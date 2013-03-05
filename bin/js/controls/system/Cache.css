@@ -1,0 +1,11 @@
+
+.cache-item input {
+    float: left;
+    margin-left: 10px;
+}
+
+.cache-item label {
+    float: left;
+    margin-left: 10px;
+    width: 80% !important;
+}

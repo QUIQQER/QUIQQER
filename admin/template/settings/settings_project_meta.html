@@ -1,0 +1,59 @@
+<form name="settings_project">
+	
+	<div class="description">
+		In Meta Angaben können Sie nützliche Informationen für Suchmaschinen und Web-Browser angeben. 
+	</div>
+	
+	<table class="setting">
+	<tr>
+		<td style="width: 100px">Autor</td>
+		<td><input type="text" name="author" value="" style="width: 100%" /></td>
+	</tr>
+	
+	<tr>
+		<td>Herausgeber</td>
+		<td><input type="text" name="publisher" value="" style="width: 100%"" /></td>
+	</tr>
+	
+	<tr>
+		<td>Copyright</td>
+		<td><input type="text" name="copyright" value="" style="width: 100%" /></td>
+	</tr>
+	</table>
+	
+	<table class="setting">
+	
+	<tr>
+		<td colspan="2">
+			{title text="Suchmaschinen Indizierung"}
+			
+			<select style="width: 100%" name="robots">
+				<option value="index" selected="selected">Indizierung der Seite erlauben</option>
+				<option value="noindex">Indizierung der Seite nicht erlauben</option>
+				<option value="nofollow">Untergeordnete Seiten / Dateien nicht besuchen</option>
+
+				<option value="noindex, nofollow">Indizierung der Seite nicht erlaubt und untergeordnete Seiten / Dateien nicht besuchen</option>
+				<option value="all">Inhalte der Seite und aus untergeordneten Seiten besuchen und indizieren</option>
+			</select>
+	</tr>
+	
+	<tr>
+		<td>
+			{title text="Stichworte"}
+			<textarea name="keywords" style="width: 100%; height: 100px;"></textarea>
+			<div class="description">
+				Geben Sie Stichwörter bitte kommasepariert an. <br />( Beispiel: Stichwort1, Stichwort2 )
+			</div>
+		</td>
+	</tr>
+	
+	<tr>
+		<td>
+			{title text="Beschreibung"}
+			<textarea name="description" style="width: 100%; height: 100px;"></textarea>
+		</td>
+	</tr>
+
+	</table>
+	<br /><br />
+</form>

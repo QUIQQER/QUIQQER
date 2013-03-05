@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * HEADER ACP
+ * @author www.pcsg.de (Henning Leutz)
+ */
+
+require_once dirname(__FILE__) .'/../header.php'; // <<-- hmm ... not realy nice
+
+// wenn https vorhanden, dann dahin
+if ((int)$_SERVER['SERVER_PORT'] !== 443 && QUI::conf('globals', 'httpshost'))
+{
+    // auf https leiten
+    header('Location: '. QUI::conf('globals', 'httpshost') . $_SERVER['REQUEST_URI']);
+    exit;
+}
+
+
+$Users = QUI::getUsers();
+$User  = $Users->getUserBySession();
+
+if (strpos($_SERVER['SCRIPT_NAME'], 'admin.php') !== false &&
+    ($Users->isAuth($User) == false || $User->isAdmin() == false))
+{
+	require_once 'login.php';
+	exit;
+}
+
+//Adminbereich markieren
+define('ADMIN', true);
+
+?>

@@ -1,0 +1,136 @@
+<?php
+
+/**
+ * Baut das obere Menü auf
+ *
+ * @return Array
+ */
+function ajax_menu()
+{
+    $User = QUI::getUserBySession();
+    $Menu = new Controls_Contextmenu_Bar(array(
+    	'name'   => 'menu',
+    	'parent' => 'menubar',
+    	'id'	 => 'menu'
+    ));
+
+	QUI_Menu::addXMLFile( $Menu, SYS_DIR .'menu.xml' );
+
+    // read the settings.xmls
+    $dir      = SYS_DIR .'settings/';
+    $files    = Utils_System_File::readDir( $dir );
+    $Settings = $Menu->getElementByName( 'settings' );
+
+    foreach ( $files as $file )
+    {
+        $windows = Utils_Xml::getSettingWindowsFromXml( $dir . $file );
+
+        foreach ( $windows as $Window )
+        {
+            $Win = new Controls_Contextmenu_Menuitem(array(
+                'onclick' => ''
+            ));
+
+            $Win->setAttribute( 'name', '/settings/'. $Window->getAttribute( 'name' ) .'/' );
+            $Win->setAttribute( 'onMouseDown', 'QUI.Menu.click' );
+            $Win->setAttribute( 'qui-window', true );
+            $Win->setAttribute( 'qui-xml-file', 'settings/'. $file );
+
+            // titel
+            $titles = $Window->getElementsByTagName( 'title' );
+
+            if ( $titles->item( 0 ) )
+            {
+                $Title = $titles->item( 0 );
+                $text  = trim( $titles->item( 0 )->nodeValue );
+
+                if ( $Title->getAttribute( 'group' ) && $Title->getAttribute( 'var' ) )
+                {
+                    $text = QUI::getLocale()->get(
+                        $Title->getAttribute( 'group' ),
+                        $Title->getAttribute( 'var' )
+                    );
+                }
+
+                $Win->setAttribute( 'text', $text );
+            }
+
+            $params = $Window->getElementsByTagName( 'params' );
+
+            if ( $params->item( 0 ) )
+            {
+                $icon = $params->item( 0 )->getElementsByTagName( 'icon' );
+
+                if ( $icon->item( 0 ) )
+                {
+                    $Win->setAttribute(
+                    	'icon',
+                        Utils_Dom::parseVar(
+                            $icon->item( 0 )->nodeValue
+                        )
+                    );
+                }
+            }
+
+            $Settings->appendChild( $Win );
+        }
+    }
+
+    // read the menu.xmls
+    $dir   = VAR_DIR .'cache/menu/';
+    $files = Utils_System_File::readDir( $dir );
+
+    foreach ( $files as $file ) {
+        QUI_Menu::addXMLFile( $Menu, $dir . $file );
+    }
+
+
+    return $Menu->toArray();
+
+
+
+
+    return;
+
+
+	$Settings->appendChild(
+		new Controls_Contextmenu_Menuitem(array(
+			'text'   => 'Wartungsarbeiten',
+			'name'   => 'settings_maintenance',
+			'image'  => URL_BIN_DIR .'16x16/configure.png',
+			'needle' => 'lib/Maintenance',
+			'click'  => 'QUI.lib.Maintenance.open'
+		))
+	);
+
+	// Menüpunkt für Plugineinstellungen
+	$SettingsPlugins = new Controls_Contextmenu_Menuitem(array(
+		'text'  => 'Plugins',
+		'name'  => 'settings_plugins',
+		'image' => URL_BIN_DIR .'16x16/plugins.png'
+	));
+	$Settings->appendChild($SettingsPlugins);
+
+	$SettingsPlugins->appendChild(
+		new Controls_Contextmenu_Menuitem(array(
+			'text'    => 'Dienste Verwaltung',
+			'name'    => 'cron_manager',
+			'image'   => URL_BIN_DIR .'16x16/tasks.png',
+			'onclick' => defined('ADMIN2') ? '_pcsg.crons.open();' : '_pcsg.crons.open'
+		))
+	);
+
+	$SettingsPlugins->appendChild(
+		new Controls_Contextmenu_Menuitem(array(
+			'text'    => 'robot.txt',
+			'name'    => 'robot_txt_manager',
+			'image'   => URL_BIN_DIR .'16x16/robottxt.png',
+			'onclick' => defined('ADMIN2') ? '_pcsg.crons.robottxt.open();': '_pcsg.crons.robottxt.open'
+		))
+	);
+
+
+}
+QUI::$Ajax->register( 'ajax_menu', false, 'Permission::checkAdminUser' );
+
+?>

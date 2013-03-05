@@ -1,0 +1,10 @@
+{foreach from=$rights item=right}
+<table class="data-table">
+	{if $right.type == 'group'}
+		{include file="`$smarty.const.SYS_DIR`template/groups/extend.group.html" group=$right}
+	{else}
+
+		{include file="`$smarty.const.SYS_DIR`template/groups/extend.item.html" right=$right cssclass=""}
+	{/if}
+</table>
+{/foreach}

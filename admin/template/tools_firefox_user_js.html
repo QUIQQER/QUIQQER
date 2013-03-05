@@ -1,0 +1,71 @@
+<form name="pcsg_FirefoxUserJs" method="post" action="bin/download.php">
+<div align="center">
+	<table style="margin-top: 10px">
+		<tbody>
+		<tr>
+			<td>
+				<br />
+				<b>Bitte prüfen Sie ob in Ihrem Firefox Profil die Datei <i>"user.js"</i> vorhanden ist.</b><br /><br />
+				<span class="description">
+					Windows: <br />
+					1. Start -> ausführen ->
+					<input
+						style="width:230px;"
+						onclick="select();"
+						value="%appdata%\Mozilla\Firefox\Profiles"
+					/>
+					<br />
+					2. Gehen Sie in Ihr standard Firefox Profil (xxxxxxx.default)
+				</span>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<br />
+				<br />
+				<b>Ist eine "user.js" vorhanden?</b>
+				<br />
+				<br />
+
+				<input class="noborder"
+					type="radio"
+					value="nein"
+					name="status"
+					checked="checked"
+					onchange="document.getElementById('ffuserjs_text').style.display='none';"
+				/> Nein, es ist keine user.js vorhanden.
+				<br />
+
+				<input class="noborder"
+					type="radio"
+					value="ja"
+					name="status"
+					onchange="document.getElementById('ffuserjs_text').style.display='block';"
+				/> Ja, es ist eine user.js vorhanden.
+
+				<div id="ffuserjs_text" style="display: none; margin-top: 9px;">
+					Bitte öffnen Sie die Datei "user.js" mit einem Editor.
+					<br />
+					Dann kopieren den Inhalt in das Textfeld.
+					<br />
+					<textarea style="width: 500px; height: 100px; margin-top:8px;" name="userjs"></textarea>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<br />
+				<b>Speichern Sie die "user.js" in Ihrem Firefox Profil Ordner ab.</b>
+				<br />
+			</td>
+		</tr>
+	</tbody>
+	</table>
+
+	<input type="hidden" name="browser" value="" />
+	<input type="hidden" name="url" value="" />
+	<input type="hidden" name="func" value="tools_firefoxUserJs" />
+
+	<div id="pcsgFFSendButton" style="width: 160px; margin-left: auto; margin-right: auto; margin-top: 20px;"></div>
+</div>
+</form>

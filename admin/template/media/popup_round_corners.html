@@ -1,0 +1,31 @@
+<form name="settings_roundcorners">
+	<table style="margin: 20px 10px">
+	<tr>
+		<td valign="top">
+			<img src="{$smarty.const.URL_BIN_DIR}48x48/roundcorners.png" style="margin: 5px 20px;" />
+		</td>
+		<td valign="top">
+			<table cellspacing="5">
+			<tr>
+				<td>Radius der Ecken</td>
+				<td>
+					<input type="text" name="rc_radius" value="" style="width: 60px; float: left;" />
+					<span style="margin-left: 5px;">px</span>
+				</td>
+			</tr>
+			<tr>
+				<td>Hintergrundfarbe</td>
+				<td style="width: 120px">
+					<input type="text" name="rc_bg" value="" style="width: 60px; margin-top: 3px; float: left;" />
+					<div id="rc_color" style="margin-left: 5px; float: left"></div>
+				</td>
+			</tr>
+			</table>
+			<p class="description" style="margin: 5px">
+				{t}Diese Einstellungen werden rekursiv auf alle Bilder im Ordner angewendet. 
+				Falls viele Bilder in dem Ordner sind, kann diese Funktion etwas Zeit in Anspruch nehmen.{/t}
+			</p>
+		</td>
+	</tr>
+	</table>
+</form>

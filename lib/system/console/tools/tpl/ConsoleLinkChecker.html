@@ -1,0 +1,55 @@
+
+    ____  ______            __
+   / __ \/_  __/___  ____  / /____
+  / /_/ / / / / __ \/ __ \/ / ___/
+ / ____/ / / / /_/ / /_/ / (__  )
+/_/     /_/  \____/\____/_/____/
+
+    __    _       __   ________              __
+   / /   (_)___  / /__/ ____/ /_  ___  _____/ /_____  _____
+  / /   / / __ \/ //_/ /   / __ \/ _ \/ ___/ //_/ _ \/ ___/
+ / /___/ / / / / ,< / /___/ / / /  __/ /__/ ,< /  __/ /
+/_____/_/_/ /_/_/|_|\____/_/ /_/\___/\___/_/|_|\___/_/
+
+
+ @author PCSG - www.pcsg.de
+
+ Projekt          : {$Project->getAttribute('name')}
+ Sprache          : {$Project->getAttribute('lang')}
+ Gefundene Fehler : {$cerrors}
+
+ Geprüfte Seiten  : {$csites}
+ Geprüfte Links   : {$clinks}
+
+
+Fehlerhafte Links:
+------------------------------------------------------
+
+{foreach from=$errors item=error}
+
+ 	Gefunden auf       : {$error.page}
+ 	Fehlertyp          : {$error.error}
+ 	Fehlercode         : {$error.code}
+ 	Linkadresse (href) : {$error.link}
+ 	Linktext           : {$error.value}
+
+ ------------------------------------------------------
+{/foreach}
+
+
+
+Leere Links (zum Beispiel <a href="http://www.pcsg.de"></a>):
+
+Diese Links sind nicht tragisch,
+kontrollieren Sie bitte trotzdem die Seiten um einen noch sauberen Quelltext zu erhalten.
+
+------------------------------------------------------
+
+{foreach from=$emptylinks item=empty}
+
+ 	Gefunden auf  		: {$empty.page}
+ 	Linkadresse (href)  : {$empty.link}
+ 	Linktext 			: {$error.value}
+
+ ------------------------------------------------------
+{/foreach}

@@ -1,0 +1,92 @@
+
+{assign var=uid value=$Site->isMarcate()}
+{user id=$uid var=MarcateUser}
+
+<div class="InfoMessage" style="width: 95%; margin: 20px;">
+	<div id="super_user_demarcate_btn" style="float: right; margin: 10px;"></div>
+	<div class="Text" style="font-size: 14px; line-height: 20px; margin-left: 50px;">
+		Diese Seite wird gerade von <b>{$MarcateUser->getName()}</b> bearbeitet
+	</div>
+</div>
+
+<div class="topic"><span style="float: right;">#{$Site->getId()}</span><span>Grunddaten</span></div>
+<table class="settingtable">
+	<tr>
+		<td style="width: 150px" class="settings"><span>Name</span></td>
+		<td>{$Site->getAttribute('name')}.html</td>
+	</tr>
+	<tr>
+		<td class="settings"><span>Titel</span></td>
+		<td>{$Site->getAttribute('title')}</td>
+	</tr>
+	<tr>
+		<td class="settings"><span>Kurzbeschreibung</span></td>
+		<td>
+			{$Site->getAttribute('short')}
+		</td>
+	</tr>
+</table>
+
+
+{title text=Seitentyp}
+<table class="settingtable">
+	<tr>
+		<td>{assign var=type value=$Site->getAttribute('type')}
+			<span style="float:left; position:relative; top: 7px;" id="type_field">
+				{if $Site->getAttribute('type') == 'standard' || $Site->getAttribute('type') == ''}
+					standard
+				{else}
+
+					{assign var=types value=$Project->getTypes()}
+					{assign var=t_ value='/'|explode:$type}
+					{assign var=parent_type value=$t_.0}
+
+					{$types.$parent_type.name}
+
+					/
+
+					{$Project->getType($type, "name")}
+
+				{/if}
+			</span>
+		</td>
+		<td></td>
+	</tr>
+</table>
+
+
+{title text=Datum}
+<table class="settingtable" style="width: 300px">
+	<tr>
+		<td>erstellt am</td>
+		<td>{$Site->getAttribute('c_date')}</td>
+		<td>von</td>
+
+		{user var=c_user id=$Site->getAttribute('c_user')}
+		<td>
+		{if $c_user}
+			{$c_user->getName()}
+		{/if}
+		</td>
+	</tr>
+	<tr>
+		<td>geändert am</td>
+		<td>{$Site->getAttribute('e_date')}</td>
+		<td>von</td>
+
+		{user var=e_user id=$Site->getAttribute('e_user')}
+		<td>{if $e_user}
+				{$e_user->getName()}
+			{/if}
+		</td>
+	</tr>
+</table>
+
+{title text=Extra}
+<table class="settingtable">
+	<tr>
+		<td style="width: 20px"><input type="checkbox" name="nav_hide" {if $Site->getAttribute('nav_hide') == 1}checked="checked"{/if} disabled="disabled" /></td>
+		<td><img src="{$smarty.const.URL_BIN_DIR}16x16/navigation_hidden.png" /><span>Nicht in Navigation anzeigen</span></td>
+	</tr>
+</table>
+

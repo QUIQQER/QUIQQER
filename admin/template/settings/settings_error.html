@@ -1,0 +1,54 @@
+<form name="global_settings">
+	<table class="setting">
+	<tr>
+		<td style="width:100px">Mail Adresse</td>
+		<td>
+			<input type="text" name="mail" value="" class="w100" />
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<span class="description">An diese E-Mail Adresse werden Fehlermeldungen gesendet</span>
+		</td>
+	</tr>
+	</table>
+
+	<br />
+
+	<table class="setting">
+	<tr>
+		<td style="width: 15px"><input type="checkbox" name="send" value="" class="noborder" /></td>
+		<td>
+			Jede Fehlermeldung gleich an die angegebene Mail senden
+		</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<span class="description">Diese Option kann Performancefressend sein.<br />
+			Da auch 404 Fehler geloggt werden</span>
+		</td>
+	</tr>
+	</table>
+
+	{title text="Ajax"}
+	<table class="setting">
+	<tr>
+		<td style="width: 15px;">
+			<input type="checkbox" name="mysql_ajax_errors_frontend" class="noborder" />
+		</td>
+		<td>
+			Frontend MySQL Fehler über Ajax weiterreichen. Der Benutzer bekommt diese dann auch zu sehen.
+		</td>
+	</tr>
+	<tr>
+		<td style="width: 15px;">
+			<input type="checkbox" name="mysql_ajax_errors_backend" class="noborder" />
+		</td>
+		<td>
+			Backend MySQL Fehler über Ajax weiterreichen. Der Benutzer bekommt diese dann auch zu sehen.
+		</td>
+	</tr>
+	</table>
+
+</form>

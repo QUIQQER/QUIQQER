@@ -1,0 +1,51 @@
+{title text="Suche"}
+
+<div style="margin: 20px 0 0 40px; width: 600px; height: 40px;">
+	<span style="margin-right: 10px; float: left; line-height: 25px">
+		Suche nach
+	</span>
+
+	<form name="sitesearch" action="" method="post" onsubmit="_pcsg.SiteSearch.Btn.onclick(); return false;">
+		<input type="text"
+			name="search_window_searchstring"
+			id="search_window_searchstring"
+			value=""
+			style="width: 200px; float: left; margin-top: 2px;"
+		/>
+		<span style="float: left; margin: 0 10px; line-height: 25px">in</span>
+
+		<select name="search_window_project" id="search_window_project"
+			style="float: left; margin-top: 2px;"
+			onchange="_pcsg.SiteSearch.showProjectLang(this)">
+			{foreach from=$projects item=Project}
+			<option value="{$Project->getAttribute('name')}">
+				{$Project->getAttribute('name')}
+			</option>
+			{/foreach}
+		</select>
+
+		<select name="search_window_lang"
+			id="search_window_lang"
+			style="float: left; margin-left: 10px; margin-top: 2px;">
+		</select>
+
+		{strip}
+		{foreach from=$projects item=Project}
+			{assign var=langs value=$Project->getAttribute('langs')}
+		<div id="search_window_{$Project->getAttribute('name')}_langs" style="display: none">
+			{foreach from=$langs item=lang}
+				{$lang},
+			{/foreach}
+		</div>
+		{/foreach}
+		{/strip}
+
+
+
+	</form>
+
+	<div id="site_search_btn" style="margin-left: 10px; float: left"></div>
+</div>
+
+{title text="Ergebnisse"}
+<div id="site_search_tbl" style="height: 200px;"></div>

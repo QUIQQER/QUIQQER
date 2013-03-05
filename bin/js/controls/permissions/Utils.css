@@ -1,0 +1,16 @@
+@CHARSET "UTF-8";
+
+.qui-permission-entry {
+    padding: 5px;
+    float: left;
+    clear: both;
+}
+
+.qui-permission-entry label {
+	width: 100px;
+	float: left;
+}
+
+.qui-permission-entry input {
+    float: left;
+}

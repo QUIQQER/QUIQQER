@@ -1,0 +1,162 @@
+
+.admin-update {
+	margin: 10px;
+}
+
+.admin-update table {
+	clear: both;
+	float: left;
+	width: 95%;
+	margin: 10px;
+	border-collapse: collapse;
+    font-size: 12px;
+    text-align: left;
+    background-color: #fff;
+}
+
+.admin-update table th {
+    color: #003399;
+    font-size: 14px;
+    font-weight: normal;
+    padding: 10px 8px;
+}
+
+.admin-update table td {
+    color: #666699;
+    padding: 8px;
+}
+.admin-update table td+td { width: 260px; }
+.admin-update table td+td+td { width: 200px; }
+
+.admin-update table .odd {
+    background: none repeat scroll 0 0 #E8EDFF;
+}
+
+.admin-update .installed td {
+	color: green;
+}
+
+#admin-update-cms-btns {
+	float: left;
+	margin: 10px;
+	width: 95%;
+	padding-bottom: 5px;
+
+	border-bottom: 1px solid #bebebe;
+}
+
+
+/* Plugin Updateliste
+ ========================================================= */
+
+#admin-update-plugin-btns {
+	float: left;
+	margin: 10px;
+	width: 95%;
+}
+
+#admin-update-plugin-list table td img {
+	float: left;
+	margin-right: 10px;
+}
+
+#admin-update-plugin-list table td+td {
+	width: 410px;
+	text-align: right;
+}
+
+.update-listing ul {
+	float: left;
+	clear: both;
+	margin: 10px 10px 10px 20px;
+	width: 100%;
+}
+
+.update-listing ul li {
+	list-style-type: none;
+	clear: both;
+}
+
+.update-listing {
+	background-color: #F2D4CE;
+	border: #AE432E;
+}
+
+.update-listing .version {
+	float: left;
+	line-height: 22px;
+    margin-right: 10px;
+}
+
+.update-listing ul li.supp .version {
+	margin-left: 40px;
+}
+
+.update-listing .loaderbar {
+	float: right;
+	line-height: 22px;
+	padding-right: 20px;
+	width: 260px;
+}
+
+.admin-update-plugin-sort-settings {
+	position: absolute;
+	top: 50px;
+	right: 20px;
+	padding: 10px;
+	background: #fff;
+	border: 1px solid #dedede;
+	z-index: 1;
+	width: 300px;
+}
+
+#admin-update-plugin-sort-close {
+	border-top: 1px solid #dedede;
+	width: 280px;
+	margin: 10px auto;
+}
+
+
+/* Server Plugins
+ ========================================================= */
+
+#plugins-server-list .server-plugin {
+	clear: both;
+	float: left;
+	width: 95%;
+	margin: 10px;
+	padding: 10px;
+	font-size: 12px;
+    text-align: left;
+    background-color: #fff;
+}
+
+#admin-delete-plugin-list .data-table img,
+#plugins-server-list .server-plugin img {
+	float: left;
+	margin-right: 10px;
+}
+
+#plugins-server-list .server-plugin h2 {
+	color: #666699;
+}
+
+#plugins-server-list .server-plugin .description {
+	clear: both;
+	margin-top: 10px;
+	float: left;
+}
+
+.server-plugin .version {
+	clear: both;
+	margin-top: 10px;
+	float: left;
+	color: #666699;
+}
+
+.server-plugin .loaderbar {
+	clear: both;
+	float: left;
+	width: 270px;
+	margin-top: 5px;
+}

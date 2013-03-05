@@ -1,0 +1,167 @@
+
+.qui-panel {
+    float: left;
+    clear: both;
+    width: 100%;
+    position: relative;
+    background: #F2F2F2;
+}
+
+.qui-panel-header {
+    position: relative;
+    background: #f1f1f1 url(images/bg-panel-header.gif) repeat-x;
+    height: 30px;
+    border-bottom: 1px solid #D3D3D3;
+    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+.qui-panel-title {
+    line-height: 30px;
+    padding-left: 20px;
+    float: left;
+
+    display: inline-block;
+    font-size: 12px;
+    margin: 0;
+    overflow: hidden;
+    color: #333;
+}
+
+.qui-panel-expand,
+.qui-panel-collapse {
+    background: url(images/collapse-expand.gif) left top no-repeat;
+    padding-right: 5px;
+    float: right;
+    width: 16px;
+    height: 16px;
+    margin-top: 7px;
+    cursor: pointer;
+}
+
+.qui-panel-expand {
+    background: url(images/collapse-expand.gif) left -16px no-repeat;
+}
+
+.qui-panel-content {
+    position: relative;
+    float: left;
+    width: 100%;
+    padding: 20px;
+}
+
+/* Panel topic buttons
+ ================================================================= */
+
+.qui-panel-buttons {
+    height: 33px;
+    width: 100%;
+    background: #dedede;
+    padding-left: 20px;
+}
+
+.qui-panel-buttons .qui-btn2-text {
+    white-space: nowrap;
+}
+
+.qui-panel-buttons:before {
+    content: "";
+    width: 100%;
+    height: 3px;
+    display: block;
+    position: relative;
+    left: -20px;         /* FF Fix */
+    padding-right: 20px; /* FF Fix */
+    top: 0px;
+
+    background-color: transparent;
+    background-image: -moz-linear-gradient(center top , rgba(0, 0, 0, 0.2), transparent);
+    background-image: -webkit-gradient(linear, center top, left bottom, from(rgba(0, 0, 0, 0.2)), to(transparent));
+    background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.2), transparent);
+    background-image: -o-linear-gradient(top, rgba(0, 0, 0, 0.2), transparent);
+    background-image: -ms-linear-gradient(top, rgba(0, 0, 0, 0.2), transparent);
+    background-image: linear-gradient(top, rgba(0, 0, 0, 0.2), transparent);
+}
+
+.qui-panel-buttons:after {
+    content: "";
+    width: 100%;
+    height: 3px;
+    display: block;
+    position: relative;
+    left: -20px;         /* FF Fix */
+    padding-right: 20px; /* FF Fix */
+    top: 27px;
+
+    background-color: transparent;
+    background-image: -moz-linear-gradient(center bottom , rgba(0, 0, 0, 0.2), transparent);
+    background-image: -webkit-gradient(linear, center bottom, left bottom, from(rgba(0, 0, 0, 0.2)), to(transparent));
+    background-image: -webkit-linear-gradient(bottom, rgba(0, 0, 0, 0.2), transparent);
+    background-image: -o-linear-gradient(bottom, rgba(0, 0, 0, 0.2), transparent);
+    background-image: -ms-linear-gradient(bottom, rgba(0, 0, 0, 0.2), transparent);
+    background-image: linear-gradient(bottom, rgba(0, 0, 0, 0.2), transparent);
+}
+
+.qui-panel-buttons .qui-btn-seperator {
+    border-left: 1px solid #999;
+    margin: 5px 4px 2px 7px;
+}
+
+/* Panel breadcrumb
+ ================================================================= */
+
+.qui-panel-breadcrumb {
+    height: 40px;
+    width: 100%;
+    background: #fff;
+    padding-left: 20px;
+    border-bottom: 1px solid #dedede;
+}
+
+
+/* Panel left buttons - categories
+ ================================================================= */
+
+.qui-panel-categories {
+    float: left;
+    width: 190px;
+    height: 100%;
+    border-right: 1px solid #dedede;
+    overflow: hidden;
+    padding-top: 20px;
+}
+
+.qui-panel-categories .qui-btn2,
+.qui-panel-categories .qui-btn2-over,
+.qui-panel-categories .qui-btn2-active,
+.qui-panel-categories .qui-btn2-disable {
+    border-width: 0 0 1px 0;
+    border-style: solid;
+    border-color: #dedede;
+    border-radius: 0px;
+    background: transparent;
+    padding: 10px 5px;
+    margin: 0 !important;
+    clear: both;
+    width: 190px;
+}
+
+.qui-panel-categories .qui-btn2-active {
+    background: #C3C3C3 !important;
+    color: #222;
+    border-width: 0 0 1px 0px !important;
+    border-style: solid !important;
+    border-color: #909090 !important;
+    border-radius: 0px !important;
+}
+
+.qui-panel-categories .qui-btn2-over {
+    background: #6C98D9 !important;
+    color: #fff;
+    border-width: 0 0 1px 0 !important;
+    border-style: solid !important;
+    border-color: #6C98D9 !important;
+    border-radius: 0px !important;
+    box-shadow: none !important;
+}

@@ -1,0 +1,40 @@
+
+<table class="data-table">
+	<thead>
+		<tr>
+			<th colspan="2">System Prüfung</th>
+		</tr>
+	</thead>
+	<tbody>
+		{foreach from=$checks item=Check}
+		<tr class="{cycle values="odd,"}">
+			<td>
+				{if $Check->getAttribute('error') === 1}
+					<img src="{$smarty.const.URL_BIN_DIR}16x16/apply.png" title="Erfolgreich" alt="Erfolgreich" />
+				{else if $Check->getAttribute('error') === -1}
+					<img src="{$smarty.const.URL_BIN_DIR}16x16/messagebox_critical.png" title="Fehler" alt="Fehler" />
+				{else}
+					<img src="{$smarty.const.URL_BIN_DIR}16x16/messagebox_critical.png" title="Nicht vorhanden" alt="Nicht vorhanden" />
+				{/if}
+			</td>
+			<td>
+				<h2>{$Check->getAttribute('title')}</h2>
+				{$Check->getAttribute('message')}
+			</td>
+		</tr>
+		{/foreach}
+	</tbody>
+</table>
+
+{*
+<table class="data-table">
+	<thead>
+		<tr>
+			<th colspan="2">Plugin Prüfungen</th>
+		</tr>
+	</thead>
+	<tbody>
+
+	</tbody>
+</tbody>
+*}

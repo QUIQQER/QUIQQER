@@ -1,0 +1,190 @@
+<locales>
+
+    <groups name="quiqqer/system" datatype="js">
+        <locale name="permissions.panel.title">
+            <de><![CDATA[Zugriffsrechte Manager]]></de>
+            <en><![CDATA[Permissions-Manager]]></en>
+        </locale>
+
+        <locale name="permissions.panel.btn.sitemap.alt">
+            <de><![CDATA[Zugriffsrechte anzeigen]]></de>
+            <en><![CDATA[Show permissions]]></en>
+        </locale>
+        <locale name="permissions.panel.btn.sitemap.title">
+            <de><![CDATA[Zugriffsrechte anzeigen]]></de>
+            <en><![CDATA[Show permissions]]></en>
+        </locale>
+        <locale name="permissions.panel.message.no.rights">
+            <de><![CDATA[Keine Rechte vorhanden]]></de>
+            <en><![CDATA[No rights exist]]></en>
+        </locale>
+
+        <locale name="permissions.panel.btn.add.alt">
+            <de><![CDATA[Fügen Sie ein Recht hinzu]]></de>
+            <en><![CDATA[Add a permission]]></en>
+        </locale>
+        <locale name="permissions.panel.btn.add.title">
+            <de><![CDATA[Fügen Sie ein Recht hinzu]]></de>
+            <en><![CDATA[Add a permission]]></en>
+        </locale>
+        <locale name="permissions.panel.btn.add.text">
+            <de><![CDATA[Recht hinzufügen]]></de>
+            <en><![CDATA[Add a permission]]></en>
+        </locale>
+
+        <locale name="permissions.panel.btn.save.alt">
+            <de><![CDATA[Alle Änderungen speichern]]></de>
+            <en><![CDATA[Save all changes]]></en>
+        </locale>
+        <locale name="permissions.panel.btn.save.title">
+            <de><![CDATA[Alle Änderungen speichern]]></de>
+            <en><![CDATA[Save all changes]]></en>
+        </locale>
+        <locale name="permissions.panel.btn.save.text">
+            <de><![CDATA[speichern]]></de>
+            <en><![CDATA[save]]></en>
+        </locale>
+
+        <locale name="permissions.panel.btn.delete.right.alt">
+            <de><![CDATA[Zugriffsrecht [right] löschen]]></de>
+            <en><![CDATA[Delete permission [right]]]></en>
+        </locale>
+        <locale name="permissions.panel.btn.delete.right.title">
+            <de><![CDATA[Zugriffsrecht [right] löschen]]></de>
+            <en><![CDATA[Delete permission [right]]]></en>
+        </locale>
+
+        <locale name="permissions.panel.window.delete.title">
+            <de><![CDATA[Möchten Sie wirklich das Zugriffsrecht löschen?]]></de>
+            <en><![CDATA[You realy want to delete the permission?]]></en>
+        </locale>
+        <locale name="permissions.panel.window.delete.text">
+            <de><![CDATA[Möchten Sie wirklich das Zugriffsrecht [right] löschen?]]></de>
+            <en><![CDATA[You realy want to delete the permission [right]?]]></en>
+        </locale>
+        <locale name="permissions.panel.window.delete.information">
+            <de><![CDATA[Das Zugriffsrecht wird unwiderruflich gelöscht.]]></de>
+            <en><![CDATA[The permission will be permanently deleted.]]></en>
+        </locale>
+
+        <locale name="permissions.panel.window.add.title">
+            <de><![CDATA[Zugriffsrecht hinzufügen]]></de>
+            <en><![CDATA[Add permission]]></en>
+        </locale>
+        <locale name="permissions.panel.window.add.text">
+            <de><![CDATA[Fügen Sie ein Zugriffsrecht hinzu. Zum Beispiel: my.custom.right]]></de>
+            <en><![CDATA[Add a permission. For example: my.custom.right]]></en>
+        </locale>
+        <locale name="permissions.panel.window.add.information">
+            <de><![CDATA[Fügen Sie ein Zugriffsrecht für Gruppen, Benutzer, Medien-Dateien oder Seiten hinzu.]]></de>
+            <en><![CDATA[Add a permission for groups, users, media-files or sites]]></en>
+        </locale>
+
+        <locale name="permissions.panel.btn.select.user">
+            <de><![CDATA[Für einen Benutzer]]></de>
+            <en><![CDATA[For an user]]></en>
+        </locale>
+        <locale name="permissions.panel.btn.select.group">
+            <de><![CDATA[Für eine Gruppe]]></de>
+            <en><![CDATA[For a group]]></en>
+        </locale>
+        <locale name="permissions.panel.btn.select.manage">
+            <de><![CDATA[Rechte nur verwalten]]></de>
+            <en><![CDATA[Permission management only]]></en>
+        </locale>
+
+        <locale name="permissions.panel.btn.select.open.alt">
+            <de><![CDATA[Zugriffsrechte für eine(n) bestimmte Gruppe / Benutzer setzen]]></de>
+            <en><![CDATA[Set permission for an specific group / user]]></en>
+        </locale>
+        <locale name="permissions.panel.btn.select.open.title">
+            <de><![CDATA[Zugriffsrechte für eine(n) bestimmte Gruppe / Benutzer setzen]]></de>
+            <en><![CDATA[Set permission for an specific group / user]]></en>
+        </locale>
+
+        <locale name="permissions.panel.select.title">
+            <de><![CDATA[Für wen möchten Sie die Zugriffsrechte setzen?]]></de>
+            <en><![CDATA[For which group want you to set the permissions?]]></en>
+        </locale>
+
+        <locale name="permissions.panel.select.group.title">
+            <de><![CDATA[Für welche Gruppe möchten Sie die Zugriffsrechte setzen?]]></de>
+            <en><![CDATA[For which group want you to set the permissions?]]></en>
+        </locale>
+        <locale name="permissions.panel.select.user.title">
+            <de><![CDATA[Für welchen Benutzer möchten Sie die Zugriffsrechte setzen?]]></de>
+            <en><![CDATA[For which user want you to set the permissions?]]></en>
+        </locale>
+
+    </groups>
+
+
+    <groups name="quiqqer/system">
+        <locale name="menu.extras.permissions.text">
+            <de><![CDATA[Zugriffsrechte-Manager]]></de>
+            <en><![CDATA[Permissions-Manager]]></en>
+        </locale>
+
+        <locale name="permissions.message.save.success">
+            <de><![CDATA[Zugriffsrechte erfolgreich gespeichert.]]></de>
+            <en><![CDATA[Permissions successfuly saved.]]></en>
+        </locale>
+        <locale name="permissions.message.delete.success">
+            <de><![CDATA[Zugriffsrecht erfolgreich gelöscht.]]></de>
+            <en><![CDATA[Permission successfuly deleted.]]></en>
+        </locale>
+
+        <locale name="exception.permission.session.expired">
+            <de><![CDATA[Ihre Sitzung ist abgelaufen, bitte loggen Sie sich ein.]]></de>
+            <en><![CDATA[Your session has expired, please login.]]></en>
+        </locale>
+        <locale name="exception.no.permission">
+            <de><![CDATA[Sie haben nicht die nötigen Rechte um diese Aktion durchzuführen.]]></de>
+            <en><![CDATA[You have not the necessary rights to perform this action.]]></en>
+        </locale>
+        <locale name="exception.permissions.exists">
+            <de><![CDATA[Das Zugriffsrecht existiert bereits.]]></de>
+            <en><![CDATA[The Permission still exists.]]></en>
+        </locale>
+        <locale name="exception.permissions.permission.not.found">
+            <de><![CDATA[Das Zugriffsrecht wurde nicht gefunden.]]></de>
+            <en><![CDATA[The Permission could not be found.]]></en>
+        </locale>
+        <locale name="exception.permissions.delete.only.user.permissions">
+            <de><![CDATA[Dieses Zugriffsrecht kann nicht gelöscht werden. Sie können nur Benutzer angelegt Zugriffsrechte löschen.]]></de>
+            <en><![CDATA[This permission can not be deleted. You can only delete user created permissions.]]></en>
+        </locale>
+
+    </groups>
+
+
+    <groups name="locale/permissions" datatype="js">
+        <locale name="quiqqer">
+            <de><![CDATA[QUIQQER]]></de>
+            <en><![CDATA[QUIQQER]]></en>
+        </locale>
+        <locale name="quiqqer.system">
+            <de><![CDATA[System]]></de>
+            <en><![CDATA[System]]></en>
+        </locale>
+        <locale name="quiqqer.admin">
+            <de><![CDATA[Administration]]></de>
+            <en><![CDATA[Administration]]></en>
+        </locale>
+        <locale name="quiqqer.admin.site">
+            <de><![CDATA[Seiten]]></de>
+            <en><![CDATA[Sites]]></en>
+        </locale>
+
+        <locale name="quiqqer.admin.groups">
+            <de><![CDATA[Gruppen]]></de>
+            <en><![CDATA[Groups]]></en>
+        </locale>
+
+        <locale name="quiqqer.admin.users">
+            <de><![CDATA[Benutzer]]></de>
+            <en><![CDATA[Users]]></en>
+        </locale>
+    </groups>
+
+</locales>

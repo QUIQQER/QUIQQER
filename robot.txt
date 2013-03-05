@@ -1,0 +1,9 @@
+User-Agent: *
+Disallow: /ajax.php
+Disallow: /update.php
+Disallow: /cron.php
+Disallow: /mail_protection.php
+Disallow: /header.php
+Disallow: /opt/
+Disallow: /usr/
+Disallow: /bin/

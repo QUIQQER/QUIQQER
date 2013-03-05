@@ -1,0 +1,202 @@
+
+<div style="margin: 10px;">
+
+	<div id="settings_toolbar" style="float: left; text-align: center; width: 150px; border: 1px solid #c6c3b9; height: 360px;">
+
+	</div>
+
+	<div id="settings_body" style="float: left; margin-left: 20px; width: 460px; border: 1px solid #c6c3b9; height: 360px;">
+		<div id="settings_body_instaled" style="display: none;">
+			<div class="plg_main_title">Installierte Plugins</div>
+			{assign var=keys value=""}
+			{foreach from=$Plugins item=Plugin key=key}
+				<div class="plg_itm">
+					<div class="plg_itm_opener" onclick="_pcsg.extras.plugins.openInfo('{$key}', this)"></div>
+
+					<div style="padding: 10px; float: left; position: relative;">
+						{if isset($Plugin.icon_32x32)}
+							<img src="{$smarty.const.URL_OPT_DIR}{$Plugin.icon_32x32}" class="plg_itm_img" />
+						{else}
+							<img src="{$smarty.const.URL_BIN_DIR}32x32/plugins.png" class="plg_itm_img" />
+						{/if}
+
+						<div style="float: left;">
+							<span style="float: left; font-weight: bold">{$Plugin.name}</span>
+							<span style="float: left; clear: both">Version {if isset($Plugin.version)}{$Plugin.version}{else}-{/if}</span>
+						</div>
+
+					</div>
+
+					<div id="info_{$key}" style="clear: both; float: left; display: none">
+						<table style="margin-left: 20px; padding-bottom: 20px">
+							<tr>
+								<td class="plg_info_title">Entwickler</td>
+								<td>{$Plugin.developer}</td>
+							</tr>
+							<tr>
+								<td class="plg_info_title">Copyright</td>
+								<td>{$Plugin.copyright}</td>
+							</tr>
+							<tr>
+								<td class="plg_info_title">Version</td>
+								<td>{$Plugin.version}</td>
+							</tr>
+							<tr>
+								<td class="plg_info_title">Updateserver</td>
+								<td>{$Plugin.updateserver}</td>
+							</tr>
+							<tr>
+								<td class="plg_info_title">Dokumentation</td>
+								<td>{if isset($Plugin.doku)}{$Plugin.doku}{else}---{/if}</td>
+							</tr>
+							<tr>
+								<td class="plg_info_title">Beschreibung</td>
+								<td>{if isset($Plugin.description)}{else}---{/if}</td>
+							</tr>
+							{if isset($Plugin.description)}
+							<tr>
+								<td class="plg_info_title"></td>
+								<td style="font-size:10px;">{$Plugin.description}</td>
+							</tr>
+							{/if}
+						</table>
+					</div>
+
+					<div id="active_{$key}" style="position: absolute; right: 0; top: 10px;"></div>
+					{capture assign=keys}{$keys},{$key}{/capture}
+				</div>
+			{/foreach}
+				<div style="clear: both; height: 20px;">&nbsp;</div>
+				<div id="settings_ids" style="display: none">{$keys}</div>
+				<div id="plg_active_plugins" style="display: none">{$JSON_Active}</div>
+		</div>
+		<div id="settings_body_update" style="display: none;">
+			<div class="plg_main_title">Updates</div>
+			{assign var=keys value=""}
+			{foreach from=$Plugins_update item=Plugin key=key}
+				<div class="plg_itm">
+					<div class="plg_itm_opener" onclick="_pcsg.extras.plugins.openInfo('update_{$key}', this)"></div>
+
+					<div style="padding: 10px; float: left; position: relative;">
+						{if isset($Plugin.icon_32x32)}
+							<img src="{$smarty.const.URL_OPT_DIR}{$Plugin.icon_32x32}" class="plg_itm_img" />
+						{else}
+							<img src="{$smarty.const.URL_BIN_DIR}32x32/plugins.png" class="plg_itm_img" />
+						{/if}
+
+						<div style="float: left;">
+							<span style="float: left; font-weight: bold">{$Plugin.name}</span>
+							<span style="float: left; clear: both">Version {if isset($Plugin.version)}{$Plugin.version}{else}-{/if}</span>
+						</div>
+
+					</div>
+
+					<div id="info_update_{$key}" style="clear: both; float: left; display: none">
+						<table style="margin-left: 20px; padding-bottom: 20px">
+							<tr>
+								<td class="plg_info_title">Entwickler</td>
+								<td>{$Plugin.developer}</td>
+							</tr>
+							<tr>
+								<td class="plg_info_title">Copyright</td>
+								<td>{$Plugin.copyright}</td>
+							</tr>
+							<tr>
+								<td class="plg_info_title">Version</td>
+								<td>{$Plugin.version}</td>
+							</tr>
+							<tr>
+								<td class="plg_info_title">Updateserver</td>
+								<td>{$Plugin.updateserver}</td>
+							</tr>
+							<tr>
+								<td class="plg_info_title">Dokumentation</td>
+								<td>{if isset($Plugin.doku)}{$Plugin.doku}{else}---{/if}</td>
+							</tr>
+							<tr>
+								<td class="plg_info_title">Beschreibung</td>
+								<td>{if isset($Plugin.description)}{else}---{/if}</td>
+							</tr>
+							{if isset($Plugin.description)}
+							<tr>
+								<td class="plg_info_title"></td>
+								<td style="font-size:10px;">{$Plugin.description}</td>
+							</tr>
+							{/if}
+						</table>
+					</div>
+
+					<div id="active_update_{$key}" style="position: absolute; right: 0; top: 10px;"></div>
+					{capture assign=keys}{$keys},{$key}{/capture}
+				</div>
+			{/foreach}
+				<div style="clear: both; height: 20px;">&nbsp;</div>
+					<div id="update_{$key}" style="position: absolute; right: 0; top: 10px;"></div>
+					{capture assign=keys}{$keys},{$key}{/capture}
+		</div>
+
+		<div id="settings_body_download" style="display: none;">
+			<div class="plg_main_title">Neue Plugins herrunterladen</div>
+			{assign var=keys value=""}
+			{foreach from=$NewPlugins item=Plugin key=key}
+				<div class="plg_itm">
+					<div class="plg_itm_opener" onclick="_pcsg.extras.plugins.openInfo('{$key}', this)"></div>
+
+					<div style="padding: 10px; float: left; position: relative;">
+						{if isset($Plugin.icon_32x32)}
+							<img src="http://{$Plugin.updateserver}/opt/{$Plugin.icon_32x32}" class="plg_itm_img" />
+						{else}
+							<img src="{$smarty.const.URL_BIN_DIR}32x32/plugins.png" class="plg_itm_img" />
+						{/if}
+
+						<div style="float: left;">
+							<span style="float: left; font-weight: bold">{$Plugin.name}</span>
+							<span style="float: left; clear: both">Version {if isset($Plugin.version)}{$Plugin.version}{else}-{/if}</span>
+						</div>
+
+					</div>
+
+					<div id="info_{$key}" style="clear: both; float: left; display: none">
+						<table style="margin-left: 20px; padding-bottom: 20px">
+							<tr>
+								<td class="plg_info_title">Entwickler</td>
+								<td>{$Plugin.developer}</td>
+							</tr>
+							<tr>
+								<td class="plg_info_title">Copyright</td>
+								<td>{$Plugin.copyright}</td>
+							</tr>
+							<tr>
+								<td class="plg_info_title">Version</td>
+								<td>{$Plugin.version}</td>
+							</tr>
+							<tr>
+								<td class="plg_info_title">Updateserver</td>
+								<td id="{$key}_updateserver">{$Plugin.updateserver}</td>
+							</tr>
+							<tr>
+								<td class="plg_info_title">Dokumentation</td>
+								<td>{if isset($Plugin.doku)}{$Plugin.doku}{else}---{/if}</td>
+							</tr>
+							<tr>
+								<td class="plg_info_title">Beschreibung</td>
+								<td>{if isset($Plugin.description)}{else}---{/if}</td>
+							</tr>
+							{if isset($Plugin.description)}
+							<tr>
+								<td class="plg_info_title"></td>
+								<td style="font-size:10px;">{$Plugin.description}</td>
+							</tr>
+							{/if}
+						</table>
+					</div>
+
+					<div id="download_{$key}" style="position: absolute; right: 0; top: 10px;"></div>
+					{capture assign=keys}{$keys},{$key}{/capture}
+				</div>
+			{/foreach}
+			<div id="new_settings_ids" style="display: none">{$keys}</div>
+		</div>
+	</div>
+
+</div>

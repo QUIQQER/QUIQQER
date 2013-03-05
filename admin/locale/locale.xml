@@ -1,0 +1,58 @@
+<locales>
+    <groups name="quiqqer/system" datatype="js">
+        <locale name="welcome.message">
+            <de><![CDATA[Willkommen [username]]]></de>
+            <en><![CDATA[Welcome [username]]]></en>
+        </locale>
+        <locale name="development.info">
+            <de><![CDATA[System ist im Entwicklungs-Modus]]></de>
+            <en><![CDATA[System is in development mode]]></en>
+        </locale>
+        <locale name="logout">
+            <de><![CDATA[Abmelden]]></de>
+            <en><![CDATA[Logout]]></en>
+        </locale>
+    </groups>
+
+    <groups name="quiqqer/system">
+        <locale name="menu.file.text">
+            <de><![CDATA[Datei]]></de>
+            <en><![CDATA[File]]></en>
+        </locale>
+            <locale name="menu.file.close.text">
+                <de><![CDATA[Schließen]]></de>
+                <en><![CDATA[Close]]></en>
+            </locale>
+            <locale name="menu.file.logout.text">
+                <de><![CDATA[Abmelden]]></de>
+                <en><![CDATA[Logout]]></en>
+            </locale>
+
+        <locale name="menu.edit.text">
+            <de><![CDATA[Bearbeiten]]></de>
+            <en><![CDATA[Edit]]></en>
+        </locale>
+        <locale name="menu.goto.text">
+            <de><![CDATA[Gehe zu ...]]></de>
+            <en><![CDATA[Go to ...]]></en>
+        </locale>
+        <locale name="menu.settings.text">
+            <de><![CDATA[Einstellungen]]></de>
+            <en><![CDATA[Settings]]></en>
+        </locale>
+            <locale name="menu.settings.media.text">
+	            <de><![CDATA[Media Einstellungen]]></de>
+	            <en><![CDATA[Media settings]]></en>
+	        </locale>
+
+        <locale name="menu.help.text">
+            <de><![CDATA[Hilfe]]></de>
+            <en><![CDATA[Help]]></en>
+        </locale>
+	        <locale name="menu.help.about.text">
+	            <de><![CDATA[Über QUIQQER]]></de>
+	            <en><![CDATA[About QUIQQER]]></en>
+	        </locale>
+    </groups>
+
+</locales>

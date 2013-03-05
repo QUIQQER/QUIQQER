@@ -1,0 +1,341 @@
+<?php
+
+/**
+ * This file contains QUI_Template
+ */
+
+/**
+ * Template Engine Manager
+ *
+ * @author www.pcsg.de (Henning Leutz)
+ * @package com.pcsg.qui.template
+ */
+
+class QUI_Template extends QDOM
+{
+    /**
+     * Registered template engines
+     * @var array
+     */
+    static $_engines = array();
+
+    /**
+     * Header extentions
+     * @var array
+     */
+    static $_header = array();
+
+    /**
+     * site type tpl
+     * @var String
+     */
+    protected $_typetpl = '';
+
+    /**
+     * Load the registered engines
+     */
+    static function load()
+    {
+        self::$_engines = self::getConfig()->toArray();
+    }
+
+    /**
+     * Return the Template Config object
+     * @return QConfig
+     */
+    static function getConfig()
+    {
+        if ( !file_exists( CMS_DIR .'etc/templates.ini' ) ) {
+            file_put_contents( CMS_DIR .'etc/templates.ini', '' );
+        }
+
+        return QUI::getConfig( 'etc/templates.ini' );
+    }
+
+    /**
+     * Get the standard template engine
+     *
+     * if $admin=true, admin template plugins were loaded
+     *
+     * @param Integer $admin - is the template for the admin or frontend? <- param depricated
+     * @return Interface_Template_Engine
+     */
+    static function getEngine($admin=false)
+    {
+        if ( empty( self::$_engines ) ) {
+            self::load();
+        }
+
+        $engine = QUI::conf( 'template', 'engine' );
+
+        if ( !isset( self::$_engines[ $engine ] ) ) {
+            throw new QException( 'Template Engine not found!' );
+        }
+
+        $Engine     = new self::$_engines[ $engine ]( $admin );
+        $implements = class_implements( $Engine );
+
+        if ( !isset( $implements['Interface_Template_Engine'] ) )
+        {
+            throw new QException(
+            	'The Template Engine implements not from Interface_Template_Engine'
+            );
+        }
+
+        return $Engine;
+    }
+
+    /**
+     * Register a template engine
+     *
+     * @param String $name
+     * @param Function $callback - must return a template engine (implements Interface_Template_Engine)
+     */
+    static function registerEngine($name, $class)
+    {
+        $Conf = self::getConfig();
+        $Conf->setValue( $name, null, $class );
+        $Conf->save();
+    }
+
+    /**
+     * Extend the head <head>...</head>
+     *
+     * @param String $str
+     * @param Integer $prio
+     */
+    static function extendHeader($str, $prio=3)
+    {
+    	$prio = (int)$prio;
+
+		if ( !isset( self::$_header[ $prio ] ) ) {
+			self::$_header[ $prio ] = '';
+		}
+
+		$_str  = self::$_header[ $prio ];
+		$_str .= $str;
+
+		self::$_header[ $prio ] = $_str;
+	}
+
+    /**
+     * Prepares the contents of a template
+     *
+     * @param Projects_Project $Project
+     * @param Projects_Site|Projects_Site_Edit $Site
+     *
+     * @return String
+     */
+	public function fetchTemplate(Projects_Project $Project, $Site)
+	{
+	    $Engine  = self::getEngine();
+        $Users   = QUI::getUsers();
+        $Rewrite = QUI::getRewrite();
+        $Locale  = QUI::getLocale();
+
+        $User = $Users->getUserBySession();
+
+	    // header
+    	$_header = QUI_Template::$_header;
+
+        foreach ( $_header as $key => $str ) {
+            $Engine->extendHeader( $str, $key );
+        }
+
+        $this->setAttribute( 'Project', $Project );
+        $this->setAttribute( 'Site', $Site );
+
+        $Engine->Template = $this;
+
+        // Zuweisungen
+        $Engine->assign(array(
+            'Rewrite' => $Rewrite,
+            'Plugins' => QUI::getPlugins(),
+
+            'Project' => $Project,
+    		'Site'    => $Site,
+    		'url'     => URL_DIR,
+    		'User'    => $User,
+    		'Smarty'  => $Engine,
+            'Engine'  => $Engine,
+
+            'Locale' => $Locale,
+            'L'      => $Locale,
+
+            'PROJECT_URL_BIN_DIR' => URL_USR_DIR .'bin/'. $Project->getAttribute('template') .'/',
+            'PROJECT_LIB_DIR'     => USR_DIR .'lib/'. $Project->getAttribute('template') .'/'
+    	));
+
+    	// Template
+        $template = $this->_loadTemplate( $Project, $Site, $Engine );
+
+        // abwärtskompatibilität
+        $Engine->assign( 'typeTemplate', $template );
+
+        // Suffix Verarbeitung
+        $suffix = $Rewrite->getSuffix();
+    	$tpl    = USR_DIR .'lib/'. $Project->getAttribute('template') .'/index.html';
+
+    	// suffix template prüfen
+    	if ( file_exists(USR_DIR .'lib/'. $Project->getAttribute('template') .'/index' . $suffix) ) {
+    		$tpl = USR_DIR .'lib/'. $Project->getAttribute('template') .'/index' . $suffix;
+    	}
+
+    	$content = '';
+
+    	if ( !file_exists( $tpl ) ) {
+            throw new QException( 'Projekt Template nicht gefunden: '. $tpl );
+    	}
+
+    	$content = $Engine->fetch( $tpl );
+
+    	return $content;
+	}
+
+    /**
+     * Template mit den Skripten laden
+     *
+     * @param Projects_Project $Project
+     * @param Projects_Site $Site
+     * @param Interface_Template_Engine $Engine
+     *
+     * @return String
+     */
+	protected function _loadTemplate(Projects_Project $Project, Projects_Site $Site, $Engine)
+	{
+	    $this->types    = $Project->getType($Site->getAttribute('type'));
+        $this->type     = $Site->getAttribute('type');
+        $this->template = $Project->getAttribute('template');
+
+        // abwärtskompatibilität
+        $smarty  = $Engine;
+        $Users   = QUI::getUsers();
+        $Rewrite = QUI::getRewrite();
+
+        $User   = $Users->getUserBySession();
+        $suffix = $Rewrite->getSuffix();
+
+        // Seitentyp Skript einbinden
+    	if (is_array($this->types) && isset($this->types['script']))
+    	{
+    	    $script = $this->type .'/'. $this->types['script'];
+    		$file   = OPT_DIR . $script;
+
+    		// schauen ob es im projekt ein seitentyp skript gibt
+    		if (file_exists(USR_DIR .'lib/'. $this->template .'/'. $script)) {
+    			$file = USR_DIR .'lib/'. $this->template .'/'. $script;
+    		}
+
+    		if (file_exists($file)) {
+    			require $file;
+    		}
+    	}
+
+	    // Globale index.php für das Design
+    	if (file_exists(USR_DIR .'lib/'. $this->template .'/index.php')) {
+    		require USR_DIR .'lib/'. $this->template .'/index.php';
+    	}
+
+        // Template + Suffix
+        $tpl = $this->_getTypeTemplate($this->types, $this->type, $this->template);
+
+        if ($suffix == '.html') {
+            return $tpl;
+        }
+
+        $_tpl = str_replace('.html', $suffix, $tpl);
+
+        if (file_exists($_tpl)) {
+            return $_tpl;
+        }
+
+        return $tpl;
+	}
+
+    /**
+     * Template für den Seitentyp
+     *
+     * @param Array $types
+     * @param String $type
+     * @param String $template
+     *
+     * @return String
+     */
+	protected function _getTypeTemplate($types, $type, $template)
+	{
+	    if (isset($types['template']))
+    	{
+    	    // Falls im Projekt ein Template existiert
+    	    $tpl = USR_DIR .'lib/'. $template .'/'. $type .'/'. $types['template'];
+
+    	    if (file_exists($tpl)) {
+    		    return $tpl;
+    		}
+
+    		// Falls im Plugin ein Template existiert
+    		$tpl = OPT_DIR . $type .'/'. $types['template'];
+
+    		if (file_exists($tpl)) {
+                return $tpl;
+    		}
+    	}
+
+    	if (file_exists(USR_DIR .'lib/'. $template .'/standard/body.html')) {
+            return USR_DIR .'lib/'. $template .'/standard/body.html';
+    	}
+
+        return LIB_DIR .'templates/standard.html';
+	}
+
+    /**
+     * Set the admin menu to the template
+     * If the user is an administrator the admin will be insert
+     *
+     * @param String $html - html
+     * @return String
+     */
+	static function setAdminMenu($html)
+	{
+		$User = QUI::getUserBySession();
+
+		// Nur bei Benutzer die in den Adminbereich dürfen macht das Menü Sinn
+		if ($User->isAdmin() == false) {
+			return $html;
+		}
+
+		$Project = Projects_Manager::get();
+		$Site    = QUI::getRewrite()->getSite();
+
+		// letzte body ersetzen
+		$string  = $html;
+        $search  = '</body>';
+		$replace = '
+    		<script type="text/javascript">
+    		/* <![CDATA[ */
+    			if (typeof _pcsg == "undefined") {
+    				var _pcsg = {};
+    			};
+
+    			_pcsg.Project = {
+    				name : "'. $Project->getAttribute('name') .'",
+    				lang : "'. $Project->getAttribute('lang') .'"
+    			};
+
+    			_pcsg.Site = {id : '. $Site->getId() .'};
+    			_pcsg.admin = {
+    				link : "'. URL_SYS_DIR .'admin.php"
+    			};
+    		/* ]]> */
+    		</script>
+    		<script type="text/javascript" src="'. URL_BIN_DIR .'js/AdminPageMenu.js"></script></body>';
+
+		return substr_replace(
+            $html,
+            $search,
+            strrpos($string, $search),
+            strlen($search)
+        );
+	}
+}
+
+?>

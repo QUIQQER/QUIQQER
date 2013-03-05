@@ -1,0 +1,29 @@
+<form name="global_settings">
+	<table class="setting">
+	<tr>
+		<td style="width: 120px">Standard Projekt</td>
+		<td>
+			<select name="standard">
+				{foreach from=$_PCSG->getProjects() key=project item=standard}
+				<option value="{$project}">{$project}</option>
+				{/foreach}
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td style="width: 100px">Fehlerseite</td>
+		<td>
+			<div id="global_settings_error_site" style="float: left; margin-right: 10px; padding-top: 7px"></div>
+			<div id="global_settings_error_site_button"></div>
+		</td>
+	</tr>
+	</table>
+
+	{title text="Virtuelle Hosts"}
+	<div id="vhosttoolbar"></div>
+	<div id="vhosts" style="clear: both; padding-top: 5px"></div>
+	
+	{title text="301 Weiterleitung"}
+	<div id="movedtoolbar"></div>
+	<div id="moved" style="clear: both; padding-top: 5px"></div>
+</form>

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu>
+    <item parent="/" name="file"
+          group="quiqqer/system"
+          var="menu.file.text"
+    >
+        Datei
+    </item>
+    <item parent="/" name="edit"
+          group="quiqqer/system"
+          var="menu.edit.text"
+    >
+        Bearbeiten
+    </item>
+    <item parent="/" name="extras"
+          group="quiqqer/system"
+          var="menu.goto.text"
+    >
+        Gehe zu ...
+    </item>
+    <item parent="/" name="settings"
+          group="quiqqer/system"
+          var="menu.settings.text"
+    >
+        Einstellungen
+    </item>
+    <item parent="/" name="help"
+          group="quiqqer/system"
+          var="menu.help.text"
+    >
+        Hilfe
+    </item>
+
+    <!-- File Menu -->
+    <item parent="/file/" name="file_close" icon="URL_DIR/bin/16x16/close.png"
+          group="quiqqer/system"
+          var="menu.file.close.text"
+    >
+        Schließen
+    </item>
+    <item parent="/file/" name="file_exit" icon="URL_DIR/bin/16x16/exit.png"
+          group="quiqqer/system"
+          var="menu.file.logout.text"
+    >
+        Beenden
+    </item>
+
+    <!-- Edit -->
+    <!--
+    <item parent="/edit/"
+        name="edit_cut"
+        icon="URL_DIR/bin/16x16/cut.png"
+        disabled="1">
+        Ausschneiden
+    </item>
+    <item parent="/edit/"
+        name="edit_copy"
+        icon="URL_DIR/bin/16x16/copy.png"
+        disabled="1">
+        Kopieren
+    </item>
+    <item parent="/edit/"
+        name="edit_paste"
+        icon="URL_DIR/bin/16x16/paste.png"
+        disabled="1">
+        Einfügen
+    </item>
+    <item parent="/edit/"
+        name="linked"
+        icon="URL_DIR/bin/16x16/linked.png"
+        disabled="1">
+        Verknüpfung einfügen
+    </item>
+    <item parent="/edit/"
+        name="linked_in"
+        icon="URL_DIR/bin/16x16/linked.png"
+        disabled="1">
+        Verknüpfung einfügen in ...
+    </item>
+    <item parent="/edit/" type="seperator"></item>
+    <item parent="/edit/"
+        name="search"
+        icon="URL_DIR/bin/16x16/find.png">
+        Suchen
+    </item>
+    <item parent="/edit/" type="seperator"></item>
+    <item parent="/edit/"
+        name="multilingual"
+        icon="URL_DIR/bin/16x16/lang_link.png">
+        Sprachen
+    </item>
+        <item parent="/edit/multilingual/"
+	        name="langmanager"
+	        icon="URL_DIR/bin/16x16/lang_link.png"
+	        disabled="1">
+	        Verwaltung
+	    </item>
+	    <item parent="/edit/multilingual/" type="seperator"></item>
+        <item parent="/edit/multilingual/"
+            name="site_links"
+            icon="URL_DIR/bin/16x16/lang_link.png"
+            disabled="1">
+            Verknüpfungen
+        </item>
+        <item parent="/edit/multilingual/"
+            name="site_links_create_in"
+            disabled="1">
+            Erstellen in
+        </item>
+     -->
+
+    <!-- goto -->
+	    <item parent="/extras/"
+	          name="permissions"
+	          icon="URL_BIN_DIR/16x16/permissions.png"
+	          require="admin/permissions/Manager"
+	          group="quiqqer/system"
+	          var="menu.extras.permissions.text"
+	    >
+	        Zugriffsrechte bearbeiten
+	    </item>
+	    <item parent="/extras/"
+	          name="packages"
+	          icon="URL_BIN_DIR/16x16/packages.png"
+	          require="admin/packages/Manager"
+	          group="quiqqer/system"
+	          var="menu.extras.packages.text"
+	    >
+	        Plugins und Packages
+	    </item>
+
+    <!-- Settings -->
+	    <item parent="/settings/"
+	          name="media"
+	          icon="URL_BIN_DIR/16x16/media.png"
+	          require="admin/media/Manager"
+	          group="quiqqer/system"
+	          var="menu.settings.media.text"
+	    >
+	        Media Einstellungen
+	    </item>
+
+    <!-- Menu -->
+	    <item parent="/help/"
+	          name="about"
+	          icon="URL_BIN_DIR/16x16/quiqqer.png"
+	          onclick="QUI.about"
+	          group="quiqqer/system"
+	          var="menu.help.about.text"
+	    >
+        Über QUIQQER
+    </item>
+
+</menu>

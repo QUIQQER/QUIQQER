@@ -1,0 +1,60 @@
+
+.qui-task {
+    float: left;
+    line-height: 26px;
+    height: 26px;
+    text-align: left;
+    white-space: nowrap;
+    cursor: pointer;
+    font-size: 11px;
+    padding: 2px 10px 2px 5px;
+    margin: 0 0 0 4px;
+    min-width: 120px;
+
+    border: 1px solid #C9C8C5;
+    background: #f2f2f2;
+}
+
+.qui-task.active {
+    font-weight: bold;
+
+    border: 1px solid #94928C;
+    background: #94928C;
+
+    /* IE fix ... -.- */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#94928c', endColorstr='#94928c');
+}
+
+.qui-task.select {
+ -webkit-box-shadow: 0px 0px 5px 2px rgba(0, 155, 255, 0.5);
+    -moz-box-shadow: 0px 0px 5px 2px rgba(0, 155, 255, 0.5);
+         box-shadow: 0px 0px 5px 2px rgba(0, 155, 255, 0.5);
+}
+
+.qui-task-icon {
+    float: left;
+    width: 20px;
+    height: 20px;
+    margin: 0 5px 0 0;
+
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.qui-task-text {
+    float: left;
+    line-height: 20px;
+    color: #333;
+}
+
+.qui-task-close {
+    float: right;
+    height: 20px;
+    width: 20px;
+    background: url(images/cancel.png) center center no-repeat;
+    overflow: hidden;
+}
+
+.qui-task-close span {
+    display: none;
+}

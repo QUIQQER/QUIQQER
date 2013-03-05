@@ -1,0 +1,16 @@
+
+/* Alert Window
+ ============================================== */
+
+.alert-body .texticon {
+	float: left;
+	margin-right: 20px;
+}
+
+.alert-body .textbody {
+	float: left;
+}
+
+.alert-body .information {
+	margin-top: 10px;
+}

@@ -1,0 +1,15 @@
+
+<thead>
+	<tr><th colspan="2">{$group.title}</th></tr>
+</thead>
+<tbody>
+	{cycle assign=cssclass values=",odd" reset=true}
+	{foreach from=$group.entries item=right}
+		{cycle assign=cssclass values="odd,"}
+		{include
+			file="`$smarty.const.SYS_DIR`template/groups/extend.item.html"
+			right=$right
+			cssclass=$cssclass
+		}
+	{/foreach}
+</tbody>

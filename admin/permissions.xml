@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<permissions>
+
+    <!-- standard quiqqer permissions -->
+    <permission name="quiqqer.admin" type="bool">
+        <title group="quiqqer/system" var="right.is.admin">
+            Darf in den Adminbereich
+        </title>
+    </permission>
+    <permission name="quiqqer.su" type="bool">
+        <title group="quiqqer/system" var="right.system.cache">
+            Ist Super-User
+        </title>
+        <description>Darf Super-User bearbeiten / erstellen</description>
+    </permission>
+
+    <permission name="quiqqer.system.update" type="bool">
+        <title group="quiqqer/system" var="right.system.update">
+            Darf Updates durchführen
+        </title>
+    </permission>
+    <permission name="quiqqer.system.permissions" type="bool">
+        <title group="quiqqer/system" var="right.system.permissions">
+            Darf Zugrifssrechte verwalten
+        </title>
+    </permission>
+    <permission name="quiqqer.system.cache" type="bool">
+        <title group="quiqqer/system" var="right.system.cache">
+            Darf Cache löschen
+        </title>
+    </permission>
+
+    <permission name="quiqqer.admin.groups.view" type="bool">
+        <title group="quiqqer/system" var="right.groups.view">
+            Darf die Gruppenverwaltung sehen
+        </title>
+    </permission>
+    <permission name="quiqqer.admin.groups.edit" type="bool">
+        <title group="quiqqer/system" var="right.groups.edit">
+            Darf Gruppen editieren
+        </title>
+    </permission>
+
+    <permission name="quiqqer.admin.users.view" type="bool">
+        <title group="quiqqer/system" var="right.users.view">
+            Darf die Benutzerverwaltung sehen
+        </title>
+    </permission>
+    <permission name="quiqqer.admin.users.edit" type="bool">
+        <title group="quiqqer/system" var="right.users.edit">
+            Darf Benutzer editieren
+        </title>
+    </permission>
+
+
+    <!-- locale/permissions quiqqer -->
+    <!-- locale/permissions quiqqer.admin -->
+    <!-- locale/permissions quiqqer.admin.site -->
+    <!-- locale/permissions quiqqer.admin.site.new.title -->
+    <!-- locale/permissions quiqqer.admin.site.new.descrition -->
+
+	<permission name="quiqqer.admin.site.view" type="users_and_groups" area="site">
+        <title group="quiqqer/system" var="site.right.view">
+            Seite besuchen
+        </title>
+    </permission>
+	<permission name="quiqqer.admin.site.edit" type="users_and_groups" area="site">
+		<title group="quiqqer/system" var="site.right.edit">
+	        Seite editieren
+        </title>
+	</permission>
+	<permission name="quiqqer.admin.site.del" type="users_and_groups" area="site">
+		<title group="quiqqer/system" var="site.right.delete">
+	        Seite löschen
+        </title>
+	</permission>
+	<permission name="quiqqer.admin.site.new" type="users_and_groups" area="site">
+		<title group="quiqqer/system" var="site.right.create.children">
+		    Kind anlegen
+	    </title>
+	</permission>
+
+</permissions>

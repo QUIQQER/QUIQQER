@@ -1,0 +1,18 @@
+
+.user-adress-edit {
+	margin: 10px;
+}
+
+.user-adress-edit-data-cell { width: 120px; }
+.user-adress-edit-input-cell { width: 180px; }
+
+.draw-adress-edit-buttons {
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	height: 30px;
+	width: 100%;
+	padding: 10px;
+	border-top: 1px solid #bebebe;
+	background: #666;
+}

@@ -1,0 +1,15 @@
+
+.qui-sitemap-filter {
+    width: 100%;
+    height: 40px;
+    float: left;
+}
+
+.qui-sitemap-filter input {
+    float: left;
+    margin: 5px;
+}
+
+.qui-sitemap-filter button {
+    margin: 7px;
+}

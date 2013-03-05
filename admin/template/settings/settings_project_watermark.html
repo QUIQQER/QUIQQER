@@ -1,0 +1,37 @@
+<form name="settings_project">
+
+	<table class="setting">
+	<tr>
+		<td style="width: 100px">Bild</td>
+		<td>
+			<input type="text" name="watermark_image" value="" class="w100" style="float: left; margin-top: 4px;" />
+			<div id="watermark-media" style="float: left;"></div>
+		</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>
+			Position
+		</td>
+		<td>
+			<select name="watermark_position">
+				<option value="center">zentriert</option>
+				<option value="topleft">oben links</option>
+				<option value="bottomleft">unten links</option>
+				<option value="topright">oben rechts</option>
+				<option value="bottomright">unten rechts</option>
+			</select>
+		</td>
+		<td></td>
+	</table>
+
+	{title text="Prozentuale Grösse zum original Bild"}
+	<table class="setting">
+	<tr>
+		<td style="width: 100px"></td>
+		<td><input type="text" name="watermark_percent" value="" class="w100" /> %</td>
+		<td></td>
+	</tr>
+	</table>
+
+</form>

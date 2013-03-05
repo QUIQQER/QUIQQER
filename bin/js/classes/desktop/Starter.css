@@ -1,0 +1,28 @@
+
+.desktop-starter {
+	float: left;
+	margin: 10px;
+	position: relative;
+	overflow: hidden;
+
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-color: transparent;
+	cursor: pointer;
+}
+
+.desktop-starter-hover {
+	background-color: #096DD1;
+}
+
+.desktop-starter-text {
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	width: 100%;
+	text-align: center;
+}
+
+.desktop-starter-hover .desktop-starter-text {
+	color: #fff;
+}

@@ -1,0 +1,27 @@
+
+.qui-contextmenu {
+	position: absolute;
+	z-index: 1000;
+
+	border: 1px solid #C9C8C5;
+	background: #FFFFFF url(images/bg-dropdown.gif) repeat-y left top;
+}
+
+.qui-contextmenu-title {
+	float: left;
+	width: 100%;
+	padding: 2px 5px;
+
+	color: #555555;
+	background: #BEBEBE;
+
+	-webkit-box-sizing: border-box;
+	   -moz-box-sizing: border-box;
+		    box-sizing: border-box;
+}
+
+.qui-contextmenu-shadow {
+	-webkit-box-shadow: 0 0px 10px rgba(0, 0, 0, 0.3);
+	   -moz-box-shadow: 0 0px 10px rgba(0, 0, 0, 0.3);
+		    box-shadow: 0 0px 10px rgba(0, 0, 0, 0.3);
+}

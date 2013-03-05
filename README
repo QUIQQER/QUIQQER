@@ -1,0 +1,34 @@
+
+QUIQQER (Content) Management System
+Copyright PCSG OhG
+
+www.pcsg.de
+www.quiqqer.com
+
+=======================================================
+
+QUIQQER is a modular based management system,
+written in PHP / JavaScript from PCSG OhG.
+
+
+=======================================================
+
+Parts of QUIQQER are free open-source software and not from us.
+We thank all for the nice work.
+
+- Composer ( http://getcomposer.org )
+- MooTools ( http://mootools.net/ )
+- requirejs ( requirejs.org/ )
+- AMD css! plugin curl.js ( https://github.com/cujojs/curl )
+- animate.css ( http://daneden.me/animate/ )
+
+- QUIQQER Font: http://fontfabric.com/multicolore-free-fonts/
+
+Last but not least, the QUIQQER UI based on MochaUI.
+We decided to reimplementation MochaUI.
+We implemented the AMD definition and rewrite all controls.
+
+Thanks to all for all nice line of code.
+If we forget somebody, please not hesitate, write us an email
+
+support@pcsg.de

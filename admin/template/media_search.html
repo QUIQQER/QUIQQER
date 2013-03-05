@@ -1,0 +1,32 @@
+{title text="Media Suche"}
+
+<div style="margin: 20px 0 0 40px; width: 400px; height: 40px;">
+	<span style="margin-right: 10px; float: left; line-height: 25px">Suche nach</span>
+	<form name="mediasearch" action="" method="post" onsubmit="_Media.search(); return false;">
+		<input type="text" name="searchstring" id="searchstring" value="" style="width: 200px; float: left; margin-top: 2px;" />
+	</form>
+	<div id="search_btn" style="margin-left: 10px; float: left"></div>
+</div>
+
+{title text="Erweiterte Suchparameter"}
+<div style="margin: 20px 0 0 40px; width: 400px; height: 40px;">
+	<table>
+		<tr>
+			<td>
+				Durchsuche
+			</td>
+			<td>
+				<select name="searchfield" id="searchfield">
+					<option value="name">Name</option>
+					<option value="title">Titel</option>
+					<option value="short">Kurzbeschreibung</option>
+					<option value="id">ID</option>
+					<option value="mime_type">Dateityp (Mime Type)</option>
+				</select>
+			</td>
+		</tr>
+	</table>
+
+</div>
+
+<div id="media_search_tbl"></div>

@@ -1,0 +1,18 @@
+
+.site-data .first-td {
+	width: 150px;
+}
+
+.site-data .scnd-td {
+	width: 40px;
+}
+
+.site-data input[name="site-name"],
+.site-data input[name="title"] {
+	width: 300px;
+}
+
+.site-data textarea[name="short"] {
+	width: 100%;
+	height: 120px;
+}

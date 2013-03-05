@@ -1,0 +1,31 @@
+
+QUI.create('controls/buttons/Button', {
+	container : document.body,
+	text      : 'huhu',
+	name      : 'myfirstbutton',
+	events    :
+	{
+		click : function()
+		{
+			console.info('onClick');
+		}
+	}
+});
+
+QUI.Controls.create('buttons/Button', {
+	container : document.body,
+	text      : 'huhu2',
+	events    :
+	{
+		click : function()
+		{
+			console.info('onClick 2');
+		}
+	}
+});
+
+QUI.Controls.load(['buttons/Button', 'buttons/Seperator'], function(Btn, Seperator)
+{
+	var MyButton = new Btn();
+	var MySep    = new Seperator();
+});

@@ -1,0 +1,29 @@
+.zoom {
+    outline: none;
+    cursor: url("zoomin.cur"), pointer;
+}
+
+
+.bild_rechts_ausrichten_zoom {
+        float: right;
+        padding: 0px 0 10px 10px;
+        cursor: url("zoomin.cur"), pointer;
+}
+
+.bild_links_ausrichten_zoom {
+        float: left;
+        padding: 0px 10px 10px 0;
+        cursor: url("zoomin.cur"), pointer;
+}
+
+
+.bild_rechts_ausrichten {
+        float: right;
+        padding: 0px 0 10px 10px;
+}
+
+.bild_links_ausrichten {
+        float: left;
+        padding: 0px 10px 10px 0;
+}
+

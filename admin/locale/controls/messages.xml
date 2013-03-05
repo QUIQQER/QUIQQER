@@ -1,0 +1,10 @@
+<locales>
+
+    <groups name="quiqqer/controls" datatype="js">
+        <locale name="messages.close">
+            <de><![CDATA[Mittleilung schließen]]></de>
+            <en><![CDATA[Close message]]></en>
+        </locale>
+    </groups>
+
+</locales>

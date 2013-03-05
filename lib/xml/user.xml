@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<user>
+
+	<window>
+		<tab name="details">
+			<text>Details</text>
+			<image>URL_BIN_DIR/16x16/user.png</image>
+			<template>SYS_DIR/template/users/details.html</template>
+		</tab>
+
+		<tab name="security">
+			<text><![CDATA[Passwort & Sicherheit]]></text>
+			<image>URL_BIN_DIR/16x16/password.png</image>
+
+			<template>SYS_DIR/template/users/security.html</template>
+			<onload>QUI.lib.Users.tabOnLoadUser</onload>
+			<onunload>QUI.lib.Users.tabOnUnLoadUser</onunload>
+		</tab>
+
+		<tab name="data">
+			<text>pers. Daten</text>
+			<image>URL_BIN_DIR/16x16/personal.png</image>
+
+			<template>SYS_DIR/template/users/data.html</template>
+			<onload>User.loadAdresses</onload>
+			<onunload>QUI.lib.Users.tabOnUnLoadUser</onunload>
+		</tab>
+
+        <tab name="avatar">
+			<text>Benutzerbild</text>
+			<image>URL_BIN_DIR/16x16/avatar.png</image>
+
+			<template>SYS_DIR/template/users/avatar.html</template>
+			<onload>QUI.lib.Users.tabOnLoadUserAvatar</onload>
+			<onunload>QUI.lib.Users.tabOnUnLoadUser</onunload>
+		</tab>
+	</window>
+
+</user>

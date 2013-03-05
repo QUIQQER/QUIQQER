@@ -1,0 +1,10 @@
+<locales>
+
+    <groups name="quiqqer/controls" datatype="js">
+        <locale name="loader.close">
+            <de><![CDATA[Das Fenster reagiert nicht mehr. Um fortzufahren klicken Sie bitte hier.]]></de>
+            <en><![CDATA[The window does not react anymore. Please click here to continue.]]></en>
+        </locale>
+    </groups>
+
+</locales>

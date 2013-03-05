@@ -1,0 +1,148 @@
+{assign var=Rights value=$Site->getRights()}
+
+{title text="Seitenrechte"}
+
+<table class="settingtable">
+	<tr>
+		<td id="rights_view_title" style="width: 150px; height: 20px" class="settings">
+			<span>{$Rights->getColName('view')}</span>
+		</td>
+	</tr>
+	<tr>
+		<td style="width: 400px">
+			<div id="rights_view" style="float: left"></div>
+			<div id="rights_view_button" style="position: relative; top: -4px; left: 10px"></div>
+			<div id="rights_view_recursive" style="position: relative; top: -4px; left: 10px"></div>
+
+			<input type="hidden" name="pcsg.rights.view" value="{$Site->getAttribute('pcsg.rights.view')}" />
+
+			{explode var=$Site->getAttribute('pcsg.rights.view') delimiter=',' assign=gids}
+			{assign var=name value=","}
+			{foreach from=$gids item=gid}
+				{if $Groups->getGroupNameById($gid)}
+					{capture assign=name}{$name}{$Groups->getGroupNameById($gid)},{/capture}
+				{/if}
+			{/foreach}
+			<div id="rights_view_names" style="display: none">{$name}</div>
+
+		</td>
+	</tr>
+	<tr><td>&nbsp;</td></tr>
+
+	<tr>
+		<td id="rights_edit_title" class="settings" style="height: 20px"><span>{$Rights->getColName('edit')}</span></td>
+	</tr>
+	<tr>
+		<td>
+			<div id="rights_edit" style="float: left"></div>
+			<div id="rights_edit_button" style="position: relative; top: -4px; left: 10px"></div>
+			<div id="rights_edit_recursive" style="position: relative; top: -4px; left: 10px"></div>
+
+			<input type="hidden" name="pcsg.rights.edit" value="{$Site->getAttribute('pcsg.rights.edit')}" />
+
+			{explode var=$Site->getAttribute('pcsg.rights.edit') delimiter=',' assign=gids}
+			{assign var=name value=","}
+			{foreach from=$gids item=gid}
+				{if $Groups->getGroupNameById($gid)}
+					{capture assign=name}{$name}{$Groups->getGroupNameById($gid)},{/capture}
+				{/if}
+			{/foreach}
+			<div id="rights_edit_names" style="display: none">{$name}</div>
+		</td>
+	</tr>
+	<tr><td>&nbsp;</td></tr>
+
+	<tr>
+		<td id="rights_delete_title" class="settings" style="height: 20px">
+			<span>{$Rights->getColName('del')}</span>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<div id="rights_delete" style="float: left"></div>
+			<div id="rights_delete_button" style="position: relative; top: -4px; left: 10px"></div>
+			<div id="rights_delete_recursive" style="position: relative; top: -4px; left: 10px"></div>
+
+			<input type="hidden" name="pcsg.rights.delete" value="{$Site->getAttribute('pcsg.rights.delete')}" />
+
+			{explode var=$Site->getAttribute('pcsg.rights.delete') delimiter=',' assign=gids}
+			{assign var=name value=","}
+			{foreach from=$gids item=gid}
+				{if $Groups->getGroupNameById($gid)}
+					{capture assign=name}{$name}{$Groups->getGroupNameById($gid)},{/capture}
+				{/if}
+			{/foreach}
+			<div id="rights_delete_names" style="display: none">{$name}</div>
+		</td>
+	</tr>
+	<tr><td>&nbsp;</td></tr>
+
+	<tr>
+		<td id="rights_new_title" class="settings" style="height: 20px"><span>{$Rights->getColName('new')}</span></td>
+	</tr>
+	<tr>
+		<td>
+			<div id="rights_new" style="float: left"></div>
+			<div id="rights_new_button" style="position: relative; top: -4px; left: 10px"></div>
+			<div id="rights_new_recursive" style="position: relative; top: -4px; left: 10px"></div>
+
+			<input type="hidden" name="pcsg.rights.new" value="{$Site->getAttribute('pcsg.rights.new')}" />
+
+			{explode var=$Site->getAttribute('pcsg.rights.new') delimiter=',' assign=gids}
+			{assign var=name value=","}
+			{foreach from=$gids item=gid}
+				{if $Groups->getGroupNameById($gid)}
+					{capture assign=name}{$name}{$Groups->getGroupNameById($gid)},{/capture}
+				{/if}
+			{/foreach}
+			<div id="rights_new_names" style="display: none">{$name}</div>
+		</td>
+	</tr>
+</table>
+
+
+{title text="Pluginrechte"}
+
+<table class="settingtable">
+
+	{assign var=allrights value=""}
+
+	{foreach from=$Rights->getCols() key=right item=itm}
+	{if
+		$right != 'view' &&
+		$right != 'edit' &&
+		$right != 'del' &&
+		$right != 'new'
+	}
+		<tr>
+			<td id="rights_{$right}_title" style="width: 150px; height: 20px" class="settings"><span>{$itm}</span></td>
+		</tr>
+		<tr>
+			<td>
+				<div id="rights_{$right}" style="float: left"></div>
+				<div id="rights_{$right}_button" style="position: relative; top: -4px; left: 10px"></div>
+				<div id="rights_{$right}_recursive" style="position: relative; top: -4px; left: 10px"></div>
+
+				{capture assign=attributes}pcsg.rights.{$right}{/capture}
+				<input type="hidden" name="pcsg.rights.{$right}" value="{$Site->getAttribute($attributes)}" />
+
+				{explode var=$Site->getAttribute($attributes) delimiter=',' assign=gids}
+				{assign var=name value=","}
+				{foreach from=$gids item=gid}
+					{if $Groups->getGroupNameById($gid)}
+						{capture assign=name}{$name}{$Groups->getGroupNameById($gid)},{/capture}
+					{/if}
+				{/foreach}
+				<div id="rights_{$right}_names" style="display: none">{$name}</div>
+			</td>
+		</tr>
+		<tr><td>&nbsp;</td></tr>
+
+		{capture assign=allrights}{$allrights},{$right}{/capture}
+
+	{/if}
+	{/foreach}
+</table>
+
+
+<div id="allrights" style="display: none">view,edit,delete,new{$allrights}</div>

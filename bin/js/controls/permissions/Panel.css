@@ -1,0 +1,83 @@
+@CHARSET "UTF-8";
+
+.qui-permissions-content {
+    float: left;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+    border: 4px dashed transparent;
+}
+
+.qui-permissions-sitemap {
+    width: 300px;
+    background: #fff;
+    height: 100%;
+    position: relative;
+    top: 0px;
+    z-index: 100;
+    border-right: 1px solid #bbb;
+    float: left;
+    overflow: auto;
+}
+
+.qui-permissions-content label {
+    white-space: nowrap;
+}
+
+/** Sheet container
+ =============================================== */
+.qui-permissions-select-sheet h1 {
+	margin-bottom: 20px;
+	text-align: center;
+}
+
+.qui-permissions-select-sheet .buttons {
+    float: left;
+    clear: both;
+    border-bottom: 1px solid #dedede;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
+.qui-permissions-select-sheet .buttons .image-container {
+    margin: 10px auto;
+}
+
+.qui-permissions-select-sheet .buttons .qui-btn2-text {
+    margin-bottom: 10px;
+}
+
+.qui-permissions-select-sheet .search {
+    float: left;
+    clear: both;
+    width: 100%;
+
+    text-align: center;
+}
+
+.qui-permissions-select-sheet .search h2 {
+	margin-bottom: 20px;
+}
+
+/** Title
+ =============================================== */
+
+.bind-info span {
+    line-height: 30px;
+    float: left;
+}
+
+.bind-info .user {
+	margin-left: 10px;
+    padding-left: 20px;
+    background: url('/bin/16x16/user.png') no-repeat left center;
+}
+
+.bind-info .group {
+    margin-left: 10px;
+    padding-left: 20px;
+    background: url('/bin/16x16/groups.png') no-repeat left center;
+}
+
+
+

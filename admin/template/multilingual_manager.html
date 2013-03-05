@@ -1,0 +1,82 @@
+{if $message}
+	Fehler: {$message}
+{else}
+	{title text="Verknüpfungen"}
+	
+	{assign var=ids value=$Site->getLangIds()}
+	
+	<table cellpadding="0" style="padding-left: 20px;">
+	
+		{assign var=no_use_langs value=""}
+		{foreach from=$langs item=lang}
+			{if $Site->existLang($lang, false) && $ids.$lang}
+				{if $lang != $Project->getAttribute('lang')}
+				<tr>
+					<td>
+						<img src="{$smarty.const.URL_BIN_DIR}16x16/flags/{$Project->getAttribute('lang')}.png" style="float: left" /> 
+					</td>
+					<td>
+						<span style="float: left; padding: 0 5px">{$Project->getAttribute('lang')} (#{$Site->getId()}) </span>
+					</td>
+					<td>	
+						<img src="{$smarty.const.URL_BIN_DIR}16x16/arrow_left_right.png" style="float: left; padding-right: 5px" />
+					</td>
+					<td nowrap="nowrap">
+						<img src="{$smarty.const.URL_BIN_DIR}16x16/flags/{$lang}.png" style="float: left" /> 
+					</td>
+					<td>
+						<span style="float: left; padding: 0 5px">{$lang} (#{$ids.$lang}) </span>
+					</td>
+					<td id="trash_{$lang}" style="width: 30px">
+						
+					</td>
+				</tr>
+				{/if}
+				
+				{assign var=existlang value=true}
+			{else}
+				{capture assign=no_use_langs}{$no_use_langs},{$lang}{/capture}
+			{/if}
+		{/foreach}
+		
+		{if !$existlang}
+		<tr>
+			<td>
+			Keine Verknüpfung vorhanden
+			</td>
+		</tr>	
+		{/if}
+	</table>
+	{title text="Sprachverknüpfung hinzufügen"}
+	<table cellpadding="0" style="padding-left: 20px; width: 90%">
+	<tr>
+		<td id="addLangButtons">{strip}
+			{if $no_use_langs != ''}
+				{assign var=no_use_langs value=','|split:$no_use_langs}
+			{/if}
+			
+			{if is_array($no_use_langs)}
+				
+				{foreach from=$no_use_langs item=no_lang}
+					{if $Project->getAttribute('lang') != $no_lang}
+						{$no_lang},
+					{/if}
+				{/foreach}
+				
+			{elseif !$existlang}
+			
+				{assign var=langs value=$Project->getAttribute('langs')}
+				{foreach from=$langs item=lang}
+					{if $Project->getAttribute('lang') != $lang}
+						{$lang},
+					{/if} 
+				{/foreach}
+			
+			{else}
+				Alle Sprachen sind verknüpft
+			{/if}
+		{/strip}</td>
+	</tr>
+	</table>
+	
+{/if}

@@ -1,0 +1,34 @@
+<form name="pcsg_support">
+	<div align="center">
+		<table style="margin-top: 10px">
+			<tbody>
+			<tr>
+				<td>
+					Betreff<br />
+					<input name="title" style="width: 480px;" type="text" />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Anfrage<br />
+					<textarea style="width: 480px; height: 200px" name="text"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Antwort E-Mail<br />
+					<input name="mail" style="width: 480px;" type="text" value="{if $User && is_object($User)}{$User->getAttribute('email')}{/if}" />
+					<div style="width: 450px;">
+						{description text="Falls Sie über den Zustand informiert werden möchten bitten wir Sie eine E-Mail Adresse anzugeben"}
+					</div>
+				</td>
+			</tr>
+			
+		</tbody>
+		</table>
+		<input type="hidden" name="browser" value="" />
+		<input type="hidden" name="url" value="" />
+		
+		<div id="pcsg_support_send" style="width:70px; margin-left: auto; margin-right: auto; margin-top: 20px;"></div>
+	</div>
+</form>

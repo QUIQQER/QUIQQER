@@ -1,0 +1,40 @@
+
+.qui-column {
+    height: 100%;
+    float: left;
+}
+
+.qui-column-content {
+    height: 100%;
+    float: left;
+}
+
+.qui-column-handle {
+	cursor : e-resize;
+	height: 100%;
+    float: left;
+    overflow: hidden;
+    background: #C3C3C3 url(images/handle-icon.gif) center center no-repeat;
+
+    border-width: 1px;
+    border-top: 0;
+    border-bottom: 0;
+    border-style: solid;
+    border-color: #909090;
+}
+
+.qui-column-hor-handle {
+    cursor : n-resize;
+    height: 4px;
+    line-height: 1px;
+    font-size: 1px;
+    overflow: hidden;
+    background: #EEE url(images/handle-icon-horizontal.gif) center center no-repeat;
+    clear: both;
+
+    border-width: 1px;
+    border-left: 0;
+    border-right: 0;
+    border-style: solid;
+    border-color: #C3C3C3;
+}

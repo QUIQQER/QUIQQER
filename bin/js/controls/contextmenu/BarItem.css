@@ -1,0 +1,31 @@
+@CHARSET "UTF-8";
+
+.qui-contextmenu-baritem {
+    float: left;
+    position: relative;
+}
+
+.qui-contextmenu-baritem-text {
+    float: left;
+    margin: 5px 0 0 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.qui-contextmenu-baritem-active .qui-contextmenu-baritem-text,
+.qui-contextmenu-baritem-text:hover {
+    background-color: #6c98d9;
+    color: #fff;
+}
+
+.bar-menu .qui-contextmenu-baritem-text {
+    -webkit-border-top-right-radius: 10px;
+     -webkit-border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+	         border-top-left-radius: 10px;
+
+    -webkit-border-bottom-right-radius: 0px;
+     -webkit-border-bottom-left-radius: 0px;
+            border-bottom-right-radius: 0px;
+             border-bottom-left-radius: 0px;
+}

@@ -1,0 +1,42 @@
+<div style="margin: 10px 0 0 40px;">
+	<img src="{$smarty.const.URL_BIN_DIR}48x48/home.png" style="float: left; margin-right: 20px" />
+
+	<h1 style="font-size: 14px; line-height: 48px">
+		Ein neues Projekt erstellen
+	</h1>
+
+	<form name="create_project">
+		<table style="margin: 10px 0 0 70px;">
+		<tr>
+			<td>Name</td>
+			<td><input type="input" name="project" value="" style="width: 180px;" /></td>
+		</tr>
+		<tr>
+			<td>Sprache</td>
+			<td>
+				{php}
+					$tlds = PT_TLD::get();
+					$this->assign('tlds', $tlds);
+				{/php}
+
+				<select name="lang" style="width: 180px;">
+					{foreach from=$tlds key=tld item=country}
+						{if $tld == 'de'}
+							<option value="{$tld}" selected="selected">{$country}</option>
+						{else}
+							<option value="{$tld}">{$country}</option>
+						{/if}
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+		</table>
+
+		<table style="margin: 10px 0 0 70px;">
+		<tr>
+			<td><input type="checkbox" name="template" value="" style="margin-right: 10px;" /></td>
+			<td>Soll der Templateordner erstellt werden?</td>
+		</tr>
+		</table>
+	</form>
+</div>

@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<!-- [begin] meta -->
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="content-language" content="{$Project->getAttribute('lang')}" />
+
+	<meta name="page-topic" content="{$Site->getAttribute('title')|escape:"html"}" />
+
+	<meta name="description" content="{if $Site->getAttribute('pcsg.base.description')}{$Site->getAttribute('pcsg.base.description')|escape:"html"}{else}{$Project->getConfig('description')|escape:"html"}{/if}" />
+	<meta name="keywords" content="{if $Site->getAttribute('pcsg.base.keywords')}{$Site->getAttribute('pcsg.base.keywords')|escape:"html"}{else}{$Project->getConfig('keywords')|escape:"html"}{/if}" />
+	<meta name="date" content="{$Site->getAttribute('e_date')}" />
+	<meta name="lang" content="{$Project->getAttribute('lang')}" />
+	<meta name="robots" content="{if $Site->getAttribute('pcsg.base.robots')}{$Site->getAttribute('pcsg.base.robots')}{else}{$Project->getConfig('robots')}{/if}" />
+	<meta name="generator" content="{$smarty.const.GENERATOR}" />
+
+	<meta name="author" content="{$Project->getConfig('author')}" />
+	<meta name="publisher" content="{$Project->getConfig('publisher')}" />
+	<meta name="copyright" content="{$Project->getConfig('copyright')}" />
+
+	<meta name="revisit-after" content="2 days" />
+	<!-- [end] meta -->
+
+	<title>{$Site->getAttribute('title')}</title>
+</head>
+<body>
+
+<h1>{$Site->getAttribute('title')}</h1>
+{$Site->getAttribute('content')}
+
+</body>
+</html>

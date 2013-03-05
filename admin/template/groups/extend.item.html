@@ -1,0 +1,27 @@
+<tr class="{$cssclass}">
+	<td class="label-text">
+		<label for="group-extend-{$right.name}">
+			{$right.title}
+		</label>
+	</td>
+	<td class="data">
+	{* type: bool, string, int, group, array *}
+	{if $right.type == 'string'}
+		<input type="text" class="string right"
+			name="{$right.name}" id="group-extend-{$right.name}"
+		/>
+	{else if $right.type == 'int'}
+		<input type="text" class="int right"
+			name="{$right.name}" id="group-extend-{$right.name}"
+		/>
+	{else if $right.type == 'group'}
+		<input type="text" class="group right"
+			name="{$right.name}" id="group-extend-{$right.name}"
+		/>
+	{else}
+		<input type="checkbox" class="right"
+			name="{$right.name}" id="group-extend-{$right.name}"
+		/>
+	{/if}
+	</td>
+</tr>

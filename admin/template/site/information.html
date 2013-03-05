@@ -1,0 +1,138 @@
+
+	<table class="data-table site-data">
+	<thead>
+		<tr>
+			<th colspan="3">
+				Daten von Seite: #{$Site->getId()}
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr class="odd">
+			<td class="first-td">Name / URL</td>
+			<td class="scnd-td site-copy-from-name"></td>
+			<td class="third-td">
+				<input type="text" name="site-name" value="" /> .html
+			</td>
+		</tr>
+		<tr class="even">
+			<td>Titel</td>
+			<td class="site-copy-from-title"></td>
+			<td>
+				<input type="text" name="title" value="" />
+			</td>
+		</tr>
+		<tr class="odd">
+			<td>Kurzbeschreibung</td>
+			<td></td>
+			<td>
+				<textarea class="site-short" name="short"></textarea>
+			</td>
+		</tr>
+		<tr class="even">
+			<td>Seitentyp</td>
+			<td></td>
+			<td>
+				<input type="text" name="type" value="" class="project-types" />
+			</td>
+		</tr>
+	</tbody>
+	</table>
+
+	<table class="data-table site-date">
+	<thead>
+		<tr>
+			<th colspan="3">Datum</th>
+		</tr>
+	</thead>
+
+	<tbody>
+		<tr class="odd">
+			<td style="width: 80px;">erstellt am</td>
+			<td style="width: 150px;">
+				<input type="text" name="c_date" disabled="disabled" />
+			</td>
+			<td style="width: 20px;">von</td>
+			<td style="width: 200px;">
+				<input type="text" name="c_user" disabled="disabled" value="" />
+				<input type="text" name="c_user_ip" disabled="disabled" value="" />
+			</td>
+			<td></td>
+		</tr>
+		<tr class="even">
+			<td>geändert am</td>
+			<td><input type="text" name="e_date" disabled="disabled" /></td>
+			<td>von</td>
+			<td>
+				<input type="text" name="e_user" disabled="disabled" value="" />
+				<input type="text" name="e_user_ip" disabled="disabled" value="" />
+			</td>
+			<td></td>
+		</tr>
+	</tbody>
+	</table>
+
+
+	<table class="data-table">
+	<thead>
+		<tr>
+			<th colspan="3">Extras</th>
+		</tr>
+	</thead>
+
+	<tbody>
+		<tr class="odd">
+			<td style="width: 20px">
+				<input type="checkbox" name="nav_hide" class="noborder" />
+			</td>
+			<td>
+				<img src="{$smarty.const.URL_BIN_DIR}16x16/navigation_hidden.png" />
+				<span>Nicht in Navigation anzeigen</span>
+			</td>
+		</tr>
+
+        {if isset($extrahtml)}
+		  {$extrahtml}
+		{/if}
+
+	</tbody>
+	</table>
+
+	<table class="data-table">
+	<thead>
+		<tr>
+			<th>Verknüpfungen</th>
+		</tr>
+	</thead>
+
+	<tbody>
+		<tr class="odd">
+			<td>
+			{assign var=pids value=$Site->getParentIds()}
+			{if count($pids) > 1}
+				<ul style="margin-left: 0px" id="linkpages">
+				{assign var=mypid value=$Site->getParentId()}
+
+				{foreach from=$pids item=pid}
+					{assign var=Parent value=$Project->get($pid)}
+					{assign var=parents value=$Parent->getParents()}
+					<li style="margin: 5px 0; clear: both; float: left; list-style-type: none;">
+						{if $mypid != $Parent->getId()}
+							<div alt="{$Parent->getId()},{$Site->getId()},{$mypid}" style="float: left; width: 30px;" parent="{$Parent->getId()}"></div>
+						{else}
+							<span style="float: left; width: 30px;" parent="{$Parent->getId()}">&nbsp;</span>
+						{/if}
+						<span style="float: left; margin-left: 10px; line-height: 28px">
+							/ {foreach from=$parents item=PS} {$PS->getAttribute('name')} / {/foreach} {$Parent->getAttribute('name')} / <span style="color: #5D717A">{$Site->getAttribute('name')}</span>
+						</span>
+					</li>
+				{/foreach}
+				</ul>
+			{else}
+				Es existieren keine Verknüpfungen zu dieser Seite
+			{/if}
+			</td>
+		</tr>
+	</tbody>
+	</table>
+

@@ -1,0 +1,8 @@
+
+.einfach {
+	border-collapse: collapse;
+}
+.einfach td {
+  padding: 5px;
+  vertical-align:top
+}

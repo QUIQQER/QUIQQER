@@ -1,0 +1,23 @@
+
+.qui-taskpanel {
+    float: left;
+    clear: both;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.qui-taskpanel-container {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.qui-taskpanel .qui-btn2,
+.qui-taskpanel .qui-btn2-disable,
+.qui-taskpanel .qui-btn2-over,
+.qui-taskpanel .qui-task,
+.qui-taskpanel .qui-taskgroup {
+    margin: 2px;
+}

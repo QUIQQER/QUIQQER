@@ -1,0 +1,101 @@
+
+.qui-btn2,
+.qui-btn2-over,
+.qui-btn2-active,
+.qui-btn2-disable {
+	font-size: 12px;
+	line-height: 16px;
+	margin: 1px 2px;
+	padding: 2px;
+	color: #444444;
+	float: left;
+	cursor: pointer;
+	position: relative;
+
+	border: 1px solid #c9c8c5;
+	background: #f5f3ed;
+
+	    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f5f3ed', endColorstr='#e8e6e1');
+	background: -moz-linear-gradient(-90deg, #f5f3ed, #e8e6e1) repeat scroll 0 0 transparent;
+	background: -webkit-gradient(linear, center bottom, center top, from(#f5f3ed), to(#e8e6e1));
+
+	-webkit-transition: all 0.2s ease;
+	   -moz-transition: all 0.2s ease;
+	    -ms-transition: all 0.2s ease;
+	     -o-transition: all 0.2s ease;
+
+	        border-radius: 3px;
+	   -moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
+
+.qui-btn2::-moz-focus-inner,
+.qui-btn2-over::-moz-focus-inner,
+.qui-btn2-active::-moz-focus-inner,
+.qui-btn2-disable::-moz-focus-inner {
+	border: none;
+}
+
+.qui-btn2-over {
+	border: 1px solid #94928c;
+	background: #ebe7dc;
+
+	    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ebe7dc', endColorstr='#d7d4cb');
+	background: -moz-linear-gradient(-90deg, #ebe7dc, #d7d4cb) repeat scroll 0 0 transparent;
+	background: -webkit-gradient(linear, center bottom, center top, from(#ebe7dc), to(#d7d4cb));
+
+	-webkit-transition: all 0.2s ease;
+	   -moz-transition: all 0.2s ease;
+	    -ms-transition: all 0.2s ease;
+	     -o-transition: all 0.2s ease;
+
+	        box-shadow: 0 0 3px #999;
+	   -moz-box-shadow: 0 0 3px #999;
+	-webkit-box-shadow: 0 0 3px #999;
+}
+
+.qui-btn2-active {
+	border: 1px solid #94928c !important;
+	background: #94928c !important;
+
+	/* IE fix ... -.- */
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#94928c', endColorstr='#94928c');
+}
+
+.qui-btn2-disable {
+	cursor: default;
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=60);
+	-moz-opacity: 0.6;
+	opacity: 0.6;
+}
+
+.qui-btn2-text {
+	margin: 0px 5px;
+	text-decoration: none;
+	text-align: center;
+}
+
+.qui-btn2-text-image {
+	float: left;
+	margin-right: 5px;
+}
+
+.qui-btn2-image { margin: 0; }
+
+.qui-btn2-drop {
+	position: absolute;
+	bottom: -5px;
+	left: 0px;
+	width: 20px;
+	height: 20px;
+
+	background: url('images/drop.png') no-repeat 0px 8px;
+}
+
+.qui-btn-seperator {
+	width: 2px;
+	border-left: 1px solid #ddd;
+	float: left;
+	margin: 4px 0 0 8px;
+	height: 16px;
+}

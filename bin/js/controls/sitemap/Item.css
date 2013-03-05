@@ -1,0 +1,58 @@
+
+.qui-sitemap-entry {
+	float: left;
+	clear: both;
+	position: relative;
+}
+
+.qui-sitemap-entry-opener {
+	float: left;
+	width: 20px;
+	height: 20px;
+	cursor: pointer;
+
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+.qui-sitemap-entry-icon {
+	float: left;
+	position: relative;
+	width: 20px;
+	height: 20px;
+
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+.qui-sitemap-entry-text {
+	float: left;
+	cursor: pointer;
+	white-space: nowrap;
+	padding: 2px;
+
+-webkit-border-radius: 4px;
+   -moz-border-radius: 4px;
+        border-radius: 4px;
+}
+
+.qui-sitemap-entry-text:hover,
+.qui-sitemap-entry .select {
+	background-color: #6C98D9;
+	color: #FFF;
+}
+
+.qui-sitemap-entry .holdBack {
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
+	    filter: alpha(opacity=20);
+
+	-khtml-opacity: 0.2;
+	  -moz-opacity: 0.2;
+	       opacity: 0.2;
+}
+
+.qui-sitemap-entry-children {
+	float: left;
+	margin-left: 20px;
+	clear: both;
+}

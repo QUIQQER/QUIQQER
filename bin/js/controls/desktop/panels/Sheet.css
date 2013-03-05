@@ -1,0 +1,33 @@
+
+.qui-panel-sheet {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+
+    width: 100%;
+    height: 100%;
+
+    zIndex: 5;
+	background: #F8F8F8;
+	border: none
+}
+
+.qui-panel-sheet-content {
+    float: left;
+    clear: both;
+    width: 100%;
+}
+
+.qui-panel-sheet-btn-container {
+    float: left;
+    clear: both;
+    width: 100%;
+
+    borderTop: 1px solid #ddd;
+	height: 49px;
+	background: #666;
+}
+
+.qui-panel-sheet-buttons {
+    margin: 0 auto;
+}

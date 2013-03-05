@@ -1,0 +1,565 @@
+
+
+/* ******************************************************* */
+
+.omnigrid {
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	position: relative;
+	border: 0px solid #eee;
+	overflow:hidden;
+	color: #000;
+	clear: both;
+}
+
+.omnigrid div.hDivBox {
+	position:relative;
+	overflow:hidden;
+}
+
+.omnigrid div.hDiv {
+	background: #fafafa url(omnigrid/fhbg.gif) repeat-x bottom;
+	position: relative;
+	border: 1px solid #ccc;
+	border-bottom: 0px;
+	overflow: hidden;
+}
+
+.omnigrid div.bDiv {
+	border: 1px solid #ccc;
+	border-top: 0px;
+	background: #fff;
+	overflow: auto;
+	position: relative;
+}
+
+.omnigrid div.hDiv .th,
+.omnigrid  div.bDiv .td {
+	text-align: left;
+	border-right: 1px solid #ddd;
+	border-left: 1px solid #fff;
+	vertical-align: top !important;
+
+	display:inline-block;
+	float:left;
+
+	white-space:nowrap;
+	overflow:hidden;
+
+	padding-left:5px;
+	-moz-user-select:text;
+	cursor:pointer;
+}
+
+.omnigrid .selection {
+	background-color:transparent;
+}
+
+.omnigrid div.hDiv div.th {
+	line-height:24px;
+	border-bottom: 1px solid #CCC;
+}
+
+.omnigrid div.bDiv .td {
+	line-height:27px;
+	/*background-color:red;*/
+}
+
+.omnigrid div.bDiv .td img {
+	float: left;
+	margin: 0;
+	padding: 0;
+}
+
+.omnigrid div.bDiv ul {
+	margin:0;
+	padding:0;
+	border-bottom:1px solid #DDDDDD;
+	overflow:hidden;
+	position: absolute;
+	top: 0;
+	left: 0;
+
+    min-width: 100%;
+}
+
+.omnigrid div.bDiv ul li {
+	margin:0;
+	padding:0;
+	list-style:none;
+	overflow:hidden;
+	border-bottom: 1px solid #fff;
+
+    min-width: 100%;
+}
+
+.omnigrid li.erow
+{
+	background-color: #f7f7f7;
+	border-bottom: 1px solid #f7f7f7;
+}
+
+.omnigrid li.selected {
+	background-color: #d9e6f4  !important;
+	/*color: #fff;*/
+}
+
+.omnigrid li.over {
+	background-color: #eaeff4;
+	/*color: #fff;*/
+}
+
+
+/* ************************************** */
+/* ************** Accordian ************** */
+/* ************************************** */
+
+.omnigrid div.bDiv .toggleicon {
+	background-image: url(omnigrid/plusminus.gif);
+	background-repeat:no-repeat;
+	width:16px;
+	height:16px;
+	float:left;
+	margin:4px 3px 0 0;
+}
+
+.omnigrid div.bDiv ul li.section {
+	display:none;
+	border-right: 1px solid #ddd;
+	border-bottom: 1px solid #eeeeee;
+	border-top: 1px solid #eeeeee;
+}
+
+/* ************************************** */
+/* ************** Toolbar *************** */
+/* ************************************** */
+.omnigrid div.tDiv {
+	background: #fafafa url(omnigrid/bg.gif) repeat-x top;
+	position: relative;
+	border: 1px solid #ccc;
+	border-bottom: 0px;
+	overflow: hidden;
+
+	height:25px;
+}
+
+.omnigrid div.fbutton {
+	margin-top:1px;
+	float: left;
+	display: block;
+	cursor: pointer;
+	padding: 1px;
+}
+
+
+.omnigrid div.fbutton div {
+	float: left;
+	padding: 1px 3px;
+}
+
+.omnigrid div.fbutton span {
+	float: left;
+	display: block;
+	padding: 3px;
+}
+
+.omnigrid div.fbutton.fbOver {
+	padding: 0px;
+	border: 1px solid #ccc;
+}
+
+.omnigrid div.fbutton.fbOver div {
+	padding: 0px 2px;
+	border-left: 1px solid #fff;
+	border-top: 1px solid #fff;
+	border-right: 1px solid #eee;
+	border-bottom: 1px solid #eee;
+}
+
+.omnigrid div.btnseparator {
+	float: left;
+	height: 22px;
+	border-left: 1px solid #ccc;
+	border-right: 1px solid #fff;
+	margin: 2px;
+}
+
+/* end toolbar*/
+
+/* ************************************** */
+
+/* ************************************** */
+/* ************** Filter **************** */
+/* ************************************** */
+
+.omnigrid li.hide {
+	display: none;
+	/*
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=15)";
+	filter: alpha(opacity=15);
+	-moz-opacity: 0.15;
+	-khtml-opacity: 0.15;
+	opacity: 0.15;
+	*/
+}
+
+.omnigrid li.filter {
+
+}
+
+/* ************************************** */
+/* ************** Columns size drag ***** */
+/* ************************************** */
+
+.omnigrid div.cDrag {
+	float: left;
+	position: absolute;
+	z-index: 2;
+	overflow: visible;
+}
+
+.omnigrid div.cDrag div {
+	float: left;
+	background: none;
+	display: block;
+	position: absolute;
+	height: 24px;
+	width: 5px;
+	cursor: col-resize;
+
+}
+
+.omnigrid div.cDrag div.dragging {
+	background: url(omnigrid/line.gif) repeat-y 2px center;
+}
+
+/* ************************************** */
+/* ************** Sort ****************** */
+/* ************************************** */
+
+.omnigrid div.hDiv div.DESC {
+	background: url(omnigrid/dn.png) no-repeat center top;
+	border-bottom: 1px solid orange !important;
+}
+
+.omnigrid div.hDiv  div.ASC {
+	background: url(omnigrid/up.png) no-repeat center top;
+	border-bottom: 1px solid orange !important;
+}
+
+
+/* ************************************** */
+/* ************** Pagination ************ */
+/* ************************************** */
+
+.omnigrid div.pDiv {
+	background: url(omnigrid/wbg.gif) repeat-x 0 -1px;
+	border: 1px solid #ccc;
+	border-top: 0px;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.omnigrid div.pDiv div.pDiv2 {
+	margin: 2px;
+	margin-left: -2px;
+	float: left;
+	width: 1024px;
+}
+
+div.pGroup {
+	float: left;
+	background: none;
+	height: 24px;
+	margin: 0px 5px;
+}
+
+.omnigrid div.pDiv .pPageStat,
+.omnigrid div.pDiv .pcontrol
+{
+	position: relative;
+	top: 0px;
+	overflow: visible;
+	font-size:10px;
+	color:#777777;
+}
+
+.omnigrid div.pDiv select {
+	font-size:10px;
+	margin-top:2px;
+	padding: 2px 5px;
+}
+
+.omnigrid div.pDiv input {
+	vertical-align: text-top;
+	position: relative;
+	top: 2px;
+	font-size:10px;
+	float: left;
+	padding: 2px 5px;
+}
+
+.omnigrid div.pDiv .btnseparator{
+	height:19px;
+}
+
+.omnigrid div.pDiv div.pButton {
+	float: left;
+	width:16px;
+	height:16px;
+	border: 0px;
+	cursor: pointer;
+	overflow: hidden;
+	margin-top:3px;
+}
+
+.omnigrid div.pDiv div.pButton:hover,
+.omnigrid div.pDiv div.pButton.pBtnOver {
+	background-position:-16px 0;
+}
+
+.omnigrid2 div.pDiv div.pButton:hover,
+.omnigrid2 div.pDiv div.pButton.pBtnOver {
+	width:14px;
+	height:14px;
+	border: 1px solid #ccc;
+	cursor: pointer;
+}
+
+.omnigrid .pSearch {
+	background: url(omnigrid/magnifier.png) no-repeat center;
+}
+
+.omnigrid .pFirst {
+	background: url(omnigrid/first.gif) no-repeat ;
+}
+
+.omnigrid .pPrev {
+	background: url(omnigrid/prev.gif) no-repeat;
+}
+
+.omnigrid .pNext {
+	background: url(omnigrid/next.gif) no-repeat;
+}
+
+.omnigrid .pLast {
+	background: url(omnigrid/last.gif) no-repeat;
+}
+
+.omnigrid .pReload {
+	background: url(omnigrid/refresh.gif) no-repeat;
+}
+
+.omnigrid .pExport {
+	background: url(omnigrid/export.png) no-repeat;
+}
+
+.omnigrid .pReload.loading {
+	background: url(omnigrid/load.gif) no-repeat;
+	background-position:0 0 !important;
+}
+
+.omnigrid .pSelectAll {
+	background: url(omnigrid/selAll.png) no-repeat;
+	margin-right: 2px;
+	margin-top: 3px;
+
+	width:16px;
+	height:16px;
+	border: 1px solid #ccc;
+	cursor: pointer;
+	float: left;
+}
+
+.omnigrid .pUnselectAll {
+	background: url(omnigrid/selNone.png) no-repeat;
+
+	width:16px;
+	height:16px;
+	border: 1px solid #ccc;
+	cursor: pointer;
+	float: left;
+	margin-top: 3px;
+}
+
+/* ************************************************************************************ */
+
+.tDiv .sButton_middle2,
+.tDiv .sButton_middle2 span {
+	line-height: 16px;
+	float: left;
+}
+
+.omnigrid .ptools-btn2-text {
+	line-height: 16px;
+}
+
+.omnigrid .elementloader {
+	width:16px;
+	height:16px;
+	background: url(omnigrid/load.gif) no-repeat;
+	position:absolute;
+}
+
+/* *************************************** */
+/* ************** Inline-Edit ************ */
+/* *************************************** */
+
+.omnigrid input.inline {
+	padding:1px 2px 1px 2px;
+}
+
+.omnigrid textarea.inline {
+	padding:1px 2px 1px 2px;
+}
+
+/* **** Section Table **** */
+
+.section table {
+  border-collapse: collapse;
+  border: 0px solid;
+  font: normal 11px verdana, arial, helvetica, sans-serif;
+  color: #363636;
+  background: #f6f6f6;
+  text-align:left;
+  width: 100%;
+}
+
+.section  caption {
+	text-align: center;
+	font: bold 16px arial, helvetica, sans-serif;
+	background: transparent;
+	padding:6px 4px 8px 0px;
+	color: #CC00FF;
+	text-transform: uppercase;
+}
+
+.section thead, .section tfoot {
+	background:url(omnigrid/fhbg.gif) repeat-x;
+	text-align:left;
+	height:24px;
+}
+
+.section tfoot th {
+	padding:5px;
+}
+.section thead th{
+	padding:5px;
+	border-right: 1px solid #DDDDDD;
+}
+
+.section table a {
+	color: #333333;
+	text-decoration:none;
+}
+
+.section tbody tr:hover {
+	background: #D9E6F4 !important;
+}
+
+.section tr.sectr1 {
+	background: #f1f1f1;
+}
+
+.section tr.sectr2 {
+	background: #fff;
+}
+
+.section td .sums {
+	margin-right:80px;
+}
+
+.section tbody td {
+	padding:3px 10px;
+	border-right: 1px solid #DDDDDD;
+}
+
+.section tbody td .description {
+	font-size: 80%;
+}
+
+.section tbody th{
+	padding:5px;
+}
+
+/* export */
+.exportSelectDiv {
+	width: 420px;
+	height:250px;
+	position: absolute;
+	left: 35%;
+	top:10%;
+	z-index:10000;
+	border: 3px solid #DDDDDD;
+	background: #fff;
+	padding:5px;
+}
+
+.exportItemsDiv {
+    border: 0 none;
+    margin: 5px;
+    padding: 0;
+    position: relative;
+    top: 0;
+    width: 100%;
+    height:190px;
+    overflow: auto;
+}
+
+.exportSelectBtnDiv {
+	width: 95%;
+	position: absolute;
+	bottom:0px;
+	border-top: 1px solid #DDDDDD;
+	padding: 3px 0px 3px 3px;
+}
+
+.exportItemDiv {
+    border: 1px solid #DDDDDD;
+    float: left;
+    margin: 3px;
+    padding: 4px;
+    width:180px;
+}
+
+.exportItemDiv input {
+	float: left;
+    margin: 2px 5px;
+}
+
+.exportItemDiv span {
+	float:left;
+}
+
+.exportTextsDiv {
+    border-bottom: 2px solid #DDDDDD;
+    font-weight: bold;
+    padding: 5px 3px 3px 10px;
+    width: 95%;
+}
+
+.exportFrame {
+   border-bottom: 2px solid #ff0000;
+   padding : 5px 3px 3px 10px;
+   width   : 500px;
+   height  : 500px;
+   position: absolute;
+   left    : 0px;
+   top     : 0px;
+}
+
+/** Drag and Drop Element
+ ***********************************************/
+
+.omni-drag-drop {
+	min-width: 100px;
+	height: 20px;
+	border: 1px solid red;
+	background-color: #fff;
+	line-height: 20px;
+	padding: 0 10px;
+	border: 5px solid #ddd;
+
+	border-radius: 2px;
+	cursor: pointer;
+}

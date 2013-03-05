@@ -1,0 +1,71 @@
+
+<form name="user-search" class="user-search-form" method="post">
+	{title text="Suche nach:"}
+	<div class="data-table">
+		<input type="text" value="" name="search" class="user-search-form-field" />
+	</div>
+
+	{title text="Suche in:"}
+	<div class="data-table">
+		<div class="checkbox-container">
+			<input type="checkbox" checked="checked" value="" name="uid" />
+			<label for="uid">Benutzer-ID</label>
+		</div>
+		<div class="checkbox-container">
+			<input type="checkbox" value="" checked="checked" name="username" />
+			<label for="username">Benutzername</label>
+		</div>
+		<div class="checkbox-container">
+			<input type="checkbox" value="" checked="checked" name="email" />
+			<label for="email">E-Mail</label>
+		</div>
+		<div class="checkbox-container">
+			<input type="checkbox" value="" checked="checked" name="firstname" />
+			<label for="firstname">Vorname</label>
+		</div>
+		<div class="checkbox-container">
+			<input type="checkbox" value="" checked="checked" name="lastname" />
+			<label for="lastname">Nachname</label>
+		</div>
+	</div>
+
+	{title text="Filter:"}
+	<table class="data-table user-search-filter">
+	<tr>
+		<td class="user-search-filter-c1">
+			<label for="filter_status">Status</label>
+		</td>
+		<td class="user-search-filter-c2">
+			<select name="filter_status">
+				<option value="all">Alle</option>
+				<option value="1">Aktiviert</option>
+				<option value="0">Deaktiviert</option>
+				<option value="-1">Gelöscht</option>
+			</select>
+		</td>
+		<td class="user-search-filter-c3">&nbsp;</td>
+	</tr>
+	<tr class="odd">
+		<td class="user-search-filter-c1">
+			<label for="filter_group">Gruppen</label>
+		</td>
+		<td class="user-search-filter-c2"><input type="hidden" name="filter_group" value="" /></td>
+		<td class="user-search-filter-c3">&nbsp;</td>
+	</tr>
+	<tr>
+		<td class="user-search-filter-c1">
+			<label for="filter_regdate_first">Datum von</label>
+		</td>
+		<td class="user-search-filter-c2"><input type="date" name="filter_regdate_first" value="" /></td>
+		<td class="user-search-filter-c3">&nbsp;</td>
+	</tr>
+	<tr class="odd">
+		<td class="user-search-filter-c1">
+			<label for="filter_regdate_last">Datum bis</label>
+		</td>
+		<td class="user-search-filter-c2"><input type="date" name="filter_regdate_last" value="" /></td>
+		<td class="user-search-filter-c3">&nbsp;</td>
+	</tr>
+	</table>
+
+</form>

@@ -1,0 +1,69 @@
+
+<div class="plg_main_title">Updates</div>
+
+{if !$count}
+Es sind keine Updates verfügbar
+{/if}
+
+{assign var=keys value=""}
+{foreach from=$Plugins item=Plugin key=key}
+	<div class="plg_itm">
+		<div class="plg_itm_opener" onclick="_pcsg.extras.plugins.openInfo('update_{$key}', this)"></div>
+
+		<div style="padding: 10px; float: left; position: relative;">
+			{if isset($Plugin.icon_32x32)}
+				<img src="{$smarty.const.URL_OPT_DIR}{$Plugin.icon_32x32}" class="plg_itm_img" />
+			{else}
+				<img src="{$smarty.const.URL_BIN_DIR}32x32/plugins.png" class="plg_itm_img" />
+			{/if}
+
+			<div style="float: left;">
+				<span style="float: left; font-weight: bold">{$Plugin.name}</span>
+				<span style="float: left; clear: both">Installierte Version {if isset($Plugin.version)}{$Plugin.version}{else}-{/if}</span>
+				<span style="float: left; clear: both">Neue Version {if isset($Plugin.new_version)}{$Plugin.new_version}{/if}</span>
+			</div>
+
+		</div>
+
+		<div id="info_update_{$key}" style="clear: both; float: left; display: none">
+			<table style="margin-left: 20px; padding-bottom: 20px">
+				<tr>
+					<td class="plg_info_title">Entwickler</td>
+					<td>{$Plugin.developer}</td>
+				</tr>
+				<tr>
+					<td class="plg_info_title">Copyright</td>
+					<td>{$Plugin.copyright}</td>
+				</tr>
+				<tr>
+					<td class="plg_info_title">Version</td>
+					<td>{$Plugin.version}</td>
+				</tr>
+				<tr>
+					<td class="plg_info_title">Updateserver</td>
+					<td>{$Plugin.updateserver}</td>
+				</tr>
+				<tr>
+					<td class="plg_info_title">Dokumentation</td>
+					<td>{if isset($Plugin.doku)}{$Plugin.doku}{else}---{/if}</td>
+				</tr>
+				<tr>
+					<td class="plg_info_title">Beschreibung</td>
+					<td>{if isset($Plugin.description)}{else}---{/if}</td>
+				</tr>
+				{if isset($Plugin.description)}
+				<tr>
+					<td class="plg_info_title"></td>
+					<td style="font-size:10px;">{$Plugin.description}</td>
+				</tr>
+				{/if}
+			</table>
+		</div>
+
+  		<div id="update_{$key}" style="position: absolute; right: 0; top: 10px;"></div>
+					{capture assign=keys}{$keys},{$key}{/capture}
+	</div>
+	{/foreach}
+	 	<div id="update_settings_ids" style="display: none">{$keys}</div>
+
+</div>

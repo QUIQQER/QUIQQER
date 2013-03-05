@@ -1,0 +1,53 @@
+
+.qui-contextitem,
+.qui-contextitem-container {
+	width: 100%;
+	float: left;
+	clear: both;
+	float: left;
+	cursor: pointer;
+	font-size: 12px;
+	line-height: 20px;
+	position: relative;
+
+	background-repeat: no-repeat;
+	background-position: 7px center;
+
+	-webkit-box-sizing: border-box;
+	   -moz-box-sizing: border-box;
+		    box-sizing: border-box;
+
+	-webkit-transition: all 0.2s ease;
+	   -moz-transition: all 0.2s ease;
+	    -ms-transition: all 0.2s ease;
+	     -o-transition: all 0.2s ease;
+}
+
+.qui-contextitem.haschildren {
+	background-image: url(images/arrow-right.gif);
+	background-position: right center;
+}
+
+/*
+.qui-contextitem-container {
+    color: #333333;
+    background-color: #FFFFFF;
+}
+*/
+
+.qui-contextitem-active {
+    background-color: #6C98D9;
+    color: #FFF;
+}
+
+.qui-contextitem.qui-contextitem-active.haschildren {
+    background: #6C98D9 url(images/arrow-right.gif) no-repeat right center !important;
+    color: #FFF;
+}
+
+.qui-contextitem span {
+	margin-left: 40px;
+	text-align: left;
+	float: left;
+	padding: 5px 0;
+}

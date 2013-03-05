@@ -1,0 +1,25 @@
+
+.qui-breadcrumb-item {
+	float: left;
+	padding: 0 20px 0 5px;
+	cursor: pointer;
+
+	background-repeat: no-repeat;
+	background-position: right center;
+	background-image : url('images/arrow-right.gif');
+}
+
+.qui-breadcrumb-item:hover {
+	background-color: #6C98D9;
+	color: #fff;
+	background-image : url('images/arrow-right-white.gif');
+}
+
+.qui-breadcrumb-item span {
+	background-repeat: no-repeat;
+	background-position: left center;
+
+	float: left;
+	height: 30px;
+	line-height: 30px;
+}

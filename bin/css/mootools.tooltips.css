@@ -1,0 +1,32 @@
+
+.tip-wrap {
+	z-index: 11000;
+	background-color: #000;
+
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+	filter: alpha(opacity=80);
+	-moz-opacity: 0.8;
+	-khtml-opacity: 0.8;
+	opacity: 0.8;
+
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.tip {
+	color: #fff;
+	width: 300px;
+}
+
+.tip-title {
+	/*font-weight: bold;*/
+	font-size: 11px;
+	margin: 0;
+	padding: 8px 8px 4px;
+}
+
+.tip-text {
+	font-size: 11px;
+	padding: 4px 8px 8px;
+}

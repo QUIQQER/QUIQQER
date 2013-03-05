@@ -1,0 +1,6 @@
+
+
+QUI.Ajax.post('ajax_project_getlist', function(result, Request)
+{
+	console.info(result);
+});
