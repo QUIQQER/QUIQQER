@@ -61,7 +61,6 @@
 				URL_SYS_DIR = "'. URL_SYS_DIR .'",
 				URL_OPT_DIR = "'. URL_OPT_DIR .'";
 				URL_VAR_DIR = "'. URL_VAR_DIR .'";
-				URL_PKG_DIR = "'. URL_PKG_DIR .'";
 
 			var PHP = {
 				upload_max_filesize : "'. \Utils_System::getUploadMaxFileSize() .'"

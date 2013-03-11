@@ -141,12 +141,6 @@ class QUI
     static $Countries = null;
 
     /**
-     * The dataBase table prefix
-     * @var String
-     */
-    static $DB_PRFX = '';
-
-    /**
      * Set all important pathes and load QUIQQER
      */
     static function load()
@@ -263,16 +257,6 @@ class QUI
         	define( 'OPT_DIR', $Config->get( 'globals','opt_dir' ) );
         }
 
-        if ( !defined( 'PKG_DIR' ) )
-        {
-            /**
-		     * PKG_DIR - Path to the package folder, where all packages are located
-		     * @var String
-		     * @package com.pcsg.qui
-		     */
-        	define( 'PKG_DIR', $Config->get( 'globals','pkg_dir' ) );
-        }
-
         if ( !defined( 'URL_DIR' ) )
         {
             /**
@@ -294,6 +278,25 @@ class QUI
 		     */
         	define( 'ERROR_BACKTRACE', $Config->get( 'error', 'backtrace' ) );
         }
+
+        if ( !defined( 'QUI_DB_PRFX' ) )
+        {
+            /**
+		     * QUI_DB_PRFX - The DB Table Prefix
+		     *
+		     * @var String
+		     * @package com.pcsg.qui
+		     */
+
+            $prfx = '';
+
+            if ( $Config->get( 'db','prfx' ) ) {
+                $prfx = $Config->get( 'db','prfx' );
+            }
+
+        	define( 'QUI_DB_PRFX', $prfx );
+        }
+
 
 		require_once $lib_dir .'autoload.php';
 
@@ -443,7 +446,7 @@ class QUI
 	 */
 	static function getDBTableName($table)
 	{
-        return self::$DB_PRFX . $table;
+        return QUI_DB_PRFX . $table;
 	}
 
     /**

@@ -43,7 +43,7 @@ class Utils_Db extends QDOM
         $this->setAttribute( 'host', 'localhost' );
         $this->setAttribute( 'driver', 'mysql' );
         $this->setAttribute( 'options', array(
-            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
+            \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
         ) );
 
         if ( isset( $attributes['driver'] ) && empty( $attributes['driver'] ) ) {

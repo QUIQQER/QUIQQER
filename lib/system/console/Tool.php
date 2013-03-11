@@ -32,7 +32,7 @@ class System_Console_Tool extends QDOM
 	 */
 	public function __construct($params=array())
 	{
-		if (is_array($params)) {
+		if ( is_array( $params ) ) {
 			$this->_params = $params;
 		}
 	}
@@ -42,11 +42,11 @@ class System_Console_Tool extends QDOM
 	 */
 	public function execute()
 	{
-		if (isset($this->_params['--help'])) {
+		if ( isset( $this->_params['--help'] ) ) {
 			$this->help();
 		}
 
-		if (method_exists($this, 'start')) {
+		if ( method_exists( $this, 'start' ) ) {
 			$this->start();
 		}
 	}
@@ -66,9 +66,9 @@ class System_Console_Tool extends QDOM
 	 */
 	protected function help()
 	{
-		$parent = $this->getAttribute('parent');
+		$parent = $this->getAttribute( 'parent' );
 
-		if ($this->_help)
+		if ( $this->_help )
 		{
 			$parent->title();
 			$this->message( $this->_help );
@@ -89,8 +89,8 @@ class System_Console_Tool extends QDOM
 	 */
 	public function message($msg, $color=false, $bg=false)
 	{
-	    if ($this->getAttribute('parent')) {
-	        $this->getAttribute('parent')->message($msg, $color, $bg);
+	    if ( $this->getAttribute( 'parent' ) ) {
+	        $this->getAttribute( 'parent' )->message( $msg, $color, $bg );
 	    }
 	}
 }

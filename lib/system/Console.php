@@ -94,26 +94,26 @@ class System_Console
 	 */
 	public function __construct($params=array())
 	{
-		if (!is_array($params))
+		if ( !is_array( $params ) )
 		{
 			$this->help();
 			exit;
 		}
 
-		if (isset($params['--help']) && !isset($params['--tool']))
+		if ( isset( $params['--help'] ) && !isset( $params['--tool'] ) )
 		{
 			$this->help();
 			exit;
 		}
 
 		// kurze schreibeweise für username und passwort
-		if (isset($params['-u']) && isset($params['-p']))
+		if ( isset( $params['-u'] ) && isset( $params['-p'] ) )
 		{
             $params['--username'] = $params['-u'];
             $params['--password'] = $params['-p'];
 		}
 
-		if (!isset($params['--username']))
+		if ( !isset( $params['--username'] ) )
 		{
 			$this->message("Please enter your username and password\n", 'red');
 

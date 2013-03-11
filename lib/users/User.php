@@ -13,8 +13,6 @@
 
 class Users_User implements Interface_Users_User
 {
-	const TABLE = 'pcsg_users';
-
 	/**
 	 * Project extention
 	 * @var UserExtend
@@ -55,13 +53,13 @@ class Users_User implements Interface_Users_User
 	 * User lang
 	 * @var String
 	 */
-	protected $_lang    = null;
+	protected $_lang = null;
 
 	/**
 	 * Active status
 	 * @var Integer
 	 */
-	protected $_active  = 0;
+	protected $_active = 0;
 
 	/**
 	 * Delete status
@@ -103,7 +101,7 @@ class Users_User implements Interface_Users_User
 	 * Extra fields
 	 * @var Array
 	 */
-	protected $_extra   = array();
+	protected $_extra = array();
 
 	/**
 	 * user plugins
@@ -115,7 +113,7 @@ class Users_User implements Interface_Users_User
      * User adresses
      * @var Array
      */
-	protected $_adress_list    = array();
+	protected $_adress_list = array();
 
 	/**
 	 * Session id file
@@ -150,7 +148,7 @@ class Users_User implements Interface_Users_User
 		$this->_Users = $Users;
 
 		$data = QUI::getDB()->select(array(
-			'from'  => self::TABLE,
+			'from'  => Users_Users::Table(),
 			'where' => array(
 				'id' => (int)$id
 			),
@@ -747,7 +745,7 @@ class Users_User implements Interface_Users_User
 		$this->_password = $newpass;
 
 		return QUI::getDB()->updateData(
-			self::TABLE,
+			Users_Users::Table(),
 			array( 'password' => $newpass ),
 			array( 'id'       => $this->getId() )
 		);
@@ -806,7 +804,7 @@ class Users_User implements Interface_Users_User
 		}
 
 		$res = QUI::getDB()->updateData(
-			self::TABLE,
+			Users_Users::Table(),
 			array( 'active' => 1 ),
 			array( 'id'     => $this->getId() )
 		);
@@ -852,7 +850,7 @@ class Users_User implements Interface_Users_User
 		}
 
 		QUI::getDB()->updateData(
-			self::TABLE,
+			Users_Users::Table(),
 			array('active' => 0),
 			array('id'     => $this->getId())
 		);
@@ -899,7 +897,7 @@ class Users_User implements Interface_Users_User
 		}
 
 		QUI::getDB()->updateData(
-			self::TABLE,
+			Users_Users::Table(),
 			array(
 				'active'     => -1,
 				'password'   => '',
@@ -977,7 +975,7 @@ class Users_User implements Interface_Users_User
 		}
 
         return QUI::getDB()->updateData(
-			self::TABLE,
+			Users_Users::Table(),
 			array(
 				'username' 	=> $this->getName(),
 				'usergroup' => $this->getGroups(false),
@@ -1113,7 +1111,7 @@ class Users_User implements Interface_Users_User
 		}
 
 		QUI::getDB()->deleteData(
-			self::TABLE,
+			Users_Users::Table(),
 			array('id' => $this->getId())
 		);
 
@@ -1205,7 +1203,7 @@ class Users_User implements Interface_Users_User
 		$_params[ 'uid' ] = $this->getId();
 
 		$Statement = QUI::getDataBase()->insert(
-		    Users_Users::TBL_ADDR,
+		    Users_Users::TableAdress(),
 		    $_params
 		);
 
@@ -1222,7 +1220,7 @@ class Users_User implements Interface_Users_User
 	public function getAdressList()
 	{
 		$result = QUI::getDB()->select(array(
-			'from'   => Users_Users::TBL_ADDR,
+			'from'   => Users_Users::TableAdress(),
 			'select' => 'id',
 			'where'  => array(
 				'uid' => $this->getId()

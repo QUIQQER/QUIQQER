@@ -31,8 +31,7 @@ define('QUIQQER', ['classes/QUIQQER'], function(QUI)
     require.config({
         baseUrl : URL_BIN_DIR +'js/',
         paths   : {
-            "plugin"  : URL_OPT_DIR,
-            "package" : URL_PKG_DIR,
+            "package" : URL_OPT_DIR,
             "admin"   : URL_SYS_DIR +'bin/',
             "locale"  : URL_VAR_DIR +'locale/bin/'
         },

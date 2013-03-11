@@ -12,9 +12,6 @@
  */
 class Groups_Group extends QDOM
 {
-	const TABLE     = 'pcsg_groups';
-	const USERTABLE = 'pcsg_users';
-
 	/**
 	 * Settings of the group
 	 * @var array
@@ -80,7 +77,7 @@ class Groups_Group extends QDOM
 		}
 
 		$result = QUI::getDataBase()->fetch(array(
-			'from'  => self::TABLE,
+			'from'  => Groups_Groups::Table(),
 			'where' => array(
 				'id' => $this->getId()
 			),
@@ -125,7 +122,7 @@ class Groups_Group extends QDOM
 		{
 		    QUI::getDataBase()->exec(array(
 		        'delete' => true,
-		        'from'  => self::TABLE,
+		        'from'  => Groups_Groups::Table(),
                 'where' => array(
                 	'id' => $child
 		        )
@@ -135,7 +132,7 @@ class Groups_Group extends QDOM
 		// Sich selbst löschen
 		QUI::getDataBase()->exec(array(
 		        'delete' => true,
-		        'from'  => self::TABLE,
+		        'from'  => Groups_Groups::Table(),
                 'where' => array(
                 	'id' => $this->getId()
 		        )
@@ -182,7 +179,7 @@ class Groups_Group extends QDOM
 
 		// Felder bekommen
 		QUI::getDataBase()->update(
-			self::TABLE,
+			Groups_Groups::Table(),
     		array(
     		    'name'    => $this->getAttribute('name'),
         		'toolbar' => $this->getAttribute('toolbar'),
@@ -201,7 +198,7 @@ class Groups_Group extends QDOM
 	public function activate()
 	{
 		QUI::getDataBase()->update(
-			self::TABLE,
+			Groups_Groups::Table(),
 			array('active' => 1),
 			array('id'     => $this->getId())
 		);
@@ -216,7 +213,7 @@ class Groups_Group extends QDOM
 	public function deactivate()
 	{
 		QUI::getDataBase()->update(
-			self::TABLE,
+			Groups_Groups::Table(),
 			array('active' => 0),
 			array('id'     => $this->getId())
 		);
@@ -305,7 +302,7 @@ class Groups_Group extends QDOM
 	 */
 	public function getUsers($params=array())
 	{
-		$params['from']  = self::USERTABLE;
+		$params['from']  = Users_Users::Table();
 		$params['where'] = array(
 		    'usergroup' => array(
 		    	'type'  => '%LIKE%',
@@ -328,7 +325,7 @@ class Groups_Group extends QDOM
 	{
 		$result = QUI::getDataBase()->fetch(array(
 			'select' => 'id',
-			'from' 	 => self::USERTABLE,
+			'from' 	 => Users_Users::Table(),
 			'where'  => 'username = \''. Utils_Security_Orthos::clearMySQL($username)
 		                .'\' AND usergroup LIKE \'%,'. $this->getId() .',%\'',
 		    'limit'  => '1'
@@ -354,7 +351,7 @@ class Groups_Group extends QDOM
 				'select' => 'id',
 				'as'     => 'count'
 			),
-			'from' 	=> self::USERTABLE,
+			'from' 	=> Users_Users::Table(),
 			'where' => array(
 			    'usergroup' => array(
 			        'type'  => 'LIKE',
@@ -445,7 +442,7 @@ class Groups_Group extends QDOM
 
 		$result = QUI::getDataBase()->fetch(array(
 			'select' => 'id, parent',
-			'from'   => self::TABLE,
+			'from'   => Groups_Groups::Table(),
 			'where'  => array(
 				'id' => $this->getId()
 			),
@@ -468,7 +465,7 @@ class Groups_Group extends QDOM
 	{
 		$result = QUI::getDataBase()->fetch(array(
 			'select' => 'id, parent',
-			'from'   => self::TABLE,
+			'from'   => Groups_Groups::Table(),
 			'where'  => array(
 				'id' => (int)$id
 			),
@@ -544,7 +541,7 @@ class Groups_Group extends QDOM
 
 		$_params = array(
 			'select' => 'id',
-			'from' 	 => self::TABLE,
+			'from' 	 => Groups_Groups::Table(),
 			'where'  => array(
 				'parent'=> $this->getId()
 			)
@@ -590,7 +587,7 @@ class Groups_Group extends QDOM
 	{
 		$result = QUI::getDataBase()->fetch(array(
 			'select' => 'id',
-			'from'   => self::TABLE,
+			'from'   => Groups_Groups::Table(),
 			'where'  => array(
 				'parent' => $id
 			)
@@ -623,7 +620,7 @@ class Groups_Group extends QDOM
 
 	  		$result = QUI::getDataBase()->fetch(array(
 				'select' => 'id',
-	  			'from'   => self::TABLE,
+	  			'from'   => Groups_Groups::Table(),
 				'where'  => array(
 					'id' => $newid
 	  			)
@@ -635,7 +632,7 @@ class Groups_Group extends QDOM
 		}
 
 		$Statement = QUI::getDataBase()->insert(
-			self::TABLE,
+			Groups_Groups::Table(),
 			array(
 				'id'     => $newid,
 				'name'   => $name,

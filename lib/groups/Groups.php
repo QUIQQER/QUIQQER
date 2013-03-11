@@ -18,8 +18,6 @@ class Groups_Groups extends QDOM
 	const TYPE_INT     = 3;
 	const TYPE_VARCHAR = 4;
 
-	const TABLE = 'pcsg_groups';
-
 	/**
 	 * internal group cache
 	 * @var array
@@ -33,6 +31,16 @@ class Groups_Groups extends QDOM
 	protected $_adminjsfiles = array();
 
 	/**
+	 * Return the db table for the groups
+	 *
+	 * @return String
+	 */
+	static function Table()
+	{
+	    return QUI_DB_PRFX .'groups';
+	}
+
+	/**
 	 * Setup for groups
 	 */
 	public function setup()
@@ -40,7 +48,7 @@ class Groups_Groups extends QDOM
 		$DataBase = QUI::getDataBase();
 		$Table    = $DataBase->Table();
 
-		$Table->appendFields(self::TABLE, array(
+		$Table->appendFields(self::Table(), array(
 		    'id'      => 'int(11) NOT NULL',
     		'name'    => 'varchar(50) NOT NULL',
     		'admin'   => 'tinyint(2) NOT NULL',
@@ -50,8 +58,8 @@ class Groups_Groups extends QDOM
 		    'rights'  => 'text'
 		));
 
-		$Table->setPrimaryKey( self::TABLE, 'id' );
-		$Table->setIndex( self::TABLE, 'parent' );
+		$Table->setPrimaryKey( self::Table(), 'id' );
+		$Table->setIndex( self::Table(), 'parent' );
 	}
 
 	/**
@@ -164,7 +172,7 @@ class Groups_Groups extends QDOM
 		$start = 0;
 
 		$_fields = array(
-			'from' => self::TABLE
+			'from' => self::Table()
 		);
 
 		if ( isset( $params['count'] ) )

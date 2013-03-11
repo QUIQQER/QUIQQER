@@ -125,7 +125,7 @@ class QUI_Package_Manager
 
         $template = str_replace(
         	'{$PACKAGE_DIR}',
-            PKG_DIR,
+            OPT_DIR,
             $template
         );
 
@@ -650,7 +650,7 @@ class QUI_Package_Manager
 
         $template = str_replace(
         	'{$PACKAGE_DIR}',
-            PKG_DIR,
+            OPT_DIR,
             $template
         );
 

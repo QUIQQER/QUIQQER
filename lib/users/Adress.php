@@ -34,7 +34,7 @@ class Users_Adress extends QDOM
 	public function __construct(Users_User $User, $id)
 	{
 		$result = QUI::getDataBase()->fetch(array(
-			'from'  => Users_Users::TBL_ADDR,
+			'from'  => Users_Users::TableAdress(),
 			'where' => array(
 				'id'  => (int)$id,
 				'uid' => $User->getId()
@@ -45,10 +45,13 @@ class Users_Adress extends QDOM
 		$this->_User = $User;
 		$this->_id   = (int)$id;
 
-		if (!isset($result[0]))
+		if ( !isset( $result[0] ) )
 		{
 			throw new QException(
-			    QUI::getLocale()->get('system', 'exception.lib.user.adress.not.found')
+			    QUI::getLocale()->get(
+			    	'system',
+			    	'exception.lib.user.adress.not.found'
+			    )
 		    );
 		}
 
@@ -282,7 +285,7 @@ class Users_Adress extends QDOM
 		$phone = json_encode($this->getPhoneList());
 
 		QUI::getDataBase()->update(
-		    Users_Users::TBL_ADDR,
+		    Users_Users::TableAdress(),
 		    array(
     			'salutation' => Utils_Security_Orthos::clear( $this->getAttribute('salutation') ),
     			'firstname'  => Utils_Security_Orthos::clear( $this->getAttribute('firstname') ),
@@ -308,7 +311,7 @@ class Users_Adress extends QDOM
 	{
 	    QUI::getDataBase()->exec(array(
 	        'delete' => true,
-	        'from'   => Users_Users::TBL_ADDR,
+	        'from'   => Users_Users::TableAdress(),
 	        'where'  => array(
 	            'id'  => $this->getId(),
 	            'uid' => $this->_User->getId()
