@@ -44,7 +44,14 @@ class ConsoleSetup extends System_Console_Tool
 	 */
 	public function start()
 	{
-		QUI_Setup::all();
+	    try
+	    {
+		    QUI_Setup::all();
+
+	    } catch ( QException $Exception )
+	    {
+            $this->message( $Exception->getMessage(), 'red' );
+	    }
 	}
 }
 

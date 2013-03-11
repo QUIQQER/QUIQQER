@@ -253,7 +253,7 @@ class System_Console
 		/**
 		 * Standard Konsoletools
 		 */
-		$path  = LIB_DIR .'console/';
+		$path  = LIB_DIR .'system/console/tools/';
 		$files = Utils_System_File::readDir($path, true);
 
 		for ($i = 0, $len = count($files); $i < $len; $i++)

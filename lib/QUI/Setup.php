@@ -19,8 +19,8 @@ class QUI_Setup
     static function all()
     {
         // not at phpunit
-        if (!isset($_SERVER['argv']) ||
-            strpos($_SERVER['argv'][0], 'phpunit') === false)
+        if ( !isset($_SERVER['argv']) ||
+             ( isset( $_SERVER['argv'][0] ) && strpos($_SERVER['argv'][0], 'phpunit') === false) )
         {
             // nur Super User darf dies
             QUI_Rights_Permission::checkSU();

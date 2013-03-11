@@ -48,7 +48,6 @@ foreach ($_SERVER['argv'] as $argv)
 }
 
 require_once 'header.php';
-require_once LIB_DIR .'Console.php';
 
 // Console aufbauen
 $Console = new System_Console($params);
