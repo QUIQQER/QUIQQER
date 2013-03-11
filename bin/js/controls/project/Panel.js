@@ -247,7 +247,11 @@ define('controls/project/Panel', [
                 // create
                 for ( i in result )
                 {
-                    langs = result[i].langs.split(',');
+                    if ( !result[i].langs ) {
+                        continue;
+                    }
+
+                    langs = result[i].langs.split( ',' );
 
                     if ( !Panel.$projectmaps[ i ] ) {
                         Panel.$projectmaps[ i ] = new QUI.controls.sitemap.Map();
