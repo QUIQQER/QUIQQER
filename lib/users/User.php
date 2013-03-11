@@ -327,11 +327,7 @@ class Users_User implements Interface_Users_User
 	 */
 	public function getId()
 	{
-		if ($this->_id) {
-			return $this->_id;
-		}
-
-		return false;
+		return $this->_id ? $this->_id : false;
 	}
 
 	/**
@@ -340,11 +336,7 @@ class Users_User implements Interface_Users_User
 	 */
 	public function getName()
 	{
-		if ($this->_name) {
-			return $this->_name;
-		}
-
-		return false;
+		return $this->_name ? $this->_name : false;
 	}
 
 	/**
@@ -353,28 +345,35 @@ class Users_User implements Interface_Users_User
 	 */
 	public function getLang()
 	{
-		if (!is_null($this->_lang)) {
+		if ( !is_null( $this->_lang ) ) {
 	        return $this->_lang;
 	    }
 
 	    $lang  = QUI::getLocale()->getCurrent();
 	    $langs = QUI::availableLanguages();
 
-	    if ($this->getAttribute('lang')) {
-            $lang = $this->getAttribute('lang');
+	    if ( $this->getAttribute( 'lang' ) ) {
+            $lang = $this->getAttribute( 'lang' );
 	    }
 
-        if (in_array($lang, $langs)) {
+        if ( in_array( $lang, $langs ) ) {
             $this->_lang = $lang;
         }
 
         // falls null, dann vom Projekt
-        if (!$this->_lang) {
-            $this->_lang = Projects_Manager::get()->getAttribute('lang');
+        if ( !$this->_lang )
+        {
+            try
+            {
+                $this->_lang = Projects_Manager::get()->getAttribute( 'lang' );
+            } catch ( QException $Exception )
+            {
+
+            }
         }
 
         // wird noch gebraucht?
-	    if (!$this->_lang) {
+	    if ( !$this->_lang ) {
             $this->_lang = QUI::getLocale()->getCurrent();
         }
 
@@ -387,12 +386,12 @@ class Users_User implements Interface_Users_User
      */
 	public function getLocale()
 	{
-	    if ($this->Locale) {
+	    if ( $this->Locale ) {
 	        return $this->Locale;
 	    }
 
         $this->Locale = new QUI_Locale();
-        $this->Locale->setCurrent($this->getLang());
+        $this->Locale->setCurrent( $this->getLang() );
 
         return $this->Locale;
 	}

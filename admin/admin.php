@@ -29,7 +29,7 @@
 		try
 		{
 			$Standard = \Projects_Manager::getStandard();
-		} catch (QException $e)
+		} catch ( QException $e )
 		{
 			// nothing
 		}
@@ -38,7 +38,14 @@
 		$config['globals'] = \QUI::conf( 'globals' );
 
 		// locale file
-		$files   = \QUI\Translator::getJSTranslationFiles( $User->getLang() );
+		try
+		{
+		    $files = \QUI\Translator::getJSTranslationFiles( $User->getLang() );
+		} catch (QException $e )
+		{
+
+		}
+
         $locales = array();
 
 		foreach ( $files as $package => $file ) {

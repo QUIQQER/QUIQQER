@@ -51,24 +51,24 @@ class Projects_Manager
 	{
 	    $Rewrite = QUI::getRewrite();
 
-	    if ($Rewrite->getParam('project'))
+	    if ( $Rewrite->getParam( 'project' ) )
 		{
 		    return self::getProject(
-			    $Rewrite->getParam('project'),
-			    $Rewrite->getParam('lang'),
-			    $Rewrite->getParam('template')
+			    $Rewrite->getParam( 'project' ),
+			    $Rewrite->getParam( 'lang' ),
+			    $Rewrite->getParam( 'template' )
 		    );
 		}
 
 		$Standard = self::getStandard();
 
 		// Falls andere Sprache gewünscht
-		if ($Rewrite->getParam('lang') &&
-		    $Rewrite->getParam('lang') != $Standard->getAttribute('lang'))
+		if ( $Rewrite->getParam( 'lang' ) &&
+		     $Rewrite->getParam( 'lang' ) != $Standard->getAttribute( 'lang' ) )
 		{
             return self::getProject(
-			    $Standard->getAttribute('name'),
-			    $Rewrite->getParam('lang')
+			    $Standard->getAttribute( 'name' ),
+			    $Rewrite->getParam( 'lang' )
 		    );
 		}
 
@@ -86,33 +86,38 @@ class Projects_Manager
 	 */
 	static function getProject($project, $lang=false, $template=false)
 	{
-	    if ($lang == false &&
-	        isset(self::$projects[$project]) &&
-            isset(self::$projects[$project]['_standard']))
+	    if ( $lang == false &&
+	         isset( self::$projects[ $project ] ) &&
+             isset( self::$projects[ $project ][ '_standard' ] ) )
         {
-	        return self::$projects[$project]['_standard'];
+	        return self::$projects[ $project ][ '_standard' ];
 	    }
 
-		if (isset(self::$projects[$project]) &&
-			isset(self::$projects[$project][$lang]))
+		if ( isset( self::$projects[ $project ] ) &&
+			 isset( self::$projects[ $project ][ $lang ] ) )
 		{
-			return self::$projects[$project][$lang];
+			return self::$projects[ $project ][ $lang ];
 		}
 
 		// Wenn der RAM zu voll wird, Objekte mal leeren
-		if (Utils_System::memUsageCheck()) {
+		if ( Utils_System::memUsageCheck() ) {
             self::$projects = array();
 		}
 
 
-		if ($lang === false)
+		if ( $lang === false )
 		{
-		    self::$projects[$project]['_standard'] = new Projects_Project($project);
-            return self::$projects[$project]['_standard'];
+		    self::$projects[ $project ][ '_standard' ] = new Projects_Project( $project );
+            return self::$projects[ $project ][ '_standard' ];
 		}
 
-		self::$projects[$project][$lang] = new Projects_Project($project, $lang, $template);
-		return self::$projects[$project][$lang];
+		self::$projects[ $project ][ $lang ] = new Projects_Project(
+		    $project,
+		    $lang,
+		    $template
+	    );
+
+		return self::$projects[ $project ][ $lang ];
 	}
 
 	/**
@@ -126,7 +131,7 @@ class Projects_Manager
 		$config = self::getConfig()->toArray();
         $list   = array();
 
-		foreach ($config as $project => $conf)
+		foreach ( $config as $project => $conf )
 		{
 			try
 			{
@@ -136,11 +141,11 @@ class Projects_Manager
 				    $conf['template']
 				);
 
-    			if (isset($conf['standard']) && $conf['standard'] == 1) {
+    			if ( isset( $conf['standard'] ) && $conf['standard'] == 1 ) {
     				self::$Standard = $Project;
     			}
 
-				if ($asobject == true)
+				if ( $asobject == true )
 				{
                     $list[] = $Project;
 				} else
@@ -148,7 +153,7 @@ class Projects_Manager
                     $list[] = $project;
 				}
 
-			} catch (QException $e)
+			} catch ( QException $e )
 			{
 
 			}
@@ -163,15 +168,15 @@ class Projects_Manager
      */
 	static function getStandard()
 	{
-        if (!is_null(self::$Standard)) {
+        if ( !is_null( self::$Standard ) ) {
             return self::$Standard;
         }
 
         $config = self::getConfig()->toArray();
 
-		foreach ($config as $project => $conf)
+		foreach ( $config as $project => $conf )
 		{
-			if (isset($conf['standard']) && $conf['standard'] == 1)
+			if ( isset( $conf['standard'] ) && $conf['standard'] == 1)
 			{
 			    self::$Standard = self::getProject(
 			        $project,
@@ -181,8 +186,8 @@ class Projects_Manager
 			}
 		}
 
-		if (is_null(self::$Standard)) {
-            throw new QException('Es wurde kein Projekt gefunden', 404);
+		if ( is_null( self::$Standard ) ) {
+            throw new QException( 'Es wurde kein Projekt gefunden', 404 );
 		}
 
 		return self::$Standard;
@@ -204,25 +209,25 @@ class Projects_Manager
 		$Users = QUI::getUsers();
 		$User  = $Users->getUserBySession();
 
-		if (!$User->isSU() || empty($name) || empty($lang) ) {
-			throw new QException('Error: No Rights', 401);
+		if ( !$User->isSU() || empty( $name ) || empty( $lang ) ) {
+			throw new QException( 'Error: No Rights', 401 );
 		}
 
-		if (strlen($name) <= 2) {
-			throw new QException('Der Projektname muss länger als 2 Zeichen sein', 701);
+		if ( strlen( $name ) <= 2 ) {
+			throw new QException( 'Der Projektname muss länger als 2 Zeichen sein', 701 );
 		}
 
-		if (preg_match("@[-.,:;#`!§$%&/?<>\=\'\" ]@", $name)) {
-			throw new QException('Der Projektname enthält nicht erlaubte Zeichen. Nicht erlaubte Zeichen: - . , : ; # ` ! § $ % & / ? < > = \' " ', 702);
+		if ( preg_match( "@[-.,:;#`!§$%&/?<>\=\'\" ]@", $name ) ) {
+			throw new QException( 'Der Projektname enthält nicht erlaubte Zeichen. Nicht erlaubte Zeichen: - . , : ; # ` ! § $ % & / ? < > = \' " ', 702 );
 		}
 
 		$projects = $this->getProjects();
 
-		if (isset($projects[$name])) {
-			throw new QException('Projekt existiert bereits');
+		if ( isset( $projects[ $name ] ) ) {
+			throw new QException( 'Projekt existiert bereits' );
 		}
 
-		$name = Utils_Security_Orthos::clear($name);
+		$name = Utils_Security_Orthos::clear( $name );
 
 		$table_site      = $name .'_'. $lang .'_sites';
 		$table_site_rel  = $name .'_'. $lang .'_sites_relations';
@@ -231,13 +236,13 @@ class Projects_Manager
 		$table_rights    = $name .'_'. $lang .'_rights';
 
 		// Prüfen ob es die Tabellen schon gibt
-		if ($db->existTable($table_site) != false ||
-			$db->existTable($table_site_rel) != false ||
-			$db->existTable($table_media) != false ||
-			$db->existTable($table_media_rel) != false ||
-			$db->existTable($table_rights) != false)
+		if ( $db->existTable( $table_site ) != false ||
+			 $db->existTable( $table_site_rel ) != false ||
+			 $db->existTable( $table_media ) != false ||
+			 $db->existTable( $table_media_rel ) != false ||
+			 $db->existTable( $table_rights ) != false )
 		{
-			throw new QException('Project exist');
+			throw new QException( 'Project exist' );
 		}
 
 		// Site Tabelle
