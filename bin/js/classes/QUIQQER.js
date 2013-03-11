@@ -333,7 +333,7 @@ QUI.config('dir', 'my/new/dir'); // set the dir
             console.error({
                 message    : msg,
                 url        : url,
-                linenummer : linenumber
+                linenummer : linenumber || ''
             });
 
             return this;

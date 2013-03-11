@@ -877,8 +877,8 @@ class Utils_Dom
             $type    = 'string';
             $default = '';
 
-            $types    = $Conf->getElementsByTagName('type');
-            $defaults = $Conf->getElementsByTagName('defaultvalue');
+            $types    = $Conf->getElementsByTagName( 'type' );
+            $defaults = $Conf->getElementsByTagName( 'defaultvalue' );
 
             // type
             if ( $types && $types->length ) {
@@ -893,7 +893,7 @@ class Utils_Dom
                 );
             }
 
-            $result[ $Conf->getAttribute('name') ] = array(
+            $result[ $Conf->getAttribute( 'name' ) ] = array(
                 'type'    => $type,
                 'default' => $default
             );
