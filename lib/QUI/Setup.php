@@ -107,6 +107,11 @@ class QUI_Setup
     		// Media Setup
     		$Project->getMedia()->setup();
 		}
+
+		/**
+		 * composer setup
+		 */
+        \QUI::getPackageManager()->update();
     }
 }
 
