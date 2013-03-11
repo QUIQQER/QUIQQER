@@ -44,7 +44,6 @@ define('URL_USR_DIR', URL_DIR . str_replace(CMS_DIR, '', USR_DIR));
 define('URL_SYS_DIR', URL_DIR . str_replace(CMS_DIR, '', SYS_DIR));
 define('URL_OPT_DIR', URL_DIR . str_replace(CMS_DIR, '', OPT_DIR));
 define('URL_VAR_DIR', URL_DIR . str_replace(CMS_DIR, '', VAR_DIR));
-define('URL_PKG_DIR', URL_DIR . str_replace(CMS_DIR, '', PKG_DIR));
 
 define('HOST',         QUI::conf('globals','host'));
 define('CACHE',        QUI::conf('globals','cache'));
