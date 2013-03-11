@@ -41,8 +41,18 @@ class System_Cache_Manager
      */
     static function getConfig()
     {
-        if ( !self::$Config ) {
-            self::$Config = QUI::getConfig( 'etc/cache.ini' );
+        if ( !self::$Config )
+        {
+            try
+            {
+                self::$Config = QUI::getConfig( 'etc/cache.ini' );
+
+            } catch ( \QException $Exception )
+            {
+                file_put_contents( CMS_DIR .'etc/cache.ini', '' );
+
+                self::$Config = QUI::getConfig( 'etc/cache.ini' );
+            }
         }
 
         return self::$Config;
