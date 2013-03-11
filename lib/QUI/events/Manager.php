@@ -9,6 +9,8 @@
  *
  * @author www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui.events
+ *
+ * @deprecated maybe depricated
  */
 class QUI_Events_Manager
 {
