@@ -13,8 +13,6 @@
  */
 class System_Cron_Manager extends QDOM
 {
-	const TABLE = 'pcsg_cron';
-
 	/**
 	 * internal cron list
 	 * @var array
@@ -30,9 +28,9 @@ class System_Cron_Manager extends QDOM
 		$Plugins = QUI::getPlugins();
 		$list    = $Plugins->get();
 
-		foreach ($list as $Plugin)
+		foreach ( $list as $Plugin )
 		{
-			if (!method_exists($Plugin, 'registerCrons')) {
+			if ( !method_exists( $Plugin, 'registerCrons' ) ) {
 				continue;
 			}
 
@@ -42,27 +40,27 @@ class System_Cron_Manager extends QDOM
 		// Projekte einlesen
 		$projects = Projects_Manager::getProjects();
 
-		foreach ($projects as $project)
+		foreach ( $projects as $project )
 		{
             $dir = USR_DIR .'lib/'. $project .'/cron/';
 
-            if (!is_dir($dir)) {
+            if ( !is_dir( $dir ) ) {
                 continue;
             }
 
-            $crons = Utils_System_File::readDir($dir, true);
+            $crons = Utils_System_File::readDir( $dir, true );
 
-            foreach ($crons as $cronfile)
+            foreach ( $crons as $cronfile )
             {
-                if (!file_exists($dir . $cronfile)) {
-                    continue;
+                if ( !file_exists( $dir . $cronfile ) ) {
+                     continue;
                 }
 
                 require_once $dir . $cronfile;
 
-                $class = 'Cron'. str_replace(array('cron.', '.php'), '', $cronfile);
+                $class = 'Cron'. str_replace( array('cron.', '.php' ), '', $cronfile );
 
-                if ( !class_exists($class) ) {
+                if ( !class_exists( $class ) ) {
                     continue;
                 }
 
@@ -71,20 +69,29 @@ class System_Cron_Manager extends QDOM
                 try
                 {
                     $this->register(
-                        QUI::get($project),
+                        QUI::get( $project ),
                         $class,
-                        $Cron->getAttribute('desc')
+                        $Cron->getAttribute( 'desc' )
                     );
                 } catch ( QException $e )
                 {
                     System_Log::write(
                     	'Cron konnte nicht registriert werden: '. $e->getMessage().' '. $class,
-                        'write'
+                        'cron'
                     );
                 }
             }
 		}
+	}
 
+	/**
+	 * Return the cron tabe
+	 *
+	 * @return String
+	 */
+	static function Table()
+	{
+	    return QUI_DB_PRFX .'cron';
 	}
 
 	/**
@@ -100,7 +107,7 @@ class System_Cron_Manager extends QDOM
 			'Plugin'   => $Plugin,
 			'cronname' => $cronname,
 			'desc'     => $desc,
-		    'project'  => get_class($Plugin) === 'Project' ? true : false
+		    'project'  => get_class( $Plugin ) === 'Project' ? true : false
 		);
 	}
 
@@ -133,13 +140,13 @@ class System_Cron_Manager extends QDOM
 
 				if ( $exec )
 				{
-    				$attributes = print_r($Cron->getAllAttributes(), true);
-                    self::log("Cron '". $Cron->getAttribute('cronname') ."' executed.\nParameters: ". $attributes);
+    				$attributes = print_r( $Cron->getAllAttributes(), true );
+                    self::log("Cron '". $Cron->getAttribute( 'cronname' ) ."' executed.\nParameters: ". $attributes);
 				}
 
-			} catch (QException $e)
+			} catch ( QException $e )
 			{
-				self::log('ERROR '. $e->getMessage());
+				self::log( 'ERROR '. $e->getMessage() );
 			}
 		}
 	}
@@ -161,7 +168,7 @@ class System_Cron_Manager extends QDOM
 	{
 	    $name = $Plugin->getAttribute('name');
 
-	    if (get_class($Plugin) === 'Project') {
+	    if ( get_class( $Plugin ) === 'Project' ) {
             $name = 'project.'. $name;
 	    }
 
@@ -172,26 +179,26 @@ class System_Cron_Manager extends QDOM
 			'month'    => '*',
 			'plugin'   => $name,
 			'cronname' => $cronname,
-			'params'   => json_encode($params)
+			'params'   => json_encode( $params )
 		);
 
-		if (isset($date['min'])) {
+		if ( isset( $date['min'] ) ) {
 			$data['min'] = $date['min'];
 		}
 
-		if (isset($date['hour'])) {
+		if ( isset( $date['hour'] ) ) {
 			$data['hour'] = $date['hour'];
 		}
 
-		if (isset($date['day'])) {
+		if ( isset( $date['day'] ) ) {
 			$data['day'] = $date['day'];
 		}
 
-		if (isset($date['month'])) {
+		if ( isset( $date['month'] ) ) {
 			$data['month'] = $date['month'];
 		}
 
-		QUI::getDB()->addData(self::TABLE, $data);
+		QUI::getDB()->addData( self::Table(), $data );
 	}
 
 	/**
@@ -210,35 +217,35 @@ class System_Cron_Manager extends QDOM
 	 */
 	static function get($params=array())
 	{
-		$params['from'] = self::TABLE;
+		$params['from'] = self::Table();
 
-		$result = QUI::getDB()->select($params);
+		$result = QUI::getDB()->select( $params );
 		$crons  = array();
 
-		foreach ($result as $entry)
+		foreach ( $result as $entry )
 		{
-		    if (strpos($entry['plugin'], 'project.') !== false)
+		    if ( strpos( $entry['plugin'], 'project.' ) !== false )
 		    {
-		        $cronfile = USR_DIR .'lib/'. str_replace('project.', '', $entry['plugin']) .'/cron/cron.'. str_replace('Cron', '', $entry['cronname']) .'.php';
+		        $cronfile = USR_DIR .'lib/'. str_replace( 'project.', '', $entry['plugin'] ) .'/cron/cron.'. str_replace( 'Cron', '', $entry['cronname'] ) .'.php';
 		        $class    = $entry['cronname'];
 		    } else
 		    {
 		        $cronfile = OPT_DIR . $entry['plugin'] .'/cron/cron.'. $entry['cronname'] .'.php';
-		        $class    = 'Cron'. ucwords(strtolower($entry['cronname']));
+		        $class    = 'Cron'. ucwords( strtolower( $entry['cronname'] ) );
 		    }
 
 		    // Prüfungen ob Cron existiert
-			if (!file_exists($cronfile)) {
+			if ( !file_exists( $cronfile ) ) {
 				continue;
 			}
 
 			require_once $cronfile;
 
-			if (!class_exists($class)) {
+			if ( !class_exists( $class ) ) {
 				continue;
 			}
 
-			$crons[] = new $class($entry);
+			$crons[] = new $class( $entry );
 		}
 
 		return $crons;
@@ -259,8 +266,8 @@ class System_Cron_Manager extends QDOM
 			'limit' => '1'
 		));
 
-		if (!isset($result[0])) {
-			throw new QException('Cron was not found', 404);
+		if ( !isset( $result[0] ) ) {
+			throw new QException( 'Cron was not found', 404 );
 		}
 
 		return $result[0];
@@ -315,7 +322,7 @@ class System_Cron_Manager extends QDOM
 
 		// Daten aktualisieren
 		return QUI::getDB()->updateData(
-			self::TABLE,
+			self::Table(),
 			$data,
 			array(
 				'id' => $id
@@ -332,8 +339,8 @@ class System_Cron_Manager extends QDOM
 	static function delete(System_Cron_Cron $Cron)
 	{
 		return QUI::getDB()->deleteData(
-			self::TABLE,
-			array('id' => $Cron->getAttribute('id'))
+			self::Table(),
+			array( 'id' => $Cron->getAttribute( 'id' ) )
 		);
 	}
 
@@ -350,8 +357,8 @@ class System_Cron_Manager extends QDOM
 
 		$str = '['. date('Y-m-d H:i:s') .' :: '. $User->getName() .'] '. $message;
 
-		Utils_System_File::mkdir($dir);
-		Utils_System_File::putLineToFile($file, $str);
+		Utils_System_File::mkdir( $dir );
+		Utils_System_File::putLineToFile( $file, $str );
 	}
 
 	/**
@@ -362,26 +369,30 @@ class System_Cron_Manager extends QDOM
 	{
 	    $DataBase = QUI::getDataBase();
 	    $PDO      = $DataBase->getPDO();
+	    $table    = self::Table();
 
-		$DataBase->Table()->appendFields(self::TABLE, array(
-			'id'       => 'INT( 3 ) NOT NULL AUTO_INCREMENT',
-			'min'      => 'VARCHAR( 2 ) NOT NULL',
-			'hour'     => 'VARCHAR( 2 ) NOT NULL',
-			'day'      => 'VARCHAR( 2 ) NOT NULL',
-			'month'    => 'VARCHAR( 2 ) NOT NULL',
-			'plugin'   => 'VARCHAR( 60 ) NOT NULL',
-			'cronname' => 'VARCHAR( 60 ) NOT NULL',
-			'params'   => 'TEXT NOT NULL',
-			'lastexec' => 'datetime NULL'
-		));
+		$DataBase->Table()->appendFields(
+		    $table,
+		    array(
+    			'id'       => 'INT( 3 ) NOT NULL AUTO_INCREMENT',
+    			'min'      => 'VARCHAR( 2 ) NOT NULL',
+    			'hour'     => 'VARCHAR( 2 ) NOT NULL',
+    			'day'      => 'VARCHAR( 2 ) NOT NULL',
+    			'month'    => 'VARCHAR( 2 ) NOT NULL',
+    			'plugin'   => 'VARCHAR( 60 ) NOT NULL',
+    			'cronname' => 'VARCHAR( 60 ) NOT NULL',
+    			'params'   => 'TEXT NOT NULL',
+    			'lastexec' => 'datetime NULL'
+    		)
+		);
 
-		$PDO->exec('ALTER TABLE `pcsg_cron` CHANGE `min` `min` VARCHAR( 250 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL');
-		$PDO->exec('ALTER TABLE `pcsg_cron` CHANGE `hour` `hour` VARCHAR( 250 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL');
-		$PDO->exec('ALTER TABLE `pcsg_cron` CHANGE `day` `day` VARCHAR( 250 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL');
-		$PDO->exec('ALTER TABLE `pcsg_cron` CHANGE `month` `month` VARCHAR( 250 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL');
+		$PDO->exec( 'ALTER TABLE `'. $table .'` CHANGE `min` `min` VARCHAR( 250 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL' );
+		$PDO->exec( 'ALTER TABLE `'. $table .'` CHANGE `hour` `hour` VARCHAR( 250 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL' );
+		$PDO->exec( 'ALTER TABLE `'. $table .'` CHANGE `day` `day` VARCHAR( 250 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL' );
+		$PDO->exec( 'ALTER TABLE `'. $table .'` CHANGE `month` `month` VARCHAR( 250 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL' );
 
 		// Primary Key setzen
-		$DataBase->Table()->setIndex(self::TABLE, 'id');
+		$DataBase->Table()->setIndex( $table, 'id' );
 	}
 }
 
