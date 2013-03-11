@@ -18,7 +18,15 @@ class QUI_Upload_Manager
      * DataBase table name
      * @var String
      */
-    protected $_table = 'pcsg_uploads';
+    protected $_table = 'uploads';
+
+    /**
+     * constructor
+     */
+    public function __construct()
+    {
+        $this->_table = QUI_DB_PRFX .'uploads';
+    }
 
     /**
      * Return the main upload dir
