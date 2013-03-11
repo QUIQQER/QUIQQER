@@ -13,7 +13,44 @@
 
 class Utils_Countries_Manager extends QDOM
 {
-    const TBL = 'pcsg_countries';
+    /**
+     * Return the real table name
+     *
+     * @return String
+     */
+    static function Table()
+    {
+        return QUI_DB_PRFX .'countries';
+    }
+
+    /**
+     * Country setup
+     */
+    static function setup()
+    {
+        // Countries
+		$db_countries = __DIR__ .'/countries.sql';
+		$PDO          = QUI::getDataBase()->getPDO();
+
+		if ( !file_exists( $db_countries ) ) {
+		    return;
+		}
+
+		$sql = file_get_contents( $db_countries );
+		$sql = str_replace( '{$TABLE}', self::Table(), $sql );
+		$sql = explode( ';', $sql );
+
+		foreach ( $sql as $query )
+		{
+			$query = trim( $query );
+
+			if ( empty( $query ) ) {
+				continue;
+			}
+
+			$PDO->exec( $query );
+		}
+    }
 
 	/**
 	 * Get a country
@@ -28,7 +65,7 @@ class Utils_Countries_Manager extends QDOM
 	static function get($code)
 	{
 	    $result = QUI::getDB()->select(array(
-			'from'  => self::TBL,
+			'from'  => self::Table(),
 			'where' => array(
 				'countries_iso_code_2' => Utils_String::toUpper(
                     $code
@@ -38,11 +75,11 @@ class Utils_Countries_Manager extends QDOM
 
 		));
 
-		if (!isset($result[0])) {
-			throw new QException('Das Land wurde nicht gefunden', 404);
+		if ( !isset( $result[0] ) ) {
+			throw new QException( 'Das Land wurde nicht gefunden', 404 );
 		}
 
-		return new Utils_Countries_Country($result[0]);
+		return new Utils_Countries_Country( $result[0] );
 	}
 
 	/**
@@ -54,19 +91,19 @@ class Utils_Countries_Manager extends QDOM
 	{
 		$order = 'countries_name ASC';
 
-		if (QUI::getLocale()->getCurrent() === 'en') {
+		if ( QUI::getLocale()->getCurrent() === 'en' ) {
             $order = 'en ASC';
 		}
 
 		$result = QUI::getDB()->select(array(
-			'from'  => self::TBL,
+			'from'  => self::Table(),
 			'order' => $order
 		));
 
 		$countries = array();
 
-		foreach ($result as $entry) {
-			$countries[] = new Utils_Countries_Country($entry);
+		foreach ( $result as $entry ) {
+			$countries[] = new Utils_Countries_Country( $entry );
 		}
 
 		return $countries;

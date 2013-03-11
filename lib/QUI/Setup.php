@@ -48,31 +48,8 @@ class QUI_Setup
 		$UploadManager = new QUI_Upload_Manager();
 		$UploadManager->setup();
 
-
 		// Countries
-		$db_countries = SYS_DIR .'setup/pcsg_countries.sql';
-		$DataBase     = QUI::getDataBase();
-		$PDO          = $DataBase->getPDO();
-
-		if ( file_exists( $db_countries ) )
-		{
-			$sql = file_get_contents( $db_countries );
-			$sql = explode( ';', $sql );
-
-			foreach ( $sql as $query )
-			{
-				$query = trim( $query );
-
-				if ( empty( $query ) ) {
-					continue;
-				}
-
-				$PDO->exec( $query );
-			}
-		}
-
-		// currency - währungen
-		// QUI_Currency::setup();
+		\Utils_Countries_Manager::setup();
 
 		/**
 		 * header dateien

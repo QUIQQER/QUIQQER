@@ -24,43 +24,43 @@ class Utils_Countries_Country extends QDOM
 	 */
 	public function __construct($params)
 	{
-		if (!isset($params['countries_iso_code_2'])) {
-			throw new QException('Parameter countries_iso_code_2 fehlt');
+		if ( !isset( $params['countries_iso_code_2'] ) ) {
+			throw new QException( 'Parameter countries_iso_code_2 fehlt' );
 		}
 
-		if (!isset($params['countries_iso_code_3'])) {
-			throw new QException('Parameter countries_iso_code_3 fehlt');
+		if ( !isset( $params['countries_iso_code_3'] ) ) {
+			throw new QException( 'Parameter countries_iso_code_3 fehlt' );
 		}
 
-		if (!isset($params['countries_name'])) {
-			throw new QException('Parameter countries_name fehlt');
+		if ( !isset( $params['countries_name'] ) ) {
+			throw new QException( 'Parameter countries_name fehlt' );
 		}
 
-		if (!isset($params['countries_id'])) {
-			throw new QException('Parameter countries_id fehlt');
+		if ( !isset( $params['countries_id'] ) ) {
+			throw new QException( 'Parameter countries_id fehlt' );
 		}
 
-		parent::setAttributes($params);
+		parent::setAttributes( $params );
 	}
 
 	/**
 	 * Return the country code
 	 * iso_code_2 or iso_code_2
 	 *
-	 * @param String $type
+	 * @param String $type - countries_iso_code_2 or countries_iso_code_3
 	 * @return String
 	 */
 	public function getCode($type='countries_iso_code_2')
 	{
-		switch ($type)
+		switch ( $type )
 		{
 			default:
 			case 'countries_iso_code_2':
-				return $this->getAttribute('countries_iso_code_2');
+				return $this->getAttribute( 'countries_iso_code_2' );
 			break;
 
 			case 'countries_iso_code_3':
-				return $this->getAttribute('countries_iso_code_3');
+				return $this->getAttribute( 'countries_iso_code_3' );
 			break;
 		}
 	}
@@ -73,11 +73,11 @@ class Utils_Countries_Country extends QDOM
 	 */
 	public function getName()
 	{
-	    if ($this->existsAttribute( QUI::getLocale()->getCurrent() )) {
+	    if ( $this->existsAttribute( QUI::getLocale()->getCurrent() ) ) {
             return $this->getAttribute( QUI::getLocale()->getCurrent() );
 	    }
 
-		return $this->getAttribute('countries_name');
+		return $this->getAttribute( 'countries_name' );
 	}
 }
 
