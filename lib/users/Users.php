@@ -13,9 +13,6 @@
 
 class Users_Users
 {
-	const TABLE    = 'users';
-	const TBL_ADDR = 'users_adress';
-
 	/**
 	 * @var PT_Session (the session object)
 	 */
