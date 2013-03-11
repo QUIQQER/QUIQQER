@@ -27,12 +27,18 @@ class QUI_Rights_Manager
      */
     public function __construct()
     {
-        $result = \QUI::getDataBase()->fetch(array(
-            'from' => \QUI::getDBTableName( self::TABLE )
-        ));
+        try
+        {
+            $result = \QUI::getDataBase()->fetch(array(
+                'from' => \QUI::getDBTableName( self::TABLE )
+            ));
 
-        foreach ( $result as $entry ) {
-            $this->_cache[ $entry['name'] ] = $entry;
+            foreach ( $result as $entry ) {
+                $this->_cache[ $entry['name'] ] = $entry;
+            }
+        } catch ( QException $Exception )
+        {
+
         }
     }
 
