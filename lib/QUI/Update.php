@@ -157,6 +157,8 @@ class Update
             return;
         }
 
+        \System_Log::write( 'Read: '. $xml_file );
+
         $engines = \Utils_Xml::getTemplateEnginesFromXml( $xml_file );
 
         foreach ( $engines as $Engine )
@@ -185,6 +187,8 @@ class Update
         if ( !file_exists( $xml_file ) ) {
             return;
         }
+
+        \System_Log::write( 'Read: '. $xml_file );
 
         $editors = \Utils_Xml::getWysiwygEditorsFromXml( $xml_file );
 
@@ -215,6 +219,8 @@ class Update
         if ( !file_exists( $xml_file ) ) {
             return;
         }
+
+        \System_Log::write( 'Read: '. $xml_file );
 
         $items = \Utils_Xml::getMenuItemsXml( $xml_file );
 
@@ -253,6 +259,8 @@ class Update
             return;
         }
 
+        \System_Log::write( 'Read: '. $xml_file );
+
         \Utils_Xml::importDataBaseFromXml( $xml_file );
     }
 
@@ -268,6 +276,8 @@ class Update
         if ( !file_exists( $xml_file ) ) {
             return;
         }
+
+        \System_Log::write( 'Read: '. $xml_file );
 
         \QUI\Translator::import( $xml_file, false );
     }
@@ -285,6 +295,8 @@ class Update
         if ( !file_exists( $xml_file ) ) {
             return;
         }
+
+        \System_Log::write( 'Read: '. $xml_file );
 
         \Utils_Xml::importPermissionsFromXml( $xml_file, $src );
     }

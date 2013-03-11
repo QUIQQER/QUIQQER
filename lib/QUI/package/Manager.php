@@ -525,6 +525,8 @@ class QUI_Package_Manager
                 $exec    = $this->_exec .'update "'. $package .'" 2>&1';
             }
 
+            \System_Log::write( 'Execute: '. $exec );
+
             exec( $exec, $output );
 
             // exception?
