@@ -14,7 +14,10 @@
 
 class QUI_Currency
 {
-    const TABLE = 'pcsg_currency';
+    static function Table()
+    {
+        return QUI_DB_PRFX . TABLE;
+    }
 
     /**
      * Calculation
@@ -28,34 +31,34 @@ class QUI_Currency
      */
     static function calc($amount, $currency_from, $currency_to='EUR')
     {
-        if ($currency_from === 'EUR' && $currency_to === 'EUR') {
+        if ( $currency_from === 'EUR' && $currency_to === 'EUR' ) {
             return $amount;
         }
 
         $signs = self::allCurrencies();
 
-        if (!isset($signs[$currency_from]) && $currency_from !== 'EUR') {
-            throw new QException('Unknown currency: '. $currency_from);
+        if ( !isset( $signs[ $currency_from ] ) && $currency_from !== 'EUR' ) {
+            throw new QException( 'Unknown currency: '. $currency_from );
         }
 
         if (!isset($signs[$currency_to]) && $currency_to !== 'EUR') {
-            throw new QException('Unknown currency: '. $currency_to);
+            throw new QException( 'Unknown currency: '. $currency_to );
         }
 
-        $rate_from_to_euro = self::getRate($currency_from);
+        $rate_from_to_euro = self::getRate( $currency_from );
 
         // nach euro
-        if ($currency_to === 'EUR') {
+        if ( $currency_to === 'EUR' ) {
             return $amount * (1 / $rate_from_to_euro);
         }
 
-        if ($currency_from === 'EUR') {
-            return $amount * self::getRate($currency_to);
+        if ( $currency_from === 'EUR' ) {
+            return $amount * self::getRate( $currency_to );
         }
 
-        $eur = self::calc($amount, $currency_from);
+        $eur = self::calc( $amount, $currency_from );
 
-        return $eur * self::getRate($currency_to);
+        return $eur * self::getRate( $currency_to );
     }
 
     /**
@@ -69,8 +72,8 @@ class QUI_Currency
      */
     static function calcWithSign($amount, $currency_from, $currency_to='EUR')
     {
-        $amount = self::calc($amount, $currency_from, $currency_to);
-        $sign   = self::getSign($currency_to);
+        $amount = self::calc( $amount, $currency_from, $currency_to );
+        $sign   = self::getSign( $currency_to );
 
         return  $amount .' '. $sign;
     }
@@ -84,14 +87,14 @@ class QUI_Currency
     static function getRate($currency)
     {
         $result = QUI::getDB()->select(array(
-            'from' => self::TABLE,
+            'from' => self::Table(),
             'where' => array(
             	'currency' => $currency
             )
         ));
 
-        if (isset($result[0])) {
-            return (float)$result[0]['rate'];
+        if ( isset( $result[0] ) ) {
+            return (float) $result[0]['rate'];
         }
 
         return false;
@@ -107,8 +110,8 @@ class QUI_Currency
     {
         $signs = self::allCurrencies();
 
-        if (isset($signs[$currency])) {
-            return $signs[$currency];
+        if ( isset( $signs[ $currency ] ) ) {
+            return $signs[ $currency ];
         }
 
         return array();
@@ -127,15 +130,15 @@ class QUI_Currency
     {
         $signs = self::allCurrencies();
 
-        if (!isset($signs[$currency])) {
+        if ( !isset( $signs[ $currency ] ) ) {
             return $currency;
         }
 
-        if (empty($signs[$currency]['sign'])) {
+        if ( empty( $signs[ $currency ][ 'sign' ] ) ) {
             return $currency;
         }
 
-        return $signs[$currency]['sign'];
+        return $signs[ $currency ][ 'sign' ];
     }
 
     /**
@@ -296,12 +299,15 @@ class QUI_Currency
      */
     static function setup()
     {
-        QUI::getDB()->createTableFields(self::TABLE, array(
-            'currency' => 'varchar(5) COLLATE utf8_unicode_ci NOT NULL',
-            'rate'     => 'DOUBLE NULL DEFAULT NULL'
-		));
+        QUI::getDB()->createTableFields(
+            self::Table(),
+            array(
+                'currency' => 'varchar(5) COLLATE utf8_unicode_ci NOT NULL',
+                'rate'     => 'DOUBLE NULL DEFAULT NULL'
+    		)
+		);
 
-		QUI::getDB()->setIndex(self::TABLE, 'currency');
+		QUI::getDB()->setIndex( self::Table(), 'currency' );
 
 		// import
 		self::import();
@@ -316,11 +322,11 @@ class QUI_Currency
     static function import($xmlfile='http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml')
     {
 	    $Dom = new DOMDocument();
-        $Dom->load($xmlfile);
+        $Dom->load( $xmlfile );
 
-        $list = $Dom->getElementsByTagName('Cube');
+        $list = $Dom->getElementsByTagName( 'Cube' );
 
-        if (!$list->length) {
+        if ( !$list->length ) {
             return;
         }
 
@@ -328,43 +334,43 @@ class QUI_Currency
             'EUR' => '1.0'
         );
 
-        for ($c=0; $c < $list->length; $c++)
+        for ( $c = 0; $c < $list->length; $c++ )
         {
-            $Cube = $list->item($c);
+            $Cube = $list->item( $c );
 
-            $currency = $Cube->getAttribute('currency');
-            $rate     = $Cube->getAttribute('rate');
+            $currency = $Cube->getAttribute( 'currency' );
+            $rate     = $Cube->getAttribute( 'rate' );
 
-            if (empty($currency)) {
+            if ( empty( $currency ) ) {
                 continue;
             }
 
-            $values[$currency] = $rate;
+            $values[ $currency ] = $rate;
         }
 
         $DataBase = QUI::getDB();
 
-        foreach ($values as $currency => $rate)
+        foreach ( $values as $currency => $rate )
         {
             $result = $DataBase->select(array(
-                'from'  => self::TABLE,
+                'from'  => self::Table(),
                 'where' => array(
                     'currency' => $currency
                 )
             ));
 
             // Update
-            if (isset($result[0]))
+            if ( isset( $result[0] ) )
             {
                 $DataBase->updateData(
-                    self::TABLE,
-                    array('rate' => $rate),
-                    array('currency' => $currency)
+                    self::Table(),
+                    array( 'rate' => $rate ),
+                    array( 'currency' => $currency )
                 );
             } else
             {
                 $DataBase->addData(
-                    self::TABLE,
+                    self::Table(),
                     array(
                     	'rate'     => $rate,
                     	'currency' => $currency

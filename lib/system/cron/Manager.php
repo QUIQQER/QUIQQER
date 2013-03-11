@@ -374,7 +374,7 @@ class System_Cron_Manager extends QDOM
 		$DataBase->Table()->appendFields(
 		    $table,
 		    array(
-    			'id'       => 'INT( 3 ) NOT NULL AUTO_INCREMENT',
+    			'id'       => 'INT( 3 ) NOT NULL',
     			'min'      => 'VARCHAR( 2 ) NOT NULL',
     			'hour'     => 'VARCHAR( 2 ) NOT NULL',
     			'day'      => 'VARCHAR( 2 ) NOT NULL',
@@ -391,8 +391,10 @@ class System_Cron_Manager extends QDOM
 		$PDO->exec( 'ALTER TABLE `'. $table .'` CHANGE `day` `day` VARCHAR( 250 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL' );
 		$PDO->exec( 'ALTER TABLE `'. $table .'` CHANGE `month` `month` VARCHAR( 250 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL' );
 
+
 		// Primary Key setzen
-		$DataBase->Table()->setIndex( $table, 'id' );
+		$DataBase->Table()->setPrimaryKey( $table, 'id' );
+		$PDO->exec( 'ALTER TABLE `'. $table .'` CHANGE `id` `id` INT( 3 ) NOT NULL AUTO_INCREMENT' );
 	}
 }
 
