@@ -35,6 +35,14 @@ class QUI_Editor_Manager
     static function setup()
     {
         Utils_System_File::mkdir( self::getToolbarsPath() );
+
+        if ( !file_exists( CMS_DIR .'etc/wysiwyg/conf.ini' ) ) {
+            file_put_contents( CMS_DIR .'etc/wysiwyg/conf.ini', '' );
+        }
+
+        if ( !file_exists( CMS_DIR .'etc/wysiwyg/editors.ini' ) ) {
+            file_put_contents( CMS_DIR .'etc/wysiwyg/editors.ini', '' );
+        }
     }
 
     /**
@@ -79,10 +87,7 @@ class QUI_Editor_Manager
         $config = self::getConf()->toArray();
         $config['toolbars'] = self::getToolbars();
         $config['editors']  = array();
-
-        if ( file_exists( CMS_DIR .'etc/wysiwyg/editors.ini' ) ) {
-            $config['editors']  = QUI::getConfig( 'etc/wysiwyg/editors.ini' )->toArray();
-        }
+        $config['editors']  = QUI::getConfig( 'etc/wysiwyg/editors.ini' )->toArray();
 
         return $config;
     }

@@ -54,11 +54,35 @@ class Update
         // rights setup, so we have all importend tables
         \QUI_Rights_Manager::setup();
 
-        $packages_dir = CMS_DIR . $Composer->getConfig()->get( 'vendor-dir' );
+        // rights setup, so we have all importend tables
+        \QUI_Editor_Manager::setup();
+
+        $packages_dir = $Composer->getConfig()->get( 'vendor-dir' );
         $packages     = \Utils_System_File::readDir( $packages_dir );
 
         $IO->write('Start QUIQQER updating ...');
 
+        // first we need all databases
+        foreach ( $packages as $package )
+        {
+            if ( $package == 'composer' ) {
+                continue;
+            }
+
+            $package_dir = $packages_dir .'/'. $package;
+            $list        = \Utils_System_File::readDir( $package_dir );
+
+            foreach ( $list as $sub )
+            {
+                // database setup
+                self::importDatabase(
+                    $package_dir .'/'. $sub .'/database.xml',
+                    $IO
+                );
+            }
+        }
+
+        // then we can read the rest xml files
         foreach ( $packages as $package )
         {
             if ( $package == 'composer' ) {
@@ -89,12 +113,6 @@ class Update
                 );
 
                 // database setup
-                self::importDatabase(
-                    $package_dir .'/'. $sub .'/database.xml',
-                    $IO
-                );
-
-                // database setup
                 self::importLocale(
                     $package_dir .'/'. $sub .'/locale.xml',
                     $IO
@@ -108,6 +126,7 @@ class Update
                 );
             }
         }
+
 
         // system xmls
         $locale_dir = CMS_DIR .'/admin/locale/';
