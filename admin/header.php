@@ -5,7 +5,7 @@
  * @author www.pcsg.de (Henning Leutz)
  */
 
-require_once dirname(__FILE__) .'/../header.php'; // <<-- hmm ... not realy nice
+require_once dirname(__FILE__) .'/../bootstrap.php'; // <<-- hmm ... not realy nice
 
 // wenn https vorhanden, dann dahin
 if ((int)$_SERVER['SERVER_PORT'] !== 443 && QUI::conf('globals', 'httpshost'))
