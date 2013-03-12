@@ -1,5 +1,6 @@
 <?php
 
+echo 1111; exit;
 //$start_test = microtime();
 
 /**
@@ -12,7 +13,7 @@
  */
 
 // Mailto
-if (isset($_REQUEST['_url']) && strpos($_REQUEST['_url'], '[mailto]') !== false)
+if ( isset( $_REQUEST['_url'] ) && strpos( $_REQUEST['_url'], '[mailto]' ) !== false )
 {
 	/**
 	 * PCSG Redirect um Mailclient zu öffnen
@@ -35,8 +36,8 @@ if (isset($_REQUEST['_url']) && strpos($_REQUEST['_url'], '[mailto]') !== false)
 }
 
 // ZLIB
-if (function_exists('gzcompress')) {
-	ob_start('ob_gzhandler');
+if ( function_exists( 'gzcompress' ) ) {
+	ob_start( 'ob_gzhandler' );
 }
 
 require_once 'header.php';

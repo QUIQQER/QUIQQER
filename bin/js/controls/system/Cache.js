@@ -13,12 +13,13 @@
 define('controls/system/Cache', [
 
     'controls/Control',
-    'classes/system/Cache'
+    'classes/system/Cache',
+
+    'css!controls/system/Cache.css'
 
 ], function(Control)
 {
     QUI.namespace('controls.system');
-    QUI.css( QUI.config('dir') +'controls/system/Cache.css' );
 
     /**
      * @class QUI.controls.system.Cache

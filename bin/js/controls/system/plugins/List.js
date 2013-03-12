@@ -18,12 +18,13 @@ define('controls/system/plugins/List', [
     'controls/Control',
     'controls/grid/Grid',
     'controls/progressbar/Progressbar',
-    'classes/system/plugins/List'
+    'classes/system/plugins/List',
+
+    'css!controls/system/plugins/List.css'
 
 ], function(Control)
 {
     QUI.namespace( 'controls.system.plugins' );
-    QUI.css( QUI.config('dir') +'controls/system/plugins/List.css' );
 
     /**
      * @class QUI.controls.system.List

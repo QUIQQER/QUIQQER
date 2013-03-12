@@ -7,12 +7,13 @@
 define('classes/users/Adresses', [
 
     'classes/DOM',
-    'controls/grid/Grid'
+    'controls/grid/Grid',
+
+    'css!classes/users/Adresses.css'
 
 ], function(DOM, Grid)
 {
     QUI.namespace( 'classes.users' );
-    QUI.css( QUI.config('dir') +'classes/users/Adresses.css' );
 
     QUI.classes.users.Adresses = new Class({
 

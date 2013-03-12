@@ -7,7 +7,7 @@
 define('lib/login/Login', [
 
     'controls/windows',
-    'css!'+ QUI.config('dir') +'lib/login/Login.css'
+    'css!lib/login/Login.css'
 
 ], function()
 {

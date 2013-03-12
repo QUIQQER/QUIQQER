@@ -3256,7 +3256,6 @@ _pcsg.crons.robottxt =
                                     'Disallow: /ajax.php\n'+
                                     'Disallow: /update.php\n'+
                                     'Disallow: /cron.php\n'+
-                                    'Disallow: /mail_protection.php\n'+
                                     'Disallow: /header.php\n'+
                                     'Disallow: /opt/\n'+
                                     'Disallow: /usr/\n'+

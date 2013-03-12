@@ -14,7 +14,7 @@ define('lib/upload/Manager', [
     'controls/progressbar/Progressbar',
     'controls/upload/File',
 
-    'css!'+ QUI.config('dir') +'lib/upload/Manager.css'
+    'css!lib/upload/Manager.css'
 
 ], function()
 {

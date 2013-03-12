@@ -6,12 +6,14 @@
  */
 
 define('classes/messages', [
+
     'classes/messages/Handler',
     'classes/messages/Message',
     'classes/messages/Attention',
     'classes/messages/Error',
     'classes/messages/Information',
     'classes/messages/Success'
+
 ], function(Handler, Message, Attention, Error, Information, Success)
 {
     return Handler;

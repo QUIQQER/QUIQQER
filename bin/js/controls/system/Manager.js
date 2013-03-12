@@ -14,12 +14,13 @@
 define('controls/system/Manager', [
 
     'controls/Control',
-    'controls/Settings'
+    'controls/Settings',
+
+    'css!controls/system/Manager.css'
 
 ], function(Control, Settings)
 {
     QUI.namespace('controls.system');
-    QUI.css( QUI.config('dir') +'controls/system/Manager.css' );
 
     /**
      * @class QUI.controls.system.Manager
