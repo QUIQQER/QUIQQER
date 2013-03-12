@@ -26,6 +26,13 @@ class QUI_Setup
             QUI_Rights_Permission::checkSU();
         }
 
+        // create dirs
+        \Utils_System_File::mkdir( BIN_DIR );
+        \Utils_System_File::mkdir( LIB_DIR );
+        \Utils_System_File::mkdir( USR_DIR );
+        \Utils_System_File::mkdir( OPT_DIR );
+        \Utils_System_File::mkdir( VAR_DIR );
+
 		// Gruppen erstellen
 		QUI::getGroups()->setup();
 
@@ -50,6 +57,7 @@ class QUI_Setup
 
 		// Countries
 		\Utils_Countries_Manager::setup();
+
 
 		/**
 		 * header dateien
@@ -88,7 +96,13 @@ class QUI_Setup
 		/**
 		 * composer setup
 		 */
+		\QUI::getPackageManager()->refreshServerList();
         \QUI::getPackageManager()->update();
+
+        /**
+         * generate translations
+         */
+        \QUI\Translator::create();
     }
 }
 

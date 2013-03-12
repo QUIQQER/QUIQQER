@@ -28,6 +28,7 @@
         "php" : ">=5.3.2",
         "phpmailer/phpmailer" : "dev-master",
         "smarty/smarty": "v3.1.12",
+        "quiqqer/installer" : "dev-master",
         "quiqqer/smarty3" : "dev-master",
         "quiqqer/ckeditor3" : "1.*",
         "quiqqer/calendar" : "dev-master",

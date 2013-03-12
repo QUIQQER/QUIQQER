@@ -344,6 +344,14 @@ class QUI_Package_Manager
      */
 
     /**
+     * Refresh the server list in the var dir
+     */
+    public function refreshServerList()
+    {
+        $this->_createComposerJSON();
+    }
+
+    /**
      * Return the server list
      *
      * @return Array
