@@ -63,12 +63,6 @@ foreach ( $_rf_files as $key => $file )
  * Ajax Ausgabe
  */
 echo QUI::$Ajax->call();
-require_once CMS_DIR .'footer.php' ;
-
-
-
-
-
 
 
 
@@ -522,7 +516,6 @@ if (isset($Project) && is_object($Project))
  * Ajax Ausgabe
  */
 echo $ajax->call();
-require_once(SYS_DIR .'footer.php');
 
 exit;
 

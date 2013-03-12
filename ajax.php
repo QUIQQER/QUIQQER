@@ -145,7 +145,6 @@ if (file_exists(CMS_DIR .'etc/plugins.ini'))
  */
 echo $ajax->call();
 
-require_once SYS_DIR .'footer.php';
 exit;
 
 ?>

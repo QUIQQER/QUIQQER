@@ -136,9 +136,5 @@
 	</div>
 </noscript>
 
-<?php
-	require_once CMS_DIR .'footer.php';
-?>
-
 </body>
 </html>

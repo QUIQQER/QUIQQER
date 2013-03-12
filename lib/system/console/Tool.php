@@ -52,7 +52,7 @@ class System_Console_Tool extends QDOM
 	}
 
 	/**
-	 * Add a help to the cron
+	 * Add a help message to the tool
 	 *
 	 * @param String $help
 	 */
@@ -62,7 +62,7 @@ class System_Console_Tool extends QDOM
 	}
 
 	/**
-	 * Outout the help
+	 * Print the help
 	 */
 	protected function help()
 	{
@@ -81,7 +81,7 @@ class System_Console_Tool extends QDOM
 	}
 
 	/**
-	 * Output a message
+	 * Print a message
 	 *
 	 * @param String $msg	- Message
 	 * @param String $color - optional, Text color
@@ -92,6 +92,20 @@ class System_Console_Tool extends QDOM
 	    if ( $this->getAttribute( 'parent' ) ) {
 	        $this->getAttribute( 'parent' )->message( $msg, $color, $bg );
 	    }
+	}
+
+	/**
+	 * Read the input from the user
+	 *
+	 * @return String
+	 */
+	public function readInput()
+	{
+	    if ( $this->getAttribute( 'parent' ) ) {
+	        return $this->getAttribute( 'parent' )->readInput();
+	    }
+
+	    return '';
 	}
 }
 

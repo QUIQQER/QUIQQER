@@ -194,6 +194,5 @@ echo $content;
 System_Debug::marker('content');
 System_Debug::output();
 
-require_once CMS_DIR .'footer.php';
 
 ?>

@@ -62,7 +62,7 @@ class QUI_Setup
 		/**
 		 * header dateien
 		 */
-        $str = "<?php require_once '". CMS_DIR ."header.php'; ?>";
+        $str = "<?php require_once '". CMS_DIR ."bootstrap.php'; ?>";
 
         if ( file_exists( USR_DIR .'header.php' ) ) {
             unlink( USR_DIR .'header.php' );

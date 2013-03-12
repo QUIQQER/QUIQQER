@@ -334,9 +334,13 @@ class QUI
         ));
 
         // mem peak - info mail at 80% usage
-        $EHandler = QUI::getErrorHandler();
-        $EHandler->registerShutdown(function()
+        QUI::getErrorHandler()->registerShutdown(function()
         {
+            // DB Verbindung schließen
+            QUI::getDB()->close();
+            System_Debug::marker('END');
+
+            // ram peak, if the ram usage is to high, than write and send a message
             $peak      = memory_get_peak_usage();
             $mem_limit = Utils_System_File::getBytes( ini_get( 'memory_limit' ) ) * 0.8;
 
@@ -356,15 +360,22 @@ class QUI
                     $_SERVER["HTTP_REFERER"] = '';
                 }
 
-                QUI_Mail::init()->send(array(
-             		'MailTo'  => QUI::conf( 'mail','admin_mail' ),
-             		'Subject' => 'Memory limit reached at http://'. $_SERVER["HTTP_HOST"],
-             		'Body'    => "Peak usage: ". $limit ."\n".
-                                 "memory_limit: ". ini_get( 'memory_limit' ) ."\n".
-                                 "URI: ". $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"] ."\n".
-                                 "HTTP_REFERER: ". $_SERVER["HTTP_REFERER"],
-             		'IsHTML'  => false
-            	));
+                $message = "Peak usage: ". $limit ."\n".
+                           "memory_limit: ". ini_get( 'memory_limit' ) ."\n".
+                           "URI: ". $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"] ."\n".
+                           "HTTP_REFERER: ". $_SERVER["HTTP_REFERER"];
+
+                if ( QUI::conf( 'mail','admin_mail' ) )
+                {
+                    QUI_Mail::init()->send(array(
+                 		'MailTo'  => QUI::conf( 'mail','admin_mail' ),
+                 		'Subject' => 'Memory limit reached at http://'. $_SERVER["HTTP_HOST"],
+                 		'Body'    => $message,
+                 		'IsHTML'  => false
+                	));
+                }
+
+                System_Log::write( $message, 'error' );
             }
         });
 
