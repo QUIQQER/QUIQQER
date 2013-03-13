@@ -51,8 +51,8 @@ define('controls/Utils', function()
                 'controls/groups/Input',
                 'controls/buttons/Button',
                 'controls/groups/Sitemap',
-                'controls/project/TypeInput',
-                'controls/project/media/Input',
+                'controls/projects/TypeInput',
+                'controls/projects/media/Input',
                 'package/quiqqer/calendar/bin/Calendar'
 
             ], function(
@@ -152,7 +152,7 @@ define('controls/Utils', function()
 
                 for ( i = 0, len = elements.length; i < len; i++ )
                 {
-                    new QUI.controls.project.TypeInput(
+                    new QUI.controls.projects.TypeInput(
                         null,
                         elements[ i ]
                     ).create();
@@ -163,7 +163,7 @@ define('controls/Utils', function()
 
                 for ( i = 0, len = elements.length; i < len; i++ )
                 {
-                    new QUI.controls.project.media.Input(
+                    new QUI.controls.projects.media.Input(
                         null,
                         elements[ i ]
                     ).create();

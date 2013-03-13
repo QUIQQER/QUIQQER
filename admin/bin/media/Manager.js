@@ -10,7 +10,7 @@
 
 define('admin/media/Manager', [
 
-    'controls/project/media/Manager'
+    'controls/projects/media/Manager'
 
 ], function(Manager)
 {

@@ -38,6 +38,8 @@ define('controls/desktop/Workspace', [
 
             this.$Parent = Parent;
             this.$Loader = null;
+
+            this.$available_panels = {};
         },
 
         /**
@@ -84,6 +86,8 @@ define('controls/desktop/Workspace', [
                         Column = new QUI.controls.desktop.Column(
                             workspace[ i ].attributes
                         );
+
+                        Column.setParent( this );
 
                         if ( workspace[ i ].children ) {
                             Column.unserialize( workspace[ i ] );
@@ -160,6 +164,58 @@ define('controls/desktop/Workspace', [
         },
 
         /**
+         * Add a available panel
+         *
+         * @param {Object} params - parameter {
+         * 		require : '',
+         * 		text    : '',
+         * 		icon    : ''
+         * }
+         *
+         * @return {this}
+         */
+        addAvailablePanel : function(params)
+        {
+            if ( typeof params.require === 'undefined' ) {
+                return this;
+            }
+
+            if ( typeof params.text === 'undefined' ) {
+                return this;
+            }
+
+            if ( typeof params.icon === 'undefined' ) {
+                return this;
+            }
+
+
+            if ( typeof this.$available_panels[ params.require ] !== 'undefined' ) {
+                return this;
+            }
+
+            this.$available_panels[ params.require ] = params;
+
+            return this;
+        },
+
+        /**
+         * Return all available Panels for that Workbench
+         *
+         * @return {Array}
+         */
+        getAvailablePanel : function()
+        {
+            var panels = [],
+                list   = this.$available_panels;
+
+            for ( var i in list ) {
+                panels.push( list[ i ] );
+            }
+
+            return panels;
+        },
+
+        /**
          * load the default workspace
          */
         defaultSpace : function()
@@ -185,7 +241,7 @@ define('controls/desktop/Workspace', [
                     onCreate : function(Column)
                     {
                         require([
-                            'controls/project/Panel',
+                            'controls/projects/Panel',
                             'controls/desktop/panels/Bookmarks'
                         ],
 

@@ -21,9 +21,9 @@ define('classes/system/Update', [
     QUI.namespace( 'classes.system' );
 
     /**
-     * @class QUI.classes.project.media.Item
+     * @class QUI.classes.projects.media.Item
      *
-     * @param {QUI.classes.project.Media} Media
+     * @param {QUI.classes.projects.Media} Media
      */
     QUI.classes.system.Update = new Class({
 

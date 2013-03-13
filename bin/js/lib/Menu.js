@@ -28,7 +28,7 @@ define('lib/Menu', function()
         {
             if ( !Itm.needle )
             {
-                eval(Itm.click +'(Itm)');
+                eval( Itm.click +'(Itm)' );
                 return;
             }
 

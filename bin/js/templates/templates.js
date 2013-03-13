@@ -1,5 +1,7 @@
 /**
  * JavaScript onLoad Event Handling für Plugins
+ *
+ * @depricated
  */
 
 window.loads = [];

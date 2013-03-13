@@ -14,8 +14,8 @@ define('controls/trash/Panel', [
     'lib/Projects',
     'controls/grid/Grid',
     'controls/buttons/Select',
-    'controls/project/Trash',
-    'classes/project/media/Trash'
+    'controls/projects/Trash',
+    'classes/projects/media/Trash'
 
 ], function(QUI_Panel, Grid)
 {

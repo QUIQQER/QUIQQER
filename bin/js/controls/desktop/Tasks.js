@@ -130,7 +130,7 @@ define('controls/desktop/Tasks', [
                 height : content_size.y - taskbar_size.y
             });
 
-            if ( this.$Active ) {
+            if ( this.$Active && this.$Active.getInstance()	) {
                 this.$Active.getInstance().resize();
             }
 

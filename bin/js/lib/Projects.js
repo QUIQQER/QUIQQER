@@ -7,7 +7,7 @@
 
 define('lib/Projects', function(QUI_SitePanel)
 {
-    QUI.namespace('lib');
+    QUI.namespace( 'lib' );
 
     QUI.Projects = QUI.lib.Projects =
     {
@@ -108,9 +108,9 @@ define('lib/Projects', function(QUI_SitePanel)
         createSitePanel : function(project, lang, id, Parent, ApppanelId)
         {
             require([
-                'controls/project/site/Panel',
+                'controls/projects/site/Panel',
                 'classes/Project',
-                'classes/project/Site'
+                'classes/projects/Site'
             ], function(QUI_SitePanel, QUI_Site)
             {
                 var panels  = QUI.Controls.get( 'content-panel' ),
@@ -130,7 +130,7 @@ define('lib/Projects', function(QUI_SitePanel)
 
         createProjectPanel : function(id, container)
         {
-            require(['controls/project/Panel'], function(QUI_ProjectPanel)
+            require(['controls/projects/Panel'], function(QUI_ProjectPanel)
             {
                 new QUI_ProjectPanel({
                     id        : id,
@@ -144,7 +144,7 @@ define('lib/Projects', function(QUI_SitePanel)
             require([
 
                 'classes/Project',
-                'controls/project/media/Panel'
+                'controls/projects/media/Panel'
 
             ], function(QUI_Project, QUI_MediaPanel)
             {

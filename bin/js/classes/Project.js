@@ -16,9 +16,9 @@
 define('classes/Project', [
 
     'classes/DOM',
-    'classes/project/Site',
-    'classes/project/Media',
-    'classes/project/Trash'
+    'classes/projects/Site',
+    'classes/projects/Media',
+    'classes/projects/Trash'
 
 ], function(QDOM, Site)
 {
@@ -53,13 +53,13 @@ define('classes/Project', [
          * @method QUI.classes.Project#get
          *
          * @param {Integer} id - ID of the site
-         * @return {QUI.classes.project.Site}
+         * @return {QUI.classes.projects.Site}
          */
         get : function(id)
         {
             if ( typeof this.$ids[ id ] === 'undefined' )
             {
-                this.$ids[ id ] = new QUI.classes.project.Site( this, id );
+                this.$ids[ id ] = new QUI.classes.projects.Site( this, id );
 
                 this.$ids[ id ].addEvent( 'onDelete', function(Site)
                 {
@@ -92,12 +92,12 @@ define('classes/Project', [
          *
          * @method QUI.classes.Project#getMedia
          *
-         * @return {QUI.classes.project.Media}
+         * @return {QUI.classes.projects.Media}
          */
         getMedia : function()
         {
             if ( !this.$Media ) {
-                this.$Media = new QUI.classes.project.Media( this );
+                this.$Media = new QUI.classes.projects.Media( this );
             }
 
             return this.$Media;
@@ -108,12 +108,12 @@ define('classes/Project', [
          *
          * @method QUI.classes.Project#getTrash
          *
-         * @return {QUI.classes.project.Trash}
+         * @return {QUI.classes.projects.Trash}
          */
         getTrash : function()
         {
             if ( !this.$Trash ) {
-                this.$Trash = new QUI.classes.project.Trash( this );
+                this.$Trash = new QUI.classes.projects.Trash( this );
             }
 
             return this.$Trash;

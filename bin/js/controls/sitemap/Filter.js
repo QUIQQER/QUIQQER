@@ -27,7 +27,7 @@ define('controls/sitemap/Filter', [
     /**
      * A project sitemap
      *
-     * @class QUI.controls.project.Filter
+     * @class QUI.controls.projects.Filter
      *
      * @param
      * @param {Object} options

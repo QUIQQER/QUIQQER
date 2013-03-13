@@ -47,7 +47,7 @@ define('lib/Controls', function()
             require([
 
                 'lib/media/Controls',
-                'controls/project/TypeInput'
+                'controls/projects/TypeInput'
 
             ], function(MediaControl, TypeInput)
             {

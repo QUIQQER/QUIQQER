@@ -54,14 +54,14 @@ define('Controls', function()
          * @param {String} type
          * @param {Function} onload
          *
-         * @exampl QUI.Controls.getByType('QUI.controls.taskbar.Task', function(Modul) { })
+         * @example QUI.Controls.getByType('QUI.controls.taskbar.Task', function(Modul) { })
          */
         getByType : function(type, onload)
         {
             var modul = type.replace( 'QUI.', '' )
                             .replace( /\./g, '/' );
 
-            require( [ modul ] , onload );
+            requirejs( [ modul ] , onload );
         },
 
         /**

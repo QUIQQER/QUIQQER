@@ -51,6 +51,11 @@
             Darf Benutzer editieren
         </title>
     </permission>
+    <permission name="quiqqer.projects.create" type="bool">
+        <title group="quiqqer/system" var="right.projects.create">
+            Darf Benutzer editieren
+        </title>
+    </permission>
 
 
     <!-- locale/permissions quiqqer -->

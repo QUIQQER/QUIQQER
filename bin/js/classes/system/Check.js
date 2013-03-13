@@ -21,7 +21,7 @@ define('classes/system/Check', [
     QUI.namespace( 'classes.system' );
 
     /**
-     * @class QUI.classes.project.media.Item
+     * @class QUI.classes.projects.media.Item
      *
      * @param {Object} params - Properties / attributes
      */

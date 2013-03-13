@@ -14,6 +14,7 @@ define('controls/desktop/Column', [
     'classes/utils/DragDrop',
     'controls/desktop/Panel',
     'controls/loader/Loader',
+    'controls/contextmenu/Menu',
 
     'css!controls/desktop/Column.css'
 
@@ -29,7 +30,12 @@ define('controls/desktop/Column', [
     QUI.controls.desktop.Column = new Class({
 
         Type       : 'QUI.controls.desktop.Column',
-        Implements : [Control],
+        Implements : [ Control ],
+
+        Binds : [
+            '$onContextMenu',
+            '$clickAddPanelToColumn'
+        ],
 
         options : {
             name        : 'column',
@@ -93,6 +99,24 @@ define('controls/desktop/Column', [
                     width       : 4,
                     borderWidth : '0 1px'
                 }
+            });
+
+            // contextmenu
+            this.$ContextMenu = new QUI.controls.contextmenu.Menu({
+                events :
+                {
+                    onBlur : function(Menu) {
+                        Menu.hide()
+                    }
+                }
+            }).inject(
+                document.body
+            );
+
+            this.$ContextMenu.hide();
+
+            this.$Elm.addEvents({
+                contextmenu : this.$onContextMenu
             });
 
             switch ( this.getAttribute( 'placement' ) )
@@ -187,14 +211,20 @@ define('controls/desktop/Column', [
                     attr   = Child.attributes;
                     height = attr.height;
 
-                    Control = eval(
-                        'new '+ Child.type +'( attr )'
-                    );
+                    try
+                    {
+                        Control = eval(
+                            'new '+ Child.type +'( attr )'
+                        );
 
-                    Control.unserialize( Child );
+                        Control.unserialize( Child );
 
-                    this.appendChild( Control );
+                        this.appendChild( Control );
 
+                    } catch ( Exception )
+                    {
+                        QUI.MH.addException( Exception );
+                    }
                     // on append child we set the height by calculation
                     // but we need the old height
                     /*
@@ -833,6 +863,66 @@ define('controls/desktop/Column', [
             );
 
             PrevInstance.resize();
+        },
+
+        /**
+         * event : on context menu
+         *
+         * @param {DOMEvent} event
+         */
+        $onContextMenu : function(event)
+        {
+            event.stop();
+
+            var Parent = this.getParent(),
+                panels = Parent.getAvailablePanel();
+
+            this.$ContextMenu.clearChildren();
+            this.$ContextMenu.setTitle( 'Column' );
+
+            var Panels = new QUI.controls.contextmenu.Item({
+                text : 'Panel hinzufügen',
+                name : 'add_panels_to_column'
+            });
+
+            this.$ContextMenu.appendChild( Panels );
+
+            for ( var i = 0, len = panels.length; i < len; i++ )
+            {
+                Panels.appendChild(
+                    new QUI.controls.contextmenu.Item({
+                        text   : panels[ i ].text,
+                        icon   : panels[ i ].icon,
+                        name   : 'add_panels_to_column',
+                        params : panels[ i ],
+                        events : {
+                            onMouseDown : this.$clickAddPanelToColumn
+                        }
+                    })
+                );
+            }
+
+            this.$ContextMenu.setPosition(
+                event.page.x,
+                event.page.y
+            ).show().focus();
+        },
+
+        /**
+         * @param {QUI.controls.contextmenu.Item} ContextMenuItem
+         */
+        $clickAddPanelToColumn : function(ContextMenuItem)
+        {
+            var Column = this,
+                params = ContextMenuItem.getAttribute( 'params' );
+
+            if ( !params.require ) {
+                return;
+            }
+
+            require([ params.require ], function(Panel) {
+                Column.appendChild( new Panel() );
+            });
         }
     });
 

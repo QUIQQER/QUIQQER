@@ -27,8 +27,8 @@ define('controls/desktop/panels/XML', [
      */
     QUI.controls.desktop.panels.XML = new Class({
 
-        Implements : [ QUI_Panel ],
-        Type       : 'QUI.controls.desktop.panels.XML',
+        Extends : QUI.controls.desktop.Panel,
+        Type    : 'QUI.controls.desktop.panels.XML',
 
         Binds : [
             '$onCreate',

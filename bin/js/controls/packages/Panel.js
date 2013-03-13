@@ -25,8 +25,8 @@ define('controls/packages/Panel', [
      */
     QUI.controls.packages.Panel = new Class({
 
-        Implements : [ QUI_Panel ],
-        Type       : 'QUI.controls.packages.Panel',
+        Extends : QUI.controls.desktop.Panel,
+        Type    : 'QUI.controls.packages.Panel',
 
         Binds : [
             '$onCreate',
@@ -257,7 +257,7 @@ define('controls/packages/Panel', [
         {
             this.Loader.show();
 
-            var Body = this.getBody().set( 'html', '' );
+            var Body = this.getBody().set( 'html', '' ),
 
                 Container = new Element('div', {
                     'class' : 'qui-packages-panel-update',

@@ -13,6 +13,8 @@
 define('controls/desktop/panels/Desktop', [
 
     'controls/desktop/Panel',
+    'controls/loader/Loader',
+
     'css!controls/desktop/panels/Desktop.css'
 
 ], function(QUI_Panel)
@@ -24,19 +26,19 @@ define('controls/desktop/panels/Desktop', [
      */
     QUI.controls.desktop.panels.Desktop = new Class({
 
-        Implements : [QUI_Panel],
-        Type       : 'QUI.controls.desktop.panels.Desktop',
+        Extends : QUI.controls.desktop.Panel,
+        Type    : 'QUI.controls.desktop.panels.Desktop',
 
         initialize: function(options)
         {
             this.init( options );
 
             // defaults
-            this.setAttribute('header', false);
-            this.setAttribute('footer', false);
+            this.setAttribute( 'header', false );
+            this.setAttribute( 'footer', false );
 
-            this.setAttribute('title', 'Desktop');
-            this.setAttribute('icon', URL_BIN_DIR +'16x16/desktop.png');
+            this.setAttribute( 'title', 'Desktop' );
+            this.setAttribute( 'icon', URL_BIN_DIR +'16x16/desktop.png' );
 
             this.Loader = new QUI.controls.loader.Loader();
 
@@ -49,7 +51,7 @@ define('controls/desktop/panels/Desktop', [
             this.addEvent('onDrawEnd', function()
             {
                 this.$create();
-                this.fireEvent( 'load', [this] );
+                this.fireEvent( 'load', [ this ] );
             }.bind( this ));
         },
 
@@ -61,8 +63,7 @@ define('controls/desktop/panels/Desktop', [
             var bookmark;
             var Body = this.getBody();
 
-            this.$Container = new Element('div').inject( Body );
-
+            this.$Container = new Element( 'div' ).inject( Body );
         }
     });
 

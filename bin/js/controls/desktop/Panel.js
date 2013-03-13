@@ -38,8 +38,8 @@ define('controls/desktop/Panel', [
      */
     QUI.controls.desktop.Panel = new Class({
 
-        Implements : [ Control ],
-        Type       : 'QUI.controls.desktop.Panel',
+        Extends : Control,
+        Type    : 'QUI.controls.desktop.Panel',
 
         options :
         {

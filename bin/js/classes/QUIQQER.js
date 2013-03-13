@@ -228,6 +228,18 @@ define('classes/QUIQQER', function()
                         }
                     }
                 }).load();
+
+                // available panels
+                QUI.Workspace
+                   .addAvailablePanel({
+                       text    : 'Projekt Panel',
+                       icon    : URL_BIN_DIR +'16x16/apps/home.png',
+                       require : 'controls/projects/Panel'
+                   }).addAvailablePanel({
+                       text    : 'Bookmars',
+                       icon    : URL_BIN_DIR +'16x16/apps/kaddressbook.png',
+                       require : 'controls/desktop/panels/Bookmarks'
+                   });
             });
         },
 
