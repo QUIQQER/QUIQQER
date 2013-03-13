@@ -18,7 +18,7 @@ define('classes/project/Site', [
 
     'classes/DOM',
 
-    'css!'
+    'css!classes/project/Site.css'
 
 ], function(DOM)
 {
