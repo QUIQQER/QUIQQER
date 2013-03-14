@@ -6,7 +6,10 @@
  *
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires
+ * @requires classes/DOM
+ * @requires classes/projects/Site
+ * @requires classes/projects/Media
+ * @requires classes/projects/Trash
  *
  * @module classes/Project
  * @package com.pcsg.qui.js.classes
