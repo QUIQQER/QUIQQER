@@ -9,6 +9,8 @@
  * @module controls/system/Check
  * @package com.pcsg.qui.js.controls.system.Manager
  * @namespace QUI.controls.system
+ *
+ * @depricated
  */
 
 define('controls/system/Check', [
