@@ -24,8 +24,9 @@ define('classes/users/User', [
 
     /**
      * @class QUI.classes.users.User
-     *
      * @param {Integer} uid - the user id
+     *
+     * @memberof! <global>
      */
     QUI.classes.users.User = new Class({
 
