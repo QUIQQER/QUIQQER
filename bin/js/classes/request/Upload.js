@@ -24,9 +24,13 @@ define('classes/request/Upload', [
     QUI.namespace('classes.request');
 
     /**
+     * @class QUI.classes.request.Upload
+     *
      * @fires onDragenter [event, Target, this]
      * @fires onDragend [event, Target, this]#
      * @fires onDrop [event, file_list, Target, this]
+     *
+     * @memberof! <global>
      */
     QUI.classes.request.Upload = new Class({
 

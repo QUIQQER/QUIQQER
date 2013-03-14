@@ -20,6 +20,8 @@ define('classes/users/Storage', [
 
     /**
      * @class QUI.classes.users.Storage
+     *
+     * @memberof! <global>
      */
     QUI.classes.users.Storage = new Class({
 

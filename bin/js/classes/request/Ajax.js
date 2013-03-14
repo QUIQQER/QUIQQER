@@ -34,6 +34,8 @@ define('classes/request/Ajax', [
      * @fires onError [QUI.classes.exceptions.Exception, this]
      *
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.classes.Ajax = new Class({
 
