@@ -66,6 +66,8 @@ define('controls/packages/Panel', [
 
         initialize : function(options)
         {
+            this.parent( options );
+
             // defaults
             this.setAttribute( 'title',
                 QUI.Locale.get(
