@@ -53,8 +53,6 @@ define('controls/projects/Manager', [
                 onCreate : this.$onCreate,
                 onResize : this.$onResize
             });
-
-            console.log( this );
         },
 
         /**
