@@ -45,6 +45,7 @@ define('controls/desktop/Workspace', [
         /**
          * Load the Workspace
          *
+         * @method QUI.controls.desktop.Workspace#load
          * @return {this}
          */
         load : function()
@@ -167,9 +168,9 @@ define('controls/desktop/Workspace', [
          * Add a available panel
          *
          * @param {Object} params - parameter {
-         * 		require : '',
-         * 		text    : '',
-         * 		icon    : ''
+         *     require : '',
+         *     text    : '',
+         *     icon    : ''
          * }
          *
          * @return {this}
