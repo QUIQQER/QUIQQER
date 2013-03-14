@@ -227,8 +227,6 @@ define('classes/desktop/Desktop', [
 
             QUI.Ajax.post('ajax_desktop_save', function(result, Ajax)
             {
-                console.log( result );
-
                 if (Ajax.getAttribute('onfinish')) {
                     Ajax.getAttribute('onfinish')(result, Ajax);
                 }
