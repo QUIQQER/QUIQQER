@@ -61,9 +61,8 @@ define('controls/contextmenu/Seperator', [
         },
 
         /**
-         * @ignore
-         *
          * if the seperator is in a baritem
+         * @ignore
          */
         setNormal : function()
         {
@@ -71,9 +70,8 @@ define('controls/contextmenu/Seperator', [
         },
 
         /**
-         * @ignore
-         *
          * if the seperator is in a baritem
+         * @ignore
          */
         setActive : function()
         {

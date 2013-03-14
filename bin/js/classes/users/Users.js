@@ -1,10 +1,9 @@
-
 /**
  * User Manager (Model)
  *
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require classes/DOM
+ * @requires classes/DOM
  *
  * @module controls/users/Users
  * @package com.pcsg.qui.js.classes.users.Users
@@ -29,17 +28,21 @@ define('classes/users/Users', [
 
     /**
      * @class QUI.classes.users.Users
+     * @desc User Manager (Model)
+     *
+     * @memberof! <global>
      */
     QUI.classes.users.Users = new Class({
 
-        Implements : [ DOM ],
-        Type       : 'QUI.classes.users.Users',
+        Implements : [ DOM ],                   // @member QUI.classes.users.Users
+        Type       : 'QUI.classes.users.Users',	// @member QUI.classes.users.Users
 
-        $users : {},
+        $users : {},							// @member QUI.classes.users.Users
 
         /**
          * Return a user
          *
+         * @method QUI.classes.users.Users#getUserBySession
          * @return {QUI.classes.users.User}
          */
         get : function(uid)
@@ -54,6 +57,7 @@ define('classes/users/Users', [
         /**
          * Return the loged in user (session user)
          *
+         * @method QUI.classes.users.Users#getUserBySession
          * @return {QUI.classes.users.User}
          */
         getUserBySession : function()
@@ -67,6 +71,8 @@ define('classes/users/Users', [
 
         /**
          * Return the user list
+         *
+         * @method QUI.classes.users.Users#getList
          *
          * @param {Object} search     - search options
          * @param {Function} onfinish - [optional] callback function
@@ -89,6 +95,8 @@ define('classes/users/Users', [
 
         /**
          * Switch the status to activate or deactivate from an user
+         *
+         * @method QUI.classes.users.Users#switchStatus
          *
          * @param {Array|Integer} uid - search options
          * @param {Function} onfinish - [optional] callback function
@@ -117,6 +125,8 @@ define('classes/users/Users', [
         /**
          * Activate the user / users
          *
+         * @method QUI.classes.users.Users#activate
+         *
          * @param {Array|Integer} uid - search options
          * @param {Function} onfinish - [optional] callback function
          * @param {Object} params     - [optional] extra params
@@ -143,6 +153,8 @@ define('classes/users/Users', [
 
         /**
          * Deactivate the user / users
+         *
+         * @method QUI.classes.users.Users#deactivate
          *
          * @param {Array|Integer} uid - search options
          * @param {Function} onfinish - [optional] callback function
@@ -171,6 +183,8 @@ define('classes/users/Users', [
         /**
          * Checks if the username exists
          *
+         * @method QUI.classes.users.Users#existsUsername
+         *
          * @param {String} username   - Username
          * @param {Function} onfinish - callback function
          * @param {Object} params     - [optional] extra params
@@ -190,6 +204,8 @@ define('classes/users/Users', [
 
         /**
          * create a new user
+         *
+         * @method QUI.classes.users.Users#createUser
          *
          * @param {String} username   - Username
          * @param {Function} onfinish - [optional] callback function
@@ -212,6 +228,8 @@ define('classes/users/Users', [
 
         /**
          * Delete users
+         *
+         * @method QUI.classes.users.Users#deleteUsers
          *
          * @param {Array} uids - User-IDs
          * @param {Function} onfinish - [optional] callback function
@@ -247,6 +265,8 @@ define('classes/users/Users', [
         /**
          * Triggerd by an user
          *
+         * @method QUI.classes.users.Users#onRefreshUser
+         *
          * @param {QUI.classes.users.User} User
          */
         onRefreshUser : function(User)
@@ -256,6 +276,8 @@ define('classes/users/Users', [
 
         /**
          * Save a user with its attributes and rights
+         *
+         * @method QUI.classes.users.Users#saveUser
          *
          * @param {QUI.classes.users.User} User
          * @param {Function} onfinish - [optional] callback

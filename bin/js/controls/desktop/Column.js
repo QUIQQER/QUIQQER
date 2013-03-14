@@ -106,7 +106,7 @@ define('controls/desktop/Column', [
                 events :
                 {
                     onBlur : function(Menu) {
-                        Menu.hide()
+                        Menu.hide();
                     }
                 }
             }).inject(
