@@ -15,32 +15,32 @@ echo 1111; exit;
 // Mailto
 if ( isset( $_REQUEST['_url'] ) && strpos( $_REQUEST['_url'], '[mailto]' ) !== false )
 {
-	/**
-	 * PCSG Redirect um Mailclient zu öffnen
-	 *
-	 * @author PCSG - Henning
-	 * @package com.pcsg.pms
-	 *
-	 * @copyright  2008 PCSG
-	 * @version    $Revision: 4785 $
-	 * @since      available since Release P.MS 0.11
-	 */
-	$addr = str_replace('[mailto]', '', $_REQUEST['_url']);
-	list($user, $host) = explode("[at]", $addr);
+    /**
+     * PCSG Redirect um Mailclient zu öffnen
+     *
+     * @author PCSG - Henning
+     * @package com.pcsg.pms
+     *
+     * @copyright  2008 PCSG
+     * @version    $Revision: 4785 $
+     * @since      available since Release P.MS 0.11
+     */
+    $addr = str_replace('[mailto]', '', $_REQUEST['_url']);
+    list($user, $host) = explode("[at]", $addr);
 
-	if (isset($user) && isset($host))
-	{
-		header("Location: mailto:".$user."@".$host);
-		exit;
-	}
+    if (isset($user) && isset($host))
+    {
+        header("Location: mailto:".$user."@".$host);
+        exit;
+    }
 }
 
 // ZLIB
 if ( function_exists( 'gzcompress' ) ) {
-	ob_start( 'ob_gzhandler' );
+    ob_start( 'ob_gzhandler' );
 }
 
-require_once 'header.php';
+require_once 'bootstrap.php';
 
 $Engine = QUI_Template::getEngine();
 
@@ -71,8 +71,8 @@ $Site    = $Rewrite->getSite()->load(); /* @var $Site Projects_Site_Edit */
 
 if (isset($Locale))
 {
-	unset($Locale);
-	$Locale = QUI::getLocale();
+    unset($Locale);
+    $Locale = QUI::getLocale();
 }
 
 /**
@@ -80,7 +80,7 @@ if (isset($Locale))
  */
 
 if (isset($_REQUEST['ref'])) {
-	$Session->set('ref', Utils_Security_Orthos::clear($_REQUEST['ref']));
+    $Session->set('ref', Utils_Security_Orthos::clear($_REQUEST['ref']));
 }
 
 /**
@@ -96,21 +96,21 @@ if (
     header('Retry-After: 3600');
     header('X-Powered-By:');
 
-	$Smarty = QUI_Template::getEngine();
+    $Smarty = QUI_Template::getEngine();
 
-	$Smarty->assign(array(
-		'Project' => $Project
-	));
+    $Smarty->assign(array(
+        'Project' => $Project
+    ));
 
-	$file  = SYS_DIR .'template/maintenance.html';
-	$pfile = USR_DIR .'lib/'. $Project->getAttribute('template') .'/maintenance.html';
+    $file  = SYS_DIR .'template/maintenance.html';
+    $pfile = USR_DIR .'lib/'. $Project->getAttribute('template') .'/maintenance.html';
 
-	if (file_exists($pfile)) {
-		$file = $pfile;
-	}
+    if (file_exists($pfile)) {
+        $file = $pfile;
+    }
 
-	echo $Smarty->fetch($file);
-	exit;
+    echo $Smarty->fetch($file);
+    exit;
 }
 
 
@@ -125,11 +125,11 @@ $suffix = '.html';
 
 if ($Rewrite->getSuffix() == '.print')
 {
-	$suffix = '.print';
-	$site_cache_file .= $suffix;
+    $suffix = '.print';
+    $site_cache_file .= $suffix;
 } else
 {
-	$suffix = $Rewrite->getSuffix();
+    $suffix = $Rewrite->getSuffix();
 }
 
 // Event onstart
@@ -141,13 +141,13 @@ System_Debug::marker('objekte initialisiert');
 // Wenn es ein Cache gibt und die Seite auch gecached werden soll
 if (CACHE && file_exists($site_cache_file) && $Site->getAttribute('nocache') != true)
 {
-	$cache_content = file_get_contents( $site_cache_file );
-	$_content      = $Rewrite->outputFilter( $cache_content );
-	$_content      = QUI_Template::setAdminMenu( $_content );
+    $cache_content = file_get_contents( $site_cache_file );
+    $_content      = $Rewrite->outputFilter( $cache_content );
+    $_content      = QUI_Template::setAdminMenu( $_content );
 
-	// Content Ausgabe
-	echo $_content;
-	exit;
+    // Content Ausgabe
+    echo $_content;
+    exit;
 }
 
 /**
@@ -163,7 +163,7 @@ if ($Site->getAttribute('nocache') != true)
 {
     Utils_System_File::mkdir($site_cache_dir . $Project->getAttribute('name') .'/');
 
-	file_put_contents($site_cache_file, $content);
+    file_put_contents($site_cache_file, $content);
 }
 
 $content = $Rewrite->outputFilter( $content );
@@ -177,16 +177,16 @@ $suffix_class_name = 'Suffix'. ucfirst(strtolower($Project->getAttribute('name')
 
 if (file_exists($suffix_class_file))
 {
-	require $suffix_class_file;
+    require $suffix_class_file;
 
-	if (class_exists($suffix_class_name))
-	{
-	    $class = new $suffix_class_name();
+    if (class_exists($suffix_class_name))
+    {
+        $class = new $suffix_class_name();
 
-		if (method_exists($class, 'suffix')) {
-			$class->suffix($content);
-		}
-	}
+        if (method_exists($class, 'suffix')) {
+            $class->suffix($content);
+        }
+    }
 }
 
 echo $content;
