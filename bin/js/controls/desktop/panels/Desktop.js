@@ -5,8 +5,8 @@
  *
  * @author www.pcsg.de (Henning Leutz)
  *
- * @module controls/desktop/panels/Bookmarks
- * @package com.pcsg.qui.js.controls.desktop.panels
+ * @module controls/desktop/panels/Desktop
+ * @package com.pcsg.qui.js.controls.desktop
  * @namespace QUI.controls.desktop.panels
  */
 
@@ -22,7 +22,7 @@ define('controls/desktop/panels/Desktop', [
     QUI.namespace( 'controls.desktop.panels' );
 
     /**
-     * @class QUI.controls.desktop.panels.Bookmarks
+     * @class QUI.controls.desktop.panels.Desktop
      */
     QUI.controls.desktop.panels.Desktop = new Class({
 
