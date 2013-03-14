@@ -28,6 +28,8 @@ define('controls/contextmenu/Item', [
      * @event onNormal [this]
      *
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.contextmenu.Item = new Class({
 

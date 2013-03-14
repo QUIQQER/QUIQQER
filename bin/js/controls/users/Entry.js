@@ -28,6 +28,8 @@ define('controls/users/Entry', [
      *
      * @param {Integer} uid - user-ID
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.users.Entry = new Class({
 

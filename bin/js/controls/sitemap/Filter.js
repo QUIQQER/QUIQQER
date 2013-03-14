@@ -29,8 +29,10 @@ define('controls/sitemap/Filter', [
      *
      * @class QUI.controls.projects.Filter
      *
-     * @param
+     * @param {QUI.controls.sitemap.Map}
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.sitemap.Filter = new Class({
 

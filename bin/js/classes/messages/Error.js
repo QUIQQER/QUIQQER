@@ -12,9 +12,14 @@ define('classes/messages/Error', [
 {
     QUI.namespace('classes.messages');
 
+    /**
+     * @class QUI.classes.messages.Error
+     *
+     * @memberof! <global>
+     */
     QUI.classes.messages.Error = new Class({
 
-        Implements: [Message],
+        Implements: [ Message ],
 
         getType : function() {
             return 'Message.Error';

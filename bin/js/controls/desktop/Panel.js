@@ -35,6 +35,8 @@ define('controls/desktop/Panel', [
 
     /**
      * @class QUI.controls.desktop.Panel
+     *
+     * @memberof! <global>
      */
     QUI.controls.desktop.Panel = new Class({
 

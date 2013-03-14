@@ -24,6 +24,8 @@ define('controls/permissions/Panel', [
      *
      * @param {Object} options - QDOM panel params
      * @param {QUI.classes.groups.Group|QUI.classes.users.User} Bind - [optional]
+     *
+     * @memberof! <global>
      */
     QUI.controls.permissions.Panel = new Class({
 

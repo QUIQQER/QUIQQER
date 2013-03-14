@@ -28,6 +28,7 @@ define('controls/projects/Manager', [
      * @class QUI.controls.projects.Manager
      *
      * @param {Object} options
+     * @memberof! <global>
      */
     QUI.controls.projects.Manager = new Class({
 

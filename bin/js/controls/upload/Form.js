@@ -39,6 +39,7 @@ define('controls/upload/Form', [
      * @class QUI.controls.upload.Form
      *
      * @param {Object} options
+     * @memberof! <global>
      */
     QUI.controls.upload.Form = new Class({
 

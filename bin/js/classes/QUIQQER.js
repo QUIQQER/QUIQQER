@@ -12,6 +12,9 @@
 
 define('classes/QUIQQER', function()
 {
+    /**
+     * @class
+     */
     return new Class({
 
         Implements : [ Events ],

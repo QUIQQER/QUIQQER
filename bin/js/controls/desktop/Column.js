@@ -26,6 +26,8 @@ define('controls/desktop/Column', [
      * @class QUI.controls.desktop.Column
      *
      * @event onCreate [this]
+     *
+     * @memberof! <global>
      */
     QUI.controls.desktop.Column = new Class({
 

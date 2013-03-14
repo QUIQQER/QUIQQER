@@ -24,6 +24,8 @@ define('controls/desktop/Tasks', [
 
     /**
      * @class QUI.controls.desktop.Tasks
+     *
+     * @memberof! <global>
      */
     QUI.controls.desktop.Tasks = new Class({
 

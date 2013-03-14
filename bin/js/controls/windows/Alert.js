@@ -26,6 +26,8 @@ define('controls/windows/Alert', [
      * @fires onClose
      *
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.windows.Alert = new Class({
 

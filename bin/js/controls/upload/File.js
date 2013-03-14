@@ -33,6 +33,8 @@ define('controls/upload/File', [
      * @fires onError [QUI.classes.exceptions.Exception, this]
      *
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.upload.File = new Class({
 

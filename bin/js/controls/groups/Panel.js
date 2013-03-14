@@ -34,6 +34,8 @@ define('controls/groups/Panel', [
 
     /**
      * @class QUI.controls.groups.Panel
+     *
+     * @memberof! <global>
      */
     QUI.controls.groups.Panel = new Class({
 

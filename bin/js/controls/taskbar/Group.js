@@ -45,6 +45,8 @@ define('controls/taskbar/Group', [
      * @class QUI.controls.taskbar.Group
      *
      * @param {Object} options - QDOM params
+     *
+     * @memberof! <global>
      */
     QUI.controls.taskbar.Group = new Class({
 

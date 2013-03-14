@@ -26,6 +26,8 @@ define('controls/buttons/Select', [
 
     /**
      * @class QUI.controls.buttons.Select
+     *
+     * @memberof! <global>
      */
     QUI.controls.buttons.Select = new Class({
 
@@ -65,6 +67,7 @@ define('controls/buttons/Select', [
         /**
          * Create the DOMNode Element
          *
+         * @method QUI.controls.buttons.Select#create
          * @return {DOMNode}
          */
         create : function()
@@ -129,6 +132,7 @@ define('controls/buttons/Select', [
         /**
          * Set the value and select the option
          *
+         * @method QUI.controls.buttons.Select#setValue
          * @param {String} value
          * @return {this}
          */
@@ -152,6 +156,7 @@ define('controls/buttons/Select', [
         /**
          * Return the current value of the select box
          *
+         * @method QUI.controls.buttons.Select#getValue
          * @return {String|Integer}
          */
         getValue : function()
@@ -161,6 +166,8 @@ define('controls/buttons/Select', [
 
         /**
          * Add a option to the select box
+         *
+         * @method QUI.controls.buttons.Select#appendChild
          *
          * @param {String} text
          * @param {String} value
@@ -184,6 +191,7 @@ define('controls/buttons/Select', [
         /**
          * Return the first option child
          *
+         * @method QUI.controls.buttons.Select#firstChild
          * @return {QUI.controls.contextmenu.Item|false}
          */
         firstChild : function()
@@ -197,6 +205,8 @@ define('controls/buttons/Select', [
 
         /**
          * Remove all children
+         *
+         * @method QUI.controls.buttons.Select#clear
          */
         clear : function()
         {
@@ -215,6 +225,7 @@ define('controls/buttons/Select', [
         /**
          * Opens the select box
          *
+         * @method QUI.controls.buttons.Select#open
          * @return {this}
          */
         open : function()
@@ -257,6 +268,8 @@ define('controls/buttons/Select', [
 
         /**
          * hide the dropdown menu
+         *
+         * @method QUI.controls.buttons.Select#close
          */
         close : function()
         {
@@ -267,6 +280,7 @@ define('controls/buttons/Select', [
         /**
          * Disable the select
          *
+         * @method QUI.controls.buttons.Select#disable
          * @return {this}
          */
         disable : function()
@@ -278,6 +292,8 @@ define('controls/buttons/Select', [
 
         /**
          * Is the select disabled?
+         *
+         * @method QUI.controls.buttons.Select#isDisabled
          */
         isDisabled : function()
         {
@@ -287,6 +303,7 @@ define('controls/buttons/Select', [
         /**
          * Enable the select
          *
+         * @method QUI.controls.buttons.Select#enable
          * @return {this}
          */
         enable : function()
@@ -299,6 +316,7 @@ define('controls/buttons/Select', [
          * internal click, mousedown event of the context menu item
          * set the value to the select box
          *
+         * @method QUI.controls.buttons.Select#$set
          * @param {QUI.controls.contextmenu.Item} Item
          */
         $set : function(Item)
@@ -324,6 +342,8 @@ define('controls/buttons/Select', [
 
         /**
          * event : on control destroy
+         *
+         * @method QUI.controls.buttons.Select#$onDestroy
          */
         $onDestroy : function()
         {
@@ -332,6 +352,8 @@ define('controls/buttons/Select', [
 
         /**
          * event : on menu blur
+         *
+         * @method QUI.controls.buttons.Select#$onBlur
          */
         $onBlur : function()
         {
@@ -343,6 +365,7 @@ define('controls/buttons/Select', [
          * event : on key up
          * if the element has the focus
          *
+         * @method QUI.controls.buttons.Select#$onKeyUp
          * @param {DOMNode} event
          */
         $onKeyUp : function(event)

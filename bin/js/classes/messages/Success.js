@@ -12,9 +12,14 @@ define('classes/messages/Success', [
 {
     QUI.namespace('classes.messages');
 
+    /**
+     * @class QUI.classes.messages.Success
+     *
+     * @memberof! <global>
+     */
     QUI.classes.messages.Success = new Class({
 
-        Implements: [Message],
+        Implements: [ Message ],
 
         getType : function() {
             return 'Message.Success';

@@ -32,6 +32,8 @@ define('controls/projects/TypeInput', [
      *
      * @param {Object} options
      * @param {DOMNode} Input - Input field [optional]
+     *
+     * @memberof! <global>
      */
     QUI.controls.projects.TypeInput = new Class({
 

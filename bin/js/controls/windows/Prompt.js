@@ -28,6 +28,8 @@ define('controls/windows/Prompt', [
      * @fires onClose
      *
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.windows.Prompt = new Class({
 

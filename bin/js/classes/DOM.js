@@ -49,7 +49,7 @@ var Obj = new QUI.classes.DOM({
 
 });
 
-     *
+     * @memberof! <global>
      */
     QUI.classes.DOM = new Class({
 

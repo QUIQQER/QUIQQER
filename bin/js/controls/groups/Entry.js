@@ -28,6 +28,8 @@ define('controls/groups/Entry', [
      *
      * @param {Integer} gid - Group-ID
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.groups.Entry = new Class({
 

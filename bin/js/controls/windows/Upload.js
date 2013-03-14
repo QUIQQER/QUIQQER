@@ -27,6 +27,8 @@ define('controls/windows/Upload', [
      * @fires onClose
      *
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.windows.Upload = new Class({
 

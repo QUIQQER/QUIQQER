@@ -26,6 +26,8 @@ define('controls/windows/Window', [
      * @fires onClose
      *
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.windows.Window = new Class({
 

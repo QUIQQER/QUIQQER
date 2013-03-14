@@ -24,6 +24,8 @@ define('controls/sitemap/Map', [
      * @fires onChildClick
      * @event onAppendChild [{QUI.controls.sitemap.Item}]
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.sitemap.Map = new Class({
 

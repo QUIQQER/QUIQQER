@@ -34,6 +34,8 @@ define('controls/projects/Panel', [
     /**
      * @class QUI.controls.projects.Panel
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.projects.Panel = new Class({
 

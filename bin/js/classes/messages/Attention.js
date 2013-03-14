@@ -12,6 +12,11 @@ define('classes/messages/Attention', [
 {
     QUI.namespace('classes.messages');
 
+    /**
+     * @class QUI.classes.messages.Attention
+     *
+     * @memberof! <global>
+     */
     QUI.classes.messages.Attention = new Class({
 
         Implements: [ Message ],

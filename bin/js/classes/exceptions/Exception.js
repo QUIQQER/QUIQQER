@@ -15,6 +15,8 @@ define('classes/exceptions/Exception', ['classes/DOM'], function(DOM)
     /**
      * @class QUI.classes.exceptions.Exception
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.classes.exceptions.Exception = new Class({
 

@@ -16,7 +16,7 @@ define('controls/buttons/Seperator', [
 
 ], function(Control)
 {
-    QUI.namespace('controls.buttons.Seperator');
+    QUI.namespace( 'controls.buttons.Seperator' );
 
     /**
      * @class QUI.controls.buttons.Seperator
@@ -24,7 +24,9 @@ define('controls/buttons/Seperator', [
      * @param {Object} options
      *
      * @event onResize [this]
-      * @event onCreate [this]
+     * @event onCreate [this]
+     *
+     * @memberof! <global>
      */
     QUI.controls.buttons.Seperator = new Class({
 
@@ -70,11 +72,11 @@ define('controls/buttons/Seperator', [
                 'data-quiid' : this.getId()
             });
 
-            if ( this.getAttribute('height') ) {
-                this.$Elm.setStyle( 'height', this.getAttribute('height') );
+            if ( this.getAttribute( 'height' ) ) {
+                this.$Elm.setStyle( 'height', this.getAttribute( 'height' ) );
             }
 
-            this.fireEvent( 'create', [this] );
+            this.fireEvent( 'create', [ this ] );
 
             return this.$Elm;
         }

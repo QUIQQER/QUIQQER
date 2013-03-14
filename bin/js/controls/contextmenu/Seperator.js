@@ -23,6 +23,8 @@ define('controls/contextmenu/Seperator', [
      * @fires onMouseDown [this]
      *
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.contextmenu.Seperator = new Class({
 

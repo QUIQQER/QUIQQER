@@ -24,8 +24,10 @@ define('controls/breadcrumb/Bar', [
 
     /**
      * @class QUI.controls.breadcrumb.Bar
-     *
+     * @desc Breadcrumb bar item - Parent object of all breadcrumb items
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.breadcrumb.Bar = new Class({
 

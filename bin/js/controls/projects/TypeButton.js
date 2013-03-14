@@ -27,6 +27,8 @@ define('controls/projects/TypeButton', [
      * @fires onCancel [Win]
       *
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.projects.TypeButton = new Class({
 

@@ -28,6 +28,8 @@ define('controls/projects/Sitemap', [
      * @fires onOpenBegin [Item, this]
      * @fires onOpenEnd [Item, this]
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.projects.Sitemap = new Class({
 

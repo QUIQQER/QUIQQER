@@ -29,6 +29,8 @@ define('controls/toolbar/Tab', [
      * @fires onEnter  - this
      * @fires onLeave  - this
      * @fires onClick  - this
+     *
+     * @memberof! <global>
      */
     QUI.controls.toolbar.Tab = new Class({
 

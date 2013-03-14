@@ -34,6 +34,8 @@ define('controls/projects/TypeWindow', [
      * @fires onCancel [Win]
       *
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.projects.TypeWindow = new Class({
 

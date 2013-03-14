@@ -35,6 +35,8 @@ define('controls/sitemap/Item', [
      * @fires onDeSelect [this]
      *
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.sitemap.Item = new Class({
 

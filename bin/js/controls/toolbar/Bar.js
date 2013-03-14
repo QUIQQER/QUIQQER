@@ -31,6 +31,8 @@ define('controls/toolbar/Bar', [
      * @class QUI.controls.toolbar.Bar
      *
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.toolbar.Bar = new Class({
 

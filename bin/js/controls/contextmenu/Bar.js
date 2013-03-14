@@ -24,6 +24,8 @@ define('controls/contextmenu/Bar', [
 
     /**
      * @class QUI.controls.contextmenu.Bar
+     *
+     * @memberof! <global>
      */
     QUI.controls.contextmenu.Bar = new Class({
 

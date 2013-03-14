@@ -39,6 +39,8 @@ define('controls/buttons/Button', [
      * @event onActive
      * @event onDisable
      * @event onEnable
+     *
+     * @memberof! <global>
      */
     QUI.controls.buttons.Button = new Class({
 

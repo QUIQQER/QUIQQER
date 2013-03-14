@@ -31,6 +31,8 @@ define('classes/Project', [
      * @class QUI.classes.Project
      *
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.classes.Project = new Class({
 

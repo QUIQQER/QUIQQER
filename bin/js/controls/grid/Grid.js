@@ -48,6 +48,8 @@ define('controls/grid/Grid', [
 
     /**
      * @class QUI.controls.grid.Grid
+     *
+     * @memberof! <global>
      */
     window.omnigrid = QUI.controls.grid.Grid = new Class({
 

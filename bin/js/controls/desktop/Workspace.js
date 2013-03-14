@@ -27,6 +27,8 @@ define('controls/desktop/Workspace', [
      *
      * @param {DOMNode} Parent - Parent node
      * @param {Object} options . QDOM params
+     *
+     * @memberof! <global>
      */
     QUI.controls.desktop.Workspace = new Class({
 

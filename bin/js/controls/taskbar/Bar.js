@@ -36,6 +36,8 @@ function(Control)
      * @class QUI.controls.taskbar.Bar
      *
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.taskbar.Bar = new Class({
 

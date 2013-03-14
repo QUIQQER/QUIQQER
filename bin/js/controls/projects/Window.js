@@ -30,6 +30,8 @@ define('controls/projects/Window', [
      * @fires onSubmit - [ids, this]
      * @fires onCancel - this
       * @param {Object} options
+      *
+      * @memberof! <global>
      */
     QUI.controls.projects.Window = new Class({
 

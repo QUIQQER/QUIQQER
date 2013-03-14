@@ -22,6 +22,8 @@ define('controls/packages/Panel', [
      * @class QUI.controls.packages.Panel
      *
      * @param {Object} options - QDOM panel params
+     *
+     * @memberof! <global>
      */
     QUI.controls.packages.Panel = new Class({
 

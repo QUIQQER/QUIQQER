@@ -31,6 +31,8 @@ define('controls/contextmenu/Menu', [
      * @fires onHide [this]
      * @fires onBlur [this]
      * @fires onFocus [this]
+     *
+     * @memberof! <global>
      */
     QUI.controls.contextmenu.Menu = new Class({
 

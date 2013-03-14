@@ -17,6 +17,8 @@ define('controls/loader/Loader', [
 
     /**
      * @class QUI.controls.loader.Loader
+     *
+     * @memberof! <global>
      */
     QUI.controls.loader.Loader = new Class({
 

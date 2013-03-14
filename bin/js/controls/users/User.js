@@ -24,6 +24,8 @@ define('controls/users/User', [
 
     /**
      * @class QUI.controls.users.User
+     *
+     * @memberof! <global>
      */
     QUI.controls.users.User = new Class({
 

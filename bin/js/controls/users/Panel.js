@@ -25,6 +25,8 @@ define('controls/users/Panel', [
 
     /**
      * @class QUI.controls.users.Panel
+     *
+     * @memberof! <global>
      */
     QUI.controls.users.Panel = new Class({
 

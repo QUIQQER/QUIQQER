@@ -29,6 +29,8 @@ define('classes/groups/Groups', [
 
     /**
      * @class QUI.classes.groups.Groups
+     *
+     * @memberof! <global>
      */
     QUI.classes.groups.Groups = new Class({
 

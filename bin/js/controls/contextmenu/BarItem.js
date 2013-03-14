@@ -35,6 +35,8 @@ define('controls/contextmenu/BarItem', [
      * @event onNormal [this]
      *
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.contextmenu.BarItem = new Class({
 

@@ -38,6 +38,8 @@ define('controls/taskbar/Task', [
      *
      * @param {QUI.controls.Control} Instance - Control for the task
      * @param {Object} options                - QDOM params
+     *
+     * @memberof! <global>
      */
     QUI.controls.taskbar.Task = new Class({
 

@@ -27,6 +27,8 @@ define('classes/groups/Group', [
      * @class QUI.classes.groups.Group
      *
      * @param {Integer} gid - Group-ID
+     *
+     * @memberof! <global>
      */
     QUI.classes.groups.Group = new Class({
 

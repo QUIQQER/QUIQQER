@@ -18,6 +18,11 @@ define('controls/progressbar/Progressbar', [
 {
     QUI.namespace( 'controls.progressbar.Progressbar' );
 
+    /**
+     * @class QUI.controls.progressbar.Progressbar
+     *
+     * @memberof! <global>
+     */
     QUI.controls.progressbar.Progressbar = new Class({
 
         // implements

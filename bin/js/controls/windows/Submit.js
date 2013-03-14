@@ -25,6 +25,8 @@ define('controls/windows/Submit', [
      * @fires onClose
      *
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.windows.Submit = new Class({
 

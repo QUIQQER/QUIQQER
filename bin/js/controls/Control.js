@@ -26,6 +26,8 @@ define('controls/Control', [
      * @fires onDrawEnd   - if inject() is used, the Event will be triggered
      *
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.classes.Control = new Class({
 

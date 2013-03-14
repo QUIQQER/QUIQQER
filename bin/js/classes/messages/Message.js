@@ -22,7 +22,9 @@ define('classes/messages/Message', [
     QUI.namespace( 'classes.messages' );
 
     /**
-     * @class QUI.classes.Messages.Message
+     * @class QUI.classes.messages.Message
+     *
+     * @memberof! <global>
      */
     QUI.classes.messages.Message = new Class({
 

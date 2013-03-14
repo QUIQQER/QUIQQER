@@ -12,9 +12,14 @@ define('classes/messages/Information', [
 {
     QUI.namespace('classes.messages');
 
+    /**
+     * @class QUI.classes.messages.Information
+     *
+     * @memberof! <global>
+     */
     QUI.classes.messages.Information = new Class({
 
-        Implements: [Message],
+        Implements: [ Message ],
 
         getType : function() {
             return 'Message.Information';

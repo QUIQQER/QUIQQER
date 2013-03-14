@@ -31,6 +31,8 @@ define('controls/users/Input', [
      *
      * @param {Object} options
      * @param {DOMNode Input} Input [optional] -> if no input given, one would be created
+     *
+     * @memberof! <global>
      */
     QUI.controls.users.Input = new Class({
 

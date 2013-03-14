@@ -33,6 +33,8 @@ define('controls/projects/TypeSitemap', [
      *
      * @param {DOMNode} Container
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.projects.TypeSitemap = new Class({
 

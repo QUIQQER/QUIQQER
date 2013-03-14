@@ -29,6 +29,8 @@ define('controls/groups/Sitemap', [
      * @class QUI.controls.groups.Sitemap
      *
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.groups.Sitemap = new Class({
 

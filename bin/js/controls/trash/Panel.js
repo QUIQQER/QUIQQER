@@ -21,6 +21,11 @@ define('controls/trash/Panel', [
 {
     QUI.namespace('controls.trash');
 
+    /**
+     * @class QUI.controls.trash.Panel
+     *
+     * @memberof! <global>
+     */
     QUI.controls.trash.Panel = new Class({
 
         Implements : QUI_Panel,
