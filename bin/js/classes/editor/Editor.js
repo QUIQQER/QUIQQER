@@ -62,7 +62,7 @@ define('classes/editor/Editor', [
 
         /**
          *
-         * @returns
+         * @returns {QUI.controls.editor.Manager}
          */
         getManager : function()
         {
