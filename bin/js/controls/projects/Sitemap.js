@@ -14,11 +14,12 @@
 define('controls/projects/Sitemap', [
 
     'controls/Control',
-    'controls/sitemap/Map'
+    'controls/sitemap/Map',
+    'Projects'
 
 ], function(QUI_Control, QUI_Sitemap)
 {
-    QUI.namespace('controls.projects');
+    QUI.namespace( 'controls.projects' );
 
     /**
      * A project sitemap
@@ -33,8 +34,8 @@ define('controls/projects/Sitemap', [
      */
     QUI.controls.projects.Sitemap = new Class({
 
-        Implements : [ QUI_Control ],
-        Type       : 'QUI.controls.projects.Sitemap',
+        Extends : QUI_Control,
+        Type    : 'QUI.controls.projects.Sitemap',
 
         options : {
             name      : 'projects-site-panel',
@@ -130,24 +131,24 @@ define('controls/projects/Sitemap', [
                     Control.$Map.firstChild().open();
                 });
 
-            } else
-            {
-                this.$getSite(
-                    this.getAttribute( 'id' ),
-                    function(result, Request)
-                    {
-                        var Control = Request.getAttribute( 'Control' );
-
-                        Control.$Map.clearChildren();
-                        Control.$addSitemapItem(
-                            Control.$Map,
-                            Control.$parseArrayToSitemapitem( result )
-                        );
-
-                        Control.$Map.firstChild().open();
-                    }
-                );
+                return;
             }
+
+            this.$getSite(
+                this.getAttribute( 'id' ),
+                function(result, Request)
+                {
+                    var Control = Request.getAttribute( 'Control' );
+
+                    Control.$Map.clearChildren();
+                    Control.$addSitemapItem(
+                        Control.$Map,
+                        Control.$parseArrayToSitemapitem( result )
+                    );
+
+                    Control.$Map.firstChild().open();
+                }
+            );
         },
 
         /**
@@ -290,40 +291,30 @@ define('controls/projects/Sitemap', [
          */
         $loadChildren : function(Item, callback)
         {
+            var Control = this;
+
             Item.clearChildren();
             Item.setAttribute( 'oicon', Item.getAttribute( 'icon' ) );
             Item.setAttribute( 'icon', URL_BIN_DIR +'images/loader.gif' );
 
-            QUI.lib.Sites.getChildren(function(result, Request)
+            QUI.Ajax.get('ajax_site_getchildren', function(result, Request)
             {
-                var i, len;
+                Item.clearChildren();
 
-                var Control = Request.getAttribute( 'Control' ),
-                    Parent  = Request.getAttribute( 'Parent' );
-
-                Parent.clearChildren();
-
-                for ( i = 0, len = result.length; i < len; i++ )
+                for ( var i = 0, len = result.length; i < len; i++ )
                 {
                     Control.$addSitemapItem(
-                        Parent,
-                        Control.$parseArrayToSitemapitem( result[i] )
+                        Item,
+                        Control.$parseArrayToSitemapitem( result[ i ] )
                     );
                 }
 
-                Item.setAttribute('icon', Item.getAttribute( 'oicon' ));
-
-                if ( Request.getAttribute( 'loadchildren_callback' ) ) {
-                    Request.getAttribute( 'loadchildren_callback' )( Item, Request );
-                }
+                Item.setAttribute( 'icon', Item.getAttribute( 'oicon' ) );
 
             }, {
-                project  : this.getAttribute( 'project' ),
-                lang     : this.getAttribute( 'lang' ),
-                id       : Item.getAttribute( 'value' ),
-                Control  : this,
-                Parent   : Item,
-                loadchildren_callback : callback
+                project : this.getAttribute( 'project' ),
+                lang    : this.getAttribute( 'lang' ),
+                id      : Item.getAttribute( 'value' )
             });
         },
 

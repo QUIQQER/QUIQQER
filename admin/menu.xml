@@ -90,12 +90,12 @@
         Sprachen
     </item>
         <item parent="/edit/multilingual/"
-	        name="langmanager"
-	        icon="URL_DIR/bin/16x16/lang_link.png"
-	        disabled="1">
-	        Verwaltung
-	    </item>
-	    <item parent="/edit/multilingual/" type="seperator"></item>
+            name="langmanager"
+            icon="URL_DIR/bin/16x16/lang_link.png"
+            disabled="1">
+            Verwaltung
+        </item>
+        <item parent="/edit/multilingual/" type="seperator"></item>
         <item parent="/edit/multilingual/"
             name="site_links"
             icon="URL_DIR/bin/16x16/lang_link.png"
@@ -110,44 +110,54 @@
      -->
 
     <!-- goto -->
-	    <item parent="/extras/"
-	          name="permissions"
-	          icon="URL_BIN_DIR/16x16/permissions.png"
-	          require="admin/permissions/Manager"
-	          group="quiqqer/system"
-	          var="menu.extras.permissions.text"
-	    >
-	        Zugriffsrechte bearbeiten
-	    </item>
-	    <item parent="/extras/"
-	          name="packages"
-	          icon="URL_BIN_DIR/16x16/packages.png"
-	          require="admin/packages/Manager"
-	          group="quiqqer/system"
-	          var="menu.extras.packages.text"
-	    >
-	        Plugins und Packages
-	    </item>
+        <item parent="/extras/"
+              name="permissions"
+              icon="URL_BIN_DIR/16x16/permissions.png"
+              require="admin/permissions/Manager"
+              group="quiqqer/system"
+              var="menu.extras.permissions.text"
+        >
+            Zugriffsrechte bearbeiten
+        </item>
+        <item parent="/extras/"
+              name="packages"
+              icon="URL_BIN_DIR/16x16/packages.png"
+              require="admin/packages/Manager"
+              group="quiqqer/system"
+              var="menu.extras.packages.text"
+        >
+            Plugins und Packages
+        </item>
+        <item parent="/extras/"
+              name="projects"
+              icon="URL_BIN_DIR/16x16/home.png"
+              require="admin/projects/Manager"
+              group="quiqqer/system"
+              var="menu.extras.projects.text"
+        >
+            Projekt Verwaltung
+        </item>
+
 
     <!-- Settings -->
-	    <item parent="/settings/"
-	          name="media"
-	          icon="URL_BIN_DIR/16x16/media.png"
-	          require="admin/media/Manager"
-	          group="quiqqer/system"
-	          var="menu.settings.media.text"
-	    >
-	        Media Einstellungen
-	    </item>
+        <item parent="/settings/"
+              name="media"
+              icon="URL_BIN_DIR/16x16/media.png"
+              require="admin/media/Manager"
+              group="quiqqer/system"
+              var="menu.settings.media.text"
+        >
+            Media Einstellungen
+        </item>
 
     <!-- Menu -->
-	    <item parent="/help/"
-	          name="about"
-	          icon="URL_BIN_DIR/16x16/quiqqer.png"
-	          onclick="QUI.about"
-	          group="quiqqer/system"
-	          var="menu.help.about.text"
-	    >
+        <item parent="/help/"
+              name="about"
+              icon="URL_BIN_DIR/16x16/quiqqer.png"
+              onclick="QUI.about"
+              group="quiqqer/system"
+              var="menu.help.about.text"
+        >
         Über QUIQQER
     </item>
 

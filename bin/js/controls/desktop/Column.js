@@ -248,8 +248,9 @@ define('controls/desktop/Column', [
          */
         appendChild : function(Panel)
         {
-            var Handler = false,
-                height  = false;
+            var Handler   = false,
+                height    = false,
+                colheight = this.$Elm.getSize().y;
 
             if ( this.count() )
             {
@@ -263,37 +264,51 @@ define('controls/desktop/Column', [
             Panel.inject( this.$Content );
             Panel.setParent( this );
 
-            // if no height, use the column height
-            if ( !Panel.getAttribute( 'height' ) ) {
+            // if no height
+            // or no second panel exist
+            // use the column height
+            if ( !Panel.getAttribute( 'height' ) || !this.count() ) {
                 Panel.setAttribute( 'height', this.$Elm.getSize().y );
             }
 
-            Panel.resize();
-
-            /*
-            if ( !this.count() )
+            // if some panels insight, resize the other panels
+            if ( this.count() )
             {
-                height = this.$Elm.getSize().y;
+                var height = Panel.getAttribute( 'height' ),
+                    Prev   = this.getPreviousPanel( Panel );
 
-                if ( height )
-                {
-                    Panel.setAttribute( 'height', this.$Elm.getSize().y );
-                    Panel.resize();
+                if ( !Prev ) {
+                    Prev = this.getNextPanel( Panel );
                 }
-            } else
-            {
-                var Prev = this.getPreviousPanel( Panel );
 
-                height = Prev.getAttribute( 'height' ) - Panel.getAttribute('height');
+                if ( !Prev ) {
+                    Prev = this.$panels[ 0 ];
+                }
+
+
+                if ( height > colheight || height.toString().match( '%' ) ) {
+                    height = colheight / 2;
+                }
+
+                var max         = Prev.getAttribute( 'height' );
+                    prev_height = max - height;
+
+                if ( prev_height < 100 )
+                {
+                    prev_height = 100;
+                    height      = max - 100;
+                }
 
                 if ( Handler ) {
                     height = height - Handler.getSize().y;
                 }
 
-                Prev.setAttribute( 'height', height );
+                Panel.setAttribute( 'height', height );
+                Prev.setAttribute( 'height', prev_height );
                 Prev.resize();
             }
-            */
+
+            Panel.resize();
 
             Panel.addEvents({
                 onMinimize : this.$onPanelClose.bind( this ),
@@ -804,8 +819,7 @@ define('controls/desktop/Column', [
                 Prev.get( 'data-quiid' )
             );
 
-
-            if ( !NextInstance.isOpen() )
+            if ( NextInstance && !NextInstance.isOpen() )
             {
                 var NextOpened = this.getNextOpenedPanel( NextInstance );
 
@@ -819,7 +833,7 @@ define('controls/desktop/Column', [
                 }
             }
 
-            if ( !PrevInstance.isOpen() )
+            if ( PrevInstance && !PrevInstance.isOpen() )
             {
                 var PrevOpened = this.getPreviousOpenedPanel( PrevInstance );
 

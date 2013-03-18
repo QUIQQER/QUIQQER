@@ -5,7 +5,7 @@
  *
  * @requires controls/Control
  * @requires controls/windows
- * @requires lib/Projects
+ * @requires Projects
  * @requires controls/projects/Sitemap
  *
  * @module controls/projects/Window
@@ -17,7 +17,7 @@ define('controls/projects/Window', [
 
     'controls/Control',
     'controls/windows',
-    'lib/Projects',
+    'Projects',
     'controls/projects/Sitemap'
 
 ], function(QUI_Control)

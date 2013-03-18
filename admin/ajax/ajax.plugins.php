@@ -1,15 +1,22 @@
 <?php
+
+exit;
+
+/**
+ * @deprecated
+ */
+
 /**
  * Plugin Manager
  */
 
 // Benutzerrechte Prüfung
 if (!$User->getId()) {
-	exit;
+    exit;
 }
 
 if ($User->isAdmin() == false) {
-	exit;
+    exit;
 }
 
 /**
@@ -19,91 +26,91 @@ if ($User->isAdmin() == false) {
  */
 function ajax_plugins_getmanager()
 {
-	$file = SYS_DIR .'template/plugins_manager.html';
+    $file = SYS_DIR .'template/plugins_manager.html';
 
-	if (!file_exists($file))
-	{
-		System_Log::write('Cannot find File '. $file, 'error');
-		return '';
-	}
+    if (!file_exists($file))
+    {
+        System_Log::write('Cannot find File '. $file, 'error');
+        return '';
+    }
 
-	$Smarty = QUI_Template::getEngine(true);
+    $Smarty = QUI_Template::getEngine(true);
 
-	// Plugins einlesen
-	$OPT = Utils_System_File::readDir(OPT_DIR);
+    // Plugins einlesen
+    $OPT = Utils_System_File::readDir(OPT_DIR);
 
-	$Plugins = array();
-	$_tmp    = array();
+    $Plugins = array();
+    $_tmp    = array();
 
-	foreach ($OPT as $key => $plg)
-	{
-		if (!is_dir(OPT_DIR . $plg)) {
-			continue;
-		}
+    foreach ($OPT as $key => $plg)
+    {
+        if (!is_dir(OPT_DIR . $plg)) {
+            continue;
+        }
 
-		if (!file_exists(OPT_DIR . $plg .'/base.ini')) {
-			continue;
-		}
+        if (!file_exists(OPT_DIR . $plg .'/base.ini')) {
+            continue;
+        }
 
-		$Plg_Config = QUI::getConfig(OPT_DIR . $plg .'/base.ini');
-		$config     = $Plg_Config->toArray();
+        $Plg_Config = QUI::getConfig(OPT_DIR . $plg .'/base.ini');
+        $config     = $Plg_Config->toArray();
 
-		$config['plg'] = $plg;
+        $config['plg'] = $plg;
 
-		// array index
-		$name = $config['plg'];
+        // array index
+        $name = $config['plg'];
 
-		if (isset($config['name']) &&
-		    !empty($config['name']))
+        if (isset($config['name']) &&
+            !empty($config['name']))
         {
             $name = $config['name'];
-		}
+        }
 
-		$_tmp[ $name ] = $config;
-	}
+        $_tmp[ $name ] = $config;
+    }
 
-	ksort($_tmp);
+    ksort($_tmp);
 
-	// sortierung
-	foreach ($_tmp as $entry) {
-	    $Plugins[ $entry['plg'] ] = $entry;
-	}
+    // sortierung
+    foreach ($_tmp as $entry) {
+        $Plugins[ $entry['plg'] ] = $entry;
+    }
 
 
-	$plg_ini = CMS_DIR .'etc/plugins.ini';
-	$Active  = array();
+    $plg_ini = CMS_DIR .'etc/plugins.ini';
+    $Active  = array();
 
-	if (file_exists($plg_ini))
-	{
-		$Active = QUI::getConfig($plg_ini);
-		$Active = $Active->toArray();
-	}
+    if (file_exists($plg_ini))
+    {
+        $Active = QUI::getConfig($plg_ini);
+        $Active = $Active->toArray();
+    }
 
-	$JSON_Active = '';
+    $JSON_Active = '';
 
-	foreach ($Active as $key => $value) {
-		$JSON_Active .= ','. $key;
-	}
+    foreach ($Active as $key => $value) {
+        $JSON_Active .= ','. $key;
+    }
 
     // Plugin Download liste bekommen
-	$Update = new \QUI\Update();
+    $Update = new \QUI\Update();
 
-	try
-	{
+    try
+    {
         $_plugin_list = $Update->pluginGetAvailablePlugins();
-	} catch (QException $e)
-	{
+    } catch (QException $e)
+    {
         $_plugin_list = array();
-	}
+    }
 
-	$Smarty->assign(array(
-		'Plugins'     => $Plugins,
-		'NewPlugins'  => $_plugin_list,
-		'Active'      => $Active,
-		'JSON_Active' => $JSON_Active
-	));
+    $Smarty->assign(array(
+        'Plugins'     => $Plugins,
+        'NewPlugins'  => $_plugin_list,
+        'Active'      => $Active,
+        'JSON_Active' => $JSON_Active
+    ));
 
-	return $Smarty->fetch($file);
+    return $Smarty->fetch($file);
 }
 $ajax->register('ajax_plugins_getmanager');
 
@@ -115,53 +122,53 @@ $ajax->register('ajax_plugins_getmanager');
  */
 function ajax_plugins_get_remove_manager()
 {
-	$file = SYS_DIR .'/template/plugins_remove_manager.html';
+    $file = SYS_DIR .'/template/plugins_remove_manager.html';
 
-	if (!file_exists($file))
-	{
-		System_Log::write('Cannot find File '. $file, 'error');
-		return '';
-	}
+    if (!file_exists($file))
+    {
+        System_Log::write('Cannot find File '. $file, 'error');
+        return '';
+    }
 
-	$Smarty = QUI_Template::getEngine(true);
+    $Smarty = QUI_Template::getEngine(true);
 
-	// Plugins einlesen
-	$OPT = Utils_System_File::readDir(OPT_DIR);
-	sort($OPT);
+    // Plugins einlesen
+    $OPT = Utils_System_File::readDir(OPT_DIR);
+    sort($OPT);
 
-	$Plugins = array();
+    $Plugins = array();
 
-	$plg_ini = CMS_DIR .'etc/plugins.ini';
-	$ActivePlugins  = array();
+    $plg_ini = CMS_DIR .'etc/plugins.ini';
+    $ActivePlugins  = array();
 
-	if (file_exists($plg_ini))
-	{
-		$Active = QUI::getConfig($plg_ini);
-		$Active = $Active->toArray();
-	}
+    if (file_exists($plg_ini))
+    {
+        $Active = QUI::getConfig($plg_ini);
+        $Active = $Active->toArray();
+    }
 
-	foreach ($Active as $key => $value) {
-		$ActivePlugins[] =  $key;
-	}
+    foreach ($Active as $key => $value) {
+        $ActivePlugins[] =  $key;
+    }
 
-	foreach ($OPT as $key => $plg)
-	{
-		if (file_exists(OPT_DIR . $plg .'/base.ini'))
-		{
-			$Plg_Config      = QUI::getConfig(OPT_DIR . $plg .'/base.ini');
-			// nur inaktive plugins können gelöscht werden
-			if (!in_array($plg, $ActivePlugins)) {
-			    $Plugins[ $plg ] = $Plg_Config->toArray();
-			}
-		}
-	}
+    foreach ($OPT as $key => $plg)
+    {
+        if (file_exists(OPT_DIR . $plg .'/base.ini'))
+        {
+            $Plg_Config      = QUI::getConfig(OPT_DIR . $plg .'/base.ini');
+            // nur inaktive plugins können gelöscht werden
+            if (!in_array($plg, $ActivePlugins)) {
+                $Plugins[ $plg ] = $Plg_Config->toArray();
+            }
+        }
+    }
 
-	$Smarty->assign(array(
-		'Plugins' => $Plugins,
-	    'count'   => count($Plugins)
-	));
+    $Smarty->assign(array(
+        'Plugins' => $Plugins,
+        'count'   => count($Plugins)
+    ));
 
-	return $Smarty->fetch($file);
+    return $Smarty->fetch($file);
 }
 $ajax->register('ajax_plugins_get_remove_manager');
 
@@ -173,33 +180,33 @@ $ajax->register('ajax_plugins_get_remove_manager');
  */
 function ajax_plugins_get_update_manager()
 {
-	$file = SYS_DIR .'/template/plugins_update_manager.html';
+    $file = SYS_DIR .'/template/plugins_update_manager.html';
 
-	if (!file_exists($file))
-	{
-		System_Log::write('Cannot find File '. $file, 'error');
-		return '';
-	}
+    if (!file_exists($file))
+    {
+        System_Log::write('Cannot find File '. $file, 'error');
+        return '';
+    }
 
-	$Smarty = QUI_Template::getEngine(true);
+    $Smarty = QUI_Template::getEngine(true);
 
     // Plugin Download liste bekommen
-	$Update = new \QUI\Update();
+    $Update = new \QUI\Update();
 
-	try
-	{
+    try
+    {
         $_plugin_list = $Update->pluginGetAvailableUpdates();
-	} catch (QException $e)
-	{
+    } catch (QException $e)
+    {
          $_plugin_list = array();
-	}
+    }
 
-	$Smarty->assign(array(
-		'Plugins'  => $_plugin_list,
-	    'count'    => count($_plugin_list)
-	));
+    $Smarty->assign(array(
+        'Plugins'  => $_plugin_list,
+        'count'    => count($_plugin_list)
+    ));
 
-	return $Smarty->fetch($file);
+    return $Smarty->fetch($file);
 }
 $ajax->register('ajax_plugins_get_update_manager');
 
@@ -211,16 +218,16 @@ $ajax->register('ajax_plugins_get_update_manager');
  */
 function ajax_plugins_install($plugin, $server)
 {
-	$Update = new \QUI\Update();
+    $Update = new \QUI\Update();
 
-	$data = array(
-	   'name'         => Utils_Security_Orthos::clear($plugin),
-	   'updateserver' => Utils_Security_Orthos::clear($server),
-	);
+    $data = array(
+       'name'         => Utils_Security_Orthos::clear($plugin),
+       'updateserver' => Utils_Security_Orthos::clear($server),
+    );
 
-	$Update->pluginInstall($data);
+    $Update->pluginInstall($data);
 
-	return 'Das Plugin wurde erfolgreich installiert und kann jetzt aktiviert werden.';
+    return 'Das Plugin wurde erfolgreich installiert und kann jetzt aktiviert werden.';
 }
 $ajax->register('ajax_plugins_install', array('plugin', 'server'));
 
@@ -231,16 +238,16 @@ $ajax->register('ajax_plugins_install', array('plugin', 'server'));
  */
 function ajax_plugins_setup($plugin)
 {
-	$Plugins = QUI::getPlugins();
-	$Plugin  = $Plugins->get($plugin);
+    $Plugins = QUI::getPlugins();
+    $Plugin  = $Plugins->get($plugin);
 
-	if (method_exists($Plugin, 'events')) {
-		$Plugin->events();
-	}
+    if (method_exists($Plugin, 'events')) {
+        $Plugin->events();
+    }
 
-	$Plugin->install();
+    $Plugin->install();
 
-	return true;
+    return true;
 }
 $ajax->register('ajax_plugins_setup', array('plugin'));
 

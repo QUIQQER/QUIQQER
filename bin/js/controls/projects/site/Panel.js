@@ -15,7 +15,7 @@
 define('controls/projects/site/Panel', [
 
     'controls/desktop/Panel',
-    'lib/Sites',
+    'Projects',
     'classes/projects/Site'
 
 ], function(QUI_Panel, QUI_Sites, QUI_Site)
@@ -38,10 +38,12 @@ define('controls/projects/site/Panel', [
         Binds : [
             'load',
             '$onCreate',
+            '$onResize',
             '$onCategoryEnter',
             '$onCategoryLeave',
             '$onEditorLoad',
-            '$onEditorDestroy'
+            '$onEditorDestroy',
+            '$onPanelButtonClick'
         ],
 
         options : {
@@ -60,8 +62,47 @@ define('controls/projects/site/Panel', [
             this.$Site = Site;
 
             this.addEvents({
-                onCreate : this.$onCreate
+                onCreate : this.$onCreate,
+                onResize : this.$onResize
             });
+        },
+
+        /**
+         * Save the site panel to the workspace
+         *
+         * @return {Object} data
+         */
+        serialize : function()
+        {
+            var Site    = this.getSite(),
+                Project = Site.getProject();
+
+            return {
+                attributes : this.getAttributes(),
+                id         : this.getSite().getId(),
+                lang       : Project.getLang(),
+                project    : Project.getName()
+            };
+        },
+
+        /**
+         * import the saved data form the workspace
+         *
+         * @param {Object} data
+         * @return {this}
+         */
+        unserialize : function(data)
+        {
+            this.setAttributes( data.attributes );
+
+            var Project = QUI.Projects.get(
+                data.project,
+                data.lang
+            );
+
+            this.$Site = Project.get( data.id );
+
+            return this;
         },
 
         /**
@@ -121,11 +162,20 @@ define('controls/projects/site/Panel', [
             ], function(categories, buttons, Request)
             {
                 var i, len;
+                var Panel = Request.getAttribute( 'Control' );
 
-                var Panel = Request.getAttribute( 'Control' ),
-                    Site  = Panel.getSite();
+                for ( i = 0, len = buttons.length; i < len; i++ )
+                {
+                    if ( buttons[ i ].onclick )
+                    {
+                        buttons[ i ]._onclick = buttons[ i ].onclick;
+                        delete buttons[ i ].onclick;
 
-                for ( i = 0, len = buttons.length; i < len; i++ ) {
+                        buttons[ i ].events   = {
+                            onClick : Panel.$onPanelButtonClick
+                        }
+                    }
+
                     Panel.addButton( buttons[ i ] );
                 }
 
@@ -139,9 +189,9 @@ define('controls/projects/site/Panel', [
                     Panel.addCategory( categories[ i ] );
                 }
 
-                Site.addEvent( 'onRefresh', Panel.load );
+                Site.addEvent( 'onLoad', Panel.load );
 
-                if ( Site.getAttribute('name') )
+                if ( Site.getAttribute( 'name' ) )
                 {
                     Panel.load();
                 } else
@@ -157,192 +207,87 @@ define('controls/projects/site/Panel', [
             });
         },
 
-
+        $onResize : function()
+        {
+                console.warn( 'site resize' );
+        },
 
         /**
-         * Load the Site and the Tabs to the Panel
+         * Save the Site params to the Site
          *
-         * @method QUI.controls.projects.site.Panel#load
+         * @method QUI.controls.projects.site.Panel#save
          */
-        /*
-        load : function()
+        save : function()
         {
-            this.$Panel.Loader.show();
-
-            var Panel   = this.$Panel,
-                Tabs    = Panel.Tabs,
-                Project = this.$Site.getProject(),
-                Site    = this.$Site;
-
-            Tabs.clear();
-
-            Panel.setAttribute( 'Project', Project );
-            Panel.setAttribute( 'Site', Site );
-            Panel.setAttribute( 'Control', this );
-
-            // Site Events
-            Site.addEvent('onStatusEditBegin', function(Site)
-            {
-                Panel.Loader.show();
-
-                var Status = Panel.Buttons.getElement('status');
-                Status.setAttribute('textimage',  URL_BIN_DIR +'images/loader.gif');
-            });
-
-            Site.addEvent('onStatusEditEnd', function(Site)
-            {
-                // Aktive / Deaktiv Button
-                var Status = Panel.Buttons.getElement('status');
-
-                if ( Site.getAttribute('active') )
-                {
-                    Status.setAttribute( 'textimage', Status.getAttribute('dimage') );
-                    Status.setAttribute( 'text', Status.getAttribute('dtext') );
-                    Status.setAttribute( 'onclick', Status.getAttribute('donclick') );
-                } else
-                {
-                    Status.setAttribute( 'textimage', Status.getAttribute('aimage') );
-                    Status.setAttribute( 'text', Status.getAttribute('atext') );
-                    Status.setAttribute( 'onclick', Status.getAttribute('aonclick') );
-                }
-
-                // adapt all projects panels
-                var i, len, c, clen, items;
-
-                var panels = QUI.lib.Sites.getProjectPanels( Site ),
-                    id     = Site.getId();
-
-                for ( i = 0, len = panels.length; i < len; i++ )
-                {
-                    items = panels[i].getSitemapItemsById( id );
-
-                    for ( c = 0, clen = items.length; c < clen; c++ )
-                    {
-                        if ( Site.getAttribute('active') )
-                        {
-                            items[c].activate();
-                        } else
-                        {
-                            items[c].deactivate();
-                        }
-
-                        // @todo check what config is set in the project for the sitemap
-                        // @todo set sitetype for the map item
-                        // @todo set nav hide for the map item
-                        items[c].setAttribute( 'text', Site.getAttribute('title') );
-                    }
-                }
-
-                Panel.Loader.hide();
-            });
-
-            // Site data
-            Site.load(function(Site, Ajax)
-            {
-                var title = '',
-                    Panel = Ajax.getAttribute('Panel');
-
-                title = title + Ajax.getAttribute('project');
-                title = title +' - '+ Site.getAttribute('name') +' ('+ Site.getId() +')';
-
-                Panel.setOptions({
-                    title : title,
-                    icon  : URL_BIN_DIR +'16x16/flags/'+ Ajax.getAttribute('lang') +'.png'
-                });
-
-                Panel.refresh();
-
-                // tabs bekommen
-                QUI.Ajax.get('ajax_site_gettabs', function(result, Ajax)
-                {
-                    var i, len, func_on_enter, func_on_leave;
-
-                    var Panel = Ajax.getAttribute('Panel'),
-                        Tabs  = Panel.Tabs;
-
-                    Tabs.clear();
-
-                    // events
-                    func_on_enter = function(Tab)
-                    {
-                        Tab.getAttribute('Panel')
-                           .getAttribute('Control')
-                           .$tabEnter( Tab );
-                    };
-
-                    func_on_leave = function(Tab)
-                    {
-                        Tab.getAttribute('Panel')
-                           .getAttribute('Control')
-                           .$tabLeave( Tab );
-                    };
-
-                    // create
-                    for (i = 0, len = result.length; i < len; i++)
-                    {
-                        Tabs.appendChild(
-                            new QUI.controls.toolbar.Tab(
-
-                                QUI.lib.Utils.combine(result[i], {
-                                    Panel  : Panel,
-                                    Site   : Panel.getAttribute('Site'),
-                                    events :
-                                    {
-                                        onEnter : func_on_enter,
-                                        onLeave : func_on_leave
-                                    }
-                                })
-
-                            )
-                        );
-                    }
-
-                    Tabs.firstChild().click();
-
-                    // Buttons laden
-                    QUI.Ajax.get('ajax_site_getbuttons', function(result, Ajax)
-                    {
-                        var i, len;
-                        var Panel = Ajax.getAttribute('Panel');
-
-                        Panel.clearButtons();
-
-                        for (i = 0, len = result.length; i < len; i++) {
-                            Panel.addButton( result[i] );
-                        }
-
-                        Panel.Loader.hide();
-
-                    }, {
-                        Panel   : Panel,
-                        project : Ajax.getAttribute('project'),
-                        lang    : Ajax.getAttribute('lang'),
-                        id      : Ajax.getAttribute('id')
-                    });
-                }, {
-                    Panel   : Panel,
-                    project : Ajax.getAttribute('project'),
-                    lang    : Ajax.getAttribute('lang'),
-                    id      : Ajax.getAttribute('id')
-                });
-
-            }, {
-                Panel   : Panel,
-                project : Project.getAttribute('name'),
-                lang    : Project.getAttribute('lang'),
-                id      : Site.getId()
-            });
+            console.info( 'save' );
+            console.log( this );
         },
 
-        unload : function()
+        /**
+         * Create a child site
+         *
+         * @method QUI.controls.projects.site.Panel#createChild
+         *
+         * @param {String} newname - [optional, if no newname was passed,
+         *         a window would be open]
+         */
+        createNewChild : function(newname)
         {
-            var Panel  = this.$Panel,
-                Tabs   = Panel.Tabs,
-                Active = Tabs.getActive();
+            if ( typeof newname === 'undefined' )
+            {
+                QUI.Windows.create('prompt', {
+                    title : 'Wie soll die neue Seite heißen?',
+                    text  : 'Bitte geben Sie ein Namen für die neue Seite an',
+                    texticon    : URL_BIN_DIR +'48x48/filenew.png',
+                    information : 'Sie legen eine neue Seite unter '+ this.getAttribute('name') +'.html an.',
+                    Site   : this,
+                    events :
+                    {
+                        onSubmit : function(result, Win) {
+                            Win.getAttribute('Site').createChild( result );
+                        }
+                    }
+                });
 
-            this.$tabLeave( Active );
+                return;
+            }
+
+            QUI.lib.Sites.createChild(
+                function(result, Request)
+                {
+                    // open the site in the sitemap
+                    var i, len, Panel, items;
+
+                    var Site   = Request.getAttribute( 'Site' ),
+                        id     = Site.getId(),
+                        panels = QUI.lib.Sites.getProjectPanels( Site ),
+
+                        func_close = function(Item) {
+                            Item.close();
+                        };
+
+                    for ( i = 0, len = panels.length; i < len; i++ )
+                    {
+                        Panel = panels[ i ];
+
+                        // if site is inb the map, it must be refreshed
+                        items = Panel.getSitemapItemsById( id );
+
+                        if ( items.length ) {
+                            items.each( func_close );
+                        }
+
+                        panels[i].openSite( result.id );
+                    }
+                },
+                this.ajaxParams(),
+                {
+                    name  : newname,
+                    title : newname
+                }
+            );
         },
-        */
+
         /**
          * Enter the Tab / Category
          * Load the tab content and set the site attributes
@@ -421,154 +366,6 @@ define('controls/projects/site/Panel', [
                 Category : Button,
                 Panel    : this
             });
-
-
-
-            return;
-
-            var Panel   = Tab.getAttribute('Panel'),
-                Site    = Panel.getAttribute('Site'),
-                Project = Panel.getAttribute('Project');
-
-            Panel.Loader.show();
-
-            // if editor exist, destroy it, so we get no problems
-            if (Panel.getAttribute('Editor')) {
-                Panel.getAttribute('Editor').destroy();
-            }
-
-            // loading editor if content tab
-            if (Tab.getAttribute('name') == 'content')
-            {
-                var Body      = Panel.getBody(),
-                    Container = new Element('textarea#editor'+ Panel.getId(), {
-                        name    :' editor'+ Panel.getId(),
-                        styles  : {
-                            width  : Body.getSize().x - 40,
-                            height : Body.getSize().y - 40
-                        }
-                    });
-
-                Body.set('html', '');
-                Container.inject( Body );
-
-                new Element('div', {
-                    styles : {
-                        margin : 10
-                    }
-                }).wraps( Container );
-
-
-                QUI.lib.Editor.getEditor('package/ckeditor3', function(Editor)
-                {
-                    var Site    = this.getAttribute('Site'),
-                        Project = this.getAttribute('Project');
-
-                    this.setAttribute('Editor', Editor);
-
-                    // draw the editor
-                    Editor.setAttribute( 'Panel', this );
-                    Editor.setAttribute( 'name', Site.getId() );
-                    Editor.addEvent('onDestroy', function(Editor)
-                    {
-                        this.setAttribute( 'Editor', false );
-                    }.bind( this ));
-
-                    // set the site content
-                    if (Site.getAttribute('content') === '' ||
-                        Site.getAttribute('content') === false)
-                    {
-                        Editor.setContent('');
-                    } else
-                    {
-                        Editor.setContent( Site.getAttribute('content') );
-                    }
-
-                    Editor.addEvent('onLoaded', function(Editor, Instance)
-                    {
-                        if (this.getAttribute('Panel')) {
-                            Panel.Loader.hide();
-                        }
-                    });
-
-                    Editor.draw( Body );
-                }.bind( Panel ));
-
-                return;
-            }
-
-            // andere Tabs laden
-            QUI.Ajax.get('ajax_site_tab_template', function(result, Ajax)
-            {
-                var Panel = Ajax.getAttribute('Panel'),
-                    Tab   = Ajax.getAttribute('Tab'),
-                    Body  = Panel.getBody();
-
-                if ( !result.tpl )
-                {
-                    Body.set('html', '');
-                    Panel.Loader.hide();
-                    return;
-                }
-
-                Body.set('html', '<form>'+ result.tpl +'</form>');
-
-                var FormElm = Body.getElement('form');
-
-                FormElm.set({
-                    events :
-                    {
-                        submit : function(event) {
-                            event.stop();
-                        }
-                    },
-
-                    styles : {
-                        margin: 20
-                    }
-                });
-
-                QUI.lib.Utils.setDataToForm(
-                    Site.getAttributes(),
-                    FormElm
-                );
-
-                // informations tab
-                if (Tab.getAttribute('name') === 'information')
-                {
-                    Body.getElement('input[name="site-name"]').focusToBegin();
-
-                    // set params
-                    FormElm.elements['site-name'].value  = Site.getAttribute('name');
-
-                    QUI.lib.Controls.parse( Body.getElement('form') );
-
-                    Panel.Loader.hide();
-                    return;
-                }
-
-                QUI.lib.Controls.parse( Body.getElement('form') );
-
-                // onload vom Plugin
-                if (result.plugin)
-                {
-                    QUI.lib.Plugins.get(result.plugin, function(Plgn)
-                    {
-                        Plgn.fireEvent('siteTabLoad', [this]);
-                    }.bind( Tab ));
-                }
-
-                Panel.Loader.hide();
-
-            }, {
-                Tab     : Tab,
-                Panel   : Panel,
-
-                id      : Site.getId(),
-                project : Project.getAttribute('name'),
-                lang    : Project.getAttribute('lang'),
-                tab     : Tab.getAttribute('name')
-            });
         },
 
         /**
@@ -634,13 +431,13 @@ define('controls/projects/site/Panel', [
             // information tab
             if (Tab.getAttribute('name') === 'information')
             {
-                var FormElm = Body.getElement('form');
+                var FormElm = Body.getElement( 'form' );
 
-                Site.setAttribute('name', FormElm.elements['site-name'].value);
-                Site.setAttribute('title', FormElm.elements.title.value);
-                Site.setAttribute('short', FormElm.elements.short.value);
-                Site.setAttribute('nav_hide', FormElm.elements.nav_hide.checked);
-                Site.setAttribute('type', FormElm.elements.type.value);
+                Site.setAttribute( 'name', FormElm.elements['site-name'].value );
+                Site.setAttribute( 'title', FormElm.elements.title.value );
+                Site.setAttribute( 'short', FormElm.elements.short.value );
+                Site.setAttribute( 'nav_hide', FormElm.elements.nav_hide.checked );
+                Site.setAttribute( 'type', FormElm.elements.type.value );
 
                 return;
             }
@@ -651,6 +448,18 @@ define('controls/projects/site/Panel', [
                     Plgn.fireEvent('siteTabUnload', [this]);
                 }
             }.bind( Tab ));
+        },
+
+        /**
+         * Exceute the panel onclick from PHP
+         *
+         * @param {QUI.controls.buttons.Button} Btn
+         */
+        $onPanelButtonClick : function(Btn)
+        {
+            var Panel = this;
+
+            eval( Btn.getAttribute( '_onclick' ) +'();' );
         },
 
         /**

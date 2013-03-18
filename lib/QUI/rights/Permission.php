@@ -91,7 +91,9 @@ class QUI_Rights_Permission
         $permissions = $Manager->getPermissions( $User );
 
         // first check user permission
-        if ( isset( $permissions[ $perm ] ) && !empty( $permissions[ $perm ] ) ) {
+        if ( isset( $permissions[ $perm ] ) &&
+             !empty( $permissions[ $perm ] ) )
+        {
             return $permissions[ $perm ];
         }
 
@@ -111,10 +113,10 @@ class QUI_Rights_Permission
 
         throw new QException(
             \QUI::getLocale()->get(
-        		'quiqqer/system',
-        		'exception.no.permission'
-        	),
-        	403
+                'quiqqer/system',
+                'exception.no.permission'
+            ),
+            403
         );
     }
 
@@ -156,10 +158,10 @@ class QUI_Rights_Permission
         if ( get_class( $User ) !== 'Users_User' )
         {
             throw new QException(
-            	\QUI::getLocale()->get(
-            		'quiqqer/system',
-            		'exception.permission.session.expired'
-            	),
+                \QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.permission.session.expired'
+                ),
                 401
             );
         }
@@ -183,21 +185,21 @@ class QUI_Rights_Permission
         {
             throw new QException(
                 \QUI::getLocale()->get(
-            		'quiqqer/system',
-            		'exception.no.permission'
-            	),
-            	403
+                    'quiqqer/system',
+                    'exception.no.permission'
+                ),
+                403
             );
         }
     }
 
-	/**
+    /**
      * Prüft ob der Benutzer in den Adminbereich darf
      *
      * @param unknown_type $User
      * @throws QException
      */
-    static function checkAdminUser( $User=false )
+    static function checkAdminUser($User=false)
     {
         if ( $User === false ) {
             $User = QUI::getUserBySession();
@@ -209,10 +211,10 @@ class QUI_Rights_Permission
         {
             throw new QException(
                 \QUI::getLocale()->get(
-            		'quiqqer/system',
-            		'exception.no.permission'
-            	),
-            	403
+                    'quiqqer/system',
+                    'exception.no.permission'
+                ),
+                403
             );
         }
     }

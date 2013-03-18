@@ -27,6 +27,8 @@ define('classes/projects/Media', [
      * @class QUI.classes.projects.Media
      *
      * @param {QUI.classes.projects.Project} Project
+     *
+     * @memberof! <global>
      */
     QUI.classes.projects.Media = new Class({
 

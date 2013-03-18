@@ -4,7 +4,7 @@
  * @author www.pcsg.de (Henning Leutz)
  *
  * @requires controls/Control
- * @requires lib/Projects
+ * @requires Projects
  * @requires buttons/Button
  * @requires controls/projects/Sitemap
  *
@@ -16,7 +16,7 @@
 define('controls/projects/Panel', [
 
     'controls/desktop/Panel',
-    'lib/Projects',
+    'Projects',
     'controls/projects/Sitemap',
     'controls/desktop/Panel',
 
@@ -44,7 +44,8 @@ define('controls/projects/Panel', [
 
         Binds : [
             '$onCreate',
-            '$onResize'
+            '$onResize',
+            '$openSitePanel'
         ],
 
         initialize : function(options)
@@ -247,7 +248,7 @@ define('controls/projects/Panel', [
                 this.$Map.destroy();
             }
 
-            QUI.lib.Projects.getList(function(result, Ajax)
+            QUI.Projects.getList(function(result, Ajax)
             {
                 var i, l, langs, len,
                     scrollsize, Map, Project,
@@ -273,7 +274,7 @@ define('controls/projects/Panel', [
 
                 func_media_click = function(Itm, event)
                 {
-                    QUI.lib.Projects.createMediaPanel(
+                    QUI.Projects.createMediaPanel(
                         Itm.getAttribute('project')
                     );
                 };
@@ -378,7 +379,7 @@ define('controls/projects/Panel', [
                 List      = Content.getElement( '.project-list' ),
                 Container = Content.getElement( '.project-content' ),
 
-                Project = QUI.lib.Projects.get(
+                Project = QUI.Projects.get(
                     this.getAttribute( 'project' ),
                     this.getAttribute( 'lang' )
                 );
@@ -387,6 +388,7 @@ define('controls/projects/Panel', [
                 left : List.getSize().x * -1
             });
 
+            /*
             Project.addEvent('onSiteStatusEditEnd', function(Site)
             {
                 if ( !this.Sitemap ) {
@@ -410,6 +412,7 @@ define('controls/projects/Panel', [
                 }
 
             }.bind( this ));
+            */
 
             // create the project sitemap in the panel
             if ( this.$Map ) {
@@ -425,15 +428,19 @@ define('controls/projects/Panel', [
 
             this.$Sitemap.addEvents({
 
-                onChildClick : function(Itm)
+                onChildClick : this.$openSitePanel,
+
+                    /*function(Itm)
                 {
-                    QUI.lib.Projects.createSitePanel(
+
+
+                    QUI.Projects.createSitePanel(
                         this.getAttribute( 'name' ),
                         this.getAttribute( 'lang' ),
                         Itm.getAttribute( 'value' )
                     );
                 }.bind( Project ),
-
+                */
                 onChildContextMenu : function(Item, event)
                 {
                     Item.getContextMenu()
@@ -517,6 +524,39 @@ define('controls/projects/Panel', [
             if ( typeof this.$Map !== 'undefined' ) {
                 this.$Map.openSite( id );
             }
+        },
+
+        /**
+         * event: click on sitemap item -> opens a site panel
+         * @param {QUI.controls.sitemap.Item} Item
+         */
+        $openSitePanel : function(Item)
+        {
+            var Conrol  = this,
+                id      = Item.getAttribute( 'value' ),
+                project = this.getAttribute( 'project' ),
+                lang    = this.getAttribute( 'lang' );
+
+
+            require([
+                 'controls/projects/site/Panel',
+                 'classes/projects/Project',
+                 'classes/projects/Site'
+             ], function(QUI_SitePanel, QUI_Site)
+             {
+                 var panels  = QUI.Controls.getByType( 'QUI.controls.desktop.Tasks' ),
+                     Project = QUI.Projects.get( project, lang ),
+                     Site    = Project.get( id );
+
+                 if ( !panels.length ) {
+                     return;
+                 }
+
+                 panels[ 0 ].appendChild(
+                     new QUI_SitePanel( Site )
+                 );
+
+             }.bind(this));
         }
     });
 

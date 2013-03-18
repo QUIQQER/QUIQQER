@@ -11,7 +11,7 @@
 define('controls/trash/Panel', [
 
     'controls/desktop/Panel',
-    'lib/Projects',
+    'Projects',
     'controls/grid/Grid',
     'controls/buttons/Select',
     'controls/projects/Trash',
@@ -238,7 +238,7 @@ define('controls/trash/Panel', [
                 }
             });
 
-            QUI.lib.Projects.getList(function(result, Request)
+            QUI.Projects.getList(function(result, Request)
             {
                 var i, len, project, langs, Project;
 
@@ -269,7 +269,7 @@ define('controls/trash/Panel', [
                 ButtonBar.refresh();
 
                 // select the project
-                Project = QUI.lib.Projects.get(
+                Project = QUI.Projects.get(
                     this.getAttribute( 'project' ),
                     this.getAttribute( 'lang' )
                 );
@@ -312,7 +312,7 @@ define('controls/trash/Panel', [
             var Media     = false,
                 ButtonBar = this.getButtonBar(),
 
-                Project = QUI.lib.Projects.get(
+                Project = QUI.Projects.get(
                     this.getAttribute( 'project' ),
                     this.getAttribute( 'lang' )
                 );

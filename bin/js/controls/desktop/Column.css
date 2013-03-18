@@ -7,11 +7,12 @@
 .qui-column-content {
     height: 100%;
     float: left;
+    overflow: auto;
 }
 
 .qui-column-handle {
-	cursor : e-resize;
-	height: 100%;
+    cursor : e-resize;
+    height: 100%;
     float: left;
     overflow: hidden;
     background: #C3C3C3 url(images/handle-icon.gif) center center no-repeat;

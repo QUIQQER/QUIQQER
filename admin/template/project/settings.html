@@ -1,0 +1,57 @@
+
+<form name="edit_project" action="" class="qui-project-settings">
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th colspan="2">
+                    Projekte Einstellungen
+                </th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr class="{cycle values="odd,even"}">
+                <td class="first">
+                    <label for="default_lang">Standard Sprache</label>
+                </td>
+                <td>
+                    <select name="default_lang"></select>
+                </td>
+            </tr>
+            <tr class="{cycle values="odd,even"}">
+                <td class="first">
+                    <label for="langs">Verfügbare Sprachen</label>
+                </td>
+                <td>
+                    <div id="langs"></div>
+                </td>
+            </tr>
+            <tr class="{cycle values="odd,even"}">
+                <td class="first">
+                    <label for="template">Standard Template</label>
+                </td>
+                <td>
+                    <select name="template"></select>
+                </td>
+            </tr>
+            <tr class="{cycle values="odd,even"}">
+                <td class="first">
+                    <label for="templates">Verfügbare Templates für dieses Projekt</label>
+                </td>
+                <td>
+                    <select name="templates"></select>
+                </td>
+            </tr>
+            <tr class="{cycle values="odd,even"}">
+                <td class="first">
+                    <label for="templates">Administrations E-Mail</label>
+                </td>
+                <td>
+                    <input type="text" name="admin_mail" value="" />
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</form>

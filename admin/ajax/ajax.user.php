@@ -1,12 +1,18 @@
 <?php
 
+exit;
+
+/**
+ * @deprecated
+ */
+
 // Benutzerrechte Prüfung
 if (!$User->getId()) {
-	exit;
+    exit;
 }
 
 if ($User->isAdmin() == false) {
-	exit;
+    exit;
 }
 
 /**
@@ -19,26 +25,26 @@ if ($User->isAdmin() == false) {
  */
 function ajax_user_setsetting($uid, $name, $value)
 {
-	$Users = QUI::getUsers();
-	$User  = $Users->get((int)$uid);
-	$extra = $User->getAttribute('extra');
+    $Users = QUI::getUsers();
+    $User  = $Users->get((int)$uid);
+    $extra = $User->getAttribute('extra');
 
-	if ($extra == false) {
-		return false;
-	}
+    if ($extra == false) {
+        return false;
+    }
 
-	$extra = json_decode($extra, true);
+    $extra = json_decode($extra, true);
 
-	if (!is_array($extra)) {
-		$extra = array();
-	}
+    if (!is_array($extra)) {
+        $extra = array();
+    }
 
-	$extra['settings'][$name] = $value;
+    $extra['settings'][$name] = $value;
 
-	$User->setAttribute('extra', json_encode($extra));
-	$User->save();
+    $User->setAttribute('extra', json_encode($extra));
+    $User->save();
 
-	return true;
+    return true;
 }
 $ajax->register('ajax_user_setsetting', array('uid', 'name', 'value'));
 
@@ -51,23 +57,23 @@ $ajax->register('ajax_user_setsetting', array('uid', 'name', 'value'));
  */
 function ajax_user_getsetting($uid, $name)
 {
-	$Users = QUI::getUsers();
-	$User  = $Users->get((int)$uid);
-	$extra = $User->getAttribute('extra');
+    $Users = QUI::getUsers();
+    $User  = $Users->get((int)$uid);
+    $extra = $User->getAttribute('extra');
 
-	if ($extra == false) {
-		return false;
-	}
+    if ($extra == false) {
+        return false;
+    }
 
-	$extra = json_decode($extra, true);
+    $extra = json_decode($extra, true);
 
-	if (!isset($extra['settings']) ||
-		!isset($extra['settings'][$name]))
-	{
-		return false;
-	}
+    if (!isset($extra['settings']) ||
+        !isset($extra['settings'][$name]))
+    {
+        return false;
+    }
 
-	return $extra['settings'][$name];
+    return $extra['settings'][$name];
 }
 $ajax->register('ajax_user_getsetting', array('uid', 'name'));
 
@@ -78,104 +84,104 @@ $ajax->register('ajax_user_getsetting', array('uid', 'name'));
  */
 function ajax_user_importad_getusers($groupid, $username, $pass, $adgroup)
 {
-	$Users = QUI::getUsers();
-	$Auth  = new QUI_Auth_ActiveDirectory();
+    $Users = QUI::getUsers();
+    $Auth  = new QUI_Auth_ActiveDirectory();
 
-	$userCount       = 0;
-	$userUpdateCount = 0;
+    $userCount       = 0;
+    $userUpdateCount = 0;
 
-	$server = QUI::conf('auth', 'server');
-	$server = explode(';', $server);
+    $server = QUI::conf('auth', 'server');
+    $server = explode(';', $server);
 
-	$Auth->setAttribute('dc', $server);
-	$Auth->setAttribute('base_dn', QUI::conf('auth', 'base_dn'));
-	$Auth->setAttribute('domain', QUI::conf('auth', 'domain'));
-	$Auth->setAttribute('auth_user', $username);
-	$Auth->setAttribute('auth_password', $pass);
+    $Auth->setAttribute('dc', $server);
+    $Auth->setAttribute('base_dn', QUI::conf('auth', 'base_dn'));
+    $Auth->setAttribute('domain', QUI::conf('auth', 'domain'));
+    $Auth->setAttribute('auth_user', $username);
+    $Auth->setAttribute('auth_password', $pass);
 
-	try
-	{
-		if (empty($adgroup))
-		{
-			$importUsers = $Auth->getUsers();
-		} else
-		{
-			$importUsers = $Auth->getUsers($adgroup);
-		}
+    try
+    {
+        if (empty($adgroup))
+        {
+            $importUsers = $Auth->getUsers();
+        } else
+        {
+            $importUsers = $Auth->getUsers($adgroup);
+        }
 
-		if ($importUsers)
-		{
-			$Auth->setAttribute('_sortUser', true);
+        if ($importUsers)
+        {
+            $Auth->setAttribute('_sortUser', true);
 
-			foreach ($importUsers as $user)
-			{
-				$userData = $Auth->getUser($user);
+            foreach ($importUsers as $user)
+            {
+                $userData = $Auth->getUser($user);
 
-				if ($Users->existsUsername($user))
-				{
-					// update User
-					$User = $Users->getUserByName($user);
+                if ($Users->existsUsername($user))
+                {
+                    // update User
+                    $User = $Users->getUserByName($user);
 
-					if (!empty($userData['mail'])) {
-						$User->setAttribute('email', $userData['mail']);
-					}
+                    if (!empty($userData['mail'])) {
+                        $User->setAttribute('email', $userData['mail']);
+                    }
 
-					if (!empty($userData['firstname'])){
-						$User->setAttribute('firstname', $userData['firstname']);
-					}
+                    if (!empty($userData['firstname'])){
+                        $User->setAttribute('firstname', $userData['firstname']);
+                    }
 
-					if (!empty($userData['lastname'])){
-						$User->setAttribute('lastname', $userData['lastname']);
-					}
+                    if (!empty($userData['lastname'])){
+                        $User->setAttribute('lastname', $userData['lastname']);
+                    }
 
-					if (!empty($userData['title'])){
-						$User->setAttribute('usertitle', $userData['title']);
-					}
+                    if (!empty($userData['title'])){
+                        $User->setAttribute('usertitle', $userData['title']);
+                    }
 
-					$User->save();
-					$userUpdateCount++;
-				} else
-				{
-					// neuen User
-					$User = $Users->createChild();
+                    $User->save();
+                    $userUpdateCount++;
+                } else
+                {
+                    // neuen User
+                    $User = $Users->createChild();
 
-					$User->setAttribute('username', $user);
-					$User->setGroups($groupid);
-					$User->setPassword(Utils_Security_Orthos::getPassword());
+                    $User->setAttribute('username', $user);
+                    $User->setGroups($groupid);
+                    $User->setPassword(Utils_Security_Orthos::getPassword());
 
-					if (!empty($userData['mail'])) {
-						$User->setAttribute('email',$userData['mail']);
-					}
+                    if (!empty($userData['mail'])) {
+                        $User->setAttribute('email',$userData['mail']);
+                    }
 
-					if (!empty($userData['firstname'])) {
-						$User->setAttribute('firstname',$userData['firstname']);
-					}
+                    if (!empty($userData['firstname'])) {
+                        $User->setAttribute('firstname',$userData['firstname']);
+                    }
 
-					if (!empty($userData['lastname'])) {
-						$User->setAttribute('lastname',$userData['lastname']);
-					}
+                    if (!empty($userData['lastname'])) {
+                        $User->setAttribute('lastname',$userData['lastname']);
+                    }
 
-					if (!empty($userData['title'])) {
-						$User->setAttribute('usertitle',$userData['title']);
-					}
+                    if (!empty($userData['title'])) {
+                        $User->setAttribute('usertitle',$userData['title']);
+                    }
 
-					$User->save();
-					$User->activate();
-					$userCount++;
-				}
-			}
+                    $User->save();
+                    $User->activate();
+                    $userCount++;
+                }
+            }
 
-			return array(
-				'newUser'   => $userCount,
-				'updateUser'=> $userUpdateCount
-			);
-		}
+            return array(
+                'newUser'   => $userCount,
+                'updateUser'=> $userUpdateCount
+            );
+        }
 
-	} catch (QException $e)
-	{
-		System_Log::writeException($e);
-		return false;
-	}
+    } catch (QException $e)
+    {
+        System_Log::writeException($e);
+        return false;
+    }
 }
 $ajax->register('ajax_user_importad_getusers', array('groupid', 'username', 'pass', 'adgroup'));
 

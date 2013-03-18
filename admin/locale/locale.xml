@@ -15,6 +15,7 @@
     </groups>
 
     <groups name="quiqqer/system">
+        <!-- Menu  -->
         <locale name="menu.file.text">
             <de><![CDATA[Datei]]></de>
             <en><![CDATA[File]]></en>
@@ -41,18 +42,26 @@
             <en><![CDATA[Settings]]></en>
         </locale>
             <locale name="menu.settings.media.text">
-	            <de><![CDATA[Media Einstellungen]]></de>
-	            <en><![CDATA[Media settings]]></en>
-	        </locale>
+                <de><![CDATA[Media Einstellungen]]></de>
+                <en><![CDATA[Media settings]]></en>
+            </locale>
 
         <locale name="menu.help.text">
             <de><![CDATA[Hilfe]]></de>
             <en><![CDATA[Help]]></en>
         </locale>
-	        <locale name="menu.help.about.text">
-	            <de><![CDATA[Über QUIQQER]]></de>
-	            <en><![CDATA[About QUIQQER]]></en>
-	        </locale>
+            <locale name="menu.help.about.text">
+                <de><![CDATA[Über QUIQQER]]></de>
+                <en><![CDATA[About QUIQQER]]></en>
+            </locale>
+
+
+        <!-- Exception  -->
+        <locale name="exception.template.not.found">
+            <de><![CDATA[Template wurde nicht gefunden.]]></de>
+            <en><![CDATA[Template not found.]]></en>
+        </locale>
+
     </groups>
 
 </locales>

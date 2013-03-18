@@ -8,14 +8,14 @@
  */
 function ajax_groups_extend($id, $eproject)
 {
-    $Group   = QUI::getGroups()->get($id);
-	$Engine  = QUI_Template::getEngine(true);
-	$Project = QUI::getProject($eproject);
+    $Group   = \QUI::getGroups()->get($id);
+    $Engine  = \QUI_Template::getEngine(true);
+    $Project = \QUI::getProject($eproject);
 
-	$Rights = QUI::getRights();
-	$rights = $Rights->getProjectRightGroups($Project);
+    $Rights = \QUI::getRights();
+    $rights = $Rights->getProjectRightGroups($Project);
 
-	$Engine->assign(array(
+    $Engine->assign(array(
         'Group'  => $Group,
         'rights' => $rights
     ));

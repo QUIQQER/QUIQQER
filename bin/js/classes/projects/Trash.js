@@ -27,6 +27,8 @@ define('classes/projects/Trash', [
      *
      * @fires onDrawBegin - this
      * @fires onDrawEnd   - this
+     *
+     * @memberof! <global>
      */
     QUI.classes.projects.Trash = new Class({
 

@@ -22,6 +22,8 @@ define('controls/groups/sitemap/Window', [
 
     /**
      * @class QUI.controls.groups.sitemap.Window
+     *
+     * @memberof! <global>
      */
     QUI.controls.groups.sitemap.Window = new Class({
 

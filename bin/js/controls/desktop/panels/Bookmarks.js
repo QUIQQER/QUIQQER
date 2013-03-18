@@ -11,6 +11,7 @@
 define('controls/desktop/panels/Bookmarks', [
 
     'controls/desktop/Panel',
+
     'css!controls/desktop/panels/Bookmarks.css'
 
 ], function(QUI_Panel)
@@ -22,28 +23,23 @@ define('controls/desktop/panels/Bookmarks', [
      */
     QUI.controls.desktop.panels.Bookmarks = new Class({
 
-        Implements : [ QUI_Panel ],
-        Type       : 'QUI.controls.desktop.panels.Bookmarks',
+        Extends : QUI_Panel,
+        Type    : 'QUI.controls.desktop.panels.Bookmarks',
+
+        Binds : [
+            '$create'
+        ],
 
         initialize: function(options)
         {
-            this.init( options );
-
-            this.Loader = new QUI.controls.loader.Loader();
-
-            this.$Elm       = null;
-            this.$Header    = null;
-            this.$Footer    = null;
-            this.$Content   = null;
-            this.$Container = null;
-
             this.$bookmarks = [];
 
-            this.addEvent('onDrawEnd', function()
-            {
-                this.$create();
-                this.fireEvent( 'load', [ this ] );
-            }.bind( this ));
+            this.setAttributes({
+                title : 'Bookmarks'
+            });
+
+            this.parent( options );
+            this.addEvent( 'onCreate', this.$create );
         },
 
         /**
@@ -118,11 +114,15 @@ define('controls/desktop/panels/Bookmarks', [
          */
         $create : function()
         {
-            this.$Container = new Element( 'div' ).inject( this.getBody() );
+            this.$Container = new Element( 'div' ).inject(
+                this.getBody()
+            );
 
             if ( typeof this.$serialize !== 'undefined' ) {
                 this.unserialize( this.$serialize );
             }
+
+            this.fireEvent( 'load', [ this ] );
         },
 
         /**

@@ -1,17 +1,23 @@
 <?php
 
+exit;
+
+/**
+ * @deprecated
+ */
+
 // Benutzerrechte Prüfung
 if (!$User->getId()) {
-	exit;
+    exit;
 }
 
 if ($User->isAdmin() == false) {
-	exit;
+    exit;
 }
 
 // Nur Superuser dürfen Logs lesen / bearbeiten
 if ($User->isSU() == false) {
-	exit;
+    exit;
 }
 
 /**
@@ -21,11 +27,11 @@ if ($User->isSU() == false) {
  */
 function ajax_plugins_logs_list()
 {
-	$logs = Utils_System_File::readDir(VAR_DIR .'log');
+    $logs = Utils_System_File::readDir(VAR_DIR .'log');
 
-	sort($logs);
+    sort($logs);
 
-	return array_reverse($logs);
+    return array_reverse($logs);
 }
 $ajax->register('ajax_plugins_logs_list');
 
@@ -37,14 +43,14 @@ $ajax->register('ajax_plugins_logs_list');
  */
 function ajax_plugins_logs_get($log)
 {
-	$log     = Utils_Security_Orthos::clearPath($log);
-	$logfile = VAR_DIR .'log/'. $log;
+    $log     = Utils_Security_Orthos::clearPath($log);
+    $logfile = VAR_DIR .'log/'. $log;
 
-	if (!file_exists($logfile) || filesize($logfile) > 1000000) {
-		return 'Die Datei Existiert nicht oder ist zu Groß';
-	}
+    if (!file_exists($logfile) || filesize($logfile) > 1000000) {
+        return 'Die Datei Existiert nicht oder ist zu Groß';
+    }
 
-	return file_get_contents($logfile);
+    return file_get_contents($logfile);
 }
 $ajax->register('ajax_plugins_logs_get', array('log'));
 
@@ -55,31 +61,31 @@ $ajax->register('ajax_plugins_logs_get', array('log'));
  */
 function ajax_plugins_logs_send($log)
 {
-	$Users = QUI::getUsers();
-	$User  = $Users->getUserBySession();
+    $Users = QUI::getUsers();
+    $User  = $Users->getUserBySession();
 
-	$email = $User->getAttribute('email');
+    $email = $User->getAttribute('email');
 
-	if ($email == false) {
-		throw new QException('Bitte hinterlegen Sie eine E-Mail Adresse');
-	}
+    if ($email == false) {
+        throw new QException('Bitte hinterlegen Sie eine E-Mail Adresse');
+    }
 
-	$Mail = new QUI_Mail();
-	$log  = Utils_Security_Orthos::clearPath($log);
+    $Mail = new QUI_Mail();
+    $log  = Utils_Security_Orthos::clearPath($log);
 
-	$logfile = VAR_DIR .'log/'. $log;
+    $logfile = VAR_DIR .'log/'. $log;
 
-	if (!file_exists($logfile)) {
-		throw new QException('Log Datei existiert nicht');
-	}
+    if (!file_exists($logfile)) {
+        throw new QException('Log Datei existiert nicht');
+    }
 
-	$Mail->send(array(
-		'MailTo' 	=> $email,
-	 	'Subject' 	=> 'Log: '. $log,
-	 	'Body' 		=> 'Anhang ('. $log .')',
-	 	'IsHTML' 	=> false,
-	 	'files' 	=> array($logfile)
-	 ));
+    $Mail->send(array(
+        'MailTo' 	=> $email,
+         'Subject' 	=> 'Log: '. $log,
+         'Body' 		=> 'Anhang ('. $log .')',
+         'IsHTML' 	=> false,
+         'files' 	=> array($logfile)
+     ));
 }
 $ajax->register('ajax_plugins_logs_send', array('log'));
 
@@ -90,14 +96,14 @@ $ajax->register('ajax_plugins_logs_send', array('log'));
  */
 function ajax_plugins_logs_delete($log)
 {
-	$log     = Utils_Security_Orthos::clearPath($log);
-	$logfile = VAR_DIR .'log/'. $log;
+    $log     = Utils_Security_Orthos::clearPath($log);
+    $logfile = VAR_DIR .'log/'. $log;
 
-	if (!file_exists($logfile)) {
-		return;
-	}
+    if (!file_exists($logfile)) {
+        return;
+    }
 
-	unlink($logfile);
+    unlink($logfile);
 }
 $ajax->register('ajax_plugins_logs_delete', array('log'));
 

@@ -65,14 +65,13 @@ define('classes/QUIQQER', function()
 
             require([
                 "Editors", "Menu", "Locale", "Users", "Storage",
+                "Projects",
 
                 "classes/messages", "controls/windows",
-                "classes/Plugin", "classes/Project",
+                "classes/Plugin", "classes/projects/Project",
 
-                "lib/Utils", "lib/Projects", "lib/Sites",
-                "lib/Plugins", "lib/Menu",
-                "lib/Ajax", "lib/upload/Manager",
-                "lib/Template",
+                "lib/Utils", "lib/Sites", "lib/Plugins",
+                "lib/Ajax", "lib/upload/Manager", "lib/Template",
 
                 "controls/buttons/Button", "mochaui"
 
@@ -242,6 +241,10 @@ define('classes/QUIQQER', function()
                        text    : 'Bookmars',
                        icon    : URL_BIN_DIR +'16x16/apps/kaddressbook.png',
                        require : 'controls/desktop/panels/Bookmarks'
+                   }).addAvailablePanel({
+                       text    : 'Taskbar Panel',
+                       icon    : URL_BIN_DIR +'16x16/apps/window_list.png',
+                       require : 'controls/desktop/Tasks'
                    });
             });
         },

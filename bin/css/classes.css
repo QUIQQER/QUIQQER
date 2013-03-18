@@ -6,16 +6,16 @@
 /* reset ein element, damit das element absolut kein design mehr hat
  ================================================== */
 .reset {
-	border: none;
-	background: none;
+    border: none;
+    background: none;
 }
 
 /* Hover && Active Element Color
  ================================================== */
 .hover,
 .active {
-	background-color: #6C98D9;
-	color: #fff;
+    background-color: #6C98D9;
+    color: #fff;
 }
 
 .dragdrop {
@@ -43,7 +43,7 @@
 .box-sizing {
 -webkit-box-sizing: border-box;
    -moz-box-sizing: border-box;
-	    box-sizing: border-box;
+        box-sizing: border-box;
 }
 
 /* schatten klassen
@@ -51,7 +51,7 @@
 .shadow {
 -webkit-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
    -moz-box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-	    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 /* round border klassen
@@ -89,37 +89,37 @@
  ================================================== */
 
 .topic {
-	float: left;
-	clear: both;
-	width: 100%;
-	border-bottom: 1px solid #bebebe;
-	margin: 10px 0;
-	font-weight: bold;
+    float: left;
+    clear: both;
+    width: 100%;
+    border-bottom: 1px solid #bebebe;
+    margin: 10px 0;
+    font-weight: bold;
 
-	-webkit-box-sizing: border-box;
-	   -moz-box-sizing: border-box;
-		    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
 }
 
 /* Checkbox Container
  ================================================== */
 
 .checkbox-container {
-	float: left;
-	margin: 10px;
+    float: left;
+    margin: 10px;
 }
 
 .checkbox-container input {
-	border: none;
-	background: none;
+    border: none;
+    background: none;
 
-	float: left;
-	margin: 1px 10px 0 0;
+    float: left;
+    margin: 1px 10px 0 0;
 }
 
 .checkbox-container label {
-	float: left;
-	line-height: 16px;
+    float: left;
+    line-height: 16px;
 }
 
 

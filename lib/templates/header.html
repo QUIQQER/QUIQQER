@@ -1,90 +1,80 @@
-	<!-- [begin] meta -->
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	{if $Smarty->getHeaderAttribute('html5') === false}
-	<meta http-equiv="content-language" content="{$Project->getAttribute('lang')}" />
+    <!-- [begin] meta -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-	<meta name="page-topic" content="{$Site->getAttribute('title')|escape:"html"}" />
-	{/if}
+    {if $Template->getAttribute('html5') === false}
+    <meta http-equiv="content-language" content="{$Project->getAttribute('lang')}" />
+    <meta name="page-topic" content="{$Site->getAttribute('title')|escape:"html"}" />
 
-	<meta name="description" content="{if $Site->getAttribute('pcsg.base.description')}{$Site->getAttribute('pcsg.base.description')|escape:"html"}{else}{$Project->getConfig('description')|escape:"html"}{/if}" />
-	<meta name="keywords" content="{if $Site->getAttribute('pcsg.base.keywords')}{$Site->getAttribute('pcsg.base.keywords')|escape:"html"}{else}{$Project->getConfig('keywords')|escape:"html"}{/if}" />
-	{if $Smarty->getHeaderAttribute('html5') === false}
-	<meta name="date" content="{$Site->getAttribute('e_date')}" />
-	<meta name="lang" content="{$Project->getAttribute('lang')}" />
-	{/if}
+    <meta name="date" content="{$Site->getAttribute('e_date')}" />
+    <meta name="lang" content="{$Project->getAttribute('lang')}" />
+    <meta name="copyright" content="{$Project->getConfig('copyright')}" />
+    {/if}
 
-	{if $Locale->no_translation}
+    <meta name="description" content="{if $Site->getAttribute('pcsg.base.description')}{$Site->getAttribute('pcsg.base.description')|escape:"html"}{else}{$Project->getConfig('description')|escape:"html"}{/if}" />
+    <meta name="keywords" content="{if $Site->getAttribute('pcsg.base.keywords')}{$Site->getAttribute('pcsg.base.keywords')|escape:"html"}{else}{$Project->getConfig('keywords')|escape:"html"}{/if}" />
+
+    {if $Locale->no_translation}
         <meta name="robots" content="noindex" />
-	{else}
-	    <meta name="robots" content="{if $Site->getAttribute('pcsg.base.robots')}{$Site->getAttribute('pcsg.base.robots')}{else}{$Project->getConfig('robots')}{/if}" />
-	{/if}
+    {else}
+        <meta name="robots" content="{if $Site->getAttribute('pcsg.base.robots')}{$Site->getAttribute('pcsg.base.robots')}{else}{$Project->getConfig('robots')}{/if}" />
+    {/if}
 
-	<meta name="generator" content="{$smarty.const.GENERATOR}" />
+    <meta name="generator" content="{$smarty.const.GENERATOR}" />
+    <meta name="author" content="{$Project->getConfig('author')}" />
+    <meta name="publisher" content="{$Project->getConfig('publisher')}" />
+    <meta name="revisit-after" content="2 days" />
+    <!-- [end] meta -->
 
-	<meta name="author" content="{$Project->getConfig('author')}" />
-	<meta name="publisher" content="{$Project->getConfig('publisher')}" />
+    <script type="text/javascript" src="{$URL_BIN_DIR}js/mvc/require.js"></script>
+    <script type="text/javascript">
+        var URL_DIR         = '{$URL_DIR}';
+            URL_OPT_DIR     = '{$URL_OPT_DIR}',
+            URL_BIN_DIR     = '{$URL_BIN_DIR}',
+            URL_VAR_DIR     = '{$URL_VAR_DIR}',
+            URL_PROJECT_DIR = '{$URL_USR_DIR}{$Project->getAttribute('name')}/';
 
-	{if $Smarty->getHeaderAttribute('html5') === false}
-	<meta name="copyright" content="{$Project->getConfig('copyright')}" />
-	{/if}
+        {literal}
+        require.config({
+            baseUrl : URL_DIR,
+            paths   : {
+                "mvc"     : URL_BIN_DIR +'js/mvc/',
+                "package" : URL_OPT_DIR,
+                "locale"  : URL_VAR_DIR +'locale/bin/'
+            },
 
-	<meta name="revisit-after" content="2 days" />
-	<!-- [end] meta -->
+            waitSeconds : 0,
+            locale      : "de-de",
+            catchError  : true,
+            map: {
+                '*': {
+                    'css': 'mvc/css'
+                }
+            }
+        });
+        {/literal}
+    </script>
 
-	<script type="text/javascript" src="{$smarty.const.URL_BIN_DIR}js/mvc/require.1.0.7.js"></script>
-	<script type="text/javascript" src="{$smarty.const.URL_BIN_DIR}js/mvc/MVC.js"></script>
+    <script type="text/javascript" src="{$URL_BIN_DIR}js/mvc/QUI.js"></script>
 
-	{if $Smarty->getHeaderAttribute('jquery')}
-	<script type="text/javascript" src="{$smarty.const.URL_BIN_DIR}js/jquery-1.6.1.min.js"></script>
-	{/if}
+    {assign var=canonical value=false}
+    {capture assign=_url}{$smarty.const.HOST}{$smarty.const.URL_DIR}{if isset($smarty.request._url)}{$smarty.request._url}{/if}{/capture}
 
-	{if $Smarty->getHeaderAttribute('mootools')}
-	<script type="text/javascript" src="{$smarty.const.URL_BIN_DIR}js/mootools/mootools-core-1.4.5-full-nocompat-yc.js"></script>
-	{/if}
+    {* @todo nicht original url mit parameter beachten *}
+    {if $Site->getId() != 1 && $_url && $_url != $Site->getCanonical() && empty($smarty.get)}
+        <link rel="canonical" href="{$Site->getCanonical()}" />
+    {/if}
 
-	{if $Smarty->getHeaderAttribute('ptools')}
-	<script type="text/javascript" src="{$smarty.const.URL_BIN_DIR}js/ptools/ptools.js"></script>
-	{/if}
+    {if $Template->getAttribute('rel_next')}
+        <link rel="next" href="{url site=$Smarty->getHeaderAttribute('rel_next')}" />
+    {/if}
 
-	{assign var=canonical value=false}
-	{capture assign=_url}{$smarty.const.HOST}{$smarty.const.URL_DIR}{if isset($smarty.request._url)}{$smarty.request._url}{/if}{/capture}
+    {if $Template->getAttribute('rel_prev')}
+        <link rel="prev" href="{url site=$Smarty->getHeaderAttribute('rel_prev')}" />
+    {/if}
 
-	{* @todo nicht original url mit parameter beachten *}
-	{if $Site->getId() != 1 && $_url && $_url != $Site->getCanonical() && empty($smarty.get)}
-		<link rel="canonical" href="{$Site->getCanonical()}" />
-	{/if}
-
-	{if $Smarty->getHeaderAttribute('rel_next')}
-		<link rel="next" href="{url site=$Smarty->getHeaderAttribute('rel_next')}" />
-	{/if}
-
-	{if $Smarty->getHeaderAttribute('rel_prev')}
-		<link rel="prev" href="{url site=$Smarty->getHeaderAttribute('rel_prev')}" />
-	{/if}
-
-	{if $Smarty->getHeaderAttribute('ajax')}
-		<!-- [begin] AJAX -->
-		{ajax}
-		<!-- [end] AJAX -->
-	{/if}
-
-	<script type="text/javascript">
-		{assign var=TPL value=$Project->getAttribute('template')}
-
-		var URL_OPT_DIR     = '{$smarty.const.URL_OPT_DIR}',
-			URL_BIN_DIR     = '{$smarty.const.URL_BIN_DIR}',
-			PROJECT_BIN_URL = '{$smarty.const.URL_USR_DIR}bin/{$TPL}/';
-	</script>
-
-	{$header_extend}
-
-	<!-- [begin] plugin files -->
-	{plugin_files}
-	<!-- [end] plugin files -->
-
-	<title>
-		{$Smarty->getHeaderAttribute('site_title_prefix')}
-		{$Site->getAttribute('pcsg.base.seotitle')|escape:"html"}
-		{$Smarty->getHeaderAttribute('site_title_suffix')}
-		{$Smarty->getHeaderAttribute('site_title')}
-	</title>
+    <title>
+        {$Template->getAttribute('site_title_prefix')}
+        {$Site->getAttribute('pcsg.base.seotitle')|escape:"html"}
+        {$Template->getAttribute('site_title_suffix')}
+        {$Template->getAttribute('site_title')}
+    </title>

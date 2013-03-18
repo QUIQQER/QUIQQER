@@ -29,8 +29,8 @@ define('controls/desktop/Tasks', [
      */
     QUI.controls.desktop.Tasks = new Class({
 
-        Implements : [ Control ],
-        Type       : 'QUI.controls.desktop.Tasks',
+        Extends : Control,
+        Type    : 'QUI.controls.desktop.Tasks',
 
         Binds : [
             '$activateTask',
@@ -44,11 +44,8 @@ define('controls/desktop/Tasks', [
             name : 'taskpanel',
 
             // header
-            header : true,      // true to create a panel header when panel is created
-            title  : false,     // the title inserted into the panel's header
-
-            // Style options:
-            height : 125        // the desired height of the panel
+            header : true,  // true to create a panel header when panel is created
+            title  : false  // the title inserted into the panel's header
         },
 
         initialize : function(options)
@@ -65,8 +62,20 @@ define('controls/desktop/Tasks', [
         },
 
         /**
+         * Is the Panel open?
+         *
+         * @method QUI.controls.desktop.Tasks#isOpen
+         * @return {Bool}
+         */
+        isOpen : function()
+        {
+            return true;
+        },
+
+        /**
          * Return the data for the workspace
          *
+         * @method QUI.controls.desktop.Tasks#serialize
          * @return {Object}
          */
         serialize : function()
@@ -81,6 +90,7 @@ define('controls/desktop/Tasks', [
         /**
          * Import the saved data
          *
+         * @method QUI.controls.desktop.Tasks#unserialize
          * @param {Object} data
          */
         unserialize : function(data)
@@ -120,8 +130,14 @@ define('controls/desktop/Tasks', [
          */
         resize : function()
         {
+            var height = this.getAttribute( 'height' );
+
+            if ( !height ) {
+                height = '100%';
+            }
+
             this.$Elm.setStyles({
-                height : '100%'//this.getAttribute( 'height' ) || '100%'
+                height : height
             });
 
             var TaskbarElm   = this.$Taskbar.getElm(),
@@ -132,7 +148,12 @@ define('controls/desktop/Tasks', [
                 height : content_size.y - taskbar_size.y
             });
 
-            if ( this.$Active && this.$Active.getInstance()	) {
+            if ( this.$Active && this.$Active.getInstance()	)
+            {
+                this.$Active.getInstance().setAttributes({
+                    height : content_size.y - taskbar_size.y
+                });
+
                 this.$Active.getInstance().resize();
             }
 
@@ -154,7 +175,7 @@ define('controls/desktop/Tasks', [
 
             this.$Elm = new Element('div', {
                 'data-quiid' : this.getId(),
-                'class'      : 'qui-taskpanel',
+                'class'      : 'qui-taskpanel qui-panel',
 
                 styles : {
                     height : '100%'

@@ -99,6 +99,8 @@ define('controls/desktop/Panel', [
 
         /**
          * destroy the panel
+         *
+         * @method QUI.controls.desktop.Panel#destroy
          */
         destroy : function()
         {
@@ -118,6 +120,7 @@ define('controls/desktop/Panel', [
         /**
          * Create the DOMNode Element for the panel
          *
+         * @method QUI.controls.desktop.Panel#create
          * @return {DOMNode}
          */
         create : function()
@@ -191,6 +194,7 @@ define('controls/desktop/Panel', [
         /**
          * Refresh the panel
          *
+         * @method QUI.controls.desktop.Panel#refresh
          * @return {this}
          */
         refresh : function()
@@ -205,6 +209,7 @@ define('controls/desktop/Panel', [
         /**
          * Refresh helper
          *
+         * @method QUI.controls.desktop.Panel#$refresh
          * @ignore
          * @private
          */
@@ -233,6 +238,7 @@ define('controls/desktop/Panel', [
         /**
          * Execute a resize and repaint
          *
+         * @method QUI.controls.desktop.Panel#resize
          * @return {this}
          */
         resize : function()
@@ -305,6 +311,7 @@ define('controls/desktop/Panel', [
         /**
          * Open the Panel
          *
+         * @method QUI.controls.desktop.Panel#open
          * @return {this}
          */
         open : function()
@@ -323,6 +330,7 @@ define('controls/desktop/Panel', [
         /**
          * Minimize / Collapse the panel
          *
+         * @method QUI.controls.desktop.Panel#minimize
          * @return {this}
          */
         minimize : function()
@@ -342,6 +350,7 @@ define('controls/desktop/Panel', [
          * Toggle the panel
          * Close the panel if the panel is opened and open the panel if the panel is closed
          *
+         * @method QUI.controls.desktop.Panel#toggle
          * @return {this}
          */
         toggle : function()
@@ -364,6 +373,7 @@ define('controls/desktop/Panel', [
         /**
          * Is the Panel open?
          *
+         * @method QUI.controls.desktop.Panel#isOpen
          * @return {Bool}
          */
         isOpen : function()
@@ -374,6 +384,7 @@ define('controls/desktop/Panel', [
         /**
          * Return the Body DOMNode Element
          *
+         * @method QUI.controls.desktop.Panel#getBody
          * @return {null|DOMNode}
          */
         getBody : function()
@@ -384,6 +395,7 @@ define('controls/desktop/Panel', [
         /**
          * Return the Title DOMNode Element
          *
+         * @method QUI.controls.desktop.Panel#getHeader
          * @return {null|DOMNode}
          */
         getHeader : function()
@@ -395,6 +407,7 @@ define('controls/desktop/Panel', [
          * Add an action button to the Panel
          * This is a button top of the panel
          *
+         * @method QUI.controls.desktop.Panel#addButton
          * @param {QUI.controls.buttons.Button|QUI.controls.buttons.Seperator|Object} Btn
          * @return {this}
          */
@@ -420,6 +433,7 @@ define('controls/desktop/Panel', [
         /**
          * Return the children
          *
+         * @method @method QUI.controls.desktop.Panel#getButtons
          * @param {String} name - [optional] name of the wanted Element
          *                        if no name given, all children will be return
          * @return {Array}
@@ -436,6 +450,7 @@ define('controls/desktop/Panel', [
         /**
          * Return the button bar of the pannel
          *
+         * @method QUI.controls.desktop.Panel#getButtonBar
          * @return {QUI.controls.toolbar.Bar}
          */
         getButtonBar : function()
@@ -459,6 +474,7 @@ define('controls/desktop/Panel', [
          * Add an category button to the Panel
          * This is a button left of the panel
          *
+         * @method QUI.controls.desktop.Panel#addCategory
          * @param {QUI.controls.buttons.Button|Object} Btn
          * @return {this}
          */
@@ -499,6 +515,7 @@ define('controls/desktop/Panel', [
         /**
          * Return a category children
          *
+         * @method QUI.controls.desktop.Panel#getCategory
          * @param {String} name - [optional] name of the wanted Element
          *                        if no name given, all children will be return
          * @return {Array}
@@ -515,6 +532,7 @@ define('controls/desktop/Panel', [
         /**
          * Return the Category bar object
          *
+         * @method QUI.controls.desktop.Panel#getCategoryBar
          * @return {QUI:controls.toolbar.Bar}
          */
         getCategoryBar : function()
@@ -544,6 +562,7 @@ define('controls/desktop/Panel', [
         /**
          * Return the active category
          *
+         * @method QUI.controls.desktop.Panel#getActiveCategory
          * @return {QUI.controls.buttons.Button}
          */
         getActiveCategory : function()
@@ -554,6 +573,7 @@ define('controls/desktop/Panel', [
         /**
          * Return the Breacrumb bar object
          *
+         * @method QUI.controls.desktop.Panel#getBreadcrumb
          * @return {QUI:controls.breadcrumb.Bar}
          */
         getBreadcrumb : function()
@@ -571,6 +591,7 @@ define('controls/desktop/Panel', [
         /**
          * Return the panel contextmenu
          *
+         * @method QUI.controls.desktop.Panel#getContextMenu
          * @return {QUI:controls.contextmenu.Menu}
          */
         getContextMenu : function()
@@ -598,6 +619,7 @@ define('controls/desktop/Panel', [
         /**
          * Create a sheet in the panel and open it
          *
+         * @method QUI.controls.desktop.Panel#createSheet
          * @return {QUI.controls.panels.Sheet}
          */
         createSheet : function()
@@ -611,6 +633,8 @@ define('controls/desktop/Panel', [
 
         /**
          * Event: on panel destroy
+         *
+         * @method QUI.controls.desktop.Panel#$onDestroy
          */
         $onDestroy : function()
         {

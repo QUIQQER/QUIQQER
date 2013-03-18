@@ -1,12 +1,18 @@
 <?php
 
+exit;
+
+/**
+ * @deprecated
+ */
+
 // Benutzerrechte Prüfung
 if (!$User->getId()) {
-	exit;
+    exit;
 }
 
 if ($User->isAdmin() == false) {
-	exit;
+    exit;
 }
 
 /**
@@ -21,7 +27,7 @@ if ($User->isAdmin() == false) {
  */
 function ajax_rights_group_settings($id)
 {
-	return QUI::getGroups()->get($id)->getJSButtons();
+    return QUI::getGroups()->get($id)->getJSButtons();
 }
 $ajax->register('ajax_rights_group_settings', array('id'));
 
@@ -33,17 +39,17 @@ $ajax->register('ajax_rights_group_settings', array('id'));
 /*
 function ajax_rights_group_tabs()
 {
-	$Groups   = QUI::getGroups();
-	$Toolbar  = $Groups->getToolbar();
-	$children = $Toolbar->getChildren();
+    $Groups   = QUI::getGroups();
+    $Toolbar  = $Groups->getToolbar();
+    $children = $Toolbar->getChildren();
 
-	$result = array();
+    $result = array();
 
-	foreach ($children as $Child) {
-		$result[] = $Child->jsObject();
-	}
+    foreach ($children as $Child) {
+        $result[] = $Child->jsObject();
+    }
 
-	return $result;
+    return $result;
 }
 $ajax->register('ajax_rights_group_tabs');
 */
@@ -55,16 +61,16 @@ $ajax->register('ajax_rights_group_tabs');
  */
 function ajax_rights_group_template($id)
 {
-	$Groups = QUI::getGroups();
-	$Group  = $Groups->get($id);
-	$Smarty = QUI_Template::getEngine(true);
+    $Groups = QUI::getGroups();
+    $Group  = $Groups->get($id);
+    $Smarty = QUI_Template::getEngine(true);
 
-	$Smarty->assign(array(
-		'Group'    => $Group,
-	    'toolbars' => QUI_Wysiwyg::getToolbars()
-	));
+    $Smarty->assign(array(
+        'Group'    => $Group,
+        'toolbars' => QUI_Wysiwyg::getToolbars()
+    ));
 
-	return $Smarty->fetch(SYS_DIR .'template/group_settings.html');
+    return $Smarty->fetch(SYS_DIR .'template/group_settings.html');
 }
 $ajax->register('ajax_rights_group_template', array('id'));
 
@@ -76,27 +82,27 @@ $ajax->register('ajax_rights_group_template', array('id'));
  */
 function ajax_rights_group_save($id, $attributes)
 {
-	$Groups = QUI::getGroups();
-	$Group  = $Groups->get($id);
+    $Groups = QUI::getGroups();
+    $Group  = $Groups->get($id);
 
-	$rights = json_decode($attributes, true);
+    $rights = json_decode($attributes, true);
 
-	// attribute
-	$attr = array(
-		"name", "admin", "parent",
-		"active", "hasChildren", "toolbar"
-	);
+    // attribute
+    $attr = array(
+        "name", "admin", "parent",
+        "active", "hasChildren", "toolbar"
+    );
 
-	foreach ($attr as $a)
-	{
+    foreach ($attr as $a)
+    {
         if (isset($rights[$a])) {
             $Group->setAttribute($a, $rights[$a]);
         }
-	}
+    }
 
-	$Group->setRights( $rights );
+    $Group->setRights( $rights );
 
-	return $Group->save();
+    return $Group->save();
 }
 QUI::$Ajax->register('ajax_rights_group_save', array('id', 'attributes'), 'Permission::checkSU');
 
@@ -108,9 +114,9 @@ QUI::$Ajax->register('ajax_rights_group_save', array('id', 'attributes'), 'Permi
  */
 function ajax_rights_group_create_child($id, $value)
 {
-	$Groups = QUI::getGroups();
-	$Group  = $Groups->get($id);
-	$Group->createChild($value);
+    $Groups = QUI::getGroups();
+    $Group  = $Groups->get($id);
+    $Group->createChild($value);
 }
 $ajax->register('ajax_rights_group_create_child', array('id', 'value'));
 
@@ -125,7 +131,7 @@ $ajax->register('ajax_rights_group_create_child', array('id', 'value'));
  */
 function ajax_rights_users_settings()
 {
-	return QUI::getUsers()->getJSButtons();
+    return QUI::getUsers()->getJSButtons();
 }
 $ajax->register('ajax_rights_users_settings');
 
@@ -138,69 +144,69 @@ $ajax->register('ajax_rights_users_settings');
  */
 function ajax_rights_users_set_settings($id, $data)
 {
-	$Users = QUI::getUsers();
-	$User  = $Users->get($id); /* @var $User User */
-	$data  = json_decode($data, true);
+    $Users = QUI::getUsers();
+    $User  = $Users->get($id); /* @var $User User */
+    $data  = json_decode($data, true);
 
-	if (is_array($data)) {
-	    $data = Utils_Security_Orthos::clearArray($data);
-	}
+    if (is_array($data)) {
+        $data = Utils_Security_Orthos::clearArray($data);
+    }
 
-	if (isset($data['password']))
-	{
-		$User->setPassword($data['password']);
-		unset($data['password']);
-	}
+    if (isset($data['password']))
+    {
+        $User->setPassword($data['password']);
+        unset($data['password']);
+    }
 
-	if (isset($data['usergroup']))
-	{
-		$User->setGroups($data['usergroup']);
-		unset($data['usergroup']);
-	}
+    if (isset($data['usergroup']))
+    {
+        $User->setGroups($data['usergroup']);
+        unset($data['usergroup']);
+    }
 
-	// avatar wird beim hochladen gesetzt und gespeichert, würde sonnst wieder überschrieben werden
-	if (isset($data['avatar'])) {
-		unset($data['avatar']);
-	}
+    // avatar wird beim hochladen gesetzt und gespeichert, würde sonnst wieder überschrieben werden
+    if (isset($data['avatar'])) {
+        unset($data['avatar']);
+    }
 
 
-	foreach ($data as $key => $value) {
-		$User->setAttribute($key, $value);
-	}
+    foreach ($data as $key => $value) {
+        $User->setAttribute($key, $value);
+    }
 
-	if ($User->getAttribute('phone')) {
-		$phones = json_decode($User->getAttribute('phone'), true);
-	}
+    if ($User->getAttribute('phone')) {
+        $phones = json_decode($User->getAttribute('phone'), true);
+    }
 
-	if ($User->getAttribute('mails'))
-	{
-		$mails = json_decode($User->getAttribute('mails'), true);
+    if ($User->getAttribute('mails'))
+    {
+        $mails = json_decode($User->getAttribute('mails'), true);
 
-		foreach ($mails as $mail) {
-			$User->addAdress($mail);
-		}
-	}
+        foreach ($mails as $mail) {
+            $User->addAdress($mail);
+        }
+    }
 
-	if (isset($data['wysiwyg-toolbar'])) {
-	    $User->setExtra('wysiwyg-toolbar', $data['wysiwyg-toolbar']);
-	};
+    if (isset($data['wysiwyg-toolbar'])) {
+        $User->setExtra('wysiwyg-toolbar', $data['wysiwyg-toolbar']);
+    };
 
-	$User->save();
+    $User->save();
 
-	if (isset($data['active']))
-	{
-		if ($data['active'] == 1)
-		{
-			$User->activate();
-		} else
-		{
-			$User->deactivate();
-		}
+    if (isset($data['active']))
+    {
+        if ($data['active'] == 1)
+        {
+            $User->activate();
+        } else
+        {
+            $User->deactivate();
+        }
 
-		unset($data['active']);
-	}
+        unset($data['active']);
+    }
 
-	return true;
+    return true;
 }
 $ajax->register('ajax_rights_users_set_settings', array('id', 'data'));
 
@@ -212,41 +218,41 @@ $ajax->register('ajax_rights_users_set_settings', array('id', 'data'));
  */
 function ajax_rights_userpopup_template($id)
 {
-	$Users  = QUI::getUsers();
-	$Groups = QUI::getGroups();
-	$Smarty = QUI_Template::getEngine(true);
-	$User   = $Users->get($id);
+    $Users  = QUI::getUsers();
+    $Groups = QUI::getGroups();
+    $Smarty = QUI_Template::getEngine(true);
+    $User   = $Users->get($id);
 
-	try
-	{
-	    $adresses = $User->getAdressList();
-	    $Smarty->assign('adresses', $adresses);
+    try
+    {
+        $adresses = $User->getAdressList();
+        $Smarty->assign('adresses', $adresses);
 
-	} catch (QException $e)
-	{
+    } catch (QException $e)
+    {
 
-	}
+    }
 
-	try
-	{
-	    $Standard = $User->getStandardAdress();
+    try
+    {
+        $Standard = $User->getStandardAdress();
         $Smarty->assign('Standard', $Standard);
 
-	} catch (QException $e)
-	{
+    } catch (QException $e)
+    {
 
-	}
+    }
 
-	$Smarty->assign(array(
-		'User'     => $User,
-		'Groups'   => $Groups,
-		'countrys' => Utils_Countries_Manager::getList(),
-	    'toolbars' => QUI_Wysiwyg::getToolbars()
-	));
+    $Smarty->assign(array(
+        'User'     => $User,
+        'Groups'   => $Groups,
+        'countrys' => Utils_Countries_Manager::getList(),
+        'toolbars' => QUI_Wysiwyg::getToolbars()
+    ));
 
-	$Smarty->assign('countrys', Utils_Countries_Manager::getList());
+    $Smarty->assign('countrys', Utils_Countries_Manager::getList());
 
-	return $Smarty->fetch(SYS_DIR .'template/user_popup.html');
+    return $Smarty->fetch(SYS_DIR .'template/user_popup.html');
 }
 $ajax->register('ajax_rights_userpopup_template', array('id'));
 

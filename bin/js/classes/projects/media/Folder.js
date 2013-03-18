@@ -20,6 +20,8 @@ define('classes/projects/media/Folder', [
 
     /**
      * @class QUI.classes.projects.media.File
+     *
+     * @memberof! <global>
      */
     QUI.classes.projects.media.Folder = new Class({
 

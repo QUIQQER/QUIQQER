@@ -32,7 +32,8 @@ define('controls/desktop/Workspace', [
      */
     QUI.controls.desktop.Workspace = new Class({
 
-        Implements : [ QUI_Control ],
+        Extends : QUI_Control,
+        Type    : 'QUI.controls.desktop.Workspace',
 
         initialize : function(Parent, options)
         {

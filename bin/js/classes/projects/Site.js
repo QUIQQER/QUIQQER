@@ -11,7 +11,11 @@
  * @package com.pcsg.qui.js.classes.project
  * @namespace QUI.classes.project
  *
- * @event onRefresh [ this ]
+ * @event onLoad [ this ]
+ * @event onGetChildren [ this, {Array} ]
+ * @event onActivate [ this ]
+ * @event onDeactivate [ this ]
+ * @event onDelete [ this ]
  */
 
 define('classes/projects/Site', [
@@ -32,6 +36,8 @@ define('classes/projects/Site', [
      *
      * @fires onStatusEditBegin - this
      * @fires onStatusEditEnd   - this
+     *
+     * @memberof! <global>
      */
     QUI.classes.projects.Site = new Class({
 
@@ -58,30 +64,28 @@ define('classes/projects/Site', [
          *
          * @method QUI.classes.projects.Site#load
          *
-         * @param {Function} onfinish      - callback Function
-         * @param {Object} params        - callback Object
+         * @param {Function} onfinish - [optional] callback Function
+         * @return {this}
          */
-        load : function(onfinish, params)
+        load : function(onfinish)
         {
-            params = params || {};
+            var params = this.ajaxParams(),
+                Site   = this;
 
-            params.project  = this.getProject().getAttribute('name');
-            params.lang     = this.getProject().getAttribute('lang');
-            params.id       = this.getId();
-            params.Site     = this;
             params.onfinish = onfinish;
+
 
             QUI.Ajax.get('ajax_site_get', function(result, Ajax)
             {
-                var Site = Ajax.getAttribute('Site');
                 Site.setAttributes( result );
-
-                Site.fireEvent( 'refresh', [ Site ] );
+                Site.fireEvent( 'load', [ Site ] );
 
                 if ( Ajax.getAttribute( 'onfinish' ) ) {
                     Ajax.getAttribute( 'onfinish' )( Site, Ajax );
                 }
             }, params);
+
+            return this;
         },
 
         /**
@@ -92,7 +96,7 @@ define('classes/projects/Site', [
          */
         getId : function()
         {
-            return this.getAttribute('id');
+            return this.getAttribute( 'id' );
         },
 
         /**
@@ -103,45 +107,60 @@ define('classes/projects/Site', [
          */
         getProject : function()
         {
-            return this.getAttribute('Project');
+            return this.getAttribute( 'Project' );
         },
 
         /**
-         * Returns the needle request (Ajax) params
+         * Get the children
          *
-         * @method QUI.classes.projects.Site#ajaxParams
-         * @return {Object}
+         * @method QUI.classes.projects.Site#getChildren
+         * @param {Function} onfinish - [optional] callback function
+         * @returns {this}
          */
-        ajaxParams : function()
+        getChildren : function(onfinish)
         {
-            return {
-                project : this.getProject().getAttribute('name'),
-                lang    : this.getProject().getAttribute('lang'),
-                id      : this.getId(),
-                Site    : this
-            };
+            var params = this.ajaxParams(),
+                Site   = this;
+
+            params.onfinish = onfinish;
+
+            QUI.Ajax.get('ajax_site_getchildren', function(result, Request)
+            {
+                if ( Request.getAttribute( 'onfinish' ) ) {
+                    Request.getAttribute( 'onfinish' )( result, Request );
+                }
+
+                Site.fireEvent( 'getChildren', [ Site, result ] );
+
+            }, params);
+
+            return this;
         },
 
         /**
          * Activate the site
          *
          * @method QUI.classes.projects.Site#ajaxParams
+         * @fires activate
+         * @param {Function} onfinish - [optional] callback function
          * @return {this}
          */
-        activate : function()
+        activate : function(onfonish)
         {
-            this.fireEvent('onStatusEditBegin', [this]);
-            this.getProject().fireEvent('onSiteStatusEditBegin', [this]);
+            var Site   = this,
+                params = this.ajaxParams();
 
-            QUI.lib.Sites.activate(function(result, Ajax)
+            params.onfinish = onfinish;
+
+            QUI.Ajax.post('ajax_site_activate', function(result, Request)
             {
-                if (result) {
-                    this.setAttribute('active', 1);
+                if ( Request.getAttribute( 'onfinish' ) ) {
+                    Request.getAttribute( 'onfinish' )( result, Request );
                 }
 
-                this.fireEvent('onStatusEditEnd', [this]);
-                this.getProject().fireEvent('onSiteStatusEditEnd', [this]);
-            }.bind(this), this.ajaxParams());
+                Site.fireEvent( 'activate', [ Site ] );
+
+            }, params);
 
             return this;
         },
@@ -150,22 +169,25 @@ define('classes/projects/Site', [
          * Deactivate the site
          *
          * @method QUI.classes.projects.Site#deactivate
+         * @fires deactivate
+         * @param {Function} onfinish - [optional] callback function
          * @return {this}
          */
-        deactivate : function()
+        deactivate : function(onfinish)
         {
-            this.fireEvent('onStatusEditBegin', [this]);
-            this.getProject().fireEvent('onSiteStatusEditBegin', [this]);
+            var Site   = this,
+                params = this.ajaxParams();
+
+            params.onfinish = onfinish;
 
             QUI.lib.Sites.deactivate(function(result, Ajax)
             {
-                if (result) {
-                    this.setAttribute('active', 0);
+                if ( Request.getAttribute( 'onfinish' ) ) {
+                    Request.getAttribute( 'onfinish' )( result, Request );
                 }
 
-                this.fireEvent('onStatusEditEnd', [this]);
-                this.getProject().fireEvent('onSiteStatusEditEnd', [this]);
-            }.bind(this), this.ajaxParams());
+                Site.fireEvent( 'deactivate', [ Site ] );
+            }, params);
 
             return this;
         },
@@ -174,24 +196,26 @@ define('classes/projects/Site', [
          * Save the site
          *
          * @method QUI.classes.projects.Site#save
-         *
+         * @fires save
+         * @param {Function} onfinish - [optional] callback function
          * @return {this}
          */
-        save : function()
+        save : function(onfinish)
         {
-            this.fireEvent('onStatusEditBegin', [this]);
-            this.getProject().fireEvent('onSiteStatusEditBegin', [this]);
+            var Site   = this,
+                params = this.ajaxParams();
 
-            QUI.lib.Sites.save(
-                function(result, Ajax)
-                {
-                    this.fireEvent('onStatusEditEnd', [this]);
-                    this.getProject().fireEvent('onSiteStatusEditEnd', [this]);
+            params.onfinish   = onfinish;
+            params.attributes = JSON.encode( this.getAttributes() );
 
-                }.bind(this),
-                this.ajaxParams(),
-                this.getAttributes()
-            );
+            QUI.Ajax.post('ajax_site_save', function(result, Request)
+            {
+                if ( Ajax.getAttribute( 'onfinish' ) ) {
+                    Ajax.getAttribute( 'onfinish' )( result, Request );
+                }
+
+                Site.fireEvent( 'save', [ Site ] );
+            }, params);
 
             return this;
         },
@@ -257,7 +281,7 @@ define('classes/projects/Site', [
                 });
 
                 // fire the delete event
-                Site.fireEvent('delete', [Site]);
+                Site.fireEvent( 'delete', [ Site ] );
 
             }, this.ajaxParams());
         },
@@ -267,13 +291,17 @@ define('classes/projects/Site', [
          *
          * @method QUI.classes.projects.Site#createChild
          *
-         * @param {String} newname - [optional, if no newname was passed,
-         *         a window would be open]
+         * @param {String} newname - new name of the child
          */
         createChild : function(newname)
         {
-            if (typeof newname === 'undefined')
-            {
+            console.warn( 'createChild' );
+
+            if ( typeof newname === 'undefined' ) {
+                return;
+            };
+
+            /*
                 QUI.Windows.create('prompt', {
                     title  : 'Wie soll die neue Seite heißen?',
                     text   : 'Bitte geben Sie ein Namen für die neue Seite an',
@@ -289,43 +317,30 @@ define('classes/projects/Site', [
                 });
 
                 return;
+            }*/
+
+            parent_params = parent_params || {};
+
+            parent_params.onfinish   = onfinish;
+            parent_params.attributes = JSON.encode( params );
+
+            if ( this.checkAjaxSiteParams( parent_params ) === false ) {
+                return false;
             }
 
-            QUI.lib.Sites.createChild(
-                function(result, Request)
-                {
-                    // open the site in the sitemap
-                    var i, len, Panel, items;
+            QUI.Ajax.post('ajax_site_children_create', function(result, Request)
+            {
+                Ajax.getAttribute( 'onfinish' )( result, Request );
+            }, parent_params);
 
-                    var Site   = Request.getAttribute('Site'),
-                        id     = Site.getId(),
-                        panels = QUI.lib.Sites.getProjectPanels( Site ),
-
-                        func_close = function(Item) {
-                            Item.close();
-                        };
-
-                    for (i = 0, len = panels.length; i < len; i++)
-                    {
-                        Panel = panels[i];
-
-                        // if site is inb the map, it must be refreshed
-                        items = Panel.getSitemapItemsById( id );
-
-                        if (items.length) {
-                            items.each( func_close );
-                        }
-
-                        panels[i].openSite( result.id );
-                    }
-                },
-                this.ajaxParams(),
-                {
-                    name : newname,
-                    title : newname
-                }
-            );
+            return true;
         },
+
+
+
+        /**
+         * Site attributes
+         */
 
         /**
          * Get an site attribute
@@ -404,6 +419,22 @@ define('classes/projects/Site', [
             }
 
             return this;
+        },
+
+        /**
+         * Returns the needle request (Ajax) params
+         *
+         * @method QUI.classes.projects.Site#ajaxParams
+         * @return {Object}
+         */
+        ajaxParams : function()
+        {
+            return {
+                project : this.getProject().getAttribute('name'),
+                lang    : this.getProject().getAttribute('lang'),
+                id      : this.getId(),
+                Site    : this
+            };
         }
     });
 

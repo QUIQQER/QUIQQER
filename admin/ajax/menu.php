@@ -9,12 +9,12 @@ function ajax_menu()
 {
     $User = QUI::getUserBySession();
     $Menu = new Controls_Contextmenu_Bar(array(
-    	'name'   => 'menu',
-    	'parent' => 'menubar',
-    	'id'	 => 'menu'
+        'name'   => 'menu',
+        'parent' => 'menubar',
+        'id'	 => 'menu'
     ));
 
-	QUI_Menu::addXMLFile( $Menu, SYS_DIR .'menu.xml' );
+    QUI_Menu::addXMLFile( $Menu, SYS_DIR .'menu.xml' );
 
     // read the settings.xmls
     $dir      = SYS_DIR .'settings/';
@@ -64,7 +64,7 @@ function ajax_menu()
                 if ( $icon->item( 0 ) )
                 {
                     $Win->setAttribute(
-                    	'icon',
+                        'icon',
                         Utils_Dom::parseVar(
                             $icon->item( 0 )->nodeValue
                         )
@@ -93,41 +93,41 @@ function ajax_menu()
     return;
 
 
-	$Settings->appendChild(
-		new Controls_Contextmenu_Menuitem(array(
-			'text'   => 'Wartungsarbeiten',
-			'name'   => 'settings_maintenance',
-			'image'  => URL_BIN_DIR .'16x16/configure.png',
-			'needle' => 'lib/Maintenance',
-			'click'  => 'QUI.lib.Maintenance.open'
-		))
-	);
+    $Settings->appendChild(
+        new Controls_Contextmenu_Menuitem(array(
+            'text'   => 'Wartungsarbeiten',
+            'name'   => 'settings_maintenance',
+            'image'  => URL_BIN_DIR .'16x16/configure.png',
+            'needle' => 'lib/Maintenance',
+            'click'  => 'QUI.lib.Maintenance.open'
+        ))
+    );
 
-	// Menüpunkt für Plugineinstellungen
-	$SettingsPlugins = new Controls_Contextmenu_Menuitem(array(
-		'text'  => 'Plugins',
-		'name'  => 'settings_plugins',
-		'image' => URL_BIN_DIR .'16x16/plugins.png'
-	));
-	$Settings->appendChild($SettingsPlugins);
+    // Menüpunkt für Plugineinstellungen
+    $SettingsPlugins = new Controls_Contextmenu_Menuitem(array(
+        'text'  => 'Plugins',
+        'name'  => 'settings_plugins',
+        'image' => URL_BIN_DIR .'16x16/plugins.png'
+    ));
+    $Settings->appendChild($SettingsPlugins);
 
-	$SettingsPlugins->appendChild(
-		new Controls_Contextmenu_Menuitem(array(
-			'text'    => 'Dienste Verwaltung',
-			'name'    => 'cron_manager',
-			'image'   => URL_BIN_DIR .'16x16/tasks.png',
-			'onclick' => defined('ADMIN2') ? '_pcsg.crons.open();' : '_pcsg.crons.open'
-		))
-	);
+    $SettingsPlugins->appendChild(
+        new Controls_Contextmenu_Menuitem(array(
+            'text'    => 'Dienste Verwaltung',
+            'name'    => 'cron_manager',
+            'image'   => URL_BIN_DIR .'16x16/tasks.png',
+            'onclick' => defined('ADMIN2') ? '_pcsg.crons.open();' : '_pcsg.crons.open'
+        ))
+    );
 
-	$SettingsPlugins->appendChild(
-		new Controls_Contextmenu_Menuitem(array(
-			'text'    => 'robot.txt',
-			'name'    => 'robot_txt_manager',
-			'image'   => URL_BIN_DIR .'16x16/robottxt.png',
-			'onclick' => defined('ADMIN2') ? '_pcsg.crons.robottxt.open();': '_pcsg.crons.robottxt.open'
-		))
-	);
+    $SettingsPlugins->appendChild(
+        new Controls_Contextmenu_Menuitem(array(
+            'text'    => 'robot.txt',
+            'name'    => 'robot_txt_manager',
+            'image'   => URL_BIN_DIR .'16x16/robottxt.png',
+            'onclick' => defined('ADMIN2') ? '_pcsg.crons.robottxt.open();': '_pcsg.crons.robottxt.open'
+        ))
+    );
 
 
 }

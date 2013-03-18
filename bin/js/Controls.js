@@ -17,9 +17,10 @@ define('Controls', function()
 
         $controls : {},
         $cids     : {},
+        $types    : {},
 
         /**
-         * Get the Controls by name
+         * Return all controls with tha name
          *
          * @param {String} n - Name of the Control
          * @return {Array} All Controls with the needle name
@@ -49,6 +50,20 @@ define('Controls', function()
         },
 
         /**
+         * Return all controls from a type
+         *
+         * @return {Array}
+         */
+        getByType : function(type)
+        {
+            if ( typeof this.$types[ type ] !== 'undefined' ) {
+                return this.$types[ type ];
+            }
+
+            return [];
+        },
+
+        /**
          * Load a control by a control type
          *
          * @param {String} type
@@ -56,7 +71,7 @@ define('Controls', function()
          *
          * @example QUI.Controls.getByType('QUI.controls.taskbar.Task', function(Modul) { })
          */
-        getByType : function(type, onload)
+        loadType : function(type, onload)
         {
             var modul = type.replace( 'QUI.', '' )
                             .replace( /\./g, '/' );
@@ -71,7 +86,8 @@ define('Controls', function()
          */
         add : function(Control)
         {
-            var n = Control.getAttribute( 'name' );
+            var n = Control.getAttribute( 'name' ),
+                t = typeOf( Control );
 
             if ( !n || n === '' ) {
                 n = '#unknown';
@@ -81,7 +97,13 @@ define('Controls', function()
                 this.$controls[ n ] = [];
             }
 
+            if ( typeof this.$types[ t ] === 'undefined' ) {
+                this.$types[ t ] = [];
+            }
+
             this.$controls[ n ].push( Control );
+            this.$types[ t ].push( Control );
+
             this.$cids[ Control.getId() ] = Control;
         },
 
@@ -92,7 +114,8 @@ define('Controls', function()
          */
         destroy : function(Control)
         {
-            var n  = Control.getAttribute('name'),
+            var n  = Control.getAttribute( 'name' ),
+                t  = typeOf( Control ),
                 id = Control.getId();
 
             if ( !n || n === '' ) {
@@ -103,7 +126,6 @@ define('Controls', function()
                 delete this.$cids[ id ];
             }
 
-
             if ( typeof this.$controls[ n ] === 'undefined' ) {
                 return;
             }
@@ -111,6 +133,7 @@ define('Controls', function()
             var i, len;
             var tmp = [];
 
+            // refresh controls
             for ( i = 0, len = this.$controls[ n ].length; i < len; i++ )
             {
                 if ( id !== this.$controls[ n ][ i ].getId() ) {
@@ -118,7 +141,19 @@ define('Controls', function()
                 }
             }
 
-            this.$controls[n] = tmp;
+            this.$controls[ t ] = tmp;
+
+            // refresh types
+            tmp = [];
+
+            for ( i = 0, len = this.$types[ t ].length; i < len; i++ )
+            {
+                if ( id !== this.$types[ t ][ i ].getId() ) {
+                    tmp.push( this.$types[ t ][ i ] );
+                }
+            }
+
+            this.$types[ t ] = tmp;
         }
     };
 

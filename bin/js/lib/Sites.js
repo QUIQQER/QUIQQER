@@ -26,6 +26,7 @@ define('lib/Sites', [
          * @param {Function} onfinish     - Callback
          * @param {Object} params        - Site parameter
          */
+        /*
         getChildren : function(onfinish, params)
         {
             params = params || {};
@@ -40,7 +41,7 @@ define('lib/Sites', [
                 Ajax.getAttribute('onfinish')(result, Ajax);
             }, params);
         },
-
+        */
         /**
          * Activate a Site
          *
@@ -350,7 +351,7 @@ define('lib/Sites', [
                     {
                         var Project = Itm.getAttribute('Project');
 
-                        QUI.lib.Projects.openSiteInPanel(
+                        QUI.Projects.openSiteInPanel(
                             Project.getAttribute('name'),
                             Project.getAttribute('lang'),
                             Itm.getAttribute('value')

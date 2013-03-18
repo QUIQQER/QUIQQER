@@ -1,0 +1,53 @@
+<locales>
+
+    <groups name="quiqqer/system" datatype="js">
+
+    </groups>
+
+
+    <groups name="quiqqer/system">
+        <locale name="menu.extras.projects.text">
+            <de><![CDATA[Projekt Verwaltung]]></de>
+            <en><![CDATA[Projects manager]]></en>
+        </locale>
+
+
+        <!-- Exception  -->
+        <locale name="exception.project.not.found">
+            <de><![CDATA[Projekt [name] konnte nicht gefunden werden.]]></de>
+            <en><![CDATA[Project [name] could not found.]]]></en>
+        </locale>
+        <locale name="exception.project.lang.not.found">
+            <de><![CDATA[Projektsprache [lang] konnte nicht gefunden werden.]]></de>
+            <en><![CDATA[Project lang [lang] could not found.]]]></en>
+        </locale>
+
+        <locale name="exception.project.longer.two.signs">
+            <de><![CDATA[Der Projektname muss länger als 2 Zeichen sein.]]></de>
+            <en><![CDATA[The project name must be longer than 2 characters.]]></en>
+        </locale>
+        <locale name="exception.project.not.allowed.signs">
+            <de><![CDATA[Der Projektname enthält nicht erlaubte Zeichen. Nicht erlaubte Zeichen sind: [signs]]]></de>
+            <en><![CDATA[The project name contains illegal characters. Illegal characters are: [signs]]]></en>
+        </locale>
+        <locale name="exception.project.lang.not.two.signs">
+            <de><![CDATA[Die Projektsprache ist ungültig.]]></de>
+            <en><![CDATA[The project language is invalid.]]></en>
+        </locale>
+        <locale name="exception.project.has.no.langs">
+            <de><![CDATA[Das Projekt besitzt keine gültigen sprachen.]]></de>
+            <en><![CDATA[The project hast no valid languages.]]></en>
+        </locale>
+         <locale name="exception.project.lang.no.default">
+            <de><![CDATA[Das Projekt besitzt keine standard Sprache.]]></de>
+            <en><![CDATA[The project hast no default languages.]]></en>
+        </locale>
+
+
+        <locale name="exception.project.exist">
+            <de><![CDATA[Projekt existiert bereits.]]></de>
+            <en><![CDATA[The project already exist.]]></en>
+        </locale>
+    </groups>
+
+</locales>

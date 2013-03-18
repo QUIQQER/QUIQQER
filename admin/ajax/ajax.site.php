@@ -1,15 +1,21 @@
 <?php
 
+exit;
+
+/**
+ * @deprecated
+ */
+
 /* @var $User User */
 $Users = QUI::getUsers();
 $User  = $Users->getUserBySession();
 
 if (!$User->getId()) {
-	exit;
+    exit;
 }
 
 if ($User->isAdmin() == false) {
-	exit;
+    exit;
 }
 
 /**
@@ -24,20 +30,20 @@ if ($User->isAdmin() == false) {
 function ajax_site_get_sorts($project, $lang, $id)
 {
     $Project = QUI::getProject($project, $lang);
-	$Site    = new Projects_Site_Edit($Project, (int)$id);
+    $Site    = new Projects_Site_Edit($Project, (int)$id);
 
-	$sorts  = $Site->getSorts();
-	$result = array();
+    $sorts  = $Site->getSorts();
+    $result = array();
 
-	foreach ($sorts as $key => $value)
-	{
+    foreach ($sorts as $key => $value)
+    {
         $result[] = array(
             'sort' => $key,
             'text' => $value
         );
-	}
+    }
 
-	return $result;
+    return $result;
 }
 $ajax->register('ajax_site_get_sorts', array('project', 'lang', 'id'));
 
@@ -51,58 +57,58 @@ $ajax->register('ajax_site_get_sorts', array('project', 'lang', 'id'));
  */
 function ajax_site_search($lang, $project, $params, $select)
 {
-	$Project = QUI::getProject($project, $lang);
-	$params  = json_decode($params, true);
-	$select  = explode(',', trim($select, ','));
+    $Project = QUI::getProject($project, $lang);
+    $params  = json_decode($params, true);
+    $select  = explode(',', trim($select, ','));
 
-	$result   = array();
-	$children = array();
+    $result   = array();
+    $children = array();
 
-	if (isset($params['id']))
-	{
-		try
-		{
-			$children[] = $Project->get((int)$params['id']);
-		} catch (QException $e)
-		{
-			return $result;
-		}
-	}
+    if (isset($params['id']))
+    {
+        try
+        {
+            $children[] = $Project->get((int)$params['id']);
+        } catch (QException $e)
+        {
+            return $result;
+        }
+    }
 
-	$childs = array();
+    $childs = array();
 
-	foreach ($children as $Child)  /* @var $Child Projects_Site */
-	{
-		$attributes = array();
+    foreach ($children as $Child)  /* @var $Child Projects_Site */
+    {
+        $attributes = array();
 
-		if (empty($select))
-		{
-			$attributes = $Child->getAllAttributes();
-		} else
-		{
-			foreach ($select as $att) {
-				$attributes[$att] = $Child->getAttribute($att);
-			}
-		}
+        if (empty($select))
+        {
+            $attributes = $Child->getAllAttributes();
+        } else
+        {
+            foreach ($select as $att) {
+                $attributes[$att] = $Child->getAttribute($att);
+            }
+        }
 
-		$attributes['id'] = $Child->getId();
+        $attributes['id'] = $Child->getId();
 
-		if (empty($select) || in_array('has_children', $select)) {
-			$attributes['has_children'] = $Child->hasChildren();
-		}
+        if (empty($select) || in_array('has_children', $select)) {
+            $attributes['has_children'] = $Child->hasChildren();
+        }
 
-		if (empty($select) || in_array('config', $select)) {
-			$attributes['config'] = $Child->conf;
-		}
+        if (empty($select) || in_array('config', $select)) {
+            $attributes['config'] = $Child->conf;
+        }
 
-		if ($Child->isLinked()) {
-			$attributes['linked'] = 1;
-		}
+        if ($Child->isLinked()) {
+            $attributes['linked'] = 1;
+        }
 
-		$childs[] = $attributes;
-	}
+        $childs[] = $attributes;
+    }
 
-	return $childs;
+    return $childs;
 }
 $ajax->register('ajax_site_search', array('lang', 'project', 'params', 'select'));
 
@@ -116,21 +122,21 @@ $ajax->register('ajax_site_search', array('lang', 'project', 'params', 'select')
  */
 function ajax_site_get_parentids($project, $lang, $id)
 {
-	$Project = QUI::getProject($project, $lang);
-	$Site    = $Project->get((int)$id);
-	$result  = array();
+    $Project = QUI::getProject($project, $lang);
+    $Site    = $Project->get((int)$id);
+    $result  = array();
 
-	if ($Site->getId() == 1) {
-		return array(1);
-	}
+    if ($Site->getId() == 1) {
+        return array(1);
+    }
 
-	$parent  = $Site->getParents();
+    $parent  = $Site->getParents();
 
-	foreach ($parent as $Parent) {
-		$result[] = $Parent->getId();
-	}
+    foreach ($parent as $Parent) {
+        $result[] = $Parent->getId();
+    }
 
-	return $result;
+    return $result;
 }
 $ajax->register('ajax_site_get_parentids', array('project', 'lang', 'id'));
 
@@ -145,10 +151,10 @@ $ajax->register('ajax_site_get_parentids', array('project', 'lang', 'id'));
  */
 function ajax_site_get_extra($id, $lang, $project, $field)
 {
-	$Project = QUI::getProject($project, $lang);
-	$Site    = new Projects_Site_Edit($Project, (int)$id);
+    $Project = QUI::getProject($project, $lang);
+    $Site    = new Projects_Site_Edit($Project, (int)$id);
 
-	return $Site->getExtra($field);
+    return $Site->getExtra($field);
 }
 $ajax->register('ajax_site_get_extra', array('id', 'lang', 'project', 'field'));
 
@@ -162,10 +168,10 @@ $ajax->register('ajax_site_get_extra', array('id', 'lang', 'project', 'field'));
  */
 function ajax_site_super_user_demarcate($project, $lang, $id)
 {
-	$Project = QUI::getProject($project, $lang);
-	$Site    = new Projects_Site_Edit($Project, $id);
+    $Project = QUI::getProject($project, $lang);
+    $Site    = new Projects_Site_Edit($Project, $id);
 
-	$Site->demarcateWithRights();
+    $Site->demarcateWithRights();
 }
 $ajax->register('ajax_site_super_user_demarcate', array('project', 'lang', 'id'));
 
@@ -179,58 +185,58 @@ $ajax->register('ajax_site_super_user_demarcate', array('project', 'lang', 'id')
  */
 function ajax_site_saveFromTemp($id, $lang, $project_name)
 {
-	try
-	{
-		$Project = QUI::getProject($project_name, $lang);
-		$Site    = $Project->get($id);
+    try
+    {
+        $Project = QUI::getProject($project_name, $lang);
+        $Site    = $Project->get($id);
 
-		return $Site->save();
+        return $Site->save();
 
-	} catch (QException $e)
-	{
-		switch( $e->getCode() )
-		{
-			case 701:
-				throw new QException(
-					'Der Name einer Seite muss mehr als 2 Zeichen betragen. <br />'.
-					'Bitte ändern Sie den Namen und speichern erneut. <br />',
-					701
-				);
-			break;
+    } catch (QException $e)
+    {
+        switch( $e->getCode() )
+        {
+            case 701:
+                throw new QException(
+                    'Der Name einer Seite muss mehr als 2 Zeichen betragen. <br />'.
+                    'Bitte ändern Sie den Namen und speichern erneut. <br />',
+                    701
+                );
+            break;
 
-			case 702:
-				throw new QException(
-					'Es wurden Sonderzeichen im Name gefunden die nicht erlaubt sind.'.
-					'Bitte nehmen Sie alle Sonderzeichen aus dem Namen und speichern erneut.<br />'.
-					'<span style="font-size: 10px">Folgende Zeichen sind nicht erlaubt:<br /> - . , ; ` # ! § $ % & / ? < > = \' [ ] +"</span>',
-					701
-				);
-			break;
+            case 702:
+                throw new QException(
+                    'Es wurden Sonderzeichen im Name gefunden die nicht erlaubt sind.'.
+                    'Bitte nehmen Sie alle Sonderzeichen aus dem Namen und speichern erneut.<br />'.
+                    '<span style="font-size: 10px">Folgende Zeichen sind nicht erlaubt:<br /> - . , ; ` # ! § $ % & / ? < > = \' [ ] +"</span>',
+                    701
+                );
+            break;
 
-			case 703:
-				throw new QException(
-					'Eine Seite mit dem gleichen Namen existiert bereits in der selben Ebene.<br />'.
-					'Bitte ändern Sie den Namen und speichern erneut.',
-					703
-				);
-			break;
+            case 703:
+                throw new QException(
+                    'Eine Seite mit dem gleichen Namen existiert bereits in der selben Ebene.<br />'.
+                    'Bitte ändern Sie den Namen und speichern erneut.',
+                    703
+                );
+            break;
 
-			case 704:
-				throw new QException(
-					'Der Name einer Seite darf nicht mehr als 200 Zeichen betragen. <br />'.
-					'Bitte ändern Sie den Namen und speichern erneut. <br />',
-					704
-				);
-			break;
+            case 704:
+                throw new QException(
+                    'Der Name einer Seite darf nicht mehr als 200 Zeichen betragen. <br />'.
+                    'Bitte ändern Sie den Namen und speichern erneut. <br />',
+                    704
+                );
+            break;
 
-			default:
-				throw new QException(
-					$e->getMessage(),
-					$e->getCode()
-				);
-			break;
-		}
-	}
+            default:
+                throw new QException(
+                    $e->getMessage(),
+                    $e->getCode()
+                );
+            break;
+        }
+    }
 }
 $ajax->register('ajax_site_saveFromTemp', array('id', 'lang', 'project_name'));
 
@@ -245,10 +251,10 @@ $ajax->register('ajax_site_saveFromTemp', array('id', 'lang', 'project_name'));
  */
 function ajax_site_move($project, $lang, $pid, $id)
 {
-	$Project = QUI::getProject($project, $lang);
-	$Site    = new Projects_Site_Edit($Project, (int)$id);
+    $Project = QUI::getProject($project, $lang);
+    $Site    = new Projects_Site_Edit($Project, (int)$id);
 
-	return $Site->move($pid) ? 1 : 0;
+    return $Site->move($pid) ? 1 : 0;
 }
 $ajax->register('ajax_site_move', array('project', 'lang', 'pid', 'id'));
 
@@ -263,10 +269,10 @@ $ajax->register('ajax_site_move', array('project', 'lang', 'pid', 'id'));
  */
 function ajax_site_copy($project, $lang, $pid, $id)
 {
-	$Project = QUI::getProject($project, $lang);
-	$Site    = new Projects_Site_Edit($Project, (int)$id);
+    $Project = QUI::getProject($project, $lang);
+    $Site    = new Projects_Site_Edit($Project, (int)$id);
 
-	return $Site->copy($pid);
+    return $Site->copy($pid);
 }
 $ajax->register('ajax_site_copy', array('project', 'lang', 'pid', 'id'));
 
@@ -281,10 +287,10 @@ $ajax->register('ajax_site_copy', array('project', 'lang', 'pid', 'id'));
  */
 function ajax_site_linked($project, $lang, $pid, $id)
 {
-	$Project = QUI::getProject($project, $lang);
-	$Site    = new Projects_Site_Edit($Project, (int)$id);
+    $Project = QUI::getProject($project, $lang);
+    $Site    = new Projects_Site_Edit($Project, (int)$id);
 
-	return $Site->linked($pid);
+    return $Site->linked($pid);
 }
 $ajax->register('ajax_site_linked', array('project', 'lang', 'pid', 'id'));
 
@@ -298,52 +304,52 @@ $ajax->register('ajax_site_linked', array('project', 'lang', 'pid', 'id'));
  */
 function ajax_site_linked_in($project, $lang, $id, $ids)
 {
-	$Project = QUI::getProject($project, $lang);
-	$Site    = new Projects_Site_Edit($Project, (int)$id);
-	$parents = json_decode($ids, true);
+    $Project = QUI::getProject($project, $lang);
+    $Site    = new Projects_Site_Edit($Project, (int)$id);
+    $parents = json_decode($ids, true);
 
-	// Schaun ob es den Namen im Kind schon gibt
-	// Falls ja dann raus
-	foreach ($parents as $pid)
-	{
-		$Parent = $Project->get((int)$pid);
+    // Schaun ob es den Namen im Kind schon gibt
+    // Falls ja dann raus
+    foreach ($parents as $pid)
+    {
+        $Parent = $Project->get((int)$pid);
 
-		try
-		{
-			$Child = $Parent->getChildIdByName(
-				$Site->getAttribute('name')
-			);
-		} catch (QException $e)
-		{
-			// es wurde kein Kind gefunden
-			$Child  = false;
-		}
+        try
+        {
+            $Child = $Parent->getChildIdByName(
+                $Site->getAttribute('name')
+            );
+        } catch (QException $e)
+        {
+            // es wurde kein Kind gefunden
+            $Child  = false;
+        }
 
-		if ($Child)
-		{
-			$parents   = $Parent->getParents();
-			$parents[] = $Parent;
+        if ($Child)
+        {
+            $parents   = $Parent->getParents();
+            $parents[] = $Parent;
 
-			$path    = '';
+            $path    = '';
 
-			foreach ($parents as $Prt) {
-				$path .= '/'. $Prt->getAttribute('name');
-			}
+            foreach ($parents as $Prt) {
+                $path .= '/'. $Prt->getAttribute('name');
+            }
 
-			// Es wurde ein Kind gefunde
-			throw new QException(
-				'Eine Seite mit dem Namen '. $Site->getAttribute('name') .' befindet sich schon unter '. $path
-			);
-		}
+            // Es wurde ein Kind gefunde
+            throw new QException(
+                'Eine Seite mit dem Namen '. $Site->getAttribute('name') .' befindet sich schon unter '. $path
+            );
+        }
 
-		$Child = false;
-	}
+        $Child = false;
+    }
 
-	foreach ($parents as $pid) {
-		$Site->linked((int)$pid);
-	}
+    foreach ($parents as $pid) {
+        $Site->linked((int)$pid);
+    }
 
-	return true;
+    return true;
 }
 $ajax->register('ajax_site_linked_in', array('project', 'lang', 'id', 'ids'));
 
@@ -358,10 +364,10 @@ $ajax->register('ajax_site_linked_in', array('project', 'lang', 'id', 'ids'));
  */
 function ajax_site_delete_linked($project, $lang, $pid, $id, $delorig)
 {
-	$Project = QUI::getProject($project, $lang);
-	$Site    = new Projects_Site_Edit($Project, (int)$id);
+    $Project = QUI::getProject($project, $lang);
+    $Site    = new Projects_Site_Edit($Project, (int)$id);
 
-	return $Site->deleteLinked($pid, $delorig);
+    return $Site->deleteLinked($pid, $delorig);
 }
 $ajax->register('ajax_site_delete_linked', array('project', 'lang', 'pid', 'id', 'delorig'));
 
@@ -374,16 +380,16 @@ $ajax->register('ajax_site_delete_linked', array('project', 'lang', 'pid', 'id',
  */
 function ajax_site_delete_onlylinked($project, $lang, $ids)
 {
-	$ids = explode(',', $ids);
+    $ids = explode(',', $ids);
 
-	if (!isset($ids[2])) {
-		throw new QException('Es wurden nicht alle Parameter übermittelt');
-	}
+    if (!isset($ids[2])) {
+        throw new QException('Es wurden nicht alle Parameter übermittelt');
+    }
 
-	$Project = QUI::getProject($project, $lang);
-	$Site    = new Projects_Site_Edit($Project, (int)$ids[1]);
+    $Project = QUI::getProject($project, $lang);
+    $Site    = new Projects_Site_Edit($Project, (int)$ids[1]);
 
-	return $Site->deleteLinked($ids[0], false, $ids[2]);
+    return $Site->deleteLinked($ids[0], false, $ids[2]);
 }
 $ajax->register('ajax_site_delete_onlylinked', array('project', 'lang', 'ids'));
 
@@ -398,28 +404,28 @@ $ajax->register('ajax_site_delete_onlylinked', array('project', 'lang', 'ids'));
  */
 function ajax_site_rights_recursive($project, $lang, $id, $rights)
 {
-	$Project = QUI::getProject($project, $lang);
-	$Site    = new Projects_Site_Edit($Project, $id);
+    $Project = QUI::getProject($project, $lang);
+    $Site    = new Projects_Site_Edit($Project, $id);
 
-	$Rights = QUI::getRights();
-	$rights = json_decode($rights, true);
+    $Rights = QUI::getRights();
+    $rights = json_decode($rights, true);
 
-	try
-	{
-		if (is_array($rights))
-		{
-			$children = $Site->getChildren(array(), true);
+    try
+    {
+        if (is_array($rights))
+        {
+            $children = $Site->getChildren(array(), true);
 
-			foreach ($children as $Child) {
-				$Rights->setRightsFromSite($Child, $rights);
-			}
-		}
+            foreach ($children as $Child) {
+                $Rights->setRightsFromSite($Child, $rights);
+            }
+        }
 
-		return true;
-	} catch (QException $e)
-	{
-		return false;
-	}
+        return true;
+    } catch (QException $e)
+    {
+        return false;
+    }
 }
 $ajax->register('ajax_site_rights_recursive', array('project', 'lang', 'id', 'rights'));
 
@@ -434,30 +440,30 @@ $ajax->register('ajax_site_rights_recursive', array('project', 'lang', 'id', 'ri
  */
 function ajax_site_getsheet($project, $lang, $parentid, $id)
 {
-	$Project  = QUI::getProject($project, $lang);
-	$Parent   = $Project->get($parentid);
+    $Project  = QUI::getProject($project, $lang);
+    $Parent   = $Project->get($parentid);
 
-	$childids = $Parent->getChildrenIds($parentid);
-	$sheet    = $Project->getConfig('sheets');
+    $childids = $Parent->getChildrenIds($parentid);
+    $sheet    = $Project->getConfig('sheets');
 
-	if ($sheet == false) {
-		$sheet = 10;
-	}
+    if ($sheet == false) {
+        $sheet = 10;
+    }
 
-	$c = 0;
+    $c = 0;
 
-	for ($i = 0, $len = count($childids); $i < $len; $i++)
-	{
-		if (($i % $sheet)) { // Seite suchen
-			$c++;
-		}
+    for ($i = 0, $len = count($childids); $i < $len; $i++)
+    {
+        if (($i % $sheet)) { // Seite suchen
+            $c++;
+        }
 
-		if ($id == $childids[$i]) {
-			break;
-		}
-	}
+        if ($id == $childids[$i]) {
+            break;
+        }
+    }
 
-	return $c;
+    return $c;
 }
 $ajax->register('ajax_site_getsheet', array('project', 'lang', 'parentid', 'id'));
 
@@ -468,13 +474,13 @@ $ajax->register('ajax_site_getsheet', array('project', 'lang', 'parentid', 'id')
  */
 function ajax_site_search_template()
 {
-	$Engine = QUI_Template::getEngine(true);
+    $Engine = QUI_Template::getEngine(true);
 
-	$Engine->assign(array(
-		'projects' => Projects_Manager::getProjects(true)
-	));
+    $Engine->assign(array(
+        'projects' => Projects_Manager::getProjects(true)
+    ));
 
-	return $Engine->fetch(SYS_DIR .'template/site_search.html');
+    return $Engine->fetch(SYS_DIR .'template/site_search.html');
 }
 $ajax->register('ajax_site_search_template');
 
@@ -486,52 +492,52 @@ $ajax->register('ajax_site_search_template');
  */
 function ajax_site_search_window($project, $search, $params)
 {
-	$params = json_decode($params, true);
+    $params = json_decode($params, true);
 
-	if (!isset($params['project'])) {
-		return array();
-	}
+    if (!isset($params['project'])) {
+        return array();
+    }
 
-	if (!isset($params['lang'])) {
-		$params['lang'] = false;
-	}
+    if (!isset($params['lang'])) {
+        $params['lang'] = false;
+    }
 
-	try
-	{
-		$Project = QUI::getProject($params['project'], $params['lang']);
-		$presult = $Project->search($search);
+    try
+    {
+        $Project = QUI::getProject($params['project'], $params['lang']);
+        $presult = $Project->search($search);
 
-		$result = array();
+        $result = array();
 
-		foreach ($presult as $Site)
-		{
-		    $icon = URL_BIN_DIR . '16x16/page_white.png';
+        foreach ($presult as $Site)
+        {
+            $icon = URL_BIN_DIR . '16x16/page_white.png';
 
-		    if (isset($Site->conf['icon_16x16'])) {
-		        $icon = URL_OPT_DIR . $Site->conf['icon_16x16'];
-		    }
+            if (isset($Site->conf['icon_16x16'])) {
+                $icon = URL_OPT_DIR . $Site->conf['icon_16x16'];
+            }
 
-			$att = array(
-				'id'      => $Site->getId(),
-				'name'    => $Site->getAttribute('name'),
-				'title'   => $Site->getAttribute('title'),
-				'rurl'    => $Site->getUrlRewrited(),
-				'url'     => $Site->getUrl(),
-				'icon'    => '<img src="'. $icon .'">',
-				'type'    => $Site->getAttribute('type'),
-				'project' => $Project->getAttribute('name'),
-				'lang'    => $Project->getAttribute('lang')
-			);
-			$result[] = $att;
-		}
+            $att = array(
+                'id'      => $Site->getId(),
+                'name'    => $Site->getAttribute('name'),
+                'title'   => $Site->getAttribute('title'),
+                'rurl'    => $Site->getUrlRewrited(),
+                'url'     => $Site->getUrl(),
+                'icon'    => '<img src="'. $icon .'">',
+                'type'    => $Site->getAttribute('type'),
+                'project' => $Project->getAttribute('name'),
+                'lang'    => $Project->getAttribute('lang')
+            );
+            $result[] = $att;
+        }
 
-		return $result;
+        return $result;
 
-	} catch (QException $e)
-	{
-		System_Log::writeException($e);
-		return array();
-	}
+    } catch (QException $e)
+    {
+        System_Log::writeException($e);
+        return array();
+    }
 }
 $ajax->register('ajax_site_search_window', array('project', 'search', 'params'));
 

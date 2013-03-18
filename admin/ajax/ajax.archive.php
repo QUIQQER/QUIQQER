@@ -1,12 +1,18 @@
 <?php
 
+exit;
+
+/**
+ * @deprecated
+ */
+
 // Benutzerrechte Prüfung
 if (!$User->getId()) {
-	exit;
+    exit;
 }
 
 if ($User->isAdmin() == false) {
-	exit;
+    exit;
 }
 
 /**
@@ -19,10 +25,10 @@ if ($User->isAdmin() == false) {
  */
 function ajax_archive_restore($project, $lang, $id, $date)
 {
-	$Project = QUI::getProject($project, $lang);
-	$Site    = new Projects_Site_Edit($Project, (int)$id);
+    $Project = QUI::getProject($project, $lang);
+    $Site    = new Projects_Site_Edit($Project, (int)$id);
 
-	return $Site->restoreArchive($date);
+    return $Site->restoreArchive($date);
 }
 $ajax->register('ajax_archive_restore', array('project', 'lang', 'id', 'date'));
 

@@ -20,6 +20,8 @@ define('classes/projects/media/File', [
 
     /**
      * @class QUI.classes.projects.media.File
+     *
+     * @memberof! <global>
      */
     QUI.classes.projects.media.File = new Class({
         Implements: [ MediaItem ],

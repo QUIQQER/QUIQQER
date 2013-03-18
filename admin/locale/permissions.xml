@@ -185,6 +185,11 @@
             <de><![CDATA[Benutzer]]></de>
             <en><![CDATA[Users]]></en>
         </locale>
+
+        <locale name="quiqqer.admin.projects">
+            <de><![CDATA[Projekte]]></de>
+            <en><![CDATA[Projects]]></en>
+        </locale>
     </groups>
 
 </locales>

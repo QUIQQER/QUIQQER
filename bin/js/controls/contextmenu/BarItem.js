@@ -27,7 +27,7 @@ define('controls/contextmenu/BarItem', [
     QUI.namespace( 'controls.contextmenu' );
 
     /**
-     * @class QUI.controls.contextmenu.Item
+     * @class QUI.controls.contextmenu.BarItem
      *
      * @event onClick [this, event]
      * @event onMouseDown [this, event]
@@ -80,8 +80,7 @@ define('controls/contextmenu/BarItem', [
         /**
          * Create the DOMNode for the Element
          *
-         * @method QUI.controls.contextmenu.Item#create
-         *
+         * @method QUI.controls.contextmenu.BarItem#create
          * @return {DOMNode}
          */
         create : function()
@@ -147,6 +146,7 @@ define('controls/contextmenu/BarItem', [
         /**
          * Focus the item
          *
+         * @method QUI.controls.contextmenu.BarItem#focus
          * @return {this}
          */
         focus : function()
@@ -163,6 +163,7 @@ define('controls/contextmenu/BarItem', [
         /**
          * Blur the item
          *
+         * @method QUI.controls.contextmenu.BarItem#blur
          * @return {this}
          */
         blur : function()
@@ -179,6 +180,7 @@ define('controls/contextmenu/BarItem', [
          * Import children
          * from a php callback or an array
          *
+         * @method QUI.controls.contextmenu.BarItem#insert
          * @param {Array} list
          * @return {this}
          */
@@ -206,6 +208,7 @@ define('controls/contextmenu/BarItem', [
         /**
          * Opens the submenu
          *
+         * @method QUI.controls.contextmenu.BarItem#show
          * @return {this}
          */
         show : function()
@@ -229,6 +232,8 @@ define('controls/contextmenu/BarItem', [
 
         /**
          * Close the submenu
+         *
+         * @method QUI.controls.contextmenu.BarItem#hide
          */
         hide : function()
         {
@@ -269,7 +274,6 @@ define('controls/contextmenu/BarItem', [
          * Clear the Context Menu Items
          *
          * @method QUI.controls.contextmenu.Item#clear
-         *
          * @return {this}
          */
         clear : function()
@@ -283,7 +287,6 @@ define('controls/contextmenu/BarItem', [
          * Create the Context Menu if not exist
          *
          * @method QUI.controls.contextmenu.Item#getContextMenu
-         *
          * @return {QUI.controls.contextmenu.Menu}
          */
         getContextMenu : function()
@@ -338,6 +341,7 @@ define('controls/contextmenu/BarItem', [
         /**
          * Is the Item active?
          *
+         * @method QUI.controls.contextmenu.BarItem#isActive
          * @return {Boolean}
          */
         isActive : function()
@@ -351,6 +355,8 @@ define('controls/contextmenu/BarItem', [
 
         /**
          * Set the Item active
+         *
+         * @method QUI.controls.contextmenu.BarItem#setNormal
          */
         setNormal : function()
         {
@@ -363,6 +369,8 @@ define('controls/contextmenu/BarItem', [
         /**
          * onSetAttribute Event
          * Set the attribute to the DOMElement if setAttribute is execute
+         *
+         * @method QUI.controls.contextmenu.BarItem#$onSetAttribute
          *
          * @param {String} key
          * @param {unknown_type} value
@@ -392,6 +400,8 @@ define('controls/contextmenu/BarItem', [
 
         /**
          * event : onclick
+         *
+         * @method QUI.controls.contextmenu.BarItem#$onClick
          */
         $onClick : function(event)
         {
@@ -401,6 +411,8 @@ define('controls/contextmenu/BarItem', [
 
         /**
          * event : on mouse enter
+         *
+         * @method QUI.controls.contextmenu.BarItem#$onMouseEnter
          */
         $onMouseEnter : function()
         {
@@ -408,7 +420,9 @@ define('controls/contextmenu/BarItem', [
         },
 
         /**
-         *  event : on mouse leave
+         * event : on mouse leave
+         *
+         * @method QUI.controls.contextmenu.BarItem#$onMouseLeave
          */
         $onMouseLeave : function()
         {

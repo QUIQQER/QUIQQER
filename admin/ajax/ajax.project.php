@@ -1,12 +1,18 @@
 <?php
 
+exit;
+
+/**
+ * @deprecated
+ */
+
 // Benutzerrechte Prüfung
 if (!$User->getId()) {
-	exit;
+    exit;
 }
 
 if ($User->isAdmin() == false) {
-	exit;
+    exit;
 }
 
 /**
@@ -18,8 +24,8 @@ if ($User->isAdmin() == false) {
  */
 function ajax_project_getproject($name, $lang)
 {
-	$Project = QUI::getProject($name, $lang);
-	return $Project->getAllAttributes();
+    $Project = QUI::getProject($name, $lang);
+    return $Project->getAllAttributes();
 }
 $ajax->register('ajax_project_getproject', array('name', 'lang'));
 
@@ -32,7 +38,7 @@ $ajax->register('ajax_project_getproject', array('name', 'lang'));
  */
 function ajax_project_create($newname, $lang, $template)
 {
-	Projects_Manager::createProject($newname, $lang, $template);
+    Projects_Manager::createProject($newname, $lang, $template);
 }
 $ajax->register('ajax_project_create', array('newname', 'lang', 'template'));
 
@@ -45,8 +51,8 @@ $ajax->register('ajax_project_create', array('newname', 'lang', 'template'));
  */
 function ajax_project_gettypes($name, $lang)
 {
-	$Project = QUI::getProject($name, $lang);
-	return $Project->getTypes();
+    $Project = QUI::getProject($name, $lang);
+    return $Project->getTypes();
 }
 $ajax->register('ajax_project_gettypes', array('name', 'lang'));
 
@@ -59,14 +65,14 @@ $ajax->register('ajax_project_gettypes', array('name', 'lang'));
  */
 function ajax_project_createbackup($name, $config, $project, $media, $templates)
 {
-	$Project = QUI::getProject($name, $lang);
+    $Project = QUI::getProject($name, $lang);
 
-	return $Project->createBackup(
-		PT_Bool::JSBool($config),
-		PT_Bool::JSBool($project),
-		PT_Bool::JSBool($media),
-		PT_Bool::JSBool($templates)
-	);
+    return $Project->createBackup(
+        PT_Bool::JSBool($config),
+        PT_Bool::JSBool($project),
+        PT_Bool::JSBool($media),
+        PT_Bool::JSBool($templates)
+    );
 }
 $ajax->register('ajax_project_createbackup', array('name', 'config', 'project', 'media', 'templates'));
 
@@ -76,26 +82,26 @@ $ajax->register('ajax_project_createbackup', array('name', 'config', 'project', 
  */
 function ajax_project_getbackups($name)
 {
-	$dir   = VAR_DIR .'backup/'. $name .'/';
-	$files = Utils_System_File::readDir($dir);
+    $dir   = VAR_DIR .'backup/'. $name .'/';
+    $files = Utils_System_File::readDir($dir);
 
-	$backups = array();
+    $backups = array();
 
-	foreach ($files as $file)
-	{
-		if (is_dir($dir.$file))
-		{
-			$backups['b'.(string)$file] = array(
-				'date'    => date('d.m.Y H:i:s', $file),
-				'folder'  => $file,
-				'running' => file_exists(VAR_DIR .'backup/c'.$file) ? 1 : 0,
-				'size'    => file_exists($dir.$file.'.zip') ? Utils_System_File::formatSize( filesize($dir.$file.'.zip') ) : 0
-			);
-		}
-	}
+    foreach ($files as $file)
+    {
+        if (is_dir($dir.$file))
+        {
+            $backups['b'.(string)$file] = array(
+                'date'    => date('d.m.Y H:i:s', $file),
+                'folder'  => $file,
+                'running' => file_exists(VAR_DIR .'backup/c'.$file) ? 1 : 0,
+                'size'    => file_exists($dir.$file.'.zip') ? Utils_System_File::formatSize( filesize($dir.$file.'.zip') ) : 0
+            );
+        }
+    }
 
-	krsort($backups, SORT_STRING);
-	return $backups;
+    krsort($backups, SORT_STRING);
+    return $backups;
 }
 $ajax->register('ajax_project_getbackups', array('name'));
 
@@ -106,34 +112,34 @@ $ajax->register('ajax_project_getbackups', array('name'));
  */
 function ajax_project_deletebackup($archive, $project)
 {
-	$Users = QUI::getUsers();
-	$User  = $Users->getUserBySession();
+    $Users = QUI::getUsers();
+    $User  = $Users->getUserBySession();
 
-	if ($User->isSU() == false)
-	{
-		throw new QException(
-			'Sie haben nciht die benötigende Rechte um ein Backup zu löschen'
-		);
-	}
+    if ($User->isSU() == false)
+    {
+        throw new QException(
+            'Sie haben nciht die benötigende Rechte um ein Backup zu löschen'
+        );
+    }
 
-	if ($archive == '') {
-		$archive = 'noarchive';
-	}
+    if ($archive == '') {
+        $archive = 'noarchive';
+    }
 
-	$dir = VAR_DIR .'backup/'. $project .'/'. $archive .'/';
-	$zip = VAR_DIR .'backup/'. $project .'/'. $archive .'.zip';
+    $dir = VAR_DIR .'backup/'. $project .'/'. $archive .'/';
+    $zip = VAR_DIR .'backup/'. $project .'/'. $archive .'.zip';
 
-	if (file_exists($zip)) {
-		unlink($zip);
-	}
+    if (file_exists($zip)) {
+        unlink($zip);
+    }
 
-	Utils_System_File::move($dir, VAR_DIR.'tmp/'.time());
+    Utils_System_File::move($dir, VAR_DIR.'tmp/'.time());
 
-	if (!file_exists($zip) && !is_dir($dir)) {
-		return true;
-	}
+    if (!file_exists($zip) && !is_dir($dir)) {
+        return true;
+    }
 
-	return false;
+    return false;
 }
 $ajax->register('ajax_project_deletebackup', array('archive', 'project'));
 
@@ -148,21 +154,21 @@ $ajax->register('ajax_project_deletebackup', array('archive', 'project'));
  */
 function ajax_project_getsites($name, $lang, $params)
 {
-	$Project = QUI::getProject($name, $lang);
-	$params  = json_decode($params, true);
+    $Project = QUI::getProject($name, $lang);
+    $params  = json_decode($params, true);
 
-	if (!is_array($params)) {
-		$params = array();
-	}
+    if (!is_array($params)) {
+        $params = array();
+    }
 
-	$result = array();
-	$sites  = $Project->getSites($params);
+    $result = array();
+    $sites  = $Project->getSites($params);
 
-	foreach ($sites as $Site) {
-		$result[] = $Site->getAllAttributes();
-	}
+    foreach ($sites as $Site) {
+        $result[] = $Site->getAllAttributes();
+    }
 
-	return $result;
+    return $result;
 }
 $ajax->register('ajax_project_getsites', array('name', 'lang', 'params'));
 
@@ -179,10 +185,10 @@ $ajax->register('ajax_project_getsites', array('name', 'lang', 'params'));
 function ajax_project_getParentIds($project, $lang, $id)
 {
     if (!function_exists('ajax_site_get_parentids')) {
-		require_once SYS_DIR .'ajax/ajax.site.php';
-	}
+        require_once SYS_DIR .'ajax/ajax.site.php';
+    }
 
-	return ajax_site_get_parentids($project, $lang, $id);
+    return ajax_site_get_parentids($project, $lang, $id);
 }
 $ajax->register('ajax_project_getParentIds', array('project', 'lang', 'id'));
 
@@ -194,23 +200,23 @@ $ajax->register('ajax_project_getParentIds', array('project', 'lang', 'id'));
  */
 function ajax_project_clear_trash($project, $lang)
 {
-	$Project = QUI::getProject($project, $lang);
+    $Project = QUI::getProject($project, $lang);
 
-	$sites = $Project->getSitesIds(array(
-		'where' => array(
-			'deleted' 	=> 1,
-			'active'	=> -1
-		)
-	));
+    $sites = $Project->getSitesIds(array(
+        'where' => array(
+            'deleted' 	=> 1,
+            'active'	=> -1
+        )
+    ));
 
-	foreach ($sites as $site)
-	{
+    foreach ($sites as $site)
+    {
         $Site = new Projects_Site_Edit($Project, (int)$site['id']);
 
-	    $Site->deleteTemp();
-		$Site->refresh();
-		$Site->destroy();
-	}
+        $Site->deleteTemp();
+        $Site->refresh();
+        $Site->destroy();
+    }
 }
 $ajax->register('ajax_project_clear_trash', array('project', 'lang'));
 

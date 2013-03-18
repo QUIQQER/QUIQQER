@@ -11,6 +11,11 @@
 
 define('lib/Template', function()
 {
+    /**
+     * Template Manager - Use the Template Manager for getting HTML Templates
+     * @namespace
+     * @memberof! <global>
+     */
     QUI.Template =
     {
         $hashes : {},
@@ -107,8 +112,7 @@ define('lib/Template', function()
          */
         $getCache : function(hash)
         {
-            var o = $( hash ),
-                h = o.get('html');
+            var h = $( hash ).get( 'html' );
 
             // unter IE8 -> html kommentare können nicht per innerHTML gehohlt werden
             h = h.replace(/\<\!\-\-/, '');

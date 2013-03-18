@@ -16,19 +16,54 @@ define('classes/projects/Projects', [
 {
     QUI.namespace( 'classes.projects' );
 
+    /**
+     * @class QUI.classes.projects.Projects
+     *
+     * @memberof! <global>
+     */
     QUI.classes.projects.Projects = new Class({
 
-        Implements : [ Control ],
-        Type       : 'QUI.classes.projects.Projects',
+        Extends : QDOM,
+        Type    : 'QUI.classes.projects.Projects',
 
         $Project  : null,
         $projects : {},
 
         /**
-         * Projekt bekommen
-         * Falls keine Parameter übergeben werden, wird das aktuelle Projekt zurück gegeben
+         * Standard project
+         * @namespace
+         */
+        Standard :
+        {
+            /**
+             * Return the lang of the standard project
+             *
+             * @returns {String}
+             */
+            getLang : function()
+            {
+                return QUI.standard.lang;
+            },
+
+            /**
+             * Return the name of the standard project
+             *
+             * @returns {String}
+             */
+            getName : function()
+            {
+                return QUI.standard.name;
+            }
+        },
+
+        /**
+         * Return the wanted project
+         * If no name and lang given, the current project will be return
          *
-         * @param name - Name des Projektes (optional)
+         * @param {String} name - [optional] Name of the project
+         * @param {String lang - [optional] Lang of the project
+         *
+         * @return {QUI.classes.projects.Project}
          */
         get : function(name, lang)
         {
@@ -42,19 +77,19 @@ define('classes/projects/Projects', [
                 if ( this.$Project === null )
                 {
                     this.$Project = new QUI.classes.projects.Project({
-                        name : QUI.lib.Projects.getName(),
+                        name : this.getName(),
                         lang : lang
                     });
                 }
 
-                return QUI.lib.Projects.$Project;
+                return this.$Project;
             }
 
             if ( this.$projects[ name +'-'+ lang ] ) {
                 return this.$projects[ name +'-'+ lang ];
             }
 
-            this.$projects[ name +'-'+ lang ] = new QUI.classes.Project({
+            this.$projects[ name +'-'+ lang ] = new QUI.classes.projects.Project({
                 name : name,
                 lang : lang
             });
@@ -62,10 +97,16 @@ define('classes/projects/Projects', [
             return this.$projects[ name +'-'+ lang ];
         },
 
+        /**
+         * Return the current language of the current project,
+         * if no project initialised than it return the name of the standard project
+         *
+         * @returns {String}
+         */
         getLang : function()
         {
-            if ( QUI.lib.Projects.$Project ) {
-                return QUI.lib.Projects.$Project.getAttribute('lang');
+            if ( this.$Project ) {
+                return this.$Project.getAttribute( 'lang' );
             }
 
             if ( QUI.lang !== '' ) {
@@ -75,10 +116,16 @@ define('classes/projects/Projects', [
             return QUI.standard.lang;
         },
 
+        /**
+         * Return the name of the current project,
+         * if no project initialised than it return the name of the standard project
+         *
+         * @returns {String}
+         */
         getName : function()
         {
-            if ( QUI.lib.Projects.$Project ) {
-                return QUI.lib.Projects.$Project.getAttribute('name');
+            if ( this.$Project ) {
+                return this.$Project.getAttribute( 'name' );
             }
 
             if ( QUI.project !== '' ) {
@@ -88,19 +135,12 @@ define('classes/projects/Projects', [
             return QUI.standard.name;
         },
 
-        Standard :
-        {
-            getLang : function()
-            {
-                return QUI.standard.lang;
-            },
-
-            getName : function()
-            {
-                return QUI.standard.name;
-            }
-        },
-
+        /**
+         * Return the project list
+         *
+         * @param {Function} onfinish - callback function
+         * @param {Object} params - request params
+         */
         getList : function(onfinish, params)
         {
             params = params || {};
@@ -113,13 +153,17 @@ define('classes/projects/Projects', [
         },
 
         /**
-         * Projekt Seite in einem Panel öffnen
+         * Opens a site panel
+         *
+         * @param {String} project - Project name
+         * @param {String} lang - Project language
+         * @param {Integer} id - ID of the site
          */
         createSitePanel : function(project, lang, id, Parent, ApppanelId)
         {
             require([
                 'controls/projects/site/Panel',
-                'classes/Project',
+                'classes/projects/Project',
                 'classes/projects/Site'
             ], function(QUI_SitePanel, QUI_Site)
             {
@@ -138,6 +182,14 @@ define('classes/projects/Projects', [
             }.bind(this));
         },
 
+        /**
+         * Opens a project panel
+         *
+         * @param id
+         * @param container
+         *
+         * @depricated
+         */
         createProjectPanel : function(id, container)
         {
             require(['controls/projects/Panel'], function(QUI_ProjectPanel)
@@ -149,11 +201,19 @@ define('classes/projects/Projects', [
             });
         },
 
+        /**
+         * Opens a media panel
+         *
+         * @param project
+         * @param lang
+         *
+         * @depricated
+         */
         createMediaPanel : function(project, lang)
         {
             require([
 
-                'classes/Project',
+                'classes/projects/Project',
                 'controls/projects/media/Panel'
 
             ], function(QUI_Project, QUI_MediaPanel)
@@ -165,9 +225,33 @@ define('classes/projects/Projects', [
 
                 Project.getMedia().openInPanel();
             });
-        }
+        },
 
+        /**
+         * Create a new project
+         *
+         * @param {String} project
+         * @param {String} lang
+         * @param {String} template
+         * @params {Function} onfinish
+         */
+        createNewProject : function(project, lang, template, onfinish)
+        {
+            QUI.Ajax.post('ajax_project_create', function(result, Request)
+            {
+                if ( Request.getAttribute( 'onfinish' ) ) {
+                    Request.getAttribute( 'onfinish' )( result, Request );
+                }
+            }, {
+                params : JSON.encode({
+                    project  : project,
+                    lang     : lang,
+                    template : template
+                }),
+                onfinish : onfinish
+            });
+        }
     });
 
-
+    return QUI.classes.projects.Projects;
 });

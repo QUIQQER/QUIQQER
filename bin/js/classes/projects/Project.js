@@ -11,12 +11,15 @@
  * @requires classes/projects/Media
  * @requires classes/projects/Trash
  *
- * @module classes/Project
- * @package com.pcsg.qui.js.classes
- * @namespace QUI.classes
+ * @module classes/projects/Project
+ * @package com.pcsg.qui.js.classes.projects
+ * @namespace QUI.classes.projects
+ *
+ * @events onSiteDelete [this, {Integer}]
+ * @events onSiteSave [this, {QUI.classes.projects.Site}]
  */
 
-define('classes/Project', [
+define('classes/projects/Project', [
 
     'classes/DOM',
     'classes/projects/Site',
@@ -25,6 +28,8 @@ define('classes/Project', [
 
 ], function(QDOM, Site)
 {
+    QUI.namespace( 'classes.projects' );
+
     /**
      * A project
      *
@@ -34,9 +39,15 @@ define('classes/Project', [
      *
      * @memberof! <global>
      */
-    QUI.classes.Project = new Class({
+    QUI.classes.projects.Project = new Class({
 
-        Implements: [ QDOM ],
+        Implements : [ QDOM ],
+        Type       : 'QUI.classes.projects.Project',
+
+        Binds : [
+            '$onChildDelete',
+            '$onSiteSave'
+        ],
 
         options : {
             name : '',
@@ -56,47 +67,34 @@ define('classes/Project', [
          * Get a site from the project
          *
          * @method QUI.classes.Project#get
-         *
          * @param {Integer} id - ID of the site
          * @return {QUI.classes.projects.Site}
          */
         get : function(id)
         {
-            if ( typeof this.$ids[ id ] === 'undefined' )
-            {
-                this.$ids[ id ] = new QUI.classes.projects.Site( this, id );
+            var Site = this.$ids[ id ];
 
-                this.$ids[ id ].addEvent( 'onDelete', function(Site)
-                {
-                    this.deleteChild( Site.getId() );
-                }.bind( this ) );
+            if ( typeof Site !== 'undefined' ) {
+                return Site;
             }
+
+            Site = new QUI.classes.projects.Site( this, id );
+            Site.addEvents({
+                'onDelete' : this.$onSiteDelete,
+                'onSave'   : this.$onSiteSave,
+                'onActivate'   : this.$onSiteSave,
+                'onDeActivate' : this.$onSiteSave,
+            });
+
+            this.$ids[ id ] = Site;
 
             return this.$ids[ id ];
-        },
-
-        /**
-         * Delete the child entry
-         *
-         * @method QUI.classes.Project#deleteChild
-         *
-         * @param {Integer} id - ID of the site
-         * @return {this}
-         */
-        deleteChild : function(id)
-        {
-            if ( this.$ids[ id ] ) {
-                delete this.$ids[ id ];
-            }
-
-            return this;
         },
 
         /**
          * Return the Media Object for the Project
          *
          * @method QUI.classes.Project#getMedia
-         *
          * @return {QUI.classes.projects.Media}
          */
         getMedia : function()
@@ -112,7 +110,6 @@ define('classes/Project', [
          * Return the Trash Object for the Project
          *
          * @method QUI.classes.Project#getTrash
-         *
          * @return {QUI.classes.projects.Trash}
          */
         getTrash : function()
@@ -144,14 +141,45 @@ define('classes/Project', [
          * Return the Project lang
          *
          * @method QUI.classes.Project#getName
-         *
          * @return {String}
          */
         getLang : function()
         {
             return this.getAttribute( 'lang' );
+        },
+
+        /**
+         * event : on Site deletion
+         *
+         * @method QUI.classes.Project#$onChildDelete
+         * @param {QUI.classes.projects.Site} Site
+         * @return {this}
+         * @fires siteDelete
+         */
+        $onSiteDelete : function(Site)
+        {
+            var id = Site.getId();
+
+            if ( this.$ids[ id ] ) {
+                delete this.$ids[ id ];
+            }
+
+            this.fireEvent( 'siteDelete', [ this, id ] );
+
+            return this;
+        },
+
+        /**
+         * event : on Site saving
+         *
+         * @param {QUI.classes.projects.Site} Site
+         * @fires siteSave
+         */
+        $onSiteSave : function(Site)
+        {
+            this.fireEvent( 'siteSave', [ this, Site ] );
         }
     });
 
-    return QUI.classes.Project;
+    return QUI.classes.projects.Project;
 });

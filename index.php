@@ -1,6 +1,5 @@
 <?php
 
-echo 1111; exit;
 //$start_test = microtime();
 
 /**
@@ -42,53 +41,49 @@ if ( function_exists( 'gzcompress' ) ) {
 
 require_once 'bootstrap.php';
 
-$Engine = QUI_Template::getEngine();
-
-//var_dump($Engine);
-
-exit;
+$Engine = \QUI_Template::getEngine();
 
 // UTF 8 Prüfung für umlaute in url
-if (isset($_REQUEST['_url'])) {
-    $_REQUEST['_url'] = Utils_String::toUTF8($_REQUEST['_url']);
+if ( isset( $_REQUEST['_url'] ) ) {
+    $_REQUEST['_url'] = \Utils_String::toUTF8( $_REQUEST['_url'] );
 }
 
 //System_Debug::$run = true;
-System_Debug::marker('index start');
+\System_Debug::marker( 'index start' );
 
-$Rewrite = QUI::getRewrite();
+$Rewrite = \QUI::getRewrite();
 $Rewrite->exec();
 
 // sprache ausschalten
-if (isset($_REQUEST['lang']) && $_REQUEST['lang'] == 'false')
+if ( isset( $_REQUEST['lang'] ) && $_REQUEST['lang'] == 'false' )
 {
     header("X-Robots-Tag: noindex, nofollow", true);
-    QUI::getLocale()->no_translation = true;
+    \QUI::getLocale()->no_translation = true;
 }
 
 $Project = $Rewrite->getProject(); 		/* @var $Project Projects_Project */
 $Site    = $Rewrite->getSite()->load(); /* @var $Site Projects_Site_Edit */
 
-if (isset($Locale))
+if ( isset( $Locale ) )
 {
-    unset($Locale);
-    $Locale = QUI::getLocale();
+    unset( $Locale );
+    $Locale = \QUI::getLocale();
 }
 
 /**
  * Referal System
  */
 
-if (isset($_REQUEST['ref'])) {
-    $Session->set('ref', Utils_Security_Orthos::clear($_REQUEST['ref']));
+if ( isset( $_REQUEST['ref'] ) ) {
+    $Session->set( 'ref', Utils_Security_Orthos::clear( $_REQUEST['ref'] ) );
 }
 
 /**
  * Wartungsarbeiten
  */
 if (
-    QUI::conf('globals','maintenance') &&
-    !(QUI::getUserBySession()->getId() && QUI::getUserBySession()->isSu())
+    \QUI::conf('globals','maintenance') &&
+    !(\QUI::getUserBySession()->getId() && \QUI::getUserBySession()->isSu())
 )
 {
     header('HTTP/1.1 503 Service Temporarily Unavailable');
@@ -96,7 +91,7 @@ if (
     header('Retry-After: 3600');
     header('X-Powered-By:');
 
-    $Smarty = QUI_Template::getEngine();
+    $Smarty = \QUI\Template::getEngine();
 
     $Smarty->assign(array(
         'Project' => $Project
@@ -154,7 +149,7 @@ if (CACHE && file_exists($site_cache_file) && $Site->getAttribute('nocache') != 
  * Template Content generieren
  */
 $Template = new QUI_Template();
-$content  = $Template->fetchTemplate($Project, $Site);
+$content  = $Template->fetchTemplate( $Site );
 
 System_Debug::marker('fetch Template');
 

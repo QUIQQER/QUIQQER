@@ -29,6 +29,8 @@ define('classes/projects/media/Item', [
      * @event onDeactivate [this]
      *
      * @param {QUI.classes.projects.Media} Media
+     *
+     * @memberof! <global>
      */
     QUI.classes.projects.media.Item = new Class({
 

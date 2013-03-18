@@ -83,7 +83,7 @@ define('lib/Plugins', ['classes/Plugin'], function(Plgn)
 
         getTypes : function(project, onfinish, params)
         {
-            project = project || QUI.lib.Projects.getName();
+            project = project || QUI.Projects.getName();
 
             params  = QUI.lib.Utils.combine(params, {
                 project  : project,

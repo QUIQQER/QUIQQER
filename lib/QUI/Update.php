@@ -58,7 +58,12 @@ class Update
         \QUI_Editor_Manager::setup();
 
         $packages_dir = $Composer->getConfig()->get( 'vendor-dir' );
-        $packages     = \Utils_System_File::readDir( $packages_dir );
+
+        if ( defined( 'OPT_DIR' ) ) {
+            $packages_dir = OPT_DIR;
+        }
+
+        $packages = \Utils_System_File::readDir( $packages_dir );
 
         $IO->write('Start QUIQQER updating ...');
 
@@ -283,7 +288,7 @@ class Update
         \Utils_Xml::importDataBaseFromXml( $xml_file );
     }
 
-	/**
+    /**
      * Locale setup - translations
      * Reads the locale.xml and import it
      *
@@ -301,7 +306,7 @@ class Update
         \QUI\Translator::import( $xml_file, false );
     }
 
-	/**
+    /**
      * Permissions import
      * Reads the permissions.xml and import it
      *
