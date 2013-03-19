@@ -68,7 +68,7 @@ define('lib/Plugins', ['classes/Plugin'], function(Plgn)
 
         getTypeName : function(type, onfinish, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 sitetype : type,
                 onfinish : onfinish
             });
@@ -85,7 +85,7 @@ define('lib/Plugins', ['classes/Plugin'], function(Plgn)
         {
             project = project || QUI.Projects.getName();
 
-            params  = QUI.lib.Utils.combine(params, {
+            params  = QUI.Utils.combine(params, {
                 project  : project,
                 onfinish : onfinish
             });

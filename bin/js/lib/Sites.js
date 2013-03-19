@@ -107,7 +107,7 @@ define('lib/Sites', [
         save : function(onfinish, params, attributes)
         {
             params     = params || {};
-            attributes = QUI.lib.Utils.filterForJSON( attributes );
+            attributes = QUI.Utils.filterForJSON( attributes );
 
             if (attributes.project) {
                 delete attributes.project;

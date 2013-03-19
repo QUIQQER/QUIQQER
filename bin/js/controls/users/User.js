@@ -201,7 +201,7 @@ define('controls/users/User', [
                 QUI.controls.Utils.parse( Body );
 
                 // insert the values
-                QUI.lib.Utils.setDataToForm(
+                QUI.Utils.setDataToForm(
                     User.getAttributes(),
                     Body.getElement( 'form' )
                 );
@@ -228,7 +228,7 @@ define('controls/users/User', [
 
             var Content = this.getBody(),
                 Frm     = Content.getElement( 'form' ),
-                data    = QUI.lib.Utils.getFormData( Frm );
+                data    = QUI.Utils.getFormData( Frm );
 
             this.getUser().setAttributes( data );
         },

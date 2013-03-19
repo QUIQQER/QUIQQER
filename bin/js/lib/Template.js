@@ -29,7 +29,7 @@ define('lib/Template', function()
          */
         get : function(template, oncomplete, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 template   : template,
                 oncomplete : oncomplete
             });

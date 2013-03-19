@@ -92,7 +92,7 @@ define('classes/groups/Group', [
          */
         getChildren : function(onfinish, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 gid      : this.getId(),
                 Group    : this,
                 onfinish : onfinish
@@ -116,7 +116,7 @@ define('classes/groups/Group', [
          */
         save : function(onfinish, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 gid        : this.getId(),
                 Group      : this,
                 onfinish   : onfinish,

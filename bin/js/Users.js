@@ -172,7 +172,7 @@ define('Users', [
                 Panel   = Tab.getAttribute('Panel'),
                 Content = Panel.getBody();
 
-            QUI.lib.Utils.setDataToForm(
+            QUI.Utils.setDataToForm(
                 User.getAttributes(),
                 Content.getElement('form')
             );
@@ -214,7 +214,7 @@ define('Users', [
                 Content = Panel.getBody();
 
             User.setAttributes(
-                QUI.lib.Utils.getFormData(
+                QUI.Utils.getFormData(
                     Content.getElement('form')
                 )
             );
@@ -258,7 +258,7 @@ define('Users', [
 
         checkUsername : function(username, onfinish, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 username : username,
                 onfinish : onfinish
             });
@@ -271,7 +271,7 @@ define('Users', [
 
         createUser : function(username, onfinish, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 username : username,
                 onfinish : onfinish
             });
@@ -284,7 +284,7 @@ define('Users', [
 
         saveUser : function(uid, attributes, onfinish, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 uid        : uid,
                 onfinish   : onfinish,
                 attributes : JSON.encode( attributes )
@@ -304,7 +304,7 @@ define('Users', [
 
         deleteUsers : function(uids, onfinish, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 uid      : uids.join(','),
                 onfinish : onfinish
             });

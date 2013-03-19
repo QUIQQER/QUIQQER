@@ -3,17 +3,20 @@
  *
  * @author www.pcsg.de (Henning Leutz)
  *
- * @module lib/Utils
+ * @module classes/utils/Utils
  * @package com.pcsg.qui.js
  * @namespace QUI.lib
  */
 
-define('lib/Utils', function()
+define('classes/utils/Utils', function()
 {
-    QUI.namespace('lib');
+    QUI.namespace( 'classes.utils' );
 
-    QUI.lib.Utils =
-    {
+    /**
+     * @class QUI.classes.utils.Utils
+     */
+    QUI.classes.utils.Utils = new Class({
+
         /**
          * Combines two Object
          *
@@ -438,8 +441,8 @@ define('lib/Utils', function()
          *
          * @example
          *
-         * QUI.lib.Utils.calcMwst(0.20, false, 19);
-         * QUI.lib.Utils.calcMwst(false, 100, 19);
+         * QUI.Utils.calcMwst(0.20, false, 19);
+         * QUI.Utils.calcMwst(false, 100, 19);
          */
         calcMwst : function(brutto, netto, mwst)
         {
@@ -461,13 +464,13 @@ define('lib/Utils', function()
 
         /**
          * Percent calculation
-          * Return the percentage integer value
-          *
-          * @method QUI.lib.Utils#percent
-          * @param Integer|Float $amount
-          * @param Integer|Float $total
-          *
-          * @return {Integer}
+         * Return the percentage integer value
+         *
+         * @method QUI.lib.Utils#percent
+         * @param Integer|Float $amount
+         * @param Integer|Float $total
+         *
+         * @return {Integer}
          */
         percent : function(amount, total)
         {
@@ -499,7 +502,7 @@ define('lib/Utils', function()
 
             return size.round( round ) +' '+ sizes[ i ];
         }
-    };
+    });
 
-    return QUI.lib.Utils;
+    return QUI.classes.utils.Utils;
 });

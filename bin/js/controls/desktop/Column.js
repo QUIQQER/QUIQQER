@@ -31,8 +31,8 @@ define('controls/desktop/Column', [
      */
     QUI.controls.desktop.Column = new Class({
 
-        Type       : 'QUI.controls.desktop.Column',
-        Implements : [ Control ],
+        Extends : Control,
+        Type    : 'QUI.controls.desktop.Column',
 
         Binds : [
             '$onContextMenu',
@@ -54,7 +54,6 @@ define('controls/desktop/Column', [
 
             this.$ContextMenu = null;
             this.$Elm         = null;
-            this.$Handle      = null;
             this.$Content     = null;
             this.$panels      = {};
 
@@ -62,10 +61,6 @@ define('controls/desktop/Column', [
             {
                 if ( this.$ContextMenu ) {
                     this.$ContextMenu.destroy();
-                }
-
-                if ( this.$Handle ) {
-                    this.$Handle.destroy();
                 }
 
                 if ( this.$Content ) {
@@ -95,14 +90,6 @@ define('controls/desktop/Column', [
                 'class' : 'qui-column-content box'
             }).inject( this.$Elm );
 
-            this.$Handle = new Element('div', {
-                'class' : 'qui-column-handle',
-                styles  : {
-                    width       : 4,
-                    borderWidth : '0 1px'
-                }
-            });
-
             // contextmenu
             this.$ContextMenu = new QUI.controls.contextmenu.Menu({
                 events :
@@ -121,28 +108,11 @@ define('controls/desktop/Column', [
                 contextmenu : this.$onContextMenu
             });
 
-            switch ( this.getAttribute( 'placement' ) )
-            {
-                case 'left':
-                    this.$Handle.inject( this.$Content, 'after' );
-                    this.$addResize();
-                break;
-
-                case 'right':
-                    this.$Handle.inject( this.$Content, 'before' );
-                    this.$addResize();
-                break;
-
-                default:
-                    this.$Handle.destroy();
-                    this.$Handle = null;
-            }
-
             if ( typeof this.$serialize !== 'undefined' ) {
                 this.unserialize( this.$serialize );
             }
 
-            this.resize();
+            // this.resize();
             this.fireEvent( 'create', [ this ] );
 
             return this.$Elm;
@@ -268,7 +238,7 @@ define('controls/desktop/Column', [
             // or no second panel exist
             // use the column height
             if ( !Panel.getAttribute( 'height' ) || !this.count() ) {
-                Panel.setAttribute( 'height', this.$Elm.getSize().y );
+                Panel.setAttribute( 'height', this.$Elm.getSize().y - 2 );
             }
 
             // if some panels insight, resize the other panels
@@ -358,30 +328,26 @@ define('controls/desktop/Column', [
                 return this;
             }
 
-            if ( this.getAttribute( 'width' ) )
-            {
-                this.$Elm.setStyle( 'width', this.getAttribute('width') );
+            var width = this.getAttribute( 'width' );
 
-                if ( this.$Handle )
-                {
-                    this.$Content.setStyle( 'width', this.getAttribute('width') - 6 );
-                } else
-                {
-                    this.$Content.setStyle( 'width', this.getAttribute('width') );
-                }
+            if ( !width ) {
+                return this;
             }
 
+            if ( this.$Elm.getSize().x == this.getAttribute( 'width' ) ) {
+                return this;
+            }
+
+            this.$Elm.setStyle( 'width', width );
 
             // all panels resize
             var i, Panel;
-
-            var size = this.$Elm.getSize();
 
             for ( i in this.$panels )
             {
                 Panel = this.$panels[ i ];
 
-                Panel.setAttribute( 'width', size.x );
+                Panel.setAttribute( 'width', width );
                 Panel.resize();
             }
 
@@ -429,10 +395,6 @@ define('controls/desktop/Column', [
 
             this.$Content.setStyle( 'display', 'none' );
 
-            if ( this.$Handle ) {
-                this.$Elm.setStyle( 'width', this.$Handle.getSize().x );
-            }
-
             // resize the sibling column
             Sibling.setAttribute(
                 'width',
@@ -477,23 +439,75 @@ define('controls/desktop/Column', [
 
         /**
          * Return the Sibling column control
+         * it is looked to the placement
+         * if no column exist, so it search the prev and next columns
          *
          * @return {false|QUI.controls.desktop.Column}
          */
         getSibling : function()
         {
-            var Next;
+            var Column;
 
-            if ( this.getAttribute('placement') == 'left' )
+            if ( this.getAttribute( 'placement' ) == 'left' )
             {
-                Next = this.getElm().getNext('.qui-column');
-            } else if( this.getAttribute('placement') == 'right' )
+                Column = this.getElm().getNext( '.qui-column' );
+            } else if( this.getAttribute( 'placement' ) == 'right' )
             {
-                Next = this.getElm().getPrevious('.qui-column');
+                Column = this.getElm().getPrevious( '.qui-column' );
             }
 
-            return QUI.Controls.getById( Next.get('data-quiid') );
+            if ( Column ) {
+                return QUI.Controls.getById( Next.get( 'data-quiid' ) );
+            }
+
+            Column = this.getPrevious();
+
+            if ( Column ) {
+                return Column;
+            }
+
+
+            Column = this.getNext();
+
+            if ( Column ) {
+                return Column;
+            }
+
+            return false;
         },
+
+        /**
+         * Return the previous sibling
+         *
+         * @return {false|QUI.controls.desktop.Column}
+         */
+        getPrevious : function()
+        {
+            var Prev = this.getElm().getPrevious( '.qui-column' );
+
+            if ( !Prev ) {
+                return false;
+            }
+
+            return QUI.Controls.getById( Prev.get( 'data-quiid' ) );
+        },
+
+        /**
+         * Return the next sibling
+         *
+         * @return {false|QUI.controls.desktop.Column}
+         */
+        getNext : function()
+        {
+            var Next = this.getElm().getNext( '.qui-column' );
+
+            if ( !Next ) {
+                return false;
+            }
+
+            return QUI.Controls.getById( Next.get( 'data-quiid' ) );
+        },
+
 
         /**
          * return the next panel sibling
@@ -647,97 +661,6 @@ define('controls/desktop/Column', [
             );
 
             Prev.resize();
-        },
-
-        /**
-         * Add the vertical resizing events to the column
-         */
-        $addResize: function()
-        {
-            if ( !this.$Handle ) {
-                return;
-            }
-
-
-            var Handle = this.$Handle;
-
-            // dbl click
-            Handle.addEvent('dblclick', function() {
-                this.toggle();
-            }.bind( this ));
-
-            // Drag & Drop event
-            var min = this.getAttribute( 'resizeLimit' )[0],
-                max = this.getAttribute( 'resizeLimit' )[1];
-
-            if ( !min ) {
-                min = 50;
-            }
-
-            if ( !max ) {
-                max = 250;
-            }
-
-            var handlepos = Handle.getPosition().y;
-
-            new QUI.classes.utils.DragDrop(Handle, {
-                limit  : {
-                    x: [min, max],
-                    y: [handlepos, handlepos]
-                },
-                events :
-                {
-                    onStart : function(Dragable, DragDrop)
-                    {
-                        var pos   = Handle.getPosition(),
-                            limit = DragDrop.getAttribute( 'limit' );
-
-                        limit.y = [ pos.y, pos.y ];
-
-                        DragDrop.setAttribute( 'limit', limit );
-
-                        Dragable.setStyles({
-                            width   : 5,
-                            padding : 0,
-                            top     : pos.y,
-                            left    : pos.x
-                        });
-                    },
-
-                    onStop : function(Dragable, DragDrop)
-                    {
-                        if ( this.isOpen() === false ) {
-                            this.open();
-                        }
-
-                        var change, Next, next_width, this_width;
-
-                        var pos  = Dragable.getPosition(),
-                            hpos = Handle.getPosition();
-
-
-                        change = pos.x - hpos.x - Handle.getSize().x;
-                        Next   = this.getSibling();
-
-                        this_width = this.getAttribute('width');
-                        next_width = Next.getAttribute('width');
-
-                        if ( this.getAttribute('placement') == 'left' )
-                        {
-                            this.setAttribute( 'width', this_width + change );
-                            Next.setAttribute( 'width', next_width - change );
-
-                        } else if ( this.getAttribute('placement') == 'right' )
-                        {
-                            this.setAttribute( 'width', this_width - change );
-                            Next.setAttribute( 'width', next_width + change );
-                        }
-
-                        Next.resize();
-                        this.resize();
-                    }.bind( this )
-                }
-            });
         },
 
         /**

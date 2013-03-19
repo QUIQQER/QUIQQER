@@ -16,7 +16,8 @@
 define('controls/desktop/Workspace', [
 
     'controls/Control',
-    'controls/loader/Loader'
+    'controls/loader/Loader',
+    'controls/contextmenu/Menu'
 
 ], function(QUI_Control)
 {
@@ -35,6 +36,11 @@ define('controls/desktop/Workspace', [
         Extends : QUI_Control,
         Type    : 'QUI.controls.desktop.Workspace',
 
+        Binds : [
+            'resize',
+            '$onHandlerContextMenu'
+        ],
+
         initialize : function(Parent, options)
         {
             this.init( options );
@@ -43,6 +49,9 @@ define('controls/desktop/Workspace', [
             this.$Loader = null;
 
             this.$available_panels = {};
+            this.$columns = [];
+
+            window.addEvent( 'resize', this.resize );
         },
 
         /**
@@ -76,13 +85,9 @@ define('controls/desktop/Workspace', [
                     workspace = [];
                 }
 
-
                 if ( workspace.length )
                 {
                     var i, len, Column;
-
-                    var width     = 0,
-                        max_width = this.$Elm.getSize().x;
 
                     // make columns
                     for ( i = 0, len = workspace.length; i < len; i++ )
@@ -91,14 +96,16 @@ define('controls/desktop/Workspace', [
                             workspace[ i ].attributes
                         );
 
-                        Column.setParent( this );
-
                         if ( workspace[ i ].children ) {
                             Column.unserialize( workspace[ i ] );
                         }
 
-                        Column.inject( this.$Elm );
+                        this.appendChild( Column );
                     }
+
+                    // resize columns width %
+                    this.resize( workspace );
+
                 } else
                 {
                     this.defaultSpace();
@@ -110,6 +117,102 @@ define('controls/desktop/Workspace', [
             }.bind( this ));
 
             return this;
+        },
+
+        /**
+         * Workspace resize
+         *
+         * @param {Array} workspace - [optional] json decoded serialized workspace
+         */
+        resize : function(workspace)
+        {
+            var i, len, Column;
+            var wlist = [];
+
+            if ( typeof workspace === 'undefined' || typeof workspace.length === 'undefined' ) {
+                workspace = false;
+            }
+
+            if ( workspace )
+            {
+                var attr;
+
+                for ( i = 0, len = workspace.length; i < len; i++ )
+                {
+                    attr = workspace[ i ].attributes;
+
+                    if ( attr.width && attr.width > 0 )
+                    {
+                        wlist.push( attr.width );
+                    } else
+                    {
+                        wlist.push( 200 );
+                    }
+                }
+            } else
+            {
+                for ( i = 0, len = this.$columns.length; i < len; i++ )
+                {
+                    var Column = this.$columns[ i ];
+
+                    // width list
+                    if ( Column.getAttribute( 'width' ) &&
+                         Column.getAttribute( 'width' ) > 0 )
+                    {
+                        wlist.push(
+                            Column.getAttribute( 'width' )
+                        );
+                    } else
+                    {
+                        wlist.push( 200 );
+                    }
+                }
+            }
+
+            // resize columns width %
+            var old_max   = 0,
+                max_width = this.$Elm.getSize().x;
+
+            for ( i = 0, len = wlist.length; i < len; i++ ) {
+                old_max = old_max + wlist[ i ];
+            }
+
+            // calc the % and resize it
+            for ( i = 0, len = wlist.length; i < len; i++ )
+            {
+                perc = QUI.Utils.percent( wlist[ i ], old_max );
+
+                this.$columns[ i ].setAttribute( 'width', (max_width * (perc / 100)).round() - 5 );
+                this.$columns[ i ].resize();
+            }
+        },
+
+        /**
+         * Create the DOMNode
+         *
+         * @return {DOMNode}
+         */
+        create : function()
+        {
+            this.$Elm = new Element('div.qui-workspace', {
+                styles : {
+                    height : '100%',
+                    width  : '100%',
+                    'float' : 'left'
+                }
+            });
+
+            this.$Loader = new QUI.controls.loader.Loader({
+                styles : {
+                    zIndex : 100
+                }
+            }).inject( this.$Elm );
+
+            if ( this.getAttribute( 'styles' ) ) {
+                this.$Elm.setStyles( this.getAttribute( 'styles' ) );
+            }
+
+            return this.$Elm;
         },
 
         /**
@@ -140,31 +243,93 @@ define('controls/desktop/Workspace', [
         },
 
         /**
-         * Create the DOMNode
+         * Add a column to the workspace
          *
-         * @return {DOMNode}
+         * @param {QUI.controls.desktop.Column|Params} Column
          */
-        create : function()
+        appendChild : function(Column)
         {
-            this.$Elm = new Element('div.qui-workspace', {
-                styles : {
-                    height : '100%',
-                    width  : '100%',
-                    'float' : 'left'
-                }
-            });
-
-            this.$Loader = new QUI.controls.loader.Loader({
-                styles : {
-                    zIndex : 100
-                }
-            }).inject( this.$Elm );
-
-            if ( this.getAttribute( 'styles' ) ) {
-                this.$Elm.setStyles( this.getAttribute( 'styles' ) );
+            if ( typeOf( Column ) !== 'QUI.controls.desktop.Column' ) {
+                Column = new QUI.controls.desktop.Column( Column );
             }
 
-            return this.$Elm;
+            var max_width = this.$Elm.getSize().x,
+                col_width = Column.getAttribute( 'width' );
+
+            if ( !this.count() ) {
+                col_width = max_width;
+            }
+
+            if ( !col_width ) {
+                col_width = 200;
+            }
+
+            Column.setAttribute( 'width', col_width );
+            Column.setParent( this );
+            Column.inject( this.$Elm );
+
+            if ( this.count() )
+            {
+                var Handler = new Element('div', {
+                    'class' : 'qui-column-handle',
+                    styles  : {
+                        width       : 4,
+                        borderWidth : '0 1px'
+                    },
+                    events : {
+                        contextmenu : this.$onHandlerContextMenu
+                    }
+                });
+
+                Handler.inject( Column.getElm(), 'before' );
+
+                this.$bindResizeToColumn( Handler, Column );
+
+                // get prev column
+                var Sibling       = this.lastChild(),
+                    sibling_width = max_width - col_width - 6;
+
+                if ( max_width > Sibling.getAttribute( 'width' ) ) {
+                    sibling_width = Sibling.getAttribute( 'width' ) - col_width - 6;
+                }
+
+                Sibling.setAttribute( 'width', sibling_width );
+                Sibling.resize();
+            }
+
+            this.$columns.push( Column );
+
+            Column.resize();
+        },
+
+        /**
+         * Return the last column
+         *
+         * @return {QUI.controls.desktop.Column|false}
+         */
+        lastChild : function()
+        {
+            return this.$columns[ this.count()-1 ] || false;
+        },
+
+        /**
+         * Return the first column
+         *
+         * @return {QUI.controls.desktop.Column|false}
+         */
+        firstChild : function()
+        {
+            return this.$columns[ 0 ] || false;
+        },
+
+        /**
+         * Return the number of columns in the workspace
+         *
+         * @return {Integer}
+         */
+        count : function()
+        {
+            return this.$columns.length;
         },
 
         /**
@@ -365,6 +530,178 @@ define('controls/desktop/Workspace', [
                     title  : 'Hilfe'
                 })
             );
+        },
+
+        /**
+         * Add the vertical resizing events to the column
+         *
+         * @param {DOMNode} Handler
+         * @param {QUI.controls.desktop.Column} Column
+         */
+        $bindResizeToColumn : function(Handler, Column)
+        {
+            // dbl click
+            Handler.addEvent('dblclick', function() {
+                Column.toggle();
+            });
+
+            // Drag & Drop event
+            var min = Column.getAttribute( 'resizeLimit' )[ 0 ],
+                max = Column.getAttribute( 'resizeLimit' )[ 1 ];
+
+            if ( !min ) {
+                min = 50;
+            }
+
+            if ( !max ) {
+                max = this.getElm().getSize().x - 50;
+            }
+
+            var handlepos = Handler.getPosition().y;
+
+            new QUI.classes.utils.DragDrop(Handler, {
+                limit  : {
+                    x: [ min, max ],
+                    y: [ handlepos, handlepos ]
+                },
+                events :
+                {
+                    onStart : function(Dragable, DragDrop)
+                    {
+                        var pos   = Handler.getPosition(),
+                            limit = DragDrop.getAttribute( 'limit' );
+
+                        limit.y = [ pos.y, pos.y ];
+
+                        DragDrop.setAttribute( 'limit', limit );
+
+                        Dragable.setStyles({
+                            width   : 5,
+                            padding : 0,
+                            top     : pos.y,
+                            left    : pos.x
+                        });
+                    },
+
+                    onStop : function(Dragable, DragDrop)
+                    {
+                        if ( this.isOpen() === false ) {
+                            this.open();
+                        }
+
+                        var change, next_width, this_width;
+
+                        var pos  = Dragable.getPosition(),
+                            hpos = Handler.getPosition(),
+                            Prev = this.getPrevious(),
+                            Next = this.getNext();
+
+
+                        change = pos.x - hpos.x - Handler.getSize().x;
+
+                        if ( !Next && !Prev ) {
+                            return;
+                        }
+
+                        var Sibling   = Next,
+                            placement = 'left';
+
+                        if ( Prev )
+                        {
+                            Sibling   = Prev,
+                            placement = 'right';
+                        }
+
+                        this_width = this.getAttribute( 'width' );
+                        next_width = Sibling.getAttribute( 'width' );
+
+                        if ( placement == 'left' )
+                        {
+                            this.setAttribute( 'width', this_width + change );
+                            Sibling.setAttribute( 'width', next_width - change );
+
+                        } else if ( placement == 'right' )
+                        {
+                            this.setAttribute( 'width', this_width - change );
+                            Sibling.setAttribute( 'width', next_width + change );
+                        }
+
+                        Sibling.resize();
+                        this.resize();
+                    }.bind( Column )
+                }
+            });
+        },
+
+        /**
+         * Resize handler context menu
+         *
+         * @param {DOMEvent} event
+         */
+        $onHandlerContextMenu : function(event)
+        {
+            event.stop();
+
+            var Menu = new QUI.controls.contextmenu.Menu({
+                events :
+                {
+                    onBlur : function(Menu) {
+                        Menu.destroy();
+                    }
+                }
+            });
+
+            Menu.hide();
+            Menu.appendChild(
+                new QUI.controls.contextmenu.Item({
+                    text   : 'Bearbeitungspalte rechts löschen.',
+                    target : event.target,
+                    events :
+                    {
+                        onMouseDown : function(Item)
+                        {
+                            console.log( Item );
+                        },
+                        onActive : function()
+                        {
+                            console.log('enter');
+                        },
+                        onNormal : function()
+                        {
+                            console.log('leave');
+                        }
+                    }
+                })
+            );
+
+            Menu.appendChild(
+                new QUI.controls.contextmenu.Item({
+                    text   : 'Bearbeitungspalte links löschen.',
+                    target : event.target,
+                    events :
+                    {
+                        onMouseDown : function(Item)
+                        {
+                            console.log( Item );
+                        },
+                        onActive : function()
+                        {
+                            console.log('enter');
+                        },
+                        onNormal : function()
+                        {
+                            console.log('leave');
+                        }
+                    }
+                })
+            );
+
+            Menu.inject( document.body );
+
+            Menu.setPosition(
+                event.page.x,
+                event.page.y
+            ).show().focus();
         }
     });
 

@@ -155,7 +155,7 @@ define('controls/projects/Panel', [
 
                         require(['controls/projects/Manager'], function(Manager)
                         {
-                            var Parent = QUI.Controls.get( 'content-panel' )[0];
+                            var Parent = QUI.Controls.getByType( 'QUI.controls.desktop.Tasks' )[0];
 
                             Parent.appendChild(
                                 new Manager({

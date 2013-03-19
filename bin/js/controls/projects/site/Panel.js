@@ -338,7 +338,7 @@ define('controls/projects/site/Panel', [
                     event.stop();
                 });
 
-                QUI.lib.Utils.setDataToForm(
+                QUI.Utils.setDataToForm(
                     Panel.getSite().getAttributes(),
                     Form
                 );

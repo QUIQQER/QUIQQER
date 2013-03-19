@@ -16,7 +16,7 @@ define('lib/media/Controls', function()
                 return false;
             }
 
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 onsubmit : function()
                 {
 
@@ -57,7 +57,7 @@ define('lib/media/Controls', function()
 
         Button : function(params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 image : URL_BIN_DIR +'16x16/media.png'
             });
 

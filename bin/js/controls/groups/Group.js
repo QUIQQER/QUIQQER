@@ -378,7 +378,7 @@ define('controls/groups/Group', [
                 Form = Body.getElement( 'form' );
 
                 QUI.controls.Utils.parse( Body );
-                QUI.lib.Utils.setDataToForm( Group.getAttributes(), Form );
+                QUI.Utils.setDataToForm( Group.getAttributes(), Form );
 
                 switch ( Category.getAttribute( 'name' ) )
                 {
@@ -413,7 +413,7 @@ define('controls/groups/Group', [
         {
             var Content = this.getBody(),
                 Frm     = Content.getElement( 'form' ),
-                data    = QUI.lib.Utils.getFormData( Frm );
+                data    = QUI.Utils.getFormData( Frm );
 
             this.getGroup().setAttributes( data );
         },

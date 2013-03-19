@@ -156,7 +156,7 @@ define('classes/projects/media/Item', [
          */
         save : function(oncomplete, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 project    : this.getMedia().getProject().getName(),
                 fileid     : this.getId(),
                 attributes : JSON.encode( this.getAttributes() ),
@@ -333,7 +333,7 @@ define('classes/projects/media/Item', [
          */
         rename : function(newname, oncomplete, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 project    : this.getMedia().getProject().getName(),
                 id         : this.getId(),
                 newname    : newname,

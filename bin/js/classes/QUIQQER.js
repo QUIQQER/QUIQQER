@@ -65,12 +65,12 @@ define('classes/QUIQQER', function()
 
             require([
                 "Editors", "Menu", "Locale", "Users", "Storage",
-                "Projects",
+                "Projects", "Utils",
 
                 "classes/messages", "controls/windows",
                 "classes/Plugin", "classes/projects/Project",
 
-                "lib/Utils", "lib/Sites", "lib/Plugins",
+                "lib/Sites", "lib/Plugins",
                 "lib/Ajax", "lib/upload/Manager", "lib/Template",
 
                 "controls/buttons/Button", "mochaui"
@@ -165,56 +165,6 @@ define('classes/QUIQQER', function()
             }
 
 
-            // @todo make a addColum control
-            new QUI.controls.buttons.Button({
-                alt    : 'Bearbeitungsspalte hinzufügen',
-                title  : 'Bearbeitungsspalte hinzufügen',
-                image  : URL_BIN_DIR +'22x22/add_column.png',
-                styles : {
-                    'float' : 'right',
-                    margin  : 5
-                },
-                events :
-                {
-                    onClick : function(Btn)
-                    {
-                        // get last column
-                        var LastColumn = $('content').getLast('.qui-column'),
-                            QUI_Column = QUI.Controls.getById(
-                                LastColumn.get('data-quiid')
-                            );
-
-                        var NewColumn = new QUI.controls.desktop.Column({
-                            name        : 'control-colum',
-                            placement   : 'right',
-                            width       : 300,
-                            resizeLimit : [200, content_width - 210],
-                            closable    : true,
-                            events      :
-                            {
-                                onCreate : function(Column)
-                                {
-                                    require(['controls/desktop/Tasks'], function(Taskpanel)
-                                    {
-                                        this.appendChild(
-                                            new Taskpanel({
-                                                name : 'task-panel'
-                                            })
-                                        );
-                                    }.bind( Column ));
-                                }
-                            }
-                        }).inject( LastColumn, 'before' );
-
-
-                        var Sibling = NewColumn.getSibling();
-
-                        Sibling.setAttribute( 'width', Sibling.getAttribute( 'width' ) - 300 );
-                        Sibling.resize();
-                    }
-                }
-            }).inject( $('menu-container') );
-
             // content grösse
             window.addEvent( 'resize', this.resize );
             this.resize();
@@ -246,6 +196,11 @@ define('classes/QUIQQER', function()
                        icon    : URL_BIN_DIR +'16x16/apps/window_list.png',
                        require : 'controls/desktop/Tasks'
                    });
+
+                requirejs(['controls/desktop/buttons/AddColumn'], function(Button)
+                {
+                    new Button( QUI.Workspace ).inject( $('menu-container') );
+                });
             });
         },
 

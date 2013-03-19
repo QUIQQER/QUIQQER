@@ -62,7 +62,7 @@ define('classes/groups/Groups', [
          */
         getList : function(search, onfinish, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 params   : JSON.encode( search ),
                 onfinish : onfinish
             });
@@ -84,7 +84,7 @@ define('classes/groups/Groups', [
          */
         switchStatus : function(gid, onfinish, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 Groups   : this,
                 gid      : JSON.encode( gid ),
                 onfinish : onfinish
@@ -126,7 +126,7 @@ define('classes/groups/Groups', [
          */
         activate : function(gid, onfinish, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 Groups   : this,
                 gid      : JSON.encode( gid ),
                 onfinish : onfinish
@@ -168,7 +168,7 @@ define('classes/groups/Groups', [
          */
         deactivate : function(gid, onfinish, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 Groups   : this,
                 gid      : JSON.encode( gid ),
                 onfinish : onfinish
@@ -209,7 +209,7 @@ define('classes/groups/Groups', [
          */
         createGroup : function(groupname, parentid, onfinish, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 groupname : groupname,
                 pid       : parentid,
                 onfinish  : onfinish
@@ -232,7 +232,7 @@ define('classes/groups/Groups', [
          */
         deleteGroups : function(gids, onfinish, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 gids     : JSON.encode( gids ),
                 onfinish : onfinish,
                 Groups   : this

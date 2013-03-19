@@ -216,12 +216,12 @@ define('lib/Groups', function()
                 elements[i].set('id', elements[i].get('name') +'-'+ id);
             }
 
-            QUI.lib.Utils.setDataToForm(
+            QUI.Utils.setDataToForm(
                 Group.getAttributes(),
                 Content.getElement('form')
             );
 
-            QUI.lib.Utils.setDataToForm(
+            QUI.Utils.setDataToForm(
                 Group.getRights(),
                 Content.getElement('form')
             );
@@ -296,7 +296,7 @@ define('lib/Groups', function()
                 Panel   = Tab.getAttribute('Panel'),
                 Content = Panel.getBody(),
                 Frm     = Content.getElement('form'),
-                data    = QUI.lib.Utils.getFormData( Frm );
+                data    = QUI.Utils.getFormData( Frm );
 
             for (i in data)
             {
@@ -326,7 +326,7 @@ define('lib/Groups', function()
 /*
         getChildren : function(gid, onfinish, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 gid      : gid,
                 onfinish : onfinish
             });
@@ -341,7 +341,7 @@ define('lib/Groups', function()
 
         createGroup : function(groupname, pid, onfinish, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 pid       : pid,
                 groupname : groupname,
                 onfinish  : onfinish
@@ -355,7 +355,7 @@ define('lib/Groups', function()
 
         saveGroup : function(gid, attributes, onfinish, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 gid        : gid,
                 onfinish   : onfinish,
                 attributes : JSON.encode( attributes )
@@ -375,7 +375,7 @@ define('lib/Groups', function()
 
         deleteGroups : function(gid, onfinish, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 gid      : gid.join(','),
                 onfinish : onfinish
             });

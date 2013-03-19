@@ -701,7 +701,7 @@ define('classes/groups/Groups', [
          */
         activate : function(gid, onfinish, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 Groups   : this,
                 gid      : gid,
                 onfinish : onfinish
@@ -731,7 +731,7 @@ define('classes/groups/Groups', [
          */
         deactivate : function(gid, onfinish, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 Groups   : this,
                 gid      : gid,
                 onfinish : onfinish

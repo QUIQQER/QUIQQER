@@ -153,7 +153,7 @@ define('controls/projects/media/FilePanel', [
             }
 
             // set data to form
-            QUI.lib.Utils.setDataToForm({
+            QUI.Utils.setDataToForm({
                     file_name      : File.getAttribute( 'name' ),
                     file_title     : File.getAttribute( 'title' ),
                     file_alt       : File.getAttribute( 'alt' ),
@@ -167,7 +167,7 @@ define('controls/projects/media/FilePanel', [
                     file_md5       : File.getAttribute( 'md5hash' ),
                     file_sha1      : File.getAttribute( 'sha1hash' ),
 
-                    file_size : QUI.lib.Utils.formatSize(
+                    file_size : QUI.Utils.formatSize(
                         File.getAttribute('filesize'), 2
                     )
                 },
@@ -238,7 +238,7 @@ define('controls/projects/media/FilePanel', [
                 return;
             }
 
-            var data = QUI.lib.Utils.getFormData( Frm );
+            var data = QUI.Utils.getFormData( Frm );
 
             File.setAttribute( 'name',  data.file_name );
             File.setAttribute( 'title', data.file_title );

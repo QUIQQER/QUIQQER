@@ -50,13 +50,13 @@ define('lib/Ajax', [
             method   = method || 'post'; // is post, put, get or delete
             callback = callback || function() {};
 
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 _rf : call
             });
 
             this.$onprogress[ id ] = new QUI.classes.Ajax(
                 // combine all params, so, they are available in the Request Object
-                QUI.lib.Utils.combine(params, {
+                QUI.Utils.combine(params, {
                     callback : callback,
                     method   : method,
                     url      : QUI.Ajax.$url,
@@ -134,7 +134,7 @@ define('lib/Ajax', [
          */
         parseParams : function(call, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 _rf : call
             });
 

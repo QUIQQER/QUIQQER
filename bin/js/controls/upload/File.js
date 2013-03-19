@@ -16,7 +16,7 @@ define('controls/upload/File', [
 
     'controls/Control',
     'classes/request/Ajax',
-    'lib/Utils',
+    'Utils',
     'controls/contextmenu/Menu',
     'controls/contextmenu/Item'
 
@@ -130,7 +130,7 @@ define('controls/upload/File', [
                 if ( this.$Progress )
                 {
                     this.$Progress.set(
-                        QUI.lib.Utils.percent(
+                        QUI.Utils.percent(
                             this.$range_start,
                             this.$file_size
                         )
@@ -354,7 +354,7 @@ define('controls/upload/File', [
             }
 
             this.$Progress.set(
-                QUI.lib.Utils.percent( this.$range_start, this.$file_size )
+                QUI.Utils.percent( this.$range_start, this.$file_size )
             );
         },
 
@@ -405,7 +405,7 @@ define('controls/upload/File', [
 
             if ( this.$execute === false )
             {
-                QUI.lib.Utils.percent( 100 );
+                QUI.Utils.percent( 100 );
 
                 if ( this.$Cancel )
                 {
@@ -545,7 +545,7 @@ define('controls/upload/File', [
                 ),
 
                 // extra params for ajax function
-                params = QUI.lib.Utils.combine( (this.getAttribute('params') || {}), {
+                params = QUI.Utils.combine( (this.getAttribute('params') || {}), {
                     file : JSON.encode({
                         uploadstart : this.$upload_time,
                         chunksize   : this.$chunk_size,

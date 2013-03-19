@@ -116,6 +116,10 @@ define('controls/contextmenu/Menu', [
          */
         show : function()
         {
+            if ( !this.$Elm ) {
+                return this;
+            }
+
             var Parent = this.$Elm.getParent(),
                 Elm    = this.$Elm;
 

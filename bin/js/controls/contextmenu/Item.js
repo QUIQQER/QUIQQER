@@ -277,17 +277,18 @@ define('controls/contextmenu/Item', [
          */
         setNormal : function()
         {
-            if ( this.$Elm )
+            if ( !this.$Elm ) {
+                return this;
+            }
+
+            if ( this.$Menu )
             {
-                if ( this.$Menu )
-                {
-                    this.$Elm
-                        .getChildren('.qui-contextitem-container')
-                        .removeClass('qui-contextitem-active');
-                } else
-                {
-                    this.$Elm.removeClass('qui-contextitem-active');
-                }
+                this.$Elm
+                    .getChildren( '.qui-contextitem-container' )
+                    .removeClass( 'qui-contextitem-active' );
+            } else
+            {
+                this.$Elm.removeClass( 'qui-contextitem-active' );
             }
 
             this.fireEvent( 'normal', [ this ] );

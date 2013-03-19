@@ -80,7 +80,7 @@ define('classes/users/Users', [
          */
         getList : function(search, onfinish, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 params   : JSON.encode( search ),
                 onfinish : onfinish
             });
@@ -104,7 +104,7 @@ define('classes/users/Users', [
          */
         switchStatus : function(uid, onfinish, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 Users    : this,
                 uid      : JSON.encode( uid ),
                 onfinish : onfinish
@@ -133,7 +133,7 @@ define('classes/users/Users', [
          */
         activate : function(uid, onfinish, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 Users    : this,
                 uid      : JSON.encode( uid ),
                 onfinish : onfinish
@@ -162,7 +162,7 @@ define('classes/users/Users', [
          */
         deactivate : function(uid, onfinish, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 Users    : this,
                 uid      : JSON.encode( uid ),
                 onfinish : onfinish
@@ -191,7 +191,7 @@ define('classes/users/Users', [
          */
         existsUsername : function(username, onfinish, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 username : username,
                 onfinish : onfinish
             });
@@ -213,7 +213,7 @@ define('classes/users/Users', [
          */
         createUser : function(username, onfinish, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 username : username,
                 onfinish : onfinish
             });
@@ -237,7 +237,7 @@ define('classes/users/Users', [
          */
         deleteUsers : function(uids, onfinish, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 uid      : JSON.encode( uids ),
                 onfinish : onfinish,
                 Users    : this
@@ -285,7 +285,7 @@ define('classes/users/Users', [
          */
         saveUser : function(User, onfinish, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 uid        : User.getId(),
                 attributes : JSON.encode( User.getAttributes() ),
                 rights     : JSON.encode( User.getRights() ),

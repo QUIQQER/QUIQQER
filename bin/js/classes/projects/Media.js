@@ -195,7 +195,7 @@ define('classes/projects/Media', [
          */
         activate : function(id, oncomplete, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 project    : this.getProject().getName(),
                 fileid     : JSON.encode( id ),
                 oncomplete : oncomplete,
@@ -221,7 +221,7 @@ define('classes/projects/Media', [
          */
         deactivate : function(id, oncomplete, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 project    : this.getProject().getName(),
                 fileid     : JSON.encode( id ),
                 oncomplete : oncomplete,
@@ -247,7 +247,7 @@ define('classes/projects/Media', [
          */
         del : function(id, oncomplete, params)
         {
-            params = QUI.lib.Utils.combine(params, {
+            params = QUI.Utils.combine(params, {
                 project    : this.getProject().getName(),
                 fileid     : JSON.encode( id ),
                 oncomplete : oncomplete,
