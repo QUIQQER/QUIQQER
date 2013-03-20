@@ -34,8 +34,8 @@ define('controls/projects/site/Panel', [
      */
     QUI.controls.projects.site.Panel = new Class({
 
-        Implements : [ QUI_Panel ],
-        Type       : 'QUI.controls.projects.site.Panel',
+        Extends : QUI_Panel,
+        Type    : 'QUI.controls.projects.site.Panel',
 
         Binds : [
             'load',
@@ -59,9 +59,9 @@ define('controls/projects/site/Panel', [
             this.setAttribute( 'id', 'projects-site-'+ Site.getId() +'-panel' );
             this.setAttribute( 'name', 'projects-site-'+ Site.getId() +'-panel' );
 
-            this.init( options );
-
             this.$Site = Site;
+
+            this.parent( options );
 
             this.addEvents({
                 onCreate : this.$onCreate,
@@ -209,9 +209,14 @@ define('controls/projects/site/Panel', [
             });
         },
 
+        /**
+         * event: panel resize
+         *
+         * @method QUI.controls.projects.site.Panel#$onResize
+         */
         $onResize : function()
         {
-                console.warn( 'site resize' );
+
         },
 
         /**

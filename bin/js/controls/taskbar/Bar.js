@@ -91,6 +91,7 @@ function(Control)
         /**
          * Import the saved data
          *
+         * @method QUI.controls.taskbar.Bar#unserialize
          * @param {Object} data
          * @return {this}
          */
@@ -195,6 +196,7 @@ function(Control)
         /**
          * Append a child to the Taskbar
          *
+         * @method QUI.controls.taskbar.Bar#appendChild
          * @param {QUI.controls.taskbar.Task|QUI.controls.taskbar.Group} Task
          */
         appendChild : function(Task)
@@ -218,6 +220,7 @@ function(Control)
             Task.addEvent( 'onDestroy', this.$onTaskDestroy );
             Task.addEvent( 'onClick', this.$onTaskClick );
 
+            Task.normalize();
             Task.inject( this.$Elm );
 
             this.$tasks.push( Task );
@@ -248,6 +251,7 @@ function(Control)
         /**
          * Return the first task children
          *
+         * @method QUI.controls.taskbar.Bar#firstChild
          * @return {QUI.controls.taskbar.Task|QUI.controls.taskbar.Group|false}
          */
         firstChild : function()
@@ -262,6 +266,7 @@ function(Control)
         /**
          * Return the last task children
          *
+         * @method QUI.controls.taskbar.Bar#lastChild
          * @return {QUI.controls.taskbar.Task|QUI.controls.taskbar.Group|false}
          */
         lastChild : function()
@@ -276,6 +281,7 @@ function(Control)
         /**
          * Remove a task from the bar
          *
+         * @method QUI.controls.taskbar.Bar#removeChild
          * @return {QUI.controls.taskbar.Task}
          */
         removeChild : function(Task)
@@ -299,6 +305,7 @@ function(Control)
         /**
          * highlight the toolbar
          *
+         * @method QUI.controls.taskbar.Bar#highlight
          * @return {this}
          */
         highlight : function()
@@ -311,6 +318,7 @@ function(Control)
         /**
          * normalize the toolbar
          *
+         * @method QUI.controls.taskbar.Bar#normalize
          * @return {this}
          */
         normalize : function()
@@ -323,6 +331,7 @@ function(Control)
         /**
          * Refresh the context menu item of the task, if the task refresh
          *
+         * @method QUI.controls.taskbar.Bar#$onTaskRefresh
          * @param {QUI.controls.taskbar.Task}
          */
         $onTaskRefresh : function(Task)
@@ -347,6 +356,7 @@ function(Control)
         /**
          * Refresh the context menu if the task would be destroyed
          *
+         * @method QUI.controls.taskbar.Bar#$onTaskDestroy
          * @param {QUI.controls.taskbar.Task} Task
          */
         $onTaskDestroy : function(Task)
@@ -357,6 +367,7 @@ function(Control)
         /**
          * event task click
          *
+         * @method QUI.controls.taskbar.Bar#$onTaskClick
          * @param {QUI.controls.taskbar.Task} Task
          * @param {DOMEvent} event
          */

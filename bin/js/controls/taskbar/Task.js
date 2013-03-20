@@ -36,7 +36,7 @@ define('controls/taskbar/Task', [
     QUI.namespace( 'controls.taskbar' );
 
     /**
-     * @class QUI.controls.buttons.Button
+     * @class QUI.controls.taskbar.Task
      *
      * @param {QUI.controls.Control} Instance - Control for the task
      * @param {Object} options                - QDOM params
@@ -50,6 +50,7 @@ define('controls/taskbar/Task', [
 
         Binds : [
             'close',
+            'click',
             '$onDestroy'
         ],
 
@@ -97,6 +98,7 @@ define('controls/taskbar/Task', [
         /**
          * Return the save date, eq for the workspace
          *
+         * @method QUI.controls.taskbar.Task#serialize
          * @return {Object}
          */
         serialize : function()
@@ -111,6 +113,7 @@ define('controls/taskbar/Task', [
         /**
          * Import the saved data
          *
+         * @method QUI.controls.taskbar.Task#unserialize
          * @param {Object} data
          * @return {this}
          */
@@ -135,107 +138,6 @@ define('controls/taskbar/Task', [
         },
 
         /**
-         * Refresh the task display
-         */
-        refresh : function()
-        {
-            if ( !this.$Elm )
-            {
-                this.fireEvent( 'refresh', [ this ] );
-                return;
-            }
-
-            var Icon = this.$Elm.getElement( '.qui-task-icon' ),
-                Text = this.$Elm.getElement( '.qui-task-text' );
-
-            if ( this.getIcon() )
-            {
-                Icon.setStyle(
-                    'background-image',
-                    'url('+ this.getIcon() +')'
-                );
-            }
-
-            if ( this.getTitle() )
-            {
-                var title = this.getTitle();
-                    title = title.substring( 0, 19 );
-
-                if ( title.length > 19 ) {
-                    title = title +'...';
-                }
-
-                Text.set( 'html', title );
-            }
-
-            this.fireEvent( 'refresh', [ this ] );
-        },
-
-        /**
-         * Return the instance icon
-         *
-         * @return {String|false}
-         */
-        getIcon : function()
-        {
-            if ( !this.getInstance() ) {
-                return '';
-            }
-
-            return this.getInstance().getAttribute( 'icon' );
-        },
-
-        /**
-         * Return the instance title
-         *
-         * @return {String|false}
-         */
-        getTitle : function()
-        {
-            if ( !this.getInstance() ) {
-                return '';
-            }
-
-            return this.getInstance().getAttribute( 'title' );
-        },
-
-        /**
-         * Return the binded instance to the task
-         *
-         * @return {QUI.controls.Control}
-         */
-        getInstance : function()
-        {
-            return this.$Instance;
-        },
-
-        /**
-         * Set / Bind an instance to the task
-         *
-         * @param {QUI.controls.Control} Instance
-         */
-        setInstance : function(Instance)
-        {
-            this.$Instance = Instance;
-        },
-
-        /**
-         * Return the Taskbar object
-         *
-         * @return {QUI
-         */
-        getTaskbar : function()
-        {
-            var Taskbar = this.getParent();
-
-            if ( typeOf( Taskbar ) == "QUI.controls.taskbar.Group" ) {
-                Taskbar = Taskbar.getParent();
-            }
-
-            return Taskbar;
-        },
-
-        /**
          * Return the DOMNode
          *
          * @method QUI.controls.buttons.Button#getElm
@@ -257,10 +159,7 @@ define('controls/taskbar/Task', [
                 tabindex : -1,
                 events   :
                 {
-                    click : function(event)
-                    {
-                        this.click( event );
-                    }.bind( this ),
+                    click : this.click,
 
                     focus : function(event)
                     {
@@ -326,7 +225,6 @@ define('controls/taskbar/Task', [
                             if ( !Droppable ) {
                                 return;
                             }
-
                             var quiid = Droppable.get( 'data-quiid' );
 
                             if ( !quiid ) {
@@ -370,8 +268,116 @@ define('controls/taskbar/Task', [
         },
 
         /**
+         * Refresh the task display
+         *
+         * @method QUI.controls.taskbar.Task#refresh
+         */
+        refresh : function()
+        {
+            if ( !this.$Elm )
+            {
+                this.fireEvent( 'refresh', [ this ] );
+                return;
+            }
+
+            var Icon = this.$Elm.getElement( '.qui-task-icon' ),
+                Text = this.$Elm.getElement( '.qui-task-text' );
+
+            if ( this.getIcon() )
+            {
+                Icon.setStyle(
+                    'background-image',
+                    'url('+ this.getIcon() +')'
+                );
+            }
+
+            if ( this.getTitle() )
+            {
+                var title = this.getTitle();
+                    title = title.substring( 0, 19 );
+
+                if ( title.length > 19 ) {
+                    title = title +'...';
+                }
+
+                Text.set( 'html', title );
+            }
+
+            this.fireEvent( 'refresh', [ this ] );
+        },
+
+        /**
+         * Return the instance icon
+         *
+         * @method QUI.controls.taskbar.Task#refresh
+         * @return {String|false}
+         */
+        getIcon : function()
+        {
+            if ( !this.getInstance() ) {
+                return '';
+            }
+
+            return this.getInstance().getAttribute( 'icon' );
+        },
+
+        /**
+         * Return the instance title
+         *
+         * @method QUI.controls.taskbar.Task#getTitle
+         * @return {String|false}
+         */
+        getTitle : function()
+        {
+            if ( !this.getInstance() ) {
+                return '';
+            }
+
+            return this.getInstance().getAttribute( 'title' );
+        },
+
+        /**
+         * Return the binded instance to the task
+         *
+         * @method QUI.controls.taskbar.Task#getInstance
+         * @return {QUI.controls.Control}
+         */
+        getInstance : function()
+        {
+            return this.$Instance;
+        },
+
+        /**
+         * Set / Bind an instance to the task
+         *
+         * @param {QUI.controls.Control} Instance
+         */
+        setInstance : function(Instance)
+        {
+            this.$Instance = Instance;
+        },
+
+        /**
+         * Return the Taskbar object
+         *
+         * @method QUI.controls.taskbar.Task#getTaskbar
+         * @return {QUI
+         */
+        getTaskbar : function()
+        {
+            var Taskbar = this.getParent();
+
+            if ( typeOf( Taskbar ) == "QUI.controls.taskbar.Group" ) {
+                Taskbar = Taskbar.getParent();
+            }
+
+            return Taskbar;
+        },
+
+        /**
          * Set the Tab active
          *
+         * @method QUI.controls.taskbar.Task#activate
          * @return {this}
          */
         activate : function()
@@ -389,6 +395,7 @@ define('controls/taskbar/Task', [
         /**
          * Normalize the tab
          *
+         * @method QUI.controls.taskbar.Task#normalize
          * @return {this}
          */
         normalize : function()
@@ -410,6 +417,7 @@ define('controls/taskbar/Task', [
         /**
          * Hide the task tab
          *
+         * @method QUI.controls.taskbar.Task#hide
          * @return {this}
          */
         hide : function()
@@ -424,6 +432,7 @@ define('controls/taskbar/Task', [
         /**
          * Return true if the Task is active
          *
+         * @method QUI.controls.taskbar.Task#isActive
          * @return {Bool}
          */
         isActive : function()
@@ -438,6 +447,7 @@ define('controls/taskbar/Task', [
         /**
          * Trigger the click event
          *
+         * @method QUI.controls.taskbar.Task#click
          * @return {this}
          */
         click : function(event)
@@ -454,6 +464,7 @@ define('controls/taskbar/Task', [
         /**
          * Trigger the close event
          *
+         * @method QUI.controls.taskbar.Task#close
          * @return {this}
          */
         close : function(event)
@@ -467,6 +478,7 @@ define('controls/taskbar/Task', [
         /**
          * Set the focus to the task DOMNode element
          *
+         * @method QUI.controls.taskbar.Task#focus
          * @return {this}
          */
         focus : function()
@@ -481,6 +493,7 @@ define('controls/taskbar/Task', [
         /**
          * Highlight the Task
          *
+         * @method QUI.controls.taskbar.Task#highlight
          * @return {this}
          */
         highlight : function()
@@ -497,6 +510,7 @@ define('controls/taskbar/Task', [
         /**
          * Select the Task
          *
+         * @method QUI.controls.taskbar.Task#select
          * @return {this}
          */
         select : function()
@@ -513,6 +527,7 @@ define('controls/taskbar/Task', [
         /**
          * Is the Task selected?
          *
+         * @method QUI.controls.taskbar.Task#isSelected
          * @return {Bool}
          */
         isSelected : function()
@@ -527,6 +542,7 @@ define('controls/taskbar/Task', [
         /**
          * Unselect the Task
          *
+         * @method QUI.controls.taskbar.Task#unselect
          * @return {this}
          */
         unselect : function()
@@ -542,6 +558,8 @@ define('controls/taskbar/Task', [
 
         /**
          * on destroy task event
+         *
+         * @method QUI.controls.taskbar.Task#$onDestroy
          */
         $onDestroy : function()
         {
