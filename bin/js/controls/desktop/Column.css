@@ -2,6 +2,7 @@
 .qui-column {
     height: 100%;
     float: left;
+    position: relative;
 }
 
 .qui-column-content {
@@ -42,16 +43,18 @@
 }
 
 .qui-column-hightlight {
-    z-index: 10;
-    position: relative;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+    z-index: 100;
 
-    outline:none;
-    transition: all 0.25s ease-in-out;
-    -webkit-transition: all 0.25s ease-in-out;
-    -moz-transition: all 0.25s ease-in-out;
+    background-color: #6C98D9;
 
-
-    box-shadow: 0px 0 10px rgba(255, 0, 0, 1);
-    -webkit-box-shadow: 0px 0 10px rgba(255, 0, 0, 1);
-    -moz-box-shadow: 0px 0 10px rgba(255, 0, 0, 1);
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+    filter: alpha(opacity=50);
+    -moz-opacity: 0.5;
+    -khtml-opacity: 0.5;
+    opacity: 0.5;
 }

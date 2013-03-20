@@ -308,6 +308,50 @@ define('controls/desktop/Workspace', [
         },
 
         /**
+         * Add a panel to the workspace
+         *
+         * First it looks fot the first tasks panel, if no task panel exist,
+         * it looks for an panel with the name content-panel, if that not exist
+         * then it took the panel to a column
+         *
+         * @param {QUI.controls.dekstop.Panel} Panel
+         */
+        appendPanel : function(Panel)
+        {
+            if ( QUI.Controls.getByType( 'QUI.controls.desktop.Tasks' ).length )
+            {
+                QUI.Controls.getByType( 'QUI.controls.desktop.Tasks' )[ 0 ].appendChild(
+                    Panel
+                );
+
+                return;
+            }
+
+            if ( QUI.Controls.get( 'content-panel' ).length )
+            {
+                QUI.Controls.get( 'content-panel' )[ 0 ].appendChild(
+                    Panel
+                );
+
+                return;
+            }
+
+            if ( this.$columns[ 1 ] )
+            {
+                this.$columns[ 1 ].appendChild( Panel );
+                return;
+            }
+
+            if ( this.$columns[ 0 ] )
+            {
+                this.$columns[ 0 ].appendChild( Panel );
+                return;
+            }
+
+            QUI.MH.addError( 'Could not append the panel to the Workspace' );
+        },
+
+        /**
          * Return the last column
          *
          * @return {QUI.controls.desktop.Column|false}
@@ -667,7 +711,7 @@ define('controls/desktop/Workspace', [
             Menu.hide();
             Menu.appendChild(
                 new QUI.controls.contextmenu.Item({
-                    text    : 'Bearbeitungspalte rechts löschen.',
+                    text    : 'Bearbeitungspalte links löschen.',
                     Column  : LeftColumn,
                     Handler : Target,
                     events  :
@@ -681,7 +725,7 @@ define('controls/desktop/Workspace', [
 
             Menu.appendChild(
                 new QUI.controls.contextmenu.Item({
-                    text   : 'Bearbeitungspalte links löschen.',
+                    text   : 'Bearbeitungspalte rechts löschen.',
                     target : event.target,
                     Column : RightColumn,
                     events :

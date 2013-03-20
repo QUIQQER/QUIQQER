@@ -122,7 +122,7 @@ define('controls/projects/media/Panel', [
                 }
             });
 
-            QUI.Controls.get( 'content-panel' )[0].appendChild(
+            QUI.Controls.getByType( 'QUI.controls.desktop.Tasks' )[0].appendChild(
                 Panel
             );
 

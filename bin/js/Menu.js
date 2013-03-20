@@ -28,7 +28,7 @@ define('Menu', [
             this.Bar = new QUI_MenuBar().inject( $('menu-container') );
 
             // menü laden
-            QUI.Ajax.get('ajax_menu', function(result, Ajax)
+            QUI.Ajax.get('ajax_menu', function(result, Request)
             {
                 QUI.Menu.Bar.insert( result );
             });
@@ -47,14 +47,14 @@ define('Menu', [
             {
                 if ( Item.getAttribute( 'require' ) )
                 {
-                    require( [ Item.getAttribute( 'require' ) ], function(Call)
+                    require( [ Item.getAttribute( 'require' ) ], function(call)
                     {
-                        if ( typeOf( Call ) === 'function' ) {
-                            Call();
+                        if ( typeOf( call ) === 'function' ) {
+                            call();
                         }
 
                         if ( this.getAttribute( 'click' ) ) {
-                            eval( '( '+ this.getAttribute( 'click' ) +'(Call); )' );
+                            eval( '( '+ this.getAttribute( 'click' ) +'(call); )' );
                         }
 
                         this.setAttribute( 'icon', this.getAttribute( 'old_icon' ) );
@@ -82,7 +82,7 @@ define('Menu', [
                     Item.setAttribute( 'icon', Item.getAttribute( 'old_icon' ) );
                 }.bind( Item ));
 
-                QUI.Controls.get( 'content-panel' )[ 0 ].appendChild(
+                QUI.Workspace.appendPanel(
                     Panel
                 );
             });

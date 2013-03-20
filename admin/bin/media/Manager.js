@@ -14,9 +14,11 @@ define('admin/media/Manager', [
 
 ], function(Manager)
 {
+    "use strict";
+
     return function()
     {
-        QUI.Controls.get( 'content-panel' )[ 0 ].appendChild(
+        QUI.Workspace.appendPanel(
             new Manager()
         );
     };

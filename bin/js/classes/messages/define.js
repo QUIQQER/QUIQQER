@@ -14,7 +14,7 @@ define('classes/messages', [
     'classes/messages/Information',
     'classes/messages/Success'
 
-], function(Handler, Message, Attention, Error, Information, Success)
+], function(Handler)
 {
     "use strict";
 

@@ -37,11 +37,12 @@ define('controls/desktop/panels/Bookmarks', [
             this.$bookmarks = [];
 
             this.setAttributes({
-                title : 'Bookmarks'
+                title : 'Bookmarks',
+                icon  : URL_BIN_DIR +'16x16/apps/klipper.png'
             });
 
-            this.parent( options );
             this.addEvent( 'onCreate', this.$create );
+            this.parent( options );
         },
 
         /**

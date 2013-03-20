@@ -41,13 +41,13 @@ define('controls/desktop/Tasks', [
             '$onTaskbarAppendChild'
         ],
 
-        options :
-        {
-            name : 'taskpanel',
+        options : {
+            name  : 'taskpanel',
+            icon  : URL_BIN_DIR +'16x16/apps/window_list.png',
 
             // header
-            header : true,  // true to create a panel header when panel is created
-            title  : false  // the title inserted into the panel's header
+            header : true,    // true to create a panel header when panel is created
+            title  : 'Tasks'  // the title inserted into the panel's header
         },
 
         initialize : function(options)
@@ -209,6 +209,34 @@ define('controls/desktop/Tasks', [
             }
 
             return this.$Elm;
+        },
+
+        /**
+         * Highlight the column
+         *
+         * @return {this}
+         */
+        highlight : function()
+        {
+            if ( this.getElm() ) {
+                this.getElm().addClass( 'qui-panel-highlight' );
+            }
+
+            return this;
+        },
+
+        /**
+         * Dehighlight the column
+         *
+         * @return {this}
+         */
+        normalize : function()
+        {
+            if ( this.getElm() ) {
+                this.getElm().removeClass( 'qui-panel-highlight' );
+            }
+
+            return this;
         },
 
         /**

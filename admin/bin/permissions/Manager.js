@@ -14,10 +14,12 @@ define('admin/permissions/Manager', [
 
 ], function(Panel)
 {
+    "use strict";
+
     return function()
     {
-        QUI.Controls.get( 'content-panel' )[ 0 ].appendChild(
-            new QUI.controls.permissions.Panel()
+        QUI.Workspace.appendPanel(
+            new Panel()
         );
     };
 });

@@ -56,7 +56,9 @@ define('controls/projects/Panel', [
             this.setAttributes({
                 name    : 'projects-panel',
                 project : false,
-                lang    : false
+                lang    : false,
+                title   : 'Projekte',
+                icon    : URL_BIN_DIR +'16x16/home.png'
             });
 
             this.parent( options );

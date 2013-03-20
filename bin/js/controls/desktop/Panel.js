@@ -108,7 +108,6 @@ define('controls/desktop/Panel', [
         {
             this.fireEvent( 'destroy', [ this ] );
 
-
             if ( typeof this.$Elm !== 'undefined' && this.$Elm ) {
                 this.$Elm.destroy();
             }
@@ -381,6 +380,40 @@ define('controls/desktop/Panel', [
         isOpen : function()
         {
             return this.$Content.getStyle( 'display' ) == 'none' ? false : true;
+        },
+
+        /**
+         * Highlight the column
+         *
+         * @return {this}
+         */
+        highlight : function()
+        {
+            if ( !this.getElm() ) {
+                return this;
+            }
+
+            new Element( 'div.qui-panel-highlight' ).inject(
+                this.getElm()
+            );
+
+            return this;
+        },
+
+        /**
+         * Dehighlight the column
+         *
+         * @return {this}
+         */
+        normalize : function()
+        {
+            if ( !this.getElm() ) {
+                return this;
+            }
+
+            this.getElm().getElements( '.qui-panel-highlight' ).destroy();
+
+            return this;
         },
 
         /**

@@ -45,6 +45,8 @@ define('controls/desktop/panels/XML', [
             this.$config = null;
 
             this.addEvent( 'onCreate', this.$onCreate );
+
+            this.parent();
         },
 
         /**

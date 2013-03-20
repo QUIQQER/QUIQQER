@@ -38,7 +38,16 @@ define('controls/desktop/Column', [
 
         Binds : [
             '$onContextMenu',
-            '$clickAddPanelToColumn'
+
+            '$onPanelOpen',
+            '$onPanelClose',
+            '$onPanelDestroy',
+
+            '$clickAddPanelToColumn',
+
+            '$onEnterRemovePanel',
+            '$onLeaveRemovePanel',
+            '$onClickRemovePanel'
         ],
 
         options : {
@@ -232,6 +241,8 @@ define('controls/desktop/Column', [
                 }).inject( this.$Content );
 
                 this.$addHorResize( Handler );
+
+                Panel.setAttribute( '_Handler', Handler );
             }
 
             Panel.inject( this.$Content );
@@ -284,8 +295,9 @@ define('controls/desktop/Column', [
             Panel.resize();
 
             Panel.addEvents({
-                onMinimize : this.$onPanelClose.bind( this ),
-                onOpen     : this.$onPanelOpen.bind( this )
+                onMinimize : this.$onPanelClose,
+                onOpen     : this.$onPanelOpen,
+                onDestroy  : this.$onPanelDestroy
             });
 
             this.$panels[ Panel.getId() ] = Panel;
@@ -447,9 +459,13 @@ define('controls/desktop/Column', [
          */
         highlight : function()
         {
-            if ( this.getElm() ) {
-                this.getElm().addClass( 'qui-column-hightlight' );
+            if ( !this.getElm() ) {
+                return this;
             }
+
+            new Element( 'div.qui-column-hightlight' ).inject(
+                this.getElm()
+            );
 
             return this;
         },
@@ -461,9 +477,11 @@ define('controls/desktop/Column', [
          */
         normalize : function()
         {
-            if ( this.getElm() ) {
-                this.getElm().removeClass( 'qui-column-hightlight' );
+            if ( !this.getElm() ) {
+                return this;
             }
+
+            this.getElm().getElements( '.qui-column-hightlight' ).destroy();
 
             return this;
         },
@@ -638,8 +656,8 @@ define('controls/desktop/Column', [
         /**
          * Panel close event
          *
-         * @ignore
          * @param {QUI.controls.desktop.Panel} Panel
+         * @ignore
          */
         $onPanelClose : function(Panel)
         {
@@ -671,8 +689,8 @@ define('controls/desktop/Column', [
         /**
          * Panel open event
          *
-         * @ignore
          * @param {QUI.controls.desktop.Panel} Panel
+         * @ignore
          */
         $onPanelOpen : function(Panel)
         {
@@ -692,6 +710,48 @@ define('controls/desktop/Column', [
             );
 
             Prev.resize();
+        },
+
+        /**
+         * event: If the panel would be destroyed
+         *
+         * @param {QUI.controls.desktop.Panel} Panel
+         * @ignore
+         */
+        $onPanelDestroy : function(Panel)
+        {
+            var pid = Panel.getId(),
+                Elm = Panel.getElm();
+
+            if ( this.$panels[ pid ] ) {
+                delete this.$panels[ pid ];
+            }
+
+            // find handler
+            var Handler = Panel.getAttribute( '_Handler' );
+
+            if ( !Handler || !Handler.hasClass( 'qui-column-hor-handle' ) ) {
+                return;
+            }
+
+            var Prev = Handler.getPrevious();
+
+            if ( Prev && Prev.get( 'data-quiid' ) )
+            {
+                var Sibling = QUI.Controls.getById(
+                        Prev.get( 'data-quiid' )
+                    ),
+
+                    height  = Handler.getSize().y +
+                              Sibling.getAttribute( 'height' ) +
+                              Panel.getAttribute( 'height' );
+
+
+                Sibling.setAttribute( 'height', height );
+                Sibling.resize();
+            }
+
+            Handler.destroy();
         },
 
         /**
@@ -884,9 +944,23 @@ define('controls/desktop/Column', [
 
             this.$ContextMenu.appendChild( RemovePanels );
 
-            for ( i = 0, len = this.$panels.length; i < len; i++ )
+            for ( i in this.$panels )
             {
                 Panel = this.$panels[ i ];
+
+                RemovePanels.appendChild(
+                    new QUI.controls.contextmenu.Item({
+                        text   : Panel.getAttribute( 'title' ),
+                        icon   : Panel.getAttribute( 'icon' ),
+                        name   : Panel.getAttribute( 'name' ),
+                        Panel  : Panel,
+                        events : {
+                            onActive    : this.$onEnterRemovePanel,
+                            onNormal    : this.$onLeaveRemovePanel,
+                            onMouseDown : this.$onClickRemovePanel
+                        }
+                    })
+                );
             }
 
 
@@ -897,6 +971,8 @@ define('controls/desktop/Column', [
         },
 
         /**
+         * event : onclick contextmenu, add a panel
+         *
          * @param {QUI.controls.contextmenu.Item} ContextMenuItem
          */
         $clickAddPanelToColumn : function(ContextMenuItem)
@@ -911,6 +987,36 @@ define('controls/desktop/Column', [
             require([ params.require ], function(Panel) {
                 Column.appendChild( new Panel() );
             });
+        },
+
+        /**
+         * event : on mouse enter at a contextmenu item -> remove panel
+         *
+         * @param {QUI.controls.contextmenu.Item} Item
+         */
+        $onEnterRemovePanel : function(Item)
+        {
+            Item.getAttribute( 'Panel' ).highlight();
+        },
+
+        /**
+         * event : on mouse leave at a contextmenu item -> remove panel
+         *
+         * @param {QUI.controls.contextmenu.Item} Item
+         */
+        $onLeaveRemovePanel : function(Item)
+        {
+            Item.getAttribute( 'Panel' ).normalize();
+        },
+
+        /**
+         * event : on mouse click at a contextmenu item -> remove panel
+         *
+         * @param {QUI.controls.contextmenu.Item} Item
+         */
+        $onClickRemovePanel : function(Item)
+        {
+            Item.getAttribute( 'Panel' ).destroy();
         }
     });
 

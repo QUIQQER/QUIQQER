@@ -173,9 +173,9 @@ define('controls/projects/site/Panel', [
                         buttons[ i ]._onclick = buttons[ i ].onclick;
                         delete buttons[ i ].onclick;
 
-                        buttons[ i ].events   = {
+                        buttons[ i ].events = {
                             onClick : Panel.$onPanelButtonClick
-                        }
+                        };
                     }
 
                     Panel.addButton( buttons[ i ] );

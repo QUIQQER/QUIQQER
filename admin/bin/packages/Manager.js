@@ -14,10 +14,12 @@ define('admin/packages/Manager', [
 
 ], function(Panel)
 {
+    "use strict";
+
     return function()
     {
-        QUI.Controls.get( 'content-panel' )[ 0 ].appendChild(
-            new QUI.controls.packages.Panel()
+        QUI.Workspace.appendPanel(
+            new Panel()
         );
     };
 });
