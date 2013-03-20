@@ -20,7 +20,9 @@ define('controls/system/Check', [
 
 ], function(Control)
 {
-    QUI.namespace('controls.system');
+    "use strict";
+
+    QUI.namespace( 'controls.system' );
 
     /**
      * @class QUI.controls.system.Check

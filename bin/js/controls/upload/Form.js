@@ -33,6 +33,8 @@ define('controls/upload/Form', [
 
 ], function(Control)
 {
+    "use strict";
+
     QUI.namespace( 'controls.upload' );
 
     /**

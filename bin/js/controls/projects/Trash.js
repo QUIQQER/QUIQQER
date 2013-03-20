@@ -18,6 +18,8 @@ define('controls/projects/Trash', [
 
 ], function(Control)
 {
+    "use strict";
+
     QUI.namespace('controls.projects');
 
     /**

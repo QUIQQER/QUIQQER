@@ -13,6 +13,8 @@ define('classes/users/Adresses', [
 
 ], function(DOM, Grid)
 {
+    "use strict";
+
     QUI.namespace( 'classes.users' );
 
     QUI.classes.users.Adresses = new Class({

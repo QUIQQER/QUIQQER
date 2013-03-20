@@ -13,6 +13,8 @@ define('classes/users/AdressesContact', [
 
 ], function(DOM)
 {
+    "use strict";
+
     QUI.namespace( 'classes.users' );
 
 

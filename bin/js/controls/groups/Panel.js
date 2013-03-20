@@ -30,6 +30,8 @@ define('controls/groups/Panel', [
 
 ], function(Panel)
 {
+    "use strict";
+
     QUI.namespace( 'controls.groups' );
 
     /**

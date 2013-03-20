@@ -1,10 +1,13 @@
 
 QUI.Controls.load([
 
-    'contextmenu/Menu', 'contextmenu/Item'
+    'contextmenu/Menu',
+    'contextmenu/Item'
 
 ], function(Menu, MenuItem)
 {
+    "use strict";
+
     var MyMenu = new Menu({
         name : 'menu'
     });
@@ -36,5 +39,5 @@ QUI.Controls.load([
             })
         );
 
-    MyMenu( document.body );
+    MyMenu.inject( document.body );
 });

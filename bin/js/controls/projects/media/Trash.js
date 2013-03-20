@@ -18,6 +18,8 @@ define('controls/projects/media/Trash', [
 
 ], function(QDOM)
 {
+    "use strict";
+
     QUI.namespace('controls.projects.media');
 
     /**

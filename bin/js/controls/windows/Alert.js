@@ -20,6 +20,8 @@ define('controls/windows/Alert', [
 
 ], function(QUI_Win, QUI_Button)
 {
+    "use strict";
+
     /**
      * @class QUI.controls.windows.Alert
      *

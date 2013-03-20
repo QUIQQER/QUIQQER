@@ -28,6 +28,8 @@ define('classes/messages/Handler', [
 
 ], function(Message, Attention, Error, Information, Success)
 {
+    "use strict";
+
     QUI.namespace( 'classes.messages' );
 
     /**

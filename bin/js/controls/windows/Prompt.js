@@ -19,6 +19,8 @@ define('controls/windows/Prompt', [
 
 ], function(Win)
 {
+    "use strict";
+
     QUI.namespace( 'controls.window' );
 
     /**

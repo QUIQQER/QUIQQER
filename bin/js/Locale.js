@@ -14,6 +14,8 @@ define('Locale', [
 
 ], function(QUI_Locale)
 {
+    "use strict";
+
     if ( typeof QUI.Locale !== 'undefined' ) {
         return QUI.Locale;
     }

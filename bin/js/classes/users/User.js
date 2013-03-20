@@ -20,6 +20,8 @@ define('classes/users/User', [
 
 ], function(DOM)
 {
+    "use strict";
+
     QUI.namespace( 'classes.users' );
 
     /**

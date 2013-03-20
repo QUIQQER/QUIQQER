@@ -18,6 +18,8 @@ define('controls/projects/media/Sitemap', [
 
 ], function(QUI_Control, QUI_Sitemap)
 {
+    "use strict";
+
     QUI.namespace( 'controls.projects.media' );
 
     /**

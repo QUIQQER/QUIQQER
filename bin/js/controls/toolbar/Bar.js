@@ -25,6 +25,8 @@ define('controls/toolbar/Bar', [
 
 ], function(Control, QUI_ContextMenuItem, QUI_Button)
 {
+    "use strict";
+
     QUI.namespace( 'controls.toolbar.Bar' );
 
     /**

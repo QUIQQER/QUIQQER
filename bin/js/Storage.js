@@ -15,6 +15,8 @@ define('Storage', [
 
 ], function(UserStorage)
 {
+    "use strict";
+
     QUI.Storage = new UserStorage(
         QUI.Users.getUserBySession()
     );

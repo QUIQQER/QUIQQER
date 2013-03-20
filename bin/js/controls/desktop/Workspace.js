@@ -21,6 +21,8 @@ define('controls/desktop/Workspace', [
 
 ], function(QUI_Control)
 {
+    "use strict";
+
     QUI.namespace( 'controls.desktop' );
 
     /**
@@ -38,7 +40,10 @@ define('controls/desktop/Workspace', [
 
         Binds : [
             'resize',
-            '$onHandlerContextMenu'
+            '$onHandlerContextMenu',
+            '$onHandlerContextMenuHighlight',
+            '$onHandlerContextMenuNormalize',
+            '$onHandlerContextMenuClick'
         ],
 
         initialize : function(Parent, options)
@@ -126,7 +131,7 @@ define('controls/desktop/Workspace', [
          */
         resize : function(workspace)
         {
-            var i, len, Column;
+            var i, len, perc, Column;
             var wlist = [];
 
             if ( typeof workspace === 'undefined' || typeof workspace.length === 'undefined' ) {
@@ -153,7 +158,7 @@ define('controls/desktop/Workspace', [
             {
                 for ( i = 0, len = this.$columns.length; i < len; i++ )
                 {
-                    var Column = this.$columns[ i ];
+                    Column = this.$columns[ i ];
 
                     // width list
                     if ( Column.getAttribute( 'width' ) &&
@@ -651,25 +656,25 @@ define('controls/desktop/Workspace', [
                 }
             });
 
+            var Target = event.target,
+                Left   = Target.getPrevious( '.qui-column' ),
+                Next   = Target.getNext( '.qui-column' ),
+
+                LeftColumn  = QUI.Controls.getById( Left.get('data-quiid') ),
+                RightColumn = QUI.Controls.getById( Next.get('data-quiid') );
+
+
             Menu.hide();
             Menu.appendChild(
                 new QUI.controls.contextmenu.Item({
-                    text   : 'Bearbeitungspalte rechts löschen.',
-                    target : event.target,
-                    events :
+                    text    : 'Bearbeitungspalte rechts löschen.',
+                    Column  : LeftColumn,
+                    Handler : Target,
+                    events  :
                     {
-                        onMouseDown : function(Item)
-                        {
-                            console.log( Item );
-                        },
-                        onActive : function()
-                        {
-                            console.log('enter');
-                        },
-                        onNormal : function()
-                        {
-                            console.log('leave');
-                        }
+                        onMouseDown : this.$onHandlerContextMenuClick,
+                        onActive    : this.$onHandlerContextMenuHighlight,
+                        onNormal    : this.$onHandlerContextMenuNormalize
                     }
                 })
             );
@@ -678,20 +683,12 @@ define('controls/desktop/Workspace', [
                 new QUI.controls.contextmenu.Item({
                     text   : 'Bearbeitungspalte links löschen.',
                     target : event.target,
+                    Column : RightColumn,
                     events :
                     {
-                        onMouseDown : function(Item)
-                        {
-                            console.log( Item );
-                        },
-                        onActive : function()
-                        {
-                            console.log('enter');
-                        },
-                        onNormal : function()
-                        {
-                            console.log('leave');
-                        }
+                        onMouseDown : this.$onHandlerContextMenuClick,
+                        onActive    : this.$onHandlerContextMenuHighlight,
+                        onNormal    : this.$onHandlerContextMenuNormalize
                     }
                 })
             );
@@ -702,6 +699,37 @@ define('controls/desktop/Workspace', [
                 event.page.x,
                 event.page.y
             ).show().focus();
+        },
+
+        /**
+         * event : mouseclick on a contextmenu item on the handler slider
+         *
+         * @param {QUI.controls.contextmenu.Item} Item
+         */
+        $onHandlerContextMenuClick : function(Item)
+        {
+            Item.getAttribute( 'Column' ).destroy();
+            Item.getAttribute( 'Handler' ).destroy();
+        },
+
+        /**
+         * event : mouseenter on a contextmenu item on the handler slider
+         *
+         * @param {QUI.controls.contextmenu.Item} Item
+         */
+        $onHandlerContextMenuHighlight : function(Item)
+        {
+            Item.getAttribute( 'Column' ).highlight();
+        },
+
+        /**
+         * event : mouseleave on a contextmenu item on the handler slider
+         *
+         * @param {QUI.controls.contextmenu.Item} Item
+         */
+        $onHandlerContextMenuNormalize : function(Item)
+        {
+            Item.getAttribute( 'Column' ).normalize();
         }
     });
 

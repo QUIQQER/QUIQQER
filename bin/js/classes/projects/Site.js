@@ -26,6 +26,8 @@ define('classes/projects/Site', [
 
 ], function(DOM)
 {
+    "use strict";
+
     QUI.namespace( 'classes.projects' );
 
     /**
@@ -299,7 +301,7 @@ define('classes/projects/Site', [
 
             if ( typeof newname === 'undefined' ) {
                 return;
-            };
+            }
 
             /*
                 QUI.Windows.create('prompt', {
@@ -319,19 +321,15 @@ define('classes/projects/Site', [
                 return;
             }*/
 
-            parent_params = parent_params || {};
+            var params = this.ajaxParams();
 
-            parent_params.onfinish   = onfinish;
-            parent_params.attributes = JSON.encode( params );
-
-            if ( this.checkAjaxSiteParams( parent_params ) === false ) {
-                return false;
-            }
+            params.onfinish   = onfinish;
+            params.attributes = JSON.encode( this.getAttributes() );
 
             QUI.Ajax.post('ajax_site_children_create', function(result, Request)
             {
                 Ajax.getAttribute( 'onfinish' )( result, Request );
-            }, parent_params);
+            }, params);
 
             return true;
         },

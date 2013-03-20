@@ -14,6 +14,8 @@ define('Groups', [
 
 ], function(QUI_Groups)
 {
+    "use strict";
+
     if ( typeof QUI.Groups !== 'undefined' ) {
         return QUI.Groups;
     }

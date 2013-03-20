@@ -22,6 +22,8 @@ define('controls/projects/TypeInput', [
 
 ], function(Control, QUI_TypeButton, QUI_TypeWindow, Plugins)
 {
+    "use strict";
+
     QUI.namespace( 'controls.projects' );
 
     /**

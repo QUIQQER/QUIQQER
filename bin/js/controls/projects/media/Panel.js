@@ -34,6 +34,8 @@ define('controls/projects/media/Panel', [
 
 ], function(QUI_Control, QUI_Media, QUI_Upload, QUI_MediaSitemap)
 {
+    "use strict";
+
     QUI.namespace( 'controls.projects.media' );
 
     /**

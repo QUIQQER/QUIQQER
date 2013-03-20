@@ -21,6 +21,8 @@ define('classes/request/Upload', [
 
 ], function(DOM)
 {
+    "use strict";
+
     QUI.namespace('classes.request');
 
     /**

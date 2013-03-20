@@ -18,6 +18,8 @@ define('controls/desktop/panels/Sheet', [
 
 ], function(Control)
 {
+    "use strict";
+
     QUI.namespace( 'controls.desktop.panels' );
 
     /**

@@ -23,6 +23,8 @@ define('controls/projects/TypeSitemap', [
 
 ], function(Control, QUI_Item, QUI_SitemapItem)
 {
+    "use strict";
+
     QUI.namespace( 'controls.projects' );
 
     /**

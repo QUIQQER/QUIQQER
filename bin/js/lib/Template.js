@@ -11,6 +11,8 @@
 
 define('lib/Template', function()
 {
+    "use strict";
+
     /**
      * Template Manager - Use the Template Manager for getting HTML Templates
      * @namespace
@@ -115,7 +117,7 @@ define('lib/Template', function()
             var h = $( hash ).get( 'html' );
 
             // unter IE8 -> html kommentare können nicht per innerHTML gehohlt werden
-            h = h.replace(/\<\!\-\-/, '');
+            h = h.replace(/<\!\-\-/, '');
             h = h.replace(/\-\-\>/, '');
 
             return h;

@@ -27,6 +27,8 @@ try
 
 define('QUIQQER', ['classes/QUIQQER'], function(QUI)
 {
+    "use strict";
+
     // require config
     require.config({
         baseUrl : URL_BIN_DIR +'js/',

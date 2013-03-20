@@ -18,7 +18,9 @@ define('controls/groups/sitemap/Window', [
 
 ], function(Control)
 {
-    QUI.namespace('controls.groups.sitemap');
+    "use strict";
+
+    QUI.namespace( 'controls.groups.sitemap' );
 
     /**
      * @class QUI.controls.groups.sitemap.Window

@@ -17,6 +17,8 @@ define('controls/permissions/Panel', [
 
 ],function(QUI_Panel)
 {
+    "use strict";
+
     QUI.namespace( 'controls.permissions' );
 
     /**

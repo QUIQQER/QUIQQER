@@ -19,6 +19,8 @@ define('controls/breadcrumb/Item', [
 
 ], function(Control, QUI_ContextMenuItem)
 {
+    "use strict";
+
     QUI.namespace( 'controls.breadcrumb' );
 
     /**

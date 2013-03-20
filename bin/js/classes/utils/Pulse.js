@@ -16,6 +16,8 @@ define('classes/utils/Pulse', [
 
 ], function(DOM)
 {
+    "use strict";
+
     QUI.namespace('classes.utils');
 
     /**

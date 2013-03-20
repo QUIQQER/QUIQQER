@@ -9,8 +9,14 @@
  * @namespace QUI.classes.desktop
  */
 
-define('classes/desktop/WidgetSettings', ['classes/DOM'], function(DOM)
+define('classes/desktop/WidgetSettings', [
+
+    'classes/DOM'
+
+    ], function(DOM)
 {
+    "use strict";
+
     QUI.namespace('classes.desktop');
 
     /**

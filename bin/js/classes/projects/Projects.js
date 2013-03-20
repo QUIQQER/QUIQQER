@@ -14,6 +14,8 @@ define('classes/projects/Projects', [
 
 ], function(QDOM)
 {
+    "use strict";
+
     QUI.namespace( 'classes.projects' );
 
     /**

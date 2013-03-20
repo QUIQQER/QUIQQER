@@ -16,6 +16,8 @@ define('classes/projects/media/Folder', [
 
 ], function(MediaItem)
 {
+    "use strict";
+
     QUI.namespace( 'classes.projects.media' );
 
     /**

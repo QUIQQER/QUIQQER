@@ -17,6 +17,8 @@ define('controls/contextmenu/Item', [
 
 ], function(Control)
 {
+    "use strict";
+
     QUI.namespace('controls.contextmenu.Item');
 
     /**

@@ -14,6 +14,8 @@ define('Projects', [
 
 ], function(QUI_Projects)
 {
+    "use strict";
+
     if ( typeof QUI.Projects !== 'undefined' ) {
         return QUI.Projects;
     }

@@ -39,6 +39,8 @@ define('controls/windows', [
 
 ], function(Win, Submit, Alert, Prompt)
 {
+    "use strict";
+
     QUI.Windows =
     {
         /**

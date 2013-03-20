@@ -18,6 +18,8 @@ define('controls/projects/media/Button', [
 
 ], function(Control, QUI_Window)
 {
+    "use strict";
+
     QUI.namespace( 'controls.projects.media' );
 
     /**

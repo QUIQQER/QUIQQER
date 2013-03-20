@@ -19,6 +19,8 @@ define('controls/trash/Panel', [
 
 ], function(QUI_Panel, Grid)
 {
+    "use strict";
+
     QUI.namespace('controls.trash');
 
     /**

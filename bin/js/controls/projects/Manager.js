@@ -24,6 +24,8 @@ define('controls/projects/Manager', [
 
 ], function(QUI_Panel)
 {
+    "use strict";
+
     QUI.namespace( 'controls.projects' );
 
     /**
@@ -56,12 +58,12 @@ define('controls/projects/Manager', [
                 icon  : URL_BIN_DIR +'16x16/home.png'
             });
 
-            this.parent( options );
-
             this.addEvents({
                 onCreate : this.$onCreate,
                 onResize : this.$onResize
             });
+
+            this.parent( options );
         },
 
         /**

@@ -12,6 +12,8 @@
 
 define('classes/Plugin', ['classes/DOM'], function(DOM)
 {
+    "use strict";
+
     QUI.classes.Plugin = new Class({
 
         Implements: [DOM],

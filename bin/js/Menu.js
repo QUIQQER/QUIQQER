@@ -14,6 +14,8 @@ define('Menu', [
 
 ], function(QUI_MenuBar)
 {
+    "use strict";
+
     QUI.Menu = {
 
         Bar : null,

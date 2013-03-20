@@ -15,6 +15,8 @@ define('Editors', [
 
 ], function(QUI_Editors)
 {
+    "use strict";
+
     if ( typeof QUI.Editors !== 'undefined' ) {
         return QUI.Editors;
     }

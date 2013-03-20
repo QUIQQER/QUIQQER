@@ -24,6 +24,8 @@ define('controls/contextmenu/BarItem', [
 
 ], function(Control)
 {
+    "use strict";
+
     QUI.namespace( 'controls.contextmenu' );
 
     /**

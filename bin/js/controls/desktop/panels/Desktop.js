@@ -19,6 +19,8 @@ define('controls/desktop/panels/Desktop', [
 
 ], function(QUI_Panel)
 {
+    "use strict";
+
     QUI.namespace( 'controls.desktop.panels' );
 
     /**

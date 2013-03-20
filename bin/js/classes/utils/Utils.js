@@ -10,6 +10,8 @@
 
 define('classes/utils/Utils', function()
 {
+    "use strict";
+
     QUI.namespace( 'classes.utils' );
 
     /**

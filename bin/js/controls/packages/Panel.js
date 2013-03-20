@@ -16,6 +16,8 @@ define('controls/packages/Panel', [
 
 ],function(QUI_Panel)
 {
+    "use strict";
+
     QUI.namespace( 'controls.packages' );
 
     /**

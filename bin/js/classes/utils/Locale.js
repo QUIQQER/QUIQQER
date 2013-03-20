@@ -16,6 +16,8 @@ define('classes/utils/Locale', [
 
 ], function(QDOM)
 {
+    "use strict";
+
     QUI.namespace( 'classes.utils' );
 
     /**

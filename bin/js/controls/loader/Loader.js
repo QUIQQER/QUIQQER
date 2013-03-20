@@ -13,6 +13,8 @@ define('controls/loader/Loader', [
 
 ], function(QUI_Control)
 {
+    "use strict";
+
     QUI.namespace( 'controls.loader.Loader' );
 
     /**

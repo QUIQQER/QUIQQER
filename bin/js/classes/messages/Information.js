@@ -10,6 +10,8 @@ define('classes/messages/Information', [
 
 ], function(Message)
 {
+    "use strict";
+
     QUI.namespace('classes.messages');
 
     /**

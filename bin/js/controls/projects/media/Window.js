@@ -14,6 +14,8 @@ define('controls/projects/media/Window', [
 
 ], function(Control)
 {
+    "use strict";
+
     QUI.namespace( 'controls.projects.media' );
 
     /**
@@ -39,8 +41,6 @@ define('controls/projects/media/Window', [
 
             this.$Elm = null;
         }
-
-
     });
 
     return QUI.controls.projects.media.Window;

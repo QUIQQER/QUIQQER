@@ -20,6 +20,8 @@ define('controls/desktop/Tasks', [
 
 ], function(Control)
 {
+    "use strict";
+
     QUI.namespace( 'controls.desktop' );
 
     /**

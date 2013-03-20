@@ -39,6 +39,8 @@ define('controls/taskbar/Group', [
 
 ], function(Control)
 {
+    "use strict";
+
     QUI.namespace( 'controls.taskbar' );
 
     /**

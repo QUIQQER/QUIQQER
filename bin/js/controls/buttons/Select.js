@@ -22,6 +22,8 @@ define('controls/buttons/Select', [
 
 ], function(Control)
 {
+    "use strict";
+
     QUI.namespace( 'controls.buttons.Select' );
 
     /**

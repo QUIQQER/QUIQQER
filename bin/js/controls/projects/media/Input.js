@@ -21,6 +21,8 @@ define('controls/projects/media/Input', [
 
 ], function(Control, QUI_MediaButton)
 {
+    "use strict";
+
     QUI.namespace( 'controls.projects.media' );
 
     /**

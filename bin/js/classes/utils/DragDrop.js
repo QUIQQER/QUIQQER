@@ -23,6 +23,8 @@ define('classes/utils/DragDrop', [
 
 ], function(DOM)
 {
+    "use strict";
+
     QUI.namespace( 'classes.utils' );
 
     /**

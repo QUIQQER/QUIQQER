@@ -22,6 +22,8 @@ define('controls/sitemap/Item', [
 
 ], function(QUI_Control, QUI_ContextMenu, QUI_ContextMenuItem)
 {
+    "use strict";
+
     QUI.namespace( 'controls.sitemap' );
 
     /**

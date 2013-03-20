@@ -18,6 +18,8 @@ var QUI =
      */
     addEvent : function(event, callback)
     {
+        "use strict";
+
         if ( typeof this.$events[ event ] === 'undefined' ) {
             this.$events[ event ] = [];
         }
@@ -32,6 +34,8 @@ var QUI =
      */
     fireEvent : function(event)
     {
+        "use strict";
+
         if ( typeof this.$events[ event ] === 'undefined' ) {
             return;
         }
@@ -44,5 +48,6 @@ var QUI =
 
 require(['mvc/domReady'], function (domReady)
 {
+    "use strict";
 
 });

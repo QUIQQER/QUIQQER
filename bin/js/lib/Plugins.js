@@ -6,6 +6,8 @@
 
 define('lib/Plugins', ['classes/Plugin'], function(Plgn)
 {
+    "use strict";
+
     QUI.namespace('lib');
 
     QUI.lib.Plugins =

@@ -17,6 +17,8 @@ define('controls/buttons/Button', [
 
 ], function(Control)
 {
+    "use strict";
+
     QUI.namespace( 'controls.buttons.Button' );
 
     /**

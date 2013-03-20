@@ -10,6 +10,8 @@
 
 define('lib/polyfills/Storage', function()
 {
+    "use strict";
+
     if ( typeof window.localStorage !== 'undefined' &&
          typeof window.sessionStorage !== 'undefined')
     {

@@ -18,6 +18,8 @@ define('classes/projects/media/Item', [
 
 ], function(DOM, QUI_FilePanel)
 {
+    "use strict";
+
     QUI.namespace( 'classes.projects.media' );
 
     /**

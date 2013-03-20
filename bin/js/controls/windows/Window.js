@@ -17,6 +17,8 @@ define('controls/windows/Window', [
 
 ], function(Control)
 {
+    "use strict";
+
     QUI.namespace('controls.windows');
 
     /**

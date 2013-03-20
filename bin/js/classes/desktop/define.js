@@ -15,5 +15,7 @@ define('classes/desktop', [
 
 ], function(Desktop, Widget, Starter)
 {
+    "use strict";
+
     return Desktop;
 });

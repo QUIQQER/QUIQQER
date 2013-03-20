@@ -17,7 +17,9 @@ define('controls/sitemap/Map', [
 
 ], function(Control, Item)
 {
-    QUI.namespace('controls.sitemap');
+    "use strict";
+
+    QUI.namespace( 'controls.sitemap' );
 
     /**
      * @class QUI.controls.sitemap.Map

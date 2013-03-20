@@ -18,7 +18,9 @@ define('controls/projects/TypeButton', [
 
 ], function(Control, QUI_Window)
 {
-    QUI.namespace('controls.projects');
+    "use strict";
+
+    QUI.namespace( 'controls.projects' );
 
     /**
      * @class QUI.controls.projects.TypeButton

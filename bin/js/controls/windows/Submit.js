@@ -18,6 +18,8 @@ define('controls/windows/Submit', [
 
 ], function(QUI_Win)
 {
+    "use strict";
+
     /**
      * @class QUI.controls.windows.Submit
      *

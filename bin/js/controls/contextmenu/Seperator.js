@@ -14,6 +14,8 @@ define('controls/contextmenu/Seperator', [
 
 ], function(Control)
 {
+    "use strict";
+
     QUI.namespace( 'controls.contextmenu' );
 
     /**

@@ -18,6 +18,8 @@ define('lib/upload/Manager', [
 
 ], function()
 {
+    "use strict";
+
     QUI.UploadManager = {
 
         $files     : [],

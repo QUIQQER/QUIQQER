@@ -14,6 +14,8 @@ define('controls/projects/media/PanelContextMenu', [
 
 ], function()
 {
+    "use strict";
+
     QUI.namespace( 'controls.projects.media' );
 
     QUI.controls.projects.media.PanelContextMenu = new Class({

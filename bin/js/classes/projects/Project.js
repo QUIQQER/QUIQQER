@@ -28,6 +28,8 @@ define('classes/projects/Project', [
 
 ], function(QDOM, Site)
 {
+    "use strict";
+
     QUI.namespace( 'classes.projects' );
 
     /**
@@ -83,7 +85,7 @@ define('classes/projects/Project', [
                 'onDelete' : this.$onSiteDelete,
                 'onSave'   : this.$onSiteSave,
                 'onActivate'   : this.$onSiteSave,
-                'onDeActivate' : this.$onSiteSave,
+                'onDeActivate' : this.$onSiteSave
             });
 
             this.$ids[ id ] = Site;

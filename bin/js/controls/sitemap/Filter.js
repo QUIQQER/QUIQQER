@@ -22,6 +22,8 @@ define('controls/sitemap/Filter', [
 
 ], function(QUI_Control)
 {
+    "use strict";
+
     QUI.namespace( 'controls.sitemap' );
 
     /**

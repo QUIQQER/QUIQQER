@@ -25,6 +25,8 @@ define('controls/projects/TypeWindow', [
 
 ], function(Control, QUI_Item, QUI_SitemapItem, QUI_TypeSitemap)
 {
+    "use strict";
+
     QUI.namespace('controls.projects');
 
     /**

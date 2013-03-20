@@ -16,6 +16,8 @@ define('controls/projects/media/FolderWindow', [
 
 ], function(QUI_Control)
 {
+    "use strict";
+
     QUI.namespace('controls.projects.media');
 
     /**

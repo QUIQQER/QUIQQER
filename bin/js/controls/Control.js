@@ -17,6 +17,8 @@ define('controls/Control', [
 
 ], function(DOM, Controls)
 {
+    "use strict";
+
     QUI.namespace( 'classes' );
 
     /**

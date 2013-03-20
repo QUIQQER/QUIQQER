@@ -10,6 +10,8 @@
 
 define('Controls', function()
 {
+    "use strict";
+
     /**
      * QUI Controls - manage controls
      */

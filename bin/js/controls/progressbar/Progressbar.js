@@ -16,6 +16,8 @@ define('controls/progressbar/Progressbar', [
 
 ], function(QUI_Control)
 {
+    "use strict";
+
     QUI.namespace( 'controls.progressbar.Progressbar' );
 
     /**

@@ -16,6 +16,8 @@ define('classes/users/Storage', [
 
 ],function(QDOM)
 {
+    "use strict";
+
     QUI.namespace( 'classes.users' );
 
     /**

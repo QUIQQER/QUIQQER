@@ -20,6 +20,8 @@ define('classes/request/Ajax', [
 
 ], function(DOM)
 {
+    "use strict";
+
     QUI.namespace( 'classes.request' );
     QUI.$storage = {};
 

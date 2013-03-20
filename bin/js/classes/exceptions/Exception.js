@@ -8,8 +8,14 @@
  * @namespace QUI.classes.exceptions
  */
 
-define('classes/exceptions/Exception', ['classes/DOM'], function(DOM)
+define('classes/exceptions/Exception', [
+
+    'classes/DOM'
+
+], function(DOM)
 {
+    "use strict";
+
     QUI.namespace('classes.exceptions');
 
     /**

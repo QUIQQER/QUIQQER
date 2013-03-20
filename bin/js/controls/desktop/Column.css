@@ -40,3 +40,18 @@
     border-style: solid;
     border-color: #C3C3C3;
 }
+
+.qui-column-hightlight {
+    z-index: 10;
+    position: relative;
+
+    outline:none;
+    transition: all 0.25s ease-in-out;
+    -webkit-transition: all 0.25s ease-in-out;
+    -moz-transition: all 0.25s ease-in-out;
+
+
+    box-shadow: 0px 0 10px rgba(255, 0, 0, 1);
+    -webkit-box-shadow: 0px 0 10px rgba(255, 0, 0, 1);
+    -moz-box-shadow: 0px 0 10px rgba(255, 0, 0, 1);
+}

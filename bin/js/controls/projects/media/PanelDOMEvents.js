@@ -14,6 +14,8 @@ define('controls/projects/media/PanelDOMEvents', [
 
 ], function()
 {
+    "use strict";
+
     QUI.namespace( 'controls.projects.media' );
 
     QUI.controls.projects.media.PanelDOMEvents = new Class({

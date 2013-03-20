@@ -31,6 +31,8 @@ define('controls/taskbar/Task', [
 
 ], function(Control)
 {
+    "use strict";
+
     QUI.namespace( 'controls.taskbar' );
 
     /**

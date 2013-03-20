@@ -16,6 +16,8 @@ define('controls/desktop/panels/Bookmarks', [
 
 ], function(QUI_Panel)
 {
+    "use strict";
+
     QUI.namespace( 'controls.desktop.panels' );
 
     /**

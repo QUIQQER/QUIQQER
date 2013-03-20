@@ -22,6 +22,8 @@ define('classes/groups/Groups', [
 
 ], function(DOM, Controls, Grid)
 {
+    "use strict";
+
     QUI.namespace( 'classes.groups' );
     QUI.css( QUI.config('dir') +'classes/groups/Groups.css' );
 

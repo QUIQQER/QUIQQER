@@ -22,6 +22,8 @@ define('controls/upload/File', [
 
 ], function(Control)
 {
+    "use strict";
+
     QUI.namespace( 'controls.upload' );
 
     /**

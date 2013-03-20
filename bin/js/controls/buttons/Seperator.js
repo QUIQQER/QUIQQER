@@ -16,6 +16,8 @@ define('controls/buttons/Seperator', [
 
 ], function(Control)
 {
+    "use strict";
+
     QUI.namespace( 'controls.buttons.Seperator' );
 
     /**

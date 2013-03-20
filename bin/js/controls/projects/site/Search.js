@@ -14,6 +14,8 @@ define('controls/projects/site/Search', [
 
 ], function(QUI_Control)
 {
+    "use strict";
+
     QUI.namespace( 'controls.projects.site' );
 
     QUI.controls.projects.site.Site = new Class({

@@ -20,6 +20,8 @@ define('controls/projects/Settings', [
 
 ], function(QUI_Panel)
 {
+    "use strict";
+
     QUI.namespace( 'controls.projects' );
 
     /**

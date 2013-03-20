@@ -22,7 +22,9 @@ define('controls/projects/Window', [
 
 ], function(QUI_Control)
 {
-    QUI.namespace('controls.projects');
+    "use strict";
+
+    QUI.namespace( 'controls.projects' );
 
     /**
      * @class QUI.controls.projects.Window
@@ -35,7 +37,7 @@ define('controls/projects/Window', [
      */
     QUI.controls.projects.Window = new Class({
 
-        Implements: [QUI_Control],
+        Implements: [ QUI_Control ],
 
         options : {
             multible    : false,

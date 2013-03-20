@@ -11,6 +11,8 @@ define('lib/login/Login', [
 
 ], function()
 {
+    "use strict";
+
     QUI.namespace( 'lib' );
 
     QUI.lib.Login =

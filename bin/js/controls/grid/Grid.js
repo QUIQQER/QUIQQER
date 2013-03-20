@@ -44,6 +44,8 @@ define('controls/grid/Grid', [
 
 ], function(Control)
 {
+    "use strict";
+
     QUI.namespace( 'controls.grid' );
 
     /**

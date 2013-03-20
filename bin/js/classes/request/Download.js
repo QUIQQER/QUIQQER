@@ -16,7 +16,9 @@ define('classes/request/Download', [
 
 ], function(DOM)
 {
-    QUI.namespace('classes.request');
+    "use strict";
+
+    QUI.namespace( 'classes.request' );
 
     /**
      * @class QUI.classes.request.Download
@@ -29,7 +31,7 @@ define('classes/request/Download', [
      */
     QUI.classes.request.Download = new Class({
 
-        Implements: [DOM],
+        Implements: [ DOM ],
         Type      : 'QUI.classes.request.Download',
 
         $Request : null,
@@ -68,8 +70,6 @@ define('classes/request/Download', [
          */
         updateStatus : function(status)
         {
-
-
             if ( status == 100 )
             {
                 // dl fertig

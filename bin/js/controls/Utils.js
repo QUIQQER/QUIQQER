@@ -10,6 +10,8 @@
 
 define('controls/Utils', function()
 {
+    "use strict";
+
     QUI.namespace('controls');
 
 

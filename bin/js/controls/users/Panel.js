@@ -21,6 +21,8 @@ define('controls/users/Panel', [
 
 ], function(Panel)
 {
+    "use strict";
+
     QUI.namespace( 'controls.users' );
 
     /**

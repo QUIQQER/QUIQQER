@@ -16,6 +16,8 @@ define('classes/desktop/Desktop', [
 
 ], function(DOM)
 {
+    "use strict";
+
     QUI.namespace('classes.desktop');
 
     /**

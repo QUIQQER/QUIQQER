@@ -14,6 +14,8 @@ define('lib/Sites', [
 
 ], function()
 {
+    "use strict";
+
     QUI.namespace('lib');
 
     QUI.lib.Sites =

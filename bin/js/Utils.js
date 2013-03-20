@@ -14,6 +14,8 @@ define('Utils', [
 
 ], function(QUI_Utils)
 {
+    "use strict";
+
     if ( typeof QUI.Utils !== 'undefined' ) {
         return QUI.Utils;
     }

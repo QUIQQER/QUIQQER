@@ -11,99 +11,12 @@ if (typeof _pcsg === 'undefined') {
 
 _pcsg.Controls = function(){};
 
-/**
- * Color Picker für das CMS
- * @param _pcsg.Controls.ColorButton.get({
- *         onsubmit : function( result ) {
- *
- *         }
- * })
- */
-_pcsg.Controls.ColorButton =
-{
-    get : function(settings)
-    {
-        return new _ptools.Button({
-            name      : 'ColorButton',
-            onclick  : function(Btn) {
-                _pcsg.Controls.ColorButton.open( Btn );
-            },
-            image     : URL_BIN_DIR +'16x16/colors.png',
-            alt      : 'Farbauswähler',
-            title      : 'Farbauswähler',
-            settings : settings
-        });
-    },
-
-    open : function(_Btn)
-    {
-        if (typeof MooRainbow == 'undefined')
-        {
-            new _ptools.Alert({
-                text        : 'Diese Funktion wird zur Zeit nicht unterstützt',
-                information : 'Leider konnte die Klasse MooRainbow nicht gefunden werden'
-            }).create();
-
-            return false;
-        }
-
-        var _settings = _Btn.getAttribute('settings');
-
-        if (typeof _settings.onsubmit != 'function')
-        {
-            new _ptools.Alert({
-                text        : 'Es wurde keine Funktion angegeben',
-                information : 'Leider konnte die Aktion nicht ausgeführt werden, da keine Funktion für das Ergebnis angegeben wurde'
-            }).create();
-
-            return false;
-        }
-
-        var _Window = new _ptools.SubmitWindow({
-            title    : 'Farbauswähler',
-            name     : '_ColorWindow',
-            body     : '',
-            width    : 440,
-            height   : 360,
-            image    : URL_BIN_DIR +'16x16/colors.png',
-            onsubmit : function(_me)
-            {
-                var _Btn     = _me.getAttribute('Btn');
-                var settings = _Btn.getAttribute('settings');
-
-                if (typeof settings.onsubmit == 'function')
-                {
-                    var sets = _me.getAttribute('Control').MooRainbow.sets;
-                    return settings.onsubmit( sets );
-                }
-
-                return false;
-            },
-            Control  : _pcsg.Controls.ColorButton,
-            Btn      : _Btn
-        });
-        _Window.create();
-
-        var o = document.createElement('div');
-        _Window.oDivBody.appendChild(o);
-
-        o.id = 'mooRPicker';
-        //_Window.oDivBody.style.border = '1px solid red';
-
-        this.MooRainbow = new MooRainbow(o.id, {
-            id      : 'mooR'+o.id,
-            imgPath    : URL_BIN_DIR +'js/extern/mooRainbow/images/',
-            Parent  : _Window.oDivBody
-        });
-
-        //_settings.func();
-    }
-};
-
 _pcsg.Controls.SiteSearchButton =
 {
     get : function(settings)
     {
+        "use strict";
+
         if (typeof _ptools.Button)
         {
             return new _ptools.Button({
@@ -121,6 +34,8 @@ _pcsg.Controls.SiteSearchButton =
 
     open : function(_button)
     {
+        "use strict";
+
         var settings;
 
         if (typeof _button.getAttribute == 'function')
@@ -134,98 +49,6 @@ _pcsg.Controls.SiteSearchButton =
         _pcsg.SiteSearch.open(settings);
     }
 };
-
-
-_pcsg.Controls.GroupButton =
-{
-    get : function(settings)
-    {
-        if ( typeof _ptools.Button ) {
-            return this.getObj( settings ).create();
-        }
-    },
-
-    getObj : function(settings)
-    {
-        if (typeof _ptools.Button)
-        {
-            return new _ptools.Button({
-                name     : '_group',
-                onclick : function(_me)
-                {
-                    _pcsg.Groups.window( _me.getAttribute('settings') );
-
-                    var _settings = _me.getAttribute('settings');
-
-                    if (typeof _settings.onclick == 'function') {
-                        _settings.onclick(_me);
-                    }
-                },
-                image     : URL_BIN_DIR +'16x16/group.png',
-                title     : 'Gruppe setzen',
-                settings : settings
-            });
-        }
-
-        return false;
-    }
-};
-
-_pcsg.Controls.UserButton =
-{
-    get : function(settings)
-    {
-        return this.getObj( settings ).create();
-    },
-
-    getObj : function(settings)
-    {
-        return new _ptools.Button({
-            name     : '_users',
-            onclick : function(_me)
-            {
-                _Users.Window( _me.getAttribute('settings') );
-
-                var _settings = _me.getAttribute('settings');
-
-                if (typeof _settings.onclick == 'function') {
-                    _settings.onclick(_me);
-                }
-            },
-            image    : URL_BIN_DIR +'16x16/user.png',
-            title    : 'Benutzer setzen',
-            settings : settings
-        });
-    }
-};
-
-_pcsg.Controls.UserSearchButton =
-{
-    get : function(settings)
-    {
-        return this.getObj( settings ).create();
-    },
-
-    getObj : function(settings)
-    {
-        return new _ptools.Button({
-            name     : '_users',
-            onclick : function(Btn)
-            {
-                var settings = Btn.getAttribute('settings');
-
-                if (typeof settings.onsubmit == 'function') {
-                    _Users.searchUser(true, settings.onsubmit);
-                }
-            },
-            image     : URL_BIN_DIR +'16x16/usersearch.png',
-            title     : 'Benutzer setzen',
-            settings : settings
-        });
-    }
-};
-
-
 
 _pcsg.SiteSearch =
 {

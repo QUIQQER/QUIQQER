@@ -21,6 +21,8 @@ define('controls/groups/Entry', [
 
 ], function(QUI_Control)
 {
+    "use strict";
+
     QUI.namespace( 'controls.groups' );
 
     /**

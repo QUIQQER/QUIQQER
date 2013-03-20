@@ -26,6 +26,8 @@ define('controls/groups/Input', [
 
 ], function(QUI_Control)
 {
+    "use strict";
+
     QUI.namespace( 'controls.groups' );
 
     /**

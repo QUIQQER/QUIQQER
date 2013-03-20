@@ -9,9 +9,15 @@
  * @namespace QUI.classes.desktop
  */
 
-define('classes/desktop/WidgetResize', ['classes/DOM'], function(DOM)
+define('classes/desktop/WidgetResize', [
+
+    'classes/DOM'
+
+], function(DOM)
 {
-    QUI.namespace('classes.desktop');
+    "use strict";
+
+    QUI.namespace( 'classes.desktop' );
 
     /**
      * @class QUI.classes.desktop.WidgetResize

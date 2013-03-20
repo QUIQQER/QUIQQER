@@ -17,6 +17,8 @@ define('controls/desktop/buttons/AddColumn', [
 
 ], function(QUI_Button)
 {
+    "use strict";
+
     QUI.namespace( 'controls.desktop.buttons' );
 
     /**

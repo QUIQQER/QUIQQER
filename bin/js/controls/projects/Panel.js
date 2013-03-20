@@ -29,6 +29,8 @@ define('controls/projects/Panel', [
 
 ], function(QUI_Control, QUI_Projects, QUI_ProjectSitemap)
 {
+    "use strict";
+
     QUI.namespace( 'controls.projects' );
 
     /**

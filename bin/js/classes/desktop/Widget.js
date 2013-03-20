@@ -22,6 +22,8 @@ define('classes/desktop/Widget', [
 
 ], function(DOM, WidgetSettings, WidgetResize)
 {
+    "use strict";
+
     QUI.namespace( 'classes.desktop' );
 
     /**

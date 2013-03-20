@@ -12,6 +12,8 @@
 
 define('lib/media/Utils', function()
 {
+    "use strict";
+
     QUI.namespace('lib.media.Utils');
 
     QUI.lib.media.Utils =

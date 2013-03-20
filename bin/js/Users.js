@@ -11,6 +11,8 @@ define('Users', [
 
 ], function(QUI_Users)
 {
+    "use strict";
+
     if ( typeof QUI.Users !== 'undefined' ) {
         return QUI.Users;
     }

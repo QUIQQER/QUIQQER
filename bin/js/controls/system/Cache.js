@@ -19,7 +19,9 @@ define('controls/system/Cache', [
 
 ], function(Control)
 {
-    QUI.namespace('controls.system');
+    "use strict";
+
+    QUI.namespace( 'controls.system' );
 
     /**
      * @class QUI.controls.system.Cache

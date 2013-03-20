@@ -1,76 +1,78 @@
 
 QUI.Controls.load([
 
-	'buttons/Button', 'buttons/Seperator',
-	'contextmenu/Menu', 'contextmenu/Item'
+    'buttons/Button', 'buttons/Seperator',
+    'contextmenu/Menu', 'contextmenu/Item'
 
 ], function(Btn, Seperator, Menu, MenuItem)
 {
-	var MyButton = new Btn({
-		text   : 'mein button',
-		events :
-		{
-			onClick : function()
-			{
-				(function()
-				{
-					QUI.Controls.get('item1')[0].setAttribute('text', 'baaam!');
-				}).delay( 1000 );
-			}
-		}
-	});
+    "use strict";
 
-	MyButton
-		.appendChild(
-			new MenuItem({
-				name   : 'item1',
-				text   : 'huhu',
-				icon   : URL_BIN_DIR +'16x16/apply.png',
-				events :
-				{
-					onClick : function()
-					{
+    var MyButton = new Btn({
+        text   : 'mein button',
+        events :
+        {
+            onClick : function()
+            {
+                (function()
+                {
+                    QUI.Controls.get('item1')[0].setAttribute('text', 'baaam!');
+                }).delay( 1000 );
+            }
+        }
+    });
 
-					}
-				}
-			})
-		).appendChild(
-			new MenuItem({
-				name : 'item1',
-				text : 'huhu',
-				icon : URL_BIN_DIR +'16x16/cancel.png'
-			})
-		).appendChild(
-			new MenuItem({
-				name : 'item1',
-				text : 'huhu'
-			})
-		);
+    MyButton
+        .appendChild(
+            new MenuItem({
+                name   : 'item1',
+                text   : 'huhu',
+                icon   : URL_BIN_DIR +'16x16/apply.png',
+                events :
+                {
+                    onClick : function()
+                    {
 
-	QUI.Controls.get('item1')[0]
-		.appendChild(
-			new MenuItem({
-				name : 'item2',
-				text : 'huhu'
-			})
-		).appendChild(
-			new MenuItem({
-				name : 'item1',
-				text : 'huhu'
-			})
-		);
+                    }
+                }
+            })
+        ).appendChild(
+            new MenuItem({
+                name : 'item1',
+                text : 'huhu',
+                icon : URL_BIN_DIR +'16x16/cancel.png'
+            })
+        ).appendChild(
+            new MenuItem({
+                name : 'item1',
+                text : 'huhu'
+            })
+        );
 
-	QUI.Controls.get('item2')[0].appendChild(
-			new MenuItem({
-				name : 'item2',
-				text : 'huhu'
-			})
-		).appendChild(
-			new MenuItem({
-				name : 'item1',
-				text : 'huhu'
-			})
-		);
+    QUI.Controls.get('item1')[0]
+        .appendChild(
+            new MenuItem({
+                name : 'item2',
+                text : 'huhu'
+            })
+        ).appendChild(
+            new MenuItem({
+                name : 'item1',
+                text : 'huhu'
+            })
+        );
 
-	MyButton.inject( document.body );
+    QUI.Controls.get('item2')[0].appendChild(
+            new MenuItem({
+                name : 'item2',
+                text : 'huhu'
+            })
+        ).appendChild(
+            new MenuItem({
+                name : 'item1',
+                text : 'huhu'
+            })
+        );
+
+    MyButton.inject( document.body );
 });

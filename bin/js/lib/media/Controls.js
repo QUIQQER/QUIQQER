@@ -6,6 +6,8 @@
 
 define('lib/media/Controls', function()
 {
+    "use strict";
+
     QUI.namespace('lib.media.Controls');
 
     QUI.lib.media.Controls =

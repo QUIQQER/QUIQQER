@@ -18,6 +18,8 @@ define('controls/desktop/panels/XML', [
 
 ], function(QUI_Panel)
 {
+    "use strict";
+
     QUI.namespace( 'controls.desktop.panels' );
 
     /**

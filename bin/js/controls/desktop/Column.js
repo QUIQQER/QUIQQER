@@ -20,6 +20,8 @@ define('controls/desktop/Column', [
 
 ], function(Control)
 {
+    "use strict";
+
     QUI.namespace( 'controls.desktop' );
 
     /**
@@ -218,6 +220,7 @@ define('controls/desktop/Column', [
          */
         appendChild : function(Panel)
         {
+            var Prev;
             var Handler   = false,
                 height    = false,
                 colheight = this.$Elm.getSize().y;
@@ -244,8 +247,8 @@ define('controls/desktop/Column', [
             // if some panels insight, resize the other panels
             if ( this.count() )
             {
-                var height = Panel.getAttribute( 'height' ),
-                    Prev   = this.getPreviousPanel( Panel );
+                height = Panel.getAttribute( 'height' );
+                Prev   = this.getPreviousPanel( Panel );
 
                 if ( !Prev ) {
                     Prev = this.getNextPanel( Panel );
@@ -260,7 +263,7 @@ define('controls/desktop/Column', [
                     height = colheight / 2;
                 }
 
-                var max         = Prev.getAttribute( 'height' );
+                var max         = Prev.getAttribute( 'height' ),
                     prev_height = max - height;
 
                 if ( prev_height < 100 )
@@ -435,6 +438,34 @@ define('controls/desktop/Column', [
         isOpen : function()
         {
             return this.$Content.getStyle( 'display' ) == 'none' ? false : true;
+        },
+
+        /**
+         * Highlight the column
+         *
+         * @return {this}
+         */
+        highlight : function()
+        {
+            if ( this.getElm() ) {
+                this.getElm().addClass( 'qui-column-hightlight' );
+            }
+
+            return this;
+        },
+
+        /**
+         * Dehighlight the column
+         *
+         * @return {this}
+         */
+        normalize : function()
+        {
+            if ( this.getElm() ) {
+                this.getElm().removeClass( 'qui-column-hightlight' );
+            }
+
+            return this;
         },
 
         /**
@@ -813,22 +844,26 @@ define('controls/desktop/Column', [
         {
             event.stop();
 
+            var i, len, Panel, AddPanels, RemovePanels;
+
             var Parent = this.getParent(),
                 panels = Parent.getAvailablePanel();
+
 
             this.$ContextMenu.clearChildren();
             this.$ContextMenu.setTitle( 'Column' );
 
-            var Panels = new QUI.controls.contextmenu.Item({
+            // add panels
+            AddPanels = new QUI.controls.contextmenu.Item({
                 text : 'Panel hinzufügen',
                 name : 'add_panels_to_column'
             });
 
-            this.$ContextMenu.appendChild( Panels );
+            this.$ContextMenu.appendChild( AddPanels );
 
-            for ( var i = 0, len = panels.length; i < len; i++ )
+            for ( i = 0, len = panels.length; i < len; i++ )
             {
-                Panels.appendChild(
+                AddPanels.appendChild(
                     new QUI.controls.contextmenu.Item({
                         text   : panels[ i ].text,
                         icon   : panels[ i ].icon,
@@ -840,6 +875,20 @@ define('controls/desktop/Column', [
                     })
                 );
             }
+
+            // remove panels
+            RemovePanels = new QUI.controls.contextmenu.Item({
+                text : 'Panel löschen',
+                name : 'remove_panel_of_column'
+            });
+
+            this.$ContextMenu.appendChild( RemovePanels );
+
+            for ( i = 0, len = this.$panels.length; i < len; i++ )
+            {
+                Panel = this.$panels[ i ];
+            }
+
 
             this.$ContextMenu.setPosition(
                 event.page.x,

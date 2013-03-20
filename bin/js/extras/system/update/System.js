@@ -11,6 +11,8 @@ define('extras/system/update/System', [
 
 ], function()
 {
+    "use strict";
+
     QUI.namespace('extras.system.Update');
 
     QUI.extras.system.Update.System =

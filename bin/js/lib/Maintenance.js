@@ -10,6 +10,8 @@
 
 define('lib/Maintenance', function()
 {
+    "use strict";
+
     QUI.namespace( 'lib' );
 
     QUI.lib.Maintenance =

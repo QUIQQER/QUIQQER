@@ -20,6 +20,8 @@ define('classes/editor/Manager', [
 
 ], function(QDOM)
 {
+    "use strict";
+
     QUI.namespace( 'classes/editor' );
 
     /**

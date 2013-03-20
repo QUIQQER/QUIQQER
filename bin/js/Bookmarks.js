@@ -12,6 +12,8 @@
 
 define('Bookmarks', function()
 {
+    "use strict";
+
     QUI.Bookmarks = {
 
         /**

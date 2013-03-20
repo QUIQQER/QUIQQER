@@ -18,6 +18,8 @@ define('classes/system/Cache', [
 
 ], function(DOM, Cache)
 {
+    "use strict";
+
     QUI.namespace( 'classes.system' );
 
     /**

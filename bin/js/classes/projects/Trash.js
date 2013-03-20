@@ -17,6 +17,8 @@ define('classes/projects/Trash', [
 
 ], function(QDOM)
 {
+    "use strict";
+
     QUI.namespace('classes.projects');
 
     /**

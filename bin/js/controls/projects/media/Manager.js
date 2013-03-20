@@ -17,6 +17,8 @@ define('controls/projects/media/Manager', [
 
 ], function(QUI_Panel)
 {
+    "use strict";
+
     QUI.namespace( 'controls.projects.media' );
 
     /**

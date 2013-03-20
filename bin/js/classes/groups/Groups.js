@@ -25,6 +25,8 @@ define('classes/groups/Groups', [
 
 ], function(DOM)
 {
+    "use strict";
+
     QUI.namespace( 'classes.groups' );
 
     /**

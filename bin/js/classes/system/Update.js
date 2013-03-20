@@ -18,6 +18,8 @@ define('classes/system/Update', [
 
 ], function(DOM, Update)
 {
+    "use strict";
+
     QUI.namespace( 'classes.system' );
 
     /**

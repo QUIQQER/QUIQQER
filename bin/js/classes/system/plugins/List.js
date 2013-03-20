@@ -18,6 +18,8 @@ define('classes/system/plugins/List', [
 
 ], function(DOM, List)
 {
+    "use strict";
+
     QUI.namespace( 'classes.system.plugins' );
 
     /**

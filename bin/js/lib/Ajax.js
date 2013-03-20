@@ -22,6 +22,8 @@ define('lib/Ajax', [
 
 ], function()
 {
+    "use strict";
+
     QUI.namespace('lib');
 
     QUI.Ajax = QUI.lib.Ajax =

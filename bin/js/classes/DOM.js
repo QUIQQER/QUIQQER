@@ -16,6 +16,8 @@
 
 define('classes/DOM', function()
 {
+    "use strict";
+
     QUI.namespace('classes');
     QUI.$storage = {};
 

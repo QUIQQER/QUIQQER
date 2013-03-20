@@ -15,6 +15,8 @@ define('controls/permissions/Utils', [
 
 ],function()
 {
+    "use strict";
+
     QUI.namespace( 'controls.permissions' );
 
     QUI.controls.permissions.Utils = {

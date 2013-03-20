@@ -24,6 +24,8 @@ define('controls/users/Input', [
 
 ], function(QUI_Control)
 {
+    "use strict";
+
     QUI.namespace( 'controls.users' );
 
     /**

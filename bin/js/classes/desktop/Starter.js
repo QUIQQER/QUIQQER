@@ -20,6 +20,8 @@ define('classes/desktop/Starter', [
 
 ], function(DOM, WidgetSettings)
 {
+    "use strict";
+
     QUI.namespace( 'classes.desktop' );
 
     /**

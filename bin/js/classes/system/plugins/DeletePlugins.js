@@ -21,6 +21,8 @@ define('classes/system/plugins/DeletePlugins', [
 
 ], function(DOM)
 {
+    "use strict";
+
     QUI.namespace( 'classes.system.plugins' );
 
     /**

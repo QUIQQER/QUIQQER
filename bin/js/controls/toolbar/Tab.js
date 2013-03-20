@@ -18,6 +18,8 @@ define('controls/toolbar/Tab', [
 
 ], function(Control)
 {
+    "use strict";
+
     QUI.namespace( 'controls.toolbar' );
 
     /**

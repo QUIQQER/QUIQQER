@@ -12,6 +12,8 @@
 
 define('classes/QUIQQER', function()
 {
+    "use strict";
+
     /**
      * @class
      */
