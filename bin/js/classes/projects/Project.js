@@ -48,7 +48,8 @@ define('classes/projects/Project', [
 
         Binds : [
             '$onChildDelete',
-            '$onSiteSave'
+            '$onSiteSave',
+            '$onSiteCreate'
         ],
 
         options : {
@@ -84,8 +85,9 @@ define('classes/projects/Project', [
             Site.addEvents({
                 'onDelete' : this.$onSiteDelete,
                 'onSave'   : this.$onSiteSave,
-                'onActivate'   : this.$onSiteSave,
-                'onDeActivate' : this.$onSiteSave
+                'onActivate'    : this.$onSiteSave,
+                'onDeActivate'  : this.$onSiteSave,
+                'onCreateChild' : this.$onCreateChild
             });
 
             this.$ids[ id ] = Site;
@@ -180,6 +182,17 @@ define('classes/projects/Project', [
         $onSiteSave : function(Site)
         {
             this.fireEvent( 'siteSave', [ this, Site ] );
+        },
+
+        /**
+         * event : on Site create
+         *
+         * @param {QUI.classes.projects.Site} Site
+         * @fires siteCreate
+         */
+        $onSiteCreate : function(Site)
+        {
+            this.fireEvent( 'siteCreate', [ this, Site ] );
         }
     });
 

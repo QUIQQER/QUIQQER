@@ -2,8 +2,8 @@
 
     <groups name="quiqqer/system" datatype="js">
         <locale name="packages.panel.title">
-            <de><![CDATA[Plugins und Packete]]></de>
-            <en><![CDATA[Plugins and Packages]]></en>
+            <de><![CDATA[System, Plugins und Packet Manager]]></de>
+            <en><![CDATA[System, Plugins and Package Manager]]></en>
         </locale>
         <locale name="packages.btn.add.server">
             <de><![CDATA[Server hinzufügen]]></de>
@@ -57,6 +57,10 @@
         <locale name="packages.grid.update.btn.upload">
             <de><![CDATA[Update hochladen]]></de>
             <en><![CDATA[Upload an update]]></en>
+        </locale>
+        <locale name="packages.grid.update.btn.setup">
+            <de><![CDATA[System Setup ausführen]]></de>
+            <en><![CDATA[Execute the system setup]]></en>
         </locale>
 
         <locale name="packages.grid.update.title.updatebtn">
@@ -211,8 +215,8 @@
 
     <groups name="quiqqer/system">
         <locale name="menu.extras.packages.text">
-            <de><![CDATA[Plugins und Packete]]></de>
-            <en><![CDATA[Plugins and Packages]]></en>
+            <de><![CDATA[System, Plugins und Packet Manager]]></de>
+            <en><![CDATA[System, Plugins and Package Manager]]></en>
         </locale>
 
         <locale name="message.packages.server.add.successfuly">

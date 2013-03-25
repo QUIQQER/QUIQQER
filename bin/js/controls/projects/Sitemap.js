@@ -54,6 +54,11 @@ define('controls/projects/Sitemap', [
             this.$Elm = null;
             this.$Map = new QUI.controls.sitemap.Map();
 
+            this.$Project = QUI.Projects.get(
+                this.getAttribute( 'project' ),
+                this.getAttribute( 'lang' )
+            );
+
             this.addEvent('onDestroy', function()
             {
                 if ( this.$Map ) {
@@ -61,13 +66,21 @@ define('controls/projects/Sitemap', [
                 }
 
             }.bind( this ));
+
+            // projects events
+            this.$Project.addEvents({
+                onSiteCreate : function(Project, NewSite)
+                {
+                    console.warn( NewSite );
+                }
+            });
+
         },
 
         /**
          * Returns the QUI.controls.sitemap.Map Control
          *
          * @method QUI.controls.projects.Sitemap#getMap
-         *
          * @return {QUI.controls.sitemap.Map}
          */
         getMap : function()
@@ -79,11 +92,14 @@ define('controls/projects/Sitemap', [
          * Create the DOMNode of the sitemap
          *
          * @method QUI.controls.projects.Sitemap#create
-         *
          * @return {DOMNode}
          */
         create : function()
         {
+            if ( this.$Elm ) {
+                return this.$Elm;
+            }
+
             this.$Elm = this.$Map.create();
 
             return this.$Elm;
@@ -157,7 +173,6 @@ define('controls/projects/Sitemap', [
          * Open the Sitemap to the specific id
          *
          * @method QUI.controls.projects.Sitemap#openSite
-         *
          * @param {Integer} id - Site ID
          */
         openSite : function(id)
@@ -242,7 +257,6 @@ define('controls/projects/Sitemap', [
          * If no id, the sitemap starts from the first child of the project
          *
          * @method QUI.controls.projects.Sitemap#getFirstChild
-         *
          * @param {Function} callback - callback function
          * @private
          * @ignore
@@ -264,9 +278,9 @@ define('controls/projects/Sitemap', [
          * Get the attributes from a site
          *
          * @method QUI.controls.projects.Sitemap#$getSite
-         *
          * @param {Integer} id - Seiten ID
          * @param {Function} callback - call back function, if ajax is finish
+         *
          * @private
          * @ignore
          */
@@ -289,6 +303,7 @@ define('controls/projects/Sitemap', [
          *
          * @param {QUI.controls.sitemap.Item} Item - Parent sitemap item
          * @param {Function} callback - callback function, if ajax is finish
+         *
          * @ignore
          */
         $loadChildren : function(Item, callback)
@@ -435,7 +450,6 @@ define('controls/projects/Sitemap', [
          * Opens a Sitemap Item
          *
          * @method QUI.controls.projects.Sitemap#$open
-         *
          * @param {QUI.controls.sitemap.Item} Item
          *
          * @private
@@ -443,13 +457,13 @@ define('controls/projects/Sitemap', [
          */
         $open : function(Item)
         {
-            this.fireEvent( 'openBegin', [Item, this] );
+            this.fireEvent( 'openBegin', [ Item, this ] );
 
             this.$loadChildren(Item, function(Item, Request)
             {
                 var Control = Request.getAttribute( 'Control' );
 
-                Control.fireEvent( 'openEnd', [Item, Control] );
+                Control.fireEvent( 'openEnd', [ Item, Control ] );
             });
         },
 
@@ -457,7 +471,6 @@ define('controls/projects/Sitemap', [
          * sitemap item close action
          *
          * @method QUI.controls.projects.Sitemap#$close
-         *
          * @param {QUI.controls.sitemap.Item} Item
          *
          * @private

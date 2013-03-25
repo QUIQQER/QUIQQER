@@ -16,6 +16,7 @@
  * @event onActivate [ this ]
  * @event onDeactivate [ this ]
  * @event onDelete [ this ]
+ * @event createChild [ this ]
  */
 
 define('classes/projects/Site', [
@@ -293,47 +294,34 @@ define('classes/projects/Site', [
          *
          * @method QUI.classes.projects.Site#createChild
          *
-         * @param {String} newname - new name of the child
+         * @param {String} newname    - new name of the child
+         * @param {Function} onfinish - [optional] callback function
          */
-        createChild : function(newname)
+        createChild : function(newname, onfinish)
         {
-            console.warn( 'createChild' );
-
             if ( typeof newname === 'undefined' ) {
                 return;
             }
 
-            /*
-                QUI.Windows.create('prompt', {
-                    title  : 'Wie soll die neue Seite heißen?',
-                    text   : 'Bitte geben Sie ein Namen für die neue Seite an',
-                    texticon    : URL_BIN_DIR +'48x48/filenew.png',
-                    information : 'Sie legen eine neue Seite unter '+ this.getAttribute('name') +'.html an.',
-                    Site   : this,
-                    events :
-                    {
-                        onSubmit : function(result, Win) {
-                            Win.getAttribute('Site').createChild( result );
-                        }
-                    }
-                });
-
-                return;
-            }*/
-
             var params = this.ajaxParams();
 
-            params.onfinish   = onfinish;
-            params.attributes = JSON.encode( this.getAttributes() );
+            params.onfinish   = onfinish || false;
+            params.attributes = JSON.encode({
+                name : newname
+            });
 
             QUI.Ajax.post('ajax_site_children_create', function(result, Request)
             {
-                Ajax.getAttribute( 'onfinish' )( result, Request );
+                if ( Request.getAttribute( 'onfinish' ) ) {
+                    Request.getAttribute( 'onfinish' )( result, Request );
+                }
+
+                var Site = Request.getAttribute( 'Site' );
+
+                Site.fireEvent( 'createChild', [ Site ] );
+
             }, params);
-
-            return true;
         },
-
 
 
         /**

@@ -135,6 +135,12 @@ class QUI
     static $Configs = array();
 
     /**
+     * QUI global Events
+     * @var QUI_Events
+     */
+    static $Events;
+
+    /**
      * Country Manager
      * @var Utils_Countries_Manager
      */
@@ -478,7 +484,7 @@ class QUI
      */
     static function getConfig($file)
     {
-        if ( !isset( self::$Configs[$file] ) )
+        if ( !isset( self::$Configs[ $file ] ) )
         {
             if ( !file_exists( CMS_DIR . $file ) || is_dir( CMS_DIR . $file ) )
             {
@@ -491,7 +497,7 @@ class QUI
             self::$Configs[ $file ] = new QConfig( CMS_DIR . $file );
         }
 
-        return self::$Configs[$file];
+        return self::$Configs[ $file ];
     }
 
     /**
@@ -516,7 +522,7 @@ class QUI
      */
     static function getDB()
     {
-        if ( is_null(self::$DataBase) ) {
+        if ( is_null( self::$DataBase ) ) {
             self::$DataBase = new Utils_MyDB();
         }
 
@@ -542,6 +548,20 @@ class QUI
         }
 
         return self::$DataBase2;
+    }
+
+    /**
+     * Returns the globals Events object
+     *
+     * @return QUI_Events_Manager
+     */
+    static function getEvents()
+    {
+        if ( is_null( self::$Events ) ) {
+            self::$Events = new QUI_Events_Manager();
+        }
+
+        return self::$Events;
     }
 
     /**

@@ -30,8 +30,8 @@ define('classes/messages/Message', [
      */
     QUI.classes.messages.Message = new Class({
 
-        Implements : [ DOM ],
-        Type       : 'QUI.classes.messages.Message',
+        Extends : DOM,
+        Type    : 'QUI.classes.messages.Message',
 
         options: {
             message : '',

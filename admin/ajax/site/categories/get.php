@@ -11,23 +11,23 @@
  */
 function ajax_site_categories_get($project, $lang, $id)
 {
-	$Project = QUI::getProject( $project, $lang );
-	$Site    = new Projects_Site_Edit( $Project, (int)$id );
+    $Project = QUI::getProject( $project, $lang );
+    $Site    = new Projects_Site_Edit( $Project, (int)$id );
 
-	$Tabbar   = Projects_Sites::getTabs( $Site );
-	$children = $Tabbar->getChildren();
+    $Tabbar   = Projects_Sites::getTabs( $Site );
+    $children = $Tabbar->getChildren();
 
-	$result = array();
+    $result = array();
 
-	foreach ( $children as $Itm ) {
-		$result[] = $Itm->getAttributes();
-	}
+    foreach ( $children as $Itm ) {
+        $result[] = $Itm->getAttributes();
+    }
 
-	return $result;
+    return $result;
 }
 
 QUI::$Ajax->register(
-	'ajax_site_categories_get',
+    'ajax_site_categories_get',
     array('project', 'lang', 'id'),
     'Permission::checkAdminUser'
 );

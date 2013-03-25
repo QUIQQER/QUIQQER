@@ -57,31 +57,38 @@
         </title>
     </permission>
 
-
+    <!-- Um locale nun anzulegen wäre dies: -->
     <!-- locale/permissions quiqqer -->
-    <!-- locale/permissions quiqqer.admin -->
-    <!-- locale/permissions quiqqer.admin.site -->
-    <!-- locale/permissions quiqqer.admin.site.new.title -->
-    <!-- locale/permissions quiqqer.admin.site.new.descrition -->
+    <!-- locale/permissions quiqqer.site -->
+    <!-- locale/permissions quiqqer.site.new.title -->
+    <!-- locale/permissions quiqqer.site.new.descrition -->
+    <!-- locale/permissions quiqqer.site.edit.title -->
+    <!-- locale/permissions quiqqer.site.edit.descrition -->
 
-    <permission name="quiqqer.admin.site.view" type="users_and_groups" area="site">
+    <permission name="quiqqer.site.view" type="users_and_groups" area="site">
         <title group="quiqqer/system" var="site.right.view">
             Seite besuchen
         </title>
     </permission>
-    <permission name="quiqqer.admin.site.edit" type="users_and_groups" area="site">
+    <permission name="quiqqer.site.edit" type="users_and_groups" area="site">
         <title group="quiqqer/system" var="site.right.edit">
             Seite editieren
         </title>
     </permission>
-    <permission name="quiqqer.admin.site.del" type="users_and_groups" area="site">
+    <permission name="quiqqer.site.del" type="users_and_groups" area="site">
         <title group="quiqqer/system" var="site.right.delete">
             Seite löschen
         </title>
     </permission>
-    <permission name="quiqqer.admin.site.new" type="users_and_groups" area="site">
+    <permission name="quiqqer.site.new" type="users_and_groups" area="site">
         <title group="quiqqer/system" var="site.right.create.children">
             Kind anlegen
+        </title>
+    </permission>
+
+    <permission name="quiqqer.admin.site.set_permissions" type="users_and_groups">
+        <title group="quiqqer/system" var="site.right.view">
+            Darf Seitenzugriffsrechte setzen
         </title>
     </permission>
 

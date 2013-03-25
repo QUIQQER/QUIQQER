@@ -27,13 +27,13 @@ class Utils_Dom
         foreach ( $tabs as $Tab )
         {
             $text  = '';
-    		$image = '';
+            $image = '';
 
-    		$Images   = $Tab->getElementsByTagName( 'image' );
-    		$Texts    = $Tab->getElementsByTagName( 'text' );
-    		$Onload   = $Tab->getElementsByTagName( 'onload' );
-    		$OnUnload = $Tab->getElementsByTagName( 'onunload' );
-    		$Template = $Tab->getElementsByTagName( 'template' );
+            $Images   = $Tab->getElementsByTagName( 'image' );
+            $Texts    = $Tab->getElementsByTagName( 'text' );
+            $Onload   = $Tab->getElementsByTagName( 'onload' );
+            $OnUnload = $Tab->getElementsByTagName( 'onunload' );
+            $Template = $Tab->getElementsByTagName( 'template' );
 
             if ( $Images && $Images->item( 0 ) ) {
                 $image = self::parseVar( $Images->item( 0 )->nodeValue );
@@ -44,11 +44,11 @@ class Utils_Dom
             }
 
             $ToolbarTab = new Controls_Toolbar_Tab(array(
-				'name'   => $Tab->getAttribute( 'name' ),
-			    'text'   => $text,
-				'image'  => $image,
-			    'plugin' => $plugin
-			));
+                'name'   => $Tab->getAttribute( 'name' ),
+                'text'   => $text,
+                'image'  => $image,
+                'plugin' => $plugin
+            ));
 
             foreach ( $Tab->attributes as $attr )
             {
@@ -64,12 +64,12 @@ class Utils_Dom
             if ( $Onload && $Onload->item( 0 ) )
             {
                 $ToolbarTab->setAttribute(
-                	'onload',
+                    'onload',
                     $Onload->item( 0 )->nodeValue
                 );
 
                 $ToolbarTab->setAttribute(
-                	'onload_require',
+                    'onload_require',
                     $Onload->item( 0 )->getAttribute( 'require' )
                 );
             }
@@ -77,12 +77,12 @@ class Utils_Dom
             if ( $OnUnload && $OnUnload->item( 0 ) )
             {
                 $ToolbarTab->setAttribute(
-                	'onunload',
+                    'onunload',
                     $OnUnload->item( 0 )->nodeValue
                 );
 
                 $ToolbarTab->setAttribute(
-                	'onunload_require',
+                    'onunload_require',
                     $Onload->item( 0 )->getAttribute( 'require' )
                 );
             }
@@ -90,7 +90,7 @@ class Utils_Dom
             if ( $Template  && $Template->item( 0 ) )
             {
                 $ToolbarTab->setAttribute(
-                	'template',
+                    'template',
                     $Template->item( 0 )->nodeValue
                 );
             }
@@ -157,18 +157,18 @@ class Utils_Dom
             $tabs = $Object->getUserTabs();
         }
 
-    	$str  = '';
+        $str  = '';
 
-    	foreach ( $tabs as $Tab )
-    	{
-    	    if ( $Tab->getAttribute( 'name' ) != $name ) {
+        foreach ( $tabs as $Tab )
+        {
+            if ( $Tab->getAttribute( 'name' ) != $name ) {
                 continue;
-    	    }
+            }
 
-    	    $str .= self::parseCategorieToHTML( $Tab );
-    	}
+            $str .= self::parseCategorieToHTML( $Tab );
+        }
 
-    	return $str;
+        return $str;
     }
 
     /**
@@ -226,7 +226,7 @@ class Utils_Dom
                 if ( $Param->nodeName == 'icon' )
                 {
                     $Win->setAttribute(
-                    	'icon',
+                        'icon',
                         Utils_Dom::parseVar( $Param->nodeValue )
                     );
 
@@ -270,7 +270,7 @@ class Utils_Dom
                 if ( $onunload && $onunload->length ) {
                     $Button->setAttribute( 'onunloadExtra', $onunload->item(0)->nodeValue );
                 }
-				*/
+                */
 
                 $btnParams = $Param->childNodes;
 
@@ -280,10 +280,10 @@ class Utils_Dom
                     {
                         case 'text':
                         case 'title':
-    		    	    case 'onclick':
+                        case 'onclick':
                             $Button->setAttribute(
-                            	$btnParams->item( $b )->nodeName,
-                            	$btnParams->item( $b )->nodeValue
+                                $btnParams->item( $b )->nodeName,
+                                $btnParams->item( $b )->nodeValue
                             );
                         break;
 
@@ -291,8 +291,8 @@ class Utils_Dom
                             $value = $btnParams->item( $b )->nodeValue;
 
                             $Button->setAttribute(
-                            	$btnParams->item( $b )->nodeName,
-                            	Utils_Dom::parseVar( $value )
+                                $btnParams->item( $b )->nodeName,
+                                Utils_Dom::parseVar( $value )
                             );
                         break;
                     }
@@ -305,12 +305,12 @@ class Utils_Dom
                     foreach ( $projects as $project )
                     {
                         $Button->setAttribute(
-                        	'text',
+                            'text',
                             str_replace( '{$project}', $project, $Button->getAttribute('text') )
                         );
 
                         $Button->setAttribute(
-                        	'title',
+                            'title',
                             str_replace( '{$project}', $project, $Button->getAttribute('title') )
                         );
 
@@ -390,7 +390,7 @@ class Utils_Dom
 
         return array(
             'name'    => $Node->getAttribute( 'name' ),
-        	'desc'    => $desc,
+            'desc'    => $desc,
             'area'    => $area,
             'title'   => $title,
             'type'    => $type,
@@ -399,12 +399,12 @@ class Utils_Dom
     }
 
     /**
-	 * Wandelt ein Kategorie DomNode in entsprechendes HTML um
-	 *
-	 * @param DomNode $Category
-	 * @param $Plugin - optional
-	 * @return String
-	 */
+     * Wandelt ein Kategorie DomNode in entsprechendes HTML um
+     *
+     * @param DomNode $Category
+     * @param $Plugin - optional
+     * @return String
+     */
     static function parseCategorieToHTML($Category, $Plugin=false)
     {
         if ( is_bool( $Category ) ) {
@@ -577,7 +577,7 @@ class Utils_Dom
      * @param DOMNode $Input
      * @return String
      */
-	static function inputDomToString(DOMNode $Input)
+    static function inputDomToString(DOMNode $Input)
     {
         if ( $Input->nodeName != 'input' ) {
             return '';
@@ -591,8 +591,8 @@ class Utils_Dom
 
         $string  = '<p>';
         $string .= '<input
-        	type="'. $type .'"
-        	name="'. $Input->getAttribute( 'conf' ) .'"
+            type="'. $type .'"
+            name="'. $Input->getAttribute( 'conf' ) .'"
         />';
 
         $text = $Input->getElementsByTagName( 'text' );
@@ -692,7 +692,7 @@ class Utils_Dom
 
         $string  = '<p>';
         $string .= '<textarea
-        	name="'. $Textarea->getAttribute( 'conf' ) .'"
+            name="'. $Textarea->getAttribute( 'conf' ) .'"
         ></textarea>';
 
         $text = $Textarea->getElementsByTagName( 'text' );
@@ -720,7 +720,7 @@ class Utils_Dom
 
         $string  = '<p>';
         $string .= '<select
-        	name="'. $Select->getAttribute( 'conf' ) .'"
+            name="'. $Select->getAttribute( 'conf' ) .'"
         >';
 
         // Options
@@ -862,17 +862,17 @@ class Utils_Dom
         );
     }
 
-	/**
-	 * Parse config entries to an array
-	 *
-	 * @param DOMNode $confs
-	 * @return Array
-	 */
-	static function parseConfs($confs)
-	{
-	    $result = array();
+    /**
+     * Parse config entries to an array
+     *
+     * @param DOMNode $confs
+     * @return Array
+     */
+    static function parseConfs($confs)
+    {
+        $result = array();
 
-    	foreach ( $confs as $Conf )
+        foreach ( $confs as $Conf )
         {
             $type    = 'string';
             $default = '';
@@ -900,20 +900,20 @@ class Utils_Dom
         }
 
         return $result;
-	}
+    }
 
     /**
-	 * Ersetzt Variablen im XML
-	 *
-	 * @param String $value
-	 * @return String
-	 */
+     * Ersetzt Variablen im XML
+     *
+     * @param String $value
+     * @return String
+     */
     static function parseVar($value)
     {
         $value = str_replace(
             array(
-            	'URL_BIN_DIR', 'URL_OPT_DIR', 'URL_USR_DIR',
-            	'BIN_DIR', 'OPT_DIR', 'URL_DIR', 'SYS_DIR', 'CMS_DIR'
+                'URL_BIN_DIR', 'URL_OPT_DIR', 'URL_USR_DIR',
+                'BIN_DIR', 'OPT_DIR', 'URL_DIR', 'SYS_DIR', 'CMS_DIR'
             ),
             array(
                 URL_BIN_DIR, URL_OPT_DIR, URL_USR_DIR,
@@ -927,49 +927,49 @@ class Utils_Dom
         return $value;
     }
 
-	/**
-	 * Returns the String between <body> and </body>
-	 *
-	 * @param String $html
-	 * @return String
-	 */
-	static function getInnerBodyFromHTML($html)
-	{
-	    return preg_replace( '/(.*)<body>(.*)<\/body>(.*)/si', '$2', $html );
-	}
+    /**
+     * Returns the String between <body> and </body>
+     *
+     * @param String $html
+     * @return String
+     */
+    static function getInnerBodyFromHTML($html)
+    {
+        return preg_replace( '/(.*)<body>(.*)<\/body>(.*)/si', '$2', $html );
+    }
 
-	/**
-	 * Returns the innerHTML from a PHP DOMNode
-	 * Equivalent to the JavaScript innerHTML property
-	 *
-	 * @param DOMNode $Node
-	 * @return String
-	 */
-	static function getInnerHTML(DOMNode $Node)
-	{
-		$Dom      = new DOMDocument();
-		$Children = $Node->childNodes;
+    /**
+     * Returns the innerHTML from a PHP DOMNode
+     * Equivalent to the JavaScript innerHTML property
+     *
+     * @param DOMNode $Node
+     * @return String
+     */
+    static function getInnerHTML(DOMNode $Node)
+    {
+        $Dom      = new DOMDocument();
+        $Children = $Node->childNodes;
 
-		foreach ( $Children as $Child ) {
-			$Dom->appendChild( $Dom->importNode( $Child, true ) );
-		}
+        foreach ( $Children as $Child ) {
+            $Dom->appendChild( $Dom->importNode( $Child, true ) );
+        }
 
-		return $Dom->saveHTML();
-	}
+        return $Dom->saveHTML();
+    }
 
-	/**
-	 * Converts an array into an QDOM object
-	 *
-	 * @param array $array
-	 * @return QDOM
-	 */
-	static function arrayToQDOM(array $array)
-	{
-		$DOM = new QDOM();
+    /**
+     * Converts an array into an QDOM object
+     *
+     * @param array $array
+     * @return QDOM
+     */
+    static function arrayToQDOM(array $array)
+    {
+        $DOM = new QDOM();
         $DOM->setAttributes( $array );
 
-		return $DOM;
-	}
+        return $DOM;
+    }
 }
 
 ?>

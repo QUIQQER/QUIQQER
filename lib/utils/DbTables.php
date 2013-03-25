@@ -47,7 +47,7 @@ class Utils_DbTables
             }
         }
 
-    	return $tables;
+        return $tables;
     }
 
     /**
@@ -62,7 +62,7 @@ class Utils_DbTables
         }
 
         return $this->_DB->getPDO()->query(
-        	'OPTIMIZE TABLE `'. implode('`,`', $tables) .'`'
+            'OPTIMIZE TABLE `'. implode('`,`', $tables) .'`'
         )->fetchAll();
     }
 
@@ -78,24 +78,41 @@ class Utils_DbTables
             'SHOW TABLES FROM `'. $this->_DB->getAttribute('dbname') .'` LIKE "'. $table .'"'
         )->fetchAll();
 
-    	return count($data) > 0 ? true : false;
+        return count($data) > 0 ? true : false;
     }
 
     /**
-     * Löscht eine Tabelle
+     * Delete a table
      *
      * @param String $table
      */
-	public function delete($table)
-	{
-        if (!$this->exist($table)) {
+    public function delete($table)
+    {
+        if ( !$this->exist( $table ) ) {
             return;
         }
 
         return $this->_DB->getPDO()->query(
-        	'DROP TABLE `'. $table .'`'
-        )->fetch();
-	}
+            'DROP TABLE `'. $table .'`'
+        );
+    }
+
+    /**
+     * Execut a TRUNCATE on a table
+     * empties a table completely
+     *
+     * @param String $table
+     */
+    public function truncate($table)
+    {
+        if ( !$this->exist( $table ) ) {
+            return;
+        }
+
+        return $this->_DB->getPDO()->query(
+            'TRUNCATE TABLE `'. $table .'`'
+        );
+    }
 
     /**
      * Erstellt eine Tabelle mit Feldern
@@ -107,38 +124,38 @@ class Utils_DbTables
      */
     public function create($table, $fields)
     {
-    	if (!isset($fields) || !is_array($fields)) {
-    		throw new QExceptionDBError('No Array given Utils_DbTables->createTable');
-    	}
+        if (!isset($fields) || !is_array($fields)) {
+            throw new QExceptionDBError('No Array given Utils_DbTables->createTable');
+        }
 
-    	$sql = 'CREATE TABLE `'. $this->_DB->getAttribute('dbname') .'`.`'. $table .'` (';
+        $sql = 'CREATE TABLE `'. $this->_DB->getAttribute('dbname') .'`.`'. $table .'` (';
 
-    	if (Utils_Array::isAssoc($fields))
-    	{
-			foreach ($fields as $key => $type) {
-				$sql .= '`'.$key.'` '.$type.',';
-			}
+        if (Utils_Array::isAssoc($fields))
+        {
+            foreach ($fields as $key => $type) {
+                $sql .= '`'.$key.'` '.$type.',';
+            }
 
-    		$sql = substr($sql, 0, -1);
-    	} else
-    	{
-    		$len = count($fields);
+            $sql = substr($sql, 0, -1);
+        } else
+        {
+            $len = count($fields);
 
-    		for ($i = 0; $i < $len; $i++)
-    		{
-    			$sql .= $fields[$i];
+            for ($i = 0; $i < $len; $i++)
+            {
+                $sql .= $fields[$i];
 
-    			if ($i < $len-1) {
-    				$sql .= ',';
-    			}
-    		}
-    	}
+                if ($i < $len-1) {
+                    $sql .= ',';
+                }
+            }
+        }
 
-    	$sql .= ') ENGINE = MYISAM DEFAULT CHARSET = utf8;';
+        $sql .= ') ENGINE = MYISAM DEFAULT CHARSET = utf8;';
 
-    	$this->_DB->getPDO()->exec( $sql );
+        $this->_DB->getPDO()->exec( $sql );
 
-    	return $this->exist($table);
+        return $this->exist($table);
     }
 
     /**
@@ -175,69 +192,69 @@ class Utils_DbTables
     public function appendFields($table, $fields)
     {
         if ($this->exist($table) == false)
-		{
-			$this->create($table, $fields);
-			return;
-		}
+        {
+            $this->create($table, $fields);
+            return;
+        }
 
-		$tbl_fields = $this->getFields($table);
+        $tbl_fields = $this->getFields($table);
 
-		foreach ($fields as $field => $type)
-		{
-		    if (!in_array($field, $tbl_fields))
-		    {
-		        $this->_DB->getPDO()->exec(
-		        	'ALTER TABLE `'. $table .'` ADD `'. $field .'` '. $type .';'
-		        );
-			}
-		}
-	}
+        foreach ($fields as $field => $type)
+        {
+            if (!in_array($field, $tbl_fields))
+            {
+                $this->_DB->getPDO()->exec(
+                    'ALTER TABLE `'. $table .'` ADD `'. $field .'` '. $type .';'
+                );
+            }
+        }
+    }
 
-	/**
-	 * Löscht ein Feld / Spalte aus der Tabelle
-	 *
-	 * @param unknown_type $table
-	 * @param unknown_type $fields
-	 */
-	public function deleteFields($table, $fields)
-	{
-	    $table = Utils_Security_Orthos::clearMySQL($table);
+    /**
+     * Löscht ein Feld / Spalte aus der Tabelle
+     *
+     * @param unknown_type $table
+     * @param unknown_type $fields
+     */
+    public function deleteFields($table, $fields)
+    {
+        $table = Utils_Security_Orthos::clearMySQL($table);
 
         if ($this->exist($table) == false) {
-		    return true;
-		}
+            return true;
+        }
 
-		$tbl_fields   = $this->getFields($table);
-		$table_fields = Utils_Array::toAssoc($tbl_fields);
+        $tbl_fields   = $this->getFields($table);
+        $table_fields = Utils_Array::toAssoc($tbl_fields);
 
-		// prüfen ob die Tabelle leer wäre wenn alle Felder gelöscht werden
-		// wenn ja, Tabelle löschen
-		foreach ($fields as $field => $type)
-		{
+        // prüfen ob die Tabelle leer wäre wenn alle Felder gelöscht werden
+        // wenn ja, Tabelle löschen
+        foreach ($fields as $field => $type)
+        {
             if (isset($table_fields[$field])) {
                 unset($table_fields[$field]);
             }
-		}
+        }
 
         if (empty($table_fields))
         {
             $this->delete($table);
             return;
-		}
+        }
 
 
-		// Einzeln die Felder löschen
+        // Einzeln die Felder löschen
         foreach ($fields as $field => $type)
-		{
-			if (in_array($field, $tbl_fields)) {
-				$this->deleteColum($table, $field);
-			}
-		}
-	}
+        {
+            if (in_array($field, $tbl_fields)) {
+                $this->deleteColum($table, $field);
+            }
+        }
+    }
 
-	/**
-	 * Column Methods
-	 */
+    /**
+     * Column Methods
+     */
 
     /**
      * Prüft ob eine Spalte in der Tabelle existiert
@@ -245,40 +262,40 @@ class Utils_DbTables
      * @param unknown_type $table
      * @param unknown_type $row
      */
-	public function existColumnInTable($table, $row)
-	{
-	    $data = $this->_DB->getPDO()->query(
-	        'SHOW COLUMNS FROM `'. $table .'` LIKE "'. $row .'"'
-	    )->fetchAll();
+    public function existColumnInTable($table, $row)
+    {
+        $data = $this->_DB->getPDO()->query(
+            'SHOW COLUMNS FROM `'. $table .'` LIKE "'. $row .'"'
+        )->fetchAll();
 
-		return count($data) > 0 ? true : false;
-	}
+        return count($data) > 0 ? true : false;
+    }
 
-	/**
-	 * Alle Spalten der Tabelle bekommen
-	 *
-	 * @param String $table
-	 * @return Array
-	 */
-	public function getColumns($table)
-	{
-	    return $this->_DB->getPDO()->query(
-	    	'SHOW COLUMNS FROM `'. $table .'`'
-	    )->fetchAll();
-	}
+    /**
+     * Alle Spalten der Tabelle bekommen
+     *
+     * @param String $table
+     * @return Array
+     */
+    public function getColumns($table)
+    {
+        return $this->_DB->getPDO()->query(
+            'SHOW COLUMNS FROM `'. $table .'`'
+        )->fetchAll();
+    }
 
-	/**
-	 * Return the informations of a column
-	 *
-	 * @param String $table - Table name
-	 * @param String $column - Row name
-	 */
-	public function getColumn($table, $column)
-	{
-	    return $this->_DB->getPDO()->query(
-	    	'SHOW COLUMNS FROM `'. $table .'` LIKE "'. $column .'"'
-	    )->fetch();
-	}
+    /**
+     * Return the informations of a column
+     *
+     * @param String $table - Table name
+     * @param String $column - Row name
+     */
+    public function getColumn($table, $column)
+    {
+        return $this->_DB->getPDO()->query(
+            'SHOW COLUMNS FROM `'. $table .'` LIKE "'. $column .'"'
+        )->fetch();
+    }
 
     /**
      * Löscht eine Spalte aus der Tabelle
@@ -296,10 +313,10 @@ class Utils_DbTables
         }
 
         $data = $this->_DB->getPDO()->query(
-	        'ALTER TABLE `'. $table .'` DROP `'. $row .'`'
-	    )->fetch();
+            'ALTER TABLE `'. $table .'` DROP `'. $row .'`'
+        )->fetch();
 
-    	return $data ? true : false;
+        return $data ? true : false;
     }
 
     /**
@@ -315,7 +332,7 @@ class Utils_DbTables
     public function getKeys($table)
     {
         return $this->_DB->getPDO()->query(
-        	'SHOW KEYS FROM `'. $table .'`'
+            'SHOW KEYS FROM `'. $table .'`'
         )->fetchAll();
     }
 
@@ -330,7 +347,7 @@ class Utils_DbTables
     public function issetPrimaryKey($table, $key)
     {
         if (is_array($key))
-    	{
+        {
             foreach ($key as $entry)
             {
                 if ($this->_issetPrimaryKey($table, $entry) == false) {
@@ -339,9 +356,9 @@ class Utils_DbTables
             }
 
             return true;
-    	}
+        }
 
-    	return $this->_issetPrimaryKey($table, $key);
+        return $this->_issetPrimaryKey($table, $key);
     }
 
     /**
@@ -357,16 +374,16 @@ class Utils_DbTables
     {
         $keys = $this->getKeys($table);
 
-    	foreach ($keys as $entry)
-    	{
-    		if (isset($entry['Column_name']) &&
-    			$entry['Column_name'] == $key)
-    		{
-    			return true;
-    		}
-    	}
+        foreach ($keys as $entry)
+        {
+            if (isset($entry['Column_name']) &&
+                $entry['Column_name'] == $key)
+            {
+                return true;
+            }
+        }
 
-    	return false;
+        return false;
     }
 
     /**
@@ -379,11 +396,11 @@ class Utils_DbTables
      */
     public function setPrimaryKey($table, $key)
     {
-    	if ($this->issetPrimaryKey($table, $key)) {
-    		return true;
-    	}
+        if ($this->issetPrimaryKey($table, $key)) {
+            return true;
+        }
 
-    	$k = $key;
+        $k = $key;
 
         if (is_array($key))
         {
@@ -397,7 +414,7 @@ class Utils_DbTables
             'ALTER TABLE `'. $table .'` ADD PRIMARY KEY('. $k .')'
         );
 
-    	return $this->issetPrimaryKey($table, $key);
+        return $this->issetPrimaryKey($table, $key);
     }
 
     /**
@@ -414,8 +431,8 @@ class Utils_DbTables
      */
     public function issetIndex($table, $key)
     {
-    	if (is_array($key))
-    	{
+        if (is_array($key))
+        {
             foreach ($key as $entry)
             {
                 if ($this->_issetIndex($table, $entry) == false) {
@@ -424,7 +441,7 @@ class Utils_DbTables
             }
 
             return true;
-    	}
+        }
 
         return $this->_issetIndex($table, $key);
     }
@@ -442,15 +459,15 @@ class Utils_DbTables
         $i = $this->getIndex($table);
 
         foreach ($i as $entry)
-    	{
-    		if (isset($entry['Column_name']) &&
-    		    $entry['Column_name'] == $key)
-    		{
-    			return true;
-    		}
-    	}
+        {
+            if (isset($entry['Column_name']) &&
+                $entry['Column_name'] == $key)
+            {
+                return true;
+            }
+        }
 
-    	return false;
+        return false;
     }
 
     /**
@@ -461,9 +478,9 @@ class Utils_DbTables
      */
     public function getIndex($table)
     {
-    	return $this->_DB->getPDO()->query(
-    	    'SHOW INDEX FROM `'. $table .'`'
-    	)->fetchAll();
+        return $this->_DB->getPDO()->query(
+            'SHOW INDEX FROM `'. $table .'`'
+        )->fetchAll();
     }
 
     /**
@@ -474,13 +491,13 @@ class Utils_DbTables
      *
      * @return Bool
      */
-	public function setIndex($table, $index)
+    public function setIndex($table, $index)
     {
         if ($this->issetIndex($table, $index)) {
-    		return true;
-    	}
+            return true;
+        }
 
-    	$in = $index;
+        $in = $index;
 
         if (is_array($index))
         {
@@ -491,8 +508,8 @@ class Utils_DbTables
         }
 
         $result = $this->_DB->getPDO()->exec(
-    		'ALTER TABLE `'. $table .'` ADD INDEX('. $in .')'
-	    );
+            'ALTER TABLE `'. $table .'` ADD INDEX('. $in .')'
+        );
 
         return $this->issetIndex($table, $index);
     }
@@ -537,13 +554,13 @@ class Utils_DbTables
      *
      * @return Bool
      */
-	public function setFulltext($table, $index)
+    public function setFulltext($table, $index)
     {
         if ($this->issetFulltext($table, $index)) {
-    		return true;
-    	}
+            return true;
+        }
 
-    	$in = $index;
+        $in = $index;
 
         if (is_array($index))
         {
@@ -554,10 +571,10 @@ class Utils_DbTables
         }
 
         $this->_DB->getPDO()->exec(
-        	'ALTER TABLE `'. $table .'` ADD FULLTEXT('. $in .')'
+            'ALTER TABLE `'. $table .'` ADD FULLTEXT('. $in .')'
         );
 
-    	return $this->issetFulltext($table, $index);
+        return $this->issetFulltext($table, $index);
     }
 
 
@@ -571,8 +588,8 @@ class Utils_DbTables
      */
     public function issetFulltext($table, $key)
     {
-    	if (is_array($key))
-    	{
+        if (is_array($key))
+        {
             foreach ($key as $entry)
             {
                 if ($this->_issetFulltext($table, $entry) == false) {
@@ -581,7 +598,7 @@ class Utils_DbTables
             }
 
             return true;
-    	}
+        }
 
         return $this->_issetFulltext($table, $key);
     }
@@ -596,18 +613,18 @@ class Utils_DbTables
     {
         $keys = $this->getKeys($table);
 
-    	foreach ($keys as $entry)
-    	{
-    		if (isset($entry['Column_name']) &&
-    		    isset($entry['Index_type']) &&
-    			$entry['Column_name'] == $key &&
-    			$entry['Index_type'] == 'FULLTEXT')
-    		{
-    			return true;
-    		}
-    	}
+        foreach ($keys as $entry)
+        {
+            if (isset($entry['Column_name']) &&
+                isset($entry['Index_type']) &&
+                $entry['Column_name'] == $key &&
+                $entry['Index_type'] == 'FULLTEXT')
+            {
+                return true;
+            }
+        }
 
-    	return false;
+        return false;
     }
 }
 

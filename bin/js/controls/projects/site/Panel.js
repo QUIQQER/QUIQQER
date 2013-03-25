@@ -39,6 +39,8 @@ define('controls/projects/site/Panel', [
 
         Binds : [
             'load',
+            'createNewChild',
+
             '$onCreate',
             '$onResize',
             '$onCategoryEnter',
@@ -226,6 +228,8 @@ define('controls/projects/site/Panel', [
          */
         save : function()
         {
+
+
             console.info( 'save' );
             console.log( this );
         },
@@ -238,26 +242,26 @@ define('controls/projects/site/Panel', [
          * @param {String} newname - [optional, if no newname was passed,
          *         a window would be open]
          */
-        createNewChild : function(newname)
+        createNewChild : function()
         {
-            if ( typeof newname === 'undefined' )
-            {
-                QUI.Windows.create('prompt', {
-                    title : 'Wie soll die neue Seite heißen?',
-                    text  : 'Bitte geben Sie ein Namen für die neue Seite an',
-                    texticon    : URL_BIN_DIR +'48x48/filenew.png',
-                    information : 'Sie legen eine neue Seite unter '+ this.getAttribute('name') +'.html an.',
-                    Site   : this,
-                    events :
-                    {
-                        onSubmit : function(result, Win) {
-                            Win.getAttribute('Site').createChild( result );
-                        }
-                    }
-                });
+            var Panel = this;
 
-                return;
-            }
+            QUI.Windows.create('prompt', {
+                title       : 'Wie soll die neue Seite heißen?',
+                text        : 'Bitte geben Sie ein Namen für die neue Seite an',
+                texticon    : URL_BIN_DIR +'48x48/filenew.png',
+                information : 'Sie legen eine neue Seite unter '+ this.getAttribute('name') +'.html an.',
+                events      :
+                {
+                    onSubmit : function(result, Win) {
+                        Panel.getSite().createChild( result );
+                    }
+                }
+            });
+
+
+
+            return;
 
             QUI.lib.Sites.createChild(
                 function(result, Request)
@@ -353,10 +357,10 @@ define('controls/projects/site/Panel', [
                 // information tab
                 if ( Request.getAttribute('tab') === 'information' )
                 {
-                    Body.getElement( 'input[name="site-name"]' ).focusToBegin();
+                    var Input = Body.getElements( 'input[name="site-name"]' );
 
-                    // set params
-                    Form.elements['site-name'].value  = Site.getAttribute( 'name' );
+                    Input.focusToBegin();
+                    Input.value = Site.getAttribute( 'name' );
                 }
 
                 QUI.controls.Utils.parse( Form );

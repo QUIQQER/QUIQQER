@@ -1,11 +1,11 @@
 {
-	"name" : "quiqqer/quiqqer",
-	"type" : "quiqqer-system",
-	"description" : "A modular based management system written in JavaScript and PHP",
-	"version" : "1-alpha",
-	"license" : "GPL-3.0+",
+    "name" : "quiqqer/quiqqer",
+    "type" : "quiqqer-system",
+    "description" : "A modular based management system written in JavaScript and PHP",
+    "version" : "1-alpha",
+    "license" : "GPL-3.0+",
 
-	"authors" : [{
+    "authors" : [{
         "name": "Henning Leutz",
         "email": "leutz@pcsg.de",
         "homepage": "http://www.pcsg.de",
@@ -37,7 +37,8 @@
         "quiqqer/ckeditor3" : "1.*",
         "quiqqer/calendar" : "dev-master",
         "quiqqer/colorpicker" : "dev-master",
-        "quiqqer/translator" : "dev-master"
+        "quiqqer/translator" : "dev-master",
+        "quiqqer/history" : "1.*"
     },
 
     "config": {

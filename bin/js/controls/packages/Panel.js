@@ -35,9 +35,9 @@ define('controls/packages/Panel', [
         Binds : [
             '$onCreate',
             '$onResize',
-            '$onRefresh',
             '$serverGridClick',
             '$serverGridBlur',
+            'setup',
 
             'loadUpdates',
             'unloadUpdates',
@@ -95,8 +95,7 @@ define('controls/packages/Panel', [
 
             this.addEvents({
                 onCreate  : this.$onCreate,
-                onResize  : this.$onResize,
-                onRefresh : this.$onRefresh
+                onResize  : this.$onResize
             });
         },
 
@@ -244,14 +243,6 @@ define('controls/packages/Panel', [
             }
         },
 
-        /**
-         * event: on panel refresh
-         */
-        $onRefresh : function()
-        {
-
-        },
-
     /**
      * Update methods
      */
@@ -336,15 +327,25 @@ define('controls/packages/Panel', [
                     }
                 }, {
                     text : QUI.Locale.get(
-                            'quiqqer/system',
-                            'packages.grid.update.btn.upload'
-                        ),
-                        textimage : URL_BIN_DIR +'16x16/actions/up.png',
-                        Control   : this,
-                        events    : {
-                            onClick : this.uploadUpdates
-                        }
-                    }],
+                        'quiqqer/system',
+                        'packages.grid.update.btn.upload'
+                    ),
+                    textimage : URL_BIN_DIR +'16x16/actions/up.png',
+                    Control   : this,
+                    events    : {
+                        onClick : this.uploadUpdates
+                    }
+                }, {
+                    text : QUI.Locale.get(
+                        'quiqqer/system',
+                        'packages.grid.update.btn.setup'
+                    ),
+                    textimage : URL_BIN_DIR +'16x16/setup.png',
+                    Control   : this,
+                    events    : {
+                        onClick : this.setup
+                    }
+                }],
 
                 height : 200
             });
@@ -363,6 +364,25 @@ define('controls/packages/Panel', [
                 this.$UpdateGrid.destroy();
                 this.$UpdateGrid = null;
             }
+        },
+
+        /**
+         * Execute a system setup
+         *
+         * @param {QUI.controls.buttons.Button} Btn
+         */
+        setup : function(Btn)
+        {
+            var SetupButton = Btn;
+
+            SetupButton.setAttribute( 'textimage', URL_BIN_DIR +'images/loader.gif' );
+
+            QUI.Ajax.post('ajax_system_setup', function(result, Request)
+            {
+                if ( typeof SetupButton !== 'undefined' ) {
+                    SetupButton.setAttribute( 'textimage', URL_BIN_DIR +'16x16/setup.png' );
+                }
+            });
         },
 
         /**
@@ -677,10 +697,19 @@ define('controls/packages/Panel', [
 
             QUI.Ajax.get('ajax_system_packages_list', function(result, Request)
             {
-                var Control = Request.getAttribute( 'Control' );
+                var Control = Request.getAttribute( 'Control' ),
+                    Grid    = null;
 
-                if ( Control.$Grid ) {
-                    Control.$Grid.setData( result );
+                if ( Control.getAttribute( 'type' ) == 'quiqqer-plugin' )
+                {
+                    Grid = Control.$PluginGrid;
+                } else
+                {
+                    Grid = Control.$Grid;
+                }
+
+                if ( Grid ) {
+                    Grid.setData( result );
                 }
 
                 Control.Loader.hide();
@@ -928,12 +957,13 @@ define('controls/packages/Panel', [
                 text : QUI.Locale.get(
                     'quiqqer/system',
                     'packages.server.win.install.package.text',
-                    { 'package' : Btn.getAttribute('package') }
+                    { 'package' : Btn.getAttribute( 'package' ) }
                 ),
 
                 texticon  : URL_BIN_DIR +'48x48/apps/kpackage.png',
                 Control   : this,
-                'package' : Btn.getAttribute('package'),
+                autoclose : false,
+                'package' : Btn.getAttribute( 'package' ),
 
                 ok_button :
                 {
@@ -952,8 +982,18 @@ define('controls/packages/Panel', [
 
                         QUI.Ajax.get('ajax_system_packages_get', function(result, Request)
                         {
-                            var Win = Request.getAttribute( 'Win' ),
-                                req = result.require.join( ', ' );
+                            var Win = Request.getAttribute( 'Win' );
+
+                            if ( typeof result.require === 'undefined' &&
+                                 typeof result.description === 'undefined' )
+                            {
+                                Win.setAttribute( 'information', '' );
+                                Win.Loader.hide();
+
+                                return;
+                            }
+
+                            var req = result.require.join( ', ' );
 
                             var html = '<p>'+ result.description +'</p>' +
                                        '<p>&nbsp;</p>'+
@@ -971,7 +1011,15 @@ define('controls/packages/Panel', [
 
                     onSubmit : function(Win)
                     {
+                        Win.Loader.show();
 
+                        QUI.Ajax.get('ajax_system_packages_install', function(result, Request)
+                        {
+                            Request.getAttribute( 'Win' ).close();
+                        }, {
+                            'package' : Win.getAttribute( 'package' ),
+                            Win       : Win
+                        });
                     }
                 }
             }).create();

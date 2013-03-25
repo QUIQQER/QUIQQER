@@ -47,7 +47,7 @@ class Utils_Db extends QDOM
         ) );
 
         if ( isset( $attributes['driver'] ) && empty( $attributes['driver'] ) ) {
-        	unset( $attributes['driver'] );
+            unset( $attributes['driver'] );
         }
 
         // Attributes
@@ -56,7 +56,7 @@ class Utils_Db extends QDOM
         if ( $this->getAttribute( 'dsn' ) === false )
         {
             $this->setAttribute(
-            	'dsn',
+                'dsn',
                 $this->getAttribute( 'driver' ) .
                 ':dbname='. $this->getAttribute( 'dbname' ) .
                 ';host='. $this->getAttribute( 'host' )
@@ -143,49 +143,49 @@ class Utils_Db extends QDOM
         $prepare = array();
 
         /**
-    	 * Start Block
-    	 */
+         * Start Block
+         */
         if ( isset( $params['insert'] ) && !empty( $params['insert'] ) ) {
             $query = $this->createQueryInsert( $params['insert'] );
-    	}
+        }
 
         if ( isset( $params['update'] ) && !empty( $params['update'] ) ) {
             $query = $this->createQueryUpdate( $params['update'] );
-    	}
+        }
 
-    	if ( isset( $params['count'] ) && !empty( $params['count'] ) ) {
+        if ( isset( $params['count'] ) && !empty( $params['count'] ) ) {
             $query = $this->createQueryCount( $params['count'] );
-    	}
+        }
 
         if ( isset( $params['delete'] ) && $params['delete'] === true ) {
             $query = $this->createQueryDelete();
-    	}
+        }
 
         /**
-    	 * From Block
-    	 */
-    	if ( isset( $params['from'] ) && !empty( $params['from'] ) ) {
+         * From Block
+         */
+        if ( isset( $params['from'] ) && !empty( $params['from'] ) ) {
             $query .= $this->createQueryFrom( $params['from'] );
-    	}
+        }
 
         /**
-    	 * Where Block
-    	 */
+         * Where Block
+         */
         if ( isset( $params['set'] ) && !empty( $params['set'] ) )
         {
              $set = $this->createQuerySet( $params['set'] );
 
              $query  .= $set['set'];
              $prepare = array_merge( $prepare, $set['prepare'] );
-    	}
+        }
 
-    	if ( isset( $params['where'] ) && !empty( $params['where'] ) )
+        if ( isset( $params['where'] ) && !empty( $params['where'] ) )
         {
              $where = $this->createQueryWhere( $params['where'] );
 
              $query  .= $where['where'];
              $prepare = array_merge( $prepare, $where['prepare'] );
-    	}
+        }
 
         if ( isset( $params['where_or'] ) && !empty( $params['where_or'] ) )
         {
@@ -193,40 +193,40 @@ class Utils_Db extends QDOM
 
              $query  .= $where['where'];
              $prepare = array_merge( $prepare, $where['prepare'] );
-    	}
+        }
 
-    	/**
-    	 * Order Block
-    	 */
-    	if ( isset( $params['order'] ) && !empty( $params['order'] ) ) {
+        /**
+         * Order Block
+         */
+        if ( isset( $params['order'] ) && !empty( $params['order'] ) ) {
             $query .= $this->createQueryOrder($params['order']);
-    	}
+        }
 
-    	if ( isset( $params['group'] ) && !empty( $params['group'] ) ) {
-    		$query .= ' GROUP BY '.$params['group'];
-    	}
+        if ( isset( $params['group'] ) && !empty( $params['group'] ) ) {
+            $query .= ' GROUP BY '.$params['group'];
+        }
 
-   	 	if ( isset( $params['limit'] ) && !empty( $params['limit'] ) )
-   	 	{
-    		$limit = $this->createQueryLimit( $params['limit'] );
+            if ( isset( $params['limit'] ) && !empty( $params['limit'] ) )
+            {
+            $limit = $this->createQueryLimit( $params['limit'] );
 
-    		$query  .= $limit['limit'];
+            $query  .= $limit['limit'];
             $prepare = array_merge( $prepare, $limit['prepare'] );
-    	}
+        }
 
         // debuging
-    	if ( isset( $params['debug'] ) )
-    	{
-    	    System_Log::writeRecursive(array(
-        	    'query'   => $query,
-        	    'prepare' => $prepare
-        	));
-    	}
+        if ( isset( $params['debug'] ) )
+        {
+            System_Log::writeRecursive(array(
+                'query'   => $query,
+                'prepare' => $prepare
+            ));
+        }
 
-    	return array(
-    	    'query'   => $query,
-    	    'prepare' => $prepare
-    	);
+        return array(
+            'query'   => $query,
+            'prepare' => $prepare
+        );
     }
 
     /**
@@ -359,7 +359,7 @@ class Utils_Db extends QDOM
         ));
     }
 
-	/**
+    /**
      * Aktualisiert einen Datensatz
      *
      * @param String $table
@@ -387,7 +387,7 @@ class Utils_Db extends QDOM
     {
         return $this->exec(array(
             'delete' => true,
-        	'from'   => $table,
+            'from'   => $table,
             'where'  => $where
         ));
     }
@@ -452,23 +452,23 @@ class Utils_Db extends QDOM
     static function createQueryCount($params)
     {
         if ( is_array( $params ) && isset( $params['select'] ) )
-		{
-			$query = ' SELECT COUNT('. $params['select'] .') ';
+        {
+            $query = ' SELECT COUNT('. $params['select'] .') ';
 
-			if ( isset( $params['as'] ) ) {
-				$query .= 'AS '. $params['as'] .' ';
-			}
+            if ( isset( $params['as'] ) ) {
+                $query .= 'AS '. $params['as'] .' ';
+            }
 
-			return $query;
-		}
+            return $query;
+        }
 
-		$query = ' SELECT COUNT(*) ';
+        $query = ' SELECT COUNT(*) ';
 
-		if ( is_string( $params ) ) {
-			$query .= 'AS '. $params .' ';
-		}
+        if ( is_string( $params ) ) {
+            $query .= 'AS '. $params .' ';
+        }
 
-		return $query;
+        return $query;
     }
 
     /**
@@ -486,15 +486,15 @@ class Utils_Db extends QDOM
         $sql = '';
 
         if ( is_array( $params ) )
-    	{
-    		$sql  = ' FROM ';
-    		$from = implode( '`', array_unique( $params ) );
-    		$from = '`'. str_replace( '`', '`,`', $from ) .'`';
+        {
+            $sql  = ' FROM ';
+            $from = implode( '`', array_unique( $params ) );
+            $from = '`'. str_replace( '`', '`,`', $from ) .'`';
 
-    		$sql .= $from;
-    	}
+            $sql .= $from;
+        }
 
-    	return $sql;
+        return $sql;
     }
 
     /**
@@ -515,53 +515,53 @@ class Utils_Db extends QDOM
         if ( is_string( $params ) )
         {
             return array(
-            	'where'   => ' WHERE '. $params,
+                'where'   => ' WHERE '. $params,
                 'prepare' => array()
             );
-		}
+        }
 
-		$prepare = array();
-		$sql     = '';
+        $prepare = array();
+        $sql     = '';
 
-		if ( is_array( $params ) )
-		{
-		    $i   = 0;
-		    $max = count( $params ) - 1;
+        if ( is_array( $params ) )
+        {
+            $i   = 0;
+            $max = count( $params ) - 1;
 
-			$sql     = ' WHERE ';
-			$prepare = array();
+            $sql     = ' WHERE ';
+            $prepare = array();
 
-			foreach ( $params as $key => $value )
-			{
-			    $key = '`'. str_replace( '.', '`.`', $key ) .'`';
+            foreach ( $params as $key => $value )
+            {
+                $key = '`'. str_replace( '.', '`.`', $key ) .'`';
 
-			    if ( !is_array( $value ) )
-			    {
-			        if ( strpos( $value, '`' ) !== false )
-    			    {
-    			        $value = str_replace( '.', '`.`', $value );
-    			    } else
-    			    {
-    			        $prepare['wherev'. $i] = $value;
-    			        $value = ':wherev'. $i;
-    			    }
+                if ( !is_array( $value ) )
+                {
+                    if ( strpos( $value, '`' ) !== false )
+                    {
+                        $value = str_replace( '.', '`.`', $value );
+                    } else
+                    {
+                        $prepare['wherev'. $i] = $value;
+                        $value = ':wherev'. $i;
+                    }
 
-    			    $sql .= $key .' = '. $value;
+                    $sql .= $key .' = '. $value;
 
-			    } elseif ( isset( $value['value'] ) &&
-			               isset( $value['type'] ) &&
-			               $value['type'] == 'NOT' )
-			    {
-			        $prepare['wherev'. $i] = $value['value'];
+                } elseif ( isset( $value['value'] ) &&
+                           isset( $value['type'] ) &&
+                           $value['type'] == 'NOT' )
+                {
+                    $prepare['wherev'. $i] = $value['value'];
                     $sql .= $key .' != :wherev'. $i;
 
-			    } else
-			    {
+                } else
+                {
                     if ( !isset( $value['type'] ) ) {
                         $value['type'] = '';
                     }
 
-			        if ( !isset( $value['value'] ) ) {
+                    if ( !isset( $value['value'] ) ) {
                         $value['value'] = '';
                     }
 
@@ -586,18 +586,18 @@ class Utils_Db extends QDOM
                     }
 
                     $sql .= $key .' LIKE :wherev'. $i;
-			    }
+                }
 
                 if ( $max > $i ) {
-    				$sql .= ' '. $type .' ';
-    			}
+                    $sql .= ' '. $type .' ';
+                }
 
-    			$i++;
-			}
-		}
+                $i++;
+            }
+        }
 
-		return array(
-        	'where'   => $sql,
+        return array(
+            'where'   => $sql,
             'prepare' => $prepare
         );
     }
@@ -624,38 +624,38 @@ class Utils_Db extends QDOM
         if ( is_string( $params ) )
         {
             return array(
-            	'set'     => ' SET '. $params,
+                'set'     => ' SET '. $params,
                 'prepare' => array()
             );
-		}
+        }
 
         $prepare = array();
-		$sql     = '';
+        $sql     = '';
 
-		if ( is_array( $params ) )
-		{
-		    $i   = 0;
-		    $max = count( $params ) - 1;
+        if ( is_array( $params ) )
+        {
+            $i   = 0;
+            $max = count( $params ) - 1;
 
-			$sql     = ' SET ';
-			$prepare = array();
+            $sql     = ' SET ';
+            $prepare = array();
 
-			foreach ( $params as $key => $value )
-			{
+            foreach ( $params as $key => $value )
+            {
                 $sql .= '`'. $key .'` = :setv'. $i;
 
                 $prepare['setv'. $i] = $value;
 
                 if ( $max > $i ) {
-    				$sql .= ', ';
-    			}
+                    $sql .= ', ';
+                }
 
-    			$i++;
-			}
-		}
+                $i++;
+            }
+        }
 
         return array(
-        	'set'     => $sql,
+            'set'     => $sql,
             'prepare' => $prepare
         );
     }
@@ -672,25 +672,25 @@ class Utils_Db extends QDOM
             return ' ORDER BY '. $params;
         }
 
-		if ( is_array( $params ) )
-		{
-			$sql = ' ORDER BY';
+        if ( is_array( $params ) )
+        {
+            $sql = ' ORDER BY';
 
-			foreach ( $params as $key => $sort )
-			{
-				if ( is_string( $key ) )
-				{
-					$sql .= ' `'. $key .'`'. $sort .' ';
-				} else
-				{
-					$sql .= ' `'. $sort .'` ';
-				}
-			}
+            foreach ( $params as $key => $sort )
+            {
+                if ( is_string( $key ) )
+                {
+                    $sql .= ' `'. $key .'`'. $sort .' ';
+                } else
+                {
+                    $sql .= ' `'. $sort .'` ';
+                }
+            }
 
-			return $sql;
-		}
+            return $sql;
+        }
 
-		return '';
+        return '';
     }
 
     /**
@@ -720,7 +720,7 @@ class Utils_Db extends QDOM
             {
                 return array(
                     'limit'   => '',
-            		'prepare' => $prepare
+                    'prepare' => $prepare
                 );
             }
 
@@ -738,7 +738,7 @@ class Utils_Db extends QDOM
         }
 
         return array(
-        	'limit'   => $sql,
+            'limit'   => $sql,
             'prepare' => $prepare
         );
     }

@@ -54,8 +54,13 @@ class Update
         // rights setup, so we have all importend tables
         \QUI_Rights_Manager::setup();
 
-        // rights setup, so we have all importend tables
+        // WYSIWYG Setup
         \QUI_Editor_Manager::setup();
+
+        // Events setup
+        \QUI_Events_Manager::setup();
+        \QUI_Events_Manager::clear();
+
 
         $packages_dir = $Composer->getConfig()->get( 'vendor-dir' );
 
@@ -129,9 +134,15 @@ class Update
                     $sub,
                     $IO
                 );
+
+                // events
+                self::importEvents(
+                    $package_dir .'/'. $sub .'/events.xml',
+                    $sub,
+                    $IO
+                );
             }
         }
-
 
         // system xmls
         $locale_dir = CMS_DIR .'/admin/locale/';
@@ -228,6 +239,36 @@ class Update
                 trim( $Editor->nodeValue ),
                 $Editor->getAttribute( 'package' )
             );
+        }
+    }
+
+    /**
+     * Import / register quiqqer events
+     *
+     * @param String $xml_file - path to an engine.xml
+     * @param $IO - Composer InputOutput
+     */
+    static function importEvents($xml_file, $IO=null)
+    {
+        if ( !file_exists( $xml_file ) ) {
+            return;
+        }
+
+        \System_Log::write( 'Read: '. $xml_file );
+
+        $events = \Utils_Xml::getEventsFromXml( $xml_file );
+        $Events = \QUI::getEvents();
+
+        foreach ( $events as $Event )
+        {
+            if ( $Event->getAttribute( 'on' ) &&
+                 $Event->getAttribute( 'fire' ) )
+            {
+                $Events->addEvent(
+                    $Event->getAttribute( 'on' ),
+                    $Event->getAttribute( 'fire' )
+                );
+            }
         }
     }
 

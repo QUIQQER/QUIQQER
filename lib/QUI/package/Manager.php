@@ -39,7 +39,6 @@ class QUI_Package_Manager
      */
     protected $_composer_exec;
 
-
     /**
      * Packaglist - installed packages
      * @var Array
@@ -51,6 +50,12 @@ class QUI_Package_Manager
      * @var String
      */
     protected $_exec = false;
+
+    /**
+     * temporary require packages
+     * @var Array
+     */
+    protected $_require = array();
 
     /**
      * constructor
@@ -102,10 +107,10 @@ class QUI_Package_Manager
                 continue;
             }
 
-   	        $repositories[] = array(
-   	            'type' => $params['type'],
-   	            'url'  => $server
-   	        );
+               $repositories[] = array(
+                   'type' => $params['type'],
+                   'url'  => $server
+               );
         }
 
         if ( isset( $servers['packagist'] ) &&
@@ -118,29 +123,44 @@ class QUI_Package_Manager
 
 
         $template = str_replace(
-        	'{$repositories}',
+            '{$repositories}',
             json_encode( $repositories ),
             $template
         );
 
         $template = str_replace(
-        	'{$PACKAGE_DIR}',
+            '{$PACKAGE_DIR}',
             OPT_DIR,
             $template
         );
 
         $template = str_replace(
-        	'{$VAR_COMPOSER_DIR}',
+            '{$VAR_COMPOSER_DIR}',
             $this->_vardir,
             $template
         );
 
         $template = str_replace(
-        	'{$LIB_DIR}',
+            '{$LIB_DIR}',
             LIB_DIR,
             $template
         );
 
+        // standard require
+        $list    = $this->_getList();
+        $require = $this->_require;
+
+        $require["php"] = ">=5.3.2";
+
+        foreach ( $list as $entry ) {
+            $require[ $entry['name'] ] = $entry['version'];
+        }
+
+        $template = str_replace(
+            '{$REQUIRE}',
+            json_encode( $require ),
+            $template
+        );
 
         if ( file_exists( $this->_composer_json ) ) {
             unlink( $this->_composer_json );
@@ -218,6 +238,21 @@ class QUI_Package_Manager
     }
 
     /**
+     * Install Package
+     *
+     * @param String $package
+     */
+    public function install($package)
+    {
+        $this->_require[ $package ] = 'dev-master';
+        $this->_createComposerJSON();
+
+        if ( $this->_exec ) {
+            exec( $this->_exec .'update "'. $package .'" 2>&1', $exec_result );
+        }
+    }
+
+    /**
      * Return the params of an installed package
      *
      * @param String $package
@@ -252,7 +287,11 @@ class QUI_Package_Manager
             foreach ( $exec_result as $key => $line )
             {
                 if ( strpos( $line, '[InvalidArgumentException]' ) !== false ) {
-                    return array();
+                    break;
+                }
+
+                if ( strpos( $line, 'Fatal error' ) !== false ) {
+                    break;
                 }
 
                 if ( strpos( $line, ':' ) )
@@ -328,7 +367,7 @@ class QUI_Package_Manager
 
             foreach ( $exec_result as $entry )
             {
-                $expl = explode( ': ', $entry );
+                $expl = explode( ' ', $entry, 2 );
 
                 if ( isset( $expl[0] ) && isset( $expl[1] ) ) {
                     $result[ $expl[0] ] = $expl[1];
@@ -653,25 +692,25 @@ class QUI_Package_Manager
         );
 
         $template = str_replace(
-        	'{$repositories}',
+            '{$repositories}',
             json_encode( $list ),
             $template
         );
 
         $template = str_replace(
-        	'{$PACKAGE_DIR}',
+            '{$PACKAGE_DIR}',
             OPT_DIR,
             $template
         );
 
         $template = str_replace(
-        	'{$VAR_COMPOSER_DIR}',
+            '{$VAR_COMPOSER_DIR}',
             $this->_vardir,
             $template
         );
 
         $template = str_replace(
-        	'{$LIB_DIR}',
+            '{$LIB_DIR}',
             LIB_DIR,
             $template
         );

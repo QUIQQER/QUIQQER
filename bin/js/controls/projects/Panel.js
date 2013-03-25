@@ -27,7 +27,7 @@ define('controls/projects/Panel', [
 
     'css!controls/projects/Panel.css'
 
-], function(QUI_Control, QUI_Projects, QUI_ProjectSitemap)
+], function(QUI_Panel, QUI_Projects, QUI_ProjectSitemap)
 {
     "use strict";
 
@@ -41,7 +41,7 @@ define('controls/projects/Panel', [
      */
     QUI.controls.projects.Panel = new Class({
 
-        Extends : QUI_Control,
+        Extends : QUI_Panel,
         Type    : 'QUI.controls.projects.Panel',
 
         Binds : [

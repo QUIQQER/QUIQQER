@@ -28,12 +28,12 @@ class QUI_Rights_PermissionOrder
         $res   = (int)$params['result'];
         $Group = $params['Group'];
 
-        if ($Group->hasRight($right) === false) {
+        if ( $Group->hasPermission( $right ) === false ) {
             return $res;
         }
 
-        if ((int)$Group->hasRight($right) > $res) {
-            return (int)$Group->hasRight($right);
+        if ( (int)$Group->hasPermission( $right ) > $res ) {
+            return (int)$Group->hasPermission( $right );
         }
 
         return $res;
@@ -51,12 +51,12 @@ class QUI_Rights_PermissionOrder
         $res   = (int)$params['result'];
         $Group = $params['Group'];
 
-        if ($Group->hasRight($right) === false) {
+        if ( $Group->hasPermission( $right ) === false ) {
             return $res;
         }
 
-        if ((int)$Group->hasRight($right) < $res) {
-            return (int)$Group->hasRight($right);
+        if ( (int)$Group->hasPermission( $right ) < $res ) {
+            return (int)$Group->hasPermission( $right );
         }
 
         return $res;

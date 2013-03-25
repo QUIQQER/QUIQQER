@@ -23,7 +23,7 @@ class Projects_Sites
      */
     static function getButtons(Projects_Site_Edit $Site, $User=false)
     {
-        if (!$User) {
+        if ( !$User ) {
             $User = QUI::getUserBySession();
         }
 
@@ -37,7 +37,7 @@ class Projects_Sites
                 'name'      => '_New',
                 'textimage' => URL_BIN_DIR .'16x16/page_white.png',
                 'text'      => 'Neu',
-                'onclick'   => 'Panel.createChild',
+                'onclick'   => 'Panel.createNewChild',
                 'help'      => 'Erzeugen Sie eine neue Unterseite',
                 'alt'       => 'Erzeugen Sie eine neue Unterseite',
                 'title'     => 'Erzeugen Sie eine neue Unterseite'
@@ -83,43 +83,33 @@ class Projects_Sites
             ))
         );
 
-        try
-        {
-            self::checkRights($Site, $User);
-        } catch (QException $e)
-        {
-            $New->setDisable();
-            $Save->setDisable();
-            $Del->setDisable();
+        $New  = $Toolbar->getElementByName( '_New' );
+        $Save = $Toolbar->getElementByName( '_Save' );
+        $Del  = $Toolbar->getElementByName( '_Del' );
 
-            return $Toolbar;
-        }
-
-        if ($Site->isMarcate()) // wenn die Seite bearbeitet wird
+        if ( $Site->isMarcate() ) // wenn die Seite bearbeitet wird
         {
             $Save->setDisable();
             $Del->setDisable();
         }
-
-        $Rights = QUI::getRights();
 
         // Wenn das Kind erstellen Recht nicht vorhanden ist
-        if (!$Rights->hasRights($User, $Site, 'new')) {
+        if ( $Site->hasPermission( 'quiqqer.site.new' ) ) {
             $New->setDisable();
         }
 
         // Wenn das Bearbeiten Recht nicht vorhanden ist
-        if (!$Rights->hasRights($User, $Site, 'edit')) {
+        if ( $Site->hasPermission( 'quiqqer.site.edit' ) == false ) {
             $Save->setDisable();
         }
 
         // Wenn das Löschen Recht nicht vorhanden ist
-        if (!$Rights->hasRights($User, $Site, 'del')) {
+        if ( $Site->hasPermission( 'quiqqer.site.del' ) == false ) {
             $Del->setDisable();
         }
 
         // Wenn das Bearbeiten Recht vorhanden ist
-        if ($Rights->hasRights($User, $Site, 'edit') && !$Site->isMarcate())
+        if ( $Site->hasPermission( 'quiqqer.site.edit') && !$Site->isMarcate() )
         {
             $Toolbar->appendChild(
                 new Controls_Buttons_Seperator(array(
@@ -137,7 +127,7 @@ class Projects_Sites
                 'donclick' => 'QUI.lib.Sites.PanelButton.deactivate'
             ));
 
-            if ($Site->getAttribute('active'))
+            if ( $Site->getAttribute( 'active' ) )
             {
                 $Status->setAttributes(array(
                     'textimage' => URL_BIN_DIR .'16x16/deactive.png',
@@ -154,16 +144,16 @@ class Projects_Sites
                 ));
             }
 
-            $Toolbar->appendChild($Status);
+            $Toolbar->appendChild( $Status );
         }
 
         // Tabs der Plugins hohlen
-        $Plugins = self::getPlugins($Site);
+        $Plugins = self::getPlugins( $Site );
 
-        foreach ($Plugins as $Plugin)
+        foreach ( $Plugins as $Plugin )
         {
-            if (method_exists($Plugin, 'setButtons')) {
-                $Plugin->setButtons($Toolbar, $Site);
+            if ( method_exists($Plugin, 'setButtons' ) ) {
+                $Plugin->setButtons( $Toolbar, $Site );
             }
         }
 
@@ -191,8 +181,8 @@ class Projects_Sites
 
         try
         {
-            self::checkRights($Site, $User);
-        } catch (QException $e)
+            //self::checkRights($Site, $User);
+        } catch ( \QException $Exception )
         {
             $Tabbar->appendChild(
                 new Controls_Toolbar_Tab(array(
@@ -208,7 +198,7 @@ class Projects_Sites
 
 
         // Wenn die Seite bearbeitet wird
-        if ($Site->isMarcate())
+        if ( $Site->isMarcate() )
         {
             $Tabbar->appendChild(
                 new Controls_Toolbar_Tab(array(
@@ -222,10 +212,9 @@ class Projects_Sites
             return $Tabbar;
         }
 
-        $Rights = $Site->getRights();
 
-        if ($Rights->hasRights($User, $Site, 'view') &&
-            $Rights->hasRights($User, $Site, 'edit'))
+        if ( $Site->hasPermission( 'quiqqer.site.view' ) &&
+             $Site->hasPermission( 'quiqqer.site.edit' ) )
         {
             $Tabbar->appendChild(
                 new Controls_Toolbar_Tab(array(
@@ -236,8 +225,7 @@ class Projects_Sites
                 ))
             );
 
-        } elseif (!$Rights->hasRights($User, $Site, 'view'))
-        // Wenn kein Ansichtsrecht besteht dann keine weiteren Tabs
+        } elseif ( $Site->hasPermission( 'quiqqer.site.view' ) === false )
         {
             $Tabbar->appendChild(
                 new Controls_Toolbar_Tab(array(
@@ -305,19 +293,6 @@ class Projects_Sites
             */
         }
 
-        /*
-        $Tabbar->appendChild(
-            new Controls_Toolbar_Tab(array(
-                'name' 	    => '_rights',
-                'text'      => 'Rechte',
-                'tpl' 	    => SYS_DIR .'template/rights.html',
-                'onload' 	=> 'on_tab_load_rights = function () { _base.rights.load(); }; insert_tab_tpl',
-                'onclick'   => "_Tabbar.getElementByName('_rights').setActive",
-                'onunload' 	=> '_base.rights.unload(); _Site.setTempFile'
-            ))
-        );
-        */
-
         return $Tabbar;
     }
 
@@ -345,36 +320,6 @@ class Projects_Sites
         }
 
         return $Tab;
-    }
-
-    /**
-     * Checks a site on the first admin rights
-     *
-     * @param Projects_Site_Edit|Projects_Site $Site
-     * @param Users_User $User
-     *
-     * @return Bool
-     * @throws QException
-     */
-    static function checkRights($Site, $User=false)
-    {
-        /* @var $Site Projects_Site_Edit */
-        if ( $User == false ) {
-            $User = QUI::getUserBySession();
-        }
-
-        // System Benutzer darf editieren und sehen
-        if ( $User->getType() == 'SystemUser' ) {
-            return true;
-        }
-
-        if ( !$Site->getRights()->hasRights( $User, $Site, 'view' ) ||
-             !$Site->getRights()->hasRights( $User, $Site, 'edit' ) )
-        {
-            throw new QException( 'No Rights', self::EACCES );
-        }
-
-        return true;
     }
 
     /**

@@ -6,222 +6,160 @@
 
 /**
  * The Event Manager
+ * Registered and set global events
+ *
+ * If you register event and the callback function is a string,
+ * the callback funciton would be set to the database
  *
  * @author www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui.events
- *
- * @deprecated maybe depricated
  */
-class QUI_Events_Manager
+class QUI_Events_Manager implements Interface_Events
 {
     /**
-     * registered events
-     * @var array
+     * construct
      */
-	static $events = array();
+    public function __construct()
+    {
+        $list = \QUI::getDataBase()->fetch(array(
+            'from' => self::Table()
+        ));
 
-	/**
-	 * i think its unnecessary, js files?
-	 * @var array
-	 */
-    private $_js = array();
+        $this->_Events = new \QUI_Events_Event();
 
-	/**
-	 * Add a event
-	 *
-	 * @param String $eventname - on*
-	 * @param QUI_Events_Event|function $Call
-	 */
-	static function add($eventname, $Call)
-	{
-	    if (!isset(self::$events[ $eventname ])) {
-	        self::$events[ $eventname ] = array();
-	    }
-
-	    self::$events[ $eventname ][] = $Call;
-	}
-
-	/**
-	 * Fires a event and exec all registered events/functions
-	 *
-	 * @param String $eventname - Name of the event
-	 * @param Array $params 	- Parameters for the event
-	 *
-	 * @return array - the results of the events
-	 */
-	static function fire($eventname, $params=array())
-	{
-	    if (!isset(self::$events[ $eventname ])) {
-            return;
-	    }
-
-	    $events  = self::$events[ $eventname ];
-	    $returns = array();
-
-	    foreach ($events as $Call)
-	    {
-            if (get_class($Call) === 'Closure')
-            {
-                $returns[] = $Call($params);
-                continue;
-            }
-
-            if (method_exists($Call, 'fire')) {
-                $returns[] = $Call->fire($params);
-            }
-	    }
-
-	    return $returns;
-	}
-
-	/**
-	 * Delete the event, clear all functions and objects to it
-	 *
-	 * @param String $eventname - the name of the event
-	 */
-	static function remove($eventname)
-	{
-        unset(self::$events[ $eventname ]);
-	}
-
-	/**
-	 * Return a complete list of registered events
-	 * for development
-	 *
-	 * @return Array
-	 */
-	static function getList()
-	{
-	    $result = array();
-
-	    foreach ($result as $key => $ev) {
-            $result[] = $key;
-	    }
-
-        return $result;
-	}
-
-
+        foreach ( $list as $params )
+        {
+            $this->_Events->addEvent(
+                $params['params'],
+                $params['callback']
+            );
+        }
+    }
 
     /**
-     * everything whats following is depricated
+     * Return the events db table name
+     *
+     * @return String
      */
-	/**
-	 * Ein JavaScript File beim Laden des Adminbereichs laden
-	 *
-	 * @param String $js - Pfad zur JavaScript Datei
-	 * @deprecated
-	 */
-	public function loadFile($js)
-	{
-		$this->_js[] = $js;
-	}
+    static function Table()
+    {
+        return QUI_DB_PRFX .'events';
+    }
 
-	/**
-	 * Gibt die Files welche geladen werden sollen zurück
-	 *
-	 * @return Array
-	 * @deprecated
-	 */
-	public function getFiles()
-	{
-		return $this->_js;
-	}
+    /**
+     * create the event table
+     */
+    static function setup()
+    {
+        $DBTable = \QUI::getDataBase()->Table();
 
-	/**
-	 * Erstellt Ordnerstruktur für Events
-	 * @deprecated
-	 */
-	static function setup()
-	{
-		$folder = VAR_DIR .'events/';
+        $DBTable->appendFields(self::Table(), array(
+            'event'    => 'varchar(200)',
+            'callback' => 'text'
+        ));
+    }
 
-		Utils_System_File::mkdir($folder .'onstart');
-		Utils_System_File::mkdir($folder .'onrequest');
-		Utils_System_File::mkdir($folder .'site_create');
-	}
+    /**
+     * clear all events
+     */
+    static function clear()
+    {
+        \QUI::getDataBase()->Table()->truncate(
+            self::Table()
+        );
+    }
 
-	/**
-	 * Fügt ein Event dem EventManager hinzu
-	 *
-	 * @param String $event
-	 * @param String $file
-	 * @param Object $Plugin
-	 * @deprecated
-	 */
-	static function addEvent($event, $file, $Plugin)
-	{
-		if (!file_exists($file)) {
-			return;
-		}
+    /**
+     * Return a complete list of registered events
+     *
+     * @return Array
+     */
+    public function getList()
+    {
+        return $this->_Events->getList();
+    }
 
-		$folder  = VAR_DIR .'events/';
+    /**
+     * Adds an event
+     * If $fn is a string, the event would be save in the database
+     * if you want to register events for the runtime, please use lambda function
+     *
+     * @example $EventManager->addEvent('myEvent', function() { });
+     *
+     * @param String $event - The type of event (e.g. 'complete').
+     * @param Function $fn - The function to execute.
+     */
+    public function addEvent($event, $fn)
+    {
+        // add the event to the db
+        if ( is_string( $fn ) )
+        {
+            \QUI::getDataBase()->insert(self::Table(), array(
+                'event'    => $event,
+                'callback' => $fn
+            ));
+        }
 
-		switch ($event)
-		{
-			case 'onstart':
-			case 'onrequest':
-			case 'site_create':
-				$plgfile = $folder . $event .'/'. $Plugin->__toString() .'.php';
+        $this->_Events->addEvent( $event, $fn );
+    }
 
-				if (file_exists($plgfile)) {
-					unlink($plgfile);
-				}
+    /**
+     * The same as addEvent, but accepts an array to add multiple events at once.
+     *
+     * @param array $events
+     */
+    public function addEvents(array $events)
+    {
+        $this->_Events->addEvents( $events );
+    }
 
-				Utils_System_File::copy($file, $plgfile);
-			break;
+    /**
+     * Removes an event from the stack of events
+     * It remove the events from the database, too.
+     *
+     * @param String $event - The type of event (e.g. 'complete').
+     * @param Function $fn - (optional) The function to remove.
+     */
+    public function removeEvent($event, $fn=false)
+    {
+        $this->_Events->removeEvent( $event, $fn );
 
-			default:
-				return;
-			break;
-		}
-	}
+        if ( $fn === false )
+        {
+            \QUI::getDataBase()->delete(self::Table(), array(
+                'event' => $event
+            ));
+        }
 
-	/**
-	 * Führt Events aus
-	 *
-	 * @param unknown_type $event
-	 * @param Bool $include - Events includieren
-	 *
-	 * @return Array
-	 * @deprecated
-	 */
-	static function load($event, $include=true)
-	{
-		global $Project, $Site;
+        if ( is_string( $fn ) )
+        {
+            \QUI::getDataBase()->delete(self::Table(), array(
+                'event'    => $event,
+                'callback' => $fn
+            ));
+        }
+    }
 
-		$folder = VAR_DIR .'events/';
+    /**
+     * Removes all events of the given type from the stack of events of a Class instance.
+     * If no $fn is specified, removes all events of the event.
+     * It remove the events from the database, too.
+     *
+     * @param array $events - [optional] If not passed removes all events of all types.
+     */
+    public function removeEvents(array $events)
+    {
+        $this->_Events->removeEvents( $events );
+    }
 
-		if (!is_dir($folder)) {
-			return array();
-		}
-
-		switch ($event)
-		{
-			case 'onstart':
-			case 'onrequest':
-            case 'site_create':
-				$dir = $folder . $event .'/';
-			break;
-
-			default:
-				return array();
-		}
-
-		$files  = Utils_System_File::readDir($dir);
-		$result = array();
-
-		foreach ($files as $file)
-		{
-		    $result[] = $dir . $file;
-
-		    if ($include) {
-			    include $dir . $file;
-		    }
-		}
-
-		return $result;
-	}
+    /**
+     * (non-PHPdoc)
+     * @see Interface_Events::fireEvent()
+     */
+    public function fireEvent($event, $args=false)
+    {
+        $this->_Events->fireEvent( $event, $args );
+    }
 }
 
 ?>

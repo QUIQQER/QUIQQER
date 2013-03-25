@@ -741,7 +741,7 @@ class Projects_Project
             $this->_RELTABLE .'.child'  => '`'. $this->_TABLE .'.id`'
         );
 
-        if ( isset( $params['active'] ) && is_null( $params['active'] ) )
+        if ( isset( $params['active'] ) && $params['active'] === '0&1' )
         {
             $where_1 = array(
                 $this->_RELTABLE .'.parent' => $parentid,
@@ -750,11 +750,11 @@ class Projects_Project
             );
         }
 
-        if ( isset($params['where']) && is_array($params['where']) )
+        if ( isset( $params['where'] ) && is_array( $params['where'] ) )
         {
             $where = array_merge($where_1, $params['where']);
 
-        } elseif ( isset($params['where']) && is_string($params['where']) )
+        } elseif ( isset($params['where'] ) && is_string( $params['where'] ) )
         {
             // @todo where als param String
             System_Log::write(
@@ -770,11 +770,11 @@ class Projects_Project
 
         $order = $this->_TABLE .'.order_field';
 
-        if ( isset($params['order']) )
+        if ( isset( $params['order'] ) )
         {
-            if ( strpos($params['order'], '.') !== false )
+            if ( strpos( $params['order'], '.' ) !== false )
             {
-                $order = $this->_TABLE.'.'.$params['order'];
+                $order = $this->_TABLE .'.'. $params['order'];
             } else
             {
                 $order = $params['order'];
@@ -783,21 +783,21 @@ class Projects_Project
 
         $result = QUI::getDataBase()->fetch(array(
             'select' => $this->_TABLE .'.id',
-            'count'  => isset($params['count']) ? 'count' : false,
+            'count'  => isset( $params['count'] ) ? 'count' : false,
             'from' 	 => array(
                 $this->_RELTABLE,
                 $this->_TABLE
             ),
-            'order'  => $order,
-            'limit'  => isset($params['limit']) ? $params['limit'] : false,
-            'where'  => $where
+            'order' => $order,
+            'limit' => isset( $params['limit'] ) ? $params['limit'] : false,
+            'where' => $where
         ));
 
         $ids = array();
 
-        foreach ($result as $entry)
+        foreach ( $result as $entry )
         {
-            if (isset($entry['id'])) {
+            if ( isset( $entry['id'] ) ) {
                 $ids[] = $entry['id'];
             }
         }
@@ -1274,7 +1274,7 @@ class Projects_Project
             $table  = QUI_DB_PRFX . $this->_name .'_'. $lang .'_sites';
 
             $DataBase->Table()->appendFields($table, array(
-                'id'          => 'bigint(20) NOT NULL',
+                'id'          => 'bigint(20) NOT NULL AUTO_INCREMENT',
                 'name'        => 'varchar(200) NOT NULL',
                 'title'       => 'tinytext',
                 'short'       => 'text',
@@ -1297,6 +1297,8 @@ class Projects_Project
             $DataBase->getPDO()->exec(
                 'ALTER TABLE `'. $table .'` CHANGE `order_type` `order_type` VARCHAR( 100 ) NULL DEFAULT NULL'
             );
+
+            $DataBase->Table()->setPrimaryKey( $table, 'id' );
 
             $DataBase->Table()->setIndex( $table, 'name' );
             $DataBase->Table()->setIndex( $table, 'active' );
@@ -1333,14 +1335,14 @@ class Projects_Project
      */
     public function setEditDate($date)
     {
-        if (file_exists($this->_edate_file)) {
-            unlink($this->_edate_file);
+        if ( file_exists( $this->_edate_file ) ) {
+            unlink( $this->_edate_file );
         }
 
-        $date = Utils_Security_Orthos::clear($date);
+        $date = Utils_Security_Orthos::clear( $date );
 
         $this->_edate = $date;
-        file_put_contents($this->_edate_file, $date);
+        file_put_contents( $this->_edate_file, $date );
     }
 }
 

@@ -114,11 +114,12 @@ class QUI_Rights_Manager
             case 'bool':
             case 'string':
             case 'int':
+            case 'array':
             case 'group':
             case 'groups':
             case 'user':
             case 'users':
-            case 'array':
+            case 'users_and_groups':
                 return $type;
             break;
         }
@@ -252,7 +253,7 @@ class QUI_Rights_Manager
         );
 
         $this->_cache[ $params['name'] ] = $params;
-      }
+    }
 
     /**
      * Delete a permission
@@ -260,8 +261,8 @@ class QUI_Rights_Manager
      * @param unknown_type $permission
      * @throws QException
      */
-      public function deletePermission($permission)
-      {
+    public function deletePermission($permission)
+    {
         $permissions = $this->getPermissionList();
 
         if ( !isset( $permissions[ $permission ] ) )
@@ -293,7 +294,7 @@ class QUI_Rights_Manager
                 'src'  => 'user'
             )
         );
-      }
+    }
 
       /**
      * Import a permissions.xml
@@ -352,25 +353,45 @@ class QUI_Rights_Manager
     }
 
     /**
-     * Return all permissions from a group or an user
+     * Return the permission data
      *
-     * @param {Groups_Group|Users_User} $Obj
+     * @param String $permission - Name of the permission
+     * @return false|array
+     */
+    public function getPermissionData($permission)
+    {
+        if ( !isset( $this->_cache[ $permission ] ) ) {
+            throw new \QException( 'Permission not found' );
+        }
+
+        return $this->_cache[ $permission ];
+    }
+
+    /**
+     * Return all permissions from a group, user, site, project or media
+     *
+     * @param {Groups_Group|Users_User|Projects_Site} $Obj
      * @return Array
      */
     public function getPermissions($Obj)
     {
-        $DataBase    = \QUI::getDataBase();
-        $table       = \QUI::getDBTableName( self::TABLE );
+        $area = $this->classToArea( get_class( $Obj ) );
+
+        switch ( $area )
+        {
+            case 'site':
+                return $this->getSitePermissions( $Obj );
+            break;
+        }
+
         $permissions = array();
 
-        $area  = $this->classToArea( get_class( $Obj ) );
         $data  = $this->_getData( $Obj );
         $_list = $this->getPermissionList( $area );
 
         foreach ( $_list as $permission => $params ) {
             $permissions[ $permission ] = false;
         }
-
 
         if ( !isset( $data[0] ) ) {
             return $permissions;
@@ -383,6 +404,33 @@ class QUI_Rights_Manager
             // parse var type
 
             $permissions[ $obj_permission ] = $value;
+        }
+
+        return $permissions;
+    }
+
+    /**
+     * Return the permissions from a site
+     *
+     * @param Projects_Site|Projects_Sites_Edit $Site
+     * @return array
+     */
+    public function getSitePermissions($Site)
+    {
+        $data  = $this->_getData( $Site );
+        $_list = $this->getPermissionList( 'site' );
+
+        foreach ( $_list as $permission => $params ) {
+            $permissions[ $permission ] = false;
+        }
+
+        foreach ( $data as $entry )
+        {
+            if ( !isset( $permissions[ $entry['permission'] ] ) ) {
+                continue;
+            }
+
+            $permissions[ $entry['permission'] ] = json_decode( $entry['value'], true );
         }
 
         return $permissions;
@@ -440,6 +488,11 @@ class QUI_Rights_Manager
                 break;
 
                 case 'users_and_groups':
+                    // u1234566775 <- user-id
+                    // g1234566775 <- group-id
+                    $val = preg_replace( '/[^0-9,ug]/', '', $val );
+                break;
+
                 case 'users':
                 case 'groups':
                     $val = preg_replace( '/[^0-9,]/', '', $val );
@@ -672,6 +725,10 @@ class QUI_Rights_Manager
 
 
     /**
+     * ab hier old
+     */
+
+    /**
      * Projekt Rechte bekommen
      *
      * @param Projects_Project $Project
@@ -710,83 +767,12 @@ class QUI_Rights_Manager
             QUI_Rights_Parser::parse( $filename )
         );
     }
-
-    /**
-     * Prüft ob der Benutzer ein Recht auf das gewünschte Recht hat
-     *
-     * @param User || Nobody $User
-     * @param unknown_type $Site
-     * @param unknown_type $right
-     *
-     * @return Bool
-     * @depricated
-     */
-    public function hasRights($User, $Site, $right='')
-    {
-        return true;
-
-        if (is_object($User) && $User->getType() == 'SystemUser') {
-            return true; /* @todo weis noch nicht ob das so toll ist */
-        }
-
-        $Groups = QUI::getGroups();
-
-        if ($right == 'view')
-        // Ansichtsrecht muss anderst geprüft werden
-        {
-            $check = $this->getRightFromSite($Site, $right);
-
-            if (!isset($check) || empty($check) || !is_array($check)) {
-                return true;
-            }
-        }
-
-        if (!is_object($User) || !$User->getId()) {
-            return false;
-        }
-
-        if (empty($right)) {
-            return true;
-        }
-
-        // Wenn kein Recht gesetzt ist dann durchlassen
-        if (!isset($check)) {
-            $check = $this->getRightFromSite($Site, $right);
-        }
-
-        if (!isset($check) || empty($check) || !is_array($check)) {
-            return true;
-        }
-
-        $UserGroups = $User->getGroups();
-        $childIds   = array();
-
-        for ($i = 0; $i < count($UserGroups); $i++)
-        {
-            if (isset($UserGroups[$i]) && is_object($UserGroups[$i]))
-            {
-                $childIds[] = $UserGroups[$i]->getId();
-                $cIds       = $UserGroups[$i]->getChildrenIds(true);
-
-                $childIds = array_merge($childIds, $cIds);
-            }
-        }
-
-        for ($i = 0; $i < count($check); $i++)
-        {
-            if (in_array($check[$i], $childIds))
-            {
-                return true;
-                break;
-            }
-        }
-
-        return false;
-    }
-
+    */
     /**
      * Rechte vom Benutzer bekommen
      * Geht bessert über User->getPermission('right')
+     *
+     * @deprecated
      *
      * @param User $User
      * @param String $right
@@ -812,9 +798,9 @@ class QUI_Rights_Manager
 
         $_rulesetresult = null;
 
-        foreach ($groups as $Group) /* @var $Group Group */
+        foreach ( $groups as $Group ) /* @var $Group Group */
         {
-            if ($ruleset)
+            if ( $ruleset )
             {
                 $ruleparams = array(
                     'right'  => $right,
@@ -822,35 +808,36 @@ class QUI_Rights_Manager
                     'Group'  => $Group
                 );
 
-                if (is_string($ruleset) && method_exists('QUI_Rights_PermissionOrder', $ruleset))
+                if ( is_string( $ruleset ) &&
+                     method_exists( 'QUI_Rights_PermissionOrder', $rulese ) )
                 {
-                    $_rulesetresult = QUI_Rights_PermissionOrder::$ruleset($ruleparams);
+                    $_rulesetresult = QUI_Rights_PermissionOrder::$ruleset( $ruleparams );
                     continue;
                 }
 
-                if (is_string($ruleset)) {
-                    throw new QException('Unbekanntes Regelset [getUserPermission]');
+                if ( is_string( $ruleset ) ) {
+                    throw new QException( 'Unbekanntes Regelset [getUserPermission]' );
                 }
 
-                $_rulesetresult = $ruleset($ruleparams);
+                $_rulesetresult = $ruleset( $ruleparams );
                 continue;
             }
 
-            $_right = $Group->hasRight($right);
+            $_right = $Group->hasRight( $right );
 
             // falls wert bool ist
-            if ($_right === true) {
+            if ( $_right === true ) {
                 return true;
             }
 
             // falls integer ist
-            if (is_int($_right))
+            if ( is_int( $_right ) )
             {
-                if (is_bool($integer)) {
+                if ( is_bool( $integer ) ) {
                     $integer = 0;
                 }
 
-                if ($_right > $integer) {
+                if ( $_right > $integer ) {
                     $integer = $_right;
                 }
 
@@ -858,16 +845,16 @@ class QUI_Rights_Manager
             }
 
             // falls wert string ist
-            if ($_right) {
+            if ( $_right ) {
                 return $_right;
             }
         }
 
-        if ($_rulesetresult) {
+        if ( $_rulesetresult ) {
             return $_rulesetresult;
         }
 
-        if (!is_bool($integer)) {
+        if ( !is_bool( $integer ) ) {
             return $integer;
         }
 
@@ -927,193 +914,6 @@ class QUI_Rights_Manager
 
         return $result;
     }
-
-    /**
-     * Gibt die Rechte der Seite zurück
-     *
-     * @param Projects_Site / Projects_Site_Edit $Site
-     * @param String $right - Recht welches gesucht wird
-     * 	(optional - wenn nichts angegeben werden werden alle zurückgegben)
-     * @return Array | String | false
-     */
-    public function getRightsFromSite($Site, $right=false)
-    {
-        return $this->getRightFromSite($Site, $right);
-    }
-
-    /**
-     * Rechtegruppen einer bestimmten Seite bekommen
-     *
-     * @param Projects_Site $Site
-     * @param String $right
-     * @param array $array
-     *
-     * @deprecated
-     */
-    public function getRightFromSite($Site, $right, $array=true)
-    {
-        if (!is_object($Site) || !$Site->getId()) {
-            return false;
-        }
-
-        $id      = $Site->getId();
-        $Project = $Site->getProject();
-
-        $table = $Project->getAttribute('name') .'_'.
-                 $Project->getAttribute('lang') .'_rights';
-
-        if (isset($this->_rightcache[$table]) &&
-            isset($this->_rightcache[$table][$id]))
-        {
-            $result = $this->_rightcache[$table][$id];
-        } else
-        {
-            $result = QUI::getDataBase()->fetch(array(
-                'from'  => $table,
-                'where' => array(
-                    'id' => $id
-                ),
-                'limit' => '1'
-            ));
-
-            $this->_rightcache[$table][$id] = $result;
-        }
-
-        // Falls alle Rechte gewollt werden
-        if (isset($result[0]) && $right == false) {
-            return $result[0];
-        }
-
-        if (!isset($result[0]) || !isset($result[0][$right])) {
-            return false;
-        }
-
-        $groups = explode(',', $result[0][$right]);
-        $g      = array();
-
-        for ($i = 0; $i < count($groups); $i++)
-        {
-            if (isset($groups[$i]) && $groups[$i] != '') {
-                $g[] = $groups[$i];
-            }
-        }
-
-        return count($g) ? $g : false;
-    }
-
-    /**
-     * Setzt Rechte in die DB
-     *
-     * @param Projects_Site|Projects_Site_Edit $Site
-     * @param array $rights
-     */
-    public function setRightsFromSite($Site, array $rights)
-    {
-        $id      = $Site->getId();
-        $Project = $Site->getProject();
-
-        $table = $Project->getAttribute('name') .'_'.
-                 $Project->getAttribute('lang') .'_rights';
-
-        $result = QUI::getDataBase()->fetch(array(
-            'select' => 'id',
-            'from'   => $table,
-            'where'  => array(
-                'id' => $id
-            )
-        ));
-
-        if (!isset($result[0]))
-        {
-            QUI::getDataBase()->insert(
-                $table,
-                array('id' => $id)
-            );
-        }
-
-        // Felder aussortieren
-        $fields = QUI::getDataBase()->Table()->getFields($table);
-
-        foreach ($rights as $key => $value)
-        {
-            if (in_array($key, $fields) == false ) {
-                unset($rights[$key]);
-            }
-        }
-
-        if (is_array($rights) && !empty($rights))
-        {
-            QUI::getDataBase()->exec(array(
-                'update' => $table,
-                'set'    => $rights,
-                'where'  => array(
-                    'id' => $id
-                )
-            ));
-
-            if (isset($this->_rightcache[$table]) &&
-                isset($this->_rightcache[$table][$id]))
-            {
-                unset( $this->_rightcache[$table][$id] );
-            }
-        }
-    }
-
-    /**
-     * Prüft ob die Gruppe $parent ein Parent von $children ist
-     *
-     * @param (GroupId) Integer $parent
-     * @param (GroupId) Integer $children
-     */
-    /*
-    public function isParent($parent, $children)
-    {
-        if (is_object($parent)) {
-            $parent = $parent->getId();
-        }
-
-        if (is_object($children))
-        {
-            $cache = $children->getGroupCache();
-
-            if (in_array($parent, $cache)) {
-                return true;
-            }
-
-        } else
-        {
-            $cache_file = VAR_DIR .'cache/rights/'. $children;
-
-            if (file_exists($cache_file))
-            {
-                $cache_content = file_get_contents($cache_file);
-                $cache         = unserialize($cache_content);
-
-                if (in_array($parent, $cache)) {
-                    return true;
-                }
-
-            } else
-            {
-                try
-                {
-                    $children = new Group($children);
-                    $cache    = $children->getGroupCache();
-
-                    if (in_array($parent, $cache)) {
-                        return true;
-                    }
-
-                } catch (Exception $e)
-                {
-                    // nothing
-                }
-            }
-        }
-
-        return false;
-    }
-    */
 }
 
 
