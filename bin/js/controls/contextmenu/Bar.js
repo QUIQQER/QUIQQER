@@ -31,8 +31,8 @@ define('controls/contextmenu/Bar', [
      */
     QUI.controls.contextmenu.Bar = new Class({
 
-        Implements: [ Control ],
-        Type      : 'QUI.controls.contextmenu.Menu',
+        Extends : Control,
+        Type    : 'QUI.controls.contextmenu.Menu',
 
         Binds : [
             '$onItemEnter',
@@ -44,7 +44,8 @@ define('controls/contextmenu/Bar', [
         options : {
             styles : null,     // mootools css styles
             width  : 200,      // menü width
-            openening : false  // if open status = true, onmouseover opens the baritmes
+            openening : false,  // if open status = true, onmouseover opens the baritmes
+            dragable  : false
         },
 
         initialize : function(options)
@@ -85,8 +86,12 @@ define('controls/contextmenu/Bar', [
         {
             for ( var i = 0, len = list.length; i < len; i++)
             {
+                if ( this.getAttribute( 'dragable' ) ) {
+                    list[ i ].dragable = true;
+                }
+
                 this.appendChild(
-                    new QUI.controls.contextmenu.BarItem( list[i] )
+                    new QUI.controls.contextmenu.BarItem( list[ i ] )
                 );
             }
 
@@ -161,9 +166,12 @@ define('controls/contextmenu/Bar', [
                 return this;
             }
 
+            if ( this.getAttribute( 'dragable' ) ) {
+                Child.setAttribute( 'dragable', true );
+            }
+
             this.$items.push( Child );
 
-            Child.setParent( this );
             Child.addEvents({
                 onMouseEnter : this.$onItemEnter,
                 onMouseLeave : this.$onItemLeave,
@@ -174,6 +182,8 @@ define('controls/contextmenu/Bar', [
             if ( this.$Elm ) {
                 Child.inject( this.$Elm );
             }
+
+            Child.setParent( this );
 
             return this;
         },

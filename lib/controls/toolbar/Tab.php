@@ -17,83 +17,83 @@ class Controls_Toolbar_Tab extends QDOM
      * The Parent object
      * @var Controls_Control
      */
-	private $_parent;
+    private $_parent;
 
-	/**
-	 * Constructor
-	 *
-	 * @param array $attributes
-	 */
-	public function __construct(array $attributes)
-	{
-		$this->setAttributes($attributes);
-	}
+    /**
+     * Constructor
+     *
+     * @param array $attributes
+     */
+    public function __construct(array $attributes)
+    {
+        $this->setAttributes($attributes);
+    }
 
-	/**
-	 * Set the Parent
-	 *
-	 * @param Controls_Toolbar_Bar $Parent
-	 */
-	public function addParent(Controls_Toolbar_Bar $Parent)
-	{
-		$this->_parent = $Parent;
-	}
+    /**
+     * Set the Parent
+     *
+     * @param Controls_Toolbar_Bar $Parent
+     */
+    public function addParent(Controls_Toolbar_Bar $Parent)
+    {
+        $this->_parent = $Parent;
+    }
 
-	/**
-	 * Get the name attribute from the control
-	 *
-	 * @return String
-	 */
-	public function getName()
-	{
-		return $this->getAttribute('name');
-	}
+    /**
+     * Get the name attribute from the control
+     *
+     * @return String
+     */
+    public function getName()
+    {
+        return $this->getAttribute( 'name' );
+    }
 
-	/**
-	 * JavaScript onclick event
-	 *
-	 * @return String
-	 */
-	public function onclick()
-	{
-		return $this->getName() .'.onclick();';
-	}
+    /**
+     * JavaScript onclick event
+     *
+     * @return String
+     */
+    public function onclick()
+    {
+        return $this->getName() .'.onclick();';
+    }
 
-	/**
-	 * Gibt den JavaScript Code mit create() des Tabs zurück
-	 *
-	 * @return String
-	 */
-	public function create()
-	{
-		$jsString  = 'var '. $this->getName() .' = '. $this->jsObject();
-	 	$jsString .= $this->_parent->getName() .'.appendChild( '. $this->getName() .' );';
+    /**
+     * Gibt den JavaScript Code mit create() des Tabs zurück
+     *
+     * @return String
+     */
+    public function create()
+    {
+        $jsString  = 'var '. $this->getName() .' = '. $this->jsObject();
+        $jsString .= $this->_parent->getName() .'.appendChild( '. $this->getName() .' );';
 
-		return $jsString;
-	}
+        return $jsString;
+    }
 
-	/**
-	 * Gibt den JavaScript Code des Tabs zurück
-	 *
-	 * @return String
-	 */
-	public function jsObject()
-	{
-		$jsString   = 'new QUI.controls.toolbar.Tab({';
-		$attributes = $this->getAllAttributes();
+    /**
+     * Gibt den JavaScript Code des Tabs zurück
+     *
+     * @return String
+     */
+    public function jsObject()
+    {
+        $jsString   = 'new QUI.controls.toolbar.Tab({';
+        $attributes = $this->getAllAttributes();
 
-		foreach ($attributes as $s => $value)
-		{
-			if ($s != 'name') {
-				$jsString .= $s .' : "'. $value .'",';
-			}
-		}
+        foreach ( $attributes as $s => $value )
+        {
+            if ( $s != 'name' ) {
+                $jsString .= $s .' : "'. $value .'",';
+            }
+        }
 
-		$jsString .= 'name: "'. $this->getName() .'"';
-		$jsString .= '});';
+        $jsString .= 'name: "'. $this->getName() .'"';
+        $jsString .= '});';
 
-		return $jsString;
-	}
+        return $jsString;
+    }
 }
 
 ?>

@@ -50,6 +50,7 @@ class Update
 
         // load quiqqer
         \QUI::load();
+        \QUI::getLocale()->setCurrent( 'en' );
 
         // rights setup, so we have all importend tables
         \QUI_Rights_Manager::setup();
@@ -92,6 +93,51 @@ class Update
             }
         }
 
+        // than we need translations
+        foreach ( $packages as $package )
+        {
+            if ( $package == 'composer' ) {
+                continue;
+            }
+
+            $package_dir = $packages_dir .'/'. $package;
+            $list        = \Utils_System_File::readDir( $package_dir );
+
+            foreach ( $list as $sub )
+            {
+                // locale setup
+                self::importLocale(
+                    $package_dir .'/'. $sub .'/locale.xml',
+                    $IO
+                );
+            }
+        }
+
+        // system xmls
+        $locale_dir = CMS_DIR .'/admin/locale/';
+        $locales    = \Utils_System_File::readDir( $locale_dir );
+
+        foreach ( $locales as $locale )
+        {
+            if ( !is_dir( $locale_dir . $locale ) )
+            {
+                self::importLocale( $locale_dir . $locale );
+                continue;
+            }
+
+            $sublocales = \Utils_System_File::readDir( $locale_dir . $locale );
+
+            foreach ( $sublocales as $sublocale ) {
+                self::importLocale( $locale_dir . $locale .'/'. $sublocale );
+            }
+        }
+        // compile the translations
+        // so the new translations are available
+        $IO->write( 'Execute QUIQQER Translator' );
+
+        \QUI\Translator::create();
+
+
         // then we can read the rest xml files
         foreach ( $packages as $package )
         {
@@ -122,12 +168,6 @@ class Update
                     $IO
                 );
 
-                // database setup
-                self::importLocale(
-                    $package_dir .'/'. $sub .'/locale.xml',
-                    $IO
-                );
-
                 // permissions
                 self::importPermissions(
                     $package_dir .'/'. $sub .'/permissions.xml',
@@ -144,25 +184,6 @@ class Update
             }
         }
 
-        // system xmls
-        $locale_dir = CMS_DIR .'/admin/locale/';
-        $locales    = \Utils_System_File::readDir( $locale_dir );
-
-        foreach ( $locales as $locale )
-        {
-            if ( !is_dir( $locale_dir . $locale ) )
-            {
-                self::importLocale( $locale_dir . $locale );
-                continue;
-            }
-
-            $sublocales = \Utils_System_File::readDir( $locale_dir . $locale );
-
-            foreach ( $sublocales as $sublocale ) {
-                self::importLocale( $locale_dir . $locale .'/'. $sublocale );
-            }
-        }
-
         // permissions
         self::importPermissions(
             CMS_DIR .'/admin/permissions.xml',
@@ -170,12 +191,6 @@ class Update
             $IO
         );
 
-
-        // compile the translations
-        // so the new translations are available
-        $IO->write( 'Execute QUIQQER Translator' );
-
-        \QUI\Translator::create();
 
         $IO->write( 'QUIQQER Update finish' );
     }

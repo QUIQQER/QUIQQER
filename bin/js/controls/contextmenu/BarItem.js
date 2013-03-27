@@ -42,8 +42,8 @@ define('controls/contextmenu/BarItem', [
      */
     QUI.controls.contextmenu.BarItem = new Class({
 
-        Implements: [ Control ],
-        Type      : 'QUI.controls.contextmenu.BarItem',
+        Extends : Control,
+        Type    : 'QUI.controls.contextmenu.BarItem',
 
         Binds : [
             '$onSetAttribute',
@@ -51,13 +51,15 @@ define('controls/contextmenu/BarItem', [
             '$onMouseEnter',
             '$onMouseLeave',
             'blur',
-            'focus'
+            'focus',
+            'appendChild'
         ],
 
         options : {
-            text   : '',
-            icon   : '',
-            styles : null
+            text     : '',
+            icon     : '',
+            styles   : null,
+            dragable : false
         },
 
         initialize : function(options)
@@ -126,8 +128,10 @@ define('controls/contextmenu/BarItem', [
             if ( this.getAttribute( 'icon' ) &&
                  this.getAttribute( 'icon' ) !== '' )
             {
-                this.$Elm
-                    .setStyle( 'background-image', 'url('+ this.getAttribute( 'icon' ) +')' );
+                this.$Elm.setStyle(
+                    'background-image',
+                    'url('+ this.getAttribute( 'icon' ) +')'
+                );
             }
 
             if ( this.getAttribute( 'text' ) &&
@@ -190,6 +194,10 @@ define('controls/contextmenu/BarItem', [
         {
             for ( var i = 0, len = list.length; i < len; i++)
             {
+                if ( this.getAttribute( 'dragable' ) ) {
+                    list[ i ].dragable = true;
+                }
+
                 if ( list[ i ].type == 'Controls_Contextmenu_Seperator' )
                 {
                     this.appendChild(
@@ -253,8 +261,11 @@ define('controls/contextmenu/BarItem', [
          */
         appendChild : function(Child)
         {
-            this.getContextMenu().appendChild( Child );
+            if ( this.getAttribute( 'dragable' ) ) {
+                Child.setAttribute( 'dragable', true );
+            }
 
+            this.getContextMenu().appendChild( Child );
             Child.setParent( this );
 
             return this;
@@ -264,11 +275,15 @@ define('controls/contextmenu/BarItem', [
          * All Context Menu Items
          *
          * @method QUI.controls.contextmenu.Item#getChildren
-         *
+         * @param {String} name : [Name of the Children, optional, if no name given, returns all Children]
          * @return {Array}
          */
-        getChildren : function()
+        getChildren : function(name)
         {
+            if ( typeof name !== 'undefined' ) {
+                return this.getContextMenu().getChildren( name );
+            }
+
             return this.getContextMenu().getChildren();
         },
 
@@ -317,6 +332,10 @@ define('controls/contextmenu/BarItem', [
                 this.$Menu.inject( this.$Elm );
                 this.$Menu.hide();
                 this.$Menu.setPosition( 0, this.$Elm.getSize().y );
+            }
+
+            if ( this.getAttribute( 'dragable' ) ) {
+                this.$Menu.setAttribute( 'dragable', true );
             }
 
             return this.$Menu;

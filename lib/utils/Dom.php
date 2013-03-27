@@ -341,55 +341,37 @@ class Utils_Dom
             return array();
         }
 
+        $perm    = $Node->getAttribute( 'name' );
         $desc    = '';
         $title   = '';
         $default = false;
 
-        $Desc    = $Node->getElementsByTagName( 'desc' );
-        $Title   = $Node->getElementsByTagName( 'title' );
         $Default = $Node->getElementsByTagName( 'defaultvalue' );
-
-        if ( $Desc && $Desc->length ) {
-            $desc = $Desc->item(0)->nodeValue;
-        }
-
-        if ( $Title && $Title->length ) {
-            $title = $Title->item(0)->nodeValue;
-        }
 
         if ( $Default && $Default->length ) {
             $default = $Default->item(0)->nodeValue;
         }
 
+        $title = QUI::getLocale()->get(
+            'locale/permissions',
+            $perm .'._title'
+        );
 
-        $type = 'bool';
-        $area = '';
+        $desc = QUI::getLocale()->get(
+            'locale/permissions',
+            $perm .'._description'
+        );
 
-        switch ( $Node->getAttribute( 'type' ) )
-        {
-            case 'bool':
-            case 'string':
-            case 'int':
-            case 'group':
-            case 'array':
-                $type = $Node->getAttribute( 'type' );
-            break;
-        }
+        $type = \QUI_Rights_Manager::parseType(
+            $Node->getAttribute( 'type' )
+        );
 
-        switch ( $Node->getAttribute( 'area' ) )
-        {
-            case 'global':
-            case 'users':
-            case 'groups':
-            case 'site':
-            case 'project':
-            case 'media':
-                $area = $Node->getAttribute( 'area' );
-            break;
-        }
+        $area = \QUI_Rights_Manager::parseArea(
+            $Node->getAttribute( 'area' )
+        );
 
         return array(
-            'name'    => $Node->getAttribute( 'name' ),
+            'name'    => $perm,
             'desc'    => $desc,
             'area'    => $area,
             'title'   => $title,

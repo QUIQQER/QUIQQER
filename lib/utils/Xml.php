@@ -15,7 +15,6 @@
 
 class Utils_Xml
 {
-
     /**
      * Read the config parameter of an *.xml file and
      * create a QConfig if not exist or read the QConfig
@@ -269,9 +268,9 @@ class Utils_Xml
             $localelist = $Group->getElementsByTagName( 'locale' );
 
             $locales = array(
-                            'group'    => $Group->getAttribute( 'name' ),
-                            'locales'  => array(),
-                            'datatype' => $Group->getAttribute( 'datatype' )
+                'group'    => $Group->getAttribute( 'name' ),
+                'locales'  => array(),
+                'datatype' => $Group->getAttribute( 'datatype' )
             );
 
             for ( $c = 0; $c < $localelist->length; $c++ )
@@ -373,7 +372,7 @@ class Utils_Xml
         for ( $i = 0; $i < $permission->length; $i++ )
         {
             $result[] = \Utils_Dom::parsePermissionToArray(
-                            $permission->item( $i )
+                $permission->item( $i )
             );
         }
 

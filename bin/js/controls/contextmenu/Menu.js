@@ -38,14 +38,20 @@ define('controls/contextmenu/Menu', [
      */
     QUI.controls.contextmenu.Menu = new Class({
 
-        Implements: [ Control ],
-        Type      : 'QUI.controls.contextmenu.Menu',
+        Extends : Control,
+        Type    : 'QUI.controls.contextmenu.Menu',
+
+        Binds : [
+            '$keyup'
+        ],
 
         options : {
-            styles : null,    // mootools css styles
+            styles : null,   // mootools css styles
             width  : 200,    // menü width
-            title  : false,    // title of the menu (optional) : String
-            shadow : true   // menü with shadow (true) or not (false)
+            title  : false,  // title of the menu (optional) : String
+            shadow : true,   // menü with shadow (true) or not (false)
+
+            dragable : false // are the items dragable?
         },
 
         initialize : function(options)
@@ -79,9 +85,7 @@ define('controls/contextmenu/Menu', [
                         this.fireEvent( 'blur', [ this ] );
                     }.bind( this ),
 
-                    keyup : function(event) {
-                        this.$keyup( event );
-                    }.bind( this )
+                    keyup : this.$keyup
                 },
                 'data-quiid' : this.getId()
             });
@@ -101,7 +105,6 @@ define('controls/contextmenu/Menu', [
             if ( this.getAttribute( 'shadow' ) ) {
                 this.$Elm.addClass( 'qui-contextmenu-shadow' );
             }
-
 
             for ( var i = 0, len = this.$items.length; i < len; i++ ) {
                 this.$items[ i ].inject( this.$Elm );
@@ -303,6 +306,10 @@ define('controls/contextmenu/Menu', [
             this.$items.push( Child );
 
             Child.setParent( this );
+
+            if ( this.getAttribute( 'dragable' ) ) {
+                Child.setAttribute( 'dragable', true );
+            }
 
             // children events
             Child.addEvent( 'onClick', function(Item, event)

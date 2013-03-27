@@ -46,6 +46,17 @@
                 <en><![CDATA[Media settings]]></en>
             </locale>
 
+        <!-- Gehe zu -->
+        <locale name="menu.extras.groups.text">
+            <de><![CDATA[Gruppen Manager]]></de>
+            <en><![CDATA[Groups-Manager]]></en>
+        </locale>
+        <locale name="menu.extras.users.text">
+            <de><![CDATA[Benutzer Manager]]></de>
+            <en><![CDATA[User-Manager]]></en>
+        </locale>
+
+
         <locale name="menu.help.text">
             <de><![CDATA[Hilfe]]></de>
             <en><![CDATA[Help]]></en>

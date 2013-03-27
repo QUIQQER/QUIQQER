@@ -80,7 +80,7 @@
         </script>';
     ?>
 
-    <!-- mootools -->
+    <!-- mootools -> combine the js -->
     <script src="<?php echo URL_BIN_DIR; ?>js/mootools/mootools-core-1.4.5.js" type="text/javascript"></script>
     <script src="<?php echo URL_BIN_DIR; ?>js/mootools/mootools-more.js" type="text/javascript"></script>
     <script src="<?php echo URL_BIN_DIR; ?>js/mootools/moofx.js" type="text/javascript"></script>
@@ -103,7 +103,7 @@
     <!-- Desktop define -->
     <script src="<?php echo URL_BIN_DIR; ?>js/classes/desktop/define.js" type="text/javascript"></script>
 
-    <!-- CSS -->
+    <!-- CSS -> combine it -->
     <style type="text/css">
         @import url("<?php echo URL_BIN_DIR; ?>css/style.css");
         @import url("<?php echo URL_BIN_DIR; ?>css/classes.css");

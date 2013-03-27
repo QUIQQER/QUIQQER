@@ -11,10 +11,10 @@
  */
 function ajax_site_categories_get($project, $lang, $id)
 {
-    $Project = QUI::getProject( $project, $lang );
-    $Site    = new Projects_Site_Edit( $Project, (int)$id );
+    $Project = \QUI::getProject( $project, $lang );
+    $Site    = new \Projects_Site_Edit( $Project, (int)$id );
 
-    $Tabbar   = Projects_Sites::getTabs( $Site );
+    $Tabbar   = \Projects_Sites::getTabs( $Site );
     $children = $Tabbar->getChildren();
 
     $result = array();
@@ -23,10 +23,12 @@ function ajax_site_categories_get($project, $lang, $id)
         $result[] = $Itm->getAttributes();
     }
 
+    \System_Log::writeRecursive( $result );
+
     return $result;
 }
 
-QUI::$Ajax->register(
+\QUI::$Ajax->register(
     'ajax_site_categories_get',
     array('project', 'lang', 'id'),
     'Permission::checkAdminUser'

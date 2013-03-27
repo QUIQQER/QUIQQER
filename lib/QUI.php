@@ -711,15 +711,12 @@ class QUI
     /**
      * Return the rights object
      * @return QUI_Rights_Manager
+     *
      * @deprecated use ::getPermissionManager
      */
     static function getRights()
     {
-        if ( is_null( self::$Rights ) ) {
-            self::$Rights = new QUI_Rights_Manager();
-        }
-
-        return self::$Rights;
+        return self::getPermissionManager();
     }
 
     /**

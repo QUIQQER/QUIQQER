@@ -12,6 +12,8 @@
  *
  * @todo must be rewrited, spaghetti code :(
  * @todo comments translating
+ *
+ * @event onRequest
  */
 
 class QUI_Rewrite
@@ -111,7 +113,7 @@ class QUI_Rewrite
     {
         global $_REQUEST;
 
-        QUI_Events_Manager::load('onrequest');
+        \QUI::getEvents()->fireEvent( 'request' );
 
         $Session = QUI::getSession();
         $vhosts  = $this->getVHosts();

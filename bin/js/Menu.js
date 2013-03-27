@@ -25,7 +25,10 @@ define('Menu', [
          */
         load : function()
         {
-            this.Bar = new QUI_MenuBar().inject( $('menu-container') );
+            this.Bar = new QUI_MenuBar({
+                name     : 'QUI.Menu',
+                dragable : true
+            }).inject( $('menu-container') );
 
             // menü laden
             QUI.Ajax.get('ajax_menu', function(result, Request)
@@ -36,6 +39,7 @@ define('Menu', [
 
         /**
          * event on menu item click
+         *
          * @param {QUI.controls.contextmenu.Item} Item
          */
         click : function(Item)

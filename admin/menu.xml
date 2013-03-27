@@ -110,33 +110,46 @@
      -->
 
     <!-- goto -->
+        <!-- Zugriffsrechte bearbeiten -->
         <item parent="/extras/"
               name="permissions"
               icon="URL_BIN_DIR/16x16/permissions.png"
               require="admin/permissions/Manager"
               group="quiqqer/system"
               var="menu.extras.permissions.text"
-        >
-            Zugriffsrechte bearbeiten
-        </item>
+        />
+        <!-- Plugins und Packages -->
         <item parent="/extras/"
               name="packages"
               icon="URL_BIN_DIR/16x16/packages.png"
               require="admin/packages/Manager"
               group="quiqqer/system"
               var="menu.extras.packages.text"
-        >
-            Plugins und Packages
-        </item>
+        />
+        <!-- Projekt Verwaltung -->
         <item parent="/extras/"
               name="projects"
               icon="URL_BIN_DIR/16x16/home.png"
               require="admin/projects/Manager"
               group="quiqqer/system"
               var="menu.extras.projects.text"
-        >
-            Projekt Verwaltung
-        </item>
+        />
+        <!-- Gruppen -->
+        <item parent="/extras/"
+              name="groups"
+              icon="URL_BIN_DIR/16x16/groups.png"
+              require="admin/groups/Manager"
+              group="quiqqer/system"
+              var="menu.extras.groups.text"
+        />
+        <!-- Benutzer -->
+        <item parent="/extras/"
+              name="users"
+              icon="URL_BIN_DIR/16x16/user.png"
+              require="admin/users/Manager"
+              group="quiqqer/system"
+              var="menu.extras.users.text"
+        />
 
 
     <!-- Settings -->

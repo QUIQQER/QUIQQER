@@ -36,6 +36,8 @@ define('controls/Control', [
         Implements : [ DOM ],
         Type       : 'QUI.classes.Control',
 
+        $Parent : null,
+
         /**
          * Init function for inherited classes
          * If a Class inherit from QUI.classes.Control, please use init()
@@ -193,11 +195,7 @@ define('controls/Control', [
          */
         getParent : function()
         {
-            if ( typeof this.$Parent !== 'undefined' ) {
-                return this.$Parent;
-            }
-
-            return false;
+            return this.$Parent ? this.$Parent : false;
         },
 
         /**
@@ -212,6 +210,23 @@ define('controls/Control', [
         {
             this.$Parent = Parent;
             return this;
+        },
+
+        /**
+         * Return a path string from the parent names
+         *
+         * @return {String}
+         */
+        getPath : function()
+        {
+            var path   = '/'+ this.getAttribute( 'name' ),
+                Parent = this.getParent();
+
+            if ( !Parent ) {
+                return path;
+            }
+
+            return Parent.getPath() + path;
         },
 
         /**
@@ -241,6 +256,30 @@ define('controls/Control', [
                 this.$Elm.setStyle( 'display', null );
             }
 
+            return this;
+        },
+
+        /**
+         * Highlight the control
+         *
+         * @method QUI.classes.Control#highlight
+         * @return {this}
+         */
+        highlight : function()
+        {
+            this.fireEvent( 'highlight', [ this ] );
+            return this;
+        },
+
+        /**
+         * Dehighlight / Normalize the control
+         *
+         * @method QUI.classes.Control#normalize
+         * @return {this}
+         */
+        normalize : function()
+        {
+            this.fireEvent( 'normalize', [ this ] );
             return this;
         }
     });

@@ -13,19 +13,22 @@
 define('controls/contextmenu/Item', [
 
     'controls/Control',
+    'classes/utils/DragDrop',
+
     'css!controls/contextmenu/Item.css'
 
 ], function(Control)
 {
     "use strict";
 
-    QUI.namespace('controls.contextmenu.Item');
+    QUI.namespace( 'controls.contextmenu.Item' );
 
     /**
      * @class QUI.controls.contextmenu.Item
      *
      * @event onClick [this, event]
      * @event onMouseDown [this, event]
+     * @event onMouseUp [this, event]
      * @event onActive [this]
      * @event onNormal [this]
      *
@@ -35,19 +38,26 @@ define('controls/contextmenu/Item', [
      */
     QUI.controls.contextmenu.Item = new Class({
 
-        Implements : [ Control ],
-        Type       : 'QUI.controls.contextmenu.Item',
+        Extends : Control,
+        Type    : 'QUI.controls.contextmenu.Item',
 
         Binds : [
             '$onSetAttribute',
             '$stringEvent',
-            '$onClick'
+            '$onClick',
+
+            '$onMouseEnter',
+            '$onMouseLeave',
+            '$onMouseUp',
+            '$onMouseDown',
         ],
 
         options : {
             text   : '',
             icon   : '',
-            styles : null
+            styles : null,
+
+            dragable : false
         },
 
         initialize : function(options)
@@ -63,6 +73,7 @@ define('controls/contextmenu/Item', [
             this.$items = [];
             this.$Elm   = null;
             this.$Menu  = null;
+            this.$path  = '';
 
             this.addEvent( 'onSetAttribute', this.$onSetAttribute );
 
@@ -70,22 +81,23 @@ define('controls/contextmenu/Item', [
                 this.insert( items );
             }
 
-            if ( events )
+            if ( !events ) {
+                return;
+            }
+
+            for ( var event in events )
             {
-                for ( var event in events )
+                if ( typeof events[ event ] === 'string' )
                 {
-                    if ( typeof events[ event ] === 'string' )
-                    {
-                        this.addEvent(event, this.$stringEvent.bind(
-                            this,
-                            events[ event ]
-                        ));
+                    this.addEvent(event, this.$stringEvent.bind(
+                        this,
+                        events[ event ]
+                    ));
 
-                        continue;
-                    }
-
-                    this.addEvent( event, events[ event ] );
+                    continue;
                 }
+
+                this.addEvent( event, events[ event ] );
             }
         },
 
@@ -112,47 +124,10 @@ define('controls/contextmenu/Item', [
                 {
                     click : this.$onClick,
 
-                    mousedown : function(event)
-                    {
-                        this.fireEvent( 'mouseDown', [ this, event ] );
-                    }.bind( this ),
-
-                    mouseup : function(event)
-                    {
-                        event.stop();
-                    }.bind( this ),
-
-                    mouseenter : function(event)
-                    {
-                        if ( this.$Menu )
-                        {
-                            var size = this.$Elm.getSize();
-
-                            this.$Menu.setPosition( size.x, 0 );
-                            this.$Menu.show();
-
-                            this.$Elm
-                                .getChildren( '.qui-contextitem-container' )
-                                .addClass( 'qui-contextitem-active' );
-                        }
-
-                        this.setActive();
-
-                    }.bind( this ),
-
-                    mouseleave : function(event)
-                    {
-                        if ( this.$Menu ) {
-                            this.$Menu.hide();
-                        }
-
-                        this.$Elm
-                            .getChildren( '.qui-contextitem-container' )
-                            .removeClass( 'qui-contextitem-active' );
-
-                        this.setNormal();
-
-                    }.bind( this )
+                    mousedown  : this.$onMouseDown,
+                    mouseup    : this.$onMouseUp,
+                    mouseenter : this.$onMouseEnter,
+                    mouseleave : this.$onMouseLeave
                 }
             });
 
@@ -168,6 +143,64 @@ define('controls/contextmenu/Item', [
                 this.$Elm
                     .getElement( '.qui-contextitem-text' )
                     .set( 'html', this.getAttribute( 'text' ) );
+            }
+
+            // drag drop for the item
+            if ( this.getAttribute( 'dragable' ) )
+            {
+                new QUI.classes.utils.DragDrop( this.$Elm, {
+                    dropables : '.qui-contextitem-dropable',
+                    events   :
+                    {
+                        onEnter : function(Element, Droppable)
+                        {
+                            if ( !Droppable ) {
+                                return;
+                            }
+
+                            var quiid = Droppable.get( 'data-quiid' );
+
+                            if ( !quiid ) {
+                                return;
+                            }
+
+                            QUI.Controls.getById( quiid ).highlight();
+                        },
+
+                        onLeave : function(Element, Droppable)
+                        {
+                            if ( !Droppable ) {
+                                return;
+                            }
+
+                            var quiid = Droppable.get( 'data-quiid' );
+
+                            if ( !quiid ) {
+                                return;
+                            }
+
+                            QUI.Controls.getById( quiid ).normalize();
+                        },
+
+                        onDrop : function(Element, Droppable, event)
+                        {
+                            if ( !Droppable ) {
+                                return;
+                            }
+                            var quiid = Droppable.get( 'data-quiid' );
+
+                            if ( !quiid ) {
+                                return;
+                            }
+
+                            var Bar = QUI.Controls.getById( quiid );
+
+                            Bar.normalize();
+                            Bar.appendChild( this );
+
+                        }.bind( this )
+                    }
+                });
             }
 
             // Create sub menu, if sub items exist
@@ -201,6 +234,10 @@ define('controls/contextmenu/Item', [
         {
             for ( var i = 0, len = list.length; i < len; i++)
             {
+                if ( this.getAttribute( 'dragable' ) ) {
+                    list[ i ].dragable = true;
+                }
+
                 if ( list[ i ].type == 'Controls_Contextmenu_Seperator' )
                 {
                     this.appendChild(
@@ -216,6 +253,16 @@ define('controls/contextmenu/Item', [
             }
 
             return this;
+        },
+
+        /**
+         * trigger a click
+         *
+         * @method QUI.controls.contextmenu.Item#click
+         */
+        click : function()
+        {
+            this.$onClick();
         },
 
         /**
@@ -302,19 +349,22 @@ define('controls/contextmenu/Item', [
          * All Context Menu Items
          *
          * @method QUI.controls.contextmenu.Item#getChildren
-         *
+         * @param {String} name : [Name of the Children, optional, if no name given, returns all Children]
          * @return {Array}
          */
-        getChildren : function()
+        getChildren : function(name)
         {
-            return this.$items;
+            if ( typeof name !== 'undefined' ) {
+                return this.getContextMenu().getChildren( name );
+            }
+
+            return this.getContextMenu().getChildren();
         },
 
         /**
          * Clear the Context Menu Items
          *
          * @method QUI.controls.contextmenu.Item#clear
-         *
          * @return {this}
          */
         clear : function()
@@ -329,7 +379,6 @@ define('controls/contextmenu/Item', [
          * Create the Context Menu if not exist
          *
          * @method QUI.controls.contextmenu.Item#getContextMenu
-         *
          * @return {QUI.controls.contextmenu.Menu}
          */
         getContextMenu : function()
@@ -410,6 +459,68 @@ define('controls/contextmenu/Item', [
         $onClick : function(event)
         {
             this.fireEvent( 'click', [ this, event ] );
+        },
+
+        /**
+         * event: mouse enter
+         *
+         * @param {DOMEvent} event - optional
+         */
+        $onMouseEnter : function(event)
+        {
+            if ( this.$Menu )
+            {
+                var size = this.$Elm.getSize();
+
+                this.$Menu.setPosition( size.x, 0 );
+                this.$Menu.show();
+
+                this.$Elm
+                    .getChildren( '.qui-contextitem-container' )
+                    .addClass( 'qui-contextitem-active' );
+            }
+
+            this.setActive();
+        },
+
+        /**
+         * event: mouse leave
+         *
+         * @param {DOMEvent} event - optional
+         */
+        $onMouseLeave : function(event)
+        {
+            if ( this.$Menu ) {
+                this.$Menu.hide();
+            }
+
+            this.$Elm
+                .getChildren( '.qui-contextitem-container' )
+                .removeClass( 'qui-contextitem-active' );
+
+            this.setNormal();
+        },
+
+        /**
+         * event: mouse up
+         *
+         * @param {DOMEvent} event - optional
+         */
+        $onMouseUp : function(event)
+        {
+            this.fireEvent( 'mouseUp', [ this, event ] );
+            event.stop();
+        },
+
+        /**
+         * event: mouse down
+         *
+         * @param {DOMEvent} event - optional
+         */
+        $onMouseDown : function(event)
+        {
+            this.fireEvent( 'mouseDown', [ this, event ] );
+            event.stop();
         }
     });
 

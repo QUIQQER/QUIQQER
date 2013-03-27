@@ -35,8 +35,8 @@ define('classes/utils/DragDrop', [
      */
     QUI.classes.utils.DragDrop = new Class({
 
-        Implements : [ DOM ],
-        Type       : 'QUI.classes.utils.DragDrop',
+        Extends : DOM,
+        Type    : 'QUI.classes.utils.DragDrop',
 
         Binds : [
              '$complete',
@@ -47,7 +47,7 @@ define('classes/utils/DragDrop', [
 
         options :
         {
-            dropables : [document.body],
+            dropables : [ document.body ],
             styles    : false,
             cssClass  : false,
             delay     : 250,     // when trigger the dragdrop, after miliseconds
@@ -185,11 +185,17 @@ define('classes/utils/DragDrop', [
                 limit.y = [ 0, docsize.y - ElmSize.y ];
             }
 
+            var dropables = this.getAttribute( 'dropables' );
+
+            if ( typeOf( dropables ) === 'array' ) {
+                dropables = dropables.join( ',' );
+            }
+
             // mootools draging
             new Drag.Move(this.$Drag, {
                 precalculate : true,
 
-                droppables : this.getAttribute( 'dropables' ),
+                droppables : dropables,
                 onComplete : this.$complete,
                 onDrop     : this.$onDrop,
                 onEnter    : this.$onEnter,

@@ -1,95 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<permissions>
-
-    <!-- standard quiqqer permissions -->
-    <permission name="quiqqer.admin" type="bool">
-        <title group="quiqqer/system" var="right.is.admin">
-            Darf in den Adminbereich
-        </title>
-    </permission>
-    <permission name="quiqqer.su" type="bool">
-        <title group="quiqqer/system" var="right.system.cache">
-            Ist Super-User
-        </title>
-        <description>Darf Super-User bearbeiten / erstellen</description>
-    </permission>
-
-    <permission name="quiqqer.system.update" type="bool">
-        <title group="quiqqer/system" var="right.system.update">
-            Darf Updates durchführen
-        </title>
-    </permission>
-    <permission name="quiqqer.system.permissions" type="bool">
-        <title group="quiqqer/system" var="right.system.permissions">
-            Darf Zugrifssrechte verwalten
-        </title>
-    </permission>
-    <permission name="quiqqer.system.cache" type="bool">
-        <title group="quiqqer/system" var="right.system.cache">
-            Darf Cache löschen
-        </title>
-    </permission>
-
-    <permission name="quiqqer.admin.groups.view" type="bool">
-        <title group="quiqqer/system" var="right.groups.view">
-            Darf die Gruppenverwaltung sehen
-        </title>
-    </permission>
-    <permission name="quiqqer.admin.groups.edit" type="bool">
-        <title group="quiqqer/system" var="right.groups.edit">
-            Darf Gruppen editieren
-        </title>
-    </permission>
-
-    <permission name="quiqqer.admin.users.view" type="bool">
-        <title group="quiqqer/system" var="right.users.view">
-            Darf die Benutzerverwaltung sehen
-        </title>
-    </permission>
-    <permission name="quiqqer.admin.users.edit" type="bool">
-        <title group="quiqqer/system" var="right.users.edit">
-            Darf Benutzer editieren
-        </title>
-    </permission>
-    <permission name="quiqqer.admin.projects.create" type="bool">
-        <title group="quiqqer/system" var="right.projects.create">
-            Darf Projekte anlegen
-        </title>
-    </permission>
 
     <!-- Um locale nun anzulegen wäre dies: -->
     <!-- locale/permissions quiqqer -->
     <!-- locale/permissions quiqqer.site -->
-    <!-- locale/permissions quiqqer.site.new.title -->
-    <!-- locale/permissions quiqqer.site.new.descrition -->
-    <!-- locale/permissions quiqqer.site.edit.title -->
-    <!-- locale/permissions quiqqer.site.edit.descrition -->
+    <!-- locale/permissions quiqqer.site.new._title -->
+    <!-- locale/permissions quiqqer.site.new._descrition -->
+    <!-- locale/permissions quiqqer.site.edit._title -->
+    <!-- locale/permissions quiqqer.site.edit._descrition -->
 
-    <permission name="quiqqer.site.view" type="users_and_groups" area="site">
-        <title group="quiqqer/system" var="site.right.view">
-            Seite besuchen
-        </title>
-    </permission>
-    <permission name="quiqqer.site.edit" type="users_and_groups" area="site">
-        <title group="quiqqer/system" var="site.right.edit">
-            Seite editieren
-        </title>
-    </permission>
-    <permission name="quiqqer.site.del" type="users_and_groups" area="site">
-        <title group="quiqqer/system" var="site.right.delete">
-            Seite löschen
-        </title>
-    </permission>
-    <permission name="quiqqer.site.new" type="users_and_groups" area="site">
-        <title group="quiqqer/system" var="site.right.create.children">
-            Kind anlegen
-        </title>
-    </permission>
+<permissions>
 
-    <permission name="quiqqer.admin.site.set_permissions" type="users_and_groups">
-        <title group="quiqqer/system" var="site.right.view">
-            Darf Seitenzugriffsrechte setzen
-        </title>
-    </permission>
+<!-- standard quiqqer permissions -->
+    <!-- Darf in den Adminbereich -->
+    <permission name="quiqqer.admin" type="bool" />
+
+    <!-- Ist Super-User -->
+    <permission name="quiqqer.su" type="bool" />
+
+    <!-- Darf Updates durchführen -->
+    <permission name="quiqqer.system.update" type="bool" />
+
+    <!-- Darf Zugrifssrechte verwalten -->
+    <permission name="quiqqer.system.permissions" type="bool" />
+
+    <!-- Darf Cache löschen -->
+    <permission name="quiqqer.system.cache" type="bool" />
+
+    <!-- Darf die Gruppenverwaltung sehen -->
+    <permission name="quiqqer.admin.groups.view" type="bool" />
+
+    <!-- Darf Gruppen editieren -->
+    <permission name="quiqqer.admin.groups.edit" type="bool" />
+
+    <!-- Darf die Benutzerverwaltung sehen -->
+    <permission name="quiqqer.admin.users.view" type="bool" />
+
+    <!-- Darf Benutzer editieren -->
+    <permission name="quiqqer.admin.users.edit" type="bool" />
+
+    <!-- Darf Projekte anlegen -->
+    <permission name="quiqqer.admin.projects.create" type="bool" />
+
+<!-- Project / Site permissions -->
+    <permission name="quiqqer.projects.site.edit" type="bool" />
+
+
+<!-- Site permissions  -->
+
+    <!-- Seite besuchen -->
+    <permission name="quiqqer.site.view" type="users_and_groups" area="site" />
+
+    <!-- Seite editieren -->
+    <permission name="quiqqer.site.edit" type="users_and_groups" area="site" />
+
+    <!-- Seite löschen -->
+    <permission name="quiqqer.site.del" type="users_and_groups" area="site" />
+
+    <!-- Kind anlegen -->
+    <permission name="quiqqer.site.new" type="users_and_groups" area="site" />
+
+    <!-- Darf Seitenzugriffsrechte setzen -->
+    <permission name="quiqqer.admin.site.set_permissions" type="users_and_groups" />
 
 </permissions>

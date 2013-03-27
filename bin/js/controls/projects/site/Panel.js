@@ -40,6 +40,7 @@ define('controls/projects/site/Panel', [
         Binds : [
             'load',
             'createNewChild',
+            'openPermissions',
 
             '$onCreate',
             '$onResize',
@@ -165,8 +166,9 @@ define('controls/projects/site/Panel', [
                 'ajax_site_buttons_get'
             ], function(categories, buttons, Request)
             {
-                var i, len;
-                var Panel = Request.getAttribute( 'Control' );
+                var i, ev, fn, len, events, category, Category,
+                    Panel = Request.getAttribute( 'Control' );
+
 
                 for ( i = 0, len = buttons.length; i < len; i++ )
                 {
@@ -183,14 +185,40 @@ define('controls/projects/site/Panel', [
                     Panel.addButton( buttons[ i ] );
                 }
 
+
                 for ( i = 0, len = categories.length; i < len; i++ )
                 {
-                    categories[ i ].events = {
+                    events   = {};
+                    category = categories[ i ];
+
+                    if ( typeOf( category.events ) === 'object' )
+                    {
+                        events = category.events;
+                        delete category.events;
+                    }
+
+                    Category = new QUI.controls.buttons.Button( category );
+
+                    Category.addEvents({
                         onActive : Panel.$onCategoryEnter,
                         onNormal : Panel.$onCategoryLeave
-                    };
+                    });
 
-                    Panel.addCategory( categories[ i ] );
+                    for ( ev in events  )
+                    {
+                        try
+                        {
+                            eval( 'fn = '+ events[ ev ] );
+
+                            Category.addEvent( ev, fn );
+
+                        } catch ( e )
+                        {
+                            continue;
+                        }
+                    }
+
+                    Panel.addCategory( Category );
                 }
 
                 Site.addEvent( 'onLoad', Panel.load );
@@ -313,10 +341,15 @@ define('controls/projects/site/Panel', [
         {
             this.Loader.show();
 
-            if ( Button.getAttribute('name') == 'content' )
+            if ( !Button.getAttribute( 'template' ) ) {
+                return;
+            }
+
+
+            if ( Button.getAttribute( 'name' ) == 'content' )
             {
                 this.loadEditor(
-                    this.getSite().getAttribute('content')
+                    this.getSite().getAttribute( 'content' )
                 );
 
                 return;
@@ -371,8 +404,7 @@ define('controls/projects/site/Panel', [
                 id      : Site.getId(),
                 project : Project.getName(),
                 lang    : Project.getLang(),
-
-                tab     : Button.getAttribute('name'),
+                tab     : Button.getAttribute( 'name' ),
 
                 Category : Button,
                 Panel    : this
@@ -474,13 +506,32 @@ define('controls/projects/site/Panel', [
         },
 
         /**
+         * Opens the permissions for the site
+         */
+        openPermissions : function()
+        {
+            var Body  = this.getBody(),
+                Panel = this;
+
+            Body.set( 'html', '' );
+
+            QUI.Ajax.get('ajax_site_permissions_tpl', function(result, Request)
+            {
+                Body.set( 'html', result );
+
+                Panel.Loader.hide();
+            });
+
+        },
+
+        /**
          * Load the WYSIWYG Editor in the panel
          *
          * @param {String} content - content of the editor
          */
         loadEditor : function(content)
         {
-            var Body      = this.getBody(),
+            var Body = this.getBody(),
 
                 Container = new Element('textarea#editor'+ this.getId(), {
                     name    :' editor'+ this.getId(),
