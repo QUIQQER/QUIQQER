@@ -8,18 +8,28 @@
  *
  * @return array
  */
-function ajax_permissions_get($bid, $btype)
+function ajax_permissions_get($params, $btype)
 {
-    $Manager = QUI::getRights();
+    $params  = json_decode( $params, true );
+    $Manager = \QUI::getPermissionManager();
 
     switch ( $btype )
     {
         case 'QUI.classes.users.User':
-            $Bind = \QUI::getUsers()->get( $bid );
+            $Bind = \QUI::getUsers()->get( $params['id'] );
         break;
 
         case 'QUI.classes.groups.Group':
-            $Bind = \QUI::getGroups()->get( $bid );
+            $Bind = \QUI::getGroups()->get( $params['id'] );
+        break;
+
+        case 'QUI.classes.projects.Project':
+            $Bind = \QUI::getProject( $params['project'] );
+        break;
+
+        case 'QUI.classes.projects.Site':
+            $Project = \QUI::getProject( $params['project'], $params['lang'] );
+            $Bind    = $Site->get( $params['project'] );
         break;
 
         default:
@@ -33,10 +43,10 @@ function ajax_permissions_get($bid, $btype)
 }
 
 QUI::$Ajax->register(
-	'ajax_permissions_get',
-    array( 'bid', 'btype' ),
+    'ajax_permissions_get',
+    array( 'params', 'btype' ),
     array(
-    	'Permission::checkAdminUser',
+        'Permission::checkAdminUser',
         'quiqqer.system.permissions'
     )
 );

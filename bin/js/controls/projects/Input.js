@@ -72,7 +72,8 @@ define('controls/projects/Input', [
         /**
          * Return the DOMNode of the projects search
          *
-         * @return {DOMNode}
+         * @method QUI.controls.projects.Input#create
+         * @return {DOMNode} Main DOM-Node Element
          */
         create : function()
         {
@@ -173,6 +174,8 @@ define('controls/projects/Input', [
 
         /**
          * updates the projects search field
+         *
+         * @method QUI.controls.projects.Input#update
          */
         update : function()
         {
@@ -198,6 +201,8 @@ define('controls/projects/Input', [
 
         /**
          * fire the search
+         *
+         * @method QUI.controls.projects.Input#fireSearch
          */
         fireSearch : function()
         {
@@ -217,6 +222,8 @@ define('controls/projects/Input', [
 
         /**
          * cancel the search timeout
+         *
+         * @method QUI.controls.projects.Input#cancelSearch
          */
         cancelSearch : function()
         {
@@ -227,6 +234,8 @@ define('controls/projects/Input', [
 
         /**
          * close the projects search
+         *
+         * @method QUI.controls.projects.Input#close
          */
         close : function()
         {
@@ -238,6 +247,7 @@ define('controls/projects/Input', [
         /**
          * Add a projects to the field
          *
+         * @method QUI.controls.projects.Input#addProject
          * @param {String} project - Project name
          * @param {String} lang - [optional] Project language
          */
@@ -259,18 +269,20 @@ define('controls/projects/Input', [
                 return;
             }
 
-            new QUI.controls.projects.Entry(uid, {
+            new QUI.controls.projects.Entry(project, {
                 events : {
                     onDestroy : this.update
                 }
             }).inject( this.$Container );
 
-            this.fireEvent( 'add', [ this, uid ] );
+            this.fireEvent( 'add', [ this, project ] );
             this.update();
         },
 
         /**
          * trigger a projects search and open a projects dropdown for selection
+         *
+         * @method QUI.controls.projects.Input#search
          */
         search : function()
         {
@@ -358,7 +370,8 @@ define('controls/projects/Input', [
         /**
          * keyup - projects dropdown selection one step up
          *
-         * @return {this}
+         * @method QUI.controls.projects.Input#up
+         * @return {this} self
          */
         up : function()
         {
@@ -389,7 +402,8 @@ define('controls/projects/Input', [
         /**
          * keydown - projects dropdown selection one step down
          *
-         * @return {this}
+         * @method QUI.controls.projects.Input#down
+         * @return {this} self
          */
         down : function()
         {
@@ -421,6 +435,8 @@ define('controls/projects/Input', [
 
         /**
          * select the selected projects
+         *
+         * @method QUI.controls.projects.Input#submit
          */
         submit : function()
         {
@@ -445,7 +461,8 @@ define('controls/projects/Input', [
         /**
          * Set the focus to the input field
          *
-         * @return {this}
+         * @method QUI.controls.projects.Input#focus
+         * @return {this} self
          */
         focus : function()
         {

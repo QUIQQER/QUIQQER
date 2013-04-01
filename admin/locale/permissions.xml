@@ -177,62 +177,120 @@
             <de><![CDATA[QUIQQER]]></de>
             <en><![CDATA[QUIQQER]]></en>
         </locale>
+
+        <locale name="quiqqer.su._title">
+            <de><![CDATA[Ist Super-User]]></de>
+            <en><![CDATA[Is Super-User]]></en>
+        </locale>
+        <locale name="quiqqer.su._description">
+            <de><![CDATA[Darf Super-User bearbeiten / erstellen.]]></de>
+            <en><![CDATA[Is allowed to create / edit Super-Users.]]></en>
+        </locale>
+
         <locale name="quiqqer.system._title">
             <de><![CDATA[System]]></de>
             <en><![CDATA[System]]></en>
         </locale>
+            <locale name="quiqqer.system.update._title">
+                <de><![CDATA[Darf Updates durchführen]]></de>
+                <en><![CDATA[Is allowed to perform updates.]]></en>
+            </locale>
+
+            <locale name="quiqqer.system.permissions._title">
+                <de><![CDATA[Darf Zugrifssrechte verwalten.]]></de>
+                <en><![CDATA[Is allowed to edit permissions.]]></en>
+            </locale>
+
+            <locale name="quiqqer.system.cache._title">
+                <de><![CDATA[Darf Cache löschen.]]></de>
+                <en><![CDATA[Is allowed to delet the cache.]]></en>
+            </locale>
+
 
         <locale name="quiqqer.admin._title">
             <de><![CDATA[Administration]]></de>
             <en><![CDATA[Administration]]></en>
         </locale>
         <locale name="quiqqer.admin._description">
-            <de><![CDATA[Kann sich an den Administrationbereich anmelden]]></de>
-            <en><![CDATA[Can login on to the administration]]></en>
+            <de><![CDATA[Kann sich in den Administrationbereich anmelden.]]></de>
+            <en><![CDATA[Can login on to the administration.]]></en>
         </locale>
 
-        <locale name="quiqqer.admin.site._title">
-            <de><![CDATA[Seiten]]></de>
-            <en><![CDATA[Sites]]></en>
-        </locale>
+            <locale name="quiqqer.admin.site._title">
+                <de><![CDATA[Seiten]]></de>
+                <en><![CDATA[Sites]]></en>
+            </locale>
 
-        <locale name="quiqqer.admin.groups._title">
-            <de><![CDATA[Gruppen]]></de>
-            <en><![CDATA[Groups]]></en>
-        </locale>
+            <locale name="quiqqer.admin.groups._title">
+                <de><![CDATA[Gruppen]]></de>
+                <en><![CDATA[Groups]]></en>
+            </locale>
+                <locale name="quiqqer.admin.groups.view._title">
+                    <de><![CDATA[Darf die Gruppenverwaltung sehen.]]></de>
+                    <en><![CDATA[Is allowed to see the group management.]]></en>
+                </locale>
+                <locale name="quiqqer.admin.groups.edit._title">
+                    <de><![CDATA[Darf Gruppen editieren]]></de>
+                    <en><![CDATA[Is allowed to edit groups]]></en>
+                </locale>
 
-        <locale name="quiqqer.admin.users._title">
-            <de><![CDATA[Benutzer]]></de>
-            <en><![CDATA[Users]]></en>
-        </locale>
+            <locale name="quiqqer.admin.users._title">
+                <de><![CDATA[Benutzer]]></de>
+                <en><![CDATA[Users]]></en>
+            </locale>
+                <locale name="quiqqer.admin.users.view._title">
+                    <de><![CDATA[Darf die Benutzerverwaltung sehen]]></de>
+                    <en><![CDATA[Is allowed to see the user management]]></en>
+                </locale>
+                <locale name="quiqqer.admin.users.edit._title">
+                    <de><![CDATA[Darf Benutzer editieren.]]></de>
+                    <en><![CDATA[Is allowed to edit users.]]></en>
+                </locale>
 
-        <locale name="quiqqer.admin.projects._title">
-            <de><![CDATA[Projekte]]></de>
-            <en><![CDATA[Projects]]></en>
-        </locale>
-         <locale name="quiqqer.admin.site.set_permissions._title">
-            <de><![CDATA[Darf Seiten bearbeiten]]></de>
-            <en><![CDATA[Allowed to edit pages]]></en>
-        </locale>
+            <locale name="quiqqer.projects._title">
+                <de><![CDATA[Projekte]]></de>
+                <en><![CDATA[Projects]]></en>
+            </locale>
+                <locale name="quiqqer.projects.create._title">
+                    <de><![CDATA[Darf Projekte anlegen.]]></de>
+                    <en><![CDATA[Is allowed to creat projects.]]></en>
+                </locale>
 
+                <locale name="quiqqer.projects.sites._title">
+                    <de><![CDATA[Mehrere Seiten]]></de>
+                    <en><![CDATA[More Pages]]></en>
+                </locale>
 
-        <!-- site permissions -->
-        <locale name="quiqqer.site.view._title">
-            <de><![CDATA[Darf die Seite besuchen.]]></de>
-            <en><![CDATA[Allowed to visit the site.]]></en>
-        </locale>
-        <locale name="quiqqer.site.edit._title">
-            <de><![CDATA[Darf die Seite bearbeiten.]]></de>
-            <en><![CDATA[Allowed to edit the page.]]></en>
-        </locale>
-        <locale name="quiqqer.site.del._title">
-            <de><![CDATA[Darf die Seite löschen.]]></de>
-            <en><![CDATA[Allowed to delete the page.]]></en>
-        </locale>
-        <locale name="quiqqer.site.new._title">
-            <de><![CDATA[Darf neue Unterseite anlegen.]]></de>
-            <en><![CDATA[Allowed to create new children pages.]]></en>
-        </locale>
+                <locale name="quiqqer.projects.site._title">
+                    <de><![CDATA[Eine Seite]]></de>
+                    <en><![CDATA[One Page]]></en>
+                </locale>
+
+                    <locale name="quiqqer.projects.site.set_permissions._title">
+                        <de><![CDATA[Darf Zugriffsrechte auf Seiten setzen und bearbeiten]]></de>
+                        <en><![CDATA[Is allowed to set / edit permissions from pages]]></en>
+                    </locale>
+                    <locale name="quiqqer.projects.sites.edit._title">
+                        <de><![CDATA[Darf Seiten bearbeiten]]></de>
+                        <en><![CDATA[is allowed to edit pages]]></en>
+                    </locale>
+
+                    <locale name="quiqqer.projects.site.view._title">
+                        <de><![CDATA[Darf die Seite besuchen.]]></de>
+                        <en><![CDATA[Allowed to visit the site.]]></en>
+                    </locale>
+                    <locale name="quiqqer.projects.site.edit._title">
+                        <de><![CDATA[Darf die Seite bearbeiten.]]></de>
+                        <en><![CDATA[Allowed to edit the page.]]></en>
+                    </locale>
+                    <locale name="quiqqer.projects.site.del._title">
+                        <de><![CDATA[Darf die Seite löschen.]]></de>
+                        <en><![CDATA[Allowed to delete the page.]]></en>
+                    </locale>
+                    <locale name="quiqqer.projects.site.new._title">
+                        <de><![CDATA[Darf neue Unterseite anlegen.]]></de>
+                        <en><![CDATA[Allowed to create new children pages.]]></en>
+                    </locale>
 
     </groups>
 

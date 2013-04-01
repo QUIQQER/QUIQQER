@@ -41,25 +41,25 @@
     <!-- Darf Projekte anlegen -->
     <permission name="quiqqer.admin.projects.create" type="bool" />
 
-<!-- Project / Site permissions -->
-    <permission name="quiqqer.projects.site.edit" type="bool" />
+<!-- Darf Seiten editieren - generelles recht -->
+    <permission name="quiqqer.projects.sites.edit" type="bool" />
 
 
 <!-- Site permissions  -->
 
     <!-- Seite besuchen -->
-    <permission name="quiqqer.site.view" type="users_and_groups" area="site" />
+    <permission name="quiqqer.projects.site.view" type="users_and_groups" area="site" />
 
     <!-- Seite editieren -->
-    <permission name="quiqqer.site.edit" type="users_and_groups" area="site" />
+    <permission name="quiqqer.projects.site.edit" type="users_and_groups" area="site" />
 
     <!-- Seite löschen -->
-    <permission name="quiqqer.site.del" type="users_and_groups" area="site" />
+    <permission name="quiqqer.projects.site.del" type="users_and_groups" area="site" />
 
     <!-- Kind anlegen -->
-    <permission name="quiqqer.site.new" type="users_and_groups" area="site" />
+    <permission name="quiqqer.projects.site.new" type="users_and_groups" area="site" />
 
     <!-- Darf Seitenzugriffsrechte setzen -->
-    <permission name="quiqqer.admin.site.set_permissions" type="users_and_groups" />
+    <permission name="quiqqer.projects.site.set_permissions" type="users_and_groups" />
 
 </permissions>

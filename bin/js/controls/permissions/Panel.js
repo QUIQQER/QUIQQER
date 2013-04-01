@@ -31,8 +31,8 @@ define('controls/permissions/Panel', [
      */
     QUI.controls.permissions.Panel = new Class({
 
-        Implements : [ QUI_Panel ],
-        Type       : 'QUI.controls.permissions.Panel',
+        Extends : QUI_Panel,
+        Type    : 'QUI.controls.permissions.Panel',
 
         Binds : [
             '$onCreate',
@@ -59,7 +59,7 @@ define('controls/permissions/Panel', [
             this.setAttribute( 'icon', URL_BIN_DIR +'16x16/permissions.png' );
 
             // init
-            this.init( options );
+            this.parent( options );
 
             this.$Bind   = Bind || null;
             this.$Map    = null;
@@ -78,7 +78,8 @@ define('controls/permissions/Panel', [
         /**
          * Set the object for which the rights are
          *
-         * @param {QUI.classes.groups.Group|QUI.classes.users.User} Bind
+         * @param {QUI.classes.groups.Group|QUI.classes.users.User|
+         *         QUI.classes.projects.Site|QUI.classes.projects.Project} Bind
          */
         setBind : function(Bind)
         {
@@ -92,6 +93,22 @@ define('controls/permissions/Panel', [
 
             this.Loader.show();
 
+            var params = {
+                id : Bind.getId()
+            };
+
+            switch ( Bind.getType() )
+            {
+                case 'QUI.classes.projects.Project':
+                    params.project = Bind.getName();
+                break;
+
+                case 'QUI.classes.projects.Site':
+                    params.project = Bind.getName();
+                    params.lang    = Bind.getLang();
+                break;
+            }
+
             // @todo load the rights of the object
             QUI.Ajax.get('ajax_permissions_get', function(result, Request)
             {
@@ -100,7 +117,7 @@ define('controls/permissions/Panel', [
                 Control.$bindpermissions = result;
                 Control.refresh();
             }, {
-                bid     : Bind.getId(),
+                params  : JSON.encode( params ),
                 btype   : Bind.getType(),
                 Control : this
             });
@@ -108,6 +125,8 @@ define('controls/permissions/Panel', [
 
         /**
          * Opens the search for groups / users
+         *
+         * @method QUI.controls.permissions.Panel#openSearch
          */
         openSearch : function()
         {
@@ -270,6 +289,7 @@ define('controls/permissions/Panel', [
         /**
          * Load the group control, to select a group
          *
+         * @method QUI.controls.permissions.Panel#$loadGroupSearch
          * @param {QUI.controls.desktop.panels.Sheet} Sheet
          */
         $loadGroupSearch : function(Sheet)
@@ -320,6 +340,7 @@ define('controls/permissions/Panel', [
         /**
          * Load the group control, to select a group
          *
+         * @method QUI.controls.permissions.Panel#$loadUserSearch
          * @param {QUI.controls.desktop.panels.Sheet} Sheet
          */
         $loadUserSearch : function(Sheet)
@@ -370,6 +391,7 @@ define('controls/permissions/Panel', [
         /**
          * Load the project control, to select a project
          *
+         * @method QUI.controls.permissions.Panel#$loadProjectSearch
          * @param {QUI.controls.desktop.panels.Sheet} Sheet
          */
         $loadProjectSearch : function(Sheet)
@@ -418,6 +440,8 @@ define('controls/permissions/Panel', [
 
         /**
          * Opens the add permission dialog
+         *
+         * @method QUI.controls.permissions.Panel#addPermission
          */
         addPermission : function()
         {
@@ -531,6 +555,7 @@ define('controls/permissions/Panel', [
         /**
          * Opens the dialog for delete a permission
          *
+         * @method QUI.controls.permissions.Panel#delPermission
          * @param {QUI.controls.buttons.Button|String} right
          */
         delPermission : function(right)
@@ -592,6 +617,8 @@ define('controls/permissions/Panel', [
 
         /**
          * Save all permissions
+         *
+         * @method QUI.controls.permissions.Panel#save
          */
         save : function()
         {
@@ -631,6 +658,8 @@ define('controls/permissions/Panel', [
         /**
          * event: on create
          * create the panel body
+         *
+         * @method QUI.controls.permissions.Panel#$onCreate
          */
         $onCreate : function()
         {
@@ -758,6 +787,8 @@ define('controls/permissions/Panel', [
 
         /**
          * event: on resize
+         *
+         * @method QUI.controls.permissions.Panel#$onResize
          */
         $onResize : function()
         {
@@ -783,6 +814,8 @@ define('controls/permissions/Panel', [
         /**
          * event: on panel refresh
          * eq: refresh the buttons
+         *
+         * @method QUI.controls.permissions.Panel#$onRefresh
          */
         $onRefresh : function()
         {
@@ -843,6 +876,8 @@ define('controls/permissions/Panel', [
 
         /**
          * Show the permission sitemap (list)
+         *
+         * @method QUI.controls.permissions.Panel#showSitemap
          */
         showSitemap : function()
         {
@@ -905,6 +940,8 @@ define('controls/permissions/Panel', [
 
         /**
          * Hide the permission sitemap (list)
+         *
+         * @method QUI.controls.permissions.Panel#hideSitemap
          */
         hideSitemap : function()
         {
@@ -946,6 +983,8 @@ define('controls/permissions/Panel', [
 
         /**
          * Creates the permission map
+         *
+         * @method QUI.controls.permissions.Panel#$createSitemap
          */
         $createSitemap : function()
         {
@@ -1009,9 +1048,10 @@ define('controls/permissions/Panel', [
         /**
          * Recursive append item helper for sitemap
          *
-         * @parent {QUI.controls.sitemap.Item} Parent
-         * @parent {String} name
-         * @parent {Object} params
+         * @method QUI.controls.permissions.Panel#$appendSitemapItemTo
+         * @param {QUI.controls.sitemap.Item} Parent
+         * @param {String} name
+         * @param {Object} params
          */
         $appendSitemapItemTo : function(Parent, name, params)
         {
@@ -1030,7 +1070,7 @@ define('controls/permissions/Panel', [
                 Item = new QUI.controls.sitemap.Item({
                     icon  : URL_BIN_DIR +'16x16/permissions.png',
                     value : _name,
-                    text  : QUI.Locale.get( 'locale/permissions', _name ),
+                    text  : QUI.Locale.get( 'locale/permissions', _name +'._title' ),
                     events : {
                         onClick : this.$onSitemapItemClick
                     }
@@ -1045,6 +1085,7 @@ define('controls/permissions/Panel', [
         /**
          * event : on sitemap item click
          *
+         * @method QUI.controls.permissions.Panel#$onSitemapItemClick
          * @param {QUI.controls.sitemap.Item} Item
          */
         $onSitemapItemClick : function(Item)
@@ -1201,6 +1242,8 @@ define('controls/permissions/Panel', [
 
         /**
          * event: if a form element triggered its onchange event
+         *
+         * @method QUI.controls.permissions.Panel#$onFormElementChange
          */
         $onFormElementChange : function(event)
         {
