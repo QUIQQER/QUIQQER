@@ -33,6 +33,8 @@ define('controls/projects/media/Input', [
      *
      * @param {Object} options
      * @param {DOMNode} Input - Input field [optional]
+     *
+     * @memberof! <global>
      */
     QUI.controls.projects.media.Input = new Class({
 

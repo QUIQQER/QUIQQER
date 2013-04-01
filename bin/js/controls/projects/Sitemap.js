@@ -81,7 +81,7 @@ define('controls/projects/Sitemap', [
          * Returns the QUI.controls.sitemap.Map Control
          *
          * @method QUI.controls.projects.Sitemap#getMap
-         * @return {QUI.controls.sitemap.Map}
+         * @return {QUI.controls.sitemap.Map} Binded Map Object
          */
         getMap : function()
         {
@@ -92,7 +92,7 @@ define('controls/projects/Sitemap', [
          * Create the DOMNode of the sitemap
          *
          * @method QUI.controls.projects.Sitemap#create
-         * @return {DOMNode}
+         * @return {DOMNode} Main DOM-Node Element
          */
         create : function()
         {
@@ -301,6 +301,7 @@ define('controls/projects/Sitemap', [
         /**
          * Load the Children asynchron
          *
+         * @method QUI.controls.projects.Sitemap#$loadChildren
          * @param {QUI.controls.sitemap.Item} Item - Parent sitemap item
          * @param {Function} callback - callback function, if ajax is finish
          *
@@ -338,11 +339,11 @@ define('controls/projects/Sitemap', [
         /**
          * Parse a ajax result set to a sitemap item
          *
+         * @method QUI.controls.projects.Sitemap#$loadChildren
          * @param {Array} result
          * @return {QUI.controls.sitemap.Item}
          *
          * @private
-         * @ignore
          */
         $parseArrayToSitemapitem : function(result)
         {

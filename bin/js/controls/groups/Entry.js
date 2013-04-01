@@ -35,11 +35,12 @@ define('controls/groups/Entry', [
      */
     QUI.controls.groups.Entry = new Class({
 
-        Implements : [ QUI_Control ],
-        Type       : 'QUI.controls.groups.Entry',
+        Extends : QUI_Control,
+        Type    : 'QUI.controls.groups.Entry',
 
         Binds : [
-            '$onGroupUpdate'
+            '$onGroupUpdate',
+            'destroy'
         ],
 
         initialize : function(gid, options)
@@ -51,8 +52,19 @@ define('controls/groups/Entry', [
         },
 
         /**
+         * Return the binded Group
+         *
+         * @return {QUI.classes.groups.Group}
+         */
+        getGroup : function()
+        {
+            return this.$Group;
+        },
+
+        /**
          * Create the DOMNode of the entry
          *
+         * @method QUI.controls.groups.Entry#create
          * @return {DOMNode}
          */
         create : function()
@@ -75,10 +87,13 @@ define('controls/groups/Entry', [
                 }
             });
 
-            this.$Elm.getElement( '.close' ).addEvent( 'click', function()
-            {
-                this.destroy();
-            }.bind( this ));
+            var Close = this.$Elm.getElement( '.close' );
+
+            Close.addEvent( 'click', this.destroy);
+            Close.set({
+                alt   : 'Gruppe entfernen',
+                title : 'Gruppe entfernen'
+            });
 
             this.$Group.addEvent( 'onRefresh', this.$onGroupUpdate );
             this.refresh();

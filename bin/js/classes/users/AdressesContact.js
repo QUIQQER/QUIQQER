@@ -17,7 +17,11 @@ define('classes/users/AdressesContact', [
 
     QUI.namespace( 'classes.users' );
 
-
+    /**
+     * @class QUI.classes.users.AdressesContact
+     *
+     * @memberof! <global>
+     */
     QUI.classes.users.AdressesContact = new Class({
 
         Implements : [DOM],

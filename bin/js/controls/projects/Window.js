@@ -27,13 +27,14 @@ define('controls/projects/Window', [
     QUI.namespace( 'controls.projects' );
 
     /**
+     * Displays a Project in Window
      * @class QUI.controls.projects.Window
      *
      * @fires onSubmit - [ids, this]
      * @fires onCancel - this
-      * @param {Object} options
-      *
-      * @memberof! <global>
+     * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.projects.Window = new Class({
 

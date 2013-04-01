@@ -18,9 +18,15 @@ define('controls/projects/site/Search', [
 
     QUI.namespace( 'controls.projects.site' );
 
+    /**
+     * @class QUI.controls.projects.site.Site
+     *
+     * @memberof! <global>
+     */
     QUI.controls.projects.site.Site = new Class({
 
-        Implements: [ QUI_Control ],
+        Extends : QUI_Control,
+        Type    : 'QUI.controls.projects.site.Site',
 
         options : {
             id : 'project-site-search'

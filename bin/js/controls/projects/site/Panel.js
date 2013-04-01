@@ -31,6 +31,8 @@ define('controls/projects/site/Panel', [
      *
      * @param {QUI.classes.projects.Site} Site
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.projects.site.Panel = new Class({
 
@@ -75,6 +77,7 @@ define('controls/projects/site/Panel', [
         /**
          * Save the site panel to the workspace
          *
+         * @method QUI.controls.projects.site.Panel#serialize
          * @return {Object} data
          */
         serialize : function()
@@ -93,6 +96,7 @@ define('controls/projects/site/Panel', [
         /**
          * import the saved data form the workspace
          *
+         * @method QUI.controls.projects.site.Panel#unserialize
          * @param {Object} data
          * @return {this}
          */
@@ -113,6 +117,7 @@ define('controls/projects/site/Panel', [
         /**
          * Return the Site object from the panel
          *
+         * @method QUI.controls.projects.site.Panel#getSite
          * @return {QUI.classes.projects.Site}
          */
         getSite : function()
@@ -122,6 +127,8 @@ define('controls/projects/site/Panel', [
 
         /**
          * Load the site attributes to the panel
+         *
+         * @method QUI.controls.projects.site.Panel#load
          */
         load : function()
         {
@@ -152,7 +159,7 @@ define('controls/projects/site/Panel', [
         /**
          * Create the panel design
          *
-         * @method QUI.controls.projects.site.Panel#create
+         * @method QUI.controls.projects.site.Panel#$onCreate
          */
         $onCreate : function()
         {
@@ -414,6 +421,7 @@ define('controls/projects/site/Panel', [
         /**
          * Load the category
          *
+         * @method QUI.controls.projects.site.Panel#$categoryOnLoad
          * @param {QUI.controls.buttons.Button} Category
          */
         $categoryOnLoad : function(Category)
@@ -496,6 +504,7 @@ define('controls/projects/site/Panel', [
         /**
          * Exceute the panel onclick from PHP
          *
+         * @method QUI.controls.projects.site.Panel#$onPanelButtonClick
          * @param {QUI.controls.buttons.Button} Btn
          */
         $onPanelButtonClick : function(Btn)
@@ -507,6 +516,8 @@ define('controls/projects/site/Panel', [
 
         /**
          * Opens the permissions for the site
+         *
+         * @method QUI.controls.projects.site.Panel#openPermissions
          */
         openPermissions : function()
         {
@@ -519,6 +530,8 @@ define('controls/projects/site/Panel', [
             {
                 Body.set( 'html', result );
 
+                QUI.controls.Utils.parse( Body );
+
                 Panel.Loader.hide();
             });
 
@@ -527,6 +540,7 @@ define('controls/projects/site/Panel', [
         /**
          * Load the WYSIWYG Editor in the panel
          *
+         * @method QUI.controls.projects.site.Panel#loadEditor
          * @param {String} content - content of the editor
          */
         loadEditor : function(content)
@@ -572,6 +586,7 @@ define('controls/projects/site/Panel', [
          * event: on editor load
          * if the editor is finished
          *
+         * @method QUI.controls.projects.site.Panel#$onEditorLoad
          * @param Editor
          * @param Instance
          */
@@ -584,6 +599,7 @@ define('controls/projects/site/Panel', [
          * event: on editor load
          * if the editor would be destroyed
          *
+         * @method QUI.controls.projects.site.Panel#$onEditorDestroy
          * @param Editor
          */
         $onEditorDestroy : function(Editor)

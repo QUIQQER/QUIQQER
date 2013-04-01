@@ -29,7 +29,10 @@ define('controls/desktop/panels/Bookmarks', [
         Type    : 'QUI.controls.desktop.panels.Bookmarks',
 
         Binds : [
-            '$create'
+            '$create',
+            '$clickRemoveButton',
+            '$onItemMouseEnter',
+            '$onItemMouseLeave'
         ],
 
         initialize: function(options)
@@ -61,7 +64,7 @@ define('controls/desktop/panels/Bookmarks', [
                 Bookmark = this.$bookmarks[ i ];
 
                 bookmarks.push({
-                    text  : Bookmark.get( 'html' ),
+                    text  : Bookmark.getElement( '.qui-bookmark-text' ).get( 'text' ),
                     icon  : Bookmark.getStyle( 'backgroundImage' ),
                     click : Bookmark.get( 'data-click' ),
                     path  : Bookmark.get( 'data-path' )
@@ -209,10 +212,10 @@ define('controls/desktop/panels/Bookmarks', [
 
             var Bookmark = new Element('div', {
                 'class' : 'qui-bookmark box smooth',
-                'html'  : params.text,
+                'html'  : '<span class="qui-bookmark-text">'+ params.text +'</span>',
                 'data-click' : params.click,
                 'data-path'  : params.path,
-                events  :
+                events :
                 {
                     click : function()
                     {
@@ -221,7 +224,7 @@ define('controls/desktop/panels/Bookmarks', [
 
                         if ( path )
                         {
-                            BookmarkPanel.clickMenuItem( path );
+                            BookmarkPanel.$clickMenuItem( path );
                             return;
                         }
 
@@ -234,9 +237,26 @@ define('controls/desktop/panels/Bookmarks', [
                         if ( typeof e === 'function' ) {
                             e();
                         }
-                    }
+                    },
+
+                    mouseleave : this.$onItemMouseLeave,
+                    mouseenter : this.$onItemMouseEnter
                 }
             });
+
+            new QUI.controls.buttons.Button({
+                icon   : URL_BIN_DIR +'10x10/cancel.png',
+                styles : {
+                    'float' : 'right',
+                    display : 'none'
+                },
+                events : {
+                    onClick : this.$clickRemoveButton
+                },
+                Bookmark : Bookmark
+            }).inject(
+                Bookmark
+            );
 
             if ( params.icon )
             {
@@ -255,14 +275,16 @@ define('controls/desktop/panels/Bookmarks', [
         /**
          * make a click on a menu item by path
          *
+         * @method QUI.controls.desktop.panels.Bookmarks#clickMenuItem
          * @param {String} path - Path to the menu item
          */
-        clickMenuItem : function(path)
+        $clickMenuItem : function(path)
         {
             var i, len;
             var parts = path.split( '/' );
 
-            if ( parts[ 0 ] === '' ) {
+            if ( parts[ 0 ] === '' )
+            {
                  delete parts[ 0 ];
 
                  parts = parts.clean();
@@ -284,6 +306,56 @@ define('controls/desktop/panels/Bookmarks', [
             }
 
             Parent.click();
+        },
+
+        /**
+         * event : click at the remove button
+         *
+         * @method QUI.controls.desktop.panels.Bookmarks#$clickRemoveButton
+         * @param {QUI.controls.buttons.Button} Btn
+         */
+        $clickRemoveButton : function(Btn)
+        {
+            var i, id, len, list, Bookmark;
+
+            list     = [];
+            Bookmark = Btn.getAttribute( 'Bookmark' );
+            id       = Slick.uidOf( Bookmark );
+
+            for ( i = 0, len = this.$bookmarks.length; i < len; i++ )
+            {
+                if ( Slick.uidOf( this.$bookmarks[ i ] ) != id )
+                {
+                    list.push( this.$bookmarks[ i ] );
+                    continue;
+                }
+
+                this.$bookmarks[ i ].destroy();
+            }
+
+            this.$bookmarks = list;
+        },
+
+        /**
+         * event : on mouse enter on a bookmark item
+         *
+         * @method QUI.controls.desktop.panels.Bookmarks#$onItemMouseEnter
+         * @param {DOMEvent} event
+         */
+        $onItemMouseEnter : function(event)
+        {
+            event.target.getElements( 'button' ).setStyle( 'display', null );
+        },
+
+        /**
+         * event : on mouse leave on a bookmark item
+         *
+         * @method QUI.controls.desktop.panels.Bookmarks#$onItemMouseLeave
+         * @param {DOMEvent} event
+         */
+        $onItemMouseLeave : function(event)
+        {
+            event.target.getElements( 'button' ).setStyle( 'display', 'none' );
         }
     });
 

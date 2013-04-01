@@ -35,11 +35,12 @@ define('controls/users/Entry', [
      */
     QUI.controls.users.Entry = new Class({
 
-        Implements : [ QUI_Control ],
-        Type       : 'QUI.controls.users.Entry',
+        Extends : QUI_Control,
+        Type    : 'QUI.controls.users.Entry',
 
         Binds : [
-            '$onUserUpdate'
+            '$onUserUpdate',
+            'destroy'
         ],
 
         initialize : function(uid, options)
@@ -48,6 +49,16 @@ define('controls/users/Entry', [
             this.init( options );
 
             this.$Elm = null;
+        },
+
+        /**
+         * Return the binded user
+         *
+         * @return {QUI.classes.users.User}
+         */
+        getUser : function()
+        {
+            return this.$User;
         },
 
         /**
@@ -75,10 +86,13 @@ define('controls/users/Entry', [
                 }
             });
 
-            this.$Elm.getElement( '.close' ).addEvent( 'click', function()
-            {
-                this.destroy();
-            }.bind( this ));
+            var Close = this.$Elm.getElement( '.close' );
+
+            Close.addEvent( 'click', this.destroy );
+            Close.set({
+                alt   : 'Benutzer entfernen',
+                title : 'Benutzer entfernen'
+            });
 
             this.$User.addEvent( 'onRefresh', this.$onUserUpdate );
             this.refresh();
@@ -130,7 +144,7 @@ define('controls/users/Entry', [
             }
 
             this.$Elm.getElement( '.text' )
-                     .set( 'html', User.getAttribute( 'name' ) );
+                     .set( 'html', User.getName() );
 
             return this;
         }

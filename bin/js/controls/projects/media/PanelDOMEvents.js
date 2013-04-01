@@ -18,6 +18,12 @@ define('controls/projects/media/PanelDOMEvents', [
 
     QUI.namespace( 'controls.projects.media' );
 
+    /**
+     * @class QUI.controls.projects.media.PanelDOMEvents
+     * @param {QUI.controls.projects.media.Panel} MediaPanel
+     *
+     * @memberof! <global>
+     */
     QUI.controls.projects.media.PanelDOMEvents = new Class({
 
         initialize : function(MediaPanel)

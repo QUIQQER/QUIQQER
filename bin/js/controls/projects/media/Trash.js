@@ -30,6 +30,8 @@ define('controls/projects/media/Trash', [
      *
      * @fires onDrawBegin - this
      * @fires onDrawEnd   - this
+     *
+     * @memberof! <global>
      */
     QUI.controls.projects.media.Trash = new Class({
 

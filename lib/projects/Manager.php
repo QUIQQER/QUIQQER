@@ -404,6 +404,47 @@ class Projects_Manager
         // Projekt Cache löschen
         System_Cache_Manager::clear( 'QUI::config' );
     }
+
+    /**
+     * Search a project
+     *
+     * @param Array $params - Search params
+     *     'search' => 'search string',
+     *     'limit'  => 5,
+     *     'page'   => 1
+     *
+     * @return Array
+     */
+    static function search($params)
+    {
+        if ( !isset( $params[ 'search' ] ) ) {
+            return array();
+        }
+
+        $search = $params[ 'search' ];
+
+        $result = array();
+        $list   = self::getConfig()->toArray();
+
+        foreach ( $list as $project => $entry )
+        {
+            if ( !empty( $search ) && strpos( $project, $search ) === false ) {
+                continue;
+            }
+
+            $langs = explode( ',', $entry[ 'langs' ] );
+
+            foreach ( $langs as $lang )
+            {
+                $result[] = array(
+                    'project' => $project,
+                    'lang'    => $lang
+                );
+            }
+        }
+
+        return $result;
+    }
 }
 
 ?>

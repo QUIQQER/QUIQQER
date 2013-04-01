@@ -25,7 +25,11 @@ define('controls/projects/Settings', [
     QUI.namespace( 'controls.projects' );
 
     /**
+     * The Project settings panel
+     *
      * @class QUI.controls.projects.Settings
+     *
+     * @param {String} project
      * @param {Object} options
      *
      * @memberof! <global>
@@ -68,13 +72,13 @@ define('controls/projects/Settings', [
         /**
          * Return the Project of the Panel
          *
-         * @return {QUI.classes.projects.Project}
+         * @method QUI.controls.projects.Settings#getProject
+         * @return {QUI.classes.projects.Project} Project of the Panel
          */
         getProject : function()
         {
             return this.$Project;
         },
-
 
         /**
          * Create the project settings body
@@ -126,6 +130,8 @@ define('controls/projects/Settings', [
 
         /**
          * Opens the Settings
+         *
+         * @method QUI.controls.projects.Settings#openSettings
          */
         openSettings : function()
         {
@@ -149,14 +155,18 @@ define('controls/projects/Settings', [
 
         /**
          * Opens the Meta
+         *
+         * @method QUI.controls.projects.Settings#openMeta
          */
-        openMeta : function()
+        openMeta : function(Plup)
         {
 
         },
 
         /**
-         * Opens the Meta
+         * Opens the backup
+         *
+         * @method QUI.controls.projects.Settings#openBackup
          */
         openBackup : function()
         {
@@ -165,6 +175,8 @@ define('controls/projects/Settings', [
 
         /**
          * Opens the Watermark
+         *
+         * @method QUI.controls.projects.Settings#openWatersign
          */
         openWatersign : function()
         {

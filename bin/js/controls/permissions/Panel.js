@@ -185,6 +185,52 @@ define('controls/permissions/Panel', [
                 new QUI.controls.buttons.Button({
                     text : QUI.Locale.get(
                         'quiqqer/system',
+                        'permissions.panel.btn.select.site'
+                    ),
+                    icon    : URL_BIN_DIR +'32x32/filenew.png',
+                    Sheet   : Sheet,
+                    Control : this,
+                    styles  : {
+                        width : 200
+                    },
+                    events :
+                    {
+                        onClick : function(Btn)
+                        {
+                            /*
+                            Btn.getAttribute( 'Control' ).$loadSiteSearch(
+                                Btn.getAttribute( 'Sheet' )
+                            );
+                            */
+                        }
+                    }
+                }).inject( Buttons );
+
+                new QUI.controls.buttons.Button({
+                    text : QUI.Locale.get(
+                        'quiqqer/system',
+                        'permissions.panel.btn.select.project'
+                    ),
+                    icon    : URL_BIN_DIR +'32x32/home.png',
+                    Sheet   : Sheet,
+                    Control : this,
+                    styles  : {
+                        width : 200
+                    },
+                    events :
+                    {
+                        onClick : function(Btn)
+                        {
+                            Btn.getAttribute( 'Control' ).$loadProjectSearch(
+                                Btn.getAttribute( 'Sheet' )
+                            );
+                        }
+                    }
+                }).inject( Buttons );
+
+                new QUI.controls.buttons.Button({
+                    text : QUI.Locale.get(
+                        'quiqqer/system',
                         'permissions.panel.btn.select.manage'
                     ),
                     icon    : URL_BIN_DIR +'32x32/permissions.png',
@@ -318,6 +364,55 @@ define('controls/permissions/Panel', [
                 }).inject( Search );
 
                 UserSearch.focus();
+            }.bind( this ));
+        },
+
+        /**
+         * Load the project control, to select a project
+         *
+         * @param {QUI.controls.desktop.panels.Sheet} Sheet
+         */
+        $loadProjectSearch : function(Sheet)
+        {
+            var Body   = Sheet.getBody(),
+                Search = Body.getElement( '.search' );
+
+            Search.set( 'html', '' );
+
+            require(['controls/projects/Input'], function(Input)
+            {
+                Search.set(
+                    'html',
+
+                    '<h2>' +
+                        QUI.Locale.get(
+                            'quiqqer/system',
+                            'permissions.panel.select.project.title'
+                        ) +
+                    '</h2>'
+                );
+
+                var ProjectSearch = new Input({
+                    max      : 1,
+                    multible : false,
+                    styles   : {
+                        margin : '0 auto',
+                        width  : 200
+                    },
+                    events :
+                    {
+                        onAdd : function(UserSearch, project, lang)
+                        {
+                            this.setBind( QUI.Projects.get( project, lang ) );
+
+                            Sheet.hide();
+                            ProjectSearch.close();
+
+                        }.bind( this )
+                    }
+                }).inject( Search );
+
+                ProjectSearch.focus();
             }.bind( this ));
         },
 

@@ -28,6 +28,11 @@ define('controls/projects/TypeSitemap', [
     QUI.namespace( 'controls.projects' );
 
     /**
+     * The type sitemap for the project
+     *
+     * The type sitemap displays / create a QUI.controls.sitemap.Map
+     * with all available types for the project
+     *
      * @class QUI.controls.projects.TypeSitemap
      *
      * @fires onItemClick
@@ -119,12 +124,15 @@ define('controls/projects/TypeSitemap', [
                     }
                 };
 
-
                 for ( i in result)
                 {
                     plugin = result[i];
                     types  = plugin.types;
                     icon   = URL_BIN_DIR + '16x16/types.png';
+
+                    if ( typeof types === 'undefined' ) {
+                        continue;
+                    }
 
                     if ( plugin.icon_16x16 ) {
                         icon = URL_OPT_DIR + plugin.icon_16x16;
@@ -177,7 +185,7 @@ define('controls/projects/TypeSitemap', [
          * Get the selected Values
          *
          * @method QUI.controls.projects.TypeSitemap#getValues
-         * @return {Array}
+         * @return {Array} Array of the selected values
          */
         getValues : function()
         {

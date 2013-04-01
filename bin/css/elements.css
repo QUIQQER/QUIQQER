@@ -21,24 +21,36 @@ textarea {
        -moz-box-sizing: border-box;
             box-sizing: border-box;
 }
-textarea:focus, textarea:hover,
-input:focus, input:hover {
+
+textarea:focus,
+textarea:hover,
+input:focus,
+input:hover {
     background: #fff;
     border: 1px solid #999;
 }
+
 textarea:focus,
 input:focus {
     box-shadow: 0 0 3px #999;
 }
+
 select {
     line-height: 22px;
     padding: 2px;
     cursor: pointer;
 }
+
 input[type="checkbox"],
 input[type="radio"] {
     border: none;
     margin-right: 10px;
+}
+
+input[disabled="disabled"] {
+    border: none;
+    background: transparent;
+    color: #666;
 }
 
 h1, h2, h3, h4, h5, h6 {

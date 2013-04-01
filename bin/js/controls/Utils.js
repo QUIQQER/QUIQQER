@@ -12,8 +12,7 @@ define('controls/Utils', function()
 {
     "use strict";
 
-    QUI.namespace('controls');
-
+    QUI.namespace( 'controls' );
 
     if ( typeof QUI.controls.Utils !== 'undefined' ) {
         return QUI.controls.Utils;
@@ -48,51 +47,115 @@ define('controls/Utils', function()
          */
         parse : function(Elm)
         {
-            require([
+            var Form = false;
 
-                'controls/groups/Input',
-                'controls/buttons/Button',
-                'controls/groups/Sitemap',
-                'controls/projects/TypeInput',
-                'controls/projects/media/Input',
-                'package/quiqqer/calendar/bin/Calendar'
+            if ( Elm.nodeName == 'FORM' ) {
+                Form = Elm;
+            }
 
-            ], function(
-                Qui_GroupInput,
-                Qui_Buttons,
-                Qui_GroupSitemap,
-                Qui_ProjectTypeInput,
-                Qui_ProjectMediaInput,
-                DatePicker
-            ) {
+            if ( !Form ) {
+                Form = Elm.getElement( 'form' );
+            }
+
+            if ( Form )
+            {
+                // ist that good?
+                Form.addEvent('submit', function(event) {
+                    event.stop();
+                });
+            }
+
+            // Button
+            if ( Elm.getElement( '.btn-button' ) ) {
+                this.parseButtons( Elm );
+            }
+
+            // Date
+            if ( Elm.getElement( 'input[type="date"]' ) ) {
+                this.parseDate( Elm );
+            }
+
+            // Groups
+            if ( Elm.getElement( 'input[class="groups"]' ) ) {
+                this.parseGroups( Elm );
+            }
+
+            // Media Types
+            if ( Elm.getElement( 'input[class="media-image"]' ) ) {
+                this.parseMediaInput( Elm );
+            }
+
+            // Project Types
+            if ( Elm.getElement( 'input[class="project-types"]' ) ) {
+                this.parseProjectTypes( Elm );
+            }
+
+            // User And Groups
+            if ( Elm.getElement( 'input[class="users_and_groups"]' ) ) {
+                this.parseUserAndGroups( Elm );
+            }
+
+            // disabled fields
+
+
+            // hidden fields
+            /*
+            elements = Elm.getElements( 'input[disabled="disabled"]' );
+
+            for ( i = 0, len = elements.length; i < len; i++ )
+            {
+                elements[ i ].setStyles({
+                    border : 'none'
+                });
+            }*/
+        },
+
+        /**
+         * Search all Elements with .btn-button and convert it to a button
+         *
+         * @param {DOMNode} Elm - parent node, this element in which is searched for
+         */
+        parseButtons : function(Elm)
+        {
+            require(['controls/buttons/Button'], function(QUI_Button)
+            {
+                // buttons
                 var i, len, Child, elements;
 
+                elements = Elm.getElements( '.btn-button' );
 
-                var Form = false;
-
-                if ( Elm.nodeName == 'FORM' ) {
-                    Form = Elm;
-                }
-
-                if ( !Form ) {
-                    Form = Elm.getElement( 'form' );
-                }
-
-                if ( Form )
+                for ( i = 0, len = elements.length; i < len; i++ )
                 {
-                    Form.addEvent('submit', function(event) {
-                        event.stop();
-                    });
+                    Child = elements[ i ];
+
+                    new QUI.controls.buttons.Button({
+                        text   : Child.get( 'data-text' ),
+                        image  : Child.get( 'data-image' ),
+                        click  : Child.get( 'data-click' )
+                    }).inject( Child );
                 }
+            });
+        },
+
+        /**
+         * Search all input[type="date"] and make a control
+         *
+         * @param {DOMNode} Elm - parent node, this element in which is searched for
+         */
+        parseDate : function(Elm)
+        {
+            require(['package/quiqqer/calendar/bin/Calendar'], function()
+            {
+                var i, len, elements, Child;
+
+                elements = Elm.getElements( 'input[type="date"]' );
 
                 // Date Buttons
-                elements = Elm.getElements( '[type="date"]' );
-
                 for ( i = 0, len = elements.length; i < len; i++ )
                 {
                     Child = elements[i];
 
-                    new Element('div').wraps( Child );
+                    new Element( 'div' ).wraps( Child );
 
                     Child.setStyles({
                         'float'  : 'left',
@@ -114,7 +177,7 @@ define('controls/Utils', function()
                         title   : 'Datum leeren',
                         Input   : Child,
                         events  : {
-                            onClick : QUI.controls.Utils.$clearDateBtn.bind( this )
+                            onClick : this.$clearDateBtn.bind( this )
                         },
                         styles : {
                             top : 1
@@ -123,44 +186,43 @@ define('controls/Utils', function()
                         Child.getParent()
                     );
                 }
+            });
+        },
 
-                // Group Buttons
+        /**
+         * Search all input[class="groups"] and convert it to a control
+         *
+         * @param {DOMNode} Elm - parent node, this element in which is searched for
+         */
+        parseGroups : function(Elm)
+        {
+            require(['controls/groups/Input'], function()
+            {
+                var i, len, elements;
+
                 elements = Elm.getElements( 'input[class="groups"]' );
 
                 for ( i = 0, len = elements.length; i < len; i++ )
                 {
-                    new QUI.controls.groups.Input(
+                    new QUI.controls.usersAndGroups.Input(
                         null,
                         elements[ i ]
                     ).create();
                 }
+            });
+        },
 
-                // buttons
-                elements = Elm.getElements( '.btn-button' );
+        /**
+         * Search all input[class="media-image"] and convert it to a control
+         *
+         * @param {DOMNode} Elm - parent node, this element in which is searched for
+         */
+        parseMediaInput : function(Elm)
+        {
+            require(['controls/projects/media/Input'], function(Qui_ProjectMediaInput)
+            {
+                var i, len, elements;
 
-                for ( i = 0, len = elements.length; i < len; i++ )
-                {
-                    Child = elements[ i ];
-
-                    new QUI.controls.buttons.Button({
-                        text   : Elm.get( 'data-text' ),
-                        image  : Elm.get( 'data-image' ),
-                        click  : Elm.get( 'data-click' )
-                    }).inject( Child );
-                }
-
-                // types
-                elements = Elm.getElements( 'input[class="project-types"]' );
-
-                for ( i = 0, len = elements.length; i < len; i++ )
-                {
-                    new QUI.controls.projects.TypeInput(
-                        null,
-                        elements[ i ]
-                    ).create();
-                }
-
-                // media controls
                 elements = Elm.getElements( 'input[class="media-image"]' );
 
                 for ( i = 0, len = elements.length; i < len; i++ )
@@ -170,24 +232,59 @@ define('controls/Utils', function()
                         elements[ i ]
                     ).create();
                 }
+            });
+        },
 
+        /**
+         * Search all input[class="project-types"] and convert it to a control
+         *
+         * @param {DOMNode} Elm - parent node, this element in which is searched for
+         */
+        parseProjectTypes : function(Elm)
+        {
+            require(['controls/projects/TypeInput'], function(QUI_TypeInput)
+            {
+                var i, len, elements;
 
-
-                // hidden fields
-                /*
-                elements = Elm.getElements( 'input[disabled="disabled"]' );
+                elements = Elm.getElements( 'input[class="project-types"]' );
 
                 for ( i = 0, len = elements.length; i < len; i++ )
                 {
-                    elements[ i ].setStyles({
-                        border : 'none'
-                    });
-                }*/
+                    new QUI.controls.projects.TypeInput(
+                        null,
+                        elements[ i ]
+                    ).create();
+                }
+            });
+        },
+
+        /**
+         * Search all Elements with the class users_and_groups and convert it to a control
+         *
+         * @param {DOMNode} Elm - parent node, this element in which is searched for
+         */
+        parseUserAndGroups : function(Elm)
+        {
+            require(['controls/usersAndGroups/Input'], function()
+            {
+                var i, len, elements;
+
+                elements = Elm.getElements( '.users_and_groups' );
+
+                for ( i = 0, len = elements.length; i < len; i++ )
+                {
+                    new QUI.controls.usersAndGroups.Input(
+                        null,
+                        elements[ i ]
+                    ).create();
+                }
             });
         },
 
         /**
          * the clear action for a date button
+         *
+         * @param {DOMNode} Elm - parent node, this element in which is searched for
          */
         $clearDateBtn : function(Btn)
         {

@@ -56,6 +56,17 @@ define('classes/users/User', [
         },
 
         /**
+         * Return the user name
+         *
+         * @method QUI.classes.users.User#getName
+         * @return {String}
+         */
+        getName : function()
+        {
+            return this.getAttribute( 'username' );
+        },
+
+        /**
          * Load the user attributes from the db
          *
          * @method QUI.classes.users.User#load

@@ -22,6 +22,8 @@
 
 module.exports = function(grunt)
 {
+    "use strict";
+
     // External libs.
     var uglifyjs = require('uglify-js');
     var gzip     = require('gzip-js');

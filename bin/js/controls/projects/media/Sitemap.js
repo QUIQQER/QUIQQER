@@ -32,6 +32,8 @@ define('controls/projects/media/Sitemap', [
      * @fires onItemClick [Item, Control]
      *
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.projects.media.Sitemap = new Class({
 

@@ -22,6 +22,8 @@ define('controls/projects/media/FolderWindow', [
 
     /**
      * @class QUI.controls.projects.media.FolderWindow
+     *
+     * @memberof! <global>
      */
     QUI.controls.projects.media.FolderWindow = new Class({
 

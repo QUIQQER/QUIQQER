@@ -25,6 +25,8 @@ define('controls/projects/media/Window', [
      * @fires onCancel [Win]
       *
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.projects.media.Window = new Class({
 

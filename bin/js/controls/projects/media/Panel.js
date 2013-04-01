@@ -45,6 +45,8 @@ define('controls/projects/media/Panel', [
      *
      * @param {QUI.classes.projects.Media} Media
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.projects.media.Panel = new Class({
 

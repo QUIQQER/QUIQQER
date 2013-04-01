@@ -23,8 +23,6 @@ function ajax_site_categories_get($project, $lang, $id)
         $result[] = $Itm->getAttributes();
     }
 
-    \System_Log::writeRecursive( $result );
-
     return $result;
 }
 

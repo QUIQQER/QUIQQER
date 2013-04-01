@@ -18,6 +18,12 @@ define('controls/projects/media/PanelContextMenu', [
 
     QUI.namespace( 'controls.projects.media' );
 
+    /**
+     * @class QUI.controls.projects.media.PanelContextMenu
+     * @param {QUI.controls.projects.media.Panel} MediaPanel
+     *
+     * @memberof! <global>
+     */
     QUI.controls.projects.media.PanelContextMenu = new Class({
 
         /**

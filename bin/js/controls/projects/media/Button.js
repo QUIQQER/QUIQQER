@@ -29,6 +29,8 @@ define('controls/projects/media/Button', [
      * @fires onCancel [Win]
       *
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.projects.media.Button = new Class({
 

@@ -33,6 +33,8 @@ define('controls/projects/media/FilePanel', [
      *
      * @param {QUI.classes.projects.media.File} File
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.projects.media.FilePanel = new Class({
 
@@ -189,6 +191,11 @@ define('controls/projects/media/FilePanel', [
             }).delay( 100, CategoryBar );
         },
 
+        /**
+         * Unload the panel
+         *
+         * @method QUI.controls.projects.media.FilePanel#unload
+         */
         unload : function()
         {
 
@@ -196,6 +203,8 @@ define('controls/projects/media/FilePanel', [
 
         /**
          * Refresh the panel
+         *
+         * @method QUI.controls.projects.media.FilePanel#refresh
          */
         refresh : function()
         {

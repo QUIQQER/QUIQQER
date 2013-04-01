@@ -25,8 +25,9 @@ define('controls/projects/media/Manager', [
      * Media administration
      *
      * @class QUI.controls.projects.media.Manager
-     *
      * @param {Object} options
+     *
+     * @memberof! <global>
      */
     QUI.controls.projects.media.Manager = new Class({
 
