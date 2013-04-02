@@ -32,8 +32,8 @@ define('controls/users/Panel', [
      */
     QUI.controls.users.Panel = new Class({
 
-        Implements : [ Panel ],
-        Type       : 'QUI.controls.users.Panel',
+        Extends : Panel,
+        Type    : 'QUI.controls.users.Panel',
 
         Binds : [
             '$onCreate',
@@ -65,7 +65,7 @@ define('controls/users/Panel', [
                 tabbar : false
             });
 
-            this.init( options );
+            this.parent( options );
 
             this.$Grid      = null;
             this.$Container = null;

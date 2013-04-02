@@ -27,8 +27,8 @@
 /** Sheet container
  =============================================== */
 .qui-permissions-select-sheet h1 {
-	margin-bottom: 20px;
-	text-align: center;
+    margin-bottom: 20px;
+    text-align: center;
 }
 
 .qui-permissions-select-sheet .buttons {
@@ -56,7 +56,7 @@
 }
 
 .qui-permissions-select-sheet .search h2 {
-	margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 /** Title
@@ -68,7 +68,7 @@
 }
 
 .bind-info .user {
-	margin-left: 10px;
+    margin-left: 10px;
     padding-left: 20px;
     background: url('/bin/16x16/user.png') no-repeat left center;
 }
@@ -80,4 +80,18 @@
 }
 
 
+/** Content
+ =============================================== */
+
+.qui-permission-entry.disabled {
+    color: #999999;
+}
+
+.qui-permission-entry.disabled input {
+    display: none;
+}
+
+.qui-permissions-content input[type="checkbox"] {
+    margin-top: 5px;
+}
 

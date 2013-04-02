@@ -17,74 +17,74 @@ class Utils_Request_Ajax extends QDOM
      * Available ajax functions
      * @var array
      */
-	static $_functions = array();
+    static $_functions = array();
 
-	/**
-	 * registered permissions from available ajax functions
-	 * @var array
-	 */
-	static $_permissions = array();
+    /**
+     * registered permissions from available ajax functions
+     * @var array
+     */
+    static $_permissions = array();
 
-	/**
-	 * constructor
-	 *
-	 * @param array $params
-	 */
-	public function __construct($params=array())
-	{
-		self::setAttributes( $params );
+    /**
+     * constructor
+     *
+     * @param array $params
+     */
+    public function __construct($params=array())
+    {
+        self::setAttributes( $params );
 
-		// Shutdown Handling
-	    if ( class_exists( 'QUI' ) )
-		{
-    		$ErrorHandler = QUI::getErrorHandler();
-    		$ErrorHandler->registerShutdown( array($this, 'onShutdown') );
-		}
-	}
+        // Shutdown Handling
+        if ( class_exists( 'QUI' ) )
+        {
+            $ErrorHandler = QUI::getErrorHandler();
+            $ErrorHandler->registerShutdown( array($this, 'onShutdown') );
+        }
+    }
 
-	/**
-	 * Registered functions which are available via Ajax
-	 *
-	 * @param String $reg_function - Function which exists in Ajax
-	 * @param String $reg_vars     - Variables which has the function of
-	 * @param String $user_perm    - rights, optional
-	 */
-	static function register($reg_function, $reg_vars=array(), $user_perm=false)
-	{
-		if ( !is_string( $reg_function ) ) {
-			return false;
-		}
+    /**
+     * Registered functions which are available via Ajax
+     *
+     * @param String $reg_function - Function which exists in Ajax
+     * @param String $reg_vars     - Variables which has the function of
+     * @param String $user_perm    - rights, optional
+     */
+    static function register($reg_function, $reg_vars=array(), $user_perm=false)
+    {
+        if ( !is_string( $reg_function ) ) {
+            return false;
+        }
 
-		if ( !is_array( $reg_vars ) ) {
-			$reg_vars = array();
-		}
+        if ( !is_array( $reg_vars ) ) {
+            $reg_vars = array();
+        }
 
-		self::$_functions[ $reg_function ] = $reg_vars;
+        self::$_functions[ $reg_function ] = $reg_vars;
 
-		if ( $user_perm ) {
-		    self::$_permissions[ $reg_function ] = $user_perm;
-		}
-	}
+        if ( $user_perm ) {
+            self::$_permissions[ $reg_function ] = $user_perm;
+        }
+    }
 
-	/**
-	 * Checks the rights if a function has a checkPermissions routine
-	 *
-	 * @param String|Closure $reg_function
-	 * @throws QException
-	 */
-	static function checkPermissions($reg_function)
-	{
+    /**
+     * Checks the rights if a function has a checkPermissions routine
+     *
+     * @param String|Closure $reg_function
+     * @throws QException
+     */
+    static function checkPermissions($reg_function)
+    {
         if ( !isset( self::$_permissions[ $reg_function ] ) ) {
             return;
         }
 
         $function = self::$_permissions[ $reg_function ];
 
-	    if ( is_object( $function ) && get_class( $function ) === 'Closure' )
-	    {
+        if ( is_object( $function ) && get_class( $function ) === 'Closure' )
+        {
             $function();
-	        return;
-	    }
+            return;
+        }
 
 
         if ( is_string( $function ) ) {
@@ -111,129 +111,129 @@ class Utils_Request_Ajax extends QDOM
             call_user_func( $func );
         }
 
-	}
+    }
 
-	/**
-	 * ajax processing
-	 *
-	 * @return false|JSON
-	 */
-	public function call()
-	{
-		if ( !isset( $_REQUEST['_rf'] ) ||
-			 !is_string( $_REQUEST['_rf'] ) &&
-			 count( $_REQUEST['_rf'] ) > 1 )
-		{
-			return $this->writeException(
-			    new QException( 'Bad Request', 400 )
+    /**
+     * ajax processing
+     *
+     * @return false|JSON
+     */
+    public function call()
+    {
+        if ( !isset( $_REQUEST['_rf'] ) ||
+             !is_string( $_REQUEST['_rf'] ) &&
+             count( $_REQUEST['_rf'] ) > 1 )
+        {
+            return $this->writeException(
+                new QException( 'Bad Request', 400 )
             );
-		}
+        }
 
-		$_rfs   = json_decode( $_REQUEST['_rf'], true );
-		$result = array();
+        $_rfs   = json_decode( $_REQUEST['_rf'], true );
+        $result = array();
 
-		foreach ( $_rfs as $_rf ) {
+        foreach ( $_rfs as $_rf ) {
             $result[ $_rf ] = $this->_call_rf( $_rf );
-		}
+        }
 
-		if ( QUI::getMessagesHandler() ) {
-			$result['message_handler'] = QUI::getMessagesHandler()->getMessagesAsArray();
-		}
+        if ( QUI::getMessagesHandler() ) {
+            $result['message_handler'] = QUI::getMessagesHandler()->getMessagesAsArray();
+        }
 
-		return '<quiqqer>'. json_encode( $result ) .'</quiqqer>';
-	}
+        return '<quiqqer>'. json_encode( $result ) .'</quiqqer>';
+    }
 
-	/**
-	 * Internal call of an ajax function
-	 *
-	 * @param String $_rf
-	 * @return Array - the result
-	 */
+    /**
+     * Internal call of an ajax function
+     *
+     * @param String $_rf
+     * @return Array - the result
+     */
     protected function _call_rf($_rf)
-	{
-		if ( !isset( self::$_functions[ $_rf ] ) )
-		{
-		    if ( defined( 'DEVELOPMENT' ) && DEVELOPMENT ) {
+    {
+        if ( !isset( self::$_functions[ $_rf ] ) )
+        {
+            if ( defined( 'DEVELOPMENT' ) && DEVELOPMENT ) {
                 System_Log::write( 'Funktion '. $_rf .' nicht gefunden' );
-		    }
+            }
 
-		    return $this->writeException(
-		        new QException( 'Bad Request', 400 )
-		    );
-		}
+            return $this->writeException(
+                new QException( 'Bad Request', 400 )
+            );
+        }
 
-		// Rechte prüfung
-		try
-		{
-		    $this->checkPermissions( $_rf );
-		} catch ( QException $e )
-		{
-			return $this->writeException( $e );
+        // Rechte prüfung
+        try
+        {
+            $this->checkPermissions( $_rf );
+        } catch ( QException $e )
+        {
+            return $this->writeException( $e );
 
-		} catch ( QExceptionDBError $e )
-		{
-			return $this->writeException( $e );
-		}
+        } catch ( QExceptionDBError $e )
+        {
+            return $this->writeException( $e );
+        }
 
 
-		// Request vars
-		if ( isset( $_REQUEST['pcsg_uri'] ) ) {
-			$_SERVER['REQUEST_URI'] = $_REQUEST['pcsg_uri'];
-		}
+        // Request vars
+        if ( isset( $_REQUEST['pcsg_uri'] ) ) {
+            $_SERVER['REQUEST_URI'] = $_REQUEST['pcsg_uri'];
+        }
 
-		$params = array();
+        $params = array();
 
-		// Params
-		foreach ( self::$_functions[ $_rf ] as $var )
-		{
-			if ( !isset($_REQUEST[ $var ]) )
-			{
-				$params[ $var ] = '';
-				continue;
-			}
+        // Params
+        foreach ( self::$_functions[ $_rf ] as $var )
+        {
+            if ( !isset($_REQUEST[ $var ]) )
+            {
+                $params[ $var ] = '';
+                continue;
+            }
 
-			$value = $_REQUEST[ $var ];
+            $value = $_REQUEST[ $var ];
 
-			if ( is_object( $value ) )
-			{
+            if ( is_object( $value ) )
+            {
                 $params[ $var ] = $value;
                 continue;
-			}
+            }
 
-			$value = urldecode( $value );
+            $value = urldecode( $value );
 
-			if ( get_magic_quotes_gpc() )
-			{
-				$params[ $var ] = stripslashes( $value );
-			} else
-			{
-				$params[ $var ] = $value;
-			}
-		}
+            if ( get_magic_quotes_gpc() )
+            {
+                $params[ $var ] = stripslashes( $value );
+            } else
+            {
+                $params[ $var ] = $value;
+            }
+        }
 
-		try
-		{
-			$return = array(
-				'result' => call_user_func_array( $_rf, $params )
-			);
+        try
+        {
+            $return = array(
+                'result' => call_user_func_array( $_rf, $params )
+            );
 
-		} catch ( QException $e )
-		{
-			return $this->writeException( $e );
-
-		} catch ( PDOException $e )
-		{
+        } catch ( QException $e )
+        {
             return $this->writeException( $e );
-		} catch ( QExceptionDBError $e )
-		{
-			return $this->writeException( $e );
-		}
 
-		// json errors bekommen
-		if ( function_exists('json_last_error') )
-		{
-        	switch ( json_last_error() )
-        	{
+        } catch ( PDOException $e )
+        {
+            return $this->writeException( $e );
+        } catch ( QExceptionDBError $e )
+        {
+            return $this->writeException( $e );
+        }
+
+        // json errors bekommen
+        if ( function_exists( 'json_last_error' ) )
+        {
+            switch ( json_last_error() )
+            {
                 case JSON_ERROR_NONE:
                     // alles ok
                 break;
@@ -244,75 +244,76 @@ class Utils_Request_Ajax extends QDOM
                 case JSON_ERROR_SYNTAX:
                 case JSON_ERROR_UTF8:
                 default:
-                    QException::setErrorLog(
-                    	'JSON Error: '. json_last_error() . ' :: '. $return
+                    \System_Log::write(
+                        'JSON Error: '. json_last_error() . ' :: '. print_r( $return, true ),
+                        'error'
                     );
                 break;
-        	}
-		}
+            }
+        }
 
-		return $return;
-	}
+        return $return;
+    }
 
-	/**
-	 * Exceptions xml / json return
-	 *
-	 * @param QException|QExceptionDBError $Exception
-	 * @return Array
-	 */
-	public function writeException($Exception)
-	{
-		$return = array();
+    /**
+     * Exceptions xml / json return
+     *
+     * @param QException|QExceptionDBError $Exception
+     * @return Array
+     */
+    public function writeException($Exception)
+    {
+        $return = array();
 
-		switch ( get_class( $Exception ) )
-		{
-			default:
-				$return['Exception']['message'] = $Exception->getMessage();
-				$return['Exception']['code']    = $Exception->getCode();
-				$return['Exception']['type']    = $Exception->getType();
-			break;
+        switch ( get_class( $Exception ) )
+        {
+            default:
+                $return['Exception']['message'] = $Exception->getMessage();
+                $return['Exception']['code']    = $Exception->getCode();
+                $return['Exception']['type']    = $Exception->getType();
+            break;
 
-			case 'PDOException':
-			case 'QExceptionDBError':
+            case 'PDOException':
+            case 'QExceptionDBError':
                 // DB Fehler immer loggen
-			    System_Log::writeException( $Exception );
+                System_Log::writeException( $Exception );
 
-			    if ( $this->getAttribute('db_errors') )
-			    {
-    				$return['ExceptionDBError']['message'] = $Exception->getMessage();
-    				$return['ExceptionDBError']['code']    = $Exception->getCode();
-			    } else
-			    {
-			        // Standardfehler rausbringen
+                if ( $this->getAttribute('db_errors') )
+                {
+                    $return['ExceptionDBError']['message'] = $Exception->getMessage();
+                    $return['ExceptionDBError']['code']    = $Exception->getCode();
+                } else
+                {
+                    // Standardfehler rausbringen
                     $return['Exception']['message'] = 'Internal Server Error';
-    				$return['Exception']['code']    = 500;
-    		    }
-			break;
-		}
+                    $return['Exception']['code']    = 500;
+                }
+            break;
+        }
 
-		return $return;
-	}
+        return $return;
+    }
 
-	/**
-	 * Ajax Timeout handling
-	 */
-	public function onShutdown()
-	{
-	    switch ( connection_status() )
-		{
-			case 2: // timeout
+    /**
+     * Ajax Timeout handling
+     */
+    public function onShutdown()
+    {
+        switch ( connection_status() )
+        {
+            case 2: // timeout
 
-				$return = array(
-					'Exception' => array(
-						'message' => 'Zeitüberschreitung der Anfrage. Bitte versuchen Sie es erneut oder zu einem späteren Zeitpunkt.',
-						'code'    => 504
-					)
-				);
+                $return = array(
+                    'Exception' => array(
+                        'message' => 'Zeitüberschreitung der Anfrage. Bitte versuchen Sie es erneut oder zu einem späteren Zeitpunkt.',
+                        'code'    => 504
+                    )
+                );
 
-				echo '<quiqqer>'. json_encode($return) .'</quiqqer>';
-			break;
-		}
-	}
+                echo '<quiqqer>'. json_encode($return) .'</quiqqer>';
+            break;
+        }
+    }
 }
 
 ?>

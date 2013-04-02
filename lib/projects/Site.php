@@ -1285,14 +1285,14 @@ class Projects_Site extends QDOM
                 $this->_getUrl($this->getId());
 
                 foreach (array_reverse($this->_parents) as $parent) {
-                    $url .= Rewrite::replaceUrlSigns( $parent, true ).'/'; // URL auch Slash ersetzen
+                    $url .= \QUI_Rewrite::replaceUrlSigns( $parent, true ).'/'; // URL auch Slash ersetzen
                 }
             }
 
             $this->_url = $url;
         }
 
-        $url .= Rewrite::replaceUrlSigns($this->getAttribute('name'), true);
+        $url .= \QUI_Rewrite::replaceUrlSigns($this->getAttribute('name'), true);
 
         foreach ($params as $param => $value)
         {
@@ -1301,7 +1301,7 @@ class Projects_Site extends QDOM
             }
 
             if ($param != 'suffix') {
-                $url .= Rewrite::URL_PARAM_SEPERATOR . $param . Rewrite::URL_PARAM_SEPERATOR . $value;
+                $url .= \QUI_Rewrite::URL_PARAM_SEPERATOR . $param . \QUI_Rewrite::URL_PARAM_SEPERATOR . $value;
             }
         }
 

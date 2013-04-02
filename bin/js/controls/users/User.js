@@ -31,8 +31,8 @@ define('controls/users/User', [
      */
     QUI.controls.users.User = new Class({
 
-        Implements : [ Panel ],
-        Type       : 'QUI.controls.users.User',
+        Extends : Panel,
+        Type    : 'QUI.controls.users.User',
 
         Binds : [
             'openPermissions',

@@ -48,14 +48,17 @@ define('controls/usersAndGroups/Input', [
             'close',
             'fireSearch',
             'update',
-            '$onGroupUserDestroy'
+
+            '$onGroupUserDestroy',
+            '$onInputFocus'
         ],
 
         options : {
             max      : false,
             multible : true,
-            name     : '',
-            styles   : false
+            name     : '',    // string
+            styles   : false, // object
+            label    : false  // text string or a <label> DOMNode Element
         },
 
         initialize : function(options, Input)
@@ -70,36 +73,20 @@ define('controls/usersAndGroups/Input', [
 
             this.$search = false;
             this.$values = [];
-
-            if ( Input.value === '' ) {
-                return;
-            }
-
-            var val = Input.value.split(',');
-
-            for ( var i = 0, len = val.length; i < len; i++ )
-            {
-                switch ( val[ i ].substr( 0, 1 ) )
-                {
-                    case 'u':
-                        this.addUser( val[ i ].substr( 1 ) );
-                    break;
-
-                    case 'g':
-                        this.addGroup( val[ i ].substr( 1 ) );
-                    break;
-                }
-            }
         },
 
         /**
          * Return the DOMNode of the users and groups search
          *
          * @method QUI.controls.usersAndGroups.Input#create
-         * @return {DOMNode}
+         * @return {DOMNode} The main DOM-Node Element
          */
         create : function()
         {
+            if ( this.$Elm ) {
+                return this.$Elm;
+            }
+
             this.$Elm = new Element('div', {
                 'class' : 'qui-users-and-groups',
                 'data-quiid' : this.getId()
@@ -119,7 +106,20 @@ define('controls/usersAndGroups/Input', [
                 this.$Elm.setStyles( this.getAttribute( 'styles' ) );
             }
 
-            this.$Input.set( 'type', 'hidden' );
+            this.$Input.set({
+                styles : {
+                    opacity  : 0,
+                    position : 'absolute',
+                    zIndex   : 1,
+                    left     : 5,
+                    top      : 5,
+                    cursor   : 'pointer'
+                },
+                events : {
+                    focus : this.$onInputFocus
+                }
+            });
+
 
             this.$List = new Element('div', {
                 'class' : 'qui-users-and-groups-list radius5'
@@ -167,8 +167,39 @@ define('controls/usersAndGroups/Input', [
                 }
             }).inject( document.body );
 
-            // load values
+            if ( this.getAttribute( 'label' ) )
+            {
+                var Label = this.getAttribute( 'label' );
 
+                if ( typeof this.getAttribute( 'label' ).nodeName === 'undefined' )
+                {
+                    Label = new Element( 'label', {
+                        html : this.getAttribute( 'label' )
+                    });
+                }
+
+                Label.inject( this.$Elm, 'top' );
+            }
+
+            // load values
+            if ( !this.$Input.value || this.$Input.value !== '' )
+            {
+                var val = this.$Input.value.split( ',' );
+
+                for ( var i = 0, len = val.length; i < len; i++ )
+                {
+                    switch ( val[ i ].substr( 0, 1 ) )
+                    {
+                        case 'u':
+                            this.addUser( val[ i ].substr( 1 ) );
+                        break;
+
+                        case 'g':
+                            this.addGroup( val[ i ].substr( 1 ) );
+                        break;
+                    }
+                }
+            }
 
             return this.$Elm;
         },
@@ -335,7 +366,7 @@ define('controls/usersAndGroups/Input', [
          * @param {Integer} id  - id of the group or the user
          * @param {String} type - group or user
          *
-         * @return {this}
+         * @return {this} self
          */
         add : function(id, type)
         {
@@ -351,7 +382,7 @@ define('controls/usersAndGroups/Input', [
          *
          * @method QUI.controls.usersAndGroups.Input#addGroup
          * @param {Integer} id - id of the group
-         * @return {this}
+         * @return {this} self
          */
         addGroup : function(id)
         {
@@ -376,7 +407,7 @@ define('controls/usersAndGroups/Input', [
          *
          * @method QUI.controls.usersAndGroups.Input#addUser
          * @param {Integer} id - id of the user
-         * @return {this}
+         * @return {this} self
          */
         addUser : function(id)
         {
@@ -397,10 +428,23 @@ define('controls/usersAndGroups/Input', [
         },
 
         /**
+         * Add a object to the list
+         * eq: over dragdrop
+         *
+         * @param Obj
+         * @return {this} self
+         */
+        appendChild : function(Obj)
+        {
+
+            return this;
+        },
+
+        /**
          * keyup - users dropdown selection one step up
          *
          * @method QUI.controls.usersAndGroups.Input#up
-         * @return {this}
+         * @return {this} self
          */
         up : function()
         {
@@ -432,7 +476,7 @@ define('controls/usersAndGroups/Input', [
          * keydown - users dropdown selection one step down
          *
          * @method QUI.controls.usersAndGroups.Input#down
-         * @return {this}
+         * @return {this} self
          */
         down : function()
         {
@@ -487,12 +531,12 @@ define('controls/usersAndGroups/Input', [
          * Set the focus to the input field
          *
          * @method QUI.controls.usersAndGroups.Input#focus
-         * @return {this}
+         * @return {this} self
          */
         focus : function()
         {
-            if ( this.$Input ) {
-                this.$Input.focus();
+            if ( this.$Search ) {
+                this.$Search.focus();
             }
 
             return this;
@@ -500,15 +544,21 @@ define('controls/usersAndGroups/Input', [
 
         /**
          * Write the ids to the real input field
+         *
+         * @method QUI.controls.usersAndGroups.Input#$refreshValues
          */
         $refreshValues : function()
         {
             this.$Input.value = this.$values.join( ',' );
+            this.$Input.fireEvent( 'change', [{
+                target : this.$Input
+            }] );
         },
 
         /**
          * event : if a user or a groupd would be destroyed
          *
+         * @method QUI.controls.usersAndGroups.Input#$onGroupUserDestroy
          * @param {QUI.controls.groups.Entry|QUI.controls.users.Entry} Item
          */
         $onGroupUserDestroy : function(Item)
@@ -531,6 +581,20 @@ define('controls/usersAndGroups/Input', [
 
             this.$values = this.$values.erase( id );
             this.$refreshValues();
+        },
+
+        /**
+         * event : on input focus, if the real input field get the focus
+         *
+         * @param {DOMEvent} event
+         */
+        $onInputFocus : function(event)
+        {
+            if ( typeof event !== 'undefined' ) {
+                event.stop();
+            }
+
+            this.focus();
         }
     });
 

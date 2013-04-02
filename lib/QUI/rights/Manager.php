@@ -85,6 +85,7 @@ class QUI_Rights_Manager
 
             case 'Projects_Site':
             case 'Projects_Site_Edit':
+            case 'Projects_Site_OnlyDB':
                 return 'site';
             break;
 
@@ -420,17 +421,14 @@ class QUI_Rights_Manager
         $data  = $this->_getData( $Site );
         $_list = $this->getPermissionList( 'site' );
 
+        $permissions = array();
+
         foreach ( $_list as $permission => $params ) {
             $permissions[ $permission ] = false;
         }
 
-        foreach ( $data as $entry )
-        {
-            if ( !isset( $permissions[ $entry['permission'] ] ) ) {
-                continue;
-            }
-
-            $permissions[ $entry['permission'] ] = json_decode( $entry['value'], true );
+        foreach ( $data as $permission => $value ) {
+            $permissions[ $permission ] = $value;
         }
 
         return $permissions;
@@ -442,6 +440,9 @@ class QUI_Rights_Manager
      * @param Users_User|Groups_Group|
      * 	      Projects_Project|Projects_Site|Projects_Site_Edit $Obj
      * @param Array $permissions - Array of permissions
+     *
+     * @todo permissions for media
+     * @todo permissions for project
      */
     public function setPermissions($Obj, $permissions)
     {
@@ -452,12 +453,17 @@ class QUI_Rights_Manager
             case 'Users_User':
             case 'Groups_Group':
             case 'Projects_Project':
+            break;
+
             case 'Projects_Site':
             case 'Projects_Site_Edit':
+            case 'Projects_Site_OnlyDB':
+                $this->setSitePermissions( $Obj, $permissions );
+                return;
             break;
 
             default:
-                throw new QException(
+                throw new \QException(
                     'Cannot set Permissions. Object not allowed'
                 );
             break;
@@ -479,44 +485,10 @@ class QUI_Rights_Manager
                 continue;
             }
 
-            $val = $permissions[ $permission ];
-
-            switch ( $params['type'] )
-            {
-                case 'int':
-                    $val = (int)$val;
-                break;
-
-                case 'users_and_groups':
-                    // u1234566775 <- user-id
-                    // g1234566775 <- group-id
-                    $val = preg_replace( '/[^0-9,ug]/', '', $val );
-                break;
-
-                case 'users':
-                case 'groups':
-                    $val = preg_replace( '/[^0-9,]/', '', $val );
-                break;
-
-                case 'user':
-                case 'group':
-                    $val = preg_replace( '/[^0-9]/', '', $val );
-                break;
-
-                case 'array':
-                    $val = \Utils_Security_Orthos::clearArray( $val );
-                break;
-
-                case 'string':
-                    $val = \Utils_Security_Orthos::clearMySQL( $val );
-                break;
-
-                default:
-                    $val = (bool)$val;
-                break;
-            }
-
-            $data[ $permission ] = $val; // data check
+            $data[ $permission ] = $this->_cleanValue(
+                $params['type'],
+                $permissions[ $permission ]
+            );
         }
 
         $DataBase = \QUI::getDataBase();
@@ -524,7 +496,6 @@ class QUI_Rights_Manager
 
         $table2users    = $table .'2users';
         $table2groups   = $table .'2groups';
-        $table2sites    = $table .'2sites';
         $table2projects = $table .'2projects';
         $table2media    = $table .'2media';
 
@@ -582,34 +553,8 @@ class QUI_Rights_Manager
                     $table2projects,
                     array( 'permissions' => json_encode( $data ) ),
                     array(
-                        'project' => $Obj->getAttribute( 'project' ),
-                        'lang'    => $Obj->getAttribute( 'lang' )
-                    )
-                );
-            break;
-
-            case 'site':
-                $Project = $Obj->getProject();
-
-                if ( !isset( $_data[0] ) )
-                {
-                    $DataBase->insert(
-                        $table2sites,
-                        array(
-                            'project' => $Project->getAttribute( 'project' ),
-                            'lang'    => $Project->getAttribute( 'lang' ),
-                            'id'      => $Obj->getId()
-                        )
-                    );
-                }
-
-                $DataBase->update(
-                    $table2sites,
-                    array( 'permissions' => json_encode( $data ) ),
-                    array(
-                        'project' => $Project->getAttribute( 'project' ),
-                        'lang'    => $Project->getAttribute( 'lang' ),
-                        'id'      => $Obj->getId()
+                        'project' => $Obj->getName(),
+                        'lang'    => $Obj->getLang()
                     )
                 );
             break;
@@ -627,6 +572,8 @@ class QUI_Rights_Manager
                             'id'      => $Obj->getId()
                         )
                     );
+
+                    return;
                 }
 
                 $DataBase->update(
@@ -643,7 +590,107 @@ class QUI_Rights_Manager
     }
 
     /**
-     * Return the data of an object an by an area
+     * Set the permissions for a site object
+     *
+     * @param Projects_Site|Projects_Site_Edit|Projects_Site_OnlyDB $Site
+     * @param Array $permissions - Array of permissions
+     */
+    public function setSitePermissions($Site, $permissions)
+    {
+        switch ( get_class( $Site ) )
+        {
+            case 'Projects_Site':
+            case 'Projects_Site_Edit':
+            case 'Projects_Site_OnlyDB':
+            break;
+
+            default:
+                return;
+        }
+
+        $_data = $this->_getData( $Site );
+        $list  = $this->getPermissionList( 'site' );
+
+        // look at permission list and cleanup the values
+        foreach ( $list as $permission => $params )
+        {
+            if ( !isset( $permissions[ $permission ] ) ) {
+                continue;
+            }
+
+            $data[ $permission ] = $this->_cleanValue(
+                $params['type'],
+                $permissions[ $permission ]
+            );
+        }
+
+        // set add permissions
+        foreach ( $data as $permission => $value )
+        {
+            if ( !isset( $_data[ $permission ] ) )
+            {
+                $this->_addSitePermission( $Site, $permission, $value );
+                continue;
+            }
+
+            $this->_setSitePermission( $Site, $permission, $value );
+        }
+    }
+
+    /**
+     * Updates the permission entry for the site
+     *
+     * @param unknown $Site
+     * @param String $permission
+     * @param String|Integer $value
+     */
+    protected function _setSitePermission($Site, $permission, $value)
+    {
+        $Project = $Site->getProject();
+        $table   = \QUI::getDBTableName( self::TABLE );
+
+        $table2sites = $table .'2sites';
+
+        \QUI::getDataBase()->update(
+            $table2sites,
+            array( 'value' => $value ),
+            array(
+                'project'    => $Project->getName(),
+                'lang'       => $Project->getLang(),
+                'id'         => $Site->getId(),
+                'permission' => $permission
+            )
+        );
+    }
+
+    /**
+     * Add a new permission entry for site
+     *
+     * @param unknown $Site
+     * @param String $permission
+     * @param String|Integer $value
+     */
+    protected function _addSitePermission($Site, $permission, $value)
+    {
+        $Project = $Site->getProject();
+        $table   = \QUI::getDBTableName( self::TABLE );
+
+        $table2sites = $table .'2sites';
+
+        \QUI::getDataBase()->insert(
+            $table2sites,
+            array(
+                'project'    => $Project->getName(),
+                'lang'       => $Project->getLang(),
+                'id'         => $Site->getId(),
+                'permission' => $permission,
+                'value'      => $value
+            )
+        );
+    }
+
+    /**
+     * Return the permissions data of an object
      *
      * @param unknown_type $Obj
      * @return Array
@@ -683,8 +730,8 @@ class QUI_Rights_Manager
             return $DataBase->fetch(array(
                 'from'  => $table .'2projects',
                 'where' => array(
-                    'project' => $Obj->getAttribute( 'project' ),
-                    'lang'    => $Obj->getAttribute( 'lang' )
+                    'project' => $Obj->getName(),
+                    'lang'    => $Obj->getLang()
                 ),
                 'limit' => 1
             ));
@@ -694,15 +741,22 @@ class QUI_Rights_Manager
         {
             $Project = $Obj->getProject();
 
-            return $DataBase->fetch(array(
+            $data = $DataBase->fetch(array(
                 'from'  => $table .'2sites',
                 'where' => array(
-                    'project' => $Project->getAttribute( 'project' ),
-                    'lang'    => $Project->getAttribute( 'lang' ),
+                    'project' => $Project->getName(),
+                    'lang'    => $Project->getLang(),
                     'id'      => $Obj->getId()
-                ),
-                'limit' => 1
+                )
             ));
+
+            $result = array();
+
+            foreach ( $data as $entry ) {
+                $result[ $entry['permission'] ] = $entry['value'];
+            }
+
+            return $result;
         }
 
         if ( $area === 'media' )
@@ -712,15 +766,62 @@ class QUI_Rights_Manager
             return $DataBase->fetch(array(
                 'from'  => $table .'2media',
                 'where' => array(
-                    'project' => $Project->getAttribute( 'project' ),
-                    'lang'    => $Project->getAttribute( 'lang' ),
+                    'project' => $Project->getName(),
+                    'lang'    => $Project->getLang(),
                     'id'      => $Obj->getId()
-                ),
-                'limit' => 1
+                )
             ));
         }
 
         return false;
+    }
+
+    /**
+     * Cleanup the value for the type
+     *
+     * @param String $type
+     * @param String|Integer $val
+     *
+     * @return String|Integer
+     */
+    protected function _cleanValue($type, $val)
+    {
+        switch ( $type )
+        {
+            case 'int':
+                $val = (int)$val;
+                break;
+
+            case 'users_and_groups':
+                // u1234566775 <- user-id
+                // g1234566775 <- group-id
+                $val = preg_replace( '/[^0-9,ug]/', '', $val );
+                break;
+
+            case 'users':
+            case 'groups':
+                $val = preg_replace( '/[^0-9,]/', '', $val );
+                break;
+
+            case 'user':
+            case 'group':
+                $val = preg_replace( '/[^0-9]/', '', $val );
+                break;
+
+            case 'array':
+                $val = \Utils_Security_Orthos::clearArray( $val );
+                break;
+
+            case 'string':
+                $val = \Utils_Security_Orthos::clearMySQL( $val );
+                break;
+
+            default:
+                $val = (bool)$val;
+                break;
+        }
+
+        return $val;
     }
 
 

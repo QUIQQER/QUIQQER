@@ -29,7 +29,7 @@ function ajax_permissions_get($params, $btype)
 
         case 'QUI.classes.projects.Site':
             $Project = \QUI::getProject( $params['project'], $params['lang'] );
-            $Bind    = $Site->get( $params['project'] );
+            $Bind    = $Project->get( $params['id'] );
         break;
 
         default:

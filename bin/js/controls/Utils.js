@@ -76,22 +76,22 @@ define('controls/Utils', function()
             }
 
             // Groups
-            if ( Elm.getElement( 'input[class="groups"]' ) ) {
+            if ( Elm.getElement( 'input.groups' ) ) {
                 this.parseGroups( Elm );
             }
 
             // Media Types
-            if ( Elm.getElement( 'input[class="media-image"]' ) ) {
+            if ( Elm.getElement( 'input.media-image' ) ) {
                 this.parseMediaInput( Elm );
             }
 
             // Project Types
-            if ( Elm.getElement( 'input[class="project-types"]' ) ) {
+            if ( Elm.getElement( 'input.project-types' ) ) {
                 this.parseProjectTypes( Elm );
             }
 
             // User And Groups
-            if ( Elm.getElement( 'input[class="users_and_groups"]' ) ) {
+            if ( Elm.getElement( 'input.users_and_groups' ) ) {
                 this.parseUserAndGroups( Elm );
             }
 
@@ -200,7 +200,7 @@ define('controls/Utils', function()
             {
                 var i, len, elements;
 
-                elements = Elm.getElements( 'input[class="groups"]' );
+                elements = Elm.getElements( 'input.groups' );
 
                 for ( i = 0, len = elements.length; i < len; i++ )
                 {
@@ -223,7 +223,7 @@ define('controls/Utils', function()
             {
                 var i, len, elements;
 
-                elements = Elm.getElements( 'input[class="media-image"]' );
+                elements = Elm.getElements( 'input.media-image' );
 
                 for ( i = 0, len = elements.length; i < len; i++ )
                 {
@@ -246,7 +246,7 @@ define('controls/Utils', function()
             {
                 var i, len, elements;
 
-                elements = Elm.getElements( 'input[class="project-types"]' );
+                elements = Elm.getElements( 'input.project-types' );
 
                 for ( i = 0, len = elements.length; i < len; i++ )
                 {
@@ -267,16 +267,27 @@ define('controls/Utils', function()
         {
             require(['controls/usersAndGroups/Input'], function()
             {
-                var i, len, elements;
+                var i, len, elements, Label, Control;
 
                 elements = Elm.getElements( '.users_and_groups' );
 
                 for ( i = 0, len = elements.length; i < len; i++ )
                 {
-                    new QUI.controls.usersAndGroups.Input(
+                    Control = new QUI.controls.usersAndGroups.Input(
                         null,
                         elements[ i ]
-                    ).create();
+                    );
+
+                    if ( elements[ i ].id )
+                    {
+                        Label = document.getElement( 'label[for="'+ elements[ i ].id +'"]' );
+
+                        if ( Label ) {
+                            Control.setAttribute( 'label', Label );
+                        }
+                    }
+
+                    Control.create();
                 }
             });
         },
@@ -288,7 +299,7 @@ define('controls/Utils', function()
          */
         $clearDateBtn : function(Btn)
         {
-            Btn.getAttribute('Input').value = '';
+            Btn.getAttribute( 'Input' ).value = '';
         }
     };
 

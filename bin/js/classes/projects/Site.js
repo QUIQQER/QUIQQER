@@ -44,7 +44,15 @@ define('classes/projects/Site', [
      */
     QUI.classes.projects.Site = new Class({
 
-        Implements: [ DOM ],
+        Extends : DOM,
+        Type    : 'QUI.classes.projects.Site',
+
+        Binds : [
+            'setAttributes',
+            'setAttribute',
+            'getAttributes',
+            'getAttribute'
+        ],
 
         options : {
             Project    : '',
@@ -54,10 +62,11 @@ define('classes/projects/Site', [
 
         initialize : function(Project, id)
         {
+            this.$Project      = Project;
+            this.$has_children = false;
+
             this.init({
-                Project    : Project,
-                id         : id,
-                attributes : {}
+                id : id
             });
         },
 
@@ -77,14 +86,15 @@ define('classes/projects/Site', [
 
             params.onfinish = onfinish;
 
-
-            QUI.Ajax.get('ajax_site_get', function(result, Ajax)
+            QUI.Ajax.get('ajax_site_get', function(result, Request)
             {
-                Site.setAttributes( result );
+                Site.setAttributes( result.attributes );
+                Site.$has_children = result.has_children || false;
+
                 Site.fireEvent( 'load', [ Site ] );
 
-                if ( Ajax.getAttribute( 'onfinish' ) ) {
-                    Ajax.getAttribute( 'onfinish' )( Site, Ajax );
+                if ( Request.getAttribute( 'onfinish' ) ) {
+                    Request.getAttribute( 'onfinish' )( Site, Request );
                 }
             }, params);
 
@@ -110,7 +120,17 @@ define('classes/projects/Site', [
          */
         getProject : function()
         {
-            return this.getAttribute( 'Project' );
+            return this.$Project;
+        },
+
+        /**
+         * Has the site children
+         *
+         * @return {Boolean}
+         */
+        hasChildren : function()
+        {
+            return this.$has_children ? true : false;
         },
 
         /**
@@ -213,8 +233,8 @@ define('classes/projects/Site', [
 
             QUI.Ajax.post('ajax_site_save', function(result, Request)
             {
-                if ( Ajax.getAttribute( 'onfinish' ) ) {
-                    Ajax.getAttribute( 'onfinish' )( result, Request );
+                if ( Request.getAttribute( 'onfinish' ) ) {
+                    Request.getAttribute( 'onfinish' )( result, Request );
                 }
 
                 Site.fireEvent( 'save', [ Site ] );
@@ -340,18 +360,18 @@ define('classes/projects/Site', [
         {
             var attributes = this.options.attributes;
 
-            if (typeof attributes[ k ] !== 'undefined') {
+            if ( typeof attributes[ k ] !== 'undefined' ) {
                 return attributes[ k ];
             }
 
-            var oid = Slick.uidOf(this);
+            var oid = Slick.uidOf( this );
 
-            if (typeof QUI.$storage[ oid ] === 'undefined') {
+            if ( typeof QUI.$storage[ oid ] === 'undefined' ) {
                 return false;
             }
 
-            if (typeof QUI.$storage[ oid ][k] !== 'undefined') {
-                return QUI.$storage[ oid ][k];
+            if ( typeof QUI.$storage[ oid ][ k ] !== 'undefined' ) {
+                return QUI.$storage[ oid ][ k ];
             }
 
             return false;
@@ -361,8 +381,7 @@ define('classes/projects/Site', [
          * Get all attributes from the Site
          *
          * @method QUI.classes.projects.Site#getAttributes
-         *
-         * @return {Object}
+         * @return {Object} Site attributes
          */
         getAttributes : function()
         {
@@ -379,7 +398,7 @@ define('classes/projects/Site', [
          */
         setAttribute : function(k, v)
         {
-            this.options.attributes[k] = v;
+            this.options.attributes[ k ] = v;
         },
 
         /**
@@ -400,8 +419,8 @@ define('classes/projects/Site', [
         {
             attributes = attributes || {};
 
-            for (var k in attributes) {
-                this.setAttribute(k, attributes[k]);
+            for ( var k in attributes ) {
+                this.setAttribute( k, attributes[ k ] );
             }
 
             return this;
@@ -416,8 +435,8 @@ define('classes/projects/Site', [
         ajaxParams : function()
         {
             return {
-                project : this.getProject().getAttribute('name'),
-                lang    : this.getProject().getAttribute('lang'),
+                project : this.getProject().getName(),
+                lang    : this.getProject().getLang(),
                 id      : this.getId(),
                 Site    : this
             };

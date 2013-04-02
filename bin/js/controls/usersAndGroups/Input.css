@@ -2,8 +2,14 @@
 
 .qui-users-and-groups {
     float: left;
+    position: relative;
     width: 400px;
     padding: 2px;
+}
+
+.qui-users-and-groups-list {
+    position: relative;
+    z-index: 2;
 }
 
 .qui-users-and-groups-list .group-entry,

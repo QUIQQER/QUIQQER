@@ -376,19 +376,16 @@ class Projects_Site_Edit extends Projects_Site
     }
     */
     /**
-     * Die Seite in die Datenbank speichern
-     *
-     * @param $createarchiv - Ein Archiveintrag erstellen
-     * @param Bool|Users_User|Users_SystemUser $User - the user which save the site, optional
+     * Saves the site
      *
      * @throws QException
      */
-    public function save($createarchiv=true, $User=false)
+    public function save()
     {
         try
         {
             // Prüfen ob der Benutzer die Seite bearbeiten darf
-            \QUI_Rights_Permission::checkPermission( 'quiqqer.admin.site.edit', $User );
+            $this->checkPermission( 'quiqqer.project.site.edit' );
 
         } catch ( \QException $Exception )
         {
@@ -399,18 +396,6 @@ class Projects_Site_Edit extends Projects_Site
                 )
             );
         }
-
-        $this->marcate();
-
-        // Archiveeintrag vom jetzigen Stand machen
-        if ( $createarchiv ) {
-            $this->createArchive();
-        }
-
-        $name = $this->getAttribute( 'name' );
-
-        // Prüfen des Namens
-        self::checkName( $name );
 
         $mid = $this->isMarcate();
 
@@ -448,6 +433,12 @@ class Projects_Site_Edit extends Projects_Site
             );
         }
 
+        // check the name, unallowed signs?
+        $name = $this->getAttribute( 'name' );
+
+        self::checkName( $name );
+
+
         /* @var $Project Projects_Project */
         $Project = $this->getProject();
 
@@ -479,7 +470,6 @@ class Projects_Site_Edit extends Projects_Site
         }
 
         // @todo onSave for Plugins
-        // @todo set permissions for the site
 
         $this->Events->fireEvent( 'save', array($this) );
 
@@ -516,17 +506,17 @@ class Projects_Site_Edit extends Projects_Site
         $update = $DataBase->update(
             $this->_TABLE,
             array(
-                'name'     => $this->getAttribute('name'),
-                'title'    => $this->getAttribute('title'),
-                'short'    => $this->getAttribute('short'),
-                'content'  => $this->getAttribute('content'),
-                'type' 	   => $this->getAttribute('type'),
-                'nav_hide' => $this->getAttribute('nav_hide') ? 1 : 0,
-                'e_user'   => $User ? $User->getId() : '',
+                'name'     => $this->getAttribute( 'name' ),
+                'title'    => $this->getAttribute( 'title' ),
+                'short'    => $this->getAttribute( 'short' ),
+                'content'  => $this->getAttribute( 'content' ),
+                'type' 	   => $this->getAttribute( 'type' ),
+                'nav_hide' => $this->getAttribute( 'nav_hide' ) ? 1 : 0,
+                'e_user'   => \QUI::getUserBySession()->getId(),
 
                 // ORDER
-                'order_type'  => $this->getAttribute('order_type'),
-                'order_field' => $this->getAttribute('order_field'),
+                'order_type'  => $this->getAttribute( 'order_type' ),
+                'order_field' => $this->getAttribute( 'order_field' ),
 
                 // Extra-Feld
                 'extra' => json_encode( $this->_extra )
@@ -641,8 +631,7 @@ class Projects_Site_Edit extends Projects_Site
                 $this->_RELTABLE .'.child'  => $this->_TABLE .'.id',
                 $this->_TABLE .'.name'      => $name,
                 $this->_TABLE.'.deleted'    => 0
-            ),
-            'debug' => true
+            )
         ));
 
         if ( !isset( $result[0] ) ) {
@@ -942,9 +931,10 @@ class Projects_Site_Edit extends Projects_Site
     }
 
     /**
-     * Ladet die Daten eines Archivs in das Objekt
+     * @todo muss in history plugin rein
      *
      * @param unknown_type $date
+     * @deprecated
      */
     public function loadArchive($date)
     {
@@ -983,9 +973,10 @@ class Projects_Site_Edit extends Projects_Site
     }
 
     /**
-     * Enter description here...
+     * @todo muss in history plugin rein
      *
      * @return unknown
+     * @deprecated
      */
     public function createArchive()
     {

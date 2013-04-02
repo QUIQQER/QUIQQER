@@ -65,7 +65,7 @@ define('controls/permissions/Panel', [
             this.$Map    = null;
             this.$rights = {};
 
-            this.$bindpermissions = null;
+            this.$bindpermissions = {};
             this.$Container       = null;
 
             this.addEvents({
@@ -83,6 +83,7 @@ define('controls/permissions/Panel', [
          */
         setBind : function(Bind)
         {
+            this.Loader.show();
             this.$Bind = Bind;
 
             if ( !this.$Bind )
@@ -104,8 +105,10 @@ define('controls/permissions/Panel', [
                 break;
 
                 case 'QUI.classes.projects.Site':
-                    params.project = Bind.getName();
-                    params.lang    = Bind.getLang();
+                    var Project = Bind.getProject();
+
+                    params.project = Project.getName();
+                    params.lang    = Project.getLang();
                 break;
             }
 
@@ -634,6 +637,24 @@ define('controls/permissions/Panel', [
                 );
             }
 
+            var params = {
+                id : this.$Bind.getId()
+            };
+
+            switch ( this.$Bind.getType() )
+            {
+                case 'QUI.classes.projects.Project':
+                    params.project = this.$Bind.getName();
+                break;
+
+                case 'QUI.classes.projects.Site':
+                    var Project = this.$Bind.getProject();
+
+                    params.project = Project.getName();
+                    params.lang    = Project.getLang();
+                break;
+            }
+
 
             QUI.Ajax.post('ajax_permissions_save', function(result, Request)
             {
@@ -648,8 +669,8 @@ define('controls/permissions/Panel', [
                 }
 
             }, {
-                bid   : this.$Bind.getId(),
-                btype : this.$Bind.getType(),
+                params      : JSON.encode( params ),
+                btype       : this.$Bind.getType(),
                 permissions : JSON.encode( this.$bindpermissions ),
                 Control     : this
             });
@@ -776,12 +797,7 @@ define('controls/permissions/Panel', [
                 return;
             }
 
-            if ( !this.$bindpermissions )
-            {
-                this.setBind( this.$Bind );
-                return;
-            }
-
+            this.setBind( this.$Bind );
             this.getButtons( 'permissions-sitemap' ).click();
         },
 
@@ -835,36 +851,37 @@ define('controls/permissions/Panel', [
             BtnAdd.disable();
 
             var Title = this.getHeader(),
-                Info  = Title.getElement( '.bind-info' );
+                Info  = Title.getElement( '.bind-info' ),
+                title = '<span>: </span>';
 
             // user
-            if ( this.$Bind.getType() === 'QUI.classes.users.User' )
+            switch ( this.$Bind.getType() )
             {
-                Info.set(
-                    'html',
-
-                    '<span>:</span>' +
-                    '<span class="user">'+
+                case 'QUI.classes.users.User':
+                    title = title + '<span class="user">'+
                         this.$Bind.getId() +
                         ' - '+
                         this.$Bind.getAttribute( 'username' ) +
-                    '</span>'
-                );
-            }
+                    '</span>';
+                break;
 
-            if ( this.$Bind.getType() === 'QUI.classes.groups.Group' )
-            {
-                Info.set(
-                    'html',
-
-                    '<span>:</span>' +
-                    '<span class="group">'+
+                case 'QUI.classes.groups.Group':
+                    title = title + '<span class="group">'+
                         this.$Bind.getId() +
                         ' - ' +
                         this.$Bind.getAttribute( 'name' ) +
-                    '</span>'
-                );
+                    '</span>';
+                break;
+
+                case 'QUI.classes.projects.Site':
+                    title = title + '<span class="site">'+
+                        this.$Bind.getAttribute( 'name' ) +
+                        ' - #'+ this.$Bind.getId() +
+                    '</span>';
+                break;
             }
+
+            Info.set( 'html', title );
 
             this.showSitemap();
             this.Loader.hide();
@@ -1090,11 +1107,13 @@ define('controls/permissions/Panel', [
          */
         $onSitemapItemClick : function(Item)
         {
-            var list, right, Node, Row, Elm;
+            this.Loader.show();
 
-            var i   = 0,
-                len = 0,
-                val = Item.getAttribute( 'value' ) +'.';
+            var list, right, Elm;
+
+            var i     = 0,
+                len   = 0,
+                val   = Item.getAttribute( 'value' ) +'.';
 
             this.$Container.set( 'html', '' );
 
@@ -1103,58 +1122,6 @@ define('controls/permissions/Panel', [
                 html    : '<tr><th>'+ Item.getAttribute( 'text' ) +'</th></tr>'
             });
 
-            var create_entry = function(right, i, Table)
-            {
-                Row = new Element('tr', {
-                    'class' : i % 2 ? 'even' : 'odd',
-                    html    : '<td></td>'
-                });
-
-                Node = QUI.controls.permissions.Utils.parse( right );
-
-                // edit modus
-                if ( !this.$Bind )
-                {
-                    Node.getElements( 'input' ).setStyle( 'display', 'none' );
-                    Node.getElements( 'label' ).set({
-                        styles : {
-                            marginLeft : 10,
-                            lineHeight : 24
-                        }
-                    });
-
-                    // only user rights can be deleted
-                    if ( right.src == 'user' )
-                    {
-                        new QUI.controls.buttons.Button({
-                            icon   : URL_BIN_DIR +'16x16/cancel.png',
-                            title  : QUI.Locale.get(
-                                'quiqqer/system',
-                                'permissions.panel.btn.delete.right.alt',
-                                {
-                                    right : right.name
-                                }
-                            ),
-                            alt : QUI.Locale.get(
-                                'quiqqer/system',
-                                'permissions.panel.btn.delete.right.title',
-                                {
-                                    right : right.name
-                                }
-                            ),
-                            value  : right.name,
-                            events : {
-                                onClick : this.delPermission
-                            }
-                        }).inject( Node, 'top' );
-                    }
-                }
-
-
-                Node.inject( Row.getElement( 'td' ) );
-                Row.inject( Table );
-
-            }.bind( this );
 
             // maybe to php?
             for ( right in this.$rights )
@@ -1165,7 +1132,7 @@ define('controls/permissions/Panel', [
 
                 if ( val == '.' && !right.match( /\./ ) )
                 {
-                    create_entry(
+                    this.$createPermissionRow(
                         this.$rights[ right ],
                         i,
                         Table
@@ -1184,7 +1151,7 @@ define('controls/permissions/Panel', [
                     continue;
                 }
 
-                create_entry(
+                this.$createPermissionRow(
                     this.$rights[ right ],
                     i,
                     Table
@@ -1192,7 +1159,6 @@ define('controls/permissions/Panel', [
 
                 i++;
             }
-
 
             // no rights
             if ( i === 0 )
@@ -1210,9 +1176,12 @@ define('controls/permissions/Panel', [
 
             Table.inject( this.$Container );
 
-            if ( !this.$bindpermissions ) {
-                return;
-            }
+            this.$Container.getElements( 'input' ).addEvent(
+                'change',
+                this.$onFormElementChange
+            );
+
+            var perms = this.$bindpermissions;
 
             // set form values
             list = this.$Container.getElements( 'input' );
@@ -1221,23 +1190,26 @@ define('controls/permissions/Panel', [
             {
                 Elm = list[ i ];
 
-                Elm.addEvent( 'change', this.$onFormElementChange );
-
-                if ( typeof this.$bindpermissions[ Elm.name ] == 'undefined' ) {
+                if ( typeof perms[ Elm.name ] === 'undefined' ) {
                     continue;
                 }
 
                 if ( Elm.type == 'checkbox' )
                 {
-                    if ( this.$bindpermissions[ Elm.name ] == 1 ) {
+                    if ( perms[ Elm.name ] == 1 ) {
                         Elm.checked = true;
                     }
 
                     continue;
                 }
 
-                Elm.value = this.$bindpermissions[ Elm.name ];
+                Elm.value = perms[ Elm.name ];
             }
+
+            // parse controls
+            QUI.controls.Utils.parse( Table );
+
+            this.Loader.hide();
         },
 
         /**
@@ -1256,6 +1228,88 @@ define('controls/permissions/Panel', [
             }
 
             this.$bindpermissions[ Target.name ] = Target.value;
+        },
+
+        /**
+         * Create the controls in the rows of the permission tables
+         *
+         * @method QUI.controls.permissions.Panel#$createPermissionRow
+         * @param {String} right - right name
+         * @param {Integer} i - row counter
+         * @param {DOMNode }Table - <table> Node Element
+         */
+        $createPermissionRow : function(right, i, Table)
+        {
+            var list, Node, Row, Elm;
+
+            Row = new Element('tr', {
+                'class' : i % 2 ? 'even' : 'odd',
+                html    : '<td></td>'
+            });
+
+            Node = QUI.controls.permissions.Utils.parse( right );
+
+            // first we disable all
+            Node.addClass( 'disabled' );
+
+            // than, we enable only for the binded area
+            if ( this.$Bind )
+            {
+                switch ( this.$Bind.getType() )
+                {
+                    case 'QUI.classes.projects.Site':
+                        Node.getElements( 'input[data-area="site"]' )
+                            .getParent()
+                            .removeClass( 'disabled' );
+                    break;
+
+                    case 'QUI.classes.projects.Project':
+                        Node.getElements( 'input[data-area="project"]' )
+                            .getParent()
+                            .removeClass( 'disabled' );
+                    break;
+                }
+            }
+
+            // edit modus
+            if ( !this.$Bind )
+            {
+                Node.getElements( 'label' ).set({
+                    styles : {
+                        marginLeft : 10,
+                        lineHeight : 24
+                    }
+                });
+
+                // only user rights can be deleted
+                if ( right.src == 'user' )
+                {
+                    new QUI.controls.buttons.Button({
+                        icon   : URL_BIN_DIR +'16x16/cancel.png',
+                        title  : QUI.Locale.get(
+                            'quiqqer/system',
+                            'permissions.panel.btn.delete.right.alt',
+                            {
+                                right : right.name
+                            }
+                        ),
+                        alt : QUI.Locale.get(
+                            'quiqqer/system',
+                            'permissions.panel.btn.delete.right.title',
+                            {
+                                right : right.name
+                            }
+                        ),
+                        value  : right.name,
+                        events : {
+                            onClick : this.delPermission
+                        }
+                    }).inject( Node, 'top' );
+                }
+            }
+
+            Node.inject( Row.getElement( 'td' ) );
+            Row.inject( Table );
         }
 
     });

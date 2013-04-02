@@ -294,6 +294,26 @@ class Projects_Project
     }
 
     /**
+     * Return the project name
+     *
+     * @return String
+     */
+    public function getName()
+    {
+        return $this->_name;
+    }
+
+    /**
+     * Return the project lang
+     *
+     * @return String
+     */
+    public function getLang()
+    {
+        return $this->_lang;
+    }
+
+    /**
      * Durchsucht das Projekt nach Seiten
      *
      * @param String $search - Suchwort
@@ -623,14 +643,14 @@ class Projects_Project
     public function get($id)
     {
         if ( defined('ADMIN') && ADMIN == 1 ) {
-            return new Projects_Site_OnlyDB($this, (int)$id);
+            return new Projects_Site_Edit( $this, (int)$id );
         }
 
-        if ( isset($this->_children[$id]) ) {
-            return $this->_children[$id];
+        if ( isset( $this->_children[ $id ] ) ) {
+            return $this->_children[ $id ];
         }
 
-        $Site = new Projects_Site($this, (int)$id);
+        $Site = new Projects_Site( $this, (int)$id );
         $this->_children[ $id ] = $Site;
 
         return $Site;
@@ -641,6 +661,7 @@ class Projects_Project
      *
      * @param Integer $id
      * @return String
+     * @deprecated
      */
     public function getNameById( $id )
     {
@@ -1335,14 +1356,16 @@ class Projects_Project
      */
     public function setEditDate($date)
     {
-        if ( file_exists( $this->_edate_file ) ) {
-            unlink( $this->_edate_file );
+        $edate_file = VAR_DIR .'cache/projects/edate_'. $this->getName() .'_'. $this->getLang();
+
+        if ( file_exists( $edate_file ) ) {
+            unlink( $edate_file );
         }
 
-        $date = Utils_Security_Orthos::clear( $date );
+        $date = \Utils_Security_Orthos::clear( $edate_file );
 
         $this->_edate = $date;
-        file_put_contents( $this->_edate_file, $date );
+        file_put_contents( $edate_file, $date );
     }
 }
 

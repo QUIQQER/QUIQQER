@@ -29,42 +29,35 @@ define('controls/permissions/Utils', [
          */
         parse : function(params)
         {
-            var html, label;
+            var Entry, Input, Label,
+                n = params.name;
 
-            var n = params.name;
 
-            // type: bool, string, int, group, array *}
-            if ( params.type == 'string' )
-            {
-                html = '<input type="text" class="string right"' +
-                            ' name="'+ n +'" id="perm-'+ n +'" ' +
-                        '/>';
+            Input = new Element('input.right', {
+                type : 'text',
+                name : n,
+                id   : 'perm-'+ n,
 
-            } else if ( params.type == 'int' )
-            {
-                html = '<input type="text" class="int right" ' +
-                            'name="'+ n +'" id="perm-'+ n +'" ' +
-                       '/>';
+                'data-area' : params.area
+            });
 
-            } else if ( params.type == 'group' )
-            {
-                html = '<input type="text" class="group right" ' +
-                            ' name="'+ n +'" id="perm-'+ n +'" ' +
-                        '/>';
-            } else
-            {
-                html = '<input type="checkbox" class="right" ' +
-                            'name="'+ n +'" id="perm-'+ n +'" ' +
-                        '/>';
+            Input.addClass( params.type );
+
+            if ( params.type == 'bool' ) {
+                Input.type = 'checkbox';
             }
 
-            label = '<label for="perm-'+ n +'">' +
-                        ( params.title || params.name ) +
-                    '</label>';
-
-            return new Element('div.qui-permission-entry', {
-                html : html + label
+            Label = new Element('label', {
+                'for' : 'perm-'+ n,
+                html  : params.title || params.name
             });
+
+            Entry = new Element( 'div.qui-permission-entry' );
+            Input.inject( Entry );
+            Label.inject( Entry );
+
+
+            return Entry;
         }
 
     };

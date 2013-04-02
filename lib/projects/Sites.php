@@ -293,20 +293,6 @@ class Projects_Sites
             */
         }
 
-
-        // Zugriffsrechte
-        $Tabbar->appendChild(
-            new Controls_Toolbar_Tab(array(
-                'name' => 'permissions',
-                'text' => 'Zugriffsrechte',
-                'icon' => URL_BIN_DIR .'16x16/apps/kgpg.png',
-                'events' => array(
-                    'onActive' => 'Panel.openPermissions'
-                )
-            ))
-        );
-
-
         return $Tabbar;
     }
 

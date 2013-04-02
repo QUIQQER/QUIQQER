@@ -30,7 +30,7 @@ class QUI_Events_Manager implements Interface_Events
         foreach ( $list as $params )
         {
             $this->_Events->addEvent(
-                $params['params'],
+                $params['event'],
                 $params['callback']
             );
         }

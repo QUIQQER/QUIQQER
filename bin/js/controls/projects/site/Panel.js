@@ -165,6 +165,22 @@ define('controls/projects/site/Panel', [
         {
             this.Loader.show();
 
+            // permissions
+            new QUI.controls.buttons.Button({
+                image  : URL_BIN_DIR +'16x16/permissions.png',
+                alt    : 'Seiten Zugriffsrechte einstellen',
+                title  : 'Seiten Zugriffsrechte einstellen',
+                styles : {
+                    'float' : 'right',
+                    margin  : 4
+                },
+                events : {
+                    onClick : this.openPermissions
+                }
+            }).inject(
+                this.getHeader()
+            );
+
             var Site    = this.getSite(),
                 Project = Site.getProject();
 
@@ -257,16 +273,31 @@ define('controls/projects/site/Panel', [
         },
 
         /**
+         * Opens the site permissions
+         *
+         * @method QUI.controls.projects.site.Panel#openPermissions
+         */
+        openPermissions : function()
+        {
+            var Parent = this.getParent(),
+                Site   = this.getSite();
+
+            require([ 'controls/permissions/Panel' ], function(PermPanel)
+            {
+                Parent.appendChild(
+                    new QUI.controls.permissions.Panel( null, Site )
+                );
+            });
+        },
+
+        /**
          * Save the Site params to the Site
          *
          * @method QUI.controls.projects.site.Panel#save
          */
         save : function()
         {
-
-
-            console.info( 'save' );
-            console.log( this );
+            this.getSite().save();
         },
 
         /**
@@ -451,54 +482,38 @@ define('controls/projects/site/Panel', [
          */
         $onCategoryLeave : function(Tab)
         {
+            this.Loader.show();
 
-
-            if ( Tab.getAttribute('name') === 'content' )
-            {
-
-            }
-
-
-            return;
-
-
-            var Panel = Tab.getAttribute('Panel'),
-                Site  = Panel.getAttribute('Site'),
+            var Site  = Panel.getAttribute('Site'),
                 Body  = Panel.getBody();
 
-            Panel.Loader.show();
-
-            // content unload editor
-            if (Tab.getAttribute('name') === 'content')
+            if ( Tab.getAttribute( 'name' ) === 'content' )
             {
                 Site.setAttribute(
                     'content',
-                    Panel.getAttribute('Editor').getContent()
+                    this.getAttribute( 'Editor' ).getContent()
                 );
 
+                this.Loader.hide();
                 return;
             }
+
+            var Form     = Body.getElement( 'form' ),
+                elements = Form.elements;
 
             // information tab
-            if (Tab.getAttribute('name') === 'information')
+            if ( Tab.getAttribute( 'name' ) === 'information' )
             {
-                var FormElm = Body.getElement( 'form' );
-
-                Site.setAttribute( 'name', FormElm.elements['site-name'].value );
-                Site.setAttribute( 'title', FormElm.elements.title.value );
-                Site.setAttribute( 'short', FormElm.elements.short.value );
-                Site.setAttribute( 'nav_hide', FormElm.elements.nav_hide.checked );
-                Site.setAttribute( 'type', FormElm.elements.type.value );
+                Site.setAttribute( 'name', elements['site-name'].value );
+                Site.setAttribute( 'title', elements.title.value );
+                Site.setAttribute( 'short', elements.short.value );
+                Site.setAttribute( 'nav_hide', elements.nav_hide.checked );
+                Site.setAttribute( 'type', elements.type.value );
 
                 return;
             }
 
-            QUI.lib.Plugins.get(Tab.getAttribute('plugin'), function(Plgn)
-            {
-                if (Plgn) {
-                    Plgn.fireEvent('siteTabUnload', [this]);
-                }
-            }.bind( Tab ));
+            console.log( elements );
         },
 
         /**
@@ -512,29 +527,6 @@ define('controls/projects/site/Panel', [
             var Panel = this;
 
             eval( Btn.getAttribute( '_onclick' ) +'();' );
-        },
-
-        /**
-         * Opens the permissions for the site
-         *
-         * @method QUI.controls.projects.site.Panel#openPermissions
-         */
-        openPermissions : function()
-        {
-            var Body  = this.getBody(),
-                Panel = this;
-
-            Body.set( 'html', '' );
-
-            QUI.Ajax.get('ajax_site_permissions_tpl', function(result, Request)
-            {
-                Body.set( 'html', result );
-
-                QUI.controls.Utils.parse( Body );
-
-                Panel.Loader.hide();
-            });
-
         },
 
         /**

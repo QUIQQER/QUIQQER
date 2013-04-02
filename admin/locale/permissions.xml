@@ -267,29 +267,29 @@
                 </locale>
 
                     <locale name="quiqqer.projects.site.set_permissions._title">
-                        <de><![CDATA[Darf Zugriffsrechte auf Seiten setzen und bearbeiten]]></de>
-                        <en><![CDATA[Is allowed to set / edit permissions from pages]]></en>
+                        <de><![CDATA[Darf Zugriffsrechte auf Seiten setzen und bearbeiten.]]></de>
+                        <en><![CDATA[Is allowed to set / edit permissions from pages.]]></en>
                     </locale>
                     <locale name="quiqqer.projects.sites.edit._title">
-                        <de><![CDATA[Darf Seiten bearbeiten]]></de>
-                        <en><![CDATA[is allowed to edit pages]]></en>
+                        <de><![CDATA[Darf Seiten bearbeiten.]]></de>
+                        <en><![CDATA[Is allowed to edit pages.]]></en>
                     </locale>
 
                     <locale name="quiqqer.projects.site.view._title">
                         <de><![CDATA[Darf die Seite besuchen.]]></de>
-                        <en><![CDATA[Allowed to visit the site.]]></en>
+                        <en><![CDATA[Is allowed to visit the site.]]></en>
                     </locale>
                     <locale name="quiqqer.projects.site.edit._title">
                         <de><![CDATA[Darf die Seite bearbeiten.]]></de>
-                        <en><![CDATA[Allowed to edit the page.]]></en>
+                        <en><![CDATA[Is allowed to edit the page.]]></en>
                     </locale>
                     <locale name="quiqqer.projects.site.del._title">
                         <de><![CDATA[Darf die Seite löschen.]]></de>
-                        <en><![CDATA[Allowed to delete the page.]]></en>
+                        <en><![CDATA[Is allowed to delete the page.]]></en>
                     </locale>
                     <locale name="quiqqer.projects.site.new._title">
                         <de><![CDATA[Darf neue Unterseite anlegen.]]></de>
-                        <en><![CDATA[Allowed to create new children pages.]]></en>
+                        <en><![CDATA[Is allowed to create new children pages.]]></en>
                     </locale>
 
     </groups>
