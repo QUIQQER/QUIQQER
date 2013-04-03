@@ -14,6 +14,8 @@
  * @todo comments translating
  *
  * @event onRequest
+ * @event onAccess
+ * @event onRewriteOutput [ Rewrite ]
  */
 
 class QUI_Rewrite
@@ -309,20 +311,17 @@ class QUI_Rewrite
             exit;
         }
 
-        $files = QUI_Events_Manager::load('site_create', false);
+        \QUI::getEvents()->fireEvent( 'access' );
 
-        foreach ($files as $file) {
-            include $file;
-        }
 
-        if (isset($exit) && $exit) {
+        if ( isset( $exit ) && $exit ) {
             return;
         }
 
         // Projekt request
         $rewrite_project_file = USR_DIR .'lib/'. $this->getProject()->getAttribute('template') .'/rewrite.php';
 
-        if (file_exists($rewrite_project_file))
+        if ( file_exists( $rewrite_project_file ) )
         {
            require $rewrite_project_file;
 
@@ -332,33 +331,33 @@ class QUI_Rewrite
         }
 
         // Falls kein suffix dann 301 weiterleiten auf .html
-        if (isset($_REQUEST['_url']) && substr($_REQUEST['_url'], -1) != '/')
+        if ( isset( $_REQUEST['_url'] ) && substr( $_REQUEST['_url'], -1 ) != '/' )
         {
-            $pathinfo = pathinfo($_REQUEST['_url']);
+            $pathinfo = pathinfo( $_REQUEST['_url'] );
 
-            if (!isset($pathinfo['extension']))
+            if ( !isset( $pathinfo['extension'] ) )
             {
                 // Falls keine Extension (.html) dann auf .html
-                $this->_showErrorHeader(301, $_REQUEST['_url'] .'.html');
+                $this->_showErrorHeader( 301, $_REQUEST['_url'] .'.html' );
             }
         }
 
         $this->_first_child = $this->getProject()->firstChild();
 
-        if (!$this->_site) {
+        if ( !$this->_site ) {
             $this->_site = $this->_first_child;
         }
 
-        if (isset($_REQUEST['_url'])) // URL Parameter filtern
+        if ( isset( $_REQUEST['_url'] ) ) // URL Parameter filtern
         {
             try
             {
-                $this->_site = $this->getSiteByUrl($_REQUEST['_url'], true);
+                $this->_site = $this->getSiteByUrl( $_REQUEST['_url'], true );
 
-            } catch (QException $e)
+            } catch ( QException $e )
             {
-                if ($this->_showErrorHeader(404)) {
-                      return;
+                if ( $this->_showErrorHeader( 404 ) ) {
+                    return;
                 }
 
                 $this->_site = $this->_first_child;
@@ -1014,10 +1013,10 @@ class QUI_Rewrite
             );
         }
 
-        $this->setOutputContent($output);
+        $this->setOutputContent( $output );
 
         // fire Rewrite::onOutput
-        QUI_Events_Manager::fire('Rewrite::onOutput', array(
+        \QUI::getEvents()->fireEvent('rewriteOutput', array(
             'Rewrite' => $this
         ));
 

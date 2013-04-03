@@ -16,7 +16,9 @@ define('controls/projects/site/Panel', [
 
     'controls/desktop/Panel',
     'Projects',
-    'classes/projects/Site'
+    'classes/projects/Site',
+
+    'css!controls/projects/site/Panel.css'
 
 ], function(QUI_Panel, QUI_Sites, QUI_Site)
 {
@@ -50,7 +52,11 @@ define('controls/projects/site/Panel', [
             '$onCategoryLeave',
             '$onEditorLoad',
             '$onEditorDestroy',
-            '$onPanelButtonClick'
+            '$onPanelButtonClick',
+
+            '$onSiteActivate',
+            '$onSiteDeactivate',
+            '$onSiteSave'
         ],
 
         options : {
@@ -137,7 +143,7 @@ define('controls/projects/site/Panel', [
                 Project = Site.getProject();
 
             title = title + Project.getName();
-            title = title +' - '+ Site.getAttribute( 'name' ) +' ('+ Site.getId() +')';
+            title = title + ' - '+ Site.getAttribute( 'name' ) +' ('+ Site.getId() +')';
 
             this.setAttributes({
                 title : title,
@@ -244,7 +250,12 @@ define('controls/projects/site/Panel', [
                     Panel.addCategory( Category );
                 }
 
-                Site.addEvent( 'onLoad', Panel.load );
+                Site.addEvents({
+                    onLoad       : Panel.load,
+                    onActivate   : Panel.$onSiteActivate,
+                    onDeactivate : Panel.$onSiteDeactivate,
+                    onSave       : Panel.$onSiteSave
+                });
 
                 if ( Site.getAttribute( 'name' ) )
                 {
@@ -291,12 +302,13 @@ define('controls/projects/site/Panel', [
         },
 
         /**
-         * Save the Site params to the Site
+         * saves site attributes
          *
-         * @method QUI.controls.projects.site.Panel#save
+         * @method QUI.controls.projects.site.Panel#openPermissions
          */
         save : function()
         {
+            this.$onCategoryLeave( this.getActiveCategory() );
             this.getSite().save();
         },
 
@@ -379,17 +391,16 @@ define('controls/projects/site/Panel', [
         {
             this.Loader.show();
 
-            if ( !Button.getAttribute( 'template' ) ) {
-                return;
-            }
-
-
             if ( Button.getAttribute( 'name' ) == 'content' )
             {
                 this.loadEditor(
                     this.getSite().getAttribute( 'content' )
                 );
 
+                return;
+            }
+
+            if ( !Button.getAttribute( 'template' ) ) {
                 return;
             }
 
@@ -426,12 +437,12 @@ define('controls/projects/site/Panel', [
                 );
 
                 // information tab
-                if ( Request.getAttribute('tab') === 'information' )
+                if ( Request.getAttribute( 'tab' ) === 'information' )
                 {
                     var Input = Body.getElements( 'input[name="site-name"]' );
 
                     Input.focusToBegin();
-                    Input.value = Site.getAttribute( 'name' );
+                    Input.set( 'value', Site.getAttribute( 'name' ) );
                 }
 
                 QUI.controls.Utils.parse( Form );
@@ -484,8 +495,8 @@ define('controls/projects/site/Panel', [
         {
             this.Loader.show();
 
-            var Site  = Panel.getAttribute('Site'),
-                Body  = Panel.getBody();
+            var Site  = this.getSite(),
+                Body  = this.getBody();
 
             if ( Tab.getAttribute( 'name' ) === 'content' )
             {
@@ -495,6 +506,10 @@ define('controls/projects/site/Panel', [
                 );
 
                 this.Loader.hide();
+                return;
+            }
+
+            if ( !Body.getElement( 'form' ) ) {
                 return;
             }
 
@@ -513,11 +528,12 @@ define('controls/projects/site/Panel', [
                 return;
             }
 
+            console.log( '@todo unload plugin params' );
             console.log( elements );
         },
 
         /**
-         * Exceute the panel onclick from PHP
+         * Execute the panel onclick from PHP
          *
          * @method QUI.controls.projects.site.Panel#$onPanelButtonClick
          * @param {QUI.controls.buttons.Button} Btn
@@ -530,6 +546,55 @@ define('controls/projects/site/Panel', [
         },
 
         /**
+         * Site event methods
+         */
+
+        $onSiteSave : function()
+        {
+            this.Loader.hide();
+        },
+
+        /**
+         * event : on {QUI.classes.projects.Site} activation
+         */
+        $onSiteActivate : function()
+        {
+            var Status = this.getButtons( 'status' );
+
+            if ( !Status ) {
+                return;
+            }
+
+            Status.setAttributes({
+                'textimage' : Status.getAttribute( 'dimage' ),
+                'text'      : Status.getAttribute( 'dtext' ),
+                '_onclick'  : 'Panel.getSite().deactivate'
+            });
+        },
+
+        /**
+         * event : on {QUI.classes.projects.Site} deactivation
+         */
+        $onSiteDeactivate : function()
+        {
+            var Status = this.getButtons( 'status' );
+
+            if ( !Status ) {
+                return;
+            }
+
+            Status.setAttributes({
+                'textimage' : Status.getAttribute( 'aimage' ),
+                'text'      : Status.getAttribute( 'atext' ),
+                '_onclick'  : 'Panel.getSite().activate'
+            });
+        },
+
+        /**
+         * Editor (WYSIWYG) Methods
+         */
+
+        /**
          * Load the WYSIWYG Editor in the panel
          *
          * @method QUI.controls.projects.site.Panel#loadEditor
@@ -537,15 +602,17 @@ define('controls/projects/site/Panel', [
          */
         loadEditor : function(content)
         {
-            var Body = this.getBody(),
+            var Body, Container;
 
-                Container = new Element('textarea#editor'+ this.getId(), {
-                    name    :' editor'+ this.getId(),
-                    styles  : {
-                        width  : Body.getSize().x - 60,
-                        height : Body.getSize().y - 40
-                    }
-                });
+            Body = this.getBody();
+
+            Container = new Element('textarea#editor'+ this.getId(), {
+                name    :' editor'+ this.getId(),
+                styles  : {
+                    width  : Body.getSize().x - 60,
+                    height : Body.getSize().y - 40
+                }
+            });
 
             Body.set( 'html', '' );
             Container.inject( Body );

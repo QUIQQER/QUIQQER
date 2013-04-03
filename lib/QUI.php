@@ -507,7 +507,7 @@ class QUI
     static function getCountries()
     {
         if ( is_null( self::$Countries ) ) {
-            self::$Countries = new Utils_Countries_Manager();
+            self::$Countries = new \Utils_Countries_Manager();
         }
 
         return self::$Countries;
@@ -538,7 +538,7 @@ class QUI
     {
         if ( is_null( self::$DataBase2 ) )
         {
-            self::$DataBase2 = new Utils_Db(array(
+            self::$DataBase2 = new \Utils_Db(array(
                 'driver'   => self::conf( 'db', 'driver' ),
                 'host'     => self::conf( 'db', 'host' ),
                 'user'     => self::conf( 'db', 'user' ),
@@ -558,7 +558,7 @@ class QUI
     static function getEvents()
     {
         if ( is_null( self::$Events ) ) {
-            self::$Events = new QUI_Events_Manager();
+            self::$Events = new \QUI_Events_Manager();
         }
 
         return self::$Events;
@@ -588,7 +588,7 @@ class QUI
      */
     static function getProject($project, $lang=false, $template=false)
     {
-        return Projects_Manager::getProject( $project, $lang, $template );
+        return \Projects_Manager::getProject( $project, $lang, $template );
     }
 
     /**
@@ -597,11 +597,11 @@ class QUI
      */
     static function getErrorHandler()
     {
-        if ( is_null(self::$ErrorHandler) )
+        if ( is_null( self::$ErrorHandler ) )
         {
             require_once 'QExceptionHandler.php';
 
-            self::$ErrorHandler = new QExceptionHandler();
+            self::$ErrorHandler = new \QExceptionHandler();
 
             self::$ErrorHandler->setAttribute(
                 'logdir',
@@ -624,7 +624,7 @@ class QUI
     static function getGroups()
     {
         if ( is_null( self::$Groups ) ) {
-            self::$Groups = new Groups_Groups();
+            self::$Groups = new \Groups_Groups();
         }
 
         return self::$Groups;
@@ -637,7 +637,7 @@ class QUI
     static function getMessagesHandler()
     {
         if ( is_null( self::$MessageHandler ) ) {
-            self::$MessageHandler = new QUI_Messages_Handler();
+            self::$MessageHandler = new \QUI_Messages_Handler();
         }
 
         return self::$MessageHandler;
@@ -650,7 +650,7 @@ class QUI
     static function getLicence()
     {
         if ( is_null( self::$Licence ) ) {
-            self::$Licence = new QUI_Licence();
+            self::$Licence = new \QUI_Licence();
         }
 
         return self::$Licence;
@@ -663,7 +663,7 @@ class QUI
     static function getLocale()
     {
         if ( is_null( self::$Locale ) ) {
-            self::$Locale = new QUI_Locale();
+            self::$Locale = new \QUI_Locale();
         }
 
         return self::$Locale;
@@ -676,7 +676,7 @@ class QUI
     static function getPackageManager()
     {
         if ( is_null( self::$PackageManager ) ) {
-            self::$PackageManager = new QUI_Package_Manager();
+            self::$PackageManager = new \QUI_Package_Manager();
         }
 
         return self::$PackageManager;
@@ -689,7 +689,7 @@ class QUI
     static function getPlugins()
     {
         if ( is_null( self::$Plugins ) ) {
-            self::$Plugins = new QUI_Plugins_Manager();
+            self::$Plugins = new \QUI_Plugins_Manager();
         }
 
         return self::$Plugins;
@@ -702,7 +702,7 @@ class QUI
     static function getRewrite()
     {
         if ( is_null( self::$Rewrite ) ) {
-            self::$Rewrite = new QUI_Rewrite();
+            self::$Rewrite = new \QUI_Rewrite();
         }
 
         return self::$Rewrite;
@@ -726,7 +726,7 @@ class QUI
     static function getPermissionManager()
     {
         if ( is_null( self::$Rights ) ) {
-            self::$Rights = new QUI_Rights_Manager();
+            self::$Rights = new \QUI_Rights_Manager();
         }
 
         return self::$Rights;
@@ -739,7 +739,7 @@ class QUI
     static function getSession()
     {
         if ( is_null( self::$Session ) ) {
-            self::$Session = new QUI_Session();
+            self::$Session = new \QUI_Session();
         }
 
         return self::$Session;
@@ -765,7 +765,7 @@ class QUI
     static function getUsers()
     {
         if ( is_null( self::$Users ) ) {
-            self::$Users = new Users_Users();
+            self::$Users = new \Users_Users();
         }
 
         return self::$Users;

@@ -139,14 +139,14 @@ class QUI_Template extends QDOM
         $Project = $Site->getProject();
 
         $Engine  = self::getEngine();
-        $Users   = QUI::getUsers();
-        $Rewrite = QUI::getRewrite();
-        $Locale  = QUI::getLocale();
+        $Users   = \QUI::getUsers();
+        $Rewrite = \QUI::getRewrite();
+        $Locale  = \QUI::getLocale();
 
         $User = $Users->getUserBySession();
 
         // header
-        $_header = QUI_Template::$_header;
+        $_header = \QUI_Template::$_header;
 
         foreach ( $_header as $key => $str ) {
             $Engine->extendHeader( $str, $key );
@@ -168,7 +168,9 @@ class QUI_Template extends QDOM
             'User'     => $User,
             'Locale'   => $Locale,
             'L'        => $Locale,
-            'Template' => $this
+            'Template' => $this,
+            'Site'     => $Site,
+            'Project'  => $Project
         ));
 
         /**
@@ -186,7 +188,10 @@ class QUI_Template extends QDOM
             {
                 $tpl = $_tpl;
 
-                $Engine->assign( 'URL_TPL_DIR', URL_OPT_DIR . $Project->getAttribute('template') .'/' );
+                $Engine->assign(
+                    'URL_TPL_DIR',
+                    URL_OPT_DIR . $Project->getAttribute('template') .'/'
+                );
             }
         }
 

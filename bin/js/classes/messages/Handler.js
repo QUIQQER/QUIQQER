@@ -87,7 +87,9 @@ define('classes/messages/Handler', [
         {
             this.messages.push( Message );
 
-            if ( $('modalOverlay') && $('modalOverlay').getStyle('display') !== 'none' )
+            if ( $('modalOverlay') &&
+                 $('modalOverlay').getStyle( 'display' ) !== 'none' ||
+                 !QUI.Controls.get( 'error-console' ).length )
             {
                 var Div = Message.create();
 

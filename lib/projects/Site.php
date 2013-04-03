@@ -477,7 +477,7 @@ class Projects_Site extends QDOM
         if ( isset( $result[0]['extra'] ) )
         {
             $this->_extra = json_decode( $result[0]['extra'], true );
-            unset($result[0]['extra']);
+            unset( $result[0]['extra'] );
         }
 
         $this->setAttributes( $result[0] );
@@ -1114,7 +1114,7 @@ class Projects_Site extends QDOM
      */
     public function delete()
     {
-        if ($this->getAttribute('id') == 1) {
+        if ( $this->getAttribute( 'id' ) == 1 ) {
             return false;
         }
 
@@ -1123,24 +1123,16 @@ class Projects_Site extends QDOM
 
         QUI::getDataBase()->update(
             $this->_TABLE,
-            array(
-                'deleted' => 1
-            ),
-            array(
-                'id' => $this->getId()
-            )
+            array( 'deleted' => 1 ),
+            array( 'id' => $this->getId() )
         );
 
-        foreach ($children as $child)
+        foreach ( $children as $child )
         {
             QUI::getDataBase()->update(
                 $this->_TABLE,
-                array(
-                    'deleted' => 1
-                ),
-                array(
-                    'id' => $child
-                )
+                array( 'deleted' => 1 ),
+                array( 'id' => $child )
             );
         }
 
@@ -1364,11 +1356,11 @@ class Projects_Site extends QDOM
      */
     public function getParentIds()
     {
-        if ($this->getId() == 1) {
+        if ( $this->getId() == 1 ) {
             return 0;
         }
 
-        if (is_array($this->_parents_id)) {
+        if ( is_array( $this->_parents_id ) ) {
             return $this->_parents_id;
         }
 
@@ -1383,11 +1375,11 @@ class Projects_Site extends QDOM
 
         $pids = array();
 
-        if (!isset($result[0])) {
+        if ( !isset( $result[0] ) ) {
             return $pids;
         }
 
-        foreach ($result as $entry) {
+        foreach ( $result as $entry ) {
             $pids[] = $entry['parent'];
         }
 
@@ -1422,26 +1414,26 @@ class Projects_Site extends QDOM
         $search  = true;
         $id      = $this->getParentId();
 
-        while ($search)
+        while ( $search )
         {
             try
             {
-                $Parent    = $Project->get($id);
+                $Parent    = $Project->get( $id );
                 $parents[] = $Parent;
 
                 $id = $Parent->getParentId();
 
-                if ($id == 0) {
+                if ( $id == 0 ) {
                     $search = false;
-                };
+                }
 
-            } catch (QException $e)
+            } catch ( QException $e )
             {
                 $search = false;
             }
         }
 
-        return array_reverse($parents);
+        return array_reverse( $parents );
     }
 
     /**
@@ -1453,12 +1445,8 @@ class Projects_Site extends QDOM
     {
         QUI::getDataBase()->update(
             $this->_TABLE,
-            array(
-                'deleted' => 0
-            ),
-            array(
-                'id' => $this->getId()
-            )
+            array( 'deleted' => 0 ),
+            array( 'id' => $this->getId() )
         );
     }
 
@@ -1469,7 +1457,7 @@ class Projects_Site extends QDOM
      */
     public function destroy()
     {
-        if ($this->getAttribute('deleted') != 1) {
+        if ( $this->getAttribute( 'deleted' ) != 1 ) {
             return;
         }
 
@@ -1481,24 +1469,24 @@ class Projects_Site extends QDOM
 
         $DataBase = QUI::getDataBase();
 
-        foreach ($Plugins as $Plugin)
+        foreach ( $Plugins as $Plugin )
         {
-            if (method_exists($Plugin, 'onDestroy'))
+            if ( method_exists( $Plugin, 'onDestroy' ) )
             {
                 try
                 {
-                    $Plugin->onDestroy($this, $Project, $DataBase);
-                } catch (QException $e)
+                    $Plugin->onDestroy( $this, $Project, $DataBase );
+                } catch ( \QException $e )
                 {
-                    System_Log::writeException($e);
+                    \System_Log::writeException( $e );
                 }
             }
 
             // Falls im AdminPlugin noch was gesetzt wurde
             $AdminPlugin = $Plugin->getAdminPlugin();
 
-            if (method_exists($AdminPlugin, 'onDestroy')) {
-                $plugins->onDestroy($this, $Project, $DataBase);
+            if ( method_exists( $AdminPlugin, 'onDestroy' ) ) {
+                $plugins->onDestroy( $this, $Project, $DataBase );
             }
         }
 
@@ -1543,8 +1531,8 @@ class Projects_Site extends QDOM
      */
     public function getExtra($name)
     {
-        if (isset($this->_extra[$name])) {
-            return $this->_extra[$name];
+        if ( isset( $this->_extra[ $name ] ) ) {
+            return $this->_extra[ $name ];
         }
 
         return false;
@@ -1557,13 +1545,16 @@ class Projects_Site extends QDOM
      */
     public function getCanonical()
     {
-        if ($this->getAttribute('canonical')) {
-            return $this->getAttribute('canonical');
+        if ( $this->getAttribute( 'canonical' ) ) {
+            return $this->getAttribute( 'canonical' );
         }
 
-        $this->setAttribute('canonical', $this->getProject()->getHost() . URL_DIR . $this->getUrlRewrited());
+        $this->setAttribute(
+            'canonical',
+            $this->getProject()->getHost() . URL_DIR . $this->getUrlRewrited()
+        );
 
-        return $this->getAttribute('canonical');
+        return $this->getAttribute( 'canonical' );
     }
 
     /**
@@ -1571,7 +1562,7 @@ class Projects_Site extends QDOM
      */
     public function deleteCache()
     {
-        \System_Cache_Manager::clear($this->_CACHENAME);
+        \System_Cache_Manager::clear( $this->_CACHENAME );
     }
 
     /**
@@ -1579,7 +1570,7 @@ class Projects_Site extends QDOM
      */
     public function createCache()
     {
-        \System_Cache_Manager::set($this->_CACHENAME, $this->encode());
+        \System_Cache_Manager::set( $this->_CACHENAME, $this->encode() );
     }
 
     /**

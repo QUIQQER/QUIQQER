@@ -205,20 +205,13 @@ class Projects_Site_Edit extends Projects_Site
     /**
      * Activate a site
      *
-     * @param Bool|Users_User|Users_SystemUser $User - the user which activate the site, optional
      * @throws QException
      */
-    public function activate($User=false)
+    public function activate()
     {
-        if ( $User == false ) {
-            $User = QUI::getUserBySession();
-        }
-
         try
         {
-            // Prüfen ob der Benutzer die Seite bearbeiten darf
-            // der System Benutzer darf editieren
-            \QUI_Rights_Permission::checkPermission( 'quiqqer.admin.site.edit', $User );
+            $this->checkPermission( 'quiqqer.projects.site.edit' );
 
         } catch ( \QException $Exception )
         {
@@ -276,15 +269,14 @@ class Projects_Site_Edit extends Projects_Site
     /**
      * Deactivate a site
      *
-     * @param Bool|Users_User|Users_SystemUser $User - the user which deactivate the site, optional
      * @throws QException
      */
-    public function deactivate($User=false)
+    public function deactivate()
     {
         try
         {
             // Prüfen ob der Benutzer die Seite bearbeiten darf
-            \QUI_Rights_Permission::checkPermission( 'quiqqer.admin.site.edit', $User );
+           $this->checkPermission( 'quiqqer.projects.site.edit' );
 
         } catch ( \QException $Exception )
         {
@@ -299,11 +291,11 @@ class Projects_Site_Edit extends Projects_Site
         // fire events
         $this->Events->fireEvent( 'deactivate', array( $this ) );
 
-        QUI::getEvents()->fireEvent( 'siteDeactivate', array( $this ) );
+        \QUI::getEvents()->fireEvent( 'siteDeactivate', array( $this ) );
 
 
         // deactivate
-        QUI::getDataBase()->exec(array(
+        \QUI::getDataBase()->exec(array(
             'update' => $this->_TABLE,
             'set'    => array(
                 'active' => 0
@@ -539,11 +531,24 @@ class Projects_Site_Edit extends Projects_Site
         // Letztes Speichern
         $Project->setEditDate( time() );
 
-        if ( $update ) {
+        if ( $update )
+        {
+            \QUI::getMessagesHandler()->addSuccess(
+                \QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'message.site.save.success',
+                    array(
+                        'id'    => $this->getId(),
+                        'title' => $this->getAttribute( 'title' ),
+                        'name'  => $this->getAttribute( 'name' )
+                    )
+                )
+            );
+
             return true;
         }
 
-        throw new QException(
+        throw new \QException(
             \QUI::getLocale()->get(
                 'quiqqer/system',
                 'exception.site.save.error'

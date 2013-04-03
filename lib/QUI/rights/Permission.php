@@ -210,7 +210,7 @@ class QUI_Rights_Permission
             $User = \QUI::getUserBySession();
         }
 
-        $Manager     = \QUI::getRights();
+        $Manager     = \QUI::getPermissionManager();
         $permissions = $Manager->getSitePermissions( $Site );
         $_found      = array();
 
@@ -263,7 +263,7 @@ class QUI_Rights_Permission
 
                 // groups ids from the user
                 $group_ids = $User->getGroups( false );
-                $group_ids = explode( ',', $user_group_ids );
+                $group_ids = explode( ',', $group_ids );
 
                 $user_group_ids = array();
 
@@ -278,11 +278,11 @@ class QUI_Rights_Permission
                     $real_id = $id;
                     $type    = 'g';
 
-                    if ( strpos( $id, 'g' ) !== false &&
+                    if ( strpos( $id, 'g' ) !== false ||
                          strpos( $id, 'u' ) !== false )
                     {
                         $real_id = (int)substr( $id, 1 );
-                        $type    = substr( $id, 1, 1 );
+                        $type    = substr( $id, 0, 1 );
                     }
 
                     switch ( $type )

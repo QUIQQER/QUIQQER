@@ -7,6 +7,12 @@
 
     <groups name="quiqqer/system">
 
+        <!-- Messages  -->
+        <locale name="message.site.save.success">
+            <de><![CDATA[Die Seite [id] [title] wurde erfogreich gespeichert.]]></de>
+            <en><![CDATA[The page [id] [title] are successfuly saved.]]]></en>
+        </locale>
+
         <!-- Exception  -->
         <locale name="exception.site.not.found">
             <de><![CDATA[Diese Seite konnte nicht gefunden.]]></de>

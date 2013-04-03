@@ -21,9 +21,7 @@
 
 define('classes/projects/Site', [
 
-    'classes/DOM',
-
-    'css!classes/projects/Site.css'
+    'classes/DOM'
 
 ], function(DOM)
 {
@@ -168,12 +166,12 @@ define('classes/projects/Site', [
          * @param {Function} onfinish - [optional] callback function
          * @return {this}
          */
-        activate : function(onfonish)
+        activate : function(onfinish)
         {
             var Site   = this,
                 params = this.ajaxParams();
 
-            params.onfinish = onfinish;
+            params.onfinish = onfinish || false;
 
             QUI.Ajax.post('ajax_site_activate', function(result, Request)
             {
@@ -201,9 +199,9 @@ define('classes/projects/Site', [
             var Site   = this,
                 params = this.ajaxParams();
 
-            params.onfinish = onfinish;
+            params.onfinish = onfinish || false;
 
-            QUI.lib.Sites.deactivate(function(result, Ajax)
+            QUI.Ajax.post('ajax_site_deactivate', function(result, Request)
             {
                 if ( Request.getAttribute( 'onfinish' ) ) {
                     Request.getAttribute( 'onfinish' )( result, Request );

@@ -75,7 +75,7 @@ if ( isset( $Locale ) )
  */
 
 if ( isset( $_REQUEST['ref'] ) ) {
-    $Session->set( 'ref', Utils_Security_Orthos::clear( $_REQUEST['ref'] ) );
+    $Session->set( 'ref', \Utils_Security_Orthos::clear( $_REQUEST['ref'] ) );
 }
 
 /**
@@ -128,13 +128,12 @@ if ($Rewrite->getSuffix() == '.print')
 }
 
 // Event onstart
-QUI_Events_Manager::load('onstart');
+\QUI::getEvents()->fireEvent( 'start' );
 
-System_Debug::marker('objekte initialisiert');
-
+\System_Debug::marker('objekte initialisiert');
 
 // Wenn es ein Cache gibt und die Seite auch gecached werden soll
-if (CACHE && file_exists($site_cache_file) && $Site->getAttribute('nocache') != true)
+if ( CACHE && file_exists( $site_cache_file ) && $Site->getAttribute('nocache') != true )
 {
     $cache_content = file_get_contents( $site_cache_file );
     $_content      = $Rewrite->outputFilter( $cache_content );
@@ -148,7 +147,7 @@ if (CACHE && file_exists($site_cache_file) && $Site->getAttribute('nocache') != 
 /**
  * Template Content generieren
  */
-$Template = new QUI_Template();
+$Template = new \QUI_Template();
 $content  = $Template->fetchTemplate( $Site );
 
 System_Debug::marker('fetch Template');
