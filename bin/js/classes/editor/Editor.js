@@ -24,6 +24,7 @@ define('classes/editor/Editor', [
     QUI.namespace( 'classes.editor' );
 
     /**
+     * Editor Main Class
      * @class QUI.classes.Editor
      *
      * @param {QUI.controls.editor.Manager} Manager
@@ -35,6 +36,8 @@ define('classes/editor/Editor', [
      * @fires onSetContent [String, this]
      * @fires onGetContent [this]
      * @fires onLoaded [Editor, Instance]
+     *
+     * @memberof! <global>
      */
     QUI.classes.editor.Editor = new Class({
 
@@ -63,8 +66,9 @@ define('classes/editor/Editor', [
         },
 
         /**
+         * Returns the Editor Manager
          *
-         * @returns {QUI.controls.editor.Manager}
+         * @return {QUI.controls.editor.Manager}
          */
         getManager : function()
         {
@@ -75,9 +79,7 @@ define('classes/editor/Editor', [
          * Draw the editor
          *
          * @method QUI.classes.editor.Editor#draw
-         *
          * @fires onDraw [DOMNode, this]
-         *
          * @param {DOMNode} Container - The DOMNode in which the editor should be displayed
          */
         draw : function(Container)
@@ -89,7 +91,6 @@ define('classes/editor/Editor', [
          * Destroy the editor
          *
          * @method QUI.classes.editor.Editor#destroy
-         *
          * @fires onDestroy [this]
          */
         destroy : function()
@@ -104,7 +105,6 @@ define('classes/editor/Editor', [
          * Set the content to the editor
          *
          * @method QUI.classes.editor.Editor#setContent
-         *
          * @fires onSetContent [content, this]
          * @param {String} content - HTML String
          */
@@ -118,8 +118,7 @@ define('classes/editor/Editor', [
          * Get the content from the editor
          *
          * @method QUI.classes.editor.Editor#getContent
-         *
-         * @return {String}
+         * @return {String} content
          */
         getContent : function()
         {
@@ -132,7 +131,6 @@ define('classes/editor/Editor', [
          * Set the editor instance
          *
          * @method QUI.classes.editor.Editor#setInstance
-         *
          * @param {Editor Instance} Instance
          */
         setInstance : function(Instance)
@@ -141,11 +139,10 @@ define('classes/editor/Editor', [
         },
 
         /**
-         * Get the editor instance<br />
+         * Get the editor instance
          * ckeditor, tinymce and so on
          *
          * @method QUI.classes.editor.Editor#getInstance
-         *
          * @return {Editor Instance}
          */
         getInstance : function()

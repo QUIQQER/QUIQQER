@@ -139,6 +139,7 @@ define('classes/groups/Group', [
         /**
          * Is the Group active?
          *
+         * @method QUI.classes.groups.Group#isActive
          * @return {Bool} true or false
          */
         isActive : function()
@@ -242,7 +243,7 @@ define('classes/groups/Group', [
          * Return the default attributes
          *
          * @method QUI.classes.groups.Group#getAttributes
-         * @return {Object}
+         * @return {Object} all attributes
          */
         getAttributes : function()
         {

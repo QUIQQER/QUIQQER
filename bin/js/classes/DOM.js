@@ -22,6 +22,9 @@ define('classes/DOM', function()
     QUI.$storage = {};
 
     /**
+     * The DOM class emulate similar methods
+     * like a DOMNode to a normal Object
+     *
      * @class QUI.classes.DOM
      *
      * @param {Object} options -
@@ -83,7 +86,8 @@ var Obj = new QUI.classes.DOM({
         /**
          * If this.TYPE is set, this.Type will be return
          *
-         * @return {String}
+         * @method QUI.classes.DOM#$family
+         * @return {String} Type of the Object
          * @ignore
          */
         $family : function()
@@ -99,7 +103,7 @@ var Obj = new QUI.classes.DOM({
          * Get the Unique ID from the Object
          *
          * @method QUI.classes.DOM#getId
-         * @return {Integer}
+         * @return {String} Object ID
          */
         getId : function()
         {
@@ -122,7 +126,7 @@ var Obj = new QUI.classes.DOM({
          * Get the type from the Object
          *
          * @method QUI.classes.DOM#getType
-         * @return {String}
+         * @return {String} The type of the object
          */
         getType : function()
         {
@@ -139,7 +143,7 @@ var Obj = new QUI.classes.DOM({
          * @param {String} k - Name of the Attribute
          * @param {Object|String|Integer|Array} v - value
          *
-         * @return {this}
+         * @return {this} The wanted attribute
          */
         setAttribute : function(k, v)
         {
@@ -182,8 +186,10 @@ var Obj = new QUI.classes.DOM({
         },
 
         /**
+         * Alias for setAttributes, please use setAttributes()
+         *
+         * @see QUI.classes.DOM#setAttributes()
          * @method QUI.classes.DOM#setOptions
-         * @see setAttributes
          */
         setOptions : function(options)
         {
@@ -193,10 +199,10 @@ var Obj = new QUI.classes.DOM({
         /**
          * If you want set more than one attribute
          *
-         * @method QUI.classes.DOM#setAttribute
+         * @method QUI.classes.DOM#setAttributes
          *
          * @param {Object} attributes - Object with attributes
-         * @return {this}
+         * @return {this} self
          *
          * @example Object.setAttributes({
          *   attr1 : '1',
@@ -219,9 +225,8 @@ var Obj = new QUI.classes.DOM({
          * returns the not the default attributes, too
          *
          * @method QUI.classes.DOM#setAttribute
-         *
          * @param {Object} attributes - Object width attributes
-         * @return {unknown_type|Bool}
+         * @return {unknown_type|Bool} attribute
          */
         getAttribute : function(k)
         {
@@ -243,8 +248,11 @@ var Obj = new QUI.classes.DOM({
         },
 
         /**
+         * Alias for getAttributes, please use getAttributes()
+         *
          * @method QUI.classes.DOM#getAllAttributes
          * @see QUI.classes.DOM#getAttributes()
+         * @depricated
          */
         getAllAttributes : function()
         {
@@ -255,7 +263,7 @@ var Obj = new QUI.classes.DOM({
          * Return the default attributes
          *
          * @method QUI.classes.DOM#getAttributes
-         * @return {Object}
+         * @return {Object} attributes
          */
         getAttributes : function()
         {
@@ -267,7 +275,7 @@ var Obj = new QUI.classes.DOM({
          *
          * @method QUI.classes.DOM#existAttribute
          * @param {String} k - wanted attribute
-         * @return {Bool}
+         * @return {Bool} true or false
          */
         existAttribute : function(k)
         {
@@ -289,7 +297,7 @@ var Obj = new QUI.classes.DOM({
          *
          * @method QUI.classes.DOM#existAttribute
          * @param {String} eventname - wanted event
-         * @return {Array|false}
+         * @return {Array|false} Event list
          */
         getEvents : function(eventname)
         {

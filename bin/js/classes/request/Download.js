@@ -21,6 +21,8 @@ define('classes/request/Download', [
     QUI.namespace( 'classes.request' );
 
     /**
+     * QUI download class for download files to the QUIQQER from external resources
+     *
      * @class QUI.classes.request.Download
      *
      * @fires onDragenter [event, Target, this]
@@ -31,8 +33,8 @@ define('classes/request/Download', [
      */
     QUI.classes.request.Download = new Class({
 
-        Implements: [ DOM ],
-        Type      : 'QUI.classes.request.Download',
+        Extends : DOM,
+        Type    : 'QUI.classes.request.Download',
 
         $Request : null,
         $result  : null,
@@ -49,6 +51,11 @@ define('classes/request/Download', [
             this.init( options );
         },
 
+        /**
+         * Create a iframe and call update.php with the wanted file
+         *
+         * @method QUI.classes.request.Download#start
+         */
         start : function()
         {
             this.$frame = new Element('iframe', {
@@ -67,6 +74,8 @@ define('classes/request/Download', [
 
         /**
          * PHP connection for status updates
+         *
+         * @method QUI.classes.request.Download#updateStatus
          */
         updateStatus : function(status)
         {
@@ -74,7 +83,7 @@ define('classes/request/Download', [
             {
                 // dl fertig
                 this.$frame.destroy();
-                this.fireEvent('complete', [this]);
+                this.fireEvent( 'complete', [ this ] );
             }
         }
     });

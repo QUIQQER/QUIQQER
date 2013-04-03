@@ -287,9 +287,9 @@ QUI.config('dir', 'my/new/dir'); // set the dir
          *
          * @method QUI.classes.QUIQQER#triggerError
          *
-         * @param Exception - Exception Objekt
-         * @param params    - Weitere Paramater (optional)
-         * @return {this}
+         * @param {QUI.classes.messages.Message|Exception} Exception - Exception Objekt
+         * @param {Object} params    - Weitere Paramater (optional)
+         * @return {this} self
          */
         triggerError : function(Exception, params)
         {
@@ -304,11 +304,11 @@ QUI.config('dir', 'my/new/dir'); // set the dir
          *
          * @method QUI.classes.QUIQQER#trigger
          *
-         * @param msg
-         * @param url
-         * @param linenumer
+         * @param {String} msg
+         * @param {String} url
+         * @param {Integer} linenumer
          *
-         * @return {this}
+         * @return {this} self
          */
         trigger : function(msg, url, linenumber)
         {

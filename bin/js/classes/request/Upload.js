@@ -26,18 +26,24 @@ define('classes/request/Upload', [
     QUI.namespace('classes.request');
 
     /**
+     * QUI upload class for multible files
+     * add dragdrop Events to the elements
+     *
      * @class QUI.classes.request.Upload
      *
      * @fires onDragenter [event, Target, this]
      * @fires onDragend [event, Target, this]#
      * @fires onDrop [event, file_list, Target, this]
      *
+     * @param {Array} elements - list pf DOMNode Elements
+     * @param {Object} events - list of event functions
+     *
      * @memberof! <global>
      */
     QUI.classes.request.Upload = new Class({
 
-        Implements: [ DOM ],
-        Type      : 'QUI.classes.request.Upload',
+        Extends : DOM,
+        Type    : 'QUI.classes.request.Upload',
 
         $Request : null,
         $result  : null,
@@ -113,8 +119,9 @@ define('classes/request/Upload', [
         /**
          * Trigger the send event
          *
+         * @method QUI.classes.request.Upload#$getFilesByEvent
          * @param {Event} event - event triggerd from onDrop
-         * @return FileList|Array
+         * @return {FileList|Array} FileList or an Array
          */
         $getFilesByEvent : function(event)
         {

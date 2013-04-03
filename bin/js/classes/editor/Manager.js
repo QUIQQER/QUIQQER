@@ -25,12 +25,15 @@ define('classes/editor/Manager', [
     QUI.namespace( 'classes/editor' );
 
     /**
+     * Editor Manager
+     *
      * @class QUI.controls.editor.Manager
+     * @memberof! <global>
      */
     QUI.classes.editor.Manager = new Class({
 
-        Implements : [ QDOM ],
-        Type       : 'QUI.classes.editor.Manager',
+        Extends : QDOM,
+        Type    : 'QUI.classes.editor.Manager',
 
         options : {
 
@@ -49,7 +52,7 @@ define('classes/editor/Manager', [
          * with the params can you define specific functionality for different
          * editors
          *
-         * @method QUI.lib.Editor#register
+         * @method QUI.classes.editor.Manager#register
          *
 
 @example
@@ -71,7 +74,7 @@ Manager.register('package/ckeditor3', {
         /**
          * Register an editor instance
          *
-         * @method QUI.lib.Editor#$registerEditor
+         * @method QUI.classes.editor.Manager#$registerEditor
          * @param {QUI.classes.Editor} Instance
          *
          * @ignore
@@ -84,7 +87,7 @@ Manager.register('package/ckeditor3', {
         /**
          * It generate a {QUI.classes.Editor} Instance from an editor parameter
          *
-         * @method QUI.lib.Editor#getEditor
+         * @method QUI.classes.editor.Manager#getEditor
          *
          * @param {String|null} name - Editor parameters name, like ckeditor3, if null,
          * @param {Function} func   - Callback function, if editor is loaded,
@@ -134,7 +137,7 @@ Manager.register('package/ckeditor3', {
         /**
          * Destroy an editor
          *
-         * @method QUI.lib.Editor#destroyEditor
+         * @method QUI.classes.editor.Manager#destroyEditor
          * @param {QUI.classes.Editor} Editor
          */
         destroyEditor : function(Editor)
@@ -155,7 +158,7 @@ Manager.register('package/ckeditor3', {
         /**
          * Get the main Editor config
          *
-         * @method QUI.lib.Editor#getConfig
+         * @method QUI.classes.editor.Manager#getConfig
          * @param {Function} onfinish - Callback function
          */
         getConfig : function(onfinish)
@@ -180,7 +183,7 @@ Manager.register('package/ckeditor3', {
         /**
          * Get all available toolbar
          *
-         * @method QUI.lib.Editor#getToolbars
+         * @method QUI.classes.editor.Manager#getToolbars
          * @param {Function} onfinish - Callback function
          */
         getToolbars : function(onfinish)

@@ -26,6 +26,8 @@ define('classes/request/Ajax', [
     QUI.$storage = {};
 
     /**
+     * QUIQQER Ajax
+     *
      * @class QUI.classes.Ajax
      *
      * @fires onComplete [this]
@@ -41,8 +43,8 @@ define('classes/request/Ajax', [
      */
     QUI.classes.Ajax = new Class({
 
-        Implements: [ DOM ],
-        Type      : 'QUI.classes.request.Ajax',
+        Extends : DOM,
+        Type    : 'QUI.classes.request.Ajax',
 
         Binds : [
             '$parseResult'
@@ -68,7 +70,7 @@ define('classes/request/Ajax', [
          * @method QUI.classes.Ajax#send
          *
          * @param {Object} params - Parameters which to be sent
-         * @return {Request}
+         * @return {Request} Request Object
          */
         send : function(params)
         {
@@ -148,7 +150,7 @@ define('classes/request/Ajax', [
          * @method QUI.classes.Ajax#parseParams
          *
          * @param {Object} params - params that will be send
-         * @return {Object}
+         * @return {Object} Param list
          */
         parseParams : function(params)
         {
@@ -206,6 +208,7 @@ define('classes/request/Ajax', [
         /**
          * Parse the result and fire the Events
          *
+         * @method QUI.classes.Ajax#$parseResult
          * @param {String} responseText - request result
          * @param {String} responseXML
          *
