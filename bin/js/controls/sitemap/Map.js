@@ -31,8 +31,8 @@ define('controls/sitemap/Map', [
      */
     QUI.controls.sitemap.Map = new Class({
 
-        Implements: [ Control ],
-        Type      : 'QUI.controls.sitemap.Map',
+        Extends : Control,
+        Type    : 'QUI.controls.sitemap.Map',
 
         options : {
             multible : false // multible selection true or false
@@ -94,7 +94,7 @@ define('controls/sitemap/Map', [
             });
 
             for ( var i = 0, len = this.$items.length; i < len; i++ ) {
-                this.$items[i].inject( this.$Elm );
+                this.$items[ i ].inject( this.$Elm );
             }
 
             return this.$Elm;
@@ -173,7 +173,7 @@ define('controls/sitemap/Map', [
          * @method QUI.controls.sitemap.Map#getChildren
          *
          * @param {String} selector
-         * @return {Array}
+         * @return {Array} List of children
          */
         getChildren : function(selector)
         {
@@ -192,7 +192,7 @@ define('controls/sitemap/Map', [
 
             for ( i = 0, len = children.length; i < len; i++ )
             {
-                quiid = children[i].get('data-quiid');
+                quiid = children[i].get( 'data-quiid' );
                 Child = Controls.getById( quiid );
 
                 if ( Child ) {

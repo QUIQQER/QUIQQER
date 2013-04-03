@@ -39,6 +39,11 @@ define('controls/projects/Sitemap', [
         Extends : QUI_Control,
         Type    : 'QUI.controls.projects.Sitemap',
 
+        Binds : [
+            'onSiteChange',
+            'onSiteCreate'
+        ],
+
         options : {
             name      : 'projects-site-panel',
             container : false,
@@ -69,12 +74,11 @@ define('controls/projects/Sitemap', [
 
             // projects events
             this.$Project.addEvents({
-                onSiteCreate : function(Project, NewSite)
-                {
-                    console.warn( NewSite );
-                }
+                onSiteCreate     : this.onSiteCreate,
+                onSiteSave       : this.onSiteChange,
+                onSiteActivate   : this.onSiteChange,
+                onSiteDeactivate : this.onSiteChange
             });
-
         },
 
         /**
@@ -341,13 +345,18 @@ define('controls/projects/Sitemap', [
          *
          * @method QUI.controls.projects.Sitemap#$loadChildren
          * @param {Array} result
+         * @param {QUI.controls.sitemap.Item} Itm
          * @return {QUI.controls.sitemap.Item}
          *
          * @private
          */
-        $parseArrayToSitemapitem : function(result)
+        $parseArrayToSitemapitem : function(result, Itm)
         {
-            var Itm = new QUI.controls.sitemap.Item({
+            if ( typeof Itm === 'undefined' ) {
+                Itm = new QUI.controls.sitemap.Item();
+            }
+
+            Itm.setAttributes({
                 name  : result.name,
                 index : result.id,
                 value : result.id,
@@ -382,6 +391,7 @@ define('controls/projects/Sitemap', [
 
             // contextmenu
             Itm.getContextMenu()
+                .clearChildren()
                 .appendChild(
                     new QUI.controls.contextmenu.Item({
                         name   : 'site-copy-'+ Itm.getId(),
@@ -480,6 +490,54 @@ define('controls/projects/Sitemap', [
         $close : function(Item)
         {
             Item.clearChildren();
+        },
+
+        /**
+         * Site event handling - if a site changes, the sitemap must change to
+         */
+
+        /**
+         * event - onSiteActivate. onSiteDeactivate, onSiteSave
+         *
+         * @param {QUI.classes.projects.Project} Project - Project of the Site that are changed
+         * @param {QUI.classes.projects.Site} Site - Site that are changed
+         */
+        onSiteChange : function(Project, Site)
+        {
+            if ( !this.$Map ) {
+                return;
+            }
+
+            var children = this.$Map.getChildrenByValue( Site.getId() );
+
+            if ( !children.length ) {
+                return;
+            }
+
+            var i, len, Item, params;
+
+            for ( i = 0, len = children.length; i < len; i++ )
+            {
+                Item   = children[ i ];
+                params = Site.getAttributes();
+
+                params.active       = Site.isActive();
+                params.has_children = Site.hasChildren() ? 1 : 0;
+
+                this.$parseArrayToSitemapitem( params, Item );
+            }
+        },
+
+        /**
+         * event - onSiteCreate
+         *
+         * @param {QUI.classes.projects.Project} Project - Project of the Site that are changed
+         * @param {QUI.classes.projects.Site} Site - Site that are changed
+         */
+        onSiteCreate : function(Project, Site)
+        {
+            console.log( Site.getId() );
+
         }
     });
 

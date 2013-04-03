@@ -293,7 +293,6 @@ define('controls/contextmenu/Menu', [
          * Add the Child to the Menü
          *
          * @method QUI.controls.contextmenu.Menu#appendChild
-         *
          * @param {QUI.controls.contextmenu.Item} Child
          * @return {this}
          */
@@ -348,7 +347,7 @@ define('controls/contextmenu/Menu', [
          *
          * @method QUI.controls.contextmenu.Menu#clearChildren
          *
-         * @return {this}
+         * @return {this} self
          */
         clearChildren : function()
         {
@@ -371,11 +370,7 @@ define('controls/contextmenu/Menu', [
          */
         getActive : function()
         {
-            if ( this.$Active ) {
-                return this.$Active;
-            }
-
-            return false;
+            return this.$Active ? this.$Active : false;
         },
 
         /**

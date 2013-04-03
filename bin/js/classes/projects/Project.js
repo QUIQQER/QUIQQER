@@ -1,9 +1,6 @@
 /**
  * A QUIQQER project
  *
- * @events onSiteStatusEditBegin
- * @events onSiteStatusEditEnd
- *
  * @author www.pcsg.de (Henning Leutz)
  *
  * @requires classes/DOM
@@ -17,6 +14,9 @@
  *
  * @events onSiteDelete [this, {Integer}]
  * @events onSiteSave [this, {QUI.classes.projects.Site}]
+ * @events onSiteCreate [this, {QUI.classes.projects.Site}]
+ * @events onSiteActivate [this, {QUI.classes.projects.Site}]
+ * @events onSiteDeactivate [this, {QUI.classes.projects.Site}]
  */
 
 define('classes/projects/Project', [
@@ -43,13 +43,15 @@ define('classes/projects/Project', [
      */
     QUI.classes.projects.Project = new Class({
 
-        Implements : [ QDOM ],
-        Type       : 'QUI.classes.projects.Project',
+        Extends : QDOM,
+        Type    : 'QUI.classes.projects.Project',
 
         Binds : [
             '$onChildDelete',
             '$onSiteSave',
-            '$onSiteCreate'
+            '$onSiteCreate',
+            '$onSiteActivate',
+            '$onSiteDeactivate'
         ],
 
         options : {
@@ -83,10 +85,10 @@ define('classes/projects/Project', [
 
             Site = new QUI.classes.projects.Site( this, id );
             Site.addEvents({
-                'onDelete' : this.$onSiteDelete,
-                'onSave'   : this.$onSiteSave,
-                'onActivate'    : this.$onSiteSave,
-                'onDeActivate'  : this.$onSiteSave,
+                'onDelete'      : this.$onSiteDelete,
+                'onSave'        : this.$onSiteSave,
+                'onActivate'    : this.$onSiteActivate,
+                'onDeactivate'  : this.$onSiteDeactivate,
                 'onCreateChild' : this.$onCreateChild
             });
 
@@ -193,6 +195,28 @@ define('classes/projects/Project', [
         $onSiteCreate : function(Site)
         {
             this.fireEvent( 'siteCreate', [ this, Site ] );
+        },
+
+        /**
+         * event : on Site activasion
+         *
+         * @param {QUI.classes.projects.Site} Site
+         * @fires Activate
+         */
+        $onSiteActivate : function(Site)
+        {
+            this.fireEvent( 'siteActivate', [ this, Site ] );
+        },
+
+        /**
+         * event : on Site deactivasion
+         *
+         * @param {QUI.classes.projects.Site} Site
+         * @fires Activate
+         */
+        $onSiteDeactivate : function(Site)
+        {
+            this.fireEvent( 'siteDeactivate', [ this, Site ] );
         }
     });
 

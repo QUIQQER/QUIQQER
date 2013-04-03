@@ -159,9 +159,7 @@ define('controls/projects/Panel', [
 
                         require(['controls/projects/Manager'], function(Manager)
                         {
-                            var Parent = QUI.Controls.getByType( 'QUI.controls.desktop.Tasks' )[0];
-
-                            Parent.appendChild(
+                            QUI.Workspace.appendPanel(
                                 new Manager({
                                     events :
                                     {
@@ -434,17 +432,6 @@ define('controls/projects/Panel', [
 
                 onChildClick : this.$openSitePanel,
 
-                    /*function(Itm)
-                {
-
-
-                    QUI.Projects.createSitePanel(
-                        this.getAttribute( 'name' ),
-                        this.getAttribute( 'lang' ),
-                        Itm.getAttribute( 'value' )
-                    );
-                }.bind( Project ),
-                */
                 onChildContextMenu : function(Item, event)
                 {
                     Item.getContextMenu()

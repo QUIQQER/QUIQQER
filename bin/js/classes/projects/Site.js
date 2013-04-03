@@ -73,9 +73,8 @@ define('classes/projects/Site', [
          * Get all attributes from the DB
          *
          * @method QUI.classes.projects.Site#load
-         *
          * @param {Function} onfinish - [optional] callback Function
-         * @return {this}
+         * @return {this} self
          */
         load : function(onfinish)
         {
@@ -341,6 +340,16 @@ define('classes/projects/Site', [
             }, params);
         },
 
+        /**
+         * Is the Site active?
+         *
+         * @method QUI.classes.projects.Site#getAttribute
+         * @return {Bool}
+         */
+        isActive : function()
+        {
+            return this.getAttribute( 'active' );
+        },
 
         /**
          * Site attributes
@@ -350,7 +359,6 @@ define('classes/projects/Site', [
          * Get an site attribute
          *
          * @method QUI.classes.projects.Site#getAttribute
-         *
          * @param {String} k - Attribute name
          * @return {unknown_type}
          */
