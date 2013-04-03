@@ -953,28 +953,33 @@ class Projects_Site extends QDOM
      */
     public function getChildIdByName($name)
     {
-        $name = Utils_Security_Orthos::clearMySQL($name);
-        $name = str_replace('-', '_', $name);
-
-        $sql = $this->_RELTABLE .'.parent='. $this->getId() .' AND '
-                . $this->_TABLE .'.deleted=0 AND '
-                . $this->_RELTABLE .'.child='. $this->_TABLE .'.id AND '
-                . $this->_TABLE .'.name LIKE "'. $name .'" '; // LIKE muss bleiben wegen _, sonst werden keine Seiten mehr gefunden
-
-        $result = QUI::getDataBase()->fetch(array(
+         $result = \QUI::getDataBase()->fetch(array(
             'from' 	=> array(
                 $this->_RELTABLE,
                 $this->_TABLE
             ),
-            'where' => $sql,
+            'where' => array(
+                $this->_RELTABLE .'.parent' => $this->getId(),
+                $this->_TABLE .'.deleted'   => 0,
+                $this->_RELTABLE .'.child'  => '`'. $this->_TABLE .'.id`',
+
+                // LIKE muss bleiben wegen _,
+                // sonst werden keine Seiten mehr gefunden
+                $this->_TABLE .'.name' => array(
+                    'type'  => 'LIKE',
+                    'value' => str_replace('-', '_', $name)
+                )
+            ),
             'limit' => 1
         ));
 
-        if (isset($result[0]) && isset($result[0]["id"])) {
+        if ( isset( $result[0] ) && isset( $result[0]["id"] ) ) {
             return $result[0]["id"];
         }
 
-        throw new QException('No Child found with name '. $name, 404);
+        throw new QException(
+            'No Child found with name '. $name, 404
+        );
     }
 
     /**
@@ -987,12 +992,12 @@ class Projects_Site extends QDOM
     {
         $id = (int)$id;
 
-        if ($id == $this->getId()) {
-            throw new QException('Page can not be a child of itself');
+        if ( $id == $this->getId() ) {
+            throw new QException( 'Page can not be a child of itself' );
         }
 
-        if (isset($this->_children[$id])) {
-            return $this->_children[$id];
+        if ( isset( $this->_children[ $id ] ) ) {
+            return $this->_children[ $id ];
         }
 
         $result = QUI::getDataBase()->fetch(array(
@@ -1004,13 +1009,13 @@ class Projects_Site extends QDOM
             'limit' => 1
         ));
 
-        if (!isset($result[0])) {
-            throw new QException('Child not found', 404);
+        if ( !isset( $result[0] ) ) {
+            throw new QException( 'Child not found', 404 );
         }
 
-        $this->_children[$id] = $this->getProject()->get($id);
+        $this->_children[ $id ] = $this->getProject()->get( $id );
 
-        return $this->_children[$id];
+        return $this->_children[ $id ];
     }
 
     /**

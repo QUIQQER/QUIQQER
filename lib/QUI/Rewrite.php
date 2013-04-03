@@ -120,28 +120,35 @@ class QUI_Rewrite
         $Session = QUI::getSession();
         $vhosts  = $this->getVHosts();
 
-        if (!isset($_SERVER['HTTP_HOST'])) {
+        if ( !isset( $_SERVER['HTTP_HOST'] ) ) {
             $_SERVER['HTTP_HOST'] = '';
         }
 
         // 301 abfangen
-        if (isset($vhosts['301']) &&
-            isset($vhosts['301'][ $_SERVER['HTTP_HOST'] ]))
+        if ( isset( $vhosts['301'] ) &&
+             isset( $vhosts['301'][ $_SERVER['HTTP_HOST'] ] ) )
         {
-            $this->_showErrorHeader(301, $vhosts['301'][ $_SERVER['HTTP_HOST'] ] .'/'. (isset($_REQUEST['_url']) ? $_REQUEST['_url'] : ''));
+            $url  = '';
+            $host = $vhosts['301'][ $_SERVER['HTTP_HOST'] ];
+
+            if ( isset( $_REQUEST['_url'] ) ) {
+                $url = $_REQUEST['_url'];
+            }
+
+            $this->_showErrorHeader( 301, $host .'/'. $url );
             exit;
         }
 
         // Kategorien aufruf
         // Aus url/kat/ wird url/kat.html
-        if (isset($_REQUEST['_url']) &&
-            substr($_REQUEST['_url'], -1) == '/' &&
-            strpos($_REQUEST['_url'], 'media/cache') === false)
+        if ( isset($_REQUEST['_url']) &&
+             substr($_REQUEST['_url'], -1) == '/' &&
+             strpos($_REQUEST['_url'], 'media/cache') === false )
         {
-            $_REQUEST['_url'] = substr($_REQUEST['_url'], 0, -1).'.html';
+            $_REQUEST['_url'] = substr( $_REQUEST['_url'], 0, -1 ) .'.html';
 
             // 301 weiterleiten
-            $this->_showErrorHeader(301, URL_DIR . $_REQUEST['_url']);
+            $this->_showErrorHeader( 301, URL_DIR . $_REQUEST['_url'] );
         }
 
         // Suffix
@@ -526,29 +533,32 @@ class QUI_Rewrite
     public function getSiteByUrl($url, $setpath=true)
     {
         // Sprache raus
-        if ($url == '') {
+        if ( $url == '' ) {
             return $this->_first_child;
         }
 
-        $_url = explode('/', $url);
+        $_url = explode( '/', $url );
 
-        if (count($_url) <= 1)
+        if ( count( $_url ) <= 1 )
         {
             // Erste Ebene
-            $site_url          = explode('.', $_url[0]);
-            $this->site_params = explode(self::URL_PARAM_SEPERATOR, $site_url[0]);
+            $site_url          = explode( '.', $_url[0] );
+            $this->site_params = explode( self::URL_PARAM_SEPERATOR, $site_url[0] );
 
-            if ($this->_first_child->getAttribute('name') == str_replace('-', ' ', $this->site_params[0]) ||
-                empty($this->site_params[0]))
-            {
+            // für was? :
+            // $this->_first_child->getAttribute('name') == str_replace('-', ' ', $this->site_params[0])
+            if ( empty( $this->site_params[0] ) ) {
                 return $this->_first_child;
             }
 
-            $id   = $this->_first_child->getChildIdByName($this->site_params[0]);
-            $Site = $this->getProject()->get($id);
+            $id = $this->_first_child->getChildIdByName(
+                $this->site_params[ 0 ]
+            );
 
-            if ($setpath) {
-                $this->_set_path($Site);
+            $Site = $this->getProject()->get( $id );
+
+            if ( $setpath ) {
+                $this->_set_path( $Site );
             }
 
             return $Site;
@@ -556,29 +566,29 @@ class QUI_Rewrite
 
         $Child = false;
 
-        foreach ($_url as $key => $val)
+        foreach ( $_url as $key => $val )
         {
-            if ($Child == false) {
+            if ( $Child == false ) {
                 $Child = $this->_first_child;
             }
 
-            if (strpos($val, '.') !== false)
+            if ( strpos( $val, '.' ) !== false)
             {
-                $site_url          = explode('.', $val);
-                $this->site_params = explode(self::URL_PARAM_SEPERATOR, $site_url[0]);
+                $site_url          = explode( '.', $val );
+                $this->site_params = explode( self::URL_PARAM_SEPERATOR, $site_url[0] );
 
                 $val = $this->site_params[0];
             }
 
-            $id    = $Child->getChildIdByName($val);
-            $Child = $this->getProject()->get($id);
+            $id    = $Child->getChildIdByName( $val );
+            $Child = $this->getProject()->get( $id );
 
-            if ($setpath) {
-                $this->_set_path($Child);
+            if ( $setpath ) {
+                $this->_set_path( $Child );
             }
         }
 
-        if ($Child != false && is_object($Child)) {
+        if ( $Child != false && is_object( $Child ) ) {
             return $Child;
         }
 
