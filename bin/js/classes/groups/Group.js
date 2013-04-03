@@ -26,20 +26,18 @@ define('classes/groups/Group', [
     QUI.namespace( 'classes.groups' );
 
     /**
+     * A QUIQQER Group
+     *
      * @class QUI.classes.groups.Group
-     *
      * @param {Integer} gid - Group-ID
-     *
      * @memberof! <global>
      */
     QUI.classes.groups.Group = new Class({
 
-        Implements : [ DOM ],
-        Type       : 'QUI.classes.groups.Group',
+        Extends : DOM,
+        Type    : 'QUI.classes.groups.Group',
 
-        // group attributes
-        attributes : {},
-        rights     : {},
+        attributes : {}, // group attributes
 
         initialize : function(gid)
         {
@@ -50,7 +48,7 @@ define('classes/groups/Group', [
          * Return the Group-ID
          *
          * @method QUI.classes.groups.Group#getId
-         * @return {Integer}
+         * @return {Integer} Group-ID
          */
         getId : function()
         {
@@ -88,7 +86,6 @@ define('classes/groups/Group', [
          * Return the children groups of the group
          *
          * @method QUI.classes.groups.Group#load
-         *
          * @param {Function} onfinish - [optional] callback
          * @param {Object} params - [optional] binded params at the request
          */
@@ -112,7 +109,6 @@ define('classes/groups/Group', [
          * Save the group with its actualy attributes
          *
          * @method QUI.classes.groups.Group#save
-         *
          * @param {Function} onfinish - [optional] callback
          * @param {Object} params - [optional] binded params at the request
          */
@@ -143,7 +139,7 @@ define('classes/groups/Group', [
         /**
          * Is the Group active?
          *
-         * @return {Bool}
+         * @return {Bool} true or false
          */
         isActive : function()
         {
@@ -154,12 +150,11 @@ define('classes/groups/Group', [
          * Get all users that are inside the group
          *
          * @method QUI.classes.groups.Group#getUsers
-         *
          * @param {Function} onfinish - Callback function
          *         the return of the function: {Array}
          * @param {Object} params - limit params (limit, page, field, order)
          *
-         * @return {this}
+         * @return {this} self
          */
         getUsers : function(onfinish, limits)
         {
@@ -192,11 +187,9 @@ define('classes/groups/Group', [
          * You can extend the Object width more than the default options
          *
          * @method QUI.classes.groups.Group#setAttribute
-         *
          * @param {String} k - Name of the Attribute
          * @param {Object|String|Integer|Array} v - value
-         *
-         * @return {this}
+         * @return {this} self
          */
         setAttribute : function(k, v)
         {
@@ -210,7 +203,7 @@ define('classes/groups/Group', [
          * @method QUI.classes.groups.Group#setAttribute
          *
          * @param {Object} attributes - Object with attributes
-         * @return {this}
+         * @return {this} self
          *
          * @example Object.setAttributes({
          *   attr1 : '1',
@@ -233,9 +226,8 @@ define('classes/groups/Group', [
          * returns the not the default attributes, too
          *
          * @method QUI.classes.groups.Group#setAttribute
-         *
          * @param {Object} attributes - Object width attributes
-         * @return {unknown_type|Bool}
+         * @return {unknown_type|Bool} wanted attribute
          */
         getAttribute : function(k)
         {
@@ -262,74 +254,11 @@ define('classes/groups/Group', [
          *
          * @method QUI.classes.groups.Group#existAttribute
          * @param {String} k - wanted attribute
-         * @return {Bool}
+         * @return {Bool} true | false
          */
         existAttribute : function(k)
         {
             if ( typeof this.attributes[ k ] !== 'undefined' ) {
-                return true;
-            }
-
-            return false;
-        },
-
-        /**
-         * Set an group right
-         *
-         * @method QUI.classes.groups.Group#setRight
-         *
-         * @param {String} k        - Name of the right
-         * @param {unknown_type} v - Value of the right
-         * @return {this}
-         */
-        setRight : function(k, v)
-        {
-            this.rights[ k ] = v;
-
-            return this;
-        },
-
-        /**
-         * Has the group the right?
-         * Returns the right if it exist
-         *
-         * @method QUI.classes.groups.Group#hasRight
-         *
-         * @param {String} right  - Name of the right
-         * @return {unknown_type|Bool}
-         */
-        hasRight : function(right)
-        {
-            if ( this.rights[ right ] !== 'undefined' ) {
-                return this.rights[ right ];
-            }
-
-            return false;
-        },
-
-        /**
-         * Get all rights from the group
-         *
-         * @method QUI.classes.groups.Group#getRights
-         *
-         * @return {Object}
-         */
-        getRights : function()
-        {
-            return this.rights;
-        },
-
-        /**
-         * Exist a right in the group?
-         *
-         * @method QUI.classes.groups.Group#existsRight
-         *
-         * @param  {String} $right
-         * @return {Bool}
-         */
-        existsRight : function(right)
-        {
-            if ( this.rights[ right ] !== 'undefined' ) {
                 return true;
             }
 

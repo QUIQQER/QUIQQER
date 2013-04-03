@@ -144,7 +144,9 @@ define('controls/Utils', function()
          */
         parseDate : function(Elm)
         {
-            require(['package/quiqqer/calendar/bin/Calendar'], function()
+            var self = this;
+
+            require(['package/quiqqer/calendar/bin/Calendar'], function(DatePicker)
             {
                 var i, len, elements, Child;
 
@@ -177,7 +179,7 @@ define('controls/Utils', function()
                         title   : 'Datum leeren',
                         Input   : Child,
                         events  : {
-                            onClick : this.$clearDateBtn.bind( this )
+                            onClick : self.$clearDateBtn.bind( self )
                         },
                         styles : {
                             top : 1
@@ -196,7 +198,7 @@ define('controls/Utils', function()
          */
         parseGroups : function(Elm)
         {
-            require(['controls/groups/Input'], function()
+            require(['controls/usersAndGroups/Input'], function()
             {
                 var i, len, elements;
 

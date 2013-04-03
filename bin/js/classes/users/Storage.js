@@ -21,20 +21,18 @@ define('classes/users/Storage', [
     QUI.namespace( 'classes.users' );
 
     /**
+     * Local storage for user settings
+     *
      * @class QUI.classes.users.Storage
+     * @param {QUI.classes.users.User} User
      *
      * @memberof! <global>
      */
     QUI.classes.users.Storage = new Class({
 
-        Implements : [ QDOM ],
-        Type       : 'QUI.classes.users.Storage',
+        Extends : QDOM,
+        Type    : 'QUI.classes.users.Storage',
 
-        /**
-         * session user
-         *
-         * @param {QUI.classes.users.User} User
-         */
         initialize : function(User)
         {
             this.$User = User;
@@ -43,6 +41,7 @@ define('classes/users/Storage', [
         /**
          * Set the value of a key
          *
+         * @method QUI.classes.users.Storage#set
          * @param {String} key
          * @param {String|Integer} value
          */
@@ -54,14 +53,14 @@ define('classes/users/Storage', [
         /**
          * Return the value of stored the key
          *
+         * @method QUI.classes.users.Storage#get
          * @param {String} key
-         * @return {unknown_type}
+         * @return {unknown_type} the wanted storage
          */
         get : function(key)
         {
             return window.localStorage.getItem( key );
         }
-
     });
 
     return QUI.classes.users.Storage;

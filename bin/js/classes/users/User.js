@@ -25,6 +25,8 @@ define('classes/users/User', [
     QUI.namespace( 'classes.users' );
 
     /**
+     * A QUIQQER User
+     *
      * @class QUI.classes.users.User
      * @param {Integer} uid - the user id
      *
@@ -32,12 +34,10 @@ define('classes/users/User', [
      */
     QUI.classes.users.User = new Class({
 
-        Implements : [ DOM ],
-        Type       : 'QUI.classes.users.User',
+        Extends : DOM,
+        Type    : 'QUI.classes.users.User',
 
-        // user attributes
-        attributes : {},
-        rights     : {},
+        attributes : {}, // user attributes
 
         initialize : function(uid)
         {
@@ -48,7 +48,7 @@ define('classes/users/User', [
          * Get user id
          *
          * @method QUI.classes.users.User#getId
-         * @return {Integer}
+         * @return {Integer} User-ID
          */
         getId : function()
         {
@@ -59,7 +59,7 @@ define('classes/users/User', [
          * Return the user name
          *
          * @method QUI.classes.users.User#getName
-         * @return {String}
+         * @return {String} Username
          */
         getName : function()
         {
@@ -164,7 +164,7 @@ define('classes/users/User', [
                 }
             });
         },
-
+        */
 
         /**
          * Returns the user avatar url
@@ -178,7 +178,7 @@ define('classes/users/User', [
         {
             return URL_DIR +'media/users/'+ this.getAttribute('avatar');
         },
-
+        */
         /**
          * Load the Adresse management in the Panel
          *
@@ -306,7 +306,7 @@ define('classes/users/User', [
          * @param {String} k - Name of the Attribute
          * @param {Object|String|Integer|Array} v - value
          *
-         * @return {this}
+         * @return {this} self
          */
         setAttribute : function(k, v)
         {
@@ -320,7 +320,7 @@ define('classes/users/User', [
          * @method QUI.classes.users.User#setAttribute
          *
          * @param {Object} attributes - Object with attributes
-         * @return {this}
+         * @return {this} self
          *
          * @example Object.setAttributes({
          *   attr1 : '1',
@@ -345,7 +345,7 @@ define('classes/users/User', [
          * @method QUI.classes.users.User#setAttribute
          *
          * @param {Object} attributes - Object width attributes
-         * @return {unknown_type|Bool}
+         * @return {unknown_type|Bool} The wanted attribute or false
          */
         getAttribute : function(k)
         {
@@ -360,7 +360,7 @@ define('classes/users/User', [
          * Return the default attributes
          *
          * @method QUI.classes.users.User#getAttributes
-         * @return {Object}
+         * @return {Object} alle attributes
          */
         getAttributes : function()
         {
@@ -372,78 +372,11 @@ define('classes/users/User', [
          *
          * @method QUI.classes.users.User#existAttribute
          * @param {String} k - wanted attribute
-         * @return {Bool}
+         * @return {Bool} true or false
          */
         existAttribute : function(k)
         {
             if ( typeof this.attributes[ k ] !== 'undefined' ) {
-                return true;
-            }
-
-            return false;
-        },
-
-        /**
-         * Rights methods
-         */
-
-        /**
-         * Set an user right
-         *
-         * @method QUI.classes.users.User#setRight
-         *
-         * @param {String} k        - Name of the right
-         * @param {unknown_type} v - Value of the right
-         * @return {this}
-         */
-        setRight : function(k, v)
-        {
-            this.rights[ k ] = v;
-
-            return this;
-        },
-
-        /**
-         * Has the user the right?
-         * Returns the right if it exist
-         *
-         * @method QUI.classes.users.User#hasRight
-         *
-         * @param {String} right  - Name of the right
-         * @return {unknown_type|Bool}
-         */
-        hasRight : function(right)
-        {
-            if ( this.rights[ right ] !== 'undefined' ) {
-                return this.rights[ right ];
-            }
-
-            return false;
-        },
-
-        /**
-         * Get all rights from the user
-         *
-         * @method QUI.classes.users.User#getRights
-         *
-         * @return {Object}
-         */
-        getRights : function()
-        {
-            return this.rights;
-        },
-
-        /**
-         * Exist the right in the user?
-         *
-         * @method QUI.classes.users.User#existsRight
-         *
-         * @param  {String} $right
-         * @return {Bool}
-         */
-        existsRight : function(right)
-        {
-            if ( this.rights[ right ] !== 'undefined' ) {
                 return true;
             }
 

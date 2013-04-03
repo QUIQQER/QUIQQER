@@ -148,10 +148,13 @@ define('Controls', function()
             // refresh types
             tmp = [];
 
-            for ( i = 0, len = this.$types[ t ].length; i < len; i++ )
+            if ( this.$types[ t ] )
             {
-                if ( id !== this.$types[ t ][ i ].getId() ) {
-                    tmp.push( this.$types[ t ][ i ] );
+                for ( i = 0, len = this.$types[ t ].length; i < len; i++ )
+                {
+                    if ( id !== this.$types[ t ][ i ].getId() ) {
+                        tmp.push( this.$types[ t ][ i ] );
+                    }
                 }
             }
 

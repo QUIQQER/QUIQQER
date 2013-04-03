@@ -2,6 +2,8 @@
  * Adressenverwaltung eines Benutzers
  *
  * @author www.pcsg.de (Henning Leutz)
+ * @todo translation
+ * @todo documentation
  */
 
 define('classes/users/Adresses', [
@@ -17,9 +19,16 @@ define('classes/users/Adresses', [
 
     QUI.namespace( 'classes.users' );
 
+    /**
+     * Adressenverwaltung eines Benutzers
+     *
+     * @class QUI.classes.users.Adresses
+     * @memberof! <global>
+     */
     QUI.classes.users.Adresses = new Class({
 
-        Implements : [DOM],
+        Extends : DOM,
+        Type    : 'QUI.classes.users.Adresses',
 
         initialize : function(User, Container)
         {
@@ -44,6 +53,11 @@ define('classes/users/Adresses', [
             this.draw();
         },
 
+        /**
+         * Draw the Adress list
+         *
+         * @method QUI.classes.users.Adresses#draw
+         */
         draw : function()
         {
             this.$Loader.create().inject( this.$Parent );

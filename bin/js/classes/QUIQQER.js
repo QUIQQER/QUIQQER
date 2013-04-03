@@ -15,12 +15,15 @@ define('classes/QUIQQER', function()
     "use strict";
 
     /**
-     * @class
+     * The QUIQQER main object
+     *
+     * @class QUI.classes.QUIQQER
+     * @memberof! <global>
      */
     return new Class({
 
         Implements : [ Events ],
-        Type       : 'QUIQQER',
+        Type       : 'QUI.classes.QUIQQER',
 
         initialize : function(options)
         {
@@ -36,6 +39,8 @@ define('classes/QUIQQER', function()
         /**
          * Load the QUIQQER System
          * event and error handling and draw the GUI
+         *
+         * @method QUI.classes.QUIQQER#load
          */
         load : function()
         {
@@ -86,6 +91,8 @@ define('classes/QUIQQER', function()
 
         /**
          * draw the GUI
+         *
+         * @method QUI.classes.QUIQQER#$draw
          */
         $draw : function()
         {
@@ -209,7 +216,7 @@ define('classes/QUIQQER', function()
         /**
          * Set or get config vars
          *
-         * @method QUI#config
+         * @method QUI.classes.QUIQQER#config
          *
          * @example
 
@@ -241,7 +248,7 @@ QUI.config('dir', 'my/new/dir'); // set the dir
          * Creates Namespaces
          * based on YAHOO code - nice solution!!
          *
-         * @method QUI#config
+         * @method QUI.classes.QUIQQER#namespace
          * @example QUI.namespace('my.name.space'); -> QUI.my.name.space
          */
         namespace : function()
@@ -278,7 +285,7 @@ QUI.config('dir', 'my/new/dir'); // set the dir
         /**
          * Fire the Error Event
          *
-         * @method QUI#triggerError
+         * @method QUI.classes.QUIQQER#triggerError
          *
          * @param Exception - Exception Objekt
          * @param params    - Weitere Paramater (optional)
@@ -295,7 +302,7 @@ QUI.config('dir', 'my/new/dir'); // set the dir
         /**
          * trigger some messages to the console
          *
-         * @method QUI#trigger
+         * @method QUI.classes.QUIQQER#trigger
          *
          * @param msg
          * @param url
@@ -316,6 +323,8 @@ QUI.config('dir', 'my/new/dir'); // set the dir
 
         /**
          * Resize the QUI
+         *
+         * @method QUI.classes.QUIQQER#resize
          */
         resize : function()
         {
@@ -335,6 +344,8 @@ QUI.config('dir', 'my/new/dir'); // set the dir
 
         /**
          * Opens the QUIQQER about window
+         *
+         * @method QUI.classes.QUIQQER#about
          */
         about : function()
         {

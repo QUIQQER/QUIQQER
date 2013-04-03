@@ -5,6 +5,7 @@
  * - onDestroy
  *
  * @author www.pcsg.de (Henning Leutz)
+ * @todo translation
  */
 
 define('classes/users/AdressesContact', [
@@ -18,13 +19,15 @@ define('classes/users/AdressesContact', [
     QUI.namespace( 'classes.users' );
 
     /**
-     * @class QUI.classes.users.AdressesContact
+     * Kontakt Tel / Fax / E-Mail von Benutzern
      *
+     * @class QUI.classes.users.AdressesContact
      * @memberof! <global>
      */
     QUI.classes.users.AdressesContact = new Class({
 
-        Implements : [DOM],
+        Extends : DOM,
+        Type    : 'QUI.classes.users.AdressesContact',
 
         options : {
             value : '',
@@ -60,11 +63,22 @@ define('classes/users/AdressesContact', [
             this.draw();
         },
 
+        /**
+         * Return the contact id
+         *
+         * @method QUI.classes.users.AdressesContact#getId
+         * @return {Integer} ID
+         */
         getId : function()
         {
             return this.$id;
         },
 
+        /**
+         * Destroy the Adress Contact
+         *
+         * @method QUI.classes.users.AdressesContact#destroy
+         */
         destroy : function()
         {
             this.$Type.destroy();
@@ -75,9 +89,14 @@ define('classes/users/AdressesContact', [
             this.$Type = null;
             this.$Data = null;
 
-            this.fireEvent('destroy', [this]);
+            this.fireEvent( 'destroy', [ this ] );
         },
 
+        /**
+         * draw the adress contact
+         *
+         * @method QUI.classes.users.AdressesContact#draw
+         */
         draw : function()
         {
             this.$Elm  = new Element('div');
@@ -135,16 +154,34 @@ define('classes/users/AdressesContact', [
             this.$Elm.inject( this.$Container );
         },
 
+        /**
+         * Returns the main DOM-Node Element
+         *
+         * @method QUI.classes.users.AdressesContact#getElm
+         * @return {DOMNode} Element
+         */
         getElm : function()
         {
             return this.$Elm;
         },
 
+        /**
+         * Return the value
+         *
+         * @method QUI.classes.users.AdressesContact#getValue
+         * @return {String} value
+         */
         getValue : function()
         {
             return this.$Data.value;
         },
 
+        /**
+         * Return the data
+         *
+         * @method QUI.classes.users.AdressesContact#getData
+         * @return {Object} {type:'', no:''}
+         */
         getData : function()
         {
             return {

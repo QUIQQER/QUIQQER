@@ -52,10 +52,12 @@ define('controls/users/User', [
 
             // defaults
             this.setAttribute( 'name', 'user-panel-'+ uid );
-            this.init( options );
+            this.parent( options );
 
-            this.addEvent( 'onCreate', this.$onCreate );
-            this.addEvent( 'onDestroy', this.$onDestroy );
+            this.addEvents({
+                onCreate  : this.$onCreate,
+                onDestroy : this.$onDestroy
+            });
         },
 
         /**
