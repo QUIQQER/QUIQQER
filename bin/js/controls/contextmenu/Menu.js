@@ -161,8 +161,7 @@ define('controls/contextmenu/Menu', [
          * Hide the Menu, set the display style to none
          *
          * @method QUI.controls.contextmenu.Menu#hide
-         *
-         * @return {this}
+         * @return {this} self
          */
         hide : function()
         {
@@ -176,8 +175,7 @@ define('controls/contextmenu/Menu', [
          * Set the focus to the Menu, the blur event would be triggerd
          *
          * @method QUI.controls.contextmenu.Menu#focus
-         *
-         * @return {this}
+         * @return {this} self
          */
         focus : function()
         {
@@ -194,10 +192,9 @@ define('controls/contextmenu/Menu', [
          * context menu don't get out of the body
          *
          * @method QUI.controls.contextmenu.Menu#setPosition
-         *
          * @param {Integer} x - from the top (x axis)
          * @param {Integer}y - from the left (y axis)
-         * @return {this}
+         * @return {this} self
          */
         setPosition : function(x, y)
         {
@@ -216,9 +213,8 @@ define('controls/contextmenu/Menu', [
          * Set and create the menu title
          *
          * @method QUI.controls.contextmenu.Menu#setTitle
-         *
          * @param {String} text - Title text
-         * @return {this}
+         * @return {this} self
          */
         setTitle : function(text)
         {
@@ -241,9 +237,8 @@ define('controls/contextmenu/Menu', [
          * Get an Child Element
          *
          * @method QUI.controls.contextmenu.Menu#getChildren
-         *
          * @param {String} name : [Name of the Children, optional, if no name given, returns all Children]
-         * @return {Array|false|QUI.controls.contextmenu.Item}
+         * @return {Array|false|QUI.controls.contextmenu.Item} children
          */
         getChildren : function(name)
         {
@@ -269,7 +264,7 @@ define('controls/contextmenu/Menu', [
          * Return the first child Element
          *
          * @method QUI.controls.contextmenu.Menu#firstChild
-         * @return {false|QUI.controls.contextmenu.Item}
+         * @return {false|QUI.controls.contextmenu.Item} Child
          */
         firstChild : function()
         {
@@ -283,7 +278,7 @@ define('controls/contextmenu/Menu', [
         /**
          * Return the number of children
          *
-         * @return {Integer}
+         * @return {Integer} count of children
          */
         count : function()
         {
@@ -366,7 +361,8 @@ define('controls/contextmenu/Menu', [
         /**
          * Return the active item
          *
-         * @return {QUI.controls.contextmenu.Item|false}
+         * @method QUI.controls.contextmenu.Menu#getActive
+         * @return {QUI.controls.contextmenu.Item|false} Active Child
          */
         getActive : function()
         {
@@ -376,6 +372,7 @@ define('controls/contextmenu/Menu', [
         /**
          * Return the next children / item of the item
          *
+         * @method QUI.controls.contextmenu.Menu#getNext
          * @param {QUI.controls.contextmenu.Item} Item
          * @return {QUI.controls.contextmenu.Item|false}
          */
@@ -398,6 +395,7 @@ define('controls/contextmenu/Menu', [
         /**
          * Return the previous children / item of the item
          *
+         * @method QUI.controls.contextmenu.Menu#getPrevious
          * @param {QUI.controls.contextmenu.Item} Item
          * @return {QUI.controls.contextmenu.Item|false}
          */
@@ -422,7 +420,8 @@ define('controls/contextmenu/Menu', [
         /**
          * Deselect all children
          *
-         * @return {this}
+         * @method QUI.controls.contextmenu.Menu#deselectItems
+         * @return {this} self
          */
         deselectItems : function()
         {
@@ -436,6 +435,8 @@ define('controls/contextmenu/Menu', [
         /**
          * Keyup event if the menu has the focus
          * so you can select with keyboard the contextmenu items
+         *
+         * @method QUI.controls.contextmenu.Menu#$keyup
          */
         $keyup : function(event)
         {
@@ -460,6 +461,8 @@ define('controls/contextmenu/Menu', [
 
         /**
          * Simulate a arrow up, select the element up
+         *
+         * @method QUI.controls.contextmenu.Menu#up
          */
         up : function(event)
         {
@@ -491,6 +494,8 @@ define('controls/contextmenu/Menu', [
 
         /**
          * Simulate a arrow down, select the element down
+         *
+         * @method QUI.controls.contextmenu.Menu#down
          */
         down : function()
         {
@@ -521,6 +526,7 @@ define('controls/contextmenu/Menu', [
         /**
          * Makes a click on the active element
          *
+         * @method QUI.controls.contextmenu.Menu#select
          * @param {DOMEvent} event - [optional]
          */
         select : function(event)
@@ -532,7 +538,6 @@ define('controls/contextmenu/Menu', [
                 this.$Active.fireEvent( 'click', [ this.$Active, event ] );
             }
         }
-
     });
 
     return QUI.controls.contextmenu.Menu;
