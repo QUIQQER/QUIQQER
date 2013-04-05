@@ -714,10 +714,6 @@ define('controls/desktop/Panel', [
         $onDestroy : function()
         {
             if ( this.$Elm ) {
-                this.$Elm.destroy();
-            }
-
-            if ( this.$Elm ) {
                 this.$Header.destroy();
             }
 

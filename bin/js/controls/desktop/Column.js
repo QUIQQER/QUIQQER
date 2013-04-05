@@ -26,9 +26,7 @@ define('controls/desktop/Column', [
 
     /**
      * @class QUI.controls.desktop.Column
-     *
      * @event onCreate [this]
-     *
      * @memberof! <global>
      */
     QUI.controls.desktop.Column = new Class({
@@ -338,8 +336,14 @@ define('controls/desktop/Column', [
             });
 
             // if the panel is from this column
-            var Handler = Panel.getAttribute( '_Handler' ),
-                Parent  = Handler.getParent( '[data-quiid="'+ this.getId() +'"]' );
+            var Handler = false,
+                Parent  = false;
+
+            Handler = Panel.getAttribute( '_Handler' );
+
+            if ( Handler ) {
+                Parent = Handler.getParent( '[data-quiid="'+ this.getId() +'"]' );
+            }
 
             if ( Parent ) {
                 this.$onPanelDestroy( Panel );
@@ -782,6 +786,8 @@ define('controls/desktop/Column', [
          */
         $onPanelDestroy : function(Panel)
         {
+            var height, Next, Prev, Sibling;
+
             var pid = Panel.getId(),
                 Elm = Panel.getElm();
 
@@ -792,22 +798,48 @@ define('controls/desktop/Column', [
             // find handler
             var Handler = Panel.getAttribute( '_Handler' );
 
-            if ( !Handler || !Handler.hasClass( 'qui-column-hor-handle' ) ) {
-                return;
-            }
-
-            var Prev = Handler.getPrevious();
-
-            if ( Prev && Prev.get( 'data-quiid' ) )
+            // the panel is the first panel
+            // so the next panel handler must be destroyed
+            if ( !Handler && !Elm.getPrevious() && Elm.getNext() )
             {
-                var Sibling = QUI.Controls.getById(
-                        Prev.get( 'data-quiid' )
-                    ),
+                Handler = Elm.getNext();
+                Next    = Handler.getNext();
+
+                if ( Next && Next.get( 'data-quiid' ) )
+                {
+                    Sibling = QUI.Controls.getById(
+                        Next.get( 'data-quiid' )
+                    );
 
                     height = Handler.getSize().y +
                              Sibling.getAttribute( 'height' ) +
                              Panel.getAttribute( 'height' );
 
+                    Sibling.setAttribute( 'height', height );
+                    Sibling.setAttribute( '_Handler', false );
+                    Sibling.resize();
+                }
+
+                Handler.destroy();
+                return;
+            }
+
+
+            if ( !Handler || !Handler.hasClass( 'qui-column-hor-handle' ) ) {
+                return;
+            }
+
+            Prev = Handler.getPrevious();
+
+            if ( Prev && Prev.get( 'data-quiid' ) )
+            {
+                Sibling = QUI.Controls.getById(
+                    Prev.get( 'data-quiid' )
+                );
+
+                height = Handler.getSize().y +
+                         Sibling.getAttribute( 'height' ) +
+                         Panel.getAttribute( 'height' );
 
                 Sibling.setAttribute( 'height', height );
                 Sibling.resize();
@@ -888,15 +920,18 @@ define('controls/desktop/Column', [
             change = pos.y - hpos.y;
 
             var Next = Handle.getNext(),
-                Prev = Handle.getPrevious();
+                Prev = Handle.getPrevious(),
 
-            var NextInstance = QUI.Controls.getById(
-                Next.get( 'data-quiid' )
-            );
+                PrevInstance = false,
+                NextInstance = false;
 
-            var PrevInstance = QUI.Controls.getById(
-                Prev.get( 'data-quiid' )
-            );
+            if ( Next ) {
+                NextInstance = QUI.Controls.getById( Next.get( 'data-quiid' ) );
+            }
+
+            if ( Prev ) {
+                PrevInstance = QUI.Controls.getById( Prev.get( 'data-quiid' ) );
+            }
 
             if ( NextInstance && !NextInstance.isOpen() )
             {
@@ -926,20 +961,27 @@ define('controls/desktop/Column', [
                 }
             }
 
+            if ( NextInstance )
+            {
+                NextInstance.setAttribute(
+                    'height',
+                    NextInstance.getAttribute( 'height' ) - change
+                );
 
-            NextInstance.setAttribute(
-                'height',
-                NextInstance.getAttribute( 'height' ) - change
-            );
+                NextInstance.resize();
+            }
+
+
+            if ( !PrevInstance ) {
+                return;
+            }
 
             PrevInstance.setAttribute(
                 'height',
                 PrevInstance.getAttribute( 'height' ) + change
             );
 
-            NextInstance.resize();
             PrevInstance.resize();
-
 
             // check if a rest height exist
             var children_height = 0;
