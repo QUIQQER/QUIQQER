@@ -181,8 +181,48 @@ define('controls/desktop/Panel', [
                 }.bind( this ));
             }
 
-            if ( this.getAttribute('dragable') ) {
+            // drag & drop
+            if ( this.getAttribute('dragable') )
+            {
                 this.$Header.setStyle( 'cursor', 'move' );
+
+                new QUI.classes.utils.DragDrop(this.$Header, {
+                    dropables : '.qui-panel-drop',
+                    cssClass  : 'radius5',
+                    styles    : {
+                        width  : 300,
+                        height : 100
+                    },
+                    events    :
+                    {
+                        onEnter : function(Element, Droppable) {
+                            QUI.controls.Utils.highlight( Droppable );
+                        },
+
+                        onLeave : function(Element, Droppable) {
+                            QUI.controls.Utils.normalize( Droppable );
+                        },
+
+                        onDrop : function(Element, Droppable, event)
+                        {
+                            if ( !Droppable ) {
+                                return;
+                            }
+                            var quiid = Droppable.get( 'data-quiid' );
+
+                            if ( !quiid ) {
+                                return;
+                            }
+
+                            var Parent = QUI.Controls.getById( quiid );
+
+                            Parent.normalize();
+                            Parent.appendChild( this );
+
+                        }.bind( this )
+                    }
+                });
+
             }
 
             // content params

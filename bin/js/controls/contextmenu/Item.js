@@ -271,13 +271,13 @@ define('controls/contextmenu/Item', [
          * @method QUI.controls.contextmenu.Item#appendChild
          *
          * @param {QUI.controls.contextmenu.Item] Child
-         * @return {this}
+         * @return {this} self
          */
         appendChild : function(Child)
         {
             this.$items.push( Child );
 
-            Child.setParent(this);
+            Child.setParent( this );
 
             if ( this.$Elm )
             {
@@ -404,6 +404,7 @@ define('controls/contextmenu/Item', [
 
             this.$Menu.inject( this.$Elm );
             this.$Menu.hide();
+            this.$Menu.setParent( this.getParent() );
 
             return this.$Menu;
         },
@@ -470,10 +471,26 @@ define('controls/contextmenu/Item', [
         {
             if ( this.$Menu )
             {
-                var size = this.$Elm.getSize();
+                var size   = this.$Elm.getSize(),
+                    Parent = this.$Menu.getParent();
 
                 this.$Menu.setPosition( size.x, 0 );
                 this.$Menu.show();
+
+                if ( Parent )
+                {
+                    var MenuElm = this.$Menu.getElm(),
+
+                        elm_pos   = MenuElm.getPosition(),
+                        elm_size  = MenuElm.getSize(),
+                        body_size = document.body.getSize();
+
+                    if ( elm_pos.x + size.x > body_size.x )
+                    {
+                        // show the menü left
+                        this.$Menu.setPosition( 0 - elm_size.x, 0 );
+                    }
+                }
 
                 this.$Elm
                     .getChildren( '.qui-contextitem-container' )

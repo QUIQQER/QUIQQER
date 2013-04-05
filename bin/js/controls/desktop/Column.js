@@ -88,12 +88,13 @@ define('controls/desktop/Column', [
         /**
          * Create the DOMNode for the Column
          *
+         * @method QUI.controls.desktop.Column#create
          * @return {DOMNode}
          */
         create : function()
         {
             this.$Elm = new Element('div', {
-                'class'      : 'qui-column box',
+                'class'      : 'qui-column box qui-panel-drop',
                 'data-quiid' : this.getId()
             });
 
@@ -132,7 +133,8 @@ define('controls/desktop/Column', [
         /**
          * Return the data for the workspace
          *
-         * @return Object
+         * @method QUI.controls.desktop.Column#serialize
+         * @return {Object}
          */
         serialize : function()
         {
@@ -152,6 +154,7 @@ define('controls/desktop/Column', [
         /**
          * Import the saved data
          *
+         * @method QUI.controls.desktop.Column#unserialize
          * @param {Object} data
          */
         unserialize : function(data)
@@ -224,16 +227,25 @@ define('controls/desktop/Column', [
         /**
          * Append a child to the Column
          *
+         * @method QUI.controls.desktop.Column#appendChild
          * @param {QUI.controls.desktop.Panel|QUI.controls.desktop.Apppanel} Panel
          * @return {this}
          */
         appendChild : function(Panel)
         {
             var Prev;
+
             var Handler   = false,
                 height    = false,
-                colheight = this.$Elm.getSize().y;
+                colheight = this.$Elm.getSize().y,
+                Parent    = Panel.getParent();
 
+            // depend from another parent, if the panel have a parent
+            if ( Panel && typeof Parent.dependChild !== 'undefined' ) {
+                Parent.dependChild( Panel );
+            }
+
+            // create a new handler
             if ( this.count() )
             {
                 Handler = new Element('div', {
@@ -306,9 +318,41 @@ define('controls/desktop/Column', [
         },
 
         /**
+         * Depends a panel from the column
+         *
+         * @method QUI.controls.desktop.Column#dependChild
+         * @param {QUI.controls.desktop.Panel} Panel
+         * @return {this} self
+         */
+        dependChild : function(Panel)
+        {
+            if ( this.$panels[ Panel.getId() ] ) {
+                delete this.$panels[ Panel.getId() ];
+            }
+
+            // destroy the panel events
+            Panel.removeEvents({
+                onMinimize : this.$onPanelClose,
+                onOpen     : this.$onPanelOpen,
+                onDestroy  : this.$onPanelDestroy
+            });
+
+            // if the panel is from this column
+            var Handler = Panel.getAttribute( '_Handler' ),
+                Parent  = Handler.getParent( '[data-quiid="'+ this.getId() +'"]' );
+
+            if ( Parent ) {
+                this.$onPanelDestroy( Panel );
+            }
+
+            return this;
+        },
+
+        /**
          * Return the column children
          *
-         * @return Object
+         * @method QUI.controls.desktop.Column#getChildren
+         * @return {Object}
          */
         getChildren : function()
         {
@@ -319,6 +363,7 @@ define('controls/desktop/Column', [
          * Panel count
          * How many panels are in the coulumn?
          *
+         * @method QUI.controls.desktop.Column#count
          * @return {Integer}
          */
         count : function()
@@ -335,6 +380,7 @@ define('controls/desktop/Column', [
         /**
          * Resize the column and all panels in the column
          *
+         * @method QUI.controls.desktop.Column#resize
          * @return {this}
          */
         resize : function()
@@ -372,6 +418,7 @@ define('controls/desktop/Column', [
         /**
          * Open the column
          *
+         * @method QUI.controls.desktop.Column#open
          * @return {this}
          */
         open : function()
@@ -397,6 +444,7 @@ define('controls/desktop/Column', [
         /**
          * Close the column
          *
+         * @method QUI.controls.desktop.Column#close
          * @return {this}
          */
         close : function()
@@ -426,6 +474,7 @@ define('controls/desktop/Column', [
          * if open, then close
          * if close, the open ;-)
          *
+         * @method QUI.controls.desktop.Column#toggle
          * @return {this}
          */
         toggle : function()
@@ -445,6 +494,7 @@ define('controls/desktop/Column', [
          * Return the open status of the colum
          * is the column open?
          *
+         * @method QUI.controls.desktop.Column#isOpen
          * @return {Bool}
          */
         isOpen : function()
@@ -455,6 +505,7 @@ define('controls/desktop/Column', [
         /**
          * Highlight the column
          *
+         * @method QUI.controls.desktop.Column#highlight
          * @return {this}
          */
         highlight : function()
@@ -473,6 +524,7 @@ define('controls/desktop/Column', [
         /**
          * Dehighlight the column
          *
+         * @method QUI.controls.desktop.Column#normalize
          * @return {this}
          */
         normalize : function()
@@ -491,6 +543,7 @@ define('controls/desktop/Column', [
          * it is looked to the placement
          * if no column exist, so it search the prev and next columns
          *
+         * @method QUI.controls.desktop.Column#getSibling
          * @return {false|QUI.controls.desktop.Column}
          */
         getSibling : function()
@@ -528,6 +581,7 @@ define('controls/desktop/Column', [
         /**
          * Return the previous sibling
          *
+         * @method QUI.controls.desktop.Column#getPrevious
          * @return {false|QUI.controls.desktop.Column}
          */
         getPrevious : function()
@@ -544,6 +598,7 @@ define('controls/desktop/Column', [
         /**
          * Return the next sibling
          *
+         * @method QUI.controls.desktop.Column#getNext
          * @return {false|QUI.controls.desktop.Column}
          */
         getNext : function()
@@ -561,6 +616,7 @@ define('controls/desktop/Column', [
         /**
          * return the next panel sibling
          *
+         * @method QUI.controls.desktop.Column#getNextPanel
          * @return {false|QUI.controls.desktop.Panel|QUI.controls.desktop.Apppanel}
          */
         getNextPanel : function(Panel)
@@ -579,6 +635,7 @@ define('controls/desktop/Column', [
         /**
          * Get the next panel sibling which is opened
          *
+         * @method QUI.controls.desktop.Column#getNextOpenedPanel
          * @return {false|QUI.controls.desktop.Panel|QUI.controls.desktop.Apppanel}
          */
         getNextOpenedPanel : function(Panel)
@@ -608,6 +665,7 @@ define('controls/desktop/Column', [
         /**
          * return the previous panel sibling
          *
+         * @method QUI.controls.desktop.Column#getPreviousPanel
          * @return {false|QUI.controls.desktop.Panel|QUI.controls.desktop.Apppanel}
          */
         getPreviousPanel : function(Panel)
@@ -626,6 +684,7 @@ define('controls/desktop/Column', [
         /**
          * return the previous panel sibling
          *
+         * @method QUI.controls.desktop.Column#getPreviousOpenedPanel
          * @return {false|QUI.controls.desktop.Panel|QUI.controls.desktop.Apppanel}
          */
         getPreviousOpenedPanel : function(Panel)
@@ -656,6 +715,7 @@ define('controls/desktop/Column', [
         /**
          * Panel close event
          *
+         * @method QUI.controls.desktop.Column#$onPanelClose
          * @param {QUI.controls.desktop.Panel} Panel
          * @ignore
          */
@@ -689,6 +749,7 @@ define('controls/desktop/Column', [
         /**
          * Panel open event
          *
+         * @method QUI.controls.desktop.Column#$onPanelOpen
          * @param {QUI.controls.desktop.Panel} Panel
          * @ignore
          */
@@ -715,6 +776,7 @@ define('controls/desktop/Column', [
         /**
          * event: If the panel would be destroyed
          *
+         * @method QUI.controls.desktop.Column#$onPanelDestroy
          * @param {QUI.controls.desktop.Panel} Panel
          * @ignore
          */
@@ -742,9 +804,9 @@ define('controls/desktop/Column', [
                         Prev.get( 'data-quiid' )
                     ),
 
-                    height  = Handler.getSize().y +
-                              Sibling.getAttribute( 'height' ) +
-                              Panel.getAttribute( 'height' );
+                    height = Handler.getSize().y +
+                             Sibling.getAttribute( 'height' ) +
+                             Panel.getAttribute( 'height' );
 
 
                 Sibling.setAttribute( 'height', height );
@@ -757,6 +819,7 @@ define('controls/desktop/Column', [
         /**
          * Add the horizental resizing events to the column
          *
+         * @method QUI.controls.desktop.Column#$addHorResize
          * @param {DOMNode} Handle
          */
         $addHorResize : function(Handle)
@@ -809,6 +872,8 @@ define('controls/desktop/Column', [
         /**
          * Horizontal Drag Drop Stop
          * Helper Function
+         *
+         * @method QUI.controls.desktop.Column#$horResizeStop
          */
         $horResizeStop : function(Dragable, DragDrop)
         {
@@ -898,6 +963,7 @@ define('controls/desktop/Column', [
         /**
          * event : on context menu
          *
+         * @method QUI.controls.desktop.Column#$onContextMenu
          * @param {DOMEvent} event
          */
         $onContextMenu : function(event)
@@ -973,6 +1039,7 @@ define('controls/desktop/Column', [
         /**
          * event : onclick contextmenu, add a panel
          *
+         * @method QUI.controls.desktop.Column#$clickAddPanelToColumn
          * @param {QUI.controls.contextmenu.Item} ContextMenuItem
          */
         $clickAddPanelToColumn : function(ContextMenuItem)
@@ -992,6 +1059,7 @@ define('controls/desktop/Column', [
         /**
          * event : on mouse enter at a contextmenu item -> remove panel
          *
+         * @method QUI.controls.desktop.Column#$onEnterRemovePanel
          * @param {QUI.controls.contextmenu.Item} Item
          */
         $onEnterRemovePanel : function(Item)
@@ -1002,6 +1070,7 @@ define('controls/desktop/Column', [
         /**
          * event : on mouse leave at a contextmenu item -> remove panel
          *
+         * @method QUI.controls.desktop.Column#$onLeaveRemovePanel
          * @param {QUI.controls.contextmenu.Item} Item
          */
         $onLeaveRemovePanel : function(Item)
@@ -1012,6 +1081,7 @@ define('controls/desktop/Column', [
         /**
          * event : on mouse click at a contextmenu item -> remove panel
          *
+         * @method QUI.controls.desktop.Column#$onClickRemovePanel
          * @param {QUI.controls.contextmenu.Item} Item
          */
         $onClickRemovePanel : function(Item)

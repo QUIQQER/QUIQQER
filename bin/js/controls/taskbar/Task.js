@@ -45,8 +45,8 @@ define('controls/taskbar/Task', [
      */
     QUI.controls.taskbar.Task = new Class({
 
-        Implements : [ Control ],
-        Type       : 'QUI.controls.taskbar.Task',
+        Extends : Control,
+        Type    : 'QUI.controls.taskbar.Task',
 
         Binds : [
             'close',
@@ -138,10 +138,10 @@ define('controls/taskbar/Task', [
         },
 
         /**
-         * Return the DOMNode
+         * Return the DOM-Node
          *
          * @method QUI.controls.buttons.Button#getElm
-         * @return {DOMNode}
+         * @return {DOMNode} DOM-Node Element
          */
         create : function()
         {

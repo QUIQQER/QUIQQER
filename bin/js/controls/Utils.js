@@ -24,7 +24,7 @@ define('controls/Utils', function()
          * Is the Object a QUI Control?
          *
          * @method QUI.lib.Controls#isControl
-         * @return {Bool}
+         * @return {Bool} true or false
          */
         isControl : function(Obj)
         {
@@ -38,6 +38,49 @@ define('controls/Utils', function()
 
             return false;
         },
+
+        /**
+         * Highlights a control
+         *
+         * @method QUI.lib.Controls#highlight
+         * @param {DOMNode} Element
+         */
+        highlight : function(Element)
+        {
+            if ( !Element ) {
+                return;
+            }
+
+            var quiid = Element.get( 'data-quiid' );
+
+            if ( !quiid ) {
+                return;
+            }
+
+            QUI.Controls.getById( quiid ).highlight();
+        },
+
+        /**
+         * Normalize a control, if it is was highlighted
+         *
+         * @method QUI.lib.Controls#normalize
+         * @param {DOMNode} Element
+         */
+        normalize : function(Element)
+        {
+            if ( !Element ) {
+                return;
+            }
+
+            var quiid = Element.get( 'data-quiid' );
+
+            if ( !quiid ) {
+                return;
+            }
+
+            QUI.Controls.getById( quiid ).normalize();
+        },
+
 
         /**
          * Parse an DOM Node Element

@@ -51,7 +51,7 @@ define('controls/contextmenu/Menu', [
             title  : false,  // title of the menu (optional) : String
             shadow : true,   // menü with shadow (true) or not (false)
 
-            dragable : false // are the items dragable?
+            dragable : false
         },
 
         initialize : function(options)
@@ -67,8 +67,7 @@ define('controls/contextmenu/Menu', [
          * Create the DOM Element
          *
          * @method QUI.controls.contextmenu.Menu#create
-         *
-         * @return {DOMNode}
+         * @return {DOMNode} main DOM-Node Element
          */
         create : function()
         {
@@ -117,7 +116,7 @@ define('controls/contextmenu/Menu', [
          * Shows the Menu, clears the display style
          *
          * @method QUI.controls.contextmenu.Menu#show
-         * @return {this}
+         * @return {this} self
          */
         show : function()
         {
@@ -132,6 +131,8 @@ define('controls/contextmenu/Menu', [
 
             // if parent is the body element
             // context menu don't get out of the body
+            this.setAttribute( 'menuPosLeft', false );
+
             if ( Parent.nodeName === 'BODY' )
             {
                 var elm_size  = Elm.getSize(),
@@ -294,7 +295,7 @@ define('controls/contextmenu/Menu', [
          *
          * @method QUI.controls.contextmenu.Menu#appendChild
          * @param {QUI.controls.contextmenu.Item} Child
-         * @return {this}
+         * @return {this} self
          */
         appendChild : function(Child)
         {
@@ -346,7 +347,6 @@ define('controls/contextmenu/Menu', [
          * Destroy all children items
          *
          * @method QUI.controls.contextmenu.Menu#clearChildren
-         *
          * @return {this} self
          */
         clearChildren : function()
