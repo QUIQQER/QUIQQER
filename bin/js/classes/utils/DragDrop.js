@@ -96,7 +96,7 @@ define('classes/utils/DragDrop', [
          * Return the binded Element
          *
          * @method QUI.classes.utils.DragDrop#getElm
-         * @return {DOMNode}
+         * @return {DOMNode} Main Dom-Node Element
          */
         getElm : function()
         {
@@ -175,14 +175,13 @@ define('classes/utils/DragDrop', [
             this.$Drag.focus();
             this.fireEvent( 'start', [ this.$Drag, this ] );
 
-
-            // if limit exist, checkit
+            // if no limit exist, set it to the body
             if ( !limit.x ) {
-                limit.x = [ 0, docsize.x - ElmSize.x ];
+                limit.x = [ 0, docsize.x - this.$Drag.getSize().x ];
             }
 
             if ( !limit.y ) {
-                limit.y = [ 0, docsize.y - ElmSize.y ];
+                limit.y = [ 0, docsize.y - this.$Drag.getSize().y ];
             }
 
             var dropables = this.getAttribute( 'dropables' );
