@@ -41,7 +41,7 @@ class QUI_Upload_Manager
      */
     public function setup()
     {
-        QUI::getDataBase()->Table()->appendFields(
+        \QUI::getDataBase()->Table()->appendFields(
             $this->_table,
             array(
                 'file'   => 'varchar(50)',
@@ -50,7 +50,7 @@ class QUI_Upload_Manager
             )
         );
 
-        QUI::getDataBase()->Table()->setIndex(
+        \QUI::getDataBase()->Table()->setIndex(
             $this->_table,
             array('file', 'user')
         );
@@ -79,18 +79,18 @@ class QUI_Upload_Manager
     public function flushMessage($message)
     {
         $message = '<script type="text/javascript">
-        	var UploadManager = false;
+            var UploadManager = false;
 
-			if ( typeof window.parent !== "undefined" &&
-				 typeof window.parent.QUI !== "undefined" &&
-				 typeof window.parent.QUI.UploadManager !== "undefined" )
-			{
-				UploadManager = window.parent.QUI.UploadManager;
-			}
+            if ( typeof window.parent !== "undefined" &&
+                 typeof window.parent.QUI !== "undefined" &&
+                 typeof window.parent.QUI.UploadManager !== "undefined" )
+            {
+                UploadManager = window.parent.QUI.UploadManager;
+            }
 
-			if ( UploadManager ) {
-				UploadManager.sendMessage('. json_encode($message) .');
-			}
+            if ( UploadManager ) {
+                UploadManager.sendMessage('. json_encode($message) .');
+            }
         </script>';
 
         echo $message;
@@ -98,7 +98,7 @@ class QUI_Upload_Manager
         flush();
     }
 
-	/**
+    /**
      * Flush a javascript call to the UploadManager
      *
      * @param String $call - eq: alert(1);
@@ -106,18 +106,18 @@ class QUI_Upload_Manager
     public function flushAction($call)
     {
         $message = '<script type="text/javascript">
-        	var UploadManager = false;
+            var UploadManager = false;
 
-			if ( typeof window.parent !== "undefined" &&
-				 typeof window.parent.QUI !== "undefined" &&
-				 typeof window.parent.QUI.UploadManager !== "undefined" )
-			{
-				UploadManager = window.parent.QUI.UploadManager;
-			}
+            if ( typeof window.parent !== "undefined" &&
+                 typeof window.parent.QUI !== "undefined" &&
+                 typeof window.parent.QUI.UploadManager !== "undefined" )
+            {
+                UploadManager = window.parent.QUI.UploadManager;
+            }
 
-			if ( UploadManager ) {
-				'. $call .'
-			}
+            if ( UploadManager ) {
+                '. $call .'
+            }
         </script>';
 
         echo $message;
@@ -131,7 +131,7 @@ class QUI_Upload_Manager
      */
     public function upload()
     {
-        Utils_System_File::mkdir(
+        \Utils_System_File::mkdir(
             $this->_getUserUploadDir()
         );
 
@@ -140,24 +140,24 @@ class QUI_Upload_Manager
         $params   = array();
         $onfinish = false;
 
-        if ( isset($_REQUEST['filename']) ) {
+        if ( isset( $_REQUEST['filename'] ) ) {
             $filename = $_REQUEST['filename'];
         }
 
-        if ( isset($_REQUEST['filesize']) ) {
+        if ( isset( $_REQUEST['filesize'] ) ) {
             $filesize = (int)$_REQUEST['filesize'];
         }
 
-        if ( isset($_REQUEST['fileparams']) ) {
+        if ( isset( $_REQUEST['fileparams'] ) ) {
             $params = json_decode($_REQUEST['fileparams'], true);
         }
 
-        if ( isset($_REQUEST['onfinish']) ) {
+        if ( isset( $_REQUEST['onfinish'] ) ) {
             $onfinish = $_REQUEST['onfinish'];
         }
 
-        if ( isset($_REQUEST['extract']) ) {
-            $_REQUEST['extract'] = Utils_Bool::JSBool( $_REQUEST['extract'] );
+        if ( isset( $_REQUEST['extract'] ) ) {
+            $_REQUEST['extract'] = \Utils_Bool::JSBool( $_REQUEST['extract'] );
         }
 
 
@@ -170,7 +170,7 @@ class QUI_Upload_Manager
             {
                 $this->_formUpload( $onfinish, $params );
 
-            } catch ( QException $Exception )
+            } catch ( \QException $Exception )
             {
                 $this->flushMessage( $Exception->toArray() );
                 return;
@@ -215,39 +215,43 @@ class QUI_Upload_Manager
         fclose( $Handle );
 
         // upload finish?
-        $fileinfo = Utils_System_File::getInfo($tmp_name, array(
-        	'filesize' => true
+        $fileinfo = \Utils_System_File::getInfo($tmp_name, array(
+            'filesize' => true
         ));
 
         // finish? then upload to folder
         if ( (int)$fileinfo['filesize'] == $filesize )
         {
             // extract if the the extract file is set
-            if ( isset($_REQUEST['extract']) && $_REQUEST['extract'] ) {
+            if ( isset( $_REQUEST['extract'] ) && $_REQUEST['extract'] ) {
                 $File = $this->_extract( $tmp_name );
             }
 
             $Data = $this->_getFileData( $filename );
 
-            if ( !isset($File) )
+            if ( !isset( $File ) )
             {
                 $File = $Data;
-                $File->setAttribute('filepath', $uploaddir . $File->getAttribute('file'));
+
+                $File->setAttribute(
+                    'filepath',
+                    $uploaddir . $File->getAttribute('file')
+                );
             }
 
-            $File->setAttribute('upload-dir', $uploaddir);
-            $File->setAttribute('params', $Data->getAttribute('params'));
+            $File->setAttribute( 'upload-dir', $uploaddir );
+            $File->setAttribute( 'params', $Data->getAttribute('params') );
 
 
             $result = $this->_callFunction($onfinish, array(
-            	'File' => $File
+                'File' => $File
             ));
 
             // delete the file from the database
             $this->_delete( $filename );
 
             // delete the real file
-            Utils_System_File::unlink( $tmp_name );
+            \Utils_System_File::unlink( $tmp_name );
 
             echo $result;
         }
@@ -264,25 +268,25 @@ class QUI_Upload_Manager
     {
         if ( is_object( $function ) && get_class( $function ) === 'Closure' ) {
             return $function();
-	    }
+        }
 
         if ( function_exists( $function ) ) {
             return call_user_func_array( $function, $params );
         }
 
-        if ( strpos($function, 'ajax_') === 0 )
+        if ( strpos( $function, 'ajax_' ) === 0 )
         {
             // if the function is a ajax_function
-            $_rf_file = CMS_DIR .'admin/'. str_replace('_', '/', $function) .'.php';
+            $_rf_file = CMS_DIR .'admin/'. str_replace( '_', '/', $function ) .'.php';
 
-            if ( file_exists($_rf_file) ) {
+            if ( file_exists( $_rf_file ) ) {
                 require_once $_rf_file;
             }
 
             if ( !function_exists( $function ) )
             {
-                throw new QException(
-                	'Function '. $function .' not found',
+                throw new \QException(
+                    'Function '. $function .' not found',
                     404
                 );
             }
@@ -291,7 +295,7 @@ class QUI_Upload_Manager
                 '_rf' => '["'. $function .'"]'
             ));
 
-            return QUI::$Ajax->call();
+            return \QUI::$Ajax->call();
         }
 
         if ( strpos( $function, 'package_' ) === 0 )
@@ -301,8 +305,7 @@ class QUI_Upload_Manager
 
             $_rf_file = $dir . $file;
 
-            if ( file_exists( $_rf_file ) )
-            {
+            if ( file_exists( $_rf_file ) ) {
                 require_once $_rf_file;
             }
 
@@ -310,11 +313,11 @@ class QUI_Upload_Manager
                 '_rf' => '["'. $function .'"]'
             ));
 
-            return QUI::$Ajax->call();
+            return \QUI::$Ajax->call();
         }
 
-        throw new QException(
-        	'Function '. $function .' not found',
+        throw new \QException(
+            'Function '. $function .' not found',
             404
         );
     }
@@ -327,11 +330,11 @@ class QUI_Upload_Manager
      */
     protected function _formUpload($onfinish, $params)
     {
-        if ( empty($_FILES) || !isset($_FILES['files']))
+        if ( empty( $_FILES ) || !isset( $_FILES['files'] ) )
         {
-            throw new QException(
-        		'No files where send', 400
-	        );
+            throw new \QException(
+                'No files where send', 400
+            );
         }
 
         $list  = $_FILES['files'];
@@ -341,12 +344,12 @@ class QUI_Upload_Manager
         {
             $this->_checkUpload( $list['error'] );
 
-		    $uploaddir = $this->_getUserUploadDir();
-		    $filename  = $list['name'];
-		    $file      = $uploaddir . $filename;
+            $uploaddir = $this->_getUserUploadDir();
+            $filename  = $list['name'];
+            $file      = $uploaddir . $filename;
 
             if ( !move_uploaded_file( $list["tmp_name"], $file ) ) {
-                throw new QException( 'Could not move file'. $filename );
+                throw new \QException( 'Could not move file'. $filename );
             }
 
             // extract if the the extract file is set
@@ -356,45 +359,8 @@ class QUI_Upload_Manager
 
             if ( !isset( $File ) )
             {
-                $File = new QDOM();
-        		$File->setAttribute( 'name', $filename );
-                $File->setAttribute( 'filepath', $file );
-            }
-
-            $File->setAttribute( 'params', $params );
-            $File->setAttribute( 'upload-dir', $uploaddir );
-
-    		$this->_callFunction($onfinish, array(
-            	'File' => $File
-            ));
-
-            // delete the real file
-            Utils_System_File::unlink( $file );
-
-            return;
-        }
-
-        foreach ( $list['error'] as $key => $error )
-		{
-		    $this->_checkUpload( $error );
-
-		    $uploaddir = $this->_getUserUploadDir();
-		    $filename  = $list['name'][ $key ];
-		    $file      = $uploaddir . $filename;
-
-            if ( !move_uploaded_file( $list["tmp_name"], $file ) ) {
-                throw new QException( 'Could not move file'. $filename );
-            }
-
-		    // extract if the the extract file is set
-	        if ( isset( $_REQUEST['extract'] ) && $_REQUEST['extract'] ) {
-                $File = $this->_extract( $file );
-            }
-
-            if ( !isset( $File ) )
-            {
-                $File = new QDOM();
-        		$File->setAttribute( 'name', $filename );
+                $File = new \QDOM();
+                $File->setAttribute( 'name', $filename );
                 $File->setAttribute( 'filepath', $file );
             }
 
@@ -402,12 +368,49 @@ class QUI_Upload_Manager
             $File->setAttribute( 'upload-dir', $uploaddir );
 
             $this->_callFunction($onfinish, array(
-            	'File' => $File
+                'File' => $File
             ));
 
             // delete the real file
-            Utils_System_File::unlink( $file );
-		}
+            \Utils_System_File::unlink( $file );
+
+            return;
+        }
+
+        foreach ( $list['error'] as $key => $error )
+        {
+            $this->_checkUpload( $error );
+
+            $uploaddir = $this->_getUserUploadDir();
+            $filename  = $list['name'][ $key ];
+            $file      = $uploaddir . $filename;
+
+            if ( !move_uploaded_file( $list["tmp_name"], $file ) ) {
+                throw new \QException( 'Could not move file'. $filename );
+            }
+
+            // extract if the the extract file is set
+            if ( isset( $_REQUEST['extract'] ) && $_REQUEST['extract'] ) {
+                $File = $this->_extract( $file );
+            }
+
+            if ( !isset( $File ) )
+            {
+                $File = new \QDOM();
+                $File->setAttribute( 'name', $filename );
+                $File->setAttribute( 'filepath', $file );
+            }
+
+            $File->setAttribute( 'params', $params );
+            $File->setAttribute( 'upload-dir', $uploaddir );
+
+            $this->_callFunction($onfinish, array(
+                'File' => $File
+            ));
+
+            // delete the real file
+            \Utils_System_File::unlink( $file );
+        }
     }
 
     /**
@@ -420,44 +423,44 @@ class QUI_Upload_Manager
     protected function _checkUpload($error)
     {
         switch ( $error )
-	    {
-			// There is no error, the file upload was successfull
-	        case UPLOAD_ERR_OK:
-				return true;
-	        break;
+        {
+            // There is no error, the file upload was successfull
+            case UPLOAD_ERR_OK:
+                return true;
+            break;
 
-	        case UPLOAD_ERR_INI_SIZE:
-				throw new QException(
-					'The uploaded file exceeds the upload_max_filesize'
-				);
-	        break;
+            case UPLOAD_ERR_INI_SIZE:
+                throw new QException(
+                    'The uploaded file exceeds the upload_max_filesize'
+                );
+            break;
 
-	        case UPLOAD_ERR_FORM_SIZE:
-				throw new QException(
-					'The uploaded file exceeds the MAX_FILE_SIZE'
-				);
-	        break;
+            case UPLOAD_ERR_FORM_SIZE:
+                throw new QException(
+                    'The uploaded file exceeds the MAX_FILE_SIZE'
+                );
+            break;
 
-	        case UPLOAD_ERR_PARTIAL:
-	            throw new QException(
-	            	'The uploaded file was only partially uploaded.'
-	            );
-	        break;
+            case UPLOAD_ERR_PARTIAL:
+                throw new QException(
+                    'The uploaded file was only partially uploaded.'
+                );
+            break;
 
-	        case UPLOAD_ERR_NO_FILE:
-	            throw new QException(
-	            	'No file was uploaded'
-	            );
-	        break;
+            case UPLOAD_ERR_NO_FILE:
+                throw new QException(
+                    'No file was uploaded'
+                );
+            break;
 
-	        case UPLOAD_ERR_NO_TMP_DIR:
-	            throw new QException(
-	            	'Missing a temporary folder'
-	            );
-	        break;
-	    }
+            case UPLOAD_ERR_NO_TMP_DIR:
+                throw new QException(
+                    'Missing a temporary folder'
+                );
+            break;
+        }
 
-	    return true;
+        return true;
     }
 
     /**
@@ -476,7 +479,7 @@ class QUI_Upload_Manager
         if ( $fileinfo['mime_type'] != 'application/zip' )
         {
             throw new QException(
-            	'No supported archive was uploaded. Could not extract the File'
+                'No supported archive was uploaded. Could not extract the File'
             );
         }
 
@@ -488,7 +491,7 @@ class QUI_Upload_Manager
         Utils_Packer_Zip::unzip( $filename, $to );
 
         $File = new QDOM();
-		$File->setAttribute( 'name', $fileinfo['filename'] );
+        $File->setAttribute( 'name', $fileinfo['filename'] );
         $File->setAttribute( 'filepath', $to );
 
         return $File;
@@ -549,7 +552,7 @@ class QUI_Upload_Manager
     {
         QUI::getDataBase()->exec(array(
             'delete' => true,
-        	'from'   => $this->_table,
+            'from'   => $this->_table,
             'where'  => array(
                 'user' => QUI::getUserBySession()->getId(),
                 'file' => $filename
@@ -589,7 +592,7 @@ class QUI_Upload_Manager
         if ( $File->getAttribute('params') )
         {
             $File->setAttribute(
-            	'params',
+                'params',
                 json_decode( $File->getAttribute('params'), true )
             );
         }

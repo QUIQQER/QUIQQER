@@ -1100,46 +1100,46 @@ class QUI_Rewrite
         $img = $output[0];
 
         // Falls in der eigenen Sammlung schon vorhanden
-        if (isset($this->_image_cache[$img])) {
-            return $this->_image_cache[$img];
+        if ( isset( $this->_image_cache[ $img ] ) ) {
+            return $this->_image_cache[ $img ];
         }
 
-        if (Media::checkMediaUrl($img))
+        if ( \Projects_Media_Utils::isMediaUrl( $img ) )
         {
-            $att = System::getHTMLAttributes($img);
+            $att = \Utils_String::getHTMLAttributes( $img );
 
-            if (isset($att['src']))
+            if ( isset( $att['src'] ) )
             {
-                $src = str_replace('&amp;', '&', $att['src']);
+                $src = str_replace( '&amp;', '&', $att['src'] );
             } else
             {
                 return $output[0];
             }
 
-            unset($att['src']);
+            unset( $att['src'] );
 
-            if (!isset($src)) {
+            if ( !isset( $src ) ) {
                 return '';
             }
 
-            if (!isset($att['alt']) || !isset($att['title']))
+            if ( !isset( $att['alt'] ) || !isset( $att['title'] ) )
             {
                 try
                 {
-                    $Image = Projects_Media_Utils::getImageByUrl($src);
+                    $Image = \Projects_Media_Utils::getImageByUrl( $src );
 
                     $att['alt']   = $Image->getAttribute('alt') ? $Image->getAttribute('alt') : '';
                     $att['title'] = $Image->getAttribute('title') ? $Image->getAttribute('title') : '';
 
-                } catch (QException $e)
+                } catch ( \QException $e )
                 {
 
                 }
             }
 
-            $this->_image_cache[$img] = Projects_Media_Utils::getImageHTML($src, $att);
+            $this->_image_cache[ $img ] = \Projects_Media_Utils::getImageHTML( $src, $att );
 
-            return $this->_image_cache[$img];
+            return $this->_image_cache[ $img ];
         }
 
         return $output[0];

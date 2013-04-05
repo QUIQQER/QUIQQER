@@ -4,7 +4,6 @@
  * Admin Bildercache
  */
 
-require_once '../../header.php';
 require_once '../header.php';
 
 if ( !QUI::getUserBySession()->isAdmin() )
@@ -28,8 +27,8 @@ try
 } catch ( QException $Exception )
 {
     header( "HTTP/1.0 404 Not Found" );
-	System_Log::writeException( $Exception );
-	exit;
+    System_Log::writeException( $Exception );
+    exit;
 }
 
 if ( $File->getType() != 'Projects_Media_Image' )
@@ -43,9 +42,9 @@ $image = $File->getFullPath();
 
 if ( !file_exists($image) )
 {
-	header( "HTTP/1.0 404 Not Found" );
-	System_Log::write( 'File not exist '. $image, 'error' );
-	exit;
+    header( "HTTP/1.0 404 Not Found" );
+    System_Log::write( 'File not exist '. $image, 'error' );
+    exit;
 }
 
 // resize
@@ -75,20 +74,20 @@ if ( isset($_REQUEST['maxwidth']) || isset($_REQUEST['maxheight']) )
     if ( !file_exists( $new_image ) )
     {
         try
-    	{
-    	    Utils_System_File::resize(
-    		    $image,
-    		    $new_image,
-    		    $width,
-    		    $height
+        {
+            Utils_System_File::resize(
+                $image,
+                $new_image,
+                $width,
+                $height
             );
 
-    	} catch ( QException $Exception )
-    	{
-    	    header( "HTTP/1.0 404 Not Found" );
-    		System_Log::writeException( $Exception );
-    		exit;
-    	}
+        } catch ( QException $Exception )
+        {
+            header( "HTTP/1.0 404 Not Found" );
+            System_Log::writeException( $Exception );
+            exit;
+        }
     }
 
     $image = $new_image;

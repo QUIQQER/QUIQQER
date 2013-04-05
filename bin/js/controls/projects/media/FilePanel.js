@@ -27,7 +27,7 @@ define('controls/projects/media/FilePanel', [
     QUI.namespace( 'controls.projects.media' );
 
     /**
-     * A Media-Panel, opens the Media in an Apppanel
+     * A Media-Panel, opens the Media in an Desktop Panel
      *
      * @class QUI.controls.projects.media.FilePanel
      *
@@ -38,8 +38,8 @@ define('controls/projects/media/FilePanel', [
      */
     QUI.controls.projects.media.FilePanel = new Class({
 
-        Implements : [ QUI_Control ],
-        Type       : 'QUI.controls.projects.media.FilePanel',
+        Extends : QUI_Control,
+        Type    : 'QUI.controls.projects.media.FilePanel',
 
         options : {
             id        : 'projects-media-file-panel',
@@ -76,7 +76,7 @@ define('controls/projects/media/FilePanel', [
 
         /**
          * Create the file panel
-         * create a MUI.Apppanel and start the file loading
+         * create a QUI.controls.desktop.Panel and start the file loading
          *
          * @method QUI.controls.projects.media.FilePanel#create
          */
@@ -88,9 +88,7 @@ define('controls/projects/media/FilePanel', [
                 tabbar : true
             });
 
-            QUI.Controls.get( 'content-panel' )[0].appendChild(
-                Panel
-            );
+            QUI.Workspace.appendPanel( Panel );
 
             this.$Panel = Panel;
             this.$Panel.Loader.show();
@@ -227,7 +225,7 @@ define('controls/projects/media/FilePanel', [
          * Return the file objectwhich is linked to the panel
          *
          * @method QUI.controls.projects.media.Panel#load
-         * @return {QUI.classesl.project.media.Item}
+         * @return {QUI.classesl.project.media.Item} File
          */
         getFile : function()
         {

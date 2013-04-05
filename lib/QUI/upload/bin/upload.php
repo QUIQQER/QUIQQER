@@ -7,16 +7,18 @@
 
 $dir = str_replace('lib/QUI/upload/bin', '', dirname( __FILE__ ));
 
-require_once $dir .'header.php';
+require_once $dir .'bootstrap.php';
 
-$QUM = new QUI_Upload_Manager();
+$QUM = new \QUI_Upload_Manager();
 
 try
 {
     $QUM->init();
 
-} catch ( QException $Exception )
+} catch ( \QException $Exception )
 {
+    \System_Log::writeException( $Exception );
+
     $QUM->flushMessage( $Exception->toArray() );
 }
 

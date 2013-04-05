@@ -16,13 +16,13 @@
 define('classes/editor/Manager', [
 
     'classes/DOM',
-    'classes/editor/Editor'
+    'controls/editor/Editor'
 
 ], function(QDOM)
 {
     "use strict";
 
-    QUI.namespace( 'classes/editor' );
+    QUI.namespace( 'classes.editor' );
 
     /**
      * Editor Manager
@@ -151,8 +151,6 @@ Manager.register('package/ckeditor3', {
             if ( typeof QUI.$storage[ id ] !== 'undefined' ) {
                 delete QUI.$storage[ id ];
             }
-
-            //delete Editor;
         },
 
         /**

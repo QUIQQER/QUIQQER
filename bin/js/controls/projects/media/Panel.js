@@ -1539,11 +1539,11 @@ define('controls/projects/media/Panel', [
                 return;
             }
 
-            if ( this.getAttribute('_mousedown') ) {
+            if ( this.getAttribute( '_mousedown' ) ) {
                 return;
             }
 
-            if ( this.getAttribute('_stopdrag') ) {
+            if ( this.getAttribute( '_stopdrag' ) ) {
                 return;
             }
 
@@ -1610,7 +1610,7 @@ define('controls/projects/media/Panel', [
             // mootools draging
             new Drag.Move(this.$Drag, {
 
-                droppables : [ '[data-type="folder"]', '.media-drop' ],
+                droppables : [ '[data-type="folder"]', '.media-drop' ].join(','),
                 onComplete : this.$dragComplete.bind( this ),
                 onDrop     : this.$drop.bind( this ),
 
@@ -1700,11 +1700,11 @@ define('controls/projects/media/Panel', [
             // mousedown "abbrechen" und onclick ausführen
             if ( !this.getAttribute('_mousedown') )
             {
-                this.setAttribute('_stopdrag', true);
+                this.setAttribute( '_stopdrag', true );
                 return;
             }
 
-            this.setAttribute('_mousedown', false);
+            this.setAttribute( '_mousedown', false );
 
             if ( typeof this.$lastDroppable !== 'undefined' ) {
                 this.$dragLeave( false, this.$lastDroppable );
@@ -1724,9 +1724,9 @@ define('controls/projects/media/Panel', [
          *
          * @param {DOMEvent} event
          */
-        $dragComplete : function(event)
+        $dragComplete : function(event, Element, Droppable)
         {
-            this.fireEvent('dragDropComplete', [this, event]);
+            this.fireEvent( 'dragDropComplete', [ this, event ] );
             this.$dragStop();
         },
 
@@ -1750,6 +1750,10 @@ define('controls/projects/media/Panel', [
 
                 if ( !Control ) {
                     return;
+                }
+
+                if ( typeof Control.highlight !== 'undefined' ) {
+                    Control.highlight();
                 }
 
                 Control.fireEvent( 'dragEnter' );
@@ -1805,6 +1809,10 @@ define('controls/projects/media/Panel', [
 
                 if ( !Control ) {
                     return;
+                }
+
+                if ( typeof Control.normalize !== 'undefined' ) {
+                    Control.normalize();
                 }
 
                 Control.fireEvent( 'dragLeave' );

@@ -100,7 +100,7 @@ class System_Cache_Manager
                 case 'apc':
                     $conf   = $Config->get( 'apc' );
                     $params = array(
-                    	'namespace' => 'pcsg'
+                        'namespace' => 'pcsg'
                     );
 
                     if ( isset( $conf['namespace'] ) ) {
@@ -124,7 +124,7 @@ class System_Cache_Manager
                 case 'filesystem':
                     $conf   = $Config->get('filesystem');
                     $params = array(
-                    	'path' => VAR_DIR .'cache/stack/'
+                        'path' => VAR_DIR .'cache/stack/'
                     );
 
                     if (!empty($conf['path']) && is_dir($conf['path'])) {
@@ -143,7 +143,7 @@ class System_Cache_Manager
                 case 'sqlite':
                     $conf   = $Config->get('sqlite');
                     $params = array(
-                    	'path' => VAR_DIR .'cache/stack/'
+                        'path' => VAR_DIR .'cache/stack/'
                     );
 
                     if ( !empty( $conf['path'] ) && is_dir( $conf['path'] ) ) {
@@ -161,7 +161,7 @@ class System_Cache_Manager
 
                 case 'memcache':
                     // defaults
-                	$options = array(
+                    $options = array(
                         'prefix_key'           => 'pcsg',
                         'libketama_compatible' => true,
                         'cache_lookups'        => true,
@@ -177,8 +177,8 @@ class System_Cache_Manager
                         $section = 'memcache'.$i;
 
                         $servers[] = array(
-                        	$Config->get( $section, 'host' ),
-                        	$Config->get( $section, 'port' ),
+                            $Config->get( $section, 'host' ),
+                            $Config->get( $section, 'port' ),
                             $Config->get( $section, 'weight' )
                         );
                     }
@@ -215,7 +215,7 @@ class System_Cache_Manager
         }
 
         $Handler = new Stash\Driver\Composite(array(
-        	'drivers' => $handlers
+            'drivers' => $handlers
         ));
 
         $Stash = new Stash\Pool( $Handler );
@@ -286,7 +286,7 @@ class System_Cache_Manager
         $data = $Item->get();
 
         if ( $Item->isMiss() ) {
-            throw new System_Cache_Exception( 'Cache existiert nicht', 404 );
+            throw new \System_Cache_Exception( 'Cache existiert nicht', 404 );
         }
 
         return $data;

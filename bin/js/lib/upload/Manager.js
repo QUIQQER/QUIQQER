@@ -35,6 +35,15 @@ define('lib/upload/Manager', [
                 return;
             }
 
+            QUI.Workspace.appendPanel(
+                new QUI.controls.desktop.Panel({
+                    name    : 'upload-manager',
+                    title   : 'Datei Upload Manager',
+                    height  : 400,
+                    content : '<div id="upload-manager-content"></div>'
+                })
+            );
+            /*
             var Parent = QUI.Controls.get( 'right-colum' )[0];
 
             Parent.appendChild(
@@ -45,6 +54,7 @@ define('lib/upload/Manager', [
                     content : '<div id="upload-manager-content"></div>'
                 })
             );
+            */
         },
 
         /**
