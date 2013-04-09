@@ -92,10 +92,10 @@ class QUI_Editor_Manager
         return $config;
     }
 
-	/**
+    /**
      * Register a js editor
      *
-     * @param String $name- name of the editor
+     * @param String $name - name of the editor
      * @param String $package - js modul/package name
      */
     static function registerEditor($name, $package)
@@ -105,30 +105,30 @@ class QUI_Editor_Manager
         $Conf->save();
     }
 
-	/**
-	 * Bereitet HTML für den Editor
-	 * URL bei Bildern richtig setzen damit diese im Admin angezeigt werden
-	 *
-	 * @param String $html
-	 */
-	public function load($html)
-	{
-		// Bilder umschreiben
-		$html = preg_replace_callback(
-			'#(src)="([^"]*)"#',
-			array($this, "cleanAdminSrc"),
-			$html
+    /**
+     * Bereitet HTML für den Editor
+     * URL bei Bildern richtig setzen damit diese im Admin angezeigt werden
+     *
+     * @param String $html
+     */
+    public function load($html)
+    {
+        // Bilder umschreiben
+        $html = preg_replace_callback(
+            '#(src)="([^"]*)"#',
+            array($this, "cleanAdminSrc"),
+            $html
         );
 
-		foreach ( $this->_plugins as $p )
+        foreach ( $this->_plugins as $p )
         {
-        	if ( method_exists( $p, 'onLoad' ) ) {
-        		$html = $p->onLoad( $html );
-        	}
+            if ( method_exists( $p, 'onLoad' ) ) {
+                $html = $p->onLoad( $html );
+            }
         }
 
         return $html;
-	}
+    }
 
     /**
      * Alle Toolbars bekommen, welche zur Verfügung stehen
@@ -203,17 +203,17 @@ class QUI_Editor_Manager
 
         // standard
         if ( $toolbar === false ) {
-    		return array();
-    	}
+            return array();
+        }
 
-    	if ( strpos( $toolbar, '.xml' ) !== false )
-    	{
-    	    if ( file_exists( self::getToolbarsPath() . $toolbar ) ) {
+        if ( strpos( $toolbar, '.xml' ) !== false )
+        {
+            if ( file_exists( self::getToolbarsPath() . $toolbar ) ) {
                 return self::parseXmlFileToArray( self::getToolbarsPath() . $toolbar );
             }
-    	}
+        }
 
-    	return explode( ',', $Config->get( 'toolbars', 'standard' ) );
+        return explode( ',', $Config->get( 'toolbars', 'standard' ) );
     }
 
     /**
@@ -266,171 +266,171 @@ class QUI_Editor_Manager
      * Clean up methods
      */
 
-	/**
-	 * Cleanup HTML - Saubermachen des HTML Codes
-	 *
-	 * @uses Tidy, if enabled
-	 * @param String $html
-	 */
-	public function cleanHTML($html)
-	{
-		$html = preg_replace( '/<!--\[if gte mso.*?-->/s', '', $html );
+    /**
+     * Cleanup HTML - Saubermachen des HTML Codes
+     *
+     * @uses Tidy, if enabled
+     * @param String $html
+     */
+    public function cleanHTML($html)
+    {
+        $html = preg_replace( '/<!--\[if gte mso.*?-->/s', '', $html );
 
-		$search = array(
-			'font-family: Arial',
-		 	'class="MsoNormal"'
-		);
-
-		$html = str_ireplace( $search, '', $html );
-
-		if ( class_exists( 'tidy' ) )
-		{
-			$Tidy = new Tidy();
-
-			$config = array(
-				"char-encoding"     => "utf8",
-				'output-xhtml'      => true,
-				'indent-attributes' => false,
-				'wrap'              => 0,
-				'word-2000'         => 1,
-
-	            // html 5 Tags registrieren
-				'new-blocklevel-tags' => 'header, footer, article, section, hgroup, nav, figure'
-			);
-
-			$Tidy->parseString( $html, $config, 'utf8' );
-			$Tidy->cleanRepair();
-			$html = $Tidy;
-		}
-
-		return $html;
-	}
-
-	/**
-	 * HTML Speichern
-	 *
-	 * @param String $html
-	 * @return String
-	 */
-	public function prepareHTMLForSave($html)
-	{
-        // Bilder umschreiben
-		$html = preg_replace_callback(
-			'#(src)="([^"]*)"#',
-			array($this, "cleanSrc"),
-			$html
+        $search = array(
+            'font-family: Arial',
+             'class="MsoNormal"'
         );
 
-		$html = preg_replace_callback(
-			'#(href)="([^"]*)"#',
-			array($this, "cleanHref"),
-			$html
-       	);
+        $html = str_ireplace( $search, '', $html );
 
-       	foreach ( $this->_plugins as $p )
+        if ( class_exists( 'tidy' ) )
         {
-        	if ( method_exists( $p, 'onSave' ) ) {
-        		$html = $p->onSave( $html );
-        	}
+            $Tidy = new Tidy();
+
+            $config = array(
+                "char-encoding"     => "utf8",
+                'output-xhtml'      => true,
+                'indent-attributes' => false,
+                'wrap'              => 0,
+                'word-2000'         => 1,
+
+                // html 5 Tags registrieren
+                'new-blocklevel-tags' => 'header, footer, article, section, hgroup, nav, figure'
+            );
+
+            $Tidy->parseString( $html, $config, 'utf8' );
+            $Tidy->cleanRepair();
+            $html = $Tidy;
+        }
+
+        return $html;
+    }
+
+    /**
+     * HTML Speichern
+     *
+     * @param String $html
+     * @return String
+     */
+    public function prepareHTMLForSave($html)
+    {
+        // Bilder umschreiben
+        $html = preg_replace_callback(
+            '#(src)="([^"]*)"#',
+            array($this, "cleanSrc"),
+            $html
+        );
+
+        $html = preg_replace_callback(
+            '#(href)="([^"]*)"#',
+            array($this, "cleanHref"),
+            $html
+           );
+
+           foreach ( $this->_plugins as $p )
+        {
+            if ( method_exists( $p, 'onSave' ) ) {
+                $html = $p->onSave( $html );
+            }
         }
 
         $html = $this->cleanHTML( $html );
 
         // Zeilenumbrüche in HTML löschen
-		$html = preg_replace_callback(
-			'#(<)(.*?)(>)#',
-			array( $this, "_deleteLineBreaksInHtml" ),
-			$html
-       	);
+        $html = preg_replace_callback(
+            '#(<)(.*?)(>)#',
+            array( $this, "_deleteLineBreaksInHtml" ),
+            $html
+           );
 
         return $html;
-	}
+    }
 
-	/**
-	 * Entfernt Zeilenumbrüche in HTML
-	 *
-	 * @param unknown_type $params
-	 * @return unknown
-	 */
-	protected function _deleteLineBreaksInHtml($params)
-	{
-		if ( !isset( $params[0] ) ) {
-			return $params[0];
-		}
+    /**
+     * Entfernt Zeilenumbrüche in HTML
+     *
+     * @param unknown_type $params
+     * @return unknown
+     */
+    protected function _deleteLineBreaksInHtml($params)
+    {
+        if ( !isset( $params[0] ) ) {
+            return $params[0];
+        }
 
-		return str_replace(
-		    array("\r\n", "\n", "\r"),
-		    "",
-		    $params[0]
-	    );
-	}
+        return str_replace(
+            array("\r\n", "\n", "\r"),
+            "",
+            $params[0]
+        );
+    }
 
-	/**
-	 * Image Src sauber machen
-	 *
-	 * @param unknown_type $html
-	 * @return unknown
-	 */
-	public function cleanSrc($html)
-	{
-		if ( isset( $html[2]) &&
-			 strpos( $html[2], 'image.php' ) !== false )
-		{
-			$html[2] = str_replace( '&amp;','&', $html[2] );
-			$src_    = explode( 'image.php?', $html[2] );
+    /**
+     * Image Src sauber machen
+     *
+     * @param unknown_type $html
+     * @return unknown
+     */
+    public function cleanSrc($html)
+    {
+        if ( isset( $html[2]) &&
+             strpos( $html[2], 'image.php' ) !== false )
+        {
+            $html[2] = str_replace( '&amp;','&', $html[2] );
+            $src_    = explode( 'image.php?', $html[2] );
 
-			return ' '. $html[1] .'="image.php?'. $src_[1] .'"';
-		}
+            return ' '. $html[1] .'="image.php?'. $src_[1] .'"';
+        }
 
-		return $html[0];
-	}
+        return $html[0];
+    }
 
-	/**
-	 * HREF Src sauber machen
-	 *
-	 * @param unknown_type $html
-	 * @return unknown
-	 */
-	public function cleanHref($html)
-	{
-		if ( isset( $html[2] ) &&
-			 strpos( $html[2], 'index.php' ) !== false &&
-			 strpos( $html[2], 'pms=1') )
-		{
-			$index = explode( 'index.php?', $html[2] );
+    /**
+     * HREF Src sauber machen
+     *
+     * @param unknown_type $html
+     * @return unknown
+     */
+    public function cleanHref($html)
+    {
+        if ( isset( $html[2] ) &&
+             strpos( $html[2], 'index.php' ) !== false &&
+             strpos( $html[2], 'pms=1') )
+        {
+            $index = explode( 'index.php?', $html[2] );
 
-			return $html[1] .'="index.php?'.$index[1]. '"';
+            return $html[1] .'="index.php?'.$index[1]. '"';
 
-		} else if(
-			isset( $html[2] ) &&
-			strpos( $html[2], 'image.php' ) !== false &&
-			strpos( $html[2], 'pms=1' ) )
-		{
-			$index = explode( 'image.php?', $html[2] );
+        } else if(
+            isset( $html[2] ) &&
+            strpos( $html[2], 'image.php' ) !== false &&
+            strpos( $html[2], 'pms=1' ) )
+        {
+            $index = explode( 'image.php?', $html[2] );
 
-			return ' '. $html[1] .'="image.php?'. $index[1] .'"';
-		}
+            return ' '. $html[1] .'="image.php?'. $index[1] .'"';
+        }
 
-		return $html[0];
-	}
+        return $html[0];
+    }
 
-	/**
-	 * Bereitet HTML für den Editor
-	 *
-	 * @param unknown_type $html
-	 * @return unknown
-	 */
-	public function cleanAdminSrc($html)
-	{
-		if ( isset($html[2]) && strpos( $html[2], 'image.php' ) !== false )
-		{
-			$src_ = explode( 'image.php?', $html[2] );
+    /**
+     * Bereitet HTML für den Editor
+     *
+     * @param unknown_type $html
+     * @return unknown
+     */
+    public function cleanAdminSrc($html)
+    {
+        if ( isset($html[2]) && strpos( $html[2], 'image.php' ) !== false )
+        {
+            $src_ = explode( 'image.php?', $html[2] );
 
-			return ' '. $html[1] .'="'. URL_DIR .'image.php?'. $src_[1] .'" ';
-		}
+            return ' '. $html[1] .'="'. URL_DIR .'image.php?'. $src_[1] .'" ';
+        }
 
-		return $html[0];
-	}
+        return $html[0];
+    }
 }
 
 ?>

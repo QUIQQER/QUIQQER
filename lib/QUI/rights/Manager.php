@@ -105,7 +105,7 @@ class QUI_Rights_Manager
     /**
      * Return the type if the type is an allowed permission type
      *
-     * @param String $area - bool, string, int, group, groups, user, users, array
+     * @param String $type - bool, string, int, group, groups, user, users, users_and_groups
      * @return String
      */
     static function parseType($type)
