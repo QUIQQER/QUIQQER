@@ -89,7 +89,7 @@ class QUI_Template extends QDOM
      * Register a template engine
      *
      * @param String $name
-     * @param Function $callback - must return a template engine (implements Interface_Template_Engine)
+     * @param String $class - must a class that implements Interface_Template_Engine
      */
     static function registerEngine($name, $class)
     {
@@ -244,10 +244,6 @@ class QUI_Template extends QDOM
     /**
      * Return the Body of the Template
      * -> body.html
-     *
-     * @param Projects_Project $Project
-     * @param Projects_Site $Site
-     * @param Interface_Template_Engine $Engine
      *
      * @return String
      */
