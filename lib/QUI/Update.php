@@ -41,7 +41,7 @@ class Update
     /**
      * If a plugin / package is updated via composer
      *
-     * @param Event $event
+     * @param Event $Event
      */
     static function onUpdate(Event $Event)
     {

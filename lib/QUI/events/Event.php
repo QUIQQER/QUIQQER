@@ -13,6 +13,10 @@
 
 class QUI_Events_Event implements Interface_Events
 {
+    /**
+     * Registered events
+     * @var Array
+     */
     protected $_events = array();
 
     /**

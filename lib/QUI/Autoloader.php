@@ -14,6 +14,10 @@
 
 class QUI_Autoloader
 {
+    /**
+     * Composer Autoloader
+     * @var \Composer\Autoload\ClassLoader
+     */
     static $ComposerLoader = null;
 
     /**
@@ -24,81 +28,81 @@ class QUI_Autoloader
      */
     static function load($classname)
     {
-		if ( class_exists( $classname ) ) {
-    		return true;
-    	}
+        if ( class_exists( $classname ) ) {
+            return true;
+        }
 
         if ( interface_exists( $classname ) ) {
-			return true;
-		}
+            return true;
+        }
 
 
-    	// Plugins werden gleich übersprungen
-       	// @todo überdenken, maybe bei plugins auch auf namespaces gehen
-    	if ( strpos( $classname, 'Plugin_' ) !== false ) {
-    		return false;
-    	}
+        // Plugins werden gleich übersprungen
+           // @todo überdenken, maybe bei plugins auch auf namespaces gehen
+        if ( strpos( $classname, 'Plugin_' ) !== false ) {
+            return false;
+        }
 
-    	// Packages
-    	/*
-    	if ( strpos( $classname, 'Package\\' ) !== false ) {
+        // Packages
+        /*
+        if ( strpos( $classname, 'Package\\' ) !== false ) {
             return self::loadPackage( $classname );
-    	}
-    	*/
+        }
+        */
 
-    	// Stash
-    	if ( strpos( $classname, 'Stash\\' ) !== false ) {
+        // Stash
+        if ( strpos( $classname, 'Stash\\' ) !== false ) {
             return self::loadStash( $classname );
-    	}
+        }
 
-    	// QUIQQER MVC
-    	/*
-    	if ( strpos( $classname, 'QUI\\' ) === 0 ) {
-    	    $classname = str_replace( 'QUI\\', '', $classname );
-    	}
-		*/
+        // QUIQQER MVC
+        /*
+        if ( strpos( $classname, 'QUI\\' ) === 0 ) {
+            $classname = str_replace( 'QUI\\', '', $classname );
+        }
+        */
 
-    	$file = LIB_DIR . str_replace( '_', '/', $classname ) .'.php';
-    	$file = strtolower( dirname( $file ) ) .'/'. basename( $file );
+        $file = LIB_DIR . str_replace( '_', '/', $classname ) .'.php';
+        $file = strtolower( dirname( $file ) ) .'/'. basename( $file );
 
-    	if ( strpos( $classname, 'QUI_' ) === 0 ) {
+        if ( strpos( $classname, 'QUI_' ) === 0 ) {
             $file = str_replace( '/qui/', '/QUI/', $file );
-    	}
+        }
 
         if ( file_exists( $file ) )
         {
             require $file;
 
-    		if ( class_exists( $classname ) ) {
-    			return true;
-    		}
+            if ( class_exists( $classname ) ) {
+                return true;
+            }
 
             if ( interface_exists( $classname ) ) {
-    			return true;
-    		}
+                return true;
+            }
         }
 
-    	if ( class_exists( $classname ) ) {
-    		return true;
-    	}
+        if ( class_exists( $classname ) ) {
+            return true;
+        }
 
         if ( interface_exists( $classname ) ) {
-			return true;
-		}
+            return true;
+        }
 
-    	// use now the composer loader
-    	if ( !self::$ComposerLoader )
-    	{
-    	    if ( !class_exists( '\Composer\Autoload\ClassLoader' ) ) {
-    	        require CMS_DIR .'packages/composer/ClassLoader.php';
-    	    }
+        // use now the composer loader
+        if ( !self::$ComposerLoader )
+        {
+            if ( !class_exists( '\Composer\Autoload\ClassLoader' ) ) {
+                require CMS_DIR .'packages/composer/ClassLoader.php';
+            }
 
-    	    self::$ComposerLoader = new \Composer\Autoload\ClassLoader();
+            self::$ComposerLoader = new \Composer\Autoload\ClassLoader();
 
-    	    $map      = require CMS_DIR .'packages/composer/autoload_namespaces.php';
-    	    $classMap = require CMS_DIR .'packages/composer/autoload_classmap.php';
+            $map      = require CMS_DIR .'packages/composer/autoload_namespaces.php';
+            $classMap = require CMS_DIR .'packages/composer/autoload_classmap.php';
 
-    	    foreach ( $map as $namespace => $path ) {
+            foreach ( $map as $namespace => $path ) {
                 self::$ComposerLoader->add( $namespace, $path );
             }
 
@@ -107,9 +111,9 @@ class QUI_Autoloader
             }
 
             //self::$ComposerLoader->register( true );
-    	}
+        }
 
-    	return self::$ComposerLoader->loadClass( $classname );
+        return self::$ComposerLoader->loadClass( $classname );
     }
 
     /**
@@ -128,13 +132,13 @@ class QUI_Autoloader
 
         $file = CMS_DIR .'packages/'. strtolower(implode('/', $classes)) .'/lib/'. ucfirst($last) .'.php';
 
-    	if (file_exists($file))
+        if (file_exists($file))
         {
             require $file;
 
-    		if (class_exists($classname)) {
-    			return true;
-    		}
+            if (class_exists($classname)) {
+                return true;
+            }
         }
 
         return false;

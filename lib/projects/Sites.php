@@ -288,7 +288,6 @@ class Projects_Sites
      *
      * @param String $tabname - Name of the Tab
      * @param Projects_Site $Site
-     * @param Users_User $User
      *
      * @throws QException
      * @return Controls_Toolbar_Tab

@@ -326,6 +326,9 @@ class QUI_Upload_Manager
      * Internal form upload method
      * If the upload is not over HTML5
      *
+     * @param {String|Function} $function - Function
+     * @param $params - extra params for the \QDOM() File Object
+     *
      * @throws QException
      */
     protected function _formUpload($onfinish, $params)
@@ -499,6 +502,8 @@ class QUI_Upload_Manager
 
     /**
      * Return the Path to the User upload directory
+     *
+     * @param Users_User $User - optional, standard is the session user
      * @return String
      */
     protected function _getUserUploadDir($User=false)
