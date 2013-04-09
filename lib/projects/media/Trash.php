@@ -44,6 +44,7 @@ class Projects_Media_Trash implements Interface_Projects_Trash
     /**
      * Returns the items in the trash
      *
+     * @param Array $params - Utils_Grid parameters
      * @return array
      */
     public function getList($params=array())
@@ -59,7 +60,7 @@ class Projects_Media_Trash implements Interface_Projects_Trash
         // count
         $count = QUI::getDataBase()->fetch(array(
             'from'  => $this->_Media->getTable(),
-        	'count' => true,
+            'count' => true,
             'where' => array(
                 'deleted' => 1
             )
@@ -101,22 +102,22 @@ class Projects_Media_Trash implements Interface_Projects_Trash
      */
     public function restore($id, Projects_Media_Folder $Folder)
     {
-		$file = $this->getPath() . $id;
+        $file = $this->getPath() . $id;
 
-		if ( !file_exists($file) ) {
+        if ( !file_exists($file) ) {
             throw new QException( 'Could not find the file '. $id .' in the Trash' );
-		}
+        }
 
-		$Item = $Folder->uploadFile( $file );
+        $Item = $Folder->uploadFile( $file );
 
         // change old db entry, if one exist
-		$data = QUI::getDataBase()->fetch(array(
-			'from' 	=> $this->_Media->getTable(),
-			'where' => array(
-				'id' => $id
-			),
-			'limit' => 1
-		));
+        $data = QUI::getDataBase()->fetch(array(
+            'from' 	=> $this->_Media->getTable(),
+            'where' => array(
+                'id' => $id
+            ),
+            'limit' => 1
+        ));
 
         if ( !isset($data[0]) ) {
             return $Item;
@@ -134,8 +135,8 @@ class Projects_Media_Trash implements Interface_Projects_Trash
 
         $Item->setAttributes(array(
             'title' => $fields['title'],
-			'alt' 	=> $fields['alt'],
-			'short' => $fields['short']
+            'alt' 	=> $fields['alt'],
+            'short' => $fields['short']
         ));
 
         $Item->save();

@@ -246,7 +246,7 @@ class QUI_Rewrite
         {
             try
             {
-                $Item = Projects_Media_Utils::getElement( $_REQUEST['_url'] );
+                $Item = \Projects_Media_Utils::getElement( $_REQUEST['_url'] );
 
                 if (strpos($_REQUEST['_url'], '__') !== false)
                 {

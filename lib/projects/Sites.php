@@ -17,8 +17,6 @@ class Projects_Sites
      * JavaScript buttons, depending on the side of the user
      *
      * @param Projects_Site_Edit $Site
-     * @param Users_User|Bool $User - optional
-     *
      * @return Controls_Toolbar_Bar
      */
     static function getButtons(\Projects_Site_Edit $Site)
@@ -160,8 +158,6 @@ class Projects_Sites
      * Return the tabs of a site
      *
      * @param Projects_Site_Edit $Site
-     * @param Users_User $User - optional; Ansonsten wird Session Benutzer verwendet
-     *
      * @return Controls_Toolbar_Bar
      */
     static function getTabs(\Projects_Site_Edit $Site)
