@@ -155,6 +155,10 @@ class QUI_Events_Manager implements Interface_Events
     /**
      * (non-PHPdoc)
      * @see Interface_Events::fireEvent()
+     *
+     * @param String $event - The type of event (e.g. 'onComplete').
+     * @param Array $args   - (optional) the argument(s) to pass to the function.
+     *                        The arguments must be in an array.
      */
     public function fireEvent($event, $args=false)
     {

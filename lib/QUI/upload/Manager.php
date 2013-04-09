@@ -326,7 +326,7 @@ class QUI_Upload_Manager
      * Internal form upload method
      * If the upload is not over HTML5
      *
-     * @param {String|Function} $function - Function
+     * @param {String|Function} $onfinish - Function
      * @param $params - extra params for the \QDOM() File Object
      *
      * @throws QException
