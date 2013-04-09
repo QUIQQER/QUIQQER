@@ -412,8 +412,8 @@ class QUI_Package_Manager
     /**
      * Activate or Deactivate a server
      *
-     * @param String $server
-     * @param Bool $status
+     * @param String $server - Server, IP, Host
+     * @param Bool $status - 1 = active, 0 = disabled
      */
     public function setServerStatus($server, $status)
     {
@@ -430,7 +430,7 @@ class QUI_Package_Manager
      * Add a server to the update-server list
      *
      * @param String $server - Server, IP, Host
-     * @params Array $params - Server Parameter
+     * @param Array $params - Server Parameter
      */
     public function addServer($server, $params=array())
     {
@@ -553,7 +553,6 @@ class QUI_Package_Manager
      * Update a package or the entire system
      *
      * @param String|false $package - optional, package name, if false, it updates the complete system
-     * @param Bool $overwrite_uncomit_changes - default=false, if changes on the filesystem exist, than overwrite it or not
      *
      * @throws QException
      *
