@@ -219,7 +219,7 @@ class Projects_Media_Utils
      * Gibt einen komplette HTML Tag <img /> von dem Bild aus
      *
      * @param String $src
-     * @param String $att
+     * @param String $attributes
      * @return String
      *
      * @todo do we really need this? think about it
@@ -549,32 +549,32 @@ class Projects_Media_Utils
         $parts = explode( 'media/cache/', $url );
 
         if ( !isset( $parts[1] ) ) {
-            throw new QException( 'File not found', 404 );
+            throw new \QException( 'File not found', 404 );
         }
 
-        $parts   = explode('/', $parts[1]);
+        $parts   = explode( '/', $parts[1] );
         $project = $parts[0];
 
-        $Project = QUI::getProject($project);
+        $Project = \QUI::getProject( $project );
         $Media   = $Project->getMedia();
         $Folder  = $Media->firstChild();
 
-        for ( $i = 1, $len = count($parts)-1; $i < $len; $i++ ) {
+        for ( $i = 1, $len = count( $parts )-1; $i < $len; $i++ ) {
             $Folder = $Folder->getChildByName( $parts[ $i ] );
         }
 
-        $file_name = end($parts);
+        $file_name = end( $parts );
 
         if ( strpos($file_name, '__') !== false )
         {
-            $lastpos_ul = strrpos($file_name, '__') + 2;
-            $pos_dot    = strpos($file_name, '.', $lastpos_ul);
+            $lastpos_ul = strrpos( $file_name, '__' ) + 2;
+            $pos_dot    = strpos( $file_name, '.', $lastpos_ul );
 
-            $size      = substr($file_name, $lastpos_ul, ($pos_dot-$lastpos_ul));
-            $part_size = explode('x', $size);
+            $size      = substr( $file_name, $lastpos_ul, ( $pos_dot - $lastpos_ul ) );
+            $part_size = explode( 'x', $size );
 
-            $file_name = substr($file_name, 0, ($lastpos_ul-2)) .
-                         substr($file_name, $pos_dot) ;
+            $file_name = substr( $file_name, 0, ( $lastpos_ul - 2 ) ) .
+                         substr( $file_name, $pos_dot ) ;
         }
 
         // leztes Element prüfen, Name der Datei
