@@ -31,6 +31,9 @@ class QUI_Events_Event implements Interface_Events
     /**
      * (non-PHPdoc)
      * @see Interface_Events::addEvent()
+     *
+     * @param String $event - The type of event (e.g. 'complete').
+     * @param Function $fn - The function to execute.
      */
     public function addEvent($event, $fn)
     {
@@ -40,6 +43,8 @@ class QUI_Events_Event implements Interface_Events
     /**
      * (non-PHPdoc)
      * @see Interface_Events::addEvents()
+     *
+     * @param array $events
      */
     public function addEvents(array $events)
     {
@@ -51,6 +56,9 @@ class QUI_Events_Event implements Interface_Events
     /**
      * (non-PHPdoc)
      * @see Interface_Events::removeEvent()
+     *
+     * @param String $event - The type of event (e.g. 'complete').
+     * @param Function $fn - (optional) The function to remove.
      */
     public function removeEvent($event, $fn=false)
     {
@@ -75,6 +83,8 @@ class QUI_Events_Event implements Interface_Events
     /**
      * (non-PHPdoc)
      * @see Interface_Events::removeEvents()
+     *
+     * @param array $events - [optional] If not passed removes all events of all types.
      */
     public function removeEvents(array $events)
     {
@@ -86,6 +96,10 @@ class QUI_Events_Event implements Interface_Events
     /**
      * (non-PHPdoc)
      * @see Interface_Events::fireEvent()
+     *
+     * @param String $event - The type of event (e.g. 'onComplete').
+     * @param Array $args   - (optional) the argument(s) to pass to the function.
+     *                        The arguments must be in an array.
      */
     public function fireEvent($event, $args=false)
     {
