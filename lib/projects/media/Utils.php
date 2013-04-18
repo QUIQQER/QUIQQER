@@ -553,17 +553,13 @@ class Projects_Media_Utils
         }
 
         $parts   = explode( '/', $parts[1] );
-        $project = $parts[0];
+        $project = array_shift( $parts );
 
         $Project = \QUI::getProject( $project );
         $Media   = $Project->getMedia();
-        $Folder  = $Media->firstChild();
 
-        for ( $i = 1, $len = count( $parts )-1; $i < $len; $i++ ) {
-            $Folder = $Folder->getChildByName( $parts[ $i ] );
-        }
-
-        $file_name = end( $parts );
+        // if the element (image) is resized resize
+        $file_name = array_pop( $parts );
 
         if ( strpos($file_name, '__') !== false )
         {
@@ -574,11 +570,12 @@ class Projects_Media_Utils
             $part_size = explode( 'x', $size );
 
             $file_name = substr( $file_name, 0, ( $lastpos_ul - 2 ) ) .
-                         substr( $file_name, $pos_dot ) ;
+                         substr( $file_name, $pos_dot );
         }
 
-        // leztes Element prüfen, Name der Datei
-        return $Folder->getChildByName( $file_name );
+        $parts[] = $file_name;
+
+        return $Media->getChildByPath( implode( '/', $parts ) );
     }
 
     /**

@@ -242,7 +242,7 @@ class QUI_Rewrite
         }
 
         // Media Center Datei, falls nicht im Cache ist
-        if (isset($_REQUEST['_url']) && strpos($_REQUEST['_url'], 'media/cache') !== false)
+        if ( isset( $_REQUEST['_url'] ) && strpos( $_REQUEST['_url'], 'media/cache' ) !== false )
         {
             try
             {
@@ -250,43 +250,43 @@ class QUI_Rewrite
 
                 if (strpos($_REQUEST['_url'], '__') !== false)
                 {
-                    $lastpos_ul = strrpos($_REQUEST['_url'], '__') + 2;
-                    $pos_dot    = strpos($_REQUEST['_url'], '.', $lastpos_ul);
+                    $lastpos_ul = strrpos( $_REQUEST['_url'], '__' ) + 2;
+                    $pos_dot    = strpos( $_REQUEST['_url'], '.', $lastpos_ul );
 
-                    $size      = substr($_REQUEST['_url'], $lastpos_ul, ($pos_dot-$lastpos_ul));
-                    $part_size = explode('x', $size);
+                    $size      = substr( $_REQUEST['_url'], $lastpos_ul, ( $pos_dot-$lastpos_ul ) );
+                    $part_size = explode( 'x', $size );
 
-                    if ( isset($part_size[0]) ) {
+                    if ( isset( $part_size[0] ) ) {
                         $width = (int)$part_size[0];
                     }
 
-                    if ( isset($part_size[1]) ) {
+                    if ( isset( $part_size[1] ) ) {
                         $height = (int)$part_size[1];
                     }
                 }
 
-            } catch (QException $e)
+            } catch ( QException $e )
             {
                 // Falls Bild nicht mehr existiert oder ein falscher Aufruf gemacht wurde
-                $this->_showErrorHeader(404);
-            } catch (QExceptionDBError $e)
+                $this->_showErrorHeader( 404 );
+            } catch ( QExceptionDBError $e )
             {
                 // Falls Bild nicht mehr existiert oder ein falscher Aufruf gemacht wurde
-                $this->_showErrorHeader(404);
+                $this->_showErrorHeader( 404 );
             }
 
-            if ($Item->getType() === 'Projects_Media_Image')
+            if ( $Item->getType() === 'Projects_Media_Image' )
             {
                 /* @var $Item Projects_Media_Image */
-                if ( !isset($width) ) {
+                if ( !isset( $width ) || empty( $width ) ) {
                     $width = false;
                 }
 
-                if ( !isset($height) ) {
+                if ( !isset( $height ) || empty( $height ) ) {
                     $height = false;
                 }
 
-                $file = $Item->createSizeCache($width, $height);
+                $file = $Item->createSizeCache( $width, $height );
             } else
             {
                 $file = $Item->createCache();

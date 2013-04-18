@@ -16,322 +16,323 @@ class Projects_Media_Image
       implements Interface_Projects_Media_File
 {
     /**
-	 * (non-PHPdoc)
-	 * @see Interface_Projects_Media_File::createCache()
-	 */
+     * (non-PHPdoc)
+     * @see Interface_Projects_Media_File::createCache()
+     */
     public function createCache()
-	{
+    {
         return $this->createSizeCache();
-	}
+    }
 
-	/**
-	 * Creates a cache file and takes into account the maximum sizes
-	 *
-	 * @param Integer|Bool $maxwidth
-	 * @param Integer|Bool $maxheight
-	 *
-	 * @return String - Path to the file
-	 */
-	public function createResizeCache($maxwidth=false, $maxheight=false)
-	{
+    /**
+     * Creates a cache file and takes into account the maximum sizes
+     *
+     * @param Integer|Bool $maxwidth
+     * @param Integer|Bool $maxheight
+     *
+     * @return String - Path to the file
+     */
+    public function createResizeCache($maxwidth=false, $maxheight=false)
+    {
         $params = $this->getResizeSize(
             $maxwidth,
             $maxheight
         );
 
-		return $this->createSizeCache(
-		    $params['width'],
-		    $params['height']
-	    );
-	}
+        return $this->createSizeCache(
+            $params['width'],
+            $params['height']
+        );
+    }
 
-	/**
-	 * Return the Image specific max resize params
-	 *
-	 * @param unknown_type $maxwidth
-	 * @param unknown_type $maxheight
-	 * @return array - array('width' => 100, 'height' => 100)
-	 */
-	public function getResizeSize($maxwidth=false, $maxheight=false)
-	{
+    /**
+     * Return the Image specific max resize params
+     *
+     * @param unknown_type $maxwidth
+     * @param unknown_type $maxheight
+     * @return array - array('width' => 100, 'height' => 100)
+     */
+    public function getResizeSize($maxwidth=false, $maxheight=false)
+    {
         $width  = $this->getAttribute('image_width');
-		$height = $this->getAttribute('image_height');
+        $height = $this->getAttribute('image_height');
 
-		if ( !$width || !$height )
-		{
+        if ( !$width || !$height )
+        {
             $info = Utils_System_File::getInfo($this->getFullPath(), array(
-            	'imagesize' => true
+                'imagesize' => true
             ));
 
             $width  = $info['width'];
             $height = $info['height'];
-		}
+        }
 
-		$newwidth  = $width;
-		$newheight = $height;
+        $newwidth  = $width;
+        $newheight = $height;
 
-		if ( !$maxwidth ) {
-		    $maxwidth = $width;
-		}
+        if ( !$maxwidth ) {
+            $maxwidth = $width;
+        }
 
-		if ( !$maxheight ) {
-		    $maxheight = $height;
-		}
+        if ( !$maxheight ) {
+            $maxheight = $height;
+        }
 
-		// Breite
-		if ( $newwidth > $maxwidth )
-		{
-			$resize_by_percent = ($maxwidth * 100) / $newwidth;
-
-			$newheight = (int)round(($newheight * $resize_by_percent) / 100);
-			$newwidth  = $maxwidth;
-		}
-
-		// Höhe
-		if ( $newheight > $maxheight )
-		{
-			$resize_by_percent = ($maxheight * 100) / $newheight;
-
-			$newwidth  = (int)round(($newwidth * $resize_by_percent) / 100);
-			$newheight = $maxheight;
-		}
-
-		return array(
-		    'width'  => $newwidth,
-			'height' => $newheight
-		);
-	}
-
-	/**
-	 * Create a cache file with the new width and height
-	 *
-	 * @param Integer $width
-	 * @param Integer $height
-	 * @return String - URL to the cachefile
-	 */
-	public function createSizeCache($width=false, $height=false)
-	{
-		if ( !$this->getAttribute('active') ) {
-			return false;
-		}
-
-		$Media   = $this->_Media; /* @var $Media Projects_Media */
-		$Project = $Media->getProject();
-
-		$mdir = CMS_DIR . $Media->getPath();
-		$cdir = CMS_DIR . $Media->getCacheDir();
-		$file = $this->getAttribute('file');
-
-		$original = $mdir . $file;
-		$extra    = '';
-
-		if ( $this->getAttribute('reflection') ) {
-			$extra = '_reflection';
-		}
-
-		if ( $width || $height )
-		{
-			$part      = explode('.', $file);
-			$cachefile = $cdir . $part[0] .'__'. $width .'x'. $height . $extra .'.'. Utils_String::toLower( end($part) );
-
-			if ( $height == false ) {
-			    $cachefile2 = $cdir . $part[0] .'__'. $width . $extra .'.'. Utils_String::toLower( end($part) );
-			}
-
-			if ( $this->getAttribute('reflection') )
-			{
-				$cachefile = $cdir . $part[0] .'__'. $width .'x'. $height . $extra .'.png';
-
-				if ( $height == false ) {
-			        $cachefile2 = $cdir . $part[0] .'__'. $width . $extra .'.png';
-			    }
-			}
-
-		} else
-		{
-			$cachefile = $cdir.$file;
-		}
-
-		// Link Cache erstellen -> macht das noch sinn?
-		// $this->_createLinkCache();
-
-		if ( file_exists($cachefile) &&
-		     // falls es eine Cachedatei ohne x geben soll
-		    (isset($cachefile2) && file_exists($cachefile2)) )
+        // Breite
+        if ( $newwidth > $maxwidth )
         {
-			return $cachefile;
-		}
+            $resize_by_percent = ($maxwidth * 100) / $newwidth;
 
-		// Cachefolder erstellen
-		$this->getParent()->createCache();
+            $newheight = (int)round(($newheight * $resize_by_percent) / 100);
+            $newwidth  = $maxwidth;
+        }
 
-		if ( $width || $height )
-		{
-			$this->resize( $cachefile, (int)$width, (int)$height );
+        // Höhe
+        if ( $newheight > $maxheight )
+        {
+            $resize_by_percent = ($maxheight * 100) / $newheight;
 
-			// falls höhe nicht angegeben ist, das Cachefile auch ohne x anlegen
-			if ( isset($cachefile2) ) {
-                $this->resize( $cachefile2, (int)$width, (int)$height );
-			}
+            $newwidth  = (int)round(($newwidth * $resize_by_percent) / 100);
+            $newheight = $maxheight;
+        }
 
-		} else
-		{
-			try
-			{
-			    if ( !file_exists($cachefile) ) {
-				    Utils_System_File::copy($original, $cachefile);
-			    }
-			} catch ( QException $e )
-			{
-			    // Fehler loggen
-			    System_Log::writeException($e);
-			}
-		}
+        return array(
+            'width'  => $newwidth,
+            'height' => $newheight
+        );
+    }
 
-		// Spiegelung
-		if ( $this->getAttribute('reflection') )
-		{
-			if ( !file_exists($cachefile) )
-			{
-				Utils_Image::reflection($original, $cachefile);
-			} else
-			{
-				Utils_Image::reflection($cachefile, $cachefile);
-			}
+    /**
+     * Create a cache file with the new width and height
+     *
+     * @param Integer $width
+     * @param Integer $height
+     * @return String - URL to the cachefile
+     */
+    public function createSizeCache($width=false, $height=false)
+    {
+        if ( !$this->getAttribute('active') ) {
+            return false;
+        }
 
-		    if ( isset($cachefile2) ) {
-                Utils_Image::reflection($cachefile, $cachefile2);
-			}
+        $Media   = $this->_Media; /* @var $Media Projects_Media */
+        $Project = $Media->getProject();
 
-			if ( $width || $height )
-			{
-				Utils_Image::resize($cachefile, $cachefile, (int)$width, (int)$height);
+        $mdir = CMS_DIR . $Media->getPath();
+        $cdir = CMS_DIR . $Media->getCacheDir();
+        $file = $this->getAttribute('file');
 
-    			if ( isset($cachefile2) ) {
-                    Utils_Image::resize($cachefile2, $cachefile2, (int)$width, (int)$height);
-    			}
-			}
-		}
+        $original = $mdir . $file;
+        $extra    = '';
 
-		/**
-		 *  Runde Ecken
-		 */
-		if ( $this->getAttribute('roundcorners') )
-		{
-			$roundcorner = $this->getAttribute('roundcorners');
-
-			if ( !is_array($roundcorner) ) {
-				$roundcorner = json_decode($roundcorner, true);
-			}
-
-			if ( isset($roundcorner['radius']) &&
-				 isset($roundcorner['background']) )
-			{
-				try
-				{
-					Utils_Image::roundCorner($cachefile, $cachefile, array(
-						'radius' 	 => (int)$roundcorner['radius'],
-						'background' => $roundcorner['background']
-					));
-
-    				if ( isset($cachefile2) )
-    				{
-                        Utils_Image::roundCorner($cachefile2, $cachefile, array(
-    						'radius' 	 => (int)$roundcorner['radius'],
-    						'background' => $roundcorner['background']
-    					));
-        			}
-
-				} catch ( QException $e )
-				{
-					System_Log::writeException($e);
-				}
-			}
-		}
-
-		/**
-		 * Wasserzeichen
-		 */
-		if ( !$this->getAttribute('watermark') ) {
-			return $cachefile;
-		}
-
-		$watermark = $this->getAttribute('watermark');
-
-		if ( !is_array($watermark) ) {
-			$watermark = json_decode($watermark, true);
-		}
-
-		if ( empty($watermark) || !$watermark['active'] ) {
-            return $cachefile;
-		}
+        if ( $this->getAttribute('reflection') ) {
+            $extra = '_reflection';
+        }
 
 
-		// wenn kein Wasserzeichen, dann schauen ob im Projekt eines gibt
-		if ( !isset($watermark['image'] ) &&
-		     $Project->getConfig('watermark_image') )
-		{
-            $watermark['image'] = $Project->getConfig('watermark_image');
-		}
+        if ( $width || $height )
+        {
+            $part      = explode('.', $file);
+            $cachefile = $cdir . $part[0] .'__'. $width .'x'. $height . $extra .'.'. \Utils_String::toLower( end($part) );
 
-		if ( !isset($watermark['image']) ) {
-			return $cachefile;
-		}
+            if ( empty( $height ) ) {
+                $cachefile2 = $cdir . $part[0] .'__'. $width . $extra .'.'. \Utils_String::toLower( end($part) );
+            }
 
-
-		$params = Utils_String::getUrlAttributes($watermark['image']);
-
-		if ( !isset($params['id']) || !isset($params['project']) ) {
-			return $cachefile;
-		}
-
-		try
-		{
-		    $WZ_Project = QUI::getProject($params['project']);
-			$WZ_Media   = $Project->getMedia();
-			$_Image     = $WZ_Media->get( (int)$params['id'] );
-
-			if ( $_Image->getType() != 'IMAGE' ) {
-				return $cachefile;
-			}
-
-			/* @var $_Image MF_Image */
-
-			$d_media = $WZ_Media->getAttribute('media_dir');
-			$f_water = $d_media . $_Image->getPath();
-
-			if ( !file_exists($f_water) ) {
-				return $cachefile;
-			}
-
-			// falls keine position, dann die vom projekt
-		    if ( !isset($watermark['position']) &&
-		         $Project->getConfig('watermark_position') )
-		    {
-				$watermark['position'] = $Project->getConfig('watermark_position');
-			}
-
-			if ( isset($watermark['position']) ) {
-				$position = $watermark['position'];
-			}
-
-			// falls keine prozent, dann die vom projekt
-			if ((!isset($watermark['percent']) || !$watermark['percent']) &&
-			    $Project->getConfig('watermark_percent'))
+            if ( $this->getAttribute('reflection') )
             {
-			    $watermark['percent'] = $Project->getConfig('watermark_percent');
-			}
+                $cachefile = $cdir . $part[0] .'__'. $width .'x'. $height . $extra .'.png';
+
+                if ( empty( $height ) ) {
+                    $cachefile2 = $cdir . $part[0] .'__'. $width . $extra .'.png';
+                }
+            }
+
+        } else
+        {
+            $cachefile = $cdir . $file;
+        }
+
+        // Link Cache erstellen -> macht das noch sinn?
+        // $this->_createLinkCache();
+
+        if ( file_exists($cachefile) &&
+             // falls es eine Cachedatei ohne x geben soll
+            (isset($cachefile2) && file_exists($cachefile2)) )
+        {
+            return $cachefile;
+        }
+
+        // Cachefolder erstellen
+        $this->getParent()->createCache();
+
+        if ( $width || $height )
+        {
+            $this->resize( $cachefile, (int)$width, (int)$height );
+
+            // falls höhe nicht angegeben ist, das Cachefile auch ohne x anlegen
+            if ( isset( $cachefile2 ) ) {
+                $this->resize( $cachefile2, (int)$width, (int)$height );
+            }
+
+        } else
+        {
+            try
+            {
+                if ( !file_exists($cachefile) ) {
+                    Utils_System_File::copy($original, $cachefile);
+                }
+            } catch ( QException $e )
+            {
+                // Fehler loggen
+                System_Log::writeException($e);
+            }
+        }
+
+        // Spiegelung
+        if ( $this->getAttribute('reflection') )
+        {
+            if ( !file_exists($cachefile) )
+            {
+                Utils_Image::reflection($original, $cachefile);
+            } else
+            {
+                Utils_Image::reflection($cachefile, $cachefile);
+            }
+
+            if ( isset($cachefile2) ) {
+                Utils_Image::reflection($cachefile, $cachefile2);
+            }
+
+            if ( $width || $height )
+            {
+                Utils_Image::resize($cachefile, $cachefile, (int)$width, (int)$height);
+
+                if ( isset($cachefile2) ) {
+                    Utils_Image::resize($cachefile2, $cachefile2, (int)$width, (int)$height);
+                }
+            }
+        }
+
+        /**
+         *  Runde Ecken
+         */
+        if ( $this->getAttribute('roundcorners') )
+        {
+            $roundcorner = $this->getAttribute('roundcorners');
+
+            if ( !is_array($roundcorner) ) {
+                $roundcorner = json_decode($roundcorner, true);
+            }
+
+            if ( isset($roundcorner['radius']) &&
+                 isset($roundcorner['background']) )
+            {
+                try
+                {
+                    Utils_Image::roundCorner($cachefile, $cachefile, array(
+                        'radius' 	 => (int)$roundcorner['radius'],
+                        'background' => $roundcorner['background']
+                    ));
+
+                    if ( isset($cachefile2) )
+                    {
+                        Utils_Image::roundCorner($cachefile2, $cachefile, array(
+                            'radius' 	 => (int)$roundcorner['radius'],
+                            'background' => $roundcorner['background']
+                        ));
+                    }
+
+                } catch ( QException $e )
+                {
+                    System_Log::writeException($e);
+                }
+            }
+        }
+
+        /**
+         * Wasserzeichen
+         */
+        if ( !$this->getAttribute('watermark') ) {
+            return $cachefile;
+        }
+
+        $watermark = $this->getAttribute('watermark');
+
+        if ( !is_array($watermark) ) {
+            $watermark = json_decode($watermark, true);
+        }
+
+        if ( empty($watermark) || !$watermark['active'] ) {
+            return $cachefile;
+        }
+
+
+        // wenn kein Wasserzeichen, dann schauen ob im Projekt eines gibt
+        if ( !isset($watermark['image'] ) &&
+             $Project->getConfig('watermark_image') )
+        {
+            $watermark['image'] = $Project->getConfig('watermark_image');
+        }
+
+        if ( !isset($watermark['image']) ) {
+            return $cachefile;
+        }
+
+
+        $params = Utils_String::getUrlAttributes($watermark['image']);
+
+        if ( !isset($params['id']) || !isset($params['project']) ) {
+            return $cachefile;
+        }
+
+        try
+        {
+            $WZ_Project = QUI::getProject($params['project']);
+            $WZ_Media   = $Project->getMedia();
+            $_Image     = $WZ_Media->get( (int)$params['id'] );
+
+            if ( $_Image->getType() != 'IMAGE' ) {
+                return $cachefile;
+            }
+
+            /* @var $_Image MF_Image */
+
+            $d_media = $WZ_Media->getAttribute('media_dir');
+            $f_water = $d_media . $_Image->getPath();
+
+            if ( !file_exists($f_water) ) {
+                return $cachefile;
+            }
+
+            // falls keine position, dann die vom projekt
+            if ( !isset($watermark['position']) &&
+                 $Project->getConfig('watermark_position') )
+            {
+                $watermark['position'] = $Project->getConfig('watermark_position');
+            }
+
+            if ( isset($watermark['position']) ) {
+                $position = $watermark['position'];
+            }
+
+            // falls keine prozent, dann die vom projekt
+            if ((!isset($watermark['percent']) || !$watermark['percent']) &&
+                $Project->getConfig('watermark_percent'))
+            {
+                $watermark['percent'] = $Project->getConfig('watermark_percent');
+            }
 
 
 
-			$c_info = Utils_System_File::getInfo($cachefile, array('imagesize' => true));
-			$w_info = Utils_System_File::getInfo($f_water, array('imagesize' => true));
+            $c_info = Utils_System_File::getInfo($cachefile, array('imagesize' => true));
+            $w_info = Utils_System_File::getInfo($f_water, array('imagesize' => true));
 
-			// Prozentuale Grösse - Wasserzeichen
-			if ( isset($watermark['percent']) && $watermark['percent'] )
-		    {
-		        $w_width  = $c_info['width'];
-		        $w_height = $c_info['height'];
+            // Prozentuale Grösse - Wasserzeichen
+            if ( isset($watermark['percent']) && $watermark['percent'] )
+            {
+                $w_width  = $c_info['width'];
+                $w_height = $c_info['height'];
 
                 $watermark_width  = ($w_width / 100 * $watermark['percent']);
                 $watermark_height = ($w_height / 100 * $watermark['percent']);
@@ -348,193 +349,193 @@ class Projects_Media_Image
 
                 $w_info  = Utils_System_File::getInfo($watermark_temp, array('imagesize' => true));
                 $f_water = $watermark_temp;
-			}
+            }
 
 
-			$top  = 0;
-			$left = 0;
+            $top  = 0;
+            $left = 0;
 
-			switch ( $position )
-			{
-				case 'topright':
-					$left = ($c_info['width'] - $w_info['width']);
-				break;
+            switch ( $position )
+            {
+                case 'topright':
+                    $left = ($c_info['width'] - $w_info['width']);
+                break;
 
-				case 'bottomleft':
-					$top = ($c_info['height'] - $w_info['height']);
-				break;
+                case 'bottomleft':
+                    $top = ($c_info['height'] - $w_info['height']);
+                break;
 
-				case 'bottomright':
-					$top  = ($c_info['height'] - $w_info['height']);
-					$left = ($c_info['width'] - $w_info['width']);
-				break;
+                case 'bottomright':
+                    $top  = ($c_info['height'] - $w_info['height']);
+                    $left = ($c_info['width'] - $w_info['width']);
+                break;
 
-				case 'center':
-					$top  = (($c_info['height'] - $w_info['height']) / 2);
-					$left = (($c_info['width'] - $w_info['width']) / 2);
-				break;
-			}
+                case 'center':
+                    $top  = (($c_info['height'] - $w_info['height']) / 2);
+                    $left = (($c_info['width'] - $w_info['width']) / 2);
+                break;
+            }
 
-			Utils_Image::watermark($cachefile, $f_water, false, $top, $left);
+            Utils_Image::watermark($cachefile, $f_water, false, $top, $left);
 
-			if ( isset($cachefile2) ) {
+            if ( isset($cachefile2) ) {
                 Utils_Image::watermark($cachefile2, $f_water, false, $top, $left);
-    		}
+            }
 
-		} catch ( QException $e )
-		{
-			System_Log::writeException($e);
-			// nothing
-		}
+        } catch ( QException $e )
+        {
+            System_Log::writeException($e);
+            // nothing
+        }
 
-		return $cachefile;
-	}
+        return $cachefile;
+    }
 
     /**
      * (non-PHPdoc)
      * @see Interface_Projects_Media_File::deleteCache()
      */
     public function deleteCache()
-	{
+    {
         $Media   = $this->_Media;
-		$Project = $Media->getProject();
+        $Project = $Media->getProject();
 
-		$cdir = CMS_DIR . $Media->getCacheDir();
-		$file = $this->getAttribute('file');
+        $cdir = CMS_DIR . $Media->getCacheDir();
+        $file = $this->getAttribute('file');
 
-		$cachefile = $cdir . $file;
+        $cachefile = $cdir . $file;
 
-		$path  = pathinfo( $cachefile );
-		$parts = explode('.', $file);
+        $path  = pathinfo( $cachefile );
+        $parts = explode('.', $file);
 
-		$files = Utils_System_File::readDir($path['dirname'], true);
+        $files = Utils_System_File::readDir($path['dirname'], true);
 
-	    foreach ( $files as $file )
-		{
-			$len = strlen( $parts[0] );
+        foreach ( $files as $file )
+        {
+            $len = strlen( $parts[0] );
 
-			if ( substr($file,0, $len+2) == $parts[0] .'__' ) {
-				Utils_System_File::unlink( $path['dirname'] .'/'. $file );
-			}
-		}
+            if ( substr($file,0, $len+2) == $parts[0] .'__' ) {
+                Utils_System_File::unlink( $path['dirname'] .'/'. $file );
+            }
+        }
 
-		Utils_System_File::unlink( $cachefile );
+        Utils_System_File::unlink( $cachefile );
 
-		// delete admin cache
-		$cache_folder = VAR_DIR .'media_cache/'. $Project->getAttribute('name') .'/';
+        // delete admin cache
+        $cache_folder = VAR_DIR .'media_cache/'. $Project->getAttribute('name') .'/';
 
-		if ( !is_dir($cache_folder) ) {
+        if ( !is_dir($cache_folder) ) {
             return;
-		}
+        }
 
-		$list  = Utils_System_File::readDir( $cache_folder );
-		$id    = $this->getId();
-		$cache = $id .'_';
+        $list  = Utils_System_File::readDir( $cache_folder );
+        $id    = $this->getId();
+        $cache = $id .'_';
 
-		foreach ( $list as $file )
-		{
-		    if ( strpos($file, $cache) !== false ) {
-		        Utils_System_File::unlink( $cache_folder . $file );
-		    }
-		}
-	}
+        foreach ( $list as $file )
+        {
+            if ( strpos($file, $cache) !== false ) {
+                Utils_System_File::unlink( $cache_folder . $file );
+            }
+        }
+    }
 
-	/**
-	 * Resize the image
-	 *
-	 * @param String $new_image - Path to the new image
-	 * @param Integer $new_width
-	 * @param Integer $new_height
-	 *
-	 * @return String - Path to the new Image
-	 */
-	public function resize($new_image, $new_width=0, $new_height=0)
-	{
-	    $dir      = CMS_DIR . $this->_Media->getPath();
-		$original = $dir . $this->getAttribute('file');
+    /**
+     * Resize the image
+     *
+     * @param String $new_image - Path to the new image
+     * @param Integer $new_width
+     * @param Integer $new_height
+     *
+     * @return String - Path to the new Image
+     */
+    public function resize($new_image, $new_width=0, $new_height=0)
+    {
+        $dir      = CMS_DIR . $this->_Media->getPath();
+        $original = $dir . $this->getAttribute( 'file' );
 
-		try
-		{
-		    return Utils_System_File::resize(
-			    $original,
-			    $new_image,
-			    $new_width,
-			    $new_height
+        try
+        {
+            return \Utils_Image::resize(
+                $original,
+                $new_image,
+                $new_width,
+                $new_height
             );
 
-		} catch ( QException $Exception )
-		{
-			System_Log::writeException( $Exception );
-		}
+        } catch ( QException $Exception )
+        {
+            \System_Log::writeException( $Exception );
+        }
 
-		return $original;
-	}
+        return $original;
+    }
 
-	/**
-	 * Set the attribute for round corners
-	 *
-	 * @param String $background - #FFFFFF
-	 * @param Integer $radius    - 10
-	 */
-	public function setRoundCorners($background='', $radius='')
-	{
-		if ( empty($background) ) {
-			throw new QException('Please set a background color');
-		}
+    /**
+     * Set the attribute for round corners
+     *
+     * @param String $background - #FFFFFF
+     * @param Integer $radius    - 10
+     */
+    public function setRoundCorners($background='', $radius='')
+    {
+        if ( empty($background) ) {
+            throw new QException('Please set a background color');
+        }
 
-		if ( empty($radius) ) {
-			throw new QException('Please set a radius');
-		}
+        if ( empty($radius) ) {
+            throw new QException('Please set a radius');
+        }
 
-		$roundcorners = array(
-			'background' => $background,
-			'radius'     => $radius
-		);
+        $roundcorners = array(
+            'background' => $background,
+            'radius'     => $radius
+        );
 
-		$this->setAttribute('roundcorners', $roundcorners);
-	}
+        $this->setAttribute('roundcorners', $roundcorners);
+    }
 
-	/**
-	 * Set a watermark to the image
-	 *
-	 * @param Array $params
-	 * 	image
-	 * 	position
-	 * 	active
-	 *  percent
-	 */
-	public function setWatermark($params=array())
-	{
-	    $watermark = $this->getAttribute('watermark');
+    /**
+     * Set a watermark to the image
+     *
+     * @param Array $params
+     * 	image
+     * 	position
+     * 	active
+     *  percent
+     */
+    public function setWatermark($params=array())
+    {
+        $watermark = $this->getAttribute('watermark');
 
-	    // jetziges Wasserzeichen setzen, falls nichts übergeben wurde
-	    if ( isset($watermark['image']) && !isset($params['image']) ) {
+        // jetziges Wasserzeichen setzen, falls nichts übergeben wurde
+        if ( isset($watermark['image']) && !isset($params['image']) ) {
             $params['image'] = $watermark['image'];
-	    }
+        }
 
-	    if ( isset($watermark['position']) && !isset($params['position']) ) {
+        if ( isset($watermark['position']) && !isset($params['position']) ) {
             $params['position'] = $watermark['position'];
-	    }
+        }
 
-	    if ( isset($watermark['active']) && !isset($params['active']) ) {
+        if ( isset($watermark['active']) && !isset($params['active']) ) {
             $params['active'] = $watermark['active'];
-	    }
+        }
 
-		// falls deaktiviert
-		if ( $params['active'] == 0 )
-		{
+        // falls deaktiviert
+        if ( $params['active'] == 0 )
+        {
             $this->setAttribute('watermark', '');
             return;
-		}
+        }
 
-		$this->setAttribute('watermark', $params);
-	}
+        $this->setAttribute('watermark', $params);
+    }
 
-	/**
-	 * Generate the MD5 file hash and set it to the Database and to the Object
-	 */
-	public function generateMD5()
-	{
+    /**
+     * Generate the MD5 file hash and set it to the Database and to the Object
+     */
+    public function generateMD5()
+    {
         $md5 = md5_file( $this->getFullPath() );
 
         $this->setAttribute('md5hash', $md5);
@@ -542,15 +543,15 @@ class Projects_Media_Image
         QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array('md5hash' => $md5),
-			array('id' => $this->getId())
+            array('id' => $this->getId())
         );
-	}
+    }
 
-	/**
-	 * Generate the SHA1 file hash and set it to the Database and to the Object
-	 */
-	public function generateSHA1()
-	{
+    /**
+     * Generate the SHA1 file hash and set it to the Database and to the Object
+     */
+    public function generateSHA1()
+    {
         $sha1 = sha1_file( $this->getFullPath() );
 
         $this->setAttribute('sha1hash', $sha1);
@@ -558,9 +559,9 @@ class Projects_Media_Image
         QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array('sha1hash' => $sha1),
-			array('id' => $this->getId())
+            array('id' => $this->getId())
         );
-	}
+    }
 }
 
 ?>

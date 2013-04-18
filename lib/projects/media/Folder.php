@@ -566,7 +566,7 @@ class Projects_Media_Folder
     public function getChildByName($filename)
     {
         $table     = $this->_Media->getTable();
-        $table_rel = $this->_Media->getTable('relations');
+        $table_rel = $this->_Media->getTable( 'relations' );
 
         $result = QUI::getDataBase()->fetch(array(
             'select' => array(
@@ -585,7 +585,7 @@ class Projects_Media_Folder
             'limit' => 1
         ));
 
-        if ( !isset($result[0]) ) {
+        if ( !isset( $result[0] ) ) {
             throw new QException('File '. $filename .' not found', 404);
         }
 
@@ -602,10 +602,10 @@ class Projects_Media_Folder
     {
         try
         {
-            $Child = $this->getChildByName($name);
+            $Child = $this->getChildByName( $name );
 
             return true;
-        } catch (QException $e)
+        } catch ( \QException $e )
         {
 
         }

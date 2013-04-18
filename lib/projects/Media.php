@@ -169,8 +169,8 @@ class Projects_Media extends QDOM
     {
         $id = (int)$id;
 
-        if ( isset( $this->_children[$id] ) ) {
-            return $this->_children[$id];
+        if ( isset( $this->_children[ $id ] ) ) {
+            return $this->_children[ $id ];
         }
 
         // If the RAM is full objects was once empty
@@ -191,9 +191,9 @@ class Projects_Media extends QDOM
         }
 
 
-        $this->_children[$id] = $this->_parseResultToItem( $result[0] );
+        $this->_children[ $id ] = $this->_parseResultToItem( $result[0] );
 
-        return $this->_children[$id];
+        return $this->_children[ $id ];
     }
 
     /**
@@ -217,6 +217,38 @@ class Projects_Media extends QDOM
         return $ids;
     }
 
+    /**
+     * Return a file from its file oath
+     *
+     * @param String $filename
+     * @return Projects_Media_Item
+     */
+    public function getChildByPath($filepath)
+    {
+        $table     = $this->getTable();
+        $table_rel = $this->getTable( 'relations' );
+
+        $result = \QUI::getDataBase()->fetch(array(
+            'select' => array(
+                $table .'.id'
+            ),
+            'from'  => array(
+                $table,
+                $table_rel
+            ),
+            'where' => array(
+                $table .'.deleted' => 0,
+                $table .'.file'	   => $filepath
+            ),
+            'limit' => 1
+        ));
+
+        if ( !isset( $result[0] ) ) {
+            throw new \QException('File '. $filepath .' not found', 404);
+        }
+
+        return $this->get( (int)$result[0]['id'] );
+    }
 
     /**
      * Replace a file with another
