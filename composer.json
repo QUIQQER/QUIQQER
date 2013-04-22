@@ -32,7 +32,7 @@
     "require": {
         "php" : ">=5.3",
         "phpmailer/phpmailer" : "dev-master",
-        "smarty/smarty": "v3.1.12",
+        "quiqqer/smarty": "3.1.12",
         "quiqqer/smarty3" : "dev-master",
         "quiqqer/ckeditor3" : "1.*",
         "quiqqer/calendar" : "dev-master",
