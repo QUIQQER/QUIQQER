@@ -25,10 +25,11 @@ module.exports = function(grunt)
     "use strict";
 
     // External libs.
-    var uglifyjs = require('uglify-js');
-    var gzip     = require('gzip-js');
-    var cleanCSS = require('clean-css');
-    var leaky    = require('leaky');
+    //var uglifyjs = require('uglify-js');
+    var UglifyJS = require( "uglify-js" );
+    var gzip     = require( 'gzip-js' );
+    var cleanCSS = require( 'clean-css' );
+    var leaky    = require( 'leaky' );
 
     // Project configuration.
     grunt.initConfig({
@@ -46,8 +47,8 @@ module.exports = function(grunt)
     grunt.registerMultiTask('pcsgmin', 'pcsg minify', function(arg1, arg2)
     {
         //var foo = grunt.helper('pcsgmin');
-        var files = grunt.file.expandFiles(this.file.src);
-        var i, len, src, min, new_file;
+        var files = grunt.file.expandFiles( this.file.src );
+        var i, len, src, min, map, new_file, new_file_map, result;
 
         for ( i = 0, len = files.length; i < len; i++ )
         {
@@ -89,15 +90,20 @@ module.exports = function(grunt)
 
 
             // js files
-            src = grunt.file.read( files[i] );
-            min = grunt.helper('uglify', src, grunt.config('uglify'));
+            src    = grunt.file.read( files[i] );
+            result = grunt.helper( 'uglify', src, grunt.config('uglify') );
 
-            new_file = 'js-min/'+ files[i].substr( 3 );
+            min = result.code;
+            map = result.map;
+
+            new_file     = 'js-min/'+ files[i].substr( 3 );
+            new_file_map = 'js-min/'+ files[i].substr( 3 ) +'.map';
 
             grunt.file.write( new_file, min );
+            grunt.file.write( new_file_map, map );
 
             // Fail task if errors were logged.
-            if (this.errorCount) {
+            if ( this.errorCount ) {
                 return false;
             }
 
@@ -116,30 +122,52 @@ module.exports = function(grunt)
     // From https://github.com/mishoo/UglifyJS
     grunt.registerHelper('uglify', function(src, options)
     {
-        if (!options) { options = {}; }
-        var jsp = uglifyjs.parser;
-        var pro = uglifyjs.uglify;
-        var ast, pos;
+        if ( !options ) {
+            options = {};
+        }
+
+        //var jsp = uglifyjs.parser;
+        //var pro = uglifyjs.uglify;
+        var ast, pos, result;
         var msg = 'Minifying with UglifyJS...';
-        grunt.verbose.write(msg);
-        try {
-            ast = jsp.parse(src);
+
+        grunt.verbose.write( msg );
+
+        try
+        {
+            result = UglifyJS.minify(src, {
+                outSourceMap : "out.js.map",
+                fromString   : true
+            });
+
+            return result;
+
+            /*
+            ast = jsp.parse( src );
             ast = pro.ast_mangle(ast, options.mangle || {});
             ast = pro.ast_squeeze(ast, options.squeeze || {});
             src = pro.gen_code(ast, options.codegen || {});
+
             // Success!
             grunt.verbose.ok();
+
             // UglifyJS adds a trailing semicolon only when run as a binary.
             // So we manually add the trailing semicolon when using it as a module.
             // https://github.com/mishoo/UglifyJS/issues/126
             return src + ';';
+            */
         } catch(e)
         {
             // Something went wrong.
-            grunt.verbose.or.write(msg);
+            grunt.verbose.or.write( msg );
+
             pos = '['.red + ('L' + e.line).yellow + ':'.red + ('C' + e.col).yellow + ']'.red;
-            grunt.log.error().writeln(pos + ' ' + (e.message + ' (position: ' + e.pos + ')').yellow);
-            grunt.warn('UglifyJS found errors.', 10);
+
+            grunt.log.error().writeln(
+                pos + ' ' + (e.message + ' (position: ' + e.pos + ')').yellow
+            );
+
+            grunt.warn( 'UglifyJS found errors.', 10 );
         }
     });
 
@@ -151,7 +179,7 @@ module.exports = function(grunt)
     // Output some size info about a file.
     grunt.registerHelper('min_max_info', function(min, max)
     {
-        var gzipSize = String(grunt.helper('gzip', min).length);
+        var gzipSize = String( grunt.helper( 'gzip', min ).length );
         grunt.log.writeln('Uncompressed size: ' + String(max.length).green + ' bytes.');
         grunt.log.writeln('Compressed size: ' + gzipSize.green + ' bytes gzipped (' + String(min.length).green + ' bytes minified).');
     });
