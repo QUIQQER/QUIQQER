@@ -70,7 +70,7 @@ class QUI_Package_Manager
         \Utils_System_File::mkdir( $this->_vardir );
 
         // exec
-        $this->_composer_exec = 'cd '. VAR_DIR .'; php composer.phar';
+        $this->_composer_exec = 'cd '. $this->_vardir .'; php composer.phar';
 
         $exec = $this->_composer_exec .' --working-dir="'. $this->_vardir .'" ';
         exec( $exec, $result );
