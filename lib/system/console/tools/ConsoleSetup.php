@@ -21,38 +21,38 @@ class ConsoleSetup extends System_Console_Tool
      * constructor
      * @param unknown_type $params
      */
-	public function __construct($params)
-	{
-		parent::__construct($params);
+    public function __construct($params)
+    {
+        parent::__construct($params);
 
-		$help = " Beschreibung:\n";
-		$help .= " Wartungsarbeiten setzen\n";
-		$help .= "\n";
-		$help .= " Aufruf:\n";
-		$help .= " admin/console.php --username=[USERNAME] --password=[PASSWORD] --tool=ConsoleSetup [params]\n";
-		$help .= "\n";
+        $help = " Beschreibung:\n";
+        $help .= " Wartungsarbeiten setzen\n";
+        $help .= "\n";
+        $help .= " Aufruf:\n";
+        $help .= " admin/console.php --username=[USERNAME] --password=[PASSWORD] --tool=ConsoleSetup [params]\n";
+        $help .= "\n";
 
-		$help .= " Optionale Parameter:\n";
-		$help .= " --help			Dieser Hilfetext\n\n";
-		$help .= "\n";
+        $help .= " Optionale Parameter:\n";
+        $help .= " --help			Dieser Hilfetext\n\n";
+        $help .= "\n";
 
-		$this->addHelp($help);
-	}
+        $this->addHelp($help);
+    }
 
-	/**
-	 * Starts the setup
-	 */
-	public function start()
-	{
-	    try
-	    {
-		    QUI_Setup::all();
+    /**
+     * Starts the setup
+     */
+    public function start()
+    {
+        try
+        {
+            \QUI_Setup::all();
 
-	    } catch ( QException $Exception )
-	    {
+        } catch ( \QException $Exception )
+        {
             $this->message( $Exception->getMessage(), 'red' );
-	    }
-	}
+        }
+    }
 }
 
 ?>

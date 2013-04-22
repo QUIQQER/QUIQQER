@@ -23,7 +23,7 @@ class QUI_Setup
              ( isset( $_SERVER['argv'][0] ) && strpos($_SERVER['argv'][0], 'phpunit') === false) )
         {
             // nur Super User darf dies
-            QUI_Rights_Permission::checkSU();
+            \QUI_Rights_Permission::checkSU();
         }
 
         // create dirs
@@ -33,35 +33,35 @@ class QUI_Setup
         \Utils_System_File::mkdir( OPT_DIR );
         \Utils_System_File::mkdir( VAR_DIR );
 
-		// Gruppen erstellen
-		QUI::getGroups()->setup();
+        // Gruppen erstellen
+        \QUI::getGroups()->setup();
 
-	    // Rechte setup
-	    QUI::getRights()->setup();
+        // Rechte setup
+        \QUI::getRights()->setup();
 
-		// Benutzer erstellen
-		QUI::getUsers()->setup();
+        // Benutzer erstellen
+        \QUI::getUsers()->setup();
 
-		// Cron Setup
-		System_Cron_Manager::setup();
+        // Cron Setup
+        \System_Cron_Manager::setup();
 
-		// Events Setip
-		QUI_Events_Manager::setup();
+        // Events Setip
+        \QUI_Events_Manager::setup();
 
-		// Package Manager
-		// QUI_Package_Manager::setup();
+        // Package Manager
+        // QUI_Package_Manager::setup();
 
-		// Upload Manager
-		$UploadManager = new QUI_Upload_Manager();
-		$UploadManager->setup();
+        // Upload Manager
+        $UploadManager = new \QUI_Upload_Manager();
+        $UploadManager->setup();
 
-		// Countries
-		\Utils_Countries_Manager::setup();
+        // Countries
+        \Utils_Countries_Manager::setup();
 
 
-		/**
-		 * header dateien
-		 */
+        /**
+         * header dateien
+         */
         $str = "<?php require_once '". CMS_DIR ."bootstrap.php'; ?>";
 
         if ( file_exists( USR_DIR .'header.php' ) ) {
@@ -76,27 +76,27 @@ class QUI_Setup
         file_put_contents( OPT_DIR .'header.php', $str );
 
 
-		/**
-		 * Project Setup
-		 */
-		$projects = Projects_Manager::getProjects( true );
+        /**
+         * Project Setup
+         */
+        $projects = \Projects_Manager::getProjects( true );
 
-		foreach ( $projects as $Project )
-		{
-		    /* @var $Project Projects_Project */
-			$Project->setup();
+        foreach ( $projects as $Project )
+        {
+            /* @var $Project Projects_Project */
+            $Project->setup();
 
-    		// Plugin Setup
-    		QUI::getPlugins()->setup( $Project );
+            // Plugin Setup
+            \QUI::getPlugins()->setup( $Project );
 
-    		// Media Setup
-    		$Project->getMedia()->setup();
-		}
+            // Media Setup
+            $Project->getMedia()->setup();
+        }
 
-		/**
-		 * composer setup
-		 */
-		\QUI::getPackageManager()->refreshServerList();
+        /**
+         * composer setup
+         */
+        \QUI::getPackageManager()->refreshServerList();
         \QUI::getPackageManager()->update();
 
         /**

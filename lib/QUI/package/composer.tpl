@@ -2,7 +2,7 @@
     "name" : "quiqqer/quiqqer",
     "type" : "composer-installer",
     "description" : "A modular based management system written in JavaScript and PHP",
-    "version" : "1-alpha",
+    "version" : "1.0.0",
     "license" : "GPL-3.0+",
 
     "authors" : [{

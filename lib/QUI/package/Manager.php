@@ -67,10 +67,10 @@ class QUI_Package_Manager
 
         $this->_composer_json = $this->_vardir .'composer.json';
 
-        Utils_System_File::mkdir( $this->_vardir );
+        \Utils_System_File::mkdir( $this->_vardir );
 
         // exec
-        $this->_composer_exec = 'cd '. CMS_DIR .'; php composer.phar';
+        $this->_composer_exec = 'cd '. CMS_DIR .'; php composer/composer.phar';
 
         $exec = $this->_composer_exec .' --working-dir="'. $this->_vardir .'" ';
         exec( $exec, $result );
@@ -588,6 +588,8 @@ class QUI_Package_Manager
 
             return true;
         }
+
+        throw new \QException( 'Could not execute composer' );
     }
 
     /**
