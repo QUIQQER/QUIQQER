@@ -106,7 +106,6 @@ define('controls/projects/Panel', [
                 left : -300
             });
 
-
             // draw filter
             this.$Filter = new QUI.controls.sitemap.Filter(null, {
                 styles : {
@@ -490,7 +489,6 @@ define('controls/projects/Panel', [
          * Get all sitemap items by the id
          *
          * @method QUI.controls.projects.Panel#getSitemapItemsById
-         *
          * @return {Array}
          */
         getSitemapItemsById : function(id)
@@ -507,7 +505,6 @@ define('controls/projects/Panel', [
          * Opens the sitemap and open the site panel
          *
          * @method QUI.controls.projects.Panel#openSite
-         *
          * @param {Integer} id - ID from the wanted site
          */
         openSite : function(id)
@@ -544,10 +541,24 @@ define('controls/projects/Panel', [
                  }
 
                  panels[ 0 ].appendChild(
-                     new QUI_SitePanel( Site )
+                     new QUI_SitePanel(Site, {
+                         events :
+                         {
+                             onShow : function(Panel)
+                             {
+                                 if ( Panel.getType() != 'QUI.controls.projects.site.Panel' ) {
+                                     return;
+                                 }
+
+                                 // if it is a sitepanel
+                                 // set the item in the map active
+                                 Conrol.openSite( Panel.getSite().getId() );
+                             }
+                         }
+                     })
                  );
 
-             }.bind(this));
+             });
         }
     });
 

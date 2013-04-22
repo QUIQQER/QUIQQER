@@ -42,8 +42,15 @@ define('controls/sitemap/Item', [
      */
     QUI.controls.sitemap.Item = new Class({
 
-        Implements: [QUI_Control],
-        Type      : 'QUI.controls.sitemap.Item',
+        Extends : QUI_Control,
+        Type    : 'QUI.controls.sitemap.Item',
+
+        Binds : [
+            'toggle',
+            'click',
+
+            '$onChildDestroy'
+        ],
 
         options : {
             value : '',
@@ -105,10 +112,11 @@ define('controls/sitemap/Item', [
                 if ( this.$ContextMenu ) {
                     this.$ContextMenu.destroy();
                 }
-
+                /*
                 if ( this.getParent() ) {
                     this.getParent().$removeChild( this );
                 }
+                */
             });
         },
 
@@ -139,7 +147,7 @@ define('controls/sitemap/Item', [
                             this.getMap().childContextMenu( this, event );
                         }
 
-                        this.fireEvent('contextMenu', [this, event]);
+                        this.fireEvent( 'contextMenu', [ this, event ] );
                     }.bind(this)
                 }
             });
@@ -151,33 +159,27 @@ define('controls/sitemap/Item', [
 
             // events
             this.$Opener.addEvents({
-                click : function()
-                {
-                    this.toggle();
-                }.bind(this)
+                click : this.toggle
             });
 
             this.$Text.addEvents({
-                click : function(event)
-                {
-                    this.click(event);
-                }.bind(this)
+                click : this.click
             });
 
             // ui
-            this.$Children.setStyle('display', 'none');
+            this.$Children.setStyle( 'display', 'none' );
 
 
-            if ( this.getAttribute('icon') )
+            if ( this.getAttribute( 'icon' ) )
             {
                 this.$Icons.setStyle(
                     'background-image',
-                    'url('+ this.getAttribute('icon') +')'
+                    'url('+ this.getAttribute( 'icon' ) +')'
                 );
             }
 
-            if ( this.getAttribute('text') ) {
-                this.$Text.set('html', this.getAttribute('text'));
+            if ( this.getAttribute( 'text' ) ) {
+                this.$Text.set( 'html', this.getAttribute( 'text' ) );
             }
 
             len = this.$items.length;
@@ -222,7 +224,7 @@ define('controls/sitemap/Item', [
                 this.getElm();
             }
 
-            var Img = this.$Icons.getElement('[src="'+ icon_url +'"]');
+            var Img = this.$Icons.getElement( '[src="'+ icon_url +'"]' );
 
             if ( Img ) {
                 return this;
@@ -254,7 +256,7 @@ define('controls/sitemap/Item', [
                 return this;
             }
 
-            var Img = this.$Icons.getElement('[src="'+ icon_url +'"]');
+            var Img = this.$Icons.getElement( '[src="'+ icon_url +'"]' );
 
             if ( Img ) {
                 Img.destroy();
@@ -327,7 +329,11 @@ define('controls/sitemap/Item', [
             Child.setParent( this );        // set the parent to the this
             Child.setMap( this.getMap() );  // set the parent to the Map
 
-            this.getMap().fireEvent( 'appendChild', [this, Child] );
+            Child.addEvents({
+                onDestroy : this.$onChildDestroy
+            });
+
+            this.getMap().fireEvent( 'appendChild', [ this, Child ] );
 
             return this;
         },
@@ -352,7 +358,7 @@ define('controls/sitemap/Item', [
          */
         hasChildren : function()
         {
-            if ( this.getAttribute('hasChildren') ) {
+            if ( this.getAttribute( 'hasChildren' ) ) {
                 return true;
             }
 
@@ -383,8 +389,8 @@ define('controls/sitemap/Item', [
 
             for ( i = 0, len = items.length; i < len; i++ )
             {
-                if ( items[i] ) {
-                    items[i].destroy();
+                if ( items[ i ] ) {
+                    items[ i ].destroy();
                 }
             }
 
@@ -411,7 +417,7 @@ define('controls/sitemap/Item', [
          * @method QUI.controls.sitemap.Item#countChildren
          *
          * @param {QUI.controls.sitemap.Item} Child
-         * @return {this}
+         * @return {this} self
          * @ignore
          */
         $removeChild : function(Child)
@@ -420,14 +426,14 @@ define('controls/sitemap/Item', [
 
             for ( var i = 0, len = this.$items.length; i < len; i++ )
             {
-                if ( this.$items[i].getId() !== Child.getId() ) {
-                    items.push( this.$items[i] );
+                if ( this.$items[ i ].getId() !== Child.getId() ) {
+                    items.push( this.$items[ i ] );
                 }
             }
 
             this.$items = items;
 
-            this.getAttribute( 'hasChildren', this.$items.length );
+            this.setAttribute( 'hasChildren', this.$items.length ? true : false );
             this.$setOpener();
 
             return this;
@@ -437,11 +443,11 @@ define('controls/sitemap/Item', [
          * Select the Item
          *
          * @method QUI.controls.sitemap.Item#select
-         * @return {this}
+         * @return {this} self
          */
         select : function()
         {
-            this.fireEvent( 'select', [this] );
+            this.fireEvent( 'select', [ this ] );
 
             if ( this.$Text ) {
                 this.$Text.addClass( 'select' );
@@ -458,7 +464,7 @@ define('controls/sitemap/Item', [
          */
         deselect : function()
         {
-            this.fireEvent( 'deSelect', [this] );
+            this.fireEvent( 'deSelect', [ this ] );
 
             if ( this.$Text ) {
                 this.$Text.removeClass( 'select' );
@@ -660,7 +666,7 @@ define('controls/sitemap/Item', [
 
             if ( this.hasChildren() === false )
             {
-                this.$Opener.setStyle('background-image', '');
+                this.$Opener.setStyle( 'background-image', '' );
                 return;
             }
 
@@ -706,6 +712,16 @@ define('controls/sitemap/Item', [
                 this.$Elm.set('data-value', value);
                 return;
             }
+        },
+
+        /**
+         * event : children destroy
+         *
+         * @param {QUI.controls.sitemap.Item} Item
+         */
+        $onChildDestroy : function(Item)
+        {
+            this.$removeChild( Item );
         }
     });
 

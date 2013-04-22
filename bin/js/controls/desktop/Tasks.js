@@ -308,8 +308,10 @@ define('controls/desktop/Tasks', [
             moofx( Elm ).animate({
                 left : 0
             }, {
-                callback : function(time) {
+                callback : function(time)
+                {
                     this.resize();
+                    this.fireEvent( 'show', [ this ] );
                 }.bind( Instance )
             });
         },

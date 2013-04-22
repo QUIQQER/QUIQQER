@@ -1,6 +1,6 @@
 /**
  * A Panel
- * A Panel is a container for apps.
+ * A Panel is like a container for apps.
  *
  * @author www.pcsg.de (Henning Leutz)
  *
@@ -70,7 +70,8 @@ define('controls/desktop/Panel', [
 
             closeable  : true, // can be the panel destroyed?
             dragable   : true,  // is the panel dragable to another column?
-            breadcrumb : false
+            breadcrumb : false,
+            toWindow   : false
         },
 
         initialize: function(options)

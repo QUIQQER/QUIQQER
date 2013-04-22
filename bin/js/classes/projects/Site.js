@@ -62,6 +62,7 @@ define('classes/projects/Site', [
         {
             this.$Project      = Project;
             this.$has_children = false;
+            this.$parentid     = false;
 
             this.init({
                 id : id
@@ -87,6 +88,7 @@ define('classes/projects/Site', [
             {
                 Site.setAttributes( result.attributes );
                 Site.$has_children = result.has_children || false;
+                Site.$parentid     = result.parentid || false;
 
                 Site.fireEvent( 'load', [ Site ] );
 
@@ -155,6 +157,21 @@ define('classes/projects/Site', [
             }, params);
 
             return this;
+        },
+
+        /**
+         * Return the parent
+         *
+         * @method QUI.classes.projects.Site#getParent
+         * @return {QUI.classes.projects.Site|false}
+         */
+        getParent : function()
+        {
+            if ( !this.$parentid ) {
+                return false;
+            }
+
+            return this.getProject().get( this.$parentid );
         },
 
         /**
@@ -242,68 +259,26 @@ define('classes/projects/Site', [
 
         /**
          * Delete the site
+         * Delete it in the Database, too
          *
          * @method QUI.classes.projects.Site#del
-         *
-         * @param {Bool} check - [optional if true, no aksing popup will be shown]
+         * @param {Function} onfinish - [optional] callback function
          */
-        del : function(check)
+        del : function(onfinish)
         {
-            if (typeof check === 'undefined')
+            var Site   = this,
+                params = this.ajaxParams();
+
+            params.onfinish   = onfinish;
+
+            QUI.Ajax.post('ajax_site_delete', function(result, Request)
             {
-                QUI.Windows.create('submit', {
-                    title  : 'Seite #'+ this.getId() +' löschen',
-                    text   : 'Möchten Sie die Seite #'+ this.getId() +' '+ this.getAttribute('name') +'.html wirklich löschen?',
-                    texticon    : URL_BIN_DIR +'48x48/trashcan_empty.png',
-                    information :
-                        'Die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden.' +
-                        'Auch alle Unterseiten und Verknüpfungen werden in den Papierkorb gelegt.',
-                    Site   : this,
-                    height : 200,
-                    events :
-                    {
-                        onSubmit : function(Win) {
-                            Win.getAttribute('Site').del( true );
-                        }
-                    }
-                });
-
-                return;
-            }
-
-            QUI.lib.Sites.del(function(result, Request)
-            {
-                // open the site in the sitemap
-                var i, len, items;
-
-                var Site       = Request.getAttribute('Site'),
-                    id         = Site.getId(),
-                    panels     = QUI.lib.Sites.getProjectPanels( Site ),
-                    sitepanels = QUI.lib.Sites.getSitePanels( Site ),
-
-                    func_destroy = function(Item) {
-                        Item.destroy();
-                    };
-
-                // destroy all sites with the id
-                for (i = 0, len = panels.length; i < len; i++)
-                {
-                    items = panels[i].getSitemapItemsById( id );
-
-                    if (items.length) {
-                        items.each( func_destroy );
-                    }
+                if ( Request.getAttribute( 'onfinish' ) ) {
+                    Request.getAttribute( 'onfinish' )( result, Request );
                 }
 
-                // destroy all panels with the site id
-                sitepanels.each(function(Panel) {
-                    Panel.close();
-                });
-
-                // fire the delete event
                 Site.fireEvent( 'delete', [ Site ] );
-
-            }, this.ajaxParams());
+            }, params);
         },
 
         /**
@@ -335,7 +310,7 @@ define('classes/projects/Site', [
 
                 var Site = Request.getAttribute( 'Site' );
 
-                Site.fireEvent( 'createChild', [ Site ] );
+                Site.fireEvent( 'createChild', [ Site, result.id ] );
 
             }, params);
         },

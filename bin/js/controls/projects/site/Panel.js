@@ -56,7 +56,8 @@ define('controls/projects/site/Panel', [
 
             '$onSiteActivate',
             '$onSiteDeactivate',
-            '$onSiteSave'
+            '$onSiteSave',
+            '$onSiteDelete'
         ],
 
         options : {
@@ -254,7 +255,8 @@ define('controls/projects/site/Panel', [
                     onLoad       : Panel.load,
                     onActivate   : Panel.$onSiteActivate,
                     onDeactivate : Panel.$onSiteDeactivate,
-                    onSave       : Panel.$onSiteSave
+                    onSave       : Panel.$onSiteSave,
+                    onDelete     : Panel.$onSiteDelete
                 });
 
                 if ( Site.getAttribute( 'name' ) )
@@ -310,6 +312,31 @@ define('controls/projects/site/Panel', [
         {
             this.$onCategoryLeave( this.getActiveCategory() );
             this.getSite().save();
+        },
+
+        /**
+         * opens the delet dialog
+         */
+        del : function()
+        {
+            var Panel = this,
+                Site  = this.getSite();
+
+            QUI.Windows.create('submit', {
+                title  : 'Seite #'+ Site.getId() +' löschen',
+                text   : 'Möchten Sie die Seite #'+ Site.getId() +' '+ Site.getAttribute( 'name' ) +'.html wirklich löschen?',
+                texticon    : URL_BIN_DIR +'48x48/trashcan_empty.png',
+                information :
+                    'Die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden.' +
+                    'Auch alle Unterseiten und Verknüpfungen werden in den Papierkorb gelegt.',
+                height : 200,
+                events :
+                {
+                    onSubmit : function(Win) {
+                        Panel.getSite().del();
+                    }
+                }
+            });
         },
 
         /**
@@ -588,6 +615,14 @@ define('controls/projects/site/Panel', [
                 'text'      : Status.getAttribute( 'atext' ),
                 '_onclick'  : 'Panel.getSite().activate'
             });
+        },
+
+        /**
+         * event : on {QUI.classes.projects.Site} delete
+         */
+        $onSiteDelete : function()
+        {
+            this.destroy();
         },
 
         /**

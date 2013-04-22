@@ -41,7 +41,11 @@ define('controls/projects/Sitemap', [
 
         Binds : [
             'onSiteChange',
-            'onSiteCreate'
+            'onSiteCreate',
+            'onSiteDelete',
+
+            '$open',
+            '$close'
         ],
 
         options : {
@@ -70,6 +74,14 @@ define('controls/projects/Sitemap', [
                     this.$Map.destroy();
                 }
 
+                this.$Project.removeEvents({
+                    onSiteCreate     : this.onSiteCreate,
+                    onSiteSave       : this.onSiteChange,
+                    onSiteActivate   : this.onSiteChange,
+                    onSiteDeactivate : this.onSiteChange,
+                    onSiteDelete     : this.onSiteDelete
+                });
+
             }.bind( this ));
 
             // projects events
@@ -77,7 +89,8 @@ define('controls/projects/Sitemap', [
                 onSiteCreate     : this.onSiteCreate,
                 onSiteSave       : this.onSiteChange,
                 onSiteActivate   : this.onSiteChange,
-                onSiteDeactivate : this.onSiteChange
+                onSiteDeactivate : this.onSiteChange,
+                onSiteDelete     : this.onSiteDelete
             });
         },
 
@@ -181,6 +194,19 @@ define('controls/projects/Sitemap', [
          */
         openSite : function(id)
         {
+            if ( !this.$Map ) {
+                return;
+            }
+
+            var children = this.$Map.getChildrenByValue( id );
+
+            if ( children.length )
+            {
+                children[ 0 ].select();
+                return;
+            }
+
+            // if not exist, search the path
             QUI.Ajax.get('ajax_site_path', function(result, Request)
             {
                 var i, len, items;
@@ -188,9 +214,7 @@ define('controls/projects/Sitemap', [
                 var Control = Request.getAttribute( 'Control' ),
                     Map     = Control.getMap();
 
-                result.push(
-                    Request.getAttribute( 'id' )
-                );
+                result.push( Request.getAttribute( 'id' ) );
 
                 items = Map.getChildrenByValue( result.getLast() );
 
@@ -200,24 +224,30 @@ define('controls/projects/Sitemap', [
                     return;
                 }
 
-                Control.$openids = result;
-                Control.addEvent( 'onOpenEnd', function(SitemapItem, Control)
+                var open_event = function(SitemapItem, Control)
                 {
-                    var i, len, items;
+                    var i, id, len, items;
+
+                    if ( typeof Control.$openids === 'undefined' ) {
+                        return;
+                    }
 
                     var ids = Control.$openids,
                         Map = Control.getMap();
 
                     for ( i = 0, len = ids.length; i < len; i++ )
                     {
-                        items = Map.getChildrenByValue( ids[i] );
+                        id    = ( ids[ i ] ).toInt();
+                        items = Map.getChildrenByValue( id );
 
                         if ( !items.length )
                         {
                             // open parent
-                            items = Map.getChildrenByValue( ids[i-1] );
+                            items = Map.getChildrenByValue( ids[ i - 1 ] );
 
-                            if ( items.length && items[0].isOpen() === false ) {
+                            if ( items.length &&
+                                 items[0].isOpen() === false )
+                            {
                                 items[0].open();
                             }
 
@@ -231,10 +261,15 @@ define('controls/projects/Sitemap', [
                         }
                     }
 
-                    items[0].click();
+                    items[0].select();
 
                     delete Control.$openids;
-                });
+
+                    Control.removeEvent( 'onOpenEnd', open_event );
+                };
+
+                Control.$openids = result;
+                Control.addEvent( 'onOpenEnd', open_event );
 
                 Control.open();
 
@@ -269,7 +304,9 @@ define('controls/projects/Sitemap', [
         {
             QUI.Ajax.get('ajax_project_firstchild', function(result, Request)
             {
-                Request.getAttribute( 'onfinish' )( result, Request );
+                if ( Request.getAttribute( 'onfinish' ) ) {
+                    Request.getAttribute( 'onfinish' )( result, Request );
+                }
             }, {
                 project  : this.getAttribute( 'project' ),
                 lang     : this.getAttribute( 'lang' ),
@@ -292,7 +329,9 @@ define('controls/projects/Sitemap', [
         {
             QUI.Ajax.get('ajax_site_get', function(result, Request)
             {
-                Request.getAttribute( 'onfinish' )(result, Request);
+                if ( Request.getAttribute( 'onfinish' ) ) {
+                    Request.getAttribute( 'onfinish' )( result, Request );
+                }
             }, {
                 project  : this.getAttribute( 'project' ),
                 lang     : this.getAttribute( 'lang' ),
@@ -333,10 +372,15 @@ define('controls/projects/Sitemap', [
 
                 Item.setAttribute( 'icon', Item.getAttribute( 'oicon' ) );
 
+                if ( Request.getAttribute( 'onfinish' ) ) {
+                    Request.getAttribute( 'onfinish' )( Item, Request );
+                }
+
             }, {
-                project : this.getAttribute( 'project' ),
-                lang    : this.getAttribute( 'lang' ),
-                id      : Item.getAttribute( 'value' )
+                project  : this.getAttribute( 'project' ),
+                lang     : this.getAttribute( 'lang' ),
+                id       : Item.getAttribute( 'value' ),
+                onfinish : callback
             });
         },
 
@@ -451,8 +495,8 @@ define('controls/projects/Sitemap', [
         $addSitemapItem : function(Parent, Child)
         {
             Child.setAttribute( 'Control', this );
-            Child.addEvent( 'onOpen', this.$open.bind( this ) );
-            Child.addEvent( 'onClose', this.$close.bind( this ) );
+            Child.addEvent( 'onOpen', this.$open );
+            Child.addEvent( 'onClose', this.$close );
 
             Parent.appendChild( Child );
         },
@@ -468,12 +512,12 @@ define('controls/projects/Sitemap', [
          */
         $open : function(Item)
         {
+            var Control = this;
+
             this.fireEvent( 'openBegin', [ Item, this ] );
 
             this.$loadChildren(Item, function(Item, Request)
             {
-                var Control = Request.getAttribute( 'Control' );
-
                 Control.fireEvent( 'openEnd', [ Item, Control ] );
             });
         },
@@ -532,12 +576,55 @@ define('controls/projects/Sitemap', [
          * event - onSiteCreate
          *
          * @param {QUI.classes.projects.Project} Project - Project of the Site that are changed
-         * @param {QUI.classes.projects.Site} Site - Site that are changed
+         * @param {QUI.classes.projects.Site} Site - Site that create the child
+         * @param {Integer} newid - new child id
          */
-        onSiteCreate : function(Project, Site)
+        onSiteCreate : function(Project, Site, newid)
         {
-            console.log( Site.getId() );
+            if ( !this.$Map ) {
+                return;
+            }
 
+            // refresh the parent
+            var children = this.$Map.getChildrenByValue( Site.getId() );
+
+            if ( !children.length ) {
+                return;
+            }
+
+            for ( var i = 0, len = children.length; i < len; i++ )
+            {
+                if ( children[ i ].isOpen() )
+                {
+                    this.$loadChildren( children[ i ] );
+                    return;
+                }
+
+                children[ i ].open();
+            }
+        },
+
+        /**
+         * event - on site delete
+         *
+         * @param {QUI.classes.projects.Project} Project - Project of the Site that are changed
+         * @param {Integer} siteid - siteid that are deleted
+         */
+        onSiteDelete : function(Project, siteid)
+        {
+            if ( !this.$Map ) {
+                return;
+            }
+
+            var children = this.$Map.getChildrenByValue( siteid );
+
+            if ( !children.length ) {
+                return;
+            }
+
+            for ( var i = 0, len = children.length; i < len; i++ ) {
+                children[ i ].destroy();
+            }
         }
     });
 

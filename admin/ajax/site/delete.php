@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Seite löschen
+ * Delete a site
  *
  * @param String $id
  * @param String $lang
@@ -9,13 +9,16 @@
  */
 function ajax_site_delete($project, $lang, $id)
 {
-    $Project = QUI::getProject($project, $lang);
-	$Site    = new Projects_Site_Edit($Project, (int)$id);
+    $Project = \QUI::getProject($project, $lang);
+    $Site    = new \Projects_Site_Edit($Project, (int)$id);
 
-    $Site->deleteTemp();
-
-	return $Site->delete();
+    return $Site->delete();
 }
-QUI::$Ajax->register('ajax_site_delete', array('project', 'lang', 'id'), 'Permission::checkAdminUser');
+
+\QUI::$Ajax->register(
+    'ajax_site_delete',
+    array('project', 'lang', 'id'),
+    'Permission::checkAdminUser'
+);
 
 ?>

@@ -11,14 +11,20 @@
  */
 function ajax_site_get($project, $lang, $id)
 {
-    $Project = QUI::getProject( $project, $lang );
-    $Site    = new Projects_Site_Edit( $Project, (int)$id );
+    $Project = \QUI::getProject( $project, $lang );
+    $Site    = new \Projects_Site_Edit( $Project, (int)$id );
 
     return array(
         'attributes'   => $Site->getAttributes(),
-        'has_children' => $Site->hasChildren()
+        'has_children' => $Site->hasChildren(),
+        'parentid'     => $Site->getParentId()
     );
 }
-QUI::$Ajax->register('ajax_site_get', array('project', 'lang', 'id'), 'Permission::checkAdminUser');
+
+\QUI::$Ajax->register(
+    'ajax_site_get',
+    array('project', 'lang', 'id'),
+    'Permission::checkAdminUser'
+);
 
 ?>
