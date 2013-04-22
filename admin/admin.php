@@ -75,6 +75,7 @@
 
             var QUI_CONFIG  = '. json_encode( $config ) .';
             var QUI_LOCALES = '. json_encode( $locales, true ) .';
+            var QUI_VERSION = "'. \QUI::version() .'";
 
         /* ]]> */
         </script>';

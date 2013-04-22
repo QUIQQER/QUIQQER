@@ -280,7 +280,7 @@ class QUI_Package_Manager
         if ( $this->_exec )
         {
             $params  = array();
-            $package = Utils_Security_Orthos::clearShell( $package );
+            $package = \Utils_Security_Orthos::clearShell( $package );
 
             exec( $this->_exec .'show "'. $package .'"', $exec_result );
 
