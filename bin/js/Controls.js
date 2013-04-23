@@ -128,27 +128,30 @@ define('Controls', function()
                 delete this.$cids[ id ];
             }
 
-            if ( typeof this.$controls[ n ] === 'undefined' ) {
-                return;
-            }
-
             var i, len;
             var tmp = [];
 
             // refresh controls
-            for ( i = 0, len = this.$controls[ n ].length; i < len; i++ )
+            if ( typeof this.$controls[ n ] !== 'undefined' )
             {
-                if ( id !== this.$controls[ n ][ i ].getId() ) {
-                    tmp.push( this.$controls[ n ][ i ] );
+                for ( i = 0, len = this.$controls[ n ].length; i < len; i++ )
+                {
+                    if ( id !== this.$controls[ n ][ i ].getId() ) {
+                        tmp.push( this.$controls[ n ][ i ] );
+                    }
+                }
+
+                this.$controls[ n ] = tmp;
+
+                if ( !tmp.length ) {
+                    delete this.$controls[ n ];
                 }
             }
-
-            this.$controls[ t ] = tmp;
 
             // refresh types
             tmp = [];
 
-            if ( this.$types[ t ] )
+            if ( typeof this.$types[ t ] !== 'undefined' )
             {
                 for ( i = 0, len = this.$types[ t ].length; i < len; i++ )
                 {

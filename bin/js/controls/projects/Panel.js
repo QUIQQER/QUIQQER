@@ -518,6 +518,8 @@ define('controls/projects/Panel', [
 
         /**
          * event: click on sitemap item -> opens a site panel
+         *
+         * @method QUI.controls.projects.Panel#$openSitePanel
          * @param {QUI.controls.sitemap.Item} Item
          */
         $openSitePanel : function(Item)
@@ -529,38 +531,55 @@ define('controls/projects/Panel', [
 
 
             require([
-                 'controls/projects/site/Panel',
-                 'classes/projects/Project',
-                 'classes/projects/Site'
-             ], function(QUI_SitePanel, QUI_Site)
-             {
-                 var panels  = QUI.Controls.getByType( 'QUI.controls.desktop.Tasks' ),
-                     Project = QUI.Projects.get( project, lang ),
-                     Site    = Project.get( id );
+                'controls/projects/site/Panel',
+                'classes/projects/Project',
+                'classes/projects/Site'
+            ], function(QUI_SitePanel, QUI_Site)
+            {
+                var n      = 'panel-'+ project +'-'+ lang +'-'+ id,
+                    panels = QUI.Controls.get( n );
 
-                 if ( !panels.length ) {
-                     return;
-                 }
 
-                 panels[ 0 ].appendChild(
-                     new QUI_SitePanel(Site, {
-                         events :
-                         {
-                             onShow : function(Panel)
-                             {
-                                 if ( Panel.getType() != 'QUI.controls.projects.site.Panel' ) {
-                                     return;
-                                 }
+                if ( panels.length )
+                {
+                    panels[ 0 ].open();
 
-                                 // if it is a sitepanel
-                                 // set the item in the map active
-                                 Conrol.openSite( Panel.getSite().getId() );
-                             }
-                         }
-                     })
-                 );
+                    // if a task exist, click it and open the instance
+                    var Task = panels[ 0 ].getAttribute( 'Task' );
 
-             });
+                    if ( Task && Task.getType() == 'QUI.controls.taskbar.Task' ) {
+                        panels[ 0 ].getAttribute( 'Task' ).click();
+                    }
+
+                    return;
+                }
+
+                panels = QUI.Controls.getByType( 'QUI.controls.desktop.Tasks' );
+
+                if ( !panels.length ) {
+                    return;
+                }
+
+                var Project = QUI.Projects.get( project, lang ),
+                    Site    = Project.get( id );
+
+                panels[ 0 ].appendChild(
+                    new QUI_SitePanel(Site, {
+                        events :
+                        {
+                            onShow : function(Panel)
+                            {
+                                if ( Panel.getType() != 'QUI.controls.projects.site.Panel' ) {
+                                    return;
+                                }
+                                // if it is a sitepanel
+                                // set the item in the map active
+                                Conrol.openSite( Panel.getSite().getId() );
+                            }
+                        }
+                    })
+                );
+            });
         }
     });
 

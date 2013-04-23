@@ -67,9 +67,16 @@ define('controls/projects/site/Panel', [
 
         initialize : function(Site, options)
         {
+            var Project = Site.getProject(),
+
+                id = 'panel-'+
+                     Project.getName() +'-'+
+                     Project.getLang() +'-'+
+                     Site.getId();
+
             // default id
-            this.setAttribute( 'id', 'projects-site-'+ Site.getId() +'-panel' );
-            this.setAttribute( 'name', 'projects-site-'+ Site.getId() +'-panel' );
+            this.setAttribute( 'id', id );
+            this.setAttribute( 'name', id );
 
             this.$Site = Site;
 

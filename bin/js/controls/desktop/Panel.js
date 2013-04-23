@@ -281,7 +281,7 @@ define('controls/desktop/Panel', [
          * Execute a resize and repaint
          *
          * @method QUI.controls.desktop.Panel#resize
-         * @return {this}
+         * @return {this} self
          */
         resize : function()
         {
@@ -354,15 +354,18 @@ define('controls/desktop/Panel', [
          * Open the Panel
          *
          * @method QUI.controls.desktop.Panel#open
-         * @return {this}
+         * @return {this} self
          */
         open : function()
         {
             this.$Content.setStyle( 'display', null );
             this.$Elm.setStyle( 'height', this.getAttribute( 'height' ) );
 
-            this.$Collaps.removeClass( 'qui-panel-expand' );
-            this.$Collaps.addClass( 'qui-panel-collapse' );
+            if ( this.$Collaps )
+            {
+                this.$Collaps.removeClass( 'qui-panel-expand' );
+                this.$Collaps.addClass( 'qui-panel-collapse' );
+            }
 
             this.fireEvent( 'open', [ this ] );
 
@@ -373,7 +376,7 @@ define('controls/desktop/Panel', [
          * Minimize / Collapse the panel
          *
          * @method QUI.controls.desktop.Panel#minimize
-         * @return {this}
+         * @return {this} self
          */
         minimize : function()
         {
@@ -393,7 +396,7 @@ define('controls/desktop/Panel', [
          * Close the panel if the panel is opened and open the panel if the panel is closed
          *
          * @method QUI.controls.desktop.Panel#toggle
-         * @return {this}
+         * @return {this} self
          */
         toggle : function()
         {
@@ -426,7 +429,7 @@ define('controls/desktop/Panel', [
         /**
          * Highlight the column
          *
-         * @return {this}
+         * @return {this} self
          */
         highlight : function()
         {
@@ -444,7 +447,7 @@ define('controls/desktop/Panel', [
         /**
          * Dehighlight the column
          *
-         * @return {this}
+         * @return {this} self
          */
         normalize : function()
         {
@@ -552,7 +555,7 @@ define('controls/desktop/Panel', [
          *
          * @method QUI.controls.desktop.Panel#addCategory
          * @param {QUI.controls.buttons.Button|Object} Btn
-         * @return {this}
+         * @return {this} self
          */
         addCategory : function(Btn)
         {

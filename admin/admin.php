@@ -22,6 +22,7 @@
     <title>QUIQQER Content Management System - <?php echo HOST ?></title>
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="<?php echo URL_DIR; ?>favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
 
     <?php
         $Standard = false;
