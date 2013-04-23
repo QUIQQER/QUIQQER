@@ -135,16 +135,18 @@ define('controls/sitemap/Map', [
         },
 
         /**
-         * Clear all children
+         * Clear all children / destroy ist
          *
          * @method QUI.controls.sitemap.Map#clearChildren
-         * @return {this}
+         * @return {this} self
          */
         clearChildren : function()
         {
             for ( var i = 0, len = this.$items.length; i < len; i++ ) {
                 this.$clearItem( this.$items[i] );
             }
+
+            this.$items = [];
 
             return this;
         },
@@ -231,7 +233,7 @@ define('controls/sitemap/Map', [
          * Deselected all selected Items
          *
          * @method QUI.controls.sitemap.Map#deselectAllChildren
-         * @return {this}
+         * @return {this} self
          */
         deselectAllChildren : function()
         {
@@ -250,7 +252,7 @@ define('controls/sitemap/Map', [
          * @method QUI.controls.sitemap.Map#childContextMenu
          * @fires onChildContextMenu {QUI.controls.sitemap.Item}
          * @param {QUI.controls.sitemap.Item} Itm
-         * @return {this}
+         * @return {this} self
          */
         childContextMenu : function(Itm, event)
         {
@@ -267,7 +269,7 @@ define('controls/sitemap/Map', [
          * Opens all children and children children
          *
          * @method QUI.controls.sitemap.Map#openAll
-         * @return {this}
+         * @return {this} self
          */
         openAll : function()
         {
@@ -283,23 +285,21 @@ define('controls/sitemap/Map', [
          *
          * @method QUI.controls.sitemap.Map#$clearItem
          * @param {QUI.controls.sitemap.Item}
-         * @return {this}
-         * @ignore
+         * @return {this} self
          */
         $clearItem : function(Item)
         {
-            if ( Item.hasChildren() === false ) {
+            if ( Item.hasChildren() === false )
+            {
+                Item.destroy();
                 return this;
             }
 
             var i, len;
             var children = Item.getChildren();
 
-            for ( i = 0, len = children.length; i < len; i++ )
-            {
-                if ( children[i].hasChildren() ) {
-                    this.$clearItem( children[i] );
-                }
+            for ( i = 0, len = children.length; i < len; i++ ) {
+                this.$clearItem( children[i] );
             }
 
             Item.clearChildren();
@@ -313,8 +313,7 @@ define('controls/sitemap/Map', [
          *
          * @method QUI.controls.sitemap.Map#$openItem
          * @param {QUI.controls.sitemap.Item}
-         * @return {this}
-         * @ignore
+         * @return {this} self
          */
         $openItem : function(Item)
         {
@@ -343,8 +342,7 @@ define('controls/sitemap/Map', [
          * @method QUI.controls.sitemap.Item#countChildren
          *
          * @param {QUI.controls.sitemap.Item} Child
-         * @return {this}
-         * @ignore
+         * @return {this} self
          */
         $removeChild : function(Child)
         {

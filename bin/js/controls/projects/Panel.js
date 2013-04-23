@@ -294,7 +294,9 @@ define('controls/projects/Panel', [
 
                     langs = result[i].langs.split( ',' );
 
-                    if ( !Panel.$projectmaps[ i ] ) {
+                    if ( typeof Panel.$projectmaps[ i ] === 'undefined' ||
+                         !Panel.$projectmaps[ i ] )
+                    {
                         Panel.$projectmaps[ i ] = new QUI.controls.sitemap.Map();
                     }
 

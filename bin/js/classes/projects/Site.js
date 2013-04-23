@@ -191,6 +191,8 @@ define('classes/projects/Site', [
 
             QUI.Ajax.post('ajax_site_activate', function(result, Request)
             {
+                Site.setAttribute( 'active', 1 );
+
                 if ( Request.getAttribute( 'onfinish' ) ) {
                     Request.getAttribute( 'onfinish' )( result, Request );
                 }
@@ -219,6 +221,8 @@ define('classes/projects/Site', [
 
             QUI.Ajax.post('ajax_site_deactivate', function(result, Request)
             {
+                Site.setAttribute( 'active', 0 );
+
                 if ( Request.getAttribute( 'onfinish' ) ) {
                     Request.getAttribute( 'onfinish' )( result, Request );
                 }
@@ -247,6 +251,10 @@ define('classes/projects/Site', [
 
             QUI.Ajax.post('ajax_site_save', function(result, Request)
             {
+                Site.setAttributes( result.attributes );
+                Site.$has_children = result.has_children || false;
+                Site.$parentid     = result.parentid || false;
+
                 if ( Request.getAttribute( 'onfinish' ) ) {
                     Request.getAttribute( 'onfinish' )( result, Request );
                 }

@@ -410,15 +410,24 @@ define('controls/projects/Sitemap', [
                 hasChildren : ( result.has_children ).toInt()
             });
 
-            if ( result.nav_hide == '1' ) {
+            if ( result.nav_hide == '1' )
+            {
                 Itm.addIcon( URL_BIN_DIR +'16x16/navigation_hidden.png' );
+            } else
+            {
+                Itm.removeIcon( URL_BIN_DIR +'16x16/navigation_hidden.png' );
             }
 
             if ( result.linked == '1' )
             {
                 Itm.setAttribute( 'linked', true );
                 Itm.addIcon( URL_BIN_DIR +'16x16/linked.png' );
+            } else
+            {
+                Itm.setAttribute( 'linked', false );
+                Itm.removeIcon( URL_BIN_DIR +'16x16/linked.png' );
             }
+
 
             if ( result.icon_16x16 ) {
                 Itm.setAttribute( 'icon', result.icon_16x16 );

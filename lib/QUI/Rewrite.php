@@ -117,7 +117,7 @@ class QUI_Rewrite
 
         \QUI::getEvents()->fireEvent( 'request' );
 
-        $Session = QUI::getSession();
+        $Session = \QUI::getSession();
         $vhosts  = $this->getVHosts();
 
         if ( !isset( $_SERVER['HTTP_HOST'] ) ) {
@@ -202,7 +202,7 @@ class QUI_Rewrite
             if (isset($_url[0]) && (strlen($_url[0]) == 2 || strlen( str_replace('.html', '', $_url[0]) ) == 2))
             {
                 $this->_lang = str_replace('.html', '', $_url[0]);
-                QUI::getLocale()->setCurrent($this->_lang);
+                \QUI::getLocale()->setCurrent($this->_lang);
 
                 unset($_url[0]);
 
@@ -223,7 +223,7 @@ class QUI_Rewrite
 
                     // und es nicht der https host ist
                     (int)$_SERVER['SERVER_PORT'] !== 443 &&
-                    QUI::conf('globals', 'httpshost') != 'https://'.$_SERVER['HTTP_HOST'])
+                    \QUI::conf('globals', 'httpshost') != 'https://'.$_SERVER['HTTP_HOST'])
                 {
                     $url = implode('/', $_url);
                     $url = $vhosts[$_SERVER['HTTP_HOST']][$this->_lang] . URL_DIR . $url;
@@ -265,11 +265,11 @@ class QUI_Rewrite
                     }
                 }
 
-            } catch ( QException $e )
+            } catch ( \QException $e )
             {
                 // Falls Bild nicht mehr existiert oder ein falscher Aufruf gemacht wurde
                 $this->_showErrorHeader( 404 );
-            } catch ( QExceptionDBError $e )
+            } catch ( \QExceptionDBError $e )
             {
                 // Falls Bild nicht mehr existiert oder ein falscher Aufruf gemacht wurde
                 $this->_showErrorHeader( 404 );
@@ -294,7 +294,7 @@ class QUI_Rewrite
 
             if ( !file_exists($file) )
             {
-                System_Log::write('File not exist: '. $file , 'error');
+                \System_Log::write('File not exist: '. $file , 'error');
                 exit;
             }
 
@@ -361,7 +361,7 @@ class QUI_Rewrite
             {
                 $this->_site = $this->getSiteByUrl( $_REQUEST['_url'], true );
 
-            } catch ( QException $e )
+            } catch ( \QException $e )
             {
                 if ( $this->_showErrorHeader( 404 ) ) {
                     return;
@@ -451,11 +451,11 @@ class QUI_Rewrite
         ));
 
         $request_url = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '' ;
-        $pos = strpos($request_url, self::URL_PARAM_SEPERATOR);
-        $end = strpos($request_url, '.');
+        $pos = strpos( $request_url, self::URL_PARAM_SEPERATOR );
+        $end = strpos( $request_url, '.' );
 
 
-        if ($pos !== false)
+        if ( $pos !== false )
         {
             $request_url = substr($request_url, 0, $pos) . substr($request_url, $end);
 
@@ -588,11 +588,7 @@ class QUI_Rewrite
             }
         }
 
-        if ( $Child != false && is_object( $Child ) ) {
-            return $Child;
-        }
-
-        return $this->_first_child;
+        return $Child;
     }
 
     /**
@@ -963,11 +959,7 @@ class QUI_Rewrite
      */
     public function isIdInPath($id)
     {
-        if (in_array($id, $this->_ids_in_path)) {
-            return true;
-        }
-
-        return false;
+        return in_array( $id, $this->_ids_in_path ) ? true : false;
     }
 
     /**

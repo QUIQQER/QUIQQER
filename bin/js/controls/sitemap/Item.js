@@ -48,8 +48,8 @@ define('controls/sitemap/Item', [
         Binds : [
             'toggle',
             'click',
-
-            '$onChildDestroy'
+            '$onChildDestroy',
+            '$onSetAttribute'
         ],
 
         options : {
@@ -84,10 +84,7 @@ define('controls/sitemap/Item', [
 
             this.$items = [];
 
-            this.addEvent('onSetAttribute', function(k, v)
-            {
-                this.$onSetAttribute( k, v );
-            }.bind(this));
+            this.addEvent( 'onSetAttribute', this.$onSetAttribute );
 
             this.addEvent('onDestroy', function(Item)
             {
@@ -112,11 +109,6 @@ define('controls/sitemap/Item', [
                 if ( this.$ContextMenu ) {
                     this.$ContextMenu.destroy();
                 }
-                /*
-                if ( this.getParent() ) {
-                    this.getParent().$removeChild( this );
-                }
-                */
             });
         },
 
@@ -501,7 +493,8 @@ define('controls/sitemap/Item', [
         /**
          * the item is a little disappear
          *
-         * @return {this}
+         * @method QUI.controls.sitemap.Item#holdBack
+         * @return {this} self
          */
         holdBack : function()
         {
@@ -534,7 +527,7 @@ define('controls/sitemap/Item', [
          * Opens the childrens
          *
          * @method QUI.controls.sitemap.Item#open
-         * @return {this}
+         * @return {this} self
          */
         open : function()
         {
@@ -550,7 +543,7 @@ define('controls/sitemap/Item', [
          * Close the childrens
          *
          * @method QUI.controls.sitemap.Item#close
-         * @return {this}
+         * @return {this} self
          */
         close : function()
         {
@@ -566,7 +559,7 @@ define('controls/sitemap/Item', [
          * Switch between open and close
          *
          * @method QUI.controls.sitemap.Item#toggle
-         * @return {this}
+         * @return {this} self
          */
         toggle : function()
         {
@@ -596,7 +589,7 @@ define('controls/sitemap/Item', [
          * Create and return a contextmenu for the Element
          *
          * @method QUI.controls.sitemap.Item#getContextMenu
-         * @return {QUI.controls.contextmenu.Menu}
+         * @return {QUI.controls.contextmenu.Menu} Menu
          */
         getContextMenu : function()
         {
@@ -631,8 +624,7 @@ define('controls/sitemap/Item', [
          * Get the map parent, if it is set
          *
          * @method QUI.controls.sitemap.Item#getMap
-         *
-         * @return {QUI.controls.sitemap.Item|null}
+         * @return {QUI.controls.sitemap.Map|null} Map
          */
         getMap : function()
         {
@@ -656,7 +648,6 @@ define('controls/sitemap/Item', [
 
         /**
          * @method QUI.controls.sitemap.Item#$setOpener
-         * @ignore
          */
         $setOpener : function()
         {
@@ -686,8 +677,12 @@ define('controls/sitemap/Item', [
         },
 
         /**
+         * event : on set attribute
+         * change the DOMNode Element if some attributes changed
+         *
          * @method QUI.controls.sitemap.Item#$onSetAttribute
-         * @ignore
+         * @param {String} key - attribute name
+         * @param {String} value - attribute value
          */
         $onSetAttribute : function(key, value)
         {
@@ -695,21 +690,33 @@ define('controls/sitemap/Item', [
                 return;
             }
 
-            if ( key === 'icon' )
+            if ( key == 'icon' )
             {
                 this.$Icons.setStyle('background-image', 'url('+ value +')');
                 return;
             }
 
-            if ( key === 'text' )
+            if ( key == 'text' )
             {
-                this.$Text.set('html', value);
+                this.$Text.set( 'html', value );
+
+                var w = ( this.$Text.getSize().x ).toInt();
+
+                if ( this.$Opener ) {
+                    w = w + ( this.$Opener.getSize().x ).toInt();
+                }
+
+                if ( this.$Icons ) {
+                    w = w + ( this.$Icons.getSize().x ).toInt();
+                }
+
+                this.$Elm.setStyle( 'width', w );
                 return;
             }
 
-            if ( value === 'text' )
+            if ( key == 'value' )
             {
-                this.$Elm.set('data-value', value);
+                this.$Elm.set( 'data-value', value );
                 return;
             }
         },
@@ -717,6 +724,7 @@ define('controls/sitemap/Item', [
         /**
          * event : children destroy
          *
+         * @method QUI.controls.sitemap.Item#$onChildDestroy
          * @param {QUI.controls.sitemap.Item} Item
          */
         $onChildDestroy : function(Item)

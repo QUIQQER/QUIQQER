@@ -69,7 +69,7 @@ class QUI_Template extends QDOM
         $engine = QUI::conf( 'template', 'engine' );
 
         if ( !isset( self::$_engines[ $engine ] ) ) {
-            throw new QException( 'Template Engine not found!' );
+            throw new \QException( 'Template Engine not found!' );
         }
 
         $Engine     = new self::$_engines[ $engine ]( $admin );
@@ -77,7 +77,7 @@ class QUI_Template extends QDOM
 
         if ( !isset( $implements['Interface_Template_Engine'] ) )
         {
-            throw new QException(
+            throw new \QException(
                 'The Template Engine implements not from Interface_Template_Engine'
             );
         }
@@ -170,7 +170,8 @@ class QUI_Template extends QDOM
             'L'        => $Locale,
             'Template' => $this,
             'Site'     => $Site,
-            'Project'  => $Project
+            'Project'  => $Project,
+            'Rewrite'  => $Rewrite
         ));
 
         /**
@@ -188,10 +189,10 @@ class QUI_Template extends QDOM
             {
                 $tpl = $_tpl;
 
-                $Engine->assign(
-                    'URL_TPL_DIR',
-                    URL_OPT_DIR . $Project->getAttribute('template') .'/'
-                );
+                $Engine->assign(array(
+                    'URL_TPL_DIR' => URL_OPT_DIR . $Project->getAttribute('template') .'/',
+                    'TPL_DIR'     => OPT_DIR . $Project->getAttribute('template') .'/',
+                ));
             }
         }
 

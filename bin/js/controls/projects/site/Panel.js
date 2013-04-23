@@ -230,8 +230,8 @@ define('controls/projects/site/Panel', [
                     Category = new QUI.controls.buttons.Button( category );
 
                     Category.addEvents({
-                        onActive : Panel.$onCategoryEnter,
-                        onNormal : Panel.$onCategoryLeave
+                        onActive : Panel.$onCategoryEnter
+                        //onNormal : Panel.$onCategoryLeave -> trigger in onActive
                     });
 
                     for ( ev in events  )
@@ -363,45 +363,6 @@ define('controls/projects/site/Panel', [
                     }
                 }
             });
-
-
-
-            return;
-
-            QUI.lib.Sites.createChild(
-                function(result, Request)
-                {
-                    // open the site in the sitemap
-                    var i, len, Panel, items;
-
-                    var Site   = Request.getAttribute( 'Site' ),
-                        id     = Site.getId(),
-                        panels = QUI.lib.Sites.getProjectPanels( Site ),
-
-                        func_close = function(Item) {
-                            Item.close();
-                        };
-
-                    for ( i = 0, len = panels.length; i < len; i++ )
-                    {
-                        Panel = panels[ i ];
-
-                        // if site is inb the map, it must be refreshed
-                        items = Panel.getSitemapItemsById( id );
-
-                        if ( items.length ) {
-                            items.each( func_close );
-                        }
-
-                        panels[i].openSite( result.id );
-                    }
-                },
-                this.ajaxParams(),
-                {
-                    name  : newname,
-                    title : newname
-                }
-            );
         },
 
         /**
@@ -417,6 +378,11 @@ define('controls/projects/site/Panel', [
         $onCategoryEnter : function(Button)
         {
             this.Loader.show();
+
+            if ( this.getActiveCategory() ) {
+                this.$onCategoryLeave( this.getActiveCategory() );
+            }
+
 
             if ( Button.getAttribute( 'name' ) == 'content' )
             {
@@ -555,8 +521,9 @@ define('controls/projects/site/Panel', [
                 return;
             }
 
-            console.log( '@todo unload plugin params' );
-            console.log( elements );
+
+            console.info( '@todo unload plugin params' );
+            console.info( elements );
         },
 
         /**
