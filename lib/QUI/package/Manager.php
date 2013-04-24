@@ -78,7 +78,11 @@ class QUI_Package_Manager
         putenv( "COMPOSER_HOME=". $this->_vardir );
 
         // exec
-        $this->_composer_exec = 'cd '. $this->_vardir .'; php composer.phar --working-dir="'. $this->_vardir .'" ';
+        $exec_var = str_replace( CMS_DIR, '', $this->_vardir );
+
+        $this->_composer_exec  = 'cd '. CMS_DIR .';';
+        $this->_composer_exec .= ' php '. $exec_var .'composer.phar';
+        $this->_composer_exec .= ' --working-dir="'. $this->_vardir .'" ';
 
         // stability
         if ( \QUI::conf( 'globales', 'stability' ) )
@@ -172,6 +176,7 @@ class QUI_Package_Manager
         $require = $this->_require;
 
         $require["php"] = ">=5.3.2";
+        $require["quiqqer/quiqqer"] = "1.*";
 
         foreach ( $list as $entry ) {
             $require[ $entry['name'] ] = $entry['version'];
