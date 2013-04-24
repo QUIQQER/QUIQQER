@@ -7,40 +7,40 @@
             <conf name="cms_dir">
                 <type><![CDATA[string]]></type>
             </conf>
-			<conf name="lib_dir">
+            <conf name="lib_dir">
                 <type><![CDATA[string]]></type>
             </conf>
-			<conf name="bin_dir">
+            <conf name="bin_dir">
                 <type><![CDATA[string]]></type>
             </conf>
-			<conf name="var_dir">
+            <conf name="var_dir">
                 <type><![CDATA[string]]></type>
             </conf>
-			<conf name="usr_dir">
+            <conf name="usr_dir">
                 <type><![CDATA[string]]></type>
             </conf>
-			<conf name="sys_dir">
+            <conf name="sys_dir">
                 <type><![CDATA[string]]></type>
             </conf>
-			<conf name="opt_dir">
+            <conf name="opt_dir">
                 <type><![CDATA[string]]></type>
             </conf>
             <conf name="pkg_dir">
                 <type><![CDATA[string]]></type>
             </conf>
-			<conf name="url_dir">
+            <conf name="url_dir">
                 <type><![CDATA[string]]></type>
             </conf>
-			<conf name="salt">
+            <conf name="salt">
                 <type><![CDATA[string]]></type>
             </conf>
-			<conf name="saltlength">
+            <conf name="saltlength">
                 <type><![CDATA[string]]></type>
             </conf>
-			<conf name="rootuser">
+            <conf name="rootuser">
                 <type><![CDATA[integer]]></type>
             </conf>
-			<conf name="root">
+            <conf name="root">
                 <type><![CDATA[integer]]></type>
             </conf>
             <conf name="system_changed">
@@ -49,6 +49,10 @@
             <conf name="debug_mode">
                 <type><![CDATA[bool]]></type>
                 <defaultvalue>0</defaultvalue>
+            </conf>
+            <conf name="stability">
+                <type><![CDATA[string]]></type>
+                <defaultvalue>stable</defaultvalue>
             </conf>
             <conf name="mailprotection">
                 <type><![CDATA[bool]]></type>
@@ -97,45 +101,45 @@
             </conf>
         </section>
 
-		<section name="mail">
-		    <conf name="admin_mail">
-		        <type><![CDATA[string]]></type>
-		    </conf>
-			<conf name="SMTP">
-		        <type><![CDATA[bool]]></type>
-		    </conf>
-			<conf name="SMTPServer">
-		        <type><![CDATA[string]]></type>
-		    </conf>
-			<conf name="SMTPAuth">
-		        <type><![CDATA[bool]]></type>
-		    </conf>
-			<conf name="SMTPUser">
-		        <type><![CDATA[string]]></type>
-		    </conf>
-			<conf name="SMTPPass">
-		        <type><![CDATA[string]]></type>
-		    </conf>
-			<conf name="MAILFrom">
-		        <type><![CDATA[string]]></type>
-		    </conf>
-			<conf name="MAILFromText">
-		        <type><![CDATA[string]]></type>
-		    </conf>
-			<conf name="MAILReplyTo">
-		        <type><![CDATA[string]]></type>
-		    </conf>
-		</section>
+        <section name="mail">
+            <conf name="admin_mail">
+                <type><![CDATA[string]]></type>
+            </conf>
+            <conf name="SMTP">
+                <type><![CDATA[bool]]></type>
+            </conf>
+            <conf name="SMTPServer">
+                <type><![CDATA[string]]></type>
+            </conf>
+            <conf name="SMTPAuth">
+                <type><![CDATA[bool]]></type>
+            </conf>
+            <conf name="SMTPUser">
+                <type><![CDATA[string]]></type>
+            </conf>
+            <conf name="SMTPPass">
+                <type><![CDATA[string]]></type>
+            </conf>
+            <conf name="MAILFrom">
+                <type><![CDATA[string]]></type>
+            </conf>
+            <conf name="MAILFromText">
+                <type><![CDATA[string]]></type>
+            </conf>
+            <conf name="MAILReplyTo">
+                <type><![CDATA[string]]></type>
+            </conf>
+        </section>
 
-		<section name="session">
-			<conf name="max_life_time">
-			    <type><![CDATA[integer]]></type>
-			    <defaultvalue>14000</defaultvalue>
-		    </conf>
-		</section>
+        <section name="session">
+            <conf name="max_life_time">
+                <type><![CDATA[integer]]></type>
+                <defaultvalue>14000</defaultvalue>
+            </conf>
+        </section>
 
-		<section name="error">
-		    <conf name="mail">
+        <section name="error">
+            <conf name="mail">
                 <type><![CDATA[string]]></type>
             </conf>
             <conf name="send">
@@ -154,23 +158,23 @@
                 <type><![CDATA[bool]]></type>
                 <defaultvalue>0</defaultvalue>
             </conf>
-	    </section>
+        </section>
 
-		<section name="auth">
-		    <conf name="type">
-		        <type><![CDATA[string]]></type>
+        <section name="auth">
+            <conf name="type">
+                <type><![CDATA[string]]></type>
                 <defaultvalue>standard</defaultvalue>
-		    </conf>
-		</section>
+            </conf>
+        </section>
 
-		<section name="template">
-		    <conf name="engine">
+        <section name="template">
+            <conf name="engine">
                 <type><![CDATA[string]]></type>
                 <defaultvalue>smarty3</defaultvalue>
             </conf>
-	    </section>
+        </section>
 
-	    <section name="smarty">
+        <section name="smarty">
             <conf name="compile_check">
                 <type><![CDATA[bool]]></type>
                 <defaultvalue>0</defaultvalue>
@@ -216,6 +220,18 @@
                     <input conf="globals.development" type="checkbox">
                         <text>Entwicklungs Modus (für Entwickler)</text>
                     </input>
+                </settings>
+
+                 <settings title="globals" name="globals">
+                    <title>Aktualisierung</title>
+                    <select conf="globals.stability">
+                        <text>Minimale Stabilität der Packete und des Systems</text>
+                        <option value="stable">stable</option>
+                        <option value="RC">RC</option>
+                        <option value="beta">beta</option>
+                        <option value="alpha">alpha</option>
+                        <option value="dev">dev</option>
+                    </select>
                 </settings>
             </category>
 

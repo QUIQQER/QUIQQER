@@ -46,8 +46,8 @@ class QUI_Package_Manager
     protected $_list = false;
 
     /**
-     * Composer exec
-     * @var String
+     * Can composer execute via bash? shell?
+     * @var Bool
      */
     protected $_exec = false;
 
@@ -61,7 +61,7 @@ class QUI_Package_Manager
      *
      * @var String
      */
-    protected $_stability = '';
+    protected $_stability = 'stable';
 
     /**
      * constructor
@@ -79,6 +79,34 @@ class QUI_Package_Manager
 
         // exec
         $this->_composer_exec = 'cd '. $this->_vardir .'; php composer.phar --working-dir="'. $this->_vardir .'" ';
+
+        // stability
+        if ( \QUI::conf( 'globales', 'stability' ) )
+        {
+            switch ( \QUI::conf( 'globales', 'stability' ) )
+            {
+                case "stable":
+                    $this->_stability = "stable";
+                break;
+
+                case "RC":
+                    $this->_stability = "RC";
+                break;
+
+                case "beta":
+                    $this->_stability = "beta";
+                break;
+
+                case "alpha":
+                    $this->_stability = "alpha";
+                break;
+
+                case "dev":
+                    $this->_stability = "dev";
+                break;
+            }
+        }
+
 
         exec( $this->_composer_exec, $result );
 
@@ -128,28 +156,14 @@ class QUI_Package_Manager
             );
         }
 
+        $template = str_replace( '{$stability}', $this->_stability, $template );
+        $template = str_replace( '{$PACKAGE_DIR}', OPT_DIR, $template );
+        $template = str_replace( '{$VAR_COMPOSER_DIR}', $this->_vardir, $template );
+        $template = str_replace( '{$LIB_DIR}', LIB_DIR, $template );
 
         $template = str_replace(
             '{$repositories}',
             json_encode( $repositories ),
-            $template
-        );
-
-        $template = str_replace(
-            '{$PACKAGE_DIR}',
-            OPT_DIR,
-            $template
-        );
-
-        $template = str_replace(
-            '{$VAR_COMPOSER_DIR}',
-            $this->_vardir,
-            $template
-        );
-
-        $template = str_replace(
-            '{$LIB_DIR}',
-            LIB_DIR,
             $template
         );
 
@@ -594,8 +608,6 @@ class QUI_Package_Manager
             // exception?
             foreach ( $output as $key => $msg )
             {
-                \System_Log::write($msg);
-
                 // if not installed
                 if ( strpos( $msg, 'quiqqer/smarty' ) !== false &&
                      strpos( $msg, 'not installed' ) !== false )
