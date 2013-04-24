@@ -58,6 +58,12 @@ class QUI_Package_Manager
     protected $_require = array();
 
     /**
+     *
+     * @var String
+     */
+    protected $_stability = '';
+
+    /**
      * constructor
      */
     public function __construct()
@@ -69,14 +75,15 @@ class QUI_Package_Manager
 
         \Utils_System_File::mkdir( $this->_vardir );
 
-        // exec
-        $this->_composer_exec = 'cd '. $this->_vardir .'; php composer.phar';
+        putenv( "COMPOSER_HOME=". $this->_vardir );
 
-        $exec = $this->_composer_exec .' --working-dir="'. $this->_vardir .'" ';
-        exec( $exec, $result );
+        // exec
+        $this->_composer_exec = 'cd '. $this->_vardir .'; php composer.phar --working-dir="'. $this->_vardir .'" ';
+
+        exec( $this->_composer_exec, $result );
 
         if ( count( $result ) ) {
-            $this->_exec = $exec;
+            $this->_exec = true;
         }
 
         if ( !file_exists( $this->_composer_json ) ) {
@@ -231,7 +238,7 @@ class QUI_Package_Manager
             $limit = (int)$params['limit'];
             $page  = (int)$params['page'];
 
-            return Utils_Grid::getResult( $result, $page, $limit );
+            return \Utils_Grid::getResult( $result, $page, $limit );
         }
 
         return $result;
@@ -248,7 +255,7 @@ class QUI_Package_Manager
         $this->_createComposerJSON();
 
         if ( $this->_exec ) {
-            exec( $this->_exec .'update "'. $package .'" 2>&1', $exec_result );
+            exec( $this->_composer_exec .'update "'. $package .'" 2>&1', $exec_result );
         }
     }
 
@@ -282,7 +289,7 @@ class QUI_Package_Manager
             $params  = array();
             $package = \Utils_Security_Orthos::clearShell( $package );
 
-            exec( $this->_exec .'show "'. $package .'"', $exec_result );
+            exec( $this->_composer_exec .'show "'. $package .'"', $exec_result );
 
             foreach ( $exec_result as $key => $line )
             {
@@ -312,7 +319,7 @@ class QUI_Package_Manager
                 {
                     $_temp = $exec_result;
 
-                    $params[ 'require' ] = array_slice($_temp, $key+1);
+                    $params[ 'require' ] = array_slice( $_temp, $key + 1 );
                 }
             }
 
@@ -358,12 +365,12 @@ class QUI_Package_Manager
     public function searchPackage($str)
     {
         $result = array();
-        $str    = Utils_Security_Orthos::clearShell( $str );
+        $str    = \Utils_Security_Orthos::clearShell( $str );
         $list   = $this->_getList();
 
         if ( $this->_exec )
         {
-            exec( $this->_exec .'search "'. $str .'"', $exec_result );
+            exec( $this->_composer_exec .'search "'. $str .'" 2>&1', $exec_result );
 
             foreach ( $exec_result as $entry )
             {
@@ -399,9 +406,9 @@ class QUI_Package_Manager
     {
         try
         {
-            return QUI::getConfig( 'etc/source.list.ini' )->toArray();
+            return \QUI::getConfig( 'etc/source.list.ini' )->toArray();
 
-        } catch ( QException $Exception )
+        } catch ( \QException $Exception )
         {
 
         }
@@ -417,7 +424,7 @@ class QUI_Package_Manager
      */
     public function setServerStatus($server, $status)
     {
-        $Config  = QUI::getConfig( 'etc/source.list.ini' );
+        $Config  = \QUI::getConfig( 'etc/source.list.ini' );
         $status = (bool)$status ? 1 : 0;
 
         $Config->setValue( $server, 'active', $status );
@@ -443,7 +450,7 @@ class QUI_Package_Manager
         }
 
 
-        $Config = QUI::getConfig( 'etc/source.list.ini' );
+        $Config = \QUI::getConfig( 'etc/source.list.ini' );
         $Config->setValue( $server, 'active', 0 );
 
         if ( isset( $params['type'] ) ) {
@@ -462,7 +469,7 @@ class QUI_Package_Manager
      */
     public function removeServer($server)
     {
-        $Config = QUI::getConfig( 'etc/source.list.ini' );
+        $Config = \QUI::getConfig( 'etc/source.list.ini' );
 
         if ( is_array( $server ) )
         {
@@ -491,7 +498,7 @@ class QUI_Package_Manager
     {
         if ( $this->_exec )
         {
-            exec( $this->_exec .'update  --dry-run', $exec_result );
+            exec( $this->_composer_exec .'update  --dry-run', $exec_result );
 
             $last = end( $exec_result );
 
@@ -510,7 +517,14 @@ class QUI_Package_Manager
                     continue;
                 }
 
-                preg_match( '#Updating ([^ ]*) #i', $line, $package );
+                if ( strpos($line, 'Installing') !== false )
+                {
+                    preg_match( '#Installing ([^ ]*) #i', $line, $package );
+                } else
+                {
+                    preg_match( '#Updating ([^ ]*) #i', $line, $package );
+                }
+
                 preg_match_all( '#\(([^\)]*)\)#', $line, $versions );
 
                 if ( isset( $package[1] ) ) {
@@ -522,8 +536,10 @@ class QUI_Package_Manager
 
                 if ( isset( $versions[ 1 ] ) )
                 {
-                    if ( isset( $versions[ 1 ][ 0 ] ) ) {
+                    if ( isset( $versions[ 1 ][ 0 ] ) )
+                    {
                         $from = $versions[ 1 ][ 0 ];
+                        $to   = $versions[ 1 ][ 0 ]; // if to is not set
                     }
 
                     if ( isset( $versions[ 1 ][ 1 ] ) ) {
@@ -541,7 +557,7 @@ class QUI_Package_Manager
             return $packages;
         }
 
-        throw new \QEXception(
+        throw new \QException(
             \QUI::getLocale()->get(
                 'quiqqer/system',
                 'exception.packages.update.check'
@@ -563,12 +579,12 @@ class QUI_Package_Manager
     {
         if ( $this->_exec )
         {
-            $exec = $this->_exec .'update 2>&1';
+            $exec = $this->_composer_exec .'update 2>&1';
 
             if ( $package )
             {
-                $package = Utils_Security_Orthos::clearShell( $package );
-                $exec    = $this->_exec .'update "'. $package .'" 2>&1';
+                $package = \Utils_Security_Orthos::clearShell( $package );
+                $exec    = $this->_composer_exec .'update "'. $package .'" 2>&1';
             }
 
             \System_Log::write( 'Execute: '. $exec );
@@ -578,9 +594,18 @@ class QUI_Package_Manager
             // exception?
             foreach ( $output as $key => $msg )
             {
+                \System_Log::write($msg);
+
+                // if not installed
+                if ( strpos( $msg, 'quiqqer/smarty' ) !== false &&
+                     strpos( $msg, 'not installed' ) !== false )
+                {
+                    $this->install( $package );
+                }
+
                 if ( strpos( $msg, 'Exception' ) )
                 {
-                    throw new QException(
+                    throw new \QException(
                         $output[ $key+1 ]
                     );
                 }
@@ -743,7 +768,7 @@ class QUI_Package_Manager
 
         if ( $last == 'Nothing to install or update' )
         {
-            throw new QException(
+            throw new \QException(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.packages.update.version.not.found'

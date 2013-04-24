@@ -17,6 +17,8 @@
         "role": "Developer"
     }],
 
+    "minimum-stability": "dev",
+
     "support" : {
         "email": "support@pcsg.de",
         "url": "http://www.quiqqer.com"
