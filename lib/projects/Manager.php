@@ -299,6 +299,8 @@ class Projects_Manager
             "child"  => "bigint(20) NOT NULL"
         ));
 
+        $Table->setAutoIncrement($table_site, 'id');
+
         // first site
         $DataBase->insert($table_site, array(
             "id"    => 1,
@@ -402,7 +404,7 @@ class Projects_Manager
         $Project->setup();
 
         // Projekt Cache löschen
-        System_Cache_Manager::clear( 'QUI::config' );
+        \System_Cache_Manager::clear( 'QUI::config' );
     }
 
     /**

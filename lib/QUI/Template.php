@@ -49,7 +49,7 @@ class QUI_Template extends QDOM
             file_put_contents( CMS_DIR .'etc/templates.ini', '' );
         }
 
-        return QUI::getConfig( 'etc/templates.ini' );
+        return \QUI::getConfig( 'etc/templates.ini' );
     }
 
     /**
@@ -259,49 +259,49 @@ class QUI_Template extends QDOM
         $Engine  = $this->getAttribute( 'Engine' );
 
 
-        $this->types    = $Project->getType($Site->getAttribute('type'));
+        $this->types    = $Project->getType( $Site->getAttribute('type') );
         $this->type     = $Site->getAttribute('type');
         $this->template = $Project->getAttribute('template');
 
         // abwärtskompatibilität
         $smarty  = $Engine;
-        $Users   = QUI::getUsers();
-        $Rewrite = QUI::getRewrite();
+        $Users   = \QUI::getUsers();
+        $Rewrite = \QUI::getRewrite();
 
         $User   = $Users->getUserBySession();
         $suffix = $Rewrite->getSuffix();
 
         // Seitentyp Skript einbinden
-        if (is_array($this->types) && isset($this->types['script']))
+        if ( is_array( $this->types ) && isset( $this->types['script'] ) )
         {
             $script = $this->type .'/'. $this->types['script'];
             $file   = OPT_DIR . $script;
 
             // schauen ob es im projekt ein seitentyp skript gibt
-            if (file_exists(USR_DIR .'lib/'. $this->template .'/'. $script)) {
+            if ( file_exists( USR_DIR .'lib/'. $this->template .'/'. $script ) ) {
                 $file = USR_DIR .'lib/'. $this->template .'/'. $script;
             }
 
-            if (file_exists($file)) {
+            if ( file_exists( $file ) ) {
                 require $file;
             }
         }
 
         // Globale index.php für das Design
-        if (file_exists(USR_DIR .'lib/'. $this->template .'/index.php')) {
+        if ( file_exists( USR_DIR .'lib/'. $this->template .'/index.php' ) ) {
             require USR_DIR .'lib/'. $this->template .'/index.php';
         }
 
         // Template + Suffix
-        $tpl = $this->_getTypeTemplate($this->types, $this->type, $this->template);
+        $tpl = $this->_getTypeTemplate( $this->types, $this->type, $this->template );
 
-        if ($suffix == '.html') {
+        if ( $suffix == '.html' ) {
             return $tpl;
         }
 
-        $_tpl = str_replace('.html', $suffix, $tpl);
+        $_tpl = str_replace( '.html', $suffix, $tpl );
 
-        if (file_exists($_tpl)) {
+        if ( file_exists( $_tpl ) ) {
             return $_tpl;
         }
 
@@ -319,24 +319,24 @@ class QUI_Template extends QDOM
      */
     protected function _getTypeTemplate($types, $type, $template)
     {
-        if (isset($types['template']))
+        if ( isset($types['template'] ) )
         {
             // Falls im Projekt ein Template existiert
             $tpl = USR_DIR .'lib/'. $template .'/'. $type .'/'. $types['template'];
 
-            if (file_exists($tpl)) {
+            if ( file_exists( $tpl ) ) {
                 return $tpl;
             }
 
             // Falls im Plugin ein Template existiert
             $tpl = OPT_DIR . $type .'/'. $types['template'];
 
-            if (file_exists($tpl)) {
+            if ( file_exists( $tpl ) ) {
                 return $tpl;
             }
         }
 
-        if (file_exists(USR_DIR .'lib/'. $template .'/standard/body.html')) {
+        if ( file_exists( USR_DIR .'lib/'. $template .'/standard/body.html' ) ) {
             return USR_DIR .'lib/'. $template .'/standard/body.html';
         }
 
@@ -352,15 +352,15 @@ class QUI_Template extends QDOM
      */
     static function setAdminMenu($html)
     {
-        $User = QUI::getUserBySession();
+        $User = \QUI::getUserBySession();
 
         // Nur bei Benutzer die in den Adminbereich dürfen macht das Menü Sinn
-        if ($User->isAdmin() == false) {
+        if ( $User->isAdmin() == false ) {
             return $html;
         }
 
-        $Project = Projects_Manager::get();
-        $Site    = QUI::getRewrite()->getSite();
+        $Project = \Projects_Manager::get();
+        $Site    = \QUI::getRewrite()->getSite();
 
         // letzte body ersetzen
         $string  = $html;
@@ -388,8 +388,8 @@ class QUI_Template extends QDOM
         return substr_replace(
             $html,
             $search,
-            strrpos($string, $search),
-            strlen($search)
+            strrpos( $string, $search ),
+            strlen( $search )
         );
     }
 }

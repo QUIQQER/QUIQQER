@@ -646,13 +646,12 @@ class Users_Users
      */
     public function getUserBySession()
     {
-        if (defined('SYSTEM_INTERN')) {
+        if ( defined( 'SYSTEM_INTERN' ) ) {
             return $this->getSystemUser();
         }
 
-
         // max_life_time check
-        if (!$this->_Session->check()) {
+        if ( !$this->_Session->check() ) {
             return $this->getNobody();
         }
 
@@ -672,12 +671,14 @@ class Users_Users
                 strpos($_SERVER['HTTP_USER_AGENT'], 'chromeframe') === false)
             {
                 // @todo Log
-                throw new QException('Falscher User Agent '. $_SERVER['HTTP_USER_AGENT'] .' -> '. $User->getAttribute('user_agent'));
+                throw new \QException(
+                    'Falscher User Agent '. $_SERVER['HTTP_USER_AGENT'] .' -> '. $User->getAttribute('user_agent')
+                );
             }
 
             return $User;
 
-        } catch (QException $e)
+        } catch ( \QException $e )
         {
             //QException::setErrorLog($e->getMessage(), false);
         }
@@ -692,7 +693,7 @@ class Users_Users
      */
     public function getNobody()
     {
-        return new Users_Nobody();
+        return new \Users_Nobody();
     }
 
     /**
@@ -702,7 +703,7 @@ class Users_Users
      */
     public function getSystemUser()
     {
-        return new Users_SystemUser();
+        return new \Users_SystemUser();
     }
 
     /**
@@ -716,14 +717,14 @@ class Users_Users
         $id = (int)$id;
 
         if ( !$id ) {
-            return new Users_Nobody();
+            return new \Users_Nobody();
         }
 
         if ( isset( $this->_users[ $id ] ) ) {
             return $this->_users[ $id ];
         }
 
-        $User = new Users_User( $id, $this );
+        $User = new \Users_User( $id, $this );
         $this->_users[ $id ] = $User;
 
         return $User;
@@ -738,7 +739,7 @@ class Users_Users
      */
     public function getUserByName($username)
     {
-        $result = QUI::getDB()->select(array(
+        $result = \QUI::getDB()->select(array(
             'select' => 'id',
             'from' 	 => self::Table(),
             'where'  => array(
@@ -747,10 +748,10 @@ class Users_Users
             'limit' => '1'
         ));
 
-        if (!isset( $result[0] ))
+        if ( !isset( $result[0] ) )
         {
-            throw new QException(
-                QUI::getLocale()->get(
+            throw new \QException(
+                \QUI::getLocale()->get(
                     'system',
                     'exception.lib.user.user.not.found'
                 ),

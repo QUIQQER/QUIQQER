@@ -335,24 +335,24 @@ class QUI
         $QPM = self::getPackageManager();
 
         // register ajax
-        QUI::$Ajax = new Utils_Request_Ajax(array(
+        self::$Ajax = new Utils_Request_Ajax(array(
             'db_errors' => self::conf( 'error', 'mysql_ajax_errors_backend' )
         ));
 
         // mem peak - info mail at 80% usage
-        QUI::getErrorHandler()->registerShutdown(function()
+        self::getErrorHandler()->registerShutdown(function()
         {
             // DB Verbindung schließen
-            QUI::getDB()->close();
-            System_Debug::marker('END');
+            \QUI::getDB()->close();
+            \System_Debug::marker('END');
 
             // ram peak, if the ram usage is to high, than write and send a message
             $peak      = memory_get_peak_usage();
-            $mem_limit = Utils_System_File::getBytes( ini_get( 'memory_limit' ) ) * 0.8;
+            $mem_limit = \Utils_System_File::getBytes( ini_get( 'memory_limit' ) ) * 0.8;
 
             if ( $peak > $mem_limit && $mem_limit > 0 )
             {
-                $limit = Utils_System_File::formatSize( memory_get_peak_usage() );
+                $limit = \Utils_System_File::formatSize( memory_get_peak_usage() );
 
                 if ( !isset( $_SERVER["HTTP_HOST"] ) ) {
                     $_SERVER["HTTP_HOST"] = '';
@@ -371,9 +371,9 @@ class QUI
                            "URI: ". $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"] ."\n".
                            "HTTP_REFERER: ". $_SERVER["HTTP_REFERER"];
 
-                if ( QUI::conf( 'mail','admin_mail' ) )
+                if ( \QUI::conf( 'mail','admin_mail' ) )
                 {
-                    QUI_Mail::init()->send(array(
+                    \QUI_Mail::init()->send(array(
                          'MailTo'  => QUI::conf( 'mail','admin_mail' ),
                          'Subject' => 'Memory limit reached at http://'. $_SERVER["HTTP_HOST"],
                          'Body'    => $message,
@@ -381,7 +381,7 @@ class QUI
                     ));
                 }
 
-                System_Log::write( $message, 'error' );
+                \System_Log::write( $message, 'error' );
             }
         });
 
@@ -389,7 +389,7 @@ class QUI
         // then make a setup
         if ( $Config->get( 'globals', 'system_changed' ) )
         {
-            QUI_Setup::all();
+            \QUI_Setup::all();
 
             $Config->set( 'globals', 'system_changed', 0 );
             $Config->save();
@@ -401,7 +401,7 @@ class QUI
      */
     static function setup()
     {
-        QUI_Setup::all();
+        \QUI_Setup::all();
     }
 
     /**

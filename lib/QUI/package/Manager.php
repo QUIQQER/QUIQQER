@@ -68,7 +68,7 @@ class QUI_Package_Manager
      */
     public function __construct()
     {
-        $this->_dir    = CMS_DIR .'packages/';
+        $this->_dir    = OPT_DIR; // CMS_DIR .'packages/';
         $this->_vardir = VAR_DIR .'composer/';
 
         $this->_composer_json = $this->_vardir .'composer.json';
@@ -146,10 +146,10 @@ class QUI_Package_Manager
                 continue;
             }
 
-               $repositories[] = array(
-                   'type' => $params['type'],
-                   'url'  => $server
-               );
+           $repositories[] = array(
+               'type' => $params['type'],
+               'url'  => $server
+           );
         }
 
         if ( isset( $servers['packagist'] ) &&
@@ -178,8 +178,18 @@ class QUI_Package_Manager
         $require["php"] = ">=5.3.2";
         $require["quiqqer/quiqqer"] = "1.*";
 
-        foreach ( $list as $entry ) {
-            $require[ $entry['name'] ] = $entry['version'];
+        foreach ( $list as $entry )
+        {
+            $version = $entry['version'];
+
+            // so, we get newer versions
+            if ( !preg_match( "/[\<\>\=\*]/", $version ) &&
+                  preg_match( "/[0-9]/", $version ) )
+            {
+                $version = '>='. $version;
+            }
+
+            $require[ $entry['name'] ] = $version;
         }
 
         $template = str_replace(
@@ -515,6 +525,8 @@ class QUI_Package_Manager
      */
     public function checkUpdates()
     {
+        $this->_createComposerJSON();
+
         if ( $this->_exec )
         {
             exec( $this->_composer_exec .'update  --dry-run', $exec_result );
