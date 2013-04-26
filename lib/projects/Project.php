@@ -128,13 +128,13 @@ class Projects_Project
      */
     public function __construct($name, $lang=false, $template=false)
     {
-        $config = Projects_Manager::getConfig()->toArray();
+        $config = \Projects_Manager::getConfig()->toArray();
         $name   = (string)$name;
 
         // Konfiguration einlesen
         if ( !isset( $config[ $name ] ) )
         {
-            throw new QException(
+            throw new \QException(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.project.not.found'
@@ -149,7 +149,7 @@ class Projects_Project
         // Langs
         if ( !isset( $this->_config[ 'langs' ] ) )
         {
-            throw new QException(
+            throw new \QException(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.project.has.no.langs'
@@ -163,7 +163,7 @@ class Projects_Project
         // Default Lang
         if ( !isset( $this->_config[ 'default_lang' ] ) )
         {
-            throw new QException(
+            throw new \QException(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.project.lang.no.default'
@@ -180,7 +180,7 @@ class Projects_Project
         {
             if ( !in_array( $lang, $this->_langs ) )
             {
-                throw new QException(
+                throw new \QException(
                     \QUI::getLocale()->get(
                         'quiqqer/system',
                         'exception.project.lang.not.found',
@@ -198,7 +198,7 @@ class Projects_Project
             // Falls keine Sprache angegeben wurde wird die Standardsprache verwendet
             if ( !isset( $this->_config['default_lang'] ) )
             {
-                throw new QException(
+                throw new \QException(
                     \QUI::getLocale()->get(
                         'quiqqer/system',
                         'exception.project.lang.no.default'
@@ -220,7 +220,7 @@ class Projects_Project
         }
 
         // vhosts abklappern
-        $vhosts = QUI::vhosts();
+        $vhosts = \QUI::vhosts();
 
         foreach ( $vhosts as $host => $vhost )
         {
@@ -324,7 +324,7 @@ class Projects_Project
     public function search($search, $select=false)
     {
         $table  = $this->getAttribute('db_table');
-        $search = Utils_Security_Orthos::clearMySQL($search);
+        $search = \Utils_Security_Orthos::clearMySQL($search);
 
         $query = 'SELECT id FROM '. $table;
         $where = ' WHERE name LIKE "%'. $search .'%"';
@@ -352,7 +352,7 @@ class Projects_Project
 
         $query = $query . $where .' AND deleted = 0 LIMIT 0, 50';
 
-        $dbresult = QUI::getDB()->getData($query, 'ARRAY', 'ASSOC');
+        $dbresult = \QUI::getDB()->getData($query, 'ARRAY', 'ASSOC');
         $result   = array();
 
         foreach ($dbresult as $entry) {
@@ -369,25 +369,25 @@ class Projects_Project
      */
     protected function _checkRights()
     {
-        if (!defined('ADMIN')) {
+        if ( !defined('ADMIN') ) {
             return true;
         }
 
         // Falls keine Rechte gesetzt sind
-        if (!$this->getConfig('rights')) {
+        if ( !$this->getConfig('rights') ) {
             return true;
         }
 
-        $User = QUI::getUsers()->getUserBySession();
+        $User = \QUI::getUsers()->getUserBySession();
 
-        if (!$User->getId()) {
+        if ( !$User->getId() ) {
             return false;
         }
 
         $Groups   = $User->getGroups();
         $children = array();
 
-        foreach ($Groups as $Group)
+        foreach ( $Groups as $Group )
         {
             $childids   = $Group->getChildrenIds(true);
             $childids[] = $Group->getId();
@@ -397,9 +397,9 @@ class Projects_Project
 
         $rights = explode(',', trim($this->getConfig('rights'), ',') );
 
-        foreach ($children as $child)
+        foreach ( $children as $child )
         {
-            if (in_array($child, $rights))
+            if ( in_array( $child, $rights ) )
             {
                 return true;
                 break;
@@ -418,22 +418,22 @@ class Projects_Project
      */
     public function getVHost($with_protocol=false, $ssl=false)
     {
-        $Hosts = QUI::getRewrite()->getVHosts();
+        $Hosts = \QUI::getRewrite()->getVHosts();
 
-        foreach ($Hosts as $url => $params)
+        foreach ( $Hosts as $url => $params )
         {
-            if ($url == 404 || $url == 301) {
+            if ( $url == 404 || $url == 301 ) {
                 continue;
             }
 
-            if (!isset($params['project'])) {
+            if ( !isset( $params['project'] ) ) {
                 continue;
             }
 
-            if ($params['project'] == $this->getAttribute('name') &&
-                $params['lang'] == $this->getAttribute('lang'))
+            if ( $params['project'] == $this->getAttribute('name') &&
+                 $params['lang'] == $this->getAttribute('lang') )
             {
-                if ($ssl && isset($params['httpshost'])) {
+                if ( $ssl && isset( $params['httpshost'] ) ) {
                     return $with_protocol ? 'https://'. $params['httpshost'] : $params['httpshost'];
                 }
 
@@ -455,7 +455,7 @@ class Projects_Project
      */
     public function getAttribute($att)
     {
-        switch ($att)
+        switch ( $att )
         {
             case "name":
                 return $this->_name;
@@ -493,15 +493,15 @@ class Projects_Project
 
             case "e_date":
 
-                if ($this->_edate) {
+                if ( $this->_edate ) {
                     return $this->_edate;
                 }
 
-                if (!file_exists($this->_edate_file)) {
+                if ( !file_exists( $this->_edate_file ) ) {
                     return time();
                 }
 
-                $this->_edate = file_get_contents($this->_edate_file);
+                $this->_edate = file_get_contents( $this->_edate_file );
 
                 return $this->_edate;
             break;
@@ -516,16 +516,20 @@ class Projects_Project
      * Gibt die gesuchte Einstellung vom Projekt zurück
      *
      * @param String $name
-     * @return false || String
+     * @return false|String|Array
      */
-    public function getConfig($name)
+    public function getConfig($name=false)
     {
-        if (isset($this->_config[ $name ])) {
+        if ( !$name ) {
+            return $this->_config;
+        }
+
+        if ( isset( $this->_config[ $name ] ) ) {
             return $this->_config[ $name ];
         }
 
         // default Werte
-        switch ($name)
+        switch ( $name )
         {
             case "sheets": // Blätterfunktion
                 return 5;
@@ -546,15 +550,15 @@ class Projects_Project
      */
     public function getHost()
     {
-        if (isset($this->_config['vhost'])) {
+        if ( isset( $this->_config['vhost'] ) ) {
             return $this->_config['vhost'];
         }
 
-        if (isset($this->_config['host'])) {
+        if ( isset( $this->_config['host'] ) ) {
             return $this->_config['host'];
         }
 
-        return QUI::conf('globals', 'host');
+        return \QUI::conf( 'globals', 'host' );
     }
 
     /**
@@ -564,7 +568,7 @@ class Projects_Project
      */
     public function getTrash()
     {
-        return new Projects_Trash($this);
+        return new \Projects_Trash( $this );
     }
 
     /**
@@ -579,8 +583,8 @@ class Projects_Project
             'lang'    => $this->_lang,
             'langs'   => $this->_langs,
             'name'    => $this->_name,
-            'sheets'  => $this->getConfig('sheets'),
-            'archive' => $this->getConfig('archive')
+            'sheets'  => $this->getConfig( 'sheets' ),
+            'archive' => $this->getConfig( 'archive' )
         );
     }
 
@@ -592,8 +596,8 @@ class Projects_Project
      */
     public function firstChild()
     {
-        if ( is_null($this->_firstchild) ) {
-            $this->_firstchild = $this->get(1);
+        if ( is_null( $this->_firstchild ) ) {
+            $this->_firstchild = $this->get( 1 );
         }
 
         return $this->_firstchild;
@@ -612,25 +616,25 @@ class Projects_Project
         if ( $link == true )
         {
             $cache = VAR_DIR.'cache/links/'. $this->getAttribute('name') .'/';
-            $files = Utils_System_File::readDir($cache);
+            $files = \Utils_System_File::readDir($cache);
 
-            foreach ($files as $file) {
-                Utils_System_File::unlink($cache.$file);
+            foreach ( $files as $file ) {
+                \Utils_System_File::unlink( $cache . $file );
             }
         }
 
         if ( $site == true )
         {
             $cache = VAR_DIR.'cache/sites/'. $this->getAttribute('name') .'/';
-            $files = Utils_System_File::readDir($cache);
+            $files = \Utils_System_File::readDir($cache);
 
-            foreach ($files as $file) {
-                Utils_System_File::unlink($cache.$file);
+            foreach ( $files as $file ) {
+                \Utils_System_File::unlink( $cache . $file );
             }
         }
 
-        foreach ($this->_cache_files as $cache) {
-            System_Cache_Manager::clear($cache);
+        foreach ( $this->_cache_files as $cache ) {
+            \System_Cache_Manager::clear( $cache );
         }
     }
 

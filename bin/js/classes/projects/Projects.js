@@ -127,7 +127,7 @@ define('classes/projects/Projects', [
         getName : function()
         {
             if ( this.$Project ) {
-                return this.$Project.getAttribute( 'name' );
+                return this.$Project.getName();
             }
 
             if ( QUI.project !== '' ) {

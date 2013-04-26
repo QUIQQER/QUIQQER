@@ -15,7 +15,7 @@ function ajax_template_get($template)
 
     if ( !file_exists( $template ) )
     {
-        throw new QException(
+        throw new \QException(
             \QUI::getLocale()->get(
                 'quiqqer/system',
                 'exception.template.not.found'
@@ -23,7 +23,7 @@ function ajax_template_get($template)
         );
     }
 
-    $Engine>assign(array(
+    $Engine->assign(array(
         'QUI' => new \QUI()
     ));
 

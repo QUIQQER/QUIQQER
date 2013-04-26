@@ -22,6 +22,15 @@
         <label for="">Project Template</label>
         <select name="template">
             <option value="">Kein Template verwenden</option>
+
+            {assign var=PM value=$QUI->getPackageManager()}
+
+            {array var=params type="quiqqer-template"}
+            {assign var=templates value=$PM->getInstalled( $params )}
+
+            {foreach from=$templates item=tpl}
+                <option value="{$tpl}">{$tpl}</option>
+            {/foreach}
         </select>
     </p>
 

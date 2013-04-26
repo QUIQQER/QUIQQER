@@ -66,7 +66,7 @@ class QUI_Template extends QDOM
             self::load();
         }
 
-        $engine = QUI::conf( 'template', 'engine' );
+        $engine = \QUI::conf( 'template', 'engine' );
 
         if ( !isset( self::$_engines[ $engine ] ) ) {
             throw new \QException( 'Template Engine not found!' );

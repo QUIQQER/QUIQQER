@@ -158,7 +158,7 @@ class QUI
         $path    = pathinfo( __FILE__ );
         $cms_dir = str_replace( DIRECTORY_SEPARATOR .'lib', '', $path['dirname'] );
 
-        $Config     = new QConfig( $cms_dir .'/etc/conf.ini' );
+        $Config     = new \QConfig( $cms_dir .'/etc/conf.ini' );
         self::$Conf = $Config;
 
         if ( !defined( 'CMS_DIR' ) )
@@ -335,7 +335,7 @@ class QUI
         $QPM = self::getPackageManager();
 
         // register ajax
-        self::$Ajax = new Utils_Request_Ajax(array(
+        self::$Ajax = new \Utils_Request_Ajax(array(
             'db_errors' => self::conf( 'error', 'mysql_ajax_errors_backend' )
         ));
 
@@ -510,7 +510,7 @@ class QUI
                 );
             }
 
-            self::$Configs[ $file ] = new QConfig( CMS_DIR . $file );
+            self::$Configs[ $file ] = new \QConfig( CMS_DIR . $file );
         }
 
         return self::$Configs[ $file ];

@@ -14,3 +14,8 @@
 .qui-project-settings td.first {
     width: 150px;
 }
+
+.qui-project-settings input,
+.qui-project-settings select {
+    width: 200px;
+}

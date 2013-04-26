@@ -145,11 +145,32 @@ define('controls/projects/Settings', [
                 Body.set( 'html', result );
 
                 // set data
+                Control.getProject().getConfig(function(result, Request)
+                {
+                    var Form     = Body.getElement( 'Form' ),
+                        Standard = Form.elements.default_lang,
+                        Langs    = Form.elements.langs,
 
+                        langs = result.langs.split( ',' );
 
+                    for ( var i = 0, len = langs.length; i < len; i++ )
+                    {
+                        new Element('option', {
+                            html  : langs[ i ],
+                            value : langs[ i ]
+                        }).inject( Standard );
 
+                        new Element('option', {
+                            html  : langs[ i ],
+                            value : langs[ i ]
+                        }).inject( Langs );
+                    }
 
-                Control.Loader.hide();
+                    Standard.value = result.default_lang;
+                    Form.elements.admin_mail.value = result.admin_mail || '';
+
+                    Control.Loader.hide();
+                });
             });
         },
 
@@ -160,7 +181,14 @@ define('controls/projects/Settings', [
          */
         openMeta : function(Plup)
         {
+            this.Loader.show();
 
+            var Control = this,
+                Body    = Control.getBody();
+
+
+            Body.set( 'html', '' );
+            Control.Loader.hide();
         },
 
         /**
@@ -170,7 +198,14 @@ define('controls/projects/Settings', [
          */
         openBackup : function()
         {
+            this.Loader.show();
 
+            var Control = this,
+                Body    = Control.getBody();
+
+
+            Body.set( 'html', '' );
+            Control.Loader.hide();
         },
 
         /**
@@ -180,7 +215,14 @@ define('controls/projects/Settings', [
          */
         openWatersign : function()
         {
+            this.Loader.show();
 
+            var Control = this,
+                Body    = Control.getBody();
+
+
+            Body.set( 'html', '' );
+            Control.Loader.hide();
         },
 
         /**

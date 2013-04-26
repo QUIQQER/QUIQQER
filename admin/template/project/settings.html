@@ -24,7 +24,7 @@
                     <label for="langs">Verfügbare Sprachen</label>
                 </td>
                 <td>
-                    <div id="langs"></div>
+                    <select name="langs" size="3"></select>
                 </td>
             </tr>
             <tr class="{cycle values="odd,even"}">
@@ -32,7 +32,18 @@
                     <label for="template">Standard Template</label>
                 </td>
                 <td>
-                    <select name="template"></select>
+                    <select name="template">
+                        <option value="">Kein Template verwenden</option>
+
+                        {assign var=PM value=$QUI->getPackageManager()}
+
+                        {array var=params type="quiqqer-template"}
+                        {assign var=templates value=$PM->getInstalled( $params )}
+
+                        {foreach from=$templates item=tpl}
+                            <option value="{$tpl}">{$tpl}</option>
+                        {/foreach}
+                    </select>
                 </td>
             </tr>
             <tr class="{cycle values="odd,even"}">
@@ -40,7 +51,16 @@
                     <label for="templates">Verfügbare Templates für dieses Projekt</label>
                 </td>
                 <td>
-                    <select name="templates"></select>
+                    <select name="templates" multiple="multiple" size="5">
+                        {assign var=PM value=$QUI->getPackageManager()}
+
+                        {array var=params type="quiqqer-template"}
+                        {assign var=templates value=$PM->getInstalled( $params )}
+
+                        {foreach from=$templates item=tpl}
+                            <option value="{$tpl}">{$tpl}</option>
+                        {/foreach}
+                    </select>
                 </td>
             </tr>
             <tr class="{cycle values="odd,even"}">

@@ -94,8 +94,35 @@ define('classes/projects/Project', [
             });
 
             this.$ids[ id ] = Site;
+            this.$config    = null;
 
             return this.$ids[ id ];
+        },
+
+        /**
+         * Return the configuration of the project
+         *
+         * @param {Function} callback - callback function
+         * @param {String} param - param name
+         */
+        getConfig : function(callback, param)
+        {
+            if ( this.$config )
+            {
+                callback( this.$config );
+                return;
+            }
+
+            QUI.Ajax.get('ajax_project_get_config', function(result, Request)
+            {
+                if ( Request.getAttribute( 'onfinish' ) ) {
+                    Request.getAttribute( 'onfinish' )( result, Request );
+                }
+            }, {
+                project  : this.getName(),
+                param    : param || false,
+                onfinish : callback
+            });
         },
 
         /**
