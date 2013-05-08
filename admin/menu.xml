@@ -154,6 +154,12 @@
 
     <!-- Settings -->
         <item parent="/settings/"
+              name="projects"
+              icon="URL_BIN_DIR/16x16/home.png"
+              group="quiqqer/system"
+              var="menu.settings.projects.text"
+        />
+        <item parent="/settings/"
               name="media"
               icon="URL_BIN_DIR/16x16/media.png"
               require="admin/media/Manager"

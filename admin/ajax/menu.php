@@ -7,27 +7,50 @@
  */
 function ajax_menu()
 {
-    $User = QUI::getUserBySession();
+    $User = \QUI::getUserBySession();
     $Menu = new Controls_Contextmenu_Bar(array(
         'name'   => 'menu',
         'parent' => 'menubar',
         'id'	 => 'menu'
     ));
 
-    QUI_Menu::addXMLFile( $Menu, SYS_DIR .'menu.xml' );
+    \QUI_Menu::addXMLFile( $Menu, SYS_DIR .'menu.xml' );
+
+    // projects settings
+    $projects = \Projects_Manager::getProjects();
+    $Settings = $Menu->getElementByName( 'settings' );
+    $Projects = $Settings->getElementByName( 'projects' );
+
+    foreach ( $projects as $project )
+    {
+        if ( !$Projects ) {
+            continue;
+        }
+
+        $Projects->appendChild(
+            new \Controls_Contextmenu_Menuitem(array(
+                'text'    => $project,
+                'icon'    => URL_BIN_DIR .'16x16/home.png',
+                'onclick' => '',
+                'require' => 'admin/projects/Settings',
+                'onMouseDown' => 'QUI.Menu.click',
+                'project' => $project
+            ))
+        );
+    }
 
     // read the settings.xmls
     $dir      = SYS_DIR .'settings/';
-    $files    = Utils_System_File::readDir( $dir );
+    $files    = \Utils_System_File::readDir( $dir );
     $Settings = $Menu->getElementByName( 'settings' );
 
     foreach ( $files as $file )
     {
-        $windows = Utils_Xml::getSettingWindowsFromXml( $dir . $file );
+        $windows = \Utils_Xml::getSettingWindowsFromXml( $dir . $file );
 
         foreach ( $windows as $Window )
         {
-            $Win = new Controls_Contextmenu_Menuitem(array(
+            $Win = new \Controls_Contextmenu_Menuitem(array(
                 'onclick' => ''
             ));
 
@@ -46,7 +69,7 @@ function ajax_menu()
 
                 if ( $Title->getAttribute( 'group' ) && $Title->getAttribute( 'var' ) )
                 {
-                    $text = QUI::getLocale()->get(
+                    $text = \QUI::getLocale()->get(
                         $Title->getAttribute( 'group' ),
                         $Title->getAttribute( 'var' )
                     );
@@ -65,7 +88,7 @@ function ajax_menu()
                 {
                     $Win->setAttribute(
                         'icon',
-                        Utils_Dom::parseVar(
+                        \Utils_Dom::parseVar(
                             $icon->item( 0 )->nodeValue
                         )
                     );
@@ -78,16 +101,15 @@ function ajax_menu()
 
     // read the menu.xmls
     $dir   = VAR_DIR .'cache/menu/';
-    $files = Utils_System_File::readDir( $dir );
+    $files = \Utils_System_File::readDir( $dir );
 
     foreach ( $files as $file ) {
-        QUI_Menu::addXMLFile( $Menu, $dir . $file );
+        \QUI_Menu::addXMLFile( $Menu, $dir . $file );
     }
-
 
     return $Menu->toArray();
 
-
+    /*
 
 
     return;
@@ -129,8 +151,13 @@ function ajax_menu()
         ))
     );
 
-
+    */
 }
-QUI::$Ajax->register( 'ajax_menu', false, 'Permission::checkAdminUser' );
+
+\QUI::$Ajax->register(
+    'ajax_menu',
+    false,
+    'Permission::checkAdminUser'
+);
 
 ?>

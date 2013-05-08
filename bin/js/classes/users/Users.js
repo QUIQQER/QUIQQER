@@ -281,7 +281,7 @@ define('classes/users/Users', [
             params = QUI.Utils.combine(params, {
                 uid        : User.getId(),
                 attributes : JSON.encode( User.getAttributes() ),
-                rights     : JSON.encode( User.getRights() ),
+                //rights     : JSON.encode( User.getRights() ),
                 onfinish   : onfinish,
                 Users      : this
             });

@@ -10,6 +10,10 @@
             <de><![CDATA[Projekt Verwaltung]]></de>
             <en><![CDATA[Projects manager]]></en>
         </locale>
+        <locale name="menu.settings.projects.text">
+            <de><![CDATA[Projekt Einstellungen]]></de>
+            <en><![CDATA[Projects settings]]></en>
+        </locale>
 
 
         <!-- Exception  -->

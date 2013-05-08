@@ -40,6 +40,12 @@ class QUI_Locale
     public $no_translation = false;
 
     /**
+     * ini file objects, if no gettext exist
+     * @var array
+     */
+    protected $_inis = array();
+
+    /**
      * Locale toString
      * @return String
      */
@@ -171,7 +177,9 @@ class QUI_Locale
         $current = $this->_current;
 
         // auf gettext wenn vorhanden
-        if ( ( $GetText = $this->initGetText( $group ) ) )
+        $GetText = $this->initGetText( $group );
+
+        if ( $GetText !== false )
         {
             $str = $GetText->get( $value );
 
@@ -224,7 +232,7 @@ class QUI_Locale
         }
 
 
-        $this->_gettext[ $current ][ $group ] = new Utils_Translation_GetText(
+        $this->_gettext[ $current ][ $group ] = new \Utils_Translation_GetText(
             $current,
             $group,
             $this->dir()
@@ -239,7 +247,7 @@ class QUI_Locale
         $dir    = $Gettext->getAttribute( 'dir' );
         $domain = $Gettext->getAttribute( 'domain' );
 
-        System_Log::write(
+        \System_Log::write(
             'Übersetzungsdatei für '. $group .' '. $dir .'de_DE/LC_MESSAGES/'. $domain .'.mo nicht gefunden.',
             'error'
         );
@@ -264,7 +272,14 @@ class QUI_Locale
             return;
         }
 
-        $Config = new QConfig( $file );
+        if ( isset( $this->_inis[ $file ] ) )
+        {
+            $Config = $this->_inis[ $file ];
+        } else
+        {
+            $Config = new \QConfig( $file );
+        }
+
         $this->set( $lang, $group, $Config->toArray() );
     }
 
@@ -278,7 +293,7 @@ class QUI_Locale
      */
     public function getTranslationFile($lang, $group)
     {
-        $locale = Utils_String::toLower( $lang ) .'_'. Utils_String::toUpper( $lang );
+        $locale = \Utils_String::toLower( $lang ) .'_'. \Utils_String::toUpper( $lang );
         $group  = str_replace( '/', '_', $group );
 
         return $this->dir() .'/'. $locale .'/LC_MESSAGES/'. $group .'.ini';

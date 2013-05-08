@@ -166,6 +166,15 @@ define('controls/projects/Settings', [
                         }).inject( Langs );
                     }
 
+                    new QUI.controls.buttons.Button({
+                        text     : 'Sprache hinzufügen',
+                        textimage : URL_BIN_DIR +'16x16/add.png',
+                        styles   : {
+                            width : 200,
+                            clear : 'both'
+                        }
+                    }).inject( Langs, 'after' );
+
                     Standard.value = result.default_lang;
                     Form.elements.admin_mail.value = result.admin_mail || '';
 

@@ -18,4 +18,5 @@
 .qui-project-settings input,
 .qui-project-settings select {
     width: 200px;
+    float: left;
 }

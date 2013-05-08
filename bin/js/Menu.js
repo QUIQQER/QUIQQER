@@ -54,7 +54,7 @@ define('Menu', [
                     require( [ Item.getAttribute( 'require' ) ], function(call)
                     {
                         if ( typeOf( call ) === 'function' ) {
-                            call();
+                            call( this );
                         }
 
                         if ( this.getAttribute( 'click' ) ) {
@@ -67,7 +67,7 @@ define('Menu', [
                     return;
                 }
 
-                eval( '( '+ Item.getAttribute( 'click' ) +'() )' );
+                eval( '( '+ Item.getAttribute( 'click' ) +'( Item ) )' );
                 Item.setAttribute( 'icon', Item.getAttribute( 'old_icon' ) );
 
                 return;
