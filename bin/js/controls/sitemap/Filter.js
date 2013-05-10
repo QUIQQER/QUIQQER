@@ -38,8 +38,8 @@ define('controls/sitemap/Filter', [
      */
     QUI.controls.sitemap.Filter = new Class({
 
-        Implements : QUI_Control,
-        Type       : 'QUI.controls.sitemap.Filter',
+        Extends : QUI_Control,
+        Type    : 'QUI.controls.sitemap.Filter',
 
         Binds : [
             'filter',

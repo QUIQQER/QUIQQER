@@ -1,7 +1,5 @@
 @CHARSET "UTF-8";
 
-
-
 .qui-search-sitemap {
     width: 300px;
     background: #fff;
@@ -18,4 +16,11 @@
     clear: both;
     overflow : auto;
     width: 290px;
+}
+
+.qui-search-sitemap-filter {
+    border-top: 1px solid #DEDEDE;
+    clear: both;
+    float: left;
+    height: 42px;
 }

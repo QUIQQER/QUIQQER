@@ -531,10 +531,14 @@ define('controls/sitemap/Item', [
          */
         open : function()
         {
+            if ( !this.$Children ) {
+                return this;
+            }
+
             this.$Children.setStyle( 'display', '' );
             this.$setOpener();
 
-            this.fireEvent( 'open', [this] );
+            this.fireEvent( 'open', [ this ] );
 
             return this;
         },
@@ -547,6 +551,9 @@ define('controls/sitemap/Item', [
          */
         close : function()
         {
+            if ( !this.$Children ) {
+                return this;
+            }
             this.$Children.setStyle( 'display', 'none' );
             this.$setOpener();
 
@@ -582,6 +589,10 @@ define('controls/sitemap/Item', [
          */
         isOpen : function()
         {
+            if ( !this.$Children ) {
+                return false;
+            }
+
             return this.$Children.getStyle( 'display' ) == 'none' ? false : true;
         },
 

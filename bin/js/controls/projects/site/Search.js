@@ -170,6 +170,8 @@ define('controls/projects/site/Search', [
                 }
             }).inject( Body.getElement( '.qui-search-sitemap-filter' ) );
 
+            this.$MapFilter.getInput().setStyle( 'width', 284 );
+
             // elements
             Body.getElement( '.qui-search-sitemap-handle' ).set({
                 styles  : {
@@ -220,6 +222,10 @@ define('controls/projects/site/Search', [
                                 );
                             }
                         }
+
+                        Select.setValue(
+                            Select.firstChild().getAttribute( 'value' )
+                        );
                     });
 
                 }.bind( this )
@@ -237,9 +243,7 @@ define('controls/projects/site/Search', [
 
             if ( this.$ProjectMap )
             {
-                this.$ProjectMap.clear();
                 this.$ProjectMap.destroy();
-
                 this.$ProjectMap = null;
             }
 
@@ -280,9 +284,7 @@ define('controls/projects/site/Search', [
         {
             if ( this.$ProjectMap )
             {
-                this.$ProjectMap.clear();
                 this.$ProjectMap.destroy();
-
                 this.$ProjectMap = null;
             }
 
