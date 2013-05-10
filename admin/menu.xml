@@ -32,18 +32,25 @@
     </item>
 
     <!-- File Menu -->
-    <item parent="/file/" name="file_close" icon="URL_DIR/bin/16x16/close.png"
-          group="quiqqer/system"
-          var="menu.file.close.text"
-    >
-        Schließen
-    </item>
-    <item parent="/file/" name="file_exit" icon="URL_DIR/bin/16x16/exit.png"
-          group="quiqqer/system"
-          var="menu.file.logout.text"
-    >
-        Beenden
-    </item>
+        <item parent="/file/"
+              name="search"
+              icon="URL_BIN_DIR/16x16/search.png"
+              require="admin/search/Site"
+              group="quiqqer/system"
+              var="menu.file.search.text"
+        />
+        <item parent="/file/" name="file_close" icon="URL_DIR/bin/16x16/close.png"
+              group="quiqqer/system"
+              var="menu.file.close.text"
+        >
+            Schließen
+        </item>
+        <item parent="/file/" name="file_exit" icon="URL_DIR/bin/16x16/exit.png"
+              group="quiqqer/system"
+              var="menu.file.logout.text"
+        >
+            Beenden
+        </item>
 
     <!-- Edit -->
     <!--

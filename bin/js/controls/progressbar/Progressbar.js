@@ -111,13 +111,13 @@ define('controls/progressbar/Progressbar', [
 
             if ( to.toInt() === 100 )
             {
-                this.$Box.addClass('complete');
-                this.fireEvent('onComplete', [this]);
+                this.$Box.addClass( 'complete' );
+                this.fireEvent( 'onComplete', [ this ] );
             }
 
             if ( this.options.fx === false )
             {
-                this.$Perc.setStyle('width', this.calculate( to.toInt() ));
+                this.$Perc.setStyle( 'width', this.calculate( to.toInt() ) );
             } else
             {
                 this.$Perc.set('morph', {
@@ -129,9 +129,9 @@ define('controls/progressbar/Progressbar', [
             }
 
             if ( this.options.displayText ) {
-                this.Text.set('text', to.toInt() +'%');
+                this.Text.set( 'text', to.toInt() +'%' );
             }
-          },
+        },
 
         // sets the percentage from its current state to desired percentage
         set : function(to)

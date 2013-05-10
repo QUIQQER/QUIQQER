@@ -18,7 +18,7 @@ define('admin/projects/Settings', [
 
     return function(Item)
     {
-        if( Item.getAttribute( 'project' ) )
+        if ( Item.getAttribute( 'project' ) )
         {
             QUI.Workspace.appendPanel(
                 new Settings( Item.getAttribute( 'project' ) )

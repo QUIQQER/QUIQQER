@@ -293,6 +293,30 @@ define('controls/projects/Sitemap', [
         },
 
         /**
+         * Get specific children
+         *
+         * @method QUI.controls.projects.Sitemap#getChildren
+         * @param {String} selector
+         * @return {Array} List of children
+         */
+        getChildren : function(selector)
+        {
+            return this.getMap().getChildren( selector );
+        },
+
+        /**
+         * Sitemap filter, the user can search for certain items
+         *
+         * @method QUI.controls.sitemap.Map#search
+         * @param {String} search
+         * @return {Array} List of found elements
+         */
+        search : function(search)
+        {
+            return this.getMap().search( search );
+        },
+
+        /**
          * If no id, the sitemap starts from the first child of the project
          *
          * @method QUI.controls.projects.Sitemap#getFirstChild

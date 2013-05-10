@@ -399,8 +399,8 @@ define('controls/sitemap/Map', [
          * Sitemap filter, the user can search for certain items
          *
          * @method QUI.controls.sitemap.Map#search
-         *
-         * @oaram {String} search
+         * @param {String} search
+         * @return {Array} List of found elements
          */
         search : function(search)
         {

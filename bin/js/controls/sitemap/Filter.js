@@ -38,7 +38,13 @@ define('controls/sitemap/Filter', [
      */
     QUI.controls.sitemap.Filter = new Class({
 
-        Implements: [QUI_Control],
+        Implements : QUI_Control,
+        Type       : 'QUI.controls.sitemap.Filter',
+
+        Binds : [
+            'filter',
+            '$filter'
+        ],
 
         options : {
             styles      : false,
@@ -63,8 +69,7 @@ define('controls/sitemap/Filter', [
          * Create the DOMNode of the sitemap filter
          *
          * @method QUI.controls.sitemap.Filter#create
-         *
-         * @return {DOMNode}
+         * @return {DOMNode} DOM-Element
          */
         create : function()
         {
@@ -100,7 +105,7 @@ define('controls/sitemap/Filter', [
 
                 focus : function(event)
                 {
-                    this.fireEvent('focus', [this]);
+                    this.fireEvent( 'focus', [ this ] );
                 }.bind( this ),
 
                 blur : function()
@@ -113,14 +118,13 @@ define('controls/sitemap/Filter', [
             });
 
 
-            if ( this.getAttribute('withbutton') )
+            if ( this.getAttribute( 'withbutton' ) )
             {
                 this.$Search = new QUI.controls.buttons.Button({
                     image  : URL_BIN_DIR +'16x16/search.png',
                     events :
                     {
-                        onClick : function()
-                        {
+                        onClick : function() {
                             this.filter( this.getInput().value );
                         }.bind( this )
                     }
@@ -139,11 +143,16 @@ define('controls/sitemap/Filter', [
          * Sets the sitemap which is to be searched
          * Older Sitemap binds persist
          *
+         * @method QUI.controls.sitemap.Filter#bindSitemap
          * @param {QUI.controls.sitemap.Map} Sitemap
-         * @return {this}
+         * @return {this} self
          */
         bindSitemap : function(Sitemap)
         {
+            if ( typeof Sitemap === 'undefined' || !Sitemap ) {
+                return;
+            }
+
             this.$maps.push( Sitemap );
 
             return this;
@@ -152,7 +161,8 @@ define('controls/sitemap/Filter', [
         /**
          * all binds would be resolved
          *
-         * @return {this}
+         * @method QUI.controls.sitemap.Filter#clearBinds
+         * @return {this} self
          */
         clearBinds : function()
         {
@@ -164,6 +174,7 @@ define('controls/sitemap/Filter', [
         /**
          * Return the filter input DOMNode Element
          *
+         * @method QUI.controls.sitemap.Filter#getInput
          * @return {DOMNode}
          */
         getInput : function()
@@ -174,18 +185,16 @@ define('controls/sitemap/Filter', [
         /**
          * Filter the Sitemaps
          *
+         * @method QUI.controls.sitemap.Filter#filter
          * @param {String} str - the filter value
          * @return {this}
          */
         filter : function(str)
         {
-            var i, len;
-            var maps = this.$maps;
-
             str = str || '';
 
-            for ( i = 0, len = this.$maps.length; i < len; i++ ) {
-                this.$filter( this.$maps[i], str );
+            for ( var i = 0, len = this.$maps.length; i < len; i++ ) {
+                this.$filter( this.$maps[ i ], str );
             }
 
             return this;
@@ -194,11 +203,16 @@ define('controls/sitemap/Filter', [
         /**
          * Helper Function for the filter
          *
+         * @method QUI.controls.sitemap.Filter#$filter
          * @param {QUI.controls.sitemap.Map} Map - the Sitemap
          * @param {String} str - the filter value
          */
         $filter : function(Map, str)
         {
+            if ( typeof Map === 'undefined' || !Map ) {
+                return;
+            }
+
             var i, len;
             var children = Map.getChildren();
 
@@ -208,7 +222,7 @@ define('controls/sitemap/Filter', [
                     children[ i ].normalize();
                 }
 
-                this.fireEvent('filter', [this, []]);
+                this.fireEvent( 'filter',  [ this, [] ] );
 
                 return;
             }
@@ -220,17 +234,11 @@ define('controls/sitemap/Filter', [
 
             var result = Map.search( str );
 
-            for ( i = 0, len = result.length; i < len; i++ )
-            {
+            for ( i = 0, len = result.length; i < len; i++ ) {
                 result[ i ].normalize();
-                /*
-                if ( i === 0 && result[i].getElm().isViewable() === false ) {
-                    this.fireEvent('resultNotViewable', [this, result[i]]);
-                }
-                */
             }
 
-            this.fireEvent('filter', [this, result]);
+            this.fireEvent( 'filter', [ this, result ] );
         }
     });
 
