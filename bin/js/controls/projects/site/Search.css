@@ -1,0 +1,21 @@
+@CHARSET "UTF-8";
+
+
+
+.qui-search-sitemap {
+    width: 300px;
+    background: #fff;
+    height: 100%;
+    position: relative;
+    top: 0px;
+    z-index: 100;
+    border-right: 1px solid #bbb;
+    float: left;
+}
+
+.qui-search-sitemap-container {
+    float: left;
+    clear: both;
+    overflow : auto;
+    width: 290px;
+}
