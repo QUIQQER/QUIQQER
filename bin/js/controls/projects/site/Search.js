@@ -12,8 +12,10 @@ define('controls/projects/site/Search', [
 
     'controls/desktop/Panel',
     'controls/buttons/Select',
+    'controls/buttons/Button',
     'controls/projects/Sitemap',
     'controls/sitemap/Filter',
+    'controls/grid/Grid',
 
     'css!controls/projects/site/Search.css'
 
@@ -34,35 +36,53 @@ define('controls/projects/site/Search', [
         Type    : 'QUI.controls.projects.site.Search',
 
         Binds : [
+            'search',
             'hideSitemap',
-            '$onCreate'
+            '$onCreate',
+            '$onResize',
+            '$onDestroy'
         ],
 
         options : {
             id    : 'project-site-search',
             icon  : URL_BIN_DIR +'16x16/search.png',
-            title : 'Seiten suchen...'
+            title : 'Seiten suchen...',
+
+            project : null,
+
+            fields  : {
+                id      : true,
+                name    : true,
+                title   : true,
+                short   : false,
+                content : false
+            }
         },
 
         initialize : function(options)
         {
             this.parent( options );
 
-            this.$Project    = null;
             this.$ProjectMap = null;
             this.$MapFilter  = null;
+            this.$Grid       = null;
 
             this.addEvents({
-                onCreate : this.$onCreate
+                onCreate  : this.$onCreate,
+                onResize  : this.$onResize,
+                onDestroy : this.$onDestroy
             });
         },
 
-
         /**
          * event: oncreate - panel creation
+         *
+         * @method QUI.controls.projects.site.Search#$onCreate
          */
         $onCreate : function()
         {
+            var Control = this;
+
             // buttons
             this.addButton({
                 name    : 'site-sitemap-button',
@@ -89,17 +109,238 @@ define('controls/projects/site/Search', [
 
 
             // create the search form & body
-            this.getBody().set(
-                'html',
+            QUI.Template.get('project_site_search', function(result, Request)
+            {
+                var Body = Control.getBody();
 
-                '<div class="qui-search-content">'+
-                    '<form></form>' +
-                '</div>'
-            );
+                Body.set( 'html', result );
+
+                // form element
+                QUI.Utils.setDataToForm(
+                    Control.getAttribute( 'fields' ),
+                    Body.getElement( 'form' )
+                );
+
+                Body.getElement( 'form' ).addEvent('submit', function(event)
+                {
+                    Control.search();
+                    event.stop();
+                });
+
+                Body.getElement( 'input' ).addEvent('change', function(event)
+                {
+                    if ( this.type != 'checkbox' ) {
+                        return;
+                    }
+
+                    var fields = Control.getAttribute( 'fields' );
+
+                    fields[ this.get( 'name' ) ] = this.checked ? true : false;
+
+                    Control.setAttribute( 'fields', fields );
+                });
+
+                Body.getElement( 'input[name="qui-search-string"]' ).focus();
+
+                // project lang
+                var Select = new QUI.controls.buttons.Select({
+                    name   : 'project_select',
+                    styles : {
+                        width : 100
+                    },
+                    events :
+                    {
+                        onChange : function(value, Select) {
+                            Control.setAttribute( 'project', value );
+                        }
+                    }
+                }).inject(
+                    Body.getElement( '.qui-search-elements' )
+                );
+
+                QUI.Projects.getList(function(result, Request)
+                {
+                    var i, len, project, langs;
+
+                    for ( project in result )
+                    {
+                        langs = result[ project ].langs.split(',');
+
+                        for ( i = 0, len = langs.length; i < len; i++ )
+                        {
+                            Select.appendChild(
+                                project +' ('+ langs[ i ] +')',
+                                project +':'+ langs[ i ],
+                                URL_BIN_DIR +'16x16/flags/'+ langs[ i ] +'.png'
+                            );
+                        }
+                    }
+
+                    Select.setValue(
+                        Select.firstChild().getAttribute( 'value' )
+                    );
+                });
+
+                // search button
+                new QUI.controls.buttons.Button({
+                    textimage : URL_BIN_DIR +'16x16/search.png',
+                    text   : 'suchen',
+                    events : {
+                        onClick : Control.search
+                    }
+                }).inject(
+                    Body.getElement( '.qui-search-elements' )
+                );
+
+                // set the sizes of the elements
+                Control.resize();
+
+                // result table
+                Control.$Grid = new QUI.controls.grid.Grid(
+                    Body.getElement( '.qui-search-results' ),
+                    {
+                        columnModel : [{
+                            header    : 'ID',
+                            dataIndex : 'id',
+                            dataType  : 'string',
+                            width     : 50
+                        }, {
+                            header    : 'Name',
+                            dataIndex : 'name',
+                            dataType  : 'string',
+                            width     : 150
+                        }, {
+                            header    : 'Titel',
+                            dataIndex : 'title',
+                            dataType  : 'string',
+                            width     : 150
+                        }],
+                        pagination : true
+                    }
+                );
+
+                Control.$Grid.addEvents({
+                    onDblClick : function(event)
+                    {
+                        if ( !Control.getAttribute( 'project' ) ) {
+                            return;
+                        }
+
+                        var data = Control.$Grid.getDataByRow( event.row );
+
+                        Control.openSitePanel(
+                            Control.getAttribute( 'project' ).split( ':' )[0],
+                            Control.getAttribute( 'project' ).split( ':' )[1],
+                            data.id
+                        );
+                    }
+                });
+            });
+        },
+
+        /**
+         * Start the search
+         */
+        search : function()
+        {
+            var Control = this,
+                Body    = this.getBody();
+
+            if ( !this.getAttribute( 'project' ) ) {
+                return;
+            }
+
+            if ( !Body ) {
+                return;
+            }
+
+            this.Loader.show();
+
+
+            var Search  = Body.getElement( '[name="qui-search-string"]' ),
+                options = Body.getElements( 'fieldset input' ),
+
+                project = this.getAttribute( 'project' ).split(':')[0],
+                lang    = this.getAttribute( 'project' ).split(':')[1];
+
+            var i, len;
+            var fields = [];
+
+            for ( i = 0, len = options.length; i < len; i++ )
+            {
+                if ( options[ i ].checked ) {
+                    fields.push( options[ i ].name );
+                }
+            }
+
+            QUI.Ajax.get('ajax_project_sites_search', function(result, Request)
+            {
+                Control.$Grid.setData( result );
+                Control.Loader.hide();
+
+            }, {
+                project : project,
+                lang    : lang,
+                search  : Search.value,
+                params  : JSON.encode({
+                    fields : fields
+                })
+            });
+        },
+
+        /**
+         * Opens the panel a Site
+         *
+         * @method QUI.controls.projects.site.Search#openSitePanel
+         * @param {String} project - Name of the Project
+         * @param {String} lang - Language of the Project
+         * @param {Integer} id - Site-ID
+         */
+        openSitePanel : function(project, lang, id)
+        {
+            require([
+                'controls/projects/site/Panel',
+                'classes/projects/Project',
+                'classes/projects/Site'
+            ], function(QUI_SitePanel, QUI_Site)
+            {
+                var n      = 'panel-'+ project +'-'+ lang +'-'+ id,
+                    panels = QUI.Controls.get( n );
+
+
+                if ( panels.length )
+                {
+                    panels[ 0 ].open();
+
+                    // if a task exist, click it and open the instance
+                    var Task = panels[ 0 ].getAttribute( 'Task' );
+
+                    if ( Task && Task.getType() == 'QUI.controls.taskbar.Task' ) {
+                        panels[ 0 ].getAttribute( 'Task' ).click();
+                    }
+
+                    return;
+                }
+
+                panels = QUI.Controls.getByType( 'QUI.controls.desktop.Tasks' );
+
+                if ( !panels.length ) {
+                    return;
+                }
+
+                var Project = QUI.Projects.get( project, lang ),
+                    Site    = Project.get( id );
+
+                panels[ 0 ].appendChild(
+                    new QUI_SitePanel( Site )
+                );
+            });
         },
 
         /**
          * Show the sitemap of a project
+         *
+         * @method QUI.controls.projects.site.Search#showSitemap
          */
         showSitemap : function()
         {
@@ -130,7 +371,7 @@ define('controls/projects/site/Search', [
             var Select = new QUI.controls.buttons.Select({
                 name   : 'project_select',
                 styles : {
-                    width : 285,
+                    width : 285
                 },
                 events :
                 {
@@ -187,22 +428,13 @@ define('controls/projects/site/Search', [
                 }
             });
 
-            Content.setStyles({
-                width       : bsize.x - 350,
-                marginLeft  : 300
-            });
-
-            Container.setStyles({
-                height : bsize.y - 70
-            });
-
             moofx( ProjectMap ).animate({
                 left : 0
             }, {
                 callback : function()
                 {
                     //this.$createSitemap();
-                    this.$resizeSheet();
+                    this.resize();
 
                     // project dropdown
                     QUI.Projects.getList(function(result, Request)
@@ -234,6 +466,8 @@ define('controls/projects/site/Search', [
 
         /**
          * Hide the sitemap element
+         *
+         * @method QUI.controls.projects.site.Search#hideSitemap
          */
         hideSitemap : function()
         {
@@ -253,14 +487,9 @@ define('controls/projects/site/Search', [
                 callback : function(Container)
                 {
                     var Body  = this.getBody(),
-                        Items = Body.getElement('.qui-search-content');
+                        Items = Body.getElement( '.qui-search-content' );
 
                     Container.destroy();
-
-                    Content.setStyles({
-                        width      : '100%',
-                        marginLeft : null
-                    });
 
                     var Btn = this.getButtons( 'site-sitemap-button' );
 
@@ -268,7 +497,7 @@ define('controls/projects/site/Search', [
                         Btn.setNormal();
                     }
 
-                    this.$resizeSheet();
+                    this.resize();
 
                 }.bind( this, Container )
             });
@@ -277,6 +506,7 @@ define('controls/projects/site/Search', [
         /**
          * Draw the sitemap of a project
          *
+         * @method QUI.controls.projects.site.Search#$createSitemap
          * @param {String} project - project name
          * @param {String} lang    - project language
          */
@@ -300,15 +530,74 @@ define('controls/projects/site/Search', [
             if ( this.$MapFilter ) {
                 this.$MapFilter.bindSitemap( this.$ProjectMap );
             }
-
         },
 
         /**
-         * Resize the inner body of the panel
+         * event : on panel resize
+         * Resize all elements
+         *
+         * @method QUI.controls.projects.site.Search#$onResize
          */
-        $resizeSheet : function()
+        $onResize : function()
         {
+            var Body = this.getBody();
 
+            if ( !Body ) {
+                return;
+            }
+
+            var Results   = Body.getElement( '.qui-search-results' ),
+                Sitemap   = Body.getElement( '.qui-search-sitemap' ),
+                Content   = Body.getElement( '.qui-search-content' ),
+                Container = Body.getElement( '.qui-search-sitemap-container' ),
+
+                bsize = Body.getSize();
+
+            if ( !Container )
+            {
+                Content.setStyles({
+                    width      : '100%',
+                    marginLeft : null
+                });
+            } else
+            {
+                Content.setStyles({
+                    width       : bsize.x - 340,
+                    marginLeft  : 300
+                });
+
+                Sitemap.setStyles({
+                    height : bsize.y
+                });
+
+                Container.setStyles({
+                    height : bsize.y - 70
+                });
+            }
+
+            if ( this.$Grid ) {
+                this.$Grid.setHeight( bsize.y - 200 );
+            }
+        },
+
+        /**
+         * event : on panel destroy
+         *
+         * @method QUI.controls.projects.site.Search#$onDestroy
+         */
+        $onDestroy : function()
+        {
+            if ( this.$ProjectMap ) {
+                this.$ProjectMap.destroy();
+            }
+
+            if ( this.$MapFilter ) {
+                this.$MapFilter.destroy();
+            }
+
+            if ( this.$Grid ) {
+                this.$Grid.destroy();
+            }
         }
     });
 

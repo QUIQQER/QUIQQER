@@ -2,6 +2,24 @@
 /* Standard Aussehen für DOM Elemente
  ================================================== */
 
+
+fieldset {
+    float: left;
+    clear: both;
+
+    margin: 20px 0 !important;
+    padding: 10px !important;
+
+    border-width: 2px 0 0 0;
+    border-color: #e5e5e5;
+    border-style: solid;
+}
+
+legend {
+    margin-left: 10px;
+    padding: 0 10px;
+}
+
 label {
     cursor: pointer;
     line-height: 26px;

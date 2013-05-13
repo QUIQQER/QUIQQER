@@ -323,40 +323,46 @@ class Projects_Project
      */
     public function search($search, $select=false)
     {
-        $table  = $this->getAttribute('db_table');
-        $search = \Utils_Security_Orthos::clearMySQL($search);
+        $table = $this->getAttribute( 'db_table' );
 
         $query = 'SELECT id FROM '. $table;
-        $where = ' WHERE name LIKE "%'. $search .'%"';
+        $where = ' WHERE name LIKE :search';
 
-        if (is_array($select))
+        $allowed = array( 'id', 'name', 'title', 'short', 'content' );
+
+        if ( is_array( $select ) )
         {
-            $allowed = array('name', 'title', 'short', 'content');
             $where   = ' WHERE (';
 
-            foreach ($select as $field)
+            foreach ( $select as $field )
             {
-                if (!in_array($field, $allowed)) {
+                if ( !in_array( $field, $allowed ) ) {
                     continue;
                 }
 
-                $where .= ' '. $field .' LIKE "%'. $search .'%" OR ';
+                $where .= ' '. $field .' LIKE :search OR ';
             }
 
-            $where = substr($where, 0, -4) .')';
+            $where = substr( $where, 0, -4 ) .')';
 
-            if (strlen($where) < 6) {
-                $where = ' WHERE name LIKE "%'. $search .'%"';
+            if ( strlen( $where ) < 6 ) {
+                $where = ' WHERE name LIKE :search';
             }
         }
 
         $query = $query . $where .' AND deleted = 0 LIMIT 0, 50';
 
-        $dbresult = \QUI::getDB()->getData($query, 'ARRAY', 'ASSOC');
+        $PDO       = \QUI::getDataBase()->getPDO();
+        $Statement = $PDO->prepare( $query );
+
+        $Statement->bindValue( ':search', '%'. $search .'%', \PDO::PARAM_STR );
+        $Statement->execute();
+
+        $dbresult = $Statement->fetchAll( \PDO::FETCH_ASSOC );
         $result   = array();
 
-        foreach ($dbresult as $entry) {
-            $result[] = $this->get($entry['id']);
+        foreach ( $dbresult as $entry ) {
+            $result[] = $this->get( $entry['id'] );
         }
 
         return $result;

@@ -176,6 +176,12 @@ define('classes/utils/Utils', function()
 
                 if ( Elm.type === 'checkbox' )
                 {
+                    if ( data[k] === false || data[k] === true )
+                    {
+                        Elm.checked = data[k];
+                        continue;
+                    }
+
                     Elm.checked = ( (data[k]).toInt() ? true : false );
                     continue;
                 }

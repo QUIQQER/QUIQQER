@@ -1,5 +1,30 @@
 @CHARSET "UTF-8";
 
+.qui-search-elements {
+    width: 100%;
+    float: left;
+    clear: both;
+}
+
+.qui-search-elements label,
+.qui-search-elements input {
+    float: left;
+    margin-right: 10px;
+}
+
+.qui-search-checkbox-container {
+    float: left;
+    width: 160px;
+    margin-left: 20px;
+}
+
+.qui-search-checkbox-container:nth-child(3n+2) {
+    clear: both;
+}
+
+/** Sitemap
+ =========================================================== */
+
 .qui-search-sitemap {
     width: 300px;
     background: #fff;
