@@ -36,6 +36,7 @@ define('controls/users/User', [
 
         Binds : [
             'openPermissions',
+            'savePassword',
 
             '$onCreate',
             '$onDestroy',
@@ -210,6 +211,23 @@ define('controls/users/User', [
                     Body.getElement( 'form' )
                 );
 
+                // password save
+                var PasswordField = Body.getElement( 'input[name="password2"]' );
+
+                if ( PasswordField )
+                {
+                    PasswordField.setStyle( 'float', 'left' );
+
+                    new QUI.controls.buttons.Button({
+                        text   : 'Passwort speichern',
+                        events : {
+                            onClick : Panel.savePassword
+                        }
+                    }).inject(
+                        PasswordField, 'after'
+                    );
+                }
+
                 Panel.Loader.hide();
             }, {
                 Panel   : this,
@@ -291,8 +309,38 @@ define('controls/users/User', [
         $onClickDel : function()
         {
 
-        }
+        },
 
+        /**
+         * Saves the password to the user
+         * only triggerd if the password tab are open
+         *
+         * @method QUI.controls.users.User#savePassword
+         */
+        savePassword : function()
+        {
+            var Control = this,
+                Body    = this.getBody(),
+                Form    = Body.getElement( 'form' ),
+                Pass1   = Form.elements.password,
+                Pass2   = Form.elements.password2;
+
+            if ( !Pass1 || !Pass2 ) {
+                return;
+            }
+
+            Control.Loader.show();
+
+            this.getUser().savePassword(
+                Pass1.value,
+                Pass2.value,
+                {},
+                function(result, Request)
+                {
+                    Control.Loader.hide();
+                }
+            );
+        }
     });
 
     return QUI.controls.users.User;

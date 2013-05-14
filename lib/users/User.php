@@ -13,232 +13,232 @@
 
 class Users_User implements Interface_Users_User
 {
-	/**
-	 * Project extention
-	 * @var UserExtend
-	 */
-	public $Extend = null;
+    /**
+     * Project extention
+     * @var UserExtend
+     */
+    public $Extend = null;
 
-	/**
-	 * The groups in which the user is
-	 * @var array|Groups_Group
-	 */
-	public $Group = array();
+    /**
+     * The groups in which the user is
+     * @var array|Groups_Group
+     */
+    public $Group = array();
 
-	/**
-	 * User locale object
-	 * @var QUI_Locale
-	 */
-	public $Locale = null;
+    /**
+     * User locale object
+     * @var QUI_Locale
+     */
+    public $Locale = null;
 
-	/**
-	 * User ID
-	 * @var Integer
-	 */
-	protected $_id;
+    /**
+     * User ID
+     * @var Integer
+     */
+    protected $_id;
 
-	/**
-	 * User groups
-	 * @var array
-	 */
-	protected $_groups;
+    /**
+     * User groups
+     * @var array
+     */
+    protected $_groups;
 
-	/**
-	 * Username
-	 * @var String
-	 */
-	protected $_name;
+    /**
+     * Username
+     * @var String
+     */
+    protected $_name;
 
-	/**
-	 * User lang
-	 * @var String
-	 */
-	protected $_lang = null;
+    /**
+     * User lang
+     * @var String
+     */
+    protected $_lang = null;
 
-	/**
-	 * Active status
-	 * @var Integer
-	 */
-	protected $_active = 0;
+    /**
+     * Active status
+     * @var Integer
+     */
+    protected $_active = 0;
 
-	/**
-	 * Delete status
-	 * @var Integer
-	 */
-	protected $_deleted = 0;
+    /**
+     * Delete status
+     * @var Integer
+     */
+    protected $_deleted = 0;
 
     /**
      * Super user flag
      * @var Bool
      */
-	protected $_su = false;
+    protected $_su = false;
 
-	/**
-	 * Admin flag
-	 * @var Bool
-	 */
-	protected $_admin = null;
+    /**
+     * Admin flag
+     * @var Bool
+     */
+    protected $_admin = null;
 
-	/**
-	 * Settings
-	 * @var array
-	 */
-	protected $_settings;
+    /**
+     * Settings
+     * @var array
+     */
+    protected $_settings;
 
-	/**
-	 * User manager
-	 * @var Users_Users
-	 */
-	protected $_Users;
+    /**
+     * User manager
+     * @var Users_Users
+     */
+    protected $_Users;
 
-	/**
-	 * Encrypted pass
-	 * @var String
-	 */
-	protected $_password;
+    /**
+     * Encrypted pass
+     * @var String
+     */
+    protected $_password;
 
-	/**
-	 * Extra fields
-	 * @var Array
-	 */
-	protected $_extra = array();
+    /**
+     * Extra fields
+     * @var Array
+     */
+    protected $_extra = array();
 
-	/**
-	 * user plugins
-	 * @var Array
-	 */
-	protected $_plugins = array();
+    /**
+     * user plugins
+     * @var Array
+     */
+    protected $_plugins = array();
 
     /**
      * User adresses
      * @var Array
      */
-	protected $_adress_list = array();
+    protected $_adress_list = array();
 
-	/**
-	 * Session id file
-	 * @var String
-	 */
-	protected $_id_sessid_file = '';
+    /**
+     * Session id file
+     * @var String
+     */
+    protected $_id_sessid_file = '';
 
-	/**
-	 * contructor
-	 *
-	 * @param Integer $id - ID of the user
-	 * @param Users_Users $Users - the user manager
-	 * @throws QException
-	 */
-	public function __construct($id, Users_Users $Users)
-	{
-		$id = (int)$id;
+    /**
+     * contructor
+     *
+     * @param Integer $id - ID of the user
+     * @param Users_Users $Users - the user manager
+     * @throws QException
+     */
+    public function __construct($id, Users_Users $Users)
+    {
+        $id = (int)$id;
 
-		if ( !$id || $id <= 10 )
-		{
-			throw new QException(
-				QUI::getLocale()->get(
-					'system',
-					'exception.lib.user.wrong.uid'
-				),
-			    404
-			);
-		}
+        if ( !$id || $id <= 10 )
+        {
+            throw new QException(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.lib.user.wrong.uid'
+                ),
+                404
+            );
+        }
 
-		$Groups = QUI::getGroups();
+        $Groups = QUI::getGroups();
 
-		$this->_Users = $Users;
+        $this->_Users = $Users;
 
-		$data = QUI::getDB()->select(array(
-			'from'  => Users_Users::Table(),
-			'where' => array(
-				'id' => (int)$id
-			),
-			'limit' => '1'
-		));
+        $data = QUI::getDB()->select(array(
+            'from'  => Users_Users::Table(),
+            'where' => array(
+                'id' => (int)$id
+            ),
+            'limit' => '1'
+        ));
 
-		if ( !isset( $data[0] ) )
-		{
-			throw new QException(
-				QUI::getLocale(
-					'system',
-					'exception.lib.user.not.found'
-				),
-				404
-			);
-		}
+        if ( !isset( $data[0] ) )
+        {
+            throw new QException(
+                QUI::getLocale(
+                    'quiqqer/system',
+                    'exception.lib.user.not.found'
+                ),
+                404
+            );
+        }
 
-		// Eigenschaften setzen
-		if ( isset( $data[0]['username'] ) )
-		{
-			$this->_name = $data[0]['username'];
-			unset( $data[0]['username'] );
-		}
+        // Eigenschaften setzen
+        if ( isset( $data[0]['username'] ) )
+        {
+            $this->_name = $data[0]['username'];
+            unset( $data[0]['username'] );
+        }
 
-		if ( isset( $data[0]['id'] ) )
-		{
-			$this->_id = $data[0]['id'];
-			unset( $data[0]['id'] );
-		}
+        if ( isset( $data[0]['id'] ) )
+        {
+            $this->_id = $data[0]['id'];
+            unset( $data[0]['id'] );
+        }
 
-		if ( isset( $data[0]['usergroup'] ) )
-		{
-			try
-			{
-				$this->setGroups( $data[0]['usergroup'] );
-			} catch ( QException $e )
-			{
-				// nohting
-			}
+        if ( isset( $data[0]['usergroup'] ) )
+        {
+            try
+            {
+                $this->setGroups( $data[0]['usergroup'] );
+            } catch ( QException $e )
+            {
+                // nohting
+            }
 
-			unset( $data[0]['usergroup'] );
-		}
+            unset( $data[0]['usergroup'] );
+        }
 
-		if ( isset( $data[0]['active'] ) && $data[0]['active'] == 1 ) {
-			$this->_active = 1;
-		}
+        if ( isset( $data[0]['active'] ) && $data[0]['active'] == 1 ) {
+            $this->_active = 1;
+        }
 
-		if ( $data[0]['active'] == -1 ) {
-			$this->_deleted = 1;
-		}
+        if ( $data[0]['active'] == -1 ) {
+            $this->_deleted = 1;
+        }
 
-		if ( isset( $data[0]['su'] ) && $data[0]['su'] == 1 ) {
-			$this->_su = true;
-		}
+        if ( isset( $data[0]['su'] ) && $data[0]['su'] == 1 ) {
+            $this->_su = true;
+        }
 
-		if ( isset( $data[0]['password'] ) ) {
-			$this->_password = $data[0]['password'];
-		}
+        if ( isset( $data[0]['password'] ) ) {
+            $this->_password = $data[0]['password'];
+        }
 
-		foreach ( $data[0] as $key => $value )
-		{
-		    if ( $key == 'user_agent' )
-		    {
-		        $this->_settings['user_agent'] = $value;
-		        continue;
-		    }
+        foreach ( $data[0] as $key => $value )
+        {
+            if ( $key == 'user_agent' )
+            {
+                $this->_settings['user_agent'] = $value;
+                continue;
+            }
 
-			$this->setAttribute( $key, $value );
-		}
+            $this->setAttribute( $key, $value );
+        }
 
-		if ( $this->getAttribute( 'expire' ) == '0000-00-00 00:00:00' ) {
-			$this->setAttribute( 'expire', false );
-		}
+        if ( $this->getAttribute( 'expire' ) == '0000-00-00 00:00:00' ) {
+            $this->setAttribute( 'expire', false );
+        }
 
         // @todo sessions prüfen mit einstellungen
-		$this->_id_sessid_file = VAR_DIR .'uid_sess/'. $id;
+        $this->_id_sessid_file = VAR_DIR .'uid_sess/'. $id;
 
-		// Extras
-		if ( $this->getAttribute( 'extra' ) ) {
-			$this->_extra = json_decode( $this->getAttribute('extra'), true );
-		}
+        // Extras
+        if ( $this->getAttribute( 'extra' ) ) {
+            $this->_extra = json_decode( $this->getAttribute('extra'), true );
+        }
 
         // Plugins laden
-		$Plugins = QUI::getPlugins();
-		$plugins = $Plugins->get();
+        $Plugins = QUI::getPlugins();
+        $plugins = $Plugins->get();
 
-		foreach ( $plugins as $Plugin ) {
-    		$Plugin->onUserLoad( $this );
-		}
-	}
+        foreach ( $plugins as $Plugin ) {
+            $Plugin->onUserLoad( $this );
+        }
+    }
 
     /**
      * (non-PHPdoc)
@@ -249,112 +249,112 @@ class Users_User implements Interface_Users_User
      *
      * @return Bool
      */
-	public function getPermission($right, $ruleset=false)
-	{
+    public function getPermission($right, $ruleset=false)
+    {
         //@todo Benutzer muss erster prüfen ob bei ihm das recht seperat gesetzt ist
 
         return QUI::getRights()->getUserPermission( $this, $right, $ruleset );
-	}
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see Interface_Users_User::getType()
-	 */
-	public function getType()
-	{
-		return get_class( $this );
-	}
+    /**
+     * (non-PHPdoc)
+     * @see Interface_Users_User::getType()
+     */
+    public function getType()
+    {
+        return get_class( $this );
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see Interface_Users_User::getExtra()
-	 *
-	 * @param String $field
-	 * @return String|Integer|array
-	 */
-	public function getExtra( $field )
-	{
-		if ( isset($this->_extra[ $field] ) ) {
-			return $this->_extra[ $field ];
-		}
+    /**
+     * (non-PHPdoc)
+     * @see Interface_Users_User::getExtra()
+     *
+     * @param String $field
+     * @return String|Integer|array
+     */
+    public function getExtra( $field )
+    {
+        if ( isset($this->_extra[ $field] ) ) {
+            return $this->_extra[ $field ];
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see Interface_Users_User::setExtra()
-	 *
-	 * @param String $field
-	 * @param String|Integer|array $value
-	 */
-	public function setExtra($field, $value)
-	{
-		$this->_extra[ $field ] = $value;
-	}
+    /**
+     * (non-PHPdoc)
+     * @see Interface_Users_User::setExtra()
+     *
+     * @param String $field
+     * @param String|Integer|array $value
+     */
+    public function setExtra($field, $value)
+    {
+        $this->_extra[ $field ] = $value;
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see Interface_Users_User::loadExtra()
-	 *
-	 * @param Projects_Project $Project
-	 * @todo für projekte wieder realiseren, vorerst ausgeschaltet
-	 */
-	public function loadExtra(Projects_Project $Project)
-	{
-	    return false;
+    /**
+     * (non-PHPdoc)
+     * @see Interface_Users_User::loadExtra()
+     *
+     * @param Projects_Project $Project
+     * @todo für projekte wieder realiseren, vorerst ausgeschaltet
+     */
+    public function loadExtra(Projects_Project $Project)
+    {
+        return false;
 
-		if ( !file_exists( USR_DIR .'lib/'. $Project->getAttribute('name') .'/User.php' ) ) {
-			return false;
-		}
+        if ( !file_exists( USR_DIR .'lib/'. $Project->getAttribute('name') .'/User.php' ) ) {
+            return false;
+        }
 
-		if ( !class_exists('UserExtend') ) {
-			require USR_DIR .'lib/'. $Project->getAttribute('name') .'/User.php';
-		}
+        if ( !class_exists('UserExtend') ) {
+            require USR_DIR .'lib/'. $Project->getAttribute('name') .'/User.php';
+        }
 
-		if ( class_exists('UserExtend') )
-		{
-			$this->Extend = new UserExtend( $this, $Project );
-			return $this->Extend;
-		}
+        if ( class_exists('UserExtend') )
+        {
+            $this->Extend = new UserExtend( $this, $Project );
+            return $this->Extend;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see Interface_Users_User::getId()
-	 */
-	public function getId()
-	{
-		return $this->_id ? $this->_id : false;
-	}
+    /**
+     * (non-PHPdoc)
+     * @see Interface_Users_User::getId()
+     */
+    public function getId()
+    {
+        return $this->_id ? $this->_id : false;
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see Interface_Users_User::getName()
-	 */
-	public function getName()
-	{
-		return $this->_name ? $this->_name : false;
-	}
+    /**
+     * (non-PHPdoc)
+     * @see Interface_Users_User::getName()
+     */
+    public function getName()
+    {
+        return $this->_name ? $this->_name : false;
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see Interface_Users_User::getLang()
-	 */
-	public function getLang()
-	{
-		if ( !is_null( $this->_lang ) ) {
-	        return $this->_lang;
-	    }
+    /**
+     * (non-PHPdoc)
+     * @see Interface_Users_User::getLang()
+     */
+    public function getLang()
+    {
+        if ( !is_null( $this->_lang ) ) {
+            return $this->_lang;
+        }
 
-	    $lang  = QUI::getLocale()->getCurrent();
-	    $langs = QUI::availableLanguages();
+        $lang  = QUI::getLocale()->getCurrent();
+        $langs = QUI::availableLanguages();
 
-	    if ( $this->getAttribute( 'lang' ) ) {
+        if ( $this->getAttribute( 'lang' ) ) {
             $lang = $this->getAttribute( 'lang' );
-	    }
+        }
 
         if ( in_array( $lang, $langs ) ) {
             $this->_lang = $lang;
@@ -373,906 +373,916 @@ class Users_User implements Interface_Users_User
         }
 
         // wird noch gebraucht?
-	    if ( !$this->_lang ) {
+        if ( !$this->_lang ) {
             $this->_lang = QUI::getLocale()->getCurrent();
         }
 
         return $this->_lang;
-	}
+    }
 
     /**
      * (non-PHPdoc)
      * @see iUser::getLocale()
      */
-	public function getLocale()
-	{
-	    if ( $this->Locale ) {
-	        return $this->Locale;
-	    }
+    public function getLocale()
+    {
+        if ( $this->Locale ) {
+            return $this->Locale;
+        }
 
         $this->Locale = new QUI_Locale();
         $this->Locale->setCurrent( $this->getLang() );
 
         return $this->Locale;
-	}
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see Interface_Users_User::getStatus()
-	 */
-	public function getStatus()
-	{
-		if ( $this->_active ) {
-			return $this->_active;
-		}
+    /**
+     * (non-PHPdoc)
+     * @see Interface_Users_User::getStatus()
+     */
+    public function getStatus()
+    {
+        if ( $this->_active ) {
+            return $this->_active;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see Interface_Users_User::setGroups()
-	 *
-	 * @param array|String $groups
-	 */
-	public function setGroups($groups)
-	{
-		if (empty($groups)) {
-			return;
-		}
+    /**
+     * (non-PHPdoc)
+     * @see Interface_Users_User::setGroups()
+     *
+     * @param array|String $groups
+     */
+    public function setGroups($groups)
+    {
+        if (empty($groups)) {
+            return;
+        }
 
-		$Groups = QUI::getGroups();
+        $Groups = QUI::getGroups();
 
-		$this->Group   = array();
-		$this->_groups = false;
+        $this->Group   = array();
+        $this->_groups = false;
 
-		if (is_array($groups))
-		{
-			$aTmp = array();
+        if (is_array($groups))
+        {
+            $aTmp = array();
 
-			foreach ($groups as $group)
-			{
-				$tg = $Groups->get($group);
+            foreach ($groups as $group)
+            {
+                $tg = $Groups->get($group);
 
-				if ($tg)
-				{
-					$this->Group[] = $tg;
-					$aTmp[]        = $group;
-				}
-			}
-
-			$this->_groups = implode($aTmp, ',');
-
-		} elseif (is_string($groups) && strpos($groups,',') !== false)
-		{
-			$groups = explode(',', $groups);
-			$aTmp   = array();
-
-			foreach ($groups as $g)
-			{
-				if (empty($g)) {
-				    continue;
-				}
-
-				try
+                if ($tg)
                 {
-					$this->Group[] = $Groups->get($g);
-					$aTmp[] = $g;
+                    $this->Group[] = $tg;
+                    $aTmp[]        = $group;
+                }
+            }
+
+            $this->_groups = implode($aTmp, ',');
+
+        } elseif (is_string($groups) && strpos($groups,',') !== false)
+        {
+            $groups = explode(',', $groups);
+            $aTmp   = array();
+
+            foreach ($groups as $g)
+            {
+                if (empty($g)) {
+                    continue;
+                }
+
+                try
+                {
+                    $this->Group[] = $Groups->get($g);
+                    $aTmp[] = $g;
 
                 } catch (QException $e)
                 {
                     // nothing
                 }
-			}
+            }
 
-			$this->_groups = ','. implode($aTmp, ',') .',';
+            $this->_groups = ','. implode($aTmp, ',') .',';
 
-		} elseif (is_string($groups))
-		{
-		    try
+        } elseif (is_string($groups))
+        {
+            try
             {
-				$this->Group[] = $Groups->get($groups);
-				$this->_groups = ','.$groups.',';
-			} catch (QException $e)
-			{
+                $this->Group[] = $Groups->get($groups);
+                $this->_groups = ','.$groups.',';
+            } catch (QException $e)
+            {
 
-			}
-		}
-	}
+            }
+        }
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see Interface_Users_User::getGroups()
-	 *
-	 * @param Bool $array - returns the groups as objects (true) or as an array (false)
-	 * @return array
-	 */
-	public function getGroups($array=true)
-	{
-		if ( $this->Group && is_array( $this->Group ) )
-		{
-			if ( $array == true ) {
-				return $this->Group;
-			}
+    /**
+     * (non-PHPdoc)
+     * @see Interface_Users_User::getGroups()
+     *
+     * @param Bool $array - returns the groups as objects (true) or as an array (false)
+     * @return array
+     */
+    public function getGroups($array=true)
+    {
+        if ( $this->Group && is_array( $this->Group ) )
+        {
+            if ( $array == true ) {
+                return $this->Group;
+            }
 
-			return $this->_groups;
-		}
+            return $this->_groups;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * Remove a group from the user
-	 *
-	 * @param Groups_Group|Integer $Group
-	 */
-	public function removeGroup($Group)
-	{
-		$Groups = QUI::getGroups();
+    /**
+     * Remove a group from the user
+     *
+     * @param Groups_Group|Integer $Group
+     */
+    public function removeGroup($Group)
+    {
+        $Groups = QUI::getGroups();
 
-		if (is_string($Group) || is_int($Group)) {
-			$Group = $Groups->get((int)$Group);
-		}
+        if (is_string($Group) || is_int($Group)) {
+            $Group = $Groups->get((int)$Group);
+        }
 
-		$groups = $this->getGroups(true);
-		$new_gr = array();
+        $groups = $this->getGroups(true);
+        $new_gr = array();
 
-		if (!is_array($groups)) {
-			$groups = array();
-		}
+        if (!is_array($groups)) {
+            $groups = array();
+        }
 
-		foreach ($groups as $key => $UserGroup)
-		{
-			if ($UserGroup->getId() != $Group->getId()) {
-				$new_gr[] = $UserGroup->getId();
-			}
-		}
+        foreach ($groups as $key => $UserGroup)
+        {
+            if ($UserGroup->getId() != $Group->getId()) {
+                $new_gr[] = $UserGroup->getId();
+            }
+        }
 
-		$this->setGroups($new_gr);
-	}
+        $this->setGroups($new_gr);
+    }
 
-	/**
-	 * Add the user to a group
-	 *
-	 * @param Integer $gid
-	 */
-	public function addGroup($gid)
-	{
-		/* @todo Root Gruppe darf nur in Root Gruppe */
-		if ($gid == QUI::conf('globals', 'root')) {
-			return; // bad fix, mal provisorisch
-		}
+    /**
+     * Add the user to a group
+     *
+     * @param Integer $gid
+     */
+    public function addGroup($gid)
+    {
+        /* @todo Root Gruppe darf nur in Root Gruppe */
+        if ($gid == QUI::conf('globals', 'root')) {
+            return; // bad fix, mal provisorisch
+        }
 
-		$Groups = QUI::getGroups();
-		$Group  = $Groups->get($gid);
+        $Groups = QUI::getGroups();
+        $Group  = $Groups->get($gid);
 
-		$groups = $this->getGroups(true);
-		$new_gr = array();
-		$_tmp   = array();
+        $groups = $this->getGroups(true);
+        $new_gr = array();
+        $_tmp   = array();
 
-		if (!is_array($groups)) {
-			$groups = array();
-		}
+        if (!is_array($groups)) {
+            $groups = array();
+        }
 
-		$groups[] = $Group;
+        $groups[] = $Group;
 
 
-		foreach ($groups as $key => $UserGroup)
-		{
-			if (isset($_tmp[ $UserGroup->getId() ])) {
-				continue;
-			}
+        foreach ($groups as $key => $UserGroup)
+        {
+            if (isset($_tmp[ $UserGroup->getId() ])) {
+                continue;
+            }
 
-			$_tmp[ $UserGroup->getId() ] = true;
+            $_tmp[ $UserGroup->getId() ] = true;
 
-			$new_gr[] = $UserGroup->getId();
-		}
+            $new_gr[] = $UserGroup->getId();
+        }
 
-		$this->setGroups($new_gr);
-	}
+        $this->setGroups($new_gr);
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see Interface_Users_User::setAttribute()
-	 *
-	 * @param String $key
-	 * @param String|Integer|Array $value
-	 */
-	public function setAttribute($key, $value)
-	{
-		if (!$key ||
-		    $key == 'id' ||
-		    $key == 'password' ||
-		    $key == 'user_agent')
-		{
-			return;
-		}
+    /**
+     * (non-PHPdoc)
+     * @see Interface_Users_User::setAttribute()
+     *
+     * @param String $key
+     * @param String|Integer|Array $value
+     */
+    public function setAttribute($key, $value)
+    {
+        if (!$key ||
+            $key == 'id' ||
+            $key == 'password' ||
+            $key == 'user_agent')
+        {
+            return;
+        }
 
-		switch ($key)
-		{
-			case "su":
-				$this->_su = (int)$value;
-			break;
+        switch ($key)
+        {
+            case "su":
+                $this->_su = (int)$value;
+            break;
 
-			case "username":
-			case "name":
-				// Falls der Name geändert wird muss geprüft werden das es diesen nicht schon gibt
-				Users_Users::checkUsernameSigns($value);
+            case "username":
+            case "name":
+                // Falls der Name geändert wird muss geprüft werden das es diesen nicht schon gibt
+                Users_Users::checkUsernameSigns($value);
 
-				if ($this->_name != $value &&
-					$this->_Users->existsUsername($value))
-				{
-					throw new QException('Name existiert bereits');
-				}
+                if ($this->_name != $value &&
+                    $this->_Users->existsUsername($value))
+                {
+                    throw new QException('Name existiert bereits');
+                }
 
-				$this->_name = $value;
-			break;
+                $this->_name = $value;
+            break;
 
-			case "usergroup":
+            case "usergroup":
                 $this->setGroups($value);
-			break;
+            break;
 
-			default:
-				$this->_settings[$key] = $value;
-			break;
-		}
-	}
+            default:
+                $this->_settings[$key] = $value;
+            break;
+        }
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see Interface_Users_User::getAttribute()
-	 *
-	 * @param String $var
-	 * @return String|Ineteger|array
-	 */
-	public function getAttribute($var)
-	{
-	    if (isset($this->_settings[$var]))
-		{
-			if ($var == 'avatar') {
-				return URL_DIR .'media/users/'. $this->_settings[$var];
-			}
+    /**
+     * (non-PHPdoc)
+     * @see Interface_Users_User::getAttribute()
+     *
+     * @param String $var
+     * @return String|Ineteger|array
+     */
+    public function getAttribute($var)
+    {
+        if (isset($this->_settings[$var]))
+        {
+            if ($var == 'avatar') {
+                return URL_DIR .'media/users/'. $this->_settings[$var];
+            }
 
-			return $this->_settings[$var];
-		}
+            return $this->_settings[$var];
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * Return all user attributes
-	 * @return Array
-	 */
-	public function getAllAttributes()
-	{
-		$params = $this->_settings;
+    /**
+     * Return all user attributes
+     * @return Array
+     */
+    public function getAllAttributes()
+    {
+        $params = $this->_settings;
 
-		$params['id']       = $this->getId();
-		$params['active']   = $this->_active;
-		$params['deleted']  = $this->_deleted;
-		$params['admin']    = $this->isAdmin();
-		$params['avatar']   = $this->getAvatar();
-		$params['su']		= $this->isSU();
+        $params['id']       = $this->getId();
+        $params['active']   = $this->_active;
+        $params['deleted']  = $this->_deleted;
+        $params['admin']    = $this->isAdmin();
+        $params['avatar']   = $this->getAvatar();
+        $params['su']		= $this->isSU();
 
-		$params['usergroup'] = $this->getGroups(false);
-		$params['username']  = $this->getName();
+        $params['usergroup'] = $this->getGroups(false);
+        $params['username']  = $this->getName();
 
-		return $params;
-	}
+        return $params;
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see Interface_Users_User::getAvatar()
-	 *
-	 * @param Bool $url - get the avatar with the complete url string
-	 * @return String
-	 */
-	public function getAvatar($url=false)
-	{
-		if (isset($this->_settings["avatar"]))
-		{
-			if ($url == true) {
-				return URL_DIR .'media/users/'. $this->_settings["avatar"];
-			}
+    /**
+     * (non-PHPdoc)
+     * @see Interface_Users_User::getAvatar()
+     *
+     * @param Bool $url - get the avatar with the complete url string
+     * @return String
+     */
+    public function getAvatar($url=false)
+    {
+        if (isset($this->_settings["avatar"]))
+        {
+            if ($url == true) {
+                return URL_DIR .'media/users/'. $this->_settings["avatar"];
+            }
 
-			return $this->_settings["avatar"];
-		}
+            return $this->_settings["avatar"];
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see Interface_Users_User::logout()
-	 */
-	public function logout()
-	{
-		if (!$this->getId()) {
-			return;
-		}
+    /**
+     * (non-PHPdoc)
+     * @see Interface_Users_User::logout()
+     */
+    public function logout()
+    {
+        if (!$this->getId()) {
+            return;
+        }
 
-		// Wenn der Benutzer dieser hier ist
-		$Users    = QUI::getUsers();
-		$SessUser = $Users->getUserBySession();
+        // Wenn der Benutzer dieser hier ist
+        $Users    = QUI::getUsers();
+        $SessUser = $Users->getUserBySession();
 
-		if ($SessUser->getId() == $this->getId())
-		{
-			//session_unset();
-			//session_destroy();
-			$Session = QUI::getSession();
-			$Session->destroy();
-		}
+        if ($SessUser->getId() == $this->getId())
+        {
+            //session_unset();
+            //session_destroy();
+            $Session = QUI::getSession();
+            $Session->destroy();
+        }
 
-		$sessid = '';
+        $sessid = '';
 
-		if (file_exists($this->_id_sessid_file)) {
-			$sessid = file_get_contents($this->_id_sessid_file);
-		}
+        if (file_exists($this->_id_sessid_file)) {
+            $sessid = file_get_contents($this->_id_sessid_file);
+        }
 
-		// Session File löschen
-		if (file_exists(VAR_DIR .'sessions/sess_'. $sessid)) {
-			unlink(VAR_DIR .'sessions/sess_'. $sessid);
-		}
+        // Session File löschen
+        if (file_exists(VAR_DIR .'sessions/sess_'. $sessid)) {
+            unlink(VAR_DIR .'sessions/sess_'. $sessid);
+        }
 
-		// ID File löschen
-		if (file_exists($this->_id_sessid_file)) {
-			unlink($this->_id_sessid_file);
-		}
-	}
+        // ID File löschen
+        if (file_exists($this->_id_sessid_file)) {
+            unlink($this->_id_sessid_file);
+        }
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see Interface_Users_User::setPassword()
-	 *
-	 * @param String $new - new password
-	 */
-	public function setPassword($new)
-	{
-		$this->_checkRights();
+    /**
+     * (non-PHPdoc)
+     * @see Interface_Users_User::setPassword()
+     *
+     * @param String $new - new password
+     */
+    public function setPassword($new)
+    {
+        $this->_checkRights();
 
-		if ( empty( $new ) )
-		{
-			throw new QException(
-		        QUI::getLocale()->get(
-		        	'system',
-		        	'exception.lib.user.empty.password'
-		        )
-			);
-		}
+        if ( empty( $new ) )
+        {
+            throw new QException(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.lib.user.empty.password'
+                )
+            );
+        }
 
-		$newpass         = Users_Users::genHash( $new );
-		$this->_password = $newpass;
+        $newpass         = Users_Users::genHash( $new );
+        $this->_password = $newpass;
 
-		return QUI::getDB()->updateData(
-			Users_Users::Table(),
-			array( 'password' => $newpass ),
-			array( 'id'       => $this->getId() )
-		);
-	}
+        QUI::getDB()->updateData(
+            Users_Users::Table(),
+            array( 'password' => $newpass ),
+            array( 'id'       => $this->getId() )
+        );
 
-	/**
-	 * (non-PHPdoc)
-	 * @see Interface_Users_User::checkPassword()
-	 *
-	 * @param String $pass 		- Password
-	 * @param Bool $encrypted	- is the given password already encrypted?
-	 */
-	public function checkPassword($pass, $encrypted=false)
-	{
-		if ( !$encrypted )
-		{
-			$_pw = $this->_Users->genHash( $pass );
-		} else
-		{
-			$_pw = $pass;
-		}
+        \QUI::getMessagesHandler()->addSuccess(
+            QUI::getLocale()->get(
+                'quiqqer/system',
+                'message.password.save.success'
+            )
+        );
+    }
 
-		return $_pw == $this->_password ? true : false;
-	}
+    /**
+     * (non-PHPdoc)
+     * @see Interface_Users_User::checkPassword()
+     *
+     * @param String $pass 		- Password
+     * @param Bool $encrypted	- is the given password already encrypted?
+     */
+    public function checkPassword($pass, $encrypted=false)
+    {
+        if ( !$encrypted )
+        {
+            $_pw = $this->_Users->genHash( $pass );
+        } else
+        {
+            $_pw = $pass;
+        }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see Interface_Users_User::activate()
-	 *
-	 * @param String $code - activasion code [optional]
-	 */
-	public function activate($code=false)
-	{
-		if ( $code == false ) {
-			$this->_checkRights();
-		}
+        return $_pw == $this->_password ? true : false;
+    }
 
-		if ( $code && $code != $this->getAttribute( 'activation' ) )
-		{
-			throw new QException(
-			    QUI::getLocale()->get(
-			    	'system',
-			    	'exception.lib.user.activasion.wrong.code'
-			    )
-			);
-		}
+    /**
+     * (non-PHPdoc)
+     * @see Interface_Users_User::activate()
+     *
+     * @param String $code - activasion code [optional]
+     */
+    public function activate($code=false)
+    {
+        if ( $code == false ) {
+            $this->_checkRights();
+        }
 
-		if ( $this->_password == '' )
-		{
-			throw new QException(
-			    QUI::getLocale()->get(
-			    	'system',
-			    	'exception.lib.user.activasion.no.password'
-			    )
-			);
-		}
+        if ( $code && $code != $this->getAttribute( 'activation' ) )
+        {
+            throw new QException(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.lib.user.activasion.wrong.code'
+                )
+            );
+        }
 
-		$res = QUI::getDB()->updateData(
-			Users_Users::Table(),
-			array( 'active' => 1 ),
-			array( 'id'     => $this->getId() )
-		);
+        if ( $this->_password == '' )
+        {
+            throw new QException(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.lib.user.activasion.no.password'
+                )
+            );
+        }
 
-		$this->_active = true;
+        $res = QUI::getDB()->updateData(
+            Users_Users::Table(),
+            array( 'active' => 1 ),
+            array( 'id'     => $this->getId() )
+        );
 
-		return $res;
-	}
+        $this->_active = true;
 
-	/**
-	 * (non-PHPdoc)
-	 * @see Interface_Users_User::deactivate()
-	 */
-	public function deactivate()
-	{
-		$this->_checkRights();
+        return $res;
+    }
 
-		// Pluginerweiterungen - onDisable Event
-		foreach ( $this->_plugins as $Plugin )
-		{
-			if ( method_exists( $Plugin, 'onDeactivate' ) ) {
-				$Plugin->onDisable( $this );
-			}
-		}
+    /**
+     * (non-PHPdoc)
+     * @see Interface_Users_User::deactivate()
+     */
+    public function deactivate()
+    {
+        $this->_checkRights();
 
-		// Extra von den Projekten
-		$projects = Projects_Manager::getProjects(true);
+        // Pluginerweiterungen - onDisable Event
+        foreach ( $this->_plugins as $Plugin )
+        {
+            if ( method_exists( $Plugin, 'onDeactivate' ) ) {
+                $Plugin->onDisable( $this );
+            }
+        }
 
-		foreach ( $projects as $Project )
-		{
-			try
-			{
-				$Extend = $this->loadExtra( $Project) ;
+        // Extra von den Projekten
+        $projects = Projects_Manager::getProjects(true);
 
-				if ( method_exists( $Extend, 'onDeactivate' ) ) {
-					$Extend->onDelete();
-				}
+        foreach ( $projects as $Project )
+        {
+            try
+            {
+                $Extend = $this->loadExtra( $Project) ;
 
-			} catch ( QException $e )
-			{
+                if ( method_exists( $Extend, 'onDeactivate' ) ) {
+                    $Extend->onDelete();
+                }
 
-			}
-		}
+            } catch ( QException $e )
+            {
 
-		QUI::getDB()->updateData(
-			Users_Users::Table(),
-			array('active' => 0),
-			array('id'     => $this->getId())
-		);
+            }
+        }
 
-		$this->_active = false;
-		$this->logout();
+        QUI::getDB()->updateData(
+            Users_Users::Table(),
+            array('active' => 0),
+            array('id'     => $this->getId())
+        );
 
-		return true;
-	}
+        $this->_active = false;
+        $this->logout();
 
-	/**
-	 * (non-PHPdoc)
-	 * @see Interface_Users_User::disable()
-	 */
-	public function disable()
-	{
-		$this->_checkRights();
+        return true;
+    }
 
-		// Pluginerweiterungen - onDisable Event
-		foreach ( $this->_plugins as $Plugin )
-		{
-			if ( method_exists( $Plugin, 'onDisable') ) {
-				$Plugin->onDisable( $this );
-			}
-		}
+    /**
+     * (non-PHPdoc)
+     * @see Interface_Users_User::disable()
+     */
+    public function disable()
+    {
+        $this->_checkRights();
 
-		// Extra von den Projekten
-		$projects = Projects_Manager::getProjects( true );
+        // Pluginerweiterungen - onDisable Event
+        foreach ( $this->_plugins as $Plugin )
+        {
+            if ( method_exists( $Plugin, 'onDisable') ) {
+                $Plugin->onDisable( $this );
+            }
+        }
 
-		foreach ( $projects as $Project )
-		{
-			try
-			{
-				$Extend = $this->loadExtra($Project);
+        // Extra von den Projekten
+        $projects = Projects_Manager::getProjects( true );
 
-				if ( method_exists( $Extend, 'onDisable' ) ) {
-					$Extend->onDelete();
-				}
+        foreach ( $projects as $Project )
+        {
+            try
+            {
+                $Extend = $this->loadExtra($Project);
 
-			} catch ( QException $e )
-			{
+                if ( method_exists( $Extend, 'onDisable' ) ) {
+                    $Extend->onDelete();
+                }
 
-			}
-		}
+            } catch ( QException $e )
+            {
 
-		QUI::getDB()->updateData(
-			Users_Users::Table(),
-			array(
-				'active'     => -1,
-				'password'   => '',
-				'usergroup'  => '',
-				'firstname'  => '',
-				'lastname'   => '',
-				'usertitle'  => '',
-				'birthday'   => '',
-				'email'      => '',
-				'su'         => 0,
-				'avatar'     => '',
-				'extra'      => '',
-				'lang'       => '',
-				'shortcuts'  => '',
-				'activation' => '',
-				'expire'     => '0000-00-00 00:00:00'
-			),
-			array( 'id' => $this->getId() )
-		);
+            }
+        }
 
-		$this->logout();
+        QUI::getDB()->updateData(
+            Users_Users::Table(),
+            array(
+                'active'     => -1,
+                'password'   => '',
+                'usergroup'  => '',
+                'firstname'  => '',
+                'lastname'   => '',
+                'usertitle'  => '',
+                'birthday'   => '',
+                'email'      => '',
+                'su'         => 0,
+                'avatar'     => '',
+                'extra'      => '',
+                'lang'       => '',
+                'shortcuts'  => '',
+                'activation' => '',
+                'expire'     => '0000-00-00 00:00:00'
+            ),
+            array( 'id' => $this->getId() )
+        );
 
-		return true;
-	}
+        $this->logout();
 
-	/**
-	 * (non-PHPdoc)
-	 * @see Interface_Users_User::save()
-	 */
-	public function save()
-	{
-		$this->_checkRights();
+        return true;
+    }
 
-		$expire   = '0000-00-00 00:00:00';
-		$birthday = '0000-00-00';
+    /**
+     * (non-PHPdoc)
+     * @see Interface_Users_User::save()
+     */
+    public function save()
+    {
+        $this->_checkRights();
 
-		if ( $this->getAttribute( 'expire' ) )
-		{
-			// Datumsprüfung auf Syntax
-			$value = trim( $this->getAttribute( 'expire' ) );
+        $expire   = '0000-00-00 00:00:00';
+        $birthday = '0000-00-00';
 
-			if ( Utils_Security_Orthos::checkMySqlDatetimeSyntax( $value ) ) {
-				$expire = $value;
-			}
-		}
+        if ( $this->getAttribute( 'expire' ) )
+        {
+            // Datumsprüfung auf Syntax
+            $value = trim( $this->getAttribute( 'expire' ) );
 
-		if ( $this->getAttribute( 'birthday') )
-		{
-			// Datumsprüfung auf Syntax
-			$value = trim( $this->getAttribute( 'birthday' ) );
+            if ( Utils_Security_Orthos::checkMySqlDatetimeSyntax( $value ) ) {
+                $expire = $value;
+            }
+        }
 
-			if ( strlen( $value ) == 10 ) {
-				$value .= ' 00:00:00';
-			}
+        if ( $this->getAttribute( 'birthday') )
+        {
+            // Datumsprüfung auf Syntax
+            $value = trim( $this->getAttribute( 'birthday' ) );
 
-			if ( Utils_Security_Orthos::checkMySqlDatetimeSyntax( $value ) ) {
-				$birthday = substr( $value, 0, 10 );
-			}
-		}
+            if ( strlen( $value ) == 10 ) {
+                $value .= ' 00:00:00';
+            }
 
-		// Pluginerweiterungen - onSave Event
-		/*
-		foreach ($this->_plugins as $Plugin)
-		{
-			if (method_exists($Plugin, 'onSave')) {
-				$Plugin->onSave($this);
-			}
-		}
-		*/
-		$Plugins = QUI::getPlugins();
-		$plugins = $Plugins->get();
+            if ( Utils_Security_Orthos::checkMySqlDatetimeSyntax( $value ) ) {
+                $birthday = substr( $value, 0, 10 );
+            }
+        }
 
-		foreach ( $plugins as $Plugin ) {
+        // Pluginerweiterungen - onSave Event
+        /*
+        foreach ($this->_plugins as $Plugin)
+        {
+            if (method_exists($Plugin, 'onSave')) {
+                $Plugin->onSave($this);
+            }
+        }
+        */
+        $Plugins = QUI::getPlugins();
+        $plugins = $Plugins->get();
+
+        foreach ( $plugins as $Plugin ) {
             $Plugin->onUserSave( $this );
-		}
+        }
 
         return QUI::getDB()->updateData(
-			Users_Users::Table(),
-			array(
-				'username' 	=> $this->getName(),
-				'usergroup' => $this->getGroups(false),
-				'firstname' => $this->getAttribute( 'firstname' ),
-				'lastname' 	=> $this->getAttribute( 'lastname' ),
-				'usertitle' => $this->getAttribute( 'usertitle' ),
-				'birthday' 	=> $birthday,
-				'email' 	=> $this->getAttribute( 'email' ),
-				'avatar' 	=> $this->getAvatar(),
-				'su'		=> $this->isSU(),
-				'extra' 	=> json_encode( $this->_extra ),
-				'lang' 	    => $this->getAttribute( 'lang' ),
-				'lastedit'  => date( "Y-m-d H:i:s" ),
-				'expire'    => $expire,
-				'shortcuts' => $this->getAttribute( 'shortcuts' ),
-				'adress'    => (int)$this->getAttribute( 'adress' )
-			),
-			array('id' => $this->getId())
-		);
-	}
+            Users_Users::Table(),
+            array(
+                'username' 	=> $this->getName(),
+                'usergroup' => $this->getGroups(false),
+                'firstname' => $this->getAttribute( 'firstname' ),
+                'lastname' 	=> $this->getAttribute( 'lastname' ),
+                'usertitle' => $this->getAttribute( 'usertitle' ),
+                'birthday' 	=> $birthday,
+                'email' 	=> $this->getAttribute( 'email' ),
+                'avatar' 	=> $this->getAvatar(),
+                'su'		=> $this->isSU(),
+                'extra' 	=> json_encode( $this->_extra ),
+                'lang' 	    => $this->getAttribute( 'lang' ),
+                'lastedit'  => date( "Y-m-d H:i:s" ),
+                'expire'    => $expire,
+                'shortcuts' => $this->getAttribute( 'shortcuts' ),
+                'adress'    => (int)$this->getAttribute( 'adress' )
+            ),
+            array('id' => $this->getId())
+        );
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see Interface_Users_User::isSU()
-	 */
-	public function isSU()
-	{
-		if ( $this->_su == true ) {
-			return true;
-		}
+    /**
+     * (non-PHPdoc)
+     * @see Interface_Users_User::isSU()
+     */
+    public function isSU()
+    {
+        if ( $this->_su == true ) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see Interface_Users_User::isAdmin()
-	 */
-	public function isAdmin()
-	{
-		if ( !is_null( $this->_admin ) ) {
-			return $this->_admin;
-		}
+    /**
+     * (non-PHPdoc)
+     * @see Interface_Users_User::isAdmin()
+     */
+    public function isAdmin()
+    {
+        if ( !is_null( $this->_admin ) ) {
+            return $this->_admin;
+        }
 
-		$this->_admin = false;
+        $this->_admin = false;
 
-		$groups = $this->getGroups();
+        $groups = $this->getGroups();
 
-		if ( !is_array( $groups ) ) {
-			return false;
-		}
+        if ( !is_array( $groups ) ) {
+            return false;
+        }
 
-		foreach ( $groups as $Group )
-		{
-			if ( $Group->getAttribute('admin') )
-			{
-				$this->_admin = true;
-				return true;
-			}
-		}
+        foreach ( $groups as $Group )
+        {
+            if ( $Group->getAttribute('admin') )
+            {
+                $this->_admin = true;
+                return true;
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see Interface_Users_User::isDeleted()
-	 */
-	public function isDeleted()
-	{
-		return $this->_deleted;
-	}
+    /**
+     * (non-PHPdoc)
+     * @see Interface_Users_User::isDeleted()
+     */
+    public function isDeleted()
+    {
+        return $this->_deleted;
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see Interface_Users_User::isActive()
-	 */
-	public function isActive()
-	{
-		return $this->_active;
-	}
+    /**
+     * (non-PHPdoc)
+     * @see Interface_Users_User::isActive()
+     */
+    public function isActive()
+    {
+        return $this->_active;
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see Interface_Users_User::isOnline()
-	 */
-	public function isOnline()
-	{
-		if ( !file_exists( $this->_id_sessid_file ) ) {
-			return false;
-		}
+    /**
+     * (non-PHPdoc)
+     * @see Interface_Users_User::isOnline()
+     */
+    public function isOnline()
+    {
+        if ( !file_exists( $this->_id_sessid_file ) ) {
+            return false;
+        }
 
-		$sessid = file_get_contents( $this->_id_sessid_file );
+        $sessid = file_get_contents( $this->_id_sessid_file );
 
-		if ( file_exists( VAR_DIR .'sessions/sess_'. $sessid ) ) {
-			return true;
-		}
+        if ( file_exists( VAR_DIR .'sessions/sess_'. $sessid ) ) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * (non-PHPdoc)
-	 * @see Interface_Users_User::delete()
-	 */
-	public function delete()
-	{
-		// Pluginerweiterungen - onDelete Event
-		foreach ( $this->_plugins as $Plugin )
-		{
-			if ( method_exists( $Plugin, 'onDelete' ) ) {
-				$Plugin->onDelete( $this );
-			}
-		}
+    /**
+     * (non-PHPdoc)
+     * @see Interface_Users_User::delete()
+     */
+    public function delete()
+    {
+        // Pluginerweiterungen - onDelete Event
+        foreach ( $this->_plugins as $Plugin )
+        {
+            if ( method_exists( $Plugin, 'onDelete' ) ) {
+                $Plugin->onDelete( $this );
+            }
+        }
 
-		// Extra von den Projekten
-		$projects = Projects_Manager::getProjects( true );
+        // Extra von den Projekten
+        $projects = Projects_Manager::getProjects( true );
 
-		foreach ( $projects as $Project )
-		{
-			try
-			{
-				$Extend = $this->loadExtra($Project);
+        foreach ( $projects as $Project )
+        {
+            try
+            {
+                $Extend = $this->loadExtra($Project);
 
-				if ( method_exists( $Extend, 'onDelete' ) ) {
-					$Extend->onDelete();
-				}
+                if ( method_exists( $Extend, 'onDelete' ) ) {
+                    $Extend->onDelete();
+                }
 
-			} catch ( QException $e )
-			{
+            } catch ( QException $e )
+            {
 
-			}
-		}
+            }
+        }
 
-		QUI::getDB()->deleteData(
-			Users_Users::Table(),
-			array('id' => $this->getId())
-		);
+        QUI::getDB()->deleteData(
+            Users_Users::Table(),
+            array('id' => $this->getId())
+        );
 
-		$this->logout();
+        $this->logout();
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * Checks the edit rights of a user
-	 *
-	 * @return true
-	 * @throws QExceptions
-	 */
-	protected function _checkRights()
-	{
-	    $User = false;
+    /**
+     * Checks the edit rights of a user
+     *
+     * @return true
+     * @throws QExceptions
+     */
+    protected function _checkRights()
+    {
+        $User = false;
 
-		$Users = QUI::getUsers();
-		$SUser = $Users->getUserBySession();
+        $Users = QUI::getUsers();
+        $SUser = $Users->getUserBySession();
 
-		if ( $User && $User->getType() == 'Users_SystemUser' ) {
-			return true;
-		}
+        if ( $User && $User->getType() == 'Users_SystemUser' ) {
+            return true;
+        }
 
-		if ( $SUser->isSU() ) {
-			return true;
-		}
+        if ( $SUser->isSU() ) {
+            return true;
+        }
 
-		if ( $SUser->getId() == $this->getId() ) {
-			return true;
-		}
+        if ( $SUser->getId() == $this->getId() ) {
+            return true;
+        }
 
-		throw new QException(
-		    QUI::getLocale()->get('system', 'exception.lib.user.no.edit.rights')
-		);
-	}
+        throw new QException(
+            QUI::getLocale()->get(
+                'quiqqer/system',
+                'exception.lib.user.no.edit.rights'
+            )
+        );
+    }
 
 
-	/**
-	 * Add a address to the user
-	 *
-	 * @param Array $params
-	 * @return Users_Adress
-	 */
-	public function addAdress($params)
-	{
-		$_params = array();
-		$needles = array(
-			'salutation', 'firstname', 'lastname',
-			'phone', 'mail', 'company',
-			'delivery', 'street_no', 'zip', 'city',
-			'country'
-		);
+    /**
+     * Add a address to the user
+     *
+     * @param Array $params
+     * @return Users_Adress
+     */
+    public function addAdress($params)
+    {
+        $_params = array();
+        $needles = array(
+            'salutation', 'firstname', 'lastname',
+            'phone', 'mail', 'company',
+            'delivery', 'street_no', 'zip', 'city',
+            'country'
+        );
 
-		foreach ( $needles as $needle )
-		{
-			if ( !isset( $params[ $needle ] ) )
-			{
-			    $_params[ $needle ] = '';
-			    continue;
-			}
+        foreach ( $needles as $needle )
+        {
+            if ( !isset( $params[ $needle ] ) )
+            {
+                $_params[ $needle ] = '';
+                continue;
+            }
 
-			if ( is_array( $params[ $needle ] ) )
-			{
+            if ( is_array( $params[ $needle ] ) )
+            {
                 $_params[ $needle ] = json_encode(
                     Utils_Security_Orthos::clearArray( $params[ $needle ] )
                 );
 
                 continue;
-			}
+            }
 
-			$_params[ $needle ] = Utils_Security_Orthos::clear(
-			    $params[ $needle ]
-	        );
-		}
+            $_params[ $needle ] = Utils_Security_Orthos::clear(
+                $params[ $needle ]
+            );
+        }
 
-		$tmp_first = $this->getAttribute( 'firstname' );
-		$tmp_last  = $this->getAttribute( 'lastname' );
+        $tmp_first = $this->getAttribute( 'firstname' );
+        $tmp_last  = $this->getAttribute( 'lastname' );
 
-		if ( empty( $tmp_first ) && empty( $tmp_last ) )
-		{
-		    $this->setAttribute( 'firstname', $_params[ 'firstname' ] );
-		    $this->setAttribute( 'lastname', $_params[ 'lastname' ] );
-		    $this->save();
-		}
+        if ( empty( $tmp_first ) && empty( $tmp_last ) )
+        {
+            $this->setAttribute( 'firstname', $_params[ 'firstname' ] );
+            $this->setAttribute( 'lastname', $_params[ 'lastname' ] );
+            $this->save();
+        }
 
 
-		$_params[ 'uid' ] = $this->getId();
+        $_params[ 'uid' ] = $this->getId();
 
-		$Statement = QUI::getDataBase()->insert(
-		    Users_Users::TableAdress(),
-		    $_params
-		);
+        $Statement = QUI::getDataBase()->insert(
+            Users_Users::TableAdress(),
+            $_params
+        );
 
-		return $this->getAdress(
+        return $this->getAdress(
             QUI::getDataBase()->getPDO()->lastInsertId()
-		);
-	}
+        );
+    }
 
-	/**
-	 * Returns all adresses from the user
-	 *
-	 * @return Array
-	 */
-	public function getAdressList()
-	{
-		$result = QUI::getDB()->select(array(
-			'from'   => Users_Users::TableAdress(),
-			'select' => 'id',
-			'where'  => array(
-				'uid' => $this->getId()
-			)
-		));
+    /**
+     * Returns all adresses from the user
+     *
+     * @return Array
+     */
+    public function getAdressList()
+    {
+        $result = QUI::getDB()->select(array(
+            'from'   => Users_Users::TableAdress(),
+            'select' => 'id',
+            'where'  => array(
+                'uid' => $this->getId()
+            )
+        ));
 
-		if ( !isset( $result[ 0 ] ) ) {
-	        return array();
-		}
+        if ( !isset( $result[ 0 ] ) ) {
+            return array();
+        }
 
-		$list = array();
+        $list = array();
 
-		foreach ( $result as $entry )
-		{
-			$id = (int)$entry[ 'id' ];
-			$list[ $id ] = $this->getAdress( $id );
-		}
+        foreach ( $result as $entry )
+        {
+            $id = (int)$entry[ 'id' ];
+            $list[ $id ] = $this->getAdress( $id );
+        }
 
-		return $list;
-	}
+        return $list;
+    }
 
-	/**
-	 * Get a adress from the user
-	 *
-	 * @param Integer $id - adress ID
-	 * @return Users_Adress
-	 */
-	public function getAdress($id)
-	{
-		$id = (int)$id;
+    /**
+     * Get a adress from the user
+     *
+     * @param Integer $id - adress ID
+     * @return Users_Adress
+     */
+    public function getAdress($id)
+    {
+        $id = (int)$id;
 
-		if ( isset($this->_adress_list[ $id ] ) ) {
-			return $this->_adress_list[ $id ];
-		}
+        if ( isset($this->_adress_list[ $id ] ) ) {
+            return $this->_adress_list[ $id ];
+        }
 
-		$this->_adress_list[ $id ] = new Users_Adress( $this, $id );
+        $this->_adress_list[ $id ] = new Users_Adress( $this, $id );
 
-		return $this->_adress_list[ $id ];
-	}
+        return $this->_adress_list[ $id ];
+    }
 
-	/**
-	 * return the standard adress from the user
-	 *
-	 * @return Users_Adress|false
-	 */
-	public function getStandardAdress()
-	{
-		if ( $this->getAttribute( 'adress' ) === false ) {
-			return false;
-		}
+    /**
+     * return the standard adress from the user
+     *
+     * @return Users_Adress|false
+     */
+    public function getStandardAdress()
+    {
+        if ( $this->getAttribute( 'adress' ) === false ) {
+            return false;
+        }
 
-		return $this->getAdress( $this->getAttribute( 'adress' ) );
-	}
+        return $this->getAdress( $this->getAttribute( 'adress' ) );
+    }
 }
 
 ?>

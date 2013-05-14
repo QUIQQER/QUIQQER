@@ -122,7 +122,6 @@ define('classes/users/User', [
          * Activate the user
          *
          * @method QUI.classes.users.User#deactivate
-         *
          * @param {Function} onfinish     - callback function, calls if deactivation is finish
          * @param {Object} params         - callback params
          */
@@ -130,6 +129,51 @@ define('classes/users/User', [
         {
             QUI.Users.deactivate( [ this.getId() ] );
         },
+
+        /**
+         * Saves a Password to the User
+         *
+         * @method QUI.classes.users.User#deactivate
+         * @param {String} pass1 - Password
+         * @param {String} pass2 - Password repeat
+         * @param {Object} options - [optional]
+         * @param {Function} onfinish - [optional] callback
+         */
+        savePassword : function(pass1, pass2, options, onfinish)
+        {
+            options  = options || {};
+            onfinish = onfinish || false;
+
+            if ( pass1 != pass2 )
+            {
+                QUI.MH.addError(
+                    QUI.Locale.get(
+                        'quiqqer/system',
+                        'exception.user.wrong.passwords'
+                    )
+                );
+
+                if ( onfinish ) {
+                    onfinish( false, false );
+                }
+
+                return;
+            }
+
+            QUI.Ajax.post('ajax_users_set_password', function(result, Request)
+            {
+                if ( Request.getAttribute( 'onfinish' ) ) {
+                    Request.getAttribute( 'onfinish' )( result, Request );
+                }
+            }, {
+                uid : this.getId(),
+                pw1 : pass1,
+                pw2 : pass2,
+                params   : JSON.encode( options ),
+                onfinish : onfinish
+            });
+        },
+
 
         /**
          * Opens the delete window

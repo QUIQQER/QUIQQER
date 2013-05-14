@@ -1,5 +1,17 @@
 <locales>
 
+    <groups name="quiqqer/system" datatype="js">
+        <locale name="exception.user.wrong.passwords">
+            <de>Die Passwörter stimmen nicht überein. Bitte geben Sie korrekte Passwörter ein.</de>
+            <en>The passwords do not match. Please enter correct passwords.</en>
+        </locale>
+
+        <locale name="message.password.save.success">
+            <de>Das Passwort wurde erfolgreich gespeichert.</de>
+            <en>The password has been successfully saved.</en>
+        </locale>
+    </groups>
+
     <groups name="quiqqer/system">
         <locale name="exception.lib.user.exist">
             <de>Dieser Benutzername existiert schon.</de>
@@ -46,6 +58,10 @@
             <de>Das Passwort darf nicht leer sein. Bitte geben Sie ein korrektes Passwort ein.</de>
             <en></en>
         </locale>
+        <locale name="exception.lib.user.wrong.passwords">
+            <de>Die Passwörter stimmen nicht überein. Bitte geben Sie korrekte Passwörter ein.</de>
+            <en>The passwords do not match. Please enter correct passwords.</en>
+        </locale>
         <locale name="exception.lib.user.activasion.wrong.code">
             <de>Ihr Aktivierungscode ist nicht korrekt.</de>
             <en>The code for the activation is not correct.</en>
@@ -84,6 +100,12 @@
             <de>Login fehlgeschlagen. Bitte überprüfen Sie Benutzername und Passwort.</de>
             <en>Login failed. Please check the username.</en>
         </locale>
+
+        <locale name="message.password.save.success">
+            <de>Das Passwort wurde erfolgreich gespeichert.</de>
+            <en>The password has been successfully saved.</en>
+        </locale>
+
     </groups>
 
 </locales>
