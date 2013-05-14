@@ -40,8 +40,8 @@ define('controls/groups/Input', [
      */
     QUI.controls.groups.Input = new Class({
 
-        Implements : [ QUI_Control ],
-        Type       : 'QUI.controls.groups.Input',
+        Extends : QUI_Control,
+        Type    : 'QUI.controls.groups.Input',
 
         Binds : [
             'close',
@@ -74,7 +74,8 @@ define('controls/groups/Input', [
         /**
          * Return the DOMNode of the group search
          *
-         * @return {DOMNode}
+         * @method QUI.controls.groups.Input#create
+         * @return {DOMNode} DOM-Element
          */
         create : function()
         {
@@ -115,12 +116,12 @@ define('controls/groups/Input', [
                             multible : Control.getAttribute('multible'),
                             events   :
                             {
-                                onSubmit : function(value)
+                                onSubmit : function(Window, values)
                                 {
                                     for ( var i = 0, len = values.length; i < len; i++ ) {
                                         this.addGroup( values[i] );
                                     }
-                                }.bind( this )
+                                }.bind( Control )
                             }
                         }).create();
                     }
@@ -190,13 +191,15 @@ define('controls/groups/Input', [
                 return this.$Elm;
             }
 
-            var i, len;
+            var i, len, val;
             var values = this.$Parent.value.toString().split(',');
 
             for ( i = 0, len = values.length; i < len; i++ )
             {
-                if ( values[i] !== '' ) {
-                    this.addGroup( values[i] );
+                val = ( values[i] ).toInt();
+
+                if ( val ) {
+                    this.addGroup( val );
                 }
             }
 
@@ -205,11 +208,14 @@ define('controls/groups/Input', [
 
         /**
          * updates the group search field
+         *
+         * @method QUI.controls.groups.Input#update
+         * @return {self} this
          */
         update : function()
         {
             if ( !this.$Container ) {
-                return;
+                return this;
             }
 
             // set value
@@ -226,10 +232,15 @@ define('controls/groups/Input', [
                 'value',
                 ','+ ids.join(',') +','
             );
+
+            return this;
         },
 
         /**
          * fire the search
+         *
+         * @method QUI.controls.groups.Input#fireSearch
+         * @return {this} self
          */
         fireSearch : function()
         {
@@ -245,41 +256,55 @@ define('controls/groups/Input', [
             });
 
             this.$search = this.search.delay( 500, this );
+
+            return this;
         },
 
         /**
          * cancel the search timeout
+         *
+         * @method QUI.controls.groups.Input#cancelSearch
+         * @return {this} self
          */
         cancelSearch : function()
         {
             if ( this.$search ) {
                 clearTimeout( this.$search );
             }
+
+            return this;
         },
 
         /**
          * close the group search
+         *
+         * @method QUI.controls.groups.Input#close
+         * @return {this} self
          */
         close : function()
         {
             this.cancelSearch();
             this.$DropDown.setStyle( 'display', 'none' );
             this.$Input.value = '';
+
+            return this;
         },
 
         /**
          * Add a group to the field
          *
+         * @method QUI.controls.groups.Input#addGroup
          * @param {Integer} gid - Group-ID
+         * @return {this} self
          */
         addGroup : function(gid)
         {
-            if ( !gid ) {
-                return;
+            if ( !gid || gid === '' ) {
+                return this;
             }
 
             if ( this.$Container.getElement( '.group-entry[data-id="'+ gid +'"]') ) {
-                return;
+                return this;
             }
 
             var entries = this.$Container.getElements( '.group-entry' );
@@ -287,7 +312,7 @@ define('controls/groups/Input', [
             if ( this.getAttribute( 'max' ) &&
                  this.getAttribute( 'max' ) <= entries.length )
             {
-                return;
+                return this;
             }
 
             new QUI.controls.groups.Entry(gid, {
@@ -298,10 +323,14 @@ define('controls/groups/Input', [
 
             this.fireEvent( 'add', [ this, gid ] );
             this.update();
+
+            return this;
         },
 
         /**
          * trigger a group search and open a group dropdown for selection
+         *
+         * @method QUI.controls.groups.Input#search
          */
         search : function()
         {
@@ -389,7 +418,8 @@ define('controls/groups/Input', [
         /**
          * keyup - group dropdown selection one step up
          *
-         * @return {this}
+         * @method QUI.controls.groups.Input#up
+         * @return {this} self
          */
         up : function()
         {
@@ -420,7 +450,8 @@ define('controls/groups/Input', [
         /**
          * keydown - group dropdown selection one step down
          *
-         * @return {this}
+         * @method QUI.controls.groups.Input#down
+         * @return {this} self
          */
         down : function()
         {
@@ -452,11 +483,14 @@ define('controls/groups/Input', [
 
         /**
          * select the selected group
+         *
+         * @method QUI.controls.groups.Input#submit
+         * @return {this} self
          */
         submit : function()
         {
             if ( !this.$DropDown ) {
-                return;
+                return this;
             }
 
             var Active = this.$DropDown.getElement( '.hover' );
@@ -467,12 +501,15 @@ define('controls/groups/Input', [
 
             this.$Input.value = '';
             this.search();
+
+            return this;
         },
 
         /**
          * Set the focus to the input field
          *
-         * @return {this}
+         * @method QUI.controls.groups.Input#focus
+         * @return {this} self
          */
         focus : function()
         {

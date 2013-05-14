@@ -93,10 +93,8 @@ define('controls/Control', [
          * Inject the DOMNode of the Control to a Parent
          *
          * @method QUI.classes.Control#inject
-         *
          * @param {DOMNode|QUI.classes.Control}
          * @param {pos} [optional]
-         *
          * @return {this}
          */
         inject : function(Parent, pos)

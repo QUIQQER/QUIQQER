@@ -241,7 +241,7 @@ define('controls/Utils', function()
          */
         parseGroups : function(Elm)
         {
-            require(['controls/usersAndGroups/Input'], function()
+            require(['controls/groups/Input'], function()
             {
                 var i, len, elements;
 
@@ -249,7 +249,7 @@ define('controls/Utils', function()
 
                 for ( i = 0, len = elements.length; i < len; i++ )
                 {
-                    new QUI.controls.usersAndGroups.Input(
+                    new QUI.controls.groups.Input(
                         null,
                         elements[ i ]
                     ).create();

@@ -59,9 +59,10 @@ define('controls/sitemap/Map', [
 
                     }.bind(this),
 
-                    onSelect : function(Item)
+                    onSelect : function(Item, event)
                     {
                         if ( this.getAttribute('multible') === false ||
+                             typeof event === 'undefined' ||
                              this.getAttribute('multible') && !event.control )
                         {
                             this.deselectAllChildren();

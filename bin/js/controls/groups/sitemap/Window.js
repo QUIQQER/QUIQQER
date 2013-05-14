@@ -7,7 +7,7 @@
  * @package com.pcsg.qui.js.controls.groups.sitemap.Window
  * @namespace QUI.controls.groups.sitemap
  *
- * @event onSubmit [this, values]
+ * @event onSubmit [ this, values ]
  */
 
 define('controls/groups/sitemap/Window', [
@@ -102,10 +102,7 @@ define('controls/groups/sitemap/Window', [
          */
         $onSubmit : function()
         {
-            this.fireEvent( 'submit', [
-                this,
-                this.$Map.getValues()
-            ] );
+            this.fireEvent( 'submit', [ this, this.$Map.getValues() ] );
         }
 
     });

@@ -38,8 +38,8 @@ define('controls/users/Input', [
      */
     QUI.controls.users.Input = new Class({
 
-        Implements : [ QUI_Control ],
-        Type       : 'QUI.controls.users.Input',
+        Extends : QUI_Control,
+        Type    : 'QUI.controls.users.Input',
 
         Binds : [
             'close',

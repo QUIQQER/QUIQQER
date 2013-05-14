@@ -452,7 +452,7 @@ define('controls/sitemap/Item', [
          * Deselect the Item
          *
          * @method QUI.controls.sitemap.Item#deselect
-         * @return {this}
+         * @return {this} self
          */
         deselect : function()
         {
@@ -469,7 +469,7 @@ define('controls/sitemap/Item', [
          * Normalite the item
          * no selection or highlighting
          *
-         * @return {this}
+         * @return {this} self
          */
         normalize : function()
         {
