@@ -94,43 +94,9 @@ class Update
         }
 
         // than we need translations
-        foreach ( $packages as $package )
-        {
-            if ( $package == 'composer' ) {
-                continue;
-            }
+        self::importAllLocaleXMLs( $Composer );
 
-            $package_dir = $packages_dir .'/'. $package;
-            $list        = \Utils_System_File::readDir( $package_dir );
 
-            foreach ( $list as $sub )
-            {
-                // locale setup
-                self::importLocale(
-                    $package_dir .'/'. $sub .'/locale.xml',
-                    $IO
-                );
-            }
-        }
-
-        // system xmls
-        $locale_dir = CMS_DIR .'/admin/locale/';
-        $locales    = \Utils_System_File::readDir( $locale_dir );
-
-        foreach ( $locales as $locale )
-        {
-            if ( !is_dir( $locale_dir . $locale ) )
-            {
-                self::importLocale( $locale_dir . $locale );
-                continue;
-            }
-
-            $sublocales = \Utils_System_File::readDir( $locale_dir . $locale );
-
-            foreach ( $sublocales as $sublocale ) {
-                self::importLocale( $locale_dir . $locale .'/'. $sublocale );
-            }
-        }
         // compile the translations
         // so the new translations are available
         $IO->write( 'Execute QUIQQER Translator' );
@@ -379,6 +345,121 @@ class Update
         \System_Log::write( 'Read: '. $xml_file );
 
         \Utils_Xml::importPermissionsFromXml( $xml_file, $src );
+    }
+
+    /**
+     * Reimportation from all menu.xml files
+     * Read all packages and import the menu.xml files to the quiqqer system
+     *
+     * @param Composer $Composer - optional
+     */
+    static function importAllMenuXMLs($Composer=null)
+    {
+        $packages_dir = false;
+
+        if ( $Composer ) {
+            $packages_dir = $Composer->getConfig()->get( 'vendor-dir' );
+        }
+
+        if ( defined( 'OPT_DIR' ) ) {
+            $packages_dir = OPT_DIR;
+        }
+
+        if ( !$packages_dir )
+        {
+            throw new \QException(
+                'Could not import menu.xml. Package-Dir not found'
+            );
+
+            return;
+        }
+
+        $packages = \Utils_System_File::readDir( OPT_DIR );
+
+        // then we can read the rest xml files
+        foreach ( $packages as $package )
+        {
+            if ( $package == 'composer' ) {
+                continue;
+            }
+
+            $package_dir = OPT_DIR .'/'. $package;
+            $list        = \Utils_System_File::readDir( $package_dir );
+
+            foreach ( $list as $sub )
+            {
+                // register menu entries
+                self::importMenu(
+                    $package_dir .'/'. $sub .'/menu.xml'
+                );
+            }
+        }
+    }
+
+    /**
+     * Reimportation from all locale.xml files
+     *
+     * @param Composer $Composer - optional
+     */
+    static function importAllLocaleXMLs($Composer=null)
+    {
+        $packages_dir = false;
+
+        if ( $Composer ) {
+            $packages_dir = $Composer->getConfig()->get( 'vendor-dir' );
+        }
+
+        if ( defined( 'OPT_DIR' ) ) {
+            $packages_dir = OPT_DIR;
+        }
+
+        if ( !$packages_dir )
+        {
+            throw new \QException(
+                'Could not import menu.xml. Package-Dir not found'
+            );
+
+            return;
+        }
+
+        $packages = \Utils_System_File::readDir( $packages_dir );
+
+        foreach ( $packages as $package )
+        {
+            if ( $package == 'composer' ) {
+                continue;
+            }
+
+            $package_dir = $packages_dir .'/'. $package;
+            $list        = \Utils_System_File::readDir( $package_dir );
+
+            foreach ( $list as $sub )
+            {
+                // locale setup
+                self::importLocale(
+                    $package_dir .'/'. $sub .'/locale.xml'
+                );
+            }
+        }
+
+        // system xmls
+        $locale_dir = CMS_DIR .'/admin/locale/';
+        $locales    = \Utils_System_File::readDir( $locale_dir );
+
+        foreach ( $locales as $locale )
+        {
+            if ( !is_dir( $locale_dir . $locale ) )
+            {
+                self::importLocale( $locale_dir . $locale );
+                continue;
+            }
+
+            $sublocales = \Utils_System_File::readDir( $locale_dir . $locale );
+
+            foreach ( $sublocales as $sublocale ) {
+                self::importLocale( $locale_dir . $locale .'/'. $sublocale );
+            }
+        }
     }
 }
 

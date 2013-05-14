@@ -102,6 +102,7 @@ class QUI_Setup
         /**
          * generate translations
          */
+        \QUI\Update::importAllLocaleXMLs();
         \QUI\Translator::create();
     }
 }

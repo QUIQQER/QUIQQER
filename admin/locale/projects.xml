@@ -6,6 +6,7 @@
 
 
     <groups name="quiqqer/system">
+        <!-- Menu  -->
         <locale name="menu.extras.projects.text">
             <de><![CDATA[Projekt Verwaltung]]></de>
             <en><![CDATA[Projects manager]]></en>

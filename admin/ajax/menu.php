@@ -100,7 +100,12 @@ function ajax_menu()
     }
 
     // read the menu.xmls
-    $dir   = VAR_DIR .'cache/menu/';
+    $dir = VAR_DIR .'cache/menu/';
+
+    if ( !is_dir( $dir ) ) {
+        \QUI\Update::importAllMenuXMLs();
+    }
+
     $files = \Utils_System_File::readDir( $dir );
 
     foreach ( $files as $file ) {
