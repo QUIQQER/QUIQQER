@@ -588,7 +588,7 @@ class Users_User implements Interface_Users_User
             return;
         }
 
-        switch ($key)
+        switch ( $key )
         {
             case "su":
                 $this->_su = (int)$value;
@@ -597,12 +597,12 @@ class Users_User implements Interface_Users_User
             case "username":
             case "name":
                 // Falls der Name geändert wird muss geprüft werden das es diesen nicht schon gibt
-                Users_Users::checkUsernameSigns($value);
+                \Users_Users::checkUsernameSigns($value);
 
                 if ($this->_name != $value &&
                     $this->_Users->existsUsername($value))
                 {
-                    throw new QException('Name existiert bereits');
+                    throw new \QException('Name existiert bereits');
                 }
 
                 $this->_name = $value;
@@ -610,6 +610,14 @@ class Users_User implements Interface_Users_User
 
             case "usergroup":
                 $this->setGroups($value);
+            break;
+
+            case "expire":
+                $time = strtotime( $value );
+
+                if ( $time > 0 ) {
+                    $this->_settings[ $key ] = date( 'Y-m-d H:i:s', $time );
+                }
             break;
 
             default:
@@ -627,13 +635,13 @@ class Users_User implements Interface_Users_User
      */
     public function getAttribute($var)
     {
-        if (isset($this->_settings[$var]))
+        if ( isset( $this->_settings[ $var ] ) )
         {
-            if ($var == 'avatar') {
-                return URL_DIR .'media/users/'. $this->_settings[$var];
+            if ( $var == 'avatar' ) {
+                return URL_DIR .'media/users/'. $this->_settings[ $var ];
             }
 
-            return $this->_settings[$var];
+            return $this->_settings[ $var ];
         }
 
         return false;
@@ -654,7 +662,7 @@ class Users_User implements Interface_Users_User
         $params['avatar']   = $this->getAvatar();
         $params['su']		= $this->isSU();
 
-        $params['usergroup'] = $this->getGroups(false);
+        $params['usergroup'] = $this->getGroups( false );
         $params['username']  = $this->getName();
 
         return $params;
@@ -669,9 +677,9 @@ class Users_User implements Interface_Users_User
      */
     public function getAvatar($url=false)
     {
-        if (isset($this->_settings["avatar"]))
+        if ( isset( $this->_settings["avatar"] ) )
         {
-            if ($url == true) {
+            if ( $url == true ) {
                 return URL_DIR .'media/users/'. $this->_settings["avatar"];
             }
 
@@ -687,7 +695,7 @@ class Users_User implements Interface_Users_User
      */
     public function logout()
     {
-        if (!$this->getId()) {
+        if ( !$this->getId() ) {
             return;
         }
 
@@ -695,7 +703,7 @@ class Users_User implements Interface_Users_User
         $Users    = QUI::getUsers();
         $SessUser = $Users->getUserBySession();
 
-        if ($SessUser->getId() == $this->getId())
+        if ( $SessUser->getId() == $this->getId() )
         {
             //session_unset();
             //session_destroy();
@@ -705,18 +713,18 @@ class Users_User implements Interface_Users_User
 
         $sessid = '';
 
-        if (file_exists($this->_id_sessid_file)) {
+        if ( file_exists( $this->_id_sessid_file ) ) {
             $sessid = file_get_contents($this->_id_sessid_file);
         }
 
         // Session File löschen
-        if (file_exists(VAR_DIR .'sessions/sess_'. $sessid)) {
-            unlink(VAR_DIR .'sessions/sess_'. $sessid);
+        if ( file_exists( VAR_DIR .'sessions/sess_'. $sessid ) ) {
+            unlink( VAR_DIR .'sessions/sess_'. $sessid );
         }
 
         // ID File löschen
-        if (file_exists($this->_id_sessid_file)) {
-            unlink($this->_id_sessid_file);
+        if ( file_exists( $this->_id_sessid_file ) ) {
+            unlink( $this->_id_sessid_file );
         }
     }
 
@@ -732,25 +740,25 @@ class Users_User implements Interface_Users_User
 
         if ( empty( $new ) )
         {
-            throw new QException(
-                QUI::getLocale()->get(
+            throw new \QException(
+                \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.user.empty.password'
                 )
             );
         }
 
-        $newpass         = Users_Users::genHash( $new );
+        $newpass         = \Users_Users::genHash( $new );
         $this->_password = $newpass;
 
-        QUI::getDB()->updateData(
-            Users_Users::Table(),
+        \QUI::getDB()->updateData(
+            \Users_Users::Table(),
             array( 'password' => $newpass ),
             array( 'id'       => $this->getId() )
         );
 
         \QUI::getMessagesHandler()->addSuccess(
-            QUI::getLocale()->get(
+            \QUI::getLocale()->get(
                 'quiqqer/system',
                 'message.password.save.success'
             )
@@ -791,8 +799,8 @@ class Users_User implements Interface_Users_User
 
         if ( $code && $code != $this->getAttribute( 'activation' ) )
         {
-            throw new QException(
-                QUI::getLocale()->get(
+            throw new \QException(
+                \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.user.activasion.wrong.code'
                 )
@@ -801,16 +809,16 @@ class Users_User implements Interface_Users_User
 
         if ( $this->_password == '' )
         {
-            throw new QException(
-                QUI::getLocale()->get(
+            throw new \QException(
+                \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.user.activasion.no.password'
                 )
             );
         }
 
-        $res = QUI::getDB()->updateData(
-            Users_Users::Table(),
+        $res = \QUI::getDB()->updateData(
+            \Users_Users::Table(),
             array( 'active' => 1 ),
             array( 'id'     => $this->getId() )
         );
@@ -837,7 +845,7 @@ class Users_User implements Interface_Users_User
         }
 
         // Extra von den Projekten
-        $projects = Projects_Manager::getProjects(true);
+        $projects = \Projects_Manager::getProjects(true);
 
         foreach ( $projects as $Project )
         {
@@ -849,14 +857,14 @@ class Users_User implements Interface_Users_User
                     $Extend->onDelete();
                 }
 
-            } catch ( QException $e )
+            } catch ( \QException $e )
             {
 
             }
         }
 
-        QUI::getDB()->updateData(
-            Users_Users::Table(),
+        \QUI::getDB()->updateData(
+            \Users_Users::Table(),
             array('active' => 0),
             array('id'     => $this->getId())
         );
@@ -884,7 +892,7 @@ class Users_User implements Interface_Users_User
         }
 
         // Extra von den Projekten
-        $projects = Projects_Manager::getProjects( true );
+        $projects = \Projects_Manager::getProjects( true );
 
         foreach ( $projects as $Project )
         {
@@ -902,7 +910,7 @@ class Users_User implements Interface_Users_User
             }
         }
 
-        QUI::getDB()->updateData(
+        \QUI::getDB()->updateData(
             Users_Users::Table(),
             array(
                 'active'     => -1,
@@ -945,7 +953,7 @@ class Users_User implements Interface_Users_User
             // Datumsprüfung auf Syntax
             $value = trim( $this->getAttribute( 'expire' ) );
 
-            if ( Utils_Security_Orthos::checkMySqlDatetimeSyntax( $value ) ) {
+            if ( \Utils_Security_Orthos::checkMySqlDatetimeSyntax( $value ) ) {
                 $expire = $value;
             }
         }
@@ -959,7 +967,7 @@ class Users_User implements Interface_Users_User
                 $value .= ' 00:00:00';
             }
 
-            if ( Utils_Security_Orthos::checkMySqlDatetimeSyntax( $value ) ) {
+            if ( \Utils_Security_Orthos::checkMySqlDatetimeSyntax( $value ) ) {
                 $birthday = substr( $value, 0, 10 );
             }
         }

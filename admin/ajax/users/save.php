@@ -9,24 +9,26 @@
  */
 function ajax_users_save($uid, $attributes, $rights)
 {
-    $Users = QUI::getUsers();
+    $Users = \QUI::getUsers();
     $User  = $Users->get( $uid );
 
     $attributes = json_decode( $attributes, true );
-    $rights     = json_decode( $rights, true );
+    //$rights     = json_decode( $rights, true );
 
     foreach ( $attributes as $k => $v ) {
         $User->setAttribute( $k, $v );
     }
 
+    /*
     foreach ( $rights as $k => $v ) {
         //$User->setAttribute( $k, $v );
     }
+    */
 
     $User->save();
 
     // aktivieren / deaktivieren
-    if ( isset($attributes['active']) )
+    if ( isset( $attributes['active'] ) )
     {
         if ( (int)$attributes['active'] === 1 )
         {
@@ -37,16 +39,16 @@ function ajax_users_save($uid, $attributes, $rights)
         }
     }
 
-    QUI::getMessagesHandler()->addInformation(
-    	'Der Benutzer '. $User->getName() .' ('. $User->getId() .') wurde erfolgreich gespeichert'
+    \QUI::getMessagesHandler()->addInformation(
+        'Der Benutzer '. $User->getName() .' ('. $User->getId() .') wurde erfolgreich gespeichert'
     );
 
     return true;
 }
 
-QUI::$Ajax->register(
-	'ajax_users_save',
-    array('uid', 'attributes', 'rights'),
+\QUI::$Ajax->register(
+    'ajax_users_save',
+    array( 'uid', 'attributes', 'rights' ),
     'Permission::checkSU'
 );
 

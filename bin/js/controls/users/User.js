@@ -206,13 +206,16 @@ define('controls/users/User', [
                 QUI.controls.Utils.parse( Body );
 
                 // insert the values
+                var attributes = User.getAttributes();
+
                 QUI.Utils.setDataToForm(
-                    User.getAttributes(),
+                    attributes,
                     Body.getElement( 'form' )
                 );
 
                 // password save
-                var PasswordField = Body.getElement( 'input[name="password2"]' );
+                var PasswordField  = Body.getElement( 'input[name="password2"]' ),
+                    PasswordExpire = Body.getElements( 'input[name="expire"]' );
 
                 if ( PasswordField )
                 {
@@ -226,6 +229,25 @@ define('controls/users/User', [
                     }).inject(
                         PasswordField, 'after'
                     );
+                }
+
+                // password expire
+                if ( PasswordExpire.length )
+                {
+                    var expire = attributes.expire || false;
+
+                    if ( !expire || expire == '0000-00-00 00:00:00' )
+                    {
+                        PasswordExpire[0].checked = true;
+                    } else
+                    {
+                        expire = expire.split(' ');
+
+                        PasswordExpire[1].checked = true;
+
+                        Body.getElement( 'input[name="expire_date"]' ).value = expire[ 0 ];
+                        Body.getElement( 'input[name="expire_time"]' ).value = expire[ 1 ];
+                    }
                 }
 
                 Panel.Loader.hide();
@@ -246,11 +268,26 @@ define('controls/users/User', [
          */
         $onButtonNormal : function(Btn)
         {
-            var i, len;
-
             var Content = this.getBody(),
                 Frm     = Content.getElement( 'form' ),
                 data    = QUI.Utils.getFormData( Frm );
+
+            if ( typeof data.expire_date !== 'undefined' )
+            {
+                var time = data.expire_time || '00:00:00',
+                    date = data.expire_date;
+
+                if ( time === '' ) {
+                    time = '00:00:00';
+                }
+
+                if ( date !== '' ) {
+                    data.expire = date +' '+ time;
+                }
+
+                delete data.expire_time;
+                delete data.expire_date;
+            }
 
             this.getUser().setAttributes( data );
         },
@@ -295,7 +332,7 @@ define('controls/users/User', [
             var Active = this.getActiveCategory();
 
             if ( Active ) {
-                Active.setNormal();
+                this.$onButtonNormal( Active );
             }
 
             this.getUser().save();
