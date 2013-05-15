@@ -46,6 +46,7 @@ define('controls/users/Panel', [
             '$gridClick',
             '$gridDblClick',
             '$gridBlur',
+
             'search',
             'createUser'
         ],

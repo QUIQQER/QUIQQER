@@ -43,6 +43,7 @@ define('controls/users/User', [
             '$onButtonActive',
             '$onButtonNormal',
             '$onUserRefresh',
+            '$onUserDelete',
             '$onClickSave',
             '$onClickDel'
         ],
@@ -59,6 +60,8 @@ define('controls/users/User', [
                 onCreate  : this.$onCreate,
                 onDestroy : this.$onDestroy
             });
+
+            QUI.Users.addEvent( 'onDelete', this.$onUserDelete );
         },
 
         /**
@@ -182,6 +185,7 @@ define('controls/users/User', [
         {
             QUI.Users.removeEvent( 'refresh', this.$onUserRefresh );
             QUI.Users.removeEvent( 'save', this.$onUserRefresh );
+            QUI.Users.removeEvent( 'delete', this.$onUserDelete );
         },
 
         /**
@@ -323,6 +327,26 @@ define('controls/users/User', [
         },
 
         /**
+         * event on user delete
+         *
+         * @param {QUI.classes.users.Users} Users
+         * @param {Array} uids - user ids, which are deleted
+         */
+        $onUserDelete : function(Users, uids)
+        {
+            var uid = this.getUser().getId();
+
+            for ( var i = 0, len = uids.length; i < len; i++ )
+            {
+                if ( uid == uids[i] )
+                {
+                    this.destroy();
+                    break;
+                }
+            }
+        },
+
+        /**
          * Event: click on save
          *
          * @method QUI.controls.users.User#$onClickSave
@@ -345,7 +369,27 @@ define('controls/users/User', [
          */
         $onClickDel : function()
         {
+            QUI.Windows.create('submit', {
+                name        : 'DeleteUser',
+                title       : 'Benutzer löschen',
+                icon        : URL_BIN_DIR +'16x16/trashcan_full.png',
+                text        : 'Sie möchten folgenden Benutzer löschen:<br /><br />'+ this.getUser().getId(),
+                texticon    : URL_BIN_DIR +'32x32/trashcan_full.png',
+                information : 'Der Benutzer wird komplett aus dem System entfernt und kann nicht wieder hergestellt werden',
 
+                width    : 500,
+                height   : 150,
+                uid      : this.getUser().getId(),
+                events   :
+                {
+                    onSubmit : function(Win)
+                    {
+                        QUI.Users.deleteUsers(
+                            [ Win.getAttribute( 'uid' ) ]
+                        );
+                    }
+                }
+            });
         },
 
         /**
