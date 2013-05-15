@@ -278,10 +278,18 @@ define('classes/users/Users', [
          */
         saveUser : function(User, onfinish, params)
         {
+            var attributes = User.getAttributes();
+
+            for ( var i in attributes )
+            {
+                if ( typeof attributes[i] === 'object' ) {
+                    delete attributes[i];
+                }
+            }
+
             params = QUI.Utils.combine(params, {
                 uid        : User.getId(),
                 attributes : JSON.encode( User.getAttributes() ),
-                //rights     : JSON.encode( User.getRights() ),
                 onfinish   : onfinish,
                 Users      : this
             });

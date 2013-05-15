@@ -174,6 +174,15 @@ define('classes/users/User', [
             });
         },
 
+        /**
+         * Is the user activated?
+         *
+         * @return {Integer} 0, 1, -1
+         */
+        isActive : function()
+        {
+            return ( this.getAttribute( 'active' ) ).toInt();
+        },
 
         /**
          * Opens the delete window

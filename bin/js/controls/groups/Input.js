@@ -221,17 +221,20 @@ define('controls/groups/Input', [
             // set value
             var i, len;
 
-            var list = this.$Container.getElements('.group-entry'),
+            var list = this.$Container.getElements( '.group-entry' ),
                 ids  = [];
 
             for ( i = 0, len = list.length; i < len; i++ ) {
                 ids.push( list[i].get('data-id') );
             }
 
-            this.$Parent.set(
-                'value',
-                ','+ ids.join(',') +','
-            );
+            if ( ids.length )
+            {
+                this.$Parent.set( 'value', ','+ ids.join(',') +',' );
+            } else
+            {
+                this.$Parent.set( 'value', '' );
+            }
 
             return this;
         },
@@ -316,8 +319,13 @@ define('controls/groups/Input', [
             }
 
             new QUI.controls.groups.Entry(gid, {
-                events : {
-                    onDestroy : this.update
+                events :
+                {
+                    onDestroy : function()
+                    {
+                        // because the node still exists, trigger after 100 miliseconds
+                        this.update.delay( 100 );
+                    }.bind( this )
                 }
             }).inject( this.$Container );
 

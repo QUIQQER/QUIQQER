@@ -42,7 +42,7 @@ define('controls/users/Panel', [
             '$onDeleteUser',
             '$onUserRefresh',
             '$onButtonnEditClick',
-            '$onButtonnDelClick',
+            '$onButtonDelClick',
             '$gridClick',
             '$gridDblClick',
             '$gridBlur',
@@ -81,7 +81,6 @@ define('controls/users/Panel', [
                 onSave         : this.$onUserRefresh
             });
 
-
             this.addEvent('onDestroy', function()
             {
                 QUI.Users.removeEvents({
@@ -91,6 +90,13 @@ define('controls/users/Panel', [
                     onSave         : this.$onUserRefresh
                 });
             }.bind( this ));
+
+
+            this.active_image = URL_BIN_DIR +'16x16/apply.png',
+            this.active_text  = 'Benutzer ist aktiviert',
+
+            this.deactive_image = URL_BIN_DIR +'16x16/cancel.png',
+            this.deactive_text  = 'Benutzer ist deaktiviert';
         },
 
         /**
@@ -152,7 +158,7 @@ define('controls/users/Panel', [
                 disabled  : true,
                 textimage :  URL_BIN_DIR +'16x16/trashcan_full.png',
                 events    : {
-                    onMousedown : this.$onButtonnDelClick
+                    onMousedown : this.$onButtonDelClick
                 }
             });
 
@@ -607,8 +613,6 @@ define('controls/users/Panel', [
 
             }, function(result, Request)
             {
-                var i, len, data, user;
-
                 var Panel = Request.getAttribute( 'Panel' ),
                     Grid  = Panel.getGrid();
 
@@ -618,35 +622,7 @@ define('controls/users/Panel', [
                     return;
                 }
 
-                data = result.data;
-
-                var active_image   = URL_BIN_DIR +'16x16/apply.png',
-                    active_text    = 'Benutzer aktivieren',
-
-                    deactive_image = URL_BIN_DIR +'16x16/cancel.png',
-                    deactive_text  = 'Benutzer deaktivieren';
-
-                for ( i = 0, len = data.length; i < len; i++ )
-                {
-                    data[i].active = ( data[i].active ).toInt();
-
-                    if ( data[i].active == -1 ) {
-                        continue;
-                    }
-
-                    data[i].activebtn = {
-                        status   : data[i].active,
-                        value    : data[i].id,
-                        uid      : data[i].id,
-                        username : data[i].username,
-                        image    : data[i].active ? active_image  : deactive_image,
-                        alt      : data[i].active ? deactive_text : active_text,
-                        events : {
-                            onClick : Panel.$btnSwitchStatus
-                        }
-                    };
-                }
-
+                Panel.$parseDataForGrid( result.data );
 
                 Grid.setData( result );
 
@@ -681,13 +657,7 @@ define('controls/users/Panel', [
             var i, id, len, Btn, entry, status;
 
             var Grid = this.getGrid(),
-                data = Grid.getData(),
-
-                active_image   = URL_BIN_DIR +'16x16/apply.png',
-                active_text    = 'Benutzer aktivieren',
-
-                deactive_image = URL_BIN_DIR +'16x16/cancel.png',
-                deactive_text  = 'Benutzer deaktivieren';
+                data = Grid.getData();
 
 
             for ( i = 0, len = data.length; i < len; i++ )
@@ -704,14 +674,14 @@ define('controls/users/Panel', [
                 // user is active
                 if ( ids[ data[ i ].id ] === 1 )
                 {
-                    Btn.setAttribute( 'alt', deactive_text );
-                    Btn.setAttribute( 'image', active_image );
+                    Btn.setAttribute( 'alt', this.active_text );
+                    Btn.setAttribute( 'image', this.active_image );
                     continue;
                 }
 
                 // user is deactive
-                Btn.setAttribute( 'alt', active_text );
-                Btn.setAttribute( 'image', deactive_image );
+                Btn.setAttribute( 'alt', this.deactive_text );
+                Btn.setAttribute( 'image', this.deactive_image );
             }
         },
 
@@ -723,28 +693,17 @@ define('controls/users/Panel', [
          */
         $onUserRefresh : function(Users, User)
         {
-            var i, len;
-
             var Grid = this.getGrid(),
                 data = Grid.getData(),
                 id   = User.getId();
 
-            for ( i = 0, len = data.length; i < len; i++ )
+            for ( var i = 0, len = data.length; i < len; i++ )
             {
                 if ( data[ i ].id != id ) {
                     continue;
                 }
 
-                Grid.setDataByRow( i, {
-                    status    : '',
-                    id        : id,
-                    username  : User.getAttribute( 'username' ),
-                    usergroup : User.getAttribute( 'usergroup' ),
-                    email     : User.getAttribute( 'email' ),
-                    firstname : User.getAttribute( 'firstname' ),
-                    lastname  : User.getAttribute( 'lastname' ),
-                    regdate   : User.getAttribute( 'regdate' )
-                });
+                Grid.setDataByRow( i, this.userToGridData( User ) );
             }
         },
 
@@ -828,7 +787,7 @@ define('controls/users/Panel', [
         /**
          * Open deletion popup
          */
-        $onButtonnDelClick : function()
+        $onButtonDelClick : function()
         {
             var i, len;
 
@@ -864,6 +823,71 @@ define('controls/users/Panel', [
                     }
                 }
             });
+        },
+
+        /**
+         * Parse the Ajax data for the grid
+         *
+         * @param {Array} data
+         * @return {Array}
+         */
+        $parseDataForGrid : function(data)
+        {
+            for ( var i = 0, len = data.length; i < len; i++ )
+            {
+                data[i].active    = ( data[i].active ).toInt();
+                data[i].usergroup = data[i].usergroup || '';
+
+                if ( data[i].active == -1 ) {
+                    continue;
+                }
+
+                data[i].activebtn = {
+                    status   : data[i].active,
+                    value    : data[i].id,
+                    uid      : data[i].id,
+                    username : data[i].username,
+                    image    : data[i].active ? this.active_image  : this.deactive_image,
+                    alt      : data[i].active ? this.active_text : this.deactive_text,
+                    events : {
+                        onClick : this.$btnSwitchStatus
+                    }
+                };
+            }
+
+            return data;
+        },
+
+        /**
+         * Parse the attributes to grid data entry
+         *
+         * @param {QUI.classes.users.User} User
+         * @return {Object}
+         */
+        userToGridData : function(User)
+        {
+            var active = ( User.isActive() ).toInt(),
+                id     = User.getId(),
+                result = User.getAttributes();
+
+            result.usergroup = result.usergroup || '';
+
+            if ( active != -1 )
+            {
+                result.activebtn = {
+                    status   : active,
+                    value    : id,
+                    uid      : id,
+                    username : User.getName(),
+                    image    : active ? this.active_image  : this.deactive_image,
+                    alt      : active ? this.active_text : this.deactive_text,
+                    events : {
+                        onClick : this.$btnSwitchStatus
+                    }
+                };
+            }
+
+            return result;
         }
     });
 
