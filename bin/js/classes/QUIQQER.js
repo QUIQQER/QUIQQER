@@ -204,6 +204,10 @@ define('classes/QUIQQER', function()
                        text    : 'Taskbar Panel',
                        icon    : URL_BIN_DIR +'16x16/apps/window_list.png',
                        require : 'controls/desktop/Tasks'
+                   }).addAvailablePanel({
+                       text    : 'Desktop',
+                       icon    : URL_BIN_DIR +'16x16/apps/background.png',
+                       require : 'controls/desktop/panels/Desktop'
                    });
 
                 requirejs(['controls/desktop/buttons/AddColumn'], function(Button)

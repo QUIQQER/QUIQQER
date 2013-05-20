@@ -1,6 +1,12 @@
 
 .qui-desktop {
-    border: 1px solid red;
     width: 100%;
     height: 100%;
+}
+
+.qui-desktop-frame {
+    border: none;
+    position: absolute;
+    top: 0px;
+    left: 0px;
 }

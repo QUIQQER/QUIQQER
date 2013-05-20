@@ -12,7 +12,6 @@
 define('controls/Control', [
 
     'classes/DOM',
-    'lib/Controls',
     'controls/Utils'
 
 ], function(DOM, Controls)

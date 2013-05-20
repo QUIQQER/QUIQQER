@@ -4,7 +4,13 @@
  * This file contains the quiqqer access for the api, cron and console
  */
 
-require_once 'bootstrap.php';
+require 'bootstrap.php';
+
+if ( isset( $_REQUEST['desktop'] ) )
+{
+    require BIN_DIR .'js/controls/desktop/desktop.php';
+    exit;
+}
 
 /**
  * Cron execution

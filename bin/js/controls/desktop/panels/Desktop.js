@@ -31,41 +31,93 @@ define('controls/desktop/panels/Desktop', [
         Extends : QUI.controls.desktop.Panel,
         Type    : 'QUI.controls.desktop.panels.Desktop',
 
+        Binds : [
+            '$onCreate',
+            '$onResize'
+        ],
+
         initialize: function(options)
         {
-            this.init( options );
-
             // defaults
+            this.setAttribute( 'title', 'Desktop' );
+            //this.setAttribute( 'icon', URL_BIN_DIR +'16x16/apps/background.png' );
+
             this.setAttribute( 'header', false );
             this.setAttribute( 'footer', false );
 
-            this.setAttribute( 'title', 'Desktop' );
-            this.setAttribute( 'icon', URL_BIN_DIR +'16x16/desktop.png' );
+            this.parent( options );
 
-            this.Loader = new QUI.controls.loader.Loader();
+            this.$widgets   = [];
+            this.$Sortables = null;
 
-            this.$Elm       = null;
-            this.$Header    = null;
-            this.$Footer    = null;
-            this.$Content   = null;
-            this.$Container = null;
-
-            this.addEvent('onDrawEnd', function()
-            {
-                this.$create();
-                this.fireEvent( 'load', [ this ] );
-            }.bind( this ));
+            this.addEvents({
+                onCreate : this.$onCreate,
+                onResize : this.$onResize
+            });
         },
 
         /**
-         * Internal creation
+         * event: on create
          */
-        $create : function()
+        $onCreate : function()
         {
-            var bookmark;
+            this.resize();
+
             var Body = this.getBody();
 
-            this.$Container = new Element( 'div' ).inject( Body );
+            Body.set({
+                html   : '<iframe src="'+ URL_DIR +'quiqqer.php?desktop=1" class="qui-desktop-frame" />',
+                styles : {
+                    width    : '100%',
+                    position : 'relative'
+                }
+            });
+        },
+
+        /**
+         *
+         */
+        $onResize : function()
+        {
+            if ( !this.getElm() ) {
+                return;
+            }
+
+            var Body = this.getBody(),
+                size = Body.getParent().getSize();
+
+            if ( !Body.getElement( 'iframe' ) ) {
+                return;
+            }
+
+            Body.setStyles({
+                width  : size.x,
+                height : size.y
+            });
+
+            Body.getElement( 'iframe' ).setStyles({
+                width  : size.x,
+                height : size.y
+            });
+        },
+
+        /**
+         * Add a Widget to the Desktop
+         *
+         * @param {QUI.controls.desktop.Widget} Widget
+         * @return {this} self
+         */
+        addWidget : function(Widget)
+        {
+            this.$widgets.push( Widget );
+
+            if ( !this.getBody() ) {
+                return this;
+            }
+
+            Widget.inject( this.getBody() );
+
+            return this;
         }
     });
 
