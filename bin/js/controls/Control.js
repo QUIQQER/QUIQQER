@@ -166,7 +166,9 @@ define('controls/Control', [
             this.$Elm = null;
 
             // destroy it from the controls
-            QUI.Controls.destroy( this );
+            if ( typeof QUI.Controls !== 'undefined' ) {
+                QUI.Controls.destroy( this );
+            }
         },
 
         /**

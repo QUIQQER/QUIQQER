@@ -1,0 +1,46 @@
+@CHARSET "UTF-8";
+
+html, body {
+    margin: 0;
+    padding: 0;
+
+    font-size: 12px;
+    background: #F2F2F2 !important;
+}
+
+.gridster {
+    width: 100%;
+}
+
+.qui-wall.disabled .gridster .gs_w,
+.qui-wall.disabled .gridster2 .gs_w  {
+    cursor: default;
+}
+
+.qui-wall.enabled .gridster .gs_w,
+.qui-wall.enabled .gridster2 .gs_w  {
+    cursor: move;
+}
+
+.qui-wall-controls {
+    width: 100%;
+    height: 40px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+
+    background: #000;
+    background: rgba( 0, 0, 0, 0.5 );
+}
+
+.qui-wall-gridster {
+    top: 50px;
+}
+
+.qui-add-widget {
+    float: left;
+    font-size: 18px;
+    line-height: 16px !important;
+    text-align: left;
+    width: 10px !important;
+}

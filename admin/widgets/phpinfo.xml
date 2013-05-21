@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<widgets>
+
+    <widget>
+        <title>PHP - Info</title>
+
+        <attributes
+            height="1"
+            width="2"
+            icon="icon-info-sign"
+            refresh="1"
+        />
+
+        <content type="ajax" func="ajax_system_phpinfo" ></content>
+        <!--<content type="html"></content> -->
+    </widget>
+
+</widgets>

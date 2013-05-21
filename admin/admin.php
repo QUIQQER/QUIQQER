@@ -30,7 +30,7 @@
         try
         {
             $Standard = \Projects_Manager::getStandard();
-        } catch ( QException $e )
+        } catch ( \QException $e )
         {
             // nothing
         }

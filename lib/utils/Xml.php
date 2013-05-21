@@ -592,6 +592,47 @@ class Utils_Xml
     }
 
     /**
+     * Reads the widgets from an *.xml
+     *
+     * @param String $file
+     * @return Array
+     */
+    static function getWidgetsFromXml($file)
+    {
+        $Dom     = self::getDomFromXml( $file );
+        $widgets = $Dom->getElementsByTagName( 'widgets' );
+
+        if ( !$widgets->length ) {
+            return array();
+        }
+
+
+        for ( $w = 0; $w < $widgets->length; $w++ )
+        {
+            $Widgets = $widgets->item( $w );
+
+            if ( $Widgets->nodeName == '#text' ) {
+                continue;
+            }
+
+            $list    = $Widgets->getElementsByTagName( 'widget' );
+
+            for ( $c = 0; $c < $list->length; $c++ )
+            {
+                $Widget = $list->item( $c );
+
+                if ( $Widget->nodeName == '#text' ) {
+                    continue;
+                }
+
+                $result[] = $Widget;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Save the setting to a xml specified config file
      *
      * @param unknown_type $file

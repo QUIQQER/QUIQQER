@@ -75,7 +75,7 @@ define('controls/desktop/panels/Desktop', [
         },
 
         /**
-         *
+         * event : on panel resize
          */
         $onResize : function()
         {

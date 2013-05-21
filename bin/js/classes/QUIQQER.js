@@ -25,12 +25,13 @@ define('classes/QUIQQER', function()
         Implements : [ Events ],
         Type       : 'QUI.classes.QUIQQER',
 
-        initialize : function(options)
+        initialize : function()
         {
             this.$conf = {
                 dir     : '',   // QUIQQGER DIR
                 debug   : QUI_CONFIG.globals.debug_mode, // QUIQQER Debug Mode
-                globals : QUI_CONFIG.globals
+                globals : QUI_CONFIG.globals,
+                draw    : false // execute the quiqqer draw, build the main admin gui
             };
 
             this.version = '';
@@ -84,7 +85,13 @@ define('classes/QUIQQER', function()
 
             ], function()
             {
-                require( QUI_LOCALES, this.$draw.bind( this ) );
+                if ( this.config( 'draw' ) )
+                {
+                    require( QUI_LOCALES, this.$draw.bind( this ) );
+                    return;
+                }
+
+                this.fireEvent( 'load' );
 
             }.bind( this ));
         },
@@ -214,6 +221,8 @@ define('classes/QUIQQER', function()
                 {
                     new Button( QUI.Workspace ).inject( $('menu-container') );
                 });
+
+                QUI.fireEvent( 'load' );
             });
         },
 

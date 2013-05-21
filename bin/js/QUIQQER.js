@@ -51,6 +51,7 @@ define('QUIQQER', ['classes/QUIQQER'], function(QUI)
     // quiqqer
     window.QUI = new QUI();
     window.QUI.config( 'dir', URL_BIN_DIR +'js/' );
+    window.QUI.config( 'draw', true );
 
     // @todo maybe save with an intervall
     window.onunload = window.onbeforeunload = (function()
