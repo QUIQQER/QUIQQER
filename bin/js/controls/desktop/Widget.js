@@ -36,12 +36,15 @@ define('controls/desktop/Widget', [
         Binds : [
             'destroy',
             'refresh',
+            'open',
+            'close',
 
             '$loadContent',
             '$onDestroy'
         ],
 
         options : {
+            open    : false,
             width   : 2,
             height  : 2,
             title   : '',
@@ -56,6 +59,11 @@ define('controls/desktop/Widget', [
 
             this.Loader = new QUI.controls.loader.Loader();
 
+            this.$Content  = null;
+            this.$TitleBox = null;
+            this.$Footer   = null;
+            this.$TitleFX  = null;
+
             this.addEvents({
                 onDestroy : this.$onDestroy
             });
@@ -68,18 +76,53 @@ define('controls/desktop/Widget', [
          */
         create : function()
         {
+            var Control = this;
+
             this.$Elm = new Element('li', {
                 'class' : 'qui-desktop-widget box smooth',
                 html    : '<div class="qui-desktop-widget-content box"></div>' +
+                          '<div class="qui-desktop-widget-title box"></div>' +
                           '<div class="qui-desktop-widget-footer box">'+
-                              '<span class="btn icon-trash smooth radius5"></span>' +
-                              '<span class="btn icon-pencil smooth radius5"></span>' +
+                              '<span class="btn opener icon-check-empty smooth radius5"></span>' +
+                              '<span class="btn delete icon-trash smooth radius5"></span>' +
+                              '<span class="btn edit icon-pencil smooth radius5"></span>' +
                           '</div>',
                 'data-qui' : this.getId()
             });
 
             this.Loader.inject( this.$Elm );
 
+            this.$Content  = this.$Elm.getElement( '.qui-desktop-widget-content' );
+            this.$TitleBox = this.$Elm.getElement( '.qui-desktop-widget-title' );
+            this.$Footer   = this.$Elm.getElement( '.qui-desktop-widget-footer' );
+            this.$Opener   = this.$Footer.getElement( '.opener' );
+
+            // title events
+            this.$TitleBox.set({
+                html : this.getAttribute( 'title' ) +
+                       '<span class="icon icon-play-circle"></span>',
+                events : {
+                    click : this.open
+                }
+            });
+
+            this.$TitleFX = moofx( this.$TitleBox );
+
+            this.$Opener.setStyle( 'float', 'left' );
+
+            this.$Opener.addEvent('click', function()
+            {
+                if ( Control.getAttribute( 'open' ) )
+                {
+                    Control.close();
+                } else
+                {
+                    Control.open();
+                }
+            });
+
+
+            // is widget refreshable
             if ( this.getAttribute( 'refresh' ) )
             {
                 new Element('span', {
@@ -91,7 +134,7 @@ define('controls/desktop/Widget', [
                         click : this.refresh
                     }
                 }).inject(
-                    this.$Elm.getElement( '.qui-desktop-widget-footer' )
+                    this.$Footer
                 );
             }
 
@@ -100,6 +143,68 @@ define('controls/desktop/Widget', [
             }
 
             return this.$Elm;
+        },
+
+        /**
+         * Open the widget and load it
+         *
+         * @return {this} self
+         */
+        open : function()
+        {
+            var Control = this;
+
+            this.setAttribute( 'open', true );
+
+            this.$TitleFX.animate({
+                left : (this.$TitleBox.getSize().x + 10) * -1
+            }, function()
+            {
+                Control.Loader.show();
+
+                Control.$Opener.removeClass( 'icon-check-empty' );
+                Control.$Opener.addClass( 'icon-check' );
+
+                if ( Control.$Footer.getElement('.icon-refresh') )
+                {
+                    Control.$Footer.getElement('.icon-refresh')
+                                   .setStyle( 'display', '' );
+                }
+
+                if ( !Control.getAttribute('require').length ||
+                     typeOf( Control.getAttribute('height') ) != 'array' )
+                {
+                    Control.$loadContent();
+                    return;
+                }
+
+                require( Control.getAttribute('require'), function() {
+                    Control.$loadContent();
+                });
+            });
+
+            return this;
+        },
+
+        /**
+         * Close the Widget
+         *
+         * @return {this} self
+         */
+        close : function()
+        {
+            this.setAttribute( 'open', false );
+
+            this.$Opener.removeClass( 'icon-check' );
+            this.$Opener.addClass( 'icon-check-empty' );
+
+            if ( this.$Footer.getElement('.icon-refresh') ) {
+                this.$Footer.getElement('.icon-refresh').setStyle( 'display', 'none' );
+            }
+
+            this.$TitleFX.animate({
+                left : 0
+            });
         },
 
         /**
@@ -123,15 +228,11 @@ define('controls/desktop/Widget', [
          */
         setContent : function(html)
         {
-            if ( !this.$Elm ) {
+            if ( !this.$Content ) {
                 return this;
             }
 
-            var Content = this.$Elm.getElement( '.qui-desktop-widget-content' );
-
-            if ( Content ) {
-                Content.set( 'html', html );
-            }
+            this.$Content.set( 'html', html );
 
             return this;
         },
@@ -152,9 +253,7 @@ define('controls/desktop/Widget', [
             col = col || 1;
             row = row || 1;
 
-            var Li      = this.create(),
-                Content = this.$Elm.getElement( '.qui-desktop-widget-content' ),
-                Footer  = this.$Elm.getElement( '.qui-desktop-widget-footer' );
+            var Li = this.create();
 
             Gridster.add_widget(
                 Li,
@@ -164,29 +263,22 @@ define('controls/desktop/Widget', [
                 row
             );
 
-            Content.setStyle(
+            this.$Content.setStyle(
                 'height',
-                Li.getSize().y - Footer.getSize().y
+                Li.getSize().y - this.$Footer.getSize().y
             );
 
-            Footer.getElement( '.icon-trash' ).addEvents({
+            this.$Footer.getElement( '.icon-trash' ).addEvents({
                 click : this.destroy
             });
 
-
-            if ( !this.getAttribute('require').length ||
-                 typeOf( this.getAttribute('height') ) != 'array' )
+            if ( this.getAttribute( 'open' ) )
             {
-                this.$loadContent();
+                this.open();
                 return this;
             }
 
-
-            var Control = this;
-
-            require( Control.getAttribute('require'), function() {
-                Control.$loadContent();
-            });
+            this.Loader.hide();
 
             return this;
         },
@@ -213,6 +305,7 @@ define('controls/desktop/Widget', [
 
                 return;
             }
+
 
 
             this.Loader.hide();

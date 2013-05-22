@@ -82,7 +82,7 @@ define('controls/buttons/Button', [
             }
 
             this.setAttributes(
-                this.initV2(options)
+                this.initV2( options )
             );
 
             this.addEvent('onSetAttribute', this.onSetAttribute);
@@ -98,7 +98,7 @@ define('controls/buttons/Button', [
          * Compatible to _ptools::Button v2
          *
          * @method QUI.controls.buttons.Button#initV2
-         * @ignore
+         * @depricated
          */
         initV2: function(options)
         {

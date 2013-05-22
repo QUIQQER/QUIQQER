@@ -44,3 +44,8 @@ html, body {
     text-align: left;
     width: 10px !important;
 }
+
+.qui-wall-btn-enable .icon-check,
+.qui-wall-btn-enable .icon-check-empty {
+    margin-right: 10px;
+}

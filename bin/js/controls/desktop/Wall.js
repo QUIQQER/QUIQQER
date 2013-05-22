@@ -16,7 +16,7 @@ define('controls/desktop/Wall', [
     'controls/buttons/Select',
 
     'css!controls/desktop/Wall.css',
-    'css!controls/desktop/Wall.Loader.css',
+    'css!controls/desktop/Wall.Loader.css'
 
 ], function(Control)
 {
@@ -143,11 +143,11 @@ define('controls/desktop/Wall', [
             );
 
             this.$EnableDisable = new QUI.controls.buttons.Button({
-                'class' : 'btn-green',
-                text    : 'sperren',
+                'class' : 'qui-wall-btn-enable',
                 styles  : {
-                    padding: '7px 10px',
-                    margin: '3px 10px',
+                    padding : '7px 10px',
+                    margin  : '3px 10px',
+                    width   : 150,
                     'float' : 'right'
                 },
                 events : {
@@ -156,6 +156,8 @@ define('controls/desktop/Wall', [
             }).inject(
                 document.getElement( '.qui-wall-controls' )
             );
+
+            this.disable();
 
             // load grister
             jQuery('.qui-wall-gridster').width(
@@ -194,7 +196,7 @@ define('controls/desktop/Wall', [
          */
         switchEnableDisable : function()
         {
-            if ( this.$EnableDisable.getElm().hasClass( 'btn-green' ) )
+            if ( this.$Elm.hasClass( 'enabled' ) )
             {
                 this.disable();
                 return;
@@ -211,11 +213,14 @@ define('controls/desktop/Wall', [
             var Btn = this.$EnableDisable,
                 Elm = Btn.getElm();
 
-            Elm.addClass( 'btn-green' );
-            Elm.removeClass( 'btn-red' );
+            Elm.removeClass( 'btn-green' );
+            Elm.addClass( 'btn-red' );
 
-            Btn.setAttribute( 'class', 'btn-green' );
-            Btn.setAttribute( 'text', 'sperren' );
+            Btn.setAttribute( 'class', 'qui-wall-btn-enable btn-red' );
+            Btn.setAttribute(
+                'text',
+                '<span class="icon-check-empty"></span>entsperrt'
+            );
 
             this.$Elm.removeClass( 'disabled' );
             this.$Elm.addClass( 'enabled' );
@@ -233,11 +238,14 @@ define('controls/desktop/Wall', [
             var Btn = this.$EnableDisable,
                 Elm = Btn.getElm();
 
-            Elm.removeClass( 'btn-green' );
-            Elm.addClass( 'btn-red' );
+            Elm.addClass( 'btn-green' );
+            Elm.removeClass( 'btn-red' );
 
-            Btn.setAttribute( 'class', 'btn-red' );
-            Btn.setAttribute( 'text', 'entsperren' );
+            Btn.setAttribute( 'class', 'qui-wall-btn-enable btn-green' );
+            Btn.setAttribute(
+                'text',
+                '<span class="icon-check"></span>gesperrt'
+            );
 
             this.$Elm.addClass( 'disabled' );
             this.$Elm.removeClass( 'enabled' );

@@ -8,7 +8,7 @@
 
     if ( !\QUI::getUserBySession()->getId() )
     {
-
+        require_once SYS_DIR .'login.php';
         exit;
     }
 
