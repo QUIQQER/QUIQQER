@@ -143,7 +143,7 @@ class QUI_Desktop_Manager
         ));
 
         $DBTable->setIndex($table, array(
-            'id', 'user_id'
+            'id', 'uid'
         ));
 
         $DBTable->setAutoIncrement($table, 'id');
