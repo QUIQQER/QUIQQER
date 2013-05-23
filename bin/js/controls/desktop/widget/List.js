@@ -154,6 +154,8 @@ define('controls/desktop/widget/List', [
                 var widgets = QUI_DESKTOP_WIDGETS || [],
                     Content = this.$Elm.getElement( '.qui-desktop-widget-list-content' );
 
+                Content.getElements( '.qui-desktop-widget-list-entry' ).destroy();
+
                 for ( i = 0, len = widgets.length; i < len; i++ )
                 {
                     Elm = new Element('div', {
@@ -178,7 +180,7 @@ define('controls/desktop/widget/List', [
             }
 
             this.fireEvent( 'close', [ this ] );
-            this.destroy();
+            //this.destroy();
         },
 
         /**
