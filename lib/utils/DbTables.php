@@ -25,7 +25,7 @@ class Utils_DbTables
      *
      * @param Utils_Db $DB
      */
-    public function __construct(Utils_Db $DB)
+    public function __construct(\Utils_Db $DB)
     {
         $this->_DB = $DB;
     }
@@ -144,14 +144,14 @@ class Utils_DbTables
     {
         if ( !isset( $fields ) || !is_array( $fields ) )
         {
-            throw new QExceptionDBError(
+            throw new \QExceptionDBError(
                 'No Array given Utils_DbTables->createTable'
             );
         }
 
         $sql = 'CREATE TABLE `'. $this->_DB->getAttribute('dbname') .'`.`'. $table .'` (';
 
-        if ( Utils_Array::isAssoc( $fields ) )
+        if ( \Utils_Array::isAssoc( $fields ) )
         {
             foreach ( $fields as $key => $type ) {
                 $sql .= '`'.$key.'` '.$type.',';
@@ -271,7 +271,7 @@ class Utils_DbTables
         }
 
         $tbl_fields   = $this->getFields( $table );
-        $table_fields = Utils_Array::toAssoc( $tbl_fields );
+        $table_fields = \Utils_Array::toAssoc( $tbl_fields );
 
         // prüfen ob die Tabelle leer wäre wenn alle Felder gelöscht werden
         // wenn ja, Tabelle löschen
@@ -373,10 +373,10 @@ class Utils_DbTables
      */
     public function deleteColumn($table, $row)
     {
-        $table = Utils_Security_Orthos::clearMySQL($table);
-        $row   = Utils_Security_Orthos::clearMySQL($row);
+        $table = \Utils_Security_Orthos::clearMySQL($table);
+        $row   = \Utils_Security_Orthos::clearMySQL($row);
 
-        if (!$this->existColumnInTable($table, $row)) {
+        if ( !$this->existColumnInTable( $table, $row ) ) {
             return;
         }
 
@@ -414,11 +414,11 @@ class Utils_DbTables
      */
     public function issetPrimaryKey($table, $key)
     {
-        if (is_array($key))
+        if ( is_array( $key ) )
         {
-            foreach ($key as $entry)
+            foreach ( $key as $entry )
             {
-                if ($this->_issetPrimaryKey($table, $entry) == false) {
+                if ( $this->_issetPrimaryKey( $table, $entry  == false ) ) {
                     return false;
                 }
             }
@@ -440,11 +440,11 @@ class Utils_DbTables
      */
     protected function _issetPrimaryKey($table, $key)
     {
-        $keys = $this->getKeys($table);
+        $keys = $this->getKeys( $table );
 
-        foreach ($keys as $entry)
+        foreach ( $keys as $entry )
         {
-            if (isset($entry['Column_name']) &&
+            if ( isset($entry['Column_name'] ) &&
                 $entry['Column_name'] == $key)
             {
                 return true;
@@ -464,13 +464,13 @@ class Utils_DbTables
      */
     public function setPrimaryKey($table, $key)
     {
-        if ($this->issetPrimaryKey($table, $key)) {
+        if ( $this->issetPrimaryKey( $table, $key ) ) {
             return true;
         }
 
         $k = $key;
 
-        if (is_array($key))
+        if ( is_array( $key ) )
         {
             $k = "`". implode("`,`", $key) ."`";
         } else
@@ -482,7 +482,7 @@ class Utils_DbTables
             'ALTER TABLE `'. $table .'` ADD PRIMARY KEY('. $k .')'
         );
 
-        return $this->issetPrimaryKey($table, $key);
+        return $this->issetPrimaryKey( $table, $key );
     }
 
     /**
@@ -499,11 +499,11 @@ class Utils_DbTables
      */
     public function issetIndex($table, $key)
     {
-        if (is_array($key))
+        if ( is_array( $key ) )
         {
-            foreach ($key as $entry)
+            foreach ( $key as $entry )
             {
-                if ($this->_issetIndex($table, $entry) == false) {
+                if ( $this->_issetIndex( $table, $entry ) == false ) {
                     return false;
                 }
             }
@@ -511,7 +511,7 @@ class Utils_DbTables
             return true;
         }
 
-        return $this->_issetIndex($table, $key);
+        return $this->_issetIndex( $table, $key );
     }
 
     /**
@@ -524,12 +524,12 @@ class Utils_DbTables
      */
     protected function _issetIndex($table, $key)
     {
-        $i = $this->getIndex($table);
+        $i = $this->getIndex( $table );
 
-        foreach ($i as $entry)
+        foreach ( $i as $entry )
         {
-            if (isset($entry['Column_name']) &&
-                $entry['Column_name'] == $key)
+            if ( isset( $entry['Column_name'] ) &&
+                 $entry['Column_name'] == $key)
             {
                 return true;
             }
@@ -561,15 +561,15 @@ class Utils_DbTables
      */
     public function setIndex($table, $index)
     {
-        if ($this->issetIndex($table, $index)) {
+        if ( $this->issetIndex( $table, $index ) ) {
             return true;
         }
 
         $in = $index;
 
-        if (is_array($index))
+        if ( is_array( $index ) )
         {
-            $in = "`". implode("`,`", $index) ."`";
+            $in = "`". implode( "`,`", $index ) ."`";
         } else
         {
              $in = "`". $index ."`";
@@ -579,7 +579,7 @@ class Utils_DbTables
             'ALTER TABLE `'. $table .'` ADD INDEX('. $in .')'
         );
 
-        return $this->issetIndex($table, $index);
+        return $this->issetIndex( $table, $index );
     }
 
     /**
@@ -590,14 +590,14 @@ class Utils_DbTables
      */
     public function setAutoIncrement($table, $index)
     {
-        $column = $this->getColumn($table, $index);
+        $column = $this->getColumn( $table, $index );
 
         $query  = 'ALTER TABLE `'. $table .'`';
         $query .= 'MODIFY COLUMN `'. $index .'`';
 
         $query .= ' '. $column['Type'];
 
-        if ($column['Null'] === 'No')
+        if ( $column['Null'] === 'No' )
         {
             $query .= ' NOT NULL';
         } else
@@ -607,7 +607,7 @@ class Utils_DbTables
 
         $query .= ' AUTO_INCREMENT';
 
-        $this->_DB->getPDO()->exec($query);
+        $this->_DB->getPDO()->exec( $query );
     }
 
     /**
@@ -624,13 +624,13 @@ class Utils_DbTables
      */
     public function setFulltext($table, $index)
     {
-        if ($this->issetFulltext($table, $index)) {
+        if ( $this->issetFulltext( $table, $index ) ) {
             return true;
         }
 
         $in = $index;
 
-        if (is_array($index))
+        if ( is_array( $index ) )
         {
             $in = "`". implode("`,`", $index) ."`";
         } else
@@ -642,7 +642,7 @@ class Utils_DbTables
             'ALTER TABLE `'. $table .'` ADD FULLTEXT('. $in .')'
         );
 
-        return $this->issetFulltext($table, $index);
+        return $this->issetFulltext( $table, $index );
     }
 
 
@@ -656,11 +656,11 @@ class Utils_DbTables
      */
     public function issetFulltext($table, $key)
     {
-        if (is_array($key))
+        if ( is_array( $key ) )
         {
-            foreach ($key as $entry)
+            foreach ( $key as $entry )
             {
-                if ($this->_issetFulltext($table, $entry) == false) {
+                if ( $this->_issetFulltext( $table, $entry ) == false ) {
                     return false;
                 }
             }
@@ -668,7 +668,7 @@ class Utils_DbTables
             return true;
         }
 
-        return $this->_issetFulltext($table, $key);
+        return $this->_issetFulltext( $table, $key );
     }
 
     /**
@@ -679,14 +679,14 @@ class Utils_DbTables
      */
     protected function _issetFulltext($table, $key)
     {
-        $keys = $this->getKeys($table);
+        $keys = $this->getKeys( $table );
 
-        foreach ($keys as $entry)
+        foreach ( $keys as $entry )
         {
-            if (isset($entry['Column_name']) &&
-                isset($entry['Index_type']) &&
-                $entry['Column_name'] == $key &&
-                $entry['Index_type'] == 'FULLTEXT')
+            if ( isset($entry['Column_name']) &&
+                 isset($entry['Index_type']) &&
+                 $entry['Column_name'] == $key &&
+                 $entry['Index_type'] == 'FULLTEXT' )
             {
                 return true;
             }
@@ -695,5 +695,3 @@ class Utils_DbTables
         return false;
     }
 }
-
-?>
