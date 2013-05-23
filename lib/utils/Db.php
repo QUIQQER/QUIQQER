@@ -27,6 +27,12 @@ class Utils_Db extends QDOM
     protected $_Tables = null;
 
     /**
+     * SQLite Flag
+     * @var Bool
+     */
+    protected $_sqlite = false;
+
+    /**
      * Constructor
      *
      * @param Array $attributes
@@ -63,15 +69,27 @@ class Utils_Db extends QDOM
             );
         }
 
-        $this->_PDO = new PDO(
-            $this->getAttribute( 'dsn' ),
-            $this->getAttribute( 'user' ),
-            $this->getAttribute( 'password' ),
-            $this->getAttribute( 'options' )
-        );
+        // sqlite PDO
+        if ( $this->getAttribute( 'driver' ) == 'sqlite' )
+        {
+            $this->_PDO = new \PDO(
+                'sqlite:'. $this->getAttribute( 'dbname' )
+            );
 
-        $this->_PDO->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-        $this->Tables = new Utils_DbTables( $this );
+            $this->_sqlite = true;
+
+        } else
+        {
+            $this->_PDO = new \PDO(
+                $this->getAttribute( 'dsn' ),
+                $this->getAttribute( 'user' ),
+                $this->getAttribute( 'password' ),
+                $this->getAttribute( 'options' )
+            );
+        }
+
+        $this->_PDO->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION );
+        $this->Tables = new \Utils_DbTables( $this );
     }
 
     /**
@@ -91,10 +109,20 @@ class Utils_Db extends QDOM
     public function Table()
     {
         if ( is_null( $this->_Tables ) ) {
-            $this->_Tables = new Utils_DbTables( $this );
+            $this->_Tables = new \Utils_DbTables( $this );
         }
 
         return $this->_Tables;
+    }
+
+    /**
+     * Is the DB a sqlite db?
+     *
+     * @return Bool
+     */
+    public function isSQLite()
+    {
+        return $this->_sqlite;
     }
 
     /**

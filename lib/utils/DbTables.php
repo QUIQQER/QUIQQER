@@ -38,11 +38,21 @@ class Utils_DbTables
     public function getTables()
     {
         $tables = array();
-        $result = $this->_DB->getPDO()->query("SHOW tables")->fetchAll();
 
-        foreach ($result as $entry)
+        if ( $this->_DB->isSQLite() )
         {
-            if ( isset($entry[0]) ) {
+            $result = $this->_DB->getPDO()->query(
+                "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"
+            )->fetchAll();
+
+        } else
+        {
+            $result = $this->_DB->getPDO()->query("SHOW tables")->fetchAll();
+        }
+
+        foreach ( $result as $entry )
+        {
+            if ( isset( $entry[0] ) ) {
                 $tables[] = $entry[0];
             }
         }
@@ -57,8 +67,8 @@ class Utils_DbTables
      */
     public function optimize($tables)
     {
-        if ( is_string($tables) ) {
-            $tables = array($tables);
+        if ( is_string( $tables ) ) {
+            $tables = array( $tables );
         }
 
         return $this->_DB->getPDO()->query(
@@ -74,11 +84,19 @@ class Utils_DbTables
      */
     public function exist($table)
     {
-        $data = $this->_DB->getPDO()->query(
-            'SHOW TABLES FROM `'. $this->_DB->getAttribute('dbname') .'` LIKE "'. $table .'"'
-        )->fetchAll();
+        if ( $this->_DB->isSQLite() )
+        {
+            $data = $this->_DB->getPDO()->query(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name ='". $table ."'"
+            )->fetchAll();
+        } else
+        {
+            $data = $this->_DB->getPDO()->query(
+                'SHOW TABLES FROM `'. $this->_DB->getAttribute('dbname') .'` LIKE "'. $table .'"'
+            )->fetchAll();
+        }
 
-        return count($data) > 0 ? true : false;
+        return count( $data ) > 0 ? true : false;
     }
 
     /**
@@ -124,28 +142,31 @@ class Utils_DbTables
      */
     public function create($table, $fields)
     {
-        if (!isset($fields) || !is_array($fields)) {
-            throw new QExceptionDBError('No Array given Utils_DbTables->createTable');
+        if ( !isset( $fields ) || !is_array( $fields ) )
+        {
+            throw new QExceptionDBError(
+                'No Array given Utils_DbTables->createTable'
+            );
         }
 
         $sql = 'CREATE TABLE `'. $this->_DB->getAttribute('dbname') .'`.`'. $table .'` (';
 
-        if (Utils_Array::isAssoc($fields))
+        if ( Utils_Array::isAssoc( $fields ) )
         {
-            foreach ($fields as $key => $type) {
+            foreach ( $fields as $key => $type ) {
                 $sql .= '`'.$key.'` '.$type.',';
             }
 
-            $sql = substr($sql, 0, -1);
+            $sql = substr( $sql, 0, -1 );
         } else
         {
-            $len = count($fields);
+            $len = count( $fields );
 
-            for ($i = 0; $i < $len; $i++)
+            for ( $i = 0; $i < $len; $i++ )
             {
                 $sql .= $fields[$i];
 
-                if ($i < $len-1) {
+                if ( $i < $len-1 ) {
                     $sql .= ',';
                 }
             }
@@ -155,7 +176,7 @@ class Utils_DbTables
 
         $this->_DB->getPDO()->exec( $sql );
 
-        return $this->exist($table);
+        return $this->exist( $table );
     }
 
     /**
@@ -170,12 +191,37 @@ class Utils_DbTables
      */
     public function getFields($table)
     {
-        $PDO    = $this->_DB->getPDO();
+        $PDO = $this->_DB->getPDO();
+
+        if ( $this->_DB->isSQLite() )
+        {
+            $result = $PDO->query(
+                "SELECT sql FROM sqlite_master
+                WHERE tbl_name = '". $table ."' AND type = 'table'"
+            )->fetchAll();
+
+            if ( !isset( $result[0] ) && !isset( $result[0] ) ) {
+                return array();
+            }
+
+            preg_match("/\((.*?)\)/", $result[0]['sql'], $matches);
+
+            $fields = array();
+            $expl    = explode( ',', $matches[1] );
+
+            foreach ( $expl as $part ) {
+                $fields[] = trim( $part, ' "' );
+            }
+
+            return $fields;
+        }
+
+
         $Stmnt  = $PDO->query( "SHOW COLUMNS FROM `" . $table ."`" );
-        $result = $Stmnt->fetchAll( PDO::FETCH_ASSOC );
+        $result = $Stmnt->fetchAll( \PDO::FETCH_ASSOC );
         $fields = array();
 
-        foreach ($result as $entry) {
+        foreach ( $result as $entry ) {
             $fields[] = $entry['Field'];
         }
 
@@ -191,17 +237,17 @@ class Utils_DbTables
      */
     public function appendFields($table, $fields)
     {
-        if ($this->exist($table) == false)
+        if ( $this->exist( $table ) == false )
         {
-            $this->create($table, $fields);
+            $this->create( $table, $fields );
             return;
         }
 
-        $tbl_fields = $this->getFields($table);
+        $tbl_fields = $this->getFields( $table );
 
-        foreach ($fields as $field => $type)
+        foreach ( $fields as $field => $type )
         {
-            if (!in_array($field, $tbl_fields))
+            if ( !in_array( $field, $tbl_fields ) )
             {
                 $this->_DB->getPDO()->exec(
                     'ALTER TABLE `'. $table .'` ADD `'. $field .'` '. $type .';'
@@ -218,36 +264,36 @@ class Utils_DbTables
      */
     public function deleteFields($table, $fields)
     {
-        $table = Utils_Security_Orthos::clearMySQL($table);
+        $table = \Utils_Security_Orthos::clearMySQL( $table );
 
-        if ($this->exist($table) == false) {
+        if ( $this->exist( $table ) == false) {
             return true;
         }
 
-        $tbl_fields   = $this->getFields($table);
-        $table_fields = Utils_Array::toAssoc($tbl_fields);
+        $tbl_fields   = $this->getFields( $table );
+        $table_fields = Utils_Array::toAssoc( $tbl_fields );
 
         // prüfen ob die Tabelle leer wäre wenn alle Felder gelöscht werden
         // wenn ja, Tabelle löschen
-        foreach ($fields as $field => $type)
+        foreach ( $fields as $field => $type )
         {
-            if (isset($table_fields[$field])) {
-                unset($table_fields[$field]);
+            if ( isset( $table_fields[ $field ] ) ) {
+                unset( $table_fields[ $field ] );
             }
         }
 
-        if (empty($table_fields))
+        if ( empty( $table_fields ) )
         {
-            $this->delete($table);
+            $this->delete( $table );
             return;
         }
 
 
         // Einzeln die Felder löschen
-        foreach ($fields as $field => $type)
+        foreach ( $fields as $field => $type )
         {
-            if (in_array($field, $tbl_fields)) {
-                $this->deleteColum($table, $field);
+            if ( in_array( $field, $tbl_fields ) ) {
+                $this->deleteColum( $table, $field );
             }
         }
     }
@@ -261,14 +307,32 @@ class Utils_DbTables
      *
      * @param unknown_type $table
      * @param unknown_type $row
+     *
+     * @return Bool
      */
     public function existColumnInTable($table, $row)
     {
-        $data = $this->_DB->getPDO()->query(
-            'SHOW COLUMNS FROM `'. $table .'` LIKE "'. $row .'"'
-        )->fetchAll();
+        if ( $this->_DB->isSQLite() == false )
+        {
+            $data = $this->_DB->getPDO()->query(
+                'SHOW COLUMNS FROM `'. $table .'` LIKE "'. $row .'"'
+            )->fetchAll();
 
-        return count($data) > 0 ? true : false;
+            return count($data) > 0 ? true : false;
+        }
+
+
+        // sqlite part
+        $columns = $this->getFields( $table );
+
+        foreach ( $columns as $col )
+        {
+            if ( $col == $row ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -279,6 +343,10 @@ class Utils_DbTables
      */
     public function getColumns($table)
     {
+        if ( $this->_DB->isSQLite() ) {
+            return $this->getFields( $table );
+        }
+
         return $this->_DB->getPDO()->query(
             'SHOW COLUMNS FROM `'. $table .'`'
         )->fetchAll();
