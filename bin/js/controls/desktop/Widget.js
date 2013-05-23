@@ -44,6 +44,7 @@ define('controls/desktop/Widget', [
         ],
 
         options : {
+            name    : '',
             open    : false,
             width   : 2,
             height  : 2,
@@ -138,7 +139,6 @@ define('controls/desktop/Widget', [
                     Control.open();
                 }
             });
-
 
             // is widget refreshable
             if ( this.getAttribute( 'refresh' ) )
@@ -308,13 +308,12 @@ define('controls/desktop/Widget', [
         {
             this.Loader.show();
 
-            var content = this.getAttribute('content');
+            var Control = this,
+                content = this.getAttribute('content');
 
             if ( content.type == 'ajax' &&
                  content.func !== '' )
             {
-                var Control = this;
-
                 QUI.Ajax.get( content.func, function( result )
                 {
                     Control.setContent( result );
@@ -324,9 +323,20 @@ define('controls/desktop/Widget', [
                 return;
             }
 
+            if ( content.type == 'html' )
+            {
+                QUI.Ajax.get('ajax_desktop_widgets_content', function( result, Request )
+                {
+                    Control.setContent( result );
+                    Control.Loader.hide();
+                }, {
+                    name : this.getAttribute( 'name' )
+                });
 
+                return;
+            }
 
-            this.Loader.hide();
+            Control.Loader.hide();
         },
 
         /**

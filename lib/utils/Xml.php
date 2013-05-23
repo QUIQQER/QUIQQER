@@ -615,7 +615,7 @@ class Utils_Xml
                 continue;
             }
 
-            $list    = $Widgets->getElementsByTagName( 'widget' );
+            $list = $Widgets->getElementsByTagName( 'widget' );
 
             for ( $c = 0; $c < $list->length; $c++ )
             {
@@ -624,6 +624,8 @@ class Utils_Xml
                 if ( $Widget->nodeName == '#text' ) {
                     continue;
                 }
+
+                $Widget->setAttribute( 'name', md5( $file . $c ) );
 
                 $result[] = $Widget;
             }

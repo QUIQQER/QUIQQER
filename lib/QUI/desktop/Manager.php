@@ -164,24 +164,26 @@ class QUI_Desktop_Manager
         $content   = $Node->getElementsByTagName( 'content' );
         $title     = $Node->getElementsByTagName( 'title' );
 
+        $Widget->setAttribute( 'name', $Node->getAttribute( 'name' ) );
+
         if ( $atributes->length )
         {
             $Attributes = $atributes->item( 0 );
 
-            if ( $Attributes->getAttribute('height') ) {
-                $Widget->setAttribute( 'height', $Attributes->getAttribute('height') );
+            if ( $Attributes->getAttribute( 'height' ) ) {
+                $Widget->setAttribute( 'height', $Attributes->getAttribute( 'height' ) );
             }
 
-            if ( $Attributes->getAttribute('width') ) {
-                $Widget->setAttribute( 'width', $Attributes->getAttribute('width') );
+            if ( $Attributes->getAttribute( 'width' ) ) {
+                $Widget->setAttribute( 'width', $Attributes->getAttribute( 'width' ) );
             }
 
-            if ( $Attributes->getAttribute('icon') ) {
-                $Widget->setAttribute( 'icon', $Attributes->getAttribute('icon') );
+            if ( $Attributes->getAttribute( 'icon' ) ) {
+                $Widget->setAttribute( 'icon', $Attributes->getAttribute( 'icon' ) );
             }
 
-            if ( $Attributes->getAttribute('refresh') ) {
-                $Widget->setAttribute( 'refresh', $Attributes->getAttribute('refresh') );
+            if ( $Attributes->getAttribute( 'refresh' ) ) {
+                $Widget->setAttribute( 'refresh', $Attributes->getAttribute( 'refresh' ) );
             }
         }
 
@@ -205,7 +207,7 @@ class QUI_Desktop_Manager
                 array(
                     'type'    => $Content->getAttribute('type'),
                     'func'    => $Content->getAttribute('func'),
-                    'content' => $Content->nodeValue
+                    'content' => trim( $Content->nodeValue )
                 )
             );
         }
@@ -214,7 +216,7 @@ class QUI_Desktop_Manager
         {
             $Widget->setAttribute(
                 'title',
-                $title->item( 0 )->nodeValue
+                trim( $title->item( 0 )->nodeValue )
             );
         }
 
