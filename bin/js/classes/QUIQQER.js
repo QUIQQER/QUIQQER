@@ -72,7 +72,7 @@ define('classes/QUIQQER', function()
             window.onerror = this.trigger.bind( this );
 
             require([
-                "Editors", "Menu", "Locale", "Users", "Storage",
+                "Controls", "Editors", "Menu", "Locale", "Users", "Storage",
                 "Projects", "Utils",
 
                 "classes/messages", "controls/windows",

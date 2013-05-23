@@ -14,6 +14,7 @@ define('controls/desktop/Wall', [
     'controls/loader/Loader',
     'controls/buttons/Button',
     'controls/buttons/Select',
+    'controls/desktop/Widget',
 
     'css!controls/desktop/Wall.css',
     'css!controls/desktop/Wall.Loader.css'
@@ -36,7 +37,9 @@ define('controls/desktop/Wall', [
 
         Binds : [
             'switchEnableDisable',
-            'openWidgetList'
+            'openDesktopList',
+            'openWidgetList',
+            'save'
         ],
 
         options : {
@@ -128,8 +131,23 @@ define('controls/desktop/Wall', [
 
             var Gridster = this.$Desktop;
 
+            var DesktopList = new QUI.controls.buttons.Button({
+                text   : '<span class="icon-ellipsis-vertical qui-desktop-manager"></span>',
+                alt    : 'Desktop-Verwaltung',
+                title  : 'Desktop-Verwaltung',
+                styles : {
+                    padding: '7px 10px',
+                    margin: '3px 10px'
+                },
+                events : {
+                    onClick : this.openDesktopList
+                }
+            }).inject(
+                document.getElement( '.qui-wall-controls' )
+            );
+
             var AddWidget = new QUI.controls.buttons.Button({
-                text   : '<span class="icon-ellipsis-vertical qui-add-widget"></span>' +
+                text   : '<span class="icon-th-large qui-add-widget"></span>' +
                          'Widget hinzufügen',
                  styles : {
                      padding: '7px 10px',
@@ -141,6 +159,7 @@ define('controls/desktop/Wall', [
             }).inject(
                 document.getElement( '.qui-wall-controls' )
             );
+
 
             this.$EnableDisable = new QUI.controls.buttons.Button({
                 'class' : 'qui-wall-btn-enable',
@@ -178,7 +197,38 @@ define('controls/desktop/Wall', [
                 widget_base_dimensions: [ dimensions, dimensions ]
             });
 
-            this.Loader.hide();
+            this.$Desktop.options.draggable.stop = this.save;
+
+            // if a desktop is in the url given, load it
+            var loc = window.location.search;
+
+            if ( !loc.match('id=') || !loc.match('desktop=') )
+            {
+                this.openDesktopList();
+                return;
+            }
+
+            var i, len, spl;
+
+            var loc_params = {};
+
+            loc = loc.replace( '?', '' );
+            loc = loc.split('&');
+
+            for ( i = 0, len = loc.length; i < len; i++ )
+            {
+                spl = loc[ i ].split( '=' );
+
+                loc_params[ spl[ 0 ] ] = spl[ 1 ];
+            }
+
+            if ( typeof loc_params.id === 'undefined' )
+            {
+                this.openDesktopList();
+                return;
+            }
+
+            this.loadDesktop( loc_params.id );
         },
 
         /**
@@ -189,6 +239,52 @@ define('controls/desktop/Wall', [
         getDesktop : function()
         {
             return this.$Desktop;
+        },
+
+        /**
+         * Return the actual Desktop-ID
+         *
+         * @return {Integer} id
+         */
+        getDesktopId : function()
+        {
+            return this.$id;
+        },
+
+        /**
+         * Save the desktop wall to the user
+         */
+        save : function()
+        {
+            if ( typeof USER === 'undefined' )
+            {
+                QUI.MH.addError(
+                    'Cannot save desktop, User not exist'
+                );
+
+                return;
+            }
+
+            var widgets = [],
+                list    = this.$Elm.getElements( '.qui-wall-gridster li.qui-desktop-widget' );
+
+            var i, len, quiid, Widget;
+
+            for ( i = 0, len = list.length; i < len; i++ )
+            {
+                quiid  = list[i].get( 'data-quiid' );
+                Widget = QUI.Controls.getById( quiid );
+
+                widgets.push( Widget.serialize() );
+            }
+
+            QUI.Ajax.post('ajax_desktop_save', function(result, Request)
+            {
+
+            }, {
+                widgets : JSON.encode( widgets ),
+                did     : this.getDesktopId()
+            });
         },
 
         /**
@@ -288,6 +384,8 @@ define('controls/desktop/Wall', [
 
             Widget.setParent( this );
             Widget.appendToGridster( this.$Desktop, col, row );
+
+            this.save();
         },
 
         /**
@@ -301,6 +399,93 @@ define('controls/desktop/Wall', [
                  'controls/desktop/widget/List'
             ], function(List) {
                 new List( Control ).inject( document.body  ).show();
+            });
+        },
+
+        /**
+         * Open the Desktop list
+         */
+        openDesktopList : function()
+        {
+            var Control = this;
+
+            require([
+                 'controls/desktop/WallDesktopList'
+            ], function(List) {
+                new List( Control ).inject( document.body  ).show();
+            });
+        },
+
+        /**
+         * Creates a new desktop
+         *
+         * @param {String} title - Title of the Desktop
+         */
+        createDesktop : function(title)
+        {
+            var Control = this;
+
+            Control.Loader.show();
+
+            QUI.Ajax.post('ajax_desktop_create', function(result, Request)
+            {
+                Control.openDesktop( result );
+            }, {
+                title : title
+            });
+        },
+
+        /**
+         * Open the desktop with the id
+         *
+         * @param {String} id - Desktop-ID
+         */
+        openDesktop : function(id)
+        {
+            this.Loader.show();
+
+            window.location = window.location.pathname +'?desktop=1&id='+ id;
+        },
+
+        /**
+         * Load the widgets from a desktop
+         *
+         * @param {Integer} id - Desktop-ID
+         */
+        loadDesktop : function(id)
+        {
+            var Control = this;
+
+            Control.Loader.show();
+            Control.$id = id;
+
+            QUI.Ajax.get('ajax_desktop_load', function(result, Request)
+            {
+                if ( !result || !result.length )
+                {
+                    Control.Loader.hide();
+                    return;
+                }
+
+                var i, len, params, Widget;
+
+                for ( i = 0, len = result.length; i < len; i++ )
+                {
+                    params = result[ i ];
+
+                    Widget = new QUI.controls.desktop.Widget( params );
+                    Widget.setParent( Control );
+
+                    Widget.appendToGridster(
+                        Control.getDesktop(),
+                        params.col,
+                        params.row
+                    );
+                }
+
+                Control.Loader.hide();
+            }, {
+                did : id
             });
         }
     });

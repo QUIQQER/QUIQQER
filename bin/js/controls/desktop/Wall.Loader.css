@@ -11,6 +11,7 @@
     height: 100%;
     background: #fff;
     background: rgba( 255, 255, 255, 0.5 );
+    z-index: 10;
 }
 
 .windows8 {

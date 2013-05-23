@@ -37,12 +37,23 @@ html, body {
     top: 50px;
 }
 
+/** Desktop topic buttons
+ ============================================================ */
+
+.qui-desktop-manager {
+    float: left;
+    font-size: 18px;
+    line-height: 16px !important;
+    text-align: left;
+    width: 5px !important;
+}
+
 .qui-add-widget {
     float: left;
     font-size: 18px;
     line-height: 16px !important;
     text-align: left;
-    width: 10px !important;
+    width: 25px !important;
 }
 
 .qui-wall-btn-enable .icon-check,

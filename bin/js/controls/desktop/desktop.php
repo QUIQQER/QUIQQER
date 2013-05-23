@@ -15,7 +15,7 @@
     $GRIDSTER_DIR = URL_BIN_DIR .'js/lib/gridster/';
 
     // load widgets
-    $widgets = \QUI_Desktop::getWidgetList();
+    $widgets = \QUI_Desktop_Manager::getWidgetList();
     $list    = array();
 
     foreach ( $widgets as $Widget ) {

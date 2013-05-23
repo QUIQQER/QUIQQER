@@ -108,7 +108,6 @@ define('controls/desktop/widget/List', [
 
             Elm.setStyle( 'display', null );
 
-
             this.$FX.animate({
                 left : 0
             }, {

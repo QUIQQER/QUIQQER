@@ -45,8 +45,11 @@ class QUI_Setup
         // Cron Setup
         \System_Cron_Manager::setup();
 
-        // Events Setip
+        // Events Setup
         \QUI_Events_Manager::setup();
+
+        // Desktop Setup
+        \QUI_Desktop_Manager::setup();
 
         // Package Manager
         // QUI_Package_Manager::setup();

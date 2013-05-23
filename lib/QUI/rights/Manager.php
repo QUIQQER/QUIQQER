@@ -1016,6 +1016,3 @@ class QUI_Rights_Manager
         return $result;
     }
 }
-
-
-?>

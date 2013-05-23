@@ -63,6 +63,12 @@ class QUI
     static $Ajax = null;
 
     /**
+     * QUI Desktop Manager
+     * @var QUI_Desktop_Manager
+     */
+    static $Desktop = null;
+
+    /**
      * QUI GroupManager, use QUI::getGroups()
      * @var Groups_Groups
      */
@@ -564,6 +570,20 @@ class QUI
         }
 
         return self::$DataBase2;
+    }
+
+    /**
+     * Return the Desktop Manager
+     *
+     * @return QUI_Desktop_Manager
+     */
+    static function getDesktopManager()
+    {
+        if ( is_null( self::$Desktop ) ) {
+            self::$Desktop = new \QUI_Desktop_Manager();
+        }
+
+        return self::$Desktop;
     }
 
     /**

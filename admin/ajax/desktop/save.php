@@ -1,18 +1,24 @@
 <?php
 
 /**
- * Desktop für den Benutzer speichern
+ * Saves the desktop for the user
  *
  * @param String $widgets - Desktop Widget Params
  */
-function ajax_desktop_save($widgets)
+function ajax_desktop_save($did, $widgets)
 {
-    $User = QUI::getUserBySession();
+    $DesktopManager = \QUI::getDesktopManager();
+    $Desktop        = $DesktopManager->get( $did );
 
-    $User->setExtra('desktop', $widgets);
-    $User->save();
+    $widgets = json_decode( $widgets, true );
+
+    $DesktopManager->save( $Desktop, $widgets );
 }
-QUI::$Ajax->register('ajax_desktop_save', array('widgets'), 'Permission::checkUser')
 
+\QUI::$Ajax->register(
+    'ajax_desktop_save',
+    array( 'did', 'widgets' ),
+    'Permission::checkUser'
+);
 
 ?>

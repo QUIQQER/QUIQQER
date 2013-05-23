@@ -70,6 +70,24 @@ define('controls/desktop/Widget', [
         },
 
         /**
+         * Serialize the widget data, for saving the desktop
+         *
+         * @return {Object}
+         */
+        serialize : function()
+        {
+            var attr = this.getAttributes(),
+                Elm  = this.getElm();
+
+            attr.col   = Elm.get( 'data-col' );
+            attr.row   = Elm.get( 'data-row' );
+            attr.sizex = Elm.get( 'data-sizex' );
+            attr.sizey = Elm.get( 'data-sizey' );
+
+            return attr;
+        },
+
+        /**
          * Return the Main DomNode Element
          *
          * @return {DOMNode} DIV
@@ -87,7 +105,7 @@ define('controls/desktop/Widget', [
                               '<span class="btn delete icon-trash smooth radius5"></span>' +
                               '<span class="btn edit icon-pencil smooth radius5"></span>' +
                           '</div>',
-                'data-qui' : this.getId()
+                'data-quiid' : this.getId()
             });
 
             this.Loader.inject( this.$Elm );

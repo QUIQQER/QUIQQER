@@ -5,125 +5,43 @@
  */
 
 /**
+ * Desktop Manager
  *
- *
+ * Save and manage the desktops for the users
  *
  * @author www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui
  */
 
-class QUI_Desktop
+class QUI_Desktop extends \QDOM
 {
     /**
-     * Return all Widgets
+     * Konstruktor
      *
-     * @return Array
+     * @param Array $params
      */
-    static function getWidgetList()
+    public function __construct($params)
     {
-        $result = array();
-        $list   = self::readWidgetsFiles();
-
-        foreach ( $list as $DOM ) {
-            $result[] = self::DOMToWidget( $DOM );
-        }
-
-        return $result;
+        self::setAttributes( $params );
     }
 
     /**
-     * parse an Widget DOM-Node to an QUI_Desktop_Widget
+     * Return the Desktop-ID
      *
-     * @param DOMNode $Node
-     * @return QUI_Desktop_Widget
+     * @return Integer
      */
-    static function DOMToWidget(DOMNode $Node)
+    public function getId()
     {
-        $Widget = new \QUI_Desktop_Widget();
-
-        $atributes = $Node->getElementsByTagName( 'attributes' );
-        $require   = $Node->getElementsByTagName( 'require' );
-        $content   = $Node->getElementsByTagName( 'content' );
-        $title     = $Node->getElementsByTagName( 'title' );
-
-        if ( $atributes->length )
-        {
-            $Attributes = $atributes->item( 0 );
-
-            if ( $Attributes->getAttribute('height') ) {
-                $Widget->setAttribute( 'height', $Attributes->getAttribute('height') );
-            }
-
-            if ( $Attributes->getAttribute('width') ) {
-                $Widget->setAttribute( 'width', $Attributes->getAttribute('width') );
-            }
-
-            if ( $Attributes->getAttribute('icon') ) {
-                $Widget->setAttribute( 'icon', $Attributes->getAttribute('icon') );
-            }
-
-            if ( $Attributes->getAttribute('refresh') ) {
-                $Widget->setAttribute( 'refresh', $Attributes->getAttribute('refresh') );
-            }
-        }
-
-        if ( $require->length )
-        {
-            $requires = array();
-
-            for ( $i = 0, $len = $require->length; $i < $len; $i++ ) {
-                $requires[] = $require->item( $i )->getAttribute('src');
-            }
-
-            $Widget->setAttribute( 'require', $requires );
-        }
-
-        if ( $content->length )
-        {
-            $Content = $content->item( 0 );
-
-            $Widget->setAttribute(
-                'content',
-                array(
-                    'type'    => $Content->getAttribute('type'),
-                    'func'    => $Content->getAttribute('func'),
-                    'content' => $Content->nodeValue
-                )
-            );
-        }
-
-        if ( $title->length )
-        {
-            $Widget->setAttribute(
-                'title',
-                $title->item( 0 )->nodeValue
-            );
-        }
-
-        return $Widget;
+        return (int)$this->getAttribute( 'id' );
     }
 
     /**
-     * Read all Widgets Files and return all Widget DOM Nodes
+     * Return the Widgets  from the Desktop
      *
      * @return Array
      */
-    static function readWidgetsFiles()
+    public function getWidgetList()
     {
-        // system widgets
-        $dir   = SYS_DIR .'widgets/';
-        $files = \Utils_System_File::readDir( $dir );
-
-        $result = array();
-
-        foreach ( $files as $file )
-        {
-            $result = array_merge(
-                $result,
-                \Utils_Xml::getWidgetsFromXml( $dir .'/'. $file )
-            );
-        }
-
-        return $result;
+        return json_decode( $this->getAttribute( 'widgets' ), true );
     }
 }

@@ -1,0 +1,100 @@
+
+
+.qui-desktop-list {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+
+    background: #FFFFFF;
+    background: rgba( 0, 0, 0, 0.5 );
+}
+
+.qui-desktop-list-content {
+    display: block;
+    margin: 50px auto 0;
+    padding: 10px;
+    overflow: auto;
+
+    min-width: 300px;
+    width: 50%;
+    height: 80%;
+
+    border: 1px solid #999999;
+    background: #EEEEEE;
+}
+
+.qui-desktop-list-entry {
+    width: 32%;
+    height: 150px;
+    float: left;
+    margin: 0 5px 5px 0;
+    cursor: pointer;
+    overflow: auto;
+    padding: 20px;
+
+    text-align: center;
+    font-size: 2em;
+    font-weight: 400;
+
+    background: #8BBA30;
+    color: #FFFFFF;
+}
+
+.qui-desktop-list-entry:hover {
+    background: #FFFFFF;
+    color: #8BBA30;
+}
+
+.qui-desktop-list-entry .icon {
+    font-size: 48px;
+    text-align: center;
+    line-height: 74px;
+    width: 100%;
+    float: left;
+    clear: both;
+}
+
+.qui-desktop-list-close {
+    float: left;
+    height: 40px;
+    width: 100%;
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-size: 22px;
+    line-height: 40px;
+    text-align: center;
+
+    color: #FFFFFF;
+    background: #999999;
+}
+
+.qui-desktop-list-close:hover {
+    background: #FFFFFF;
+    color: #999999;
+}
+
+/* add desktop
+ ===================================================== */
+
+.qui-desktop-add-content {
+    display: block;
+    margin: 50px auto 0;
+    padding: 20px;
+    overflow: auto;
+
+    width: 500px;
+    height: 200px;
+
+    border: 1px solid #999999;
+    background: #EEEEEE;
+}
+
+.qui-desktop-add-content input {
+    font-size: 16px;
+    width: 100%;
+    margin: 20px auto;
+}
+
+

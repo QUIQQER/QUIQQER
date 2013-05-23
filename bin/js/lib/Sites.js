@@ -10,7 +10,7 @@
 
 define('lib/Sites', [
 
-    'lib/Controls'
+    'Controls'
 
 ], function()
 {

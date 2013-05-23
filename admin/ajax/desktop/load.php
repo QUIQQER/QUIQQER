@@ -1,16 +1,20 @@
 <?php
 
 /**
- * Desktop für den Benutzer bekommen
+ * Return all widgets of a desktop
  *
- * @param String $widgets - Desktop Widget Params
+ * @param Integer $did - Desktop-ID
  */
-function ajax_desktop_load()
+function ajax_desktop_load($did)
 {
-    $User = QUI::getUserBySession();
+    $DesktopManager = \QUI::getDesktopManager();
+    $Desktop        = $DesktopManager->get( $did );
 
-    return $User->getExtra('desktop');
+    return $Desktop->getWidgetList();
 }
-QUI::$Ajax->register('ajax_desktop_load', array('widgets'), 'Permission::checkUser')
 
-?>
+\QUI::$Ajax->register(
+    'ajax_desktop_load',
+    array('did'),
+    'Permission::checkUser'
+);
