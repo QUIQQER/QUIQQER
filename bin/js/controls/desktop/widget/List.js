@@ -63,6 +63,10 @@ define('controls/desktop/widget/List', [
          */
         create : function()
         {
+            if ( this.$Elm ) {
+                return this.$Elm;
+            }
+
             this.$Elm = new Element('div', {
                 'class' : 'qui-desktop-widget-list box',
                 html    : '<div class="qui-desktop-widget-list-content box">'+

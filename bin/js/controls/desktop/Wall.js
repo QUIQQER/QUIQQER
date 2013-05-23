@@ -54,6 +54,8 @@ define('controls/desktop/Wall', [
             this.$Loader  = null;
 
             this.$EnableDisable = null;
+            this.$DesktopList   = null;
+            this.$WidgetList    = null;
 
             /**
              * wall loader object
@@ -185,7 +187,7 @@ define('controls/desktop/Wall', [
 
             var min_cols   = 5,
                 margins    = 10,
-                dimensions = 140;
+                dimensions = 100;
 
             /*
             min_cols = this.$Elm.getSize().x / ( dimensions + (margins*2) );
@@ -393,12 +395,20 @@ define('controls/desktop/Wall', [
          */
         openWidgetList : function()
         {
+            if ( this.$WidgetList )
+            {
+                this.$WidgetList.show();
+                return;
+            }
+
             var Control = this;
 
             require([
                  'controls/desktop/widget/List'
-            ], function(List) {
-                new List( Control ).inject( document.body  ).show();
+            ], function(List)
+            {
+                Control.$WidgetList = new List( Control ).inject( document.body  );
+                Control.$WidgetList.show();
             });
         },
 
@@ -407,12 +417,21 @@ define('controls/desktop/Wall', [
          */
         openDesktopList : function()
         {
+            if ( this.$DesktopList )
+            {
+                this.$DesktopList.show();
+                return;
+            }
+
+
             var Control = this;
 
             require([
                  'controls/desktop/WallDesktopList'
-            ], function(List) {
-                new List( Control ).inject( document.body  ).show();
+            ], function(List)
+            {
+                Control.$DesktopList = new List( Control ).inject( document.body );
+                Control.$DesktopList.show();
             });
         },
 
