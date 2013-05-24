@@ -80,7 +80,7 @@ class QUI_Desktop_Manager
      * @param QUI_Desktop $Desktop
      * @param array $widgets - new widgets
      */
-    public function save(QUI_Desktop $Desktop, $widgets=array())
+    public function save(\QUI_Desktop $Desktop, $widgets=array())
     {
         $User     = \QUI::getUserBySession();
         $Database = \QUI::getDataBase();
@@ -155,7 +155,7 @@ class QUI_Desktop_Manager
      * @param DOMNode $Node
      * @return QUI_Desktop_Widget
      */
-    static function DOMToWidget(DOMNode $Node)
+    static function DOMToWidget(\DOMNode $Node)
     {
         $Widget = new \QUI_Desktop_Widget();
 
@@ -226,6 +226,8 @@ class QUI_Desktop_Manager
     /**
      * Read all Widgets Files and return all Widget DOM Nodes
      *
+     * @todo cache the widget files, to reduce hdd access
+     *
      * @return Array
      */
     static function readWidgetsFiles()
@@ -241,6 +243,21 @@ class QUI_Desktop_Manager
             $result = array_merge(
                 $result,
                 \Utils_Xml::getWidgetsFromXml( $dir .'/'. $file )
+            );
+        }
+
+        // package widgets
+        $PkgM = \QUI::getPackageManager();
+        $list = $PkgM->getInstalled();
+
+        foreach ( $list as $package )
+        {
+            $widget_file = OPT_DIR . $package['name'] .'/widgets.xml';
+            $widget_file = \Utils_Dom::parseVar( $widget_file );
+
+            $result = array_merge(
+                $result,
+                \Utils_Xml::getWidgetsFromXml( $widget_file )
             );
         }
 

@@ -109,5 +109,3 @@ class QUI_Setup
         \QUI\Translator::create();
     }
 }
-
-?>

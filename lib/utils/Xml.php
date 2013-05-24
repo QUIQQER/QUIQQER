@@ -49,7 +49,7 @@ class Utils_Xml
             file_put_contents( $ini_file, '' );
         }
 
-        $Config = new QConfig( $ini_file );
+        $Config = new \QConfig( $ini_file );
         $params = self::getConfigParamsFromXml( $file );
 
         foreach ( $params as $section => $key )
@@ -96,7 +96,7 @@ class Utils_Xml
             return false;
         }
 
-        $projects = Projects_Manager::getProjects();
+        $projects = \Projects_Manager::getProjects();
         $children = $configs->item( 0 )->childNodes;
         $result   = array();
 
@@ -116,13 +116,13 @@ class Utils_Xml
                 if ( $Param->getAttribute( 'type' ) == 'project' )
                 {
                     foreach ( $projects as $project ) {
-                        $result[ $project ] = Utils_Dom::parseConfs( $confs );
+                        $result[ $project ] = \Utils_Dom::parseConfs( $confs );
                     }
 
                     continue;
                 }
 
-                $result[ $name ] = Utils_Dom::parseConfs( $confs );
+                $result[ $name ] = \Utils_Dom::parseConfs( $confs );
             }
         }
 
@@ -157,7 +157,7 @@ class Utils_Xml
             for ( $i = 0; $i < $tables->length; $i++ )
             {
                 $dbfields['globals'][] = \Utils_Dom::dbTableDomToArray(
-                                $tables->item( $i )
+                    $tables->item( $i )
                 );
             }
         }
@@ -170,7 +170,7 @@ class Utils_Xml
             for ( $i = 0; $i < $tables->length; $i++ )
             {
                 $dbfields['projects'][] = \Utils_Dom::dbTableDomToArray(
-                                $tables->item( $i )
+                    $tables->item( $i )
                 );
             }
         }
@@ -187,14 +187,14 @@ class Utils_Xml
     static function getDomFromXml($filename)
     {
         if ( strpos($filename, '.xml') === false ) {
-            return new DOMDocument();
+            return new \DOMDocument();
         }
 
         if ( !file_exists( $filename ) ) {
-            return new DOMDocument();
+            return new \DOMDocument();
         }
 
-        $Dom = new DOMDocument();
+        $Dom = new \DOMDocument();
         $Dom->load( $filename );
 
         return $Dom;
@@ -245,7 +245,7 @@ class Utils_Xml
      *      ),
      *  );
      */
-    static function getLocaleGroupsFromDom(DOMDocument $Dom)
+    static function getLocaleGroupsFromDom(\DOMDocument $Dom)
     {
         $locales = $Dom->getElementsByTagName( 'locales' );
 
@@ -282,7 +282,7 @@ class Utils_Xml
                 }
 
                 $params = array(
-                                'name' => $Locale->getAttribute( 'name' )
+                    'name' => $Locale->getAttribute( 'name' )
                 );
 
                 $translations = $Locale->childNodes;
@@ -353,7 +353,7 @@ class Utils_Xml
      */
     static function getPermissionsFromXml($file)
     {
-        $Dom      = self::getDomFromXml( $file );
+        $Dom         = self::getDomFromXml( $file );
         $permissions = $Dom->getElementsByTagName( 'permissions' );
 
         if ( !$permissions || !$permissions->length ) {
@@ -484,7 +484,7 @@ class Utils_Xml
      * @param DOMDocument $Dom
      * @return Array
      */
-    static function getTabsFromDom(DOMDocument $Dom)
+    static function getTabsFromDom(\DOMDocument $Dom)
     {
         $window = $Dom->getElementsByTagName( 'window' );
 
@@ -606,6 +606,7 @@ class Utils_Xml
             return array();
         }
 
+        $result = array();
 
         for ( $w = 0; $w < $widgets->length; $w++ )
         {
@@ -625,6 +626,20 @@ class Utils_Xml
                     continue;
                 }
 
+                // widget on another location
+                if ( $Widget->getAttribute( 'src' ) )
+                {
+                    $file   = $Widget->getAttribute( 'src' );
+                    $file   = \Utils_Dom::parseVar( $file );
+                    $Widget = self::getWidgetFromXml( $file );
+
+                    if ( $Widget ) {
+                        $result[] = $Widget;
+                    }
+
+                    continue;
+                }
+
                 $Widget->setAttribute( 'name', md5( $file . $c ) );
 
                 $result[] = $Widget;
@@ -635,6 +650,27 @@ class Utils_Xml
     }
 
     /**
+     * Reads the widget from an *.xml file
+     *
+     * @param String $file - path to the xml file
+     * @return boolean|DOMNode
+     */
+    static function getWidgetFromXml($file)
+    {
+        $Dom    = self::getDomFromXml( $file );
+        $widget = $Dom->getElementsByTagName( 'widget' );
+
+        if ( !$widget->length ) {
+            return false;
+        }
+
+        $Widget = $widget->item( 0 );
+        $Widget->setAttribute( 'name', md5( $file ) );
+
+        return $Widget;
+    }
+
+    /**
      * Save the setting to a xml specified config file
      *
      * @param unknown_type $file
@@ -642,8 +678,8 @@ class Utils_Xml
      */
     static function setConfigFromXml($file, $params)
     {
-        if ( QUI::getUserBySession()->isSU() === false ) {
-            throw new QException( 'You have no rights to edit the configuration.' );
+        if ( \QUI::getUserBySession()->isSU() === false ) {
+            throw new \QException( 'You have no rights to edit the configuration.' );
         }
 
         // defaults prüfen
@@ -672,7 +708,7 @@ class Utils_Xml
                 switch ( $default['type'] )
                 {
                     case 'bool':
-                        $value = Utils_Bool::JSBool( $value );
+                        $value = \Utils_Bool::JSBool( $value );
 
                         if ( $value )
                         {
@@ -688,7 +724,7 @@ class Utils_Xml
                     break;
 
                     case 'string':
-                        $value = Utils_Security_Orthos::cleanHTML( $value );
+                        $value = \Utils_Security_Orthos::cleanHTML( $value );
                     break;
                 }
 
@@ -707,7 +743,7 @@ class Utils_Xml
      */
     static function importDataBase($dbfields)
     {
-        $DataBase = QUI::getDB();
+        $DataBase = \QUI::getDB();
         $projects = \Projects_Manager::getConfig()->toArray();
 
         // globale tabellen erweitern / anlegen

@@ -22,7 +22,7 @@ class Utils_Dom
      * @param Controls_Toolbar_Bar $Tabbar
      * @param $plugin - optional
      */
-    static function addTabsToToolbar($tabs, Controls_Toolbar_Bar $Tabbar, $plugin='')
+    static function addTabsToToolbar($tabs, \Controls_Toolbar_Bar $Tabbar, $plugin='')
     {
         foreach ( $tabs as $Tab )
         {
@@ -43,7 +43,7 @@ class Utils_Dom
                 $text = self::parseVar( $Texts->item( 0 )->nodeValue );
             }
 
-            $ToolbarTab = new Controls_Toolbar_Tab(array(
+            $ToolbarTab = new \Controls_Toolbar_Tab(array(
                 'name'   => $Tab->getAttribute( 'name' ),
                 'text'   => $text,
                 'image'  => $image,
@@ -114,14 +114,14 @@ class Utils_Dom
         if ( is_string( $Object ) )
         {
             if ( file_exists( $Object ) ) {
-                $tabs = Utils_Xml::getTabsFromXml( $Object );
+                $tabs = \Utils_Xml::getTabsFromXml( $Object );
             }
 
         } else if ( get_class( $Object ) === 'Project' )
         {
             /* @var $Object Projects_Project */
             // tabs welche ein projekt zur Verfügung stellt
-            $tabs = Utils_Xml::getTabsFromUserXml(
+            $tabs = \Utils_Xml::getTabsFromUserXml(
                 USR_DIR .'lib/'. $Object->getAttribute( 'name' ) .'/user.xml'
             );
 
@@ -129,7 +129,7 @@ class Utils_Dom
             get_class( $Object ) === 'Projects_Site' ||
             get_class( $Object ) === 'Projects_Site_Edit' )
         {
-            $Tabbar = Projects_Sites::getTabs( $Object );
+            $Tabbar = \Projects_Sites::getTabs( $Object );
             $Tab    = $Tabbar->getElementByName( $name );
 
             if ( $Tab->getAttribute( 'template' ) )
@@ -138,11 +138,11 @@ class Utils_Dom
 
                 if ( file_exists( $file ) )
                 {
-                    $Engine = QUI_Template::getEngine( true );
+                    $Engine = \QUI_Template::getEngine( true );
                     $Engine->assign(array(
                         'Site'    => $Object,
                         'Project' => $Object->getProject(),
-                        'Plugins' => QUI::getPlugins()
+                        'Plugins' => \QUI::getPlugins()
                     ));
 
                     return $Engine->fetch( $file );
@@ -194,7 +194,7 @@ class Utils_Dom
         }
 
         $Window = $winlist->item( 0 );
-        $Win    = new Controls_Windows_Window();
+        $Win    = new \Controls_Windows_Window();
 
         // name
         if ( $Window->getAttribute( 'name' ) ) {
@@ -227,7 +227,7 @@ class Utils_Dom
                 {
                     $Win->setAttribute(
                         'icon',
-                        Utils_Dom::parseVar( $Param->nodeValue )
+                        \Utils_Dom::parseVar( $Param->nodeValue )
                     );
 
                     continue;
@@ -252,7 +252,7 @@ class Utils_Dom
                     continue;
                 }
 
-                $Button = new Controls_Buttons_Button();
+                $Button = new \Controls_Buttons_Button();
                 $Button->setAttribute( 'name', $Param->getAttribute( 'name' ) );
                 //$Button->setAttribute( 'onclick', '_pcsg.Plugins.Settings.getButtonContent' );
                 //$Button->setAttribute( 'onload', '_pcsg.Plugins.Settings.onload' );
@@ -300,7 +300,7 @@ class Utils_Dom
 
                 if ( $Param->getAttribute( 'type' ) == 'projects' )
                 {
-                    $projects = Projects_Manager::getProjects();
+                    $projects = \Projects_Manager::getProjects();
 
                     foreach ( $projects as $project )
                     {
@@ -335,7 +335,7 @@ class Utils_Dom
      * @param DOMNode $Node
      * @return Array
      */
-    static function parsePermissionToArray(DOMNode $Node)
+    static function parsePermissionToArray(\DOMNode $Node)
     {
         if ( $Node->nodeName != 'permission' ) {
             return array();
@@ -352,12 +352,12 @@ class Utils_Dom
             $default = $Default->item(0)->nodeValue;
         }
 
-        $title = QUI::getLocale()->get(
+        $title = \QUI::getLocale()->get(
             'locale/permissions',
             $perm .'._title'
         );
 
-        $desc = QUI::getLocale()->get(
+        $desc = \QUI::getLocale()->get(
             'locale/permissions',
             $perm .'._description'
         );
@@ -400,7 +400,7 @@ class Utils_Dom
             return '';
         }
 
-        $Engine   = QUI_Template::getEngine( true );
+        $Engine   = \QUI_Template::getEngine( true );
         $template = $Category->getElementsByTagName( 'template' );
 
         // Falls ein Template angegeben wurde
@@ -600,7 +600,7 @@ class Utils_Dom
      * @param DOMNode $Button
      * @return String
      */
-    static function buttonDomToString(DOMNode $Button)
+    static function buttonDomToString(\DOMNode $Button)
     {
         if ( $Button->nodeName != 'button' ) {
             return '';
@@ -633,7 +633,7 @@ class Utils_Dom
      * @param DOMNode $Group
      * @return String
      */
-    static function groupDomToString(DOMNode $Group)
+    static function groupDomToString(\DOMNode $Group)
     {
         if ( $Group->nodeName != 'group' ) {
             return '';
@@ -666,7 +666,7 @@ class Utils_Dom
      *
      * @return String
      */
-    static function textareaDomToString(DOMNode $Textarea)
+    static function textareaDomToString(\DOMNode $Textarea)
     {
         if ( $Textarea->nodeName != 'textarea' ) {
             return '';
@@ -694,7 +694,7 @@ class Utils_Dom
      * @param DOMNode $Select
      * @return String
      */
-    static function selectDomToString(DOMNode $Select)
+    static function selectDomToString(\DOMNode $Select)
     {
         if ( $Select->nodeName != 'select' ) {
             return '';
@@ -706,7 +706,7 @@ class Utils_Dom
         >';
 
         // Options
-        $Dom = new DOMDocument();
+        $Dom = new \DOMDocument();
 
         foreach ( $Select->childNodes as $Child )
         {
@@ -737,7 +737,7 @@ class Utils_Dom
      * @param DOMNode $Table
      * @return Array
      */
-    static function dbTableDomToArray(DOMNode $Table)
+    static function dbTableDomToArray(\DOMNode $Table)
     {
         $result = array(
             'suffix' => $Table->getAttribute( 'name' )
@@ -790,7 +790,7 @@ class Utils_Dom
      * @param DOMNode $Field
      * @return Array
      */
-    static function dbFieldDomToArray(DOMNode $Field)
+    static function dbFieldDomToArray(\DOMNode $Field)
     {
         $str  = '';
         $str .= $Field->getAttribute( 'type' );
@@ -824,7 +824,7 @@ class Utils_Dom
      * @param DOMNode $Primary
      * @return Array
      */
-    static function dbPrimaryDomToArray(DOMNode $Primary)
+    static function dbPrimaryDomToArray(\DOMNode $Primary)
     {
         return array(
             'primary' => explode( ',', $Primary->nodeValue )
@@ -837,7 +837,7 @@ class Utils_Dom
      * @param DOMNode $Index
      * @return Array
      */
-    static function dbIndexDomToArray(DOMNode $Index)
+    static function dbIndexDomToArray(\DOMNode $Index)
     {
         return array(
             'index' => $Index->nodeValue
@@ -904,7 +904,7 @@ class Utils_Dom
             $value
         );
 
-        $value = Utils_String::replaceDblSlashes( $value );
+        $value = \Utils_String::replaceDblSlashes( $value );
 
         return $value;
     }
@@ -927,9 +927,9 @@ class Utils_Dom
      * @param DOMNode $Node
      * @return String
      */
-    static function getInnerHTML(DOMNode $Node)
+    static function getInnerHTML(\DOMNode $Node)
     {
-        $Dom      = new DOMDocument();
+        $Dom      = new \DOMDocument();
         $Children = $Node->childNodes;
 
         foreach ( $Children as $Child ) {
@@ -947,7 +947,7 @@ class Utils_Dom
      */
     static function arrayToQDOM(array $array)
     {
-        $DOM = new QDOM();
+        $DOM = new \QDOM();
         $DOM->setAttributes( $array );
 
         return $DOM;

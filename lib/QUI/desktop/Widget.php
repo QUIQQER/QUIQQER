@@ -5,8 +5,8 @@
  */
 
 /**
- *
- *
+ * A desktop Widget
+ * parent class
  *
  * @author www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui
