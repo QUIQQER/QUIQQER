@@ -43,7 +43,7 @@ define('controls/desktop/panels/Desktop', [
             this.setAttribute( 'title', 'Desktop' );
             //this.setAttribute( 'icon', URL_BIN_DIR +'16x16/apps/background.png' );
 
-            this.setAttribute( 'header', false );
+            this.setAttribute( 'header', true );
             this.setAttribute( 'footer', false );
 
             this.parent( options );
@@ -141,14 +141,16 @@ define('controls/desktop/panels/Desktop', [
                 return;
             }
 
+            var height = size.y - this.getHeader().getSize().y;
+
             Body.setStyles({
                 width  : size.x,
-                height : size.y
+                height : height
             });
 
             Body.getElement( 'iframe' ).setStyles({
                 width  : size.x,
-                height : size.y
+                height : height
             });
         },
 
