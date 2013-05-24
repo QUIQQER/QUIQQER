@@ -2,6 +2,7 @@
  * A desktop panel
  *
  * A panel where you can organize widgets
+ * the panel opens the quiiqer wall
  *
  * @author www.pcsg.de (Henning Leutz)
  *
@@ -49,11 +50,54 @@ define('controls/desktop/panels/Desktop', [
 
             this.$widgets   = [];
             this.$Sortables = null;
+            this.$src       = '';
 
             this.addEvents({
                 onCreate : this.$onCreate,
                 onResize : this.$onResize
             });
+        },
+
+        /**
+         * look at QUI.classes.Control.unserialize
+         *
+         * @param {Object} data
+         */
+        unserialize : function(data)
+        {
+            if ( data.attributes ) {
+                this.setAttributes( data.attributes );
+            }
+
+            if ( typeof data.src !== 'undefined' && data.src !== '' ) {
+                this.$src = data.src;
+            }
+        },
+
+        /**
+         * look at QUI.classes.Control.serialize
+         *
+         * @return {Object}
+         */
+        serialize : function()
+        {
+            var src = '';
+
+            if ( this.getBody() &&
+                 this.getBody().getElement( 'iframe' ) )
+            {
+                var Frame = this.getBody().getElement( 'iframe' ),
+                    loc   = Frame.contentWindow.location;
+
+                src = loc.pathname.toString() +
+                      loc.search;
+            }
+
+            return {
+                attributes : this.getAttributes(),
+                type       : this.getType(),
+                src        : src
+            };
         },
 
         /**
@@ -63,10 +107,17 @@ define('controls/desktop/panels/Desktop', [
         {
             this.resize();
 
-            var Body = this.getBody();
+            var Body = this.getBody(),
+                src  = URL_DIR +'quiqqer.php?desktop=1';
+
+            if ( this.$src.match( 'quiqqer.php?' ) &&
+                 this.$src.match( 'desktop=1' ) )
+            {
+                src = this.$src;
+            }
 
             Body.set({
-                html   : '<iframe src="'+ URL_DIR +'quiqqer.php?desktop=1" class="qui-desktop-frame" />',
+                html   : '<iframe src="'+ src +'" class="qui-desktop-frame" />',
                 styles : {
                     width    : '100%',
                     position : 'relative'
