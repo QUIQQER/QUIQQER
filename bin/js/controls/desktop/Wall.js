@@ -204,7 +204,7 @@ define('controls/desktop/Wall', [
             // if a desktop is in the url given, load it
             var loc = window.location.search;
 
-            if ( !loc.match('id=') || !loc.match('desktop=') )
+            if ( !loc.match( 'id=' ) || !loc.match( 'desktop=' ) )
             {
                 this.openDesktopList();
                 return;
@@ -215,7 +215,7 @@ define('controls/desktop/Wall', [
             var loc_params = {};
 
             loc = loc.replace( '?', '' );
-            loc = loc.split('&');
+            loc = loc.split( '&' );
 
             for ( i = 0, len = loc.length; i < len; i++ )
             {
@@ -360,8 +360,9 @@ define('controls/desktop/Wall', [
          */
         appendWidget : function(Widget)
         {
-            var col = 1,
-                row = 1;
+            var col     = 1,
+                row     = 1,
+                Control = this;
 
             // find the last widget pos
             var list = this.$Elm.getElements( '.qui-wall-gridster li' );
@@ -384,7 +385,13 @@ define('controls/desktop/Wall', [
                 }
             }
 
+            // save after 200 ms, because all nodes are deleted
+            var save_after_200 = function() {
+                Control.save.delay( 200, Control );
+            };
+
             Widget.setParent( this );
+            Widget.addEvent( 'onDestroy', save_after_200 );
             Widget.appendToGridster( this.$Desktop, col, row );
 
             this.save();
@@ -488,11 +495,18 @@ define('controls/desktop/Wall', [
 
                 var i, len, params, Widget;
 
+                var save_after_200 = function() {
+                    Control.save.delay( 200, Control );
+                };
+
                 for ( i = 0, len = result.length; i < len; i++ )
                 {
                     params = result[ i ];
 
                     Widget = new QUI.controls.desktop.Widget( params );
+
+                    // save after 200 ms, because all nodes are deleted
+                    Widget.addEvent( 'onDestroy', save_after_200 );
                     Widget.setParent( Control );
 
                     Widget.appendToGridster(
