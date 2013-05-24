@@ -26,6 +26,7 @@ define('controls/windows/Window', [
      *
      * @fires onDrawEnd
      * @fires onClose
+     * @fires onCreate
      *
      * @param {Object} options
      *
@@ -171,6 +172,7 @@ define('controls/windows/Window', [
                     }
 
                     Parent.fireEvent( 'drawEnd', [ Parent, this ] );
+                    Parent.fireEvent( 'create', [ Parent, this ] );
                 },
 
                 onClose : function()

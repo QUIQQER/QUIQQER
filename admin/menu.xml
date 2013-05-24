@@ -180,11 +180,17 @@
         <item parent="/help/"
               name="about"
               icon="URL_BIN_DIR/16x16/quiqqer.png"
-              onclick="QUI.about"
+              require="admin/quiqqer/About"
               group="quiqqer/system"
               var="menu.help.about.text"
-        >
-        Über QUIQQER
-    </item>
+        />
+        <item parent="/help/"
+              name="changelog"
+              icon="URL_BIN_DIR/16x16/quiqqer.png"
+              require="admin/quiqqer/Changelog"
+              group="quiqqer/system"
+              var="menu.help.changelog.text"
+        />
+
 
 </menu>

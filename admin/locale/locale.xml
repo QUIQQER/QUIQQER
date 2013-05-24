@@ -65,7 +65,10 @@
                 <de><![CDATA[Über QUIQQER]]></de>
                 <en><![CDATA[About QUIQQER]]></en>
             </locale>
-
+            <locale name="menu.help.changelog.text">
+                <de><![CDATA[QUIQQER Changelog]]></de>
+                <en><![CDATA[QUIQQER Changelog]]></en>
+            </locale>
 
         <!-- Exception  -->
         <locale name="exception.template.not.found">
