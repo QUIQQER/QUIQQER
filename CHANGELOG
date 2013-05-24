@@ -1,0 +1,27 @@
+
+v 1.0.3
+
+    - New Desktop-Wall System
+    - Desktop-Walls are seperatly accessible: quiqqer.php?desktop=1&id=1
+    - Better SQLite Support
+
+v 1.0.2
+
+    - New Site-Search-Control -> You can find it at File -> Search sites ...
+
+    Fixes:
+
+    - Update Routine Fix for the QUIQQER System
+    - Composer execution
+    - Menu Cache
+    - Setting Passwords for Users
+    - Setting Userpassword lifetime
+    - Event Fixes in the Control: QUI.controls.users.Users and QUI.controls.users.User
+    - Correct parsing from Group input fields
+    - Better JSDOC for QUI.controls.groups.Input
+    - Better JSDOC for QUI.controls.sitemap.item
+    - Menu Translations for Projects
+
+v 1.0.1
+
+    - QUIQQER Milk
