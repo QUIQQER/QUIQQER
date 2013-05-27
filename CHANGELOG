@@ -5,6 +5,10 @@ v 1.0.4
     - Widgets for Packages
     - Changelog Window : Menü -> Help -> QUIQQER Changelog
 
+    Fixes
+
+    - QUI.controls.toolbar.Bar accept DOM Elements
+
 v 1.0.3
 
     - New Desktop-Wall System

@@ -5,7 +5,7 @@
  *
  * @return Array
  */
-function ajax_system_logs_get($page, $limit)
+function ajax_system_logs_get($page, $limit, $search='')
 {
     $dir = VAR_DIR .'log/';
 
@@ -16,6 +16,10 @@ function ajax_system_logs_get($page, $limit)
 
     foreach ( $files as $file )
     {
+        if ( $search && strpos( $file, $search ) === false ) {
+            continue;
+        }
+
         $mtime = filemtime( $dir . $file );
 
         $list[] = array(
@@ -30,6 +34,6 @@ function ajax_system_logs_get($page, $limit)
 
 \QUI::$Ajax->register(
     'ajax_system_logs_get',
-    array( 'page', 'limit' ),
+    array( 'page', 'limit', 'search' ),
     'Permission::checkSU'
 );

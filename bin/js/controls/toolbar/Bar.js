@@ -611,9 +611,9 @@ define('controls/toolbar/Bar', [
                 return this;
             }
 
-            var type = Itm.getType();
+            var type = typeOf( Itm );
 
-            switch ( Itm.getType() )
+            switch ( type )
             {
                 case 'QUI.controls.buttons.Button':
                 case 'QUI.controls.buttons.Select':
@@ -621,6 +621,11 @@ define('controls/toolbar/Bar', [
                 case 'QUI.controls.toolbar.Tab':
                     // nothing
                 break;
+
+                // domnode
+                case 'element':
+                    Itm.inject( this.Tabs, 'before' );
+                    return this;
 
                 default:
                     return this;
@@ -631,7 +636,7 @@ define('controls/toolbar/Bar', [
 
             // Falls Toolbar eine Tabbar ist, Buttons an vorletzter Stelle
             if ( this.getAttribute( 'type' ) === 'tabbar' &&
-                 Itm.getType() === 'QUI.control.buttons.Button' )
+                 type === 'QUI.control.buttons.Button' )
             {
                 this.btns.push( Itm );
 

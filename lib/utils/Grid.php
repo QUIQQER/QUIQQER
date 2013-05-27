@@ -37,21 +37,21 @@ class Utils_Grid extends QDOM
     {
         $_params = $params;
 
-    	if ( $this->getAttribute('max') ) {
+        if ( $this->getAttribute('max') ) {
             $max = (int)$this->getAttribute('max');
-    	}
+        }
 
         if ( !$this->getAttribute('page') ) {
             $params['page'] = 1;
         }
 
-    	if ( $this->getAttribute('page') )
-    	{
-    	    $page  = ($this->getAttribute('page')-1);
+        if ( $this->getAttribute('page') )
+        {
+            $page  = ($this->getAttribute('page')-1);
             $start = $page * $max;
 
             $_params['limit'] = $start.','.$max;
-    	}
+        }
 
         return $_params;
     }
@@ -73,7 +73,7 @@ class Utils_Grid extends QDOM
         return array(
             'data'  => $data,
             'page'  => $this->getAttribute( 'page' ),
-        	'total' => $count
+            'total' => $count
         );
     }
 
@@ -91,9 +91,9 @@ class Utils_Grid extends QDOM
         $start = $end - $limit;
 
         return array(
-            'data'  => array_slice( $data, $start, $end ),
+            'data'  => array_slice( $data, $start, $limit ),
             'page'  => $page,
-        	'total' => $count
+            'total' => $count
         );
     }
 }

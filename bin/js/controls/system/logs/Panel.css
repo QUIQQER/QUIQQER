@@ -1,5 +1,16 @@
 @CHARSET "UTF-8";
 
+
+.qui-logs-search {
+    float: left;
+    margin-right: 5px;
+    width: 147px;
+}
+
+
+/** file display
+ ====================================================== */
+
 .qui-logs-file {
     float: left;
     margin: 20px 20px 20px 0;

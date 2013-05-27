@@ -32,13 +32,15 @@ define('controls/system/logs/Panel', [
             '$onCreate',
             '$onResize',
             '$onDestroy',
-            '$btnOpenLog'
+            '$btnOpenLog',
+            '$gridRefresh'
         ],
 
         options : {
-            file  : '',
-            page  : 1,
-            limit : 20,
+            file   : '',
+            page   : 1,
+            limit  : 20,
+            search : '',
             'site-width' : 220
         },
 
@@ -47,11 +49,14 @@ define('controls/system/logs/Panel', [
             // defaults
             this.setAttribute( 'title', 'Logs' );
             this.setAttribute( 'icon', URL_BIN_DIR +'16x16/actions/klipper_dock.png' );
+
             this.parent( options );
 
-            this.$Grid          = null;
+            this.$Fx     = null;
+            this.$Search = null;
+            this.$Grid   = null;
             this.$GridContainer = null;
-            this.$Fx            = null;
+
 
             this.$openLog = false;
             this.$file    = false;
@@ -91,8 +96,9 @@ define('controls/system/logs/Panel', [
                 Control.$Grid.setData( result );
                 Control.Loader.hide();
             }, {
-                page  : this.getAttribute( 'page' ),
-                limit : this.getAttribute( 'limit' )
+                page   : this.getAttribute( 'page' ),
+                limit  : this.getAttribute( 'limit' ),
+                search : this.getAttribute( 'search' )
             });
         },
 
@@ -114,16 +120,10 @@ define('controls/system/logs/Panel', [
             Control.$openLog = true;
             Control.$file    = file;
 
-            if ( Control.getButtons( 'refresh' ).length === 0 )
+            if ( !Control.getButtons( 'refresh' ) )
             {
-                Control.addButton({
-                    name : 'refresh',
-                    text : 'Datei aktualisieren',
-                    textimage : URL_BIN_DIR +'16x16/actions/reload.png',
-                    events : {
-                        onClick : Control.refreshFile
-                    }
-                });
+                console.log( Control.getButtonBar() );
+
             }
 
 
@@ -143,30 +143,7 @@ define('controls/system/logs/Panel', [
                         File = new Element('div.qui-logs-file').inject( Parent );
                     }
 
-                    QUI.Ajax.get('ajax_system_logs_file', function(result)
-                    {
-                        require([
-
-                            'classes/utils/SyntaxHighlighter'
-
-                        ], function(Highlighter)
-                        {
-                            File.set(
-                                'html',
-                                '<pre class="box language-bash">'+ result +'</pre>'
-                            );
-
-                            new Highlighter().highlight(
-                                File.getElement( 'pre' )
-                            );
-
-                            Control.Loader.hide();
-                            Control.refresh();
-                        });
-
-                    }, {
-                        file : file
-                    });
+                    Control.refreshFile();
                 }
             });
         },
@@ -189,10 +166,24 @@ define('controls/system/logs/Panel', [
 
             QUI.Ajax.get('ajax_system_logs_file', function(result)
             {
-                File.set( 'html', '<pre class="box">'+ result +'</pre>' );
+                require([
 
-                Control.Loader.hide();
+                     'classes/utils/SyntaxHighlighter'
 
+                 ], function(Highlighter)
+                 {
+                     File.set(
+                         'html',
+                         '<pre class="box language-bash" style="margin: 0;">'+ result +'</pre>'
+                     );
+
+                     new Highlighter().highlight(
+                         File.getElement( 'pre' )
+                     );
+
+                     Control.Loader.hide();
+                     Control.refresh();
+                 });
             }, {
                 file : this.$file
             });
@@ -204,6 +195,8 @@ define('controls/system/logs/Panel', [
          */
         $onCreate : function()
         {
+            var Control = this;
+
             this.$GridContainer = new Element('div', {
                 'class' : 'qui-logs-container'
             }).inject(
@@ -231,11 +224,63 @@ define('controls/system/logs/Panel', [
                 }],
 
                 pagination : true,
-                onrefresh  : this.getLogs
+                onrefresh  : this.$gridRefresh
             });
 
-            this.resize.delay( 200 );
-            this.getLogs();
+
+            this.$Search = new Element('input', {
+                'class'     : 'qui-logs-search',
+                placeholder : 'Suche nach...',
+                events :
+                {
+                    keyup : function(event)
+                    {
+                        if ( event.key == 'enter' ) {
+                            Control.getButtons( 'search' ).onclick();
+                        }
+                    }
+                }
+            });
+
+            this.getButtonBar().appendChild( this.$Search );
+
+            this.addButton({
+                name      : 'search',
+                image     : URL_BIN_DIR +'16x16/search.png',
+                alt       : 'Suche starten',
+                title     : 'Suche starten',
+                events    :
+                {
+                    onClick : function(Btn)
+                    {
+                        Control.setAttribute(
+                            'search',
+                            Control.$Search.value
+                        );
+
+                        Control.getLogs();
+                    }
+                }
+            });
+
+            this.addButton({
+                type : 'QUI.controls.buttons.Seperator'
+            });
+
+
+            this.addButton({
+                name      : 'refresh',
+                text      : 'Datei aktualisieren',
+                textimage : URL_BIN_DIR +'16x16/actions/reload.png',
+                disabled  : true,
+                events    : {
+                    onClick : this.refreshFile
+                }
+            });
+
+
+            //this.resize.delay( 200 );
+            this.getLogs.delay( 100, this );
         },
 
         /**
@@ -255,17 +300,19 @@ define('controls/system/logs/Panel', [
                 Parent = Body.getParent(),
                 File   = Parent.getElement( '.qui-logs-file' );
 
+            size   = Parent.getSize();
+            height = size.y - Header.getSize().y - 50;
+
+            if ( this.getButtonBar() ) {
+                height = height - this.getButtonBar().getElm().getSize().y;
+            }
+
             // file display
             if ( this.$openLog )
             {
-                size   = Parent.getSize();
-                height = size.y - Header.getSize().y - 50;
-
-                if ( this.getButtonBar() ) {
-                    height = height - this.getButtonBar().getElm().getSize().y;
-                }
-
                 Body.setStyle( 'width', this.getAttribute( 'site-width' ) );
+
+                this.getButtons('refresh').enable();
 
                 this.$Grid.setWidth( 180 );
                 this.$Grid.setHeight( height );
@@ -289,10 +336,12 @@ define('controls/system/logs/Panel', [
             }
 
             // only log listing
-            size = Body.getSize();
+            // size = Body.getSize();
 
-            this.$Grid.setWidth( size.x - Header.getSize().y - 10 );
-            this.$Grid.setHeight( size.y - Header.getSize().y - 10 );
+            this.getButtons('refresh').disable();
+
+            this.$Grid.setWidth( size.x - 40 );
+            this.$Grid.setHeight( height );
         },
 
         /**
@@ -313,6 +362,21 @@ define('controls/system/logs/Panel', [
             this.openLog(
                 Btn.getAttribute( 'file' )
             );
+        },
+
+        /**
+         * event : grid refresh
+         *
+         * @param {QUI.controls.grid.Grid} Grid
+         */
+        $gridRefresh : function(Grid)
+        {
+            this.setAttributes({
+                limit : Grid.getAttribute( 'perPage' ),
+                page  : Grid.getAttribute( 'page' )
+            });
+
+            this.getLogs();
         }
     });
 
