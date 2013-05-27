@@ -60,8 +60,7 @@ module.exports = function(grunt)
             grunt.log.writeln( 'Start "' + files[i] );
 
             // all others files, no js and css
-            if ( !files[i].match('.css') &&
-                 !files[i].match('.js') ||
+            if ( !files[i].match('.css') && !files[i].match('.js') ||
                  files[i].match('.json') )
             {
                 new_file = 'js-min/'+ files[i].substr( 3 );
@@ -114,13 +113,84 @@ module.exports = function(grunt)
         }
     });
 
+    // checks unused variables
+    grunt.registerMultiTask('leaky', 'Leaky Cleanup', function(arg1, arg2)
+    {
+        //console.log( this.files );
+        //console.log( this.filesSrc );
+
+        //var foo = grunt.helper('pcsgmin');
+        var files  = grunt.file.expand( this.filesSrc ),
+            errors = 0;
+
+        var i, len, src, err;
+
+        for ( i = 0, len = files.length; i < len; i++ )
+        {
+            if ( !files[i].match( '.js' ) ) {
+                continue;
+            }
+
+            if ( files[i].match( 'mootools-core' ) ) {
+                continue;
+            }
+
+            if ( files[i].match( 'Prism.js' ) ) {
+                continue;
+            }
+
+            if ( files[i].match( 'lib/gridster' ) ) {
+                continue;
+            }
+
+            if ( files[i].substr( 0, 3 ) != 'js/' ) {
+                continue;
+            }
+
+            grunt.log.write( '.' );
+
+            // js files
+            src = grunt.file.read( files[i] );
+
+            try
+            {
+                err = leaky( src );
+            } catch ( e )
+            {
+                grunt.log.writeln( '==========================================' );
+                grunt.log.writeln( '' );
+                grunt.log.writeln( 'Error found in "' + files[i] );
+                grunt.log.error( e );
+                grunt.log.writeln( '' );
+
+                errors++;
+
+                err = false;
+            }
+
+            if ( err instanceof leaky.LeakError )
+            {
+                grunt.log.writeln( '==========================================' );
+                grunt.log.writeln( '' );
+                grunt.log.writeln( 'Error found in "' + files[i] );
+                grunt.log.error( err );
+                grunt.log.writeln( '' );
+
+                errors++;
+            }
+        }
+
+        if ( errors ) {
+            grunt.fail.warn( 'found '+ errors +' errors' );
+        }
+    });
     // ==========================================================================
     // HELPERS
     // ==========================================================================
 
     // Minify with UglifyJS.
     // From https://github.com/mishoo/UglifyJS
-    grunt.registerHelper('uglify', function(src, options)
+    grunt.registerTask('uglify', function(src, options)
     {
         if ( !options ) {
             options = {};
@@ -172,72 +242,22 @@ module.exports = function(grunt)
     });
 
      // Return gzipped source.
-    grunt.registerHelper('gzip', function(src) {
+    grunt.registerTask('gzip', function(src) {
         return src ? gzip.zip(src, {}) : '';
     });
 
     // Output some size info about a file.
-    grunt.registerHelper('min_max_info', function(min, max)
+    grunt.registerTask('min_max_info', function(min, max)
     {
         var gzipSize = String( grunt.helper( 'gzip', min ).length );
         grunt.log.writeln('Uncompressed size: ' + String(max.length).green + ' bytes.');
         grunt.log.writeln('Compressed size: ' + gzipSize.green + ' bytes gzipped (' + String(min.length).green + ' bytes minified).');
     });
 
-    // checks unused variables
-    grunt.registerMultiTask('leaky', 'leaky check', function(arg1, arg2)
-    {
-      //var foo = grunt.helper('pcsgmin');
-        var files  = grunt.file.expandFiles( this.file.src ),
-            errors = 0;
-
-        var i, len, src, err;
-
-        for ( i = 0, len = files.length; i < len; i++ )
-        {
-            if ( !files[i].match('.js') ) {
-                continue;
-            }
-
-            if ( files[i].match('mootools-core') ) {
-                continue;
-            }
-
-            if ( files[i].match('js/media/') ) {
-                continue;
-            }
-
-            if ( files[i].substr( 0, 3 ) != 'js/' ) {
-                continue;
-            }
-
-            grunt.log.write('.');
-
-            // js files
-            src = grunt.file.read( files[i] );
-            err = leaky( src );
-
-            if ( err instanceof leaky.LeakError )
-            {
-                grunt.log.writeln( '==========================================' );
-                grunt.log.writeln( '' );
-                grunt.log.writeln( 'Error found in "' + files[i] );
-                grunt.log.error( err );
-                grunt.log.writeln( '' );
-
-                errors++;
-            }
-        }
-
-        if ( errors ) {
-            grunt.fail.warn( 'found '+ errors +' errors' );
-        }
-    });
-
 
     // ==========================================================================
     // start all tasks
     // ==========================================================================
-    grunt.registerTask('default', 'pcsgmin leaky');
+    //grunt.registerTask('default', 'pcsgmin leaky');
 
 };
