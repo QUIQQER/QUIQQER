@@ -157,6 +157,14 @@
               group="quiqqer/system"
               var="menu.extras.users.text"
         />
+        <!-- Logs -->
+        <item parent="/extras/"
+              name="logs"
+              icon="URL_BIN_DIR/16x16/actions/klipper_dock.png"
+              require="admin/quiqqer/Logs"
+              group="quiqqer/system"
+              var="menu.extras.logs.text"
+        />
 
 
     <!-- Settings -->

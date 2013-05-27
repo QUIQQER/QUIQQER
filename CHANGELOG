@@ -1,8 +1,17 @@
 
+v 1.0.4
+
+    - Log Manager
+    - Widgets for Packages
+    - Changelog Window : Menü -> Help -> QUIQQER Changelog
+
 v 1.0.3
 
     - New Desktop-Wall System
     - Desktop-Walls are seperatly accessible: quiqqer.php?desktop=1&id=1
+
+    Fixes
+
     - Better SQLite Support
 
 v 1.0.2

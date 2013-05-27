@@ -55,6 +55,10 @@
             <de><![CDATA[Benutzer Manager]]></de>
             <en><![CDATA[User-Manager]]></en>
         </locale>
+        <locale name="menu.extras.logs.text">
+            <de><![CDATA[Logs]]></de>
+            <en><![CDATA[Logs]]></en>
+        </locale>
 
 
         <locale name="menu.help.text">

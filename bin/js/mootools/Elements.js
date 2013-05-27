@@ -19,20 +19,27 @@ Element.implement({
             return;
         }
 
-        if ( this.createTextRange )
+        try
         {
-            var part = this.createTextRange();
+            if ( this.createTextRange )
+            {
+                var part = this.createTextRange();
 
-            this.moveat( "character", 0 );
-            this.moveEnd( "character", 0 );
-            this.select();
+                this.moveat( "character", 0 );
+                this.moveEnd( "character", 0 );
+                this.select();
 
-        } else if ( this.setSelectionRange )
+            } else if ( this.setSelectionRange )
+            {
+                this.setSelectionRange( 0, 0 );
+            }
+
+            this.focus();
+
+        } catch ( e )
         {
-            this.setSelectionRange( 0, 0 );
+            // nothing
         }
-
-        this.focus();
     },
 
     /**

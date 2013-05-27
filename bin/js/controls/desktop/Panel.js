@@ -265,13 +265,13 @@ define('controls/desktop/Panel', [
             }
 
             if ( this.getAttribute( 'title' ) ) {
-                this.$Title.set( 'html', this.getAttribute('title') );
+                this.$Title.set( 'html', this.getAttribute( 'title' ) );
             }
 
             if ( this.getAttribute( 'icon' ) )
             {
                 this.$Title.setStyles({
-                    background  : 'url('+ this.getAttribute('icon') +') no-repeat 25px center',
+                    background  : 'url('+ this.getAttribute( 'icon' ) +') no-repeat 25px center',
                     paddingLeft : 50
                 });
             }
