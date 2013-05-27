@@ -120,13 +120,6 @@ define('controls/system/logs/Panel', [
             Control.$openLog = true;
             Control.$file    = file;
 
-            if ( !Control.getButtons( 'refresh' ) )
-            {
-                console.log( Control.getButtonBar() );
-
-            }
-
-
             Control.setAttribute( 'title', 'Logs: '+ file );
 
             Control.$Fx.animate({
@@ -336,9 +329,7 @@ define('controls/system/logs/Panel', [
             }
 
             // only log listing
-            // size = Body.getSize();
-
-            this.getButtons('refresh').disable();
+            this.getButtons( 'refresh' ).disable();
 
             this.$Grid.setWidth( size.x - 40 );
             this.$Grid.setHeight( height );
