@@ -100,26 +100,32 @@ class QUI_Events_Event implements Interface_Events
      * @param String $event - The type of event (e.g. 'onComplete').
      * @param Array $args   - (optional) the argument(s) to pass to the function.
      *                        The arguments must be in an array.
+     *
+     * @return Array - Event results, assoziative array
      */
     public function fireEvent($event, $args=false)
     {
+        $results = array();
+
         if ( strpos( $event, 'on' ) !== 0 ) {
             $event = 'on'. ucfirst( $event );
         }
 
         if ( !isset( $this->_events[ $event ] ) ) {
-            return;
+            return $results;
         }
 
         foreach ( $this->_events[ $event ] as $fn )
         {
             if ( $args === false )
             {
-                $fn();
+                $results[ $fn ] = $fn();
                 continue;
             }
 
-            call_user_func_array( $fn, $args );
+            $results[ $fn ] = call_user_func_array( $fn, $args );
         }
+
+        return $results;
     }
 }

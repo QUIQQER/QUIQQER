@@ -9,7 +9,7 @@
  * Registered and set global events
  *
  * If you register event and the callback function is a string,
- * the callback funciton would be set to the database
+ * the callback function would be set to the database
  *
  * @author www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui.events
@@ -165,5 +165,3 @@ class QUI_Events_Manager implements Interface_Events
         $this->_Events->fireEvent( $event, $args );
     }
 }
-
-?>
