@@ -579,7 +579,7 @@ class Projects_Site_Edit extends Projects_Site
         } elseif (isset($params['where']) && is_string($params['where']))
         {
             // @todo where als param String
-            System_Log::write('WIRD NICHT verwendet'. $params['where'], 'error');
+            \QUI\System\Log::write('WIRD NICHT verwendet'. $params['where'], 'error');
             $where = $where_1;
         } else
         {
@@ -857,7 +857,7 @@ class Projects_Site_Edit extends Projects_Site
         // Namen vergeben falls existiert
         $i = 1;
 
-        \System_Log::writeRecursive($params['name']);
+        \QUI\System\Log::writeRecursive($params['name']);
 
         if ( !isset( $params['name'] ) || empty( $params['name'] ) )
         {

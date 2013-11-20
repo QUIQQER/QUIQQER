@@ -30,7 +30,7 @@ function ajax_plugins_getmanager()
 
     if (!file_exists($file))
     {
-        System_Log::write('Cannot find File '. $file, 'error');
+        \QUI\System\Log::write('Cannot find File '. $file, 'error');
         return '';
     }
 
@@ -126,7 +126,7 @@ function ajax_plugins_get_remove_manager()
 
     if (!file_exists($file))
     {
-        System_Log::write('Cannot find File '. $file, 'error');
+        \QUI\System\Log::write('Cannot find File '. $file, 'error');
         return '';
     }
 
@@ -184,7 +184,7 @@ function ajax_plugins_get_update_manager()
 
     if (!file_exists($file))
     {
-        System_Log::write('Cannot find File '. $file, 'error');
+        \QUI\System\Log::write('Cannot find File '. $file, 'error');
         return '';
     }
 
@@ -312,7 +312,7 @@ function ajax_plugins_settings_get_category($plugin, $category, $params)
         $Plugin  = $Plugins->get($plugin);
     }
 
-    return Utils_Dom::parseCategorieToHTML(
+    return \QUI\Utils\DOM::parseCategorieToHTML(
         $Plugin->getSettingsCategory($category)
     );
 }

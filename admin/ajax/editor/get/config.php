@@ -7,8 +7,11 @@
  */
 function ajax_editor_get_config()
 {
-    return QUI_Editor_Manager::getConfig();
+    return \QUI\Editor\Manager::getConfig();
 }
-QUI::$Ajax->register('ajax_editor_get_config', false, 'Permission::checkSU');
 
-?>
+\QUI::$Ajax->register(
+    'ajax_editor_get_config',
+    false,
+    'Permission::checkSU'
+);

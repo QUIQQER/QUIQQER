@@ -8,8 +8,11 @@
  */
 function ajax_editor_get_toolbars()
 {
-    return QUI_Editor_Manager::getToolbars();
+    return \QUI\Editor\Manager::getToolbars();
 }
-QUI::$Ajax->register('ajax_editor_get_toolbars', false, 'Permission::checkSU');
 
-?>
+\QUI::$Ajax->register(
+    'ajax_editor_get_toolbars',
+    false,
+    'Permission::checkSU'
+);

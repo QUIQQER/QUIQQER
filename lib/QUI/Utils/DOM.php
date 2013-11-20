@@ -1,19 +1,21 @@
 <?php
 
 /**
- * This file contains the Utils_Dom
+ * This file contains the \QUI\Utils\DOM
  */
+
+namespace QUI\Utils;
 
 /**
  * QUIQQER DOM Helper
  *
- * Utils_Dom helps with quiqqer .xml files and DOMNode Elements
+ * \QUI\Utils\DOM helps with quiqqer .xml files and DOMNode Elements
  *
  * @author www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui.utils
  */
 
-class Utils_Dom
+class DOM
 {
     /**
      * Fügt DOM XML Tabs in eine Toolbar ein
@@ -114,14 +116,14 @@ class Utils_Dom
         if ( is_string( $Object ) )
         {
             if ( file_exists( $Object ) ) {
-                $tabs = \Utils_Xml::getTabsFromXml( $Object );
+                $tabs = \QUI\Utils\XML::getTabsFromXml( $Object );
             }
 
         } else if ( get_class( $Object ) === 'Project' )
         {
             /* @var $Object Projects_Project */
             // tabs welche ein projekt zur Verfügung stellt
-            $tabs = \Utils_Xml::getTabsFromUserXml(
+            $tabs = \QUI\Utils\XML::getTabsFromUserXml(
                 USR_DIR .'lib/'. $Object->getAttribute( 'name' ) .'/user.xml'
             );
 
@@ -227,7 +229,7 @@ class Utils_Dom
                 {
                     $Win->setAttribute(
                         'icon',
-                        \Utils_Dom::parseVar( $Param->nodeValue )
+                        \QUI\Utils\DOM::parseVar( $Param->nodeValue )
                     );
 
                     continue;
@@ -292,7 +294,7 @@ class Utils_Dom
 
                             $Button->setAttribute(
                                 $btnParams->item( $b )->nodeName,
-                                Utils_Dom::parseVar( $value )
+                                \QUI\Utils\DOM::parseVar( $value )
                             );
                         break;
                     }
@@ -362,11 +364,11 @@ class Utils_Dom
             $perm .'._description'
         );
 
-        $type = \QUI_Rights_Manager::parseType(
+        $type = \QUI\Rights\Manager::parseType(
             $Node->getAttribute( 'type' )
         );
 
-        $area = \QUI_Rights_Manager::parseArea(
+        $area = \QUI\Rights\Manager::parseArea(
             $Node->getAttribute( 'area' )
         );
 
@@ -947,7 +949,7 @@ class Utils_Dom
      */
     static function arrayToQDOM(array $array)
     {
-        $DOM = new \QDOM();
+        $DOM = new \QUI\QDOM();
         $DOM->setAttributes( $array );
 
         return $DOM;

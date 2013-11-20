@@ -75,7 +75,7 @@ class System_Cron_Manager extends \QUI\QDOM
                     );
                 } catch ( \QUI\Exception $e )
                 {
-                    System_Log::write(
+                    \QUI\System\Log::write(
                         'Cron konnte nicht registriert werden: '. $e->getMessage().' '. $class,
                         'cron'
                     );

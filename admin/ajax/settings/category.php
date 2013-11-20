@@ -11,13 +11,13 @@ function ajax_settings_category($file, $category)
         return '';
     }
 
-    $Category = Utils_Xml::getSettingCategoriesFromXml( $file, $category );
+    $Category = \QUI\Utils\XML::getSettingCategoriesFromXml( $file, $category );
 
     if ( !$Category ) {
         return '';
     }
 
-    return Utils_Dom::parseCategorieToHTML( $Category );
+    return \QUI\Utils\DOM::parseCategorieToHTML( $Category );
 }
 
 \QUI::$Ajax->register(

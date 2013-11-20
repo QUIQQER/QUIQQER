@@ -260,12 +260,12 @@ class Projects_Sites
                 continue;
             }
 
-            \Utils_Dom::addTabsToToolbar(
-                \Utils_Xml::getTabsFromXml( $file ),
+            \QUI\Utils\DOM::addTabsToToolbar(
+                \QUI\Utils\XML::getTabsFromXml( $file ),
                 $Tabbar
             );
 
-            //System_Log::writeRecursive( $result, 'error' );
+            //\QUI\System\Log::writeRecursive( $result, 'error' );
 
             /* old api
             if ( method_exists( $Plugin, 'setTabs' ) ) {

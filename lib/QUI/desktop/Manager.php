@@ -242,7 +242,7 @@ class QUI_Desktop_Manager
         {
             $result = array_merge(
                 $result,
-                \Utils_Xml::getWidgetsFromXml( $dir .'/'. $file )
+                \QUI\Utils\XML::getWidgetsFromXml( $dir .'/'. $file )
             );
         }
 
@@ -253,11 +253,11 @@ class QUI_Desktop_Manager
         foreach ( $list as $package )
         {
             $widget_file = OPT_DIR . $package['name'] .'/widgets.xml';
-            $widget_file = \Utils_Dom::parseVar( $widget_file );
+            $widget_file = \QUI\Utils\DOM::parseVar( $widget_file );
 
             $result = array_merge(
                 $result,
-                \Utils_Xml::getWidgetsFromXml( $widget_file )
+                \QUI\Utils\XML::getWidgetsFromXml( $widget_file )
             );
         }
 

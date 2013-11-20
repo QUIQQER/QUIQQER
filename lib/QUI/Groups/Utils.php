@@ -27,8 +27,8 @@ class Utils
             'name'  => 'UserToolbar'
         ));
 
-        Utils_Dom::addTabsToToolbar(
-            Utils_Xml::getTabsFromXml( SYS_DIR .'groups.xml' ),
+        \QUI\Utils\DOM::addTabsToToolbar(
+            \QUI\Utils\XML::getTabsFromXml( SYS_DIR .'groups.xml' ),
             $Tabbar,
             'pcsg'
         );
@@ -82,7 +82,7 @@ class Utils
         // System
         if ( $plugin === 'pcsg' )
         {
-            return Utils_Dom::getTabHTML(
+            return \QUI\Utils\DOM::getTabHTML(
                 $tab, SYS_DIR .'groups.xml'
             );
         }

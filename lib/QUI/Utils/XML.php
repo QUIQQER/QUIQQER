@@ -1,8 +1,10 @@
 <?php
 
 /**
- * This file contains the Utils_Xml
+ * This file contains the \QUI\Utils\XML
  */
+
+namespace QUI\Utils;
 
 /**
  * QUIQQER XML Util class
@@ -13,7 +15,7 @@
  * @package com.pcsg.qui.utils
  */
 
-class Utils_Xml
+class XML
 {
     /**
      * Read the config parameter of an *.xml file and
@@ -116,13 +118,13 @@ class Utils_Xml
                 if ( $Param->getAttribute( 'type' ) == 'project' )
                 {
                     foreach ( $projects as $project ) {
-                        $result[ $project ] = \Utils_Dom::parseConfs( $confs );
+                        $result[ $project ] = \QUI\Utils\DOM::parseConfs( $confs );
                     }
 
                     continue;
                 }
 
-                $result[ $name ] = \Utils_Dom::parseConfs( $confs );
+                $result[ $name ] = \QUI\Utils\DOM::parseConfs( $confs );
             }
         }
 
@@ -156,7 +158,7 @@ class Utils_Xml
 
             for ( $i = 0; $i < $tables->length; $i++ )
             {
-                $dbfields['globals'][] = \Utils_Dom::dbTableDomToArray(
+                $dbfields['globals'][] = \QUI\Utils\DOM::dbTableDomToArray(
                     $tables->item( $i )
                 );
             }
@@ -169,7 +171,7 @@ class Utils_Xml
 
             for ( $i = 0; $i < $tables->length; $i++ )
             {
-                $dbfields['projects'][] = \Utils_Dom::dbTableDomToArray(
+                $dbfields['projects'][] = \QUI\Utils\DOM::dbTableDomToArray(
                     $tables->item( $i )
                 );
             }
@@ -371,7 +373,7 @@ class Utils_Xml
 
         for ( $i = 0; $i < $permission->length; $i++ )
         {
-            $result[] = \Utils_Dom::parsePermissionToArray(
+            $result[] = \QUI\Utils\DOM::parsePermissionToArray(
                 $permission->item( $i )
             );
         }
@@ -630,7 +632,7 @@ class Utils_Xml
                 if ( $Widget->getAttribute( 'src' ) )
                 {
                     $file   = $Widget->getAttribute( 'src' );
-                    $file   = \Utils_Dom::parseVar( $file );
+                    $file   = \QUI\Utils\DOM::parseVar( $file );
                     $Widget = self::getWidgetFromXml( $file );
 
                     if ( $Widget ) {

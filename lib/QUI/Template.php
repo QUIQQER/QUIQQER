@@ -217,7 +217,7 @@ class QUI_Template extends \QUI\QDOM
             return $Engine->fetch( $tpl );
         } catch ( \Exception $Exception )
         {
-            \System_Log::writeException( $Exception );
+            \QUI\System\Log::writeException( $Exception );
             return '';
         }
     }

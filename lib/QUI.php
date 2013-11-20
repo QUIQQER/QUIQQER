@@ -28,7 +28,7 @@ class QUI
 
     /**
      * QUI getDB object, use \QUI::getDB()
-     * @var Utils_MyDB
+     * @var \QUI\Utils\MyDB
      */
     static $DataBase = null;
 
@@ -112,7 +112,7 @@ class QUI
 
     /**
      * QUI Rights Object, use \QUI::getRights();
-     * @var QUI_Rights_Manager
+     * @var \QUI\Rights\Manager
      */
     static $Rights = null;
 
@@ -358,7 +358,7 @@ class QUI
         {
             // DB Verbindung schließen
             \QUI::getDB()->close();
-            \System_Debug::marker('END');
+            \QUI\Utils\System\Debug::marker('END');
 
             // ram peak, if the ram usage is to high, than write and send a message
             $peak      = memory_get_peak_usage();
@@ -395,7 +395,7 @@ class QUI
                     ));
                 }
 
-                \System_Log::write( $message, 'error' );
+                \QUI\System\Log::write( $message, 'error' );
             }
         });
 
@@ -546,14 +546,14 @@ class QUI
     /**
      * Returns the Datebase Object (old version)
      *
-     * @return Utils_MyDB
+     * @return \QUI\Utils\MyDB
      * @deprecated
      * use getDataBase and PDO or direct getPDO
      */
     static function getDB()
     {
         if ( is_null( self::$DataBase ) ) {
-            self::$DataBase = new \Utils_MyDB();
+            self::$DataBase = new \QUI\Utils\MyDB();
         }
 
         return self::$DataBase;
@@ -754,7 +754,7 @@ class QUI
 
     /**
      * Return the rights object
-     * @return QUI_Rights_Manager
+     * @return \QUI\Rights\Manager
      *
      * @deprecated use ::getPermissionManager
      */
@@ -765,12 +765,12 @@ class QUI
 
     /**
      * Return the rights object
-     * @return QUI_Rights_Manager
+     * @return \QUI\Rights\Manager
      */
     static function getPermissionManager()
     {
         if ( is_null( self::$Rights ) ) {
-            self::$Rights = new \QUI_Rights_Manager();
+            self::$Rights = new \QUI\Rights\Manager();
         }
 
         return self::$Rights;

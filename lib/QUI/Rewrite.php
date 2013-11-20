@@ -302,7 +302,7 @@ class QUI_Rewrite
 
             if ( !file_exists($file) )
             {
-                \System_Log::write('File not exist: '. $file , 'error');
+                \QUI\System\Log::write('File not exist: '. $file , 'error');
                 exit;
             }
 
@@ -859,7 +859,7 @@ class QUI_Rewrite
                     } catch (\QUI\Exception $e)
                     {
                         // nothing
-                        System_Log::writeException($e);
+                        \QUI\System\Log::writeException($e);
                     }
                 }
 
@@ -875,10 +875,10 @@ class QUI_Rewrite
 
                         return true;
 
-                    } catch (\QUI\Exception $e)
+                    } catch ( \QUI\Exception $e )
                     {
                         // nothing
-                        System_Log::writeException($e);
+                        \QUI\System\Log::writeException($e);
                     }
                 }
 
@@ -1211,10 +1211,10 @@ class QUI_Rewrite
 
             } catch (Exception $e)
             {
-                System_Log::writeException($e);
+                \QUI\System\Log::writeException($e);
             } catch (\QUI\Exception $e)
             {
-                System_Log::writeException($e);
+                \QUI\System\Log::writeException($e);
             }
         } else
         {

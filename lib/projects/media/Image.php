@@ -185,7 +185,7 @@ class Projects_Media_Image
             } catch ( \QUI\Exception $e )
             {
                 // Fehler loggen
-                System_Log::writeException($e);
+                \QUI\System\Log::writeException($e);
             }
         }
 
@@ -245,7 +245,7 @@ class Projects_Media_Image
 
                 } catch ( \QUI\Exception $e )
                 {
-                    System_Log::writeException($e);
+                    \QUI\System\Log::writeException($e);
                 }
             }
         }
@@ -384,7 +384,7 @@ class Projects_Media_Image
 
         } catch ( \QUI\Exception $e )
         {
-            System_Log::writeException($e);
+            \QUI\System\Log::writeException($e);
             // nothing
         }
 
@@ -465,7 +465,7 @@ class Projects_Media_Image
 
         } catch ( \QUI\Exception $Exception )
         {
-            \System_Log::writeException( $Exception );
+            \QUI\System\Log::writeException( $Exception );
         }
 
         return $original;

@@ -28,7 +28,7 @@ class Update
      */
     static function onInstall(Event $Event)
     {
-        // \System_Log::writeRecursive( $event, 'error' );
+        // \QUI\System\Log::writeRecursive( $event, 'error' );
 
         $IO = $Event->getIO();
 
@@ -53,10 +53,10 @@ class Update
         \QUI::getLocale()->setCurrent( 'en' );
 
         // rights setup, so we have all importend tables
-        \QUI_Rights_Manager::setup();
+        \QUI\Rights\Manager::setup();
 
         // WYSIWYG Setup
-        \QUI_Editor_Manager::setup();
+        \QUI\Editor\Manager::setup();
 
         // Events setup
         \QUI\Events\Manager::setup();
@@ -173,9 +173,9 @@ class Update
             return;
         }
 
-        \System_Log::write( 'Read: '. $xml_file );
+        \QUI\System\Log::write( 'Read: '. $xml_file );
 
-        $engines = \Utils_Xml::getTemplateEnginesFromXml( $xml_file );
+        $engines = \QUI\Utils\XML::getTemplateEnginesFromXml( $xml_file );
 
         foreach ( $engines as $Engine )
         {
@@ -204,9 +204,9 @@ class Update
             return;
         }
 
-        \System_Log::write( 'Read: '. $xml_file );
+        \QUI\System\Log::write( 'Read: '. $xml_file );
 
-        $editors = \Utils_Xml::getWysiwygEditorsFromXml( $xml_file );
+        $editors = \QUI\Utils\XML::getWysiwygEditorsFromXml( $xml_file );
 
         foreach ( $editors as $Editor )
         {
@@ -216,7 +216,7 @@ class Update
                 continue;
             }
 
-            \QUI_Editor_Manager::registerEditor(
+            \QUI\Editor\Manager::registerEditor(
                 trim( $Editor->nodeValue ),
                 $Editor->getAttribute( 'package' )
             );
@@ -235,9 +235,9 @@ class Update
             return;
         }
 
-        \System_Log::write( 'Read: '. $xml_file );
+        \QUI\System\Log::write( 'Read: '. $xml_file );
 
-        $events = \Utils_Xml::getEventsFromXml( $xml_file );
+        $events = \QUI\Utils\XML::getEventsFromXml( $xml_file );
         $Events = \QUI::getEvents();
 
         foreach ( $events as $Event )
@@ -266,9 +266,9 @@ class Update
             return;
         }
 
-        \System_Log::write( 'Read: '. $xml_file );
+        \QUI\System\Log::write( 'Read: '. $xml_file );
 
-        $items = \Utils_Xml::getMenuItemsXml( $xml_file );
+        $items = \QUI\Utils\XML::getMenuItemsXml( $xml_file );
 
         if ( !count( $items ) ) {
             return;
@@ -305,9 +305,9 @@ class Update
             return;
         }
 
-        \System_Log::write( 'Read: '. $xml_file );
+        \QUI\System\Log::write( 'Read: '. $xml_file );
 
-        \Utils_Xml::importDataBaseFromXml( $xml_file );
+        \QUI\Utils\XML::importDataBaseFromXml( $xml_file );
     }
 
     /**
@@ -323,7 +323,7 @@ class Update
             return;
         }
 
-        \System_Log::write( 'Read: '. $xml_file );
+        \QUI\System\Log::write( 'Read: '. $xml_file );
 
         \QUI\Translator::import( $xml_file, false );
     }
@@ -342,9 +342,9 @@ class Update
             return;
         }
 
-        \System_Log::write( 'Read: '. $xml_file );
+        \QUI\System\Log::write( 'Read: '. $xml_file );
 
-        \Utils_Xml::importPermissionsFromXml( $xml_file, $src );
+        \QUI\Utils\XML::importPermissionsFromXml( $xml_file, $src );
     }
 
     /**

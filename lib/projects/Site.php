@@ -261,7 +261,7 @@ class Projects_Site extends \QUI\QDOM
         }
 
 
-        $DataBaseXML = Utils_Xml::getDomFromXml( $database_xml );
+        $DataBaseXML = \QUI\Utils\XML::getDomFromXml( $database_xml );
         $projects    = $DataBaseXML->getElementsByTagName( 'projects' );
 
         if ( $projects && $projects->length )
@@ -276,7 +276,7 @@ class Projects_Site extends \QUI\QDOM
                     continue;
                 }
 
-                $fields = Utils_Dom::dbTableDomToArray( $Table );
+                $fields = \QUI\Utils\DOM::dbTableDomToArray( $Table );
 
                 if ( !isset( $fields['suffix'] ) ||
                      !isset( $fields['fields'] ) )
@@ -321,7 +321,7 @@ class Projects_Site extends \QUI\QDOM
             return;
         }
 
-        $SiteXML    = Utils_Xml::getDomFromXml( $site_xml );
+        $SiteXML    = \QUI\Utils\XML::getDomFromXml( $site_xml );
         $attributes = $SiteXML->getElementsByTagName( 'attribute' );
 
         if ( !$attributes->length ) {
@@ -748,7 +748,7 @@ class Projects_Site extends \QUI\QDOM
             } catch ( \QUI\Exception $e )
             {
                 if ( DEBUG_MODE ) {
-                    System_Log::writeException( $e );
+                    \QUI\System\Log::writeException( $e );
                 }
             }
         }
@@ -1483,7 +1483,7 @@ class Projects_Site extends \QUI\QDOM
                     $Plugin->onDestroy( $this, $Project, $DataBase );
                 } catch ( \QUI\Exception $e )
                 {
-                    \System_Log::writeException( $e );
+                    \QUI\System\Log::writeException( $e );
                 }
             }
 
@@ -1579,7 +1579,7 @@ class Projects_Site extends \QUI\QDOM
     }
 
     /**
-     * Shortcut for QUI_Rights_Permission::hasSitePermission
+     * Shortcut for \QUI\Rights\Permission::hasSitePermission
      *
      * @param string $permission - name of the permission
      * @param Users_User $User - optional
@@ -1587,7 +1587,7 @@ class Projects_Site extends \QUI\QDOM
      */
     public function hasPermission($permission, $User=false)
     {
-        return \QUI_Rights_Permission::hasSitePermission(
+        return \QUI\Rights\Permission::hasSitePermission(
             $permission,
             $this,
             $User
@@ -1595,7 +1595,7 @@ class Projects_Site extends \QUI\QDOM
     }
 
     /**
-     * Shortcut for QUI_Rights_Permission::checkSitePermission
+     * Shortcut for \QUI\Rights\Permission::checkSitePermission
      *
      * @param string $permission - name of the permission
      * @param Users_User $User - optional
@@ -1603,12 +1603,10 @@ class Projects_Site extends \QUI\QDOM
      */
     public function checkPermission($permission, $User=false)
     {
-        \QUI_Rights_Permission::checkSitePermission(
+        \QUI\Rights\Permission::checkSitePermission(
             $permission,
             $this,
             $User
         );
     }
 }
-
-?>

@@ -15,7 +15,7 @@ function ajax_site_categories_template($project, $lang, $id, $tab)
     $Site    = new Projects_Site_Edit( $Project, (int)$id );
 
     return \QUI\Utils\String::removeLineBreaks(
-        Utils_Dom::getTabHTML( $tab, $Site )
+        \QUI\Utils\DOM::getTabHTML( $tab, $Site )
     );
 }
 

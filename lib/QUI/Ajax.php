@@ -95,7 +95,7 @@ class Ajax extends \QUI\QDOM
             // if it is a real permission
             if ( strpos( $func, '::' ) === false )
             {
-                \QUI_Rights_Permission::checkPermission( $func );
+                \QUI\Rights\Permission::checkPermission( $func );
                 return;
             }
 
@@ -153,7 +153,7 @@ class Ajax extends \QUI\QDOM
         if ( !isset( self::$_functions[ $_rf ] ) )
         {
             if ( defined( 'DEVELOPMENT' ) && DEVELOPMENT ) {
-                System_Log::write( 'Funktion '. $_rf .' nicht gefunden' );
+                \QUI\System\Log::write( 'Funktion '. $_rf .' nicht gefunden' );
             }
 
             return $this->writeException(
@@ -243,7 +243,7 @@ class Ajax extends \QUI\QDOM
                 case JSON_ERROR_SYNTAX:
                 case JSON_ERROR_UTF8:
                 default:
-                    \System_Log::write(
+                    \QUI\System\Log::write(
                         'JSON Error: '. json_last_error() . ' :: '. print_r( $return, true ),
                         'error'
                     );
@@ -276,7 +276,7 @@ class Ajax extends \QUI\QDOM
             case '\PDOException':
             case '\QUI\Database\Exception':
                 // DB Fehler immer loggen
-                \System_Log::writeException( $Exception );
+                \QUI\System\Log::writeException( $Exception );
 
                 if ( $this->getAttribute('db_errors') )
                 {

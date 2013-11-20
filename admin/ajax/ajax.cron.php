@@ -176,13 +176,11 @@ function ajax_cron_execute($cid)
     try
     {
         $Cron->exec();
-    } catch (\QUI\Exception $e)
+    } catch ( \QUI\Exception $e )
     {
-        System_Log::writeException($e);
+        \QUI\System\Log::writeException($e);
     }
 
     System_Cron_Manager::log("Cron '". $Cron->getAttribute('cronname') ."' wurde ausgeführt.\nParameter: ". print_r($Cron->getAllAttributes(), true));
 }
 $ajax->register('ajax_cron_execute', array('cid'));
-
-?>

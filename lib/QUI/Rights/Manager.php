@@ -1,8 +1,10 @@
 <?php
 
 /**
- * This file contains the QUI_Rights_Manager
+ * This file contains the \QUI\Rights\Manager
  */
+
+namespace QUI\Rights;
 
 /**
  * Rights management
@@ -11,7 +13,7 @@
  * @package com.pcsg.qui.rights
  */
 
-class QUI_Rights_Manager
+class Manager
 {
     const TABLE = 'permissions';
 
@@ -306,7 +308,7 @@ class QUI_Rights_Manager
      */
     public function importPermissionsFromXml($xmlfile, $src='')
     {
-        $permissions = \Utils_Xml::getPermissionsFromXml( $xmlfile );
+        $permissions = \QUI\Utils\XML::getPermissionsFromXml( $xmlfile );
 
         if ( !count( $permissions ) ) {
             return;
@@ -913,9 +915,9 @@ class QUI_Rights_Manager
                 );
 
                 if ( is_string( $ruleset ) &&
-                     method_exists( 'QUI_Rights_PermissionOrder', $rulese ) )
+                     method_exists( '\QUI\Rights\PermissionOrder', $rulese ) )
                 {
-                    $_rulesetresult = QUI_Rights_PermissionOrder::$ruleset( $ruleparams );
+                    $_rulesetresult = \QUI\Rights\PermissionOrder::$ruleset( $ruleparams );
                     continue;
                 }
 

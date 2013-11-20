@@ -9,7 +9,7 @@ function ajax_settings_get($file)
         return array();
     }
 
-    $Config = Utils_Xml::getConfigFromXml( $file );
+    $Config = \QUI\Utils\XML::getConfigFromXml( $file );
 
     if ( !$Config ) {
         return array();

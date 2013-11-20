@@ -46,7 +46,7 @@ function ajax_menu()
 
     foreach ( $files as $file )
     {
-        $windows = \Utils_Xml::getSettingWindowsFromXml( $dir . $file );
+        $windows = \QUI\Utils\XML::getSettingWindowsFromXml( $dir . $file );
 
         foreach ( $windows as $Window )
         {
@@ -88,7 +88,7 @@ function ajax_menu()
                 {
                     $Win->setAttribute(
                         'icon',
-                        \Utils_Dom::parseVar(
+                        \QUI\Utils\DOM::parseVar(
                             $icon->item( 0 )->nodeValue
                         )
                     );

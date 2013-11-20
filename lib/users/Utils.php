@@ -25,8 +25,8 @@ class Users_Utils
             'name'  => 'UserToolbar'
         ));
 
-        Utils_Dom::addTabsToToolbar(
-            Utils_Xml::getTabsFromXml( LIB_DIR .'xml/user.xml' ),
+        \QUI\Utils\DOM::addTabsToToolbar(
+            \QUI\Utils\XML::getTabsFromXml( LIB_DIR .'xml/user.xml' ),
             $Tabbar,
             'pcsg'
         );
@@ -40,26 +40,26 @@ class Users_Utils
          */
 
         $Plugin  = \QUI::getPlugins();
-		$plugins = $Plugin->get();
+        $plugins = $Plugin->get();
 
-		// user.xml auslesen
-		foreach ( $plugins as $Plugin ) {
+        // user.xml auslesen
+        foreach ( $plugins as $Plugin ) {
             $Plugin->loadUserTabs( $Tabbar, $User );
-		}
+        }
 
-		/**
-		 * user extention from projects
-		 */
-		$projects = Projects_Manager::getProjects();
+        /**
+         * user extention from projects
+         */
+        $projects = Projects_Manager::getProjects();
 
-		foreach ( $projects as $project )
-		{
-	        Utils_Dom::addTabsToToolbar(
-	            Utils_Xml::getTabsFromXml( USR_DIR .'lib/'. $project .'/user.xml' ),
-	            $Tabbar,
-	            'project.'. $project
-	        );
-		}
+        foreach ( $projects as $project )
+        {
+            \QUI\Utils\DOM::addTabsToToolbar(
+                \QUI\Utils\XML::getTabsFromXml( USR_DIR .'lib/'. $project .'/user.xml' ),
+                $Tabbar,
+                'project.'. $project
+            );
+        }
 
         return $Tabbar;
     }
@@ -76,34 +76,32 @@ class Users_Utils
     static function getTab($uid, $plugin, $tab)
     {
         $Users = \QUI::getUsers();
-    	$User  = $Users->get( (int)$uid );
+        $User  = $Users->get( (int)$uid );
 
-    	// System
-    	if ( $plugin === 'pcsg' )
-    	{
-            return Utils_Dom::getTabHTML(
+        // System
+        if ( $plugin === 'pcsg' )
+        {
+            return \QUI\Utils\DOM::getTabHTML(
                 $tab,
                 LIB_DIR .'xml/user.xml'
             );
-    	}
+        }
 
-    	// project extention
-    	if ( strpos($plugin, 'project.') !== false )
-    	{
+        // project extention
+        if ( strpos($plugin, 'project.') !== false )
+        {
             $project = explode( 'project.', $plugin );
 
-            return Utils_Dom::getTabHTML(
+            return \QUI\Utils\DOM::getTabHTML(
                 $tab,
                 \QUI::getProject( $project[1] )
             );
         }
 
-       	// Plugin extention
-    	$Plugins = \QUI::getPlugins();
+           // Plugin extention
+        $Plugins = \QUI::getPlugins();
         $Plugin  = $Plugins->get( $plugin );
 
-        return Utils_Dom::getTabHTML( $tab, $Plugin );
+        return \QUI\Utils\DOM::getTabHTML( $tab, $Plugin );
     }
 }
-
-?>

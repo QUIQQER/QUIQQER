@@ -1,8 +1,10 @@
 <?php
 
 /**
- * This file contains the QUI_Rights_PermissionOrder
+ * This file contains the \QUI\Rights\PermissionOrder
  */
+
+namespace QUI\Rights;
 
 /**
  * Allgemeine Permission Sotierungs Handling Methoden
@@ -14,7 +16,7 @@
  * @package com.pcsg.qui.rights
  *
  */
-class QUI_Rights_PermissionOrder
+class PermissionOrder
 {
     /**
      * Gibt den Maximalen Integer Rechte Wert zurück

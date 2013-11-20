@@ -788,7 +788,7 @@ class Projects_Project
         } elseif ( isset($params['where'] ) && is_string( $params['where'] ) )
         {
             // @todo where als param String
-            System_Log::write(
+            \QUI\System\Log::write(
                 'Project->getChildrenIdsFrom WIRD NICHT verwendet'. $params['where'],
                 'message'
             );

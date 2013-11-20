@@ -314,13 +314,13 @@ class Projects_Media_Utils
 
             } catch ( \QUI\Exception $Exception )
             {
-                \System_Log::writeException( $Exception );
+                \QUI\System\Log::writeException( $Exception );
 
                 return URL_DIR . $output;
 
             } catch ( \Exception $Exception )
             {
-                \System_Log::writeException( $Exception );
+                \QUI\System\Log::writeException( $Exception );
 
                 return URL_DIR . $output;
             }

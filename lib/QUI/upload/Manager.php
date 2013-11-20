@@ -327,7 +327,7 @@ class QUI_Upload_Manager
      * If the upload is not over HTML5
      *
      * @param {String|Function} $onfinish - Function
-     * @param $params - extra params for the \QDOM() File Object
+     * @param $params - extra params for the \QUI\QDOM File Object
      *
      * @throws \QUI\Exception
      */
@@ -362,7 +362,7 @@ class QUI_Upload_Manager
 
             if ( !isset( $File ) )
             {
-                $File = new \QDOM();
+                $File = new \QUI\QDOM();
                 $File->setAttribute( 'name', $filename );
                 $File->setAttribute( 'filepath', $file );
             }
@@ -399,7 +399,7 @@ class QUI_Upload_Manager
 
             if ( !isset( $File ) )
             {
-                $File = new \QDOM();
+                $File = new \QUI\QDOM();
                 $File->setAttribute( 'name', $filename );
                 $File->setAttribute( 'filepath', $file );
             }
@@ -614,7 +614,7 @@ class QUI_Upload_Manager
      */
     public function getUnfinishedUploadsFromUser($User=false)
     {
-        if ( !QUI::getUsers()->isUser($User) ) {
+        if ( !\QUI::getUsers()->isUser($User) ) {
             $User = \QUI::getUserBySession();
         }
 

@@ -11,7 +11,7 @@ function ajax_settings_save($file, $params)
         );
     }
 
-    Utils_Xml::setConfigFromXml(
+    \QUI\Utils\XML::setConfigFromXml(
         $file,
         json_decode( $params, true )
     );

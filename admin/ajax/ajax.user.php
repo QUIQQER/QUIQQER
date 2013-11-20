@@ -179,7 +179,7 @@ function ajax_user_importad_getusers($groupid, $username, $pass, $adgroup)
 
     } catch (\QUI\Exception $e)
     {
-        System_Log::writeException($e);
+        \QUI\System\Log::writeException($e);
         return false;
     }
 }

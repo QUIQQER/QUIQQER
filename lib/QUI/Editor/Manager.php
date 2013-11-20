@@ -1,8 +1,10 @@
 <?php
 
 /**
- * This file contains QUI_Editor_Manager
+ * This file contains \QUI\Editor\Manager
  */
+
+namespace QUI\Editor;
 
 /**
  * Wysiwyg manager
@@ -15,7 +17,7 @@
  * @todo docu translation
  */
 
-class QUI_Editor_Manager
+class Manager
 {
     /**
      * WYSIWYG editor config
@@ -224,7 +226,7 @@ class QUI_Editor_Manager
      */
     static function parseXmlFileToArray($file)
     {
-        $Dom     = Utils_Xml::getDomFromXml( $file );
+        $Dom     = \QUI\Utils\XML::getDomFromXml( $file );
         $toolbar = $Dom->getElementsByTagName( 'toolbar' );
 
         if ( !$toolbar->length ) {

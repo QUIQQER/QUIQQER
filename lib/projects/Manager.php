@@ -205,7 +205,7 @@ class Projects_Manager
      */
     static function createProject($name, $lang, $template=false)
     {
-        \QUI_Rights_Permission::checkPermission(
+        \QUI\Rights\Permission::checkPermission(
             'quiqqer.admin.projects.create'
         );
 

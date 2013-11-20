@@ -129,7 +129,7 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
         }
 
         // Datenbank aufbauen
-        \Utils_Xml::importDataBaseFromXml(
+        \QUI\Utils\XML::importDataBaseFromXml(
             OPT_DIR . $this->getAttribute('name') .'/database.xml'
         );
     }
@@ -230,7 +230,7 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
             $tables = $global->item(0)->getElementsByTagName('table');
 
             for ($i=0; $i < $tables->length; $i++) {
-                $dbfields['globals'][] = Utils_Dom::dbTableDomToArray($tables->item($i));
+                $dbfields['globals'][] = \QUI\Utils\DOM::dbTableDomToArray($tables->item($i));
             }
         }
 
@@ -240,7 +240,7 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
             $tables = $project->item(0)->getElementsByTagName('table');
 
             for ($i=0; $i < $tables->length; $i++) {
-                $dbfields['projects'][] = Utils_Dom::dbTableDomToArray($tables->item($i));
+                $dbfields['projects'][] = \QUI\Utils\DOM::dbTableDomToArray($tables->item($i));
             }
         }
 
@@ -463,7 +463,7 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
      * Gibt Einstellungsfenster zurück, wenn eines gesetzt ist
      *
      * @return Controls_Windows_Setting|false
-     * @todo rewrite auf Utils_DOM
+     * @todo rewrite auf \QUI\Utils\DOM
      */
     public function getSettingsWindow()
     {
@@ -537,7 +537,7 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
 
                 if ($Param->nodeName == 'image')
                 {
-                    $Win->setAttribute('image',  Utils_Dom::parseVar($Param->nodeValue));
+                    $Win->setAttribute('image',  \QUI\Utils\DOM::parseVar($Param->nodeValue));
                     continue;
                 }
 
@@ -597,7 +597,7 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
 
                             $Button->setAttribute(
                                 $btnParams->item($b)->nodeName,
-                                Utils_Dom::parseVar($value)
+                                \QUI\Utils\DOM::parseVar($value)
                             );
                         break;
                     }
@@ -643,7 +643,7 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
      */
     public function getSettingsCategory($name)
     {
-        return Utils_Xml::getSettingCategoriesFromXml(
+        return \QUI\Utils\XML::getSettingCategoriesFromXml(
             OPT_DIR . $this->getAttribute('name') .'/settings.xml',
             $name
         );
@@ -699,7 +699,7 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
      */
     public function getUserTabs()
     {
-        return Utils_Xml::getTabsFromDom(
+        return \QUI\Utils\XML::getTabsFromDom(
             $this->_getUserXml()
         );
     }
@@ -712,7 +712,7 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
      */
     public function getUserTabHtml($name)
     {
-        return Utils_Dom::getTabHTML($name, $this);
+        return \QUI\Utils\DOM::getTabHTML($name, $this);
     }
 
     /**
@@ -736,7 +736,7 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
         // Neue XML Tabs
         $tabs = $this->getUserTabs();
 
-        Utils_Dom::addTabsToToolbar(
+        \QUI\Utils\DOM::addTabsToToolbar(
             $this->getUserTabs(),
             $Tabbar,
             $this->getAttribute('name')
@@ -1046,7 +1046,7 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
             return $this->SettingsDOM;
         }
 
-        $this->SettingsDOM = Utils_Xml::getDomFromXml(
+        $this->SettingsDOM = \QUI\Utils\XML::getDomFromXml(
             OPT_DIR . $this->getAttribute('name') .'/settings.xml'
         );
 
@@ -1065,7 +1065,7 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
             return $this->UserDOM;
         }
 
-        $this->UserDOM = Utils_Xml::getDomFromXml(
+        $this->UserDOM = \QUI\Utils\XML::getDomFromXml(
             OPT_DIR . $this->getAttribute('name') .'/user.xml'
         );
 
@@ -1084,7 +1084,7 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
             return $this->DbDOM;
         }
 
-        $this->DbDOM = Utils_Xml::getDomFromXml(
+        $this->DbDOM = \QUI\Utils\XML::getDomFromXml(
             OPT_DIR . $this->getAttribute('name') .'/database.xml'
         );
 

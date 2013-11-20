@@ -102,7 +102,7 @@ class Utils_Request_Linkchecker extends \QUI\QDOM
                 $href = $host.trim($href, '/');
             }
 
-            $innerhtml = Utils_Dom::getInnerHTML($link);
+            $innerhtml = \QUI\Utils\DOM::getInnerHTML($link);
 
             $result[] = array(
                 'url'   => empty($href) ? false : $href,

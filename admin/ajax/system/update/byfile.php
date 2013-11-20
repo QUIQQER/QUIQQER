@@ -3,7 +3,7 @@
 /**
  * Update plugin or system by a file
  *
- * @params QDOM $File
+ * @params \QUI\QDOM $File
  */
 function ajax_system_update_byfile($File)
 {

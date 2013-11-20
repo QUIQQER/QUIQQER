@@ -111,7 +111,7 @@ class Projects_Trash extends \QUI\QDOM implements Interface_Projects_Trash
             );
         }
 
-        //System_Log::writeRecursive( $result );
+        //\QUI\System\Log::writeRecursive( $result );
 
         $total = $this->_Project->getSites(array(
             'where' => array(

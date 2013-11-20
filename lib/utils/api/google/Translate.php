@@ -65,7 +65,7 @@ class Utils_Api_Google_Translation extends \QUI\QDOM
         if ( isset($data['error']) || !isset($data['data']) )
         {
             if ( isset($data['error']) ) {
-                System_Log::writeRecursive( $message, 'error' );
+                \QUI\System\Log::writeRecursive( $message, 'error' );
             }
 
             throw new \QUI\Exception('Es konnte keine Übersetzung gefunden werden');

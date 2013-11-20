@@ -1,8 +1,10 @@
 <?php
 
 /**
- * This file contains QUI_Rights_Permission
+ * This file contains \QUI\Rights\Permission
  */
+
+namespace QUI\Rights;
 
 /**
  * Provides methods for quick rights checking
@@ -17,7 +19,7 @@
  * @package com.pcsg.qui.rights
  */
 
-class QUI_Rights_Permission
+class Permission
 {
     /**
      * Checks, if the user is an admin user

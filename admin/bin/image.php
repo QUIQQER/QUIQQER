@@ -27,7 +27,7 @@ try
 } catch ( \QUI\Exception $Exception )
 {
     header( "HTTP/1.0 404 Not Found" );
-    System_Log::writeException( $Exception );
+    \QUI\System\Log::writeException( $Exception );
     exit;
 }
 
@@ -43,7 +43,7 @@ $image = $File->getFullPath();
 if ( !file_exists($image) )
 {
     header( "HTTP/1.0 404 Not Found" );
-    System_Log::write( 'File not exist '. $image, 'error' );
+    \QUI\System\Log::write( 'File not exist '. $image, 'error' );
     exit;
 }
 
@@ -85,7 +85,7 @@ if ( isset($_REQUEST['maxwidth']) || isset($_REQUEST['maxheight']) )
         } catch ( \QUI\Exception $Exception )
         {
             header( "HTTP/1.0 404 Not Found" );
-            System_Log::writeException( $Exception );
+            \QUI\System\Log::writeException( $Exception );
             exit;
         }
     }

@@ -54,7 +54,7 @@ if (isset($_REQUEST['project']) && isset($_REQUEST['id']))
         if ( !file_exists($image) )
         {
             header("HTTP/1.0 404 Not Found");
-            System_Log::write('File not exist '.$image, 'error');
+            \QUI\System\Log::write('File not exist '.$image, 'error');
             exit;
         }
 

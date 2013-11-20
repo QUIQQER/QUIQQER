@@ -254,9 +254,9 @@ class ActiveDirectory extends \QUI\QDOM implements Interface_Users_Auth
                 $password
             );
 
-        } catch (\QUI\Exception $e)
+        } catch ( \QUI\Exception $e )
         {
-            System_Log::writeException($e);
+            \QUI\System\Log::writeException($e);
         }
 
         if ($this->_bind) {

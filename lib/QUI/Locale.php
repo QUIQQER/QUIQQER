@@ -247,7 +247,7 @@ class QUI_Locale
         $dir    = $Gettext->getAttribute( 'dir' );
         $domain = $Gettext->getAttribute( 'domain' );
 
-        \System_Log::write(
+        \QUI\System\Log::write(
             'Übersetzungsdatei für '. $group .' '. $dir .'de_DE/LC_MESSAGES/'. $domain .'.mo nicht gefunden.',
             'error'
         );

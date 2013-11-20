@@ -26,7 +26,7 @@ class QUI_Menu
         }
 
         // read the xml
-        $items = Utils_Xml::getMenuItemsXml( $file );
+        $items = \QUI\Utils\XML::getMenuItemsXml( $file );
 
         foreach ( $items as $Item )
         {
@@ -47,7 +47,7 @@ class QUI_Menu
             $params = array(
                 'text'    => $text,
                 'name'    => $Item->getAttribute( 'name' ),
-                'icon'    => Utils_Dom::parseVar( $Item->getAttribute( 'icon' ) ),
+                'icon'    => \QUI\Utils\DOM::parseVar( $Item->getAttribute( 'icon' ) ),
                 'require' => $Item->getAttribute( 'require' ),
                 'onClick' => 'QUI.Menu.click',
                 'click'   => $Item->getAttribute( 'onclick' )

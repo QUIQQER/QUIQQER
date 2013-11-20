@@ -535,7 +535,7 @@ function ajax_site_search_window($project, $search, $params)
 
     } catch (\QUI\Exception $e)
     {
-        System_Log::writeException($e);
+        \QUI\System\Log::writeException($e);
         return array();
     }
 }

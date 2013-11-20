@@ -48,7 +48,7 @@ class Projects_Media_Folder
 
             } catch ( \QUI\Exception $Exception )
             {
-                System_Log::writeException( $Exception );
+                \QUI\System\Log::writeException( $Exception );
             }
         }
 
@@ -87,7 +87,7 @@ class Projects_Media_Folder
 
             } catch ( \QUI\Exception $Exception )
             {
-                System_Log::writeException( $Exception );
+                \QUI\System\Log::writeException( $Exception );
             }
         }
 
@@ -116,7 +116,7 @@ class Projects_Media_Folder
 
             } catch ( \QUI\Exception $Exception )
             {
-                System_Log::writeException( $Exception );
+                \QUI\System\Log::writeException( $Exception );
             }
         }
 
@@ -147,7 +147,7 @@ class Projects_Media_Folder
 
             } catch ( \QUI\Exception $Exception )
             {
-                System_Log::writeException( $Exception );
+                \QUI\System\Log::writeException( $Exception );
             }
         }
 
@@ -370,7 +370,7 @@ class Projects_Media_Folder
 
             } catch ( \QUI\Exception $Exception )
             {
-                System_Log::writeException( $Exception );
+                \QUI\System\Log::writeException( $Exception );
             }
         }
     }
@@ -395,7 +395,7 @@ class Projects_Media_Folder
 
             } catch ( \QUI\Exception $Exception )
             {
-                System_Log::writeException( $Exception );
+                \QUI\System\Log::writeException( $Exception );
             }
         }
 
@@ -550,7 +550,7 @@ class Projects_Media_Folder
                 $folders[] = $this->_Media->get( (int)$entry['id'] );
             } catch ( \QUI\Exception $Exception )
             {
-                System_Log::writeException( $Exception );
+                \QUI\System\Log::writeException( $Exception );
             }
         }
 

@@ -38,5 +38,3 @@ class QUI_Messages_Message extends \QUI\QDOM
         return $attributes;
     }
 }
-
-?>

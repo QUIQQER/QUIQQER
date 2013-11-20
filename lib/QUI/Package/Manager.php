@@ -185,7 +185,7 @@ class Manager
 
         foreach ( $list as $entry )
         {
-            \System_Log::writeRecursive($entry);
+            \QUI\System\Log::writeRecursive($entry);
 
             $version = $entry['version'];
 
@@ -200,7 +200,7 @@ class Manager
             $require[ $entry['name'] ] = $version;
         }
 
-        \System_Log::writeRecursive( $require );
+        \QUI\System\Log::writeRecursive( $require );
 
 
         $template = str_replace(
@@ -359,7 +359,7 @@ class Manager
         {
             exec( $this->_composer_exec .'update "'. $package .'" 2>&1', $exec_result );
 
-            \System_Log::writeRecursive( $exec_result );
+            \QUI\System\Log::writeRecursive( $exec_result );
         }
     }
 
@@ -476,7 +476,7 @@ class Manager
         {
             exec( $this->_composer_exec .'search "'. $str .'" 2>&1', $exec_result );
 
-            \System_Log::writeRecursive($exec_result);
+            \QUI\System\Log::writeRecursive($exec_result);
 
             foreach ( $exec_result as $entry )
             {
@@ -695,7 +695,7 @@ class Manager
                 $exec    = $this->_composer_exec .'update "'. $package .'" 2>&1';
             }
 
-            \System_Log::write( 'Execute: '. $exec );
+            \QUI\System\Log::write( 'Execute: '. $exec );
 
             exec( $exec, $output );
 

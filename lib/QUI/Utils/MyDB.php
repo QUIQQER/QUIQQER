@@ -1,8 +1,10 @@
 <?php
 
 /**
- * This file contains the Utils_MyDB
+ * This file contains the \QUI\Utils\MyDB
  */
+
+namespace QUI\Utils;
 
 /**
  * Bridge für die alte MyDB Klasse zu neuer PDO
@@ -12,7 +14,7 @@
  *
  * @deprecated
  */
-class Utils_MyDB
+class MyDB
 {
     /**
      * internal db object

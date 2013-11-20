@@ -48,8 +48,8 @@ if ( isset( $_REQUEST['_url'] ) ) {
     $_REQUEST['_url'] = \Utils_String::toUTF8( $_REQUEST['_url'] );
 }
 
-//System_Debug::$run = true;
-\System_Debug::marker( 'index start' );
+//\QUI\Utils\System\Debug::$run = true;
+\QUI\Utils\System\Debug::marker( 'index start' );
 
 $Rewrite = \QUI::getRewrite();
 $Rewrite->exec();
@@ -130,7 +130,7 @@ if ($Rewrite->getSuffix() == '.print')
 // Event onstart
 \QUI::getEvents()->fireEvent( 'start' );
 
-\System_Debug::marker('objekte initialisiert');
+\QUI\Utils\System\Debug::marker('objekte initialisiert');
 
 // Wenn es ein Cache gibt und die Seite auch gecached werden soll
 if ( CACHE && file_exists( $site_cache_file ) && $Site->getAttribute('nocache') != true )
@@ -150,7 +150,7 @@ if ( CACHE && file_exists( $site_cache_file ) && $Site->getAttribute('nocache') 
 $Template = new \QUI_Template();
 $content  = $Template->fetchTemplate( $Site );
 
-System_Debug::marker('fetch Template');
+\QUI\Utils\System\Debug::marker('fetch Template');
 
 // cachefile erstellen
 if ($Site->getAttribute('nocache') != true)
@@ -163,7 +163,7 @@ if ($Site->getAttribute('nocache') != true)
 $content = $Rewrite->outputFilter( $content );
 $content = QUI_Template::setAdminMenu( $content );
 
-System_Debug::marker('output Filter');
+\QUI\Utils\System\Debug::marker('output Filter');
 
 // Suffix Verarbeitung
 $suffix_class_file = USR_DIR .'lib/'. $Project->getAttribute('name') .'/Suffix.php';
@@ -185,8 +185,11 @@ if (file_exists($suffix_class_file))
 
 echo $content;
 
-System_Debug::marker('content');
-System_Debug::output();
+\QUI\Utils\System\Debug::marker('content');
 
-
-?>
+if ( \QUI\Utils\System\Debug::$run )
+{
+    \QUI\System\Log(
+        \QUI\Utils\System\Debug::output()
+    );
+}

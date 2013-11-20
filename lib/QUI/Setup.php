@@ -23,7 +23,7 @@ class QUI_Setup
              ( isset( $_SERVER['argv'][0] ) && strpos($_SERVER['argv'][0], 'phpunit') === false) )
         {
             // nur Super User darf dies
-            \QUI_Rights_Permission::checkSU();
+            \QUI\Rights\Permission::checkSU();
         }
 
         // create dirs
@@ -49,7 +49,7 @@ class QUI_Setup
         \QUI\Events\Manager::setup();
 
         // Desktop Setup
-        \QUI_Desktop_Manager::setup();
+        // \QUI_Desktop_Manager::setup();
 
         // Package Manager
         // \QUI\Package\Manager::setup();
@@ -59,7 +59,7 @@ class QUI_Setup
         $UploadManager->setup();
 
         // Countries
-        \Utils_Countries_Manager::setup();
+        // \Utils_Countries_Manager::setup();
 
 
         /**

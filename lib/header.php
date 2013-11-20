@@ -12,7 +12,7 @@ date_default_timezone_set( 'Europe/Zurich' );
 error_reporting( E_ALL );
 ini_set( 'display_errors', true );
 
-System_Debug::marker( 'header start' );
+\QUI\Utils\System\Debug::marker( 'header start' );
 
 ini_set( 'display_errors', false );
 ini_set( "log_errors", "on" );
@@ -84,7 +84,7 @@ try
         </body>
         </html>';
 
-    System_Log::writeException( $Exception );
+    \QUI\System\Log::writeException( $Exception );
     exit;
 }
 
@@ -137,4 +137,4 @@ if ( isset( $_GET['logout'] ) )
     }
 }
 
-System_Debug::marker( 'header end' );
+\QUI\Utils\System\Debug::marker( 'header end' );

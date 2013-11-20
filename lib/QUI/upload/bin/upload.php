@@ -17,7 +17,7 @@ try
 
 } catch ( \QUI\Exception $Exception )
 {
-    \System_Log::writeException( $Exception );
+    \QUI\System\Log::writeException( $Exception );
 
     $QUM->flushMessage( $Exception->toArray() );
 }

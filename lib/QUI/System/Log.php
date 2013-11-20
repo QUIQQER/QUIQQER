@@ -1,8 +1,10 @@
 <?php
 
 /**
- * This file contains System_Log
+ * This file contains \QUI\System\Log
  */
+
+namespace QUI\System;
 
 /**
  * Writes Logs into the logdir
@@ -11,7 +13,7 @@
  * @package com.pcsg.qui.system
  */
 
-class System_Log
+class Log
 {
     /**
      * Writes an String to a log file
@@ -24,10 +26,10 @@ class System_Log
         $dir  = VAR_DIR .'log/';
         $file = $dir . $filename . date('-Y-m-d').'.log';
 
-		// Log Verzeichnis erstellen
-		\QUI\Utils\System\File::mkdir( $dir );
+        // Log Verzeichnis erstellen
+        \QUI\Utils\System\File::mkdir( $dir );
 
-		error_log($message."\n", 3, $file);
+        error_log($message."\n", 3, $file);
     }
 
     /**
@@ -55,5 +57,3 @@ class System_Log
         self::write($message, $filename);
     }
 }
-
-?>
