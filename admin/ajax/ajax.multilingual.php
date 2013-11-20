@@ -42,7 +42,7 @@ function ajax_multilingual_manager($id, $lang, $project_name)
             'langs'		=> $langs
         ));
 
-    } catch (QException $e)
+    } catch (\QUI\Exception $e)
     {
         $Smarty->assign('message', $e->getMessage());
     } catch (Exception $e)
@@ -115,7 +115,7 @@ function ajax_multilingual_copy($project_name, $id, $sitelang, $parentid, $paren
 
         if (!$newid)
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 'Konnte kein Kind in anderer Sprache anlegen unter '. $p_lang->getAttribute('name') .'-'. $p_lang->getId()
             );
 
@@ -129,7 +129,7 @@ function ajax_multilingual_copy($project_name, $id, $sitelang, $parentid, $paren
         ajax_multilingual_addlink($project_name, $id, $sitelang, $newid, $parentlang); // Multilingual Link setzen, damit Verknüpfung vorhanden ist
         return true;
 
-    } catch (QException $e)
+    } catch (\QUI\Exception $e)
     {
         return false;
     } catch (Exception $e)

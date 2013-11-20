@@ -12,7 +12,7 @@
  * @package com.pcsg.qui.projects.media
  */
 
-abstract class Projects_Media_Item extends QDOM
+abstract class Projects_Media_Item extends \QUI\QDOM
 {
     /**
      * internal media object
@@ -47,7 +47,7 @@ abstract class Projects_Media_Item extends QDOM
 
         if ( !file_exists( $this->_file ) )
         {
-            $Exception = new QException(
+            $Exception = new \QUI\Exception(
                 'File '. $this->_file .' doesn\'t exist',
                 404
             );
@@ -58,7 +58,7 @@ abstract class Projects_Media_Item extends QDOM
         }
 
 
-        $this->setAttribute( 'filesize', Utils_System_File::getFileSize( $this->_file ) );
+        $this->setAttribute( 'filesize', \QUI\Utils\System\File::getFileSize( $this->_file ) );
         $this->setAttribute( 'cache_url', URL_DIR . $this->_Media->getCacheDir() . $this->getPath() );
         $this->setAttribute( 'url', $this->getUrl() );
     }
@@ -86,7 +86,7 @@ abstract class Projects_Media_Item extends QDOM
         {
             // activate the parents, otherwise the file is not accessible
             $this->getParent()->activate();
-        } catch ( QException $e )
+        } catch ( \QUI\Exception $e )
         {
             // has no parent
         }
@@ -186,10 +186,10 @@ abstract class Projects_Media_Item extends QDOM
         $original   = $this->getFullPath();
         $var_folder = VAR_DIR .'media/'. $Media->getProject()->getAttribute('name') .'/';
 
-        Utils_System_File::unlink( $var_folder . $this->getId() );
+        \QUI\Utils\System\File::unlink( $var_folder . $this->getId() );
 
-        Utils_System_File::mkdir( $var_folder );
-        Utils_System_File::move( $original, $var_folder . $this->getId() );
+        \QUI\Utils\System\File::mkdir( $var_folder );
+        \QUI\Utils\System\File::move( $original, $var_folder . $this->getId() );
 
         // change db entries
         QUI::getDataBase()->update(
@@ -223,18 +223,18 @@ abstract class Projects_Media_Item extends QDOM
     public function destroy()
     {
         if ( $this->isActive() ) {
-            throw QException( 'Only inactive files can be destroyed' );
+            throw \QUI\Exception( 'Only inactive files can be destroyed' );
         }
 
         if ( $this->isDeleted() ) {
-            throw QException( 'Only deleted files can be destroyed' );
+            throw \QUI\Exception( 'Only deleted files can be destroyed' );
         }
 
         // get the trash file and destroy it
         $var_folder = VAR_DIR .'media/'. $Media->getProject()->getAttribute('name') .'/';
         $var_file   = $var_folder . $this->getId();
 
-        Utils_System_File::unlink( $var_file );
+        \QUI\Utils\System\File::unlink( $var_file );
 
         QUI::getDataBase()->delete($table, array(
             'id' => $this->getId()
@@ -265,12 +265,12 @@ abstract class Projects_Media_Item extends QDOM
      * Rename the File
      *
      * @param String $newname - The new name what the file get
-     * @throws QException
+     * @throws \QUI\Exception
      */
     public function rename($newname)
     {
         $original  = $this->getFullPath();
-        $extension = Utils_String::pathinfo( $original, PATHINFO_EXTENSION );
+        $extension = \QUI\Utils\String::pathinfo( $original, PATHINFO_EXTENSION );
         $Parent    = $this->getParent();
 
         $new_full_file = $Parent->getFullPath() . $newname .'.'. $extension;
@@ -280,12 +280,12 @@ abstract class Projects_Media_Item extends QDOM
             return;
         }
 
-        // throws the QException
+        // throws the \QUI\Exception
         Projects_Media_Utils::checkMediaName( $new_file );
 
         if ( $Parent->childWithNameExists( $newname ) )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 'Eine Datei mit dem Namen '. $newname .'existiert bereits.
                 Bitte wählen Sie einen anderen Namen.'
             );
@@ -293,7 +293,7 @@ abstract class Projects_Media_Item extends QDOM
 
         if ( $Parent->fileWithNameExists( $newname .'.'. $extension ) )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 'Eine Datei mit dem Namen '. $newname .'existiert bereits.
                 Bitte wählen Sie einen anderen Namen.'
             );
@@ -319,7 +319,7 @@ abstract class Projects_Media_Item extends QDOM
         $this->setAttribute( 'name', $newname );
         $this->setAttribute( 'file', $new_file );
 
-        Utils_System_File::move( $original, $new_full_file );
+        \QUI\Utils\System\File::move( $original, $new_full_file );
 
         if ( method_exists($this, 'createCache') ) {
             $this->createCache();
@@ -377,7 +377,7 @@ abstract class Projects_Media_Item extends QDOM
      * Return the Parent Media Item Object
      *
      * @return Projects_Media_Folder
-     * @throws QException
+     * @throws \QUI\Exception
      */
     public function getParent()
     {
@@ -466,7 +466,7 @@ abstract class Projects_Media_Item extends QDOM
         // check if a child with the same name exist
         if ( $Folder->fileWithNameExists( $this->getAttribute('name') ) )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 'File with a same Name exist in folder '. $Folder->getAttribute('name')
             );
         }
@@ -508,7 +508,7 @@ abstract class Projects_Media_Item extends QDOM
         );
 
         // move file on the real directory
-        Utils_System_File::move( $old_path, $new_path );
+        \QUI\Utils\System\File::move( $old_path, $new_path );
 
 
         // delete the file cache

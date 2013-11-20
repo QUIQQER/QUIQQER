@@ -277,7 +277,7 @@ class QUI_Locale
             $Config = $this->_inis[ $file ];
         } else
         {
-            $Config = new \QConfig( $file );
+            $Config = new \QUI\Config( $file );
         }
 
         $this->set( $lang, $group, $Config->toArray() );
@@ -293,7 +293,7 @@ class QUI_Locale
      */
     public function getTranslationFile($lang, $group)
     {
-        $locale = \Utils_String::toLower( $lang ) .'_'. \Utils_String::toUpper( $lang );
+        $locale = \QUI\Utils\String::toLower( $lang ) .'_'. \QUI\Utils\String::toUpper( $lang );
         $group  = str_replace( '/', '_', $group );
 
         return $this->dir() .'/'. $locale .'/LC_MESSAGES/'. $group .'.ini';
@@ -308,5 +308,3 @@ class QUI_Locale
         return VAR_DIR .'locale/';
     }
 }
-
-?>

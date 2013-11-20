@@ -5,7 +5,7 @@
  * The file must be opend directly in the browser
  *
  * @return Binary
- * @throws QException
+ * @throws \QUI\Exception
  */
 function ajax_media_file_download($project, $fileid)
 {
@@ -19,8 +19,11 @@ function ajax_media_file_download($project, $fileid)
         exit;
     }
 
-    Utils_System_File::downloadHeader( $File->getFullPath() );
+    \QUI\Utils\System\File::downloadHeader( $File->getFullPath() );
 }
-QUI::$Ajax->register('ajax_media_file_download', array('project', 'fileid'), 'Permission::checkAdminUser');
 
-?>
+\QUI::$Ajax->register(
+    'ajax_media_file_download',
+    array('project', 'fileid'),
+    'Permission::checkAdminUser'
+);

@@ -11,7 +11,7 @@
  * @todo writing a gmap api :-)
  */
 
-class Utils_Api_Google_GMap extends QDOM
+class Utils_Api_Google_GMap extends \QUI\QDOM
 {
 
 }

@@ -14,12 +14,12 @@
  * @package com.pcsg.qui
  */
 
-require LIB_DIR .'QUI/Autoloader.php';
+require dirname( __FILE__ ) .'/Autoloader.php';
 
 if ( function_exists( 'spl_autoload_register' ) )
 {
-	if ( function_exists( '__autoload' ) ) {
-    	spl_autoload_register( '__autoload' );
+    if ( function_exists( '__autoload' ) ) {
+        spl_autoload_register( '__autoload' );
     }
 
     spl_autoload_register( '__quiqqer_autoload' );
@@ -45,7 +45,7 @@ if ( function_exists( 'spl_autoload_register' ) )
  */
 function __quiqqer_autoload($classname)
 {
-	return QUI_Autoloader::load($classname);
+    return \QUI\Autoloader::load( $classname );
 }
 
 
@@ -64,15 +64,13 @@ function exception_error_handler($errno, $errstr, $errfile, $errline)
 {
     if ( $errstr == 'json_encode(): Invalid UTF-8 sequence in argument' )
     {
-        QUI::getErrorHandler()->setAttribute('show_request', true);
-        QUI::getErrorHandler()->writeErrorToLog( $errno, $errstr, $errfile, $errline );
-        QUI::getErrorHandler()->setAttribute('show_request', false);
+        \QUI::getErrorHandler()->setAttribute('show_request', true);
+        \QUI::getErrorHandler()->writeErrorToLog( $errno, $errstr, $errfile, $errline );
+        \QUI::getErrorHandler()->setAttribute('show_request', false);
 
         return true;
     }
 
-	QUI::getErrorHandler()->writeErrorToLog( $errno, $errstr, $errfile, $errline );
-	return true;
+    \QUI::getErrorHandler()->writeErrorToLog( $errno, $errstr, $errfile, $errline );
+    return true;
 }
-
-?>

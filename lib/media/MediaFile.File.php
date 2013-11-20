@@ -28,7 +28,7 @@ class MF_File extends MediaFile implements iMF
 
 	/**
 	 * Aktiviert die Datei und die darüber liegenden Ordner
-	 * @return true || throw QException
+	 * @return true || throw \QUI\Exception
 	 */
 	public function activate()
 	{
@@ -49,7 +49,7 @@ class MF_File extends MediaFile implements iMF
 		);
 
 		if (!$r_db) {
-			throw new QException('Cannot activate ID:'.$this->getId().'; DB error');
+			throw new \QUI\Exception('Cannot activate ID:'.$this->getId().'; DB error');
 		}
 
 		$this->setAttribute('active', 1);
@@ -64,7 +64,7 @@ class MF_File extends MediaFile implements iMF
 
 	/**
 	 * Deaktiviert den Ordner
-	 * @return Bool || throw QException
+	 * @return Bool || throw \QUI\Exception
 	 */
 	public function deactivate()
 	{
@@ -76,7 +76,7 @@ class MF_File extends MediaFile implements iMF
 		);
 
 		if ( !$r_db ) {
-			throw new QException('Cannot activate ID:'.$this->getId().'; DB error');
+			throw new \QUI\Exception('Cannot activate ID:'.$this->getId().'; DB error');
 		}
 
 		$this->setAttribute('active', 0);
@@ -92,7 +92,7 @@ class MF_File extends MediaFile implements iMF
 
 	/**
 	 * Schiebt das File in den Temp Ordner und setzt das delete Flag
-	 * @return Bool || throw QException
+	 * @return Bool || throw \QUI\Exception
 	 */
 	public function delete()
 	{
@@ -103,10 +103,10 @@ class MF_File extends MediaFile implements iMF
 		$var_folder = VAR_DIR .'media/'. $Media->getProject()->getAttribute('name') .'/';
 
 		if (!is_dir($var_folder) || !file_exists($var_folder)) {
-			Utils_System_File::mkdir($var_folder);
+			\QUI\Utils\System\File::mkdir($var_folder);
 		}
 
-		Utils_System_File::move($original, $var_folder.$this->getId());
+		\QUI\Utils\System\File::move($original, $var_folder.$this->getId());
 
 		// Update für die DB
 		$u_del = QUI::getDB()->updateData(
@@ -132,7 +132,7 @@ class MF_File extends MediaFile implements iMF
 			return true;
 		}
 
-		throw new QException(
+		throw new \QUI\Exception(
 			'Update DB "MF_File->delete()" Error; ID '. $this->getId()
 		);
 	}
@@ -140,7 +140,7 @@ class MF_File extends MediaFile implements iMF
 	/**
 	 * Cachedatei erzeugen
 	 * Es wurden nur manche Dateien aus Sicherheitsgründen gecachet
-	 * @return String - Pfad zur Cachedatei || throw QException
+	 * @return String - Pfad zur Cachedatei || throw \QUI\Exception
 	 */
 	public function createCache()
 	{
@@ -166,7 +166,7 @@ class MF_File extends MediaFile implements iMF
 		$original  = $Media->getAttribute('media_dir') . $this->getAttribute('file');
 		$cachefile = $Media->getAttribute('cache_dir') . $this->getAttribute('file');
 
-		$ext = Utils_String::pathinfo($original, PATHINFO_EXTENSION);
+		$ext = \QUI\Utils\String::pathinfo($original, PATHINFO_EXTENSION);
 
 		if (in_array($ext, $WHITE_LIST_EXTENSION))
 		// Nur wenn Extension in Whitelist ist dann Cache machen
@@ -180,8 +180,8 @@ class MF_File extends MediaFile implements iMF
 
 			try
 			{
-				Utils_System_File::copy($original, $cachefile);
-			} catch(QException $e)
+				\QUI\Utils\System\File::copy($original, $cachefile);
+			} catch(\QUI\Exception $e)
 			{
 				// nothing
 			}
@@ -200,7 +200,7 @@ class MF_File extends MediaFile implements iMF
 
 	/**
 	 * Cachedatei löschen
-	 * @return Bool || throw QException
+	 * @return Bool || throw \QUI\Exception
 	 */
 	public function deleteCache()
 	{
@@ -217,7 +217,7 @@ class MF_File extends MediaFile implements iMF
 	 * Umbennenen einer Datei
 	 *
 	 * @param String $name
-	 * @return Bool || throw QException
+	 * @return Bool || throw \QUI\Exception
 	 */
 	public function rename($name)
 	{
@@ -233,7 +233,7 @@ class MF_File extends MediaFile implements iMF
 		$org_file_path = $Media->getAttribute('media_dir').$this->getAttribute('file');
 
 		// Neue Datei
-		$ext = Utils_String::pathinfo($org_file_path, PATHINFO_EXTENSION);
+		$ext = \QUI\Utils\String::pathinfo($org_file_path, PATHINFO_EXTENSION);
 
 		if (strpos($name, '.') === false) {
 		    $name = $name .'.'. $ext;
@@ -247,11 +247,11 @@ class MF_File extends MediaFile implements iMF
 		}
 
 		if (file_exists($new_file_path)) {
-			throw new QException('Can\'t move the file; New File exists '. $new_file .';');
+			throw new \QUI\Exception('Can\'t move the file; New File exists '. $new_file .';');
 		}
 
 		// Datei verschieben
-		Utils_System_File::move($org_file_path, $new_file_path);
+		\QUI\Utils\System\File::move($org_file_path, $new_file_path);
 
 		// Alter Cache löschen
 		$this->deleteCache();
@@ -277,7 +277,7 @@ class MF_File extends MediaFile implements iMF
 	 * Stellt eine Datei wieder her und schiebt diese in den übergebenen Ordner
 	 *
 	 * @param MF_Folder $toParent
-	 * @return true || throw QException
+	 * @return true || throw \QUI\Exception
 	 */
 	public function restore(MF_Folder $toParent)
 	{
@@ -299,7 +299,7 @@ class MF_File extends MediaFile implements iMF
 			$new_file = $Media->getAttribute('media_dir').$f_path.$file;
 
 			// Datei in den richtigen Ordner schieben
-			Utils_System_File::move($tmp_file, $new_file);
+			\QUI\Utils\System\File::move($tmp_file, $new_file);
 
 			// DB aktualisieren
 			$u_db = QUI::getDB()->updateData(
@@ -325,21 +325,21 @@ class MF_File extends MediaFile implements iMF
 				return true;
 			}
 
-			throw new QException('Update DB Error on MF_File->restore()');
+			throw new \QUI\Exception('Update DB Error on MF_File->restore()');
 		}
 
-		throw new QException('Deleted File not found');
+		throw new \QUI\Exception('Deleted File not found');
 	}
 
 	/**
 	 * Entfernt die Datei komplett aus der DB und dem Filesystem
 	 * Muss vorher deativiert werden
-	 * @return Bool || throw QException
+	 * @return Bool || throw \QUI\Exception
 	 */
 	public function destroy()
 	{
 		if ($this->getAttribute('active') == 1) {
-			throw new QException('File is active; Cant delete; deactivate File before delete');
+			throw new \QUI\Exception('File is active; Cant delete; deactivate File before delete');
 		}
 
 		$id = $this->getId();
@@ -378,12 +378,12 @@ class MF_File extends MediaFile implements iMF
 			return true;
 		}
 
-		throw new QException('destroy error; ID '. $id);
+		throw new \QUI\Exception('destroy error; ID '. $id);
 	}
 
 	/**
 	 * Erstellt den Link Cache
-	 * @return Bool || throw QException
+	 * @return Bool || throw \QUI\Exception
 	 */
 	protected function _createLinkCache()
 	{
@@ -391,7 +391,7 @@ class MF_File extends MediaFile implements iMF
 		$lcd      = VAR_DIR .'cache/links/'. $Project->getAttribute('name') .'/';
 		$lcd_file = $lcd.$this->getId() .'_'. $Project->getAttribute('name') .'_media';
 
-		Utils_System_File::mkdir($lcd);
+		\QUI\Utils\System\File::mkdir($lcd);
 
 		$url = $this->getUrl(true);
 
@@ -399,7 +399,7 @@ class MF_File extends MediaFile implements iMF
 
 		if (!file_put_contents($lcd_file, $url))
 		{
-			throw new QException(
+			throw new \QUI\Exception(
 				'Error on CreateLinkCache at File '.$lcd_file
 			);
 		}
@@ -409,7 +409,7 @@ class MF_File extends MediaFile implements iMF
 
 	/**
 	 * Löscht den Link Cache
-	 * @return Bool || throw QException
+	 * @return Bool || throw \QUI\Exception
 	 */
 	protected function _deleteLinkCache()
 	{
@@ -428,16 +428,16 @@ class MF_File extends MediaFile implements iMF
 	 * Ersetzt die Datei
 	 *
 	 * @param Array $FILE
-	 * @return Bool || throw QException
+	 * @return Bool || throw \QUI\Exception
 	 */
 	public function replace($FILE)
 	{
 		if (!is_array($FILE)) {
-			throw new QException('$FILE is not an array');
+			throw new \QUI\Exception('$FILE is not an array');
 		}
 
 		if (!isset($FILE["name"])) {
-			throw new QException('$FILE["name"] not exist');
+			throw new \QUI\Exception('$FILE["name"] not exist');
 		}
 
 		$Media    = $this->_Media; /* @var $Media Media  */
@@ -450,7 +450,7 @@ class MF_File extends MediaFile implements iMF
 		$new_file = $dir . $filename;
 
 		if (file_exists($new_file) && $file != $new_file) {
-			throw new QException($filename." already exists");
+			throw new \QUI\Exception($filename." already exists");
 		}
 
 		unlink($file);
@@ -458,7 +458,7 @@ class MF_File extends MediaFile implements iMF
 		if (!move_uploaded_file($FILE["tmp_name"], $new_file))
 		{
 			if (!copy($FILE["tmp_name"], $new_file)) {
-				throw new QException('replace() Error; Konnte "'. $FILE["name"] .'" nicht kopieren');
+				throw new \QUI\Exception('replace() Error; Konnte "'. $FILE["name"] .'" nicht kopieren');
 			}
 		}
 
@@ -466,7 +466,7 @@ class MF_File extends MediaFile implements iMF
 		$this->deleteCache();
 
 		// Update
-		$info = Utils_System_File::getInfo( $new_file );
+		$info = \QUI\Utils\System\File::getInfo( $new_file );
 
 		$this->setAttribute('file', str_replace($mediadir, '', $new_file));
 
@@ -516,7 +516,7 @@ class MF_File extends MediaFile implements iMF
 		$new_file = $Media->getAttribute('media_dir') . $f_path . $file;
 		$old_file = $Media->getAttribute('media_dir') . $this->getPath();
 
-		Utils_System_File::move($old_file, $new_file);
+		\QUI\Utils\System\File::move($old_file, $new_file);
 
 		$this->setAttribute('file', $f_path . $file);
 

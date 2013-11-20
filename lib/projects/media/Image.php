@@ -59,7 +59,7 @@ class Projects_Media_Image
 
         if ( !$width || !$height )
         {
-            $info = Utils_System_File::getInfo($this->getFullPath(), array(
+            $info = \QUI\Utils\System\File::getInfo($this->getFullPath(), array(
                 'imagesize' => true
             ));
 
@@ -133,10 +133,10 @@ class Projects_Media_Image
         if ( $width || $height )
         {
             $part      = explode('.', $file);
-            $cachefile = $cdir . $part[0] .'__'. $width .'x'. $height . $extra .'.'. \Utils_String::toLower( end($part) );
+            $cachefile = $cdir . $part[0] .'__'. $width .'x'. $height . $extra .'.'. \QUI\Utils\String::toLower( end($part) );
 
             if ( empty( $height ) ) {
-                $cachefile2 = $cdir . $part[0] .'__'. $width . $extra .'.'. \Utils_String::toLower( end($part) );
+                $cachefile2 = $cdir . $part[0] .'__'. $width . $extra .'.'. \QUI\Utils\String::toLower( end($part) );
             }
 
             if ( $this->getAttribute('reflection') )
@@ -180,9 +180,9 @@ class Projects_Media_Image
             try
             {
                 if ( !file_exists($cachefile) ) {
-                    Utils_System_File::copy($original, $cachefile);
+                    \QUI\Utils\System\File::copy($original, $cachefile);
                 }
-            } catch ( QException $e )
+            } catch ( \QUI\Exception $e )
             {
                 // Fehler loggen
                 System_Log::writeException($e);
@@ -243,7 +243,7 @@ class Projects_Media_Image
                         ));
                     }
 
-                } catch ( QException $e )
+                } catch ( \QUI\Exception $e )
                 {
                     System_Log::writeException($e);
                 }
@@ -280,7 +280,7 @@ class Projects_Media_Image
         }
 
 
-        $params = Utils_String::getUrlAttributes($watermark['image']);
+        $params = \QUI\Utils\String::getUrlAttributes($watermark['image']);
 
         if ( !isset($params['id']) || !isset($params['project']) ) {
             return $cachefile;
@@ -325,8 +325,8 @@ class Projects_Media_Image
 
 
 
-            $c_info = Utils_System_File::getInfo($cachefile, array('imagesize' => true));
-            $w_info = Utils_System_File::getInfo($f_water, array('imagesize' => true));
+            $c_info = \QUI\Utils\System\File::getInfo($cachefile, array('imagesize' => true));
+            $w_info = \QUI\Utils\System\File::getInfo($f_water, array('imagesize' => true));
 
             // Prozentuale Grösse - Wasserzeichen
             if ( isset($watermark['percent']) && $watermark['percent'] )
@@ -341,13 +341,13 @@ class Projects_Media_Image
 
                 // Resize des Wasserzeichens
                 if (!file_exists($watermark_temp)) {
-                    Utils_System_File::copy($f_water, $watermark_temp);
+                    \QUI\Utils\System\File::copy($f_water, $watermark_temp);
                 }
 
                 Utils_Image::resize($watermark_temp, $watermark_temp, $watermark_width);
                 Utils_Image::resize($watermark_temp, $watermark_temp, 0, $watermark_height);
 
-                $w_info  = Utils_System_File::getInfo($watermark_temp, array('imagesize' => true));
+                $w_info  = \QUI\Utils\System\File::getInfo($watermark_temp, array('imagesize' => true));
                 $f_water = $watermark_temp;
             }
 
@@ -382,7 +382,7 @@ class Projects_Media_Image
                 Utils_Image::watermark($cachefile2, $f_water, false, $top, $left);
             }
 
-        } catch ( QException $e )
+        } catch ( \QUI\Exception $e )
         {
             System_Log::writeException($e);
             // nothing
@@ -408,18 +408,18 @@ class Projects_Media_Image
         $path  = pathinfo( $cachefile );
         $parts = explode('.', $file);
 
-        $files = Utils_System_File::readDir($path['dirname'], true);
+        $files = \QUI\Utils\System\File::readDir($path['dirname'], true);
 
         foreach ( $files as $file )
         {
             $len = strlen( $parts[0] );
 
             if ( substr($file,0, $len+2) == $parts[0] .'__' ) {
-                Utils_System_File::unlink( $path['dirname'] .'/'. $file );
+                \QUI\Utils\System\File::unlink( $path['dirname'] .'/'. $file );
             }
         }
 
-        Utils_System_File::unlink( $cachefile );
+        \QUI\Utils\System\File::unlink( $cachefile );
 
         // delete admin cache
         $cache_folder = VAR_DIR .'media_cache/'. $Project->getAttribute('name') .'/';
@@ -428,14 +428,14 @@ class Projects_Media_Image
             return;
         }
 
-        $list  = Utils_System_File::readDir( $cache_folder );
+        $list  = \QUI\Utils\System\File::readDir( $cache_folder );
         $id    = $this->getId();
         $cache = $id .'_';
 
         foreach ( $list as $file )
         {
             if ( strpos($file, $cache) !== false ) {
-                Utils_System_File::unlink( $cache_folder . $file );
+                \QUI\Utils\System\File::unlink( $cache_folder . $file );
             }
         }
     }
@@ -463,7 +463,7 @@ class Projects_Media_Image
                 $new_height
             );
 
-        } catch ( QException $Exception )
+        } catch ( \QUI\Exception $Exception )
         {
             \System_Log::writeException( $Exception );
         }
@@ -480,11 +480,11 @@ class Projects_Media_Image
     public function setRoundCorners($background='', $radius='')
     {
         if ( empty($background) ) {
-            throw new QException('Please set a background color');
+            throw new \QUI\Exception('Please set a background color');
         }
 
         if ( empty($radius) ) {
-            throw new QException('Please set a radius');
+            throw new \QUI\Exception('Please set a radius');
         }
 
         $roundcorners = array(

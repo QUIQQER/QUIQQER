@@ -33,7 +33,7 @@ class Projects_Site_OnlyDB extends Projects_Site
 		$id = (int)$id;
 
 		if ( empty($id) ) {
-			throw new QException( 'Site Error; No ID given:'. $id, 400 );
+			throw new \QUI\Exception( 'Site Error; No ID given:'. $id, 400 );
 		}
 
 		$this->_id = $id;
@@ -56,7 +56,7 @@ class Projects_Site_OnlyDB extends Projects_Site
 		));
 
 		if ( !isset( $result[0] ) ) {
-			throw new QException( 'Site not exist', 404 );
+			throw new \QUI\Exception( 'Site not exist', 404 );
 		}
 
 		$params = $result[0];

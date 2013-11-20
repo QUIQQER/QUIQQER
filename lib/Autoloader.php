@@ -1,8 +1,10 @@
 <?php
 
 /**
- * This file contains the QUI_Autoloader
+ * This file contains the \QUI\Autoloader
  */
+
+namespace QUI;
 
 /**
  * The QUIQQER Autoloader
@@ -12,7 +14,7 @@
  * @package com.pcsg.qui
  */
 
-class QUI_Autoloader
+class Autoloader
 {
     /**
      * Composer Autoloader
@@ -36,6 +38,19 @@ class QUI_Autoloader
             return true;
         }
 
+        // exists quiqqer?
+        if ( !class_exists( '\QUI' ) ) {
+            require_once __DIR__ .'/QUI.php';
+        }
+
+        // if quiqqer not loaded, load it
+        if ( !defined( 'CMS_DIR' ) ) {
+            \QUI::load();
+        }
+
+        if ( $classname == 'QUI' ) {
+            return true;
+        }
 
         // Plugins werden gleich übersprungen
            // @todo überdenken, maybe bei plugins auch auf namespaces gehen
@@ -55,13 +70,8 @@ class QUI_Autoloader
             return self::loadStash( $classname );
         }
 
-        // QUIQQER MVC
-        /*
-        if ( strpos( $classname, 'QUI\\' ) === 0 ) {
-            $classname = str_replace( 'QUI\\', '', $classname );
-        }
-        */
-
+        // QUIQQER MVC -> old version, no namespaces
+        // remove it if namespaces complet implemented
         $file = LIB_DIR . str_replace( '_', '/', $classname ) .'.php';
         $file = strtolower( dirname( $file ) ) .'/'. basename( $file );
 
@@ -163,5 +173,3 @@ class QUI_Autoloader
         return false;
     }
 }
-
-?>

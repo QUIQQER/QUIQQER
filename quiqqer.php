@@ -44,5 +44,3 @@ if ( !file_exists( $conf ) ) {
 // Console aufbauen
 $Console = new \System_Console();
 $Console->start();
-
-?>

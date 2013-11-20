@@ -11,7 +11,7 @@
  * @package com.pcsg.qui.projects
  */
 
-class Projects_Trash extends QDOM implements Interface_Projects_Trash
+class Projects_Trash extends \QUI\QDOM implements Interface_Projects_Trash
 {
     /**
      * The Project of the trash
@@ -55,16 +55,16 @@ class Projects_Trash extends QDOM implements Interface_Projects_Trash
         }
 
         $_params = $Grid->parseDBParams(array(
-    	    'where' => array(
+            'where' => array(
                 'deleted' => 1,
-    	        'active'  => -1
-    	    )
-    	));
+                'active'  => -1
+            )
+        ));
 
         /**
          * Order and Sort
          */
-    	if ( isset( $params['order'] ) )
+        if ( isset( $params['order'] ) )
         {
             switch ( $params['order'] )
             {
@@ -78,10 +78,10 @@ class Projects_Trash extends QDOM implements Interface_Projects_Trash
                     $_params['order'] = 'id';
                 break;
             }
-    	}
+        }
 
-    	if ( isset( $params['sort'] ) )
-    	{
+        if ( isset( $params['sort'] ) )
+        {
             switch ( $params['sort'] )
             {
                 case 'ASC':
@@ -92,28 +92,28 @@ class Projects_Trash extends QDOM implements Interface_Projects_Trash
                     $_params['order'] = $_params['order'] .' DESC';
                 break;
             }
-    	}
+        }
 
         /**
          * Creating result
          */
-    	$result = array();
-    	$sites  = $this->_Project->getSites( $_params );
+        $result = array();
+        $sites  = $this->_Project->getSites( $_params );
 
-    	foreach ( $sites as $Site )
-    	{
-    	    $result[] = array(
-    	        'icon'  => URL_BIN_DIR .'16x16/page.png',
-    		    'name'  => $Site->getAttribute('name'),
-        		'title' => $Site->getAttribute('title'),
-        		'type'  => $Site->getAttribute('type'),
-        		'id'    => $Site->getId()
+        foreach ( $sites as $Site )
+        {
+            $result[] = array(
+                'icon'  => URL_BIN_DIR .'16x16/page.png',
+                'name'  => $Site->getAttribute('name'),
+                'title' => $Site->getAttribute('title'),
+                'type'  => $Site->getAttribute('type'),
+                'id'    => $Site->getId()
             );
-    	}
+        }
 
-    	//System_Log::writeRecursive( $result );
+        //System_Log::writeRecursive( $result );
 
-    	$total = $this->_Project->getSites(array(
+        $total = $this->_Project->getSites(array(
             'where' => array(
                 'deleted' => 1,
                 'active'  => -1
@@ -121,7 +121,7 @@ class Projects_Trash extends QDOM implements Interface_Projects_Trash
             'count' => true
         ));
 
-    	return $Grid->parseResult( $result, $total );
+        return $Grid->parseResult( $result, $total );
     }
 
     /**
@@ -159,8 +159,8 @@ class Projects_Trash extends QDOM implements Interface_Projects_Trash
             $Site = new Projects_Site_Edit( $Project, $id );
 
             $Site->restore();
-        	$Site->move( $Parent->getId() );
-        	$Site->deactivate();
+            $Site->move( $Parent->getId() );
+            $Site->deactivate();
         }
     }
 }

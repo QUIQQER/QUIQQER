@@ -12,9 +12,9 @@
  * @package com.pcsg.qui.utils.api
  */
 
-class Utils_Api_Facebook extends QDOM
+class Utils_Api_Facebook extends \QUI\QDOM
 {
-	/**
+    /**
      * Opengraph Suche
      *
      * All public posts: https://graph.facebook.com/search?q=watermelon&type=post
@@ -33,38 +33,38 @@ class Utils_Api_Facebook extends QDOM
      * @return Bool
      * @todo oAuth
      */
-	static function search($params)
-	{
-	    $result = json_decode(
-	        Utils_Request_Url::get("https://graph.facebook.com/search?". http_build_query($params)),
-	        true
-	    );
+    static function search($params)
+    {
+        $result = json_decode(
+            Utils_Request_Url::get("https://graph.facebook.com/search?". http_build_query($params)),
+            true
+        );
 
-	    return $result;
-	}
+        return $result;
+    }
 
-	/**
+    /**
      * Prüft ob der Nutzername bereits existiert
      *
      * @param String $username
      * @return Bool
      */
-	static function userExist($username)
-	{
-	    $data = json_decode(
-	        Utils_Request_Url::get(
-	        	'https://graph.facebook.com/'. $username
-	        ), true
-	    );
+    static function userExist($username)
+    {
+        $data = json_decode(
+            Utils_Request_Url::get(
+                'https://graph.facebook.com/'. $username
+            ), true
+        );
 
-	    if (isset($data['error']) &&
-	        !empty($data['error']))
-	    {
+        if (isset($data['error']) &&
+            !empty($data['error']))
+        {
             return 0;
-	    }
+        }
 
-	    return 1;
-	}
+        return 1;
+    }
 }
 
 ?>

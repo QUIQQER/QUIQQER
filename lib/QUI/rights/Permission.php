@@ -34,7 +34,7 @@ class QUI_Rights_Permission
         try
         {
             return self::checkPermission( 'quiqqer.admin', $User );
-        } catch ( \QException $Exception )
+        } catch ( \QUI\Exception $Exception )
         {
 
         }
@@ -67,7 +67,7 @@ class QUI_Rights_Permission
         try
         {
             return self::checkPermission( 'quiqqer.su', $User );
-        } catch ( \QException $Exception)
+        } catch ( \QUI\Exception $Exception)
         {
 
         }
@@ -88,7 +88,7 @@ class QUI_Rights_Permission
         try
         {
             return self::checkPermission( $perm, $User );
-        } catch ( \QException $Exception )
+        } catch ( \QUI\Exception $Exception )
         {
 
         }
@@ -110,7 +110,7 @@ class QUI_Rights_Permission
         try
         {
             return self::checkSitePermission($perm, $Site, $User);
-        } catch ( \QException $Exception )
+        } catch ( \QUI\Exception $Exception )
         {
 
         }
@@ -122,7 +122,7 @@ class QUI_Rights_Permission
      * Prüft ob der Benutzer in den Adminbereich darf
      *
      * @param Users_User|false $User - optional
-     * @throws QException
+     * @throws \QUI\Exception
      */
     static function checkAdminUser($User=false)
     {
@@ -134,7 +134,7 @@ class QUI_Rights_Permission
 
         if ( !self::isAdmin( $User ) )
         {
-            throw new \QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.no.permission'
@@ -152,7 +152,7 @@ class QUI_Rights_Permission
      *
      * @return false|string|permission
      *
-     * @throws QException
+     * @throws \QUI\Exception
      */
     static function checkPermission($perm, $User=false)
     {
@@ -186,7 +186,7 @@ class QUI_Rights_Permission
             }
         }
 
-        throw new \QException(
+        throw new \QUI\Exception(
             \QUI::getLocale()->get(
                 'quiqqer/system',
                 'exception.no.permission'
@@ -202,7 +202,7 @@ class QUI_Rights_Permission
      * @param unknown_type $Site
      * @param Users_User|false $User - optional
      *
-     * @throws QException
+     * @throws \QUI\Exception
      */
     static function checkSitePermission($perm, $Site, $User=false)
     {
@@ -307,7 +307,7 @@ class QUI_Rights_Permission
             return true;
         }
 
-        throw new \QException(
+        throw new \QUI\Exception(
             \QUI::getLocale()->get(
                 'quiqqer/system',
                 'exception.no.permission'
@@ -320,7 +320,7 @@ class QUI_Rights_Permission
      * Prüft ob der Benutzer ein SuperUser ist
      *
      * @param Users_User|false $User - optional
-     * @throws QException
+     * @throws \QUI\Exception
      */
     static function checkSU($User=false)
     {
@@ -332,7 +332,7 @@ class QUI_Rights_Permission
 
         if ( !self::isSU() )
         {
-            throw new \QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.no.permission'
@@ -345,7 +345,7 @@ class QUI_Rights_Permission
      * Prüft ob der Benutzer auch ein Benutzer ist
      *
      * @param Users_User|false $User - optional
-     * @throws QException
+     * @throws \QUI\Exception
      */
     static function checkUser($User=false)
     {
@@ -355,7 +355,7 @@ class QUI_Rights_Permission
 
         if ( get_class( $User ) !== 'Users_User' )
         {
-            throw new \QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.permission.session.expired'

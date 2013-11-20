@@ -5,11 +5,11 @@
  * The file must be opend directly in the browser
  *
  * @return Binary
- * @throws QException
+ * @throws \QUI\Exception
  */
 function ajax_media_file_preview($project, $fileid)
 {
-    $Project = Projects_Manager::getProject( $project );
+    $Project = \Projects_Manager::getProject( $project );
     $Media   = $Project->getMedia();
     $File    = $Media->get( $fileid );
 
@@ -19,8 +19,7 @@ function ajax_media_file_preview($project, $fileid)
         exit;
     }
 
-    Utils_System_File::fileHeader( $File->getFullPath() );
+    \QUI\Utils\System\File::fileHeader( $File->getFullPath() );
 }
-QUI::$Ajax->register('ajax_media_file_preview', array('project', 'fileid'), 'Permission::checkAdminUser');
 
-?>
+\QUI::$Ajax->register('ajax_media_file_preview', array('project', 'fileid'), 'Permission::checkAdminUser');

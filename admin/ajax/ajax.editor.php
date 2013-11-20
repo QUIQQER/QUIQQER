@@ -148,7 +148,7 @@ $plugin_dir = LIB_DIR .'ptools/editor/plugins/';
 
 if (is_dir($plugin_dir))
 {
-    if ($plugins = Utils_System_File::readDir($plugin_dir))
+    if ($plugins = \QUI\Utils\System\File::readDir($plugin_dir))
     {
         foreach ($plugins as $plugin)
         {
@@ -158,5 +158,3 @@ if (is_dir($plugin_dir))
         }
     }
 }
-
-?>

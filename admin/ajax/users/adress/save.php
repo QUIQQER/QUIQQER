@@ -13,7 +13,7 @@ function ajax_users_adress_save($uid, $aid, $data)
 	try
 	{
 	    $Adress = $User->getAdress((int)$aid);
-	} catch (QException $e)
+	} catch (\QUI\Exception $e)
 	{
         $Adress = $User->addAdress($data);
 	}

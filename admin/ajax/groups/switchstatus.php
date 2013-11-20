@@ -33,7 +33,7 @@ function ajax_groups_switchstatus($gid)
 
             $result[ $_gid ] = $Group->isActive() ? 1 : 0;
 
-        } catch ( QException $Exception )
+        } catch ( \QUI\Exception $Exception )
         {
             QUI::getMessagesHandler()->addException( $Exception );
             continue;

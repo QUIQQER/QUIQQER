@@ -38,7 +38,8 @@
         "quiqqer/calendar" : "dev-master",
         "quiqqer/colorpicker" : "dev-master",
         "quiqqer/translator" : "dev-master",
-        "quiqqer/history" : "1.*"
+        "quiqqer/history" : "1.*",
+        "quiqqer/qutils" : "1.*"
     },
 
     "config": {

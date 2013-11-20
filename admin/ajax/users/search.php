@@ -64,7 +64,7 @@ function ajax_users_search($params)
 			try
 			{
 			    $groupnames .= $Groups->getGroupNameById( $gid ) .',';
-			} catch (QException $e)
+			} catch (\QUI\Exception $e)
 			{
                 $groupnames .= $gid .',';
 			}

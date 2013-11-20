@@ -73,7 +73,7 @@ function ajax_cron_add($params)
     $params = json_decode($params, true);
 
     if (!isset($params['plugin'])) {
-        throw new QException('Es wurde kein Plugin angegeben');
+        throw new \QUI\Exception('Es wurde kein Plugin angegeben');
     }
 
     if (strpos($params['plugin'], 'project.') !== false)
@@ -176,7 +176,7 @@ function ajax_cron_execute($cid)
     try
     {
         $Cron->exec();
-    } catch (QException $e)
+    } catch (\QUI\Exception $e)
     {
         System_Log::writeException($e);
     }

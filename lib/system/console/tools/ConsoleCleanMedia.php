@@ -102,7 +102,7 @@ class ConsoleCleanMedia extends System_Console_Tool
 			echo "Gehe Mediabereich durch\n\n";
 			$this->_recursivMedia(1);
 
-		} catch(QException $e)
+		} catch(\QUI\Exception $e)
 		{
 			echo "Projekt '".$this->_project."' konnte nicht gefunden werden!!!\n\n";
 		}

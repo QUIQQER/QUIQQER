@@ -11,7 +11,7 @@
  * @package com.pcsg.qui.utils
  */
 
-class Utils_Grid extends QDOM
+class Utils_Grid extends \QUI\QDOM
 {
     /**
      * constructor

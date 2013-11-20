@@ -36,7 +36,7 @@ class QUI_Rights_Manager
             foreach ( $result as $entry ) {
                 $this->_cache[ $entry['name'] ] = $entry;
             }
-        } catch ( QException $Exception )
+        } catch ( \QUI\Exception $Exception )
         {
 
         }
@@ -202,7 +202,7 @@ class QUI_Rights_Manager
      * 							default =>
      * 							src =>
      * 						)
-     * @throws QException
+     * @throws \QUI\Exception
      */
     public function addPermission($params)
     {
@@ -260,7 +260,7 @@ class QUI_Rights_Manager
      * Delete a permission
      *
      * @param unknown_type $permission
-     * @throws QException
+     * @throws \QUI\Exception
      */
     public function deletePermission($permission)
     {
@@ -268,7 +268,7 @@ class QUI_Rights_Manager
 
         if ( !isset( $permissions[ $permission ] ) )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.permissions.permission.not.found'
@@ -280,7 +280,7 @@ class QUI_Rights_Manager
 
         if ( $params['src'] != 'user' )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.permissions.delete.only.user.permissions'
@@ -362,7 +362,7 @@ class QUI_Rights_Manager
     public function getPermissionData($permission)
     {
         if ( !isset( $this->_cache[ $permission ] ) ) {
-            throw new \QException( 'Permission not found' );
+            throw new \QUI\Exception( 'Permission not found' );
         }
 
         return $this->_cache[ $permission ];
@@ -463,7 +463,7 @@ class QUI_Rights_Manager
             break;
 
             default:
-                throw new \QException(
+                throw new \QUI\Exception(
                     'Cannot set Permissions. Object not allowed'
                 );
             break;
@@ -917,7 +917,7 @@ class QUI_Rights_Manager
                 }
 
                 if ( is_string( $ruleset ) ) {
-                    throw new QException( 'Unbekanntes Regelset [getUserPermission]' );
+                    throw new \QUI\Exception( 'Unbekanntes Regelset [getUserPermission]' );
                 }
 
                 $_rulesetresult = $ruleset( $ruleparams );

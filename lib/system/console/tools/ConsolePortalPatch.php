@@ -54,11 +54,11 @@ class ConsolePortalPatch extends System_Console_Tool
 		$params = $this->_params;
 
 		if (!isset($params['--project'])) {
-			throw new QException('Es wurde kein Project angegeben');
+			throw new \QUI\Exception('Es wurde kein Project angegeben');
 		}
 
 		if (!isset($params['--lang'])) {
-			throw new QException('Es wurde keine Sprache angegeben');
+			throw new \QUI\Exception('Es wurde keine Sprache angegeben');
 		}
 
 		$db   = QUI::getDB();

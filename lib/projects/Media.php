@@ -11,7 +11,7 @@
  * @package com.pcsg.qui.projects.media
  */
 
-class Projects_Media extends QDOM
+class Projects_Media extends \QUI\QDOM
 {
     /**
      * internal project object
@@ -163,7 +163,7 @@ class Projects_Media extends QDOM
      *
      * @param Integer $id - media id
      * @return Projects_Media_Item
-     * @throws QException
+     * @throws \QUI\Exception
      */
     public function get($id)
     {
@@ -174,11 +174,11 @@ class Projects_Media extends QDOM
         }
 
         // If the RAM is full objects was once empty
-        if ( Utils_System::memUsageCheck() ) {
+        if ( \QUI\Utils\System::memUsageToHigh() ) {
             $this->_children = array();
         }
 
-        $result = QUI::getDataBase()->fetch(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'from' 	=> $this->getTable(),
             'where' => array(
                 'id' => $id
@@ -187,7 +187,7 @@ class Projects_Media extends QDOM
         ));
 
         if ( !isset( $result[0] ) ) {
-            throw new QException( 'ID '. $id .' not found', 404 );
+            throw new \QUI\Exception( 'ID '. $id .' not found', 404 );
         }
 
 
@@ -244,7 +244,7 @@ class Projects_Media extends QDOM
         ));
 
         if ( !isset( $result[0] ) ) {
-            throw new \QException('File '. $filepath .' not found', 404);
+            throw new \QUI\Exception('File '. $filepath .' not found', 404);
         }
 
         return $this->get( (int)$result[0]['id'] );
@@ -255,12 +255,12 @@ class Projects_Media extends QDOM
      *
      * @param Integer $id  -
      * @param String $file - Path to the new file
-     * @throws QException
+     * @throws \QUI\Exception
      */
     public function replace($id, $file)
     {
         if ( !file_exists($file) ) {
-            throw new QException( 'File could not be found', 404 );
+            throw new \QUI\Exception( 'File could not be found', 404 );
         }
 
         // use direct db not the objects, because
@@ -275,17 +275,17 @@ class Projects_Media extends QDOM
 
 
         if ( !isset($result[0]) ) {
-            throw new QException( 'File entry not found', 404 );
+            throw new \QUI\Exception( 'File entry not found', 404 );
         }
 
         if ( $result[0]['type'] == 'folder' ) {
-            throw new QException( 'Only Files can be replaced', 403 );
+            throw new \QUI\Exception( 'Only Files can be replaced', 403 );
         }
 
         $data = $result[0];
 
         $name = $data['name'];
-        $info = Utils_System_File::getInfo( $file );
+        $info = \QUI\Utils\System\File::getInfo( $file );
 
         if ( $info['mime_type'] != $data['mime_type'] ) {
             $name = $info['basename'];
@@ -297,7 +297,7 @@ class Projects_Media extends QDOM
         $parentid = $this->getParentIdFrom( $data['id'] );
 
         if ( !$parentid ) {
-            throw new QException( 'No Parent found.', 404 );
+            throw new \QUI\Exception( 'No Parent found.', 404 );
         }
 
         /* @var $Parent Projects_Media_Folder */
@@ -306,7 +306,7 @@ class Projects_Media extends QDOM
         if ( $data['name'] != $name &&
              $Parent->childWithNameExists($name) )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 'A file with the name '. $name .' already exist.',
                 403
             );
@@ -315,7 +315,7 @@ class Projects_Media extends QDOM
         // delete the file
         if ( isset($data['file']) && !empty($data['file']) )
         {
-            Utils_System_File::unlink(
+            \QUI\Utils\System\File::unlink(
                 $this->getFullPath() . $data['file']
             );
         }
@@ -338,7 +338,7 @@ class Projects_Media extends QDOM
             array('id' => $id)
         );
 
-        Utils_System_File::move($file, $real_file);
+        \QUI\Utils\System\File::move($file, $real_file);
 
         $File = $this->get( $id );
         $File->deleteCache();

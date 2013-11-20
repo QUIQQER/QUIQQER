@@ -48,7 +48,7 @@ class MF_Folder extends MediaFile implements iMF
 
 	/**
 	 * Aktiviert den Ordner
-	 * @return true || throw QException
+	 * @return true || throw \QUI\Exception
 	 */
 	public function activate()
 	{
@@ -60,7 +60,7 @@ class MF_Folder extends MediaFile implements iMF
 		);
 
 		if (!$r_db) {
-			throw new QException('Aktivierung des Ordners mit ID '. $this->getId() .' Fehlgeschlagen', 600);
+			throw new \QUI\Exception('Aktivierung des Ordners mit ID '. $this->getId() .' Fehlgeschlagen', 600);
 		}
 
 		$this->setAttribute('active', 1);
@@ -72,7 +72,7 @@ class MF_Folder extends MediaFile implements iMF
 
 	/**
 	 * Deaktiviert den Ordner und die darunter liegenden Sachen
-	 * @return true || throw QException
+	 * @return true || throw \QUI\Exception
 	 */
 	public function deactivate()
 	{
@@ -85,7 +85,7 @@ class MF_Folder extends MediaFile implements iMF
 
 		if (!$r_db)
 		{
-			throw new QException(
+			throw new \QUI\Exception(
 				'Deaktivierung des Ordners mit der ID '. $this->getId() .' fehlgeschlagen',
 				601
 			);
@@ -187,13 +187,13 @@ class MF_Folder extends MediaFile implements iMF
 		$folder = $this->_Media->getAttribute('media_dir').$this->getAttribute('file');
 
 		if (is_dir($folder)) {
-			Utils_System_File::unlink($folder);
+			\QUI\Utils\System\File::unlink($folder);
 		}
 	}
 
 	/**
 	 * Cachedatei löschen
-	 * @return Bool || throw QException
+	 * @return Bool || throw \QUI\Exception
 	 */
 	public function deleteCache()
 	{
@@ -201,7 +201,7 @@ class MF_Folder extends MediaFile implements iMF
 		$folder = $this->_Media->getAttribute('cache_dir').$this->getAttribute('file');
 
 		if (is_dir($folder)) {
-			Utils_System_File::unlink($folder);
+			\QUI\Utils\System\File::unlink($folder);
 		}
 
 		return true;
@@ -210,7 +210,7 @@ class MF_Folder extends MediaFile implements iMF
 	/**
 	 * Ordner wiederherstellen
 	 * @param MF_Folder $Parent - Unter welcher der Ordner wieder eingehängt werden soll
-	 * @return Bool || throw QException
+	 * @return Bool || throw \QUI\Exception
 	 */
 	public function restore(MF_Folder $Parent)
 	{
@@ -224,7 +224,7 @@ class MF_Folder extends MediaFile implements iMF
 
 		if (file_exists($dir.$new_folder))
 		{
-			throw new QException(
+			throw new \QUI\Exception(
 				'Restore Error; Ein Ordner mit dem gleichen Namen existiert bereits in diesem Ordner',
 				702
 			);
@@ -254,7 +254,7 @@ class MF_Folder extends MediaFile implements iMF
 			return true;
 		}
 
-		throw new QException(
+		throw new \QUI\Exception(
 			'Update DB Error MF_File->restore()',
 			703
 		);
@@ -264,7 +264,7 @@ class MF_Folder extends MediaFile implements iMF
 	 * Umbennenen eines Ordners
 	 *
 	 * @param String $name
-	 * @return Bool || throw QException
+	 * @return Bool || throw \QUI\Exception
 	 */
 	public function rename($name)
 	{
@@ -280,8 +280,8 @@ class MF_Folder extends MediaFile implements iMF
 		$file     = $this->getAttribute('file');
 		$newfile  = $Parent->getAttribute('file') . $name;
 
-		$org_path = Utils_String::removeLastSlash( $Media->getAttribute('media_dir') . $file );
-		$new_path = Utils_String::removeLastSlash( $Media->getAttribute('media_dir') . $newfile );
+		$org_path = \QUI\Utils\String::removeLastSlash( $Media->getAttribute('media_dir') . $file );
+		$new_path = \QUI\Utils\String::removeLastSlash( $Media->getAttribute('media_dir') . $newfile );
 
 		if ($org_path == $new_path) {
 			return true;
@@ -289,7 +289,7 @@ class MF_Folder extends MediaFile implements iMF
 
 		if (file_exists($new_path))
 		{
-			throw new QException(
+			throw new \QUI\Exception(
 				'Der Ordner kann nicht umbenannt werden da ein Ordner mit dem gleichen Namen existiert.'
 				.' :: '. $org_path .' => '. $new_path
 			);
@@ -324,7 +324,7 @@ class MF_Folder extends MediaFile implements iMF
 			array('id' => $this->getId())
 		);
 
-		Utils_System_File::move($org_path, $new_path);
+		\QUI\Utils\System\File::move($org_path, $new_path);
 		$this->deleteCache();
 	}
 
@@ -335,7 +335,7 @@ class MF_Folder extends MediaFile implements iMF
 	{
 		if ($this->getAttribute('active') == 1)
 		{
-			throw new QException(
+			throw new \QUI\Exception(
 				'Der Ordner ist aktiv, bitte deaktivieren Sie den Ordner um diesen zu löschen',
 				704
 			);
@@ -371,7 +371,7 @@ class MF_Folder extends MediaFile implements iMF
 			return true;
 		}
 
-		throw new QException('destroy error; ID '. $id, 602);
+		throw new \QUI\Exception('destroy error; ID '. $id, 602);
 	}
 
 	/**
@@ -402,7 +402,7 @@ class MF_Folder extends MediaFile implements iMF
 	 * Erstellt einen Unterordner
 	 *
 	 * @param String $new_name - Name für den neuen Ordner
-	 * @return MF_Folder || throw QException
+	 * @return MF_Folder || throw \QUI\Exception
 	 */
 	public function createFolder($new_name=false)
 	{
@@ -415,7 +415,7 @@ class MF_Folder extends MediaFile implements iMF
 
 		if (strpos($new_name, '.') !== false)
 		{
-			throw new QException(
+			throw new \QUI\Exception(
 				'Nicht erlaubte Zeichen wurden im Namen gefunden. Punkte in Ordnernamen dürfen nicht verwendet werden.',
 				702
 			);
@@ -430,10 +430,10 @@ class MF_Folder extends MediaFile implements iMF
 		$Parent = $this->getParent();
 
 		if (is_dir($dir.$new_name)) {
-			throw new QException('Der Ordner existiert schon ' . $dir . $new_name, 701);
+			throw new \QUI\Exception('Der Ordner existiert schon ' . $dir . $new_name, 701);
 		}
 
-		Utils_System_File::mkdir($dir.$new_name);
+		\QUI\Utils\System\File::mkdir($dir.$new_name);
 
 		// In die DB legen
 		QUI::getDB()->addData($this->_TABLE, array(
@@ -463,7 +463,7 @@ class MF_Folder extends MediaFile implements iMF
 			return $this->_Media->get( $newid );
 		}
 
-		throw new QException(
+		throw new \QUI\Exception(
 			'Der Ordner konnte nicht erstellt werden',
 			507
 		);
@@ -477,7 +477,7 @@ class MF_Folder extends MediaFile implements iMF
 	 * 		<li>$FILE['name'] = Name des Files</li>
 	 * 		<li>$FILE['tmp_name'] = Pfad zur Datei damit diese kopiert werden kann</li>
 	 * </ul>
-	 * @todo return MF_File || throw QException
+	 * @todo return MF_File || throw \QUI\Exception
 	 */
 	public function upload($FILE)
 	{
@@ -490,18 +490,18 @@ class MF_Folder extends MediaFile implements iMF
 		$filename = $Media->stripMediaName($FILE["name"]);
 
 		if (file_exists($dir.$filename)) {
-			throw new QException($dir.$filename ." existiert bereits", 705);
+			throw new \QUI\Exception($dir.$filename ." existiert bereits", 705);
 		}
 
 		if (!move_uploaded_file($FILE["tmp_name"], $dir.$filename))
 		{
 			if (!copy($FILE["tmp_name"], $dir.$filename)) {
-				throw new QException('Kann Datei nicht in den Zielordner verschieben', 508);
+				throw new \QUI\Exception('Kann Datei nicht in den Zielordner verschieben', 508);
 			}
 		}
 
 		$newid = $Media->getNewId();
-		$info  = Utils_System_File::getInfo($dir.$filename);
+		$info  = \QUI\Utils\System\File::getInfo($dir.$filename);
 
 		// In die DB legen
 		QUI::getDB()->addData($this->_TABLE, array(
@@ -564,7 +564,7 @@ class MF_Folder extends MediaFile implements iMF
 		if (strpos($FILE["type"], 'zip') === false &&
 			strpos($FILE["type"], 'octet-stream') === false)
 		{
-			throw new QException(
+			throw new \QUI\Exception(
 				'uploadArchive() Error; NO ZIP',
 				707
 			);
@@ -576,14 +576,14 @@ class MF_Folder extends MediaFile implements iMF
 		$tmp_folder = str_replace('.zip', '', $tmp_file);
 		$tmp_folder = $tmp_folder.'/';
 
-		Utils_System_File::mkdir($tmp_folder);
+		\QUI\Utils\System\File::mkdir($tmp_folder);
 		$zip->unzip($tmp_file, $tmp_folder);
 
-		$PT_File = new Utils_System_File();
+		$PT_File = new \QUI\Utils\System\File();
 		$files   =  $PT_File->readDirRecursiv($tmp_folder);
 
 		if (count($files) <= 0) {
-			throw new QException('No Files in Archiv', 706);
+			throw new \QUI\Exception('No Files in Archiv', 706);
 		}
 
 		$dir = $Media->getAttribute('media_dir').$this->getAttribute('file');
@@ -603,7 +603,7 @@ class MF_Folder extends MediaFile implements iMF
 					{
 						$Folder = $this->_createPath( $path );
 
-					} catch (QException $e)
+					} catch (\QUI\Exception $e)
 					{
 						// 701 = Folder exists
 						if ($e->getCode() == 701)
@@ -646,7 +646,7 @@ class MF_Folder extends MediaFile implements iMF
 					try
 					{
 						$Folder->upload($FILE);
-					} catch (QException $e)
+					} catch (\QUI\Exception $e)
 					{
 						if ($e->getCode() == 705)
 						{
@@ -667,7 +667,7 @@ class MF_Folder extends MediaFile implements iMF
 	 * Erstellt ein übergebenen Pfad in dem Ordner
 	 *
 	 * @param unknown_type $path
-	 * @return Folder (letzter Folder) || throw QException
+	 * @return Folder (letzter Folder) || throw \QUI\Exception
 	 */
 	private function _createPath($path)
 	{
@@ -683,14 +683,14 @@ class MF_Folder extends MediaFile implements iMF
 			try
 			{
 				$Folder = $Parent->createFolder($folder);
-			} catch (QException $e)
+			} catch (\QUI\Exception $e)
 			{
 				$Children = $Parent->getChildren('FOLDER', 'name', $folder);
 				$Folder   = $Children->get(0);
 			}
 
 			if (!is_object($Folder)) {
-				throw new QException('Could not create the Path', 708);
+				throw new \QUI\Exception('Could not create the Path', 708);
 			}
 
 			$Parent = $Folder;
@@ -701,7 +701,7 @@ class MF_Folder extends MediaFile implements iMF
 
 	/**
 	 * Erstellt den Cacheordner
-	 * @return Bool || throw QException
+	 * @return Bool || throw \QUI\Exception
 	 */
 	public function createCache()
 	{
@@ -711,11 +711,11 @@ class MF_Folder extends MediaFile implements iMF
 
 		$cache_dir = $this->_Media->getAttribute('cache_dir').$this->getAttribute('file');
 
-		if (Utils_System_File::mkdir($cache_dir)) {
+		if (\QUI\Utils\System\File::mkdir($cache_dir)) {
 			return true;
 		}
 
-		throw new QException(
+		throw new \QUI\Exception(
 			'createCache() Error; Could not create Folder '. $cache_dir,
 			506
 		);
@@ -853,7 +853,7 @@ class MF_Folder extends MediaFile implements iMF
 		));
 
 		if (!isset($result[0])) {
-			throw new QException('No Child in Folder', 404);
+			throw new \QUI\Exception('No Child in Folder', 404);
 		}
 
 		return $this->_Media->get( (int)$result[0]['id'] );
@@ -914,7 +914,7 @@ class MF_Folder extends MediaFile implements iMF
 
 				$File->save();
 
-			} catch (QException $Exception)
+			} catch (\QUI\Exception $Exception)
 			{
                 QUI::getMessagesHandler()->addException( $Exception );
 			}
@@ -932,11 +932,11 @@ class MF_Folder extends MediaFile implements iMF
 	public function setRoundCorners($background, $radius)
 	{
 		if (empty($background)) {
-			throw new QException('Bitte geben Sie eine Hintergrundfarbe an');
+			throw new \QUI\Exception('Bitte geben Sie eine Hintergrundfarbe an');
 		}
 
 		if (empty($radius)) {
-			throw new QException('Bitte geben Sie einen Radius für die Ecken an');
+			throw new \QUI\Exception('Bitte geben Sie einen Radius für die Ecken an');
 		}
 
 		$this->_tmp_children = array();
@@ -958,7 +958,7 @@ class MF_Folder extends MediaFile implements iMF
 				$File->setRoundCorners($background, $radius);
 				$File->save();
 
-			} catch( QException $e)
+			} catch( \QUI\Exception $e)
 			{
 				// nothing
 			}

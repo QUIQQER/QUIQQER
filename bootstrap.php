@@ -25,8 +25,10 @@ if ( !file_exists( $etc_dir .'conf.ini' ))
 
 $config = parse_ini_file( $etc_dir .'conf.ini', true );
 
+if ( file_exists( $config['globals']['lib_dir'] .'autoload.php' ) ) {
+    require_once $config['globals']['lib_dir'] .'autoload.php';
+}
+
 if ( file_exists( $config['globals']['lib_dir'] .'header.php' ) ) {
     require $config['globals']['lib_dir'] .'header.php';
 }
-
-?>

@@ -134,7 +134,7 @@ class Projects_Project
         // Konfiguration einlesen
         if ( !isset( $config[ $name ] ) )
         {
-            throw new \QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.project.not.found'
@@ -149,7 +149,7 @@ class Projects_Project
         // Langs
         if ( !isset( $this->_config[ 'langs' ] ) )
         {
-            throw new \QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.project.has.no.langs'
@@ -163,7 +163,7 @@ class Projects_Project
         // Default Lang
         if ( !isset( $this->_config[ 'default_lang' ] ) )
         {
-            throw new \QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.project.lang.no.default'
@@ -180,7 +180,7 @@ class Projects_Project
         {
             if ( !in_array( $lang, $this->_langs ) )
             {
-                throw new \QException(
+                throw new \QUI\Exception(
                     \QUI::getLocale()->get(
                         'quiqqer/system',
                         'exception.project.lang.not.found',
@@ -198,7 +198,7 @@ class Projects_Project
             // Falls keine Sprache angegeben wurde wird die Standardsprache verwendet
             if ( !isset( $this->_config['default_lang'] ) )
             {
-                throw new \QException(
+                throw new \QUI\Exception(
                     \QUI::getLocale()->get(
                         'quiqqer/system',
                         'exception.project.lang.no.default'
@@ -622,20 +622,20 @@ class Projects_Project
         if ( $link == true )
         {
             $cache = VAR_DIR.'cache/links/'. $this->getAttribute('name') .'/';
-            $files = \Utils_System_File::readDir($cache);
+            $files = \QUI\Utils\System\File::readDir($cache);
 
             foreach ( $files as $file ) {
-                \Utils_System_File::unlink( $cache . $file );
+                \QUI\Utils\System\File::unlink( $cache . $file );
             }
         }
 
         if ( $site == true )
         {
             $cache = VAR_DIR.'cache/sites/'. $this->getAttribute('name') .'/';
-            $files = \Utils_System_File::readDir($cache);
+            $files = \QUI\Utils\System\File::readDir($cache);
 
             foreach ( $files as $file ) {
-                \Utils_System_File::unlink( $cache . $file );
+                \QUI\Utils\System\File::unlink( $cache . $file );
             }
         }
 
@@ -747,7 +747,7 @@ class Projects_Project
             try
             {
                 $this->_plugins[ $_plugins[$i] ] = $Plugins->get($_plugins[$i]);
-            } catch (QException $e)
+            } catch (\QUI\Exception $e)
             {
                 //nothing
             }
@@ -1198,11 +1198,11 @@ class Projects_Project
         $User = QUI::getUserBySession();
 
         if (!$User->isSU()) {
-            throw new QException('You must be an Superuser to create a Backup');
+            throw new \QUI\Exception('You must be an Superuser to create a Backup');
         }
 
         if (file_exists(VAR_DIR .'backup/start')) {
-            throw new QException('There currently running a backup. Please try again later');
+            throw new \QUI\Exception('There currently running a backup. Please try again later');
         }
 
         $time  = time();
@@ -1210,10 +1210,10 @@ class Projects_Project
         $cfile = VAR_DIR .'backup/'. $this->getAttribute('name') .'/c'. $time;
 
         if (is_dir($dir)) {
-            throw new QException('Cannot create Backup; Backupfolder exists');
+            throw new \QUI\Exception('Cannot create Backup; Backupfolder exists');
         }
 
-        Utils_System_File::mkdir($dir);
+        \QUI\Utils\System\File::mkdir($dir);
 
         // Backup creation file - zeigt an ob das Backup gerade läuft
         file_put_contents($cfile, 'start');
@@ -1236,7 +1236,7 @@ class Projects_Project
             {
                 $tbl_multilingual = $this->getAttribute('name') .'_multilingual';
                 QUI::getDB()->backup($tbl_multilingual, $dir.$tbl_multilingual);
-            } catch (QException $e)
+            } catch (\QUI\Exception $e)
             {
                 // wenn es nur eine Sprache gibt
             }
@@ -1245,10 +1245,10 @@ class Projects_Project
         if ($media)
         {
             // Mediafiles sichern
-            Utils_System_File::mkdir($dir.'media/');
+            \QUI\Utils\System\File::mkdir($dir.'media/');
 
             $mediadir = CMS_DIR .'media/sites/'. $this->getAttribute('name') .'/';
-            Utils_System_File::dircopy($mediadir, $dir.'media/');
+            \QUI\Utils\System\File::dircopy($mediadir, $dir.'media/');
 
             //Mediadb
             $tbl_media     = $this->getAttribute('name') .'_de_media';
@@ -1265,14 +1265,14 @@ class Projects_Project
             $b_bindir = $dir .'templates/bin';
             $b_libdir = $dir .'templates/lib';
 
-            Utils_System_File::mkdir($b_bindir);
-            Utils_System_File::mkdir($b_libdir);
+            \QUI\Utils\System\File::mkdir($b_bindir);
+            \QUI\Utils\System\File::mkdir($b_libdir);
 
             $bindir = USR_DIR .'bin/'. $this->getAttribute('template') .'/';
             $libdir = USR_DIR .'lib/'. $this->getAttribute('template') .'/';
 
-            Utils_System_File::dircopy($bindir, $b_bindir);
-            Utils_System_File::dircopy($libdir, $b_libdir);
+            \QUI\Utils\System\File::dircopy($bindir, $b_bindir);
+            \QUI\Utils\System\File::dircopy($libdir, $b_libdir);
         }
 
         // config
@@ -1281,7 +1281,7 @@ class Projects_Project
             $f_config = $dir.'conf.ini';
             file_put_contents($f_config, '');
 
-            $Config = new QConfig($f_config);
+            $Config = new \QUI\Config($f_config);
             $Config->setSection($this->getAttribute('name') ,$this->_config);
             $Config->save();
         }

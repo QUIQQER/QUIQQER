@@ -138,7 +138,7 @@ class System_Console
     		    $params[ '--password' ]
 	        );
 
-		} catch ( QException $e )
+		} catch ( \QUI\Exception $e )
         {
 			$this->writeLn( $e->getMessage() ."\n\n", 'red' );
 			exit;
@@ -295,7 +295,7 @@ class System_Console
 		 * Standard Konsoletools
 		 */
 		$path  = LIB_DIR .'system/console/tools/';
-		$files = Utils_System_File::readDir( $path, true );
+		$files = \QUI\Utils\System\File::readDir( $path, true );
 
 		for ( $i = 0, $len = count( $files ); $i < $len; $i++ )
 		{
@@ -309,7 +309,7 @@ class System_Console
 		/**
 		 * Plugins console tools
 		 */
-		$plugins_dir = Utils_System_File::readDir( OPT_DIR );
+		$plugins_dir = \QUI\Utils\System\File::readDir( OPT_DIR );
 
 		for ( $i = 0, $len = count( $plugins_dir ); $i < $len; $i++)
 		{
@@ -333,7 +333,7 @@ class System_Console
 		/**
 		 * Projects console tools
 		 */
-		$projects_dir = Utils_System_File::readDir( USR_DIR .'lib/' );
+		$projects_dir = \QUI\Utils\System\File::readDir( USR_DIR .'lib/' );
 
 		for ( $i = 0, $len = count( $projects_dir ); $i < $len; $i++ )
 		{
@@ -343,7 +343,7 @@ class System_Console
 				continue;
 			}
 
-			$c_dir = Utils_System_File::readDir( $dir, true );
+			$c_dir = \QUI\Utils\System\File::readDir( $dir, true );
 
 			for ( $c = 0, $clen = count( $c_dir ); $c < $clen; $c++ )
 			{

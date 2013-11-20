@@ -226,14 +226,14 @@ class Utils_Security_Orthos
 	}
 
 	/**
-	 * use Utils_String::removeLineBreaks
-	 * @see Utils_String::removeLineBreaks
-	 * @deprecated use Utils_String::removeLineBreaks
+	 * use \QUI\Utils\String::removeLineBreaks
+	 * @see \QUI\Utils\String::removeLineBreaks
+	 * @deprecated use \QUI\Utils\String::removeLineBreaks
 	 * @param String $text
 	 */
 	static function removeLineBreaks($text)
 	{
-		return Utils_String::removeLineBreaks($text, ' ');
+		return \QUI\Utils\String::removeLineBreaks($text, ' ');
 	}
 
     /**

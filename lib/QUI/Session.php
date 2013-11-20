@@ -58,7 +58,7 @@ class QUI_Session
 	public function set($var, $value)
 	{
 		if ( is_object( $value ) ) {
-			throw new QException( 'You cannot set an Object to the Session' );
+			throw new \QUI\Exception( 'You cannot set an Object to the Session' );
 		}
 
 		$_SESSION[ $var ] = $value;

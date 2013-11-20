@@ -24,7 +24,7 @@ try
     $Media   = $Project->getMedia();
     $File    = $Media->get( (int)$_REQUEST['id'] );
 
-} catch ( QException $Exception )
+} catch ( \QUI\Exception $Exception )
 {
     header( "HTTP/1.0 404 Not Found" );
     System_Log::writeException( $Exception );
@@ -67,7 +67,7 @@ if ( isset($_REQUEST['maxwidth']) || isset($_REQUEST['maxheight']) )
     $height = $size['height'];
 
     $cache_folder = VAR_DIR .'media_cache/'. $Project->getAttribute('name') .'/';
-    Utils_System_File::mkdir( $cache_folder );
+    \QUI\Utils\System\File::mkdir( $cache_folder );
 
     $new_image = $cache_folder . $File->getId() .'_'. $width .'x'. $height;
 
@@ -75,14 +75,14 @@ if ( isset($_REQUEST['maxwidth']) || isset($_REQUEST['maxheight']) )
     {
         try
         {
-            Utils_System_File::resize(
+            \QUI\Utils\System\File::resize(
                 $image,
                 $new_image,
                 $width,
                 $height
             );
 
-        } catch ( QException $Exception )
+        } catch ( \QUI\Exception $Exception )
         {
             header( "HTTP/1.0 404 Not Found" );
             System_Log::writeException( $Exception );
@@ -109,5 +109,3 @@ $fr_image = fread( $fo_image, filesize($image) );
 fclose( $fo_image );
 
 echo $fr_image;
-
-?>

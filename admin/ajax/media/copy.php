@@ -17,7 +17,7 @@ function ajax_media_copy($project, $to, $ids)
 
     if ( !Projects_Media_Utils::isFolder( $Folder ) )
     {
-        throw new QException(
+        throw new \QUI\Exception(
         	'Bitte wählen Sie ein Ordner aus um die Dateie zu kopieren.'
         );
     }
@@ -29,7 +29,7 @@ function ajax_media_copy($project, $to, $ids)
             $Item = $Media->get( (int)$id );
             $Item->copyTo( $Folder );
 
-        } catch ( QException $e )
+        } catch ( \QUI\Exception $e )
         {
             // @todo Fehler sammeln und an den handler weiter reichen
         }

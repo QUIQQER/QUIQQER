@@ -149,7 +149,7 @@ class ConsoleCreateLang extends System_Console_Tool
             {
                 $_Site = new Projects_Site_Edit($Project, $id['id']);
                 $_Site->addLanguageLink($params['--newlang'], $id['id']);
-            } catch (QException $e)
+            } catch (\QUI\Exception $e)
             {
                 $this->message($e->getMessage()."\n", 'red');
             }

@@ -11,7 +11,7 @@
  * @package com.pcsg.qui.utils.countries
  */
 
-class Utils_Countries_Manager extends QDOM
+class Utils_Countries_Manager extends \QUI\QDOM
 {
     /**
      * Return the real table name
@@ -29,85 +29,85 @@ class Utils_Countries_Manager extends QDOM
     static function setup()
     {
         // Countries
-		$db_countries = __DIR__ .'/countries.sql';
-		$PDO          = QUI::getDataBase()->getPDO();
+        $db_countries = __DIR__ .'/countries.sql';
+        $PDO          = QUI::getDataBase()->getPDO();
 
-		if ( !file_exists( $db_countries ) ) {
-		    return;
-		}
+        if ( !file_exists( $db_countries ) ) {
+            return;
+        }
 
-		$sql = file_get_contents( $db_countries );
-		$sql = str_replace( '{$TABLE}', self::Table(), $sql );
-		$sql = explode( ';', $sql );
+        $sql = file_get_contents( $db_countries );
+        $sql = str_replace( '{$TABLE}', self::Table(), $sql );
+        $sql = explode( ';', $sql );
 
-		foreach ( $sql as $query )
-		{
-			$query = trim( $query );
+        foreach ( $sql as $query )
+        {
+            $query = trim( $query );
 
-			if ( empty( $query ) ) {
-				continue;
-			}
+            if ( empty( $query ) ) {
+                continue;
+            }
 
-			$PDO->exec( $query );
-		}
+            $PDO->exec( $query );
+        }
     }
 
-	/**
-	 * Get a country
-	 *
-	 * @param String $code - the country code
-	 * @return Utils_Countries_Country
-	 *
-	 * @example
-	 * $Country = Utils_Countries_Manager::get('de');
-	 * $Country->getName()
-	 */
-	static function get($code)
-	{
-	    $result = QUI::getDB()->select(array(
-			'from'  => self::Table(),
-			'where' => array(
-				'countries_iso_code_2' => Utils_String::toUpper(
+    /**
+     * Get a country
+     *
+     * @param String $code - the country code
+     * @return Utils_Countries_Country
+     *
+     * @example
+     * $Country = Utils_Countries_Manager::get('de');
+     * $Country->getName()
+     */
+    static function get($code)
+    {
+        $result = QUI::getDB()->select(array(
+            'from'  => self::Table(),
+            'where' => array(
+                'countries_iso_code_2' => \QUI\Utils\String::toUpper(
                     $code
                 )
-		  	),
-		  	'limit' => '1'
+              ),
+              'limit' => '1'
 
-		));
+        ));
 
-		if ( !isset( $result[0] ) ) {
-			throw new QException( 'Das Land wurde nicht gefunden', 404 );
-		}
+        if ( !isset( $result[0] ) ) {
+            throw new \QUI\Exception( 'Das Land wurde nicht gefunden', 404 );
+        }
 
-		return new Utils_Countries_Country( $result[0] );
-	}
+        return new Utils_Countries_Country( $result[0] );
+    }
 
-	/**
-	 * Get the complete country list
-	 *
-	 * @return Array
-	 */
-	static function getList()
-	{
-		$order = 'countries_name ASC';
+    /**
+     * Get the complete country list
+     *
+     * @return Array
+     */
+    static function getList()
+    {
+        $order = 'countries_name ASC';
 
-		if ( QUI::getLocale()->getCurrent() === 'en' ) {
+        if ( QUI::getLocale()->getCurrent() === 'en' ) {
             $order = 'en ASC';
-		}
+        }
 
-		$result = QUI::getDB()->select(array(
-			'from'  => self::Table(),
-			'order' => $order
-		));
+        $result = QUI::getDB()->select(array(
+            'from'  => self::Table(),
+            'order' => $order
+        ));
 
-		$countries = array();
+        $countries = array();
 
-		foreach ( $result as $entry ) {
-			$countries[] = new Utils_Countries_Country( $entry );
-		}
+        foreach ( $result as $entry ) {
+            $countries[] = new Utils_Countries_Country( $entry );
+        }
 
-		return $countries;
-	}
+        return $countries;
+    }
 }
 
 ?>

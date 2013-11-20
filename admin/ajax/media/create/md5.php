@@ -3,7 +3,7 @@
 /**
  * Activate the file / files
  *
- * @throws QException
+ * @throws \QUI\Exception
  */
 function ajax_media_create_md5($project, $params)
 {
@@ -27,7 +27,7 @@ function ajax_media_create_md5($project, $params)
             $Item = $Media->get( $id );
             $Item->generateMD5();
 
-        } catch ( QException $Exception )
+        } catch ( \QUI\Exception $Exception )
         {
             QUI::getMessagesHandler()->addException( $Exception );
         }

@@ -15,7 +15,7 @@ function ajax_media_upload($project, $parentid, $File)
 
     if ( $Folder->getType() != 'Projects_Media_Folder' )
     {
-        throw new QException(
+        throw new \QUI\Exception(
         	'The parent id is not a folder. You can only upload files to folders'
 	    );
     }

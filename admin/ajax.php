@@ -127,7 +127,7 @@ function ajax_get_robot_txt()
 	$User  = $Users->getUserBySession();
 
 	if (!$User->isSU()) {
-		throw new QException('Nur SuperUser dürfen die robot.txt bearbeiten');
+		throw new \QUI\Exception('Nur SuperUser dürfen die robot.txt bearbeiten');
 	}
 
 	$f_robot = CMS_DIR .'robots.txt';
@@ -152,7 +152,7 @@ function ajax_set_robot_txt($text)
 	$User  = $Users->getUserBySession();
 
 	if (!$User->isSU()) {
-		throw new QException('Nur SuperUser dürfen die robot.txt bearbeiten');
+		throw new \QUI\Exception('Nur SuperUser dürfen die robot.txt bearbeiten');
 	}
 
 	$f_robot = CMS_DIR .'robots.txt';

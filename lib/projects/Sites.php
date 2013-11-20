@@ -169,7 +169,7 @@ class Projects_Sites
         try
         {
             //self::checkRights($Site, $User);
-        } catch ( \QException $Exception )
+        } catch ( \QUI\Exception $Exception )
         {
             $Tabbar->appendChild(
                 new \Controls_Toolbar_Tab(array(
@@ -289,7 +289,7 @@ class Projects_Sites
      * @param String $tabname - Name of the Tab
      * @param Projects_Site $Site
      *
-     * @throws QException
+     * @throws \QUI\Exception
      * @return Controls_Toolbar_Tab
      */
     static function getTab($tabname, $Site)
@@ -298,7 +298,7 @@ class Projects_Sites
         $Tab     = $Toolbar->getElementByName( $tabname );
 
         if ( $Tab === false ) {
-            throw new \QException( 'The tab could not be found.' );
+            throw new \QUI\Exception( 'The tab could not be found.' );
         }
 
         return $Tab;

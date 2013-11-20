@@ -126,7 +126,7 @@ class Users_User implements Interface_Users_User
      *
      * @param Integer $id - ID of the user
      * @param Users_Users $Users - the user manager
-     * @throws QException
+     * @throws \QUI\Exception
      */
     public function __construct($id, Users_Users $Users)
     {
@@ -134,7 +134,7 @@ class Users_User implements Interface_Users_User
 
         if ( !$id || $id <= 10 )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.user.wrong.uid'
@@ -157,7 +157,7 @@ class Users_User implements Interface_Users_User
 
         if ( !isset( $data[0] ) )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 QUI::getLocale(
                     'quiqqer/system',
                     'exception.lib.user.not.found'
@@ -184,7 +184,7 @@ class Users_User implements Interface_Users_User
             try
             {
                 $this->setGroups( $data[0]['usergroup'] );
-            } catch ( QException $e )
+            } catch ( \QUI\Exception $e )
             {
                 // nohting
             }
@@ -366,7 +366,7 @@ class Users_User implements Interface_Users_User
             try
             {
                 $this->_lang = Projects_Manager::get()->getAttribute( 'lang' );
-            } catch ( QException $Exception )
+            } catch ( \QUI\Exception $Exception )
             {
 
             }
@@ -459,7 +459,7 @@ class Users_User implements Interface_Users_User
                     $this->Group[] = $Groups->get($g);
                     $aTmp[] = $g;
 
-                } catch (QException $e)
+                } catch (\QUI\Exception $e)
                 {
                     // nothing
                 }
@@ -473,7 +473,7 @@ class Users_User implements Interface_Users_User
             {
                 $this->Group[] = $Groups->get($groups);
                 $this->_groups = ','.$groups.',';
-            } catch (QException $e)
+            } catch (\QUI\Exception $e)
             {
 
             }
@@ -602,7 +602,7 @@ class Users_User implements Interface_Users_User
                 if ($this->_name != $value &&
                     $this->_Users->existsUsername($value))
                 {
-                    throw new \QException('Name existiert bereits');
+                    throw new \QUI\Exception('Name existiert bereits');
                 }
 
                 $this->_name = $value;
@@ -740,7 +740,7 @@ class Users_User implements Interface_Users_User
 
         if ( empty( $new ) )
         {
-            throw new \QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.user.empty.password'
@@ -799,7 +799,7 @@ class Users_User implements Interface_Users_User
 
         if ( $code && $code != $this->getAttribute( 'activation' ) )
         {
-            throw new \QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.user.activasion.wrong.code'
@@ -809,7 +809,7 @@ class Users_User implements Interface_Users_User
 
         if ( $this->_password == '' )
         {
-            throw new \QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.user.activasion.no.password'
@@ -857,7 +857,7 @@ class Users_User implements Interface_Users_User
                     $Extend->onDelete();
                 }
 
-            } catch ( \QException $e )
+            } catch ( \QUI\Exception $e )
             {
 
             }
@@ -904,7 +904,7 @@ class Users_User implements Interface_Users_User
                     $Extend->onDelete();
                 }
 
-            } catch ( QException $e )
+            } catch ( \QUI\Exception $e )
             {
 
             }
@@ -1118,7 +1118,7 @@ class Users_User implements Interface_Users_User
                     $Extend->onDelete();
                 }
 
-            } catch ( QException $e )
+            } catch ( \QUI\Exception $e )
             {
 
             }
@@ -1138,7 +1138,7 @@ class Users_User implements Interface_Users_User
      * Checks the edit rights of a user
      *
      * @return true
-     * @throws QExceptions
+     * @throws \QUI\Exceptions
      */
     protected function _checkRights()
     {
@@ -1159,7 +1159,7 @@ class Users_User implements Interface_Users_User
             return true;
         }
 
-        throw new QException(
+        throw new \QUI\Exception(
             QUI::getLocale()->get(
                 'quiqqer/system',
                 'exception.lib.user.no.edit.rights'

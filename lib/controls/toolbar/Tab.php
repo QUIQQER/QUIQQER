@@ -11,7 +11,7 @@
  * @package com.pcsg.qui.controls.toolbar
  */
 
-class Controls_Toolbar_Tab extends QDOM
+class Controls_Toolbar_Tab extends \QUI\QDOM
 {
     /**
      * The Parent object

@@ -20,9 +20,9 @@ class Utils_MyDB
      */
     protected $_DB = null;
 
-   	/**
-   	 * constructor
-   	 */
+       /**
+        * constructor
+        */
     public function __construct()
     {
         $this->_DB = QUI::getDataBase();
@@ -52,7 +52,7 @@ class Utils_MyDB
      */
     public function __toString()
     {
-    	return 'MyDB()';
+        return 'MyDB()';
     }
 
     /**
@@ -69,27 +69,27 @@ class Utils_MyDB
     public function escape($data)
     {
         if (!is_numeric($data)) {
-        	$data = $this->getPDO()->quote($data);
+            $data = $this->getPDO()->quote($data);
         }
 
         return $data;
     }
 
-	/**
-	 * MASKIERTE QUERY
-	 *
-	 * @param String $query
-	 * @return Resource
-	 *
-	 * @deprecated use PDO and prepared statemens
-	 * getPDO()->query()->fetch
-	 * getPDO()->query()->fetchAll
-	 * getPDO()->exec()
-	 */
+    /**
+     * MASKIERTE QUERY
+     *
+     * @param String $query
+     * @return Resource
+     *
+     * @deprecated use PDO and prepared statemens
+     * getPDO()->query()->fetch
+     * getPDO()->query()->fetchAll
+     * getPDO()->exec()
+     */
     public function query($query)
     {
         if (!is_string($query)) {
-            throw new QException('only strings accepted');
+            throw new \QUI\Exception('only strings accepted');
         }
 
         $query .= ';';
@@ -118,12 +118,12 @@ class Utils_MyDB
         return $this->getData($params, $type, $type2);
     }
 
-	/**
-	 * Unmaskierte Query
-	 *
-	 * @param Array $params
-	 * @return Resource
-	 */
+    /**
+     * Unmaskierte Query
+     *
+     * @param Array $params
+     * @return Resource
+     */
     public function queryNoEscape($params)
     {
         return $this->_DB->exec($params);
@@ -174,12 +174,12 @@ class Utils_MyDB
         }
     }
 
- 	/**
- 	 * gibt alle felder zurück
- 	 *
- 	 * @param String $table
- 	 * @return Array
- 	 */
+     /**
+      * gibt alle felder zurück
+      *
+      * @param String $table
+      * @return Array
+      */
     public function getFields($table)
     {
         return $this->_DB->Table()->getFields($table);
@@ -195,16 +195,16 @@ class Utils_MyDB
         return $this->_DB->Table()->getTables();
     }
 
- 	/**
- 	 * tabelle, name, 'email'=>'horst@desgibbetnet.net'),array('id'=>12)
+     /**
+      * tabelle, name, 'email'=>'horst@desgibbetnet.net'),array('id'=>12)
      * oder
      * tabelle, name, 'email'=>'horst@desgibbetnet.net'),"id=12 AND nachname = 'Meier'"
      *
- 	 * @param String $table
- 	 * @param String $field
- 	 * @param String, Array $fieldAndId
- 	 * @return Array
- 	 */
+      * @param String $table
+      * @param String $field
+      * @param String, Array $fieldAndId
+      * @return Array
+      */
     public function getOneData($table, $field, $fieldAndId)
     {
         return $this->getData(array(
@@ -271,7 +271,7 @@ class Utils_MyDB
     {
         return $this->_DB->exec(array(
             'delete' => true,
-        	'from'   => $table,
+            'from'   => $table,
             'where'  => $fieldAndId
         ));
     }
@@ -307,7 +307,7 @@ class Utils_MyDB
     public function createTableFields($table, $fields)
     {
         $this->_DB->Table()->appendFields($table, $fields);
-	}
+    }
 
     /**
      * Löscht die Felder einer Tabelle, wenn die Tabelle keine Felder mehr hätte wird diese gelöscht
@@ -361,7 +361,7 @@ class Utils_MyDB
      * @param unknown_type $table
      * @return Array
      */
-	public function getRowsFromTable($table)
+    public function getRowsFromTable($table)
     {
         return $this->_DB->Table()->getColumns($table);
     }
@@ -389,7 +389,7 @@ class Utils_MyDB
         return $this->_DB->Table()->getKeys($table);
     }
 
-	/**
+    /**
      * Prüft ob der PrimaryKey gesetzt ist
      *
      * @param String $table
@@ -447,7 +447,7 @@ class Utils_MyDB
      *
      * @return Bool
      */
-	public function setIndex($table, $index)
+    public function setIndex($table, $index)
     {
         return $this->_DB->Table()->setIndex($table, $index);
     }
@@ -460,7 +460,7 @@ class Utils_MyDB
      *
      * @return Bool
      */
-	public function setFulltext($table, $index)
+    public function setFulltext($table, $index)
     {
         return $this->_DB->Table()->setFulltext($table, $index);
     }
@@ -503,4 +503,3 @@ class Utils_MyDB
 
     }
 }
-?>

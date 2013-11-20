@@ -444,7 +444,7 @@ define('controls/upload/File', [
             this.$is_paused = true;
 
             if ( this.$PauseResume ) {
-                this.$PauseResume.setAttribute('text', 'forführen');
+                this.$PauseResume.setAttribute('text', 'fortführen');
             }
         },
 

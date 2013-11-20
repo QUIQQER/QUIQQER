@@ -100,7 +100,7 @@ class Utils_Request_FTP
 				$this->_host = $settings['host'];
 			} else
 			{
-				throw new QException('No Host given');
+				throw new \QUI\Exception('No Host given');
 			}
 
 			if(isset($settings['password']))
@@ -108,7 +108,7 @@ class Utils_Request_FTP
 				$this->_password = $settings['password'];
 			} else
 			{
-				throw new QException('No Password given');
+				throw new \QUI\Exception('No Password given');
 			}
 
 			if(isset($settings['username']))
@@ -116,19 +116,19 @@ class Utils_Request_FTP
 				$this->_username = $settings['username'];
 			} else
 			{
-				throw new QException('No Username given');
+				throw new \QUI\Exception('No Username given');
 			}
 
 		} else
 		{
-			throw new QException('Settings must be an Array');
+			throw new \QUI\Exception('Settings must be an Array');
 		}
 	}
 
 	/**
 	 * Erstellt eine Veribndung zum Server
 	 *
-	 * @throws QException
+	 * @throws \QUI\Exception
 	 */
 	public function connect()
 	{
@@ -160,14 +160,14 @@ class Utils_Request_FTP
 			}
 		}
 
-		throw new QException('Fehler bei der Verbindung zu Server ' . $this->_host);
+		throw new \QUI\Exception('Fehler bei der Verbindung zu Server ' . $this->_host);
 	}
 
 	/**
 	 * Statusprüfung
 	 *
 	 * @return Bool
-	 * @throws QException
+	 * @throws \QUI\Exception
 	 */
 	public function isOk()
 	{
@@ -175,7 +175,7 @@ class Utils_Request_FTP
 
 		if ($this->_message == "" || preg_match('/^5/', $this->_message) )
 		{
-			throw new QException($this->_message);
+			throw new \QUI\Exception($this->_message);
 			return 0;
 		}
 

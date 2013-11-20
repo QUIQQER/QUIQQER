@@ -14,123 +14,123 @@
  * @todo we need that?
  */
 
-class Controls_Select_Select extends QDOM
+class Controls_Select_Select extends \QUI\QDOM
 {
     /**
      * Parent Object
      * @var Controls_Control
      */
-	private $_parent;
+    private $_parent;
 
-	/**
-	 * Sub items
-	 * @var array
-	 */
-	private $_items = array();
+    /**
+     * Sub items
+     * @var array
+     */
+    private $_items = array();
 
-	/**
-	 * constructor
-	 *
-	 * @param array $settings
-	 */
-	public function __construct(array $settings)
-	{
-		$this->setAttributes($settings);
-	}
+    /**
+     * constructor
+     *
+     * @param array $settings
+     */
+    public function __construct(array $settings)
+    {
+        $this->setAttributes($settings);
+    }
 
-	/**
-	 * Ein Optionfield hinzufügen
-	 *
-	 * @param Controls_Select_Option $option
-	 */
-	public function appendChild( Controls_Select_Option $option)
-	{
-		$this->_items[] = $option;
-	}
+    /**
+     * Ein Optionfield hinzufügen
+     *
+     * @param Controls_Select_Option $option
+     */
+    public function appendChild( Controls_Select_Option $option)
+    {
+        $this->_items[] = $option;
+    }
 
-	/**
-	 * Parent setzen
-	 *
-	 * @param Controls_Toolbar_Bar $parent
-	 */
-	public function addParent($parent)
-	{
-	    $this->_parent = $parent;
-	}
+    /**
+     * Parent setzen
+     *
+     * @param Controls_Toolbar_Bar $parent
+     */
+    public function addParent($parent)
+    {
+        $this->_parent = $parent;
+    }
 
-	/**
-	 * Namen vom Objekt bekommen
-	 *
-	 * @return String
-	 * @deprecated Es sollte getAttribute('name') verwendet werden
-	 */
-	public function getName()
-	{
-		return $this->getAttribute('name');
-	}
+    /**
+     * Namen vom Objekt bekommen
+     *
+     * @return String
+     * @deprecated Es sollte getAttribute('name') verwendet werden
+     */
+    public function getName()
+    {
+        return $this->getAttribute('name');
+    }
 
-	/**
-	 * Enter description here...
-	 *
-	 * @return Array
-	 */
-	public function getChildren()
-	{
-		 return $this->_items;
-	}
+    /**
+     * Enter description here...
+     *
+     * @return Array
+     */
+    public function getChildren()
+    {
+         return $this->_items;
+    }
 
-	/**
-	 * create the jsobject and the create
-	 * @return String
-	 */
-	public function create()
-	{
-		$jsString  = 'var '.$this->getAttribute('name') .' = '. $this->jsObject() .';';
-	 	$jsString .= $this->_parent->getName().'.appendChild( '.$this->getAttribute('name').' );';
+    /**
+     * create the jsobject and the create
+     * @return String
+     */
+    public function create()
+    {
+        $jsString  = 'var '.$this->getAttribute('name') .' = '. $this->jsObject() .';';
+         $jsString .= $this->_parent->getName().'.appendChild( '.$this->getAttribute('name').' );';
 
-		return $jsString;
-	}
+        return $jsString;
+    }
 
-	/**
-	 * create only the jsobject
-	 * @return String
-	 */
-	public function jsObject()
-	{
-		$allattributes = $this->getAllAttributes();
+    /**
+     * create only the jsobject
+     * @return String
+     */
+    public function jsObject()
+    {
+        $allattributes = $this->getAllAttributes();
 
-		$jsString = 'new _ptools.Select({'.
-			'name: "'.$this->getAttribute('name').'",';
+        $jsString = 'new _ptools.Select({'.
+            'name: "'.$this->getAttribute('name').'",';
 
-		foreach ($allattributes as $key => $setting)
-		{
-			if($key != 'name' && $key != 'text') {
-				$jsString  .= $key.': '. json_encode($setting) .',';
-			}
-		}
+        foreach ($allattributes as $key => $setting)
+        {
+            if($key != 'name' && $key != 'text') {
+                $jsString  .= $key.': '. json_encode($setting) .',';
+            }
+        }
 
-		if( $this->getAttribute('text') )
-		{
-			$jsString .= 'text: "'.$this->getAttribute('text').'"';
-		} else
-		{
-			$jsString .= 'text: ""';
-		}
+        if( $this->getAttribute('text') )
+        {
+            $jsString .= 'text: "'.$this->getAttribute('text').'"';
+        } else
+        {
+            $jsString .= 'text: ""';
+        }
 
-		$jsString .= '})';
+        $jsString .= '})';
 
 
-		if(count( $this->_items ) > 0)
-		{
-			foreach ($this->_items as $itm)
-			{
-				$itm->addParent( $this );
-				$jsString .= '.appendChild('. $itm->jsObject() .')';
-			}
-		}
+        if(count( $this->_items ) > 0)
+        {
+            foreach ($this->_items as $itm)
+            {
+                $itm->addParent( $this );
+                $jsString .= '.appendChild('. $itm->jsObject() .')';
+            }
+        }
 
-		return $jsString;
-	}
+        return $jsString;
+    }
 }
 
 ?>

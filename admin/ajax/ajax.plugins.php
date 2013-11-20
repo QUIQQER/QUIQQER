@@ -37,7 +37,7 @@ function ajax_plugins_getmanager()
     $Smarty = QUI_Template::getEngine(true);
 
     // Plugins einlesen
-    $OPT = Utils_System_File::readDir(OPT_DIR);
+    $OPT = \QUI\Utils\System\File::readDir(OPT_DIR);
 
     $Plugins = array();
     $_tmp    = array();
@@ -98,7 +98,7 @@ function ajax_plugins_getmanager()
     try
     {
         $_plugin_list = $Update->pluginGetAvailablePlugins();
-    } catch (QException $e)
+    } catch (\QUI\Exception $e)
     {
         $_plugin_list = array();
     }
@@ -133,7 +133,7 @@ function ajax_plugins_get_remove_manager()
     $Smarty = QUI_Template::getEngine(true);
 
     // Plugins einlesen
-    $OPT = Utils_System_File::readDir(OPT_DIR);
+    $OPT = \QUI\Utils\System\File::readDir(OPT_DIR);
     sort($OPT);
 
     $Plugins = array();
@@ -196,7 +196,7 @@ function ajax_plugins_get_update_manager()
     try
     {
         $_plugin_list = $Update->pluginGetAvailableUpdates();
-    } catch (QException $e)
+    } catch (\QUI\Exception $e)
     {
          $_plugin_list = array();
     }

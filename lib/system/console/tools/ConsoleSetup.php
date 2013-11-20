@@ -48,11 +48,9 @@ class ConsoleSetup extends System_Console_Tool
         {
             \QUI_Setup::all();
 
-        } catch ( \QException $Exception )
+        } catch ( \QUI\Exception $Exception )
         {
             $this->message( $Exception->getMessage(), 'red' );
         }
     }
 }
-
-?>

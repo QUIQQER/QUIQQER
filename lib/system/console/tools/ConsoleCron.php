@@ -69,7 +69,7 @@ class ConsoleCron extends System_Console_Tool
 		try
 		{
 			$Cron = $this->_getCron($params['--cron']);
-		} catch (QException $e)
+		} catch (\QUI\Exception $e)
 		{
 			$this->message("Der Cron wurde nicht gefunden\n\n", 'red');
 			exit;
@@ -112,7 +112,7 @@ class ConsoleCron extends System_Console_Tool
 			return new $class($entry);
 		}
 
-		throw new QException('Cron wurde nicht gefunden');
+		throw new \QUI\Exception('Cron wurde nicht gefunden');
 	}
 }
 

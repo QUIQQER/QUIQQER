@@ -11,7 +11,7 @@
  * @package com.pcsg.qui.controls.contextmenu
  */
 
-Class Controls_Contextmenu_Baritem extends QDOM
+Class Controls_Contextmenu_Baritem extends \QUI\QDOM
 {
     /**
      * subitems

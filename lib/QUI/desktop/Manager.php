@@ -20,7 +20,7 @@ class QUI_Desktop_Manager
     /**
      * Get the Desktop
      *
-     * @throws QException
+     * @throws \QUI\Exception
      * @return QUI_Desktop
      */
     public function get($desktopid)
@@ -39,7 +39,7 @@ class QUI_Desktop_Manager
 
         if ( !isset( $result[ 0 ] ) )
         {
-            throw new \QException(
+            throw new \QUI\Exception(
                 'Desktop not found',
                 404
             );
@@ -105,7 +105,7 @@ class QUI_Desktop_Manager
     /**
      * Create a new Desktop for the user
      *
-     * @throws QException
+     * @throws \QUI\Exception
      * @return QUI_Desktop
      */
     public function create($title='')
@@ -234,7 +234,7 @@ class QUI_Desktop_Manager
     {
         // system widgets
         $dir   = SYS_DIR .'widgets/';
-        $files = \Utils_System_File::readDir( $dir );
+        $files = \QUI\Utils\System\File::readDir( $dir );
 
         $result = array();
 

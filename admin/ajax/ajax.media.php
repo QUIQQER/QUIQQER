@@ -144,7 +144,7 @@ $ajax->register('ajax_media_folder_createfolder', array('project', 'id', 'folder
  * @param unknown_type $id
  * @param unknown_type $background
  * @param unknown_type $radius
- * @throws QException
+ * @throws \QUI\Exception
  */
 function ajax_media_folder_roundcorners($project, $id, $background, $radius)
 {
@@ -153,7 +153,7 @@ function ajax_media_folder_roundcorners($project, $id, $background, $radius)
     $Folder  = $Media->get( (int)$id );
 
     if ($Folder->getType() != 'FOLDER') {
-        throw new QException('Diese Funktion steht nur bei Ordnern zur Verfügung');
+        throw new \QUI\Exception('Diese Funktion steht nur bei Ordnern zur Verfügung');
     }
 
     return $Folder->setRoundCorners($background, $radius);
@@ -166,7 +166,7 @@ $ajax->register('ajax_media_folder_roundcorners', array('project', 'id', 'backgr
  * @param unknown_type $project
  * @param unknown_type $id
  * @param unknown_type $params
- * @throws QException
+ * @throws \QUI\Exception
  */
 function ajax_media_folder_watermark($project, $id, $params)
 {
@@ -179,7 +179,7 @@ function ajax_media_folder_watermark($project, $id, $params)
     );
 
     if ($Folder->getType() != 'FOLDER') {
-        throw new QException('Diese Funktion steht nur bei Ordnern zur Verfügung');
+        throw new \QUI\Exception('Diese Funktion steht nur bei Ordnern zur Verfügung');
     }
 
     $Folder->setWatermark($params);
@@ -395,7 +395,7 @@ function ajax_media_trash_destroy($project, $ids)
             }
         }
 
-    } catch (QException $e)
+    } catch (\QUI\Exception $e)
     {
         // nothing
     }
@@ -419,8 +419,8 @@ function ajax_media_folder_getchildren($project, $id, $mtype, $order, $filename)
     $Project = QUI::getProject($project);
     $Media   = $Project->getMedia(); /* $Media Media */
 
-    $mtype = Utils_String::JSString($mtype);
-    $order = Utils_String::JSString($order);
+    $mtype = \QUI\Utils\String::JSString($mtype);
+    $order = \QUI\Utils\String::JSString($order);
     $name  = PT_Bool::JSBool($filename);
 
     $Obj = $Media->get( (int)$id ); /* @var $Obj MF_Folder */

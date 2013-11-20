@@ -26,7 +26,7 @@ class Temp
         $this->_folder = rtrim( $tempfolder, '/' ) .'/';
 
         if ( !is_dir( $this->_folder ) ) {
-            \Utils_System_File::mkdir( $this->_folder );
+            \QUI\Utils\System\File::mkdir( $this->_folder );
         }
     }
 
@@ -37,17 +37,17 @@ class Temp
      */
     public function createFolder()
     {
-		// create a var_dir temp folder
-		do
-		{
-			$folder = $this->_folder . str_replace(
-			    array(' ', '.'),
-			    '',
-			    microtime()
-		    ) .'/';
-		} while ( file_exists( $folder ) );
+        // create a var_dir temp folder
+        do
+        {
+            $folder = $this->_folder . str_replace(
+                array(' ', '.'),
+                '',
+                microtime()
+            ) .'/';
+        } while ( file_exists( $folder ) );
 
-		\Utils_System_File::mkdir( $folder );
+        \QUI\Utils\System\File::mkdir( $folder );
 
         return $folder;
     }

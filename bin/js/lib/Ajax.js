@@ -29,7 +29,7 @@ define('lib/Ajax', [
     QUI.Ajax = QUI.lib.Ajax =
     {
         $onprogress : {},
-        $url        : URL_DIR +'admin/ajax.php',
+        $url        : typeof URL_DIR === 'undefined' ? '' : URL_DIR +'admin/ajax.php',
 
         /**
          * Send a Request

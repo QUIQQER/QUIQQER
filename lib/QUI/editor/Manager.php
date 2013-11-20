@@ -19,7 +19,7 @@ class QUI_Editor_Manager
 {
     /**
      * WYSIWYG editor config
-     * @var QConfig
+     * @var \QUI\Config
      */
     static $Config = null;
 
@@ -34,7 +34,7 @@ class QUI_Editor_Manager
      */
     static function setup()
     {
-        Utils_System_File::mkdir( self::getToolbarsPath() );
+        \QUI\Utils\System\File::mkdir( self::getToolbarsPath() );
 
         if ( !file_exists( CMS_DIR .'etc/wysiwyg/conf.ini' ) ) {
             file_put_contents( CMS_DIR .'etc/wysiwyg/conf.ini', '' );
@@ -66,7 +66,7 @@ class QUI_Editor_Manager
     /**
      * Return the main editor manager (wyiswyg) config object
      *
-     * @return QConfig
+     * @return \QUI\Config
      */
     static function getConf()
     {
@@ -138,7 +138,7 @@ class QUI_Editor_Manager
     static function getToolbars()
     {
         $folder = self::getToolbarsPath();
-        $files  = Utils_System_File::readDir( $folder, true );
+        $files  = \QUI\Utils\System\File::readDir( $folder, true );
 
         try
         {
@@ -153,7 +153,7 @@ class QUI_Editor_Manager
                 array_unshift( $files, $toolbar );
             }
 
-        } catch ( QException $Exception )
+        } catch ( \QUI\Exception $Exception )
         {
 
         }

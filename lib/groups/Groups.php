@@ -11,7 +11,7 @@
  * @package com.pcsg.qui.groups
  */
 
-class Groups_Groups extends QDOM
+class Groups_Groups extends \QUI\QDOM
 {
     const TYPE_BOOL    = 1;
     const TYPE_TEXT    = 2;
@@ -80,12 +80,12 @@ class Groups_Groups extends QDOM
      * @param Integer $id - ID of the Group
      * @return Groups_Group
      *
-     * @throws QException
+     * @throws \QUI\Exception
      */
     public function get($id)
     {
         if ( !$id ) {
-            throw new QException( 'Es wurde keine Gruppen ID übergeben' );
+            throw new \QUI\Exception( 'Es wurde keine Gruppen ID übergeben' );
         }
 
         if ( isset( $this->_groups[ $id ] ) ) {

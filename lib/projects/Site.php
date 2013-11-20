@@ -20,7 +20,7 @@
  * </ul>
  */
 
-class Projects_Site extends QDOM
+class Projects_Site extends \QUI\QDOM
 {
     /**
      * $Events - manage and fires events
@@ -143,7 +143,7 @@ class Projects_Site extends QDOM
         $this->Events   = new QUI_Events_Event();
 
         if ( empty( $this->_id ) ) {
-            throw new \QException( 'Site Error; No ID given:'. $id, 400 );
+            throw new \QUI\Exception( 'Site Error; No ID given:'. $id, 400 );
         }
 
         // DB Tables
@@ -378,11 +378,11 @@ class Projects_Site extends QDOM
         $decode  = json_decode( $params, true );
 
         if ( $decode['active'] != 1 ) {
-            throw new QException( 'Site not exist', 404 );
+            throw new \QUI\Exception( 'Site not exist', 404 );
         }
 
         if ( $decode['deleted'] == 1 ) {
-            throw new QException( 'Site not exist', 404 );
+            throw new \QUI\Exception( 'Site not exist', 404 );
         }
 
         if ( isset( $decode['extra'] ) )
@@ -417,7 +417,7 @@ class Projects_Site extends QDOM
 
         if ( !isset( $result[0] ) )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.site.not.found'
@@ -430,7 +430,7 @@ class Projects_Site extends QDOM
 
         if ( $params['active'] != 1 )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.site.not.found'
@@ -441,7 +441,7 @@ class Projects_Site extends QDOM
 
         if ( $params['deleted'] == 1 )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.site.not.found'
@@ -542,7 +542,7 @@ class Projects_Site extends QDOM
 
             return true;
 
-        } catch (QException $e)
+        } catch (\QUI\Exception $e)
         {
             // nothing
         }
@@ -584,7 +584,7 @@ class Projects_Site extends QDOM
                 }
             }
 
-        } catch (QException $e)
+        } catch (\QUI\Exception $e)
         {
 
         }
@@ -745,7 +745,7 @@ class Projects_Site extends QDOM
 
                 $children[] = $Child;
 
-            } catch ( QException $e )
+            } catch ( \QUI\Exception $e )
             {
                 if ( DEBUG_MODE ) {
                     System_Log::writeException( $e );
@@ -787,7 +787,7 @@ class Projects_Site extends QDOM
      * Liefert die nächstfolgende Seite
      *
      * @return Projects_Site
-     * @throws QException
+     * @throws \QUI\Exception
      */
     public function nextSibling()
     {
@@ -802,7 +802,7 @@ class Projects_Site extends QDOM
             }
         }
 
-        throw new QException('Die Seite besitzt keine nächstfolgende Seite');
+        throw new \QUI\Exception('Die Seite besitzt keine nächstfolgende Seite');
     }
 
     /**
@@ -834,7 +834,7 @@ class Projects_Site extends QDOM
                     try
                     {
                         $result[] = $Project->get( (int)$list[ $key + $i ] );
-                    } catch (QException $e)
+                    } catch (\QUI\Exception $e)
                     {
 
                     }
@@ -849,7 +849,7 @@ class Projects_Site extends QDOM
      * Liefert die vorhergehenden Seite
      *
      * @return Projects_Site
-     * @throws QException
+     * @throws \QUI\Exception
      */
     public function previousSibling()
     {
@@ -864,7 +864,7 @@ class Projects_Site extends QDOM
             }
         }
 
-        throw new QException('Die Seite besitzt keine vorhergehenden Seite');
+        throw new \QUI\Exception('Die Seite besitzt keine vorhergehenden Seite');
     }
 
     /**
@@ -896,7 +896,7 @@ class Projects_Site extends QDOM
                     try
                     {
                         $result[] = $Project->get( (int)$list[ $key - $i ] );
-                    } catch (QException $e)
+                    } catch (\QUI\Exception $e)
                     {
 
                     }
@@ -977,7 +977,7 @@ class Projects_Site extends QDOM
             return $result[0]["id"];
         }
 
-        throw new QException(
+        throw new \QUI\Exception(
             'No Child found with name '. $name, 404
         );
     }
@@ -993,7 +993,7 @@ class Projects_Site extends QDOM
         $id = (int)$id;
 
         if ( $id == $this->getId() ) {
-            throw new QException( 'Page can not be a child of itself' );
+            throw new \QUI\Exception( 'Page can not be a child of itself' );
         }
 
         if ( isset( $this->_children[ $id ] ) ) {
@@ -1010,7 +1010,7 @@ class Projects_Site extends QDOM
         ));
 
         if ( !isset( $result[0] ) ) {
-            throw new QException( 'Child not found', 404 );
+            throw new \QUI\Exception( 'Child not found', 404 );
         }
 
         $this->_children[ $id ] = $this->getProject()->get( $id );
@@ -1432,7 +1432,7 @@ class Projects_Site extends QDOM
                     $search = false;
                 }
 
-            } catch ( QException $e )
+            } catch ( \QUI\Exception $e )
             {
                 $search = false;
             }
@@ -1481,7 +1481,7 @@ class Projects_Site extends QDOM
                 try
                 {
                     $Plugin->onDestroy( $this, $Project, $DataBase );
-                } catch ( \QException $e )
+                } catch ( \QUI\Exception $e )
                 {
                     \System_Log::writeException( $e );
                 }
@@ -1599,7 +1599,7 @@ class Projects_Site extends QDOM
      *
      * @param string $permission - name of the permission
      * @param Users_User $User - optional
-     * @throws QException
+     * @throws \QUI\Exception
      */
     public function checkPermission($permission, $User=false)
     {

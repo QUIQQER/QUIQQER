@@ -12,7 +12,7 @@
  * @package com.pcsg.qui
  */
 
-class QUI_Desktop_Widget extends QDOM
+class QUI_Desktop_Widget extends \QUI\QDOM
 {
     /**
      * Konstruktor

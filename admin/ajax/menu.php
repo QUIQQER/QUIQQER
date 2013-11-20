@@ -41,7 +41,7 @@ function ajax_menu()
 
     // read the settings.xmls
     $dir      = SYS_DIR .'settings/';
-    $files    = \Utils_System_File::readDir( $dir );
+    $files    = \QUI\Utils\System\File::readDir( $dir );
     $Settings = $Menu->getElementByName( 'settings' );
 
     foreach ( $files as $file )
@@ -106,7 +106,7 @@ function ajax_menu()
         \QUI\Update::importAllMenuXMLs();
     }
 
-    $files = \Utils_System_File::readDir( $dir );
+    $files = \QUI\Utils\System\File::readDir( $dir );
 
     foreach ( $files as $file ) {
         \QUI_Menu::addXMLFile( $Menu, $dir . $file );

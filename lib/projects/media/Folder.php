@@ -46,7 +46,7 @@ class Projects_Media_Folder
                 $Item = $Media->get( $id );
                 $Item->activate();
 
-            } catch ( QException $Exception )
+            } catch ( \QUI\Exception $Exception )
             {
                 System_Log::writeException( $Exception );
             }
@@ -85,7 +85,7 @@ class Projects_Media_Folder
                 $Item = $Media->get( $id );
                 $Item->deactivate();
 
-            } catch ( QException $Exception )
+            } catch ( \QUI\Exception $Exception )
             {
                 System_Log::writeException( $Exception );
             }
@@ -114,7 +114,7 @@ class Projects_Media_Folder
                     $File->delete();
                 }
 
-            } catch ( QException $Exception )
+            } catch ( \QUI\Exception $Exception )
             {
                 System_Log::writeException( $Exception );
             }
@@ -145,7 +145,7 @@ class Projects_Media_Folder
                 );
 
 
-            } catch ( QException $Exception )
+            } catch ( \QUI\Exception $Exception )
             {
                 System_Log::writeException( $Exception );
             }
@@ -162,7 +162,7 @@ class Projects_Media_Folder
             array('child'  => $this->getId())
         );
 
-        Utils_System_File::unlink( $this->getFullPath() );
+        \QUI\Utils\System\File::unlink( $this->getFullPath() );
 
 
         // delete cache
@@ -217,7 +217,7 @@ class Projects_Media_Folder
 
         if ( $Parent->childWithNameExists( $newname ) )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 'Ein Ordner mit dem gleichen Namen existiert bereits.', 403
             );
         }
@@ -249,7 +249,7 @@ class Projects_Media_Folder
             array('id' => $this->getId())
         );
 
-        Utils_System_File::move(
+        \QUI\Utils\System\File::move(
             $this->_Media->getFullPath() . $old_path,
             $this->_Media->getFullPath() . $new_path
         );
@@ -278,7 +278,7 @@ class Projects_Media_Folder
 
         if ( $Folder->childWithNameExists( $this->getAttribute('name') ) )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 'Ein Ordner mit dem gleichen Namen existiert bereits.', 403
             );
         }
@@ -287,8 +287,8 @@ class Projects_Media_Folder
         $old_path = $this->getPath();
         $new_path = $Folder->getPath() .'/'. $this->getAttribute('name');
 
-        $old_path = Utils_String::replaceDblSlashes( $old_path );
-        $new_path = Utils_String::replaceDblSlashes( $new_path );
+        $old_path = \QUI\Utils\String::replaceDblSlashes( $old_path );
+        $new_path = \QUI\Utils\String::replaceDblSlashes( $new_path );
 
 
         // update children paths
@@ -325,7 +325,7 @@ class Projects_Media_Folder
             )
         );
 
-        Utils_System_File::move(
+        \QUI\Utils\System\File::move(
             $this->_Media->getFullPath() . $old_path,
             $this->_Media->getFullPath() . $new_path
         );
@@ -346,7 +346,7 @@ class Projects_Media_Folder
     {
         if ( $Folder->childWithNameExists( $this->getAttribute('name') ) )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 'Ein Ordner mit dem gleichen Namen existiert bereits.', 403
             );
         }
@@ -368,7 +368,7 @@ class Projects_Media_Folder
                 $Item = $this->_Media->get( $id );
                 $Item->copyTo( $Copy );
 
-            } catch ( QException $Exception )
+            } catch ( \QUI\Exception $Exception )
             {
                 System_Log::writeException( $Exception );
             }
@@ -393,7 +393,7 @@ class Projects_Media_Folder
             {
                 $this->_children[] = $this->_Media->get( $id );
 
-            } catch ( QException $Exception )
+            } catch ( \QUI\Exception $Exception )
             {
                 System_Log::writeException( $Exception );
             }
@@ -548,7 +548,7 @@ class Projects_Media_Folder
             try
             {
                 $folders[] = $this->_Media->get( (int)$entry['id'] );
-            } catch ( QException $Exception )
+            } catch ( \QUI\Exception $Exception )
             {
                 System_Log::writeException( $Exception );
             }
@@ -586,7 +586,7 @@ class Projects_Media_Folder
         ));
 
         if ( !isset( $result[0] ) ) {
-            throw new QException('File '. $filename .' not found', 404);
+            throw new \QUI\Exception('File '. $filename .' not found', 404);
         }
 
         return $this->_Media->get( (int)$result[0]['id'] );
@@ -605,7 +605,7 @@ class Projects_Media_Folder
             $Child = $this->getChildByName( $name );
 
             return true;
-        } catch ( \QException $e )
+        } catch ( \QUI\Exception $e )
         {
 
         }
@@ -655,11 +655,11 @@ class Projects_Media_Folder
 
         $cache_dir = CMS_DIR . $this->_Media->getCacheDir() . $this->getAttribute('file');
 
-        if ( Utils_System_File::mkdir($cache_dir) ) {
+        if ( \QUI\Utils\System\File::mkdir($cache_dir) ) {
             return true;
         }
 
-        throw new QException(
+        throw new \QUI\Exception(
             'createCache() Error; Could not create Folder '. $cache_dir,
             506
         );
@@ -671,7 +671,7 @@ class Projects_Media_Folder
      */
     public function deleteCache()
     {
-        Utils_System_File::unlink(
+        \QUI\Utils\System\File::unlink(
             $this->_Media->getAttribute('cache_dir') . $this->getAttribute('file')
         );
 
@@ -683,7 +683,7 @@ class Projects_Media_Folder
      *
      * @param String $foldername - Name of the new folder
      * @return Projects_Media_Folder
-     * @throws QException
+     * @throws \QUI\Exception
      */
     public function createFolder($foldername)
     {
@@ -699,13 +699,13 @@ class Projects_Media_Folder
 
         if ( is_dir($dir . $new_name) )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 'Der Ordner existiert schon ' . $dir . $new_name,
                 701
             );
         }
 
-        Utils_System_File::mkdir( $dir . $new_name );
+        \QUI\Utils\System\File::mkdir( $dir . $new_name );
 
         $table     = $this->_Media->getTable();
         $table_rel = $this->_Media->getTable('relations');
@@ -739,7 +739,7 @@ class Projects_Media_Folder
             return $this->_Media->get( $id );
         }
 
-        throw new QException(
+        throw new \QUI\Exception(
             'Der Ordner konnte nicht erstellt werden',
             507
         );
@@ -751,25 +751,25 @@ class Projects_Media_Folder
      * @param String $file - Path to the File
      *
      * @return Projects_Media_Item
-     * @throws QException
+     * @throws \QUI\Exception
      */
     public function uploadFile($file)
     {
         if ( !file_exists($file) ) {
-            throw new QException( 'Datei existiert nicht.', 404 );
+            throw new \QUI\Exception( 'Datei existiert nicht.', 404 );
         }
 
         if ( is_dir($file) ) {
             return $this->_uploadFolder( $file );
         }
 
-        $fileinfo = Utils_System_File::getInfo( $file );
+        $fileinfo = \QUI\Utils\System\File::getInfo( $file );
         $filename = Projects_Media_Utils::stripMediaName( $fileinfo['basename'] );
 
         // if no ending, we search for one
         if ( !isset($fileinfo['extension']) || empty($fileinfo['extension']) )
         {
-            $filename .= Utils_System_File::getEndingByMimeType(
+            $filename .= \QUI\Utils\System\File::getEndingByMimeType(
                 $fileinfo['mime_type']
             );
         }
@@ -777,11 +777,11 @@ class Projects_Media_Folder
         $new_file = $this->getFullPath() . $filename;
 
         if ( file_exists( $new_file ) ) {
-            throw new QException( $filename .' existiert bereits', 705 );
+            throw new \QUI\Exception( $filename .' existiert bereits', 705 );
         }
 
         // copy the file to the media
-        Utils_System_File::copy( $file, $new_file );
+        \QUI\Utils\System\File::copy( $file, $new_file );
 
 
         // create the database entry
@@ -789,7 +789,7 @@ class Projects_Media_Folder
         $table     = $this->_Media->getTable();
         $table_rel = $this->_Media->getTable( 'relations' );
 
-        $new_file_info = Utils_System_File::getInfo( $new_file );
+        $new_file_info = \QUI\Utils\System\File::getInfo( $new_file );
         $title         = str_replace( '_', ' ', $new_file_info['filename'] );
 
         if ( empty($new_file_info['filename']) ) {
@@ -841,7 +841,7 @@ class Projects_Media_Folder
      */
     protected function _uploadFolder($path, $Folder=false)
     {
-        $files = Utils_System_File::readDir( $path );
+        $files = \QUI\Utils\System\File::readDir( $path );
 
         foreach ( $files as $file )
         {
@@ -854,7 +854,7 @@ class Projects_Media_Folder
                 {
                     $NewFolder = $this->getChildByName( $foldername );
 
-                } catch ( QException $Exception )
+                } catch ( \QUI\Exception $Exception )
                 {
                     $NewFolder = $this->createFolder($foldername);
                 }

@@ -10,7 +10,7 @@ function ajax_system_logs_get($page, $limit, $search='')
     $dir = VAR_DIR .'log/';
 
     $list  = array();
-    $files = \Utils_System_File::readDir( $dir );
+    $files = \QUI\Utils\System\File::readDir( $dir );
 
     rsort( $files );
 

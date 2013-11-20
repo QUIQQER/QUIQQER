@@ -59,7 +59,7 @@ class QUI_Upload_Manager
     /**
      * Initialized the upload
      *
-     * @throws QException
+     * @throws \QUI\Exception
      */
     public function init()
     {
@@ -131,7 +131,7 @@ class QUI_Upload_Manager
      */
     public function upload()
     {
-        \Utils_System_File::mkdir(
+        \QUI\Utils\System\File::mkdir(
             $this->_getUserUploadDir()
         );
 
@@ -170,7 +170,7 @@ class QUI_Upload_Manager
             {
                 $this->_formUpload( $onfinish, $params );
 
-            } catch ( \QException $Exception )
+            } catch ( \QUI\Exception $Exception )
             {
                 $this->flushMessage( $Exception->toArray() );
                 return;
@@ -215,7 +215,7 @@ class QUI_Upload_Manager
         fclose( $Handle );
 
         // upload finish?
-        $fileinfo = \Utils_System_File::getInfo($tmp_name, array(
+        $fileinfo = \QUI\Utils\System\File::getInfo($tmp_name, array(
             'filesize' => true
         ));
 
@@ -251,7 +251,7 @@ class QUI_Upload_Manager
             $this->_delete( $filename );
 
             // delete the real file
-            \Utils_System_File::unlink( $tmp_name );
+            \QUI\Utils\System\File::unlink( $tmp_name );
 
             echo $result;
         }
@@ -262,7 +262,7 @@ class QUI_Upload_Manager
      *
      * @param {String|Function} $function - Function
      * @param {Array} $params			  - function parameter
-     * @throws QException
+     * @throws \QUI\Exception
      */
     protected function _callFunction($function, $params=array())
     {
@@ -285,7 +285,7 @@ class QUI_Upload_Manager
 
             if ( !function_exists( $function ) )
             {
-                throw new \QException(
+                throw new \QUI\Exception(
                     'Function '. $function .' not found',
                     404
                 );
@@ -316,7 +316,7 @@ class QUI_Upload_Manager
             return \QUI::$Ajax->call();
         }
 
-        throw new \QException(
+        throw new \QUI\Exception(
             'Function '. $function .' not found',
             404
         );
@@ -329,13 +329,13 @@ class QUI_Upload_Manager
      * @param {String|Function} $onfinish - Function
      * @param $params - extra params for the \QDOM() File Object
      *
-     * @throws QException
+     * @throws \QUI\Exception
      */
     protected function _formUpload($onfinish, $params)
     {
         if ( empty( $_FILES ) || !isset( $_FILES['files'] ) )
         {
-            throw new \QException(
+            throw new \QUI\Exception(
                 'No files where send', 400
             );
         }
@@ -352,7 +352,7 @@ class QUI_Upload_Manager
             $file      = $uploaddir . $filename;
 
             if ( !move_uploaded_file( $list["tmp_name"], $file ) ) {
-                throw new \QException( 'Could not move file'. $filename );
+                throw new \QUI\Exception( 'Could not move file'. $filename );
             }
 
             // extract if the the extract file is set
@@ -375,7 +375,7 @@ class QUI_Upload_Manager
             ));
 
             // delete the real file
-            \Utils_System_File::unlink( $file );
+            \QUI\Utils\System\File::unlink( $file );
 
             return;
         }
@@ -389,7 +389,7 @@ class QUI_Upload_Manager
             $file      = $uploaddir . $filename;
 
             if ( !move_uploaded_file( $list["tmp_name"], $file ) ) {
-                throw new \QException( 'Could not move file'. $filename );
+                throw new \QUI\Exception( 'Could not move file'. $filename );
             }
 
             // extract if the the extract file is set
@@ -412,7 +412,7 @@ class QUI_Upload_Manager
             ));
 
             // delete the real file
-            \Utils_System_File::unlink( $file );
+            \QUI\Utils\System\File::unlink( $file );
         }
     }
 
@@ -421,7 +421,7 @@ class QUI_Upload_Manager
      *
      * @param unknown_type $error
      * @return Bool
-     * @throws QException
+     * @throws \QUI\Exception
      */
     protected function _checkUpload($error)
     {
@@ -433,31 +433,31 @@ class QUI_Upload_Manager
             break;
 
             case UPLOAD_ERR_INI_SIZE:
-                throw new QException(
+                throw new \QUI\Exception(
                     'The uploaded file exceeds the upload_max_filesize'
                 );
             break;
 
             case UPLOAD_ERR_FORM_SIZE:
-                throw new QException(
+                throw new \QUI\Exception(
                     'The uploaded file exceeds the MAX_FILE_SIZE'
                 );
             break;
 
             case UPLOAD_ERR_PARTIAL:
-                throw new QException(
+                throw new \QUI\Exception(
                     'The uploaded file was only partially uploaded.'
                 );
             break;
 
             case UPLOAD_ERR_NO_FILE:
-                throw new QException(
+                throw new \QUI\Exception(
                     'No file was uploaded'
                 );
             break;
 
             case UPLOAD_ERR_NO_TMP_DIR:
-                throw new QException(
+                throw new \QUI\Exception(
                     'Missing a temporary folder'
                 );
             break;
@@ -470,30 +470,30 @@ class QUI_Upload_Manager
      * Extract the Archiv
      *
      * @param String $filename
-     * @throws QException
-     * @return QDOM
+     * @throws \QUI\Exception
+     * @return \QUI\QDOM
      *
      * @todo more archive types
      */
     protected function _extract($filename)
     {
-        $fileinfo = Utils_System_File::getInfo( $filename );
+        $fileinfo = \QUI\Utils\System\File::getInfo( $filename );
 
         if ( $fileinfo['mime_type'] != 'application/zip' )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 'No supported archive was uploaded. Could not extract the File'
             );
         }
 
         $to = $this->_getUserUploadDir() . $fileinfo['filename'];
 
-        Utils_System_File::unlink( $to );
-        Utils_System_File::mkdir( $to );
+        \QUI\Utils\System\File::unlink( $to );
+        \QUI\Utils\System\File::mkdir( $to );
 
         Utils_Packer_Zip::unzip( $filename, $to );
 
-        $File = new QDOM();
+        $File = new \QUI\QDOM();
         $File->setAttribute( 'name', $fileinfo['filename'] );
         $File->setAttribute( 'filepath', $to );
 
@@ -551,7 +551,7 @@ class QUI_Upload_Manager
      * Delete the file entry and the uploaded temp file
      *
      * @param String $filename
-     * @throws QException
+     * @throws \QUI\Exception
      */
     protected function _delete($filename)
     {
@@ -564,18 +564,18 @@ class QUI_Upload_Manager
             )
         ));
 
-        Utils_System_File::unlink(
+        \QUI\Utils\System\File::unlink(
             $this->_getUserUploadDir() . $filename
         );
     }
 
     /**
-     * Return a QDOM Object of the file entry
+     * Return a \QUI\QDOM Object of the file entry
      *
      * @param String $filename
      *
-     * @return QDOM
-     * @throws QException
+     * @return \QUI\QDOM
+     * @throws \QUI\Exception
      */
     protected function _getFileData($filename)
     {
@@ -588,10 +588,10 @@ class QUI_Upload_Manager
         ));
 
         if ( !isset($db_result[0]) ) {
-            throw new QException('File not found', 404);
+            throw new \QUI\Exception('File not found', 404);
         }
 
-        $File = new QDOM();
+        $File = new \QUI\QDOM();
         $File->setAttributes( $db_result[0] );
 
         if ( $File->getAttribute('params') )
@@ -625,7 +625,7 @@ class QUI_Upload_Manager
             return array();
         }
 
-        $files  = Utils_System_File::readDir( $dir );
+        $files  = \QUI\Utils\System\File::readDir( $dir );
         $result = array();
 
         foreach ( $files as $file )
@@ -638,7 +638,7 @@ class QUI_Upload_Manager
                 if ( isset($attributes['params']) && is_string($attributes['params']) )
                 {
                     $params    = json_decode( $attributes['params'], true );
-                    $file_info = Utils_System_File::getInfo( $dir . $file );
+                    $file_info = \QUI\Utils\System\File::getInfo( $dir . $file );
 
                     $params['file']['uploaded'] = $file_info['filesize'];
 
@@ -647,10 +647,10 @@ class QUI_Upload_Manager
 
                 $result[] = $attributes;
 
-            } catch ( QException $e )
+            } catch ( \QUI\Exception $e )
             {
                 if ( $e->getCode() === 404 ) {
-                    Utils_System_File::unlink( $dir . $file );
+                    \QUI\Utils\System\File::unlink( $dir . $file );
                 }
             }
         }

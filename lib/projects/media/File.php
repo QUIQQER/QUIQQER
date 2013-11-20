@@ -44,11 +44,11 @@ class Projects_Media_File
 		$original  = $mdir . $file;
 		$cachefile = $cdir . $file;
 
-		$extension = Utils_String::pathinfo($original, PATHINFO_EXTENSION);
+		$extension = \QUI\Utils\String::pathinfo($original, PATHINFO_EXTENSION);
 
 		if ( !in_array( $extension, $WHITE_LIST_EXTENSION ) )
 		{
-            Utils_System_File::unlink( $cachefile );
+            \QUI\Utils\System\File::unlink( $cachefile );
 
 			return $original;
 		}
@@ -63,8 +63,8 @@ class Projects_Media_File
 
 		try
 		{
-			Utils_System_File::copy( $original, $cachefile );
-		} catch ( QException $e )
+			\QUI\Utils\System\File::copy( $original, $cachefile );
+		} catch ( \QUI\Exception $e )
 		{
 			// nothing
 		}
@@ -84,7 +84,7 @@ class Projects_Media_File
 		$cdir = CMS_DIR . $Media->getCacheDir();
 		$file = $this->getAttribute( 'file' );
 
-		Utils_System_File::unlink( $cdir . $file );
+		\QUI\Utils\System\File::unlink( $cdir . $file );
 	}
 
 	/**

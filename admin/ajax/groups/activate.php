@@ -14,7 +14,7 @@ function ajax_groups_activate($gid)
         $gid = array( $gid );
     }
 
-    $Groups = QUI::getGroups();
+    $Groups = \QUI::getGroups();
     $result = array();
 
     foreach ( $gid as $_gid )
@@ -26,9 +26,9 @@ function ajax_groups_activate($gid)
 
             $result[ $_gid ] = $Group->isActive() ? 1 : 0;
 
-        } catch ( QException $Exception )
+        } catch ( \QUI\Exception $Exception )
         {
-            QUI::getMessagesHandler()->addException( $Exception );
+            \QUI::getMessagesHandler()->addException( $Exception );
             continue;
         }
     }
@@ -36,10 +36,8 @@ function ajax_groups_activate($gid)
     return $result;
 }
 
-QUI::$Ajax->register(
-	'ajax_groups_activate',
+\QUI::$Ajax->register(
+    'ajax_groups_activate',
     array('gid'),
     'Permission::checkSU'
 );
-
-?>

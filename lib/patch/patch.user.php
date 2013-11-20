@@ -78,7 +78,7 @@ function patch_user( $Patch )
 				$Project = new Project($project);
 				$langs = $Project->getAttribute('langs');
 
-			} catch(QException $e)
+			} catch(\QUI\Exception $e)
 			{
 				$Patch->write($e->getMessage());
 				continue;
@@ -144,7 +144,7 @@ function patch_user( $Patch )
 		}
 
 		$Patch->write('nobody wird nun angelegt ...');
-	} catch(QException $e)
+	} catch(\QUI\Exception $e)
 	{
 		$Patch->write('Benutzer mit der ID 1 existiert nicht. nobody wird angelegt ...');
 	}
@@ -173,7 +173,7 @@ function patch_user( $Patch )
 			$Patch->write('Falls der Root Benutzer geändert wurde müssen Sie die neue ID ('.$newid.') in etc/conf.ini anpassen');
 		}
 
-	} catch(QException $e)
+	} catch(\QUI\Exception $e)
 	{
 		$Patch->write( $e->getMessage() );
 		return false;

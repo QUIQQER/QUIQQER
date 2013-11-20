@@ -59,25 +59,25 @@ interface Interface_Projects_Media_File
 
     /**
      * Activate the file
-     * @throws QException
+     * @throws \QUI\Exception
      */
     public function activate();
 
     /**
      * Deactivate the file
-     * @throws QException
+     * @throws \QUI\Exception
      */
     public function deactivate();
 
     /**
      * Delete the file, file is in trash
-     * @throws QException
+     * @throws \QUI\Exception
      */
     public function delete();
 
     /**
      * Save the file with all its attributes to the Database
-     * @throws QException
+     * @throws \QUI\Exception
      */
     public function save();
 
@@ -85,19 +85,19 @@ interface Interface_Projects_Media_File
      * Renames the file
      *
      * @param String $newname - new name of the file
-     * @throws QException
+     * @throws \QUI\Exception
      */
     public function rename($newname);
 
     /**
      * create the file cache
-     * @throws QException
+     * @throws \QUI\Exception
      */
     public function createCache();
 
     /**
      * delete the file cache
-     * @throws QException
+     * @throws \QUI\Exception
      */
     public function deleteCache();
 

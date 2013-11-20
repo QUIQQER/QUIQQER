@@ -73,7 +73,7 @@ class QUI_Package_Manager
 
         $this->_composer_json = $this->_vardir .'composer.json';
 
-        \Utils_System_File::mkdir( $this->_vardir );
+        \QUI\Utils\System\File::mkdir( $this->_vardir );
 
         putenv( "COMPOSER_HOME=". $this->_vardir );
 
@@ -117,6 +117,8 @@ class QUI_Package_Manager
         if ( count( $result ) ) {
             $this->_exec = true;
         }
+
+        $this->_refreshInstalledList();
 
         if ( !file_exists( $this->_composer_json ) ) {
             $this->_createComposerJSON();
@@ -180,6 +182,8 @@ class QUI_Package_Manager
 
         foreach ( $list as $entry )
         {
+            System_Log::writeRecursive($entry);
+
             $version = $entry['version'];
 
             // so, we get newer versions
@@ -187,10 +191,14 @@ class QUI_Package_Manager
                   preg_match( "/[0-9]/", $version ) )
             {
                 $version = '>='. $version;
+                //$version = '*';
             }
 
             $require[ $entry['name'] ] = $version;
         }
+
+        \System_Log::writeRecursive( $require );
+
 
         $template = str_replace(
             '{$REQUIRE}',
@@ -240,6 +248,61 @@ class QUI_Package_Manager
     }
 
     /**
+     * Refreshed the installed package list
+     * If some packages are uploaded, sometimes the package versions and data are not correct
+     *
+     * this method correct it
+     */
+    protected function _refreshInstalledList()
+    {
+        $installed_file = $this->_dir .'composer/installed.json';
+
+        if ( !file_exists( $installed_file ) ) {
+            return;
+        }
+
+
+        $data = file_get_contents( $installed_file );
+        $list = json_decode( $data, true );
+
+        foreach ( $list as $key => $entry )
+        {
+            $cf = $this->_dir . $entry['name'] .'/composer.json';
+
+            if ( !file_exists( $cf ) ) {
+                continue;
+            }
+
+            $data = json_decode( file_get_contents( $cf ), true );
+
+            if ( !is_array( $data ) ) {
+                continue;
+            }
+
+            if ( !isset( $data['version'] ) ) {
+                continue;
+            }
+
+            /*
+            $list[ $key ]['version'] = $data['version'];
+
+            // is that right?
+            $list[ $key ]["version_normalized"] = str_replace(
+                array('x', '*'),
+                9999999,
+                $data['version']
+            );
+            */
+        }
+
+        $this->_list = array();
+
+        if ( is_array( $list ) ) {
+            $this->_list = $list;
+        }
+    }
+
+    /**
      * Return the installed packages
      *
      * @param {Array} $params - [optional] search / limit params
@@ -250,16 +313,22 @@ class QUI_Package_Manager
         $list   = $this->_getList();
         $result = array();
 
-        foreach ( $list as $package )
+        if ( isset( $params['type'] ) )
         {
-            if ( isset( $params['type'] ) &&
-                 !empty( $params['type'] ) &&
-                 $params['type'] != $package['type'] )
+            foreach ( $list as $package )
             {
-                continue;
-            }
+                if ( !isset( $package['type'] ) ) {
+                    continue;
+                }
 
-            $result[] = $package;
+                if ( !empty( $params['type'] ) &&
+                     $params['type'] != $package['type'] )
+                {
+                    continue;
+                }
+
+                $result[] = $package;
+            }
         }
 
         if ( isset( $params['limit'] ) && isset( $params['page'] ) )
@@ -285,6 +354,8 @@ class QUI_Package_Manager
 
         if ( $this->_exec ) {
             exec( $this->_composer_exec .'update "'. $package .'" 2>&1', $exec_result );
+
+            \System_Log::writeRecursive( $exec_result );
         }
     }
 
@@ -401,6 +472,8 @@ class QUI_Package_Manager
         {
             exec( $this->_composer_exec .'search "'. $str .'" 2>&1', $exec_result );
 
+            \System_Log::writeRecursive($exec_result);
+
             foreach ( $exec_result as $entry )
             {
                 $expl = explode( ' ', $entry, 2 );
@@ -437,7 +510,7 @@ class QUI_Package_Manager
         {
             return \QUI::getConfig( 'etc/source.list.ini' )->toArray();
 
-        } catch ( \QException $Exception )
+        } catch ( \QUI\Exception $Exception )
         {
 
         }
@@ -521,7 +594,7 @@ class QUI_Package_Manager
 
     /**
      * Check for updates
-     * @throws \QEXception
+     * @throws \\QUI\Exception
      */
     public function checkUpdates()
     {
@@ -588,7 +661,7 @@ class QUI_Package_Manager
             return $packages;
         }
 
-        throw new \QException(
+        throw new \QUI\Exception(
             \QUI::getLocale()->get(
                 'quiqqer/system',
                 'exception.packages.update.check'
@@ -601,7 +674,7 @@ class QUI_Package_Manager
      *
      * @param String|false $package - optional, package name, if false, it updates the complete system
      *
-     * @throws QException
+     * @throws \QUI\Exception
      *
      * @todo if exception uncommited changes -> own error message
      * @todo if exception uncommited changes -> interactive mode
@@ -634,7 +707,7 @@ class QUI_Package_Manager
 
                 if ( strpos( $msg, 'Exception' ) )
                 {
-                    throw new \QException(
+                    throw new \QUI\Exception(
                         $output[ $key+1 ]
                     );
                 }
@@ -643,20 +716,20 @@ class QUI_Package_Manager
             return true;
         }
 
-        throw new \QException( 'Could not execute composer' );
+        throw new \QUI\Exception( 'Could not execute composer' );
     }
 
     /**
      * Update a packe or the entire system from a package archive
      *
      * @param String $packagepath - path to the ZIP archive
-     * @throws \QEXception
+     * @throws \\QUI\Exception
      */
     public function updatePackage($packagepath)
     {
         if ( !file_exists( $packagepath ) )
         {
-            throw new \QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.packages.update.archive.not.found'
@@ -675,7 +748,7 @@ class QUI_Package_Manager
 
         if ( !file_exists( $composer ) )
         {
-            throw new \QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.no.quiqqer.update.archive'
@@ -691,8 +764,8 @@ class QUI_Package_Manager
             unlink( $update_file );
         }
 
-        \Utils_System_File::mkdir( $package_dir );
-        \Utils_System_File::move( $packagepath, $update_file );
+        \QUI\Utils\System\File::mkdir( $package_dir );
+        \QUI\Utils\System\File::move( $packagepath, $update_file );
 
 
         // create packages.json
@@ -783,7 +856,7 @@ class QUI_Package_Manager
 
         if ( !count( $result ) )
         {
-            throw new \QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.packages.exec.not.found.composer'
@@ -797,7 +870,7 @@ class QUI_Package_Manager
 
         if ( $last == 'Nothing to install or update' )
         {
-            throw new \QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.packages.update.version.not.found'

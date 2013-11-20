@@ -51,15 +51,15 @@ class ConsoleImageCacheOptimize extends System_Console_Tool
 	public function start()
 	{
 	    if (!isset($this->_params['--project'])) {
-			throw new QException('Es wurde kein Projekt angegeben');
+			throw new \QUI\Exception('Es wurde kein Projekt angegeben');
 		}
 
 	    if (!isset($this->_params['--lang'])) {
-			throw new QException('Es wurde keine Projekt Sprache angegeben');
+			throw new \QUI\Exception('Es wurde keine Projekt Sprache angegeben');
 		}
 
 		if (!isset($this->_params['--image'])) {
-		    throw new QException('Bitte geben Sie an welche Bilder kombrimiert werden sollen');
+		    throw new \QUI\Exception('Bitte geben Sie an welche Bilder kombrimiert werden sollen');
 		}
 
         $Project = QUI::getProject(

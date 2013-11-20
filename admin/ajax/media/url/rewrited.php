@@ -24,7 +24,7 @@ function ajax_media_url_rewrited($fileurl)
 
         return $url;
 
-    } catch ( QException $e )
+    } catch ( \QUI\Exception $e )
     {
 
     }

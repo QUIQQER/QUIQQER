@@ -11,7 +11,7 @@
  * @author www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui.utils.request
  */
-class Utils_Request_Ajax extends QDOM
+class Utils_Request_Ajax extends \QUI\QDOM
 {
     /**
      * Available ajax functions
@@ -70,7 +70,7 @@ class Utils_Request_Ajax extends QDOM
      * Checks the rights if a function has a checkPermissions routine
      *
      * @param String|Closure $reg_function
-     * @throws QException
+     * @throws \QUI\Exception
      */
     static function checkPermissions($reg_function)
     {
@@ -105,7 +105,7 @@ class Utils_Request_Ajax extends QDOM
             }
 
             if ( !is_callable( $func ) ) {
-                throw new QException( 'Permission denied', 503 );
+                throw new \QUI\Exception( 'Permission denied', 503 );
             }
 
             call_user_func( $func );
@@ -125,7 +125,7 @@ class Utils_Request_Ajax extends QDOM
              count( $_REQUEST['_rf'] ) > 1 )
         {
             return $this->writeException(
-                new QException( 'Bad Request', 400 )
+                new \QUI\Exception( 'Bad Request', 400 )
             );
         }
 
@@ -158,7 +158,7 @@ class Utils_Request_Ajax extends QDOM
             }
 
             return $this->writeException(
-                new QException( 'Bad Request', 400 )
+                new \QUI\Exception( 'Bad Request', 400 )
             );
         }
 
@@ -166,11 +166,11 @@ class Utils_Request_Ajax extends QDOM
         try
         {
             $this->checkPermissions( $_rf );
-        } catch ( QException $e )
+        } catch ( \QUI\Exception $e )
         {
             return $this->writeException( $e );
 
-        } catch ( QExceptionDBError $e )
+        } catch ( \QUI\ExceptionDBError $e )
         {
             return $this->writeException( $e );
         }
@@ -217,14 +217,14 @@ class Utils_Request_Ajax extends QDOM
                 'result' => call_user_func_array( $_rf, $params )
             );
 
-        } catch ( QException $e )
+        } catch ( \QUI\Exception $e )
         {
             return $this->writeException( $e );
 
         } catch ( PDOException $e )
         {
             return $this->writeException( $e );
-        } catch ( QExceptionDBError $e )
+        } catch ( \QUI\ExceptionDBError $e )
         {
             return $this->writeException( $e );
         }
@@ -258,7 +258,7 @@ class Utils_Request_Ajax extends QDOM
     /**
      * Exceptions xml / json return
      *
-     * @param QException|QExceptionDBError $Exception
+     * @param \QUI\Exception|\QUI\ExceptionDBError $Exception
      * @return Array
      */
     public function writeException($Exception)
@@ -274,7 +274,7 @@ class Utils_Request_Ajax extends QDOM
             break;
 
             case 'PDOException':
-            case 'QExceptionDBError':
+            case '\QUI\ExceptionDBError':
                 // DB Fehler immer loggen
                 System_Log::writeException( $Exception );
 

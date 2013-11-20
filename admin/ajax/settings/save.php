@@ -6,7 +6,7 @@ function ajax_settings_save($file, $params)
 
     if ( !file_exists( $file ) )
     {
-        throw new QException(
+        throw new \QUI\Exception(
             'Could not save the data. the config file was not found'
         );
     }
@@ -16,15 +16,13 @@ function ajax_settings_save($file, $params)
         json_decode( $params, true )
     );
 
-    QUI::getMessagesHandler()->addSuccess(
-    	'Konfiguration erfolgreich gespeichert'
+    \QUI::getMessagesHandler()->addSuccess(
+        'Konfiguration erfolgreich gespeichert'
     );
 }
 
-QUI::$Ajax->register(
-	'ajax_settings_save',
+\QUI::$Ajax->register(
+    'ajax_settings_save',
     array( 'file', 'params' ),
     'Permission::checkAdminUser'
 );
-
-?>

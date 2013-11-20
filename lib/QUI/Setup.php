@@ -27,11 +27,11 @@ class QUI_Setup
         }
 
         // create dirs
-        \Utils_System_File::mkdir( BIN_DIR );
-        \Utils_System_File::mkdir( LIB_DIR );
-        \Utils_System_File::mkdir( USR_DIR );
-        \Utils_System_File::mkdir( OPT_DIR );
-        \Utils_System_File::mkdir( VAR_DIR );
+        \QUI\Utils\System\File::mkdir( BIN_DIR );
+        \QUI\Utils\System\File::mkdir( LIB_DIR );
+        \QUI\Utils\System\File::mkdir( USR_DIR );
+        \QUI\Utils\System\File::mkdir( OPT_DIR );
+        \QUI\Utils\System\File::mkdir( VAR_DIR );
 
         // Gruppen erstellen
         \QUI::getGroups()->setup();

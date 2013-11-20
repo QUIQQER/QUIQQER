@@ -11,7 +11,7 @@ function ajax_system_update_byfile($File)
 
     if ( !file_exists( $filepath ) && !is_dir( $filepath ) )
     {
-        throw new \QException(
+        throw new \QUI\Exception(
             \QUI::getLocale()->get(
                 'quiqqer/system',
                 'exception.no.quiqqer.update.archive'
@@ -24,13 +24,11 @@ function ajax_system_update_byfile($File)
     );
 }
 
-QUI::$Ajax->register(
-	'ajax_system_update_byfile',
+\QUI::$Ajax->register(
+    'ajax_system_update_byfile',
     array( 'File' ),
     array(
-    	'Permission::checkAdminUser',
+        'Permission::checkAdminUser',
         'quiqqer.system.update'
     )
 );
-
-?>

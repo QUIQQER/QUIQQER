@@ -51,7 +51,7 @@ class ConsoleMaintenance extends System_Console_Tool
 		$params = $this->_params;
 
 		if (!isset($params['--status'])) {
-			throw new QException('Es wurde keine Status angegeben');
+			throw new \QUI\Exception('Es wurde keine Status angegeben');
 		}
 
 		$Config = QUI::getConfig('etc/conf.ini');

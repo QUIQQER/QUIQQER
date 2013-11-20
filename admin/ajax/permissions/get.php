@@ -33,7 +33,7 @@ function ajax_permissions_get($params, $btype)
         break;
 
         default:
-            throw new \QException(
+            throw new \QUI\Exception(
                 'Cannot find permissions for Object'
             );
         break;
@@ -42,7 +42,7 @@ function ajax_permissions_get($params, $btype)
     return $Manager->getPermissions( $Bind );
 }
 
-QUI::$Ajax->register(
+\QUI::$Ajax->register(
     'ajax_permissions_get',
     array( 'params', 'btype' ),
     array(
@@ -50,5 +50,3 @@ QUI::$Ajax->register(
         'quiqqer.system.permissions'
     )
 );
-
-?>

@@ -69,7 +69,7 @@ function ajax_site_search($lang, $project, $params, $select)
         try
         {
             $children[] = $Project->get((int)$params['id']);
-        } catch (QException $e)
+        } catch (\QUI\Exception $e)
         {
             return $result;
         }
@@ -192,12 +192,12 @@ function ajax_site_saveFromTemp($id, $lang, $project_name)
 
         return $Site->save();
 
-    } catch (QException $e)
+    } catch (\QUI\Exception $e)
     {
         switch( $e->getCode() )
         {
             case 701:
-                throw new QException(
+                throw new \QUI\Exception(
                     'Der Name einer Seite muss mehr als 2 Zeichen betragen. <br />'.
                     'Bitte ändern Sie den Namen und speichern erneut. <br />',
                     701
@@ -205,7 +205,7 @@ function ajax_site_saveFromTemp($id, $lang, $project_name)
             break;
 
             case 702:
-                throw new QException(
+                throw new \QUI\Exception(
                     'Es wurden Sonderzeichen im Name gefunden die nicht erlaubt sind.'.
                     'Bitte nehmen Sie alle Sonderzeichen aus dem Namen und speichern erneut.<br />'.
                     '<span style="font-size: 10px">Folgende Zeichen sind nicht erlaubt:<br /> - . , ; ` # ! § $ % & / ? < > = \' [ ] +"</span>',
@@ -214,7 +214,7 @@ function ajax_site_saveFromTemp($id, $lang, $project_name)
             break;
 
             case 703:
-                throw new QException(
+                throw new \QUI\Exception(
                     'Eine Seite mit dem gleichen Namen existiert bereits in der selben Ebene.<br />'.
                     'Bitte ändern Sie den Namen und speichern erneut.',
                     703
@@ -222,7 +222,7 @@ function ajax_site_saveFromTemp($id, $lang, $project_name)
             break;
 
             case 704:
-                throw new QException(
+                throw new \QUI\Exception(
                     'Der Name einer Seite darf nicht mehr als 200 Zeichen betragen. <br />'.
                     'Bitte ändern Sie den Namen und speichern erneut. <br />',
                     704
@@ -230,7 +230,7 @@ function ajax_site_saveFromTemp($id, $lang, $project_name)
             break;
 
             default:
-                throw new QException(
+                throw new \QUI\Exception(
                     $e->getMessage(),
                     $e->getCode()
                 );
@@ -319,7 +319,7 @@ function ajax_site_linked_in($project, $lang, $id, $ids)
             $Child = $Parent->getChildIdByName(
                 $Site->getAttribute('name')
             );
-        } catch (QException $e)
+        } catch (\QUI\Exception $e)
         {
             // es wurde kein Kind gefunden
             $Child  = false;
@@ -337,7 +337,7 @@ function ajax_site_linked_in($project, $lang, $id, $ids)
             }
 
             // Es wurde ein Kind gefunde
-            throw new QException(
+            throw new \QUI\Exception(
                 'Eine Seite mit dem Namen '. $Site->getAttribute('name') .' befindet sich schon unter '. $path
             );
         }
@@ -383,7 +383,7 @@ function ajax_site_delete_onlylinked($project, $lang, $ids)
     $ids = explode(',', $ids);
 
     if (!isset($ids[2])) {
-        throw new QException('Es wurden nicht alle Parameter übermittelt');
+        throw new \QUI\Exception('Es wurden nicht alle Parameter übermittelt');
     }
 
     $Project = QUI::getProject($project, $lang);
@@ -422,7 +422,7 @@ function ajax_site_rights_recursive($project, $lang, $id, $rights)
         }
 
         return true;
-    } catch (QException $e)
+    } catch (\QUI\Exception $e)
     {
         return false;
     }
@@ -533,7 +533,7 @@ function ajax_site_search_window($project, $search, $params)
 
         return $result;
 
-    } catch (QException $e)
+    } catch (\QUI\Exception $e)
     {
         System_Log::writeException($e);
         return array();

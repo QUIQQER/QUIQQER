@@ -28,7 +28,7 @@ class Projects_Media_Trash implements Interface_Projects_Trash
     {
         $this->_Media = $Media;
 
-        Utils_System_File::mkdir( $this->getPath() );
+        \QUI\Utils\System\File::mkdir( $this->getPath() );
     }
 
     /**
@@ -91,7 +91,7 @@ class Projects_Media_Trash implements Interface_Projects_Trash
             array('id' => $id)
         );
 
-        Utils_System_File::unlink( $this->getPath() . $id );
+        \QUI\Utils\System\File::unlink( $this->getPath() . $id );
     }
 
     /**
@@ -105,7 +105,7 @@ class Projects_Media_Trash implements Interface_Projects_Trash
         $file = $this->getPath() . $id;
 
         if ( !file_exists($file) ) {
-            throw new QException( 'Could not find the file '. $id .' in the Trash' );
+            throw new \QUI\Exception( 'Could not find the file '. $id .' in the Trash' );
         }
 
         $Item = $Folder->uploadFile( $file );
@@ -128,7 +128,7 @@ class Projects_Media_Trash implements Interface_Projects_Trash
         try
         {
             $Item->rename( $fields['name'] );
-        } catch ( QException $Exception )
+        } catch ( \QUI\Exception $Exception )
         {
 
         }

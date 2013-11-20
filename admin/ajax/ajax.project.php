@@ -83,7 +83,7 @@ $ajax->register('ajax_project_createbackup', array('name', 'config', 'project', 
 function ajax_project_getbackups($name)
 {
     $dir   = VAR_DIR .'backup/'. $name .'/';
-    $files = Utils_System_File::readDir($dir);
+    $files = \QUI\Utils\System\File::readDir($dir);
 
     $backups = array();
 
@@ -95,7 +95,7 @@ function ajax_project_getbackups($name)
                 'date'    => date('d.m.Y H:i:s', $file),
                 'folder'  => $file,
                 'running' => file_exists(VAR_DIR .'backup/c'.$file) ? 1 : 0,
-                'size'    => file_exists($dir.$file.'.zip') ? Utils_System_File::formatSize( filesize($dir.$file.'.zip') ) : 0
+                'size'    => file_exists($dir.$file.'.zip') ? \QUI\Utils\System\File::formatSize( filesize($dir.$file.'.zip') ) : 0
             );
         }
     }
@@ -117,7 +117,7 @@ function ajax_project_deletebackup($archive, $project)
 
     if ($User->isSU() == false)
     {
-        throw new QException(
+        throw new \QUI\Exception(
             'Sie haben nciht die benötigende Rechte um ein Backup zu löschen'
         );
     }
@@ -133,7 +133,7 @@ function ajax_project_deletebackup($archive, $project)
         unlink($zip);
     }
 
-    Utils_System_File::move($dir, VAR_DIR.'tmp/'.time());
+    \QUI\Utils\System\File::move($dir, VAR_DIR.'tmp/'.time());
 
     if (!file_exists($zip) && !is_dir($dir)) {
         return true;

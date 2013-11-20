@@ -13,7 +13,7 @@ function ajax_permissions_add($permission, $permissiontype, $area)
 
     if ( isset( $permissions[ $permission ] ) )
     {
-        throw new QException(
+        throw new \QUI\Exception(
             \QUI::getLocale()->get(
                 'quiqqer/system',
                 'exception.permissions.exists'

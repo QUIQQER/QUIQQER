@@ -71,6 +71,12 @@ define('classes/QUIQQER', function()
 
             window.onerror = this.trigger.bind( this );
 
+            if ( !this.config( 'draw' ) )
+            {
+                this.fireEvent( 'load' );
+                return;
+            }
+
             require([
                 "Controls", "Editors", "Menu", "Locale", "Users", "Storage",
                 "Projects", "Utils",
@@ -85,13 +91,8 @@ define('classes/QUIQQER', function()
 
             ], function()
             {
-                if ( this.config( 'draw' ) )
-                {
-                    require( QUI_LOCALES, this.$draw.bind( this ) );
-                    return;
-                }
-
-                this.fireEvent( 'load' );
+                require( QUI_LOCALES, this.$draw.bind( this ) );
+                return;
 
             }.bind( this ));
         },

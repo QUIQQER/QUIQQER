@@ -27,7 +27,7 @@ if ($User->isSU() == false) {
  */
 function ajax_plugins_logs_list()
 {
-    $logs = Utils_System_File::readDir(VAR_DIR .'log');
+    $logs = \QUI\Utils\System\File::readDir(VAR_DIR .'log');
 
     sort($logs);
 
@@ -67,7 +67,7 @@ function ajax_plugins_logs_send($log)
     $email = $User->getAttribute('email');
 
     if ($email == false) {
-        throw new QException('Bitte hinterlegen Sie eine E-Mail Adresse');
+        throw new \QUI\Exception('Bitte hinterlegen Sie eine E-Mail Adresse');
     }
 
     $Mail = new QUI_Mail();
@@ -76,7 +76,7 @@ function ajax_plugins_logs_send($log)
     $logfile = VAR_DIR .'log/'. $log;
 
     if (!file_exists($logfile)) {
-        throw new QException('Log Datei existiert nicht');
+        throw new \QUI\Exception('Log Datei existiert nicht');
     }
 
     $Mail->send(array(

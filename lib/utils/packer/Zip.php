@@ -29,13 +29,13 @@ class Utils_Packer_Zip
 	 * Check, if ZipArchive is enabled
 	 *
 	 * @return Bool
-	 * @throws QException
+	 * @throws \QUI\Exception
 	 */
 	static function check()
 	{
 	    if ( !class_exists('ZipArchive') )
 		{
-			throw new QException(
+			throw new \QUI\Exception(
 				'Class ZipArchive not exist', 404
 			);
 		}
@@ -57,7 +57,7 @@ class Utils_Packer_Zip
 		$Zip = new ZipArchive();
 
 		if ( $Zip->open($zipfile, ZIPARCHIVE::CREATE) !== true ) {
-            throw new QException( 'cannot open '. $zipfile );
+            throw new \QUI\Exception( 'cannot open '. $zipfile );
         }
 
         if ( !is_array($ignore) ) {
@@ -68,7 +68,7 @@ class Utils_Packer_Zip
         	$folder .= '/';
         }
 
-		$File  = new Utils_System_File();
+		$File  = new \QUI\Utils\System\File();
 		$files = $File->readDirRecursiv( $folder );
 
 		foreach ( $files as $_folder => $_file )
@@ -100,14 +100,14 @@ class Utils_Packer_Zip
 	 * @param String $zipfile 	- path to zip file
 	 * @param String $to		- path to the destination folder
 	 *
-	 * @throws QException
+	 * @throws \QUI\Exception
 	 */
 	static function unzip($zipfile, $to)
 	{
 	    self::check();
 
 		if (!file_exists($zipfile)) {
-			throw new QException('Zip Archive '. $zipfile .' doesn\'t exist',	404);
+			throw new \QUI\Exception('Zip Archive '. $zipfile .' doesn\'t exist',	404);
 		}
 
 		$Zip = new ZipArchive();
@@ -120,7 +120,7 @@ class Utils_Packer_Zip
 			return;
 		}
 
-		throw new QException('Error on Extract Zip Archive');
+		throw new \QUI\Exception('Error on Extract Zip Archive');
 	}
 }
 

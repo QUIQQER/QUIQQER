@@ -15,7 +15,7 @@ function ajax_template_get($template)
 
     if ( !file_exists( $template ) )
     {
-        throw new \QException(
+        throw new \QUI\Exception(
             \QUI::getLocale()->get(
                 'quiqqer/system',
                 'exception.template.not.found'
@@ -30,10 +30,8 @@ function ajax_template_get($template)
     return $Engine->fetch( $template );
 }
 
-QUI::$Ajax->register(
+\QUI::$Ajax->register(
     'ajax_template_get',
     array( 'template' ),
     'Permission::checkAdminUser'
 );
-
-?>

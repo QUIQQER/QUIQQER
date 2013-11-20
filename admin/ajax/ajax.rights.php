@@ -228,7 +228,7 @@ function ajax_rights_userpopup_template($id)
         $adresses = $User->getAdressList();
         $Smarty->assign('adresses', $adresses);
 
-    } catch (QException $e)
+    } catch (\QUI\Exception $e)
     {
 
     }
@@ -238,7 +238,7 @@ function ajax_rights_userpopup_template($id)
         $Standard = $User->getStandardAdress();
         $Smarty->assign('Standard', $Standard);
 
-    } catch (QException $e)
+    } catch (\QUI\Exception $e)
     {
 
     }

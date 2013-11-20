@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file contains QExceptionHandler
+ * This file contains \QUI\ExceptionHandler
  */
 
 /**
@@ -14,7 +14,7 @@
  * @package com.pcsg.qui
  */
 
-class QExceptionHandler extends QDOM
+class QExceptionHandler extends \QUI\QDOM
 {
     /**
      * registered shutdown callback functions
@@ -62,9 +62,9 @@ class QExceptionHandler extends QDOM
     /**
      * Register shutdown funktions
      *
-     * @example QExceptionHandler->registerShutdown('function', 'param');
-     * QExceptionHandler->registerShutdown(array($Object, 'dynamicMethod'));
-     * QExceptionHandler->registerShutdown('class::staticMethod');
+     * @example \QUI\ExceptionHandler->registerShutdown('function', 'param');
+     * \QUI\ExceptionHandler->registerShutdown(array($Object, 'dynamicMethod'));
+     * \QUI\ExceptionHandler->registerShutdown('class::staticMethod');
      *
      * @return Bool
      */
@@ -74,7 +74,7 @@ class QExceptionHandler extends QDOM
 
         if ( empty( $callback ) )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 'No callback passed to '. __FUNCTION__ .' method', E_USER_ERROR
             );
 
@@ -83,7 +83,7 @@ class QExceptionHandler extends QDOM
 
         if ( !is_callable( $callback[0] ) )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 'Invalid callback passed to the '.__FUNCTION__.' method', E_USER_ERROR
             );
 
@@ -129,7 +129,7 @@ class QExceptionHandler extends QDOM
             $log = $this->getAttribute('logdir') .'error'. date('-Y-m-d').'.log';
 
             // Log Verzeichnis erstellen
-            Utils_System_File::mkdir($this->getAttribute('logdir'));
+            \QUI\Utils\System\File::mkdir($this->getAttribute('logdir'));
         }
 
         if ($log && !file_exists($log)) {

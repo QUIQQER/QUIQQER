@@ -67,7 +67,7 @@ class Utils_Request_Url
 		$error     = curl_error($Curl);
 
 		if ($error) {
-            throw new QException('Fehler bei der Anfrage '. $error);
+            throw new \QUI\Exception('Fehler bei der Anfrage '. $error);
 		}
 
 		curl_close($Curl);
@@ -114,7 +114,7 @@ class Utils_Request_Url
 		$error = curl_error($Curl);
 
 		if ($error) {
-            throw new QException('Fehler bei der Anfrage '. $error);
+            throw new \QUI\Exception('Fehler bei der Anfrage '. $error);
 		}
 
 		curl_close($Curl);

@@ -904,7 +904,7 @@ class Utils_Dom
             $value
         );
 
-        $value = \Utils_String::replaceDblSlashes( $value );
+        $value = \QUI\Utils\String::replaceDblSlashes( $value );
 
         return $value;
     }
@@ -940,10 +940,10 @@ class Utils_Dom
     }
 
     /**
-     * Converts an array into an QDOM object
+     * Converts an array into an \QUI\QDOM object
      *
      * @param array $array
-     * @return QDOM
+     * @return \QUI\QDOM
      */
     static function arrayToQDOM(array $array)
     {
@@ -953,5 +953,3 @@ class Utils_Dom
         return $DOM;
     }
 }
-
-?>

@@ -25,7 +25,7 @@ class System_Log
         $file = $dir . $filename . date('-Y-m-d').'.log';
 
 		// Log Verzeichnis erstellen
-		Utils_System_File::mkdir( $dir );
+		\QUI\Utils\System\File::mkdir( $dir );
 
 		error_log($message."\n", 3, $file);
     }

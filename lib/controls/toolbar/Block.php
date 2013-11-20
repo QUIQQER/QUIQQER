@@ -11,117 +11,117 @@
  * @package com.pcsg.qui.controls.toolbar
  */
 
-class Controls_Toolbar_Block extends QDOM
+class Controls_Toolbar_Block extends \QUI\QDOM
 {
     /**
      * The parent object
      * @var Controls_Control
      */
-	private $_parent;
+    private $_parent;
 
-	/**
-	 * The sub items
-	 * @var array
-	 */
-	private $_items;
+    /**
+     * The sub items
+     * @var array
+     */
+    private $_items;
 
-	/**
-	 * Constructor
-	 *
-	 * @param array $settings
-	 */
-	public function __construct(array $settings)
-	{
-		foreach ($settings as $key => $value) {
-			$this->setAttribute($key, $value);
-		}
-	}
+    /**
+     * Constructor
+     *
+     * @param array $settings
+     */
+    public function __construct(array $settings)
+    {
+        foreach ($settings as $key => $value) {
+            $this->setAttribute($key, $value);
+        }
+    }
 
-	/**
-	 * Parent setzen
-	 *
-	 * @param Toolbar $parent
-	 */
-	public function addParent(Toolbar $parent)
-	{
-		$this->_parent = $parent;
-	}
+    /**
+     * Parent setzen
+     *
+     * @param Toolbar $parent
+     */
+    public function addParent(Toolbar $parent)
+    {
+        $this->_parent = $parent;
+    }
 
-	/**
-	 * Namen vom Objekt bekommen
-	 *
-	 * @return String
-	 */
-	public function getName()
-	{
-		return $this->getAttribute('name');
-	}
+    /**
+     * Namen vom Objekt bekommen
+     *
+     * @return String
+     */
+    public function getName()
+    {
+        return $this->getAttribute('name');
+    }
 
-	/**
-	 * JavaScript für Onclick
-	 *
-	 * @return String
-	 */
-	public function onclick()
-	{
-		return $this->getName().'.onclick();';
-	}
+    /**
+     * JavaScript für Onclick
+     *
+     * @return String
+     */
+    public function onclick()
+    {
+        return $this->getName().'.onclick();';
+    }
 
-	/**
-	 * Ein Kind anhängen
-	 *
-	 * @param unknown_type $itm
-	 */
-	public function appendChild($itm)
-	{
-		$this->_items[] = $itm;
-	}
+    /**
+     * Ein Kind anhängen
+     *
+     * @param unknown_type $itm
+     */
+    public function appendChild($itm)
+    {
+        $this->_items[] = $itm;
+    }
 
-	/**
-	 * Gibt den JavaScript Code des Blocks zurück und erstellt gleichzeitig die Variable
-	 *
-	 * @return String
-	 */
-	public function create()
-	{
-		$jsString  = 'var '. $this->getName() .' = ';
-	 	$jsString .= $this->_parent->getName().'.appendChild( '. $this->getName() .' );';
+    /**
+     * Gibt den JavaScript Code des Blocks zurück und erstellt gleichzeitig die Variable
+     *
+     * @return String
+     */
+    public function create()
+    {
+        $jsString  = 'var '. $this->getName() .' = ';
+         $jsString .= $this->_parent->getName().'.appendChild( '. $this->getName() .' );';
 
-		return $jsString;
-	}
+        return $jsString;
+    }
 
-	/**
-	 * Gibt den JavaScript Code des Blocks zurück
-	 *
-	 * @return String
-	 */
-	public function jsObject()
-	{
-		$jsString = 'new _ptools.ToolbarBlock({';
+    /**
+     * Gibt den JavaScript Code des Blocks zurück
+     *
+     * @return String
+     */
+    public function jsObject()
+    {
+        $jsString = 'new _ptools.ToolbarBlock({';
 
-		$attributes = $this->getAllAttributes();
+        $attributes = $this->getAllAttributes();
 
-		foreach ($attributes as $s => $value)
-		{
-			if ($s != 'name') {
-				$jsString .= $s .' : '. json_encode($value) .',';
-			}
-		}
+        foreach ($attributes as $s => $value)
+        {
+            if ($s != 'name') {
+                $jsString .= $s .' : '. json_encode($value) .',';
+            }
+        }
 
-		$jsString .= 'name: "'. $this->getName() .'"';
-		$jsString .= '})';
+        $jsString .= 'name: "'. $this->getName() .'"';
+        $jsString .= '})';
 
-		if (count($this->_items) > 0)
-		{
-			foreach ($this->_items as $itm)
-			{
-				$itm->addParent( $this );
-				$jsString .= '.appendChild('. $itm->jsObject() .')';
-			}
-		}
+        if (count($this->_items) > 0)
+        {
+            foreach ($this->_items as $itm)
+            {
+                $itm->addParent( $this );
+                $jsString .= '.appendChild('. $itm->jsObject() .')';
+            }
+        }
 
-		return $jsString;
-	}
+        return $jsString;
+    }
 }
 
 ?>

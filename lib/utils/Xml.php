@@ -17,10 +17,10 @@ class Utils_Xml
 {
     /**
      * Read the config parameter of an *.xml file and
-     * create a QConfig if not exist or read the QConfig
+     * create a \QUI\Config if not exist or read the \QUI\Config
      *
      * @param String $file - path to the xml file
-     * @return QConfig|false
+     * @return \QUI\Config|false
      */
     static function getConfigFromXml($file)
     {
@@ -49,7 +49,7 @@ class Utils_Xml
             file_put_contents( $ini_file, '' );
         }
 
-        $Config = new \QConfig( $ini_file );
+        $Config = new \QUI\Config( $ini_file );
         $params = self::getConfigParamsFromXml( $file );
 
         foreach ( $params as $section => $key )
@@ -678,8 +678,11 @@ class Utils_Xml
      */
     static function setConfigFromXml($file, $params)
     {
-        if ( \QUI::getUserBySession()->isSU() === false ) {
-            throw new \QException( 'You have no rights to edit the configuration.' );
+        if ( \QUI::getUserBySession()->isSU() === false )
+        {
+            throw new \QUI\Exception(
+                'You have no rights to edit the configuration.'
+            );
         }
 
         // defaults prüfen

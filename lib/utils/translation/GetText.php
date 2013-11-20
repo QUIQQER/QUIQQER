@@ -15,7 +15,7 @@
  * @uses gettext
  */
 
-class Utils_Translation_GetText extends QDOM
+class Utils_Translation_GetText extends \QUI\QDOM
 {
     /**
      * Constructor
@@ -26,7 +26,7 @@ class Utils_Translation_GetText extends QDOM
      */
     public function __construct($lang, $domain, $dir)
     {
-        $this->setAttribute('locale', Utils_String::toLower($lang) .'_'. Utils_String::toUpper($lang));
+        $this->setAttribute('locale', \QUI\Utils\String::toLower($lang) .'_'. \QUI\Utils\String::toUpper($lang));
         $this->setAttribute('domain', str_replace('/', '_', $domain));
         $this->setAttribute('dir', $dir);
     }
@@ -72,11 +72,9 @@ class Utils_Translation_GetText extends QDOM
         );
         */
 
-		bindtextdomain($this->getAttribute('domain'), $this->getAttribute('dir'));
-		bind_textdomain_codeset($this->getAttribute('domain'), 'UTF-8');
+        bindtextdomain($this->getAttribute('domain'), $this->getAttribute('dir'));
+        bind_textdomain_codeset($this->getAttribute('domain'), 'UTF-8');
 
-		textdomain($this->getAttribute('domain'));
+        textdomain($this->getAttribute('domain'));
     }
 }
-
-?>

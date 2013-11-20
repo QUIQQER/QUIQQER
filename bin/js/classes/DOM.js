@@ -143,7 +143,7 @@ var Obj = new QUI.classes.DOM({
          * @param {String} k - Name of the Attribute
          * @param {Object|String|Integer|Array} v - value
          *
-         * @return {this} The wanted attribute
+         * @return {this}
          */
         setAttribute : function(k, v)
         {

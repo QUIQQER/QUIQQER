@@ -162,7 +162,7 @@ class ConsolePatch extends System_Console_Tool
 
 		// System Patches
 		$p_dir   = LIB_DIR .'patch/';
-		$p_files = Utils_System_File::readDir($p_dir);
+		$p_files = \QUI\Utils\System\File::readDir($p_dir);
 
 		foreach ($p_files as $patch)
 		{
@@ -182,7 +182,7 @@ class ConsolePatch extends System_Console_Tool
 		}
 
 		// Plugin Patches
-		$p_files = Utils_System_File::readDir(OPT_DIR);
+		$p_files = \QUI\Utils\System\File::readDir(OPT_DIR);
 
 		foreach ($p_files as $plugin)
 		{
@@ -195,7 +195,7 @@ class ConsolePatch extends System_Console_Tool
 			}
 
 			// Patchdir lesen
-			$patches = Utils_System_File::readDir(OPT_DIR . $plugin .'/patch/');
+			$patches = \QUI\Utils\System\File::readDir(OPT_DIR . $plugin .'/patch/');
 
 			foreach ($patches as $file)
 			{

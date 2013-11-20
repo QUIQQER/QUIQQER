@@ -69,7 +69,7 @@ class Update
             $packages_dir = OPT_DIR;
         }
 
-        $packages = \Utils_System_File::readDir( $packages_dir );
+        $packages = \QUI\Utils\System\File::readDir( $packages_dir );
 
         $IO->write('Start QUIQQER updating ...');
 
@@ -81,7 +81,7 @@ class Update
             }
 
             $package_dir = $packages_dir .'/'. $package;
-            $list        = \Utils_System_File::readDir( $package_dir );
+            $list        = \QUI\Utils\System\File::readDir( $package_dir );
 
             foreach ( $list as $sub )
             {
@@ -112,7 +112,7 @@ class Update
             }
 
             $package_dir = $packages_dir .'/'. $package;
-            $list        = \Utils_System_File::readDir( $package_dir );
+            $list        = \QUI\Utils\System\File::readDir( $package_dir );
 
             foreach ( $list as $sub )
             {
@@ -283,7 +283,7 @@ class Update
         $dir      = VAR_DIR .'cache/menu/';
         $cachfile = $dir . $file;
 
-        \Utils_System_File::mkdir( $dir );
+        \QUI\Utils\System\File::mkdir( $dir );
 
         if ( file_exists( $cachfile ) ) {
             unlink( $cachfile );
@@ -367,14 +367,14 @@ class Update
 
         if ( !$packages_dir )
         {
-            throw new \QException(
+            throw new \QUI\Exception(
                 'Could not import menu.xml. Package-Dir not found'
             );
 
             return;
         }
 
-        $packages = \Utils_System_File::readDir( OPT_DIR );
+        $packages = \QUI\Utils\System\File::readDir( OPT_DIR );
 
         // then we can read the rest xml files
         foreach ( $packages as $package )
@@ -384,7 +384,7 @@ class Update
             }
 
             $package_dir = OPT_DIR .'/'. $package;
-            $list        = \Utils_System_File::readDir( $package_dir );
+            $list        = \QUI\Utils\System\File::readDir( $package_dir );
 
             foreach ( $list as $sub )
             {
@@ -415,14 +415,14 @@ class Update
 
         if ( !$packages_dir )
         {
-            throw new \QException(
+            throw new \QUI\Exception(
                 'Could not import menu.xml. Package-Dir not found'
             );
 
             return;
         }
 
-        $packages = \Utils_System_File::readDir( $packages_dir );
+        $packages = \QUI\Utils\System\File::readDir( $packages_dir );
 
         foreach ( $packages as $package )
         {
@@ -431,7 +431,7 @@ class Update
             }
 
             $package_dir = $packages_dir .'/'. $package;
-            $list        = \Utils_System_File::readDir( $package_dir );
+            $list        = \QUI\Utils\System\File::readDir( $package_dir );
 
             foreach ( $list as $sub )
             {
@@ -444,7 +444,7 @@ class Update
 
         // system xmls
         $locale_dir = CMS_DIR .'/admin/locale/';
-        $locales    = \Utils_System_File::readDir( $locale_dir );
+        $locales    = \QUI\Utils\System\File::readDir( $locale_dir );
 
         foreach ( $locales as $locale )
         {
@@ -454,7 +454,7 @@ class Update
                 continue;
             }
 
-            $sublocales = \Utils_System_File::readDir( $locale_dir . $locale );
+            $sublocales = \QUI\Utils\System\File::readDir( $locale_dir . $locale );
 
             foreach ( $sublocales as $sublocale ) {
                 self::importLocale( $locale_dir . $locale .'/'. $sublocale );
@@ -462,5 +462,3 @@ class Update
         }
     }
 }
-
-?>

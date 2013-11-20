@@ -237,7 +237,7 @@ class ConsoleLinkChecker extends System_Console_Tool
 
 			$this->_log("\n");
 
-		} catch (QException $e)
+		} catch (\QUI\Exception $e)
 		{
 			$this->_log($e->getMessage()."\n");
 		}

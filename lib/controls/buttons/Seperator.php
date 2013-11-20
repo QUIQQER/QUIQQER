@@ -11,82 +11,82 @@
  * @package com.pcsg.qui.controls.buttons
  */
 
-class Controls_Buttons_Seperator extends QDOM
+class Controls_Buttons_Seperator extends \QUI\QDOM
 {
     /**
      * the settings array
      * @var array
      */
-	private $_settings;
+    private $_settings;
 
-	/**
-	 * the Parent Object
-	 * @var QUI_Controls_Control
-	 */
-	private $_parent;
+    /**
+     * the Parent Object
+     * @var QUI_Controls_Control
+     */
+    private $_parent;
 
-	/**
-	 * Constructor
-	 *
-	 * @param array $settings
-	 */
-	public function __construct(array $settings)
-	{
-	    $this->setAttribute('type', 'QUI.controls.buttons.Seperator');
+    /**
+     * Constructor
+     *
+     * @param array $settings
+     */
+    public function __construct(array $settings)
+    {
+        $this->setAttribute('type', 'QUI.controls.buttons.Seperator');
         $this->setAttributes($settings);
-	}
+    }
 
-	/**
-	 * Set the Parent
-	 *
-	 * @param Controls_Toolbar_Bar $Parent
-	 */
-	public function addParent($Parent)
-	{
-		$this->_parent = $Parent;
-	}
+    /**
+     * Set the Parent
+     *
+     * @param Controls_Toolbar_Bar $Parent
+     */
+    public function addParent($Parent)
+    {
+        $this->_parent = $Parent;
+    }
 
-	/**
-	 * get the name attribute
-	 *
-	 * @return String
-	 */
-	public function getName()
-	{
-		return $this->getAttribute('name');
-	}
+    /**
+     * get the name attribute
+     *
+     * @return String
+     */
+    public function getName()
+    {
+        return $this->getAttribute('name');
+    }
 
-	/**
-	 * Ertstellt den JavaScript Code und ruft die create Methode auf
-	 *
-	 * @return String
-	 */
-	public function create()
-	{
-		$jsString = 'var '. $this->getAttribute('name') .' = '. $this->jsObject() .';';
-		$jsString .= $this->_parent->getName().'.appendChild( '. $this->getAttribute('name') .' );';
+    /**
+     * Ertstellt den JavaScript Code und ruft die create Methode auf
+     *
+     * @return String
+     */
+    public function create()
+    {
+        $jsString = 'var '. $this->getAttribute('name') .' = '. $this->jsObject() .';';
+        $jsString .= $this->_parent->getName().'.appendChild( '. $this->getAttribute('name') .' );';
 
-		return $jsString;
-	}
+        return $jsString;
+    }
 
-	/**
-	 * Ertstellt den JavaScript
-	 *
-	 * @return String
-	 */
-	public function jsObject()
-	{
-		$jsString  = 'new QUI.controls.buttons.Seperator({';
+    /**
+     * Ertstellt den JavaScript
+     *
+     * @return String
+     */
+    public function jsObject()
+    {
+        $jsString  = 'new QUI.controls.buttons.Seperator({';
 
-		if($this->getAttribute('height')) {
-			$jsString .= 'height: "'. $this->getAttribute('height') .'",';
-		}
+        if($this->getAttribute('height')) {
+            $jsString .= 'height: "'. $this->getAttribute('height') .'",';
+        }
 
-		$jsString .= 'name: "'. $this->getAttribute('name') .'"';
-		$jsString .= '})';
+        $jsString .= 'name: "'. $this->getAttribute('name') .'"';
+        $jsString .= '})';
 
-		return $jsString;
-	}
+        return $jsString;
+    }
 }
 
 ?>

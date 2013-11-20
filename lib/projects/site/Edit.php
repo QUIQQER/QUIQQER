@@ -70,7 +70,7 @@ class Projects_Site_Edit extends Projects_Site
                               $id .'_'. $Project->getAttribute( 'lang' );
 
         // Temp Dir abfragen ob existiert
-        Utils_System_File::mkdir( VAR_DIR .'admin/' );
+        \QUI\Utils\System\File::mkdir( VAR_DIR .'admin/' );
 
         // Erste Rechteprüfung
         $User = QUI::getUserBySession();
@@ -176,7 +176,7 @@ class Projects_Site_Edit extends Projects_Site
 
         if ( !isset( $result[0] ) )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.site.not.found'
@@ -205,7 +205,7 @@ class Projects_Site_Edit extends Projects_Site
     /**
      * Activate a site
      *
-     * @throws QException
+     * @throws \QUI\Exception
      */
     public function activate()
     {
@@ -213,9 +213,9 @@ class Projects_Site_Edit extends Projects_Site
         {
             $this->checkPermission( 'quiqqer.projects.site.edit' );
 
-        } catch ( \QException $Exception )
+        } catch ( \QUI\Exception $Exception )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.permissions.edit'
@@ -239,14 +239,14 @@ class Projects_Site_Edit extends Projects_Site
 
         if ( $release_from && $release_from > time() )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 'Die Seite kann nicht aktiviert werden, da das Datum "Veröffentlichen von" in der Zukunft liegt'
             );
         }
 
         if ( $release_until && $release_until < time() )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 'Die Seite kann nicht aktiviert werden, da das Datum "Veröffentlichen bis" in der Vergangenheit liegt'
             );
         }
@@ -269,7 +269,7 @@ class Projects_Site_Edit extends Projects_Site
     /**
      * Deactivate a site
      *
-     * @throws QException
+     * @throws \QUI\Exception
      */
     public function deactivate()
     {
@@ -278,9 +278,9 @@ class Projects_Site_Edit extends Projects_Site
             // Prüfen ob der Benutzer die Seite bearbeiten darf
            $this->checkPermission( 'quiqqer.projects.site.edit' );
 
-        } catch ( \QException $Exception )
+        } catch ( \QUI\Exception $Exception )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.permissions.edit'
@@ -370,7 +370,7 @@ class Projects_Site_Edit extends Projects_Site
     /**
      * Saves the site
      *
-     * @throws QException
+     * @throws \QUI\Exception
      */
     public function save()
     {
@@ -379,9 +379,9 @@ class Projects_Site_Edit extends Projects_Site
             // Prüfen ob der Benutzer die Seite bearbeiten darf
             $this->checkPermission( 'quiqqer.project.site.edit' );
 
-        } catch ( \QException $Exception )
+        } catch ( \QUI\Exception $Exception )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.permissions.edit'
@@ -397,14 +397,14 @@ class Projects_Site_Edit extends Projects_Site
             {
                 $User = QUI::getUsers()->get( $mid );
 
-            } catch ( QException $Exception )
+            } catch ( \QUI\Exception $Exception )
             {
 
             }
 
             if ( isset( $User ) )
             {
-                throw new QException(
+                throw new \QUI\Exception(
                     \QUI::getLocale()->get(
                         'quiqqer/system',
                         'exception.site.is.being.edited.user',
@@ -416,7 +416,7 @@ class Projects_Site_Edit extends Projects_Site
                 );
             }
 
-            throw new QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.site.is.being.edited'
@@ -446,7 +446,7 @@ class Projects_Site_Edit extends Projects_Site
 
                 if ( $Parent->existNameInChildren( $name ) > 1 )
                 {
-                    throw new QException(
+                    throw new \QUI\Exception(
                         \QUI::getLocale()->get(
                             'quiqqer/system',
                             'exception.site.same.name',
@@ -548,7 +548,7 @@ class Projects_Site_Edit extends Projects_Site
             return true;
         }
 
-        throw new \QException(
+        throw new \QUI\Exception(
             \QUI::getLocale()->get(
                 'quiqqer/system',
                 'exception.site.save.error'
@@ -836,7 +836,7 @@ class Projects_Site_Edit extends Projects_Site
      * @param Bool|Users_User|Users_SystemUser $User - the user which create the site, optional
      *
      * @return Int
-     * @throws QException
+     * @throws \QUI\Exception
      */
     public function createChild($params=array(), $User=false)
     {
@@ -873,21 +873,21 @@ class Projects_Site_Edit extends Projects_Site
 
 
         if ( $this->existNameInChildren( $new_name ) ) {
-            throw new QException( 'Name exist', 401 );
+            throw new \QUI\Exception( 'Name exist', 401 );
         }
 
         // Prüfung des Namens - Länge
         if ( strlen( $new_name ) <= 2 ) {
-            throw new QException( 'Error Name: 2 signs or lower', 701 );
+            throw new \QUI\Exception( 'Error Name: 2 signs or lower', 701 );
         }
 
         if ( strlen( $new_name ) > 200 ) {
-            throw new QException( 'Error Name: 200 signs or higher', 704 );
+            throw new \QUI\Exception( 'Error Name: 200 signs or higher', 704 );
         }
 
         // Prüfung des Namens - Sonderzeichen
         if ( preg_match( "@[-.,:;#`!§$%&/?<>\=\'\"]@", $new_name ) ) {
-            throw new QException( 'Error Name: Not supported signs in Name', 702 );
+            throw new \QUI\Exception( 'Error Name: Not supported signs in Name', 702 );
         }
 
         $_params = array(
@@ -897,7 +897,7 @@ class Projects_Site_Edit extends Projects_Site
             'e_user' => $User->getId(),
             'c_user' => $User->getId(),
 
-            'c_user_ip' => Utils_System::getClientIP()
+            'c_user_ip' => \QUI\Utils\System::getClientIP()
         );
 
         if ( isset( $params['title'] ) ) {
@@ -960,7 +960,7 @@ class Projects_Site_Edit extends Projects_Site
         ));
 
         if (!isset($result[0]) || !isset($result[0]['fields'])) {
-            throw new QException('Archive not found', 404);
+            throw new \QUI\Exception('Archive not found', 404);
         }
 
         $fields = json_decode($result[0]['fields'], true);
@@ -1108,7 +1108,7 @@ class Projects_Site_Edit extends Projects_Site
             $Child = $Parent->getChildIdByName(
                 $this->getAttribute('name')
             );
-        } catch (QException $e)
+        } catch (\QUI\Exception $e)
         {
             // es wurde kein Kind gefunden
             $Child  = false;
@@ -1126,7 +1126,7 @@ class Projects_Site_Edit extends Projects_Site
             }
 
             // Es wurde ein Kind gefunde
-            throw new QException(
+            throw new \QUI\Exception(
                 'Eine Seite mit dem Namen '. $this->getAttribute('name') .' befindet sich schon unter '. $path
             );
         }
@@ -1170,7 +1170,7 @@ class Projects_Site_Edit extends Projects_Site
         // Prüfen ob die Seite schon in dem Parent ist
         if ($Parent->getId() == $pid)
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 'Es kann keine Verknüpfung in dieser Ebene erstellt werden,
                 da eine Verknüpfung oder die original Seite bereits in dieser Ebene existiert', 400
             );
@@ -1187,7 +1187,7 @@ class Projects_Site_Edit extends Projects_Site
         {
             if ($entry['parent'] == $pid)
             {
-                throw new QException(
+                throw new \QUI\Exception(
                     'Es kann keine Verknüpfung in dieser Ebene erstellt werden,
                     da eine Verknüpfung oder die original Seite bereits in dieser Ebene existiert', 400
                 );
@@ -1277,7 +1277,7 @@ class Projects_Site_Edit extends Projects_Site
         $link_cache_dir  = VAR_DIR .'cache/links/'. $Project->getAttribute('name') .'/';
         $link_cache_file = $link_cache_dir . $this->getId() .'_'. $Project->getAttribute('name') .'_'. $Project->getAttribute('lang');
 
-        Utils_System_File::mkdir($link_cache_dir);
+        \QUI\Utils\System\File::mkdir($link_cache_dir);
 
         file_put_contents($link_cache_file, $this->getUrlRewrited());
     }
@@ -1420,25 +1420,25 @@ class Projects_Site_Edit extends Projects_Site
      * Prüft ob der Name erlaubt ist
      *
      * @param unknown_type $name
-     * @throws QException
+     * @throws \QUI\Exception
      */
     static function checkName($name)
     {
         if (!isset($name)) {
-            throw new QException('Bitte gebe einen Titel ein');
+            throw new \QUI\Exception('Bitte gebe einen Titel ein');
         }
 
         if (strlen($name) <= 2) {
-            throw new QException('Die URL muss mehr als 2 Zeichen lang sein', 701);
+            throw new \QUI\Exception('Die URL muss mehr als 2 Zeichen lang sein', 701);
         }
 
         if (strlen($name) > 200) {
-            throw new QException('Die URL darf nicht länger als 200 Zeichen lang sein', 704);
+            throw new \QUI\Exception('Die URL darf nicht länger als 200 Zeichen lang sein', 704);
         }
 
         // Prüfung des Namens - Sonderzeichen
         if (preg_match("@[-.,:;#`!§$%&/?<>\=\'\"\@\_\]\[\+]@", $name)) {
-            throw new QException('In der URL "'. $name .'" dürfen folgende Zeichen nicht verwendet werden: _-.,:;#@`!§$%&/?<>=\'"[]+', 702);
+            throw new \QUI\Exception('In der URL "'. $name .'" dürfen folgende Zeichen nicht verwendet werden: _-.,:;#@`!§$%&/?<>=\'"[]+', 702);
         }
 
         return true;

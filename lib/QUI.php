@@ -22,7 +22,7 @@ class QUI
 {
     /**
      * QUI Config, use QUI::getConfig()
-     * @var QConfig
+     * @var \QUI\Config
      */
     static $Conf = null;
 
@@ -40,7 +40,7 @@ class QUI
 
     /**
      * QUI Error Handler, use QUI::getErrorHandler();
-     * @var QExceptionHandler
+     * @var \QUI\ExceptionHandler
      */
     static $ErrorHandler = null;
 
@@ -157,15 +157,14 @@ class QUI
      */
     static function load()
     {
-        require 'QException.php';
-        require 'QConfig.php';
-
         // load the main configuration
         $path    = pathinfo( __FILE__ );
         $cms_dir = str_replace( DIRECTORY_SEPARATOR .'lib', '', $path['dirname'] );
+        $config  = parse_ini_file( $cms_dir .'/etc/conf.ini', true );
 
-        $Config     = new \QConfig( $cms_dir .'/etc/conf.ini' );
-        self::$Conf = $Config;
+        /**
+         * load the constants
+         */
 
         if ( !defined( 'CMS_DIR' ) )
         {
@@ -174,24 +173,30 @@ class QUI
              * @var String
              * @package com.pcsg.qui
              */
-            define( 'CMS_DIR', $Config->get( 'globals', 'cms_dir' ) );
+            define( 'CMS_DIR', $config['globals']['cms_dir'] );
         }
 
-        /**
-         * DEBUG_MODE - setting if debug mode is enabled or not
-         * @var Bool
-         * @package com.pcsg.qui
-         */
-        define( "DEBUG_MODE", $Config->get( 'globals', 'debug_mode' ) );
+        if ( !defined( 'DEBUG_MODE' ) )
+        {
+            /**
+             * DEBUG_MODE - setting if debug mode is enabled or not
+             * @var Bool
+             * @package com.pcsg.qui
+             */
+            define( "DEBUG_MODE", $config['globals']['debug_mode'] );
+        }
 
-        /**
-         * DEVELOPMENT - setting if the system is in development mode or not
-         * @var Bool
-         * @package com.pcsg.qui
-         */
-        define( "DEVELOPMENT", $Config->get( 'globals', 'development' ) );
+        if ( !defined( 'DEVELOPMENT' ) )
+        {
+            /**
+             * DEVELOPMENT - setting if the system is in development mode or not
+             * @var Bool
+             * @package com.pcsg.qui
+             */
+            define( "DEVELOPMENT", $config['globals']['development'] );
+        }
 
-        $var_dir = $Config->get( 'globals', 'var_dir' );
+        $var_dir = $config['globals']['var_dir'];
 
         if ( file_exists( $var_dir .'last_update' ) )
         {
@@ -202,8 +207,8 @@ class QUI
             self::$last_up_date = time();
         }
 
-        $lib_dir = $Config->get( 'globals', 'lib_dir' );
-        $var_dir = $Config->get( 'globals', 'var_dir' );
+        $lib_dir = $config['globals']['lib_dir'];
+        $var_dir = $config['globals']['var_dir'];
 
         // Define quiqqer path constants
 
@@ -236,7 +241,7 @@ class QUI
              * @var String
              * @package com.pcsg.qui
              */
-            define( 'BIN_DIR', $Config->get( 'globals','bin_dir' ) );
+            define( 'BIN_DIR', $config['globals']['bin_dir'] );
         }
 
         if ( !defined( 'USR_DIR' ) )
@@ -246,7 +251,7 @@ class QUI
              * @var String
              * @package com.pcsg.qui
              */
-            define( 'USR_DIR', $Config->get( 'globals','usr_dir' ) );
+            define( 'USR_DIR', $config['globals']['usr_dir'] );
         }
 
         if ( !defined('SYS_DIR') )
@@ -256,7 +261,7 @@ class QUI
              * @var String
              * @package com.pcsg.qui
              */
-            define( 'SYS_DIR', $Config->get( 'globals','sys_dir' ) );
+            define( 'SYS_DIR', $config['globals']['sys_dir'] );
         }
 
         if ( !defined( 'OPT_DIR' ) )
@@ -266,7 +271,7 @@ class QUI
              * @var String
              * @package com.pcsg.qui
              */
-            define( 'OPT_DIR', $Config->get( 'globals','opt_dir' ) );
+            define( 'OPT_DIR', $config['globals']['opt_dir'] );
         }
 
         if ( !defined( 'URL_DIR' ) )
@@ -276,8 +281,13 @@ class QUI
              * @var String
              * @package com.pcsg.qui
              */
-            define( 'URL_DIR', $Config->get( 'globals','url_dir' ) );
+            define( 'URL_DIR', $config['globals']['url_dir'] );
         }
+
+
+
+        $Config     = new \QUI\Config( $cms_dir .'/etc/conf.ini' );
+        self::$Conf = $Config;
 
         if ( !defined( 'ERROR_BACKTRACE' ) )
         {
@@ -310,8 +320,6 @@ class QUI
         }
 
 
-        require_once $lib_dir .'autoload.php';
-
         // create the temp folder
         // @todo better do at the setup
         $folders = array(
@@ -334,7 +342,7 @@ class QUI
         );
 
         foreach ( $folders as $folder ) {
-            Utils_System_File::mkdir( $folder );
+            \QUI\Utils\System\File::mkdir( $folder );
         }
 
         // Load Packages
@@ -354,11 +362,11 @@ class QUI
 
             // ram peak, if the ram usage is to high, than write and send a message
             $peak      = memory_get_peak_usage();
-            $mem_limit = \Utils_System_File::getBytes( ini_get( 'memory_limit' ) ) * 0.8;
+            $mem_limit = \QUI\Utils\System\File::getBytes( ini_get( 'memory_limit' ) ) * 0.8;
 
             if ( $peak > $mem_limit && $mem_limit > 0 )
             {
-                $limit = \Utils_System_File::formatSize( memory_get_peak_usage() );
+                $limit = \QUI\Utils\System\File::formatSize( memory_get_peak_usage() );
 
                 if ( !isset( $_SERVER["HTTP_HOST"] ) ) {
                     $_SERVER["HTTP_HOST"] = '';
@@ -476,7 +484,7 @@ class QUI
             $vhosts = self::getConfig( 'etc/vhosts.ini' );
             self::$vhosts = $vhosts->toArray();
 
-        } catch ( \QException $Exception )
+        } catch ( \QUI\Exception $Exception )
         {
             self::$vhosts = array();
         }
@@ -500,9 +508,9 @@ class QUI
      * Starting from CMS_DIR
      *
      * @param String $file
-     * @throws QException
+     * @throws \QUI\Exception
      *
-     * @return QConfig
+     * @return \QUI\Config
      */
     static function getConfig($file)
     {
@@ -510,13 +518,13 @@ class QUI
         {
             if ( !file_exists( CMS_DIR . $file ) || is_dir( CMS_DIR . $file ) )
             {
-                throw new QException(
+                throw new \QUI\Exception(
                     'Error: Ini Datei: '. $file .' existiert nicht.',
                     404
                 );
             }
 
-            self::$Configs[ $file ] = new \QConfig( CMS_DIR . $file );
+            self::$Configs[ $file ] = new \QUI\Config( CMS_DIR . $file );
         }
 
         return self::$Configs[ $file ];
@@ -560,7 +568,7 @@ class QUI
     {
         if ( is_null( self::$DataBase2 ) )
         {
-            self::$DataBase2 = new \Utils_Db(array(
+            self::$DataBase2 = new \QUI\Database\DB(array(
                 'driver'   => self::conf( 'db', 'driver' ),
                 'host'     => self::conf( 'db', 'host' ),
                 'user'     => self::conf( 'db', 'user' ),
@@ -629,7 +637,7 @@ class QUI
 
     /**
      * Returns the ErrorHandler
-     * @return QExceptionHandler
+     * @return \QUI\ExceptionHandler
      */
     static function getErrorHandler()
     {
@@ -817,5 +825,3 @@ class QUI
         return self::getUsers()->getUserBySession();
     }
 }
-
-?>

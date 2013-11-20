@@ -15,7 +15,7 @@ class Projects_Manager
 {
     /**
      * Projects config
-     * @var QConfig
+     * @var \QUI\Config
      */
     static $Config = null;
 
@@ -34,7 +34,7 @@ class Projects_Manager
     /**
      * projects.ini
      *
-     * @return QConfig
+     * @return \QUI\Config
      */
     static function getConfig()
     {
@@ -45,7 +45,7 @@ class Projects_Manager
      * Returns the current project
      *
      * @return Project
-     * @throws QException
+     * @throws \QUI\Exception
      */
     static function get()
     {
@@ -100,7 +100,7 @@ class Projects_Manager
         }
 
         // Wenn der RAM zu voll wird, Objekte mal leeren
-        if ( Utils_System::memUsageCheck() ) {
+        if ( \QUI\Utils\System::memUsageToHigh() ) {
             self::$projects = array();
         }
 
@@ -153,7 +153,7 @@ class Projects_Manager
                     $list[] = $project;
                 }
 
-            } catch ( QException $e )
+            } catch ( \QUI\Exception $e )
             {
 
             }
@@ -187,7 +187,7 @@ class Projects_Manager
         }
 
         if ( is_null( self::$Standard ) ) {
-            throw new QException( 'Es wurde kein Projekt gefunden', 404 );
+            throw new \QUI\Exception( 'Es wurde kein Projekt gefunden', 404 );
         }
 
         return self::$Standard;
@@ -199,7 +199,7 @@ class Projects_Manager
      * @param String $name - Project name
      * @param String $lang - Project lang
      * @param String $template - template, optional
-     * @throws QException
+     * @throws \QUI\Exception
      *
      * @todo noch einmal anschauen und übersichtlicher schreiben
      */
@@ -211,7 +211,7 @@ class Projects_Manager
 
         if ( strlen( $name ) <= 2 )
         {
-            throw new \QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.project.longer.two.signs'
@@ -222,7 +222,7 @@ class Projects_Manager
 
         if ( strlen( $lang ) != 2 )
         {
-            throw new \QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.project.lang.not.two.signs'
@@ -239,7 +239,7 @@ class Projects_Manager
 
         if ( preg_match( "@[-.,:;#`!§$%&/?<>\=\'\" ]@", $name ) )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.project.not.allowed.signs',
@@ -255,7 +255,7 @@ class Projects_Manager
 
         if ( isset( $projects[ $name ] ) )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.project.not.allowed.signs'
@@ -369,8 +369,8 @@ class Projects_Manager
         /**
          * Create the file system folders
          */
-        Utils_System_File::mkdir( CMS_DIR .'media/sites/'. $name .'/' );
-        Utils_System_File::mkdir( USR_DIR . $name .'/' );
+        \QUI\Utils\System\File::mkdir( CMS_DIR .'media/sites/'. $name .'/' );
+        \QUI\Utils\System\File::mkdir( USR_DIR . $name .'/' );
 
 
         /**

@@ -11,7 +11,7 @@
  * @package com.pcsg.qui.template
  */
 
-class QUI_Template extends QDOM
+class QUI_Template extends \QUI\QDOM
 {
     /**
      * Registered template engines
@@ -41,7 +41,7 @@ class QUI_Template extends QDOM
 
     /**
      * Return the Template Config object
-     * @return QConfig
+     * @return \QUI\Config
      */
     static function getConfig()
     {
@@ -69,7 +69,7 @@ class QUI_Template extends QDOM
         $engine = \QUI::conf( 'template', 'engine' );
 
         if ( !isset( self::$_engines[ $engine ] ) ) {
-            throw new \QException( 'Template Engine not found!' );
+            throw new \QUI\Exception( 'Template Engine not found!' );
         }
 
         $Engine     = new self::$_engines[ $engine ]( $admin );
@@ -77,7 +77,7 @@ class QUI_Template extends QDOM
 
         if ( !isset( $implements['Interface_Template_Engine'] ) )
         {
-            throw new \QException(
+            throw new \QUI\Exception(
                 'The Template Engine implements not from Interface_Template_Engine'
             );
         }

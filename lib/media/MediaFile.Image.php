@@ -101,7 +101,7 @@ class MF_Image extends MF_File implements iMF
 		if (file_exists($file))
 		{
 			$filesize           = filesize($file);
-			$attributes['size'] = Utils_System_File::formatSize($filesize, 2);
+			$attributes['size'] = \QUI\Utils\System\File::formatSize($filesize, 2);
 		}
 
 		return $attributes;
@@ -180,10 +180,10 @@ class MF_Image extends MF_File implements iMF
 		if ($width || $height)
 		{
 			$part      = explode('.', $file);
-			$cachefile  = $cdir . $part[0] .'__'. $width .'x'. $height . $extra .'.'. Utils_String::toLower( end($part) );
+			$cachefile  = $cdir . $part[0] .'__'. $width .'x'. $height . $extra .'.'. \QUI\Utils\String::toLower( end($part) );
 
 			if ($height == false) {
-			    $cachefile2 = $cdir . $part[0] .'__'. $width . $extra .'.'. Utils_String::toLower( end($part) );
+			    $cachefile2 = $cdir . $part[0] .'__'. $width . $extra .'.'. \QUI\Utils\String::toLower( end($part) );
 			}
 
 			if ($this->getAttribute('reflection'))
@@ -226,8 +226,8 @@ class MF_Image extends MF_File implements iMF
 		{
 			try
 			{
-				Utils_System_File::copy($original, $cachefile);
-			} catch (QException $e)
+				\QUI\Utils\System\File::copy($original, $cachefile);
+			} catch (\QUI\Exception $e)
 			{
 			    // Fehler loggen
 			    System_Log::writeException($e);
@@ -288,7 +288,7 @@ class MF_Image extends MF_File implements iMF
     					));
         			}
 
-				} catch (QException $e)
+				} catch (\QUI\Exception $e)
 				{
 					System_Log::writeException($e);
 				}
@@ -325,7 +325,7 @@ class MF_Image extends MF_File implements iMF
 		}
 
 
-		$params  = Utils_String::getUrlAttributes($watermark['image']);
+		$params  = \QUI\Utils\String::getUrlAttributes($watermark['image']);
 
 		if (!isset($params['id']) || !isset($params['project'])) {
 			return $cachefile;
@@ -370,8 +370,8 @@ class MF_Image extends MF_File implements iMF
 
 
 
-			$c_info = Utils_System_File::getInfo($cachefile, array('imagesize' => true));
-			$w_info = Utils_System_File::getInfo($f_water, array('imagesize' => true));
+			$c_info = \QUI\Utils\System\File::getInfo($cachefile, array('imagesize' => true));
+			$w_info = \QUI\Utils\System\File::getInfo($f_water, array('imagesize' => true));
 
 			// Prozentuale Grösse - Wasserzeichen
 			if (isset($watermark['percent']) && $watermark['percent'])
@@ -386,13 +386,13 @@ class MF_Image extends MF_File implements iMF
 
                 // Resize des Wasserzeichens
                 if (!file_exists($watermark_temp)) {
-                    Utils_System_File::copy($f_water, $watermark_temp);
+                    \QUI\Utils\System\File::copy($f_water, $watermark_temp);
                 }
 
                 Utils_Image::resize($watermark_temp, $watermark_temp, $watermark_width);
                 Utils_Image::resize($watermark_temp, $watermark_temp, 0, $watermark_height);
 
-                $w_info  = Utils_System_File::getInfo($watermark_temp, array('imagesize' => true));
+                $w_info  = \QUI\Utils\System\File::getInfo($watermark_temp, array('imagesize' => true));
                 $f_water = $watermark_temp;
 			}
 
@@ -427,7 +427,7 @@ class MF_Image extends MF_File implements iMF
                 Utils_Image::watermark($cachefile2, $f_water, false, $top, $left);
     		}
 
-		} catch (QException $e)
+		} catch (\QUI\Exception $e)
 		{
 			System_Log::writeException($e);
 			// nothing
@@ -465,14 +465,14 @@ class MF_Image extends MF_File implements iMF
 		}
 
 		// Cachefolder erstellen
-		Utils_System_File::mkdir($cdir);
+		\QUI\Utils\System\File::mkdir($cdir);
 
 		if ($width || $height)
 		{
 			$this->resize($cachefile, (int)$width, (int)$height);
 		} else
 		{
-			Utils_System_File::copy($original, $cachefile);
+			\QUI\Utils\System\File::copy($original, $cachefile);
 		}
 
 		return $cachefile;
@@ -489,7 +489,7 @@ class MF_Image extends MF_File implements iMF
 		$path = pathinfo($cachefile);
 		$expl = explode('.', $this->getAttribute('name'));
 
-		$files = Utils_System_File::readDir($path['dirname'], true);
+		$files = \QUI\Utils\System\File::readDir($path['dirname'], true);
 
 		foreach ($files as $file)
 		{
@@ -506,7 +506,7 @@ class MF_Image extends MF_File implements iMF
 
 		// Admincache löschen
 		$acdir = VAR_DIR .'media_cache/'. $this->_Project->getAttribute('name') .'/';
-		$files = Utils_System_File::readDir($acdir, true);
+		$files = \QUI\Utils\System\File::readDir($acdir, true);
 		$id    = $this->getId();
 
 		foreach ($files as $file)
@@ -532,9 +532,9 @@ class MF_Image extends MF_File implements iMF
 		try
 		{
 			$original = $this->_Media->getAttribute('media_dir').$this->getAttribute('file');
-			return Utils_System_File::resize($original, $new_image, $new_width, $new_height);
+			return \QUI\Utils\System\File::resize($original, $new_image, $new_width, $new_height);
 
-		} catch (QException $e)
+		} catch (\QUI\Exception $e)
 		{
 			System_Log::writeException($e);
 			return $original;
@@ -550,11 +550,11 @@ class MF_Image extends MF_File implements iMF
 	public function setRoundCorners($background='', $radius='')
 	{
 		if (empty($background)) {
-			throw new QException('Please enter a background color');
+			throw new \QUI\Exception('Please enter a background color');
 		}
 
 		if (empty($radius)) {
-			throw new QException('Please enter a Radius');
+			throw new \QUI\Exception('Please enter a Radius');
 		}
 
 		$roundcorners = array(

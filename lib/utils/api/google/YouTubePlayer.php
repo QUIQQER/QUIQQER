@@ -43,149 +43,149 @@
  *	$YouTubePlayer->setAttribute('quality','22'); # 6=Low,18=High,22=HD
  *
  */
-class Utils_Api_Google_YouTubePlayer extends QDOM
+class Utils_Api_Google_YouTubePlayer extends \QUI\QDOM
 {
     /**
      * YouTube video code
      * @var String
      */
-	protected $_ytcode = null;
+    protected $_ytcode = null;
 
-	/**
-	 * Youtube url
-	 * @var String
-	 */
-	protected $_ytUrl = 'http://www.youtube.com/v/';
+    /**
+     * Youtube url
+     * @var String
+     */
+    protected $_ytUrl = 'http://www.youtube.com/v/';
 
-	/**
-	 * Settings
-	 * @var array
-	 */
-	protected $_settings = array(
-    	'autoplay' 		 => '0',
-    	'enablejsapi'    => '0',
-    	'autohide'       => '2',
+    /**
+     * Settings
+     * @var array
+     */
+    protected $_settings = array(
+        'autoplay' 		 => '0',
+        'enablejsapi'    => '0',
+        'autohide'       => '2',
         'controls'       => '1',
         'origin'         => null,
-    	'start'          => null,
-    	'theme'          => 'dark',
-    	'loop' 			 => '0',
-    	'rel' 			 => '1',
-    	'playerapiid'  	 => '',
-    	'disablekb' 	 => '0',
-    	'egm' 			 => '0',
-    	'border' 		 => '0',
-    	'color1' 		 => '',
-    	'color2' 		 => '',
-    	'fs' 			 => '1',
-    	'showsearch' 	 => '0',
-    	'showinfo' 		 => '0',
-    	'iv_load_policy' => '3',
-    	'load_policy' 	 => '0',
-    	'width' 		 => '640',
-    	'height' 		 => '390',
-    	'quality' 		 => '18',
-    	'title' 		 => 'Video',
-    	'bgcolor' 		 => '#000000'
-	);
+        'start'          => null,
+        'theme'          => 'dark',
+        'loop' 			 => '0',
+        'rel' 			 => '1',
+        'playerapiid'  	 => '',
+        'disablekb' 	 => '0',
+        'egm' 			 => '0',
+        'border' 		 => '0',
+        'color1' 		 => '',
+        'color2' 		 => '',
+        'fs' 			 => '1',
+        'showsearch' 	 => '0',
+        'showinfo' 		 => '0',
+        'iv_load_policy' => '3',
+        'load_policy' 	 => '0',
+        'width' 		 => '640',
+        'height' 		 => '390',
+        'quality' 		 => '18',
+        'title' 		 => 'Video',
+        'bgcolor' 		 => '#000000'
+    );
 
-	/**
-	 * Konstruktor
-	 *
-	 * @param $ytcode #YouTubeID oder Youtube URL
-	 */
-	public function __construct($ytcode)
-	{
-		$this->_ytcode = self::getYouTubeId($ytcode, false);
+    /**
+     * Konstruktor
+     *
+     * @param $ytcode #YouTubeID oder Youtube URL
+     */
+    public function __construct($ytcode)
+    {
+        $this->_ytcode = self::getYouTubeId($ytcode, false);
 
-		// Einstellungen
-		foreach ($this->_settings as $key => $val) {
-			$this->setAttribute($key,$val);
-		}
-	}
+        // Einstellungen
+        foreach ($this->_settings as $key => $val) {
+            $this->setAttribute($key,$val);
+        }
+    }
 
-	/**
-	 * Gibt den Youtube Player HTML Code zurück
-	 *
-	 * @return String - player html code
-	 */
-	public function getPlayerOld()
-	{
-		$html 	 = '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
-					width="'. $this->getAttribute('width') . '"
-					height="'. $this->getAttribute('height') . '">';
-		$html 	.= ' <param name="movie" value="'. $this->getUrl() .'" />';
-		$html 	.= ' <param name="quality" value="high" />';
-		$html 	.= ' <param name="bgcolor" value="'. $this->getAttribute('bgcolor') .'" />';
-		$html 	.= ' <param name="wmode" value="opaque" />';
-		$html 	.= ' <param name="menu" value="false" />';
-		$html 	.= ' <param name="allowfullscreen" value="true" />';
-		$html 	.= ' <embed ';
-		$html 	.= ' id="'. $this->getAttribute('title') .'"';
-		$html 	.= ' quality="high"';
-		$html 	.= ' width="'. $this->getAttribute('width') .'"';
-		$html 	.= ' height="'. $this->getAttribute('height') .'"';
-		$html 	.= ' type="application/x-shockwave-flash"';
-		$html 	.= ' src="'. $this->getUrl() .'"';
-		$html 	.= ' name="'. $this->getAttribute('title') .'"';
-		$html 	.= ' bgcolor="'. $this->getAttribute('bgcolor') .'"';
-		$html 	.= ' wmode="opaque"';
-		$html 	.= ' menu="false"';
-		$html 	.= ' allowfullscreen="true"';
-		$html   .= $this->getAttribute('embed_extra');
-		$html 	.= '></embed>';
-		$html 	.= '</object>';
+    /**
+     * Gibt den Youtube Player HTML Code zurück
+     *
+     * @return String - player html code
+     */
+    public function getPlayerOld()
+    {
+        $html 	 = '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+                    width="'. $this->getAttribute('width') . '"
+                    height="'. $this->getAttribute('height') . '">';
+        $html 	.= ' <param name="movie" value="'. $this->getUrl() .'" />';
+        $html 	.= ' <param name="quality" value="high" />';
+        $html 	.= ' <param name="bgcolor" value="'. $this->getAttribute('bgcolor') .'" />';
+        $html 	.= ' <param name="wmode" value="opaque" />';
+        $html 	.= ' <param name="menu" value="false" />';
+        $html 	.= ' <param name="allowfullscreen" value="true" />';
+        $html 	.= ' <embed ';
+        $html 	.= ' id="'. $this->getAttribute('title') .'"';
+        $html 	.= ' quality="high"';
+        $html 	.= ' width="'. $this->getAttribute('width') .'"';
+        $html 	.= ' height="'. $this->getAttribute('height') .'"';
+        $html 	.= ' type="application/x-shockwave-flash"';
+        $html 	.= ' src="'. $this->getUrl() .'"';
+        $html 	.= ' name="'. $this->getAttribute('title') .'"';
+        $html 	.= ' bgcolor="'. $this->getAttribute('bgcolor') .'"';
+        $html 	.= ' wmode="opaque"';
+        $html 	.= ' menu="false"';
+        $html 	.= ' allowfullscreen="true"';
+        $html   .= $this->getAttribute('embed_extra');
+        $html 	.= '></embed>';
+        $html 	.= '</object>';
 
-		return $html;
-	}
+        return $html;
+    }
 
 
-	/**
-	 * Gibt den Youtube Player HTML Code als Div zurück
-	 *
-	 * @return String player javascript code
-	 */
-	public function getPlayer()
-	{
-	    $html  = '';
-	    $html .= '<script type="text/javascript">'."\r\n";
-	    $html .= $this->appendPlayer();
-	    $html .= '/* ]]> */</script>'."\r\n\r\n";
+    /**
+     * Gibt den Youtube Player HTML Code als Div zurück
+     *
+     * @return String player javascript code
+     */
+    public function getPlayer()
+    {
+        $html  = '';
+        $html .= '<script type="text/javascript">'."\r\n";
+        $html .= $this->appendPlayer();
+        $html .= '/* ]]> */</script>'."\r\n\r\n";
 
-	    $playerDiv = '';
+        $playerDiv = '';
 
-	    if ($this->getAttribute('playerDiv') !=  'ytVideo_' . $this->_getYTId()) {
-	        $playerDiv = '<div id="ytVideo_' . $this->_getYTId() . '" class="ytVideoDiv" '.$this->getAttribute('embed_extra') .'></div>';
-	    }
+        if ($this->getAttribute('playerDiv') !=  'ytVideo_' . $this->_getYTId()) {
+            $playerDiv = '<div id="ytVideo_' . $this->_getYTId() . '" class="ytVideoDiv" '.$this->getAttribute('embed_extra') .'></div>';
+        }
 
-	    $html .= $playerDiv."\r\n";
+        $html .= $playerDiv."\r\n";
 
-	    return $html;
-	}
+        return $html;
+    }
 
-	/**
-	 * Gibt den Youtube Player HTML Code als Div zurück
-	 *
-	 * @return String $PlayerCode
-	 */
-	public function appendPlayer()
-	{
-	    $playerDiv = '';
+    /**
+     * Gibt den Youtube Player HTML Code als Div zurück
+     *
+     * @return String $PlayerCode
+     */
+    public function appendPlayer()
+    {
+        $playerDiv = '';
 
-	    if (!$this->getAttribute('playerDiv'))
-	    {
-	        $this->setAttribute('playerDiv', 'ytVideo_'. $this->_getYTId());
+        if (!$this->getAttribute('playerDiv'))
+        {
+            $this->setAttribute('playerDiv', 'ytVideo_'. $this->_getYTId());
 
-	        if ($this->getAttribute('parentId'))
-	        {
-	            $playerDiv .= 'if(!document.getElementById("ytVideo_' . $this->_getYTId() . '")){'."\r\n";
-	            $playerDiv .= 'var _PlayerDiv_' . $this->_getYTId() . ' = document.createElement("div");'."\r\n";
-	            $playerDiv .= '_PlayerDiv_' . $this->_getYTId() . '.id = "ytVideo_' . $this->_getYTId() . '";'."\r\n";
-	            $playerDiv .= '_PlayerDiv_' . $this->_getYTId() . '.className = "ytVideoDic";'."\r\n";
-	            $playerDiv .= 'document.getElementById("' . $this->getAttribute('parentId') . '").appendChild(_PlayerDiv_' . $this->_getYTId() . ');'."\r\n\r\n";
-	            $playerDiv .= '};';
-	        }
-	    }
+            if ($this->getAttribute('parentId'))
+            {
+                $playerDiv .= 'if(!document.getElementById("ytVideo_' . $this->_getYTId() . '")){'."\r\n";
+                $playerDiv .= 'var _PlayerDiv_' . $this->_getYTId() . ' = document.createElement("div");'."\r\n";
+                $playerDiv .= '_PlayerDiv_' . $this->_getYTId() . '.id = "ytVideo_' . $this->_getYTId() . '";'."\r\n";
+                $playerDiv .= '_PlayerDiv_' . $this->_getYTId() . '.className = "ytVideoDic";'."\r\n";
+                $playerDiv .= 'document.getElementById("' . $this->getAttribute('parentId') . '").appendChild(_PlayerDiv_' . $this->_getYTId() . ');'."\r\n\r\n";
+                $playerDiv .= '};';
+            }
+        }
 
         $this->_playerHTML .= 'var _yt = document.createElement("script");'."\r\n";
         $this->_playerHTML .= '_yt.src = "http://www.youtube.com/player_api";'."\r\n";
@@ -241,107 +241,107 @@ class Utils_Api_Google_YouTubePlayer extends QDOM
         $this->_playerHTML .= 'onYouTubePlayerAPIReady();';
         $this->_playerHTML .= '}';
 
-	    return $this->_playerHTML;
-	}
+        return $this->_playerHTML;
+    }
 
-	/**
-	 * Erstellt die YouTube URL mit allen Parametern
-	 *
-	 * @return string $movieUrl
-	 */
-	private function getUrl()
-	{
-		$movieUrl  = $this->_ytUrl;
-		$movieUrl .= $this->_ytcode;
-		$movieUrl .= '&ap=%2526fmt%3D'	. $this->getAttribute('quality');
-		$movieUrl .= '&rel='			. $this->getAttribute('rel');
-		$movieUrl .= '&autoplay='		. $this->getAttribute('autoplay');
-		$movieUrl .= '&loop='			. $this->getAttribute('loop');
-		$movieUrl .= '&enablejsapi='	. $this->getAttribute('enablejsapi');
-		$movieUrl .= '&playerapiid='	. $this->getAttribute('playerapiid');
-		$movieUrl .= '&disablekb='		. $this->getAttribute('disablekb');
-		$movieUrl .= '&egm='			. $this->getAttribute('egm');
-		$movieUrl .= '&border='			. $this->getAttribute('border');
-		$movieUrl .= '&color1='			. $this->getAttribute('color1');
-		$movieUrl .= '&color2='			. $this->getAttribute('color2');
-		$movieUrl .= '&fs='				. $this->getAttribute('fs');
-		$movieUrl .= '&showsearch='		. $this->getAttribute('showsearch');
-		$movieUrl .= '&showinfo='		. $this->getAttribute('showinfo');
-		$movieUrl .= '&iv_load_policy=' . $this->getAttribute('iv_load_policy');
-		$movieUrl .= '&load_policy=' 	. $this->getAttribute('load_policy');
+    /**
+     * Erstellt die YouTube URL mit allen Parametern
+     *
+     * @return string $movieUrl
+     */
+    private function getUrl()
+    {
+        $movieUrl  = $this->_ytUrl;
+        $movieUrl .= $this->_ytcode;
+        $movieUrl .= '&ap=%2526fmt%3D'	. $this->getAttribute('quality');
+        $movieUrl .= '&rel='			. $this->getAttribute('rel');
+        $movieUrl .= '&autoplay='		. $this->getAttribute('autoplay');
+        $movieUrl .= '&loop='			. $this->getAttribute('loop');
+        $movieUrl .= '&enablejsapi='	. $this->getAttribute('enablejsapi');
+        $movieUrl .= '&playerapiid='	. $this->getAttribute('playerapiid');
+        $movieUrl .= '&disablekb='		. $this->getAttribute('disablekb');
+        $movieUrl .= '&egm='			. $this->getAttribute('egm');
+        $movieUrl .= '&border='			. $this->getAttribute('border');
+        $movieUrl .= '&color1='			. $this->getAttribute('color1');
+        $movieUrl .= '&color2='			. $this->getAttribute('color2');
+        $movieUrl .= '&fs='				. $this->getAttribute('fs');
+        $movieUrl .= '&showsearch='		. $this->getAttribute('showsearch');
+        $movieUrl .= '&showinfo='		. $this->getAttribute('showinfo');
+        $movieUrl .= '&iv_load_policy=' . $this->getAttribute('iv_load_policy');
+        $movieUrl .= '&load_policy=' 	. $this->getAttribute('load_policy');
 
-		if ($this->getAttribute('start')) {
-			$movieUrl .= '&start=' . $this->getAttribute('start');
-		}
+        if ($this->getAttribute('start')) {
+            $movieUrl .= '&start=' . $this->getAttribute('start');
+        }
 
-		if ($this->getAttribute('end')) {
-			$movieUrl .= '&end=' . $this->getAttribute('end');
-		}
+        if ($this->getAttribute('end')) {
+            $movieUrl .= '&end=' . $this->getAttribute('end');
+        }
 
-		return htmlspecialchars($movieUrl);
-	}
+        return htmlspecialchars($movieUrl);
+    }
 
-	/**
-	 * YouTube Player - ID für das DIV und JavaScript
-	 * @return String
-	 */
-	protected function _getYTId()
-	{
-	    return preg_replace('/[^a-zA-Z0-9]/i', '', $this->_ytcode);
-	}
+    /**
+     * YouTube Player - ID für das DIV und JavaScript
+     * @return String
+     */
+    protected function _getYTId()
+    {
+        return preg_replace('/[^a-zA-Z0-9]/i', '', $this->_ytcode);
+    }
 
-	/**
-	 * Return only the youtube id, if the id is correct
-	 *
-	 * @param String $youTubeString
-	 * @param Bool $check true/false
-	 *
-	 * @return string youTubeId
-	 * @throws QException
-	 */
-	static function getYouTubeId($youTubeString=false, $check=true)
-	{
-	    if (strpos($youTubeString, 'v='))
-		{
-			$params = Utils_String::getUrlAttributes($youTubeString);
+    /**
+     * Return only the youtube id, if the id is correct
+     *
+     * @param String $youTubeString
+     * @param Bool $check true/false
+     *
+     * @return string youTubeId
+     * @throws \QUI\Exception
+     */
+    static function getYouTubeId($youTubeString=false, $check=true)
+    {
+        if (strpos($youTubeString, 'v='))
+        {
+            $params = \QUI\Utils\String::getUrlAttributes($youTubeString);
 
-			if (isset($params['v'])) {
-				return $params['v'];
-			}
+            if (isset($params['v'])) {
+                return $params['v'];
+            }
 
-			throw new QException('Keine YouTube Id gefunden');
-		}
+            throw new \QUI\Exception('Keine YouTube Id gefunden');
+        }
 
-		if (strpos($youTubeString, 'http://youtu.be/') !== false) {
-		    return str_replace('http://youtu.be/', '', $youTubeString);
-		}
+        if (strpos($youTubeString, 'http://youtu.be/') !== false) {
+            return str_replace('http://youtu.be/', '', $youTubeString);
+        }
 
-		if ($check) {
-			self::checkYouTubeId($youTubeString);
-		}
+        if ($check) {
+            self::checkYouTubeId($youTubeString);
+        }
 
-		return $youTubeString;
-	}
+        return $youTubeString;
+    }
 
-	/**
-	 * Prüft eine YouTube Id
-	 *
-	 * @param String $yid
-	 *
-	 * @return String $yid
-	 */
-	static function checkYouTubeId($yid)
-	{
-		$url = 'http://www.youtube.com/watch?v='. $yid;
+    /**
+     * Prüft eine YouTube Id
+     *
+     * @param String $yid
+     *
+     * @return String $yid
+     */
+    static function checkYouTubeId($yid)
+    {
+        $url = 'http://www.youtube.com/watch?v='. $yid;
 
-		$httpcode = Utils_Request_Linkchecker::checkUrl($url);
+        $httpcode = Utils_Request_Linkchecker::checkUrl($url);
 
-		if ($httpcode >= 400) {
-			throw new QException('Die YouTube Id existiert nicht', $httpcode);
-		}
+        if ($httpcode >= 400) {
+            throw new \QUI\Exception('Die YouTube Id existiert nicht', $httpcode);
+        }
 
-		return true;
-	}
+        return true;
+    }
 }
 
 ?>

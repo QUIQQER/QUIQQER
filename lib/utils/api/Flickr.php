@@ -12,9 +12,9 @@
  * @uses phpFlickr Class by Dan Coulter
  */
 
-class Utils_Api_Flickr extends QDOM
+class Utils_Api_Flickr extends \QUI\QDOM
 {
-	/**
+    /**
      * Konstruktor
      *
      * @param Array $params
@@ -49,9 +49,9 @@ class Utils_Api_Flickr extends QDOM
      * @param String $username
      * @return Bool
      */
-	public function userExist($username)
-	{
-	    require_once dirname(__FILE__) .'/flickr/phpFlickr.php';
+    public function userExist($username)
+    {
+        require_once dirname(__FILE__) .'/flickr/phpFlickr.php';
 
         $Flickr = new phpFlickr(
             $this->getAttribute('apikey'),
@@ -69,7 +69,7 @@ class Utils_Api_Flickr extends QDOM
         }
 
         return false;
-	}
+    }
 }
 
 ?>

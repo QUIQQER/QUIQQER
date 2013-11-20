@@ -16,7 +16,7 @@ class QUI_Licence
 {
     /**
      * Internal licence
-     * @var QConfig
+     * @var \QUI\Config
      */
 	private $_config;
 
@@ -32,7 +32,7 @@ class QUI_Licence
 
 		if (!file_exists($licence_file))
 		{
-			throw new QException('Keine Lizenz');
+			throw new \QUI\Exception('Keine Lizenz');
 			return false;
 		}
 
@@ -83,7 +83,7 @@ class QUI_Licence
         $res = curl_exec($Curl);
 
 		if (empty($res)) {
-			throw new QException('The license code is invalid', $http_code);
+			throw new \QUI\Exception('The license code is invalid', $http_code);
 		}
 
 	    $http_code = curl_getinfo($Curl, CURLINFO_HTTP_CODE);
@@ -91,7 +91,7 @@ class QUI_Licence
 
 		if ($http_code == 404)
 		{
-			throw new QException(
+			throw new \QUI\Exception(
 				'The connection to the update server could not be established',
 			    $http_code
 			);
@@ -99,8 +99,8 @@ class QUI_Licence
 
 		$res = json_decode($res, true);
 
-		if (isset($res['QException'])) {
-			throw new QException($res['QException']['message']);
+		if (isset($res['\QUI\Exception'])) {
+			throw new \QUI\Exception($res['\QUI\Exception']['message']);
 		}
 
 		return $res;

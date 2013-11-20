@@ -3,7 +3,7 @@
 /**
  * Activate the file / files
  *
- * @throws QException
+ * @throws \QUI\Exception
  * @return true - if succeed
  */
 function ajax_media_activate($project, $fileid)

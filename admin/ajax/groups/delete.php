@@ -25,7 +25,7 @@ function ajax_groups_delete($gids)
 
             $result[] = $gid;
 
-        } catch ( QException $Exception )
+        } catch ( \QUI\Exception $Exception )
         {
 
         }

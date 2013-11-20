@@ -13,7 +13,7 @@ function ajax_users_set_password($uid, $pw1, $pw2, $params)
 
     if ( $pw1 != $pw2 )
     {
-        throw new \QException(
+        throw new \QUI\Exception(
             \QUI::getLocale(
                 'quiqqer/system',
                 'exception.lib.user.wrong.passwords'
@@ -29,5 +29,3 @@ function ajax_users_set_password($uid, $pw1, $pw2, $params)
     array( 'uid', 'pw1', 'pw2', 'params' ),
     'Permission::checkSU'
 );
-
-?>

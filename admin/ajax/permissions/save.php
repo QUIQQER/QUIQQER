@@ -33,7 +33,7 @@ function ajax_permissions_save($params, $btype, $permissions)
         break;
 
         default:
-            throw new \QException(
+            throw new \QUI\Exception(
                 'Cannot find permissions for Object'
             );
         break;
@@ -57,5 +57,3 @@ function ajax_permissions_save($params, $btype, $permissions)
         'quiqqer.system.permissions'
     )
 );
-
-?>

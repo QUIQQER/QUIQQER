@@ -11,7 +11,7 @@
  * @package com.pcsg.qui.messages
  */
 
-class QUI_Messages_Message extends QDOM
+class QUI_Messages_Message extends \QUI\QDOM
 {
     /**
      * constructor

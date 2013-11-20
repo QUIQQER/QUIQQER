@@ -33,7 +33,7 @@ function ajax_users_switchstatus($uid)
 
             $result[ $_uid ] = $User->isActive() ? 1 : 0;
 
-        } catch ( QException $Exception )
+        } catch ( \QUI\Exception $Exception )
         {
             QUI::getMessagesHandler()->addException( $Exception );
             continue;

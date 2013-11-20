@@ -173,19 +173,19 @@ class QUI_Mail
 	public function send($mailconf)
 	{
 		if ( !is_array( $mailconf ) ) {
-			throw new QException( 'Mail Error: send() Fehlender Paramater', 400 );
+			throw new \QUI\Exception( 'Mail Error: send() Fehlender Paramater', 400 );
 		}
 
 		if ( !isset( $mailconf['MailTo'] ) ) {
-			throw new QException( 'Mail Error: send() Fehlender Paramater MailTo', 400 );
+			throw new \QUI\Exception( 'Mail Error: send() Fehlender Paramater MailTo', 400 );
 		}
 
 		if ( !isset( $mailconf['Subject'] ) ) {
-			throw new QException( 'Mail Error: send() Fehlender Paramater Subject', 400 );
+			throw new \QUI\Exception( 'Mail Error: send() Fehlender Paramater Subject', 400 );
 		}
 
 		if ( !isset( $mailconf['Body'] ) ) {
-			throw new QException( 'Mail Error: send() Fehlender Paramater Body', 400 );
+			throw new \QUI\Exception( 'Mail Error: send() Fehlender Paramater Body', 400 );
 		}
 
 		$Body    = $mailconf['Body'];
@@ -260,7 +260,7 @@ class QUI_Mail
 					continue;
 				}
 
-				$infos = Utils_System_File::getInfo( $file );
+				$infos = \QUI\Utils\System\File::getInfo( $file );
 
 				if ( !isset( $infos['mime_type'] ) ) {
 					$infos['mime_type'] = 'application/octet-stream';
@@ -289,7 +289,7 @@ class QUI_Mail
 
 		QUI::getErrorHandler()->setAttribute( 'ERROR_8192', true );
 
-		throw new QException( 'Mail Error: '. $this->_mail->ErrorInfo, 500 );
+		throw new \QUI\Exception( 'Mail Error: '. $this->_mail->ErrorInfo, 500 );
 	}
 }
 

@@ -26,7 +26,7 @@ function ajax_media_folder_children($project, $folderid)
             $Child      = $Media->get( $id );
             $children[] = Projects_Media_Utils::parseForMediaCenter( $Child );
 
-        } catch ( QException $Exception )
+        } catch ( \QUI\Exception $Exception )
         {
             $params = array(
                 'id'    => $id,

@@ -20,10 +20,8 @@ function ajax_settings_category($file, $category)
     return Utils_Dom::parseCategorieToHTML( $Category );
 }
 
-QUI::$Ajax->register(
-	'ajax_settings_category',
+\QUI::$Ajax->register(
+    'ajax_settings_category',
     array( 'file', 'category' ),
     'Permission::checkAdminUser'
 );
-
-?>

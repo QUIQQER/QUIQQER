@@ -34,7 +34,7 @@ function patch_hkl_content2( $Patch )
 			$Project = new Project($project);
 			$langs = $Project->getAttribute('langs');
 
-		} catch(QException $e)
+		} catch(\QUI\Exception $e)
 		{
 			$Patch->write($e->getMessage());
 			continue;

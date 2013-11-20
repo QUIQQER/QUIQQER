@@ -3,7 +3,7 @@
 /**
  * Deactivate the file / files
  *
- * @throws QException
+ * @throws \QUI\Exception
  */
 function ajax_media_deactivate($project, $fileid)
 {

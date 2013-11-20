@@ -12,7 +12,7 @@ class System_Cache_Manager
 {
     /**
      * Cache Manager Configs
-     * @var QConfig
+     * @var \QUI\Config
      */
     static $Config = null;
 
@@ -37,7 +37,7 @@ class System_Cache_Manager
     /**
      * Cache Settings
      *
-     * @return QConfig
+     * @return \QUI\Config
      */
     static function getConfig()
     {
@@ -47,7 +47,7 @@ class System_Cache_Manager
             {
                 self::$Config = QUI::getConfig( 'etc/cache.ini' );
 
-            } catch ( \QException $Exception )
+            } catch ( \QUI\Exception $Exception )
             {
                 file_put_contents( CMS_DIR .'etc/cache.ini', '' );
 
@@ -68,7 +68,7 @@ class System_Cache_Manager
     {
         // pfad erstellen falls nicht erstellt ist
         if ( !is_dir( VAR_DIR .'cache/stack/' ) ) {
-            Utils_System_File::mkdir( VAR_DIR .'cache/stack/' );
+            \QUI\Utils\System\File::mkdir( VAR_DIR .'cache/stack/' );
         }
 
         if ( $key !== false ) {
@@ -317,7 +317,7 @@ class System_Cache_Manager
      */
     static function clearAll()
     {
-        Utils_System_File::unlink( VAR_DIR .'cache/' );
+        \QUI\Utils\System\File::unlink( VAR_DIR .'cache/' );
 
         self::clear();
     }

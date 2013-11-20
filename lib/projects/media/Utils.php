@@ -196,16 +196,16 @@ class Projects_Media_Utils
      * Return the media item
      *
      * @param String $url - image.php? url
-     * @return MediaFile || QException
+     * @return MediaFile || \QUI\Exception
      */
     static function getImageByUrl($url)
     {
         if ( self::isMediaUrl( $url ) === false ) {
-            throw new \QException( 'Its not a QUIQQER image url', 400 );
+            throw new \QUI\Exception( 'Its not a QUIQQER image url', 400 );
         }
 
         // Parameter herrausfinden
-        $params = \Utils_String::getUrlAttributes( $url );
+        $params = \QUI\Utils\String::getUrlAttributes( $url );
 
         $Project = \QUI::getProject( $params['project'] );
         $Media   = $Project->getMedia();
@@ -231,7 +231,7 @@ class Projects_Media_Utils
 
         if ( isset( $attributes['style'] ) )
         {
-            $style = \Utils_String::splitStyleAttributes(
+            $style = \QUI\Utils\String::splitStyleAttributes(
                 $attributes['style']
             );
 
@@ -282,7 +282,7 @@ class Projects_Media_Utils
         }
 
         // Parameter herrausfinden
-        $params = \Utils_String::getUrlAttributes( $output );
+        $params = \QUI\Utils\String::getUrlAttributes( $output );
 
         if ( !isset( $params['qui'] ) ) {
             return '';
@@ -312,7 +312,7 @@ class Projects_Media_Utils
                 $Obj = self::getImageByUrl( $output );
                 $url = $Obj->getUrl( true );
 
-            } catch ( \QException $Exception )
+            } catch ( \QUI\Exception $Exception )
             {
                 \System_Log::writeException( $Exception );
 
@@ -378,14 +378,14 @@ class Projects_Media_Utils
      * checks if the string can be used for a media folder name
      *
      * @param String $str - foldername
-     * @throws QException
+     * @throws \QUI\Exception
      */
     static function checkFolderName($str)
     {
         // Prüfung des Namens - Sonderzeichen
         if ( preg_match('/[^0-9_a-zA-Z -]/', $str) )
         {
-            throw new \QException(
+            throw new \QUI\Exception(
                 'Nicht erlaubte Zeichen wurden im Namen "'. $str .'" gefunden.
                 Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -',
                 702
@@ -394,7 +394,7 @@ class Projects_Media_Utils
 
         if ( strpos($str, '__') !== false )
         {
-            throw new \QException(
+            throw new \QUI\Exception(
                 'Nicht erlaubte Zeichen wurden im Namen gefunden.
                 Doppelte __ dürfen nicht verwendet werden.',
                 702
@@ -431,14 +431,14 @@ class Projects_Media_Utils
      * checks if the string can be used for a media item
      *
      * @param String $filename - the complete filename: my_file.jpg
-     * @throws QException
+     * @throws \QUI\Exception
      */
     static function checkMediaName($filename)
     {
         // Prüfung des Namens - Sonderzeichen
         if ( preg_match('/[^0-9_a-zA-Z -.]/', $filename) )
         {
-            throw new \QException(
+            throw new \QUI\Exception(
                 'Nicht erlaubte Zeichen wurden im Namen "'. $filename .'" gefunden.
                 Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -',
                 702
@@ -448,7 +448,7 @@ class Projects_Media_Utils
         // mehr als zwei punkte
          if ( substr_count($filename, '.') > 1 )
          {
-             throw new \QException(
+             throw new \QUI\Exception(
                 'Punkte dürfe nicht im Namen enthalten sein',
                 702
             );
@@ -456,7 +456,7 @@ class Projects_Media_Utils
 
         if ( strpos($filename, '__') !== false )
         {
-            throw new \QException(
+            throw new \QUI\Exception(
                 'Nicht erlaubte Zeichen wurden im Namen gefunden.
                 Doppelte __ dürfen nicht verwendet werden.',
                 702
@@ -483,7 +483,7 @@ class Projects_Media_Utils
 
         // delete the dots but not the last dot
         $str = str_replace('.', '_', $str);
-        $str = \Utils_String::replaceLast('_', '.', $str);
+        $str = \QUI\Utils\String::replaceLast('_', '.', $str);
 
         // FIX
         $str = preg_replace('/[_]{2,}/', "_", $str);
@@ -542,14 +542,14 @@ class Projects_Media_Utils
      *
      * @param String $url
      * @return Projects_Media_Item
-     * @throws QException
+     * @throws \QUI\Exception
      */
     static function getElement($url)
     {
         $parts = explode( 'media/cache/', $url );
 
         if ( !isset( $parts[1] ) ) {
-            throw new \QException( 'File not found', 404 );
+            throw new \QUI\Exception( 'File not found', 404 );
         }
 
         $parts   = explode( '/', $parts[1] );
@@ -585,7 +585,7 @@ class Projects_Media_Utils
      * @param Integer $fileid 	  - The File which will be replaced
      * @param Array $uploadparams - Array with file information array('name' => '', 'type' => '')
      *
-     * @throws QException
+     * @throws \QUI\Exception
      */
     static function checkReplace(Projects_Media $Media, $fileid, $uploadparams)
     {
@@ -600,7 +600,7 @@ class Projects_Media_Utils
         ));
 
         if ( !isset( $result[0] ) ) {
-            throw new \QException( 'File entry not found', 404 );
+            throw new \QUI\Exception( 'File entry not found', 404 );
         }
 
         $data = $result[0];
@@ -615,7 +615,7 @@ class Projects_Media_Utils
 
         if ( $Parent->fileWithNameExists( $uploadparams['name'] ) )
         {
-            throw new \QException(
+            throw new \QUI\Exception(
                 'A file with the name '. $uploadparams['name'] .' already exist.',
                 403
             );
@@ -644,6 +644,3 @@ class Projects_Media_Utils
         return sha1_file( $File->getFullPath() );
     }
 }
-
-
-?>

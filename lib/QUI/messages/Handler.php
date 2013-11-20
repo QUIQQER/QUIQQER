@@ -70,7 +70,7 @@ class QUI_Messages_Handler
 	 * Add a exception to the messanger
 	 * it converts the exception into an error message
 	 *
-	 * @param QException|Exception $Exception
+	 * @param \QUI\Exception|Exception $Exception
 	 */
 	public function addException($Exception)
 	{

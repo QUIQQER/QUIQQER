@@ -15,7 +15,7 @@ function ajax_media_folder_create($project, $parentid, $newfolder)
     $File    = $Media->get( $parentid );
 
     if ( Projects_Media_Utils::isFolder($File) === false ) {
-        throw new QException('Sie können nur in einem Ordner einen Ordner erstellen');
+        throw new \QUI\Exception('Sie können nur in einem Ordner einen Ordner erstellen');
     }
 
     /* @var $File Projects_Media_Folder */

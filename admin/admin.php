@@ -2,7 +2,7 @@
 
     require 'header.php';
 
-    $Plugins = QUI::getPlugins();
+    $Plugins = \QUI::getPlugins();
     $plugins = $Plugins->getAvailablePlugins(false, true);
 
 ?>
@@ -30,7 +30,7 @@
         try
         {
             $Standard = \Projects_Manager::getStandard();
-        } catch ( \QException $e )
+        } catch ( \QUI\Exception $e )
         {
             // nothing
         }
@@ -42,7 +42,7 @@
         try
         {
             $files = \QUI\Translator::getJSTranslationFiles( $User->getLang() );
-        } catch (QException $e )
+        } catch ( \QUI\Exception $e )
         {
 
         }
@@ -71,7 +71,7 @@
                 URL_VAR_DIR = "'. URL_VAR_DIR .'";
 
             var PHP = {
-                upload_max_filesize : "'. \Utils_System::getUploadMaxFileSize() .'"
+                upload_max_filesize : "'. \QUI\Utils\System::getUploadMaxFileSize() .'"
             };
 
             var QUI_CONFIG  = '. json_encode( $config ) .';

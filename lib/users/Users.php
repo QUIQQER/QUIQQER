@@ -133,7 +133,7 @@ class Users_Users
         try
         {
             $_User = $this->getUserBySession();
-        } catch ( QException $e )
+        } catch ( \QUI\Exception $e )
         {
             return false;
         }
@@ -204,7 +204,7 @@ class Users_Users
         {
             if ( $this->existsUsername( $username ) )
             {
-                throw new QException(
+                throw new \QUI\Exception(
                     QUI::getLocale()->get(
                         'system',
                         'exception.lib.user.exist'
@@ -272,7 +272,7 @@ class Users_Users
     {
         if ( !isset( $params['username'] ) )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 QUI::getLocale()->get(
                     'system',
                     'exception.lib.user.register.specify.username'
@@ -282,7 +282,7 @@ class Users_Users
 
         if ( !isset( $params['password'] ) )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 QUI::getLocale()->get(
                     'system',
                     ''
@@ -298,7 +298,7 @@ class Users_Users
 
         if ( $this->existsUsername( $username ) )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 QUI::getLocale()->get(
                     'system',
                     'exception.lib.user.register.specify.password'
@@ -412,7 +412,7 @@ class Users_Users
             {
                 $result[] = $this->get((int)$id['id']);
 
-            } catch (QException $e)
+            } catch (\QUI\Exception $e)
             {
                 // nothing
             }
@@ -461,7 +461,7 @@ class Users_Users
             try
             {
                 $Users[] = $this->get((int)$entry['id']);
-            } catch (QException $e)
+            } catch (\QUI\Exception $e)
             {
                 // nothing
             }
@@ -476,7 +476,7 @@ class Users_Users
      * @param String $username  - username
      * @param String $pass		- password
      * @return Users_User
-     * @throws QException
+     * @throws \QUI\Exception
      */
     public function login($username, $pass)
     {
@@ -490,7 +490,7 @@ class Users_Users
         }
 
         if ( empty( $pass ) ) {
-            throw new QException( 'No Password given', 401 );
+            throw new \QUI\Exception( 'No Password given', 401 );
         }
 
         // Authentifizierung
@@ -523,9 +523,9 @@ class Users_Users
                             'limit' => '0,1'
                         ));
                     }
-                } catch (QException $e)
+                } catch (\QUI\Exception $e)
                 {
-                    QException::setErrorLog($e->getMessage(), false);
+                    \QUI\Exception::setErrorLog($e->getMessage(), false);
                 }
 
             break;
@@ -574,7 +574,7 @@ class Users_Users
                 $uparams['expire'] != '0000-00-00 00:00:00' &&
                 strtotime($uparams['expire']) < time())
             {
-                throw new QException(
+                throw new \QUI\Exception(
                     QUI::getLocale()->get('system', 'exception.login.expire', array(
                         'expire' => $uparams['expire']
                     ))
@@ -630,7 +630,7 @@ class Users_Users
             }
         }
 
-        throw new QException(
+        throw new \QUI\Exception(
             QUI::getLocale()->get( 'system', 'exception.login.fail' ),
             401
         );
@@ -671,16 +671,16 @@ class Users_Users
                 strpos($_SERVER['HTTP_USER_AGENT'], 'chromeframe') === false)
             {
                 // @todo Log
-                throw new \QException(
+                throw new \QUI\Exception(
                     'Falscher User Agent '. $_SERVER['HTTP_USER_AGENT'] .' -> '. $User->getAttribute('user_agent')
                 );
             }
 
             return $User;
 
-        } catch ( \QException $e )
+        } catch ( \QUI\Exception $e )
         {
-            //QException::setErrorLog($e->getMessage(), false);
+            //\QUI\Exception::setErrorLog($e->getMessage(), false);
         }
 
         return $this->getNobody();
@@ -734,7 +734,7 @@ class Users_Users
      * get the user by username
      *
      * @param String $username - Username
-     * @throws QException
+     * @throws \QUI\Exception
      * @return Users_User
      */
     public function getUserByName($username)
@@ -750,7 +750,7 @@ class Users_Users
 
         if ( !isset( $result[0] ) )
         {
-            throw new \QException(
+            throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'system',
                     'exception.lib.user.user.not.found'
@@ -767,7 +767,7 @@ class Users_Users
      *
      * @param String $email - User E-Mail
      * @return Users_User
-     * @throws QException
+     * @throws \QUI\Exception
      */
     public function getUserByMail($email)
     {
@@ -782,7 +782,7 @@ class Users_Users
 
         if ( !isset( $result[0] ) )
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 QUI::getLocale()->get(
                     'system',
                     'exception.lib.user.user.not.found'
@@ -1171,13 +1171,13 @@ class Users_Users
      *
      * @param String $username
      * @return Bool
-     * @throws QException
+     * @throws \QUI\Exception
      */
     static function checkUsernameSigns($username)
     {
         if ($username != self::clearUsername($username))
         {
-            throw new QException(
+            throw new \QUI\Exception(
                 QUI::getLocale()->get('system', 'exception.lib.user.illegal.signs')
             );
         }
