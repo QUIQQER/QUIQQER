@@ -25,7 +25,7 @@ class Utils_MyDB
         */
     public function __construct()
     {
-        $this->_DB = QUI::getDataBase();
+        $this->_DB = \QUI::getDataBase();
     }
 
     /**
@@ -34,7 +34,7 @@ class Utils_MyDB
      */
     public function getPDO()
     {
-        return QUI::getDataBase()->getPDO();
+        return \QUI::getDataBase()->getPDO();
     }
 
     /**
@@ -44,7 +44,7 @@ class Utils_MyDB
      */
     public function getUtilsDB()
     {
-        return QUI::getDataBase();
+        return \QUI::getDataBase();
     }
 
     /**

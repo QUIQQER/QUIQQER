@@ -8,10 +8,10 @@
  * The Main Object of the QUIQQER Management System
  *
  * @example
- * QUI::conf();
- * QUI::getDataBase();
- * QUI::getPDO();
- * QUI::getLocale();
+ * \QUI::conf();
+ * \QUI::getDataBase();
+ * \QUI::getPDO();
+ * \QUI::getLocale();
  * and so on
  *
  * @author www.pcsg.de (Henning Leutz)
@@ -21,31 +21,31 @@
 class QUI
 {
     /**
-     * QUI Config, use QUI::getConfig()
+     * QUI Config, use \QUI::getConfig()
      * @var \QUI\Config
      */
     static $Conf = null;
 
     /**
-     * QUI getDB object, use QUI::getDB()
+     * QUI getDB object, use \QUI::getDB()
      * @var Utils_MyDB
      */
     static $DataBase = null;
 
     /**
-     * QUI getDataBase object, use QUI::getDataBase();
+     * QUI getDataBase object, use \QUI::getDataBase();
      * @var Utils_Db
      */
     static $DataBase2 = null;
 
     /**
-     * QUI Error Handler, use QUI::getErrorHandler();
+     * QUI Error Handler, use \QUI::getErrorHandler();
      * @var \QUI\ExceptionHandler
      */
     static $ErrorHandler = null;
 
     /**
-     * QUI vhosts, use QUI::vhosts();
+     * QUI vhosts, use \QUI::vhosts();
      * @var array
      */
     static $vhosts = null;
@@ -69,67 +69,67 @@ class QUI
     static $Desktop = null;
 
     /**
-     * QUI GroupManager, use QUI::getGroups()
-     * @var Groups_Groups
+     * QUI GroupManager, use \QUI::getGroups()
+     * @var \QUI\Groups\Groups
      */
     static $Groups = null;
 
     /**
-     * QUI Message Handler, use QUI::getMessageHandler()
+     * QUI Message Handler, use \QUI::getMessageHandler()
      * @var QUI_Messages_Handler
      */
     static $MessageHandler = null;
 
     /**
-     * QUI Licence, use QUI::getLicence()
+     * QUI Licence, use \QUI::getLicence()
      * @var QUI_Licence
      */
     static $Licence = null;
 
     /**
-     * QUI Locale Object, use QUI::getLocale()
+     * QUI Locale Object, use \QUI::getLocale()
      * @var QUI_Locale
      */
     static $Locale = null;
 
     /**
-     * QUI Pluginmanager, use QUI::getPlugins();
+     * QUI Pluginmanager, use \QUI::getPlugins();
      * @var QUI_Plugins_Manager
      */
     static $Plugins  = null;
 
     /**
-     * QUI Packagemanager, use QUI::getPackageManager();
-     * @var QUI_Package_Manager
+     * QUI Packagemanager, use \QUI::getPackageManager();
+     * @var \QUI\Package\Manager
      */
     static $PackageManager = null;
 
     /**
-     * QUI Rewrite Object, use QUI::getRewrite();
+     * QUI Rewrite Object, use \QUI::getRewrite();
      * @var QUI_Rewrite
      */
     static $Rewrite = null;
 
     /**
-     * QUI Rights Object, use QUI::getRights();
+     * QUI Rights Object, use \QUI::getRights();
      * @var QUI_Rights_Manager
      */
     static $Rights = null;
 
     /**
-     * QUI Session Object, use QUI::getSession();
+     * QUI Session Object, use \QUI::getSession();
      * @var QUI_Session
      */
     static $Session = null;
 
     /**
-     * QUI\Temp Object, use QUI::getTemp();
+     * QUI\Temp Object, use \QUI::getTemp();
      * @var QUI\Temp
      */
     static $Temp = null;
 
     /**
-     * QUI User Manager, use QUI::getUsers();
+     * QUI User Manager, use \QUI::getUsers();
      * @var Users_Users
      */
     static $Users = null;
@@ -142,7 +142,7 @@ class QUI
 
     /**
      * QUI global Events
-     * @var QUI_Events
+     * @var \QUI\Events\Manager
      */
     static $Events;
 
@@ -349,7 +349,7 @@ class QUI
         $QPM = self::getPackageManager();
 
         // register ajax
-        self::$Ajax = new \Utils_Request_Ajax(array(
+        self::$Ajax = new \QUI\Ajax(array(
             'db_errors' => self::conf( 'error', 'mysql_ajax_errors_backend' )
         ));
 
@@ -388,7 +388,7 @@ class QUI
                 if ( \QUI::conf( 'mail','admin_mail' ) )
                 {
                     \QUI_Mail::init()->send(array(
-                         'MailTo'  => QUI::conf( 'mail','admin_mail' ),
+                         'MailTo'  => \QUI::conf( 'mail','admin_mail' ),
                          'Subject' => 'Memory limit reached at http://'. $_SERVER["HTTP_HOST"],
                          'Body'    => $message,
                          'IsHTML'  => false
@@ -553,7 +553,7 @@ class QUI
     static function getDB()
     {
         if ( is_null( self::$DataBase ) ) {
-            self::$DataBase = new Utils_MyDB();
+            self::$DataBase = new \Utils_MyDB();
         }
 
         return self::$DataBase;
@@ -597,12 +597,12 @@ class QUI
     /**
      * Returns the globals Events object
      *
-     * @return QUI_Events_Manager
+     * @return \QUI\Events\Manager
      */
     static function getEvents()
     {
         if ( is_null( self::$Events ) ) {
-            self::$Events = new \QUI_Events_Manager();
+            self::$Events = new \QUI\Events\Manager();
         }
 
         return self::$Events;
@@ -637,15 +637,15 @@ class QUI
 
     /**
      * Returns the ErrorHandler
-     * @return \QUI\ExceptionHandler
+     * @return \QUI\Exceptions\Handler
      */
     static function getErrorHandler()
     {
         if ( is_null( self::$ErrorHandler ) )
         {
-            require_once 'QExceptionHandler.php';
+            require_once dirname( __FILE__ ) .'/QUI/Exceptions/Handler.php';
 
-            self::$ErrorHandler = new \QExceptionHandler();
+            self::$ErrorHandler = new \QUI\Exceptions\Handler();
 
             self::$ErrorHandler->setAttribute(
                 'logdir',
@@ -663,12 +663,12 @@ class QUI
 
     /**
      * Returns the group manager
-     * @return Groups_Groups
+     * @return \QUI\Groups\Groups
      */
     static function getGroups()
     {
         if ( is_null( self::$Groups ) ) {
-            self::$Groups = new \Groups_Groups();
+            self::$Groups = new \QUI\Groups\Groups();
         }
 
         return self::$Groups;
@@ -715,12 +715,12 @@ class QUI
 
     /**
      * Returns the package manager
-     * @return QUI_Package_Manager
+     * @return \QUI\Package\Manager
      */
     static function getPackageManager()
     {
         if ( is_null( self::$PackageManager ) ) {
-            self::$PackageManager = new \QUI_Package_Manager();
+            self::$PackageManager = new \QUI\Package\Manager();
         }
 
         return self::$PackageManager;

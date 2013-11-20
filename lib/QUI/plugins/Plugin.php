@@ -161,7 +161,7 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
                 {
                     try
                     {
-                        $Project = QUI::getProject( $project, $lang );
+                        $Project = \QUI::getProject( $project, $lang );
                         //$Project->setup(); <<--- wird das echt benötigt?
 
                         $this->setup( $Project );
@@ -196,7 +196,7 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
         $Dom      = $this->_getDbXml();
         $database = $Dom->getElementsByTagName('database');
         $projects = Projects_Manager::getConfig()->toArray();
-        $DataBase = QUI::getDB();
+        $DataBase = \QUI::getDB();
 
         $settings = array(
             'database' => isset($params['database']) && $params['database'] ? true : false
@@ -936,12 +936,12 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
         if (file_exists($langdir) &&
             is_dir($langdir))
         {
-            $Locale = QUI::getLocale(); /* @var $Users Users */
-            $file   = $langdir . QUI::getLocale()->getCurrent() .'.js';
+            $Locale = \QUI::getLocale(); /* @var $Users Users */
+            $file   = $langdir . \QUI::getLocale()->getCurrent() .'.js';
 
             if (file_exists($file))
             {
-                array_unshift($js, 'order!'. $this->getUrlDir() .'bin/lang/'. QUI::getLocale()->getCurrent() .'.js');
+                array_unshift($js, 'order!'. $this->getUrlDir() .'bin/lang/'. \QUI::getLocale()->getCurrent() .'.js');
                 array_unshift($js, 'order!'. URL_BIN_DIR .'js/ptools/locale/locale.js');
             }
         }
@@ -1198,7 +1198,7 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
         // Init.d Pfad erstellen
         \QUI\Utils\System\File::mkdir(CMS_DIR .'etc/plugins/');
 
-        $this->_Config = QUI::getConfig(
+        $this->_Config = \QUI::getConfig(
             'etc/plugins/'. $this->getAttribute('name') .'.ini'
         );
 

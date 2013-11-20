@@ -36,7 +36,7 @@ class QUI_Licence
 			return false;
 		}
 
-		$config = QUI::getConfig('etc/licence.pcsg');
+		$config = \QUI::getConfig('etc/licence.pcsg');
 		$this->_config = $config->toArray();
 
 		return true;

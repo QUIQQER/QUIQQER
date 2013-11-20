@@ -25,7 +25,7 @@ if ($User->isAdmin() == false) {
  */
 function ajax_archive_restore($project, $lang, $id, $date)
 {
-    $Project = QUI::getProject($project, $lang);
+    $Project = \QUI::getProject($project, $lang);
     $Site    = new Projects_Site_Edit($Project, (int)$id);
 
     return $Site->restoreArchive($date);

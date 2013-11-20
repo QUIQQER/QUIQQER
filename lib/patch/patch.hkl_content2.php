@@ -20,7 +20,7 @@ function patch_hkl_content2( $Patch )
 {
 	$Patch->write('Patch für Content2 Plugin wird ausgeführt...');
 
-	$db       = QUI::getDB();
+	$db       = \QUI::getDB();
 	$projects = Projects_Manager::getProjects();
 
 	$ERRORS = 0;

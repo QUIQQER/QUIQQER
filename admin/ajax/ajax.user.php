@@ -25,7 +25,7 @@ if ($User->isAdmin() == false) {
  */
 function ajax_user_setsetting($uid, $name, $value)
 {
-    $Users = QUI::getUsers();
+    $Users = \QUI::getUsers();
     $User  = $Users->get((int)$uid);
     $extra = $User->getAttribute('extra');
 
@@ -57,7 +57,7 @@ $ajax->register('ajax_user_setsetting', array('uid', 'name', 'value'));
  */
 function ajax_user_getsetting($uid, $name)
 {
-    $Users = QUI::getUsers();
+    $Users = \QUI::getUsers();
     $User  = $Users->get((int)$uid);
     $extra = $User->getAttribute('extra');
 
@@ -84,18 +84,18 @@ $ajax->register('ajax_user_getsetting', array('uid', 'name'));
  */
 function ajax_user_importad_getusers($groupid, $username, $pass, $adgroup)
 {
-    $Users = QUI::getUsers();
-    $Auth  = new QUI_Auth_ActiveDirectory();
+    $Users = \QUI::getUsers();
+    $Auth  = new \QUI\AuthActiveDirectory();
 
     $userCount       = 0;
     $userUpdateCount = 0;
 
-    $server = QUI::conf('auth', 'server');
+    $server = \QUI::conf('auth', 'server');
     $server = explode(';', $server);
 
     $Auth->setAttribute('dc', $server);
-    $Auth->setAttribute('base_dn', QUI::conf('auth', 'base_dn'));
-    $Auth->setAttribute('domain', QUI::conf('auth', 'domain'));
+    $Auth->setAttribute('base_dn', \QUI::conf('auth', 'base_dn'));
+    $Auth->setAttribute('domain', \QUI::conf('auth', 'domain'));
     $Auth->setAttribute('auth_user', $username);
     $Auth->setAttribute('auth_password', $pass);
 

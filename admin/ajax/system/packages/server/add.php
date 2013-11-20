@@ -7,13 +7,13 @@
  */
 function ajax_system_packages_server_add($server, $params)
 {
-    QUI::getPackageManager()->addServer(
+    \QUI::getPackageManager()->addServer(
         $server,
         json_decode( $params, true )
     );
 
-    QUI::getMessagesHandler()->addSuccess(
-        QUI::getLocale()->get(
+    \QUI::getMessagesHandler()->addSuccess(
+        \QUI::getLocale()->get(
         	'quiqqer/system',
         	'message.packages.server.add.successfuly',
             array( 'server' => $server )

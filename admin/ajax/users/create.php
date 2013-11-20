@@ -8,7 +8,7 @@
  */
 function ajax_users_create($username)
 {
-    $Users = QUI::getUsers();
+    $Users = \QUI::getUsers();
 	$User  = $Users->createChild($username);
 
 	return $User->getId();

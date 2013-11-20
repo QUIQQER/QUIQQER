@@ -102,7 +102,7 @@ class Projects_Media extends \QUI\QDOM
          */
         $table = $this->getTable();
 
-        $DataBase = QUI::getDataBase();
+        $DataBase = \QUI::getDataBase();
         $DataBase->Table()->appendFields($table, array(
             'id'           => 'bigint(20) NOT NULL',
             'name'         => 'varchar(200) NOT NULL',
@@ -207,7 +207,7 @@ class Projects_Media extends \QUI\QDOM
         $params['select'] = 'id';
         $params['from']   = $this->getTable();
 
-        $result = QUI::getDataBase()->fetch( $params );
+        $result = \QUI::getDataBase()->fetch( $params );
         $ids    = array();
 
         foreach ( $result as $entry )  {
@@ -265,7 +265,7 @@ class Projects_Media extends \QUI\QDOM
 
         // use direct db not the objects, because
         // if file is not ok you can replace the file though
-        $result = QUI::getDataBase()->fetch(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'from' 	=> $this->getTable(),
             'where' => array(
                 'id' => $id
@@ -323,7 +323,7 @@ class Projects_Media extends \QUI\QDOM
         $new_file  = $Parent->getPath() . $name;
         $real_file = $Parent->getFullPath() . $name;
 
-        QUI::getDataBase()->update(
+        \QUI::getDataBase()->update(
             $this->getTable(),
             array(
                 'file'         => $new_file,
@@ -360,7 +360,7 @@ class Projects_Media extends \QUI\QDOM
             return false;
         }
 
-        $result = QUI::getDataBase()->fetch(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'select' => 'parent',
             'from' 	 => $this->getTable('relations'),
             'where'  => array(

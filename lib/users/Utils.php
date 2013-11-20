@@ -39,7 +39,7 @@ class Users_Utils
          * user extention from plugins
          */
 
-        $Plugin  = QUI::getPlugins();
+        $Plugin  = \QUI::getPlugins();
 		$plugins = $Plugin->get();
 
 		// user.xml auslesen
@@ -75,7 +75,7 @@ class Users_Utils
      */
     static function getTab($uid, $plugin, $tab)
     {
-        $Users = QUI::getUsers();
+        $Users = \QUI::getUsers();
     	$User  = $Users->get( (int)$uid );
 
     	// System
@@ -94,12 +94,12 @@ class Users_Utils
 
             return Utils_Dom::getTabHTML(
                 $tab,
-                QUI::getProject( $project[1] )
+                \QUI::getProject( $project[1] )
             );
         }
 
        	// Plugin extention
-    	$Plugins = QUI::getPlugins();
+    	$Plugins = \QUI::getPlugins();
         $Plugin  = $Plugins->get( $plugin );
 
         return Utils_Dom::getTabHTML( $tab, $Plugin );

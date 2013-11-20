@@ -11,7 +11,7 @@
  */
 function ajax_site_getchildren($project, $lang, $id, $select, $start)
 {
-    $Project = QUI::getProject( $project, $lang );
+    $Project = \QUI::getProject( $project, $lang );
     $Site    = new Projects_Site_Edit( $Project, (int)$id );
 
     if ( !empty( $select ) ) {

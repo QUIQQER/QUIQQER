@@ -7,7 +7,7 @@
  */
 function ajax_system_plugins_deactivate($plugin)
 {
-    $Plugins = QUI::getPlugins();
+    $Plugins = \QUI::getPlugins();
 
     $Plugins->deactivate(
         $Plugins->get($plugin)

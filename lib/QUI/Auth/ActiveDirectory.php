@@ -1,8 +1,10 @@
 <?php
 
 /**
- * This file contains QUI_Auth_ActiveDirectory
+ * This file contains \QUI\Auth\ActiveDirectory
  */
+
+namespace \QUI\Auth;
 
 /**
  * ADLDAP_NORMAL_ACCOUNT
@@ -61,7 +63,7 @@ define('ADLDAP_DISTRIBUTION_LOCAL_GROUP', 536870913);
  * @package com.pcsg.qui.auth
  *
  * @example
- * $Auth = new QUI_Auth_ActiveDirectory();
+ * $Auth = new \QUI\Auth\ActiveDirectory();
  * $Auth->setAttribute('dc', array("192.168.1.1","192.168.2.100"));
  * $Auth->setAttribute('base_dn', 'DC=SBS2003,DC=local');
  * $Auth->setAttribute('domain', 'SBS2003.local');
@@ -76,7 +78,7 @@ define('ADLDAP_DISTRIBUTION_LOCAL_GROUP', 536870913);
  * @todo docu translation
  */
 
-class QUI_Auth_ActiveDirectory extends \QUI\QDOM implements Interface_Users_Auth
+class ActiveDirectory extends \QUI\QDOM implements Interface_Users_Auth
 {
     /**
      * ldap_bind
@@ -228,7 +230,7 @@ class QUI_Auth_ActiveDirectory extends \QUI\QDOM implements Interface_Users_Auth
             return $this->_domain_controller;
         }
 
-        throw new \QUI\Exception('QUI_Auth_ActiveDirectory :: Setup a DC Host Controller');
+        throw new \QUI\Exception('\QUI\Auth\ActiveDirectory :: Setup a DC Host Controller');
     }
 
     /**
@@ -595,7 +597,7 @@ class QUI_Auth_ActiveDirectory extends \QUI\QDOM implements Interface_Users_Auth
             } else
             {
                 throw new \QUI\Exception(
-                    'QUI_Auth_ActiveDirectory :: Setup a Domain Name "setAttribute(base_dn)" '
+                    '\QUI\Auth\ActiveDirectory :: Setup a Domain Name "setAttribute(base_dn)" '
                 );
             }
         }
@@ -603,5 +605,3 @@ class QUI_Auth_ActiveDirectory extends \QUI\QDOM implements Interface_Users_Auth
         return true;
     }
 }
-
-?>

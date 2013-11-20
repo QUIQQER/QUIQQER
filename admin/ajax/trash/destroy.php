@@ -9,7 +9,7 @@
  */
 function ajax_trash_destroy($project, $lang, $ids)
 {
-    $Project = QUI::getProject($project, $lang);
+    $Project = \QUI::getProject($project, $lang);
     $ids     = json_decode($ids, true);
     $Trash   = $Project->getTrash();
 

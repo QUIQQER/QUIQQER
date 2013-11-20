@@ -25,7 +25,7 @@ class System_Cron_Manager extends \QUI\QDOM
     public function __construct()
     {
         // Plugins einlesen
-        $Plugins = QUI::getPlugins();
+        $Plugins = \QUI::getPlugins();
         $list    = $Plugins->get();
 
         foreach ( $list as $Plugin )
@@ -69,7 +69,7 @@ class System_Cron_Manager extends \QUI\QDOM
                 try
                 {
                     $this->register(
-                        QUI::get( $project ),
+                        \QUI::get( $project ),
                         $class,
                         $Cron->getAttribute( 'desc' )
                     );
@@ -130,7 +130,7 @@ class System_Cron_Manager extends \QUI\QDOM
     static function exec($User=false)
     {
         $crons   = self::get();
-        $DatBase = QUI::getDB();
+        $DatBase = \QUI::getDB();
 
         foreach ( $crons as $Cron )
         {
@@ -198,7 +198,7 @@ class System_Cron_Manager extends \QUI\QDOM
             $data['month'] = $date['month'];
         }
 
-        QUI::getDB()->addData( self::Table(), $data );
+        \QUI::getDB()->addData( self::Table(), $data );
     }
 
     /**
@@ -219,7 +219,7 @@ class System_Cron_Manager extends \QUI\QDOM
     {
         $params['from'] = self::Table();
 
-        $result = QUI::getDB()->select( $params );
+        $result = \QUI::getDB()->select( $params );
         $crons  = array();
 
         foreach ( $result as $entry )
@@ -321,7 +321,7 @@ class System_Cron_Manager extends \QUI\QDOM
         }
 
         // Daten aktualisieren
-        return QUI::getDB()->updateData(
+        return \QUI::getDB()->updateData(
             self::Table(),
             $data,
             array(
@@ -338,7 +338,7 @@ class System_Cron_Manager extends \QUI\QDOM
      */
     static function delete(System_Cron_Cron $Cron)
     {
-        return QUI::getDB()->deleteData(
+        return \QUI::getDB()->deleteData(
             self::Table(),
             array( 'id' => $Cron->getAttribute( 'id' ) )
         );
@@ -351,7 +351,7 @@ class System_Cron_Manager extends \QUI\QDOM
      */
     static function log($message)
     {
-        $User = QUI::getUsers()->getUserBySession();
+        $User = \QUI::getUsers()->getUserBySession();
         $dir  = VAR_DIR . 'log/';
         $file = $dir . 'cron_'. date('Y-m-d') .'.log';
 
@@ -367,7 +367,7 @@ class System_Cron_Manager extends \QUI\QDOM
      */
     static function setup()
     {
-        $DataBase = QUI::getDataBase();
+        $DataBase = \QUI::getDataBase();
         $PDO      = $DataBase->getPDO();
         $table    = self::Table();
 

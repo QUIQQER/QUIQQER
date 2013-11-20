@@ -58,7 +58,7 @@ class Projects_Media_Trash implements Interface_Projects_Trash
         );
 
         // count
-        $count = QUI::getDataBase()->fetch(array(
+        $count = \QUI::getDataBase()->fetch(array(
             'from'  => $this->_Media->getTable(),
             'count' => true,
             'where' => array(
@@ -66,7 +66,7 @@ class Projects_Media_Trash implements Interface_Projects_Trash
             )
         ));
 
-        $data = QUI::getDataBase()->fetch( $query );
+        $data = \QUI::getDataBase()->fetch( $query );
 
         foreach ( $data as $key => $entry )
         {
@@ -86,7 +86,7 @@ class Projects_Media_Trash implements Interface_Projects_Trash
      */
     public function destroy($id)
     {
-        QUI::getDataBase()->delete(
+        \QUI::getDataBase()->delete(
             $this->_Media->getTable(),
             array('id' => $id)
         );
@@ -111,7 +111,7 @@ class Projects_Media_Trash implements Interface_Projects_Trash
         $Item = $Folder->uploadFile( $file );
 
         // change old db entry, if one exist
-        $data = QUI::getDataBase()->fetch(array(
+        $data = \QUI::getDataBase()->fetch(array(
             'from' 	=> $this->_Media->getTable(),
             'where' => array(
                 'id' => $id
@@ -141,7 +141,7 @@ class Projects_Media_Trash implements Interface_Projects_Trash
 
         $Item->save();
 
-        QUI::getDataBase()->delete(
+        \QUI::getDataBase()->delete(
             $this->_Media->getTable(),
             array('id' => $id)
         );

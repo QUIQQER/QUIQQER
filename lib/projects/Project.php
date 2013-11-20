@@ -640,7 +640,7 @@ class Projects_Project
         }
 
         foreach ( $this->_cache_files as $cache ) {
-            \System_Cache_Manager::clear( $cache );
+            \QUI\Cache\Manager::clear( $cache );
         }
     }
 
@@ -675,7 +675,7 @@ class Projects_Project
      */
     public function getNameById( $id )
     {
-        $result = QUI::getDataBase()->fetch(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'select' => 'name',
             'from'   => $this->_TABLE,
             'where'  => array(
@@ -697,7 +697,7 @@ class Projects_Project
      */
     public function getNewId()
     {
-        $maxid = QUI::getDataBase()->fetch(array(
+        $maxid = \QUI::getDataBase()->fetch(array(
             'select' => 'id',
             'from'   => $this->getAttribute('db_table'),
             'limit'  => '0,1',
@@ -730,7 +730,7 @@ class Projects_Project
             return $this->_plugins;
         }
 
-        $Plugins = QUI::getPlugins();
+        $Plugins = \QUI::getPlugins();
 
         if (!isset($this->_config['plugins']))
         {
@@ -812,7 +812,7 @@ class Projects_Project
             }
         }
 
-        $result = QUI::getDataBase()->fetch(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'select' => $this->_TABLE .'.id',
             'count'  => isset( $params['count'] ) ? 'count' : false,
             'from' 	 => array(
@@ -859,7 +859,7 @@ class Projects_Project
             return 0;
         }
 
-        $result = QUI::getDataBase()->fetch(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'select' => 'parent',
             'from' 	 => $this->_RELTABLE,
             'where'  => array(
@@ -911,14 +911,14 @@ class Projects_Project
     {
         try
         {
-            return System_Cache_Manager::get( $this->_cache_files['types'] );
-        } catch (System_Cache_Exception $e)
+            return \QUI\Cache\Manager::get( $this->_cache_files['types'] );
+        } catch ( \QUI\Cache\Exception $e )
         {
 
         }
 
         $types   = array();
-        $Plugins = QUI::getPlugins(); /* @var $Plugins Plugins */
+        $Plugins = \QUI::getPlugins(); /* @var $Plugins Plugins */
         $plugins = $Plugins->get();
 
         foreach ( $plugins as $Plugin )
@@ -940,7 +940,7 @@ class Projects_Project
         }
 
         // Cache erstellen
-        System_Cache_Manager::set( $this->_cache_files['types'], $types );
+        \QUI\Cache\Manager::set( $this->_cache_files['types'], $types );
 
         return $types;
     }
@@ -957,14 +957,14 @@ class Projects_Project
 
         try
         {
-            return System_Cache_Manager::get( $this->_cache_files['gtypes'] );
-        } catch (System_Cache_Exception $e)
+            return \QUI\Cache\Manager::get( $this->_cache_files['gtypes'] );
+        } catch ( \QUI\Cache\Exception $e )
         {
 
         }
 
         $globaltypes = array();
-        $Plugins     = QUI::getPlugins(); /* @var $Plugins Plugins */
+        $Plugins     = \QUI::getPlugins(); /* @var $Plugins Plugins */
         $plugins     = $Plugins->get();
 
         foreach ( $plugins as $Plugin )
@@ -999,7 +999,7 @@ class Projects_Project
         }
 
         // Cachefile anlegen
-        System_Cache_Manager::set($this->_cache_files['gtypes'], $globaltypes);
+        \QUI\Cache\Manager::set($this->_cache_files['gtypes'], $globaltypes);
 
         return $globaltypes;
     }
@@ -1068,7 +1068,7 @@ class Projects_Project
         {
             // Falls kein Query dann alle Seiten hohlen
             // @notice - Kann performancefressend sein
-            return QUI::getDB()->select(array(
+            return \QUI::getDB()->select(array(
                 'select' => 'id',
                 'from'   => $this->getAttribute('db_table')
             ));
@@ -1147,7 +1147,7 @@ class Projects_Project
             $sql['where_relation'] = $params['where_relation'];
         }
 
-        return QUI::getDB()->select($sql);
+        return \QUI::getDB()->select($sql);
     }
 
     /**
@@ -1195,7 +1195,7 @@ class Projects_Project
      */
     public function createBackup($config=true, $project=true, $media=true, $template=true)
     {
-        $User = QUI::getUserBySession();
+        $User = \QUI::getUserBySession();
 
         if (!$User->isSU()) {
             throw new \QUI\Exception('You must be an Superuser to create a Backup');
@@ -1227,15 +1227,15 @@ class Projects_Project
                 $tbl_rel_sites = $tbl_sites.'_relations';
 
                 // Backup erstellen
-                QUI::getDB()->backup($tbl_sites, $dir.$tbl_sites);
-                QUI::getDB()->backup($tbl_rel_sites, $dir.$tbl_rel_sites);
+                \QUI::getDB()->backup($tbl_sites, $dir.$tbl_sites);
+                \QUI::getDB()->backup($tbl_rel_sites, $dir.$tbl_rel_sites);
             }
 
             // Multilingual
             try
             {
                 $tbl_multilingual = $this->getAttribute('name') .'_multilingual';
-                QUI::getDB()->backup($tbl_multilingual, $dir.$tbl_multilingual);
+                \QUI::getDB()->backup($tbl_multilingual, $dir.$tbl_multilingual);
             } catch (\QUI\Exception $e)
             {
                 // wenn es nur eine Sprache gibt
@@ -1255,8 +1255,8 @@ class Projects_Project
             $tbl_rel_media = $tbl_media.'_relations';
 
             // Backup erstellen
-            QUI::getDB()->backup($tbl_media, $dir.$tbl_media);
-            QUI::getDB()->backup($tbl_rel_media, $dir.$tbl_rel_media);
+            \QUI::getDB()->backup($tbl_media, $dir.$tbl_media);
+            \QUI::getDB()->backup($tbl_rel_media, $dir.$tbl_rel_media);
         }
 
         // Templates sichern
@@ -1287,7 +1287,7 @@ class Projects_Project
         }
 
         // Archiv erstellen Verzeichnis packen
-        $PT_Zip = new Utils_Packer_Zip();
+        $PT_Zip = new \QUI\Archiver\Zip();
         $PT_Zip->zip($dir, VAR_DIR.'backup/'.$this->getAttribute('name').'/'.$time.'.zip');
 
         unlink($cfile);
@@ -1298,7 +1298,7 @@ class Projects_Project
      */
     public function setup()
     {
-        $DataBase = QUI::getDataBase(); /* @var $db MyDB */
+        $DataBase = \QUI::getDataBase(); /* @var $db MyDB */
 
         foreach ( $this->_langs as $lang )
         {

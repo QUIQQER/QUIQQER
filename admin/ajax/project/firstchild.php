@@ -7,7 +7,7 @@
  */
 function ajax_project_firstchild($project, $lang)
 {
-    $Project = QUI::getProject($project, $lang);
+    $Project = \QUI::getProject($project, $lang);
     $First   = $Project->firstChild();
     $Temp    = new Projects_Site_Edit($Project, $First->getId());
 

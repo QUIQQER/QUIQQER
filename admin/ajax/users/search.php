@@ -11,8 +11,8 @@ function ajax_users_search($params)
 {
     $params = json_decode( $params, true );
 
-	$Groups = QUI::getGroups();
-	$Users  = QUI::getUsers();
+	$Groups = \QUI::getGroups();
+	$Users  = \QUI::getUsers();
 	$page   = 1;
 	$limit  = 10;
 

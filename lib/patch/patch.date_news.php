@@ -22,7 +22,7 @@ function patch_date_news( $Patch )
 {
 	$Patch->write('Patch News Release Dates wird ausgeführt...');
 
-	$db       = QUI::getDB();
+	$db       = \QUI::getDB();
 	$projects = Projects_Manager::getProjects();
 
 	$ERRORS = 0;

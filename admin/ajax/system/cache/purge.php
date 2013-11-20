@@ -5,8 +5,7 @@
  */
 function ajax_system_cache_purge()
 {
-    System_Cache_Manager::purge();
+    \QUI\Cache\Manager::purge();
 }
-QUI::$Ajax->register('ajax_system_cache_purge', false, 'Permission::checkSU');
 
-?>
+\QUI::$Ajax->register('ajax_system_cache_purge', false, 'Permission::checkSU');

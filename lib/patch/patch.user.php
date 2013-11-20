@@ -19,8 +19,8 @@
 
 function patch_user( $Patch )
 {
-    $db    = QUI::getDB();
-    $Users = QUI::getUsers();
+    $db    = \QUI::getDB();
+    $Users = \QUI::getUsers();
 
     $Patch->write('Patch User wird ausgeführt...');
 

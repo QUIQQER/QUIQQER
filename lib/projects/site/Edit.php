@@ -63,7 +63,7 @@ class Projects_Site_Edit extends Projects_Site
         $this->refresh();
 
         $id       = $this->getId();
-        $DataBase = QUI::getDataBase();
+        $DataBase = \QUI::getDataBase();
 
         $this->_marcatefile = VAR_DIR .'marcate/'.
                               $Project->getAttribute( 'name' ) .'_'.
@@ -73,7 +73,7 @@ class Projects_Site_Edit extends Projects_Site
         \QUI\Utils\System\File::mkdir( VAR_DIR .'admin/' );
 
         // Erste Rechteprüfung
-        $User = QUI::getUserBySession();
+        $User = \QUI::getUserBySession();
 
         if ( !$User->getId() ) {
             return false;
@@ -101,7 +101,7 @@ class Projects_Site_Edit extends Projects_Site
     {
         // Globale requireds
         $Project = $this->getProject();
-        $Plugin  = QUI::getPlugins();
+        $Plugin  = \QUI::getPlugins();
 
         // Plugins laden
         parent::_load_plugins();
@@ -143,7 +143,7 @@ class Projects_Site_Edit extends Projects_Site
      */
     public function refresh()
     {
-        $result = QUI::getDataBase()->fetch(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'from'  => $this->_TABLE,
             'where' => array(
                 'id' => $this->getId()
@@ -154,7 +154,7 @@ class Projects_Site_Edit extends Projects_Site
         // Verknüpfung hohlen
         if ( $this->getId() != 1 )
         {
-            $relresult = QUI::getDataBase()->fetch(array(
+            $relresult = \QUI::getDataBase()->fetch(array(
                 'from'  => $this->_RELTABLE,
                 'where' => array(
                     'child' => $this->getId()
@@ -225,7 +225,7 @@ class Projects_Site_Edit extends Projects_Site
 
         $this->Events->fireEvent( 'activate', array( $this ) );
 
-        QUI::getEvents()->fireEvent( 'siteActivate', array( $this ) );
+        \QUI::getEvents()->fireEvent( 'siteActivate', array( $this ) );
 
 
         /*
@@ -252,7 +252,7 @@ class Projects_Site_Edit extends Projects_Site
         }
         */
 
-        QUI::getDataBase()->exec(array(
+        \QUI::getDataBase()->exec(array(
             'update' => $this->_TABLE,
             'set'    => array(
                 'active' => 1
@@ -319,12 +319,12 @@ class Projects_Site_Edit extends Projects_Site
     public function updateFromTemp()
     {
         // User Prüfung
-        $User = QUI::getUserBySession();
+        $User = \QUI::getUserBySession();
 
         // Rechte Prüfung
         if (!$this->getRights()->hasRights($User, $this, 'view'))
         {
-            $result = QUI::getDataBase()->fetch(array(
+            $result = \QUI::getDataBase()->fetch(array(
                 'select' => 'name',
                 'from'   => $this->_TABLE,
                 'where'  => array(
@@ -395,7 +395,7 @@ class Projects_Site_Edit extends Projects_Site
         {
             try
             {
-                $User = QUI::getUsers()->get( $mid );
+                $User = \QUI::getUsers()->get( $mid );
 
             } catch ( \QUI\Exception $Exception )
             {
@@ -471,7 +471,7 @@ class Projects_Site_Edit extends Projects_Site
          * Speicher Routine der Plugins aufrufen
          */
         $Plugins  = $this->_getLoadedPlugins();
-        $DataBase = QUI::getDataBase();
+        $DataBase = \QUI::getDataBase();
         /*
         for ($i = 0, $len = count($Plugins); $i < $len; $i++)
         {
@@ -599,7 +599,7 @@ class Projects_Site_Edit extends Projects_Site
             }
         }
 
-        $result = QUI::getDataBase()->fetch(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'select' => $this->_TABLE .'.id',
             'count'  => isset($params['count']) ? 'count' : false,
             'from' 	 => array(
@@ -622,7 +622,7 @@ class Projects_Site_Edit extends Projects_Site
      */
     public function existNameInChildren($name)
     {
-        $result = QUI::getDataBase()->fetch(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'count'  => array(
                 'select' => $this->_TABLE .'.id',
                 'as'     => 'id'
@@ -698,7 +698,7 @@ class Projects_Site_Edit extends Projects_Site
         /*
         $this->Events->fireEvent( 'getChildren', array( $this, $params ) );
 
-        QUI::getEvents()->fireEvent( 'getChildren', array( $this, $params ) );
+        \QUI::getEvents()->fireEvent( 'getChildren', array( $this, $params ) );
         */
 
         // if active = '0&1', project -> getchildren returns all children
@@ -726,7 +726,7 @@ class Projects_Site_Edit extends Projects_Site
      */
     protected function _createChild($childid)
     {
-        $User = QUI::getUserBySession();
+        $User = \QUI::getUserBySession();
 
         // Tabs der Plugins hohlen
         $Plugins = $this->_getLoadedPlugins();
@@ -750,7 +750,7 @@ class Projects_Site_Edit extends Projects_Site
         $table   = $Project->getAttribute('name') .'_'.
                    $Project->getAttribute('lang') .'_archive';
 
-        $result = QUI::getDataBase()->fetch(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'from' 	=> $table,
             'where' => array(
                 'id' => $this->getId()
@@ -775,7 +775,7 @@ class Projects_Site_Edit extends Projects_Site
         $Project = $this->getProject();
         $p_lang  = $Project->getAttribute( 'lang' );
 
-        $result = QUI::getDataBase()->fetch(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'from' 	=> $this->_RELLANGTABLE,
             'where' => array(
                 $p_lang => $this->getId()
@@ -785,7 +785,7 @@ class Projects_Site_Edit extends Projects_Site
 
         if ( isset( $result[0] ) )
         {
-             return QUI::getDataBase()->exec(array(
+             return \QUI::getDataBase()->exec(array(
                 'update' => $this->_RELLANGTABLE,
                 'set'    => array(
                      $lang => $id
@@ -796,7 +796,7 @@ class Projects_Site_Edit extends Projects_Site
             ));
         }
 
-        return QUI::getDataBase()->exec(array(
+        return \QUI::getDataBase()->exec(array(
             'insert' => $this->_RELLANGTABLE,
             'set'    => array(
                 $p_lang => $this->getId(),
@@ -818,7 +818,7 @@ class Projects_Site_Edit extends Projects_Site
 
         $Project = $this->getProject();
 
-        return QUI::getDataBase()->exec(array(
+        return \QUI::getDataBase()->exec(array(
             'update' => $this->_RELLANGTABLE,
             'set'    => array(
                  $lang => 0
@@ -841,7 +841,7 @@ class Projects_Site_Edit extends Projects_Site
     public function createChild($params=array(), $User=false)
     {
         if ( $User == false ) {
-            $User = QUI::getUserBySession();
+            $User = \QUI::getUserBySession();
         }
 
         // @todo Prüfen ob der Benutzer Kinder anlegen darf
@@ -912,7 +912,7 @@ class Projects_Site_Edit extends Projects_Site
             $_params['content'] = $params['content'];
         }
 
-        $DataBase = QUI::getDB();
+        $DataBase = \QUI::getDB();
 
         $DataBase->addData(
             $this->_TABLE,
@@ -951,7 +951,7 @@ class Projects_Site_Edit extends Projects_Site
         $table   = $Project->getAttribute('name') .'_'.
                    $Project->getAttribute('lang') .'_archive';
 
-        $result = QUI::getDB()->select(array(
+        $result = \QUI::getDB()->select(array(
             'from' 	=> $table,
             'where' => array(
                 'date' => date('Y-m-d G:i:s', $date)
@@ -999,7 +999,7 @@ class Projects_Site_Edit extends Projects_Site
         $archiveitems = $Project->getConfig('archive');
 
         // anzahl der Einträge überprüfen
-        $archives = QUI::getDB()->select(array(
+        $archives = \QUI::getDB()->select(array(
             'from'  => $table_archive,
             'where' => array(
                 'id' => $this->getId()
@@ -1009,15 +1009,15 @@ class Projects_Site_Edit extends Projects_Site
 
         if (isset($archives[0]) && count($archives) >= $archiveitems)
         {
-            QUI::getDB()->deleteData(
+            \QUI::getDB()->deleteData(
                 $table_archive,
                 array('date' => $archives[0]['date'])
             );
         }
 
-        $User = QUI::getUsers()->getUserBySession();
+        $User = \QUI::getUsers()->getUserBySession();
 
-        return QUI::getDB()->addData($table_archive, array(
+        return \QUI::getDB()->addData($table_archive, array(
             'id'     => $this->getId(),
             'date'   => date('Y-m-d G:i:s'),
             'user'   => $User->getId(),
@@ -1067,7 +1067,7 @@ class Projects_Site_Edit extends Projects_Site
         if (!in_array($pid, $children) &&
             $pid != $this->getId())
         {
-            $DataBase = QUI::getDB();
+            $DataBase = \QUI::getDB();
 
             $DataBase->updateData(
                 $this->_RELTABLE,
@@ -1176,7 +1176,7 @@ class Projects_Site_Edit extends Projects_Site
             );
         }
 
-        $links = QUI::getDB()->select(array(
+        $links = \QUI::getDB()->select(array(
             'from'  => $table,
             'where' => array(
                 'child' => $this->getId()
@@ -1194,7 +1194,7 @@ class Projects_Site_Edit extends Projects_Site
             }
         }
 
-        return QUI::getDB()->addData($table, array(
+        return \QUI::getDB()->addData($table, array(
             'parent'  => $pid,
             'child'   => $this->getId(),
             'oparent' => $Parent->getId()
@@ -1212,7 +1212,7 @@ class Projects_Site_Edit extends Projects_Site
     {
         $Project = $this->getProject();
         $Parent  = $this->getParent();
-        $db      = QUI::getDB(); /* @var $db MyDB */
+        $db      = \QUI::getDB(); /* @var $db MyDB */
 
         $table   = $Project->getAttribute('name') .'_'.
                    $Project->getAttribute('lang') .'_sites_relations';
@@ -1326,7 +1326,7 @@ class Projects_Site_Edit extends Projects_Site
         }
 
         $time = time() - filemtime($this->_marcatefile);
-        $max_life_time = QUI::conf('session', 'max_life_time');
+        $max_life_time = \QUI::conf('session', 'max_life_time');
 
         if ($time > $max_life_time)
         {
@@ -1347,7 +1347,7 @@ class Projects_Site_Edit extends Projects_Site
             return;
         }
 
-        file_put_contents($this->_marcatefile, QUI::getUserBySession()->getId());
+        file_put_contents($this->_marcatefile, \QUI::getUserBySession()->getId());
     }
 
     /**

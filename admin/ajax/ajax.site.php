@@ -7,7 +7,7 @@ exit;
  */
 
 /* @var $User User */
-$Users = QUI::getUsers();
+$Users = \QUI::getUsers();
 $User  = $Users->getUserBySession();
 
 if (!$User->getId()) {
@@ -29,7 +29,7 @@ if ($User->isAdmin() == false) {
  */
 function ajax_site_get_sorts($project, $lang, $id)
 {
-    $Project = QUI::getProject($project, $lang);
+    $Project = \QUI::getProject($project, $lang);
     $Site    = new Projects_Site_Edit($Project, (int)$id);
 
     $sorts  = $Site->getSorts();
@@ -57,7 +57,7 @@ $ajax->register('ajax_site_get_sorts', array('project', 'lang', 'id'));
  */
 function ajax_site_search($lang, $project, $params, $select)
 {
-    $Project = QUI::getProject($project, $lang);
+    $Project = \QUI::getProject($project, $lang);
     $params  = json_decode($params, true);
     $select  = explode(',', trim($select, ','));
 
@@ -122,7 +122,7 @@ $ajax->register('ajax_site_search', array('lang', 'project', 'params', 'select')
  */
 function ajax_site_get_parentids($project, $lang, $id)
 {
-    $Project = QUI::getProject($project, $lang);
+    $Project = \QUI::getProject($project, $lang);
     $Site    = $Project->get((int)$id);
     $result  = array();
 
@@ -151,7 +151,7 @@ $ajax->register('ajax_site_get_parentids', array('project', 'lang', 'id'));
  */
 function ajax_site_get_extra($id, $lang, $project, $field)
 {
-    $Project = QUI::getProject($project, $lang);
+    $Project = \QUI::getProject($project, $lang);
     $Site    = new Projects_Site_Edit($Project, (int)$id);
 
     return $Site->getExtra($field);
@@ -168,7 +168,7 @@ $ajax->register('ajax_site_get_extra', array('id', 'lang', 'project', 'field'));
  */
 function ajax_site_super_user_demarcate($project, $lang, $id)
 {
-    $Project = QUI::getProject($project, $lang);
+    $Project = \QUI::getProject($project, $lang);
     $Site    = new Projects_Site_Edit($Project, $id);
 
     $Site->demarcateWithRights();
@@ -187,7 +187,7 @@ function ajax_site_saveFromTemp($id, $lang, $project_name)
 {
     try
     {
-        $Project = QUI::getProject($project_name, $lang);
+        $Project = \QUI::getProject($project_name, $lang);
         $Site    = $Project->get($id);
 
         return $Site->save();
@@ -251,7 +251,7 @@ $ajax->register('ajax_site_saveFromTemp', array('id', 'lang', 'project_name'));
  */
 function ajax_site_move($project, $lang, $pid, $id)
 {
-    $Project = QUI::getProject($project, $lang);
+    $Project = \QUI::getProject($project, $lang);
     $Site    = new Projects_Site_Edit($Project, (int)$id);
 
     return $Site->move($pid) ? 1 : 0;
@@ -269,7 +269,7 @@ $ajax->register('ajax_site_move', array('project', 'lang', 'pid', 'id'));
  */
 function ajax_site_copy($project, $lang, $pid, $id)
 {
-    $Project = QUI::getProject($project, $lang);
+    $Project = \QUI::getProject($project, $lang);
     $Site    = new Projects_Site_Edit($Project, (int)$id);
 
     return $Site->copy($pid);
@@ -287,7 +287,7 @@ $ajax->register('ajax_site_copy', array('project', 'lang', 'pid', 'id'));
  */
 function ajax_site_linked($project, $lang, $pid, $id)
 {
-    $Project = QUI::getProject($project, $lang);
+    $Project = \QUI::getProject($project, $lang);
     $Site    = new Projects_Site_Edit($Project, (int)$id);
 
     return $Site->linked($pid);
@@ -304,7 +304,7 @@ $ajax->register('ajax_site_linked', array('project', 'lang', 'pid', 'id'));
  */
 function ajax_site_linked_in($project, $lang, $id, $ids)
 {
-    $Project = QUI::getProject($project, $lang);
+    $Project = \QUI::getProject($project, $lang);
     $Site    = new Projects_Site_Edit($Project, (int)$id);
     $parents = json_decode($ids, true);
 
@@ -364,7 +364,7 @@ $ajax->register('ajax_site_linked_in', array('project', 'lang', 'id', 'ids'));
  */
 function ajax_site_delete_linked($project, $lang, $pid, $id, $delorig)
 {
-    $Project = QUI::getProject($project, $lang);
+    $Project = \QUI::getProject($project, $lang);
     $Site    = new Projects_Site_Edit($Project, (int)$id);
 
     return $Site->deleteLinked($pid, $delorig);
@@ -386,7 +386,7 @@ function ajax_site_delete_onlylinked($project, $lang, $ids)
         throw new \QUI\Exception('Es wurden nicht alle Parameter übermittelt');
     }
 
-    $Project = QUI::getProject($project, $lang);
+    $Project = \QUI::getProject($project, $lang);
     $Site    = new Projects_Site_Edit($Project, (int)$ids[1]);
 
     return $Site->deleteLinked($ids[0], false, $ids[2]);
@@ -404,10 +404,10 @@ $ajax->register('ajax_site_delete_onlylinked', array('project', 'lang', 'ids'));
  */
 function ajax_site_rights_recursive($project, $lang, $id, $rights)
 {
-    $Project = QUI::getProject($project, $lang);
+    $Project = \QUI::getProject($project, $lang);
     $Site    = new Projects_Site_Edit($Project, $id);
 
-    $Rights = QUI::getRights();
+    $Rights = \QUI::getRights();
     $rights = json_decode($rights, true);
 
     try
@@ -440,7 +440,7 @@ $ajax->register('ajax_site_rights_recursive', array('project', 'lang', 'id', 'ri
  */
 function ajax_site_getsheet($project, $lang, $parentid, $id)
 {
-    $Project  = QUI::getProject($project, $lang);
+    $Project  = \QUI::getProject($project, $lang);
     $Parent   = $Project->get($parentid);
 
     $childids = $Parent->getChildrenIds($parentid);
@@ -504,7 +504,7 @@ function ajax_site_search_window($project, $search, $params)
 
     try
     {
-        $Project = QUI::getProject($params['project'], $params['lang']);
+        $Project = \QUI::getProject($params['project'], $params['lang']);
         $presult = $Project->search($search);
 
         $result = array();

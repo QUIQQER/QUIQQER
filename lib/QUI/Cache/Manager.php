@@ -1,14 +1,20 @@
 <?php
 
 /**
+ * This file contains \QUI\Cache\System;
+ */
+
+namespace QUI\Cache;
+
+/**
  * Cache Manager
- * Einfacher Zugriff auf verschiedenen Cachearten.
+ * Easy access fot different cache types
  *
  * @author www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui.system.cache
  */
 
-class System_Cache_Manager
+class Manager
 {
     /**
      * Cache Manager Configs
@@ -45,13 +51,13 @@ class System_Cache_Manager
         {
             try
             {
-                self::$Config = QUI::getConfig( 'etc/cache.ini' );
+                self::$Config = \QUI::getConfig( 'etc/cache.ini' );
 
             } catch ( \QUI\Exception $Exception )
             {
                 file_put_contents( CMS_DIR .'etc/cache.ini', '' );
 
-                self::$Config = QUI::getConfig( 'etc/cache.ini' );
+                self::$Config = \QUI::getConfig( 'etc/cache.ini' );
             }
         }
 
@@ -113,8 +119,8 @@ class System_Cache_Manager
 
                     try
                     {
-                        array_unshift( $handlers, new Stash\Driver\Apc( $params ) );
-                    } catch (StashError $e)
+                        array_unshift( $handlers, new \Stash\Driver\Apc( $params ) );
+                    } catch ( \Stash\Exception\RuntimeException $e )
                     {
 
                     }
@@ -127,14 +133,14 @@ class System_Cache_Manager
                         'path' => VAR_DIR .'cache/stack/'
                     );
 
-                    if (!empty($conf['path']) && is_dir($conf['path'])) {
+                    if ( !empty( $conf['path'] ) && is_dir( $conf['path'] ) ) {
                         $params['path'] = $conf['path'];
                     }
 
                     try
                     {
-                        $handlers[] = new Stash\Driver\FileSystem( $params );
-                    } catch (StashError $e)
+                        $handlers[] = new \Stash\Driver\FileSystem( $params );
+                    } catch ( \Stash\Exception\RuntimeException $e )
                     {
 
                     }
@@ -152,8 +158,8 @@ class System_Cache_Manager
 
                     try
                     {
-                        $handlers[] = new Stash\Driver\Sqlite( $params );
-                    } catch (StashError $e)
+                        $handlers[] = new \Stash\Driver\Sqlite( $params );
+                    } catch ( \Stash\Exception\RuntimeException $e )
                     {
 
                     }
@@ -205,7 +211,7 @@ class System_Cache_Manager
 
                     try
                     {
-                        array_unshift( $handlers, new Stash\Driver\Memcached( $params ) );
+                        array_unshift( $handlers, new \Stash\Driver\Memcached( $params ) );
                     } catch ( StashError $e )
                     {
 
@@ -214,11 +220,11 @@ class System_Cache_Manager
             }
         }
 
-        $Handler = new Stash\Driver\Composite(array(
+        $Handler = new \Stash\Driver\Composite(array(
             'drivers' => $handlers
         ));
 
-        $Stash = new Stash\Pool( $Handler );
+        $Stash = new \Stash\Pool( $Handler );
 
 
         self::$Stash    = $Stash;
@@ -278,7 +284,7 @@ class System_Cache_Manager
      * @param String $name
      * @return unknown_type
      *
-     * @throws System_Cache_Exception
+     * @throws \QUI\Cache\Exception
      */
     static function get($name)
     {
@@ -286,7 +292,7 @@ class System_Cache_Manager
         $data = $Item->get();
 
         if ( $Item->isMiss() ) {
-            throw new \System_Cache_Exception( 'Cache existiert nicht', 404 );
+            throw new \QUI\Cache\Exception( 'Cache existiert nicht', 404 );
         }
 
         return $data;
@@ -322,5 +328,3 @@ class System_Cache_Manager
         self::clear();
     }
 }
-
-?>

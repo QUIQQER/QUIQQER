@@ -63,7 +63,7 @@ function ajax_groups_users($gid, $params)
 	}
 
 	// search users
-	$users  = QUI::getGroups()->get( $gid )->getUsers( $params );
+	$users  = \QUI::getGroups()->get( $gid )->getUsers( $params );
 	$result = array();
 
 	foreach ( $users as $user )
@@ -83,7 +83,7 @@ function ajax_groups_users($gid, $params)
 	$params['count'] = 'cu';
 	$params['limit'] = false;
 
-	$count = QUI::getGroups()->get( $gid )->getUsers( $params );
+	$count = \QUI::getGroups()->get( $gid )->getUsers( $params );
 
 	return array(
 	    'total' => isset( $count[0]['cu'] ) ? $count[0]['cu'] : 0,

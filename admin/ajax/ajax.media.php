@@ -28,7 +28,7 @@ if ($User->isAdmin() == false) {
  */
 function ajax_media_save_file($project, $id, $params)
 {
-    $Project = QUI::getProject($project);
+    $Project = \QUI::getProject($project);
     $Media   = $Project->getMedia(); 	/* @var $Media Media */
     $File    = $Media->get((int)$id); 	/* @var $File MediaFile */
 
@@ -79,7 +79,7 @@ $ajax->register('ajax_media_save_file', array('project', 'id', 'params'));
  */
 function ajax_media_getimagesize($project, $id)
 {
-    $Project = QUI::getProject($project);
+    $Project = \QUI::getProject($project);
     $Media   = $Project->getMedia();
     $Obj     = $Media->get( (int)$id );
 
@@ -107,7 +107,7 @@ $ajax->register('ajax_media_getimagesize', array('project', 'id'));
  */
 function ajax_media_get_data($project, $id)
 {
-    $Project = QUI::getProject($project);
+    $Project = \QUI::getProject($project);
     $Media   = $Project->getMedia(); /* @var $Media Media */
     $Obj     = $Media->get( (int)$id );
 
@@ -125,7 +125,7 @@ $ajax->register('ajax_media_get_data', array('project', 'id'));
  */
 function ajax_media_folder_createfolder($project, $id, $foldername)
 {
-    $Project = QUI::getProject($project);
+    $Project = \QUI::getProject($project);
     $Media   = $Project->getMedia(); /* $Media Media */
     $Folder  = $Media->get((int)$id);
 
@@ -148,7 +148,7 @@ $ajax->register('ajax_media_folder_createfolder', array('project', 'id', 'folder
  */
 function ajax_media_folder_roundcorners($project, $id, $background, $radius)
 {
-    $Project = QUI::getProject($project);
+    $Project = \QUI::getProject($project);
     $Media   = $Project->getMedia(); /* $Media Media */
     $Folder  = $Media->get( (int)$id );
 
@@ -170,7 +170,7 @@ $ajax->register('ajax_media_folder_roundcorners', array('project', 'id', 'backgr
  */
 function ajax_media_folder_watermark($project, $id, $params)
 {
-    $Project = QUI::getProject($project);
+    $Project = \QUI::getProject($project);
     $Media   = $Project->getMedia(); 	 /* @var $Media Media */
     $Folder  = $Media->get( (int)$id );  /* @var $Media MF_Folder */
 
@@ -184,7 +184,7 @@ function ajax_media_folder_watermark($project, $id, $params)
 
     $Folder->setWatermark($params);
 
-    QUI::getMessagesHandler()->addSuccess(
+    \QUI::getMessagesHandler()->addSuccess(
         'Das Wasserzeichen wurde erfolgreich auf den Ordner '. $Folder->getAttribute('name') .' gesetzt'
     );
 }
@@ -199,7 +199,7 @@ $ajax->register('ajax_media_folder_watermark', array('project', 'id', 'params'))
  */
 function ajax_media_delete($project, $id)
 {
-    $Project = QUI::getProject($project);
+    $Project = \QUI::getProject($project);
     $Media   = $Project->getMedia(); /* $Media Media */
     $Obj     = $Media->get( (int)$id );
 
@@ -216,7 +216,7 @@ $ajax->register('ajax_media_delete', array('project', 'id'));
  */
 function ajax_media_destroy($project, $id)
 {
-    $Project = QUI::getProject($project);
+    $Project = \QUI::getProject($project);
     $Media   = $Project->getMedia(); /* $Media Media */
     $Obj     = $Media->get( (int)$id );
 
@@ -234,7 +234,7 @@ $ajax->register('ajax_media_destroy', array('project', 'id'));
  */
 function ajax_media_activate($project, $id)
 {
-    $Project = QUI::getProject($project);
+    $Project = \QUI::getProject($project);
     $Media   = $Project->getMedia();
     $Obj     = $Media->get( (int)$id );
 
@@ -251,7 +251,7 @@ $ajax->register('ajax_media_activate', array('project', 'id'));
  */
 function ajax_media_deactivate($project, $id)
 {
-    $Project = QUI::getProject($project);
+    $Project = \QUI::getProject($project);
     $Media   = $Project->getMedia();
     $Obj     = $Media->get((int)$id);
 
@@ -269,7 +269,7 @@ $ajax->register('ajax_media_deactivate', array('project', 'id'));
  */
 function ajax_media_restore($project, $id, $pid)
 {
-    $Project = QUI::getProject($project);
+    $Project = \QUI::getProject($project);
     $Media   = $Project->getMedia(); /* $Media Media */
 
     $Child   = $Media->get((int)$id);
@@ -288,7 +288,7 @@ $ajax->register('ajax_media_restore', array('project', 'id', 'pid'));
  */
 function ajax_media_get_parent_ids($project, $id)
 {
-    $Project = QUI::getProject($project);
+    $Project = \QUI::getProject($project);
     $Media   = $Project->getMedia(); /* $Media Media */
 
     $Obj = $Media->get( (int)$id ); /* @var $Obj MediaFile */
@@ -305,7 +305,7 @@ $ajax->register('ajax_media_get_parent_ids', array('project', 'id'));
  */
 function ajax_media_get_parents($project, $id)
 {
-    $Project = QUI::getProject($project);
+    $Project = \QUI::getProject($project);
     $Media   = $Project->getMedia();
 
     $Obj = $Media->get((int)$id);
@@ -332,7 +332,7 @@ $ajax->register('ajax_media_get_parents', array('project', 'id'));
  */
 function ajax_media_get_path($project, $id)
 {
-    $Project = QUI::getProject($project);
+    $Project = \QUI::getProject($project);
     $Media   = $Project->getMedia();
 
     $Obj = $Media->get((int)$id);
@@ -362,7 +362,7 @@ $ajax->register('ajax_media_get_path', array('project', 'id'));
  */
 function ajax_media_trash_getsites($project)
 {
-    $Project = QUI::getProject($project);
+    $Project = \QUI::getProject($project);
     $Trash   = new MC_Trash($Project); /* $Trash MC_Trash */
 
     $MC_Children = $Trash->getSites(); /* $MC_Children MC_Children */
@@ -379,7 +379,7 @@ $ajax->register('ajax_media_trash_getsites', array('project'));
  */
 function ajax_media_trash_destroy($project, $ids)
 {
-    $Project = QUI::getProject($project);
+    $Project = \QUI::getProject($project);
     $Media   = $Project->getMedia(); /* $Media Media */
 
     $ids = explode(',', $ids);
@@ -416,7 +416,7 @@ $ajax->register('ajax_media_trash_destroy', array('project', 'ids'));
  */
 function ajax_media_folder_getchildren($project, $id, $mtype, $order, $filename)
 {
-    $Project = QUI::getProject($project);
+    $Project = \QUI::getProject($project);
     $Media   = $Project->getMedia(); /* $Media Media */
 
     $mtype = \QUI\Utils\String::JSString($mtype);
@@ -436,7 +436,7 @@ $ajax->register('ajax_media_folder_getchildren', array('project', 'id', 'mtype',
  */
 function ajax_media_folder_haschildren($project, $id)
 {
-    $Project = QUI::getProject($project);
+    $Project = \QUI::getProject($project);
     $Media   = $Project->getMedia(); /* $Media Media */
     $Obj     = $Media->get( (int)$id ); /* @var $Obj MF_Folder */
 
@@ -470,7 +470,7 @@ $ajax->register('ajax_media_search_template');
  */
 function ajax_media_search($project, $search, $params)
 {
-    $Project = QUI::getProject($project);
+    $Project = \QUI::getProject($project);
     $Media   = $Project->getMedia();
     $params  = json_decode($params, true);
 

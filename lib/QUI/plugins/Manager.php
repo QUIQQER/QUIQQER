@@ -46,7 +46,7 @@ class QUI_Plugins_Manager extends \QUI\QDOM
      */
     public function __construct()
     {
-        $this->_Config = QUI::getConfig( 'etc/plugins.ini' );
+        $this->_Config = \QUI::getConfig( 'etc/plugins.ini' );
     }
 
     /**
@@ -216,7 +216,7 @@ class QUI_Plugins_Manager extends \QUI\QDOM
      */
     static function clearCache()
     {
-        System_Cache_Manager::clearAll();
+        \QUI\Cache\Manager::clearAll();
     }
 
     /**
@@ -232,7 +232,7 @@ class QUI_Plugins_Manager extends \QUI\QDOM
             return false;
         }
 
-        System_Cache_Manager::set( 'plugin-'. $class, $Plugin->getAttributes() );
+        \QUI\Cache\Manager::set( 'plugin-'. $class, $Plugin->getAttributes() );
     }
 
     /**
@@ -247,13 +247,13 @@ class QUI_Plugins_Manager extends \QUI\QDOM
     {
         try
         {
-            $attributes = System_Cache_Manager::get( 'plugin-'. $class );
+            $attributes = \QUI\Cache\Manager::get( 'plugin-'. $class );
 
             if ( empty( $attributes ) ) {
                 return false;
             }
 
-        } catch ( System_Cache_Exception $e )
+        } catch ( \QUI\Cache\Exception $e )
         {
             return false;
         }

@@ -9,7 +9,7 @@
 function ajax_users_adress_template()
 {
     $Engine    = QUI_Template::getEngine(true);
-    $Countries = QUI::getCountries();
+    $Countries = \QUI::getCountries();
 
     $Engine->assign(array(
         'countrys' => $Countries->getList()

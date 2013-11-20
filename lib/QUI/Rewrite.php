@@ -113,7 +113,7 @@ class QUI_Rewrite
      */
     public function __construct()
     {
-        $this->Events = new \QUI_Events_Event();
+        $this->Events = new \QUI\Events\Event();
     }
 
     /**
@@ -388,7 +388,7 @@ class QUI_Rewrite
 
                 // und es nicht der https host ist
                 (int)$_SERVER['SERVER_PORT'] !== 443 &&
-                QUI::conf('globals', 'httpshost') != 'https://'.$_SERVER['HTTP_HOST']
+                \QUI::conf('globals', 'httpshost') != 'https://'.$_SERVER['HTTP_HOST']
             )
             {
                 $url = $this->_site->getUrlRewrited();
@@ -617,7 +617,7 @@ class QUI_Rewrite
         }
 
         // Falls keine Projekt Parameter existieren wird das standard Projekt verwendet
-        $conf   = QUI::getConfig( 'etc/projects.ini' );
+        $conf   = \QUI::getConfig( 'etc/projects.ini' );
         $config = $conf->toArray();
 
         // Vhosts
@@ -676,7 +676,7 @@ class QUI_Rewrite
         $this->_project = $Project;
         $this->_lang    = $Project->getAttribute( 'lang' );
 
-        QUI::getLocale()->setCurrent(
+        \QUI::getLocale()->setCurrent(
             $Project->getAttribute( 'lang' )
         );
 
@@ -730,7 +730,7 @@ class QUI_Rewrite
         {
             $_REQUEST['project'] = $pname;
 
-            $Project = QUI::getProject(
+            $Project = \QUI::getProject(
                 $pname,
                 $this->_lang,
                 $template
@@ -750,7 +750,7 @@ class QUI_Rewrite
         {
             $this->_project = $Project;
 
-            QUI::getLocale()->setCurrent(
+            \QUI::getLocale()->setCurrent(
                 $Project->getAttribute( 'lang' )
             );
 
@@ -771,7 +771,7 @@ class QUI_Rewrite
             return $this->_vhosts;
         }
 
-        $this->_vhosts = QUI::vhosts();
+        $this->_vhosts = \QUI::vhosts();
 
         return $this->_vhosts;
     }
@@ -847,7 +847,7 @@ class QUI_Rewrite
 
                     try
                     {
-                        $this->_project = QUI::getProject(
+                        $this->_project = \QUI::getProject(
                             $error[0],
                             $error[1]
                         );
@@ -870,7 +870,7 @@ class QUI_Rewrite
                 {
                     try
                     {
-                        $this->_project = QUI::getProject($vhosts[404]['project'], $vhosts[404]['lang']);
+                        $this->_project = \QUI::getProject($vhosts[404]['project'], $vhosts[404]['lang']);
                         $this->_site    = $this->_project->get($vhosts[404]['id']);
 
                         return true;
@@ -1317,7 +1317,7 @@ class QUI_Rewrite
             // Wenn nicht erstellen
             try
             {
-                $Project = QUI::getProject($project, $lang); /* @var $Project Projects_Project */
+                $Project = \QUI::getProject($project, $lang); /* @var $Project Projects_Project */
                 $Site    = $Project->get( (int)$id ); /* @var $s Projects_Site */
             } catch (\QUI\Exception $e)
             {

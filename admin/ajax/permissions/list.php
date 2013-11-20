@@ -7,7 +7,7 @@
  */
 function ajax_permissions_list()
 {
-    return QUI::getRights()->getPermissionList();
+    return \QUI::getRights()->getPermissionList();
 }
 
 QUI::$Ajax->register(

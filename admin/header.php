@@ -8,10 +8,10 @@
 require_once __DIR__ .'/../bootstrap.php'; // <<-- hmm ... not realy nice
 
 // wenn https vorhanden, dann dahin
-if ( (int)$_SERVER['SERVER_PORT'] !== 443 && QUI::conf( 'globals', 'httpshost' ) )
+if ( (int)$_SERVER['SERVER_PORT'] !== 443 && \QUI::conf( 'globals', 'httpshost' ) )
 {
     // auf https leiten
-    header( 'Location: '. QUI::conf( 'globals', 'httpshost' ) . $_SERVER['REQUEST_URI'] );
+    header( 'Location: '. \QUI::conf( 'globals', 'httpshost' ) . $_SERVER['REQUEST_URI'] );
     exit;
 }
 

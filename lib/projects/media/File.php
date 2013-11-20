@@ -96,7 +96,7 @@ class Projects_Media_File
 
         $this->setAttribute('md5hash', $md5);
 
-        QUI::getDataBase()->update(
+        \QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array('md5hash' => $md5),
 			array('id' => $this->getId())
@@ -112,7 +112,7 @@ class Projects_Media_File
 
         $this->setAttribute('sha1hash', $sha1);
 
-        QUI::getDataBase()->update(
+        \QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array('sha1hash' => $sha1),
 			array('id' => $this->getId())

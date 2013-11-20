@@ -121,7 +121,7 @@ class Users_Nobody extends \QUI\QDOM implements Interface_Users_User
     public function addAdress($params)
     {
         throw new \QUI\Exception(
-            QUI::getLocale('system', 'exception.lib.user.nobody.add.adress')
+            \QUI::getLocale('system', 'exception.lib.user.nobody.add.adress')
         );
     }
 
@@ -171,7 +171,7 @@ class Users_Nobody extends \QUI\QDOM implements Interface_Users_User
      * @return String
      */
     public function getLang() {
-        return QUI::getLocale()->getCurrent();
+        return \QUI::getLocale()->getCurrent();
     }
 
     /**
@@ -179,7 +179,7 @@ class Users_Nobody extends \QUI\QDOM implements Interface_Users_User
      * @return QUI_Locale
      */
     public function getLocale() {
-        return QUI::getLocale();
+        return \QUI::getLocale();
     }
 
     /**
@@ -204,7 +204,7 @@ class Users_Nobody extends \QUI\QDOM implements Interface_Users_User
     public function getAdress($id)
     {
         throw new \QUI\Exception(
-            QUI::getLocale('system', 'exception.lib.user.nobody.get.adress')
+            \QUI::getLocale('system', 'exception.lib.user.nobody.get.adress')
         );
     }
 

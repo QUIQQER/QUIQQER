@@ -91,7 +91,7 @@ abstract class Projects_Media_Item extends \QUI\QDOM
             // has no parent
         }
 
-        QUI::getDataBase()->update(
+        \QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array('active' => 1),
             array('id' => $this->getId())
@@ -115,7 +115,7 @@ abstract class Projects_Media_Item extends \QUI\QDOM
      */
     public function deactivate()
     {
-        QUI::getDataBase()->update(
+        \QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array('active' => 0),
             array('id' => $this->getId())
@@ -151,7 +151,7 @@ abstract class Projects_Media_Item extends \QUI\QDOM
         }
 
 
-        QUI::getDataBase()->update(
+        \QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array(
                 'title' => $this->getAttribute('title'),
@@ -192,7 +192,7 @@ abstract class Projects_Media_Item extends \QUI\QDOM
         \QUI\Utils\System\File::move( $original, $var_folder . $this->getId() );
 
         // change db entries
-        QUI::getDataBase()->update(
+        \QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array(
                 'deleted' => 1,
@@ -204,7 +204,7 @@ abstract class Projects_Media_Item extends \QUI\QDOM
             )
         );
 
-        QUI::getDataBase()->delete(
+        \QUI::getDataBase()->delete(
             $this->_Media->getTable('relations'),
             array('child' => $this->getId())
         );
@@ -236,7 +236,7 @@ abstract class Projects_Media_Item extends \QUI\QDOM
 
         \QUI\Utils\System\File::unlink( $var_file );
 
-        QUI::getDataBase()->delete($table, array(
+        \QUI::getDataBase()->delete($table, array(
             'id' => $this->getId()
         ));
     }
@@ -305,7 +305,7 @@ abstract class Projects_Media_Item extends \QUI\QDOM
             $this->deleteCache();
         }
 
-        QUI::getDataBase()->update(
+        \QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array(
                 'name' => $newname,
@@ -485,7 +485,7 @@ abstract class Projects_Media_Item extends \QUI\QDOM
         $new_path = $this->_Media->getFullPath() . $new_file;
 
         // update file path
-        QUI::getDataBase()->update(
+        \QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array(
                 'file' => $new_file
@@ -496,7 +496,7 @@ abstract class Projects_Media_Item extends \QUI\QDOM
         );
 
         // set the new parent relationship
-        QUI::getDataBase()->update(
+        \QUI::getDataBase()->update(
             $this->_Media->getTable('relations'),
             array(
                 'parent' => $Folder->getId()

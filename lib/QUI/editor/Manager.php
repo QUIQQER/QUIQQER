@@ -71,7 +71,7 @@ class QUI_Editor_Manager
     static function getConf()
     {
         if ( !self::$Config ) {
-            self::$Config = QUI::getConfig( 'etc/wysiwyg/conf.ini' );
+            self::$Config = \QUI::getConfig( 'etc/wysiwyg/conf.ini' );
         }
 
         return self::$Config;
@@ -87,7 +87,7 @@ class QUI_Editor_Manager
         $config = self::getConf()->toArray();
         $config['toolbars'] = self::getToolbars();
         $config['editors']  = array();
-        $config['editors']  = QUI::getConfig( 'etc/wysiwyg/editors.ini' )->toArray();
+        $config['editors']  = \QUI::getConfig( 'etc/wysiwyg/editors.ini' )->toArray();
 
         return $config;
     }
@@ -100,7 +100,7 @@ class QUI_Editor_Manager
      */
     static function registerEditor($name, $package)
     {
-        $Conf = QUI::getConfig( 'etc/wysiwyg/editors.ini' );
+        $Conf = \QUI::getConfig( 'etc/wysiwyg/editors.ini' );
         $Conf->setValue( $name, null, $package );
         $Conf->save();
     }
@@ -169,7 +169,7 @@ class QUI_Editor_Manager
     static function getButtons()
     {
         // Erste Benutzer spezifische Toolbar
-        $Users = QUI::getUsers();
+        $Users = \QUI::getUsers();
         $User  = $Users->getUserBySession();
 
         $toolbar = $User->getExtra( 'wysiwyg-toolbar' );
@@ -432,5 +432,3 @@ class QUI_Editor_Manager
         return $html[0];
     }
 }
-
-?>

@@ -62,7 +62,7 @@ class ConsoleImageCacheOptimize extends System_Console_Tool
 		    throw new \QUI\Exception('Bitte geben Sie an welche Bilder kombrimiert werden sollen');
 		}
 
-        $Project = QUI::getProject(
+        $Project = \QUI::getProject(
             $this->_params['--project'],
             $this->_params['--lang']
         );

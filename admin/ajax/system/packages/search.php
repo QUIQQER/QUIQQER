@@ -7,12 +7,12 @@
  */
 function ajax_system_packages_search($str)
 {
-    $result = QUI::getPackageManager()->searchPackage( $str );
+    $result = \QUI::getPackageManager()->searchPackage( $str );
     $result = \Utils_Grid::getResult( $result, 1, 20 );
 
     $data = array();
 
-    $list      = QUI::getPackageManager()->getInstalled();
+    $list      = \QUI::getPackageManager()->getInstalled();
     $installed = array();
 
     foreach ( $list as $package ) {

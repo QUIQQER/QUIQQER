@@ -7,7 +7,7 @@
  */
 function ajax_system_packages_get($package)
 {
-    return QUI::getPackageManager()->getPackage( $package );
+    return \QUI::getPackageManager()->getPackage( $package );
 }
 
 QUI::$Ajax->register(

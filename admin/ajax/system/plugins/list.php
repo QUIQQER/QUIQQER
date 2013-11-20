@@ -7,7 +7,7 @@
  */
 function ajax_system_plugins_list()
 {
-    $Plugins = QUI::getPlugins();
+    $Plugins = \QUI::getPlugins();
     $list    = $Plugins->getAvailablePlugins( true );
 
     $plugins = array();

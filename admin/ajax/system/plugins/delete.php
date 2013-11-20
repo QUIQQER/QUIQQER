@@ -7,7 +7,7 @@
  */
 function ajax_system_plugins_delete($plugin, $params)
 {
-    $Plugins = QUI::getPlugins();
+    $Plugins = \QUI::getPlugins();
     $Plugin  = $Plugins->get($plugin);
 
     $Plugin->uninstall(

@@ -24,7 +24,7 @@ class Projects_Site extends \QUI\QDOM
 {
     /**
      * $Events - manage and fires events
-     * @var QUI_Events
+     * @var \QUI\Events\Event
      */
     public $Events;
 
@@ -140,7 +140,7 @@ class Projects_Site extends \QUI\QDOM
     {
         $this->_id      = (int)$id;
         $this->_Project = $Project;
-        $this->Events   = new QUI_Events_Event();
+        $this->Events   = new \QUI\Events\Event();
 
         if ( empty( $this->_id ) ) {
             throw new \QUI\Exception( 'Site Error; No ID given:'. $id, 400 );
@@ -171,17 +171,17 @@ class Projects_Site extends \QUI\QDOM
         try
         {
             $this->decode(
-                System_Cache_Manager::get( $this->_CACHENAME )
+                \QUI\Cache\Manager::get( $this->_CACHENAME )
             );
 
-        } catch ( System_Cache_Exception $e )
+        } catch ( \QUI\Cache\Exception $e )
         {
             // Daten aus der DB hohlen
             $this->refresh();
 
             // Falls ein PHP Cache vorhanden ist
             // dann diesen nutzen anstatt das Filesystem
-            System_Cache_Manager::set( $this->_CACHENAME, $this->encode() );
+            \QUI\Cache\Manager::set( $this->_CACHENAME, $this->encode() );
         }
 
         // set the default type if no type is set
@@ -212,7 +212,7 @@ class Projects_Site extends \QUI\QDOM
 
         if ( $plugin )
         {
-            $Plugins = QUI::getPlugins();
+            $Plugins = \QUI::getPlugins();
             $Plugins->get( $plugin );
 
             $this->_loadPlugin( $Plugins->get( $plugin ) );
@@ -286,7 +286,7 @@ class Projects_Site extends \QUI\QDOM
 
                 $tbl = $project_name .'_'. $project_lang .'_'. $fields['suffix'];
 
-                $result = QUI::getDB()->select(array(
+                $result = \QUI::getDB()->select(array(
                     'select' => array_keys( $fields['fields'] ),
                     'from'   => $tbl,
                     'where'  => array(
@@ -407,7 +407,7 @@ class Projects_Site extends \QUI\QDOM
     {
         $this->_loadflag = false;
 
-        $result = QUI::getDataBase()->fetch(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'from'  => $this->_TABLE,
             'where' => array(
                 'id' => $this->getId()
@@ -454,7 +454,7 @@ class Projects_Site extends \QUI\QDOM
         // Verknüpfung hohlen
         if ( $this->getId() != 1 )
         {
-            $relresult = QUI::getDataBase()->fetch(array(
+            $relresult = \QUI::getDataBase()->fetch(array(
                 'from'  => $this->_RELTABLE,
                 'where' => array(
                     'child' => $this->getId()
@@ -533,7 +533,7 @@ class Projects_Site extends \QUI\QDOM
 
         try
         {
-            $_Project = QUI::getProject(
+            $_Project = \QUI::getProject(
                 $Project->getAttribute('name'),
                 $lang
             );
@@ -542,7 +542,7 @@ class Projects_Site extends \QUI\QDOM
 
             return true;
 
-        } catch (\QUI\Exception $e)
+        } catch ( \QUI\Exception $e )
         {
             // nothing
         }
@@ -564,7 +564,7 @@ class Projects_Site extends \QUI\QDOM
             $Project   = $this->getProject();
             $rel_table = $Project->getAttribute('name').'_multilingual';
 
-            $result = QUI::getDataBase()->fetch(array(
+            $result = \QUI::getDataBase()->fetch(array(
                 'from'  => $rel_table,
                 'where' => array(
                     $rel_table.'.'.$Project->getAttribute('lang') => $this->getId()
@@ -624,7 +624,7 @@ class Projects_Site extends \QUI\QDOM
         $lang_table = $pname .'_'. $lang.'_sites';
         $rel_table  = $pname .'_multilingual';
 
-        $PDO = QUI::getPDO();
+        $PDO = \QUI::getPDO();
 
         $Statment = $PDO->prepare('
             SELECT `'. $rel_table .'`.`'. $lang .'`
@@ -1000,7 +1000,7 @@ class Projects_Site extends \QUI\QDOM
             return $this->_children[ $id ];
         }
 
-        $result = QUI::getDataBase()->fetch(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'from' 	=> $this->_RELTABLE,
             'where' => array(
                 'parent' => $this->getId(),
@@ -1101,7 +1101,7 @@ class Projects_Site extends \QUI\QDOM
         }
 
         // statement
-        $Statement = QUI::getPDO()->prepare(
+        $Statement = \QUI::getPDO()->prepare(
             'SELECT COUNT(id) AS idc
             FROM `'. $this->_RELTABLE .'`, `'. $this->_TABLE .'`
             WHERE '. $where .'
@@ -1126,7 +1126,7 @@ class Projects_Site extends \QUI\QDOM
         // Rekursiv alle Kinder bekommen
         $children = $this->getChildrenIdsRecursive();
 
-        QUI::getDataBase()->update(
+        \QUI::getDataBase()->update(
             $this->_TABLE,
             array( 'deleted' => 1 ),
             array( 'id' => $this->getId() )
@@ -1134,7 +1134,7 @@ class Projects_Site extends \QUI\QDOM
 
         foreach ( $children as $child )
         {
-            QUI::getDataBase()->update(
+            \QUI::getDataBase()->update(
                 $this->_TABLE,
                 array( 'deleted' => 1 ),
                 array( 'id' => $child )
@@ -1152,7 +1152,7 @@ class Projects_Site extends \QUI\QDOM
      */
     protected function _existNameInChildren($name)
     {
-        $result = QUI::getDataBase()->fetch(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'from' 	=> array(
                 $this->_RELTABLE,
                 $this->_TABLE
@@ -1179,7 +1179,7 @@ class Projects_Site extends \QUI\QDOM
      */
     public function getUrl($params=array(), $rewrited=false)
     {
-        $Rewrite = QUI::getRewrite();
+        $Rewrite = \QUI::getRewrite();
 
         if ( !is_array( $params ) ) {
             $params = array();
@@ -1251,8 +1251,8 @@ class Projects_Site extends \QUI\QDOM
         // Plugins können hier eingreifen
         if (QUI::conf('system', 'geturl'))
         {
-            $plugins = explode(',', QUI::conf('system', 'geturl'));
-            $Plugins = QUI::getPlugins();
+            $plugins = explode(',', \QUI::conf('system', 'geturl'));
+            $Plugins = \QUI::getPlugins();
 
             foreach ($plugins as $plugin)
             {
@@ -1369,7 +1369,7 @@ class Projects_Site extends \QUI\QDOM
             return $this->_parents_id;
         }
 
-        $result = QUI::getDataBase()->fetch(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'select' => 'parent',
             'from' 	 => $this->_RELTABLE,
             'where'  => array(
@@ -1448,7 +1448,7 @@ class Projects_Site extends \QUI\QDOM
      */
     public function restore()
     {
-        QUI::getDataBase()->update(
+        \QUI::getDataBase()->update(
             $this->_TABLE,
             array( 'deleted' => 0 ),
             array( 'id' => $this->getId() )
@@ -1472,7 +1472,7 @@ class Projects_Site extends \QUI\QDOM
         $Plugins = $this->_getLoadedPlugins();
         $Project = $this->getProject();
 
-        $DataBase = QUI::getDataBase();
+        $DataBase = \QUI::getDataBase();
 
         foreach ( $Plugins as $Plugin )
         {
@@ -1567,7 +1567,7 @@ class Projects_Site extends \QUI\QDOM
      */
     public function deleteCache()
     {
-        \System_Cache_Manager::clear( $this->_CACHENAME );
+        \QUI\Cache\Manager::clear( $this->_CACHENAME );
     }
 
     /**
@@ -1575,7 +1575,7 @@ class Projects_Site extends \QUI\QDOM
      */
     public function createCache()
     {
-        \System_Cache_Manager::set( $this->_CACHENAME, $this->encode() );
+        \QUI\Cache\Manager::set( $this->_CACHENAME, $this->encode() );
     }
 
     /**

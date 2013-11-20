@@ -9,7 +9,7 @@
  */
 function ajax_trash_media_destroy($project, $ids)
 {
-    $Project = QUI::getProject($project);
+    $Project = \QUI::getProject($project);
     $Media   = $Project->getMedia();
     $Trash   = $Media->getTrash();
 

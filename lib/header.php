@@ -5,16 +5,12 @@
  */
 
 header( "Content-Type: text/html; charset=utf-8" );
-header( "Cache-Control: public, max-age=". 15 * 60 ); // 15min public caching für proxys
+header( "Cache-Control: public, max-age=". 15 * 60 ); // 15min public caching for proxys
 
 date_default_timezone_set( 'Europe/Zurich' );
 
 error_reporting( E_ALL );
 ini_set( 'display_errors', true );
-
-// require_once __DIR__ .'/QUI.php';
-// QUI::load();
-
 
 System_Debug::marker( 'header start' );
 
@@ -41,20 +37,21 @@ define('URL_SYS_DIR', URL_DIR . str_replace( CMS_DIR, '', SYS_DIR ) );
 define('URL_OPT_DIR', URL_DIR . str_replace( CMS_DIR, '', OPT_DIR ) );
 define('URL_VAR_DIR', URL_DIR . str_replace( CMS_DIR, '', VAR_DIR ) );
 
-define( 'HOST',         QUI::conf( 'globals','host' ) );
-define( 'CACHE',        QUI::conf( 'globals','cache' ) );
-define( 'SALT_LENGTH',  QUI::conf( 'globals','saltlength' ) );
-define( 'MAIL_PROTECT', QUI::conf( 'globals','mailprotection' ) );
+define( 'HOST',         \QUI::conf( 'globals','host' ) );
+define( 'CACHE',        \QUI::conf( 'globals','cache' ) );
+define( 'SALT_LENGTH',  \QUI::conf( 'globals','saltlength' ) );
+define( 'MAIL_PROTECT', \QUI::conf( 'globals','mailprotection' ) );
 define( 'ADMIN_CACHE',  false );
 define( 'DEBUG_MEMORY', false );
 
 // Cacheflag setzen
-System_Cache_Manager::set( 'qui_cache_test', 1 );
+\QUI\Cache\Manager::set( 'qui_cache_test', 1 );
 
 try
 {
-    define( 'CHECK_CACHE', System_Cache_Manager::get( 'qui_cache_test' ) );
-} catch ( System_Cache_Exception $e )
+    define( 'CHECK_CACHE', \QUI\Cache\Manager::get( 'qui_cache_test' ) );
+
+} catch ( \QUI\Cache\Exception $e )
 {
     define( 'CHECK_CACHE', false );
 }
@@ -74,7 +71,7 @@ if ( !empty( $error_mail ) )
 try
 {
     \QUI::getDB();
-} catch ( Exception $Exception )
+} catch ( \Exception $Exception )
 {
     echo '<html>
         <body>
@@ -115,7 +112,7 @@ if ( isset( $_POST['username'] ) &&
         define( 'LOGIN_FAILED', $Exception->getMessage() );
     }
 
-} elseif ( QUI::getSession()->get( 'id' ) )
+} elseif ( \QUI::getSession()->get( 'id' ) )
 {
     try
     {

@@ -14,7 +14,7 @@ function ajax_groups_switchstatus($gid)
         $gid = array( $gid );
     }
 
-    $Groups = QUI::getGroups();
+    $Groups = \QUI::getGroups();
     $result = array();
 
     foreach ( $gid as $_gid )
@@ -35,7 +35,7 @@ function ajax_groups_switchstatus($gid)
 
         } catch ( \QUI\Exception $Exception )
         {
-            QUI::getMessagesHandler()->addException( $Exception );
+            \QUI::getMessagesHandler()->addException( $Exception );
             continue;
         }
     }

@@ -59,8 +59,8 @@ class Update
         \QUI_Editor_Manager::setup();
 
         // Events setup
-        \QUI_Events_Manager::setup();
-        \QUI_Events_Manager::clear();
+        \QUI\Events\Manager::setup();
+        \QUI\Events\Manager::clear();
 
 
         $packages_dir = $Composer->getConfig()->get( 'vendor-dir' );

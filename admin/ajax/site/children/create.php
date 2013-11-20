@@ -10,7 +10,7 @@
  */
 function ajax_site_children_create($project, $lang, $id, $attributes)
 {
-	$Project = QUI::getProject($project, $lang);
+	$Project = \QUI::getProject($project, $lang);
 	$Site    = new Projects_Site_Edit($Project, (int)$id);
 
 	$childid = $Site->createChild(

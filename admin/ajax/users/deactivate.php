@@ -14,7 +14,7 @@ function ajax_users_deactivate($uid)
         $uid = array( $uid );
     }
 
-    $Users  = QUI::getUsers();
+    $Users  = \QUI::getUsers();
     $result = array();
 
     foreach ( $uid as $_uid )
@@ -28,7 +28,7 @@ function ajax_users_deactivate($uid)
 
         } catch ( \QUI\Exception $Exception )
         {
-            QUI::getMessagesHandler()->addException( $Exception );
+            \QUI::getMessagesHandler()->addException( $Exception );
             continue;
         }
     }

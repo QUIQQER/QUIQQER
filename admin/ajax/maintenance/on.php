@@ -5,7 +5,7 @@
  */
 function ajax_maintenance_on()
 {
-    $Config = QUI::getConfig('etc/conf.ini');
+    $Config = \QUI::getConfig('etc/conf.ini');
     $Config->setValue('globals','maintenance', 1);
     $Config->save();
 }

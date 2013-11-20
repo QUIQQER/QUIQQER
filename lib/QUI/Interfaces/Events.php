@@ -1,10 +1,10 @@
 <?php
 
 /**
- * This file contains Interface_Events
+ * This file contains \QUI\Interfaces\Events
  */
 
-// namespace QUI\Interfaces;
+namespace QUI\Interfaces;
 
 /**
  * Event Interface
@@ -14,7 +14,7 @@
  * @author www.pcsg.de (Henning Leutz)
  */
 
-interface Interface_Events
+interface Events
 {
     /**
      * Return all registered events

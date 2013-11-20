@@ -73,8 +73,8 @@ class Utils_Countries_Country extends \QUI\QDOM
      */
     public function getName()
     {
-        if ( $this->existsAttribute( QUI::getLocale()->getCurrent() ) ) {
-            return $this->getAttribute( QUI::getLocale()->getCurrent() );
+        if ( $this->existsAttribute( \QUI::getLocale()->getCurrent() ) ) {
+            return $this->getAttribute( \QUI::getLocale()->getCurrent() );
         }
 
         return $this->getAttribute( 'countries_name' );

@@ -29,7 +29,7 @@ function ajax_media_create_md5($project, $params)
 
         } catch ( \QUI\Exception $Exception )
         {
-            QUI::getMessagesHandler()->addException( $Exception );
+            \QUI::getMessagesHandler()->addException( $Exception );
         }
     }
 }

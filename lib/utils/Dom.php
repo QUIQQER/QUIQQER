@@ -413,7 +413,7 @@ class Utils_Dom
             {
                 $Engine->assign(array(
                     'Plugin'  => $Plugin,
-                    'Plugins' => QUI::getPlugins()
+                    'Plugins' => \QUI::getPlugins()
                 ));
 
                 return $Engine->fetch( $file );

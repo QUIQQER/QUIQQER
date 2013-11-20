@@ -333,7 +333,7 @@ class MF_Image extends MF_File implements iMF
 
 		try
 		{
-		    $WZ_Project = QUI::getProject($params['project']);
+		    $WZ_Project = \QUI::getProject($params['project']);
 			$WZ_Media   = $Project->getMedia();
 			$_Image     = $WZ_Media->get( (int)$params['id'] );
 

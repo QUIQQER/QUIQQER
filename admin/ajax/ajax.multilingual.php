@@ -30,7 +30,7 @@ function ajax_multilingual_manager($id, $lang, $project_name)
 
     try
     {
-        $Project = QUI::getProject($project_name, $lang);
+        $Project = \QUI::getProject($project_name, $lang);
         $Site    = new Projects_Site_Edit($Project, (int)$id);
 
         $config = $Project->getAttribute('config');
@@ -65,7 +65,7 @@ $ajax->register('ajax_multilingual_manager', array('id', 'lang', 'project_name')
  */
 function ajax_multilingual_addlink($project_name, $id1, $lang1, $id2, $lang2)
 {
-    $Project = QUI::getProject($project_name, $lang1);
+    $Project = \QUI::getProject($project_name, $lang1);
     $Site    = new Projects_Site_Edit($Project, (int)$id1);
 
     return $Site->addLanguageLink($lang2, $id2);
@@ -83,7 +83,7 @@ $ajax->register('ajax_multilingual_addlink', array('project_name', 'id1', 'lang1
  */
 function ajax_multilingual_removelink($project_name, $id1, $lang1, $id2, $lang2)
 {
-    $Project = QUI::getProject($project_name, $lang1);
+    $Project = \QUI::getProject($project_name, $lang1);
     $Site    = new Projects_Site_Edit($Project, (int)$id1);
 
     return $Site->removeLanguageLink($lang2);
@@ -104,8 +104,8 @@ function ajax_multilingual_copy($project_name, $id, $sitelang, $parentid, $paren
 {
     try
     {
-        $p      = QUI::getProject($project_name, $sitelang); // aktuelles Projekt
-        $p_lang = QUI::getProject($project_name, $parentlang); // aktuelles Projekt mit anderer Sprache
+        $p      = \QUI::getProject($project_name, $sitelang); // aktuelles Projekt
+        $p_lang = \QUI::getProject($project_name, $parentlang); // aktuelles Projekt mit anderer Sprache
 
         $site       = new Projects_Site_Edit($p, (int)$id, false, true); // Aktuelle Seite
         $attributes = $site->getAllAttributes(); // Attribute von aktueller Seite bekommen

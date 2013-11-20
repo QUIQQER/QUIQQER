@@ -133,7 +133,7 @@ class System_Console
 
 		try
 		{
-    		$User = QUI::getUsers()->login(
+    		$User = \QUI::getUsers()->login(
     		    $params[ '--username' ],
     		    $params[ '--password' ]
 	        );

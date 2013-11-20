@@ -7,7 +7,7 @@
  */
 function ajax_system_packages_server_status($server, $status)
 {
-    QUI::getPackageManager()->setServerStatus( $server, $status );
+    \QUI::getPackageManager()->setServerStatus( $server, $status );
 }
 
 QUI::$Ajax->register(

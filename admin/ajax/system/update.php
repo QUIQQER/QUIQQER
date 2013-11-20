@@ -5,7 +5,7 @@
  */
 function ajax_system_update($package)
 {
-    QUI::getPackageManager()->update( $package );
+    \QUI::getPackageManager()->update( $package );
 }
 
 QUI::$Ajax->register(

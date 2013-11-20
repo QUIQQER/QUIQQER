@@ -46,13 +46,13 @@ class QUI_Setup
         \System_Cron_Manager::setup();
 
         // Events Setup
-        \QUI_Events_Manager::setup();
+        \QUI\Events\Manager::setup();
 
         // Desktop Setup
         \QUI_Desktop_Manager::setup();
 
         // Package Manager
-        // QUI_Package_Manager::setup();
+        // \QUI\Package\Manager::setup();
 
         // Upload Manager
         $UploadManager = new \QUI_Upload_Manager();

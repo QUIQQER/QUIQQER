@@ -42,7 +42,7 @@ class MF_File extends MediaFile implements iMF
 		}
 
 		// DB setzen
-		$r_db = QUI::getDB()->updateData(
+		$r_db = \QUI::getDB()->updateData(
 			$this->_TABLE,
 			array('active' => 1),
 			array('id' => $this->getId())
@@ -69,7 +69,7 @@ class MF_File extends MediaFile implements iMF
 	public function deactivate()
 	{
 		// DB setzen
-		$r_db = QUI::getDB()->updateData(
+		$r_db = \QUI::getDB()->updateData(
 			$this->_TABLE,
 			array('active' => 0),
 			array('id' => $this->getId())
@@ -109,7 +109,7 @@ class MF_File extends MediaFile implements iMF
 		\QUI\Utils\System\File::move($original, $var_folder.$this->getId());
 
 		// Update für die DB
-		$u_del = QUI::getDB()->updateData(
+		$u_del = \QUI::getDB()->updateData(
 			$this->_TABLE,
 			array(
 				'deleted' => 1,
@@ -257,7 +257,7 @@ class MF_File extends MediaFile implements iMF
 		$this->deleteCache();
 
 		// DB Update
-		$u_db = QUI::getDB()->updateData(
+		$u_db = \QUI::getDB()->updateData(
 			$this->_TABLE,
 			array(
 				'name' => $name,
@@ -302,7 +302,7 @@ class MF_File extends MediaFile implements iMF
 			\QUI\Utils\System\File::move($tmp_file, $new_file);
 
 			// DB aktualisieren
-			$u_db = QUI::getDB()->updateData(
+			$u_db = \QUI::getDB()->updateData(
 				$this->_TABLE,
 				array(
 					'deleted' => 0,
@@ -313,7 +313,7 @@ class MF_File extends MediaFile implements iMF
 			);
 
 			// Relation wieder herstellen
-			$u_parent_db = QUI::getDB()->addData(
+			$u_parent_db = \QUI::getDB()->addData(
 				$this->_RELTABLE,
 				array(
 					'parent' => $toParent->getId(),
@@ -345,18 +345,18 @@ class MF_File extends MediaFile implements iMF
 		$id = $this->getId();
 
 		// Update für die DB
-		$u_des = QUI::getDB()->deleteData(
+		$u_des = \QUI::getDB()->deleteData(
 			$this->_TABLE,
 			array('id' => $id)
 		);
 
 		// Eltern Beziehungen löschen
-		$c_des = QUI::getDB()->deleteData(
+		$c_des = \QUI::getDB()->deleteData(
 			$this->_RELTABLE,
 			array('child' => $id)
 		);
 
-		$p_des = QUI::getDB()->deleteData(
+		$p_des = \QUI::getDB()->deleteData(
 			$this->_RELTABLE,
 			array('parent' => $id)
 		);

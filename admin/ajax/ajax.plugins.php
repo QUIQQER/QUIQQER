@@ -52,7 +52,7 @@ function ajax_plugins_getmanager()
             continue;
         }
 
-        $Plg_Config = QUI::getConfig(OPT_DIR . $plg .'/base.ini');
+        $Plg_Config = \QUI::getConfig(OPT_DIR . $plg .'/base.ini');
         $config     = $Plg_Config->toArray();
 
         $config['plg'] = $plg;
@@ -82,7 +82,7 @@ function ajax_plugins_getmanager()
 
     if (file_exists($plg_ini))
     {
-        $Active = QUI::getConfig($plg_ini);
+        $Active = \QUI::getConfig($plg_ini);
         $Active = $Active->toArray();
     }
 
@@ -143,7 +143,7 @@ function ajax_plugins_get_remove_manager()
 
     if (file_exists($plg_ini))
     {
-        $Active = QUI::getConfig($plg_ini);
+        $Active = \QUI::getConfig($plg_ini);
         $Active = $Active->toArray();
     }
 
@@ -155,7 +155,7 @@ function ajax_plugins_get_remove_manager()
     {
         if (file_exists(OPT_DIR . $plg .'/base.ini'))
         {
-            $Plg_Config      = QUI::getConfig(OPT_DIR . $plg .'/base.ini');
+            $Plg_Config      = \QUI::getConfig(OPT_DIR . $plg .'/base.ini');
             // nur inaktive plugins können gelöscht werden
             if (!in_array($plg, $ActivePlugins)) {
                 $Plugins[ $plg ] = $Plg_Config->toArray();
@@ -238,7 +238,7 @@ $ajax->register('ajax_plugins_install', array('plugin', 'server'));
  */
 function ajax_plugins_setup($plugin)
 {
-    $Plugins = QUI::getPlugins();
+    $Plugins = \QUI::getPlugins();
     $Plugin  = $Plugins->get($plugin);
 
     if (method_exists($Plugin, 'events')) {
@@ -259,7 +259,7 @@ $ajax->register('ajax_plugins_setup', array('plugin'));
  */
 function ajax_plugins_settings_get_window($plugin)
 {
-    $Plugins = QUI::getPlugins();
+    $Plugins = \QUI::getPlugins();
     $Plugin  = $Plugins->get($plugin);
     $Window  = $Plugin->getSettingsWindow();
 
@@ -308,7 +308,7 @@ function ajax_plugins_settings_get_category($plugin, $category, $params)
 
     } else
     {
-        $Plugins = QUI::getPlugins();
+        $Plugins = \QUI::getPlugins();
         $Plugin  = $Plugins->get($plugin);
     }
 
@@ -338,7 +338,7 @@ function ajax_plugins_settings_save($plugin, $config, $system)
         $Plugin = SystemPlugins::get($plugin);
     } else
     {
-        $Plugins = QUI::getPlugins();
+        $Plugins = \QUI::getPlugins();
         $Plugin  = $Plugins->get($plugin);
     }
 

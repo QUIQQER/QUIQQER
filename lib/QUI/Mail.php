@@ -80,7 +80,7 @@ class QUI_Mail
 		//require_once LIB_DIR .'extern/phpmail/class.phpmailer.php';
 
 		// Standard Config setzen
-		$mailconf = QUI::conf( 'mail' );
+		$mailconf = \QUI::conf( 'mail' );
 
 		$this->_config = array(
 			'IsSMTP'		=> $mailconf['SMTP'],
@@ -208,11 +208,11 @@ class QUI_Mail
 		}
 
 		if ( DEBUG_MODE ) {
-			$this->_mail->AddCC( QUI::conf( 'mail','admin_mail' ) );
+			$this->_mail->AddCC( \QUI::conf( 'mail','admin_mail' ) );
 		}
 
-		if ( QUI::conf('mail','bccToAdmin')) {
-			$this->_mail->AddBCC( QUI::conf( 'mail','admin_mail' ) );
+		if ( \QUI::conf('mail','bccToAdmin')) {
+			$this->_mail->AddBCC( \QUI::conf( 'mail','admin_mail' ) );
 		}
 
 		QUI::getErrorHandler()->setAttribute( 'ERROR_8192', false );

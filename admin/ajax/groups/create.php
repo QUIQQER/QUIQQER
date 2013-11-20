@@ -9,7 +9,7 @@
  */
 function ajax_groups_create($groupname, $pid)
 {
-    $Groups = QUI::getGroups();
+    $Groups = \QUI::getGroups();
     $Parent = $Groups->get( (int)$pid );
 	$Group  = $Parent->createChild( $groupname );
 

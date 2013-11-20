@@ -8,7 +8,7 @@
  */
 function ajax_users_get($uid)
 {
-	$Users = QUI::getUsers();
+	$Users = \QUI::getUsers();
 	$User  = $Users->get((int)$uid);
 
 	return $User->getAllAttributes();

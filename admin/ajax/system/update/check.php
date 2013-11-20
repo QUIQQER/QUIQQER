@@ -7,7 +7,7 @@
  */
 function ajax_system_update_check()
 {
-    $updates = QUI::getPackageManager()->checkUpdates();
+    $updates = \QUI::getPackageManager()->checkUpdates();
 
     if ( !count( $updates ) )
     {

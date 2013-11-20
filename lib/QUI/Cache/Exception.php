@@ -1,11 +1,15 @@
 <?php
 
 /**
+ * This file contains \QUI\Cache\Exception
+ */
+
+namespace QUI\Cache;
+
+/**
  * Cache Exception
  *
  * @author www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui.system.cache
  */
-class System_Cache_Exception extends Exception {}
-
-?>
+class Exception extends \Exception {}

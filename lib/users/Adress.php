@@ -33,7 +33,7 @@ class Users_Adress extends \QUI\QDOM
      */
     public function __construct(Users_User $User, $id)
     {
-        $result = QUI::getDataBase()->fetch(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'from'  => Users_Users::TableAdress(),
             'where' => array(
                 'id'  => (int)$id,
@@ -48,7 +48,7 @@ class Users_Adress extends \QUI\QDOM
         if ( !isset( $result[0] ) )
         {
             throw new \QUI\Exception(
-                QUI::getLocale()->get(
+                \QUI::getLocale()->get(
                     'system',
                     'exception.lib.user.adress.not.found'
                 )
@@ -222,7 +222,7 @@ class Users_Adress extends \QUI\QDOM
         if ( \QUI\Utils\Security\Orthos::checkMailSyntax($mail) == false )
         {
             throw new \QUI\Exception(
-                QUI::getLocale()->get(
+                \QUI::getLocale()->get(
                     'system',
                     'exception.lib.user.adress.mail.wrong.syntax'
                 )
@@ -263,7 +263,7 @@ class Users_Adress extends \QUI\QDOM
         if ($this->getAttribute('country') === false)
         {
             throw new \QUI\Exception(
-                QUI::getLocale()->get('system', 'exception.lib.user.adress.no.country')
+                \QUI::getLocale()->get('system', 'exception.lib.user.adress.no.country')
             );
         }
 
@@ -278,7 +278,7 @@ class Users_Adress extends \QUI\QDOM
         }
 
         throw new \QUI\Exception(
-            QUI::getLocale()->get('system', 'exception.lib.user.adress.no.country')
+            \QUI::getLocale()->get('system', 'exception.lib.user.adress.no.country')
         );
     }
 
@@ -290,7 +290,7 @@ class Users_Adress extends \QUI\QDOM
         $mail  = json_encode($this->getMailList());
         $phone = json_encode($this->getPhoneList());
 
-        QUI::getDataBase()->update(
+        \QUI::getDataBase()->update(
             Users_Users::TableAdress(),
             array(
                 'salutation' => \QUI\Utils\Security\Orthos::clear( $this->getAttribute('salutation') ),
@@ -315,7 +315,7 @@ class Users_Adress extends \QUI\QDOM
      */
     public function delete()
     {
-        QUI::getDataBase()->exec(array(
+        \QUI::getDataBase()->exec(array(
             'delete' => true,
             'from'   => Users_Users::TableAdress(),
             'where'  => array(

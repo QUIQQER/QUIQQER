@@ -233,14 +233,14 @@ class Media
      */
     public function getNewId()
     {
-        $maxid = QUI::getDB()->select(array(
+        $maxid = \QUI::getDB()->select(array(
             'select' => 'id',
             'from' 	 => $this->_TABLE,
             'limit'  => '0,1',
             'order'  => 'id DESC'
         ));
 
-        $id = (int)$maxid[0]['id']+1;
+        $id = (int)$maxid[0]['id'] + 1;
 
         return $id;
     }
@@ -411,7 +411,7 @@ class Media
             $this->_obj_cache = array();
         }
 
-        $result = QUI::getDB()->select(array(
+        $result = \QUI::getDB()->select(array(
             'from' 	=> $this->_TABLE,
             'where' => array(
                 $this->_TABLE .'.id' => $id
@@ -471,7 +471,7 @@ class Media
         $params['from'] = $this->_TABLE;
 
         return $this->_parseChildren(
-            QUI::getDB()->select($params)
+            \QUI::getDB()->select($params)
         );
     }
 
@@ -573,7 +573,7 @@ class Media
         $query .= $where;
         $query .= ' LIMIT 0, 30';
 
-        $result   = QUI::getDB()->getData($query, 'ARRAY', 'ASSOC');
+        $result   = \QUI::getDB()->getData($query, 'ARRAY', 'ASSOC');
         $Children = new MC_Children();
 
         if (!isset($result[0])) {

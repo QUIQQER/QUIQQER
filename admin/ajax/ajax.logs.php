@@ -61,7 +61,7 @@ $ajax->register('ajax_plugins_logs_get', array('log'));
  */
 function ajax_plugins_logs_send($log)
 {
-    $Users = QUI::getUsers();
+    $Users = \QUI::getUsers();
     $User  = $Users->getUserBySession();
 
     $email = $User->getAttribute('email');

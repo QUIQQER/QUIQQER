@@ -38,7 +38,7 @@ class MC_Trash
 	{
 		$Media = $this->_Media;
 
-		$result = QUI::getDB()->select(array(
+		$result = \QUI::getDB()->select(array(
 			'from' 	=> $this->_TABLE,
 			'where' => $this->_TABLE.'.deleted = 1',
 			'order'	=> $this->_TABLE.'.type ASC, '.$this->_TABLE.'.name'

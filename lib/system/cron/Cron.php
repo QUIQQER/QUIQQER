@@ -30,7 +30,7 @@ class System_Cron_Cron extends \QUI\QDOM
      */
     public function exec()
     {
-        $Users = QUI::getUsers();
+        $Users = \QUI::getUsers();
         $User  = $Users->getUserBySession();
 
         if (!$User->isSU() && $User->getType() != 'SystemUser') {
@@ -114,7 +114,7 @@ class System_Cron_Cron extends \QUI\QDOM
         }
 
         // Last Exceute setzen
-        QUI::getDB()->updateData(
+        \QUI::getDB()->updateData(
             System_Cron_Manager::TABLE,
             array('lastexec' => date('Y-m-d H:i:s')),
             array('id'       => $this->getAttribute('id'))

@@ -63,8 +63,8 @@ class ConsoleCreateLang extends System_Console_Tool
 			exit;
 		}
 
-	    $DataBase = QUI::getDB();
-        $Config   = QUI::getConfig('etc/projects.ini');
+	    $DataBase = \QUI::getDB();
+        $Config   = \QUI::getConfig('etc/projects.ini');
 
         $langs = explode(',', $Config->get($params['--project'], 'langs'));
 
@@ -81,10 +81,10 @@ class ConsoleCreateLang extends System_Console_Tool
         $Config->save();
 
 
-        $Project = QUI::getProject($params['--project']);
+        $Project = \QUI::getProject($params['--project']);
         $Project->setup();
 
-        $Plugins = QUI::getPlugins();
+        $Plugins = \QUI::getPlugins();
         $Plugins->setup($Project);
 
         $table = $Project->getAttribute('name') .'_'. $params['--newlang'] .'_sites';

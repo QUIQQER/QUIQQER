@@ -21,7 +21,7 @@ function ajax_system_cache_clear($params)
         return;
     }
 
-    \System_Cache_Manager::clearAll();
+    \QUI\Cache\Manager::clearAll();
     \QUI_Plugins_Manager::clearCache();
 }
 

@@ -72,7 +72,7 @@ function ajax_editor_conf($project)
         return;
     }
 
-    $Config = QUI::getConfig($conf);
+    $Config = \QUI::getConfig($conf);
     $conf   = $Config->toArray();
 
     // defaults

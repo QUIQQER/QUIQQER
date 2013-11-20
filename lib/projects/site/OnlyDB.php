@@ -22,8 +22,8 @@ class Projects_Site_OnlyDB extends Projects_Site
      */
     public function __construct(Projects_Project $Project, $id)
 	{
-        $this->_db    = QUI::getDB();
-		$this->_users = QUI::getUsers();
+        $this->_db    = \QUI::getDB();
+		$this->_users = \QUI::getUsers();
 		$this->_user  = $this->_users->getUserBySession();
 
 		$this->_TABLE        = $Project->getAttribute('db_table');
@@ -47,7 +47,7 @@ class Projects_Site_OnlyDB extends Projects_Site
 	 */
 	public function refresh()
 	{
-		$result = QUI::getDataBase()->fetch(array(
+		$result = \QUI::getDataBase()->fetch(array(
 			'from'  => $this->_TABLE,
 			'where' => array(
 				'id' => $this->getId()
@@ -64,7 +64,7 @@ class Projects_Site_OnlyDB extends Projects_Site
 		// Verknüpfung hohlen
 		if ( $this->getId() != 1 )
 		{
-			$relresult = QUI::getDataBase()->fetch(array(
+			$relresult = \QUI::getDataBase()->fetch(array(
 				'from'  => $this->_RELTABLE,
 				'where' => array(
 					'child' => $this->getId()

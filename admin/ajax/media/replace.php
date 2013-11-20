@@ -11,7 +11,7 @@ function ajax_media_replace($project, $fileid, $File)
 {
     $Project = Projects_Manager::getProject( $project );
     $Media   = $Project->getMedia();
-    $User    = QUI::getUserBySession();
+    $User    = \QUI::getUserBySession();
 
     $file = $File->getAttribute('filepath');
 

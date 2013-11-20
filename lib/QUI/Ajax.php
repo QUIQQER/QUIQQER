@@ -1,8 +1,10 @@
 <?php
 
 /**
- * This file contains Utils_Request_Ajax
+ * This file contains \QUI\Ajax
  */
+
+namespace QUI;
 
 /**
  * QUIQQER Ajax
@@ -11,7 +13,7 @@
  * @author www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui.utils.request
  */
-class Utils_Request_Ajax extends \QUI\QDOM
+class Ajax extends \QUI\QDOM
 {
     /**
      * Available ajax functions
@@ -35,11 +37,8 @@ class Utils_Request_Ajax extends \QUI\QDOM
         self::setAttributes( $params );
 
         // Shutdown Handling
-        if ( class_exists( 'QUI' ) )
-        {
-            $ErrorHandler = QUI::getErrorHandler();
-            $ErrorHandler->registerShutdown( array($this, 'onShutdown') );
-        }
+        $ErrorHandler = \QUI::getErrorHandler();
+        $ErrorHandler->registerShutdown( array($this, 'onShutdown') );
     }
 
     /**
@@ -136,8 +135,8 @@ class Utils_Request_Ajax extends \QUI\QDOM
             $result[ $_rf ] = $this->_call_rf( $_rf );
         }
 
-        if ( QUI::getMessagesHandler() ) {
-            $result['message_handler'] = QUI::getMessagesHandler()->getMessagesAsArray();
+        if ( \QUI::getMessagesHandler() ) {
+            $result['message_handler'] = \QUI::getMessagesHandler()->getMessagesAsArray();
         }
 
         return '<quiqqer>'. json_encode( $result ) .'</quiqqer>';
@@ -221,7 +220,7 @@ class Utils_Request_Ajax extends \QUI\QDOM
         {
             return $this->writeException( $e );
 
-        } catch ( PDOException $e )
+        } catch ( \PDOException $e )
         {
             return $this->writeException( $e );
         } catch ( \QUI\ExceptionDBError $e )
@@ -274,9 +273,10 @@ class Utils_Request_Ajax extends \QUI\QDOM
             break;
 
             case 'PDOException':
-            case '\QUI\ExceptionDBError':
+            case '\PDOException':
+            case '\QUI\Database\Exception':
                 // DB Fehler immer loggen
-                System_Log::writeException( $Exception );
+                \System_Log::writeException( $Exception );
 
                 if ( $this->getAttribute('db_errors') )
                 {
@@ -315,5 +315,3 @@ class Utils_Request_Ajax extends \QUI\QDOM
         }
     }
 }
-
-?>

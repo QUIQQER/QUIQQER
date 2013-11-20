@@ -22,7 +22,7 @@ function patch_date_blog( $Patch )
 {
 	$Patch->write('Patch Blog Release Dates wird ausgeführt...');
 
-	$db       = QUI::getDB();
+	$db       = \QUI::getDB();
 	$projects = Projects_Manager::getProjects();
 
 	$ERRORS = 0;
@@ -33,7 +33,7 @@ function patch_date_blog( $Patch )
 		{
 			$Patch->write('');
 			$Patch->write('[BEGIN] Starte mit Projekt: '.$project);
-			$Project = QUI::getProject($project);
+			$Project = \QUI::getProject($project);
 			$langs = $Project->getAttribute('langs');
 
 		} catch(\QUI\Exception $e)
@@ -46,7 +46,7 @@ function patch_date_blog( $Patch )
 		foreach($langs as $lang)
 		{
 			$Patch->write('====> Starte mit Sprache :'.$lang);
-			$_Project = QUI::getProject($project, $lang);
+			$_Project = \QUI::getProject($project, $lang);
 
 			// Blog Sites
 			/*

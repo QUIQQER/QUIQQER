@@ -119,7 +119,7 @@ class MediaFile extends \QUI\QDOM
      */
     protected function _getParentId($id)
     {
-        $result = QUI::getDB()->select(array(
+        $result = \QUI::getDB()->select(array(
             'from' 	=> $this->_RELTABLE,
             'where' => array(
                 'child' => $id
@@ -244,7 +244,7 @@ class MediaFile extends \QUI\QDOM
         }
 
         // Standard Felder ändern
-        QUI::getDB()->updateData(
+        \QUI::getDB()->updateData(
             $this->_TABLE,
             array(
                 'name'  => $this->getAttribute('name'),
@@ -298,7 +298,7 @@ class MediaFile extends \QUI\QDOM
      */
     public function rate($rate)
     {
-        $Users = QUI::getUsers();
+        $Users = \QUI::getUsers();
         $User  = $Users->getUserBySession();
         $rate  = (int)$rate;
 
@@ -330,7 +330,7 @@ class MediaFile extends \QUI\QDOM
 
         $ratings[ $User->getId() ] = $rate;
 
-        QUI::getDB()->updateData(
+        \QUI::getDB()->updateData(
             $this->_TABLE,
             array(
                 'rate_users' => json_encode($ratings),

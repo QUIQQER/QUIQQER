@@ -24,7 +24,7 @@ if ($User->isAdmin() == false) {
  */
 function ajax_project_getproject($name, $lang)
 {
-    $Project = QUI::getProject($name, $lang);
+    $Project = \QUI::getProject($name, $lang);
     return $Project->getAllAttributes();
 }
 $ajax->register('ajax_project_getproject', array('name', 'lang'));
@@ -51,7 +51,7 @@ $ajax->register('ajax_project_create', array('newname', 'lang', 'template'));
  */
 function ajax_project_gettypes($name, $lang)
 {
-    $Project = QUI::getProject($name, $lang);
+    $Project = \QUI::getProject($name, $lang);
     return $Project->getTypes();
 }
 $ajax->register('ajax_project_gettypes', array('name', 'lang'));
@@ -65,7 +65,7 @@ $ajax->register('ajax_project_gettypes', array('name', 'lang'));
  */
 function ajax_project_createbackup($name, $config, $project, $media, $templates)
 {
-    $Project = QUI::getProject($name, $lang);
+    $Project = \QUI::getProject($name, $lang);
 
     return $Project->createBackup(
         PT_Bool::JSBool($config),
@@ -112,7 +112,7 @@ $ajax->register('ajax_project_getbackups', array('name'));
  */
 function ajax_project_deletebackup($archive, $project)
 {
-    $Users = QUI::getUsers();
+    $Users = \QUI::getUsers();
     $User  = $Users->getUserBySession();
 
     if ($User->isSU() == false)
@@ -154,7 +154,7 @@ $ajax->register('ajax_project_deletebackup', array('archive', 'project'));
  */
 function ajax_project_getsites($name, $lang, $params)
 {
-    $Project = QUI::getProject($name, $lang);
+    $Project = \QUI::getProject($name, $lang);
     $params  = json_decode($params, true);
 
     if (!is_array($params)) {
@@ -200,7 +200,7 @@ $ajax->register('ajax_project_getParentIds', array('project', 'lang', 'id'));
  */
 function ajax_project_clear_trash($project, $lang)
 {
-    $Project = QUI::getProject($project, $lang);
+    $Project = \QUI::getProject($project, $lang);
 
     $sites = $Project->getSitesIds(array(
         'where' => array(

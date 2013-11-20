@@ -61,7 +61,7 @@ class ConsolePortalPatch extends System_Console_Tool
 			throw new \QUI\Exception('Es wurde keine Sprache angegeben');
 		}
 
-		$db   = QUI::getDB();
+		$db   = \QUI::getDB();
 		$test = isset($params['--test']) ? true : false;
 
 		$lang    = $params['--lang'];

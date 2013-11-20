@@ -20,12 +20,12 @@ if ($User->isAdmin() == false) {
  */
 function ajax_config_global()
 {
-    $Config  = QUI::getConfig('etc/conf.ini');
+    $Config  = \QUI::getConfig('etc/conf.ini');
     $_config = $Config->toArray();
 
     $_config['standard'] = Projects_Manager::getStandard()->getAttribute('name');
 
-    $VHosts = QUI::getConfig('etc/vhosts.ini');
+    $VHosts = \QUI::getConfig('etc/vhosts.ini');
     $vhosts = $VHosts->toArray();
 
     if (isset($vhosts[404]))
@@ -54,7 +54,7 @@ $ajax->register('ajax_config_global');
  */
 function ajax_config_global_save($params)
 {
-    $Config = QUI::getConfig('etc/conf.ini');
+    $Config = \QUI::getConfig('etc/conf.ini');
     $Params = json_decode($params, true);
 
     if (isset($Params['db']) &&
@@ -141,7 +141,7 @@ function ajax_config_global_save($params)
         // vhosts anlegen
         file_put_contents(CMS_DIR .'etc/vhosts.ini', '');
 
-        $VHosts = QUI::getConfig('etc/vhosts.ini');
+        $VHosts = \QUI::getConfig('etc/vhosts.ini');
 
         // Fehlerseite
         if (isset($Params['vhosts']['error_site']))
@@ -185,7 +185,7 @@ function ajax_config_global_save($params)
 
     $Config->save();
 
-    System_Cache_Manager::clear('QUI::config'); // Cache auch leeren
+    \QUI\Cache\Manager::clear('QUI::config'); // Cache auch leeren
 
     return true;
 }
@@ -198,7 +198,7 @@ $ajax->register('ajax_config_global_save', array('params'));
  */
 function ajax_config_projects($project)
 {
-    $Config  = QUI::getConfig('etc/projects.ini');
+    $Config  = \QUI::getConfig('etc/projects.ini');
     $conf    = $Config->toArray();
 
     if (isset($conf[$project]))
@@ -238,7 +238,7 @@ $ajax->register('ajax_config_projects', array('project'));
  */
 function ajax_config_projects_save($project, $params)
 {
-    $Config = QUI::getConfig('etc/projects.ini');
+    $Config = \QUI::getConfig('etc/projects.ini');
     $params = json_decode($params, true);
 
     foreach ($params as $key => $value)

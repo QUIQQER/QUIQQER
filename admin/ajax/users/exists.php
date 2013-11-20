@@ -8,7 +8,7 @@
  */
 function ajax_users_exists($username)
 {
-    return QUI::getUsers()->existsUsername( $username );
+    return \QUI::getUsers()->existsUsername( $username );
 }
 QUI::$Ajax->register('ajax_users_exists', array('username'), 'Permission::checkUser')
 

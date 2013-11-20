@@ -62,7 +62,7 @@ foreach ( $_rf_files as $key => $file )
 /**
  * Ajax Ausgabe
  */
-echo QUI::$Ajax->call();
+echo \QUI::$Ajax->call();
 
 
 
@@ -123,7 +123,7 @@ QUI::$Ajax->register('ajax_send_support_mail', array('title', 'text', 'browser',
  */
 function ajax_get_robot_txt()
 {
-    $Users = QUI::getUsers();
+    $Users = \QUI::getUsers();
     $User  = $Users->getUserBySession();
 
     if (!$User->isSU()) {
@@ -148,7 +148,7 @@ QUI::$Ajax->register('ajax_get_robot_txt');
  */
 function ajax_set_robot_txt($text)
 {
-    $Users = QUI::getUsers();
+    $Users = \QUI::getUsers();
     $User  = $Users->getUserBySession();
 
     if (!$User->isSU()) {
@@ -170,7 +170,7 @@ QUI::$Ajax->register('ajax_set_robot_txt', array('text'));
  */
 function ajax_get_maintenance_status()
 {
-    return QUI::conf('globals','maintenance');
+    return \QUI::conf('globals','maintenance');
 }
 QUI::$Ajax->register('ajax_get_maintenance_status');
 
@@ -181,7 +181,7 @@ QUI::$Ajax->register('ajax_get_maintenance_status');
  */
 function ajax_set_maintenance_status($status)
 {
-    $Users = QUI::getUsers();
+    $Users = \QUI::getUsers();
     $User  = $Users->getUserBySession();
 
     if (!$User->getId()) {
@@ -192,7 +192,7 @@ function ajax_set_maintenance_status($status)
         return;
     }
 
-    $Config = QUI::getConfig(CMS_DIR .'etc/conf.ini');
+    $Config = \QUI::getConfig(CMS_DIR .'etc/conf.ini');
     $Config->setValue('globals','maintenance', (bool)$status);
 
     $Config->save();
@@ -207,7 +207,7 @@ QUI::$Ajax->register('ajax_set_maintenance_status', array('status'));
  */
 function ajax_url_clean($project, $url)
 {
-    $Project = QUI::getProject($project);
+    $Project = \QUI::getProject($project);
 
     return Projects_Site_Edit::clearUrl($url, $Project);
 }

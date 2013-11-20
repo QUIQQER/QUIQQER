@@ -9,6 +9,7 @@ namespace QUI;
 /**
  * The QUIQQER Autoloader
  * Loads all classes when calling, in dependence of the classes name
+ * it includes the composer autoloader
  *
  * @author www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui
@@ -65,11 +66,6 @@ class Autoloader
         }
         */
 
-        // Stash
-        if ( strpos( $classname, 'Stash\\' ) !== false ) {
-            return self::loadStash( $classname );
-        }
-
         // QUIQQER MVC -> old version, no namespaces
         // remove it if namespaces complet implemented
         $file = LIB_DIR . str_replace( '_', '/', $classname ) .'.php';
@@ -78,6 +74,7 @@ class Autoloader
         if ( strpos( $classname, 'QUI_' ) === 0 ) {
             $file = str_replace( '/qui/', '/QUI/', $file );
         }
+
 
         if ( file_exists( $file ) )
         {

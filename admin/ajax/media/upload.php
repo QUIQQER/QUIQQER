@@ -11,7 +11,7 @@ function ajax_media_upload($project, $parentid, $File)
     $Project = Projects_Manager::getProject( $project );
     $Media   = $Project->getMedia();
     $Folder  = $Media->get( (int)$parentid );
-    $User    = QUI::getUserBySession();
+    $User    = \QUI::getUserBySession();
 
     if ( $Folder->getType() != 'Projects_Media_Folder' )
     {

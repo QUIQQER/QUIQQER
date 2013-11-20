@@ -8,7 +8,7 @@
  */
 function ajax_users_gettoolbar($uid)
 {
-	$Users = QUI::getUsers();
+	$Users = \QUI::getUsers();
 	$User  = $Users->get( (int)$uid );
 
 	$Toolbar = Users_Utils::getUserToolbar( $User );

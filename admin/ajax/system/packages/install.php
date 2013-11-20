@@ -5,7 +5,7 @@
  */
 function ajax_system_packages_install($package)
 {
-    return QUI::getPackageManager()->install( $package );
+    return \QUI::getPackageManager()->install( $package );
 }
 
 QUI::$Ajax->register(

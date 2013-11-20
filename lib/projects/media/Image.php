@@ -288,7 +288,7 @@ class Projects_Media_Image
 
         try
         {
-            $WZ_Project = QUI::getProject($params['project']);
+            $WZ_Project = \QUI::getProject($params['project']);
             $WZ_Media   = $Project->getMedia();
             $_Image     = $WZ_Media->get( (int)$params['id'] );
 
@@ -540,7 +540,7 @@ class Projects_Media_Image
 
         $this->setAttribute('md5hash', $md5);
 
-        QUI::getDataBase()->update(
+        \QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array('md5hash' => $md5),
             array('id' => $this->getId())
@@ -556,7 +556,7 @@ class Projects_Media_Image
 
         $this->setAttribute('sha1hash', $sha1);
 
-        QUI::getDataBase()->update(
+        \QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array('sha1hash' => $sha1),
             array('id' => $this->getId())

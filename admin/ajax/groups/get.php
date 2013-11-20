@@ -8,7 +8,7 @@
  */
 function ajax_groups_get($gid)
 {
-	$Groups = QUI::getGroups();
+	$Groups = \QUI::getGroups();
 	$Group  = $Groups->get((int)$gid);
 
 	$attr = $Group->getAttributes();

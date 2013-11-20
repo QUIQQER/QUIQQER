@@ -78,12 +78,12 @@ function ajax_cron_add($params)
 
     if (strpos($params['plugin'], 'project.') !== false)
     {
-        $Object = QUI::getProject(
+        $Object = \QUI::getProject(
             str_replace('project.', '', $params['plugin'])
         );
     } else
     {
-        $Plugins = QUI::getPlugins();
+        $Plugins = \QUI::getPlugins();
         $Object  = $Plugins->get($params['plugin']);
     };
 

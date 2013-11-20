@@ -1,8 +1,10 @@
 <?php
 
 /**
- * This file contains QUI_Events
+ * This file contains \QUI\Events\Event
  */
+
+namespace QUI\Events;
 
 /**
  * Events Handling
@@ -11,7 +13,7 @@
  * @author www.pcsg.de (Henning Leutz)
  */
 
-class QUI_Events_Event implements Interface_Events
+class Event implements \QUI\Interfaces\Events
 {
     /**
      * Registered events
@@ -21,7 +23,7 @@ class QUI_Events_Event implements Interface_Events
 
     /**
      * (non-PHPdoc)
-     * @see Interface_Events::getList()
+     * @see \QUI\Interfaces\Events::getList()
      */
     public function getList()
     {
@@ -30,7 +32,7 @@ class QUI_Events_Event implements Interface_Events
 
     /**
      * (non-PHPdoc)
-     * @see Interface_Events::addEvent()
+     * @see \QUI\Interfaces\Events::addEvent()
      *
      * @param String $event - The type of event (e.g. 'complete').
      * @param Function $fn - The function to execute.
@@ -42,7 +44,7 @@ class QUI_Events_Event implements Interface_Events
 
     /**
      * (non-PHPdoc)
-     * @see Interface_Events::addEvents()
+     * @see \QUI\Interfaces\Events::addEvents()
      *
      * @param array $events
      */
@@ -55,7 +57,7 @@ class QUI_Events_Event implements Interface_Events
 
     /**
      * (non-PHPdoc)
-     * @see Interface_Events::removeEvent()
+     * @see \QUI\Interfaces\Events::removeEvent()
      *
      * @param String $event - The type of event (e.g. 'complete').
      * @param Function $fn - (optional) The function to remove.
@@ -82,7 +84,7 @@ class QUI_Events_Event implements Interface_Events
 
     /**
      * (non-PHPdoc)
-     * @see Interface_Events::removeEvents()
+     * @see \QUI\Interfaces\Events::removeEvents()
      *
      * @param array $events - [optional] If not passed removes all events of all types.
      */
@@ -95,7 +97,7 @@ class QUI_Events_Event implements Interface_Events
 
     /**
      * (non-PHPdoc)
-     * @see Interface_Events::fireEvent()
+     * @see \QUI\Interfaces\Events::fireEvent()
      *
      * @param String $event - The type of event (e.g. 'onComplete').
      * @param Array $args   - (optional) the argument(s) to pass to the function.

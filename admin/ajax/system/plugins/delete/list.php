@@ -7,7 +7,7 @@
  */
 function ajax_system_plugins_delete_list()
 {
-    $Plugins = QUI::getPlugins();
+    $Plugins = \QUI::getPlugins();
     $list    = $Plugins->getInactivePlugins( true );
     $result  = array();
 

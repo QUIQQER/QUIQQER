@@ -7,7 +7,7 @@
  */
 function ajax_users_adress_setstandard($uid, $aid)
 {
-	$User   = QUI::getUsers()->get((int)$uid);
+	$User   = \QUI::getUsers()->get((int)$uid);
 	$Adress = $User->getAdress((int)$aid);
 
 	$User->setAttribute('adress', $Adress->getId());

@@ -8,7 +8,7 @@
  */
 function ajax_users_delete($uid)
 {
-    $Users = QUI::getUsers();
+    $Users = \QUI::getUsers();
     $uids  = json_decode( $uid, true );
 
     if ( !is_array( $uids ) ) {
@@ -19,7 +19,7 @@ function ajax_users_delete($uid)
         $Users->get( $uid )->delete();
     }
 
-    QUI::getMessagesHandler()->addInformation(
+    \QUI::getMessagesHandler()->addInformation(
         'Die Benutzer '. implode(', ', $uids) . ' wurden erfolgreich gelöscht'
     );
 

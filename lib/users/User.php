@@ -21,7 +21,7 @@ class Users_User implements Interface_Users_User
 
     /**
      * The groups in which the user is
-     * @var array|Groups_Group
+     * @var array|\QUI\Groups\Group
      */
     public $Group = array();
 
@@ -135,7 +135,7 @@ class Users_User implements Interface_Users_User
         if ( !$id || $id <= 10 )
         {
             throw new \QUI\Exception(
-                QUI::getLocale()->get(
+                \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.user.wrong.uid'
                 ),
@@ -143,11 +143,11 @@ class Users_User implements Interface_Users_User
             );
         }
 
-        $Groups = QUI::getGroups();
+        $Groups = \QUI::getGroups();
 
         $this->_Users = $Users;
 
-        $data = QUI::getDB()->select(array(
+        $data = \QUI::getDB()->select(array(
             'from'  => Users_Users::Table(),
             'where' => array(
                 'id' => (int)$id
@@ -158,7 +158,7 @@ class Users_User implements Interface_Users_User
         if ( !isset( $data[0] ) )
         {
             throw new \QUI\Exception(
-                QUI::getLocale(
+                \QUI::getLocale(
                     'quiqqer/system',
                     'exception.lib.user.not.found'
                 ),
@@ -232,7 +232,7 @@ class Users_User implements Interface_Users_User
         }
 
         // Plugins laden
-        $Plugins = QUI::getPlugins();
+        $Plugins = \QUI::getPlugins();
         $plugins = $Plugins->get();
 
         foreach ( $plugins as $Plugin ) {
@@ -253,7 +253,7 @@ class Users_User implements Interface_Users_User
     {
         //@todo Benutzer muss erster prüfen ob bei ihm das recht seperat gesetzt ist
 
-        return QUI::getRights()->getUserPermission( $this, $right, $ruleset );
+        return \QUI::getRights()->getUserPermission( $this, $right, $ruleset );
     }
 
     /**
@@ -349,8 +349,8 @@ class Users_User implements Interface_Users_User
             return $this->_lang;
         }
 
-        $lang  = QUI::getLocale()->getCurrent();
-        $langs = QUI::availableLanguages();
+        $lang  = \QUI::getLocale()->getCurrent();
+        $langs = \QUI::availableLanguages();
 
         if ( $this->getAttribute( 'lang' ) ) {
             $lang = $this->getAttribute( 'lang' );
@@ -374,7 +374,7 @@ class Users_User implements Interface_Users_User
 
         // wird noch gebraucht?
         if ( !$this->_lang ) {
-            $this->_lang = QUI::getLocale()->getCurrent();
+            $this->_lang = \QUI::getLocale()->getCurrent();
         }
 
         return $this->_lang;
@@ -421,7 +421,7 @@ class Users_User implements Interface_Users_User
             return;
         }
 
-        $Groups = QUI::getGroups();
+        $Groups = \QUI::getGroups();
 
         $this->Group   = array();
         $this->_groups = false;
@@ -504,11 +504,11 @@ class Users_User implements Interface_Users_User
     /**
      * Remove a group from the user
      *
-     * @param Groups_Group|Integer $Group
+     * @param \QUI\Groups\Group|Integer $Group
      */
     public function removeGroup($Group)
     {
-        $Groups = QUI::getGroups();
+        $Groups = \QUI::getGroups();
 
         if (is_string($Group) || is_int($Group)) {
             $Group = $Groups->get((int)$Group);
@@ -539,11 +539,11 @@ class Users_User implements Interface_Users_User
     public function addGroup($gid)
     {
         /* @todo Root Gruppe darf nur in Root Gruppe */
-        if ($gid == QUI::conf('globals', 'root')) {
+        if ($gid == \QUI::conf('globals', 'root')) {
             return; // bad fix, mal provisorisch
         }
 
-        $Groups = QUI::getGroups();
+        $Groups = \QUI::getGroups();
         $Group  = $Groups->get($gid);
 
         $groups = $this->getGroups(true);
@@ -700,14 +700,14 @@ class Users_User implements Interface_Users_User
         }
 
         // Wenn der Benutzer dieser hier ist
-        $Users    = QUI::getUsers();
+        $Users    = \QUI::getUsers();
         $SessUser = $Users->getUserBySession();
 
         if ( $SessUser->getId() == $this->getId() )
         {
             //session_unset();
             //session_destroy();
-            $Session = QUI::getSession();
+            $Session = \QUI::getSession();
             $Session->destroy();
         }
 
@@ -981,14 +981,14 @@ class Users_User implements Interface_Users_User
             }
         }
         */
-        $Plugins = QUI::getPlugins();
+        $Plugins = \QUI::getPlugins();
         $plugins = $Plugins->get();
 
         foreach ( $plugins as $Plugin ) {
             $Plugin->onUserSave( $this );
         }
 
-        return QUI::getDB()->updateData(
+        return \QUI::getDB()->updateData(
             Users_Users::Table(),
             array(
                 'username' 	=> $this->getName(),
@@ -1124,7 +1124,7 @@ class Users_User implements Interface_Users_User
             }
         }
 
-        QUI::getDB()->deleteData(
+        \QUI::getDB()->deleteData(
             Users_Users::Table(),
             array('id' => $this->getId())
         );
@@ -1144,7 +1144,7 @@ class Users_User implements Interface_Users_User
     {
         $User = false;
 
-        $Users = QUI::getUsers();
+        $Users = \QUI::getUsers();
         $SUser = $Users->getUserBySession();
 
         if ( $User && $User->getType() == 'Users_SystemUser' ) {
@@ -1160,7 +1160,7 @@ class Users_User implements Interface_Users_User
         }
 
         throw new \QUI\Exception(
-            QUI::getLocale()->get(
+            \QUI::getLocale()->get(
                 'quiqqer/system',
                 'exception.lib.user.no.edit.rights'
             )
@@ -1219,13 +1219,13 @@ class Users_User implements Interface_Users_User
 
         $_params[ 'uid' ] = $this->getId();
 
-        $Statement = QUI::getDataBase()->insert(
+        $Statement = \QUI::getDataBase()->insert(
             Users_Users::TableAdress(),
             $_params
         );
 
         return $this->getAdress(
-            QUI::getDataBase()->getPDO()->lastInsertId()
+            \QUI::getDataBase()->getPDO()->lastInsertId()
         );
     }
 
@@ -1236,7 +1236,7 @@ class Users_User implements Interface_Users_User
      */
     public function getAdressList()
     {
-        $result = QUI::getDB()->select(array(
+        $result = \QUI::getDB()->select(array(
             'from'   => Users_Users::TableAdress(),
             'select' => 'id',
             'where'  => array(

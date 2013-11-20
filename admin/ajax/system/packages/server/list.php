@@ -7,7 +7,7 @@
  */
 function ajax_system_packages_server_list()
 {
-    $list = QUI::getPackageManager()->getServerList();
+    $list = \QUI::getPackageManager()->getServerList();
     $data = array();
 
     foreach ( $list as $server => $params )

@@ -38,7 +38,7 @@ class Projects_Manager
      */
     static function getConfig()
     {
-        return QUI::getConfig('etc/projects.ini');
+        return \QUI::getConfig('etc/projects.ini');
     }
 
     /**
@@ -49,7 +49,7 @@ class Projects_Manager
      */
     static function get()
     {
-        $Rewrite = QUI::getRewrite();
+        $Rewrite = \QUI::getRewrite();
 
         if ( $Rewrite->getParam( 'project' ) )
         {
@@ -404,7 +404,7 @@ class Projects_Manager
         $Project->setup();
 
         // Projekt Cache löschen
-        \System_Cache_Manager::clear( 'QUI::config' );
+        \QUI\Cache\Manager::clear( 'QUI::config' );
     }
 
     /**

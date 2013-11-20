@@ -9,7 +9,7 @@
 function ajax_system_update_template($tpltype)
 {
     $Engine  = QUI_Template::getEngine();
-    $Plugins = QUI::getPlugins();
+    $Plugins = \QUI::getPlugins();
 
     if ( $tpltype == 'plugin' )
     {

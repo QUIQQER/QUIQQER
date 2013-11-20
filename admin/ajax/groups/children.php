@@ -8,7 +8,7 @@
  */
 function ajax_groups_children($gid)
 {
-	$Groups   = QUI::getGroups();
+	$Groups   = \QUI::getGroups();
 	$children = array();
 
 	$Group    = $Groups->get($gid);

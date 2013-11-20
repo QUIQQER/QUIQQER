@@ -371,7 +371,7 @@ class QUI_Rights_Manager
     /**
      * Return all permissions from a group, user, site, project or media
      *
-     * @param {Groups_Group|Users_User|Projects_Site} $Obj
+     * @param \QUI\Groups\Group|Users_User|Projects_Site $Obj
      * @return Array
      */
     public function getPermissions($Obj)
@@ -437,7 +437,7 @@ class QUI_Rights_Manager
     /**
      * Set the permissions for an object
      *
-     * @param Users_User|Groups_Group|
+     * @param Users_User|\QUI\Groups\Group|
      * 	      Projects_Project|Projects_Site|Projects_Site_Edit $Obj
      * @param Array $permissions - Array of permissions
      *
@@ -451,7 +451,10 @@ class QUI_Rights_Manager
         switch ( $cls )
         {
             case 'Users_User':
+
+            case '\\QUI\\Groups\\Group':
             case 'Groups_Group':
+
             case 'Projects_Project':
             break;
 
@@ -966,13 +969,13 @@ class QUI_Rights_Manager
      * Rechte Array einer Gruppe aus den Attributen erstellen
      * Wird zum Beispiel zum Speichern einer Gruppe verwendet
      *
-     * @param Groups_Group $Group
+     * @param \QUI\Groups\Group $Group
      * @return Array
      */
-    public function getRightParamsFromGroup(Groups_Group $Group)
+    public function getRightParamsFromGroup(\QUI\Groups\Group $Group)
     {
         $result = array();
-        $rights = QUI::getDataBase()->fetch(array(
+        $rights = \QUI::getDataBase()->fetch(array(
             'select' => 'name,type',
             'from'   => self::TABLE
         ));

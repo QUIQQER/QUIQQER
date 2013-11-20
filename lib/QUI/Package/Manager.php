@@ -1,8 +1,10 @@
 <?php
 
 /**
- * This file contains QUI_Package_Manager
+ * This file contains \QUI\Package\Manager
  */
+
+namespace QUI\Package;
 
 /**
  * Package Manager for the QUIQQER System
@@ -11,7 +13,7 @@
  * @package com.pcsg.qui
  */
 
-class QUI_Package_Manager
+class Manager
 {
     /**
      * Package Directory
@@ -179,10 +181,11 @@ class QUI_Package_Manager
 
         $require["php"] = ">=5.3.2";
         $require["quiqqer/quiqqer"] = "1.*";
+        $require["tedivm/stash"]    = "0.11.*";
 
         foreach ( $list as $entry )
         {
-            System_Log::writeRecursive($entry);
+            \System_Log::writeRecursive($entry);
 
             $version = $entry['version'];
 
@@ -352,7 +355,8 @@ class QUI_Package_Manager
         $this->_require[ $package ] = 'dev-master';
         $this->_createComposerJSON();
 
-        if ( $this->_exec ) {
+        if ( $this->_exec )
+        {
             exec( $this->_composer_exec .'update "'. $package .'" 2>&1', $exec_result );
 
             \System_Log::writeRecursive( $exec_result );
@@ -740,7 +744,7 @@ class QUI_Package_Manager
         // extract the archive
         $folder = \QUI::getTemp()->createFolder();
 
-        \Utils_Packer_Zip::unzip( $packagepath, $folder );
+        \QUI\Archiver\Zip::unzip( $packagepath, $folder );
 
         // read composer file
         $composer     = $folder .'composer.json';
@@ -881,5 +885,3 @@ class QUI_Package_Manager
         exec( $exec .'update', $exec_result );
     }
 }
-
-?>

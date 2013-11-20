@@ -9,7 +9,7 @@
  */
 function ajax_groups_save($gid, $attributes, $rights)
 {
-    $Groups = QUI::getGroups();
+    $Groups = \QUI::getGroups();
     $Group  = $Groups->get( (int)$gid );
 
     $attributes = json_decode( $attributes, true);
@@ -30,7 +30,7 @@ function ajax_groups_save($gid, $attributes, $rights)
         }
     }
 
-    QUI::getMessagesHandler()->addSuccess(
+    \QUI::getMessagesHandler()->addSuccess(
         'Die Gruppe '. $Group->getAttribute('name') .' wurde erfolgreich gespeichert'
     );
 }

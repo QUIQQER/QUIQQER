@@ -1,8 +1,10 @@
 <?php
 
 /**
- * This file contains \QUI\ExceptionHandler
+ * This file contains \QUI\Exceptions\Handler
  */
+
+namespace QUI\Exceptions;
 
 /**
  * Exception and Error Manager
@@ -14,7 +16,7 @@
  * @package com.pcsg.qui
  */
 
-class QExceptionHandler extends \QUI\QDOM
+class Handler extends \QUI\QDOM
 {
     /**
      * registered shutdown callback functions
@@ -218,6 +220,3 @@ class QExceptionHandler extends \QUI\QDOM
         error_log($err_msg, 3, $log);
     }
 }
-
-
-?>

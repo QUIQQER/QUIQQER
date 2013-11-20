@@ -20,7 +20,7 @@ function patch_myadmin( $Patch )
 {
 	$Patch->write('Patch für phpMyAdmin wird ausgeführt...');
 
-	$db       = QUI::getDB();
+	$db       = \QUI::getDB();
 	$projects = Projects_Manager::getProjects();
 
 	$ERRORS = 0;

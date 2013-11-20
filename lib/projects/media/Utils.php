@@ -297,9 +297,9 @@ class Projects_Media_Utils
         // exist cache?
         try
         {
-            $url = \System_Cache_Manager::get( $cache );
+            $url = \QUI\Cache\Manager::get( $cache );
 
-        } catch ( \System_Cache_Exception $Exception )
+        } catch ( \QUI\Cache\Exception $Exception )
         {
 
         }

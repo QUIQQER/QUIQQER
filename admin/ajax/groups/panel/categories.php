@@ -8,11 +8,14 @@
  */
 function ajax_groups_panel_categories($gid)
 {
-	$Groups = QUI::getGroups();
-	$Group  = $Groups->get( (int)$gid );
+    $Groups = \QUI::getGroups();
+    $Group  = $Groups->get( (int)$gid );
 
-	return Groups_Utils::getGroupToolbar( $Group )->toArray();
+    return \QUI\Groups\Utils::getGroupToolbar( $Group )->toArray();
 }
-QUI::$Ajax->register( 'ajax_groups_panel_categories', array('gid'), 'Permission::checkSU' );
 
-?>
+\QUI::$Ajax->register(
+    'ajax_groups_panel_categories',
+    array('gid'),
+    'Permission::checkSU'
+);

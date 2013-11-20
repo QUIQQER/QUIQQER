@@ -126,7 +126,7 @@
         }
 
         // packages defines
-        echo QUI::getPackageManager()->getJavaScriptDefines();
+        echo \QUI::getPackageManager()->getJavaScriptDefines();
         */
     ?>
 

@@ -491,7 +491,7 @@ class QUI_Upload_Manager
         \QUI\Utils\System\File::unlink( $to );
         \QUI\Utils\System\File::mkdir( $to );
 
-        Utils_Packer_Zip::unzip( $filename, $to );
+        \QUI\Archiver\Zip::unzip( $filename, $to );
 
         $File = new \QUI\QDOM();
         $File->setAttribute( 'name', $fileinfo['filename'] );
@@ -509,7 +509,7 @@ class QUI_Upload_Manager
     protected function _getUserUploadDir($User=false)
     {
         if ( !QUI::getUsers()->isUser( $User ) ) {
-            $User = QUI::getUserBySession();
+            $User = \QUI::getUserBySession();
         }
 
         return $this->getDir() . $User->getId() .'/';
@@ -540,9 +540,9 @@ class QUI_Upload_Manager
         }
 
 
-        QUI::getDataBase()->insert($this->_table, array(
+        \QUI::getDataBase()->insert($this->_table, array(
             'file'   => $filename,
-            'user'   => QUI::getUserBySession()->getId(),
+            'user'   => \QUI::getUserBySession()->getId(),
             'params' => json_encode( $params )
         ));
     }
@@ -555,11 +555,11 @@ class QUI_Upload_Manager
      */
     protected function _delete($filename)
     {
-        QUI::getDataBase()->exec(array(
+        \QUI::getDataBase()->exec(array(
             'delete' => true,
             'from'   => $this->_table,
             'where'  => array(
-                'user' => QUI::getUserBySession()->getId(),
+                'user' => \QUI::getUserBySession()->getId(),
                 'file' => $filename
             )
         ));
@@ -579,10 +579,10 @@ class QUI_Upload_Manager
      */
     protected function _getFileData($filename)
     {
-        $db_result = QUI::getDataBase()->fetch(array(
+        $db_result = \QUI::getDataBase()->fetch(array(
             'from'   => $this->_table,
             'where'  => array(
-                'user' => QUI::getUserBySession()->getId(),
+                'user' => \QUI::getUserBySession()->getId(),
                 'file' => $filename
             )
         ));
@@ -615,7 +615,7 @@ class QUI_Upload_Manager
     public function getUnfinishedUploadsFromUser($User=false)
     {
         if ( !QUI::getUsers()->isUser($User) ) {
-            $User = QUI::getUserBySession();
+            $User = \QUI::getUserBySession();
         }
 
         // read user upload dir
@@ -658,5 +658,3 @@ class QUI_Upload_Manager
         return $result;
     }
 }
-
-?>

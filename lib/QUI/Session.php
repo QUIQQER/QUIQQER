@@ -28,7 +28,7 @@ class QUI_Session
 		// Einstellungen
 		$this->_max_life_time = 1400; // default
 
-		if ( $sess = QUI::conf( 'session', 'max_life_time' ) ) {
+		if ( $sess = \QUI::conf( 'session', 'max_life_time' ) ) {
 			$this->_max_life_time = $sess;
 		}
 

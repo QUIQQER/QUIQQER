@@ -27,7 +27,7 @@ if ($User->isAdmin() == false) {
  */
 function ajax_rights_group_settings($id)
 {
-    return QUI::getGroups()->get($id)->getJSButtons();
+    return \QUI::getGroups()->get($id)->getJSButtons();
 }
 $ajax->register('ajax_rights_group_settings', array('id'));
 
@@ -39,7 +39,7 @@ $ajax->register('ajax_rights_group_settings', array('id'));
 /*
 function ajax_rights_group_tabs()
 {
-    $Groups   = QUI::getGroups();
+    $Groups   = \QUI::getGroups();
     $Toolbar  = $Groups->getToolbar();
     $children = $Toolbar->getChildren();
 
@@ -61,7 +61,7 @@ $ajax->register('ajax_rights_group_tabs');
  */
 function ajax_rights_group_template($id)
 {
-    $Groups = QUI::getGroups();
+    $Groups = \QUI::getGroups();
     $Group  = $Groups->get($id);
     $Smarty = QUI_Template::getEngine(true);
 
@@ -82,7 +82,7 @@ $ajax->register('ajax_rights_group_template', array('id'));
  */
 function ajax_rights_group_save($id, $attributes)
 {
-    $Groups = QUI::getGroups();
+    $Groups = \QUI::getGroups();
     $Group  = $Groups->get($id);
 
     $rights = json_decode($attributes, true);
@@ -114,7 +114,7 @@ QUI::$Ajax->register('ajax_rights_group_save', array('id', 'attributes'), 'Permi
  */
 function ajax_rights_group_create_child($id, $value)
 {
-    $Groups = QUI::getGroups();
+    $Groups = \QUI::getGroups();
     $Group  = $Groups->get($id);
     $Group->createChild($value);
 }
@@ -131,7 +131,7 @@ $ajax->register('ajax_rights_group_create_child', array('id', 'value'));
  */
 function ajax_rights_users_settings()
 {
-    return QUI::getUsers()->getJSButtons();
+    return \QUI::getUsers()->getJSButtons();
 }
 $ajax->register('ajax_rights_users_settings');
 
@@ -144,7 +144,7 @@ $ajax->register('ajax_rights_users_settings');
  */
 function ajax_rights_users_set_settings($id, $data)
 {
-    $Users = QUI::getUsers();
+    $Users = \QUI::getUsers();
     $User  = $Users->get($id); /* @var $User User */
     $data  = json_decode($data, true);
 
@@ -218,8 +218,8 @@ $ajax->register('ajax_rights_users_set_settings', array('id', 'data'));
  */
 function ajax_rights_userpopup_template($id)
 {
-    $Users  = QUI::getUsers();
-    $Groups = QUI::getGroups();
+    $Users  = \QUI::getUsers();
+    $Groups = \QUI::getGroups();
     $Smarty = QUI_Template::getEngine(true);
     $User   = $Users->get($id);
 

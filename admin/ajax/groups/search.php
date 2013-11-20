@@ -9,7 +9,7 @@
  */
 function ajax_groups_search($params)
 {
-    $Groups = QUI::getGroups();
+    $Groups = \QUI::getGroups();
     $params = json_decode( $params, true );
     $page   = 1;
 	$limit  = 10;

@@ -1,8 +1,10 @@
 <?php
 
 /**
- * This file contains Groups_Groups
+ * This file contains \QUI\Groups\Groups
  */
+
+namespace QUI\Groups;
 
 /**
  * Group Manager
@@ -11,7 +13,7 @@
  * @package com.pcsg.qui.groups
  */
 
-class Groups_Groups extends \QUI\QDOM
+class Groups extends \QUI\QDOM
 {
     const TYPE_BOOL    = 1;
     const TYPE_TEXT    = 2;
@@ -45,7 +47,7 @@ class Groups_Groups extends \QUI\QDOM
      */
     public function setup()
     {
-        $DataBase = QUI::getDataBase();
+        $DataBase = \QUI::getDataBase();
         $Table    = $DataBase->Table();
 
         $Table->appendFields(self::Table(), array(
@@ -65,12 +67,12 @@ class Groups_Groups extends \QUI\QDOM
     /**
      * Returns the first group
      *
-     * @return Groups_Group
+     * @return \QUI\Groups\Groups
      */
     public function firstChild()
     {
         return $this->get(
-            QUI::conf( 'globals','root' )
+            \QUI::conf( 'globals','root' )
         );
     }
 
@@ -78,7 +80,7 @@ class Groups_Groups extends \QUI\QDOM
      * Return a group by ID
      *
      * @param Integer $id - ID of the Group
-     * @return Groups_Group
+     * @return \QUI\Groups\Groups
      *
      * @throws \QUI\Exception
      */
@@ -92,7 +94,7 @@ class Groups_Groups extends \QUI\QDOM
             return $this->_groups[ $id ];
         }
 
-        $this->_groups[ $id ] = new Groups_Group( $id );
+        $this->_groups[ $id ] = new \QUI\Groups\Group( $id );
 
         return $this->_groups[ $id ];
     }
@@ -153,7 +155,7 @@ class Groups_Groups extends \QUI\QDOM
      */
     protected function _search($params)
     {
-        $DataBase = QUI::getDataBase();
+        $DataBase = \QUI::getDataBase();
         $params   = \QUI\Utils\Security\Orthos::clearArray( $params );
 
         $allowOrderFields = array(
@@ -239,5 +241,3 @@ class Groups_Groups extends \QUI\QDOM
         return $DataBase->fetch( $_fields );
     }
 }
-
-?>

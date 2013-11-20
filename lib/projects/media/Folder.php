@@ -27,7 +27,7 @@ class Projects_Media_Folder
      */
     public function activate()
     {
-        QUI::getDataBase()->update(
+        \QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array('active' => 1),
             array('id' => $this->getId())
@@ -66,7 +66,7 @@ class Projects_Media_Folder
             return;
         }
 
-        QUI::getDataBase()->update(
+        \QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array('active' => 0),
             array('id' => $this->getId())
@@ -134,12 +134,12 @@ class Projects_Media_Folder
                 }
 
                  // delete database entries
-                QUI::getDataBase()->delete(
+                \QUI::getDataBase()->delete(
                     $this->_Media->getTable(),
                     array('id' => $id)
                 );
 
-                QUI::getDataBase()->delete(
+                \QUI::getDataBase()->delete(
                     $this->_Media->getTable('relations'),
                     array('child' => $id)
                 );
@@ -152,12 +152,12 @@ class Projects_Media_Folder
         }
 
         // delete the own database entries
-        QUI::getDataBase()->delete(
+        \QUI::getDataBase()->delete(
             $this->_Media->getTable(),
             array('id' => $this->getId())
         );
 
-        QUI::getDataBase()->delete(
+        \QUI::getDataBase()->delete(
             $this->_Media->getTable('relations'),
             array('child'  => $this->getId())
         );
@@ -222,7 +222,7 @@ class Projects_Media_Folder
             );
         }
 
-        $PDO      = QUI::getDataBase()->getPDO();
+        $PDO      = \QUI::getDataBase()->getPDO();
         $old_path = $this->getPath();
         $new_path = $Parent->getPath() . $newname;
 
@@ -240,7 +240,7 @@ class Projects_Media_Folder
         $Statement->execute();
 
         // update me
-        QUI::getDataBase()->update(
+        \QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array(
                 'name' => $newname,
@@ -283,7 +283,7 @@ class Projects_Media_Folder
             );
         }
 
-        $PDO      = QUI::getDataBase()->getPDO();
+        $PDO      = \QUI::getDataBase()->getPDO();
         $old_path = $this->getPath();
         $new_path = $Folder->getPath() .'/'. $this->getAttribute('name');
 
@@ -305,7 +305,7 @@ class Projects_Media_Folder
         $Statement->execute();
 
         // update me
-        QUI::getDataBase()->update(
+        \QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array(
                 'file' => $new_path
@@ -314,7 +314,7 @@ class Projects_Media_Folder
         );
 
         // set the new parent relationship
-        QUI::getDataBase()->update(
+        \QUI::getDataBase()->update(
             $this->_Media->getTable('relations'),
             array(
                 'parent' => $Folder->getId()
@@ -433,7 +433,7 @@ class Projects_Media_Folder
         }
 
 
-        $fetch = QUI::getDataBase()->fetch(array(
+        $fetch = \QUI::getDataBase()->fetch(array(
             'select' => 'id',
             'from'   => array(
                 $table,
@@ -466,7 +466,7 @@ class Projects_Media_Folder
         $table     = $this->_Media->getTable();
         $table_rel = $this->_Media->getTable('relations');
 
-        $result = QUI::getDataBase()->fetch(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'count' => 'children',
             'from'  => array(
                 $table,
@@ -496,7 +496,7 @@ class Projects_Media_Folder
         $table     = $this->_Media->getTable();
         $table_rel = $this->_Media->getTable('relations');
 
-        $result = QUI::getDataBase()->fetch(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'count' => 'children',
             'from'  => array(
                 $table,
@@ -527,7 +527,7 @@ class Projects_Media_Folder
         $table     = $this->_Media->getTable();
         $table_rel = $this->_Media->getTable('relations');
 
-        $result = QUI::getDataBase()->fetch(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'from'  => array(
                 $table,
                 $table_rel
@@ -568,7 +568,7 @@ class Projects_Media_Folder
         $table     = $this->_Media->getTable();
         $table_rel = $this->_Media->getTable( 'relations' );
 
-        $result = QUI::getDataBase()->fetch(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'select' => array(
                 $table .'.id'
             ),
@@ -624,7 +624,7 @@ class Projects_Media_Folder
         $table     = $this->_Media->getTable();
         $table_rel = $this->_Media->getTable('relations');
 
-        $result = QUI::getDataBase()->fetch(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'select' => array(
                 $table .'.id'
             ),
@@ -694,7 +694,7 @@ class Projects_Media_Folder
         $new_name = trim( $foldername );
 
 
-        $User = QUI::getUserBySession();
+        $User = \QUI::getUserBySession();
         $dir  = $this->_Media->getFullPath() . $this->getPath();
 
         if ( is_dir($dir . $new_name) )
@@ -711,7 +711,7 @@ class Projects_Media_Folder
         $table_rel = $this->_Media->getTable('relations');
 
         // In die DB legen
-        QUI::getDataBase()->insert($table, array(
+        \QUI::getDataBase()->insert($table, array(
             'name' 	    => $new_name,
             'title'     => $new_name,
             'short'     => $new_name,
@@ -728,9 +728,9 @@ class Projects_Media_Folder
             'roundcorners' => $this->getAttribute('roundcorners')
         ));
 
-        $id = QUI::getDataBase()->getPDO()->lastInsertId();
+        $id = \QUI::getDataBase()->getPDO()->lastInsertId();
 
-        QUI::getDataBase()->insert($table_rel, array(
+        \QUI::getDataBase()->insert($table_rel, array(
             'parent' => $this->getId(),
             'child'  => $id
         ));
@@ -785,7 +785,7 @@ class Projects_Media_Folder
 
 
         // create the database entry
-        $User      = QUI::getUserBySession();
+        $User      = \QUI::getUserBySession();
         $table     = $this->_Media->getTable();
         $table_rel = $this->_Media->getTable( 'relations' );
 
@@ -796,7 +796,7 @@ class Projects_Media_Folder
             $new_file_info['filename'] = time();
         }
 
-        QUI::getDataBase()->insert($table, array(
+        \QUI::getDataBase()->insert($table, array(
             'name' 	    => $new_file_info['filename'],
             'title'     => $title,
             'short'     => $title,
@@ -816,9 +816,9 @@ class Projects_Media_Folder
             'roundcorners' => $this->getAttribute('roundcorners')
         ));
 
-        $id = QUI::getDataBase()->getPDO()->lastInsertId();
+        $id = \QUI::getDataBase()->getPDO()->lastInsertId();
 
-        QUI::getDataBase()->insert($table_rel, array(
+        \QUI::getDataBase()->insert($table_rel, array(
             'parent' => $this->getId(),
             'child'  => $id
         ));
@@ -885,7 +885,7 @@ class Projects_Media_Folder
     {
         // own sql statement, not over the getChildren() method,
         // its better for performance
-        $children = QUI::getDataBase()->fetch(array(
+        $children = \QUI::getDataBase()->fetch(array(
             'select' => 'id',
             'from'   => $this->_Media->getTable(),
             'where'  => array(

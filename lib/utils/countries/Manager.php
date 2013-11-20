@@ -30,7 +30,7 @@ class Utils_Countries_Manager extends \QUI\QDOM
     {
         // Countries
         $db_countries = __DIR__ .'/countries.sql';
-        $PDO          = QUI::getDataBase()->getPDO();
+        $PDO          = \QUI::getDataBase()->getPDO();
 
         if ( !file_exists( $db_countries ) ) {
             return;
@@ -64,7 +64,7 @@ class Utils_Countries_Manager extends \QUI\QDOM
      */
     static function get($code)
     {
-        $result = QUI::getDB()->select(array(
+        $result = \QUI::getDB()->select(array(
             'from'  => self::Table(),
             'where' => array(
                 'countries_iso_code_2' => \QUI\Utils\String::toUpper(
@@ -91,11 +91,11 @@ class Utils_Countries_Manager extends \QUI\QDOM
     {
         $order = 'countries_name ASC';
 
-        if ( QUI::getLocale()->getCurrent() === 'en' ) {
+        if ( \QUI::getLocale()->getCurrent() === 'en' ) {
             $order = 'en ASC';
         }
 
-        $result = QUI::getDB()->select(array(
+        $result = \QUI::getDB()->select(array(
             'from'  => self::Table(),
             'order' => $order
         ));

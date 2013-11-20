@@ -9,7 +9,7 @@
  */
 function ajax_trash_sites($project, $lang, $params)
 {
-	$Project = QUI::getProject($project, $lang);
+	$Project = \QUI::getProject($project, $lang);
 	$Trash   = $Project->getTrash();
 
 	return $Trash->getList(

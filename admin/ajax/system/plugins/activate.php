@@ -7,7 +7,7 @@
  */
 function ajax_system_plugins_activate($plugin)
 {
-    $Plugins = QUI::getPlugins();
+    $Plugins = \QUI::getPlugins();
     $Plugin  = $Plugins->get($plugin);
 
     $Plugins->activate( $Plugin );

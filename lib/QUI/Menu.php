@@ -38,7 +38,7 @@ class QUI_Menu
 
             if ( $Item->getAttribute( 'group' ) && $Item->getAttribute( 'var' ) )
             {
-                $text = QUI::getLocale()->get(
+                $text = \QUI::getLocale()->get(
                     $Item->getAttribute( 'group' ),
                     $Item->getAttribute( 'var' )
                 );

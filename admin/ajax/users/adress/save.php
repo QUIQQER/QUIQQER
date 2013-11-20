@@ -8,7 +8,7 @@
 function ajax_users_adress_save($uid, $aid, $data)
 {
     $data = json_decode($data, true);
-	$User = QUI::getUsers()->get((int)$uid);
+	$User = \QUI::getUsers()->get((int)$uid);
 
 	try
 	{

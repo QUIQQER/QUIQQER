@@ -9,7 +9,7 @@
 function ajax_groups_delete($gids)
 {
     $gids   = json_decode( $gids, true );
-    $Groups = QUI::getGroups();
+    $Groups = \QUI::getGroups();
 
     if ( !is_array( $gids ) ) {
         $gids = array( $gids );
@@ -31,7 +31,7 @@ function ajax_groups_delete($gids)
         }
     }
 
-    QUI::getMessagesHandler()->addInformation(
+    \QUI::getMessagesHandler()->addInformation(
         'Die Gruppe(n) '. implode( ', ', $gids ) . ' wurde(n) erfolgreich gelöscht'
     );
 

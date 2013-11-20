@@ -7,7 +7,7 @@
  */
 function ajax_users_adress_list($uid)
 {
-	$User = QUI::getUsers()->get((int)$uid);
+	$User = \QUI::getUsers()->get((int)$uid);
 
 	$adresses = $User->getAdressList();
 	$result   = array();

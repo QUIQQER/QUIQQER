@@ -1,8 +1,10 @@
 <?php
 
 /**
- * This file contains QUI_Events_Manager
+ * This file contains \QUI\Events\Manager
  */
+
+namespace QUI\Events;
 
 /**
  * The Event Manager
@@ -14,7 +16,7 @@
  * @author www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui.events
  */
-class QUI_Events_Manager implements Interface_Events
+class Manager implements \QUI\Interfaces\Events
 {
     /**
      * construct
@@ -25,7 +27,7 @@ class QUI_Events_Manager implements Interface_Events
             'from' => self::Table()
         ));
 
-        $this->_Events = new \QUI_Events_Event();
+        $this->_Events = new \QUI\Events\Event();
 
         foreach ( $list as $params )
         {
@@ -154,7 +156,7 @@ class QUI_Events_Manager implements Interface_Events
 
     /**
      * (non-PHPdoc)
-     * @see Interface_Events::fireEvent()
+     * @see \QUI\Interfaces\Events::fireEvent()
      *
      * @param String $event - The type of event (e.g. 'onComplete').
      * @param Array $args   - (optional) the argument(s) to pass to the function.

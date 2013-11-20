@@ -12,7 +12,7 @@
  */
 function ajax_site_save($project, $lang, $id, $attributes)
 {
-    $Project = QUI::getProject( $project, $lang );
+    $Project = \QUI::getProject( $project, $lang );
     $Site    = new Projects_Site_Edit( $Project, (int)$id );
 
     $attributes = json_decode( $attributes, true );

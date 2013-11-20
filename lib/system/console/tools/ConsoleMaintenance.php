@@ -54,7 +54,7 @@ class ConsoleMaintenance extends System_Console_Tool
 			throw new \QUI\Exception('Es wurde keine Status angegeben');
 		}
 
-		$Config = QUI::getConfig('etc/conf.ini');
+		$Config = \QUI::getConfig('etc/conf.ini');
 		$Config->setValue('globals','maintenance', (bool)$params['--status']);
 
 		$Config->save();
