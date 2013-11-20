@@ -290,7 +290,7 @@ class Users_Users
             );
         }
 
-        $username = Utils_Security_Orthos::clearMySQL( $params['username'] );
+        $username = \QUI\Utils\Security\Orthos::clearMySQL( $params['username'] );
         $password = $this->genHash( $params['password'] );
 
         // unerlaubte zeichen prüfen
@@ -345,7 +345,7 @@ class Users_Users
                 continue;
             }
 
-            $regparams[ $key ] = Utils_Security_Orthos::clearMySQL( $params[ $key ] );
+            $regparams[ $key ] = \QUI\Utils\Security\Orthos::clearMySQL( $params[ $key ] );
         }
 
         $Session = QUI::getSession();
@@ -355,7 +355,7 @@ class Users_Users
         $regparams['username']   = $username;
         $regparams['password']   = $password;
         $regparams['active']     = 0;
-        $regparams['activation'] = Utils_Security_Orthos::getPassword(20);
+        $regparams['activation'] = \QUI\Utils\Security\Orthos::getPassword(20);
         $regparams['regdate']    = time();
         $regparams['lastedit']   = date('Y-m-d H:i:s');
 
@@ -480,8 +480,8 @@ class Users_Users
      */
     public function login($username, $pass)
     {
-        $username = Utils_Security_Orthos::clear( $username );
-        //$pass     = Utils_Security_Orthos::clear($pass);
+        $username = \QUI\Utils\Security\Orthos::clear( $username );
+        //$pass     = \QUI\Utils\Security\Orthos::clear($pass);
 
         if ( !get_magic_quotes_gpc() )
         {
@@ -916,7 +916,7 @@ class Users_Users
     {
         $DataBase = QUI::getDB();
         $PDO      = $DataBase->getPDO();
-        $params   = Utils_Security_Orthos::clearArray( $params );
+        $params   = \QUI\Utils\Security\Orthos::clearArray( $params );
 
         $allowOrderFields = array(
             'id'        => true,

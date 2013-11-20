@@ -809,11 +809,11 @@ class QUI_Rights_Manager
                 break;
 
             case 'array':
-                $val = \Utils_Security_Orthos::clearArray( $val );
+                $val = \QUI\Utils\Security\Orthos::clearArray( $val );
                 break;
 
             case 'string':
-                $val = \Utils_Security_Orthos::clearMySQL( $val );
+                $val = \QUI\Utils\Security\Orthos::clearMySQL( $val );
                 break;
 
             default:
@@ -998,11 +998,11 @@ class QUI_Rights_Manager
                 break;
 
                 case 'array':
-                    $val = Utils_Security_Orthos::clearArray($val);
+                    $val = \QUI\Utils\Security\Orthos::clearArray($val);
                 break;
 
                 case 'string':
-                    $val = Utils_Security_Orthos::clearMySQL( $val );
+                    $val = \QUI\Utils\Security\Orthos::clearMySQL( $val );
                 break;
 
                 default:

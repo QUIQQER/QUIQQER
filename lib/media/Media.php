@@ -532,7 +532,7 @@ class Media
      */
     public function search($search, $params)
     {
-        $search = Utils_Security_Orthos::clearMySQL($search);
+        $search = \QUI\Utils\Security\Orthos::clearMySQL($search);
         $query  = 'SELECT * FROM '. $this->_TABLE;
         $where  = ' WHERE ';
 

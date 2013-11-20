@@ -221,8 +221,8 @@ function ajax_plugins_install($plugin, $server)
     $Update = new \QUI\Update();
 
     $data = array(
-       'name'         => Utils_Security_Orthos::clear($plugin),
-       'updateserver' => Utils_Security_Orthos::clear($server),
+       'name'         => \QUI\Utils\Security\Orthos::clear($plugin),
+       'updateserver' => \QUI\Utils\Security\Orthos::clear($server),
     );
 
     $Update->pluginInstall($data);

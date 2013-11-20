@@ -424,8 +424,8 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
             break;
 
             case 'string':
-                $value = Utils_Security_Orthos::cleanHTML($value);
-                $value = Utils_Security_Orthos::clearMySQL($value);
+                $value = \QUI\Utils\Security\Orthos::cleanHTML($value);
+                $value = \QUI\Utils\Security\Orthos::clearMySQL($value);
             break;
         }
 

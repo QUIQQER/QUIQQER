@@ -953,7 +953,7 @@ class Users_User implements Interface_Users_User
             // Datumsprüfung auf Syntax
             $value = trim( $this->getAttribute( 'expire' ) );
 
-            if ( \Utils_Security_Orthos::checkMySqlDatetimeSyntax( $value ) ) {
+            if ( \QUI\Utils\Security\Orthos::checkMySqlDatetimeSyntax( $value ) ) {
                 $expire = $value;
             }
         }
@@ -967,7 +967,7 @@ class Users_User implements Interface_Users_User
                 $value .= ' 00:00:00';
             }
 
-            if ( \Utils_Security_Orthos::checkMySqlDatetimeSyntax( $value ) ) {
+            if ( \QUI\Utils\Security\Orthos::checkMySqlDatetimeSyntax( $value ) ) {
                 $birthday = substr( $value, 0, 10 );
             }
         }
@@ -1195,13 +1195,13 @@ class Users_User implements Interface_Users_User
             if ( is_array( $params[ $needle ] ) )
             {
                 $_params[ $needle ] = json_encode(
-                    Utils_Security_Orthos::clearArray( $params[ $needle ] )
+                    \QUI\Utils\Security\Orthos::clearArray( $params[ $needle ] )
                 );
 
                 continue;
             }
 
-            $_params[ $needle ] = Utils_Security_Orthos::clear(
+            $_params[ $needle ] = \QUI\Utils\Security\Orthos::clear(
                 $params[ $needle ]
             );
         }

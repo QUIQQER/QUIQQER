@@ -153,7 +153,7 @@ function ajax_cron_add_template()
         'list' => $list
     ));
 
-    return Utils_Security_Orthos::removeLineBreaks(
+    return \QUI\Utils\Security\Orthos::removeLineBreaks(
         $Smarty->fetch(SYS_DIR .'template/cron/add.html'), ' '
     );
 }

@@ -1372,12 +1372,10 @@ class Projects_Project
             unlink( $edate_file );
         }
 
-        $date = \Utils_Security_Orthos::clear( $edate_file );
+        $date = \QUI\Utils\Security\Orthos::clear( $edate_file );
 
         $this->_edate = $date;
         file_put_contents( $edate_file, $date );
     }
 }
 
-
-?>

@@ -113,7 +113,7 @@ class QUI_Desktop_Manager
         $User     = \QUI::getUserBySession();
         $Database = \QUI::getDataBase();
 
-        $title = \Utils_Security_Orthos::clear( $title );
+        $title = \QUI\Utils\Security\Orthos::clear( $title );
 
         $Database->insert(
             \QUI::getDBTableName( self::TABLE ),

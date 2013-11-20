@@ -149,7 +149,7 @@ function ajax_rights_users_set_settings($id, $data)
     $data  = json_decode($data, true);
 
     if (is_array($data)) {
-        $data = Utils_Security_Orthos::clearArray($data);
+        $data = \QUI\Utils\Security\Orthos::clearArray($data);
     }
 
     if (isset($data['password']))

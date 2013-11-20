@@ -147,7 +147,7 @@ function ajax_user_importad_getusers($groupid, $username, $pass, $adgroup)
 
                     $User->setAttribute('username', $user);
                     $User->setGroups($groupid);
-                    $User->setPassword(Utils_Security_Orthos::getPassword());
+                    $User->setPassword(\QUI\Utils\Security\Orthos::getPassword());
 
                     if (!empty($userData['mail'])) {
                         $User->setAttribute('email',$userData['mail']);

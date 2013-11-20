@@ -326,7 +326,7 @@ class Groups_Group extends \QUI\QDOM
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'id',
             'from' 	 => Users_Users::Table(),
-            'where'  => 'username = \''. Utils_Security_Orthos::clearMySQL($username)
+            'where'  => 'username = \''. \QUI\Utils\Security\Orthos::clearMySQL($username)
                         .'\' AND usergroup LIKE \'%,'. $this->getId() .',%\'',
             'limit'  => '1'
         ));

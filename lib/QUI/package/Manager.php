@@ -387,7 +387,7 @@ class QUI_Package_Manager
         if ( $this->_exec )
         {
             $params  = array();
-            $package = \Utils_Security_Orthos::clearShell( $package );
+            $package = \QUI\Utils\Security\Orthos::clearShell( $package );
 
             exec( $this->_composer_exec .'show "'. $package .'"', $exec_result );
 
@@ -465,7 +465,7 @@ class QUI_Package_Manager
     public function searchPackage($str)
     {
         $result = array();
-        $str    = \Utils_Security_Orthos::clearShell( $str );
+        $str    = \QUI\Utils\Security\Orthos::clearShell( $str );
         $list   = $this->_getList();
 
         if ( $this->_exec )
@@ -687,7 +687,7 @@ class QUI_Package_Manager
 
             if ( $package )
             {
-                $package = \Utils_Security_Orthos::clearShell( $package );
+                $package = \QUI\Utils\Security\Orthos::clearShell( $package );
                 $exec    = $this->_composer_exec .'update "'. $package .'" 2>&1';
             }
 

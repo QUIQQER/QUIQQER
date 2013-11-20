@@ -174,7 +174,7 @@ function ajax_media_folder_watermark($project, $id, $params)
     $Media   = $Project->getMedia(); 	 /* @var $Media Media */
     $Folder  = $Media->get( (int)$id );  /* @var $Media MF_Folder */
 
-    $params = Utils_Security_Orthos::clearArray(
+    $params = \QUI\Utils\Security\Orthos::clearArray(
         json_decode($params, true)
     );
 

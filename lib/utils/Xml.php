@@ -727,7 +727,7 @@ class Utils_Xml
                     break;
 
                     case 'string':
-                        $value = \Utils_Security_Orthos::cleanHTML( $value );
+                        $value = \QUI\Utils\Security\Orthos::cleanHTML( $value );
                     break;
                 }
 

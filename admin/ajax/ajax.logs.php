@@ -43,7 +43,7 @@ $ajax->register('ajax_plugins_logs_list');
  */
 function ajax_plugins_logs_get($log)
 {
-    $log     = Utils_Security_Orthos::clearPath($log);
+    $log     = \QUI\Utils\Security\Orthos::clearPath($log);
     $logfile = VAR_DIR .'log/'. $log;
 
     if (!file_exists($logfile) || filesize($logfile) > 1000000) {
@@ -71,7 +71,7 @@ function ajax_plugins_logs_send($log)
     }
 
     $Mail = new QUI_Mail();
-    $log  = Utils_Security_Orthos::clearPath($log);
+    $log  = \QUI\Utils\Security\Orthos::clearPath($log);
 
     $logfile = VAR_DIR .'log/'. $log;
 
@@ -96,7 +96,7 @@ $ajax->register('ajax_plugins_logs_send', array('log'));
  */
 function ajax_plugins_logs_delete($log)
 {
-    $log     = Utils_Security_Orthos::clearPath($log);
+    $log     = \QUI\Utils\Security\Orthos::clearPath($log);
     $logfile = VAR_DIR .'log/'. $log;
 
     if (!file_exists($logfile)) {
@@ -106,5 +106,3 @@ function ajax_plugins_logs_delete($log)
     unlink($logfile);
 }
 $ajax->register('ajax_plugins_logs_delete', array('log'));
-
-?>

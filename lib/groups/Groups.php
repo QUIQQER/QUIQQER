@@ -154,7 +154,7 @@ class Groups_Groups extends \QUI\QDOM
     protected function _search($params)
     {
         $DataBase = QUI::getDataBase();
-        $params   = Utils_Security_Orthos::clearArray( $params );
+        $params   = \QUI\Utils\Security\Orthos::clearArray( $params );
 
         $allowOrderFields = array(
             'id', 'name', 'admin', 'parent', 'active'

@@ -182,16 +182,19 @@ class Users_Adress extends \QUI\QDOM
      */
     public function addMail($mail)
     {
-        if (Utils_Security_Orthos::checkMailSyntax($mail) == false)
+        if ( \QUI\Utils\Security\Orthos::checkMailSyntax($mail) == false )
         {
             throw new \QUI\Exception(
-                QUI::getLocale()->get('system', 'exception.lib.user.adress.mail.wrong.syntax')
+                \QUI::getLocale()->get(
+                    'system',
+                    'exception.lib.user.adress.mail.wrong.syntax'
+                )
             );
         }
 
         $list = $this->getMailList();
 
-        if (in_array($mail, $list)) {
+        if ( in_array($mail, $list) ) {
             return;
         }
 
@@ -216,10 +219,13 @@ class Users_Adress extends \QUI\QDOM
      */
     public function editMail($index, $mail)
     {
-        if (Utils_Security_Orthos::checkMailSyntax($mail) == false)
+        if ( \QUI\Utils\Security\Orthos::checkMailSyntax($mail) == false )
         {
             throw new \QUI\Exception(
-                QUI::getLocale()->get('system', 'exception.lib.user.adress.mail.wrong.syntax')
+                QUI::getLocale()->get(
+                    'system',
+                    'exception.lib.user.adress.mail.wrong.syntax'
+                )
             );
         }
 
@@ -287,15 +293,15 @@ class Users_Adress extends \QUI\QDOM
         QUI::getDataBase()->update(
             Users_Users::TableAdress(),
             array(
-                'salutation' => Utils_Security_Orthos::clear( $this->getAttribute('salutation') ),
-                'firstname'  => Utils_Security_Orthos::clear( $this->getAttribute('firstname') ),
-                'lastname'   => Utils_Security_Orthos::clear( $this->getAttribute('lastname') ),
-                'company'    => Utils_Security_Orthos::clear( $this->getAttribute('company') ),
-                'delivery'   => Utils_Security_Orthos::clear( $this->getAttribute('delivery') ),
-                'street_no'  => Utils_Security_Orthos::clear( $this->getAttribute('street_no') ),
-                'zip'        => Utils_Security_Orthos::clear( $this->getAttribute('zip') ),
-                'city'       => Utils_Security_Orthos::clear( $this->getAttribute('city') ),
-                'country'    => Utils_Security_Orthos::clear( $this->getAttribute('country') ),
+                'salutation' => \QUI\Utils\Security\Orthos::clear( $this->getAttribute('salutation') ),
+                'firstname'  => \QUI\Utils\Security\Orthos::clear( $this->getAttribute('firstname') ),
+                'lastname'   => \QUI\Utils\Security\Orthos::clear( $this->getAttribute('lastname') ),
+                'company'    => \QUI\Utils\Security\Orthos::clear( $this->getAttribute('company') ),
+                'delivery'   => \QUI\Utils\Security\Orthos::clear( $this->getAttribute('delivery') ),
+                'street_no'  => \QUI\Utils\Security\Orthos::clear( $this->getAttribute('street_no') ),
+                'zip'        => \QUI\Utils\Security\Orthos::clear( $this->getAttribute('zip') ),
+                'city'       => \QUI\Utils\Security\Orthos::clear( $this->getAttribute('city') ),
+                'country'    => \QUI\Utils\Security\Orthos::clear( $this->getAttribute('country') ),
                 'mail'       => $mail,
                 'phone'      => $phone
             ), array(

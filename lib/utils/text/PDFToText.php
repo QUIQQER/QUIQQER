@@ -45,7 +45,7 @@ class Utils_Text_PDFToText extends \QUI\QDOM
         $tmp_file = VAR_DIR .'tmp/'. str_replace(array('.', ' '), '', microtime()) .'.txt';
         $exec     = 'pdftotext '. $filename .' '. $tmp_file;
 
-        system( Utils_Security_Orthos::clearShell( $exec ) );
+        system( \QUI\Utils\Security\Orthos::clearShell( $exec ) );
 
         if ( !file_exists($tmp_file) ) {
             throw new \QUI\Exception('Could not create text from PDF.', 404);
@@ -58,5 +58,3 @@ class Utils_Text_PDFToText extends \QUI\QDOM
         return $content;
     }
 }
-
-?>

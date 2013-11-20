@@ -263,7 +263,7 @@ class Projects_Manager
             );
         }
 
-        $name = \Utils_Security_Orthos::clear( $name );
+        $name = \QUI\Utils\Security\Orthos::clear( $name );
 
         $DataBase = \QUI::getDataBase();
         $Table    = $DataBase->Table();
