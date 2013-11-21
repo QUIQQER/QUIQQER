@@ -1,8 +1,10 @@
 <?php
 
 /**
- * This file contains Interface_Template_Engine
+ * This file contains \QUI\Interfaces\Template\Engine
  */
+
+namespace QUI\Interfaces\Template;
 
 /**
  * Interface of a template engine
@@ -11,13 +13,13 @@
  * @package com.pcsg.qui.interface.template
  */
 
-interface Interface_Template_Engine
+interface Engine
 {
     /**
      * Return the complete template
      *
-	 * @param String $template - path to the template
-	 * @return String
+     * @param String $template - path to the template
+     * @return String
      */
     public function fetch($template);
 
@@ -29,5 +31,3 @@ interface Interface_Template_Engine
      */
     public function assign($var, $value=false);
 }
-
-?>

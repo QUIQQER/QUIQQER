@@ -46,12 +46,12 @@ class Trash implements \QUI\Interfaces\Projects\Trash
     /**
      * Returns the items in the trash
      *
-     * @param Array $params - Utils_Grid parameters
+     * @param Array $params - \QUI\Utils\Grid parameters
      * @return array
      */
     public function getList($params=array())
     {
-        $Grid  = new Utils_Grid();
+        $Grid  = new \QUI\Utils\Grid();
 
         $query = $Grid->parseDBParams( $params );
         $query['from']  = $this->_Media->getTable();

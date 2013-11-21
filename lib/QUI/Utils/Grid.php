@@ -1,8 +1,10 @@
 <?php
 
 /**
- * This file contains the Utils_Grid
+ * This file contains the \QUI\Utils\Grid
  */
+
+namespace QUI\Utils;
 
 /**
  * Helper for the javascript QUI.control.grid.Grid
@@ -11,7 +13,7 @@
  * @package com.pcsg.qui.utils
  */
 
-class Utils_Grid extends \QUI\QDOM
+class Grid extends \QUI\QDOM
 {
     /**
      * constructor
@@ -97,5 +99,3 @@ class Utils_Grid extends \QUI\QDOM
         );
     }
 }
-
-?>

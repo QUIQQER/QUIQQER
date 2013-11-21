@@ -36,7 +36,7 @@ class Utils_Api_Facebook extends \QUI\QDOM
     static function search($params)
     {
         $result = json_decode(
-            Utils_Request_Url::get("https://graph.facebook.com/search?". http_build_query($params)),
+            \QUI\Utils\Request\Url::get("https://graph.facebook.com/search?". http_build_query($params)),
             true
         );
 
@@ -52,7 +52,7 @@ class Utils_Api_Facebook extends \QUI\QDOM
     static function userExist($username)
     {
         $data = json_decode(
-            Utils_Request_Url::get(
+            \QUI\Utils\Request\Url::get(
                 'https://graph.facebook.com/'. $username
             ), true
         );

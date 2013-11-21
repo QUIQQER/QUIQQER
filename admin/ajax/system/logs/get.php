@@ -29,7 +29,7 @@ function ajax_system_logs_get($page, $limit, $search='')
         );
     }
 
-    return \Utils_Grid::getResult( $list, $page, $limit );
+    return \QUI\Utils\Grid::getResult( $list, $page, $limit );
 }
 
 \QUI::$Ajax->register(

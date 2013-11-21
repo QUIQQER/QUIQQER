@@ -91,7 +91,7 @@ class Utils_Api_Twitter extends \QUI\QDOM
     static function userExist($username)
     {
         $data = json_decode(
-            Utils_Request_Url::get(
+            \QUI\Utils\Request\Url::get(
                 "http://api.twitter.com/1/users/show.json?screen_name=". $username
             ), true
         );

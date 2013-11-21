@@ -7,7 +7,9 @@
  */
 function ajax_system_changelog()
 {
-    return \Utils_Request_Url::get( 'http://update.quiqqer.com/CHANGELOG' );
+    return \QUI\Utils\Request\Url::get(
+        'http://update.quiqqer.com/CHANGELOG'
+    );
 }
 
 \QUI::$Ajax->register(

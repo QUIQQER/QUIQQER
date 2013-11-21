@@ -8,7 +8,7 @@
 function ajax_system_packages_search($str)
 {
     $result = \QUI::getPackageManager()->searchPackage( $str );
-    $result = \Utils_Grid::getResult( $result, 1, 20 );
+    $result = \QUI\Utils\Grid::getResult( $result, 1, 20 );
 
     $data = array();
 
@@ -35,12 +35,10 @@ function ajax_system_packages_search($str)
 }
 
 QUI::$Ajax->register(
-	'ajax_system_packages_search',
+    'ajax_system_packages_search',
     array( 'str' ),
     array(
-    	'Permission::checkAdminUser',
+        'Permission::checkAdminUser',
         'quiqqer.system.update'
     )
 );
-
-?>

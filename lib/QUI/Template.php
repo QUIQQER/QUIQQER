@@ -60,7 +60,7 @@ class Template extends \QUI\QDOM
      * if $admin=true, admin template plugins were loaded
      *
      * @param Integer $admin - is the template for the admin or frontend? <- param depricated
-     * @return Interface_Template_Engine
+     * @return \QUI\Interfaces\Template\Engine
      */
     static function getEngine($admin=false)
     {
@@ -77,10 +77,10 @@ class Template extends \QUI\QDOM
         $Engine     = new self::$_engines[ $engine ]( $admin );
         $implements = class_implements( $Engine );
 
-        if ( !isset( $implements['Interface_Template_Engine'] ) )
+        if ( !isset( $implements['\\QUI\\Interfaces\\Template\\Engine'] ) )
         {
             throw new \QUI\Exception(
-                'The Template Engine implements not from Interface_Template_Engine'
+                'The Template Engine implements not from \QUI\Interfaces\Template\Engine'
             );
         }
 
@@ -91,7 +91,7 @@ class Template extends \QUI\QDOM
      * Register a template engine
      *
      * @param String $name
-     * @param String $class - must a class that implements Interface_Template_Engine
+     * @param String $class - must a class that implements \QUI\Interfaces\Template\Engine
      */
     static function registerEngine($name, $class)
     {
@@ -254,7 +254,7 @@ class Template extends \QUI\QDOM
     {
         /* @var $Project \QUI\Projects\Project */
         /* @var $Site \QUI\Projects\Site */
-        /* @var $Engine Interface_Template_Engine */
+        /* @var $Engine \QUI\Interfaces\Template\Engine */
 
         $Project = $this->getAttribute( 'Project' );
         $Site    = $this->getAttribute( 'Site' );

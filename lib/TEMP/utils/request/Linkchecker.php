@@ -15,7 +15,7 @@
  *
  * @todo Extension for link detection -> Special checks, for example etracker
  * @todo Linkcheck over SSL
- * @todo rewrite it and use Utils_Request_Url
+ * @todo rewrite it and use \QUI\Utils\Request\Url
  *
  * @uses Curl
  */

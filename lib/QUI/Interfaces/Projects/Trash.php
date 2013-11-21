@@ -21,7 +21,7 @@ interface Trash
     /**
      * Return the trash list
      *
-     * @param Array $params - Utils_Grid params
+     * @param Array $params - \QUI\Utils\Grid params
      * @return Array
      */
     public function getList($params=array());

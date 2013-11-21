@@ -57,7 +57,7 @@ class Setup
         // \QUI\Package\Manager::setup();
 
         // Upload Manager
-        $UploadManager = new \QUI_Upload_Manager();
+        $UploadManager = new \QUI\Upload\Manager();
         $UploadManager->setup();
 
         // Countries

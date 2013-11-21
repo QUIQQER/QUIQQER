@@ -9,7 +9,7 @@ $dir = str_replace('lib/QUI/upload/bin', '', dirname( __FILE__ ));
 
 require_once $dir .'bootstrap.php';
 
-$QUM = new \QUI_Upload_Manager();
+$QUM = new \QUI\Upload\Manager();
 
 try
 {

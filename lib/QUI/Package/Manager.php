@@ -339,7 +339,7 @@ class Manager
             $limit = (int)$params['limit'];
             $page  = (int)$params['page'];
 
-            return \Utils_Grid::getResult( $result, $page, $limit );
+            return \QUI\Utils\Grid::getResult( $result, $page, $limit );
         }
 
         return $result;

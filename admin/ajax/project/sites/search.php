@@ -27,7 +27,7 @@ function ajax_project_sites_search($project, $lang, $search, $params)
         );
     }
 
-    return Utils_Grid::getResult( $result, 1, 10 );
+    return \QUI\Utils\Grid::getResult( $result, 1, 10 );
 }
 
 \QUI::$Ajax->register(

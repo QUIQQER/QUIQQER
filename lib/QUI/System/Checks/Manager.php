@@ -1,8 +1,10 @@
 <?php
 
 /**
- * This file contains the QUI_Systemcheck_Manager
+ * This file contains the \QUI\System\Checks\Manager
  */
+
+namespace QUI\System\Checks;
 
 /**
  * Systemcheck Manager
@@ -12,12 +14,12 @@
  * @author www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui.systemcheck
  *
- * @todo create a gui, api, console api for QUI_Systemcheck_Manager
+ * @todo create a gui, api, console api for \QUI\System\Checks\Manager
  * @todo create a Systemcheck class
  * @todo create a systemcheck exception
  */
 
-class QUI_Systemcheck_Manager
+class Manager
 {
     /**
      * Excute standard tests
@@ -28,8 +30,8 @@ class QUI_Systemcheck_Manager
     {
         /**
          * 1  = OK
-          * 0  = Nicht vorhanden, wird aber nicht benötigt
-          * -1 = MUSS vorhanden sein
+         * 0  = Nicht vorhanden, wird aber nicht benötigt
+         * -1 = MUSS vorhanden sein
          */
 
         $need = array();
@@ -159,5 +161,3 @@ class QUI_Systemcheck_Manager
         return $need;
     }
 }
-
-?>

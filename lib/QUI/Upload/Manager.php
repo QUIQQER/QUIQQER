@@ -1,8 +1,10 @@
 <?php
 
 /**
- * This file contains QUI_Upload_Manager
+ * This file contains \QUI\Upload\Manager
  */
+
+namespace QUI\Upload;
 
 /**
  * Upload Manager
@@ -12,7 +14,7 @@
  * @package com.pcsg.qui.upload
  */
 
-class QUI_Upload_Manager
+class Manager
 {
     /**
      * DataBase table name

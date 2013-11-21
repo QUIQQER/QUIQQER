@@ -7,9 +7,12 @@
  */
 function ajax_uploads_cancel($file)
 {
-    $UploadManager = new QUI_Upload_Manager();
+    $UploadManager = new \QUI\Upload\Manager();
     $UploadManager->cancel( $file );
 }
-QUI::$Ajax->register('ajax_uploads_cancel', array('file'), 'Permission::checkAdminUser');
 
-?>
+\QUI::$Ajax->register(
+    'ajax_uploads_cancel',
+    array('file'),
+    'Permission::checkAdminUser'
+);

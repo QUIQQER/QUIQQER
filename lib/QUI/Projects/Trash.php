@@ -46,7 +46,7 @@ class Trash extends \QUI\QDOM implements \QUI\Interfaces\Projects\Trash
     public function getList($params=array())
     {
         // create grid
-        $Grid = new Utils_Grid();
+        $Grid = new \QUI\Utils\Grid();
 
         if ( isset( $params['max'] ) ) {
             $Grid->setAttribute('max', (int)$params['max']);

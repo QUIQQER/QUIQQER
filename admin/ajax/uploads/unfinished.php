@@ -7,10 +7,13 @@
  */
 function ajax_uploads_unfinished()
 {
-    $UploadManager = new QUI_Upload_Manager();
+    $UploadManager = new \QUI\Upload\Manager();
 
-	return $UploadManager->getUnfinishedUploadsFromUser();
+    return $UploadManager->getUnfinishedUploadsFromUser();
 }
-QUI::$Ajax->register('ajax_uploads_unfinished', false, 'Permission::checkAdminUser');
 
-?>
+\QUI::$Ajax->register(
+    'ajax_uploads_unfinished',
+    false,
+    'Permission::checkAdminUser'
+);

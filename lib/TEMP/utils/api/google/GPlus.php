@@ -52,7 +52,7 @@ class Utils_Api_Google_GPlus extends \QUI\QDOM
     public function userExist($username)
     {
         $result = json_decode(
-            Utils_Request_Url::get(
+            \QUI\Utils\Request\Url::get(
                 'https://www.googleapis.com/plus/v1/people?query='. $username .
                 '&pp=1&key='. $this->getAttribute( 'key' )
             ), true
@@ -85,7 +85,7 @@ class Utils_Api_Google_GPlus extends \QUI\QDOM
     public function getActivity($userid)
     {
         $result = json_decode(
-            Utils_Request_Url::get(
+            \QUI\Utils\Request\Url::get(
                 'https://www.googleapis.com/plus/v1/people/'. $userid .
                 '/activities/public?key='. $this->getAttribute( 'key' )
             ), true
