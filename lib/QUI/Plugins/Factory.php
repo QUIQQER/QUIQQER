@@ -21,10 +21,10 @@ class Factory extends \QUI\QDOM
      * Erweitert die Tabs im Admin
      * (optional)
      *
-     * @param Controls_Toolbar_Bar $Tabbar - Tabbar / Toolbar Objekt
+     * @param \QUI\Controls\Toolbar\Bar $Tabbar - Tabbar / Toolbar Objekt
      * @param \QUI\Projects\Site $Site          - Aktuelle Seite
      */
-    public function setTabs(Controls_Toolbar_Bar $Tabbar, \QUI\Projects\Site $Site) {}
+    public function setTabs(\QUI\Controls\Toolbar\Bar $Tabbar, \QUI\Projects\Site $Site) {}
 
     /**
      * Methode welche aufgerufen wird wenn eine Seite gespeichert wird

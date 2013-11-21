@@ -4,7 +4,7 @@
  * This file contains \QUI\Users\Nobody
  */
 
-namespace \QUI\Users;
+namespace QUI\Users;
 
 /**
  * The standard user

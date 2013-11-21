@@ -19,17 +19,17 @@ class Sites
      * JavaScript buttons, depending on the side of the user
      *
      * @param \QUI\Projects\Site\Edit $Site
-     * @return Controls_Toolbar_Bar
+     * @return \QUI\Controls\Toolbar\Bar
      */
     static function getButtons(\QUI\Projects\Site\Edit $Site)
     {
-        $Toolbar = new \Controls_Toolbar_Bar(array(
+        $Toolbar = new \QUI\Controls\Toolbar\Bar(array(
             'name' => '_Toolbar'
         ));
 
         // Standard Buttons
         $Toolbar->appendChild(
-            new \Controls_Buttons_Button(array(
+            new \QUI\Controls\Buttons\Button(array(
                 'name'      => '_New',
                 'textimage' => URL_BIN_DIR .'16x16/page_white.png',
                 'text'      => 'Neu',
@@ -41,7 +41,7 @@ class Sites
         );
 
         $Toolbar->appendChild(
-            new \Controls_Buttons_Button(array(
+            new \QUI\Controls\Buttons\Button(array(
                 'name'      => '_Save',
                 'textimage' => URL_BIN_DIR .'16x16/save.png',
                 'text'      => 'Speichern',
@@ -53,7 +53,7 @@ class Sites
         );
 
         $Toolbar->appendChild(
-            new \Controls_Buttons_Button(array(
+            new \QUI\Controls\Buttons\Button(array(
                 'name'      => '_Del',
                 'textimage' => URL_BIN_DIR .'16x16/trashcan_empty.png',
                 'text'      => 'Löschen',
@@ -65,13 +65,13 @@ class Sites
         );
 
         $Toolbar->appendChild(
-            new \Controls_Buttons_Seperator(array(
+            new \QUI\Controls\Buttons\Seperator(array(
                 'name' => '_sep'
             ))
         );
 
         $Toolbar->appendChild(
-            new \Controls_Buttons_Button(array(
+            new \QUI\Controls\Buttons\Button(array(
                 'name'      => '_Preview',
                 'textimage' => URL_BIN_DIR .'16x16/preview.png',
                 'text'      => 'Vorschau',
@@ -108,12 +108,12 @@ class Sites
         if ( $Site->hasPermission( 'quiqqer.projects.site.edit') && !$Site->isMarcate() )
         {
             $Toolbar->appendChild(
-                new Controls_Buttons_Seperator(array(
+                new \QUI\Controls\Buttons\Seperator(array(
                     'name' => '_sep'
                 ))
             );
 
-            $Status = new \Controls_Buttons_Button(array(
+            $Status = new \QUI\Controls\Buttons\Button(array(
                 'name'     => 'status',
                 'aimage'   => URL_BIN_DIR .'16x16/active.png',
                 'atext'    => 'Aktivieren',
@@ -160,11 +160,11 @@ class Sites
      * Return the tabs of a site
      *
      * @param \QUI\Projects\Site\Edit $Site
-     * @return Controls_Toolbar_Bar
+     * @return \QUI\Controls\Toolbar\Bar
      */
     static function getTabs(\QUI\Projects\Site\Edit $Site)
     {
-        $Tabbar = new \Controls_Toolbar_Bar(array(
+        $Tabbar = new \QUI\Controls\Toolbar\Bar(array(
             'name' => '_Tabbar'
         ));
 
@@ -174,7 +174,7 @@ class Sites
         } catch ( \QUI\Exception $Exception )
         {
             $Tabbar->appendChild(
-                new \Controls_Toolbar_Tab(array(
+                new \QUI\Controls\Toolbar\Tab(array(
                     'name' => 'information',
                     'text' => 'Information',
                     'tpl'  => SYS_DIR .'template/site/information_edit.html',
@@ -190,7 +190,7 @@ class Sites
         if ( $Site->isMarcate() )
         {
             $Tabbar->appendChild(
-                new \Controls_Toolbar_Tab(array(
+                new \QUI\Controls\Toolbar\Tab(array(
                     'name'     => 'information',
                     'text'     => 'Information',
                     'template' => SYS_DIR .'template/site/information_edit.html',
@@ -206,7 +206,7 @@ class Sites
              $Site->hasPermission( 'quiqqer.projects.site.edit' ) )
         {
             $Tabbar->appendChild(
-                new \Controls_Toolbar_Tab(array(
+                new \QUI\Controls\Toolbar\Tab(array(
                     'name'     => 'information',
                     'text'     => 'Information',
                     'template' => SYS_DIR .'template/site/information.html',
@@ -217,7 +217,7 @@ class Sites
         } elseif ( $Site->hasPermission( 'quiqqer.projects.site.view' ) === false )
         {
             $Tabbar->appendChild(
-                new \Controls_Toolbar_Tab(array(
+                new \QUI\Controls\Toolbar\Tab(array(
                     'name'     => 'information',
                     'text'     => 'Information',
                     'template' => SYS_DIR .'template/site/noview.html',
@@ -231,7 +231,7 @@ class Sites
         // Wenn kein Bearbeitungsrecht aber Ansichtsrecht besteht
         {
             $Tabbar->appendChild(
-                new \Controls_Toolbar_Tab(array(
+                new \QUI\Controls\Toolbar\Tab(array(
                     'name'     => 'information',
                     'text'     => 'Information',
                     'template' => SYS_DIR .'template/site/information_norights.html',
@@ -244,7 +244,7 @@ class Sites
 
         // Inhaltsreiter
         $Tabbar->appendChild(
-            new \Controls_Toolbar_Tab(array(
+            new \QUI\Controls\Toolbar\Tab(array(
                 'name' => 'content',
                 'text' => 'Inhalt',
                 'icon' => URL_BIN_DIR .'16x16/edit.png'
@@ -292,7 +292,7 @@ class Sites
      * @param \QUI\Projects\Site $Site
      *
      * @throws \QUI\Exception
-     * @return Controls_Toolbar_Tab
+     * @return \QUI\Controls\Toolbar\Tab
      */
     static function getTab($tabname, $Site)
     {

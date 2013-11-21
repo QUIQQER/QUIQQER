@@ -19,11 +19,11 @@ class Utils
      * JavaScript Buttons / Tabs from a user
      *
      * @param \QUI\Users\User $User
-     * @return Controls_Toolbar_Bar
+     * @return \QUI\Controls\Toolbar\Bar
      */
     static function getUserToolbar($User)
     {
-        $Tabbar = new Controls_Toolbar_Bar(array(
+        $Tabbar = new \QUI\Controls\Toolbar\Bar(array(
             'name'  => 'UserToolbar'
         ));
 

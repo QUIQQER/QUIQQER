@@ -76,7 +76,7 @@ class QUI
 
     /**
      * QUI Message Handler, use \QUI::getMessageHandler()
-     * @var QUI_Messages_Handler
+     * @var \QUI\Messages\Handler
      */
     static $MessageHandler = null;
 
@@ -676,12 +676,12 @@ class QUI
 
     /**
      * Returns the QUIQQER message handler object
-     * @return QUI_Messages_Handler
+     * @return \QUI\Messages\Handler
      */
     static function getMessagesHandler()
     {
         if ( is_null( self::$MessageHandler ) ) {
-            self::$MessageHandler = new \QUI_Messages_Handler();
+            self::$MessageHandler = new \QUI\Messages\Handler();
         }
 
         return self::$MessageHandler;

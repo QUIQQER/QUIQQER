@@ -19,11 +19,11 @@ class Utils
      * JavaScript Buttons / Tabs for a group
      *
      * @param \QUI\Groups\Group $Group
-     * @return Controls_Toolbar_Bar
+     * @return \QUI\Controls\Toolbar\Bar
      */
     static function getGroupToolbar($Group)
     {
-        $Tabbar = new Controls_Toolbar_Bar(array(
+        $Tabbar = new \QUI\Controls\Toolbar\Bar(array(
             'name'  => 'UserToolbar'
         ));
 

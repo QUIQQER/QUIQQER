@@ -21,10 +21,10 @@ class DOM
      * Fügt DOM XML Tabs in eine Toolbar ein
      *
      * @param Array $tabs
-     * @param Controls_Toolbar_Bar $Tabbar
+     * @param \QUI\Controls\Toolbar\Bar $Tabbar
      * @param $plugin - optional
      */
-    static function addTabsToToolbar($tabs, \Controls_Toolbar_Bar $Tabbar, $plugin='')
+    static function addTabsToToolbar($tabs, \QUI\Controls\Toolbar\Bar $Tabbar, $plugin='')
     {
         foreach ( $tabs as $Tab )
         {
@@ -45,7 +45,7 @@ class DOM
                 $text = self::parseVar( $Texts->item( 0 )->nodeValue );
             }
 
-            $ToolbarTab = new \Controls_Toolbar_Tab(array(
+            $ToolbarTab = new \QUI\Controls\Toolbar\Tab(array(
                 'name'   => $Tab->getAttribute( 'name' ),
                 'text'   => $text,
                 'image'  => $image,
@@ -178,7 +178,7 @@ class DOM
      * if a settings window exist in it
      *
      * @param DomDocument|DomElement $Dom
-     * @return Controls_Windows_Setting|false
+     * @return \QUI\Controls\Windows\Setting|false
      */
     static function parseDomToWindow($Dom)
     {
@@ -196,7 +196,7 @@ class DOM
         }
 
         $Window = $winlist->item( 0 );
-        $Win    = new \Controls_Windows_Window();
+        $Win    = new \QUI\Controls\Windows\Window();
 
         // name
         if ( $Window->getAttribute( 'name' ) ) {
@@ -254,7 +254,7 @@ class DOM
                     continue;
                 }
 
-                $Button = new \Controls_Buttons_Button();
+                $Button = new \QUI\Controls\Buttons\Button();
                 $Button->setAttribute( 'name', $Param->getAttribute( 'name' ) );
                 //$Button->setAttribute( 'onclick', '_pcsg.Plugins.Settings.getButtonContent' );
                 //$Button->setAttribute( 'onload', '_pcsg.Plugins.Settings.onload' );

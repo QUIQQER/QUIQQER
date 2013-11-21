@@ -464,7 +464,7 @@ class Plugin extends \QUI\QDOM
     /**
      * Gibt Einstellungsfenster zurück, wenn eines gesetzt ist
      *
-     * @return Controls_Windows_Setting|false
+     * @return \QUI\Controls\Windows\Window|false
      * @todo rewrite auf \QUI\Utils\DOM
      */
     public function getSettingsWindow()
@@ -484,7 +484,7 @@ class Plugin extends \QUI\QDOM
         }
 
         $Window = $winlist->item(0);
-        $Win    = new Controls_Windows_Window();
+        $Win    = new \QUI\Controls\Windows\Window();
 
         // settings laden
         $defaults = $this->_getDefaultSettings();
@@ -562,7 +562,7 @@ class Plugin extends \QUI\QDOM
                     continue;
                 }
 
-                $Button = new Controls_Buttons_Button();
+                $Button = new \QUI\Controls\Buttons\Button();
                 $Button->setAttribute('name', $Param->getAttribute('name'));
                 $Button->setAttribute('onclick', '_pcsg.Plugins.Settings.getButtonContent');
                 $Button->setAttribute('plugin', $this->getAttribute('name'));
@@ -720,10 +720,10 @@ class Plugin extends \QUI\QDOM
     /**
      * Ladet die Benutzer-Tabs in die Toolbar
      *
-     * @param Controls_Toolbar_Bar $Tabbar
+     * @param \QUI\Controls\Toolbar\Bar $Tabbar
      * @param \QUI\Users\User $User
      */
-    public function loadUserTabs(Controls_Toolbar_Bar $Tabbar, \QUI\Users\User $User)
+    public function loadUserTabs(\QUI\Controls\Toolbar\Bar $Tabbar, \QUI\Users\User $User)
     {
         // Alte JS Tabs über PHP
         if ($this->getUserPlugin())

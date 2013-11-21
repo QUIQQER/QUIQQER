@@ -18,7 +18,7 @@ class Handler
      */
     static function Table()
     {
-        return 'messages';
+        return QUI_DB_PRFX .'messages';
     }
 
     /**
@@ -43,18 +43,36 @@ class Handler
      */
     public function getNewMessages(\QUI\Users\User $User)
     {
-        $list = \PCSG::getDB()->select(array(
+        $list = \QUI::getDB()->select(array(
             'from'  => self::Table(),
             'where' => array(
                 'uid' => $User->getId()
             )
         ));
 
-        \QUI::getDB()->deleteData(self::TABLE, array(
+        \QUI::getDB()->deleteData(self::Table(), array(
             'uid' => $User->getId()
         ));
 
         return $list;
+    }
+
+    /**
+     * Return the messages list as pure array
+     *
+     * @param \QUI\Users\User $User
+     * @return array
+     */
+    public function getMessagesAsArray(\QUI\Users\User $User)
+    {
+        $result   = array();
+        $messages = $this->getNewMessages( $User );
+
+        foreach ( $messages as $Message ) {
+            $result[] = $Message->toArray();
+        }
+
+        return $result;
     }
 
     /**

@@ -8,7 +8,7 @@
 function ajax_menu()
 {
     $User = \QUI::getUserBySession();
-    $Menu = new Controls_Contextmenu_Bar(array(
+    $Menu = new \QUI\Controls\Contextmenu\Bar(array(
         'name'   => 'menu',
         'parent' => 'menubar',
         'id'	 => 'menu'
@@ -28,7 +28,7 @@ function ajax_menu()
         }
 
         $Projects->appendChild(
-            new \Controls_Contextmenu_Menuitem(array(
+            new \QUI\Controls\Contextmenu\Menuitem(array(
                 'text'    => $project,
                 'icon'    => URL_BIN_DIR .'16x16/home.png',
                 'onclick' => '',
@@ -50,7 +50,7 @@ function ajax_menu()
 
         foreach ( $windows as $Window )
         {
-            $Win = new \Controls_Contextmenu_Menuitem(array(
+            $Win = new \QUI\Controls\Contextmenu\Menuitem(array(
                 'onclick' => ''
             ));
 

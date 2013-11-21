@@ -109,7 +109,6 @@ class Ajax extends \QUI\QDOM
 
             call_user_func( $func );
         }
-
     }
 
     /**
@@ -135,8 +134,11 @@ class Ajax extends \QUI\QDOM
             $result[ $_rf ] = $this->_call_rf( $_rf );
         }
 
-        if ( \QUI::getMessagesHandler() ) {
-            $result['message_handler'] = \QUI::getMessagesHandler()->getMessagesAsArray();
+        if ( \QUI::getMessagesHandler() )
+        {
+            $result['message_handler'] = \QUI::getMessagesHandler()->getMessagesAsArray(
+                \QUI::getUserBySession()
+            );
         }
 
         return '<quiqqer>'. json_encode( $result ) .'</quiqqer>';

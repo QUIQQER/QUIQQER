@@ -4,7 +4,7 @@
  * This file contains \QUI\Auth\ActiveDirectory
  */
 
-namespace \QUI\Auth;
+namespace QUI\Auth;
 
 /**
  * ADLDAP_NORMAL_ACCOUNT

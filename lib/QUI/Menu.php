@@ -16,10 +16,10 @@ class QUI_Menu
     /**
      * Add a menu.xml file to a contextmenu bar item
      *
-     * @param Controls_Contextmenu_Bar $Menu - Menu Object
+     * @param \QUI\Controls\Contextmenu\Bar $Menu - Menu Object
      * @param String $file - Path to XML File
      */
-    static function addXMLFile(Controls_Contextmenu_Bar $Menu, $file)
+    static function addXMLFile(\QUI\Controls\Contextmenu\Bar $Menu, $file)
     {
         if ( !file_exists( $file ) ) {
             return;
@@ -57,10 +57,10 @@ class QUI_Menu
 
             if ( $Item->getAttribute( 'parent' ) == '/' )
             {
-                $MenuItem = new Controls_Contextmenu_Baritem( $params );
+                $MenuItem = new \QUI\Controls\Contextmenu\Baritem( $params );
             } else
             {
-                $MenuItem    = new Controls_Contextmenu_Menuitem( $params );
+                $MenuItem    = new \QUI\Controls\Contextmenu\Menuitem( $params );
                 $parent_path = explode( '/', trim( $Item->getAttribute( 'parent' ), '/' ) );
 
                 foreach ( $parent_path as $parent )
@@ -72,7 +72,7 @@ class QUI_Menu
             }
 
             if ( $Item->getAttribute( 'type' ) == 'seperator' ) {
-                $MenuItem = new Controls_Contextmenu_Seperator( $params );
+                $MenuItem = new \QUI\Controls\Contextmenu\Seperator( $params );
             }
 
             if ( $Item->getAttribute( 'disabled' ) == 1 ) {
@@ -85,5 +85,3 @@ class QUI_Menu
         }
     }
 }
-
-?>

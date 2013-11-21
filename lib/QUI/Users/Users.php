@@ -4,7 +4,7 @@
  * This file contains \QUI\Users\Users
  */
 
-namespace \QUI\Users;
+namespace QUI\Users;
 
 /**
  * QUIQQER user manager

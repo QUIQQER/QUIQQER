@@ -45,7 +45,10 @@ class Setup
         \QUI::getUsers()->setup();
 
         // Cron Setup
-        \System_Cron_Manager::setup();
+        // \System_Cron_Manager::setup();
+
+        // Cron Setup
+        \QUI::getMessagesHandler()->setup();
 
         // Events Setup
         \QUI\Events\Manager::setup();

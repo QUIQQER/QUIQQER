@@ -62,6 +62,8 @@ class Update
         \QUI\Events\Manager::setup();
         \QUI\Events\Manager::clear();
 
+        \QUI\Messages\Handler::setup();
+
 
         $packages_dir = $Composer->getConfig()->get( 'vendor-dir' );
 
