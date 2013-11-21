@@ -94,7 +94,7 @@ class QUI
 
     /**
      * QUI Pluginmanager, use \QUI::getPlugins();
-     * @var QUI_Plugins_Manager
+     * @var \QUI\Plugins\Manager
      */
     static $Plugins  = null;
 
@@ -728,12 +728,12 @@ class QUI
 
     /**
      * Returns the plugins manager
-     * @return QUI_Plugins_Manager
+     * @return \QUI\Plugins\Manager
      */
     static function getPlugins()
     {
         if ( is_null( self::$Plugins ) ) {
-            self::$Plugins = new \QUI_Plugins_Manager();
+            self::$Plugins = new \QUI\Plugins\Manager();
         }
 
         return self::$Plugins;

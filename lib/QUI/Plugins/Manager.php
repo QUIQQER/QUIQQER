@@ -1,8 +1,10 @@
 <?php
 
 /**
- * This file contains QUI_Plugins_Manager
+ * This file contains \QUI\Plugins\Manager
  */
+
+namespace QUI\Plugins;
 
 /**
  * Plugin Manager
@@ -13,7 +15,7 @@
  * @todo Plugin Methoden Benennung sollte bisschen überdacht werden
  */
 
-class QUI_Plugins_Manager extends \QUI\QDOM
+class Manager extends \QUI\QDOM
 {
     /**
      * loaded plugins
@@ -228,7 +230,7 @@ class QUI_Plugins_Manager extends \QUI\QDOM
     protected function _createCache($class, $Plugin)
     {
         // Kein Cache für Standard Plugins
-        if ( $class == 'QUI_Plugins_Plugin' ) {
+        if ( $class == '\\QUI\\Plugins\\Plugin' ) {
             return false;
         }
 
@@ -327,7 +329,7 @@ class QUI_Plugins_Manager extends \QUI\QDOM
         }
 
         if ( !class_exists( $class ) ) {
-            $class = 'QUI_Plugins_Plugin';
+            $class = '\\QUI\\Plugins\\Plugin';
         }
 
         $Plugin = new $class();

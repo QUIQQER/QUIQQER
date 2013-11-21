@@ -1,8 +1,10 @@
 <?php
 
 /**
- * This file contains QUI_Plugins_Factory
+ * This file contains \QUI\Plugins\Factory
  */
+
+namespace QUI\Plugins;
 
 /**
  * Factory Klasse eines Plugins
@@ -11,8 +13,9 @@
  * @package com.pcsg.qui.plugins
  *
  * @todo Factory Klasse für Plugins umsetzen
+ * @todo ???
  */
-class QUI_Plugins_Factory extends \QUI\QDOM
+class Factory extends \QUI\QDOM
 {
     /**
      * Erweitert die Tabs im Admin

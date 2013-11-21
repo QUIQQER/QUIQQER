@@ -12,7 +12,7 @@ function ajax_system_cache_clear($params)
     }
 
     if ( isset($params['plugins']) && $params['plugins'] == 1 ) {
-        \QUI_Plugins_Manager::clearCache();
+        \QUI\Plugins\Manager::clearCache();
     }
 
     if ( !isset($params['compile']) || $params['compile'] != 1 &&
@@ -22,7 +22,7 @@ function ajax_system_cache_clear($params)
     }
 
     \QUI\Cache\Manager::clearAll();
-    \QUI_Plugins_Manager::clearCache();
+    \QUI\Plugins\Manager::clearCache();
 }
 
 \QUI::$Ajax->register(

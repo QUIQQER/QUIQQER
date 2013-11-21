@@ -1,8 +1,10 @@
 <?php
 
 /**
- * This file contains QUI_Plugins_Plugin
+ * This file contains \QUI\Plugins\Plugin
  */
+
+namespace QUI\Plugins;
 
 /**
  * Grundklasse eines Plugins
@@ -12,7 +14,7 @@
  * @package com.pcsg.qui.plugins
  */
 
-class QUI_Plugins_Plugin extends \QUI\QDOM
+class Plugin extends \QUI\QDOM
 {
     /**
      * Plugin config
@@ -23,7 +25,7 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
     /**
      * Admin Plugin
      * @deprecated
-     * @var QUI_Plugins_Plugin
+     * @var \QUI\Plugins\Plugin
      */
     protected $_Admin = null; // Adminerweiterung
 
