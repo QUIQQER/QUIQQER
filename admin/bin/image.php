@@ -20,7 +20,7 @@ if ( !isset($_REQUEST['project']) || !isset($_REQUEST['id']) )
 
 try
 {
-    $Project = Projects_Manager::getProject($_REQUEST['project']);
+    $Project = \QUI\Projects\Manager::getProject($_REQUEST['project']);
     $Media   = $Project->getMedia();
     $File    = $Media->get( (int)$_REQUEST['id'] );
 
@@ -31,7 +31,7 @@ try
     exit;
 }
 
-if ( $File->getType() != 'Projects_Media_Image' )
+if ( $File->getType() != '\\QUI\\Projects\\Media\\Image' )
 {
     header( "HTTP/1.1 404 Not Found" );
     exit;

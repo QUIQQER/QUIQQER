@@ -18,87 +18,87 @@
 
 function patch_hkl_content2( $Patch )
 {
-	$Patch->write('Patch für Content2 Plugin wird ausgeführt...');
+    $Patch->write('Patch für Content2 Plugin wird ausgeführt...');
 
-	$db       = \QUI::getDB();
-	$projects = Projects_Manager::getProjects();
+    $db       = \QUI::getDB();
+    $projects = \QUI\Projects\Manager::getProjects();
 
-	$ERRORS = 0;
+    $ERRORS = 0;
 
-	foreach($projects as $project => $val)
-	{
-		try
-		{
-			$Patch->write('');
-			$Patch->write('[BEGIN] Starte mit Projekt: '.$project);
-			$Project = new Project($project);
-			$langs = $Project->getAttribute('langs');
+    foreach($projects as $project => $val)
+    {
+        try
+        {
+            $Patch->write('');
+            $Patch->write('[BEGIN] Starte mit Projekt: '.$project);
+            $Project = new Project($project);
+            $langs = $Project->getAttribute('langs');
 
-		} catch(\QUI\Exception $e)
-		{
-			$Patch->write($e->getMessage());
-			continue;
-		}
+        } catch(\QUI\Exception $e)
+        {
+            $Patch->write($e->getMessage());
+            continue;
+        }
 
-		// Content 2 Setup ausführen
-		require_once(OPT_DIR .'content2/Content2.php');
+        // Content 2 Setup ausführen
+        require_once(OPT_DIR .'content2/Content2.php');
 
-		foreach($langs as $lang)
-		{
-			$_Project = new Project($project, $lang);
+        foreach($langs as $lang)
+        {
+            $_Project = new Project($project, $lang);
 
-			$Plugin = new Plugin_content2();
-			$Plugin->setup($_Project, $db);
-		}
+            $Plugin = new Plugin_content2();
+            $Plugin->setup($_Project, $db);
+        }
 
-		// Jeder Sprache muss gepatcht werden
-		foreach($langs as $lang)
-		{
-			$Patch->write('====> Starte mit Sprache :'.$lang);
+        // Jeder Sprache muss gepatcht werden
+        foreach($langs as $lang)
+        {
+            $Patch->write('====> Starte mit Sprache :'.$lang);
 
-			$tbl_hkl = $Project->getAttribute('name').'_'.$lang.'_hkl';
-			$tbl_c2 = $Project->getAttribute('name').'_'.$lang.'_content2';
+            $tbl_hkl = $Project->getAttribute('name').'_'.$lang.'_hkl';
+            $tbl_c2 = $Project->getAttribute('name').'_'.$lang.'_content2';
 
-			$entrys = $db->select(array(
-				'from' => $tbl_hkl
-			));
+            $entrys = $db->select(array(
+                'from' => $tbl_hkl
+            ));
 
-			foreach($entrys as $entry)
-			{
-				$exist = $db->select(array(
-					'from' => $tbl_c2,
-					'where' => array(
-						'id' => $entry['id']
-					)
-				));
+            foreach($entrys as $entry)
+            {
+                $exist = $db->select(array(
+                    'from' => $tbl_c2,
+                    'where' => array(
+                        'id' => $entry['id']
+                    )
+                ));
 
-				// Eintrag existiert
-				if(!isset($exist[0]) && !empty($entry['content2']))
-				{
-					$_result = $db->addData($tbl_c2, array(
-						'id' 		=> $entry['id'],
-						'content2'  => $entry['content2'],
-					));
+                // Eintrag existiert
+                if(!isset($exist[0]) && !empty($entry['content2']))
+                {
+                    $_result = $db->addData($tbl_c2, array(
+                        'id' 		=> $entry['id'],
+                        'content2'  => $entry['content2'],
+                    ));
 
-					$Patch->write('[OK] '. $entry['id']);
-				}
-			}
+                    $Patch->write('[OK] '. $entry['id']);
+                }
+            }
 
-			$Patch->write('====> Sprache '. $lang .' beendet');
-		}
+            $Patch->write('====> Sprache '. $lang .' beendet');
+        }
 
-		$Patch->write('[END] Projekt beendet');
-	}
+        $Patch->write('[END] Projekt beendet');
+    }
 
-	$Patch->write('');
-	$Patch->write('##### FEHLER '. $ERRORS .' #####');
-	$Patch->write('');
+    $Patch->write('');
+    $Patch->write('##### FEHLER '. $ERRORS .' #####');
+    $Patch->write('');
 
-	if($ERRORS) {
-		return false;
-	}
+    if($ERRORS) {
+        return false;
+    }
 
-	return true;
+    return true;
 }
 
 ?>

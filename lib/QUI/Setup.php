@@ -1,8 +1,10 @@
 <?php
 
 /**
- * This file contains QUI_Setup
+ * This file contains \QUI\Setup
  */
+
+namespace QUI;
 
 /**
  * QUIQQER Setup
@@ -11,7 +13,7 @@
  * @package com.pcsg.qui
  */
 
-class QUI_Setup
+class Setup
 {
     /**
      * Excute the QUIQQER Setup
@@ -59,7 +61,7 @@ class QUI_Setup
         $UploadManager->setup();
 
         // Countries
-        // \Utils_Countries_Manager::setup();
+        // \QUI\Countries\Manager::setup();
 
 
         /**
@@ -82,11 +84,11 @@ class QUI_Setup
         /**
          * Project Setup
          */
-        $projects = \Projects_Manager::getProjects( true );
+        $projects = \QUI\Projects\Manager::getProjects( true );
 
         foreach ( $projects as $Project )
         {
-            /* @var $Project Projects_Project */
+            /* @var $Project \QUI\Projects\Project */
             $Project->setup();
 
             // Plugin Setup

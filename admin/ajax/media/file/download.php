@@ -9,11 +9,11 @@
  */
 function ajax_media_file_download($project, $fileid)
 {
-    $Project = Projects_Manager::getProject( $project );
+    $Project = \QUI\Projects\Manager::getProject( $project );
     $Media   = $Project->getMedia();
     $File    = $Media->get( $fileid );
 
-    if ( Projects_Media_Utils::isFolder( $File ) )
+    if ( \QUI\Projects\Media\Utils::isFolder( $File ) )
     {
         echo 'You cannot download a Folder';
         exit;

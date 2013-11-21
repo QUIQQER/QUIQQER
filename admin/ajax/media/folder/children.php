@@ -11,9 +11,9 @@
  */
 function ajax_media_folder_children($project, $folderid)
 {
-    $Project = Projects_Manager::getProject( $project );
+    $Project = \QUI\Projects\Manager::getProject( $project );
     $Media   = $Project->getMedia();
-    $File    = $Media->get( $folderid ); /* @var $File Projects_Media_Folder */
+    $File    = $Media->get( $folderid ); /* @var $File \QUI\Projects\Media\Folder */
 
     $children  = array();
     $_children = $File->getChildrenIds();
@@ -24,15 +24,15 @@ function ajax_media_folder_children($project, $folderid)
         try
         {
             $Child      = $Media->get( $id );
-            $children[] = Projects_Media_Utils::parseForMediaCenter( $Child );
+            $children[] = \QUI\Projects\Media\Utils::parseForMediaCenter( $Child );
 
         } catch ( \QUI\Exception $Exception )
         {
             $params = array(
                 'id'    => $id,
-            	'name'  => $Exception->getAttribute('name'),
+                'name'  => $Exception->getAttribute('name'),
                 'title' => $Exception->getAttribute('title'),
-            	'error' => true
+                'error' => true
             );
 
             $children[] = $params;

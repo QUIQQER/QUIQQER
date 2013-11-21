@@ -46,7 +46,7 @@ class ConsoleSetup extends System_Console_Tool
     {
         try
         {
-            \QUI_Setup::all();
+            \QUI\Setup::all();
 
         } catch ( \QUI\Exception $Exception )
         {

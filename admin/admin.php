@@ -29,7 +29,7 @@
 
         try
         {
-            $Standard = \Projects_Manager::getStandard();
+            $Standard = \QUI\Projects\Manager::getStandard();
         } catch ( \QUI\Exception $e )
         {
             // nothing

@@ -12,7 +12,7 @@
 function ajax_site_getchildren($project, $lang, $id, $select, $start)
 {
     $Project = \QUI::getProject( $project, $lang );
-    $Site    = new Projects_Site_Edit( $Project, (int)$id );
+    $Site    = new \QUI\Projects\Site\Edit( $Project, (int)$id );
 
     if ( !empty( $select ) ) {
         $select = explode( ',', trim($select, ',') );
@@ -49,14 +49,14 @@ function ajax_site_getchildren($project, $lang, $id, $select, $start)
 
     for ( $i = 0, $len = count( $children ); $i < $len; $i++ )
     {
-        $Child = $children[ $i ]; /* @var $Child Projects_Site_Edit */
+        $Child = $children[ $i ]; /* @var $Child \QUI\Projects\Site\Edit */
 
         if ( empty( $select ) )
         {
             $childs[ $i ] = $Child->getAllAttributes();
         } else
         {
-            /* @todo BEAH Lösung Select muss in Projects_Site_Edit verlagert werden */
+            /* @todo BEAH Lösung Select muss in \QUI\Projects\Site\Edit verlagert werden */
             foreach ( $select as $att ) {
                 $childs[ $i ][ $att ] = $Child->getAttribute( $att );
             }

@@ -52,9 +52,9 @@ class QUI_Plugins_Manager extends \QUI\QDOM
     /**
      * Führt das Setup aller aktiven Plugins auf das Projekt aus
      *
-     * @param Projects_Project $Project
+     * @param \QUI\Projects\Project $Project
      */
-    public function setup(Projects_Project $Project)
+    public function setup(\QUI\Projects\Project $Project)
     {
         $plugins = $this->get();
 
@@ -178,7 +178,7 @@ class QUI_Plugins_Manager extends \QUI\QDOM
     /**
      * Gibt alle Seitentypen zurück die verfügbar sind
      *
-     * @param Projects_Project $Project - optional
+     * @param \QUI\Projects\Project $Project - optional
      * @return Array
      */
     public function getAvailableTypes($Project=false)

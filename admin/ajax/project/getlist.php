@@ -7,9 +7,12 @@
  */
 function ajax_project_getlist()
 {
-	return Projects_Manager::getConfig()->toArray();
+    return \QUI\Projects\Manager::getConfig()->toArray();
 }
-QUI::$Ajax->register('ajax_project_getlist', false, 'Permission::checkAdminUser');
 
+\QUI::$Ajax->register(
+    'ajax_project_getlist',
+    false,
+    'Permission::checkAdminUser'
+);
 
-?>

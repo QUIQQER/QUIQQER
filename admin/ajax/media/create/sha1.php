@@ -8,14 +8,14 @@
 function ajax_media_create_sha1($project, $params)
 {
     $params  = json_decode( $params, true );
-    $Project = Projects_Manager::getProject( $project );
+    $Project = \QUI\Projects\Manager::getProject( $project );
     $Media   = $Project->getMedia();
 
     $ids = $Media->getChildrenIds(array(
         'where' => array(
             'type' => array(
                 'type'  => 'NOT',
-            	'value' => 'folder'
+                'value' => 'folder'
             )
         )
     ));

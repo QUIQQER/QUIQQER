@@ -8,13 +8,16 @@
  */
 function ajax_users_gettoolbar($uid)
 {
-	$Users = \QUI::getUsers();
-	$User  = $Users->get( (int)$uid );
+    $Users = \QUI::getUsers();
+    $User  = $Users->get( (int)$uid );
 
-	$Toolbar = Users_Utils::getUserToolbar( $User );
+    $Toolbar = \QUI\Users\Utils::getUserToolbar( $User );
 
-	return $Toolbar->toArray();
+    return $Toolbar->toArray();
 }
-QUI::$Ajax->register('ajax_users_gettoolbar', array('uid'), 'Permission::checkSU')
 
-?>
+\QUI::$Ajax->register(
+    'ajax_users_gettoolbar',
+    array('uid'),
+    'Permission::checkSU'
+);

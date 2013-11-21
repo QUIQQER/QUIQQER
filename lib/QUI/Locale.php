@@ -1,8 +1,10 @@
 <?php
 
 /**
- * This file contains QUI_Locale
+ * This file contains \QUI\Locale
  */
+
+namespace QUI;
 
 /**
  * The locale object
@@ -14,7 +16,7 @@
  * @use gettext - if enable
  */
 
-class QUI_Locale
+class Locale
 {
     /**
      * The current lang
@@ -213,7 +215,7 @@ class QUI_Locale
      * the GetText init
      *
      * @param $group - language group
-     * @return Bool|Utils_Translation_GetText
+     * @return Bool|\QUI\Utils\Translation\GetText
      */
     public function initGetText($group)
     {
@@ -232,7 +234,7 @@ class QUI_Locale
         }
 
 
-        $this->_gettext[ $current ][ $group ] = new \Utils_Translation_GetText(
+        $this->_gettext[ $current ][ $group ] = new \QUI\Utils\Translation\GetText(
             $current,
             $group,
             $this->dir()

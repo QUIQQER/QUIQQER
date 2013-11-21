@@ -8,7 +8,7 @@
  */
 function ajax_system_update_template($tpltype)
 {
-    $Engine  = QUI_Template::getEngine();
+    $Engine  = \QUI\Template::getEngine();
     $Plugins = \QUI::getPlugins();
 
     if ( $tpltype == 'plugin' )
@@ -24,6 +24,9 @@ function ajax_system_update_template($tpltype)
 
     return $Engine->fetch( CMS_DIR .'admin/ajax/system/update/template.html' );
 }
-QUI::$Ajax->register('ajax_system_update_template', array('tpltype'), 'Permission::checkSU');
 
-?>
+\QUI::$Ajax->register(
+    'ajax_system_update_template',
+    array('tpltype'),
+    'Permission::checkSU'
+);

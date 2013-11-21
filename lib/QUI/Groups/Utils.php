@@ -38,7 +38,7 @@ class Utils
 
         // Projekt Tabs
         /*
-        $projects = Projects_Manager::getProjects( true );
+        $projects = \QUI\Projects\Manager::getProjects( true );
 
         foreach ( $projects as $Project )
         {
@@ -73,7 +73,7 @@ class Utils
     {
         $Groups = \QUI::getGroups();
         $Group  = $Groups->get( $gid );
-        $Engine = QUI_Template::getEngine( true );
+        $Engine = \QUI\Template::getEngine( true );
 
         $Engine->assign(array(
             'Group' => $Group
@@ -91,10 +91,10 @@ class Utils
         if ( strpos($tab, 'project_') !== false )
         {
             $tab     = explode( 'project_', $tab );
-            $Project = Projects_Manager::getProject( $tab[1] );
+            $Project = \QUI\Projects\Manager::getProject( $tab[1] );
             $file    = USR_DIR .'lib/'. $Project->getAttribute('name') .'/rights.xml';
 
-            $Engine = QUI_Template::getEngine( true );
+            $Engine = \QUI\Template::getEngine( true );
             $rights = QUI_Rights_Parser::getGroups(
                 QUI_Rights_Parser::parse( $file )
             );

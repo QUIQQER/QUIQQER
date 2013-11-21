@@ -6,7 +6,7 @@
  */
 function ajax_media_file_save($project, $fileid, $attributes)
 {
-    $Project = Projects_Manager::getProject( $project );
+    $Project = \QUI\Projects\Manager::getProject( $project );
     $Media   = $Project->getMedia();
     $File    = $Media->get( $fileid );
 
@@ -17,6 +17,9 @@ function ajax_media_file_save($project, $fileid, $attributes)
 
     return $File->getAttributes();
 }
-QUI::$Ajax->register('ajax_media_file_save', array('project', 'fileid', 'attributes'), 'Permission::checkAdminUser');
 
-?>
+\QUI::$Ajax->register(
+    'ajax_media_file_save',
+    array('project', 'fileid', 'attributes'),
+    'Permission::checkAdminUser'
+);

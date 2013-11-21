@@ -10,17 +10,19 @@
  */
 function ajax_site_children_create($project, $lang, $id, $attributes)
 {
-	$Project = \QUI::getProject($project, $lang);
-	$Site    = new Projects_Site_Edit($Project, (int)$id);
+    $Project = \QUI::getProject($project, $lang);
+    $Site    = new \QUI\Projects\Site\Edit($Project, (int)$id);
 
-	$childid = $Site->createChild(
-	    json_decode($attributes, true)
-	);
+    $childid = $Site->createChild(
+        json_decode($attributes, true)
+    );
 
-	$Child = new Projects_Site_Edit($Project, $childid);
+    $Child = new \QUI\Projects\Site\Edit($Project, $childid);
 
-	return $Child->getAllAttributes();
+    return $Child->getAllAttributes();
 }
-QUI::$Ajax->register('ajax_site_children_create', array('project', 'lang', 'id', 'attributes'));
 
-?>
+\QUI::$Ajax->register(
+    'ajax_site_children_create',
+    array('project', 'lang', 'id', 'attributes')
+);

@@ -10,24 +10,22 @@
  */
 function ajax_media_folder_create($project, $parentid, $newfolder)
 {
-    $Project = Projects_Manager::getProject( $project );
+    $Project = \QUI\Projects\Manager::getProject( $project );
     $Media   = $Project->getMedia();
     $File    = $Media->get( $parentid );
 
-    if ( Projects_Media_Utils::isFolder($File) === false ) {
+    if ( \QUI\Projects\Media\Utils::isFolder($File) === false ) {
         throw new \QUI\Exception('Sie können nur in einem Ordner einen Ordner erstellen');
     }
 
-    /* @var $File Projects_Media_Folder */
+    /* @var $File \QUI\Projects\Media\Folder */
     $Folder = $File->createFolder( $newfolder );
 
-    return Projects_Media_Utils::parseForMediaCenter( $Folder );
+    return \QUI\Projects\Media\Utils::parseForMediaCenter( $Folder );
 }
 
-QUI::$Ajax->register(
-	'ajax_media_folder_create',
+\QUI::$Ajax->register(
+    'ajax_media_folder_create',
     array('project', 'parentid', 'newfolder'),
     'Permission::checkAdminUser'
 );
-
-?>

@@ -17,7 +17,7 @@ function ajax_menu()
     \QUI_Menu::addXMLFile( $Menu, SYS_DIR .'menu.xml' );
 
     // projects settings
-    $projects = \Projects_Manager::getProjects();
+    $projects = \QUI\Projects\Manager::getProjects();
     $Settings = $Menu->getElementByName( 'settings' );
     $Projects = $Settings->getElementByName( 'projects' );
 

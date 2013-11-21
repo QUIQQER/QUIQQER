@@ -10,16 +10,14 @@
  */
 function ajax_media_url_get($project, $fileid)
 {
-    $Project = Projects_Manager::getProject( $project );
+    $Project = \QUI\Projects\Manager::getProject( $project );
     $Media   = $Project->getMedia();
 
     return $Media->get( $fileid )->getUrl( true );
 }
 
-QUI::$Ajax->register(
-	'ajax_media_url_get',
+\QUI::$Ajax->register(
+    'ajax_media_url_get',
     array( 'project', 'fileid' ),
     'Permission::checkAdminUser'
 );
-
-?>

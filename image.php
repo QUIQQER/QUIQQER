@@ -6,8 +6,8 @@ if (isset($_REQUEST['project']) && isset($_REQUEST['id']))
 {
     try
     {
-        /* @var $project Projects_Project */
-        $Project = Projects_Manager::getProject($_REQUEST['project']);
+        /* @var $project \QUI\Projects\Project */
+        $Project = \QUI\Projects\Manager::getProject($_REQUEST['project']);
         $Media   = $Project->getMedia();
         $File    = $Media->get( (int)$_REQUEST['id'] );
 
@@ -30,7 +30,7 @@ if (isset($_REQUEST['project']) && isset($_REQUEST['id']))
         }
         */
 
-        if ( $File->getType() === 'Projects_Media_Image' &&
+        if ( $File->getType() === '\\QUI\\Projects\\Media\\Image' &&
             (isset($_REQUEST['maxwidth']) || isset($_REQUEST['maxheight'])) )
         {
             $maxwidth  = false;

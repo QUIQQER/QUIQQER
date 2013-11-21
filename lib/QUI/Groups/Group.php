@@ -304,7 +304,7 @@ class Group extends \QUI\QDOM
      */
     public function getUsers($params=array())
     {
-        $params['from']  = Users_Users::Table();
+        $params['from']  = \QUI\Users\Users::Table();
         $params['where'] = array(
             'usergroup' => array(
                 'type'  => '%LIKE%',
@@ -320,14 +320,14 @@ class Group extends \QUI\QDOM
      *
      * @param String $username
      *
-     * @return Users_User
+     * @return \QUI\Users\User
      * @throws \QUI\Exception
      */
     public function getUserByName($username)
     {
         $result = \QUI::getDataBase()->fetch(array(
             'select' => 'id',
-            'from' 	 => Users_Users::Table(),
+            'from' 	 => \QUI\Users\Users::Table(),
             'where'  => 'username = \''. \QUI\Utils\Security\Orthos::clearMySQL($username)
                         .'\' AND usergroup LIKE \'%,'. $this->getId() .',%\'',
             'limit'  => '1'
@@ -353,7 +353,7 @@ class Group extends \QUI\QDOM
                 'select' => 'id',
                 'as'     => 'count'
             ),
-            'from' 	=> Users_Users::Table(),
+            'from' 	=> \QUI\Users\Users::Table(),
             'where' => array(
                 'usergroup' => array(
                     'type'  => 'LIKE',

@@ -10,10 +10,13 @@
 function ajax_site_deactivate($project, $lang, $id)
 {
     $Project = \QUI::getProject($project, $lang);
-	$Site    = new Projects_Site_Edit($Project, (int)$id);
+    $Site    = new \QUI\Projects\Site\Edit($Project, (int)$id);
 
-	return $Site->deactivate();
+    return $Site->deactivate();
 }
-QUI::$Ajax->register('ajax_site_deactivate', array('project', 'lang', 'id'), 'Permission::checkAdminUser');
 
-?>
+\QUI::$Ajax->register(
+    'ajax_site_deactivate',
+    array('project', 'lang', 'id'),
+    'Permission::checkAdminUser'
+);

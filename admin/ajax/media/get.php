@@ -11,7 +11,7 @@
  */
 function ajax_media_get($project, $fileid)
 {
-    $Project = Projects_Manager::getProject( $project );
+    $Project = \QUI\Projects\Manager::getProject( $project );
     $Media   = $Project->getMedia();
     $File    = $Media->get( $fileid );
 
@@ -20,30 +20,32 @@ function ajax_media_get($project, $fileid)
     $children   = array();
     $_children  = array();
 
-    if ($File->getType() === 'Projects_Media_Folder') {
+    if ($File->getType() === '\\QUI\\Projects\\Media\\Folder') {
         $_children = $File->getChildren();
     }
 
-
     // create breadcrumb data
     foreach ($parents as $Parent) {
-        $breadcrumb[] = Projects_Media_Utils::parseForMediaCenter( $Parent );
+        $breadcrumb[] = \QUI\Projects\Media\Utils::parseForMediaCenter( $Parent );
     }
 
-    $breadcrumb[] = Projects_Media_Utils::parseForMediaCenter( $File );
+    $breadcrumb[] = \QUI\Projects\Media\Utils::parseForMediaCenter( $File );
 
     // create children data
     foreach ($_children as $Child) {
-        $children[] = Projects_Media_Utils::parseForMediaCenter( $Child );
+        $children[] = \QUI\Projects\Media\Utils::parseForMediaCenter( $Child );
     }
 
 
     return array(
-        'file'       => Projects_Media_Utils::parseForMediaCenter( $File ),
+        'file'       => \QUI\Projects\Media\Utils::parseForMediaCenter( $File ),
         'breadcrumb' => $breadcrumb,
         'children'   => $children
     );
 }
-QUI::$Ajax->register('ajax_media_get', array('project', 'fileid'), 'Permission::checkAdminUser');
 
-?>
+\QUI::$Ajax->register(
+    'ajax_media_get',
+    array('project', 'fileid'),
+    'Permission::checkAdminUser'
+);

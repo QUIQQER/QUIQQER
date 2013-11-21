@@ -105,7 +105,7 @@ class DOM
      * HTML eines DOM Tabs
      *
      * @param String $name
-     * @param Plugin | Projects_Project | String $Object - String = user.xml File
+     * @param Plugin | \QUI\Projects\Project | String $Object - String = user.xml File
      *
      * @return String
      */
@@ -121,17 +121,17 @@ class DOM
 
         } else if ( get_class( $Object ) === 'Project' )
         {
-            /* @var $Object Projects_Project */
+            /* @var $Object \QUI\Projects\Project */
             // tabs welche ein projekt zur Verfügung stellt
             $tabs = \QUI\Utils\XML::getTabsFromUserXml(
                 USR_DIR .'lib/'. $Object->getAttribute( 'name' ) .'/user.xml'
             );
 
         } else if (
-            get_class( $Object ) === 'Projects_Site' ||
-            get_class( $Object ) === 'Projects_Site_Edit' )
+            get_class( $Object ) === '\\QUI\\Projects\\Site' ||
+            get_class( $Object ) === '\\QUI\\Projects\\Site\\Edit' )
         {
-            $Tabbar = \Projects_Sites::getTabs( $Object );
+            $Tabbar = \QUI\Projects\Sites::getTabs( $Object );
             $Tab    = $Tabbar->getElementByName( $name );
 
             if ( $Tab->getAttribute( 'template' ) )
@@ -140,7 +140,7 @@ class DOM
 
                 if ( file_exists( $file ) )
                 {
-                    $Engine = \QUI_Template::getEngine( true );
+                    $Engine = \QUI\Template::getEngine( true );
                     $Engine->assign(array(
                         'Site'    => $Object,
                         'Project' => $Object->getProject(),
@@ -302,7 +302,7 @@ class DOM
 
                 if ( $Param->getAttribute( 'type' ) == 'projects' )
                 {
-                    $projects = \Projects_Manager::getProjects();
+                    $projects = \QUI\Projects\Manager::getProjects();
 
                     foreach ( $projects as $project )
                     {
@@ -402,7 +402,7 @@ class DOM
             return '';
         }
 
-        $Engine   = \QUI_Template::getEngine( true );
+        $Engine   = \QUI\Template::getEngine( true );
         $template = $Category->getElementsByTagName( 'template' );
 
         // Falls ein Template angegeben wurde

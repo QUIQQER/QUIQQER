@@ -18,52 +18,52 @@
 
 class ConsoleCreateLang extends System_Console_Tool
 {
-	/**
-	 * constructor
-	 * @param unknown_type $params
-	 */
-	public function __construct($params)
-	{
-		parent::__construct($params);
+    /**
+     * constructor
+     * @param unknown_type $params
+     */
+    public function __construct($params)
+    {
+        parent::__construct($params);
 
-		$help = " Beschreibung:\n";
-		$help .= " Sprache erstellen und Sprachtabelle anlegen\n";
-		$help .= "\n";
-		$help .= " Aufruf:\n";
-		$help .= " admin/console.php --username=[USERNAME] --password=[PASSWORD] --tool=ConsoleCreateLang [params]\n";
-		$help .= "\n";
-		$help .= " Parameter:\n";
-		$help .= " --project=[PROJECT]		Projektnamen\n\n";
-		$help .= " --newlang=[LANG]		    Neue Sprache die angelegt werden soll\n\n";
-		$help .= " --copylang=[LANG]	    Sprache die kopiert werden soll\n\n";
+        $help = " Beschreibung:\n";
+        $help .= " Sprache erstellen und Sprachtabelle anlegen\n";
+        $help .= "\n";
+        $help .= " Aufruf:\n";
+        $help .= " admin/console.php --username=[USERNAME] --password=[PASSWORD] --tool=ConsoleCreateLang [params]\n";
+        $help .= "\n";
+        $help .= " Parameter:\n";
+        $help .= " --project=[PROJECT]		Projektnamen\n\n";
+        $help .= " --newlang=[LANG]		    Neue Sprache die angelegt werden soll\n\n";
+        $help .= " --copylang=[LANG]	    Sprache die kopiert werden soll\n\n";
 
-		$help .= " Optionale Parameter:\n";
-		$help .= " --help			Dieser Hilfetext\n\n";
-		$help .= "\n";
+        $help .= " Optionale Parameter:\n";
+        $help .= " --help			Dieser Hilfetext\n\n";
+        $help .= "\n";
 
-		$this->addHelp($help);
-	}
+        $this->addHelp($help);
+    }
 
-	/**
-	 * Führt das Tool aus
-	 */
-	public function start()
-	{
-		$params = $this->_params;
+    /**
+     * Führt das Tool aus
+     */
+    public function start()
+    {
+        $params = $this->_params;
 
-		if (!isset($params['--project']))
-		{
-			$this->message("\nEs wurde kein Project angegeben\n", 'red');
-			exit;
-		}
+        if (!isset($params['--project']))
+        {
+            $this->message("\nEs wurde kein Project angegeben\n", 'red');
+            exit;
+        }
 
-		if (!isset($params['--newlang']))
-		{
-			$this->message("\nEs wurde keine Sprache angegeben\n", 'red');
-			exit;
-		}
+        if (!isset($params['--newlang']))
+        {
+            $this->message("\nEs wurde keine Sprache angegeben\n", 'red');
+            exit;
+        }
 
-	    $DataBase = \QUI::getDB();
+        $DataBase = \QUI::getDB();
         $Config   = \QUI::getConfig('etc/projects.ini');
 
         $langs = explode(',', $Config->get($params['--project'], 'langs'));
@@ -103,9 +103,9 @@ class ConsoleCreateLang extends System_Console_Tool
         if (!in_array($params['--newlang'], $fields))
         {
             $DataBase->query(
-            	'ALTER TABLE `'. $Project->getAttribute('name') .'_multilingual`
-            	 ADD `'. $params['--newlang'] .'`
-            	 BIGINT( 2 ) NOT NULL'
+                'ALTER TABLE `'. $Project->getAttribute('name') .'_multilingual`
+                 ADD `'. $params['--newlang'] .'`
+                 BIGINT( 2 ) NOT NULL'
             );
         }
 
@@ -115,12 +115,12 @@ class ConsoleCreateLang extends System_Console_Tool
              * Erste Seite anlegen
              */
             $DataBase->query(
-            	"INSERT INTO `". $table ."`
+                "INSERT INTO `". $table ."`
                     (`id`, `name`, `title`, `short`, `content`, `type`, `active`, `deleted`, `c_date`, `e_date`, `c_user`, `e_user`, `nav_hide`, `order_type`, `order_field`, `extra`, `c_user_ip`)
                 VALUES ('1', 'Startpage', 'Startpage', 'Startpage', NULL, 'standard', '0', '0', NOW(), CURRENT_TIMESTAMP, NULL, NULL, '', NULL, NULL, NULL, NULL);"
             );
 
-            $_Site = new Projects_Site_Edit($Project, 1);
+            $_Site = new \QUI\Projects\Site\Edit($Project, 1);
             $_Site->addLanguageLink($params['--newlang'], 1);
 
             return;
@@ -147,14 +147,14 @@ class ConsoleCreateLang extends System_Console_Tool
         {
             try
             {
-                $_Site = new Projects_Site_Edit($Project, $id['id']);
+                $_Site = new \QUI\Projects\Site\Edit($Project, $id['id']);
                 $_Site->addLanguageLink($params['--newlang'], $id['id']);
             } catch (\QUI\Exception $e)
             {
                 $this->message($e->getMessage()."\n", 'red');
             }
         }
-	}
+    }
 }
 
 ?>

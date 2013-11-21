@@ -77,26 +77,26 @@ class Manager
     {
         switch ( $cls )
         {
-            case 'Users_User':
+            case '\\QUI\\Users\\User':
                 return 'user';
             break;
 
-            case 'Groups_Group':
+            case '\\QUI\\Groups\\Group':
                 return 'groups';
             break;
 
-            case 'Projects_Site':
-            case 'Projects_Site_Edit':
-            case 'Projects_Site_OnlyDB':
+            case '\\QUI\\Projects\\Site':
+            case '\\QUI\\Projects\\Site\\Edit':
+            case '\\QUI\\Projects\\Site\\OnlyDB':
                 return 'site';
             break;
 
-            case 'Projects_Project':
+            case '\\QUI\\Projects\\Project':
                 return 'project';
             break;
 
             // @todo media file classes
-            case 'Projects_Media':
+            case '\\QUI\\Projects\\Media':
                 return 'media';
             break;
         }
@@ -373,7 +373,7 @@ class Manager
     /**
      * Return all permissions from a group, user, site, project or media
      *
-     * @param \QUI\Groups\Group|Users_User|Projects_Site $Obj
+     * @param \QUI\Groups\Group|\QUI\Users\User|\QUI\Projects\Site\ $Obj
      * @return Array
      */
     public function getPermissions($Obj)
@@ -415,7 +415,7 @@ class Manager
     /**
      * Return the permissions from a site
      *
-     * @param Projects_Site|Projects_Sites_Edit $Site
+     * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
      * @return array
      */
     public function getSitePermissions($Site)
@@ -439,8 +439,8 @@ class Manager
     /**
      * Set the permissions for an object
      *
-     * @param Users_User|\QUI\Groups\Group|
-     * 	      Projects_Project|Projects_Site|Projects_Site_Edit $Obj
+     * @param \QUI\Users\User|\QUI\Groups\Group|
+     * 	      \QUI\Projects\Project|\QUI\Projects\Site|\QUI\Projects\Site\Edit $Obj
      * @param Array $permissions - Array of permissions
      *
      * @todo permissions for media
@@ -452,17 +452,14 @@ class Manager
 
         switch ( $cls )
         {
-            case 'Users_User':
-
+            case '\\QUI\\Users\\User':
             case '\\QUI\\Groups\\Group':
-            case 'Groups_Group':
-
-            case 'Projects_Project':
+            case '\\QUI\\Projects\\Project':
             break;
 
-            case 'Projects_Site':
-            case 'Projects_Site_Edit':
-            case 'Projects_Site_OnlyDB':
+            case '\\QUI\\Projects\\Site':
+            case '\\QUI\\Projects\\Site\\Edit':
+            case '\\QUI\\Projects\\Site\\OnlyDB':
                 $this->setSitePermissions( $Obj, $permissions );
                 return;
             break;
@@ -597,16 +594,16 @@ class Manager
     /**
      * Set the permissions for a site object
      *
-     * @param Projects_Site|Projects_Site_Edit|Projects_Site_OnlyDB $Site
+     * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit|\QUI\Projects\Site\OnlyDB $Site
      * @param Array $permissions - Array of permissions
      */
     public function setSitePermissions($Site, $permissions)
     {
         switch ( get_class( $Site ) )
         {
-            case 'Projects_Site':
-            case 'Projects_Site_Edit':
-            case 'Projects_Site_OnlyDB':
+            case '\\QUI\\Projects\\Site':
+            case '\\QUI\\Projects\\Site\\Edit':
+            case '\\QUI\\Projects\\Site\\OnlyDB':
             break;
 
             default:
@@ -837,11 +834,11 @@ class Manager
     /**
      * Projekt Rechte bekommen
      *
-     * @param Projects_Project $Project
+     * @param \QUI\Projects\Project $Project
      * @return Array
      */
     /*
-    public function getProjectRights(Projects_Project $Project)
+    public function getProjectRights(\QUI\Projects\Project $Project)
     {
         $filename = USR_DIR .'lib/'. $Project->getAttribute('template') .'/rights.xml';
 
@@ -857,11 +854,11 @@ class Manager
     /**
      * Gibt die XML Gruppen zurück
      *
-     * @param Projects_Project $Project
+     * @param \QUI\Projects\Project $Project
      * @return Array
      */
     /*
-    public function getProjectRightGroups(Projects_Project $Project)
+    public function getProjectRightGroups(\QUI\Projects\Project $Project)
     {
         $filename = USR_DIR .'lib/'. $Project->getAttribute('template') .'/rights.xml';
 

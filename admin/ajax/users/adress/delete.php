@@ -7,11 +7,14 @@
  */
 function ajax_users_adress_delete($uid, $aid)
 {
-	$User   = \QUI::getUsers()->get((int)$uid);
-	$Adress = $User->getAdress((int)$aid);
+    $User   = \QUI::getUsers()->get((int)$uid);
+    $Adress = $User->getAdress((int)$aid);
 
-	$Adress->delete();
+    $Adress->delete();
 }
-QUI::$Ajax->register('ajax_users_adress_delete', array('uid', 'aid'), 'Permission::checkSU');
 
-?>
+\QUI::$Ajax->register(
+    'ajax_users_adress_delete',
+    array('uid', 'aid'),
+    'Permission::checkSU'
+);

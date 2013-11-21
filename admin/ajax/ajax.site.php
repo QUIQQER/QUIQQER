@@ -30,7 +30,7 @@ if ($User->isAdmin() == false) {
 function ajax_site_get_sorts($project, $lang, $id)
 {
     $Project = \QUI::getProject($project, $lang);
-    $Site    = new Projects_Site_Edit($Project, (int)$id);
+    $Site    = new \QUI\Projects\Site\Edit($Project, (int)$id);
 
     $sorts  = $Site->getSorts();
     $result = array();
@@ -77,7 +77,7 @@ function ajax_site_search($lang, $project, $params, $select)
 
     $childs = array();
 
-    foreach ($children as $Child)  /* @var $Child Projects_Site */
+    foreach ($children as $Child)  /* @var $Child \QUI\Projects\Site */
     {
         $attributes = array();
 
@@ -152,7 +152,7 @@ $ajax->register('ajax_site_get_parentids', array('project', 'lang', 'id'));
 function ajax_site_get_extra($id, $lang, $project, $field)
 {
     $Project = \QUI::getProject($project, $lang);
-    $Site    = new Projects_Site_Edit($Project, (int)$id);
+    $Site    = new \QUI\Projects\Site\Edit($Project, (int)$id);
 
     return $Site->getExtra($field);
 }
@@ -169,7 +169,7 @@ $ajax->register('ajax_site_get_extra', array('id', 'lang', 'project', 'field'));
 function ajax_site_super_user_demarcate($project, $lang, $id)
 {
     $Project = \QUI::getProject($project, $lang);
-    $Site    = new Projects_Site_Edit($Project, $id);
+    $Site    = new \QUI\Projects\Site\Edit($Project, $id);
 
     $Site->demarcateWithRights();
 }
@@ -252,7 +252,7 @@ $ajax->register('ajax_site_saveFromTemp', array('id', 'lang', 'project_name'));
 function ajax_site_move($project, $lang, $pid, $id)
 {
     $Project = \QUI::getProject($project, $lang);
-    $Site    = new Projects_Site_Edit($Project, (int)$id);
+    $Site    = new \QUI\Projects\Site\Edit($Project, (int)$id);
 
     return $Site->move($pid) ? 1 : 0;
 }
@@ -270,7 +270,7 @@ $ajax->register('ajax_site_move', array('project', 'lang', 'pid', 'id'));
 function ajax_site_copy($project, $lang, $pid, $id)
 {
     $Project = \QUI::getProject($project, $lang);
-    $Site    = new Projects_Site_Edit($Project, (int)$id);
+    $Site    = new \QUI\Projects\Site\Edit($Project, (int)$id);
 
     return $Site->copy($pid);
 }
@@ -288,7 +288,7 @@ $ajax->register('ajax_site_copy', array('project', 'lang', 'pid', 'id'));
 function ajax_site_linked($project, $lang, $pid, $id)
 {
     $Project = \QUI::getProject($project, $lang);
-    $Site    = new Projects_Site_Edit($Project, (int)$id);
+    $Site    = new \QUI\Projects\Site\Edit($Project, (int)$id);
 
     return $Site->linked($pid);
 }
@@ -305,7 +305,7 @@ $ajax->register('ajax_site_linked', array('project', 'lang', 'pid', 'id'));
 function ajax_site_linked_in($project, $lang, $id, $ids)
 {
     $Project = \QUI::getProject($project, $lang);
-    $Site    = new Projects_Site_Edit($Project, (int)$id);
+    $Site    = new \QUI\Projects\Site\Edit($Project, (int)$id);
     $parents = json_decode($ids, true);
 
     // Schaun ob es den Namen im Kind schon gibt
@@ -365,7 +365,7 @@ $ajax->register('ajax_site_linked_in', array('project', 'lang', 'id', 'ids'));
 function ajax_site_delete_linked($project, $lang, $pid, $id, $delorig)
 {
     $Project = \QUI::getProject($project, $lang);
-    $Site    = new Projects_Site_Edit($Project, (int)$id);
+    $Site    = new \QUI\Projects\Site\Edit($Project, (int)$id);
 
     return $Site->deleteLinked($pid, $delorig);
 }
@@ -387,7 +387,7 @@ function ajax_site_delete_onlylinked($project, $lang, $ids)
     }
 
     $Project = \QUI::getProject($project, $lang);
-    $Site    = new Projects_Site_Edit($Project, (int)$ids[1]);
+    $Site    = new \QUI\Projects\Site\Edit($Project, (int)$ids[1]);
 
     return $Site->deleteLinked($ids[0], false, $ids[2]);
 }
@@ -405,7 +405,7 @@ $ajax->register('ajax_site_delete_onlylinked', array('project', 'lang', 'ids'));
 function ajax_site_rights_recursive($project, $lang, $id, $rights)
 {
     $Project = \QUI::getProject($project, $lang);
-    $Site    = new Projects_Site_Edit($Project, $id);
+    $Site    = new \QUI\Projects\Site\Edit($Project, $id);
 
     $Rights = \QUI::getRights();
     $rights = json_decode($rights, true);
@@ -474,10 +474,10 @@ $ajax->register('ajax_site_getsheet', array('project', 'lang', 'parentid', 'id')
  */
 function ajax_site_search_template()
 {
-    $Engine = QUI_Template::getEngine(true);
+    $Engine = \QUI\Template::getEngine(true);
 
     $Engine->assign(array(
-        'projects' => Projects_Manager::getProjects(true)
+        'projects' => \QUI\Projects\Manager::getProjects(true)
     ));
 
     return $Engine->fetch(SYS_DIR .'template/site_search.html');

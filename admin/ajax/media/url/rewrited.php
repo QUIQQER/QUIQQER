@@ -15,7 +15,7 @@ function ajax_media_url_rewrited($fileurl)
 
     try
     {
-        $File = Projects_Media_Utils::getImageByUrl( $fileurl );
+        $File = \QUI\Projects\Media\Utils::getImageByUrl( $fileurl );
         $url  = $File->getUrl( true );
 
         if ( empty( $url ) ) {
@@ -33,7 +33,7 @@ function ajax_media_url_rewrited($fileurl)
 }
 
 QUI::$Ajax->register(
-	'ajax_media_url_rewrited',
+    'ajax_media_url_rewrited',
     array( 'fileurl' ),
     'Permission::checkAdminUser'
 );

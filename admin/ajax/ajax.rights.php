@@ -63,7 +63,7 @@ function ajax_rights_group_template($id)
 {
     $Groups = \QUI::getGroups();
     $Group  = $Groups->get($id);
-    $Smarty = QUI_Template::getEngine(true);
+    $Smarty = \QUI\Template::getEngine(true);
 
     $Smarty->assign(array(
         'Group'    => $Group,
@@ -220,7 +220,7 @@ function ajax_rights_userpopup_template($id)
 {
     $Users  = \QUI::getUsers();
     $Groups = \QUI::getGroups();
-    $Smarty = QUI_Template::getEngine(true);
+    $Smarty = \QUI\Template::getEngine(true);
     $User   = $Users->get($id);
 
     try
@@ -228,7 +228,7 @@ function ajax_rights_userpopup_template($id)
         $adresses = $User->getAdressList();
         $Smarty->assign('adresses', $adresses);
 
-    } catch (\QUI\Exception $e)
+    } catch ( \QUI\Exception $e )
     {
 
     }
@@ -238,7 +238,7 @@ function ajax_rights_userpopup_template($id)
         $Standard = $User->getStandardAdress();
         $Smarty->assign('Standard', $Standard);
 
-    } catch (\QUI\Exception $e)
+    } catch ( \QUI\Exception $e )
     {
 
     }
@@ -246,14 +246,12 @@ function ajax_rights_userpopup_template($id)
     $Smarty->assign(array(
         'User'     => $User,
         'Groups'   => $Groups,
-        'countrys' => Utils_Countries_Manager::getList(),
+        'countrys' => \QUI\Countries\Manager::getList(),
         'toolbars' => QUI_Wysiwyg::getToolbars()
     ));
 
-    $Smarty->assign('countrys', Utils_Countries_Manager::getList());
+    $Smarty->assign('countrys', \QUI\Countries\Manager::getList());
 
     return $Smarty->fetch(SYS_DIR .'template/user_popup.html');
 }
 $ajax->register('ajax_rights_userpopup_template', array('id'));
-
-?>

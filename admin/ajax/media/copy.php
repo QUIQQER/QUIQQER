@@ -9,16 +9,16 @@
  */
 function ajax_media_copy($project, $to, $ids)
 {
-    $Project = Projects_Manager::getProject( $project );
+    $Project = \QUI\Projects\Manager::getProject( $project );
     $Media   = $Project->getMedia();
     $Folder  = $Media->get( $to );
 
     $ids = json_decode($ids, true);
 
-    if ( !Projects_Media_Utils::isFolder( $Folder ) )
+    if ( !\QUI\Projects\Media\Utils::isFolder( $Folder ) )
     {
         throw new \QUI\Exception(
-        	'Bitte wählen Sie ein Ordner aus um die Dateie zu kopieren.'
+            'Bitte wählen Sie ein Ordner aus um die Dateie zu kopieren.'
         );
     }
 
@@ -35,6 +35,9 @@ function ajax_media_copy($project, $to, $ids)
         }
     }
 }
-QUI::$Ajax->register('ajax_media_copy', array('project', 'to', 'ids'), 'Permission::checkAdminUser');
 
-?>
+\QUI::$Ajax->register(
+    'ajax_media_copy',
+    array('project', 'to', 'ids'),
+    'Permission::checkAdminUser'
+);

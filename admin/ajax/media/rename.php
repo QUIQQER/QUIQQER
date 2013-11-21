@@ -10,7 +10,7 @@
  */
 function ajax_media_rename($project, $id, $newname)
 {
-    $Project = Projects_Manager::getProject( $project );
+    $Project = \QUI\Projects\Manager::getProject( $project );
     $Media   = $Project->getMedia();
     $Item    = $Media->get( $id );
 
@@ -18,6 +18,9 @@ function ajax_media_rename($project, $id, $newname)
 
     return $Item->getAttribute( 'name' );
 }
-QUI::$Ajax->register('ajax_media_rename', array('project', 'id', 'newname'), 'Permission::checkAdminUser');
 
-?>
+\QUI::$Ajax->register(
+    'ajax_media_rename',
+    array('project', 'id', 'newname'),
+    'Permission::checkAdminUser'
+);

@@ -24,7 +24,7 @@ class Permission
     /**
      * Checks, if the user is an admin user
      *
-     * @param Users_User|false $User - optional
+     * @param \QUI\Users\User|false $User - optional
      * @return Bool
      */
     static function isAdmin($User=false)
@@ -52,7 +52,7 @@ class Permission
     /**
      * Prüft den Benutzer auf SuperUser
      *
-     * @param Users_User|false $User - optional
+     * @param \QUI\Users\User|false $User - optional
      * @return Bool
      */
     static function isSU($User=false)
@@ -81,7 +81,7 @@ class Permission
      * has the User the permission
      *
      * @param String $perm
-     * @param Users_User|false $User
+     * @param \QUI\Users\User|false $User
      *
      * @return Ambigous <false, string, permission, unknown, boolean>|boolean
      */
@@ -102,8 +102,8 @@ class Permission
      * has the User the permission at the site?
      *
      * @param String $perm
-     * @param Projects_Site $Site
-     * @param Users_User|false $User - optional
+     * @param \QUI\Projects\Site $Site
+     * @param \QUI\Users\User|false $User - optional
      *
      * @return Ambigous <false, string, permission, unknown, boolean>|boolean
      */
@@ -123,7 +123,7 @@ class Permission
     /**
      * Prüft ob der Benutzer in den Adminbereich darf
      *
-     * @param Users_User|false $User - optional
+     * @param \QUI\Users\User|false $User - optional
      * @throws \QUI\Exception
      */
     static function checkAdminUser($User=false)
@@ -150,7 +150,7 @@ class Permission
      * Prüft ob der Benutzer das Recht besitzt
      *
      * @param String $perm
-     * @param Users_User|false $User - optional
+     * @param \QUI\Users\User|false $User - optional
      *
      * @return false|string|permission
      *
@@ -202,7 +202,7 @@ class Permission
      *
      * @param String $perm
      * @param unknown_type $Site
-     * @param Users_User|false $User - optional
+     * @param \QUI\Users\User|false $User - optional
      *
      * @throws \QUI\Exception
      */
@@ -321,7 +321,7 @@ class Permission
     /**
      * Prüft ob der Benutzer ein SuperUser ist
      *
-     * @param Users_User|false $User - optional
+     * @param \QUI\Users\User|false $User - optional
      * @throws \QUI\Exception
      */
     static function checkSU($User=false)
@@ -346,7 +346,7 @@ class Permission
     /**
      * Prüft ob der Benutzer auch ein Benutzer ist
      *
-     * @param Users_User|false $User - optional
+     * @param \QUI\Users\User|false $User - optional
      * @throws \QUI\Exception
      */
     static function checkUser($User=false)
@@ -355,7 +355,7 @@ class Permission
             $User = \QUI::getUserBySession();
         }
 
-        if ( get_class( $User ) !== 'Users_User' )
+        if ( get_class( $User ) !== '\\QUI\\Users\\User' )
         {
             throw new \QUI\Exception(
                 \QUI::getLocale()->get(
@@ -370,7 +370,7 @@ class Permission
     /**
      * Return the Site Permission
      *
-     * @param Projects_Site|Projects_Site_Edit $Site
+     * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
      * @param String $perm
      *
      * @return unknown_type|boolean
@@ -387,7 +387,7 @@ class Permission
      * Checks if the permission is set
      *
      * @param String $perm
-     * @param Users_User|false $User - optional
+     * @param \QUI\Users\User|false $User - optional
      *
      * @return Bool
      */
@@ -423,8 +423,8 @@ class Permission
      * Checks if the permission exists in the Site
      *
      * @param String $perm
-     * @param Projects_Site|Projects_Site_Edit $Site
-     * @param Users_User|false $User - optional
+     * @param \QUI\Projects\Site\|\QUI\Projects\Site\Edit $Site
+     * @param \QUI\Users\User|false $User - optional
      */
     static function existsSitePermission($perm, $Site, $User=false)
     {
@@ -438,5 +438,3 @@ class Permission
         return isset( $permissions[ $perm ] ) ? true : false;
     }
 }
-
-?>

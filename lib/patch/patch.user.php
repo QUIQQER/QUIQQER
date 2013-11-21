@@ -67,7 +67,7 @@ function patch_user( $Patch )
         $Patch->write('Neue ID: '.$newid);
 
         // Seiten werde gepatcht -c_user und e_user
-        $projects = Projects_Manager::getProjects();
+        $projects = \QUI\Projects\Manager::getProjects();
 
         foreach($projects as $project => $val)
         {

@@ -38,7 +38,7 @@ class System_Cron_Manager extends \QUI\QDOM
         }
 
         // Projekte einlesen
-        $projects = Projects_Manager::getProjects();
+        $projects = \QUI\Projects\Manager::getProjects();
 
         foreach ( $projects as $project )
         {
@@ -97,7 +97,7 @@ class System_Cron_Manager extends \QUI\QDOM
     /**
      * Registered Crons to the Cron Manager
      *
-     * @param Plugin|Projects_Project $Plugin - Plugin or project which the cron provides
+     * @param Plugin|\QUI\Projects\Project $Plugin - Plugin or project which the cron provides
      * @param String $cronname - Name of the cron
      * @param String $desc - Description of the cron
      */
@@ -125,7 +125,7 @@ class System_Cron_Manager extends \QUI\QDOM
      * Execute the cron manager
      * All crons that must be executed will be start
      *
-     * @param Users_User|Bool|Users_SystemUser $User - The user who executes the cron
+     * @param \QUI\Users\User|Bool|\QUI\Users\SystemUser $User - The user who executes the cron
      */
     static function exec($User=false)
     {
@@ -154,7 +154,7 @@ class System_Cron_Manager extends \QUI\QDOM
     /**
      * Add a cron to the execution list
      *
-     * @param Plugin|Projects_Project $Plugin
+     * @param Plugin|\QUI\Projects\Project $Plugin
      * @param String $cronname - The name of the cron
      * @param Array $date   - When should the cron run
      * @param Array $params - Which parameters should be carried out of the cron

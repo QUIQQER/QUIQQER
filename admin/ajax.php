@@ -80,7 +80,7 @@ function ajax_send_support_mail($title, $text, $browser, $url, $mail)
     $_mail = new QUI_Mail(array(
         'MAILFromText' => 'Support Mailer'
     ));
-    $mail_smarty = QUI_Template::getEngine();
+    $mail_smarty = \QUI\Template::getEngine();
 
     $mail_smarty->assign(array(
         'url'     => $url,
@@ -209,7 +209,7 @@ function ajax_url_clean($project, $url)
 {
     $Project = \QUI::getProject($project);
 
-    return Projects_Site_Edit::clearUrl($url, $Project);
+    return \QUI\Projects\Site\Edit::clearUrl($url, $Project);
 }
 QUI::$Ajax->register('ajax_url_clean', array('project', 'url'));
 

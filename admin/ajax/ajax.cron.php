@@ -134,7 +134,7 @@ $ajax->register('ajax_cron_edit_params', array('cid', 'params'));
  */
 function ajax_cron_add_template()
 {
-    $Smarty      = QUI_Template::getEngine();
+    $Smarty      = \QUI\Template::getEngine();
     $CronManager = new System_Cron_Manager();
 
     $list = $CronManager->getList();

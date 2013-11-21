@@ -7,7 +7,7 @@
 
 function ajax_project_get_config($project, $param)
 {
-    $Project = \Projects_Manager::getProject( $project );
+    $Project = \QUI\Projects\Manager::getProject( $project );
 
     if ( isset( $param ) ) {
         return $Project->getConfig( $param );
@@ -21,6 +21,3 @@ function ajax_project_get_config($project, $param)
     array( 'project', 'param' ),
     'Permission::checkAdminUser'
 );
-
-
-?>

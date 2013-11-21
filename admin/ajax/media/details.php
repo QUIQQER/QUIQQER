@@ -11,7 +11,7 @@
 function ajax_media_details($project, $fileid)
 {
     $fileid  = json_decode( $fileid, true );
-    $Project = Projects_Manager::getProject( $project );
+    $Project = \QUI\Projects\Manager::getProject( $project );
     $Media   = $Project->getMedia();
 
     if ( is_array($fileid) )
@@ -29,6 +29,9 @@ function ajax_media_details($project, $fileid)
 
     return $Media->get( $fileid )->getAttributes();
 }
-QUI::$Ajax->register('ajax_media_details', array('project', 'fileid'), 'Permission::checkAdminUser');
 
-?>
+\QUI::$Ajax->register(
+    'ajax_media_details',
+    array('project', 'fileid'),
+    'Permission::checkAdminUser'
+);

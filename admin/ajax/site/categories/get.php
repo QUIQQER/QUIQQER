@@ -12,9 +12,9 @@
 function ajax_site_categories_get($project, $lang, $id)
 {
     $Project = \QUI::getProject( $project, $lang );
-    $Site    = new \Projects_Site_Edit( $Project, (int)$id );
+    $Site    = new \QUI\Projects\Site\Edit( $Project, (int)$id );
 
-    $Tabbar   = \Projects_Sites::getTabs( $Site );
+    $Tabbar   = \QUI\Projects\Sites::getTabs( $Site );
     $children = $Tabbar->getChildren();
 
     $result = array();
@@ -31,5 +31,3 @@ function ajax_site_categories_get($project, $lang, $id)
     array('project', 'lang', 'id'),
     'Permission::checkAdminUser'
 );
-
-?>

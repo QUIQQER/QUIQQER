@@ -8,12 +8,12 @@
  */
 function ajax_groups_extend($id, $eproject)
 {
-    $Group   = \QUI::getGroups()->get($id);
-    $Engine  = \QUI_Template::getEngine(true);
-    $Project = \QUI::getProject($eproject);
+    $Group   = \QUI::getGroups()->get( $id );
+    $Engine  = \QUI\Template::getEngine( true );
+    $Project = \QUI::getProject( $eproject );
 
     $Rights = \QUI::getRights();
-    $rights = $Rights->getProjectRightGroups($Project);
+    $rights = $Rights->getProjectRightGroups( $Project );
 
     $Engine->assign(array(
         'Group'  => $Group,
@@ -22,6 +22,5 @@ function ajax_groups_extend($id, $eproject)
 
     return $Engine->fetch(CMS_DIR .'admin/template/groups/extend.html');
 }
-$ajax->register('ajax_groups_extend', array('id', 'eproject'));
 
-?>
+\QUI::$Ajax->register( 'ajax_groups_extend', array('id', 'eproject') );

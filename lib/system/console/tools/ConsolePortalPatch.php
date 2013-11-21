@@ -19,96 +19,96 @@
 
 class ConsolePortalPatch extends System_Console_Tool
 {
-	/**
-	 * Enter description here...
-	 *
-	 * @param unknown_type $params
-	 */
-	public function __construct($params)
-	{
-		parent::__construct($params);
+    /**
+     * Enter description here...
+     *
+     * @param unknown_type $params
+     */
+    public function __construct($params)
+    {
+        parent::__construct($params);
 
-		$help = " Beschreibung:\n";
-		$help .= " Patch für das Portalplugin\n";
-		$help .= "\n";
-		$help .= " Aufruf:\n";
-		$help .= " admin/console.php --username=[USERNAME] --password=[PASSWORD] --tool=ConsoleTranslate [params]\n";
-		$help .= "\n";
-		$help .= " Parameter:\n";
-		$help .= " --project=[PROJECT]		Projektnamen\n\n";
-		$help .= " --lang=[LANG]		    Sprache\n\n";
+        $help = " Beschreibung:\n";
+        $help .= " Patch für das Portalplugin\n";
+        $help .= "\n";
+        $help .= " Aufruf:\n";
+        $help .= " admin/console.php --username=[USERNAME] --password=[PASSWORD] --tool=ConsoleTranslate [params]\n";
+        $help .= "\n";
+        $help .= " Parameter:\n";
+        $help .= " --project=[PROJECT]		Projektnamen\n\n";
+        $help .= " --lang=[LANG]		    Sprache\n\n";
 
-		$help .= " Optionale Parameter:\n";
-		$help .= " --help			Dieser Hilfetext\n\n";
-		$help .= " --test			Testmodus\n\n";
-		$help .= "\n";
+        $help .= " Optionale Parameter:\n";
+        $help .= " --help			Dieser Hilfetext\n\n";
+        $help .= " --test			Testmodus\n\n";
+        $help .= "\n";
 
-		$this->addHelp($help);
-	}
+        $this->addHelp($help);
+    }
 
-	/**
-	 * Führt das Tool aus
-	 */
-	public function start()
-	{
-		$params = $this->_params;
+    /**
+     * Führt das Tool aus
+     */
+    public function start()
+    {
+        $params = $this->_params;
 
-		if (!isset($params['--project'])) {
-			throw new \QUI\Exception('Es wurde kein Project angegeben');
-		}
+        if (!isset($params['--project'])) {
+            throw new \QUI\Exception('Es wurde kein Project angegeben');
+        }
 
-		if (!isset($params['--lang'])) {
-			throw new \QUI\Exception('Es wurde keine Sprache angegeben');
-		}
+        if (!isset($params['--lang'])) {
+            throw new \QUI\Exception('Es wurde keine Sprache angegeben');
+        }
 
-		$db   = \QUI::getDB();
-		$test = isset($params['--test']) ? true : false;
+        $db   = \QUI::getDB();
+        $test = isset($params['--test']) ? true : false;
 
-		$lang    = $params['--lang'];
-		$project = $params['--project'];
+        $lang    = $params['--lang'];
+        $project = $params['--project'];
 
-		$Project = new Projects_Project($project, $lang);
-		$sites   = $Project->getSites(array(
-			'where' => array(
-				'type' => 'base/portal'
-			)
-		));
+        $Project = new \QUI\Projects\Project($project, $lang);
+        $sites   = $Project->getSites(array(
+            'where' => array(
+                'type' => 'base/portal'
+            )
+        ));
 
-		$table = $Project->getAttribute('db_table');
+        $table = $Project->getAttribute('db_table');
 
-		/* @var $Site Projects_Site */
-		foreach ($sites as $Site)
-		{
-			$result = $db->select(array(
-				'from'  => $table,
-				'where' => array(
-					'id' => $Site->getId()
-				)
-			));
+        /* @var $Site \QUI\Projects\Site */
+        foreach ($sites as $Site)
+        {
+            $result = $db->select(array(
+                'from'  => $table,
+                'where' => array(
+                    'id' => $Site->getId()
+                )
+            ));
 
-			$content = json_decode($result[0]['content'], true);
+            $content = json_decode($result[0]['content'], true);
 
-			if ($test)
-			{
-				echo $Site->getId() .' - '. $Site->getAttribute('title') ."\n";
-				echo json_encode($content);
-				echo "\n\n";
-				continue;
-			}
+            if ($test)
+            {
+                echo $Site->getId() .' - '. $Site->getAttribute('title') ."\n";
+                echo json_encode($content);
+                echo "\n\n";
+                continue;
+            }
 
-			$_Site = new Projects_Site_Edit($Project, $Site->getId());
+            $_Site = new \QUI\Projects\Site\Edit($Project, $Site->getId());
 
-			echo $_Site->getId() .' - '. $_Site->getAttribute('title') ."\n";
-			$_Site->setAttribute('pcsg.portal.content', json_encode($content));
-			$_Site->setAttribute('type', 'portal/portal');
+            echo $_Site->getId() .' - '. $_Site->getAttribute('title') ."\n";
+            $_Site->setAttribute('pcsg.portal.content', json_encode($content));
+            $_Site->setAttribute('type', 'portal/portal');
 
-			$_Site->updateTemp('pcsg.portal.content', json_encode($content));
-			$_Site->updateTemp('type', 'portal/portal');
+            $_Site->updateTemp('pcsg.portal.content', json_encode($content));
+            $_Site->updateTemp('type', 'portal/portal');
 
-			$_Site->save();
-			echo "Status ... OK\n\n";
-		}
-	}
+            $_Site->save();
+            echo "Status ... OK\n\n";
+        }
+    }
 }
 
 ?>

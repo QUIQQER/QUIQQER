@@ -41,9 +41,9 @@ class Media
     /**
      * Konstruktor
      *
-     * @param Projects_Project $project
+     * @param \QUI\Projects\Project $project
      */
-    public function __construct(Projects_Project $Project)
+    public function __construct(\QUI\Projects\Project $Project)
     {
         $name = $Project->getAttribute('name');
 

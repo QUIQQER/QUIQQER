@@ -78,7 +78,7 @@ define('ADLDAP_DISTRIBUTION_LOCAL_GROUP', 536870913);
  * @todo docu translation
  */
 
-class ActiveDirectory extends \QUI\QDOM implements Interface_Users_Auth
+class ActiveDirectory extends \QUI\QDOM implements \QUI\Interfaces\Users\Auth
 {
     /**
      * ldap_bind

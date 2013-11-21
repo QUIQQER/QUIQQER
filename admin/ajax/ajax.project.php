@@ -38,7 +38,7 @@ $ajax->register('ajax_project_getproject', array('name', 'lang'));
  */
 function ajax_project_create($newname, $lang, $template)
 {
-    Projects_Manager::createProject($newname, $lang, $template);
+    \QUI\Projects\Manager::createProject($newname, $lang, $template);
 }
 $ajax->register('ajax_project_create', array('newname', 'lang', 'template'));
 
@@ -211,7 +211,7 @@ function ajax_project_clear_trash($project, $lang)
 
     foreach ($sites as $site)
     {
-        $Site = new Projects_Site_Edit($Project, (int)$site['id']);
+        $Site = new \QUI\Projects\Site\Edit($Project, (int)$site['id']);
 
         $Site->deleteTemp();
         $Site->refresh();

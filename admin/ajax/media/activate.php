@@ -14,7 +14,7 @@ function ajax_media_activate($project, $fileid)
         $fileid = array( $fileid );
     }
 
-    $Project = Projects_Manager::getProject( $project );
+    $Project = \QUI\Projects\Manager::getProject( $project );
     $Media   = $Project->getMedia();
 
     foreach ( $fileid as $id ) {
@@ -23,10 +23,9 @@ function ajax_media_activate($project, $fileid)
 
     return true;
 }
-QUI::$Ajax->register(
-	'ajax_media_activate',
+
+\QUI::$Ajax->register(
+    'ajax_media_activate',
     array( 'project', 'fileid' ),
     'Permission::checkAdminUser'
 );
-
-?>

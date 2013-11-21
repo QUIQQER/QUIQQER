@@ -1,8 +1,10 @@
 <?php
 
 /**
- * This file contains QUI_Rewrite
+ * This file contains \QUI\Rewrite
  */
+
+namespace QUI;
 
 /**
  * Rewrite - URL Verwaltung (sprechende URLS)
@@ -18,7 +20,7 @@
  * @event onQUI::RewriteOutput [ Rewrite ]
  */
 
-class QUI_Rewrite
+class Rewrite
 {
     const URL_PARAM_SEPERATOR   = '_';
     const URL_SPACE_CHARACTER   = '-';
@@ -32,7 +34,7 @@ class QUI_Rewrite
 
     /**
      * active project
-     * @var Projects_Project
+     * @var \QUI\Projects\Project
      */
     private $_project;
 
@@ -62,13 +64,13 @@ class QUI_Rewrite
 
     /**
      * active site
-     * @var Projects_Site
+     * @var \QUI\Projects\Site
      */
     private $_site = null;
 
     /**
      * first site of the project
-     * @var Projects_Site
+     * @var \QUI\Projects\Site
      */
     private $_first_child;
 
@@ -254,7 +256,7 @@ class QUI_Rewrite
         {
             try
             {
-                $Item = \Projects_Media_Utils::getElement( $_REQUEST['_url'] );
+                $Item = \QUI\Projects\Media\Utils::getElement( $_REQUEST['_url'] );
 
                 if (strpos($_REQUEST['_url'], '__') !== false)
                 {
@@ -283,9 +285,9 @@ class QUI_Rewrite
                 $this->_showErrorHeader( 404 );
             }
 
-            if ( $Item->getType() === 'Projects_Media_Image' )
+            if ( $Item->getType() === '\\QUI\\Projects\\Media\\Image' )
             {
-                /* @var $Item Projects_Media_Image */
+                /* @var $Item \QUI\Projects\Media\Image */
                 if ( !isset( $width ) || empty( $width ) ) {
                     $width = false;
                 }
@@ -604,7 +606,7 @@ class QUI_Rewrite
      * Gibt das aktuelle Projekt zurück
      * Die Daten werden aus der URL gehohlt
      *
-     * @return Projects_Project
+     * @return \QUI\Projects\Project
      */
     public function getProject()
     {
@@ -613,7 +615,7 @@ class QUI_Rewrite
         }
 
         if ( is_string( $this->_project_str ) && !empty( $this->_project_str ) ) {
-            return Projects_Manager::get();
+            return \QUI\Projects\Manager::get();
         }
 
         // Falls keine Projekt Parameter existieren wird das standard Projekt verwendet
@@ -656,7 +658,7 @@ class QUI_Rewrite
 
         try
         {
-            $Project = Projects_Manager::get();
+            $Project = \QUI\Projects\Manager::get();
         } catch ( \QUI\Exception $e )
         {
             $Project = false;
@@ -671,7 +673,7 @@ class QUI_Rewrite
         // Projekt mit der Sprache exitiert nicht
         $this->_showErrorHeader( 404 );
 
-        $Project = Projects_Manager::getStandard();
+        $Project = \QUI\Projects\Manager::getStandard();
 
         $this->_project = $Project;
         $this->_lang    = $Project->getAttribute( 'lang' );
@@ -686,7 +688,7 @@ class QUI_Rewrite
     /**
      * Return the prject by the vhost, if a vhost exist
      *
-     * @return Projects_Project|false
+     * @return \QUI\Projects\Project|false
      */
     protected function _getProjectByVhost()
     {
@@ -915,7 +917,7 @@ class QUI_Rewrite
     /**
      * Aktuelles Site Objekt überschreiben
      *
-     * @param Projects_Site|Projects_Site_Edit $Site
+     * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
      */
     public function setSite($Site)
     {
@@ -974,9 +976,9 @@ class QUI_Rewrite
     /**
      * Setzt eine Seite in den Path
      *
-     * @param Projects_Site $Site - seite die hinzugefügt wird
+     * @param \QUI\Projects\Site $Site - seite die hinzugefügt wird
      */
-    private function _set_path(Projects_Site $Site)
+    private function _set_path(\QUI\Projects\Site $Site)
     {
         $this->_path[] = $Site;
         array_push($this->_ids_in_path, $Site->getId());
@@ -1083,7 +1085,7 @@ class QUI_Rewrite
     {
         try
         {
-            return $output[1].'="'. Projects_Media_Utils::getUrl('image.php?'.$output[3]).'"';
+            return $output[1].'="'. \QUI\Projects\Media\Utils::getUrl('image.php?'.$output[3]).'"';
         } catch (\QUI\Exception $e)
         {
             return $output[1].'=""';
@@ -1105,7 +1107,7 @@ class QUI_Rewrite
             return $this->_image_cache[ $img ];
         }
 
-        if ( \Projects_Media_Utils::isMediaUrl( $img ) )
+        if ( \QUI\Projects\Media\Utils::isMediaUrl( $img ) )
         {
             $att = \QUI\Utils\String::getHTMLAttributes( $img );
 
@@ -1127,7 +1129,7 @@ class QUI_Rewrite
             {
                 try
                 {
-                    $Image = \Projects_Media_Utils::getImageByUrl( $src );
+                    $Image = \QUI\Projects\Media\Utils::getImageByUrl( $src );
 
                     $att['alt']   = $Image->getAttribute('alt') ? $Image->getAttribute('alt') : '';
                     $att['title'] = $Image->getAttribute('title') ? $Image->getAttribute('title') : '';
@@ -1138,7 +1140,7 @@ class QUI_Rewrite
                 }
             }
 
-            $this->_image_cache[ $img ] = \Projects_Media_Utils::getImageHTML( $src, $att );
+            $this->_image_cache[ $img ] = \QUI\Projects\Media\Utils::getImageHTML( $src, $att );
 
             return $this->_image_cache[ $img ];
         }
@@ -1317,9 +1319,9 @@ class QUI_Rewrite
             // Wenn nicht erstellen
             try
             {
-                $Project = \QUI::getProject($project, $lang); /* @var $Project Projects_Project */
-                $Site    = $Project->get( (int)$id ); /* @var $s Projects_Site */
-            } catch (\QUI\Exception $e)
+                $Project = \QUI::getProject($project, $lang); /* @var $Project \QUI\Projects\Project */
+                $Site    = $Project->get( (int)$id ); /* @var $s \QUI\Projects\Site */
+            } catch ( \QUI\Exception $e )
             {
                 // Seite existiert nicht
                 return '';

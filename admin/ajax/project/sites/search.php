@@ -8,8 +8,8 @@
  */
 function ajax_project_sites_search($project, $lang, $search, $params)
 {
-    $params = json_decode( $params, true );
-    $Project = \Projects_Manager::getProject($project, $lang);
+    $params  = json_decode( $params, true );
+    $Project = \QUI\Projects\Manager::getProject($project, $lang);
 
     $sites  = $Project->search( $search, $params['fields'] );
     $result = array();

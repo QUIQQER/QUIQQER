@@ -455,7 +455,7 @@ $ajax->register('ajax_media_folder_haschildren', array('project', 'id'));
  */
 function ajax_media_search_template()
 {
-    return QUI_Template::getEngine(true)->fetch(
+    return \QUI\Template::getEngine(true)->fetch(
         SYS_DIR .'template/media_search.html'
     );
 }

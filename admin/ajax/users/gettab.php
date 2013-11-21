@@ -11,8 +11,11 @@
  */
 function ajax_users_gettab($uid, $plugin, $tab)
 {
-    return Users_Utils::getTab($uid, $plugin, $tab);
+    return \QUI\Users\Utils::getTab($uid, $plugin, $tab);
 }
-QUI::$Ajax->register('ajax_users_gettab', array('uid', 'plugin', 'tab'), 'Permission::checkSU');
 
-?>
+\QUI::$Ajax->register(
+    'ajax_users_gettab',
+    array('uid', 'plugin', 'tab'),
+    'Permission::checkSU'
+);

@@ -25,13 +25,13 @@ if ($User->isAdmin() == false) {
  */
 function ajax_multilingual_manager($id, $lang, $project_name)
 {
-    $Smarty = QUI_Template::getEngine(true);
+    $Smarty = \QUI\Template::getEngine(true);
     $file   = SYS_DIR .'template/multilingual_manager.html';
 
     try
     {
         $Project = \QUI::getProject($project_name, $lang);
-        $Site    = new Projects_Site_Edit($Project, (int)$id);
+        $Site    = new \QUI\Projects\Site\Edit($Project, (int)$id);
 
         $config = $Project->getAttribute('config');
         $langs  = explode(',', $config['langs']);
@@ -66,7 +66,7 @@ $ajax->register('ajax_multilingual_manager', array('id', 'lang', 'project_name')
 function ajax_multilingual_addlink($project_name, $id1, $lang1, $id2, $lang2)
 {
     $Project = \QUI::getProject($project_name, $lang1);
-    $Site    = new Projects_Site_Edit($Project, (int)$id1);
+    $Site    = new \QUI\Projects\Site\Edit($Project, (int)$id1);
 
     return $Site->addLanguageLink($lang2, $id2);
 }
@@ -84,7 +84,7 @@ $ajax->register('ajax_multilingual_addlink', array('project_name', 'id1', 'lang1
 function ajax_multilingual_removelink($project_name, $id1, $lang1, $id2, $lang2)
 {
     $Project = \QUI::getProject($project_name, $lang1);
-    $Site    = new Projects_Site_Edit($Project, (int)$id1);
+    $Site    = new \QUI\Projects\Site\Edit($Project, (int)$id1);
 
     return $Site->removeLanguageLink($lang2);
 }
@@ -107,10 +107,10 @@ function ajax_multilingual_copy($project_name, $id, $sitelang, $parentid, $paren
         $p      = \QUI::getProject($project_name, $sitelang); // aktuelles Projekt
         $p_lang = \QUI::getProject($project_name, $parentlang); // aktuelles Projekt mit anderer Sprache
 
-        $site       = new Projects_Site_Edit($p, (int)$id, false, true); // Aktuelle Seite
+        $site       = new \QUI\Projects\Site\Edit($p, (int)$id, false, true); // Aktuelle Seite
         $attributes = $site->getAllAttributes(); // Attribute von aktueller Seite bekommen
 
-        $p_site = new Projects_Site_Edit($p_lang, (int)$parentid, $parentlang, true); // Parent
+        $p_site = new \QUI\Projects\Site\Edit($p_lang, (int)$parentid, $parentlang, true); // Parent
         $newid  = $p_site->createChild(); // Neues Kind erzeugen
 
         if (!$newid)
@@ -122,7 +122,7 @@ function ajax_multilingual_copy($project_name, $id, $sitelang, $parentid, $paren
             return false;
         }
 
-        $newsite = new Projects_Site_Edit($p_lang, (int)$newid, false); // Neues Kind als Objekt
+        $newsite = new \QUI\Projects\Site\Edit($p_lang, (int)$newid, false); // Neues Kind als Objekt
         $newsite->updateTemp($attributes); // Alle Attribute in das neue Kind schmeisen
         $newsite->save(); // Speichern
 

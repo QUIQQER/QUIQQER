@@ -147,7 +147,7 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
         }
 
         // Alle Projekte durchgehen
-        $Conf = Projects_Manager::getConfig();
+        $Conf = \QUI\Projects\Manager::getConfig();
         $conf = $Conf->toArray();
 
         foreach ( $conf as $project => $entrys )
@@ -195,7 +195,7 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
         $dbfields = array();
         $Dom      = $this->_getDbXml();
         $database = $Dom->getElementsByTagName('database');
-        $projects = Projects_Manager::getConfig()->toArray();
+        $projects = \QUI\Projects\Manager::getConfig()->toArray();
         $DataBase = \QUI::getDB();
 
         $settings = array(
@@ -605,7 +605,7 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
 
                 if ($Param->getAttribute('type') == 'projects')
                 {
-                    $projects = Projects_Manager::getProjects();
+                    $projects = \QUI\Projects\Manager::getProjects();
 
                     foreach ($projects as $project)
                     {
@@ -719,9 +719,9 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
      * Ladet die Benutzer-Tabs in die Toolbar
      *
      * @param Controls_Toolbar_Bar $Tabbar
-     * @param Users_User $User
+     * @param \QUI\Users\User $User
      */
-    public function loadUserTabs(Controls_Toolbar_Bar $Tabbar, Users_User $User)
+    public function loadUserTabs(Controls_Toolbar_Bar $Tabbar, \QUI\Users\User $User)
     {
         // Alte JS Tabs über PHP
         if ($this->getUserPlugin())
@@ -777,9 +777,9 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
      * Speichert die Extra Attribute ins Extrafeld des Benutzers
      * Falls kein onSave gesetzt ist
      *
-     * @param Users_User $User
+     * @param \QUI\Users\User $User
      */
-    public function onUserSave(Users_User $User)
+    public function onUserSave(\QUI\Users\User $User)
     {
         if ($this->getUserPlugin())
         {
@@ -809,9 +809,9 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
      * Ladet die Pluginfelder aus den Extras in den Benutzern
      * Falls kein onLoad gesetzt ist
      *
-     * @param Users_User $User
+     * @param \QUI\Users\User $User
      */
-    public function onUserLoad(Users_User $User)
+    public function onUserLoad(\QUI\Users\User $User)
     {
         // Plugin Attribute setzen
         $attr = $this->getUserAttributes();
@@ -896,7 +896,7 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
     /**
      * Plugin beim MVC registrieren
      *
-     * @param Projects_Project|Bool $Project - optional
+     * @param \QUI\Projects\Project|Bool $Project - optional
      * @return String
      */
     public function getTemplateHeader($Project=false)
@@ -922,7 +922,7 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
     /**
      * Header Dateien des Plugins
      *
-     * @param Projects_Project $Project - optional
+     * @param \QUI\Projects\Project $Project - optional
      * @return Array
      */
     public function getHeaderFiles($Project=false)
@@ -1107,7 +1107,7 @@ class QUI_Plugins_Plugin extends \QUI\QDOM
 
         $Dom      = $this->_getSettingsXml();
         $settings = $Dom->getElementsByTagName('plugin_settings');
-        $projects = Projects_Manager::getProjects();
+        $projects = \QUI\Projects\Manager::getProjects();
 
         if (!$settings->length) {
             return array();

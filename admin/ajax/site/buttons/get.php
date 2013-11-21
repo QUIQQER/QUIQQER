@@ -12,15 +12,13 @@
 function ajax_site_buttons_get($project, $lang, $id)
 {
     $Project = \QUI::getProject( $project, $lang );
-    $Site    = new \Projects_Site_Edit( $Project, (int)$id );
+    $Site    = new \QUI\Projects\Site\Edit( $Project, (int)$id );
 
-    return \Projects_Sites::getButtons( $Site )->toArray();
+    return \QUI\Projects\Sites::getButtons( $Site )->toArray();
 }
 
-QUI::$Ajax->register(
+\QUI::$Ajax->register(
     'ajax_site_buttons_get',
     array( 'project', 'lang', 'id' ),
     'Permission::checkAdminUser'
 );
-
-?>

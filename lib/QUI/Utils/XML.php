@@ -98,7 +98,7 @@ class XML
             return false;
         }
 
-        $projects = \Projects_Manager::getProjects();
+        $projects = \QUI\Projects\Manager::getProjects();
         $children = $configs->item( 0 )->childNodes;
         $result   = array();
 
@@ -161,6 +161,10 @@ class XML
                 $dbfields['globals'][] = \QUI\Utils\DOM::dbTableDomToArray(
                     $tables->item( $i )
                 );
+            }
+
+            if ( $global->item(0)->getAttribute( 'execute' ) ) {
+                $dbfields['execute'][] = $global->item(0)->getAttribute( 'execute' );
             }
         }
 
@@ -749,14 +753,14 @@ class XML
     static function importDataBase($dbfields)
     {
         $DataBase = \QUI::getDB();
-        $projects = \Projects_Manager::getConfig()->toArray();
+        $projects = \QUI\Projects\Manager::getConfig()->toArray();
 
         // globale tabellen erweitern / anlegen
         if ( isset( $dbfields['globals'] ) )
         {
             foreach ( $dbfields['globals'] as $table )
             {
-                $tbl  = \QUI::getDBTableName( $table['suffix'] );
+                $tbl = \QUI::getDBTableName( $table['suffix'] );
 
                 $DataBase->createTableFields( $tbl, $table['fields'] );
 
@@ -775,6 +779,10 @@ class XML
         {
             foreach ( $dbfields['projects'] as $table )
             {
+                if ( !isset( $table['suffix'] ) ) {
+                    continue;
+                }
+
                 $suffix = $table['suffix'];
                 $fields = $table['fields'];
 
@@ -829,7 +837,4 @@ class XML
         $Manager = \QUI::getRights();
         $Manager->importPermissionsFromXml( $xmlfile, $src );
     }
-
 }
-
-?>

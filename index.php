@@ -41,7 +41,7 @@ if ( function_exists( 'gzcompress' ) ) {
 
 require_once 'bootstrap.php';
 
-$Engine = \QUI_Template::getEngine();
+$Engine = \QUI\Template::getEngine();
 
 // UTF 8 Prüfung für umlaute in url
 if ( isset( $_REQUEST['_url'] ) ) {
@@ -61,8 +61,8 @@ if ( isset( $_REQUEST['lang'] ) && $_REQUEST['lang'] == 'false' )
     \QUI::getLocale()->no_translation = true;
 }
 
-$Project = $Rewrite->getProject(); 		/* @var $Project Projects_Project */
-$Site    = $Rewrite->getSite()->load(); /* @var $Site Projects_Site_Edit */
+$Project = $Rewrite->getProject(); 		/* @var $Project \QUI\Projects\Project */
+$Site    = $Rewrite->getSite()->load(); /* @var $Site \QUI\Projects\Site\Edit */
 
 if ( isset( $Locale ) )
 {
@@ -137,7 +137,7 @@ if ( CACHE && file_exists( $site_cache_file ) && $Site->getAttribute('nocache') 
 {
     $cache_content = file_get_contents( $site_cache_file );
     $_content      = $Rewrite->outputFilter( $cache_content );
-    $_content      = QUI_Template::setAdminMenu( $_content );
+    $_content      = \QUI\Template::setAdminMenu( $_content );
 
     // Content Ausgabe
     echo $_content;
@@ -147,7 +147,7 @@ if ( CACHE && file_exists( $site_cache_file ) && $Site->getAttribute('nocache') 
 /**
  * Template Content generieren
  */
-$Template = new \QUI_Template();
+$Template = new \QUI\Template();
 $content  = $Template->fetchTemplate( $Site );
 
 \QUI\Utils\System\Debug::marker('fetch Template');
@@ -161,7 +161,7 @@ if ($Site->getAttribute('nocache') != true)
 }
 
 $content = $Rewrite->outputFilter( $content );
-$content = QUI_Template::setAdminMenu( $content );
+$content = \QUI\Template::setAdminMenu( $content );
 
 \QUI\Utils\System\Debug::marker('output Filter');
 

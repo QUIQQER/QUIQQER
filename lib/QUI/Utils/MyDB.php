@@ -22,9 +22,9 @@ class MyDB
      */
     protected $_DB = null;
 
-       /**
-        * constructor
-        */
+    /**
+     * constructor
+     */
     public function __construct()
     {
         $this->_DB = \QUI::getDataBase();
@@ -158,20 +158,20 @@ class MyDB
         switch ( $type )
         {
             case 'OBJ':
-                return $this->_DB->fetch( $params, PDO::FETCH_OBJ );
+                return $this->_DB->fetch( $params, \PDO::FETCH_OBJ );
             break;
 
             case 'NUM':
-                return $this->_DB->fetch( $params, PDO::FETCH_NUM );
+                return $this->_DB->fetch( $params, \PDO::FETCH_NUM );
             break;
 
             case 'BOTH':
-                return $this->_DB->fetch( $params, PDO::FETCH_BOTH );
+                return $this->_DB->fetch( $params, \PDO::FETCH_BOTH );
             break;
 
             default:
             case 'ASSOC':
-                return $this->_DB->fetch($params, PDO::FETCH_ASSOC );
+                return $this->_DB->fetch($params, \PDO::FETCH_ASSOC );
             break;
         }
     }

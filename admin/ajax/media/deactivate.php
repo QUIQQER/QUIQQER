@@ -9,7 +9,7 @@ function ajax_media_deactivate($project, $fileid)
 {
 $fileid = json_decode($fileid, true);
 
-    $Project = Projects_Manager::getProject( $project );
+    $Project = \QUI\Projects\Manager::getProject( $project );
     $Media   = $Project->getMedia();
 
     if ( is_array( $fileid ) )
@@ -23,6 +23,9 @@ $fileid = json_decode($fileid, true);
 
     $Media->get( $fileid )->deactivate();
 }
-QUI::$Ajax->register('ajax_media_deactivate', array('project', 'fileid'), 'Permission::checkAdminUser');
 
-?>
+\QUI::$Ajax->register(
+    'ajax_media_deactivate',
+    array('project', 'fileid'),
+    'Permission::checkAdminUser'
+);

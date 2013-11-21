@@ -13,7 +13,7 @@
 function ajax_site_save($project, $lang, $id, $attributes)
 {
     $Project = \QUI::getProject( $project, $lang );
-    $Site    = new Projects_Site_Edit( $Project, (int)$id );
+    $Site    = new \QUI\Projects\Site\Edit( $Project, (int)$id );
 
     $attributes = json_decode( $attributes, true );
 
@@ -31,5 +31,3 @@ function ajax_site_save($project, $lang, $id, $attributes)
     array( 'project', 'lang', 'id', 'attributes' ),
     'Permission::checkAdminUser'
 );
-
-?>

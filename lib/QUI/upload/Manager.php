@@ -503,7 +503,7 @@ class QUI_Upload_Manager
     /**
      * Return the Path to the User upload directory
      *
-     * @param Users_User $User - optional, standard is the session user
+     * @param \QUI\Users\User $User - optional, standard is the session user
      * @return String
      */
     protected function _getUserUploadDir($User=false)
@@ -609,7 +609,7 @@ class QUI_Upload_Manager
      * Get unfinish uploads from a specific user
      * so you can resume the upload
      *
-     * @param Users_User $User - optional, if false = the session user
+     * @param \QUI\Users\User $User - optional, if false = the session user
      * @return array
      */
     public function getUnfinishedUploadsFromUser($User=false)

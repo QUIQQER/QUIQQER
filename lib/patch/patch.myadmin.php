@@ -18,94 +18,94 @@
 
 function patch_myadmin( $Patch )
 {
-	$Patch->write('Patch für phpMyAdmin wird ausgeführt...');
+    $Patch->write('Patch für phpMyAdmin wird ausgeführt...');
 
-	$db       = \QUI::getDB();
-	$projects = Projects_Manager::getProjects();
+    $db       = \QUI::getDB();
+    $projects = \QUI\Projects\Manager::getProjects();
 
-	$ERRORS = 0;
+    $ERRORS = 0;
 
-	foreach($projects as $project => $val)
-	{
-		try
-		{
-			$Patch->write('');
-			$Patch->write('[BEGIN] Starte mit Projekt: '.$project);
-			$Project = new Project($project);
-			$langs = $Project->getAttribute('langs');
+    foreach($projects as $project => $val)
+    {
+        try
+        {
+            $Patch->write('');
+            $Patch->write('[BEGIN] Starte mit Projekt: '.$project);
+            $Project = new Project($project);
+            $langs = $Project->getAttribute('langs');
 
-		} catch(\QUI\Exception $e)
-		{
-			$Patch->write($e->getMessage());
-			continue;
-		}
+        } catch(\QUI\Exception $e)
+        {
+            $Patch->write($e->getMessage());
+            continue;
+        }
 
-		// Jeder Sprache muss gepatcht werden
-		foreach($langs as $lang)
-		{
-			$Patch->write("\n\n====> Starte mit Sprache :".$lang);
+        // Jeder Sprache muss gepatcht werden
+        foreach($langs as $lang)
+        {
+            $Patch->write("\n\n====> Starte mit Sprache :".$lang);
 
-			$_Project = new Project($project, $lang);
-			$tpl 	  = $_Project->getAttribute('name') .'_'. $lang .'_base';
+            $_Project = new Project($project, $lang);
+            $tpl 	  = $_Project->getAttribute('name') .'_'. $lang .'_base';
 
-			$entrys = $db->select(array(
-				'from' => $tpl
-			));
+            $entrys = $db->select(array(
+                'from' => $tpl
+            ));
 
-			foreach($entrys as $entry)
-			{
-				try
-				{
-					$_Site = new Projects_Site_Edit($_Project, $entry['id']);
+            foreach($entrys as $entry)
+            {
+                try
+                {
+                    $_Site = new \QUI\Projects\Site\Edit($_Project, $entry['id']);
 
-					$Patch->write(
-						'Seite '. $_Site->getId() .' - '.
-						$_Site->getAttribute('name') .' wird bearbeitet'
-					);
+                    $Patch->write(
+                        'Seite '. $_Site->getId() .' - '.
+                        $_Site->getAttribute('name') .' wird bearbeitet'
+                    );
 
-					$content = _phpMyAdmin_parse_content(
-						$_Site->getAttribute('content')
-					);
+                    $content = _phpMyAdmin_parse_content(
+                        $_Site->getAttribute('content')
+                    );
 
-					$content2 = _phpMyAdmin_parse_content(
-						$_Site->getAttribute('content2')
-					);
+                    $content2 = _phpMyAdmin_parse_content(
+                        $_Site->getAttribute('content2')
+                    );
 
-					$_Site->setAttribute('content', $content);
-					$_Site->setAttribute('content2', $content2);
+                    $_Site->setAttribute('content', $content);
+                    $_Site->setAttribute('content2', $content2);
 
-					$_Site->updateTemp(array(
-						'content'  => $content,
-						'content2' => $content2
-					));
+                    $_Site->updateTemp(array(
+                        'content'  => $content,
+                        'content2' => $content2
+                    ));
 
-					$_Site->save(false); // Speichern ohne Archiv zu erstellen
-					$_Site->deleteTemp();
+                    $_Site->save(false); // Speichern ohne Archiv zu erstellen
+                    $_Site->deleteTemp();
 
-					$Patch->write('OK - Bearbeitung erfolgreich');
+                    $Patch->write('OK - Bearbeitung erfolgreich');
 
-				} catch( \QUI\Exception $e )
-				{
-					$ERRORS++;
-					$Patch->write('False- Fehler: '.$e->getMessage());
-				}
-			}
+                } catch( \QUI\Exception $e )
+                {
+                    $ERRORS++;
+                    $Patch->write('False- Fehler: '.$e->getMessage());
+                }
+            }
 
-			$Patch->write('====> Sprache beendet');
-		}
+            $Patch->write('====> Sprache beendet');
+        }
 
-		$Patch->write('[END] Projekt beendet');
-	}
+        $Patch->write('[END] Projekt beendet');
+    }
 
-	$Patch->write('');
-	$Patch->write('##### FEHLER '. $ERRORS .' #####');
-	$Patch->write('');
+    $Patch->write('');
+    $Patch->write('##### FEHLER '. $ERRORS .' #####');
+    $Patch->write('');
 
-	if($ERRORS) {
-		return false;
-	}
+    if($ERRORS) {
+        return false;
+    }
 
-	return true;
+    return true;
 }
 
 /**
@@ -118,13 +118,13 @@ function patch_myadmin( $Patch )
  */
 function _phpMyAdmin_parse_content( $content )
 {
-	$content = preg_replace_callback(
-		'#(href|src|action|value|data)="([^"]*)"#',
-		"_clean_links_from_phpmyadmin",
-		$content
-	);
+    $content = preg_replace_callback(
+        '#(href|src|action|value|data)="([^"]*)"#',
+        "_clean_links_from_phpmyadmin",
+        $content
+    );
 
-	return $content;
+    return $content;
 }
 
 /**
@@ -137,20 +137,20 @@ function _phpMyAdmin_parse_content( $content )
  */
 function _clean_links_from_phpmyadmin( $links )
 {
-	$links = str_replace('&amp;','&', $links); // &amp; fix
-	$links = str_replace('〈=','&lang=',$links); // URL FIX
+    $links = str_replace('&amp;','&', $links); // &amp; fix
+    $links = str_replace('〈=','&lang=',$links); // URL FIX
 
-	$_link = $links[2];
+    $_link = $links[2];
 
-	// Falls kein phpMyAdmin vorhanden ist
-	if(strpos($_link, 'phpMyAdmin') === false) {
-		return $links[1].'="'.$_link.'"';
-	}
+    // Falls kein phpMyAdmin vorhanden ist
+    if(strpos($_link, 'phpMyAdmin') === false) {
+        return $links[1].'="'.$_link.'"';
+    }
 
-	$_link = preg_replace('#&phpMyAdmin([^"|^&]*)#', '', $_link);
-	$_link = preg_replace('#?phpMyAdmin([^"|^&]*)#', '', $_link);
+    $_link = preg_replace('#&phpMyAdmin([^"|^&]*)#', '', $_link);
+    $_link = preg_replace('#?phpMyAdmin([^"|^&]*)#', '', $_link);
 
-	return $links[1].'="'.$_link.'"';
+    return $links[1].'="'.$_link.'"';
 }
 
 ?>

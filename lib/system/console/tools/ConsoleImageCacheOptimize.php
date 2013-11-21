@@ -22,45 +22,45 @@ class ConsoleImageCacheOptimize extends System_Console_Tool
      * constructor
      * @param array $params
      */
-	public function __construct($params)
-	{
-		parent::__construct($params);
+    public function __construct($params)
+    {
+        parent::__construct($params);
 
-		$help = " Beschreibung:\n";
-		$help .= " Übersetzungstool\n";
-		$help .= "\n";
-		$help .= " Aufruf:\n";
-		$help .= " admin/console.php --username=[USERNAME] --password=[PASSWORD] --tool=ConsoleImageCacheOptimize [params]\n";
-		$help .= "\n";
-		$help .= " Parameter:\n";
-		$help .= " --project=[PROJECT]		Projektnamen\n\n";
-		$help .= " --lang=[LANG]		    Sprache\n\n";
-		$help .= " --image=[STRING]			PNG, JPG, ALL - Bildart welche kombrimiert werden soll\n\n";
+        $help = " Beschreibung:\n";
+        $help .= " Übersetzungstool\n";
+        $help .= "\n";
+        $help .= " Aufruf:\n";
+        $help .= " admin/console.php --username=[USERNAME] --password=[PASSWORD] --tool=ConsoleImageCacheOptimize [params]\n";
+        $help .= "\n";
+        $help .= " Parameter:\n";
+        $help .= " --project=[PROJECT]		Projektnamen\n\n";
+        $help .= " --lang=[LANG]		    Sprache\n\n";
+        $help .= " --image=[STRING]			PNG, JPG, ALL - Bildart welche kombrimiert werden soll\n\n";
 
-		$help .= " Optionale Parameter:\n";
-		$help .= " --help			Dieser Hilfetext\n\n";
-		$help .= " --mtime			Nur Bilder die neuer sind als (--mtime) : in Tage \n\n";
-		$help .= "\n";
+        $help .= " Optionale Parameter:\n";
+        $help .= " --help			Dieser Hilfetext\n\n";
+        $help .= " --mtime			Nur Bilder die neuer sind als (--mtime) : in Tage \n\n";
+        $help .= "\n";
 
-		$this->addHelp($help);
-	}
+        $this->addHelp($help);
+    }
 
-	/**
-	 * Führt das Tool aus
-	 */
-	public function start()
-	{
-	    if (!isset($this->_params['--project'])) {
-			throw new \QUI\Exception('Es wurde kein Projekt angegeben');
-		}
+    /**
+     * Führt das Tool aus
+     */
+    public function start()
+    {
+        if (!isset($this->_params['--project'])) {
+            throw new \QUI\Exception('Es wurde kein Projekt angegeben');
+        }
 
-	    if (!isset($this->_params['--lang'])) {
-			throw new \QUI\Exception('Es wurde keine Projekt Sprache angegeben');
-		}
+        if (!isset($this->_params['--lang'])) {
+            throw new \QUI\Exception('Es wurde keine Projekt Sprache angegeben');
+        }
 
-		if (!isset($this->_params['--image'])) {
-		    throw new \QUI\Exception('Bitte geben Sie an welche Bilder kombrimiert werden sollen');
-		}
+        if (!isset($this->_params['--image'])) {
+            throw new \QUI\Exception('Bitte geben Sie an welche Bilder kombrimiert werden sollen');
+        }
 
         $Project = \QUI::getProject(
             $this->_params['--project'],
@@ -75,20 +75,20 @@ class ConsoleImageCacheOptimize extends System_Console_Tool
         }
 
         // PNGS
-	    if ($this->_params['--image'] == 'PNG' ||
-	        $this->_params['--image'] == 'ALL')
-	    {
+        if ($this->_params['--image'] == 'PNG' ||
+            $this->_params['--image'] == 'ALL')
+        {
             $this->_pngs($Project);
         }
-	}
+    }
 
     /**
      * JPG Bilder optimieren
      *
-     * @param Projects_Project $Project
+     * @param \QUI\Projects\Project $Project
      */
-	protected function _jpgs(Projects_Project $Project)
-	{
+    protected function _jpgs(\QUI\Projects\Project $Project)
+    {
         $media_cachedir  = CMS_DIR .'media/cache/'. $Project->getAttribute('name') .'/';
         $system_cachedir = VAR_DIR .'cache/';
         $file_cache      = $system_cachedir .'optimize_images_jpgs_'. $Project->getAttribute('name') .'_'. $Project->getAttribute('lang');
@@ -134,9 +134,9 @@ class ConsoleImageCacheOptimize extends System_Console_Tool
         $du2 = explode("\t", $du2);
 
         echo "\n\n##############################\n".
-        	'Kombrimiert auf von '. $du[0] .' auf '. $du2[0] ."\n\n";
+            'Kombrimiert auf von '. $du[0] .' auf '. $du2[0] ."\n\n";
 
-	    if (file_exists($file_cache)) {
+        if (file_exists($file_cache)) {
             unlink($file_cache);
         }
     }
@@ -144,11 +144,11 @@ class ConsoleImageCacheOptimize extends System_Console_Tool
     /**
      * PNG Bilder Komprimieren
      *
-     * @param Projects_Project $Project
+     * @param \QUI\Projects\Project $Project
      */
-    protected function _pngs(Projects_Project $Project)
-	{
-	    $media_cachedir  = CMS_DIR .'media/cache/'. $Project->getAttribute('name') .'/';
+    protected function _pngs(\QUI\Projects\Project $Project)
+    {
+        $media_cachedir  = CMS_DIR .'media/cache/'. $Project->getAttribute('name') .'/';
         $system_cachedir = VAR_DIR .'cache/';
         $file_cache      = $system_cachedir .'optimize_images_pngs_'. $Project->getAttribute('name') .'_'. $Project->getAttribute('lang');
 
@@ -193,12 +193,12 @@ class ConsoleImageCacheOptimize extends System_Console_Tool
         $du2 = explode("\t", $du2);
 
         echo "\n\n##############################\n".
-        	'Kombrimiert auf von '. $du[0] .' auf '. $du2[0] ."\n\n";
+            'Kombrimiert auf von '. $du[0] .' auf '. $du2[0] ."\n\n";
 
-	    if (file_exists($file_cache)) {
+        if (file_exists($file_cache)) {
             unlink($file_cache);
         }
-	}
+    }
 }
 
 ?>

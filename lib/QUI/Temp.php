@@ -52,5 +52,3 @@ class Temp
         return $folder;
     }
 }
-
-?>

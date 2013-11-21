@@ -11,7 +11,7 @@ function ajax_project_search($params)
     $params = json_decode( $params, true );
 
     return Utils_Grid::getResult(
-        \Projects_Manager::search( $params ),
+        \QUI\Projects\Manager::search( $params ),
         1,
         10
     );

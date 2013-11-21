@@ -19,46 +19,46 @@ class QUI_Plugins_Factory extends \QUI\QDOM
      * (optional)
      *
      * @param Controls_Toolbar_Bar $Tabbar - Tabbar / Toolbar Objekt
-     * @param Projects_Site $Site          - Aktuelle Seite
+     * @param \QUI\Projects\Site $Site          - Aktuelle Seite
      */
-    public function setTabs(Controls_Toolbar_Bar $Tabbar, Projects_Site $Site) {}
+    public function setTabs(Controls_Toolbar_Bar $Tabbar, \QUI\Projects\Site $Site) {}
 
     /**
      * Methode welche aufgerufen wird wenn eine Seite gespeichert wird
      * (optional)
      *
-     * @param Projects_Site $Site
-     * @param Projects_Project $Project
+     * @param \QUI\Projects\Site $Site
+     * @param \QUI\Projects\Project $Project
      * @return unknown
      */
-    public function onSave(Projects_Site $Site, Projects_Project $Project) {}
+    public function onSave(\QUI\Projects\Site $Site, \QUI\Projects\Project $Project) {}
 
     /**
      * Methode welche aufgerufen wird wenn eine Seite initialisiert wird
      * (optional)
      *
-     * @param Projects_Site $Site
-     * @param Projects_Project $Project
+     * @param \QUI\Projects\Site $Site
+     * @param \QUI\Projects\Project $Project
      */
-    public function onLoad(Projects_Site $Site, Projects_Project $Project) {}
+    public function onLoad(\QUI\Projects\Site $Site, \QUI\Projects\Project $Project) {}
 
     /**
      * Methode welche aufgerufen wird, wenn eine Seite zerstört wird
      * (optional)
      *
-     * @param Projects_Site $Site       - Seite die zerstört wird
-     * @param Projects_Project $Project - Project in welchem die Seite liegt
+     * @param \QUI\Projects\Site $Site       - Seite die zerstört wird
+     * @param \QUI\Projects\Project $Project - Project in welchem die Seite liegt
      */
-    public function onDestroy(Projects_Site $Site, Projects_Project $Project) {}
+    public function onDestroy(\QUI\Projects\Site $Site, \QUI\Projects\Project $Project) {}
 
     /**
      * Methode die aufgerufen wird beim Setup des Plugins
      * Zusätzlich zur database.xml
      * (optional)
      *
-     * @param Projects_Project $Project
+     * @param \QUI\Projects\Project $Project
      */
-    public function setup(Projects_Project $Project) {}
+    public function setup(\QUI\Projects\Project $Project) {}
 
     /**
      * Methode die aufgerufen wird beim Deinstallieren des Plugins
@@ -74,6 +74,3 @@ class QUI_Plugins_Factory extends \QUI\QDOM
      */
     public function registerCrons(System_Cron_Manager $CronManager) {}
 }
-
-
-?>

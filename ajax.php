@@ -8,7 +8,7 @@ require_once "header.php";
 require_once LIB_DIR .'Ajax.php';
 
 if (!isset($_REQUEST['_url'])) {
-	$_REQUEST['_url'] = '';
+    $_REQUEST['_url'] = '';
 };
 
 /**
@@ -31,7 +31,7 @@ if ($User->getId() && $User->getLang()) {
  * @var $ajax Ajax
  */
 $ajax = new PT_Ajax(array(
-	'db_errors' => QUI::conf('error','mysql_ajax_errors_frontend')
+    'db_errors' => QUI::conf('error','mysql_ajax_errors_frontend')
 ));
 
 
@@ -41,7 +41,7 @@ $ajax = new PT_Ajax(array(
  */
 function ajax_hello_world()
 {
-	return 'HELLO';
+    return 'HELLO';
 }
 $ajax->register('ajax_hello_world');
 
@@ -53,7 +53,7 @@ $ajax->register('ajax_hello_world');
  */
 function ajax_hello_world_var($myvar)
 {
-	return 'HELLO: '. $myvar;
+    return 'HELLO: '. $myvar;
 }
 $ajax->register('ajax_hello_world_var', array('myvar'));
 
@@ -64,7 +64,7 @@ $ajax->register('ajax_hello_world_var', array('myvar'));
  */
 function ajax_hello_array()
 {
-	return array(1, 2, 3, 4, 5);
+    return array(1, 2, 3, 4, 5);
 }
 $ajax->register('ajax_hello_array');
 
@@ -81,8 +81,8 @@ function ajax_get_https_host($project, $lang)
         $host = QUI::conf('globals', 'host');
     }
 
-    $Standard = Projects_Manager::getStandard();
-    $Project  = Projects_Manager::getProject($project, $lang);
+    $Standard = \QUI\Projects\Manager::getStandard();
+    $Project  = \QUI\Projects\Manager::getProject($project, $lang);
 
     if ($Standard->getAttribute('name') != $Project->getAttribute('name')) {
         $host = $host .'/'. Rewrite::URL_PROJECT_CHARACTER . $Project->getAttribute('name');
@@ -100,44 +100,44 @@ $ajax->register('ajax_get_https_host', array('project', 'lang'));
 // Falls ein Project verwendet wird, Project Ajax File einbinden
 if (isset($_REQUEST['project']))
 {
-	$Project = Projects_Manager::getProject(
-	    Utils_Security_Orthos::clear($_REQUEST['project'])
-	);
+    $Project = \QUI\Projects\Manager::getProject(
+        Utils_Security_Orthos::clear($_REQUEST['project'])
+    );
 
-	if (file_exists(USR_DIR .'lib/'. $Project->getAttribute('template') .'/ajax.php'))
-	{
-		try
-		{
-			require_once USR_DIR .'lib/'. $Project->getAttribute('template') .'/ajax.php';
-		} catch (QException $e)
-		{
-			echo $ajax->writeException($e);
-			exit;
-		}
-	}
+    if (file_exists(USR_DIR .'lib/'. $Project->getAttribute('template') .'/ajax.php'))
+    {
+        try
+        {
+            require_once USR_DIR .'lib/'. $Project->getAttribute('template') .'/ajax.php';
+        } catch (QException $e)
+        {
+            echo $ajax->writeException($e);
+            exit;
+        }
+    }
 }
 
 // Ajax der Plugins einbinden
 if (file_exists(CMS_DIR .'etc/plugins.ini'))
 {
     $Plugins = QUI::getPlugins();
-	$plugins = $Plugins->get();
+    $plugins = $Plugins->get();
 
-	foreach ($plugins as $Plugin)
-	{
-	    if (!file_exists(OPT_DIR . $Plugin->getAttribute('name') .'/ajax.php')) {
-			continue;
-		}
+    foreach ($plugins as $Plugin)
+    {
+        if (!file_exists(OPT_DIR . $Plugin->getAttribute('name') .'/ajax.php')) {
+            continue;
+        }
 
-		try
-		{
-			require_once OPT_DIR . $Plugin->getAttribute('name') .'/ajax.php';
-		} catch (QException $e)
-		{
-			echo $ajax->writeException($e);
-			exit;
-		}
-	}
+        try
+        {
+            require_once OPT_DIR . $Plugin->getAttribute('name') .'/ajax.php';
+        } catch (QException $e)
+        {
+            echo $ajax->writeException($e);
+            exit;
+        }
+    }
 }
 
 /**

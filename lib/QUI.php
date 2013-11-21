@@ -82,13 +82,13 @@ class QUI
 
     /**
      * QUI Licence, use \QUI::getLicence()
-     * @var QUI_Licence
+     * @var \QUI\Licence
      */
     static $Licence = null;
 
     /**
      * QUI Locale Object, use \QUI::getLocale()
-     * @var QUI_Locale
+     * @var \QUI\Locale
      */
     static $Locale = null;
 
@@ -106,7 +106,7 @@ class QUI
 
     /**
      * QUI Rewrite Object, use \QUI::getRewrite();
-     * @var QUI_Rewrite
+     * @var \QUI\Rewrite
      */
     static $Rewrite = null;
 
@@ -118,7 +118,7 @@ class QUI
 
     /**
      * QUI Session Object, use \QUI::getSession();
-     * @var QUI_Session
+     * @var \QUI\Session
      */
     static $Session = null;
 
@@ -130,7 +130,7 @@ class QUI
 
     /**
      * QUI User Manager, use \QUI::getUsers();
-     * @var Users_Users
+     * @var \QUI\Users\Users
      */
     static $Users = null;
 
@@ -148,7 +148,7 @@ class QUI
 
     /**
      * Country Manager
-     * @var Utils_Countries_Manager
+     * @var \QUI\Countries\Manager
      */
     static $Countries = null;
 
@@ -403,7 +403,7 @@ class QUI
         // then make a setup
         if ( $Config->get( 'globals', 'system_changed' ) )
         {
-            \QUI_Setup::all();
+            \QUI\Setup::all();
 
             $Config->set( 'globals', 'system_changed', 0 );
             $Config->save();
@@ -415,7 +415,7 @@ class QUI
      */
     static function setup()
     {
-        \QUI_Setup::all();
+        \QUI\Setup::all();
     }
 
     /**
@@ -440,7 +440,7 @@ class QUI
      */
     static function availableLanguages()
     {
-        $projects = Projects_Manager::getConfig()->toArray();
+        $projects = \QUI\Projects\Manager::getConfig()->toArray();
         $langs    = array();
 
         foreach ( $projects as $project ) {
@@ -532,12 +532,12 @@ class QUI
 
     /**
      * Returns the Country Manager
-     * @return Utils_Countries_Manager
+     * @return \QUI\Countries\Manager
      */
     static function getCountries()
     {
         if ( is_null( self::$Countries ) ) {
-            self::$Countries = new \Utils_Countries_Manager();
+            self::$Countries = new \QUI\Countries\Manager();
         }
 
         return self::$Countries;
@@ -610,7 +610,7 @@ class QUI
 
     /**
      * Returns the PDO Database object
-     * @return PDO
+     * @return \PDO
      */
     static function getPDO()
     {
@@ -619,20 +619,20 @@ class QUI
 
     /**
      * Returns a Project
-     * It use the Projects_Manager
+     * It use the \QUI\Projects\Manager
      *
-     * You can also use Projects_Manager::getProject()
+     * You can also use \QUI\Projects\Manager::getProject()
      *
      * @param String $project 	- Project name
      * @param String $lang		- Project lang (optional)
      * @param String $template  - Project template (optional)
      *
-     * @return Projects_Project
-     * @uses Projects_Manager
+     * @return \QUI\Projects\Project
+     * @uses \QUI\Projects\Manager
      */
     static function getProject($project, $lang=false, $template=false)
     {
-        return \Projects_Manager::getProject( $project, $lang, $template );
+        return \QUI\Projects\Manager::getProject( $project, $lang, $template );
     }
 
     /**
@@ -689,12 +689,12 @@ class QUI
 
     /**
      * Returns the QUIQQER licence object
-     * @return QUI_Licence
+     * @return \QUI\Licence
      */
     static function getLicence()
     {
         if ( is_null( self::$Licence ) ) {
-            self::$Licence = new \QUI_Licence();
+            self::$Licence = new \QUI\Licence();
         }
 
         return self::$Licence;
@@ -702,12 +702,12 @@ class QUI
 
     /**
      * Returns the main locale object
-     * @return QUI_Locale
+     * @return \QUI\Locale
      */
     static function getLocale()
     {
         if ( is_null( self::$Locale ) ) {
-            self::$Locale = new \QUI_Locale();
+            self::$Locale = new \QUI\Locale();
         }
 
         return self::$Locale;
@@ -741,12 +741,12 @@ class QUI
 
     /**
      * returns the rewrite object
-     * @return QUI_Rewrite
+     * @return \QUI\Rewrite
      */
     static function getRewrite()
     {
         if ( is_null( self::$Rewrite ) ) {
-            self::$Rewrite = new \QUI_Rewrite();
+            self::$Rewrite = new \QUI\Rewrite();
         }
 
         return self::$Rewrite;
@@ -778,12 +778,12 @@ class QUI
 
     /**
      * Return the global QUI Session
-     * @return QUI_Session
+     * @return \QUI\Session
      */
     static function getSession()
     {
         if ( is_null( self::$Session ) ) {
-            self::$Session = new \QUI_Session();
+            self::$Session = new \QUI\Session();
         }
 
         return self::$Session;
@@ -804,12 +804,12 @@ class QUI
 
     /**
      * Return the user manager
-     * @return Users_Users
+     * @return \QUI\Users\Users
      */
     static function getUsers()
     {
         if ( is_null( self::$Users ) ) {
-            self::$Users = new \Users_Users();
+            self::$Users = new \QUI\Users\Users();
         }
 
         return self::$Users;
@@ -817,8 +817,8 @@ class QUI
 
     /**
      * Get current logged in user
-     * @return Users_User
-     * @uses Users_Users
+     * @return \QUI\Users\User
+     * @uses \QUI\Users\Users
      */
     static function getUserBySession()
     {

@@ -34,7 +34,7 @@ function ajax_plugins_getmanager()
         return '';
     }
 
-    $Smarty = QUI_Template::getEngine(true);
+    $Smarty = \QUI\Template::getEngine(true);
 
     // Plugins einlesen
     $OPT = \QUI\Utils\System\File::readDir(OPT_DIR);
@@ -130,7 +130,7 @@ function ajax_plugins_get_remove_manager()
         return '';
     }
 
-    $Smarty = QUI_Template::getEngine(true);
+    $Smarty = \QUI\Template::getEngine(true);
 
     // Plugins einlesen
     $OPT = \QUI\Utils\System\File::readDir(OPT_DIR);
@@ -188,7 +188,7 @@ function ajax_plugins_get_update_manager()
         return '';
     }
 
-    $Smarty = QUI_Template::getEngine(true);
+    $Smarty = \QUI\Template::getEngine(true);
 
     // Plugin Download liste bekommen
     $Update = new \QUI\Update();

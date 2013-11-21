@@ -23,7 +23,7 @@ function ajax_config_global()
     $Config  = \QUI::getConfig('etc/conf.ini');
     $_config = $Config->toArray();
 
-    $_config['standard'] = Projects_Manager::getStandard()->getAttribute('name');
+    $_config['standard'] = \QUI\Projects\Manager::getStandard()->getAttribute('name');
 
     $VHosts = \QUI::getConfig('etc/vhosts.ini');
     $vhosts = $VHosts->toArray();
@@ -113,8 +113,8 @@ function ajax_config_global_save($params)
     if (isset($Params['standard']))
     // Standard Projekt setzen
     {
-        $projects      = Projects_Manager::getProjects();
-        $ProjectConfig = Projects_Manager::getConfig();
+        $projects      = \QUI\Projects\Manager::getProjects();
+        $ProjectConfig = \QUI\Projects\Manager::getConfig();
 
         foreach ($projects as $project => $values)
         {

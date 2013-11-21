@@ -13,45 +13,45 @@
 
 class MC_Trash
 {
-	private $_Project;
-	private $_Media;
-	private $_TABLE;
+    private $_Project;
+    private $_Media;
+    private $_TABLE;
 
-	/**
-	 * Konstruktor
-	 *
-	 * @param Media $Media
-	 */
-	public function __construct(Projects_Project $Project)
-	{
-		$this->_Project = $Project;
-		$this->_Media   = $Project->getMedia();
-		$this->_TABLE   = $Project->getAttribute('media_table');
-	}
+    /**
+     * Konstruktor
+     *
+     * @param Media $Media
+     */
+    public function __construct(\QUI\Projects\Project $Project)
+    {
+        $this->_Project = $Project;
+        $this->_Media   = $Project->getMedia();
+        $this->_TABLE   = $Project->getAttribute('media_table');
+    }
 
-	/**
-	 * Gibt die gelöschten Seiten zurück
-	 *
-	 * @return MC_Children
-	 */
-	public function getSites()
-	{
-		$Media = $this->_Media;
+    /**
+     * Gibt die gelöschten Seiten zurück
+     *
+     * @return MC_Children
+     */
+    public function getSites()
+    {
+        $Media = $this->_Media;
 
-		$result = \QUI::getDB()->select(array(
-			'from' 	=> $this->_TABLE,
-			'where' => $this->_TABLE.'.deleted = 1',
-			'order'	=> $this->_TABLE.'.type ASC, '.$this->_TABLE.'.name'
-		));
+        $result = \QUI::getDB()->select(array(
+            'from' 	=> $this->_TABLE,
+            'where' => $this->_TABLE.'.deleted = 1',
+            'order'	=> $this->_TABLE.'.type ASC, '.$this->_TABLE.'.name'
+        ));
 
-		$children = new MC_Children();
+        $children = new MC_Children();
 
-		foreach ($result as $field) {
-			$children->add( $Media->get( (int)$field['id'] ), $field );
-		}
+        foreach ($result as $field) {
+            $children->add( $Media->get( (int)$field['id'] ), $field );
+        }
 
-		return $children;
-	}
+        return $children;
+    }
 }
 
 ?>

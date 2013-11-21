@@ -1,8 +1,10 @@
 <?php
 
 /**
- * This file contains QUI_Template
+ * This file contains \QUI\Template
  */
+
+namespace QUI;
 
 /**
  * Template Engine Manager
@@ -11,7 +13,7 @@
  * @package com.pcsg.qui.template
  */
 
-class QUI_Template extends \QUI\QDOM
+class Template extends \QUI\QDOM
 {
     /**
      * Registered template engines
@@ -130,12 +132,12 @@ class QUI_Template extends \QUI\QDOM
     /**
      * Prepares the contents of a template
      *
-     * @param Projects_Site|Projects_Site_Edit $Site
+     * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
      * @return String
      */
     public function fetchTemplate($Site)
     {
-        /* @var $Site Projects_Site */
+        /* @var $Site \QUI\Projects\Site */
         $Project = $Site->getProject();
 
         $Engine  = self::getEngine();
@@ -146,7 +148,7 @@ class QUI_Template extends \QUI\QDOM
         $User = $Users->getUserBySession();
 
         // header
-        $_header = \QUI_Template::$_header;
+        $_header = \QUI\Template::$_header;
 
         foreach ( $_header as $key => $str ) {
             $Engine->extendHeader( $str, $key );
@@ -250,8 +252,8 @@ class QUI_Template extends \QUI\QDOM
      */
     public function getBody()
     {
-        /* @var $Project Projects_Project */
-        /* @var $Site Projects_Site */
+        /* @var $Project \QUI\Projects\Project */
+        /* @var $Site \QUI\Projects\Site */
         /* @var $Engine Interface_Template_Engine */
 
         $Project = $this->getAttribute( 'Project' );
@@ -359,7 +361,7 @@ class QUI_Template extends \QUI\QDOM
             return $html;
         }
 
-        $Project = \Projects_Manager::get();
+        $Project = \QUI\Projects\Manager::get();
         $Site    = \QUI::getRewrite()->getSite();
 
         // letzte body ersetzen
@@ -393,5 +395,3 @@ class QUI_Template extends \QUI\QDOM
         );
     }
 }
-
-?>

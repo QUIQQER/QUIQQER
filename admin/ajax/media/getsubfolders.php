@@ -11,7 +11,7 @@
  */
 function ajax_media_getsubfolders($project, $fileid)
 {
-    $Project = Projects_Manager::getProject( $project );
+    $Project = \QUI\Projects\Manager::getProject( $project );
     $Media   = $Project->getMedia();
     $File    = $Media->get( $fileid );
 
@@ -20,11 +20,14 @@ function ajax_media_getsubfolders($project, $fileid)
 
     // create children data
     foreach ( $_children as $Child ) {
-        $children[] = Projects_Media_Utils::parseForMediaCenter( $Child );
+        $children[] = \QUI\Projects\Media\Utils::parseForMediaCenter( $Child );
     }
 
     return $children;
 }
-QUI::$Ajax->register('ajax_media_getsubfolders', array('project', 'fileid'), 'Permission::checkAdminUser');
 
-?>
+\QUI::$Ajax->register(
+    'ajax_media_getsubfolders',
+    array('project', 'fileid'),
+    'Permission::checkAdminUser'
+);
