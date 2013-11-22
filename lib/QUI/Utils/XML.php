@@ -789,7 +789,7 @@ class XML
                 switch ( $default['type'] )
                 {
                     case 'bool':
-                        $value = \Utils_Bool::JSBool( $value );
+                        $value = \QUI\Utils\Bool::JSBool( $value );
 
                         if ( $value )
                         {
@@ -878,6 +878,21 @@ class XML
                         }
                     }
                 }
+            }
+        }
+
+        // php executes
+        if ( isset( $dbfields['execute'] ) )
+        {
+            foreach ( $dbfields['execute'] as $exec )
+            {
+                if ( !is_callable( $exec ) )
+                {
+                    \QUI\System\Log::write( $exec .' not callable', 'error' );
+                    continue;
+                }
+
+                call_user_func( $exec );
             }
         }
     }

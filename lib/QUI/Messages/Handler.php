@@ -13,6 +13,8 @@ namespace QUI\Messages;
 
 class Handler
 {
+    protected $_messages = array();
+
     /**
      * Return the message handler db table
      */
@@ -43,6 +45,8 @@ class Handler
      */
     public function getNewMessages(\QUI\Users\User $User)
     {
+        $result = $this->_messages;
+
         $list = \QUI::getDB()->select(array(
             'from'  => self::Table(),
             'where' => array(
@@ -54,7 +58,48 @@ class Handler
             'uid' => $User->getId()
         ));
 
-        return $list;
+        foreach ( $list as $entry )
+        {
+            $str = $entry['message'];
+
+            switch ( $entry )
+            {
+                case 'QUI\\Messages\\Attention':
+                    $Message = new \QUI\Messages\Attention(array(
+                        'message' => $str
+                    ));
+                break;
+
+                case 'QUI\\Messages\\Error':
+                    $Message = new \QUI\Messages\Error(array(
+                        'message' => $str
+                    ));
+                break;
+
+                case 'QUI\\Messages\\Information':
+                    $Message = new \QUI\Messages\Information(array(
+                        'message' => $str
+                    ));
+                break;
+
+                case 'QUI\\Messages\\Success':
+                    $Message = new \QUI\Messages\Success(array(
+                        'message' => $str
+                    ));
+                break;
+
+                default:
+                    $Message = new \QUI\Messages\Message(array(
+                        'message' => $str
+                    ));
+            }
+
+            $result[] = $Message;
+        }
+
+        $this->_messages = array();
+
+        return $result;
     }
 
     /**
@@ -76,12 +121,78 @@ class Handler
     }
 
     /**
-     * Send a message to an user
+     * Add a message to the handler
+     *
+     * @param \QUi\Messages\Message $Message
+     */
+    public function addMessage($Message)
+    {
+        $this->_messages[] = $Message;
+    }
+
+    /**
+     * Add an information for an user
+     *
+     * @param String $str
+     */
+    public function addAttention($str)
+    {
+        $this->addMessage(
+            new \QUI\Messages\Attention(array(
+                'message' => $str
+            ))
+        );
+    }
+
+    /**
+     * Add an error for an user
+     *
+     * @param String $str
+     */
+    public function addError($str)
+    {
+        $this->addMessage(
+            new \QUI\Messages\Error(array(
+                'message' => $str
+            ))
+        );
+    }
+
+    /**
+     * Add a information for an user
+     *
+     * @param String $str
+     */
+    public function addInformation($str)
+    {
+        $this->addMessage(
+            new \QUI\Messages\Information(array(
+                'message' => $str
+            ))
+        );
+    }
+
+    /**
+     * Add a success message for an user
+     *
+     * @param String $str
+     */
+    public function addSuccess($str)
+    {
+        $this->addMessage(
+            new \QUI\Messages\Success(array(
+                'message' => $str
+            ))
+        );
+    }
+
+    /**
+     * Send a message to an user and save it to the database
      *
      * @param \QUI\Users\User $User
      * @param \QUi\Messages\Message $Message
      */
-    public function addMessage(\QUI\Users\User $User, \QUI\Messages\Message $Message)
+    public function sendMessage(\QUI\Users\User $User, \QUI\Messages\Message $Message)
     {
         $message = $Message->getMessage();
         $message = \QUI\Utils\Security\Orthos::clearMySQL( $message );
@@ -96,14 +207,14 @@ class Handler
     }
 
     /**
-     * Add an information for an user
+     * Send an information to an user and save it to the database
      *
      * @param \QUI\Users\User $User
      * @param String $str
      */
-    public function addAttention(\QUI\Users\User $User, $str)
+    public function sendAttention(\QUI\Users\User $User, $str)
     {
-        $this->addMessage(
+        $this->sendMessage(
             $User,
             new \QUI\Messages\Attention(array(
                 'message' => $str
@@ -112,14 +223,14 @@ class Handler
     }
 
     /**
-     * Add an error for an user
+     * Send an error to an user and save it to the database
      *
      * @param \QUI\Users\User $User
      * @param String $str
      */
-    public function addError(\QUI\Users\User $User, $str)
+    public function sendError(\QUI\Users\User $User, $str)
     {
-        $this->addMessage(
+        $this->sendMessage(
             $User,
             new \QUI\Messages\Error(array(
                 'message' => $str
@@ -128,14 +239,14 @@ class Handler
     }
 
     /**
-     * Add a information for an user
+     * Send a information to an user and save it to the database
      *
      * @param \QUI\Users\User $User
      * @param String $str
      */
-    public function addInformation(\QUI\Users\User $User, $str)
+    public function sendInformation(\QUI\Users\User $User, $str)
     {
-        $this->addMessage(
+        $this->sendMessage(
             $User,
             new \QUI\Messages\Information(array(
                 'message' => $str
@@ -144,14 +255,14 @@ class Handler
     }
 
     /**
-     * Add a success message for an user
+     * Send a success message to an user and save it to the database
      *
      * @param \QUI\Users\User $User
      * @param String $str
      */
-    public function addSuccess(\QUI\Users\User $User, $str)
+    public function sendSuccess(\QUI\Users\User $User, $str)
     {
-        $this->addMessage(
+        $this->sendMessage(
             $User,
             new \QUI\Messages\Success(array(
                 'message' => $str
