@@ -36,6 +36,7 @@ class Permission
         try
         {
             return self::checkPermission( 'quiqqer.admin', $User );
+
         } catch ( \QUI\Exception $Exception )
         {
 
@@ -355,7 +356,7 @@ class Permission
             $User = \QUI::getUserBySession();
         }
 
-        if ( get_class( $User ) !== '\\QUI\\Users\\User' )
+        if ( get_class( $User ) !== 'QUI\\Users\\User' )
         {
             throw new \QUI\Exception(
                 \QUI::getLocale()->get(

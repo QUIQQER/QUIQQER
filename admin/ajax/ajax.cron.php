@@ -176,6 +176,7 @@ function ajax_cron_execute($cid)
     try
     {
         $Cron->exec();
+
     } catch ( \QUI\Exception $e )
     {
         \QUI\System\Log::writeException($e);

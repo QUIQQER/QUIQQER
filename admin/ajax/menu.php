@@ -14,7 +14,7 @@ function ajax_menu()
         'id'	 => 'menu'
     ));
 
-    \QUI_Menu::addXMLFile( $Menu, SYS_DIR .'menu.xml' );
+    \QUI\Utils\XML::addXMLFileToMenu( $Menu, SYS_DIR .'menu.xml' );
 
     // projects settings
     $projects = \QUI\Projects\Manager::getProjects();
@@ -109,7 +109,7 @@ function ajax_menu()
     $files = \QUI\Utils\System\File::readDir( $dir );
 
     foreach ( $files as $file ) {
-        \QUI_Menu::addXMLFile( $Menu, $dir . $file );
+        \QUI\Utils\XML::addXMLFileToMenu( $Menu, $dir . $file );
     }
 
     return $Menu->toArray();
@@ -164,5 +164,3 @@ function ajax_menu()
     false,
     'Permission::checkAdminUser'
 );
-
-?>

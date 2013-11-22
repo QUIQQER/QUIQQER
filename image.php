@@ -30,7 +30,7 @@ if (isset($_REQUEST['project']) && isset($_REQUEST['id']))
         }
         */
 
-        if ( $File->getType() === '\\QUI\\Projects\\Media\\Image' &&
+        if ( $File->getType() === 'QUI\\Projects\\Media\\Image' &&
             (isset($_REQUEST['maxwidth']) || isset($_REQUEST['maxheight'])) )
         {
             $maxwidth  = false;

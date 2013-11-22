@@ -77,26 +77,26 @@ class Manager
     {
         switch ( $cls )
         {
-            case '\\QUI\\Users\\User':
+            case 'QUI\\Users\\User':
                 return 'user';
             break;
 
-            case '\\QUI\\Groups\\Group':
+            case 'QUI\\Groups\\Group':
                 return 'groups';
             break;
 
-            case '\\QUI\\Projects\\Site':
-            case '\\QUI\\Projects\\Site\\Edit':
-            case '\\QUI\\Projects\\Site\\OnlyDB':
+            case 'QUI\\Projects\\Site':
+            case 'QUI\\Projects\\Site\\Edit':
+            case 'QUI\\Projects\\Site\\OnlyDB':
                 return 'site';
             break;
 
-            case '\\QUI\\Projects\\Project':
+            case 'QUI\\Projects\\Project':
                 return 'project';
             break;
 
             // @todo media file classes
-            case '\\QUI\\Projects\\Media':
+            case 'QUI\\Projects\\Media':
                 return 'media';
             break;
         }
@@ -452,14 +452,14 @@ class Manager
 
         switch ( $cls )
         {
-            case '\\QUI\\Users\\User':
-            case '\\QUI\\Groups\\Group':
-            case '\\QUI\\Projects\\Project':
+            case 'QUI\\Users\\User':
+            case 'QUI\\Groups\\Group':
+            case 'QUI\\Projects\\Project':
             break;
 
-            case '\\QUI\\Projects\\Site':
-            case '\\QUI\\Projects\\Site\\Edit':
-            case '\\QUI\\Projects\\Site\\OnlyDB':
+            case 'QUI\\Projects\\Site':
+            case 'QUI\\Projects\\Site\\Edit':
+            case 'QUI\\Projects\\Site\\OnlyDB':
                 $this->setSitePermissions( $Obj, $permissions );
                 return;
             break;
@@ -601,9 +601,9 @@ class Manager
     {
         switch ( get_class( $Site ) )
         {
-            case '\\QUI\\Projects\\Site':
-            case '\\QUI\\Projects\\Site\\Edit':
-            case '\\QUI\\Projects\\Site\\OnlyDB':
+            case 'QUI\\Projects\\Site':
+            case 'QUI\\Projects\\Site\\Edit':
+            case 'QUI\\Projects\\Site\\OnlyDB':
             break;
 
             default:
@@ -775,7 +775,7 @@ class Manager
             ));
         }
 
-        return false;
+        return array();
     }
 
     /**

@@ -1063,7 +1063,7 @@ class Plugin extends \QUI\QDOM
      */
     protected function _getUserXml()
     {
-        if (isset($this->UserDOM)) {
+        if ( isset( $this->UserDOM ) ) {
             return $this->UserDOM;
         }
 
@@ -1082,7 +1082,7 @@ class Plugin extends \QUI\QDOM
      */
     protected function _getDbXml()
     {
-        if (isset($this->DbDOM)) {
+        if ( isset( $this->DbDOM ) ) {
             return $this->DbDOM;
         }
 
@@ -1103,7 +1103,7 @@ class Plugin extends \QUI\QDOM
      */
     protected function _getDefaultSettings()
     {
-        if ($this->_defaults) {
+        if ( $this->_defaults ) {
             return $this->_defaults;
         }
 
@@ -1111,40 +1111,42 @@ class Plugin extends \QUI\QDOM
         $settings = $Dom->getElementsByTagName('plugin_settings');
         $projects = \QUI\Projects\Manager::getProjects();
 
-        if (!$settings->length) {
+        if ( !$settings->length ) {
             return array();
         }
 
-        if (!($configs = $settings->item(0)->getElementsByTagName('config'))) {
+        $configs = $settings->item(0)->getElementsByTagName('config');
+
+        if ( !$configs ) {
             return array();
         }
 
         $children = $configs->item(0)->childNodes;
         $result   = array();
 
-        for ($i=0; $i < $children->length; $i++)
+        for ( $i = 0; $i < $children->length; $i++ )
         {
             $Param = $children->item($i);
 
-            if ($Param->nodeName == '#text') {
+            if ( $Param->nodeName == '#text' ) {
                 continue;
             }
 
-            if ($Param->nodeName == 'section')
+            if ( $Param->nodeName == 'section' )
             {
                 $name  = $Param->getAttribute('name');
                 $confs = $Param->getElementsByTagName('conf');
 
-                if ($Param->getAttribute('type') == 'project')
+                if ( $Param->getAttribute('type') == 'project' )
                 {
-                    foreach ($projects as $project) {
-                        $result[ $project ] = $this->_parseConfs($confs);
+                    foreach ( $projects as $project ) {
+                        $result[ $project ] = $this->_parseConfs( $confs );
                     }
 
                     continue;
                 }
 
-                $result[ $name ] = $this->_parseConfs($confs);
+                $result[ $name ] = $this->_parseConfs( $confs );
             }
         }
 
@@ -1162,18 +1164,21 @@ class Plugin extends \QUI\QDOM
     {
         $result = array();
 
-        foreach ($confs as $Conf)
+        foreach ( $confs as $Conf )
         {
             $type    = 'string';
             $default = '';
 
+            $types    = $Conf->getElementsByTagName('type');
+            $defaults = $Conf->getElementsByTagName('defaultvalue');
+
             // type
-            if (($types = $Conf->getElementsByTagName('type')) && $types->length) {
+            if ( $types && $types->length) {
                 $type = $types->item(0)->nodeValue;
             }
 
             // default
-            if (($defaults = $Conf->getElementsByTagName('defaultvalue')) && $defaults->length) {
+            if ( $defaults && $defaults->length ) {
                 $default = $defaults->item(0)->nodeValue;
             }
 
@@ -1193,7 +1198,7 @@ class Plugin extends \QUI\QDOM
      */
     protected function _loadSetting()
     {
-        if ($this->_Config) {
+        if ( $this->_Config ) {
             return $this->_Config;
         }
 
@@ -1207,6 +1212,3 @@ class Plugin extends \QUI\QDOM
         return $this->_Config;
     }
 }
-
-
-?>

@@ -15,8 +15,6 @@ function ajax_media_replace($project, $fileid, $File)
 
     $file = $File->getAttribute('filepath');
 
-    \QUI\System\Log::writeRecursive( $File );
-
     if ( !file_exists($file) ) {
         return;
     }

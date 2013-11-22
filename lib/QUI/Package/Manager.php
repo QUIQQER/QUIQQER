@@ -185,8 +185,6 @@ class Manager
 
         foreach ( $list as $entry )
         {
-            \QUI\System\Log::writeRecursive($entry);
-
             $version = $entry['version'];
 
             // so, we get newer versions
@@ -199,8 +197,6 @@ class Manager
 
             $require[ $entry['name'] ] = $version;
         }
-
-        \QUI\System\Log::writeRecursive( $require );
 
 
         $template = str_replace(

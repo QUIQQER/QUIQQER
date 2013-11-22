@@ -37,3 +37,25 @@ Thanks for all the nice lines of code.
 If we forget somebody, please not hesitate and write us an email.
 
 Henning and Moritz from PCSG / QUIQQER
+
+
+
+
+
+
+Packages
+
+- Mail Queue Server
+- Desktop Manager
+- Crons
+- Systemcheck
+- RSS
+- Linkchecker
+- patch system
+
+
+Muss geprüft werden
+
+- Countries
+- Message Handler
+- QUI Controls (php)

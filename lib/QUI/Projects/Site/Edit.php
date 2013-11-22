@@ -859,8 +859,6 @@ class Edit extends \QUI\Projects\Site
         // Namen vergeben falls existiert
         $i = 1;
 
-        \QUI\System\Log::writeRecursive($params['name']);
-
         if ( !isset( $params['name'] ) || empty( $params['name'] ) )
         {
             while ( $this->existNameInChildren( $new_name ) )

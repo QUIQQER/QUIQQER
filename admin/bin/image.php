@@ -31,7 +31,7 @@ try
     exit;
 }
 
-if ( $File->getType() != '\\QUI\\Projects\\Media\\Image' )
+if ( $File->getType() != 'QUI\\Projects\\Media\\Image' )
 {
     header( "HTTP/1.1 404 Not Found" );
     exit;

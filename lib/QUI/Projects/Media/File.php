@@ -119,5 +119,3 @@ class File extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects\
         );
     }
 }
-
-?>

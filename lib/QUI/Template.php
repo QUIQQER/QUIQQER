@@ -77,7 +77,7 @@ class Template extends \QUI\QDOM
         $Engine     = new self::$_engines[ $engine ]( $admin );
         $implements = class_implements( $Engine );
 
-        if ( !isset( $implements['\\QUI\\Interfaces\\Template\\Engine'] ) )
+        if ( !isset( $implements['QUI\\Interfaces\\Template\\Engine'] ) )
         {
             throw new \QUI\Exception(
                 'The Template Engine implements not from \QUI\Interfaces\Template\Engine'

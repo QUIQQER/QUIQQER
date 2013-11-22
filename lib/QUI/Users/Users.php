@@ -159,7 +159,7 @@ class Users
             return false;
         }
 
-        if ( get_class( $User ) === '\\QUI\\Users\\User' ) {
+        if ( get_class( $User ) === 'QUI\\Users\\User' ) {
             return true;
         }
 
@@ -1098,13 +1098,13 @@ class Users
         $Statement = $PDO->prepare( $query );
 
         foreach ( $binds as $key => $value ) {
-            $Statement->bindParam( $key, $value, PDO::PARAM_STR );
+            $Statement->bindParam( $key, $value, \PDO::PARAM_STR );
         }
 
         try
         {
             $Statement->execute();
-        } catch ( PDOException $e )
+        } catch ( \PDOException $e )
         {
             $message  = $e->getMessage();
             $message .= print_r($query, true);
@@ -1115,7 +1115,7 @@ class Users
             );
         }
 
-        $result = $Statement->fetchAll( PDO::FETCH_ASSOC );
+        $result = $Statement->fetchAll( \PDO::FETCH_ASSOC );
 
         if ( isset( $params['count'] ) ) {
             return (int)$result[0]['count'];

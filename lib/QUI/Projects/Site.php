@@ -638,10 +638,10 @@ class Site extends \QUI\QDOM
                LIMIT 1;
         ');
 
-        $Statment->bindValue( ':id', $this->getId(), PDO::PARAM_INT );
+        $Statment->bindValue( ':id', $this->getId(), \PDO::PARAM_INT );
         $Statment->execute();
 
-        $result = $Statment->fetchAll( PDO::FETCH_ASSOC );
+        $result = $Statment->fetchAll( \PDO::FETCH_ASSOC );
 
         if ( isset( $result[0] ) && isset( $result[0][$lang] ) )
         {
@@ -1111,7 +1111,7 @@ class Site extends \QUI\QDOM
         );
 
         $Statement->execute($prepared);
-        $result = $Statement->fetchAll(PDO::FETCH_ASSOC);
+        $result = $Statement->fetchAll( \PDO::FETCH_ASSOC );
 
         return $result[0]['idc'];
     }
@@ -1233,7 +1233,7 @@ class Site extends \QUI\QDOM
                 }
 
                 if ($param != 'suffix') {
-                    $url .= Rewrite::URL_PARAM_SEPERATOR . $param . Rewrite::URL_PARAM_SEPERATOR . $value;
+                    $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $param . \QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
                 }
             }
 
@@ -1251,20 +1251,20 @@ class Site extends \QUI\QDOM
         $default_lang = $Project->getAttribute('default_lang');
 
         // Plugins können hier eingreifen
-        if (QUI::conf('system', 'geturl'))
+        if ( \QUI::conf('system', 'geturl') )
         {
             $plugins = explode(',', \QUI::conf('system', 'geturl'));
             $Plugins = \QUI::getPlugins();
 
-            foreach ($plugins as $plugin)
+            foreach ( $plugins as $plugin )
             {
-                $Plugin = $Plugins->get($plugin);
+                $Plugin = $Plugins->get( $plugin );
 
-                if (method_exists($Plugin, 'getUrl'))
+                if ( method_exists($Plugin, 'getUrl') )
                 {
-                    $_url = $Plugin->getUrl($this);
+                    $_url = $Plugin->getUrl( $this );
 
-                    if ($_url) {
+                    if ( $_url ) {
                         return $_url;
                     }
                 }
@@ -1273,17 +1273,17 @@ class Site extends \QUI\QDOM
 
 
         // Url zusammen bauen
-        if ($this->_url != false)
+        if ( $this->_url != false )
         {
             $url = $this->_url;
         } else
         {
-            if ($this->getParentId() && $this->getParentId() != 1)
+            if ( $this->getParentId() && $this->getParentId() != 1 )
             // Wenn parent nicht die Startseite ist, dann muss der Pfad generiert werden
             {
                 $this->_getUrl($this->getId());
 
-                foreach (array_reverse($this->_parents) as $parent) {
+                foreach ( array_reverse($this->_parents) as $parent ) {
                     $url .= \QUI\Rewrite::replaceUrlSigns( $parent, true ).'/'; // URL auch Slash ersetzen
                 }
             }
@@ -1291,20 +1291,20 @@ class Site extends \QUI\QDOM
             $this->_url = $url;
         }
 
-        $url .= \QUI\Rewrite::replaceUrlSigns($this->getAttribute('name'), true);
+        $url .= \QUI\Rewrite::replaceUrlSigns( $this->getAttribute('name'), true );
 
-        foreach ($params as $param => $value)
+        foreach ( $params as $param => $value )
         {
-            if ($param == 'phpMyAdmin') {
+            if ( $param == 'phpMyAdmin' ) {
                 continue;
             }
 
-            if ($param != 'suffix') {
+            if ( $param != 'suffix' ) {
                 $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $param . \QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
             }
         }
 
-        if (isset($params['suffix'])) {
+        if ( isset( $params['suffix'] ) ) {
             return $url .'.'. $params['suffix'];
         }
 

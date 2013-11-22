@@ -119,7 +119,7 @@ class DOM
                 $tabs = \QUI\Utils\XML::getTabsFromXml( $Object );
             }
 
-        } else if ( get_class( $Object ) === 'Project' )
+        } else if ( get_class( $Object ) === 'QUI\\Projects\\Project' )
         {
             /* @var $Object \QUI\Projects\Project */
             // tabs welche ein projekt zur Verfügung stellt
@@ -128,8 +128,8 @@ class DOM
             );
 
         } else if (
-            get_class( $Object ) === '\\QUI\\Projects\\Site' ||
-            get_class( $Object ) === '\\QUI\\Projects\\Site\\Edit' )
+            get_class( $Object ) === 'QUI\\Projects\\Site' ||
+            get_class( $Object ) === 'QUI\\Projects\\Site\\Edit' )
         {
             $Tabbar = \QUI\Projects\Sites::getTabs( $Object );
             $Tab    = $Tabbar->getElementByName( $name );
@@ -177,7 +177,7 @@ class DOM
      * Parse a DOMDocument to a settings window
      * if a settings window exist in it
      *
-     * @param DomDocument|DomElement $Dom
+     * @param \DomDocument|DomElement $Dom
      * @return \QUI\Controls\Windows\Setting|false
      */
     static function parseDomToWindow($Dom)
@@ -334,7 +334,7 @@ class DOM
     /**
      * Parse a DOMNode permission to an array
      *
-     * @param DOMNode $Node
+     * @param \DOMNode $Node
      * @return Array
      */
     static function parsePermissionToArray(\DOMNode $Node)
@@ -385,7 +385,7 @@ class DOM
     /**
      * Wandelt ein Kategorie DomNode in entsprechendes HTML um
      *
-     * @param DomNode $Category
+     * @param \DOMNode $Category
      * @param $Plugin - optional
      * @return String
      */
@@ -558,10 +558,10 @@ class DOM
     /**
      * Eingabe Element Input in einen String für die Einstellung umwandeln
      *
-     * @param DOMNode $Input
+     * @param \DOMNode $Input
      * @return String
      */
-    static function inputDomToString(DOMNode $Input)
+    static function inputDomToString(\DOMNode $Input)
     {
         if ( $Input->nodeName != 'input' ) {
             return '';
@@ -599,7 +599,7 @@ class DOM
     /**
      * Button Element
      *
-     * @param DOMNode $Button
+     * @param \DOMNode $Button
      * @return String
      */
     static function buttonDomToString(\DOMNode $Button)
@@ -632,7 +632,7 @@ class DOM
     /**
      * Wandelt <group> in einen String für die Einstellung um
      *
-     * @param DOMNode $Group
+     * @param \DOMNode $Group
      * @return String
      */
     static function groupDomToString(\DOMNode $Group)
@@ -664,7 +664,7 @@ class DOM
     /**
      * Eingabe Element Textarea in einen String für die Einstellung umwandeln
      *
-     * @param DOMNode $Textarea
+     * @param \DOMNode $Textarea
      *
      * @return String
      */
@@ -693,7 +693,7 @@ class DOM
     /**
      * Eingabe Element Select in einen String für die Einstellung umwandeln
      *
-     * @param DOMNode $Select
+     * @param \DOMNode $Select
      * @return String
      */
     static function selectDomToString(\DOMNode $Select)
@@ -736,7 +736,7 @@ class DOM
     /**
      * Table Datenbank DOmNode Objekt in ein Array umwandeln
      *
-     * @param DOMNode $Table
+     * @param \DOMNode $Table
      * @return Array
      */
     static function dbTableDomToArray(\DOMNode $Table)
@@ -789,7 +789,7 @@ class DOM
     /**
      * Field Datenbank DOmNode Objekt in ein Array umwandeln
      *
-     * @param DOMNode $Field
+     * @param \DOMNode $Field
      * @return Array
      */
     static function dbFieldDomToArray(\DOMNode $Field)
@@ -823,7 +823,7 @@ class DOM
     /**
      * Primary Datenbank DOmNode Objekt in ein Array umwandeln
      *
-     * @param DOMNode $Primary
+     * @param \DOMNode $Primary
      * @return Array
      */
     static function dbPrimaryDomToArray(\DOMNode $Primary)
@@ -836,7 +836,7 @@ class DOM
     /**
      * Index Datenbank DOmNode Objekt in ein Array umwandeln
      *
-     * @param DOMNode $Index
+     * @param \DOMNode $Index
      * @return Array
      */
     static function dbIndexDomToArray(\DOMNode $Index)
@@ -849,7 +849,7 @@ class DOM
     /**
      * Parse config entries to an array
      *
-     * @param DOMNode $confs
+     * @param \DOMNode $confs
      * @return Array
      */
     static function parseConfs($confs)
@@ -926,7 +926,7 @@ class DOM
      * Returns the innerHTML from a PHP DOMNode
      * Equivalent to the JavaScript innerHTML property
      *
-     * @param DOMNode $Node
+     * @param \DOMNode $Node
      * @return String
      */
     static function getInnerHTML(\DOMNode $Node)

@@ -20,7 +20,7 @@ function ajax_media_get($project, $fileid)
     $children   = array();
     $_children  = array();
 
-    if ($File->getType() === '\\QUI\\Projects\\Media\\Folder') {
+    if ( $File->getType() === 'QUI\\Projects\\Media\\Folder' ) {
         $_children = $File->getChildren();
     }
 

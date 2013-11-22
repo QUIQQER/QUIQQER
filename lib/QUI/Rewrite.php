@@ -285,7 +285,7 @@ class Rewrite
                 $this->_showErrorHeader( 404 );
             }
 
-            if ( $Item->getType() === '\\QUI\\Projects\\Media\\Image' )
+            if ( $Item->getType() === 'QUI\\Projects\\Media\\Image' )
             {
                 /* @var $Item \QUI\Projects\Media\Image */
                 if ( !isset( $width ) || empty( $width ) ) {

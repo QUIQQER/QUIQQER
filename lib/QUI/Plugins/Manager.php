@@ -230,7 +230,7 @@ class Manager extends \QUI\QDOM
     protected function _createCache($class, $Plugin)
     {
         // Kein Cache für Standard Plugins
-        if ( $class == '\\QUI\\Plugins\\Plugin' ) {
+        if ( $class == 'QUI\\Plugins\\Plugin' ) {
             return false;
         }
 

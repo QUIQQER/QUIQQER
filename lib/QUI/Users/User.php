@@ -1149,7 +1149,7 @@ class User implements \QUI\Interfaces\Users\User
         $Users = \QUI::getUsers();
         $SUser = $Users->getUserBySession();
 
-        if ( $User && $User->getType() == '\\QUI\\Users\\SystemUser' ) {
+        if ( $User && $User->getType() == 'QUI\\Users\\SystemUser' ) {
             return true;
         }
 

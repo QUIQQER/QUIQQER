@@ -100,7 +100,7 @@ class Ajax extends \QUI\QDOM
             }
 
             if ( strpos( $func, 'Permission' ) === 0 ) {
-                   $func = 'QUI_Rights_'. $func;
+                   $func = '\\QUI\\Rights\\'. $func;
             }
 
             if ( !is_callable( $func ) ) {
@@ -275,8 +275,7 @@ class Ajax extends \QUI\QDOM
             break;
 
             case 'PDOException':
-            case '\PDOException':
-            case '\QUI\Database\Exception':
+            case 'QUI\\Database\\Exception':
                 // DB Fehler immer loggen
                 \QUI\System\Log::writeException( $Exception );
 

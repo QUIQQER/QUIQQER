@@ -40,7 +40,7 @@ class Utils
             );
         }
 
-        if ( $Item->getType() == '\\QUI\\Projects\\Media\\Folder' )
+        if ( $Item->getType() == 'QUI\\Projects\\Media\\Folder' )
         {
             /* @var $Item \QUI\Projects\Media\Folder */
             return array(
@@ -66,7 +66,7 @@ class Utils
             'id'        => $Item->getId(),
             'name'      => $Item->getAttribute('name'),
             'title'     => $Item->getAttribute('title'),
-            'type'      => $Item->getType() === '\\QUI\\Projects\\Media\\Image' ? 'image' : 'file',
+            'type'      => $Item->getType() === 'QUI\\Projects\\Media\\Image' ? 'image' : 'file',
             'url'       => $Item->getUrl(),
             'active'    => $Item->isActive(),
             'e_date'    => $Item->getAttribute('e_date')
@@ -513,7 +513,7 @@ class Utils
             return false;
         }
 
-        if ( $Unknown->getType() === '\\QUI\\Projects\\Media\\Folder' ) {
+        if ( $Unknown->getType() === 'QUI\\Projects\\Media\\Folder' ) {
             return true;
         }
 

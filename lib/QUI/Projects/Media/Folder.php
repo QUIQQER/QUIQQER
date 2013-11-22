@@ -905,5 +905,3 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
         return $result;
     }
 }
-
-?>

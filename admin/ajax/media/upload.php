@@ -13,7 +13,7 @@ function ajax_media_upload($project, $parentid, $File)
     $Folder  = $Media->get( (int)$parentid );
     $User    = \QUI::getUserBySession();
 
-    if ( $Folder->getType() != '\\QUI\\Projects\\Media\\Folder' )
+    if ( $Folder->getType() != 'QUI\\Projects\\Media\\Folder' )
     {
         throw new \QUI\Exception(
             'The parent id is not a folder. You can only upload files to folders'

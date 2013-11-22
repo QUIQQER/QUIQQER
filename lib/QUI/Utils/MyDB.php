@@ -7,7 +7,7 @@
 namespace QUI\Utils;
 
 /**
- * Bridge für die alte MyDB Klasse zu neuer PDO
+ * Bridge für die alte MyDB Klasse zu neuer \PDO
  *
  * @author www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui.utils
@@ -32,7 +32,7 @@ class MyDB
 
     /**
      * PDO Objekt
-     * @return PDO
+     * @return \PDO
      */
     public function getPDO()
     {
