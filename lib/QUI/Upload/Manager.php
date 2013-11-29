@@ -159,7 +159,7 @@ class Manager
         }
 
         if ( isset( $_REQUEST['extract'] ) ) {
-            $_REQUEST['extract'] = \Utils_Bool::JSBool( $_REQUEST['extract'] );
+            $_REQUEST['extract'] = \QUI\Utils\Bool::JSBool( $_REQUEST['extract'] );
         }
 
 

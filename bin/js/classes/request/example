@@ -1,8 +1,0 @@
-
-
-QUI.Ajax.post('ajax_project_getlist', function(result, Request)
-{
-    "use strict";
-
-    console.info(result);
-});

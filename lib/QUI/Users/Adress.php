@@ -36,7 +36,7 @@ class Adress extends \QUI\QDOM
     public function __construct(\QUI\Users\User $User, $id)
     {
         $result = \QUI::getDataBase()->fetch(array(
-            'from'  => \QUI\Users\Users::TableAdress(),
+            'from'  => \QUI\Users\Manager::TableAdress(),
             'where' => array(
                 'id'  => (int)$id,
                 'uid' => $User->getId()
@@ -300,7 +300,7 @@ class Adress extends \QUI\QDOM
         $phone = json_encode($this->getPhoneList());
 
         \QUI::getDataBase()->update(
-            \QUI\Users\Users::TableAdress(),
+            \QUI\Users\Manager::TableAdress(),
             array(
                 'salutation' => \QUI\Utils\Security\Orthos::clear( $this->getAttribute('salutation') ),
                 'firstname'  => \QUI\Utils\Security\Orthos::clear( $this->getAttribute('firstname') ),
@@ -326,7 +326,7 @@ class Adress extends \QUI\QDOM
     {
         \QUI::getDataBase()->exec(array(
             'delete' => true,
-            'from'   => \QUI\Users\Users::TableAdress(),
+            'from'   => \QUI\Users\Manager::TableAdress(),
             'where'  => array(
                 'id'  => $this->getId(),
                 'uid' => $this->_User->getId()

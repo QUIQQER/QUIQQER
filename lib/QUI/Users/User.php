@@ -89,7 +89,7 @@ class User implements \QUI\Interfaces\Users\User
 
     /**
      * User manager
-     * @var \QUI\Users\Users
+     * @var \QUI\Users\Manager
      */
     protected $_Users;
 
@@ -127,10 +127,10 @@ class User implements \QUI\Interfaces\Users\User
      * contructor
      *
      * @param Integer $id - ID of the user
-     * @param \QUI\Users\Users $Users - the user manager
+     * @param \QUI\Users\Manager $Users - the user manager
      * @throws \QUI\Exception
      */
-    public function __construct($id, \QUI\Users\Users $Users)
+    public function __construct($id, \QUI\Users\Manager $Users)
     {
         $id = (int)$id;
 
@@ -150,7 +150,7 @@ class User implements \QUI\Interfaces\Users\User
         $this->_Users = $Users;
 
         $data = \QUI::getDB()->select(array(
-            'from'  => \QUI\Users\Users::Table(),
+            'from'  => \QUI\Users\Manager::Table(),
             'where' => array(
                 'id' => (int)$id
             ),
@@ -599,7 +599,7 @@ class User implements \QUI\Interfaces\Users\User
             case "username":
             case "name":
                 // Falls der Name geändert wird muss geprüft werden das es diesen nicht schon gibt
-                \QUI\Users\Users::checkUsernameSigns($value);
+                \QUI\Users\Manager::checkUsernameSigns($value);
 
                 if ($this->_name != $value &&
                     $this->_Users->existsUsername($value))
@@ -750,11 +750,11 @@ class User implements \QUI\Interfaces\Users\User
             );
         }
 
-        $newpass         = \QUI\Users\Users::genHash( $new );
+        $newpass         = \QUI\Users\Manager::genHash( $new );
         $this->_password = $newpass;
 
         \QUI::getDB()->updateData(
-            \QUI\Users\Users::Table(),
+            \QUI\Users\Manager::Table(),
             array( 'password' => $newpass ),
             array( 'id'       => $this->getId() )
         );
@@ -820,7 +820,7 @@ class User implements \QUI\Interfaces\Users\User
         }
 
         $res = \QUI::getDB()->updateData(
-            \QUI\Users\Users::Table(),
+            \QUI\Users\Manager::Table(),
             array( 'active' => 1 ),
             array( 'id'     => $this->getId() )
         );
@@ -866,7 +866,7 @@ class User implements \QUI\Interfaces\Users\User
         }
 
         \QUI::getDB()->updateData(
-            \QUI\Users\Users::Table(),
+            \QUI\Users\Manager::Table(),
             array('active' => 0),
             array('id'     => $this->getId())
         );
@@ -913,7 +913,7 @@ class User implements \QUI\Interfaces\Users\User
         }
 
         \QUI::getDB()->updateData(
-            \QUI\Users\Users::Table(),
+            \QUI\Users\Manager::Table(),
             array(
                 'active'     => -1,
                 'password'   => '',
@@ -991,7 +991,7 @@ class User implements \QUI\Interfaces\Users\User
         }
 
         return \QUI::getDB()->updateData(
-            \QUI\Users\Users::Table(),
+            \QUI\Users\Manager::Table(),
             array(
                 'username' 	=> $this->getName(),
                 'usergroup' => $this->getGroups(false),
@@ -1127,7 +1127,7 @@ class User implements \QUI\Interfaces\Users\User
         }
 
         \QUI::getDB()->deleteData(
-            \QUI\Users\Users::Table(),
+            \QUI\Users\Manager::Table(),
             array('id' => $this->getId())
         );
 
@@ -1222,7 +1222,7 @@ class User implements \QUI\Interfaces\Users\User
         $_params[ 'uid' ] = $this->getId();
 
         $Statement = \QUI::getDataBase()->insert(
-            \QUI\Users\Users::TableAdress(),
+            \QUI\Users\Manager::TableAdress(),
             $_params
         );
 
@@ -1239,7 +1239,7 @@ class User implements \QUI\Interfaces\Users\User
     public function getAdressList()
     {
         $result = \QUI::getDB()->select(array(
-            'from'   => \QUI\Users\Users::TableAdress(),
+            'from'   => \QUI\Users\Manager::TableAdress(),
             'select' => 'id',
             'where'  => array(
                 'uid' => $this->getId()

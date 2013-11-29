@@ -34,7 +34,7 @@ class QUI
 
     /**
      * QUI getDataBase object, use \QUI::getDataBase();
-     * @var Utils_Db
+     * @var \QUI\Database\DB
      */
     static $DataBase2 = null;
 
@@ -58,7 +58,7 @@ class QUI
 
     /**
      * QUI Ajax
-     * @var Utils_Request_Ajax
+     * @var \QUI\Utils\Request\Ajax
      */
     static $Ajax = null;
 
@@ -70,7 +70,7 @@ class QUI
 
     /**
      * QUI GroupManager, use \QUI::getGroups()
-     * @var \QUI\Groups\Groups
+     * @var \QUI\Groups\Manager
      */
     static $Groups = null;
 
@@ -130,7 +130,7 @@ class QUI
 
     /**
      * QUI User Manager, use \QUI::getUsers();
-     * @var \QUI\Users\Users
+     * @var \QUI\Users\Manager
      */
     static $Users = null;
 
@@ -562,7 +562,7 @@ class QUI
     /**
      * Returns the Database object
      *
-     * @return Utils_Db
+     * @return \QUI\Database\DB
      */
     static function getDataBase()
     {
@@ -663,12 +663,12 @@ class QUI
 
     /**
      * Returns the group manager
-     * @return \QUI\Groups\Groups
+     * @return \QUI\Groups\Manager
      */
     static function getGroups()
     {
         if ( is_null( self::$Groups ) ) {
-            self::$Groups = new \QUI\Groups\Groups();
+            self::$Groups = new \QUI\Groups\Manager();
         }
 
         return self::$Groups;
@@ -804,12 +804,12 @@ class QUI
 
     /**
      * Return the user manager
-     * @return \QUI\Users\Users
+     * @return \QUI\Users\Manager
      */
     static function getUsers()
     {
         if ( is_null( self::$Users ) ) {
-            self::$Users = new \QUI\Users\Users();
+            self::$Users = new \QUI\Users\Manager();
         }
 
         return self::$Users;
@@ -818,7 +818,7 @@ class QUI
     /**
      * Get current logged in user
      * @return \QUI\Users\User
-     * @uses \QUI\Users\Users
+     * @uses \QUI\Users\Manager
      */
     static function getUserBySession()
     {

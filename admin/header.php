@@ -28,5 +28,3 @@ if ( strpos($_SERVER['SCRIPT_NAME'], 'admin.php') !== false &&
 
 //Adminbereich markieren
 define( 'ADMIN', true );
-
-?>

@@ -1,20 +1,50 @@
 
-body {
-    float: left;
-    width: 100%;
+html, body {
+    background: #2F8FC6;
+    color: #212527;
+    font-size: 13px;
+    font-weight: 400;
+    font-family: 'Open Sans', sans-serif;
     height: 100%;
-}
-
-header,
-nav,
-footer,
-#content {
+    margin: 0;
     width: 100%;
-    float: left;
-    clear: both;
 }
 
-#content {
-    border-top: 1px solid #909090;
+/** logo, title
+ * ====================================================== */
+
+.qui-logo-container {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.6);
+    color: #BABABA;
+    float: left;
+    height: 50px;
+    line-height: 50px;
+    position: relative;
+    text-align: center;
+    width: 100%;
+}
+
+.qui-logo-container img {
+    float: left;
+    margin: 10px;
+}
+
+/** menu
+ * ====================================================== */
+
+.qui-menu-container {
+    background: #F2F2F2;
     border-bottom: 1px solid #909090;
+    float: left;
+    height: 40px;
+    width: 100%;
+}
+
+/** workspace
+ * ====================================================== */
+
+.qui-workspace-container {
+    background: #F2F2F2;
+    float: left;
+    width: 100%;
 }

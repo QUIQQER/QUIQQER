@@ -194,22 +194,22 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
         {
             if ( !file_exists($cachefile) )
             {
-                Utils_Image::reflection($original, $cachefile);
+                \QUI\Utils\Image::reflection($original, $cachefile);
             } else
             {
-                Utils_Image::reflection($cachefile, $cachefile);
+                \QUI\Utils\Image::reflection($cachefile, $cachefile);
             }
 
             if ( isset($cachefile2) ) {
-                Utils_Image::reflection($cachefile, $cachefile2);
+                \QUI\Utils\Image::reflection($cachefile, $cachefile2);
             }
 
             if ( $width || $height )
             {
-                Utils_Image::resize($cachefile, $cachefile, (int)$width, (int)$height);
+                \QUI\Utils\Image::resize($cachefile, $cachefile, (int)$width, (int)$height);
 
                 if ( isset($cachefile2) ) {
-                    Utils_Image::resize($cachefile2, $cachefile2, (int)$width, (int)$height);
+                    \QUI\Utils\Image::resize($cachefile2, $cachefile2, (int)$width, (int)$height);
                 }
             }
         }
@@ -230,14 +230,14 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
             {
                 try
                 {
-                    Utils_Image::roundCorner($cachefile, $cachefile, array(
+                    \QUI\Utils\Image::roundCorner($cachefile, $cachefile, array(
                         'radius' 	 => (int)$roundcorner['radius'],
                         'background' => $roundcorner['background']
                     ));
 
                     if ( isset($cachefile2) )
                     {
-                        Utils_Image::roundCorner($cachefile2, $cachefile, array(
+                        \QUI\Utils\Image::roundCorner($cachefile2, $cachefile, array(
                             'radius' 	 => (int)$roundcorner['radius'],
                             'background' => $roundcorner['background']
                         ));
@@ -344,8 +344,8 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
                     \QUI\Utils\System\File::copy($f_water, $watermark_temp);
                 }
 
-                Utils_Image::resize($watermark_temp, $watermark_temp, $watermark_width);
-                Utils_Image::resize($watermark_temp, $watermark_temp, 0, $watermark_height);
+                \QUI\Utils\Image::resize($watermark_temp, $watermark_temp, $watermark_width);
+                \QUI\Utils\Image::resize($watermark_temp, $watermark_temp, 0, $watermark_height);
 
                 $w_info  = \QUI\Utils\System\File::getInfo($watermark_temp, array('imagesize' => true));
                 $f_water = $watermark_temp;
@@ -376,10 +376,10 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
                 break;
             }
 
-            Utils_Image::watermark($cachefile, $f_water, false, $top, $left);
+            \QUI\Utils\Image::watermark($cachefile, $f_water, false, $top, $left);
 
             if ( isset($cachefile2) ) {
-                Utils_Image::watermark($cachefile2, $f_water, false, $top, $left);
+                \QUI\Utils\Image::watermark($cachefile2, $f_water, false, $top, $left);
             }
 
         } catch ( \QUI\Exception $e )
@@ -456,7 +456,7 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
 
         try
         {
-            return \Utils_Image::resize(
+            return \QUI\Utils\Image::resize(
                 $original,
                 $new_image,
                 $new_width,

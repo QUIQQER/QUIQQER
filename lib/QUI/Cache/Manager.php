@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file contains \QUI\Cache\System;
+ * This file contains \QUI\Cache\Manager;
  */
 
 namespace QUI\Cache;

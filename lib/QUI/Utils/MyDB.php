@@ -18,7 +18,7 @@ class MyDB
 {
     /**
      * internal db object
-     * @var Utils_Db
+     * @var \QUI\Database\DB
      */
     protected $_DB = null;
 
@@ -40,9 +40,9 @@ class MyDB
     }
 
     /**
-     * Utils_Db Objekt (Neues Datenbank Objekt)
+     * \QUI\Database\DB Objekt (Neues Datenbank Objekt)
      *
-     * @return Utils_Db
+     * @return \QUI\Database\DB
      */
     public function getUtilsDB()
     {

@@ -5,138 +5,130 @@
     $Plugins = \QUI::getPlugins();
     $plugins = $Plugins->getAvailablePlugins(false, true);
 
-?>
+    // qui path
+    $qui_path   =  URL_OPT_DIR .'bin/qui/';
+    $qui_extend =  URL_OPT_DIR .'bin/qui/extend/';
 
+?>
 <!doctype html>
-<!--[if lt IE 7 ]><html class="ie ie6" lang="de"> <![endif]-->
-<!--[if IE 7 ]><html class="ie ie7" lang="de"> <![endif]-->
-<!--[if IE 8 ]><html class="ie ie8" lang="de"> <![endif]-->
-<!--[if (gte IE 9)|!(IE)]><!--><html lang="de"> <!--<![endif]-->
+<!--[if lt IE 7 ]><html class="ie ie6" lang="<?php echo $User->getLang(); ?>"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="<?php echo $User->getLang(); ?>"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="<?php echo $User->getLang(); ?>"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="<?php echo $User->getLang(); ?>"> <!--<![endif]-->
 <head>
+
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:400,700,400italic|Bitter"
+        rel="stylesheet"
+        type="text/css"
+    />
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1,maximum-scale=1"
+    />
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
     <!-- HTML5
-          ================================================== -->
-    <!--[if lt IE 9]>
-        <script src="<?php echo URL_BIN_DIR; ?>js/mvc/html5.js"></script>
-    <![endif]-->
+        ================================================== -->
 
     <title>QUIQQER Content Management System - <?php echo HOST ?></title>
 
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link href="<?php echo URL_DIR; ?>favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
 
-    <?php
-        $Standard = false;
+    <!-- [begin] css combine -->
 
-        try
-        {
-            $Standard = \QUI\Projects\Manager::getStandard();
-        } catch ( \QUI\Exception $e )
-        {
-            // nothing
-        }
+    <link href="<?php echo $qui_extend; ?>font-awesome/css/font-awesome.min.css"
+        rel="stylesheet"
+        type="text/css"
+    />
 
-        $config = array();
-        $config['globals'] = \QUI::conf( 'globals' );
+    <!--[if (lt IE 9) & (!IEMobile)]>
+        <link href="<?php echo $qui_extend; ?>unsemantic/ie.css"
+            rel="stylesheet"
+            type="text/css"
+        />
+    <![endif]-->
 
-        // locale file
-        try
-        {
-            $files = \QUI\Translator::getJSTranslationFiles( $User->getLang() );
-        } catch ( \QUI\Exception $e )
-        {
+    <link href="<?php echo $qui_extend; ?>unsemantic/unsemantic-grid-responsive.css"
+        rel="stylesheet"
+        type="text/css"
+    />
 
-        }
+    <link href="<?php echo $qui_extend; ?>animate.min.css"
+        rel="stylesheet"
+        type="text/css"
+    />
 
-        $locales = array();
+    <link href="<?php echo $qui_extend; ?>classes.css"
+        rel="stylesheet"
+        type="text/css"
+    />
 
-        foreach ( $files as $package => $file ) {
-            $locales[] = $package .'/'. $User->getLang();
-        }
+    <link href="<?php echo $qui_extend; ?>buttons.css"
+        rel="stylesheet"
+        type="text/css"
+    />
 
-        echo '
-        <script type="text/javascript">
-        /* <![CDATA[ */
-            var USER = {
-                isSU : '. ($User->isSU() ? 1 : 0) .',
-                id   : '. $User->getId() .',
-                lang : "'. $User->getLang() .'"
-            };
+    <link href="<?php echo URL_BIN_DIR; ?>css/style.css"
+        rel="stylesheet"
+        type="text/css"
+    />
 
-            var URL_DIR     = "'. URL_DIR .'",
-                URL_LIB_DIR = "'. URL_LIB_DIR .'",
-                URL_BIN_DIR = "'. URL_BIN_DIR .'",
-                URL_USR_DIR = "'. URL_USR_DIR .'",
-                URL_SYS_DIR = "'. URL_SYS_DIR .'",
-                URL_OPT_DIR = "'. URL_OPT_DIR .'";
-                URL_VAR_DIR = "'. URL_VAR_DIR .'";
+    <script type="text/javascript">
+    /* <![CDATA[ */
+        var USER = {
+            isSU : <?php echo $User->isSU() ? 1 : 0; ?>,
+            id   : <?php echo $User->getId(); ?>,
+            lang : "<?php echo $User->getLang(); ?>"
+        };
 
-            var PHP = {
-                upload_max_filesize : "'. \QUI\Utils\System::getUploadMaxFileSize() .'"
-            };
+        var URL_DIR     = "<?php echo URL_DIR; ?>",
+            URL_LIB_DIR = "<?php echo URL_LIB_DIR; ?>",
+            URL_BIN_DIR = "<?php echo URL_BIN_DIR; ?>",
+            URL_USR_DIR = "<?php echo URL_USR_DIR; ?>",
+            URL_SYS_DIR = "<?php echo URL_SYS_DIR; ?>",
+            URL_OPT_DIR = "<?php echo URL_OPT_DIR; ?>",
+            URL_VAR_DIR = "<?php echo URL_VAR_DIR; ?>";
 
-            var QUI_CONFIG  = '. json_encode( $config ) .';
-            var QUI_LOCALES = '. json_encode( $locales, true ) .';
-            var QUI_VERSION = "'. \QUI::version() .'";
+        var PHP = {
+            upload_max_filesize : "<?php echo \QUI\Utils\System::getUploadMaxFileSize(); ?>"
+        };
 
-        /* ]]> */
-        </script>';
-    ?>
-
-    <!-- mootools -> combine the js -->
-    <script src="<?php echo URL_BIN_DIR; ?>js/mootools/mootools-core-1.4.5.js" type="text/javascript"></script>
-    <script src="<?php echo URL_BIN_DIR; ?>js/mootools/mootools-more.js" type="text/javascript"></script>
-    <script src="<?php echo URL_BIN_DIR; ?>js/mootools/moofx.js" type="text/javascript"></script>
-    <script src="<?php echo URL_BIN_DIR; ?>js/mootools/Elements.js" type="text/javascript"></script>
-    <script src="<?php echo URL_BIN_DIR; ?>js/mootools/Object.js" type="text/javascript"></script>
-    <script src="<?php echo URL_BIN_DIR; ?>js/mootools/Slick.js" type="text/javascript"></script>
-
-    <!-- QUIQQER && require -->
-    <script data-main="<?php echo URL_BIN_DIR; ?>js/QUIQQER.js" src="<?php echo URL_BIN_DIR; ?>js/mvc/require.js" type="text/javascript"></script>
-
-    <!-- MochUI define -->
-    <script src="<?php echo URL_BIN_DIR; ?>js/mocha/define.js" type="text/javascript"></script>
-
-    <!-- Error Handler define -->
-    <script src="<?php echo URL_BIN_DIR; ?>js/classes/messages/define.js" type="text/javascript"></script>
-
-    <!-- Windows define -->
-    <script src="<?php echo URL_BIN_DIR; ?>js/controls/windows/define.js" type="text/javascript"></script>
-
-    <!-- Desktop define -->
-    <script src="<?php echo URL_BIN_DIR; ?>js/classes/desktop/define.js" type="text/javascript"></script>
-
-    <!-- CSS -> combine it -->
-    <style type="text/css">
-        @import url("<?php echo URL_BIN_DIR; ?>css/style.css");
-        @import url("<?php echo URL_BIN_DIR; ?>css/classes.css");
-        @import url("<?php echo URL_BIN_DIR; ?>css/elements.css");
-        @import url("<?php echo URL_BIN_DIR; ?>css/tables.css");
-        @import url("<?php echo URL_BIN_DIR; ?>css/buttons.css");
-        @import url("<?php echo URL_BIN_DIR; ?>css/animate.css");
-    </style>
-
-    <?php
-        // Admin Header Includes
-        /*
-        foreach ( $plugins as $plugin )
-        {
-            if ( file_exists(OPT_DIR . $plugin .'/admin/bin/define.js') ) {
-                echo '<script src="'. URL_OPT_DIR . $plugin .'/admin/bin/define.js" type="text/javascript"></script>';
-            }
-        }
-
-        // packages defines
-        echo \QUI::getPackageManager()->getJavaScriptDefines();
-        */
-    ?>
+    /* ]]> */
+    </script>
 
 </head>
-<body>
-<noscript>
-    <div class="error" style="position: absolute; z-index: 100000; width: 100%; height: 30px; line-height: 30px; color: red; text-align: center;">
-        JavaScript ist in Ihrem Browser nicht aktiviert. Bitte aktivieren Sie JavaScript
+<body class="<?php echo $User->getLang(); ?>">
+
+    <div id="wrapper">
+        <div class="qui-logo-container grid-100 grid-parent">
+            <img src="<?php echo URL_BIN_DIR; ?>quiqqer_logo_mini.png" />
+
+            QUIQQER Managament System - www.pcsg.de
+        </div>
+
+        <div class="qui-menu-container grid-100 grid-parent">
+
+        </div>
+
+        <div class="qui-workspace-container grid-100 grid-parent">
+
+        </div>
     </div>
-</noscript>
+
+    <noscript>
+        <div class="error" style="position: absolute; z-index: 100000; width: 100%; height: 30px; line-height: 30px; color: red; text-align: center;">
+            JavaScript ist in Ihrem Browser nicht aktiviert. Bitte aktivieren Sie JavaScript
+        </div>
+    </noscript>
+
+    <script src="<?php echo URL_OPT_DIR; ?>bin/require.js"></script>
+    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/src/lib/mootools-core.js"></script>
+    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/src/lib/mootools-more.js"></script>
+    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/src/lib/moofx.js"></script>
+
+    <!-- load the quiqqer admin -->
+    <script src="<?php echo URL_BIN_DIR; ?>QUI/init.js"></script>
 
 </body>
 </html>

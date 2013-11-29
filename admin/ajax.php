@@ -10,7 +10,7 @@ header( "Content-Type: text/plain" );
 
 
 /**
- * @var Utils_Request_Ajax $ajax
+ * @var \QUI\Utils\Request\Ajax $ajax
  */
 
 $_rf_files = array();

@@ -45,7 +45,7 @@ $Engine = \QUI\Template::getEngine();
 
 // UTF 8 Prüfung für umlaute in url
 if ( isset( $_REQUEST['_url'] ) ) {
-    $_REQUEST['_url'] = \Utils_String::toUTF8( $_REQUEST['_url'] );
+    $_REQUEST['_url'] = \QUI\Utils\String::toUTF8( $_REQUEST['_url'] );
 }
 
 //\QUI\Utils\System\Debug::$run = true;
@@ -75,7 +75,7 @@ if ( isset( $Locale ) )
  */
 
 if ( isset( $_REQUEST['ref'] ) ) {
-    $Session->set( 'ref', \Utils_Security_Orthos::clear( $_REQUEST['ref'] ) );
+    $Session->set( 'ref', \QUI\Utils\Security\Orthos::clear( $_REQUEST['ref'] ) );
 }
 
 /**
@@ -155,7 +155,7 @@ $content  = $Template->fetchTemplate( $Site );
 // cachefile erstellen
 if ($Site->getAttribute('nocache') != true)
 {
-    Utils_System_File::mkdir($site_cache_dir . $Project->getAttribute('name') .'/');
+    \QUI\Utils\System\File::mkdir($site_cache_dir . $Project->getAttribute('name') .'/');
 
     file_put_contents($site_cache_file, $content);
 }
