@@ -94,6 +94,8 @@
             upload_max_filesize : "<?php echo \QUI\Utils\System::getUploadMaxFileSize(); ?>"
         };
 
+        var QUIQQER_VERSION = '1.0.0';
+
     /* ]]> */
     </script>
 
@@ -104,7 +106,9 @@
         <div class="qui-logo-container grid-100 grid-parent">
             <img src="<?php echo URL_BIN_DIR; ?>quiqqer_logo_mini.png" />
 
-            QUIQQER Managament System - www.pcsg.de
+            <p>
+                QUIQQER Managament System - www.namerobot.com
+            </p>
         </div>
 
         <div class="qui-menu-container grid-100 grid-parent">

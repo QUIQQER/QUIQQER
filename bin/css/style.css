@@ -1,6 +1,6 @@
 
 html, body {
-    background: #2F8FC6;
+    background: #f0f2f5;
     color: #212527;
     font-size: 13px;
     font-weight: 400;
@@ -14,7 +14,6 @@ html, body {
  * ====================================================== */
 
 .qui-logo-container {
-    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.6);
     color: #BABABA;
     float: left;
     height: 50px;
@@ -29,12 +28,21 @@ html, body {
     margin: 10px;
 }
 
+.qui-logo-container p {
+    color: #2F8FC6;
+    float: right;
+    font-size: 14px;
+    font-style: italic;
+    margin: 0 10px 0 0;
+    padding: 0;
+}
+
 /** menu
  * ====================================================== */
 
 .qui-menu-container {
     background: #F2F2F2;
-    border-bottom: 1px solid #909090;
+    border-bottom: 2px solid #e3e4e8;
     float: left;
     height: 40px;
     width: 100%;

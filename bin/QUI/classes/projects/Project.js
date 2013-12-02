@@ -28,7 +28,7 @@ define('classes/projects/Project', [
     'classes/projects/project/Site',
     'classes/projects/project/Media'
 
-], function(QDOM, Ajax, Site, Media)
+], function(QDOM, Ajax, ProjectSite, Media)
 {
     "use strict";
 
@@ -84,7 +84,7 @@ define('classes/projects/Project', [
                 return Site;
             }
 
-            Site = new Site( this, id );
+            Site = new ProjectSite( this, id );
 
             Site.addEvents({
                 'onDelete'      : this.$onSiteDelete,

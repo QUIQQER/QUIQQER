@@ -31,7 +31,7 @@ class Sites
         $Toolbar->appendChild(
             new \QUI\Controls\Buttons\Button(array(
                 'name'      => '_New',
-                'textimage' => URL_BIN_DIR .'16x16/page_white.png',
+                'textimage'      => 'icon-page-alt',
                 'text'      => 'Neu',
                 'onclick'   => 'Panel.createNewChild',
                 'help'      => 'Erzeugen Sie eine neue Unterseite',
@@ -42,25 +42,25 @@ class Sites
 
         $Toolbar->appendChild(
             new \QUI\Controls\Buttons\Button(array(
-                'name'      => '_Save',
-                'textimage' => URL_BIN_DIR .'16x16/save.png',
-                'text'      => 'Speichern',
-                'onclick'   => 'Panel.save',
-                'help'      => 'Speichern Sie Ihre Änderungen.',
-                'alt'       => 'Speichern Sie Ihre Änderungen.',
-                'title'     => 'Speichern Sie Ihre Änderungen.'
+                'name'    => '_Save',
+                'textimage'    => 'icon-save',
+                'text'    => 'Speichern',
+                'onclick' => 'Panel.save',
+                'help'    => 'Speichern Sie Ihre Änderungen.',
+                'alt'     => 'Speichern Sie Ihre Änderungen.',
+                'title'   => 'Speichern Sie Ihre Änderungen.'
             ))
         );
 
         $Toolbar->appendChild(
             new \QUI\Controls\Buttons\Button(array(
-                'name'      => '_Del',
-                'textimage' => URL_BIN_DIR .'16x16/trashcan_empty.png',
-                'text'      => 'Löschen',
-                'onclick'   => 'Panel.del',
-                'help'      => 'Löschen Sie die Seite, die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden',
-                'title'     => 'Löschen Sie die Seite, die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden',
-                'alt'       => 'Löschen Sie die Seite, die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden'
+                'name'    => '_Del',
+                'textimage'    => 'icon-trash',
+                'text'    => 'Löschen',
+                'onclick' => 'Panel.del',
+                'help'    => 'Löschen Sie die Seite, die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden',
+                'title'   => 'Löschen Sie die Seite, die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden',
+                'alt'     => 'Löschen Sie die Seite, die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden'
             ))
         );
 
@@ -72,10 +72,10 @@ class Sites
 
         $Toolbar->appendChild(
             new \QUI\Controls\Buttons\Button(array(
-                'name'      => '_Preview',
-                'textimage' => URL_BIN_DIR .'16x16/preview.png',
-                'text'      => 'Vorschau',
-                'onclick'   => 'QUI.lib.Sites.PanelButton.preview'
+                'name'    => '_Preview',
+                'textimage'    => 'icon-eye-open',
+                'text'    => 'Vorschau',
+                'onclick' => 'QUI.lib.Sites.PanelButton.preview'
             ))
         );
 
@@ -126,7 +126,7 @@ class Sites
             if ( $Site->getAttribute( 'active' ) )
             {
                 $Status->setAttributes(array(
-                    'textimage' => URL_BIN_DIR .'16x16/deactive.png',
+                    'textimage' => 'icon-remove',
                     'text'      => 'Deaktivieren',
                     'onclick'   => 'Panel.getSite().deactivate'
                 ));
@@ -134,7 +134,7 @@ class Sites
             } else
             {
                 $Status->setAttributes(array(
-                    'textimage' => URL_BIN_DIR .'16x16/active.png',
+                    'textimage' => 'icon-ok',
                     'text'      => 'Aktivieren',
                     'onclick'   => 'Panel.getSite().activate'
                 ));

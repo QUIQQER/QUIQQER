@@ -12,18 +12,16 @@
 
 define('classes/projects/Media', [
 
-    'classes/DOM',
-    'controls/projects/media/Panel',
-    'classes/projects/media/Image',
-    'classes/projects/media/File',
-    'classes/projects/media/Folder',
-    'classes/projects/media/Trash'
+    'qui/classes/DOM',
 
-], function(DOM, QUI_MediaPanel)
+    'classes/projects/project/media/Image',
+    'classes/projects/project/media/File',
+    'classes/projects/project/media/Folder',
+    'classes/projects/project/media/Trash'
+
+], function(DOM)
 {
     "use strict";
-
-    QUI.namespace( 'classes.projects' );
 
     /**
      * @class QUI.classes.projects.Media
@@ -32,9 +30,9 @@ define('classes/projects/Media', [
      *
      * @memberof! <global>
      */
-    QUI.classes.projects.Media = new Class({
+    return new Class({
 
-        Implements: [ DOM ],
+        Extends: DOM,
 
         initialize : function(Project)
         {

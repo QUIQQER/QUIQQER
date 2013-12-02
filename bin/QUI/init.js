@@ -25,6 +25,7 @@ require.config({
 require([
 
     'Ajax',
+    'controls/welcome/Panel',
     'qui/controls/desktop/Workspace',
     'qui/controls/desktop/Column',
     'qui/controls/desktop/Panel',
@@ -33,7 +34,7 @@ require([
     'qui/controls/bookmarks/Panel',
     'controls/projects/project/Panel'
 
-], function(Ajax, Workspace, Column, Panel, TaskPanel, Button, BookmarkPanel, ProjectPanel)
+], function(Ajax, Welcome, Workspace, Column, Panel, TaskPanel, Button, BookmarkPanel, ProjectPanel)
 {
     "use strict";
 
@@ -76,9 +77,14 @@ require([
     // task panel
     MiddleColumn.appendChild(
         new TaskPanel({
-            title   : 'My Panel 1',
-            icon    : 'icon-heart'
+            title : 'My Panel 1',
+            icon  : 'icon-heart',
+            name  : 'tasks'
         })
+    );
+
+    MiddleColumn.getChildren( 'tasks' ).appendChild(
+        new Welcome()
     );
 
     // resize the worksapce
@@ -94,20 +100,10 @@ require([
 
     // contextmenu
     require([
-        'qui/controls/contextmenu/Bar',
-        'qui/controls/contextmenu/BarItem',
+        'Menu',
         'qui/controls/contextmenu/Item'
-    ], function(ContextmenuBar, ContextmenuBarItem, ContextmenuItem)
+    ], function(Menu, ContextmenuItem)
     {
-        var Bar = new ContextmenuBar().inject(
-            document.getElement( '.qui-menu-container' )
-        );
-
-        Ajax.get('ajax_menu', function(result) {
-            Bar.insert( result );
-        });
-
-
         // Bookmar text
         Bookmarks.appendChild(
             new ContextmenuItem({

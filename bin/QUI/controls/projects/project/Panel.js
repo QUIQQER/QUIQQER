@@ -522,10 +522,11 @@ define('controls/projects/project/Panel', [
 
 
             require([
+                'qui/QUI',
                 'controls/projects/project/site/Panel',
                 'classes/projects/Project',
                 'classes/projects/project/Site'
-            ], function(QUI_SitePanel, QUI_Site)
+            ], function(QUI, SitePanel, Project, Site)
             {
                 var n      = 'panel-'+ project +'-'+ lang +'-'+ id,
                     panels = QUI.Controls.get( n );
@@ -538,14 +539,14 @@ define('controls/projects/project/Panel', [
                     // if a task exist, click it and open the instance
                     var Task = panels[ 0 ].getAttribute( 'Task' );
 
-                    if ( Task && Task.getType() == 'QUI.controls.taskbar.Task' ) {
+                    if ( Task && Task.getType() == 'qui/controls/taskbar/Task' ) {
                         panels[ 0 ].getAttribute( 'Task' ).click();
                     }
 
                     return;
                 }
 
-                panels = QUI.Controls.getByType( 'QUI.controls.desktop.Tasks' );
+                panels = QUI.Controls.getByType( 'qui/controls/desktop/Tasks' );
 
                 if ( !panels.length ) {
                     return;
@@ -555,7 +556,7 @@ define('controls/projects/project/Panel', [
                     Site    = Project.get( id );
 
                 panels[ 0 ].appendChild(
-                    new QUI_SitePanel(Site, {
+                    new SitePanel(Site, {
                         events :
                         {
                             onShow : function(Panel)

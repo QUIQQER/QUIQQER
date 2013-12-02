@@ -53,8 +53,8 @@ class XML
                 'name'    => $Item->getAttribute( 'name' ),
                 'icon'    => \QUI\Utils\DOM::parseVar( $Item->getAttribute( 'icon' ) ),
                 'require' => $Item->getAttribute( 'require' ),
-                'onClick' => 'QUI.Menu.click',
-                'click'   => $Item->getAttribute( 'onclick' )
+                'onClick' => 'QUI.Menu.menuClick',
+                //'click'   => $Item->getAttribute( 'onclick' )
             );
 
             $Parent = $Menu;

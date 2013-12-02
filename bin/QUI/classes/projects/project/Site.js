@@ -19,11 +19,13 @@
  * @event createChild [ this ]
  */
 
-define('classes/projects/Site', [
+define('classes/projects/project/Site', [
 
-    'qui/classes/DOM'
+    'qui/QUI',
+    'qui/classes/DOM',
+    'Ajax'
 
-], function(DOM)
+], function(QUI, DOM, Ajax)
 {
     "use strict";
 
@@ -41,7 +43,7 @@ define('classes/projects/Site', [
     return new Class({
 
         Extends : DOM,
-        Type    : 'classes/projects/Site',
+        Type    : 'classes/projects/project/Site',
 
         Binds : [
             'setAttributes',
@@ -62,7 +64,7 @@ define('classes/projects/Site', [
             this.$has_children = false;
             this.$parentid     = false;
 
-            this.init({
+            this.parent({
                 id : id
             });
         },
@@ -82,7 +84,7 @@ define('classes/projects/Site', [
 
             params.onfinish = onfinish;
 
-            QUI.Ajax.get('ajax_site_get', function(result, Request)
+            Ajax.get('ajax_site_get', function(result, Request)
             {
                 Site.setAttributes( result.attributes );
                 Site.$has_children = result.has_children || false;
@@ -144,7 +146,7 @@ define('classes/projects/Site', [
 
             params.onfinish = onfinish;
 
-            QUI.Ajax.get('ajax_site_getchildren', function(result, Request)
+            Ajax.get('ajax_site_getchildren', function(result, Request)
             {
                 if ( Request.getAttribute( 'onfinish' ) ) {
                     Request.getAttribute( 'onfinish' )( result, Request );
@@ -187,7 +189,7 @@ define('classes/projects/Site', [
 
             params.onfinish = onfinish || false;
 
-            QUI.Ajax.post('ajax_site_activate', function(result, Request)
+            Ajax.post('ajax_site_activate', function(result, Request)
             {
                 Site.setAttribute( 'active', 1 );
 
@@ -217,7 +219,7 @@ define('classes/projects/Site', [
 
             params.onfinish = onfinish || false;
 
-            QUI.Ajax.post('ajax_site_deactivate', function(result, Request)
+            Ajax.post('ajax_site_deactivate', function(result, Request)
             {
                 Site.setAttribute( 'active', 0 );
 
@@ -247,7 +249,7 @@ define('classes/projects/Site', [
             params.onfinish   = onfinish;
             params.attributes = JSON.encode( this.getAttributes() );
 
-            QUI.Ajax.post('ajax_site_save', function(result, Request)
+            Ajax.post('ajax_site_save', function(result, Request)
             {
                 Site.setAttributes( result.attributes );
                 Site.$has_children = result.has_children || false;
@@ -277,7 +279,7 @@ define('classes/projects/Site', [
 
             params.onfinish   = onfinish;
 
-            QUI.Ajax.post('ajax_site_delete', function(result, Request)
+            Ajax.post('ajax_site_delete', function(result, Request)
             {
                 if ( Request.getAttribute( 'onfinish' ) ) {
                     Request.getAttribute( 'onfinish' )( result, Request );
@@ -308,7 +310,7 @@ define('classes/projects/Site', [
                 name : newname
             });
 
-            QUI.Ajax.post('ajax_site_children_create', function(result, Request)
+            Ajax.post('ajax_site_children_create', function(result, Request)
             {
                 if ( Request.getAttribute( 'onfinish' ) ) {
                     Request.getAttribute( 'onfinish' )( result, Request );
@@ -353,12 +355,12 @@ define('classes/projects/Site', [
 
             var oid = Slick.uidOf( this );
 
-            if ( typeof QUI.$storage[ oid ] === 'undefined' ) {
+            if ( typeof window.$quistorage[ oid ] === 'undefined' ) {
                 return false;
             }
 
-            if ( typeof QUI.$storage[ oid ][ k ] !== 'undefined' ) {
-                return QUI.$storage[ oid ][ k ];
+            if ( typeof window.$quistorage[ oid ][ k ] !== 'undefined' ) {
+                return window.$quistorage[ oid ][ k ];
             }
 
             return false;
@@ -429,6 +431,4 @@ define('classes/projects/Site', [
             };
         }
     });
-
-    return QUI.classes.projects.Site;
 });
