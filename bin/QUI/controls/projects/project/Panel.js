@@ -236,18 +236,19 @@ define('controls/projects/project/Panel', [
          */
         createList : function()
         {
+            var self = this;
+
             if ( this.$Map ) {
                 this.$Map.destroy();
             }
 
-            Projects.getList(function(result, Ajax)
+            Projects.getList(function(result)
             {
                 var i, l, langs, len,
                     scrollsize, Map, Project,
                     func_project_click, func_media_click;
 
-                var Panel     = Ajax.getAttribute( 'Panel' ),
-                    Content   = Panel.getBody(),
+                var Content   = self.getContent(),
                     List      = Content.getElement( '.project-list' ),
                     Container = new Element( 'div' );
 
@@ -256,23 +257,21 @@ define('controls/projects/project/Panel', [
                 // click events
                 func_project_click = function(Itm, event)
                 {
-                    var Panel = Itm.getAttribute( 'Panel' );
+                    self.setAttribute( 'project', Itm.getAttribute( 'project' ) );
+                    self.setAttribute( 'lang', Itm.getAttribute( 'lang' ) );
 
-                    Panel.setAttribute( 'project', Itm.getAttribute( 'project' ) );
-                    Panel.setAttribute( 'lang', Itm.getAttribute( 'lang' ) );
-
-                    Panel.openProject();
+                    self.openProject();
                 };
 
                 func_media_click = function(Itm, event)
                 {
-                    Projects.createMediaPanel(
-                        Itm.getAttribute('project')
+                    self.openMediaPanel(
+                        Itm.getAttribute( 'project' )
                     );
                 };
 
-                if ( Panel.$Filter ) {
-                    Panel.$Filter.clearBinds();
+                if ( self.$Filter ) {
+                    self.$Filter.clearBinds();
                 }
 
 
@@ -285,17 +284,17 @@ define('controls/projects/project/Panel', [
 
                     langs = result[i].langs.split( ',' );
 
-                    if ( typeof Panel.$projectmaps[ i ] === 'undefined' ||
-                         !Panel.$projectmaps[ i ] )
+                    if ( typeof self.$projectmaps[ i ] === 'undefined' ||
+                         !self.$projectmaps[ i ] )
                     {
-                        Panel.$projectmaps[ i ] = new QUISitemap();
+                        self.$projectmaps[ i ] = new QUISitemap();
                     }
 
-                    Map = Panel.$projectmaps[ i ];
+                    Map = self.$projectmaps[ i ];
                     Map.clearChildren();
 
-                    if ( Panel.$Filter ) {
-                        Panel.$Filter.bindSitemap( Map );
+                    if ( self.$Filter ) {
+                        self.$Filter.bindSitemap( Map );
                     }
 
                     Project = new QUISitemapItem({
@@ -303,7 +302,6 @@ define('controls/projects/project/Panel', [
                         icon    : 'icon-home',
                         project : i,
                         lang    : result[i].default_lang,
-                        Panel   : Panel,
                         events  : {
                             onClick : func_project_click
                         }
@@ -321,7 +319,6 @@ define('controls/projects/project/Panel', [
                                 name    : 'project.'+ i +'.'+ langs[l],
                                 project : i,
                                 lang    : langs[l],
-                                Panel   : Panel,
                                 events  : {
                                     onClick : func_project_click
                                 }
@@ -335,7 +332,6 @@ define('controls/projects/project/Panel', [
                             text    : 'Media',
                             icon    : 'icon-picture',
                             project : i,
-                            Panel   : Panel,
                             events  : {
                                 onClick : func_media_click
                             }
@@ -354,11 +350,9 @@ define('controls/projects/project/Panel', [
                     left : 0
                 }, {
                     callback : function(time) {
-                        this.$Button.setActive();
-                    }.bind( Panel )
+                        self.$Button.setActive();
+                    }
                 });
-            }, {
-                Panel : this
             });
         },
 
@@ -569,6 +563,55 @@ define('controls/projects/project/Panel', [
                                 Conrol.openSite( Panel.getSite().getId() );
                             }
                         }
+                    })
+                );
+            });
+        },
+
+        /**
+         * opens a media panel from a project
+         *
+         * @method QUI.controls.projects.Panel#$openSitePanel
+         * @param {String} Project name
+         */
+        openMediaPanel : function(project)
+        {
+            var n      = 'panel-'+ project +'-media',
+                panels = QUI.Controls.get( n );
+
+            if ( panels.length )
+            {
+                panels[ 0 ].open();
+
+                // if a task exist, click it and open the instance
+                var Task = panels[ 0 ].getAttribute( 'Task' );
+
+                if ( Task && Task.getType() == 'qui/controls/taskbar/Task' ) {
+                    panels[ 0 ].getAttribute( 'Task' ).click();
+                }
+
+                return;
+            }
+
+            panels = QUI.Controls.getByType( 'qui/controls/desktop/Tasks' );
+
+            if ( !panels.length ) {
+                return;
+            }
+
+
+            require([
+                'qui/QUI',
+                'controls/projects/project/media/Panel',
+                'classes/projects/Project'
+            ], function(QUI, MediaPanel, Project, Site)
+            {
+                var Project = QUI.Projects.get( project ),
+                    Media   = Project.getMedia();
+
+                panels[ 0 ].appendChild(
+                    new MediaPanel( Project.getMedia(), {
+
                     })
                 );
             });

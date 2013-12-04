@@ -10,16 +10,17 @@
  * @namespace QUI.classes.project
  */
 
-define('classes/projects/Media', [
+define('classes/projects/project/Media', [
 
     'qui/classes/DOM',
 
+    'Ajax',
     'classes/projects/project/media/Image',
     'classes/projects/project/media/File',
     'classes/projects/project/media/Folder',
     'classes/projects/project/media/Trash'
 
-], function(DOM)
+], function(DOM, Ajax, MediaImage, MediaFile, MediaFolder, MediaTrash)
 {
     "use strict";
 
@@ -32,7 +33,8 @@ define('classes/projects/Media', [
      */
     return new Class({
 
-        Extends: DOM,
+        Extends : DOM,
+        Type    : 'classes/projects/Media',
 
         initialize : function(Project)
         {
@@ -60,7 +62,7 @@ define('classes/projects/Media', [
          */
         getTrash : function()
         {
-            return new QUI.classes.projects.media.Trash( this );
+            return new MediaTrash( this );
         },
 
         /**
@@ -89,7 +91,7 @@ define('classes/projects/Media', [
                 return this.$parseResultToItem( params );
             }
 
-            QUI.Ajax.get('ajax_media_details', function(result, Request)
+            Ajax.get('ajax_media_details', function(result, Request)
             {
                 var Media    = Request.getAttribute( 'Media' ),
                     children = Media.$parseResultToItem( result );
@@ -107,7 +109,7 @@ define('classes/projects/Media', [
                 Request.getAttribute( 'onfinish' )( children );
             }, {
                 fileid   : JSON.encode( id ),
-                project  : this.getProject().getAttribute( 'project' ),
+                project  : this.getProject().getName(),
                 onfinish : params,
                 Media    : this
             });
@@ -125,7 +127,7 @@ define('classes/projects/Media', [
          */
         getData : function(id, onfinish)
         {
-            QUI.Ajax.get('ajax_media_details', function(result, Request)
+            Ajax.get('ajax_media_details', function(result, Request)
             {
                 if ( Request.getAttribute('onfinish') ) {
                     Request.getAttribute('onfinish')( result );
@@ -152,10 +154,10 @@ define('classes/projects/Media', [
          *
          * @params {MUI.Apppanel} Panel - optional
          */
-        openInPanel : function(Panel)
-        {
-            this.$Panel = new QUI.controls.projects.media.Panel( this );
-        },
+//        openInPanel : function(Panel)
+//        {
+//            this.$Panel = new QUI.controls.projects.media.Panel( this );
+//        },
 
         /**
          * Replace the file
@@ -202,7 +204,7 @@ define('classes/projects/Media', [
                 Media      : this
             });
 
-            QUI.Ajax.post('ajax_media_activate', function(result, Request)
+            Ajax.post('ajax_media_activate', function(result, Request)
             {
                 if ( Request.getAttribute('oncomplete') ) {
                     Request.getAttribute('oncomplete')( result, Request );
@@ -228,7 +230,7 @@ define('classes/projects/Media', [
                 Media      : this
             });
 
-            QUI.Ajax.post('ajax_media_deactivate', function(result, Request)
+            Ajax.post('ajax_media_deactivate', function(result, Request)
             {
                 if ( Request.getAttribute('oncomplete') ) {
                     Request.getAttribute('oncomplete')( result, Request );
@@ -254,7 +256,7 @@ define('classes/projects/Media', [
                 Media      : this
             });
 
-            QUI.Ajax.post('ajax_media_delete', function(result, Request)
+            Ajax.post('ajax_media_delete', function(result, Request)
             {
                 if ( Request.getAttribute('oncomplete') ) {
                     Request.getAttribute('oncomplete')( result, Request );
@@ -286,13 +288,13 @@ define('classes/projects/Media', [
             switch ( result.type )
             {
                 case "image":
-                    return new QUI.classes.projects.media.Image( result, this );
+                    return new MediaImage( result, this );
 
                 case "folder":
-                    return new QUI.classes.projects.media.Folder( result, this );
+                    return new MediaFolder( result, this );
             }
 
-            return new QUI.classes.projects.media.File( result, this );
+            return new MediaFile( result, this );
         }
     });
 });

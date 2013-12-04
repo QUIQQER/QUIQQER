@@ -27,7 +27,7 @@ class Utils
         if ( $Item->getId() === 1 )
         {
             return array(
-                'icon'      => URL_BIN_DIR .'16x16/media.png',
+                'icon'      => 'icon-picture',
                 'icon80x80' => URL_BIN_DIR .'80x80/media.png',
                 'id'        => $Item->getId(),
                 'name'      => $Item->getAttribute('name'),
@@ -44,7 +44,7 @@ class Utils
         {
             /* @var $Item \QUI\Projects\Media\Folder */
             return array(
-                'icon'          => URL_BIN_DIR .'16x16/extensions/folder.png',
+                'icon'          => 'icon-folder-close-alt',
                 'icon80x80'     => URL_BIN_DIR .'80x80/extensions/folder.png',
                 'id'            => $Item->getId(),
                 'name'          => $Item->getAttribute('name'),
