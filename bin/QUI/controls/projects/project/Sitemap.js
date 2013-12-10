@@ -380,8 +380,11 @@ define('controls/projects/project/Sitemap', [
             var Control = this;
 
             Item.clearChildren();
+
             Item.setAttribute( 'oicon', Item.getAttribute( 'icon' ) );
-            Item.setAttribute( 'icon', URL_BIN_DIR +'images/loader.gif' );
+            Item.addIcon( 'icon-refresh icon-spin' );
+            Item.removeIcon( Item.getAttribute( 'icon' ) );
+
 
             Ajax.get('ajax_site_getchildren', function(result, Request)
             {
@@ -395,7 +398,8 @@ define('controls/projects/project/Sitemap', [
                     );
                 }
 
-                Item.setAttribute( 'icon', Item.getAttribute( 'oicon' ) );
+                Item.addIcon( Item.getAttribute( 'oicon' ) );
+                Item.removeIcon( 'icon-refresh' );
 
                 if ( Request.getAttribute( 'onfinish' ) ) {
                     Request.getAttribute( 'onfinish' )( Item, Request );

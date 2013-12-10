@@ -115,10 +115,10 @@ class Sites
 
             $Status = new \QUI\Controls\Buttons\Button(array(
                 'name'     => 'status',
-                'aimage'   => URL_BIN_DIR .'16x16/active.png',
+                'aimage'   => 'icon-ok',
                 'atext'    => 'Aktivieren',
                 'aonclick' => 'Panel.getSite().activate',
-                'dimage'   => URL_BIN_DIR .'16x16/deactive.png',
+                'dimage'   => 'icon-remove',
                 'dtext'    => 'Deaktivieren',
                 'donclick' => 'Panel.getSite().activate'
             ));
@@ -340,5 +340,3 @@ class Sites
         return $result;
     }
 }
-
-?>

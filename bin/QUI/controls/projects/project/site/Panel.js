@@ -329,21 +329,25 @@ define('controls/projects/project/site/Panel', [
             var Panel = this,
                 Site  = this.getSite();
 
-            QUI.Windows.create('submit', {
-                title  : 'Seite #'+ Site.getId() +' löschen',
-                text   : 'Möchten Sie die Seite #'+ Site.getId() +' '+ Site.getAttribute( 'name' ) +'.html wirklich löschen?',
-                texticon    : URL_BIN_DIR +'48x48/trashcan_empty.png',
-                information :
-                    'Die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden.' +
-                    'Auch alle Unterseiten und Verknüpfungen werden in den Papierkorb gelegt.',
-                height : 200,
-                events :
-                {
-                    onSubmit : function(Win) {
-                        Panel.getSite().del();
+            require(['qui/controls/windows/Submit'], function(Submit)
+    		{
+            	new Submit({
+            		title       : 'Seite #'+ Site.getId() +' löschen',
+            		titleicon   : 'icon-trash',
+                    text        : 'Möchten Sie die Seite #'+ Site.getId() +' '+ Site.getAttribute( 'name' ) +'.html wirklich löschen?',
+                    information :
+                        'Die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden.' +
+                        'Auch alle Unterseiten und Verknüpfungen werden in den Papierkorb gelegt.',
+                    height : 200,
+                    events :
+                    {
+                        onSubmit : function(Win) {
+                            Panel.getSite().del();
+                        }
                     }
-                }
-            });
+            	}).open();
+    		});
+
         },
 
         /**
@@ -411,8 +415,7 @@ define('controls/projects/project/site/Panel', [
             {
                 var Panel    = Request.getAttribute( 'Panel' ),
                     Category = Request.getAttribute( 'Category' ),
-                    Body     = Panel.getBody();
-
+                    Body     = Panel.getContent();
 
                 if ( !result )
                 {

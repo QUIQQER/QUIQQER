@@ -20,6 +20,8 @@ define('classes/projects/project/media/panel/DOMEvents', function()
      */
     return new Class({
 
+    	Type : "classes/projects/project/media/panel/DOMEvents",
+
         initialize : function(MediaPanel)
         {
             this.$MediaPanel = MediaPanel;

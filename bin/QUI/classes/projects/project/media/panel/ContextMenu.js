@@ -22,6 +22,8 @@ define('classes/projects/project/media/panel/ContextMenu', [
      */
     return new Class({
 
+    	Type : 'classes/projects/project/media/panel/ContextMenu',
+
         /**
          * @constructor
          *
