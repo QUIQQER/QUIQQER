@@ -30,7 +30,7 @@ function ajax_menu()
         $Projects->appendChild(
             new \QUI\Controls\Contextmenu\Menuitem(array(
                 'text'    => $project,
-                'icon'    => URL_BIN_DIR .'16x16/home.png',
+                'icon'    => 'icon-home',
                 'onclick' => '',
                 'require' => 'admin/projects/Settings',
                 'onMouseDown' => 'QUI.Menu.click',

@@ -4,13 +4,15 @@
 
 define('controls/menu/Manager', [
 
+    'qui/QUI',
     'qui/controls/Control',
     'qui/controls/contextmenu/Bar',
     'qui/controls/contextmenu/BarItem',
     'qui/controls/contextmenu/Item',
-    'Ajax'
+    'Ajax',
+    'qui/controls/desktop/Panel'
 
-], function(Control, ContextmenuBar, ContextmenuBarItem, ContextmenuItem, Ajax)
+], function(QUI, Control, ContextmenuBar, ContextmenuBarItem, ContextmenuItem, Ajax, Panel)
 {
     "use strict";
 
@@ -25,7 +27,9 @@ define('controls/menu/Manager', [
             this.parent( options );
         },
 
-
+        /**
+         * Create the topic menu
+         */
         create : function()
         {
             var self = this;
@@ -39,10 +43,15 @@ define('controls/menu/Manager', [
             return this.$Bar.create();
         },
 
-
+        /**
+         * Menu click helper method
+         *
+         * @param {qui/controls/contextmenu/Item} Item - Menu Item
+         */
         menuClick : function(Item)
         {
-            var menuRequire = Item.getAttribute( 'require' );
+            var self        = this,
+                menuRequire = Item.getAttribute( 'require' );
 
             if ( menuRequire )
             {
@@ -50,11 +59,32 @@ define('controls/menu/Manager', [
                 {
                     var Ctrl = new Control();
 
+                    if ( instanceOf( Ctrl, Panel ) )
+                    {
+                        self.openPanelInTasks( Ctrl );
+
+                        return;
+                    }
+
                     Ctrl.open();
                 });
             }
-        }
+        },
 
+        /**
+         * Open a Panel in a taskpanel
+         */
+        openPanelInTasks : function(Panel)
+        {
+            // if panel not exists
+            var panels = QUI.Controls.getByType( 'qui/controls/desktop/Tasks' );
+
+            if ( !panels.length ) {
+                return;
+            }
+
+            panels[ 0 ].appendChild( Panel );
+        }
     });
 
 });

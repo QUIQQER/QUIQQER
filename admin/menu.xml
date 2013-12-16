@@ -34,18 +34,22 @@
     <!-- File Menu -->
         <item parent="/file/"
               name="search"
-              icon="URL_BIN_DIR/16x16/search.png"
+              icon="icon-search"
               require="admin/search/Site"
               group="quiqqer/system"
               var="menu.file.search.text"
         />
-        <item parent="/file/" name="file_close" icon="URL_DIR/bin/16x16/close.png"
+        <item parent="/file/"
+              name="file_close"
+              icon="icon-remove-sign"
               group="quiqqer/system"
               var="menu.file.close.text"
         >
             Schließen
         </item>
-        <item parent="/file/" name="file_exit" icon="URL_DIR/bin/16x16/exit.png"
+        <item parent="/file/"
+              name="file_exit"
+              icon="icon-off"
               group="quiqqer/system"
               var="menu.file.logout.text"
         >
@@ -120,7 +124,7 @@
         <!-- Zugriffsrechte bearbeiten -->
         <item parent="/extras/"
               name="permissions"
-              icon="URL_BIN_DIR/16x16/permissions.png"
+              icon="icon-gears"
               require="admin/permissions/Manager"
               group="quiqqer/system"
               var="menu.extras.permissions.text"
@@ -128,7 +132,7 @@
         <!-- Plugins und Packages -->
         <item parent="/extras/"
               name="packages"
-              icon="URL_BIN_DIR/16x16/packages.png"
+              icon="URL_BIN_DIR/16x16/quiqqer.png"
               require="admin/packages/Manager"
               group="quiqqer/system"
               var="menu.extras.packages.text"
@@ -136,7 +140,7 @@
         <!-- Projekt Verwaltung -->
         <item parent="/extras/"
               name="projects"
-              icon="URL_BIN_DIR/16x16/home.png"
+              icon="icon-home"
               require="admin/projects/Manager"
               group="quiqqer/system"
               var="menu.extras.projects.text"
@@ -144,15 +148,15 @@
         <!-- Gruppen -->
         <item parent="/extras/"
               name="groups"
-              icon="URL_BIN_DIR/16x16/groups.png"
-              require="admin/groups/Manager"
+              icon="icon-group"
+              require="controls/groups/Panel"
               group="quiqqer/system"
               var="menu.extras.groups.text"
         />
         <!-- Benutzer -->
         <item parent="/extras/"
               name="users"
-              icon="URL_BIN_DIR/16x16/user.png"
+              icon="icon-user"
               require="admin/users/Manager"
               group="quiqqer/system"
               var="menu.extras.users.text"
@@ -160,8 +164,8 @@
         <!-- Logs -->
         <item parent="/extras/"
               name="logs"
-              icon="URL_BIN_DIR/16x16/actions/klipper_dock.png"
-              require="admin/quiqqer/Logs"
+              icon="icon-terminal"
+              require="controls/logs/Panel"
               group="quiqqer/system"
               var="menu.extras.logs.text"
         />
@@ -170,13 +174,13 @@
     <!-- Settings -->
         <item parent="/settings/"
               name="projects"
-              icon="URL_BIN_DIR/16x16/home.png"
+              icon="icon-home"
               group="quiqqer/system"
               var="menu.settings.projects.text"
         />
         <item parent="/settings/"
               name="media"
-              icon="URL_BIN_DIR/16x16/media.png"
+              icon="icon-picture"
               require="admin/media/Manager"
               group="quiqqer/system"
               var="menu.settings.media.text"
