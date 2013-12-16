@@ -12,7 +12,7 @@ namespace QUI\Messages;
  * @author www.pcsg.de (Henning Leutz)
  */
 
-class Message extends \PT_DOM
+class Message extends \QUI\QDOM
 {
     /**
      * constructor
@@ -25,7 +25,8 @@ class Message extends \PT_DOM
         $this->setAttributes(array(
             'message' => '',
             'code'    => '',
-            'time'    => time()
+            'time'    => time(),
+            'mtype'   => get_class( $this )
         ));
 
         $this->setAttributes( $params );

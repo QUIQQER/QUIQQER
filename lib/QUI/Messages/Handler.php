@@ -114,7 +114,7 @@ class Handler
         $messages = $this->getNewMessages( $User );
 
         foreach ( $messages as $Message ) {
-            $result[] = $Message->toArray();
+            $result[] = $Message->getAttributes();
         }
 
         return $result;

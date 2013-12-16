@@ -46,6 +46,7 @@ define('controls/projects/project/site/Panel', [
             'load',
             'createNewChild',
             'openPermissions',
+            'openMedia',
 
             '$onCreate',
             '$onResize',
@@ -195,6 +196,20 @@ define('controls/projects/project/site/Panel', [
                 this.getHeader()
             );
 
+            new QUIButton({
+                image  : 'icon-picture',
+                alt    : 'Media',
+                title  : 'Media',
+                styles : {
+                    'float' : 'right'
+                },
+                events : {
+                    onClick : this.openMedia
+                }
+            }).inject(
+                this.getHeader()
+            );
+
             var Site    = this.getSite(),
                 Project = Site.getProject();
 
@@ -311,6 +326,23 @@ define('controls/projects/project/site/Panel', [
         },
 
         /**
+         * Opens the site media
+         *
+         * @method QUI.controls.projects.site.Panel#openMedia
+         */
+        openMedia : function()
+        {
+            var Parent  = this.getParent(),
+                Site    = this.getSite(),
+                Project = Site.getProject(),
+                Media   = Project.getMedia();
+
+            require([ 'controls/projects/project/media/Panel' ], function(Panel) {
+                Parent.appendChild( new Panel( Media ) );
+            });
+        },
+
+        /**
          * saves site attributes
          *
          * @method QUI.controls.projects.site.Panel#openPermissions
@@ -326,14 +358,13 @@ define('controls/projects/project/site/Panel', [
          */
         del : function()
         {
-            var Panel = this,
-                Site  = this.getSite();
+            var Site = this.getSite();
 
-            require(['qui/controls/windows/Submit'], function(Submit)
-    		{
-            	new Submit({
-            		title       : 'Seite #'+ Site.getId() +' löschen',
-            		titleicon   : 'icon-trash',
+            require(['qui/controls/windows/Confirm'], function(Confirm)
+            {
+                new Confirm({
+                    title       : 'Seite #'+ Site.getId() +' löschen',
+                    titleicon   : 'icon-trash',
                     text        : 'Möchten Sie die Seite #'+ Site.getId() +' '+ Site.getAttribute( 'name' ) +'.html wirklich löschen?',
                     information :
                         'Die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden.' +
@@ -342,11 +373,11 @@ define('controls/projects/project/site/Panel', [
                     events :
                     {
                         onSubmit : function(Win) {
-                            Panel.getSite().del();
+                            Site.del();
                         }
                     }
-            	}).open();
-    		});
+                }).open();
+            });
 
         },
 
@@ -360,19 +391,23 @@ define('controls/projects/project/site/Panel', [
          */
         createNewChild : function()
         {
-            var Panel = this;
+            var self = this,
+                Site = self.getSite()
 
-            QUI.Windows.create('prompt', {
-                title       : 'Wie soll die neue Seite heißen?',
-                text        : 'Bitte geben Sie ein Namen für die neue Seite an',
-                texticon    : URL_BIN_DIR +'48x48/filenew.png',
-                information : 'Sie legen eine neue Seite unter '+ this.getAttribute('name') +'.html an.',
-                events      :
-                {
-                    onSubmit : function(result, Win) {
-                        Panel.getSite().createChild( result );
+            require(['qui/controls/windows/Prompt'], function(Prompt)
+            {
+                new Prompt({
+                    title       : 'Wie soll die neue Seite heißen?',
+                    text        : 'Bitte geben Sie ein Namen für die neue Seite an',
+                    texticon    : 'icon-file',
+                    information : 'Sie legen eine neue Seite unter '+ Site.getAttribute('name') +'.html an.',
+                    events      :
+                    {
+                        onSubmit : function(result, Win) {
+                            Site.createChild( result );
+                        }
                     }
-                }
+                }).open();
             });
         },
 
