@@ -21,8 +21,9 @@ if ( isset( $_REQUEST['cron'] ) )
 
     ignore_user_abort( true );
 
+    // @todo cron plugin
     System_Cron_Manager::exec(
-        QUI::getUsers()->getSystemUser()
+        \QUI::getUsers()->getSystemUser()
     );
 
     exit;
@@ -42,5 +43,5 @@ if ( !file_exists( $conf ) ) {
 }
 
 // Console aufbauen
-$Console = new \System_Console();
+$Console = new \QUI\System\Console();
 $Console->start();

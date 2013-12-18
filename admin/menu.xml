@@ -125,7 +125,7 @@
         <item parent="/extras/"
               name="permissions"
               icon="icon-gears"
-              require="admin/permissions/Manager"
+              require="controls/permissions/Panel"
               group="quiqqer/system"
               var="menu.extras.permissions.text"
         />
@@ -133,7 +133,7 @@
         <item parent="/extras/"
               name="packages"
               icon="URL_BIN_DIR/16x16/quiqqer.png"
-              require="admin/packages/Manager"
+              require="controls/packages/Panel"
               group="quiqqer/system"
               var="menu.extras.packages.text"
         />
@@ -157,7 +157,7 @@
         <item parent="/extras/"
               name="users"
               icon="icon-user"
-              require="admin/users/Manager"
+              require="controls/users/Panel"
               group="quiqqer/system"
               var="menu.extras.users.text"
         />

@@ -43,7 +43,11 @@
     margin: 10px auto;
 }
 
-.qui-permissions-select-sheet .buttons .qui-btn2-text {
+.qui-permissions-select-sheet .buttons .image-container {
+    font-size: 32px;
+}
+
+.qui-permissions-select-sheet .buttons .qui-button-text {
     margin-bottom: 10px;
 }
 

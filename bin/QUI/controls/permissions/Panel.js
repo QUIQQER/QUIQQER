@@ -140,7 +140,8 @@ define('controls/permissions/Panel', [
         openSearch : function()
         {
             var Sheet = this.createSheet(),
-                Body  = this.getBody();
+                Body  = this.getBody(),
+                self  = this;
 
             if ( Body.getElement( '.qui-permissions-sitemap' ) ) {
                 this.hideSitemap();
@@ -163,134 +164,125 @@ define('controls/permissions/Panel', [
                     }
                 }).inject( Sheet.getBody() );
 
-                var Buttons = Container.getElement( '.buttons' );
+                var Buttons = Container.getElement( '.buttons' ),
+                    btnList = [];
 
 
-                new QUIButton({
-                    text : Locale.get(
-                        'quiqqer/system',
-                        'permissions.panel.btn.select.user'
-                    ),
-                    icon    : URL_BIN_DIR +'32x32/user.png',
-                    Sheet   : Sheet,
-                    Control : this,
-                    styles  : {
-                        width : 200
-                    },
-                    events :
-                    {
-                        onClick : function(Btn)
+                btnList.push(
+                    new QUIButton({
+                        text : Locale.get(
+                            'quiqqer/system',
+                            'permissions.panel.btn.select.user'
+                        ),
+                        icon    : 'icon-user',
+                        styles  : {
+                            width : 200
+                        },
+                        events :
                         {
-                            Btn.getAttribute( 'Control' ).$loadUserSearch(
-                                Btn.getAttribute( 'Sheet' )
-                            );
+                            onClick : function(Btn) {
+                                self.$loadUserSearch( Sheet );
+                            }
                         }
-                    }
-                }).inject( Buttons );
+                    }).inject( Buttons )
+                );
 
-                new QUIButton({
-                    text : Locale.get(
-                        'quiqqer/system',
-                        'permissions.panel.btn.select.group'
-                    ),
-                    icon    : URL_BIN_DIR +'32x32/group.png',
-                    Sheet   : Sheet,
-                    Control : this,
-                    styles  : {
-                        width : 200
-                    },
-                    events :
-                    {
-                        onClick : function(Btn)
+                btnList.push(
+                    new QUIButton({
+                        text : Locale.get(
+                            'quiqqer/system',
+                            'permissions.panel.btn.select.group'
+                        ),
+                        icon   : 'icon-group',
+                        events :
                         {
-                            Btn.getAttribute( 'Control' ).$loadGroupSearch(
-                                Btn.getAttribute( 'Sheet' )
-                            );
+                            onClick : function(Btn) {
+                                self.$loadGroupSearch( Sheet );
+                            }
                         }
-                    }
-                }).inject( Buttons );
+                    }).inject( Buttons )
+                );
 
-                new QUIButton({
-                    text : Locale.get(
-                        'quiqqer/system',
-                        'permissions.panel.btn.select.site'
-                    ),
-                    icon    : URL_BIN_DIR +'32x32/filenew.png',
-                    Sheet   : Sheet,
-                    Control : this,
-                    styles  : {
-                        width : 200
-                    },
-                    events :
-                    {
-                        onClick : function(Btn)
+                btnList.push(
+                    new QUIButton({
+                        text : Locale.get(
+                            'quiqqer/system',
+                            'permissions.panel.btn.select.site'
+                        ),
+                        icon   : 'icon-file-alt',
+                        events :
                         {
-                            /*
-                            Btn.getAttribute( 'Control' ).$loadSiteSearch(
-                                Btn.getAttribute( 'Sheet' )
-                            );
-                            */
+                            onClick : function(Btn)
+                            {
+                                /*
+                                Btn.getAttribute( 'Control' ).$loadSiteSearch(
+                                    Btn.getAttribute( 'Sheet' )
+                                );
+                                */
+                            }
                         }
-                    }
-                }).inject( Buttons );
+                    }).inject( Buttons )
+                );
 
-                new QUIButton({
-                    text : Locale.get(
-                        'quiqqer/system',
-                        'permissions.panel.btn.select.project'
-                    ),
-                    icon    : URL_BIN_DIR +'32x32/home.png',
-                    Sheet   : Sheet,
-                    Control : this,
-                    styles  : {
-                        width : 200
-                    },
-                    events :
-                    {
-                        onClick : function(Btn)
+                btnList.push(
+                    new QUIButton({
+                        text : Locale.get(
+                            'quiqqer/system',
+                            'permissions.panel.btn.select.project'
+                        ),
+                        icon   : 'icon-home',
+                        events :
                         {
-                            Btn.getAttribute( 'Control' ).$loadProjectSearch(
-                                Btn.getAttribute( 'Sheet' )
-                            );
+                            onClick : function(Btn) {
+                                self.$loadProjectSearch( Sheet );
+                            }
                         }
-                    }
-                }).inject( Buttons );
+                    }).inject( Buttons )
+                );
 
-                new QUIButton({
-                    text : Locale.get(
-                        'quiqqer/system',
-                        'permissions.panel.btn.select.manage'
-                    ),
-                    icon    : URL_BIN_DIR +'32x32/permissions.png',
-                    Sheet   : Sheet,
-                    Control : this,
-                    styles  : {
-                        width : 200
-                    },
-                    events :
-                    {
-                        onClick : function(Btn)
+                btnList.push(
+                    new QUIButton({
+                        text : Locale.get(
+                            'quiqqer/system',
+                            'permissions.panel.btn.select.manage'
+                        ),
+                        icon   : 'icon-gears',
+                        events :
                         {
-                            Btn.getAttribute( 'Sheet' ).hide();
+                            onClick : function(Btn)
+                            {
+                                Sheet.hide();
 
-                            Btn.getAttribute( 'Control' ).setBind( null );
-
-                            Btn.getAttribute( 'Control' )
-                               .getButtons( 'permissions-sitemap' ).click();
+                                self.setBind( null );
+                                self.getButtons( 'permissions-sitemap' ).click();
+                            }
                         }
-                    }
-                }).inject( Buttons );
+                    }).inject( Buttons )
+                );
 
+                var i, len, Elm;
 
-                this.Loader.hide();
+                for ( i = 0, len = btnList.length; i < len; i++ )
+                {
+                    Elm = btnList[ i ].getElm();
 
-            }.bind( this ));
+                    Elm.removeClass( 'qui-button' );
+                    Elm.addClass( 'button' );
+                    Elm.addClass( 'btn-rosy' );
+                    Elm.setStyles({
+                        margin : '0 10px 10px 0',
+                        width  : 190
+                    });
+                }
+
+                self.Loader.hide();
+            });
 
             Sheet.addEvent('onClose', function()
             {
-                this.refresh();
-                this.showSitemap();
-            }.bind( this ));
+                self.refresh();
+                self.showSitemap();
+            });
 
             Sheet.show();
         },

@@ -2120,12 +2120,6 @@ define('controls/grid/Grid', [
                     this.removeClass('fbOver');
                 };
 
-                var QUIButton = false;
-
-                if ( typeof QUI.controls.buttons.Button !== 'undefined' ) {
-                    QUIButton = true;
-                }
-
                 for ( i = 0, len = bt.length; i < len; i++ )
                 {
                     if ( bt[i].separator )
@@ -2134,51 +2128,49 @@ define('controls/grid/Grid', [
                         continue;
                     }
 
-                    if ( QUIButton )
-                    {
-                        bt[i].List     = this;
-                        bt[i].Grid     = this;
-                        bt[bt[i].name] = new QUI.controls.buttons.Button(bt[i]);
+                    bt[i].List     = this;
+                    bt[i].Grid     = this;
+                    bt[bt[i].name] = new QUIButton(bt[i]);
 
-                        node = bt[ bt[i].name ].create();
-                        node.removeProperty('tabindex'); // focus eigenschaft nehmen
+                    node = bt[ bt[i].name ].create();
+                    node.removeProperty('tabindex'); // focus eigenschaft nehmen
 
-                        node.inject( tDiv );
-                        continue;
-                    }
+                    node.inject( tDiv );
 
-                    fBt = new Element('div', {
-                        'class' : 'fbutton'
-                    });
 
-                    tDiv.appendChild(fBt);
-
-                    if (bt[i].separator)
-                    {
-                        fBt.addClass('btnseparator');
-                        continue;
-                    }
-
-                    cBt = new Element('div', {
-                        events :
-                        {
-                            click     : bt[i].onclick.bind(t, [bt[i].bclass, t]),
-                            mouseover : func_fbOver,
-                            mouseout  : func_fbOut
-                        }
-                    });
-
-                    fBt.appendChild( cBt );
-
-                    spanBt = new Element('span', {
-                        'html'  : bt[i].name,
-                        'class' : bt[i].bclass,
-                        styles  : {
-                            'padding-left' : 20
-                        }
-                    });
-
-                    cBt.appendChild( spanBt );
+//
+//                    fBt = new Element('div', {
+//                        'class' : 'fbutton'
+//                    });
+//
+//                    tDiv.appendChild(fBt);
+//
+//                    if (bt[i].separator)
+//                    {
+//                        fBt.addClass('btnseparator');
+//                        continue;
+//                    }
+//
+//                    cBt = new Element('div', {
+//                        events :
+//                        {
+//                            click     : bt[i].onclick.bind(t, [bt[i].bclass, t]),
+//                            mouseover : func_fbOver,
+//                            mouseout  : func_fbOut
+//                        }
+//                    });
+//
+//                    fBt.appendChild( cBt );
+//
+//                    spanBt = new Element('span', {
+//                        'html'  : bt[i].name,
+//                        'class' : bt[i].bclass,
+//                        styles  : {
+//                            'padding-left' : 20
+//                        }
+//                    });
+//
+//                    cBt.appendChild( spanBt );
                 }
             }
 
