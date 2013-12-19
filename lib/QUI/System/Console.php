@@ -229,6 +229,8 @@ class Console
 
         $tools = $this->get( true );
 
+        ksort( $tools );
+
         foreach ( $tools as $Tool )
         {
             $this->writeLn( " - " );
@@ -239,7 +241,7 @@ class Console
             $this->write( $Tool->getDescription() );
         }
 
-        $this->writeLn("");
+        $this->writeLn( "" );
         $this->writeLn( "Please select a tool from the list" );
         $this->writeLn( "Tool: " );
 

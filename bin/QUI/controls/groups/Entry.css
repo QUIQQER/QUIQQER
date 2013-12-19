@@ -1,0 +1,26 @@
+
+.group-entry {
+	float: left;
+	margin: 5px;
+}
+
+.group-entry .text {
+	float: left;
+	line-height: 20px;
+	margin: 0 0 0 5px;
+	padding-left: 20px;
+	background: url('/bin/16x16/groups.png') no-repeat left center;
+}
+
+.group-entry .close {
+	float: left;
+	height: 20px;
+	width: 20px;
+	cursor: pointer;
+	background: url('/bin/js/mocha/Themes/default/images/cancel.png') no-repeat center center;
+	visibility: hidden;
+}
+
+.group-entry:hover .close {
+	visibility: visible;
+}

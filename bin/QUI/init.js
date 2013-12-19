@@ -10,6 +10,7 @@ require.config({
     paths : {
         "package" : URL_OPT_DIR,
         "qui"     : URL_OPT_DIR +'bin/qui/src',
+        "locale"  : URL_VAR_DIR +'locale/bin'
     },
 
     waitSeconds : 0,
@@ -24,6 +25,7 @@ require.config({
 
 require([
 
+    'Locale',
     'Ajax',
     'controls/welcome/Panel',
     'qui/controls/desktop/Workspace',
@@ -34,9 +36,11 @@ require([
     'qui/controls/bookmarks/Panel',
     'controls/projects/project/Panel'
 
-], function(Ajax, Welcome, Workspace, Column, Panel, TaskPanel, Button, BookmarkPanel, ProjectPanel)
+], function(Locale, Ajax, Welcome, Workspace, Column, Panel, TaskPanel, Button, BookmarkPanel, ProjectPanel)
 {
     "use strict";
+
+    Locale.setCurrent( USER.lang );
 
     // load the default workspace
     var doc_size  = document.body.getSize(),
@@ -96,7 +100,17 @@ require([
         MyWorkspace.resize();
     }).delay( 100 );
 
+    /**
+     * Locale
+     */
+    console.log( QUIQQER_LOCALE );
 
+    require( QUIQQER_LOCALE, function()
+    {
+        require(['Locale'], function(Locale) {
+            console.log( Locale );
+        });
+    });
 
     // contextmenu
     require([

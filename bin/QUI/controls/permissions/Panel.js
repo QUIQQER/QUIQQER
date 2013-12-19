@@ -5,7 +5,6 @@
  *
  * @module controls/permissions/Panel
  * @package com.pcsg.qui.js.controls.permissions
- * @namespace QUI.controls.permissions
  */
 
 define('controls/permissions/Panel', [
@@ -13,6 +12,7 @@ define('controls/permissions/Panel', [
     'qui/QUI',
     'qui/controls/desktop/Panel',
     'utils/permissions/Utils',
+    'utils/Controls',
     'qui/utils/Object',
     'Locale',
     'Ajax',
@@ -20,18 +20,23 @@ define('controls/permissions/Panel', [
     'qui/controls/buttons/Seperator',
     'qui/controls/sitemap/Map',
     'qui/controls/sitemap/Item',
+    'qui/controls/windows/Prompt',
+    'qui/controls/windows/Confirm',
 
     'css!controls/permissions/Panel.css'
 
-], function(QUI, Panel, Utils, ObjectUtils, Locale, Ajax, QUIButton, QUIButtonSeperator, Sitemap, SitemapItem)
+], function(
+    QUI, Panel, Utils, ObjectUtils, ControlUtils, Locale, Ajax,
+    QUIButton, QUIButtonSeperator, Sitemap, SitemapItem, QUIPrompt, QUIConfirm
+)
 {
     "use strict";
 
     /**
-     * @class QUI.controls.permissions.Panel
+     * @class controls/permissions/Panel
      *
      * @param {Object} options - QDOM panel params
-     * @param {QUI.classes.groups.Group|QUI.classes.users.User} Bind - [optional]
+     * @param {classes/groups/Group|classes/users/User} Bind - [optional]
      *
      * @memberof! <global>
      */
@@ -84,8 +89,8 @@ define('controls/permissions/Panel', [
         /**
          * Set the object for which the rights are
          *
-         * @param {QUI.classes.groups.Group|QUI.classes.users.User|
-         *         QUI.classes.projects.Site|QUI.classes.projects.Project} Bind
+         * @param {classes/groups/Group|classes/users/User|
+         *         classes/projects/Site|classes/projects/Project} Bind
          */
         setBind : function(Bind)
         {
@@ -135,7 +140,7 @@ define('controls/permissions/Panel', [
         /**
          * Opens the search for groups / users
          *
-         * @method QUI.controls.permissions.Panel#openSearch
+         * @method controls/permissions/Panel#openSearch
          */
         openSearch : function()
         {
@@ -290,12 +295,13 @@ define('controls/permissions/Panel', [
         /**
          * Load the group control, to select a group
          *
-         * @method QUI.controls.permissions.Panel#$loadGroupSearch
-         * @param {QUI.controls.desktop.panels.Sheet} Sheet
+         * @method controls/permissions/Panel#$loadGroupSearch
+         * @param {qui/controls/desktop/panels/Sheet} Sheet
          */
         $loadGroupSearch : function(Sheet)
         {
-            var Body   = Sheet.getBody(),
+            var self   = this,
+                Body   = Sheet.getBody(),
                 Search = Body.getElement( '.search' );
 
             Search.set( 'html', '' );
@@ -306,7 +312,7 @@ define('controls/permissions/Panel', [
                     'html',
 
                     '<h2>' +
-                        QUI.Locale.get(
+                        Locale.get(
                             'quiqqer/system',
                             'permissions.panel.select.group.title'
                         ) +
@@ -324,29 +330,32 @@ define('controls/permissions/Panel', [
                     {
                         onAdd : function(GroupSearch, groupid)
                         {
-                            this.setBind( QUI.Groups.get( groupid ) );
-                            //this.getButtons( 'permissions-sitemap' ).click();
+                            require(['Groups'], function(Groups)
+                            {
+                                self.setBind( Groups.get( groupid ) );
+                                //this.getButtons( 'permissions-sitemap' ).click();
 
-                            Sheet.hide();
-                            GroupSearch.close();
-
-                        }.bind( this )
+                                Sheet.hide();
+                                GroupSearch.close();
+                            });
+                        }
                     }
                 }).inject( Search );
 
                 GroupSearch.focus();
-            }.bind( this ));
+            });
         },
 
         /**
          * Load the group control, to select a group
          *
-         * @method QUI.controls.permissions.Panel#$loadUserSearch
-         * @param {QUI.controls.desktop.panels.Sheet} Sheet
+         * @method controls/permissions/Panel#$loadUserSearch
+         * @param {qui/controls/desktop/panels/Sheet} Sheet
          */
         $loadUserSearch : function(Sheet)
         {
-            var Body   = Sheet.getBody(),
+            var self   = this,
+                Body   = Sheet.getBody(),
                 Search = Body.getElement( '.search' );
 
             Search.set( 'html', '' );
@@ -357,7 +366,7 @@ define('controls/permissions/Panel', [
                     'html',
 
                     '<h2>' +
-                        QUI.Locale.get(
+                        Locale.get(
                             'quiqqer/system',
                             'permissions.panel.select.user.title'
                         ) +
@@ -375,13 +384,16 @@ define('controls/permissions/Panel', [
                     {
                         onAdd : function(UserSearch, userid)
                         {
-                            this.setBind( QUI.Users.get( userid ) );
-                            // this.getButtons( 'permissions-sitemap' ).click();
+                            require(['Users'], function(Users)
+                            {
+                                self.setBind( Users.get( userid ) );
+                                // this.getButtons( 'permissions-sitemap' ).click();
 
-                            Sheet.hide();
-                            UserSearch.close();
+                                Sheet.hide();
+                                UserSearch.close();
+                            });
 
-                        }.bind( this )
+                        }
                     }
                 }).inject( Search );
 
@@ -392,12 +404,13 @@ define('controls/permissions/Panel', [
         /**
          * Load the project control, to select a project
          *
-         * @method QUI.controls.permissions.Panel#$loadProjectSearch
-         * @param {QUI.controls.desktop.panels.Sheet} Sheet
+         * @method controls/permissions/Panel#$loadProjectSearch
+         * @param {qui/controls/desktop/panels/Sheet} Sheet
          */
         $loadProjectSearch : function(Sheet)
         {
-            var Body   = Sheet.getBody(),
+            var self   = this,
+                Body   = Sheet.getBody(),
                 Search = Body.getElement( '.search' );
 
             Search.set( 'html', '' );
@@ -408,7 +421,7 @@ define('controls/permissions/Panel', [
                     'html',
 
                     '<h2>' +
-                        QUI.Locale.get(
+                        Locale.get(
                             'quiqqer/system',
                             'permissions.panel.select.project.title'
                         ) +
@@ -426,53 +439,56 @@ define('controls/permissions/Panel', [
                     {
                         onAdd : function(UserSearch, project, lang)
                         {
-                            this.setBind( QUI.Projects.get( project, lang ) );
+                            require(['Projects'], function(Projects)
+                            {
+                                self.setBind( Projects.get( project, lang ) );
 
-                            Sheet.hide();
-                            ProjectSearch.close();
+                                Sheet.hide();
+                                ProjectSearch.close();
+                            });
 
-                        }.bind( this )
+                        }
                     }
                 }).inject( Search );
 
                 ProjectSearch.focus();
-            }.bind( this ));
+            });
         },
 
         /**
          * Opens the add permission dialog
          *
-         * @method QUI.controls.permissions.Panel#addPermission
+         * @method controls/permissions/Panel#addPermission
          */
         addPermission : function()
         {
-            new QUI.controls.windows.Prompt({
-                title : QUI.Locale.get(
+            var self = this;
+
+            new QUIPrompt({
+                title : Locale.get(
                     'quiqqer/system',
                     'permissions.panel.window.add.title'
                 ),
-                icon : URL_BIN_DIR +'16x16/add.png',
-                text : QUI.Locale.get(
+                icon : 'icon-add',
+                text : Locale.get(
                     'quiqqer/system',
                     'permissions.panel.window.add.text'
                 ),
 
-                information : QUI.Locale.get(
+                information : Locale.get(
                     'quiqqer/system',
                     'permissions.panel.window.add.information'
                 ),
 
                 autoclose : false,
                 width     : 600,
-                Control   : this,
 
                 events :
                 {
                     onDrawEnd : function(Win)
                     {
-                        var Body    = Win.getBody(),
-                            Input   = Body.getElement( 'input' ),
-                            Control = Win.getAttribute( 'Control' );
+                        var Body  = Win.getBody(),
+                            Input = Body.getElement( 'input' );
 
                         Input.setStyles({
                             width   : 200,
@@ -510,11 +526,11 @@ define('controls/permissions/Panel', [
 
                         Body.getElement( '.information' ).setStyle( 'clear', 'both' );
 
-                        if ( !Control.$Map ) {
+                        if ( !self.$Map ) {
                             return;
                         }
 
-                        var sels = Control.$Map.getSelectedChildren();
+                        var sels = self.$Map.getSelectedChildren();
 
                         if ( sels[ 0 ] )
                         {
@@ -527,24 +543,24 @@ define('controls/permissions/Panel', [
                     {
                         Win.Loader.show();
 
-                        QUI.Ajax.post('ajax_permissions_add', function(result, Request)
+                        Ajax.post('ajax_permissions_add', function(result, Request)
                         {
                             if ( result )
                             {
-                                Request.getAttribute( 'Win' ).close();
-                                Request.getAttribute( 'Control' ).$createSitemap();
+                                Win.close();
+                                self.$createSitemap();
                             }
                         }, {
                             permission     : value,
                             area           : Win.getBody().getElement( '[name="area"]' ).value,
                             permissiontype : Win.getBody().getElement( '[name="type"]' ).value,
-                            Win            : Win,
-                            Control        : Win.getAttribute( 'Control' ),
                             onError : function(Exception, Request)
                             {
-                                QUI.MH.addException( Exception );
+                                QUI.getMessageHandler(function(MessageHandler) {
+                                    MessageHandler.addException( Exception );
+                                });
 
-                                Request.getAttribute( 'Win' ).Loader.hide();
+                                Win.Loader.hide();
                             }
                         });
                     }
@@ -556,12 +572,12 @@ define('controls/permissions/Panel', [
         /**
          * Opens the dialog for delete a permission
          *
-         * @method QUI.controls.permissions.Panel#delPermission
-         * @param {QUI.controls.buttons.Button|String} right
+         * @method controls/permissions/Panel#delPermission
+         * @param {qui/controls/buttons/Button|String} right
          */
         delPermission : function(right)
         {
-            if ( typeOf( right ) == 'QUI.controls.buttons.Button' ) {
+            if ( typeOf( right ) == 'qui/controls/buttons/Button' ) {
                 right = right.getAttribute( 'value' );
             }
 
@@ -569,47 +585,46 @@ define('controls/permissions/Panel', [
                 return;
             }
 
-            new QUI.controls.windows.Submit({
-                title : QUI.Locale.get(
+            var self = this;
+
+            new QUIConfirm({
+                title : Locale.get(
                     'quiqqer/system',
                     'permissions.panel.window.delete.title'
                 ),
-                text  : QUI.Locale.get(
+                text  : Locale.get(
                     'quiqqer/system',
                     'permissions.panel.window.delete.text',
                     {
                         right : right
                     }
                 ),
-                information : QUI.Locale.get(
+                information : Locale.get(
                     'quiqqer/system',
                     'permissions.panel.window.delete.information',
                     {
                         right : right
                     }
                 ),
-                icon      : URL_BIN_DIR +'16x16/cancel.png',
-                texticon  : URL_BIN_DIR +'32x32/permissions.png',
+                icon      : 'icon-false',
+                texticon  : 'icon-gears',
                 autoclose : false,
                 width     : 450,
                 height    : 200,
                 right     : right,
-                Control   : this,
                 events :
                 {
                     onSubmit : function(Win)
                     {
                         Win.Loader.show();
 
-                        QUI.Ajax.post('ajax_permissions_delete', function(result, Request)
+                        Ajax.post('ajax_permissions_delete', function(result, Request)
                         {
-                            Request.getAttribute( 'Win' ).close();
-                            Request.getAttribute( 'Control' ).$createSitemap();
+                            Win.close();
+                            self.$createSitemap();
 
                         }, {
-                            permission : Win.getAttribute( 'right' ),
-                            Control    : Win.getAttribute( 'Control' ),
-                            Win        : Win
+                            permission : Win.getAttribute( 'right' )
                         });
                     }
                 }
@@ -619,7 +634,7 @@ define('controls/permissions/Panel', [
         /**
          * Save all permissions
          *
-         * @method QUI.controls.permissions.Panel#save
+         * @method controls/permissions/Panel#save
          */
         save : function()
         {
@@ -641,11 +656,11 @@ define('controls/permissions/Panel', [
 
             switch ( this.$Bind.getType() )
             {
-                case 'QUI.classes.projects.Project':
+                case 'classes/projects/Project':
                     params.project = this.$Bind.getName();
                 break;
 
-                case 'QUI.classes.projects.Site':
+                case 'classes/projects/Site':
                     var Project = this.$Bind.getProject();
 
                     params.project = Project.getName();
@@ -653,24 +668,22 @@ define('controls/permissions/Panel', [
                 break;
             }
 
+            var self = this;
 
-            QUI.Ajax.post('ajax_permissions_save', function(result, Request)
+            Ajax.post('ajax_permissions_save', function(result, Request)
             {
-                var Control = Request.getAttribute( 'Control' );
-
-                if ( Control.getButtons( 'permissions-save' ) )
+                if ( self.getButtons( 'permissions-save' ) )
                 {
-                    Control.getButtons( 'permissions-save' ).setAttribute(
+                    self.getButtons( 'permissions-save' ).setAttribute(
                         'textimage',
-                        URL_BIN_DIR +'16x16/save.png'
+                        'icon-save'
                     );
                 }
 
             }, {
                 params      : JSON.encode( params ),
                 btype       : this.$Bind.getType(),
-                permissions : JSON.encode( this.$bindpermissions ),
-                Control     : this
+                permissions : JSON.encode( this.$bindpermissions )
             });
         },
 
@@ -678,10 +691,12 @@ define('controls/permissions/Panel', [
          * event: on create
          * create the panel body
          *
-         * @method QUI.controls.permissions.Panel#$onCreate
+         * @method controls/permissions/Panel#$onCreate
          */
         $onCreate : function()
         {
+            var self = this;
+
             this.Loader.show();
 
             // title - header info
@@ -703,19 +718,18 @@ define('controls/permissions/Panel', [
                     'quiqqer/system',
                     'permissions.panel.btn.sitemap.title'
                 ),
-                Control : this,
                 events  :
                 {
                     onClick : function(Btn)
                     {
                         if ( Btn.isActive() )
                         {
-                            Btn.getAttribute('Control').hideSitemap();
+                            self.hideSitemap();
                             Btn.setNormal();
                             return;
                         }
 
-                        Btn.getAttribute('Control').showSitemap();
+                        self.showSitemap();
                         Btn.setActive();
                     }
                 }
@@ -732,7 +746,6 @@ define('controls/permissions/Panel', [
                     'quiqqer/system',
                     'permissions.panel.btn.select.open.alt'
                 ),
-                Control : this,
                 events  : {
                     onClick : this.openSearch
                 }
@@ -800,7 +813,7 @@ define('controls/permissions/Panel', [
         /**
          * event: on resize
          *
-         * @method QUI.controls.permissions.Panel#$onResize
+         * @method controls/permissions/Panel#$onResize
          */
         $onResize : function()
         {
@@ -827,7 +840,7 @@ define('controls/permissions/Panel', [
          * event: on panel refresh
          * eq: refresh the buttons
          *
-         * @method QUI.controls.permissions.Panel#$onRefresh
+         * @method controls/permissions/Panel#$onRefresh
          */
         $onRefresh : function()
         {
@@ -853,7 +866,7 @@ define('controls/permissions/Panel', [
             // user
             switch ( this.$Bind.getType() )
             {
-                case 'QUI.classes.users.User':
+                case 'classes/users/User':
                     title = title + '<span class="user">'+
                         this.$Bind.getId() +
                         ' - '+
@@ -861,7 +874,7 @@ define('controls/permissions/Panel', [
                     '</span>';
                 break;
 
-                case 'QUI.classes.groups.Group':
+                case 'classes/groups/Group':
                     title = title + '<span class="group">'+
                         this.$Bind.getId() +
                         ' - ' +
@@ -869,7 +882,7 @@ define('controls/permissions/Panel', [
                     '</span>';
                 break;
 
-                case 'QUI.classes.projects.Site':
+                case 'classes/projects/Site':
                     title = title + '<span class="site">'+
                         this.$Bind.getAttribute( 'name' ) +
                         ' - #'+ this.$Bind.getId() +
@@ -890,7 +903,7 @@ define('controls/permissions/Panel', [
         /**
          * Show the permission sitemap (list)
          *
-         * @method QUI.controls.permissions.Panel#showSitemap
+         * @method controls/permissions/Panel#showSitemap
          */
         showSitemap : function()
         {
@@ -954,7 +967,7 @@ define('controls/permissions/Panel', [
         /**
          * Hide the permission sitemap (list)
          *
-         * @method QUI.controls.permissions.Panel#hideSitemap
+         * @method controls/permissions/Panel#hideSitemap
          */
         hideSitemap : function()
         {
@@ -997,7 +1010,7 @@ define('controls/permissions/Panel', [
         /**
          * Creates the permission map
          *
-         * @method QUI.controls.permissions.Panel#$createSitemap
+         * @method controls/permissions/Panel#$createSitemap
          */
         $createSitemap : function()
         {
@@ -1061,8 +1074,8 @@ define('controls/permissions/Panel', [
         /**
          * Recursive append item helper for sitemap
          *
-         * @method QUI.controls.permissions.Panel#$appendSitemapItemTo
-         * @param {QUI.controls.sitemap.Item} Parent
+         * @method controls/permissions/Panel#$appendSitemapItemTo
+         * @param {qui/controls/sitemap/Item} Parent
          * @param {String} name
          * @param {Object} params
          */
@@ -1098,8 +1111,8 @@ define('controls/permissions/Panel', [
         /**
          * event : on sitemap item click
          *
-         * @method QUI.controls.permissions.Panel#$onSitemapItemClick
-         * @param {QUI.controls.sitemap.Item} Item
+         * @method controls/permissions/Panel#$onSitemapItemClick
+         * @param {qui/controls/sitemap/Item} Item
          */
         $onSitemapItemClick : function(Item)
         {
@@ -1202,8 +1215,7 @@ define('controls/permissions/Panel', [
             }
 
             // parse controls
-            //QUI.controls.Utils.parse( Table );
-            console.info( '@todo QUI.controls.Utils.parse( Table );' );
+            ControlUtils.parse( Table );
 
             this.Loader.hide();
         },
@@ -1211,7 +1223,7 @@ define('controls/permissions/Panel', [
         /**
          * event: if a form element triggered its onchange event
          *
-         * @method QUI.controls.permissions.Panel#$onFormElementChange
+         * @method controls/permissions/Panel#$onFormElementChange
          */
         $onFormElementChange : function(event)
         {
@@ -1229,7 +1241,7 @@ define('controls/permissions/Panel', [
         /**
          * Create the controls in the rows of the permission tables
          *
-         * @method QUI.controls.permissions.Panel#$createPermissionRow
+         * @method controls/permissions/Panel#$createPermissionRow
          * @param {String} right - right name
          * @param {Integer} i - row counter
          * @param {DOMNode }Table - <table> Node Element
@@ -1253,13 +1265,13 @@ define('controls/permissions/Panel', [
             {
                 switch ( this.$Bind.getType() )
                 {
-                    case 'QUI.classes.projects.Site':
+                    case 'classes/projects/Site':
                         Node.getElements( 'input[data-area="site"]' )
                             .getParent()
                             .removeClass( 'disabled' );
                     break;
 
-                    case 'QUI.classes.projects.Project':
+                    case 'classes/projects/Project':
                         Node.getElements( 'input[data-area="project"]' )
                             .getParent()
                             .removeClass( 'disabled' );
@@ -1281,15 +1293,15 @@ define('controls/permissions/Panel', [
                 if ( right.src == 'user' )
                 {
                     new QUIButton({
-                        icon   : URL_BIN_DIR +'16x16/cancel.png',
-                        title  : QUI.Locale.get(
+                        icon   : 'icon-remove',
+                        title  : Locale.get(
                             'quiqqer/system',
                             'permissions.panel.btn.delete.right.alt',
                             {
                                 right : right.name
                             }
                         ),
-                        alt : QUI.Locale.get(
+                        alt : Locale.get(
                             'quiqqer/system',
                             'permissions.panel.btn.delete.right.title',
                             {

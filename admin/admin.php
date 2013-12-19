@@ -9,6 +9,8 @@
     $qui_path   =  URL_OPT_DIR .'bin/qui/';
     $qui_extend =  URL_OPT_DIR .'bin/qui/extend/';
 
+    $config = array();
+    $config['globals'] = \QUI::conf( 'globals' );
 ?>
 <!doctype html>
 <!--[if lt IE 7 ]><html class="ie ie6" lang="<?php echo $User->getLang(); ?>"> <![endif]-->
@@ -69,6 +71,11 @@
         type="text/css"
     />
 
+    <link href="<?php echo $qui_extend; ?>elements.css"
+        rel="stylesheet"
+        type="text/css"
+    />
+
     <link href="<?php echo URL_BIN_DIR; ?>css/style.css"
         rel="stylesheet"
         type="text/css"
@@ -95,9 +102,37 @@
         };
 
         var QUIQQER_VERSION = '1.0.0';
+        var QUIQQER_CONFIG  = <?php echo json_encode( $config ); ?>;
 
     /* ]]> */
     </script>
+
+    <?php
+
+        /**
+         * locale file
+         */
+        try
+        {
+            $files = \QUI\Translator::getJSTranslationFiles( $User->getLang() );
+
+        } catch ( \QUI\Exception $e )
+        {
+
+        }
+
+        $locales = array();
+
+        foreach ( $files as $package => $file ) {
+            $locales[] = $package .'/'. $User->getLang();
+        }
+
+        echo '<script type="text/javascript">';
+        echo '/* <![CDATA[ */';
+        echo 'var QUIQQER_LOCALE = '. json_encode( $locales, true );
+        echo '/* ]]> */';
+        echo '</script>';
+    ?>
 
 </head>
 <body class="<?php echo $User->getLang(); ?>">

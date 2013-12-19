@@ -104,13 +104,16 @@ class Setup
         /**
          * composer setup
          */
+        /*
         \QUI::getPackageManager()->refreshServerList();
         \QUI::getPackageManager()->update();
+        */
 
-        /**
-         * generate translations
-         */
+        // generate translations
         \QUI\Update::importAllLocaleXMLs();
         \QUI\Translator::create();
+
+        // generate menu
+        \QUI\Update::importAllMenuXMLs();
     }
 }

@@ -1,0 +1,30 @@
+
+.projects-input {
+    position: relative;
+    display: block;
+}
+
+.projects-input-entry {
+    float: left;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.projects-input-dropdown {
+    position : absolute;
+    z-index  : 10;
+    width    : 200px;
+    padding  : 5px;
+    border   : 1px solid #dedede;
+    background : #fff;
+}
+
+.projects-input-dropdown .hover {
+    background-color: #2F8FC6;
+    color: #FFFFFF;
+}
+
+.projects-input-dropdown .mark {
+    font-weight: bold;
+    color: red;
+}
