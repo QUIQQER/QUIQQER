@@ -310,10 +310,12 @@ class Manager
     public function getInstalled($params=array())
     {
         $list   = $this->_getList();
-        $result = array();
+        $result = $list;
 
         if ( isset( $params['type'] ) )
         {
+            $result = array();
+
             foreach ( $list as $package )
             {
                 if ( !isset( $package['type'] ) ) {

@@ -204,6 +204,42 @@ class XML
     }
 
     /**
+     * Reads the tools list from an *.xml
+     *
+     * @param String $file - path to xml file
+     * @return array()
+     */
+    static function getConsoleToolsFromXml($file)
+    {
+        $Dom     = self::getDomFromXml( $file );
+        $console = $Dom->getElementsByTagName( 'console' );
+
+        if ( !$console->length ) {
+            return array();
+        }
+
+        $Console = $console->item( 0 );
+        $tools   = $Console->getElementsByTagName( 'tool' );
+
+        if ( !$tools->length ) {
+            return array();
+        }
+
+        $list = array();
+
+        for ( $i = 0; $i < $tools->length; $i++ )
+        {
+            $exec = $tools->item( $i )->getAttribute('exec');
+
+            if ( !empty( $exec ) ) {
+                $list[] = $exec;
+            }
+        }
+
+        return $list;
+    }
+
+    /**
      * Reads the database entries from an *.xml
      *
      * @param String $file - path to the xml file

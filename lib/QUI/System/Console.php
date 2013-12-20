@@ -301,9 +301,7 @@ class Console
      */
     private function _read()
     {
-        /**
-         * Standard Konsoletools
-         */
+        // Standard Konsoletools
         $path  = LIB_DIR .'QUI/System/Console/Tools/';
         $files = \QUI\Utils\System\File::readDir( $path, true );
 
@@ -316,51 +314,56 @@ class Console
             $this->_includeClasses( $files[ $i ], $path );
         }
 
-        /**
-         * Plugins console tools
-         */
-        $plugins_dir = \QUI\Utils\System\File::readDir( OPT_DIR );
+        // look at console tools at plugins
+        $PackageManager = \QUI::getPackageManager();
+        $plugins        = $PackageManager->getInstalled();
 
-        for ( $i = 0, $len = count( $plugins_dir ); $i < $len; $i++)
+        $tools = array();
+
+        foreach ( $plugins as $plugin )
         {
-            if ( !file_exists( OPT_DIR . $plugins_dir[ $i ] .'/Console.php' ) ) {
+            $dir = OPT_DIR . $plugin['name'];
+
+            if ( !file_exists( $dir .'/console.xml' ) ) {
                 continue;
             }
 
-            require_once OPT_DIR . $plugins_dir[ $i ] .'/Console.php';
-
-            $class = 'Console'. ucfirst( $plugins_dir[ $i ] );
-
-            if ( class_exists( $class ) )
-            {
-                $tool = new $class( $this->_argv );
-
-                $tool->setAttribute( 'parent', $this );
-                $this->_tools[ $class ] = $tool;
-            }
+            $tools = array_merge(
+               $tools,
+               \QUI\Utils\XML::getConsoleToolsFromXml( $dir .'/console.xml' )
+            );
         }
 
-        /**
-         * Projects console tools
-         */
-        $projects_dir = \QUI\Utils\System\File::readDir( USR_DIR .'lib/' );
+        // look at console tools at projects
+        $ProjectManager = \QUI::getProjectManager();
+        $projects       = $ProjectManager->getProjects();
 
-        for ( $i = 0, $len = count( $projects_dir ); $i < $len; $i++ )
+        foreach ( $projects as $project )
         {
-            $dir = USR_DIR .'lib/'. $projects_dir[ $i ] .'/console/';
+            $dir = USR_DIR . $project;
 
-            if ( !is_dir( $dir ) ) {
+            if ( !file_exists( $dir .'/console.xml' ) ) {
                 continue;
             }
 
-            $c_dir = \QUI\Utils\System\File::readDir( $dir, true );
+            $tools = array_merge(
+               $tools,
+               \QUI\Utils\XML::getConsoleToolsFromXml( $dir .'/console.xml' )
+            );
+        }
 
-            for ( $c = 0, $clen = count( $c_dir ); $c < $clen; $c++ )
-            {
-                if ( file_exists( $dir . $c_dir[ $c ] ) ) {
-                    $this->_includeClasses( $c_dir[ $c ], $dir );
-                }
+
+        // init tools
+        foreach ( $tools as $cls )
+        {
+            $Tool = new $cls();
+            $Tool->setAttribute( 'parent', $this );
+
+            foreach ( $this->_argv as $key => $value ) {
+                $Tool->setArgument( $key, $value );
             }
+
+            $this->_tools[ $Tool->getName() ] = $Tool;
         }
     }
 

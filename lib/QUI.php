@@ -105,6 +105,12 @@ class QUI
     static $PackageManager = null;
 
     /**
+     * QUI Projectmanager, use \QUI::getProjectManager();
+     * @var \QUI\Projects\Manager
+     */
+    static $ProjectManager = null;
+
+    /**
      * QUI Rewrite Object, use \QUI::getRewrite();
      * @var \QUI\Rewrite
      */
@@ -724,6 +730,19 @@ class QUI
         }
 
         return self::$PackageManager;
+    }
+
+    /**
+     * Returns the project manager
+     * @return \QUI\Projects\Manager
+     */
+    static function getProjectManager()
+    {
+        if ( is_null( self::$ProjectManager ) ) {
+            self::$ProjectManager = new \QUI\Projects\Manager();
+        }
+
+        return self::$ProjectManager;
     }
 
     /**
