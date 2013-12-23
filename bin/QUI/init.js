@@ -49,7 +49,8 @@ require([
         Menu      = document.getElement( '.qui-menu-container' );
 
     Container.setStyles({
-        height : doc_size.y - Logo.getSize().y - Menu.getSize().y
+        height : doc_size.y - Logo.getSize().y - Menu.getSize().y,
+        width  : doc_size.x - 10 // -10, wegen der scrollbar
     });
 
     var MyWorkspace = new Workspace().inject( Container );
@@ -103,14 +104,7 @@ require([
     /**
      * Locale
      */
-    console.log( QUIQQER_LOCALE );
-
-    require( QUIQQER_LOCALE, function()
-    {
-        require(['Locale'], function(Locale) {
-            console.log( Locale );
-        });
-    });
+    require( QUIQQER_LOCALE, function() {});
 
     // contextmenu
     require([

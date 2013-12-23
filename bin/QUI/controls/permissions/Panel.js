@@ -26,7 +26,7 @@ define('controls/permissions/Panel', [
     'css!controls/permissions/Panel.css'
 
 ], function(
-    QUI, Panel, Utils, ObjectUtils, ControlUtils, Locale, Ajax,
+    QUI, Panel, Utils, ControlUtils, ObjectUtils, Locale, Ajax,
     QUIButton, QUIButtonSeperator, Sitemap, SitemapItem, QUIPrompt, QUIConfirm
 )
 {
@@ -1197,6 +1197,10 @@ define('controls/permissions/Panel', [
             for ( i = 0, len = list.length; i < len; i++ )
             {
                 Elm = list[ i ];
+
+                if ( typeof perms === 'undefined' ) {
+                    continue;
+                }
 
                 if ( typeof perms[ Elm.name ] === 'undefined' ) {
                     continue;

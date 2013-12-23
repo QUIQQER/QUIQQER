@@ -1939,6 +1939,10 @@ define('controls/grid/Grid', [
                     var Btn  = new QUIButton( _btn );
                     var node = Btn.create();
 
+                    node.removeClass( 'qui-button' );
+                    node.addClass( 'button' );
+                    node.addClass( 'btn-silver' );
+
                     _btn.data.quiid = Btn.getId();
 
                     node.removeProperty('tabindex');  // focus eigenschaft nehmen
@@ -2103,7 +2107,7 @@ define('controls/grid/Grid', [
                 tDiv = new Element('div.tDiv', {
                     styles : {
                         width  : width,
-                        height : 25 + (browser ? 2 : 0 )
+                        height : 40
                     }
                 });
 
@@ -2134,6 +2138,10 @@ define('controls/grid/Grid', [
 
                     node = bt[ bt[i].name ].create();
                     node.removeProperty('tabindex'); // focus eigenschaft nehmen
+
+                    node.removeClass( 'qui-button' );
+                    node.addClass( 'button' );
+                    node.addClass( 'btn-silver' );
 
                     node.inject( tDiv );
 

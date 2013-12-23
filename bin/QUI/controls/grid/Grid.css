@@ -565,10 +565,11 @@ div.pGroup {
 }
 
 
-.omnigrid .qui-button {
+.omnigrid button {
     border: 0 none;
     line-height: 20px;
     margin: 2px;
     padding: 2px;
+    white-space: nowrap;
 }
 

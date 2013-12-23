@@ -142,7 +142,7 @@ define('controls/projects/project/Panel', [
             }).inject( this.$Filter.getElm() );
 
             // add project
-            new QUIButton({
+            var BtnAdd = new QUIButton({
                 name     : 'add_projects',
                 icon     : 'icon-plus',
                 title    : 'Projekt hinzufügen',
@@ -173,11 +173,15 @@ define('controls/projects/project/Panel', [
                 }
             }).inject( this.getHeader(), 'top' );
 
+            BtnAdd.getElm().removeClass( 'qui-button' );
+            BtnAdd.getElm().addClass( 'button' );
+            BtnAdd.getElm().addClass( 'btn-blue' );
+
             // title button
             this.$Button = new QUIButton({
-                name     : 'projects',
-                image    : 'icon-home',
-                events   :
+                name   : 'projects',
+                image  : 'icon-home',
+                events :
                 {
                     onClick : function(Btn, event)
                     {
@@ -204,6 +208,10 @@ define('controls/projects/project/Panel', [
                     }.bind( this )
                 }
             }).inject( this.getHeader(), 'top' );
+
+            this.$Button.getElm().removeClass( 'qui-button' );
+            this.$Button.getElm().addClass( 'button' );
+            this.$Button.getElm().addClass( 'btn-blue' );
 
             // resize after insert
             (function()

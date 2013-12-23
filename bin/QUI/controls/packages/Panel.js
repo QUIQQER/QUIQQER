@@ -1091,7 +1091,7 @@ define('controls/packages/Panel', [
                         'packages.btn.del.server'
                     ),
                     name : 'delServers',
-                    textimage : URL_BIN_DIR +'16x16/filesystems/trashcan_empty.png',
+                    textimage : 'icon-trash',
                     disabled  : true,
                     events :
                     {
@@ -1155,11 +1155,11 @@ define('controls/packages/Panel', [
                                 'packages.server.grid.btn.activate.title'
                             );
 
-                            icon = URL_BIN_DIR +'16x16/actions/apply.png';
+                            icon = 'icon-ok';
 
                             if ( result[ i ].active === 0 )
                             {
-                                icon  = URL_BIN_DIR +'16x16/actions/cancel.png';
+                                icon  = 'icon-remove';
 
                                 alt = Locale.get(
                                     'quiqqer/system',

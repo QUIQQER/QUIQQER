@@ -5,8 +5,9 @@
  *
  * @author www.pcsg.de (Henning Leutz)
  *
+ * @requires qui/QUI
  * @requires qui/classes/DOM
- * @requires classes/editor/Editor
+ * @requires Ajax
  *
  * @module controls/editor/Manager
  * @package com.pcsg.qui.js.classes.editor
@@ -106,7 +107,6 @@ Manager.register('package/ckeditor3', {
                         self.$config.settings.standard,
                         func
                     );
-
                 });
 
                 return;
@@ -123,14 +123,13 @@ Manager.register('package/ckeditor3', {
                 return;
             }
 
-            this.getConfig(function()
+            this.getConfig(function(result)
             {
                 require([ self.$config.editors[ name ] ], function(Editor)
                 {
                     self.$editors[ name ] = Editor;
                     self.getEditor( name, func );
                 });
-
             });
         },
 
@@ -165,17 +164,16 @@ Manager.register('package/ckeditor3', {
                 return onfinish( this.$config );
             }
 
-            Ajax.get( 'ajax_editor_get_config', function(result, Request)
-            {
-                Request.getAttribute( 'Manager' ).$config = result;
+            var self = this;
 
-                if ( Request.getAttribute( 'onfinish' ) ) {
-                    Request.getAttribute( 'onfinish' )( result, Request );
+            Ajax.get( 'ajax_editor_get_config', function(result)
+            {
+                self.$config = result;
+
+                if ( typeof onfinish === 'function' ) {
+                    onfinish( result );
                 }
-            }, {
-                Manager  : this,
-                onfinish : onfinish
-            } );
+            });
         },
 
         /**

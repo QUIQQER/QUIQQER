@@ -9,7 +9,6 @@
  *
  * @module controls/projects/site/Panel
  * @package com.pcsg.qui.js.controls.project
- * @namespace QUI.controls.projects.site
  */
 
 define('controls/projects/project/site/Panel', [
@@ -20,19 +19,20 @@ define('controls/projects/project/site/Panel', [
     'classes/projects/project/Site',
     'qui/controls/buttons/Button',
     'qui/utils/Form',
+    'utils/Controls',
 
     'css!controls/projects/project/site/Panel.css'
 
-], function(QUIPanel, Projects, Ajax, Site, QUIButton, QUIFormUtils)
+], function(QUIPanel, Projects, Ajax, Site, QUIButton, QUIFormUtils, ControlUtils)
 {
     "use strict";
 
     /**
      * An SitePanel, opens the Site in an Apppanel
      *
-     * @class QUI.controls.projects.site.Panel
+     * @class controls/projects/project/site/Panel
      *
-     * @param {QUI.classes.projects.Site} Site
+     * @param {classes/projects/Site} Site
      * @param {Object} options
      *
      * @memberof! <global>
@@ -93,7 +93,7 @@ define('controls/projects/project/site/Panel', [
         /**
          * Save the site panel to the workspace
          *
-         * @method QUI.controls.projects.site.Panel#serialize
+         * @method controls/projects/project/site/Panel#serialize
          * @return {Object} data
          */
         serialize : function()
@@ -112,7 +112,7 @@ define('controls/projects/project/site/Panel', [
         /**
          * import the saved data form the workspace
          *
-         * @method QUI.controls.projects.site.Panel#unserialize
+         * @method controls/projects/project/site/Panel#unserialize
          * @param {Object} data
          * @return {this}
          */
@@ -133,8 +133,8 @@ define('controls/projects/project/site/Panel', [
         /**
          * Return the Site object from the panel
          *
-         * @method QUI.controls.projects.site.Panel#getSite
-         * @return {QUI.classes.projects.Site}
+         * @method controls/projects/project/site/Panel#getSite
+         * @return {classes/projects/Site}
          */
         getSite : function()
         {
@@ -144,7 +144,7 @@ define('controls/projects/project/site/Panel', [
         /**
          * Load the site attributes to the panel
          *
-         * @method QUI.controls.projects.site.Panel#load
+         * @method controls/projects/project/site/Panel#load
          */
         load : function()
         {
@@ -175,14 +175,14 @@ define('controls/projects/project/site/Panel', [
         /**
          * Create the panel design
          *
-         * @method QUI.controls.projects.site.Panel#$onCreate
+         * @method controls/projects/project/site/Panel#$onCreate
          */
         $onCreate : function()
         {
             this.Loader.show();
 
             // permissions
-            new QUIButton({
+            var PermissionButton = new QUIButton({
                 image  : 'icon-gears',
                 alt    : 'Seiten Zugriffsrechte einstellen',
                 title  : 'Seiten Zugriffsrechte einstellen',
@@ -196,7 +196,7 @@ define('controls/projects/project/site/Panel', [
                 this.getHeader()
             );
 
-            new QUIButton({
+            var MediaButton = new QUIButton({
                 image  : 'icon-picture',
                 alt    : 'Media',
                 title  : 'Media',
@@ -300,7 +300,7 @@ define('controls/projects/project/site/Panel', [
         /**
          * event: panel resize
          *
-         * @method QUI.controls.projects.site.Panel#$onResize
+         * @method controls/projects/project/site/Panel#$onResize
          */
         $onResize : function()
         {
@@ -310,7 +310,7 @@ define('controls/projects/project/site/Panel', [
         /**
          * Opens the site permissions
          *
-         * @method QUI.controls.projects.site.Panel#openPermissions
+         * @method controls/projects/project/site/Panel#openPermissions
          */
         openPermissions : function()
         {
@@ -328,7 +328,7 @@ define('controls/projects/project/site/Panel', [
         /**
          * Opens the site media
          *
-         * @method QUI.controls.projects.site.Panel#openMedia
+         * @method controls/projects/project/site/Panel#openMedia
          */
         openMedia : function()
         {
@@ -345,7 +345,7 @@ define('controls/projects/project/site/Panel', [
         /**
          * saves site attributes
          *
-         * @method QUI.controls.projects.site.Panel#openPermissions
+         * @method controls/projects/project/site/Panel#openPermissions
          */
         save : function()
         {
@@ -384,7 +384,7 @@ define('controls/projects/project/site/Panel', [
         /**
          * Create a child site
          *
-         * @method QUI.controls.projects.site.Panel#createChild
+         * @method controls/projects/project/site/Panel#createChild
          *
          * @param {String} newname - [optional, if no newname was passed,
          *         a window would be open]
@@ -416,10 +416,10 @@ define('controls/projects/project/site/Panel', [
          * Load the tab content and set the site attributes
          * or exec the plugin event
          *
-         * @method QUI.controls.projects.site.Panel#$tabEnter
+         * @method controls/projects/project/site/Panel#$tabEnter
          * @fires onSiteTabLoad
          *
-         * @param {QUI.controls.toolbar.Button} Button
+         * @param {qui/controls/toolbar/Button} Button
          */
         $onCategoryEnter : function(Button)
         {
@@ -483,8 +483,7 @@ define('controls/projects/project/site/Panel', [
                     Input.set( 'value', Site.getAttribute( 'name' ) );
                 }
 
-                // @todo control parsing
-                // QUI.controls.Utils.parse( Form );
+                ControlUtils.parse( Form );
 
                 Panel.$categoryOnLoad( Category );
 
@@ -502,8 +501,8 @@ define('controls/projects/project/site/Panel', [
         /**
          * Load the category
          *
-         * @method QUI.controls.projects.site.Panel#$categoryOnLoad
-         * @param {QUI.controls.buttons.Button} Category
+         * @method controls/projects/project/site/Panel#$categoryOnLoad
+         * @param {qui/controls/buttons/Button} Category
          */
         $categoryOnLoad : function(Category)
         {
@@ -525,10 +524,10 @@ define('controls/projects/project/site/Panel', [
         /**
          * The site tab leave event
          *
-         * @method QUI.controls.projects.site.Panel#$tabLeave
+         * @method controls/projects/project/site/Panel#$tabLeave
          * @fires onSiteTabUnLoad
          *
-         * @param {QUI.controls.toolbar.Tab} Tab
+         * @param {qui/controls/toolbar/Tab} Tab
          */
         $onCategoryLeave : function(Tab)
         {
@@ -575,8 +574,8 @@ define('controls/projects/project/site/Panel', [
         /**
          * Execute the panel onclick from PHP
          *
-         * @method QUI.controls.projects.site.Panel#$onPanelButtonClick
-         * @param {QUI.controls.buttons.Button} Btn
+         * @method controls/projects/project/site/Panel#$onPanelButtonClick
+         * @param {qui/controls/buttons/Button} Btn
          */
         $onPanelButtonClick : function(Btn)
         {
@@ -595,7 +594,7 @@ define('controls/projects/project/site/Panel', [
         },
 
         /**
-         * event : on {QUI.classes.projects.Site} activation
+         * event : on {classes/projects/Site} activation
          */
         $onSiteActivate : function()
         {
@@ -613,7 +612,7 @@ define('controls/projects/project/site/Panel', [
         },
 
         /**
-         * event : on {QUI.classes.projects.Site} deactivation
+         * event : on {classes/projects/Site} deactivation
          */
         $onSiteDeactivate : function()
         {
@@ -631,7 +630,7 @@ define('controls/projects/project/site/Panel', [
         },
 
         /**
-         * event : on {QUI.classes.projects.Site} delete
+         * event : on {classes/projects/Site} delete
          */
         $onSiteDelete : function()
         {
@@ -645,26 +644,15 @@ define('controls/projects/project/site/Panel', [
         /**
          * Load the WYSIWYG Editor in the panel
          *
-         * @method QUI.controls.projects.site.Panel#loadEditor
+         * @method controls/projects/project/site/Panel#loadEditor
          * @param {String} content - content of the editor
          */
         loadEditor : function(content)
         {
-            var self, Body, Container;
-
-            self = this;
-            Body = this.getBody();
-
-            Container = new Element('textarea#editor'+ this.getId(), {
-                name    :' editor'+ this.getId(),
-                styles  : {
-                    width  : Body.getSize().x - 60,
-                    height : Body.getSize().y - 40
-                }
-            });
+            var self = this,
+                Body = this.getBody();
 
             Body.set( 'html', '' );
-            Container.inject( Body );
 
             require(['Editors'], function(Editors)
             {
@@ -685,10 +673,9 @@ define('controls/projects/project/site/Panel', [
                         content = '';
                     }
 
+                    Editor.inject( Body );
                     Editor.setContent( content );
-                    Editor.addEvent( 'onLoaded', self.$onEditorLoad );
-                    Editor.draw( Body );
-
+                    Editor.addEvent( 'onLoaded', self.$onEditorLoad )
                 });
             });
         },
@@ -697,7 +684,7 @@ define('controls/projects/project/site/Panel', [
          * event: on editor load
          * if the editor is finished
          *
-         * @method QUI.controls.projects.site.Panel#$onEditorLoad
+         * @method controls/projects/project/site/Panel#$onEditorLoad
          * @param Editor
          * @param Instance
          */
@@ -710,7 +697,7 @@ define('controls/projects/project/site/Panel', [
          * event: on editor load
          * if the editor would be destroyed
          *
-         * @method QUI.controls.projects.site.Panel#$onEditorDestroy
+         * @method controls/projects/project/site/Panel#$onEditorDestroy
          * @param Editor
          */
         $onEditorDestroy : function(Editor)

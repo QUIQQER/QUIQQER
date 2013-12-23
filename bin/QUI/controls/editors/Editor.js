@@ -8,11 +8,11 @@
  *
  * @requires qui/controls/Control
  *
- * @module classes/editor/Editor
+ * @module controls/editor/Editor
  * @package com.pcsg.qui.js.classes.editor
  */
 
-define('controls/editor/Editor', ['qui/controls/Control'], function(Control)
+define('controls/editors/Editor', ['qui/controls/Control'], function(Control)
 {
     "use strict";
 
@@ -81,17 +81,25 @@ define('controls/editor/Editor', ['qui/controls/Control'], function(Control)
         /**
          * Draw the editor
          *
-         * @method QUI.controls.editor.Editor#draw
+         * @method QUI.controls.editor.Editor#create
          * @fires onDraw [DOMNode, this]
-         * @param {DOMNode} Container - The DOMNode in which the editor should be displayed
+         * @return {DOMNode} DOMNode Element
          */
-        draw : function(Container)
+        create : function()
         {
-            this.$Container = Container;
-            this.$Container.addClass( 'media-drop' );
-            this.$Container.set( 'data-quiid', this.getId() );
+            this.$Elm = new Element('div', {
+                styles : {
+                    width  : '100%',
+                    height : '100%'
+                }
+            });
 
-            this.fireEvent( 'draw', [ this.$Container, this ] );
+            this.$Elm.addClass( 'media-drop' );
+            this.$Elm.set( 'data-quiid', this.getId() );
+
+            this.fireEvent( 'draw', [ this.$Elm, this ] );
+
+            return this.$Elm;
         },
 
         /**
@@ -155,30 +163,6 @@ define('controls/editor/Editor', ['qui/controls/Control'], function(Control)
         getInstance : function()
         {
             return this.$Instance;
-        },
-
-        /**
-         * Highlight the editor
-         *
-         * @method QUI.controls.editor.Editor#highlight
-         */
-        highlight : function()
-        {
-            if ( this.$Container ) {
-                this.$Container.addClass( 'highlight' );
-            }
-        },
-
-        /**
-         * Normalize the Editor, if the editor was highlighted
-         *
-         * @method QUI.controls.editor.Editor#normalize
-         */
-        normalize : function()
-        {
-            if ( this.$Container ) {
-                this.$Container.removeClass( 'highlight' );
-            }
         }
     });
 });
