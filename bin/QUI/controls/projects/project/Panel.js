@@ -20,13 +20,14 @@ define('controls/projects/project/Panel', [
     'controls/projects/project/Sitemap',
 
     'qui/controls/buttons/Button',
+    'qui/controls/buttons/Seperator',
     'qui/controls/sitemap/Map',
     'qui/controls/sitemap/Item',
     'qui/controls/sitemap/Filter',
 
     'css!controls/projects/project/Panel.css'
 
-], function(QUI_Panel, Projects, ProjectSitemap, QUIButton, QUISitemap, QUISitemapItem, QUISitemapFilter)
+], function(QUI_Panel, Projects, ProjectSitemap, QUIButton, QUIButtonSeperator, QUISitemap, QUISitemapItem, QUISitemapFilter)
 {
     "use strict";
 
@@ -142,45 +143,47 @@ define('controls/projects/project/Panel', [
             }).inject( this.$Filter.getElm() );
 
             // add project
-            var BtnAdd = new QUIButton({
-                name     : 'add_projects',
-                icon     : 'icon-plus',
-                title    : 'Projekt hinzufügen',
-                alt      : 'Projekt hinzufügen',
-                events   :
-                {
-                    onClick : function(Btn, event)
-                    {
-                        event.stop();
+            new QUIButtonSeperator().inject( this.getHeader(), 'top' );
 
-                        require(['controls/projects/Manager'], function(Manager)
-                        {
-                            QUI.Workspace.appendPanel(
-                                new Manager({
-                                    events :
-                                    {
-                                        onCreate : function(Panel)
-                                        {
-                                            Panel.getCategoryBar()
-                                                 .getElement( 'add_project' )
-                                                 .click();
-                                        }
-                                    }
-                                })
-                            );
-                        });
-                    }
-                }
-            }).inject( this.getHeader(), 'top' );
+//            var BtnAdd = new QUIButton({
+//                name     : 'add_projects',
+//                icon     : 'icon-plus',
+//                title    : 'Projekt hinzufügen',
+//                alt      : 'Projekt hinzufügen',
+//                events   :
+//                {
+//                    onClick : function(Btn, event)
+//                    {
+//                        event.stop();
+//
+//                        require(['controls/projects/Manager'], function(Manager)
+//                        {
+//                            QUI.Workspace.appendPanel(
+//                                new Manager({
+//                                    events :
+//                                    {
+//                                        onCreate : function(Panel)
+//                                        {
+//                                            Panel.getCategoryBar()
+//                                                 .getElement( 'add_project' )
+//                                                 .click();
+//                                        }
+//                                    }
+//                                })
+//                            );
+//                        });
+//                    }
+//                }
+//            }).inject( this.getHeader(), 'top' );
 
-            BtnAdd.getElm().removeClass( 'qui-button' );
-            BtnAdd.getElm().addClass( 'button' );
-            BtnAdd.getElm().addClass( 'btn-blue' );
+//            BtnAdd.getElm().removeClass( 'qui-button' );
+//            BtnAdd.getElm().addClass( 'button' );
+//            BtnAdd.getElm().addClass( 'btn-blue' );
 
             // title button
             this.$Button = new QUIButton({
                 name   : 'projects',
-                image  : 'icon-home',
+                image  : 'icon-circle-arrow-left',
                 events :
                 {
                     onClick : function(Btn, event)
@@ -374,6 +377,7 @@ define('controls/projects/project/Panel', [
             var Content   = this.getBody(),
                 List      = Content.getElement( '.project-list' ),
                 Container = Content.getElement( '.project-content' ),
+                lang      = this.getAttribute( 'lang' ),
 
                 Project = Projects.get(
                     this.getAttribute( 'project' ),
@@ -382,6 +386,20 @@ define('controls/projects/project/Panel', [
 
             moofx( List ).animate({
                 left : List.getSize().x * -1
+            });
+
+            Container.set(
+                'html',
+
+                '<h2>'+
+                    this.getAttribute('project') +
+                '</h2>'
+            );
+
+            Container.getElement( 'h2' ).setStyles({
+                margin: '20px 0 0 20px',
+                background : 'url('+ URL_BIN_DIR +'16x16/flags/'+ lang +'.png) no-repeat left center',
+                padding : '0 0 0 20px'
             });
 
             /*
@@ -443,15 +461,19 @@ define('controls/projects/project/Panel', [
             this.$Map.inject( Container );
             this.$Map.open();
 
-            // set the panel title
-            this.getHeader().getElement( 'h2' ).set(
-                'html',
+            this.$Map.getElm().setStyles({
+                margin : '10px 20px'
+            });
 
-                '<img src="'+ URL_BIN_DIR +'16x16/flags/'+ Project.getAttribute('lang') +'.png" ' +
-                    'style="margin: 9px 5px 0 0; float: left;"' +
-                ' />'+
-                Project.getAttribute('name')
-            );
+            // set the panel title
+//            this.getHeader().getElement( 'h2' ).set(
+//                'html',
+//
+//                '<img src="'+ URL_BIN_DIR +'16x16/flags/'+ Project.getAttribute('lang') +'.png" ' +
+//                    'style="margin: 9px 5px 0 0; float: left;"' +
+//                ' />'+
+//                Project.getAttribute('name')
+//            );
 
             this.$Button.setNormal();
         },

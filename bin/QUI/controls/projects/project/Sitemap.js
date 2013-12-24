@@ -67,21 +67,23 @@ define('controls/projects/project/Sitemap', [
                 this.getAttribute( 'lang' )
             );
 
+            var self = this;
+
             this.addEvent('onDestroy', function()
             {
-                if ( this.$Map ) {
-                    this.$Map.destroy();
+                if ( self.$Map ) {
+                    self.$Map.destroy();
                 }
 
-                this.$Project.removeEvents({
-                    onSiteCreate     : this.onSiteCreate,
-                    onSiteSave       : this.onSiteChange,
-                    onSiteActivate   : this.onSiteChange,
-                    onSiteDeactivate : this.onSiteChange,
-                    onSiteDelete     : this.onSiteDelete
+                self.$Project.removeEvents({
+                    onSiteCreate     : self.onSiteCreate,
+                    onSiteSave       : self.onSiteChange,
+                    onSiteActivate   : self.onSiteChange,
+                    onSiteDeactivate : self.onSiteChange,
+                    onSiteDelete     : self.onSiteDelete
                 });
 
-            }.bind( this ));
+            });
 
             // projects events
             this.$Project.addEvents({
