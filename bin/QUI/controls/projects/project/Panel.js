@@ -80,6 +80,8 @@ define('controls/projects/project/Panel', [
          */
         $onCreate : function()
         {
+            var self = this;
+
             this.getBody().set(
                 'html',
 
@@ -194,21 +196,25 @@ define('controls/projects/project/Panel', [
 
                         if ( Btn.isActive() )
                         {
-                            var Content = this.getBody(),
-                                List    = Content.getElement( '.project-list' );
+                            var Content = self.getBody(),
+                                List    = Content.getElement( '.project-list' ),
+                                first   = null;
 
-                            moofx( List ).animate({
-                                left : List.getSize().x * -1
-                            }, {
-                                callback : this.$Button.setNormal.bind( this.$Button )
-                            });
+                            //console.log( ProjectCon.get( 'html' ) );
+
+                            // get the first projects map
+                            for ( first in self.$projectmaps ) {
+                                break;
+                            }
+
+                            // select the first languag of the project
+                            self.$projectmaps[ first ].firstChild().firstChild().click();
 
                             return;
                         }
 
-                        this.createList();
-
-                    }.bind( this )
+                        self.createList();
+                    }
                 }
             }).inject( this.getHeader(), 'top' );
 
@@ -219,9 +225,9 @@ define('controls/projects/project/Panel', [
             // resize after insert
             (function()
             {
-                this.resize();
-                this.$Button.click();
-            }).delay( 250, this );
+                self.resize();
+                self.$Button.click();
+            }).delay( 250 );
         },
 
         /**
