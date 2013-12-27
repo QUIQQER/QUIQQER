@@ -51,7 +51,8 @@ define('controls/menu/Manager', [
         menuClick : function(Item)
         {
             var self        = this,
-                menuRequire = Item.getAttribute( 'require' );
+                menuRequire = Item.getAttribute( 'require' ),
+                exec        = Item.getAttribute( 'exec' );
 
             if ( menuRequire )
             {
@@ -67,6 +68,16 @@ define('controls/menu/Manager', [
                     }
 
                     Ctrl.open();
+                });
+            }
+
+            try
+            {
+                eval( exec );
+            } catch ( e )
+            {
+                QUI.getMessageHandler(function(MessageHandler) {
+                    MessageHandler.addError( e );
                 });
             }
         },

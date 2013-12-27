@@ -10,7 +10,7 @@
  * @requires Ajax
  *
  * @module controls/editor/Manager
- * @package com.pcsg.qui.js.classes.editor
+ * @package com.pcsg.quiqqer
  */
 
 define('classes/editor/Manager', [

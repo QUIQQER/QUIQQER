@@ -25,6 +25,7 @@ require.config({
 
 require([
 
+    'qui/QUI',
     'Locale',
     'Ajax',
     'controls/welcome/Panel',
@@ -36,7 +37,7 @@ require([
     'qui/controls/bookmarks/Panel',
     'controls/projects/project/Panel'
 
-], function(Locale, Ajax, Welcome, Workspace, Column, Panel, TaskPanel, Button, BookmarkPanel, ProjectPanel)
+], function(QUI, Locale, Ajax, Welcome, Workspace, Column, Panel, TaskPanel, Button, BookmarkPanel, ProjectPanel)
 {
     "use strict";
 
@@ -60,11 +61,16 @@ require([
 
         MiddleColumn = new Column({
             width : doc_size.x * 0.8
+        }),
+
+        RightColumn = new Column({
+            width : doc_size.x * 0.2
         });
 
 
     MyWorkspace.appendChild( LeftColumn );
     MyWorkspace.appendChild( MiddleColumn );
+    MyWorkspace.appendChild( RightColumn );
 
     // projects panel
     LeftColumn.appendChild(
@@ -73,7 +79,8 @@ require([
 
     // bookmarks panel
     var Bookmarks = new BookmarkPanel({
-        title : 'Bookmarks'
+        title : 'Bookmarks',
+        icon  : ''
     });
 
     LeftColumn.appendChild( Bookmarks );
@@ -105,6 +112,26 @@ require([
      * Locale
      */
     require( QUIQQER_LOCALE, function() {});
+
+    /**
+     * MessageHandler
+     */
+    QUI.getMessageHandler(function(MessageHandler)
+    {
+        new Panel({
+            title  : 'Nachrichten',
+            events :
+            {
+                onCreate : function(Panel)
+                {
+                    MessageHandler.bindParent( Panel.getContent() );
+                    MessageHandler.open();
+                }
+            }
+        }).inject(
+            RightColumn
+        );
+    });
 
     // contextmenu
     require([

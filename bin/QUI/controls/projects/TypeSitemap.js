@@ -11,8 +11,7 @@
  * @requires controls/sitemap/Item
  *
  * @module controls/projects/TypeSitemap
- * @package com.pcsg.qui.js.classes.projects
- * @namespace QUI.classes.projects
+ * @package com.pcsg.quiqqer
  */
 
 define('controls/projects/TypeSitemap', [
@@ -32,7 +31,7 @@ define('controls/projects/TypeSitemap', [
      * The type sitemap displays / create a QUI.controls.sitemap.Map
      * with all available types for the project
      *
-     * @class QUI.controls.projects.TypeSitemap
+     * @class controls/projects/TypeSitemap
      *
      * @fires onItemClick
      * @fires onItemDblClick

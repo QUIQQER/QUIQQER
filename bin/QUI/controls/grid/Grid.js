@@ -783,6 +783,10 @@ define('controls/grid/Grid', [
                 row    = li.retrieve('row'),
                 ondblclick = false;
 
+            if ( !target.hasClass( 'td' ) && target.getParent( '.td' ) ) {
+                target = target.getParent( '.td' );
+            }
+
             if ( this.getAttribute('editable') &&
                  this.getAttribute('editondblclick') && target.hasClass('td') )
             {
@@ -2033,7 +2037,7 @@ define('controls/grid/Grid', [
                     div.set( 'html', '&nbsp;' );
                 } else
                 {
-                    div.set( 'text', str );
+                    div.set( 'html', str );
                 }
 
                 var Toggle = false;
