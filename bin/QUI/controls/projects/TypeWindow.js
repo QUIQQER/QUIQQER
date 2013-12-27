@@ -51,7 +51,7 @@ define('controls/projects/TypeWindow', [
             project  : false,
 
             title   : 'Seitentypen Auswahl',
-            icon    : URL_BIN_DIR +'16x16/types.png',
+            icon    : 'icon-magic',
             height  : 400,
             width   : 350,
             message : false
@@ -98,7 +98,9 @@ define('controls/projects/TypeWindow', [
                 self.$Sitemap = new TyeSitemap(SitemapBody, {
                     project  : self.getAttribute( 'project' ),
                     multible : self.getAttribute( 'multible' )
-                });
+                }).inject( SitemapBody );
+
+                self.$Sitemap.open();
 
                 self.Loader.hide();
             });

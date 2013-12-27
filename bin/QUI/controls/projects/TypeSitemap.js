@@ -19,9 +19,10 @@ define('controls/projects/TypeSitemap', [
 
     'qui/controls/Control',
     'qui/controls/sitemap/Map',
-    'qui/controls/sitemap/Item'
+    'qui/controls/sitemap/Item',
+    'Ajax'
 
-], function(QUIControl, QUISitemap, QUISitemapItem)
+], function(QUIControl, QUISitemap, QUISitemapItem, Ajax)
 {
     "use strict";
 
@@ -80,7 +81,7 @@ define('controls/projects/TypeSitemap', [
                 value   : 1,
                 text    : 'Seitentypen',
                 alt     : 'Seitentypen',
-                icon    : 'icon-refresh',
+                icon    : 'icon-magic',
                 hasChildren : false,
                 events :
                 {
@@ -128,11 +129,11 @@ define('controls/projects/TypeSitemap', [
                     }
                 };
 
-                for ( i in result)
+                for ( i in result )
                 {
                     plugin = result[i];
                     types  = plugin.types;
-                    icon   = URL_BIN_DIR + '16x16/types.png';
+                    icon   = 'icon-magic';
 
                     if ( typeof types === 'undefined' ) {
                         continue;
@@ -160,7 +161,7 @@ define('controls/projects/TypeSitemap', [
 
                     for ( c = 0, len = types.length; c < len; c++ )
                     {
-                        type_icon = URL_BIN_DIR +'16x16/types.png';
+                        type_icon = 'icon-magic';
 
                         if ( types[c].icon_16x16 ) {
                             type_icon = types[c].icon_16x16;
@@ -178,7 +179,19 @@ define('controls/projects/TypeSitemap', [
                     }
                 }
 
-                First.setAttribute( 'icon', URL_BIN_DIR +'16x16/types.png' );
+                // empty result
+                if ( typeOf( result ) == 'array' )
+                {
+                    First.disable();
+
+                    First.setAttribute(
+                        'text',
+                        'Es stehen keine Seitentypen zur Verfügung'
+                    );
+                }
+
+                First.setAttribute( 'icon', 'icon-magic' );
+                // First.setAttribute( 'icon', URL_BIN_DIR +'16x16/types.png' );
             }, {
                 project : this.getAttribute( 'project' )
             });

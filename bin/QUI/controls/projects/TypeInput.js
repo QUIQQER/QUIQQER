@@ -1,16 +1,15 @@
 /**
- * The type input set the type control on the input field
+ * The type input set the type control to an input field
  *
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires controls/Control
+ * @requires qui/controls/Control
  * @requires controls/projects/TypeButton
  * @requires controls/projects/TypeWindow
- * @requires lib/Plugins
+ * @requires Plugins
  *
  * @module controls/projects/TypeInput
  * @package com.pcsg.qui.js.controls.projects
- * @namespace QUI.controls.projects
  */
 
 define('controls/projects/TypeInput', [
@@ -111,6 +110,8 @@ define('controls/projects/TypeInput', [
          */
         loadTypeName : function()
         {
+            var self = this;
+
             this.$Text.set(
                 'html',
                 '<img src="'+ URL_BIN_DIR +'images/loader.gif" />'

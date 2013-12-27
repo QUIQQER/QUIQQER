@@ -59,7 +59,7 @@ define('controls/projects/TypeButton', [
 
             this.$Button = new QUIButton({
                 name    : 'project-types',
-                image   : URL_BIN_DIR +'16x16/types.png',
+                image   : 'icon-magic',
                 alt     : 'Seitentypen ändern',
                 title   : 'Seitentypen ändern',
                 Project : this.getAttribute('project'),
