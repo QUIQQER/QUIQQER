@@ -67,22 +67,30 @@ if ( !empty( $error_mail ) )
 }
 
 // Datenbankverbindung aufbauen
-// @todo uaaaaah, an echo with html -.-" ... need better solution
 try
 {
     \QUI::getDB();
 } catch ( \Exception $Exception )
 {
-    echo '<html>
-        <body>
-            <div style="
-                background-color: #FFBFBF;
-                border: 1px solid red; padding: 10px; margin: 10px;">
-                Die Verbindung zur Datenbank hat leider nicht funktioniert.<br />
-                Bitte &uuml;berpr&uuml;fen Sie Ihr Log Verzeichnis vom P.MS um weitere Informationen zu erhalten
-            </div>
-        </body>
-        </html>';
+    header( 'HTTP/1.1 503 Service Temporarily Unavailable' );
+    header( 'Status: 503 Service Temporarily Unavailable' );
+
+    $Template = \QUI\Template::getEngine();
+    $file     = LIB_DIR .'templates/db_error.html';
+
+    if ( \QUI::conf( 'db', 'error_html' ) &&
+         file_exists( \QUI::conf( 'db', 'error_html' ) ) )
+    {
+        $file = \QUI::conf( 'db', 'error_html' );
+    }
+
+    try
+    {
+        echo $Template->fetch( $file );
+    } catch ( \QUI\Exception $Exception )
+    {
+        echo $Template->fetch( LIB_DIR .'templates/db_error.html' );
+    }
 
     \QUI\System\Log::writeException( $Exception );
     exit;
