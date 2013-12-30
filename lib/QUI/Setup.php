@@ -109,6 +109,9 @@ class Setup
         \QUI::getPackageManager()->update();
         */
 
+        // import permissions
+        \QUI\Update::importAllPermissionsXMLs();
+
         // generate translations
         \QUI\Update::importAllLocaleXMLs();
         \QUI\Translator::create();

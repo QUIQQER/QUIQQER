@@ -181,7 +181,7 @@
         <item parent="/settings/"
               name="media"
               icon="icon-picture"
-              require="admin/media/Manager"
+              require="controls/projects/project/media/Manager"
               group="quiqqer/system"
               var="menu.settings.media.text"
         >

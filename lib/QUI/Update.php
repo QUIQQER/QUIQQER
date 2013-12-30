@@ -399,6 +399,40 @@ class Update
     }
 
     /**
+     * Reimportation from all permissions.xml files
+     * Read all packages and import the permissions.xml files to the quiqqer system
+     */
+    static function importAllPermissionsXMLs()
+    {
+        $packages_dir = OPT_DIR;
+        $packages = \QUI\Utils\System\File::readDir( OPT_DIR );
+
+        self::importPermissions(
+            CMS_DIR .'/admin/permissions.xml',
+            'system'
+        );
+
+        foreach ( $packages as $package )
+        {
+            if ( $package == 'composer' ) {
+                continue;
+            }
+
+            $package_dir = OPT_DIR .'/'. $package;
+            $list        = \QUI\Utils\System\File::readDir( $package_dir );
+
+            foreach ( $list as $sub )
+            {
+                // register permissions entries
+                self::importPermissions(
+                    $package_dir .'/'. $sub .'/permissions.xml',
+                    $sub
+                );
+            }
+        }
+    }
+
+    /**
      * Reimportation from all locale.xml files
      *
      * @param Composer $Composer - optional

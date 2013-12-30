@@ -52,7 +52,9 @@ class Manager
      */
     static function setConfigForProject($project, $params)
     {
-        \QUI\Rights\Permission::checkPermission( 'quiqqer.projects.setconfig' );
+        \QUI\Rights\Permission::checkPermission(
+            'quiqqer.admin.projects.setconfig'
+        );
 
 
         $Project = \QUI\Projects\Manager::getProject( $project );
@@ -76,12 +78,12 @@ class Manager
             "standard"     => "1"
         );
 
-        if ( isset( $config[ $project ] ) )
+        if ( isset( $projects[ $project ] ) )
         {
-            $old_config = $config[ $project ];
+            $old_config = $projects[ $project ];
         } else
         {
-            $old_config = $default;
+            $old_config = $config;
         }
 
         // generate new config for the project
@@ -96,6 +98,8 @@ class Manager
 
         $Config->setSection( $project, $config );
         $Config->save();
+
+        $Project->setup();
     }
 
     /**

@@ -28,7 +28,7 @@ class Handler
      */
     static function setup()
     {
-        \QUI::getDB()->createTableFields(self::Table(), array(
+        \QUI::getDataBase()->Table()->appendFields(self::Table(), array(
             'uid'     => 'int(11)',
             'message' => 'text',
             'mtype'   => 'varchar(100)',
@@ -40,21 +40,25 @@ class Handler
     /**
      * Return all new messages for an user and delete it in the queue
      *
-     * @param \QUI\Users\User $User
+     * @param \QUI\Users\User|\QUI\Users\Nobody $User
      * @return array
      */
-    public function getNewMessages(\QUI\Users\User $User)
+    public function getNewMessages($User)
     {
         $result = $this->_messages;
 
-        $list = \QUI::getDB()->select(array(
+        if ( $User->getId() ) {
+             return $result;
+        }
+
+        $list = \QUI::getDataBase()->fetch(array(
             'from'  => self::Table(),
             'where' => array(
                 'uid' => $User->getId()
             )
         ));
 
-        \QUI::getDB()->deleteData(self::Table(), array(
+        \QUI::getDataBase()->delete(self::Table(), array(
             'uid' => $User->getId()
         ));
 
@@ -105,10 +109,10 @@ class Handler
     /**
      * Return the messages list as pure array
      *
-     * @param \QUI\Users\User $User
+     * @param \QUI\Users\User|\QUI\Users\Nobody $User
      * @return array
      */
-    public function getMessagesAsArray(\QUI\Users\User $User)
+    public function getMessagesAsArray($User)
     {
         $result   = array();
         $messages = $this->getNewMessages( $User );
@@ -197,7 +201,7 @@ class Handler
         $message = $Message->getMessage();
         $message = \QUI\Utils\Security\Orthos::clearMySQL( $message );
 
-        \QUI::getDB()->addData(self::Table(), array(
+        \QUI::getDataBase()->insert(self::Table(), array(
             'uid'     => $User->getId(),
             'message' => $message,
             'mcode'   => (int)$Message->getCode(),

@@ -11,19 +11,17 @@ function ajax_permissions_delete($permission)
 
     \QUI::getMessagesHandler()->addSuccess(
         \QUI::getLocale()->get(
-        	'quiqqer/system',
+            'quiqqer/system',
             'permissions.message.delete.success'
         )
     );
 }
 
 QUI::$Ajax->register(
-	'ajax_permissions_delete',
+    'ajax_permissions_delete',
     array( 'permission' ),
     array(
-    	'Permission::checkAdminUser',
+        'Permission::checkAdminUser',
         'quiqqer.system.permissions'
     )
 );
-
-?>

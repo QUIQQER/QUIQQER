@@ -7,16 +7,14 @@
  */
 function ajax_permissions_list()
 {
-    return \QUI::getRights()->getPermissionList();
+    return \QUI::getPermissionManager()->getPermissionList();
 }
 
 QUI::$Ajax->register(
-	'ajax_permissions_list',
+    'ajax_permissions_list',
     false,
     array(
-    	'Permission::checkAdminUser',
+        'Permission::checkAdminUser',
         'quiqqer.system.permissions'
     )
 );
-
-?>

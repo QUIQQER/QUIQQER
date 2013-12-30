@@ -6,9 +6,9 @@
 
 function ajax_project_set_config($project, $params)
 {
-    \QUI\Projects\Manager::setConfigForProject( $project, $params );
+    \QUI\System\Log::writeRecursive($params);
 
-    $Project->setup();
+    \QUI\Projects\Manager::setConfigForProject( $project, $params );
 }
 
 \QUI::$Ajax->register(

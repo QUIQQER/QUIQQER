@@ -22,7 +22,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
      */
     return new Class({
 
-    	Type : 'classes/projects/project/media/panel/ContextMenu',
+        Type : 'classes/projects/project/media/panel/ContextMenu',
 
         /**
          * @constructor
@@ -347,7 +347,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                     new QUIContextmenuItem({
                         name : 'cancel',
                         text : 'Abbrechen',
-                        icon : URL_BIN_DIR +'16x16/cancel.png'
+                        icon : 'icon-remove'
                         // do nothing ^^
                     })
                 );
@@ -397,7 +397,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                     new QUIContextmenuItem({
                         name : 'cancel',
                         text : 'Abbrechen',
-                        icon : URL_BIN_DIR +'16x16/cancel.png'
+                        icon : 'icon-remove'
                         // do nothing ^^
                     })
                 );
@@ -468,7 +468,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 new QUIContextmenuItem({
                     name : 'cancel',
                     text : 'Abbrechen',
-                    icon : URL_BIN_DIR +'16x16/cancel.png'
+                    icon : 'icon-remove'
                     // do nothing ^^
                 })
             );

@@ -4,9 +4,9 @@
 
 .data-table,
 .data-table-nowidth {
-	clear: both;
-	float: left;
-	border-collapse: collapse;
+    clear: both;
+    float: left;
+    border-collapse: collapse;
     font-size: 12px;
     text-align: left;
     background-color: #fff;
@@ -14,12 +14,12 @@
     border: 1px solid #dedede;
 
     -webkit-box-sizing: border-box;
-	   -moz-box-sizing: border-box;
-		    box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
 }
 
 .data-table {
-	width: 100%;
+    width: 100%;
 }
 
 .data-table th,
@@ -45,19 +45,19 @@
 
 .data-table .data,
 .data-table-nowidth .data {
-	color: #333;
+    color: #333;
 }
 
 .data-table td.label-text {
-	width: 160px;
+    width: 160px;
 }
 
 .data-table td label {
-	width: 150px;
-	float: left;
+    width: 150px;
+    float: left;
 }
 
 .data-table input.int,
 .data-table-nowidth input.int {
-	width: 80px;
+    width: 80px;
 }

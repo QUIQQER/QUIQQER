@@ -396,6 +396,7 @@ class Manager
             $permissions[ $permission ] = false;
         }
 
+
         if ( !isset( $data[0] ) ) {
             return $permissions;
         }

@@ -16,10 +16,11 @@ define('controls/projects/project/Settings', [
     'qui/controls/buttons/Button',
     'Projects',
     'utils/Template',
+    'controls/lang/Popup',
 
     'css!controls/projects/project/Settings.css'
 
-], function(QUIPanel, QUIButton, Projects, UtilsTemplate)
+], function(QUIPanel, QUIButton, Projects, UtilsTemplate, LangPopup)
 {
     "use strict";
 
@@ -176,18 +177,14 @@ define('controls/projects/project/Settings', [
                         {
                             onClick : function()
                             {
-                                require(['controls/lang/Popup'], function(Popup)
-                                {
-                                    new Popup({
-                                        events :
-                                        {
-                                            onSubmit : function(value, Popup)
-                                            {
-                                                console.warn( value );
-                                            }
+                                new LangPopup({
+                                    events :
+                                    {
+                                        onSubmit : function(value, Popup) {
+                                            Control.addLangToProject( value[0] );
                                         }
-                                    }).open();
-                                });
+                                    }
+                                }).open();
                             }
                         }
                     }).inject( Langs, 'after' );
@@ -259,6 +256,29 @@ define('controls/projects/project/Settings', [
         $onResize : function()
         {
 
+        },
+
+        /**
+         * Add a language to the project
+         */
+        addLangToProject : function(lang)
+        {
+            var self = this;
+
+            self.Loader.show();
+
+            this.$Project.getConfig(function(config)
+            {
+                var langs = config.langs.split( ',' );
+                langs.push( lang );
+
+                self.$Project.setConfig(function()
+                {
+                    self.Loader.hide();
+                }, {
+                    langs : langs.join( ',' )
+                });
+            });
         }
     });
 });

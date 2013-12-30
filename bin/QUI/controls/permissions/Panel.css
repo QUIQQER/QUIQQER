@@ -21,6 +21,7 @@
 }
 
 .qui-permissions-content label {
+    line-height: 28px;
     white-space: nowrap;
 }
 
@@ -86,6 +87,10 @@
 
 /** Content
  =============================================== */
+
+.qui-permission-entry {
+    width: 99%;
+}
 
 .qui-permission-entry.disabled {
     color: #999999;

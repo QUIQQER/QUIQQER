@@ -148,7 +148,7 @@ define('utils/Controls', function()
                     });
 
                     new QUIButton({
-                        image   : URL_BIN_DIR +'10x10/cancel.png',
+                        image   : 'icon-remove',
                         alt     : 'Datum leeren',
                         title   : 'Datum leeren',
                         Input   : Child,

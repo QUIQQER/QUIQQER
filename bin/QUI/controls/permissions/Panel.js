@@ -1202,6 +1202,10 @@ define('controls/permissions/Panel', [
                     continue;
                 }
 
+                if ( !perms ) {
+                    continue;
+                }
+
                 if ( typeof perms[ Elm.name ] === 'undefined' ) {
                     continue;
                 }
@@ -1261,8 +1265,10 @@ define('controls/permissions/Panel', [
 
             Node = Utils.parse( right );
 
-            // first we disable all
-            Node.addClass( 'disabled' );
+            // first we disable all nodes if the node have a specific area type
+            if ( !Node.getElements( 'input[data-area=""]' ) ) {
+                Node.addClass( 'disabled' );
+            }
 
             // than, we enable only for the binded area
             if ( this.$Bind )

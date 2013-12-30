@@ -34,12 +34,10 @@ function ajax_permissions_add($permission, $permissiontype, $area)
 }
 
 QUI::$Ajax->register(
-	'ajax_permissions_add',
+    'ajax_permissions_add',
     array( 'permission', 'permissiontype', 'area' ),
     array(
-    	'Permission::checkAdminUser',
-    	'quiqqer.system.permissions'
+        'Permission::checkAdminUser',
+        'quiqqer.system.permissions'
     )
 );
-
-?>

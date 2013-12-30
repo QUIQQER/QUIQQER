@@ -39,6 +39,11 @@
 
     <!-- [begin] css combine -->
 
+    <link href="<?php echo URL_BIN_DIR; ?>css/tables.css"
+        rel="stylesheet"
+        type="text/css"
+    />
+
     <link href="<?php echo $qui_extend; ?>font-awesome/css/font-awesome.min.css"
         rel="stylesheet"
         type="text/css"

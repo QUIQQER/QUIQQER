@@ -128,9 +128,10 @@ define('classes/projects/Project', [
 
         /**
          * Set the config for a project
+         * You can set a single config parameter or multible parameters
          *
          * @param {Function} callback
-         * @param {Object} params
+         * @param {Object} params - one ore more params
          */
         setConfig : function(callback, param)
         {

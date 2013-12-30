@@ -15,19 +15,19 @@ function ajax_permissions_get($params, $btype)
 
     switch ( $btype )
     {
-        case 'QUI.classes.users.User':
+        case 'classes/users/User':
             $Bind = \QUI::getUsers()->get( $params['id'] );
         break;
 
-        case 'QUI.classes.groups.Group':
+        case 'classes/groups/Group':
             $Bind = \QUI::getGroups()->get( $params['id'] );
         break;
 
-        case 'QUI.classes.projects.Project':
+        case 'classes/projects/Project':
             $Bind = \QUI::getProject( $params['project'] );
         break;
 
-        case 'QUI.classes.projects.Site':
+        case 'classes/projects/Site':
             $Project = \QUI::getProject( $params['project'], $params['lang'] );
             $Bind    = $Project->get( $params['id'] );
         break;

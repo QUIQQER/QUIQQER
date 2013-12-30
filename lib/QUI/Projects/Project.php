@@ -686,7 +686,7 @@ class Project
             'limit' => '1'
         ));
 
-        if (isset($result[0]) && is_array($result)) {
+        if ( isset( $result[0] ) && is_array( $result ) ) {
             return $result[0]['name'];
         }
 
@@ -728,13 +728,13 @@ class Project
      */
     public function getPlugins()
     {
-        if (!is_null($this->_plugins)) {
+        if ( !is_null( $this->_plugins ) ) {
             return $this->_plugins;
         }
 
         $Plugins = \QUI::getPlugins();
 
-        if (!isset($this->_config['plugins']))
+        if ( !isset( $this->_config['plugins'] ) )
         {
               // Falls für das Projekt keine Plugins freigeschaltet wurden dann alle
             $this->_plugins = $Plugins->get();
@@ -742,14 +742,15 @@ class Project
         }
 
         // Plugins einlesen falls dies noch nicht getan wurde
-        $_plugins = explode(',', trim($this->_config['plugins'],','));
+        $_plugins = explode( ',', trim( $this->_config['plugins'], ',' ) );
 
-        for ($i = 0, $len = count($_plugins); $i < $len; $i++)
+        for ( $i = 0, $len = count($_plugins); $i < $len; $i++ )
         {
             try
             {
-                $this->_plugins[ $_plugins[$i] ] = $Plugins->get($_plugins[$i]);
-            } catch (\QUI\Exception $e)
+                $this->_plugins[ $_plugins[$i] ] = $Plugins->get( $_plugins[$i] );
+
+            } catch ( \QUI\Exception $e )
             {
                 //nothing
             }
