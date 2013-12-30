@@ -12,11 +12,12 @@ define('controls/desktop/panels/XML', [
 
     'qui/controls/desktop/Panel',
     'qui/controls/buttons/Button',
+    'qui/utils/Object',
     'Ajax',
 
     'css!controls/desktop/panels/XML.css'
 
-], function(QUIPanel, QUIButton, Ajax)
+], function(QUIPanel, QUIButton, QUIObjectUtils, Ajax)
 {
     "use strict";
 
@@ -107,7 +108,7 @@ define('controls/desktop/panels/XML', [
                 self.addButton({
                     name : 'reload',
                     text : 'Änderungen verwerfen',
-                    textimage : 'icon-reload',
+                    textimage : 'icon-ban-circle',
                     events : {
                         onClick : self.$onCreate
                     }
@@ -166,7 +167,7 @@ define('controls/desktop/panels/XML', [
                 for ( i = 0, len = elements.length; i < len; i++)
                 {
                     Elm   = elements[ i ];
-                    value = Object.getValue( Elm.name, config );
+                    value = QUIObjectUtils.getValue( Elm.name, config );
 
                     if ( !value ) {
                         continue;
