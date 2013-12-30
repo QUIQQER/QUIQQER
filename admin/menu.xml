@@ -141,7 +141,7 @@
         <item parent="/extras/"
               name="projects"
               icon="icon-home"
-              require="admin/projects/Manager"
+              require="controls/projects/Manager"
               group="quiqqer/system"
               var="menu.extras.projects.text"
         />

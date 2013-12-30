@@ -6,6 +6,7 @@
 
 namespace QUI\Projects;
 
+use QUI\Rights\Permission;
 /**
  * The Project Manager
  * The main object to get a project
@@ -41,6 +42,60 @@ class Manager
     static function getConfig()
     {
         return \QUI::getConfig('etc/projects.ini');
+    }
+
+    /**
+     * set configuration for a project
+     *
+     * @param String $project
+     * @param Array $params
+     */
+    static function setConfigForProject($project, $params)
+    {
+        \QUI\Rights\Permission::checkPermission( 'quiqqer.projects.setconfig' );
+
+
+        $Project = \QUI\Projects\Manager::getProject( $project );
+        $Config  = \QUI\Projects\Manager::getConfig();
+
+        $projects = $Config->toArray();
+
+        // $config
+        $config = array(
+            "default_lang" => "de",
+            "langs"        => "de",
+            "admin_mail"   => "support@pcsg.de",
+            "template"     => "",
+            "image_text"   => "0",
+            "keywords"     => "",
+            "description"  => "",
+            "robots"       => "index",
+            "author"       => "",
+            "publisher"    => "",
+            "copyright"    => "",
+            "standard"     => "1"
+        );
+
+        if ( isset( $config[ $project ] ) )
+        {
+            $old_config = $config[ $project ];
+        } else
+        {
+            $old_config = $default;
+        }
+
+        // generate new config for the project
+        foreach ( $config as $key => $value )
+        {
+            if ( !isset( $old_config[ $key ] ) ) {
+                continue;
+            }
+
+            $config[ $key ] = \QUI\Utils\Security\Orthos::clear( $value );
+        }
+
+        $Config->setSection( $project, $config );
+        $Config->save();
     }
 
     /**
@@ -450,5 +505,3 @@ class Manager
         return $result;
     }
 }
-
-?>

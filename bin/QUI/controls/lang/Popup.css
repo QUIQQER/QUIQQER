@@ -1,0 +1,11 @@
+@CHARSET "UTF-8";
+
+.control-lang-popup {
+    height: 40px;
+    margin: 0px 10px 10px 0;
+    width: 130px;
+}
+
+.control-lang-popup .qui-button-text-image {
+    padding: 10px 0 5px 5px;
+}

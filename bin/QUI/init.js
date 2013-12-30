@@ -124,8 +124,18 @@ require([
             {
                 onCreate : function(Panel)
                 {
-                    MessageHandler.bindParent( Panel.getContent() );
+                    var Content = Panel.getContent();
+
+                    Content.setStyles({
+                        padding : 5
+                    });
+
+                    MessageHandler.bindParent( Content );
                     MessageHandler.open();
+
+                    Content.getElement( '.message-handler-container' ).setStyles({
+                        zIndex : 100
+                    });
                 }
             }
         }).inject(

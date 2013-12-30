@@ -95,6 +95,11 @@ define('controls/menu/Manager', [
             }
 
             panels[ 0 ].appendChild( Panel );
+
+
+            (function() {
+                Panel.focus();
+            }).delay( 100 );
         }
     });
 

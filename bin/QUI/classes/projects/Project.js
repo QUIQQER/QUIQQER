@@ -127,6 +127,25 @@ define('classes/projects/Project', [
         },
 
         /**
+         * Set the config for a project
+         *
+         * @param {Function} callback
+         * @param {Object} params
+         */
+        setConfig : function(callback, param)
+        {
+            Ajax.get('ajax_project_set_config', function(result, Request)
+            {
+                if ( typeof callback !== 'undefined' ) {
+                    callback( result );
+                }
+            }, {
+                project : this.getName(),
+                param   : param
+            });
+        },
+
+        /**
          * Return the Media Object for the Project
          *
          * @method QUI.classes.Project#getMedia

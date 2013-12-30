@@ -46,6 +46,8 @@
 
 
 <!-- Site permissions  -->
+    <!--  Darf Projekt Einstellungen machen -->
+    <permission name="quiqqer.projects.setconfig" type="users_and_groups" />
 
     <!-- Seite besuchen -->
     <permission name="quiqqer.projects.site.view" type="users_and_groups" area="site" />
