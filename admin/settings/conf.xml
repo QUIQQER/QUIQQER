@@ -185,7 +185,7 @@
     <window>
         <title>QUIQQER Einstellungen</title>
         <params>
-            <icon>URL_BIN_DIR/16x16/settings.png</icon>
+            <icon>URL_BIN_DIR/16x16/quiqqer.png</icon>
         </params>
 
         <categories>
