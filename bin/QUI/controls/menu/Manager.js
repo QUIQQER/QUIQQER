@@ -52,8 +52,10 @@ define('controls/menu/Manager', [
         {
             var self        = this,
                 menuRequire = Item.getAttribute( 'require' ),
-                exec        = Item.getAttribute( 'exec' );
+                exec        = Item.getAttribute( 'exec' ),
+                xmlFile     = Item.getAttribute( 'qui-xml-file' );
 
+            // js require
             if ( menuRequire )
             {
                 require([ menuRequire ], function(Control)
@@ -71,6 +73,20 @@ define('controls/menu/Manager', [
                 });
             }
 
+            // xml setting file
+            if ( xmlFile )
+            {
+                require(['controls/desktop/panels/XML'], function(XMLPanel)
+                {
+                    self.openPanelInTasks(
+                        new XMLPanel( xmlFile )
+                    );
+                });
+
+                return;
+            }
+
+            // js function
             try
             {
                 eval( exec );

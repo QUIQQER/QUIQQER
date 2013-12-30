@@ -33,7 +33,7 @@ function ajax_menu()
                 'icon'    => 'icon-home',
                 'onclick' => '',
                 'require' => 'admin/projects/Settings',
-                'onMouseDown' => 'QUI.Menu.click',
+                'onClick' => 'QUI.Menu.menuClick',
                 'project' => $project
             ))
         );
@@ -50,12 +50,10 @@ function ajax_menu()
 
         foreach ( $windows as $Window )
         {
-            $Win = new \QUI\Controls\Contextmenu\Menuitem(array(
-                'onclick' => ''
-            ));
+            $Win = new \QUI\Controls\Contextmenu\Menuitem();
 
             $Win->setAttribute( 'name', '/settings/'. $Window->getAttribute( 'name' ) .'/' );
-            $Win->setAttribute( 'onMouseDown', 'QUI.Menu.click' );
+            $Win->setAttribute( 'onClick', 'QUI.Menu.menuClick' );
             $Win->setAttribute( 'qui-window', true );
             $Win->setAttribute( 'qui-xml-file', 'settings/'. $file );
 

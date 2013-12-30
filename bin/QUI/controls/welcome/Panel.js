@@ -34,7 +34,7 @@ define('controls/welcome/Panel', [
 
         options : {
             icon : 'icon-thumbs-up',
-            title : 'Welcome to QUIQQER'
+            title : 'Willkommen bei QUIQQER'
         },
 
         initialize : function(options)
@@ -56,7 +56,8 @@ define('controls/welcome/Panel', [
             this.getContent().set(
                 'html',
 
-                '<h1>Welcome to QUIQQER</h1>'
+                '<h1>Willkommen bei QUIQQER</h1>'+
+                '<p>Hier kommt ein Willkommenstext mit allen Einzelheiten zum Start</p>'
             );
         }
     });
