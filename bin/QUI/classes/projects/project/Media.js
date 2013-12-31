@@ -1,18 +1,24 @@
 /**
  * Media for a Project
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author www.namerobot.com (Henning Leutz)
  *
- * @requires classes/projects/Media
+ * @requires qui/classes/DOM
+ * @requires qui/utils/Object
+ * @requires Ajax
+ * @requires classes/projects/project/media/Image
+ * @requires classes/projects/project/media/File
+ * @requires classes/projects/project/media/Folder
+ * @requires classes/projects/project/media/Trash
  *
- * @module classes/projects/Media
- * @package com.pcsg.qui.js.classes.project
- * @namespace QUI.classes.project
+ * @module classes/projects/project/Media
+ * @package com.pcsg.quiqqer
  */
 
 define('classes/projects/project/Media', [
 
     'qui/classes/DOM',
+    'qui/utils/Object',
 
     'Ajax',
     'classes/projects/project/media/Image',
@@ -20,14 +26,14 @@ define('classes/projects/project/Media', [
     'classes/projects/project/media/Folder',
     'classes/projects/project/media/Trash'
 
-], function(DOM, Ajax, MediaImage, MediaFile, MediaFolder, MediaTrash)
+], function(DOM, ObjectUtils, Ajax, MediaImage, MediaFile, MediaFolder, MediaTrash)
 {
     "use strict";
 
     /**
-     * @class QUI.classes.projects.Media
+     * @class classes/projects/project/Media
      *
-     * @param {QUI.classes.projects.Project} Project
+     * @param {classes/projects/Project} Project
      *
      * @memberof! <global>
      */
@@ -46,8 +52,8 @@ define('classes/projects/project/Media', [
         /**
          * Return the Project from the Media
          *
-         * @method QUI.classes.projects.Media#getProject
-         * @return {QUI.classes.Project}
+         * @method classes/projects/project/Media#getProject
+         * @return {classes/projects/Project}
          */
         getProject : function()
         {
@@ -57,8 +63,8 @@ define('classes/projects/project/Media', [
         /**
          * Return the Trash from the Media
          *
-         * @method QUI.classes.projects.Media#getTrash
-         * @return {QUI.classes.projects.media.Trash}
+         * @method classes/projects/project/Media#getTrash
+         * @return {classes/projects/project/media/Trash}
          */
         getTrash : function()
         {
@@ -68,12 +74,12 @@ define('classes/projects/project/Media', [
         /**
          * Get a file object from the media
          *
-         * @method QUI.classes.projects.Media#get
+         * @method classes/projects/project/Media#get
          *
          * @param {Integer|Array} id      - ID of the file or an id list
          * @param {Function|Array} params - Item params or a callback function
          *
-         * @return {QUI.classes.projects.media.Item} or callback( QUI.classes.projects.media.Item )
+         * @return {classes/projects/project/media/Item} or callback( classes/projects/project/media/Item )
          */
         get : function(id, params)
         {
@@ -91,34 +97,33 @@ define('classes/projects/project/Media', [
                 return this.$parseResultToItem( params );
             }
 
+            var self = this;
+
             Ajax.get('ajax_media_details', function(result, Request)
             {
-                var Media    = Request.getAttribute( 'Media' ),
-                    children = Media.$parseResultToItem( result );
+                var children = self.$parseResultToItem( result );
 
                 if ( typeOf( children ) == 'array' )
                 {
                     for ( var i = 0, len = children.length; i < len; i++ ) {
-                        Media.$items[ children[ i ].getId() ] = children[ i ];
+                        self.$items[ children[ i ].getId() ] = children[ i ];
                     }
                 } else
                 {
-                    Media.$items[ children.getId() ] = children;
+                    self.$items[ children.getId() ] = children;
                 }
 
-                Request.getAttribute( 'onfinish' )( children );
+                params( children );
             }, {
-                fileid   : JSON.encode( id ),
-                project  : this.getProject().getName(),
-                onfinish : params,
-                Media    : this
+                fileid  : JSON.encode( id ),
+                project : this.getProject().getName()
             });
         },
 
         /**
          * Return thr file / files array, not the objects
          *
-         * @method QUI.classes.projects.Media#getData
+         * @method classes/projects/project/Media#getData
          *
          * @param {Integer|Array} id  - ID of the file or an id list
          * @param {Function} onfinish - callback function
@@ -129,67 +134,59 @@ define('classes/projects/project/Media', [
         {
             Ajax.get('ajax_media_details', function(result, Request)
             {
-                if ( Request.getAttribute('onfinish') ) {
-                    Request.getAttribute('onfinish')( result );
+                if ( onfinish ) {
+                    onfinish( result );
                 }
             }, {
-                fileid   : JSON.encode( id ),
-                project  : this.getProject().getAttribute('project'),
-                onfinish : onfinish
+                fileid  : JSON.encode( id ),
+                project : this.getProject().getAttribute('project')
             });
         },
 
         /**
          * get the first child of the media
          *
-         * @method QUI.classes.projects.Media#get
+         * @method classes/projects/project/Media#get
          */
         firstChild : function(callback)
         {
-            return this.get(1, callback);
+            return this.get( 1, callback );
         },
-
-        /**
-         * Open the Media in an AppPanel or create a new AppPanel
-         *
-         * @params {MUI.Apppanel} Panel - optional
-         */
-//        openInPanel : function(Panel)
-//        {
-//            this.$Panel = new QUI.controls.projects.media.Panel( this );
-//        },
 
         /**
          * Replace the file
          *
-         * @method QUI.classes.projects.Media#download
+         * @method classes/projects/project/Media#download
          *
          * @param {Integer} childid   - the Mediafile ID
          * @param {File} File         - Browser File Object
          * @param {Function} onfinish - callback function after the upload is finish
-         *                              onfinish( {QUI.controls.upload.File} )
+         *                              onfinish( {controls/upload/File} )
          */
         replace : function(childid, File, onfinish)
         {
             // upload file
-            QUI.UploadManager.uploadFiles(
-                [File],
-                'ajax_media_replace',
-                {
-                    project    : this.getProject().getName(),
-                    fileid     : childid,
-                    phponstart : 'ajax_media_checkreplace',
-                    events  : {
-                        onComplete : onfinish
+            require(['UploadManager'], function(UploadManager)
+            {
+                UploadManager.uploadFiles(
+                    [File],
+                    'ajax_media_replace',
+                    {
+                        project    : this.getProject().getName(),
+                        fileid     : childid,
+                        phponstart : 'ajax_media_checkreplace',
+                        events  : {
+                            onComplete : onfinish
+                        }
                     }
-                }
-            );
+                );
+            });
         },
 
         /**
          * Activate one ore more items
          *
-         * @method QUI.classes.projects.Media#activate
+         * @method classes/projects/project/Media#activate
          *
          * @param {Integer|Array}       - Item list or an Item id
          * @param {Function} oncomplete - [optional] callback Function
@@ -197,17 +194,15 @@ define('classes/projects/project/Media', [
          */
         activate : function(id, oncomplete, params)
         {
-            params = QUI.Utils.combine(params, {
-                project    : this.getProject().getName(),
-                fileid     : JSON.encode( id ),
-                oncomplete : oncomplete,
-                Media      : this
+            params = ObjectUtils.combine(params, {
+                project : this.getProject().getName(),
+                fileid  : JSON.encode( id )
             });
 
             Ajax.post('ajax_media_activate', function(result, Request)
             {
-                if ( Request.getAttribute('oncomplete') ) {
-                    Request.getAttribute('oncomplete')( result, Request );
+                if ( oncomplete ) {
+                    oncomplete( result, Request );
                 }
             }, params);
         },
@@ -215,7 +210,7 @@ define('classes/projects/project/Media', [
         /**
          * Deactivate one ore more items
          *
-         * @method QUI.classes.projects.Media#deactivate
+         * @method classes/projects/project/Media#deactivate
          *
          * @param {Integer|Array}       - Item list or an Item id
          * @param {Function} oncomplete - [optional] callback Function
@@ -223,17 +218,15 @@ define('classes/projects/project/Media', [
          */
         deactivate : function(id, oncomplete, params)
         {
-            params = QUI.Utils.combine(params, {
-                project    : this.getProject().getName(),
-                fileid     : JSON.encode( id ),
-                oncomplete : oncomplete,
-                Media      : this
+            params = ObjectUtils.combine(params, {
+                project : this.getProject().getName(),
+                fileid  : JSON.encode( id )
             });
 
             Ajax.post('ajax_media_deactivate', function(result, Request)
             {
-                if ( Request.getAttribute('oncomplete') ) {
-                    Request.getAttribute('oncomplete')( result, Request );
+                if ( oncomplete ) {
+                    oncomplete( result, Request );
                 }
             }, params);
         },
@@ -241,7 +234,7 @@ define('classes/projects/project/Media', [
         /**
          * Delete one ore more items
          *
-         * @method QUI.classes.projects.Media#del
+         * @method classes/projects/project/Media#del
          *
          * @param {Integer|Array}       - Item list or an Item id
          * @param {Function} oncomplete - [optional] callback Function
@@ -249,17 +242,15 @@ define('classes/projects/project/Media', [
          */
         del : function(id, oncomplete, params)
         {
-            params = QUI.Utils.combine(params, {
-                project    : this.getProject().getName(),
-                fileid     : JSON.encode( id ),
-                oncomplete : oncomplete,
-                Media      : this
+            params = ObjectUtils.combine(params, {
+                project : this.getProject().getName(),
+                fileid  : JSON.encode( id )
             });
 
             Ajax.post('ajax_media_delete', function(result, Request)
             {
-                if ( Request.getAttribute('oncomplete') ) {
-                    Request.getAttribute('oncomplete')( result, Request );
+                if ( oncomplete ) {
+                    oncomplete( result, Request );
                 }
             }, params);
         },
@@ -267,7 +258,7 @@ define('classes/projects/project/Media', [
         /**
          * Parse the get result to a file object
          *
-         * @return {QUI.classes.projects.media.Item|Array}
+         * @return {classes/projects/project/media/Item|Array}
          */
         $parseResultToItem : function(result)
         {

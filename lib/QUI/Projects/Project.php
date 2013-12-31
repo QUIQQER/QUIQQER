@@ -13,8 +13,7 @@ namespace QUI\Projects;
  * @package com.pcsg.qui.projects
  *
  * @copyright  2008 PCSG
- * @version    $Revision: 4722 $
- * @since      Class available since Release P.MS 0.1
+ * @since      Class available since Release QUIQQER 0.1
  *
  * @errorcodes
  * <ul>

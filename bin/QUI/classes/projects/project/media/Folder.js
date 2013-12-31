@@ -13,9 +13,10 @@
 define('classes/projects/project/media/Folder', [
 
     'classes/projects/project/media/Item',
-    'Ajax'
+    'Ajax',
+    'UploadManager'
 
-], function(MediaItem, Ajax)
+], function(MediaItem, Ajax, UploadManager)
 {
     "use strict";
 
@@ -84,7 +85,7 @@ define('classes/projects/project/media/Folder', [
         {
             onfinish = onfinish || function() {};
 
-            QUI.UploadManager.uploadFiles(
+            UploadManager.uploadFiles(
                 files,
                 'ajax_media_upload',
                 {

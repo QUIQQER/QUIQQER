@@ -26,22 +26,23 @@ define('controls/projects/project/media/Panel', [
     'classes/projects/project/media/panel/DOMEvents',
     'classes/projects/project/media/panel/ContextMenu',
     'qui/controls/breadcrumb/Item',
-
-    //'controls/upload/Form',
-    //'classes/request/Upload',
+    'controls/grid/Grid',
+    'controls/upload/Form',
+    'classes/request/Upload',
+    'Ajax',
 
     'css!controls/projects/project/media/Panel.css'
 
-], function(QUI, QUIPanel, Media, MediaSitemap, PanelDOMEvents, PanelContextMenu, BreadcrumbItem)
+], function(QUI, QUIPanel, Media, MediaSitemap, PanelDOMEvents, PanelContextMenu, BreadcrumbItem, GridControl, UploadForm, RequestUpload, Ajax)
 {
     "use strict";
 
     /**
      * A Media-Panel, opens the Media in an Apppanel
      *
-     * @class QUI.controls.projects.media.Panel
+     * @class controls/projects/project/media/Panel
      *
-     * @param {QUI.classes.projects.Media} Media
+     * @param {classes/projects/project/Media} Media
      * @param {Object} options
      *
      * @memberof! <global>
@@ -52,7 +53,8 @@ define('controls/projects/project/media/Panel', [
         Type    : 'controls/projects/project/media/Panel',
 
         Binds : [
-            '$onCreate'
+            '$onCreate',
+            '$viewOnDrop'
         ],
 
         options : {
@@ -99,8 +101,8 @@ define('controls/projects/project/media/Panel', [
             this.$children = [];
             this.$selected = [];
 
-            this.$DOMEvents   = new PanelDOMEvents( this );
-            this.$ContextMenu = new PanelContextMenu( this );
+            this.$DOMEvents        = new PanelDOMEvents( this );
+            this.$PanelContextMenu = new PanelContextMenu( this );
 
             this.addEvents({
                 onCreate : this.$onCreate
@@ -110,7 +112,7 @@ define('controls/projects/project/media/Panel', [
         /**
          * Close and destroy the media panel
          *
-         * @method QUI.controls.projects.media.Panel#close
+         * @method controls/projects/project/media/Panel#close
          */
         close : function()
         {
@@ -121,7 +123,7 @@ define('controls/projects/project/media/Panel', [
          * Create the Media Panel
          * create a MUI.Apppanel and start the Media loading
          *
-         * @method QUI.controls.projects.media.Panel#create
+         * @method controls/projects/project/media/Panel#create
          */
 //        create : function()
 //        {
@@ -131,7 +133,7 @@ define('controls/projects/project/media/Panel', [
 //                tabbar     : false,
 //                breadcrumb : true,
 //                events : {
-//                    onContextMenu : this.$ContextMenu.createPanelMenu.bind( this )
+//                    onContextMenu : this.$PanelContextMenu.createPanelMenu.bind( this )
 //                }
 //            });
 //
@@ -147,7 +149,7 @@ define('controls/projects/project/media/Panel', [
         /**
          * Load the Media and the Tabs to the Panel
          *
-         * @method QUI.controls.projects.media.Panel#load
+         * @method controls/projects/project/media/Panel#load
          */
         $onCreate : function()
         {
@@ -285,8 +287,7 @@ define('controls/projects/project/media/Panel', [
                 // Upload
                 var Upload = new QUIButton({
                     textimage : 'icon-upload',
-                    text      : 'Dateien hochladen',
-                    Control   : this
+                    text      : 'Dateien hochladen'
                 });
 
                 Upload.appendChild(
@@ -296,11 +297,8 @@ define('controls/projects/project/media/Panel', [
                         icon   : 'icon-file',
                         events :
                         {
-                            onMouseDown : function(Item, event)
-                            {
-                                Item.getAttribute('Button')
-                                    .getAttribute('Control')
-                                    .uploadFiles();
+                            onMouseDown : function(Item, event) {
+                                self.uploadFiles();
                             }
                         }
                     })
@@ -311,11 +309,8 @@ define('controls/projects/project/media/Panel', [
                         icon   : 'icon-archive',
                         events :
                         {
-                            onMouseDown : function(Item, event)
-                            {
-                                Item.getAttribute('Button')
-                                    .getAttribute('Control')
-                                    .uploadArchive();
+                            onMouseDown : function(Item, event) {
+                                self.uploadArchive();
                             }
                         }
                     })
@@ -345,7 +340,7 @@ define('controls/projects/project/media/Panel', [
         /**
          * Refresh the Panel
          *
-         * @method QUI.controls.projects.media.Panel#openID
+         * @method controls/projects/project/media/Panel#openID
          */
         refresh : function()
         {
@@ -361,7 +356,7 @@ define('controls/projects/project/media/Panel', [
         /**
          * Opens the file and load the breadcrumb
          *
-         * @method QUI.controls.projects.media.Panel#openID
+         * @method controls/projects/project/media/Panel#openID
          *
          * @param {Integer} fileid
          */
@@ -437,7 +432,7 @@ define('controls/projects/project/media/Panel', [
         /**
          * Return the Media object of the panel
          *
-         * @return {QUI.classes.projects.Media} Media
+         * @return {classes/projects/project/Media} Media
          */
         getMedia : function()
         {
@@ -447,7 +442,7 @@ define('controls/projects/project/media/Panel', [
         /**
          * Return the current displayed media folder
          *
-         * @return {QUI.classes.projects.media.Folder} Folder
+         * @return {classes/projects/project/media/Folder} Folder
          */
         getCurrentFile : function()
         {
@@ -457,13 +452,14 @@ define('controls/projects/project/media/Panel', [
         /**
          * Create the left Sitemap for the panel and show it
          *
-         * @method QUI.controls.projects.media.Panel#showSitemap
+         * @method controls/projects/project/media/Panel#showSitemap
          */
         showSitemap : function()
         {
             var Container;
 
-            var Body  = this.getContent(),
+            var self  = this,
+                Body  = this.getContent(),
                 Items = Body.getElement('.qui-media-content');
 
             if ( !Body.getElement('.qui-media-sitemap') )
@@ -489,8 +485,8 @@ define('controls/projects/project/media/Panel', [
             }, {
                 callback : function()
                 {
-                    this.$createSitemap();
-                    this.$resizeSheet();
+                    self.$createSitemap();
+                    self.$resizeSheet();
 
                     new Element('div', {
                         'class' : 'qui-media-sitemap-handle columnHandle',
@@ -504,24 +500,24 @@ define('controls/projects/project/media/Panel', [
                         },
                         events :
                         {
-                            click : function()
-                            {
-                                this.hideSitemap();
-                            }.bind( this )
+                            click : function() {
+                                self.hideSitemap();
+                            }
                         }
                     }).inject( Body.getElement('.qui-media-sitemap') );
-                }.bind( this )
+                }
             });
         },
 
         /**
          * Hide the Sitemap
          *
-         * @method QUI.controls.projects.media.Panel#hideSitemap
+         * @method controls/projects/project/media/Panel#hideSitemap
          */
         hideSitemap : function()
         {
-            var Body      = this.getContent(),
+            var self      = this,
+                Body      = this.getContent(),
                 Container = Body.getElement('.qui-media-sitemap');
 
             if ( this.$Map )
@@ -533,9 +529,9 @@ define('controls/projects/project/media/Panel', [
             moofx( Container ).animate({
                 left : -350
             }, {
-                callback : function(Container)
+                callback : function()
                 {
-                    var Body  = this.getContent(),
+                    var Body  = self.getContent(),
                         Items = Body.getElement('.qui-media-content');
 
                     Container.destroy();
@@ -545,22 +541,21 @@ define('controls/projects/project/media/Panel', [
                         marginLeft : null
                     });
 
-                    var Btn = this.getButtons( 'left-sitemap-media-button' );
+                    var Btn = self.getButtons( 'left-sitemap-media-button' );
 
                     if ( Btn ) {
                         Btn.setNormal();
                     }
 
-                    this.$resizeSheet();
-
-                }.bind( this, Container )
+                    self.$resizeSheet();
+                }
             });
         },
 
         /**
          * Opens the sheet with the upload dialog
          *
-         * @method QUI.controls.projects.media.Panel#uploadFiles
+         * @method controls/projects/project/media/Panel#uploadFiles
          */
         uploadFiles : function()
         {
@@ -570,7 +565,7 @@ define('controls/projects/project/media/Panel', [
         /**
          * Opens the sheet with the upload archive dialog
          *
-         * @method QUI.controls.projects.media.Panel#uploadArchive
+         * @method controls/projects/project/media/Panel#uploadArchive
          */
         uploadArchive : function()
         {
@@ -580,116 +575,119 @@ define('controls/projects/project/media/Panel', [
         /**
          * Upload sheet helper
          *
-         * @method QUI.controls.projects.media.Panel#uploadArchive
+         * @method controls/projects/project/media/Panel#uploadArchive
          *
          * @param {Bool} extract - [optional] extrat = true => archiv upload,
          *                                    extrat = false => standard upload
          */
         $upload : function(extract)
         {
+            var self  = this,
+                Sheet = this.createSheet();
+
             extract = extract || false;
 
-            this.openSheet(function(Sheet, Content, Buttons)
-            {
-                var Parent;
-
-                this.$resizeSheet();
-
-                Content.set( 'html', '' );
-
-
-                if ( extract )
+            Sheet.addEvents({
+                onOpen : function()
                 {
-                    Parent = new Element('div.qui-media-upload', {
-                        html : '<h2>Archiv Upload</h2>' +
-                               '<p>Laden Sie Archiv Dateien in den Media Ordner hoch.</p>' +
-                               '<p>Diese Archivdateien werden direkt entpackt.</p>'
-                    }).inject( Content );
+                    var Parent;
+                    var Content = Sheet.getBody();
 
-                } else
-                {
-                    Parent = new Element('div.qui-media-upload', {
-                        html : '<h2>Datei Upload</h2>' +
-                               '<p>Laden Sie Dateien in den Media Ordner hoch.</p>'
-                    }).inject( Content );
-                }
+                    Content.set( 'html', '' );
 
-                // upload form
-                var Form = new QUI.controls.upload.Form({
-                    multible   : true,
-                    sendbutton : true,
-                    maxuploads : 5,
-                    uploads    : 1,
-                    styles     : {
-                        margin : '20px 0 0',
-                        float  : 'left',
-                        clear  : 'both'
-                    },
-                    Media  : this.getMedia(),
-                    Drops  : [Sheet],
-                    Panel  : this,
-                    Sheet  : Sheet,
-                    fileid : this.getAttribute('fileid'),
-                    events :
+
+                    if ( extract )
                     {
-                        onDragenter: function(event, Elm, Upload)
-                        {
-                            if ( !Elm.hasClass('pannelsheet-content')  ) {
-                                Elm = Elm.getParent('pannelsheet-content');
-                            }
+                        Parent = new Element('div.qui-media-upload', {
+                            html : '<h2><span class="icon-upload"></span>Archiv Upload</h2>' +
+                                   '<p>Laden Sie Archiv Dateien in den Media Ordner hoch.</p>' +
+                                   '<p>Diese Archivdateien werden direkt entpackt.</p>'
+                        }).inject( Content );
 
-                            if ( !Elm || !Elm.hasClass('pannelsheet-content') ) {
-                                return;
-                            }
+                    } else
+                    {
+                        Parent = new Element('div.qui-media-upload', {
+                            html : '<h2><span class="icon-upload"></span>Datei Upload</h2>' +
+                                   '<p>Laden Sie Dateien in den Media Ordner hoch.</p>'
+                        }).inject( Content );
+                    }
 
-                            Elm.addClass( 'qui-media-drag' );
-                            event.stop();
+                    // upload form
+                    var Form = new UploadForm({
+                        multible   : true,
+                        sendbutton : true,
+                        maxuploads : 5,
+                        uploads    : 1,
+                        styles     : {
+                            margin : '20px 0 0',
+                            float  : 'left',
+                            clear  : 'both'
                         },
-
-                        onDragend : function(event, Elm, Upload)
+                        Drops  : [ Sheet ],
+                        fileid : self.getAttribute('fileid'),
+                        events :
                         {
-                            if ( Elm.hasClass('qui-media-drag') ) {
-                                Elm.removeClass( 'qui-media-drag' );
-                            }
-                        },
+                            onDragenter: function(event, Elm, Upload)
+                            {
+                                if ( !Elm.hasClass( 'pannelsheet-content' )  ) {
+                                    Elm = Elm.getParent( 'pannelsheet-content' );
+                                }
 
-                        onBegin : function(Control) {
-                            Control.getAttribute('Sheet').close();
-                        },
+                                if ( !Elm || !Elm.hasClass('pannelsheet-content') ) {
+                                    return;
+                                }
 
-                        onComplete : function(Control)
-                        {
-                            var i, len;
-                            var panels = QUI.Controls.get('projects-media-panel');
+                                Elm.addClass( 'qui-media-drag' );
+                                event.stop();
+                            },
 
-                            for ( i = 0, len = panels.length; i < len; i++ ) {
-                                panels[i].refresh();
+                            onDragend : function(event, Elm, Upload)
+                            {
+                                if ( Elm.hasClass( 'qui-media-drag' ) ) {
+                                    Elm.removeClass( 'qui-media-drag' );
+                                }
+                            },
+
+                            onBegin : function(Control) {
+                                Sheet.close();
+                            },
+
+                            onComplete : function(Control)
+                            {
+                                var panels = QUI.Controls.get( 'projects-media-panel' );
+
+                                for ( var i = 0, len = panels.length; i < len; i++ ) {
+                                    panels[ i ].refresh();
+                                }
                             }
                         }
+                    });
+
+                    Form.setParam( 'onfinish', 'ajax_media_upload' );
+                    Form.setParam( 'project', self.$Media.getProject().getName() );
+                    Form.setParam( 'parentid', self.getAttribute('fileid') );
+
+                    if ( extract )
+                    {
+                        Form.setParam( 'extract', 1 );
+                    } else
+                    {
+                        Form.setParam( 'extract', 1 );
                     }
-                });
 
-                Form.setParam('onfinish', 'ajax_media_upload');
-                Form.setParam('project', this.$Media.getProject().getName());
-                Form.setParam('parentid', this.getAttribute('fileid'));
+                    Form.inject( Parent );
 
-                if ( extract )
-                {
-                    Form.setParam('extract', 1);
-                } else
-                {
-                    Form.setParam('extract', 1);
+                    Sheet.focus();
                 }
+            });
 
-                Form.inject( Parent );
-
-            }.bind( this ) );
+            Sheet.show();
         },
 
         /**
          * Download the file
          *
-         * @method QUI.controls.projects.media.Panel#downloadFile
+         * @method controls/projects/project/media/Panel#downloadFile
          * @param {Integer} fileid - ID of the file
          */
         downloadFile : function(fileid)
@@ -702,7 +700,7 @@ define('controls/projects/project/media/Panel', [
         /**
          * Create the Sitemap
          *
-         * @method QUI.controls.projects.media.Panel#$createSitemap
+         * @method controls/projects/project/media/Panel#$createSitemap
          */
         $createSitemap : function()
         {
@@ -748,7 +746,7 @@ define('controls/projects/project/media/Panel', [
         /**
          * Create the breadcrumb items for openID method
          *
-         * @method QUI.controls.projects.media.Panel#$createBreadCrumb
+         * @method controls/projects/project/media/Panel#$createBreadCrumb
          * @params {array} items
          */
         $createBreadCrumb : function(items)
@@ -786,7 +784,7 @@ define('controls/projects/project/media/Panel', [
         /**
          * Resize the panel sheet, if the sheet exist
          *
-         * @method QUI.controls.projects.media.Panel#$resizeSheet
+         * @method controls/projects/project/media/Panel#$resizeSheet
          */
         $resizeSheet : function()
         {
@@ -832,12 +830,13 @@ define('controls/projects/project/media/Panel', [
         /**
          * list the children
          *
-         * @method QUI.controls.projects.media.Panel#$viewSymbols
+         * @method controls/projects/project/media/Panel#$viewSymbols
          * @params {array} children
          */
         $view : function(children)
         {
-            var Body     = this.getContent(),
+            var self     = this,
+                Body     = this.getContent(),
                 Media    = this.$Media,
                 Project  = Media.getProject(),
                 droplist = [],
@@ -893,34 +892,33 @@ define('controls/projects/project/media/Panel', [
 
 
             // Upload events
-//            @todo upload
-//            new QUI.classes.request.Upload(droplist, {
-//
-//                onDragenter: function(event, Elm, Upload)
-//                {
-//                    this.$dragEnter( event, Elm );
-//
-//                    event.stop();
-//                }.bind( this ),
-//
-//                onDragend : function(event, Elm, Upload)
-//                {
-//                    this.$dragLeave( event, Elm );
-//
-//                    event.stop();
-//                }.bind( this ),
-//
-//                onDrop : this.$viewOnDrop.bind( this )
-//            });
+            new RequestUpload(droplist, {
+
+                onDragenter: function(event, Elm, Upload)
+                {
+                    self.$dragEnter( event, Elm );
+
+                    event.stop();
+                },
+
+                onDragend : function(event, Elm, Upload)
+                {
+                    self.$dragLeave( event, Elm );
+
+                    event.stop();
+                },
+
+                onDrop : this.$viewOnDrop
+            });
         },
 
         /**
          * OnDrop Event
          *
-         * @param {DOMEvent} event       - DragDrop Event
-         * @param {Array|FileList} files - List of droped files
-         * @param {DOMNode} Elm          - Droped Parent Element
-         * @param {QUI.classes.request.Upload} Upload - Upload control
+         * @param {DOMEvent} event                - DragDrop Event
+         * @param {Array|FileList} files          - List of droped files
+         * @param {DOMNode} Elm          		  - Droped Parent Element
+         * @param {classes/request/Upload} Upload - Upload control
          */
         $viewOnDrop : function(event, files, Elm, Upload)
         {
@@ -930,7 +928,7 @@ define('controls/projects/project/media/Panel', [
 
             if ( Elm.hasClass('qui-media-content') )
             {
-                this.$ContextMenu.showDragDropMenu( files, Elm, event );
+                this.$PanelContextMenu.showDragDropMenu( files, Elm, event );
 
                 /*
                 this.$Media.get( this.getAttribute('fileid'), function(Item)
@@ -963,17 +961,17 @@ define('controls/projects/project/media/Panel', [
             // drop on a file
             if ( !Elm || Elm.get('data-type') != 'folder' )
             {
-                this.$ContextMenu.showDragDropMenu( files[0], Elm, event );
+                this.$PanelContextMenu.showDragDropMenu( files[0], Elm, event );
                 return;
             }
 
-            this.$ContextMenu.showDragDropMenu( files, Elm, event );
+            this.$PanelContextMenu.showDragDropMenu( files, Elm, event );
         },
 
         /**
          * list the children as symbol icons
          *
-         * @method QUI.controls.projects.media.Panel#$viewSymbols
+         * @method controls/projects/project/media/Panel#$viewSymbols
          * @params {array} children
          * @params {DOMNode} Container - Parent Container for the DOMNodes
          * @return {array} the drop-upload-list
@@ -1012,7 +1010,7 @@ define('controls/projects/project/media/Panel', [
                         click       : this.$viewSymbolClick.bind(this),
                         mousedown   : this.$viewSymbolMouseDown.bind( this ),
                         mouseup     : this.$dragStop.bind( this ),
-                        contextmenu : this.$ContextMenu.show.bind( this.$ContextMenu )
+                        contextmenu : this.$PanelContextMenu.show.bind( this.$PanelContextMenu )
                     }
                 });
 
@@ -1035,9 +1033,12 @@ define('controls/projects/project/media/Panel', [
                         paddingLeft     : 20
                     });
 
-                    QUI.MH.addError(
-                        'File is broken #'+ Child.id +' '+ Child.name
-                    );
+                    QUI.getMessageHandler(function(MH)
+                    {
+                        MH.addError(
+                            'File is broken #'+ Child.id +' '+ Child.name
+                        );
+                    });
 
                 } else
                 {
@@ -1057,7 +1058,7 @@ define('controls/projects/project/media/Panel', [
          * list the children with preview icons
          * preview for images
          *
-         * @method QUI.controls.projects.media.Panel#$viewSymbols
+         * @method controls/projects/project/media/Panel#$viewSymbols
          * @params {array} children
          * @params {DOMNode} Container - Parent Container for the DOMNodes
          * @return {array} the drop-upload-list
@@ -1097,7 +1098,7 @@ define('controls/projects/project/media/Panel', [
                         click       : this.$viewSymbolClick.bind( this ),
                         mousedown   : this.$viewSymbolMouseDown.bind( this ),
                         mouseup     : this.$dragStop.bind( this ),
-                        contextmenu : this.$ContextMenu.show.bind( this.$ContextMenu )
+                        contextmenu : this.$PanelContextMenu.show.bind( this.$PanelContextMenu )
                     }
                 });
 
@@ -1115,9 +1116,12 @@ define('controls/projects/project/media/Panel', [
                         paddingLeft     : 20
                     });
 
-                    QUI.MH.addError(
-                        'File is broken #'+ Child.id +' '+ Child.name
-                    );
+                    QUI.getMessageHandler(function(MH)
+                    {
+                        MH.addError(
+                            'File is broken #'+ Child.id +' '+ Child.name
+                        );
+                    });
                 }
 
                 if ( Child.type === 'image' && !Child.error )
@@ -1155,7 +1159,7 @@ define('controls/projects/project/media/Panel', [
         /**
          * execute a click event on a target media item div
          *
-         * @method QUI.controls.projects.media.Panel#$viewSymbolClick
+         * @method controls/projects/project/media/Panel#$viewSymbolClick
          * @param {DOMEvent} event
          */
         $viewSymbolClick : function(event)
@@ -1184,7 +1188,7 @@ define('controls/projects/project/media/Panel', [
         /**
          * execute a mousedown event on a target media item div
          *
-         * @method QUI.controls.projects.media.Panel#$viewSymbolMouseDown
+         * @method controls/projects/project/media/Panel#$viewSymbolMouseDown
          * @param {DOMEvent} event
          */
         $viewSymbolMouseDown : function(event)
@@ -1198,7 +1202,7 @@ define('controls/projects/project/media/Panel', [
         /**
          * execute a mouseup event on a target media item div
          *
-         * @method QUI.controls.projects.media.Panel#$viewSymbolMouseUp
+         * @method controls/projects/project/media/Panel#$viewSymbolMouseUp
          * @param {DOMEvent} event
          */
         $viewSymbolMouseUp : function(event)
@@ -1209,7 +1213,7 @@ define('controls/projects/project/media/Panel', [
         /**
          * list the children as table
          *
-         * @method QUI.controls.projects.media.Panel#$viewDetails
+         * @method controls/projects/project/media/Panel#$viewDetails
          *
          * @params {array} children
          * @params {DOMNode} Container - Parent Container for the DOMNodes
@@ -1217,12 +1221,15 @@ define('controls/projects/project/media/Panel', [
          */
         $viewDetails : function(children, Container)
         {
-            Container.set('html', '');
+            Container.set( 'html', '' );
 
-            var GridContainer = new Element('div');
-                GridContainer.inject( Container );
+            var self          = this,
+                GridContainer = new Element('div');
 
-            var Grid = new QUI.controls.grid.Grid(GridContainer, {
+
+            GridContainer.inject( Container );
+
+            var Grid = new GridControl(GridContainer, {
 
                 columnModel: [{
                     header    : '&nbsp;',
@@ -1270,32 +1277,29 @@ define('controls/projects/project/media/Panel', [
                 {
                     var options = me.options;
 
-                    this.setAttribute('field', options.sortOn);
-                    this.setAttribute('order', options.sortBy);
-                    this.setAttribute('limit', options.perPage);
-                    this.setAttribute('page', options.page);
+                    self.setAttribute('field', options.sortOn);
+                    self.setAttribute('order', options.sortBy);
+                    self.setAttribute('limit', options.perPage);
+                    self.setAttribute('page', options.page);
 
-                    this.refresh();
+                    self.refresh();
 
-                }.bind( this ),
+                },
 
                 alternaterows     : true,
                 resizeColumns     : true,
                 selectable        : true,
                 multipleSelection : true,
-                resizeHeaderOnly  : true,
-
-                Controle : this
+                resizeHeaderOnly  : true
             });
 
             Grid.addEvents({
                 onClick : function(data, Item)
                 {
-                    var Grid     = data.target,
-                        row      = data.row,
-                        Controle = Grid.getAttribute('Controle');
+                    var Grid = data.target,
+                        row  = data.row;
 
-                    Controle.openID( Grid.getDataByRow( row ).id );
+                    self.openID( Grid.getDataByRow( row ).id );
                 }
             });
 
@@ -1313,7 +1317,7 @@ define('controls/projects/project/media/Panel', [
                     children.reverse();
 
                     children.push({
-                        icon  : URL_BIN_DIR +'16x16/folder.png',
+                        icon  : 'icon-level-up',
                         id    : BeforeLast.getAttribute('id'),
                         name  : '..',
                         title : BeforeLast.getAttribute('text')
@@ -1333,7 +1337,7 @@ define('controls/projects/project/media/Panel', [
         /**
          * Opens the create folder window
          *
-         * @method QUI.controls.projects.media.Panel#createFolder
+         * @method controls/projects/project/media/Panel#createFolder
          */
         createFolder : function()
         {
@@ -1370,7 +1374,7 @@ define('controls/projects/project/media/Panel', [
         /**
          * Activate the media item from the DOMNode
          *
-         * @method QUI.controls.projects.media.Panel#activateItem
+         * @method controls/projects/project/media/Panel#activateItem
          * @param {DOMNode} DOMNode
          *
          * @depricated this.$DOMEvents.activate
@@ -1383,7 +1387,7 @@ define('controls/projects/project/media/Panel', [
         /**
          * Activate the media items
          *
-         * @method QUI.controls.projects.media.Panel#activateItem
+         * @method controls/projects/project/media/Panel#activateItem
          * @param {Array} DOMNode List
          *
          * @depricated this.$DOMEvents.activate
@@ -1396,7 +1400,7 @@ define('controls/projects/project/media/Panel', [
         /**
          * Deactivate the media item from the DOMNode
          *
-         * @method QUI.controls.projects.media.Panel#deactivateItem
+         * @method controls/projects/project/media/Panel#deactivateItem
          * @param {DOMNode} DOMNode
          *
          * @depricated this.$DOMEvents.deactivate
@@ -1409,7 +1413,7 @@ define('controls/projects/project/media/Panel', [
         /**
          * Deactivate the media item from the DOMNode
          *
-         * @method QUI.controls.projects.media.Panel#deactivateItem
+         * @method controls/projects/project/media/Panel#deactivateItem
          * @param {DOMNode} DOMNode
          *
          * @depricated this.$DOMEvents.deactivate
@@ -1422,7 +1426,7 @@ define('controls/projects/project/media/Panel', [
         /**
          * Delete the media item from the DOMNode
          *
-         * @method QUI.controls.projects.media.Panel#deleteItem
+         * @method controls/projects/project/media/Panel#deleteItem
          * @param {DOMNode} DOMNode
          */
         deleteItem : function(DOMNode)
@@ -1433,7 +1437,7 @@ define('controls/projects/project/media/Panel', [
         /**
          * Delete the media items
          *
-         * @method QUI.controls.projects.media.Panel#deleteItems
+         * @method controls/projects/project/media/Panel#deleteItems
          * @param {Array} DOMNode List
          */
         deleteItems : function(items)
@@ -1444,7 +1448,7 @@ define('controls/projects/project/media/Panel', [
         /**
          * Rename the folder
          *
-         * @method QUI.controls.projects.media.Panel#renameItem
+         * @method controls/projects/project/media/Panel#renameItem
          * @param {DOMNode} DOMNode
          */
         renameItem : function(DOMNode)
@@ -1455,7 +1459,7 @@ define('controls/projects/project/media/Panel', [
         /**
          * Opens the replace dialoge
          *
-         * @method QUI.controls.projects.media.Panel#replaceItem
+         * @method controls/projects/project/media/Panel#replaceItem
          * @param {DOMNode} DOMNode
          */
         replaceItem : function(DOMNode)
@@ -1709,7 +1713,7 @@ define('controls/projects/project/media/Panel', [
                 return;
             }
 
-            this.$ContextMenu.showDragDropMenu( Element, Droppable, event );
+            this.$PanelContextMenu.showDragDropMenu( Element, Droppable, event );
         },
 
         /**

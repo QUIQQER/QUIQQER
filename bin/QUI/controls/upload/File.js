@@ -19,11 +19,13 @@ define('controls/upload/File', [
     'qui/controls/contextmenu/Item',
     'qui/controls/buttons/Button',
     'qui/controls/utils/Progressbar',
+    'qui/controls/windows/Prompt',
+    'qui/controls/messages/Error',
     'qui/utils/Math',
     'qui/utils/Object',
     'Ajax'
 
-], function(QUIControl, QUIContextMenu, QUIContextmenuItem, QUIButton, Progressbar, MathUtils, ObjectUtils, Ajax)
+], function(QUIControl, QUIContextMenu, QUIContextmenuItem, QUIButton, QUIProgressbar, QUIPrompt, MessageError, MathUtils, ObjectUtils, Ajax)
 {
     "use strict";
 
@@ -41,7 +43,7 @@ define('controls/upload/File', [
      */
     return new Class({
 
-        Extends : Control,
+        Extends : QUIControl,
         Type    : 'controls/upload/File',
 
         Binds : [
@@ -124,7 +126,7 @@ define('controls/upload/File', [
             this.addEvent('onError', function(Exception)
             {
                 QUI.getMessageHandler(function(MessageHandler) {
-                    MessageHandler.addException( Exception );
+                    MessageHandler.add( Exception );
                 });
             });
 
@@ -187,7 +189,7 @@ define('controls/upload/File', [
                 }
             });
 
-            this.$Progress = new Progressbar();
+            this.$Progress = new QUIProgressbar();
             this.$Progress.inject( this.$Elm.getElement( '.progress' ) );
 
 
@@ -218,7 +220,6 @@ define('controls/upload/File', [
 
                         self.$File = files[0];
                         self.resume();
-
                     }
                 },
                 styles : {
@@ -238,7 +239,7 @@ define('controls/upload/File', [
                     {
                         self.pause();
 
-                        QUI.Windows.create('submit', {
+                        new QUIPrompt({
                             name   : 'cancel-upload-window',
                             title  : 'Upload abbrechen',
                             text   : 'Möchten Sie den Upload abbrechen?',
@@ -257,7 +258,7 @@ define('controls/upload/File', [
                                     //Win.getAttribute('Control').resume();
                                 }
                             }
-                        });
+                        }).open();
                     }
                 }
             });
@@ -291,7 +292,7 @@ define('controls/upload/File', [
             this.$PauseResume.inject( Buttons );
 
             // context menu
-            this.$ContextMenu = new QUIContextmenu({
+            this.$ContextMenu = new QUIContextMenu({
                 title  : this.getFilename(),
                 events :
                 {
@@ -569,7 +570,7 @@ define('controls/upload/File', [
                 });
 
             // $project, $parentid, $file, $data
-            var url = URL_LIB_DIR +'QUI/upload/bin/upload.php?';
+            var url = URL_LIB_DIR +'QUI/Upload/bin/upload.php?';
                 url = url + Object.toQueryString( params );
 
             this.$Request.open( 'PUT', url, true );

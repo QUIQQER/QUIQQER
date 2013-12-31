@@ -4,6 +4,24 @@
  * @author www.namerobot.com (Henning Leutz)
  */
 
+// extend mootools with desktop drag drop
+Object.append(Element.NativeEvents, {
+    dragenter: 2,
+    dragleave: 2,
+    dragover: 2,
+    dragend: 2,
+    drop: 2
+});
+
+//IE Flickering Bug
+try
+{
+    document.execCommand( "BackgroundImageCache", false, true );
+} catch ( err )
+{
+    // Nothing to do
+}
+
 // require config
 require.config({
     baseUrl : URL_BIN_DIR +'QUI/',
@@ -114,6 +132,13 @@ require([
     require( QUIQQER_LOCALE, function() {});
 
     /**
+     * UploadManager
+     */
+    require(['UploadManager'], function(UploadManager) {
+        UploadManager.inject( RightColumn );
+    });
+
+    /**
      * MessageHandler
      */
     QUI.getMessageHandler(function(MessageHandler)
@@ -141,6 +166,25 @@ require([
             }
         }).inject( RightColumn );
     });
+
+    /**
+     * If files were droped to quiqqer
+     * dont show it
+     */
+    $( document.body ).addEvents({
+        drop : function(event) {
+            event.preventDefault();
+        },
+
+        dragend : function(event) {
+            event.preventDefault();
+        },
+
+        dragover: function(event) {
+            event.preventDefault();
+        }
+    });
+
 
     // contextmenu
     require([

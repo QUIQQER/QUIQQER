@@ -88,7 +88,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                     new QUIContextmenuItem({
                         name    : 'create_folder',
                         text    : 'Neuen Ordner erstellen',
-                        icon    : URL_BIN_DIR +'16x16/folder.png',
+                        icon    : 'icon-folder',
                         Control : this,
                         events  :
                         {
@@ -111,7 +111,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
          */
         getFileMenu : function(DOMNode)
         {
-            var Menu = this.$MediaPanel.$Panel.getContextMenu();
+            var Menu = this.getPanel().getContextMenu();
 
             Menu.clearChildren();
 
@@ -137,7 +137,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 Trash = new QUIContextmenuItem({
                     name    : 'delete',
                     text    : 'In den Mülleimer werfen',
-                    icon    : URL_BIN_DIR +'16x16/trashcan_empty.png',
+                    icon    : 'icon-trash',
                     Control : this,
                     DOMNode : DOMNode,
                     events  :
@@ -160,7 +160,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 Trash = new QUIContextmenuItem({
                     name : 'delete',
                     text : 'In den Mülleimer werfen',
-                    icon : URL_BIN_DIR +'16x16/trashcan_empty.png'
+                    icon : 'icon-trash'
                 });
 
                 Trash.appendChild(
@@ -220,7 +220,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 new QUIContextmenuItem({
                     name    : 'replace',
                     text    : 'Datei ersetzen ...',
-                    icon    : URL_BIN_DIR +'16x16/replace.png',
+                    icon    : 'icon-retweet',
                     Control : this,
                     DOMNode : DOMNode,
                     events  :
@@ -247,7 +247,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                     new QUIContextmenuItem({
                         name    : 'download',
                         text    : 'Datei herunterladen',
-                        icon    : URL_BIN_DIR +'16x16/down.png',
+                        icon    : 'icon-download',
                         Control : this,
                         DOMNode : DOMNode,
                         events  :
@@ -286,12 +286,15 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 return;
             }
 
-            var Menu  = this.$MediaPanel.$Panel.getContextMenu(),
+            var self  = this,
+                Menu  = this.getPanel().getContextMenu(),
                 title = Droppable.get('title'),
+
                 pos   =  {
                     x : event.page.x,
                     y : event.page.y
                 };
+
 
             if ( !pos.x && !pos.y )
             {
@@ -312,30 +315,22 @@ define('classes/projects/project/media/panel/ContextMenu', [
                     new QUIContextmenuItem({
                         name : 'copy-files',
                         text : 'Datei ersetzen mit '+ Element.name,
-                        icon : URL_BIN_DIR +'16x16/replace.png',
-
-                        File    : Element,
-                        DOMNode : Droppable,
-                        Control : this,
-
+                        icon : 'icon-retweet',
                         events :
                         {
                             onMouseDown : function(Item, event)
                             {
                                 event.stop();
 
-                                var File    = Item.getAttribute('File'),
-                                    DomNode = Item.getAttribute('DOMNode'),
-                                    Control = Item.getAttribute('Control'),
-                                    Panel   = Control.getPanel();
+                                var Panel = self.getPanel();
 
                                 Panel.$Media.replace(
                                     DomNode.get('data-id'),
-                                    File,
+                                    Element,
                                     function(File)
                                     {
-                                        this.refresh();
-                                    }.bind( Panel )
+                                        Panel.refresh();
+                                    }
                                 );
                             }
                         }
@@ -365,27 +360,19 @@ define('classes/projects/project/media/panel/ContextMenu', [
                     new QUIContextmenuItem({
                         name : 'upload-files',
                         text : 'An diese Stelle hochladen',
-                        icon : URL_BIN_DIR +'16x16/upload.png',
-
-                        files   : Element,
-                        DOMNode : Droppable,
-                        Control : this,
-
+                        icon : 'icon-upload',
                         events :
                         {
                             onMouseDown : function(Item, event)
                             {
                                 event.stop();
 
-                                var DOMNode = Item.getAttribute('DOMNode'),
-                                    files   = Item.getAttribute('files'),
-                                    Control = Item.getAttribute('Control'),
-                                    Media   = Control.getPanel().getMedia();
+                                var Media = self.getPanel().getMedia();
 
                                 Media.get( DOMNode.get('data-id'), function(Item)
                                 {
-                                    Item.uploadFiles( files, function() {
-                                        Control.getPanel().refresh();
+                                    Item.uploadFiles( Element, function() {
+                                        self.getPanel().refresh();
                                     });
                                 });
                             }
@@ -416,24 +403,14 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 new QUIContextmenuItem({
                     name : 'copy-files',
                     text : 'An diese Stelle kopieren',
-                    icon : URL_BIN_DIR +'16x16/copy.png',
-
-                    ids     : ids,
-                    id      : id,
-                    Control : this,
-
+                    icon : 'icon-copy',
                     events :
                     {
                         onMouseDown : function(Item, event)
                         {
                             event.stop();
 
-                            Item.getAttribute('Control')
-                                .getPanel()
-                                .copyTo(
-                                    Item.getAttribute('id'),
-                                    Item.getAttribute('ids')
-                                );
+                            self.getPanel().copyTo( id, ids );
                         }
                     }
                 })
@@ -441,24 +418,14 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 new QUIContextmenuItem({
                     name : 'cut-files',
                     text : 'An diese Stelle verschieben',
-                    icon : URL_BIN_DIR +'16x16/cut.png',
-
-                    ids     : ids,
-                    id      : id,
-                    Control : this,
-
+                    icon : 'icon-cut',
                     events :
                     {
                         onMouseDown : function(Item, event)
                         {
                             event.stop();
 
-                            Item.getAttribute('Control')
-                                .getPanel()
-                                .moveTo(
-                                    Item.getAttribute('id'),
-                                    Item.getAttribute('ids')
-                                );
+                            self.getPanel().moveTo( id, ids );
                         }
                     }
                 })
@@ -484,7 +451,8 @@ define('classes/projects/project/media/panel/ContextMenu', [
          */
         getFolderMenu : function(DOMNode)
         {
-            var Menu = this.$MediaPanel.$Panel.getContextMenu();
+            var self = this,
+                Menu = this.getPanel().getContextMenu();
 
             Menu.clearChildren();
 
@@ -504,45 +472,35 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 new QUIContextmenuSeperator()
             ).appendChild(
                 new QUIContextmenuItem({
-                    name    : 'rename',
-                    text    : 'Umbenennen',
-                    icon    : URL_BIN_DIR +'16x16/folder.png',
-                    Control : this,
-                    DOMNode : DOMNode,
-                    events  :
+                    name   : 'rename',
+                    text   : 'Umbenennen',
+                    icon   : 'icon-font',
+                    events :
                     {
                         onMouseDown : function(Item, event)
                         {
-                            var Control = Item.getAttribute('Control'),
-                                DOMNode = Item.getAttribute('DOMNode');
-
                             if ( !DOMNode ) {
                                 return;
                             }
 
-                            Control.getPanel().renameItem( DOMNode );
+                            self.getPanel().renameItem( DOMNode );
                         }
                     }
                 })
             ).appendChild(
                 new QUIContextmenuItem({
-                    name    : 'delete',
-                    text    : 'In den Mülleimer werfen',
-                    icon    : URL_BIN_DIR +'16x16/trashcan_empty.png',
-                    Control : this,
-                    DOMNode : DOMNode,
-                    events  :
+                    name   : 'delete',
+                    text   : 'In den Mülleimer werfen',
+                    icon   : 'icon-trash',
+                    events :
                     {
                         onMouseDown : function(Item, event)
                         {
-                            var Control = Item.getAttribute('Control'),
-                                DOMNode = Item.getAttribute('DOMNode');
-
                             if ( !DOMNode ) {
                                 return;
                             }
 
-                            Control.getPanel().deleteItem( DOMNode );
+                            self.getPanel().deleteItem( DOMNode );
                         }
                     }
                 })
@@ -566,7 +524,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 return new QUIContextmenuItem({
                     name    : 'activate',
                     text    : 'Aktivieren',
-                    icon    : URL_BIN_DIR +'16x16/active.png',
+                    icon    : 'icon-ok',
                     Control : this,
                     DOMNode : DOMNode,
                     events  :
@@ -589,7 +547,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
             var Activate = new QUIContextmenuItem({
                 name    : 'activate',
                 text    : 'Aktivieren',
-                icon    : URL_BIN_DIR +'16x16/active.png'
+                icon    : 'icon-ok'
             });
 
             Activate.appendChild(
@@ -653,7 +611,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 return new QUIContextmenuItem({
                     name    : 'deactivate',
                     text    : 'Deaktivieren',
-                    icon    : URL_BIN_DIR +'16x16/deactive.png',
+                    icon    : 'icon-remove',
                     Control : this,
                     DOMNode : DOMNode,
                     events  :
@@ -676,7 +634,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
             var Deactivate = new QUIContextmenuItem({
                 name    : 'deactivate',
                 text    : 'Deaktivieren',
-                icon    : URL_BIN_DIR +'16x16/deactive.png'
+                icon    : 'icon-remove'
             });
 
             Deactivate.appendChild(

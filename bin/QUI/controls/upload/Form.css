@@ -1,7 +1,7 @@
 
 .qui-form-upload {
     float: left;
-	clear: both;
+    clear: both;
     margin: 2px 0;
 }
 
@@ -19,6 +19,6 @@
 }
 
 .qui-form-fileinfo:hover {
-    background-color: #6C98D9;
+    background-color: #2F8FC6;
     color: #fff;
 }

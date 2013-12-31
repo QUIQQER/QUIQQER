@@ -40,10 +40,11 @@ define('controls/grid/Grid', [
 
     'qui/controls/Control',
     'qui/controls/buttons/Button',
+    'qui/utils/Controls',
 
     'css!controls/grid/Grid.css'
 
-], function(Control, QUIButton)
+], function(Control, QUIButton, ControlUtils)
 {
     "use strict";
 
@@ -1890,7 +1891,7 @@ define('controls/grid/Grid', [
                 li.addClass( this.$data[r].cssClass );
             }
 
-            var columnModel, div;
+            var columnModel, columnDataIndex, div;
             var firstvisible = -1;
 
             var func_input_click = function(data)
@@ -1903,7 +1904,8 @@ define('controls/grid/Grid', [
 
             for ( c = 0; c < columnCount; c++ )
             {
-                columnModel = this.$columnModel[c];
+                columnModel     = this.$columnModel[c];
+                columnDataIndex = columnModel.dataIndex;
 
                 div = new Element('div.td', {
                     styles : {
@@ -1932,10 +1934,10 @@ define('controls/grid/Grid', [
                     div.title = rowdata[columnModel.title];
                 }
 
-                if ( columnModel.dataType == 'button' && this.$data[r][columnModel.dataIndex] )
+                if ( columnModel.dataType == 'button' && this.$data[ r ][ columnDataIndex ] )
                 {
-                    var _btn  = this.$data[r][columnModel.dataIndex];
-                    _btn.data = this.$data[r];
+                    var _btn  = this.$data[ r ][ columnDataIndex ];
+                    _btn.data = this.$data[ r ];
 
                     _btn.data.row  = r;
                     _btn.data.List = t;
@@ -1968,7 +1970,7 @@ define('controls/grid/Grid', [
 
                     div.appendChild( input );
 
-                    var val = rowdata[columnModel.dataIndex];
+                    var val = rowdata[ columnDataIndex ];
 
                     if (val == 1 || val=='t') {
                         input.set('checked', true);
@@ -1979,9 +1981,18 @@ define('controls/grid/Grid', [
 
                 if ( columnModel.dataType == "image" )
                 {
+                    if ( ControlUtils.isFontAwesomeClass( rowdata[ columnDataIndex ] ) )
+                    {
+                        new Element('span', {
+                            'class' : rowdata[ columnDataIndex ]
+                        }).inject( div );
+
+                        continue;
+                    }
+
                     div.appendChild(
                         new Element('img', {
-                            src : rowdata[columnModel.dataIndex]
+                            src : rowdata[ columnDataIndex ]
                         })
                     );
 
@@ -1994,11 +2005,11 @@ define('controls/grid/Grid', [
 
                 if ( columnModel.dataType == "node" )
                 {
-                    if (typeof rowdata[columnModel.dataIndex] != 'undefined' &&
-                        rowdata[columnModel.dataIndex].nodeName)
+                    if (typeof rowdata[ columnDataIndex ] != 'undefined' &&
+                        rowdata[ columnDataIndex ].nodeName)
                     {
                         div.appendChild(
-                            rowdata[columnModel.dataIndex]
+                            rowdata[ columnDataIndex ]
                         );
                     }
 
@@ -2013,15 +2024,15 @@ define('controls/grid/Grid', [
 
                 if ( columnModel.dataType == "style" )
                 {
-                    if ( rowdata[columnModel.dataIndex] ) {
-                        div.setStyles( rowdata[columnModel.dataIndex] );
+                    if ( rowdata[ columnDataIndex ] ) {
+                        div.setStyles( rowdata[ columnDataIndex ] );
                     }
 
                     div.innerHTML = '&nbsp;';
                     continue;
                 }
 
-                var str = rowdata[columnModel.dataIndex] || "";
+                var str = rowdata[ columnDataIndex ] || "";
 
                 if ( str === null ||
                      str == 'null' ||

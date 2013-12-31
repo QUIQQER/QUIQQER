@@ -1017,7 +1017,7 @@ class Rewrite
         // SPAM Protection
         if (MAIL_PROTECT)
         {
-            $output = str_replace('</body>', '<!-- [begin] P.MS Mail SPAM Bot Protection --><iframe src="'. URL_BIN_DIR .'mail_protection.php" style="position: absolute; display: none; width: 1px; height: 1px;" name="mail_protection" title="mail_protection"></iframe><!-- [begin] P.MS Mail SPAM Bot Protection --></body>', $output);
+            $output = str_replace('</body>', '<!-- [begin] QUIQQER Mail SPAM Bot Protection --><iframe src="'. URL_BIN_DIR .'mail_protection.php" style="position: absolute; display: none; width: 1px; height: 1px;" name="mail_protection" title="mail_protection"></iframe><!-- [begin] P.MS Mail SPAM Bot Protection --></body>', $output);
 
             $output = preg_replace_callback(
               '#(href)="(mailto:)([^"]*)"#',

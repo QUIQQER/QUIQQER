@@ -5,7 +5,7 @@
  * if the browser supports no html5 upload
  */
 
-$dir = str_replace('lib/QUI/upload/bin', '', dirname( __FILE__ ));
+$dir = str_replace('lib/QUI/Upload/bin', '', dirname( __FILE__ ));
 
 require_once $dir .'bootstrap.php';
 

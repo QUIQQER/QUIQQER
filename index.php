@@ -3,27 +3,13 @@
 //$start_test = microtime();
 
 /**
- * @author PCSG - Henning
+ * @author www.namerobot.com (Henning Leutz)
  * @package com.pcsg.pms
- *
- * @copyright  2008 PCSG
- * @version    $Revision: 4785 $
- * @since      available since Release P.MS 0.1
  */
 
 // Mailto
 if ( isset( $_REQUEST['_url'] ) && strpos( $_REQUEST['_url'], '[mailto]' ) !== false )
 {
-    /**
-     * PCSG Redirect um Mailclient zu öffnen
-     *
-     * @author PCSG - Henning
-     * @package com.pcsg.pms
-     *
-     * @copyright  2008 PCSG
-     * @version    $Revision: 4785 $
-     * @since      available since Release P.MS 0.11
-     */
     $addr = str_replace('[mailto]', '', $_REQUEST['_url']);
     list($user, $host) = explode("[at]", $addr);
 

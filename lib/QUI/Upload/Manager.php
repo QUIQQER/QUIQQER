@@ -27,7 +27,7 @@ class Manager
      */
     public function __construct()
     {
-        $this->_table = QUI_DB_PRFX .'uploads';
+        $this->_table = \QUI_DB_PRFX .'uploads';
     }
 
     /**
@@ -510,7 +510,7 @@ class Manager
      */
     protected function _getUserUploadDir($User=false)
     {
-        if ( !QUI::getUsers()->isUser( $User ) ) {
+        if ( !\QUI::getUsers()->isUser( $User ) ) {
             $User = \QUI::getUserBySession();
         }
 

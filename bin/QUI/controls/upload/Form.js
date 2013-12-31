@@ -49,7 +49,7 @@ define('controls/upload/Form', [
         Type    : 'controls/upload/Form',
 
         options : {
-            action     : URL_LIB_DIR +'QUI/upload/bin/upload.php',
+            action     : URL_LIB_DIR +'QUI/Upload/bin/upload.php',
             method     : 'POST', // form method
             maxuploads : false,  // how many uploads are allowed
             multible   : false,  // are multible uploads allowed?
@@ -466,7 +466,9 @@ define('controls/upload/Form', [
                 }).inject( this.$Form );
 
                 // send upload to the upload manager
-                QUI.UploadManager.injectForm( this );
+                require(['UploadManager'], function(UploadManager) {
+                    UploadManager.injectForm( this );
+                });
 
                 // and submit the form
                 this.$Form.submit();
@@ -484,11 +486,14 @@ define('controls/upload/Form', [
                 onComplete : this.finish.bind( this )
             };
 
-            QUI.UploadManager.uploadFiles(
-                this.getFiles(),
-                this.getParam( 'onfinish' ),
-                params
-            );
+            require(['UploadManager'], function(UploadManager)
+            {
+                QUI.UploadManager.uploadFiles(
+                    this.getFiles(),
+                    this.getParam( 'onfinish' ),
+                    params
+                );
+            });
         },
 
         /**

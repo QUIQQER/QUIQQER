@@ -51,6 +51,11 @@
     cursor:pointer;
 }
 
+.omnigrid  div.bDiv .td [class^="icon-"],
+.omnigrid  div.bDiv .td [class*=" icon-"] {
+    font-size: 16px;
+}
+
 .omnigrid .selection {
     background-color:transparent;
 }

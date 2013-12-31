@@ -12,7 +12,7 @@ define('Projects', [
 
     'classes/projects/Manager'
 
-], function(QUI_Projects)
+], function(Projects)
 {
     "use strict";
 
@@ -20,7 +20,7 @@ define('Projects', [
         return QUI.Projects;
     }
 
-    QUI.Projects = new QUI_Projects();
+    QUI.Projects = new Projects();
 
     return QUI.Projects;
 });
