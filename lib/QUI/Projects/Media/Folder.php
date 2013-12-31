@@ -697,12 +697,27 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
         $User = \QUI::getUserBySession();
         $dir  = $this->_Media->getFullPath() . $this->getPath();
 
-        if ( is_dir($dir . $new_name) )
+        if ( is_dir( $dir . $new_name ) )
         {
-            throw new \QUI\Exception(
-                'Der Ordner existiert schon ' . $dir . $new_name,
-                701
-            );
+            // prüfen ob dieser ordner schon als kind existiert
+            // wenn nein, muss dieser ordner in der DB angelegt werden
+
+            try
+            {
+                $children = $this->getChildByName( $new_name );
+
+            } catch ( \QUI\Exception $Exception )
+            {
+                $children = false;
+            }
+
+            if ( $children )
+            {
+                throw new \QUI\Exception(
+                    'Der Ordner existiert schon ' . $dir . $new_name,
+                    701
+                );
+            }
         }
 
         \QUI\Utils\System\File::mkdir( $dir . $new_name );

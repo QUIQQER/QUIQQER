@@ -271,7 +271,11 @@ define('classes/projects/project/Media', [
          */
         $parseResultToItem : function(result)
         {
-            if ( result.length )
+            if ( !result ) {
+                return [];
+            }
+
+            if ( typeOf( result ) == 'array' && result.length )
             {
                 var list = [];
 

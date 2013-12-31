@@ -200,8 +200,6 @@ define('controls/projects/project/Panel', [
                                 List    = Content.getElement( '.project-list' ),
                                 first   = null;
 
-                            //console.log( ProjectCon.get( 'html' ) );
-
                             // get the first projects map
                             for ( first in self.$projectmaps ) {
                                 break;
@@ -441,7 +439,8 @@ define('controls/projects/project/Panel', [
 
             this.$Map = new ProjectSitemap({
                 project : Project.getAttribute( 'name' ),
-                lang    : Project.getAttribute( 'lang' )
+                lang    : Project.getAttribute( 'lang' ),
+                media   : true
             });
 
             this.$Sitemap = this.$Map.getMap();
@@ -549,6 +548,10 @@ define('controls/projects/project/Panel', [
                 id      = Item.getAttribute( 'value' ),
                 project = this.getAttribute( 'project' ),
                 lang    = this.getAttribute( 'lang' );
+
+            if ( !id ) {
+                return;
+            }
 
 
             require([

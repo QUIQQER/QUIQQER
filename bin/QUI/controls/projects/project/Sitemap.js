@@ -52,7 +52,8 @@ define('controls/projects/project/Sitemap', [
             container : false,
             project   : false,
             lang      : false,
-            id        : false
+            id        : false,
+            media     : false // show the media in the sitemap, too
         },
 
         initialize : function(options)
@@ -134,6 +135,9 @@ define('controls/projects/project/Sitemap', [
                 return;
             }
 
+            var self = this;
+
+
             // if an specific id must be open
             if ( typeof this.$openids !== 'undefined' && this.$Map.firstChild() )
             {
@@ -156,16 +160,37 @@ define('controls/projects/project/Sitemap', [
             {
                 this.$getFirstChild(function(result, Request)
                 {
-                    var Control = Request.getAttribute( 'Control' );
+                    self.$Map.clearChildren();
 
-                    Control.$Map.clearChildren();
-
-                    Control.$addSitemapItem(
-                        Control.$Map,
-                        Control.$parseArrayToSitemapitem( result )
+                    self.$addSitemapItem(
+                        self.$Map,
+                        self.$parseArrayToSitemapitem( result )
                     );
 
-                    Control.$Map.firstChild().open();
+                    self.$Map.firstChild().open();
+
+                    // media
+                    if ( self.getAttribute( 'media' ) )
+                    {
+                        self.$Map.appendChild(
+                            new QUISitemapItem({
+                                text   : 'Media',
+                                icon   : 'icon-picture',
+                                events :
+                                {
+                                    onClick : function()
+                                    {
+                                        require(['controls/projects/project/Panel'], function(Panel)
+                                        {
+                                            new Panel().openMediaPanel(
+                                                self.getAttribute( 'project' )
+                                            );
+                                        });
+                                    }
+                                }
+                            })
+                        );
+                    }
                 });
 
                 return;
@@ -175,16 +200,14 @@ define('controls/projects/project/Sitemap', [
                 this.getAttribute( 'id' ),
                 function(result, Request)
                 {
-                    var Control = Request.getAttribute( 'Control' );
+                    self.$Map.clearChildren();
 
-                    Control.$Map.clearChildren();
-
-                    Control.$addSitemapItem(
-                        Control.$Map,
-                        Control.$parseArrayToSitemapitem( result )
+                    self.$addSitemapItem(
+                        self.$Map,
+                        self.$parseArrayToSitemapitem( result )
                     );
 
-                    Control.$Map.firstChild().open();
+                    self.$Map.firstChild().open();
                 }
             );
         },
@@ -201,7 +224,8 @@ define('controls/projects/project/Sitemap', [
                 return;
             }
 
-            var children = this.$Map.getChildrenByValue( id );
+            var children = this.$Map.getChildrenByValue( id ),
+                self     = this;
 
             if ( children.length )
             {
@@ -231,12 +255,12 @@ define('controls/projects/project/Sitemap', [
                 {
                     var i, id, len, items;
 
-                    if ( typeof Control.$openids === 'undefined' ) {
+                    if ( typeof self.$openids === 'undefined' ) {
                         return;
                     }
 
-                    var ids = Control.$openids,
-                        Map = Control.getMap();
+                    var ids = self.$openids,
+                        Map = self.getMap();
 
                     for ( i = 0, len = ids.length; i < len; i++ )
                     {

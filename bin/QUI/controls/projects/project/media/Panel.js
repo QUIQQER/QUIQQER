@@ -1354,8 +1354,11 @@ define('controls/projects/project/media/Panel', [
                         {
                             self.$File.createFolder(
                                 value,
-                                function(Folder, Request) {
-                                    self.openID( Folder.getId() );
+                                function(Folder, Request)
+                                {
+                                    if ( Folder ) {
+                                        self.openID( Folder.getId() );
+                                    }
                                 }
                             );
                         }

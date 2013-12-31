@@ -251,11 +251,11 @@ define('controls/desktop/panels/XML', [
 
             var Save = this.getButtonBar().getElement( 'save' );
 
-            Save.setAttribute( 'textimage', URL_BIN_DIR +'images/loader.gif' );
+            Save.setAttribute( 'textimage', 'icon-refresh icon-rotate' );
 
             Ajax.post('ajax_settings_save', function(result, Request)
             {
-                Save.setAttribute( 'textimage', URL_BIN_DIR +'16x16/save.png' );
+                Save.setAttribute( 'textimage', 'icon-save' );
             }, {
                 file   : this.$file,
                 params : JSON.encode( this.$config )

@@ -39,20 +39,17 @@ define('classes/projects/project/media/Folder', [
          */
         createFolder : function(newfolder, oncomplete)
         {
+            var self = this;
+
             Ajax.post('ajax_media_folder_create', function(result, Request)
             {
-                var Folder = Request.getAttribute('Folder'),
-                    Media  = Folder.getMedia();
-
-                Request.getAttribute('oncomplete')(
-                    Media.$parseResultToItem( result )
+                oncomplete(
+                    self.getMedia().$parseResultToItem( result )
                 );
             }, {
-                project    : this.getMedia().getProject().getName(),
-                parentid   : this.getId(),
-                newfolder  : newfolder,
-                oncomplete : oncomplete,
-                Folder     : this
+                project   : this.getMedia().getProject().getName(),
+                parentid  : this.getId(),
+                newfolder : newfolder
             });
         },
 
@@ -68,11 +65,10 @@ define('classes/projects/project/media/Folder', [
         {
             Ajax.get('ajax_media_folder_children', function(result, Request)
             {
-                Request.getAttribute('oncomplete')(result);
+                oncomplete( result );
             }, {
                 project    : this.getMedia().getProject().getName(),
-                folderid   : this.getId(),
-                oncomplete : oncomplete
+                folderid   : this.getId()
             });
         },
 

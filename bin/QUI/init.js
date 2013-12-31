@@ -120,6 +120,7 @@ require([
     {
         new Panel({
             title  : 'Nachrichten',
+            name   : 'message-handler',
             events :
             {
                 onCreate : function(Panel)
@@ -138,9 +139,7 @@ require([
                     });
                 }
             }
-        }).inject(
-            RightColumn
-        );
+        }).inject( RightColumn );
     });
 
     // contextmenu

@@ -1,0 +1,24 @@
+
+.qui-form-upload {
+    float: left;
+	clear: both;
+    margin: 2px 0;
+}
+
+.qui-form-upload input {
+    float: left;
+    margin: 2px;
+}
+
+.qui-form-fileinfo {
+    float: left;
+    padding: 5px 5px 5px 25px;
+    background-repeat: no-repeat;
+    background-position: 5px center;
+    cursor: pointer;
+}
+
+.qui-form-fileinfo:hover {
+    background-color: #6C98D9;
+    color: #fff;
+}
