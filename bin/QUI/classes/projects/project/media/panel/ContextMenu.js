@@ -111,7 +111,8 @@ define('classes/projects/project/media/panel/ContextMenu', [
          */
         getFileMenu : function(DOMNode)
         {
-            var Menu = this.getPanel().getContextMenu();
+            var self = this,
+                Menu = this.getPanel().getContextMenu();
 
             Menu.clearChildren();
 
@@ -135,23 +136,18 @@ define('classes/projects/project/media/panel/ContextMenu', [
             if ( !sels.length || sels.length == 1 )
             {
                 Trash = new QUIContextmenuItem({
-                    name    : 'delete',
-                    text    : 'In den Mülleimer werfen',
-                    icon    : 'icon-trash',
-                    Control : this,
-                    DOMNode : DOMNode,
-                    events  :
+                    name   : 'delete',
+                    text   : 'In den Mülleimer werfen',
+                    icon   : 'icon-trash',
+                    events :
                     {
                         onMouseDown : function(Item, event)
                         {
-                            var Control = Item.getAttribute('Control'),
-                                DOMNode = Item.getAttribute('DOMNode');
-
                             if ( !DOMNode ) {
                                 return;
                             }
 
-                            Control.getPanel().deleteItem( DOMNode );
+                            self.getPanel().deleteItem( DOMNode );
                         }
                     }
                 });
@@ -165,42 +161,32 @@ define('classes/projects/project/media/panel/ContextMenu', [
 
                 Trash.appendChild(
                     new QUIContextmenuItem({
-                        name    : 'delete',
-                        text    : DOMNode.get('title'),
-                        //icon    : URL_BIN_DIR +'16x16/trashcan_empty.png',
-                        Control : this,
-                        DOMNode : DOMNode,
-                        events  :
+                        name   : 'delete',
+                        text   : DOMNode.get('title'),
+                        events :
                         {
                             onMouseDown : function(Item, event)
                             {
-                                var Control = Item.getAttribute('Control'),
-                                    DOMNode = Item.getAttribute('DOMNode');
-
                                 if ( !DOMNode ) {
                                     return;
                                 }
 
-                                Control.getPanel().deleteItem( DOMNode );
+                                self.getPanel().deleteItem( DOMNode );
                             }
                         }
                     })
                 ).appendChild(
                     new QUIContextmenuItem({
-                        name    : 'delete',
-                        text    : 'Alle markierte Elemente',
-                        //icon    : URL_BIN_DIR +'16x16/trashcan_empty.png',
-                        Control : this,
-                        DOMNode : DOMNode,
-                        events  :
+                        name   : 'delete',
+                        text   : 'Alle markierte Elemente',
+                        events :
                         {
                             onMouseDown : function(Item, event)
                             {
-                                var Control = Item.getAttribute('Control'),
-                                    Panel   = Control.getPanel(),
+                                var Panel   = self.getPanel(),
                                     sels    = Panel.getSelectedItems();
 
-                                Control.getPanel().deleteItems( sels );
+                                self.getPanel().deleteItems( sels );
                             }
                         }
                     })
@@ -218,23 +204,18 @@ define('classes/projects/project/media/panel/ContextMenu', [
 
             Menu.appendChild(
                 new QUIContextmenuItem({
-                    name    : 'replace',
-                    text    : 'Datei ersetzen ...',
-                    icon    : 'icon-retweet',
-                    Control : this,
-                    DOMNode : DOMNode,
-                    events  :
+                    name   : 'replace',
+                    text   : 'Datei ersetzen ...',
+                    icon   : 'icon-retweet',
+                    events :
                     {
                         onMouseDown : function(Item, event)
                         {
-                            var Control = Item.getAttribute('Control'),
-                                DOMNode = Item.getAttribute('DOMNode');
-
                             if ( !DOMNode ) {
                                 return;
                             }
 
-                            Control.getPanel().replaceItem( DOMNode );
+                            self.getPanel().replaceItem( DOMNode );
                         }
                     }
                 })
@@ -245,23 +226,18 @@ define('classes/projects/project/media/panel/ContextMenu', [
             {
                 Menu.appendChild(
                     new QUIContextmenuItem({
-                        name    : 'download',
-                        text    : 'Datei herunterladen',
-                        icon    : 'icon-download',
-                        Control : this,
-                        DOMNode : DOMNode,
-                        events  :
+                        name   : 'download',
+                        text   : 'Datei herunterladen',
+                        icon   : 'icon-download',
+                        events :
                         {
                             onMouseDown : function(Item, event)
                             {
-                                var Control = Item.getAttribute('Control'),
-                                    DOMNode = Item.getAttribute('DOMNode');
-
                                 if ( !DOMNode ) {
                                     return;
                                 }
 
-                                Control.getPanel().downloadFile(
+                                self.getPanel().downloadFile(
                                     DOMNode.get('data-id')
                                 );
                             }
@@ -325,7 +301,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                                 var Panel = self.getPanel();
 
                                 Panel.$Media.replace(
-                                    DomNode.get('data-id'),
+                                    Droppable.get('data-id'),
                                     Element,
                                     function(File)
                                     {
@@ -369,7 +345,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
 
                                 var Media = self.getPanel().getMedia();
 
-                                Media.get( DOMNode.get('data-id'), function(Item)
+                                Media.get( Droppable.get('data-id'), function(Item)
                                 {
                                     Item.uploadFiles( Element, function() {
                                         self.getPanel().refresh();
@@ -517,28 +493,24 @@ define('classes/projects/project/media/panel/ContextMenu', [
          */
         getActivateItem : function(DOMNode)
         {
-            var sels = this.getPanel().getSelectedItems();
+            var self = this,
+                sels = this.getPanel().getSelectedItems();
 
             if ( !sels.length || sels.length == 1 )
             {
                 return new QUIContextmenuItem({
-                    name    : 'activate',
-                    text    : 'Aktivieren',
-                    icon    : 'icon-ok',
-                    Control : this,
-                    DOMNode : DOMNode,
-                    events  :
+                    name   : 'activate',
+                    text   : 'Aktivieren',
+                    icon   : 'icon-ok',
+                    events :
                     {
                         onMouseDown : function(Item, event)
                         {
-                            var Control = Item.getAttribute('Control'),
-                                DOMNode = Item.getAttribute('DOMNode');
-
                             if ( !DOMNode ) {
                                 return;
                             }
 
-                            Control.getPanel().activateItem( DOMNode );
+                            self.getPanel().activateItem( DOMNode );
                         }
                     }
                 });
@@ -552,18 +524,12 @@ define('classes/projects/project/media/panel/ContextMenu', [
 
             Activate.appendChild(
                 new QUIContextmenuItem({
-                    name    : 'activate',
-                    text    : DOMNode.get('title'),
-                    //icon    : URL_BIN_DIR +'16x16/trashcan_empty.png',
-                    Control : this,
-                    DOMNode : DOMNode,
-                    events  :
+                    name   : 'activate',
+                    text   : DOMNode.get('title'),
+                    events :
                     {
                         onMouseDown : function(Item, event)
                         {
-                            var Control = Item.getAttribute('Control'),
-                                DOMNode = Item.getAttribute('DOMNode');
-
                             if ( !DOMNode ) {
                                 return;
                             }
@@ -574,20 +540,16 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 })
             ).appendChild(
                 new QUIContextmenuItem({
-                    name    : 'activate',
-                    text    : 'Alle markierte Elemente',
-                    //icon    : URL_BIN_DIR +'16x16/trashcan_empty.png',
-                    Control : this,
-                    DOMNode : DOMNode,
-                    events  :
+                    name   : 'activate',
+                    text   : 'Alle markierte Elemente',
+                    events :
                     {
                         onMouseDown : function(Item, event)
                         {
-                            var Control = Item.getAttribute('Control'),
-                                Panel   = Control.getPanel(),
+                            var Panel   = self.getPanel(),
                                 sels    = Panel.getSelectedItems();
 
-                            Control.getPanel().activateItems( sels );
+                            self.getPanel().activateItems( sels );
                         }
                     }
                 })
@@ -604,7 +566,8 @@ define('classes/projects/project/media/panel/ContextMenu', [
          */
         getDeActivateItem : function(DOMNode)
         {
-            var sels = this.getPanel().getSelectedItems();
+            var self = this,
+                sels = this.getPanel().getSelectedItems();
 
             if ( !sels.length || sels.length == 1 )
             {
@@ -612,20 +575,15 @@ define('classes/projects/project/media/panel/ContextMenu', [
                     name    : 'deactivate',
                     text    : 'Deaktivieren',
                     icon    : 'icon-remove',
-                    Control : this,
-                    DOMNode : DOMNode,
                     events  :
                     {
                         onMouseDown : function(Item, event)
                         {
-                            var Control = Item.getAttribute('Control'),
-                                DOMNode = Item.getAttribute('DOMNode');
-
                             if ( !DOMNode ) {
                                 return;
                             }
 
-                            Control.getPanel().deactivateItem( DOMNode );
+                            self.getPanel().deactivateItem( DOMNode );
                         }
                     }
                 });
@@ -639,42 +597,32 @@ define('classes/projects/project/media/panel/ContextMenu', [
 
             Deactivate.appendChild(
                 new QUIContextmenuItem({
-                    name    : 'deactivate',
-                    text    : DOMNode.get('title'),
-                    //icon    : URL_BIN_DIR +'16x16/trashcan_empty.png',
-                    Control : this,
-                    DOMNode : DOMNode,
-                    events  :
+                    name   : 'deactivate',
+                    text   : DOMNode.get('title'),
+                    events :
                     {
                         onMouseDown : function(Item, event)
                         {
-                            var Control = Item.getAttribute('Control'),
-                                DOMNode = Item.getAttribute('DOMNode');
-
                             if ( !DOMNode ) {
                                 return;
                             }
 
-                            Control.getPanel().deactivateItem( DOMNode );
+                            self.getPanel().deactivateItem( DOMNode );
                         }
                     }
                 })
             ).appendChild(
                 new QUIContextmenuItem({
-                    name    : 'deactivate',
-                    text    : 'Alle markierte Elemente',
-                    //icon    : URL_BIN_DIR +'16x16/trashcan_empty.png',
-                    Control : this,
-                    DOMNode : DOMNode,
-                    events  :
+                    name   : 'deactivate',
+                    text   : 'Alle markierte Elemente',
+                    events :
                     {
                         onMouseDown : function(Item, event)
                         {
-                            var Control = Item.getAttribute('Control'),
-                                Panel   = Control.getPanel(),
+                            var Panel   = self.getPanel(),
                                 sels    = Panel.getSelectedItems();
 
-                            Control.getPanel().deactivateItems( sels );
+                            self.getPanel().deactivateItems( sels );
                         }
                     }
                 })
