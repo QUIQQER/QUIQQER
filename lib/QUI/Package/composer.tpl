@@ -31,7 +31,7 @@
     "config": {
         "vendor-dir": "{$PACKAGE_DIR}",
         "cache-dir" : "{$VAR_COMPOSER_DIR}",
-        "component-dir" : "{$PACKAGE_DIR}/bin"
+        "component-dir" : "{$PACKAGE_DIR}bin"
     },
 
     "scripts": {
