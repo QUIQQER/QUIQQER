@@ -2,7 +2,7 @@
     "name" : "quiqqer/quiqqer",
     "type" : "quiqqer-system",
     "description" : "A modular based management system written in JavaScript and PHP",
-    "version" : "1.0.3",
+    "version" : "dev-dev",
     "license" : "GPL-3.0+",
 
     "authors" : [{
@@ -34,12 +34,12 @@
         "phpmailer/phpmailer" : "dev-master",
         "quiqqer/smarty": "3.1.12",
         "quiqqer/smarty3" : "dev-master",
-        "quiqqer/ckeditor3" : "1.*",
+        "quiqqer/ckeditor3" : "dev-master",
         "quiqqer/calendar" : "dev-master",
         "quiqqer/colorpicker" : "dev-master",
         "quiqqer/translator" : "dev-master",
-        "quiqqer/history" : "1.*",
-        "quiqqer/qutils" : "1.*"
+        "quiqqer/history" : "dev-master",
+        "quiqqer/qutils" : "dev-master"
     },
 
     "config": {
