@@ -118,7 +118,7 @@ class Setup
                 continue;
             }
 
-            $package_dir = $packages_dir .'/'. $package;
+            $package_dir = OPT_DIR .'/'. $package;
             $list        = \QUI\Utils\System\File::readDir( $package_dir );
 
             foreach ( $list as $sub )
