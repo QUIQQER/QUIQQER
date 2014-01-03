@@ -1,5 +1,5 @@
 
-# QUIQQER (Content) Management System
+# QUIQQER Management System
 Copyright PCSG OhG
 
 www.pcsg.de
@@ -25,7 +25,8 @@ We thank all for the nice work.
 - requirejs ( requirejs.org/ )
 - AMD css! plugin curl.js ( https://github.com/cujojs/curl )
 - animate.css ( http://daneden.me/animate/ )
-- prism ( http://prismjs.com/ )
+- moofx (https://github.com/kamicane/moofx/)
+- Font Awesome (http://fontawesome.io/)
 
 - QUIQQER Font: http://fontfabric.com/multicolore-free-fonts/
 
