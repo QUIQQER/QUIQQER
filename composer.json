@@ -30,6 +30,8 @@
     "require": {
         "php" : ">=5.3",
         "phpmailer/phpmailer" : "dev-master",
+        "quiqqer/qui" : "dev-master",
+        "quiqqer/qui-php" : "dev-master",
         "quiqqer/smarty": "3.1.12",
         "quiqqer/smarty3" : "dev-master",
         "quiqqer/ckeditor3" : "dev-master",
