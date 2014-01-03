@@ -46,7 +46,8 @@
 
     "config": {
         "vendor-dir": "packages",
-        "cache-dir" : "var/composer"
+        "cache-dir" : "var/composer",
+        "component-dir" : "packages/bin"
     },
 
     "scripts": {
