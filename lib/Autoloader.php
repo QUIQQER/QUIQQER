@@ -112,6 +112,7 @@ class Autoloader
             // add lib to the namespace
             self::$ComposerLoader->add( 'QUI', LIB_DIR );
 
+
             foreach ( $map as $namespace => $path ) {
                 self::$ComposerLoader->add( $namespace, $path );
             }
