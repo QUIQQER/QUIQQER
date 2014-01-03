@@ -109,7 +109,7 @@ class Setup
         \QUI::getPackageManager()->update();
         */
 
-        $packages = \QUI\Utils\System\File::readDir( $packages_dir );
+        $packages = \QUI\Utils\System\File::readDir( OPT_DIR );
 
         // first we need all databases
         foreach ( $packages as $package )
