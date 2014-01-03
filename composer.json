@@ -25,8 +25,6 @@
     "repositories": [{
         "type": "composer",
         "url": "http://update.quiqqer.com"
-    }, {
-        "packagist": false
     }],
 
     "require": {

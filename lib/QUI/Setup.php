@@ -109,6 +109,27 @@ class Setup
         \QUI::getPackageManager()->update();
         */
 
+        $packages = \QUI\Utils\System\File::readDir( $packages_dir );
+
+        // first we need all databases
+        foreach ( $packages as $package )
+        {
+            if ( $package == 'composer' ) {
+                continue;
+            }
+
+            $package_dir = $packages_dir .'/'. $package;
+            $list        = \QUI\Utils\System\File::readDir( $package_dir );
+
+            foreach ( $list as $sub )
+            {
+                // database setup
+                \QUI\Update::importDatabase(
+                    $package_dir .'/'. $sub .'/database.xml'
+                );
+            }
+        }
+
         // import permissions
         \QUI\Update::importAllPermissionsXMLs();
 
