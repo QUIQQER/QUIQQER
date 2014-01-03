@@ -39,7 +39,8 @@
         "quiqqer/colorpicker" : "dev-master",
         "quiqqer/translator" : "dev-master",
         "quiqqer/history" : "dev-master",
-        "quiqqer/utils" : "dev-master"
+        "quiqqer/utils" : "dev-master",
+        "quiqqer/installer" : "dev-master"
     },
 
     "config": {
