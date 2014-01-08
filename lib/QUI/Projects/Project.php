@@ -1300,14 +1300,16 @@ class Project
      */
     public function setup()
     {
-        $DataBase = \QUI::getDataBase(); /* @var $db MyDB */
+        $DataBase = \QUI::getDataBase();
+        $Table    = $DataBase->Table();
+        $User     = \QUI::getUserBySession();
 
         foreach ( $this->_langs as $lang )
         {
-            $table  = QUI_DB_PRFX . $this->_name .'_'. $lang .'_sites';
+            $table = QUI_DB_PRFX . $this->_name .'_'. $lang .'_sites';
 
-            $DataBase->Table()->appendFields($table, array(
-                'id'          => 'bigint(20) NOT NULL AUTO_INCREMENT',
+            $Table->appendFields($table, array(
+                'id'          => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY',
                 'name'        => 'varchar(200) NOT NULL',
                 'title'       => 'tinytext',
                 'short'       => 'text',
@@ -1331,34 +1333,51 @@ class Project
                 'ALTER TABLE `'. $table .'` CHANGE `order_type` `order_type` VARCHAR( 100 ) NULL DEFAULT NULL'
             );
 
-            $DataBase->Table()->setPrimaryKey( $table, 'id' );
+            if ( !$Table->issetPrimaryKey($table, 'id' ) ) {
+                $Table->setPrimaryKey( $table, 'id' );
+            }
 
-            $DataBase->Table()->setIndex( $table, 'name' );
-            $DataBase->Table()->setIndex( $table, 'active' );
-            $DataBase->Table()->setIndex( $table, 'deleted' );
-            $DataBase->Table()->setIndex( $table, 'order_field' );
-            $DataBase->Table()->setIndex( $table, 'type' );
-            $DataBase->Table()->setIndex( $table, 'c_date' );
-            $DataBase->Table()->setIndex( $table, 'e_date' );
+            $Table->setIndex( $table, 'name' );
+            $Table->setIndex( $table, 'active' );
+            $Table->setIndex( $table, 'deleted' );
+            $Table->setIndex( $table, 'order_field' );
+            $Table->setIndex( $table, 'type' );
+            $Table->setIndex( $table, 'c_date' );
+            $Table->setIndex( $table, 'e_date' );
+
+
+            // create first site -> id 1
+            $DataBase->insert($table, array(
+                'id'     => 1,
+                'name'   => 'start',
+                'title'  => 'Start',
+                'type'   => 'standard',
+                'c_date' => date( 'Y-m-d H:i:s' ),
+                'c_user' => $User->getId(),
+                'c_user_ip' => \QUI\Utils\System::getClientIP()
+            ));
 
             // Beziehungen
-            $table = $this->_name .'_'. $lang .'_sites_relations';
+            $table = QUI_DB_PRFX . $this->_name .'_'. $lang .'_sites_relations';
 
-            $DataBase->Table()->appendFields($table, array(
+            $Table->appendFields($table, array(
                 'parent'  => 'bigint(20)',
                 'child'   => 'bigint(20)',
                 'oparent' => 'bigint(20)'
             ));
 
-            $DataBase->Table()->setIndex( $table, 'parent' );
-            $DataBase->Table()->setIndex( $table, 'child' );
+            $Table->setIndex( $table, 'parent' );
+            $Table->setIndex( $table, 'child' );
 
-            // Media Setup
-            $this->getMedia()->setup();
 
             // Translation Setup
             \QUI\Translator::addLang( $lang );
         }
+
+
+        // Media Setup
+        $this->getMedia()->setup();
+
     }
 
     /**

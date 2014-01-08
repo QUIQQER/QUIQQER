@@ -88,10 +88,10 @@ class Media extends \QUI\QDOM
     public function getTable($type=false)
     {
         if ( $type == 'relations' ) {
-            return $this->_Project->getAttribute( 'name' ) .'_de_media_relations';
+            return $this->_Project->getAttribute( 'name' ) .'_media_relations';
         }
 
-        return $this->_Project->getAttribute( 'name' ) .'_de_media';
+        return $this->_Project->getAttribute( 'name' ) .'_media';
     }
 
     /**

@@ -172,7 +172,7 @@ require([
      * If files were droped to quiqqer
      * dont show it
      */
-    $( document.body ).addEvents({
+    document.id( document.body ).addEvents({
         drop : function(event) {
             event.preventDefault();
         },

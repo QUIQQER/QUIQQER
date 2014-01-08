@@ -6,7 +6,7 @@
 
 function ajax_project_set_config($project, $params)
 {
-    \QUI\System\Log::writeRecursive($params);
+    $params = json_decode( $params, true );
 
     \QUI\Projects\Manager::setConfigForProject( $project, $params );
 }
