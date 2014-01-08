@@ -12,6 +12,7 @@ date_default_timezone_set( 'Europe/Zurich' );
 error_reporting( E_ALL );
 ini_set( 'display_errors', true );
 
+\QUI::load();
 \QUI\Utils\System\Debug::marker( 'header start' );
 
 ini_set( 'display_errors', false );
@@ -70,6 +71,7 @@ if ( !empty( $error_mail ) )
 try
 {
     \QUI::getDB();
+
 } catch ( \Exception $Exception )
 {
     header( 'HTTP/1.1 503 Service Temporarily Unavailable' );
