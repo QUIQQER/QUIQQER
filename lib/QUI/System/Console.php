@@ -254,7 +254,16 @@ class Console
 
         if ( $Exec )
         {
-            $Exec->execute();
+            try
+            {
+                $Exec->execute();
+
+            } catch ( \QUI\Exception $Exception )
+            {
+                $this->writeLn( $Exception->getMessage(), 'red' );
+                $this->writeLn();
+            }
+
             return;
         }
 
@@ -291,8 +300,17 @@ class Console
             return;
         }
 
-        if ( $tool = $this->get( $this->_argv[ '--tool' ] ) ) {
-            $tool->execute();
+        if ( $tool = $this->get( $this->_argv[ '--tool' ] ) )
+        {
+            try
+            {
+                $tool->execute();
+
+            } catch ( \QUI\Exception $Exception )
+            {
+                $this->writeLn( $Exception->getMessage(), 'red' );
+                $this->writeLn();
+            }
         }
     }
 

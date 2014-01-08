@@ -34,9 +34,10 @@ require.config({
     waitSeconds : 0,
     locale : USER.lang +"-"+ USER.lang,
     catchError : true,
+
     map : {
         '*': {
-            'css': URL_OPT_DIR +'bin/qui/src/lib/css'
+            'css': URL_OPT_DIR +'bin/qui/src/lib/css.js'
         }
     }
 });
