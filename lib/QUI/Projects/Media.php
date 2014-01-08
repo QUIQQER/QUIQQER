@@ -135,8 +135,6 @@ class Media extends \QUI\QDOM
         $DataBase->Table()->setAutoIncrement( $table, 'id' );
 
         // Media Relations
-        $table = $this->getTable();
-
         $DataBase->Table()->appendFields($table, array(
             'parent' => 'bigint(20) NOT NULL',
             'child'  => 'bigint(20) NOT NULL'

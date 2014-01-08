@@ -1377,7 +1377,6 @@ class Project
 
         // Media Setup
         $this->getMedia()->setup();
-
     }
 
     /**

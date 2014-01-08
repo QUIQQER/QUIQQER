@@ -396,8 +396,8 @@ class Manager
         /**
          * Media and media relation
          */
-        $table_media     = QUI_DB_PRFX . $name .'_'. $lang .'_media';
-        $table_media_rel = QUI_DB_PRFX . $name .'_'. $lang .'_media_relations';
+        $table_media     = QUI_DB_PRFX . $name .'_media';
+        $table_media_rel = QUI_DB_PRFX . $name .'_media_relations';
 
         $Table->appendFields($table_media, array(
             "id"      => "bigint(20) NOT NULL",
