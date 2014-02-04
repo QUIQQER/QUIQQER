@@ -5,7 +5,6 @@
  *
  * @module controls/users/Panel
  * @package com.pcsg.qui.js.controls.users
- * @namespace QUI.controls.users
  */
 
 define('controls/users/Panel', [
@@ -15,15 +14,19 @@ define('controls/users/Panel', [
     'controls/grid/Grid',
     'Users',
     'qui/controls/messages/Attention',
+    'qui/controls/windows/Confirm',
+    'qui/controls/windows/Prompt',
+    'qui/controls/buttons/Button',
+    'utils/Template',
 
     'css!controls/users/Panel.css'
 
-], function(QUI, Panel, Grid, Users, Attention)
+], function(QUI, Panel, Grid, Users, Attention, QUIConfirm, QUIPrompt, QUIButton, Template)
 {
     "use strict";
 
     /**
-     * @class QUI.controls.users.Panel
+     * @class controls/users/Panel
      *
      * @memberof! <global>
      */
@@ -38,7 +41,7 @@ define('controls/users/Panel', [
             '$onSwitchStatus',
             '$onDeleteUser',
             '$onUserRefresh',
-            '$onButtonnEditClick',
+            '$onButtonEditClick',
             '$onButtonDelClick',
             '$gridClick',
             '$gridDblClick',
@@ -99,7 +102,7 @@ define('controls/users/Panel', [
         /**
          * Return the user grid
          *
-         * @return {QUI.controls.grid.Grid|null}
+         * @return {controls/grid/Grid|null}
          */
         getGrid : function()
         {
@@ -143,7 +146,7 @@ define('controls/users/Panel', [
                 disabled  : true,
                 textimage : 'icon-pencil',
                 events    : {
-                    onMousedown : this.$onButtonnEditClick
+                    onMousedown : this.$onButtonEditClick
                 }
             });
 
@@ -287,18 +290,17 @@ define('controls/users/Panel', [
         {
             this.Loader.show();
 
-            var Sheet = this.createSheet();
+            var self  = this,
+                Sheet = this.createSheet();
 
             Sheet.addEvent('onOpen', function(Sheet)
             {
-                QUI.Template.get('users_searchtpl', function(result, Request)
+                Template.get('users_searchtpl', function(result, Request)
                 {
                     var i, len, inputs, new_id, Frm, Search, Label;
 
-                    var Sheet    = Request.getAttribute('Sheet'),
-                        Users    = Request.getAttribute('Users'),
-                        Body     = Sheet.getBody(),
-                        settings = Users.getAttribute('searchSettings'),
+                    var Body     = Sheet.getBody(),
+                        settings = self.getAttribute('searchSettings'),
 
                         values   = Object.merge(
                             {},
@@ -307,7 +309,7 @@ define('controls/users/Panel', [
                         );
 
                     Body.set( 'html', result );
-                    Users.setAttribute( 'SearchSheet', Sheet );
+                    self.setAttribute( 'SearchSheet', Sheet );
 
                     // parse controls
                     QUI.controls.Utils.parse( Body );
@@ -318,9 +320,9 @@ define('controls/users/Panel', [
                     Search.addEvent('keyup', function(event)
                     {
                         if ( event.key === 'enter' ) {
-                            this.execSearch( this.getAttribute('SearchSheet') );
+                            self.execSearch( self.getAttribute('SearchSheet') );
                         }
-                    }.bind( Users ));
+                    });
 
                     Search.value = settings.userSearchString || '';
                     Search.focus();
@@ -330,7 +332,7 @@ define('controls/users/Panel', [
 
                     for ( i = 0, len = inputs.length; i < len; i++ )
                     {
-                        new_id = inputs[i].name + Users.getId();
+                        new_id = inputs[i].name + self.getId();
 
                         inputs[ i ].set('id', new_id);
 
@@ -357,30 +359,21 @@ define('controls/users/Panel', [
                     }
 
                     // search button
-                    new QUI.controls.buttons.Button({
-                        image  : URL_BIN_DIR +'16x16/search.png',
+                    new QUIButton({
+                        image  : 'icon-search',
                         alt    : 'Suche starten ...',
                         title  : 'Suche starten ...',
-                        Sheet  : Sheet,
-                        Users  : Users,
                         events :
                         {
-                            onClick : function(Btn)
-                            {
-                                Btn.getAttribute('Users').execSearch(
-                                    Btn.getAttribute('Sheet')
-                                );
+                            onClick : function(Btn) {
+                                self.execSearch( Sheet );
                             }
                         }
                     });
 
-                    Users.Loader.hide();
-                }, {
-                    Users : this,
-                    Sheet : Sheet
+                    self.Loader.hide();
                 });
-
-            }.bind( this ));
+            });
 
             Sheet.show();
         },
@@ -388,7 +381,7 @@ define('controls/users/Panel', [
         /**
          * Execute the search
          *
-         * @param {QUI.desktop.panels.Sheet}
+         * @param {qui/desktop/panels/Sheet}
          */
         execSearch : function(Sheet)
         {
@@ -426,7 +419,9 @@ define('controls/users/Panel', [
          */
         createUser : function()
         {
-            QUI.Windows.create('prompt', {
+            var self = this;
+
+            new QUIPrompt({
                 name        : 'CreateUser',
                 title       : 'Neuen Benutzer anlegen',
                 icon        : 'icon-user',
@@ -441,12 +436,10 @@ define('controls/users/Panel', [
                 {
                     Win.Loader.show();
 
-                    QUI.Users.existsUsername(
+                    Users.existsUsername(
                         Win.getValue(),
                         function(result, Request)
                         {
-                            var Win = Request.getAttribute('Win');
-
                             // Benutzer existiert schon
                             if ( result === true )
                             {
@@ -461,8 +454,6 @@ define('controls/users/Panel', [
 
                             Win.fireEvent( 'onsubmit', [ Win.getValue(), Win ] );
                             Win.close();
-                        }, {
-                            Win : Win
                         }
                     );
 
@@ -473,14 +464,12 @@ define('controls/users/Panel', [
                 {
                     onsubmit : function(value, Win)
                     {
-                        QUI.Users.createUser(value, function(result, Request)
-                        {
-                            this.openUser( result );
-
-                        }.bind( Win.getAttribute( 'Panel' ) ) );
+                        Users.createUser(value, function(result, Request) {
+                            self.openUser( result );
+                        });
                     }
                 }
-            });
+            }).open();
         },
 
 
@@ -647,7 +636,7 @@ define('controls/users/Panel', [
         /**
          * if a user status is changed
          *
-         * @param {QUI.classes.users.Users} Users
+         * @param {classes/users/Users} Users
          * @param {Object} ids - User-IDs
          */
         $onSwitchStatus : function(Users, ids)
@@ -686,8 +675,8 @@ define('controls/users/Panel', [
         /**
          * if a user status is changed
          *
-         * @param {QUI.classes.users.Users} Users
-         * @param {QUI.classes.users.User} User
+         * @param {classes/users/Users} Users
+         * @param {classes/users/User} User
          */
         $onUserRefresh : function(Users, User)
         {
@@ -735,7 +724,7 @@ define('controls/users/Panel', [
         /**
          * Open all marked users
          */
-        $onButtonnEditClick : function()
+        $onButtonEditClick : function()
         {
             var Parent  = this.getParent(),
                 Grid    = this.getGrid(),
@@ -753,18 +742,21 @@ define('controls/users/Panel', [
 
             var i, len;
 
-            if ( Parent.getType() === 'QUI.controls.desktop.Tasks' )
+            if ( Parent.getType() === 'qui/controls/desktop/Tasks' )
             {
-                require([ 'controls/users/User' ], function(QUI_User_Control)
+                require([
+                    'controls/users/User',
+                    'qui/controls/taskbar/Group'
+                ], function(UserPanel, QUITaskGroup)
                 {
                     var User, Task, TaskGroup;
 
-                    TaskGroup = new QUI.controls.taskbar.Group();
+                    TaskGroup = new QUITaskGroup();
                     Parent.appendTask( TaskGroup );
 
                     for ( i = 0, len = seldata.length; i < len; i++ )
                     {
-                        User = new QUI.controls.users.User( seldata[ i ].id );
+                        User = new UserPanel( seldata[ i ].id );
                         Task = Parent.instanceToTask( User );
 
                         TaskGroup.appendChild( Task );
@@ -800,27 +792,33 @@ define('controls/users/Panel', [
                 return;
             }
 
-            QUI.Windows.create('submit', {
+            new QUIConfirm({
                 name        : 'DeleteUsers',
                 title       : 'Benutzer löschen',
-                icon        : URL_BIN_DIR +'16x16/trashcan_full.png',
+                icon        : 'icon-trashcan',
                 text        : 'Sie möchten folgende Benutzer löschen:<br /><br />'+ uids.join(', '),
-                texticon    : URL_BIN_DIR +'32x32/trashcan_full.png',
+                texticon    : 'icon-trashcan',
                 information : 'Die Benutzer werden komplett aus dem System entfernt und können nicht wieder hergestellt werden',
 
-                width    : 500,
-                height   : 150,
-                uids     : uids,
-                events   :
+                width  : 500,
+                height : 150,
+                uids   : uids,
+                events :
                 {
                     onSubmit : function(Win)
                     {
-                        QUI.Users.deleteUsers(
-                            Win.getAttribute( 'uids' )
-                        );
+                        require(['Users'], function(Users)
+                        {
+                            Users.deleteUsers(
+                                Win.getAttribute( 'uids' ),
+                                function() {
+                                    Win.close();
+                                }
+                            );
+                        });
                     }
                 }
-            });
+            }).open();
         },
 
         /**
@@ -859,7 +857,7 @@ define('controls/users/Panel', [
         /**
          * Parse the attributes to grid data entry
          *
-         * @param {QUI.classes.users.User} User
+         * @param {classes/users/User} User
          * @return {Object}
          */
         userToGridData : function(User)
