@@ -12,11 +12,10 @@
 
 define('controls/groups/sitemap/Window', [
 
-    'qui/controls/Control',
-    'controls/groups/Sitemap',
-    'qui/controls/windows/Confirm'
+    'qui/controls/windows/Confirm',
+    'controls/groups/Sitemap'
 
-], function(QUIControl, GroupSitemap, QUIConfirm)
+], function(QUIConfirm, GroupSitemap)
 {
     "use strict";
 
@@ -27,7 +26,7 @@ define('controls/groups/sitemap/Window', [
      */
     return new Class({
 
-        Extends : QUIControl,
+        Extends : QUIConfirm,
         Type    : 'controls/groups/sitemap/Window',
 
         Binds : [
@@ -39,7 +38,10 @@ define('controls/groups/sitemap/Window', [
             multible : false,
             message  : false,
             title    : 'Gruppenauswahl',
-            text     : 'Wählen Sie eine Gruppe aus'
+            text     : 'Wählen Sie eine Gruppe aus',
+            icon     : 'icon-group',
+            maxHeight   : 600,
+            maxWidth    : 450
         },
 
         initialize : function(options)
@@ -51,43 +53,25 @@ define('controls/groups/sitemap/Window', [
         },
 
         /**
-         * Return the the Window
-         *
-         * @return {qui/controls/windows/Confirm}
+         * event : onCreate
          */
-        create : function()
+        open : function()
         {
-            this.$Win = new QUIConfirm({
-                title   : this.getAttribute( 'title' ),
-                text    : this.getAttribute( 'text' ),
-                icon    : 'icon-group',
-                height  : 400,
-                width   : 350,
-                information : '<div class="group-sitemap"></div>',
-                events  :
-                {
-                    onDrawEnd : this.$onWindowCreate,
-                    onSubmit  : this.$onSubmit
-                }
-            });
+            this.parent();
 
-            this.$Win.create();
+            var Content    = this.getContent(),
+                SubmitBody = Content.getElement( '.submit-body' );
 
-            return this;
-        },
+            var SitemapBody = new Element('div', {
+                'class' : 'group-sitemap'
+            }).inject( Content );
 
-        /**
-         * event - window ope / create
-         */
-        $onWindowCreate : function()
-        {
-            var SitemapBody = this.$Win.getBody().getElement( '.group-sitemap' );
 
             if ( this.getAttribute( 'message' ) )
             {
                 new Element('div', {
                     html : this.getAttribute( 'message' )
-                }).inject( SitemapBody, 'before' );
+                }).inject( Content, 'top' );
             }
 
             this.$Map = new GroupSitemap({
@@ -96,12 +80,17 @@ define('controls/groups/sitemap/Window', [
         },
 
         /**
-         * Event: on submit
+         * Submit the window
+         *
+         * @method qui/controls/windows/Confirm#submit
          */
-        $onSubmit : function()
+        submit : function()
         {
             this.fireEvent( 'submit', [ this, this.$Map.getValues() ] );
-        }
 
+            if ( this.getAttribute( 'autoclose' ) ) {
+                this.close();
+            }
+        }
     });
 });

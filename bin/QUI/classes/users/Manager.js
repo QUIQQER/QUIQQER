@@ -39,7 +39,7 @@ define('classes/users/Manager', [
         Extends : DOM,                   // @member QUI.classes.users.Uses
         Type    : 'classes/users/Users', // @member QUI.classes.users.Users
 
-        $users : {},							// @member QUI.classes.users.Users
+        $users : {},				     // @member QUI.classes.users.Users
 
         /**
          * Return a user

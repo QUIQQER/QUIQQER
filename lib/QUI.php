@@ -318,8 +318,8 @@ class QUI
 
             $prfx = '';
 
-            if ( $Config->get( 'db','prfx' ) ) {
-                $prfx = $Config->get( 'db','prfx' );
+            if ( $Config->get( 'db', 'prfx' ) ) {
+                $prfx = $Config->get( 'db', 'prfx' );
             }
 
             define( 'QUI_DB_PRFX', $prfx );

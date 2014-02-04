@@ -26,7 +26,7 @@ try
 require.config({
     baseUrl : URL_BIN_DIR +'QUI/',
     paths : {
-        "package" : URL_OPT_DIR,
+        "package" : URL_OPT_DIR +'bin/',
         "qui"     : URL_OPT_DIR +'bin/qui/src',
         "locale"  : URL_VAR_DIR +'locale/bin'
     },
@@ -172,7 +172,7 @@ require([
      * If files were droped to quiqqer
      * dont show it
      */
-    $( document.body ).addEvents({
+    document.id( document.body ).addEvents({
         drop : function(event) {
             event.preventDefault();
         },
@@ -186,6 +186,19 @@ require([
         }
     });
 
+    // media popup test
+//    require(['controls/projects/project/media/Popup'], function(Popup)
+//    {
+//        new Popup({
+//            events :
+//            {
+//                onSubmit : function(Popup, imageData)
+//                {
+//                    console.warn( imageData );
+//                }
+//            }
+//        }).open();
+//    });
 
     // contextmenu
     require([

@@ -18,19 +18,20 @@ define('controls/projects/project/media/FilePanel', [
     'classes/projects/project/media/panel/DOMEvents',
     'qui/controls/buttons/Button',
     'qui/controls/buttons/Seperator',
+    'qui/controls/windows/Confirm',
     'utils/Template',
     'qui/utils/Form',
 
     'css!controls/projects/project/media/FilePanel.css'
 
-], function(QUIControl, PanelDOMEvents, QUIButton, QUIButtonSeperator, Template, FormUtils)
+], function(QUIPanel, PanelDOMEvents, QUIButton, QUIButtonSeperator, QUIConfirm, Template, FormUtils)
 {
     "use strict";
 
     /**
      * A Media-Panel, opens the Media in an Desktop Panel
      *
-     * @class QUI.controls.projects.media.FilePanel
+     * @class controls/projects/project/media/FilePanel
      *
      * @param {QUI.classes.projects.media.File} File
      * @param {Object} options
@@ -39,7 +40,7 @@ define('controls/projects/project/media/FilePanel', [
      */
     return new Class({
 
-        Extends : QUIControl,
+        Extends : QUIPanel,
         Type    : 'controls/projects/project/media/FilePanel',
 
         Binds : [
@@ -330,36 +331,31 @@ define('controls/projects/project/media/FilePanel', [
          */
         del : function()
         {
-            QUI.Windows.create('submit', {
+            var self = this;
 
-                icon  : URL_BIN_DIR +'16x16/trashcan_empty.png',
+            var Submit = new QUIConfirm({
+                icon  : 'icon-trash',
                 title : 'Möchten Sie '+ this.$File.getAttribute('file') +' wirklich löschen?',
 
                 text     : 'Möchten Sie '+ this.$File.getAttribute('file') +' wirklich löschen?',
-                texticon : URL_BIN_DIR +'32x32/trashcan_empty.png',
+                texticon : 'icon-trash',
 
                 information : 'Die Datei wird in den Papierkorb verschoben und kann wieder hergestellt werden.',
                 autoclose   : true,
-                Control     : this,
                 events :
                 {
                     onSubmit : function(Win)
                     {
                         Win.Loader.show();
 
-                        Win.getAttribute( 'Control' )
-                           .getFile()
-                           .del(function(result, Request)
-                            {
-                               Request.getAttribute( 'Control' ).$Panel.close();
-                               Request.getAttribute( 'Win' ).close();
-                            }, {
-                                Win     : Win,
-                                Control : Win.getAttribute( 'Control' )
-                            });
+                        self.getFile().del(function(result, Request)
+                        {
+                           self.close();
+                           Win.close();
+                        });
                     }
                 }
-            });
+            }).open();
         },
 
         /**

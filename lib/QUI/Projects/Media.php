@@ -88,10 +88,10 @@ class Media extends \QUI\QDOM
     public function getTable($type=false)
     {
         if ( $type == 'relations' ) {
-            return $this->_Project->getAttribute( 'name' ) .'_de_media_relations';
+            return $this->_Project->getAttribute( 'name' ) .'_media_relations';
         }
 
-        return $this->_Project->getAttribute( 'name' ) .'_de_media';
+        return $this->_Project->getAttribute( 'name' ) .'_media';
     }
 
     /**
@@ -135,8 +135,6 @@ class Media extends \QUI\QDOM
         $DataBase->Table()->setAutoIncrement( $table, 'id' );
 
         // Media Relations
-        $table = $this->getTable();
-
         $DataBase->Table()->appendFields($table, array(
             'parent' => 'bigint(20) NOT NULL',
             'child'  => 'bigint(20) NOT NULL'

@@ -16,6 +16,12 @@ define('utils/Media', function()
 
     return {
 
+        /**
+         * Return a icon by its mime type
+         *
+         * @param {String} mimtype - MimeType of the file
+         * @return {String}
+         */
         getIconByMimeType : function(mimtype)
         {
             if ( typeof mimtype === 'undefined' ) {
@@ -41,6 +47,19 @@ define('utils/Media', function()
             }
 
             return URL_BIN_DIR +'16x16/extensions/empty.png';
+        },
+
+        /**
+         * Return the image url by its image params
+         *
+         * @param {String} id - id of the file
+         * @param {String} project - project name
+         *
+         * @return {String}
+         */
+        getUrlByImageParams : function(id, project)
+        {
+            return 'image.php?id='+ id +'&project='+ project;
         }
     };
 });

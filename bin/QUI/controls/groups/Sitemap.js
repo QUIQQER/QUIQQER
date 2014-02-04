@@ -56,6 +56,7 @@ define('controls/groups/Sitemap', [
             this.parent( options );
 
             this.$Map = null;
+
             this.addEvent( 'onDrawEnd', this.$onDrawEnd );
         },
 
@@ -66,6 +67,8 @@ define('controls/groups/Sitemap', [
          */
         create : function()
         {
+            var self = this;
+
             this.$Elm = new Element( 'div.qui-group-sitemap' );
 
             this.$Map = new QUISitemap({
@@ -76,13 +79,11 @@ define('controls/groups/Sitemap', [
             // Firstchild
             this.$Map.appendChild(
                 new QUISitemapItem({
-                    Control : this,
                     name    : 1,
                     index   : 1,
                     value   : 1,
                     text    : '',
                     alt     : '',
-                    icon    : 'icon-refresh',
                     hasChildren : false,
                     events :
                     {
@@ -94,6 +95,11 @@ define('controls/groups/Sitemap', [
             );
 
             this.$Map.inject( this.$Elm );
+
+
+            (function() {
+                self.$onDrawEnd();
+            }).delay( 200 );
 
             return this.$Elm;
         },
@@ -131,7 +137,8 @@ define('controls/groups/Sitemap', [
          */
         getChildren : function(Parent)
         {
-            Parent.setAttribute( 'icon', 'icon-refresh' );
+            Parent.removeIcon( 'icon-group' );
+            Parent.addIcon( 'icon-refresh icon-spin' );
 
             var self  = this,
                 Group = Groups.get( Parent.getAttribute('value') );
@@ -148,12 +155,12 @@ define('controls/groups/Sitemap', [
 
                     Parent.appendChild(
                         new QUISitemapItem({
-                            name    : entry.name,
-                            index   : entry.id,
-                            value   : entry.id,
-                            text    : entry.name,
-                            alt     : entry.name,
-                            icon    : 'icon-group',
+                            name  : entry.name,
+                            index : entry.id,
+                            value : entry.id,
+                            text  : entry.name,
+                            alt   : entry.name,
+                            icon  : 'icon-group',
                             hasChildren : entry.hasChildren,
                             events :
                             {
@@ -165,7 +172,8 @@ define('controls/groups/Sitemap', [
                     );
                 }
 
-                Parent.setAttribute( 'icon', 'icon-group' );
+                Parent.removeIcon( 'icon-refresh' );
+                Parent.addIcon( 'icon-group' );
             });
         },
 

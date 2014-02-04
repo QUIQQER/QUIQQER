@@ -13,6 +13,7 @@
  * @requires controls/upload/Form
  *
  * @event onDragDropComplete [this, event]
+ * @event childClick [ this, imageData ]
  *
  * @module controls/projects/project/media/Panel
  */
@@ -30,10 +31,11 @@ define('controls/projects/project/media/Panel', [
     'controls/upload/Form',
     'classes/request/Upload',
     'Ajax',
+    'utils/Media',
 
     'css!controls/projects/project/media/Panel.css'
 
-], function(QUI, QUIPanel, Media, MediaSitemap, PanelDOMEvents, PanelContextMenu, BreadcrumbItem, GridControl, UploadForm, RequestUpload, Ajax)
+], function(QUI, QUIPanel, Media, MediaSitemap, PanelDOMEvents, PanelContextMenu, BreadcrumbItem, GridControl, UploadForm, RequestUpload, Ajax, MediaUtils)
 {
     "use strict";
 
@@ -71,7 +73,11 @@ define('controls/projects/project/media/Panel', [
             field : 'name',
             order : 'ASC',
             limit : 20,
-            page  : 1
+            page  : 1,
+
+            selectable	        : false, 	   // is the media in the selectable mode (for popup or image inserts)
+            selectable_types    : ['*'], 	   // you can specified which types are selectable
+            selectable_multible : false		   // multibel selection active? press ctrl / strg
         },
 
         initialize : function(Media, options)
@@ -437,6 +443,16 @@ define('controls/projects/project/media/Panel', [
         getMedia : function()
         {
             return this.$Media;
+        },
+
+        /**
+         * Return the Project object of the Media
+         *
+         * @return {classes/projects/Project} Project
+         */
+        getProject : function()
+        {
+            return this.$Media.getProject();
         },
 
         /**
@@ -863,9 +879,9 @@ define('controls/projects/project/media/Panel', [
                 'data-type' : 'folder'
             });
 
-            if ( this.$File ) {
-                MediaBody.set('title', this.$File.getAttribute('title'));
-            }
+//            if ( this.$File ) {
+//                MediaBody.set('title', this.$File.getAttribute('title'));
+//            }
 
 //            QUI.Storage.set(
 //                'qui-media-panel-view',
@@ -1007,7 +1023,7 @@ define('controls/projects/project/media/Panel', [
 
                     events  :
                     {
-                        click       : this.$viewSymbolClick.bind(this),
+                        click       : this.$viewSymbolClick.bind( this ),
                         mousedown   : this.$viewSymbolMouseDown.bind( this ),
                         mouseup     : this.$dragStop.bind( this ),
                         contextmenu : this.$PanelContextMenu.show.bind( this.$PanelContextMenu )
@@ -1172,11 +1188,22 @@ define('controls/projects/project/media/Panel', [
                 Target = Target.getParent('div');
             }
 
-            if ( event.control )
+            if ( event.control || this.getAttribute( 'selectable' ) )
             {
                 this.$selected.push( Target );
 
                 Target.addClass( 'selected' );
+
+                var id      = Target.get('data-id'),
+                    project = this.getProject().getName();
+
+                var imageData = {
+                    id      : id,
+                    project : project,
+                    url     : MediaUtils.getUrlByImageParams( id, project )
+                };
+
+                this.fireEvent( 'childClick', [ self, imageData ] );
 
                 return;
             }
@@ -1283,7 +1310,6 @@ define('controls/projects/project/media/Panel', [
                     self.setAttribute('page', options.page);
 
                     self.refresh();
-
                 },
 
                 alternaterows     : true,
@@ -1298,6 +1324,22 @@ define('controls/projects/project/media/Panel', [
                 {
                     var Grid = data.target,
                         row  = data.row;
+
+                    if ( self.getAttribute( 'selectable' ) )
+                    {
+                        var id      = Grid.getDataByRow( row ).id,
+                            project = this.getProject().getName();
+
+                        var imageData = {
+                            id      : id,
+                            project : project,
+                            url     : MediaUtils.getUrlByImageParams( id, project )
+                        };
+
+                        self.fireEvent( 'childClick', [ self, imageData ] );
+
+                        return;
+                    }
 
                     self.openID( Grid.getDataByRow( row ).id );
                 }

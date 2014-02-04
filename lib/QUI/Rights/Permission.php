@@ -165,7 +165,7 @@ class Permission
 
         self::checkUser( $User );
 
-        $Manager     = \QUI::getRights();
+        $Manager     = \QUI::getPermissionManager();
         $permissions = $Manager->getPermissions( $User );
 
         // first check user permission

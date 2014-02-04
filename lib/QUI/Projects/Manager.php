@@ -56,9 +56,8 @@ class Manager
             'quiqqer.admin.projects.setconfig'
         );
 
-
-        $Project = \QUI\Projects\Manager::getProject( $project );
-        $Config  = \QUI\Projects\Manager::getConfig();
+        $Project = self::getProject( $project );
+        $Config  = self::getConfig();
 
         $projects = $Config->toArray();
 
@@ -93,12 +92,25 @@ class Manager
                 continue;
             }
 
+            if ( isset( $params[ $key ] ) )
+            {
+                $config[ $key ] = \QUI\Utils\Security\Orthos::clear( $params[ $key ] );
+                continue;
+            }
+
             $config[ $key ] = \QUI\Utils\Security\Orthos::clear( $value );
         }
 
         $Config->setSection( $project, $config );
         $Config->save();
 
+        // remove the project from the temp
+        if ( self::$projects[ $project ] ) {
+            unset( self::$projects[ $project ] );
+        }
+
+        // execute the project setup
+        $Project = self::getProject( $project );
         $Project->setup();
     }
 
@@ -384,8 +396,8 @@ class Manager
         /**
          * Media and media relation
          */
-        $table_media     = QUI_DB_PRFX . $name .'_'. $lang .'_media';
-        $table_media_rel = QUI_DB_PRFX . $name .'_'. $lang .'_media_relations';
+        $table_media     = QUI_DB_PRFX . $name .'_media';
+        $table_media_rel = QUI_DB_PRFX . $name .'_media_relations';
 
         $Table->appendFields($table_media, array(
             "id"      => "bigint(20) NOT NULL",

@@ -133,7 +133,7 @@ define('classes/projects/Project', [
          * @param {Function} callback
          * @param {Object} params - one ore more params
          */
-        setConfig : function(callback, param)
+        setConfig : function(callback, params)
         {
             Ajax.get('ajax_project_set_config', function(result, Request)
             {
@@ -142,7 +142,7 @@ define('classes/projects/Project', [
                 }
             }, {
                 project : this.getName(),
-                param   : param
+                params  : JSON.encode( params )
             });
         },
 

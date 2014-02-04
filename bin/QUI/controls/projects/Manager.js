@@ -158,6 +158,12 @@ define('controls/projects/Manager', [
 
             Projects.getList(function(result, Request)
             {
+                if ( !Object.getLength( result ) )
+                {
+                    Control.Loader.hide();
+                    return;
+                }
+
                 var data = [];
 
                 for ( var project in result )

@@ -4,30 +4,32 @@
  *
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require classes/DOM
+ * @require qui/classes/DOM
+ * @require Ajax
+ * @require qui/utils/Object
  *
  * @module classes/groups/Group
  * @package com.pcsg.qui.js.classes.groups
- * @namespace QUI.classes.groups
  *
- * @event onRefresh [ {QUI.classes.groups.Group} ]
- * @event onActivate [ {QUI.classes.groups.Group} ]
- * @event onDeactivate [ {QUI.classes.groups.Group} ]
+ * @event onRefresh [ {classes/groups/Group} ]
+ * @event onActivate [ {classes/groups/Group} ]
+ * @event onDeactivate [ {classes/groups/Group} ]
  */
 
 define('classes/groups/Group', [
 
     'qui/classes/DOM',
-    'Ajax'
+    'Ajax',
+    'qui/utils/Object'
 
-], function(DOM, Ajax)
+], function(DOM, Ajax, ObjectUtils)
 {
     "use strict";
 
     /**
      * A QUIQQER Group
      *
-     * @class QUI.classes.groups.Group
+     * @class classes/groups/Group
      * @param {Integer} gid - Group-ID
      * @memberof! <global>
      */
@@ -46,7 +48,7 @@ define('classes/groups/Group', [
         /**
          * Return the Group-ID
          *
-         * @method QUI.classes.groups.Group#getId
+         * @method classes/groups/Group#getId
          * @return {Integer} Group-ID
          */
         getId : function()
@@ -57,7 +59,7 @@ define('classes/groups/Group', [
         /**
          * Load the group attributes from the db
          *
-         * @method QUI.classes.groups.Group#load
+         * @method classes/groups/Group#load
          * @param {Function} onfinish - [optional] callback
          */
         load: function(onfinish)
@@ -84,13 +86,13 @@ define('classes/groups/Group', [
         /**
          * Return the children groups of the group
          *
-         * @method QUI.classes.groups.Group#load
+         * @method classes/groups/Group#load
          * @param {Function} onfinish - [optional] callback
          * @param {Object} params - [optional] binded params at the request
          */
         getChildren : function(onfinish, params)
         {
-            params = QUI.Utils.combine(params, {
+            params = ObjectUtils.combine(params, {
                 gid      : this.getId(),
                 Group    : this,
                 onfinish : onfinish
@@ -107,13 +109,13 @@ define('classes/groups/Group', [
         /**
          * Save the group with its actualy attributes
          *
-         * @method QUI.classes.groups.Group#save
+         * @method classes/groups/Group#save
          * @param {Function} onfinish - [optional] callback
          * @param {Object} params - [optional] binded params at the request
          */
         save : function(onfinish, params)
         {
-            params = QUI.Utils.combine(params, {
+            params = ObjectUtils.combine(params, {
                 gid        : this.getId(),
                 Group      : this,
                 onfinish   : onfinish,
@@ -138,7 +140,7 @@ define('classes/groups/Group', [
         /**
          * Is the Group active?
          *
-         * @method QUI.classes.groups.Group#isActive
+         * @method classes/groups/Group#isActive
          * @return {Bool} true or false
          */
         isActive : function()
@@ -149,7 +151,7 @@ define('classes/groups/Group', [
         /**
          * Get all users that are inside the group
          *
-         * @method QUI.classes.groups.Group#getUsers
+         * @method classes/groups/Group#getUsers
          * @param {Function} onfinish - Callback function
          *         the return of the function: {Array}
          * @param {Object} params - limit params (limit, page, field, order)
@@ -186,7 +188,7 @@ define('classes/groups/Group', [
          * You can extend the Object with everything you like
          * You can extend the Object width more than the default options
          *
-         * @method QUI.classes.groups.Group#setAttribute
+         * @method classes/groups/Group#setAttribute
          * @param {String} k - Name of the Attribute
          * @param {Object|String|Integer|Array} v - value
          * @return {this} self
@@ -200,7 +202,7 @@ define('classes/groups/Group', [
         /**
          * If you want set more than one attribute
          *
-         * @method QUI.classes.groups.Group#setAttribute
+         * @method classes/groups/Group#setAttribute
          *
          * @param {Object} attributes - Object with attributes
          * @return {this} self
@@ -225,7 +227,7 @@ define('classes/groups/Group', [
          * Return an attribute of the Object
          * returns the not the default attributes, too
          *
-         * @method QUI.classes.groups.Group#setAttribute
+         * @method classes/groups/Group#setAttribute
          * @param {Object} attributes - Object width attributes
          * @return {unknown_type|Bool} wanted attribute
          */
@@ -241,7 +243,7 @@ define('classes/groups/Group', [
         /**
          * Return the default attributes
          *
-         * @method QUI.classes.groups.Group#getAttributes
+         * @method classes/groups/Group#getAttributes
          * @return {Object} all attributes
          */
         getAttributes : function()
@@ -252,7 +254,7 @@ define('classes/groups/Group', [
         /**
          * Return true if a attribute exist
          *
-         * @method QUI.classes.groups.Group#existAttribute
+         * @method classes/groups/Group#existAttribute
          * @param {String} k - wanted attribute
          * @return {Bool} true | false
          */
