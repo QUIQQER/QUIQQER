@@ -112,15 +112,15 @@ class Group extends \QUI\QDOM
     public function delete()
     {
         // Rootgruppe kann nicht gelöscht werden
-        if ((int)QUI::conf('globals','root') === $this->getId()) {
+        if ( (int)\QUI::conf('globals','root') === $this->getId() ) {
             throw new \QUI\Exception('Die Root Gruppe kann nicht gelöscht werden');
         }
 
         // Rekursiv die Kinder bekommen
-        $children = $this->getChildrenIds(true);
+        $children = $this->getChildrenIds( true );
 
         // Kinder löschen
-        foreach ($children as $child)
+        foreach ( $children as $child )
         {
             \QUI::getDataBase()->exec(array(
                 'delete' => true,
@@ -177,7 +177,7 @@ class Group extends \QUI\QDOM
      */
     public function save()
     {
-        $this->_rights = \QUI::getRights()->getRightParamsFromGroup($this);
+        $this->_rights = \QUI::getPermissionManager()->getRightParamsFromGroup($this);
 
         // Felder bekommen
         \QUI::getDataBase()->update(
@@ -241,8 +241,8 @@ class Group extends \QUI\QDOM
      */
     public function hasRight($right)
     {
-        if (isset($this->_rights[$right])) {
-            return $this->_rights[$right];
+        if ( isset( $this->_rights[ $right ] ) ) {
+            return $this->_rights[ $right ];
         }
 
         return false;
@@ -266,11 +266,11 @@ class Group extends \QUI\QDOM
      */
     public function existsRight($right)
     {
-        if ($this->existsAttribute($right)) {
+        if ( $this->existsAttribute( $right ) ) {
             return true;
         }
 
-        if (isset($this->_rights[$right])) {
+        if ( isset( $this->_rights[ $right ] ) ) {
             return true;
         }
 
@@ -287,11 +287,11 @@ class Group extends \QUI\QDOM
     {
         $User = \QUI::getUserBySession();
 
-        if (!$User->isSU()) {
-            throw new \QUI\Exception('Sie dürfe keine Gruppen bearbeiten');
+        if ( !$User->isSU() ) {
+            throw new \QUI\Exception( 'Sie dürfe keine Gruppen bearbeiten' );
         }
 
-        foreach ($rights as $k => $v) {
+        foreach ( $rights as $k => $v ) {
             $this->_rights[$k] = $v;
         }
     }
@@ -304,7 +304,8 @@ class Group extends \QUI\QDOM
      */
     public function getUsers($params=array())
     {
-        $params['from']  = \QUI\Users\Manager::Table();
+        $params['from'] = \QUI\Users\Manager::Table();
+
         $params['where'] = array(
             'usergroup' => array(
                 'type'  => '%LIKE%',
@@ -312,7 +313,7 @@ class Group extends \QUI\QDOM
             )
         );
 
-        return \QUI::getDataBase()->fetch($params);
+        return \QUI::getDataBase()->fetch( $params );
     }
 
     /**
@@ -333,8 +334,8 @@ class Group extends \QUI\QDOM
             'limit'  => '1'
         ));
 
-        if (!isset($result[0])) {
-            throw new \QUI\Exception('User not found', 404);
+        if ( !isset( $result[0] ) ) {
+            throw new \QUI\Exception( 'User not found', 404 );
         }
 
         return \QUI::getUsers()->get($result[0]['id']);
@@ -362,18 +363,18 @@ class Group extends \QUI\QDOM
             )
         );
 
-        if (isset($params['order'])) {
+        if ( isset( $params['order'] ) ) {
             $_params['order'] = $params['order'];
         }
 
-        if (isset($params['limit'])) {
+        if ( isset( $params['limit'] ) ) {
             $_params['limit'] = $params['limit'];
         }
 
-        $result = \QUI::getDataBase()->fetch($_params);
+        $result = \QUI::getDataBase()->fetch( $_params );
 
-        if (isset($result[0]) &&
-            isset($result[0]['count']))
+        if ( isset( $result[0] ) &&
+             isset( $result[0]['count'] ) )
         {
             return $result[0]['count'];
         }
@@ -391,16 +392,16 @@ class Group extends \QUI\QDOM
      */
     public function isParent($id, $recursiv=false)
     {
-        if ($recursiv)
+        if ( $recursiv )
         {
-            if (in_array($id, $this->_parentids)) {
+            if ( in_array( $id, $this->_parentids ) ) {
                 return true;
             }
 
             return false;
         }
 
-        if ($this->getParent() == $id) {
+        if ( $this->getParent() == $id ) {
             return true;
         }
 
@@ -418,12 +419,12 @@ class Group extends \QUI\QDOM
     {
         $ids = $this->getParentIds();
 
-        if (!isset($ids[0])) {
+        if ( !isset( $ids[0] ) ) {
             return false;
         }
 
-        if ($obj == true) {
-            return \QUI::getGroups()->get($ids[0]);
+        if ( $obj == true ) {
+            return \QUI::getGroups()->get( $ids[0] );
         }
 
         return $ids[0];
@@ -436,7 +437,7 @@ class Group extends \QUI\QDOM
      */
     public function getParentIds()
     {
-        if ($this->_parentids) {
+        if ( $this->_parentids ) {
             return $this->_parentids;
         }
 
@@ -452,7 +453,8 @@ class Group extends \QUI\QDOM
         ));
 
         $this->_parentids[] = $result[0]['parent'];
-        $this->_getParentIds($result[0]['parent']);
+
+        $this->_getParentIds( $result[0]['parent'] );
 
         return $this->_parentids;
     }
@@ -474,14 +476,15 @@ class Group extends \QUI\QDOM
             'limit' => 1
         ));
 
-        if (!isset($result[0]) ||
-            !isset($result[0]['parent']))
+        if ( !isset( $result[0] ) ||
+             !isset( $result[0]['parent'] ) )
         {
             return;
         }
 
         $this->_parentids[] = $result[0]['parent'];
-        $this->_getParentIds($result[0]['parent']);
+
+        $this->_getParentIds( $result[0]['parent'] );
     }
 
     /**
@@ -490,7 +493,7 @@ class Group extends \QUI\QDOM
      */
     public function hasChildren()
     {
-        return count($this->getChildren());
+        return count( $this->getChildren() );
     }
 
     /**
@@ -501,21 +504,22 @@ class Group extends \QUI\QDOM
      */
     public function getChildren($params=array())
     {
-        $ids      = $this->getChildrenIds(false, $params);
+        $ids      = $this->getChildrenIds( false, $params );
         $children = array();
         $Groups   = \QUI::getGroups();
 
-        foreach ($ids as $id)
+        foreach ( $ids as $id )
         {
             try
             {
-                $Child      = $Groups->get($id);
+                $Child = $Groups->get( $id );
+
                 $children[] = array_merge(
                     $Child->getAttributes(),
                     array('hasChildren' => $Child->hasChildren())
                 );
 
-            } catch (\QUI\Exception $e)
+            } catch ( \QUI\Exception $Exception )
             {
                 // nothing
             }
@@ -534,7 +538,7 @@ class Group extends \QUI\QDOM
      */
     public function getChildrenIds($recursiv=false, $params=array())
     {
-        if ($this->_childrenids) {
+        if ( $this->_childrenids ) {
             return $this->_childrenids;
         }
 
@@ -549,30 +553,28 @@ class Group extends \QUI\QDOM
             )
         );
 
-        if (isset($params['order'])) {
+        if ( isset( $params['order'] ) ) {
             $_params['order'] = $params['order'];
         }
 
-        if (isset($params['limit'])) {
+        if ( isset( $params['limit'] ) ) {
             $_params['limit'] = $params['limit'];
         }
 
-        $result = \QUI::getDataBase()->fetch($_params);
+        $result = \QUI::getDataBase()->fetch( $_params );
 
-        if (!isset($result) ||
-            !isset($result[0]))
-        {
+        if ( !isset( $result ) || !isset( $result[0] ) ) {
             return $this->_childrenids;
         }
 
-        foreach ($result as $entry)
+        foreach ( $result as $entry )
         {
-            if (isset($entry['id']))
+            if ( isset( $entry['id'] ) )
             {
                 $this->_childrenids[] = $entry['id'];
 
-                if ($recursiv == true) {
-                    $this->_getChildrenIds($entry['id']);
+                if ( $recursiv == true ) {
+                    $this->_getChildrenIds( $entry['id'] );
                 }
             }
         }
@@ -595,12 +597,13 @@ class Group extends \QUI\QDOM
             )
         ));
 
-        foreach ($result as $entry)
+        foreach ( $result as $entry )
         {
-            if (isset($entry['id']))
+            if ( isset( $entry['id'] ) )
             {
                 $this->_childrenids[] = $entry['id'];
-                $this->_getChildrenIds($entry['id']);
+
+                $this->_getChildrenIds( $entry['id'] );
             }
         }
     }
@@ -615,20 +618,20 @@ class Group extends \QUI\QDOM
     {
         $create = true;
 
-        while ($create)
+        while ( $create )
         {
-            srand(microtime()*1000000);
-              $newid = rand(1, 1000000000);
+            srand( microtime() * 1000000 );
+            $newid = rand( 1, 1000000000 );
 
-              $result = \QUI::getDataBase()->fetch(array(
+            $result = \QUI::getDataBase()->fetch(array(
                 'select' => 'id',
-                  'from'   => \QUI\Groups\Manager::Table(),
+                'from'   => \QUI\Groups\Manager::Table(),
                 'where'  => array(
                     'id' => $newid
-                  )
+                )
             ));
 
-            if (!isset($result[0]) || !$result[0]['id']) {
+            if ( !isset( $result[0] ) || !$result[0]['id'] ) {
                 $create = false;
             }
         }

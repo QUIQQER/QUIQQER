@@ -21,11 +21,14 @@ define('controls/groups/Panel', [
     'qui/controls/desktop/Panel',
     'Groups',
     'controls/grid/Grid',
+    'controls/groups/sitemap/Window',
+    'utils/Template',
     'qui/controls/messages/Attention',
+    'qui/controls/windows/Prompt',
 
     'css!controls/groups/Panel.css'
 
-], function(Panel, Groups, Grid, Attention)
+], function(Panel, Groups, Grid, GroupSitemapWindow, Template, Attention, QUIPrompt)
 {
     "use strict";
 
@@ -103,7 +106,7 @@ define('controls/groups/Panel', [
         /**
          * Return the group grid
          *
-         * @return {QUI.controls.grid.Grid|null}
+         * @return {controls/grid/Grid|null}
          */
         getGrid : function()
         {
@@ -274,22 +277,21 @@ define('controls/groups/Panel', [
         {
             this.Loader.show();
 
-            var Sheet = this.createSheet();
+            var self  = this,
+                Sheet = this.createSheet();
 
             Sheet.addEvent('onOpen', function(Sheet)
             {
-                QUI.Template.get('groups_searchtpl', function(result, Request)
+                Template.get('groups_searchtpl', function(result, Request)
                 {
                     var i, len, Frm, Search;
 
-                    var Sheet  = Request.getAttribute('Sheet'),
-                        Panel  = Request.getAttribute('Panel'),
-                        Body   = Sheet.getBody(),
-                        fields = Panel.getAttribute('searchfields'),
-                        search = Panel.getAttribute('search');
+                    var Body   = Sheet.getBody(),
+                        fields = self.getAttribute('searchfields'),
+                        search = self.getAttribute('search');
 
                     Body.set( 'html', result );
-                    Panel.setAttribute( 'SearchSheet', Sheet );
+                    self.setAttribute( 'SearchSheet', Sheet );
 
                     // @todo parse controls
                     // QUI.controls.Utils.parse( Body );
@@ -300,9 +302,9 @@ define('controls/groups/Panel', [
                     Search.addEvent('keyup', function(event)
                     {
                         if ( event.key === 'enter' ) {
-                            this.execSearch( this.getAttribute( 'SearchSheet' ) );
+                            self.execSearch( self.getAttribute( 'SearchSheet' ) );
                         }
-                    }.bind( Panel ));
+                    });
 
                     Search.value = search || '';
                     Search.focus();
@@ -326,12 +328,9 @@ define('controls/groups/Panel', [
                     });
 
 
-                    Panel.Loader.hide();
-                }, {
-                    Panel : this,
-                    Sheet : Sheet
+                    self.Loader.hide();
                 });
-            }.bind( this ));
+            });
 
             Sheet.show();
         },
@@ -339,7 +338,7 @@ define('controls/groups/Panel', [
         /**
          * Execute the search
          *
-         * @param {QUI.desktop.panels.Sheet}
+         * @param {qui/desktop/panels/Sheet}
          */
         execSearch : function(Sheet)
         {
@@ -367,11 +366,12 @@ define('controls/groups/Panel', [
          */
         createGroup : function()
         {
-            new QUI.controls.groups.sitemap.Window({
-                title   : 'Gruppe erstellen',
-                text    : 'Unter welcher Gruppe soll die neue Gruppe angelegt werden?',
-                Control : this,
-                events  :
+            var self = this;
+
+            new GroupSitemapWindow({
+                title  : 'Gruppe erstellen',
+                text   : 'Unter welcher Gruppe soll die neue Gruppe angelegt werden?',
+                events :
                 {
                     // now we need a groupname
                     onSubmit : function(Win, result)
@@ -380,15 +380,13 @@ define('controls/groups/Panel', [
                             return;
                         }
 
-                        new QUI.controls.windows.Prompt({
+                        new QUIPrompt({
                             title   : 'Neuer Gruppennamen',
-                            icon    : URL_BIN_DIR +'16x16/group.png',
+                            icon    : 'icon-group',
                             height  : 220,
                             width   : 450,
                             text    : 'Bitte geben Sie den neuen Gruppennamen an',
                             pid     : result[ 0 ],
-                            Control : Win.getAttribute( 'Control' ),
-
                             events :
                             {
                                 onDrawEnd : function(Win) {
@@ -399,27 +397,24 @@ define('controls/groups/Panel', [
                                 {
                                     Win.Loader.show();
 
-                                    QUI.Groups.createGroup(
+                                    Groups.createGroup(
                                         result,
                                         Win.getAttribute( 'pid' ),
                                         function( newgroupid )
                                         {
-                                            this.getAttribute( 'Control' ).load();
-                                            this.getAttribute( 'Control' ).openGroup(
-                                                newgroupid
-                                            );
+                                            self.load();
+                                            self.openGroup( newgroupid );
 
-                                            this.close();
-
-                                        }.bind( Win )
+                                            Win.close();
+                                        }
                                     );
                                 }
                             }
-                        }).create();
+                        }).open();
 
                     }
                 }
-            }).create();
+            }).open();
         },
 
         /**
