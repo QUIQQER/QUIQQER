@@ -41,7 +41,7 @@ define('classes/projects/Manager', [
              */
             getLang : function()
             {
-                return QUI.standard.lang;
+                return QUIQQER_PROJECT.lang;
             },
 
             /**
@@ -51,7 +51,7 @@ define('classes/projects/Manager', [
              */
             getName : function()
             {
-                return QUI.standard.name;
+                return QUIQQER_PROJECT.name;
             }
         },
 

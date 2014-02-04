@@ -11,6 +11,8 @@
 
     $config = array();
     $config['globals'] = \QUI::conf( 'globals' );
+
+    $Project = \QUI::getProjectManager()->getStandard();
 ?>
 <!doctype html>
 <!--[if lt IE 7 ]><html class="ie ie6" lang="<?php echo $User->getLang(); ?>"> <![endif]-->
@@ -108,6 +110,10 @@
 
         var QUIQQER_VERSION = '1.0.0';
         var QUIQQER_CONFIG  = <?php echo json_encode( $config ); ?>;
+        var QUIQQER_PROJECT = <?php echo json_encode(array(
+            'name' => $Project->getName(),
+            'lang' => $Project->getLang()
+        )); ?>;
 
     /* ]]> */
     </script>

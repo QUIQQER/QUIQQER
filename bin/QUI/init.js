@@ -186,6 +186,19 @@ require([
         }
     });
 
+    // media popup test
+//    require(['controls/projects/project/media/Popup'], function(Popup)
+//    {
+//        new Popup({
+//            events :
+//            {
+//                onSubmit : function(Popup, imageData)
+//                {
+//                    console.warn( imageData );
+//                }
+//            }
+//        }).open();
+//    });
 
     // contextmenu
     require([
