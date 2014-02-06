@@ -163,6 +163,18 @@ define('controls/editors/Editor', ['qui/controls/Control'], function(Control)
         getInstance : function()
         {
             return this.$Instance;
+        },
+
+        /**
+         * Open the Meda Popup for Image insertion
+         *
+         * @param {Object} options - controls/projects/project/media/Popup options
+         */
+        openMedia : function(options)
+        {
+            require(['controls/projects/project/media/Popup'], function(Popup) {
+                new Popup( options ).open();
+            });
         }
     });
 });

@@ -186,6 +186,12 @@ require([
         }
     });
 
+//    require(['controls/editors/windows/ImageWindow'], function(ImageWindow)
+//    {
+//        new ImageWindow().open();
+//    });
+
+
     // media popup test
 //    require(['controls/projects/project/media/Popup'], function(Popup)
 //    {

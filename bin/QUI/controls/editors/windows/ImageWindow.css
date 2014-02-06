@@ -1,0 +1,12 @@
+@CHARSET "UTF-8";
+
+.qui-editor-window-image label {
+    float: left;
+    margin: 10px 0;
+    width: 100%;
+}
+
+.qui-editor-window-image input {
+    float: left;
+    margin: 0;
+}
