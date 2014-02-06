@@ -175,6 +175,18 @@ define('controls/editors/Editor', ['qui/controls/Control'], function(Control)
             require(['controls/projects/project/media/Popup'], function(Popup) {
                 new Popup( options ).open();
             });
+        },
+
+        /**
+         * Open the Meda Popup for Image insertion
+         *
+         * @param {Object} options - controls/projects/project/project/Popup options
+         */
+        openProject : function(options)
+        {
+            require(['controls/projects/Popup'], function(Popup) {
+                new Popup( options ).open();
+            });
         }
     });
 });

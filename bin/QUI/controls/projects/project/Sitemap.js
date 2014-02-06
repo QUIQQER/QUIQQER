@@ -53,7 +53,8 @@ define('controls/projects/project/Sitemap', [
             project   : false,
             lang      : false,
             id        : false,
-            media     : false // show the media in the sitemap, too
+            media     : false, // show the media in the sitemap, too
+            multible  : false
         },
 
         initialize : function(options)
@@ -61,7 +62,9 @@ define('controls/projects/project/Sitemap', [
             this.parent( options );
 
             this.$Elm = null;
-            this.$Map = new QUISitemap();
+            this.$Map = new QUISitemap({
+                multible : this.getAttribute( 'multible' )
+            });
 
             this.$Project = Projects.get(
                 this.getAttribute( 'project' ),

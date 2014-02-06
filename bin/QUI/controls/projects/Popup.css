@@ -1,0 +1,16 @@
+@CHARSET "UTF-8";
+
+.qui-project-popup-header {
+    background: #E1E4E9;
+    border-bottom: 1px solid #DEDEDE;
+    border-top: 1px solid #BBBBBB;
+    clear: both;
+    float: left;
+    height: 50px;
+    width: 100%;
+}
+
+.qui-project-popup-body {
+    clear: both;
+    float: left;
+}
