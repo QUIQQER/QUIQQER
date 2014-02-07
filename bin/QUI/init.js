@@ -186,22 +186,17 @@ require([
         }
     });
 
-//    require(['controls/editors/windows/ImageWindow'], function(ImageWindow)
-//    {
-//        new ImageWindow().open();
+//    require(['controls/projects/Popup'], function(Popup) {
+//        new Popup({
+//            events :
+//            {
+//                onSubmit : function(Control, result)
+//                {
+//                    console.warn( result );
+//                }
+//            }
+//        }).open();
 //    });
-
-    require(['controls/projects/Popup'], function(Popup) {
-        new Popup({
-            multible : true,
-            events : {
-                onSubmit : function(Control, result)
-                {
-                    console.warn( result );
-                }
-            }
-        }).open();
-    });
 
     // media popup test
 //    require(['controls/projects/project/media/Popup'], function(Popup)

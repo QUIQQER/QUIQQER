@@ -80,7 +80,7 @@ define('controls/projects/Popup', [
 
             var Select = new QUISelect({
                 styles : {
-                    margin: 5,
+                    margin: 8,
                     position: 'relative'
                 },
                 events :
@@ -173,14 +173,27 @@ define('controls/projects/Popup', [
                 return;
             }
 
-            var ids = this.$Map.getSelectedChildren().map(function(o) {
+            var ids, urls;
+            var children = this.$Map.getSelectedChildren();
+
+            projectString = 'project='+ this.getAttribute( 'project' ) +'&'+
+                            'lang='+ this.getAttribute( 'lang' );
+
+            ids = children.map(function(o) {
                 return o.getAttribute( 'value' );
             });
+
+            urls = children.map(function(o) {
+                return 'index.php?id='+ o.getAttribute( 'value' ) +'&'+ projectString;
+            });
+
+            console.log( urls );
 
             var result = {
                 project : this.getAttribute( 'project' ),
                 lang    : this.getAttribute( 'lang' ),
-                ids     : ids
+                ids     : ids,
+                urls    : urls
             };
 
             this.fireEvent( 'submit', [ this, result ] );
