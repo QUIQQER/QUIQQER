@@ -187,8 +187,6 @@ define('controls/projects/Popup', [
                 return 'index.php?id='+ o.getAttribute( 'value' ) +'&'+ projectString;
             });
 
-            console.log( urls );
-
             var result = {
                 project : this.getAttribute( 'project' ),
                 lang    : this.getAttribute( 'lang' ),
