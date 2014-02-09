@@ -166,6 +166,17 @@ require([
                 }
             }
         }).inject( RightColumn );
+
+        // if 404 -> not loged in, than login pop
+        MessageHandler.addEvent('onAdd', function(MH, Message)
+        {
+            if ( Message.getAttribute( 'code' ) == 401 )
+            {
+                require(['controls/system/Login'], function(Login) {
+                    new Login().open();
+                });
+            }
+        });
     });
 
     /**

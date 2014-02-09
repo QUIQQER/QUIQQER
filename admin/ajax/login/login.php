@@ -9,6 +9,8 @@ function ajax_login_login($username, $password)
 {
     \QUI::getUsers()->login($username, $password);
 }
-QUI::$Ajax->register('ajax_login_login', array('username', 'password'));
 
-?>
+\QUI::$Ajax->register(
+    'ajax_login_login',
+    array('username', 'password')
+);

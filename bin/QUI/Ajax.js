@@ -75,6 +75,11 @@ define('Ajax', [
 
                         onError : function(Exception, Request)
                         {
+                            QUI.getMessageHandler(function(MessageHandler) {
+                                MessageHandler.addException( Exception );
+                            });
+
+
                             if ( Request.getAttribute( 'onError' ) ) {
                                 return Request.getAttribute( 'onError' )( Exception, Request );
                             }
