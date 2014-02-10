@@ -248,6 +248,10 @@ class Console
         $tool = $this->readInput();
         $Exec = false;
 
+        if ( $tool == 'exit' ) {
+            return;
+        }
+
         if ( isset( $this->_tools[ $tool ] ) ) {
             $Exec = $this->_tools[ $tool ];
         }
@@ -262,10 +266,12 @@ class Console
             {
                 $this->writeLn( $Exception->getMessage(), 'red' );
                 $this->writeLn();
-            }
 
-            return;
+                return;
+            }
         }
+
+        $this->writeLn( 'Would you like any other steps to do?' );
 
         $this->readToolFromShell();
     }
