@@ -51,4 +51,20 @@ class Temp
 
         return $folder;
     }
+
+    /**
+     * Clear the Temp folder
+     */
+    public function clear()
+    {
+        if ( system( 'rm -rf '.  $this->_folder ) )
+        {
+            \QUI\Utils\System\File::mkdir( $this->_folder );
+            return;
+        }
+
+        // system is not allowed
+        \QUI\Utils\System\File::deleteDir( $this->_folder );
+        \QUI\Utils\System\File::mkdir( $this->_folder );
+    }
 }
