@@ -799,6 +799,17 @@ class User implements \QUI\Interfaces\Users\User
             $this->_checkRights();
         }
 
+        // benutzer ist schon aktiv, aktivierung kann nciht durchgeführt werden
+        if ( $this->getAttribute( 'active' ) )
+        {
+            throw new PException(
+                PCSG::getLocale()->get(
+                    'system',
+                    'exception.lib.user.activasion.user.is.activated'
+                )
+            );
+        }
+
         if ( $code && $code != $this->getAttribute( 'activation' ) )
         {
             throw new \QUI\Exception(

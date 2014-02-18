@@ -175,4 +175,14 @@ class Tool extends \QUI\QDOM
 
         return '';
     }
+
+    /**
+     * Reset the color
+     */
+    public function resetColor()
+    {
+        if ( $this->getAttribute( 'parent' ) ) {
+            $this->getAttribute( 'parent' )->clearMsg();
+        }
+    }
 }
