@@ -577,6 +577,6 @@ div.pGroup {
     white-space: nowrap;
 }
 
-.omnigrid button span {
+.omnigrid .bDiv button span {
     padding: 0;
 }
