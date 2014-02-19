@@ -1346,16 +1346,27 @@ class Project
             $Table->setIndex( $table, 'e_date' );
 
 
-            // create first site -> id 1
-            $DataBase->insert($table, array(
-                'id'     => 1,
-                'name'   => 'start',
-                'title'  => 'Start',
-                'type'   => 'standard',
-                'c_date' => date( 'Y-m-d H:i:s' ),
-                'c_user' => $User->getId(),
-                'c_user_ip' => \QUI\Utils\System::getClientIP()
+            // create first site -> id 1 if not exist
+            $firstChildResult = $DataBase->fetch(array(
+                'from'  => $table,
+                'where' => array(
+                    'id' => 1
+                ),
+                'limit' => 1
             ));
+
+            if ( !isset( $firstChildResult[0] ) )
+            {
+                $DataBase->insert($table, array(
+                    'id'     => 1,
+                    'name'   => 'start',
+                    'title'  => 'Start',
+                    'type'   => 'standard',
+                    'c_date' => date( 'Y-m-d H:i:s' ),
+                    'c_user' => $User->getId(),
+                    'c_user_ip' => \QUI\Utils\System::getClientIP()
+                ));
+            }
 
             // Beziehungen
             $table = QUI_DB_PRFX . $this->_name .'_'. $lang .'_sites_relations';
