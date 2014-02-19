@@ -41,7 +41,8 @@
 }
 
 .qui-permissions-select-sheet .buttons .image-container {
-    margin: 10px auto;
+    float: left;
+    margin: 10px 0;
 }
 
 .qui-permissions-select-sheet .buttons .image-container {
@@ -49,14 +50,16 @@
 }
 
 .qui-permissions-select-sheet .buttons .qui-button-text {
-    margin-bottom: 10px;
+    float: right;
+    margin: 10px 0;
+    text-align: left;
+    width: 130px;
 }
 
 .qui-permissions-select-sheet .search {
     float: left;
     clear: both;
     width: 100%;
-
     text-align: center;
 }
 
