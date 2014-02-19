@@ -1292,13 +1292,6 @@ define('controls/permissions/Panel', [
             // edit modus
             if ( !this.$Bind )
             {
-                Node.getElements( 'label' ).set({
-                    styles : {
-                        marginLeft : 10,
-                        lineHeight : 24
-                    }
-                });
-
                 // only user rights can be deleted
                 if ( right.src == 'user' )
                 {

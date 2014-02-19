@@ -27,11 +27,11 @@ define('utils/permissions/Utils', [
          */
         parse : function(params)
         {
-            var Entry, Input, Label,
-                n = params.name;
+            var n = params.name;
 
+            var Entry = new Element( 'div.qui-permission-entry' );
 
-            Input = new Element('input.right', {
+            var Input = new Element('input.right', {
                 type : 'text',
                 name : n,
                 id   : 'perm-'+ n,
@@ -45,15 +45,38 @@ define('utils/permissions/Utils', [
                 Input.type = 'checkbox';
             }
 
-            Label = new Element('label', {
+            var Label = new Element('label', {
                 'for' : 'perm-'+ n,
                 html  : params.title || params.name
             });
 
-            Entry = new Element( 'div.qui-permission-entry' );
             Input.inject( Entry );
             Label.inject( Entry );
 
+
+            if ( params.desc )
+            {
+                var Container = new Element('div', {
+                    styles : {
+                        'float' : 'left',
+                        marginLeft : 10
+                    }
+                });
+
+                Container.wraps( Label );
+
+                Label.setStyles({
+                    cursor : 'pointer',
+                    margin : 0
+                });
+
+                new Element('p', {
+                    html : params.desc,
+                    styles : {
+                        margin : 0
+                    }
+                }).inject( Container );
+            }
 
             return Entry;
         }

@@ -58,6 +58,11 @@
     width: 150px;
 }
 
+.data-table td p {
+    clear: both;
+    float: left;
+}
+
 .data-table input.int,
 .data-table-nowidth input.int {
     width: 80px;
