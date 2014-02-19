@@ -288,6 +288,10 @@ define('controls/usersAndGroups/Input', [
                 {
                     var Elm = event.target;
 
+                    if ( !Elm.hasClass( 'qui-users-and-groups-dropdown-entry' ) ) {
+                        Elm = Elm.getParent( '.qui-users-and-groups-dropdown-entry' );
+                    }
+
                     this.add(
                         Elm.get( 'data-id' ),
                         Elm.get( 'data-type' )
@@ -297,8 +301,13 @@ define('controls/usersAndGroups/Input', [
 
                 func_mouseover = function()
                 {
-                    this.getParent().getElements( '.hover' ).removeClass( 'hover' );
-                    this.addClass( 'hover' );
+                    this.getParent().getElements(
+                        '.qui-users-and-groups-dropdown-entry-hover'
+                    ).removeClass(
+                        'qui-users-and-groups-dropdown-entry-hover'
+                    );
+
+                    this.addClass( 'qui-users-and-groups-dropdown-entry-hover' );
                 };
 
                 // create
@@ -322,8 +331,8 @@ define('controls/usersAndGroups/Input', [
                     }
 
                     Entry = new Element('div', {
-                        html        : nam +' ('+ data[ i ].id +')',
-                        'class'     : 'box-sizing radius5 entry',
+                        html        : '<span>'+ nam +' ('+ data[ i ].id +')</span>',
+                        'class'     : 'box-sizing qui-users-and-groups-dropdown-entry',
                         'data-id'   : data[ i ].id,
                         'data-name' : data[ i ].username || data[ i ].name,
                         'data-type' : type,
@@ -336,10 +345,20 @@ define('controls/usersAndGroups/Input', [
 
                     if ( type == 'group' )
                     {
-                        Entry.setStyle( 'background-image', 'url('+ URL_BIN_DIR +'16x16/group.png)' );
+                        new Element('span', {
+                            'class' : 'icon-group',
+                            styles : {
+                                marginRight : 5
+                            }
+                        }).inject( Entry, 'top' );
                     } else
                     {
-                        Entry.setStyle( 'background-image', 'url('+ URL_BIN_DIR +'16x16/user.png)' );
+                        new Element('span', {
+                            'class' : 'icon-user',
+                            styles : {
+                                marginRight : 5
+                            }
+                        }).inject( Entry, 'top' );
                     }
 
                 }
@@ -451,16 +470,23 @@ define('controls/usersAndGroups/Input', [
                 return this;
             }
 
-            var Active = this.$DropDown.getElement( '.hover' );
+            var Active = this.$DropDown.getElement(
+                '.qui-users-and-groups-dropdown-entry-hover'
+            );
 
             // Last Element
             if ( !Active )
             {
-                this.$DropDown.getLast().addClass( 'hover' );
+                this.$DropDown.getLast().addClass(
+                    'qui-users-and-groups-dropdown-entry-hover'
+                );
+
                 return this;
             }
 
-            Active.removeClass( 'hover' );
+            Active.removeClass(
+                'qui-users-and-groups-dropdown-entry-hover'
+            );
 
             if ( !Active.getPrevious() )
             {
@@ -468,7 +494,9 @@ define('controls/usersAndGroups/Input', [
                 return this;
             }
 
-            Active.getPrevious().addClass( 'hover' );
+            Active.getPrevious().addClass(
+                'qui-users-and-groups-dropdown-entry-hover'
+            );
         },
 
         /**
@@ -483,16 +511,23 @@ define('controls/usersAndGroups/Input', [
                 return this;
             }
 
-            var Active = this.$DropDown.getElement( '.hover' );
+            var Active = this.$DropDown.getElement(
+                '.qui-users-and-groups-dropdown-entry-hover'
+            );
 
             // First Element
             if ( !Active )
             {
-                this.$DropDown.getFirst().addClass( 'hover' );
+                this.$DropDown.getFirst().addClass(
+                    'qui-users-and-groups-dropdown-entry-hover'
+                );
+
                 return this;
             }
 
-            Active.removeClass( 'hover' );
+            Active.removeClass(
+                'qui-users-and-groups-dropdown-entry-hover'
+            );
 
             if ( !Active.getNext() )
             {
@@ -500,7 +535,9 @@ define('controls/usersAndGroups/Input', [
                 return this;
             }
 
-            Active.getNext().addClass( 'hover' );
+            Active.getNext().addClass(
+                'qui-users-and-groups-dropdown-entry-hover'
+            );
 
             return this;
         },
@@ -516,7 +553,9 @@ define('controls/usersAndGroups/Input', [
                 return;
             }
 
-            var Active = this.$DropDown.getElement( '.hover' );
+            var Active = this.$DropDown.getElement(
+                '.qui-users-and-groups-dropdown-entry-hover'
+            );
 
             if ( Active ) {
                 this.addUser( Active.get( 'data-id' ) );

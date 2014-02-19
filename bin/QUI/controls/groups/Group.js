@@ -603,8 +603,8 @@ define('controls/groups/Group', [
             {
                 if ( result.data[ i ].active )
                 {
-                    result.data[ i ].status = new Element('img', {
-                        src    : URL_BIN_DIR +'16x16/apply.png',
+                    result.data[ i ].status = new Element('div', {
+                        'class' : 'icon-ok',
                         styles : {
                             margin : '5px 0 5px 12px'
                         }
@@ -612,8 +612,8 @@ define('controls/groups/Group', [
 
                 } else
                 {
-                    result.data[ i ].status = new Element('img', {
-                        src    : URL_BIN_DIR +'16x16/cancel.png',
+                    result.data[ i ].status = new Element('div', {
+                        'class' : 'icon-remove',
                         styles : {
                             margin : '5px 0 5px 12px'
                         }

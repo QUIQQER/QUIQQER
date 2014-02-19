@@ -1,26 +1,37 @@
 
 .group-entry {
-	float: left;
-	margin: 5px;
+    clear: both;
+    float: left;
+    font-size: 14px;
+    line-height: 20px;
+    margin: 5px;
 }
 
-.group-entry .text {
-	float: left;
-	line-height: 20px;
-	margin: 0 0 0 5px;
-	padding-left: 20px;
-	background: url('/bin/16x16/groups.png') no-repeat left center;
+.group-entry-text {
+    float: left;
+    line-height: 20px;
+    margin: 0 0 0 5px;
 }
 
-.group-entry .close {
-	float: left;
-	height: 20px;
-	width: 20px;
-	cursor: pointer;
-	background: url('/bin/js/mocha/Themes/default/images/cancel.png') no-repeat center center;
-	visibility: hidden;
+.group-entry-icon {
+    float: left;
+    line-height: 20px;
 }
 
-.group-entry:hover .close {
-	visibility: visible;
+.group-entry-close {
+    cursor: pointer;
+    float: left;
+    line-height: 20px;
+    margin: 0 0 0 10px;
+    padding: 0 10px;
+    visibility: hidden;
+}
+
+.group-entry:hover .group-entry-close {
+    visibility: visible;
+}
+
+.group-entry-close:hover {
+    background: #2F8FC6;
+    color: #FFFFFF;
 }

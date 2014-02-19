@@ -66,24 +66,15 @@ define('controls/users/Entry', [
         create : function()
         {
             this.$Elm = new Element('div', {
-                'class'   : 'users-entry radius5',
+                'class'   : 'users-entry',
                 'data-id' : this.$User.getId(),
 
-                html : '<div class="text"></div>' +
-                       '<div class="close"></div>',
-
-                events :
-                {
-                    mouseover : function() {
-                        this.addClass( 'hover' );
-                    },
-                    mouseout : function() {
-                        this.removeClass( 'hover' );
-                    }
-                }
+                html : '<div class="users-entry-icon"></div>' +
+                       '<div class="users-entry-text"></div>' +
+                       '<div class="users-entry-close icon-remove"></div>'
             });
 
-            var Close = this.$Elm.getElement( '.close' );
+            var Close = this.$Elm.getElement( '.users-entry-close' );
 
             Close.addEvent( 'click', this.destroy );
             Close.set({
@@ -112,10 +103,11 @@ define('controls/users/Entry', [
          */
         refresh : function()
         {
-            this.$Elm.getElement( '.text' ).set(
-                'html',
-                '<img src="'+ URL_BIN_DIR +'images/loader.gif" />'
-            );
+            var UserIcon = this.$Elm.getElement( '.users-entry-icon' );
+
+            UserIcon.removeClass( 'icon-user' );
+            UserIcon.addClass( 'icon-refresh' );
+            UserIcon.addClass( 'icon-spin' );
 
             if ( this.$User.getAttribute( 'name' ) )
             {
@@ -140,7 +132,13 @@ define('controls/users/Entry', [
                 return this;
             }
 
-            this.$Elm.getElement( '.text' )
+            var UserIcon = this.$Elm.getElement( '.users-entry-icon' );
+
+            UserIcon.addClass( 'icon-user' );
+            UserIcon.removeClass( 'icon-refresh' );
+            UserIcon.removeClass( 'icon-spin' );
+
+            this.$Elm.getElement( '.users-entry-text' )
                      .set( 'html', User.getName() );
 
             return this;

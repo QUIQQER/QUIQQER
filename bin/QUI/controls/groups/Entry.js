@@ -68,24 +68,15 @@ define('controls/groups/Entry', [
         create : function()
         {
             this.$Elm = new Element('div', {
-                'class'   : 'group-entry radius5',
+                'class'   : 'group-entry',
                 'data-id' : this.$Group.getId(),
 
-                html : '<div class="text"></div>' +
-                       '<div class="close"></div>',
-
-                events :
-                {
-                    mouseover : function() {
-                        this.addClass( 'hover' );
-                    },
-                    mouseout : function() {
-                        this.removeClass( 'hover' );
-                    }
-                }
+                html : '<span class="group-entry-icon icon-group"></span>' +
+                       '<span class="group-entry-text"></span>' +
+                       '<span class="group-entry-close icon-remove"></span>'
             });
 
-            var Close = this.$Elm.getElement( '.close' );
+            var Close = this.$Elm.getElement( '.group-entry-close' );
 
             Close.addEvent( 'click', this.destroy);
             Close.set({
@@ -114,10 +105,11 @@ define('controls/groups/Entry', [
          */
         refresh : function()
         {
-            this.$Elm.getElement( '.text' ).set(
-                'html',
-                '<img src="'+ URL_BIN_DIR +'images/loader.gif" />'
-            );
+            var GroupIcon = this.$Elm.getElement( '.group-entry-icon' );
+
+            GroupIcon.removeClass( 'icon-group' );
+            GroupIcon.addClass( 'icon-refresh' );
+            GroupIcon.addClass( 'icon-spin' );
 
             if ( this.$Group.getAttribute('name') )
             {
@@ -142,7 +134,13 @@ define('controls/groups/Entry', [
                 return this;
             }
 
-            this.$Elm.getElement( '.text' )
+            var GroupIcon = this.$Elm.getElement( '.group-entry-icon' );
+
+            GroupIcon.addClass( 'icon-group' );
+            GroupIcon.removeClass( 'icon-refresh' );
+            GroupIcon.removeClass( 'icon-spin' );
+
+            this.$Elm.getElement( '.group-entry-text' )
                      .set( 'html', Group.getAttribute( 'name' ) );
 
             return this;

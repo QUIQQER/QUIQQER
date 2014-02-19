@@ -1,26 +1,37 @@
 
 .users-entry {
-	float: left;
-	margin: 5px;
+    clear: both;
+    float: left;
+    font-size: 14px;
+    line-height: 20px;
+    margin: 5px;
 }
 
-.users-entry .text {
-	float: left;
-	line-height: 20px;
-	margin: 0 0 0 5px;
-	padding-left: 20px;
-	background: url('/bin/16x16/user.png') no-repeat left center;
+.users-entry-text {
+    float: left;
+    line-height: 20px;
+    margin: 0 0 0 5px;
 }
 
-.users-entry .close {
-	float: left;
-	height: 20px;
-	width: 20px;
-	cursor: pointer;
-	background: url('/bin/js/mocha/Themes/default/images/cancel.png') no-repeat center center;
-	visibility: hidden;
+.users-entry-icon {
+    float: left;
+    line-height: 20px;
 }
 
-.users-entry:hover .close {
-	visibility: visible;
+.users-entry-close {
+    cursor: pointer;
+    float: left;
+    line-height: 20px;
+    margin: 0 0 0 10px;
+    padding: 0 10px;
+    visibility: hidden;
+}
+
+.users-entry:hover .users-entry-close {
+    visibility: visible;
+}
+
+.users-entry-close:hover {
+    background: #2F8FC6;
+    color: #FFFFFF;
 }

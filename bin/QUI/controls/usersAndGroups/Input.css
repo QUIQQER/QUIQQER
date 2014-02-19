@@ -81,13 +81,15 @@
     color: red;
 }
 
-.qui-users-and-groups-dropdown .entry {
+.qui-users-and-groups-dropdown-entry {
     float: left;
     clear: both;
     cursor: pointer;
     width: 100%;
-    padding: 5px 5px 5px 25px;
+    padding: 5px;
+}
 
-    background-position: 5px center;
-    background-repeat: no-repeat;
+.qui-users-and-groups-dropdown-entry-hover {
+    background: #2F8FC6;
+    color: #FFFFFF;
 }
