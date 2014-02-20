@@ -1085,11 +1085,17 @@ class Rewrite
     {
         try
         {
-            return $output[1].'="'. \QUI\Projects\Media\Utils::getUrl('image.php?'.$output[3]).'"';
+            $url = \QUI\Projects\Media\Utils::getRewritedUrl(
+                'image.php?'.$output[3]
+            );
+
         } catch (\QUI\Exception $e)
         {
-            return $output[1].'=""';
+            $url = '';
         }
+
+
+        return $output[1].'="'. $url .'"';
     }
 
     /**

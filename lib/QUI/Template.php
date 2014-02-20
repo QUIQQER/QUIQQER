@@ -180,27 +180,40 @@ class Template extends \QUI\QDOM
          * find the index.html
          */
 
-        $tpl = LIB_DIR .'templates/index.html';
+        $default_tpl  = LIB_DIR .'templates/index.html';
 
-        // if template is set
+        $project_tpl   = USR_DIR . $Project->getAttribute('name') .'/lib/index.html';
+        $project_index = USR_DIR . $Project->getAttribute('name') .'/lib/index.php';
+
+        $template_tpl   = false;
+        $template_index = false;
+
+        $tpl = $default_tpl;
+
         if ( $Project->getAttribute('template') )
         {
-            $_tpl = OPT_DIR . $Project->getAttribute('template') .'/index.html';
-
-            if ( file_exists( $_tpl ) )
-            {
-                $tpl = $_tpl;
-
-                $Engine->assign(array(
-                    'URL_TPL_DIR' => URL_OPT_DIR . $Project->getAttribute('template') .'/',
-                    'TPL_DIR'     => OPT_DIR . $Project->getAttribute('template') .'/',
-                ));
-            }
+            $template_tpl   = OPT_DIR . $Project->getAttribute('template') .'/index.html';
+            $template_index = OPT_DIR . $Project->getAttribute('template') .'/index.php';
         }
 
-        // if project have its own template
-        if ( file_exists( USR_DIR . $Project->getAttribute('template') .'/index.html' ) ) {
-            $tpl = USR_DIR . $Project->getAttribute('template') .'/index.html';
+        if ( $template_tpl && file_exists( $template_tpl ) )
+        {
+            $tpl = $template_tpl;
+
+            $Engine->assign(array(
+                'URL_TPL_DIR' => URL_OPT_DIR . $Project->getAttribute('template') .'/',
+                'TPL_DIR'     => OPT_DIR . $Project->getAttribute('template') .'/',
+            ));
+        }
+
+        if ( file_exists( $project_tpl ) )
+        {
+            $tpl = $project_tpl;
+
+            $Engine->assign(array(
+                'URL_TPL_DIR' => URL_USR_DIR . $Project->getAttribute('name') .'/',
+                'TPL_DIR'     => USR_DIR . $Project->getAttribute('name') .'/',
+            ));
         }
 
 
@@ -213,15 +226,27 @@ class Template extends \QUI\QDOM
         }
         */
 
+        // scripts file (index.php)
+        if ( file_exists( $project_index ) )
+        {
+            require $project_index;
+
+        } else if ( $template_index && file_exists( $template_index ) )
+        {
+            require $template_index;
+        }
+
 
         try
         {
             return $Engine->fetch( $tpl );
+
         } catch ( \Exception $Exception )
         {
             \QUI\System\Log::writeException( $Exception );
-            return '';
         }
+
+        return '';
     }
 
     /**

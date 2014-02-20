@@ -139,7 +139,7 @@ $content  = $Template->fetchTemplate( $Site );
 \QUI\Utils\System\Debug::marker('fetch Template');
 
 // cachefile erstellen
-if ($Site->getAttribute('nocache') != true)
+if ( $Site->getAttribute('nocache') != true )
 {
     \QUI\Utils\System\File::mkdir($site_cache_dir . $Project->getAttribute('name') .'/');
 
@@ -155,16 +155,16 @@ $content = \QUI\Template::setAdminMenu( $content );
 $suffix_class_file = USR_DIR .'lib/'. $Project->getAttribute('name') .'/Suffix.php';
 $suffix_class_name = 'Suffix'. ucfirst(strtolower($Project->getAttribute('name')));
 
-if (file_exists($suffix_class_file))
+if ( file_exists( $suffix_class_file ) )
 {
     require $suffix_class_file;
 
-    if (class_exists($suffix_class_name))
+    if ( class_exists( $suffix_class_name ) )
     {
         $class = new $suffix_class_name();
 
-        if (method_exists($class, 'suffix')) {
-            $class->suffix($content);
+        if ( method_exists( $class, 'suffix' ) ) {
+            $class->suffix( $content );
         }
     }
 }

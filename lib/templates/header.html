@@ -25,7 +25,10 @@
     <meta name="revisit-after" content="2 days" />
     <!-- [end] meta -->
 
+    {if $Template->getAttribute('requirejs')}
     <script type="text/javascript" src="{$URL_BIN_DIR}js/mvc/require.js"></script>
+    {/if}
+
     <script type="text/javascript">
         var URL_DIR         = '{$URL_DIR}';
             URL_OPT_DIR     = '{$URL_OPT_DIR}',
@@ -33,6 +36,7 @@
             URL_VAR_DIR     = '{$URL_VAR_DIR}',
             URL_PROJECT_DIR = '{$URL_USR_DIR}{$Project->getAttribute('name')}/';
 
+        {if $Template->getAttribute('requirejs')}
         {literal}
         require.config({
             baseUrl : URL_DIR,
@@ -52,9 +56,12 @@
             }
         });
         {/literal}
+        {/if}
     </script>
 
+    {if $Template->getAttribute('QUI')}
     <script type="text/javascript" src="{$URL_BIN_DIR}js/mvc/QUI.js"></script>
+    {/if}
 
     {assign var=canonical value=false}
     {capture assign=_url}{$smarty.const.HOST}{$smarty.const.URL_DIR}{if isset($smarty.request._url)}{$smarty.request._url}{/if}{/capture}
