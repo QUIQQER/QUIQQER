@@ -4,7 +4,6 @@
 
 /**
  * @author www.namerobot.com (Henning Leutz)
- * @package com.pcsg.pms
  */
 
 // Mailto

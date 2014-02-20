@@ -286,10 +286,6 @@ class Utils
         // Parameter herrausfinden
         $params = \QUI\Utils\String::getUrlAttributes( $output );
 
-        if ( !isset( $params['qui'] ) ) {
-            return '';
-        }
-
         $id      = $params['id'];
         $project = $params['project'];
 
@@ -310,7 +306,6 @@ class Utils
         {
             try
             {
-
                 $Obj = self::getImageByUrl( $output );
                 $url = $Obj->getUrl( true );
 
@@ -529,7 +524,6 @@ class Utils
     static function isMediaUrl($url)
     {
         if ( strpos( $url, 'image.php' ) !== false &&
-             strpos( $url, 'qui=1' ) !== false &&
              strpos( $url, 'project=' ) !== false &&
              strpos( $url, 'id=' ) !== false )
         {

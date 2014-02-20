@@ -1193,7 +1193,7 @@ class Site extends \QUI\QDOM
             return $Rewrite->getUrlFromSite( $params );
         }
 
-        $str = 'index.php?pms=1&id='. $this->getId() .
+        $str = 'index.php?id='. $this->getId() .
                '&project='. $this->getProject()->getAttribute( 'name' ) .
                '&lang='. $this->getProject()->getAttribute( 'lang' );
 

@@ -1113,45 +1113,38 @@ class Rewrite
             return $this->_image_cache[ $img ];
         }
 
-        if ( \QUI\Projects\Media\Utils::isMediaUrl( $img ) )
-        {
-            $att = \QUI\Utils\String::getHTMLAttributes( $img );
-
-            if ( isset( $att['src'] ) )
-            {
-                $src = str_replace( '&amp;', '&', $att['src'] );
-            } else
-            {
-                return $output[0];
-            }
-
-            unset( $att['src'] );
-
-            if ( !isset( $src ) ) {
-                return '';
-            }
-
-            if ( !isset( $att['alt'] ) || !isset( $att['title'] ) )
-            {
-                try
-                {
-                    $Image = \QUI\Projects\Media\Utils::getImageByUrl( $src );
-
-                    $att['alt']   = $Image->getAttribute('alt') ? $Image->getAttribute('alt') : '';
-                    $att['title'] = $Image->getAttribute('title') ? $Image->getAttribute('title') : '';
-
-                } catch ( \QUI\Exception $e )
-                {
-
-                }
-            }
-
-            $this->_image_cache[ $img ] = \QUI\Projects\Media\Utils::getImageHTML( $src, $att );
-
-            return $this->_image_cache[ $img ];
+        if ( !\QUI\Projects\Media\Utils::isMediaUrl( $img ) ) {
+            return $output[0];
         }
 
-        return $output[0];
+        $att = \QUI\Utils\String::getHTMLAttributes( $img );
+
+        if ( !isset( $att['src'] ) ) {
+            return $output[0];
+        }
+
+        $src = str_replace( '&amp;', '&', $att['src'] );
+
+        unset( $att['src'] );
+
+        if ( !isset( $att['alt'] ) || !isset( $att['title'] ) )
+        {
+            try
+            {
+                $Image = \QUI\Projects\Media\Utils::getImageByUrl( $src );
+
+                $att['alt']   = $Image->getAttribute('alt') ? $Image->getAttribute('alt') : '';
+                $att['title'] = $Image->getAttribute('title') ? $Image->getAttribute('title') : '';
+
+            } catch ( \QUI\Exception $Exception )
+            {
+
+            }
+        }
+
+        $this->_image_cache[ $img ] = \QUI\Projects\Media\Utils::getImageHTML( $src, $att );
+
+        return $this->_image_cache[ $img ];
     }
 
     /**
@@ -1162,75 +1155,63 @@ class Rewrite
      */
     public function _output_links($output)
     {
-        $id       = '';
-        $lang     = '';
-        $project  = '';
-        $pms_link = false;
+        // no php url
+        if ( $output[2] !== 'index.php' ) {
+            return $output[0];
+        }
 
-        $output = str_replace('&amp;','&', $output); // &amp; fix
-        $output = str_replace('〈=','&lang=',$output); // URL FIX
+        $output = str_replace( '&amp;','&', $output );   // &amp; fix
+        $output = str_replace( '〈=','&lang=', $output ); // URL FIX
 
-        $_output_url = $output[3];
+        $components = $output[3];
 
         // Falls in der eigenen Sammlung schon vorhanden
-        if (isset($this->_url_cache[$_output_url])) {
-            return $output[1].'="'.$this->_url_cache[$_output_url].'"';
+        if ( isset( $this->_url_cache[ $components ] ) ) {
+            return $output[1] .'="'. $this->_url_cache[ $components ] .'"';
         }
 
-        // prüfen ob ein anker mit in der URL ist
-        $anchor = '';
+        $parseUrl = parse_url( $output[2] .'?'. $components );
 
-        if (strpos($_output_url, '#'))
-        {
-            $anchor_expl = explode('#', $_output_url);
-            $_output_url = $anchor_expl[0];
-            $anchor      = '#'.$anchor_expl[1];
+        if ( !isset( $parseUrl['query'] ) || empty( $parseUrl['query'] ) ) {
+            return $output[0];
         }
 
-        $params = explode('&', $_output_url);
+        $urlQuery = $parseUrl['query'];
 
-        foreach ($params as $param)
+        if ( strpos( $urlQuery, 'project' ) === false ||
+             strpos( $urlQuery, 'lang' ) === false ||
+             strpos( $urlQuery, 'id' ) === false )
         {
-            $param = explode('=', $param);
+            // no quiqqer url
+            return $output[0];
+        }
 
-            switch ($param[0])
-            {
-                case 'pms':
-                    $pms_link = true;
-                break;
+        // maybe a quiqqer url ?
+        parse_str( $urlQuery, $urlQueryParams );
 
-                default:
-                    if (isset($param[0]) && isset($param[1])) {
-                         $url_prams[ $param[0] ] = $param[1];
-                    }
-                break;
+        try
+        {
+            $url    = $this->getUrlFromSite( $urlQueryParams );
+            $anchor = '';
+
+            if ( isset( $parseUrl['fragment'] ) && !empty( $parseUrl['fragment'] ) ) {
+                $anchor = '#'. $parseUrl['fragment'];
             }
+
+            $this->_url_cache[ $components ] = $url;
+
+            return $output[1] .'="'. $url . $anchor .'"';
+
+        } catch ( \Exception $Exception )
+        {
+            \QUI\System\Log::writeException( $Exception );
+
+        } catch ( \QUI\Exception $Exception )
+        {
+            \QUI\System\Log::writeException( $Exception );
         }
 
-        // Wenn es ein Link vom PMA ist
-        $url = '';
-
-        if ($pms_link)
-        {
-            try
-            {
-                $url = $this->getUrlFromSite($url_prams) . $anchor;
-                $this->_url_cache[$_output_url] = $url; // URLS sammeln
-
-            } catch (Exception $e)
-            {
-                \QUI\System\Log::writeException($e);
-            } catch (\QUI\Exception $e)
-            {
-                \QUI\System\Log::writeException($e);
-            }
-        } else
-        {
-            // Externe URL
-            $url = $_output_url . $anchor;
-        }
-
-        return $output[1].'="'.$url.'"';
+        return $output[0];
     }
 
     /**
@@ -1244,13 +1225,13 @@ class Rewrite
     {
         $search = array('%20', '.', ' ', '_');
 
-        if ($slash) {
+        if ( $slash ) {
             $search[] = '/';
         }
 
         $url = str_replace($search, '-', $url);
 
-        if (substr($url,-5) == '_html') {
+        if ( substr($url,-5) == '_html' ) {
             $url = substr($url, 0, -5).'.html';
         }
 
@@ -1281,6 +1262,8 @@ class Rewrite
             $lang    = $Project->getAttribute( 'lang' );
             $project = $Project->getAttribute( 'name' );
 
+            unset($params['site']);
+
         } else
         {
             if ( isset( $params['id'] ) ) {
@@ -1294,12 +1277,11 @@ class Rewrite
             if ( isset( $params['lang'] ) ) {
                 $lang = $params['lang'];
             }
-        }
 
-        unset($params['site']);
-        unset($params['project']);
-        unset($params['id']);
-        unset($params['lang']);
+            unset($params['project']);
+            unset($params['id']);
+            unset($params['lang']);
+        }
 
         // Wenn nicht alles da ist dann wird ein Exception geworfen
         if (!isset($id) || !isset($project)) {
@@ -1433,5 +1415,3 @@ class Rewrite
         return $url.'.'. (isset($exp[1]) ? $exp[1] : 'html');
     }
 }
-
-?>

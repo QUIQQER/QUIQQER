@@ -395,18 +395,15 @@ class Manager
      */
     public function cleanHref($html)
     {
-        if ( isset( $html[2] ) &&
-             strpos( $html[2], 'index.php' ) !== false &&
-             strpos( $html[2], 'pms=1') )
+        if ( isset( $html[2] ) && strpos( $html[2], 'index.php' ) !== false )
         {
             $index = explode( 'index.php?', $html[2] );
 
             return $html[1] .'="index.php?'.$index[1]. '"';
+        }
 
-        } else if(
-            isset( $html[2] ) &&
-            strpos( $html[2], 'image.php' ) !== false &&
-            strpos( $html[2], 'pms=1' ) )
+
+        if( isset( $html[2] ) && strpos( $html[2], 'image.php' ) !== false )
         {
             $index = explode( 'image.php?', $html[2] );
 
