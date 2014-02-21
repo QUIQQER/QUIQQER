@@ -1218,7 +1218,7 @@ class Site extends \QUI\QDOM
      */
     public function getUrlRewrited($params=array())
     {
-        if ($this->getId() == 1)
+        if ( $this->getId() == 1 )
         {
             if (empty($params)) {
                 return '';
@@ -1251,6 +1251,7 @@ class Site extends \QUI\QDOM
         $default_lang = $Project->getAttribute('default_lang');
 
         // Plugins können hier eingreifen
+        // @todo event
         if ( \QUI::conf('system', 'geturl') )
         {
             $plugins = explode(',', \QUI::conf('system', 'geturl'));

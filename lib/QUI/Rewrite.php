@@ -1321,7 +1321,7 @@ class Rewrite
                 $_params['suffix'] = $params['suffix'];
             }
 
-            $url = $Site->getUrlRewrited($_params);
+            $url = URL_DIR . $Site->getUrlRewrited($_params);
 
             // Link Cache
             file_put_contents($link_cache_file, str_replace('.print','.html',$url));
@@ -1365,7 +1365,6 @@ class Rewrite
             $url = URL_DIR . $this->_project_prefix . $lang .'/'. $url;
             $url = \QUI\Utils\String::replaceDblSlashes($url);
         }
-
 
         // falls host anderst ist, dann muss dieser dran gehängt werden
         // damit kein doppelter content entsteht
