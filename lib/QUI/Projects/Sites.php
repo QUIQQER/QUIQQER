@@ -210,7 +210,7 @@ class Sites
                     'name'     => 'information',
                     'text'     => 'Information',
                     'template' => SYS_DIR .'template/site/information.html',
-                    'icon'     => URL_BIN_DIR .'16x16/page.png'
+                    'icon'     => 'icon-file-alt'
                 ))
             );
 
@@ -221,7 +221,7 @@ class Sites
                     'name'     => 'information',
                     'text'     => 'Information',
                     'template' => SYS_DIR .'template/site/noview.html',
-                    'icon'     => URL_BIN_DIR .'16x16/page.png'
+                    'icon'     => 'icon-file-alt'
                 ))
             );
 
@@ -235,7 +235,7 @@ class Sites
                     'name'     => 'information',
                     'text'     => 'Information',
                     'template' => SYS_DIR .'template/site/information_norights.html',
-                    'icon'     => URL_BIN_DIR .'16x16/page.png'
+                    'icon'     => 'icon-file-alt'
                 ))
             );
 
@@ -247,7 +247,17 @@ class Sites
             new \QUI\Controls\Toolbar\Tab(array(
                 'name' => 'content',
                 'text' => 'Inhalt',
-                'icon' => URL_BIN_DIR .'16x16/edit.png'
+                'icon' => 'icon-file-text-alt'
+            ))
+        );
+
+        // Inhaltsreiter
+        $Tabbar->appendChild(
+            new \QUI\Controls\Toolbar\Tab(array(
+                'name'     => 'sort',
+                'text'     => 'Sortierung',
+                'template' => SYS_DIR .'template/site/navigation.html',
+                'icon'     => 'icon-sort'
             ))
         );
 
