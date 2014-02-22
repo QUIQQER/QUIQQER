@@ -44,9 +44,30 @@ function ajax_menu()
     $files    = \QUI\Utils\System\File::readDir( $dir );
     $Settings = $Menu->getElementByName( 'settings' );
 
+    foreach ( $files as $key => $file ) {
+        $files[ $key ] = $dir . $file;
+    }
+
+    // plugin settings
+    $plugins = \QUI::getPackageManager()->getInstalled();
+
+    foreach ( $plugins as $plugin )
+    {
+        $setting_file = OPT_DIR . $plugin['name'] .'/settings.xml';
+
+        if ( file_exists( $setting_file ) ) {
+            $files[] = $setting_file;
+        }
+    }
+
+    // create the menu setting entries
     foreach ( $files as $file )
     {
-        $windows = \QUI\Utils\XML::getSettingWindowsFromXml( $dir . $file );
+        $windows = \QUI\Utils\XML::getSettingWindowsFromXml( $file );
+
+        if ( !$windows ) {
+            continue;
+        }
 
         foreach ( $windows as $Window )
         {
@@ -55,7 +76,7 @@ function ajax_menu()
             $Win->setAttribute( 'name', '/settings/'. $Window->getAttribute( 'name' ) .'/' );
             $Win->setAttribute( 'onClick', 'QUI.Menu.menuClick' );
             $Win->setAttribute( 'qui-window', true );
-            $Win->setAttribute( 'qui-xml-file', 'settings/'. $file );
+            $Win->setAttribute( 'qui-xml-file', $file );
 
             // titel
             $titles = $Window->getElementsByTagName( 'title' );

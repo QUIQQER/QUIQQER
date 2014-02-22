@@ -5,8 +5,6 @@
  */
 function ajax_settings_category($file, $category)
 {
-    $file = SYS_DIR . $file;
-
     if ( !file_exists( $file ) ) {
         return '';
     }

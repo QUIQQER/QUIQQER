@@ -2,8 +2,6 @@
 
 function ajax_settings_save($file, $params)
 {
-    $file = SYS_DIR . $file;
-
     if ( !file_exists( $file ) )
     {
         throw new \QUI\Exception(

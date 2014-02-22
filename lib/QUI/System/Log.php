@@ -58,7 +58,7 @@ class Log
      *
      * @example \QUI\System\Log::write( 'My Error', \QUI\System\Log::LEVEL_ERROR );
      */
-    static function write($message, $loglevel=self::LEVEL_NOTICE, $filename='error')
+    static function write($message, $loglevel=self::LEVEL_INFO, $filename='error')
     {
         \QUI::getEvents()->fireEvent('logWrite', array(
             'message'  => $message,

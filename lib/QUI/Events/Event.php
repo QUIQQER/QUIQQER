@@ -119,6 +119,8 @@ class Event implements \QUI\Interfaces\Events
 
         foreach ( $this->_events[ $event ] as $fn )
         {
+            $fn = preg_replace('/[\\\\]{2,}/', '\\', $fn);
+
             if ( $args === false )
             {
                 $results[ $fn ] = $fn();

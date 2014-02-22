@@ -3,8 +3,6 @@
 
 function ajax_settings_get($file)
 {
-    $file = SYS_DIR . $file;
-
     if ( !file_exists( $file ) ) {
         return array();
     }
