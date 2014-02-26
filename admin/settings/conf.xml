@@ -237,7 +237,7 @@
 
             <category name="database">
                 <text>Datenbank</text>
-                <icon>URL_BIN_DIR/22x22/database.png</icon>
+                <icon>icon-briefcase</icon>
 
                 <settings title="database" name="database">
                     <title>Datenbank Einstellungen</title>
@@ -261,7 +261,7 @@
 
             <category name="mail">
                 <text>E-Mail</text>
-                <icon>URL_BIN_DIR/22x22/mail.png</icon>
+                <icon>icon-envelope-alt</icon>
 
                 <settings title="mail" name="mail">
                     <title>E-Mail Einstellungen</title>
@@ -311,7 +311,7 @@
 
             <category name="auth">
                 <text>Authentifizierung</text>
-                <icon>URL_BIN_DIR/22x22/user.png</icon>
+                <icon>icon-user</icon>
 
                 <settings title="auth" name="auth">
                     <title>Authentifizierung</title>

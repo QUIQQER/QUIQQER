@@ -49,19 +49,24 @@ define('controls/projects/project/Settings', [
             'openWatersign'
         ],
 
-        initialize : function(project, options)
+        options : {
+            project : ''
+        },
+
+        initialize : function(options)
         {
+            this.parent( options );
+
             // defaults
-            this.$project = project;
-            this.$Project = Projects.get( this.$project );
+            this.$Project = Projects.get(
+                this.getAttribute( 'project' )
+            );
 
             this.setAttributes({
                 name  : 'projects-panel',
                 icon  : 'icon-home',
-                title : this.$project
+                title : this.getAttribute( 'project' )
             });
-
-            this.parent( options );
 
             this.addEvents({
                 onCreate : this.$onCreate,
@@ -92,7 +97,7 @@ define('controls/projects/project/Settings', [
             this.addCategory({
                 name   : 'settings',
                 text   : 'Einstellungen',
-                icon   : URL_BIN_DIR +'32x32/actions/misc.png',
+                icon   : 'icon-gear',
                 events : {
                     onClick : this.openSettings
                 }
@@ -101,7 +106,7 @@ define('controls/projects/project/Settings', [
             this.addCategory({
                 name   : 'meta',
                 text   : 'Meta Angaben',
-                icon   : URL_BIN_DIR +'32x32/actions/contents.png',
+                icon   : 'icon-inbox',
                 events : {
                     onClick : this.openMeta
                 }
@@ -110,7 +115,7 @@ define('controls/projects/project/Settings', [
             this.addCategory({
                 name   : 'backup',
                 text   : 'Backup',
-                icon   : URL_BIN_DIR +'32x32/devices/hdd_mount.png',
+                icon   : 'icon-hdd',
                 events : {
                     onClick : this.openBackup
                 }
@@ -119,7 +124,7 @@ define('controls/projects/project/Settings', [
             this.addCategory({
                 name   : 'watersign',
                 text   : 'Wasserzeichen',
-                icon   : URL_BIN_DIR +'32x32/actions/thumbnail.png',
+                icon   : 'icon-picture',
                 events : {
                     onClick : this.openWatersign
                 }
@@ -210,6 +215,8 @@ define('controls/projects/project/Settings', [
                 Body    = Control.getBody();
 
 
+            console.warn( 'not implemented' );
+
             Body.set( 'html', '' );
             Control.Loader.hide();
         },
@@ -227,6 +234,8 @@ define('controls/projects/project/Settings', [
                 Body    = Control.getBody();
 
 
+            console.warn( 'not implemented' );
+
             Body.set( 'html', '' );
             Control.Loader.hide();
         },
@@ -243,6 +252,7 @@ define('controls/projects/project/Settings', [
             var Control = this,
                 Body    = Control.getBody();
 
+            console.warn( 'not implemented' );
 
             Body.set( 'html', '' );
             Control.Loader.hide();

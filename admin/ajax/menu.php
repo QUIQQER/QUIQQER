@@ -32,7 +32,7 @@ function ajax_menu()
                 'text'    => $project,
                 'icon'    => 'icon-home',
                 'onclick' => '',
-                'require' => 'admin/projects/Settings',
+                'require' => 'controls/projects/project/Settings',
                 'onClick' => 'QUI.Menu.menuClick',
                 'project' => $project
             ))

@@ -60,7 +60,12 @@ define('controls/menu/Manager', [
             {
                 require([ menuRequire ], function(Control)
                 {
-                    var Ctrl = new Control();
+                    var attributes = Object.merge(
+                        Item.getStorageAttributes(),
+                        Item.getAttributes()
+                    );
+
+                    var Ctrl = new Control( attributes );
 
                     if ( instanceOf( Ctrl, Panel ) )
                     {
