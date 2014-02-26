@@ -412,6 +412,76 @@ class User implements \QUI\Interfaces\Users\User
     }
 
     /**
+     * Return the user Currency
+     *
+     * @return String
+     * @todo do it as a plugin
+     */
+    public function getCurrency()
+    {
+        if ( $this->getAttribute( 'currency' ) )
+        {
+            if ( \QUI\Currency::existCurrency( $this->getAttribute( 'currency' ) ) ) {
+                return $this->getAttribute( 'currency' );
+            }
+        }
+
+        $Country = $this->getCountry();
+
+        if ( $Country )
+        {
+            $currency = $Country->getCurrencyCode();
+
+            if ( \QUI\Currency::existCurrency( $currency ) ) {
+                return $currency;
+            }
+        }
+
+        return \QUI\Currency::getDefaultCurrency();
+    }
+
+    /**
+     * Return the Country from the
+     *
+     * @return \QUI\Countries\Country|boolean
+     * @todo do it as a plugin
+     */
+    public function getCountry()
+    {
+        try
+        {
+            $Standard = $this->getStandardAdress();
+
+            if ( $Standard )
+            {
+                $Country = $Standard->getCountry();
+                return $Country;
+            }
+
+        } catch ( \QUI\Exception $Exception )
+        {
+
+        }
+
+        // apache fallback falls möglich
+        if ( isset( $_SERVER[ "GEOIP_COUNTRY_CODE" ] ) )
+        {
+            try
+            {
+                return \QUI\Countries\Manager::get(
+                    $_SERVER[ "GEOIP_COUNTRY_CODE" ]
+                );
+
+            } catch ( \QUI\Exception $Exception )
+            {
+
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * (non-PHPdoc)
      * @see \QUI\Interfaces\Users\User::setGroups()
      *

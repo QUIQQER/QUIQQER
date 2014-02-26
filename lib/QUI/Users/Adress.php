@@ -258,7 +258,7 @@ class Adress extends \QUI\QDOM
     /**
      * Länder bekommen
      *
-     * @return Country
+     * @return \QUI\Countries\Country
      */
     public function getCountry()
     {
