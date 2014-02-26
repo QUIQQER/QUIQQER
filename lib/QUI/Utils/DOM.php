@@ -573,16 +573,22 @@ class DOM
             $type = $Input->getAttribute( 'type' );
         }
 
+        $id = $Input->getAttribute( 'conf' ) .'-'. time();
+
         $string  = '<p>';
         $string .= '<input
             type="'. $type .'"
             name="'. $Input->getAttribute( 'conf' ) .'"
+            id="'. $id .'"
         />';
 
         $text = $Input->getElementsByTagName( 'text' );
 
-        if ( $text->length ) {
-            $string .= '<span>'. $text->item( 0 )->nodeValue .'</span>';
+        if ( $text->length )
+        {
+            $string .= '<label for="'. $id .'">'.
+                $text->item( 0 )->nodeValue .
+            '</label>';
         }
 
         $desc = $Input->getElementsByTagName( 'description' );

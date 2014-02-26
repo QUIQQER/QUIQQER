@@ -1,6 +1,13 @@
 
 .qui-xml-panel input {
+    float: left;
+    line-height: 30px;
     margin-right: 10px;
+}
+
+.qui-xml-panel label {
+    cursor: pointer;
+    white-space: nowrap;
 }
 
 .qui-xml-panel .description {
