@@ -142,31 +142,36 @@ require([
     /**
      * MessageHandler
      */
+    require(['qui/controls/messages/Panel'], function(MessagePanel)
+    {
+        new MessagePanel().inject( RightColumn );
+    });
+
     QUI.getMessageHandler(function(MessageHandler)
     {
-        new Panel({
-            title  : 'Nachrichten',
-            name   : 'message-handler',
-            events :
-            {
-                onCreate : function(Panel)
-                {
-                    var Content = Panel.getContent();
-
-                    Content.setStyles({
-                        padding : 5
-                    });
-
-                    MessageHandler.bindParent( Content );
-                    MessageHandler.open();
-
-                    Content.getElement( '.message-handler-container' ).setStyles({
-                        zIndex : 100
-                    });
-                }
-            }
-        }).inject( RightColumn );
-
+//        new Panel({
+//            title  : 'Nachrichten',
+//            name   : 'message-handler',
+//            events :
+//            {
+//                onCreate : function(Panel)
+//                {
+//                    var Content = Panel.getContent();
+//
+//                    Content.setStyles({
+//                        padding : 5
+//                    });
+//
+//                    MessageHandler.bindParent( Content );
+//                    MessageHandler.open();
+//
+//                    Content.getElement( '.message-handler-container' ).setStyles({
+//                        zIndex : 100
+//                    });
+//                }
+//            }
+//        }).inject( RightColumn );
+//
         // if 404 -> not loged in, than login pop
         MessageHandler.addEvent('onAdd', function(MH, Message)
         {
