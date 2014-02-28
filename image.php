@@ -75,7 +75,7 @@ if (isset($_REQUEST['project']) && isset($_REQUEST['id']))
 
         echo $fr_image;
 
-    } catch (QException $e)
+    } catch ( \QUI\Exception $e)
     {
         // wenn es das Bild nicht mehr gibt
         header("HTTP/1.0 404 Not Found");
