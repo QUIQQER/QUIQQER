@@ -22,7 +22,8 @@ function ajax_site_getchildren($project, $lang, $id, $select, $start)
         $select = array();
     }
 
-    if ( isset( $start ) )
+    // forerst kein limit
+    if ( false && isset( $start ) )
     {
         $max = $Project->getConfig( 'sheets' );
 
@@ -90,5 +91,3 @@ QUI::$Ajax->register(
     array('project', 'lang', 'id', 'select', 'start'),
     'Permission::checkAdminUser'
 );
-
-?>
