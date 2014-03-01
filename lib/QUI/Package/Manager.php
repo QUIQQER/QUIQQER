@@ -6,6 +6,15 @@
 
 namespace QUI\Package;
 
+//Use the Composer classes
+use Composer\Console\Application;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Event\ConsoleTerminateEvent;
+use Symfony\Component\Console\ConsoleEvents;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Formatter\OutputFormatterInterface;
+
+
 /**
  * Package Manager for the QUIQQER System
  *
@@ -66,6 +75,12 @@ class Manager
     protected $_stability = 'stable';
 
     /**
+     * Composer Application
+     * @var Application
+     */
+    protected $_Application;
+
+    /**
      * constructor
      */
     public function __construct()
@@ -75,56 +90,62 @@ class Manager
 
         $this->_composer_json = $this->_vardir .'composer.json';
 
+        // Create the application and run it with the commands
+        $this->_Application = new Application();
+        $this->_Application->setAutoExit( false );
+
         \QUI\Utils\System\File::mkdir( $this->_vardir );
 
         putenv( "COMPOSER_HOME=". $this->_vardir );
 
-        // exec
-        $exec_var = str_replace( CMS_DIR, '', $this->_vardir );
-
-        $this->_composer_exec  = 'cd '. CMS_DIR .';';
-        $this->_composer_exec .= ' php '. $exec_var .'composer.phar';
-        $this->_composer_exec .= ' --working-dir="'. $this->_vardir .'" ';
-
-        // stability
-        if ( \QUI::conf( 'globales', 'stability' ) )
-        {
-            switch ( \QUI::conf( 'globales', 'stability' ) )
-            {
-                case "stable":
-                    $this->_stability = "stable";
-                break;
-
-                case "RC":
-                    $this->_stability = "RC";
-                break;
-
-                case "beta":
-                    $this->_stability = "beta";
-                break;
-
-                case "alpha":
-                    $this->_stability = "alpha";
-                break;
-
-                case "dev":
-                    $this->_stability = "dev";
-                break;
-            }
-        }
 
 
-        exec( $this->_composer_exec, $result );
+//         // exec
+//         $exec_var = str_replace( CMS_DIR, '', $this->_vardir );
 
-        if ( count( $result ) ) {
-            $this->_exec = true;
-        }
+//         $this->_composer_exec  = 'cd '. CMS_DIR .';';
+//         $this->_composer_exec .= ' php '. $exec_var .'composer.phar';
+//         $this->_composer_exec .= ' --working-dir="'. $this->_vardir .'" ';
 
-        $this->_refreshInstalledList();
+//         // stability
+//         if ( \QUI::conf( 'globales', 'stability' ) )
+//         {
+//             switch ( \QUI::conf( 'globales', 'stability' ) )
+//             {
+//                 case "stable":
+//                     $this->_stability = "stable";
+//                 break;
 
-        if ( !file_exists( $this->_composer_json ) ) {
-            $this->_createComposerJSON();
-        }
+//                 case "RC":
+//                     $this->_stability = "RC";
+//                 break;
+
+//                 case "beta":
+//                     $this->_stability = "beta";
+//                 break;
+
+//                 case "alpha":
+//                     $this->_stability = "alpha";
+//                 break;
+
+//                 case "dev":
+//                     $this->_stability = "dev";
+//                 break;
+//             }
+//         }
+
+
+//         exec( $this->_composer_exec, $result );
+
+//         if ( count( $result ) ) {
+//             $this->_exec = true;
+//         }
+
+//         $this->_refreshInstalledList();
+
+//         if ( !file_exists( $this->_composer_json ) ) {
+//             $this->_createComposerJSON();
+//         }
     }
 
     /**
@@ -181,7 +202,7 @@ class Manager
 
         $require["php"] = ">=5.3.2";
         $require["quiqqer/quiqqer"] = "1.*";
-        $require["tedivm/stash"]    = "0.11.*";
+        $require["tedivm/stash"] = "0.11.*";
 
         foreach ( $list as $entry )
         {
@@ -192,12 +213,14 @@ class Manager
                   preg_match( "/[0-9]/", $version ) )
             {
                 $version = '>='. $version;
-                //$version = '*';
             }
 
             $require[ $entry['name'] ] = $version;
         }
 
+        // composer and component installer should not be overwritten
+        $require["composer/composer"] = "1.0.*@dev";
+        $require["robloach/component-installer"] = "*";
 
         $template = str_replace(
             '{$REQUIRE}',
@@ -353,12 +376,11 @@ class Manager
         $this->_require[ $package ] = 'dev-master';
         $this->_createComposerJSON();
 
-        if ( $this->_exec )
-        {
-            exec( $this->_composer_exec .'update "'. $package .'" 2>&1', $exec_result );
+        $result = $this->_execComposer('update', array(
+            'tokens' => $package
+        ));
 
-            \QUI\System\Log::writeRecursive( $exec_result );
-        }
+        \QUI\System\Log::writeRecursive( $result );
     }
 
     /**
@@ -389,9 +411,11 @@ class Manager
         if ( $this->_exec )
         {
             $params  = array();
-            $package = \QUI\Utils\Security\Orthos::clearShell( $package );
+            $package = \QUI\Utils\Security\Orthos::clear( $package );
 
-            exec( $this->_composer_exec .'show "'. $package .'"', $exec_result );
+            $exec_result = $this->_execComposer('show', array(
+               'tokens' => $package
+            ));
 
             foreach ( $exec_result as $key => $line )
             {
@@ -470,19 +494,16 @@ class Manager
         $str    = \QUI\Utils\Security\Orthos::clearShell( $str );
         $list   = $this->_getList();
 
-        if ( $this->_exec )
+        $list = $this->_execComposer('search', array(
+            'tokens' => array( $str )
+        ));
+
+        foreach ( $list as $entry )
         {
-            exec( $this->_composer_exec .'search "'. $str .'" 2>&1', $exec_result );
+            $expl = explode( ' ', $entry, 2 );
 
-            \QUI\System\Log::writeRecursive($exec_result);
-
-            foreach ( $exec_result as $entry )
-            {
-                $expl = explode( ' ', $entry, 2 );
-
-                if ( isset( $expl[0] ) && isset( $expl[1] ) ) {
-                    $result[ $expl[0] ] = $expl[1];
-                }
+            if ( isset( $expl[0] ) && isset( $expl[1] ) ) {
+                $result[ $expl[0] ] = $expl[1];
             }
         }
 
@@ -602,73 +623,57 @@ class Manager
     {
         $this->_createComposerJSON();
 
-        if ( $this->_exec )
+        $result = $this->_execComposer( 'update', array(
+            '--dry-run' => true
+        ));
+
+        foreach ( $result as $line )
         {
-            exec( $this->_composer_exec .'update  --dry-run', $exec_result );
-
-            $last = end( $exec_result );
-
-            if ( $last == 'Nothing to install or update' ) {
-                return array();
-            }
-
-            $packages = array();
-
-            foreach ( $exec_result as $line )
+            if ( strpos( $line, '-' ) === false ||
+                 strpos( $line, '/' ) === false ||
+                 strpos( $line, '(' ) === false )
             {
-                if ( strpos( $line, '-' ) === false ||
-                     strpos( $line, '/' ) === false ||
-                     strpos( $line, '(' ) === false )
-                {
-                    continue;
-                }
-
-                if ( strpos($line, 'Installing') !== false )
-                {
-                    preg_match( '#Installing ([^ ]*) #i', $line, $package );
-                } else
-                {
-                    preg_match( '#Updating ([^ ]*) #i', $line, $package );
-                }
-
-                preg_match_all( '#\(([^\)]*)\)#', $line, $versions );
-
-                if ( isset( $package[1] ) ) {
-                    $package = $package[1];
-                }
-
-                $from = '';
-                $to   = '';
-
-                if ( isset( $versions[ 1 ] ) )
-                {
-                    if ( isset( $versions[ 1 ][ 0 ] ) )
-                    {
-                        $from = $versions[ 1 ][ 0 ];
-                        $to   = $versions[ 1 ][ 0 ]; // if to is not set
-                    }
-
-                    if ( isset( $versions[ 1 ][ 1 ] ) ) {
-                        $to = $versions[ 1 ][ 1 ];
-                    }
-                }
-
-                $packages[] = array(
-                    'package' => $package,
-                    'from'    => $from,
-                    'to'      => $to
-                );
+                continue;
             }
 
-            return $packages;
+            if ( strpos($line, 'Installing') !== false )
+            {
+                preg_match( '#Installing ([^ ]*) #i', $line, $package );
+            } else
+            {
+                preg_match( '#Updating ([^ ]*) #i', $line, $package );
+            }
+
+            preg_match_all( '#\(([^\)]*)\)#', $line, $versions );
+
+            if ( isset( $package[1] ) ) {
+                $package = $package[1];
+            }
+
+            $from = '';
+            $to   = '';
+
+            if ( isset( $versions[ 1 ] ) )
+            {
+                if ( isset( $versions[ 1 ][ 0 ] ) )
+                {
+                    $from = $versions[ 1 ][ 0 ];
+                    $to   = $versions[ 1 ][ 0 ]; // if to is not set
+                }
+
+                if ( isset( $versions[ 1 ][ 1 ] ) ) {
+                    $to = $versions[ 1 ][ 1 ];
+                }
+            }
+
+            $packages[] = array(
+                'package' => $package,
+                'from'    => $from,
+                'to'      => $to
+            );
         }
 
-        throw new \QUI\Exception(
-            \QUI::getLocale()->get(
-                'quiqqer/system',
-                'exception.packages.update.check'
-            )
-        );
+        return $packages;
     }
 
     /**
@@ -683,46 +688,37 @@ class Manager
      */
     public function update($package=false)
     {
-        if ( $this->_exec )
+        if ( $package )
         {
-            $exec = $this->_composer_exec .'update 2>&1';
-
-            if ( $package )
-            {
-                $package = \QUI\Utils\Security\Orthos::clearShell( $package );
-                $exec    = $this->_composer_exec .'update "'. $package .'" 2>&1';
-            }
-
-            \QUI\System\Log::write( 'Execute: '. $exec );
-
-            exec( $exec, $output );
-
-            // exception?
-            foreach ( $output as $key => $msg )
-            {
-                // if not installed
-                if ( strpos( $msg, 'quiqqer/smarty' ) !== false &&
-                     strpos( $msg, 'not installed' ) !== false )
-                {
-                    $this->install( $package );
-                }
-
-                if ( strpos( $msg, 'Exception' ) )
-                {
-                    throw new \QUI\Exception(
-                        $output[ $key+1 ]
-                    );
-                }
-            }
-
-            return true;
+            $result = $this->_execComposer('update', array(
+                'tokens' => $package
+            ));
+        } else
+        {
+            $result = $this->_execComposer('update');
         }
 
-        throw new \QUI\Exception( 'Could not execute composer' );
+        // exception?
+        foreach ( $output as $key => $msg )
+        {
+            // if not installed
+            if ( strpos( $msg, $package ) !== false &&
+                 strpos( $msg, 'not installed' ) !== false )
+            {
+                $this->install( $package );
+            }
+
+            if ( strpos( $msg, 'Exception' ) )
+            {
+                throw new \QUI\Exception(
+                    $output[ $key + 1 ]
+                );
+            }
+        }
     }
 
     /**
-     * Update a packe or the entire system from a package archive
+     * Update a package or the entire system from a package archive
      *
      * @param String $packagepath - path to the ZIP archive
      * @throws \\QUI\Exception
@@ -853,8 +849,9 @@ class Manager
         file_put_contents( $repositories .'composer.json', $template );
 
         // make an update from the repository archive source
-        $exec = $this->_composer_exec .' --working-dir="'. $repositories .'" ';
-        exec( $exec, $result );
+        $result = $this->_execComposer('', array(
+            '--working-dir' => $repositories
+        ));
 
         if ( !count( $result ) )
         {
@@ -866,9 +863,11 @@ class Manager
             );
         }
 
-        exec( $exec .'update  --dry-run', $exec_result );
-        $last = end( $exec_result );
+        $result = $this->_execComposer('update', array(
+            '--dry-run' => true
+        ));
 
+        $last = end( $result );
 
         if ( $last == 'Nothing to install or update' )
         {
@@ -880,6 +879,40 @@ class Manager
             );
         }
 
-        exec( $exec .'update', $exec_result );
+        $result = $this->_execComposer('update');
+    }
+
+    /**
+     * Execute a composer command
+     *
+     * @param String $command
+     * @param Array $params
+     */
+    protected function _execComposer($command, $params=array())
+    {
+        // composer output some warnings that composer/cache is not empty
+        \QUI::getTemp()->moveToTemp( $this->_vardir .'cache' );
+
+        if ( !isset( $params['--working-dir'] ) ) {
+            $params['--working-dir'] = $this->_vardir;
+        }
+
+        $params = array_merge(array(
+            'command' => $command
+        ), $params);
+
+        $Input  = new ArrayInput( $params );
+        $Output = new \QUI\Package\Output();
+
+        //$Command = $this->_Composer->get( $command );
+        $this->_Application->run( $Input, $Output );
+
+        return $Output->getMessages();
+
+
+//         $exec_var = str_replace( CMS_DIR, '', $this->_vardir );
+
+//         $this->_composer_exec  = 'cd '. CMS_DIR .';';
+//         $this->_composer_exec .= ' php '. $exec_var .'composer.phar';
     }
 }

@@ -67,4 +67,18 @@ class Temp
         \QUI\Utils\System\File::deleteDir( $this->_folder );
         \QUI\Utils\System\File::mkdir( $this->_folder );
     }
+
+    /**
+     * Move a folder or a file to the temp folder
+     * so it can be deleted
+     *
+     * @param {String} $folder - Path to file or folder
+     */
+    public function moveToTemp($folder)
+    {
+        \QUI\Utils\System\File::move(
+            $folder,
+            self::createFolder() . md5($folder)
+        );
+    }
 }

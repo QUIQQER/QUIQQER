@@ -104,6 +104,10 @@ class Autoloader
                 require CMS_DIR .'packages/composer/ClassLoader.php';
             }
 
+            if ( $classname == 'Composer\Autoload\ClassLoader' ) {
+                return true;
+            }
+
             self::$ComposerLoader = new \Composer\Autoload\ClassLoader();
 
             $map      = require CMS_DIR .'packages/composer/autoload_namespaces.php';

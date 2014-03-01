@@ -205,13 +205,5 @@
               var="menu.help.changelog.text"
         />
 
-        <item parent="/help/"
-              name="messages"
-              icon="icon-inbox"
-              group="quiqqer/system"
-              var="menu.help.inbox.text"
-              exec="QUI.getMessageHandler(function(MH) { MH.open(); });"
-        />
-
 
 </menu>
