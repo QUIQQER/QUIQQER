@@ -194,8 +194,6 @@ define('controls/packages/Panel', [
             var Body = this.getContent(),
                 size = Body.getSize();
 
-            console.log( Body );
-
             if ( this.$Grid )
             {
                 this.$Grid.setHeight( size.y -40 );
