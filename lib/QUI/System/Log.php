@@ -84,7 +84,7 @@ class Log
      */
     static function writeRecursive($object, $loglevel=self::LEVEL_NOTICE, $filename='error')
     {
-        self::write( print_r($object, true), $filename );
+        self::write( print_r($object, true), $loglevel, $filename );
     }
 
     /**
