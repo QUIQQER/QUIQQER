@@ -23,12 +23,10 @@ function ajax_system_update_check()
 }
 
 QUI::$Ajax->register(
-	'ajax_system_update_check',
+    'ajax_system_update_check',
     false,
     array(
-    	'Permission::checkAdminUser',
+        'Permission::checkAdminUser',
         'quiqqer.system.update'
     )
 );
-
-?>
