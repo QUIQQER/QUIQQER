@@ -312,6 +312,10 @@ define('classes/projects/project/Site', [
 
             Ajax.post('ajax_site_children_create', function(result, Request)
             {
+                if ( !result ) {
+                    return;
+                }
+
                 if ( Request.getAttribute( 'onfinish' ) ) {
                     Request.getAttribute( 'onfinish' )( result, Request );
                 }

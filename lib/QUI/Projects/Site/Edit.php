@@ -623,28 +623,28 @@ class Edit extends \QUI\Projects\Site
      */
     public function existNameInChildren($name)
     {
-        $result = \QUI::getDataBase()->fetch(array(
-            'count'  => array(
-                'select' => $this->_TABLE .'.id',
-                'as'     => 'id'
-            ),
-            'from' 	 => array(
-                $this->_RELTABLE,
-                $this->_TABLE
-            ),
-            'where'  =>	array(
-                $this->_RELTABLE .'.parent' => $this->getId(),
-                $this->_RELTABLE .'.child'  => $this->_TABLE .'.id',
-                $this->_TABLE .'.name'      => $name,
-                $this->_TABLE.'.deleted'    => 0
-            )
-        ));
+        $query = "
+            SELECT COUNT({$this->_TABLE}.id) AS count
+            FROM `{$this->_RELTABLE}`,`{$this->_TABLE}`
+            WHERE `{$this->_RELTABLE}`.`parent` = {$this->getId()} AND
+                  `{$this->_RELTABLE}`.`child` = `{$this->_TABLE}`.`id` AND
+                  `{$this->_TABLE}`.`name` = :name AND
+                  `{$this->_TABLE}`.`deleted` = 0
+        ";
+
+        $PDO   = \QUI::getDataBase()->getPDO();
+        $Stmnt = $PDO->prepare( $query );
+
+        $Stmnt->bindValue( ':name', $name, \PDO::PARAM_STR );
+        $Stmnt->execute();
+
+        $result = $Stmnt->fetchAll( \PDO::FETCH_ASSOC );
 
         if ( !isset( $result[0] ) ) {
             return false;
         }
 
-        return (int)$result[0]['id'] ? (int)$result[0]['id'] : false;
+        return (int)$result[0]['count'] ? (int)$result[0]['count'] : false;
     }
 
     /**
