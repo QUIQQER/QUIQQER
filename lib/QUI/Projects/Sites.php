@@ -251,13 +251,30 @@ class Sites
             ))
         );
 
-        // Inhaltsreiter
+        // Einstellungen
+        $Tabbar->appendChild(
+            new \QUI\Controls\Toolbar\Tab(array(
+                'name'     => 'settings',
+                'text'     => 'Einstellungen',
+                'icon'     => 'icon-cog',
+                'onload_require'   => 'controls/projects/project/site/siteSettings',
+                'onload'           => 'Plugin.onload',
+                'onunload_require' => 'controls/projects/project/site/siteSettings',
+                'onunload'         => 'Plugin.onunload'
+            ))
+        );
+
+        // Sortierung
         $Tabbar->appendChild(
             new \QUI\Controls\Toolbar\Tab(array(
                 'name'     => 'sort',
                 'text'     => 'Sortierung',
                 'template' => SYS_DIR .'template/site/navigation.html',
-                'icon'     => 'icon-sort'
+                'icon'     => 'icon-sort',
+                'onload_require'   => 'controls/projects/project/site/siteSort',
+                'onload'           => 'Plugin.onload',
+                'onunload_require' => 'controls/projects/project/site/siteSort',
+                'onunload'         => 'Plugin.onunload'
             ))
         );
 

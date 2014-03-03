@@ -419,9 +419,9 @@ define('controls/projects/project/site/Panel', [
          * @method controls/projects/project/site/Panel#$tabEnter
          * @fires onSiteTabLoad
          *
-         * @param {qui/controls/toolbar/Button} Button
+         * @param {qui/controls/toolbar/Button} Category
          */
-        $onCategoryEnter : function(Button)
+        $onCategoryEnter : function(Category)
         {
             this.Loader.show();
 
@@ -430,7 +430,7 @@ define('controls/projects/project/site/Panel', [
             }
 
 
-            if ( Button.getAttribute( 'name' ) == 'content' )
+            if ( Category.getAttribute( 'name' ) == 'content' )
             {
                 this.loadEditor(
                     this.getSite().getAttribute( 'content' )
@@ -439,23 +439,26 @@ define('controls/projects/project/site/Panel', [
                 return;
             }
 
-            if ( !Button.getAttribute( 'template' ) ) {
+            if ( !Category.getAttribute( 'template' ) )
+            {
+                this.getContent().set( 'html', '' );
+                this.$categoryOnLoad( Category );
+
                 return;
             }
 
-            var Site    = this.getSite(),
+            var self    = this,
+                Site    = this.getSite(),
                 Project = Site.getProject();
 
             Ajax.get('ajax_site_categories_template', function(result, Request)
             {
-                var Panel    = Request.getAttribute( 'Panel' ),
-                    Category = Request.getAttribute( 'Category' ),
-                    Body     = Panel.getContent();
+                var Body = self.getContent();
 
                 if ( !result )
                 {
                     Body.set( 'html', '' );
-                    Panel.$categoryOnLoad( Category );
+                    self.$categoryOnLoad( Category );
 
                     return;
                 }
@@ -470,12 +473,12 @@ define('controls/projects/project/site/Panel', [
                 });
 
                 QUIFormUtils.setDataToForm(
-                    Panel.getSite().getAttributes(),
+                    self.getSite().getAttributes(),
                     Form
                 );
 
                 // information tab
-                if ( Request.getAttribute( 'tab' ) === 'information' )
+                if ( Category.getAttribute( 'tab' ) === 'information' )
                 {
                     var Input = Body.getElements( 'input[name="site-name"]' );
 
@@ -485,16 +488,13 @@ define('controls/projects/project/site/Panel', [
 
                 ControlUtils.parse( Form );
 
-                Panel.$categoryOnLoad( Category );
+                self.$categoryOnLoad( Category );
 
             }, {
                 id      : Site.getId(),
                 project : Project.getName(),
                 lang    : Project.getLang(),
-                tab     : Button.getAttribute( 'name' ),
-
-                Category : Button,
-                Panel    : this
+                tab     : Category.getAttribute( 'name' )
             });
         },
 
@@ -506,14 +506,16 @@ define('controls/projects/project/site/Panel', [
          */
         $categoryOnLoad : function(Category)
         {
+            var self = this;
+
             if ( Category.getAttribute( 'onload_require' ) )
             {
                 require([
                     Category.getAttribute( 'onload_require' )
                 ], function(Plugin)
                 {
-                    eval( Category.getAttribute( 'onload' ) +'( Category, this );' );
-                }.bind( this ));
+                    eval( Category.getAttribute( 'onload' ) +'( Category, self );' );
+                });
 
                 return;
             }
@@ -527,16 +529,16 @@ define('controls/projects/project/site/Panel', [
          * @method controls/projects/project/site/Panel#$tabLeave
          * @fires onSiteTabUnLoad
          *
-         * @param {qui/controls/toolbar/Tab} Tab
+         * @param {qui/controls/buttons/Button} Category
          */
-        $onCategoryLeave : function(Tab)
+        $onCategoryLeave : function(Category)
         {
             this.Loader.show();
 
             var Site  = this.getSite(),
                 Body  = this.getBody();
 
-            if ( Tab.getAttribute( 'name' ) === 'content' )
+            if ( Category.getAttribute( 'name' ) === 'content' )
             {
                 Site.setAttribute(
                     'content',
@@ -555,7 +557,7 @@ define('controls/projects/project/site/Panel', [
                 elements = Form.elements;
 
             // information tab
-            if ( Tab.getAttribute( 'name' ) === 'information' )
+            if ( Category.getAttribute( 'name' ) === 'information' )
             {
                 Site.setAttribute( 'name', elements['site-name'].value );
                 Site.setAttribute( 'title', elements.title.value );
@@ -566,9 +568,19 @@ define('controls/projects/project/site/Panel', [
                 return;
             }
 
+            var self = this;
 
-            console.info( '@todo unload plugin params' );
-            console.info( elements );
+            if ( Category.getAttribute( 'onunload_require' ) )
+            {
+                require([
+                    Category.getAttribute( 'onunload_require' )
+                ], function(Plugin)
+                {
+                    eval( Category.getAttribute( 'onunload' ) +'( Category, self );' );
+                });
+
+                return;
+            }
         },
 
         /**
