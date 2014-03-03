@@ -160,7 +160,8 @@ define('controls/grid/Grid', [
                     'blur'      : this.blur.bind( this ),
                     'mousedown' : this.mousedown.bind( this ),
                     'mouseup'   : this.mouseup.bind( this )
-                }
+                },
+                'data-quiid' : this.getId()
             });
 
             this.draw();
