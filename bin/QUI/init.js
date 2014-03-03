@@ -127,6 +127,24 @@ require([
         MyWorkspace.resize();
     }).delay( 100 );
 
+    window.addEvent('resize', function()
+    {
+        // load the default workspace
+        var doc_size  = document.body.getSize(),
+            Container = document.getElement( '.qui-workspace-container' ),
+            Logo      = document.getElement( '.qui-logo-container' ),
+            Menu      = document.getElement( '.qui-menu-container' );
+
+        Container.setStyles({
+            height : doc_size.y - Logo.getSize().y - Menu.getSize().y,
+            width  : doc_size.x - 10 // -10, wegen der scrollbar
+        });
+
+        (function() {
+            MyWorkspace.resize();
+        }).delay( 100 );
+    });
+
     /**
      * Locale
      */
