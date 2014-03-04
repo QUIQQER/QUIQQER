@@ -478,12 +478,11 @@ define('controls/projects/project/site/Panel', [
                 );
 
                 // information tab
-                if ( Category.getAttribute( 'tab' ) === 'information' )
+                if ( Category.getAttribute( 'name' ) === 'information' )
                 {
-                    var Input = Body.getElements( 'input[name="site-name"]' );
+                    Body.getElements( 'input[name="site-name"]' )
+                        .set('value', Site.getAttribute( 'name' ) );
 
-                    //Input.focusToBegin();
-                    Input.set( 'value', Site.getAttribute( 'name' ) );
                 }
 
                 ControlUtils.parse( Form );
@@ -566,6 +565,18 @@ define('controls/projects/project/site/Panel', [
                 Site.setAttribute( 'type', elements.type.value );
 
                 return;
+            }
+
+            // unload params
+            for ( var i = 0, len = elements.length; i < len; i++ )
+            {
+                if ( elements[ i ].name )
+                {
+                    Site.setAttribute(
+                        elements[ i ].name,
+                        elements[ i ].value
+                    );
+                }
             }
 
             var self = this;

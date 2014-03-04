@@ -495,6 +495,16 @@ class Edit extends \QUI\Projects\Site
         }
         */
 
+        $order_type = '';
+
+        \QUI\System\Log::write( $this->getAttribute( 'order_type' ) );
+        \QUI\System\Log::write( $this->getAttribute( 'name' ) );
+
+        switch ( $this->getAttribute( 'order_type' ) )
+        {
+
+        }
+
         // Haupttabelle speichern
         $update = $DataBase->update(
             $this->_TABLE,

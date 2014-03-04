@@ -195,7 +195,7 @@ define('utils/Controls', function()
          */
         parseMediaInput : function(Elm)
         {
-            require(['controls/projects/media/Input'], function(ProjectMediaInput)
+            require(['controls/projects/project/media/Input'], function(ProjectMediaInput)
             {
                 var i, len, elements;
 

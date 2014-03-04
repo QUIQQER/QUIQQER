@@ -257,10 +257,7 @@ class Sites
                 'name'     => 'settings',
                 'text'     => 'Einstellungen',
                 'icon'     => 'icon-cog',
-                'onload_require'   => 'controls/projects/project/site/siteSettings',
-                'onload'           => 'Plugin.onload',
-                'onunload_require' => 'controls/projects/project/site/siteSettings',
-                'onunload'         => 'Plugin.onunload'
+                'template' => SYS_DIR .'template/site/settings.html'
             ))
         );
 

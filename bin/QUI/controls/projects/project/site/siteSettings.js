@@ -20,7 +20,7 @@ define('controls/projects/project/site/siteSettings', [
          */
         onload : function(Category, Panel)
         {
-            console.log('load settings');
+
 
             Panel.Loader.hide();
         },
