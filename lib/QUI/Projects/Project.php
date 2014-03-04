@@ -1325,7 +1325,9 @@ class Project
                 'order_type'  => 'varchar(100) default NULL',
                 'order_field' => 'bigint(20) default NULL',
                 'extra'       => 'text NULL',
-                'c_user_ip'   => 'varchar(40)'
+                'c_user_ip'   => 'varchar(40)',
+                'image_emotion' => 'text',
+                'image_site'    => 'text'
             ));
 
             // fix for old tables

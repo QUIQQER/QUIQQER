@@ -497,13 +497,12 @@ class Edit extends \QUI\Projects\Site
 
         $order_type = '';
 
-        \QUI\System\Log::write( $this->getAttribute( 'order_type' ) );
-        \QUI\System\Log::write( $this->getAttribute( 'name' ) );
-
         switch ( $this->getAttribute( 'order_type' ) )
         {
 
         }
+
+        \QUI\System\Log::write( $this->getAttribute( 'image_emotion' ) );
 
         // Haupttabelle speichern
         $update = $DataBase->update(
@@ -520,6 +519,10 @@ class Edit extends \QUI\Projects\Site
                 // ORDER
                 'order_type'  => $this->getAttribute( 'order_type' ),
                 'order_field' => $this->getAttribute( 'order_field' ),
+
+                // images
+                'image_emotion' => $this->getAttribute( 'image_emotion' ),
+                'image_site'    => $this->getAttribute( 'image_site' ),
 
                 // Extra-Feld
                 'extra' => json_encode( $this->_extra )

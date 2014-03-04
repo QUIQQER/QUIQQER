@@ -1,24 +1,25 @@
 
-
- <table class="data-table site-data">
+<table class="data-table site-data">
     <thead>
         <tr>
             <th colspan="2">
                 Media Einstellungen
-                <p class="description">
-                    Legen Sie fest welche Bilder ihrer Seite zugeordnet sind.
-                </p>
             </th>
+        </tr>
+        <tr>
+            <td class="{cycle values="odd,even"}" colspan="2">
+                Legen Sie fest welche Bilder Ihrer Seite zugeordnet sind.
+            </td>
         </tr>
     </thead>
     <tbody>
-        <tr class="odd">
+        <tr class="{cycle values="odd,even"}">
             <td>Emotion-Bild</td>
-            <td><input type="text" name="image-emotion" class="media-image" /></td>
+            <td><input type="text" name="image_emotion" class="media-image" /></td>
         </tr>
-        <tr>
+        <tr class="{cycle values="odd,even"}">
             <td>Seiten-Bild</td>
-            <td><input type="text" name="image-site" class="media-image" /></td>
+            <td><input type="text" name="image_site" class="media-image" /></td>
         </tr>
     </tbody>
 </table>
