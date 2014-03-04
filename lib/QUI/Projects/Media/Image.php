@@ -26,6 +26,32 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
 
     /**
      * Creates a cache file and takes into account the maximum sizes
+     * return the media url
+     *
+     * @param Integer|Bool $maxwidth
+     * @param Integer|Bool $maxheight
+     *
+     * @return String - Path to the file
+     */
+    public function createSizeCacheUrl($maxwidth=false, $maxheight=false)
+    {
+        $params = $this->getResizeSize(
+            $maxwidth,
+            $maxheight
+        );
+
+        $cacheUrl = $this->createSizeCache(
+            $params['width'],
+            $params['height']
+        );
+
+        $cacheUrl = str_replace( CMS_DIR, URL_DIR, $cacheUrl );
+
+        return $cacheUrl;
+    }
+
+    /**
+     * Creates a cache file and takes into account the maximum sizes
      *
      * @param Integer|Bool $maxwidth
      * @param Integer|Bool $maxheight
