@@ -571,12 +571,10 @@ div.pGroup {
 
 .omnigrid button {
     border: 0 none;
-    line-height: 20px;
-    margin: 2px;
-    padding: 2px;
     white-space: nowrap;
+    margin: 5px;
 }
-
+/*
 .omnigrid .bDiv button span {
     padding: 0;
-}
+}*/

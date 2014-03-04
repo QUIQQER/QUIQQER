@@ -23,9 +23,11 @@ define('controls/projects/project/site/siteSort', [
         {
             var Content    = Panel.getContent(),
                 Navigation = Content.getElement('.qui-site-navigation'),
+                Select     = Content.getElement( '[name="order-type"]' ),
                 Site       = Panel.getSite(),
-                size       = Content.getSize(),
-                height     = size.y - 100;
+
+                size   = Content.getSize(),
+                height = size.y - 100;
 
             Navigation.setStyles({
                 height     : height,
@@ -59,10 +61,67 @@ define('controls/projects/project/site/siteSort', [
                     dataType  : 'string',
                     width     : 150
                 }],
+                buttons : [{
+                    name : 'up',
+                    textimage : 'icon-angle-up',
+                    text : 'hoch',
+                    events :
+                    {
+                        onClick : function()
+                        {
+                            alert('up');
+                        }
+                    }
+                }, {
+                    name : 'down',
+                    textimage : 'icon-angle-down',
+                    text : 'runter',
+                    events :
+                    {
+                        onClick : function()
+                        {
+                            alert('down');
+                        }
+                    }
+                }],
                 height : height,
                 pagination : true
             });
 
+
+            Select.value = Site.getAttribute( 'order_type' );
+
+            Select.addEvent('change', function()
+            {
+                Site.setAttribute( 'order_type', this.value );
+
+                var buttons = Navigation.getElements( 'button' );
+
+                for ( var i = 0, len = buttons.length; i < len; i++ )
+                {
+                    var quiid  = buttons[ i ].get('data-quiid'),
+                        Button = QUI.Controls.getById( quiid );
+
+                    if ( !Button ) {
+                        continue;
+                    }
+
+                    if ( Button.getAttribute('name') != 'up' &&
+                         Button.getAttribute('name') != 'down' )
+                    {
+                        continue;
+                    }
+
+
+                    if ( this.value == 'manuell' )
+                    {
+                        Button.enable();
+                    } else
+                    {
+                        Button.disable();
+                    }
+                }
+            });
 
             Site.getChildren(function(result)
             {
@@ -92,6 +151,8 @@ define('controls/projects/project/site/siteSort', [
             Panel.addEvents({
                 onResize : this.onResize
             });
+
+            Select.fireEvent( 'change' );
         },
 
         /**
