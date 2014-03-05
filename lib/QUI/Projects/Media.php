@@ -134,16 +134,6 @@ class Media extends \QUI\QDOM
         $DataBase->Table()->setIndex( $table, 'id' );
         $DataBase->Table()->setAutoIncrement( $table, 'id' );
 
-        // Media Relations
-        $DataBase->Table()->appendFields($table, array(
-            'parent' => 'bigint(20) NOT NULL',
-            'child'  => 'bigint(20) NOT NULL'
-        ));
-
-        $DataBase->Table()->setIndex( $table, 'parent' );
-        $DataBase->Table()->setIndex( $table, 'child' );
-
-
         // create first site -> id 1 if not exist
         $firstChildResult = $DataBase->fetch(array(
             'from'  => $table,
@@ -175,6 +165,17 @@ class Media extends \QUI\QDOM
                 ));
             }
         }
+
+        // Media Relations
+        $table = $this->getTable('relations');
+
+        $DataBase->Table()->appendFields($table, array(
+            'parent' => 'bigint(20) NOT NULL',
+            'child'  => 'bigint(20) NOT NULL'
+        ));
+
+        $DataBase->Table()->setIndex( $table, 'parent' );
+        $DataBase->Table()->setIndex( $table, 'child' );
     }
 
     /**
