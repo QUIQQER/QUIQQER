@@ -160,7 +160,7 @@ class Media extends \QUI\QDOM
                 'name'   => 'Media',
                 'title'  => 'Media',
                 'c_date' => date( 'Y-m-d H:i:s' ),
-                'c_user' => $User->getId(),
+                'c_user' => \QUI::getUserBySession()->getId(),
                 'type'   => 'folder'
             ));
         } else

@@ -168,12 +168,13 @@ class Update
         if ( \QUI::getUserBySession()->getId() )
         {
             \QUI::setup();
+
+            $IO->write( 'QUIQQER Setup finish' );
+
         } else
         {
-            $IO->write( 'Maybe some Databases or Plugins need a setup. Please log in and execute a setup.' );
+            $IO->write( 'Maybe some Databases or Plugins need a setup. Please log in and execute the setup.' );
         }
-
-        $IO->write( 'QUIQQER Setup finish' );
     }
 
     /**
