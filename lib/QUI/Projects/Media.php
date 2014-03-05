@@ -160,8 +160,20 @@ class Media extends \QUI\QDOM
                 'name'   => 'Media',
                 'title'  => 'Media',
                 'c_date' => date( 'Y-m-d H:i:s' ),
-                'c_user' => $User->getId()
+                'c_user' => $User->getId(),
+                'type'   => 'folder'
             ));
+        } else
+        {
+            // check if id 1 is a folder, id 1 MUST BE a folder
+            if ( $firstChildResult[0]['type'] != 'folder' )
+            {
+                $DataBase->update($table, array(
+                    'type' => 'folder'
+                ), array(
+                    'id' => 1
+                ));
+            }
         }
     }
 
