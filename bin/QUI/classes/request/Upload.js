@@ -133,7 +133,7 @@ define('classes/request/Upload', [
             }
 
             if ( !files || !files.length ) {
-                return new FileList();
+                return [];
             }
 
             return files;
