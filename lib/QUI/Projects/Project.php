@@ -1327,7 +1327,9 @@ class Project
                 'extra'       => 'text NULL',
                 'c_user_ip'   => 'varchar(40)',
                 'image_emotion' => 'text',
-                'image_site'    => 'text'
+                'image_site'    => 'text',
+                'release_from'  => 'timestamp NULL default NULL',
+                'release_to'    => 'timestamp NULL default NULL'
             ));
 
             // fix for old tables

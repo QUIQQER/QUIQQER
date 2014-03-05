@@ -17,6 +17,11 @@
         <td class="grid-20">Veröffentlichen bis</td>
         <td class="grid-80"><input type="date" name="release_to" /></td>
     </tr>
+    <tr>
+        <td colspan="2" class="desc {cycle values="odd,even"}">
+            Beachten Sie: Damit die Seite automatisiert veröffentlicht wird muss im Cron-Manager der Veröffentlichungs-Cron eingerichtet sein.
+        </td>
+    </tr>
 </tbody>
 </table>
 
@@ -29,7 +34,7 @@
         </th>
     </tr>
     <tr>
-        <td class="{cycle values="odd,even"}" colspan="2">
+        <td class="{cycle values="odd,even" reset=true}" colspan="2">
             Legen Sie fest welche Bilder Ihrer Seite zugeordnet sind.
         </td>
     </tr>

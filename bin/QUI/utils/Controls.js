@@ -133,18 +133,23 @@ define('utils/Controls', function()
 
                     new Element( 'div' ).wraps( Child );
 
+                    Child.placeholder = 'YYYY-MM-DD HH:MM:SS';
+
                     Child.setStyles({
                         'float'  : 'left',
                         'cursor' : 'pointer'
                     });
 
                     new DatePicker(Child, {
-                        timePicker: false,
+                        timePicker: true,
                         positionOffset: {
                             x: 5,
                             y: 0
                         },
-                        pickerClass: 'datepicker_dashboard'
+                        pickerClass: 'datepicker_dashboard',
+                        onSelect: function(UserDate) {
+                            this.value = UserDate.format('db');
+                        }.bind( Child )
                     });
 
                     new QUIButton({
@@ -152,18 +157,22 @@ define('utils/Controls', function()
                         alt     : 'Datum leeren',
                         title   : 'Datum leeren',
                         Input   : Child,
-                        events  : {
-                            onClick : self.$clearDateBtn.bind( self )
+                        events  :
+                        {
+                            onClick : function(Btn) {
+                                Btn.getAttribute( 'Input' ).value = '';
+                            }
                         },
                         styles : {
                             top : 1
                         }
-                    }).inject(
-                        Child.getParent()
-                    );
+                    }).inject( Child.getParent() );
                 }
-            }, function()
+
+            }, function(err)
             {
+                console.error( err );
+
                 require(['qui/QUI'], function(QUI)
                 {
                     QUI.getMessageHandler(function(MH)

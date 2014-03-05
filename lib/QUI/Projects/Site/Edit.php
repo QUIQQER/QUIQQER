@@ -504,6 +504,28 @@ class Edit extends \QUI\Projects\Site
 
         \QUI\System\Log::write( $this->getAttribute( 'image_emotion' ) );
 
+        // release dates
+        $release_from = '';
+        $release_to   = '';
+
+        if ( $this->getAttribute( 'release_from' ) )
+        {
+            $rf = strtotime( $this->getAttribute( 'release_from' ) );
+
+            if ( $rf ) {
+                $release_from = date('Y-m-d H:i:s', $rf);
+            }
+        }
+
+        if ( $this->getAttribute( 'release_to' ) )
+        {
+            $rf = strtotime( $this->getAttribute( 'release_to' ) );
+
+            if ( $rf ) {
+                $release_to = date('Y-m-d H:i:s', $rf);
+            }
+        }
+
         // Haupttabelle speichern
         $update = $DataBase->update(
             $this->_TABLE,
@@ -523,6 +545,10 @@ class Edit extends \QUI\Projects\Site
                 // images
                 'image_emotion' => $this->getAttribute( 'image_emotion' ),
                 'image_site'    => $this->getAttribute( 'image_site' ),
+
+                // release
+                'release_from' => $release_from,
+                'release_to'   => $release_to,
 
                 // Extra-Feld
                 'extra' => json_encode( $this->_extra )
