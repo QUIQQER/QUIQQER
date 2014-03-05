@@ -165,7 +165,13 @@ class Update
         // quiqqer setup
         $IO->write( 'Starting QUIQQER setup' );
 
-        \QUI::setup();
+        if ( \QUI::getUserBySession()->getId() )
+        {
+            \QUI::setup();
+        } else
+        {
+            $IO->write( 'Maybe some Databases or Plugins need a setup. Please log in and execute a setup.' );
+        }
 
         $IO->write( 'QUIQQER Setup finish' );
     }
