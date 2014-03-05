@@ -161,6 +161,13 @@ class Update
 
 
         $IO->write( 'QUIQQER Update finish' );
+
+        // quiqqer setup
+        $IO->write( 'Starting QUIQQER setup' );
+
+        \QUI::setup();
+
+        $IO->write( 'QUIQQER Setup finish' );
     }
 
     /**
