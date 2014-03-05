@@ -99,7 +99,7 @@ class Log
         $message  = $Exception->getCode() ." :: \n\n";
         $message .= $Exception->getMessage();
 
-        self::write( $message, $filename );
+        self::write( $message, $loglevel, $filename );
     }
 
     /**
