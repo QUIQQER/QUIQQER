@@ -142,6 +142,27 @@ class Media extends \QUI\QDOM
 
         $DataBase->Table()->setIndex( $table, 'parent' );
         $DataBase->Table()->setIndex( $table, 'child' );
+
+
+        // create first site -> id 1 if not exist
+        $firstChildResult = $DataBase->fetch(array(
+            'from'  => $table,
+            'where' => array(
+                'id' => 1
+            ),
+            'limit' => 1
+        ));
+
+        if ( !isset( $firstChildResult[0] ) )
+        {
+            $DataBase->insert($table, array(
+                'id'     => 1,
+                'name'   => 'Media',
+                'title'  => 'Media',
+                'c_date' => date( 'Y-m-d H:i:s' ),
+                'c_user' => $User->getId()
+            ));
+        }
     }
 
     /**
