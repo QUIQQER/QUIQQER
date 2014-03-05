@@ -162,6 +162,18 @@ define('utils/Controls', function()
                         Child.getParent()
                     );
                 }
+            }, function()
+            {
+                require(['qui/QUI'], function(QUI)
+                {
+                    QUI.getMessageHandler(function(MH)
+                    {
+                        MH.addAttention(
+                            'Das Kalender Packet konnte nicht gefunden werden.' +
+                            'Bitte installieren Sie quiqqer/calendar'
+                        );
+                    });
+                });
             });
         },
 

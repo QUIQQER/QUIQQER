@@ -581,6 +581,48 @@ class XML
     }
 
     /**
+     * Return the types from a xml file
+     *
+     * @param unknown $file
+     * @return boolean
+     */
+    static function getTypesFromXml($file)
+    {
+        $Dom   = self::getDomFromXml( $file );
+        $sites = $Dom->getElementsByTagName( 'sites' );
+
+        if ( !$sites->length ) {
+            return false;
+        }
+
+
+        $Sites = $sites->item( 0 );
+        $types = $Settings->getElementsByTagName( 'types' );
+
+        if ( !$types->length ) {
+            return false;
+        }
+
+        $Types    = $types->item( 0 );
+        $typeList = $Types->getElementsByTagName( 'type' );
+
+        $result = array();
+
+        for ( $c = 0; $c < $typeList->length; $c++ )
+        {
+            $Type = $typeList->item( $c );
+
+            if ( $Type->nodeName == '#text' ) {
+                continue;
+            }
+
+            $result[] = $Window;
+        }
+
+        return $result;
+    }
+
+    /**
      * Reads the tabs from an *.xml
      *
      * @param String $file

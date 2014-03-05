@@ -331,7 +331,7 @@ class Sites
     }
 
     /**
-     * Return all plugins having a site
+     * Returns all plugins that has the site
      *
      * @param \QUI\Projects\Site $Site
      * @return Array
