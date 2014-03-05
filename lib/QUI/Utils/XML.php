@@ -120,6 +120,8 @@ class XML
             $ini_file .= $Conf->getAttribute( 'name' ) .'.ini';
         }
 
+        \QUI\Utils\System\File::mkdir( dirname( $ini_file ) );
+
         if ( !file_exists( $ini_file ) ) {
             file_put_contents( $ini_file, '' );
         }
