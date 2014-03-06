@@ -24,7 +24,9 @@ define('controls/menu/Responsive', [
         options : {
             project : false,
             lang    : false,
-            id      : false
+            id      : false,
+
+            searchButton : false
         },
 
         initialize : function(options)
@@ -103,10 +105,13 @@ define('controls/menu/Responsive', [
                 }
             }).inject( this.$Buttons );
 
-            new QUIButton({
-                text : 'Suche',
-                textimage : 'icon-search'
-            }).inject( this.$Buttons );
+            if ( this.getAttribute('searchButton') )
+            {
+                new QUIButton({
+                    text : 'Suche',
+                    textimage : 'icon-search'
+                }).inject( this.$Buttons );
+            }
 
             this.$Close.addEvents({
                 click : function() {
