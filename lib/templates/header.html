@@ -36,6 +36,11 @@
             URL_VAR_DIR     = '{$URL_VAR_DIR}',
             URL_PROJECT_DIR = '{$URL_USR_DIR}{$Project->getAttribute('name')}/';
 
+        var QUIQQER_PROJECT = {
+            name : '{$Project->getName()}',
+            lang : '{$Project->getLang()}'
+        };
+
         {if $Template->getAttribute('requirejs')}
         {literal}
         require.config({

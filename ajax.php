@@ -2,6 +2,9 @@
 
 /**
  * PHP Ajax Schnittstelle
+ *
+ * @deprecated
+ * @todo muss neu überdacht werden
  */
 
 require_once "header.php";
@@ -95,7 +98,6 @@ function ajax_get_https_host($project, $lang)
     return $host;
 }
 $ajax->register('ajax_get_https_host', array('project', 'lang'));
-
 
 // Falls ein Project verwendet wird, Project Ajax File einbinden
 if (isset($_REQUEST['project']))

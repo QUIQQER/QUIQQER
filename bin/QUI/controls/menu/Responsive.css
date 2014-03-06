@@ -1,0 +1,144 @@
+@CHARSET "UTF-8";
+
+.qui-controls-menu-responsive {
+    background: #FFF;
+    border-right: 1px solid #DDDDDD;
+    height: 100%;
+    left: -100%;
+    top: 0;
+    z-index: 10000;
+}
+
+@media screen and (max-width: 410px) {
+    .qcm-responsive.shadow:after {
+        background-color: transparent;
+        background-image: -moz-linear-gradient(center left , rgba(0, 0, 0, 0.2), transparent);
+        background-image: -webkit-gradient(linear, center top, left bottom, from(rgba(0, 0, 0, 0.2)), to(transparent));
+        background-image: -webkit-linear-gradient(left, rgba(0, 0, 0, 0.2), transparent);
+        background-image: -o-linear-gradient(left, rgba(0, 0, 0, 0.2), transparent);
+        background-image: -ms-linear-gradient(left, rgba(0, 0, 0, 0.2), transparent);
+        background-image: linear-gradient(left, rgba(0, 0, 0, 0.2), transparent);
+
+        content:"";
+        height: 100%;
+        left: 400px;
+        position: fixed;
+        top: 0px;
+        width: 8px;
+        z-index: 10000;
+    }
+}
+
+.qcm-responsive-title {
+    border-bottom: 1px solid #1183B7;
+    clear: both;
+    color: #1183B7;
+    float: left;
+    font-size: 18px;
+    height: 50px;
+    line-height: 50px;
+    padding: 0 20px;
+    width: 100%;
+}
+
+.qcm-responsive-title-home {
+    cursor: pointer;
+    float: left;
+}
+
+.qcm-responsive-title-home span {
+    margin-right: 5px;
+}
+
+.qcm-responsive-title-close  {
+    cursor: pointer;
+    float: right;
+    line-height: 50px;
+}
+
+.qcm-responsive-buttons {
+    background: #2F8FC6;
+    clear: both;
+    height: 50px;
+    width: 100%;
+}
+
+.qcm-responsive-buttons button {
+    background: none;
+    border-radius: 0px;
+    border-width: none;
+    border-right: 1px solid #0069B4;
+    box-shadow: none;
+    line-height: 50px;
+    font-size: 16px;
+    padding: 0 20px;
+    margin: 0;
+}
+
+.qcm-responsive-buttons button span {
+    color: #FFFFFF;
+}
+
+/** content
+ ==================================================== */
+
+.qcm-responsive-content {
+    clear: both;
+    float: left;
+    padding: 10px;
+    width: 100%;
+}
+
+.qcm-responsive-content-entry {
+    border-bottom: 1px solid #D0D3D3;
+    clear: both;
+    display: table;
+    text-decoration: none;
+    width: 100%;
+}
+
+.qcm-responsive-content-entry-text {
+    color: #444444;
+    cursor: pointer;
+    display: table-cell;
+    font-size: 16px;
+    padding: 10px 0 10px 10px;
+}
+
+.qcm-responsive-content-entry-text:hover {
+    background: rgb(47, 143, 198);
+    color: #FFFFFF;
+}
+
+.qcm-responsive-content-entry-children {
+    color: #444444;
+    cursor: pointer;
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    width: 40px;
+}
+
+.qcm-responsive-content-entry-children:hover {
+    background: rgb(47, 143, 198);
+    color: #FFFFFF;
+}
+
+
+
+/*
+.qui-controls-menu-responsive-content li li a {
+    background: #EAEDED;
+}
+
+.qui-controls-menu-responsive-content li li span {
+    color: #527686;
+    font-size: 14px;
+    line-height: 20px;
+    padding: 9px;
+}
+
+.qui-controls-menu-responsive-content li li li span {
+    margin: 0 0 0 60px;
+}
+*/

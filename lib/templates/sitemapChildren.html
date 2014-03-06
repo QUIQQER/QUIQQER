@@ -1,0 +1,16 @@
+
+{assign var=children value=$Site->getNavigation()}
+{if count($children)}
+    <ul>
+    {foreach from=$children item=Child}
+        <li>
+            <a href="{url site=$Child}">
+                <span>
+                    {$Child->getAttribute('title')}
+                </span>
+            </a>
+        </li>
+        {include file="`$smarty.const.LIB_DIR`templates/sitemapChildren.html" Site=$Child}
+    {/foreach}
+    </ul>
+{/if}
