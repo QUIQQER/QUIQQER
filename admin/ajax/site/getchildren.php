@@ -9,36 +9,23 @@
  *
  * @return Array
  */
-function ajax_site_getchildren($project, $lang, $id, $select, $start)
+function ajax_site_getchildren($project, $lang, $id, $params)
 {
     $Project = \QUI::getProject( $project, $lang );
     $Site    = new \QUI\Projects\Site\Edit( $Project, (int)$id );
+    $params  = json_decode( $params, true );
 
-    if ( !empty( $select ) ) {
-        $select = explode( ',', trim($select, ',') );
-    }
+    $attributes = false;
 
-    if ( !is_array( $select ) ) {
-        $select = array();
+    if ( isset( $params['attributes'] ) ) {
+        $attributes = explode( ',', $params['attributes'] );
     }
 
     // forerst kein limit
-    if ( false && isset( $start ) )
+    if ( isset( $params['limit'] ) )
     {
-        $max = $Project->getConfig( 'sheets' );
-
-        if ( $max == false ) {
-            $max = 10;
-        }
-
-        $s = 0;
-
-        if ( (int)$start ) {
-            $s = $start;
-        }
-
         $children = $Site->getChildren(array(
-            'limit' => $s .','. $max
+            'limit' => $params['limit']
         ));
 
     } else
@@ -52,24 +39,24 @@ function ajax_site_getchildren($project, $lang, $id, $select, $start)
     {
         $Child = $children[ $i ]; /* @var $Child \QUI\Projects\Site\Edit */
 
-        if ( empty( $select ) )
+        if ( !$attributes )
         {
-            $childs[ $i ] = $Child->getAllAttributes();
+            $childs[ $i ] = $Child->getAttributes();
+
         } else
         {
-            /* @todo BEAH Lösung Select muss in \QUI\Projects\Site\Edit verlagert werden */
-            foreach ( $select as $att ) {
-                $childs[ $i ][ $att ] = $Child->getAttribute( $att );
+            foreach ( $attributes as $attribute ) {
+                $childs[ $i ][ $attribute ] = $Child->getAttribute( $attribute );
             }
         }
 
-        $childs[$i]['id'] = $Child->getId();
+        $childs[ $i ][ 'id' ] = $Child->getId();
 
-        if ( empty( $select ) || in_array( 'has_children', $select ) ) {
+        if ( !$attributes || in_array( 'has_children', $attributes ) ) {
             $childs[ $i ]['has_children'] = $Child->hasChildren( true );
         }
 
-        if ( empty( $select ) || in_array( 'config', $select ) ) {
+        if ( !$attributes || in_array( 'config', $attributes ) ) {
             $childs[ $i ]['config'] = $Child->conf;
         }
 
@@ -79,7 +66,7 @@ function ajax_site_getchildren($project, $lang, $id, $select, $start)
 
         // Projekt Objekt muss da nicht mit
         if ( isset( $childs[ $i ]['project'] ) && is_object( $childs[ $i ]['project'] ) ) {
-            unset($childs[ $i ]['project']);
+            unset( $childs[ $i ]['project'] );
         }
     }
 
@@ -88,6 +75,6 @@ function ajax_site_getchildren($project, $lang, $id, $select, $start)
 
 QUI::$Ajax->register(
     'ajax_site_getchildren',
-    array('project', 'lang', 'id', 'select', 'start'),
+    array('project', 'lang', 'id', 'params'),
     'Permission::checkAdminUser'
 );

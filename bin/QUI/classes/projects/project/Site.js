@@ -137,24 +137,25 @@ define('classes/projects/project/Site', [
          *
          * @method QUI.classes.projects.Site#getChildren
          * @param {Function} onfinish - [optional] callback function
+         * @param {Object} params - [optional]
          * @returns {this}
          */
-        getChildren : function(onfinish)
+        getChildren : function(onfinish, params)
         {
-            var params = this.ajaxParams(),
-                Site   = this;
+            var data = this.ajaxParams(),
+                Site = this;
 
-            params.onfinish = onfinish;
+            data.params = JSON.encode( params || {} );
 
             Ajax.get('ajax_site_getchildren', function(result, Request)
             {
-                if ( Request.getAttribute( 'onfinish' ) ) {
-                    Request.getAttribute( 'onfinish' )( result, Request );
+                if ( typeof onfinish !== 'undefined' ) {
+                    onfinish( result, Request );
                 }
 
                 Site.fireEvent( 'getChildren', [ Site, result ] );
 
-            }, params);
+            }, data);
 
             return this;
         },

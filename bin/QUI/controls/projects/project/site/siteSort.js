@@ -21,10 +21,12 @@ define('controls/projects/project/site/siteSort', [
          */
         onload : function(Category, Panel)
         {
-            var Content    = Panel.getContent(),
+            var self       = this,
+                Content    = Panel.getContent(),
                 Navigation = Content.getElement('.qui-site-navigation'),
                 Select     = Content.getElement( '[name="order-type"]' ),
                 Site       = Panel.getSite(),
+                Project    = Site.getProject(),
 
                 size   = Content.getSize(),
                 height = size.y - 100;
@@ -60,32 +62,59 @@ define('controls/projects/project/site/siteSort', [
                     dataIndex : 'e_date',
                     dataType  : 'string',
                     width     : 150
+                }, {
+                    header    : 'Sortierungsfeld',
+                    dataIndex : 'order_field',
+                    dataType  : 'string',
+                    width     : 150
                 }],
                 buttons : [{
                     name : 'up',
                     textimage : 'icon-angle-up',
                     text : 'hoch',
+                    disabled : true,
                     events :
                     {
-                        onClick : function()
-                        {
-                            alert('up');
+                        onClick : function() {
+                            GridTable.moveup();
                         }
                     }
                 }, {
                     name : 'down',
                     textimage : 'icon-angle-down',
                     text : 'runter',
+                    disabled : true,
                     events :
                     {
-                        onClick : function()
-                        {
-                            alert('down');
+                        onClick : function() {
+                            GridTable.movedown();
                         }
                     }
                 }],
                 height : height,
-                pagination : true
+                pagination : true,
+                onrefresh : function() {
+                    self.displayChildren( Panel, GridTable );
+                }
+            });
+
+            GridTable.addEvents({
+                click : function()
+                {
+                    var sel = GridTable.getSelectedIndices();
+
+                    if ( !sel.length ) {
+                        return;
+                    }
+
+                    if ( Select.value == 'manuell' )
+                    {
+                        self.enableUpDownButtons( Content );
+                    } else
+                    {
+                        self.disableUpDownButtons( Content );
+                    }
+                }
             });
 
 
@@ -95,64 +124,21 @@ define('controls/projects/project/site/siteSort', [
             {
                 Site.setAttribute( 'order_type', this.value );
 
-                var buttons = Navigation.getElements( 'button' );
-
-                for ( var i = 0, len = buttons.length; i < len; i++ )
-                {
-                    var quiid  = buttons[ i ].get('data-quiid'),
-                        Button = QUI.Controls.getById( quiid );
-
-                    if ( !Button ) {
-                        continue;
-                    }
-
-                    if ( Button.getAttribute('name') != 'up' &&
-                         Button.getAttribute('name') != 'down' )
-                    {
-                        continue;
-                    }
-
-
-                    if ( this.value == 'manuell' )
-                    {
-                        Button.enable();
-                    } else
-                    {
-                        Button.disable();
-                    }
-                }
+                self.disableUpDownButtons( Content );
             });
 
-            Site.getChildren(function(result)
-            {
-                var i, len, entry;
-                var data = [];
+            this.displayChildren( Panel, GridTable );
 
-                for ( i = 0, len = result.length; i < len; i++ )
-                {
-                    entry = result[ i ];
-
-                    data.push({
-                        id     : entry.id,
-                        name   : entry.name,
-                        title  : entry.title,
-                        e_date : entry.e_date,
-                        c_date : entry.c_date
-                    });
-                }
-
-                GridTable.setData({
-                    data : data
-                });
-
-                Panel.Loader.hide();
-            });
 
             Panel.addEvents({
                 onResize : this.onResize
             });
 
             Select.fireEvent( 'change' );
+
+            // site event handling
+            Site.addEvent( 'onCreateChild', this.onChildCreate );
+            // Project.addEvent( 'onSiteDelete', this.onSiteDelete );
         },
 
         /**
@@ -163,7 +149,13 @@ define('controls/projects/project/site/siteSort', [
          */
         onunload : function(Category, Panel)
         {
+            var Site    = Panel.getSite(),
+                Project = Site.getProject();
+
             Panel.removeEvent( 'onResize', this.onResize );
+
+            Site.removeEvent( 'onCreateChild', this.onChildCreate );
+            Project.removeEvent( 'onSiteDelete', this.onSiteDelete );
         },
 
         /**
@@ -183,6 +175,190 @@ define('controls/projects/project/site/siteSort', [
             );
 
             GridTable.setHeight( height );
+        },
+
+        /**
+         * event: on child create
+         */
+        onChildCreate : function(Site, newid)
+        {
+            require(['controls/projects/project/site/siteSort'], function(siteSort)
+            {
+                var i, len, Panel, Content, GridTable, GridContainer;
+
+                var Project = Site.getProject();
+
+                // get site panels
+                var panelName = 'panel-'+
+                                Project.getName() +'-'+
+                                Project.getLang() +'-'+
+                                Site.getId();
+
+                var panels = QUI.Controls.get( panelName );
+
+                for ( i = 0, len = panels.length; i < len; i++ )
+                {
+                    Panel   = panels[ i ];
+                    Content = Panel.getContent();
+
+                    GridContainer = Content.getElement( '.omnigrid' );
+
+                    if ( !GridContainer ) {
+                        continue;
+                    }
+
+                    GridTable = QUI.Controls.getById(
+                        GridContainer.get( 'data-quiid' )
+                    );
+
+                    siteSort.displayChildren( Panel, GridTable );
+                }
+            });
+        },
+
+        /**
+         * event: on site delete
+         *
+         * vorerst nicht umgesetzt, da das parent panel gesucht werden muss
+         * die site aber nicht mehr existiert und somit auch die parentid nicht gefunden werden kann
+         */
+//        onSiteDelete : function(Project, siteid)
+//        {
+//            var i, len, data, Panel, Content, GridTable, GridContainer;
+//
+//            // get site panels
+//            var panelName = 'panel-'+
+//                            Project.getName() +'-'+
+//                            Project.getLang() +'-'+
+//                            siteid;
+//
+//            var panels = QUI.Controls.get( panelName );
+//
+//            for ( i = 0, len = panels.length; i < len; i++ )
+//            {
+//                Panel   = panels[ i ];
+//                Content = Panel.getContent();
+//
+//                GridContainer = Content.getElement( '.omnigrid' );
+//
+//                if ( !GridContainer ) {
+//                    continue;
+//                }
+//
+//                GridTable = QUI.Controls.getById(
+//                    GridContainer.get( 'data-quiid' )
+//                );
+//
+//                // check if the site id is in the children
+//                data = GridTable.getData();
+//
+//                console.log( data );
+//
+//            }
+//        },
+
+        /**
+         * Display the children in the grid
+         *
+         * @param {controls/projects/project/Panel} Panel - Site Panel
+         * @param {controls/grid/Grid} GridTable - grid in the site panel
+         */
+        displayChildren : function(Panel, GridTable)
+        {
+            Panel.Loader.show();
+
+            var Site = Panel.getSite();
+
+            var perPage = GridTable.options.perPage,
+                page    = GridTable.options.page;
+
+            var limit = ((page - 1) * perPage) +','+ perPage;
+
+            Site.getChildren(function(result)
+            {
+                var i, len, entry;
+                var data = [];
+
+                for ( i = 0, len = result.length; i < len; i++ )
+                {
+                    entry = result[ i ];
+
+                    data.push({
+                        id     : entry.id,
+                        name   : entry.name,
+                        title  : entry.title,
+                        e_date : entry.e_date,
+                        c_date : entry.c_date,
+                        order_field : entry.order_field
+                    });
+                }
+
+                GridTable.setData({
+                    data : data
+                });
+
+                Panel.Loader.hide();
+            }, {
+                limit : limit
+            });
+        },
+
+        /**
+         * Enable the up and down buttons
+         *
+         * @param {DOMNode} Content - parent node
+         */
+        enableUpDownButtons : function(Content)
+        {
+            var Navigation = Content.getElement('.qui-site-navigation'),
+                buttons    = Navigation.getElements( 'button' );
+
+            for ( var i = 0, len = buttons.length; i < len; i++ )
+            {
+                var quiid  = buttons[ i ].get('data-quiid'),
+                    Button = QUI.Controls.getById( quiid );
+
+                if ( !Button ) {
+                    continue;
+                }
+
+                if ( Button.getAttribute('name') != 'up' &&
+                     Button.getAttribute('name') != 'down' )
+                {
+                    continue;
+                }
+
+                Button.enable();
+            }
+        },
+
+        /**
+         * Disable the up and down buttons
+         *
+         * @param {DOMNode} Content - parent node
+         */
+        disableUpDownButtons : function(Content)
+        {
+            var Navigation = Content.getElement('.qui-site-navigation'),
+                buttons    = Navigation.getElements( 'button' );
+
+            for ( var i = 0, len = buttons.length; i < len; i++ )
+            {
+                var quiid  = buttons[ i ].get('data-quiid'),
+                    Button = QUI.Controls.getById( quiid );
+
+                if ( !Button ) {
+                    continue;
+                }
+
+                if ( Button.getAttribute('name') != 'up' &&
+                     Button.getAttribute('name') != 'down' )
+                {
+                    continue;
+                }
+
+                Button.disable();
+            }
         }
     };
 

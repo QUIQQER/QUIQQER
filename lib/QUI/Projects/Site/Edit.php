@@ -928,6 +928,8 @@ class Edit extends \QUI\Projects\Site
             throw new \QUI\Exception( 'Error Name: Not supported signs in Name', 702 );
         }
 
+        $childCount = $this->hasChildren( true );
+
         $_params = array(
             'name'   => $new_name,
             'title'  => $new_name,
@@ -935,7 +937,8 @@ class Edit extends \QUI\Projects\Site
             'e_user' => $User->getId(),
             'c_user' => $User->getId(),
 
-            'c_user_ip' => \QUI\Utils\System::getClientIP()
+            'c_user_ip'   => \QUI\Utils\System::getClientIP(),
+            'order_field' => $childCount
         );
 
         if ( isset( $params['title'] ) ) {

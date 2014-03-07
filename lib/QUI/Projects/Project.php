@@ -826,6 +826,10 @@ class Project
             'where' => $where
         ));
 
+        if ( isset( $params['count'] ) ) {
+            return (int)$result[0]['count'];
+        }
+
         $ids = array();
 
         foreach ( $result as $entry )
