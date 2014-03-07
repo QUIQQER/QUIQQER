@@ -251,6 +251,8 @@ define('controls/projects/project/Panel', [
          */
         createList : function()
         {
+            this.Loader.show();
+
             var self = this;
 
             if ( this.$Map ) {
@@ -364,8 +366,10 @@ define('controls/projects/project/Panel', [
                 moofx( List ).animate({
                     left : 0
                 }, {
-                    callback : function(time) {
+                    callback : function(time)
+                    {
                         self.$Button.setActive();
+                        self.Loader.hide();
                     }
                 });
             });
