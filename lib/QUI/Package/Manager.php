@@ -721,6 +721,8 @@ class Manager
                 );
             }
         }
+
+        \QUI\System\Log::addInfo( implode("\n", $output) );
     }
 
     /**
