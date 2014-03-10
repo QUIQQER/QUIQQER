@@ -377,7 +377,7 @@ class Manager
         $this->_createComposerJSON();
 
         $result = $this->_execComposer('update', array(
-            'tokens' => $package
+            'packages' => $package
         ));
 
         \QUI\System\Log::writeRecursive( $result );
