@@ -54,6 +54,10 @@
                 <type><![CDATA[string]]></type>
                 <defaultvalue>stable</defaultvalue>
             </conf>
+            <conf name="quiqqer_version">
+                <type><![CDATA[string]]></type>
+                <defaultvalue>master-dev</defaultvalue>
+            </conf>
             <conf name="mailprotection">
                 <type><![CDATA[bool]]></type>
                 <defaultvalue>0</defaultvalue>
@@ -232,6 +236,10 @@
                         <option value="alpha">alpha</option>
                         <option value="dev">dev</option>
                     </select>
+
+                    <input conf="globals.quiqqer_version">
+                        <text>Version des QUIQQER Systems</text>
+                    </input>
                 </settings>
             </category>
 
