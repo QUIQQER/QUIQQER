@@ -200,8 +200,14 @@ class Manager
         $list    = $this->_getList();
         $require = $this->_require;
 
+        $quiqqerVersion = '1.*';
+
+        if ( \QUI::conf( 'globals', 'quiqqer_version' ) ) {
+            $quiqqerVersion = \QUI::conf( 'globals', 'quiqqer_version' );
+        }
+
         $require["php"] = ">=5.3.2";
-        $require["quiqqer/quiqqer"] = "1.*";
+        $require["quiqqer/quiqqer"] = $quiqqerVersion;
         $require["tedivm/stash"] = "0.11.*";
 
         foreach ( $list as $entry )
