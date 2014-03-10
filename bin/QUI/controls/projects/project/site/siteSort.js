@@ -5,9 +5,10 @@
 define('controls/projects/project/site/siteSort', [
 
     'qui/QUI',
-    'controls/grid/Grid'
+    'controls/grid/Grid',
+    'Ajax'
 
-], function(QUI, Grid)
+], function(QUI, Grid, Ajax)
 {
     "use strict";
 
@@ -88,6 +89,22 @@ define('controls/projects/project/site/siteSort', [
                     {
                         onClick : function() {
                             GridTable.movedown();
+                        }
+                    }
+                }, {
+                    name : 'sortSave',
+                    textimage : 'icon-save',
+                    text : 'Sortierung speichern',
+                    disabled : true,
+                    events :
+                    {
+                        onClick : function(Btn)
+                        {
+                            Btn.setAttribute( 'textimage', 'icon-refresh icon-spin' );
+
+                            self.saveSort(Site, GridTable, function() {
+                                Btn.setAttribute( 'textimage', 'icon-save' );
+                            });
                         }
                     }
                 }],
@@ -294,7 +311,10 @@ define('controls/projects/project/site/siteSort', [
                 }
 
                 GridTable.setData({
-                    data : data
+                    data    : data,
+                    total   : Site.countChild(),
+                    page    : page,
+                    perPage : perPage
                 });
 
                 Panel.Loader.hide();
@@ -323,7 +343,8 @@ define('controls/projects/project/site/siteSort', [
                 }
 
                 if ( Button.getAttribute('name') != 'up' &&
-                     Button.getAttribute('name') != 'down' )
+                     Button.getAttribute('name') != 'down' &&
+                     Button.getAttribute('name') != 'sortSave')
                 {
                     continue;
                 }
@@ -352,13 +373,50 @@ define('controls/projects/project/site/siteSort', [
                 }
 
                 if ( Button.getAttribute('name') != 'up' &&
-                     Button.getAttribute('name') != 'down' )
+                     Button.getAttribute('name') != 'down' &&
+                     Button.getAttribute('name') != 'sortSave')
                 {
                     continue;
                 }
 
                 Button.disable();
             }
+        },
+
+        /**
+         * Save the actually sort of the children
+         *
+         * @param {classes/projects/project/Site} Site
+         * @param {controls/grid/Grid} GridTable - grid in the site panel
+         * @param {Function} callback - [optional] callback function
+         */
+        saveSort : function(Site, GridTable, callback)
+        {
+            var i, len;
+
+            var Project = Site.getProject(),
+                ids     = [],
+                perPage = GridTable.options.perPage,
+                page    = GridTable.options.page,
+                data    = GridTable.getData();
+
+
+            for ( i = 0, len = data.length; i < len; i++ ) {
+                ids.push( data[ i ].id );
+            }
+
+            Ajax.post('ajax_site_children_sort', function()
+            {
+                if ( typeof callback !== 'undefined' ) {
+                    callback();
+                }
+            }, {
+                project : Project.getName(),
+                lang    : Project.getLang(),
+                ids     : JSON.encode( ids ),
+                start   : (page - 1) * perPage
+            });
+
         }
     };
 

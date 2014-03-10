@@ -82,18 +82,17 @@ define('classes/projects/project/Site', [
             var params = this.ajaxParams(),
                 Site   = this;
 
-            params.onfinish = onfinish;
-
             Ajax.get('ajax_site_get', function(result, Request)
             {
                 Site.setAttributes( result.attributes );
+
                 Site.$has_children = result.has_children || false;
                 Site.$parentid     = result.parentid || false;
 
                 Site.fireEvent( 'load', [ Site ] );
 
-                if ( Request.getAttribute( 'onfinish' ) ) {
-                    Request.getAttribute( 'onfinish' )( Site, Request );
+                if ( typeof onfinish !== 'undefined' ) {
+                    onfinish( Site, Request );
                 }
             }, params);
 
@@ -130,6 +129,16 @@ define('classes/projects/project/Site', [
         hasChildren : function()
         {
             return this.$has_children ? true : false;
+        },
+
+        /**
+         * Return the children count
+         *
+         * @param {Integer}
+         */
+        countChild : function()
+        {
+            return ( this.$has_children ).toInt();
         },
 
         /**
@@ -185,22 +194,19 @@ define('classes/projects/project/Site', [
          */
         activate : function(onfinish)
         {
-            var Site   = this,
-                params = this.ajaxParams();
-
-            params.onfinish = onfinish || false;
+            var Site = this;
 
             Ajax.post('ajax_site_activate', function(result, Request)
             {
                 Site.setAttribute( 'active', 1 );
 
-                if ( Request.getAttribute( 'onfinish' ) ) {
-                    Request.getAttribute( 'onfinish' )( result, Request );
+                if ( typeof onfinish !== 'undefined' ) {
+                    onfinish( result, Request );
                 }
 
                 Site.fireEvent( 'activate', [ Site ] );
 
-            }, params);
+            }, this.ajaxParams());
 
             return this;
         },
@@ -215,21 +221,18 @@ define('classes/projects/project/Site', [
          */
         deactivate : function(onfinish)
         {
-            var Site   = this,
-                params = this.ajaxParams();
-
-            params.onfinish = onfinish || false;
+            var Site = this;
 
             Ajax.post('ajax_site_deactivate', function(result, Request)
             {
                 Site.setAttribute( 'active', 0 );
 
-                if ( Request.getAttribute( 'onfinish' ) ) {
-                    Request.getAttribute( 'onfinish' )( result, Request );
+                if ( typeof onfinish !== 'undefined' ) {
+                    onfinish( result, Request );
                 }
 
                 Site.fireEvent( 'deactivate', [ Site ] );
-            }, params);
+            }, this.ajaxParams());
 
             return this;
         },
@@ -247,7 +250,6 @@ define('classes/projects/project/Site', [
             var Site   = this,
                 params = this.ajaxParams();
 
-            params.onfinish   = onfinish;
             params.attributes = JSON.encode( this.getAttributes() );
 
             Ajax.post('ajax_site_save', function(result, Request)
@@ -256,11 +258,12 @@ define('classes/projects/project/Site', [
                 Site.$has_children = result.has_children || false;
                 Site.$parentid     = result.parentid || false;
 
-                if ( Request.getAttribute( 'onfinish' ) ) {
-                    Request.getAttribute( 'onfinish' )( result, Request );
+                if ( typeof onfinish !== 'undefined' ) {
+                    onfinish( result, Request );
                 }
 
                 Site.fireEvent( 'save', [ Site ] );
+
             }, params);
 
             return this;
@@ -275,19 +278,17 @@ define('classes/projects/project/Site', [
          */
         del : function(onfinish)
         {
-            var Site   = this,
-                params = this.ajaxParams();
-
-            params.onfinish   = onfinish;
+            var Site = this;
 
             Ajax.post('ajax_site_delete', function(result, Request)
             {
-                if ( Request.getAttribute( 'onfinish' ) ) {
-                    Request.getAttribute( 'onfinish' )( result, Request );
+                if ( typeof onfinish !== 'undefined' ) {
+                    onfinish( result, Request );
                 }
 
                 Site.fireEvent( 'delete', [ Site ] );
-            }, params);
+
+            }, this.ajaxParams());
         },
 
         /**
@@ -304,9 +305,9 @@ define('classes/projects/project/Site', [
                 return;
             }
 
-            var params = this.ajaxParams();
+            var Site   = this,
+                params = this.ajaxParams();
 
-            params.onfinish   = onfinish || false;
             params.attributes = JSON.encode({
                 name : newname
             });
@@ -317,11 +318,9 @@ define('classes/projects/project/Site', [
                     return;
                 }
 
-                if ( Request.getAttribute( 'onfinish' ) ) {
-                    Request.getAttribute( 'onfinish' )( result, Request );
+                if ( typeof onfinish !== 'undefined' ) {
+                    onfinish( result, Request );
                 }
-
-                var Site = Request.getAttribute( 'Site' );
 
                 Site.fireEvent( 'createChild', [ Site, result.id ] );
 
@@ -431,8 +430,7 @@ define('classes/projects/project/Site', [
             return {
                 project : this.getProject().getName(),
                 lang    : this.getProject().getLang(),
-                id      : this.getId(),
-                Site    : this
+                id      : this.getId()
             };
         }
     });
