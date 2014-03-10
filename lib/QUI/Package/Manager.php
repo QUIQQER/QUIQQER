@@ -234,6 +234,8 @@ class Manager
             $template
         );
 
+        \QUI\System\Log::addDebug( $template );
+
         if ( file_exists( $this->_composer_json ) ) {
             unlink( $this->_composer_json );
         }
@@ -899,6 +901,7 @@ class Manager
     protected function _execComposer($command, $params=array())
     {
         \QUI\System\Log::addDebug( $command );
+        \QUI\System\Log::addDebug( print_r($params, true) );
 
         // composer output some warnings that composer/cache is not empty
         try
