@@ -901,6 +901,8 @@ class Manager
         // composer output some warnings that composer/cache is not empty
         \QUI::getTemp()->moveToTemp( $this->_vardir .'cache' );
 
+        \QUI\System\Log::addDebug( $command );
+
         if ( !isset( $params['--working-dir'] ) ) {
             $params['--working-dir'] = $this->_vardir;
         }
