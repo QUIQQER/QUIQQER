@@ -898,10 +898,17 @@ class Manager
      */
     protected function _execComposer($command, $params=array())
     {
-        // composer output some warnings that composer/cache is not empty
-        \QUI::getTemp()->moveToTemp( $this->_vardir .'cache' );
-
         \QUI\System\Log::addDebug( $command );
+
+        // composer output some warnings that composer/cache is not empty
+        try
+        {
+            \QUI::getTemp()->moveToTemp( $this->_vardir .'cache' );
+
+        } catch ( \QUI\Exception $Exception )
+        {
+            \QUI\System\Log::addInfo( $Exception->getMessage() );
+        }
 
         if ( !isset( $params['--working-dir'] ) ) {
             $params['--working-dir'] = $this->_vardir;
