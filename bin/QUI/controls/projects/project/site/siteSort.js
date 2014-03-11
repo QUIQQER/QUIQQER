@@ -70,33 +70,33 @@ define('controls/projects/project/site/siteSort', [
                     width     : 150
                 }],
                 buttons : [{
-                    name : 'up',
+                    name      : 'up',
                     textimage : 'icon-angle-up',
-                    text : 'hoch',
-                    disabled : true,
-                    events :
+                    text      : 'hoch',
+                    disabled  : true,
+                    events    :
                     {
                         onClick : function() {
                             GridTable.moveup();
                         }
                     }
                 }, {
-                    name : 'down',
+                    name      : 'down',
                     textimage : 'icon-angle-down',
-                    text : 'runter',
-                    disabled : true,
-                    events :
+                    text      : 'runter',
+                    disabled  : true,
+                    events    :
                     {
                         onClick : function() {
                             GridTable.movedown();
                         }
                     }
                 }, {
-                    name : 'sortSave',
+                    name      : 'sortSave',
                     textimage : 'icon-save',
-                    text : 'Sortierung speichern',
-                    disabled : true,
-                    events :
+                    text      : 'Sortierung speichern',
+                    disabled  : true,
+                    events    :
                     {
                         onClick : function(Btn)
                         {

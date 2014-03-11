@@ -938,7 +938,7 @@ class Edit extends \QUI\Projects\Site
             'c_user' => $User->getId(),
 
             'c_user_ip'   => \QUI\Utils\System::getClientIP(),
-            'order_field' => $childCount
+            'order_field' => $childCount + 1
         );
 
         if ( isset( $params['title'] ) ) {
