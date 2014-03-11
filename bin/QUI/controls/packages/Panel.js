@@ -476,12 +476,11 @@ define('controls/packages/Panel', [
         {
            Ajax.post('ajax_system_update', function(result, Request)
            {
-               if ( Request.getAttribute( 'oncomplete' ) ) {
-                   Request.getAttribute( 'oncomplete' )( result, Request );
+               if ( typeof callback !== 'undefined' ) {
+                   callback( result, Request );
                }
            }, {
-               'package'  : pkg || false,
-               oncomplete : callback
+               'package'  : pkg || false
            });
         },
 
@@ -695,27 +694,27 @@ define('controls/packages/Panel', [
         {
             this.Loader.show();
 
+            var self = this;
+
             Ajax.get('ajax_system_packages_list', function(result, Request)
             {
-                var Control = Request.getAttribute( 'Control' ),
-                    GridObj = null;
+                var GridObj = null;
 
-                if ( Control.getAttribute( 'type' ) == 'quiqqer-plugin' )
+                if ( self.getAttribute( 'type' ) == 'quiqqer-plugin' )
                 {
-                    GridObj = Control.$PluginGrid;
+                    GridObj = self.$PluginGrid;
                 } else
                 {
-                    GridObj = Control.$Grid;
+                    GridObj = self.$Grid;
                 }
 
                 if ( GridObj ) {
                     GridObj.setData( result );
                 }
 
-                Control.Loader.hide();
+                self.Loader.hide();
             }, {
-                Control : this,
-                params  : JSON.encode({
+                params : JSON.encode({
                     limit : this.getAttribute( 'limit' ),
                     page  : this.getAttribute( 'page' ),
                     type  : this.getAttribute( 'type' )
@@ -737,20 +736,17 @@ define('controls/packages/Panel', [
                 return;
             }
 
+            var self = this;
+
             Ajax.get('ajax_system_packages_get', function(result, Request)
             {
-                var pkg     = Request.getAttribute( 'package' ),
-                    Control = Request.getAttribute( 'Control' );
+                self.$packages[ pkg ] = result;
 
-                Control.$packages[ pkg ] = result;
-
-                if ( Request.getAttribute( 'onfinish' ) ) {
-                    Request.getAttribute( 'onfinish' )( result, Request );
+                if ( typeof onfinish !== 'undefined' ) {
+                    onfinish( result, Request );
                 }
             }, {
-                'onfinish' : onfinish,
-                'package'  : pkg,
-                Control    : this
+                'package' : pkg
             });
         },
 
@@ -815,7 +811,7 @@ define('controls/packages/Panel', [
                     ),
                     dataIndex : 'install',
                     dataType  : 'button',
-                    width     : 40
+                    width     : 50
                 },{
                     header : Locale.get(
                         'quiqqer/system',
@@ -885,7 +881,7 @@ define('controls/packages/Panel', [
 
             this.Loader.show();
 
-            var Control = this;
+            var self = this;
 
             this.search(Search.value, function(result, Request)
             {
@@ -897,7 +893,7 @@ define('controls/packages/Panel', [
 
                     result.data[ i ].install = {
                         'package' : result.data[ i ]['package'],
-                        image     : URL_BIN_DIR +'16x16/apps/kpackage.png',
+                        image     : 'icon-download',
                         title     : Locale.get(
                             'quiqqer/system',
                             'packages.search.grid.setup.btn.title',
@@ -909,19 +905,18 @@ define('controls/packages/Panel', [
                             {'package' : result.data[ i ]['package'] }
                         ),
                         events : {
-                            onClick : Control.dialogInstall
+                            onClick : self.dialogInstall
                         }
                     };
                 }
 
 
-                if ( this.$SearchGrid ) {
-                    this.$SearchGrid.setData( result );
+                if ( self.$SearchGrid ) {
+                    self.$SearchGrid.setData( result );
                 }
 
-                this.Loader.hide();
-
-            }.bind( this ));
+                self.Loader.hide();
+            });
         },
 
         /**
@@ -934,12 +929,11 @@ define('controls/packages/Panel', [
         {
             Ajax.get('ajax_system_packages_search', function(result, Request)
             {
-                if ( Request.getAttribute( 'onfinish' ) ) {
-                    Request.getAttribute( 'onfinish' )( result, Request );
+                if ( typeof callback !== 'undefined' ) {
+                    callback( result, Request );
                 }
             }, {
-                str      : str,
-                onfinish : callback
+                str : str
             });
         },
 
@@ -948,26 +942,27 @@ define('controls/packages/Panel', [
          */
         dialogInstall : function(Btn)
         {
+            var pkg = Btn.getAttribute( 'package' );
+
             new QUIConfirm({
                 title : Locale.get(
                     'quiqqer/system',
                     'packages.server.win.install.package.title'
                 ),
-                icon : URL_BIN_DIR +'16x16/apps/kpackage.png',
+                icon : 'icon-download',
                 text : Locale.get(
                     'quiqqer/system',
                     'packages.server.win.install.package.text',
-                    { 'package' : Btn.getAttribute( 'package' ) }
+                    { 'package' : pkg }
                 ),
 
-                texticon  : URL_BIN_DIR +'48x48/apps/kpackage.png',
+                texticon  : 'icon-download',
                 Control   : this,
                 autoclose : false,
-                'package' : Btn.getAttribute( 'package' ),
 
                 ok_button :
                 {
-                    textimage : URL_BIN_DIR +'16x16/apps/kpackage.png',
+                    textimage : 'icon-download',
                     text      : Locale.get(
                         'quiqqer/system',
                         'packages.server.win.install.submit.btn'
@@ -982,8 +977,6 @@ define('controls/packages/Panel', [
 
                         Ajax.get('ajax_system_packages_get', function(result, Request)
                         {
-                            var Win = Request.getAttribute( 'Win' );
-
                             if ( typeof result.require === 'undefined' &&
                                  typeof result.description === 'undefined' )
                             {
@@ -1004,8 +997,7 @@ define('controls/packages/Panel', [
                             Win.Loader.hide();
 
                         }, {
-                            'package' : Win.getAttribute( 'package' ),
-                            Win       : Win
+                            'package' : pkg
                         });
                     },
 
@@ -1015,14 +1007,13 @@ define('controls/packages/Panel', [
 
                         Ajax.get('ajax_system_packages_install', function(result, Request)
                         {
-                            Request.getAttribute( 'Win' ).close();
+                            Win.close();
                         }, {
-                            'package' : Win.getAttribute( 'package' ),
-                            Win       : Win
+                            'package' : pkg
                         });
                     }
                 }
-            }).create();
+            }).open();
         },
 
     /**
