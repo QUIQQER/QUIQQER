@@ -786,6 +786,16 @@ class DOM
             );
         }
 
+        $autoincrement = $Table->getElementsByTagName( 'auto_increment' );
+
+        for ( $i = 0; $i < $autoincrement->length; $i++ )
+        {
+            $result = array_merge(
+                $result,
+                self::dbAutoIncrementDomToArray( $index->item( $i ) )
+            );
+        }
+
         $result['fields'] = $_fields;
 
 
@@ -840,7 +850,7 @@ class DOM
     }
 
     /**
-     * Index Datenbank DOmNode Objekt in ein Array umwandeln
+     * Index Datenbank DOMNode Objekt in ein Array umwandeln
      *
      * @param \DOMNode $Index
      * @return Array
@@ -849,6 +859,19 @@ class DOM
     {
         return array(
             'index' => $Index->nodeValue
+        );
+    }
+
+    /**
+     * AUTO_INCREMENT Datenbank DOMNode Objekt in ein Array umwandeln
+     *
+     * @param \DOMNode $Index
+     * @return Array
+     */
+    static function dbAutoIncrementDomToArray(\DOMNode $AI)
+    {
+        return array(
+            'auto_increment' => $AI->nodeValue
         );
     }
 

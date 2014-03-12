@@ -905,7 +905,7 @@ class XML
      */
     static function importDataBase($dbfields)
     {
-        $DataBase = \QUI::getDB();
+        $Table    = \QUI::getDataBase()->Table();
         $projects = \QUI\Projects\Manager::getConfig()->toArray();
 
         // globale tabellen erweitern / anlegen
@@ -915,14 +915,18 @@ class XML
             {
                 $tbl = \QUI::getDBTableName( $table['suffix'] );
 
-                $DataBase->createTableFields( $tbl, $table['fields'] );
+                $Table->appendFields( $tbl, $table['fields'] );
 
                 if ( isset( $table['primary'] ) ) {
-                    $DataBase->setPrimaryKey( $tbl, $table['primary'] );
+                    $Table->setPrimaryKey( $tbl, $table['primary'] );
                 }
 
                 if ( isset( $table['index'] ) ) {
-                    $DataBase->setIndex( $tbl, $table['index'] );
+                    $Table->setIndex( $tbl, $table['index'] );
+                }
+
+                if ( isset( $table[ 'auto_increment' ] ) ) {
+                    $Table->setAutoIncrement( $tbl, $table[ 'auto_increment' ] );
                 }
             }
         }
@@ -948,14 +952,18 @@ class XML
                     {
                         $tbl = \QUI::getDBTableName( $name .'_'. $lang .'_'. $suffix );
 
-                        $DataBase->createTableFields( $tbl, $fields );
+                        $Table->appendFields( $tbl, $fields );
 
                         if ( isset( $table['primary'] ) ) {
-                            $DataBase->setPrimaryKey( $tbl, $table['primary'] );
+                            $Table->setPrimaryKey( $tbl, $table['primary'] );
                         }
 
                         if ( isset( $table['index'] ) ) {
-                            $DataBase->setIndex( $tbl, $table['index'] );
+                            $Table->setIndex( $tbl, $table['index'] );
+                        }
+
+                        if ( isset( $table[ 'auto_increment' ] ) ) {
+                            $Table->setAutoIncrement( $tbl, $table[ 'auto_increment' ] );
                         }
                     }
                 }
