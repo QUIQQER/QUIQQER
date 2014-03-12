@@ -188,6 +188,7 @@ define('controls/projects/project/site/Panel', [
                 alt    : 'Seiten Zugriffsrechte einstellen',
                 title  : 'Seiten Zugriffsrechte einstellen',
                 styles : {
+                    'border-left-width' : 1,
                     'float' : 'right'
                 },
                 events : {
@@ -200,6 +201,7 @@ define('controls/projects/project/site/Panel', [
                 alt    : 'Media',
                 title  : 'Media',
                 styles : {
+                    'border-left-width' : 1,
                     'float' : 'right'
                 },
                 events : {
@@ -212,6 +214,7 @@ define('controls/projects/project/site/Panel', [
                 alt    : 'Sortierung',
                 title  : 'Sortierung',
                 styles : {
+                    'border-left-width' : 1,
                     'float' : 'right'
                 },
                 events : {
