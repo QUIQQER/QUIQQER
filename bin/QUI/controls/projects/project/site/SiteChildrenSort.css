@@ -1,0 +1,14 @@
+@CHARSET "UTF-8";
+
+.qui-project-children-sort {
+    clear: both;
+    float: left;
+    height: 100%;
+    overflow: auto;
+    padding: 20px;
+    width: 100%;
+}
+
+.qui-project-children-sort-container {
+    margin-top: 20px;
+}

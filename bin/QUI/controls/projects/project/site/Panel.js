@@ -47,6 +47,7 @@ define('controls/projects/project/site/Panel', [
             'createNewChild',
             'openPermissions',
             'openMedia',
+            'openSort',
 
             '$onCreate',
             '$onResize',
@@ -192,9 +193,7 @@ define('controls/projects/project/site/Panel', [
                 events : {
                     onClick : this.openPermissions
                 }
-            }).inject(
-                this.getHeader()
-            );
+            }).inject( this.getHeader() );
 
             var MediaButton = new QUIButton({
                 image  : 'icon-picture',
@@ -206,9 +205,20 @@ define('controls/projects/project/site/Panel', [
                 events : {
                     onClick : this.openMedia
                 }
-            }).inject(
-                this.getHeader()
-            );
+            }).inject( this.getHeader() );
+
+            var SortButton = new QUIButton({
+                image  : 'icon-sort',
+                alt    : 'Sortierung',
+                title  : 'Sortierung',
+                styles : {
+                    'float' : 'right'
+                },
+                events : {
+                    onClick : this.openSort
+                }
+            }).inject( this.getHeader() );
+
 
             var Site    = this.getSite(),
                 Project = Site.getProject();
@@ -340,6 +350,33 @@ define('controls/projects/project/site/Panel', [
             require([ 'controls/projects/project/media/Panel' ], function(Panel) {
                 Parent.appendChild( new Panel( Media ) );
             });
+        },
+
+        /**
+         * Opens the sort sheet
+         *
+         * @method controls/projects/project/site/Panel#openSort
+         */
+        openSort : function()
+        {
+            var self    = this,
+                Site    = this.getSite(),
+                Project = Site.getProject();
+
+            this.createSheet({
+                title : 'Sortierung - '+ this.getAttribute( 'title' ),
+                events :
+                {
+                    onOpen : function(Sheet)
+                    {
+                        require([
+                            'controls/projects/project/site/SiteChildrenSort'
+                        ], function(SiteSort) {
+                            new SiteSort( Site ).inject( Sheet.getContent() );
+                        });
+                    }
+                }
+            }).show();
         },
 
         /**

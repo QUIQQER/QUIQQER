@@ -18,10 +18,11 @@ define('controls/users/Panel', [
     'qui/controls/windows/Prompt',
     'qui/controls/buttons/Button',
     'utils/Template',
+    'utils/Controls',
 
     'css!controls/users/Panel.css'
 
-], function(QUI, Panel, Grid, Users, Attention, QUIConfirm, QUIPrompt, QUIButton, Template)
+], function(QUI, Panel, Grid, Users, Attention, QUIConfirm, QUIPrompt, QUIButton, Template, ControlUtils)
 {
     "use strict";
 
@@ -312,7 +313,7 @@ define('controls/users/Panel', [
                     self.setAttribute( 'SearchSheet', Sheet );
 
                     // parse controls
-                    QUI.controls.Utils.parse( Body );
+                    ControlUtils.parse( Body );
 
                     Frm    = Body.getElement('form');
                     Search = Frm.elements.search;
