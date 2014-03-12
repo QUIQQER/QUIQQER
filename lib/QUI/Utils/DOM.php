@@ -792,7 +792,7 @@ class DOM
         {
             $result = array_merge(
                 $result,
-                self::dbAutoIncrementDomToArray( $index->item( $i ) )
+                self::dbAutoIncrementDomToArray( $autoincrement->item( $i ) )
             );
         }
 
