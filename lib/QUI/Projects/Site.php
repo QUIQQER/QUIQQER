@@ -176,7 +176,7 @@ class Site extends \QUI\QDOM
                 \QUI\Cache\Manager::get( $this->_CACHENAME )
             );
 
-        } catch ( \QUI\Cache\Exception $e )
+        } catch ( \QUI\Cache\Exception $Exception )
         {
             // Daten aus der DB hohlen
             $this->refresh();
