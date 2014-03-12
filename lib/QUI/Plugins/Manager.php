@@ -185,30 +185,30 @@ class Manager extends \QUI\QDOM
      */
     public function getAvailableTypes($Project=false)
     {
-        $types   = array();
-        $plugins = $this->getAvailablePlugins();
+        $types     = array();
+        $installed = \QUI::getPackageManager()->getInstalled();
 
-        foreach ( $plugins as $Plugin )
+        foreach ( $installed as $package )
         {
-            if ( !is_object( $Plugin ) ) {
+            $name    = $package['name'];
+            $siteXml = OPT_DIR . $name .'/site.xml';
+
+            if ( !file_exists( $siteXml ) ) {
                 continue;
             }
 
-            /* @var $Plugin Plugin */
-            $name = $Plugin->getAttribute( 'name' );
+            $typeList = \QUI\Utils\XML::getTypesFromXml( $siteXml );
 
-            if ( !$Plugin->getAttribute( 'types' ) ) {
-                continue;
-            }
-
-            $plugin_types = $Plugin->getAttribute( 'types' );
-
-            foreach ( $plugin_types as $_type => $_params ) {
-                $types[] = $name .'/'. $_type;
+            foreach ( $typeList as $Type )
+            {
+                $types[ $name ][] = array(
+                    'type' => $Type->getAttribute('type'),
+                    'icon' => $Type->getAttribute('icon')
+                );
             }
         }
 
-        sort($types);
+        ksort( $types );
 
         return $types;
     }

@@ -583,15 +583,16 @@ class XML
     }
 
     /**
-     * Return the types from a xml file
+     * Return the site types from a xml file
+     * https://dev.quiqqer.com/quiqqer/quiqqer/wikis/Site-Xml
      *
      * @param unknown $file
-     * @return boolean
+     * @return boolean|array
      */
     static function getTypesFromXml($file)
     {
         $Dom   = self::getDomFromXml( $file );
-        $sites = $Dom->getElementsByTagName( 'sites' );
+        $sites = $Dom->getElementsByTagName( 'site' );
 
         if ( !$sites->length ) {
             return false;
@@ -599,7 +600,7 @@ class XML
 
 
         $Sites = $sites->item( 0 );
-        $types = $Settings->getElementsByTagName( 'types' );
+        $types = $Sites->getElementsByTagName( 'types' );
 
         if ( !$types->length ) {
             return false;
@@ -618,7 +619,7 @@ class XML
                 continue;
             }
 
-            $result[] = $Window;
+            $result[] = $Type;
         }
 
         return $result;

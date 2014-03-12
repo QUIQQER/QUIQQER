@@ -79,7 +79,7 @@ define('controls/projects/TypeInput', [
             new TypeButton({
                 events :
                 {
-                    onSubmit : function(result, Btn)
+                    onSubmit : function(Btn, result)
                     {
                         self.$Input.value = result;
                         self.loadTypeName();

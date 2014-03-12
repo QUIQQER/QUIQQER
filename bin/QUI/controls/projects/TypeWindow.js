@@ -40,7 +40,7 @@ define('controls/projects/TypeWindow', [
     return new Class({
 
         Extends : QUIConfirm,
-        Type    : 'QUI.controls.projects.TypeWindow',
+        Type    : 'controls/projects/TypeWindow',
 
         Binds : [
             '$onCreate'
@@ -50,11 +50,11 @@ define('controls/projects/TypeWindow', [
             multible : false,
             project  : false,
 
-            title   : 'Seitentypen Auswahl',
-            icon    : 'icon-magic',
-            height  : 400,
-            width   : 350,
-            message : false
+            title     : 'Seitentypen Auswahl',
+            icon      : 'icon-magic',
+            maxHeight : 500,
+            maxWidth  : 400,
+            message   : false
         },
 
         initialize : function(options)
@@ -65,8 +65,7 @@ define('controls/projects/TypeWindow', [
             this.$Elm     = null;
 
             this.addEvents({
-                'onOpen'   : this.$onOpen,
-                'onSubmit' : this.$onSubmit
+                'onOpen' : this.$onOpen
             });
         },
 
@@ -104,64 +103,24 @@ define('controls/projects/TypeWindow', [
 
                 self.Loader.hide();
             });
+        },
 
-//
-//            this.$Elm = new QUI.controls.windows.Submit({
-//                title  : this.getAttribute( 'title' ),
-//                icon   : this.getAttribute( 'icon' ),
-//                height : this.getAttribute( 'height' ),
-//                width  : this.getAttribute( 'width' ),
-//                information : '<div class="types-sitemap"></div>',
-//
-//                Control : this,
-//                events  :
-//                {
-//                    onDrawEnd : function(Win, MuiWin)
-//                    {
-//                        var Control     = Win.getAttribute( 'Control' ),
-//                            Body        = Win.getBody(),
-//                            SitemapBody = Body.getElement( '.types-sitemap' ),
-//                            Text        = Body.getElement( '.text' ),
-//                            Information = Body.getElement( '.information' );
-//
-//                        if ( Control.getAttribute( 'message')  )
-//                        {
-//                            new Element('div', {
-//                                html : Control.getAttribute( 'message' )
-//                            }).inject( SitemapBody, 'before' );
-//                        }
-//
-//                        if ( Text ) {
-//                            Text.destroy();
-//                        }
-//
-//                        require(['controls/projects/TypeSitemap'], function(Control)
-//                        {
-//                            this.$Sitemap = new Control(SitemapBody, {
-//                                project  : this.getAttribute( 'project' ),
-//                                multible : this.getAttribute( 'multible' )
-//                            });
-//
-//                        }.bind( Control ));
-//                    },
-//
-//                    onSubmit : function(Win)
-//                    {
-//                        var Control = Win.getAttribute( 'Control' ),
-//                            Sitemap = Control.$Sitemap;
-//
-//                        if ( Sitemap )
-//                        {
-//                            Control.fireEvent('submit', [
-//                                Sitemap.getValues(),
-//                                Control
-//                            ]);
-//                        }
-//                    }
-//                }
-//            }).create();
+        /**
+         * submit the window
+         */
+        submit : function()
+        {
+            var values = [];
 
-            // return this.$Elm;
+            if ( this.$Sitemap ) {
+                values = this.$Sitemap.getValues();
+            }
+
+            this.fireEvent( 'submit', [ this, values ] );
+
+            if ( this.getAttribute( 'autoclose' ) ) {
+                this.close();
+            }
         }
     });
 });

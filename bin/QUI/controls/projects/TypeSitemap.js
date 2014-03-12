@@ -51,12 +51,15 @@ define('controls/projects/TypeSitemap', [
             project  : false
         },
 
-        $Map       : null,
-        $Container : null,
+        Binds : [
+            'open'
+        ],
 
         initialize : function(options)
         {
-            var self = this;
+            this.$Map       = null;
+            this.$Container = null;
+            this.$load      = false;
 
             this.parent( options );
         },
@@ -68,6 +71,8 @@ define('controls/projects/TypeSitemap', [
          */
         create : function()
         {
+            var self = this;
+
             this.$Map = new QUISitemap({
                 name     : 'Type-Sitemap',
                 multible : this.getAttribute('multible')
@@ -81,16 +86,11 @@ define('controls/projects/TypeSitemap', [
                 text    : 'Seitentypen',
                 alt     : 'Seitentypen',
                 icon    : 'icon-magic',
-                hasChildren : false,
-                events :
-                {
-                    onOpen : function(Itm) {
-                        self.open();
-                    }
-                }
+                hasChildren : false
             });
 
             this.$Map.appendChild( First );
+            this.open();
 
             return this.$Map.create();
         },
@@ -103,51 +103,61 @@ define('controls/projects/TypeSitemap', [
          */
         open : function()
         {
-            var self = this;
+            if ( this.$load ) {
+                return;
+            }
 
-            Ajax.get('ajax_project_types_get_list', function(result, Ajax)
+            this.$load = true;
+
+            var self  = this,
+                First = self.$Map.firstChild();
+
+            First.removeIcon( 'icon-magic' );
+            First.addIcon( 'icon-spin icon-refresh' );
+
+            Ajax.get('ajax_project_types_get_list', function(result)
             {
-                var i, c, len, icon, types,
-                    plugin, Plgn, type_icon,
-                    func_itm_click;
-
-                var First = self.$Map.firstChild();
-
+                First = self.$Map.firstChild();
                 First.clearChildren();
+                First.disable();
 
-                func_itm_click = function(Itm, event)
+                First.removeIcon( 'icon-spin' );
+                First.addIcon( 'icon-magic' );
+
+                // empty result
+                if ( typeOf( result ) == 'array' )
+                {
+                    First.setAttribute(
+                        'text',
+                        'Es stehen keine Seitentypen zur Verfügung'
+                    );
+
+                    return;
+                }
+
+                var c, i, len, data, icon, Plugin;
+
+                var func_itm_click = function(Itm, event)
                 {
                     Itm.open();
 
                     if ( Itm.firstChild() )
                     {
-                        (function()
-                        {
+                        (function() {
                             Itm.firstChild().click();
                         }).delay( 100 );
                     }
                 };
 
+                // create the map
                 for ( i in result )
                 {
-                    plugin = result[i];
-                    types  = plugin.types;
-                    icon   = 'icon-magic';
-
-                    if ( typeof types === 'undefined' ) {
-                        continue;
-                    }
-
-                    if ( plugin.icon_16x16 ) {
-                        icon = URL_OPT_DIR + plugin.icon_16x16;
-                    }
-
-                    Plgn = new QUISitemapItem({
+                    Plugin = new QUISitemapItem({
                         name  : i,
                         value : i,
-                        text  : plugin.name,
-                        alt   : plugin.description,
-                        icon  : icon,
+                        text  : i,
+                        alt   : i,
+                        icon  : 'icon-puzzle-piece',
                         hasChildren : true,
 
                         events : {
@@ -155,42 +165,30 @@ define('controls/projects/TypeSitemap', [
                         }
                     });
 
-                    First.appendChild( Plgn );
+                    First.appendChild( Plugin );
 
 
-                    for ( c = 0, len = types.length; c < len; c++ )
+                    for ( c = 0, len = result[ i ].length; c < len; c++ )
                     {
-                        type_icon = 'icon-magic';
+                        icon = 'icon-magic';
+                        data = result[ i ][ c ];
 
-                        if ( types[c].icon_16x16 ) {
-                            type_icon = types[c].icon_16x16;
+                        if ( data.icon ) {
+                            icon = data.icon;
                         }
 
-                        Plgn.appendChild(
-                            new QUISitemapItem({
-                                name  : i,
-                                value : types[c].type,
-                                text  : types[c].name,
-                                alt   : types[c].description,
-                                icon  : type_icon
-                            })
-                        );
+                        new QUISitemapItem({
+                            name  : i,
+                            value : data.type,
+                            text  : data.type,
+                            alt   : data.type,
+                            icon  : icon
+                        }).inject( Plugin );
                     }
                 }
 
-                // empty result
-                if ( typeOf( result ) == 'array' )
-                {
-                    First.disable();
+                First.open();
 
-                    First.setAttribute(
-                        'text',
-                        'Es stehen keine Seitentypen zur Verfügung'
-                    );
-                }
-
-                First.setAttribute( 'icon', 'icon-magic' );
-                // First.setAttribute( 'icon', URL_BIN_DIR +'16x16/types.png' );
             }, {
                 project : this.getAttribute( 'project' )
             });
@@ -212,7 +210,7 @@ define('controls/projects/TypeSitemap', [
             for ( i = 0, len = actives.length; i < len; i++ )
             {
                 result.push(
-                    actives[i].getAttribute( 'value' )
+                    actives[ i ].getAttribute( 'value' )
                 );
             }
 

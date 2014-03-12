@@ -58,24 +58,22 @@ define('controls/projects/TypeButton', [
             var self = this;
 
             this.$Button = new QUIButton({
-                name    : 'project-types',
-                image   : 'icon-magic',
-                alt     : 'Seitentypen ändern',
-                title   : 'Seitentypen ändern',
-                Project : this.getAttribute('project'),
-                events  :
+                name   : 'project-types',
+                image  : 'icon-magic',
+                alt    : 'Seitentypen ändern',
+                title  : 'Seitentypen ändern',
+                events :
                 {
                     click : function(Btn)
                     {
                         new TypeWindow({
-                            project : Btn.getAttribute('Project'),
-                            Control : Btn.getAttribute('Control'),
+                            project : self.getAttribute('Project'),
                             events  :
                             {
-                                onSubmit : function(result, Win)
+                                onSubmit : function(Win, result)
                                 {
                                     if ( result[0] ) {
-                                        self.fireEvent( 'submit', [ result[0], Control ] );
+                                        self.fireEvent( 'submit', [ self, result[0] ] );
                                     }
                                 },
 

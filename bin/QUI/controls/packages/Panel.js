@@ -448,6 +448,8 @@ define('controls/packages/Panel', [
          */
         uploadUpdates : function()
         {
+            return;
+
             var Win = new QUI.controls.windows.Upload({
                 title : Locale.get(
                     'quiqqer/system',
