@@ -174,7 +174,7 @@ define('controls/packages/Panel', [
                     'quiqqer/system',
                     'packages.category.search'
                 ),
-                image  : URL_BIN_DIR +'32x32/actions/find.png',
+                image  : 'icon-search',
                 events : {
                     onActive : this.loadSearch,
                     onNormal : this.unloadSearch
@@ -762,7 +762,8 @@ define('controls/packages/Panel', [
             this.Loader.show();
             this.getBody().set( 'html', '' );
 
-            var Body = this.getBody(),
+            var self = this,
+                Body = this.getBody(),
                 size = Body.getSize(),
 
                 Container = new Element('div', {
@@ -812,7 +813,7 @@ define('controls/packages/Panel', [
                     dataIndex : 'install',
                     dataType  : 'button',
                     width     : 50
-                },{
+                }, {
                     header : Locale.get(
                         'quiqqer/system',
                         'packages.search.grid.title.package'
@@ -835,9 +836,8 @@ define('controls/packages/Panel', [
                 sortHeader : true,
                 width      : Container.getSize().x,
                 height     : 200,
-                onrefresh  : function(me)
-                {
-
+                onrefresh  : function() {
+                    self.startSearch();
                 }
             });
 
@@ -881,42 +881,48 @@ define('controls/packages/Panel', [
 
             this.Loader.show();
 
-            var self = this;
-
-            this.search(Search.value, function(result, Request)
-            {
-                for ( var i = 0, len = result.data.length; i < len; i++ )
+            var self     = this,
+                onResult = function(result, Request)
                 {
-                    if ( result.data[ i ].isInstalled ) {
-                        continue;
+                    for ( var i = 0, len = result.data.length; i < len; i++ )
+                    {
+                        if ( result.data[ i ].isInstalled ) {
+                            continue;
+                        }
+
+                        result.data[ i ].install = {
+                            'package' : result.data[ i ]['package'],
+                            image     : 'icon-download',
+                            title     : Locale.get(
+                                'quiqqer/system',
+                                'packages.search.grid.setup.btn.title',
+                                {'package' : result.data[ i ]['package'] }
+                            ),
+                            alt : Locale.get(
+                                'quiqqer/system',
+                                'packages.search.grid.setup.btn.alt',
+                                {'package' : result.data[ i ]['package'] }
+                            ),
+                            events : {
+                                onClick : self.dialogInstall
+                            }
+                        };
                     }
 
-                    result.data[ i ].install = {
-                        'package' : result.data[ i ]['package'],
-                        image     : 'icon-download',
-                        title     : Locale.get(
-                            'quiqqer/system',
-                            'packages.search.grid.setup.btn.title',
-                            {'package' : result.data[ i ]['package'] }
-                        ),
-                        alt : Locale.get(
-                            'quiqqer/system',
-                            'packages.search.grid.setup.btn.alt',
-                            {'package' : result.data[ i ]['package'] }
-                        ),
-                        events : {
-                            onClick : self.dialogInstall
-                        }
-                    };
-                }
 
+                    if ( self.$SearchGrid ) {
+                        self.$SearchGrid.setData( result );
+                    }
 
-                if ( self.$SearchGrid ) {
-                    self.$SearchGrid.setData( result );
-                }
+                    self.Loader.hide();
+                };
 
-                self.Loader.hide();
-            });
+            this.search(
+                Search.value,
+                onResult,
+                this.$SearchGrid.options.page,
+                this.$SearchGrid.options.perPage
+            );
         },
 
         /**
@@ -924,16 +930,28 @@ define('controls/packages/Panel', [
          *
          * @param {String} str
          * @param {Function} callback
+         * @param {Integer} start - [optional]
+         * @param {Integer} max - [optional]
          */
-        search : function(str, callback)
+        search : function(str, callback, start, max)
         {
+            if ( typeof start === 'undefined' ) {
+                start = 1;
+            }
+
+            if ( typeof max === 'undefined' ) {
+                max = 1;
+            }
+
             Ajax.get('ajax_system_packages_search', function(result, Request)
             {
                 if ( typeof callback !== 'undefined' ) {
                     callback( result, Request );
                 }
             }, {
-                str : str
+                str   : str,
+                from  : start,
+                max   : max
             });
         },
 
@@ -942,7 +960,8 @@ define('controls/packages/Panel', [
          */
         dialogInstall : function(Btn)
         {
-            var pkg = Btn.getAttribute( 'package' );
+            var pkg  = Btn.getAttribute( 'package' ),
+                self = this;
 
             new QUIConfirm({
                 title : Locale.get(
@@ -1008,6 +1027,7 @@ define('controls/packages/Panel', [
                         Ajax.get('ajax_system_packages_install', function(result, Request)
                         {
                             Win.close();
+                            self.startSearch();
                         }, {
                             'package' : pkg
                         });
