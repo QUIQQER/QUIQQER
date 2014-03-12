@@ -122,7 +122,7 @@ define('controls/projects/project/site/SiteChildrenSort', [
                     events    :
                     {
                         onClick : function() {
-                            GridTable.moveup();
+                            self.$GridTable.moveup();
                         }
                     }
                 }, {
@@ -133,7 +133,7 @@ define('controls/projects/project/site/SiteChildrenSort', [
                     events    :
                     {
                         onClick : function() {
-                            GridTable.movedown();
+                            self.$GridTable.movedown();
                         }
                     }
                 }, {
@@ -147,7 +147,7 @@ define('controls/projects/project/site/SiteChildrenSort', [
                         {
                             Btn.setAttribute( 'textimage', 'icon-refresh icon-spin' );
 
-                            self.saveSort(Site, GridTable, function() {
+                            self.save(function() {
                                 Btn.setAttribute( 'textimage', 'icon-save' );
                             });
                         }
@@ -159,6 +159,27 @@ define('controls/projects/project/site/SiteChildrenSort', [
                     self.displayChildren();
                 }
             });
+
+
+            this.$GridTable.addEvents({
+                click : function()
+                {
+                    var sel = self.$GridTable.getSelectedIndices();
+
+                    if ( !sel.length ) {
+                        return;
+                    }
+
+                    if ( self.$Select.value == 'manuell' )
+                    {
+                        self.enableUpDownButtons();
+                    } else
+                    {
+                        self.disableUpDownButtons();
+                    }
+                }
+            });
+
 
 
             this.$Select.value = this.$Site.getAttribute( 'order_type' );
@@ -226,10 +247,8 @@ define('controls/projects/project/site/SiteChildrenSort', [
 
         /**
          * Enable the up and down buttons
-         *
-         * @param {DOMNode} Content - parent node
          */
-        enableUpDownButtons : function(Content)
+        enableUpDownButtons : function()
         {
             var buttons = this.$Container.getElements( 'button' );
 
@@ -255,10 +274,8 @@ define('controls/projects/project/site/SiteChildrenSort', [
 
         /**
          * Disable the up and down buttons
-         *
-         * @param {DOMNode} Content - parent node
          */
-        disableUpDownButtons : function(Content)
+        disableUpDownButtons : function()
         {
             var buttons = this.$Container.getElements( 'button' );
 
@@ -286,18 +303,17 @@ define('controls/projects/project/site/SiteChildrenSort', [
          * Save the actually sort of the children
          *
          * @param {classes/projects/project/Site} Site
-         * @param {controls/grid/Grid} GridTable - grid in the site panel
          * @param {Function} callback - [optional] callback function
          */
-        save : function(Site, GridTable, callback)
+        save : function(callback)
         {
             var i, len;
 
             var Project = this.$Site.getProject(),
                 ids     = [],
-                perPage = GridTable.options.perPage,
-                page    = GridTable.options.page,
-                data    = GridTable.getData();
+                perPage = this.$GridTable.options.perPage,
+                page    = this.$GridTable.options.page,
+                data    = this.$GridTable.getData();
 
 
             for ( i = 0, len = data.length; i < len; i++ ) {
@@ -432,7 +448,7 @@ define('controls/projects/project/site/SiteChildrenSort', [
                         {
                             Btn.setAttribute( 'textimage', 'icon-refresh icon-spin' );
 
-                            self.saveSort(Site, GridTable, function() {
+                            self.save(function() {
                                 Btn.setAttribute( 'textimage', 'icon-save' );
                             });
                         }

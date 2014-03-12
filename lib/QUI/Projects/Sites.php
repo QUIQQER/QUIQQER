@@ -261,20 +261,6 @@ class Sites
             ))
         );
 
-        // Sortierung
-        $Tabbar->appendChild(
-            new \QUI\Controls\Toolbar\Tab(array(
-                'name'     => 'sort',
-                'text'     => 'Sortierung',
-                'template' => SYS_DIR .'template/site/navigation.html',
-                'icon'     => 'icon-sort',
-                'onload_require'   => 'controls/projects/project/site/siteSort',
-                'onload'           => 'Plugin.onload',
-                'onunload_require' => 'controls/projects/project/site/siteSort',
-                'onunload'         => 'Plugin.onunload'
-            ))
-        );
-
         // Global Plugins hohlen
         $Plugins = self::getPlugins( $Site );
 
