@@ -133,6 +133,29 @@ class Site extends \QUI\QDOM
     protected $_database_data = array();
 
     /**
+     * Extend class string
+     * @var String
+     */
+    protected $_extend = '';
+
+    /**
+     * Extend class object
+     */
+    protected $_Extend = null;
+
+    /**
+     * Type string
+     * @var String|false
+     */
+    protected $_type = false;
+
+    /**
+     * Package string
+     * @var String|false
+     */
+    protected $_package = false;
+
+    /**
      * Constructor
      *
      * @param \QUI\Projects\Project $Project
@@ -163,7 +186,6 @@ class Site extends \QUI\QDOM
 
         // view permission check
         $this->checkPermission( 'quiqqer.site.view' );
-
 
         // Im Adminbereich wird kein Cache verwendet
         if ( defined( 'ADMIN' ) && ADMIN == 1 ) {
@@ -210,6 +232,56 @@ class Site extends \QUI\QDOM
      */
     public function load($plugin=false)
     {
+        $this->_loadflag = true;
+
+        $PackageManager = \QUI::getPackageManager();
+        $packages       = $PackageManager->getInstalled();
+
+        foreach ( $packages as $package )
+        {
+            if ( $plugin && $plugin != $package['name'] ) {
+                continue;
+            }
+
+            $dir = OPT_DIR . $package['name'] .'/';
+
+            $this->_loadDatabases( $dir );
+        }
+
+        // load type
+        $type = $this->getAttribute('type');
+
+        if ( strpos( $type, ':' ) === false ) {
+            return $this;
+        }
+
+        // site.xml
+        $explode = explode( ':', $type );
+        $package = $explode[ 0 ];
+        $type    = $explode[ 1 ];
+
+        $this->_type    = $type;
+        $this->_package = $package;
+
+        $siteXml = OPT_DIR . $package .'/site.xml';
+
+        $Dom   = \QUI\Utils\XML::getDomFromXml( $siteXml );
+        $XPath = new \DOMXPath( $Dom );
+        $Types = $XPath->query( '//type[@type="'. $type .'"]' );
+
+        $Type   = $Types->item( 0 );
+        $extend = $Type->getAttribute( 'extend' );
+
+        if ( $extend )
+        {
+            $this->_extend  = $extend;
+            $this->_Extends = new $extend();
+        }
+
+
+        return $this;
+
+
         $Project = $this->getProject();
 
         if ( $plugin )
@@ -244,26 +316,21 @@ class Site extends \QUI\QDOM
      * Load the Plugin databases
      * database.xml
      *
-     * @param unknown_type $Plugin
+     * @param String $dir - Path to the package
      *
      * @rewrite it to events
      */
-    protected function _loadDatabases($Plugin)
+    protected function _loadDatabases($dir)
     {
-        $Project = $this->getProject();
-
-        $project_lang = $Project->getAttribute( 'lang' );
-        $project_name = $Project->getAttribute( 'name' );
-
-        $database_xml = $Plugin->getAttribute( '_folder_' ) .'database.xml';
+        $databaseXml = $dir .'database.xml';
 
         // database.xml
-        if ( !file_exists( $database_xml ) ) {
+        if ( !file_exists( $databaseXml ) ) {
             return;
         }
 
 
-        $DataBaseXML = \QUI\Utils\XML::getDomFromXml( $database_xml );
+        $DataBaseXML = \QUI\Utils\XML::getDomFromXml( $databaseXml );
         $projects    = $DataBaseXML->getElementsByTagName( 'projects' );
 
         if ( $projects && $projects->length )
@@ -286,18 +353,29 @@ class Site extends \QUI\QDOM
                     continue;
                 }
 
-                $tbl = $project_name .'_'. $project_lang .'_'. $fields['suffix'];
+                $tbl    = $project_name .'_'. $project_lang .'_'. $fields['suffix'];
+                $fields = array_keys( $fields['fields'] );
 
-                $result = \QUI::getDB()->select(array(
-                    'select' => array_keys( $fields['fields'] ),
+                $result = \QUI::getDataBase()->fetch(array(
+                    'select' => $fields,
                     'from'   => $tbl,
                     'where'  => array(
                         'id' => $this->getId()
-                    )
+                    ),
+                    'limit' => 1
                 ));
 
-                if ( isset( $result[0] ) ) {
-                    $this->_database_data[ $fields['suffix'] ] = $result[0];
+                foreach ( $fields as $field )
+                {
+                    if ( $field == 'id' ) {
+                        continue;
+                    }
+
+                    if ( !isset( $result[0][ $field ] ) ) {
+                        continue;
+                    }
+
+                    $this->setAttribute( $field, $result[0][ $field ] );
                 }
             }
         }
@@ -309,49 +387,49 @@ class Site extends \QUI\QDOM
      *
      * @param unknown_type $Plugin
      */
-    protected function _loadPlugin($Plugin)
-    {
-        $Project  = $this->getProject();
-        $site_xml = $Plugin->getAttribute( '_folder_' ) .'site.xml';
+//     protected function _loadPlugin($Plugin)
+//     {
+//         $Project  = $this->getProject();
+//         $site_xml = $Plugin->getAttribute( '_folder_' ) .'site.xml';
 
-        if ( method_exists( $Plugin, 'onLoad' ) ) {
-            $Plugin->onLoad( $this, $Project );
-        }
+//         if ( method_exists( $Plugin, 'onLoad' ) ) {
+//             $Plugin->onLoad( $this, $Project );
+//         }
 
-        // site.xml
-        if ( !file_exists( $site_xml ) ) {
-            return;
-        }
+//         // site.xml
+//         if ( !file_exists( $site_xml ) ) {
+//             return;
+//         }
 
-        $SiteXML    = \QUI\Utils\XML::getDomFromXml( $site_xml );
-        $attributes = $SiteXML->getElementsByTagName( 'attribute' );
+//         $SiteXML    = \QUI\Utils\XML::getDomFromXml( $site_xml );
+//         $attributes = $SiteXML->getElementsByTagName( 'attribute' );
 
-        if ( !$attributes->length ) {
-            return;
-        }
+//         if ( !$attributes->length ) {
+//             return;
+//         }
 
-        for ( $c = 0; $c < $attributes->length; $c++ )
-        {
-            $Attribute = $attributes->item( $c );
+//         for ( $c = 0; $c < $attributes->length; $c++ )
+//         {
+//             $Attribute = $attributes->item( $c );
 
-            $attr  = $Attribute->getAttribute( 'name' );
-            $value = $Attribute->getAttribute( 'value' );
+//             $attr  = $Attribute->getAttribute( 'name' );
+//             $value = $Attribute->getAttribute( 'value' );
 
-            $field    = $Attribute->getAttribute( 'field' );
-            $database = $Attribute->getAttribute( 'database' );
+//             $field    = $Attribute->getAttribute( 'field' );
+//             $database = $Attribute->getAttribute( 'database' );
 
-            $this->setAttribute( $attr, $value );
+//             $this->setAttribute( $attr, $value );
 
-            if ( isset( $this->_database_data[ $database ] ) &&
-                 isset( $this->_database_data[ $database ][ $field ] ) )
-            {
-                $this->setAttribute(
-                    $attr,
-                    $this->_database_data[ $database ][ $field ]
-                );
-            }
-        }
-    }
+//             if ( isset( $this->_database_data[ $database ] ) &&
+//                  isset( $this->_database_data[ $database ][ $field ] ) )
+//             {
+//                 $this->setAttribute(
+//                     $attr,
+//                     $this->_database_data[ $database ][ $field ]
+//                 );
+//             }
+//         }
+//     }
 
     /**
      * Serialisierungsdaten
@@ -361,10 +439,13 @@ class Site extends \QUI\QDOM
     public function encode()
     {
         $att = $this->getAttributes();
+
         $att['extra']         = $this->_extra;
         $att['linked_parent'] = $this->_LINKED_PARENT;
+        $att['_type']         = $this->_type;
+        $att['_extend']       = $this->_extend;
 
-        unset($att['project']);
+        unset( $att['project'] );
 
         return json_encode($att);
     }
@@ -514,7 +595,7 @@ class Site extends \QUI\QDOM
 
         $Project = $this->getProject();
 
-        if ($lang == $Project->getAttribute('lang')) {
+        if ( $lang == $Project->getAttribute('lang') ) {
             return true;
         }
 
@@ -522,14 +603,12 @@ class Site extends \QUI\QDOM
         $lang_id = $this->getId($lang);
 
         // Wenn keine ID dann gleich raus
-        if ($lang_id == false) {
+        if ( $lang_id == false ) {
             return false;
         }
 
         // Wenn es egal ist ob aktive oder inaktive
-        if ($check_only_active == false &&
-            $lang_id == true)
-        {
+        if ( $check_only_active == false && $lang_id == true ) {
             return true;
         }
 
@@ -540,7 +619,7 @@ class Site extends \QUI\QDOM
                 $lang
             );
 
-            $_Site = $_Project->get($lang_id);
+            $_Site = $_Project->get( $lang_id );
 
             return true;
 
@@ -564,7 +643,7 @@ class Site extends \QUI\QDOM
         try
         {
             $Project   = $this->getProject();
-            $rel_table = $Project->getAttribute('name').'_multilingual';
+            $rel_table = $Project->getAttribute('name') .'_multilingual';
 
             $result = \QUI::getDataBase()->fetch(array(
                 'from'  => $rel_table,
@@ -575,18 +654,18 @@ class Site extends \QUI\QDOM
 
             $p_langs = $Project->getAttribute('langs');
 
-            foreach ($p_langs as $p_lang)
+            foreach ( $p_langs as $p_lang )
             {
-                if (isset($result[0][ $p_lang ]))
+                if ( isset( $result[0][ $p_lang ] ) )
                 {
-                    $r[$p_lang] = $result[0][ $p_lang ];
+                    $r[ $p_lang ] = $result[0][ $p_lang ];
                 } else
                 {
-                    $r[$p_lang] = false;
+                    $r[ $p_lang ] = false;
                 }
             }
 
-        } catch (\QUI\Exception $e)
+        } catch ( \QUI\Exception $Exception )
         {
 
         }
@@ -727,7 +806,7 @@ class Site extends \QUI\QDOM
         $result = $this->getChildrenIds( $params );
 
         if ( isset( $params['count'] ) ) {
-            return count( $result );
+            return (int)$result;
         }
 
 

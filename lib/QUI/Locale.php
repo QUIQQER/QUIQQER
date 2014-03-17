@@ -22,7 +22,7 @@ class Locale
      * The current lang
      * @var String
      */
-    protected $_current = 'de';
+    protected $_current = 'en';
 
     /**
      * the exist langs

@@ -145,6 +145,9 @@ class Template extends \QUI\QDOM
         $Rewrite = \QUI::getRewrite();
         $Locale  = \QUI::getLocale();
 
+        // defaults
+        $this->setAttribute( 'html5', true );
+
         $User = $Users->getUserBySession();
 
         // header
@@ -261,9 +264,39 @@ class Template extends \QUI\QDOM
         $Site    = $this->getAttribute( 'Site' );
         $Engine  = $this->getAttribute( 'Engine' );
 
+        $siteType = $Site->getAttribute( 'type' );
+        $siteType = explode( ':', $siteType );
+
+        if ( isset( $siteType[ 0 ] ) && isset( $siteType[ 1 ] ) )
+        {
+            $package = $siteType[ 0 ];
+            $type    = $siteType[ 1 ];
+
+            // type css
+            $siteStyle  = OPT_DIR . $package .'/bin/'. $type .'.css';
+            $siteScript = OPT_DIR . $package .'/bin/'. $type .'.js';
+
+            if ( file_exists( $siteStyle ) )
+            {
+                $Engine->assign(
+                    'siteStyle',
+                    URL_OPT_DIR . $package .'/bin/'. $type .'.css'
+                );
+            }
+
+            if ( file_exists( $siteScript ) )
+            {
+                $Engine->assign(
+                    'siteScript',
+                    URL_OPT_DIR . $package .'/bin/'. $type .'.js'
+                );
+            }
+        }
+
         $Engine->assign(array(
             'Project' => $Project,
-            'Site'    => $Site
+            'Site'    => $Site,
+            'Engine'  => $Engine
         ));
 
         return $Engine->fetch( LIB_DIR .'templates/header.html' );
@@ -285,54 +318,111 @@ class Template extends \QUI\QDOM
         $Site    = $this->getAttribute( 'Site' );
         $Engine  = $this->getAttribute( 'Engine' );
 
-
-        $this->types    = $Project->getType( $Site->getAttribute('type') );
-        $this->type     = $Site->getAttribute('type');
-        $this->template = $Project->getAttribute('template');
-
         // abwärtskompatibilität
         $smarty  = $Engine;
         $Users   = \QUI::getUsers();
         $Rewrite = \QUI::getRewrite();
+        $User    = $Users->getUserBySession();
+        $suffix  = $Rewrite->getSuffix();
 
-        $User   = $Users->getUserBySession();
-        $suffix = $Rewrite->getSuffix();
+        // $this->types    = $Project->getType( $Site->getAttribute('type') );
+        // $this->type     = $Site->getAttribute('type');
+        $this->template = $Project->getAttribute('template');
+
+        $package = false;
+        $type    = false;
+
+        $template = LIB_DIR .'templates/standard.html';
+
+        $siteScript    = false;
+        $siteStyle     = false;
+        $projectScript = false;
+
+        $siteType = $Site->getAttribute( 'type' );
+        $siteType = explode( ':', $siteType );
+
+        if ( isset( $siteType[ 0 ] ) && isset( $siteType[ 1 ] ) )
+        {
+            $package = $siteType[ 0 ];
+            $type    = $siteType[ 1 ];
+
+            // site template
+            $siteTemplate = OPT_DIR . $package .'/'. $type .'.html';
+            $siteScript   = OPT_DIR . $package .'/'. $type .'.php';
+            $siteStyle    = OPT_DIR . $package .'/bin/'. $type .'.css';
+
+            if ( file_exists( $siteStyle ) )
+            {
+                $Engine->assign(
+                    'siteStyle',
+                    URL_OPT_DIR . $package .'/'. $type .'.css'
+                );
+            }
+
+            if ( file_exists( $siteTemplate ) ) {
+                $template = $siteTemplate;
+            }
+
+            // project template
+            $projectTemplate = USR_DIR .'lib/'. $this->template .'/'. $type .'.html';
+            $projectScript   = USR_DIR .'lib/'. $this->template .'/'. $type .'.php';
+
+            if ( file_exists( $projectTemplate ) ) {
+                $template = $projectTemplate;
+            }
+        }
+
+        // includes
+        if ( $siteScript && file_exists( $siteScript ) ) {
+            require $siteScript;
+        }
+
+        if ( $projectScript && file_exists( $projectScript ) ) {
+            require $projectScript;
+        }
+
+
+        if ( !file_exists( $template ) ) {
+            $template = LIB_DIR .'templates/standard.html';
+        }
+
+        return $Engine->fetch( $template );
 
         // Seitentyp Skript einbinden
-        if ( is_array( $this->types ) && isset( $this->types['script'] ) )
-        {
-            $script = $this->type .'/'. $this->types['script'];
-            $file   = OPT_DIR . $script;
+//         if ( is_array( $this->types ) && isset( $this->types['script'] ) )
+//         {
+//             $script = $this->type .'/'. $this->types['script'];
+//             $file   = OPT_DIR . $script;
 
-            // schauen ob es im projekt ein seitentyp skript gibt
-            if ( file_exists( USR_DIR .'lib/'. $this->template .'/'. $script ) ) {
-                $file = USR_DIR .'lib/'. $this->template .'/'. $script;
-            }
+//             // schauen ob es im projekt ein seitentyp skript gibt
+//             if ( file_exists( USR_DIR .'lib/'. $this->template .'/'. $script ) ) {
+//                 $file = USR_DIR .'lib/'. $this->template .'/'. $script;
+//             }
 
-            if ( file_exists( $file ) ) {
-                require $file;
-            }
-        }
+//             if ( file_exists( $file ) ) {
+//                 require $file;
+//             }
+//         }
 
         // Globale index.php für das Design
-        if ( file_exists( USR_DIR .'lib/'. $this->template .'/index.php' ) ) {
-            require USR_DIR .'lib/'. $this->template .'/index.php';
-        }
+//         if ( file_exists( USR_DIR .'lib/'. $this->template .'/index.php' ) ) {
+//             require USR_DIR .'lib/'. $this->template .'/index.php';
+//         }
 
-        // Template + Suffix
-        $tpl = $this->_getTypeTemplate( $this->types, $this->type, $this->template );
+//         // Template + Suffix
+//         $tpl = $this->_getTypeTemplate( $this->types, $this->type, $this->template );
 
-        if ( $suffix == '.html' ) {
-            return $tpl;
-        }
+//         if ( $suffix == '.html' ) {
+//             return $tpl;
+//         }
 
-        $_tpl = str_replace( '.html', $suffix, $tpl );
+//         $_tpl = str_replace( '.html', $suffix, $tpl );
 
-        if ( file_exists( $_tpl ) ) {
-            return $_tpl;
-        }
+//         if ( file_exists( $_tpl ) ) {
+//             return $_tpl;
+//         }
 
-        return $tpl;
+//         return $tpl;
     }
 
     /**

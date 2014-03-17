@@ -8,6 +8,7 @@
     <meta name="date" content="{$Site->getAttribute('e_date')}" />
     <meta name="lang" content="{$Project->getAttribute('lang')}" />
     <meta name="copyright" content="{$Project->getConfig('copyright')}" />
+    <meta name="publisher" content="{$Project->getConfig('publisher')}" />
     {/if}
 
     <meta name="description" content="{if $Site->getAttribute('pcsg.base.description')}{$Site->getAttribute('pcsg.base.description')|escape:"html"}{else}{$Project->getConfig('description')|escape:"html"}{/if}" />
@@ -21,10 +22,10 @@
 
     <meta name="generator" content="{$smarty.const.GENERATOR}" />
     <meta name="author" content="{$Project->getConfig('author')}" />
-    <meta name="publisher" content="{$Project->getConfig('publisher')}" />
     <meta name="revisit-after" content="2 days" />
     <!-- [end] meta -->
 
+    {* depricated *}
     {if $Template->getAttribute('requirejs')}
     <script type="text/javascript" src="{$URL_BIN_DIR}js/mvc/require.js"></script>
     {/if}
@@ -64,6 +65,7 @@
         {/if}
     </script>
 
+    {* depricated *}
     {if $Template->getAttribute('QUI')}
     <script type="text/javascript" src="{$URL_BIN_DIR}js/mvc/QUI.js"></script>
     {/if}
@@ -82,6 +84,15 @@
 
     {if $Template->getAttribute('rel_prev')}
         <link rel="prev" href="{url site=$Smarty->getHeaderAttribute('rel_prev')}" />
+    {/if}
+
+    {* type Files *}
+    {if isset( $siteStyle )}
+        <link href="{$siteStyle}" rel="stylesheet" />
+    {/if}
+
+    {if isset( $siteScript )}
+        <script type="text/javascript" src="{$siteScript}"></script>
     {/if}
 
     <title>

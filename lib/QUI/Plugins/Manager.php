@@ -202,13 +202,23 @@ class Manager extends \QUI\QDOM
             foreach ( $typeList as $Type )
             {
                 $types[ $name ][] = array(
-                    'type' => $Type->getAttribute('type'),
+                    'type' => $name .':'. $Type->getAttribute('type'),
                     'icon' => $Type->getAttribute('icon')
                 );
             }
         }
 
         ksort( $types );
+
+        // standard to top
+        $types = array_reverse( $types, true );
+
+        $types['standard'] = array(
+            'type' => 'standard',
+            'icon' => 'icon-file-alt'
+        );
+
+        $types = array_reverse( $types, true );
 
         return $types;
     }
@@ -430,6 +440,12 @@ class Manager extends \QUI\QDOM
             return 'Standard';
         }
 
+        \QUI\System\Log::write( $type );
+
+
+        return $type;
+
+        /*
         $type    = explode( '/', $type );
         $plugins = $this->get();
 
@@ -450,6 +466,7 @@ class Manager extends \QUI\QDOM
         }
 
         throw new \QUI\Exception( 'Type not found', 404 );
+        */
     }
 
     /**
@@ -512,5 +529,3 @@ class Manager extends \QUI\QDOM
         return $this->_groupplugins;
     }
 }
-
-?>

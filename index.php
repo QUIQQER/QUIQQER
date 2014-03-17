@@ -47,7 +47,9 @@ if ( isset( $_REQUEST['lang'] ) && $_REQUEST['lang'] == 'false' )
 }
 
 $Project = $Rewrite->getProject(); 		/* @var $Project \QUI\Projects\Project */
-$Site    = $Rewrite->getSite()->load(); /* @var $Site \QUI\Projects\Site\Edit */
+$Site    = $Rewrite->getSite(); /* @var $Site \QUI\Projects\Site */
+
+$Site->load();
 
 if ( isset( $Locale ) )
 {

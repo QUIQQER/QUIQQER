@@ -901,11 +901,11 @@ class Rewrite
      */
     public function getSite()
     {
-        if (isset($this->_site) && is_object($this->_site)) {
+        if ( isset( $this->_site ) && is_object( $this->_site ) ) {
             return $this->_site;
         }
 
-        if ($this->_showErrorHeader()) {
+        if ( $this->_showErrorHeader() ) {
             return $this->_site;
         }
 

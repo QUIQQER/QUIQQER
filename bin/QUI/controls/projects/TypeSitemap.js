@@ -80,12 +80,12 @@ define('controls/projects/TypeSitemap', [
 
             // Firstchild
             var First = new QUISitemapItem({
-                name    : 1,
-                index   : 1,
-                value   : 1,
-                text    : 'Seitentypen',
-                alt     : 'Seitentypen',
-                icon    : 'icon-magic',
+                name  : 1,
+                index : 1,
+                value : 1,
+                text  : 'Seitentypen',
+                alt   : 'Seitentypen',
+                icon  : 'icon-magic',
                 hasChildren : false
             });
 
@@ -152,6 +152,20 @@ define('controls/projects/TypeSitemap', [
                 // create the map
                 for ( i in result )
                 {
+                    if ( i == 'standard' )
+                    {
+                        new QUISitemapItem({
+                            name  : i,
+                            value : i,
+                            text  : i,
+                            alt   : i,
+                            icon  : result[ i ].icon,
+                            hasChildren : false
+                        }).inject( First );
+
+                        continue;
+                    }
+
                     Plugin = new QUISitemapItem({
                         name  : i,
                         value : i,
@@ -180,7 +194,7 @@ define('controls/projects/TypeSitemap', [
                         new QUISitemapItem({
                             name  : i,
                             value : data.type,
-                            text  : data.type,
+                            text  : data.type.split(':')[1],
                             alt   : data.type,
                             icon  : icon
                         }).inject( Plugin );

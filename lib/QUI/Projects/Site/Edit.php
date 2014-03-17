@@ -31,13 +31,14 @@ namespace QUI\Projects\Site;
  * @todo site plugin erweiterungen
  * @todo translation der quelltext doku
  *
- * @qui-event onSiteActivate [\QUI\Projects\Site\Edit]
- * @qui-event onSiteDeactivate [\QUI\Projects\Site\Edit]
- * @qui-event onSiteSave [\QUI\Projects\Site\Edit]
+ * @qui-event onSiteActivate [ \QUI\Projects\Site\Edit ]
+ * @qui-event onSiteDeactivate [ \QUI\Projects\Site\Edit ]
+ * @qui-event onSiteSave [ \QUI\Projects\Site\Edit ]
  *
- * @event onActivate [\QUI\Projects\Site\Edit]
- * @event onDeactivate [\QUI\Projects\Site\Edit]
- * @event onSave [\QUI\Projects\Site\Edit]
+ * @event onSiteCreateChild [ Integer $newId, \QUI\Projects\Site\Edit ]
+ * @event onActivate [ \QUI\Projects\Site\Edit ]
+ * @event onDeactivate [ \QUI\Projects\Site\Edit ]
+ * @event onSave [ \QUI\Projects\Site\Edit ]
  */
 
 class Edit extends \QUI\Projects\Site
@@ -764,20 +765,20 @@ class Edit extends \QUI\Projects\Site
      *
      * @param Integer $childid
      */
-    protected function _createChild($childid)
-    {
-        $User = \QUI::getUserBySession();
+//     protected function _createChild($childid)
+//     {
+//         $User = \QUI::getUserBySession();
 
-        // Tabs der Plugins hohlen
-        $Plugins = $this->_getLoadedPlugins();
+//         // Tabs der Plugins hohlen
+//         $Plugins = $this->_getLoadedPlugins();
 
-        foreach ( $Plugins as $plg )
-        {
-            if ( method_exists( $plg, 'onChildCreate' ) ) {
-                $plg->onChildCreate( $childid, $this );
-            }
-        }
-    }
+//         foreach ( $Plugins as $plg )
+//         {
+//             if ( method_exists( $plg, 'onChildCreate' ) ) {
+//                 $plg->onChildCreate( $childid, $this );
+//             }
+//         }
+//     }
 
     /**
      * Gibt Archiveeinträge zurück
@@ -953,27 +954,26 @@ class Edit extends \QUI\Projects\Site
             $_params['content'] = $params['content'];
         }
 
-        $DataBase = \QUI::getDB();
+        $DataBase = \QUI::getDataBase();
 
-        $DataBase->addData(
-            $this->_TABLE,
-            $_params
-        );
+        $DataBase->insert( $this->_TABLE , $_params );
 
-        $new_id = $DataBase->getPDO()->lastInsertId();
+        $newId = $DataBase->getPDO()->lastInsertId();
 
-        $DataBase->addData($this->_RELTABLE, array(
+        $DataBase->insert($this->_RELTABLE, array(
             'parent' => $this->getId(),
-            'child'  => $new_id
+            'child'  => $newId
         ));
 
         // Aufruf der createChild Methode im TempSite - für den Adminbereich
         // needled ?
-        if ( method_exists( $this, '_createChild' ) ) {
-            $this->_createChild( $new_id );
-        }
+        $this->Events->fireEvent('siteCreateChild', array($newId, $this));
 
-        return $new_id;
+//         if ( method_exists( $this, '_createChild' ) ) {
+//             $this->_createChild( $new_id );
+//         }
+
+        return $newId;
     }
 
     /**
