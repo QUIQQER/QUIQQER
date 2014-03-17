@@ -441,12 +441,17 @@ class Manager extends \QUI\QDOM
         }
 
         // \QUI\System\Log::write( $type );
-        $translationType = str_replace( '/', '.', $type );
+        $data = $this->_getSiteXMLDataByType( $type );
 
-        if ( \QUI::getLocale()->exists( '', $translationType .'.site.type' ) ) {
-
+        if ( !isset( $data['value'] ) || empty( $data['value'] ) ) {
+            return $type;
         }
 
+        $value = explode( ' ', $data['value'] );
+
+        if ( \QUI::getLocale()->exists( $value[ 0 ], $value[ 1 ] ) ) {
+            return \QUI::getLocale()->get( $value[ 0 ], $value[ 1 ] );
+        }
 
         return $type;
 
