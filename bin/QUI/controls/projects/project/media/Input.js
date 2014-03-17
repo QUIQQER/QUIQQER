@@ -78,7 +78,9 @@ define('controls/projects/project/media/Input', [
             });
 
             this.$MediaButton = new QUIButton({
-                icon : 'icon-picture',
+                icon   : 'icon-picture',
+                alt    : 'Bild leeren',
+                title  : 'Bild leeren',
                 events :
                 {
                     onClick : function()
@@ -91,6 +93,16 @@ define('controls/projects/project/media/Input', [
                                 }
                             }
                         }).open();
+                    }
+                }
+            }).inject( this.$Elm );
+
+            this.$ClearButton = new QUIButton({
+                icon : 'icon-remove',
+                events :
+                {
+                    onClick : function() {
+                        self.$Input.value = '';
                     }
                 }
             }).inject( this.$Elm );

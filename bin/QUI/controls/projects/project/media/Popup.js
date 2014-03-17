@@ -57,9 +57,7 @@ define('controls/projects/project/media/Popup', [
             Media   = Project.getMedia();
 
             this.$Panel = new MediaPanel(Media, {
-
                 selectable : true,
-
                 events :
                 {
                     onCreate : function() {
@@ -68,6 +66,12 @@ define('controls/projects/project/media/Popup', [
 
                     onChildClick : function(Popup, imageData)
                     {
+                        if ( imageData.type == 'folder' )
+                        {
+                            self.$Panel.openID( imageData.id );
+                            return;
+                        }
+
                         self.close();
 
                         self.fireEvent( 'submit', [ self, imageData ] );

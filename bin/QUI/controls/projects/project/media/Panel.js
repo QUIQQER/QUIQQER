@@ -1197,10 +1197,12 @@ define('controls/projects/project/media/Panel', [
                 var id      = Target.get('data-id'),
                     project = this.getProject().getName();
 
+
                 var imageData = {
                     id      : id,
                     project : project,
-                    url     : MediaUtils.getUrlByImageParams( id, project )
+                    url     : MediaUtils.getUrlByImageParams( id, project ),
+                    type    : Target.get('data-type')
                 };
 
                 this.fireEvent( 'childClick', [ self, imageData ] );
@@ -1327,14 +1329,18 @@ define('controls/projects/project/media/Panel', [
 
                     if ( self.getAttribute( 'selectable' ) )
                     {
-                        var id      = Grid.getDataByRow( row ).id,
+                        var data    = Grid.getDataByRow( row ),
+                            id      = data.id,
                             project = this.getProject().getName();
 
                         var imageData = {
                             id      : id,
                             project : project,
-                            url     : MediaUtils.getUrlByImageParams( id, project )
+                            url     : MediaUtils.getUrlByImageParams( id, project ),
+                            type    : ''
                         };
+
+                        console.info( data );
 
                         self.fireEvent( 'childClick', [ self, imageData ] );
 

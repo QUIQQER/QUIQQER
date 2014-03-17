@@ -488,6 +488,12 @@ class Manager extends \QUI\QDOM
 
         }
 
+        if ( strpos( $explode, ':' ) === false )
+        {
+            \QUI\Cache\Manager::set( $cache, '' );
+            return '';
+        }
+
         $explode = explode( ':', $type );
         $package = $explode[ 0 ];
         $type    = $explode[ 1 ];
