@@ -75,10 +75,10 @@ function ajax_site_getchildren($project, $lang, $id, $params)
         // icon
         if ( !$attributes || in_array( 'icon', $attributes ) )
         {
-            if ( $Site->getAttribute('type') != 'standard' )
+            if ( $Child->getAttribute('type') != 'standard' )
             {
                 $childs[ $i ]['icon'] = $PluginManager->getIconByType(
-                    $Site->getAttribute('type')
+                    $Child->getAttribute('type')
                 );
             }
 
