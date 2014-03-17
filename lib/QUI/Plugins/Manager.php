@@ -38,6 +38,7 @@ class Manager extends \QUI\QDOM
     /**
      * loaded group extentions
      * @var array|Bool
+     * @deprecated
      */
     protected $_groupplugins = false;
 
@@ -106,6 +107,7 @@ class Manager extends \QUI\QDOM
      * @param Bool $onlynames	- Nur Namen, keine Objekte (optional)
      *
      * @return Array
+     * @deprecated use package manager
      */
     public function getAvailablePlugins($order=false, $onlynames=false)
     {
@@ -295,6 +297,7 @@ class Manager extends \QUI\QDOM
      *
      * @return Plugin
      * @todo Unbedingt ändern, get gibt nur aktiv Plugins zurück -> überarbeiten
+     * @todo überdenken -> wird das noch gebraucht?
      */
     public function get($name=false, $type=false)
     {
@@ -454,29 +457,6 @@ class Manager extends \QUI\QDOM
         }
 
         return $type;
-
-        /*
-        $type    = explode( '/', $type );
-        $plugins = $this->get();
-
-        foreach ( $plugins as $Plugin )
-        {
-            if ( $Plugin->getAttribute( 'name' ) != $type[ 0 ] ) {
-                continue;
-            }
-
-            if ( !isset( $type[1] ) ) {
-                return $Plugin->getAttribute('name');
-            }
-
-            $types  = $Plugin->getAttribute('types');
-            $config = $Plugin->getAttribute('config');
-
-            return $config['name'] .' / '. $types[ $type[1] ]['name'];
-        }
-
-        throw new \QUI\Exception( 'Type not found', 404 );
-        */
     }
 
     /**
@@ -586,7 +566,7 @@ class Manager extends \QUI\QDOM
         return array();
 
 
-        if ($this->_groupplugins) {
+        if ( $this->_groupplugins ) {
             return $this->_groupplugins;
         }
 
@@ -594,9 +574,9 @@ class Manager extends \QUI\QDOM
 
         $config = $this->_Config->toArray();
 
-        foreach ($config as $entry => $value)
+        foreach ( $config as $entry => $value )
         {
-            if (!file_exists(OPT_DIR . $entry .'/Groups.php')) {
+            if ( !file_exists( OPT_DIR . $entry .'/Groups.php' ) ) {
                 continue;
             }
 
@@ -604,7 +584,7 @@ class Manager extends \QUI\QDOM
 
             $class = 'Plugin'. ucfirst($entry) .'GroupExtend';
 
-            if (!class_exists($class)) {
+            if ( !class_exists( $class ) ) {
                 continue;
             }
 
