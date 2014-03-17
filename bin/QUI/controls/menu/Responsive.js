@@ -232,7 +232,15 @@ define('controls/menu/Responsive', [
                 var i, len, entry, Text, Container;
                 var size = self.$Content.getSize();
 
-                self.$Content.set('html', '');
+                self.$Content.set( 'html', '' );
+
+                var Sheet = new Element('div', {
+                    styles : {
+                        left    : '-100%',
+                        position: 'absolute',
+                        top     : 0
+                    }
+                }).inject( self.$Content );
 
                 for ( i = 0, len = result.length; i < len; i++ )
                 {
@@ -242,7 +250,7 @@ define('controls/menu/Responsive', [
                         'class'    : 'qcm-responsive-content-entry',
                         'data-id'  : entry.id,
                         'data-url' : entry.url
-                    }).inject( self.$Content );
+                    }).inject( Sheet );
 
                     Text = new Element('div', {
                         'class' : 'qcm-responsive-content-entry-text smooth box',
@@ -287,6 +295,10 @@ define('controls/menu/Responsive', [
                         }
                     }).inject( Container );
                 }
+
+                moofx( Sheet ).animate({
+                    left : 0
+                });
 
                 self.$Loader.hide();
 

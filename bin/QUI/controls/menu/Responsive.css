@@ -85,6 +85,7 @@
 .qcm-responsive-content {
     clear: both;
     float: left;
+    overflow: auto;
     padding: 10px;
     width: 100%;
 }
