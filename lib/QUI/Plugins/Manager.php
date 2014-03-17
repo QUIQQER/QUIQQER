@@ -441,6 +441,11 @@ class Manager extends \QUI\QDOM
         }
 
         // \QUI\System\Log::write( $type );
+        $translationType = str_replace( '/', '.', $type );
+
+        if ( \QUI::getLocale()->exists( '', $translationType .'.site.type' ) ) {
+
+        }
 
 
         return $type;
@@ -477,7 +482,25 @@ class Manager extends \QUI\QDOM
      */
     public function getIconByType($type)
     {
-        $cache = 'pluginManager/icon/'. $type;
+        $data = $this->_getSiteXMLDataByType( $type );
+
+        if ( isset( $data['icon'] ) ) {
+            return $data['icon'];
+        }
+
+        return '';
+    }
+
+    /**
+     * Return the data for a type from its site.xml
+     * https://dev.quiqqer.com/quiqqer/quiqqer/wikis/Site-Xml
+     *
+     * @param unknown $type
+     * @return boolean|array
+     */
+    protected function _getSiteXMLDataByType($type)
+    {
+        $cache = 'pluginManager/data/'. $type;
 
         try
         {
@@ -488,9 +511,7 @@ class Manager extends \QUI\QDOM
 
         }
 
-        if ( strpos( $explode, ':' ) === false )
-        {
-            \QUI\Cache\Manager::set( $cache, '' );
+        if ( strpos( $type, ':' ) === false ) {
             return '';
         }
 
@@ -500,33 +521,32 @@ class Manager extends \QUI\QDOM
 
         $siteXml = OPT_DIR . $package .'/site.xml';
 
-        if ( !file_exists( $siteXml ) )
-        {
-            \QUI\Cache\Manager::set( $cache, '' );
-            return '';
+        if ( !file_exists( $siteXml ) ) {
+            return false;
         }
 
         $Dom   = \QUI\Utils\XML::getDomFromXml( $siteXml );
         $XPath = new \DOMXPath( $Dom );
         $Types = $XPath->query( '//type[@type="'. $type .'"]' );
 
-        if ( !$Types->length )
-        {
-            \QUI\Cache\Manager::set( $cache, '' );
-            return '';
+        if ( !$Types->length ) {
+            return false;
         }
 
         $Type = $Types->item( 0 );
+        $data = array();
 
-        if ( $Type->getAttribute( 'icon' ) )
-        {
-            \QUI\Cache\Manager::set( $cache, $Type->getAttribute( 'icon' ) );
-
-            return $Type->getAttribute( 'icon' );
+        if ( $Type->getAttribute( 'icon' ) ) {
+            $data['icon'] = $Type->getAttribute( 'icon' );
         }
 
-        \QUI\Cache\Manager::set( $cache, '' );
-        return '';
+        if ( $Type->getAttribute( 'extend' ) ) {
+            $data['extend'] = $Type->getAttribute( 'extend' );
+        }
+
+        $data['value'] = trim( $Type->nodeValue );
+
+        return $data;
     }
 
     /**
