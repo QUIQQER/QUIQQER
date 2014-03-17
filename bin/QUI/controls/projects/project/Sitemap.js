@@ -383,15 +383,13 @@ define('controls/projects/project/Sitemap', [
         {
             Ajax.get('ajax_site_get', function(result, Request)
             {
-                if ( Request.getAttribute( 'onfinish' ) ) {
-                    Request.getAttribute( 'onfinish' )( result, Request );
+                if ( typeof callback !== 'undefined' ) {
+                    callback( result, Request );
                 }
             }, {
                 project  : this.getAttribute( 'project' ),
                 lang     : this.getAttribute( 'lang' ),
-                id       : id,
-                Control  : this,
-                onfinish : callback
+                id       : id
             });
         },
 
@@ -406,7 +404,7 @@ define('controls/projects/project/Sitemap', [
          */
         $loadChildren : function(Item, callback)
         {
-            var Control = this;
+            var self = this;
 
             Item.clearChildren();
 
@@ -421,24 +419,26 @@ define('controls/projects/project/Sitemap', [
 
                 for ( var i = 0, len = result.length; i < len; i++ )
                 {
-                    Control.$addSitemapItem(
+                    self.$addSitemapItem(
                         Item,
-                        Control.$parseArrayToSitemapitem( result[ i ] )
+                        self.$parseArrayToSitemapitem( result[ i ] )
                     );
                 }
 
                 Item.addIcon( Item.getAttribute( 'oicon' ) );
                 Item.removeIcon( 'icon-refresh' );
 
-                if ( Request.getAttribute( 'onfinish' ) ) {
-                    Request.getAttribute( 'onfinish' )( Item, Request );
+                if ( typeof callback !== 'undefined' ) {
+                    callback( Item, Request );
                 }
 
             }, {
-                project  : this.getAttribute( 'project' ),
-                lang     : this.getAttribute( 'lang' ),
-                id       : Item.getAttribute( 'value' ),
-                onfinish : callback
+                project : this.getAttribute( 'project' ),
+                lang    : this.getAttribute( 'lang' ),
+                id      : Item.getAttribute( 'value' ),
+                params  : JSON.encode({
+                    attributes : 'id,name,title,has_children,nav_hide,linked,active,icon'
+                })
             });
         },
 
@@ -464,7 +464,7 @@ define('controls/projects/project/Sitemap', [
                 value : result.id,
                 text  : result.title,
                 alt   : result.name +'.html',
-                icon  : 'icon-file-alt',
+                icon  : result.icon || 'icon-file-alt',
                 hasChildren : ( result.has_children ).toInt()
             });
 
@@ -507,7 +507,7 @@ define('controls/projects/project/Sitemap', [
                     new QUIContextmenuItem({
                         name   : 'site-copy-'+ Itm.getId(),
                         text   : 'kopieren',
-                        icon   : URL_BIN_DIR +'16x16/copy.png',
+                        icon   : 'icon-copy',
                         events :
                         {
                             onClick : function(Item, event)
@@ -520,7 +520,7 @@ define('controls/projects/project/Sitemap', [
                     new QUIContextmenuItem({
                         name   : 'site-paste-'+ Itm.getId(),
                         text   : 'einfügen',
-                        icon   : URL_BIN_DIR +'16x16/paste.png',
+                        icon   : 'icon-paste',
                         events :
                         {
                             onClick : function(Item, event)
@@ -533,7 +533,7 @@ define('controls/projects/project/Sitemap', [
                     new QUIContextmenuItem({
                         name   : 'site-cut-'+ Itm.getId(),
                         text   : 'ausschneiden',
-                        icon   : URL_BIN_DIR +'16x16/cut.png',
+                        icon   : 'icon-cut',
                         events :
                         {
                             onClick : function(Item, event)

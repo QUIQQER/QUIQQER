@@ -15,6 +15,9 @@ function ajax_site_getchildren($project, $lang, $id, $params)
     $Site    = new \QUI\Projects\Site\Edit( $Project, (int)$id );
     $params  = json_decode( $params, true );
 
+    $PackageManager = \QUI::getPackageManager();
+    $PluginManager  = \QUI::getPluginManager();
+
     $attributes = false;
 
     if ( isset( $params['attributes'] ) ) {
@@ -57,7 +60,7 @@ function ajax_site_getchildren($project, $lang, $id, $params)
         }
 
         if ( !$attributes || in_array( 'config', $attributes ) ) {
-            $childs[ $i ]['config'] = $Child->conf;
+            $childs[ $i ]['config'] = $Child->conf; // old??
         }
 
         if ( $Child->isLinked() && $Child->isLinked() != $Site->getId() ) {
@@ -67,6 +70,19 @@ function ajax_site_getchildren($project, $lang, $id, $params)
         // Projekt Objekt muss da nicht mit
         if ( isset( $childs[ $i ]['project'] ) && is_object( $childs[ $i ]['project'] ) ) {
             unset( $childs[ $i ]['project'] );
+        }
+
+        // icon
+        if ( !$attributes || in_array( 'icon', $attributes ) )
+        {
+            if ( $Site->getAttribute('type') != 'standard' )
+            {
+                $childs[ $i ]['icon'] = $PluginManager->getIconByType(
+                    $Site->getAttribute('type')
+                );
+            }
+
+
         }
     }
 

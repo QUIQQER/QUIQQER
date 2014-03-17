@@ -746,10 +746,18 @@ class QUI
     }
 
     /**
+     * @deprecated use \QUI::getPluginManager()
+     */
+    static function getPlugins()
+    {
+        return self::getPluginManager();
+    }
+
+    /**
      * Returns the plugins manager
      * @return \QUI\Plugins\Manager
      */
-    static function getPlugins()
+    static function getPluginManager()
     {
         if ( is_null( self::$Plugins ) ) {
             self::$Plugins = new \QUI\Plugins\Manager();

@@ -440,7 +440,7 @@ class Manager extends \QUI\QDOM
             return 'Standard';
         }
 
-        \QUI\System\Log::write( $type );
+        // \QUI\System\Log::write( $type );
 
 
         return $type;
@@ -467,6 +467,60 @@ class Manager extends \QUI\QDOM
 
         throw new \QUI\Exception( 'Type not found', 404 );
         */
+    }
+
+    /**
+     * Return the type icon
+     *
+     * @param unknown $type
+     * @return String
+     */
+    public function getIconByType($type)
+    {
+        $cache = 'pluginManager/icon/'. $type;
+
+        try
+        {
+            return \QUI\Cache\Manager::get( $cache );
+
+        } catch ( \QUI\Cache\Exception $Exception )
+        {
+
+        }
+
+        $explode = explode( ':', $type );
+        $package = $explode[ 0 ];
+        $type    = $explode[ 1 ];
+
+        $siteXml = OPT_DIR . $package .'/site.xml';
+
+        if ( !file_exists( $siteXml ) )
+        {
+            \QUI\Cache\Manager::set( $cache, '' );
+            return '';
+        }
+
+        $Dom   = \QUI\Utils\XML::getDomFromXml( $siteXml );
+        $XPath = new \DOMXPath( $Dom );
+        $Types = $XPath->query( '//type[@type="'. $type .'"]' );
+
+        if ( !$Types->length )
+        {
+            \QUI\Cache\Manager::set( $cache, '' );
+            return '';
+        }
+
+        $Type = $Types->item( 0 );
+
+        if ( $Type->getAttribute( 'icon' ) )
+        {
+            \QUI\Cache\Manager::set( $cache, $Type->getAttribute( 'icon' ) );
+
+            return $Type->getAttribute( 'icon' );
+        }
+
+        \QUI\Cache\Manager::set( $cache, '' );
+        return '';
     }
 
     /**

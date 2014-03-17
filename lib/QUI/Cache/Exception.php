@@ -12,4 +12,4 @@ namespace QUI\Cache;
  * @author www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui.system.cache
  */
-class Exception extends \Exception {}
+class Exception extends \QUI\Exception {}
