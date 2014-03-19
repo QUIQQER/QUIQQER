@@ -34,7 +34,9 @@ define('controls/menu/Manager', [
         {
             var self = this;
 
-            this.$Bar = new ContextmenuBar();
+            this.$Bar = new ContextmenuBar({
+                dragable : true
+            });
 
             Ajax.get('ajax_menu', function(result) {
                 self.$Bar.insert( result );

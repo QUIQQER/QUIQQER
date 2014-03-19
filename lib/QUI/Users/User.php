@@ -276,7 +276,7 @@ class User implements \QUI\Interfaces\Users\User
      */
     public function getExtra( $field )
     {
-        if ( isset($this->_extra[ $field] ) ) {
+        if ( isset( $this->_extra[ $field ] ) ) {
             return $this->_extra[ $field ];
         }
 
@@ -368,6 +368,7 @@ class User implements \QUI\Interfaces\Users\User
             try
             {
                 $this->_lang = \QUI\Projects\Manager::get()->getAttribute( 'lang' );
+
             } catch ( \QUI\Exception $Exception )
             {
 
@@ -489,7 +490,7 @@ class User implements \QUI\Interfaces\Users\User
      */
     public function setGroups($groups)
     {
-        if (empty($groups)) {
+        if ( empty( $groups ) ) {
             return;
         }
 
@@ -498,7 +499,7 @@ class User implements \QUI\Interfaces\Users\User
         $this->Group   = array();
         $this->_groups = false;
 
-        if (is_array($groups))
+        if ( is_array( $groups ) )
         {
             $aTmp = array();
 
@@ -545,7 +546,7 @@ class User implements \QUI\Interfaces\Users\User
             {
                 $this->Group[] = $Groups->get($groups);
                 $this->_groups = ','.$groups.',';
-            } catch (\QUI\Exception $e)
+            } catch ( \QUI\Exception $e )
             {
 
             }
@@ -736,6 +737,7 @@ class User implements \QUI\Interfaces\Users\User
 
         $params['usergroup'] = $this->getGroups( false );
         $params['username']  = $this->getName();
+        $params['extras']    = $this->_extra;
 
         return $params;
     }
@@ -823,7 +825,7 @@ class User implements \QUI\Interfaces\Users\User
         $newpass         = \QUI\Users\Manager::genHash( $new );
         $this->_password = $newpass;
 
-        \QUI::getDB()->updateData(
+        \QUI::getDataBase()->update(
             \QUI\Users\Manager::Table(),
             array( 'password' => $newpass ),
             array( 'id'       => $this->getId() )
@@ -869,11 +871,11 @@ class User implements \QUI\Interfaces\Users\User
             $this->_checkRights();
         }
 
-        // benutzer ist schon aktiv, aktivierung kann nciht durchgeführt werden
+        // benutzer ist schon aktiv, aktivierung kann nicht durchgeführt werden
         if ( $this->getAttribute( 'active' ) )
         {
-            throw new PException(
-                PCSG::getLocale()->get(
+            throw new \QUI\Exception(
+                \QUI::getLocale()->get(
                     'system',
                     'exception.lib.user.activasion.user.is.activated'
                 )
@@ -900,7 +902,7 @@ class User implements \QUI\Interfaces\Users\User
             );
         }
 
-        $res = \QUI::getDB()->updateData(
+        $res = \QUI::getDataBase()->update(
             \QUI\Users\Manager::Table(),
             array( 'active' => 1 ),
             array( 'id'     => $this->getId() )
@@ -1071,7 +1073,7 @@ class User implements \QUI\Interfaces\Users\User
             $Plugin->onUserSave( $this );
         }
 
-        return \QUI::getDB()->updateData(
+        return \QUI::getDataBase()->update(
             \QUI\Users\Manager::Table(),
             array(
                 'username' 	=> $this->getName(),

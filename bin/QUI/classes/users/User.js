@@ -26,7 +26,7 @@ define('classes/users/User', [
     /**
      * A QUIQQER User
      *
-     * @class QUI.classes.users.User
+     * @class classes/users/User
      * @param {Integer} uid - the user id
      *
      * @memberof! <global>
@@ -40,13 +40,14 @@ define('classes/users/User', [
 
         initialize : function(uid)
         {
-            this.$uid = uid;
+            this.$uid    = uid;
+            this.$extras = {};
         },
 
         /**
          * Get user id
          *
-         * @method QUI.classes.users.User#getId
+         * @method classes/users/User#getId
          * @return {Integer} User-ID
          */
         getId : function()
@@ -57,7 +58,7 @@ define('classes/users/User', [
         /**
          * Return the user name
          *
-         * @method QUI.classes.users.User#getName
+         * @method classes/users/User#getName
          * @return {String} Username
          */
         getName : function()
@@ -68,71 +69,91 @@ define('classes/users/User', [
         /**
          * Load the user attributes from the db
          *
-         * @method QUI.classes.users.User#load
+         * @method classes/users/User#load
          * @param {Function} onfinish - [optional] callback
          */
         load: function(onfinish)
         {
+            var self = this;
+
             Ajax.get('ajax_users_get', function(result, Request)
             {
-                var User = Request.getAttribute( 'User' );
-
-                User.setAttributes( result );
-
-                if ( Request.getAttribute( 'onfinish' ) ) {
-                    Request.getAttribute( 'onfinish' )( User, Request );
+                if ( result.extras )
+                {
+                    self.$extras = result.extras;
+                    delete result.extras;
                 }
 
-                User.fireEvent( 'refresh', [ User ] );
+                self.setAttributes( result );
 
-                QUI.Users.onRefreshUser( User );
+                if ( typeof onfinish !== 'undefined' ) {
+                    onfinish( self, Request );
+                }
+
+                self.fireEvent( 'refresh', [ self ] );
+
+                require(['Users'], function(Users) {
+                    Users.onRefreshUser( self );
+                })
 
             }, {
-                uid      : this.getId(),
-                User     : this,
-                onfinish : onfinish
+                uid : this.getId()
             });
         },
 
         /**
          * Save the user attributes to the database
          *
-         * @method QUI.classes.users.User#save
+         * @method classes/users/User#save
+         * @param {Function} callback - [optional]
+         * @param {params} Object     - [optional] extra ajax params
          */
-        save : function()
+        save : function(callback, params)
         {
-            QUI.Users.saveUser( this );
+            var self = this;
+
+            require(['Users'], function(Users) {
+                Users.saveUser( self, callback, params );
+            });
         },
 
         /**
          * Activate the user
          *
-         * @method QUI.classes.users.User#activate
+         * @method classes/users/User#activate
          *
          * @param {Function} onfinish     - callback function, calls if activation is finish
          * @param {Object} params         - callback params
          */
         activate : function(onfinish, params)
         {
-            QUI.Users.activate( [ this.getId() ] );
+            var self = this;
+
+            require(['Users'], function(Users) {
+                Users.activate( [ Users.getId() ] );
+            });
         },
 
         /**
          * Activate the user
          *
-         * @method QUI.classes.users.User#deactivate
+         * @method classes/users/User#deactivate
          * @param {Function} onfinish     - callback function, calls if deactivation is finish
          * @param {Object} params         - callback params
          */
         deactivate : function(onfinish, params)
         {
-            QUI.Users.deactivate( [ this.getId() ] );
+            var self = this;
+
+            require(['Users'], function(Users) {
+                Users.deactivate( [ self.getId() ] );
+            });
         },
 
         /**
          * Saves a Password to the User
          *
-         * @method QUI.classes.users.User#deactivate
+         * @method classes/users/User#deactivate
          * @param {String} pass1 - Password
          * @param {String} pass2 - Password repeat
          * @param {Object} options - [optional]
@@ -140,8 +161,7 @@ define('classes/users/User', [
          */
         savePassword : function(pass1, pass2, options, onfinish)
         {
-            options  = options || {};
-            onfinish = onfinish || false;
+            options = options || {};
 
             if ( pass1 != pass2 )
             {
@@ -161,15 +181,14 @@ define('classes/users/User', [
 
             Ajax.post('ajax_users_set_password', function(result, Request)
             {
-                if ( Request.getAttribute( 'onfinish' ) ) {
-                    Request.getAttribute( 'onfinish' )( result, Request );
+                if ( typeof onfinish !== 'undefined' ) {
+                    onfinish( result, Request );
                 }
             }, {
-                uid : this.getId(),
-                pw1 : pass1,
-                pw2 : pass2,
-                params   : JSON.encode( options ),
-                onfinish : onfinish
+                uid    : this.getId(),
+                pw1    : pass1,
+                pw2    : pass2,
+                params : JSON.encode( options )
             });
         },
 
@@ -186,7 +205,7 @@ define('classes/users/User', [
         /**
          * Opens the delete window
          *
-         * @method QUI.classes.users.User#del
+         * @method classes/users/User#del
          */
         /*
         del : function()
@@ -234,7 +253,7 @@ define('classes/users/User', [
         /**
          * Load the Adresse management in the Panel
          *
-         * @method QUI.classes.users.User#loadAdresses
+         * @method classes/users/User#loadAdresses
          */
         /*
         loadAdresses : function()
@@ -353,7 +372,7 @@ define('classes/users/User', [
          * You can extend the Object with everything you like
          * You can extend the Object width more than the default options
          *
-         * @method QUI.classes.users.User#setAttribute
+         * @method classes/users/User#setAttribute
          *
          * @param {String} k - Name of the Attribute
          * @param {Object|String|Integer|Array} v - value
@@ -369,7 +388,7 @@ define('classes/users/User', [
         /**
          * If you want set more than one attribute
          *
-         * @method QUI.classes.users.User#setAttribute
+         * @method classes/users/User#setAttribute
          *
          * @param {Object} attributes - Object with attributes
          * @return {this} self
@@ -394,7 +413,7 @@ define('classes/users/User', [
          * Return an attribute of the Object
          * returns the not the default attributes, too
          *
-         * @method QUI.classes.users.User#setAttribute
+         * @method classes/users/User#setAttribute
          *
          * @param {Object} attributes - Object width attributes
          * @return {unknown_type|Bool} The wanted attribute or false
@@ -411,7 +430,7 @@ define('classes/users/User', [
         /**
          * Return the default attributes
          *
-         * @method QUI.classes.users.User#getAttributes
+         * @method classes/users/User#getAttributes
          * @return {Object} alle attributes
          */
         getAttributes : function()
@@ -422,7 +441,7 @@ define('classes/users/User', [
         /**
          * Return true if a attribute exist
          *
-         * @method QUI.classes.users.User#existAttribute
+         * @method classes/users/User#existAttribute
          * @param {String} k - wanted attribute
          * @return {Bool} true or false
          */
@@ -433,6 +452,42 @@ define('classes/users/User', [
             }
 
             return false;
+        },
+
+        /**
+         * Return the extra entry
+         *
+         * @param {String} $field
+         * @return {String|Integer|Array|Bool}
+         */
+        getExtra : function(field)
+        {
+            if ( typeof this.$extras[ field ] !== 'undefined' ) {
+                return this.$extras[ field ];
+            }
+
+            return false;
+        },
+
+        /**
+         * Set a extra attribute
+         *
+         * @param {String} field - Name of the extra field
+         * @param {String|Bool} value - Value of the extra field
+         */
+        setExtra : function(field, value)
+        {
+            this.$extras[ field ] = value;
+        },
+
+        /**
+         * Return all extra attributes
+         *
+         * @return {Object}
+         */
+        getExtras : function()
+        {
+            return this.$extras;
         }
     });
 });

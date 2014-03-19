@@ -86,7 +86,6 @@ require([
             width : doc_size.x * 0.2
         });
 
-
     MyWorkspace.appendChild( LeftColumn );
     MyWorkspace.appendChild( MiddleColumn );
     MyWorkspace.appendChild( RightColumn );
@@ -98,12 +97,75 @@ require([
 
     // bookmarks panel
     var Bookmarks = new BookmarkPanel({
-        title : 'Bookmarks',
-        icon  : ''
+        title  : 'Bookmarks',
+        icon   : 'icon-bookmark',
+        name   : 'qui-bookmarks',
+        events :
+        {
+            onInject : function(Panel)
+            {
+                Panel.Loader.show();
+
+                require(['Users'], function(Users)
+                {
+                    var User = Users.get( USER.id );
+
+                    User.load(function()
+                    {
+                        var extra = Panel.getAttribute( 'name' ),
+                            data  = User.getExtra( extra );
+
+                        if ( !data )
+                        {
+                            Panel.Loader.hide();
+                            return;
+                        }
+
+                        Panel.unserialize( data );
+                        Panel.Loader.hide();
+                    });
+                });
+            },
+
+            onAppendChild : function(Panel, Item)
+            {
+                Panel.Loader.show();
+
+                require(['Users'], function(Users)
+                {
+                    var User  = Users.get( USER.id ),
+                        extra = Panel.getAttribute( 'name' );
+
+                    User.setExtra( extra, Panel.serialize() );
+
+                    User.save(function() {
+                        Panel.Loader.hide();
+                    });
+                });
+            },
+
+            onRemoveChild : function(Panel)
+            {
+                Panel.Loader.show();
+
+                require(['Users'], function(Users)
+                {
+                    var User  = Users.get( USER.id ),
+                        extra = Panel.getAttribute( 'name' );
+
+                    User.setExtra( extra, Panel.serialize() );
+
+                    User.save(function() {
+                        Panel.Loader.hide();
+                    });
+                });
+            }
+        }
     });
 
     LeftColumn.appendChild( Bookmarks );
-    Bookmarks.Loader.show();
+
+    // Bookmarks.toggle();
 
     // task panel
     MiddleColumn.appendChild(
@@ -146,9 +208,14 @@ require([
     });
 
     /**
+     * Menu
+     */
+    require(['Menu']);
+
+    /**
      * Locale
      */
-    require( QUIQQER_LOCALE, function() {});
+    require( QUIQQER_LOCALE );
 
     /**
      * UploadManager
@@ -160,8 +227,7 @@ require([
     /**
      * MessageHandler
      */
-    require(['qui/controls/messages/Panel'], function(MessagePanel)
-    {
+    require(['qui/controls/messages/Panel'], function(MessagePanel) {
         new MessagePanel().inject( RightColumn );
     });
 
@@ -247,18 +313,18 @@ require([
 //    });
 
     // contextmenu
-    require([
-        'Menu',
-        'qui/controls/contextmenu/Item'
-    ], function(Menu, ContextmenuItem)
-    {
-        // Bookmar text
-        Bookmarks.appendChild(
-            new ContextmenuItem({
-                text : 'test'
-            })
-        );
-
-        Bookmarks.Loader.hide();
-    });
+//    require([
+//        'Menu',
+//        'qui/controls/contextmenu/Item'
+//    ], function(Menu, ContextmenuItem)
+//    {
+//        // Bookmar text
+//        Bookmarks.appendChild(
+//            new ContextmenuItem({
+//                text : 'test'
+//            })
+//        );
+//
+//        Bookmarks.Loader.hide();
+//    });
 });

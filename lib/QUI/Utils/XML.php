@@ -54,7 +54,7 @@ class XML
                 'icon'    => \QUI\Utils\DOM::parseVar( $Item->getAttribute( 'icon' ) ),
                 'require' => $Item->getAttribute( 'require' ),
                 'exec'    => $Item->getAttribute( 'exec' ),
-                'onClick' => 'QUI.Menu.menuClick',
+                'onClick' => 'QUI.Menu.menuClick'
                 //'click'   => $Item->getAttribute( 'onclick' )
             );
 

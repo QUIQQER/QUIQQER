@@ -9,14 +9,22 @@
  */
 function ajax_users_save($uid, $attributes, $rights)
 {
-    $Users = \QUI::getUsers();
-    $User  = $Users->get( $uid );
+    $User = \QUI::getUsers()->get( $uid );
 
     $attributes = json_decode( $attributes, true );
     //$rights     = json_decode( $rights, true );
 
-    foreach ( $attributes as $k => $v ) {
-        $User->setAttribute( $k, $v );
+    if ( isset( $attributes['extra'] ) )
+    {
+        foreach ( $attributes['extra'] as $key => $value ) {
+            $User->setExtra( $key, $value );
+        }
+
+        unset( $attributes['extra'] );
+    }
+
+    foreach ( $attributes as $key => $value ) {
+        $User->setAttribute( $key, $value );
     }
 
     /*
@@ -32,7 +40,10 @@ function ajax_users_save($uid, $attributes, $rights)
     {
         if ( (int)$attributes['active'] === 1 )
         {
-            $User->activate();
+            if ( !$User->isActive() ) {
+                $User->activate();
+            }
+
         } else
         {
             $User->deactivate();
@@ -51,5 +62,3 @@ function ajax_users_save($uid, $attributes, $rights)
     array( 'uid', 'attributes', 'rights' ),
     'Permission::checkSU'
 );
-
-?>
