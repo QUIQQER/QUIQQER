@@ -90,7 +90,7 @@ define('controls/projects/TypeInput', [
 
             this.$Text = new Element('div.types-text', {
                 styles : {
-                    margin  : 5,
+                    margin  : '0 5px',
                     'float' : 'left'
                 }
             });

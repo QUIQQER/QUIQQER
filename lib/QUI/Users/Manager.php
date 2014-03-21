@@ -607,7 +607,7 @@ class Manager
                     $useragent = $_SERVER['HTTP_USER_AGENT'];
                 }
 
-                \QUI::getDB()->updateData(
+                \QUI::getDataBase()->update(
                     self::Table(),
                     array(
                         'lastvisit'  => time(),

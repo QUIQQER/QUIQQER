@@ -1,52 +1,98 @@
 
-{title text="Status"}
 <table class="data-table">
-<tr>
-	<td style="width: 30px"><input type="radio" name="active" value="1" class="noborder" /></td>
-	<td>Aktiviert</td>
-</tr>
-<tr class="odd">
-	<td><input type="radio" name="active" value="0" class="noborder" /></td>
-	<td>Deaktiviert</td>
-</tr>
+    <thead>
+        <tr>
+            <th colspan="2">
+                {title text="Status"}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="{cycle values="odd,even"}">
+            <td style="width: 30px">
+               <input type="radio" name="active" value="1" class="noborder" />
+            </td>
+            <td>Aktiviert</td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td><input type="radio" name="active" value="0" class="noborder" /></td>
+            <td>Deaktiviert</td>
+        </tr>
+    </tbody>
 </table>
 
-{title text="Details"}
+
 <table class="data-table">
-<tr>
-	<td style="width: 150px">Benutzer-ID</td>
-	<td><input type="text" name="id" value="" disabled="disabled" /></td>
-</tr>
+    <thead>
+        <tr>
+            <th colspan="2">
+                {title text="Details"}
+            </th>
+        </tr>
+    </thead>
 
-<tr class="odd">
-	<td>Super User</td>
-	<td><input type="checkbox" name="su" class="noborder" /></td>
-</tr>
+    <tbody>
+        <tr class="{cycle values="odd,even"}">
+            <td style="width: 150px">Benutzer-ID</td>
+            <td><input type="text" name="id" value="" disabled="disabled" /></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>Super User</td>
+            <td><input type="checkbox" name="su" class="noborder" /></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>Benutzername</td>
+            <td><input type="text" name="username" value="" /></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>E-Mail</td>
+            <td><input type="text" name="email" value="" /></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>Gruppe</td>
+            <td>
+                <input type="text" name="usergroup" class="groups" value="" />
+            </td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>Editor Toolbar</td>
+            <td></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>Benutzer-Sprache</td>
+            <td>
+                <select name="lang">
+                {assign var=langs value=$QUI->availableLanguages()}
+                {foreach from=$langs item=lang}
+                    <option value="{$lang}">{$lang}</option>
+                {/foreach}
+                </select>
+            </td>
+        </tr>
+    </tbody>
+</table>
 
-<tr>
-	<td>Benutzername</td>
-	<td><input type="text" name="username" value="" /></td>
-</tr>
+<table class="data-table">
+    <thead>
+        <tr>
+            <th colspan="2">
+                {title text="Daten"}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="{cycle values="odd,even"}">
+            <td>Zuletzte geändert am</td>
+            <td><input type="text" name="lastedit" value="" disabled="disabled" /></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td style="width: 150px">Letzter Login</td>
+            <td><input type="text" name="lastvisit" value="" disabled="disabled" /></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td style="width: 150px">Browser User-Agent</td>
+            <td><input type="text" name="user_agent" value="" disabled="disabled" /></td>
+        </tr>
 
-<tr class="odd">
-	<td>E-Mail</td>
-	<td><input type="text" name="email" value="" /></td>
-</tr>
-
-<tr>
-	<td>Gruppe</td>
-	<td>
-		<input type="text" name="usergroup" class="groups" value="" />
-	</td>
-</tr>
-<tr class="odd">
-	<td>Editor Toolbar</td>
-	<td></td>
-</tr>
-
-<tr>
-	<td>Zuletzte geändert am</td>
-	<td><input type="text" name="lastedit" value="" disabled="disabled" /></td>
-</tr>
-
+    </tbody>
 </table>

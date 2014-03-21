@@ -3,10 +3,7 @@
  * Here you can change / edit the user
  *
  * @author www.pcsg.de (Henning Leutz)
- *
  * @module controls/users/User
- * @package com.pcsg.qui.js.controls.users
- * @namespace QUI.controls.users
  */
 
 define('controls/users/User', [
@@ -15,16 +12,18 @@ define('controls/users/User', [
     'Users',
     'Ajax',
     'qui/controls/buttons/Button',
+    'qui/controls/windows/Confirm',
     'qui/utils/Form',
+    'utils/Controls',
 
     'css!controls/users/User.css'
 
-], function(Panel, Users, Ajax, QUIButton, FormUtils)
+], function(Panel, Users, Ajax, QUIButton, QUIConfirm, FormUtils, ControlUtils)
 {
     "use strict";
 
     /**
-     * @class QUI.controls.users.User
+     * @class controls/users/User
      *
      * @memberof! <global>
      */
@@ -66,7 +65,7 @@ define('controls/users/User', [
         /**
          * Return the user of the panel
          *
-         * @return {QUI.classes.users.User}
+         * @return {classes/users/User}
          */
         getUser : function()
         {
@@ -127,9 +126,7 @@ define('controls/users/User', [
                 events : {
                     onClick : this.openPermissions
                 }
-            }).inject(
-                this.getHeader()
-            );
+            }).inject( this.getHeader() );
 
             Users.addEvent( 'onRefresh', this.$onUserRefresh );
             Users.addEvent( 'onSave', this.$onUserRefresh );
@@ -138,7 +135,6 @@ define('controls/users/User', [
             Ajax.get('ajax_users_gettoolbar', function(result, Request)
             {
                 var i, len;
-
                 var User = self.getUser();
 
                 for ( i = 0, len = result.length; i < len; i++ )
@@ -201,7 +197,7 @@ define('controls/users/User', [
                 Body.set( 'html', '<form>'+ result +'</form>' );
 
                 // parse all the controls
-                // QUI.controls.Utils.parse( Body );
+                ControlUtils.parse( Body );
 
                 // insert the values
                 var attributes = User.getAttributes();
@@ -237,6 +233,7 @@ define('controls/users/User', [
                     if ( !expire || expire == '0000-00-00 00:00:00' )
                     {
                         PasswordExpire[0].checked = true;
+
                     } else
                     {
                         expire = expire.split(' ');
@@ -250,10 +247,10 @@ define('controls/users/User', [
 
                 self.Loader.hide();
             }, {
-                Tab     : Btn,
-                plugin  : Btn.getAttribute( 'plugin' ),
-                tab     : Btn.getAttribute( 'name' ),
-                uid     : this.getUser().getId()
+                Tab    : Btn,
+                plugin : Btn.getAttribute( 'plugin' ),
+                tab    : Btn.getAttribute( 'name' ),
+                uid    : this.getUser().getId()
             });
         },
 
@@ -362,12 +359,12 @@ define('controls/users/User', [
          */
         $onClickDel : function()
         {
-            QUI.Windows.create('submit', {
+            new QUIConfirm({
                 name        : 'DeleteUser',
                 title       : 'Benutzer löschen',
-                icon        : URL_BIN_DIR +'16x16/trashcan_full.png',
+                icon        : 'icon-trash',
                 text        : 'Sie möchten folgenden Benutzer löschen:<br /><br />'+ this.getUser().getId(),
-                texticon    : URL_BIN_DIR +'32x32/trashcan_full.png',
+                texticon    : 'icon-trash',
                 information : 'Der Benutzer wird komplett aus dem System entfernt und kann nicht wieder hergestellt werden',
 
                 width    : 500,
@@ -382,7 +379,7 @@ define('controls/users/User', [
                         );
                     }
                 }
-            });
+            }).open();
         },
 
         /**

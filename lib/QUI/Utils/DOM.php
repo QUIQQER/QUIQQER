@@ -141,10 +141,12 @@ class DOM
                 if ( file_exists( $file ) )
                 {
                     $Engine = \QUI\Template::getEngine( true );
+
                     $Engine->assign(array(
                         'Site'    => $Object,
                         'Project' => $Object->getProject(),
-                        'Plugins' => \QUI::getPlugins()
+                        'Plugins' => \QUI::getPlugins(),
+                        'QUI'     => new \QUI()
                     ));
 
                     return $Engine->fetch( $file );
@@ -415,7 +417,8 @@ class DOM
             {
                 $Engine->assign(array(
                     'Plugin'  => $Plugin,
-                    'Plugins' => \QUI::getPlugins()
+                    'Plugins' => \QUI::getPlugins(),
+                    'QUI'     => new \QUI()
                 ));
 
                 return $Engine->fetch( $file );

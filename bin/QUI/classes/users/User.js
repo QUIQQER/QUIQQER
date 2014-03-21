@@ -42,6 +42,7 @@ define('classes/users/User', [
         {
             this.$uid    = uid;
             this.$extras = {};
+            this.$loaded = false;
         },
 
         /**
@@ -78,6 +79,8 @@ define('classes/users/User', [
 
             Ajax.get('ajax_users_get', function(result, Request)
             {
+                self.$loaded = true;
+
                 if ( result.extras )
                 {
                     self.$extras = result.extras;
@@ -99,6 +102,16 @@ define('classes/users/User', [
             }, {
                 uid : this.getId()
             });
+        },
+
+        /**
+         * the user has been loaded once?
+         *
+         * @return {Bool}
+         */
+        isLoaded : function()
+        {
+            return this.$loaded;
         },
 
         /**

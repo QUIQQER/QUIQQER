@@ -4,14 +4,14 @@
 
 .data-table,
 .data-table-nowidth {
+    background-color: #fff;
+    border: 1px solid #dedede;
+    border-collapse: collapse;
     clear: both;
     float: left;
-    border-collapse: collapse;
     font-size: 12px;
-    text-align: left;
-    background-color: #fff;
     margin-bottom: 20px;
-    border: 1px solid #dedede;
+    text-align: left;
 
     -webkit-box-sizing: border-box;
        -moz-box-sizing: border-box;
@@ -34,6 +34,7 @@
 .data-table td,
 .data-table-nowidth td {
     color: #666699;
+    line-height: 30px;
     padding: 8px;
     vertical-align: top;
 }
