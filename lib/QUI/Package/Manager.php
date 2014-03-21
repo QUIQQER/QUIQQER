@@ -544,6 +544,24 @@ class Manager
     }
 
     /**
+     * Execute a setup for a package
+     *
+     * @param String $package
+     */
+    public function setup($package)
+    {
+        $dir = OPT_DIR . $package .'/';
+
+        \QUI\Update::importDatabase( $dir .'database.xml' );
+        \QUI\Update::importTemplateEngines( $dir .'engines.xml' );
+        \QUI\Update::importEditors( $dir .'wysiwyg.xml' );
+        \QUI\Update::importMenu( $dir .'menu.xml' );
+        \QUI\Update::importPermissions( $dir .'permissions.xml', $package );
+        \QUI\Update::importEvents( $dir .'events.xml' );
+        \QUI\Update::importMenu( $dir .'menu.xml' );
+    }
+
+    /**
      * Update Server Methods
      */
 

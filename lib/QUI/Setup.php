@@ -109,6 +109,7 @@ class Setup
         \QUI::getPackageManager()->update();
         */
 
+        $PackageManager = \QUI::getPackageManager();
         $packages = \QUI\Utils\System\File::readDir( OPT_DIR );
 
         // first we need all databases
@@ -121,12 +122,8 @@ class Setup
             $package_dir = OPT_DIR .'/'. $package;
             $list        = \QUI\Utils\System\File::readDir( $package_dir );
 
-            foreach ( $list as $sub )
-            {
-                // database setup
-                \QUI\Update::importDatabase(
-                    $package_dir .'/'. $sub .'/database.xml'
-                );
+            foreach ( $list as $sub ) {
+                $PackageManager->setup( $package .'/'. $sub );
             }
         }
 

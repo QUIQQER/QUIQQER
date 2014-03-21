@@ -254,7 +254,8 @@ define('controls/packages/Panel', [
         {
             this.Loader.show();
 
-            var Body = this.getBody().set( 'html', '' ),
+            var self = this,
+                Body = this.getBody().set( 'html', '' ),
 
                 Container = new Element('div', {
                     'class' : 'qui-packages-panel-update',
@@ -320,9 +321,8 @@ define('controls/packages/Panel', [
                         'quiqqer/system',
                         'packages.grid.update.btn.start'
                     ),
-                    textimage : URL_BIN_DIR +'16x16/update.png',
-                    Control   : this,
-                    events    : {
+                    textimage : 'icon-refresh',
+                    events : {
                         onClick : this.checkUpdates
                     }
                 }, {
@@ -330,9 +330,8 @@ define('controls/packages/Panel', [
                         'quiqqer/system',
                         'packages.grid.update.btn.upload'
                     ),
-                    textimage : URL_BIN_DIR +'16x16/actions/up.png',
-                    Control   : this,
-                    events    : {
+                    textimage : 'icon-upload',
+                    events : {
                         onClick : this.uploadUpdates
                     }
                 }, {
@@ -340,10 +339,12 @@ define('controls/packages/Panel', [
                         'quiqqer/system',
                         'packages.grid.update.btn.setup'
                     ),
-                    textimage : URL_BIN_DIR +'16x16/setup.png',
-                    Control   : this,
-                    events    : {
-                        onClick : this.setup
+                    textimage : 'icon-hdd',
+                    events :
+                    {
+                        onClick : function(Btn) {
+                            self.setup( false, Btn );
+                        }
                     }
                 }],
 
@@ -369,19 +370,37 @@ define('controls/packages/Panel', [
         /**
          * Execute a system setup
          *
-         * @param {qui/controls/buttons/Button} Btn
+         * @param {String} pkg - [optional] Package name, if no package name given, complete setup are executed
+         * @param {qui/controls/buttons/Button} Btn - [optional]
          */
-        setup : function(Btn)
+        setup : function(pkg, Btn)
         {
-            var SetupButton = Btn;
+            if ( typeof Btn !== 'undefined' )
+            {
+                if ( Btn.getAttribute( 'textimage' ) ) {
+                    Btn.setAttribute( 'textimage', 'icon-refresh icon-spin' );
+                }
 
-            SetupButton.setAttribute( 'textimage', URL_BIN_DIR +'images/loader.gif' );
+                if ( Btn.getAttribute( 'icon' ) ) {
+                    Btn.setAttribute( 'icon', 'icon-refresh icon-spin' );
+                }
+            }
 
             Ajax.post('ajax_system_setup', function(result, Request)
             {
-                if ( typeof SetupButton !== 'undefined' ) {
-                    SetupButton.setAttribute( 'textimage', URL_BIN_DIR +'16x16/setup.png' );
+                if ( typeof Btn === 'undefined' ) {
+                    return;
                 }
+
+                if ( Btn.getAttribute( 'textimage' ) ) {
+                    Btn.setAttribute( 'textimage', 'icon-hdd' );
+                }
+
+                if ( Btn.getAttribute( 'icon' ) ) {
+                    Btn.setAttribute( 'icon', 'icon-hdd' );
+                }
+            }, {
+                'package' : pkg || false
             });
         },
 
@@ -392,21 +411,17 @@ define('controls/packages/Panel', [
          */
         checkUpdates : function(Btn)
         {
-            Btn.setAttribute( 'textimage', URL_BIN_DIR +'images/loader.gif' );
+            var self = this;
+
+            Btn.setAttribute( 'textimage', 'icon-refresh icon-spin' );
 
             Ajax.get('ajax_system_update_check', function(result, Request)
             {
-                var Btn     = Request.getAttribute( 'Btn' ),
-                    Control = Request.getAttribute( 'Control' );
-
-                Btn.setAttribute(
-                    'textimage',
-                    URL_BIN_DIR +'16x16/update.png'
-                );
+                Btn.setAttribute( 'textimage', 'icon-refresh' );
 
                 if ( !result.length )
                 {
-                    Control.Loader.hide();
+                    self.Loader.hide();
                     return;
                 }
 
@@ -423,23 +438,19 @@ define('controls/packages/Panel', [
                         'to'      : entry.to,
                         'update'  : {
                             'package' : entry['package'],
-                            image     : URL_BIN_DIR +'16x16/update.png',
+                            image     : 'icon-retweet',
                             events    : {
-                                onClick : Control.$clickUpdateBtn
+                                onClick : self.$clickUpdateBtn
                             }
                         }
                     });
                 }
 
-                Control.$UpdateGrid.setData({
+                self.$UpdateGrid.setData({
                     data : data
                 });
 
-                Control.Loader.hide();
-
-            }, {
-                Btn     : Btn,
-                Control : this
+                self.Loader.hide();
             });
         },
 
@@ -482,7 +493,7 @@ define('controls/packages/Panel', [
                    callback( result, Request );
                }
            }, {
-               'package'  : pkg || false
+               'package' : pkg || false
            });
         },
 
@@ -493,11 +504,11 @@ define('controls/packages/Panel', [
          */
         $clickUpdateBtn : function(Btn)
         {
-            Btn.setAttribute( 'image', URL_BIN_DIR +'images/loader.gif' );
+            Btn.setAttribute( 'image', 'icon-refresh icon-spin' );
 
             this.update(function(result, Request)
             {
-                Btn.setAttribute( 'image', URL_BIN_DIR +'16x16/actions/apply.png' );
+                Btn.setAttribute( 'image', 'icon-ok' );
 
             }, Btn.getAttribute( 'package' ) );
         },
@@ -514,7 +525,8 @@ define('controls/packages/Panel', [
             this.Loader.show();
             this.getBody().set( 'html', '' );
 
-            var Body = this.getBody(),
+            var self = this,
+                Body = this.getBody(),
                 size = Body.getSize(),
 
                 Container = new Element('div', {
@@ -527,6 +539,16 @@ define('controls/packages/Panel', [
 
             var GridObj = new Grid(Container, {
                 columnModel : [{
+                    header    : ' ',
+                    dataIndex : '_',
+                    dataType  : 'string',
+                    width     : 30
+                }, {
+                    header    : ' ',
+                    dataIndex : 'setup',
+                    dataType  : 'button',
+                    width     : 50
+                }, {
                     header : Locale.get(
                         'quiqqer/system',
                         'packages.grid.title.name'
@@ -589,14 +611,13 @@ define('controls/packages/Panel', [
                 {
                     var options = me.options;
 
-                    this.setAttribute( 'field', options.sortOn );
-                    this.setAttribute( 'order', options.sortBy );
-                    this.setAttribute( 'limit', options.perPage );
-                    this.setAttribute( 'page', options.page );
+                    self.setAttribute( 'field', options.sortOn );
+                    self.setAttribute( 'order', options.sortBy );
+                    self.setAttribute( 'limit', options.perPage );
+                    self.setAttribute( 'page', options.page );
 
-                    this.refreshPackageList();
-
-                }.bind( this ),
+                    self.refreshPackageList();
+                },
 
                 alternaterows     : true,
                 resizeColumns     : true,
@@ -617,7 +638,7 @@ define('controls/packages/Panel', [
                         '<img src="'+ URL_BIN_DIR +'images/loader.gif" style="margin: 10px;" />'
                     );
 
-                    this.getPackage( rowdata.name, function(result, Request)
+                    self.getPackage( rowdata.name, function(result, Request)
                     {
                         var pkg;
                         var str = '<div class="qui-packages-panel-package-info">' +
@@ -657,12 +678,13 @@ define('controls/packages/Panel', [
 
                         Parent.set( 'html', str );
                     });
-                }.bind( this )
+                }
             });
 
             if ( this.getAttribute( 'type' ) == 'quiqqer-plugin' )
             {
                 this.$PluginGrid = GridObj;
+
             } else
             {
                 this.$Grid = GridObj;
@@ -700,14 +722,34 @@ define('controls/packages/Panel', [
 
             Ajax.get('ajax_system_packages_list', function(result, Request)
             {
+                var i, len;
                 var GridObj = null;
 
                 if ( self.getAttribute( 'type' ) == 'quiqqer-plugin' )
                 {
                     GridObj = self.$PluginGrid;
+
                 } else
                 {
                     GridObj = self.$Grid;
+                }
+
+                for ( i = 0, len = result.data.length; i < len; i++ )
+                {
+                    result.data[ i ].setup = {
+                        icon   : 'icon-hdd',
+                        pkg    : result.data[ i ].name,
+                        events :
+                        {
+                            onClick : function(Btn)
+                            {
+                                self.setup(
+                                    Btn.getAttribute( 'pkg' ),
+                                    Btn
+                                );
+                            }
+                        }
+                    };
                 }
 
                 if ( GridObj ) {
@@ -784,9 +826,9 @@ define('controls/packages/Panel', [
                     {
                         submit : function(event)
                         {
-                            this.startSearch();
+                            self.startSearch();
                             event.stop();
-                        }.bind( this )
+                        }
                     }
                 }).inject( Body, 'top' ),
 
@@ -951,9 +993,9 @@ define('controls/packages/Panel', [
                     callback( result, Request );
                 }
             }, {
-                str   : str,
-                from  : start,
-                max   : max
+                str  : str,
+                from : start,
+                max  : max
             });
         },
 
