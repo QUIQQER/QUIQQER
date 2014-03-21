@@ -1429,18 +1429,17 @@ define('controls/packages/Panel', [
          */
         activateServer : function(server)
         {
+            var self = this;
+
             Ajax.post('ajax_system_packages_server_status', function(result, Request)
             {
-                var Control = Request.getAttribute( 'Control' );
-
-                if ( Control.$ServerGrid ) {
-                    Control.$ServerGrid.refresh();
+                if ( self.$ServerGrid ) {
+                    self.$ServerGrid.refresh();
                 }
 
             }, {
-                Control : this,
-                server  : server,
-                status  : 1
+                server : server,
+                status : 1
             });
         },
 
@@ -1451,18 +1450,17 @@ define('controls/packages/Panel', [
          */
         deactivateServer : function(server)
         {
+            var self = this;
+
             Ajax.post('ajax_system_packages_server_status', function(result, Request)
             {
-                var Control = Request.getAttribute( 'Control' );
-
-                if ( Control.$ServerGrid ) {
-                    Control.$ServerGrid.refresh();
+                if ( self.$ServerGrid ) {
+                    self.$ServerGrid.refresh();
                 }
 
             }, {
-                Control : this,
-                server  : server,
-                status  : 0
+                server : server,
+                status : 0
             });
         },
 
@@ -1473,18 +1471,17 @@ define('controls/packages/Panel', [
          */
         addServer : function(server, params)
         {
+            var self = this;
+
             Ajax.post('ajax_system_packages_server_add', function(result, Request)
             {
-                var Control = Request.getAttribute( 'Control' );
-
-                if ( Control.$ServerGrid ) {
-                    Control.$ServerGrid.refresh();
+                if ( self.$ServerGrid ) {
+                    self.$ServerGrid.refresh();
                 }
 
             }, {
-                Control : this,
-                server  : server,
-                params  : JSON.encode( params )
+                server : server,
+                params : JSON.encode( params )
             });
         }
     });
