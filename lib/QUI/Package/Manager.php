@@ -375,6 +375,31 @@ class Manager
     }
 
     /**
+     * Retrn all packages with the type
+     *
+     * @param String $type
+     * @return Array
+     */
+    public function getPackagesByType($type)
+    {
+        $list   = $this->_getList();
+        $result = array();
+
+        foreach ( $list as $Package )
+        {
+            if ( !isset( $params['type'] ) ) {
+                continue;
+            }
+
+            if ( $params['type'] == $type ) {
+                $result[] = $type;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Install Package
      *
      * @param String $package
@@ -701,6 +726,7 @@ class Manager
             $result = $this->_execComposer('update', array(
                 'packages' => array($package)
             ));
+
         } else
         {
             $result = $this->_execComposer('update');
