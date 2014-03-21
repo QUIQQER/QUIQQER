@@ -3,11 +3,11 @@
  *
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires classes/projects/media/Item
+ * @requires classes/projects/project/media/Item
+ * @requires Ajax
+ * @requires UploadManager
  *
- * @module classes/projects/media/Folder
- * @package com.pcsg.qui.js.classes.projects.media.Folder
- * @namespace classes.projects.media
+ * @module classes/projects/project/media/Folder
  */
 
 define('classes/projects/project/media/Folder', [
@@ -21,7 +21,7 @@ define('classes/projects/project/media/Folder', [
     "use strict";
 
     /**
-     * @class QUI.classes.projects.media.File
+     * @class classes/projects/project/media/Folder
      *
      * @memberof! <global>
      */
@@ -33,7 +33,7 @@ define('classes/projects/project/media/Folder', [
         /**
          * create a sub folder
          *
-         * @method QUI.classes.projects.media.Folder#createFolder
+         * @method classes/projects/project/media/Folder#createFolder
          *
          * @param {String} newfolder    - New folder name
          * @param {Function} oncomplete - callback( new_folder_id ) function
@@ -57,7 +57,7 @@ define('classes/projects/project/media/Folder', [
         /**
          * create a sub folder
          *
-         * @method QUI.classes.projects.media.Folder#createFolder
+         * @method classes/projects/project/media/Folder#createFolder
          *
          * @param {String} newfolder    - New folder name
          * @param {Function} oncomplete - callback( children ) function
@@ -76,7 +76,7 @@ define('classes/projects/project/media/Folder', [
         /**
          * Upload files to the folder
          *
-         * @method QUI.classes.projects.media.Folder#uploadFiles
+         * @method classes/projects/project/media/Folder#uploadFiles
          *
          * @param {Array|Filelist} files
          * @param {Function} onfinish - callback function
@@ -102,7 +102,7 @@ define('classes/projects/project/media/Folder', [
          * Folder replace
          * you cannot replace a folder at the moment
          *
-         * @method QUI.classes.projects.media.Folder#replace
+         * @method classes/projects/project/media/Folder#replace
          */
         replace : function()
         {

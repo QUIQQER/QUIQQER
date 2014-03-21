@@ -2,12 +2,8 @@
  * A media image
  *
  * @author www.pcsg.de (Henning Leutz)
- *
- * @requires classes/projects/media/Item
- *
- * @module classes/projects/media/Image
- * @package com.pcsg.qui.js.classes.projects.media
- * @namespace classes.projects.media
+ * @module classes/projects/project/media/Image
+ * @requires classes/projects/project/media/Item
  */
 
 define('classes/projects/project/media/Image', [
@@ -19,7 +15,7 @@ define('classes/projects/project/media/Image', [
     "use strict";
 
     /**
-     * @class QUI.classes.projects.media.Image
+     * @class classes/projects/project/media/Image
      *
      * @memberof! <global>
      */

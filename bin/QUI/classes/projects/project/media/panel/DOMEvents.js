@@ -4,22 +4,21 @@
  * @author www.pcsg.de (Henning Leutz)
  *
  * @module classes/projects/project/media/panel/DOMEvents
- * @package com.pcsg.qui.js.controls.projects.media.PanelDOMEvents
- * @namespace QUI.controls.projects.media
  */
 
 define('classes/projects/project/media/panel/DOMEvents', [
 
+   'qui/QUI',
    'qui/controls/windows/Prompt',
    'qui/controls/windows/Confirm'
 
-], function(QUIPrompt, QUIConfirm)
+], function(QUI, QUIPrompt, QUIConfirm)
 {
     "use strict";
 
     /**
      * @class classes/projects/project/media/panel/DOMEvents
-     * @param {QUI.controls.projects.media.Panel} MediaPanel
+     * @param {qui/controls/projects/media/Panel} MediaPanel
      *
      * @memberof! <global>
      */
@@ -36,7 +35,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
         /**
          * Activate the media item from the DOMNode
          *
-         * @method QUI.controls.projects.media.PanelDOMEvents#activateItem
+         * @method classes/projects/project/media/panel/DOMEvents#activateItem
          * @param {Array} DOMNode List
          */
         activate : function(List)
@@ -61,7 +60,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
         /**
          * Deactivate the media item from the DOMNode
          *
-         * @method QUI.controls.projects.media.PanelDOMEvents#deactivateItem
+         * @method classes/projects/project/media/panel/DOMEvents#deactivateItem
          * @param {Array} DOMNode List
          */
         deactivate : function(List)
@@ -86,7 +85,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
         /**
          * Delete the media items from the DOMNode
          *
-         * @method QUI.controls.projects.media.PanelDOMEvents#deactivateItem
+         * @method classes/projects/project/media/panel/DOMEvents#deactivateItem
          * @param {Array} DOMNode List
          */
         del : function(List)
@@ -166,7 +165,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
         /**
          * Rename the folder, show the rename dialoge
          *
-         * @method QUI.controls.projects.media.PanelDOMEvents#renameItem
+         * @method classes/projects/project/media/panel/DOMEvents#renameItem
          * @param {DOMNode} DOMNode
          */
         rename : function(DOMNode)
@@ -268,7 +267,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
         /**
          * replace a file
          *
-         * @method QUI.controls.projects.media.PanelDOMEvents#replace
+         * @method classes/projects/project/media/panel/DOMEvents#replace
          * @param {DOMNode} DOMNode
          */
         replace : function(DOMNode)

@@ -576,7 +576,7 @@ define('controls/projects/project/media/FilePanel', [
                     events  :
                     {
                         onClick : function(Btn) {
-                            self.getFile().openInWindow();
+                            window.open( self.getFile().getAttribute( 'cache_url' ) );
                         }
                     },
                     styles : {

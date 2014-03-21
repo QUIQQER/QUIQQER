@@ -5,9 +5,7 @@
  *
  * @requires classes/projects/media/Item
  *
- * @module classes/projects/media/File
- * @package com.pcsg.qui.js.classes.projects.media
- * @namespace classes.projects.media
+ * @module classes/projects/project/media/File
  */
 
 define('classes/projects/project/media/File', [
@@ -19,7 +17,7 @@ define('classes/projects/project/media/File', [
     "use strict";
 
     /**
-     * @class QUI.classes.projects.media.File
+     * @class classes/projects/project/media/File
      *
      * @memberof! <global>
      */

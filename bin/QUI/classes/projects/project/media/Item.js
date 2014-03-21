@@ -3,12 +3,11 @@
  *
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires classes/DOM
- * @requires controls/projects/media/FilePanel
+ * @requires qui/classes/DOM
+ * @requires Ajax
+ * @requires qui/utils/Object
  *
- * @module classes/projects/media/Item
- * @package com.pcsg.qui.js.classes.projects.media.Item
- * @namespace QUI.classes.projects.media
+ * @module classes/projects/project/media/Item
  */
 
 define('classes/projects/project/media/Item', [
@@ -54,14 +53,15 @@ define('classes/projects/project/media/Item', [
 
             mime_type    : '',
             image_height : '',
-            image_width  : ''
+            image_width  : '',
+            cache_url    : ''
         },
 
         initialize : function(params, Media)
         {
             this.$Media = Media;
             this.$Panel = null;
-
+console.log( params );
             this.parent( params );
         },
 
@@ -82,7 +82,7 @@ define('classes/projects/project/media/Item', [
         /**
          * Open the File in an AppPanel or create a new AppPanel
          *
-         * @method QUI.classes.projects.media.Item#openInPanel
+         * @method classes/projects/project/media/Item#openInPanel
          * @params {MUI.Apppanel} Panel - optional
          */
 //        openInPanel : function(Panel)
@@ -93,7 +93,7 @@ define('classes/projects/project/media/Item', [
         /**
          * Returns the Media Object of the item
          *
-         * @method QUI.classes.projects.media.Item#getMedia
+         * @method classes/projects/project/media/Item#getMedia
          * @return {QUI.classes.projects.Media}
          */
         getMedia : function()
@@ -121,7 +121,7 @@ define('classes/projects/project/media/Item', [
         /**
          * Returns the ID of the item
          *
-         * @method QUI.classes.projects.media.Item#getId
+         * @method classes/projects/project/media/Item#getId
          * @return {Integer}
          */
         getId : function()
@@ -132,25 +132,24 @@ define('classes/projects/project/media/Item', [
         /**
          * Returns the breadcrumb entries (parent path)
          *
-         * @method QUI.classes.projects.media.Item#getBreadcrumb
+         * @method classes/projects/project/media/Item#getBreadcrumb
          * @param {Function} oncomplete - callback Function
          */
         getBreadcrumb : function(oncomplete)
         {
             Ajax.get('ajax_media_breadcrumb', function(result, Request)
             {
-                Request.getAttribute('oncomplete')(result);
+                oncomplete( result );
             }, {
-                project    : this.getMedia().getProject().getName(),
-                fileid     : this.getId(),
-                oncomplete : oncomplete
+                project : this.getMedia().getProject().getName(),
+                fileid  : this.getId()
             });
         },
 
         /**
          * Save the File attributes to the database
          *
-         * @method QUI.classes.projects.media.Item#save
+         * @method classes/projects/project/media/Item#save
          * @fires onSave [this]
          * @param {Function} oncomplete - [optional] callback Function
          * @params {Object} params      - [optional], parameters that are linked to the request object
@@ -182,7 +181,7 @@ define('classes/projects/project/media/Item', [
         /**
          * Delete the item
          *
-         * @method QUI.classes.projects.media.Item#del
+         * @method classes/projects/project/media/Item#del
          *
          * @fires onDelete [this]
          *
@@ -198,7 +197,7 @@ define('classes/projects/project/media/Item', [
         /**
          * Activate the File
          *
-         * @method QUI.classes.projects.media.Item#activate
+         * @method classes/projects/project/media/Item#activate
          *
          * @fires onActivate [this]
          *
@@ -209,31 +208,12 @@ define('classes/projects/project/media/Item', [
         {
             this.fireEvent('activate', [this]);
             this.getMedia().activate( this.getId(), oncomplete, params );
-
-            /*
-            QUI.Ajax.post('ajax_media_file_activate', function(result, Request)
-            {
-                var File = Request.getAttribute('File');
-
-                File.setAttribute('active', 1);
-                File.fireEvent('activate', [File]);
-
-                if ( Request.getAttribute('oncomplete') ) {
-                    Request.getAttribute('oncomplete')(result, Request);
-                }
-            }, {
-                File       : this,
-                project    : this.getMedia().getProject().getName(),
-                fileid     : this.getId(),
-                oncomplete : oncomplete
-            });
-            */
         },
 
         /**
          * Deactivate the File
          *
-         * @method QUI.classes.projects.media.Item#deactivate
+         * @method classes/projects/project/media/Item#deactivate
          *
          * @fires onDeactivate [this]
          *
@@ -244,35 +224,16 @@ define('classes/projects/project/media/Item', [
         {
             this.fireEvent('deactivate', [this]);
             this.getMedia().deactivate( this.getId(), oncomplete, params );
-
-            /*
-            QUI.Ajax.post('ajax_media_file_deactivate', function(result, Request)
-            {
-                var File = Request.getAttribute('File');
-
-                File.setAttribute('active', 0);
-                File.fireEvent('deActivate', [File]);
-
-                if (Request.getAttribute('oncomplete')) {
-                    Request.getAttribute('oncomplete')(result, Request);
-                }
-            }, {
-                File       : this,
-                project    : this.getMedia().getProject().getName(),
-                fileid     : this.getId(),
-                oncomplete : oncomplete
-            });
-            */
         },
 
         /**
          * Download the image
          *
-         * @method QUI.classes.projects.media.Item#download
+         * @method classes/projects/project/media/Item#download
          */
         download : function()
         {
-            if ( this.getType() === 'QUI.classes.projects.media.Folder' ) {
+            if ( this.getType() === 'classes/projects/project/media/Folder' ) {
                 return;
             }
 
@@ -301,11 +262,11 @@ define('classes/projects/project/media/Item', [
         /**
          * Replace the file
          *
-         * @method QUI.classes.projects.media.Item#download
+         * @method classes/projects/project/media/Item#download
          *
          * @param {File} File
          * @param {Function} onfinish - callback function after the upload is finish
-         *                              onfinish( {QUI.classes.projects.media.Item} )
+         *                              onfinish( {classes/projects/project/media/Item} )
          */
         replace : function(File, onfinish)
         {
@@ -315,7 +276,7 @@ define('classes/projects/project/media/Item', [
         /**
          * Returns if the File is active or not
          *
-         * @method QUI.classes.projects.media.Item#isActive
+         * @method classes/projects/project/media/Item#isActive
          * @return {Bool}
          */
         isActive : function()
@@ -326,7 +287,7 @@ define('classes/projects/project/media/Item', [
         /**
          * Rename the folder
          *
-         * @method QUI.classes.projects.media.Folder#rename
+         * @method classes/projects/project/media/Folder#rename
          *
          * @param {String} newname      - New folder name
          * @param {Function} oncomplete - callback() function
@@ -335,15 +296,14 @@ define('classes/projects/project/media/Item', [
         rename : function(newname, oncomplete, params)
         {
             params = Utils.combine(params, {
-                project    : this.getMedia().getProject().getName(),
-                id         : this.getId(),
-                newname    : newname,
-                oncomplete : oncomplete
+                project : this.getMedia().getProject().getName(),
+                id      : this.getId(),
+                newname : newname
             });
 
             Ajax.post('ajax_media_rename', function(result, Request)
             {
-                Request.getAttribute('oncomplete')( result, Request );
+                oncomplete( result, Request );
             }, params);
         }
     });
