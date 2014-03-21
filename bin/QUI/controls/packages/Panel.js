@@ -110,7 +110,7 @@ define('controls/packages/Panel', [
                     'quiqqer/system',
                     'packages.category.updates'
                 ),
-                image  : URL_BIN_DIR +'32x32/update.png',
+                image  : 'icon-refresh',
                 events : {
                     onActive : this.loadUpdates,
                     onNormal : this.unloadUpdates
@@ -123,12 +123,12 @@ define('controls/packages/Panel', [
                     'quiqqer/system',
                     'packages.category.plugins'
                 ),
-                image  : URL_BIN_DIR +'32x32/plugins.png',
+                image  : 'icon-puzzle-piece',
                 events :
                 {
                     onActive : function()
                     {
-                        this.setAttribute( 'type', 'quiqqer-plugin' );
+                        this.setAttribute( 'type', 'quiqqer-library' );
                         this.loadPackages();
                     }.bind( this ),
 
@@ -142,7 +142,7 @@ define('controls/packages/Panel', [
                     'quiqqer/system',
                     'packages.category.packages'
                 ),
-                image  : URL_BIN_DIR +'32x32/packages.png',
+                image  : 'icon-puzzle-piece',
                 events :
                 {
                     onActive : function()
@@ -161,7 +161,7 @@ define('controls/packages/Panel', [
                     'quiqqer/system',
                     'packages.category.server'
                 ),
-                image  : URL_BIN_DIR +'32x32/filesystems/server.png',
+                image  : 'icon-building',
                 events : {
                     onActive : this.loadServers,
                     onNormal : this.unloadServer
@@ -196,14 +196,14 @@ define('controls/packages/Panel', [
 
             if ( this.$Grid )
             {
-                this.$Grid.setHeight( size.y -40 );
-                this.$Grid.setWidth( size.x -40 );
+                this.$Grid.setHeight( size.y  -50 );
+                this.$Grid.setWidth( size.x - 50 );
             }
 
             if ( this.$PluginGrid )
             {
-                this.$PluginGrid.setHeight( size.y -40 );
-                this.$PluginGrid.setWidth( size.x -40 );
+                this.$PluginGrid.setHeight( size.y - 0 );
+                this.$PluginGrid.setWidth( size.x - 0 );
             }
 
             if ( this.$UpdateGrid )
@@ -216,10 +216,10 @@ define('controls/packages/Panel', [
                 }
 
                 height = ( Title.getSize().y + Information.getSize().y );
-                height = Body.getSize().y - height - 80;
+                height = Body.getSize().y - height - 110;
 
                 this.$UpdateGrid.setHeight( height );
-                this.$UpdateGrid.setWidth( size.x - 40 );
+                this.$UpdateGrid.setWidth( size.x - 50 );
             }
 
             if ( this.$SearchGrid )
@@ -681,7 +681,7 @@ define('controls/packages/Panel', [
                 }
             });
 
-            if ( this.getAttribute( 'type' ) == 'quiqqer-plugin' )
+            if ( this.getAttribute( 'type' ) == 'quiqqer-library' )
             {
                 this.$PluginGrid = GridObj;
 
@@ -722,10 +722,10 @@ define('controls/packages/Panel', [
 
             Ajax.get('ajax_system_packages_list', function(result, Request)
             {
-                var i, len;
+                var i, alt, len, pkg, entry;
                 var GridObj = null;
 
-                if ( self.getAttribute( 'type' ) == 'quiqqer-plugin' )
+                if ( self.getAttribute( 'type' ) == 'quiqqer-library' )
                 {
                     GridObj = self.$PluginGrid;
 
@@ -736,9 +736,19 @@ define('controls/packages/Panel', [
 
                 for ( i = 0, len = result.data.length; i < len; i++ )
                 {
+                    entry = result.data[ i ];
+
+                    pkg = result.data[ i ].name;
+
+                    alt = Locale.get( 'quiqqer/system', 'packages.btn.execute.setup.alt', {
+                        pkg : pkg
+                    });
+
                     result.data[ i ].setup = {
                         icon   : 'icon-hdd',
-                        pkg    : result.data[ i ].name,
+                        pkg    : pkg,
+                        alt    : alt,
+                        title  : alt,
                         events :
                         {
                             onClick : function(Btn)

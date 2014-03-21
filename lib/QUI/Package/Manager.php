@@ -24,6 +24,8 @@ use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 
 class Manager
 {
+    const CACHE_NAME_TYPES = 'qui/packages/types';
+
     /**
      * Package Directory
      * @var String
@@ -259,6 +261,17 @@ class Manager
             return $this->_list;
         }
 
+        try
+        {
+            $this->_list = \QUI\Cache\Manager::get( self::CACHE_NAME_TYPES );
+
+            return $this->_list;
+
+        } catch ( \QUI\Exception $Exception )
+        {
+
+        }
+
         $installed_file = $this->_dir .'composer/installed.json';
 
         if ( !file_exists( $installed_file ) ) {
@@ -268,11 +281,45 @@ class Manager
         $data = file_get_contents( $installed_file );
         $list = json_decode( $data, true );
 
-        $this->_list = array();
+        $result = array();
 
-        if ( is_array( $list ) ) {
-            $this->_list = $list;
+        if ( is_array( $list ) )
+        {
+            foreach ( $list  as $entry )
+            {
+                if ( !isset( $entry['type'] ) )
+                {
+                    $result[] = $entry;
+                    continue;
+                }
+
+                if ( $entry['type'] != 'quiqqer-library' )
+                {
+                    $result[] = $entry;
+                    continue;
+                }
+
+                $path = OPT_DIR . $entry['name'] .'/';
+
+                if ( file_exists( $path .'settings.xml' ) ) {
+                    $entry['_settings'] = 1;
+                }
+
+                if ( file_exists( $path .'permissions.xml' ) ) {
+                    $entry['_permissions'] = 1;
+                }
+
+                if ( file_exists( $path .'database.xml' ) ) {
+                    $entry['_database'] = 1;
+                }
+
+                $result[] = $entry;
+            }
+
+            $this->_list = $result;
         }
+
+        \QUI\Cache\Manager::set( self::CACHE_NAME_TYPES , $this->_list );
 
         return $this->_list;
     }
@@ -369,31 +416,6 @@ class Manager
             $page  = (int)$params['page'];
 
             return \QUI\Utils\Grid::getResult( $result, $page, $limit );
-        }
-
-        return $result;
-    }
-
-    /**
-     * Retrn all packages with the type
-     *
-     * @param String $type
-     * @return Array
-     */
-    public function getPackagesByType($type)
-    {
-        $list   = $this->_getList();
-        $result = array();
-
-        foreach ( $list as $Package )
-        {
-            if ( !isset( $params['type'] ) ) {
-                continue;
-            }
-
-            if ( $params['type'] == $type ) {
-                $result[] = $type;
-            }
         }
 
         return $result;
@@ -690,6 +712,7 @@ class Manager
             if ( strpos($line, 'Installing') !== false )
             {
                 preg_match( '#Installing ([^ ]*) #i', $line, $package );
+
             } else
             {
                 preg_match( '#Updating ([^ ]*) #i', $line, $package );
@@ -970,6 +993,8 @@ class Manager
 
         //$Command = $this->_Composer->get( $command );
         $this->_Application->run( $Input, $Output );
+
+        \QUI\Cache\Manager::clear( self::CACHE_NAME_TYPES );
 
         return $Output->getMessages();
 
