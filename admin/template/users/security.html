@@ -1,47 +1,50 @@
 
-{title text="Benutzer Passwort"}
-
 <table class="data-table">
-<tr>
-    <td style="width: 150px">Neues Passwort setzen</td>
-    <td><input type="password" name="password" value="" /></td>
-</tr>
-<tr class="odd">
-    <td style="width: 150px">Passwort wiederhohlen</td>
-    <td><input type="password" name="password2" value="" /></td>
-</tr>
+    <thead>
+        <tr>
+            <th colspan="2">
+                {title text="Benutzer Passwort"}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="odd">
+            <td style="width: 150px">Neues Passwort setzen</td>
+            <td><input type="password" name="password" value="" /></td>
+        </tr>
+        <tr class="even">
+            <td style="width: 150px">Passwort wiederhohlen</td>
+            <td><input type="password" name="password2" value="" /></td>
+        </tr>
+    </tbody>
 </table>
 
 
-{title text="Gültig bis"}
 <table class="data-table">
-<tr>
-    <td style="width: 20px;"><input type="radio" name="expire" value="never" class="noborder" /></td>
-    <td>Immer</td>
-</tr>
-<tr class="odd">
-    <td><input type="radio" name="expire" value="date" class="noborder" /></td>
-    <td>Datum / Uhrzeit</td>
-</tr>
-<tr class="odd">
-    <td></td>
-    <td>
-        <div class="expire-container" style="width: 300px; float: left; clear: both;">
-            <input name="expire_date" value="" type="date" />
-            <input name="expire_time" value="" style="float: left; width: 60px; margin-left: 10px;" />
-
-            <div style="clear: both">
-                <span style="float: left; width: 200px; margin: 5px 10px 0 0; color: #57595E">
-                    z.B. 2009-10-10
-                </span>
-                <span style="float: left; margin-top: 5px; color: #57595E">
-                    18:00:00
-                </span>
-            </div>
-
-        </div>
-    </td>
-</tr>
-
-<tr><td style="font-size: 5px">&nbsp;</td></tr>
+    <thead>
+        <tr>
+            <th colspan="2">
+                {title text="Gültig bis"}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="odd">
+            <td style="width: 20px;"><input type="radio" name="expire" value="never" class="noborder" /></td>
+            <td>Immer</td>
+        </tr>
+        <tr class="even">
+            <td><input type="radio" name="expire" value="date" class="noborder" /></td>
+            <td>Datum / Uhrzeit</td>
+        </tr>
+        <tr class="even">
+            <td></td>
+            <td>
+                <div class="expire-container">
+                    <input name="expire_date" value="" type="date" />
+                </div>
+            </td>
+        </tr>
+        <tr><td style="font-size: 5px">&nbsp;</td></tr>
+    </tbody>
 </table>

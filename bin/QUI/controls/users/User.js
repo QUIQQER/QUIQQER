@@ -236,12 +236,9 @@ define('controls/users/User', [
 
                     } else
                     {
-                        expire = expire.split(' ');
-
                         PasswordExpire[1].checked = true;
 
-                        Body.getElement( 'input[name="expire_date"]' ).value = expire[ 0 ];
-                        Body.getElement( 'input[name="expire_time"]' ).value = expire[ 1 ];
+                        Body.getElement( 'input[name="expire_date"]' ).value = expire;
                     }
                 }
 
@@ -266,21 +263,8 @@ define('controls/users/User', [
                 Frm     = Content.getElement( 'form' ),
                 data    = FormUtils.getFormData( Frm );
 
-            if ( typeof data.expire_date !== 'undefined' )
-            {
-                var time = data.expire_time || '00:00:00',
-                    date = data.expire_date;
-
-                if ( time === '' ) {
-                    time = '00:00:00';
-                }
-
-                if ( date !== '' ) {
-                    data.expire = date +' '+ time;
-                }
-
-                delete data.expire_time;
-                delete data.expire_date;
+            if ( data.expire_date ) {
+                data.expire = data.expire_date;
             }
 
             this.getUser().setAttributes( data );
