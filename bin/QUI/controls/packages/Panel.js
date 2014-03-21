@@ -1099,6 +1099,8 @@ define('controls/packages/Panel', [
          */
         loadServers : function()
         {
+            var self = this;
+
             this.Loader.show();
             this.getBody().set( 'html', '' );
 
@@ -1144,7 +1146,7 @@ define('controls/packages/Panel', [
                         'quiqqer/system',
                         'packages.btn.add.server'
                     ),
-                    textimage : URL_BIN_DIR +'16x16/filesystems/server.png',
+                    textimage : 'icon-plus',
                     events : {
                         onClick : this.dialogAddServer
                     }
@@ -1183,25 +1185,23 @@ define('controls/packages/Panel', [
                     Ajax.get('ajax_system_packages_server_list', function(result, Request)
                     {
                         var i, len, alt, title, icon;
-                        var Control = Request.getAttribute( 'Control' );
 
                         var server_click = function(Btn)
                         {
-                            var Control = Btn.getAttribute( 'Control' ),
-                                server  = Btn.getAttribute( 'server' );
+                            var server = Btn.getAttribute( 'server' );
 
                             if ( !server ) {
                                 return;
                             }
 
-                            Btn.setAttribute( 'image', URL_BIN_DIR +'loader.gif' );
+                            Btn.setAttribute( 'icon', 'icon-refresh icon-spin' );
 
                             if ( Btn.getAttribute( 'status' ) )
                             {
-                                Control.deactivateServer( server );
+                                self.deactivateServer( server );
                             } else
                             {
-                                Control.activateServer( server );
+                                self.activateServer( server );
                             }
                         };
 
@@ -1222,7 +1222,7 @@ define('controls/packages/Panel', [
 
                             if ( result[ i ].active === 0 )
                             {
-                                icon  = 'icon-remove';
+                                icon = 'icon-remove';
 
                                 alt = Locale.get(
                                     'quiqqer/system',
@@ -1242,7 +1242,6 @@ define('controls/packages/Panel', [
                                 icon    : icon,
                                 server  : result[ i ].server,
                                 status  : result[ i ].active,
-                                Control : Control,
                                 events  : {
                                     onClick : server_click
                                 }
@@ -1250,20 +1249,16 @@ define('controls/packages/Panel', [
                         }
 
 
-                        Control.$ServerGrid.setData({
+                        self.$ServerGrid.setData({
                             data : result
                         });
 
-                        Control.Loader.hide();
-                    }, {
-                        Control : this
+                        self.Loader.hide();
                     });
-
-                }.bind( this ),
-
-                alternaterows     : true,
-                resizeColumns     : true,
-                resizeHeaderOnly  : true
+                },
+                alternaterows    : true,
+                resizeColumns    : true,
+                resizeHeaderOnly : true
             });
 
             this.$ServerGrid.addEvents({
@@ -1290,12 +1285,14 @@ define('controls/packages/Panel', [
          */
         dialogAddServer : function()
         {
+            var self = this;
+
             new QUIConfirm({
                 title : Locale.get(
                     'quiqqer/system',
                     'packages.server.win.add.title'
                 ),
-                icon : URL_BIN_DIR +'16x16/filesystems/server.png',
+                icon : 'icon-building',
                 text : Locale.get(
                     'quiqqer/system',
                     'packages.server.win.add.text'
@@ -1312,12 +1309,11 @@ define('controls/packages/Panel', [
                               '</form>',
 
                 autoclose : false,
-                Control   : this,
                 events    :
                 {
                     onDrawEnd : function(Win)
                     {
-                        var Form = Win.getBody().getElement( 'form' );
+                        var Form = Win.getContent().getElement( 'form' );
 
                         if ( !Form ) {
                             return;
@@ -1334,8 +1330,7 @@ define('controls/packages/Panel', [
 
                     onSubmit : function(Win)
                     {
-                        var Form    = Win.getBody().getElement( 'form' ),
-                            Control = Win.getAttribute( 'Control' );
+                        var Form = Win.getContent().getElement( 'form' );
 
                         if ( !Form ) {
                             return;
@@ -1344,17 +1339,14 @@ define('controls/packages/Panel', [
                         var Input  = Form.getElement( 'input' ),
                             Select = Form.getElement( 'select' );
 
-                        Control.addServer(
-                            Input.value,
-                            {
-                                type : Select.value
-                            }
-                        );
+                        self.addServer( Input.value, {
+                            type : Select.value
+                        });
 
                         Win.close();
                     }
                 }
-            }).create();
+            }).open();
         },
 
         /**
@@ -1364,17 +1356,19 @@ define('controls/packages/Panel', [
          */
         dialogRemoveServer : function(list)
         {
+            var self = this;
+
             new QUIConfirm({
                 title : Locale.get(
                     'quiqqer/system',
                     'packages.server.win.remove.title'
                 ),
-                icon : URL_BIN_DIR +'16x16/filesystems/trashcan_empty.png',
+                icon : 'icon-trash',
                 text : Locale.get(
                     'quiqqer/system',
                     'packages.server.win.remove.text'
                 ),
-                texticon    : URL_BIN_DIR +'32x32/filesystems/trashcan_empty.png',
+                texticon    : 'icon-trash',
                 information : list.join( '<br />' ) +
                               '<p>&nbsp;</p>'+
                               '<p>'+
@@ -1384,35 +1378,27 @@ define('controls/packages/Panel', [
                                   ) +
                               '</p>',
                 autoclose : false,
-                Control   : this,
-                list      : list,
-                events    :
+                list : list,
+                events :
                 {
                     onSubmit : function(Win)
                     {
                         Win.Loader.show();
 
-                        Ajax.post(
-                            'ajax_system_packages_server_remove',
-                            function(result, Request)
-                            {
-                                var Win     = Request.getAttribute( 'Win' ),
-                                    Control = Win.getAttribute( 'Control' );
+                        Ajax.post( 'ajax_system_packages_server_remove', function(result, Request)
+                        {
+                            Win.close();
 
-                                Win.close();
-
-                                if ( Control.$ServerGrid ) {
-                                    Control.$ServerGrid.refresh();
-                                }
-
-                            }, {
-                                server : JSON.encode( Win.getAttribute( 'list' ) ),
-                                Win    : Win
+                            if ( self.$ServerGrid ) {
+                                self.$ServerGrid.refresh();
                             }
-                        );
+
+                        }, {
+                            server : JSON.encode( Win.getAttribute( 'list' ) )
+                        });
                     }
                 }
-            }).create();
+            }).open();
         },
 
         /**
