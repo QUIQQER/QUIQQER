@@ -1,0 +1,35 @@
+@CHARSET "UTF-8";
+
+.control-editors-configurator {
+    float: left;
+    height: 100%;
+    padding: 20px;
+    width: 100%;
+}
+
+.control-editors-configurator select {
+    clear: both;
+    float: left;
+}
+
+.control-editors-configurator label {
+    clear: both;
+    float: left;
+    line-height: 30px;
+    margin-right: 20px;
+}
+
+.control-editors-configurator-buttons {
+    float: left;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.control-editors-configurator-toolbar {
+    float: left;
+    height: 400px;
+    margin: 0;
+    overflow: auto;
+    padding: 10px;
+    width: 100%;
+}

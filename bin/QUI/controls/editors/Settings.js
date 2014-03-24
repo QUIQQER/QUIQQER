@@ -212,14 +212,30 @@ define('controls/editors/Settings', [
                 {
                     onOpen : function(Sheet)
                     {
-                        Sheet.Loader.show();
-
+                        // Sheet.Loader.show();
                         var Content = Sheet.getContent();
 
+                        require([
+                            'controls/editors/ToolbarConfigurator'
+                        ], function(Configurator)
+                        {
+                            var C = new Configurator({
+                                toolbar : toolbar
+                            });
 
+                            Sheet.addButton({
+                                text : 'Änderungen speichern',
+                                textimage : 'icon-save',
+                                events :
+                                {
+                                    onClick : function() {
+                                        C.save();
+                                    }
+                                }
+                            });
 
-                        console.log( Content );
-
+                            C.inject( Content );
+                        });
                     }
                 }
             }).show();
