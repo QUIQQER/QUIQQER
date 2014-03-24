@@ -44,7 +44,7 @@
     <!--  Darf Projekt Einstellungen machen -->
     <permission name="quiqqer.admin.projects.setconfig" type="bool" />
 
-<!-- Darf Seiten editieren - generelles recht -->
+    <!-- Darf Seiten editieren - generelles recht -->
     <permission name="quiqqer.projects.sites.edit" type="bool" />
 
 
@@ -64,5 +64,10 @@
 
     <!-- Darf Seitenzugriffsrechte setzen -->
     <permission name="quiqqer.projects.site.set_permissions" type="users_and_groups" />
+
+
+<!-- Editor permissions -->
+    <permission name="quiqqer.editors.toolbar.delete" type="bool" />
+
 
 </permissions>

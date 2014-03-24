@@ -64,22 +64,20 @@ define('classes/groups/Group', [
          */
         load: function(onfinish)
         {
+            var self = this;
+
             Ajax.get('ajax_groups_get', function(result, Request)
             {
-                var Group = Request.getAttribute( 'Group' );
+                self.setAttributes( result );
 
-                Group.setAttributes( result );
-
-                if ( Request.getAttribute( 'onfinish' ) ) {
-                    Request.getAttribute( 'onfinish' )( Group, Request );
+                if ( typeof onfinish !== 'undefined' ) {
+                    onfinish( self, Request );
                 }
 
-                Group.fireEvent( 'refresh', [ Group ] );
+                self.fireEvent( 'refresh', [ self ] );
 
             }, {
-                gid      : this.getId(),
-                Group    : this,
-                onfinish : onfinish
+                gid : this.getId()
             });
         },
 
@@ -93,15 +91,13 @@ define('classes/groups/Group', [
         getChildren : function(onfinish, params)
         {
             params = ObjectUtils.combine(params, {
-                gid      : this.getId(),
-                Group    : this,
-                onfinish : onfinish
+                gid : this.getId()
             });
 
             Ajax.get('ajax_groups_children', function(result, Request)
             {
-                if ( Request.getAttribute( 'onfinish' ) ) {
-                     Request.getAttribute( 'onfinish' )( result, Request );
+                if ( typeof onfinish !== 'undefined' ) {
+                    onfinish( result, Request );
                 }
             }, params);
         },
@@ -115,24 +111,22 @@ define('classes/groups/Group', [
          */
         save : function(onfinish, params)
         {
+            var self = this;
+
             params = ObjectUtils.combine(params, {
                 gid        : this.getId(),
-                Group      : this,
-                onfinish   : onfinish,
                 attributes : JSON.encode( this.getAttributes() ),
-                rights     : JSON.encode( this.getRights() )
+                rights     : '[]' //JSON.encode( this.getRights() )
             });
 
             Ajax.post('ajax_groups_save', function(result, Request)
             {
-                var Group = Request.getAttribute( 'Group' );
-
-                if ( Request.getAttribute( 'onfinish' ) ) {
-                    Request.getAttribute( 'onfinish' )( Group, Request );
+                if ( typeof onfinish !== 'undefined' ) {
+                    onfinish( self, Request );
                 }
 
-                Group.fireEvent( 'refresh', [ Group ] );
-                QUI.Groups.refreshGroup( Group );
+                self.fireEvent( 'refresh', [ self ] );
+                QUI.Groups.refreshGroup( self );
 
             }, params);
         },
@@ -169,11 +163,10 @@ define('classes/groups/Group', [
 
             Ajax.get('ajax_groups_users', function(result, Request)
             {
-                Request.getAttribute('onfinish')( result, Request );
+                onfinish( result, Request );
             }, {
-                gid      : this.getId(),
-                params   : JSON.encode( params ),
-                onfinish : onfinish
+                gid    : this.getId(),
+                params : JSON.encode( params )
             });
 
             return this;

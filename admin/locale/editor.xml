@@ -1,0 +1,15 @@
+<locales>
+
+    <groups name="quiqqer/system" datatype="js">
+
+    </groups>
+
+    <groups name="quiqqer/system">
+        <locale name="exception.editor.toolbar.exist">
+            <de>Die Toolbar existiert bereits.</de>
+            <en>The toolbar already exists.</en>
+        </locale>
+
+    </groups>
+
+</locales>

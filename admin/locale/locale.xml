@@ -45,6 +45,12 @@
                 <de><![CDATA[Media Einstellungen]]></de>
                 <en><![CDATA[Media settings]]></en>
             </locale>
+            <locale name="menu.settings.editor.text">
+                <de><![CDATA[WYSIWYG-Editor Einstellungen]]></de>
+                <en><![CDATA[WYSIWYG-Editor settings]]></en>
+            </locale>
+
+
 
         <!-- Gehe zu -->
         <locale name="menu.extras.groups.text">

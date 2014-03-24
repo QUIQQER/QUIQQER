@@ -188,6 +188,16 @@
             Media Einstellungen
         </item>
 
+        <item parent="/settings/"
+              name="media"
+              icon="icon-font"
+              require="controls/editors/Settings"
+              group="quiqqer/system"
+              var="menu.settings.editor.text"
+        >
+            WYSIWYG-Editor Einstellungen
+        </item>
+
     <!-- Menu -->
         <item parent="/help/"
               name="about"

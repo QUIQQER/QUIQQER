@@ -9,7 +9,6 @@
  * @requires qui/controls/Control
  *
  * @module controls/editor/Editor
- * @package com.pcsg.qui.js.classes.editor
  */
 
 define('controls/editors/Editor', ['qui/controls/Control'], function(Control)
@@ -19,9 +18,9 @@ define('controls/editors/Editor', ['qui/controls/Control'], function(Control)
     /**
      * Editor Main Class
      *
-     * @class QUI.classes.Editor
+     * @class controls/editors/Editor
      *
-     * @param {QUI.controls.editor.Manager} Manager
+     * @param {classes/editor/Manager} Manager
      * @param {Object} options
      *
      * @fires onInit [this]

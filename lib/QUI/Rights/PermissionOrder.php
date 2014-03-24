@@ -64,5 +64,3 @@ class PermissionOrder
         return $res;
     }
 }
-
-?>

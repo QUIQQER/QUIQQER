@@ -62,7 +62,7 @@ class Manager
      */
     static function getToolbarsPath()
     {
-        return self::getPath() .'toolbars';
+        return self::getPath() .'toolbars/';
     }
 
     /**
@@ -142,25 +142,75 @@ class Manager
         $folder = self::getToolbarsPath();
         $files  = \QUI\Utils\System\File::readDir( $folder, true );
 
-        try
-        {
-            $Conf     = self::getConf();
-            $toolbars = $Conf->getSection( 'toolbars' );
+//         try
+//         {
+//             $Conf     = self::getConf();
+//             $toolbars = $Conf->getSection( 'toolbars' );
 
-            if ( !is_array( $toolbars ) ) {
-                return $files;
-            }
+//             if ( !is_array( $toolbars ) ) {
+//                 return $files;
+//             }
 
-            foreach ( $toolbars as $toolbar => $btns ) {
-                array_unshift( $files, $toolbar );
-            }
+//             foreach ( $toolbars as $toolbar => $btns ) {
+//                 array_unshift( $files, $toolbar );
+//             }
 
-        } catch ( \QUI\Exception $Exception )
-        {
+//         } catch ( \QUI\Exception $Exception )
+//         {
 
-        }
+//         }
 
         return $files;
+    }
+
+    /**
+     * Delete a toolbar
+     *
+     * @param String $toolbar - Name of the tools (toolbar.xml)
+     */
+    static function deleteToolbar($toolbar)
+    {
+        \QUI\Rights\Permission::hasPermission(
+            'quiqqer.editors.toolbar.delete'
+        );
+
+        $folder = self::getToolbarsPath();
+        $path   = $folder . $toolbar;
+
+        $path = \QUI\Utils\Security\Orthos::clearPath( $path );
+
+        if ( file_exists( $path ) ) {
+            unlink( $path );
+        }
+    }
+
+    /**
+     * Add a new toolbar
+     *
+     * @param String $toolbar - Name of the tools (myNewToolbar)
+     */
+    static function addToolbar($toolbar)
+    {
+        \QUI\Rights\Permission::hasPermission(
+            'quiqqer.editors.toolbar.add'
+        );
+
+        $toolbar = str_replace( '.xml', '', $toolbar );
+
+        $folder = self::getToolbarsPath();
+        $file   = $folder . $toolbar .'.xml';
+
+        if ( file_exists( $file ) )
+        {
+            throw new \QUI\Exception(
+                \QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.editor.toolbar.exist'
+                )
+            );
+        }
+
+        \QUI\Utils\System\File::mkfile( $file );
     }
 
     /**
@@ -168,7 +218,7 @@ class Manager
      *
      * @return array
      */
-    static function getButtons()
+    static function getToolbarButtonsFromUser()
     {
         // Erste Benutzer spezifische Toolbar
         $Users = \QUI::getUsers();
@@ -226,6 +276,17 @@ class Manager
      */
     static function parseXmlFileToArray($file)
     {
+        $cache = 'editor/xml/file/'. md5( $file );
+
+        try
+        {
+            return \QUI\Cache\Manager::get( $cache );
+
+        } catch ( \QUI\Exception $Exception )
+        {
+
+        }
+
         $Dom     = \QUI\Utils\XML::getDomFromXml( $file );
         $toolbar = $Dom->getElementsByTagName( 'toolbar' );
 
@@ -244,20 +305,85 @@ class Manager
                 continue;
             }
 
+            if ( $Param->nodeName == 'line' ) {
+                $result['lines'][] = self::parseXMLLineNode( $Param );
+            }
+
+            if ( $Param->nodeName == 'group' ) {
+                $result['groups'][] = self::parseXMLGroupNode( $Param );
+            }
+        }
+
+        \QUI\Cache\Manager::set( $cache, $result );
+
+        return $result;
+    }
+
+    /**
+     * Parse an XML <line> node
+     *
+     * @param DOMNode $Node
+     * @return boolean|array
+     */
+    static function parseXMLLineNode($Node)
+    {
+        if ( $Node->nodeName != 'line' ) {
+            return false;
+        }
+
+        $children = $Node->childNodes;
+        $result   = array();
+
+        for ( $i = 0; $i < $children->length; $i++ )
+        {
+            $Param = $children->item( $i );
+
+            if ( $Param->nodeName == '#text' ) {
+                continue;
+            }
+
+            if ( $Param->nodeName == 'group' ) {
+                $result[] = self::parseXMLGroupNode( $Param );
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Parse an XML <group> node
+     *
+     * @param DOMNode $Node
+     * @return boolean|array
+     */
+    static function parseXMLGroupNode($Node)
+    {
+        if ( $Node->nodeName != 'group' ) {
+            return false;
+        }
+
+        $children = $Node->childNodes;
+        $result   = array();
+
+        for ( $i = 0; $i < $children->length; $i++ )
+        {
+            $Param = $children->item( $i );
+
             if ( $Param->nodeName == 'seperator' )
             {
-                $result[] = 'seperator';
+                $result[] = array(
+                    'type' => 'seperator'
+                );
+
                 continue;
             }
 
-            if ( $Param->nodeName == 'break' )
+            if ( $Param->nodeName == 'button' )
             {
-                $result[] = 'break';
-                continue;
-            }
-
-            if ( $Param->nodeValue ) {
-                $result[] = $Param->nodeValue;
+                $result[] = array(
+                    'type'   => 'button',
+                    'button' => trim( $Param->nodeValue )
+                );
             }
         }
 

@@ -26,7 +26,7 @@ define('classes/editor/Manager', [
     /**
      * Editor Manager
      *
-     * @class QUI.controls.editor.Manager
+     * @class classes/editor/Manager
      * @memberof! <global>
      */
     return new Class({
@@ -51,12 +51,12 @@ define('classes/editor/Manager', [
          * with the params can you define specific functionality for different
          * editors
          *
-         * @method QUI.classes.editor.Manager#register
+         * @method classes/editor/Manager#register
          *
 
 @example
 
-Manager.register('package/ckeditor3', {
+Manager.register('package/ckeditor4', {
     events : {},
     methods : {}
 });
@@ -73,8 +73,8 @@ Manager.register('package/ckeditor3', {
         /**
          * Register an editor instance
          *
-         * @method QUI.classes.editor.Manager#$registerEditor
-         * @param {QUI.classes.Editor} Instance
+         * @method classes/editor/Manager#$registerEditor
+         * @param {controls/editors/Editor} Instance
          *
          * @ignore
          */
@@ -84,13 +84,13 @@ Manager.register('package/ckeditor3', {
         },
 
         /**
-         * It generate a {QUI.classes.Editor} Instance from an editor parameter
+         * It generate a {controls/editors/Editor} Instance from an editor parameter
          *
-         * @method QUI.classes.editor.Manager#getEditor
+         * @method classes/editor/Manager#getEditor
          *
          * @param {String|null} name - Editor parameters name, like ckeditor3, if null,
-         * @param {Function} func   - Callback function, if editor is loaded,
-         *             the Parameter of the function is an {QUI.classes.Editor} Instance
+         * @param {Function} func    - Callback function, if editor is loaded,
+         *                             the Parameter of the function is an {QUI.classes.Editor} Instance
          */
         getEditor : function(name, func)
         {
@@ -136,8 +136,8 @@ Manager.register('package/ckeditor3', {
         /**
          * Destroy an editor
          *
-         * @method QUI.classes.editor.Manager#destroyEditor
-         * @param {QUI.classes.Editor} Editor
+         * @method classes/editor/Manager#destroyEditor
+         * @param {controls/editors/Editor} Editor
          */
         destroyEditor : function(Editor)
         {
@@ -155,7 +155,7 @@ Manager.register('package/ckeditor3', {
         /**
          * Get the main Editor config
          *
-         * @method QUI.classes.editor.Manager#getConfig
+         * @method classes/editor/Manager#getConfig
          * @param {Function} onfinish - Callback function
          */
         getConfig : function(onfinish)
@@ -177,9 +177,20 @@ Manager.register('package/ckeditor3', {
         },
 
         /**
+         * Get the toolbar for the user
+         *
+         * @method classes/editor/Manager#getToolbars
+         * @param {Function} onfinish - Callback function
+         */
+        getToolbar : function(onfinish)
+        {
+            Ajax.get( 'ajax_editor_get_toolbar', onfinish );
+        },
+
+        /**
          * Get all available toolbar
          *
-         * @method QUI.classes.editor.Manager#getToolbars
+         * @method classes/editor/Manager#getToolbars
          * @param {Function} onfinish - Callback function
          */
         getToolbars : function(onfinish)
