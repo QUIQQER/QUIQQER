@@ -475,7 +475,7 @@ class Sites
                             "'. $table['project'] .' ('. $table['lang'] .')" as "project",
                             '. implode(',', $selectList) .'
                         FROM `'. $table['table'] .'`
-                        WHERE '. $where .') ';
+                        WHERE ('. $where .') AND deleted = 0) ';
 
             if ( $table !== end( $tables ) ) {
                 $query .= ' UNION ';

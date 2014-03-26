@@ -8,12 +8,13 @@ define('controls/projects/project/site/Search', [
     'qui/controls/desktop/Panel',
     'qui/controls/buttons/Button',
     'controls/grid/Grid',
+    'controls/projects/project/site/Panel',
     'Projects',
     'Ajax',
 
     'css!controls/projects/project/site/Search.css'
 
-], function(QUI, QUIPanel, QUIButton, Grid, Projects, Ajax)
+], function(QUI, QUIPanel, QUIButton, Grid, SitePanel, Projects, Ajax)
 {
     "use strict";
 
@@ -25,7 +26,8 @@ define('controls/projects/project/site/Search', [
         Binds : [
             '$onCreate',
             '$onResize',
-            '$onShow'
+            '$onShow',
+            '$openSite'
         ],
 
         options : {
@@ -111,6 +113,11 @@ define('controls/projects/project/site/Search', [
 
             this.$Grid = new Grid( Container, {
                 columnModel : [{
+                    dataType  : 'button',
+                    header    : '&nbsp;',
+                    dataIndex : 'open',
+                    width     : 50
+                }, {
                     dataType  : 'integer',
                     header    : 'ID',
                     dataIndex : 'id',
@@ -210,6 +217,22 @@ define('controls/projects/project/site/Search', [
 
             Ajax.get('ajax_site_search', function(result)
             {
+                var data = result.data;
+
+                for ( var i = 0, len = data.length; i < len; i++ )
+                {
+                    result.data[ i ].open = {
+                        icon        : 'icon-file-alt',
+                        siteid      : data[ i ].id,
+                        siteproject : data[ i ].project,
+                        title       : 'Seite öffnen',
+                        alt         : 'Seite öffnen',
+                        events : {
+                            onClick : self.$openSite
+                        }
+                    };
+                }
+
                 self.$Grid.setData( result );
                 self.Loader.hide();
             }, {
@@ -221,6 +244,24 @@ define('controls/projects/project/site/Search', [
                     fields  : fields.join(',')
                 })
             });
+        },
+
+        /**
+         * button click : Open a site
+         *
+         * @param {qui/controls/buttons/Button} Btn
+         */
+        $openSite : function(Btn)
+        {
+            var siteId      = Btn.getAttribute( 'siteid' ),
+                projectData = Btn.getAttribute( 'siteproject' );
+
+            projectData = projectData.replace('(', '').replace(')', '').split(' ');
+
+            var Project = Projects.get( projectData[ 0 ], projectData[ 1 ] ),
+                Site    = Project.get( siteId );
+
+            new SitePanel( Site ).inject( this.getParent() );
         }
     });
 
