@@ -9,10 +9,9 @@ namespace QUI\Utils;
 /**
  * QUIQQER XML Util class
  *
- * Provides methods to read / write QUIQQER XML files
+ * Provides methods to read and work with QUIQQER XML files
  *
  * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.utils
  */
 
 class XML
@@ -63,6 +62,7 @@ class XML
             if ( $Item->getAttribute( 'parent' ) == '/' )
             {
                 $MenuItem = new \QUI\Controls\Contextmenu\Baritem( $params );
+
             } else
             {
                 $MenuItem    = new \QUI\Controls\Contextmenu\Menuitem( $params );

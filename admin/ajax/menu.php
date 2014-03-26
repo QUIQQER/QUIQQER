@@ -34,7 +34,8 @@ function ajax_menu()
                 'onclick' => '',
                 'require' => 'controls/projects/project/Settings',
                 'onClick' => 'QUI.Menu.menuClick',
-                'project' => $project
+                'project' => $project,
+                'name'    => $project
             ))
         );
     }

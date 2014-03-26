@@ -21,7 +21,9 @@ define('Menu', [
         return QUI.Menu;
     }
 
-    QUI.Menu = new Menu().inject(
+    QUI.Menu = new Menu({
+        name : 'QUIQQER-Menu'
+    }).inject(
         document.getElement( '.qui-menu-container' )
     );
 

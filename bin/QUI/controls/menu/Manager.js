@@ -35,14 +35,27 @@ define('controls/menu/Manager', [
             var self = this;
 
             this.$Bar = new ContextmenuBar({
-                dragable : true
+                dragable : true,
+                name     : 'quiqqer-menu-bar'
             });
+
+            this.$Bar.setParent( this );
 
             Ajax.get('ajax_menu', function(result) {
                 self.$Bar.insert( result );
             });
 
             return this.$Bar.create();
+        },
+
+        /**
+         * Return the ContextBar
+         *
+         * @return qui/controls/contextmenu/Bar
+         */
+        getChildren : function()
+        {
+            return this.$Bar;
         },
 
         /**
