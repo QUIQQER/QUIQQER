@@ -214,6 +214,55 @@ class Manager
     }
 
     /**
+     * Save the Toolbar
+     *
+     * @param String $toolbar - toolbar name
+     * @param String $xml - toolbar xml
+     */
+    static function saveToolbar($toolbar, $xml)
+    {
+        \QUI\Rights\Permission::hasPermission(
+            'quiqqer.editors.toolbar.save'
+        );
+
+        $toolbar = str_replace( '.xml', '', $toolbar );
+
+        $folder = self::getToolbarsPath();
+        $file   = $folder . $toolbar .'.xml';
+
+        if ( !file_exists( $file ) )
+        {
+            throw new \QUI\Exception(
+                \QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.editor.toolbar.not.exist'
+                )
+            );
+        }
+
+        // check the xml
+        libxml_use_internal_errors( true );
+
+        $Doc = new \DOMDocument('1.0', 'utf-8');
+        $Doc->loadXML( $xml );
+
+        $errors = libxml_get_errors();
+
+        if ( !empty( $errors ) )
+        {
+            throw new \QUI\Exception(
+                \QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.editor.toolbar.xml.error',
+                    array( 'error' => $errors[0]->message )
+                )
+            );
+        }
+
+        file_put_contents( $file, $xml );
+    }
+
+    /**
      * Buttonliste vom aktuellen Benutzer bekommen
      *
      * @return array

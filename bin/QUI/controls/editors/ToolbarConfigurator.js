@@ -31,7 +31,7 @@ define('controls/editors/ToolbarConfigurator', [
         {
             this.parent( options );
 
-            this.$Loader = new QUILoader();
+            this.Loader = new QUILoader();
 
             this.$Elm      = null;
             this.$Select   = null;
@@ -60,7 +60,7 @@ define('controls/editors/ToolbarConfigurator', [
                           '<textarea class="control-editors-configurator-toolbar box"></textarea>'
             });
 
-            this.$Loader.inject( this.$Elm );
+            this.Loader.inject( this.$Elm );
 
             this.$Select = this.$Elm.getElement(
                 '.control-editors-configurator-buttons'
@@ -174,7 +174,17 @@ define('controls/editors/ToolbarConfigurator', [
          */
         save : function()
         {
+            var self = this;
 
+            self.Loader.show();
+
+            Ajax.post('ajax_editor_toolbar_save', function()
+            {
+                self.Loader.hide();
+            }, {
+                toolbar : this.getAttribute( 'toolbar' ),
+                xml     : this.$Textarea.value
+            });
         },
 
         /**
@@ -182,12 +192,12 @@ define('controls/editors/ToolbarConfigurator', [
          */
         $onInject : function()
         {
-            this.$Loader.show();
+            this.Loader.show();
 
             if ( !this.getAttribute( 'toolbar' ) )
             {
 
-                this.$Loader.hide();
+                this.Loader.hide();
 
                 return;
             }
@@ -197,7 +207,7 @@ define('controls/editors/ToolbarConfigurator', [
             Ajax.get( 'ajax_editor_get_toolbar_xml', function(result)
             {
                 self.$Textarea.value = result;
-                self.$Loader.hide();
+                self.Loader.hide();
             }, {
                 toolbar : this.getAttribute( 'toolbar' )
             });

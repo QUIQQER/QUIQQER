@@ -218,17 +218,19 @@ require([
     require( QUIQQER_LOCALE );
 
     /**
-     * UploadManager
+     * UploadManager && MessageHandler
      */
-    require(['UploadManager'], function(UploadManager) {
-        UploadManager.inject( RightColumn );
-    });
+    require([
 
-    /**
-     * MessageHandler
-     */
-    require(['qui/controls/messages/Panel'], function(MessagePanel) {
+        'UploadManager',
+        'qui/controls/messages/Panel'
+
+    ], function(UploadManager, MessagePanel)
+    {
         new MessagePanel().inject( RightColumn );
+
+        UploadManager.inject( RightColumn );
+        UploadManager.toggle();
     });
 
     QUI.getMessageHandler(function(MessageHandler)
