@@ -61,7 +61,7 @@ define('classes/projects/project/media/Item', [
         {
             this.$Media = Media;
             this.$Panel = null;
-console.log( params );
+
             this.parent( params );
         },
 
@@ -80,17 +80,6 @@ console.log( params );
         },
 
         /**
-         * Open the File in an AppPanel or create a new AppPanel
-         *
-         * @method classes/projects/project/media/Item#openInPanel
-         * @params {MUI.Apppanel} Panel - optional
-         */
-//        openInPanel : function(Panel)
-//        {
-//            this.$Panel = new QUI.controls.projects.media.FilePanel( this );
-//        },
-
-        /**
          * Returns the Media Object of the item
          *
          * @method classes/projects/project/media/Item#getMedia
@@ -100,23 +89,6 @@ console.log( params );
         {
             return this.$Media;
         },
-
-        /**
-         * Opens the File in a new Browser Window
-         */
-//        openInWindow : function()
-//        {
-//            if ( this.getType() === 'QUI.classes.projects.media.Folder' ) {
-//                return;
-//            }
-//
-//            var url = QUI.Ajax.$url +'?'+ QUI.Ajax.parseParams('ajax_media_file_preview', {
-//                project : this.getMedia().getProject().getName(),
-//                fileid  : this.getId()
-//            });
-//
-//            window.open( url );
-//        },
 
         /**
          * Returns the ID of the item

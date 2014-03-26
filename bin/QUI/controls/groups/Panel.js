@@ -25,10 +25,11 @@ define('controls/groups/Panel', [
     'utils/Template',
     'qui/controls/messages/Attention',
     'qui/controls/windows/Prompt',
+    'qui/controls/windows/Confirm',
 
     'css!controls/groups/Panel.css'
 
-], function(Panel, Groups, Grid, GroupSitemapWindow, Template, Attention, QUIPrompt)
+], function(Panel, Groups, Grid, GroupSitemapWindow, Template, Attention, QUIPrompt, QUIConfirm)
 {
     "use strict";
 
@@ -821,7 +822,7 @@ define('controls/groups/Panel', [
                 return;
             }
 
-            QUI.Windows.create('submit', {
+            new QUIConfirm({
                 name        : 'DeleteGroups',
                 title       : 'Gruppen löschen',
                 icon        : URL_BIN_DIR +'16x16/trashcan_full.png',
@@ -841,7 +842,7 @@ define('controls/groups/Panel', [
                         );
                     }
                 }
-            });
+            }).open();
         }
 
     });

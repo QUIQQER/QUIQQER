@@ -8,8 +8,6 @@
  * @requires controls/projects/media/PanelDOMEvents
  *
  * @module controls/projects/media/Panel
- * @package com.pcsg.qui.js.controls.project
- * @namespace QUI.controls.projects.media
  */
 
 define('controls/projects/project/media/FilePanel', [
@@ -21,10 +19,11 @@ define('controls/projects/project/media/FilePanel', [
     'qui/controls/windows/Confirm',
     'utils/Template',
     'qui/utils/Form',
+    'utils/Controls',
 
     'css!controls/projects/project/media/FilePanel.css'
 
-], function(QUIPanel, PanelDOMEvents, QUIButton, QUIButtonSeperator, QUIConfirm, Template, FormUtils)
+], function(QUIPanel, PanelDOMEvents, QUIButton, QUIButtonSeperator, QUIConfirm, Template, FormUtils, ControlUtils)
 {
     "use strict";
 
@@ -33,7 +32,7 @@ define('controls/projects/project/media/FilePanel', [
      *
      * @class controls/projects/project/media/FilePanel
      *
-     * @param {QUI.classes.projects.media.File} File
+     * @param {classes/projects/media/File} File
      * @param {Object} options
      *
      * @memberof! <global>
@@ -68,7 +67,6 @@ define('controls/projects/project/media/FilePanel', [
 
             this.parent( options );
 
-            this.$Panel = null;
             this.$File  = File;
             this.$Media = this.$File.getMedia();
 
@@ -82,63 +80,12 @@ define('controls/projects/project/media/FilePanel', [
         /**
          * Close and destroy the panel
          *
-         * @method QUI.controls.projects.media.FilePanel#close
+         * @method controls/projects/project/media/FilePanel#close
          */
         close : function()
         {
             this.destroy();
         },
-
-        /**
-         * Create the file panel
-         * create a QUI.controls.desktop.Panel and start the file loading
-         *
-         * @method QUI.controls.projects.media.FilePanel#create
-         */
-//        create : function()
-//        {
-//            var Panel = new QUI.controls.desktop.Panel({
-//                id     : this.getAttribute( 'id' ),
-//                icon   : URL_BIN_DIR +'images/loader.gif',
-//                tabbar : true
-//            });
-//
-//            QUI.Workspace.appendPanel( Panel );
-//
-//            this.$Panel = Panel;
-//            this.$Panel.Loader.show();
-//            this.$Panel.getBody().set( 'data-id', this.$File.getId() );
-//
-//            this.$createTabs();
-//            this.$createButtons();
-//
-//            QUI.Template.get('project_media_file', function(result, Request)
-//            {
-//                var FormElm;
-//
-//                var Control = Request.getAttribute( 'Control' ),
-//                    Panel   = Control.$Panel,
-//                    File    = Control.$File,
-//                    Body    = Panel.getBody();
-//
-//                Body.set(
-//                    'html',
-//
-//                    '<form>' +
-//                        result +
-//                        '<div class="qui-media-file-preview"></div>' +
-//                    '</form>'
-//                );
-//
-//                FormElm = Body.getElement( 'form' );
-//
-//                QUI.controls.Utils.parse( FormElm );
-//
-//                Control.refresh();
-//            }, {
-//                Control : this
-//            });
-//        },
 
         /**
          * @event : on panel create
@@ -179,14 +126,14 @@ define('controls/projects/project/media/FilePanel', [
 
                 self.load();
 
-//                QUI.controls.Utils.parse( Body.getElement( 'form' ) );
+                ControlUtils.parse( Body.getElement( 'form' ) );
             });
         },
 
         /**
          * Load the buttons and the tabs to the panel
          *
-         * @method QUI.controls.projects.media.Panel#load
+         * @method controls/projects/project/media/FilePanel#load
          */
         load : function()
         {
@@ -248,7 +195,7 @@ define('controls/projects/project/media/FilePanel', [
         /**
          * Unload the panel
          *
-         * @method QUI.controls.projects.media.FilePanel#unload
+         * @method controls/projects/project/media/FilePanel#unload
          */
         unload : function()
         {
@@ -258,7 +205,7 @@ define('controls/projects/project/media/FilePanel', [
         /**
          * Refresh the panel
          *
-         * @method QUI.controls.projects.media.FilePanel#refresh
+         * @method controls/projects/project/media/FilePanel#refresh
          */
         refresh : function()
         {
@@ -282,8 +229,8 @@ define('controls/projects/project/media/FilePanel', [
         /**
          * Return the file objectwhich is linked to the panel
          *
-         * @method QUI.controls.projects.media.Panel#load
-         * @return {QUI.classesl.project.media.Item} File
+         * @method controls/projects/project/media/FilePanel#load
+         * @return {classes/project/media/Item} File
          */
         getFile : function()
         {
@@ -293,7 +240,7 @@ define('controls/projects/project/media/FilePanel', [
         /**
          * Saves the files
          *
-         * @method QUI.controls.projects.media.Panel#save
+         * @method controls/projects/project/media/FilePanel#save
          */
         save : function()
         {
@@ -306,7 +253,7 @@ define('controls/projects/project/media/FilePanel', [
                 return;
             }
 
-            var data = QUI.Utils.getFormData( Frm );
+            var data = FormUtils.getFormData( Frm );
 
             File.setAttribute( 'name',  data.file_name );
             File.setAttribute( 'title', data.file_title );
@@ -317,23 +264,24 @@ define('controls/projects/project/media/FilePanel', [
 
             File.save(function(result, Request)
             {
-                QUI.MH.addSuccess( 'Datei wurde erfolgreich gespeichert' );
+                QUI.getMessageHandler(function(MH) {
+                    MH.addSuccess( 'Datei wurde erfolgreich gespeichert' );
+                });
 
                 self.Loader.hide();
-
             });
         },
 
         /**
          * Delete the files
          *
-         * @method QUI.controls.projects.media.Panel#del
+         * @method controls/projects/project/media/FilePanel#del
          */
         del : function()
         {
             var self = this;
 
-            var Submit = new QUIConfirm({
+            new QUIConfirm({
                 icon  : 'icon-trash',
                 title : 'Möchten Sie '+ this.$File.getAttribute('file') +' wirklich löschen?',
 
@@ -361,7 +309,7 @@ define('controls/projects/project/media/FilePanel', [
         /**
          * Activate the file
          *
-         * @method QUI.controls.projects.media.Panel#activate
+         * @method controls/projects/project/media/FilePanel#activate
          */
         activate : function()
         {
@@ -375,7 +323,7 @@ define('controls/projects/project/media/FilePanel', [
         /**
          * Deactivate the file
          *
-         * @method QUI.controls.projects.media.Panel#activate
+         * @method controls/projects/project/media/FilePanel#activate
          */
         deactivate : function()
         {
@@ -389,18 +337,18 @@ define('controls/projects/project/media/FilePanel', [
         /**
          * Open the replace Dialog for the File
          *
-         * @method QUI.controls.projects.media.Panel#replace
+         * @method controls/projects/project/media/FilePanel#replace
          */
         replace : function()
         {
-            this.$DOMEvents.replace( this.$Panel.getBody() );
+            this.$DOMEvents.replace( this.getBody() );
         },
 
         /**
          * Create the Buttons for the Panel
          * Such like Save, Delete
          *
-         * @method QUI.controls.projects.media.FilePanel#$createTabs
+         * @method controls/projects/project/media/FilePanel#$createTabs
          */
         $createButtons : function()
         {
@@ -485,7 +433,7 @@ define('controls/projects/project/media/FilePanel', [
          * Create the Tabs for the Panel
          * Such like Preview and Details Tab
          *
-         * @method QUI.controls.projects.media.FilePanel#$createTabs
+         * @method controls/projects/project/media/FilePanel#$createTabs
          */
         $createTabs : function()
         {
@@ -554,7 +502,7 @@ define('controls/projects/project/media/FilePanel', [
         /**
          * Opens the detail tab
          *
-         * @method QUI.controls.projects.media.FilePanel#$createTabs
+         * @method controls/projects/project/media/FilePanel#$createTabs
          */
         $openDetails : function()
         {

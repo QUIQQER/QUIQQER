@@ -186,7 +186,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
 
                 events  :
                 {
-                    onDrawEnd : function(Win)
+                    onCreate : function(Win)
                     {
                         Win.Loader.show();
 
@@ -272,6 +272,8 @@ define('classes/projects/project/media/panel/DOMEvents', [
          */
         replace : function(DOMNode)
         {
+            var self = this;
+
             new QUIPrompt({
                 title   : 'Datei ersetzen ...',
                 icon    : URL_BIN_DIR +'16x16/replace.png',
@@ -288,51 +290,40 @@ define('classes/projects/project/media/panel/DOMEvents', [
                 autoclose   : false,
                 events :
                 {
-                    onDrawEnd : function(Win, MuiWin)
+                    onCreate : function(Win)
                     {
-                        var WinBody    = Win.getBody(),
-                            WinContent = WinBody.getParent('.mochaContentWrapper');
-
-                        WinContent.addClass( 'smooth' );
-                        WinContent.addClass( 'box' );
+                        var Content = Win.getContent();
 
                         // upload formular
                         require(['controls/upload/Form'], function(UploadForm)
                         {
-                            var Control = this.getAttribute('Control'),
-                                Node    = this.getAttribute('DOMNode');
-
                             var Form = new UploadForm({
-                                Drops  : [WinContent],
+                                Drops  : [ Content ],
                                 styles : {
                                     margin : '20px 0 0 70px',
                                     float  : 'left',
                                     clear  : 'both'
                                 },
-                                Media   : Control.$Media,
-                                Win     : this,
-                                Node    : Node,
-                                events  :
+                                events :
                                 {
                                     onBegin : function(Control) {
-                                        Control.getAttribute('Win').close();
+                                        Win.close();
                                     },
 
                                     onComplete : function(Control)
                                     {
                                         var i, len;
-                                        var Node    = Control.getAttribute('Node'),
 
-                                            panels = QUI.Controls.get(
+                                        var panels = QUI.Controls.get(
                                                 'projects-media-panel'
                                             ),
 
                                             windows = QUI.Controls.get(
-                                                'replace-media-id-'+ Node.get('data-id')
+                                                'replace-media-id-'+ DOMNode.get('data-id')
                                             ),
 
                                             filepanels = QUI.Controls.get(
-                                                'projects-media-file-panel-'+ Node.get('data-id')
+                                                'projects-media-file-panel-'+ DOMNode.get('data-id')
                                             );
 
                                         // Media panels refresh
@@ -354,14 +345,6 @@ define('classes/projects/project/media/panel/DOMEvents', [
                                     /// drag drop events
                                     onDragenter: function(event, Elm, Upload)
                                     {
-                                        if ( !Elm.hasClass('mochaContentWrapper') ) {
-                                            Elm = Elm.getParent('.mochaContentWrapper');
-                                        }
-
-                                        if ( !Elm || !Elm.hasClass('mochaContentWrapper') ) {
-                                            return;
-                                        }
-
                                         Elm.addClass( 'qui-media-drag' );
 
                                         event.stop();
@@ -378,21 +361,19 @@ define('classes/projects/project/media/panel/DOMEvents', [
 
                             Form.setParam('onstart', 'ajax_media_checkreplace');
                             Form.setParam('onfinish', 'ajax_media_replace');
-                            Form.setParam('project', Control.$Media.getProject().getName());
-                            Form.setParam('fileid', Node.get('data-id'));
+                            Form.setParam('project', self.$Media.getProject().getName());
+                            Form.setParam('fileid', DOMNode.get('data-id'));
 
-                            Form.inject( this.getBody() );
+                            Form.inject( Content );
 
                             Win.setAttribute( 'Form', Form );
-
-                        }.bind( Win ));
+                        });
                     },
 
                     onSubmit : function(Win)
                     {
                         Win.Loader.show();
                         Win.getAttribute('Form').submit();
-
                     }
                 }
             }).open();
