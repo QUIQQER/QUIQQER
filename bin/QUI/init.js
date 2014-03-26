@@ -223,11 +223,13 @@ require([
     require([
 
         'UploadManager',
-        'qui/controls/messages/Panel'
+        'qui/controls/messages/Panel',
+        'controls/desktop/panels/Help'
 
-    ], function(UploadManager, MessagePanel)
+    ], function(UploadManager, MessagePanel, Help)
     {
         new MessagePanel().inject( RightColumn );
+        new Help().inject( RightColumn );
 
         UploadManager.inject( RightColumn );
         UploadManager.toggle();
