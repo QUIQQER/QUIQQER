@@ -26,22 +26,43 @@ function ajax_users_switchstatus($uid)
             if ( $User->isActive() )
             {
                 $User->deactivate();
+
+                \QUI::getMessagesHandler()->addSuccess(
+                    \QUI::getLocale()->get(
+                        'quiqqer/system',
+                        'message.user.deactivate'
+                    )
+                );
+
             } else
             {
                 $User->activate();
+
+                \QUI::getMessagesHandler()->addSuccess(
+                    \QUI::getLocale()->get(
+                        'quiqqer/system',
+                        'message.user.activate'
+                    )
+                );
             }
 
             $result[ $_uid ] = $User->isActive() ? 1 : 0;
 
         } catch ( \QUI\Exception $Exception )
         {
-            \QUI::getMessagesHandler()->addException( $Exception );
+            \QUI::getMessagesHandler()->addAttention(
+                $Exception->getMessage()
+            );
+
             continue;
         }
     }
 
     return $result;
 }
-QUI::$Ajax->register('ajax_users_switchstatus', array('uid'), 'Permission::checkSU');
 
-?>
+\QUI::$Ajax->register(
+    'ajax_users_switchstatus',
+    array('uid'),
+    'Permission::checkSU'
+);

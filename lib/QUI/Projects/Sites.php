@@ -323,6 +323,7 @@ class Sites
      * @return Array
      *
      * @todo schauen wegen admin bereich
+     * @deprecated
      */
     static function getPlugins($Site)
     {
@@ -346,6 +347,170 @@ class Sites
                 $Site->getAttribute( 'type' )
             );
         }
+
+        return $result;
+    }
+
+    /**
+     * Search sites
+     *
+     * @param String $search
+     * @param Array $params
+     *
+     * $params['Project'] - \QUI\Projects\Project
+     * $params['project'] - string - project name
+     *
+     * $params['limit'] - max entries
+     * $params['page'] - number of the page
+     * $params['fields'] - searchable fields
+     * $params['count'] - true/false result as a count?
+     *
+     * @return array
+     */
+    static function search($search, $params=array())
+    {
+        $DataBase = \QUI::getDataBase();
+
+        $page     = 1;
+        $limit    = 50;
+        $Project  = null;
+        $projects = array();
+        $fields   = array( 'id', 'title', 'name' );
+
+        $selectList = array(
+            'id', 'name', 'title', 'short', 'content', 'type',
+            'c_date', 'e_date', 'c_user', 'e_user', 'active'
+        );
+
+        // projekt
+        if ( isset( $params['Project'] ) && !empty( $params['Project'] ) )
+        {
+            $projects[] = $params['Project'];
+
+        } else if ( isset( $params['project'] ) && !empty( $params['project'] ) )
+        {
+            $projects[] = \QUI::getProject( $params['project'] );
+
+        } else
+        {
+            // search all projects
+            $projects = \QUI::getProjectManager()->getProjects( true );
+        }
+
+        // limits
+        if ( isset( $params['limit'] ) ) {
+            $limit = (int)$params['limit'];
+        }
+
+        if ( isset( $params['page'] ) && (int)$params['page'] ) {
+            $page = (int)$params['page'];
+        }
+
+        // fields
+        if ( isset( $params['fields'] ) && !empty( $params['fields'] ) )
+        {
+            $fields  = array();
+            $_fields = explode( ',', $params['fields'] );
+
+            foreach ( $_fields as $field )
+            {
+                switch ( $field )
+                {
+                    case 'id':
+                    case 'name':
+                    case 'title':
+                    case 'short':
+                    case 'content':
+                    case 'c_date':
+                    case 'e_date':
+                    case 'c_user':
+                    case 'e_user':
+                    case 'active':
+                        $fields[] = $field;
+                    break;
+
+                    default:
+                        continue;
+                }
+
+            }
+        }
+
+
+        // find the search tables
+        $tables = array();
+
+        foreach ( $projects as $Project )
+        {
+            $langs = $Project->getAttribute('langs');
+            $name  = $Project->getName();
+
+            foreach ( $langs as $lang )
+            {
+                $tables[] = array(
+                    'table'   => QUI_DB_PRFX . $name .'_'. $lang .'_sites',
+                    'lang'    => $lang,
+                    'project' => $name
+                );
+            }
+        }
+
+        $search = '%'. $search .'%';
+        $query  = '';
+
+        foreach ( $tables as $table )
+        {
+            $where = '';
+
+            foreach ( $fields as $field )
+            {
+                $where .= $field .' LIKE :search';
+
+                if ( $field !== end( $fields ) ) {
+                    $where .= ' OR ';
+                }
+            }
+
+            $query .= '(SELECT
+                            "'. $table['project'] .' ('. $table['lang'] .')" as "project",
+                            '. implode(',', $selectList) .'
+                        FROM `'. $table['table'] .'`
+                        WHERE '. $where .') ';
+
+            if ( $table !== end( $tables ) ) {
+                $query .= ' UNION ';
+            }
+        }
+
+        // limit, pages
+        if ( !isset( $params['count'] ) )
+        {
+
+            $page = $page - 1;
+
+            if ( $page <= 0 ) {
+                $page = 0;
+            }
+
+            $query .= ' LIMIT '. ($page * $limit) .','. $limit;
+        }
+
+
+        $PDO  = $DataBase->getPDO();
+        $Stmt = $PDO->prepare( $query );
+
+        $Stmt->execute(array(
+            ':search' => $search
+        ));
+
+        $result = $Stmt->fetchAll( \PDO::FETCH_ASSOC );
+
+        if ( isset( $params['count'] ) ) {
+            return count( $result );
+        }
+
+        // \QUI\System\Log::write( $query );
+        // \QUI\System\Log::writeRecursive( $result );
 
         return $result;
     }

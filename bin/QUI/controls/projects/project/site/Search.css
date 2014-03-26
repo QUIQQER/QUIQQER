@@ -1,0 +1,27 @@
+@CHARSET "UTF-8";
+
+.control-site-search label {
+    clear: both;
+    float: left;
+    line-height: 30px;
+    width: 100%;
+}
+
+.control-site-search-label {
+    clear: both;
+    float: left;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.control-site-search-label select {
+    float: left;
+    margin: 0 10px 0 0;
+    width: 20%;
+}
+
+.control-site-search-label input {
+    float: left;
+    margin: 0 10px 0 0;
+    width: 30%;
+}

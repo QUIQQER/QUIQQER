@@ -948,7 +948,7 @@ class User implements \QUI\Interfaces\Users\User
             }
         }
 
-        \QUI::getDB()->updateData(
+        \QUI::getDataBase()->update(
             \QUI\Users\Manager::Table(),
             array('active' => 0),
             array('id'     => $this->getId())

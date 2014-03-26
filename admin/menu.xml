@@ -35,7 +35,7 @@
         <item parent="/file/"
               name="search"
               icon="icon-search"
-              require="admin/search/Site"
+              require="controls/projects/project/site/Search"
               group="quiqqer/system"
               var="menu.file.search.text"
         />
