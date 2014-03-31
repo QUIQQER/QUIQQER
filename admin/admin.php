@@ -185,6 +185,8 @@
     <script src="<?php echo URL_OPT_DIR; ?>bin/qui/src/lib/mootools-core.js"></script>
     <script src="<?php echo URL_OPT_DIR; ?>bin/qui/src/lib/mootools-more.js"></script>
     <script src="<?php echo URL_OPT_DIR; ?>bin/qui/src/lib/moofx.js"></script>
+    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/src/lib/ElementQuery.js"></script>
+    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/src/lib/ResizeSensor.js"></script>
 
     <!-- load the quiqqer admin -->
     <script src="<?php echo URL_BIN_DIR; ?>QUI/init.js"></script>
