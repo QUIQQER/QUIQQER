@@ -112,6 +112,7 @@ class Autoloader
 
             $map      = require CMS_DIR .'packages/composer/autoload_namespaces.php';
             $classMap = require CMS_DIR .'packages/composer/autoload_classmap.php';
+            $psr4     = require CMS_DIR .'packages/composer/autoload_psr4.php';
 
             // add lib to the namespace
             self::$ComposerLoader->add( 'QUI', LIB_DIR );
@@ -119,6 +120,10 @@ class Autoloader
 
             foreach ( $map as $namespace => $path ) {
                 self::$ComposerLoader->add( $namespace, $path );
+            }
+
+            foreach ( $psr4 as $namespace => $path ) {
+                self::$ComposerLoader->addPsr4( $namespace, $path );
             }
 
             if ( $classMap ) {
