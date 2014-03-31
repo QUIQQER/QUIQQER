@@ -273,7 +273,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
         replace : function(DOMNode)
         {
             var self = this;
-
+console.info( '@todo upload -> anderes popup' );
             new QUIPrompt({
                 title   : 'Datei ersetzen ...',
                 icon    : URL_BIN_DIR +'16x16/replace.png',
