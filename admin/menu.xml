@@ -52,6 +52,7 @@
               icon="icon-off"
               group="quiqqer/system"
               var="menu.file.logout.text"
+              exec="logout();"
         >
             Beenden
         </item>

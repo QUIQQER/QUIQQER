@@ -290,6 +290,14 @@ require([
         }
     });
 
+    // logout function
+    window.logout = function()
+    {
+        Ajax.post('ajax_user_logout', function() {
+            window.location = '/admin/admin.php';
+        });
+    }
+
 //    require(['controls/projects/Popup'], function(Popup) {
 //        new Popup({
 //            events :

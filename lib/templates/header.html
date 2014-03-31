@@ -42,6 +42,10 @@
             lang : '{$Project->getLang()}'
         };
 
+        var QUIQQER_USER = {
+            id : '{$User->getId()}'
+        };
+
         {if $Template->getAttribute('requirejs')}
         {literal}
         require.config({
