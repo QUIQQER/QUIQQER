@@ -152,9 +152,6 @@ define('classes/projects/project/Media', [
                     project : self.getProject().getName(),
                     onError : function(Exception)
                     {
-                        console.log( 'media error' );
-                        console.log( Exception );
-
                         reject( Exception );
                     }
                 });
@@ -167,20 +164,31 @@ define('classes/projects/project/Media', [
          * @method classes/projects/project/Media#getData
          *
          * @param {Integer|Array} id  - ID of the file or an id list
-         * @param {Function} onfinish - callback function
+         * @param {Function} onfinish - [optional] callback function
          *
-         * @return callback( Array )
+         * @return {Promise}
          */
         getData : function(id, onfinish)
         {
-            Ajax.get('ajax_media_details', function(result, Request)
+            var self = this;
+
+            return new Promise(function(resolve, reject)
             {
-                if ( onfinish ) {
-                    onfinish( result );
-                }
-            }, {
-                fileid  : JSON.encode( id ),
-                project : this.getProject().getAttribute('project')
+                Ajax.get('ajax_media_details', function(result, Request)
+                {
+                    if ( onfinish ) {
+                        onfinish( result );
+                    }
+
+                    resolve( result );
+                }, {
+                    fileid  : JSON.encode( id ),
+                    project : this.getProject().getAttribute('project'),
+                    onError : function(Exception)
+                    {
+                        reject( Exception );
+                    }
+                });
             });
         },
 
@@ -188,6 +196,7 @@ define('classes/projects/project/Media', [
          * get the first child of the media
          *
          * @method classes/projects/project/Media#get
+         * @return {Promise}
          */
         firstChild : function(callback)
         {
