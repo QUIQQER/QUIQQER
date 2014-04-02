@@ -92,15 +92,15 @@ define('classes/projects/project/media/panel/DOMEvents', [
         {
             var self    = this,
                 Control = this.$MediaPanel,
-                Media   = this.$Media;
-
+                Media   = this.$Media,
+                items   = [];
 
             new QUIConfirm({
-                name : 'delete_item',
-                title : 'Ordner / Datei(en) löschen',
-                icon : 'icon-trashcan',
+                name     : 'delete_item',
+                title    : 'Ordner / Datei(en) löschen',
+                icon     : 'icon-trashcan',
                 texticon : 'icon-trashcan',
-                text : 'Möchten Sie folgende(n) Ordner / Datei(en) wirklich löschen?',
+                text     : 'Möchten Sie folgende(n) Ordner / Datei(en) wirklich löschen?',
                 information : '<div class="qui-media-file-delete"></div>',
                 events :
                 {
@@ -108,17 +108,28 @@ define('classes/projects/project/media/panel/DOMEvents', [
                     {
                         Win.Loader.show();
 
+                        var i, len;
                         var list = [];
 
-                        for ( var i = 0, len = List.length; i < len; i++ ) {
-                            list.push( List[i].get('data-id') );
+                        for ( i = 0, len = List.length; i < len; i++ ) {
+                            list.push( List[ i ].get( 'data-id' ) );
                         }
 
-                        Media.get( list, function(items, Request)
+                        console.log( list );
+                        console.log( 'onopen end' );
+
+                        Media.get( list, function(result)
                         {
+                            console.log( 'media get' );
+                            console.log( result );
+
+
+                            var i, len;
                             var information = '<ul>';
 
-                            for ( var i = 0, len = items.length; i < len; i++ )
+                            items = result;
+
+                            for ( i = 0, len = items.length; i < len; i++ )
                             {
                                 information = information +
                                     '<li>'+
@@ -128,8 +139,6 @@ define('classes/projects/project/media/panel/DOMEvents', [
                             }
 
                             information = information +'</ul>';
-
-                            Win.setAttribute( 'media-items', items );
 
                             Win.getContent().getElement( '.qui-media-file-delete' ).set(
                                 'html',
@@ -142,10 +151,12 @@ define('classes/projects/project/media/panel/DOMEvents', [
 
                     onSubmit : function(Win)
                     {
-                        if ( Win.getAttribute( 'media-items' ) )
+                        console.warn( 'onSubmit' );
+                        console.warn( items );
+
+                        if ( items.length )
                         {
-                            var ids   = [],
-                                items = Win.getAttribute( 'media-items' );
+                            var ids = [];
 
                             Control.Loader.show();
 

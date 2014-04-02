@@ -83,6 +83,32 @@ define('classes/projects/project/Media', [
          */
         get : function(id, params)
         {
+            // id list
+            if ( typeOf( id ) == 'array' )
+            {
+                var i, len, itemId;
+                var result = [];
+
+                for ( i = 0, len = id.length; i < len; i++ )
+                {
+                    itemId = id[ i ];
+
+                    if ( this.$items[ itemId ] ) {
+                        result.push( this.$items[ itemId ] );
+                    }
+                }
+
+                if ( result.length === len )
+                {
+                    if ( typeOf( params ) === 'function' ) {
+                        return params( result );
+                    }
+
+                    return result;
+                }
+            }
+
+            // one id
             if ( this.$items[ id ] )
             {
                 if ( typeOf( params ) === 'function' ) {
@@ -108,12 +134,14 @@ define('classes/projects/project/Media', [
                     for ( var i = 0, len = children.length; i < len; i++ ) {
                         self.$items[ children[ i ].getId() ] = children[ i ];
                     }
+
                 } else
                 {
                     self.$items[ children.getId() ] = children;
                 }
 
                 params( children );
+
             }, {
                 fileid  : JSON.encode( id ),
                 project : this.getProject().getName()
@@ -242,6 +270,19 @@ define('classes/projects/project/Media', [
          */
         del : function(id, oncomplete, params)
         {
+            console.log( 'del' );
+            console.log( id );
+
+            if ( !id.length )
+            {
+                if ( typeof oncomplete !== 'undefined' ) {
+                    oncomplete( result, Request );
+                }
+
+                return;
+            }
+
+
             params = ObjectUtils.combine(params, {
                 project : this.getProject().getName(),
                 fileid  : JSON.encode( id )
@@ -249,7 +290,7 @@ define('classes/projects/project/Media', [
 
             Ajax.post('ajax_media_delete', function(result, Request)
             {
-                if ( oncomplete ) {
+                if ( typeof oncomplete !== 'undefined' ) {
                     oncomplete( result, Request );
                 }
             }, params);

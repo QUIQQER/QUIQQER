@@ -43,7 +43,8 @@
         };
 
         var QUIQQER_USER = {
-            id : '{$User->getId()}'
+            id   : '{$User->getId()}',
+            name : '{$User->getName()}'
         };
 
         {if $Template->getAttribute('requirejs')}

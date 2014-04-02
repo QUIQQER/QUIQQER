@@ -162,6 +162,8 @@ define('classes/projects/project/media/Item', [
          */
         del : function(oncomplete, params)
         {
+            console.warn( this.getId() );
+
             this.fireEvent('delete', [this]);
             this.getMedia().del( this.getId(), oncomplete, params );
         },

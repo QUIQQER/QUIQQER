@@ -1479,7 +1479,7 @@ define('controls/projects/project/media/Panel', [
          */
         deleteItem : function(DOMNode)
         {
-            this.$DOMEvents.del( [DOMNode] );
+            this.$DOMEvents.del( [ DOMNode ] );
         },
 
         /**
