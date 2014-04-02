@@ -67,16 +67,22 @@ define('classes/projects/project/media/Item', [
 
         /**
          * Refresh the params from the database to the file
+         *
+         * @param {Function} oncomplete - [optional] callback function
+         * @return {Promise}
          */
         refresh : function(oncomplete)
         {
-            this.getMedia().getData(this.getId(), function(result)
+            var self = this;
+
+            return this.getMedia().getData( this.getId() ).then(function(result)
             {
-                this.setAttributes( result );
+                self.setAttributes( result );
 
-                oncomplete(this);
-
-            }.bind( this ));
+                if ( typeOf( oncomplete ) === 'function' ) {
+                    oncomplete( self )
+                }
+            });
         },
 
         /**

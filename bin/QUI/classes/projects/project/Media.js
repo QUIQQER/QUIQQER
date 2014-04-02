@@ -176,14 +176,14 @@ define('classes/projects/project/Media', [
             {
                 Ajax.get('ajax_media_details', function(result, Request)
                 {
-                    if ( onfinish ) {
+                    if ( typeOf( onfinish ) == 'function' ) {
                         onfinish( result );
                     }
 
                     resolve( result );
                 }, {
                     fileid  : JSON.encode( id ),
-                    project : this.getProject().getAttribute('project'),
+                    project : self.getProject().getName(),
                     onError : function(Exception)
                     {
                         reject( Exception );

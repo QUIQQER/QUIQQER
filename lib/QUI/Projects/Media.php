@@ -364,9 +364,6 @@ class Media extends \QUI\QDOM
             $real_file = $this->getFullPath() . $result[0]['file'];
         }
 
-        \QUI\System\Log::write( $new_file );
-        \QUI\System\Log::write( $real_file );
-
         \QUI::getDataBase()->update(
             $this->getTable(),
             array(

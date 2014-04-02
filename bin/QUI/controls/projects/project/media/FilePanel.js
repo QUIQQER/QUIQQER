@@ -213,16 +213,12 @@ define('controls/projects/project/media/FilePanel', [
 
             this.Loader.show();
 
-            self.$File.refresh(function()
+            self.$File.refresh().then(function()
             {
-                var ButtonBar = self.getButtonBar();
-
                 self.$createButtons();
                 self.$createTabs();
 
                 self.load();
-
-                self.Loader.hide();
             });
         },
 
