@@ -2,12 +2,17 @@
  * Parent class for all media items like file, image, folder
  *
  * @author www.pcsg.de (Henning Leutz)
+ * @module classes/projects/project/media/Item
+ *
+ * @event onRefresh [ {self} ]
+ * @event onSave [ {self} ]
+ * @event onDelete [ {self} ]
+ * @event onActivate [ {self} ]
+ * @event onDeactivate [ {self} ]
  *
  * @requires qui/classes/DOM
  * @requires Ajax
  * @requires qui/utils/Object
- *
- * @module classes/projects/project/media/Item
  */
 
 define('classes/projects/project/media/Item', [
@@ -79,6 +84,8 @@ define('classes/projects/project/media/Item', [
             {
                 self.setAttributes( result );
 
+                self.fireEvent( 'refresh', [ self ] );
+
                 if ( typeOf( oncomplete ) === 'function' ) {
                     oncomplete( self )
                 }
@@ -115,7 +122,7 @@ define('classes/projects/project/media/Item', [
          */
         getBreadcrumb : function(oncomplete)
         {
-            Ajax.get('ajax_media_breadcrumb', function(result, Request)
+            Ajax.get('ajax_media_breadcrumb', function(result)
             {
                 oncomplete( result );
             }, {
@@ -148,10 +155,10 @@ define('classes/projects/project/media/Item', [
                 var File = Request.getAttribute('File');
 
                 File.setAttributes( result );
-                File.fireEvent('save', [File]);
+                File.fireEvent( 'save', [ File ] );
 
-                if ( Request.getAttribute('oncomplete') ) {
-                    Request.getAttribute('oncomplete')(result, Request);
+                if ( typeOf( oncomplete ) === 'function' ) {
+                    oncomplete( result, Request );
                 }
             }, params);
         },
@@ -168,9 +175,7 @@ define('classes/projects/project/media/Item', [
          */
         del : function(oncomplete, params)
         {
-            console.warn( this.getId() );
-
-            this.fireEvent('delete', [this]);
+            this.fireEvent( 'delete', [ this ]) ;
             this.getMedia().del( this.getId(), oncomplete, params );
         },
 
@@ -186,7 +191,7 @@ define('classes/projects/project/media/Item', [
          */
         activate : function(oncomplete, params)
         {
-            this.fireEvent('activate', [this]);
+            this.fireEvent( 'activate', [ this ] );
             this.getMedia().activate( this.getId(), oncomplete, params );
         },
 
@@ -202,7 +207,7 @@ define('classes/projects/project/media/Item', [
          */
         deactivate : function(oncomplete, params)
         {
-            this.fireEvent('deactivate', [this]);
+            this.fireEvent( 'deactivate', [ this ] );
             this.getMedia().deactivate( this.getId(), oncomplete, params );
         },
 

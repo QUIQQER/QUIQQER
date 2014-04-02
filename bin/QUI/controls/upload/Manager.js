@@ -112,38 +112,38 @@ define('controls/upload/Manager', [
             // application/zip
             var i, len;
 
-            var self                = this,
+            var self              = this,
                 foundPackageFiles = false,
-                archiveFiles       = [],
-                extract             = false;
+                archiveFiles      = [],
+                extract           = false;
 
             params = params || {};
 
-            if ( params.extract === true ||
-                 params.extract === false )
-            {
+            if ( typeof params.extract !== 'undefined' ) {
                 extract = params.extract;
             }
 
-            if ( typeof params.extract === 'undefined' ) {
-                extract = true;
-            }
+            console.info( params );
 
-            if ( params.extract === true )
-            {
-                extract = {};
-
-                for ( i = 0, len = files.length; i < len; i++ )
-                {
-                    if ( files[i].type === 'application/zip' ) {
-                        extract[ files[i].name ] = true;
-                    }
-                }
-            }
+//            if ( typeof params.extract === 'undefined' ) {
+//                extract = true;
+//            }
+//
+//            if ( params.extract === true )
+//            {
+//                extract = {};
+//
+//                for ( i = 0, len = files.length; i < len; i++ )
+//                {
+//                    if ( files[i].type === 'application/zip' ) {
+//                        extract[ files[i].name ] = true;
+//                    }
+//                }
+//            }
 
             // check for archive files (like zip or tar)
             // if undefined, ask for it
-            if ( typeof params.extract === 'undefined' )
+            if ( !extract )
             {
                 for ( i = 0, len = files.length; i < len; i++ )
                 {
@@ -173,16 +173,15 @@ define('controls/upload/Manager', [
                 // ask for extraction
                 new QUIAlert({
                     title       : 'Archiv Dateien gefunden',
-                    text        : 'Sie möchten folgende Archivdateien hochladen. ' +
-                                  'Möchten Sie diese direkt entpacken?',
-                    information : list,
+                    content     : 'Sie möchten folgende Archivdateien hochladen. ' +
+                                  'Möchten Sie diese direkt entpacken?' + list,
                     events      :
                     {
                         onClose : function(Win)
                         {
                             var i, n, len;
 
-                            var Body      = Win.getBody(),
+                            var Body      = Win.getContent(),
                                 checkboxs = Body.getElements( 'input[type="checkbox"]' ),
                                 extract   = {};
 
@@ -190,8 +189,8 @@ define('controls/upload/Manager', [
                             // collect all which must be extract
                             for ( i = 0, len = checkboxs.length; i < len; i++ )
                             {
-                                if ( checkboxs[i].checked ) {
-                                    extract[ checkboxs[i].get( 'value' ) ] = true;
+                                if ( checkboxs[ i ].checked ) {
+                                    extract[ checkboxs[ i ].get( 'value' ) ] = true;
                                 }
                             }
 

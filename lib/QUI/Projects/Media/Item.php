@@ -183,8 +183,6 @@ abstract class Item extends \QUI\QDOM
         $original   = $this->getFullPath();
         $var_folder = VAR_DIR .'media/'. $Media->getProject()->getAttribute('name') .'/';
 
-        \QUI\System\Log::write( 'delete' );
-
         try
         {
             \QUI\Utils\System\File::unlink( $var_folder . $this->getId() );
