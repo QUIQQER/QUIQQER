@@ -41,6 +41,9 @@ function ajax_media_folder_children($project, $folderid)
 
     return $children;
 }
-QUI::$Ajax->register('ajax_media_folder_children', array('project', 'folderid'), 'Permission::checkAdminUser');
 
-?>
+\QUI::$Ajax->register(
+    'ajax_media_folder_children',
+    array('project', 'folderid'),
+    'Permission::checkAdminUser'
+);

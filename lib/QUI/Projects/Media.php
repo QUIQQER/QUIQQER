@@ -308,7 +308,7 @@ class Media extends \QUI\QDOM
         ));
 
 
-        if ( !isset($result[0]) ) {
+        if ( !isset( $result[0] ) ) {
             throw new \QUI\Exception( 'File entry not found', 404 );
         }
 
@@ -337,8 +337,7 @@ class Media extends \QUI\QDOM
         /* @var $Parent \QUI\Projects\Media\Folder */
         $Parent = $this->get( $parentid );
 
-        if ( $data['name'] != $name &&
-             $Parent->childWithNameExists($name) )
+        if ( $data['name'] != $name && $Parent->childWithNameExists($name) )
         {
             throw new \QUI\Exception(
                 'A file with the name '. $name .' already exist.',
@@ -347,15 +346,26 @@ class Media extends \QUI\QDOM
         }
 
         // delete the file
-        if ( isset($data['file']) && !empty($data['file']) )
+        if ( isset( $data['file'] ) && !empty( $data['file'] ) )
         {
             \QUI\Utils\System\File::unlink(
                 $this->getFullPath() . $data['file']
             );
         }
 
-        $new_file  = $Parent->getPath() . $name;
-        $real_file = $Parent->getFullPath() . $name;
+        if ( $data['name'] != $name )
+        {
+            $new_file  = $Parent->getPath() . $name;
+            $real_file = $Parent->getFullPath() . $name;
+
+        } else
+        {
+            $new_file  = $result[0]['file'];
+            $real_file = $this->getFullPath() . $result[0]['file'];
+        }
+
+        \QUI\System\Log::write( $new_file );
+        \QUI\System\Log::write( $real_file );
 
         \QUI::getDataBase()->update(
             $this->getTable(),

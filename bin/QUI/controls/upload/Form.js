@@ -441,6 +441,8 @@ define('controls/upload/Form', [
          */
         submit : function()
         {
+            var self = this;
+
             // FileReader is undefined, so no html5 upload available
             // use the normal upload
             if ( typeof FileReader === 'undefined' )
@@ -489,8 +491,8 @@ define('controls/upload/Form', [
             require(['UploadManager'], function(UploadManager)
             {
                 QUI.UploadManager.uploadFiles(
-                    this.getFiles(),
-                    this.getParam( 'onfinish' ),
+                    self.getFiles(),
+                    self.getParam( 'onfinish' ),
                     params
                 );
             });

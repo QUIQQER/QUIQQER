@@ -172,11 +172,9 @@ define('controls/projects/project/media/Panel', [
 
             // buttons
             require([
-
                 'qui/controls/buttons/Button',
                 'qui/controls/buttons/Seperator',
                 'qui/controls/contextmenu/Item'
-
             ], function(QUIButton, QUISeperator, ContextmenuItem)
             {
                 self.addButton(
@@ -383,7 +381,7 @@ define('controls/projects/project/media/Panel', [
             // this.refresh();
 
             // get the file object
-            this.getMedia().get(fileid, function(MediaFile, Request)
+            this.getMedia().get( fileid ).then(function(MediaFile)
             {
                 // set media image to the panel
                 self.setOptions({
@@ -1404,15 +1402,12 @@ define('controls/projects/project/media/Panel', [
                     {
                         onSubmit : function(value, Win)
                         {
-                            self.$File.createFolder(
-                                value,
-                                function(Folder, Request)
-                                {
-                                    if ( Folder ) {
-                                        self.openID( Folder.getId() );
-                                    }
+                            self.$File.createFolder( value, function(Folder, Request)
+                            {
+                                if ( typeOf( Folder ) == 'classes/projects/project/media/Folder' ) {
+                                    self.openID( Folder.getId() );
                                 }
-                            );
+                            });
                         }
                     }
                 }).open()

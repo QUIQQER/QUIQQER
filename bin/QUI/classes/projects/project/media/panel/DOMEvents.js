@@ -93,7 +93,8 @@ define('classes/projects/project/media/panel/DOMEvents', [
             var self    = this,
                 Control = this.$MediaPanel,
                 Media   = this.$Media,
-                items   = [];
+                items   = [],
+                list    = [];
 
             new QUIConfirm({
                 name     : 'delete_item',
@@ -108,22 +109,12 @@ define('classes/projects/project/media/panel/DOMEvents', [
                     {
                         Win.Loader.show();
 
-                        var i, len;
-                        var list = [];
-
-                        for ( i = 0, len = List.length; i < len; i++ ) {
+                        for ( var i = 0, len = List.length; i < len; i++ ) {
                             list.push( List[ i ].get( 'data-id' ) );
                         }
 
-                        console.log( list );
-                        console.log( 'onopen end' );
-
-                        Media.get( list, function(result)
+                        Media.get( list ).done(function(result)
                         {
-                            console.log( 'media get' );
-                            console.log( result );
-
-
                             var i, len;
                             var information = '<ul>';
 
@@ -133,9 +124,26 @@ define('classes/projects/project/media/panel/DOMEvents', [
                             {
                                 information = information +
                                     '<li>'+
-                                        '#'+ items[i].getAttribute('id') +
-                                        ' - '+ items[i].getAttribute('name') +
+                                        '#'+ items[ i ].getAttribute('id') +
+                                        ' - '+ items[ i ].getAttribute('name') +
                                     '</li>';
+                            }
+
+                            information = information +'</ul>';
+
+                            Win.getContent().getElement( '.qui-media-file-delete' ).set(
+                                'html',
+                                information
+                            );
+
+                            Win.Loader.hide();
+
+                        }, function()
+                        {
+                            var information = '<ul>';
+
+                            for ( var i = 0, len = list.length; i < len; i++ ) {
+                                information = information + '<li>#'+ list[i] +'</li>';
                             }
 
                             information = information +'</ul>';
@@ -151,23 +159,15 @@ define('classes/projects/project/media/panel/DOMEvents', [
 
                     onSubmit : function(Win)
                     {
-                        console.warn( 'onSubmit' );
-                        console.warn( items );
-
-                        if ( items.length )
-                        {
-                            var ids = [];
-
-                            Control.Loader.show();
-
-                            for ( var i = 0, len = items.length; i < len; i++ ) {
-                                ids.push( items[i].getId() );
-                            }
-
-                            Media.del(ids, function(result, Request) {
-                                Control.refresh();
-                            });
+                        if ( !list.length ) {
+                            return;
                         }
+
+                        Control.Loader.show();
+
+                        Media.del( list, function(result) {
+                            Control.refresh();
+                        });
                     }
                 }
             }).open();
@@ -284,18 +284,16 @@ define('classes/projects/project/media/panel/DOMEvents', [
         replace : function(DOMNode)
         {
             var self = this;
-console.info( '@todo upload -> anderes popup' );
-            new QUIPrompt({
+
+            new QUIConfirm({
                 title   : 'Datei ersetzen ...',
-                icon    : URL_BIN_DIR +'16x16/replace.png',
+                icon    : 'icon-retweet',
                 name    : 'replace-media-id-'+ DOMNode.get('data-id'),
                 width   : 500,
                 height  : 200,
-                DOMNode : DOMNode,
-                Control : this,
 
                 text     : 'Datei ersetzen',
-                texticon : URL_BIN_DIR +'48x48/replace.png',
+                texticon : 'icon-retweet',
 
                 information : 'Wählen Sie eine Datei aus oder ziehen Sie eine Datei in das Fenster.',
                 autoclose   : false,

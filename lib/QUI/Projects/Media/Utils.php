@@ -607,7 +607,13 @@ class Utils
             return;
         }
 
-        $Parent = $Media->get( $Media->getParentIdFrom( $fileid ) );
+        $File = $Media->get( $fileid );
+
+        if ( $File->getAttribute('name') == $uploadparams['name'] ) {
+            return;
+        }
+
+        $Parent = $File->getParent();
 
         if ( $Parent->fileWithNameExists( $uploadparams['name'] ) )
         {

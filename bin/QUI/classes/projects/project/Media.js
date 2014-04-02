@@ -79,72 +79,85 @@ define('classes/projects/project/Media', [
          * @param {Integer|Array} id      - ID of the file or an id list
          * @param {Function|Array} params - Item params or a callback function
          *
-         * @return {classes/projects/project/media/Item} or callback( classes/projects/project/media/Item )
+         * @return {Promise}
          */
-        get : function(id, params)
+        get : function(id, params, onerror)
         {
-            // id list
-            if ( typeOf( id ) == 'array' )
-            {
-                var i, len, itemId;
-                var result = [];
-
-                for ( i = 0, len = id.length; i < len; i++ )
-                {
-                    itemId = id[ i ];
-
-                    if ( this.$items[ itemId ] ) {
-                        result.push( this.$items[ itemId ] );
-                    }
-                }
-
-                if ( result.length === len )
-                {
-                    if ( typeOf( params ) === 'function' ) {
-                        return params( result );
-                    }
-
-                    return result;
-                }
-            }
-
-            // one id
-            if ( this.$items[ id ] )
-            {
-                if ( typeOf( params ) === 'function' ) {
-                    return params( this.$items[ id ] );
-                }
-
-                return this.$items[ id ];
-            }
-
-
-            if ( typeOf( params ) !== 'function' ) {
-                return this.$parseResultToItem( params );
-            }
-
             var self = this;
 
-            Ajax.get('ajax_media_details', function(result, Request)
+            return new Promise(function(resolve, reject)
             {
-                var children = self.$parseResultToItem( result );
-
-                if ( typeOf( children ) == 'array' )
+                // id list
+                if ( typeOf( id ) == 'array' )
                 {
-                    for ( var i = 0, len = children.length; i < len; i++ ) {
-                        self.$items[ children[ i ].getId() ] = children[ i ];
+                    var i, len, itemId;
+                    var result = [];
+
+                    for ( i = 0, len = id.length; i < len; i++ )
+                    {
+                        itemId = id[ i ];
+
+                        if ( self.$items[ itemId ] ) {
+                            result.push( self.$items[ itemId ] );
+                        }
                     }
 
-                } else
-                {
-                    self.$items[ children.getId() ] = children;
+                    if ( result.length === len )
+                    {
+                        if ( typeOf( params ) === 'function' ) {
+                            return params( result );
+                        }
+
+                        resolve( result );
+                    }
                 }
 
-                params( children );
+                // one id
+                if ( self.$items[ id ] )
+                {
+                    if ( typeOf( params ) === 'function' ) {
+                        return params( self.$items[ id ] );
+                    }
 
-            }, {
-                fileid  : JSON.encode( id ),
-                project : this.getProject().getName()
+                    resolve( self.$items[ id ] );
+                }
+
+                if ( typeOf( params ) === 'object' ) {
+                    return resolve( self.$parseResultToItem( params ) );
+                }
+
+                Ajax.get('ajax_media_details', function(result)
+                {
+                    var children = self.$parseResultToItem( result );
+
+                    if ( typeOf( children ) == 'array' )
+                    {
+                        for ( var i = 0, len = children.length; i < len; i++ ) {
+                            self.$items[ children[ i ].getId() ] = children[ i ];
+                        }
+
+                    } else
+                    {
+                        self.$items[ children.getId() ] = children;
+                    }
+
+                    if ( typeOf( params ) === 'function' ) {
+                        return params( children );
+                    }
+
+                    resolve( children );
+
+                }, {
+                    fileid  : JSON.encode( id ),
+                    project : self.getProject().getName(),
+                    onError : function(Exception)
+                    {
+                        console.log( 'media error' );
+                        console.log( Exception );
+
+                        reject( Exception );
+                    }
+                });
             });
         },
 
@@ -193,21 +206,19 @@ define('classes/projects/project/Media', [
          */
         replace : function(childid, File, onfinish)
         {
+            var self = this;
+
             // upload file
             require(['UploadManager'], function(UploadManager)
             {
-                UploadManager.uploadFiles(
-                    [File],
-                    'ajax_media_replace',
-                    {
-                        project    : this.getProject().getName(),
-                        fileid     : childid,
-                        phponstart : 'ajax_media_checkreplace',
-                        events  : {
-                            onComplete : onfinish
-                        }
+                UploadManager.uploadFiles( [ File ], 'ajax_media_replace', {
+                    project    : self.getProject().getName(),
+                    fileid     : childid,
+                    phponstart : 'ajax_media_checkreplace',
+                    events  : {
+                        onComplete : onfinish
                     }
-                );
+                });
             });
         },
 
@@ -270,9 +281,6 @@ define('classes/projects/project/Media', [
          */
         del : function(id, oncomplete, params)
         {
-            console.log( 'del' );
-            console.log( id );
-
             if ( !id.length )
             {
                 if ( typeof oncomplete !== 'undefined' ) {

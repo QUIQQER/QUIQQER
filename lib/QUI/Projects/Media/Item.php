@@ -49,16 +49,12 @@ abstract class Item extends \QUI\QDOM
 
         if ( !file_exists( $this->_file ) )
         {
-            $Exception = new \QUI\Exception(
-                'File '. $this->_file .' doesn\'t exist',
-                404
+            \QUI::getMessagesHandler()->addAttention(
+                'File '. $this->_file .' ('. $this->getId() .') doesn\'t exist'
             );
 
-            $Exception->setAttributes( $params );
-
-            throw $Exception;
+            return;
         }
-
 
         $this->setAttribute( 'filesize', \QUI\Utils\System\File::getFileSize( $this->_file ) );
         $this->setAttribute( 'cache_url', URL_DIR . $this->_Media->getCacheDir() . $this->getPath() );
@@ -152,7 +148,6 @@ abstract class Item extends \QUI\QDOM
             $roundcorners = json_encode( $roundcorners );
         }
 
-
         \QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array(
@@ -188,10 +183,31 @@ abstract class Item extends \QUI\QDOM
         $original   = $this->getFullPath();
         $var_folder = VAR_DIR .'media/'. $Media->getProject()->getAttribute('name') .'/';
 
-        \QUI\Utils\System\File::unlink( $var_folder . $this->getId() );
+        \QUI\System\Log::write( 'delete' );
 
-        \QUI\Utils\System\File::mkdir( $var_folder );
-        \QUI\Utils\System\File::move( $original, $var_folder . $this->getId() );
+        try
+        {
+            \QUI\Utils\System\File::unlink( $var_folder . $this->getId() );
+
+        } catch ( \QUI\Exception $Exception )
+        {
+            \QUI::getMessagesHandler()->addAttention(
+                $Exception->getMessage()
+            );
+        }
+
+        try
+        {
+            \QUI\Utils\System\File::mkdir( $var_folder );
+            \QUI\Utils\System\File::move( $original, $var_folder . $this->getId() );
+
+        } catch ( \QUI\Exception $Exception )
+        {
+            \QUI::getMessagesHandler()->addAttention(
+                $Exception->getMessage()
+            );
+        }
+
 
         // change db entries
         \QUI::getDataBase()->update(
