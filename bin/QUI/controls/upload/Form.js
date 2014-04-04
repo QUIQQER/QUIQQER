@@ -482,18 +482,31 @@ define('controls/upload/Form', [
             this.fireEvent( 'submit', [ this.getFiles(), this ] );
 
             // send to upload manager
-            var params = this.getParams();
+            var params = this.getParams(),
+                files  = self.getFiles();
 
             params.events = {
                 onComplete : this.finish.bind( this )
             };
+
+            if ( "extract" in params && params.extract )
+            {
+                var extract = {};
+
+                for ( var i = 0, len = files.length; i < len; i++ )
+                {
+                    extract[ files[i].name ] = true;
+                }
+
+                params.extract = extract;
+            }
 
             require(['UploadManager'], function(UploadManager)
             {
                 self.fireEvent( 'begin', [ self ] );
 
                 QUI.UploadManager.uploadFiles(
-                    self.getFiles(),
+                    files,
                     self.getParam( 'onfinish' ),
                     params
                 );

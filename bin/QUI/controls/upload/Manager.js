@@ -175,6 +175,7 @@ define('controls/upload/Manager', [
                     title       : 'Archiv Dateien gefunden',
                     content     : 'Sie möchten folgende Archivdateien hochladen. ' +
                                   'Möchten Sie diese direkt entpacken?' + list,
+                    closeButtonText : 'Upload starten',
                     events      :
                     {
                         onClose : function(Win)
