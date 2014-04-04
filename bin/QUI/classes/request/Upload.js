@@ -10,7 +10,12 @@
  * @requires classes/exceptions/Exception
  *
  * @module classes/request/Upload
- * @package com.pcsg.qui.js.classes.request
+ *
+ * @event onDragenter [{DOMEvent}, {DOMNode Target}, {self}]
+ * @event onDragleave [{DOMEvent}, {DOMNode Target}, {self}]
+ * @event onDragover [{DOMEvent}, {DOMNode Target}, {self}]
+ * @event onDrop [{DOMEvent}, {Array file list}, {DOMNode Target}, {self}]
+ * @event onDragend [{DOMEvent}, {DOMNode Target}, {self}]
  */
 
 define('classes/request/Upload', [
@@ -63,7 +68,7 @@ define('classes/request/Upload', [
                 },
 
                 dragleave : function(event) {
-                    self.fireEvent( 'dragend', [ event, event.target, self ] );
+                    self.fireEvent( 'dragleave', [ event, event.target, self ] );
                 },
 
                 dragover : function(event) {

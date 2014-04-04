@@ -490,6 +490,8 @@ define('controls/upload/Form', [
 
             require(['UploadManager'], function(UploadManager)
             {
+                self.fireEvent( 'begin', [ self ] );
+
                 QUI.UploadManager.uploadFiles(
                     self.getFiles(),
                     self.getParam( 'onfinish' ),

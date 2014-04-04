@@ -637,17 +637,17 @@ define('controls/projects/project/media/Panel', [
                             float  : 'left',
                             clear  : 'both'
                         },
-                        Drops  : [ Sheet ],
+                        Drops  : [ Sheet.getBody() ],
                         fileid : self.getAttribute('fileid'),
                         events :
                         {
                             onDragenter: function(event, Elm, Upload)
                             {
-                                if ( !Elm.hasClass( 'pannelsheet-content' )  ) {
-                                    Elm = Elm.getParent( 'pannelsheet-content' );
+                                if ( !Elm.hasClass( 'qui-panel-sheet-body' )  ) {
+                                    Elm = Elm.getParent( 'qui-panel-sheet-body' );
                                 }
 
-                                if ( !Elm || !Elm.hasClass('pannelsheet-content') ) {
+                                if ( !Elm || !Elm.hasClass('qui-panel-sheet-body') ) {
                                     return;
                                 }
 
@@ -655,15 +655,22 @@ define('controls/projects/project/media/Panel', [
                                 event.stop();
                             },
 
+                            onDragleave: function(event, Elm, Upload)
+                            {
+                                if ( Elm.hasClass( 'qui-panel-sheet-body' ) ) {
+                                    Elm.removeClass( 'qui-media-drag' );
+                                }
+                            },
+
                             onDragend : function(event, Elm, Upload)
                             {
-                                if ( Elm.hasClass( 'qui-media-drag' ) ) {
+                                if ( Elm.hasClass( 'qui-panel-sheet-body' ) ) {
                                     Elm.removeClass( 'qui-media-drag' );
                                 }
                             },
 
                             onBegin : function(Control) {
-                                Sheet.close();
+                                Sheet.hide();
                             },
 
                             onComplete : function(Control)

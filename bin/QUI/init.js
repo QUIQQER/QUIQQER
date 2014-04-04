@@ -13,6 +13,12 @@ Object.append(Element.NativeEvents, {
     drop: 2
 });
 
+// custome select
+// eq: getElements( 'input:display(inline)' )
+Slick.definePseudo('display', function(value){
+    return Element.getStyle(this, 'display') == value;
+});
+
 //IE Flickering Bug
 try
 {
@@ -41,6 +47,11 @@ require.config({
         }
     }
 });
+
+
+/**
+ * Init quiqqer
+ */
 
 require([
 
