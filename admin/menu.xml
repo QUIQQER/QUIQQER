@@ -199,6 +199,18 @@
             WYSIWYG-Editor Einstellungen
         </item>
 
+
+        <item parent="/settings/"
+              name="vhosts"
+              icon="icon-external-link"
+              require="controls/system/VHosts"
+              group="quiqqer/system"
+              var="menu.settings.vhosts.text"
+        >
+            Virtual Hosts
+        </item>
+
+
     <!-- Menu -->
         <item parent="/help/"
               name="about"

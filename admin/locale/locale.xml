@@ -49,7 +49,10 @@
                 <de><![CDATA[WYSIWYG-Editor Einstellungen]]></de>
                 <en><![CDATA[WYSIWYG-Editor settings]]></en>
             </locale>
-
+            <locale name="menu.settings.vhosts.text">
+                <de><![CDATA[Virtual Hosts]]></de>
+                <en><![CDATA[Virtual Hosts]]></en>
+            </locale>
 
 
         <!-- Gehe zu -->
