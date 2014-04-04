@@ -43,7 +43,10 @@ define('controls/projects/project/media/FilePanel', [
         Type    : 'controls/projects/project/media/FilePanel',
 
         Binds : [
-            '$onCreate'
+            '$onCreate',
+            '$onDestroy',
+            '$onFileActivate',
+            '$onFileDeactivate'
         ],
 
         options : {
@@ -73,7 +76,13 @@ define('controls/projects/project/media/FilePanel', [
             this.$DOMEvents = new PanelDOMEvents( this );
 
             this.addEvents({
-                onCreate : this.$onCreate
+                onCreate  : this.$onCreate,
+                onDestroy : this.$onDestroy
+            });
+
+            this.$File.addEvents({
+                onActivate   : this.$onFileActivate,
+                onDeactivate : this.$onFileDeactivate
             });
         },
 
@@ -128,6 +137,15 @@ define('controls/projects/project/media/FilePanel', [
 
                 ControlUtils.parse( Body.getElement( 'form' ) );
             });
+        },
+
+        /**
+         * @event : on panel destroy
+         */
+        $onDestroy : function()
+        {
+            this.$File.removeEvent( 'onActivate', this.$onFileActivate );
+            this.$File.removeEvent( 'onDeactivate', this.$onFileDeactivate );
         },
 
         /**
@@ -442,7 +460,7 @@ define('controls/projects/project/media/FilePanel', [
                     text    : 'Datei Details',
                     name    : 'details',
                     Control : this,
-                    icon    : URL_BIN_DIR +'22x22/details.png',
+                    icon    : 'icon-file-alt',
                     events  :
                     {
                         onActive : function(Tab) {
@@ -462,7 +480,7 @@ define('controls/projects/project/media/FilePanel', [
                 new QUIButton({
                     text    : 'Vorschau',
                     name    : 'preview',
-                    icon    : URL_BIN_DIR +'22x22/preview.png',
+                    icon    : 'icon-eye-open',
                     Control : this,
                     events  :
                     {
@@ -514,7 +532,7 @@ define('controls/projects/project/media/FilePanel', [
             {
                 this.$OpenInNewWindow = new QUIButton({
                     name    : 'show_file',
-                    image   : URL_BIN_DIR +'16x16/preview.png',
+                    image   : 'icon-eye-open',
                     title   : 'Datei öffnen',
                     alt     : 'Datei öffnen',
                     events  :
@@ -528,6 +546,10 @@ define('controls/projects/project/media/FilePanel', [
                     }
                 });
 
+                if ( this.$File.getAttribute( 'active' ) ) {
+                    this.$OpenInNewWindow.disable();
+                }
+
                 this.$OpenInNewWindow.inject( Inp, 'after' );
             }
 
@@ -535,7 +557,7 @@ define('controls/projects/project/media/FilePanel', [
             {
                 this.$Download = new QUIButton({
                     name    : 'download_file',
-                    image   : URL_BIN_DIR +'16x16/down.png',
+                    image   : 'icon-download',
                     title   : 'Datei herunterladen',
                     alt     : 'Datei herunterladen',
                     events  :
@@ -551,6 +573,26 @@ define('controls/projects/project/media/FilePanel', [
 
                 this.$Download.inject( Inp, 'after' );
             }
+        },
+
+        /**
+         * File events
+         */
+
+        /**
+         * event : on file activate
+         */
+        $onFileActivate : function()
+        {
+            this.$OpenInNewWindow.enable();
+        },
+
+        /**
+         *event : on file deactivate
+         */
+        $onFileDeactivate : function()
+        {
+            this.$OpenInNewWindow.disable();
         }
     });
 });
