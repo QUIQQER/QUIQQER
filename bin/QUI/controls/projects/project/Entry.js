@@ -41,15 +41,26 @@ define('controls/projects/project/Entry', [
 
         Binds : [
             '$onProjectUpdate',
-            'destroy'
+            '$onInject',
+            '$onDestroy'
         ],
 
         initialize : function(project, lang, options)
         {
-            this.$Project = Projects.get( project, lang );
             this.parent( options );
 
-            this.$Elm = null;
+            this.$Project = Projects.get( project, lang );
+
+            this.$Elm      = null;
+            this.$Close    = null;
+            this.$Text     = null;
+            this.$Icon     = null;
+            this.$IconSpan = null;
+
+            this.addEvents({
+                onDestroy : this.$onDestroy,
+                onInject  : this.$onInject
+            });
         },
 
         /**
@@ -71,14 +82,20 @@ define('controls/projects/project/Entry', [
          */
         create : function()
         {
+            var self = this;
+
             this.$Elm = new Element('div', {
-                'class'   : 'projects-entry radius5',
+                'class'        : 'project-entry',
                 'data-project' : this.getProject().getName(),
                 'data-lang'    : this.getProject().getLang(),
 
-                html : '<div class="text"></div>' +
-                       '<div class="close"></div>',
-
+                html : '<div class="project-entry-icon">' +
+                           '<span class="icon-home"></span>' +
+                       '</div>' +
+                       '<div class="project-entry-text"></div>' +
+                       '<div class="project-entry-close">' +
+                           '<span class="icon-remove"></span>' +
+                       '</div>',
                 events :
                 {
                     mouseover : function() {
@@ -90,10 +107,17 @@ define('controls/projects/project/Entry', [
                 }
             });
 
-            var Close = this.$Elm.getElement( '.close' );
+            this.$Close = this.$Elm.getElement( '.project-entry-close' ),
+            this.$Icon  = this.$Elm.getElement( '.project-entry-icon' ),
+            this.$Text  = this.$Elm.getElement( '.project-entry-text' );
 
-            Close.addEvent( 'click', this.destroy );
-            Close.set({
+            this.$IconSpan = this.$Icon.getElement( 'span' );
+
+            this.$Close.addEvent('click', function() {
+                self.destroy();
+            });
+
+            this.$Close.set({
                 alt   : 'Projekt entfernen',
                 title : 'Projekt entfernen'
             });
@@ -101,7 +125,26 @@ define('controls/projects/project/Entry', [
             this.getProject().addEvent( 'onRefresh', this.$onProjectUpdate );
             this.refresh();
 
+            console.log( this.$Elm.getSize() );
+
             return this.$Elm;
+        },
+
+        /**
+         * event : on inject
+         */
+        $onInject : function()
+        {
+            var iconWidth  = this.$Icon.getSize().x,
+                textWidth  = this.$Text.getSize().x,
+                closeWidth = this.$Close.getSize().x;
+
+
+            this.$Elm.setStyles({
+                width : ( iconWidth ).toInt() +
+                        ( textWidth ).toInt() +
+                        ( closeWidth ).toInt()
+            });
         },
 
         /**
@@ -122,14 +165,13 @@ define('controls/projects/project/Entry', [
          */
         refresh : function()
         {
-            this.$Elm.getElement( '.text' ).set(
-                'html',
-                '<img src="'+ URL_BIN_DIR +'images/loader.gif" />'
-            );
+            this.$IconSpan.removeClass( 'icon-home' );
+            this.$IconSpan.addClass( 'icon-spinner icon-spin' );
 
-            if ( this.getProject().getAttribute( 'name' ) )
+            if ( this.getProject().getName() )
             {
                 this.$onProjectUpdate( this.getProject() );
+
                 return this;
             }
 
@@ -151,8 +193,13 @@ define('controls/projects/project/Entry', [
                 return this;
             }
 
-            this.$Elm.getElement( '.text' )
-                     .set( 'html', Project.getName() );
+            this.$Text.set( 'html', Project.getName() );
+
+            this.$IconSpan.addClass( 'icon-home' );
+            this.$IconSpan.removeClass( 'icon-spinner' );
+            this.$IconSpan.removeClass( 'icon-spin' );
+
+            this.$onInject();
 
             return this;
         }

@@ -255,7 +255,7 @@ class User implements \QUI\Interfaces\Users\User
     {
         //@todo Benutzer muss erster prüfen ob bei ihm das recht seperat gesetzt ist
 
-        return \QUI::getRights()->getUserPermission( $this, $right, $ruleset );
+        return \QUI::getPermissionManager()->getUserPermission( $this, $right, $ruleset );
     }
 
     /**

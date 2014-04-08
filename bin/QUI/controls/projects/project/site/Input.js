@@ -1,18 +1,20 @@
+
 /**
+ * Select a site input field
  *
+ * @author www.pcsg.de (Henning Leutz)
  */
 
-
-define('controls/projects/project/media/Input', [
+define('controls/projects/project/site/Input', [
 
     'qui/controls/Control',
     'qui/controls/buttons/Button',
-    'controls/projects/project/media/Popup',
+    'controls/projects/Popup',
     'Ajax',
 
-    'css!controls/projects/project/media/Input.css'
+    'css!controls/projects/project/site/Input.css'
 
-], function(QUIControl, QUIButton, MediaPopup, Ajax)
+], function(QUIControl, QUIButton, ProjectPopup, Ajax)
 {
     "use strict";
 
@@ -27,7 +29,7 @@ define('controls/projects/project/media/Input', [
     return new Class({
 
         Extends : QUIControl,
-        Type    : 'controls/projects/project/media/Input',
+        Type    : 'controls/projects/project/site/Input',
 
         Binds : [
             '$onCreate'
@@ -43,6 +45,7 @@ define('controls/projects/project/media/Input', [
             this.parent( options );
 
             this.$Input = Input || null;
+            this.$SiteButton = null;
         },
 
         /**
@@ -55,7 +58,7 @@ define('controls/projects/project/media/Input', [
             var self = this;
 
             this.$Elm = new Element('div', {
-                'class' : 'qui-controls-project-media-input box'
+                'class' : 'qui-controls-project-site-input box'
             });
 
             if ( !this.$Input )
@@ -77,19 +80,17 @@ define('controls/projects/project/media/Input', [
                 'float' : 'left'
             });
 
-            this.$MediaButton = new QUIButton({
-                icon   : 'icon-picture',
-                alt    : 'Bild auswählen',
-                title  : 'Bild auswählen',
+            this.$SiteButton = new QUIButton({
+                icon   : 'icon-file-alt',
                 events :
                 {
                     onClick : function()
                     {
-                        new MediaPopup({
+                        new ProjectPopup({
                             events :
                             {
                                 onSubmit : function(Popup, params) {
-                                    self.$Input.value = params.url;
+                                    self.$Input.value = params.urls[ 0 ];
                                 }
                             }
                         }).open();
@@ -112,7 +113,7 @@ define('controls/projects/project/media/Input', [
 
             this.$Input.addEvents({
                 focus : function() {
-                    self.$MediaButton.click();
+                    self.$SiteButton.click();
                 }
             });
 

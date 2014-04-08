@@ -56,15 +56,22 @@ define('utils/Controls', function()
                 this.parseMediaInput( Elm );
             }
 
-            // Project Types
-            if ( Elm.getElement( 'input.project-types' ) ) {
-                this.parseProjectTypes( Elm );
-            }
-
             // User And Groups
             if ( Elm.getElement( 'input.users_and_groups' ) ) {
                 this.parseUserAndGroups( Elm );
             }
+
+            // projects
+            if ( Elm.getElement( 'input.project' ) ) {
+                this.parseProject( Elm );
+            }
+
+            // Project Types
+            if ( Elm.getElement( 'input.project-site' ) ) {
+                this.parseProjectSite( Elm );
+            }
+
+
 
             // disabled fields
 
@@ -233,6 +240,26 @@ define('utils/Controls', function()
         },
 
         /**
+         *
+         */
+        parseProject : function(Elm)
+        {
+            require(['controls/projects/Input'], function(ProjectInput)
+            {
+                var i, len, elements;
+
+                elements = Elm.getElements( 'input.project' );
+
+                for ( i = 0, len = elements.length; i < len; i++ )
+                {
+                    new ProjectInput({
+                        multible : false,
+                    }, elements[ i ] ).create();
+                }
+            });
+        },
+
+        /**
          * Search all input[class="project-types"] and convert it to a control
          *
          * @param {DOMNode} Elm - parent node, this element in which is searched for
@@ -248,6 +275,27 @@ define('utils/Controls', function()
                 for ( i = 0, len = elements.length; i < len; i++ )
                 {
                     new TypeInput(
+                        null,
+                        elements[ i ]
+                    ).create();
+                }
+            });
+        },
+
+        /**
+         *
+         */
+        parseProjectSite : function(Elm)
+        {
+            require(['controls/projects/project/site/Input'], function(SiteInput)
+            {
+                var i, len, elements;
+
+                elements = Elm.getElements( 'input.project-site' );
+
+                for ( i = 0, len = elements.length; i < len; i++ )
+                {
+                    new SiteInput(
                         null,
                         elements[ i ]
                     ).create();

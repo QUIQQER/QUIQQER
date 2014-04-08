@@ -1,26 +1,36 @@
 
-.projects-entry {
+.project-entry {
+    cursor: default;
     float: left;
     margin: 5px;
 }
 
-.projects-entry .text {
+.project-entry-icon {
     float: left;
-    line-height: 20px;
-    margin: 0 0 0 5px;
-    padding-left: 20px;
-    background: url('/bin/16x16/home.png') no-repeat left center;
+    line-height: 30px;
+    text-align: center;
+    width: 30px;
 }
 
-.projects-entry .close {
+.project-entry-text {
     float: left;
-    height: 20px;
-    width: 20px;
+    line-height: 30px;
+}
+
+.project-entry-close {
     cursor: pointer;
-    background: url('/bin/js/mocha/Themes/default/images/cancel.png') no-repeat center center;
+    float: left;
+    line-height: 30px;
+    text-align: center;
     visibility: hidden;
+    width: 30px;
 }
 
-.projects-entry:hover .close {
+.project-entry:hover {
+    background: #2F8FC6;
+    color: #FFFFFF;
+}
+
+.project-entry:hover .project-entry-close {
     visibility: visible;
 }

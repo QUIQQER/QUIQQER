@@ -1,22 +1,30 @@
 
 .projects-input {
+    float: left;
     position: relative;
-    display: block;
+}
+
+.projects-input-input {
+    cursor: pointer;
+    float: left;
+    margin: 3px 0;
+    padding-left: 20px;
+    width: 100%;
 }
 
 .projects-input-entry {
+    cursor: pointer;
     float: left;
     margin: 5px;
-    cursor: pointer;
 }
 
 .projects-input-dropdown {
-    position : absolute;
-    z-index  : 10;
-    width    : 200px;
-    padding  : 5px;
-    border   : 1px solid #dedede;
-    background : #fff;
+    background: #fff;
+    border: 1px solid #dedede;
+    padding: 10px;
+    position: absolute;
+    width: 190px;
+    z-index: 10;
 }
 
 .projects-input-dropdown .hover {
@@ -25,6 +33,19 @@
 }
 
 .projects-input-dropdown .mark {
-    font-weight: bold;
     color: red;
+    font-weight: bold;
+}
+
+/** entry container
+ * =============================================== */
+
+.projects-input-container {
+    float: left;
+    margin: 0px 0px 5px 0px;
+    width: 100%;
+}
+
+.projects-input-container .project-entry {
+    margin: 0;
 }

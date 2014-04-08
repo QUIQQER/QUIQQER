@@ -43,7 +43,7 @@ define('controls/projects/Input', [
         Binds : [
             'close',
             'fireSearch',
-            'update'
+            'refresh'
         ],
 
         options : {
@@ -76,17 +76,28 @@ define('controls/projects/Input', [
          */
         create : function()
         {
-            this.$Elm = new Element( 'div.projects-input' );
+            this.$Elm = new Element('div', {
+                'class'      : 'projects-input',
+                'data-quiid' : this.getId()
+            });
 
             if ( !this.$Parent )
             {
                 this.$Parent = new Element('input', {
                     name : this.getAttribute('name')
                 }).inject( this.$Elm );
+
             } else
             {
                 this.$Elm.wraps( this.$Parent );
+
+                this.$Elm.setStyle(
+                    'width',
+                    this.$Parent.getStyle( 'width' )
+                );
             }
+
+            this.$Parent.set( 'data-quiid', this.getId() );
 
             if ( this.getAttribute( 'styles' ) ) {
                 this.$Elm.setStyles( this.getAttribute( 'styles' ) );
@@ -96,15 +107,11 @@ define('controls/projects/Input', [
             this.$Parent.set('type', 'hidden' );
 
             this.$Input = new Element('input', {
+                'class' : 'projects-input-input box',
                 type   : 'text',
                 name   : this.$Parent.get('name') +'-search',
                 styles : {
-                    'float'       : 'left',
-                    'margin'      : '3px 0',
-                    'paddingLeft' : 20,
-                    'background'  : 'url('+ URL_BIN_DIR +'10x10/search.png) no-repeat 4px center',
-                    width         : 165,
-                    cursor        : 'pointer'
+                   'background'  : 'url('+ URL_BIN_DIR +'10x10/search.png) no-repeat 4px center'
                 },
                 events :
                 {
@@ -146,25 +153,27 @@ define('controls/projects/Input', [
             }).inject( document.body );
 
             this.$Container = new Element('div', {
-                styles : {
-                    'float' : 'left',
-                    margin  : '0 0 0 10px',
-                    width   : 400
-                }
+                'class' : 'projects-input-container'
             }).inject( this.$Input, 'after' );
+
+            this.$Container.setStyle(
+                'width',
+                this.$Parent.getStyle( 'width' )
+            );
 
             // loading
             if ( this.$Parent.value === '' ) {
                 return this.$Elm;
             }
 
+
             var i, len;
-            var values = this.$Parent.value.toString().split(',');
+            var values = JSON.decode( this.$Parent.value.toString() );
 
             for ( i = 0, len = values.length; i < len; i++ )
             {
-                if ( values[i] !== '' ) {
-                    this.addProject( values[i] );
+                if ( "project" in values[ i ] && "lang" in values[ i ] ) {
+                    this.addProject( values[ i ].project, values[ i ].lang );
                 }
             }
 
@@ -174,9 +183,9 @@ define('controls/projects/Input', [
         /**
          * updates the projects search field
          *
-         * @method controls/projects/Input#update
+         * @method controls/projects/Input#refresh
          */
-        update : function()
+        refresh : function()
         {
             if ( !this.$Container ) {
                 return;
@@ -185,17 +194,18 @@ define('controls/projects/Input', [
             // set value
             var i, len;
 
-            var list = this.$Container.getElements( '.projects-entry' ),
-                ids  = [];
+            var list = this.$Container.getElements( '.project-entry' ),
+                data = [];
 
-            for ( i = 0, len = list.length; i < len; i++ ) {
-                ids.push( list[i].get( 'data-project' ) );
+            for ( i = 0, len = list.length; i < len; i++ )
+            {
+                data.push({
+                    project : list[i].get( 'data-project' ),
+                    lang    : list[i].get( 'data-lang' )
+                });
             }
 
-            this.$Parent.set(
-                'value',
-                ','+ ids.join(',') +','
-            );
+            this.$Parent.set( 'value', JSON.encode( data ) );
         },
 
         /**
@@ -256,11 +266,13 @@ define('controls/projects/Input', [
                 return;
             }
 
-            if ( this.$Container.getElement( '.projects-entry[data-id="'+ project +'"]') ) {
+            var Container = this.$Container;
+
+            if ( Container.getElement( '.project-entry[data-project="'+ project +'"]') ) {
                 return;
             }
 
-            var entries = this.$Container.getElements( '.projects-entry' );
+            var entries = Container.getElements( '.project-entry' );
 
             if ( this.getAttribute( 'max' ) &&
                  this.getAttribute( 'max' ) <= entries.length )
@@ -268,14 +280,19 @@ define('controls/projects/Input', [
                 return;
             }
 
-            new ProjectEntry(project, {
-                events : {
-                    onDestroy : this.update
-                }
-            }).inject( this.$Container );
+            var self = this;
 
-            this.fireEvent( 'add', [ this, project ] );
-            this.update();
+            new ProjectEntry(project, lang, {
+                events :
+                {
+                    onDestroy : function() {
+                        self.refresh.delay( 250 );
+                    }
+                }
+            }).inject( Container );
+
+            this.fireEvent( 'add', [ this, project, lang ] );
+            this.refresh();
         },
 
         /**
