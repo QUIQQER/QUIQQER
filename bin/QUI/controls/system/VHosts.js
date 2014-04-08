@@ -190,9 +190,6 @@ define('controls/system/VHosts', [
                 });
 
                 self.Loader.hide();
-
-            }, {
-
             });
         },
 
@@ -254,24 +251,42 @@ define('controls/system/VHosts', [
                                 'html',
 
                                 '<form action="">' +
-                                    '<label for="">Domain</label>' +
-                                    '<input type="text" name="domain" disabled="disabled" />' +
-
-                                    '<div class="clear"></div>' +
-
-                                    '<label for="">Projekt</label>' +
-                                    '<input type="text" class="project" name="project" />' +
-
-                                    '<div class="clear"></div>' +
-
-                                    '<label for="">Template</label>' +
-                                    '<select name="template"></select>' +
-
-                                    '<div class="clear"></div>' +
-
-                                    '<label for="">Fehler-Seite</label>' +
-                                    '<input name="error" class="project-site" />' +
-
+                                '<table class="data-table">' +
+                                '<tbody>' +
+                                    '<tr class="odd">' +
+                                        '<td style="width: 150px;">' +
+                                            '<label for="">Domain</label>' +
+                                        '</td>' +
+                                        '<td>' +
+                                            '<input type="text" name="domain" disabled="disabled" />' +
+                                        '</td>' +
+                                    '</tr>' +
+                                    '<tr class="even">' +
+                                        '<td>' +
+                                            '<label for="">Projekt</label>' +
+                                        '</td>' +
+                                        '<td>' +
+                                            '<input type="text" class="project" name="project" />' +
+                                        '</td>' +
+                                    '</tr>' +
+                                    '<tr class="odd">' +
+                                        '<td>' +
+                                            '<label for="">Template</label>' +
+                                        '</td>' +
+                                        '<td>' +
+                                            '<select name="template"></select>' +
+                                        '</td>' +
+                                    '</tr>' +
+                                    '<tr class="even">' +
+                                        '<td>' +
+                                            '<label for="">Fehler-Seite</label>' +
+                                        '</td>' +
+                                        '<td>' +
+                                            '<input name="error" class="project-site" />' +
+                                        '</td>' +
+                                    '</tr>' +
+                                '</tbody>' +
+                                '</table>' +
                                 '</form>'
                             );
 
