@@ -14,13 +14,14 @@ define('controls/system/VHost', [
 
     'controls/grid/Grid',
     'utils/Controls',
+    'qui/utils/String',
     'Ajax',
     'Locale',
     'Projects',
 
     'css!controls/system/VHost.css'
 
-], function(QUI, QUIControl, QUILoader, FormUtils, Grid, ControlUtils, Ajax, Locale, Projects)
+], function(QUI, QUIControl, QUILoader, FormUtils, Grid, ControlUtils, StringUtils, Ajax, Locale, Projects)
 {
     "use strict";
 
@@ -35,7 +36,8 @@ define('controls/system/VHost', [
         ],
 
         options : {
-            host : false
+            host : false,
+            data : {}
         },
 
         initialize : function(options)
@@ -46,7 +48,7 @@ define('controls/system/VHost', [
             this.$TemplateSelect = null;
             this.$ProjectInput   = null;
             this.$ErrorSite      = null;
-            this.$LangGrid       = null;
+            this.$HttpsHost      = null;
 
             this.Loader = new QUILoader();
 
@@ -88,12 +90,16 @@ define('controls/system/VHost', [
                 var i, len;
 
                 var project = vhostData.project,
-                    lang    = vhostData.lang;
+                    lang    = vhostData.lang,
+                    error   = vhostData.error;
 
                 vhostData.domain = self.getAttribute( 'host' );
 
                 delete vhostData.project;
                 delete vhostData.lang;
+                delete vhostData.error;
+
+                self.setAttribute( 'data', vhostData );
 
                 self.$Elm.set(
                     'html',
@@ -138,6 +144,14 @@ define('controls/system/VHost', [
                                 '<input name="error" class="project-site" />' +
                             '</td>' +
                         '</tr>' +
+                        '<tr class="odd">' +
+                            '<td>' +
+                                '<label for="">HTTPS-Host</label>' +
+                            '</td>' +
+                            '<td>' +
+                                '<input name="httpshost" />' +
+                            '</td>' +
+                        '</tr>' +
                     '</tbody>' +
                     '</table>' +
 
@@ -155,11 +169,25 @@ define('controls/system/VHost', [
                 self.$TemplateSelect = self.$Elm.getElement( '[name="template"]' );
                 self.$ProjectInput   = self.$Elm.getElement( '[name="project"]' );
                 self.$ErrorSite      = self.$Elm.getElement( '[name="error"]' );
+                self.$HttpsHost      = self.$Elm.getElement( '[name="httpshost"]' );
 
+                // project data
                 self.$ProjectInput.value = JSON.encode([{
                     project : project,
                     lang    : lang
                 }]);
+
+                // error site
+                if ( error != '' )
+                {
+                    error = error.split(',');
+
+                    self.$ErrorSite.value = 'index.php?' +Object.toQueryString({
+                        project : error[ 0 ],
+                        lang    : error[ 1 ],
+                        id      : error[ 2 ],
+                    });
+                }
 
                 // create controls
                 ControlUtils.parse( self.$Elm );
@@ -202,18 +230,18 @@ define('controls/system/VHost', [
          */
         save : function(callback)
         {
-            var data, projectData, errorData;
+            var i, len, data, langFields, siteParts;
 
-            var self = this;
+            var self        = this,
+                errorSite   = '',
+
+                projectData = {
+                    project : '',
+                    lang    : ''
+                };
 
             this.Loader.show();
 
-            projectData = {
-                project : '',
-                lang    : ''
-            };
-
-            errorData = '';
 
             // project data
             if ( self.$ProjectInput.value !== '' )
@@ -226,16 +254,32 @@ define('controls/system/VHost', [
             }
 
             // error site
-            //self.$ErrorSite
+            siteParts = StringUtils.getUrlParams( self.$ErrorSite.value );
+
+            if ( siteParts.project ) {
+                errorSite = siteParts.project +','+ siteParts.lang +','+ siteParts.id;
+            }
 
             // complete data
             data = {
                 project   : projectData.project,
                 lang      : projectData.lang,
-                template  : self.$TemplateSelect.value,
-                error     : '',
-                httpshost : ''
+                template  : this.$TemplateSelect.value,
+                error     : errorSite,
+                httpshost : this.$HttpsHost.value
             };
+
+            // lang hosts
+            langFields = this.$Elm.getElements(
+                '.control-system-vhost-languages tbody input'
+            );
+
+            for ( i = 0, len = langFields.length; i < len; i++ )
+            {
+                if ( langFields[ i ].value != '' ) {
+                    data[ langFields[ i ].name ] = langFields[ i ].value;
+                }
+            }
 
             Ajax.post('ajax_vhosts_save', function()
             {
@@ -297,23 +341,34 @@ define('controls/system/VHost', [
                     return;
                 }
 
-
                 TBody.set( 'html', '' );
 
-                var cssClass = 'even';
+                // create the language data
+                var i, len, lang, host;
 
-                for ( var i = 0, len = langs.length; i < len; i++ )
+                var cssClass  = 'even',
+                    vhostData = self.getAttribute( 'data' );
+
+                for ( i = 0, len = langs.length; i < len; i++ )
                 {
                     if ( data[ 0 ].lang == langs[ i ] ) {
                         continue;
                     }
 
                     cssClass = cssClass == 'odd' ? 'even' : 'odd';
+                    lang     = langs[ i ];
+                    host     = '';
+
+                    if ( vhostData[ lang ] )  {
+                        host = vhostData[ lang ];
+                    }
 
                     new Element('tr', {
                         'class' : cssClass,
-                        html    : '<td style="width: 150px;">'+ langs[ i ] +'</td>' +
-                                  '<td><input type="text" value="" /></td>'
+                        html    : '<td style="width: 150px;">'+ lang +'</td>' +
+                                  '<td>' +
+                                      '<input type="text" value="'+ host +'" name="'+ lang +'" />' +
+                                  '</td>'
                     }).inject( TBody );
                 }
 

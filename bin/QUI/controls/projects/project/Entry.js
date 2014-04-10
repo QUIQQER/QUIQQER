@@ -203,7 +203,10 @@ define('controls/projects/project/Entry', [
                 return this;
             }
 
-            this.$Text.set( 'html', Project.getName() );
+            this.$Text.set(
+                'html',
+                Project.getName() +' ('+ Project.getLang() +')'
+            );
 
             this.$IconSpan.addClass( 'icon-home' );
             this.$IconSpan.removeClass( 'icon-spinner' );
