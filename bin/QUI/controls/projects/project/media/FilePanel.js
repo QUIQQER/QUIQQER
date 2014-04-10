@@ -12,6 +12,7 @@
 
 define('controls/projects/project/media/FilePanel', [
 
+    'qui/QUI',
     'qui/controls/desktop/Panel',
     'classes/projects/project/media/panel/DOMEvents',
     'qui/controls/buttons/Button',
@@ -23,7 +24,7 @@ define('controls/projects/project/media/FilePanel', [
 
     'css!controls/projects/project/media/FilePanel.css'
 
-], function(QUIPanel, PanelDOMEvents, QUIButton, QUIButtonSeperator, QUIConfirm, Template, FormUtils, ControlUtils)
+], function(QUI, QUIPanel, PanelDOMEvents, QUIButton, QUIButtonSeperator, QUIConfirm, Template, FormUtils, ControlUtils)
 {
     "use strict";
 

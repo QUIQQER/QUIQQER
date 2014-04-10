@@ -13,6 +13,7 @@
 
 define('controls/upload/File', [
 
+    'qui/QUI',
     'qui/controls/Control',
     'qui/controls/contextmenu/Menu',
     'qui/controls/contextmenu/Item',
@@ -24,7 +25,7 @@ define('controls/upload/File', [
     'qui/utils/Object',
     'Ajax'
 
-], function(QUIControl, QUIContextMenu, QUIContextmenuItem, QUIButton, QUIProgressbar, QUIPrompt, MessageError, MathUtils, ObjectUtils, Ajax)
+], function(QUI, QUIControl, QUIContextMenu, QUIContextmenuItem, QUIButton, QUIProgressbar, QUIPrompt, MessageError, MathUtils, ObjectUtils, Ajax)
 {
     "use strict";
 
