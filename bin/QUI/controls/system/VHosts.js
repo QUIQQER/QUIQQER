@@ -9,14 +9,13 @@ define('controls/system/VHosts', [
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
-    'qui/utils/Form',
+    'qui/controls/windows/Prompt',
+    'qui/controls/windows/Confirm',
     'controls/grid/Grid',
-    'utils/Controls',
-    'Ajax',
+    'controls/system/VHost',
+    'Ajax'
 
-    'css!controls/system/VHosts.css'
-
-], function(QUI, QUIPanel, FormUtils, Grid, ControlUtils, Ajax)
+], function(QUI, QUIPanel, QUIPrompt, QUIConfirm, Grid, Vhost, Ajax)
 {
     "use strict";
 
@@ -30,8 +29,7 @@ define('controls/system/VHosts', [
             '$onResize',
 
             '$gridClick',
-            '$gridDblClick',
-            '$gridBlur'
+            '$gridDblClick'
         ],
 
         options : {
@@ -60,7 +58,8 @@ define('controls/system/VHosts', [
             this.addButton({
                 text : 'Virtuellen Host hinzufügen',
                 textimage : 'icon-plus',
-                events : {
+                events :
+                {
                     onClick : function() {
                         self.openAddVhost();
                     }
@@ -76,7 +75,8 @@ define('controls/system/VHosts', [
                 text : 'Markierten Host editieren',
                 textimage : 'icon-edit',
                 disabled  : true,
-                events : {
+                events :
+                {
                     onClick : function() {
                         self.openEditVhost();
                     }
@@ -88,9 +88,10 @@ define('controls/system/VHosts', [
                 text : 'Markierte Hosts löschen',
                 textimage : 'icon-trash',
                 disabled  : true,
-                events : {
+                events :
+                {
                     onClick : function() {
-                        self.openDelVhost();
+                        self.openRemoveVhost();
                     }
                 }
             });
@@ -130,8 +131,7 @@ define('controls/system/VHosts', [
             // Events
             this.$Grid.addEvents({
                 onClick    : this.$gridClick,
-                onDblClick : this.$gridDblClick,
-                onBlur     : this.$gridBlur
+                onDblClick : this.$gridDblClick
             });
 
             this.load();
@@ -151,7 +151,6 @@ define('controls/system/VHosts', [
             if ( !Body ) {
                 return;
             }
-
 
             var size = Body.getSize();
 
@@ -193,31 +192,125 @@ define('controls/system/VHosts', [
             });
         },
 
-
-        addVhost : function(host, data)
+        /**
+         * add a vhost
+         *
+         * @param {String} host - name of the host
+         * @param {Function} callback - [optional] callback function
+         */
+        addVhost : function(host, callback)
         {
+            Ajax.get('ajax_vhosts_add', function(result)
+            {
+                self.load();
 
+                if ( typeOf( callback ) === 'function' ) {
+                    callback( host );
+                }
+            }, {
+                vhost : host
+            });
         },
 
-
-        removeVhost : function(host)
+        /**
+         * Edit a vhost
+         *
+         * @param {String} host - virtual host eq: www.something.com
+         * @param {Array} data - virtual host data
+         * @param {Function} callback - [optional] callback function
+         */
+        editVhost : function(host, data, callback)
         {
+            var self = this;
 
+            this.Loader.show();
+
+            Ajax.get('ajax_vhosts_edit', function(result)
+            {
+                self.load();
+
+                if ( typeOf( callback ) === 'function' ) {
+                    callback( host, data );
+                }
+            }, {
+                vhost : host,
+                data  : JSON.encode( data )
+            });
         },
 
+        /**
+         * Delete a vhost
+         *
+         * @param {String} host - virtual host eq: www.something.com
+         * @param {Function} callback - [optional] callback function
+         */
+        removeVhost : function(host, callback)
+        {
+            var self = this;
 
+            this.Loader.show();
+
+            Ajax.get('ajax_vhosts_remove', function(result)
+            {
+                self.load();
+
+                if ( typeOf( callback ) === 'function' ) {
+                    callback( host );
+                }
+            }, {
+                vhost : host
+            });
+        },
+
+        /**
+         * window & sheet methods
+         */
+
+        /**
+         * opens a add vhost window
+         */
         openAddVhost : function()
         {
+            var self = this;
 
+            new QUIPrompt({
+                icon  : 'icon-plus',
+                title : 'Neuen Virtuellen-Host hinzufügen',
+                information : 'Bitte geben Sie den neuen Host ein. Zum Beispiel: www.meine-domain.de',
+                events :
+                {
+                    onSubmit : function(value, Win)
+                    {
+                        self.addVhost( value, function(host)
+                        {
+                            Win.close();
+                            self.openEditVhost( host );
+                        });
+                    }
+                }
+            }).open();
         },
 
-
+        /**
+         * Open the edit sheet
+         *
+         * @param {String} vhost - host name
+         */
         openEditVhost : function(vhost)
         {
             var self = this;
 
-            if ( typeof vhost == 'undefined' ) {
-                vhost = this.$Grid.getSelectedData().host;
+            if ( typeof vhost === 'undefined' )
+            {
+                var data = this.$Grid.getSelectedData();
+
+                if ( data[ 0 ] && data[ 0 ].host ) {
+                    vhost = data[0].host;
+                }
+            }
+
+            if ( typeof vhost === 'undefined' ) {
+                return;
             }
 
             var Sheet = this.createSheet({
@@ -229,102 +322,80 @@ define('controls/system/VHosts', [
                     {
                         self.Loader.show();
 
-                        Sheet.getContent().addClass( 'control-system-vhosts-sheet' );
+                        var Host = new Vhost({
+                            host : vhost
+                        }).inject( Sheet.getContent() );
 
-                        Ajax.get([
-                            'ajax_vhosts_get',
-                            'ajax_template_getlist'
-                        ], function(vhostData, templates)
-                        {
-                            var i, len, TemplateSelect, ProjectInput;
-
-                            var Content = Sheet.getContent(),
-                                project = vhostData.project,
-                                lang    = vhostData.lang;
-
-                            vhostData.domain = vhost;
-
-                            delete vhostData.project;
-                            delete vhostData.lang;
-
-                            Content.set(
-                                'html',
-
-                                '<form action="">' +
-                                '<table class="data-table">' +
-                                '<tbody>' +
-                                    '<tr class="odd">' +
-                                        '<td style="width: 150px;">' +
-                                            '<label for="">Domain</label>' +
-                                        '</td>' +
-                                        '<td>' +
-                                            '<input type="text" name="domain" disabled="disabled" />' +
-                                        '</td>' +
-                                    '</tr>' +
-                                    '<tr class="even">' +
-                                        '<td>' +
-                                            '<label for="">Projekt</label>' +
-                                        '</td>' +
-                                        '<td>' +
-                                            '<input type="text" class="project" name="project" />' +
-                                        '</td>' +
-                                    '</tr>' +
-                                    '<tr class="odd">' +
-                                        '<td>' +
-                                            '<label for="">Template</label>' +
-                                        '</td>' +
-                                        '<td>' +
-                                            '<select name="template"></select>' +
-                                        '</td>' +
-                                    '</tr>' +
-                                    '<tr class="even">' +
-                                        '<td>' +
-                                            '<label for="">Fehler-Seite</label>' +
-                                        '</td>' +
-                                        '<td>' +
-                                            '<input name="error" class="project-site" />' +
-                                        '</td>' +
-                                    '</tr>' +
-                                '</tbody>' +
-                                '</table>' +
-                                '</form>'
-                            );
-
-                            TemplateSelect = Content.getElement( '[name="template"]' );
-                            ProjectInput   = Content.getElement( '[name="project"]' );
-
-                            ProjectInput.value = JSON.encode([{
-                                project : project,
-                                lang    : lang
-                            }]);
-
-                            // create controls
-                            ControlUtils.parse( Content );
-
-                            FormUtils.setDataToForm(
-                                vhostData,
-                                Content.getElement( 'form' )
-                            );
-
-                            // create template select
-                            for ( i = 0, len = templates.length; i < len; i++ )
+                        Sheet.addButton({
+                            text      : 'Speichern',
+                            textimage : 'icon-save',
+                            events    :
                             {
-                                new Element('option', {
-                                    value : templates[ i ].name,
-                                    html  : templates[ i ].name
-                                }).inject( TemplateSelect );
+                                onClick : function()
+                                {
+                                    Host.save(function() {
+                                        Sheet.hide();
+                                    });
+                                }
                             }
-
-                            self.Loader.hide();
-
-                        }, {
-                            vhost : vhost
                         });
+
+                        self.Loader.hide();
+                    },
+
+                    onClose : function() {
+                        self.load();
                     }
                 }
             });
 
             Sheet.show();
+        },
+
+        /**
+         * Open the remove window
+         *
+         * @param {String} vhost - host name
+         */
+        openRemoveVhost : function(vhost)
+        {
+            var self = this;
+
+            if ( typeof vhost === 'undefined' )
+            {
+                var data = this.$Grid.getSelectedData();
+
+                if ( data[ 0 ] && data[ 0 ].host ) {
+                    vhost = data[0].host;
+                }
+            }
+
+            if ( typeof vhost === 'undefined' ) {
+                return;
+            }
+
+
+            new QUIConfirm({
+                title : 'Virtuellen-Host löschen',
+                icon  : 'icon-trash',
+                text  : 'Möchten Sie den Host '+ vhost +' wirklich löschen?',
+                texticon    : 'icon-trash',
+                information : 'Beachten Sie, der Host Eintrag ist nicht wieder herstellbar und wird unwiederruflich gelöscht',
+
+                closeButtonText : 'Abbrechen',
+
+                ok_button : {
+                    text      : 'Löschen',
+                    textimage : 'icon-trash'
+                },
+
+                events :
+                {
+                    onSubmit : function() {
+                        self.removeVhost( vhost );
+                    }
+                }
+            }).open();
         },
 
         /**
@@ -366,18 +437,6 @@ define('controls/system/VHosts', [
             this.openEditVhost(
                 data.target.getDataByRow( data.row ).host
             );
-        },
-
-        /**
-         *
-         */
-        $gridBlur : function()
-        {
-            this.$Grid.unselectAll();
-            this.$Grid.removeSections();
-
-            this.getButtons( 'editVhost' ).disable(),
-            this.getButtons( 'delVhost' ).disable();
         }
     });
 

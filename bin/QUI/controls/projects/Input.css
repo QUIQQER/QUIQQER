@@ -5,6 +5,9 @@
 }
 
 .projects-input-input {
+    border-radius: 0;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
     cursor: pointer;
     float: left;
     margin: 3px 0;
@@ -41,6 +44,9 @@
  * =============================================== */
 
 .projects-input-container {
+    background: #DEDEDE;
+    border-bottom-right-radius: 2px;
+    border-bottom-left-radius: 2px;
     float: left;
     margin: 0px 0px 5px 0px;
     width: 100%;

@@ -62,7 +62,7 @@ define('classes/projects/Manager', [
          * @param {String} name - [optional] Name of the project
          * @param {String lang - [optional] Lang of the project
          *
-         * @return {QUI.classes.projects.Project}
+         * @return {classes/projects/Project}
          */
         get : function(name, lang)
         {

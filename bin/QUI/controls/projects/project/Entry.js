@@ -45,6 +45,10 @@ define('controls/projects/project/Entry', [
             '$onDestroy'
         ],
 
+        options : {
+            styles : false
+        },
+
         initialize : function(project, lang, options)
         {
             this.parent( options );
@@ -107,6 +111,10 @@ define('controls/projects/project/Entry', [
                 }
             });
 
+            if ( this.getAttribute( 'styles' ) ) {
+                this.$Elm.setStyles( this.getAttribute( 'styles' ) );
+            }
+
             this.$Close = this.$Elm.getElement( '.project-entry-close' ),
             this.$Icon  = this.$Elm.getElement( '.project-entry-icon' ),
             this.$Text  = this.$Elm.getElement( '.project-entry-text' );
@@ -125,8 +133,6 @@ define('controls/projects/project/Entry', [
             this.getProject().addEvent( 'onRefresh', this.$onProjectUpdate );
             this.refresh();
 
-            console.log( this.$Elm.getSize() );
-
             return this.$Elm;
         },
 
@@ -135,6 +141,10 @@ define('controls/projects/project/Entry', [
          */
         $onInject : function()
         {
+            if ( this.getAttribute( 'styles' ) && this.getAttribute( 'styles' ).width ) {
+                return;
+            }
+
             var iconWidth  = this.$Icon.getSize().x,
                 textWidth  = this.$Text.getSize().x,
                 closeWidth = this.$Close.getSize().x;

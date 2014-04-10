@@ -116,13 +116,12 @@ define('classes/projects/Project', [
 
             Ajax.get('ajax_project_get_config', function(result, Request)
             {
-                if ( Request.getAttribute( 'onfinish' ) ) {
-                    Request.getAttribute( 'onfinish' )( result, Request );
+                if ( typeof callback !== 'undefined' ) {
+                    callback( result, Request );
                 }
             }, {
-                project  : this.getName(),
-                param    : param || false,
-                onfinish : callback
+                project : this.getName(),
+                param   : param || false
             });
         },
 

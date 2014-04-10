@@ -19,7 +19,7 @@
 
 .project-entry-close {
     cursor: pointer;
-    float: left;
+    float: right;
     line-height: 30px;
     text-align: center;
     visibility: hidden;

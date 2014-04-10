@@ -804,6 +804,10 @@ class Manager
      */
     public function existsUsername($username)
     {
+        if ( empty( $username ) ) {
+            return false;
+        }
+
         $result = \QUI::getDB()->select(array(
             'select' => 'username',
             'from' 	 => self::Table(),

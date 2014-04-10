@@ -183,11 +183,17 @@ define('controls/projects/Input', [
         /**
          * updates the projects search field
          *
+         * @param {Function} callback - [optional] callback function on finish
          * @method controls/projects/Input#refresh
          */
-        refresh : function()
+        refresh : function(callback)
         {
-            if ( !this.$Container ) {
+            if ( !this.$Container )
+            {
+                if ( typeof callback !== 'undefined' ) {
+                    callback();
+                }
+
                 return;
             }
 
@@ -206,6 +212,10 @@ define('controls/projects/Input', [
             }
 
             this.$Parent.set( 'value', JSON.encode( data ) );
+
+            if ( typeof callback !== 'undefined' ) {
+                callback();
+            }
         },
 
         /**
@@ -268,31 +278,49 @@ define('controls/projects/Input', [
 
             var Container = this.$Container;
 
+            if ( this.getAttribute( 'multible' ) == false )
+            {
+                // wenn multible = false
+                // dann leeren und nur ein projekt zu lassen
+                this.$Container.set( 'html', '' );
+            }
+
             if ( Container.getElement( '.project-entry[data-project="'+ project +'"]') ) {
                 return;
             }
 
-            var entries = Container.getElements( '.project-entry' );
+            var entries = Container.getElements( '.project-entry' ),
+                max     = this.getAttribute( 'max' );
 
-            if ( this.getAttribute( 'max' ) &&
-                 this.getAttribute( 'max' ) <= entries.length )
-            {
+            if ( max && max <= entries.length ) {
                 return;
             }
 
             var self = this;
 
             new ProjectEntry(project, lang, {
+                styles : {
+                    width : '100%'
+                },
                 events :
                 {
-                    onDestroy : function() {
-                        self.refresh.delay( 250 );
+                    onDestroy : function()
+                    {
+                        (function()
+                        {
+                            self.refresh(function() {
+                                self.$Parent.fireEvent( 'change', [ this ] );
+                            });
+                        }).delay( 250 );
                     }
                 }
             }).inject( Container );
 
             this.fireEvent( 'add', [ this, project, lang ] );
-            this.refresh();
+
+            this.refresh(function() {
+                self.$Parent.fireEvent( 'change', [ this ] );
+            });
         },
 
         /**
