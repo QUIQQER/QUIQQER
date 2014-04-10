@@ -8,8 +8,7 @@
  * @require classes/groups/Group
  *
  * @module classes/groups/Groups
- * @package com.pcsg.qui.js.classes.groups
- * @namespace QUI.classes.groups.Groups
+ * @package classes/groups/Manager
  *
  * @event onActivate [this, result, Request]
  * @event onDeactivate [this, result, Request]
@@ -44,7 +43,7 @@ define('classes/groups/Manager', [
         /**
          * Return a group
          *
-         * @method QUI.classes.groups.Groups#get
+         * @method classes/groups/Manager#get
          * @return {classes/groups/Group} Group
          */
         get : function(gid)
@@ -59,7 +58,7 @@ define('classes/groups/Manager', [
         /**
          * Return the group list
          *
-         * @method QUI.classes.groups.Groups#getList
+         * @method classes/groups/Manager#getList
          * @param {Object} search     - search options
          * @param {Function} onfinish - [optional] callback function
          * @param {Object} params     - [optional] extra params
@@ -82,7 +81,7 @@ define('classes/groups/Manager', [
         /**
          * Switch the status to activate or deactivate of the group
          *
-         * @method QUI.classes.groups.Groups#switchStatus
+         * @method classes/groups/Manager#switchStatus
          * @param {Array|Integer} uid - search options
          * @param {Function} onfinish - [optional] callback function
          * @param {Object} params     - [optional] extra params
@@ -123,7 +122,7 @@ define('classes/groups/Manager', [
         /**
          * Activate a group
          *
-         * @method QUI.classes.groups.Groups#activate
+         * @method classes/groups/Manager#activate
          * @param {Array|Integer} gid - group id
          * @param {Function} onfinish - callback function after activasion
          * @param {Object} params     - callback parameter
@@ -164,7 +163,7 @@ define('classes/groups/Manager', [
         /**
          * Dectivate a group
          *
-         * @method QUI.classes.groups.Groups#deactivate
+         * @method classes/groups/Manager#deactivate
          * @param {Array|Integer} gid - group id
          * @param {Function} onfinish - callback function after activasion
          * @param {Object} params     - callback parameter
@@ -205,7 +204,7 @@ define('classes/groups/Manager', [
         /**
          * create a new group
          *
-         * @method QUI.classes.groups.Groups#createGroup
+         * @method classes/groups/Manager#createGroup
          * @param {String} groupname  - Name of the group
          * @param {Inetegr} parentid  - ID of the parent group
          * @param {Function} onfinish - [optional] callback function
@@ -230,7 +229,7 @@ define('classes/groups/Manager', [
         /**
          * Delete groups
          *
-         * @method QUI.classes.groups.Groups#deleteGroups
+         * @method classes/groups/Manager#deleteGroups
          * @param {Array} gids - Group-IDs
          * @param {Function} onfinish - [optional] callback function
          * @param {Object} params     - [optional] extra params
@@ -265,8 +264,8 @@ define('classes/groups/Manager', [
         /**
          * Trigger the refresh event
          *
-         * @method QUI.classes.groups.Groups#refreshGroup
-         * @param {QUI.classes.groups.Group} Group
+         * @method classes/groups/Manager#refreshGroup
+         * @param {classes/groups/Group} Group
          */
         refreshGroup : function(Group)
         {

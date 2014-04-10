@@ -1,18 +1,17 @@
 
 .user-search-form {
-	margin: 10px;
+    margin: 10px;
 }
 
 .user-search-form .date {
-	float: left;
+    float: left;
 }
 
 .user-search-form-field {
-	float: left;
-	line-height: 16px;
-	margin: 2px;
+    float: left;
+    line-height: 16px;
 }
 
 .user-search-filter-c1 {
-	width: 100px;
+    width: 100px;
 }

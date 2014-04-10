@@ -1,5 +1,5 @@
 /**
- *
+ * @depricated
  */
 
 define('classes/plugins/Manager', [

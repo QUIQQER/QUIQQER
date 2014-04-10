@@ -4,7 +4,6 @@
  * @author www.pcsg.de (Henning Leutz)
  *
  * @module controls/users/Panel
- * @package com.pcsg.qui.js.controls.users
  */
 
 define('controls/users/Panel', [
@@ -310,10 +309,7 @@ define('controls/users/Panel', [
                         );
 
                     Body.set( 'html', result );
-                    self.setAttribute( 'SearchSheet', Sheet );
 
-                    // parse controls
-                    ControlUtils.parse( Body );
 
                     Frm    = Body.getElement('form');
                     Search = Frm.elements.search;
@@ -321,12 +317,19 @@ define('controls/users/Panel', [
                     Search.addEvent('keyup', function(event)
                     {
                         if ( event.key === 'enter' ) {
-                            self.execSearch( self.getAttribute('SearchSheet') );
+                            self.execSearch( Sheet );
                         }
                     });
 
                     Search.value = settings.userSearchString || '';
                     Search.focus();
+
+                    new QUIButton({
+                        text : 'Suche starten',
+                        textimage : 'icon-search'
+                    }).inject(
+                        Search, 'after'
+                    );
 
                     // elements
                     inputs = Frm.elements;
@@ -348,16 +351,14 @@ define('controls/users/Panel', [
                             }
                         }
 
-                        //if ( inputs[ i ].hasClass( 'date' ) ) {
-                            //QUI.lib.Controls.Calendar( inputs[ i ] );
-                        //}
-
                         Label = Frm.getElement( 'label[for="'+ inputs[ i ].name +'"]' );
 
                         if ( Label ) {
                             Label.set('for', new_id);
                         }
                     }
+
+                    ControlUtils.parse( Body );
 
                     // search button
                     new QUIButton({
@@ -444,10 +445,13 @@ define('controls/users/Panel', [
                             // Benutzer existiert schon
                             if ( result === true )
                             {
-                                QUI.MH.addAttention(
-                                    'Der Benutzername existiert schon.' +
-                                    'Bitte geben Sie einen anderen Benutzernamen an.'
-                                );
+                                QUI.getMessageHandler(function(MH)
+                                {
+                                    MH.addAttention(
+                                        'Der Benutzername existiert schon.' +
+                                        'Bitte geben Sie einen anderen Benutzernamen an.'
+                                    );
+                                });
 
                                 Win.Loader.hide();
                                 return;
@@ -536,13 +540,14 @@ define('controls/users/Panel', [
 
             if ( this.getAttribute( 'search' ) )
             {
-                this.getGrid().setHeight( Body.getSize().y - 100 );
+                this.getGrid().setHeight( Body.getSize().y - 120 );
+
             } else
             {
                 this.getGrid().setHeight( Body.getSize().y - 40 );
             }
 
-            var Message = Body.getElement( '.message' );
+            var Message = Body.getElement( '.messages-message' );
 
             if ( Message ) {
                 Message.setStyle( 'width', this.getBody().getSize().x - 40 );
@@ -565,7 +570,7 @@ define('controls/users/Panel', [
             this.refresh();
 
             if ( this.getAttribute( 'search' ) &&
-                 !this.getBody().getElement( '.message' ) )
+                 !this.getBody().getElement( '.messages-message' ) )
             {
                 var Msg = new Attention({
                     Users   : this,

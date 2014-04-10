@@ -218,6 +218,9 @@
 
                 <settings title="globals" name="globals">
                     <title>Einstellungen für Entwickler</title>
+                    <input conf="globals.maintenance" type="checkbox">
+                        <text>Wartungsarbeiten atkivieren</text>
+                    </input>
                     <input conf="globals.debug_mode" type="checkbox">
                         <text>Debug Modus (für Entwickler)</text>
                     </input>

@@ -67,6 +67,11 @@ define('utils/Controls', function()
             }
 
             // Project Types
+            if ( Elm.getElement( 'input.project-types' ) ) {
+                this.parseProjectTypes( Elm );
+            }
+
+            // project site
             if ( Elm.getElement( 'input.project-site' ) ) {
                 this.parseProjectSite( Elm );
             }
@@ -126,10 +131,11 @@ define('utils/Controls', function()
 
             require([
                 'package/quiqqer/calendar/bin/Calendar',
-                'qui/controls/buttons/Button'
-            ], function(DatePicker, QUIButton)
+                'qui/controls/buttons/Button',
+                'qui/utils/Elements'
+            ], function(DatePicker, QUIButton, ElementUtils)
             {
-                var i, len, elements, Child;
+                var i, len, elements, Child, Picker;
 
                 elements = Elm.getElements( 'input[type="date"]' );
 
@@ -147,7 +153,7 @@ define('utils/Controls', function()
                         'cursor' : 'pointer'
                     });
 
-                    new DatePicker(Child, {
+                    Picker = new DatePicker(Child, {
                         timePicker: true,
                         positionOffset: {
                             x: 5,
@@ -155,9 +161,15 @@ define('utils/Controls', function()
                         },
                         pickerClass: 'datepicker_dashboard',
                         onSelect: function(UserDate) {
-                            this.value = UserDate.format('db');
-                        }.bind( Child )
+                            Child.value = UserDate.format('db');
+                        }
                     });
+
+                    Picker.picker.setStyles({
+                        zIndex : ElementUtils.getComputedZIndex( Child )
+                    });
+
+                    //console.log( Picker.picker );
 
                     new QUIButton({
                         image   : 'icon-remove',
@@ -240,7 +252,9 @@ define('utils/Controls', function()
         },
 
         /**
+         * Search all input[class="project"] and convert it to a control
          *
+         * @param {DOMNode} Elm - parent node, this element in which is searched for
          */
         parseProject : function(Elm)
         {
@@ -283,7 +297,9 @@ define('utils/Controls', function()
         },
 
         /**
+         * Search all input[class="project-site"] and convert it to a control
          *
+         * @param {DOMNode} Elm - parent node, this element in which is searched for
          */
         parseProjectSite : function(Elm)
         {

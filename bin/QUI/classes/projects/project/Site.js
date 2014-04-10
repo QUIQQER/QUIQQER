@@ -7,9 +7,7 @@
  * @requires controls/contextmenu/Menu
  * @requires controls/contextmenu/Item
  *
- * @module classes/projects/Site
- * @package com.pcsg.qui.js.classes.project
- * @namespace QUI.classes.project
+ * @module classes/projects/project/Site
  *
  * @event onLoad [ this ]
  * @event onGetChildren [ this, {Array} ]
@@ -30,9 +28,9 @@ define('classes/projects/project/Site', [
     "use strict";
 
     /**
-     * @class QUI.classes.projects.Site
+     * @class classes/projects/project/Site
      *
-     * @param {QUI.classes.projects.Project} Project
+     * @param {classes/projects/Project} Project
      * @param {Integer} id - Site ID
      *
      * @fires onStatusEditBegin - this
@@ -73,7 +71,7 @@ define('classes/projects/project/Site', [
          * Load the site
          * Get all attributes from the DB
          *
-         * @method QUI.classes.projects.Site#load
+         * @method classes/projects/project/Site#load
          * @param {Function} onfinish - [optional] callback Function
          * @return {this} self
          */
@@ -102,7 +100,7 @@ define('classes/projects/project/Site', [
         /**
          * Get the site ID
          *
-         * @method QUI.classes.projects.Site#getId
+         * @method classes/projects/project/Site#getId
          * @return {Integer}
          */
         getId : function()
@@ -113,8 +111,8 @@ define('classes/projects/project/Site', [
         /**
          * Get the site project
          *
-         * @method QUI.classes.projects.Site#getProject
-         * @return {QUI.classes.projects.Project}
+         * @method classes/projects/project/Site#getProject
+         * @return {classes/projects/Project}
          */
         getProject : function()
         {
@@ -144,7 +142,7 @@ define('classes/projects/project/Site', [
         /**
          * Get the children
          *
-         * @method QUI.classes.projects.Site#getChildren
+         * @method classes/projects/project/Site#getChildren
          * @param {Function} onfinish - [optional] callback function
          * @param {Object} params - [optional]
          * @returns {this}
@@ -172,8 +170,8 @@ define('classes/projects/project/Site', [
         /**
          * Return the parent
          *
-         * @method QUI.classes.projects.Site#getParent
-         * @return {QUI.classes.projects.Site|false}
+         * @method classes/projects/project/Site#getParent
+         * @return {classes/projects/project/Site|false}
          */
         getParent : function()
         {
@@ -187,7 +185,7 @@ define('classes/projects/project/Site', [
         /**
          * Activate the site
          *
-         * @method QUI.classes.projects.Site#ajaxParams
+         * @method classes/projects/project/Site#ajaxParams
          * @fires activate
          * @param {Function} onfinish - [optional] callback function
          * @return {this}
@@ -214,7 +212,7 @@ define('classes/projects/project/Site', [
         /**
          * Deactivate the site
          *
-         * @method QUI.classes.projects.Site#deactivate
+         * @method classes/projects/project/Site#deactivate
          * @fires deactivate
          * @param {Function} onfinish - [optional] callback function
          * @return {this}
@@ -240,7 +238,7 @@ define('classes/projects/project/Site', [
         /**
          * Save the site
          *
-         * @method QUI.classes.projects.Site#save
+         * @method classes/projects/project/Site#save
          * @fires save
          * @param {Function} onfinish - [optional] callback function
          * @return {this}
@@ -273,7 +271,7 @@ define('classes/projects/project/Site', [
          * Delete the site
          * Delete it in the Database, too
          *
-         * @method QUI.classes.projects.Site#del
+         * @method classes/projects/project/Site#del
          * @param {Function} onfinish - [optional] callback function
          */
         del : function(onfinish)
@@ -294,7 +292,7 @@ define('classes/projects/project/Site', [
         /**
          * Create a child site
          *
-         * @method QUI.classes.projects.Site#createChild
+         * @method classes/projects/project/Site#createChild
          *
          * @param {String} newname    - new name of the child
          * @param {Function} onfinish - [optional] callback function
@@ -330,7 +328,7 @@ define('classes/projects/project/Site', [
         /**
          * Is the Site active?
          *
-         * @method QUI.classes.projects.Site#getAttribute
+         * @method classes/projects/project/Site#getAttribute
          * @return {Bool}
          */
         isActive : function()
@@ -345,7 +343,7 @@ define('classes/projects/project/Site', [
         /**
          * Get an site attribute
          *
-         * @method QUI.classes.projects.Site#getAttribute
+         * @method classes/projects/project/Site#getAttribute
          * @param {String} k - Attribute name
          * @return {unknown_type}
          */
@@ -373,7 +371,7 @@ define('classes/projects/project/Site', [
         /**
          * Get all attributes from the Site
          *
-         * @method QUI.classes.projects.Site#getAttributes
+         * @method classes/projects/project/Site#getAttributes
          * @return {Object} Site attributes
          */
         getAttributes : function()
@@ -384,7 +382,7 @@ define('classes/projects/project/Site', [
         /**
          * Set an site attribute
          *
-         * @method QUI.classes.projects.Site#setAttribute
+         * @method classes/projects/project/Site#setAttribute
          *
          * @param {String} k        - Name of the Attribute
          * @param {unknown_type} v - Value of the Attribute
@@ -397,7 +395,7 @@ define('classes/projects/project/Site', [
         /**
          * If you want to set more than one attribute
          *
-         * @method QUI.classes.projects.Site#setAttributes
+         * @method classes/projects/project/Site#setAttributes
          *
          * @param {Object} attributes - Object with attributes
          * @return {this}
@@ -422,7 +420,7 @@ define('classes/projects/project/Site', [
         /**
          * Returns the needle request (Ajax) params
          *
-         * @method QUI.classes.projects.Site#ajaxParams
+         * @method classes/projects/project/Site#ajaxParams
          * @return {Object}
          */
         ajaxParams : function()

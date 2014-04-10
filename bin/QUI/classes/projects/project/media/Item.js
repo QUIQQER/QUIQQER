@@ -96,7 +96,7 @@ define('classes/projects/project/media/Item', [
          * Returns the Media Object of the item
          *
          * @method classes/projects/project/media/Item#getMedia
-         * @return {QUI.classes.projects.Media}
+         * @return {classes/projects/project/Media}
          */
         getMedia : function()
         {

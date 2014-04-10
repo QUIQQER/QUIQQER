@@ -90,7 +90,7 @@ Manager.register('package/ckeditor4', {
          *
          * @param {String|null} name - Editor parameters name, like ckeditor3, if null,
          * @param {Function} func    - Callback function, if editor is loaded,
-         *                             the Parameter of the function is an {QUI.classes.Editor} Instance
+         *                             the Parameter of the function is an {controls/editors/Editor} Instance
          */
         getEditor : function(name, func)
         {

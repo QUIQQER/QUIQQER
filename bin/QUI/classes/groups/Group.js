@@ -9,7 +9,6 @@
  * @require qui/utils/Object
  *
  * @module classes/groups/Group
- * @package com.pcsg.qui.js.classes.groups
  *
  * @event onRefresh [ {classes/groups/Group} ]
  * @event onActivate [ {classes/groups/Group} ]
@@ -126,7 +125,10 @@ define('classes/groups/Group', [
                 }
 
                 self.fireEvent( 'refresh', [ self ] );
-                QUI.Groups.refreshGroup( self );
+
+                require(['Groups'], function(self) {
+                    Groups.refreshGroup( self );
+                });
 
             }, params);
         },
