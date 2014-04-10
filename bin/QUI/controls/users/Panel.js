@@ -276,8 +276,8 @@ define('controls/users/Panel', [
         {
             var self = this;
 
-            require([ 'controls/users/User' ], function(QUI_User) {
-                self.getParent().appendChild( new QUI_User( uid ) );
+            require(['controls/users/User'], function(QUIUser) {
+                self.getParent().appendChild( new QUIUser( uid ) );
             });
 
             return this;
@@ -291,7 +291,10 @@ define('controls/users/Panel', [
             this.Loader.show();
 
             var self  = this,
-                Sheet = this.createSheet();
+                Sheet = this.createSheet({
+                    title : 'Benutzer suchen',
+                    icon  : 'icon-search'
+                });
 
             Sheet.addEvent('onOpen', function(Sheet)
             {

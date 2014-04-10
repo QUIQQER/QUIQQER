@@ -1,4 +1,7 @@
 
+/** user search
+ * =============================================== */
+
 .user-search-form {
     margin: 10px;
 }
@@ -14,4 +17,22 @@
 
 .user-search-filter-c1 {
     width: 100px;
+}
+
+.user-search-form .data-table td {
+    line-height: 34px;
+}
+
+.user-search-table-input {
+    float: left;
+    padding: 10px 10px 0 10px;
+    width: 100%;
+}
+
+.user-search-table-filter,
+.user-search-table-searchin {
+    clear: none;
+    float: left;
+    padding: 0 10px 10px 10px;
+    width: 50%;
 }

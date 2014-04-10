@@ -1,129 +1,134 @@
 
 <form name="user-search" class="user-search-form" method="post">
 
-    <table class="data-table">
-       <thead>
+    <div class="user-search-table-input box">
+        <table class="data-table">
+           <thead>
+                <tr>
+                    <th>Suche nach:</th>
+                </tr>
+           </thead>
+           <tbody>
+               <tr class="odd">
+                   <td>
+                       <input
+                            type="text"
+                            value=""
+                            name="search"
+                            class="user-search-form-field"
+                            placeholder="Suche nach..."
+                       />
+                   </td>
+               </tr>
+           </tbody>
+        </table>
+    </div>
+
+    <div class="user-search-table-searchin box">
+        <table class="data-table">
+        <thead>
             <tr>
-                <th>Suche nach:</th>
+                <th colspan="2">
+                    Suche in:
+                </th>
             </tr>
-       </thead>
-       <tbody>
-           <tr class="odd">
-               <td>
-                   <input
-                        type="text"
-                        value=""
-                        name="search"
-                        class="user-search-form-field"
-                        placeholder="Suche nach..."
-                   />
-               </td>
-           </tr>
-       </tbody>
-    </table>
+        </thead>
+        <tbody>
+            <tr class="{cycle values="odd,even"}">
+                <td style="width: 30px;">
+                    <input type="checkbox" checked="checked" value="" name="uid" />
+                </td>
+                <td>
+                    <label for="uid">Benutzer-ID</label>
+                </td>
+            </tr>
 
-    <table class="data-table">
-    <thead>
-        <tr>
-            <th colspan="2">
-                Suche in:
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr class="{cycle values="odd,even"}">
-            <td style="width: 30px;">
-                <input type="checkbox" checked="checked" value="" name="uid" />
-            </td>
-            <td>
-                <label for="uid">Benutzer-ID</label>
-            </td>
-        </tr>
+            <tr class="{cycle values="odd,even"}">
+                <td>
+                    <input type="checkbox" value="" checked="checked" name="username" />
+                </td>
+                <td>
+                    <label for="username">Benutzername</label>
+                </td>
+            </tr>
 
-        <tr class="{cycle values="odd,even"}">
-            <td>
-                <input type="checkbox" value="" checked="checked" name="username" />
-            </td>
-            <td>
-                <label for="username">Benutzername</label>
-            </td>
-        </tr>
+            <tr class="{cycle values="odd,even"}">
+                <td>
+                    <input type="checkbox" value="" checked="checked" name="email" />
+                </td>
+                <td>
+                    <label for="email">E-Mail</label>
+                </td>
+            </tr>
 
-        <tr class="{cycle values="odd,even"}">
-            <td>
-                <input type="checkbox" value="" checked="checked" name="email" />
-            </td>
-            <td>
-                <label for="email">E-Mail</label>
-            </td>
-        </tr>
+            <tr class="{cycle values="odd,even"}">
+                <td>
+                    <input type="checkbox" value="" checked="checked" name="firstname" />
+                </td>
+                <td>
+                    <label for="firstname">Vorname</label>
+                </td>
+            </tr>
 
-        <tr class="{cycle values="odd,even"}">
-            <td>
-                <input type="checkbox" value="" checked="checked" name="firstname" />
-            </td>
-            <td>
-                <label for="firstname">Vorname</label>
-            </td>
-        </tr>
+            <tr class="{cycle values="odd,even"}">
+                <td>
+                    <input type="checkbox" value="" checked="checked" name="lastname" />
+                </td>
+                <td>
+                    <label for="lastname">Nachname</label>
+                </td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
 
-        <tr class="{cycle values="odd,even"}">
-            <td>
-                <input type="checkbox" value="" checked="checked" name="lastname" />
-            </td>
-            <td>
-                <label for="lastname">Nachname</label>
-            </td>
-        </tr>
-    </tbody>
-    </table>
-
-
-    <table class="data-table user-search-filter">
-    <thead>
-        <tr>
-            <th colspan="3">
-                Filter:
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr class="{cycle values="odd,even" reset=true}">
-            <td class="user-search-filter-c1">
-                <label for="filter_status">Status</label>
-            </td>
-            <td class="user-search-filter-c2">
-                <select name="filter_status">
-                    <option value="all">Alle</option>
-                    <option value="1">Aktiviert</option>
-                    <option value="0">Deaktiviert</option>
-                    <option value="-1">Gelöscht</option>
-                </select>
-            </td>
-            <td class="user-search-filter-c3">&nbsp;</td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td class="user-search-filter-c1">
-                <label for="filter_group">Gruppen</label>
-            </td>
-            <td class="user-search-filter-c2"><input type="hidden" name="filter_group" value="" /></td>
-            <td class="user-search-filter-c3">&nbsp;</td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td class="user-search-filter-c1">
-                <label for="filter_regdate_first">Datum von</label>
-            </td>
-            <td class="user-search-filter-c2"><input type="date" name="filter_regdate_first" value="" /></td>
-            <td class="user-search-filter-c3">&nbsp;</td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td class="user-search-filter-c1">
-                <label for="filter_regdate_last">Datum bis</label>
-            </td>
-            <td class="user-search-filter-c2"><input type="date" name="filter_regdate_last" value="" /></td>
-            <td class="user-search-filter-c3">&nbsp;</td>
-        </tr>
-    </tbody>
-    </table>
+    <div class="user-search-filter user-search-table-filter box">
+        <table class="data-table">
+        <thead>
+            <tr>
+                <th colspan="3">
+                    Filter:
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="{cycle values="odd,even" reset=true}">
+                <td class="user-search-filter-c1">
+                    <label for="filter_status">Status</label>
+                </td>
+                <td class="user-search-filter-c2">
+                    <select name="filter_status">
+                        <option value="all">Alle</option>
+                        <option value="1">Aktiviert</option>
+                        <option value="0">Deaktiviert</option>
+                        <option value="-1">Gelöscht</option>
+                    </select>
+                </td>
+                <td class="user-search-filter-c3">&nbsp;</td>
+            </tr>
+            <tr class="{cycle values="odd,even"}">
+                <td class="user-search-filter-c1">
+                    <label for="filter_group">Gruppen</label>
+                </td>
+                <td class="user-search-filter-c2"><input type="hidden" name="filter_group" value="" /></td>
+                <td class="user-search-filter-c3">&nbsp;</td>
+            </tr>
+            <tr class="{cycle values="odd,even"}">
+                <td class="user-search-filter-c1">
+                    <label for="filter_regdate_first">Datum von</label>
+                </td>
+                <td class="user-search-filter-c2"><input type="date" name="filter_regdate_first" value="" /></td>
+                <td class="user-search-filter-c3">&nbsp;</td>
+            </tr>
+            <tr class="{cycle values="odd,even"}">
+                <td class="user-search-filter-c1">
+                    <label for="filter_regdate_last">Datum bis</label>
+                </td>
+                <td class="user-search-filter-c2"><input type="date" name="filter_regdate_last" value="" /></td>
+                <td class="user-search-filter-c3">&nbsp;</td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
 
 </form>
