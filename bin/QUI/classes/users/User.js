@@ -8,18 +8,18 @@
  * @requires classes/users/AdressesContact
  *
  * @module classes/users/User
- * @package com.pcsg.qui.js.classes.users
- * @namespace QUI.classes.users
  *
- * @event onRefresh [ {QUI.classes.users.User} ]
+ * @event onRefresh [ {classes/users/User} ]
  */
 
 define('classes/users/User', [
 
+    'qui/QUI',
     'qui/classes/DOM',
-    'Ajax'
+    'Ajax',
+    'Locale'
 
-], function(DOM, Ajax)
+], function(QUI, DOM, Ajax, Locale)
 {
     "use strict";
 
@@ -178,12 +178,15 @@ define('classes/users/User', [
 
             if ( pass1 != pass2 )
             {
-                QUI.MH.addError(
-                    QUI.Locale.get(
-                        'quiqqer/system',
-                        'exception.user.wrong.passwords'
-                    )
-                );
+                QUI.getMessageHandler(function(MH)
+                {
+                    MH.addError(
+                        Locale.get(
+                            'quiqqer/system',
+                            'exception.user.wrong.passwords'
+                        )
+                    );
+                });
 
                 if ( onfinish ) {
                     onfinish( false, false );
@@ -214,167 +217,6 @@ define('classes/users/User', [
         {
             return ( this.getAttribute( 'active' ) ).toInt();
         },
-
-        /**
-         * Opens the delete window
-         *
-         * @method classes/users/User#del
-         */
-        /*
-        del : function()
-        {
-            QUI.Windows.create('submit', {
-                name        : 'DeleteUser'+ this.getId(),
-                title       : 'Möchten Sie den Benutzer wirklich löschen?',
-                icon        : URL_BIN_DIR +'16x16/trashcan_full.png',
-                texticon    : URL_BIN_DIR +'32x32/trashcan_full.png',
-                text        : 'Den Benutzer '+ this.getAttribute('username') +' wirklich löschen?',
-                information : 'Der Benutzer wird komplett aus dem System entfernt und kann nicht wieder hergestellt werden',
-
-                width  : 500,
-                height : 150,
-                events :
-                {
-                    onsubmit : function(Win)
-                    {
-                        QUI.Ajax.post('ajax_users_delete', function(result, Ajax)
-                        {
-                            Ajax.getAttribute('User').Panel.close();
-                        }, {
-                            uid  : this.getId(),
-                            User : this
-                        });
-                    }.bind( this )
-                }
-            });
-        },
-        */
-
-        /**
-         * Returns the user avatar url
-         *
-         * @method QUI.classes.users.User#getAvatar
-         *
-         * @return {String}
-         */
-        /*
-        getAvatar : function()
-        {
-            return URL_DIR +'media/users/'+ this.getAttribute('avatar');
-        },
-        */
-        /**
-         * Load the Adresse management in the Panel
-         *
-         * @method classes/users/User#loadAdresses
-         */
-        /*
-        loadAdresses : function()
-        {
-            var Body      = this.Panel.getBody(),
-                Container = Body.getElement('form .adress-list'),
-                User      = this;
-
-            if ( !Container ) {
-                return;
-            }
-
-            Container.setStyles({
-                height : Body.getSize().y - 300,
-                width  : Body.getSize().x - 40
-            });
-
-            require([
-                'classes/users/Adresses',
-                'classes/users/AdressesContact'
-            ], function(Adresses, Contact)
-            {
-                User.$Adresses = new Adresses(User, Container);
-            });
-        },
-
-        /**
-         * Load the toolbar for the user panel
-         *
-         * @method QUI.classes.users.User#$loadToolbar
-         * @param {Function} onfinish - callback
-         * @ignore
-         */
-        /*
-        $loadToolbar : function(onfinish)
-        {
-            QUI.Ajax.get('ajax_users_gettoolbar', function(result, Ajax)
-            {
-                var i, len, Btn, on_set_active;
-
-                var User  = Ajax.getAttribute('User'),
-                    Panel = User.Panel;
-
-                on_set_active = function(Btn)
-                {
-                    var Parent = Btn.getParent();
-
-                    if ( !Parent )
-                    {
-                        QUI.lib.Users.tabOnLoad( Btn );
-                        return;
-                    }
-
-                    var Active = Btn.getParent().getActive();
-
-                    // unload auf aktiven Button
-                    if ( Active )
-                    {
-                        if ( Btn.getAttribute('name') == Active.getAttribute('name') ) {
-                            return;
-                        }
-
-                        if ( QUI.lib.Users.tabOnUnLoad( Active ) === false )
-                        {
-                            Btn.setNormal();
-                            Active.setActive();
-                            return;
-                        }
-                    }
-
-                    QUI.lib.Users.tabOnLoad( Btn );
-                };
-
-                for ( i = 0, len = result.length; i < len; i++ )
-                {
-                    Btn = new QUI.controls.buttons.Button( result[i] );
-                    Btn.setAttribute('Panel', Panel);
-                    Btn.setAttribute('User', User);
-
-                    if ( Btn.getAttribute('onload') )
-                    {
-                        Btn.setAttribute('onUserLoad', Btn.getAttribute('onload'));
-                        Btn.setAttribute('onload', false);
-                    }
-
-                    if ( Btn.getAttribute('onunload') )
-                    {
-                        Btn.setAttribute('onUserUnLoad', Btn.getAttribute('onunload'));
-                        Btn.setAttribute('onunload', false);
-                    }
-
-                    Btn.addEvents({
-                        onSetActive : on_set_active
-                    });
-
-                    User.Panel.appendChild( Btn );
-                }
-
-                Ajax.getAttribute('onfinish')(result, Ajax);
-            }, {
-                uid  : this.getId(),
-                User : this,
-                onfinish : onfinish
-            });
-        }
-        */
-
-
 
         /**
          * Attribute methods

@@ -69,8 +69,8 @@ define('controls/editors/Editor', ['qui/controls/Control'], function(Control)
         /**
          * Returns the Editor Manager
          *
-         * @method QUI.controls.editor.Editor#getManager
-         * @return {QUI.controls.editor.Manager} Editor Manager
+         * @method controls/editors/Editor#getManager
+         * @return {controls/editors/Manager} Editor Manager
          */
         getManager : function()
         {
@@ -80,7 +80,7 @@ define('controls/editors/Editor', ['qui/controls/Control'], function(Control)
         /**
          * Draw the editor
          *
-         * @method QUI.controls.editor.Editor#create
+         * @method controls/editors/Editor#create
          * @fires onDraw [DOMNode, this]
          * @return {DOMNode} DOMNode Element
          */
@@ -104,7 +104,7 @@ define('controls/editors/Editor', ['qui/controls/Control'], function(Control)
         /**
          * Destroy the editor
          *
-         * @method QUI.controls.editor.Editor#destroy
+         * @method controls/editors/Editor#destroy
          * @fires onDestroy [this]
          */
         destroy : function()
@@ -118,7 +118,7 @@ define('controls/editors/Editor', ['qui/controls/Control'], function(Control)
         /**
          * Set the content to the editor
          *
-         * @method QUI.controls.editor.Editor#setContent
+         * @method controls/editors/Editor#setContent
          * @fires onSetContent [content, this]
          * @param {String} content - HTML String
          */
@@ -131,7 +131,7 @@ define('controls/editors/Editor', ['qui/controls/Control'], function(Control)
         /**
          * Get the content from the editor
          *
-         * @method QUI.controls.editor.Editor#getContent
+         * @method controls/editors/Editor#getContent
          * @return {String} content
          */
         getContent : function()
@@ -144,7 +144,7 @@ define('controls/editors/Editor', ['qui/controls/Control'], function(Control)
         /**
          * Set the editor instance
          *
-         * @method QUI.controls.editor.Editor#setInstance
+         * @method controls/editors/Editor#setInstance
          * @param {Editor Instance} Instance
          */
         setInstance : function(Instance)
@@ -156,7 +156,7 @@ define('controls/editors/Editor', ['qui/controls/Control'], function(Control)
          * Get the editor instance
          * ckeditor, tinymce and so on
          *
-         * @method QUI.controls.editor.Editor#getInstance
+         * @method controls/editors/Editor#getInstance
          * @return {Editor Instance} Instance
          */
         getInstance : function()

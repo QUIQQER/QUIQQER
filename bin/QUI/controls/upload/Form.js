@@ -10,16 +10,15 @@
  * @fires onComplete [this]
  * @fires onSubmit [Array, this]
  * @fires onInputDestroy
- * @fires onDragenter [event, DOMNode, QUI.controls.upload.Form]
- * @fires onDragleave [event, DOMNode, QUI.controls.upload.Form]
- * @fires onDragend [event, DOMNode, QUI.controls.upload.Form]
+ * @fires onDragenter [event, DOMNode, controls/upload/Form]
+ * @fires onDragleave [event, DOMNode, controls/upload/Form]
+ * @fires onDragend [event, DOMNode, controls/upload/Form]
  * @fires onDrop [event, files, Elm, Upload]
  *
  * @requires controls/Control
  *
  * @module controls/upload/Form
  * @class controls/upload/Form
- * @package com.pcsg.qui.js.controls.upload
  */
 
 define('controls/upload/Form', [
@@ -505,7 +504,7 @@ define('controls/upload/Form', [
             {
                 self.fireEvent( 'begin', [ self ] );
 
-                QUI.UploadManager.uploadFiles(
+                UploadManager.uploadFiles(
                     files,
                     self.getParam( 'onfinish' ),
                     params
@@ -516,7 +515,7 @@ define('controls/upload/Form', [
         /**
          * Set the status to finish and fires the onFinish Event
          *
-         * @param {QUI.controls.upload.File} File
+         * @param {controls/upload/Form} File
          * @param {unknown_type} result - result of the upload
          */
         finish : function(File, result)

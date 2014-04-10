@@ -1,19 +1,12 @@
 /**
- * Global Editor manager
- * define: QUI.Editors
+ * Global Menu manager
  *
  * @author www.pcsg.de (Henning Leutz)
  *
- * @module Editors
- * @package com.pcsg.qui.js
- * @namespace QUI
+ * @module Menu
  */
 
-define('Menu', [
-
-    'controls/menu/Manager'
-
-], function(Menu)
+define('Menu', ['controls/menu/Manager'], function(Menu)
 {
     "use strict";
 

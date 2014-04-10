@@ -8,8 +8,7 @@
  * @requires controls/Control
  *
  * @module controls/upload/File
- * @class QUI.controls.upload.File
- * @package com.pcsg.qui.js.controls.upload
+ * @class controls/upload/File
  */
 
 define('controls/upload/File', [
@@ -35,7 +34,7 @@ define('controls/upload/File', [
      * @fires onClick [this]
      * @fires onCancel [this]
      * @fires onComplete [this]
-     * @fires onError [QUI.classes.exceptions.Exception, this]
+     * @fires onError [qui/controls/messages/Error, this]
      *
      * @param {Object} options
      *

@@ -100,10 +100,10 @@ define('controls/projects/project/Sitemap', [
         },
 
         /**
-         * Returns the QUI.controls.sitemap.Map Control
+         * Returns the qui/controls/sitemap/Map Control
          *
-         * @method QUI.controls.projects.Sitemap#getMap
-         * @return {QUI.controls.sitemap.Map} Binded Map Object
+         * @method controls/projects/project/Sitemap#getMap
+         * @return {qui/controls/sitemap/Map} Binded Map Object
          */
         getMap : function()
         {
@@ -113,7 +113,7 @@ define('controls/projects/project/Sitemap', [
         /**
          * Create the DOMNode of the sitemap
          *
-         * @method QUI.controls.projects.Sitemap#create
+         * @method controls/projects/project/Sitemap#create
          * @return {DOMNode} Main DOM-Node Element
          */
         create : function()
@@ -130,7 +130,7 @@ define('controls/projects/project/Sitemap', [
         /**
          * Open the Map
          *
-         * @method QUI.controls.projects.Sitemap#open
+         * @method controls/projects/project/Sitemap#open
          */
         open : function()
         {
@@ -218,7 +218,7 @@ define('controls/projects/project/Sitemap', [
         /**
          * Open the Sitemap to the specific id
          *
-         * @method QUI.controls.projects.Sitemap#openSite
+         * @method controls/projects/project/Sitemap#openSite
          * @param {Integer} id - Site ID
          */
         openSite : function(id)
@@ -314,7 +314,7 @@ define('controls/projects/project/Sitemap', [
         /**
          * Get all selected Items
          *
-         * @method QUI.controls.projects.Sitemap#getSelectedChildren
+         * @method controls/projects/project/Sitemap#getSelectedChildren
          * @return {Array}
          */
         getSelectedChildren : function()
@@ -325,7 +325,7 @@ define('controls/projects/project/Sitemap', [
         /**
          * Get specific children
          *
-         * @method QUI.controls.projects.Sitemap#getChildren
+         * @method controls/projects/project/Sitemap#getChildren
          * @param {String} selector
          * @return {Array} List of children
          */
@@ -337,7 +337,7 @@ define('controls/projects/project/Sitemap', [
         /**
          * Sitemap filter, the user can search for certain items
          *
-         * @method QUI.controls.sitemap.Map#search
+         * @method qui/controls/sitemap/Map#search
          * @param {String} search
          * @return {Array} List of found elements
          */
@@ -349,7 +349,7 @@ define('controls/projects/project/Sitemap', [
         /**
          * If no id, the sitemap starts from the first child of the project
          *
-         * @method QUI.controls.projects.Sitemap#getFirstChild
+         * @method controls/projects/project/Sitemap#getFirstChild
          * @param {Function} callback - callback function
          * @private
          * @ignore
@@ -372,7 +372,7 @@ define('controls/projects/project/Sitemap', [
         /**
          * Get the attributes from a site
          *
-         * @method QUI.controls.projects.Sitemap#$getSite
+         * @method controls/projects/project/Sitemap#$getSite
          * @param {Integer} id - Seiten ID
          * @param {Function} callback - call back function, if ajax is finish
          *
@@ -396,8 +396,8 @@ define('controls/projects/project/Sitemap', [
         /**
          * Load the Children asynchron
          *
-         * @method QUI.controls.projects.Sitemap#$loadChildren
-         * @param {QUI.controls.sitemap.Item} Item - Parent sitemap item
+         * @method controls/projects/project/Sitemap#$loadChildren
+         * @param {qui/controls/sitemap/Item} Item - Parent sitemap item
          * @param {Function} callback - callback function, if ajax is finish
          *
          * @ignore
@@ -445,10 +445,10 @@ define('controls/projects/project/Sitemap', [
         /**
          * Parse a ajax result set to a sitemap item
          *
-         * @method QUI.controls.projects.Sitemap#$loadChildren
+         * @method controls/projects/project/Sitemap#$loadChildren
          * @param {Array} result
-         * @param {QUI.controls.sitemap.Item} Itm
-         * @return {QUI.controls.sitemap.Item}
+         * @param {qui/controls/sitemap/Item} Itm
+         * @return {qui/controls/sitemap/Item}
          *
          * @private
          */
@@ -551,10 +551,10 @@ define('controls/projects/project/Sitemap', [
          * Add the item to its parent<br />
          * set the control attributes to the child item
          *
-         * @method QUI.controls.projects.Sitemap#$addSitemapItem
+         * @method controls/projects/project/Sitemap#$addSitemapItem
          *
-         * @param {QUI.controls.sitemap.Item} Parent
-         * @param {QUI.controls.sitemap.Item} Child
+         * @param {qui/controls/sitemap/Item} Parent
+         * @param {qui/controls/sitemap/Item} Child
          *
          * @private
          * @ignore
@@ -571,8 +571,8 @@ define('controls/projects/project/Sitemap', [
         /**
          * Opens a Sitemap Item
          *
-         * @method QUI.controls.projects.Sitemap#$open
-         * @param {QUI.controls.sitemap.Item} Item
+         * @method controls/projects/project/Sitemap#$open
+         * @param {qui/controls/sitemap/Item} Item
          *
          * @private
          * @ignore
@@ -592,8 +592,8 @@ define('controls/projects/project/Sitemap', [
         /**
          * sitemap item close action
          *
-         * @method QUI.controls.projects.Sitemap#$close
-         * @param {QUI.controls.sitemap.Item} Item
+         * @method controls/projects/project/Sitemap#$close
+         * @param {qui/controls/sitemap/Item} Item
          *
          * @private
          * @ignore
@@ -610,8 +610,8 @@ define('controls/projects/project/Sitemap', [
         /**
          * event - onSiteActivate. onSiteDeactivate, onSiteSave
          *
-         * @param {QUI.classes.projects.Project} Project - Project of the Site that are changed
-         * @param {QUI.classes.projects.Site} Site - Site that are changed
+         * @param {classes/projects/Project} Project - Project of the Site that are changed
+         * @param {classes/projects/project/Site} Site - Site that are changed
          */
         onSiteChange : function(Project, Site)
         {
@@ -642,8 +642,8 @@ define('controls/projects/project/Sitemap', [
         /**
          * event - onSiteCreate
          *
-         * @param {QUI.classes.projects.Project} Project - Project of the Site that are changed
-         * @param {QUI.classes.projects.Site} Site - Site that create the child
+         * @param {classes/projects/Project} Project - Project of the Site that are changed
+         * @param {classes/projects/project/Site} Site - Site that create the child
          * @param {Integer} newid - new child id
          */
         onSiteCreate : function(Project, Site, newid)
@@ -674,7 +674,7 @@ define('controls/projects/project/Sitemap', [
         /**
          * event - on site delete
          *
-         * @param {QUI.classes.projects.Project} Project - Project of the Site that are changed
+         * @param {classes/projects/Project} Project - Project of the Site that are changed
          * @param {Integer} siteid - siteid that are deleted
          */
         onSiteDelete : function(Project, siteid)

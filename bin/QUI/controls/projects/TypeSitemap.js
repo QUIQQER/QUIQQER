@@ -1,7 +1,7 @@
 /**
  * The type sitemap for the project
  *
- * The type sitemap displays / create a QUI.controls.sitemap.Map
+ * The type sitemap displays / create a qui/controls/sitemap/Map
  * with all available types for the project
  *
  * @author www.pcsg.de (Henning Leutz)
@@ -28,7 +28,7 @@ define('controls/projects/TypeSitemap', [
     /**
      * The type sitemap for the project
      *
-     * The type sitemap displays / create a QUI.controls.sitemap.Map
+     * The type sitemap displays / create a qui/controls/sitemap/Map
      * with all available types for the project
      *
      * @class controls/projects/TypeSitemap

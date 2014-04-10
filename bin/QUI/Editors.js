@@ -5,8 +5,6 @@
  * @author www.pcsg.de (Henning Leutz)
  *
  * @module Editors
- * @package com.pcsg.qui.js
- * @namespace QUI
  */
 
 define('Editors', ['classes/editor/Manager'], function(Editors)

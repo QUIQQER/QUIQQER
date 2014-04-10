@@ -4,8 +4,6 @@
  * @author www.pcsg.de (Henning Leutz)
  *
  * @module controls/projects/Input
- * @package com.pcsg.qui.js.controls.projects
- * @namespace QUI.controls.projects
  *
  * @require controls/Control
  * @require controls/buttons/Button

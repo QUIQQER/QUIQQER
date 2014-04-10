@@ -169,8 +169,6 @@ define('utils/Controls', function()
                         zIndex : ElementUtils.getComputedZIndex( Child )
                     });
 
-                    //console.log( Picker.picker );
-
                     new QUIButton({
                         image   : 'icon-remove',
                         alt     : 'Datum leeren',
@@ -190,8 +188,6 @@ define('utils/Controls', function()
 
             }, function(err)
             {
-                console.error( err );
-
                 require(['qui/QUI'], function(QUI)
                 {
                     QUI.getMessageHandler(function(MH)

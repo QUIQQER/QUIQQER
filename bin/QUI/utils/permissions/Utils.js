@@ -5,15 +5,13 @@
  * @author www.pcsg.de (Henning Leutz)
  *
  * @module controls/permissions/Utils
- * @package com.pcsg.qui.js.controls.permissions
- * @namespace  QUI.controls.permissions
  */
 
 define('utils/permissions/Utils', [
 
     'css!utils/permissions/Utils.css'
 
-],function()
+], function()
 {
     "use strict";
 

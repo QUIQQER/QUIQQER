@@ -7,7 +7,6 @@
  * @requires Projects
  *
  * @module controls/projects/Settings
- * @package com.pcsg.qui.js.controls.project
  */
 
 define('controls/projects/project/Settings', [

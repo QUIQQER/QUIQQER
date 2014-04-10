@@ -9,14 +9,12 @@
  * @requires classes/projects/Trash
  *
  * @module classes/projects/Project
- * @package com.pcsg.qui.js.classes.projects
- * @namespace QUI.classes.projects
  *
  * @events onSiteDelete [this, {Integer}]
- * @events onSiteSave [this, {QUI.classes.projects.Site}]
- * @events onSiteCreate [this, {QUI.classes.projects.Site}]
- * @events onSiteActivate [this, {QUI.classes.projects.Site}]
- * @events onSiteDeactivate [this, {QUI.classes.projects.Site}]
+ * @events onSiteSave [this, {classes/projects/project/Site}]
+ * @events onSiteCreate [this, {classes/projects/project/Site}]
+ * @events onSiteActivate [this, {classes/projects/project/Site}]
+ * @events onSiteDeactivate [this, {classes/projects/project/Site}]
  *
  * @todo Trash
  */
@@ -72,9 +70,9 @@ define('classes/projects/Project', [
         /**
          * Get a site from the project
          *
-         * @method QUI.classes.Project#get
+         * @method classes/projects/Project#get
          * @param {Integer} id - ID of the site
-         * @return {QUI.classes.projects.Site}
+         * @return {classes/projects/project/Site}
          */
         get : function(id)
         {
@@ -148,8 +146,8 @@ define('classes/projects/Project', [
         /**
          * Return the Media Object for the Project
          *
-         * @method QUI.classes.Project#getMedia
-         * @return {QUI.classes.projects.Media}
+         * @method classes/projects/Project#getMedia
+         * @return {classes/projects/project/Media}
          */
         getMedia : function()
         {
@@ -163,8 +161,8 @@ define('classes/projects/Project', [
         /**
          * Return the Trash Object for the Project
          *
-         * @method QUI.classes.Project#getTrash
-         * @return {QUI.classes.projects.Trash}
+         * @method classes/projects/Project#getTrash
+         * @return {classes/projects/project/Trash}
          */
         getTrash : function()
         {
@@ -178,7 +176,7 @@ define('classes/projects/Project', [
         /**
          * Return the Project name
          *
-         * @method QUI.classes.Project#getName
+         * @method classes/projects/Project#getName
          *
          * @return {String}
          */
@@ -194,7 +192,7 @@ define('classes/projects/Project', [
         /**
          * Return the Project lang
          *
-         * @method QUI.classes.Project#getName
+         * @method classes/projects/Project#getName
          * @return {String}
          */
         getLang : function()
@@ -205,8 +203,8 @@ define('classes/projects/Project', [
         /**
          * event : on Site deletion
          *
-         * @method QUI.classes.Project#$onChildDelete
-         * @param {QUI.classes.projects.Site} Site
+         * @method classes/projects/Project#$onChildDelete
+         * @param {classes/projects/project/Site} Site
          * @return {this}
          * @fires siteDelete
          */
@@ -226,7 +224,7 @@ define('classes/projects/Project', [
         /**
          * event : on Site saving
          *
-         * @param {QUI.classes.projects.Site} Site
+         * @param {classes/projects/project/Site} Site
          * @fires siteSave
          */
         $onSiteSave : function(Site)
@@ -237,8 +235,8 @@ define('classes/projects/Project', [
         /**
          * event : on Site create
          *
-         * @param {QUI.classes.projects.Site} Site
-         * @param {Innteger} newchildid - id of the new child
+         * @param {classes/projects/project/Site} Site
+         * @param {Integer} newchildid - id of the new child
          * @fires siteCreate
          */
         $onSiteCreate : function(Site, newchildid)
@@ -249,7 +247,7 @@ define('classes/projects/Project', [
         /**
          * event : on Site activasion
          *
-         * @param {QUI.classes.projects.Site} Site
+         * @param {classes/projects/project/Site} Site
          * @fires Activate
          */
         $onSiteActivate : function(Site)
@@ -260,7 +258,7 @@ define('classes/projects/Project', [
         /**
          * event : on Site deactivasion
          *
-         * @param {QUI.classes.projects.Site} Site
+         * @param {classes/projects/project/Site} Site
          * @fires Activate
          */
         $onSiteDeactivate : function(Site)

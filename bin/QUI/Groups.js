@@ -1,11 +1,9 @@
 /**
- * Global Group Manager Object object
+ * Global Group Manager object
  *
  * @author www.pcsg.de (Henning Leutz)
  *
  * @module Groups
- * @package com.pcsg.qui.js
- * @namespace QUI
  */
 
 define('Groups', ['classes/groups/Manager'], function(Groups)

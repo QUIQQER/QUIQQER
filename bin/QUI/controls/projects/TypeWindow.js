@@ -1,7 +1,7 @@
 /**
  * The type window for the project
  *
- * The type window create a QUI.controls.windows.Submit
+ * The type window create a qui/controls/windows/Confirm
  * with all available types for the project
  *
  * @author www.pcsg.de (Henning Leutz)
@@ -12,8 +12,6 @@
  * @requires controls/projects/TypeSitemap
  *
  * @module controls/projects/TypeSitemap
- * @package com.pcsg.qui.js.controls.projects
- * @namespace QUI.controls.projects
  */
 
 define('controls/projects/TypeWindow', [
@@ -28,7 +26,7 @@ define('controls/projects/TypeWindow', [
     "use strict";
 
     /**
-     * @class QUI.controls.projects.TypeWindow
+     * @class controls/projects/TypeWindow
      *
      * @fires onSubmit [result, Win]
      * @fires onCancel [Win]
@@ -72,7 +70,7 @@ define('controls/projects/TypeWindow', [
         /**
          * Create the Window with a type sitemap
          *
-         * @method QUI.controls.projects.TypeWindow#create
+         * @method controls/projects/TypeWindow#create
          * @return {DOMNode}
          */
         $onOpen : function()
@@ -107,6 +105,8 @@ define('controls/projects/TypeWindow', [
 
         /**
          * submit the window
+         *
+         * @method controls/projects/TypeWindow#submit
          */
         submit : function()
         {

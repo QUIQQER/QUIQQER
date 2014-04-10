@@ -4,7 +4,6 @@
  * @author www.pcsg.de (Henning Leutz)
  *
  * @module controls/permissions/Panel
- * @package com.pcsg.qui.js.controls.permissions
  */
 
 define('controls/permissions/Panel', [

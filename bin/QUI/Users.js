@@ -1,11 +1,9 @@
 /**
- * Global Group Manager Object object
+ * Global User Manager object
  *
  * @author www.pcsg.de (Henning Leutz)
  *
- * @module Groups
- * @package com.pcsg.qui.js
- * @namespace QUI
+ * @module Users
  */
 
 define('Users', ['classes/users/Manager'], function(Users)

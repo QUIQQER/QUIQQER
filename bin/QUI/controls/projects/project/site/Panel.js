@@ -3,12 +3,14 @@
  *
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires controls/Control
- * @requires lib/Sites
- * @requires classes/projects/Site
+ * @requires qui/controls/desktop/Panel
+ * @requires Projects
+ * @requires Ajax
+ * @requires classes/projects/project/Site
+ * @requires qui/controls/buttons/Button
+ * @requires qui/utils/Form
  *
  * @module controls/projects/site/Panel
- * @package com.pcsg.qui.js.controls.project
  */
 
 define('controls/projects/project/site/Panel', [

@@ -5,7 +5,6 @@
  * @author www.pcsg.de (Henning Leutz)
  *
  * @module controls/users/Entry
- * @package com.pcsg.qui.js.controls.users
  *
  * @require controls/Control
  * @require users

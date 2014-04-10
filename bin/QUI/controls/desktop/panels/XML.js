@@ -3,9 +3,7 @@
  * eg settings.xml
  *
  * @author www.pcsg.de (Henning Leutz)
- *
  * @module controls/desktop/panels/XML
- * @package com.pcsg.qui.js.controls.desktop.panels
  */
 
 define('controls/desktop/panels/XML', [

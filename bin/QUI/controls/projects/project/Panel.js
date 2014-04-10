@@ -9,8 +9,6 @@
  * @requires controls/projects/Sitemap
  *
  * @module controls/projects/Panel
- * @package com.pcsg.qui.js.controls.project
- * @namespace QUI.controls.project
  */
 
 define('controls/projects/project/Panel', [
@@ -27,7 +25,7 @@ define('controls/projects/project/Panel', [
 
     'css!controls/projects/project/Panel.css'
 
-], function(QUI_Panel, Projects, ProjectSitemap, QUIButton, QUIButtonSeperator, QUISitemap, QUISitemapItem, QUISitemapFilter)
+], function(QUIPanel, Projects, ProjectSitemap, QUIButton, QUIButtonSeperator, QUISitemap, QUISitemapItem, QUISitemapFilter)
 {
     "use strict";
 
@@ -39,7 +37,7 @@ define('controls/projects/project/Panel', [
      */
     return new Class({
 
-        Extends : QUI_Panel,
+        Extends : QUIPanel,
         Type    : 'controls/projects/project/Panel',
 
         Binds : [
@@ -76,7 +74,7 @@ define('controls/projects/project/Panel', [
         /**
          * Create the project panel body
          *
-         * @method QUI.controls.projects.Panel#$onCreate
+         * @method controls/projects/project/Panel#$onCreate
          */
         $onCreate : function()
         {
@@ -247,7 +245,7 @@ define('controls/projects/project/Panel', [
         /**
          * Create the Project list for the Panel
          *
-         * @method QUI.controls.projects.Panel#createList
+         * @method controls/projects/project/Panel#createList
          */
         createList : function()
         {
@@ -378,7 +376,7 @@ define('controls/projects/project/Panel', [
         /**
          * Opens the selected Project and create a Project Sitemap in the Panel
          *
-         * @method QUI.controls.projects.Panel#openProject
+         * @method controls/projects/project/Panel#openProject
          */
         openProject : function()
         {
@@ -490,7 +488,7 @@ define('controls/projects/project/Panel', [
         /**
          * Select an sitemap item by ID
          *
-         * @method QUI.controls.projects.Panel#selectSitemapItemById
+         * @method controls/projects/project/Panel#selectSitemapItemById
          *
          * @param {Integer} id - the site id
          * @return {this}
@@ -514,7 +512,7 @@ define('controls/projects/project/Panel', [
         /**
          * Get all sitemap items by the id
          *
-         * @method QUI.controls.projects.Panel#getSitemapItemsById
+         * @method controls/projects/project/Panel#getSitemapItemsById
          * @return {Array}
          */
         getSitemapItemsById : function(id)
@@ -530,7 +528,7 @@ define('controls/projects/project/Panel', [
          * Opens a site in the panel<br />
          * Opens the sitemap and open the site panel
          *
-         * @method QUI.controls.projects.Panel#openSite
+         * @method controls/projects/project/Panel#openSite
          * @param {Integer} id - ID from the wanted site
          */
         openSite : function(id)
@@ -543,12 +541,12 @@ define('controls/projects/project/Panel', [
         /**
          * event: click on sitemap item -> opens a site panel
          *
-         * @method QUI.controls.projects.Panel#$openSitePanel
-         * @param {QUI.controls.sitemap.Item} Item
+         * @method controls/projects/project/Panel#$openSitePanel
+         * @param {qui/controls/sitemap/Item} Item
          */
         $openSitePanel : function(Item)
         {
-            var Conrol  = this,
+            var self    = this,
                 id      = Item.getAttribute( 'value' ),
                 project = this.getAttribute( 'project' ),
                 lang    = this.getAttribute( 'lang' );
@@ -589,7 +587,7 @@ define('controls/projects/project/Panel', [
                     return;
                 }
 
-                var Project = QUI.Projects.get( project, lang ),
+                var Project = Projects.get( project, lang ),
                     Site    = Project.get( id );
 
                 panels[ 0 ].appendChild(
@@ -598,12 +596,12 @@ define('controls/projects/project/Panel', [
                         {
                             onShow : function(Panel)
                             {
-                                if ( Panel.getType() != 'QUI.controls.projects.site.Panel' ) {
+                                if ( Panel.getType() != 'controls/projects/project/site/Panel' ) {
                                     return;
                                 }
                                 // if it is a sitepanel
                                 // set the item in the map active
-                                Conrol.openSite( Panel.getSite().getId() );
+                                self.openSite( Panel.getSite().getId() );
                             }
                         }
                     })
@@ -614,7 +612,7 @@ define('controls/projects/project/Panel', [
         /**
          * opens a media panel from a project
          *
-         * @method QUI.controls.projects.Panel#$openSitePanel
+         * @method controls/projects/project/Panel#$openSitePanel
          * @param {String} Project name
          */
         openMediaPanel : function(project)
@@ -642,14 +640,13 @@ define('controls/projects/project/Panel', [
                 return;
             }
 
-
             require([
                 'qui/QUI',
                 'controls/projects/project/media/Panel',
                 'classes/projects/Project'
             ], function(QUI, MediaPanel, Project, Site)
             {
-                var Project = QUI.Projects.get( project ),
+                var Project = Projects.get( project ),
                     Media   = Project.getMedia();
 
                 panels[ 0 ].appendChild(

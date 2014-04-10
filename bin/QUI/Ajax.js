@@ -19,10 +19,11 @@ require(['Ajax'], function(Ajax)
 
 define('Ajax', [
 
+    'qui/QUI',
     'qui/classes/request/Ajax',
     'qui/utils/Object'
 
-], function(QUIAjax, Utils)
+], function(QUI, QUIAjax, Utils)
 {
     "use strict";
 
@@ -34,14 +35,14 @@ define('Ajax', [
         /**
          * Send a Request
          *
-         * @method QUI.lib.Ajax#request
+         * @method Ajax#request
          *
          * @param {String} call            - PHP function
          * @param {String} method         - Send Method -> post or get
          * @param {Function} callback     - Callback function if the request is finish
          * @param {Object} params         - PHP parameter (optional)
          *
-         * @return {QUI.classes.Ajax}
+         * @return {Ajax}
          */
         request : function(call, method, callback, params)
         {
@@ -102,13 +103,13 @@ define('Ajax', [
         /**
          * Send a POST Request
          *
-         * @method QUI.lib.Ajax#post
+         * @method Ajax#post
          *
          * @param {String|Array} call - PHP function
          * @param {Function} callback - Callback function if the Request is finish
          * @param {Object} params     - PHP parameter (optional)
          *
-         * @return {QUI.classes.Ajax}
+         * @return {Ajax}
          */
         post : function(call, callback, params)
         {
@@ -118,13 +119,13 @@ define('Ajax', [
         /**
          * Send a GET Request
          *
-         * @method QUI.lib.Ajax#get
+         * @method Ajax#get
          *
          * @param {String|Array} call - PHP function
          * @param {Function} callback - Callback function if the Request is finish
          * @param {Object} params     - PHP parameter (optional)
          *
-         * @return {QUI.classes.Ajax]
+         * @return {Ajax}
          */
         get : function(call, callback, params)
         {
@@ -134,7 +135,7 @@ define('Ajax', [
         /**
          * Parse params to a ajax request string
          *
-         * @method QUI.lib.Ajax#parseParams
+         * @method Ajax#parseParams
          *
          * @param {String|Array} call - PHP function
          * @param {Object} params     - PHP parameter (optional)

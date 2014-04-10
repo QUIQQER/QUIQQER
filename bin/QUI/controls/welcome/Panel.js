@@ -2,11 +2,9 @@
  * The Welcome Quiqqer panel
  *
  * @author www.namerobot.com (Henning Leutz)
- *
- * @requires controls/Control
- *
  * @module controls/welcome/Panel
- * @package com.pcsg.qui.js.controls.project
+ *
+ * @requires qui/controls/desktop/Panel
  */
 
 define('controls/welcome/Panel', [

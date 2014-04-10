@@ -4,8 +4,6 @@
  * @author www.pcsg.de (Henning Leutz)
  *
  * @module controls/groups/Group
- * @package com.pcsg.qui.js.controls.groups
- * @namespace QUI.controls.groups
  *
  * @require controls/desktop/Panel
  * @require controls/grid/Grid
@@ -21,10 +19,11 @@ define('controls/groups/Group', [
     'Editors',
     'qui/controls/buttons/Button',
     'qui/utils/Form',
+    'utils/Controls',
 
     'css!controls/groups/Group.css'
 
-], function(Panel, Grid, Groups, Ajax, Editors, QUIButton, FormUtils)
+], function(Panel, Grid, Groups, Ajax, Editors, QUIButton, FormUtils, ControlUtils)
 {
     "use strict";
 
@@ -81,7 +80,7 @@ define('controls/groups/Group', [
         /**
          * Return the assigned group
          *
-         * @return {QUi.classes.groups.Group}
+         * @return {classes/groups/Group}
          */
         getGroup : function()
         {
@@ -138,10 +137,10 @@ define('controls/groups/Group', [
             var Parent = this.getParent(),
                 Group  = this.getGroup();
 
-            require([ 'controls/permissions/Panel' ], function(PermPanel)
+            require(['controls/permissions/Panel'], function(PermPanel)
             {
                 Parent.appendChild(
-                    new QUI.controls.permissions.Panel(
+                    new PermPanel(
                         null,
                         Group
                     )
@@ -248,7 +247,7 @@ define('controls/groups/Group', [
          * event: groups on delete
          * if one group deleted, check if the group is this group
          *
-         * @param {QUI.classes.groups.Groups} Groups
+         * @param {classes/groups/Manager} Groups
          * @param {Array} ids - Array of group ids which have been deleted
          */
         $onGroupDelete : function(Groups, ids)
@@ -267,7 +266,7 @@ define('controls/groups/Group', [
          * event: groups on status change
          * if one groups status change, check if the group is this group
          *
-         * @param {QUI.classes.groups.Groups} Groups
+         * @param {classes/groups/Manager} Groups
          * @param {Object} groups - groups that change the status
          */
         $onGroupStatusChange : function(Groups, groups)
@@ -291,7 +290,7 @@ define('controls/groups/Group', [
         /**
          * Draw the panel action buttons
          *
-         * @method QUI.controls.groups.Group#$drawButtons
+         * @method controls/groups/Group#$drawButtons
          */
         $drawButtons : function()
         {
@@ -332,7 +331,7 @@ define('controls/groups/Group', [
         /**
          * Get the category buttons for the pannel
          *
-         * @method QUI.controls.groups.Group#drawCategories
+         * @method controls/groups/Group#drawCategories
          *
          * @param {Function} onfinish - Callback function
          * @ignore
@@ -366,7 +365,7 @@ define('controls/groups/Group', [
         /**
          * event: on category click
          *
-         * @param {QUI.controls.buttons.Button} Category
+         * @param {qui/controls/buttons/Button} Category
          */
         $onCategoryLoad : function(Category)
         {
@@ -390,8 +389,7 @@ define('controls/groups/Group', [
 
                 Form = Body.getElement( 'form' );
 
-                // @todo
-                // QUI.controls.Utils.parse( Body );
+                ControlUtils.parse( Body );
                 FormUtils.setDataToForm( Group.getAttributes(), Form );
 
                 switch ( Category.getAttribute( 'name' ) )

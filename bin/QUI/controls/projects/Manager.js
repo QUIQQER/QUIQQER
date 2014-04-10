@@ -10,7 +10,6 @@
  * @requires controls/grid/Grid
  *
  * @module controls/projects/Manager
- * @package com.pcsg.qui.js.controls.project
  */
 
 define('controls/projects/Manager', [

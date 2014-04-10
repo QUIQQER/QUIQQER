@@ -3,25 +3,25 @@
  *
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires controls/Settings
- *
+ * @requires qui/controls/desktop/Panel
  * @module controls/system/Cache
- * @package com.pcsg.qui.js.controls.system.Manager
- * @namespace QUI.controls.system
+ *
+ * @depricated???
  */
 
 define('controls/cache/Manager', [
 
+    'qui/QUI',
     'qui/controls/desktop/Panel',
 
     'css!controls/cache/Manager.css'
 
-], function(QUIPanel)
+], function(QUI, QUIPanel)
 {
     "use strict";
 
     /**
-     * @class QUI.controls.system.Cache
+     * @class controls/cache/Manager
      */
     return new Class({
 
@@ -52,7 +52,7 @@ define('controls/cache/Manager', [
         /**
          * Load the cache manager
          *
-         * @method QUI.controls.system.Cache#load
+         * @method controls/cache/Manager#load
          */
         $onCreate : function()
         {
@@ -60,15 +60,15 @@ define('controls/cache/Manager', [
 
             var i, n, len;
 
-            var Body = this.getContent();
-            var caches = this.$caches,
+            var Body   = this.getContent(),
+                caches = this.$caches,
                 table  = '<table class="data-table">' +
-                        '<thead>' +
-                            '<tr>' +
-                                '<th>Cache</th>' +
-                            '</tr>' +
-                        '</thead>' +
-                        '<tbody>';
+                         '<thead>' +
+                             '<tr>' +
+                                 '<th>Cache</th>' +
+                             '</tr>' +
+                         '</thead>' +
+                         '<tbody>';
 
             for ( i = 0, len = caches.length; i < len; i++ )
             {
@@ -91,7 +91,7 @@ define('controls/cache/Manager', [
             table = table + '</tbody></table>';
             table = table + '<div class="clear-cache-btn"></div>';
 
-            Body.set('html', table);
+            Body.set( 'html', table );
 
             this.addButton({
                 text      : 'Cache leeren ausführen',
@@ -158,11 +158,9 @@ define('controls/cache/Manager', [
         {
             Ajax.post('ajax_system_cache_purge', function(result, Request)
             {
-                if ( Request.getAttribute('oncomplete') ) {
-                    Request.getAttribute('oncomplete')( result, Request );
+                if ( typeof oncomplete !== 'undefined' ) {
+                    oncomplete( result, Request );
                 }
-            }, {
-                oncomplete : oncomplete
             });
         },
 
@@ -173,12 +171,11 @@ define('controls/cache/Manager', [
         {
             Ajax.post('ajax_system_cache_clear', function(result, Request)
             {
-                if ( Request.getAttribute('oncomplete') ) {
-                    Request.getAttribute('oncomplete')( result, Request );
+                if ( typeof oncomplete !== 'undefined' ) {
+                    oncomplete( result, Request );
                 }
             }, {
-                oncomplete : oncomplete,
-                params     : JSON.encode( params )
+                params : JSON.encode( params )
             });
         }
 
@@ -214,9 +211,12 @@ define('controls/cache/Manager', [
             {
                 this.$Clear.setAttribute('textimage', URL_BIN_DIR +'16x16/cache.png');
 
-                QUI.MH.addInformation(
-                    'Der Cache wurde erfolgreich geleert'
-                );
+                QUI.getMessageHandler(function(MH)
+                {
+                    MH.addInformation(
+                        'Der Cache wurde erfolgreich geleert'
+                    );
+                });
 
             }.bind( this ));
         },
@@ -234,9 +234,12 @@ define('controls/cache/Manager', [
             {
                 this.$Purge.setAttribute('textimage', URL_BIN_DIR +'16x16/cache.png');
 
-                QUI.MH.addInformation(
-                    'Der Cache wurde erfolgreich gesäubert'
-                );
+                QUI.getMessageHandler(function(MH)
+                {
+                    MH.addInformation(
+                        'Der Cache wurde erfolgreich gesäubert'
+                    );
+                });
 
             }.bind( this ));
         },
@@ -246,7 +249,7 @@ define('controls/cache/Manager', [
          */
         $onChange : function()
         {
-            var checkboxs = this.$Body.getElements('input[type="checkbox"]');
+            var checkboxs = this.$Body.getElements( 'input[type="checkbox"]' );
 
             for ( var i = 0, len = checkboxs.length; i < len; i++ )
             {

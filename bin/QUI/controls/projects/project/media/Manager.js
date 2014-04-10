@@ -4,7 +4,6 @@
  * @author www.pcsg.de (Henning Leutz)
  *
  * @module controls/projects/media/Manager
- * @package com.pcsg.qui.js.controls.projects.media
  */
 
 define('controls/projects/project/media/Manager', [

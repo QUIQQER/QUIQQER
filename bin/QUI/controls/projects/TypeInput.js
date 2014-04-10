@@ -9,7 +9,6 @@
  * @requires Plugins
  *
  * @module controls/projects/TypeInput
- * @package com.pcsg.qui.js.controls.projects
  */
 
 define('controls/projects/TypeInput', [

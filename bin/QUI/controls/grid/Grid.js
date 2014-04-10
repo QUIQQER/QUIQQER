@@ -30,9 +30,7 @@
  * @requires controls/Control
  *
  * @module controls/grid/Grid
- * @package com.pcsg.qui.js.controls.grid
- * @namespace QUI.controls.grid
- *
+
  * @author www.pcsg.de (Henning Leutz)
  */
 
@@ -49,7 +47,7 @@ define('controls/grid/Grid', [
     "use strict";
 
     /**
-     * @class QUI.controls.grid.Grid
+     * @class controls/grid/Grid
      *
      * @memberof! <global>
      */
@@ -1862,7 +1860,7 @@ define('controls/grid/Grid', [
         /**
          * Render one row
          *
-         * @method QUI.controls.grid.Grid#renderRow
+         * @method controls/grid/Grid#renderRow
          *
          * @param {Integer} row - row number
          * @param {Object} data - data for the row
@@ -2903,7 +2901,7 @@ define('controls/grid/Grid', [
 
             for ( var exportType in options.exportTypes )
             {
-                new QUI.controls.buttons.Button({
+                new QUIButton({
                     name   : exportType,
                     text   : options.exportTypes[exportType],
                     events : {
@@ -2915,7 +2913,7 @@ define('controls/grid/Grid', [
                 }).inject( exportBarDiv );
             }
 
-            new QUI.controls.buttons.Button({
+            new QUIButton({
                 name   : 'cancel',
                 text   : 'Abbrechen',
                 events :
@@ -3029,7 +3027,7 @@ define('controls/grid/Grid', [
         /**
          * Starts the Drag & Drop
          *
-         * @method QUI.controls.grid.Grid#startDrag
+         * @method controls/grid/Grid#startDrag
          *
          * @param {DOMEvent} event
          */

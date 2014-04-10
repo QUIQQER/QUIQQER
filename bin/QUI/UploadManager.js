@@ -4,14 +4,9 @@
  * @author www.pcsg.de (Henning Leutz)
  *
  * @module UploadManager
- * @package com.pcsg.qui.js
  */
 
-define('UploadManager', [
-
-    'controls/upload/Manager'
-
-], function(UploadManager)
+define('UploadManager', ['controls/upload/Manager'], function(UploadManager)
 {
     "use strict";
 

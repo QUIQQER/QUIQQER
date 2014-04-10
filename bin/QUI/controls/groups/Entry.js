@@ -5,8 +5,6 @@
  * @author www.pcsg.de (Henning Leutz)
  *
  * @module controls/groups/Entry
- * @package com.pcsg.qui.js.controls.groups
- * @namespace QUI.controls.groups
  *
  * @require controls/Control
  * @require Groups
@@ -52,7 +50,7 @@ define('controls/groups/Entry', [
         /**
          * Return the binded Group
          *
-         * @return {QUI.classes.groups.Group}
+         * @return {classes/groups/Group}
          */
         getGroup : function()
         {
@@ -62,7 +60,7 @@ define('controls/groups/Entry', [
         /**
          * Create the DOMNode of the entry
          *
-         * @method QUI.controls.groups.Entry#create
+         * @method controls/groups/Entry#create
          * @return {DOMNode}
          */
         create : function()
@@ -125,7 +123,7 @@ define('controls/groups/Entry', [
         /**
          * Update the group name
          *
-         * @param {QUI.classes.groups.Group}
+         * @param {classes/groups/Group}
          * @return {this}
          */
         $onGroupUpdate : function(Group)

@@ -6,8 +6,6 @@
  * @requires classes/DOM
  *
  * @module classes/request/Download
- * @package com.pcsg.qui.js.classes.request
- * @namespace QUI.classes
  */
 
 define('classes/request/Download', [
@@ -21,7 +19,7 @@ define('classes/request/Download', [
     /**
      * QUI download class for download files to the QUIQQER from external resources
      *
-     * @class QUI.classes.request.Download
+     * @class classes/request/Download
      *
      * @fires onDragenter [event, Target, this]
      * @fires onDragend [event, Target, this]#
@@ -32,7 +30,7 @@ define('classes/request/Download', [
     return new Class({
 
         Extends : DOM,
-        Type    : 'QUI.classes.request.Download',
+        Type    : 'classes/request/Download',
 
         $Request : null,
         $result  : null,
@@ -52,7 +50,7 @@ define('classes/request/Download', [
         /**
          * Create a iframe and call update.php with the wanted file
          *
-         * @method QUI.classes.request.Download#start
+         * @method classes/request/Download#start
          */
         start : function()
         {
@@ -73,7 +71,7 @@ define('classes/request/Download', [
         /**
          * PHP connection for status updates
          *
-         * @method QUI.classes.request.Download#updateStatus
+         * @method classes/request/Download#updateStatus
          */
         updateStatus : function(status)
         {

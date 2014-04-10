@@ -18,7 +18,7 @@ define('controls/logs/Panel', [
     "use strict";
 
     /**
-     * @class QUI.controls.desktop.panels.Desktop
+     * @class controls/logs/Panel
      */
     return new Class({
 
@@ -350,7 +350,7 @@ define('controls/logs/Panel', [
         /**
          * Click on the log button to open the log
          *
-         * @param {QUI.controls.buttons.button} Btn
+         * @param {qui/controls/buttons/button} Btn
          */
         $btnOpenLog : function(Btn)
         {
@@ -362,7 +362,7 @@ define('controls/logs/Panel', [
         /**
          * event : grid refresh
          *
-         * @param {QUI.controls.grid.Grid} Grid
+         * @param {controls/grid/Grid} Grid
          */
         $gridRefresh : function(Grid)
         {

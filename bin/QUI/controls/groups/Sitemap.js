@@ -4,7 +4,6 @@
  * @author www.pcsg.de (Henning Leutz)
  *
  * @module controls/groups/Sitemap
- * @package com.pcsg.qui.js.controls.groups
  *
  * @events onItemClick [ this, {qui/controls/sitemap/Item} ]
  * @events onItemDblClick [ this, {qui/controls/sitemap/Item} ]

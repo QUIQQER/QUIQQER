@@ -108,11 +108,7 @@ define('classes/projects/Manager', [
                 return this.$Project.getAttribute( 'lang' );
             }
 
-            if ( QUI.lang !== '' ) {
-                return QUI.lang;
-            }
-
-            return QUI.standard.lang;
+            return QUIQQER_PROJECT.lang;
         },
 
         /**
@@ -127,11 +123,7 @@ define('classes/projects/Manager', [
                 return this.$Project.getName();
             }
 
-            if ( QUI.project !== '' ) {
-                return QUI.project;
-            }
-
-            return QUI.standard.name;
+            return QUIQQER_PROJECT.name;
         },
 
         /**
@@ -142,13 +134,10 @@ define('classes/projects/Manager', [
          */
         getList : function(onfinish, params)
         {
-            params = params || {};
-            params.onfinish = onfinish;
-
             Ajax.get('ajax_project_getlist', function(result, Ajax)
             {
-                Ajax.getAttribute('onfinish')(result, Ajax);
-            }, params);
+                onfinish( result, Ajax );
+            }, params || {});
         },
 
         /**
@@ -163,16 +152,15 @@ define('classes/projects/Manager', [
         {
             Ajax.post('ajax_project_create', function(result, Request)
             {
-                if ( Request.getAttribute( 'onfinish' ) ) {
-                    Request.getAttribute( 'onfinish' )( result, Request );
+                if ( typeof onfinish !== 'undefined' ) {
+                    onfinish( result, Request );
                 }
             }, {
                 params : JSON.encode({
                     project  : project,
                     lang     : lang,
                     template : template
-                }),
-                onfinish : onfinish
+                })
             });
         }
     });

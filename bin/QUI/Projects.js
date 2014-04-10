@@ -4,15 +4,9 @@
  * @author www.pcsg.de (Henning Leutz)
  *
  * @module Projects
- * @package com.pcsg.qui.js
- * @namespace QUI
  */
 
-define('Projects', [
-
-    'classes/projects/Manager'
-
-], function(Projects)
+define('Projects', ['classes/projects/Manager'], function(Projects)
 {
     "use strict";
 

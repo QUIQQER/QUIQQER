@@ -7,7 +7,6 @@
  * @requires controls/projects/TypeWindow
  *
  * @module controls/projects/TypeButton
- * @package com.pcsg.qui.js.controls.projects
  */
 
 define('controls/projects/TypeButton', [

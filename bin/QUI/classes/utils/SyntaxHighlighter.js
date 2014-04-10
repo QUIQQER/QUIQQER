@@ -3,11 +3,8 @@
  *
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires classes/DOM
- *
+ * @requires qui/classes/DOM
  * @module classes/utils/SyntaxHighlighter
- * @package com.pcsg.qui.js.classes.utils
- * @namespace QUI.classes.utils
  */
 
 define('classes/utils/SyntaxHighlighter', [
@@ -19,12 +16,12 @@ define('classes/utils/SyntaxHighlighter', [
     "use strict";
 
     /**
-     * @class QUI.classes.utils.SyntaxHighlighter
+     * @class classes/utils/SyntaxHighlighter
      */
     return new Class({
 
         Extends : DOM,
-        Type    : 'SyntaxHighlighter',
+        Type    : 'classes/utils/SyntaxHighlighter',
 
         /**
          * Highlight the code into an Element

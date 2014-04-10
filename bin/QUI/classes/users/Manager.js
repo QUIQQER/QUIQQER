@@ -5,9 +5,7 @@
  *
  * @requires classes/DOM
  *
- * @module controls/users/Users
- * @package com.pcsg.qui.js.classes.users.Users
- * @namespace QUI.classes.users
+ * @module classes/users/Manager
  *
  * @event onSwitchStatus [this, result, Request]
  * @event onActivate [this, result, Request]
@@ -29,23 +27,23 @@ define('classes/users/Manager', [
     "use strict";
 
     /**
-     * @class QUI.classes.users.Users
+     * @class classes/users/Manager
      * @desc User Manager (Model)
      *
      * @memberof! <global>
      */
     return new Class({
 
-        Extends : DOM,                   // @member QUI.classes.users.Uses
-        Type    : 'classes/users/Users', // @member QUI.classes.users.Users
+        Extends : DOM,                   // @member classes/users/Manager
+        Type    : 'classes/users/Users', // @member classes/users/Manager
 
-        $users : {},				     // @member QUI.classes.users.Users
+        $users : {},				     // @member classes/users/Manager
 
         /**
          * Return a user
          *
-         * @method QUI.classes.users.Users#get
-         * @return {QUI.classes.users.User} User
+         * @method classes/users/Manager#get
+         * @return {controls/users/User} User
          */
         get : function(uid)
         {
@@ -59,8 +57,8 @@ define('classes/users/Manager', [
         /**
          * Return the loged in user (session user)
          *
-         * @method QUI.classes.users.Users#getUserBySession
-         * @return {QUI.classes.users.User} User
+         * @method classes/users/Manager#getUserBySession
+         * @return {controls/users/User} User
          */
         getUserBySession : function()
         {
@@ -74,7 +72,7 @@ define('classes/users/Manager', [
         /**
          * Return the user list
          *
-         * @method QUI.classes.users.Users#getList
+         * @method classes/users/Manager#getList
          * @param {Object} search     - search options
          * @param {Function} onfinish - [optional] callback function
          * @param {Object} params     - [optional] extra params
@@ -96,7 +94,7 @@ define('classes/users/Manager', [
         /**
          * Switch the status to activate or deactivate from an user
          *
-         * @method QUI.classes.users.Users#switchStatus
+         * @method classes/users/Manager#switchStatus
          * @param {Array|Integer} uid - search options
          * @param {Function} onfinish - [optional] callback function
          * @param {Object} params     - [optional] extra params
@@ -123,7 +121,7 @@ define('classes/users/Manager', [
         /**
          * Activate the user / users
          *
-         * @method QUI.classes.users.Users#activate
+         * @method classes/users/Manager#activate
          * @param {Array|Integer} uid - search options
          * @param {Function} onfinish - [optional] callback function
          * @param {Object} params     - [optional] extra params
@@ -150,7 +148,7 @@ define('classes/users/Manager', [
         /**
          * Deactivate the user / users
          *
-         * @method QUI.classes.users.Users#deactivate
+         * @method classes/users/Manager#deactivate
          * @param {Array|Integer} uid - search options
          * @param {Function} onfinish - [optional] callback function
          * @param {Object} params     - [optional] extra params
@@ -177,7 +175,7 @@ define('classes/users/Manager', [
         /**
          * Checks if the username exists
          *
-         * @method QUI.classes.users.Users#existsUsername
+         * @method classes/users/Manager#existsUsername
          * @param {String} username   - Username
          * @param {Function} onfinish - callback function
          * @param {Object} params     - [optional] extra params
@@ -197,7 +195,7 @@ define('classes/users/Manager', [
         /**
          * create a new user
          *
-         * @method QUI.classes.users.Users#createUser
+         * @method classes/users/Manager#createUser
          * @param {String} username   - Username
          * @param {Function} onfinish - [optional] callback function
          * @param {Object} params     - [optional] extra params
@@ -219,7 +217,7 @@ define('classes/users/Manager', [
         /**
          * Delete users
          *
-         * @method QUI.classes.users.Users#deleteUsers
+         * @method classes/users/Manager#deleteUsers
          * @param {Array} uids - User-IDs
          * @param {Function} onfinish - [optional] callback function
          * @param {Object} params     - [optional] extra params
@@ -253,8 +251,8 @@ define('classes/users/Manager', [
         /**
          * Triggerd by an user
          *
-         * @method QUI.classes.users.Users#onRefreshUser
-         * @param {QUI.classes.users.User} User
+         * @method classes/users/Manager#onRefreshUser
+         * @param {controls/users/User} User
          */
         onRefreshUser : function(User)
         {
@@ -264,8 +262,8 @@ define('classes/users/Manager', [
         /**
          * Save a user with its attributes and rights
          *
-         * @method QUI.classes.users.Users#saveUser
-         * @param {QUI.classes.users.User} User
+         * @method classes/users/Manager#saveUser
+         * @param {controls/users/User} User
          * @param {Function} onfinish - [optional] callback
          * @param {params} Object     - [optional] extra params
          */

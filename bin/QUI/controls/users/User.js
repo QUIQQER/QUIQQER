@@ -48,7 +48,7 @@ define('controls/users/User', [
 
         initialize : function(uid, options)
         {
-            this.$User = QUI.Users.get( uid );
+            this.$User = Users.get( uid );
 
             // defaults
             this.setAttribute( 'name', 'user-panel-'+ uid );
@@ -181,7 +181,7 @@ define('controls/users/User', [
          * the button active event
          * load the template of the category, parse the controls and insert the values
          *
-         * @param {QUI.controls.buttons.Button} Btn
+         * @param {qui/controls/buttons/Button} Btn
          */
         $onButtonActive : function(Btn)
         {
@@ -255,7 +255,7 @@ define('controls/users/User', [
          * if the button was active and know normal
          * = unload event of the button
          *
-         * @param {QUI.controls.buttons.Button} Btn
+         * @param {qui/controls/buttons/Button} Btn
          */
         $onButtonNormal : function(Btn)
         {
@@ -273,7 +273,7 @@ define('controls/users/User', [
         /**
          * Refresh the Panel if the user is refreshed
          *
-         * @param {QUI.classes.users.User} User
+         * @param {qui/classes/users/User} User
          */
         $onUserRefresh : function(User)
         {
@@ -303,7 +303,7 @@ define('controls/users/User', [
         /**
          * event on user delete
          *
-         * @param {QUI.classes.users.Users} Users
+         * @param {qui/classes/users/Manager} Users
          * @param {Array} uids - user ids, which are deleted
          */
         $onUserDelete : function(Users, uids)
@@ -323,7 +323,7 @@ define('controls/users/User', [
         /**
          * Event: click on save
          *
-         * @method QUI.controls.users.User#$onClickSave
+         * @method controls/users/User#$onClickSave
          */
         $onClickSave : function()
         {
@@ -339,7 +339,7 @@ define('controls/users/User', [
         /**
          * Event: click on delete
          *
-         * @method QUI.controls.users.User#$onClickDel
+         * @method controls/users/User#$onClickDel
          */
         $onClickDel : function()
         {
@@ -358,7 +358,7 @@ define('controls/users/User', [
                 {
                     onSubmit : function(Win)
                     {
-                        QUI.Users.deleteUsers(
+                        Users.deleteUsers(
                             [ Win.getAttribute( 'uid' ) ]
                         );
                     }
@@ -370,7 +370,7 @@ define('controls/users/User', [
          * Saves the password to the user
          * only triggerd if the password tab are open
          *
-         * @method QUI.controls.users.User#savePassword
+         * @method controls/users/User#savePassword
          */
         savePassword : function()
         {

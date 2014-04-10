@@ -4,8 +4,6 @@
  * @author www.pcsg.de (Henning Leutz)
  *
  * @module controls/groups/Panel
- * @package com.pcsg.qui.js.controls.groups
- * @namespace QUI.controls.groups
  *
  * @require controls/desktop/Panel
  * @require Groups
@@ -21,6 +19,7 @@ define('controls/groups/Panel', [
     'qui/controls/desktop/Panel',
     'Groups',
     'controls/grid/Grid',
+    'utils/Controls',
     'controls/groups/sitemap/Window',
     'utils/Template',
     'qui/controls/messages/Attention',
@@ -29,7 +28,7 @@ define('controls/groups/Panel', [
 
     'css!controls/groups/Panel.css'
 
-], function(Panel, Groups, Grid, GroupSitemapWindow, Template, Attention, QUIPrompt, QUIConfirm)
+], function(Panel, Groups, Grid, ControlUtils, GroupSitemapWindow, Template, Attention, QUIPrompt, QUIConfirm)
 {
     "use strict";
 
@@ -294,8 +293,7 @@ define('controls/groups/Panel', [
                     Body.set( 'html', result );
                     self.setAttribute( 'SearchSheet', Sheet );
 
-                    // @todo parse controls
-                    // QUI.controls.Utils.parse( Body );
+                    ControlUtils.parse( Body );
 
                     Frm    = Body.getElement('form');
                     Search = Frm.elements.search;
@@ -421,7 +419,7 @@ define('controls/groups/Panel', [
         /**
          * Convert a Group to a grid data field
          *
-         * @param {QUI.controls.groups.Group} Group
+         * @param {controls/groups/Group} Group
          * @return {Object}
          */
         groupToData : function(Group)
@@ -648,13 +646,13 @@ define('controls/groups/Panel', [
         /**
          * execute a group status switch
          *
-         * @param {QUI.controls.buttons.Button} Btn
+         * @param {qui/controls/buttons/Button} Btn
          */
         $btnSwitchStatus : function(Btn)
         {
             Btn.setAttribute( 'icon', URL_BIN_DIR +'images/loader.gif' );
 
-            QUI.Groups.switchStatus(
+            Groups.switchStatus(
                 Btn.getAttribute( 'gid' )
             );
         },
@@ -663,7 +661,7 @@ define('controls/groups/Panel', [
          * event : status change of a group
          * if a group status is changed
          *
-         * @param {QUI.classes.groups.Groups} Groups
+         * @param {classes/groups/Manager} Groups
          * @param {Object} ids - Group-IDs with status
          */
         $onSwitchStatus : function(Groups, ids)
@@ -702,8 +700,8 @@ define('controls/groups/Panel', [
          * event : group fresh
          * if a group is refreshed
          *
-         * @param {QUI.classes.groups.Groups} Groups
-         * @param {QUI.classes.groups.Group} Group
+         * @param {classes/groups/Manager} Groups
+         * @param {classes/groups/Group} Group
          */
         $onRefreshGroup : function(Groups, Group)
         {
@@ -727,7 +725,7 @@ define('controls/groups/Panel', [
          * event: group deletion
          * if a group is deleted
          *
-         * @param {QUI.classes.groups.Groups} Groups
+         * @param {classes/groups/Manager} Groups
          * @param {Array} ids - Delete Group-IDs
          */
         $onDeleteGroup : function(Groups, ids)
@@ -775,18 +773,21 @@ define('controls/groups/Panel', [
 
             var i, len;
 
-            if ( Parent.getType() === 'QUI.controls.desktop.Tasks' )
+            if ( Parent.getType() === 'qui/controls/desktop/Tasks' )
             {
-                require([ 'controls/groups/Group' ], function(QUI_Group_Control)
+                require([
+                    'controls/groups/Group',
+                    'qui/controls/taskbar/Group'
+                ], function(GroupControl, QUITaskGroup)
                 {
                     var Group, Task, TaskGroup;
 
-                    TaskGroup = new QUI.controls.taskbar.Group();
+                    TaskGroup = new QUITaskGroup();
                     Parent.appendTask( TaskGroup );
 
                     for ( i = 0, len = seldata.length; i < len; i++ )
                     {
-                        Group = new QUI.controls.groups.Group( seldata[ i ].id );
+                        Group = new GroupControl( seldata[ i ].id );
                         Task  = Parent.instanceToTask( Group );
 
                         TaskGroup.appendChild( Task );
@@ -837,7 +838,7 @@ define('controls/groups/Panel', [
                 {
                     onSubmit : function(Win)
                     {
-                        QUI.Groups.deleteGroups(
+                        Groups.deleteGroups(
                             Win.getAttribute( 'gids' )
                         );
                     }

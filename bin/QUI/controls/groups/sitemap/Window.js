@@ -3,9 +3,8 @@
  *
  * @author www.pcsg.de (Henning Leutz)
  *
+ * @module controls/groups/sitemap/Window
  * @class controls/groups/sitemap/Window
- * @package com.pcsg.qui.js.controls.groups.sitemap.Window
- * @namespace QUI.controls.groups.sitemap
  *
  * @event onSubmit [ this, values ]
  */

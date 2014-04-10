@@ -2,9 +2,7 @@
  * Package Manager
  *
  * @author www.pcsg.de (Henning Leutz)
- *
  * @module controls/packages/Panel
- * @package com.pcsg.qui.js.controls.packages
  */
 
 define('controls/packages/Panel', [
