@@ -91,7 +91,7 @@ define('controls/system/VHost', [
 
                 var project = vhostData.project,
                     lang    = vhostData.lang,
-                    error   = vhostData.error;
+                    error   = vhostData.error || '';
 
                 vhostData.domain = self.getAttribute( 'host' );
 
@@ -301,8 +301,6 @@ define('controls/system/VHost', [
         {
             var self = this,
                 data = JSON.decode( this.$ProjectInput.value );
-
-            console.log( this.$ProjectInput.value );
 
             if ( typeof data[ 0 ] === 'undefined' || !data[ 0 ].project )
             {

@@ -13,9 +13,10 @@ define('controls/system/VHosts', [
     'qui/controls/windows/Confirm',
     'controls/grid/Grid',
     'controls/system/VHost',
+    'controls/system/VHostServerCode',
     'Ajax'
 
-], function(QUI, QUIPanel, QUIPrompt, QUIConfirm, Grid, Vhost, Ajax)
+], function(QUI, QUIPanel, QUIPrompt, QUIConfirm, Grid, Vhost, VhostServerCode, Ajax)
 {
     "use strict";
 
@@ -95,6 +96,7 @@ define('controls/system/VHosts', [
                     }
                 }
             });
+
 
             // Grid
             var Container = new Element('div').inject(
@@ -200,6 +202,8 @@ define('controls/system/VHosts', [
          */
         addVhost : function(host, callback)
         {
+            var self = this;
+
             Ajax.get('ajax_vhosts_add', function(result)
             {
                 self.load();
@@ -276,7 +280,8 @@ define('controls/system/VHosts', [
             new QUIPrompt({
                 icon  : 'icon-plus',
                 title : 'Neuen Virtuellen-Host hinzufügen',
-                information : 'Bitte geben Sie den neuen Host ein. Zum Beispiel: www.meine-domain.de',
+                information : 'Bitte geben Sie den neuen Host ein oder einen Server-Error-Code.<br />' +
+                              'Zum Beispiel: www.meine-domain.de order einfach nur 404',
                 events :
                 {
                     onSubmit : function(value, Win)
@@ -322,9 +327,20 @@ define('controls/system/VHosts', [
                     {
                         self.Loader.show();
 
-                        var Host = new Vhost({
-                            host : vhost
-                        }).inject( Sheet.getContent() );
+                        // only numbers -> server error codes
+                        if ( /^\d+$/.test( vhost ) )
+                        {
+                            var Host = new VhostServerCode({
+                                host : vhost
+                            }).inject( Sheet.getContent() );
+
+                        } else
+                        {
+                            var Host = new Vhost({
+                                host : vhost
+                            }).inject( Sheet.getContent() );
+                        }
+
 
                         Sheet.addButton({
                             text      : 'Speichern',

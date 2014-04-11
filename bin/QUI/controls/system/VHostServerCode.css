@@ -1,0 +1,27 @@
+@CHARSET "UTF-8";
+
+.control-system-vhostServerCode {
+    height: 100%;
+    padding: 20px;
+    width: 100%;
+}
+
+.control-system-vhostServerCode label {
+    float: left;
+    line-height: 30px;
+    width: 20%;
+}
+
+.control-system-vhostServerCode select,
+.control-system-vhostServerCode input {
+    margin: 0;
+    width: 200px;
+}
+
+.control-system-vhostServerCode input[disabled="disabled"] {
+    padding: 10px 0;
+}
+
+.control-system-vhostServerCode input {
+    cursor: pointer;
+}
