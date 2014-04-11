@@ -276,8 +276,8 @@ define('controls/users/Panel', [
         {
             var self = this;
 
-            require(['controls/users/User'], function(QUIUser) {
-                self.getParent().appendChild( new QUIUser( uid ) );
+            require(['controls/users/User'], function(User) {
+                self.getParent().appendChild( new User( uid ) );
             });
 
             return this;
@@ -305,7 +305,7 @@ define('controls/users/Panel', [
                     var Body     = Sheet.getBody(),
                         settings = self.getAttribute('searchSettings'),
 
-                        values   = Object.merge(
+                        values = Object.merge(
                             {},
                             settings.filter,
                             settings.fields
@@ -393,10 +393,9 @@ define('controls/users/Panel', [
             var Frm = Sheet.getBody().getElement('form');
 
             this.setAttribute( 'search', true );
+
             this.setAttribute( 'searchSettings', {
-
                 userSearchString : Frm.elements.search.value,
-
                 fields : {
                     uid       : Frm.elements.uid.checked,
                     username  : Frm.elements.username.checked,
@@ -404,14 +403,12 @@ define('controls/users/Panel', [
                     firstname : Frm.elements.firstname.checked,
                     lastname  : Frm.elements.lastname.checked
                 },
-
                 filter : {
                     filter_status        : Frm.elements.filter_status.value,
                     filter_group         : Frm.elements.filter_group.value,
                     filter_regdate_first : Frm.elements.filter_regdate_first.value,
                     filter_regdate_last  : Frm.elements.filter_regdate_last.value
                 }
-
             });
 
             Sheet.hide();

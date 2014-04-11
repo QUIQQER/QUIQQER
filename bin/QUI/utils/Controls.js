@@ -160,8 +160,11 @@ define('utils/Controls', function()
                             y: 0
                         },
                         pickerClass: 'datepicker_dashboard',
-                        onSelect: function(UserDate) {
-                            Child.value = UserDate.format('db');
+                        onSelect: function(UserDate, elmList, Obj)
+                        {
+                            for (var i = 0, len = elmList.length; i < len; i++ ) {
+                                elmList[ i ].value = UserDate.format('db');
+                            }
                         }
                     });
 
