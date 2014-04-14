@@ -10,10 +10,11 @@ define('controls/logs/Panel', [
     'Ajax',
     'qui/controls/buttons/Button',
     'qui/controls/buttons/Seperator',
+    'qui/controls/windows/Confirm',
 
     'css!controls/logs/Panel.css'
 
-], function(Panel, Grid, Ajax, QUIButton, QUIButtonSeperator)
+], function(Panel, Grid, Ajax, QUIButton, QUIButtonSeperator, QUIConfirm)
 {
     "use strict";
 
@@ -29,11 +30,14 @@ define('controls/logs/Panel', [
             'getLogs',
             'resize',
             'refreshFile',
+            'deleteActiveLog',
             '$onCreate',
             '$onResize',
             '$onDestroy',
             '$btnOpenLog',
-            '$gridRefresh'
+            '$gridRefresh',
+            '$gridClick',
+            '$gridDblClick'
         ],
 
         options : {
@@ -142,6 +146,50 @@ define('controls/logs/Panel', [
         },
 
         /**
+         * Delete a log
+         *
+         * @param {String} file - name of the log
+         * @param {Function} callback - callback function
+         */
+        deleteLog : function(file, callback)
+        {
+            Ajax.get('ajax_system_logs_delete', function(result)
+            {
+                if ( typeof callback !== 'undefined' ) {
+                    callback();
+                }
+            }, {
+                file : file
+            });
+        },
+
+        /**
+         * Delete the active log
+         */
+        deleteActiveLog : function()
+        {
+            var self = this,
+                sel  = this.$Grid.getSelectedData();
+
+            new QUIConfirm({
+                title  : 'Log löschen: '+ sel[0].file,
+                icon   : 'icon-remove',
+                text   : 'Möchten Sie wirklich die Log löschen?',
+                events :
+                {
+                    onSubmit : function()
+                    {
+                        self.Loader.show();
+
+                        self.deleteLog(sel[0].file, function() {
+                            self.getLogs();
+                        });
+                    }
+                }
+            }).open();
+        },
+
+        /**
          * Refresh the current file
          *
          * @return {this} self
@@ -159,22 +207,20 @@ define('controls/logs/Panel', [
 
             Ajax.get('ajax_system_logs_file', function(result)
             {
-                require([
-                     'classes/utils/SyntaxHighlighter'
-                 ], function(Highlighter)
-                 {
-                     File.set(
-                         'html',
-                         '<pre class="box language-bash" style="margin: 0;">'+ result +'</pre>'
-                     );
+                require(['classes/utils/SyntaxHighlighter'], function(Highlighter)
+                {
+                    File.set(
+                        'html',
+                        '<pre class="box language-bash" style="margin: 0;">'+ result +'</pre>'
+                    );
 
-                     new Highlighter().highlight(
-                         File.getElement( 'pre' )
-                     );
+                    new Highlighter().highlight(
+                        File.getElement( 'pre' )
+                    );
 
-                     Control.Loader.hide();
-                     Control.refresh();
-                 });
+                    Control.Loader.hide();
+                    Control.refresh();
+                });
             }, {
                 file : this.$file
             });
@@ -190,9 +236,7 @@ define('controls/logs/Panel', [
 
             this.$GridContainer = new Element('div', {
                 'class' : 'qui-logs-container'
-            }).inject(
-                this.getContent()
-            );
+            }).inject( this.getContent() );
 
             this.$Fx = moofx( this.getContent() );
 
@@ -216,6 +260,11 @@ define('controls/logs/Panel', [
 
                 pagination : true,
                 onrefresh  : this.$gridRefresh
+            });
+
+            this.$Grid.addEvents({
+                onClick    : this.$gridClick,
+                onDblClick : this.$gridDblClick
             });
 
 
@@ -264,7 +313,7 @@ define('controls/logs/Panel', [
             this.addButton(
                 new QUIButton({
                     name      : 'refresh',
-                    text      : 'Datei aktualisieren',
+                    text      : 'Log aktualisieren',
                     textimage : 'icon-refresh',
                     disabled  : true,
                     events    : {
@@ -273,6 +322,21 @@ define('controls/logs/Panel', [
                 })
             );
 
+            this.addButton(
+                new QUIButtonSeperator()
+            );
+
+            this.addButton(
+                new QUIButton({
+                    name      : 'delete',
+                    text      : 'Markierte Logs löschen',
+                    textimage : 'icon-trash',
+                    disabled  : true,
+                    events    : {
+                        onClick : this.deleteActiveLog
+                    }
+                })
+            );
 
             //this.resize.delay( 200 );
             this.getLogs.delay( 100, this );
@@ -372,6 +436,38 @@ define('controls/logs/Panel', [
             });
 
             this.getLogs();
+        },
+
+        /**
+         * event : on grid click
+         *
+         * @param {Object} data - Grid Data
+         */
+        $gridClick : function(data)
+        {
+            var len    = data.target.selected.length,
+                Delete = this.getButtons( 'delete' );
+
+            Delete.disable();
+
+            if ( len )
+            {
+                Delete.enable();
+                return;
+            }
+        },
+
+        /**
+         * event : on grid dbl click
+         *
+         * @param {Object} data - Grid Data
+         */
+        $gridDblClick : function(data)
+        {
+            var target = data.target,
+                sel    = this.$Grid.getSelectedData();
+
+            this.openLog( sel[ 0 ].file );
         }
     });
 });

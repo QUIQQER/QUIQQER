@@ -29,10 +29,11 @@
                 <en><![CDATA[Logout]]></en>
             </locale>
 
-        <locale name="menu.edit.text">
-            <de><![CDATA[Bearbeiten]]></de>
-            <en><![CDATA[Edit]]></en>
+        <locale name="menu.profil.text">
+            <de><![CDATA[Profil]]></de>
+            <en><![CDATA[Profile]]></en>
         </locale>
+
         <locale name="menu.goto.text">
             <de><![CDATA[Gehe zu ...]]></de>
             <en><![CDATA[Go to ...]]></en>

@@ -6,12 +6,6 @@
     >
         Datei
     </item>
-    <item parent="/" name="edit"
-          group="quiqqer/system"
-          var="menu.edit.text"
-    >
-        Bearbeiten
-    </item>
     <item parent="/" name="extras"
           group="quiqqer/system"
           var="menu.goto.text"
@@ -21,6 +15,12 @@
     <item parent="/" name="settings"
           group="quiqqer/system"
           var="menu.settings.text"
+    >
+        Einstellungen
+    </item>
+    <item parent="/" name="profil"
+          group="quiqqer/system"
+          var="menu.profil.text"
     >
         Einstellungen
     </item>
