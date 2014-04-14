@@ -1,5 +1,5 @@
 /**
- * Groups manager panel (View)
+ * Groups manager panel
  *
  * @author www.pcsg.de (Henning Leutz)
  *
@@ -25,10 +25,11 @@ define('controls/groups/Panel', [
     'qui/controls/messages/Attention',
     'qui/controls/windows/Prompt',
     'qui/controls/windows/Confirm',
+    'qui/controls/buttons/Button',
 
     'css!controls/groups/Panel.css'
 
-], function(Panel, Groups, Grid, ControlUtils, GroupSitemapWindow, Template, Attention, QUIPrompt, QUIConfirm)
+], function(Panel, Groups, Grid, ControlUtils, GroupSitemapWindow, Template, Attention, QUIPrompt, QUIConfirm, QUIButton)
 {
     "use strict";
 
@@ -259,10 +260,10 @@ define('controls/groups/Panel', [
          */
         openGroup : function(gid)
         {
-            require([ 'controls/groups/Group' ], function(QUI_Group)
+            require(['controls/groups/Group'], function(Group)
             {
                 this.getParent().appendChild(
-                    new QUI_Group( gid )
+                    new Group( gid )
                 );
 
             }.bind( this ));
@@ -278,7 +279,9 @@ define('controls/groups/Panel', [
             this.Loader.show();
 
             var self  = this,
-                Sheet = this.createSheet();
+                Sheet = this.createSheet({
+                    title : 'Gruppe suchen...'
+                });
 
             Sheet.addEvent('onOpen', function(Sheet)
             {
@@ -308,6 +311,10 @@ define('controls/groups/Panel', [
                     Search.value = search || '';
                     Search.focus();
 
+
+                    Frm.elements.gid.checked  = false;
+                    Frm.elements.name.checked = false;
+
                     for ( i = 0, len = fields.length; i < len; i++ )
                     {
                         switch ( fields[i] )
@@ -327,6 +334,18 @@ define('controls/groups/Panel', [
                     });
 
 
+                    // search button
+                    new QUIButton({
+                        textimage : 'icon-search',
+                        text      : 'Suche starten ...',
+                        events    :
+                        {
+                            onClick : function(Btn) {
+                                self.execSearch( Sheet );
+                            }
+                        }
+                    }).inject( Search, 'after' );
+
                     self.Loader.hide();
                 });
             });
@@ -343,6 +362,16 @@ define('controls/groups/Panel', [
         {
             var fields = [],
                 Frm    = Sheet.getBody().getElement('form');
+
+
+            // check if one checkbox is active
+            if ( !Frm.elements.gid.checked &&
+                 !Frm.elements.name.checked )
+            {
+                Frm.elements.gid.checked  = true;
+                Frm.elements.name.checked = true;
+            }
+
 
             if ( Frm.elements.gid.checked ) {
                 fields.push( 'id' );
@@ -528,7 +557,7 @@ define('controls/groups/Panel', [
                 this.getGrid().setHeight( Body.getSize().y - 40 );
             }
 
-            var Message = Body.getElement( '.message' );
+            var Message = Body.getElement( '.messages-message' );
 
             if ( Message ) {
                 Message.setStyle( 'width', this.getBody().getSize().x - 40 );
@@ -551,7 +580,7 @@ define('controls/groups/Panel', [
             this.refresh();
 
             if ( this.getAttribute( 'search' ) &&
-                 !this.getBody().getElement( '.message' ) )
+                 !this.getBody().getElement( '.messages-message' ) )
             {
                 var Msg = new Attention({
                     message : 'Sucheparameter sind aktiviert. '+
@@ -578,15 +607,14 @@ define('controls/groups/Panel', [
 
             this.resize();
 
-
+            // search
             Groups.getList({
-                field : this.getAttribute( 'field' ),
-                order : this.getAttribute( 'order' ),
-                limit : this.getAttribute( 'limit' ),
-                page  : this.getAttribute( 'page' ),
-                search         : this.getAttribute( 'search' ),
-                searchSettings : this.getAttribute( 'searchSettings' )
-
+                field  : this.getAttribute( 'field' ),
+                order  : this.getAttribute( 'order' ),
+                limit  : this.getAttribute( 'limit' ),
+                page   : this.getAttribute( 'page' ),
+                search : this.getAttribute( 'search' ),
+                searchSettings : this.getAttribute( 'searchfields' )
             }, function(result, Request)
             {
                 var i, len, data, group, admin;

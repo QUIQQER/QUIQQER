@@ -1,19 +1,71 @@
 
 <form name="group-search" class="group-search-form" method="post">
-	{title text="Suche nach:"}
-	<div class="data-table">
-		<input type="text" value="" name="search" class="group-search-form-field" />
-	</div>
 
-	{title text="Suche in:"}
-	<div class="data-table">
-		<div class="checkbox-container">
-			<input type="checkbox" value="" name="gid" />
-			<label for="gid">Gruppen-ID</label>
-		</div>
-		<div class="checkbox-container">
-			<input type="checkbox" value="" name="name" />
-			<label for="name">Gruppenname</label>
-		</div>
-	</div>
+    <div class="group-search-table-input box">
+        <table class="data-table">
+           <thead>
+                <tr>
+                    <th>
+                        Suche nach:
+                    </th>
+                </tr>
+           </thead>
+           <tbody>
+               <tr class="odd">
+                   <td>
+                       <input type="text"
+                              value=""
+                              name="search"
+                              class="group-search-form-field"
+                              placeholder="Suche nach..."
+                       />
+                   </td>
+               </tr>
+           </tbody>
+        </table>
+    </div>
+
+    <div class="user-search-table-searchin box">
+        <table class="data-table">
+        <thead>
+            <tr>
+                <th colspan="2">
+                    Suche in:
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="{cycle values="odd,even"}">
+                <td style="width: 30px;">
+                    <input type="checkbox"
+                           checked="checked"
+                           value=""
+                           name="gid"
+                           id="gid-group-search-checkbox"
+                    />
+                </td>
+                <td>
+                    <label for="gid-group-search-checkbox">
+                        Gruppen-ID
+                    </label>
+                </td>
+            </tr>
+            <tr class="{cycle values="odd,even"}">
+                <td style="width: 30px;">
+                    <input type="checkbox"
+                           checked="checked"
+                           value=""
+                           name="name"
+                           id="name-group-search-checkbox"
+                    />
+                </td>
+                <td>
+                    <label for="name-group-search-checkbox">
+                        Gruppenname
+                    </label>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
 </form>

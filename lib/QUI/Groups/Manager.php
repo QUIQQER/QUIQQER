@@ -211,8 +211,7 @@ class Manager extends \QUI\QDOM
             $_fields['where'] = $params['where'];
         }
 
-        if ( isset( $params['search'] ) &&
-             !isset( $params['searchfields'] ) )
+        if ( isset( $params['search'] ) && !isset( $params['searchSettings'] ) )
         {
             $_fields['where'] = array(
                 'name' => array(
@@ -220,12 +219,13 @@ class Manager extends \QUI\QDOM
                     'value' => $params['search']
                 )
             );
+
         } else if (
             isset( $params['search'] ) &&
-            isset( $params['searchfields'] ) &&
-            is_array( $params['searchfields']) )
+            isset( $params['searchSettings'] ) &&
+            is_array( $params['searchSettings']) )
         {
-            foreach ( $params['searchfields'] as $field )
+            foreach ( $params['searchSettings'] as $field )
             {
                 if ( !isset( $allowSearchFields[ $field ] ) ) {
                     continue;

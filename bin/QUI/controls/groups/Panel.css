@@ -1,15 +1,16 @@
 
+/** group search
+ * =============================================== */
+
 .group-search-form {
-	margin: 10px;
+    margin: 10px;
 }
 
 .group-search-form .date {
-	float: left;
+    float: left;
 }
 
 .group-search-form-field {
-	float: left;
-	line-height: 16px;
-	margin: 2px;
-	padding: 2px;
+    float: left;
+    line-height: 16px;
 }
