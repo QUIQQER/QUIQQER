@@ -920,8 +920,7 @@ class Manager
      */
     protected function _search($params)
     {
-        $DataBase = \QUI::getDB();
-        $PDO      = $DataBase->getPDO();
+        $PDO      = \QUI::getDataBase()->getPDO();
         $params   = \QUI\Utils\Security\Orthos::clearArray( $params );
 
         $allowOrderFields = array(
@@ -1014,9 +1013,17 @@ class Manager
             $query .= ' WHERE (';
             $binds[':search'] = '%'. $search .'%';
 
+            if ( empty( $search ) ) {
+                $binds[':search'] = '%';
+            }
+
             foreach ( $fields as $field => $value )
             {
                 if ( !isset( $allowOrderFields[ $field ] ) ) {
+                    continue;
+                }
+
+                if ( empty( $value ) ) {
                     continue;
                 }
 
@@ -1028,6 +1035,11 @@ class Manager
             }
 
             $query.= ') ';
+
+            // empty where, no search possible
+            if ( strpos( $query, 'WHERE ()' ) !== false ) {
+                return array();
+            }
 
 
             if ( $filter_status )
@@ -1098,16 +1110,25 @@ class Manager
             $query .= ' LIMIT '. $start .', '. $max;
         }
 
-
         $Statement = $PDO->prepare( $query );
 
-        foreach ( $binds as $key => $value ) {
-            $Statement->bindParam( $key, $value, \PDO::PARAM_STR );
+
+        foreach ( $binds as $key => $value )
+        {
+            if ( $key == ':active' )
+            {
+                $Statement->bindValue( $key, $value, \PDO::PARAM_INT );
+
+            } else
+            {
+                $Statement->bindValue( $key, $value, \PDO::PARAM_STR );
+            }
         }
 
         try
         {
             $Statement->execute();
+
         } catch ( \PDOException $e )
         {
             $message  = $e->getMessage();

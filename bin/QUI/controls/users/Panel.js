@@ -324,15 +324,9 @@ define('controls/users/Panel', [
                         }
                     });
 
-                    Search.value = settings.userSearchString || '';
-                    Search.focus();
-
-                    new QUIButton({
-                        text : 'Suche starten',
-                        textimage : 'icon-search'
-                    }).inject(
-                        Search, 'after'
-                    );
+                    if ( values.id ) {
+                        values.uid = values.id;
+                    }
 
                     // elements
                     inputs = Frm.elements;
@@ -352,6 +346,16 @@ define('controls/users/Panel', [
                             {
                                 inputs[ i ].value = values[ inputs[ i ].name ];
                             }
+
+                        } else
+                        {
+                            if ( inputs[ i ].type == 'checkbox' )
+                            {
+                                inputs[ i ].checked = false;
+                            } else
+                            {
+                                inputs[ i ].value = '';
+                            }
                         }
 
                         Label = Frm.getElement( 'label[for="'+ inputs[ i ].name +'"]' );
@@ -361,20 +365,23 @@ define('controls/users/Panel', [
                         }
                     }
 
+                    Search.value = settings.userSearchString || '';
+                    Search.focus();
+
+
                     ControlUtils.parse( Body );
 
                     // search button
                     new QUIButton({
-                        image  : 'icon-search',
-                        alt    : 'Suche starten ...',
-                        title  : 'Suche starten ...',
+                        textimage : 'icon-search',
+                        text : 'Suche starten ...',
                         events :
                         {
                             onClick : function(Btn) {
                                 self.execSearch( Sheet );
                             }
                         }
-                    });
+                    }).inject( Search, 'after' );
 
                     self.Loader.hide();
                 });
@@ -394,10 +401,22 @@ define('controls/users/Panel', [
 
             this.setAttribute( 'search', true );
 
+            // check if one checkbox is active
+            if ( !Frm.elements.uid.checked &&
+                 !Frm.elements.username.checked &&
+                 !Frm.elements.email.checked &&
+                 !Frm.elements.firstname.checked &&
+                 !Frm.elements.lastname.checked )
+            {
+                Frm.elements.uid.checked      = true;
+                Frm.elements.username.checked = true;
+            }
+
+
             this.setAttribute( 'searchSettings', {
                 userSearchString : Frm.elements.search.value,
                 fields : {
-                    uid       : Frm.elements.uid.checked,
+                    id        : Frm.elements.uid.checked,
                     username  : Frm.elements.username.checked,
                     email     : Frm.elements.email.checked,
                     firstname : Frm.elements.firstname.checked,
@@ -574,7 +593,7 @@ define('controls/users/Panel', [
             {
                 var Msg = new Attention({
                     Users   : this,
-                    message : 'Sucheparameter sind aktiviert. '+
+                    message : 'Suchparameter sind aktiviert. '+
                               'Klicken Sie hier um die Suche zu beenden und alle Benutzer '+
                               'wieder anzeigen zu lassen.',
                     events  :
