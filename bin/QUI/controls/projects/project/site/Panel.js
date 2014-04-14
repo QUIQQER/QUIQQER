@@ -169,7 +169,9 @@ define('controls/projects/project/site/Panel', [
 
             if ( this.getActiveCategory() )
             {
-                this.getActiveCategory().click();
+                this.$onCategoryEnter( this.getActiveCategory() );
+                // .click();
+
             } else
             {
                 this.getCategoryBar().firstChild().click();
@@ -551,7 +553,7 @@ define('controls/projects/project/site/Panel', [
                     {
                         Row = rowList[ i ];
 
-                        if ( Row.get( 'data-id' ) == '' ) {
+                        if ( !Row.get( 'data-id' ).toInt() ) {
                             continue;
                         }
 
@@ -573,6 +575,27 @@ define('controls/projects/project/site/Panel', [
                                 {
                                     PanelUtils.openSitePanel(
                                         Project.getName(),
+                                        Btn.getAttribute( 'lang' ),
+                                        Btn.getAttribute( 'siteId' )
+                                    );
+                                }
+                            }
+                        }).inject( LastCell );
+
+                        new QUIButton({
+                            icon   : 'icon-remove',
+                            alt    : 'Verknüpfung löschen',
+                            title  : 'Verknüpfung löschen',
+                            lang   : Row.get( 'data-lang' ),
+                            siteId : Row.get( 'data-id' ),
+                            styles : {
+                                'float' : 'right'
+                            },
+                            events :
+                            {
+                                onClick : function(Btn)
+                                {
+                                    self.removeLanguagLink(
                                         Btn.getAttribute( 'lang' ),
                                         Btn.getAttribute( 'siteId' )
                                     );
@@ -826,7 +849,7 @@ define('controls/projects/project/site/Panel', [
         },
 
         /**
-         * Opens a project popup, an user can set a languag link
+         * Opens a project popup, so, an user can set a languag link
          */
         addLanguagLink : function()
         {
@@ -858,8 +881,9 @@ define('controls/projects/project/site/Panel', [
 
                                 Ajax.post('ajax_site_linked_in', function()
                                 {
-                                    Popup.Loader.hide();
                                     Popup.close();
+
+                                    self.load();
                                 }, {
                                     project : Project.getName(),
                                     lang    : Project.getLang(),
@@ -873,6 +897,51 @@ define('controls/projects/project/site/Panel', [
                         }
                     }).open();
                 });
+            });
+        },
+
+        /**
+         * Open the remove languag link popup
+         *
+         * @param {String} lang - lang of the language link
+         * @param {String} id - Site id of the language link
+         */
+        removeLanguagLink : function(lang, id)
+        {
+            var self = this;
+
+            require(['qui/controls/windows/Confirm'], function(QUIConfirm)
+            {
+                var Site    = self.getSite(),
+                    Project = Site.getProject();
+
+                new QUIConfirm({
+                    title  : 'Sprach-Verknüpfung wirklich löschen?',
+                    icon   : 'icon-remove',
+                    text   : 'Möchten Sie die Sprach-Verknüpfung wirklich löschen?',
+                    events :
+                    {
+                        onSubmit : function(Confirm)
+                        {
+                            Confirm.Loader.show();
+
+                            Ajax.post('ajax_site_linked_remove', function()
+                            {
+                                Confirm.close();
+
+                                self.load();
+                            }, {
+                                project : Project.getName(),
+                                lang    : Project.getLang(),
+                                id      : Site.getId(),
+                                linkedParams : JSON.encode({
+                                    lang : lang,
+                                    id   : id
+                                })
+                            });
+                        }
+                    }
+                }).open();
             });
         }
     });
