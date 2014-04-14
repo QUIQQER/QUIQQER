@@ -638,31 +638,30 @@ class Site extends \QUI\QDOM
      */
     public function getLangIds()
     {
-        $r = array();
+        $result = array();
 
         try
         {
-            $Project   = $this->getProject();
-            $rel_table = $Project->getAttribute('name') .'_multilingual';
+            $Project = $this->getProject();
 
-            $result = \QUI::getDataBase()->fetch(array(
-                'from'  => $rel_table,
+            $dbResult = \QUI::getDataBase()->fetch(array(
+                'from'  => $Project->getAttribute('name') .'_multilingual',
                 'where' => array(
-                    $rel_table.'.'.$Project->getAttribute('lang') => $this->getId()
+                    $Project->getAttribute('lang') => $this->getId()
                 )
             ));
 
-            $p_langs = $Project->getAttribute('langs');
+            $langs = $Project->getAttribute('langs');
 
-            foreach ( $p_langs as $p_lang )
+            foreach ( $langs as $lang )
             {
-                if ( isset( $result[0][ $p_lang ] ) )
+                if ( isset( $dbResult[0][ $lang ] ) )
                 {
-                    $r[ $p_lang ] = $result[0][ $p_lang ];
-                } else
-                {
-                    $r[ $p_lang ] = false;
+                    $result[ $lang ] = $dbResult[0][ $lang ];
+                    continue;
                 }
+
+                $result[ $lang ] = false;
             }
 
         } catch ( \QUI\Exception $Exception )
@@ -670,7 +669,7 @@ class Site extends \QUI\QDOM
 
         }
 
-        return $r;
+        return $result;
     }
 
     /**

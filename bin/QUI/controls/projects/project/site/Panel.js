@@ -22,10 +22,11 @@ define('controls/projects/project/site/Panel', [
     'qui/controls/buttons/Button',
     'qui/utils/Form',
     'utils/Controls',
+    'utils/Panels',
 
     'css!controls/projects/project/site/Panel.css'
 
-], function(QUIPanel, Projects, Ajax, Site, QUIButton, QUIFormUtils, ControlUtils)
+], function(QUIPanel, Projects, Ajax, Site, QUIButton, QUIFormUtils, ControlUtils, PanelUtils)
 {
     "use strict";
 
@@ -525,6 +526,60 @@ define('controls/projects/project/site/Panel', [
                     Body.getElements( 'input[name="site-name"]' )
                         .set('value', Site.getAttribute( 'name' ) );
 
+
+                    // site linking
+                    var i, len, Row, LastCell;
+
+                    var LinkinLangTable = Body.getElement( '.site-langs' ),
+                        rowList         = LinkinLangTable.getElements( 'tbody tr' );
+
+                    new QUIButton({
+                        text : 'Sprach Verknüpfung hinzufügen',
+                        styles : {
+                            float : 'right'
+                        },
+                        events :
+                        {
+                            onClick : function() {
+                                self.addLanguagLink();
+                            }
+                        }
+                    }).inject( LinkinLangTable.getElement( 'th' ) );
+
+
+                    for ( i = 0, len = rowList.length; i < len; i++ )
+                    {
+                        Row = rowList[ i ];
+
+                        if ( Row.get( 'data-id' ) == '' ) {
+                            continue;
+                        }
+
+                        LastCell = rowList[ i ].getLast();
+
+
+                        new QUIButton({
+                            icon   : 'icon-file-alt',
+                            alt    : 'Seite öffnen',
+                            title  : 'Seite öffnen',
+                            lang   : Row.get( 'data-lang' ),
+                            siteId : Row.get( 'data-id' ),
+                            styles : {
+                                'float' : 'right'
+                            },
+                            events :
+                            {
+                                onClick : function(Btn)
+                                {
+                                    PanelUtils.openSitePanel(
+                                        Project.getName(),
+                                        Btn.getAttribute( 'lang' ),
+                                        Btn.getAttribute( 'siteId' )
+                                    );
+                                }
+                            }
+                        }).inject( LastCell );
+                    }
                 }
 
                 ControlUtils.parse( Form );
@@ -768,6 +823,57 @@ define('controls/projects/project/site/Panel', [
         $onEditorDestroy : function(Editor)
         {
             this.setAttribute( 'Editor', false );
+        },
+
+        /**
+         * Opens a project popup, an user can set a languag link
+         */
+        addLanguagLink : function()
+        {
+            var self = this;
+
+            require(['controls/projects/Popup'], function(ProjectPopup)
+            {
+                var Site    = self.getSite(),
+                    Project = Site.getProject();
+
+                Project.getConfig(function(config)
+                {
+                    var langs = config.langs,
+                        lang  = Project.getLang();
+
+                    langs = langs.replace( lang, '' )
+                                 .replace( ',,', '' )
+                                 .replace( /^,|,$/g, '' );
+
+
+                    new ProjectPopup({
+                        project : Project.getName(),
+                        langs   : langs.split(','),
+                        events  :
+                        {
+                            onSubmit : function(Popup, result)
+                            {
+                                Popup.Loader.show();
+
+                                Ajax.post('ajax_site_linked_in', function()
+                                {
+                                    Popup.Loader.hide();
+                                    Popup.close();
+                                }, {
+                                    project : Project.getName(),
+                                    lang    : Project.getLang(),
+                                    id      : Site.getId(),
+                                    linkedParams : JSON.encode({
+                                        lang : result.lang,
+                                        id   : result.ids[ 0 ]
+                                    })
+                                });
+                            }
+                        }
+                    }).open();
+                });
+            });
         }
     });
 });

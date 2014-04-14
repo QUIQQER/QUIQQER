@@ -31,14 +31,15 @@ define('controls/projects/Popup', [
         ],
 
         options : {
-            project : false,
-            lang : false,
-            icon : 'icon-home',
-            title : 'Projekte',
-            maxWidth : 400,
+            project   : false,
+            lang      : false,
+            langs     : false,
+            icon      : 'icon-home',
+            title     : 'Projekte',
+            maxWidth  : 400,
             maxHeight : 600,
             autoclose : true,
-            multible : false 	// select multible items
+            multible  : false 	// select multible items
         },
 
         initialize : function(options)
@@ -87,7 +88,7 @@ define('controls/projects/Popup', [
                 {
                     onChange : function(Sel)
                     {
-                        var value = this.getValue().split( ',' )
+                        var value = this.getValue().split( ',' );
 
                         self.setAttribute( 'project', value[0] );
                         self.setAttribute( 'lang', value[1] );
@@ -95,14 +96,23 @@ define('controls/projects/Popup', [
                         self.loadMap();
                     }
                 }
-            }).inject(
-                this.$Header
-            );
+            }).inject( this.$Header );
 
             // load the projects
             Projects.getList(function(result)
             {
                 var i, len, langs, project;
+
+                var selfLangs      = self.getAttribute( 'langs' ),
+                    allowedProject = self.getAttribute( 'project' ),
+                    allowedLangs   = !selfLangs ? false : {};
+
+                if ( selfLangs && selfLangs.length )
+                {
+                    for ( var i = 0, len = selfLangs.length; i < len; i++ ) {
+                        allowedLangs[ selfLangs[i] ] = true;
+                    }
+                }
 
                 for ( project in result )
                 {
@@ -110,6 +120,14 @@ define('controls/projects/Popup', [
 
                     for ( i = 0, len = langs.length; i < len; i++ )
                     {
+                        if ( allowedProject && allowedProject != project ) {
+                            continue;
+                        }
+
+                        if ( allowedLangs && !allowedLangs[ langs[ i ] ] ) {
+                            continue;
+                        }
+
                         Select.appendChild(
                             project +' ('+ langs[ i ] +')',
                             project +','+ langs[ i ],

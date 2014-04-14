@@ -16,6 +16,7 @@ define('controls/projects/project/Panel', [
     'qui/controls/desktop/Panel',
     'Projects',
     'controls/projects/project/Sitemap',
+    'utils/Panels',
 
     'qui/controls/buttons/Button',
     'qui/controls/buttons/Seperator',
@@ -25,7 +26,7 @@ define('controls/projects/project/Panel', [
 
     'css!controls/projects/project/Panel.css'
 
-], function(QUIPanel, Projects, ProjectSitemap, QUIButton, QUIButtonSeperator, QUISitemap, QUISitemapItem, QUISitemapFilter)
+], function(QUIPanel, Projects, ProjectSitemap, PanelUtils, QUIButton, QUIButtonSeperator, QUISitemap, QUISitemapItem, QUISitemapFilter)
 {
     "use strict";
 
@@ -555,57 +556,19 @@ define('controls/projects/project/Panel', [
                 return;
             }
 
-
-            require([
-                'qui/QUI',
-                'controls/projects/project/site/Panel',
-                'classes/projects/Project',
-                'classes/projects/project/Site'
-            ], function(QUI, SitePanel, Project, Site)
+            PanelUtils.openSitePanel(project, lang, id, function(Panel)
             {
-                var n      = 'panel-'+ project +'-'+ lang +'-'+ id,
-                    panels = QUI.Controls.get( n );
-
-
-                if ( panels.length )
-                {
-                    panels[ 0 ].open();
-
-                    // if a task exist, click it and open the instance
-                    var Task = panels[ 0 ].getAttribute( 'Task' );
-
-                    if ( Task && Task.getType() == 'qui/controls/taskbar/Task' ) {
-                        panels[ 0 ].getAttribute( 'Task' ).click();
-                    }
-
-                    return;
-                }
-
-                panels = QUI.Controls.getByType( 'qui/controls/desktop/Tasks' );
-
-                if ( !panels.length ) {
-                    return;
-                }
-
-                var Project = Projects.get( project, lang ),
-                    Site    = Project.get( id );
-
-                panels[ 0 ].appendChild(
-                    new SitePanel(Site, {
-                        events :
-                        {
-                            onShow : function(Panel)
-                            {
-                                if ( Panel.getType() != 'controls/projects/project/site/Panel' ) {
-                                    return;
-                                }
-                                // if it is a sitepanel
-                                // set the item in the map active
-                                self.openSite( Panel.getSite().getId() );
-                            }
+                Panel.addEvents({
+                    onShow : function(Panel)
+                    {
+                        if ( Panel.getType() != 'controls/projects/project/site/Panel' ) {
+                            return;
                         }
-                    })
-                );
+                        // if it is a sitepanel
+                        // set the item in the map active
+                        self.openSite( Panel.getSite().getId() );
+                    }
+                });
             });
         },
 
@@ -617,44 +580,7 @@ define('controls/projects/project/Panel', [
          */
         openMediaPanel : function(project)
         {
-            var n      = 'panel-'+ project +'-media',
-                panels = QUI.Controls.get( n );
-
-            if ( panels.length )
-            {
-                panels[ 0 ].open();
-
-                // if a task exist, click it and open the instance
-                var Task = panels[ 0 ].getAttribute( 'Task' );
-
-                if ( Task && Task.getType() == 'qui/controls/taskbar/Task' ) {
-                    panels[ 0 ].getAttribute( 'Task' ).click();
-                }
-
-                return;
-            }
-
-            panels = QUI.Controls.getByType( 'qui/controls/desktop/Tasks' );
-
-            if ( !panels.length ) {
-                return;
-            }
-
-            require([
-                'qui/QUI',
-                'controls/projects/project/media/Panel',
-                'classes/projects/Project'
-            ], function(QUI, MediaPanel, Project, Site)
-            {
-                var Project = Projects.get( project ),
-                    Media   = Project.getMedia();
-
-                panels[ 0 ].appendChild(
-                    new MediaPanel( Project.getMedia(), {
-
-                    })
-                );
-            });
+            PanelUtils.openMediaPanel( project );
         }
     });
 });

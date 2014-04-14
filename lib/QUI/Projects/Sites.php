@@ -329,7 +329,7 @@ class Sites
     {
         // Globale requireds
         $Project = $Site->getProject();
-        $Plugins = \QUI::getPlugins();
+        $Plugins = \QUI::getPluginManager();
 
         $types  = $Project->getTypes();
         $result = array();

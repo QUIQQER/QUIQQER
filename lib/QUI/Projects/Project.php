@@ -1308,6 +1308,14 @@ class Project
         $Table    = $DataBase->Table();
         $User     = \QUI::getUserBySession();
 
+        // multi lingual table
+        $multiLingualTable = QUI_DB_PRFX . $this->_name .'_multilingual';
+
+        $Table->appendFields($multiLingualTable, array(
+            'id' => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY'
+        ));
+
+
         foreach ( $this->_langs as $lang )
         {
             $table = QUI_DB_PRFX . $this->_name .'_'. $lang .'_sites';
@@ -1388,11 +1396,15 @@ class Project
             $Table->setIndex( $table, 'parent' );
             $Table->setIndex( $table, 'child' );
 
+            // multilingual field
+            $Table->appendFields(
+                $multiLingualTable,
+                array( $lang => 'bigint(20)' )
+            );
 
             // Translation Setup
             \QUI\Translator::addLang( $lang );
         }
-
 
         // Media Setup
         $this->getMedia()->setup();

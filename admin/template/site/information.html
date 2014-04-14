@@ -98,10 +98,44 @@
     </tbody>
     </table>
 
-    <table class="data-table">
+    <table class="data-table site-langs">
     <thead>
         <tr>
-            <th>Verknüpfungen</th>
+            <th colspan="3">
+                Sprach-Verknüpfungen
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {assign var=langIds value=$Site->getLangIds()}
+        {assign var=Project value=$Site->getProject()}
+
+        {foreach from=$langIds item=entry key=lang}
+        {if $lang != $Project->getLang()}
+        <tr class="{cycle values="odd,even"}" data-lang="{$lang}" data-id="{$entry}">
+            <td style="width: 30px;">
+                <img src="{$smarty.const.URL_BIN_DIR}16x16/flags/{$lang}.png" />
+            </td>
+            <td>
+                {if $entry}
+                    {site id=$entry project=$Project->getName() lang=$lang attribute=name} ( {$entry} )
+                {else}
+                    Keine Sprach-Verknüpfung für {$lang}
+                {/if}
+            </td>
+            <td>
+
+            </td>
+        </tr>
+        {/if}
+        {/foreach}
+    </tbody>
+    </table>
+
+    <table class="data-table site-linking">
+    <thead>
+        <tr>
+            <th>Mehrfach-Verknüpfungen</th>
         </tr>
     </thead>
 

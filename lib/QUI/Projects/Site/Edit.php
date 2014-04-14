@@ -103,7 +103,7 @@ class Edit extends \QUI\Projects\Site
     {
         // Globale requireds
         $Project = $this->getProject();
-        $Plugin  = \QUI::getPlugins();
+        $Plugin  = \QUI::getPluginManager();
 
         // Plugins laden
         parent::_load_plugins();
@@ -811,10 +811,13 @@ class Edit extends \QUI\Projects\Site
      */
     public function addLanguageLink($lang, $id)
     {
-        \QUI\Projects\Sites::checkRights( $this );
+        $this->checkPermission( 'quiqqer.projects.site.edit' );
+
 
         $Project = $this->getProject();
         $p_lang  = $Project->getAttribute( 'lang' );
+
+        $id = (int)$id;
 
         $result = \QUI::getDataBase()->fetch(array(
             'from' 	=> $this->_RELLANGTABLE,
@@ -854,8 +857,7 @@ class Edit extends \QUI\Projects\Site
      */
     public function removeLanguageLink($lang)
     {
-        // Edit Rechte prüfen
-        \QUI\Projects\Sites::checkRights($this);
+        $this->checkPermission( 'quiqqer.projects.site.edit' );
 
         $Project = $this->getProject();
 
@@ -905,6 +907,7 @@ class Edit extends \QUI\Projects\Site
                 $new_name = $old.' ('.$i.')';
                 $i++;
             }
+
         } else
         {
             $new_name = $params['name'];
@@ -1070,23 +1073,24 @@ class Edit extends \QUI\Projects\Site
      * Spielt ein Archiv wieder ein
      *
      * @param unknown_type $date
+     * @deprecated
      */
     public function restoreArchive($date)
     {
         // Edit Rechte prüfen
-        \QUI\Projects\Sites::checkRights($this);
+        $this->checkPermission( 'quiqqer.projects.site.edit' );
 
         // jetziger Stand sichern
-        $this->createArchive();
+        // $this->createArchive();
 
         // Tempfile löschen
         //$this->deleteTemp();
 
         // Archiv laden
-        $this->loadArchive($date);
+        // $this->loadArchive($date);
 
         // Attribute speichern
-        $this->save(false);
+        //$this->save(false);
     }
 
     /**
@@ -1097,20 +1101,16 @@ class Edit extends \QUI\Projects\Site
      */
     public function move($pid)
     {
-        // Edit Rechte prüfen
-        \QUI\Projects\Sites::checkRights($this);
+        $this->checkPermission( 'quiqqer.projects.site.edit' );
 
         $Project = $this->getProject();
         $Parent  = $Project->get( (int)$pid );// Prüfen ob das Parent existiert
 
         $children = $this->getChildrenIds( $this->getId(), array(), true );
 
-        if (!in_array($pid, $children) &&
-            $pid != $this->getId())
+        if ( !in_array($pid, $children) && $pid != $this->getId() )
         {
-            $DataBase = \QUI::getDB();
-
-            $DataBase->updateData(
+            \QUI::getDataBase()->update(
                 $this->_RELTABLE,
                 array('parent' => $Parent->getId()),
                 'child = '. $this->getId() .' AND oparent IS NULL'
@@ -1137,32 +1137,32 @@ class Edit extends \QUI\Projects\Site
     public function copy($pid)
     {
         // Edit Rechte prüfen
-        \QUI\Projects\Sites::checkRights($this);
+        $this->checkPermission( 'quiqqer.projects.site.edit' );
 
         $Project   = $this->getProject();
         $Parent    = new \QUI\Projects\Site\Edit( $Project, (int)$pid );
         $attribues = $this->getAllAttributes();
 
-        // [begin] Prüfen ob es eine Seite mit dem gleichen Namen im Parent schon gibt
+        // Prüfen ob es eine Seite mit dem gleichen Namen im Parent schon gibt
         try
         {
             $Child = $Parent->getChildIdByName(
                 $this->getAttribute('name')
             );
-        } catch (\QUI\Exception $e)
+        } catch ( \QUI\Exception $Exception )
         {
             // es wurde kein Kind gefunden
             $Child  = false;
         }
 
-            if ($Child)
+        if ( $Child )
         {
             $parents   = $Parent->getParents();
             $parents[] = $Parent;
 
             $path    = '';
 
-            foreach ($parents as $Prt) {
+            foreach ( $parents as $Prt ) {
                 $path .= '/'. $Prt->getAttribute('name');
             }
 
@@ -1171,7 +1171,7 @@ class Edit extends \QUI\Projects\Site
                 'Eine Seite mit dem Namen '. $this->getAttribute('name') .' befindet sich schon unter '. $path
             );
         }
-        // [end] Prüfen ob es eine Seite mit dem gleichen Namen im Parent schon gibt
+
 
         // kopiervorgang beginnen
         $site_id = $Parent->createChild(array(
@@ -1179,18 +1179,18 @@ class Edit extends \QUI\Projects\Site
         ));
 
         // Erstmal Seitentyp setzn
-        $Site = new \QUI\Projects\Site\Edit($Project, (int)$site_id);
-        $Site->setAttribute('type', $this->getAttribute('type'));
-        $Site->save(false);
+        $Site = new \QUI\Projects\Site\Edit( $Project, (int)$site_id );
+        $Site->setAttribute( 'type', $this->getAttribute('type') );
+        $Site->save( false );
 
         // Alle Attribute setzen
-        $Site = new \QUI\Projects\Site\Edit($Project, (int)$site_id);
+        $Site = new \QUI\Projects\Site\Edit( $Project, (int)$site_id );
 
-        foreach ($attribues as $key => $value) {
-            $Site->setAttribute($key, $value);
+        foreach ( $attribues as $key => $value ) {
+            $Site->setAttribute( $key, $value );
         }
 
-        return $Site->save(false);
+        return $Site->save( false );
     }
 
     /**
@@ -1200,10 +1200,10 @@ class Edit extends \QUI\Projects\Site
      */
     public function linked($pid)
     {
-        $Project   = $this->getProject();
+        $Project = $this->getProject();
 
-        $table     = $Project->getAttribute('name') .'_'.
-                     $Project->getAttribute('lang') .'_sites_relations';
+        $table = $Project->getAttribute('name') .'_'.
+                 $Project->getAttribute('lang') .'_sites_relations';
 
         $NewParent = new \QUI\Projects\Site\Edit($Project, (int)$pid);
         $Parent    = $this->getParent();
@@ -1217,16 +1217,16 @@ class Edit extends \QUI\Projects\Site
             );
         }
 
-        $links = \QUI::getDB()->select(array(
+        $links = \QUI::getDataBase()->fetch(array(
             'from'  => $table,
             'where' => array(
                 'child' => $this->getId()
             )
         ));
 
-        foreach ($links as $entry)
+        foreach ( $links as $entry )
         {
-            if ($entry['parent'] == $pid)
+            if ( $entry['parent'] == $pid )
             {
                 throw new \QUI\Exception(
                     'Es kann keine Verknüpfung in dieser Ebene erstellt werden,
@@ -1235,7 +1235,7 @@ class Edit extends \QUI\Projects\Site
             }
         }
 
-        return \QUI::getDB()->addData($table, array(
+        return \QUI::getDataBase()->insert($table, array(
             'parent'  => $pid,
             'child'   => $this->getId(),
             'oparent' => $Parent->getId()
@@ -1248,45 +1248,51 @@ class Edit extends \QUI\Projects\Site
      * @param Integer $pid - Parent ID
      * @param Integer $all - Alle Verknüpfungen und Original Seite löschen
      * @param Bool $orig   - Delete the original site, too
+     *
+     * @todo refactor -> use PDO
      */
     public function deleteLinked($pid, $all=false, $orig=false)
     {
-        $Project = $this->getProject();
-        $Parent  = $this->getParent();
-        $db      = \QUI::getDB(); /* @var $db MyDB */
+        $this->checkPermission( 'quiqqer.projects.site.edit' );
 
-        $table   = $Project->getAttribute('name') .'_'.
-                   $Project->getAttribute('lang') .'_sites_relations';
+        $Project  = $this->getProject();
+        $Parent   = $this->getParent();
+        $DataBase = \QUI::getDataBase();
 
-        if (PT_Bool::JSBool($all))
+        $table = $Project->getAttribute('name') .'_'.
+                 $Project->getAttribute('lang') .'_sites_relations';
+
+        if ( \QUI\Utils\Bool::JSBool( $value ) )
         {
             // Seite löschen
             $this->delete();
 
-            $qry  = 'DELETE FROM `'. $table.'` ';
+            $qry  = 'DELETE FROM `'. $table .'` ';
             $qry .= 'WHERE child ='. $this->getId() .' AND parent != '. $Parent->getId();
 
             // Alle Verknüpfungen
-            return $db->query($qry);
+            return $DataBase->fetchSQL( $qry );
         }
 
         // Einzelne Verknüpfung löschen
-        if ($pid && $orig == false)
+        if ( $pid && $orig == false )
         {
             $qry  = 'DELETE FROM `'. $table.'` ';
             $qry .= 'WHERE child ='. $this->getId() .' AND parent = '. (int)$pid;
 
-            return $db->query($qry);
+            return $DataBase->fetchSQL( $qry );
         }
 
         $qry  = 'DELETE FROM `'. $table.'` ';
         $qry .= 'WHERE child ='. $this->getId() .' AND parent = '. (int)$pid .' AND oparent = '. (int)$orig;
 
-        return $db->query($qry);
+        return $DataBase->fetchSQL( $qry );
     }
 
     /**
      * Löscht den Site Cache
+     *
+     * @todo -> use internal caching system
      */
     public function deleteCache()
     {
@@ -1299,13 +1305,15 @@ class Edit extends \QUI\Projects\Site
         $link_cache_dir  = VAR_DIR .'cache/links/'. $Project->getAttribute('name') .'/';
         $link_cache_file = $link_cache_dir . $this->getId() .'_'. $Project->getAttribute('name') .'_'. $Project->getAttribute('lang');
 
-        if (file_exists($link_cache_file)) {
-            unlink($link_cache_file);
+        if ( file_exists( $link_cache_file ) ) {
+            unlink( $link_cache_file );
         }
     }
 
     /**
      * Erstellt den Site Cache
+     *
+     * @todo -> use internal caching system
      */
     public function createCache()
     {
@@ -1318,9 +1326,9 @@ class Edit extends \QUI\Projects\Site
         $link_cache_dir  = VAR_DIR .'cache/links/'. $Project->getAttribute('name') .'/';
         $link_cache_file = $link_cache_dir . $this->getId() .'_'. $Project->getAttribute('name') .'_'. $Project->getAttribute('lang');
 
-        \QUI\Utils\System\File::mkdir($link_cache_dir);
+        \QUI\Utils\System\File::mkdir( $link_cache_dir );
 
-        file_put_contents($link_cache_file, $this->getUrlRewrited());
+        file_put_contents( $link_cache_file, $this->getUrlRewrited() );
     }
 
     /**
@@ -1331,7 +1339,7 @@ class Edit extends \QUI\Projects\Site
      */
     public function setExtra($name, $value)
     {
-        $this->_extra[$name] = $value;
+        $this->_extra[ $name ] = $value;
     }
 
     /**
@@ -1341,8 +1349,8 @@ class Edit extends \QUI\Projects\Site
      */
     public function removeExtra($name)
     {
-        if (isset($this->_extra[$name])) {
-            unset($this->_extra[$name]);
+        if ( isset( $this->_extra[ $name ] ) ) {
+            unset( $this->_extra[ $name ] );
         }
     }
 
@@ -1356,20 +1364,20 @@ class Edit extends \QUI\Projects\Site
      */
     public function isMarcate()
     {
-        if (!file_exists($this->_marcatefile)) {
+        if ( !file_exists( $this->_marcatefile ) ) {
             return false;
         }
 
-        $uid = file_get_contents($this->_marcatefile);
+        $uid = file_get_contents( $this->_marcatefile );
 
-        if (QUI::getUserBySession()->getId() == $uid) {
+        if ( \QUI::getUserBySession()->getId() == $uid ) {
             return false;
         }
 
-        $time = time() - filemtime($this->_marcatefile);
+        $time = time() - filemtime( $this->_marcatefile );
         $max_life_time = \QUI::conf('session', 'max_life_time');
 
-        if ($time > $max_life_time)
+        if ( $time > $max_life_time )
         {
             $this->demarcate();
             return false;
@@ -1384,11 +1392,11 @@ class Edit extends \QUI\Projects\Site
      */
     public function marcate()
     {
-        if ($this->isMarcate()) {
+        if ( $this->isMarcate() ) {
             return;
         }
 
-        file_put_contents($this->_marcatefile, \QUI::getUserBySession()->getId());
+        file_put_contents( $this->_marcatefile, \QUI::getUserBySession()->getId() );
     }
 
     /**
@@ -1396,11 +1404,11 @@ class Edit extends \QUI\Projects\Site
      */
     public function demarcate()
     {
-        if (!file_exists($this->_marcatefile)) {
+        if ( !file_exists( $this->_marcatefile ) ) {
             return;
         }
 
-        unlink($this->_marcatefile);
+        unlink( $this->_marcatefile );
     }
 
     /**
@@ -1408,12 +1416,12 @@ class Edit extends \QUI\Projects\Site
      */
     public function demarcateWithRights()
     {
-        if (!QUI::getUserBySession()->isSU()) {
+        if ( !\QUI::getUserBySession()->isSU() ) {
             return;
         }
 
-           if (file_exists($this->_marcatefile)) {
-            unlink($this->_marcatefile);
+        if ( file_exists( $this->_marcatefile ) ) {
+            unlink( $this->_marcatefile );
         }
     }
 
@@ -1445,12 +1453,12 @@ class Edit extends \QUI\Projects\Site
         $filter = USR_DIR .'lib/'. $name .'/url.filter.php';
         $func   = 'url_filter_'. $name;
 
-        if (file_exists($filter))
+        if ( file_exists( $filter ) )
         {
             require_once $filter;
 
-            if (function_exists($func)) {
-                $url = $func($url);
+            if ( function_exists( $func ) ) {
+                $url = $func( $url );
             }
         }
 
@@ -1465,24 +1473,38 @@ class Edit extends \QUI\Projects\Site
      */
     static function checkName($name)
     {
-        if (!isset($name)) {
-            throw new \QUI\Exception('Bitte gebe einen Titel ein');
+        if ( !isset( $name ) )
+        {
+            throw new \QUI\Exception(
+                'Bitte gebe einen Titel ein'
+            );
         }
 
-        if (strlen($name) <= 2) {
-            throw new \QUI\Exception('Die URL muss mehr als 2 Zeichen lang sein', 701);
+        if ( strlen( $name ) <= 2 )
+        {
+            throw new \QUI\Exception(
+                'Die URL muss mehr als 2 Zeichen lang sein',
+                701
+            );
         }
 
-        if (strlen($name) > 200) {
-            throw new \QUI\Exception('Die URL darf nicht länger als 200 Zeichen lang sein', 704);
+        if ( strlen( $name ) > 200 )
+        {
+            throw new \QUI\Exception(
+                'Die URL darf nicht länger als 200 Zeichen lang sein',
+                704
+            );
         }
 
         // Prüfung des Namens - Sonderzeichen
-        if (preg_match("@[-.,:;#`!§$%&/?<>\=\'\"\@\_\]\[\+]@", $name)) {
-            throw new \QUI\Exception('In der URL "'. $name .'" dürfen folgende Zeichen nicht verwendet werden: _-.,:;#@`!§$%&/?<>=\'"[]+', 702);
+        if ( preg_match("@[-.,:;#`!§$%&/?<>\=\'\"\@\_\]\[\+]@", $name ))
+        {
+            throw new \QUI\Exception(
+                'In der URL "'. $name .'" dürfen folgende Zeichen nicht verwendet werden: _-.,:;#@`!§$%&/?<>=\'"[]+',
+                702
+            );
         }
 
         return true;
     }
 }
-?>
