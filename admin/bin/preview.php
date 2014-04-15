@@ -26,6 +26,10 @@ if ( !isset( $_POST['project'] ) ||
 $Project = \QUI::getProject( $_POST['project'], $_POST['lang'] );
 $Site    = new \QUI\Projects\Site\Edit( $Project, $_POST['id'] );
 
+if ( isset( $_POST['siteData']['type'] ) ) {
+    $Site->setAttribute( 'type', $_POST['siteData']['type'] );
+}
+
 $Site->load();
 
 // site data
