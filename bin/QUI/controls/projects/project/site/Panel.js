@@ -879,7 +879,7 @@ define('controls/projects/project/site/Panel', [
                             {
                                 Popup.Loader.show();
 
-                                Ajax.post('ajax_site_linked_in', function()
+                                Ajax.post('ajax_site_language_add', function()
                                 {
                                     Popup.close();
 
@@ -925,7 +925,7 @@ define('controls/projects/project/site/Panel', [
                         {
                             Confirm.Loader.show();
 
-                            Ajax.post('ajax_site_linked_remove', function()
+                            Ajax.post('ajax_site_language_remove', function()
                             {
                                 Confirm.close();
 

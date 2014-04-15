@@ -290,6 +290,79 @@ define('classes/projects/project/Site', [
         },
 
         /**
+         * Move the site to another parent site
+         *
+         * @param {Integer} newParentId - ID of the new parent
+         * @param {Function} onfinish - [optional] callback function
+         */
+        move : function(newParentId, callback)
+        {
+            var Site   = this,
+                params = this.ajaxParams();
+
+            params.newParentId = newParentId;
+
+            Ajax.post('ajax_site_move', function(result, Request)
+            {
+                if ( typeof callback !== 'undefined' ) {
+                    callback( result, Request );
+                }
+
+                Site.fireEvent( 'move', [ Site, newParentId ] );
+
+            }, params);
+        },
+
+
+        /**
+         * Copy the site to another parent site
+         *
+         * @param {Integer} newParentId - ID of the new parent
+         * @param {Function} onfinish - [optional] callback function
+         */
+        copy : function(newParentId, callback)
+        {
+            var Site   = this,
+                params = this.ajaxParams();
+
+            params.newParentId = newParentId;
+
+            Ajax.post('ajax_site_copy', function(result, Request)
+            {
+                if ( typeof callback !== 'undefined' ) {
+                    callback( result, Request );
+                }
+
+                Site.fireEvent( 'copy', [ Site, newParentId ] );
+
+            }, params);
+        },
+
+        /**
+         * Create a link into the parent to the site
+         *
+         * @param {Integer} newParentId - ID of the parent
+         * @param {Function} onfinish - [optional] callback function
+         */
+        linked : function(newParentId, callback)
+        {
+            var Site   = this,
+                params = this.ajaxParams();
+
+            params.newParentId = newParentId;
+
+            Ajax.post('ajax_site_linked', function(result, Request)
+            {
+                if ( typeof callback !== 'undefined' ) {
+                    callback( result, Request );
+                }
+
+                Site.fireEvent( 'linked', [ Site, newParentId ] );
+
+            }, params);
+        },
+
+        /**
          * Create a child site
          *
          * @method classes/projects/project/Site#createChild

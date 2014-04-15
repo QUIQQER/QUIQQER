@@ -7,18 +7,18 @@
  * @param String $lang
  * @param String $project
  */
-function ajax_site_linked_in($project, $lang, $id, $linkedParams)
+function ajax_site_language_remove($project, $lang, $id, $linkedParams)
 {
     $linkedParams = json_decode( $linkedParams, true );
 
     $Project = \QUI::getProject( $project, $lang );
     $Site    = new \QUI\Projects\Site\Edit( $Project, (int)$id );
 
-    $Site->addLanguageLink( $linkedParams['lang'], (int)$linkedParams['id'] );
+    $Site->removeLanguageLink( $linkedParams['lang'] );
 }
 
 \QUI::$Ajax->register(
-    'ajax_site_linked_in',
+    'ajax_site_language_remove',
     array('project', 'lang', 'id', 'linkedParams'),
     'Permission::checkAdminUser'
 );

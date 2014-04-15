@@ -15,10 +15,12 @@ define('controls/projects/project/Sitemap', [
     'qui/controls/sitemap/Map',
     'qui/controls/sitemap/Item',
     'qui/controls/contextmenu/Item',
+    'qui/controls/contextmenu/Seperator',
     'Projects',
-    'Ajax'
+    'Ajax',
+    'Clipboard'
 
-], function(QUIControl, QUISitemap, QUISitemapItem, QUIContextmenuItem, Projects, Ajax)
+], function(QUIControl, QUISitemap, QUISitemapItem, QUIContextmenuItem, QUIContextmenuSeperator, Projects, Ajax, Clipboard)
 {
     "use strict";
 
@@ -97,6 +99,10 @@ define('controls/projects/project/Sitemap', [
                 onSiteDeactivate : this.onSiteChange,
                 onSiteDelete     : this.onSiteDelete
             });
+
+            // copy and paste ids
+            this.$cut  = false;
+            this.$copy = false;
         },
 
         /**
@@ -358,8 +364,8 @@ define('controls/projects/project/Sitemap', [
         {
             Ajax.get('ajax_project_firstchild', function(result, Request)
             {
-                if ( Request.getAttribute( 'onfinish' ) ) {
-                    Request.getAttribute( 'onfinish' )( result, Request );
+                if ( typeof callback !== 'undefined' ) {
+                    callback( result, Request );
                 }
             }, {
                 project  : this.getAttribute( 'project' ),
@@ -445,7 +451,7 @@ define('controls/projects/project/Sitemap', [
         /**
          * Parse a ajax result set to a sitemap item
          *
-         * @method controls/projects/project/Sitemap#$loadChildren
+         * @method controls/projects/project/Sitemap#$parseArrayToSitemapitem
          * @param {Array} result
          * @param {qui/controls/sitemap/Item} Itm
          * @return {qui/controls/sitemap/Item}
@@ -454,6 +460,8 @@ define('controls/projects/project/Sitemap', [
          */
         $parseArrayToSitemapitem : function(result, Itm)
         {
+            var self = this;
+
             if ( typeof Itm === 'undefined' ) {
                 Itm = new QUISitemapItem();
             }
@@ -501,48 +509,111 @@ define('controls/projects/project/Sitemap', [
             }
 
             // contextmenu
-            Itm.getContextMenu()
-                .clearChildren()
-                .appendChild(
+            var ContextMenu = Itm.getContextMenu();
+
+            ContextMenu.clearChildren().appendChild(
                     new QUIContextmenuItem({
-                        name   : 'site-copy-'+ Itm.getId(),
+                        name   : 'copy',
                         text   : 'kopieren',
                         icon   : 'icon-copy',
                         events :
                         {
-                            onClick : function(Item, event)
+                            onClick : function(ContextItem, event)
                             {
-                                console.info(Item);
+                                Clipboard.set({
+                                    project  : self.getAttribute( 'project' ),
+                                    lang     : self.getAttribute( 'lang' ),
+                                    id       : Itm.getAttribute( 'value' ),
+                                    Item     : Itm,
+                                    copyType : 'copy'
+                                });
                             }
                         }
                     })
                 ).appendChild(
                     new QUIContextmenuItem({
-                        name   : 'site-paste-'+ Itm.getId(),
-                        text   : 'einfügen',
-                        icon   : 'icon-paste',
-                        events :
-                        {
-                            onClick : function(Item, event)
-                            {
-                                console.info(Item);
-                            }
-                        }
-                    })
-                ).appendChild(
-                    new QUIContextmenuItem({
-                        name   : 'site-cut-'+ Itm.getId(),
+                        name   : 'cut',
                         text   : 'ausschneiden',
                         icon   : 'icon-cut',
                         events :
                         {
-                            onClick : function(Item, event)
+                            onClick : function(ContextItem, event)
                             {
-                                console.info(Item);
+                                Clipboard.set({
+                                    project  : self.getAttribute( 'project' ),
+                                    lang     : self.getAttribute( 'lang' ),
+                                    id       : Itm.getAttribute( 'value' ),
+                                    Item     : Itm,
+                                    copyType : 'cut'
+                                });
+                            }
+                        }
+                    })
+                ).appendChild(
+                    new QUIContextmenuSeperator()
+                ).appendChild(
+                    new QUIContextmenuItem({
+                        disabled : true,
+                        name   : 'paste',
+                        text   : 'einfügen',
+                        icon   : 'icon-paste',
+                        events :
+                        {
+                            onClick : function(ContextItem, event) {
+                                self.$pasteSite( Itm );
+                            }
+                        }
+                    })
+                ).appendChild(
+                    new QUIContextmenuItem({
+                        disabled : true,
+                        name   : 'linked-paste',
+                        text   : 'Verknüpfung einfügen',
+                        icon   : 'icon-paste',
+                        events :
+                        {
+                            onClick : function(ContextItem, event) {
+                                self.$linkSite( Itm );
                             }
                         }
                     })
                 );
+
+            ContextMenu.addEvents({
+                onShow : function(ContextMenu)
+                {
+                    var data   = Clipboard.get(),
+                        Paste  = ContextMenu.getChildren( 'paste' ),
+                        Linked = ContextMenu.getChildren( 'linked-paste' ),
+                        Cut    = ContextMenu.getChildren( 'cut' );
+
+                    Paste.disable();
+                    Linked.disable();
+
+                    if ( Itm.getAttribute( 'value' ) == 1 )
+                    {
+                        Cut.disable();
+                    } else
+                    {
+                        Cut.enable();
+                    }
+
+                    if ( !data ) {
+                        return;
+                    }
+
+                    if ( typeof data.copyType === 'undefined' ) {
+                        return;
+                    }
+
+                    if ( data.copyType !== 'cut' && data.copyType !== 'copy' ) {
+                        return;
+                    }
+
+                    Paste.enable();
+                    Linked.enable();
+                }
+            });
 
             return Itm;
         },
@@ -579,13 +650,12 @@ define('controls/projects/project/Sitemap', [
          */
         $open : function(Item)
         {
-            var Control = this;
+            var self = this;
 
             this.fireEvent( 'openBegin', [ Item, this ] );
 
-            this.$loadChildren(Item, function(Item, Request)
-            {
-                Control.fireEvent( 'openEnd', [ Item, Control ] );
+            this.$loadChildren(Item, function(Item, Request) {
+                self.fireEvent( 'openEnd', [ Item, self ] );
             });
         },
 
@@ -601,6 +671,99 @@ define('controls/projects/project/Sitemap', [
         $close : function(Item)
         {
             Item.clearChildren();
+        },
+
+        /**
+         * Move a site to a new parent
+         *
+         * @param {qui/controls/sitemap/Item} ParentItem
+         */
+        $pasteSite : function(NewParentItem)
+        {
+            var data = Clipboard.get();
+
+            if ( typeof data.Item === 'undefined' ) {
+                return;
+            }
+
+            if ( typeof data.project === 'undefined' ||
+                 typeof data.lang === 'undefined' ||
+                 typeof data.id === 'undefined' )
+            {
+                return;
+            }
+
+            var self    = this,
+                Project = Projects.get( data.project, data.lang ),
+                Site    = Project.get( data.id ),
+                Item    = data.Item;
+
+            // move site
+            if ( data.copyType === 'cut' )
+            {
+                Site.move( NewParentItem.getAttribute('value'), function()
+                {
+                    Item.destroy();
+
+                    if ( !NewParentItem.isOpen() )
+                    {
+                        NewParentItem.open();
+                    } else
+                    {
+                        self.$open( NewParentItem );
+                    }
+                });
+
+                return;
+            }
+
+            Site.copy( NewParentItem.getAttribute('value'), function()
+            {
+                if ( !NewParentItem.isOpen() )
+                {
+                    NewParentItem.open();
+                } else
+                {
+                    self.$open( NewParentItem );
+                }
+            });
+        },
+
+        /**
+         * Link a site into a new parent
+         *
+         * @param {qui/controls/sitemap/Item} ParentItem
+         */
+        $linkSite : function(NewParentItem)
+        {
+            var data = Clipboard.get();
+
+            if ( typeof data.Item === 'undefined' ) {
+                return;
+            }
+
+            if ( typeof data.project === 'undefined' ||
+                 typeof data.lang === 'undefined' ||
+                 typeof data.id === 'undefined' )
+            {
+                return;
+            }
+
+            var self    = this,
+                Project = Projects.get( data.project, data.lang ),
+                Site    = Project.get( data.id ),
+                Item    = data.Item;
+
+            Site.linked( NewParentItem.getAttribute('value'), function()
+            {
+                if ( !NewParentItem.isOpen() )
+                {
+                    NewParentItem.open();
+                } else
+                {
+                    self.$open( NewParentItem );
+                }
+            });
         },
 
         /**

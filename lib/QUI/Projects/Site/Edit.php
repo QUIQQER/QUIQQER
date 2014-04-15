@@ -1094,7 +1094,7 @@ class Edit extends \QUI\Projects\Site
     }
 
     /**
-     * Verschiebt die Seite in ein anderes Parent
+     * Move the site to another parent
      *
      * @param Integer $pid - Parent ID
      * @return Bool
@@ -1190,7 +1190,9 @@ class Edit extends \QUI\Projects\Site
             $Site->setAttribute( $key, $value );
         }
 
-        return $Site->save( false );
+        $Site->save( false );
+
+        return $Site;
     }
 
     /**

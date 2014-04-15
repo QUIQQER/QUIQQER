@@ -143,43 +143,7 @@ define('controls/projects/project/Panel', [
                 }
             }).inject( this.$Filter.getElm() );
 
-            // add project
             new QUIButtonSeperator().inject( this.getHeader(), 'top' );
-
-//            var BtnAdd = new QUIButton({
-//                name     : 'add_projects',
-//                icon     : 'icon-plus',
-//                title    : 'Projekt hinzufügen',
-//                alt      : 'Projekt hinzufügen',
-//                events   :
-//                {
-//                    onClick : function(Btn, event)
-//                    {
-//                        event.stop();
-//
-//                        require(['controls/projects/Manager'], function(Manager)
-//                        {
-//                            QUI.Workspace.appendPanel(
-//                                new Manager({
-//                                    events :
-//                                    {
-//                                        onCreate : function(Panel)
-//                                        {
-//                                            Panel.getCategoryBar()
-//                                                 .getElement( 'add_project' )
-//                                                 .click();
-//                                        }
-//                                    }
-//                                })
-//                            );
-//                        });
-//                    }
-//                }
-//            }).inject( this.getHeader(), 'top' );
-
-//            BtnAdd.getElm().removeClass( 'qui-button' );
-//            BtnAdd.getElm().addClass( 'button' );
-//            BtnAdd.getElm().addClass( 'btn-blue' );
 
             // title button
             this.$Button = new QUIButton({
@@ -397,43 +361,14 @@ define('controls/projects/project/Panel', [
 
             Container.set(
                 'html',
-
-                '<h2>'+
-                    this.getAttribute('project') +
-                '</h2>'
+                '<h2>'+ this.getAttribute('project') + '</h2>'
             );
 
             Container.getElement( 'h2' ).setStyles({
-                margin: '20px 0 0 20px',
+                margin : '20px 0 0 20px',
                 background : 'url('+ URL_BIN_DIR +'16x16/flags/'+ lang +'.png) no-repeat left center',
                 padding : '0 0 0 20px'
             });
-
-            /*
-            Project.addEvent('onSiteStatusEditEnd', function(Site)
-            {
-                if ( !this.Sitemap ) {
-                    return;
-                }
-
-                var i, len;
-
-                var id   = Site.getId(),
-                    list = this.Sitemap.getChildren( '[data-value="'+ id +'"]' );
-
-                for ( i = 0, len = list.length; i < len; i++)
-                {
-                    if ( Site.getAttribute( 'active' ) == 1 )
-                    {
-                        list[i].activate();
-                    } else
-                    {
-                        list[i].deactivate();
-                    }
-                }
-
-            }.bind( this ));
-            */
 
             // create the project sitemap in the panel
             if ( this.$Map ) {
@@ -449,15 +384,19 @@ define('controls/projects/project/Panel', [
             this.$Sitemap = this.$Map.getMap();
 
             this.$Sitemap.addEvents({
-
-                onChildClick : this.$openSitePanel,
-
-                onChildContextMenu : function(Item, event)
+                onChildClick       : this.$openSitePanel,
+                onChildContextMenu : function(Item, MapItem, event)
                 {
-                    Item.getContextMenu()
-                        .setTitle( Item.getAttribute( 'text' ) +' - '+ Item.getAttribute( 'value' ) )
-                        .setPosition( event.page.x, event.page.y )
-                        .show();
+                    var title = MapItem.getAttribute( 'text' ) +' - '+
+                                MapItem.getAttribute( 'value' )
+
+                    MapItem.getContextMenu()
+                           .setTitle( title )
+                           .setPosition(
+                               event.page.x,
+                               event.page.y
+                           )
+                           .show();
 
                     event.stop();
                 }
@@ -472,16 +411,6 @@ define('controls/projects/project/Panel', [
             this.$Map.getElm().setStyles({
                 margin : '10px 20px'
             });
-
-            // set the panel title
-//            this.getHeader().getElement( 'h2' ).set(
-//                'html',
-//
-//                '<img src="'+ URL_BIN_DIR +'16x16/flags/'+ Project.getAttribute('lang') +'.png" ' +
-//                    'style="margin: 9px 5px 0 0; float: left;"' +
-//                ' />'+
-//                Project.getAttribute('name')
-//            );
 
             this.$Button.setNormal();
         },
