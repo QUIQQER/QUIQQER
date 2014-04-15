@@ -649,8 +649,9 @@ define('controls/projects/project/site/Panel', [
          * @fires onSiteTabUnLoad
          *
          * @param {qui/controls/buttons/Button} Category
+         * @param {Function} callback - [optional] callback function
          */
-        $onCategoryLeave : function(Category)
+        $onCategoryLeave : function(Category, callback)
         {
             this.Loader.show();
 
@@ -664,11 +665,20 @@ define('controls/projects/project/site/Panel', [
                     this.getAttribute( 'Editor' ).getContent()
                 );
 
+                if ( typeof callback !== 'undefined' ) {
+                    callback();
+                }
+
                 this.Loader.hide();
                 return;
             }
 
-            if ( !Body.getElement( 'form' ) ) {
+            if ( !Body.getElement( 'form' ) )
+            {
+                if ( typeof callback !== 'undefined' ) {
+                    callback();
+                }
+
                 return;
             }
 
@@ -683,6 +693,10 @@ define('controls/projects/project/site/Panel', [
                 Site.setAttribute( 'short', elements.short.value );
                 Site.setAttribute( 'nav_hide', elements.nav_hide.checked );
                 Site.setAttribute( 'type', elements.type.value );
+
+                if ( typeof callback !== 'undefined' ) {
+                    callback();
+                }
 
                 return;
             }
@@ -708,6 +722,10 @@ define('controls/projects/project/site/Panel', [
                 ], function(Plugin)
                 {
                     eval( Category.getAttribute( 'onunload' ) +'( Category, self );' );
+
+                    if ( typeof callback !== 'undefined' ) {
+                        callback();
+                    }
                 });
 
                 return;
@@ -731,6 +749,9 @@ define('controls/projects/project/site/Panel', [
          * Site event methods
          */
 
+        /**
+         * event on site save
+         */
         $onSiteSave : function()
         {
             this.Loader.hide();
@@ -942,6 +963,71 @@ define('controls/projects/project/site/Panel', [
                         }
                     }
                 }).open();
+            });
+        },
+
+        /**
+         * Open the preview window
+         */
+        openPreview : function()
+        {
+            var self = this;
+
+            this.Loader.show();
+
+            this.$onCategoryLeave(this.getActiveCategory(), function()
+            {
+                var Site    = self.getSite(),
+                    Project = Site.getProject();
+
+                var Form = new Element('form', {
+                    method : 'POST',
+                    action : URL_SYS_DIR +'bin/preview.php',
+                    target : '_blank'
+                });
+
+                var attributes = Site.getAttributes(),
+                    project = Project.getName(),
+                    lang    = Project.getLang(),
+                    id      = Site.getId();
+
+
+                new Element('input', {
+                    type  : 'hidden',
+                    value : Project.getName(),
+                    name  : 'project'
+                }).inject( Form );
+
+                new Element('input', {
+                    type  : 'hidden',
+                    value :  Project.getLang(),
+                    name  : 'lang'
+                }).inject( Form );
+
+                new Element('input', {
+                    type  : 'hidden',
+                    value : Site.getId(),
+                    name  : 'id'
+                }).inject( Form );
+
+
+                for ( var key in attributes )
+                {
+                    new Element('input', {
+                        type  : 'hidden',
+                        value : attributes[ key ],
+                        name  : 'siteData['+ key +']'
+                    }).inject( Form );
+                }
+
+                Form.inject( document.body );
+                Form.submit();
+
+                self.Loader.hide();
+
+                (function() {
+                    Form.destroy();
+                }).delay( 1000 );
             });
         }
     });
