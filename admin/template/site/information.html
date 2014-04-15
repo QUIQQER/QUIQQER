@@ -107,12 +107,13 @@
         </tr>
     </thead>
     <tbody>
+        {cycle values="even,odd" reset=true assign=_cycle}
         {assign var=langIds value=$Site->getLangIds()}
         {assign var=Project value=$Site->getProject()}
 
         {foreach from=$langIds item=entry key=lang}
         {if $lang != $Project->getLang()}
-        <tr class="{cycle values="odd,even"}" data-lang="{$lang}" data-id="{$entry}">
+        <tr class="{cycle values="even,odd"}" data-lang="{$lang}" data-id="{$entry}">
             <td style="width: 30px;">
                 <img src="{$smarty.const.URL_BIN_DIR}16x16/flags/{$lang}.png" />
             </td>
@@ -140,16 +141,40 @@
     </thead>
 
     <tbody>
+        {cycle values="even,odd" reset=true assign=_cycle}
+
+        {assign var=pids value=$Site->getParentIds()}
+        {if count($pids) > 1}
+            {assign var=mypid value=$Site->getParentId()}
+
+            {foreach from=$pids item=pid}
+            <tr class="{cycle values="even,odd"}">
+                {assign var=Parent value=$Project->get($pid)}
+                {assign var=parents value=$Parent->getParents()}
+                <td>
+                    <span class="icon-home"></span>
+                    / {foreach from=$parents item=PS} {$PS->getAttribute('name')}
+                    / {/foreach} {$Parent->getAttribute('name')}
+                    / {$Site->getAttribute('name')}
+                </td>
+            </tr>
+            {/foreach}
+
+        {else}
+        <tr class="{cycle values="odd,even"}">
+            <td>
+                Es existieren keine Verknüpfungen zu dieser Seite
+            </td>
+        </tr>
+        {/if}
+
+        {*
         <tr class="odd">
             <td>
             {assign var=pids value=$Site->getParentIds()}
             {if count($pids) > 1}
                 <ul style="margin-left: 0px" id="linkpages">
-                {assign var=mypid value=$Site->getParentId()}
 
-                {foreach from=$pids item=pid}
-                    {assign var=Parent value=$Project->get($pid)}
-                    {assign var=parents value=$Parent->getParents()}
                     <li style="margin: 5px 0; clear: both; float: left; list-style-type: none;">
                         {if $mypid != $Parent->getId()}
                             <div alt="{$Parent->getId()},{$Site->getId()},{$mypid}" style="float: left; width: 30px;" parent="{$Parent->getId()}"></div>
@@ -167,6 +192,7 @@
             {/if}
             </td>
         </tr>
+        *}
     </tbody>
     </table>
 
