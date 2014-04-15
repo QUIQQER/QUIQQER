@@ -132,13 +132,19 @@ define('controls/projects/project/Panel', [
             // site search
             new QUIButton({
                 icon   : 'icon-search',
-                title  : 'Seiten suchen ...',
-                alt    : 'Seiten suchen ...',
+                title  : 'Seiten suchen öffnen',
+                alt    : 'Seiten suchen öffnen',
                 events :
                 {
                     onClick : function()
                     {
-                        console.info( 'site search not implemented' );
+                        require([
+                            'controls/projects/project/site/Search',
+                            'utils/Panels'
+                        ], function(Search, PanelUtils)
+                        {
+                            PanelUtils.openPanelInTasks( new Search() );
+                        });
                     }
                 }
             }).inject( this.$Filter.getElm() );

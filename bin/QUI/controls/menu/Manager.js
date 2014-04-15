@@ -9,10 +9,11 @@ define('controls/menu/Manager', [
     'qui/controls/contextmenu/Bar',
     'qui/controls/contextmenu/BarItem',
     'qui/controls/contextmenu/Item',
+    'qui/controls/desktop/Panel',
     'Ajax',
-    'qui/controls/desktop/Panel'
+    'utils/Panels'
 
-], function(QUI, Control, ContextmenuBar, ContextmenuBarItem, ContextmenuItem, Ajax, Panel)
+], function(QUI, Control, ContextmenuBar, ContextmenuBarItem, ContextmenuItem, Panel, Ajax, PanelUtils)
 {
     "use strict";
 
@@ -123,19 +124,7 @@ define('controls/menu/Manager', [
          */
         openPanelInTasks : function(Panel)
         {
-            // if panel not exists
-            var panels = QUI.Controls.getByType( 'qui/controls/desktop/Tasks' );
-
-            if ( !panels.length ) {
-                return;
-            }
-
-            panels[ 0 ].appendChild( Panel );
-
-
-            (function() {
-                Panel.focus();
-            }).delay( 100 );
+            PanelUtils.openPanelInTasks( Panel );
         }
     });
 

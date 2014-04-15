@@ -129,6 +129,32 @@ define('utils/Panels', function()
                     callback( Panel );
                 }
             });
+        },
+
+        /**
+         * Open a panel in a task panel
+         * it search the first taskpanel
+         *
+         * @param {qui/controls/desktop/Panel} Panel
+         */
+        openPanelInTasks : function(Panel)
+        {
+            require(['qui/QUI'], function(QUI)
+            {
+                // if panel not exists
+                var panels = QUI.Controls.getByType( 'qui/controls/desktop/Tasks' );
+
+                if ( !panels.length ) {
+                    return;
+                }
+
+                panels[ 0 ].appendChild( Panel );
+
+
+                (function() {
+                    Panel.focus();
+                }).delay( 100 );
+            });
         }
 
     };
