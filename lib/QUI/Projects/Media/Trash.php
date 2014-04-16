@@ -62,7 +62,7 @@ class Trash implements \QUI\Interfaces\Projects\Trash
         // count
         $count = \QUI::getDataBase()->fetch(array(
             'from'  => $this->_Media->getTable(),
-            'count' => true,
+            'count' => 'count',
             'where' => array(
                 'deleted' => 1
             )
@@ -77,7 +77,7 @@ class Trash implements \QUI\Interfaces\Projects\Trash
             );
         }
 
-        return $Grid->parseResult( $data, $count );
+        return $Grid->parseResult( $data, $count[0]['count'] );
     }
 
     /**
@@ -88,6 +88,16 @@ class Trash implements \QUI\Interfaces\Projects\Trash
      */
     public function destroy($id)
     {
+        // check if the file is realy deleted?
+        $File = $this->_Media->get( $id );
+
+        if ( !$File->isDeleted() )
+        {
+            throw new \QUI\Exception(
+                'Only deleted Files can be destroyed. Please delete the file'
+            );
+        }
+
         \QUI::getDataBase()->delete(
             $this->_Media->getTable(),
             array('id' => $id)
@@ -106,8 +116,11 @@ class Trash implements \QUI\Interfaces\Projects\Trash
     {
         $file = $this->getPath() . $id;
 
-        if ( !file_exists($file) ) {
-            throw new \QUI\Exception( 'Could not find the file '. $id .' in the Trash' );
+        if ( !file_exists($file) )
+        {
+            throw new \QUI\Exception(
+                'Could not find the file '. $id .' in the Trash'
+               );
         }
 
         $Item = $Folder->uploadFile( $file );
@@ -130,6 +143,7 @@ class Trash implements \QUI\Interfaces\Projects\Trash
         try
         {
             $Item->rename( $fields['name'] );
+
         } catch ( \QUI\Exception $Exception )
         {
 

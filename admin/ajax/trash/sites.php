@@ -9,19 +9,16 @@
  */
 function ajax_trash_sites($project, $lang, $params)
 {
-	$Project = \QUI::getProject($project, $lang);
-	$Trash   = $Project->getTrash();
+    $Project = \QUI::getProject($project, $lang);
+    $Trash   = $Project->getTrash();
 
-	return $Trash->getList(
-	    json_decode($params, true)
-	);
+    return $Trash->getList(
+        json_decode($params, true)
+    );
 }
 
-QUI::$Ajax->register(
-	'ajax_trash_sites',
+\QUI::$Ajax->register(
+    'ajax_trash_sites',
     array('project', 'lang', 'params'),
     'Permission::checkAdminUser'
 );
-
-
-?>

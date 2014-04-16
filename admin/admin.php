@@ -2,9 +2,6 @@
 
     require 'header.php';
 
-    $Plugins = \QUI::getPlugins();
-    $plugins = $Plugins->getAvailablePlugins(false, true);
-
     // qui path
     $qui_path   =  URL_OPT_DIR .'bin/qui/';
     $qui_extend =  URL_OPT_DIR .'bin/qui/extend/';
@@ -118,7 +115,7 @@
             upload_max_filesize : "<?php echo \QUI\Utils\System::getUploadMaxFileSize(); ?>"
         };
 
-        var QUIQQER_VERSION = '1.0.0';
+        var QUIQQER_VERSION = "<?php echo \QUI::version() ?>";
         var QUIQQER_CONFIG  = <?php echo json_encode( $config ); ?>;
 
         // standard project
@@ -131,7 +128,6 @@
     </script>
 
     <?php
-
         /**
          * locale file
          */
@@ -165,7 +161,7 @@
             <img src="<?php echo URL_BIN_DIR; ?>quiqqer_logo_mini.png" />
 
             <p>
-                QUIQQER Managament System - www.namerobot.com
+                QUIQQER Managament System - www.quiqqer.com
             </p>
         </div>
 

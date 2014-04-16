@@ -122,14 +122,6 @@
      -->
 
     <!-- goto -->
-        <!-- Zugriffsrechte bearbeiten -->
-        <item parent="/extras/"
-              name="permissions"
-              icon="icon-gears"
-              require="controls/permissions/Panel"
-              group="quiqqer/system"
-              var="menu.extras.permissions.text"
-        />
         <!-- Plugins und Packages -->
         <item parent="/extras/"
               name="packages"
@@ -146,22 +138,38 @@
               group="quiqqer/system"
               var="menu.extras.projects.text"
         />
-        <!-- Gruppen -->
+        <!-- Zugriffsrechte bearbeiten -->
         <item parent="/extras/"
-              name="groups"
-              icon="icon-group"
-              require="controls/groups/Panel"
+              name="rights"
+              icon="icon-unlock-alt"
               group="quiqqer/system"
-              var="menu.extras.groups.text"
+              var="menu.extras.rights.text"
         />
-        <!-- Benutzer -->
-        <item parent="/extras/"
-              name="users"
-              icon="icon-user"
-              require="controls/users/Panel"
-              group="quiqqer/system"
-              var="menu.extras.users.text"
-        />
+            <!-- Zugriffsrechte bearbeiten -->
+            <item parent="/extras/rights/"
+                  name="permissions"
+                  icon="icon-gears"
+                  require="controls/permissions/Panel"
+                  group="quiqqer/system"
+                  var="menu.extras.permissions.text"
+            />
+            <!-- Gruppen -->
+            <item parent="/extras/rights/"
+                  name="groups"
+                  icon="icon-group"
+                  require="controls/groups/Panel"
+                  group="quiqqer/system"
+                  var="menu.extras.groups.text"
+            />
+            <!-- Benutzer -->
+            <item parent="/extras/rights/"
+                  name="users"
+                  icon="icon-user"
+                  require="controls/users/Panel"
+                  group="quiqqer/system"
+                  var="menu.extras.users.text"
+            />
+
         <!-- Logs -->
         <item parent="/extras/"
               name="logs"

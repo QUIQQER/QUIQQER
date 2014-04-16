@@ -15,6 +15,9 @@ function ajax_trash_destroy($project, $lang, $ids)
 
     $Trash->destroy($Project, $ids);
 }
-QUI::$Ajax->register('ajax_trash_destroy', array('project', 'lang', 'ids'), 'Permission::checkAdminUser');
 
-?>
+\QUI::$Ajax->register(
+    'ajax_trash_destroy',
+    array('project', 'lang', 'ids'),
+    'Permission::checkAdminUser'
+);

@@ -720,7 +720,7 @@ define('controls/grid/Grid', [
                         si = t.selected[selectedNum-1];
                     }
 
-                    var endindex   = currentindex;
+                    var endindex   = row;
                     var startindex = Math.min(si, endindex);
 
                     endindex = Math.max(si, endindex);
@@ -738,7 +738,7 @@ define('controls/grid/Grid', [
                     t.selected.push( Number( row ) );
                 }
 
-                t.unique(t.selected, true);
+                t.selected = t.unique( t.selected, true );
             }
 
             if ( t.getAttribute('accordion') &&
@@ -978,15 +978,7 @@ define('controls/grid/Grid', [
             var sf =  asNumber ? om_sort_number : function(){};
 
             a.sort( sf );
-
-            for ( var i = 1, len = a.length; i < len; i++ )
-            {
-                if ( a[i-1] == a[i] )
-                {
-                    a.splice( i, 1 );
-                    i--;
-                }
-            }
+            a = a.unique();
 
             return a;
         },

@@ -37,22 +37,22 @@ class Grid extends \QUI\QDOM
      */
     public function parseDBParams($params=array())
     {
-        $_params = $params;
+        $_params = array();
 
-        if ( $this->getAttribute('max') ) {
-            $max = (int)$this->getAttribute('max');
+        if ( isset( $params['perPage'] ) ) {
+            $this->setAttribute( 'max', $params['perPage'] );
         }
 
-        if ( !$this->getAttribute('page') ) {
-            $params['page'] = 1;
+        if ( isset( $params['page'] ) ) {
+            $this->setAttribute( 'page', $params['page'] );
         }
 
         if ( $this->getAttribute('page') )
         {
-            $page  = ($this->getAttribute('page')-1);
-            $start = $page * $max;
+            $page  = ( $this->getAttribute('page' ) - 1 );
+            $start = $page * $this->getAttribute('max');
 
-            $_params['limit'] = $start.','.$max;
+            $_params['limit'] = $start .','. $this->getAttribute('max');
         }
 
         return $_params;

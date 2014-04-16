@@ -232,7 +232,7 @@ define('controls/projects/project/Panel', [
             {
                 var i, l, langs, len,
                     scrollsize, Map, Project,
-                    func_project_click, func_media_click;
+                    func_project_click, func_media_click, func_trash_click;
 
                 var Content   = self.getContent(),
                     List      = Content.getElement( '.project-list' ),
@@ -254,6 +254,11 @@ define('controls/projects/project/Panel', [
                     self.openMediaPanel(
                         Itm.getAttribute( 'project' )
                     );
+                };
+
+                func_trash_click = function()
+                {
+                    PanelUtils.openTrashPanel();
                 };
 
                 if ( self.$Filter ) {
@@ -323,6 +328,19 @@ define('controls/projects/project/Panel', [
                             }
                         })
                     );
+
+                    // Media
+                    Project.appendChild(
+                        new QUISitemapItem({
+                            text    : 'Mülleimer',
+                            icon    : 'icon-trash',
+                            project : i,
+                            events  : {
+                                onClick : func_trash_click
+                            }
+                        })
+                    );
+
 
                     List.appendChild( Map.create() );
 

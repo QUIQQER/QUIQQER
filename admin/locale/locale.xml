@@ -57,13 +57,21 @@
 
 
         <!-- Gehe zu -->
+        <locale name="menu.extras.rights.text">
+            <de><![CDATA[Rechte]]></de>
+            <en><![CDATA[Rechte]]></en>
+        </locale>
+        <locale name="menu.extras.permissions.text">
+            <de><![CDATA[Zugriffsrechte]]></de>
+            <en><![CDATA[Permissions]]></en>
+        </locale>
         <locale name="menu.extras.groups.text">
-            <de><![CDATA[Gruppen Manager]]></de>
-            <en><![CDATA[Groups-Manager]]></en>
+            <de><![CDATA[Gruppen]]></de>
+            <en><![CDATA[Groups]]></en>
         </locale>
         <locale name="menu.extras.users.text">
-            <de><![CDATA[Benutzer Manager]]></de>
-            <en><![CDATA[User-Manager]]></en>
+            <de><![CDATA[Benutzer]]></de>
+            <en><![CDATA[User]]></en>
         </locale>
         <locale name="menu.extras.logs.text">
             <de><![CDATA[Logs]]></de>

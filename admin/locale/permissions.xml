@@ -134,10 +134,6 @@
 
 
     <groups name="quiqqer/system">
-        <locale name="menu.extras.permissions.text">
-            <de><![CDATA[Zugriffsrechte-Manager]]></de>
-            <en><![CDATA[Permissions-Manager]]></en>
-        </locale>
 
         <locale name="permissions.message.save.success">
             <de><![CDATA[Zugriffsrechte erfolgreich gespeichert.]]></de>

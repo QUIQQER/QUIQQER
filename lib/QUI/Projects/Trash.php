@@ -48,20 +48,13 @@ class Trash extends \QUI\QDOM implements \QUI\Interfaces\Projects\Trash
         // create grid
         $Grid = new \QUI\Utils\Grid();
 
-        if ( isset( $params['max'] ) ) {
-            $Grid->setAttribute('max', (int)$params['max']);
-        }
+        $_params = $Grid->parseDBParams($params);
 
-        if ( isset( $params['page'] ) ) {
-            $Grid->setAttribute('page', (int)$params['page']);
-        }
+        $_params['where'] = array(
+            'deleted' => 1,
+            'active'  => -1
+        );
 
-        $_params = $Grid->parseDBParams(array(
-            'where' => array(
-                'deleted' => 1,
-                'active'  => -1
-            )
-        ));
 
         /**
          * Order and Sort

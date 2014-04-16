@@ -55,7 +55,10 @@ define('controls/welcome/Panel', [
                 'html',
 
                 '<h1>Willkommen bei QUIQQER</h1>'+
-                '<p>Hier kommt ein Willkommenstext mit allen Einzelheiten zum Start</p>'
+                '<p>Hilfe und eine Dokumentation finden Sie unter <a href="http://doc.quiqqer.com" target="_blank">doc.quiqqer.com</a>.</p>'+
+
+                '<p>Haben Sie fragen können Sie sich gerne über folgende Kanäle an uns wenden:<br />'+
+                'support@pcsg.de oder IRC: #quiqqer on freenode</p>'
             );
         }
     });

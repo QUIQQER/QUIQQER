@@ -64,7 +64,8 @@ class File extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects\
         try
         {
             \QUI\Utils\System\File::copy( $original, $cachefile );
-        } catch ( \QUI\Exception $e )
+
+        } catch ( \QUI\Exception $Exception )
         {
             // nothing
         }

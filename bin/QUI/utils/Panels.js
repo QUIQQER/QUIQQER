@@ -12,8 +12,8 @@ define('utils/Panels', function()
     return {
 
         /**
-         * open a site panel
-         * if the panel exists, there this is used
+         * opens a site panel
+         * if the panel exists, there will be used
          *
          * @param {String} project - name of the Project
          * @param {String} lang - languag of the Project
@@ -81,8 +81,8 @@ define('utils/Panels', function()
         },
 
         /**
-         * open a site panel
-         * if the panel exists, there this is used
+         * opens a media panel
+         * if the panel exists, there will be used
          *
          * @param {String} project - Name of the project
          * @param {Function} callback - callback function, only triggered if the panel is not exist
@@ -90,12 +90,12 @@ define('utils/Panels', function()
         openMediaPanel : function(project, callback)
         {
             require([
-                 'qui/QUI',
-                 'controls/projects/project/media/Panel',
-                 'classes/projects/Project',
-                 'Projects'
-             ], function(QUI, MediaPanel, Project, Projects)
-             {
+                'qui/QUI',
+                'controls/projects/project/media/Panel',
+                'classes/projects/Project',
+                'Projects'
+            ], function(QUI, MediaPanel, Project, Projects)
+            {
                 var panels = QUI.Controls.get( 'panel-'+ project +'-media' );
 
                 if ( panels.length )
@@ -124,6 +124,54 @@ define('utils/Panels', function()
                     Panel   = new MediaPanel( Project.getMedia() );
 
                 panels[ 0 ].appendChild( Panel );
+
+                if ( typeof callback !== 'undefined' ) {
+                    callback( Panel );
+                }
+            });
+        },
+
+        /**
+         * opens a trash panel
+         * if the panel exists, there will be used
+         *
+         * @param {Function} callback - callback function
+         */
+        openTrashPanel : function(callback)
+        {
+            var self = this;
+
+            require([
+                'qui/QUI',
+                'controls/trash/Panel'
+            ], function(QUI, TrashPanel)
+            {
+                var name   = 'panel-trash',
+                    panels = QUI.Controls.get( name );
+
+                if ( panels.length )
+                {
+                    panels[ 0 ].open();
+
+                    // if a task exist, click it and open the instance
+                    var Task = panels[ 0 ].getAttribute( 'Task' );
+
+                    if ( Task && Task.getType() == 'qui/controls/taskbar/Task' ) {
+                        panels[ 0 ].getAttribute( 'Task' ).click();
+                    }
+
+                    if ( typeof callback !== 'undefined' ) {
+                        callback( panels[ 0 ] );
+                    }
+
+                    return;
+                }
+
+                var Panel = new TrashPanel({
+                    name : name
+                });
+
+                self.openPanelInTasks( Panel );
 
                 if ( typeof callback !== 'undefined' ) {
                     callback( Panel );

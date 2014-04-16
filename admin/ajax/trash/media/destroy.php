@@ -20,10 +20,8 @@ function ajax_trash_media_destroy($project, $ids)
     }
 }
 
-QUI::$Ajax->register(
-	'ajax_trash_media_destroy',
+\QUI::$Ajax->register(
+    'ajax_trash_media_destroy',
     array('project', 'ids'),
     'Permission::checkAdminUser'
 );
-
-?>

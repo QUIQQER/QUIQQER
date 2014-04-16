@@ -53,6 +53,7 @@ define('controls/projects/project/site/Panel', [
             'openSort',
 
             '$onCreate',
+            '$onDestroy',
             '$onResize',
             '$onCategoryEnter',
             '$onCategoryLeave',
@@ -89,8 +90,9 @@ define('controls/projects/project/site/Panel', [
             this.parent( options );
 
             this.addEvents({
-                onCreate : this.$onCreate,
-                onResize : this.$onResize
+                onCreate  : this.$onCreate,
+                onResize  : this.$onResize,
+                onDestroy : this.$onDestroy
             });
         },
 
@@ -228,7 +230,8 @@ define('controls/projects/project/site/Panel', [
             }).inject( this.getHeader() );
 
 
-            var Site    = this.getSite(),
+            var self    = this,
+                Site    = this.getSite(),
                 Project = Site.getProject();
 
             Ajax.get([
@@ -236,8 +239,7 @@ define('controls/projects/project/site/Panel', [
                 'ajax_site_buttons_get'
             ], function(categories, buttons, Request)
             {
-                var i, ev, fn, len, events, category, Category,
-                    Panel = Request.getAttribute( 'Control' );
+                var i, ev, fn, len, events, category, Category;
 
 
                 for ( i = 0, len = buttons.length; i < len; i++ )
@@ -248,11 +250,11 @@ define('controls/projects/project/site/Panel', [
                         delete buttons[ i ].onclick;
 
                         buttons[ i ].events = {
-                            onClick : Panel.$onPanelButtonClick
+                            onClick : self.$onPanelButtonClick
                         };
                     }
 
-                    Panel.addButton( buttons[ i ] );
+                    self.addButton( buttons[ i ] );
                 }
 
 
@@ -270,7 +272,7 @@ define('controls/projects/project/site/Panel', [
                     Category = new QUIButton( category );
 
                     Category.addEvents({
-                        onActive : Panel.$onCategoryEnter
+                        onActive : self.$onCategoryEnter
                         //onNormal : Panel.$onCategoryLeave -> trigger in onActive
                     });
 
@@ -288,31 +290,38 @@ define('controls/projects/project/site/Panel', [
                         }
                     }
 
-                    Panel.addCategory( Category );
+                    self.addCategory( Category );
                 }
 
                 Site.addEvents({
-                    onLoad       : Panel.load,
-                    onActivate   : Panel.$onSiteActivate,
-                    onDeactivate : Panel.$onSiteDeactivate,
-                    onSave       : Panel.$onSiteSave,
-                    onDelete     : Panel.$onSiteDelete
+                    onLoad       : self.load,
+                    onActivate   : self.$onSiteActivate,
+                    onDeactivate : self.$onSiteDeactivate,
+                    onSave       : self.$onSiteSave,
+                    onDelete     : self.$onSiteDelete
                 });
 
-                if ( Site.getAttribute( 'name' ) )
-                {
-                    Panel.load();
-                } else
-                {
-                    Site.load();
-                }
+                Site.load();
 
             }, {
                 project : Project.getName(),
                 lang    : Project.getLang(),
-                id      : Site.getId(),
-                Control : this
+                id      : Site.getId()
             });
+        },
+
+        /**
+         * event : on destroy
+         */
+        $onDestroy : function()
+        {
+            var Site = this.getSite();
+
+            Site.removeEvent( 'onLoad', this.load );
+            Site.removeEvent( 'onActivate', this.$onSiteActivate );
+            Site.removeEvent( 'onDeactivate', this.$onSiteDeactivate );
+            Site.removeEvent( 'onSave', this.$onSiteSave );
+            Site.removeEvent( 'onDelete', this.$onSiteDelete );
         },
 
         /**
