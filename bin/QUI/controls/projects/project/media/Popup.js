@@ -7,16 +7,17 @@
 define('controls/projects/project/media/Popup', [
 
     'qui/controls/windows/Popup',
+    'qui/controls/buttons/Button',
     'controls/projects/project/media/Panel',
     'Projects'
 
-], function(Popup, MediaPanel, Projects)
+], function(QUIPopup, QUIButton, MediaPanel, Projects)
 {
     "use strict";
 
     return new Class({
 
-        Extends : Popup,
+        Extends : QUIPopup,
         Type    : 'controls/projects/project/media/Popup',
 
         Binds : [
@@ -24,15 +25,20 @@ define('controls/projects/project/media/Popup', [
         ],
 
         options : {
-            project    : false,
-            selectable : true
+            project         : false,
+            closeButtonText : 'Abbrechen',
+
+            selectable           : true,
+            selectable_types     : false,   // you can specified which types are selectable
+            selectable_mimetypes : false  	// you can specified which mime types are selectable
         },
 
         initialize : function(options)
         {
             this.parent( options );
 
-            this.$Panel = null;
+            this.$Panel      = null;
+            this.$folderData = false;
 
             this.addEvent( 'onCreate', this.$onCreate );
         },
@@ -56,8 +62,25 @@ define('controls/projects/project/media/Popup', [
             Project = Projects.get( project );
             Media   = Project.getMedia();
 
+            this.addButton(
+                new QUIButton({
+                    text : 'übernehmen',
+                    textimage : 'icon-ok',
+                    events :
+                    {
+                        onClick : function()
+                        {
+                            self.close();
+                            self.fireEvent( 'submit', [ self, self.$folderData ] );
+                        }
+                    }
+                })
+            );
+
             this.$Panel = new MediaPanel(Media, {
-                selectable : true,
+                selectable           : true,
+                selectable_types     : this.getAttribute( 'selectable_types' ),
+                selectable_mimetypes : this.getAttribute( 'selectable_mimetypes' ),
                 events :
                 {
                     onCreate : function() {
@@ -69,11 +92,11 @@ define('controls/projects/project/media/Popup', [
                         if ( imageData.type == 'folder' )
                         {
                             self.$Panel.openID( imageData.id );
+                            self.$folderData = imageData;
                             return;
                         }
 
                         self.close();
-
                         self.fireEvent( 'submit', [ self, imageData ] );
                     }
                 }
@@ -81,7 +104,6 @@ define('controls/projects/project/media/Popup', [
 
             this.$Panel.inject( this.getContent() );
         }
-
     });
 
 });

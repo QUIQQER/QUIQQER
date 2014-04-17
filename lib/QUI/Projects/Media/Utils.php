@@ -69,7 +69,8 @@ class Utils
             'type'      => $Item->getType() === 'QUI\\Projects\\Media\\Image' ? 'image' : 'file',
             'url'       => $Item->getUrl(),
             'active'    => $Item->isActive(),
-            'e_date'    => $Item->getAttribute('e_date')
+            'e_date'    => $Item->getAttribute('e_date'),
+            'mimetype'  => $Item->getAttribute('mime_type')
         );
 
         return $result;
@@ -87,7 +88,8 @@ class Utils
      */
     static function getIconByExtension($ext, $size='16x16')
     {
-        switch ( $size ) {
+        switch ( $size )
+        {
             case '16x16':
             case '80x80':
             break;
@@ -154,8 +156,8 @@ class Utils
             'mp3' => URL_BIN_DIR .'80x80/extensions/sound.png',
         );
 
-        if ( isset($extensions[$size][$ext]) ) {
-            return $extensions[$size][$ext];
+        if ( isset( $extensions[ $size ][ $ext ] ) ) {
+            return $extensions[ $size ][ $ext ];
         }
 
         return URL_BIN_DIR . $size .'/extensions/empty.png';

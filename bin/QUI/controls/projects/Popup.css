@@ -14,3 +14,10 @@
     clear: both;
     float: left;
 }
+
+.qui-project-popup-information {
+    float: left;
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+}

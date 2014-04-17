@@ -111,21 +111,20 @@ class Trash implements \QUI\Interfaces\Projects\Trash
      *
      * @param Integer $id
      * @param \QUI\Projects\Media\Folder $Folder
+     * @return \QUI\Projects\Media\Item
      */
     public function restore($id, \QUI\Projects\Media\Folder $Folder)
     {
         $file = $this->getPath() . $id;
 
-        if ( !file_exists($file) )
+        if ( !file_exists( $file ) )
         {
             throw new \QUI\Exception(
                 'Could not find the file '. $id .' in the Trash'
-               );
+            );
         }
 
-        $Item = $Folder->uploadFile( $file );
-
-        // change old db entry, if one exist
+        // search old db entry for data
         $data = \QUI::getDataBase()->fetch(array(
             'from' 	=> $this->_Media->getTable(),
             'where' => array(
@@ -134,32 +133,41 @@ class Trash implements \QUI\Interfaces\Projects\Trash
             'limit' => 1
         ));
 
-        if ( !isset($data[0]) ) {
-            return $Item;
+        if ( !isset( $data[0] ) )
+        {
+            throw new \QUI\Exception(
+                'No data for the file found. Can\'t restore the file'
+            );
         }
 
-        $fields = $data[0];
 
-        try
-        {
-            $Item->rename( $fields['name'] );
+        // rename the file for upload
+        $extension = \QUI\Utils\System\File::getExtensionByMimeType(
+            $data[0]['mime_type']
+        );
 
-        } catch ( \QUI\Exception $Exception )
-        {
+        $newFile = $this->getPath() . $data[0]['name'] . $extension;
 
-        }
+        \QUI\Utils\System\File::move( $file , $newFile );
 
+        // insert the file
+        $Item = $Folder->uploadFile( $newFile );
+
+        // change old db entry, if one exist
         $Item->setAttributes(array(
-            'title' => $fields['title'],
-            'alt' 	=> $fields['alt'],
-            'short' => $fields['short']
+            'title' => $data[0]['title'],
+            'alt' 	=> $data[0]['alt'],
+            'short' => $data[0]['short']
         ));
 
         $Item->save();
 
+        // delete the old db entry
         \QUI::getDataBase()->delete(
             $this->_Media->getTable(),
             array('id' => $id)
         );
+
+        return $Item;
     }
 }

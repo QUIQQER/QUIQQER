@@ -770,11 +770,11 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
      */
     public function uploadFile($file)
     {
-        if ( !file_exists($file) ) {
+        if ( !file_exists( $file ) ) {
             throw new \QUI\Exception( 'Datei existiert nicht.', 404 );
         }
 
-        if ( is_dir($file) ) {
+        if ( is_dir( $file ) ) {
             return $this->_uploadFolder( $file );
         }
 
@@ -782,9 +782,9 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
         $filename = \QUI\Projects\Media\Utils::stripMediaName( $fileinfo['basename'] );
 
         // if no ending, we search for one
-        if ( !isset($fileinfo['extension']) || empty($fileinfo['extension']) )
+        if ( !isset( $fileinfo['extension'] ) || empty( $fileinfo['extension'] ) )
         {
-            $filename .= \QUI\Utils\System\File::getEndingByMimeType(
+            $filename .= \QUI\Utils\System\File::getExtensionByMimeType(
                 $fileinfo['mime_type']
             );
         }
@@ -807,7 +807,7 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
         $new_file_info = \QUI\Utils\System\File::getInfo( $new_file );
         $title         = str_replace( '_', ' ', $new_file_info['filename'] );
 
-        if ( empty($new_file_info['filename']) ) {
+        if ( empty( $new_file_info['filename'] ) ) {
             $new_file_info['filename'] = time();
         }
 

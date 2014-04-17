@@ -11,10 +11,12 @@ define('controls/trash/Panel', [
     'qui/controls/buttons/Select',
     'qui/controls/windows/Confirm',
     'controls/grid/Grid',
+    'controls/projects/Popup',
+    'controls/projects/project/media/Popup',
     'Projects',
     'Ajax'
 
-], function(QUI, QUIPanel, QUISelect, QUIConfirm, Grid, Projects, Ajax)
+], function(QUI, QUIPanel, QUISelect, QUIConfirm, Grid, ProjectPopup, MediaPopup, Projects, Ajax)
 {
     "use strict";
 
@@ -270,11 +272,88 @@ define('controls/trash/Panel', [
         },
 
         /**
-         *
+         * Opens the restore window
          */
         openRestoreWindow : function()
         {
+            if ( !this.$Select.getValue() || this.$Select.getValue() == '' ) {
+                return;
+            }
 
+            var i, len, selectedData, information;
+
+            var self   = this,
+                type   = 'project',
+                ids    = [],
+                params = this.$Select.getValue().split(',');
+
+            if ( this.$Select.getValue().match( 'media' ) ) {
+                type = 'media';
+            }
+
+            if ( this.$MediaGrid ) {
+                selectedData = this.$MediaGrid.getSelectedData();
+            }
+
+            if ( this.$ProjectGrid ) {
+                selectedData = this.$ProjectGrid.getSelectedData();
+            }
+
+
+            for ( i = 0, len = selectedData.length; i < len; i++ ) {
+                ids.push( selectedData[ i ].id );
+            }
+
+            if ( type === 'project' )
+            {
+                new ProjectPopup({
+                    project : params[ 0 ],
+                    lang    : params[ 1 ],
+                    disableProjectSelect : true,
+                    information : 'Bitte wählen Sie die Elternseite aus unter welcher die Seite(n) eingehängt werden sollen',
+                    events :
+                    {
+                        onSubmit : function(Popup, params)
+                        {
+                            var project  = params.project,
+                                lang     = params.lang,
+                                parentId = params.ids[ 0 ];
+
+                            self.restoreProjectItems( project, lang, parentId, ids, function()
+                            {
+                                Popup.close();
+
+                                self.$ProjectGrid.refresh();
+                                self.getButtons( 'remove' ).disable();
+                                self.getButtons( 'restore' ).disable();
+                            });
+                        }
+                    }
+                }).open();
+
+                return;
+            }
+
+            // media file restore
+            new MediaPopup({
+                project : params[ 0 ],
+                selectable_types : ['folder'],
+                events :
+                {
+                    onSubmit : function(Popup, data)
+                    {
+                        var project  = data.project,
+                            parentId = data.id;
+
+                        self.restoreProjectMediaItems( project, parentId, ids, function()
+                        {
+                            self.$MediaGrid.refresh();
+                            self.getButtons( 'remove' ).disable();
+                            self.getButtons( 'restore' ).disable();
+                        });
+                    }
+                }
+            }).open();
         },
 
 
@@ -398,6 +477,30 @@ define('controls/trash/Panel', [
         },
 
         /**
+         * Restore the ids into the parentId
+         *
+         * @param {String} project
+         * @param {String} lang
+         * @param {Integer} parentId - ID of the parent id
+         * @param {Array} restoreIds - IDs to the restored ids
+         * @param {Function} callback . [optional]  callback function on finish
+         */
+        restoreProjectItems : function(project, lang, parentId, restoreIds, callback)
+        {
+            Ajax.post('ajax_trash_restore', function()
+            {
+                if ( typeof callback !== 'undefined' ) {
+                    callback();
+                }
+            }, {
+                project  : project,
+                lang     : lang,
+                parentid : parentId,
+                ids      : JSON.encode( restoreIds )
+            });
+        },
+
+        /**
          * Media methods
          */
 
@@ -508,6 +611,28 @@ define('controls/trash/Panel', [
             }, {
                 project : project,
                 ids     : JSON.encode( ids )
+            });
+        },
+
+        /**
+         * Restore the ids into the parentId
+         *
+         * @param {String} project
+         * @param {Integer} parentId - ID of the parent id
+         * @param {Array} restoreIds - IDs to the restored ids
+         * @param {Function} callback . [optional]  callback function on finish
+         */
+        restoreProjectMediaItems : function(project, parentId, restoreIds, callback)
+        {
+            Ajax.post('ajax_trash_media_restore', function()
+            {
+                if ( typeof callback !== 'undefined' ) {
+                    callback();
+                }
+            }, {
+                project  : project,
+                parentid : parentId,
+                ids      : JSON.encode( restoreIds )
             });
         },
 

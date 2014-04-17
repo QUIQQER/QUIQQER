@@ -14,17 +14,15 @@ function ajax_trash_media_restore($project, $ids, $parentid)
     $Trash   = $Media->getTrash();
     $Folder  = $Media->get( $parentid );
 
-    $ids = json_decode($ids, true);
+    $ids = json_decode( $ids, true );
 
     foreach ( $ids as $id ) {
         $Trash->restore( $id, $Folder );
     }
 }
 
-QUI::$Ajax->register(
-	'ajax_trash_media_restore',
+\QUI::$Ajax->register(
+    'ajax_trash_media_restore',
     array('project', 'ids', 'parentid'),
     'Permission::checkAdminUser'
 );
-
-?>

@@ -15,6 +15,9 @@ function ajax_trash_restore($project, $lang, $ids, $parentid)
 
     $Trash->restore($Project, $ids, $parentid);
 }
-QUI::$Ajax->register('ajax_trash_restore', array('project', 'lang', 'ids', 'parentid'), 'Permission::checkAdminUser');
 
-?>
+\QUI::$Ajax->register(
+    'ajax_trash_restore',
+    array('project', 'lang', 'ids', 'parentid'),
+    'Permission::checkAdminUser'
+);

@@ -39,7 +39,9 @@ define('controls/projects/Popup', [
             maxWidth  : 400,
             maxHeight : 600,
             autoclose : true,
-            multible  : false 	// select multible items
+            multible  : false, 				// select multible items
+            disableProjectSelect : false,	// Can the user change the projects?
+            information : false 			// information text
         },
 
         initialize : function(options)
@@ -49,6 +51,7 @@ define('controls/projects/Popup', [
             this.$Header = null;
             this.$Body   = null;
             this.$Map    = null;
+            this.$Information = null;
         },
 
         /**
@@ -79,6 +82,14 @@ define('controls/projects/Popup', [
             this.$Header = Content.getElement( '.qui-project-popup-header' );
             this.$Body   = Content.getElement( '.qui-project-popup-body' );
 
+            if ( this.getAttribute( 'information' ) )
+            {
+                this.$Information = new Element('div', {
+                    'class' : 'qui-project-popup-information box',
+                    html    : this.getAttribute( 'information' )
+                }).inject( Content, 'top' );
+            }
+
             var Select = new QUISelect({
                 styles : {
                     margin: 8,
@@ -97,6 +108,10 @@ define('controls/projects/Popup', [
                     }
                 }
             }).inject( this.$Header );
+
+            if ( this.getAttribute( 'disableProjectSelect' ) ) {
+                Select.disable();
+            }
 
             // load the projects
             Projects.getList(function(result)

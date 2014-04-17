@@ -75,9 +75,10 @@ define('controls/projects/project/media/Panel', [
             limit : 20,
             page  : 1,
 
-            selectable	        : false, 	   // is the media in the selectable mode (for popup or image inserts)
-            selectable_types    : ['*'], 	   // you can specified which types are selectable
-            selectable_multible : false		   // multibel selection active? press ctrl / strg
+            selectable	         : false, 	// is the media in the selectable mode (for popup or image inserts)
+            selectable_types     : false, 	// {Array} you can specified which types are selectable (folder, image, file, *)
+            selectable_mimetypes : false,  	// {Array} you can specified which mime types are selectable
+            selectable_multible  : false 	// multibel selection active? press ctrl / strg
         },
 
         initialize : function(Media, options)
@@ -1015,11 +1016,12 @@ define('controls/projects/project/media/Panel', [
                 Child = children[i];
 
                 Elm = new Element('div', {
-                    'data-id'      : Child.id,
-                    'data-project' : project,
-                    'data-type'    : Child.type,
-                    'data-active'  : Child.active ? 1 : 0,
-                    'data-error'   : Child.error ? 1 : 0,
+                    'data-id'       : Child.id,
+                    'data-project'  : project,
+                    'data-type'     : Child.type,
+                    'data-active'   : Child.active ? 1 : 0,
+                    'data-error'    : Child.error ? 1 : 0,
+                    'data-mimetype' : Child.mimetype,
 
                     'class' : 'qui-media-item box smooth',
                     html    : '<span class="title">'+ Child.name +'</span>',
@@ -1103,11 +1105,12 @@ define('controls/projects/project/media/Panel', [
                 Child = children[i];
 
                 Elm = new Element('div', {
-                    'data-id'      : Child.id,
-                    'data-project' : project,
-                    'data-type'    : Child.type,
-                    'data-active'  : Child.active ? 1 : 0,
-                    'data-error'   : Child.error ? 1 : 0,
+                    'data-id'       : Child.id,
+                    'data-project'  : project,
+                    'data-type'     : Child.type,
+                    'data-active'   : Child.active ? 1 : 0,
+                    'data-error'    : Child.error ? 1 : 0,
+                    'data-mimetype' : Child.mimetype,
 
                     'class' : 'qui-media-item box smooth',
                     html    : '<span class="title">'+ Child.name +'</span>',
@@ -1191,6 +1194,10 @@ define('controls/projects/project/media/Panel', [
 
             if ( Target.nodeName == 'SPAN' ) {
                 Target = Target.getParent('div');
+            }
+
+            if ( !this.isItemSelectable( Target ) ) {
+                return;
             }
 
             if ( event.control || this.getAttribute( 'selectable' ) )
@@ -1332,6 +1339,10 @@ define('controls/projects/project/media/Panel', [
                     var Grid = data.target,
                         row  = data.row;
 
+                    if ( !self.isItemSelectable( data ) ) {
+                        return;
+                    }
+
                     if ( self.getAttribute( 'selectable' ) )
                     {
                         var data    = Grid.getDataByRow( row ),
@@ -1344,6 +1355,7 @@ define('controls/projects/project/media/Panel', [
                             url     : MediaUtils.getUrlByImageParams( id, project ),
                             type    : ''
                         };
+
 
                         console.info( data );
 
@@ -1544,9 +1556,79 @@ define('controls/projects/project/media/Panel', [
          *
          * @return {Array}
          */
-        getSelectedItems : function()
+        getSelectedItems : function(Item)
         {
             return this.$selected;
+        },
+
+        /**
+         * Is the item selectable
+         *
+         * @param {Object|DOMNode} Item
+         * @return {Bool}
+         */
+        isItemSelectable : function(Item)
+        {
+            // selectable
+            var selectableTypes     = this.getAttribute( 'selectable_types' ),
+                selectableMimeTypes = this.getAttribute( 'selectable_mimetypes' );
+
+            if ( !selectableTypes && !selectableMimeTypes ) {
+                return true;
+            }
+
+            if ( typeOf( selectableTypes ) !== 'array' ) {
+                selectableTypes = ['*'];
+            }
+
+            if ( typeOf( selectableMimeTypes ) !== 'array' ) {
+                selectableMimeTypes = ['*'];
+            }
+
+            var allTypes = selectableTypes.contains('*'),
+                allMimes = selectableMimeTypes.contains('*');
+
+            if ( allTypes && allMimes ) {
+                return true;
+            }
+
+
+            var elmtype  = '',
+                mimeType = '';
+
+            if ( typeOf( Item ) == 'element' )
+            {
+                elmtype  = Item.get( 'data-type' );
+                mimeType = Item.get( 'data-mimetype' );
+            } else
+            {
+                elmtype  = Item.type;
+                mimeType = Item.mimetype;
+            }
+
+
+            var mimeTypeFound = selectableMimeTypes.contains(  mimeType ),
+                typeFound     = selectableTypes.contains(  elmtype );
+
+            if ( elmtype == 'folder' ) {
+                allMimes = true;
+            }
+
+            // if all mime types allowed and the allowed type is correct
+            if ( allMimes && typeFound ) {
+                return true;
+            }
+
+            // if all types allowed and the allowed mime_type is correct
+            if ( allTypes && mimeTypeFound ) {
+                return true;
+            }
+
+            if ( typeFound && mimeTypeFound ) {
+                return true;
+            }
+
+            return false;
         },
 
         /**
