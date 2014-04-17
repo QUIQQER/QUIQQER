@@ -36,7 +36,7 @@ define('controls/trash/Panel', [
 
         options : {
             icon  : 'icon-trash',
-            title : 'Mülleimer'
+            title : 'Papierkorb'
         },
 
         initialize : function(options)

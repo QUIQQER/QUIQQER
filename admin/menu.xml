@@ -178,6 +178,14 @@
               group="quiqqer/system"
               var="menu.extras.logs.text"
         />
+        <!-- Papierkorb -->
+        <item parent="/extras/"
+              name="trash"
+              icon="icon-trash"
+              require="controls/trash/Panel"
+              group="quiqqer/system"
+              var="menu.extras.trash.text"
+        />
 
 
     <!-- Settings -->

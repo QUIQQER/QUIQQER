@@ -332,7 +332,7 @@ define('controls/projects/project/Panel', [
                     // Media
                     Project.appendChild(
                         new QUISitemapItem({
-                            text    : 'Mülleimer',
+                            text    : 'Papierkorb',
                             icon    : 'icon-trash',
                             project : i,
                             events  : {

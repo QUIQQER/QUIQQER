@@ -77,6 +77,10 @@
             <de><![CDATA[Logs]]></de>
             <en><![CDATA[Logs]]></en>
         </locale>
+        <locale name="menu.extras.trash.text">
+            <de><![CDATA[Papierkorb]]></de>
+            <en><![CDATA[Trash]]></en>
+        </locale>
 
 
         <locale name="menu.help.text">
