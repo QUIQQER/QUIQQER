@@ -530,7 +530,7 @@ define('controls/groups/Panel', [
             this.getGrid().unselectAll();
             this.getGrid().removeSections();
 
-            this.getButtons( 'groupEdit' ).disable(),
+            this.getButtons( 'groupEdit' ).disable();
             this.getButtons( 'groupDel' ).disable();
         },
 

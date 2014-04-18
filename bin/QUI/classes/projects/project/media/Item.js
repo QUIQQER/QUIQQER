@@ -87,7 +87,7 @@ define('classes/projects/project/media/Item', [
                 self.fireEvent( 'refresh', [ self ] );
 
                 if ( typeOf( oncomplete ) === 'function' ) {
-                    oncomplete( self )
+                    oncomplete( self );
                 }
             });
         },

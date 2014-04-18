@@ -42,5 +42,5 @@ define('Clipboard', function()
         {
             this.$data = null;
         }
-    }
+    };
 });

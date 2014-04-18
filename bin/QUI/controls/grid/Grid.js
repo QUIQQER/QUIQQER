@@ -2769,7 +2769,7 @@ define('controls/grid/Grid', [
             var i, c, len, clen, data, dat, cml,
                 el, columnModel;
 
-            clen = this.$columnModel.length,
+            clen = this.$columnModel.length;
             len  = this.$data.length;
             data = this.$data;
 

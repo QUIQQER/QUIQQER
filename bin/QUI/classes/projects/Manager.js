@@ -68,7 +68,7 @@ define('classes/projects/Manager', [
         {
             if ( typeof name === 'undefined' || !name )
             {
-                if ( typeof lang === 'undfined' ) {
+                if ( typeof lang === 'undefined' ) {
                     lang = this.getLang();
                 }
 

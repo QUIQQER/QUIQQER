@@ -327,16 +327,18 @@ define('controls/system/VHosts', [
                     {
                         self.Loader.show();
 
+                        var Host = null;
+
                         // only numbers -> server error codes
                         if ( /^\d+$/.test( vhost ) )
                         {
-                            var Host = new VhostServerCode({
+                            Host = new VhostServerCode({
                                 host : vhost
                             }).inject( Sheet.getContent() );
 
                         } else
                         {
-                            var Host = new Vhost({
+                            Host = new Vhost({
                                 host : vhost
                             }).inject( Sheet.getContent() );
                         }

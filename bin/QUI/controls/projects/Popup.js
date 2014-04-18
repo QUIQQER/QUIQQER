@@ -19,7 +19,7 @@ define('controls/projects/Popup', [
 
 ], function(QUIPopup, QUISelect, Projects, ProjectMap)
 {
-    "use static";
+    "use strict";
 
     return new Class({
 
@@ -124,7 +124,7 @@ define('controls/projects/Popup', [
 
                 if ( selfLangs && selfLangs.length )
                 {
-                    for ( var i = 0, len = selfLangs.length; i < len; i++ ) {
+                    for ( i = 0, len = selfLangs.length; i < len; i++ ) {
                         allowedLangs[ selfLangs[i] ] = true;
                     }
                 }

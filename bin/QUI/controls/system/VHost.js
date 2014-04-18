@@ -178,7 +178,7 @@ define('controls/system/VHost', [
                 }]);
 
                 // error site
-                if ( error != '' )
+                if ( error !== '' )
                 {
                     error = error.split(',');
 
@@ -276,7 +276,7 @@ define('controls/system/VHost', [
 
             for ( i = 0, len = langFields.length; i < len; i++ )
             {
-                if ( langFields[ i ].value != '' ) {
+                if ( langFields[ i ].value !== '' ) {
                     data[ langFields[ i ].name ] = langFields[ i ].value;
                 }
             }

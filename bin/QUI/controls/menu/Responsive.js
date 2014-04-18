@@ -242,6 +242,27 @@ define('controls/menu/Responsive', [
                     }
                 }).inject( self.$Content );
 
+                var click = function()
+                {
+                    var Parent = this.getParent(
+                        '.qcm-responsive-content-entry'
+                    );
+
+                    self.hide();
+
+                    window.location = Parent.get( 'data-url' );
+                };
+
+                var clickOpenChildren = function()
+                {
+                    var Parent = this.getParent(
+                        '.qcm-responsive-content-entry'
+                    );
+
+                    self.showChildren( Parent.get('data-id') );
+                };
+
+
                 for ( i = 0, len = result.length; i < len; i++ )
                 {
                     entry = result[ i ];
@@ -258,18 +279,8 @@ define('controls/menu/Responsive', [
                         styles  : {
                             width : size.x - 60
                         },
-                        events :
-                        {
-                            click : function()
-                            {
-                                var Parent = this.getParent(
-                                    '.qcm-responsive-content-entry'
-                                );
-
-                                self.hide();
-
-                                window.location = Parent.get( 'data-url' );
-                            }
+                        events : {
+                            click : click
                         }
                     }).inject( Container );
 
@@ -282,16 +293,8 @@ define('controls/menu/Responsive', [
                     new Element('div', {
                         'class' : 'qcm-responsive-content-entry-children smooth box',
                         html    : '<span class="icon-caret-right"></span>',
-                        events  :
-                        {
-                            click : function()
-                            {
-                                var Parent = this.getParent(
-                                    '.qcm-responsive-content-entry'
-                                );
-
-                                self.showChildren( Parent.get('data-id') );
-                            }
+                        events  : {
+                            click : clickOpenChildren
                         }
                     }).inject( Container );
                 }

@@ -446,7 +446,7 @@ define('controls/projects/project/site/Panel', [
         createNewChild : function()
         {
             var self = this,
-                Site = self.getSite()
+                Site = self.getSite();
 
             require(['qui/controls/windows/Prompt'], function(Prompt)
             {
@@ -848,7 +848,7 @@ define('controls/projects/project/site/Panel', [
 
                     Editor.inject( Body );
                     Editor.setContent( content );
-                    Editor.addEvent( 'onLoaded', self.$onEditorLoad )
+                    Editor.addEvent( 'onLoaded', self.$onEditorLoad );
                 });
             });
         },

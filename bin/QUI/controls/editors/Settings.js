@@ -29,7 +29,6 @@ define('controls/editors/Settings', [
 
             '$gridClick',
             '$gridDblClick',
-            '$gridBlur',
 
             'openAddToolbarWindow',
             'openDeleteToolbarWindow'
@@ -116,8 +115,7 @@ define('controls/editors/Settings', [
 
             this.$Grid.addEvents({
                 onClick    : this.$gridClick,
-                onDblClick : this.$gridDblClick,
-                onBlur     : this.$gridBlur
+                onDblClick : this.$gridDblClick
             });
 
             this.refresh();
@@ -382,26 +380,7 @@ define('controls/editors/Settings', [
             this.editToolbar(
                 data.target.getDataByRow( data.row ).toolbar
             );
-        },
-
-        /**
-         * onblur on the grid
-         */
-        $gridBlur : function(data)
-        {
-            return;
-
-            if ( !this.getGrid() ) {
-                return;
-            }
-
-            this.getGrid().unselectAll();
-            this.getGrid().removeSections();
-
-            this.getButtons( 'toolbarEdit' ).disable(),
-            this.getButtons( 'toolbarDelete' ).disable();
         }
-
     });
 
 });

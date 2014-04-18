@@ -197,7 +197,7 @@ define('controls/trash/Panel', [
          */
         openDestroyWindow : function()
         {
-            if ( !this.$Select.getValue() || this.$Select.getValue() == '' ) {
+            if ( !this.$Select.getValue() || this.$Select.getValue() === '' ) {
                 return;
             }
 
@@ -276,7 +276,7 @@ define('controls/trash/Panel', [
          */
         openRestoreWindow : function()
         {
-            if ( !this.$Select.getValue() || this.$Select.getValue() == '' ) {
+            if ( !this.$Select.getValue() || this.$Select.getValue() === '' ) {
                 return;
             }
 

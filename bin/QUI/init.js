@@ -15,7 +15,8 @@ Object.append(Element.NativeEvents, {
 
 // custome select
 // eq: getElements( 'input:display(inline)' )
-Slick.definePseudo('display', function(value){
+Slick.definePseudo('display', function(value) {
+    "use strict";
     return Element.getStyle(this, 'display') == value;
 });
 
@@ -87,7 +88,7 @@ require([
     var MyWorkspace = new Workspace().inject( Container );
 
     // Columns
-    var LeftColumn   = new Column(),
+    var LeftColumn = new Column(),
 
         MiddleColumn = new Column({
             width : doc_size.x * 0.8
@@ -307,7 +308,7 @@ require([
         Ajax.post('ajax_user_logout', function() {
             window.location = '/admin/admin.php';
         });
-    }
+    };
 
 //    require(['controls/projects/Popup'], function(Popup) {
 //        new Popup({

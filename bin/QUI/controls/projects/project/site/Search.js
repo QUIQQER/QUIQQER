@@ -211,7 +211,7 @@ define('controls/projects/project/site/Search', [
 
             this.Loader.show();
 
-            if ( this.$FieldList.value.value != '' ) {
+            if ( this.$FieldList.value.value !== '' ) {
                 fields.push( this.$FieldList.value );
             }
 

@@ -1345,9 +1345,9 @@ define('controls/projects/project/media/Panel', [
 
                     if ( self.getAttribute( 'selectable' ) )
                     {
-                        var data    = Grid.getDataByRow( row ),
-                            id      = data.id,
-                            project = this.getProject().getName();
+                        var GridData = Grid.getDataByRow( row ),
+                            id       = GridData.id,
+                            project  = this.getProject().getName();
 
                         var imageData = {
                             id      : id,
@@ -1357,7 +1357,7 @@ define('controls/projects/project/media/Panel', [
                         };
 
 
-                        console.info( data );
+                        console.info( GridData );
 
                         self.fireEvent( 'childClick', [ self, imageData ] );
 
@@ -1429,7 +1429,7 @@ define('controls/projects/project/media/Panel', [
                             });
                         }
                     }
-                }).open()
+                }).open();
             });
         },
 

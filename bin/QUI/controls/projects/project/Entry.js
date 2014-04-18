@@ -113,8 +113,8 @@ define('controls/projects/project/Entry', [
                 this.$Elm.setStyles( this.getAttribute( 'styles' ) );
             }
 
-            this.$Close = this.$Elm.getElement( '.project-entry-close' ),
-            this.$Icon  = this.$Elm.getElement( '.project-entry-icon' ),
+            this.$Close = this.$Elm.getElement( '.project-entry-close' );
+            this.$Icon  = this.$Elm.getElement( '.project-entry-icon' );
             this.$Text  = this.$Elm.getElement( '.project-entry-text' );
 
             this.$IconSpan = this.$Icon.getElement( 'span' );

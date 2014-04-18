@@ -92,10 +92,10 @@ define('controls/users/Panel', [
             }.bind( this ));
 
 
-            this.active_image = 'icon-ok',
-            this.active_text  = 'Benutzer ist aktiviert',
+            this.active_image = 'icon-ok';
+            this.active_text  = 'Benutzer ist aktiviert';
 
-            this.deactive_image = 'icon-remove',
+            this.deactive_image = 'icon-remove';
             this.deactive_text  = 'Benutzer ist deaktiviert';
         },
 
@@ -538,7 +538,7 @@ define('controls/users/Panel', [
             this.getGrid().unselectAll();
             this.getGrid().removeSections();
 
-            this.getButtons( 'userEdit' ).disable(),
+            this.getButtons( 'userEdit' ).disable();
             this.getButtons( 'userDel' ).disable();
         },
 

@@ -353,46 +353,4 @@ define('controls/projects/project/site/SiteChildrenSort', [
         }
     });
 
-    return {
-
-        /**
-         * event: on child create
-         */
-        onChildCreate : function(Site, newid)
-        {
-            require(['controls/projects/project/site/siteSort'], function(siteSort)
-            {
-                var i, len, Panel, Content, GridTable, GridContainer;
-
-                var Project = Site.getProject();
-
-                // get site panels
-                var panelName = 'panel-'+
-                                Project.getName() +'-'+
-                                Project.getLang() +'-'+
-                                Site.getId();
-
-                var panels = QUI.Controls.get( panelName );
-
-                for ( i = 0, len = panels.length; i < len; i++ )
-                {
-                    Panel   = panels[ i ];
-                    Content = Panel.getContent();
-
-                    GridContainer = Content.getElement( '.omnigrid' );
-
-                    if ( !GridContainer ) {
-                        continue;
-                    }
-
-                    GridTable = QUI.Controls.getById(
-                        GridContainer.get( 'data-quiid' )
-                    );
-
-                    siteSort.displayChildren( Panel, GridTable );
-                }
-            });
-        }
-    };
-
 });

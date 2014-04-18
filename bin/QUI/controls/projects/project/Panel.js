@@ -412,7 +412,7 @@ define('controls/projects/project/Panel', [
                 onChildContextMenu : function(Item, MapItem, event)
                 {
                     var title = MapItem.getAttribute( 'text' ) +' - '+
-                                MapItem.getAttribute( 'value' )
+                                MapItem.getAttribute( 'value' );
 
                     MapItem.getContextMenu()
                            .setTitle( title )

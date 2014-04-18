@@ -177,12 +177,12 @@ define('controls/cache/Manager', [
             }, {
                 params : JSON.encode( params )
             });
-        }
+        },
 
         /**
          * Execute the cache clearing
          */
-        clear : function()
+        execClear : function()
         {
             var i, n, len, Elm;
 
@@ -224,7 +224,7 @@ define('controls/cache/Manager', [
         /**
          * Exceute the cache purging
          */
-        purge : function()
+        execPurge : function()
         {
             var self = this;
 

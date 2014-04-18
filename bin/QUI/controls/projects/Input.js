@@ -276,7 +276,7 @@ define('controls/projects/Input', [
 
             var Container = this.$Container;
 
-            if ( this.getAttribute( 'multible' ) == false )
+            if ( this.getAttribute( 'multible' ) === false )
             {
                 // wenn multible = false
                 // dann leeren und nur ein projekt zu lassen

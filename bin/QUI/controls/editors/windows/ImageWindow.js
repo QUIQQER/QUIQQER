@@ -136,7 +136,7 @@ define('controls/editors/windows/ImageWindow', [
                 alt : document.id( 'qui-editor-window-image-alt' ).value,
                 height : document.id( 'qui-editor-window-image-height' ).value,
                 width : document.id( 'qui-editor-window-image-width' ).value
-            }
+            };
         }
     });
 

@@ -97,7 +97,7 @@ define('classes/users/User', [
 
                 require(['Users'], function(Users) {
                     Users.onRefreshUser( self );
-                })
+                });
 
             }, {
                 uid : this.getId()

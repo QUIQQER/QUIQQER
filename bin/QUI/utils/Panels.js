@@ -25,10 +25,8 @@ define('utils/Panels', function()
             require([
                 'qui/QUI',
                 'controls/projects/project/site/Panel',
-                'classes/projects/Project',
-                'classes/projects/project/Site',
                 'Projects'
-            ], function(QUI, SitePanel, Project, Site, Projects)
+            ], function(QUI, SitePanel, Projects)
             {
                 var n      = 'panel-'+ project +'-'+ lang +'-'+ id,
                     panels = QUI.Controls.get( n );
@@ -54,10 +52,9 @@ define('utils/Panels', function()
                     return;
                 }
 
-                var Project = Projects.get( project, lang ),
-                    Site    = Project.get( id );
+                var Site = Projects.get( project, lang ).get( id );
 
-                var SitePanel = new SitePanel(Site, {
+                var Panel = new SitePanel(Site, {
                     events :
                     {
                         onShow : function(Panel)
@@ -72,10 +69,10 @@ define('utils/Panels', function()
                     }
                 });
 
-                panels[ 0 ].appendChild( SitePanel );
+                panels[ 0 ].appendChild( Panel );
 
                 if ( typeof callback !== 'undefined' ) {
-                    callback( SitePanel );
+                    callback( Panel );
                 }
             });
         },
@@ -92,9 +89,8 @@ define('utils/Panels', function()
             require([
                 'qui/QUI',
                 'controls/projects/project/media/Panel',
-                'classes/projects/Project',
                 'Projects'
-            ], function(QUI, MediaPanel, Project, Projects)
+            ], function(QUI, MediaPanel, Projects)
             {
                 var panels = QUI.Controls.get( 'panel-'+ project +'-media' );
 

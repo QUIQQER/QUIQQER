@@ -732,6 +732,14 @@ define('controls/packages/Panel', [
                     GridObj = self.$Grid;
                 }
 
+                var onSlickSetup = function(Btn)
+                {
+                    self.setup(
+                        Btn.getAttribute( 'pkg' ),
+                        Btn
+                    );
+                };
+
                 for ( i = 0, len = result.data.length; i < len; i++ )
                 {
                     entry = result.data[ i ];
@@ -747,15 +755,8 @@ define('controls/packages/Panel', [
                         pkg    : pkg,
                         alt    : alt,
                         title  : alt,
-                        events :
-                        {
-                            onClick : function(Btn)
-                            {
-                                self.setup(
-                                    Btn.getAttribute( 'pkg' ),
-                                    Btn
-                                );
-                            }
+                        events : {
+                            onClick : onSlickSetup
                         }
                     };
                 }
