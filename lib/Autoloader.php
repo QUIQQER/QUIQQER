@@ -101,7 +101,7 @@ class Autoloader
         if ( !self::$ComposerLoader )
         {
             if ( !class_exists( '\Composer\Autoload\ClassLoader' ) ) {
-                require CMS_DIR .'packages/composer/ClassLoader.php';
+                require OPT_DIR .'composer/ClassLoader.php';
             }
 
             if ( $classname == 'Composer\Autoload\ClassLoader' ) {
@@ -110,9 +110,9 @@ class Autoloader
 
             self::$ComposerLoader = new \Composer\Autoload\ClassLoader();
 
-            $map      = require CMS_DIR .'packages/composer/autoload_namespaces.php';
-            $classMap = require CMS_DIR .'packages/composer/autoload_classmap.php';
-            $psr4     = require CMS_DIR .'packages/composer/autoload_psr4.php';
+            $map      = require OPT_DIR .'composer/autoload_namespaces.php';
+            $classMap = require OPT_DIR .'composer/autoload_classmap.php';
+            $psr4     = require OPT_DIR .'composer/autoload_psr4.php';
 
             // add lib to the namespace
             self::$ComposerLoader->add( 'QUI', LIB_DIR );
@@ -150,7 +150,7 @@ class Autoloader
         $first   = array_shift($classes);
         $last    = array_pop($classes);
 
-        $file = CMS_DIR .'packages/'. strtolower(implode('/', $classes)) .'/lib/'. ucfirst($last) .'.php';
+        $file = OPT_DIR . strtolower(implode('/', $classes)) .'/lib/'. ucfirst($last) .'.php';
 
         if (file_exists($file))
         {
@@ -169,6 +169,7 @@ class Autoloader
      *
      * @param String $classname - stash class which is required
      * @return Bool
+     * @deprecated
      */
     static function loadStash($classname)
     {
