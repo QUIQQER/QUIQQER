@@ -11,7 +11,7 @@ namespace QUI\Plugins;
  * Alle Plugins müssen von dieser Klasse erben
  *
  * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.plugins
+ * @todo komplett überarbeiten
  */
 
 class Plugin extends \QUI\QDOM
@@ -120,6 +120,12 @@ class Plugin extends \QUI\QDOM
      */
     public function install()
     {
+        $iniFile = CMS_DIR .'etc/plugins/'. $this->getAttribute('name') .'.ini';
+
+        if ( !file_exists( $iniFile ) ) {
+            file_put_contents( $iniFile , '' );
+        }
+
         $this->_setup();
 
         // Sprache einlesen
@@ -1205,9 +1211,9 @@ class Plugin extends \QUI\QDOM
         // Init.d Pfad erstellen
         \QUI\Utils\System\File::mkdir( CMS_DIR .'etc/plugins/' );
 
-        $this->_Config = \QUI::getConfig(
-            'etc/plugins/'. $this->getAttribute('name') .'.ini'
-        );
+        $iniFile = CMS_DIR .'etc/plugins/'. $this->getAttribute('name') .'.ini';
+
+        $this->_Config = new \QUI\Config( $iniFile );
 
         return $this->_Config;
     }
