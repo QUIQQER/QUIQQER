@@ -110,9 +110,21 @@ class Autoloader
 
             self::$ComposerLoader = new \Composer\Autoload\ClassLoader();
 
-            $map      = require OPT_DIR .'composer/autoload_namespaces.php';
-            $classMap = require OPT_DIR .'composer/autoload_classmap.php';
-            $psr4     = require OPT_DIR .'composer/autoload_psr4.php';
+            $map      = array();
+            $psr4     = array();
+            $classMap = false;
+
+            if ( file_exists( OPT_DIR .'composer/autoload_namespaces.php' ) ) {
+                $map = require OPT_DIR .'composer/autoload_namespaces.php';
+            }
+
+            if ( file_exists( OPT_DIR .'composer/autoload_classmap.php' ) ) {
+                $classMap = require OPT_DIR .'composer/autoload_classmap.php';
+            }
+
+            if ( file_exists( OPT_DIR .'composer/autoload_psr4.php' ) ) {
+                $psr4 = require OPT_DIR .'composer/autoload_psr4.php';
+            }
 
             // add lib to the namespace
             self::$ComposerLoader->add( 'QUI', LIB_DIR );
