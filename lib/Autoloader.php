@@ -54,7 +54,7 @@ class Autoloader
         }
 
         // Plugins werden gleich übersprungen
-        // @todo überdenken, maybe bei plugins auch auf namespaces gehen
+           // @todo überdenken, maybe bei plugins auch auf namespaces gehen
         if ( strpos( $classname, 'Plugin_' ) !== false ) {
             return false;
         }
@@ -101,7 +101,7 @@ class Autoloader
         if ( !self::$ComposerLoader )
         {
             if ( !class_exists( '\Composer\Autoload\ClassLoader' ) ) {
-                require OPT_DIR .'composer/ClassLoader.php';
+                require CMS_DIR .'packages/composer/ClassLoader.php';
             }
 
             if ( $classname == 'Composer\Autoload\ClassLoader' ) {
@@ -110,21 +110,9 @@ class Autoloader
 
             self::$ComposerLoader = new \Composer\Autoload\ClassLoader();
 
-            $map      = array();
-            $psr4     = array();
-            $classMap = false;
-
-            if ( file_exists( OPT_DIR .'composer/autoload_namespaces.php' ) ) {
-                $map = require OPT_DIR .'composer/autoload_namespaces.php';
-            }
-
-            if ( file_exists( OPT_DIR .'composer/autoload_classmap.php' ) ) {
-                $classMap = require OPT_DIR .'composer/autoload_classmap.php';
-            }
-
-            if ( file_exists( OPT_DIR .'composer/autoload_psr4.php' ) ) {
-                $psr4 = require OPT_DIR .'composer/autoload_psr4.php';
-            }
+            $map      = require CMS_DIR .'packages/composer/autoload_namespaces.php';
+            $classMap = require CMS_DIR .'packages/composer/autoload_classmap.php';
+            $psr4     = require CMS_DIR .'packages/composer/autoload_psr4.php';
 
             // add lib to the namespace
             self::$ComposerLoader->add( 'QUI', LIB_DIR );
@@ -162,7 +150,7 @@ class Autoloader
         $first   = array_shift($classes);
         $last    = array_pop($classes);
 
-        $file = OPT_DIR . strtolower(implode('/', $classes)) .'/lib/'. ucfirst($last) .'.php';
+        $file = CMS_DIR .'packages/'. strtolower(implode('/', $classes)) .'/lib/'. ucfirst($last) .'.php';
 
         if (file_exists($file))
         {
