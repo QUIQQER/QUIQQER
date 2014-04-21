@@ -6,7 +6,11 @@
 
 namespace QUI\Package;
 
-//Use the Composer classes
+// Use the Composer classes
+if ( !defined('STDIN') ) {
+    define( 'STDIN', fopen("php://stdin","r") );
+}
+
 use Composer\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
