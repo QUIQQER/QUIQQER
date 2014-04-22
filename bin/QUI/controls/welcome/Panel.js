@@ -9,9 +9,11 @@
 
 define('controls/welcome/Panel', [
 
-    'qui/controls/desktop/Panel'
+    'qui/controls/desktop/Panel',
+    'controls/projects/Manager',
+    'utils/Panels'
 
-], function(QUIPanel)
+], function(QUIPanel, ProjectManager, PanelUtils)
 {
     "use strict";
 
@@ -31,7 +33,7 @@ define('controls/welcome/Panel', [
         ],
 
         options : {
-            icon : 'icon-thumbs-up',
+            icon  : 'icon-thumbs-up',
             title : 'Willkommen bei QUIQQER'
         },
 
@@ -51,15 +53,72 @@ define('controls/welcome/Panel', [
          */
         $onCreate : function()
         {
-            this.getContent().set(
+            var Content = this.getContent();
+
+            Content.set(
                 'html',
 
                 '<h1>Willkommen bei QUIQQER</h1>'+
-                '<p>Hilfe und eine Dokumentation finden Sie unter <a href="http://doc.quiqqer.com" target="_blank">doc.quiqqer.com</a>.</p>'+
+                '<p>Ihre Installation war erfolgreich und Sie können QUIQQER nun erfolgreich nutzen.</p>'+
 
-                '<p>Haben Sie fragen können Sie sich gerne über folgende Kanäle an uns wenden:<br />'+
-                'support@pcsg.de oder IRC: #quiqqer on freenode</p>'
+                '<h2>Wie geht es weiter?</h2>'+
+                '<ul>'+
+                    '<li>'+
+                        '<a href="" class="create-project">'+
+                            'Webseiten Projekt starten'+
+                        '</a>'+
+                    '</li>'+
+                    '<li>'+
+                        '<a href="http://doc.quiqqer.com/" target="_blank">'+
+                            'Online Dokumentation öffnen'+
+                        '</a>'+
+                    '</li>'+
+                '</ul>'+
+
+                '<p>Wenn Sie Fragen haben oder Hilfe benötigen stehen Ihnen verschiedenen Möglichkeiten zur Verfügung.</p>'+
+
+                '<h3>Hilfe für Benutzer</h3>'+
+                '<ul>'+
+                    '<li>'+
+                        '<a href="http://doc.quiqqer.com/" target="_blank">'+
+                            'Online Benutzer-Dokumentation öffnen'+
+                        '</a>'+
+                    '</li>'+
+                '</ul>'+
+
+                '<h3>Hilfe für Entwickler</h3>'+
+                '<ul>'+
+                    '<li>'+
+                        '<a href="https://dev.quiqqer.com/quiqqer/quiqqer/wikis/home" target="_blank">'+
+                            'Wiki'+
+                        '</a>'+
+                    '</li>'+
+                    '<li>'+
+                        '<a href="http://doc.quiqqer.com/api/dev/php/doc/" target="_blank">'+
+                            'PHP Api'+
+                        '</a>'+
+                    '</li>'+
+                    '<li>'+
+                        '<a href="http://doc.quiqqer.com/qui/doc/" target="_blank">'+
+                            'QUI API (QUIQQER User Interface)'+
+                        '</a>'+
+                    '</li>'+
+                '</ul>'+
+
+                '<h3>Kontakt aufnehmen</h3>'+
+                '<ul>'+
+                    '<li>Mail: support@pcsg.de</li>'+
+                    '<li>IRC: #quiqqer on freenode</li>'+
+                '</ul>'
             );
+
+            Content.getElement( '.create-project' ).addEvent('click', function(event)
+            {
+                event.stop();
+
+                PanelUtils.openPanelInTasks( new ProjectManager() );
+            });
+
         }
     });
 });
