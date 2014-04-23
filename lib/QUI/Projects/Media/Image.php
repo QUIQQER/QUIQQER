@@ -25,6 +25,63 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
     }
 
     /**
+     * Return the image url
+     *
+     * @param string $maxwidth
+     * @param string $maxheight
+     */
+    public function getSizeCacheUrl($maxwidth=false, $maxheight=false)
+    {
+        $params = $this->getResizeSize(
+            $maxwidth,
+            $maxheight
+        );
+
+        $width  = $params['width'];
+        $height = $params['height'];
+
+        $Media   = $this->_Media; /* @var $Media \QUI\Projects\Media */
+        $Project = $Media->getProject();
+
+        $mdir = CMS_DIR . $Media->getPath();
+        $cdir = CMS_DIR . $Media->getCacheDir();
+        $file = $this->getAttribute('file');
+
+        $original = $mdir . $file;
+        $extra    = '';
+
+        if ( $this->getAttribute('reflection') ) {
+            $extra = '_reflection';
+        }
+
+
+        if ( $width || $height )
+        {
+            $part      = explode('.', $file);
+            $cachefile = $cdir . $part[0] .'__'. $width .'x'. $height . $extra .'.'. \QUI\Utils\String::toLower( end($part) );
+
+            if ( empty( $height ) ) {
+                $cachefile = $cdir . $part[0] .'__'. $width . $extra .'.'. \QUI\Utils\String::toLower( end($part) );
+            }
+
+            if ( $this->getAttribute('reflection') )
+            {
+                $cachefile = $cdir . $part[0] .'__'. $width .'x'. $height . $extra .'.png';
+
+                if ( empty( $height ) ) {
+                    $cachefile = $cdir . $part[0] .'__'. $width . $extra .'.png';
+                }
+            }
+
+        } else
+        {
+            $cachefile = $cdir . $file;
+        }
+
+        return $cachefile;
+    }
+
+    /**
      * Creates a cache file and takes into account the maximum sizes
      * return the media url
      *
@@ -148,44 +205,11 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
         $cdir = CMS_DIR . $Media->getCacheDir();
         $file = $this->getAttribute('file');
 
-        $original = $mdir . $file;
-        $extra    = '';
-
-        if ( $this->getAttribute('reflection') ) {
-            $extra = '_reflection';
-        }
+        $original  = $mdir . $file;
+        $cachefile = $this->getSizeCacheUrl( $width, $height );
 
 
-        if ( $width || $height )
-        {
-            $part      = explode('.', $file);
-            $cachefile = $cdir . $part[0] .'__'. $width .'x'. $height . $extra .'.'. \QUI\Utils\String::toLower( end($part) );
-
-            if ( empty( $height ) ) {
-                $cachefile2 = $cdir . $part[0] .'__'. $width . $extra .'.'. \QUI\Utils\String::toLower( end($part) );
-            }
-
-            if ( $this->getAttribute('reflection') )
-            {
-                $cachefile = $cdir . $part[0] .'__'. $width .'x'. $height . $extra .'.png';
-
-                if ( empty( $height ) ) {
-                    $cachefile2 = $cdir . $part[0] .'__'. $width . $extra .'.png';
-                }
-            }
-
-        } else
-        {
-            $cachefile = $cdir . $file;
-        }
-
-        // Link Cache erstellen -> macht das noch sinn?
-        // $this->_createLinkCache();
-
-        if ( file_exists($cachefile) &&
-             // falls es eine Cachedatei ohne x geben soll
-            (isset($cachefile2) && file_exists($cachefile2)) )
-        {
+        if ( file_exists( $cachefile ) ) {
             return $cachefile;
         }
 
@@ -196,47 +220,26 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
         {
             $this->resize( $cachefile, (int)$width, (int)$height );
 
-            // falls höhe nicht angegeben ist, das Cachefile auch ohne x anlegen
-            if ( isset( $cachefile2 ) ) {
-                $this->resize( $cachefile2, (int)$width, (int)$height );
-            }
-
         } else
         {
             try
             {
-                if ( !file_exists($cachefile) ) {
-                    \QUI\Utils\System\File::copy($original, $cachefile);
-                }
-            } catch ( \QUI\Exception $e )
+                \QUI\Utils\System\File::copy( $original, $cachefile );
+
+            } catch ( \QUI\Exception $Exception )
             {
                 // Fehler loggen
-                \QUI\System\Log::writeException($e);
+                \QUI\System\Log::writeException( $Exception );
             }
         }
 
         // Spiegelung
         if ( $this->getAttribute('reflection') )
         {
-            if ( !file_exists($cachefile) )
-            {
-                \QUI\Utils\Image::reflection($original, $cachefile);
-            } else
-            {
-                \QUI\Utils\Image::reflection($cachefile, $cachefile);
-            }
+            \QUI\Utils\Image::reflection( $original, $cachefile );
 
-            if ( isset($cachefile2) ) {
-                \QUI\Utils\Image::reflection($cachefile, $cachefile2);
-            }
-
-            if ( $width || $height )
-            {
-                \QUI\Utils\Image::resize($cachefile, $cachefile, (int)$width, (int)$height);
-
-                if ( isset($cachefile2) ) {
-                    \QUI\Utils\Image::resize($cachefile2, $cachefile2, (int)$width, (int)$height);
-                }
+            if ( $width || $height ) {
+                \QUI\Utils\Image::resize( $cachefile, $cachefile, (int)$width, (int)$height );
             }
         }
 
@@ -247,12 +250,11 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
         {
             $roundcorner = $this->getAttribute('roundcorners');
 
-            if ( !is_array($roundcorner) ) {
-                $roundcorner = json_decode($roundcorner, true);
+            if ( !is_array( $roundcorner ) ) {
+                $roundcorner = json_decode( $roundcorner, true) ;
             }
 
-            if ( isset($roundcorner['radius']) &&
-                 isset($roundcorner['background']) )
+            if ( isset( $roundcorner['radius'] ) && isset( $roundcorner['background'] ) )
             {
                 try
                 {
@@ -261,17 +263,9 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
                         'background' => $roundcorner['background']
                     ));
 
-                    if ( isset($cachefile2) )
-                    {
-                        \QUI\Utils\Image::roundCorner($cachefile2, $cachefile, array(
-                            'radius' 	 => (int)$roundcorner['radius'],
-                            'background' => $roundcorner['background']
-                        ));
-                    }
-
-                } catch ( \QUI\Exception $e )
+                } catch ( \QUI\Exception $Exception )
                 {
-                    \QUI\System\Log::writeException($e);
+                    \QUI\System\Log::writeException( $Exception );
                 }
             }
         }
@@ -285,30 +279,30 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
 
         $watermark = $this->getAttribute('watermark');
 
-        if ( !is_array($watermark) ) {
-            $watermark = json_decode($watermark, true);
+        if ( !is_array( $watermark ) ) {
+            $watermark = json_decode( $watermark, true );
         }
 
-        if ( empty($watermark) || !$watermark['active'] ) {
+        if ( empty( $watermark ) || !$watermark['active'] ) {
             return $cachefile;
         }
 
 
         // wenn kein Wasserzeichen, dann schauen ob im Projekt eines gibt
-        if ( !isset($watermark['image'] ) &&
+        if ( !isset( $watermark['image'] ) &&
              $Project->getConfig('watermark_image') )
         {
             $watermark['image'] = $Project->getConfig('watermark_image');
         }
 
-        if ( !isset($watermark['image']) ) {
+        if ( !isset( $watermark['image'] ) ) {
             return $cachefile;
         }
 
 
-        $params = \QUI\Utils\String::getUrlAttributes($watermark['image']);
+        $params = \QUI\Utils\String::getUrlAttributes( $watermark['image'] );
 
-        if ( !isset($params['id']) || !isset($params['project']) ) {
+        if ( !isset( $params['id'] ) || !isset( $params['project'] ) ) {
             return $cachefile;
         }
 
@@ -327,23 +321,23 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
             $d_media = $WZ_Media->getAttribute('media_dir');
             $f_water = $d_media . $_Image->getPath();
 
-            if ( !file_exists($f_water) ) {
+            if ( !file_exists( $f_water ) ) {
                 return $cachefile;
             }
 
             // falls keine position, dann die vom projekt
-            if ( !isset($watermark['position']) &&
+            if ( !isset( $watermark['position'] ) &&
                  $Project->getConfig('watermark_position') )
             {
                 $watermark['position'] = $Project->getConfig('watermark_position');
             }
 
-            if ( isset($watermark['position']) ) {
+            if ( isset( $watermark['position'] ) ) {
                 $position = $watermark['position'];
             }
 
             // falls keine prozent, dann die vom projekt
-            if ((!isset($watermark['percent']) || !$watermark['percent']) &&
+            if ( ( !isset( $watermark['percent'] ) || !$watermark['percent'] ) &&
                 $Project->getConfig('watermark_percent'))
             {
                 $watermark['percent'] = $Project->getConfig('watermark_percent');
@@ -351,29 +345,50 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
 
 
 
-            $c_info = \QUI\Utils\System\File::getInfo($cachefile, array('imagesize' => true));
-            $w_info = \QUI\Utils\System\File::getInfo($f_water, array('imagesize' => true));
+            $c_info = \QUI\Utils\System\File::getInfo(
+                $cachefile,
+                array('imagesize' => true)
+               );
+
+            $w_info = \QUI\Utils\System\File::getInfo(
+                $f_water,
+                array('imagesize' => true)
+            );
 
             // Prozentuale Grösse - Wasserzeichen
-            if ( isset($watermark['percent']) && $watermark['percent'] )
+            if ( isset( $watermark['percent'] ) && $watermark['percent'] )
             {
                 $w_width  = $c_info['width'];
                 $w_height = $c_info['height'];
 
-                $watermark_width  = ($w_width / 100 * $watermark['percent']);
-                $watermark_height = ($w_height / 100 * $watermark['percent']);
+                $watermark_width  = ( $w_width / 100 * $watermark['percent'] );
+                $watermark_height = ( $w_height / 100 * $watermark['percent'] );
 
-                $watermark_temp = VAR_DIR .'tmp/'. md5($cachefile);
+                $watermark_temp = VAR_DIR .'tmp/'. md5( $cachefile );
 
                 // Resize des Wasserzeichens
-                if (!file_exists($watermark_temp)) {
-                    \QUI\Utils\System\File::copy($f_water, $watermark_temp);
+                if ( !file_exists( $watermark_temp ) ) {
+                    \QUI\Utils\System\File::copy( $f_water, $watermark_temp );
                 }
 
-                \QUI\Utils\Image::resize($watermark_temp, $watermark_temp, $watermark_width);
-                \QUI\Utils\Image::resize($watermark_temp, $watermark_temp, 0, $watermark_height);
+                \QUI\Utils\Image::resize(
+                    $watermark_temp,
+                    $watermark_temp,
+                    $watermark_width
+                );
 
-                $w_info  = \QUI\Utils\System\File::getInfo($watermark_temp, array('imagesize' => true));
+                \QUI\Utils\Image::resize(
+                    $watermark_temp,
+                    $watermark_temp,
+                    0,
+                    $watermark_height
+                );
+
+                $w_info = \QUI\Utils\System\File::getInfo(
+                    $watermark_temp,
+                    array('imagesize' => true)
+                );
+
                 $f_water = $watermark_temp;
             }
 
@@ -384,34 +399,30 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
             switch ( $position )
             {
                 case 'topright':
-                    $left = ($c_info['width'] - $w_info['width']);
+                    $left = $c_info['width'] - $w_info['width'];
                 break;
 
                 case 'bottomleft':
-                    $top = ($c_info['height'] - $w_info['height']);
+                    $top = $c_info['height'] - $w_info['height'];
                 break;
 
                 case 'bottomright':
-                    $top  = ($c_info['height'] - $w_info['height']);
-                    $left = ($c_info['width'] - $w_info['width']);
+                    $top  = $c_info['height'] - $w_info['height'];
+                    $left = $c_info['width'] - $w_info['width'];
                 break;
 
                 case 'center':
-                    $top  = (($c_info['height'] - $w_info['height']) / 2);
-                    $left = (($c_info['width'] - $w_info['width']) / 2);
+                    $top  = ( ( $c_info['height'] - $w_info['height'] ) / 2 );
+                    $left = ( ( $c_info['width'] - $w_info['width'] ) / 2 );
                 break;
             }
 
-            \QUI\Utils\Image::watermark($cachefile, $f_water, false, $top, $left);
+            \QUI\Utils\Image::watermark( $cachefile, $f_water, false, $top, $left );
 
-            if ( isset($cachefile2) ) {
-                \QUI\Utils\Image::watermark($cachefile2, $f_water, false, $top, $left);
-            }
 
-        } catch ( \QUI\Exception $e )
+        } catch ( \QUI\Exception $Exception )
         {
-            \QUI\System\Log::writeException($e);
-            // nothing
+            \QUI\System\Log::writeException( $Exception );
         }
 
         return $cachefile;
