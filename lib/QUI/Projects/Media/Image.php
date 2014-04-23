@@ -25,12 +25,12 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
     }
 
     /**
-     * Return the image url
+     * Return the image path
      *
      * @param string $maxwidth
      * @param string $maxheight
      */
-    public function getSizeCacheUrl($maxwidth=false, $maxheight=false)
+    public function getSizeCachePath($maxwidth=false, $maxheight=false)
     {
         $params = $this->getResizeSize(
             $maxwidth,
@@ -79,6 +79,20 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
         }
 
         return $cachefile;
+    }
+
+    /**
+     * Return the image url
+     *
+     * @param string $maxwidth
+     * @param string $maxheight
+     */
+    public function getSizeCacheUrl($maxwidth=false, $maxheight=false)
+    {
+        $cachePath = $this->getSizeCachePath( $maxwidth, $maxheight );
+        $cacheUrl  = str_replace( CMS_DIR, URL_DIR, $cachePath );
+
+        return $cacheUrl;
     }
 
     /**
@@ -206,7 +220,7 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
         $file = $this->getAttribute('file');
 
         $original  = $mdir . $file;
-        $cachefile = $this->getSizeCacheUrl( $width, $height );
+        $cachefile = $this->getSizeCachePath( $width, $height );
 
 
         if ( file_exists( $cachefile ) ) {
