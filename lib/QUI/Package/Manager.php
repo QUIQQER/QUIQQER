@@ -96,15 +96,6 @@ class Manager
 
         $this->_composer_json = $this->_vardir .'composer.json';
 
-        // Create the application and run it with the commands
-        $this->_Application = new Application();
-        $this->_Application->setAutoExit( false );
-
-        \QUI\Utils\System\File::mkdir( $this->_vardir );
-
-        putenv( "COMPOSER_HOME=". $this->_vardir );
-
-
 
 //         // exec
 //         $exec_var = str_replace( CMS_DIR, '', $this->_vardir );
@@ -152,6 +143,23 @@ class Manager
 //         if ( !file_exists( $this->_composer_json ) ) {
 //             $this->_createComposerJSON();
 //         }
+    }
+
+    protected function _getApplication()
+    {
+        if ( $this->_Application ) {
+            return $this->_Application;
+        }
+
+        // Create the application and run it with the commands
+        $this->_Application = new Application();
+        $this->_Application->setAutoExit( false );
+
+        \QUI\Utils\System\File::mkdir( $this->_vardir );
+
+        putenv( "COMPOSER_HOME=". $this->_vardir );
+
+        return $this->_Application;
     }
 
     /**
@@ -996,7 +1004,7 @@ class Manager
         $Output = new \QUI\Package\Output();
 
         //$Command = $this->_Composer->get( $command );
-        $this->_Application->run( $Input, $Output );
+        $this->_getApplication()->run( $Input, $Output );
 
         \QUI\Cache\Manager::clear( self::CACHE_NAME_TYPES );
 
