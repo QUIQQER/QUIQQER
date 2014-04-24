@@ -22,28 +22,29 @@ class Manager implements \QUI\Interfaces\Events
      */
     public function __construct()
     {
+        $this->_Events = new \QUI\Events\Event();
+
         try
         {
-            if ( \QUI::getDataBase()->Table()->exist( self::Table() ) )
+            if ( !\QUI::getDataBase()->Table()->exist( self::Table() ) ) {
+                return;
+            }
+
+            $list = \QUI::getDataBase()->fetch(array(
+                'from' => self::Table()
+            ));
+
+            foreach ( $list as $params )
             {
-                $list = \QUI::getDataBase()->fetch(array(
-                    'from' => self::Table()
-                ));
+                $this->_Events->addEvent(
+                    $params['event'],
+                    $params['callback']
+                );
             }
 
         } catch ( \QUI\Database\Exception $Exception )
         {
 
-        }
-
-        $this->_Events = new \QUI\Events\Event();
-
-        foreach ( $list as $params )
-        {
-            $this->_Events->addEvent(
-                $params['event'],
-                $params['callback']
-            );
         }
     }
 
