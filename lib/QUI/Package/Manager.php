@@ -740,13 +740,13 @@ class Manager
     {
         if ( $package )
         {
-            $result = $this->_execComposer('update', array(
+            $output = $this->_execComposer('update', array(
                 'packages' => array($package)
             ));
 
         } else
         {
-            $result = $this->_execComposer('update');
+            $output = $this->_execComposer('update');
         }
 
         // exception?
