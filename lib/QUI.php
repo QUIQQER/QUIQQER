@@ -362,8 +362,6 @@ class QUI
         // mem peak - info mail at 80% usage
         self::getErrorHandler()->registerShutdown(function()
         {
-            // DB Verbindung schließen
-            \QUI::getDB()->close();
             \QUI\Utils\System\Debug::marker('END');
 
             // ram peak, if the ram usage is to high, than write and send a message

@@ -14,6 +14,8 @@ use Symfony\Component\Console\Formatter\OutputFormatterInterface;
  * so he can use composer as symfony application
  *
  * @author www.namerobot.com (Henning Leutz)
+ *
+ * @event onOutput [ String $message ]
  */
 
 class Output extends \Symfony\Component\Console\Output\Output
@@ -31,6 +33,26 @@ class Output extends \Symfony\Component\Console\Output\Output
     protected $_message  = '';
 
     /**
+     * Event Manager
+     * @var \QUI\Events\Manager
+     */
+    public $Events;
+
+    /**
+     * Konstruktor
+     *
+     * @param unknown $verbosity
+     * @param string $decorated
+     * @param OutputFormatterInterface $formatter
+     */
+    public function __construct($verbosity=self::VERBOSITY_NORMAL, $decorated=false, OutputFormatterInterface $formatter=null)
+    {
+        parent::__construct( $verbosity, $decorated, $formatter );
+
+        $this->Events = new \QUI\Events\Manager();
+    }
+
+    /**
      * Writes a message to the output.
      *
      * @param string  $message A message to write to the output
@@ -39,6 +61,8 @@ class Output extends \Symfony\Component\Console\Output\Output
     public function doWrite($message, $newline)
     {
         $this->_message .= $message;
+
+        $this->Events->fireEvent( 'output', array( $message ) );
 
         if ( !$newline ) {
             return;

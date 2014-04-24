@@ -503,7 +503,6 @@ class Edit extends \QUI\Projects\Site
 
         }
 
-        \QUI\System\Log::write( $this->getAttribute( 'image_emotion' ) );
 
         // release dates
         $release_from = '';

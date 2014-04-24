@@ -618,10 +618,6 @@ class Rewrite
             return \QUI\Projects\Manager::get();
         }
 
-        // Falls keine Projekt Parameter existieren wird das standard Projekt verwendet
-        $conf   = \QUI::getConfig( 'etc/projects.ini' );
-        $config = $conf->toArray();
-
         // Vhosts
         $Project = $this->_getProjectByVhost();
 
@@ -629,9 +625,14 @@ class Rewrite
             return $Project;
         }
 
+
         /**
          * If no vhost was found
          */
+
+        // Falls keine Projekt Parameter existieren wird das standard Projekt verwendet
+        $Config = \QUI\Projects\Manager::getConfig();
+        $config = $Config->toArray();
 
         // wenn standard vhost nicht der gewünschte ist, dann 404
         $host = '';
@@ -659,7 +660,8 @@ class Rewrite
         try
         {
             $Project = \QUI\Projects\Manager::get();
-        } catch ( \QUI\Exception $e )
+
+        } catch ( \QUI\Exception $Exception )
         {
             $Project = false;
         }
@@ -667,6 +669,7 @@ class Rewrite
         if ( $Project && is_object( $Project ) )
         {
             $this->_project = $Project;
+
             return $this->_project;
         }
 
@@ -738,11 +741,7 @@ class Rewrite
                 $template
             );
 
-        } catch( Exception $e )
-        {
-            // nothing todo
-            $Project = false;
-        } catch( \QUI\Exception $e )
+        } catch( \Exception $Exception )
         {
             // nothing todo
             $Project = false;

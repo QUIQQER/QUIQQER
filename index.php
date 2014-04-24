@@ -1,6 +1,7 @@
 <?php
 
 //$start_test = microtime();
+// xdebug_start_trace();
 
 /**
  * @author www.namerobot.com (Henning Leutz)
@@ -36,8 +37,23 @@ if ( isset( $_REQUEST['_url'] ) ) {
 //\QUI\Utils\System\Debug::$run = true;
 \QUI\Utils\System\Debug::marker( 'index start' );
 
+// check if one projects exists
+if ( !\QUI::getProjectManager()->count() )
+{
+    header( "HTTP/1.0 404 Not Found" );
+
+    // no project exist
+    echo '<div style="text-align: center; margin-top: 100px;">
+                <img src="'. URL_BIN_DIR .'quiqqer_logo.png" style="max-width: 100%;" />
+          </div>';
+    exit;
+}
+
+
+// start
 $Rewrite = \QUI::getRewrite();
 $Rewrite->exec();
+
 
 // sprache ausschalten
 if ( isset( $_REQUEST['lang'] ) && $_REQUEST['lang'] == 'false' )
@@ -46,8 +62,8 @@ if ( isset( $_REQUEST['lang'] ) && $_REQUEST['lang'] == 'false' )
     \QUI::getLocale()->no_translation = true;
 }
 
-$Project = $Rewrite->getProject(); 		/* @var $Project \QUI\Projects\Project */
-$Site    = $Rewrite->getSite(); /* @var $Site \QUI\Projects\Site */
+$Project = $Rewrite->getProject();
+$Site    = $Rewrite->getSite();
 
 $Site->load();
 
@@ -87,11 +103,11 @@ if (
     $file  = SYS_DIR .'template/maintenance.html';
     $pfile = USR_DIR .'lib/'. $Project->getAttribute('template') .'/maintenance.html';
 
-    if (file_exists($pfile)) {
+    if ( file_exists( $pfile ) ) {
         $file = $pfile;
     }
 
-    echo $Smarty->fetch($file);
+    echo $Smarty->fetch( $file );
     exit;
 }
 

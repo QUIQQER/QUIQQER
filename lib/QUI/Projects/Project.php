@@ -220,7 +220,7 @@ class Project
             $this->_template = $template;
         }
 
-        // vhosts abklappern
+        // vhosts
         $vhosts = \QUI::vhosts();
 
         foreach ( $vhosts as $host => $vhost )

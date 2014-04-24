@@ -30,8 +30,15 @@ class Update extends \QUI\System\Console\Tool
     {
         $this->writeLn( 'Start Update ...' );
 
-        \QUI::getPackageManager()->refreshServerList();
-        \QUI::getPackageManager()->update();
+        $self = $this;
+        $PM   = \QUI::getPackageManager();
+
+        $PM->Events->addEvent('onOutput', function($message) use ($self) {
+            $this->writeLn( $self );
+        });
+
+        $PM->refreshServerList();
+        $PM->update();
 
         $this->write( ' [ok]' );
         $this->writeLn( '' );

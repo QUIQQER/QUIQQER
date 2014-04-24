@@ -115,6 +115,19 @@ class Manager
     }
 
     /**
+     * Return the projects count
+     *
+     * @return {Integer}
+     */
+    static function count()
+    {
+        $Config = self::getConfig();
+        $config = $Config->toArray();
+
+        return count( $config );
+    }
+
+    /**
      * Returns the current project
      *
      * @return Project
@@ -259,8 +272,18 @@ class Manager
             }
         }
 
-        if ( is_null( self::$Standard ) ) {
-            throw new \QUI\Exception( 'Es wurde kein Projekt gefunden', 404 );
+        if ( is_null( self::$Standard ) )
+        {
+            \QUI\System\Log::addAlert(
+                'No standard project are set. Please define a standard projekt'
+            );
+
+            $project = key( $config );
+
+            self::$Standard = \QUI\Projects\Manager::getProject(
+                $project,
+                $config[ key( $config ) ]['default_lang']
+            );
         }
 
         return self::$Standard;
