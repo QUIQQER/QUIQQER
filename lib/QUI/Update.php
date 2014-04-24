@@ -53,7 +53,7 @@ class Update
         \QUI::getLocale()->setCurrent( 'en' );
 
         // session table
-        \QUI::getSession()->setup();
+        \QUI\Session::setup();
 
         // rights setup, so we have all importend tables
         \QUI\Rights\Manager::setup();
