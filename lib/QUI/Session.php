@@ -9,6 +9,8 @@ namespace QUI;
 use Symfony\Component\HttpFoundation\Session\Session as SymfonySession;
 use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler;
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcacheSessionHandler;
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
 
 /**
  * Session handling for QUIQQER
@@ -61,17 +63,48 @@ class Session
         ini_set( 'session.gc_maxlifetime', $this->_max_life_time );
         ini_set( 'session.gc_probability', 100 );
 
-        $this->_Storage = new NativeSessionStorage(
-            array(),
-            new PdoSessionHandler( \QUI::getDataBase()->getPDO(), array(
-                'db_table'    => $this->_table,
-                'db_id_col'   => 'session_id',
-                'db_data_col' => 'session_value',
-                'db_time_col' => 'session_time',
-            ))
-        );
-
+        $this->_Storage = new NativeSessionStorage( array(), $this->_getStorage() );
         $this->_Session = new SymfonySession( $this->_Storage );
+    }
+
+    /**
+     * Return the storage type
+     *
+     * @return SessionHandlerInterface
+     */
+    protected function _getStorage()
+    {
+        $memcached_host = \QUI::conf( 'session', 'memcached_host' );
+        $memcached_port = \QUI::conf( 'session', 'memcached_host' );
+
+        $memcache_host = \QUI::conf( 'session', 'memcache_host' );
+        $memcache_port = \QUI::conf( 'session', 'memcache_host' );
+
+        if ( !empty( $memcached_host ) &&
+             !empty( $memcached_port ) &&
+             class_exists('Memcached') )
+        {
+            $Memcached = new \Memcached();
+            $Memcached->addServer( $memcached_host, $memcached_port );
+
+            return new MemcachedSessionHandler( $Memcached );
+        }
+
+        if ( !empty( $memcache_host ) &&
+             !empty( $memcache_port ) &&
+             class_exists('Memcache') )
+        {
+            $Memcache = new \Memcache( $memcache_host, $memcache_port );
+
+            return new MemcacheSessionHandler( $Memcache );
+        }
+
+        return new PdoSessionHandler( \QUI::getDataBase()->getPDO(), array(
+            'db_table'    => $this->_table,
+            'db_id_col'   => 'session_id',
+            'db_data_col' => 'session_value',
+            'db_time_col' => 'session_time',
+        ));
     }
 
     /**
@@ -94,7 +127,8 @@ class Session
         $DBTable->appendFields($this->_table, array(
             'session_id'    => 'varchar(255) NOT NULL',
             'session_value' => 'text NOT NULL',
-            'session_time'  => 'int(11) NOT NULL'
+            'session_time'  => 'int(11) NOT NULL',
+            'uid'           => 'int(11) NOT NULL'
         ));
 
         $DBTable->setPrimaryKey( $this->_table , 'session_id' );
@@ -175,5 +209,45 @@ class Session
     {
         $this->_Session->clear();
         $this->_Session->invalidate();
+    }
+
+    /**
+     * Return the last login from the session-id
+     * @param String $sid - Session-ID
+     */
+    public function getLastRefreshFrom($sid)
+    {
+        $result = \QUI::getDataBase()->fetch(array(
+            'from'  => $this->_table,
+            'where' => array(
+                'session_id' => $sid
+            ),
+            'limit' => 1
+        ));
+
+        if ( !isset( $result[ 0 ] ) ) {
+            return 0;
+        }
+
+        return $result[ 0 ][ 'session_time' ];
+    }
+
+    /**
+     * Is the user online?
+     *
+     * @param Integer $uid
+     * @return Bool
+     */
+    public function isUserOnline($uid)
+    {
+        $result = \QUI::getDataBase()->fetch(array(
+            'from'  => $this->_table,
+            'where' => array(
+                'uid' => (int)$uid
+            ),
+            'limit' => 1
+        ));
+
+        return isset( $result[ 0 ] ) ? true : false;
     }
 }

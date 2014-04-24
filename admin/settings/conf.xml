@@ -140,6 +140,18 @@
                 <type><![CDATA[integer]]></type>
                 <defaultvalue>14000</defaultvalue>
             </conf>
+            <conf name="memcached_host">
+                <type><![CDATA[string]]></type>
+            </conf>
+            <conf name="memcached_port">
+                <type><![CDATA[integer]]></type>
+            </conf>
+            <conf name="memcache_host">
+                <type><![CDATA[string]]></type>
+            </conf>
+            <conf name="memcache_port">
+                <type><![CDATA[integer]]></type>
+            </conf>
         </section>
 
         <section name="error">
@@ -330,10 +342,46 @@
                     <input conf="globals.emaillogin" type="checkbox">
                         <text>Login über die E-Mail Adresse zulassen</text>
                     </input>
-                    <input conf="auth.type" type="text">
+                    <select conf="auth.type" type="text">
                         <text>Authentifierungsart</text>
+                        <option value="standard">standard</option>
+                    </select>
+                </settings>
+
+                <settings title="auth-session" name="auth-session">
+                    <title>Sitzung</title>
+
+                    <input conf="session.max_life_time">
+                        <text>Maximale inaktive Zeit eines Benutzers (max session life time)</text>
                     </input>
                 </settings>
+
+                <settings title="auth-memcached" name="auth-memcached">
+                    <title>Memcached Server</title>
+                    <text>Geben Sie hier einen Memcached Server an damit die Sitzungsdaten über einen Memcached Server verwaltet werden</text>
+                    <input conf="session.memcached_host">
+                        <text>Host</text>
+                    </input>
+
+                    <input conf="session.memcached_port">
+                        <text>Port</text>
+                    </input>
+
+                </settings>
+
+                <settings title="auth-memcache" name="auth-memcache">
+                    <title>Memcache Server</title>
+                    <text>Geben Sie hier einen Memcache Server an damit die Sitzungsdaten über einen Memcache Server verwaltet werden</text>
+                    <input conf="session.memcache_host">
+                        <text>Host</text>
+                    </input>
+
+                    <input conf="session.memcache_port">
+                        <text>Port</text>
+                    </input>
+
+                </settings>
+
             </category>
 
         </categories>

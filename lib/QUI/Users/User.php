@@ -118,12 +118,6 @@ class User implements \QUI\Interfaces\Users\User
     protected $_adress_list = array();
 
     /**
-     * Session id file
-     * @var String
-     */
-    protected $_id_sessid_file = '';
-
-    /**
      * contructor
      *
      * @param Integer $id - ID of the user
@@ -148,11 +142,22 @@ class User implements \QUI\Interfaces\Users\User
         $Groups = \QUI::getGroups();
 
         $this->_Users = $Users;
+        $this->_id    = $id;
 
-        $data = \QUI::getDB()->select(array(
+        $this->refresh();
+    }
+
+    /**
+     * refresh the data from the database
+     *
+     * @throws \QUI\Exception
+     */
+    public function refresh()
+    {
+        $data = \QUI::getDataBase()->fetch(array(
             'from'  => \QUI\Users\Manager::Table(),
             'where' => array(
-                'id' => (int)$id
+                'id' => $this->_id
             ),
             'limit' => '1'
         ));
@@ -225,8 +230,6 @@ class User implements \QUI\Interfaces\Users\User
             $this->setAttribute( 'expire', false );
         }
 
-        // @todo sessions prüfen mit einstellungen
-        $this->_id_sessid_file = VAR_DIR .'uid_sess/'. $id;
 
         // Extras
         if ( $this->getAttribute( 'extra' ) ) {
@@ -234,7 +237,7 @@ class User implements \QUI\Interfaces\Users\User
         }
 
         // Plugins laden
-        $Plugins = \QUI::getPlugins();
+        $Plugins = \QUI::getPluginManager();
         $plugins = $Plugins->get();
 
         foreach ( $plugins as $Plugin ) {
@@ -532,7 +535,7 @@ class User implements \QUI\Interfaces\Users\User
                     $this->Group[] = $Groups->get($g);
                     $aTmp[] = $g;
 
-                } catch (\QUI\Exception $e)
+                } catch ( \QUI\Exception $Exception )
                 {
                     // nothing
                 }
@@ -546,7 +549,8 @@ class User implements \QUI\Interfaces\Users\User
             {
                 $this->Group[] = $Groups->get($groups);
                 $this->_groups = ','.$groups.',';
-            } catch ( \QUI\Exception $e )
+
+            } catch ( \QUI\Exception $Exception )
             {
 
             }
@@ -653,10 +657,10 @@ class User implements \QUI\Interfaces\Users\User
      */
     public function setAttribute($key, $value)
     {
-        if (!$key ||
-            $key == 'id' ||
-            $key == 'password' ||
-            $key == 'user_agent')
+        if ( !$key ||
+             $key == 'id' ||
+             $key == 'password' ||
+             $key == 'user_agent' )
         {
             return;
         }
@@ -721,10 +725,31 @@ class User implements \QUI\Interfaces\Users\User
     }
 
     /**
+     * @deprecated use getAttributes
+     */
+    public function getAllAttributes()
+    {
+        $params = $this->_settings;
+
+        $params['id']       = $this->getId();
+        $params['active']   = $this->_active;
+        $params['deleted']  = $this->_deleted;
+        $params['admin']    = $this->isAdmin();
+        $params['avatar']   = $this->getAvatar();
+        $params['su']		= $this->isSU();
+
+        $params['usergroup'] = $this->getGroups( false );
+        $params['username']  = $this->getName();
+        $params['extras']    = $this->_extra;
+
+        return $params;
+    }
+
+    /**
      * Return all user attributes
      * @return Array
      */
-    public function getAllAttributes()
+    public function getAttributes()
     {
         $params = $this->_settings;
 
@@ -779,26 +804,8 @@ class User implements \QUI\Interfaces\Users\User
 
         if ( $SessUser->getId() == $this->getId() )
         {
-            //session_unset();
-            //session_destroy();
             $Session = \QUI::getSession();
             $Session->destroy();
-        }
-
-        $sessid = '';
-
-        if ( file_exists( $this->_id_sessid_file ) ) {
-            $sessid = file_get_contents($this->_id_sessid_file);
-        }
-
-        // Session File löschen
-        if ( file_exists( VAR_DIR .'sessions/sess_'. $sessid ) ) {
-            unlink( VAR_DIR .'sessions/sess_'. $sessid );
-        }
-
-        // ID File löschen
-        if ( file_exists( $this->_id_sessid_file ) ) {
-            unlink( $this->_id_sessid_file );
         }
     }
 
@@ -1163,17 +1170,7 @@ class User implements \QUI\Interfaces\Users\User
      */
     public function isOnline()
     {
-        if ( !file_exists( $this->_id_sessid_file ) ) {
-            return false;
-        }
-
-        $sessid = file_get_contents( $this->_id_sessid_file );
-
-        if ( file_exists( VAR_DIR .'sessions/sess_'. $sessid ) ) {
-            return true;
-        }
-
-        return false;
+        return \QUI::getSession()->isUserOnline( $this->getId() );
     }
 
     /**
@@ -1321,7 +1318,7 @@ class User implements \QUI\Interfaces\Users\User
      */
     public function getAdressList()
     {
-        $result = \QUI::getDB()->select(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'from'   => \QUI\Users\Manager::TableAdress(),
             'select' => 'id',
             'where'  => array(

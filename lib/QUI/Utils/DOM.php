@@ -487,9 +487,7 @@ class DOM
                     switch ( $Set->nodeName )
                     {
                         case 'text':
-                            $result .= smarty_function_title(array(
-                                'text' => $Set->nodeValue
-                            ), $Engine);
+                            $result .= '<div>'. $Set->nodeValue .'</div>';
                         break;
 
                         case 'input':

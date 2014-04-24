@@ -110,7 +110,7 @@ class Manager
     /**
      * Is the user authenticated
      *
-     * @param \QUI\Users\User|Nobody $User
+     * @param \QUI\Users\User|\QUI\Users\Nobody $User
      * @return Bool
      */
     public function isAuth($User)
@@ -203,6 +203,7 @@ class Manager
             }
 
             $newname = $username;
+
         } else
         {
             $newname = 'Neuer Benutzer';
@@ -220,8 +221,7 @@ class Manager
 
         // Nur erlaubte Zeichen zu lassen
         //$newname
-
-        \QUI::getDB()->addData(
+        \QUI::getDataBase()->insert(
             self::Table(),
             array(
                 'id'       => $newid,
@@ -505,7 +505,7 @@ class Manager
 
                     if ($Auth->auth($username, $pass))
                     {
-                        $loginuser = \QUI::getDB()->select(array(
+                        $loginuser = \QUI::getDataBase()->fetch(array(
                             'from'  => self::Table(),
                             'where' => array(
                                 'username' => $username
@@ -527,27 +527,27 @@ class Manager
              * Standard Authentifizierung
              */
             if ( \QUI::conf( 'globals', 'emaillogin' ) &&
-                strpos( $username, '@' ) !== false )
+                 strpos( $username, '@' ) !== false )
             {
                 // Wenn Login per E-Mail erlaubt ist
-                $loginuser = \QUI::getDB()->select(array(
+                $loginuser = \QUI::getDataBase()->fetch(array(
                     'from'  => self::Table(),
                     'where' => array(
                         'email'    => $username,
                         'password' => $this->genHash( $pass )
                     ),
-                    'limit' => '0,1'
+                    'limit' => 1
                 ));
 
             } else
             {
-                $loginuser = \QUI::getDB()->select(array(
+                $loginuser = \QUI::getDataBase()->fetch(array(
                     'from'  => self::Table(),
                     'where' => array(
                         'username' => $username,
                         'password' => $this->genHash($pass)
                     ),
-                    'limit' => '0,1'
+                    'limit' => 1
                 ));
             }
         }
@@ -591,7 +591,7 @@ class Manager
 
                 $useragent = '';
 
-                if (isset($_SERVER['HTTP_USER_AGENT'])) {
+                if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
                     $useragent = $_SERVER['HTTP_USER_AGENT'];
                 }
 
@@ -604,7 +604,9 @@ class Manager
                     array('id' => $loginuser[0]['id'])
                 );
 
-                $User = $this->get($uparams['id']);
+                $User = $this->get( $uparams['id'] );
+                $User->refresh();
+
                 $this->_users[$uparams['id']] = $User;
 
                 // uid_sess speichern
@@ -655,23 +657,19 @@ class Manager
             /**
              * Sicherheitsabfragen
              */
-
             // User Agent
             if (isset($_SERVER['HTTP_USER_AGENT']) &&
                 $User->getAttribute('user_agent') != $_SERVER['HTTP_USER_AGENT'] &&
                 strpos($_SERVER['HTTP_USER_AGENT'], 'chromeframe') === false)
             {
-                // @todo Log
-                throw new \QUI\Exception(
-                    'Falscher User Agent '. $_SERVER['HTTP_USER_AGENT'] .' -> '. $User->getAttribute('user_agent')
-                );
+                return $this->getNobody();
             }
 
             return $User;
 
         } catch ( \QUI\Exception $Exception )
         {
-            //\QUI\Exception::setErrorLog($e->getMessage(), false);
+            \QUI\System\Log::addDebug( $Exception->getMessage() );
         }
 
         return $this->getNobody();
@@ -730,13 +728,13 @@ class Manager
      */
     public function getUserByName($username)
     {
-        $result = \QUI::getDB()->select(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'select' => 'id',
             'from' 	 => self::Table(),
             'where'  => array(
                 'username' => $username
             ),
-            'limit' => '1'
+            'limit' => 1
         ));
 
         if ( !isset( $result[0] ) )
@@ -762,13 +760,13 @@ class Manager
      */
     public function getUserByMail($email)
     {
-        $result = \QUI::getDB()->select(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'select' => 'id',
             'from' 	 => self::Table(),
             'where'  => array(
                 'email' => $email
             ),
-            'limit' => '1'
+            'limit' => 1
         ));
 
         if ( !isset( $result[0] ) )
@@ -797,13 +795,13 @@ class Manager
             return false;
         }
 
-        $result = \QUI::getDB()->select(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'select' => 'username',
             'from' 	 => self::Table(),
             'where'  => array(
                 'username' => $username
             ),
-            'limit' => '1'
+            'limit' => 1
         ));
 
         return isset( $result[ 0 ] ) ? true : false;
@@ -829,13 +827,13 @@ class Manager
      */
     public function existEmail($email)
     {
-        $result = \QUI::getDB()->select(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'select' => 'email',
             'from' 	 => self::Table(),
             'where'  => array(
                 'email' => $email
             ),
-            'limit' => '1'
+            'limit' => 1
         ));
 
         return isset( $result[ 0 ] ) ? true : false;
@@ -851,15 +849,15 @@ class Manager
     {
         $salt = \QUI::conf('globals','salt');
 
-        if ($salt === null)
+        if ( $salt === null )
         {
             $salt = substr(md5(uniqid(rand(), true)), 0, SALT_LENGTH);
         } else
         {
-            $salt = substr($salt, 0, SALT_LENGTH);
+            $salt = substr( $salt, 0, SALT_LENGTH );
         }
 
-        return $salt . md5($salt . $pass);
+        return $salt . md5( $salt . $pass );
     }
 
     /**
@@ -870,7 +868,7 @@ class Manager
      */
     public function deleteUser($id)
     {
-        return $this->get($id)->delete();
+        return $this->get( $id )->delete();
     }
 
     /**
@@ -1150,9 +1148,9 @@ class Manager
         while ($create)
         {
             srand(microtime()*1000000);
-              $newid = rand(100, 1000000000);
+            $newid = rand(100, 1000000000);
 
-              $result = \QUI::getDB()->select(array(
+            $result = \QUI::getDataBase()->fetch(array(
                 'from'  => self::Table(),
                 'where' => array(
                     'id' => $newid
