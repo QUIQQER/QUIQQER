@@ -119,9 +119,19 @@ class Event implements \QUI\Interfaces\Events
 
         foreach ( $this->_events[ $event ] as $fn )
         {
-            if ( is_string( $fn ) ) {
-                $fn = preg_replace('/[\\\\]{2,}/', '\\', $fn);
+            if ( !is_string( $fn ) )
+            {
+                if ( $args === false )
+                {
+                    $fn();
+                    continue;
+                }
+
+                $fn( $args );
+                continue;
             }
+
+            $fn = preg_replace('/[\\\\]{2,}/', '\\', $fn);
 
             if ( $args === false )
             {
