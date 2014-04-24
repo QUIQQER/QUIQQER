@@ -14,7 +14,6 @@ namespace QUI\Events;
  * the callback function would be set to the database
  *
  * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.events
  */
 class Manager implements \QUI\Interfaces\Events
 {
@@ -23,9 +22,19 @@ class Manager implements \QUI\Interfaces\Events
      */
     public function __construct()
     {
-        $list = \QUI::getDataBase()->fetch(array(
-            'from' => self::Table()
-        ));
+        try
+        {
+            if ( \QUI::getDataBase()->Table()->exist( self::Table() ) )
+            {
+                $list = \QUI::getDataBase()->fetch(array(
+                    'from' => self::Table()
+                ));
+            }
+
+        } catch ( \QUI\Database\Exception $Exception )
+        {
+
+        }
 
         $this->_Events = new \QUI\Events\Event();
 
