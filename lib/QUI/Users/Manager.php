@@ -662,10 +662,7 @@ class Manager
                 $User->getAttribute('user_agent') != $_SERVER['HTTP_USER_AGENT'] &&
                 strpos($_SERVER['HTTP_USER_AGENT'], 'chromeframe') === false)
             {
-                // @todo Log
-                throw new \QUI\Exception(
-                    'Falscher User Agent '. $_SERVER['HTTP_USER_AGENT'] .' -> '. $User->getAttribute('user_agent')
-                );
+                return $this->getNobody();
             }
 
             return $User;

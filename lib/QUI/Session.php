@@ -107,7 +107,6 @@ class Session
         ));
     }
 
-
     /**
      * Start the session
      */

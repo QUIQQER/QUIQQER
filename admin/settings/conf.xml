@@ -369,7 +369,7 @@
 
                 </settings>
 
-                <settings title="auth-memcached" name="auth-memcached">
+                <settings title="auth-memcache" name="auth-memcache">
                     <title>Memcache Server</title>
                     <text>Geben Sie hier einen Memcache Server an damit die Sitzungsdaten über einen Memcache Server verwaltet werden</text>
                     <input conf="session.memcache_host">
