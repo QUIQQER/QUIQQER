@@ -260,6 +260,13 @@ class Manager
 
         $config = self::getConfig()->toArray();
 
+        if ( !count( $config ) )
+        {
+            throw new \QUI\Exception(
+                'No project exist'
+            );
+        }
+
         foreach ( $config as $project => $conf )
         {
             if ( isset( $conf['standard'] ) && $conf['standard'] == 1)

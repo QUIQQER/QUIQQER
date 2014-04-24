@@ -94,7 +94,8 @@ class Session
         $DBTable->appendFields($this->_table, array(
             'session_id'    => 'varchar(255) NOT NULL',
             'session_value' => 'text NOT NULL',
-            'session_time'  => 'int(11) NOT NULL'
+            'session_time'  => 'int(11) NOT NULL',
+            'uid'           => 'int(11) NOT NULL'
         ));
 
         $DBTable->setPrimaryKey( $this->_table , 'session_id' );
@@ -175,5 +176,45 @@ class Session
     {
         $this->_Session->clear();
         $this->_Session->invalidate();
+    }
+
+    /**
+     * Return the last login from the session-id
+     * @param String $sid - Session-ID
+     */
+    public function getLastRefreshFrom($sid)
+    {
+        $result = \QUI::getDataBase()->fetch(array(
+            'from'  => $this->_table,
+            'where' => array(
+                'session_id' => $sid
+            ),
+            'limit' => 1
+        ));
+
+        if ( !isset( $result[ 0 ] ) ) {
+            return 0;
+        }
+
+        return $result[ 0 ][ 'session_time' ];
+    }
+
+    /**
+     * Is the user online?
+     *
+     * @param Integer $uid
+     * @return Bool
+     */
+    public function isUserOnline($uid)
+    {
+        $result = \QUI::getDataBase()->fetch(array(
+            'from'  => $this->_table,
+            'where' => array(
+                'uid' => (int)$uid
+            ),
+            'limit' => 1
+        ));
+
+        return isset( $result[ 0 ] ) ? true : false;
     }
 }
