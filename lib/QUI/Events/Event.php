@@ -127,7 +127,7 @@ class Event implements \QUI\Interfaces\Events
                     continue;
                 }
 
-                $fn( $args );
+                call_user_func_array( $fn, $args );
                 continue;
             }
 
