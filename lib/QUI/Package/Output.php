@@ -62,7 +62,7 @@ class Output extends \Symfony\Component\Console\Output\Output
     {
         $this->_message .= $message;
 
-        $this->Events->fireEvent( 'output', array( $message ) );
+        $this->Events->fireEvent( 'output', array( $message, $newline ) );
 
         if ( !$newline ) {
             return;
