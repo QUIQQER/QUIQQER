@@ -45,27 +45,14 @@ class Setup
         \QUI::getUsers()->setup();
 
         // Cron Setup
-        // \System_Cron_Manager::setup();
-
-        // Cron Setup
         \QUI::getMessagesHandler()->setup();
 
         // Events Setup
         \QUI\Events\Manager::setup();
 
-        // Desktop Setup
-        // \QUI_Desktop_Manager::setup();
-
-        // Package Manager
-        // \QUI\Package\Manager::setup();
-
         // Upload Manager
         $UploadManager = new \QUI\Upload\Manager();
         $UploadManager->setup();
-
-        // Countries
-        // \QUI\Countries\Manager::setup();
-
 
         /**
          * header dateien
@@ -104,11 +91,6 @@ class Setup
         /**
          * composer setup
          */
-        /*
-        \QUI::getPackageManager()->refreshServerList();
-        \QUI::getPackageManager()->update();
-        */
-
         $PackageManager = \QUI::getPackageManager();
         $packages = \QUI\Utils\System\File::readDir( OPT_DIR );
 

@@ -23,7 +23,7 @@ use Symfony\Component\Console\Formatter\OutputFormatterInterface;
  * Package Manager for the QUIQQER System
  *
  * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui
+ * @event onOutput [ String $message ]
  */
 
 class Manager
@@ -87,6 +87,12 @@ class Manager
     protected $_Application;
 
     /**
+     * internal event manager
+     * @var \QUI\Events\Manager
+     */
+    public $Events;
+
+    /**
      * constructor
      */
     public function __construct()
@@ -96,55 +102,13 @@ class Manager
 
         $this->_composer_json = $this->_vardir .'composer.json';
 
-
-//         // exec
-//         $exec_var = str_replace( CMS_DIR, '', $this->_vardir );
-
-//         $this->_composer_exec  = 'cd '. CMS_DIR .';';
-//         $this->_composer_exec .= ' php '. $exec_var .'composer.phar';
-//         $this->_composer_exec .= ' --working-dir="'. $this->_vardir .'" ';
-
-//         // stability
-//         if ( \QUI::conf( 'globales', 'stability' ) )
-//         {
-//             switch ( \QUI::conf( 'globales', 'stability' ) )
-//             {
-//                 case "stable":
-//                     $this->_stability = "stable";
-//                 break;
-
-//                 case "RC":
-//                     $this->_stability = "RC";
-//                 break;
-
-//                 case "beta":
-//                     $this->_stability = "beta";
-//                 break;
-
-//                 case "alpha":
-//                     $this->_stability = "alpha";
-//                 break;
-
-//                 case "dev":
-//                     $this->_stability = "dev";
-//                 break;
-//             }
-//         }
-
-
-//         exec( $this->_composer_exec, $result );
-
-//         if ( count( $result ) ) {
-//             $this->_exec = true;
-//         }
-
-//         $this->_refreshInstalledList();
-
-//         if ( !file_exists( $this->_composer_json ) ) {
-//             $this->_createComposerJSON();
-//         }
+        $this->Events = new \QUI\Events\Manager();
     }
 
+    /**
+     * Return the Composer Application
+     * @return \Composer\Console\Application
+     */
     protected function _getApplication()
     {
         if ( $this->_Application ) {
@@ -1003,7 +967,14 @@ class Manager
         $Input  = new ArrayInput( $params );
         $Output = new \QUI\Package\Output();
 
-        //$Command = $this->_Composer->get( $command );
+        // output events
+        $PackageManager = $this;
+
+        $Output->Events->addEvent('onOutput', function($message) use ($PackageManager) {
+            $PackageManager->Events->fireEvent( 'output', array( $message ) );
+        });
+
+        // run application
         $this->_getApplication()->run( $Input, $Output );
 
         \QUI\Cache\Manager::clear( self::CACHE_NAME_TYPES );

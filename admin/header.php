@@ -15,7 +15,6 @@ if ( (int)$_SERVER['SERVER_PORT'] !== 443 && \QUI::conf( 'globals', 'httpshost' 
     exit;
 }
 
-
 $Users = \QUI::getUsers();
 $User  = $Users->getUserBySession();
 

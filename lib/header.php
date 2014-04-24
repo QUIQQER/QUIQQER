@@ -70,7 +70,7 @@ if ( !empty( $error_mail ) )
 // Datenbankverbindung aufbauen
 try
 {
-    \QUI::getDB();
+    \QUI::getDataBase();
 
 } catch ( \Exception $Exception )
 {
@@ -89,6 +89,7 @@ try
     try
     {
         echo $Template->fetch( $file );
+
     } catch ( \QUI\Exception $Exception )
     {
         echo $Template->fetch( LIB_DIR .'templates/db_error.html' );
@@ -127,6 +128,7 @@ if ( isset( $_POST['username'] ) &&
     try
     {
         $User = \QUI::getUserBySession();
+
     } catch ( \QUI\Exception $Exception )
     {
         define( 'LOGIN_FAILED',  $Exception->getMessage() );
