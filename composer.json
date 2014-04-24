@@ -33,6 +33,7 @@
         "tedivm/stash" : "0.11.*",
         "robloach/component-installer" : "*",
         "phpmailer/phpmailer" : "dev-master",
+        "symfony/http-foundation" : "*",
         "quiqqer/qui" : "dev-master",
         "quiqqer/qui-php" : "dev-master",
         "quiqqer/smarty": "3.*",
