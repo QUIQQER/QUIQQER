@@ -106,6 +106,8 @@ try
 // User ist Standard Nobody
 $User = \QUI::getUsers()->getNobody();
 
+\QUI::getSession()->start();
+
 if ( isset( $_POST['username'] ) &&
      isset( $_POST['password'] ) &&
      isset( $_POST['login'] ) )
@@ -123,7 +125,7 @@ if ( isset( $_POST['username'] ) &&
         define( 'LOGIN_FAILED', $Exception->getMessage() );
     }
 
-} elseif ( \QUI::getSession()->get( 'id' ) )
+} elseif ( \QUI::getSession()->get( 'uid' ) )
 {
     try
     {

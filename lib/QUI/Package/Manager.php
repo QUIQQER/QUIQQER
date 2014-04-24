@@ -187,6 +187,7 @@ class Manager
         $require["php"] = ">=5.3.2";
         $require["quiqqer/quiqqer"] = $quiqqerVersion;
         $require["tedivm/stash"] = "0.11.*";
+        $require["symfony/http-foundation"] = "*";
 
         foreach ( $list as $entry )
         {

@@ -16,11 +16,6 @@ namespace QUI\Users;
 class Manager
 {
     /**
-     * @var PT_Session (the session object)
-     */
-    private $_Session;
-
-    /**
      * @var \QUI\Projects\Project (active internal project)
      */
     private $_Project = false;
@@ -29,14 +24,6 @@ class Manager
      * @var array - list of users (cache)
      */
     private $_users = array();
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->_Session = \QUI::getSession();
-    }
 
     /**
      * Return the db table
@@ -135,7 +122,8 @@ class Manager
         try
         {
             $_User = $this->getUserBySession();
-        } catch ( \QUI\Exception $e )
+
+        } catch ( \QUI\Exception $Exception )
         {
             return false;
         }
@@ -598,8 +586,8 @@ class Manager
 
             if ($group_check == true)
             {
-                $this->_Session->set('auth', 1);
-                $this->_Session->set('id', $uparams['id']);
+                \QUI::getSession()->set( 'auth', 1 );
+                \QUI::getSession()->set( 'uid', $uparams['id'] );
 
                 $useragent = '';
 
@@ -620,13 +608,14 @@ class Manager
                 $this->_users[$uparams['id']] = $User;
 
                 // uid_sess speichern
-                $uid_sess_folder = VAR_DIR .'uid_sess/'. $uparams['id'];
-
+                // $uid_sess_folder = VAR_DIR .'uid_sess/'. $uparams['id'];
+                /*
                 if (file_exists($uid_sess_folder)) {
                     unlink($uid_sess_folder);
                 }
 
                 file_put_contents($uid_sess_folder, $this->_Session->getId());
+                */
 
                 return $User;
             }
@@ -653,14 +642,14 @@ class Manager
         }
 
         // max_life_time check
-        if ( !$this->_Session->check() ) {
+        if ( !\QUI::getSession()->check() ) {
             return $this->getNobody();
         }
 
         try
         {
             $User = $this->get(
-                $this->_Session->get('id')
+                \QUI::getSession()->get('uid')
             );
 
             /**
@@ -680,7 +669,7 @@ class Manager
 
             return $User;
 
-        } catch ( \QUI\Exception $e )
+        } catch ( \QUI\Exception $Exception )
         {
             //\QUI\Exception::setErrorLog($e->getMessage(), false);
         }

@@ -6,12 +6,17 @@
 
 namespace QUI;
 
+use Symfony\Component\HttpFoundation\Session\Session as SymfonySession;
+use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler;
+
 /**
  * Session handling for QUIQQER
  *
- * @author www.pcsg.de (Moritz Scholz)
+ * based at symfony session handler
+ * http://symfony.com/doc/current/components/http_foundation/sessions.html
+ *
  * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui
  */
 
 class Session
@@ -23,11 +28,30 @@ class Session
     private $_max_life_time = 0;
 
     /**
+     * Session handler
+     * @var \Symfony\Component\HttpFoundation\Session\Session
+     */
+    private $_Session;
+
+    /**
+     * Storage handler
+     * @var \Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
+     */
+    private $_Storage;
+
+    /**
+     * Database table
+     * @var String
+     */
+    private $_table;
+
+    /**
      * constructor
      */
     public function __construct()
     {
-        // Einstellungen
+        $this->_table = QUI_DB_PRFX .'sessions';
+
         $this->_max_life_time = 1400; // default
 
         if ( $sess = \QUI::conf( 'session', 'max_life_time' ) ) {
@@ -35,35 +59,56 @@ class Session
         }
 
         ini_set( 'session.gc_maxlifetime', $this->_max_life_time );
-        ini_set( "session.gc_probability", 100 );
+        ini_set( 'session.gc_probability', 100 );
 
-        session_save_path( VAR_DIR .'sessions/' );
-        session_name( 'QUI_SESSION' );
+        $this->_Storage = new NativeSessionStorage(
+            array(),
+            new PdoSessionHandler( \QUI::getDataBase()->getPDO(), array(
+                'db_table'    => $this->_table,
+                'db_id_col'   => 'session_id',
+                'db_data_col' => 'session_value',
+                'db_time_col' => 'session_time',
+            ))
+        );
 
-        if ( !isset( $_SESSION ) ) {
-            session_start();
-        }
+        $this->_Session = new SymfonySession( $this->_Storage );
+    }
 
-        session_regenerate_id();
+    /**
+     * Start the session
+     */
+    public function start()
+    {
+        $this->_Session->start();
+    }
 
-        if ( !isset( $_SESSION['QUI_START'] ) ) {
-            $this->refresh();
-        }
+    /**
+     * Session setup
+     */
+    static function setup()
+    {
+        $DBTable = \QUI::getDataBase()->Table();
+
+        // pdo mysql options db
+        // more at http://symfony.com/doc/current/cookbook/configuration/pdo_session_storage.html
+        $DBTable->appendFields($this->_table, array(
+            'session_id'    => 'varchar(255) NOT NULL',
+            'session_value' => 'text NOT NULL',
+            'session_time'  => 'int(11) NOT NULL'
+        ));
+
+        $DBTable->setPrimaryKey( $this->_table , 'session_id' );
     }
 
     /**
      * Set a variable to the session
      *
-     * @param String $var - Name og the variable
+     * @param String $name - Name og the variable
      * @param String $value - value of the variable
      */
-    public function set($var, $value)
+    public function set($name, $value)
     {
-        if ( is_object( $value ) ) {
-            throw new \QUI\Exception( 'You cannot set an Object to the Session' );
-        }
-
-        $_SESSION[ $var ] = $value;
+        $this->_Session->set( $name, $value );
     }
 
     /**
@@ -71,26 +116,18 @@ class Session
      */
     public function refresh()
     {
-        $_SESSION['QUI_START'] = time();
+        $this->_Session->migrate();
     }
 
     /**
      * returns a variable from the session
      *
-     * @param String $var - name of the variable
+     * @param String $name - name of the variable
      * @return false|Array
      */
-    public function get($var)
+    public function get($name)
     {
-        if ( !$this->check() ) {
-            return false;
-        }
-
-        if ( isset( $_SESSION[ $var ] ) ) {
-            return $_SESSION[ $var ];
-        }
-
-        return false;
+        return $this->_Session->get( $name, false );
     }
 
     /**
@@ -100,7 +137,7 @@ class Session
      */
     public function getId()
     {
-        return session_id();
+        return $this->_Session->getId();
     }
 
     /**
@@ -110,21 +147,14 @@ class Session
      */
     public function check()
     {
-        if ( !isset( $_SESSION[ 'QUI_START' ] ) )
+        $idle = time() - $this->_Session->getMetadataBag()->getLastUsed();
+
+        if ( $idle > $this->_max_life_time )
         {
-            $this->destroy();
+            $this->_Session->invalidate();
             return false;
         }
 
-
-        // Max Time prüfen
-        if ( time() - $_SESSION['QUI_START'] > $this->_max_life_time )
-        {
-            $this->destroy();
-            return false;
-        }
-
-        $_SESSION['QUI_START'] = time();
         return true;
     }
 
@@ -132,17 +162,10 @@ class Session
      * Delete a session variable
      *
      * @param String $var - name of the variable
-     * @return Bool
      */
     public function del($var)
     {
-        if ( isset( $_SESSION[ $var ] ) )
-        {
-            unset( $_SESSION[ $var ] );
-            return true;
-        }
-
-        return false;
+        $this->_Session->remove( $var );
     }
 
     /**
@@ -150,12 +173,7 @@ class Session
      */
     public function destroy()
     {
-        $_SESSION = array();
-
-        if ( $this->getId() == false ) {
-            return;
-        }
-
-        session_destroy();
+        $this->_Session->clear();
+        $this->_Session->invalidate();
     }
 }
