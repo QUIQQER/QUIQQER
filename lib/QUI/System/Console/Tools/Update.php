@@ -34,7 +34,7 @@ class Update extends \QUI\System\Console\Tool
         $PM   = \QUI::getPackageManager();
 
         $PM->Events->addEvent('onOutput', function($message) use ($self) {
-            $this->writeLn( $self );
+            $self->writeLn( $message );
         });
 
         $PM->refreshServerList();
