@@ -209,8 +209,8 @@ define('controls/projects/Popup', [
             var ids, urls;
             var children = this.$Map.getSelectedChildren();
 
-            projectString = 'project='+ this.getAttribute( 'project' ) +'&'+
-                            'lang='+ this.getAttribute( 'lang' );
+            var projectString = 'project='+ this.getAttribute( 'project' ) +'&'+
+                                'lang='+ this.getAttribute( 'lang' );
 
             ids = children.map(function(o) {
                 return o.getAttribute( 'value' );
