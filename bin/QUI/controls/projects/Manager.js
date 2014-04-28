@@ -76,8 +76,7 @@ define('controls/projects/Manager', [
                 name   : 'edit_projects',
                 text   : 'Projekte verwalten',
                 icon   : URL_BIN_DIR +'32x32/actions/klipper_dock.png',
-                events :
-                {
+                events : {
                     onClick : this.openList
                 }
             });
@@ -201,7 +200,9 @@ define('controls/projects/Manager', [
         openProjectSettings : function(project)
         {
             this.getParent().appendChild(
-                new ProjectSettings( project )
+                new ProjectSettings({
+                    project : project
+                })
             );
         },
 

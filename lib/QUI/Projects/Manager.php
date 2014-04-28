@@ -101,6 +101,12 @@ class Manager
             $config[ $key ] = \QUI\Utils\Security\Orthos::clear( $value );
         }
 
+        // doppelte sprachen filtern
+        $langs = explode(',', $config['langs']);
+        $langs = array_unique( $langs );
+
+        $config['langs'] = implode( ',', $langs );
+
         $Config->setSection( $project, $config );
         $Config->save();
 
