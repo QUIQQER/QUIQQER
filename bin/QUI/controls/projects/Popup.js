@@ -24,7 +24,7 @@ define('controls/projects/Popup', [
     return new Class({
 
         Extends : QUIPopup,
-        Type : 'controls/projects/Popup',
+        Type    : 'controls/projects/Popup',
 
         Binds : [
             '$onCreate'

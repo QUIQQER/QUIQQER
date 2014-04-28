@@ -252,9 +252,12 @@ define('classes/projects/project/Site', [
 
             Ajax.post('ajax_site_save', function(result, Request)
             {
-                Site.setAttributes( result.attributes );
-                Site.$has_children = result.has_children || false;
-                Site.$parentid     = result.parentid || false;
+                if ( result && result.attributes ) {
+                    Site.setAttributes( result.attributes );
+                }
+
+                Site.$has_children = result && result.has_children || false;
+                Site.$parentid     = result && result.parentid || false;
 
                 if ( typeof onfinish !== 'undefined' ) {
                     onfinish( result, Request );
