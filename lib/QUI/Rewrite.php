@@ -246,13 +246,13 @@ class Rewrite
 
             $_REQUEST['_url'] = implode('/', $_url);
 
-            if (!count($_url)) {
-                 unset($_REQUEST['_url']);
+            if ( !count( $_url ) ) {
+                 unset( $_REQUEST['_url'] );
             }
         }
 
         // Media Center Datei, falls nicht im Cache ist
-        if ( strpos( $_REQUEST['_url'], 'media/cache' ) !== false )
+        if ( isset( $_REQUEST['_url'] ) && strpos( $_REQUEST['_url'], 'media/cache' ) !== false )
         {
             try
             {
@@ -404,19 +404,19 @@ class Rewrite
             // REQUEST setzen
             $site_params = $this->site_params;
 
-            if (is_array($site_params) && isset($site_params[1]))
+            if ( is_array( $site_params ) && isset( $site_params[1] ) )
             {
-                for ($i = 1; $i < count($site_params); $i++)
+                for ( $i = 1; $i < count($site_params); $i++ )
                 {
-                    if ($i %2 != 0)
+                    if ( $i %2 != 0 )
                     {
                         $value = false;
 
-                        if (isset($site_params[$i+1])) {
-                            $value = $site_params[$i+1];
+                        if ( isset( $site_params[ $i + 1 ] ) ) {
+                            $value = $site_params[ $i + 1 ];
                         }
 
-                        $_REQUEST[ $site_params[$i] ] = $value;
+                        $_REQUEST[ $site_params[ $i ] ] = $value;
                     }
                 }
             }
@@ -432,19 +432,19 @@ class Rewrite
              * Sprache behandeln
              * Falls für die Sprache ein Host Eintrag existiert
              */
-            if (isset($_SERVER['HTTP_HOST']) &&
-                isset($vhosts[$_SERVER['HTTP_HOST']]) &&
-                isset($vhosts[$_SERVER['HTTP_HOST']][$this->_lang]))
+            if ( isset( $_SERVER['HTTP_HOST'] ) &&
+                 isset( $vhosts[ $_SERVER['HTTP_HOST'] ] ) &&
+                 isset( $vhosts[ $_SERVER['HTTP_HOST'] ][ $this->_lang ] ) )
             {
-                $url = $vhosts[$_SERVER['HTTP_HOST']][$this->_lang] . URL_DIR;
-                $url = \QUI\Utils\String::replaceDblSlashes($url);
+                $url = $vhosts[ $_SERVER['HTTP_HOST'] ][ $this->_lang ] . URL_DIR;
+                $url = \QUI\Utils\String::replaceDblSlashes( $url );
                 $url = 'http://'. $this->_project_prefix . $url;
 
-                if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] != URL_DIR)
+                if ( isset( $_SERVER['REQUEST_URI'] ) && $_SERVER['REQUEST_URI'] != URL_DIR )
                 {
                     $message  = "\n\n===================================\n\n";
                     $message .= 'Rewrite 301 bei der wir nicht wissen wann es kommt. Rewrite.php Zeile 391 '."\n";
-                    $message .= print_r($_SERVER, true);
+                    $message .= print_r( $_SERVER, true );
 
                     error_log($message, 3,
                         VAR_DIR .'log/rewrite'. date('-Y-m-d').'.log'
@@ -468,23 +468,23 @@ class Rewrite
 
         if ( $pos !== false )
         {
-            $request_url = substr($request_url, 0, $pos) . substr($request_url, $end);
+            $request_url = substr( $request_url, 0, $pos ) . substr( $request_url, $end );
 
-            if ($this->_site->getId() == 1) {
-                $request_url = substr($request_url, 0, $pos);
+            if ( $this->_site->getId() == 1 ) {
+                $request_url = substr( $request_url, 0, $pos );
             }
         }
 
-        $request_url = urldecode($request_url);
+        $request_url = urldecode( $request_url );
 
-        if (strpos($request_url, '?') !== false)
+        if ( strpos( $request_url, '?' ) !== false )
         {
-            $request_url = explode('?', $request_url);
+            $request_url = explode( '?', $request_url );
             $request_url = $request_url[0];
         }
 
-        if ($request_url != $url) {
-            $this->_site->setAttribute('canonical', $url);
+        if ( $request_url != $url ) {
+            $this->_site->setAttribute( 'canonical', $url );
         }
     }
 
