@@ -712,13 +712,7 @@ class Rewrite
             return false;
         }
 
-
         $pname = $vhosts[ $http_host ]['project'];
-
-        if ( !isset( $config[ $pname ] ) )
-        {
-            return false;
-        }
 
         //$lang = false;
         if ( isset( $vhosts[ $http_host ]['lang'] ) && !$this->_lang ) {
@@ -1357,6 +1351,7 @@ class Rewrite
             }
 
             $url = URL_DIR . $this->_project_prefix . $url;
+
         } else if ($Project->getAttribute('default_lang') !== $lang)
         {
             // Falls kein Host Eintrag gibt

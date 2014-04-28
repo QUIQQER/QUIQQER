@@ -168,7 +168,7 @@ class Template extends \QUI\QDOM
             'URL_LIB_DIR' => URL_LIB_DIR,
             'URL_VAR_DIR' => URL_VAR_DIR,
             'URL_OPT_DIR' => URL_OPT_DIR,
-            'URL_USR_DIR' => URL_USR_DIR . $Project->getAttribute('template') .'/',
+            'URL_USR_DIR' => URL_USR_DIR,
 
             'User'     => $User,
             'Locale'   => $Locale,
