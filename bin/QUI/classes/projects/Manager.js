@@ -150,10 +150,10 @@ define('classes/projects/Manager', [
          */
         createNewProject : function(project, lang, template, onfinish)
         {
-            Ajax.post('ajax_project_create', function(result, Request)
+            Ajax.post('ajax_project_create', function(result)
             {
                 if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( result, Request );
+                    onfinish( result );
                 }
             }, {
                 params : JSON.encode({
