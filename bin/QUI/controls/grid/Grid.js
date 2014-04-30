@@ -874,7 +874,8 @@ define('controls/grid/Grid', [
                 return;
             }
 
-            var section = this.getSection();
+            var row     = li.retrieve('row'),
+                section = this.getSection( row );
 
             if ( this.getAttribute('accordion') &&
                  (typeof section === 'undefined' || !section) )
@@ -2581,7 +2582,7 @@ define('controls/grid/Grid', [
             }
 
             if ( this.getAttribute('accordionLiveRenderer') ) {
-                t.removeSections();
+                this.removeSections();
             }
 
             var header = this.container.getElements( '.th' ),
@@ -2714,7 +2715,7 @@ define('controls/grid/Grid', [
                 if ( i % 2 )
                 {
                     elements[ i ].removeClass( 'erow' );
-                    return;
+                    continue;
                 }
 
                 elements[ i ].addClass( 'erow' );
@@ -2731,7 +2732,7 @@ define('controls/grid/Grid', [
                 if ( i % 2 )
                 {
                     elements[ i ].removeClass( 'erow' );
-                    return;
+                    continue;
                 }
 
                 elements[ i ].addClass( 'erow' );
@@ -2884,7 +2885,7 @@ define('controls/grid/Grid', [
 
             var func_export_btn_click = function(Btn)
             {
-                var Data = Grid.setExportData();
+                var Data = t.setExportData();
 
                 Btn.getAttribute('Grid').exportGrid(
                     Btn.getAttribute('exportType')
@@ -2914,7 +2915,7 @@ define('controls/grid/Grid', [
                         $$('.exportSelectDiv').destroy();
                     }
                 },
-                textimage : this.getAttribute('exportBinUrl') +'exit.png'
+                textimage : 'icon-remove'
             }).create().inject( exportBarDiv );
 
             return false;
@@ -2952,11 +2953,14 @@ define('controls/grid/Grid', [
                 };
             }
 
-            if ( this.getAttribute('data') )
+
+            var gridData = this.getData();
+
+            if ( gridData )
             {
-                for ( i = 0, len = this.getAttribute('data').length; i < len; i++ )
+                for ( i = 0, len = gridData.length; i < len; i++ )
                 {
-                    var dat      = this.getAttribute('data')[i];
+                    var dat      = gridData[i];
                     data.data[i] = {};
 
                     for ( var h in data.header ) {
