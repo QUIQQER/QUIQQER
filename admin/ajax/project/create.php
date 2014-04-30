@@ -9,11 +9,13 @@ function ajax_project_create($params)
 {
     $params = json_decode( $params, true );
 
-    \QUI\Projects\Manager::createProject(
+    $Project = \QUI\Projects\Manager::createProject(
         $params['project'],
         $params['lang'],
         $params['template']
     );
+
+    return $Project->getName();
 }
 
 \QUI::$Ajax->register(

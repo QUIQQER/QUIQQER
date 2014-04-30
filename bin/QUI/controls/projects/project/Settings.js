@@ -13,13 +13,15 @@ define('controls/projects/project/Settings', [
 
     'qui/controls/desktop/Panel',
     'qui/controls/buttons/Button',
-    'Projects',
+    'qui/utils/Form',
     'utils/Template',
     'controls/lang/Popup',
+    'Projects',
+    'Ajax',
 
     'css!controls/projects/project/Settings.css'
 
-], function(QUIPanel, QUIButton, Projects, UtilsTemplate, LangPopup)
+], function(QUIPanel, QUIButton, QUIFormUtils, UtilsTemplate, LangPopup, Projects, Ajax)
 {
     "use strict";
 
@@ -42,6 +44,7 @@ define('controls/projects/project/Settings', [
             '$onCreate',
             '$onResize',
 
+            'save',
             'openSettings',
             'openMeta',
             'openBackup',
@@ -67,6 +70,8 @@ define('controls/projects/project/Settings', [
                 title : this.getAttribute( 'project' )
             });
 
+            this.$config = {};
+
             this.addEvents({
                 onCreate : this.$onCreate,
                 onResize : this.$onResize
@@ -91,7 +96,17 @@ define('controls/projects/project/Settings', [
          */
         $onCreate : function()
         {
+            var self = this;
+
             this.Loader.show();
+
+            this.addButton({
+                text : 'Speichern',
+                textimage : 'icon-save',
+                events : {
+                    onClick : this.save
+                }
+            });
 
             this.addCategory({
                 name   : 'settings',
@@ -112,15 +127,6 @@ define('controls/projects/project/Settings', [
             });
 
             this.addCategory({
-                name   : 'backup',
-                text   : 'Backup',
-                icon   : 'icon-hdd',
-                events : {
-                    onClick : this.openBackup
-                }
-            });
-
-            this.addCategory({
                 name   : 'watersign',
                 text   : 'Wasserzeichen',
                 icon   : 'icon-picture',
@@ -129,7 +135,30 @@ define('controls/projects/project/Settings', [
                 }
             });
 
-            this.getCategoryBar().firstChild().click();
+            this.getProject().getConfig(function(result, Request)
+            {
+                self.$config = result;
+                self.getCategoryBar().firstChild().click();
+            });
+        },
+
+        /**
+         * Save the project settings
+         */
+        save : function()
+        {
+            var self = this;
+
+            this.Loader.show();
+            this.$unloadCategory();
+
+            Ajax.post('ajax_project_set_config', function()
+            {
+                self.Loader.hide();
+            }, {
+                project : this.$Project.getName(),
+                params  : JSON.encode( this.$config )
+            });
         },
 
         /**
@@ -140,64 +169,64 @@ define('controls/projects/project/Settings', [
         openSettings : function()
         {
             this.Loader.show();
+            this.$unloadCategory();
 
-            var Control = this,
-                Body    = Control.getBody();
+            var self = this,
+                Body = this.getBody();
 
-            UtilsTemplate.get('project/settings', function(result, Request)
+            UtilsTemplate.get('project/settings', function(result)
             {
                 Body.set( 'html', result );
 
                 // set data
-                Control.getProject().getConfig(function(result, Request)
+                var Form     = Body.getElement( 'Form' ),
+                    Standard = Form.elements.default_lang,
+                    Langs    = Form.elements.langs,
+
+                    langs = self.$config.langs.split( ',' );
+
+                for ( var i = 0, len = langs.length; i < len; i++ )
                 {
-                    var Form     = Body.getElement( 'Form' ),
-                        Standard = Form.elements.default_lang,
-                        Langs    = Form.elements.langs,
+                    new Element('option', {
+                        html  : langs[ i ],
+                        value : langs[ i ]
+                    }).inject( Standard );
 
-                        langs = result.langs.split( ',' );
+                    new Element('option', {
+                        html  : langs[ i ],
+                        value : langs[ i ]
+                    }).inject( Langs );
+                }
 
-                    for ( var i = 0, len = langs.length; i < len; i++ )
+                new QUIButton({
+                    text : 'Sprache hinzufügen',
+                    textimage : 'icon-plus',
+                    styles : {
+                        width : 200,
+                        clear : 'both'
+                    },
+                    events :
                     {
-                        new Element('option', {
-                            html  : langs[ i ],
-                            value : langs[ i ]
-                        }).inject( Standard );
-
-                        new Element('option', {
-                            html  : langs[ i ],
-                            value : langs[ i ]
-                        }).inject( Langs );
-                    }
-
-                    new QUIButton({
-                        text : 'Sprache hinzufügen',
-                        textimage : 'icon-plus',
-                        styles   : {
-                            width : 200,
-                            clear : 'both'
-                        },
-                        events :
+                        onClick : function()
                         {
-                            onClick : function()
-                            {
-                                new LangPopup({
-                                    events :
-                                    {
-                                        onSubmit : function(value, Popup) {
-                                            Control.addLangToProject( value[0] );
-                                        }
+                            new LangPopup({
+                                events :
+                                {
+                                    onSubmit : function(value, Popup) {
+                                        self.addLangToProject( value[0] );
                                     }
-                                }).open();
-                            }
+                                }
+                            }).open();
                         }
-                    }).inject( Langs, 'after' );
+                    }
+                }).inject( Langs, 'after' );
 
-                    Standard.value = result.default_lang;
-                    Form.elements.admin_mail.value = result.admin_mail || '';
 
-                    Control.Loader.hide();
-                });
+                Standard.value = self.$config.default_lang;
+
+                QUIFormUtils.setDataToForm( self.$config, Form );
+
+                self.Loader.hide();
             });
         },
 
@@ -209,34 +238,32 @@ define('controls/projects/project/Settings', [
         openMeta : function(Plup)
         {
             this.Loader.show();
+            this.$unloadCategory();
 
-            var Control = this,
-                Body    = Control.getBody();
+            var self = this,
+                Body = this.getContent();
 
+            UtilsTemplate.get('project/meta', function(result)
+            {
+                Body.set( 'html', result );
 
-            console.warn( 'not implemented' );
+                QUIFormUtils.setDataToForm(
+                    self.$config,
+                    Body.getElement( 'form' )
+                );
 
-            Body.set( 'html', '' );
-            Control.Loader.hide();
-        },
+                self.Loader.hide();
+            });
 
-        /**
-         * Opens the backup
-         *
-         * @method controls/projects/project/Settings#openBackup
-         */
-        openBackup : function()
-        {
-            this.Loader.show();
+            /*
+            Autor
+            Herausgeber
+            Copyright
+            Suchmaschinen Indizierung
+            Stichworte
+            Beschreibung
+            */
 
-            var Control = this,
-                Body    = Control.getBody();
-
-
-            console.warn( 'not implemented' );
-
-            Body.set( 'html', '' );
-            Control.Loader.hide();
         },
 
         /**
@@ -247,6 +274,7 @@ define('controls/projects/project/Settings', [
         openWatersign : function()
         {
             this.Loader.show();
+            this.$unloadCategory();
 
             var Control = this,
                 Body    = Control.getBody();
@@ -265,6 +293,36 @@ define('controls/projects/project/Settings', [
         $onResize : function()
         {
 
+        },
+
+        /**
+         * unload the category and set the values into the config
+         */
+        $unloadCategory : function()
+        {
+            var Content = this.getContent(),
+                Form    = Content.getElement( 'form' );
+
+            if ( !Form ) {
+                return;
+            }
+
+            var data = QUIFormUtils.getFormData( Form );
+
+            for ( var i in data )  {
+                this.$config[ i ] = data[ i ];
+            }
+
+            // exist langs?
+            if ( typeof Form.elements.langs !== 'undefined' )
+            {
+                var Langs = Form.elements.langs,
+                    langs = Langs.getElements('option').map(function(Elm) {
+                    return Elm.value;
+                });
+
+                this.$config.langs = langs.join(',');
+            }
         },
 
         /**

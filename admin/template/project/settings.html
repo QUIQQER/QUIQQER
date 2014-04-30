@@ -41,7 +41,7 @@
                         {assign var=templates value=$PM->getInstalled( $params )}
 
                         {foreach from=$templates item=tpl}
-                            <option value="{$tpl}">{$tpl}</option>
+                            <option value="{$tpl.name}">{$tpl.name}</option>
                         {/foreach}
                     </select>
                 </td>
@@ -58,7 +58,7 @@
                         {assign var=templates value=$PM->getInstalled( $params )}
 
                         {foreach from=$templates item=tpl}
-                            <option value="{$tpl}">{$tpl}</option>
+                            <option value="{$tpl.name}">{$tpl.name}</option>
                         {/foreach}
                     </select>
                 </td>

@@ -350,8 +350,11 @@ define('controls/projects/project/Panel', [
                 Container.inject( List );
 
 
+                List.setStyle( 'display', null );
+
                 moofx( List ).animate({
-                    left : 0
+                    left : 0,
+
                 }, {
                     callback : function(time)
                     {
@@ -381,6 +384,10 @@ define('controls/projects/project/Panel', [
 
             moofx( List ).animate({
                 left : List.getSize().x * -1
+            }, {
+                callback : function() {
+                    List.setStyle( 'display', 'none' );
+                }
             });
 
             Container.set(

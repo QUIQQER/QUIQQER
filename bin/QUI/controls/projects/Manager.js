@@ -75,9 +75,8 @@ define('controls/projects/Manager', [
             this.addCategory({
                 name   : 'edit_projects',
                 text   : 'Projekte verwalten',
-                icon   : URL_BIN_DIR +'32x32/actions/klipper_dock.png',
-                events :
-                {
+                icon   : 'icon-list',
+                events : {
                     onClick : this.openList
                 }
             });
@@ -85,7 +84,7 @@ define('controls/projects/Manager', [
             this.addCategory({
                 name   : 'add_project',
                 text   : 'Neues Projekte erstellen',
-                icon   : URL_BIN_DIR +'32x32/actions/edit_add.png',
+                icon   : 'icon-plus',
                 events : {
                     onClick : this.openAddProject
                 }
@@ -173,7 +172,7 @@ define('controls/projects/Manager', [
                         langs   : result[ project ].langs,
 
                         settingsbtn : {
-                            icon    : URL_BIN_DIR +'16x16/actions/misc.png',
+                            icon    : 'icon-gear',
                             title   : 'Projekt Einstellungen öffnen',
                             alt     : 'Projekt Einstellungen öffnen',
                             project : project,
@@ -201,7 +200,9 @@ define('controls/projects/Manager', [
         openProjectSettings : function(project)
         {
             this.getParent().appendChild(
-                new ProjectSettings( project )
+                new ProjectSettings({
+                    project : project
+                })
             );
         },
 
@@ -252,12 +253,18 @@ define('controls/projects/Manager', [
          */
         $submitCreateProject : function()
         {
-            var Form = this.getBody().getElement( 'form' );
+            var self = this,
+                Form = this.getBody().getElement( 'form' );
 
             Projects.createNewProject(
                 Form.elements.project.value,
                 Form.elements.lang.value,
-                Form.elements.template.value
+                Form.elements.template.value,
+                function(result)
+                {
+                    self.openList();
+                    self.openProjectSettings( result );
+                }
             );
         },
 

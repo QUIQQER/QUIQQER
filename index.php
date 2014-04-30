@@ -54,6 +54,10 @@ if ( !\QUI::getProjectManager()->count() )
 $Rewrite = \QUI::getRewrite();
 $Rewrite->exec();
 
+\QUI::getLocale()->setCurrent(
+    $Rewrite->getProject()->getLang()
+);
+
 
 // sprache ausschalten
 if ( isset( $_REQUEST['lang'] ) && $_REQUEST['lang'] == 'false' )

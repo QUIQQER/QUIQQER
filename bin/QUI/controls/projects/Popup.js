@@ -24,7 +24,7 @@ define('controls/projects/Popup', [
     return new Class({
 
         Extends : QUIPopup,
-        Type : 'controls/projects/Popup',
+        Type    : 'controls/projects/Popup',
 
         Binds : [
             '$onCreate'
@@ -209,8 +209,8 @@ define('controls/projects/Popup', [
             var ids, urls;
             var children = this.$Map.getSelectedChildren();
 
-            projectString = 'project='+ this.getAttribute( 'project' ) +'&'+
-                            'lang='+ this.getAttribute( 'lang' );
+            var projectString = 'project='+ this.getAttribute( 'project' ) +'&'+
+                                'lang='+ this.getAttribute( 'lang' );
 
             ids = children.map(function(o) {
                 return o.getAttribute( 'value' );

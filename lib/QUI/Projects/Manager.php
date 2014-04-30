@@ -7,12 +7,15 @@
 namespace QUI\Projects;
 
 use QUI\Rights\Permission;
+
 /**
  * The Project Manager
  * The main object to get a project
  *
  * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.projects
+ *
+ * @event onProjectConfigSave [ String project, Array config ]
+ * @event onCreateProject [ String \QUI\Projects\Project ]
  */
 class Manager
 {
@@ -101,8 +104,16 @@ class Manager
             $config[ $key ] = \QUI\Utils\Security\Orthos::clear( $value );
         }
 
+        // doppelte sprachen filtern
+        $langs = explode(',', $config['langs']);
+        $langs = array_unique( $langs );
+
+        $config['langs'] = implode( ',', $langs );
+
         $Config->setSection( $project, $config );
         $Config->save();
+
+        \QUI::getEvents()->fireEvent( 'projectConfigSave', array( $project, $config ) );
 
         // remove the project from the temp
         if ( self::$projects[ $project ] ) {
@@ -302,6 +313,7 @@ class Manager
      * @param String $name - Project name
      * @param String $lang - Project lang
      * @param String $template - template, optional
+     * @return \QUI\Projects\Project
      * @throws \QUI\Exception
      *
      * @todo noch einmal anschauen und übersichtlicher schreiben
@@ -508,6 +520,11 @@ class Manager
 
         // Projekt Cache löschen
         \QUI\Cache\Manager::clear( 'QUI::config' );
+
+        // project create event
+        \QUI::getEvents()->fireEvent( 'createProject', array( $Project ) );
+
+        return $Project;
     }
 
     /**

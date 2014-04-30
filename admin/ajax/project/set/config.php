@@ -6,9 +6,10 @@
 
 function ajax_project_set_config($project, $params)
 {
-    $params = json_decode( $params, true );
-
-    \QUI\Projects\Manager::setConfigForProject( $project, $params );
+    \QUI\Projects\Manager::setConfigForProject(
+        $project,
+        json_decode( $params, true )
+    );
 }
 
 \QUI::$Ajax->register(

@@ -494,6 +494,17 @@ class Update
             }
         }
 
+        // projects
+        $projects = \QUI::getProjectManager()->getProjects();
+
+        foreach ( $projects as $project )
+        {
+            // locale setup
+            self::importLocale(
+                USR_DIR . $project .'/lib/locale.xml'
+            );
+        }
+
         // system xmls
         $locale_dir = CMS_DIR .'/admin/locale/';
         $locales    = \QUI\Utils\System\File::readDir( $locale_dir );

@@ -1,31 +1,57 @@
 
 <form name="edit_project" action="" class="qui-projects-manager-edit">
 
-    <h1>Projekte Meta Angaben</h1>
+    <table class="data-table">
+    <thead>
+        <tr>
+            <th>Meta Angaben</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="{cycle values="odd,even"}">
+            <td>Suchmaschinen Indizierung</td>
+            <td>
+                <select name="templates">
+                    <option value="index" selected="selected">
+                        Indizierung der Seite erlauben
+                    </option>
+                    <option value="noindex">
+                        Indizierung der Seite nicht erlauben
+                    </option>
+                    <option value="nofollow">
+                        Untergeordnete Seiten / Dateien nicht besuchen
+                    </option>
+                    <option value="noindex, nofollow">
+                        Indizierung der Seite nicht erlaubt und untergeordnete Seiten / Dateien nicht besuchen
+                    </option>
+                    <option value="all">
+                        Inhalte der Seite und aus untergeordneten Seiten besuchen und indizieren
+                    </option>
+                </select>
+            </td>
+        </tr>
 
-    <p>
-        <label for="robots">
-            Suchmaschinen Indizierung
-        </label>
+        <tr class="{cycle values="odd,even"}">
+            <td>Author</td>
+            <td>
+                <input type="text" value="" name="author" />
+            </td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>Publisher</td>
+            <td>
+                <input type="text" value="" name="publisher" />
+            </td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>Copyright</td>
+            <td>
+                <input type="text" value="" name="copyright" />
+            </td>
+        </tr>
 
-        <select name="templates">
-            <option value="index" selected="selected">
-                Indizierung der Seite erlauben
-            </option>
-            <option value="noindex">
-                Indizierung der Seite nicht erlauben
-            </option>
-            <option value="nofollow">
-                Untergeordnete Seiten / Dateien nicht besuchen
-            </option>
-            <option value="noindex, nofollow">
-                Indizierung der Seite nicht erlaubt und untergeordnete Seiten / Dateien nicht besuchen
-            </option>
-            <option value="all">
-                Inhalte der Seite und aus untergeordneten Seiten besuchen und indizieren
-            </option>
-        </select>
-    </p>
+    </tbody>
+    </table>
 
 </form>
 {*
