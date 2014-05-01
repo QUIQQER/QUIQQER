@@ -1013,7 +1013,7 @@ class XML
      */
     static function importPermissionsFromXml($xmlfile, $src='')
     {
-        $Manager = \QUI::getRights();
+        $Manager = \QUI::getPermissionManager();
         $Manager->importPermissionsFromXml( $xmlfile, $src );
     }
 }

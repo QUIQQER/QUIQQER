@@ -421,7 +421,7 @@ class Update
     static function importAllPermissionsXMLs()
     {
         $packages_dir = OPT_DIR;
-        $packages = \QUI\Utils\System\File::readDir( OPT_DIR );
+        $packages     = \QUI\Utils\System\File::readDir( OPT_DIR );
 
         self::importPermissions(
             CMS_DIR .'/admin/permissions.xml',

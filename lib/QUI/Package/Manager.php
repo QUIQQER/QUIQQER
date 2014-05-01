@@ -558,6 +558,16 @@ class Manager
         \QUI\Update::importPermissions( $dir .'permissions.xml', $package );
         \QUI\Update::importEvents( $dir .'events.xml' );
         \QUI\Update::importMenu( $dir .'menu.xml' );
+
+        // settings
+        if ( !file_exists( $dir .'settings.xml' ) ) {
+            return;
+        }
+
+        $defaults = \QUI\Utils\XML::getConfigParamsFromXml( $dir .'settings.xml' );
+        $Config   = \QUI\Utils\XML::getConfigFromXml( $dir .'settings.xml' );
+
+        $Config->save();
     }
 
     /**
