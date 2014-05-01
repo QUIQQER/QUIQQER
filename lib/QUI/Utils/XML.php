@@ -976,6 +976,8 @@ class XML
         {
             foreach ( $dbfields['execute'] as $exec )
             {
+                $exec = str_replace( '\\\\', '\\', $exec );
+
                 if ( !is_callable( $exec ) )
                 {
                     \QUI\System\Log::write( $exec .' not callable', 'error' );
