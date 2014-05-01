@@ -92,7 +92,7 @@ class Setup
          * composer setup
          */
         $PackageManager = \QUI::getPackageManager();
-        $packages = \QUI\Utils\System\File::readDir( OPT_DIR );
+        $packages       = \QUI\Utils\System\File::readDir( OPT_DIR );
 
         // first we need all databases
         foreach ( $packages as $package )

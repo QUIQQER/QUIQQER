@@ -53,42 +53,6 @@ class Autoloader
             return true;
         }
 
-        // Plugins werden gleich übersprungen
-           // @todo überdenken, maybe bei plugins auch auf namespaces gehen
-        if ( strpos( $classname, 'Plugin_' ) !== false ) {
-            return false;
-        }
-
-        // Packages
-        /*
-        if ( strpos( $classname, 'Package\\' ) !== false ) {
-            return self::loadPackage( $classname );
-        }
-        */
-
-        // QUIQQER MVC -> old version, no namespaces
-        // remove it if namespaces complet implemented
-        $file = LIB_DIR . str_replace( '_', '/', $classname ) .'.php';
-        $file = strtolower( dirname( $file ) ) .'/'. basename( $file );
-
-        if ( strpos( $classname, 'QUI_' ) === 0 ) {
-            $file = str_replace( '/qui/', '/QUI/', $file );
-        }
-
-
-        if ( file_exists( $file ) )
-        {
-            require $file;
-
-            if ( class_exists( $classname ) ) {
-                return true;
-            }
-
-            if ( interface_exists( $classname ) ) {
-                return true;
-            }
-        }
-
         if ( class_exists( $classname ) ) {
             return true;
         }
@@ -129,58 +93,8 @@ class Autoloader
             if ( $classMap ) {
                 self::$ComposerLoader->addClassMap( $classMap );
             }
-
-            //self::$ComposerLoader->register( true );
         }
 
         return self::$ComposerLoader->loadClass( $classname );
-    }
-
-    /**
-     * Package Loader
-     *
-     * @param unknown_type $classname
-     * @return Bool
-     * @deprecated
-     */
-    static function loadPackage($classname)
-    {
-        // load Packages
-        $classes = explode('\\', $classname);
-        $first   = array_shift($classes);
-        $last    = array_pop($classes);
-
-        $file = OPT_DIR . strtolower(implode('/', $classes)) .'/lib/'. ucfirst($last) .'.php';
-
-        if (file_exists($file))
-        {
-            require $file;
-
-            if (class_exists($classname)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Loads the Stash (Cache Framework)
-     *
-     * @param String $classname - stash class which is required
-     * @return Bool
-     * @deprecated
-     */
-    static function loadStash($classname)
-    {
-        $file = LIB_DIR .'system/cache/stash/'. str_replace('Stash/', '', strtr($classname, '\\', '/')) .'.php';
-
-        if (file_exists($file))
-        {
-            require $file;
-            return true;
-        }
-
-        return false;
     }
 }

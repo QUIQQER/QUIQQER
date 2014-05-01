@@ -976,6 +976,8 @@ class XML
         {
             foreach ( $dbfields['execute'] as $exec )
             {
+                $exec = str_replace( '\\\\', '\\', $exec );
+
                 if ( !is_callable( $exec ) )
                 {
                     \QUI\System\Log::write( $exec .' not callable', 'error' );
@@ -1011,7 +1013,7 @@ class XML
      */
     static function importPermissionsFromXml($xmlfile, $src='')
     {
-        $Manager = \QUI::getRights();
+        $Manager = \QUI::getPermissionManager();
         $Manager->importPermissionsFromXml( $xmlfile, $src );
     }
 }
