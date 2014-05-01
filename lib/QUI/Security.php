@@ -23,7 +23,11 @@ class Security
      */
     static function encrypt($str)
     {
-        $Cipher = new Crypt_Blowfish();
+        if ( empty( $str ) ) {
+            return '';
+        }
+
+        $Cipher = new \Crypt_Blowfish();
         $Cipher->setKey( \QUI::conf( 'globals', 'salt' ) );
 
         return $Cipher->encrypt( $str );
@@ -37,7 +41,11 @@ class Security
      */
     static function decrypt($str)
     {
-        $Cipher = new Crypt_Blowfish();
+        if ( empty( $str ) ) {
+            return '';
+        }
+
+        $Cipher = new \Crypt_Blowfish();
         $Cipher->setKey( \QUI::conf( 'globals', 'salt' ) );
 
         return $Cipher->decrypt( $str );
