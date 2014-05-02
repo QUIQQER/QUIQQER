@@ -146,7 +146,8 @@ define('utils/Controls', function()
 
                     new Element( 'div' ).wraps( Child );
 
-                    Child.placeholder = 'YYYY-MM-DD HH:MM:SS';
+                    Child.placeholder  = 'YYYY-MM-DD HH:MM:SS';
+                    Child.autocomplete = 'off';
 
                     Child.setStyles({
                         'float'  : 'left',
@@ -162,9 +163,16 @@ define('utils/Controls', function()
                         pickerClass: 'datepicker_dashboard',
                         onSelect: function(UserDate, elmList, Obj)
                         {
-                            for (var i = 0, len = elmList.length; i < len; i++ ) {
-                                elmList[ i ].value = UserDate.format('db');
+                            if ( typeOf( elmList ) === 'array' )
+                            {
+                                for (var i = 0, len = elmList.length; i < len; i++ ) {
+                                    elmList[ i ].value = UserDate.format('db');
+                                }
+                            } else if ( typeOf( elmList ) === 'element' )
+                            {
+                                elmList.value = UserDate.format('db');
                             }
+
                         }
                     });
 
