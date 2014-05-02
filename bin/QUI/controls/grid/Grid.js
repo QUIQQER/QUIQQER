@@ -1078,6 +1078,35 @@ define('controls/grid/Grid', [
             }
         },
 
+        /**
+         * Return the grid buttons
+         *
+         * @return {Array}
+         */
+        getButtons : function()
+        {
+            var buttons = [];
+
+            var btns = this.getAttribute('buttons');
+
+            if ( !btns || !btns.length ) {
+                return buttons;
+            }
+
+            var i, len, Btn;
+
+            for ( i = 0, len = btns.length; i < len; i++ )
+            {
+                if ( !btns[ btns[i].name ] ) {
+                    continue;
+                }
+
+                buttons.push( btns[ btns[i].name ] );
+            }
+
+            return buttons;
+        },
+
         dataLoader : function()
         {
             this.setAttribute('page', 1);
@@ -2048,7 +2077,13 @@ define('controls/grid/Grid', [
                 if ( firstvisible == c && o.accordion && o.showtoggleicon )
                 {
                     Toggle = new Element('div.toggleicon', {
-                        title : o.toggleiconTitle
+                        title  : o.toggleiconTitle,
+                        events :
+                        {
+                            click : function(event) {
+                                t.toggleIconClick( event );
+                            }
+                        }
                     }).inject( div, 'top' );
                 }
             }
