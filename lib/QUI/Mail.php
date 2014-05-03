@@ -1,8 +1,10 @@
 <?php
 
 /**
- * This file contains QUI_Mail
+ * This file contains \QUI\Mail
  */
+
+namespace QUI;
 
 /**
  * E-Mail
@@ -34,7 +36,7 @@
     ));
  */
 
-class QUI_Mail
+class Mail
 {
     /**
      * internal mail config
@@ -75,7 +77,7 @@ class QUI_Mail
      */
     public function __construct($config=false)
     {
-        QUI::getErrorHandler()->setAttribute( 'ERROR_8192', false );
+        \QUI::getErrorHandler()->setAttribute( 'ERROR_8192', false );
 
         //require_once LIB_DIR .'extern/phpmail/class.phpmailer.php';
 
@@ -135,7 +137,7 @@ class QUI_Mail
         }
 
         // Mail Klasse laden und einstellungen übergeben
-        $this->_mail = new PHPMailer();
+        $this->_mail = new \PHPMailer();
 
         if ( $this->_config['IsSMTP'] == true )
         {
@@ -153,7 +155,7 @@ class QUI_Mail
 
         //$this->_mail->SetLanguage( 'de', LIB_DIR .'extern/phpmail/language/' );
 
-        QUI::getErrorHandler()->setAttribute( 'ERROR_8192', true );
+        \QUI::getErrorHandler()->setAttribute( 'ERROR_8192', true );
     }
 
     /**
@@ -215,7 +217,7 @@ class QUI_Mail
             $this->_mail->AddBCC( \QUI::conf( 'mail','admin_mail' ) );
         }
 
-        QUI::getErrorHandler()->setAttribute( 'ERROR_8192', false );
+        \QUI::getErrorHandler()->setAttribute( 'ERROR_8192', false );
 
         if ( $IsHTML ) {
             $this->_mail->IsHTML(true);
