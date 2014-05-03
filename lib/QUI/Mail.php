@@ -277,10 +277,9 @@ class Mail
 
         if ( $IsHTML )
         {
-            $Html2Text = new \QUI\Utils\Text\HtmlToText();
-            $Html2Text->setHTML( $Body );
+            $Html2Text = new \html2text( $Body );
 
-            $this->_mail->AltBody = $Html2Text->getText();
+            $this->_mail->AltBody = $Html2Text->get_text();
         }
 
         if ( $this->_mail->Send() )
