@@ -46,19 +46,9 @@ class Mail
 
     /**
      * internal PHPMailer object
-     * @var PHPMailer
+     * @var \PHPMailer
      */
     private $_mail;
-
-    /**
-     * Initiliase a QUI_Mail Object
-     *
-     * @return QUI_Mail
-     */
-    static function init()
-    {
-        return new self();
-    }
 
     /**
      * constructor
