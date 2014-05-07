@@ -27,7 +27,7 @@
     visibility: hidden;
 }
 
-.users-entry:hover .users-entry-close {
+.users-entry-enabled:hover .users-entry-close {
     visibility: visible;
 }
 

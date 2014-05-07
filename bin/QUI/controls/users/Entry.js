@@ -68,7 +68,7 @@ define('controls/users/Entry', [
             var self = this;
 
             this.$Elm = new Element('div', {
-                'class'      : 'users-entry',
+                'class'      : 'users-entry users-entry-enabled',
                 'data-id'    : this.$User.getId(),
                 'data-quiid' : this.getId(),
 
@@ -159,6 +159,7 @@ define('controls/users/Entry', [
          */
         disable : function()
         {
+            this.$Elm.removeClass( 'users-entry-enabled' );
             this.$disabled = true;
         },
 
@@ -168,6 +169,7 @@ define('controls/users/Entry', [
          */
         enable : function()
         {
+            this.$Elm.addClass( 'users-entry-enabled' );
             this.$disabled = false;
         },
 

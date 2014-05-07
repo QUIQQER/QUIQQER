@@ -1,5 +1,6 @@
 
 .users-input {
+    float: left;
     position: relative;
     display: block;
 }

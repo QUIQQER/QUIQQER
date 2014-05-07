@@ -105,7 +105,8 @@ define('controls/users/Input', [
                     'paddingLeft' : 20,
                     'background'  : 'url('+ URL_BIN_DIR +'10x10/search.png) no-repeat 4px center',
                     width         : 165,
-                    cursor        : 'pointer'
+                    cursor        : 'pointer',
+                    display       : 'none'
                 },
                 events :
                 {
@@ -149,8 +150,7 @@ define('controls/users/Input', [
             this.$Container = new Element('div', {
                 styles : {
                     'float' : 'left',
-                    margin  : '0 0 0 10px',
-                    width   : 400
+                    margin  : '0 0 0 10px'
                 }
             }).inject( this.$Input, 'after' );
 
@@ -502,11 +502,26 @@ define('controls/users/Input', [
          */
         disable : function()
         {
+            if ( this.isDisabled() ) {
+                return;
+            }
+
+
             this.$disabled = true;
 
             if ( this.$Parent ) {
                 this.$Parent.disabled = true;
             }
+
+            var self = this;
+
+            moofx( this.$Input ).animate({
+                opacity : 0
+            }, {
+                callback : function() {
+                    self.$Input.setStyle( 'display', 'none' );
+                }
+            });
 
             // disable children
             var list = this.$getUserEntries();

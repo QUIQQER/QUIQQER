@@ -1,41 +1,63 @@
 
-{title text="Status"}
-
 <table class="data-table">
-<tr>
-	<td style="width: 30px"><input type="radio" name="active" value="1" class="noborder" /></td>
-	<td>
-		<label for="active">
-			Aktiviert
-		</label>
-	</td>
-</tr>
-<tr class="odd">
-	<td><input type="radio" name="active" value="0" class="noborder" /></td>
-	<td>
-		<label for="active">
-			Deaktiviert
-		</label>
-	</td>
-</tr>
+<thead>
+    <tr>
+        <th colspan="2">Status</th>
+    </tr>
+</thead>
+<tbody>
+    <tr class="{cycle values="odd,even"}">
+        <td style="width: 30px">
+            <input type="radio" name="active" value="1" class="noborder" />
+        </td>
+        <td>
+            <label for="active">
+                Aktiviert
+            </label>
+        </td>
+    </tr>
+    <tr class="{cycle values="odd,even"}">
+        <td>
+            <input type="radio" name="active" value="0" class="noborder" />
+        </td>
+        <td>
+            <label for="active">
+                Deaktiviert
+            </label>
+        </td>
+    </tr>
+</tbody>
 </table>
 
-{title text="Information"}
+
 <table class="data-table">
-	<tr>
-		<td style="width: 150px;">{t}Gruppen-ID{/t}</td>
-		<td><input type="text" name="id" value="" /></td>
-	</tr>
-	<tr class="odd">
-		<td>{t}Name{/t}</td>
-		<td><input type="text" name="name" value="" /></td>
-	</tr>
-	<tr>
-		<td>{t}Zugang zum Adminbereich{/t}</td>
-		<td><input type="checkbox" name="admin" class="noborder" /> Ja</td>
-	</tr>
-	<tr class="odd">
-		<td>{t}Toolbar{/t}</td>
-		<td class="toolbar-listing"><img src="{$smarty.const.URL_BIN_DIR}images/loader.gif" /></td>
-	</tr>
+<thead>
+    <tr>
+        <th colspan="2">Information</th>
+    </tr>
+</thead>
+<tbody>
+    <tr class="{cycle values="odd,even"}">
+        <td style="width: 150px;">{t}Gruppen-ID{/t}</td>
+        <td>
+            <input type="text" name="id" value="" />
+        </td>
+    </tr>
+    <tr class="{cycle values="odd,even"}">
+        <td>{t}Name{/t}</td>
+        <td>
+            <input type="text" name="name" value="" />
+        </td>
+    </tr>
+    <tr class="{cycle values="odd,even"}">
+        <td>{t}Zugang zum Adminbereich{/t}</td>
+        <td>
+            <input type="checkbox" name="admin" class="noborder" /> Ja
+        </td>
+    </tr>
+    <tr class="{cycle values="odd,even"}">
+        <td>{t}Toolbar{/t}</td>
+        <td class="toolbar-listing"></td>
+    </tr>
+</tbody>
 </table>
