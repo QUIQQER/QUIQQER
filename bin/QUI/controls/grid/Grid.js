@@ -38,11 +38,12 @@ define('controls/grid/Grid', [
 
     'qui/controls/Control',
     'qui/controls/buttons/Button',
+    'qui/controls/buttons/Seperator',
     'qui/utils/Controls',
 
     'css!controls/grid/Grid.css'
 
-], function(Control, QUIButton, ControlUtils)
+], function(Control, QUIButton, QUISeperator, ControlUtils)
 {
     "use strict";
 
@@ -1249,6 +1250,21 @@ define('controls/grid/Grid', [
             }
         },
 
+        /**
+         * Delete multible rows
+         *
+         * @param {Array} rowIds - list of the row ids
+         */
+        deleteRows : function(rowIds)
+        {
+            for ( var i = 0, len = rowIds.length; i < len; i++ ) {
+                delete this.$data[ rowIds[ i ] ];
+            }
+
+            this.$data = this.$data.clean();
+            this.reset();
+        },
+
         isHidden : function(i)
         {
             return this.elements[i].hasClass(
@@ -2144,7 +2160,7 @@ define('controls/grid/Grid', [
             container.addClass('omnigrid');
 
             // Toolbar
-            if (this.getAttribute('buttons'))
+            if ( this.getAttribute('buttons') )
             {
                 tDiv = new Element('div.tDiv', {
                     styles : {
@@ -2168,9 +2184,11 @@ define('controls/grid/Grid', [
 
                 for ( i = 0, len = bt.length; i < len; i++ )
                 {
-                    if ( bt[i].separator )
+                    if ( bt[i].type == 'seperator' )
                     {
-                        new Element('div.btnseparator').inject( tDiv );
+                        new QUISeperator().inject( tDiv );
+
+                        // new Element('div.btnseparator').inject( tDiv );
                         continue;
                     }
 

@@ -61,6 +61,11 @@ define('utils/Controls', function()
                 this.parseUserAndGroups( Elm );
             }
 
+            // User And Groups
+            if ( Elm.getElement( 'input.user' ) ) {
+                this.parseUser( Elm );
+            }
+
             // projects
             if ( Elm.getElement( 'input.project' ) ) {
                 this.parseProject( Elm );
@@ -343,6 +348,42 @@ define('utils/Controls', function()
                 {
                     Control = new UserAndGroup(
                         null,
+                        elements[ i ]
+                    );
+
+                    if ( elements[ i ].id )
+                    {
+                        Label = document.getElement( 'label[for="'+ elements[ i ].id +'"]' );
+
+                        if ( Label ) {
+                            Control.setAttribute( 'label', Label );
+                        }
+                    }
+
+                    Control.create();
+                }
+            });
+        },
+
+        /**
+         * Search all Elements with the class user and convert it to a control
+         *
+         * @param {DOMNode} Elm - parent node, this element in which is searched for
+         */
+        parseUser : function(Elm)
+        {
+            require(['controls/users/Input'], function(UserInput)
+            {
+                var i, len, elements, Label, Control;
+
+                elements = Elm.getElements( '.user' );
+
+                for ( i = 0, len = elements.length; i < len; i++ )
+                {
+                    Control = new UserInput(
+                        {
+                            max : 1
+                        },
                         elements[ i ]
                     );
 

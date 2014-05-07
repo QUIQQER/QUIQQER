@@ -14,6 +14,7 @@
 
 define('controls/users/Input', [
 
+    'qui/QUI',
     'qui/controls/Control',
     'qui/controls/buttons/Button',
     'controls/users/Entry',
@@ -21,7 +22,7 @@ define('controls/users/Input', [
 
     'css!controls/users/Input.css'
 
-], function(QUIControl, QUIButton, UserEntry, Ajax)
+], function(QUI, QUIControl, QUIButton, UserEntry, Ajax)
 {
     "use strict";
 
@@ -45,10 +46,9 @@ define('controls/users/Input', [
         ],
 
         options : {
-            max      : false,
-            multible : true,
-            name     : '',
-            styles   : false
+            max    : false,
+            name   : '',
+            styles : false
         },
 
         initialize : function(options, Input)
@@ -62,6 +62,7 @@ define('controls/users/Input', [
             this.$Container = null;
             this.$search    = false;
             this.$DropDown  = null;
+            this.$disabled  = false;
 
             this.$Parent = Input || null;
         },
@@ -80,8 +81,11 @@ define('controls/users/Input', [
                 this.$Parent = new Element('input', {
                     name : this.getAttribute('name')
                 }).inject( this.$Elm );
+
             } else
             {
+                this.$disabled = this.$Parent.disabled;
+
                 this.$Elm.wraps( this.$Parent );
             }
 
@@ -155,6 +159,10 @@ define('controls/users/Input', [
                 return this.$Elm;
             }
 
+            var wasDisabled = this.isDisabled();
+
+            this.enable();
+
             var i, len;
             var values = this.$Parent.value.toString().split(',');
 
@@ -165,6 +173,10 @@ define('controls/users/Input', [
                 }
             }
 
+            if ( wasDisabled ) {
+                this.disable();
+            }
+
             return this.$Elm;
         },
 
@@ -173,6 +185,10 @@ define('controls/users/Input', [
          */
         update : function()
         {
+            if ( this.isDisabled() ) {
+                return this;
+            }
+
             if ( !this.$Container ) {
                 return;
             }
@@ -198,6 +214,12 @@ define('controls/users/Input', [
          */
         fireSearch : function()
         {
+            console.log( this.isDisabled() );
+
+            if ( this.isDisabled() ) {
+                return;
+            }
+
             this.cancelSearch();
 
             this.$DropDown.set({
@@ -227,6 +249,10 @@ define('controls/users/Input', [
          */
         close : function()
         {
+            if ( this.isDisabled() ) {
+                return this;
+            }
+
             this.cancelSearch();
             this.$DropDown.setStyle( 'display', 'none' );
             this.$Input.value = '';
@@ -239,15 +265,19 @@ define('controls/users/Input', [
          */
         addUser : function(uid)
         {
+            if ( this.isDisabled() ) {
+                return this;
+            }
+
             if ( !uid ) {
                 return;
             }
 
-            if ( this.$Container.getElement( '.user-entry[data-id="'+ uid +'"]') ) {
+            if ( this.$Container.getElement( '.users-entry[data-id="'+ uid +'"]') ) {
                 return;
             }
 
-            var entries = this.$Container.getElements( '.user-entry' );
+            var entries = this.$Container.getElements( '.users-entry' );
 
             if ( this.getAttribute( 'max' ) &&
                  this.getAttribute( 'max' ) <= entries.length )
@@ -255,11 +285,15 @@ define('controls/users/Input', [
                 return;
             }
 
-            new UserEntry(uid, {
+            var User = new UserEntry(uid, {
                 events : {
                     onDestroy : this.update
                 }
             }).inject( this.$Container );
+
+            if ( this.isDisabled() ) {
+                User.disable();
+            }
 
             this.fireEvent( 'add', [ this, uid ] );
             this.update();
@@ -270,6 +304,10 @@ define('controls/users/Input', [
          */
         search : function()
         {
+            if ( this.isDisabled() ) {
+                return this;
+            }
+
             Ajax.get('ajax_users_search', function(result, Request)
             {
                 var i, len, nam, func_mousedown, func_mouseover;
@@ -360,6 +398,10 @@ define('controls/users/Input', [
          */
         up : function()
         {
+            if ( this.isDisabled() ) {
+                return this;
+            }
+
             if ( !this.$DropDown ) {
                 return this;
             }
@@ -391,6 +433,10 @@ define('controls/users/Input', [
          */
         down : function()
         {
+            if ( this.isDisabled() ) {
+                return this;
+            }
+
             if ( !this.$DropDown ) {
                 return this;
             }
@@ -448,6 +494,81 @@ define('controls/users/Input', [
             }
 
             return this;
+        },
+
+        /**
+         * Disable the input field
+         * no changes are possible
+         */
+        disable : function()
+        {
+            this.$disabled = true;
+
+            if ( this.$Parent ) {
+                this.$Parent.disabled = true;
+            }
+
+            // disable children
+            var list = this.$getUserEntries();
+
+            for ( var i = 0, len = list.length; i < len; i++ ) {
+                list[ i ].disable();
+            }
+        },
+
+        /**
+         * Enable the input field if it is disabled
+         * changes are possible
+         */
+        enable : function()
+        {
+            this.$disabled = false;
+
+            if ( this.$Parent ) {
+                this.$Parent.disabled = false;
+            }
+
+            // enable children
+            var list = this.$getUserEntries();
+
+            for ( var i = 0, len = list.length; i < len; i++ ) {
+                list[ i ].enable();
+            }
+        },
+
+        /**
+         * Is it disabled?
+         * if disabled, no changes are possible
+         */
+        isDisabled : function()
+        {
+            if ( this.$Parent )  {
+                return this.$Parent.disabled;
+            }
+
+            return this.$disabled;
+        },
+
+        /**
+         * Return the UserEntry objects
+         *
+         * @return {Array}
+         */
+        $getUserEntries : function()
+        {
+            var list   = this.$Container.getElements('.users-entry'),
+                result = [];
+
+            for ( var i = 0, len = list.length; i < len; i++ )
+            {
+                result.push(
+                    QUI.Controls.getById(
+                        list[ i ].get('data-quiid')
+                    )
+                );
+            }
+
+            return result;
         }
     });
 });

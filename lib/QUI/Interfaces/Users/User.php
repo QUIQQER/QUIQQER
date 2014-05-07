@@ -133,6 +133,13 @@ interface User
     public function getAdress($id);
 
     /**
+     * Return the Country from the user
+     *
+     * @return \QUI\Countries\Country|boolean
+     */
+    public function getCountry();
+
+    /**
      * Set a attribute of the user
      *
      * @param String $key

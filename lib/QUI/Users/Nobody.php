@@ -214,6 +214,30 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
     }
 
     /**
+     * Return the Country of nobody
+     * use the GEOIP_COUNTRY_CODE from apache, if available
+     *
+     * @return \QUI\Countries\Country|boolean
+     */
+    public function getCountry()
+    {
+        // apache
+        if ( isset( $_SERVER[ "GEOIP_COUNTRY_CODE" ] ) )
+        {
+            try
+            {
+                return \QUI\Countries\Manager::get( $_SERVER[ "GEOIP_COUNTRY_CODE" ] );
+
+            } catch ( \QUI\Exception $Exception )
+            {
+
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * This method is useless for nobody
      * \QUI\Users\Nobody cannot have a adress
      *

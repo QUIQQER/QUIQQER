@@ -448,7 +448,6 @@ class User implements \QUI\Interfaces\Users\User
      * Return the Country from the
      *
      * @return \QUI\Countries\Country|boolean
-     * @todo do it as a plugin
      */
     public function getCountry()
     {
