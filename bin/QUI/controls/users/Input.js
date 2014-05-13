@@ -149,19 +149,26 @@ define('controls/users/Input', [
 
             this.$Container = new Element('div', {
                 styles : {
-                    'float' : 'left',
-                    margin  : '0 0 0 10px'
+                    clear   : 'both',
+                    'float' : 'left'
                 }
             }).inject( this.$Input, 'after' );
 
             // loading
-            if ( this.$Parent.value === '' ) {
+            if ( this.$Parent.value === '' )
+            {
+                if ( !this.isDisabled() ) {
+                    this.enable();
+                }
+
                 return this.$Elm;
             }
 
             var wasDisabled = this.isDisabled();
 
-            this.enable();
+            this.$Parent.disabled = false;
+            this.$disabled        = false;
+
 
             var i, len;
             var values = this.$Parent.value.toString().split(',');
@@ -173,8 +180,17 @@ define('controls/users/Input', [
                 }
             }
 
-            if ( wasDisabled ) {
-                this.disable();
+            if ( wasDisabled )
+            {
+                this.$Parent.disabled = true;
+                this.$disabled        = true;
+
+                // disable children
+                var list = this.$getUserEntries();
+
+                for ( var i = 0, len = list.length; i < len; i++ ) {
+                    list[ i ].disable();
+                }
             }
 
             return this.$Elm;
@@ -199,8 +215,19 @@ define('controls/users/Input', [
             var list = this.$Container.getElements('.users-entry'),
                 ids  = [];
 
+            if ( !list.length ) {
+                return;
+            }
+
             for ( i = 0, len = list.length; i < len; i++ ) {
                 ids.push( list[i].get( 'data-id' ) );
+            }
+
+
+            if ( ids.length == 1 )
+            {
+                this.$Parent.set( 'value', ids[ 0 ] );
+                return;
             }
 
             this.$Parent.set(
@@ -214,8 +241,6 @@ define('controls/users/Input', [
          */
         fireSearch : function()
         {
-            console.log( this.isDisabled() );
-
             if ( this.isDisabled() ) {
                 return;
             }
@@ -542,6 +567,9 @@ define('controls/users/Input', [
             if ( this.$Parent ) {
                 this.$Parent.disabled = false;
             }
+
+            this.$Input.setStyle( 'display', null );
+
 
             // enable children
             var list = this.$getUserEntries();

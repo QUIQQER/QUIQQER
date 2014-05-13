@@ -148,7 +148,7 @@ define('controls/users/Entry', [
             UserIcon.removeClass( 'icon-spin' );
 
             this.$Elm.getElement( '.users-entry-text' )
-                     .set( 'html', User.getName() );
+                     .set( 'html', User.getName() +' ('+ User.getId() +')' );
 
             return this;
         },
