@@ -5,9 +5,13 @@
 define('controls/users/Address', [
 
     'qui/QUI',
-    'qui/controls/Control'
+    'qui/controls/Control',
+    'qui/controls/loader/Loader',
+    'Ajax',
 
-], function(QUI, QUIControl)
+    'css!controls/users/Address.css'
+
+], function(QUI, QUIControl, QUILoader, Ajax)
 {
     "use strict";
 
@@ -15,6 +19,10 @@ define('controls/users/Address', [
 
         Extends : QUIControl,
         Type    : 'controls/users/Address',
+
+        Binds : [
+            '$onInject'
+        ],
 
         options : {
             uid       : false,
@@ -24,6 +32,12 @@ define('controls/users/Address', [
         initialize : function(options)
         {
             this.parent( options );
+
+            this.Loader = new QUILoader();
+
+            this.addEvents({
+                onInject : this.$onInject
+            });
         },
 
         /**
@@ -34,13 +48,29 @@ define('controls/users/Address', [
         create : function()
         {
             this.$Elm = new Element('div', {
-                'class' : 'qui-control-users-address',
-                html    : '------'
+                'class' : 'control-users-address box'
             });
 
+            this.Loader.inject( this.$Elm );
 
 
             return this.$Elm;
+        },
+
+        /**
+         * event : on inject
+         */
+        $onInject : function()
+        {
+            var self = this;
+
+            this.Loader.show();
+
+            Ajax.get('ajax_users_address_template', function(result)
+            {
+                self.getElm().set( 'html', result );
+                self.Loader.hide();
+            });
         }
 
     });

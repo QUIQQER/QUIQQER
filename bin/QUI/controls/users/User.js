@@ -543,12 +543,15 @@ define('controls/users/User', [
                     type : 'seperator'
                 }, {
                     name : 'add',
-                    text : 'Adresse löschen',
-                    textimage : 'icon-remove',
+                    text : 'Adresse editieren',
+                    textimage : 'icon-edit',
                     events :
                     {
-                        onClick : function() {
-
+                        onClick : function()
+                        {
+                            self.editAddress(
+                                self.$AddressGrid.getSelectedData()[ 0 ].id
+                            );
                         }
                     }
                 }, {
@@ -569,6 +572,15 @@ define('controls/users/User', [
                 }
             });
 
+            this.$AddressGrid.addEvents({
+                onDblClick : function()
+                {
+                    self.editAddress(
+                        self.$AddressGrid.getSelectedData()[ 0 ].id
+                    );
+                }
+            });
+
             this.$AddressGrid.setWidth( size.x - 60 );
             this.$AddressGrid.refresh();
         },
@@ -586,7 +598,9 @@ define('controls/users/User', [
 
             Ajax.get('ajax_users_address_list', function(result)
             {
-                console.log( result );
+                self.$AddressGrid.setData({
+                    data : result
+                });
             }, {
                 uid : this.getUser().getId()
             });
@@ -636,7 +650,37 @@ define('controls/users/User', [
                 }
             });
 
-            Sheet.open();
+            Sheet.show();
+        },
+
+
+        /**
+         * Delete an address
+         *
+         * @param {Integer} addressId - ID of the address
+         */
+        delAddress : function(addressId)
+        {
+            var self = this;
+
+            new QUIConfirm({
+                title : 'Adresse löschen',
+                text  : 'Möchten Sie die Adresse wirklich löschen?',
+                information : 'Die Adresse ist nicht wieder herstellbar',
+                events :
+                {
+                    onSubmit : function()
+                    {
+                        Ajax.post('ajax_users_address_delete', function(result)
+                        {
+                            self.$AddressGrid.refresh();
+                        }, {
+                            aid : addressId,
+                            uid : self.getUser().getId()
+                        });
+                    }
+                }
+            }).open();
         }
 
     });

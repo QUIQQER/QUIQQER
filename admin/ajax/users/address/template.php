@@ -16,10 +16,10 @@ function ajax_users_address_template()
         'countrys' => $Countries->getList()
     ));
 
-    return $Engine->fetch(SYS_DIR .'template/users/address/new.html');
+    return $Engine->fetch(SYS_DIR .'template/users/address/edit.html');
 }
 
 \QUI::$Ajax->register(
     'ajax_users_address_template',
-    array('uid', 'params')
+    false
 );

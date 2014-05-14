@@ -7,8 +7,8 @@
  */
 function ajax_users_address_delete($uid, $aid)
 {
-    $User   = \QUI::getUsers()->get((int)$uid);
-    $Address = $User->getAddress((int)$aid);
+    $User   = \QUI::getUsers()->get( (int)$uid );
+    $Address = $User->getAddress( (int)$aid );
 
     $Address->delete();
 }

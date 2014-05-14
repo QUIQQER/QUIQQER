@@ -1,0 +1,123 @@
+
+<form name="add-address" class="box">
+    <input type="hidden" name="address-id" value="" />
+
+    <div class="grid-50">
+        <table class="data-table">
+            <thead>
+               <tr>
+                   <th>
+                       Daten
+                   </th>
+               </tr>
+            </thead>
+            <tbody>
+                <tr class="{cycle values="odd,even"}">
+                    <td>
+                        Firma
+                    </td>
+                    <td>
+                        <input type="text" name="address-company" value="" />
+                    </td>
+                </tr>
+                <tr class="{cycle values="odd,even"}">
+                    <td>
+                        Anrede
+                    </td>
+                    <td>
+                        <input type="text" name="address-salutation" value="" />
+                    </td>
+                </tr>
+                <tr class="{cycle values="odd,even"}">
+                    <td>
+                        Vorname
+                    </td>
+                    <td>
+                        <input type="text" name="address-firstname" value="" />
+                    </td>
+                </tr>
+                <tr class="{cycle values="odd,even"}">
+                    <td>
+                        Nachname
+                    </td>
+                    <td>
+                        <input type="text" name="address-lastname" value="" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="grid-50">
+        <table class="data-table">
+            <thead>
+               <tr>
+                   <th colspan="2">
+                       Anschrift
+                   </th>
+               </tr>
+            </thead>
+            <tbody>
+                <tr class="{cycle values="odd,even"}">
+                    <td>
+                        Strasse / Nr.
+                    </td>
+                    <td>
+                        <input type="text" name="address-street_no" value="" />
+                    </td>
+                </tr>
+                <tr class="{cycle values="odd,even"}">
+                    <td>
+                        PLZ
+                    </td>
+                    <td>
+                        <input type="text" name="address-zip" value="" />
+                    </td>
+                </tr>
+                <tr class="{cycle values="odd,even"}">
+                    <td>
+                        Ort
+                    </td>
+                    <td>
+                        <input type="text" name="address-city" value="" />
+                    </td>
+                </tr>
+                <tr class="{cycle values="odd,even"}">
+                    <td>
+                        Land
+                    </td>
+                    <td>
+                        <select name="address-country" style="width: 200px;">
+                            <option value=""></option>
+                            {foreach from=$countrys item=Country}
+                            <option value="{$Country->getCode()}">
+                                {$Country->getName()}
+                            </option>
+                            {/foreach}
+                        </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="grid-100">
+        <table class="data-table">
+            <thead>
+               <tr>
+                   <th>
+                       Telefon / Fax / E-Mail
+                   </th>
+               </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="user-address-edit-telfaxmail"></div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</form>
