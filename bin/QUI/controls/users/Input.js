@@ -94,7 +94,8 @@ define('controls/users/Input', [
             }
 
 
-            this.$Parent.set('type', 'hidden' );
+            this.$Parent.set( 'type', 'hidden' );
+            this.$Parent.set( 'data-quiid', this.getId() );
 
             this.$Input = new Element('input', {
                 type   : 'text',

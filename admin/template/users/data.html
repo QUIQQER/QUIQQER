@@ -3,7 +3,7 @@
     <thead>
         <tr>
             <th colspan="2">
-                {title text="Persönliche Daten"}
+                Persönliche Daten
             </th>
         </tr>
     </thead>
@@ -30,5 +30,19 @@
     </tbody>
 </table>
 
-{title text="Adressen"}
-<div class="adress-list"></div>
+<table class="data-table">
+    <thead>
+        <tr>
+            <th colspan="2">
+                Adressen
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="{cycle values="odd,even"}">
+            <td>
+                <div class="address-list"></div>
+            </td>
+        </tr>
+    </tbody>
+</table>

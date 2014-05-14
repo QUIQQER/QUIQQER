@@ -120,12 +120,12 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
      * @throws \QUI\Exception
      * @ignore
      */
-    public function addAdress($params)
+    public function addAddress($params)
     {
         throw new \QUI\Exception(
             \QUI::getLocale(
                 'system',
-                'exception.lib.user.nobody.add.adress'
+                'exception.lib.user.nobody.add.address'
             )
         );
     }
@@ -189,27 +189,27 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
 
     /**
      * This method is useless for nobody
-     * \QUI\Users\Nobody cannot have a adress
+     * \QUI\Users\Nobody cannot have a address
      *
      * @return array
      * @ignore
      */
-    public function getAdressList() {
+    public function getAddressList() {
         return array();
     }
 
     /**
      * This method is useless for nobody
-     * \QUI\Users\Nobody cannot have a adress
+     * \QUI\Users\Nobody cannot have a address
      *
      * @param Integer $id
      * @throws \QUI\Exception
      * @ignore
      */
-    public function getAdress($id)
+    public function getAddress($id)
     {
         throw new \QUI\Exception(
-            \QUI::getLocale('system', 'exception.lib.user.nobody.get.adress')
+            \QUI::getLocale('system', 'exception.lib.user.nobody.get.address')
         );
     }
 
@@ -239,12 +239,12 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
 
     /**
      * This method is useless for nobody
-     * \QUI\Users\Nobody cannot have a adress
+     * \QUI\Users\Nobody cannot have a address
      *
      * @return false
      * @ignore
      */
-    public function getStandardAdress() {
+    public function getStandardAddress() {
         return false;
     }
 

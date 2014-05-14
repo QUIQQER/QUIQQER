@@ -36,13 +36,13 @@ class Manager
     }
 
     /**
-     * Return the db table for the adresses
+     * Return the db table for the addresses
      *
      * @return String
      */
-    static function TableAdress()
+    static function TableAddress()
     {
-        return QUI_DB_PRFX .'users_adress';
+        return QUI_DB_PRFX .'users_address';
     }
 
     /**
@@ -75,7 +75,7 @@ class Manager
             'activation' => 'varchar(20) NULL',
             'referal'    => 'varchar(200) NULL',
             'user_agent' => 'text',
-            'adress'     => 'int(11)'
+            'address'    => 'int(11)'
         ));
 
         // Patch
@@ -83,8 +83,8 @@ class Manager
             'ALTER TABLE `'. self::Table() .'` CHANGE `birthday` `birthday` DATE NULL DEFAULT NULL'
         );
 
-        // Adresses
-        $DataBase->Table()->appendFields(self::TableAdress() , array(
+        // Addresses
+        $DataBase->Table()->appendFields(self::TableAddress() , array(
             'id'         => 'int(11)',
             'uid'        => 'int(11)',
             'salutation' => 'varchar(10)',
@@ -100,10 +100,10 @@ class Manager
             'country'    => 'text'
         ));
 
-        $DataBase->Table()->setIndex(self::TableAdress(), 'id');
+        $DataBase->Table()->setIndex(self::TableAddress(), 'id');
 
         $DataBase->getPDO()->exec(
-            'ALTER TABLE `'. self::TableAdress() .'` CHANGE `id` `id` INT( 11 ) NOT NULL AUTO_INCREMENT'
+            'ALTER TABLE `'. self::TableAddress() .'` CHANGE `id` `id` INT( 11 ) NOT NULL AUTO_INCREMENT'
         );
     }
 

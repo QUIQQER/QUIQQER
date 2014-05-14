@@ -858,7 +858,7 @@ class Plugin extends \QUI\QDOM
     }
 
     /**
-     * Gibt die URL Adresse des Plugins zurück
+     * Gibt die URL Addresse des Plugins zurück
      *
      * @return String
      */
@@ -872,7 +872,7 @@ class Plugin extends \QUI\QDOM
     }
 
     /**
-     * Gibt die Pfad Adresse des Plugins zurück
+     * Gibt die Pfad Addresse des Plugins zurück
      *
      * @return String
      */

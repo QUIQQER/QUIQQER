@@ -1052,7 +1052,7 @@ class Rewrite
 
     /**
      * Mail Protection gegen SPAM
-     * Wandelt die Mail Adressen so um das ein BOT nichts mit anfangen kann
+     * Wandelt die Mail Addressen so um das ein BOT nichts mit anfangen kann
      *
      * @param String $output
      * @return String

@@ -40,7 +40,24 @@ class Utils
         /**
          * user extention from plugins
          */
+        $list = \QUI::getPackageManager()->getInstalled();
 
+        foreach ( $list as $entry )
+        {
+            $userXml = OPT_DIR . $entry['name'] .'/user.xml';
+
+            if ( !file_exists( $userXml ) ) {
+                continue;
+            }
+
+            \QUI\Utils\DOM::addTabsToToolbar(
+                \QUI\Utils\XML::getTabsFromXml( $userXml ),
+                $Tabbar,
+                'plugin.'. $entry['name']
+            );
+        }
+
+        /*
         $Plugin  = \QUI::getPlugins();
         $plugins = $Plugin->get();
 
@@ -48,6 +65,7 @@ class Utils
         foreach ( $plugins as $Plugin ) {
             $Plugin->loadUserTabs( $Tabbar, $User );
         }
+        */
 
         /**
          * user extention from projects
@@ -80,6 +98,9 @@ class Utils
         $Users = \QUI::getUsers();
         $User  = $Users->get( (int)$uid );
 
+        // assign user as global var
+        \QUI\Template::assignGlobalParam( 'User', $User );
+
         // System
         if ( $plugin === 'pcsg' )
         {
@@ -100,10 +121,17 @@ class Utils
             );
         }
 
-           // Plugin extention
-        $Plugins = \QUI::getPlugins();
-        $Plugin  = $Plugins->get( $plugin );
+        // Plugin extention
+        $plugin  = str_replace( 'plugin.', '', $plugin );
+        $package = \QUI::getPackageManager()->getPackage( $plugin );
 
-        return \QUI\Utils\DOM::getTabHTML( $tab, $Plugin );
+        if ( !$package || !isset( $package['name'] ) ) {
+            return '';
+        }
+
+        return \QUI\Utils\DOM::getTabHTML(
+            $tab,
+            OPT_DIR . $package['name'] .'/user.xml'
+        );
     }
 }

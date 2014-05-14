@@ -112,10 +112,10 @@ class User implements \QUI\Interfaces\Users\User
     protected $_plugins = array();
 
     /**
-     * User adresses
+     * User addresses
      * @var Array
      */
-    protected $_adress_list = array();
+    protected $_address_list = array();
 
     /**
      * contructor
@@ -453,7 +453,7 @@ class User implements \QUI\Interfaces\Users\User
     {
         try
         {
-            $Standard = $this->getStandardAdress();
+            $Standard = $this->getStandardAddress();
 
             if ( $Standard )
             {
@@ -1096,7 +1096,7 @@ class User implements \QUI\Interfaces\Users\User
                 'lastedit'  => date( "Y-m-d H:i:s" ),
                 'expire'    => $expire,
                 'shortcuts' => $this->getAttribute( 'shortcuts' ),
-                'adress'    => (int)$this->getAttribute( 'adress' )
+                'address'   => (int)$this->getAttribute( 'address' )
             ),
             array('id' => $this->getId())
         );
@@ -1253,9 +1253,9 @@ class User implements \QUI\Interfaces\Users\User
      * Add a address to the user
      *
      * @param Array $params
-     * @return \QUI\Users\Adress
+     * @return \QUI\Users\Address
      */
-    public function addAdress($params)
+    public function addAddress($params)
     {
         $_params = array();
         $needles = array(
@@ -1301,24 +1301,24 @@ class User implements \QUI\Interfaces\Users\User
         $_params[ 'uid' ] = $this->getId();
 
         $Statement = \QUI::getDataBase()->insert(
-            \QUI\Users\Manager::TableAdress(),
+            \QUI\Users\Manager::TableAddress(),
             $_params
         );
 
-        return $this->getAdress(
+        return $this->getAddress(
             \QUI::getDataBase()->getPDO()->lastInsertId()
         );
     }
 
     /**
-     * Returns all adresses from the user
+     * Returns all addresses from the user
      *
      * @return Array
      */
-    public function getAdressList()
+    public function getAddressList()
     {
         $result = \QUI::getDataBase()->fetch(array(
-            'from'   => \QUI\Users\Manager::TableAdress(),
+            'from'   => \QUI\Users\Manager::TableAddress(),
             'select' => 'id',
             'where'  => array(
                 'uid' => $this->getId()
@@ -1334,42 +1334,42 @@ class User implements \QUI\Interfaces\Users\User
         foreach ( $result as $entry )
         {
             $id = (int)$entry[ 'id' ];
-            $list[ $id ] = $this->getAdress( $id );
+            $list[ $id ] = $this->getAddress( $id );
         }
 
         return $list;
     }
 
     /**
-     * Get a adress from the user
+     * Get a address from the user
      *
-     * @param Integer $id - adress ID
-     * @return \QUI\Users\Adress
+     * @param Integer $id - address ID
+     * @return \QUI\Users\Address
      */
-    public function getAdress($id)
+    public function getAddress($id)
     {
         $id = (int)$id;
 
-        if ( isset($this->_adress_list[ $id ] ) ) {
-            return $this->_adress_list[ $id ];
+        if ( isset($this->_address_list[ $id ] ) ) {
+            return $this->_address_list[ $id ];
         }
 
-        $this->_adress_list[ $id ] = new \QUI\Users\Adress( $this, $id );
+        $this->_address_list[ $id ] = new \QUI\Users\Address( $this, $id );
 
-        return $this->_adress_list[ $id ];
+        return $this->_address_list[ $id ];
     }
 
     /**
-     * return the standard adress from the user
+     * return the standard address from the user
      *
-     * @return \QUI\Users\Adress|false
+     * @return \QUI\Users\Address|false
      */
-    public function getStandardAdress()
+    public function getStandardAddress()
     {
-        if ( $this->getAttribute( 'adress' ) === false ) {
+        if ( $this->getAttribute( 'address' ) === false ) {
             return false;
         }
 
-        return $this->getAdress( $this->getAttribute( 'adress' ) );
+        return $this->getAddress( $this->getAttribute( 'address' ) );
     }
 }

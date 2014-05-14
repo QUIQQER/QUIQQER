@@ -1,12 +1,13 @@
 <?php
 
 /**
- * Adresse zu einem Benutzer hinzufügen
+ * Template for create an address
  *
  * @param String $uid
  * @param String $params
+ *
  */
-function ajax_users_adress_template()
+function ajax_users_address_template()
 {
     $Engine    = \QUI\Template::getEngine( true );
     $Countries = \QUI::getCountries();
@@ -15,10 +16,10 @@ function ajax_users_adress_template()
         'countrys' => $Countries->getList()
     ));
 
-    return $Engine->fetch(SYS_DIR .'template/users/adress/new.html');
+    return $Engine->fetch(SYS_DIR .'template/users/address/new.html');
 }
 
 \QUI::$Ajax->register(
-    'ajax_users_adress_template',
+    'ajax_users_address_template',
     array('uid', 'params')
 );

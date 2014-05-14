@@ -6,7 +6,7 @@
  * @param String / Integer $uid
  * @return Array
  */
-function ajax_users_gettoolbar($uid)
+function ajax_users_getCategories($uid)
 {
     $Users = \QUI::getUsers();
     $User  = $Users->get( (int)$uid );
@@ -17,7 +17,7 @@ function ajax_users_gettoolbar($uid)
 }
 
 \QUI::$Ajax->register(
-    'ajax_users_gettoolbar',
+    'ajax_users_getCategories',
     array('uid'),
     'Permission::checkSU'
 );

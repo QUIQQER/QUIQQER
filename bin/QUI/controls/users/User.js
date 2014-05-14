@@ -8,17 +8,19 @@
 
 define('controls/users/User', [
 
+    'qui/QUI',
     'qui/controls/desktop/Panel',
-    'Users',
-    'Ajax',
     'qui/controls/buttons/Button',
     'qui/controls/windows/Confirm',
+    'controls/grid/Grid',
     'qui/utils/Form',
     'utils/Controls',
+    'Users',
+    'Ajax',
 
     'css!controls/users/User.css'
 
-], function(Panel, Users, Ajax, QUIButton, QUIConfirm, FormUtils, ControlUtils)
+], function(QUI, QUIPanel, QUIButton, QUIConfirm, Grid, FormUtils, ControlUtils, Users, Ajax)
 {
     "use strict";
 
@@ -29,7 +31,7 @@ define('controls/users/User', [
      */
     return new Class({
 
-        Extends : Panel,
+        Extends : QUIPanel,
         Type    : 'controls/users/User',
 
         Binds : [
@@ -48,7 +50,8 @@ define('controls/users/User', [
 
         initialize : function(uid, options)
         {
-            this.$User = Users.get( uid );
+            this.$User        = Users.get( uid );
+            this.$AddressGrid = null;
 
             // defaults
             this.setAttribute( 'name', 'user-panel-'+ uid );
@@ -132,7 +135,7 @@ define('controls/users/User', [
             Users.addEvent( 'onSave', this.$onUserRefresh );
 
 
-            Ajax.get('ajax_users_gettoolbar', function(result, Request)
+            Ajax.get('ajax_users_getCategories', function(result, Request)
             {
                 var i, len;
                 var User = self.getUser();
@@ -189,10 +192,14 @@ define('controls/users/User', [
 
             this.Loader.show();
 
-            Ajax.get('ajax_users_gettab', function(result, Request)
+            Ajax.get('ajax_users_gettab', function(result)
             {
                 var Body = self.getBody(),
                     User = self.getUser();
+
+                if ( !result ) {
+                    result = '';
+                }
 
                 Body.set( 'html', '<form>'+ result +'</form>' );
 
@@ -209,7 +216,8 @@ define('controls/users/User', [
 
                 // password save
                 var PasswordField  = Body.getElement( 'input[name="password2"]' ),
-                    PasswordExpire = Body.getElements( 'input[name="expire"]' );
+                    PasswordExpire = Body.getElements( 'input[name="expire"]' ),
+                    AddressList    = Body.getElement( '.address-list' );
 
                 if ( PasswordField )
                 {
@@ -220,9 +228,7 @@ define('controls/users/User', [
                         events : {
                             onClick : self.savePassword
                         }
-                    }).inject(
-                        PasswordField, 'after'
-                    );
+                    }).inject( PasswordField, 'after' );
                 }
 
                 // password expire
@@ -242,7 +248,56 @@ define('controls/users/User', [
                     }
                 }
 
-                self.Loader.hide();
+                if ( AddressList ) {
+                    self.$createAddressTable();
+                }
+
+
+                if ( !Btn.getAttribute( 'onload_require' ) &&
+                     !Btn.getAttribute( 'onload' ) )
+                {
+                    self.Loader.hide();
+                    return;
+                }
+
+                // require onload
+                try
+                {
+                    var exec = Btn.getAttribute( 'onload' ),
+                        req  = Btn.getAttribute( 'onload_require' );
+
+                    if ( req )
+                    {
+                        require( [ req ], function(result)
+                        {
+                            self.Loader.hide();
+
+                            if ( typeOf( result ) == 'class' ) {
+                                new result( self );
+                            }
+
+                            if ( typeOf( result ) == 'function' ) {
+                                result( self );
+                            }
+
+                            if ( exec ) {
+                                eval( exec +'( self )' );
+                            }
+                        });
+
+                        return;
+                    }
+
+                    eval( exec +'( self )' );
+
+                    self.Loader.hide();
+
+                } catch ( Exception )
+                {
+                    console.error( 'some error occurred '+ Exception.getMessage() );
+                    self.Loader.hide();
+                }
+
             }, {
                 Tab    : Btn,
                 plugin : Btn.getAttribute( 'plugin' ),
@@ -395,6 +450,194 @@ define('controls/users/User', [
                     Control.Loader.hide();
                 }
             );
+        },
+
+
+        /**
+         * Addresses
+         */
+
+        /**
+         * Create the address table
+         */
+        $createAddressTable : function()
+        {
+            var self        = this,
+                Content     = this.getContent(),
+                size        = Content.getSize(),
+                AddressList = Content.getElement( '.address-list' );
+
+            if ( !AddressList ) {
+                return;
+            }
+
+            this.$AddressGrid = new Grid( AddressList, {
+                columnModel : [{
+                    header : 'ID',
+                    dataIndex : 'id',
+                    dataType : 'string',
+                    width : 60
+                }, {
+                    header : 'Anrede',
+                    dataIndex : 'salutation',
+                    dataType : 'string',
+                    width : 60
+                }, {
+                    header : 'Vornamen',
+                    dataIndex : 'firstname',
+                    dataType : 'string',
+                    width : 100
+                }, {
+                    header : 'Nachnamen',
+                    dataIndex : 'lastname',
+                    dataType : 'string',
+                    width : 100
+                }, {
+                    header : 'Tel / Fax / Mobil',
+                    dataIndex : 'phone',
+                    dataType : 'string',
+                    width : 100
+                }, {
+                    header : 'E-Mail',
+                    dataIndex : 'mail',
+                    dataType : 'string',
+                    width : 100
+                }, {
+                    header : 'Firma',
+                    dataIndex : 'company',
+                    dataType : 'string',
+                    width : 100
+                }, {
+                    header : 'Strasse',
+                    dataIndex : 'street_no',
+                    dataType : 'string',
+                    width : 100
+                }, {
+                    header : 'PLZ',
+                    dataIndex : 'zip',
+                    dataType : 'string',
+                    width : 100
+                }, {
+                    header : 'Stadt',
+                    dataIndex : 'city',
+                    dataType : 'string',
+                    width : 100
+                }, {
+                    header : 'Land',
+                    dataIndex : 'country',
+                    dataType : 'string',
+                    width : 100
+                }],
+
+                buttons : [{
+                    name : 'add',
+                    text : 'Adresse hinzufügen',
+                    textimage : 'icon-plus',
+                    events :
+                    {
+                        onClick : function() {
+                            self.createAddress();
+                        }
+                    }
+                }, {
+                    type : 'seperator'
+                }, {
+                    name : 'add',
+                    text : 'Adresse löschen',
+                    textimage : 'icon-remove',
+                    events :
+                    {
+                        onClick : function() {
+
+                        }
+                    }
+                }, {
+                    name : 'add',
+                    text : 'Adresse löschen',
+                    textimage : 'icon-remove',
+                    events :
+                    {
+                        onClick : function() {
+
+                        }
+                    }
+                }],
+
+                height    : 300,
+                onrefresh : function() {
+                    self.$refreshAddresses();
+                }
+            });
+
+            this.$AddressGrid.setWidth( size.x - 60 );
+            this.$AddressGrid.refresh();
+        },
+
+        /**
+         * Load / refresh the adresses
+         */
+        $refreshAddresses : function()
+        {
+            if ( !this.$AddressGrid ) {
+                return;
+            }
+
+            var self = this;
+
+            Ajax.get('ajax_users_address_list', function(result)
+            {
+                console.log( result );
+            }, {
+                uid : this.getUser().getId()
+            });
+        },
+
+        /**
+         * Creates a new address and opens the edit control
+         */
+        createAddress : function()
+        {
+            var self = this;
+
+            Ajax.post('ajax_users_address_save', function(newId)
+            {
+                self.editAddress( newId );
+                self.$AddressGrid.refresh();
+            }, {
+                uid  : this.getUser().getId(),
+                aid  : 0,
+                data : JSON.encode([])
+            });
+        },
+
+        /**
+         * Edit an address
+         *
+         * @param {Integer} addressId - ID of the address
+         */
+        editAddress : function(addressId)
+        {
+            var self  = this,
+                Sheet = this.createSheet({
+                    title : 'Adresse bearbeiten',
+                    icon  : 'icon-edit'
+                });
+
+            Sheet.addEvents({
+                onOpen : function(Sheet)
+                {
+                    require(['controls/users/Address'], function(Address)
+                    {
+                        new Address({
+                            addressId : addressId,
+                            uid       : self.getUser().getId()
+                        }).inject( Sheet.getContent() );
+                    });
+                }
+            });
+
+            Sheet.open();
         }
+
     });
 });

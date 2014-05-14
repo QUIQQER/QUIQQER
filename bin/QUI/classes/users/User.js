@@ -3,11 +3,10 @@
  *
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires classes/DOM
- * @requires classes/users/Adresses
- * @requires classes/users/AdressesContact
- *
- * @module classes/users/User
+ * @require qui/QUI
+ * @require qui/classes/DOM
+ * @require Ajax
+ * @require Locale
  *
  * @event onRefresh [ {classes/users/User} ]
  */

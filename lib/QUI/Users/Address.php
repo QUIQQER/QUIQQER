@@ -1,19 +1,20 @@
 <?php
 
 /**
- * This file contains \QUI\Users\Adress
+ * This file contains \QUI\Users\Address
  */
 
 namespace QUI\Users;
 
+use \QUI\Utils\Security\Orthos as Orthos;
+
 /**
- * User Adress
+ * User Address
  *
  * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.users
  */
 
-class Adress extends \QUI\QDOM
+class Address extends \QUI\QDOM
 {
     /**
      * The user
@@ -22,7 +23,7 @@ class Adress extends \QUI\QDOM
     protected $_User = null;
 
     /**
-     * Adress ID
+     * Address-ID
      * @var Integer
      */
     protected $_id = false;
@@ -31,12 +32,12 @@ class Adress extends \QUI\QDOM
      * constructor
      *
      * @param \QUI\Users\User $User  - User
-     * @param Integer $id 		- Adress id
+     * @param Integer $id - Address id
      */
     public function __construct(\QUI\Users\User $User, $id)
     {
         $result = \QUI::getDataBase()->fetch(array(
-            'from'  => \QUI\Users\Manager::TableAdress(),
+            'from'  => \QUI\Users\Manager::TableAddress(),
             'where' => array(
                 'id'  => (int)$id,
                 'uid' => $User->getId()
@@ -52,19 +53,19 @@ class Adress extends \QUI\QDOM
             throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'system',
-                    'exception.lib.user.adress.not.found'
+                    'exception.lib.user.address.not.found'
                 )
             );
         }
 
-        unset($result[0]['id']);
-        unset($result[0]['uid']);
+        unset( $result[0]['id'] );
+        unset( $result[0]['uid'] );
 
-        $this->setAttributes($result[0]);
+        $this->setAttributes( $result[0] );
     }
 
     /**
-     * ID der Adresse
+     * ID der Addresse
      *
      * @return Integer
      */
@@ -85,31 +86,31 @@ class Adress extends \QUI\QDOM
      */
     public function addPhone($phone)
     {
-        if (!is_array($phone)) {
+        if ( !is_array( $phone ) ) {
             return;
         }
 
-        if (!isset($phone['no'])) {
+        if ( !isset( $phone['no'] ) ) {
             return;
         }
 
-        if (!isset($phone['type'])) {
+        if ( !isset( $phone['type'] ) ) {
             return;
         }
 
-        if ($phone['type'] != 'tel' &&
-            $phone['type'] != 'fax' &&
-            $phone['type'] != 'mobile')
+        if ( $phone['type'] != 'tel' &&
+             $phone['type'] != 'fax' &&
+             $phone['type'] != 'mobile' )
         {
             return;
         }
 
         $list = $this->getPhoneList();
 
-        foreach ($list as $entry)
+        foreach ( $list as $entry )
         {
-            if ($entry['type'] == $phone['type'] &&
-                $entry['no'] == $phone['no'])
+            if ( $entry['type'] == $phone['type'] &&
+                 $entry['no'] == $phone['no'] )
             {
                 return;
             }
@@ -117,7 +118,7 @@ class Adress extends \QUI\QDOM
 
         $list[] = $phone;
 
-        $this->setAttribute('phone', json_encode($list));
+        $this->setAttribute( 'phone', json_encode( $list ) );
     }
 
     /**
@@ -130,23 +131,23 @@ class Adress extends \QUI\QDOM
     {
         $index = (int)$index;
 
-        if (!is_array($phone)) {
+        if ( !is_array( $phone ) ) {
             return;
         }
 
-        if (!isset($phone['no'])) {
+        if ( !isset( $phone['no'] ) ) {
             return;
         }
 
-        if (!isset($phone['type'])) {
+        if ( !isset( $phone['type'] ) ) {
             return;
         }
 
         $list = $this->getPhoneList();
 
-        $list[$index] = $phone;
+        $list[ $index ] = $phone;
 
-        $this->setAttribute('phone', json_encode($list));
+        $this->setAttribute( 'phone', json_encode( $list ) );
     }
 
     /**
@@ -154,7 +155,7 @@ class Adress extends \QUI\QDOM
      */
     public function clearPhone()
     {
-        $this->setAttribute('phone', array());
+        $this->setAttribute( 'phone', array() );
     }
 
     /**
@@ -164,13 +165,13 @@ class Adress extends \QUI\QDOM
      */
     public function getPhoneList()
     {
-        if (is_array($this->getAttribute('phone'))) {
+        if ( is_array( $this->getAttribute('phone') ) ) {
             return $this->getAttribute('phone');
         }
 
-        $result = json_decode($this->getAttribute('phone'), true);
+        $result = json_decode( $this->getAttribute('phone'), true );
 
-        if (is_array($result)) {
+        if ( is_array( $result ) ) {
             return $result;
         }
 
@@ -178,35 +179,35 @@ class Adress extends \QUI\QDOM
     }
 
     /**
-     * Fügt eine E-Mail Adresse hinzu
+     * Add a EMail address
      *
      * @param String $mail
      */
     public function addMail($mail)
     {
-        if ( \QUI\Utils\Security\Orthos::checkMailSyntax($mail) == false )
+        if ( Orthos::checkMailSyntax( $mail ) == false )
         {
             throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'system',
-                    'exception.lib.user.adress.mail.wrong.syntax'
+                    'exception.lib.user.address.mail.wrong.syntax'
                 )
             );
         }
 
         $list = $this->getMailList();
 
-        if ( in_array($mail, $list) ) {
+        if ( in_array( $mail, $list ) ) {
             return;
         }
 
         $list[] = $mail;
 
-        $this->setAttribute('mail', json_encode($list));
+        $this->setAttribute( 'mail', json_encode( $list ) );
     }
 
     /**
-     * Leert E-Mail Adressen
+     * Clear mail addresses
      */
     public function clearMail()
     {
@@ -221,12 +222,12 @@ class Adress extends \QUI\QDOM
      */
     public function editMail($index, $mail)
     {
-        if ( \QUI\Utils\Security\Orthos::checkMailSyntax($mail) == false )
+        if ( Orthos::checkMailSyntax( $mail ) == false )
         {
             throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'system',
-                    'exception.lib.user.adress.mail.wrong.syntax'
+                    'exception.lib.user.address.mail.wrong.syntax'
                 )
             );
         }
@@ -236,7 +237,7 @@ class Adress extends \QUI\QDOM
 
         $list[$index] = $mail;
 
-        $this->setAttribute('mail', json_encode($list));
+        $this->setAttribute( 'mail', json_encode( $list ) );
     }
 
     /**
@@ -246,9 +247,9 @@ class Adress extends \QUI\QDOM
      */
     public function getMailList()
     {
-        $result = json_decode($this->getAttribute('mail'), true);
+        $result = json_decode( $this->getAttribute('mail'), true );
 
-        if (is_array($result)) {
+        if ( is_array( $result ) ) {
             return $result;
         }
 
@@ -267,7 +268,7 @@ class Adress extends \QUI\QDOM
             throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'system',
-                    'exception.lib.user.adress.no.country'
+                    'exception.lib.user.address.no.country'
                 )
             );
         }
@@ -278,7 +279,7 @@ class Adress extends \QUI\QDOM
                 $this->getAttribute('country')
             );
 
-        } catch ( \QUI\Exception $e )
+        } catch ( \QUI\Exception $Exception )
         {
 
         }
@@ -286,31 +287,31 @@ class Adress extends \QUI\QDOM
         throw new \QUI\Exception(
             \QUI::getLocale()->get(
                 'system',
-                'exception.lib.user.adress.no.country'
+                'exception.lib.user.address.no.country'
             )
         );
     }
 
     /**
-     * Adresse speichern
+     * Addresse speichern
      */
     public function save()
     {
-        $mail  = json_encode($this->getMailList());
-        $phone = json_encode($this->getPhoneList());
+        $mail  = json_encode( $this->getMailList() );
+        $phone = json_encode( $this->getPhoneList() );
 
         \QUI::getDataBase()->update(
-            \QUI\Users\Manager::TableAdress(),
+            \QUI\Users\Manager::TableAddress(),
             array(
-                'salutation' => \QUI\Utils\Security\Orthos::clear( $this->getAttribute('salutation') ),
-                'firstname'  => \QUI\Utils\Security\Orthos::clear( $this->getAttribute('firstname') ),
-                'lastname'   => \QUI\Utils\Security\Orthos::clear( $this->getAttribute('lastname') ),
-                'company'    => \QUI\Utils\Security\Orthos::clear( $this->getAttribute('company') ),
-                'delivery'   => \QUI\Utils\Security\Orthos::clear( $this->getAttribute('delivery') ),
-                'street_no'  => \QUI\Utils\Security\Orthos::clear( $this->getAttribute('street_no') ),
-                'zip'        => \QUI\Utils\Security\Orthos::clear( $this->getAttribute('zip') ),
-                'city'       => \QUI\Utils\Security\Orthos::clear( $this->getAttribute('city') ),
-                'country'    => \QUI\Utils\Security\Orthos::clear( $this->getAttribute('country') ),
+                'salutation' => Orthos::clear( $this->getAttribute('salutation') ),
+                'firstname'  => Orthos::clear( $this->getAttribute('firstname') ),
+                'lastname'   => Orthos::clear( $this->getAttribute('lastname') ),
+                'company'    => Orthos::clear( $this->getAttribute('company') ),
+                'delivery'   => Orthos::clear( $this->getAttribute('delivery') ),
+                'street_no'  => Orthos::clear( $this->getAttribute('street_no') ),
+                'zip'        => Orthos::clear( $this->getAttribute('zip') ),
+                'city'       => Orthos::clear( $this->getAttribute('city') ),
+                'country'    => Orthos::clear( $this->getAttribute('country') ),
                 'mail'       => $mail,
                 'phone'      => $phone
             ), array(
@@ -326,7 +327,7 @@ class Adress extends \QUI\QDOM
     {
         \QUI::getDataBase()->exec(array(
             'delete' => true,
-            'from'   => \QUI\Users\Manager::TableAdress(),
+            'from'   => \QUI\Users\Manager::TableAddress(),
             'where'  => array(
                 'id'  => $this->getId(),
                 'uid' => $this->_User->getId()
@@ -338,23 +339,23 @@ class Adress extends \QUI\QDOM
      * Administrations Template
      *
      * @param Bool $active - Setzt den Eintrag auf checked (optional)
-     *
      * @return String
      */
     public function getAdminTpl($active=false)
     {
-        $Engine = \QUI\Template::getEngine(true);
+        $Engine = \QUI\Template::getEngine( true );
+
         $Engine->assign(array(
-            'User'   => $this->_User,
-            'Adress' => $this,
-            'active' => $active
+            'User'    => $this->_User,
+            'Address' => $this,
+            'active'  => $active
         ));
 
-        return $Engine->fetch(SYS_DIR .'template/user_popup_adress.html');
+        return $Engine->fetch( SYS_DIR .'template/user_popup_address.html' );
     }
 
     /**
-     * Adresse als JSON String
+     * Addresse als JSON String
      *
      * @return String
      */

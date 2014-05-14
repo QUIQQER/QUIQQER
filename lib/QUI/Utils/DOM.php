@@ -105,7 +105,7 @@ class DOM
      * HTML eines DOM Tabs
      *
      * @param String $name
-     * @param Plugin | \QUI\Projects\Project | String $Object - String = user.xml File
+     * @param Plugin | \QUI\Projects\Project | String $Object - String = path to user.xml File
      *
      * @return String
      */
@@ -155,12 +155,13 @@ class DOM
 
             return '';
 
-        } else
+        }
+/*
+         else
         {
-            /* @var $Object Plugin */
             $tabs = $Object->getUserTabs();
         }
-
+*/
         $str  = '';
 
         foreach ( $tabs as $Tab )
