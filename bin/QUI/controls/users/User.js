@@ -318,6 +318,8 @@ define('controls/users/User', [
                 Frm     = Content.getElement( 'form' ),
                 data    = FormUtils.getFormData( Frm );
 
+            console.log( data );
+
             if ( data.expire_date ) {
                 data.expire = data.expire_date;
             }

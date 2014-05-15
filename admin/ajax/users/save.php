@@ -13,7 +13,7 @@ function ajax_users_save($uid, $attributes, $rights)
 
     $attributes = json_decode( $attributes, true );
     //$rights     = json_decode( $rights, true );
-
+    /*
     if ( isset( $attributes['extra'] ) )
     {
         foreach ( $attributes['extra'] as $key => $value ) {
@@ -22,6 +22,8 @@ function ajax_users_save($uid, $attributes, $rights)
 
         unset( $attributes['extra'] );
     }
+    */
+
 
     foreach ( $attributes as $key => $value ) {
         $User->setAttribute( $key, $value );

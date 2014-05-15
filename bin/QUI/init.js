@@ -124,8 +124,7 @@ require([
 
                     User.load(function()
                     {
-                        var extra = Panel.getAttribute( 'name' ),
-                            data  = User.getExtra( extra );
+                        var data = User.getAttribute( 'qui-bookmarks' );
 
                         if ( !data )
                         {
@@ -145,10 +144,9 @@ require([
 
                 require(['Users'], function(Users)
                 {
-                    var User  = Users.get( USER.id ),
-                        extra = Panel.getAttribute( 'name' );
+                    var User = Users.get( USER.id );
 
-                    User.setExtra( extra, Panel.serialize() );
+                    User.setAttribute( 'qui-bookmarks', Panel.serialize() );
 
                     User.save(function() {
                         Panel.Loader.hide();
@@ -162,10 +160,9 @@ require([
 
                 require(['Users'], function(Users)
                 {
-                    var User  = Users.get( USER.id ),
-                        extra = Panel.getAttribute( 'name' );
+                    var User = Users.get( USER.id );
 
-                    User.setExtra( extra, Panel.serialize() );
+                    User.setExtra( 'qui-bookmarks', Panel.serialize() );
 
                     User.save(function() {
                         Panel.Loader.hide();
