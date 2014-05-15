@@ -33,33 +33,52 @@
     {assign var=country value="---"}
 {/if}
 
-<div class="address-display">
-    <div class="grid-100">
+<address class="grid-100 vcard">
+
+    <div class="adr">
         {if $Address->getAttribute('company')}
-            <p>Firma</p>
-            <p>{$Address->getAttribute('company')}</p>
-            <br />
+        <div class="company">
+            Firma<br />
+            {$Address->getAttribute('company')}
+        </div>
         {/if}
 
-        <p>
-            {$salutation} {$firstname} {$lastname}
+        <div class="salutation">{$salutation} {$firstname} {$lastname}</div>
+
+        <div class="street-address">{$street_no}</div>
+        <div class="locality">{$city}</div >
+        <div class="postal-code">{$country} - {$zip}</div >
+
+        {if $Address->getAttribute('company') &&
+            $Countries->existsCountryCode( $Address->getAttribute('company') )
+        }
+            {assign var=Country value=$Address->getCountry()}
+            {if $Country->getCountry()}
+            <div class="country-name">{$Country->getName()}</div>
+            {/if}
+        {/if}
+    </div>
+
+    {assign var=maillist value=$Address->getMailList()}
+    {assign var=phonelist value=$Address->getPhoneList()}
+
+    {foreach from=$maillist item=mail}
+    <div class="mail">
+        <span class="icon icon-envelope"></span>
+        {$mail}
+    </div>
+    {/foreach}
+
+    {foreach from=$phonelist item=phone}
+        <div class="{$phone.type}">
+            {assign var="cssclass" value="phone"}
+            {if $phone.type == 'mobile'}
+                {assign var="cssclass" value="mobile-phone"}
+            {/if}
+
+            <span class="icon icon-{$cssclass}"></span>
+            {$phone.no}
         </p>
-        <p>{$street_no}</p>
-        <br />
-        <p>{$zip} {$city}</p>
-        <p>{$country}</p>
-    </div>
+    {/foreach}
 
-    <div class="grid-100">
-        {assign var=maillist value=$Address->getMailList()}
-        {assign var=phonelist value=$Address->getPhoneList()}
-
-        {foreach from=$maillist item=mail}
-            <p class="mail">{$mail}</p>
-        {/foreach}
-
-        {foreach from=$phonelist item=phone}
-            <p class="{$phone.type}">{$phone.no}</p>
-        {/foreach}
-    </div>
-</div>
+</address>

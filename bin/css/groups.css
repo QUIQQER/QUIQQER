@@ -1,36 +1,37 @@
-
+/*
 form.group-extend {
-	margin: 10px;
+    margin: 10px;
 }
 
 form.group-extend p {
-	float: left;
-	clear: both;
-	margin: 5px 0;
+    float: left;
+    clear: both;
+    margin: 5px 0;
 }
 
 form.group-extend label {
-	cursor: pointer;
+    cursor: pointer;
 }
 
 form .group-entry {
-	float: left;
-	clear: both;
-	width: 90%;
+    float: left;
+    clear: both;
+    width: 90%;
 
-	border-bottom: 1px solid #dedede;
-	margin-bottom: 10px;
-	padding-bottom: 10px;
+    border-bottom: 1px solid #dedede;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
 }
 
 form .group-entry p {
-	margin-left: 30px;
+    margin-left: 30px;
 }
 
 form.group-extend input {
-	margin-right: 5px;
+    margin-right: 5px;
 }
 
 form.group-extend input.int {
-	width: 30px;
+    width: 30px;
 }
+*/

@@ -336,19 +336,20 @@ class Address extends \QUI\QDOM
     }
 
     /**
-     * Administrations Template
+     * Adressen display
      *
      * @param Bool $active - Setzt den Eintrag auf checked (optional)
-     * @return String
+     * @return String - HTML <address>
      */
-    public function getAdminTpl($active=false)
+    public function getDisplay($active=false)
     {
         $Engine = \QUI\Template::getEngine( true );
 
         $Engine->assign(array(
-            'User'    => $this->_User,
-            'Address' => $this,
-            'active'  => $active
+            'User'      => $this->_User,
+            'Address'   => $this,
+            'active'    => $active,
+            'Countries' => new \QUI\Countries\Manager()
         ));
 
         return $Engine->fetch( SYS_DIR .'template/users/address/display.html' );
