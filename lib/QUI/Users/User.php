@@ -1350,7 +1350,7 @@ class User implements \QUI\Interfaces\Users\User
     {
         $id = (int)$id;
 
-        if ( isset($this->_address_list[ $id ] ) ) {
+        if ( isset( $this->_address_list[ $id ] ) ) {
             return $this->_address_list[ $id ];
         }
 

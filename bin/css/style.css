@@ -14,6 +14,12 @@ th {
     text-align: left;
 }
 
+p {
+    clear: both;
+    margin: 0 5px 0 0;
+    padding: 0;
+}
+
 /** logo, title
  * ====================================================== */
 

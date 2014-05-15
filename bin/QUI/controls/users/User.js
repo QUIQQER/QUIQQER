@@ -192,7 +192,7 @@ define('controls/users/User', [
 
             this.Loader.show();
 
-            Ajax.get('ajax_users_gettab', function(result)
+            Ajax.get('ajax_users_getCategory', function(result)
             {
                 var Body = self.getBody(),
                     User = self.getUser();
@@ -542,9 +542,10 @@ define('controls/users/User', [
                 }, {
                     type : 'seperator'
                 }, {
-                    name : 'add',
+                    name : 'edit',
                     text : 'Adresse editieren',
                     textimage : 'icon-edit',
+                    disabled : true,
                     events :
                     {
                         onClick : function()
@@ -555,13 +556,17 @@ define('controls/users/User', [
                         }
                     }
                 }, {
-                    name : 'add',
+                    name : 'delete',
                     text : 'Adresse löschen',
                     textimage : 'icon-remove',
+                    disabled : true,
                     events :
                     {
-                        onClick : function() {
-
+                        onClick : function()
+                        {
+                            self.deleteAddress(
+                                self.$AddressGrid.getSelectedData()[ 0 ].id
+                            );
                         }
                     }
                 }],
@@ -573,6 +578,28 @@ define('controls/users/User', [
             });
 
             this.$AddressGrid.addEvents({
+                onClick : function()
+                {
+                    var buttons = self.$AddressGrid.getButtons(),
+                        sels    = self.$AddressGrid.getSelectedIndices();
+
+                    if ( !sels )
+                    {
+                        buttons.each(function(Btn)
+                        {
+                            if ( Btn.getAttribute('name') != 'add' ) {
+                                Btn.disable();
+                            }
+                        });
+
+                        return;
+                    }
+
+                    buttons.each(function(Btn) {
+                        Btn.enable();
+                    });
+                },
+
                 onDblClick : function()
                 {
                     self.editAddress(
@@ -642,10 +669,29 @@ define('controls/users/User', [
                 {
                     require(['controls/users/Address'], function(Address)
                     {
-                        new Address({
+                        var UserAddress = new Address({
                             addressId : addressId,
-                            uid       : self.getUser().getId()
+                            uid       : self.getUser().getId(),
+                            events    :
+                            {
+                                onSaved : function()
+                                {
+                                    Sheet.hide();
+                                    self.$AddressGrid.refresh();
+                                }
+                            }
                         }).inject( Sheet.getContent() );
+
+                        Sheet.addButton({
+                            textimage : 'icon-save',
+                            text   : 'speichern',
+                            events :
+                            {
+                                onClick : function() {
+                                    UserAddress.save();
+                                }
+                            }
+                        });
                     });
                 }
             });
@@ -653,13 +699,12 @@ define('controls/users/User', [
             Sheet.show();
         },
 
-
         /**
          * Delete an address
          *
          * @param {Integer} addressId - ID of the address
          */
-        delAddress : function(addressId)
+        deleteAddress : function(addressId)
         {
             var self = this;
 

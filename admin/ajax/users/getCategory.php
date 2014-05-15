@@ -9,13 +9,13 @@
  *
  * @return String
  */
-function ajax_users_gettab($uid, $plugin, $tab)
+function ajax_users_getCategory($uid, $plugin, $tab)
 {
-    return \QUI\Users\Utils::getTab($uid, $plugin, $tab);
+    return \QUI\Users\Utils::getTab( $uid, $plugin, $tab );
 }
 
 \QUI::$Ajax->register(
-    'ajax_users_gettab',
+    'ajax_users_getCategory',
     array('uid', 'plugin', 'tab'),
     'Permission::checkSU'
 );

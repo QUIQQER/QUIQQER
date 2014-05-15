@@ -154,14 +154,8 @@ class DOM
             }
 
             return '';
+        }
 
-        }
-/*
-         else
-        {
-            $tabs = $Object->getUserTabs();
-        }
-*/
         $str  = '';
 
         foreach ( $tabs as $Tab )

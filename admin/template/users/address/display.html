@@ -1,0 +1,65 @@
+
+{assign var=salutation value=$Address->getAttribute('salutation')}
+{assign var=firstname value=$Address->getAttribute('firstname')}
+{assign var=lastname value=$Address->getAttribute('lastname')}
+
+{assign var=street_no value=$Address->getAttribute('street_no')}
+{assign var=zip value=$Address->getAttribute('zip')}
+{assign var=city value=$Address->getAttribute('city')}
+{assign var=country value=$Address->getAttribute('country')}
+
+{if !$firstname}
+    {assign var=firstname value="---"}
+{/if}
+
+{if !$lastname}
+    {assign var=lastname value="---"}
+{/if}
+
+
+{if !$street_no}
+    {assign var=street_no value="---"}
+{/if}
+
+{if !$zip}
+    {assign var=zip value="---"}
+{/if}
+
+{if !$city}
+    {assign var=city value="---"}
+{/if}
+
+{if !$country}
+    {assign var=country value="---"}
+{/if}
+
+<div class="address-display">
+    <div class="grid-100">
+        {if $Address->getAttribute('company')}
+            <p>Firma</p>
+            <p>{$Address->getAttribute('company')}</p>
+            <br />
+        {/if}
+
+        <p>
+            {$salutation} {$firstname} {$lastname}
+        </p>
+        <p>{$street_no}</p>
+        <br />
+        <p>{$zip} {$city}</p>
+        <p>{$country}</p>
+    </div>
+
+    <div class="grid-100">
+        {assign var=maillist value=$Address->getMailList()}
+        {assign var=phonelist value=$Address->getPhoneList()}
+
+        {foreach from=$maillist item=mail}
+            <p class="mail">{$mail}</p>
+        {/foreach}
+
+        {foreach from=$phonelist item=phone}
+            <p class="{$phone.type}">{$phone.no}</p>
+        {/foreach}
+    </div>
+</div>

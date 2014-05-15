@@ -14,7 +14,7 @@ function ajax_users_address_save($uid, $aid, $data)
 
     try
     {
-        $Address = $User->getAddress((int)$aid);
+        $Address = $User->getAddress( (int)$aid );
 
     } catch ( \QUI\Exception $Exception )
     {

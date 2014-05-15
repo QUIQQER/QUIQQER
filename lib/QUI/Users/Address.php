@@ -235,7 +235,7 @@ class Address extends \QUI\QDOM
         $index = (int)$index;
         $list  = $this->getMailList();
 
-        $list[$index] = $mail;
+        $list [$index ] = $mail;
 
         $this->setAttribute( 'mail', json_encode( $list ) );
     }
@@ -351,7 +351,7 @@ class Address extends \QUI\QDOM
             'active'  => $active
         ));
 
-        return $Engine->fetch( SYS_DIR .'template/user_popup_address.html' );
+        return $Engine->fetch( SYS_DIR .'template/users/address/display.html' );
     }
 
     /**
