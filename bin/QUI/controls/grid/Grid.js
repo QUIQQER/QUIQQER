@@ -469,13 +469,32 @@ define('controls/grid/Grid', [
 
             t.inlineeditmode = false;
 
-            if ( editType == 'input' ) {
-                data[colmod.dataIndex] = ( evt && ( (evt.type == 'keyup' && evt.key == 'enter' ) || (evt.type == 'dblclick')) ) ? t.inlineEditSafe.input.value : t.inlineEditSafe.oldvalue;
+            if ( editType == 'input' )
+            {
+                if ( ( evt && ( (evt.type == 'keyup' && evt.key == 'enter' ) || (evt.type == 'dblclick')) ) )
+                {
+                    data[ colmod.dataIndex ] = t.inlineEditSafe.input.value;
+                } else
+                {
+                    data[ colmod.dataIndex ] = t.inlineEditSafe.oldvalue;
+                }
             }
 
-            if (editType == 'textarea') {
-                data[colmod.dataIndex] = ( evt  && evt.type == 'dblclick') ? t.inlineEditSafe.input.value : t.inlineEditSafe.oldvalue;
+            if ( editType == 'textarea' )
+            {
+                if ( evt && evt.type == 'dblclick' )
+                {
+                    data[ colmod.dataIndex ] = t.inlineEditSafe.input.value;
+                } else
+                {
+                    data[ colmod.dataIndex ] = t.inlineEditSafe.oldvalue;
+                }
             }
+
+            if ( typeof data[ colmod.dataIndex ] === 'undefined' || !data[ colmod.dataIndex ] ) {
+                data[ colmod.dataIndex ] = '';
+            }
+
 
             td.innerHTML = colmod.labelFunction ? colmod.labelFunction(data, row, colmod) : data[colmod.dataIndex];
 
