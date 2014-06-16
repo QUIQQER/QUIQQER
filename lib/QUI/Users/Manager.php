@@ -665,7 +665,7 @@ class Manager
 
         } catch ( \QUI\Exception $Exception )
         {
-            \QUI\System\Log::addDebug( $Exception->getMessage() );
+            // \QUI\System\Log::addDebug( $Exception->getMessage() );
         }
 
         return $this->getNobody();

@@ -395,11 +395,11 @@ class Plugin extends \QUI\QDOM
     {
         $this->_Config = $this->_loadSetting();
 
-        if (!$this->_Config) {
+        if ( !$this->_Config ) {
             return false;
         }
 
-        return $this->_Config->get($section, $key);
+        return $this->_Config->get( $section, $key );
     }
 
     /**
