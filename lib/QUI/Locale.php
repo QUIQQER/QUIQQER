@@ -298,7 +298,7 @@ class Locale
         $locale = \QUI\Utils\String::toLower( $lang ) .'_'. \QUI\Utils\String::toUpper( $lang );
         $group  = str_replace( '/', '_', $group );
 
-        return $this->dir() .'/'. $locale .'/LC_MESSAGES/'. $group .'.ini';
+        return $this->dir() .'/'. $locale .'/LC_MESSAGES/'. $group .'.ini.php';
     }
 
      /**

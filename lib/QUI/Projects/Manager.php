@@ -492,7 +492,7 @@ class Manager
          * Write the config
          */
         if ( !file_exists( CMS_DIR .'etc/projects.ini' ) ) {
-            file_put_contents( CMS_DIR .'etc/projects.ini', '' );
+            file_put_contents( CMS_DIR .'etc/projects.ini.php', '' );
         }
 
         $Config = self::getConfig();

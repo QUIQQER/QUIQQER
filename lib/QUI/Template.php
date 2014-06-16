@@ -65,11 +65,11 @@ class Template extends \QUI\QDOM
      */
     static function getConfig()
     {
-        if ( !file_exists( CMS_DIR .'etc/templates.ini' ) ) {
-            file_put_contents( CMS_DIR .'etc/templates.ini', '' );
+        if ( !file_exists( CMS_DIR .'etc/templates.ini.php' ) ) {
+            file_put_contents( CMS_DIR .'etc/templates.ini.php', '' );
         }
 
-        return \QUI::getConfig( 'etc/templates.ini' );
+        return \QUI::getConfig( 'etc/templates.ini.php' );
     }
 
     /**

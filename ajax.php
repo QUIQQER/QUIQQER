@@ -120,7 +120,7 @@ if (isset($_REQUEST['project']))
 }
 
 // Ajax der Plugins einbinden
-if (file_exists(CMS_DIR .'etc/plugins.ini'))
+if (file_exists(CMS_DIR .'etc/plugins.ini.php'))
 {
     $Plugins = QUI::getPlugins();
     $plugins = $Plugins->get();

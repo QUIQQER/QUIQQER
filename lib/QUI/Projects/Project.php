@@ -1284,7 +1284,7 @@ class Project
         // config
         if ($config)
         {
-            $f_config = $dir.'conf.ini';
+            $f_config = $dir.'conf.ini.php';
             file_put_contents($f_config, '');
 
             $Config = new \QUI\Config($f_config);

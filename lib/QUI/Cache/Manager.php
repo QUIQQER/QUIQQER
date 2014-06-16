@@ -51,13 +51,13 @@ class Manager
         {
             try
             {
-                self::$Config = \QUI::getConfig( 'etc/cache.ini' );
+                self::$Config = \QUI::getConfig( 'etc/cache.ini.php' );
 
             } catch ( \QUI\Exception $Exception )
             {
-                file_put_contents( CMS_DIR .'etc/cache.ini', '' );
+                file_put_contents( CMS_DIR .'etc/cache.ini.php', '' );
 
-                self::$Config = \QUI::getConfig( 'etc/cache.ini' );
+                self::$Config = \QUI::getConfig( 'etc/cache.ini.php' );
             }
         }
 

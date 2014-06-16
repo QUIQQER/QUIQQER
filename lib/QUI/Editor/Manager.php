@@ -38,12 +38,12 @@ class Manager
     {
         \QUI\Utils\System\File::mkdir( self::getToolbarsPath() );
 
-        if ( !file_exists( CMS_DIR .'etc/wysiwyg/conf.ini' ) ) {
-            file_put_contents( CMS_DIR .'etc/wysiwyg/conf.ini', '' );
+        if ( !file_exists( CMS_DIR .'etc/wysiwyg/conf.ini.php' ) ) {
+            file_put_contents( CMS_DIR .'etc/wysiwyg/conf.ini.php', '' );
         }
 
-        if ( !file_exists( CMS_DIR .'etc/wysiwyg/editors.ini' ) ) {
-            file_put_contents( CMS_DIR .'etc/wysiwyg/editors.ini', '' );
+        if ( !file_exists( CMS_DIR .'etc/wysiwyg/editors.ini.php' ) ) {
+            file_put_contents( CMS_DIR .'etc/wysiwyg/editors.ini.php', '' );
         }
     }
 
@@ -73,7 +73,7 @@ class Manager
     static function getConf()
     {
         if ( !self::$Config ) {
-            self::$Config = \QUI::getConfig( 'etc/wysiwyg/conf.ini' );
+            self::$Config = \QUI::getConfig( 'etc/wysiwyg/conf.ini.php' );
         }
 
         return self::$Config;
@@ -89,7 +89,7 @@ class Manager
         $config = self::getConf()->toArray();
         $config['toolbars'] = self::getToolbars();
         $config['editors']  = array();
-        $config['editors']  = \QUI::getConfig( 'etc/wysiwyg/editors.ini' )->toArray();
+        $config['editors']  = \QUI::getConfig( 'etc/wysiwyg/editors.ini.php' )->toArray();
 
         return $config;
     }
@@ -102,7 +102,7 @@ class Manager
      */
     static function registerEditor($name, $package)
     {
-        $Conf = \QUI::getConfig( 'etc/wysiwyg/editors.ini' );
+        $Conf = \QUI::getConfig( 'etc/wysiwyg/editors.ini.php' );
         $Conf->setValue( $name, null, $package );
         $Conf->save();
     }

@@ -62,7 +62,7 @@ class Plugin extends \QUI\QDOM
             return $this->_Config;
         }
 
-        $iniFile = CMS_DIR .'etc/plugins/'. $this->getAttribute('name') .'.ini';
+        $iniFile = CMS_DIR .'etc/plugins/'. $this->getAttribute('name') .'.ini.php';
 
         if ( !file_exists( $iniFile ) ) {
             file_put_contents( $iniFile , '' );

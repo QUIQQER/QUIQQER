@@ -117,7 +117,7 @@ class XML
         $ini_file = CMS_DIR .'etc/';
 
         if ( $Conf->getAttribute( 'name' ) ) {
-            $ini_file .= $Conf->getAttribute( 'name' ) .'.ini';
+            $ini_file .= $Conf->getAttribute( 'name' ) .'.ini.php';
         }
 
         \QUI\Utils\System\File::mkdir( dirname( $ini_file ) );
