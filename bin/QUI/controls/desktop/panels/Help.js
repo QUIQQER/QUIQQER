@@ -1,7 +1,7 @@
 /**
  * Help panel
  *
- * @author www.namerobot.com (Henning Leutz)
+ * @author www.pcsg.de (Henning Leutz)
  */
 
 define('controls/desktop/panels/Help', [

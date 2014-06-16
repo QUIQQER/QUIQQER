@@ -238,6 +238,35 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
     }
 
     /**
+     * (non-PHPdoc)
+     * @see iUser::getCurrency()
+     */
+    public function getCurrency()
+    {
+        if ( \QUI::getSession()->get( 'currency' ) )
+        {
+            $currency = \QUI::getSession()->get( 'currency' );
+
+            if ( \QUI\Currency::existCurrency( $currency ) ) {
+                return $currency;
+            }
+        }
+
+        $Country = $this->getCountry();
+
+        if ( $Country )
+        {
+            $currency = $Country->getCurrencyCode();
+
+            if ( \QUI\Currency::existCurrency( $currency ) ) {
+                return $currency;
+            }
+        }
+
+        return \QUI\Currency::getDefaultCurrency();
+    }
+
+    /**
      * This method is useless for nobody
      * \QUI\Users\Nobody cannot have a address
      *

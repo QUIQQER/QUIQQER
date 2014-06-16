@@ -1,7 +1,7 @@
 /**
  * The Welcome Quiqqer panel
  *
- * @author www.namerobot.com (Henning Leutz)
+ * @author www.pcsg.de (Henning Leutz)
  * @module controls/welcome/Panel
  *
  * @requires qui/controls/desktop/Panel

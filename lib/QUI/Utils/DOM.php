@@ -253,6 +253,7 @@ class DOM
 
                 $Button = new \QUI\Controls\Buttons\Button();
                 $Button->setAttribute( 'name', $Param->getAttribute( 'name' ) );
+                $Button->setAttribute( 'require', $Param->getAttribute( 'require' ) );
                 //$Button->setAttribute( 'onclick', '_pcsg.Plugins.Settings.getButtonContent' );
                 //$Button->setAttribute( 'onload', '_pcsg.Plugins.Settings.onload' );
                 //$Button->setAttribute( 'onunload', '_pcsg.Plugins.Settings.onunload' );
@@ -546,7 +547,9 @@ class DOM
             }
         }
 
-        $result .= '</table>';
+        if ( !empty( $result ) ) {
+            $result .= '</table>';
+        }
 
         return $result;
     }

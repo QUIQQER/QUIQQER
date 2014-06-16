@@ -1,7 +1,7 @@
 /**
  * The main loading script for the quiqqer administration
  *
- * @author www.namerobot.com (Henning Leutz)
+ * @author www.pcsg.de (Henning Leutz)
  */
 
 // extend mootools with desktop drag drop

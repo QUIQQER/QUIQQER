@@ -1,7 +1,7 @@
 /**
  * Media for a Project
  *
- * @author www.namerobot.com (Henning Leutz)
+ * @author www.pcsg.de (Henning Leutz)
  *
  * @requires qui/classes/DOM
  * @requires qui/utils/Object

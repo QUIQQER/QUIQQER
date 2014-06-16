@@ -2,7 +2,7 @@
  * Upload manager
  * Uploads files and show the upload status
  *
- * @author www.namerobot.com (Henning Leutz)
+ * @author www.pcsg.de (Henning Leutz)
  *
  * @module controls/upload/Manager
  * @package com.pcsg.quiqqer

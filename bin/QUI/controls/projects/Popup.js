@@ -4,7 +4,7 @@
  * In this Popup you can select a site from a project and submit it
  * eq for insert a link into a input element or editor
  *
- * @author www.namerobot.com (Henning Leutz)
+ * @author www.pcsg.de (Henning Leutz)
  * @module controls/projects/Popup
  */
 

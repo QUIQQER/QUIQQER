@@ -1,7 +1,7 @@
 /**
  * WYWIWYG Editor Setting Panel
  *
- * @author www.namerobot.com (Henning Leutz)
+ * @author www.pcsg.de (Henning Leutz)
  */
 
 define('controls/editors/Settings', [

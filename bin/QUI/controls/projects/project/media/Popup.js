@@ -1,7 +1,7 @@
 /**
  * A media Popup
  *
- * @author www.namerobot.com (Henning Leutz)
+ * @author www.pcsg.de (Henning Leutz)
  */
 
 define('controls/projects/project/media/Popup', [

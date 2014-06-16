@@ -10,7 +10,8 @@ namespace QUI\Users;
  * QUIQQER user manager
  *
  * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.users
+ *
+ * @event onUserLogin [ \QUI\Users\User ]
  */
 
 class Manager
@@ -577,14 +578,14 @@ class Manager
             $Groups      = $User->Group;
             $group_check = false;
 
-            foreach ($Groups as $Group)
+            foreach ( $Groups as $Group )
             {
-                if ($Group->getAttribute('active') == 1) {
+                if ( $Group->getAttribute('active') == 1 ) {
                     $group_check = true;
                 }
             }
 
-            if ($group_check == true)
+            if ( $group_check == true )
             {
                 \QUI::getSession()->set( 'auth', 1 );
                 \QUI::getSession()->set( 'uid', $uparams['id'] );
@@ -609,15 +610,10 @@ class Manager
 
                 $this->_users[$uparams['id']] = $User;
 
-                // uid_sess speichern
-                // $uid_sess_folder = VAR_DIR .'uid_sess/'. $uparams['id'];
-                /*
-                if (file_exists($uid_sess_folder)) {
-                    unlink($uid_sess_folder);
-                }
 
-                file_put_contents($uid_sess_folder, $this->_Session->getId());
-                */
+                // on login event
+                \QUI::getEvents()->fireEvent('userDisable', array($User));
+
 
                 return $User;
             }

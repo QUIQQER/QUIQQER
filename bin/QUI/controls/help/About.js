@@ -1,7 +1,7 @@
 /**
  * Help Window
  *
- * @author www.namerobot.com (Henning Leutz)
+ * @author www.pcsg.de (Henning Leutz)
  */
 
 define('controls/help/About', [
@@ -44,8 +44,8 @@ define('controls/help/About', [
                     '<br />' +
                     '<p>' +
                         'Copyright ' +
-                        '<a href="http://www.namerobot.com" target="_blank">' +
-                            'http://www.namerobot.com' +
+                        '<a href="http://www.pcsg.de" target="_blank">' +
+                            'http://www.pcsg.de' +
                         '</a>' +
                     '</p>' +
                     '<p>Author: Henning Leutz & Moritz Scholz</p>' +
