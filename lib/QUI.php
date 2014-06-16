@@ -166,7 +166,7 @@ class QUI
         // load the main configuration
         $path    = pathinfo( __FILE__ );
         $cms_dir = str_replace( DIRECTORY_SEPARATOR .'lib', '', $path['dirname'] );
-        $config  = parse_ini_file( $cms_dir .'/etc/conf.ini', true );
+        $config  = parse_ini_file( $cms_dir .'/etc/conf.ini.php', true );
 
         /**
          * load the constants
@@ -518,17 +518,27 @@ class QUI
      */
     static function getConfig($file)
     {
+        if ( isset( self::$Configs[ $file ] ) ) {
+            return self::$Configs[ $file ];
+        }
+
+        $_file = CMS_DIR . $file;
+
+        if ( substr( $file, -4 ) !== '.php' ) {
+            $_file .= '.php';
+        }
+
         if ( !isset( self::$Configs[ $file ] ) )
         {
-            if ( !file_exists( CMS_DIR . $file ) || is_dir( CMS_DIR . $file ) )
+            if ( !file_exists( $_file ) || is_dir( $_file ) )
             {
                 throw new \QUI\Exception(
-                    'Error: Ini Datei: '. $file .' existiert nicht.',
+                    'Error: Ini Datei: '. $_file .' existiert nicht.',
                     404
                 );
             }
 
-            self::$Configs[ $file ] = new \QUI\Config( CMS_DIR . $file );
+            self::$Configs[ $file ] = new \QUI\Config( $_file );
         }
 
         return self::$Configs[ $file ];
