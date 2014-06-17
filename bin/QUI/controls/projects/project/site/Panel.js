@@ -541,76 +541,80 @@ define('controls/projects/project/site/Panel', [
                     // site linking
                     var i, len, Row, LastCell;
 
-                    var LinkinLangTable = Body.getElement( '.site-langs' ),
-                        rowList         = LinkinLangTable.getElements( 'tbody tr' );
+                    var LinkinLangTable = Body.getElement( '.site-langs' );
 
-                    new QUIButton({
-                        text : 'Sprach Verknüpfung hinzufügen',
-                        styles : {
-                            float : 'right'
-                        },
-                        events :
-                        {
-                            onClick : function() {
-                                self.addLanguagLink();
-                            }
-                        }
-                    }).inject( LinkinLangTable.getElement( 'th' ) );
-
-
-                    for ( i = 0, len = rowList.length; i < len; i++ )
+                    if ( LinkinLangTable )
                     {
-                        Row = rowList[ i ];
+                        var rowList = LinkinLangTable.getElements( 'tbody tr' );
 
-                        if ( !Row.get( 'data-id' ).toInt() ) {
-                            continue;
+                        new QUIButton({
+                            text : 'Sprach Verknüpfung hinzufügen',
+                            styles : {
+                                float : 'right'
+                            },
+                            events :
+                            {
+                                onClick : function() {
+                                    self.addLanguagLink();
+                                }
+                            }
+                        }).inject( LinkinLangTable.getElement( 'th' ) );
+
+
+                        for ( i = 0, len = rowList.length; i < len; i++ )
+                        {
+                            Row = rowList[ i ];
+
+                            if ( !Row.get( 'data-id' ).toInt() ) {
+                                continue;
+                            }
+
+                            LastCell = rowList[ i ].getLast();
+
+
+                            new QUIButton({
+                                icon   : 'icon-file-alt',
+                                alt    : 'Seite öffnen',
+                                title  : 'Seite öffnen',
+                                lang   : Row.get( 'data-lang' ),
+                                siteId : Row.get( 'data-id' ),
+                                styles : {
+                                    'float' : 'right'
+                                },
+                                events :
+                                {
+                                    onClick : function(Btn)
+                                    {
+                                        PanelUtils.openSitePanel(
+                                            Project.getName(),
+                                            Btn.getAttribute( 'lang' ),
+                                            Btn.getAttribute( 'siteId' )
+                                        );
+                                    }
+                                }
+                            }).inject( LastCell );
+
+                            new QUIButton({
+                                icon   : 'icon-remove',
+                                alt    : 'Verknüpfung löschen',
+                                title  : 'Verknüpfung löschen',
+                                lang   : Row.get( 'data-lang' ),
+                                siteId : Row.get( 'data-id' ),
+                                styles : {
+                                    'float' : 'right'
+                                },
+                                events :
+                                {
+                                    onClick : function(Btn)
+                                    {
+                                        self.removeLanguagLink(
+                                            Btn.getAttribute( 'lang' ),
+                                            Btn.getAttribute( 'siteId' )
+                                        );
+                                    }
+                                }
+                            }).inject( LastCell );
                         }
-
-                        LastCell = rowList[ i ].getLast();
-
-
-                        new QUIButton({
-                            icon   : 'icon-file-alt',
-                            alt    : 'Seite öffnen',
-                            title  : 'Seite öffnen',
-                            lang   : Row.get( 'data-lang' ),
-                            siteId : Row.get( 'data-id' ),
-                            styles : {
-                                'float' : 'right'
-                            },
-                            events :
-                            {
-                                onClick : function(Btn)
-                                {
-                                    PanelUtils.openSitePanel(
-                                        Project.getName(),
-                                        Btn.getAttribute( 'lang' ),
-                                        Btn.getAttribute( 'siteId' )
-                                    );
-                                }
-                            }
-                        }).inject( LastCell );
-
-                        new QUIButton({
-                            icon   : 'icon-remove',
-                            alt    : 'Verknüpfung löschen',
-                            title  : 'Verknüpfung löschen',
-                            lang   : Row.get( 'data-lang' ),
-                            siteId : Row.get( 'data-id' ),
-                            styles : {
-                                'float' : 'right'
-                            },
-                            events :
-                            {
-                                onClick : function(Btn)
-                                {
-                                    self.removeLanguagLink(
-                                        Btn.getAttribute( 'lang' ),
-                                        Btn.getAttribute( 'siteId' )
-                                    );
-                                }
-                            }
-                        }).inject( LastCell );
                     }
                 }
 
