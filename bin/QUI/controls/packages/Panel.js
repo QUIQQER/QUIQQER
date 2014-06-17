@@ -56,7 +56,10 @@ define('controls/packages/Panel', [
             'startSearch',
 
             'dialogAddServer',
-            'dialogInstall'
+            'dialogInstall',
+
+            'loadHealth',
+            'unloadHealth'
         ],
 
         options : {
@@ -88,6 +91,7 @@ define('controls/packages/Panel', [
             this.$UpdateGrid = null;
             this.$ServerGrid = null;
             this.$SearchGrid = null;
+            this.$HealthGrid = null;
 
             this.$packages = {};
 
@@ -178,6 +182,20 @@ define('controls/packages/Panel', [
                     onNormal : this.unloadSearch
                 }
             });
+
+            this.addCategory({
+                name : 'health',
+                text : Locale.get(
+                    'quiqqer/system',
+                    'packages.category.system.health'
+                ),
+                image  : 'icon-medkit',
+                events : {
+                    onActive : this.loadHealth,
+                    onNormal : this.unloadHealth
+                }
+            });
+
 
             this.getCategoryBar().firstChild().click();
         },
@@ -1482,6 +1500,242 @@ define('controls/packages/Panel', [
                 server : server,
                 params : JSON.encode( params )
             });
+        },
+
+    /**
+     * Health methods
+     */
+
+        /**
+         * load the system health category
+         */
+        loadHealth : function()
+        {
+            var self = this;
+
+            this.Loader.show();
+
+            this.getBody().set(
+                'html',
+
+                '<h1>Haben sich Dateien verändert?</h1>' +
+                '<p>Führen Sie einen Selbstcheck durch und / oder prüfen Sie Ihr System mit unseren Online Servern.</p>'
+            );
+
+            var Body = this.getBody(),
+                size = Body.getSize(),
+
+                Container = new Element('div', {
+                    styles : {
+                        width     : size.x - 40,
+                        height    : size.y - 200,
+                        marginTop : 20
+                    }
+                }).inject( Body );
+
+            this.$HealthGrid = new Grid(Container, {
+
+                columnModel : [{
+                    header : Locale.get(
+                        'quiqqer/system',
+                        'packages.grid.update.title.healthbtn'
+                    ),
+                    dataIndex : 'health',
+                    dataType  : 'button',
+                    width     : 50
+                }, {
+                    header : Locale.get(
+                        'quiqqer/system',
+                        'packages.grid.update.title.package'
+                    ),
+                    dataIndex : 'name',
+                    dataType  : 'string',
+                    width     : 250
+                }],
+
+                buttons : [{
+                    text      : 'Hauptsystem prüfen',
+                    textimage : 'icon-play',
+                    events    :
+                    {
+                        click : function() {
+                            self.systemHealthCheck();
+                        }
+                    }
+                }],
+
+                height : size.y - 200
+            });
+
+            Ajax.get('ajax_system_packages_list', function(result)
+            {
+                var i, alt, len, pkg, entry;
+
+                var startHealthCheck = function(Btn)
+                {
+                    self.packageHealthCheck(
+                        Btn.getAttribute( 'pkg' )
+                    );
+                };
+
+                for ( i = 0, len = result.data.length; i < len; i++ )
+                {
+                    entry = result.data[ i ];
+                    pkg   = entry.name;
+
+                    alt = Locale.get( 'quiqqer/system', 'packages.btn.execute.health.alt', {
+                        pkg : pkg
+                    });
+
+                    result.data[ i ].health = {
+                        icon   : 'icon-play',
+                        pkg    : pkg,
+                        alt    : alt,
+                        title  : alt,
+                        events : {
+                            onClick : startHealthCheck
+                        }
+                    };
+                }
+
+                if ( self.$HealthGrid ) {
+                    self.$HealthGrid.setData( result );
+                }
+
+                self.Loader.hide();
+
+            }, {
+                params : JSON.encode({
+                    limit : this.getAttribute( 'limit' ),
+                    page  : this.getAttribute( 'page' ),
+                    type  : ''
+                })
+            });
+        },
+
+        /**
+         * unload the system health category
+         */
+        unloadHealth : function()
+        {
+            if ( this.$HealthGrid )
+            {
+                this.$HealthGrid.destroy();
+                this.$HealthGrid = null;
+            }
+        },
+
+        /**
+         * start the system health check
+         */
+        systemHealthCheck : function()
+        {
+            var self = this;
+
+            this.Loader.show();
+
+            Ajax.get('ajax_system_health_system', function(result)
+            {
+                self.$openHealthCheckSheet( result );
+                self.Loader.hide();
+            });
+        },
+
+        /**
+         * start the health check for a package
+         *
+         * @param {String} pkg - name of the package
+         */
+        packageHealthCheck : function(pkg)
+        {
+            var self = this;
+
+            this.Loader.show();
+
+            Ajax.get('ajax_system_health_package', function(result)
+            {
+                if ( result ) {
+                    self.$openHealthCheckSheet( result );
+                }
+
+                self.Loader.hide();
+            }, {
+                pkg : pkg
+            });
+        },
+
+        /**
+         * display the result sheet for a health check
+         *
+         * @param {Object} result - health check result
+         */
+        $openHealthCheckSheet : function(result)
+        {
+            var self = this;
+
+            this.createSheet({
+                title  : 'Healthcheck Ergebnis',
+                icon   : 'icon-health',
+                events :
+                {
+                    onOpen : function(Sheet)
+                    {
+                        var i, icon, html;
+
+                        var c = 0,
+                            Content = Sheet.getContent();
+
+                        Content.setStyles({
+                            padding: 20
+                        });
+
+                        html = '<table class="data-table"><thead>' +
+                               '<tr>' +
+                                   '<th colspan="2">Ergebnis</th>' +
+                               '</tr>' +
+                               '</thead>' +
+                               '<tbody>';
+
+                        var iconOK       = '<span class="icon-ok"></span>',
+                            iconError    = '<span class="icon-exclamation"></span>',
+                            iconNotFound = '<span class="icon-question"></span>';
+
+
+                        for ( i in result )
+                        {
+                            icon = '';
+
+                            if ( result[ i ] === -1 )
+                            {
+                                icon = iconError;
+
+                            } else if ( result[ i ] === 1 )
+                            {
+                                icon = iconOK;
+
+                            } else if ( result[ i ] === 0 )
+                            {
+                                icon = iconNotFound;
+                            }
+
+
+                            html = html +
+                                   '<tr class="'+ (c % 2 ? 'even' : 'odd') +'">' +
+                                       '<td>'+ icon +'</td>' +
+                                       '<td>'+ i +'</td>' +
+                                   '</tr>';
+
+                            c++;
+                        }
+
+                        html = html + '</tbody></table>';
+
+
+                        Content.set( 'html', html );
+                    }
+                }
+            }).show();
         }
+
     });
 });

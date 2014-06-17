@@ -34,6 +34,10 @@
             <de><![CDATA[Packete / Plugins suchen und installieren]]></de>
             <en><![CDATA[Packages / Plugin search and installation]]></en>
         </locale>
+        <locale name="packages.category.system.health">
+            <de><![CDATA[Systemgesundheit]]></de>
+            <en><![CDATA[Systemhealth]]></en>
+        </locale>
 
 
         <locale name="packages.grid.update.title">
