@@ -55,13 +55,14 @@ class Manager
      */
     static function setConfigForProject($project, $params)
     {
-        \QUI\Rights\Permission::checkPermission(
-            'quiqqer.projects.setconfig'
+        $Project = self::getProject( $project );
+
+        \QUI\Rights\Permission::checkProjectPermission(
+            'quiqqer.projects.setconfig',
+            $Project
         );
 
-        $Project = self::getProject( $project );
-        $Config  = self::getConfig();
-
+        $Config   = self::getConfig();
         $projects = $Config->toArray();
 
         // $config
@@ -533,12 +534,13 @@ class Manager
      */
     static function deleteProject(\QUI\Projects\Project $Project)
     {
-        \QUI\Rights\Permission::checkPermission(
-            'quiqqer.projects.destroy'
+        \QUI\Rights\Permission::checkProjectPermission(
+            'quiqqer.projects.destroy',
+             $Project
         );
 
         $project = $Project->getName();
-        $langs   = explode(',', $Project->getAttribute('langs'));
+        $langs   = $Project->getAttribute('langs');
 
         $DataBase = \QUI::getDataBase();
         $Table    = $DataBase->Table();
@@ -546,33 +548,72 @@ class Manager
         // delete site tables for all languages
         foreach ( $langs as $lang )
         {
-            $table_site     = QUI_DB_PRFX . $project .'_'. $lang .'_sites';
-            $table_site_rel = QUI_DB_PRFX . $project .'_'. $lang .'_sites_relations';
+            $table_site     = \QUI::getDBTableName( $project .'_'. $lang .'_sites' );
+            $table_site_rel = \QUI::getDBTableName( $project .'_'. $lang .'_sites_relations' );
+            $table_multi    = \QUI::getDBTableName( $project .'_multilingual' );
 
-            $table_media     = QUI_DB_PRFX . $project .'_media';
-            $table_media_rel = QUI_DB_PRFX . $project .'_media_relations';
+            $table_media     = \QUI::getDBTableName( $project .'_media' );
+            $table_media_rel = \QUI::getDBTableName( $project .'_media_relations' );
 
 
+            \QUI::getDataBase()->Table()->delete( $table_site );
+            \QUI::getDataBase()->Table()->delete( $table_site_rel );
+            \QUI::getDataBase()->Table()->delete( $table_multi );
+            \QUI::getDataBase()->Table()->delete( $table_media );
+            \QUI::getDataBase()->Table()->delete( $table_media_rel );
         }
 
         // delete database tables from plugins
-        $packages = \QUI::getPackageManager();
-
-        \QUI\System\Log::writeRecursive( $packages );
+        $packages = \QUI::getPackageManager()->getInstalled();
 
         foreach ( $packages as $package )
         {
             // search database tables
-            $packages;
+            $databaseXml = OPT_DIR . $package['name'] .'/database.xml';
 
+            if ( !file_exists( $databaseXml ) ) {
+                continue;
+            }
+
+            $dbfields = \QUI\Utils\XML::getDataBaseFromXml( $databaseXml );
+
+            if ( !isset( $dbfields['projects'] ) ) {
+                continue;
+            }
+
+            // for each language
+            foreach ( $dbfields['projects'] as $table )
+            {
+                foreach ( $langs as $lang )
+                {
+                    $tbl = \QUI::getDBTableName(
+                        $project .'_'. $lang .'_'. $table['suffix']
+                    );
+
+                    \QUI::getDataBase()->Table()->delete( $tbl );
+                }
+            }
         }
 
+        // delete projects permissions
+        \QUI::getDataBase()->delete(
+            \QUI::getDBTableName( \QUI\Rights\Manager::TABLE ) .'2projects',
+            array(
+                'project' => $project
+            )
+        );
 
+        \QUI::getDataBase()->delete(
+            \QUI::getDBTableName( \QUI\Rights\Manager::TABLE ) .'2sites',
+            array(
+                'project' => $project
+            )
+        );
 
         // config schreiben
-//         $Config = self::getConfig();
-//         $Config->del( $project );
-//         $Config->save();
+        $Config = self::getConfig();
+        $Config->del( $project );
+        $Config->save();
 
         \QUI\Cache\Manager::clear( 'QUI::config' );
 
