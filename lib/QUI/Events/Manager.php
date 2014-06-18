@@ -69,6 +69,8 @@ class Manager implements \QUI\Interfaces\Events
             'event'    => 'varchar(200)',
             'callback' => 'text'
         ));
+
+        self::clear();
     }
 
     /**

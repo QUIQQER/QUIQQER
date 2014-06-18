@@ -646,9 +646,45 @@ define('controls/projects/project/site/Panel', [
                     Category.getAttribute( 'onload_require' )
                 ], function(Plugin)
                 {
-                    eval( Category.getAttribute( 'onload' ) +'( Category, self );' );
+                    if ( Category.getAttribute( 'onload' ) )
+                    {
+                        eval( Category.getAttribute( 'onload' ) +'( Category, self );' );
+                        return;
+                    }
+
+                    var type = typeOf( Plugin );
+
+                    if ( type === 'function' )
+                    {
+                        type( Category, self );
+                        return;
+                    }
+
+                    if ( type === 'class' )
+                    {
+                        var Obj = new Plugin({
+                            Site : self.getSite()
+                        });
+
+                        if ( QUI.Controls.isControl( Obj ) )
+                        {
+                            Obj.inject( self.getContent() );
+                            Obj.setParent( self );
+
+                            self.Loader.hide();
+
+                            return;
+                        }
+                    }
+
                 });
 
+                return;
+            }
+
+            if ( Category.getAttribute( 'onload' ) )
+            {
+                eval( Category.getAttribute( 'onload' ) +'( Category, self );' );
                 return;
             }
 
