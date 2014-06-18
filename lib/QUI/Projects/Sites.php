@@ -261,12 +261,30 @@ class Sites
             ))
         );
 
-        // Global Plugins hohlen
-        $Plugins = self::getPlugins( $Site );
+        // site type tabs
+        $type  = $Site->getAttribute( 'type' );
+        $types = explode( ':', $type );
 
-        foreach ( $Plugins as $Plugin )
+        $file = OPT_DIR . $types[ 0 ] .'/site.xml';
+
+        if ( file_exists( $file ) )
         {
-            $file = $Plugin->getAttribute( '_folder_' ) .'site.xml';
+            $Dom  = \QUI\Utils\XML::getDomFromXml( $file );
+            $Path = new \DOMXPath( $Dom );
+
+            \QUI\Utils\DOM::addTabsToToolbar(
+                $Path->query( "//site/types/type[@type='". $types[ 1 ] ."']/tab" ),
+                $Tabbar
+            );
+        }
+
+
+        // Global tabs
+        $packages = \QUI::getPackageManager()->getInstalled();
+
+        foreach ( $packages as $package )
+        {
+            $file = OPT_DIR . $package['name'] .'/site.xml';
 
             if ( !file_exists( $file ) ) {
                 continue;
@@ -276,20 +294,6 @@ class Sites
                 \QUI\Utils\XML::getTabsFromXml( $file ),
                 $Tabbar
             );
-
-            //\QUI\System\Log::writeRecursive( $result, 'error' );
-
-            /* old api
-            if ( method_exists( $Plugin, 'setTabs' ) ) {
-                $Plugin->setTabs($Tabbar, $Site);
-            }
-            */
-
-            /*
-            if ( method_exists( $Plugin, 'onAdminLoad' ) ) {
-                $adminload .= $Plugin->onAdminLoad($Site);
-            }
-            */
         }
 
         return $Tabbar;
