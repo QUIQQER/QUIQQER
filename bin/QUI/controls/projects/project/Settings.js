@@ -13,6 +13,7 @@ define('controls/projects/project/Settings', [
 
     'qui/controls/desktop/Panel',
     'qui/controls/buttons/Button',
+    'qui/controls/windows/Confirm',
     'qui/utils/Form',
     'utils/Template',
     'controls/lang/Popup',
@@ -21,7 +22,7 @@ define('controls/projects/project/Settings', [
 
     'css!controls/projects/project/Settings.css'
 
-], function(QUIPanel, QUIButton, QUIFormUtils, UtilsTemplate, LangPopup, Projects, Ajax)
+], function(QUIPanel, QUIButton, QUIConfirm, QUIFormUtils, UtilsTemplate, LangPopup, Projects, Ajax)
 {
     "use strict";
 
@@ -45,6 +46,7 @@ define('controls/projects/project/Settings', [
             '$onResize',
 
             'save',
+            'del',
             'openSettings',
             'openMeta',
             'openBackup',
@@ -108,6 +110,14 @@ define('controls/projects/project/Settings', [
                 }
             });
 
+            this.addButton({
+                text      : 'Löschen',
+                textimage : 'icon-remove',
+                events : {
+                    onClick : this.del
+                }
+            });
+
             this.addCategory({
                 name   : 'settings',
                 text   : 'Einstellungen',
@@ -160,6 +170,49 @@ define('controls/projects/project/Settings', [
                 params  : JSON.encode( this.$config )
             });
         },
+
+        /**
+         * Opens the delete dialog
+         */
+        del : function()
+        {
+            var self = this;
+
+            new QUIConfirm({
+                icon        : 'icon-exclamation-sign',
+                title       : 'Projekt löschen',
+                text        : 'Projekt wirlich löschen?',
+                texticon    : 'icon-exclamation-sign',
+                information : 'Das Projekt kann nicht wieder hergestellt werden und die Löschung ist unwiderruflich',
+
+                events :
+                {
+                    onSubmit : function()
+                    {
+                        new QUIConfirm({
+                            icon        : 'icon-exclamation-sign',
+                            title       : 'Projekt löschen',
+                            text        : 'Sind Sie sicher das Sie das Projekt löschen möchten?',
+                            texticon    : 'icon-exclamation-sign',
+
+                            events :
+                            {
+                                onSubmit : function()
+                                {
+                                    Ajax.post('ajax_project_delete', function()
+                                    {
+
+                                    }, {
+                                        project : self.$Project.getName()
+                                    });
+                                }
+                            }
+                        }).open();
+                    }
+                }
+            }).open();
+        },
+
 
         /**
          * Opens the Settings

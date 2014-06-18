@@ -38,14 +38,19 @@
     <!-- Darf Benutzer editieren -->
     <permission name="quiqqer.admin.users.edit" type="bool" />
 
+<!-- Project permissions  -->
+
     <!-- Darf Projekte anlegen -->
-    <permission name="quiqqer.admin.projects.create" type="bool" />
+    <permission name="quiqqer.projects.create" type="users_and_groups" area="project" />
+
+    <!-- Darf Projekte löschen -->
+    <permission name="quiqqer.projects.destroy" type="users_and_groups" area="project" />
 
     <!--  Darf Projekt Einstellungen machen -->
-    <permission name="quiqqer.admin.projects.setconfig" type="bool" />
+    <permission name="quiqqer.projects.setconfig" type="users_and_groups" area="project" />
 
     <!-- Darf Seiten editieren - generelles recht -->
-    <permission name="quiqqer.projects.sites.edit" type="bool" />
+    <permission name="quiqqer.projects.sites.edit" type="users_and_groups" area="project" />
 
 
 <!-- Site permissions  -->

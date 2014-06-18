@@ -56,7 +56,7 @@ class Manager
     static function setConfigForProject($project, $params)
     {
         \QUI\Rights\Permission::checkPermission(
-            'quiqqer.admin.projects.setconfig'
+            'quiqqer.projects.setconfig'
         );
 
         $Project = self::getProject( $project );
@@ -321,7 +321,7 @@ class Manager
     static function createProject($name, $lang, $template=false)
     {
         \QUI\Rights\Permission::checkPermission(
-            'quiqqer.admin.projects.create'
+            'quiqqer.projects.create'
         );
 
         if ( strlen( $name ) <= 2 )
@@ -525,6 +525,60 @@ class Manager
         \QUI::getEvents()->fireEvent( 'createProject', array( $Project ) );
 
         return $Project;
+    }
+
+    /**
+     * Delete a project
+     * @param \QUI\Projects\Project $Project
+     */
+    static function deleteProject(\QUI\Projects\Project $Project)
+    {
+        \QUI\Rights\Permission::checkPermission(
+            'quiqqer.projects.destroy'
+        );
+
+        $project = $Project->getName();
+        $langs   = explode(',', $Project->getAttribute('langs'));
+
+        $DataBase = \QUI::getDataBase();
+        $Table    = $DataBase->Table();
+
+        // delete site tables for all languages
+        foreach ( $langs as $lang )
+        {
+            $table_site     = QUI_DB_PRFX . $project .'_'. $lang .'_sites';
+            $table_site_rel = QUI_DB_PRFX . $project .'_'. $lang .'_sites_relations';
+
+            $table_media     = QUI_DB_PRFX . $project .'_media';
+            $table_media_rel = QUI_DB_PRFX . $project .'_media_relations';
+
+
+        }
+
+        // delete database tables from plugins
+        $packages = \QUI::getPackageManager();
+
+        \QUI\System\Log::writeRecursive( $packages );
+
+        foreach ( $packages as $package )
+        {
+            // search database tables
+            $packages;
+
+        }
+
+
+
+        // config schreiben
+//         $Config = self::getConfig();
+//         $Config->del( $project );
+//         $Config->save();
+
+        \QUI\Cache\Manager::clear( 'QUI::config' );
+
+
+        // project create event
+        \QUI::getEvents()->fireEvent( 'deleteProject', array( $project ) );
     }
 
     /**

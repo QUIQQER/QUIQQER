@@ -118,5 +118,8 @@ class Setup
 
         // generate menu
         \QUI\Update::importAllMenuXMLs();
+
+        // clear cache
+        \QUI\Cache\Manager::clearAll();
     }
 }
