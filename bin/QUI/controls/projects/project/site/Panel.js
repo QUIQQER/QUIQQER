@@ -676,7 +676,6 @@ define('controls/projects/project/site/Panel', [
                             return;
                         }
                     }
-
                 });
 
                 return;

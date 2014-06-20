@@ -508,6 +508,17 @@ class QUI
     }
 
     /**
+     * Return the tablename with the QUI Prefix and table params
+     *
+     * @param String $table
+     * @return String
+     */
+    static function getDBProjectTableName($table, \QUI\Projects\Project $Project)
+    {
+        return QUI_DB_PRFX . $Project->getName() .'_'. $Project->getLang() .'_'. $table;
+    }
+
+    /**
      * Returns a config object for a INI file
      * Starting from CMS_DIR
      *

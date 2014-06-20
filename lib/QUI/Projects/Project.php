@@ -717,7 +717,7 @@ class Project
      */
     public function getMedia()
     {
-        return new \QUI\Projects\Media($this);
+        return new \QUI\Projects\Media( $this );
     }
 
     /**
@@ -749,7 +749,7 @@ class Project
             {
                 $this->_plugins[ $_plugins[$i] ] = $Plugins->get( $_plugins[$i] );
 
-            } catch ( \QUI\Exception $e )
+            } catch ( \QUI\Exception $Exception )
             {
                 //nothing
             }
@@ -1198,6 +1198,7 @@ class Project
      * @param Bool $project - Projektdb sichern
      * @param Bool $media - Media-Center sichern
      * @param Bool $template - Templates sichern
+     * @deprecated
      */
     public function createBackup($config=true, $project=true, $media=true, $template=true)
     {

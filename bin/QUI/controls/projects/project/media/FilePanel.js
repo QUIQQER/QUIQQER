@@ -120,6 +120,12 @@ define('controls/projects/project/media/FilePanel', [
             this.$createTabs();
             this.$createButtons();
 
+            this.$File.addEvents({
+                onSave : function() {
+                    self.refresh();
+                }
+            });
+
             Template.get('project_media_file', function(result, Request)
             {
                 var File = self.$File,
@@ -232,7 +238,7 @@ define('controls/projects/project/media/FilePanel', [
 
             this.Loader.show();
 
-            self.$File.refresh().then(function()
+            this.$File.refresh().then(function()
             {
                 self.$createButtons();
                 self.$createTabs();

@@ -76,13 +76,11 @@ define('classes/projects/Project', [
          */
         get : function(id)
         {
-            var Site = this.$ids[ id ];
-
-            if ( typeof Site !== 'undefined' ) {
-                return Site;
+            if ( typeof this.$ids[ id ] !== 'undefined' ) {
+                return this.$ids[ id ];
             }
 
-            Site = new ProjectSite( this, id );
+            var Site = new ProjectSite( this, id );
 
             Site.addEvents({
                 'onDelete'      : this.$onSiteDelete,

@@ -179,6 +179,10 @@ class Manager implements \QUI\Interfaces\Events
         $this->_Events->fireEvent( $event, $args );
 
         // event onFireEvent
+        if ( !is_array( $args ) ) {
+            $args = array();
+        }
+
         array_unshift( $args, array(
             'event' => $event
         ) );
