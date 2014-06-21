@@ -887,7 +887,20 @@ define('controls/projects/project/site/Panel', [
 
                     Editor.inject( Body );
                     Editor.setContent( content );
-                    Editor.addEvent( 'onLoaded', self.$onEditorLoad );
+
+                    // load css files
+                    Ajax.get('ajax_editor_get_cssFiles', function(result)
+                    {
+                        for ( var i = 0, len = result.length; i < len; i++) {
+                            Editor.addCSS( result[ i ] )
+                        }
+
+                        Editor.addEvent( 'onLoaded', self.$onEditorLoad );
+
+                    }, {
+                        project : Project.getName()
+                    });
+
                 });
             });
         },

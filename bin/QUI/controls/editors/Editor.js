@@ -8,10 +8,14 @@
  *
  * @requires qui/controls/Control
  *
- * @module controls/editor/Editor
+ * @event onInit [ {self} ]
+ * @event onDraw [ {self} ]
+ * @event onDestroy[ {self} ]
+ * @event onSetContent [ {String} content, {self} ]
+ * @event onAddCSS [ {String} file, {self} ]
  */
 
-define('controls/editors/Editor', ['qui/controls/Control'], function(Control)
+define(['qui/controls/Control'], function(Control)
 {
     "use strict";
 
@@ -163,6 +167,15 @@ define('controls/editors/Editor', ['qui/controls/Control'], function(Control)
         {
             return this.$Instance;
         },
+
+        /**
+         * Add an CSS file to the Instance
+         */
+        addCSS : function(file)
+        {
+            this.fireEvent( 'addCSS', [ file, this ] );
+        },
+
 
         /**
          * Open the Meda Popup for Image insertion

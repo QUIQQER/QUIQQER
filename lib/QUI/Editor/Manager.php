@@ -88,7 +88,6 @@ class Manager
     {
         $config = self::getConf()->toArray();
         $config['toolbars'] = self::getToolbars();
-        $config['editors']  = array();
         $config['editors']  = \QUI::getConfig( 'etc/wysiwyg/editors.ini.php' )->toArray();
 
         return $config;

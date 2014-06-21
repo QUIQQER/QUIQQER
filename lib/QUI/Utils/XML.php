@@ -210,7 +210,7 @@ class XML
      * Reads the tools list from an *.xml
      *
      * @param String $file - path to xml file
-     * @return array()
+     * @return Array
      */
     static function getConsoleToolsFromXml($file)
     {
@@ -243,10 +243,31 @@ class XML
     }
 
     /**
+     * Reads the css file list from an *.xml
+     *
+     * @param String $file
+     * @return Array
+     */
+    static function getWysiwygCSSFromXml($file)
+    {
+        $Dom  = self::getDomFromXml( $file );
+        $Path = new \DOMXPath( $Dom );
+
+        $CSSList = $Path->query( "//wysiwyg/css" );
+        $files   = array();
+
+        for ( $i = 0; $i < $CSSList->length; $i++ ) {
+             $files[] = $CSSList->item( $i )->getAttribute( 'src' );
+        }
+
+        return $files;
+    }
+
+    /**
      * Reads the database entries from an *.xml
      *
      * @param String $file - path to the xml file
-     * @return array
+     * @return Array
      */
     static function getDataBaseFromXml($file)
     {
