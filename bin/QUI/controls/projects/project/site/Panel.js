@@ -526,6 +526,12 @@ define('controls/projects/project/site/Panel', [
                     event.stop();
                 });
 
+                // set to the media inputs the right project
+                Body.getElements( '.media-image' ).each(function(Elm) {
+                    Elm.set( 'data-project', Project.getName() );
+                });
+
+                // set data
                 QUIFormUtils.setDataToForm(
                     self.getSite().getAttributes(),
                     Form

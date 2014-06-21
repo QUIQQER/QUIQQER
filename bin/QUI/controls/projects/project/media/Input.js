@@ -85,7 +85,14 @@ define('controls/projects/project/media/Input', [
                 {
                     onClick : function()
                     {
+                        var project = '';
+
+                        if ( self.$Input.get( 'date-project' ) ) {
+                            project = self.$Input.get( 'project' );
+                        }
+
                         new MediaPopup({
+                            project : project,
                             events :
                             {
                                 onSubmit : function(Popup, params) {
