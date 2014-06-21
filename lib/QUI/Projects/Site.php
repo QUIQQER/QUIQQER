@@ -1298,24 +1298,24 @@ class Site extends \QUI\QDOM
     {
         if ( $this->getId() == 1 )
         {
-            if (empty($params)) {
+            if ( empty( $params ) ) {
                 return '';
             }
 
             $url = '';
 
-            foreach ($params as $param => $value)
+            foreach ( $params as $param => $value )
             {
-                if ($param == 'phpMyAdmin') {
+                if ( $param == 'phpMyAdmin' ) {
                     continue;
                 }
 
-                if ($param != 'suffix') {
+                if ( $param != 'suffix' ) {
                     $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $param . \QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
                 }
             }
 
-            if (isset($params['suffix'])) {
+            if ( isset( $params['suffix'] ) ) {
                 return $url .'.'. $params['suffix'];
             }
 
