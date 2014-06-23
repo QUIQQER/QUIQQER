@@ -70,6 +70,9 @@ define('controls/projects/project/site/SiteChildrenSort', [
                             '<option value="c_date DESC">Erstellungsdatum absteigend</option>' +
                             '<option value="d_date ASC">Editierungsdatum aufsteigend</option>' +
                             '<option value="d_date DESC">Editierungsdatum absteigend</option>' +
+
+                            '<option value="release_from ASC">Veröffentlichungsdatum aufsteigend</option>' +
+                            '<option value="release_from DESC">Veröffentlichungsdatum absteigend</option>' +
                         '</select>' +
                         '<div class="qui-project-children-sort-container"></div>'
             });
@@ -115,6 +118,23 @@ define('controls/projects/project/site/SiteChildrenSort', [
                     width     : 150
                 }],
                 buttons : [{
+                    name      : 'sortSave',
+                    textimage : 'icon-save',
+                    text      : 'Sortierung speichern',
+                    events    :
+                    {
+                        onClick : function(Btn)
+                        {
+                            Btn.setAttribute( 'textimage', 'icon-refresh icon-spin' );
+
+                            self.save(function() {
+                                Btn.setAttribute( 'textimage', 'icon-save' );
+                            });
+                        }
+                    }
+                }, {
+                    type : 'seperator'
+                }, {
                     name      : 'up',
                     textimage : 'icon-angle-up',
                     text      : 'hoch',
@@ -134,22 +154,6 @@ define('controls/projects/project/site/SiteChildrenSort', [
                     {
                         onClick : function() {
                             self.$GridTable.movedown();
-                        }
-                    }
-                }, {
-                    name      : 'sortSave',
-                    textimage : 'icon-save',
-                    text      : 'Sortierung speichern',
-                    disabled  : true,
-                    events    :
-                    {
-                        onClick : function(Btn)
-                        {
-                            Btn.setAttribute( 'textimage', 'icon-refresh icon-spin' );
-
-                            self.save(function() {
-                                Btn.setAttribute( 'textimage', 'icon-save' );
-                            });
                         }
                     }
                 }],
@@ -262,8 +266,7 @@ define('controls/projects/project/site/SiteChildrenSort', [
                 }
 
                 if ( Button.getAttribute('name') != 'up' &&
-                     Button.getAttribute('name') != 'down' &&
-                     Button.getAttribute('name') != 'sortSave')
+                     Button.getAttribute('name') != 'down' )
                 {
                     continue;
                 }
@@ -289,8 +292,7 @@ define('controls/projects/project/site/SiteChildrenSort', [
                 }
 
                 if ( Button.getAttribute('name') != 'up' &&
-                     Button.getAttribute('name') != 'down' &&
-                     Button.getAttribute('name') != 'sortSave')
+                     Button.getAttribute('name') != 'down' )
                 {
                     continue;
                 }
@@ -307,6 +309,20 @@ define('controls/projects/project/site/SiteChildrenSort', [
          */
         save : function(callback)
         {
+            if ( this.$Select.value !== 'manuell' )
+            {
+                this.$Site.setAttribute( 'order', this.$Select.value );
+
+                this.$Site.save(function()
+                {
+                    if ( typeof callback !== 'undefined' ) {
+                        callback();
+                    }
+                });
+
+                return;
+            }
+
             var i, len;
 
             var Project = this.$Site.getProject(),

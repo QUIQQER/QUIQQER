@@ -895,9 +895,12 @@ define('controls/projects/project/site/Panel', [
                     Editor.setContent( content );
 
                     // load css files
-                    Ajax.get('ajax_editor_get_cssFiles', function(result)
+                    Ajax.get('ajax_editor_get_projectFiles', function(result)
                     {
-                        for ( var i = 0, len = result.length; i < len; i++) {
+                        Editor.setAttribute( 'bodyId', result.bodyId );
+                        Editor.setAttribute( 'bodyClass', result.bodyClass );
+
+                        for ( var i = 0, len = result.cssFiles.length; i < len; i++) {
                             Editor.addCSS( result[ i ] )
                         }
 

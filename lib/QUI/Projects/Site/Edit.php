@@ -463,12 +463,6 @@ class Edit extends \QUI\Projects\Site
             }
         }
 
-        // @todo onSave for Plugins
-
-        $this->Events->fireEvent( 'save', array($this) );
-
-        \QUI::getEvents()->fireEvent( 'siteSave', array($this) );
-
         /**
          * Speicher Routine der Plugins aufrufen
          */
@@ -496,11 +490,25 @@ class Edit extends \QUI\Projects\Site
         }
         */
 
-        $order_type = '';
+        $order_type = 'manuell';
 
         switch ( $this->getAttribute( 'order_type' ) )
         {
+            case 'manuell':
+            case 'name ASC':
+            case 'name DESC':
+            case 'title ASC':
+            case 'title DESC':
 
+            case 'c_date ASC':
+            case 'c_date DESC':
+            case 'd_date ASC':
+            case 'd_date DESC':
+
+            case 'release_from ASC':
+            case 'release_from DESC':
+                $order_type = $this->getAttribute( 'order_type' );
+            break;
         }
 
 
@@ -539,7 +547,7 @@ class Edit extends \QUI\Projects\Site
                 'e_user'   => \QUI::getUserBySession()->getId(),
 
                 // ORDER
-                'order_type'  => $this->getAttribute( 'order_type' ),
+                'order_type'  => $order_type,
                 'order_field' => $this->getAttribute( 'order_field' ),
 
                 // images
@@ -570,6 +578,11 @@ class Edit extends \QUI\Projects\Site
 
         // Letztes Speichern
         $Project->setEditDate( time() );
+
+        // on save event
+        $this->Events->fireEvent( 'save', array($this) );
+        \QUI::getEvents()->fireEvent( 'siteSave', array($this) );
+
 
         if ( $update )
         {
@@ -760,48 +773,6 @@ class Edit extends \QUI\Projects\Site
     }
 
     /**
-     * Beim Kind erstellen werden die Plugins aufgerufen
-     *
-     * @param Integer $childid
-     */
-//     protected function _createChild($childid)
-//     {
-//         $User = \QUI::getUserBySession();
-
-//         // Tabs der Plugins hohlen
-//         $Plugins = $this->_getLoadedPlugins();
-
-//         foreach ( $Plugins as $plg )
-//         {
-//             if ( method_exists( $plg, 'onChildCreate' ) ) {
-//                 $plg->onChildCreate( $childid, $this );
-//             }
-//         }
-//     }
-
-    /**
-     * Gibt Archiveeinträge zurück
-     *
-     * @return Array
-     */
-    public function getArchive()
-    {
-        $Project = $this->getProject();
-        $table   = $Project->getAttribute('name') .'_'.
-                   $Project->getAttribute('lang') .'_archive';
-
-        $result = \QUI::getDataBase()->fetch(array(
-            'from' 	=> $table,
-            'where' => array(
-                'id' => $this->getId()
-            ),
-            'order' => 'date DESC'
-        ));
-
-        return $result;
-    }
-
-    /**
      * Fügt eine Verknüpfung zu einer anderen Sprache ein
      *
      * @param String $lang - Sprache zu welcher verknüpft werden soll
@@ -968,128 +939,10 @@ class Edit extends \QUI\Projects\Site
         ));
 
         // Aufruf der createChild Methode im TempSite - für den Adminbereich
-        // needled ?
-        $this->Events->fireEvent('siteCreateChild', array($newId, $this));
-
-//         if ( method_exists( $this, '_createChild' ) ) {
-//             $this->_createChild( $new_id );
-//         }
+        $this->Events->fireEvent('createChild', array($newId, $this));
+        \QUI::getEvents()->fireEvent( 'siteCreateChild', array($newId, $this) );
 
         return $newId;
-    }
-
-    /**
-     * load archiv
-     * @todo muss in history plugin rein
-     *
-     * @param unknown_type $date
-     * @deprecated
-     */
-    public function loadArchive($date)
-    {
-        // Edit Rechte prüfen
-        \QUI\Projects\Sites::checkRights($this);
-
-        $Project = $this->getProject();
-        $table   = $Project->getAttribute('name') .'_'.
-                   $Project->getAttribute('lang') .'_archive';
-
-        $result = \QUI::getDB()->select(array(
-            'from' 	=> $table,
-            'where' => array(
-                'date' => date('Y-m-d G:i:s', $date)
-            ),
-            'order' => 'date DESC'
-        ));
-
-        if (!isset($result[0]) || !isset($result[0]['fields'])) {
-            throw new \QUI\Exception('Archive not found', 404);
-        }
-
-        $fields = json_decode($result[0]['fields'], true);
-
-        if (!is_array($fields)) {
-            return;
-        }
-
-        if (isset($fields['project'])) {
-            unset($fields['project']);
-        }
-
-        foreach ($fields as $key => $value) {
-            $this->setAttribute($key, $value);
-        }
-    }
-
-    /**
-     * create archiv
-     * @todo muss in history plugin rein
-     *
-     * @return unknown
-     * @deprecated
-     */
-    public function createArchive()
-    {
-        // Edit Rechte prüfen
-        \QUI\Projects\Sites::checkRights($this);
-
-        $Project       = $this->getProject();
-        $table_archive = $Project->getAttribute('name') .'_'.
-                         $Project->getAttribute('lang') .'_archive';
-
-        // [begin] Archive
-        $allparams    = $this->getAllAttributes();
-        $archiveitems = $Project->getConfig('archive');
-
-        // anzahl der Einträge überprüfen
-        $archives = \QUI::getDB()->select(array(
-            'from'  => $table_archive,
-            'where' => array(
-                'id' => $this->getId()
-            ),
-            'order' => 'date ASC'
-        ));
-
-        if (isset($archives[0]) && count($archives) >= $archiveitems)
-        {
-            \QUI::getDB()->deleteData(
-                $table_archive,
-                array('date' => $archives[0]['date'])
-            );
-        }
-
-        $User = \QUI::getUsers()->getUserBySession();
-
-        return \QUI::getDB()->addData($table_archive, array(
-            'id'     => $this->getId(),
-            'date'   => date('Y-m-d G:i:s'),
-            'user'   => $User->getId(),
-            'fields' => json_encode( $allparams )
-        ));
-    }
-
-    /**
-     * Spielt ein Archiv wieder ein
-     *
-     * @param unknown_type $date
-     * @deprecated
-     */
-    public function restoreArchive($date)
-    {
-        // Edit Rechte prüfen
-        $this->checkPermission( 'quiqqer.projects.site.edit' );
-
-        // jetziger Stand sichern
-        // $this->createArchive();
-
-        // Tempfile löschen
-        //$this->deleteTemp();
-
-        // Archiv laden
-        // $this->loadArchive($date);
-
-        // Attribute speichern
-        //$this->save(false);
     }
 
     /**

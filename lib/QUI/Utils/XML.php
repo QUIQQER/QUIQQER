@@ -324,7 +324,7 @@ class XML
      */
     static function getDomFromXml($filename)
     {
-        if ( strpos($filename, '.xml') === false ) {
+        if ( strpos( $filename, '.xml' ) === false ) {
             return new \DOMDocument();
         }
 
