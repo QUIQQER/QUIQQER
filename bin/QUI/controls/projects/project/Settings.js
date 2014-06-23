@@ -44,6 +44,8 @@ define('controls/projects/project/Settings', [
         Binds : [
             '$onCreate',
             '$onResize',
+            '$onCategoryEnter',
+            '$onCategoryLeave',
 
             'save',
             'del',
@@ -75,8 +77,10 @@ define('controls/projects/project/Settings', [
             this.$config = {};
 
             this.addEvents({
-                onCreate : this.$onCreate,
-                onResize : this.$onResize
+                onCreate        : this.$onCreate,
+                onResize        : this.$onResize,
+                onCategoryEnter : this.$onCategoryEnter,
+                onCategoryLeave : this.$onCategoryLeave
             });
         },
 
@@ -103,7 +107,7 @@ define('controls/projects/project/Settings', [
             this.Loader.show();
 
             this.addButton({
-                text : 'Speichern',
+                text      : 'Speichern',
                 textimage : 'icon-save',
                 events : {
                     onClick : this.save
@@ -123,7 +127,7 @@ define('controls/projects/project/Settings', [
                 text   : 'Einstellungen',
                 icon   : 'icon-gear',
                 events : {
-                    onClick : this.openSettings
+                    onActive : this.openSettings
                 }
             });
 
@@ -132,24 +136,36 @@ define('controls/projects/project/Settings', [
                 text   : 'Meta Angaben',
                 icon   : 'icon-inbox',
                 events : {
-                    onClick : this.openMeta
+                    onActive : this.openMeta
                 }
             });
 
-            this.addCategory({
-                name   : 'watersign',
-                text   : 'Wasserzeichen',
-                icon   : 'icon-picture',
-                events : {
-                    onClick : this.openWatersign
-                }
-            });
-
-            this.getProject().getConfig(function(result, Request)
+            Ajax.get('ajax_project_panel_categories_get', function(list)
             {
-                self.$config = result;
-                self.getCategoryBar().firstChild().click();
+                for ( var i = 0, len = list.length; i < len; i++) {
+                    self.addCategory( list[ i ] );
+                }
+
+                self.getProject().getConfig(function(result, Request)
+                {
+                    self.$config = result;
+                    self.getCategoryBar().firstChild().click();
+                });
+
+            }, {
+                project : this.getProject().getName()
             });
+
+
+//            this.addCategory({
+//                name   : 'watersign',
+//                text   : 'Wasserzeichen',
+//                icon   : 'icon-picture',
+//                events : {
+//                    onClick : this.openWatersign
+//                }
+//            });
+
         },
 
         /**
@@ -160,7 +176,7 @@ define('controls/projects/project/Settings', [
             var self = this;
 
             this.Loader.show();
-            this.$unloadCategory();
+            this.$onCategoryLeave();
 
             Ajax.post('ajax_project_set_config', function()
             {
@@ -222,7 +238,6 @@ define('controls/projects/project/Settings', [
         openSettings : function()
         {
             this.Loader.show();
-            this.$unloadCategory();
 
             var self = this,
                 Body = this.getBody();
@@ -234,6 +249,7 @@ define('controls/projects/project/Settings', [
                 // set data
                 var Form     = Body.getElement( 'Form' ),
                     Standard = Form.elements.default_lang,
+                    Template = Form.elements.template,
                     Langs    = Form.elements.langs,
 
                     langs = self.$config.langs.split( ',' );
@@ -276,6 +292,7 @@ define('controls/projects/project/Settings', [
 
 
                 Standard.value = self.$config.default_lang;
+                Template.value = self.$config.template;
 
                 QUIFormUtils.setDataToForm( self.$config, Form );
 
@@ -291,7 +308,6 @@ define('controls/projects/project/Settings', [
         openMeta : function(Plup)
         {
             this.Loader.show();
-            this.$unloadCategory();
 
             var self = this,
                 Body = this.getContent();
@@ -351,7 +367,7 @@ define('controls/projects/project/Settings', [
         /**
          * unload the category and set the values into the config
          */
-        $unloadCategory : function()
+        $onCategoryLeave : function()
         {
             var Content = this.getContent(),
                 Form    = Content.getElement( 'form' );
@@ -362,7 +378,7 @@ define('controls/projects/project/Settings', [
 
             var data = QUIFormUtils.getFormData( Form );
 
-            for ( var i in data )  {
+            for ( var i in data ) {
                 this.$config[ i ] = data[ i ];
             }
 
@@ -398,6 +414,52 @@ define('controls/projects/project/Settings', [
                 }, {
                     langs : langs.join( ',' )
                 });
+            });
+        },
+
+        /**
+         * event : on category enter
+         *
+         * @param {qui/controls/desktop/Panel} Panel
+         * @param {qui/controls/buttons/Button} Category
+         */
+        $onCategoryEnter : function(Panel, Category)
+        {
+            var self = this,
+                name = Category.getAttribute( 'name' ),
+                file = Category.getAttribute( 'file' );
+
+            if ( name == 'settings' || name == 'meta' ) {
+                return;
+            }
+
+            this.Loader.show();
+            this.getBody().set( 'html', '' );
+
+            Ajax.get('ajax_settings_category', function(result, Request)
+            {
+                var Body = self.getBody();
+
+                if ( !result ) {
+                    result = '';
+                }
+
+                Body.set( 'html', '<form>'+ result +'</form>' );
+
+                var Form = Body.getElement( 'form' );
+
+                Form.name = Category.getAttribute( 'name' );
+                Form.addEvent('submit', function(event) {
+                    event.stop();
+                });
+
+                // set data to the form
+                QUIFormUtils.setDataToForm( self.$config, Form );
+
+                self.Loader.hide();
+            }, {
+                file     : Category.getAttribute( 'file' ),
+                category : Category.getAttribute( 'name' )
             });
         }
     });

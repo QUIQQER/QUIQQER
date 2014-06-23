@@ -7,6 +7,8 @@
 namespace QUI\Projects;
 
 use QUI\Rights\Permission;
+use QUI\Utils\Security\Orthos as Orthos;
+
 
 /**
  * The Project Manager
@@ -98,11 +100,17 @@ class Manager
 
             if ( isset( $params[ $key ] ) )
             {
-                $config[ $key ] = \QUI\Utils\Security\Orthos::clear( $params[ $key ] );
+                $str = Orthos::removeHTML( $params[ $key ] );
+                $str = Orthos::clearPath( $str );
+
+                $config[ $key ] = $str;
                 continue;
             }
 
-            $config[ $key ] = \QUI\Utils\Security\Orthos::clear( $value );
+            $str = Orthos::removeHTML( $value );
+            $str = Orthos::clearPath( $str );
+
+            $config[ $key ] = $str;
         }
 
         // doppelte sprachen filtern
@@ -110,6 +118,9 @@ class Manager
         $langs = array_unique( $langs );
 
         $config['langs'] = implode( ',', $langs );
+
+        // template settings
+
 
         $Config->setSection( $project, $config );
         $Config->save();

@@ -171,6 +171,94 @@ class DOM
     }
 
     /**
+     * Return the buttons from <categories>
+     *
+     * @param \DomDocument|\DomElement $Dom
+     * @return array
+     */
+    static function getButtonsFromWindow($Dom)
+    {
+        $btnlist = $Dom->getElementsByTagName( 'categories' );
+
+        if ( !$btnlist->length ) {
+            return array();
+        }
+
+        $result   = array();
+        $children = $btnlist->item( 0 )->childNodes;
+
+        for ( $i = 0; $i < $children->length; $i++ )
+        {
+            $Param = $children->item( $i );
+
+            if ( $Param->nodeName != 'category' ) {
+                continue;
+            }
+
+            $Button = new \QUI\Controls\Buttons\Button();
+            $Button->setAttribute( 'name', $Param->getAttribute( 'name' ) );
+            $Button->setAttribute( 'require', $Param->getAttribute( 'require' ) );
+
+            $onload   = $Param->getElementsByTagName( 'onload' );
+            $onunload = $Param->getElementsByTagName( 'onunload' );
+
+            $btnParams = $Param->childNodes;
+
+            for ( $b = 0; $b < $btnParams->length; $b++ )
+            {
+                switch ( $btnParams->item( $b )->nodeName )
+                {
+                    case 'text':
+                    case 'title':
+                    case 'onclick':
+                        $Button->setAttribute(
+                            $btnParams->item( $b )->nodeName,
+                            $btnParams->item( $b )->nodeValue
+                        );
+                    break;
+
+                    case 'icon':
+                        $value = $btnParams->item( $b )->nodeValue;
+
+                        $Button->setAttribute(
+                            $btnParams->item( $b )->nodeName,
+                            \QUI\Utils\DOM::parseVar( $value )
+                        );
+                    break;
+                }
+            }
+
+            if ( $Param->getAttribute( 'type' ) == 'projects' )
+            {
+                $projects = \QUI\Projects\Manager::getProjects();
+
+                foreach ( $projects as $project )
+                {
+                    $Button->setAttribute(
+                        'text',
+                        str_replace( '{$project}', $project, $Button->getAttribute('text') )
+                    );
+
+                    $Button->setAttribute(
+                        'title',
+                        str_replace( '{$project}', $project, $Button->getAttribute('title') )
+                    );
+
+                    $Button->setAttribute( 'section', $project );
+
+                    $result[] = $Button;
+                }
+
+                continue;
+            }
+
+            $result[] = $Button;
+        }
+
+        return $result;
+    }
+
+    /**
      * Parse a DOMDocument to a settings window
      * if a settings window exist in it
      *
@@ -208,122 +296,10 @@ class DOM
         }
 
         // Window Parameter
-        $params = $Window->getElementsByTagName('params');
+        $btnList = self::getButtonsFromWindow( $Window );
 
-        if ( $params->length )
-        {
-            $children = $params->item( 0 )->childNodes;
-
-            for ( $i = 0; $i < $children->length; $i++ )
-            {
-                $Param = $children->item( $i );
-
-                if ( $Param->nodeName == '#text' ) {
-                    continue;
-                }
-
-                if ( $Param->nodeName == 'icon' )
-                {
-                    $Win->setAttribute(
-                        'icon',
-                        \QUI\Utils\DOM::parseVar( $Param->nodeValue )
-                    );
-
-                    continue;
-                }
-
-                $Win->setAttribute( $Param->nodeName, $Param->nodeValue );
-            }
-        }
-
-        // buttons bauen
-        $btnlist = $Settings->getElementsByTagName( 'categories' );
-
-        if ( $btnlist->length )
-        {
-            $children = $btnlist->item( 0 )->childNodes;
-
-            for ( $i = 0; $i < $children->length; $i++ )
-            {
-                $Param = $children->item( $i );
-
-                if ( $Param->nodeName != 'category' ) {
-                    continue;
-                }
-
-                $Button = new \QUI\Controls\Buttons\Button();
-                $Button->setAttribute( 'name', $Param->getAttribute( 'name' ) );
-                $Button->setAttribute( 'require', $Param->getAttribute( 'require' ) );
-                //$Button->setAttribute( 'onclick', '_pcsg.Plugins.Settings.getButtonContent' );
-                //$Button->setAttribute( 'onload', '_pcsg.Plugins.Settings.onload' );
-                //$Button->setAttribute( 'onunload', '_pcsg.Plugins.Settings.onunload' );
-
-                $onload   = $Param->getElementsByTagName( 'onload' );
-                $onunload = $Param->getElementsByTagName( 'onunload' );
-
-                // Extra on / unload
-                /*
-                if ( $onload && $onload->length ) {
-                    $Button->setAttribute( 'onloadExtra', $onload->item(0)->nodeValue );
-                }
-
-                if ( $onunload && $onunload->length ) {
-                    $Button->setAttribute( 'onunloadExtra', $onunload->item(0)->nodeValue );
-                }
-                */
-
-                $btnParams = $Param->childNodes;
-
-                for ( $b = 0; $b < $btnParams->length; $b++ )
-                {
-                    switch ( $btnParams->item( $b )->nodeName )
-                    {
-                        case 'text':
-                        case 'title':
-                        case 'onclick':
-                            $Button->setAttribute(
-                                $btnParams->item( $b )->nodeName,
-                                $btnParams->item( $b )->nodeValue
-                            );
-                        break;
-
-                        case 'icon':
-                            $value = $btnParams->item( $b )->nodeValue;
-
-                            $Button->setAttribute(
-                                $btnParams->item( $b )->nodeName,
-                                \QUI\Utils\DOM::parseVar( $value )
-                            );
-                        break;
-                    }
-                }
-
-                if ( $Param->getAttribute( 'type' ) == 'projects' )
-                {
-                    $projects = \QUI\Projects\Manager::getProjects();
-
-                    foreach ( $projects as $project )
-                    {
-                        $Button->setAttribute(
-                            'text',
-                            str_replace( '{$project}', $project, $Button->getAttribute('text') )
-                        );
-
-                        $Button->setAttribute(
-                            'title',
-                            str_replace( '{$project}', $project, $Button->getAttribute('title') )
-                        );
-
-                        $Button->setAttribute( 'section', $project );
-
-                        $Win->appendCategory( $Button );
-                    }
-
-                    continue;
-                }
-
-                $Win->appendCategory( $Button );
-            }
+        foreach ( $btnList as $Button ) {
+            $Win->appendCategory( $Button );
         }
 
         return $Win;
