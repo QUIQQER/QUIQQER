@@ -1,1 +1,9 @@
-{$Site->getAttribute('content')}
+<div
+    data-editable="true"
+    data-editAttribute="content"
+    data-project="{$Project->getName()}"
+    data-lang="{$Project->getLang()}"
+    data-id="{$Site->getId()}"
+>
+    {$Site->getAttribute('content')}
+</div>

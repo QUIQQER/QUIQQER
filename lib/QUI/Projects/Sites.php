@@ -284,6 +284,11 @@ class Sites
 
         foreach ( $packages as $package )
         {
+            // templates would be seperated
+            if ( $package['type'] == 'quiqqer-template' ) {
+                continue;
+            }
+
             $file = OPT_DIR . $package['name'] .'/site.xml';
 
             if ( !file_exists( $file ) ) {
@@ -295,6 +300,25 @@ class Sites
                 $Tabbar
             );
         }
+
+        // project template tabs
+        $Project   = $Site->getProject();
+        $templates = \QUI\Projects\Manager::getRelatedTemplates( $Project );
+
+        foreach ( $templates as $template )
+        {
+            $file = OPT_DIR . $package['name'] .'/site.xml';
+
+            if ( !file_exists( $file ) ) {
+                continue;
+            }
+
+            \QUI\Utils\DOM::addTabsToToolbar(
+                \QUI\Utils\XML::getTabsFromXml( $file ),
+                $Tabbar
+            );
+        }
+
 
         return $Tabbar;
     }

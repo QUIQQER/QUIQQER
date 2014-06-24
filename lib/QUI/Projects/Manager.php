@@ -68,28 +68,13 @@ class Manager
         $projects = $Config->toArray();
 
         // $config
-        $config = array(
-            "default_lang" => "de",
-            "langs"        => "de",
-            "admin_mail"   => "support@pcsg.de",
-            "template"     => "",
-            "image_text"   => "0",
-            "keywords"     => "",
-            "description"  => "",
-            "robots"       => "index",
-            "author"       => "",
-            "publisher"    => "",
-            "copyright"    => "",
-            "standard"     => "1"
-        );
+        $config     = self::getProjectConfigList( $Project );
+        $old_config = $config;
 
-        if ( isset( $projects[ $project ] ) )
-        {
+        if ( isset( $projects[ $project ] ) ) {
             $old_config = $projects[ $project ];
-        } else
-        {
-            $old_config = $config;
         }
+
 
         // generate new config for the project
         foreach ( $config as $key => $value )
@@ -119,8 +104,6 @@ class Manager
 
         $config['langs'] = implode( ',', $langs );
 
-        // template settings
-
 
         $Config->setSection( $project, $config );
         $Config->save();
@@ -138,9 +121,83 @@ class Manager
     }
 
     /**
+     * Return the config list
+     *
+     * @param \QUI\Projects\Project $Project
+     * @return Array
+     */
+    static function getProjectConfigList(\QUI\Projects\Project $Project)
+    {
+        $cache = 'qui/projects/'. $Project->getName() .'/configList';
+
+        try
+        {
+            return \QUI\Cache\Manager::get( $cache );
+
+        } catch ( \QUI\Exception $Exception )
+        {
+
+        }
+
+        $config = array(
+            "default_lang" => "de",
+            "langs"        => "de",
+            "admin_mail"   => "support@pcsg.de",
+            "template"     => "",
+            "image_text"   => "0",
+            "keywords"     => "",
+            "description"  => "",
+            "robots"       => "index",
+            "author"       => "",
+            "publisher"    => "",
+            "copyright"    => "",
+            "standard"     => "1"
+        );
+
+        // settings.xml
+        $settingsXml = self::getRelatedSettingsXML( $Project );
+
+        foreach ( $settingsXml as $file )
+        {
+            $Dom  = \QUI\Utils\XML::getDomFromXml( $file );
+            $Path = new \DOMXPath( $Dom );
+
+            $settingsList = $Path->query( "//project/settings" );
+
+            for ( $i = 0, $len = $settingsList->length; $i < $len; $i++ )
+            {
+                $Settings = $settingsList->item( $i );
+                $sections = \QUI\Utils\DOM::getConfigParamsFromDOM( $Settings );
+
+                $settingsName = $Settings->getAttribute('name');
+
+                if ( !empty( $settingsName ) ) {
+                    $settingsName = $settingsName .'.';
+                }
+
+                foreach ( $sections as $section => $entry )
+                {
+                    foreach ( $entry as $key => $param )
+                    {
+                        $config[ $section .'.'. $key ] = '';
+
+                        if ( isset( $param[ 'default' ] ) ) {
+                            $config[ $settingsName . $section .'.'. $key ] = $param[ 'default' ];
+                        }
+                    }
+                }
+            }
+        }
+
+        \QUI\Cache\Manager::set( $cache, $config );
+
+        return $config;
+    }
+
+    /**
      * Return the projects count
      *
-     * @return {Integer}
+     * @return Integer
      */
     static function count()
     {
@@ -262,7 +319,7 @@ class Manager
                     $list[] = $project;
                 }
 
-            } catch ( \QUI\Exception $e )
+            } catch ( \QUI\Exception $Exception )
             {
 
             }
@@ -631,6 +688,73 @@ class Manager
 
         // project create event
         \QUI::getEvents()->fireEvent( 'deleteProject', array( $project ) );
+    }
+
+    /**
+     * Return all templates which are related to the project
+     * the vhost templates are included
+     *
+     * @param \QUI\Projects\Project $Project
+     * @return Array
+     */
+    static function getRelatedTemplates(\QUI\Projects\Project $Project)
+    {
+        $result    = array();
+        $templates = array();
+        $project   = $Project->getName();
+
+        $result[] = $Project->getAttribute('template');
+        $templates[ $Project->getAttribute('template') ] = true;
+
+        // vhosts und templates schauen
+        $vhosts = \QUI::getRewrite()->getVHosts();
+
+        foreach ( $vhosts as $vhost )
+        {
+            if ( !isset( $vhost[ 'project' ] ) ) {
+                continue;
+            }
+
+            if ( $vhost[ 'project' ] != $project ) {
+                continue;
+            }
+
+            if ( isset( $templates[ $vhost[ 'template' ] ] ) ) {
+                continue;
+            }
+
+            $templates[ $vhost[ 'template' ] ] = true;
+            $result[] = $vhost[ 'template' ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Return all settings.xml which are related to the project
+     * eq: all settings.xml from templates
+     *
+     * @param \QUI\Projects\Project $Project
+     * @return Array
+     */
+    static function getRelatedSettingsXML(\QUI\Projects\Project $Project)
+    {
+        $list      = array();
+        $templates = self::getRelatedTemplates( $Project );
+
+        // read template config
+        foreach ( $templates as $template )
+        {
+            $file = OPT_DIR . $template .'/settings.xml';
+
+            if ( !file_exists( $file ) ) {
+                continue;
+            }
+
+            $list[] = $file;
+        }
+
+        return $list;
     }
 
     /**

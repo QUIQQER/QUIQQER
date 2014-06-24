@@ -483,11 +483,21 @@ define('controls/projects/project/site/Panel', [
                 this.$onCategoryLeave( this.getActiveCategory() );
             }
 
-
             if ( Category.getAttribute( 'name' ) == 'content' )
             {
                 this.loadEditor(
                     this.getSite().getAttribute( 'content' )
+                );
+
+                return;
+            }
+
+            if ( Category.getAttribute( 'type' ) == 'wysiwyg' )
+            {
+                this.loadEditor(
+                    this.getSite().getAttribute(
+                        Category.getAttribute( 'name' )
+                    )
                 );
 
                 return;
@@ -712,6 +722,7 @@ define('controls/projects/project/site/Panel', [
             var Site  = this.getSite(),
                 Body  = this.getBody();
 
+            // main content
             if ( Category.getAttribute( 'name' ) === 'content' )
             {
                 Site.setAttribute(
@@ -727,6 +738,23 @@ define('controls/projects/project/site/Panel', [
                 return;
             }
 
+            // wysiwyg type
+            if ( Category.getAttribute( 'type' ) == 'wysiwyg' )
+            {
+                Site.setAttribute(
+                    Category.getAttribute( 'name' ),
+                    this.getAttribute( 'Editor' ).getContent()
+                );
+
+                if ( typeof callback !== 'undefined' ) {
+                    callback();
+                }
+
+                this.Loader.hide();
+                return;
+            }
+
+            // form unload
             if ( !Body.getElement( 'form' ) )
             {
                 if ( typeof callback !== 'undefined' ) {

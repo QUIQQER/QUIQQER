@@ -1481,6 +1481,10 @@ class Site extends \QUI\QDOM
      */
     public function getParent()
     {
+        if ( !$this->getParentId() ) {
+            return false;
+        }
+
         return $this->getProject()->get(
             $this->getParentId()
         );

@@ -159,51 +159,9 @@ class XML
      */
     static function getConfigParamsFromXml($file)
     {
-        $Dom      = self::getDomFromXml( $file );
-        $settings = $Dom->getElementsByTagName( 'settings' );
-
-        if ( !$settings->length ) {
-            return false;
-        }
-
-        $Settings = $settings->item( 0 );
-        $configs  = $Settings->getElementsByTagName( 'config' );
-
-        if ( !$configs->length ) {
-            return false;
-        }
-
-        $projects = \QUI\Projects\Manager::getProjects();
-        $children = $configs->item( 0 )->childNodes;
-        $result   = array();
-
-        for ( $i = 0; $i < $children->length; $i++ )
-        {
-            $Param = $children->item( $i );
-
-            if ( $Param->nodeName == '#text' ) {
-                continue;
-            }
-
-            if ( $Param->nodeName == 'section' )
-            {
-                $name  = $Param->getAttribute( 'name' );
-                $confs = $Param->getElementsByTagName( 'conf' );
-
-                if ( $Param->getAttribute( 'type' ) == 'project' )
-                {
-                    foreach ( $projects as $project ) {
-                        $result[ $project ] = \QUI\Utils\DOM::parseConfs( $confs );
-                    }
-
-                    continue;
-                }
-
-                $result[ $name ] = \QUI\Utils\DOM::parseConfs( $confs );
-            }
-        }
-
-        return $result;
+        return \QUI\Utils\DOM::getConfigParamsFromDOM(
+            self::getDomFromXml( $file )
+        );
     }
 
     /**
@@ -964,6 +922,11 @@ class XML
 
                 $suffix = $table['suffix'];
                 $fields = $table['fields'];
+
+                $fields = array(
+                    'id' => 'bigint(20) NOT NULL'
+                ) + $fields;
+
 
                 // Projekte durchgehen
                 foreach ( $projects as $name => $params )

@@ -998,4 +998,79 @@ class Manager
 //         $this->_composer_exec  = 'cd '. CMS_DIR .';';
 //         $this->_composer_exec .= ' php '. $exec_var .'composer.phar';
     }
+
+
+    /**
+     * XML helper
+     */
+
+    /**
+     * Return all packages which includes a site.xml
+     *
+     * @return array
+     */
+    public function getPackageSiteXmlList()
+    {
+        try
+        {
+            return \QUI\Cache\Manager::get( 'qui/packages/list/haveSiteXml' );
+
+        } catch ( \QUI\Exception $Exception )
+        {
+
+        }
+
+        $packages = $this->getInstalled();
+        $result   = array();
+
+        foreach ( $packages as $package )
+        {
+            $file = OPT_DIR . $package[ 'name' ] .'/site.xml';
+
+            if ( !file_exists( $file ) ) {
+                continue;
+            }
+
+            $result[] = $package[ 'name' ];
+        }
+
+        \QUI\Cache\Manager::set( 'qui/packages/list/haveSiteXml', $result );
+
+        return $result;
+    }
+
+    /**
+     * Return all packages which includes a site.xml
+     *
+     * @return array
+     */
+    public function getPackageDatabaseXmlList()
+    {
+        try
+        {
+            return \QUI\Cache\Manager::get( 'qui/packages/list/haveDatabaseXml' );
+
+        } catch ( \QUI\Exception $Exception )
+        {
+
+        }
+
+        $packages = $this->getInstalled();
+        $result   = array();
+
+        foreach ( $packages as $package )
+        {
+            $file = OPT_DIR . $package[ 'name' ] .'/database.xml';
+
+            if ( !file_exists( $file ) ) {
+                continue;
+            }
+
+            $result[] = $package[ 'name' ];
+        }
+
+        \QUI\Cache\Manager::set( 'qui/packages/list/haveDatabaseXml', $result );
+
+        return $result;
+    }
 }

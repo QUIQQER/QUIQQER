@@ -463,33 +463,7 @@ class Edit extends \QUI\Projects\Site
             }
         }
 
-        /**
-         * Speicher Routine der Plugins aufrufen
-         */
-        $Plugins  = $this->_getLoadedPlugins();
-        $DataBase = \QUI::getDataBase();
-        /*
-        for ($i = 0, $len = count($Plugins); $i < $len; $i++)
-        {
-            if (method_exists($Plugins[$i], 'onSave')) {
-                $Plugins[$i]->onSave($this, $Project, $DataBase);
-            }
-        }
-        */
-
-        // Globale Tabs
-        /*
-        if (isset($GLOBALS['admin_plugins']))
-        {
-            foreach ($GLOBALS['admin_plugins'] as $plugins)
-            {
-                if (method_exists($plugins, 'onSave')) {
-                    $plugins->onSave($this, $Project, $DataBase);
-                }
-            }
-        }
-        */
-
+        // order type
         $order_type = 'manuell';
 
         switch ( $this->getAttribute( 'order_type' ) )
@@ -534,8 +508,8 @@ class Edit extends \QUI\Projects\Site
             }
         }
 
-        // Haupttabelle speichern
-        $update = $DataBase->update(
+        // save main data
+        $update = \QUI::getDataBase()->update(
             $this->_TABLE,
             array(
                 'name'     => $this->getAttribute( 'name' ),
@@ -565,6 +539,69 @@ class Edit extends \QUI\Projects\Site
                 'id' => $this->getId()
             )
         );
+
+        // save package automatic site data
+        $packages = \QUI::getPackageManager()->getPackageDatabaseXmlList();
+        $name     = $Project->getName();
+        $lang     = $Project->getLang();
+
+        // @todo fields and table list must cached -> performance
+        foreach ( $packages as $package )
+        {
+            $file = OPT_DIR . $package .'/database.xml';
+
+            $Dom  = \QUI\Utils\XML::getDomFromXml( $file );
+            $Path = new \DOMXPath( $Dom );
+
+            $tableList = $Path->query( "//database/projects/table" );
+
+            for ( $i = 0, $len = $tableList->length; $i < $len; $i++ )
+            {
+                $Table = $tableList->item( $i );
+
+                if ( $Table->getAttribute( 'no-auto-update' ) ) {
+                    continue;
+                }
+
+                $suffix = $Table->getAttribute( 'name' );
+                $fields = $Table->getElementsByTagName( 'field' );
+
+                $table = \QUI::getDBTableName( $name .'_'. $lang .'_'. $suffix );
+                $data  = array();
+
+                for ( $f = 0, $flen = $fields->length; $f < $flen; $f++ )
+                {
+                    $Field     = $fields->item( $f );
+                    $attribute = trim( $Field->nodeValue );
+
+                    $data[ $attribute ] = $this->getAttribute( $attribute );
+                }
+            }
+
+            if ( empty( $data ) ) {
+                continue;
+            }
+
+            $result = \QUI::getDataBase()->fetch(array(
+                'from'  => $table,
+                'where' => array(
+                    'id' => $this->getId()
+                ),
+                'limit' => 1
+            ));
+
+            if ( !isset( $result[ 0 ] ) )
+            {
+                \QUI::getDataBase()->insert($table, array(
+                    'id' => $this->getId()
+                ));
+            }
+
+            \QUI::getDataBase()->update($table, $data, array(
+                'id' => $this->getId()
+            ));
+        }
+
 
         //$this->deleteTemp($User);
         $Project->clearCache();
@@ -1174,6 +1211,7 @@ class Edit extends \QUI\Projects\Site
         // Objekt Cache
         parent::createCache();
 
+
         // Link Cache
         $Project = $this->getProject();
 
@@ -1182,7 +1220,7 @@ class Edit extends \QUI\Projects\Site
 
         \QUI\Utils\System\File::mkdir( $link_cache_dir );
 
-        file_put_contents( $link_cache_file, $this->getUrlRewrited() );
+        file_put_contents( $link_cache_file, URL_DIR . $this->getUrlRewrited() );
     }
 
     /**
