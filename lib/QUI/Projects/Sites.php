@@ -144,6 +144,8 @@ class Sites
         }
 
         // Tabs der Plugins hohlen
+        // @todo über xml's oder neue apis
+        /*
         $Plugins = self::getPlugins( $Site );
 
         foreach ( $Plugins as $Plugin )
@@ -152,6 +154,7 @@ class Sites
                 $Plugin->setButtons( $Toolbar, $Site );
             }
         }
+        */
 
         return $Toolbar;
     }

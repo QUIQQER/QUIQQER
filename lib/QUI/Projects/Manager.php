@@ -624,11 +624,11 @@ class Manager
             $table_media_rel = \QUI::getDBTableName( $project .'_media_relations' );
 
 
-            \QUI::getDataBase()->Table()->delete( $table_site );
-            \QUI::getDataBase()->Table()->delete( $table_site_rel );
-            \QUI::getDataBase()->Table()->delete( $table_multi );
-            \QUI::getDataBase()->Table()->delete( $table_media );
-            \QUI::getDataBase()->Table()->delete( $table_media_rel );
+            $Table->delete( $table_site );
+            $Table->delete( $table_site_rel );
+            $Table->delete( $table_multi );
+            $Table->delete( $table_media );
+            $Table->delete( $table_media_rel );
         }
 
         // delete database tables from plugins
@@ -658,7 +658,7 @@ class Manager
                         $project .'_'. $lang .'_'. $table['suffix']
                     );
 
-                    \QUI::getDataBase()->Table()->delete( $tbl );
+                    $Table->delete( $tbl );
                 }
             }
         }
@@ -703,8 +703,11 @@ class Manager
         $templates = array();
         $project   = $Project->getName();
 
-        $result[] = $Project->getAttribute('template');
-        $templates[ $Project->getAttribute('template') ] = true;
+        if ( $Project->getAttribute('template') )
+        {
+            $result[] = $Project->getAttribute('template');
+            $templates[ $Project->getAttribute('template') ] = true;
+        }
 
         // vhosts und templates schauen
         $vhosts = \QUI::getRewrite()->getVHosts();
