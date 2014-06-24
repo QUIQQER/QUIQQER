@@ -524,38 +524,52 @@ class XML
     }
 
     /**
-     * Reads the settings window from an *.xml
+     * Return the settings window from an *.xml
      *
      * @param String $file
      * @return Array
      */
     static function getSettingWindowsFromXml($file)
     {
-        $Dom      = self::getDomFromXml( $file );
-        $settings = $Dom->getElementsByTagName( 'settings' );
+        $Dom  = self::getDomFromXml( $file );
+        $Path = new \DOMXPath( $Dom );
 
-        if ( !$settings->length ) {
-            return false;
-        }
+        $windows = $Path->query( "//quiqqer/settings/window" );
 
-        $Settings = $settings->item( 0 );
-        $winlist  = $Settings->getElementsByTagName( 'window' );
-
-        if ( !$winlist->length ) {
-            return false;
+        if ( !$windows->length ) {
+            return array();
         }
 
         $result = array();
 
-        for ( $c = 0; $c < $winlist->length; $c++ )
-        {
-            $Window = $winlist->item( $c );
+        for ( $i = 0, $len = $windows->length; $i < $len; $i++ ) {
+            $result[] = $windows->item( $i );
+        }
 
-            if ( $Window->nodeName == '#text' ) {
-                continue;
-            }
+        return $result;
+    }
 
-            $result[] = $Window;
+    /**
+     * Return the project settings window from an *.xml
+     *
+     * @param String $file
+     * @return Array
+     */
+    static function getProjectSettingWindowsFromXml($file)
+    {
+        $Dom  = self::getDomFromXml( $file );
+        $Path = new \DOMXPath( $Dom );
+
+        $windows = $Path->query( "//quiqqer/project/settings/window" );
+
+        if ( !$windows->length ) {
+            return array();
+        }
+
+        $result = array();
+
+        for ( $i = 0, $len = $windows->length; $i < $len; $i++ ) {
+            $result[] = $windows->item( $i );
         }
 
         return $result;

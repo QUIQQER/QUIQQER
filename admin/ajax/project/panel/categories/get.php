@@ -23,7 +23,7 @@ function ajax_project_panel_categories_get($project)
             continue;
         }
 
-        $windows = \QUI\Utils\XML::getSettingWindowsFromXml( $file );
+        $windows = \QUI\Utils\XML::getProjectSettingWindowsFromXml( $file );
 
         foreach ( $windows as $Window )
         {

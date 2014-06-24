@@ -719,6 +719,10 @@ class Manager
                 continue;
             }
 
+            if ( !isset( $vhost[ 'template' ] ) ) {
+                continue;
+            }
+
             if ( isset( $templates[ $vhost[ 'template' ] ] ) ) {
                 continue;
             }
@@ -739,20 +743,52 @@ class Manager
      */
     static function getRelatedSettingsXML(\QUI\Projects\Project $Project)
     {
+        $cache = 'qui/projects/'. $Project->getName() .'/relatedSettingsXml';
+
+        try
+        {
+            return \QUI\Cache\Manager::get( $cache );
+
+        } catch ( \QUI\Exception $Exception )
+        {
+
+        }
+
         $list      = array();
+        $packages  = \QUI::getPackageManager()->getInstalled();
+
         $templates = self::getRelatedTemplates( $Project );
+        $templates = array_flip( $templates );
 
         // read template config
-        foreach ( $templates as $template )
+        foreach ( $packages as $package )
         {
-            $file = OPT_DIR . $template .'/settings.xml';
+            // if the package is a quiqqer template,
+            if ( $package['type'] == 'quiqqer-template' )
+            {
+                // note only related templates
+                if ( !isset( $templates[ $package['name'] ] ) ) {
+                    continue;
+                }
+            }
+
+            $file = OPT_DIR . $package['name'] .'/settings.xml';
 
             if ( !file_exists( $file ) ) {
                 continue;
             }
 
-            $list[] = $file;
+            $Dom  = \QUI\Utils\XML::getDomFromXml( $file );
+            $Path = new \DOMXPath( $Dom );
+
+            $Settings = $Path->query( "//project/settings" );
+
+            if ( $Settings->length ) {
+                $list[] = $file;
+            }
         }
+
+        \QUI\Cache\Manager::set( 'qui/projects/', $list );
 
         return $list;
     }
