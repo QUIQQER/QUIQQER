@@ -1229,7 +1229,7 @@ class Plugin extends \QUI\QDOM
         // Init.d Pfad erstellen
         \QUI\Utils\System\File::mkdir( CMS_DIR .'etc/plugins/' );
 
-        $iniFile = CMS_DIR .'etc/plugins/'. $this->getAttribute('name') .'.ini';
+        $iniFile = CMS_DIR .'etc/plugins/'. $this->getAttribute('name') .'.ini.php';
 
         $this->_Config = new \QUI\Config( $iniFile );
 

@@ -292,7 +292,7 @@ class QUI
 
 
 
-        $Config     = new \QUI\Config( $cms_dir .'/etc/conf.ini' );
+        $Config     = new \QUI\Config( $cms_dir .'/etc/conf.ini.php' );
         self::$Conf = $Config;
 
         if ( !defined( 'ERROR_BACKTRACE' ) )
@@ -431,7 +431,7 @@ class QUI
     static function conf($section, $key=null)
     {
         if ( is_null( self::$Conf ) ) {
-             self::$Conf = self::getConfig( 'etc/conf.ini' );
+             self::$Conf = self::getConfig( 'etc/conf.ini.php' );
         }
 
         return self::$Conf->get( $section, $key );
@@ -485,7 +485,7 @@ class QUI
 
         try
         {
-            $vhosts = self::getConfig( 'etc/vhosts.ini' );
+            $vhosts = self::getConfig( 'etc/vhosts.ini.php' );
             self::$vhosts = $vhosts->toArray();
 
         } catch ( \QUI\Exception $Exception )

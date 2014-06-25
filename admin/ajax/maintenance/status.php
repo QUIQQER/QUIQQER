@@ -10,6 +10,9 @@ function ajax_maintenance_status()
 {
     return \QUI::conf('globals','maintenance');
 }
-QUI::$Ajax->register('ajax_maintenance_status', false, 'Permission::checkAdminUser');
 
-?>
+\QUI::$Ajax->register(
+    'ajax_maintenance_status',
+    false,
+    'Permission::checkAdminUser'
+);
