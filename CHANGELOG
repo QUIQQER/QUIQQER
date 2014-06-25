@@ -9,6 +9,7 @@ v 1.0.8
     - Projekte können gelöscht werden
     - Mediabereiche -> Dateien umbenennen -> Cache Problem behoben
     - Neue Sortierung der Unterseiten möglich -> Nach veröffentlichungsdatum
+    - Jedes Plugin auf dem Updateserver besitzt eine md5 hash Datei (checklist.md5)
 
     Development
 
