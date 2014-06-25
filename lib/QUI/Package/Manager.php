@@ -18,6 +18,7 @@ use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 
+use \QUI\Utils\XML as XML;
 
 /**
  * Package Manager for the QUIQQER System
@@ -564,10 +565,12 @@ class Manager
             return;
         }
 
-        $defaults = \QUI\Utils\XML::getConfigParamsFromXml( $dir .'settings.xml' );
-        $Config   = \QUI\Utils\XML::getConfigFromXml( $dir .'settings.xml' );
+        $defaults = XML::getConfigParamsFromXml( $dir .'settings.xml' );
+        $Config   = XML::getConfigFromXml( $dir .'settings.xml' );
 
-        $Config->save();
+        if ( $Config ) {
+            $Config->save();
+        }
     }
 
     /**

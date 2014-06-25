@@ -12,6 +12,98 @@
             <de><![CDATA[Abmelden]]></de>
             <en><![CDATA[Logout]]></en>
         </locale>
+
+        <!-- contextmenu -->
+        <locale name="copy">
+            <de><![CDATA[Kokpieren]]></de>
+            <en><![CDATA[Copy]]></en>
+        </locale>
+        <locale name="cut">
+            <de><![CDATA[Ausschneiden]]></de>
+            <en><![CDATA[Cut]]></en>
+        </locale>
+        <locale name="paste">
+            <de><![CDATA[Einfügen]]></de>
+            <en><![CDATA[Paste]]></en>
+        </locale>
+        <locale name="linked.paste">
+            <de><![CDATA[Verknüpfung einfügen]]></de>
+            <en><![CDATA[Paste site linking]]></en>
+        </locale>
+
+
+
+        <!-- controls -->
+
+        <!-- project controls -->
+        <locale name="projects.project.panel.title">
+            <de><![CDATA[Projekte]]></de>
+            <en><![CDATA[Projects]]></en>
+        </locale>
+        <locale name="projects.project.panel.open.search">
+            <de><![CDATA[Seitensuche öffnen]]></de>
+            <en><![CDATA[Open the site search]]></en>
+        </locale>
+        <locale name="projects.project.panel.tash">
+            <de><![CDATA[Papierkorb]]></de>
+            <en><![CDATA[Trash]]></en>
+        </locale>
+        <locale name="projects.project.panel.media">
+            <de><![CDATA[Media]]></de>
+            <en><![CDATA[Media]]></en>
+        </locale>
+
+        <locale name="projects.project.sitemap.media">
+            <de><![CDATA[Media]]></de>
+            <en><![CDATA[Media]]></en>
+        </locale>
+
+        <locale name="projects.project.panel.entry.delete.project">
+            <de><![CDATA[Projekt entfernen]]></de>
+            <en><![CDATA[Remove project]]></en>
+        </locale>
+
+        <locale name="projects.project.panel.settings.btn.save">
+            <de><![CDATA[Speichern]]></de>
+            <en><![CDATA[Save]]></en>
+        </locale>
+        <locale name="projects.project.panel.settings.btn.remove">
+            <de><![CDATA[Löschen]]></de>
+            <en><![CDATA[Delete]]></en>
+        </locale>
+        <locale name="projects.project.panel.settings.btn.settings">
+            <de><![CDATA[Einstellungen]]></de>
+            <en><![CDATA[Settings]]></en>
+        </locale>
+        <locale name="projects.project.panel.settings.btn.meta">
+            <de><![CDATA[Meta Angaben]]></de>
+            <en><![CDATA[Meta data]]></en>
+        </locale>
+        <locale name="projects.project.panel.btn.addlanguage">
+            <de><![CDATA[Sprache hinzufügen]]></de>
+            <en><![CDATA[Add a language]]></en>
+        </locale>
+
+
+
+        <locale name="projects.project.project.delete.window.title">
+            <de><![CDATA[Projekt löschen]]></de>
+            <en><![CDATA[Delete project]]></en>
+        </locale>
+        <locale name="projects.project.project.delete.window.text">
+            <de><![CDATA[Projekt wirklich löschen?]]></de>
+            <en><![CDATA[Really want to delete the project?]]></en>
+        </locale>
+        <locale name="projects.project.project.delete.window.information">
+            <de><![CDATA[Das Projekt kann nicht wiederhergestellt werden und die Löschung ist unwiderruflich.]]></de>
+            <en><![CDATA[The project can not be restored and the deletion is irrevocable.]]></en>
+        </locale>
+        <locale name="projects.project.project.delete.window.text.2">
+            <de><![CDATA[Sind Sie sicher das Sie das Projekt löschen möchten?]]></de>
+            <en><![CDATA[Are you sure you want to delete this project?]]></en>
+        </locale>
+
+
     </groups>
 
     <groups name="quiqqer/system">
@@ -95,6 +187,7 @@
                 <de><![CDATA[QUIQQER Changelog]]></de>
                 <en><![CDATA[QUIQQER Changelog]]></en>
             </locale>
+
 
         <!-- Exception  -->
         <locale name="exception.template.not.found">

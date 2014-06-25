@@ -113,12 +113,18 @@ class XML
             return false;
         }
 
-        $Conf     = $configs->item( 0 );
-        $ini_file = CMS_DIR .'etc/';
+        if ( !$configs->item( 0 )->getAttribute( 'name' ) ) {
+            return false;
+        }
 
-        if ( $Conf->getAttribute( 'name' ) ) {
+
+        $Conf     = $configs->item( 0 );
+        $ini_file = CMS_DIR .'etc/' . $Conf->getAttribute( 'name' ) .'.ini.php';
+
+        if ( !$Conf->getAttribute( 'name' ) ) {
             $ini_file .= $Conf->getAttribute( 'name' ) .'.ini.php';
         }
+
 
         \QUI\Utils\System\File::mkdir( dirname( $ini_file ) );
 
