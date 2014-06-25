@@ -1,4 +1,100 @@
 
+v 1.0.8
+
+    QUIQQER
+
+    - Benutzer / Gruppen Verwaltung überarbeitet
+    - Permissions / Rechte überarbeitet -> Falsches handhaben von Projektrechten behoben
+    - Jede Menge XML API Fixes (user.xml, settings.xml -> standards überarbeitet)
+    - Projekte können gelöscht werden
+    - Mediabereiche -> Dateien umbenennen -> Cache Problem behoben
+    - Neue Sortierung der Unterseiten möglich -> Nach veröffentlichungsdatum
+
+    Development
+
+    - Grid Control um Methode erweitert -> getButtons() Browse Code »
+    - Control parsing -> Calendar fix Browse Code »
+    - Mail -> namespaces
+    - html2text in die mail klasse
+    - User und Nobody besitzen nun einen getCountry
+    - User -> set extras raus, wird nicht mehr gebraucht; user xml prüft auf extra attribute Browse Code »
+    - grid edit fix
+    - event : onUserLogin
+    - site panels über die site.xml erweiter -> neue tabs Browse Code »
+    - Neue Konstante: URL_TEMPLATE_DIR in Smarty
+    - URL Rewrite fix für die Startseite
+    - Controls -> media input im sitepanel, richtiges projekt gesetzt
+    - projects settings -> extra settings ... Projekte können nun über die settings.xml erweiterte Einstellungen bekommen
+
+    Bugs
+
+    #4820 - .ini Dateien im etc als php Dateien (Security)
+    #5164 - Edit History
+    #6277 - UpdateServer: File Map mit Hashes generienren bei erstellugn einer neuer Version
+    #21513 - Sprachverknüpfungen nur anzeigen wenn es mehrere Sprachen gibt
+    #21507 - WYSIWYG - Projekte CSS XML Browse Code »
+    8f0f9ad7a   URL_TEMPLATE_DIR Browse Code »
+
+v 1.0.7
+
+    QUIQQER
+
+    - Willkommens Panel
+    - Benutzer Sessions können über die Datenbank oder das Filesystem laufen
+    - Doppelte Projektsprachen werden verhindert
+
+    Development
+
+    - symfony -> STDIN fix beim Update
+    - Media -> neue getSizeCacheUrl Methode
+    - Performance opimisation im Packet Manager
+    - Neue Security Klasse -> \QUI\Security::
+
+
+v 1.0.6
+
+    QUIQQER
+
+    - Seiten Sortierung - Händisches sortieren wird richtig speichern
+    - Bookmark Panel - Bookmarks werden nun gespeichert
+    - WYSIWYG Editor Toolbars können über die Administration konifguriert werden
+    - Seitensuche verbessert und funktional umgesetzt
+    - Virtual Host Verwaltung (VHosts) in der Administration
+    - Gruppensuche umgesetzt
+    - Seitenvorschau
+    - Seiten Verknüpfungen
+
+    Development
+
+    - database.xml Fixes -> autoincrement
+    - Package Manager verbessert
+    - Composer -> psr4
+    - Mediabereich auf promises umgestellt und dabei stabil gemacht
+    - jshint errors gefixt
+
+    Bugs
+
+    #15149 - Seiten - Seiten suchen
+    #15155 - Media - Ordner löschen
+    #15140 - Seiten - Anzeige von Verknüpfungen
+    #15137, #15146 - Seiten - Vorschau
+    #4955 - Papierkorp global über gehezu
+
+
+v 1.0.5
+
+    QUIQQER
+
+    - Seiten Sortierung umgesetzt. Unterseiten können nun bequem im Panel sortiert werden
+
+    Development
+
+    - Temp wird geleert
+    - Log Level nach RFC 5424; Vorbereitung für Nutzung von monolog
+    - Alte PExceptions umgeschrieben
+    - XML Settings
+    - Jede Menge Fixes und Code Style
+
 v 1.0.4
 
     - Log Manager
