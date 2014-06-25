@@ -13,15 +13,15 @@ v 1.0.8
 
     Development
 
-    - Grid Control um Methode erweitert -> getButtons() Browse Code »
-    - Control parsing -> Calendar fix Browse Code »
+    - Grid Control um Methode erweitert -> getButtons()
+    - Control parsing -> Calendar fix
     - Mail -> namespaces
     - html2text in die mail klasse
     - User und Nobody besitzen nun einen getCountry
-    - User -> set extras raus, wird nicht mehr gebraucht; user xml prüft auf extra attribute Browse Code »
+    - User -> set extras raus, wird nicht mehr gebraucht; user xml prüft auf extra attribute
     - grid edit fix
     - event : onUserLogin
-    - site panels über die site.xml erweiter -> neue tabs Browse Code »
+    - site panels über die site.xml erweiter -> neue tabs
     - Neue Konstante: URL_TEMPLATE_DIR in Smarty
     - URL Rewrite fix für die Startseite
     - Controls -> media input im sitepanel, richtiges projekt gesetzt

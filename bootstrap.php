@@ -19,7 +19,7 @@ $etc_dir = __DIR__ .'/etc/';
 
 if ( !file_exists( $etc_dir .'conf.ini.php' ))
 {
-    require 'quiqqer.php';
+    require_once 'quiqqer.php';
     exit;
 }
 
@@ -30,5 +30,5 @@ if ( file_exists( $config['globals']['lib_dir'] .'autoload.php' ) ) {
 }
 
 if ( file_exists( $config['globals']['lib_dir'] .'header.php' ) ) {
-    require $config['globals']['lib_dir'] .'header.php';
+    require_once $config['globals']['lib_dir'] .'header.php';
 }
