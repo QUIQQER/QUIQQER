@@ -117,7 +117,7 @@ class XML
         $ini_file = CMS_DIR .'etc/';
 
         if ( $Conf->getAttribute( 'name' ) ) {
-            $ini_file .= $Conf->getAttribute( 'name' ) .'.ini';
+            $ini_file .= $Conf->getAttribute( 'name' ) .'.ini.php';
         }
 
         \QUI\Utils\System\File::mkdir( dirname( $ini_file ) );
@@ -159,58 +159,16 @@ class XML
      */
     static function getConfigParamsFromXml($file)
     {
-        $Dom      = self::getDomFromXml( $file );
-        $settings = $Dom->getElementsByTagName( 'settings' );
-
-        if ( !$settings->length ) {
-            return false;
-        }
-
-        $Settings = $settings->item( 0 );
-        $configs  = $Settings->getElementsByTagName( 'config' );
-
-        if ( !$configs->length ) {
-            return false;
-        }
-
-        $projects = \QUI\Projects\Manager::getProjects();
-        $children = $configs->item( 0 )->childNodes;
-        $result   = array();
-
-        for ( $i = 0; $i < $children->length; $i++ )
-        {
-            $Param = $children->item( $i );
-
-            if ( $Param->nodeName == '#text' ) {
-                continue;
-            }
-
-            if ( $Param->nodeName == 'section' )
-            {
-                $name  = $Param->getAttribute( 'name' );
-                $confs = $Param->getElementsByTagName( 'conf' );
-
-                if ( $Param->getAttribute( 'type' ) == 'project' )
-                {
-                    foreach ( $projects as $project ) {
-                        $result[ $project ] = \QUI\Utils\DOM::parseConfs( $confs );
-                    }
-
-                    continue;
-                }
-
-                $result[ $name ] = \QUI\Utils\DOM::parseConfs( $confs );
-            }
-        }
-
-        return $result;
+        return \QUI\Utils\DOM::getConfigParamsFromDOM(
+            self::getDomFromXml( $file )
+        );
     }
 
     /**
      * Reads the tools list from an *.xml
      *
      * @param String $file - path to xml file
-     * @return array()
+     * @return Array
      */
     static function getConsoleToolsFromXml($file)
     {
@@ -243,10 +201,31 @@ class XML
     }
 
     /**
+     * Reads the css file list from an *.xml
+     *
+     * @param String $file
+     * @return Array
+     */
+    static function getWysiwygCSSFromXml($file)
+    {
+        $Dom  = self::getDomFromXml( $file );
+        $Path = new \DOMXPath( $Dom );
+
+        $CSSList = $Path->query( "//wysiwyg/css" );
+        $files   = array();
+
+        for ( $i = 0; $i < $CSSList->length; $i++ ) {
+             $files[] = $CSSList->item( $i )->getAttribute( 'src' );
+        }
+
+        return $files;
+    }
+
+    /**
      * Reads the database entries from an *.xml
      *
      * @param String $file - path to the xml file
-     * @return array
+     * @return Array
      */
     static function getDataBaseFromXml($file)
     {
@@ -303,7 +282,7 @@ class XML
      */
     static function getDomFromXml($filename)
     {
-        if ( strpos($filename, '.xml') === false ) {
+        if ( strpos( $filename, '.xml' ) === false ) {
             return new \DOMDocument();
         }
 
@@ -545,38 +524,52 @@ class XML
     }
 
     /**
-     * Reads the settings window from an *.xml
+     * Return the settings window from an *.xml
      *
      * @param String $file
      * @return Array
      */
     static function getSettingWindowsFromXml($file)
     {
-        $Dom      = self::getDomFromXml( $file );
-        $settings = $Dom->getElementsByTagName( 'settings' );
+        $Dom  = self::getDomFromXml( $file );
+        $Path = new \DOMXPath( $Dom );
 
-        if ( !$settings->length ) {
-            return false;
-        }
+        $windows = $Path->query( "//quiqqer/settings/window" );
 
-        $Settings = $settings->item( 0 );
-        $winlist  = $Settings->getElementsByTagName( 'window' );
-
-        if ( !$winlist->length ) {
-            return false;
+        if ( !$windows->length ) {
+            return array();
         }
 
         $result = array();
 
-        for ( $c = 0; $c < $winlist->length; $c++ )
-        {
-            $Window = $winlist->item( $c );
+        for ( $i = 0, $len = $windows->length; $i < $len; $i++ ) {
+            $result[] = $windows->item( $i );
+        }
 
-            if ( $Window->nodeName == '#text' ) {
-                continue;
-            }
+        return $result;
+    }
 
-            $result[] = $Window;
+    /**
+     * Return the project settings window from an *.xml
+     *
+     * @param String $file
+     * @return Array
+     */
+    static function getProjectSettingWindowsFromXml($file)
+    {
+        $Dom  = self::getDomFromXml( $file );
+        $Path = new \DOMXPath( $Dom );
+
+        $windows = $Path->query( "//quiqqer/project/settings/window" );
+
+        if ( !$windows->length ) {
+            return array();
+        }
+
+        $result = array();
+
+        for ( $i = 0, $len = $windows->length; $i < $len; $i++ ) {
+            $result[] = $windows->item( $i );
         }
 
         return $result;
@@ -943,6 +936,11 @@ class XML
 
                 $suffix = $table['suffix'];
                 $fields = $table['fields'];
+
+                $fields = array(
+                    'id' => 'bigint(20) NOT NULL'
+                ) + $fields;
+
 
                 // Projekte durchgehen
                 foreach ( $projects as $name => $params )

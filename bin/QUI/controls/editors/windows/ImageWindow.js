@@ -2,7 +2,7 @@
 /**
  * Link Plugin for a WYSIWYG Editor
  *
- * @author www.namerobot.com (Henning Leutz)
+ * @author www.pcsg.de (Henning Leutz)
  */
 
 define('controls/editors/windows/ImageWindow', [

@@ -9,7 +9,7 @@
  */
 function ajax_permissions_save($params, $btype, $permissions)
 {
-    $Manager     = \QUI::getRights();
+    $Manager     = \QUI::getPermissionManager();
     $permissions = json_decode( $permissions, true );
     $params      = json_decode( $params, true );
 
@@ -27,7 +27,7 @@ function ajax_permissions_save($params, $btype, $permissions)
             $Bind = \QUI::getProject( $params['project'] );
         break;
 
-        case 'classes/projects/Site':
+        case 'classes/projects/project/Site':
             $Project = \QUI::getProject( $params['project'], $params['lang'] );
             $Bind    = $Project->get( $params['id'] );
         break;

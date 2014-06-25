@@ -1,0 +1,13 @@
+@CHARSET "UTF-8";
+
+.control-users-address {
+    float: left;
+    clear: both;
+    width: 100%;
+}
+
+.control-users-address form {
+    float: left;
+    padding: 20px 10px;
+    width: 100%;
+}

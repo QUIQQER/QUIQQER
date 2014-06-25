@@ -1,18 +1,16 @@
 @CHARSET "UTF-8";
 
 .qui-project-settings p {
-    float: left;
     clear: both;
-    margin: 2px 0;
-}
-
-.qui-project-settings label {
     float: left;
-    width: 150px;
+    margin: 2px 0;
+    width: 100%;
 }
 
 .qui-project-settings td.first {
-    width: 150px;
+    max-width: 200px;
+    padding: 10px;
+    width: 33%;
 }
 
 .qui-project-settings td {
@@ -20,8 +18,30 @@
     vertical-align: top;
 }
 
+.qui-project-settings td label {
+    float: left;
+    margin: 0px;
+    width: 100%;
+}
+
+.qui-project-settings td p label {
+    margin: 7px 0;
+    width: 33%;
+}
+
 .qui-project-settings input,
 .qui-project-settings select {
     width: 200px;
     float: left;
+}
+
+.qui-project-settings input[type="checkbox"],
+.qui-project-settings input[type="radio"] {
+    margin-right: 10px;
+    width: 20px;
+}
+
+.qui-project-settings .description {
+    font-style: italic;
+    padding: 10px 0 0;
 }

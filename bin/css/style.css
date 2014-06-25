@@ -1,4 +1,10 @@
 
+* {
+-webkit-box-sizing: border-box;
+   -moz-box-sizing: border-box;
+        box-sizing: border-box;
+}
+
 html, body {
     background: #f0f2f5;
     color: #212527;
@@ -12,6 +18,33 @@ html, body {
 
 th {
     text-align: left;
+}
+
+p {
+    clear: both;
+    margin: 0 5px 0 0;
+    padding: 0;
+}
+
+address {
+    font-size: 14px;
+    line-height: normal;
+}
+
+address .salutation {
+    margin-top: 10px;
+}
+
+address .adr {
+    margin-bottom: 10px;
+}
+
+address .icon {
+    float: left;
+    line-height: 16px;
+    margin-right: 5px;
+    text-align: center;
+    width: 20px;
 }
 
 /** logo, title

@@ -42,11 +42,11 @@
 
             </en>
         </locale>
-        <locale name="exception.lib.user.nobody.add.adress">
+        <locale name="exception.lib.user.nobody.add.address">
             <de>Dieser Benutzer existiert nicht, daher kann keine Adresse hinterlegt werden. Bitte legen Sie einen Benutzer an.</de>
             <en></en>
         </locale>
-        <locale name="exception.lib.user.nobody.get.adress">
+        <locale name="exception.lib.user.nobody.get.address">
             <de>Dieser Benutzer hat keine Adresse hinterlegt.</de>
             <en></en>
         </locale>
@@ -80,15 +80,15 @@
             <de>Sie haben keine Berechtigung diesen Benutzer zu editieren.</de>
             <en></en>
         </locale>
-        <locale name="exception.lib.user.adress.not.found">
+        <locale name="exception.lib.user.address.not.found">
             <de>Adresse wurde nicht gefunden.</de>
             <en></en>
         </locale>
-        <locale name="exception.lib.user.adress.mail.wrong.syntax">
+        <locale name="exception.lib.user.address.mail.wrong.syntax">
             <de>E-Mail Syntax ist nicht korrekt.</de>
             <en></en>
         </locale>
-        <locale name="exception.lib.user.adress.no.country">
+        <locale name="exception.lib.user.address.no.country">
             <de>Der Adresse wurde kein Land zugewiesen.</de>
             <en></en>
         </locale>

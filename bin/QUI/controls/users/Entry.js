@@ -44,7 +44,8 @@ define('controls/users/Entry', [
             this.$User = Users.get( uid );
             this.parent( options );
 
-            this.$Elm = null;
+            this.$Elm      = null;
+            this.$disabled = false;
         },
 
         /**
@@ -64,9 +65,12 @@ define('controls/users/Entry', [
          */
         create : function()
         {
+            var self = this;
+
             this.$Elm = new Element('div', {
-                'class'   : 'users-entry',
-                'data-id' : this.$User.getId(),
+                'class'      : 'users-entry users-entry-enabled',
+                'data-id'    : this.$User.getId(),
+                'data-quiid' : this.getId(),
 
                 html : '<div class="users-entry-icon"></div>' +
                        '<div class="users-entry-text"></div>' +
@@ -75,7 +79,13 @@ define('controls/users/Entry', [
 
             var Close = this.$Elm.getElement( '.users-entry-close' );
 
-            Close.addEvent( 'click', this.destroy );
+            Close.addEvent( 'click', function()
+            {
+                if ( !self.isDisabled() ) {
+                    self.destroy();
+                }
+            });
+
             Close.set({
                 alt   : 'Benutzer entfernen',
                 title : 'Benutzer entfernen'
@@ -138,9 +148,38 @@ define('controls/users/Entry', [
             UserIcon.removeClass( 'icon-spin' );
 
             this.$Elm.getElement( '.users-entry-text' )
-                     .set( 'html', User.getName() );
+                     .set( 'html', User.getName() +' ('+ User.getId() +')' );
 
             return this;
+        },
+
+        /**
+         * Disable the control
+         * no changes are posible
+         */
+        disable : function()
+        {
+            this.$Elm.removeClass( 'users-entry-enabled' );
+            this.$disabled = true;
+        },
+
+        /**
+         * Disable the control
+         * changes are posible
+         */
+        enable : function()
+        {
+            this.$Elm.addClass( 'users-entry-enabled' );
+            this.$disabled = false;
+        },
+
+        /**
+         * Is it disabled?
+         * if disabled, no changes are possible
+         */
+        isDisabled : function()
+        {
+            return this.$disabled;
         }
     });
 });

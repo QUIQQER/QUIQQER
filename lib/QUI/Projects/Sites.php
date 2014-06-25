@@ -144,6 +144,8 @@ class Sites
         }
 
         // Tabs der Plugins hohlen
+        // @todo über xml's oder neue apis
+        /*
         $Plugins = self::getPlugins( $Site );
 
         foreach ( $Plugins as $Plugin )
@@ -152,6 +154,7 @@ class Sites
                 $Plugin->setButtons( $Toolbar, $Site );
             }
         }
+        */
 
         return $Toolbar;
     }
@@ -261,12 +264,35 @@ class Sites
             ))
         );
 
-        // Global Plugins hohlen
-        $Plugins = self::getPlugins( $Site );
+        // site type tabs
+        $type  = $Site->getAttribute( 'type' );
+        $types = explode( ':', $type );
 
-        foreach ( $Plugins as $Plugin )
+        $file = OPT_DIR . $types[ 0 ] .'/site.xml';
+
+        if ( file_exists( $file ) )
         {
-            $file = $Plugin->getAttribute( '_folder_' ) .'site.xml';
+            $Dom  = \QUI\Utils\XML::getDomFromXml( $file );
+            $Path = new \DOMXPath( $Dom );
+
+            \QUI\Utils\DOM::addTabsToToolbar(
+                $Path->query( "//site/types/type[@type='". $types[ 1 ] ."']/tab" ),
+                $Tabbar
+            );
+        }
+
+
+        // Global tabs
+        $packages = \QUI::getPackageManager()->getInstalled();
+
+        foreach ( $packages as $package )
+        {
+            // templates would be seperated
+            if ( $package['type'] == 'quiqqer-template' ) {
+                continue;
+            }
+
+            $file = OPT_DIR . $package['name'] .'/site.xml';
 
             if ( !file_exists( $file ) ) {
                 continue;
@@ -276,21 +302,26 @@ class Sites
                 \QUI\Utils\XML::getTabsFromXml( $file ),
                 $Tabbar
             );
-
-            //\QUI\System\Log::writeRecursive( $result, 'error' );
-
-            /* old api
-            if ( method_exists( $Plugin, 'setTabs' ) ) {
-                $Plugin->setTabs($Tabbar, $Site);
-            }
-            */
-
-            /*
-            if ( method_exists( $Plugin, 'onAdminLoad' ) ) {
-                $adminload .= $Plugin->onAdminLoad($Site);
-            }
-            */
         }
+
+        // project template tabs
+        $Project   = $Site->getProject();
+        $templates = \QUI\Projects\Manager::getRelatedTemplates( $Project );
+
+        foreach ( $templates as $template )
+        {
+            $file = OPT_DIR . $package['name'] .'/site.xml';
+
+            if ( !file_exists( $file ) ) {
+                continue;
+            }
+
+            \QUI\Utils\DOM::addTabsToToolbar(
+                \QUI\Utils\XML::getTabsFromXml( $file ),
+                $Tabbar
+            );
+        }
+
 
         return $Tabbar;
     }

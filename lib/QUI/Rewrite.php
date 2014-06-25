@@ -1008,7 +1008,7 @@ class Rewrite
         );
 
         // SPAM Protection
-        if (MAIL_PROTECT)
+        if ( MAIL_PROTECT )
         {
             $output = str_replace('</body>', '<!-- [begin] QUIQQER Mail SPAM Bot Protection --><iframe src="'. URL_BIN_DIR .'mail_protection.php" style="position: absolute; display: none; width: 1px; height: 1px;" name="mail_protection" title="mail_protection"></iframe><!-- [begin] P.MS Mail SPAM Bot Protection --></body>', $output);
 
@@ -1052,14 +1052,14 @@ class Rewrite
 
     /**
      * Mail Protection gegen SPAM
-     * Wandelt die Mail Adressen so um das ein BOT nichts mit anfangen kann
+     * Wandelt die Mail Addressen so um das ein BOT nichts mit anfangen kann
      *
      * @param String $output
      * @return String
      */
     public function _output_mail($output)
     {
-        if (isset($output[3]) && strpos($output[3], '@') !== false)
+        if ( isset( $output[3] ) && strpos( $output[3], '@' ) !== false )
         {
             list($user, $domain) = explode("@", $output[3]);
             return 'href="'.URL_DIR.'[mailto]'.$user.'[at]'.$domain.'" target="mail_protection"';
@@ -1079,10 +1079,10 @@ class Rewrite
         try
         {
             $url = \QUI\Projects\Media\Utils::getRewritedUrl(
-                'image.php?'.$output[3]
+                'image.php?'. $output[3]
             );
 
-        } catch (\QUI\Exception $e)
+        } catch ( \QUI\Exception $Excxeption )
         {
             $url = '';
         }
@@ -1255,7 +1255,7 @@ class Rewrite
             $lang    = $Project->getAttribute( 'lang' );
             $project = $Project->getAttribute( 'name' );
 
-            unset($params['site']);
+            unset( $params['site'] );
 
         } else
         {
@@ -1271,38 +1271,42 @@ class Rewrite
                 $lang = $params['lang'];
             }
 
-            unset($params['project']);
-            unset($params['id']);
-            unset($params['lang']);
+            unset( $params['project'] );
+            unset( $params['id'] );
+            unset( $params['lang'] );
         }
 
         // Wenn nicht alles da ist dann wird ein Exception geworfen
-        if (!isset($id) || !isset($project)) {
-            throw new \QUI\Exception('Params missing Rewrite::getUrlFromPage');
+        if ( !isset( $id ) || !isset( $project ) )
+        {
+            throw new \QUI\Exception(
+                'Params missing Rewrite::getUrlFromPage'
+            );
         }
 
-        \QUI\Utils\System\File::mkdir(VAR_DIR.'cache/links');
+        \QUI\Utils\System\File::mkdir( VAR_DIR .'cache/links' );
 
         $link_cache_dir = VAR_DIR .'cache/links/'. $project .'/';
-        \QUI\Utils\System\File::mkdir($link_cache_dir);
+        \QUI\Utils\System\File::mkdir( $link_cache_dir );
 
-        $link_cache_file = $link_cache_dir.$id.'_'.$project.'_'.$lang;
+        $link_cache_file = $link_cache_dir . $id .'_'. $project .'_'. $lang;
 
-        $url = '';
+        $url = URL_DIR;
         // Falls es das Cachefile schon gibt
-        if (file_exists($link_cache_file))
+        if ( file_exists( $link_cache_file ) )
         {
-            $url = file_get_contents($link_cache_file);
-            $url = $this->_extendUrlWidthPrams($url, $params);
+            $url = file_get_contents( $link_cache_file );
+            $url = $this->_extendUrlWidthPrams( $url, $params );
 
         } else
         {
             // Wenn nicht erstellen
             try
             {
-                $Project = \QUI::getProject($project, $lang); /* @var $Project \QUI\Projects\Project */
+                $Project = \QUI::getProject( $project, $lang ); /* @var $Project \QUI\Projects\Project */
                 $Site    = $Project->get( (int)$id ); /* @var $s \QUI\Projects\Site */
-            } catch ( \QUI\Exception $e )
+
+            } catch ( \QUI\Exception $Exception )
             {
                 // Seite existiert nicht
                 return '';
@@ -1310,28 +1314,32 @@ class Rewrite
 
             $_params = array(); // Temp Params, nur um die Endung mitzuliefern
 
-            if (isset($params['suffix'])) {
+            if ( isset( $params['suffix'] ) ) {
                 $_params['suffix'] = $params['suffix'];
             }
 
-            $url = URL_DIR . $Site->getUrlRewrited($_params);
+            $url = URL_DIR . $Site->getUrlRewrited( $_params );
 
             // Link Cache
-            file_put_contents($link_cache_file, str_replace('.print','.html',$url));
-            $url = $this->_extendUrlWidthPrams($url, $params);
+            file_put_contents(
+                $link_cache_file,
+                str_replace( '.print', '.html', $url )
+            );
+
+            $url = $this->_extendUrlWidthPrams( $url, $params );
         }
 
         $vhosts = $this->getVHosts();
 
-        if (!isset($Project)) {
+        if ( !isset( $Project ) ) {
             $Project = $this->getProject();
         }
 
         /**
          * Sprache behandeln
          */
-        if (isset($vhosts[$_SERVER['HTTP_HOST']]) &&
-            isset($vhosts[$_SERVER['HTTP_HOST']][$lang]))
+        if ( isset( $vhosts[ $_SERVER['HTTP_HOST'] ] ) &&
+             isset( $vhosts[ $_SERVER['HTTP_HOST'] ][ $lang ] ) )
         {
             if (// wenn ein Host eingetragen ist
                 $lang != $Project->getAttribute('lang') ||
@@ -1352,21 +1360,21 @@ class Rewrite
 
             $url = URL_DIR . $this->_project_prefix . $url;
 
-        } else if ($Project->getAttribute('default_lang') !== $lang)
+        } else if ( $Project->getAttribute('default_lang') !== $lang )
         {
             // Falls kein Host Eintrag gibt
             // Und nicht die Standardsprache dann das Sprachenflag davor setzen
             $url = URL_DIR . $this->_project_prefix . $lang .'/'. $url;
-            $url = \QUI\Utils\String::replaceDblSlashes($url);
+            $url = \QUI\Utils\String::replaceDblSlashes( $url );
         }
 
         // falls host anderst ist, dann muss dieser dran gehängt werden
         // damit kein doppelter content entsteht
-        if ($_SERVER['HTTP_HOST'] != $Project->getHost())
+        if ( $_SERVER['HTTP_HOST'] != $Project->getHost() )
         {
-            $url = $Project->getHost() . \QUI\Utils\String::replaceDblSlashes(URL_DIR . $url);
+            $url = $Project->getHost() . \QUI\Utils\String::replaceDblSlashes( URL_DIR . $url );
 
-            if (strpos($url, 'http://') === false) {
+            if ( strpos( $url, 'http://' ) === false ) {
                 $url = 'http://'. $url;
             }
         }
@@ -1383,28 +1391,28 @@ class Rewrite
      */
     private function _extendUrlWidthPrams($url, $params)
     {
-        if (count($params) <= 0) {
+        if ( count( $params ) <= 0 ) {
             return $url;
         }
 
-        $exp = explode('.', $url);
+        $exp = explode( '.', $url );
         $url = $exp[0];
 
-        foreach ($params as $key => $param)
+        foreach ( $params as $key => $param )
         {
-            if ($param == 'phpMyAdmin') {
+            if ( $param == 'phpMyAdmin' ) {
                 continue;
             }
 
-            if ($key != 'suffix') {
+            if ( $key != 'suffix' ) {
                 $url .= self::URL_PARAM_SEPERATOR . $key . self::URL_PARAM_SEPERATOR . $param;
             }
         }
 
-        if (isset($params['suffix'])) {
-            return $url.'.'.$params['suffix'];
+        if ( isset( $params['suffix'] ) ) {
+            return $url .'.'. $params['suffix'];
         }
 
-        return $url.'.'. (isset($exp[1]) ? $exp[1] : 'html');
+        return $url.'.'. ( isset($exp[1] ) ? $exp[1] : 'html' );
     }
 }

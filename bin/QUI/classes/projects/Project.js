@@ -33,7 +33,7 @@ define('classes/projects/Project', [
     /**
      * A project
      *
-     * @class classes/projects/project/Project
+     * @class classes/projects/Project
      *
      * @param {Object} options
      *
@@ -42,7 +42,7 @@ define('classes/projects/Project', [
     return new Class({
 
         Extends : QDOM,
-        Type    : 'classes/projects/project/Project',
+        Type    : 'classes/projects/Project',
 
         Binds : [
             '$onChildDelete',
@@ -76,13 +76,11 @@ define('classes/projects/Project', [
          */
         get : function(id)
         {
-            var Site = this.$ids[ id ];
-
-            if ( typeof Site !== 'undefined' ) {
-                return Site;
+            if ( typeof this.$ids[ id ] !== 'undefined' ) {
+                return this.$ids[ id ];
             }
 
-            Site = new ProjectSite( this, id );
+            var Site = new ProjectSite( this, id );
 
             Site.addEvents({
                 'onDelete'      : this.$onSiteDelete,

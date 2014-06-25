@@ -1,1 +1,6 @@
 @CHARSET "UTF-8";
+
+.address-list {
+    float: left;
+    width: 100%;
+}

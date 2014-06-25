@@ -12,13 +12,11 @@ function ajax_system_packages_list($params)
     );
 }
 
-QUI::$Ajax->register(
-	'ajax_system_packages_list',
+\QUI::$Ajax->register(
+    'ajax_system_packages_list',
     array( 'params' ),
     array(
-    	'Permission::checkAdminUser',
+        'Permission::checkAdminUser',
         'quiqqer.system.update'
     )
 );
-
-?>

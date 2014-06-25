@@ -17,13 +17,13 @@
 
 $etc_dir = __DIR__ .'/etc/';
 
-if ( !file_exists( $etc_dir .'conf.ini' ))
+if ( !file_exists( $etc_dir .'conf.ini.php' ))
 {
     require 'quiqqer.php';
     exit;
 }
 
-$config = parse_ini_file( $etc_dir .'conf.ini', true );
+$config = parse_ini_file( $etc_dir .'conf.ini.php', true );
 
 if ( file_exists( $config['globals']['lib_dir'] .'autoload.php' ) ) {
     require_once $config['globals']['lib_dir'] .'autoload.php';

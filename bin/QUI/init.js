@@ -1,7 +1,7 @@
 /**
  * The main loading script for the quiqqer administration
  *
- * @author www.namerobot.com (Henning Leutz)
+ * @author www.pcsg.de (Henning Leutz)
  */
 
 // extend mootools with desktop drag drop
@@ -124,8 +124,7 @@ require([
 
                     User.load(function()
                     {
-                        var extra = Panel.getAttribute( 'name' ),
-                            data  = User.getExtra( extra );
+                        var data = User.getAttribute( 'qui-bookmarks' );
 
                         if ( !data )
                         {
@@ -145,10 +144,9 @@ require([
 
                 require(['Users'], function(Users)
                 {
-                    var User  = Users.get( USER.id ),
-                        extra = Panel.getAttribute( 'name' );
+                    var User = Users.get( USER.id );
 
-                    User.setExtra( extra, Panel.serialize() );
+                    User.setAttribute( 'qui-bookmarks', Panel.serialize() );
 
                     User.save(function() {
                         Panel.Loader.hide();
@@ -162,10 +160,9 @@ require([
 
                 require(['Users'], function(Users)
                 {
-                    var User  = Users.get( USER.id ),
-                        extra = Panel.getAttribute( 'name' );
+                    var User = Users.get( USER.id );
 
-                    User.setExtra( extra, Panel.serialize() );
+                    User.setExtra( 'qui-bookmarks', Panel.serialize() );
 
                     User.save(function() {
                         Panel.Loader.hide();
@@ -245,42 +242,19 @@ require([
 
         UploadManager.inject( RightColumn );
         UploadManager.toggle();
-    });
 
-    QUI.getMessageHandler(function(MessageHandler)
-    {
-//        new Panel({
-//            title  : 'Nachrichten',
-//            name   : 'message-handler',
-//            events :
-//            {
-//                onCreate : function(Panel)
-//                {
-//                    var Content = Panel.getContent();
-//
-//                    Content.setStyles({
-//                        padding : 5
-//                    });
-//
-//                    MessageHandler.bindParent( Content );
-//                    MessageHandler.open();
-//
-//                    Content.getElement( '.message-handler-container' ).setStyles({
-//                        zIndex : 100
-//                    });
-//                }
-//            }
-//        }).inject( RightColumn );
-//
-        // if 404 -> not loged in, than login pop
-        MessageHandler.addEvent('onAdd', function(MH, Message)
+        QUI.getMessageHandler(function(MessageHandler)
         {
-            if ( Message.getAttribute( 'code' ) == 401 )
+            // if 404 -> not loged in, than login pop
+            MessageHandler.addEvent('onAdd', function(MH, Message)
             {
-                require(['controls/system/Login'], function(Login) {
-                    new Login().open();
-                });
-            }
+                if ( Message.getAttribute( 'code' ) == 401 )
+                {
+                    require(['controls/system/Login'], function(Login) {
+                        new Login().open();
+                    });
+                }
+            });
         });
     });
 

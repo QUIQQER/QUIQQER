@@ -18,6 +18,20 @@ namespace QUI\Utils;
 class DOM
 {
     /**
+     * Converts an array into an \QUI\QDOM object
+     *
+     * @param array $array
+     * @return \QUI\QDOM
+     */
+    static function arrayToQDOM(array $array)
+    {
+        $DOM = new \QUI\QDOM();
+        $DOM->setAttributes( $array );
+
+        return $DOM;
+    }
+
+    /**
      * Fügt DOM XML Tabs in eine Toolbar ein
      *
      * @param Array $tabs
@@ -30,6 +44,7 @@ class DOM
         {
             $text  = '';
             $image = '';
+            $type  = '';
 
             $Images   = $Tab->getElementsByTagName( 'image' );
             $Texts    = $Tab->getElementsByTagName( 'text' );
@@ -45,11 +60,16 @@ class DOM
                 $text = self::parseVar( $Texts->item( 0 )->nodeValue );
             }
 
+            if ( $Tab->getAttribute( 'type' ) ) {
+                $type = $Tab->getAttribute( 'type' );
+            }
+
             $ToolbarTab = new \QUI\Controls\Toolbar\Tab(array(
-                'name'   => $Tab->getAttribute( 'name' ),
-                'text'   => $text,
-                'image'  => $image,
-                'plugin' => $plugin
+                'name'    => $Tab->getAttribute( 'name' ),
+                'text'    => $text,
+                'image'   => $image,
+                'plugin'  => $plugin,
+                'wysiwyg' => $type == 'wysiwyg' ? true : false
             ));
 
             foreach ( $Tab->attributes as $attr )
@@ -102,10 +122,179 @@ class DOM
     }
 
     /**
+     * Button Element
+     *
+     * @param \DOMNode $Button
+     * @return String
+     */
+    static function buttonDomToString(\DOMNode $Button)
+    {
+        if ( $Button->nodeName != 'button' ) {
+            return '';
+        }
+
+        $text = '';
+        $Text = $Button->getElementsByTagName( 'text' );
+
+        if ( $Text->length ) {
+            $text = $Text->item( 0 )->nodeValue;
+        }
+
+
+        $string  = '<p>';
+        $string .= '<div class="btn-button" ';
+
+        $string .= 'data-text="'. $text .'" ';
+        $string .= 'data-click="'. $Button->getAttribute( 'onclick' ) .'" ';
+        $string .= 'data-image="'. $Button->getAttribute( 'image' ) .'" ';
+
+        $string .= '></div>';
+        $string .= '</p>';
+
+        return $string;
+    }
+
+    /**
+     * Table Datenbank DOmNode Objekt in ein Array umwandeln
+     *
+     * @param \DOMNode $Table
+     * @return Array
+     */
+    static function dbTableDomToArray(\DOMNode $Table)
+    {
+        $result = array(
+            'suffix' => $Table->getAttribute( 'name' )
+        );
+
+        $_fields = array();
+
+        // table fields
+        $fields = $Table->getElementsByTagName( 'field' );
+
+        for ( $i = 0; $i < $fields->length; $i++ )
+        {
+            $_fields = array_merge(
+                $_fields,
+                self::dbFieldDomToArray( $fields->item( $i ) )
+            );
+        }
+
+        // primary key
+        $primary = $Table->getElementsByTagName( 'primary' );
+
+        for ( $i = 0; $i < $primary->length; $i++ )
+        {
+            $result = array_merge(
+                $result,
+                self::dbPrimaryDomToArray( $primary->item( $i ) )
+            );
+        }
+
+        // index
+        $index = $Table->getElementsByTagName( 'index' );
+
+        for ( $i = 0; $i < $index->length; $i++ )
+        {
+            $result = array_merge(
+                $result,
+                self::dbIndexDomToArray( $index->item( $i ) )
+            );
+        }
+
+        $autoincrement = $Table->getElementsByTagName( 'auto_increment' );
+
+        for ( $i = 0; $i < $autoincrement->length; $i++ )
+        {
+            $result = array_merge(
+                $result,
+                self::dbAutoIncrementDomToArray( $autoincrement->item( $i ) )
+            );
+        }
+
+        $result['fields'] = $_fields;
+
+
+        return $result;
+    }
+
+    /**
+     * Field Datenbank DOmNode Objekt in ein Array umwandeln
+     *
+     * @param \DOMNode $Field
+     * @return Array
+     */
+    static function dbFieldDomToArray(\DOMNode $Field)
+    {
+        $str  = '';
+        $str .= $Field->getAttribute( 'type' );
+
+        if ( empty( $str ) ) {
+            $str .= 'text';
+        }
+
+        if ( $Field->getAttribute( 'length' ) ) {
+            $str .= '('. $Field->getAttribute( 'length' ) .')';
+        }
+
+        $str .= ' ';
+
+        if ( $Field->getAttribute( 'null' ) == 1 )
+        {
+            $str .= 'NULL';
+        } else
+        {
+            $str .= 'NOT NULL';
+        }
+
+        return array(
+            trim( $Field->nodeValue ) => $str
+        );
+    }
+
+    /**
+     * Primary Datenbank DOmNode Objekt in ein Array umwandeln
+     *
+     * @param \DOMNode $Primary
+     * @return Array
+     */
+    static function dbPrimaryDomToArray(\DOMNode $Primary)
+    {
+        return array(
+            'primary' => explode( ',', $Primary->nodeValue )
+        );
+    }
+
+    /**
+     * Index Datenbank DOMNode Objekt in ein Array umwandeln
+     *
+     * @param \DOMNode $Index
+     * @return Array
+     */
+    static function dbIndexDomToArray(\DOMNode $Index)
+    {
+        return array(
+            'index' => $Index->nodeValue
+        );
+    }
+
+    /**
+     * AUTO_INCREMENT Datenbank DOMNode Objekt in ein Array umwandeln
+     *
+     * @param \DOMNode $Index
+     * @return Array
+     */
+    static function dbAutoIncrementDomToArray(\DOMNode $AI)
+    {
+        return array(
+            'auto_increment' => $AI->nodeValue
+        );
+    }
+
+    /**
      * HTML eines DOM Tabs
      *
      * @param String $name
-     * @param Plugin | \QUI\Projects\Project | String $Object - String = user.xml File
+     * @param Plugin | \QUI\Projects\Project | String $Object - String = path to user.xml File
      *
      * @return String
      */
@@ -154,11 +343,6 @@ class DOM
             }
 
             return '';
-
-        } else
-        {
-            /* @var $Object Plugin */
-            $tabs = $Object->getUserTabs();
         }
 
         $str  = '';
@@ -173,6 +357,215 @@ class DOM
         }
 
         return $str;
+    }
+
+    /**
+     * Return the buttons from <categories>
+     *
+     * @param \DomDocument|\DomElement $Dom
+     * @return array
+     */
+    static function getButtonsFromWindow($Dom)
+    {
+        $btnlist = $Dom->getElementsByTagName( 'categories' );
+
+        if ( !$btnlist->length ) {
+            return array();
+        }
+
+        $result   = array();
+        $children = $btnlist->item( 0 )->childNodes;
+
+        for ( $i = 0; $i < $children->length; $i++ )
+        {
+            $Param = $children->item( $i );
+
+            if ( $Param->nodeName != 'category' ) {
+                continue;
+            }
+
+            $Button = new \QUI\Controls\Buttons\Button();
+            $Button->setAttribute( 'name', $Param->getAttribute( 'name' ) );
+            $Button->setAttribute( 'require', $Param->getAttribute( 'require' ) );
+
+            $onload   = $Param->getElementsByTagName( 'onload' );
+            $onunload = $Param->getElementsByTagName( 'onunload' );
+
+            $btnParams = $Param->childNodes;
+
+            for ( $b = 0; $b < $btnParams->length; $b++ )
+            {
+                switch ( $btnParams->item( $b )->nodeName )
+                {
+                    case 'text':
+                    case 'title':
+                    case 'onclick':
+                        $Button->setAttribute(
+                            $btnParams->item( $b )->nodeName,
+                            $btnParams->item( $b )->nodeValue
+                        );
+                    break;
+
+                    case 'icon':
+                        $value = $btnParams->item( $b )->nodeValue;
+
+                        $Button->setAttribute(
+                            $btnParams->item( $b )->nodeName,
+                            \QUI\Utils\DOM::parseVar( $value )
+                        );
+                    break;
+                }
+            }
+
+            if ( $Param->getAttribute( 'type' ) == 'projects' )
+            {
+                $projects = \QUI\Projects\Manager::getProjects();
+
+                foreach ( $projects as $project )
+                {
+                    $Button->setAttribute(
+                        'text',
+                        str_replace( '{$project}', $project, $Button->getAttribute('text') )
+                    );
+
+                    $Button->setAttribute(
+                        'title',
+                        str_replace( '{$project}', $project, $Button->getAttribute('title') )
+                    );
+
+                    $Button->setAttribute( 'section', $project );
+
+                    $result[] = $Button;
+                }
+
+                continue;
+            }
+
+            $result[] = $Button;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Wandelt <group> in einen String für die Einstellung um
+     *
+     * @param \DOMNode $Group
+     * @return String
+     */
+    static function groupDomToString(\DOMNode $Group)
+    {
+        if ( $Group->nodeName != 'group' ) {
+            return '';
+        }
+
+        $string  = '<p>';
+        $string .= '<div class="btn-groups" name="'. $Group->getAttribute( 'conf' ) .'"></div>';
+
+        $text = $Group->getElementsByTagName( 'text' );
+
+        if ( $text->length ) {
+            $string .= '<span>'. $text->item( 0 )->nodeValue .'</span>';
+        }
+
+        $desc = $Group->getElementsByTagName( 'description' );
+
+        if ( $desc->length ) {
+            $string .= '<div class="description">'. $desc->item( 0 )->nodeValue .'</div>';
+        }
+
+        $string .= '</p>';
+
+        return $string;
+    }
+
+    /**
+     * Returns the String between <body> and </body>
+     *
+     * @param String $html
+     * @return String
+     */
+    static function getInnerBodyFromHTML($html)
+    {
+        return preg_replace( '/(.*)<body>(.*)<\/body>(.*)/si', '$2', $html );
+    }
+
+    /**
+     * Returns the innerHTML from a PHP DOMNode
+     * Equivalent to the JavaScript innerHTML property
+     *
+     * @param \DOMNode $Node
+     * @return String
+     */
+    static function getInnerHTML(\DOMNode $Node)
+    {
+        $Dom      = new \DOMDocument();
+        $Children = $Node->childNodes;
+
+        foreach ( $Children as $Child ) {
+            $Dom->appendChild( $Dom->importNode( $Child, true ) );
+        }
+
+        return $Dom->saveHTML();
+    }
+
+    /**
+     * Return the config parameter from an DOMNode Element
+     *
+     * @param \DOMDocument|\DOMNode $Dom
+     * @return Array
+     */
+    static function getConfigParamsFromDOM($Dom)
+    {
+        $Settings = $Dom;
+
+        if ( $Dom->nodeName != 'settings' )
+        {
+            $settings = $Dom->getElementsByTagName( 'settings' );
+            $Settings = $settings->item( 0 );
+
+            if ( !$settings->length ) {
+                return array();
+            }
+        }
+
+        $configs = $Settings->getElementsByTagName( 'config' );
+
+        if ( !$configs->length ) {
+            return array();
+        }
+
+        $projects = \QUI\Projects\Manager::getProjects();
+        $children = $configs->item( 0 )->childNodes;
+        $result   = array();
+
+        for ( $i = 0; $i < $children->length; $i++ )
+        {
+            $Param = $children->item( $i );
+
+            if ( $Param->nodeName == '#text' ) {
+                continue;
+            }
+
+            if ( $Param->nodeName == 'section' )
+            {
+                $name  = $Param->getAttribute( 'name' );
+                $confs = $Param->getElementsByTagName( 'conf' );
+
+                if ( $Param->getAttribute( 'type' ) == 'project' )
+                {
+                    foreach ( $projects as $project ) {
+                        $result[ $project ] = \QUI\Utils\DOM::parseConfs( $confs );
+                    }
+
+                    continue;
+                }
+
+                $result[ $name ] = \QUI\Utils\DOM::parseConfs( $confs );
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -213,121 +606,10 @@ class DOM
         }
 
         // Window Parameter
-        $params = $Window->getElementsByTagName('params');
+        $btnList = self::getButtonsFromWindow( $Window );
 
-        if ( $params->length )
-        {
-            $children = $params->item( 0 )->childNodes;
-
-            for ( $i = 0; $i < $children->length; $i++ )
-            {
-                $Param = $children->item( $i );
-
-                if ( $Param->nodeName == '#text' ) {
-                    continue;
-                }
-
-                if ( $Param->nodeName == 'icon' )
-                {
-                    $Win->setAttribute(
-                        'icon',
-                        \QUI\Utils\DOM::parseVar( $Param->nodeValue )
-                    );
-
-                    continue;
-                }
-
-                $Win->setAttribute( $Param->nodeName, $Param->nodeValue );
-            }
-        }
-
-        // buttons bauen
-        $btnlist = $Settings->getElementsByTagName( 'categories' );
-
-        if ( $btnlist->length )
-        {
-            $children = $btnlist->item( 0 )->childNodes;
-
-            for ( $i = 0; $i < $children->length; $i++ )
-            {
-                $Param = $children->item( $i );
-
-                if ( $Param->nodeName != 'category' ) {
-                    continue;
-                }
-
-                $Button = new \QUI\Controls\Buttons\Button();
-                $Button->setAttribute( 'name', $Param->getAttribute( 'name' ) );
-                //$Button->setAttribute( 'onclick', '_pcsg.Plugins.Settings.getButtonContent' );
-                //$Button->setAttribute( 'onload', '_pcsg.Plugins.Settings.onload' );
-                //$Button->setAttribute( 'onunload', '_pcsg.Plugins.Settings.onunload' );
-
-                $onload   = $Param->getElementsByTagName( 'onload' );
-                $onunload = $Param->getElementsByTagName( 'onunload' );
-
-                // Extra on / unload
-                /*
-                if ( $onload && $onload->length ) {
-                    $Button->setAttribute( 'onloadExtra', $onload->item(0)->nodeValue );
-                }
-
-                if ( $onunload && $onunload->length ) {
-                    $Button->setAttribute( 'onunloadExtra', $onunload->item(0)->nodeValue );
-                }
-                */
-
-                $btnParams = $Param->childNodes;
-
-                for ( $b = 0; $b < $btnParams->length; $b++ )
-                {
-                    switch ( $btnParams->item( $b )->nodeName )
-                    {
-                        case 'text':
-                        case 'title':
-                        case 'onclick':
-                            $Button->setAttribute(
-                                $btnParams->item( $b )->nodeName,
-                                $btnParams->item( $b )->nodeValue
-                            );
-                        break;
-
-                        case 'icon':
-                            $value = $btnParams->item( $b )->nodeValue;
-
-                            $Button->setAttribute(
-                                $btnParams->item( $b )->nodeName,
-                                \QUI\Utils\DOM::parseVar( $value )
-                            );
-                        break;
-                    }
-                }
-
-                if ( $Param->getAttribute( 'type' ) == 'projects' )
-                {
-                    $projects = \QUI\Projects\Manager::getProjects();
-
-                    foreach ( $projects as $project )
-                    {
-                        $Button->setAttribute(
-                            'text',
-                            str_replace( '{$project}', $project, $Button->getAttribute('text') )
-                        );
-
-                        $Button->setAttribute(
-                            'title',
-                            str_replace( '{$project}', $project, $Button->getAttribute('title') )
-                        );
-
-                        $Button->setAttribute( 'section', $project );
-
-                        $Win->appendCategory( $Button );
-                    }
-
-                    continue;
-                }
-
-                $Win->appendCategory( $Button );
-            }
+        foreach ( $btnList as $Button ) {
+            $Win->appendCategory( $Button );
         }
 
         return $Win;
@@ -551,7 +833,9 @@ class DOM
             }
         }
 
-        $result .= '</table>';
+        if ( !empty( $result ) ) {
+            $result .= '</table>';
+        }
 
         return $result;
     }
@@ -577,87 +861,38 @@ class DOM
         $id = $Input->getAttribute( 'conf' ) .'-'. time();
 
         $string  = '<p>';
-        $string .= '<input
-            type="'. $type .'"
-            name="'. $Input->getAttribute( 'conf' ) .'"
-            id="'. $id .'"
-        />';
+        $text    = $Input->getElementsByTagName( 'text' );
+        $input   = '<input type="'. $type .'"
+                           name="'. $Input->getAttribute( 'conf' ) .'"
+                           id="'. $id .'"
+                    />';
 
-        $text = $Input->getElementsByTagName( 'text' );
-
-        if ( $text->length )
+        if ( $type == 'checkbox' || $type == 'radio' )
         {
-            $string .= '<label for="'. $id .'">'.
-                $text->item( 0 )->nodeValue .
-            '</label>';
+            if ( $text->length )
+            {
+                $string .= '<label for="'. $id .'">'.
+                    $input .
+                    $text->item( 0 )->nodeValue .
+                '</label>';
+            } else
+            {
+                $string .= $input;
+            }
+
+        } else
+        {
+            if ( $text->length )
+            {
+                $string .= '<label for="'. $id .'">'.
+                    $text->item( 0 )->nodeValue .
+                '</label>';
+            }
+
+            $string .= $input;
         }
 
         $desc = $Input->getElementsByTagName( 'description' );
-
-        if ( $desc->length ) {
-            $string .= '<div class="description">'. $desc->item( 0 )->nodeValue .'</div>';
-        }
-
-        $string .= '</p>';
-
-        return $string;
-    }
-
-    /**
-     * Button Element
-     *
-     * @param \DOMNode $Button
-     * @return String
-     */
-    static function buttonDomToString(\DOMNode $Button)
-    {
-        if ( $Button->nodeName != 'button' ) {
-            return '';
-        }
-
-        $text = '';
-        $Text = $Button->getElementsByTagName( 'text' );
-
-        if ( $Text->length ) {
-            $text = $Text->item( 0 )->nodeValue;
-        }
-
-
-        $string  = '<p>';
-        $string .= '<div class="btn-button" ';
-
-        $string .= 'data-text="'. $text .'" ';
-        $string .= 'data-click="'. $Button->getAttribute( 'onclick' ) .'" ';
-        $string .= 'data-image="'. $Button->getAttribute( 'image' ) .'" ';
-
-        $string .= '></div>';
-        $string .= '</p>';
-
-        return $string;
-    }
-
-    /**
-     * Wandelt <group> in einen String für die Einstellung um
-     *
-     * @param \DOMNode $Group
-     * @return String
-     */
-    static function groupDomToString(\DOMNode $Group)
-    {
-        if ( $Group->nodeName != 'group' ) {
-            return '';
-        }
-
-        $string  = '<p>';
-        $string .= '<div class="btn-groups" name="'. $Group->getAttribute( 'conf' ) .'"></div>';
-
-        $text = $Group->getElementsByTagName( 'text' );
-
-        if ( $text->length ) {
-            $string .= '<span>'. $text->item( 0 )->nodeValue .'</span>';
-        }
-
-        $desc = $Group->getElementsByTagName( 'description' );
 
         if ( $desc->length ) {
             $string .= '<div class="description">'. $desc->item( 0 )->nodeValue .'</div>';
@@ -695,185 +930,6 @@ class DOM
         $string .= '</p>';
 
         return $string;
-    }
-
-    /**
-     * Eingabe Element Select in einen String für die Einstellung umwandeln
-     *
-     * @param \DOMNode $Select
-     * @return String
-     */
-    static function selectDomToString(\DOMNode $Select)
-    {
-        if ( $Select->nodeName != 'select' ) {
-            return '';
-        }
-
-        $string  = '<p>';
-        $string .= '<select
-            name="'. $Select->getAttribute( 'conf' ) .'"
-        >';
-
-        // Options
-        $Dom = new \DOMDocument();
-
-        foreach ( $Select->childNodes as $Child )
-        {
-            if ( $Dom->nodeName == 'text' ) {
-                continue;
-            }
-
-            $Dom->appendChild( $Dom->importNode( $Child, true ) );
-        }
-
-        $string .= $Dom->saveHtml();
-        $string .= '</select>';
-
-        $text = $Select->getElementsByTagName( 'text' );
-
-        if ( $text->length ) {
-            $string .= '<span>'. $text->item(0)->nodeValue .'</span>';
-        }
-
-        $string .= '</p>';
-
-        return $string;
-    }
-
-    /**
-     * Table Datenbank DOmNode Objekt in ein Array umwandeln
-     *
-     * @param \DOMNode $Table
-     * @return Array
-     */
-    static function dbTableDomToArray(\DOMNode $Table)
-    {
-        $result = array(
-            'suffix' => $Table->getAttribute( 'name' )
-        );
-
-        $_fields = array();
-
-        // table fields
-        $fields = $Table->getElementsByTagName( 'field' );
-
-        for ( $i = 0; $i < $fields->length; $i++ )
-        {
-            $_fields = array_merge(
-                $_fields,
-                self::dbFieldDomToArray( $fields->item( $i ) )
-            );
-        }
-
-        // primary key
-        $primary = $Table->getElementsByTagName( 'primary' );
-
-        for ( $i = 0; $i < $primary->length; $i++ )
-        {
-            $result = array_merge(
-                $result,
-                self::dbPrimaryDomToArray( $primary->item( $i ) )
-            );
-        }
-
-        // index
-        $index = $Table->getElementsByTagName( 'index' );
-
-        for ( $i = 0; $i < $index->length; $i++ )
-        {
-            $result = array_merge(
-                $result,
-                self::dbIndexDomToArray( $index->item( $i ) )
-            );
-        }
-
-        $autoincrement = $Table->getElementsByTagName( 'auto_increment' );
-
-        for ( $i = 0; $i < $autoincrement->length; $i++ )
-        {
-            $result = array_merge(
-                $result,
-                self::dbAutoIncrementDomToArray( $autoincrement->item( $i ) )
-            );
-        }
-
-        $result['fields'] = $_fields;
-
-
-        return $result;
-    }
-
-    /**
-     * Field Datenbank DOmNode Objekt in ein Array umwandeln
-     *
-     * @param \DOMNode $Field
-     * @return Array
-     */
-    static function dbFieldDomToArray(\DOMNode $Field)
-    {
-        $str  = '';
-        $str .= $Field->getAttribute( 'type' );
-
-        if ( empty( $str ) ) {
-            $str .= 'text';
-        }
-
-        if ( $Field->getAttribute( 'length' ) ) {
-            $str .= '('. $Field->getAttribute( 'length' ) .')';
-        }
-
-        $str .= ' ';
-
-        if ( $Field->getAttribute( 'null' ) == 1 )
-        {
-            $str .= 'NULL';
-        } else
-        {
-            $str .= 'NOT NULL';
-        }
-
-        return array(
-            trim( $Field->nodeValue ) => $str
-        );
-    }
-
-    /**
-     * Primary Datenbank DOmNode Objekt in ein Array umwandeln
-     *
-     * @param \DOMNode $Primary
-     * @return Array
-     */
-    static function dbPrimaryDomToArray(\DOMNode $Primary)
-    {
-        return array(
-            'primary' => explode( ',', $Primary->nodeValue )
-        );
-    }
-
-    /**
-     * Index Datenbank DOMNode Objekt in ein Array umwandeln
-     *
-     * @param \DOMNode $Index
-     * @return Array
-     */
-    static function dbIndexDomToArray(\DOMNode $Index)
-    {
-        return array(
-            'index' => $Index->nodeValue
-        );
-    }
-
-    /**
-     * AUTO_INCREMENT Datenbank DOMNode Objekt in ein Array umwandeln
-     *
-     * @param \DOMNode $Index
-     * @return Array
-     */
-    static function dbAutoIncrementDomToArray(\DOMNode $AI)
-    {
-        return array(
-            'auto_increment' => $AI->nodeValue
-        );
     }
 
     /**
@@ -942,46 +998,45 @@ class DOM
     }
 
     /**
-     * Returns the String between <body> and </body>
+     * Eingabe Element Select in einen String für die Einstellung umwandeln
      *
-     * @param String $html
+     * @param \DOMNode $Select
      * @return String
      */
-    static function getInnerBodyFromHTML($html)
+    static function selectDomToString(\DOMNode $Select)
     {
-        return preg_replace( '/(.*)<body>(.*)<\/body>(.*)/si', '$2', $html );
-    }
+        if ( $Select->nodeName != 'select' ) {
+            return '';
+        }
 
-    /**
-     * Returns the innerHTML from a PHP DOMNode
-     * Equivalent to the JavaScript innerHTML property
-     *
-     * @param \DOMNode $Node
-     * @return String
-     */
-    static function getInnerHTML(\DOMNode $Node)
-    {
-        $Dom      = new \DOMDocument();
-        $Children = $Node->childNodes;
+        $string  = '<p>';
+        $string .= '<select
+            name="'. $Select->getAttribute( 'conf' ) .'"
+        >';
 
-        foreach ( $Children as $Child ) {
+        // Options
+        $Dom = new \DOMDocument();
+
+        foreach ( $Select->childNodes as $Child )
+        {
+            if ( $Dom->nodeName == 'text' ) {
+                continue;
+            }
+
             $Dom->appendChild( $Dom->importNode( $Child, true ) );
         }
 
-        return $Dom->saveHTML();
-    }
+        $string .= $Dom->saveHtml();
+        $string .= '</select>';
 
-    /**
-     * Converts an array into an \QUI\QDOM object
-     *
-     * @param array $array
-     * @return \QUI\QDOM
-     */
-    static function arrayToQDOM(array $array)
-    {
-        $DOM = new \QUI\QDOM();
-        $DOM->setAttributes( $array );
+        $text = $Select->getElementsByTagName( 'text' );
 
-        return $DOM;
+        if ( $text->length ) {
+            $string .= '<span>'. $text->item(0)->nodeValue .'</span>';
+        }
+
+        $string .= '</p>';
+
+        return $string;
     }
 }

@@ -28,6 +28,12 @@ class Template extends \QUI\QDOM
     static $_header = array();
 
     /**
+     * assigned vars
+     * @var array
+     */
+    static $_assigned = array();
+
+    /**
      * site type tpl
      * @var String
      */
@@ -42,16 +48,28 @@ class Template extends \QUI\QDOM
     }
 
     /**
+     * Register a param for the Template engine
+     * This registered param would be assigned to the Template Engine at the getEngine() method
+     *
+     * @param unknown $param
+     * @param unknown $value
+     */
+    static function assignGlobalParam($param, $value)
+    {
+        self::$_assigned[ $param ] = $value;
+    }
+
+    /**
      * Return the Template Config object
      * @return \QUI\Config
      */
     static function getConfig()
     {
-        if ( !file_exists( CMS_DIR .'etc/templates.ini' ) ) {
-            file_put_contents( CMS_DIR .'etc/templates.ini', '' );
+        if ( !file_exists( CMS_DIR .'etc/templates.ini.php' ) ) {
+            file_put_contents( CMS_DIR .'etc/templates.ini.php', '' );
         }
 
-        return \QUI::getConfig( 'etc/templates.ini' );
+        return \QUI::getConfig( 'etc/templates.ini.php' );
     }
 
     /**
@@ -82,6 +100,10 @@ class Template extends \QUI\QDOM
             throw new \QUI\Exception(
                 'The Template Engine implements not from \QUI\Interfaces\Template\Engine'
             );
+        }
+
+        if ( !empty( self::$_assigned ) ) {
+            $Engine->assign( self::$_assigned );
         }
 
         return $Engine;

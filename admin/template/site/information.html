@@ -55,7 +55,7 @@
             <td style="width: 20px;">von</td>
             <td style="width: 500px;">
                 <input type="text" name="c_user" disabled="disabled" class="user" value="" />
-                <input type="text" name="c_user_ip" disabled="disabled" class="user" value="" placeholder="IP Adresse Benutzer" />
+                <input type="text" name="c_user_ip" disabled="disabled" value="" placeholder="IP Adresse Benutzer" />
             </td>
             <td></td>
         </tr>
@@ -64,7 +64,7 @@
             <td><input type="text" name="e_date" disabled="disabled" /></td>
             <td>von</td>
             <td>
-                <input type="text" name="e_user" disabled="disabled" value="" />
+                <input type="text" name="e_user" disabled="disabled" class="user" value="" />
                 <input type="text" name="e_user_ip" disabled="disabled" value="" placeholder="IP Adresse Benutzer" />
             </td>
             <td></td>
@@ -98,6 +98,11 @@
     </tbody>
     </table>
 
+
+    {assign var=langIds value=$Site->getLangIds()}
+    {assign var=Project value=$Site->getProject()}
+
+    {if count( $langIds ) > 1}
     <table class="data-table site-langs">
     <thead>
         <tr>
@@ -108,8 +113,6 @@
     </thead>
     <tbody>
         {cycle values="even,odd" reset=true assign=_cycle}
-        {assign var=langIds value=$Site->getLangIds()}
-        {assign var=Project value=$Site->getProject()}
 
         {foreach from=$langIds item=entry key=lang}
         {if $lang != $Project->getLang()}
@@ -132,6 +135,7 @@
         {/foreach}
     </tbody>
     </table>
+    {/if}
 
     <table class="data-table site-linking">
     <thead>

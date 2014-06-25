@@ -89,11 +89,12 @@ define('controls/permissions/Panel', [
          * Set the object for which the rights are
          *
          * @param {classes/groups/Group|classes/users/User|
-         *         classes/projects/Site|classes/projects/Project} Bind
+         *         classes/projects/project/Site|classes/projects/Project} Bind
          */
         setBind : function(Bind)
         {
             this.Loader.show();
+
             this.$Bind = Bind;
 
             if ( !this.$Bind )
@@ -102,11 +103,10 @@ define('controls/permissions/Panel', [
                 return;
             }
 
-            this.Loader.show();
-
-            var params = {
-                id : Bind.getId()
-            };
+            var self   = this,
+                params = {
+                    id : Bind.getId()
+                };
 
             switch ( Bind.getType() )
             {
@@ -114,7 +114,7 @@ define('controls/permissions/Panel', [
                     params.project = Bind.getName();
                 break;
 
-                case 'classes/projects/Site':
+                case 'classes/projects/project/Site':
                     var Project = Bind.getProject();
 
                     params.project = Project.getName();
@@ -122,17 +122,19 @@ define('controls/permissions/Panel', [
                 break;
             }
 
-            // @todo load the rights of the object
+
             Ajax.get('ajax_permissions_get', function(result, Request)
             {
-                var Control = Request.getAttribute( 'Control' );
+                if ( typeOf( result ) != 'object' ) {
+                    result = {};
+                }
 
-                Control.$bindpermissions = result;
-                Control.refresh();
+                self.$bindpermissions = result;
+                self.refresh();
+
             }, {
-                params  : JSON.encode( params ),
-                btype   : Bind.getType(),
-                Control : this
+                params : JSON.encode( params ),
+                btype  : Bind.getType()
             });
         },
 
@@ -659,7 +661,7 @@ define('controls/permissions/Panel', [
                     params.project = this.$Bind.getName();
                 break;
 
-                case 'classes/projects/Site':
+                case 'classes/projects/project/Site':
                     var Project = this.$Bind.getProject();
 
                     params.project = Project.getName();
@@ -881,7 +883,7 @@ define('controls/permissions/Panel', [
                     '</span>';
                 break;
 
-                case 'classes/projects/Site':
+                case 'classes/projects/project/Site':
                     title = title + '<span class="site">'+
                         this.$Bind.getAttribute( 'name' ) +
                         ' - #'+ this.$Bind.getId() +
@@ -1221,8 +1223,19 @@ define('controls/permissions/Panel', [
                 Elm.value = perms[ Elm.name ];
             }
 
-            // parse controls
-            ControlUtils.parse( Table );
+            // parse controls only if an object bind exist
+            if ( this.$Bind )
+            {
+                ControlUtils.parse( Table );
+
+            } else
+            {
+                // if no bind exist, we would only edit the permissions
+                Table.getElements('input,textarea').setStyles({
+                    display : 'none'
+                });
+            }
+
 
             this.Loader.hide();
         },
@@ -1274,7 +1287,7 @@ define('controls/permissions/Panel', [
             {
                 switch ( this.$Bind.getType() )
                 {
-                    case 'classes/projects/Site':
+                    case 'classes/projects/project/Site':
                         Node.getElements( 'input[data-area="site"]' )
                             .getParent()
                             .removeClass( 'disabled' );

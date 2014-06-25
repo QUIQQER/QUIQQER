@@ -1,7 +1,7 @@
 /**
  * List all available languages
  *
- * @author www.namerobot.com (Henning Leutz)
+ * @author www.pcsg.de (Henning Leutz)
  *
  * @event onSubmit [ {Array}, {this} ]
  */

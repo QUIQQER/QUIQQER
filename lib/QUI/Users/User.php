@@ -10,7 +10,14 @@ namespace QUI\Users;
  * A user
  *
  * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.users
+ *
+ * @event onUserSave [ \QUI\Users\User ]
+ * @event onUserDelete [ \QUI\Users\User ]
+ * @event onUserLoad [ \QUI\Users\User ]
+ * @event onUserSetPassword [ \QUI\Users\User ]
+ * @event onUserDisable [ \QUI\Users\User ]
+ * @event onUserActivate [ \QUI\Users\User ]
+ * @event onUserDeactivate [ \QUI\Users\User ]
  */
 
 class User implements \QUI\Interfaces\Users\User
@@ -112,10 +119,10 @@ class User implements \QUI\Interfaces\Users\User
     protected $_plugins = array();
 
     /**
-     * User adresses
+     * User addresses
      * @var Array
      */
-    protected $_adress_list = array();
+    protected $_address_list = array();
 
     /**
      * contructor
@@ -191,6 +198,7 @@ class User implements \QUI\Interfaces\Users\User
             try
             {
                 $this->setGroups( $data[0]['usergroup'] );
+
             } catch ( \QUI\Exception $e )
             {
                 // nohting
@@ -232,17 +240,39 @@ class User implements \QUI\Interfaces\Users\User
 
 
         // Extras
-        if ( $this->getAttribute( 'extra' ) ) {
-            $this->_extra = json_decode( $this->getAttribute('extra'), true );
+        if ( isset( $data[0]['extra'] ) )
+        {
+            $extraList = $this->_getListOfExtraAttributes();
+            $extras    = array();
+            $extraData = json_decode( $data[0]['extra'], true );
+
+            if ( !is_array( $extraData ) ) {
+                $extraData = array();
+            }
+
+            foreach ( $extraList as $attribute ) {
+                $extras[ $attribute ] = true;
+            }
+
+            foreach ( $extraData as $attribute => $value )
+            {
+                if ( isset( $extras[ $attribute ] ) ) {
+                    $this->setAttribute( $attribute , $extraData[ $attribute ] );
+                }
+            }
         }
 
-        // Plugins laden
+        // Event
+        \QUI::getEvents()->fireEvent( 'userLoad', array( $this ));
+
+        /*
         $Plugins = \QUI::getPluginManager();
         $plugins = $Plugins->get();
 
         foreach ( $plugins as $Plugin ) {
             $Plugin->onUserLoad( $this );
         }
+        */
     }
 
     /**
@@ -276,14 +306,11 @@ class User implements \QUI\Interfaces\Users\User
      *
      * @param String $field
      * @return String|Integer|array
+     * @deprecated use getAttribute
      */
     public function getExtra( $field )
     {
-        if ( isset( $this->_extra[ $field ] ) ) {
-            return $this->_extra[ $field ];
-        }
-
-        return false;
+        return $this->getAttribute( $field );
     }
 
     /**
@@ -292,10 +319,11 @@ class User implements \QUI\Interfaces\Users\User
      *
      * @param String $field
      * @param String|Integer|array $value
+     * @deprecated use user.xml and setAttribute
      */
     public function setExtra($field, $value)
     {
-        $this->_extra[ $field ] = $value;
+        $this->getAttribute( $field, $value );
     }
 
     /**
@@ -304,6 +332,7 @@ class User implements \QUI\Interfaces\Users\User
      *
      * @param \QUI\Projects\Project $Project
      * @todo für projekte wieder realiseren, vorerst ausgeschaltet
+     * @deprecated use user.xml
      */
     public function loadExtra(\QUI\Projects\Project $Project)
     {
@@ -448,13 +477,12 @@ class User implements \QUI\Interfaces\Users\User
      * Return the Country from the
      *
      * @return \QUI\Countries\Country|boolean
-     * @todo do it as a plugin
      */
     public function getCountry()
     {
         try
         {
-            $Standard = $this->getStandardAdress();
+            $Standard = $this->getStandardAddress();
 
             if ( $Standard )
             {
@@ -829,6 +857,9 @@ class User implements \QUI\Interfaces\Users\User
             );
         }
 
+        \QUI::getEvents()->fireEvent('userSetPassword', array( $this ));
+
+
         $newpass         = \QUI\Users\Manager::genHash( $new );
         $this->_password = $newpass;
 
@@ -909,6 +940,8 @@ class User implements \QUI\Interfaces\Users\User
             );
         }
 
+        \QUI::getEvents()->fireEvent('userActivate', array( $this ));
+
         $res = \QUI::getDataBase()->update(
             \QUI\Users\Manager::Table(),
             array( 'active' => 1 ),
@@ -929,9 +962,10 @@ class User implements \QUI\Interfaces\Users\User
         $this->_checkRights();
 
         // Pluginerweiterungen - onDisable Event
+        /*
         foreach ( $this->_plugins as $Plugin )
         {
-            if ( method_exists( $Plugin, 'onDeactivate' ) ) {
+            if ( method_exists( $Plugin, 'onUserDeactivate' ) ) {
                 $Plugin->onDisable( $this );
             }
         }
@@ -954,6 +988,9 @@ class User implements \QUI\Interfaces\Users\User
 
             }
         }
+        */
+
+        \QUI::getEvents()->fireEvent('userDeactivate', array( $this ));
 
         \QUI::getDataBase()->update(
             \QUI\Users\Manager::Table(),
@@ -976,14 +1013,17 @@ class User implements \QUI\Interfaces\Users\User
         $this->_checkRights();
 
         // Pluginerweiterungen - onDisable Event
+        /*
         foreach ( $this->_plugins as $Plugin )
         {
             if ( method_exists( $Plugin, 'onDisable') ) {
                 $Plugin->onDisable( $this );
             }
         }
+        */
 
         // Extra von den Projekten
+        /*
         $projects = \QUI\Projects\Manager::getProjects( true );
 
         foreach ( $projects as $Project )
@@ -1001,6 +1041,9 @@ class User implements \QUI\Interfaces\Users\User
 
             }
         }
+        */
+
+        \QUI::getEvents()->fireEvent('userDisable', array( $this ));
 
         \QUI::getDB()->updateData(
             \QUI\Users\Manager::Table(),
@@ -1065,6 +1108,15 @@ class User implements \QUI\Interfaces\Users\User
         }
 
         // Pluginerweiterungen - onSave Event
+        $extra      = array();
+        $attributes = $this->_getListOfExtraAttributes();
+
+        foreach ( $attributes as $attribute ) {
+            $extra[ $attribute ] = $this->getAttribute( $attribute );
+        }
+
+        \QUI::getEvents()->fireEvent('userSave', array($this));
+
         /*
         foreach ($this->_plugins as $Plugin)
         {
@@ -1073,12 +1125,14 @@ class User implements \QUI\Interfaces\Users\User
             }
         }
         */
+        /*
         $Plugins = \QUI::getPlugins();
         $plugins = $Plugins->get();
 
         foreach ( $plugins as $Plugin ) {
             $Plugin->onUserSave( $this );
         }
+        */
 
         return \QUI::getDataBase()->update(
             \QUI\Users\Manager::Table(),
@@ -1092,12 +1146,12 @@ class User implements \QUI\Interfaces\Users\User
                 'email' 	=> $this->getAttribute( 'email' ),
                 'avatar' 	=> $this->getAvatar(),
                 'su'		=> $this->isSU(),
-                'extra' 	=> json_encode( $this->_extra ),
+                'extra' 	=> json_encode( $extra ), //,
                 'lang' 	    => $this->getAttribute( 'lang' ),
                 'lastedit'  => date( "Y-m-d H:i:s" ),
                 'expire'    => $expire,
                 'shortcuts' => $this->getAttribute( 'shortcuts' ),
-                'adress'    => (int)$this->getAttribute( 'adress' )
+                'address'   => (int)$this->getAttribute( 'address' )
             ),
             array('id' => $this->getId())
         );
@@ -1180,6 +1234,9 @@ class User implements \QUI\Interfaces\Users\User
     public function delete()
     {
         // Pluginerweiterungen - onDelete Event
+        \QUI::getEvents()->fireEvent('userDelete', array($this));
+
+        /*
         foreach ( $this->_plugins as $Plugin )
         {
             if ( method_exists( $Plugin, 'onDelete' ) ) {
@@ -1205,8 +1262,9 @@ class User implements \QUI\Interfaces\Users\User
 
             }
         }
+        */
 
-        \QUI::getDB()->deleteData(
+        \QUI::getDataBase()->delete(
             \QUI\Users\Manager::Table(),
             array('id' => $this->getId())
         );
@@ -1249,14 +1307,99 @@ class User implements \QUI\Interfaces\Users\User
         );
     }
 
+    /**
+     * Return the list which extra attributes exist
+     * Plugins could extend the user attributes
+     * look at https://dev.quiqqer.com/quiqqer/quiqqer/wikis/User-Xml
+     *
+     * @return Array
+     */
+    protected function _getListOfExtraAttributes()
+    {
+        try
+        {
+            return \QUI\Cache\Manager::get( 'user/plugin-attribute-list' );
+
+        } catch ( \QUI\Exception $Exception ) {
+
+        }
+
+
+        $list       = \QUI::getPackageManager()->getInstalled();
+        $attributes = array();
+
+        foreach ( $list as $entry )
+        {
+            $plugin  = $entry['name'];
+            $userXml = OPT_DIR . $plugin .'/user.xml';
+
+            if ( !file_exists( $userXml ) ) {
+                continue;
+            }
+
+            $attributes = array_merge(
+                $attributes,
+                $this->_readAttributesFromUserXML( $userXml )
+            );
+        }
+
+        $attributes = array_merge(
+            $attributes,
+            $this->_readAttributesFromUserXML( SYS_DIR .'user.xml' )
+        );
+
+        \QUI\Cache\Manager::set( 'user/plugin-attribute-list', $attributes );
+
+        return \QUI\Cache\Manager::get( 'user/plugin-attribute-list' );
+    }
+
+    /**
+     * Read an user.xml and return the attributes,
+     * if some extra attributes defined
+     *
+     * @param String $file
+     * @return Array
+     */
+    protected function _readAttributesFromUserXML($file)
+    {
+
+        $Dom  = \QUI\Utils\XML::getDomFromXml( $file );
+        $Attr = $Dom->getElementsByTagName( 'attributes' );
+
+        if ( !$Attr->length ) {
+            return array();
+        }
+
+        $Attributes = $Attr->item( 0 );
+        $list       = $Attributes->getElementsByTagName( 'attribute' );
+
+        if ( !$list->length ) {
+            return array();
+        }
+
+        $attributes = array();
+
+        for ( $c = 0; $c < $list->length; $c++ )
+        {
+            $Attribute = $list->item( $c );
+
+            if ( $Attribute->nodeName == '#text' ) {
+                continue;
+            }
+
+            $attributes[] = trim( $Attribute->nodeValue );
+        }
+
+        return $attributes;
+    }
 
     /**
      * Add a address to the user
      *
      * @param Array $params
-     * @return \QUI\Users\Adress
+     * @return \QUI\Users\Address
      */
-    public function addAdress($params)
+    public function addAddress($params)
     {
         $_params = array();
         $needles = array(
@@ -1302,24 +1445,24 @@ class User implements \QUI\Interfaces\Users\User
         $_params[ 'uid' ] = $this->getId();
 
         $Statement = \QUI::getDataBase()->insert(
-            \QUI\Users\Manager::TableAdress(),
+            \QUI\Users\Manager::TableAddress(),
             $_params
         );
 
-        return $this->getAdress(
+        return $this->getAddress(
             \QUI::getDataBase()->getPDO()->lastInsertId()
         );
     }
 
     /**
-     * Returns all adresses from the user
+     * Returns all addresses from the user
      *
      * @return Array
      */
-    public function getAdressList()
+    public function getAddressList()
     {
         $result = \QUI::getDataBase()->fetch(array(
-            'from'   => \QUI\Users\Manager::TableAdress(),
+            'from'   => \QUI\Users\Manager::TableAddress(),
             'select' => 'id',
             'where'  => array(
                 'uid' => $this->getId()
@@ -1335,42 +1478,42 @@ class User implements \QUI\Interfaces\Users\User
         foreach ( $result as $entry )
         {
             $id = (int)$entry[ 'id' ];
-            $list[ $id ] = $this->getAdress( $id );
+            $list[ $id ] = $this->getAddress( $id );
         }
 
         return $list;
     }
 
     /**
-     * Get a adress from the user
+     * Get a address from the user
      *
-     * @param Integer $id - adress ID
-     * @return \QUI\Users\Adress
+     * @param Integer $id - address ID
+     * @return \QUI\Users\Address
      */
-    public function getAdress($id)
+    public function getAddress($id)
     {
         $id = (int)$id;
 
-        if ( isset($this->_adress_list[ $id ] ) ) {
-            return $this->_adress_list[ $id ];
+        if ( isset( $this->_address_list[ $id ] ) ) {
+            return $this->_address_list[ $id ];
         }
 
-        $this->_adress_list[ $id ] = new \QUI\Users\Adress( $this, $id );
+        $this->_address_list[ $id ] = new \QUI\Users\Address( $this, $id );
 
-        return $this->_adress_list[ $id ];
+        return $this->_address_list[ $id ];
     }
 
     /**
-     * return the standard adress from the user
+     * return the standard address from the user
      *
-     * @return \QUI\Users\Adress|false
+     * @return \QUI\Users\Address|false
      */
-    public function getStandardAdress()
+    public function getStandardAddress()
     {
-        if ( $this->getAttribute( 'adress' ) === false ) {
+        if ( $this->getAttribute( 'address' ) === false ) {
             return false;
         }
 
-        return $this->getAdress( $this->getAttribute( 'adress' ) );
+        return $this->getAddress( $this->getAttribute( 'address' ) );
     }
 }

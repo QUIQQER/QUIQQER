@@ -1,0 +1,84 @@
+
+{assign var=salutation value=$Address->getAttribute('salutation')}
+{assign var=firstname value=$Address->getAttribute('firstname')}
+{assign var=lastname value=$Address->getAttribute('lastname')}
+
+{assign var=street_no value=$Address->getAttribute('street_no')}
+{assign var=zip value=$Address->getAttribute('zip')}
+{assign var=city value=$Address->getAttribute('city')}
+{assign var=country value=$Address->getAttribute('country')}
+
+{if !$firstname}
+    {assign var=firstname value="---"}
+{/if}
+
+{if !$lastname}
+    {assign var=lastname value="---"}
+{/if}
+
+
+{if !$street_no}
+    {assign var=street_no value="---"}
+{/if}
+
+{if !$zip}
+    {assign var=zip value="---"}
+{/if}
+
+{if !$city}
+    {assign var=city value="---"}
+{/if}
+
+{if !$country}
+    {assign var=country value="---"}
+{/if}
+
+<address class="grid-100 vcard">
+
+    <div class="adr">
+        {if $Address->getAttribute('company')}
+        <div class="company">
+            Firma<br />
+            {$Address->getAttribute('company')}
+        </div>
+        {/if}
+
+        <div class="salutation">{$salutation} {$firstname} {$lastname}</div>
+
+        <div class="street-address">{$street_no}</div>
+        <div class="locality">{$city}</div >
+        <div class="postal-code">{$country} - {$zip}</div >
+
+        {if $Address->getAttribute('company') &&
+            $Countries->existsCountryCode( $Address->getAttribute('company') )
+        }
+            {assign var=Country value=$Address->getCountry()}
+            {if $Country->getCountry()}
+            <div class="country-name">{$Country->getName()}</div>
+            {/if}
+        {/if}
+    </div>
+
+    {assign var=maillist value=$Address->getMailList()}
+    {assign var=phonelist value=$Address->getPhoneList()}
+
+    {foreach from=$maillist item=mail}
+    <div class="mail">
+        <span class="icon icon-envelope"></span>
+        {$mail}
+    </div>
+    {/foreach}
+
+    {foreach from=$phonelist item=phone}
+        <div class="{$phone.type}">
+            {assign var="cssclass" value="phone"}
+            {if $phone.type == 'mobile'}
+                {assign var="cssclass" value="mobile-phone"}
+            {/if}
+
+            <span class="icon icon-{$cssclass}"></span>
+            {$phone.no}
+        </p>
+    {/foreach}
+
+</address>

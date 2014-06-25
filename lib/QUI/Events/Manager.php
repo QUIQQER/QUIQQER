@@ -69,6 +69,8 @@ class Manager implements \QUI\Interfaces\Events
             'event'    => 'varchar(200)',
             'callback' => 'text'
         ));
+
+        self::clear();
     }
 
     /**
@@ -175,5 +177,16 @@ class Manager implements \QUI\Interfaces\Events
     public function fireEvent($event, $args=false)
     {
         $this->_Events->fireEvent( $event, $args );
+
+        // event onFireEvent
+        if ( !is_array( $args ) ) {
+            $args = array();
+        }
+
+        array_unshift( $args, array(
+            'event' => $event
+        ) );
+
+        $this->_Events->fireEvent( 'onFireEvent', $args );
     }
 }

@@ -8,10 +8,14 @@
  *
  * @requires qui/controls/Control
  *
- * @module controls/editor/Editor
+ * @event onInit [ {self} ]
+ * @event onDraw [ {self} ]
+ * @event onDestroy[ {self} ]
+ * @event onSetContent [ {String} content, {self} ]
+ * @event onAddCSS [ {String} file, {self} ]
  */
 
-define('controls/editors/Editor', ['qui/controls/Control'], function(Control)
+define(['qui/controls/Control'], function(Control)
 {
     "use strict";
 
@@ -42,11 +46,16 @@ define('controls/editors/Editor', ['qui/controls/Control'], function(Control)
         ],
 
         options : {
-            content : ''
+            content : '',
+
+            bodyId    : false,  // wysiwyg DOMNode body id
+            bodyClass : false   // wysiwyg DOMNode body css class
         },
 
         initialize : function(Manager, options)
         {
+            var self = this;
+
             this.$Manager = Manager;
 
             this.parent( options );
@@ -57,8 +66,16 @@ define('controls/editors/Editor', ['qui/controls/Control'], function(Control)
             this.addEvents({
                 onLoaded : function(Editor, Instance)
                 {
-                    if ( Editor.getAttribute( 'content' ) ) {
-                        Editor.setContent( Editor.getAttribute( 'content' ) );
+                    if ( self.getAttribute( 'bodyId' ) ) {
+                        self.getDocument().body.id = self.getAttribute( 'bodyId' );
+                    }
+
+                    if ( self.getAttribute( 'bodyClass' ) ) {
+                        self.getDocument().body.className = self.getAttribute( 'bodyClass' );
+                    }
+
+                    if ( self.getAttribute( 'content' ) ) {
+                        self.setContent( self.getAttribute( 'content' ) );
                     }
                 }
             });
@@ -162,6 +179,24 @@ define('controls/editors/Editor', ['qui/controls/Control'], function(Control)
         getInstance : function()
         {
             return this.$Instance;
+        },
+
+        /**
+         * Return the Document DOM element of the editor frame
+         *
+         * @param {DOMNode} document
+         */
+        getDocument : function()
+        {
+            return this.$Elm.getElement( 'iframe' ).contentWindow.document;
+        },
+
+        /**
+         * Add an CSS file to the Instance
+         */
+        addCSS : function(file)
+        {
+            this.fireEvent( 'addCSS', [ file, this ] );
         },
 
         /**

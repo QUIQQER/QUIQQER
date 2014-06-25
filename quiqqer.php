@@ -36,7 +36,7 @@ if ( php_sapi_name() != 'cli' ) {
     exit;
 }
 
-$conf = __DIR__ .'/etc/conf.ini';
+$conf = __DIR__ .'/etc/conf.ini.php';
 
 if ( !file_exists( $conf ) ) {
     exit(1);

@@ -148,6 +148,10 @@ define('controls/desktop/panels/XML', [
             {
                 var Body = self.getBody();
 
+                if ( !result ) {
+                    result = '';
+                }
+
                 Body.set(
                     'html',
 
@@ -178,6 +182,41 @@ define('controls/desktop/panels/XML', [
                     }
 
                     Elm.value = value;
+                }
+
+
+                // require?
+                if ( Category.getAttribute( 'require' ) )
+                {
+                    require([ Category.getAttribute( 'require' ) ], function(R)
+                    {
+                        var type = typeOf( R );
+
+                        if ( type == 'function' )
+                        {
+                            R( self );
+
+                        } else if ( type == 'class' )
+                        {
+                            new R().inject( self.getContent() );
+                        }
+
+                        self.Loader.hide();
+
+                    }, function()
+                    {
+                        QUI.getMessageHandler(function(MH)
+                        {
+                            MH.addWarning(
+                                'Some error occured. Control could not be loaded: ' +
+                                Category.getAttribute( 'require' )
+                            );
+                        });
+
+                        self.Loader.hide();
+                    });
+
+                    return;
                 }
 
                 self.Loader.hide();

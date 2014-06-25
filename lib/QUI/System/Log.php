@@ -67,12 +67,12 @@ class Log
 
 
         $dir  = VAR_DIR .'log/';
-        $file = $dir . $filename . date('-Y-m-d').'.log';
+        $file = $dir . $filename . date('-Y-m-d') .'.log';
 
         // Log Verzeichnis erstellen
         \QUI\Utils\System\File::mkdir( $dir );
 
-        error_log($message."\n", 3, $file);
+        error_log( $message."\n", 3, $file );
     }
 
     /**

@@ -70,6 +70,7 @@ class Permission
         try
         {
             return self::checkPermission( 'quiqqer.su', $User );
+
         } catch ( \QUI\Exception $Exception)
         {
 
@@ -91,6 +92,7 @@ class Permission
         try
         {
             return self::checkPermission( $perm, $User );
+
         } catch ( \QUI\Exception $Exception )
         {
 
@@ -113,6 +115,7 @@ class Permission
         try
         {
             return self::checkSitePermission($perm, $Site, $User);
+
         } catch ( \QUI\Exception $Exception )
         {
 
@@ -215,8 +218,44 @@ class Permission
 
         $Manager     = \QUI::getPermissionManager();
         $permissions = $Manager->getSitePermissions( $Site );
-        $_found      = array();
 
+        return self::checkPermissionList( $permissions, $perm, $User );
+    }
+
+    /**
+     * Checks if the User have the permission of the Project
+     *
+     * @param String $perm
+     * @param \QUI\Projects\Project $Project
+     * @param \QUI\Users\User|false $User - optional
+     *
+     * @throws \QUI\Exception
+     */
+    static function checkProjectPermission($perm, \QUI\Projects\Project $Project, $User=false)
+    {
+        if ( $User === false ) {
+            $User = \QUI::getUserBySession();
+        }
+
+        $Manager     = \QUI::getPermissionManager();
+        $permissions = $Manager->getProjectPermissions( $Project );
+
+        return self::checkPermissionList( $permissions, $perm, $User );
+    }
+
+    /**
+     * Check the permission with a given permission list
+     *
+     * @param array $permissions - list of permissions
+     * @param String $perm
+     * @param  $User
+     *
+     * @throws \QUI\Exception
+     *
+     * @return boolean
+     */
+    static function checkPermissionList($permissions, $perm, $User=false)
+    {
         if ( !isset( $permissions[ $perm ] ) ) {
             return true;
         }
@@ -226,6 +265,7 @@ class Permission
         }
 
         // what type
+        $Manager    = \QUI::getPermissionManager();
         $perm_data  = $Manager->getPermissionData( $perm );
         $perm_value = $permissions[ $perm ];
 

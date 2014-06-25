@@ -7,6 +7,18 @@
  */
 function ajax_menu()
 {
+    $cache = 'qui/admin/menu';
+
+    try
+    {
+        return \QUI\Cache\Manager::get( $cache );
+
+    } catch ( \QUI\Exception $Exception )
+    {
+
+    }
+
+
     $User = \QUI::getUserBySession();
     $Menu = new \QUI\Controls\Contextmenu\Bar(array(
         'name'   => 'menu',
@@ -60,6 +72,7 @@ function ajax_menu()
             $files[] = $setting_file;
         }
     }
+
 
     // create the menu setting entries
     foreach ( $files as $file )
@@ -131,6 +144,8 @@ function ajax_menu()
     foreach ( $files as $file ) {
         \QUI\Utils\XML::addXMLFileToMenu( $Menu, $dir . $file );
     }
+
+    \QUI\Cache\Manager::set( $cache , $Menu->toArray() );
 
     return $Menu->toArray();
 

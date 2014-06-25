@@ -141,21 +141,19 @@ define('classes/projects/project/media/Item', [
          */
         save : function(oncomplete, params)
         {
+            var self = this;
+
             params = Utils.combine(params, {
                 project    : this.getMedia().getProject().getName(),
                 fileid     : this.getId(),
-                attributes : JSON.encode( this.getAttributes() ),
-                oncomplete : oncomplete,
-                File       : this
+                attributes : JSON.encode( this.getAttributes() )
             });
 
 
             Ajax.post('ajax_media_file_save', function(result, Request)
             {
-                var File = Request.getAttribute('File');
-
-                File.setAttributes( result );
-                File.fireEvent( 'save', [ File ] );
+                self.setAttributes( result );
+                self.fireEvent( 'save', [ File ] );
 
                 if ( typeOf( oncomplete ) === 'function' ) {
                     oncomplete( result, Request );

@@ -28,11 +28,11 @@ class VhostManager
      */
     protected function _getConfig()
     {
-        if ( !file_exists( CMS_DIR .'/etc/vhosts.ini' ) ) {
-            file_put_contents( CMS_DIR .'/etc/vhosts.ini' , '' );
+        if ( !file_exists( CMS_DIR .'/etc/vhosts.ini.php' ) ) {
+            file_put_contents( CMS_DIR .'/etc/vhosts.ini.php' , '' );
         }
 
-        $this->_Config = new \QUI\Config( CMS_DIR .'/etc/vhosts.ini' );
+        $this->_Config = new \QUI\Config( CMS_DIR .'/etc/vhosts.ini.php' );
 
         return $this->_Config;
     }

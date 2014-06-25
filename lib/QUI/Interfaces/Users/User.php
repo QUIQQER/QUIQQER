@@ -125,12 +125,19 @@ interface User
     public function getGroups($array=true);
 
     /**
-     * Get an adress from the user
+     * Get an address from the user
      *
-     * @param Integer $id - ID of the adress
-     * @return \QUI\Users\Adress
+     * @param Integer $id - ID of the address
+     * @return \QUI\Users\Address
      */
-    public function getAdress($id);
+    public function getAddress($id);
+
+    /**
+     * Return the Country from the user
+     *
+     * @return \QUI\Countries\Country|boolean
+     */
+    public function getCountry();
 
     /**
      * Set a attribute of the user

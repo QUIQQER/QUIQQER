@@ -7,6 +7,8 @@
 namespace QUI\Projects;
 
 use QUI\Rights\Permission;
+use QUI\Utils\Security\Orthos as Orthos;
+
 
 /**
  * The Project Manager
@@ -55,38 +57,24 @@ class Manager
      */
     static function setConfigForProject($project, $params)
     {
-        \QUI\Rights\Permission::checkPermission(
-            'quiqqer.admin.projects.setconfig'
+        $Project = self::getProject( $project );
+
+        \QUI\Rights\Permission::checkProjectPermission(
+            'quiqqer.projects.setconfig',
+            $Project
         );
 
-        $Project = self::getProject( $project );
-        $Config  = self::getConfig();
-
+        $Config   = self::getConfig();
         $projects = $Config->toArray();
 
         // $config
-        $config = array(
-            "default_lang" => "de",
-            "langs"        => "de",
-            "admin_mail"   => "support@pcsg.de",
-            "template"     => "",
-            "image_text"   => "0",
-            "keywords"     => "",
-            "description"  => "",
-            "robots"       => "index",
-            "author"       => "",
-            "publisher"    => "",
-            "copyright"    => "",
-            "standard"     => "1"
-        );
+        $config     = self::getProjectConfigList( $Project );
+        $old_config = $config;
 
-        if ( isset( $projects[ $project ] ) )
-        {
+        if ( isset( $projects[ $project ] ) ) {
             $old_config = $projects[ $project ];
-        } else
-        {
-            $old_config = $config;
         }
+
 
         // generate new config for the project
         foreach ( $config as $key => $value )
@@ -97,11 +85,17 @@ class Manager
 
             if ( isset( $params[ $key ] ) )
             {
-                $config[ $key ] = \QUI\Utils\Security\Orthos::clear( $params[ $key ] );
+                $str = Orthos::removeHTML( $params[ $key ] );
+                $str = Orthos::clearPath( $str );
+
+                $config[ $key ] = $str;
                 continue;
             }
 
-            $config[ $key ] = \QUI\Utils\Security\Orthos::clear( $value );
+            $str = Orthos::removeHTML( $value );
+            $str = Orthos::clearPath( $str );
+
+            $config[ $key ] = $str;
         }
 
         // doppelte sprachen filtern
@@ -109,6 +103,7 @@ class Manager
         $langs = array_unique( $langs );
 
         $config['langs'] = implode( ',', $langs );
+
 
         $Config->setSection( $project, $config );
         $Config->save();
@@ -126,9 +121,83 @@ class Manager
     }
 
     /**
+     * Return the config list
+     *
+     * @param \QUI\Projects\Project $Project
+     * @return Array
+     */
+    static function getProjectConfigList(\QUI\Projects\Project $Project)
+    {
+        $cache = 'qui/projects/'. $Project->getName() .'/configList';
+
+        try
+        {
+            return \QUI\Cache\Manager::get( $cache );
+
+        } catch ( \QUI\Exception $Exception )
+        {
+
+        }
+
+        $config = array(
+            "default_lang" => "de",
+            "langs"        => "de",
+            "admin_mail"   => "support@pcsg.de",
+            "template"     => "",
+            "image_text"   => "0",
+            "keywords"     => "",
+            "description"  => "",
+            "robots"       => "index",
+            "author"       => "",
+            "publisher"    => "",
+            "copyright"    => "",
+            "standard"     => "1"
+        );
+
+        // settings.xml
+        $settingsXml = self::getRelatedSettingsXML( $Project );
+
+        foreach ( $settingsXml as $file )
+        {
+            $Dom  = \QUI\Utils\XML::getDomFromXml( $file );
+            $Path = new \DOMXPath( $Dom );
+
+            $settingsList = $Path->query( "//project/settings" );
+
+            for ( $i = 0, $len = $settingsList->length; $i < $len; $i++ )
+            {
+                $Settings = $settingsList->item( $i );
+                $sections = \QUI\Utils\DOM::getConfigParamsFromDOM( $Settings );
+
+                $settingsName = $Settings->getAttribute('name');
+
+                if ( !empty( $settingsName ) ) {
+                    $settingsName = $settingsName .'.';
+                }
+
+                foreach ( $sections as $section => $entry )
+                {
+                    foreach ( $entry as $key => $param )
+                    {
+                        $config[ $section .'.'. $key ] = '';
+
+                        if ( isset( $param[ 'default' ] ) ) {
+                            $config[ $settingsName . $section .'.'. $key ] = $param[ 'default' ];
+                        }
+                    }
+                }
+            }
+        }
+
+        \QUI\Cache\Manager::set( $cache, $config );
+
+        return $config;
+    }
+
+    /**
      * Return the projects count
      *
-     * @return {Integer}
+     * @return Integer
      */
     static function count()
     {
@@ -250,7 +319,7 @@ class Manager
                     $list[] = $project;
                 }
 
-            } catch ( \QUI\Exception $e )
+            } catch ( \QUI\Exception $Exception )
             {
 
             }
@@ -321,7 +390,7 @@ class Manager
     static function createProject($name, $lang, $template=false)
     {
         \QUI\Rights\Permission::checkPermission(
-            'quiqqer.admin.projects.create'
+            'quiqqer.projects.create'
         );
 
         if ( strlen( $name ) <= 2 )
@@ -492,7 +561,7 @@ class Manager
          * Write the config
          */
         if ( !file_exists( CMS_DIR .'etc/projects.ini' ) ) {
-            file_put_contents( CMS_DIR .'etc/projects.ini', '' );
+            file_put_contents( CMS_DIR .'etc/projects.ini.php', '' );
         }
 
         $Config = self::getConfig();
@@ -525,6 +594,206 @@ class Manager
         \QUI::getEvents()->fireEvent( 'createProject', array( $Project ) );
 
         return $Project;
+    }
+
+    /**
+     * Delete a project
+     * @param \QUI\Projects\Project $Project
+     */
+    static function deleteProject(\QUI\Projects\Project $Project)
+    {
+        \QUI\Rights\Permission::checkProjectPermission(
+            'quiqqer.projects.destroy',
+             $Project
+        );
+
+        $project = $Project->getName();
+        $langs   = $Project->getAttribute('langs');
+
+        $DataBase = \QUI::getDataBase();
+        $Table    = $DataBase->Table();
+
+        // delete site tables for all languages
+        foreach ( $langs as $lang )
+        {
+            $table_site     = \QUI::getDBTableName( $project .'_'. $lang .'_sites' );
+            $table_site_rel = \QUI::getDBTableName( $project .'_'. $lang .'_sites_relations' );
+            $table_multi    = \QUI::getDBTableName( $project .'_multilingual' );
+
+            $table_media     = \QUI::getDBTableName( $project .'_media' );
+            $table_media_rel = \QUI::getDBTableName( $project .'_media_relations' );
+
+
+            $Table->delete( $table_site );
+            $Table->delete( $table_site_rel );
+            $Table->delete( $table_multi );
+            $Table->delete( $table_media );
+            $Table->delete( $table_media_rel );
+        }
+
+        // delete database tables from plugins
+        $packages = \QUI::getPackageManager()->getInstalled();
+
+        foreach ( $packages as $package )
+        {
+            // search database tables
+            $databaseXml = OPT_DIR . $package['name'] .'/database.xml';
+
+            if ( !file_exists( $databaseXml ) ) {
+                continue;
+            }
+
+            $dbfields = \QUI\Utils\XML::getDataBaseFromXml( $databaseXml );
+
+            if ( !isset( $dbfields['projects'] ) ) {
+                continue;
+            }
+
+            // for each language
+            foreach ( $dbfields['projects'] as $table )
+            {
+                foreach ( $langs as $lang )
+                {
+                    $tbl = \QUI::getDBTableName(
+                        $project .'_'. $lang .'_'. $table['suffix']
+                    );
+
+                    $Table->delete( $tbl );
+                }
+            }
+        }
+
+        // delete projects permissions
+        \QUI::getDataBase()->delete(
+            \QUI::getDBTableName( \QUI\Rights\Manager::TABLE ) .'2projects',
+            array(
+                'project' => $project
+            )
+        );
+
+        \QUI::getDataBase()->delete(
+            \QUI::getDBTableName( \QUI\Rights\Manager::TABLE ) .'2sites',
+            array(
+                'project' => $project
+            )
+        );
+
+        // config schreiben
+        $Config = self::getConfig();
+        $Config->del( $project );
+        $Config->save();
+
+        \QUI\Cache\Manager::clear( 'QUI::config' );
+
+
+        // project create event
+        \QUI::getEvents()->fireEvent( 'deleteProject', array( $project ) );
+    }
+
+    /**
+     * Return all templates which are related to the project
+     * the vhost templates are included
+     *
+     * @param \QUI\Projects\Project $Project
+     * @return Array
+     */
+    static function getRelatedTemplates(\QUI\Projects\Project $Project)
+    {
+        $result    = array();
+        $templates = array();
+        $project   = $Project->getName();
+
+        if ( $Project->getAttribute('template') )
+        {
+            $result[] = $Project->getAttribute('template');
+            $templates[ $Project->getAttribute('template') ] = true;
+        }
+
+        // vhosts und templates schauen
+        $vhosts = \QUI::getRewrite()->getVHosts();
+
+        foreach ( $vhosts as $vhost )
+        {
+            if ( !isset( $vhost[ 'project' ] ) ) {
+                continue;
+            }
+
+            if ( $vhost[ 'project' ] != $project ) {
+                continue;
+            }
+
+            if ( !isset( $vhost[ 'template' ] ) ) {
+                continue;
+            }
+
+            if ( isset( $templates[ $vhost[ 'template' ] ] ) ) {
+                continue;
+            }
+
+            $templates[ $vhost[ 'template' ] ] = true;
+            $result[] = $vhost[ 'template' ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Return all settings.xml which are related to the project
+     * eq: all settings.xml from templates
+     *
+     * @param \QUI\Projects\Project $Project
+     * @return Array
+     */
+    static function getRelatedSettingsXML(\QUI\Projects\Project $Project)
+    {
+        $cache = 'qui/projects/'. $Project->getName() .'/relatedSettingsXml';
+
+        try
+        {
+            return \QUI\Cache\Manager::get( $cache );
+
+        } catch ( \QUI\Exception $Exception )
+        {
+
+        }
+
+        $list      = array();
+        $packages  = \QUI::getPackageManager()->getInstalled();
+
+        $templates = self::getRelatedTemplates( $Project );
+        $templates = array_flip( $templates );
+
+        // read template config
+        foreach ( $packages as $package )
+        {
+            // if the package is a quiqqer template,
+            if ( $package['type'] == 'quiqqer-template' )
+            {
+                // note only related templates
+                if ( !isset( $templates[ $package['name'] ] ) ) {
+                    continue;
+                }
+            }
+
+            $file = OPT_DIR . $package['name'] .'/settings.xml';
+
+            if ( !file_exists( $file ) ) {
+                continue;
+            }
+
+            $Dom  = \QUI\Utils\XML::getDomFromXml( $file );
+            $Path = new \DOMXPath( $Dom );
+
+            $Settings = $Path->query( "//project/settings" );
+
+            if ( $Settings->length ) {
+                $list[] = $file;
+            }
+        }
+
+        \QUI\Cache\Manager::set( 'qui/projects/', $list );
+
+        return $list;
     }
 
     /**

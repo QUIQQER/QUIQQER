@@ -120,12 +120,12 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
      * @throws \QUI\Exception
      * @ignore
      */
-    public function addAdress($params)
+    public function addAddress($params)
     {
         throw new \QUI\Exception(
             \QUI::getLocale(
                 'system',
-                'exception.lib.user.nobody.add.adress'
+                'exception.lib.user.nobody.add.address'
             )
         );
     }
@@ -189,38 +189,91 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
 
     /**
      * This method is useless for nobody
-     * \QUI\Users\Nobody cannot have a adress
+     * \QUI\Users\Nobody cannot have a address
      *
      * @return array
      * @ignore
      */
-    public function getAdressList() {
+    public function getAddressList() {
         return array();
     }
 
     /**
      * This method is useless for nobody
-     * \QUI\Users\Nobody cannot have a adress
+     * \QUI\Users\Nobody cannot have a address
      *
      * @param Integer $id
      * @throws \QUI\Exception
      * @ignore
      */
-    public function getAdress($id)
+    public function getAddress($id)
     {
         throw new \QUI\Exception(
-            \QUI::getLocale('system', 'exception.lib.user.nobody.get.adress')
+            \QUI::getLocale('system', 'exception.lib.user.nobody.get.address')
         );
     }
 
     /**
+     * Return the Country of nobody
+     * use the GEOIP_COUNTRY_CODE from apache, if available
+     *
+     * @return \QUI\Countries\Country|boolean
+     */
+    public function getCountry()
+    {
+        // apache
+        if ( isset( $_SERVER[ "GEOIP_COUNTRY_CODE" ] ) )
+        {
+            try
+            {
+                return \QUI\Countries\Manager::get( $_SERVER[ "GEOIP_COUNTRY_CODE" ] );
+
+            } catch ( \QUI\Exception $Exception )
+            {
+
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see iUser::getCurrency()
+     */
+    public function getCurrency()
+    {
+        if ( \QUI::getSession()->get( 'currency' ) )
+        {
+            $currency = \QUI::getSession()->get( 'currency' );
+
+            if ( \QUI\Currency::existCurrency( $currency ) ) {
+                return $currency;
+            }
+        }
+
+        $Country = $this->getCountry();
+
+        if ( $Country )
+        {
+            $currency = $Country->getCurrencyCode();
+
+            if ( \QUI\Currency::existCurrency( $currency ) ) {
+                return $currency;
+            }
+        }
+
+        return \QUI\Currency::getDefaultCurrency();
+    }
+
+    /**
      * This method is useless for nobody
-     * \QUI\Users\Nobody cannot have a adress
+     * \QUI\Users\Nobody cannot have a address
      *
      * @return false
      * @ignore
      */
-    public function getStandardAdress() {
+    public function getStandardAddress() {
         return false;
     }
 

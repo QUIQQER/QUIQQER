@@ -356,7 +356,7 @@ class Manager extends \QUI\QDOM
             $Plugin->setAttribute( 'active', 1 );
         }
 
-        $Plugin->load();
+        // $Plugin->load();
 
         $this->_plugins[ $class ] = $Plugin;
 

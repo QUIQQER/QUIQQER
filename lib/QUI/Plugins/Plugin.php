@@ -20,7 +20,7 @@ class Plugin extends \QUI\QDOM
      * Plugin config
      * @var \QUI\Config
      */
-    protected $_Config;
+    protected $_Config = null;
 
     /**
      * Admin Plugin
@@ -48,62 +48,85 @@ class Plugin extends \QUI\QDOM
      */
     public function __toString()
     {
-        return get_class($this);
+        return get_class( $this );
+    }
+
+    /**
+     * return the plugin config
+     *
+     * @return \QUI\Config|false
+     */
+    public function getConfig()
+    {
+        if ( $this->_Config ) {
+            return $this->_Config;
+        }
+
+        $iniFile = CMS_DIR .'etc/plugins/'. $this->getAttribute('name') .'.ini.php';
+
+        if ( !file_exists( $iniFile ) ) {
+            file_put_contents( $iniFile , '' );
+        }
+
+        $this->_Config = new \QUI\Config( $iniFile );
+
+        return $this->_Config;
     }
 
     /**
      * Ladet Config und legt Dateien fest für Ajax und den Adminbereich
+     * @deprecated
      */
-    public function load()
-    {
-        $name = $this->getAttribute('name');
+//     public function load()
+//     {
+//         $name = $this->getAttribute('name');
 
-        // CONFIG laden
-        $Base  = new \QUI\Config(OPT_DIR . $name .'/base.ini');
-        $_base = $Base->toArray();
+//         // CONFIG laden
+//         $Base  = new \QUI\Config(OPT_DIR . $name .'/base.ini');
+//         $_base = $Base->toArray();
 
-        $this->setAttribute('config', $_base);
+//         $this->setAttribute('config', $_base);
 
-        // Ajax Skripte aufnehmen
-        if (file_exists(OPT_DIR . $name .'/admin/ajax.php')) {
-            $this->setAttribute('global_ajax', OPT_DIR . $name .'/admin/ajax.php');
-        }
+//         // Ajax Skripte aufnehmen
+//         if (file_exists(OPT_DIR . $name .'/admin/ajax.php')) {
+//             $this->setAttribute('global_ajax', OPT_DIR . $name .'/admin/ajax.php');
+//         }
 
-        // Admin Skripte aufnehmen
-        if (file_exists(OPT_DIR . $name .'/admin/admin.php')) {
-            $this->setAttribute('admin', OPT_DIR . $name .'/admin/admin.php');
-        }
+//         // Admin Skripte aufnehmen
+//         if (file_exists(OPT_DIR . $name .'/admin/admin.php')) {
+//             $this->setAttribute('admin', OPT_DIR . $name .'/admin/admin.php');
+//         }
 
-        // Upload Skripte aufnehmen
-        if (file_exists(OPT_DIR . $name .'/admin/upload.php')) {
-            $this->setAttribute('upload', OPT_DIR . $name .'/admin/upload.php');
-        }
+//         // Upload Skripte aufnehmen
+//         if (file_exists(OPT_DIR . $name .'/admin/upload.php')) {
+//             $this->setAttribute('upload', OPT_DIR . $name .'/admin/upload.php');
+//         }
 
-        // Seitentypen
-        $types = array();
+//         // Seitentypen
+//         $types = array();
 
-        if (isset($_base['types']))
-        {
-            $_t = $_base['types'];
+//         if (isset($_base['types']))
+//         {
+//             $_t = $_base['types'];
 
-            foreach ($_t as $tkey => $tconf)
-            {
-                if (file_exists(OPT_DIR . $name .'/'. $tconf))
-                {
-                    $type_ini = new \QUI\Config(OPT_DIR . $name .'/'. $tconf);
-                    $type_ini = $type_ini->toArray();
+//             foreach ($_t as $tkey => $tconf)
+//             {
+//                 if (file_exists(OPT_DIR . $name .'/'. $tconf))
+//                 {
+//                     $type_ini = new \QUI\Config(OPT_DIR . $name .'/'. $tconf);
+//                     $type_ini = $type_ini->toArray();
 
-                    if (isset($type_ini['icon_16x16'])) {
-                        $type_ini['icon_16x16'] = URL_OPT_DIR . $type_ini["icon_16x16"];
-                    }
+//                     if (isset($type_ini['icon_16x16'])) {
+//                         $type_ini['icon_16x16'] = URL_OPT_DIR . $type_ini["icon_16x16"];
+//                     }
 
-                    $types[$tkey] = $type_ini;
-                }
-            }
-        }
+//                     $types[$tkey] = $type_ini;
+//                 }
+//             }
+//         }
 
-        $this->setAttribute('types', $types);
-    }
+//         $this->setAttribute('types', $types);
+//     }
 
     /**
      * Gibt die Plugin Config zurück
@@ -120,12 +143,7 @@ class Plugin extends \QUI\QDOM
      */
     public function install()
     {
-        $iniFile = CMS_DIR .'etc/plugins/'. $this->getAttribute('name') .'.ini';
-
-        if ( !file_exists( $iniFile ) ) {
-            file_put_contents( $iniFile , '' );
-        }
-
+        $this->getConfig();
         $this->_setup();
 
         // Sprache einlesen
@@ -377,11 +395,11 @@ class Plugin extends \QUI\QDOM
     {
         $this->_Config = $this->_loadSetting();
 
-        if (!$this->_Config) {
+        if ( !$this->_Config ) {
             return false;
         }
 
-        return $this->_Config->get($section, $key);
+        return $this->_Config->get( $section, $key );
     }
 
     /**
@@ -858,7 +876,7 @@ class Plugin extends \QUI\QDOM
     }
 
     /**
-     * Gibt die URL Adresse des Plugins zurück
+     * Gibt die URL Addresse des Plugins zurück
      *
      * @return String
      */
@@ -872,7 +890,7 @@ class Plugin extends \QUI\QDOM
     }
 
     /**
-     * Gibt die Pfad Adresse des Plugins zurück
+     * Gibt die Pfad Addresse des Plugins zurück
      *
      * @return String
      */

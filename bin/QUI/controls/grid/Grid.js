@@ -38,11 +38,12 @@ define('controls/grid/Grid', [
 
     'qui/controls/Control',
     'qui/controls/buttons/Button',
+    'qui/controls/buttons/Seperator',
     'qui/utils/Controls',
 
     'css!controls/grid/Grid.css'
 
-], function(Control, QUIButton, ControlUtils)
+], function(Control, QUIButton, QUISeperator, ControlUtils)
 {
     "use strict";
 
@@ -468,13 +469,32 @@ define('controls/grid/Grid', [
 
             t.inlineeditmode = false;
 
-            if ( editType == 'input' ) {
-                data[colmod.dataIndex] = ( evt && ( (evt.type == 'keyup' && evt.key == 'enter' ) || (evt.type == 'dblclick')) ) ? t.inlineEditSafe.input.value : t.inlineEditSafe.oldvalue;
+            if ( editType == 'input' )
+            {
+                if ( ( evt && ( (evt.type == 'keyup' && evt.key == 'enter' ) || (evt.type == 'dblclick')) ) )
+                {
+                    data[ colmod.dataIndex ] = t.inlineEditSafe.input.value;
+                } else
+                {
+                    data[ colmod.dataIndex ] = t.inlineEditSafe.oldvalue;
+                }
             }
 
-            if (editType == 'textarea') {
-                data[colmod.dataIndex] = ( evt  && evt.type == 'dblclick') ? t.inlineEditSafe.input.value : t.inlineEditSafe.oldvalue;
+            if ( editType == 'textarea' )
+            {
+                if ( evt && evt.type == 'dblclick' )
+                {
+                    data[ colmod.dataIndex ] = t.inlineEditSafe.input.value;
+                } else
+                {
+                    data[ colmod.dataIndex ] = t.inlineEditSafe.oldvalue;
+                }
             }
+
+            if ( typeof data[ colmod.dataIndex ] === 'undefined' || !data[ colmod.dataIndex ] ) {
+                data[ colmod.dataIndex ] = '';
+            }
+
 
             td.innerHTML = colmod.labelFunction ? colmod.labelFunction(data, row, colmod) : data[colmod.dataIndex];
 
@@ -1078,6 +1098,35 @@ define('controls/grid/Grid', [
             }
         },
 
+        /**
+         * Return the grid buttons
+         *
+         * @return {Array}
+         */
+        getButtons : function()
+        {
+            var buttons = [];
+
+            var btns = this.getAttribute('buttons');
+
+            if ( !btns || !btns.length ) {
+                return buttons;
+            }
+
+            var i, len, Btn;
+
+            for ( i = 0, len = btns.length; i < len; i++ )
+            {
+                if ( !btns[ btns[i].name ] ) {
+                    continue;
+                }
+
+                buttons.push( btns[ btns[i].name ] );
+            }
+
+            return buttons;
+        },
+
         dataLoader : function()
         {
             this.setAttribute('page', 1);
@@ -1218,6 +1267,21 @@ define('controls/grid/Grid', [
                 this.$data.splice( row, 1 );
                 this.reset();
             }
+        },
+
+        /**
+         * Delete multible rows
+         *
+         * @param {Array} rowIds - list of the row ids
+         */
+        deleteRows : function(rowIds)
+        {
+            for ( var i = 0, len = rowIds.length; i < len; i++ ) {
+                delete this.$data[ rowIds[ i ] ];
+            }
+
+            this.$data = this.$data.clean();
+            this.reset();
         },
 
         isHidden : function(i)
@@ -2048,7 +2112,13 @@ define('controls/grid/Grid', [
                 if ( firstvisible == c && o.accordion && o.showtoggleicon )
                 {
                     Toggle = new Element('div.toggleicon', {
-                        title : o.toggleiconTitle
+                        title  : o.toggleiconTitle,
+                        events :
+                        {
+                            click : function(event) {
+                                t.toggleIconClick( event );
+                            }
+                        }
                     }).inject( div, 'top' );
                 }
             }
@@ -2109,7 +2179,7 @@ define('controls/grid/Grid', [
             container.addClass('omnigrid');
 
             // Toolbar
-            if (this.getAttribute('buttons'))
+            if ( this.getAttribute('buttons') )
             {
                 tDiv = new Element('div.tDiv', {
                     styles : {
@@ -2133,9 +2203,11 @@ define('controls/grid/Grid', [
 
                 for ( i = 0, len = bt.length; i < len; i++ )
                 {
-                    if ( bt[i].separator )
+                    if ( bt[i].type == 'seperator' )
                     {
-                        new Element('div.btnseparator').inject( tDiv );
+                        new QUISeperator().inject( tDiv );
+
+                        // new Element('div.btnseparator').inject( tDiv );
                         continue;
                     }
 

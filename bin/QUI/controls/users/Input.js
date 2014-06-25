@@ -14,6 +14,7 @@
 
 define('controls/users/Input', [
 
+    'qui/QUI',
     'qui/controls/Control',
     'qui/controls/buttons/Button',
     'controls/users/Entry',
@@ -21,7 +22,7 @@ define('controls/users/Input', [
 
     'css!controls/users/Input.css'
 
-], function(QUIControl, QUIButton, UserEntry, Ajax)
+], function(QUI, QUIControl, QUIButton, UserEntry, Ajax)
 {
     "use strict";
 
@@ -45,10 +46,9 @@ define('controls/users/Input', [
         ],
 
         options : {
-            max      : false,
-            multible : true,
-            name     : '',
-            styles   : false
+            max    : false,
+            name   : '',
+            styles : false
         },
 
         initialize : function(options, Input)
@@ -62,6 +62,7 @@ define('controls/users/Input', [
             this.$Container = null;
             this.$search    = false;
             this.$DropDown  = null;
+            this.$disabled  = false;
 
             this.$Parent = Input || null;
         },
@@ -80,8 +81,11 @@ define('controls/users/Input', [
                 this.$Parent = new Element('input', {
                     name : this.getAttribute('name')
                 }).inject( this.$Elm );
+
             } else
             {
+                this.$disabled = this.$Parent.disabled;
+
                 this.$Elm.wraps( this.$Parent );
             }
 
@@ -90,7 +94,8 @@ define('controls/users/Input', [
             }
 
 
-            this.$Parent.set('type', 'hidden' );
+            this.$Parent.set( 'type', 'hidden' );
+            this.$Parent.set( 'data-quiid', this.getId() );
 
             this.$Input = new Element('input', {
                 type   : 'text',
@@ -101,7 +106,8 @@ define('controls/users/Input', [
                     'paddingLeft' : 20,
                     'background'  : 'url('+ URL_BIN_DIR +'10x10/search.png) no-repeat 4px center',
                     width         : 165,
-                    cursor        : 'pointer'
+                    cursor        : 'pointer',
+                    display       : 'none'
                 },
                 events :
                 {
@@ -144,16 +150,26 @@ define('controls/users/Input', [
 
             this.$Container = new Element('div', {
                 styles : {
-                    'float' : 'left',
-                    margin  : '0 0 0 10px',
-                    width   : 400
+                    clear   : 'both',
+                    'float' : 'left'
                 }
             }).inject( this.$Input, 'after' );
 
             // loading
-            if ( this.$Parent.value === '' ) {
+            if ( this.$Parent.value === '' )
+            {
+                if ( !this.isDisabled() ) {
+                    this.enable();
+                }
+
                 return this.$Elm;
             }
+
+            var wasDisabled = this.isDisabled();
+
+            this.$Parent.disabled = false;
+            this.$disabled        = false;
+
 
             var i, len;
             var values = this.$Parent.value.toString().split(',');
@@ -165,6 +181,19 @@ define('controls/users/Input', [
                 }
             }
 
+            if ( wasDisabled )
+            {
+                this.$Parent.disabled = true;
+                this.$disabled        = true;
+
+                // disable children
+                var list = this.$getUserEntries();
+
+                for ( var i = 0, len = list.length; i < len; i++ ) {
+                    list[ i ].disable();
+                }
+            }
+
             return this.$Elm;
         },
 
@@ -173,6 +202,10 @@ define('controls/users/Input', [
          */
         update : function()
         {
+            if ( this.isDisabled() ) {
+                return this;
+            }
+
             if ( !this.$Container ) {
                 return;
             }
@@ -183,8 +216,19 @@ define('controls/users/Input', [
             var list = this.$Container.getElements('.users-entry'),
                 ids  = [];
 
+            if ( !list.length ) {
+                return;
+            }
+
             for ( i = 0, len = list.length; i < len; i++ ) {
                 ids.push( list[i].get( 'data-id' ) );
+            }
+
+
+            if ( ids.length == 1 )
+            {
+                this.$Parent.set( 'value', ids[ 0 ] );
+                return;
             }
 
             this.$Parent.set(
@@ -198,6 +242,10 @@ define('controls/users/Input', [
          */
         fireSearch : function()
         {
+            if ( this.isDisabled() ) {
+                return;
+            }
+
             this.cancelSearch();
 
             this.$DropDown.set({
@@ -227,6 +275,10 @@ define('controls/users/Input', [
          */
         close : function()
         {
+            if ( this.isDisabled() ) {
+                return this;
+            }
+
             this.cancelSearch();
             this.$DropDown.setStyle( 'display', 'none' );
             this.$Input.value = '';
@@ -239,15 +291,19 @@ define('controls/users/Input', [
          */
         addUser : function(uid)
         {
+            if ( this.isDisabled() ) {
+                return this;
+            }
+
             if ( !uid ) {
                 return;
             }
 
-            if ( this.$Container.getElement( '.user-entry[data-id="'+ uid +'"]') ) {
+            if ( this.$Container.getElement( '.users-entry[data-id="'+ uid +'"]') ) {
                 return;
             }
 
-            var entries = this.$Container.getElements( '.user-entry' );
+            var entries = this.$Container.getElements( '.users-entry' );
 
             if ( this.getAttribute( 'max' ) &&
                  this.getAttribute( 'max' ) <= entries.length )
@@ -255,11 +311,15 @@ define('controls/users/Input', [
                 return;
             }
 
-            new UserEntry(uid, {
+            var User = new UserEntry(uid, {
                 events : {
                     onDestroy : this.update
                 }
             }).inject( this.$Container );
+
+            if ( this.isDisabled() ) {
+                User.disable();
+            }
 
             this.fireEvent( 'add', [ this, uid ] );
             this.update();
@@ -270,6 +330,10 @@ define('controls/users/Input', [
          */
         search : function()
         {
+            if ( this.isDisabled() ) {
+                return this;
+            }
+
             Ajax.get('ajax_users_search', function(result, Request)
             {
                 var i, len, nam, func_mousedown, func_mouseover;
@@ -360,6 +424,10 @@ define('controls/users/Input', [
          */
         up : function()
         {
+            if ( this.isDisabled() ) {
+                return this;
+            }
+
             if ( !this.$DropDown ) {
                 return this;
             }
@@ -391,6 +459,10 @@ define('controls/users/Input', [
          */
         down : function()
         {
+            if ( this.isDisabled() ) {
+                return this;
+            }
+
             if ( !this.$DropDown ) {
                 return this;
             }
@@ -448,6 +520,99 @@ define('controls/users/Input', [
             }
 
             return this;
+        },
+
+        /**
+         * Disable the input field
+         * no changes are possible
+         */
+        disable : function()
+        {
+            if ( this.isDisabled() ) {
+                return;
+            }
+
+
+            this.$disabled = true;
+
+            if ( this.$Parent ) {
+                this.$Parent.disabled = true;
+            }
+
+            var self = this;
+
+            moofx( this.$Input ).animate({
+                opacity : 0
+            }, {
+                callback : function() {
+                    self.$Input.setStyle( 'display', 'none' );
+                }
+            });
+
+            // disable children
+            var list = this.$getUserEntries();
+
+            for ( var i = 0, len = list.length; i < len; i++ ) {
+                list[ i ].disable();
+            }
+        },
+
+        /**
+         * Enable the input field if it is disabled
+         * changes are possible
+         */
+        enable : function()
+        {
+            this.$disabled = false;
+
+            if ( this.$Parent ) {
+                this.$Parent.disabled = false;
+            }
+
+            this.$Input.setStyle( 'display', null );
+
+
+            // enable children
+            var list = this.$getUserEntries();
+
+            for ( var i = 0, len = list.length; i < len; i++ ) {
+                list[ i ].enable();
+            }
+        },
+
+        /**
+         * Is it disabled?
+         * if disabled, no changes are possible
+         */
+        isDisabled : function()
+        {
+            if ( this.$Parent )  {
+                return this.$Parent.disabled;
+            }
+
+            return this.$disabled;
+        },
+
+        /**
+         * Return the UserEntry objects
+         *
+         * @return {Array}
+         */
+        $getUserEntries : function()
+        {
+            var list   = this.$Container.getElements('.users-entry'),
+                result = [];
+
+            for ( var i = 0, len = list.length; i < len; i++ )
+            {
+                result.push(
+                    QUI.Controls.getById(
+                        list[ i ].get('data-quiid')
+                    )
+                );
+            }
+
+            return result;
         }
     });
 });

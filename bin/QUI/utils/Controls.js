@@ -1,7 +1,7 @@
 /**
  * control utils - helper for all controls
  *
- * @author www.namerobot.com (Henning Leutz)
+ * @author www.pcsg.de (Henning Leutz)
  */
 
 define('utils/Controls', function()
@@ -42,7 +42,7 @@ define('utils/Controls', function()
             }
 
             // Date
-            if ( Elm.getElement( 'input[type="date"]' ) ) {
+            if ( Elm.getElement( 'input[type="date"],input[type="datetime"]' ) ) {
                 this.parseDate( Elm );
             }
 
@@ -59,6 +59,11 @@ define('utils/Controls', function()
             // User And Groups
             if ( Elm.getElement( 'input.users_and_groups' ) ) {
                 this.parseUserAndGroups( Elm );
+            }
+
+            // User And Groups
+            if ( Elm.getElement( 'input.user' ) ) {
+                this.parseUser( Elm );
             }
 
             // projects
@@ -135,18 +140,30 @@ define('utils/Controls', function()
                 'qui/utils/Elements'
             ], function(DatePicker, QUIButton, ElementUtils)
             {
-                var i, len, elements, Child, Picker;
+                var i, len, elements, datetime,
+                    Child, Parent, Picker;
 
-                elements = Elm.getElements( 'input[type="date"]' );
+                elements = Elm.getElements( 'input[type="date"],input[type="datetime"]' );
 
                 // Date Buttons
                 for ( i = 0, len = elements.length; i < len; i++ )
                 {
-                    Child = elements[i];
+                    Child    = elements[i];
+                    Parent   = new Element( 'div' ).wraps( Child );
+                    datetime = Parent.getElement( 'input[type="datetime"]' ) ? true : false;
 
-                    new Element( 'div' ).wraps( Child );
+                    if ( datetime )
+                    {
+                        Child.placeholder = 'YYYY-MM-DD HH:MM:SS';
+                        Child.set( 'data-type', 'datetime' );
+                    } else
+                    {
+                        Child.placeholder = 'YYYY-MM-DD';
+                        Child.set( 'data-type', 'date' );
+                    }
 
-                    Child.placeholder = 'YYYY-MM-DD HH:MM:SS';
+
+                    Child.autocomplete = 'off';
 
                     Child.setStyles({
                         'float'  : 'left',
@@ -154,16 +171,39 @@ define('utils/Controls', function()
                     });
 
                     Picker = new DatePicker(Child, {
-                        timePicker: true,
-                        positionOffset: {
+                        timePicker     : datetime ? true : false,
+                        datetime       : datetime,
+                        positionOffset : {
                             x: 5,
                             y: 0
                         },
-                        pickerClass: 'datepicker_dashboard',
-                        onSelect: function(UserDate, elmList, Obj)
+                        pickerClass : 'datepicker_dashboard',
+                        onSelect    : function(UserDate, elmList, Obj)
                         {
-                            for (var i = 0, len = elmList.length; i < len; i++ ) {
-                                elmList[ i ].value = UserDate.format('db');
+                            var i, len;
+
+                            if ( typeOf( elmList ) === 'array' )
+                            {
+                                for ( i = 0, len = elmList.length; i < len; i++ )
+                                {
+                                    if ( elmList[ i ].get( 'data-type' ) == 'date' )
+                                    {
+                                        elmList[ i ].value = UserDate.format( '%Y-%m-%d' );
+                                    } else
+                                    {
+                                        elmList[ i ].value = UserDate.format( 'db' );
+                                    }
+                                }
+
+                            } else if ( typeOf( elmList ) === 'element' )
+                            {
+                                if ( elmList.get('data-type') == 'date' )
+                                {
+                                    elmList.value = UserDate.format( '%Y-%m-%d' );
+                                } else
+                                {
+                                    elmList.value = UserDate.format( 'db' );
+                                }
                             }
                         }
                     });
@@ -335,6 +375,42 @@ define('utils/Controls', function()
                 {
                     Control = new UserAndGroup(
                         null,
+                        elements[ i ]
+                    );
+
+                    if ( elements[ i ].id )
+                    {
+                        Label = document.getElement( 'label[for="'+ elements[ i ].id +'"]' );
+
+                        if ( Label ) {
+                            Control.setAttribute( 'label', Label );
+                        }
+                    }
+
+                    Control.create();
+                }
+            });
+        },
+
+        /**
+         * Search all Elements with the class user and convert it to a control
+         *
+         * @param {DOMNode} Elm - parent node, this element in which is searched for
+         */
+        parseUser : function(Elm)
+        {
+            require(['controls/users/Input'], function(UserInput)
+            {
+                var i, len, elements, Label, Control;
+
+                elements = Elm.getElements( '.user' );
+
+                for ( i = 0, len = elements.length; i < len; i++ )
+                {
+                    Control = new UserInput(
+                        {
+                            max : 1
+                        },
                         elements[ i ]
                     );
 

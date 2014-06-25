@@ -2,7 +2,7 @@
 /**
  * The Project Manager
  *
- * @author www.namerobot.de (Henning Leutz)
+ * @author www.pcsg.de (Henning Leutz)
  */
 
 define('classes/projects/Manager', [

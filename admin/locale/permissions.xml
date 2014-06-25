@@ -251,6 +251,29 @@
                     <de><![CDATA[Darf Projekte anlegen.]]></de>
                     <en><![CDATA[Is allowed to creat projects.]]></en>
                 </locale>
+                <locale name="quiqqer.projects.create._description">
+                    <de><![CDATA[Projekte anlegen erlaubt es, neue Projekt im System zu erstellen.]]></de>
+                    <en><![CDATA[Creating projects makes it possible to create new project in the system.]]></en>
+                </locale>
+
+                <locale name="quiqqer.projects.destroy._title">
+                    <de><![CDATA[Darf Projekte löschen.]]></de>
+                    <en><![CDATA[Is allowed to delete projects.]]></en>
+                </locale>
+                <locale name="quiqqer.projects.destroy._description">
+                    <de><![CDATA[Darf komplette Projekte löschen. Alle Inhalt eines Projektes können somit unwiederruflich gelöscht werden.]]></de>
+                    <en><![CDATA[Can delete entire projects. All content of a project can thus be deleted irrevocably.]]></en>
+                </locale>
+
+                <locale name="quiqqer.projects.setconfig._title">
+                    <de><![CDATA[Darf Projekt Einstellungen ändern.]]></de>
+                    <en><![CDATA[Is allowed to edit project settings.]]></en>
+                </locale>
+                <locale name="quiqqer.projects.setconfig._description">
+                    <de><![CDATA[Darf alle Einstellungen von Projekte editieren / ändern.]]></de>
+                    <en><![CDATA[Is allowed to edit all project settings.]]></en>
+                </locale>
+
 
                 <locale name="quiqqer.projects.sites._title">
                     <de><![CDATA[Mehrere Seiten]]></de>
@@ -287,6 +310,27 @@
                         <de><![CDATA[Darf neue Unterseite anlegen.]]></de>
                         <en><![CDATA[Is allowed to create new children pages.]]></en>
                     </locale>
+
+            <locale name="quiqqer.editors._title">
+                <de><![CDATA[Editor / WYSIWYG]]></de>
+                <en><![CDATA[Editor / WYSIWYG]]></en>
+            </locale>
+
+                <locale name="quiqqer.editors.toolbar._title">
+                    <de><![CDATA[Editor / WYSIWYG Toolbar]]></de>
+                    <en><![CDATA[Editor / WYSIWYG Toolbar]]></en>
+                </locale>
+
+                <locale name="quiqqer.editors.toolbar.delete._title">
+                    <de><![CDATA[Darf Editor Toolbars löschen]]></de>
+                    <en><![CDATA[Is allowed to delete editor toolbars]]></en>
+                </locale>
+
+                <locale name="quiqqer.editors.toolbar.delete._description">
+                    <de><![CDATA[Kann angelegt Toolbars für einen WYSIWYG Editor löschen.]]></de>
+                    <en><![CDATA[Is allowed to delete created WYSIWYG editor toolbars.]]></en>
+                </locale>
+
 
     </groups>
 

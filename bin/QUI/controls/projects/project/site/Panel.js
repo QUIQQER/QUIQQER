@@ -483,11 +483,21 @@ define('controls/projects/project/site/Panel', [
                 this.$onCategoryLeave( this.getActiveCategory() );
             }
 
-
             if ( Category.getAttribute( 'name' ) == 'content' )
             {
                 this.loadEditor(
                     this.getSite().getAttribute( 'content' )
+                );
+
+                return;
+            }
+
+            if ( Category.getAttribute( 'type' ) == 'wysiwyg' )
+            {
+                this.loadEditor(
+                    this.getSite().getAttribute(
+                        Category.getAttribute( 'name' )
+                    )
                 );
 
                 return;
@@ -526,6 +536,12 @@ define('controls/projects/project/site/Panel', [
                     event.stop();
                 });
 
+                // set to the media inputs the right project
+                Body.getElements( '.media-image' ).each(function(Elm) {
+                    Elm.set( 'data-project', Project.getName() );
+                });
+
+                // set data
                 QUIFormUtils.setDataToForm(
                     self.getSite().getAttributes(),
                     Form
@@ -541,76 +557,80 @@ define('controls/projects/project/site/Panel', [
                     // site linking
                     var i, len, Row, LastCell;
 
-                    var LinkinLangTable = Body.getElement( '.site-langs' ),
-                        rowList         = LinkinLangTable.getElements( 'tbody tr' );
+                    var LinkinLangTable = Body.getElement( '.site-langs' );
 
-                    new QUIButton({
-                        text : 'Sprach Verknüpfung hinzufügen',
-                        styles : {
-                            float : 'right'
-                        },
-                        events :
-                        {
-                            onClick : function() {
-                                self.addLanguagLink();
-                            }
-                        }
-                    }).inject( LinkinLangTable.getElement( 'th' ) );
-
-
-                    for ( i = 0, len = rowList.length; i < len; i++ )
+                    if ( LinkinLangTable )
                     {
-                        Row = rowList[ i ];
+                        var rowList = LinkinLangTable.getElements( 'tbody tr' );
 
-                        if ( !Row.get( 'data-id' ).toInt() ) {
-                            continue;
+                        new QUIButton({
+                            text : 'Sprach Verknüpfung hinzufügen',
+                            styles : {
+                                float : 'right'
+                            },
+                            events :
+                            {
+                                onClick : function() {
+                                    self.addLanguagLink();
+                                }
+                            }
+                        }).inject( LinkinLangTable.getElement( 'th' ) );
+
+
+                        for ( i = 0, len = rowList.length; i < len; i++ )
+                        {
+                            Row = rowList[ i ];
+
+                            if ( !Row.get( 'data-id' ).toInt() ) {
+                                continue;
+                            }
+
+                            LastCell = rowList[ i ].getLast();
+
+
+                            new QUIButton({
+                                icon   : 'icon-file-alt',
+                                alt    : 'Seite öffnen',
+                                title  : 'Seite öffnen',
+                                lang   : Row.get( 'data-lang' ),
+                                siteId : Row.get( 'data-id' ),
+                                styles : {
+                                    'float' : 'right'
+                                },
+                                events :
+                                {
+                                    onClick : function(Btn)
+                                    {
+                                        PanelUtils.openSitePanel(
+                                            Project.getName(),
+                                            Btn.getAttribute( 'lang' ),
+                                            Btn.getAttribute( 'siteId' )
+                                        );
+                                    }
+                                }
+                            }).inject( LastCell );
+
+                            new QUIButton({
+                                icon   : 'icon-remove',
+                                alt    : 'Verknüpfung löschen',
+                                title  : 'Verknüpfung löschen',
+                                lang   : Row.get( 'data-lang' ),
+                                siteId : Row.get( 'data-id' ),
+                                styles : {
+                                    'float' : 'right'
+                                },
+                                events :
+                                {
+                                    onClick : function(Btn)
+                                    {
+                                        self.removeLanguagLink(
+                                            Btn.getAttribute( 'lang' ),
+                                            Btn.getAttribute( 'siteId' )
+                                        );
+                                    }
+                                }
+                            }).inject( LastCell );
                         }
-
-                        LastCell = rowList[ i ].getLast();
-
-
-                        new QUIButton({
-                            icon   : 'icon-file-alt',
-                            alt    : 'Seite öffnen',
-                            title  : 'Seite öffnen',
-                            lang   : Row.get( 'data-lang' ),
-                            siteId : Row.get( 'data-id' ),
-                            styles : {
-                                'float' : 'right'
-                            },
-                            events :
-                            {
-                                onClick : function(Btn)
-                                {
-                                    PanelUtils.openSitePanel(
-                                        Project.getName(),
-                                        Btn.getAttribute( 'lang' ),
-                                        Btn.getAttribute( 'siteId' )
-                                    );
-                                }
-                            }
-                        }).inject( LastCell );
-
-                        new QUIButton({
-                            icon   : 'icon-remove',
-                            alt    : 'Verknüpfung löschen',
-                            title  : 'Verknüpfung löschen',
-                            lang   : Row.get( 'data-lang' ),
-                            siteId : Row.get( 'data-id' ),
-                            styles : {
-                                'float' : 'right'
-                            },
-                            events :
-                            {
-                                onClick : function(Btn)
-                                {
-                                    self.removeLanguagLink(
-                                        Btn.getAttribute( 'lang' ),
-                                        Btn.getAttribute( 'siteId' )
-                                    );
-                                }
-                            }
-                        }).inject( LastCell );
                     }
                 }
 
@@ -642,9 +662,44 @@ define('controls/projects/project/site/Panel', [
                     Category.getAttribute( 'onload_require' )
                 ], function(Plugin)
                 {
-                    eval( Category.getAttribute( 'onload' ) +'( Category, self );' );
+                    if ( Category.getAttribute( 'onload' ) )
+                    {
+                        eval( Category.getAttribute( 'onload' ) +'( Category, self );' );
+                        return;
+                    }
+
+                    var type = typeOf( Plugin );
+
+                    if ( type === 'function' )
+                    {
+                        type( Category, self );
+                        return;
+                    }
+
+                    if ( type === 'class' )
+                    {
+                        var Obj = new Plugin({
+                            Site : self.getSite()
+                        });
+
+                        if ( QUI.Controls.isControl( Obj ) )
+                        {
+                            Obj.inject( self.getContent() );
+                            Obj.setParent( self );
+
+                            self.Loader.hide();
+
+                            return;
+                        }
+                    }
                 });
 
+                return;
+            }
+
+            if ( Category.getAttribute( 'onload' ) )
+            {
+                eval( Category.getAttribute( 'onload' ) +'( Category, self );' );
                 return;
             }
 
@@ -667,6 +722,7 @@ define('controls/projects/project/site/Panel', [
             var Site  = this.getSite(),
                 Body  = this.getBody();
 
+            // main content
             if ( Category.getAttribute( 'name' ) === 'content' )
             {
                 Site.setAttribute(
@@ -682,6 +738,23 @@ define('controls/projects/project/site/Panel', [
                 return;
             }
 
+            // wysiwyg type
+            if ( Category.getAttribute( 'type' ) == 'wysiwyg' )
+            {
+                Site.setAttribute(
+                    Category.getAttribute( 'name' ),
+                    this.getAttribute( 'Editor' ).getContent()
+                );
+
+                if ( typeof callback !== 'undefined' ) {
+                    callback();
+                }
+
+                this.Loader.hide();
+                return;
+            }
+
+            // form unload
             if ( !Body.getElement( 'form' ) )
             {
                 if ( typeof callback !== 'undefined' ) {
@@ -848,7 +921,23 @@ define('controls/projects/project/site/Panel', [
 
                     Editor.inject( Body );
                     Editor.setContent( content );
-                    Editor.addEvent( 'onLoaded', self.$onEditorLoad );
+
+                    // load css files
+                    Ajax.get('ajax_editor_get_projectFiles', function(result)
+                    {
+                        Editor.setAttribute( 'bodyId', result.bodyId );
+                        Editor.setAttribute( 'bodyClass', result.bodyClass );
+
+                        for ( var i = 0, len = result.cssFiles.length; i < len; i++) {
+                            Editor.addCSS( result[ i ] )
+                        }
+
+                        Editor.addEvent( 'onLoaded', self.$onEditorLoad );
+
+                    }, {
+                        project : Project.getName()
+                    });
+
                 });
             });
         },

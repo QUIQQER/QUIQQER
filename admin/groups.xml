@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <groups>
 
-	<window>
-		<tab name="settings">
-			<text>Einstellungen</text>
-			<image>URL_BIN_DIR/16x16/settings.png</image>
+    <window>
+        <tab name="settings">
+            <text>Einstellungen</text>
+            <image>icon-gears</image>
 
-			<template>SYS_DIR/template/groups/settings.html</template>
-			<onload>_pcsg.lib.Groups.tabOnLoadGroup</onload>
-			<onunload>_pcsg.lib.Groups.tabOnUnLoadGroup</onunload>
-		</tab>
+            <template>SYS_DIR/template/groups/settings.html</template>
+            <onload>_pcsg.lib.Groups.tabOnLoadGroup</onload>
+            <onunload>_pcsg.lib.Groups.tabOnUnLoadGroup</onunload>
+        </tab>
 
-		<tab name="users">
-			<text>Benutzer in der Gruppe</text>
-			<image>URL_BIN_DIR/16x16/user.png</image>
+        <tab name="users">
+            <text>Benutzer in der Gruppe</text>
+            <image>icon-user</image>
 
-			<onload>Group.showUsers</onload>
-			<onunload>_pcsg.lib.Groups.tabOnUnLoadGroup</onunload>
-		</tab>
-	</window>
+            <onload>Group.showUsers</onload>
+            <onunload>_pcsg.lib.Groups.tabOnUnLoadGroup</onunload>
+        </tab>
+    </window>
 
 </groups>

@@ -43,6 +43,7 @@ define('controls/projects/project/Panel', [
 
         Binds : [
             '$onCreate',
+            '$onInject',
             '$onResize',
             '$openSitePanel'
         ],
@@ -68,6 +69,7 @@ define('controls/projects/project/Panel', [
 
             this.addEvents({
                 onCreate : this.$onCreate,
+                onInject : this.$onInject,
                 onResize : this.$onResize
             });
         },
@@ -188,6 +190,14 @@ define('controls/projects/project/Panel', [
             this.$Button.getElm().removeClass( 'qui-button' );
             this.$Button.getElm().addClass( 'button' );
             this.$Button.getElm().addClass( 'btn-blue' );
+        },
+
+        /**
+         * event : on inject
+         */
+        $onInject : function()
+        {
+            var self = this;
 
             // resize after insert
             (function()
@@ -204,13 +214,19 @@ define('controls/projects/project/Panel', [
         {
             var Body      = this.getBody(),
                 height    = this.getAttribute( 'height' ),
-                Container = Body.getElement( '.project-container' );
+                Container = Body.getElement( '.project-container' ),
+                Search    = Body.getElement( '.project-search' );
 
-            if ( Body.getSize().y ) {
-                height = Body.getSize().y;
+            var height = Body.getComputedSize().height;
+
+            if ( !height ) {
+                return;
             }
 
-            Container.setStyle( 'height', Body.getSize().y - 42 );
+            Container.setStyle(
+                'height',
+                height - Search.getComputedSize().totalHeight
+            );
         },
 
         /**
