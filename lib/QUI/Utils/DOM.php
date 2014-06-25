@@ -861,19 +861,35 @@ class DOM
         $id = $Input->getAttribute( 'conf' ) .'-'. time();
 
         $string  = '<p>';
-        $string .= '<input
-            type="'. $type .'"
-            name="'. $Input->getAttribute( 'conf' ) .'"
-            id="'. $id .'"
-        />';
+        $text    = $Input->getElementsByTagName( 'text' );
+        $input   = '<input type="'. $type .'"
+                           name="'. $Input->getAttribute( 'conf' ) .'"
+                           id="'. $id .'"
+                    />';
 
-        $text = $Input->getElementsByTagName( 'text' );
-
-        if ( $text->length )
+        if ( $type == 'checkbox' || $type == 'radio' )
         {
-            $string .= '<label for="'. $id .'">'.
-                $text->item( 0 )->nodeValue .
-            '</label>';
+            if ( $text->length )
+            {
+                $string .= '<label for="'. $id .'">'.
+                    $input .
+                    $text->item( 0 )->nodeValue .
+                '</label>';
+            } else
+            {
+                $string .= $input;
+            }
+
+        } else
+        {
+            if ( $text->length )
+            {
+                $string .= '<label for="'. $id .'">'.
+                    $text->item( 0 )->nodeValue .
+                '</label>';
+            }
+
+            $string .= $input;
         }
 
         $desc = $Input->getElementsByTagName( 'description' );

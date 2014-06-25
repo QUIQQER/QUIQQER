@@ -105,6 +105,7 @@ define('controls/projects/project/Settings', [
             var self = this;
 
             this.Loader.show();
+            this.getContent().addClass( 'qui-project-settings' );
 
             this.addButton({
                 text      : 'Speichern',
@@ -315,6 +316,7 @@ define('controls/projects/project/Settings', [
             UtilsTemplate.get('project/meta', function(result)
             {
                 Body.set( 'html', result );
+                Body.getElements('tr td:first-child').addClass( 'first' );
 
                 QUIFormUtils.setDataToForm(
                     self.$config,
@@ -445,6 +447,7 @@ define('controls/projects/project/Settings', [
                 }
 
                 Body.set( 'html', '<form>'+ result +'</form>' );
+                Body.getElements('tr td:first-child').addClass( 'first' );
 
                 var Form = Body.getElement( 'form' );
 
