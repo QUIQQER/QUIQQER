@@ -591,7 +591,7 @@ class Manager
     {
         try
         {
-            return \QUI::getConfig( 'etc/source.list.ini' )->toArray();
+            return \QUI::getConfig( 'etc/source.list.ini.php' )->toArray();
 
         } catch ( \QUI\Exception $Exception )
         {
@@ -609,7 +609,7 @@ class Manager
      */
     public function setServerStatus($server, $status)
     {
-        $Config  = \QUI::getConfig( 'etc/source.list.ini' );
+        $Config  = \QUI::getConfig( 'etc/source.list.ini.php' );
         $status = (bool)$status ? 1 : 0;
 
         $Config->setValue( $server, 'active', $status );
@@ -635,7 +635,7 @@ class Manager
         }
 
 
-        $Config = \QUI::getConfig( 'etc/source.list.ini' );
+        $Config = \QUI::getConfig( 'etc/source.list.ini.php' );
         $Config->setValue( $server, 'active', 0 );
 
         if ( isset( $params['type'] ) ) {
@@ -654,7 +654,7 @@ class Manager
      */
     public function removeServer($server)
     {
-        $Config = \QUI::getConfig( 'etc/source.list.ini' );
+        $Config = \QUI::getConfig( 'etc/source.list.ini.php' );
 
         if ( is_array( $server ) )
         {

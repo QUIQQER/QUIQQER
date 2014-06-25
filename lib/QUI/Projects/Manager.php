@@ -560,7 +560,7 @@ class Manager
         /**
          * Write the config
          */
-        if ( !file_exists( CMS_DIR .'etc/projects.ini' ) ) {
+        if ( !file_exists( CMS_DIR .'etc/projects.ini.php' ) ) {
             file_put_contents( CMS_DIR .'etc/projects.ini.php', '' );
         }
 
