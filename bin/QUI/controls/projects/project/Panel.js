@@ -32,18 +32,19 @@ define('controls/projects/project/Panel', [
 {
     "use strict";
 
-    var QUIPanel = arguments[0],
+    // classes
+    var QUIPanel           = arguments[ 0 ],
+        Projects           = arguments[ 1 ],
+        ProjectSitemap     = arguments[ 2 ],
+        PanelUtils         = arguments[ 3 ],
 
-        Projects       = arguments[1],
-        ProjectSitemap = arguments[2],
-        PanelUtils     = arguments[3],
+        QUIButton          = arguments[ 4 ],
+        QUIButtonSeperator = arguments[ 5 ],
+        QUISitemap         = arguments[ 6 ],
+        QUISitemapItem     = arguments[ 7 ],
+        QUISitemapFilter   = arguments[ 8 ],
 
-        QUIButton          = arguments[4],
-        QUIButtonSeperator = arguments[5],
-        QUISitemap         = arguments[6],
-        QUISitemapItem     = arguments[7],
-        QUISitemapFilter   = arguments[8],
-        Locale             = arguments[9];
+        Locale             = arguments[ 9 ];
 
     /**
      * @class controls/projects/project/Panel

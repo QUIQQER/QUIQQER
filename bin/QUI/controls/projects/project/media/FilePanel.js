@@ -21,12 +21,24 @@ define('controls/projects/project/media/FilePanel', [
     'utils/Template',
     'qui/utils/Form',
     'utils/Controls',
+    'Locale',
 
     'css!controls/projects/project/media/FilePanel.css'
 
-], function(QUI, QUIPanel, PanelDOMEvents, QUIButton, QUIButtonSeperator, QUIConfirm, Template, FormUtils, ControlUtils)
+], function()
 {
     "use strict";
+
+    var QUI				   = arguments[ 0 ],
+        QUIPanel           = arguments[ 1 ],
+        PanelDOMEvents     = arguments[ 2 ],
+        QUIButton          = arguments[ 3 ],
+        QUIButtonSeperator = arguments[ 4 ],
+        QUIConfirm         = arguments[ 5 ],
+        Template           = arguments[ 6 ],
+        FormUtils          = arguments[ 7 ],
+        ControlUtils       = arguments[ 8 ],
+        Locale             = arguments[ 9 ];
 
     /**
      * A Media-Panel, opens the Media in an Desktop Panel

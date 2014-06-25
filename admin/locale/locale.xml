@@ -1,4 +1,6 @@
 <locales>
+
+<!-- js -->
     <groups name="quiqqer/system" datatype="js">
         <locale name="welcome.message">
             <de><![CDATA[Willkommen [username]]]></de>
@@ -84,8 +86,6 @@
             <en><![CDATA[Add a language]]></en>
         </locale>
 
-
-
         <locale name="projects.project.project.delete.window.title">
             <de><![CDATA[Projekt löschen]]></de>
             <en><![CDATA[Delete project]]></en>
@@ -103,9 +103,58 @@
             <en><![CDATA[Are you sure you want to delete this project?]]></en>
         </locale>
 
+        <!-- editors controls -->
+        <locale name="editors.settings.title">
+            <de><![CDATA[WYSIWYG-Editor Einstellungen]]></de>
+            <en><![CDATA[WYSIWYG-Editor Settings]]></en>
+        </locale>
+        <locale name="editors.settings.btn.edit.toolbar">
+            <de><![CDATA[Toolbar editieren]]></de>
+            <en><![CDATA[Edit the toolbar]]></en>
+        </locale>
+        <locale name="editors.settings.btn.delete.toolbar">
+            <de><![CDATA[Toolbar löschen]]></de>
+            <en><![CDATA[Delete the toolbar]]></en>
+        </locale>
+        <locale name="editors.settings.btn.add.toolbar">
+            <de><![CDATA[Toolbar hinzufügen]]></de>
+            <en><![CDATA[Add a toolbar]]></en>
+        </locale>
+        <locale name="editors.settings.table.toolbar.name">
+            <de><![CDATA[Name der Toolbar]]></de>
+            <en><![CDATA[Name of the toolbar]]></en>
+        </locale>
+        <locale name="editors.settings.editsheet.title">
+            <de><![CDATA[Toolbar [toolbar] editieren]]></de>
+            <en><![CDATA[Edit [toolbar] toolbar]]></en>
+        </locale>
+        <locale name="editors.settings.editsheet.btn.save">
+            <de><![CDATA[Änderungen speichern]]></de>
+            <en><![CDATA[Save changes]]></en>
+        </locale>
+        <locale name="editors.settings.delete.window.title">
+            <de><![CDATA[Toolbar wirklich löschen?]]></de>
+            <en><![CDATA[Save changes]]></en>
+        </locale>
+        <locale name="editors.settings.delete.window.text">
+            <de><![CDATA[Möchten Sie die Toolbar [toolbar] wirklich löschen?]]></de>
+            <en><![CDATA[Are you sure you want to delete the toolbar [toolbar]?]]></en>
+        </locale>
+        <locale name="editors.settings.add.window.title">
+            <de><![CDATA[Toolbar hinzufügen]]></de>
+            <en><![CDATA[Add a toolbar]]></en>
+        </locale>
+        <locale name="editors.settings.add.window.text">
+            <de><![CDATA[Bitte geben Sie einen neuen Toolbarnamen ein:]]></de>
+            <en><![CDATA[Please enter a new toolbar name:]]></en>
+        </locale>
+
+
 
     </groups>
 
+
+<!-- php -->
     <groups name="quiqqer/system">
         <!-- Menu  -->
         <locale name="menu.file.text">
@@ -188,12 +237,88 @@
                 <en><![CDATA[QUIQQER Changelog]]></en>
             </locale>
 
+        <!-- Projects -->
+        <locale name="projects.project.settings.panel.settings.title">
+            <de><![CDATA[Projekte Einstellungen]]></de>
+            <en><![CDATA[Projects settings]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.language.default">
+            <de><![CDATA[Standard Sprache]]></de>
+            <en><![CDATA[Default language]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.language.available">
+            <de><![CDATA[Verfügbare Sprachen]]></de>
+            <en><![CDATA[Available languages]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.templates.default">
+            <de><![CDATA[Standard Template]]></de>
+            <en><![CDATA[Default template]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.templates.no.template">
+            <de><![CDATA[Kein Template verwenden]]></de>
+            <en><![CDATA[Do not use a template]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.templates.available">
+            <de><![CDATA[Verfügbare Templates für dieses Projekt]]></de>
+            <en><![CDATA[Available templates for this project]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.admin.email">
+            <de><![CDATA[Administrations E-Mail]]></de>
+            <en><![CDATA[Administration E-mail]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.set.standard">
+            <de><![CDATA[Als standard Projekt setzen]]></de>
+            <en><![CDATA[Set as default project]]></en>
+        </locale>
+
+        <locale name="projects.project.settings.meta.settings.title">
+            <de><![CDATA[Meta Angaben]]></de>
+            <en><![CDATA[Meta data]]></en>
+        </locale>
+        <locale name="projects.project.settings.meta.author">
+            <de><![CDATA[Autor]]></de>
+            <en><![CDATA[Author]]></en>
+        </locale>
+        <locale name="projects.project.settings.meta.publisher">
+            <de><![CDATA[Publisher]]></de>
+            <en><![CDATA[Publisher]]></en>
+        </locale>
+        <locale name="projects.project.settings.meta.copyright">
+            <de><![CDATA[Copyright]]></de>
+            <en><![CDATA[Copyright]]></en>
+        </locale>
+        <locale name="projects.project.settings.meta.indexing">
+            <de><![CDATA[Suchmaschinen Indizierung]]></de>
+            <en><![CDATA[Search engine indexing]]></en>
+        </locale>
+        <locale name="projects.project.settings.meta.indexing.index">
+            <de><![CDATA[Indizierung der Seite erlauben]]></de>
+            <en><![CDATA[Allow indexing of the site]]></en>
+        </locale>
+        <locale name="projects.project.settings.meta.indexing.noindex">
+            <de><![CDATA[Indizierung der Seite nicht erlauben]]></de>
+            <en><![CDATA[Not allow indexing of the site]]></en>
+        </locale>
+        <locale name="projects.project.settings.meta.indexing.nofollow">
+            <de><![CDATA[Untergeordnete Seiten / Dateien nicht besuchen]]></de>
+            <en><![CDATA[Not visit subsidiary pages / files]]></en>
+        </locale>
+        <locale name="projects.project.settings.meta.indexing.noindex_nofollow">
+            <de><![CDATA[Indizierung der Seite nicht erlaubt und untergeordnete Seiten / Dateien nicht besuchen]]></de>
+            <en><![CDATA[Indexing of the site is not allowed and does not visit the child pages / files]]></en>
+        </locale>
+        <locale name="projects.project.settings.meta.indexing.all">
+            <de><![CDATA[Inhalte der Seite und aus untergeordneten Seiten besuchen und indizieren]]></de>
+            <en><![CDATA[Visit the contents page and from child pages and index]]></en>
+        </locale>
+
 
         <!-- Exception  -->
         <locale name="exception.template.not.found">
             <de><![CDATA[Template wurde nicht gefunden.]]></de>
             <en><![CDATA[Template not found.]]></en>
         </locale>
+
 
     </groups>
 

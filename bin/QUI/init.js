@@ -20,10 +20,11 @@ Slick.definePseudo('display', function(value) {
     return Element.getStyle(this, 'display') == value;
 });
 
-//IE Flickering Bug
+// IE Flickering Bug
 try
 {
     document.execCommand( "BackgroundImageCache", false, true );
+
 } catch ( err )
 {
     // Nothing to do
@@ -54,23 +55,40 @@ require.config({
  * Init quiqqer
  */
 
-require([
+// main require list + locale translations
+var requireList = [
+   'qui/QUI',
+   'Locale',
+   'Ajax',
+   'controls/welcome/Panel',
+   'qui/controls/desktop/Workspace',
+   'qui/controls/desktop/Column',
+   'qui/controls/desktop/Panel',
+   'qui/controls/desktop/Tasks',
+   'qui/controls/buttons/Button',
+   'qui/controls/bookmarks/Panel',
+   'controls/projects/project/Panel'
+].append( QUIQQER_LOCALE || [] );
 
-    'qui/QUI',
-    'Locale',
-    'Ajax',
-    'controls/welcome/Panel',
-    'qui/controls/desktop/Workspace',
-    'qui/controls/desktop/Column',
-    'qui/controls/desktop/Panel',
-    'qui/controls/desktop/Tasks',
-    'qui/controls/buttons/Button',
-    'qui/controls/bookmarks/Panel',
-    'controls/projects/project/Panel'
 
-], function(QUI, Locale, Ajax, Welcome, Workspace, Column, Panel, TaskPanel, Button, BookmarkPanel, ProjectPanel)
+require( requireList, function()
 {
     "use strict";
+
+    /**
+     *
+     */
+    var QUI           = arguments[ 0 ],
+        Locale        = arguments[ 1 ],
+        Ajax          = arguments[ 2 ],
+        Welcome       = arguments[ 3 ],
+        Workspace     = arguments[ 4 ],
+        Column        = arguments[ 5 ],
+        Panel         = arguments[ 6 ],
+        TaskPanel     = arguments[ 7 ],
+        Button        = arguments[ 8 ],
+        BookmarkPanel = arguments[ 9 ],
+        ProjectPanel  = arguments[ 10 ];
 
     Locale.setCurrent( USER.lang );
 
@@ -220,11 +238,6 @@ require([
      * Menu
      */
     require(['Menu']);
-
-    /**
-     * Locale
-     */
-    require( QUIQQER_LOCALE );
 
     /**
      * UploadManager && MessageHandler
