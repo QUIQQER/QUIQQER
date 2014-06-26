@@ -1,0 +1,13 @@
+<locales>
+
+<!-- js -->
+    <groups name="quiqqer/system" datatype="js">
+
+        <locale name="projects.project.site.input.clear">
+            <de><![CDATA[Eingabe leeren]]></de>
+            <en><![CDATA[Empty input]]></en>
+        </locale>
+
+    </groups>
+
+</locales>

@@ -1,0 +1,89 @@
+<locales>
+
+<!-- js -->
+    <groups name="quiqqer/system" datatype="js">
+
+        <locale name="open.site">
+            <de><![CDATA[Seite öffnen]]></de>
+            <en><![CDATA[Open page]]></en>
+        </locale>
+
+
+        <locale name="projects.project.site.panel.btn.permissions">
+            <de><![CDATA[Seiten Zugriffsrechte einstellen]]></de>
+            <en><![CDATA[Set site permissions]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.btn.media">
+            <de><![CDATA[Media]]></de>
+            <en><![CDATA[Media]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.btn.sort">
+            <de><![CDATA[Sortierung]]></de>
+            <en><![CDATA[Sort]]></en>
+        </locale>
+
+        <locale name="projects.project.site.panel.window.delete.title">
+            <de><![CDATA[Seite #[id] löschen]]></de>
+            <en><![CDATA[Delete site #[id]]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.window.delete.text">
+            <de><![CDATA[Möchten Sie die Seite #[id] [url] wirklich löschen?]]></de>
+            <en><![CDATA[Are you sure you want to delete the page #[id] [url]?]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.window.delete.information">
+            <de><![CDATA[
+                Die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden.<br />
+                Auch alle Unterseiten und Verknüpfungen werden in den Papierkorb gelegt.
+            ]]></de>
+            <en><![CDATA[
+                The page is placed in the trash and can be restored.<br />
+                Also all pages and links will be placed in the trash.
+            ]]></en>
+        </locale>
+
+        <locale name="projects.project.site.panel.window.create.title">
+            <de><![CDATA[Wie soll die neue Seite heißen?]]></de>
+            <en><![CDATA[How be called the new page?]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.window.create.text">
+            <de><![CDATA[Bitte geben Sie ein Namen für die neue Seite an]]></de>
+            <en><![CDATA[Please enter a name for the new page]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.window.create.information">
+            <de><![CDATA[Sie legen eine neue Seite unter [name].html an.]]></de>
+            <en><![CDATA[You create a new page under [name].html.]]></en>
+        </locale>
+
+        <locale name="projects.project.site.panel.sort.title">
+            <de><![CDATA[Sortierung der Seiten unter #[id] [title]]]></de>
+            <en><![CDATA[Sorting of the pages below #[id] [title]]]></en>
+        </locale>
+
+        <locale name="projects.project.site.panel.linked.btn.add">
+            <de><![CDATA[Sprachverknüpfung hinzufügen]]></de>
+            <en><![CDATA[Add language linking]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.linked.btn.delete">
+            <de><![CDATA[Sprachverknüpfung löschen]]></de>
+            <en><![CDATA[Delete language linking]]></en>
+        </locale>
+
+        <locale name="projects.project.site.panel.linked.window.delete.title">
+            <de><![CDATA[Sprach-Verknüpfung wirklich löschen?]]></de>
+            <en><![CDATA[Really delete the language linking?]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.linked.window.delete.text">
+            <de><![CDATA[Möchten Sie die Sprach-Verknüpfung wirklich löschen?]]></de>
+            <en><![CDATA[Do you really want delete the language linking?]]></en>
+        </locale>
+
+
+
+
+
+
+
+
+    </groups>
+
+</locales>

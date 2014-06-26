@@ -100,8 +100,14 @@ define('controls/projects/project/site/Input', [
 
             this.$ClearButton = new QUIButton({
                 icon : 'icon-remove',
-                alt    : 'Eingabe leeren',
-                title  : 'Eingabe leeren',
+                alt : Locale.get(
+                    'quiqqer/system',
+                    'projects.project.site.input.clear'
+                ),
+                title : Locale.get(
+                    'quiqqer/system',
+                    'projects.project.site.input.clear'
+                ),
                 events :
                 {
                     onClick : function() {

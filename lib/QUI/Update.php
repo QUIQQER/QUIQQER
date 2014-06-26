@@ -506,22 +506,12 @@ class Update
         }
 
         // system xmls
-        $locale_dir = CMS_DIR .'/admin/locale/';
-        $locales    = \QUI\Utils\System\File::readDir( $locale_dir );
+        $File       = new \QUI\Utils\System\File();
+        $locale_dir = CMS_DIR .'admin/locale/';
+        $locales    = $File->readDirRecursiv( $locale_dir, true );
 
-        foreach ( $locales as $locale )
-        {
-            if ( !is_dir( $locale_dir . $locale ) )
-            {
-                self::importLocale( $locale_dir . $locale );
-                continue;
-            }
-
-            $sublocales = \QUI\Utils\System\File::readDir( $locale_dir . $locale );
-
-            foreach ( $sublocales as $sublocale ) {
-                self::importLocale( $locale_dir . $locale .'/'. $sublocale );
-            }
+        foreach ( $locales as $locale ) {
+            self::importLocale( $locale_dir . $locale );
         }
     }
 }

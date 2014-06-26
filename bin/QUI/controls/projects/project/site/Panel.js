@@ -9,6 +9,7 @@
  * @requires classes/projects/project/Site
  * @requires qui/controls/buttons/Button
  * @requires qui/utils/Form
+ * @requires Locale
  *
  * @module controls/projects/site/Panel
  */
@@ -23,12 +24,23 @@ define('controls/projects/project/site/Panel', [
     'qui/utils/Form',
     'utils/Controls',
     'utils/Panels',
+    'Locale',
 
     'css!controls/projects/project/site/Panel.css'
 
-], function(QUIPanel, Projects, Ajax, Site, QUIButton, QUIFormUtils, ControlUtils, PanelUtils)
+], function()
 {
     "use strict";
+
+    var QUIPanel     = arguments[ 0 ],
+        Projects     = arguments[ 1 ],
+        Ajax         = arguments[ 2 ],
+        Site         = arguments[ 3 ],
+        QUIButton    = arguments[ 4 ],
+        QUIFormUtils = arguments[ 5 ],
+        ControlUtils = arguments[ 6 ],
+        PanelUtils   = arguments[ 7 ],
+        Locale       = arguments[ 8 ];
 
     /**
      * An SitePanel, opens the Site in an Apppanel
@@ -192,8 +204,8 @@ define('controls/projects/project/site/Panel', [
             // permissions
             var PermissionButton = new QUIButton({
                 image  : 'icon-gears',
-                alt    : 'Seiten Zugriffsrechte einstellen',
-                title  : 'Seiten Zugriffsrechte einstellen',
+                alt    : Locale.get('quiqqer/system','projects.project.site.panel.btn.permissions'),
+                title  : Locale.get('quiqqer/system','projects.project.site.panel.btn.permissions'),
                 styles : {
                     'border-left-width' : 1,
                     'float' : 'right'
@@ -205,8 +217,8 @@ define('controls/projects/project/site/Panel', [
 
             var MediaButton = new QUIButton({
                 image  : 'icon-picture',
-                alt    : 'Media',
-                title  : 'Media',
+                alt    : Locale.get('quiqqer/system','projects.project.site.panel.btn.media'),
+                title  : Locale.get('quiqqer/system','projects.project.site.panel.btn.media'),
                 styles : {
                     'border-left-width' : 1,
                     'float' : 'right'
@@ -218,8 +230,8 @@ define('controls/projects/project/site/Panel', [
 
             var SortButton = new QUIButton({
                 image  : 'icon-sort',
-                alt    : 'Sortierung',
-                title  : 'Sortierung',
+                alt    : Locale.get('quiqqer/system','projects.project.site.panel.btn.sort'),
+                title  : Locale.get('quiqqer/system','projects.project.site.panel.btn.sort'),
                 styles : {
                     'border-left-width' : 1,
                     'float' : 'right'
@@ -273,7 +285,6 @@ define('controls/projects/project/site/Panel', [
 
                     Category.addEvents({
                         onActive : self.$onCategoryEnter
-                        //onNormal : Panel.$onCategoryLeave -> trigger in onActive
                     });
 
                     for ( ev in events  )
@@ -381,7 +392,15 @@ define('controls/projects/project/site/Panel', [
                 Project = Site.getProject();
 
             this.createSheet({
-                title : 'Sortierung - '+ this.getAttribute( 'title' ),
+                title : Locale.get(
+                    'quiqqer/system',
+                    'projects.project.site.panel.sort.title',
+                    {
+                        id    : Site.getId(),
+                        title : Site.getAttribute('title'),
+                        name  : Site.getAttribute('name')
+                    }
+                ),
                 events :
                 {
                     onOpen : function(Sheet)
@@ -417,12 +436,23 @@ define('controls/projects/project/site/Panel', [
             require(['qui/controls/windows/Confirm'], function(Confirm)
             {
                 new Confirm({
-                    title       : 'Seite #'+ Site.getId() +' löschen',
-                    titleicon   : 'icon-trash',
-                    text        : 'Möchten Sie die Seite #'+ Site.getId() +' '+ Site.getAttribute( 'name' ) +'.html wirklich löschen?',
-                    information :
-                        'Die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden.' +
-                        'Auch alle Unterseiten und Verknüpfungen werden in den Papierkorb gelegt.',
+                    title : Locale.get(
+                        'quiqqer/system',
+                        'projects.project.site.panel.window.delete.title'
+                    ),
+                    titleicon : 'icon-trash',
+                    text : Locale.get(
+                        'quiqqer/system',
+                        'projects.project.site.panel.window.delete.text',
+                        {
+                            id  : Site.getId(),
+                            url : Site.getAttribute( 'name' ) +'.html'
+                        }
+                    ),
+                    information : Locale.get(
+                        'quiqqer/system',
+                        'projects.project.site.panel.window.delete.information'
+                    ),
                     height : 200,
                     events :
                     {
@@ -432,7 +462,6 @@ define('controls/projects/project/site/Panel', [
                     }
                 }).open();
             });
-
         },
 
         /**
@@ -451,11 +480,24 @@ define('controls/projects/project/site/Panel', [
             require(['qui/controls/windows/Prompt'], function(Prompt)
             {
                 new Prompt({
-                    title       : 'Wie soll die neue Seite heißen?',
-                    text        : 'Bitte geben Sie ein Namen für die neue Seite an',
-                    texticon    : 'icon-file',
-                    information : 'Sie legen eine neue Seite unter '+ Site.getAttribute('name') +'.html an.',
-                    events      :
+                    title : Locale.get(
+                        'quiqqer/system',
+                        'projects.project.site.panel.window.create.title'
+                    ),
+                    text : Locale.get(
+                        'quiqqer/system',
+                        'projects.project.site.panel.window.create.text'
+                    ),
+                    texticon : 'icon-file',
+                    information : Locale.get(
+                        'quiqqer/system',
+                        'projects.project.site.panel.window.create.information',
+                        {
+                            name : Site.getAttribute( 'name' ),
+                            id   : Site.getId()
+                        }
+                    ),
+                    events :
                     {
                         onSubmit : function(result, Win) {
                             Site.createChild( result );
@@ -564,7 +606,10 @@ define('controls/projects/project/site/Panel', [
                         var rowList = LinkinLangTable.getElements( 'tbody tr' );
 
                         new QUIButton({
-                            text : 'Sprach Verknüpfung hinzufügen',
+                            text : Locale.get(
+                                'quiqqer/system',
+                                'projects.project.site.panel.linked.btn.add'
+                            ),
                             styles : {
                                 float : 'right'
                             },
@@ -590,8 +635,8 @@ define('controls/projects/project/site/Panel', [
 
                             new QUIButton({
                                 icon   : 'icon-file-alt',
-                                alt    : 'Seite öffnen',
-                                title  : 'Seite öffnen',
+                                alt    : Locale.get('quiqqer/system', 'open.site'),
+                                title  : Locale.get('quiqqer/system', 'open.site'),
                                 lang   : Row.get( 'data-lang' ),
                                 siteId : Row.get( 'data-id' ),
                                 styles : {
@@ -611,10 +656,16 @@ define('controls/projects/project/site/Panel', [
                             }).inject( LastCell );
 
                             new QUIButton({
-                                icon   : 'icon-remove',
-                                alt    : 'Verknüpfung löschen',
-                                title  : 'Verknüpfung löschen',
-                                lang   : Row.get( 'data-lang' ),
+                                icon : 'icon-remove',
+                                alt : Locale.get(
+                                    'quiqqer/system',
+                                    'projects.project.site.panel.linked.btn.delete'
+                                ),
+                                title : Locale.get(
+                                    'quiqqer/system',
+                                    'projects.project.site.panel.linked.btn.delete'
+                                ),
+                                lang : Row.get( 'data-lang' ),
                                 siteId : Row.get( 'data-id' ),
                                 styles : {
                                     'float' : 'right'
@@ -1035,9 +1086,15 @@ define('controls/projects/project/site/Panel', [
                     Project = Site.getProject();
 
                 new QUIConfirm({
-                    title  : 'Sprach-Verknüpfung wirklich löschen?',
-                    icon   : 'icon-remove',
-                    text   : 'Möchten Sie die Sprach-Verknüpfung wirklich löschen?',
+                    title : Locale.get(
+                        'quiqqer/system',
+                        'projects.project.site.panel.linked.window.delete.title'
+                    ),
+                    icon : 'icon-remove',
+                    text : Locale.get(
+                        'quiqqer/system',
+                        'projects.project.site.panel.linked.window.delete.text'
+                    ),
                     events :
                     {
                         onSubmit : function(Confirm)
