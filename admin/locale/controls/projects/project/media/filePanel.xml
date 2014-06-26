@@ -3,71 +3,23 @@
 <!-- js -->
     <groups name="quiqqer/system" datatype="js">
 
-        <locale name="projects.project.site.media.filePanel.message.save.success">
-            <de><![CDATA[Datei wurde erfolgreich gespeichert]]></de>
-            <en><![CDATA[File has been saved successfully]]></en>
+        <locale name="projects.project.site.media.input.select.alt">
+            <de><![CDATA[Bild auswählen]]></de>
+            <en><![CDATA[Select image]]></en>
+        </locale>
+        <locale name="projects.project.site.media.input.select.title">
+            <de><![CDATA[Bild auswählen]]></de>
+            <en><![CDATA[Select image]]></en>
         </locale>
 
-        <locale name="projects.project.site.media.filePanel.btn.save.text">
-            <de><![CDATA[Speichern]]></de>
-            <en><![CDATA[Save]]></en>
+        <locale name="projects.project.site.media.input.clear.alt">
+            <de><![CDATA[Eingabe leeren]]></de>
+            <en><![CDATA[Clear]]></en>
         </locale>
-        <locale name="projects.project.site.media.filePanel.btn.delete.text">
-            <de><![CDATA[Löschen]]></de>
-            <en><![CDATA[Delete]]></en>
+        <locale name="projects.project.site.media.input.clear.title">
+            <de><![CDATA[Eingabe leeren]]></de>
+            <en><![CDATA[Clear]]></en>
         </locale>
-        <locale name="projects.project.site.media.filePanel.btn.replace.text">
-            <de><![CDATA[Ersetzen mit ...]]></de>
-            <en><![CDATA[Replace with ...]]></en>
-        </locale>
-        <locale name="projects.project.site.media.filePanel.btn.activate.text">
-            <de><![CDATA[Aktivieren]]></de>
-            <en><![CDATA[Activate]]></en>
-        </locale>
-        <locale name="projects.project.site.media.filePanel.btn.deactivate.text">
-            <de><![CDATA[Deaktivieren]]></de>
-            <en><![CDATA[Deactivate]]></en>
-        </locale>
-        <locale name="projects.project.site.media.filePanel.details.text">
-            <de><![CDATA[Details]]></de>
-            <en><![CDATA[Details]]></en>
-        </locale>
-        <locale name="projects.project.site.media.filePanel.preview.text">
-            <de><![CDATA[Vorschau]]></de>
-            <en><![CDATA[Preview]]></en>
-        </locale>
-
-        <locale name="projects.project.site.media.filePanel.btn.openFile.title">
-            <de><![CDATA[Datei öffnen]]></de>
-            <en><![CDATA[Open file]]></en>
-        </locale>
-        <locale name="projects.project.site.media.filePanel.btn.openFile.alt">
-            <de><![CDATA[Datei öffnen]]></de>
-            <en><![CDATA[Open file]]></en>
-        </locale>
-        <locale name="projects.project.site.media.filePanel.btn.downloadFile.title">
-            <de><![CDATA[Datei herunterladen]]></de>
-            <en><![CDATA[Download file]]></en>
-        </locale>
-        <locale name="projects.project.site.media.filePanel.btn.downloadFile.alt">
-            <de><![CDATA[Die Datei wird in den Papierkorb verschoben und kann wieder hergestellt werden.]]></de>
-            <en><![CDATA[The file is moved to the trash and can be restored.]]></en>
-        </locale>
-
-
-        <locale name="projects.project.site.media.filePanel.window.delete.title">
-            <de><![CDATA[Möchten Sie die Datei [file] wirklich löschen?]]></de>
-            <en><![CDATA[Are you sure you want to delete the file [file]?]]></en>
-        </locale>
-        <locale name="projects.project.site.media.filePanel.window.delete.text">
-            <de><![CDATA[Möchten Sie die Datei [file] wirklich löschen?]]></de>
-            <en><![CDATA[Are you sure you want to delete the file [file]?]]></en>
-        </locale>
-        <locale name="projects.project.site.media.filePanel.window.delete.information">
-            <de><![CDATA[Möchten Sie die Datei [file] wirklich löschen?]]></de>
-            <en><![CDATA[Are you sure you want to delete the file [file]?]]></en>
-        </locale>
-
 
 
     </groups>
