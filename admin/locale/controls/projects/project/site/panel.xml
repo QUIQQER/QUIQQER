@@ -96,6 +96,96 @@
             <en><![CDATA[This page is currently being edited by: [username]]]></en>
         </locale>
 
+        <locale name="projects.project.site.information">
+            <de><![CDATA[Information]]></de>
+            <en><![CDATA[Information]]></en>
+        </locale>
+        <locale name="projects.project.site.content">
+            <de><![CDATA[Inhalt]]></de>
+            <en><![CDATA[Content]]></en>
+        </locale>
+        <locale name="projects.project.site.settings">
+            <de><![CDATA[Einstellungen]]></de>
+            <en><![CDATA[Settings]]></en>
+        </locale>
+
+        <locale name="projects.project.site.btn.new.text">
+            <de><![CDATA[Neu]]></de>
+            <en><![CDATA[New]]></en>
+        </locale>
+            <locale name="projects.project.site.btn.new.help">
+                <de><![CDATA[Erzeugen Sie eine neue Unterseite]]></de>
+                <en><![CDATA[Create a new page under the current page]]></en>
+            </locale>
+            <locale name="projects.project.site.btn.new.alt">
+                <de><![CDATA[Erzeugen Sie eine neue Unterseite]]></de>
+                <en><![CDATA[Create a new page under the current page]]></en>
+            </locale>
+            <locale name="projects.project.site.btn.new.new">
+                <de><![CDATA[Erzeugen Sie eine neue Unterseite]]></de>
+                <en><![CDATA[Create a new page under the current page]]></en>
+            </locale>
+        <locale name="projects.project.site.btn.save.text">
+            <de><![CDATA[Speichern]]></de>
+            <en><![CDATA[Save]]></en>
+        </locale>
+            <locale name="projects.project.site.btn.save.help">
+                <de><![CDATA[Speichern Sie Ihre Änderungen.]]></de>
+                <en><![CDATA[Save your changes.]]></en>
+            </locale>
+            <locale name="projects.project.site.btn.save.alt">
+                <de><![CDATA[Speichern Sie Ihre Änderungen.]]></de>
+                <en><![CDATA[Save your changes.]]></en>
+            </locale>
+            <locale name="projects.project.site.btn.save.new">
+                <de><![CDATA[Speichern Sie Ihre Änderungen.]]></de>
+                <en><![CDATA[Save your changes.]]></en>
+            </locale>
+        <locale name="projects.project.site.btn.delete.text">
+            <de><![CDATA[Löschen]]></de>
+            <en><![CDATA[Delete]]></en>
+        </locale>
+            <locale name="projects.project.site.btn.delete.help">
+                <de><![CDATA[
+                    Löschen Sie die Seite, die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden
+                ]]></de>
+                <en><![CDATA[
+                    Delete the page, the page is placed in the trash and can be restored
+                ]]></en>
+            </locale>
+            <locale name="projects.project.site.btn.delete.alt">
+                <de><![CDATA[
+                    Löschen Sie die Seite, die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden
+                ]]></de>
+                <en><![CDATA[
+                    Delete the page, the page is placed in the trash and can be restored
+                ]]></en>
+            </locale>
+            <locale name="projects.project.site.btn.delete.new">
+                <de><![CDATA[
+                    Löschen Sie die Seite, die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden
+                ]]></de>
+                <en><![CDATA[
+                    Delete the page, the page is placed in the trash and can be restored
+                ]]></en>
+            </locale>
+
+        <locale name="projects.project.site.btn.preview.text">
+            <de><![CDATA[Vorschau]]></de>
+            <en><![CDATA[Preview]]></en>
+        </locale>
+        <locale name="projects.project.site.btn.activate.text">
+            <de><![CDATA[Aktivieren]]></de>
+            <en><![CDATA[Activate]]></en>
+        </locale>
+        <locale name="projects.project.site.btn.deactivate.text">
+            <de><![CDATA[Deaktivieren]]></de>
+            <en><![CDATA[Deactivate]]></en>
+        </locale>
+
+
+
+
         <locale name="projects.project.site.panel.information.title">
             <de><![CDATA[Daten von Seite: #[id]]]></de>
             <en><![CDATA[Data from site: #[id]]]></en>
