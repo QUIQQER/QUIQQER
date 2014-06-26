@@ -1,8 +1,8 @@
 <locales>
 
 <!-- php -->
-    <groups name="quiqqer/system" datatype="js">
-        <locale name="projects.project.site.media.manager.general.title">
+    <groups name="quiqqer/system">
+        <locale name="projects.project.site.media.manager.general.tpl.title">
             <de><![CDATA[Datei Hashes neu berechnen]]></de>
             <en><![CDATA[Calculate file hashes new]]></en>
         </locale>
