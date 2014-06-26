@@ -171,23 +171,6 @@ class Sites
             'name' => '_Tabbar'
         ));
 
-        try
-        {
-            //self::checkRights($Site, $User);
-        } catch ( \QUI\Exception $Exception )
-        {
-            $Tabbar->appendChild(
-                new \QUI\Controls\Toolbar\Tab(array(
-                    'name' => 'information',
-                    'text' => 'Information',
-                    'tpl'  => SYS_DIR .'template/site/information_edit.html',
-                    'icon' => URL_BIN_DIR .'16x16/page.png'
-                ))
-            );
-
-            return $Tabbar;
-        }
-
 
         // Wenn die Seite bearbeitet wird
         if ( $Site->isMarcate() )
@@ -196,7 +179,7 @@ class Sites
                 new \QUI\Controls\Toolbar\Tab(array(
                     'name'     => 'information',
                     'text'     => 'Information',
-                    'template' => SYS_DIR .'template/site/information_edit.html',
+                    'template' => SYS_DIR .'template/site/information_norights.html',
                     'icon'     => URL_BIN_DIR .'16x16/page.png'
                 ))
             );

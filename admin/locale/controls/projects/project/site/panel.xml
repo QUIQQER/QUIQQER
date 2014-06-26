@@ -83,10 +83,18 @@
     <groups name="quiqqer/system">
 
         <locale name="projects.project.site.no.permissions">
-            <de><![CDATA[Sie besitzen keine Rechte um diese Seite anzuzeigen]]></de>
-            <en><![CDATA[You do not have permission to access this page]]></en>
+            <de><![CDATA[Sie besitzen keine Rechte diese Seite anzuzeigen.]]></de>
+            <en><![CDATA[You do not have permission to access this page.]]></en>
+        </locale>
+        <locale name="projects.project.site.no.edit.permissions">
+            <de><![CDATA[Sie besitzen keine Rechte diese Seite zu bearbeiten.]]></de>
+            <en><![CDATA[You do not have permission to edit this page.]]></en>
         </locale>
 
+        <locale name="projects.project.site.messages.marcate">
+            <de><![CDATA[Diese Seite wird gerade bearbeitet von: [username]]]></de>
+            <en><![CDATA[This page is currently being edited by: [username]]]></en>
+        </locale>
 
         <locale name="projects.project.site.panel.information.title">
             <de><![CDATA[Daten von Seite: #[id]]]></de>
@@ -95,6 +103,10 @@
         <locale name="projects.project.site.panel.information.nameUrl">
             <de><![CDATA[Name / URL]]></de>
             <en><![CDATA[Name / URL]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.information.title">
+            <de><![CDATA[Titel]]></de>
+            <en><![CDATA[Title]]></en>
         </locale>
         <locale name="projects.project.site.panel.information.short">
             <de><![CDATA[Kurzbeschreibung]]></de>
