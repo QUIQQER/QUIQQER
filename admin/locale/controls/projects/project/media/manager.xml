@@ -1,0 +1,69 @@
+<locales>
+
+<!-- php -->
+    <groups name="quiqqer/system" datatype="js">
+        <locale name="projects.project.site.media.manager.general.title">
+            <de><![CDATA[Datei Hashes neu berechnen]]></de>
+            <en><![CDATA[Calculate file hashes new]]></en>
+        </locale>
+
+        <locale name="projects.project.site.media.manager.general.recalc.md5">
+            <de><![CDATA[MD5 Hashes der Dateien neu berechnen:]]></de>
+            <en><![CDATA[Recalculate MD5 hashes of files:]]></en>
+        </locale>
+
+        <locale name="projects.project.site.media.manager.general.recalc.sha1">
+            <de><![CDATA[SHA1 Hashes der Dateien neu berechnen:]]></de>
+            <en><![CDATA[Recalculate SHA1 hashes of files:]]></en>
+        </locale>
+
+
+    </groups>
+
+
+<!-- js -->
+    <groups name="quiqqer/system" datatype="js">
+
+        <locale name="projects.project.site.media.manager.title">
+            <de><![CDATA[Media Verwaltung]]></de>
+            <en><![CDATA[Media Manager]]></en>
+        </locale>
+
+        <locale name="projects.project.site.media.manager.general.text">
+            <de><![CDATA[Allgemein]]></de>
+            <en><![CDATA[Generally]]></en>
+        </locale>
+        <locale name="projects.project.site.media.manager.general.title">
+            <de><![CDATA[Allgemein]]></de>
+            <en><![CDATA[Generally]]></en>
+        </locale>
+
+        <locale name="projects.project.site.media.manager.calcmd5.select">
+            <de><![CDATA[Projekt für MD5 Berechnung auswählen...]]></de>
+            <en><![CDATA[Choose project for MD5 calculation ...]]></en>
+        </locale>
+        <locale name="projects.project.site.media.manager.calcmd5.start.title">
+            <de><![CDATA[Berechnung starten]]></de>
+            <en><![CDATA[Start calculation]]></en>
+        </locale>
+        <locale name="projects.project.site.media.manager.calcmd5.start.alt">
+            <de><![CDATA[Berechnung starten]]></de>
+            <en><![CDATA[Start calculation]]></en>
+        </locale>
+
+        <locale name="projects.project.site.media.manager.calcsha1.select">
+            <de><![CDATA[Projekt für SHA1 Berechnung auswählen...]]></de>
+            <en><![CDATA[Choose project for SHA1 calculation ...]]></en>
+        </locale>
+        <locale name="projects.project.site.media.manager.calcsha1.start.title">
+            <de><![CDATA[Berechnung starten]]></de>
+            <en><![CDATA[Start calculation]]></en>
+        </locale>
+        <locale name="projects.project.site.media.manager.calcsha1.start.alt">
+            <de><![CDATA[Berechnung starten]]></de>
+            <en><![CDATA[Start calculation]]></en>
+        </locale>
+
+    </groups>
+
+</locales>
