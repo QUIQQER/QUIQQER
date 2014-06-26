@@ -29,6 +29,8 @@ define('controls/projects/project/media/FilePanel', [
 {
     "use strict";
 
+    var lg = 'quiqqer/system';
+
     var QUI				   = arguments[ 0 ],
         QUIPanel           = arguments[ 1 ],
         PanelDOMEvents     = arguments[ 2 ],
@@ -298,7 +300,9 @@ define('controls/projects/project/media/FilePanel', [
             File.save(function(result, Request)
             {
                 QUI.getMessageHandler(function(MH) {
-                    MH.addSuccess( 'Datei wurde erfolgreich gespeichert' );
+                    MH.addSuccess(
+                        Locale.get( lg, 'projects.project.site.media.filePanel.message.save.success' )
+                    );
                 });
 
                 self.Loader.hide();
@@ -316,13 +320,26 @@ define('controls/projects/project/media/FilePanel', [
 
             new QUIConfirm({
                 icon  : 'icon-trash',
-                title : 'Möchten Sie '+ this.$File.getAttribute('file') +' wirklich löschen?',
-
-                text     : 'Möchten Sie '+ this.$File.getAttribute('file') +' wirklich löschen?',
                 texticon : 'icon-trash',
 
-                information : 'Die Datei wird in den Papierkorb verschoben und kann wieder hergestellt werden.',
-                autoclose   : true,
+                title : Locale.get(
+                    'quiqqer/system',
+                    'projects.project.site.media.filePanel.window.delete.title',
+                    { file : this.$File.getAttribute('file') }
+                ),
+
+                text : Locale.get(
+                    'quiqqer/system',
+                    'projects.project.site.media.filePanel.window.delete.text',
+                    { file : this.$File.getAttribute('file') }
+                ),
+
+                information : Locale.get(
+                    'quiqqer/system',
+                    'projects.project.site.media.filePanel.window.delete.text'
+                ),
+
+                autoclose : true,
                 events :
                 {
                     onSubmit : function(Win)
@@ -391,7 +408,7 @@ define('controls/projects/project/media/FilePanel', [
 
             this.addButton(
                 new QUIButton({
-                    text      : 'Speichern',
+                    text      : Locale.get( lg, 'projects.project.site.media.filePanel.btn.save.text' ),
                     textimage : 'icon-save',
                     events    :
                     {
@@ -402,7 +419,7 @@ define('controls/projects/project/media/FilePanel', [
                 })
             ).addButton(
                 new QUIButton({
-                    text      : 'Löschen',
+                    text      : Locale.get( lg, 'projects.project.site.media.filePanel.btn.delete.text' ),
                     textimage : 'icon-trash',
                     events    :
                     {
@@ -413,7 +430,7 @@ define('controls/projects/project/media/FilePanel', [
                 })
             ).addButton(
                 new QUIButton({
-                    text      : 'Ersetzen mit ...',
+                    text      : Locale.get( lg, 'projects.project.site.media.filePanel.btn.replace.text' ),
                     textimage : 'icon-upload',
                     events    :
                     {
@@ -432,7 +449,7 @@ define('controls/projects/project/media/FilePanel', [
                 this.addButton(
                     new QUIButton({
                         name      : 'status',
-                        text      : 'Deaktivieren',
+                        text      : Locale.get( lg, 'projects.project.site.media.filePanel.btn.deactivate.text' ),
                         textimage : 'icon-remove',
                         Control   : this,
                         events    :
@@ -443,12 +460,13 @@ define('controls/projects/project/media/FilePanel', [
                         }
                     })
                 );
+
             } else
             {
                 this.addButton(
                     new QUIButton({
                         name      : 'status',
-                        text      : 'Aktivieren',
+                        text      : Locale.get( lg, 'projects.project.site.media.filePanel.btn.activate.text' ),
                         textimage : 'icon-remove',
                         Control   : this,
                         events    :
@@ -476,7 +494,7 @@ define('controls/projects/project/media/FilePanel', [
 
             this.addCategory(
                 new QUIButton({
-                    text    : 'Datei Details',
+                    text    : Locale.get( lg, 'projects.project.site.media.filePanel.details.text' ),
                     name    : 'details',
                     Control : this,
                     icon    : 'icon-file-alt',
@@ -497,7 +515,7 @@ define('controls/projects/project/media/FilePanel', [
                 })
             ).addCategory(
                 new QUIButton({
-                    text    : 'Vorschau',
+                    text    : Locale.get( lg, 'projects.project.site.media.filePanel.preview.text' ),
                     name    : 'preview',
                     icon    : 'icon-eye-open',
                     Control : this,
@@ -552,8 +570,8 @@ define('controls/projects/project/media/FilePanel', [
                 this.$OpenInNewWindow = new QUIButton({
                     name    : 'show_file',
                     image   : 'icon-eye-open',
-                    title   : 'Datei öffnen',
-                    alt     : 'Datei öffnen',
+                    title   : Locale.get( lg, 'projects.project.site.media.filePanel.btn.openFile.title' ),
+                    alt     : Locale.get( lg, 'projects.project.site.media.filePanel.btn.openFile.alt' ),
                     events  :
                     {
                         onClick : function(Btn) {
@@ -577,8 +595,8 @@ define('controls/projects/project/media/FilePanel', [
                 this.$Download = new QUIButton({
                     name    : 'download_file',
                     image   : 'icon-download',
-                    title   : 'Datei herunterladen',
-                    alt     : 'Datei herunterladen',
+                    title   : Locale.get( lg, 'projects.project.site.media.filePanel.btn.downloadFile.title' ),
+                    alt     : Locale.get( lg, 'projects.project.site.media.filePanel.btn.downloadFile.alt' ),
                     events  :
                     {
                         onClick : function(Btn) {
