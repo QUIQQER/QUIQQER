@@ -156,6 +156,17 @@
 
 <!-- php -->
     <groups name="quiqqer/system">
+        <!-- allgemeines -->
+        <locale name="from">
+            <de><![CDATA[von]]></de>
+            <en><![CDATA[from]]></en>
+        </locale>
+        <locale name="user_ip_adress">
+            <de><![CDATA[IP Adresse des Benutzers]]></de>
+            <en><![CDATA[The user's IP address]]></en>
+        </locale>
+
+
         <!-- Menu  -->
         <locale name="menu.file.text">
             <de><![CDATA[Datei]]></de>
