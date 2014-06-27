@@ -513,5 +513,18 @@ class Update
         foreach ( $locales as $locale ) {
             self::importLocale( $locale_dir . $locale );
         }
+
+        // javascript
+        $controlDir = BIN_DIR .'QUI/';
+
+        $list = shell_exec(
+            'find "'. $controlDir .'" -iname \*.xml -type f'
+        );
+
+        $list = explode( "\n", $list );
+
+        foreach ( $list as $file ) {
+            self::importLocale( trim($file) );
+        }
     }
 }

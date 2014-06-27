@@ -54,7 +54,6 @@
             <en><![CDATA[The file is moved to the trash and can be restored.]]></en>
         </locale>
 
-
         <locale name="projects.project.site.media.filePanel.window.delete.title">
             <de><![CDATA[Möchten Sie die Datei [file] wirklich löschen?]]></de>
             <en><![CDATA[Are you sure you want to delete the file [file]?]]></en>
@@ -67,9 +66,6 @@
             <de><![CDATA[Möchten Sie die Datei [file] wirklich löschen?]]></de>
             <en><![CDATA[Are you sure you want to delete the file [file]?]]></en>
         </locale>
-
-
-
     </groups>
 
 </locales>

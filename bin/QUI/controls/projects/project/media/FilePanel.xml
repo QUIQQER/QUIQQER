@@ -2,7 +2,6 @@
 
 <!-- js -->
     <groups name="quiqqer/system" datatype="js">
-
         <locale name="projects.project.site.media.input.select.alt">
             <de><![CDATA[Bild auswählen]]></de>
             <en><![CDATA[Select image]]></en>
@@ -20,8 +19,6 @@
             <de><![CDATA[Eingabe leeren]]></de>
             <en><![CDATA[Clear]]></en>
         </locale>
-
-
     </groups>
 
 </locales>

@@ -9,9 +9,10 @@ define('controls/projects/project/media/Popup', [
     'qui/controls/windows/Popup',
     'qui/controls/buttons/Button',
     'controls/projects/project/media/Panel',
-    'Projects'
+    'Projects',
+    'Locale'
 
-], function(QUIPopup, QUIButton, MediaPanel, Projects)
+], function(QUIPopup, QUIButton, MediaPanel, Projects, Locale)
 {
     "use strict";
 
@@ -26,7 +27,7 @@ define('controls/projects/project/media/Popup', [
 
         options : {
             project         : false,
-            closeButtonText : 'Abbrechen',
+            closeButtonText : Locale.get('quiqqer/system', 'cancel'),
 
             selectable           : true,
             selectable_types     : false,   // you can specified which types are selectable
@@ -64,9 +65,9 @@ define('controls/projects/project/media/Popup', [
 
             this.addButton(
                 new QUIButton({
-                    text : 'übernehmen',
+                    text      : Locale.get( 'quiqqer/system', 'accept' ),
                     textimage : 'icon-ok',
-                    events :
+                    events    :
                     {
                         onClick : function()
                         {

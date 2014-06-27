@@ -9,12 +9,15 @@ define('controls/projects/project/site/SiteChildrenSort', [
     'qui/controls/loader/Loader',
     'controls/grid/Grid',
     'Ajax',
+    'Locale',
 
     'css!controls/projects/project/site/SiteChildrenSort.css'
 
-], function(QUI, QUIControl, QUILoader, Grid, Ajax)
+], function(QUI, QUIControl, QUILoader, Grid, Ajax, Locale)
 {
     "use strict";
+
+    var lg = 'quiqqer/system';
 
     return new Class({
 
@@ -60,19 +63,19 @@ define('controls/projects/project/site/SiteChildrenSort', [
                 'class' : 'qui-project-children-sort box',
                 html  : '<label for="order-type">Sortierung</label>' +
                         '<select name="order-type">' +
-                            '<option value="manuell">manuell</option>' +
-                            '<option value="name ASC">Name aufsteigend</option>' +
-                            '<option value="name DESC">Name absteigend</option>' +
-                            '<option value="title ASC">Title aufsteigend</option>' +
-                            '<option value="title DESC">Title absteigend</option>' +
+                            '<option value="manuell">'+ Locale.get( lg, 'manually' ) +'</option>' +
+                            '<option value="name ASC">'+ Locale.get( lg, 'name_asc' ) +'</option>' +
+                            '<option value="name DESC">'+ Locale.get( lg, 'name_desc' ) +'</option>' +
+                            '<option value="title ASC">'+ Locale.get( lg, 'title_asc' ) +'</option>' +
+                            '<option value="title DESC">'+ Locale.get( lg, 'title_desc' ) +'</option>' +
 
-                            '<option value="c_date ASC">Erstellungsdatum aufsteigend</option>' +
-                            '<option value="c_date DESC">Erstellungsdatum absteigend</option>' +
-                            '<option value="d_date ASC">Editierungsdatum aufsteigend</option>' +
-                            '<option value="d_date DESC">Editierungsdatum absteigend</option>' +
+                            '<option value="c_date ASC">'+ Locale.get( lg, 'c_date_asc' ) +'</option>' +
+                            '<option value="c_date DESC">'+ Locale.get( lg, 'c_date_desc' ) +'</option>' +
+                            '<option value="e_date ASC">'+ Locale.get( lg, 'e_date_asc' ) +'</option>' +
+                            '<option value="e_date DESC">'+ Locale.get( lg, 'e_date_desc' ) +'</option>' +
 
-                            '<option value="release_from ASC">Veröffentlichungsdatum aufsteigend</option>' +
-                            '<option value="release_from DESC">Veröffentlichungsdatum absteigend</option>' +
+                            '<option value="release_from ASC">'+ Locale.get( lg, 'release_from_asc' ) +'</option>' +
+                            '<option value="release_from DESC">'+ Locale.get( lg, 'release_from_desc' ) +'</option>' +
                         '</select>' +
                         '<div class="qui-project-children-sort-container"></div>'
             });
@@ -87,32 +90,32 @@ define('controls/projects/project/site/SiteChildrenSort', [
 
             this.$GridTable = new Grid(this.$Container, {
                 columnModel : [{
-                    header    : 'ID',
+                    header    : Locale.get( lg, 'id' ),
                     dataIndex : 'id',
                     dataType  : 'string',
                     width     : 50
                 }, {
-                    header    : 'Site-Name',
+                    header    : Locale.get( lg, 'name' ),
                     dataIndex : 'name',
                     dataType  : 'string',
                     width     : 200
                 }, {
-                    header    : 'Site-Titel',
+                    header    : Locale.get( lg, 'title' ),
                     dataIndex : 'title',
                     dataType  : 'string',
                     width     : 200
                 }, {
-                    header    : 'Erstellungsdatum',
+                    header    : Locale.get( lg, 'c_date' ),
                     dataIndex : 'c_date',
                     dataType  : 'string',
                     width     : 150
                 }, {
-                    header    : 'Editierungsdatum',
+                    header    : Locale.get( lg, 'e_date' ),
                     dataIndex : 'e_date',
                     dataType  : 'string',
                     width     : 150
                 }, {
-                    header    : 'Sortierungsfeld',
+                    header    : Locale.get( lg, 'projects.project.site.childrensort.order_field' ),
                     dataIndex : 'order_field',
                     dataType  : 'string',
                     width     : 150
@@ -120,7 +123,7 @@ define('controls/projects/project/site/SiteChildrenSort', [
                 buttons : [{
                     name      : 'sortSave',
                     textimage : 'icon-save',
-                    text      : 'Sortierung speichern',
+                    text      : Locale.get( lg, 'projects.project.site.childrensort.save' ),
                     events    :
                     {
                         onClick : function(Btn)
@@ -137,7 +140,7 @@ define('controls/projects/project/site/SiteChildrenSort', [
                 }, {
                     name      : 'up',
                     textimage : 'icon-angle-up',
-                    text      : 'hoch',
+                    text      : Locale.get( lg, 'up' ),
                     disabled  : true,
                     events    :
                     {
@@ -148,7 +151,7 @@ define('controls/projects/project/site/SiteChildrenSort', [
                 }, {
                     name      : 'down',
                     textimage : 'icon-angle-down',
-                    text      : 'runter',
+                    text      : Locale.get( lg, 'down' ),
                     disabled  : true,
                     events    :
                     {

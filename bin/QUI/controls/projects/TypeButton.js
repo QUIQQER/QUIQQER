@@ -13,9 +13,10 @@ define('controls/projects/TypeButton', [
 
     'qui/controls/Control',
     'controls/projects/TypeWindow',
-    'qui/controls/buttons/Button'
+    'qui/controls/buttons/Button',
+    'Locale'
 
-], function(QUIControl, TypeWindow, QUIButton)
+], function(QUIControl, TypeWindow, QUIButton, Locale)
 {
     "use strict";
 
@@ -59,8 +60,8 @@ define('controls/projects/TypeButton', [
             this.$Button = new QUIButton({
                 name   : 'project-types',
                 image  : 'icon-magic',
-                alt    : 'Seitentypen ändern',
-                title  : 'Seitentypen ändern',
+                alt    : Locale.get( 'quiqqer/system', 'projects.typebutton.title' ),
+                title  : Locale.get( 'quiqqer/system', 'projects.typebutton.title' ),
                 events :
                 {
                     click : function(Btn)

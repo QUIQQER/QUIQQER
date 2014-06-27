@@ -1,5 +1,155 @@
 <locales>
 
+    <!--general locales -->
+    <groups name="quiqqer/system" datatype="js,php">
+        <locale name="id">
+            <de><![CDATA[ID]]></de>
+            <en><![CDATA[ID]]></en>
+        </locale>
+        <locale name="name">
+            <de><![CDATA[Name]]></de>
+            <en><![CDATA[Name]]></en>
+        </locale>
+        <locale name="title">
+            <de><![CDATA[Titel]]></de>
+            <en><![CDATA[Title]]></en>
+        </locale>
+        <locale name="size">
+            <de><![CDATA[Größe]]></de>
+            <en><![CDATA[Size]]></en>
+        </locale>
+        <locale name="createdate">
+            <de><![CDATA[Erstellungsdatum]]></de>
+            <en><![CDATA[Creation date]]></en>
+        </locale>
+        <locale name="from">
+            <de><![CDATA[von]]></de>
+            <en><![CDATA[from]]></en>
+        </locale>
+        <locale name="to">
+            <de><![CDATA[nach]]></de>
+            <en><![CDATA[to]]></en>
+        </locale>
+
+        <locale name="up">
+            <de><![CDATA[Hoch]]></de>
+            <en><![CDATA[Up]]></en>
+        </locale>
+        <locale name="down">
+            <de><![CDATA[Runter]]></de>
+            <en><![CDATA[Down]]></en>
+        </locale>
+
+        <locale name="username">
+            <de><![CDATA[Benutzername]]></de>
+            <en><![CDATA[Username]]></en>
+        </locale>
+        <locale name="user_id">
+            <de><![CDATA[Benutzer-ID]]></de>
+            <en><![CDATA[User ID]]></en>
+        </locale>
+        <locale name="user_ip_adress">
+            <de><![CDATA[IP Adresse des Benutzers]]></de>
+            <en><![CDATA[The user's IP address]]></en>
+        </locale>
+
+        <locale name="cancel">
+            <de><![CDATA[Abbrechen]]></de>
+            <en><![CDATA[Cancel]]></en>
+        </locale>
+        <locale name="ok">
+            <de><![CDATA[Ok]]></de>
+            <en><![CDATA[Ok]]></en>
+        </locale>
+        <locale name="accept">
+            <de><![CDATA[Übernehmen]]></de>
+            <en><![CDATA[Accept]]></en>
+        </locale>
+
+
+        <locale name="project">
+            <de><![CDATA[Projekt]]></de>
+            <en><![CDATA[Project]]></en>
+        </locale>
+         <locale name="projects">
+            <de><![CDATA[Projekte]]></de>
+            <en><![CDATA[Projects]]></en>
+        </locale>
+        <locale name="type">
+            <de><![CDATA[Typ]]></de>
+            <en><![CDATA[Type]]></en>
+        </locale>
+
+        <locale name="open.site">
+            <de><![CDATA[Seite öffnen]]></de>
+            <en><![CDATA[Open page]]></en>
+        </locale>
+        <locale name="c_date">
+            <de><![CDATA[Erstellungsdatum]]></de>
+            <en><![CDATA[Creation date]]></en>
+        </locale>
+        <locale name="e_date">
+            <de><![CDATA[Editierungsdatum]]></de>
+            <en><![CDATA[Edit date]]></en>
+        </locale>
+
+        <locale name="manually">
+            <de><![CDATA[manuell]]></de>
+            <en><![CDATA[manually]]></en>
+        </locale>
+        <locale name="name_asc">
+            <de><![CDATA[Name aufsteigend]]></de>
+            <en><![CDATA[Name ascending]]></en>
+        </locale>
+        <locale name="name_desc">
+            <de><![CDATA[Name absteigend]]></de>
+            <en><![CDATA[Name descending]]></en>
+        </locale>
+        <locale name="title_asc">
+            <de><![CDATA[Titel aufsteigend]]></de>
+            <en><![CDATA[Title ascending]]></en>
+        </locale>
+        <locale name="title_desc">
+            <de><![CDATA[Title absteigend]]></de>
+            <en><![CDATA[Title descending]]></en>
+        </locale>
+        <locale name="c_date_asc">
+            <de><![CDATA[Erstellungsdatum aufsteigend]]></de>
+            <en><![CDATA[Creation date ascending]]></en>
+        </locale>
+        <locale name="c_date_desc">
+            <de><![CDATA[Erstellungsdatum absteigend]]></de>
+            <en><![CDATA[Creation date descending]]></en>
+        </locale>
+        <locale name="e_date_asc">
+            <de><![CDATA[Editierungsdatum aufsteigend]]></de>
+            <en><![CDATA[Edit date ascending]]></en>
+        </locale>
+        <locale name="e_date_desc">
+            <de><![CDATA[Editierungsdatum absteigend]]></de>
+            <en><![CDATA[Edit date descending]]></en>
+        </locale>
+        <locale name="release_from_asc">
+            <de><![CDATA[Veröffentlichungsdatum aufsteigend]]></de>
+            <en><![CDATA[Release date ascending]]></en>
+        </locale>
+        <locale name="release_from_desc">
+            <de><![CDATA[Veröffentlichungsdatum absteigend]]></de>
+            <en><![CDATA[Release date descending]]></en>
+        </locale>
+
+        <locale name="language">
+            <de><![CDATA[Sprache]]></de>
+            <en><![CDATA[Language]]></en>
+        </locale>
+        <locale name="languages">
+            <de><![CDATA[Sprachen]]></de>
+            <en><![CDATA[Languages]]></en>
+        </locale>
+
+    </groups>
+
+
 <!-- js -->
     <groups name="quiqqer/system" datatype="js">
         <locale name="welcome.message">
@@ -34,53 +184,15 @@
         </locale>
 
 
-
         <!-- controls -->
 
         <!-- project controls -->
-        <locale name="projects.project.panel.title">
-            <de><![CDATA[Projekte]]></de>
-            <en><![CDATA[Projects]]></en>
-        </locale>
-        <locale name="projects.project.panel.open.search">
-            <de><![CDATA[Seitensuche öffnen]]></de>
-            <en><![CDATA[Open the site search]]></en>
-        </locale>
-        <locale name="projects.project.panel.tash">
-            <de><![CDATA[Papierkorb]]></de>
-            <en><![CDATA[Trash]]></en>
-        </locale>
-        <locale name="projects.project.panel.media">
-            <de><![CDATA[Media]]></de>
-            <en><![CDATA[Media]]></en>
-        </locale>
 
         <locale name="projects.project.sitemap.media">
             <de><![CDATA[Media]]></de>
             <en><![CDATA[Media]]></en>
         </locale>
 
-        <locale name="projects.project.panel.entry.delete.project">
-            <de><![CDATA[Projekt entfernen]]></de>
-            <en><![CDATA[Remove project]]></en>
-        </locale>
-
-        <locale name="projects.project.panel.settings.btn.save">
-            <de><![CDATA[Speichern]]></de>
-            <en><![CDATA[Save]]></en>
-        </locale>
-        <locale name="projects.project.panel.settings.btn.remove">
-            <de><![CDATA[Löschen]]></de>
-            <en><![CDATA[Delete]]></en>
-        </locale>
-        <locale name="projects.project.panel.settings.btn.settings">
-            <de><![CDATA[Einstellungen]]></de>
-            <en><![CDATA[Settings]]></en>
-        </locale>
-        <locale name="projects.project.panel.settings.btn.meta">
-            <de><![CDATA[Meta Angaben]]></de>
-            <en><![CDATA[Meta data]]></en>
-        </locale>
         <locale name="projects.project.panel.btn.addlanguage">
             <de><![CDATA[Sprache hinzufügen]]></de>
             <en><![CDATA[Add a language]]></en>
@@ -103,69 +215,11 @@
             <en><![CDATA[Are you sure you want to delete this project?]]></en>
         </locale>
 
-        <!-- editors controls -->
-        <locale name="editors.settings.title">
-            <de><![CDATA[WYSIWYG-Editor Einstellungen]]></de>
-            <en><![CDATA[WYSIWYG-Editor Settings]]></en>
-        </locale>
-        <locale name="editors.settings.btn.edit.toolbar">
-            <de><![CDATA[Toolbar editieren]]></de>
-            <en><![CDATA[Edit the toolbar]]></en>
-        </locale>
-        <locale name="editors.settings.btn.delete.toolbar">
-            <de><![CDATA[Toolbar löschen]]></de>
-            <en><![CDATA[Delete the toolbar]]></en>
-        </locale>
-        <locale name="editors.settings.btn.add.toolbar">
-            <de><![CDATA[Toolbar hinzufügen]]></de>
-            <en><![CDATA[Add a toolbar]]></en>
-        </locale>
-        <locale name="editors.settings.table.toolbar.name">
-            <de><![CDATA[Name der Toolbar]]></de>
-            <en><![CDATA[Name of the toolbar]]></en>
-        </locale>
-        <locale name="editors.settings.editsheet.title">
-            <de><![CDATA[Toolbar [toolbar] editieren]]></de>
-            <en><![CDATA[Edit [toolbar] toolbar]]></en>
-        </locale>
-        <locale name="editors.settings.editsheet.btn.save">
-            <de><![CDATA[Änderungen speichern]]></de>
-            <en><![CDATA[Save changes]]></en>
-        </locale>
-        <locale name="editors.settings.delete.window.title">
-            <de><![CDATA[Toolbar wirklich löschen?]]></de>
-            <en><![CDATA[Save changes]]></en>
-        </locale>
-        <locale name="editors.settings.delete.window.text">
-            <de><![CDATA[Möchten Sie die Toolbar [toolbar] wirklich löschen?]]></de>
-            <en><![CDATA[Are you sure you want to delete the toolbar [toolbar]?]]></en>
-        </locale>
-        <locale name="editors.settings.add.window.title">
-            <de><![CDATA[Toolbar hinzufügen]]></de>
-            <en><![CDATA[Add a toolbar]]></en>
-        </locale>
-        <locale name="editors.settings.add.window.text">
-            <de><![CDATA[Bitte geben Sie einen neuen Toolbarnamen ein:]]></de>
-            <en><![CDATA[Please enter a new toolbar name:]]></en>
-        </locale>
-
-
-
     </groups>
 
 
 <!-- php -->
     <groups name="quiqqer/system">
-        <!-- allgemeines -->
-        <locale name="from">
-            <de><![CDATA[von]]></de>
-            <en><![CDATA[from]]></en>
-        </locale>
-        <locale name="user_ip_adress">
-            <de><![CDATA[IP Adresse des Benutzers]]></de>
-            <en><![CDATA[The user's IP address]]></en>
-        </locale>
-
 
         <!-- Menu  -->
         <locale name="menu.file.text">
