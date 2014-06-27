@@ -27,16 +27,18 @@ class Sites
             'name' => '_Toolbar'
         ));
 
+        $gl = 'quiqqer/system';
+
         // Standard Buttons
         $Toolbar->appendChild(
             new \QUI\Controls\Buttons\Button(array(
                 'name'      => '_New',
                 'textimage' => 'icon-page-alt',
-                'text'      => 'Neu',
+                'text'      => \QUI::getLocale()->get( $gl, 'projects.project.site.btn.new.text' ),
                 'onclick'   => 'Panel.createNewChild',
-                'help'      => 'Erzeugen Sie eine neue Unterseite',
-                'alt'       => 'Erzeugen Sie eine neue Unterseite',
-                'title'     => 'Erzeugen Sie eine neue Unterseite'
+                'help'      => \QUI::getLocale()->get( $gl, 'projects.project.site.btn.new.help' ),
+                'alt'       => \QUI::getLocale()->get( $gl, 'projects.project.site.btn.new.alt' ),
+                'title'     => \QUI::getLocale()->get( $gl, 'projects.project.site.btn.new.title' )
             ))
         );
 
@@ -44,11 +46,11 @@ class Sites
             new \QUI\Controls\Buttons\Button(array(
                 'name'      => '_Save',
                 'textimage' => 'icon-save',
-                'text'      => 'Speichern',
+                'text'      => \QUI::getLocale()->get( $gl, 'projects.project.site.btn.save.text' ),
                 'onclick'   => 'Panel.save',
-                'help'      => 'Speichern Sie Ihre Änderungen.',
-                'alt'       => 'Speichern Sie Ihre Änderungen.',
-                'title'     => 'Speichern Sie Ihre Änderungen.'
+                'help'      => \QUI::getLocale()->get( $gl, 'projects.project.site.btn.save.help' ),
+                'alt'       => \QUI::getLocale()->get( $gl, 'projects.project.site.btn.save.alt' ),
+                'title'     => \QUI::getLocale()->get( $gl, 'projects.project.site.btn.save.title' )
             ))
         );
 
@@ -56,11 +58,11 @@ class Sites
             new \QUI\Controls\Buttons\Button(array(
                 'name'      => '_Del',
                 'textimage' => 'icon-trash',
-                'text'      => 'Löschen',
+                'text'      => \QUI::getLocale()->get( $gl, 'projects.project.site.btn.delete.text' ),
                 'onclick'   => 'Panel.del',
-                'help'      => 'Löschen Sie die Seite, die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden',
-                'title'     => 'Löschen Sie die Seite, die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden',
-                'alt'       => 'Löschen Sie die Seite, die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden'
+                'help'      => \QUI::getLocale()->get( $gl, 'projects.project.site.btn.help.text' ),
+                'title'     => \QUI::getLocale()->get( $gl, 'projects.project.site.btn.title.text' ),
+                'alt'       => \QUI::getLocale()->get( $gl, 'projects.project.site.btn.alt.text' )
             ))
         );
 
@@ -74,7 +76,7 @@ class Sites
             new \QUI\Controls\Buttons\Button(array(
                 'name'      => '_Preview',
                 'textimage' => 'icon-eye-open',
-                'text'      => 'Vorschau',
+                'text'      => \QUI::getLocale()->get( $gl, 'projects.project.site.btn.preview.text' ),
                 'onclick'   => 'Panel.openPreview'
             ))
         );
@@ -116,10 +118,10 @@ class Sites
             $Status = new \QUI\Controls\Buttons\Button(array(
                 'name'     => 'status',
                 'aimage'   => 'icon-ok',
-                'atext'    => 'Aktivieren',
+                'atext'    => \QUI::getLocale()->get( $gl, 'projects.project.site.btn.activate.text' ),
                 'aonclick' => 'Panel.getSite().activate',
                 'dimage'   => 'icon-remove',
-                'dtext'    => 'Deaktivieren',
+                'dtext'    => \QUI::getLocale()->get( $gl, 'projects.project.site.btn.deactivate.text' ),
                 'donclick' => 'Panel.getSite().activate'
             ));
 
@@ -127,7 +129,7 @@ class Sites
             {
                 $Status->setAttributes(array(
                     'textimage' => 'icon-remove',
-                    'text'      => 'Deaktivieren',
+                    'text'      => \QUI::getLocale()->get( $gl, 'projects.project.site.btn.deactivate.text' ),
                     'onclick'   => 'Panel.getSite().deactivate'
                 ));
 
@@ -135,7 +137,7 @@ class Sites
             {
                 $Status->setAttributes(array(
                     'textimage' => 'icon-ok',
-                    'text'      => 'Aktivieren',
+                    'text'      => \QUI::getLocale()->get( $gl, 'projects.project.site.btn.activate.text' ),
                     'onclick'   => 'Panel.getSite().activate'
                 ));
             }
@@ -171,33 +173,19 @@ class Sites
             'name' => '_Tabbar'
         ));
 
-        try
-        {
-            //self::checkRights($Site, $User);
-        } catch ( \QUI\Exception $Exception )
-        {
-            $Tabbar->appendChild(
-                new \QUI\Controls\Toolbar\Tab(array(
-                    'name' => 'information',
-                    'text' => 'Information',
-                    'tpl'  => SYS_DIR .'template/site/information_edit.html',
-                    'icon' => URL_BIN_DIR .'16x16/page.png'
-                ))
-            );
-
-            return $Tabbar;
-        }
-
 
         // Wenn die Seite bearbeitet wird
         if ( $Site->isMarcate() )
         {
             $Tabbar->appendChild(
                 new \QUI\Controls\Toolbar\Tab(array(
-                    'name'     => 'information',
-                    'text'     => 'Information',
-                    'template' => SYS_DIR .'template/site/information_edit.html',
-                    'icon'     => URL_BIN_DIR .'16x16/page.png'
+                    'name' => 'information',
+                    'text' => \QUI::getLocale()->get(
+                        'quiqqer/system',
+                        'projects.project.site.information'
+                    ),
+                    'template' => SYS_DIR .'template/site/information_norights.html',
+                    'icon' => URL_BIN_DIR .'16x16/page.png'
                 ))
             );
 
@@ -210,10 +198,13 @@ class Sites
         {
             $Tabbar->appendChild(
                 new \QUI\Controls\Toolbar\Tab(array(
-                    'name'     => 'information',
-                    'text'     => 'Information',
+                    'name' => 'information',
+                    'text' => \QUI::getLocale()->get(
+                        'quiqqer/system',
+                        'projects.project.site.information'
+                    ),
                     'template' => SYS_DIR .'template/site/information.html',
-                    'icon'     => 'icon-file-alt'
+                    'icon' => 'icon-file-alt'
                 ))
             );
 
@@ -221,10 +212,13 @@ class Sites
         {
             $Tabbar->appendChild(
                 new \QUI\Controls\Toolbar\Tab(array(
-                    'name'     => 'information',
-                    'text'     => 'Information',
+                    'name' => 'information',
+                    'text' => \QUI::getLocale()->get(
+                        'quiqqer/system',
+                        'projects.project.site.information'
+                    ),
                     'template' => SYS_DIR .'template/site/noview.html',
-                    'icon'     => 'icon-file-alt'
+                    'icon' => 'icon-file-alt'
                 ))
             );
 
@@ -235,10 +229,13 @@ class Sites
         {
             $Tabbar->appendChild(
                 new \QUI\Controls\Toolbar\Tab(array(
-                    'name'     => 'information',
-                    'text'     => 'Information',
+                    'name' => 'information',
+                    'text' => \QUI::getLocale()->get(
+                        'quiqqer/system',
+                        'projects.project.site.information'
+                    ),
                     'template' => SYS_DIR .'template/site/information_norights.html',
-                    'icon'     => 'icon-file-alt'
+                    'icon' => 'icon-file-alt'
                 ))
             );
 
@@ -249,7 +246,10 @@ class Sites
         $Tabbar->appendChild(
             new \QUI\Controls\Toolbar\Tab(array(
                 'name' => 'content',
-                'text' => 'Inhalt',
+                'text' => \QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'projects.project.site.content'
+                ),
                 'icon' => 'icon-file-text-alt'
             ))
         );
@@ -257,9 +257,12 @@ class Sites
         // Einstellungen
         $Tabbar->appendChild(
             new \QUI\Controls\Toolbar\Tab(array(
-                'name'     => 'settings',
-                'text'     => 'Einstellungen',
-                'icon'     => 'icon-cog',
+                'name' => 'settings',
+                'text' => \QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'projects.project.site.settings'
+                ),
+                'icon' => 'icon-cog',
                 'template' => SYS_DIR .'template/site/settings.html'
             ))
         );

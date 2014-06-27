@@ -20,12 +20,15 @@ define('controls/projects/Manager', [
     'Projects',
     'controls/grid/Grid',
     'utils/Template',
+    'Locale',
 
     'css!controls/projects/Manager.css'
 
-], function(QUIPanel, QUIButton, ProjectSettings, Projects, Grid, UtilsTemplate)
+], function(QUIPanel, QUIButton, ProjectSettings, Projects, Grid, UtilsTemplate, Locale)
 {
     "use strict";
+
+    var lg = 'quiqqer/system';
 
     /**
      * @class controls/projects/Manager
@@ -53,7 +56,7 @@ define('controls/projects/Manager', [
 
             this.setAttributes({
                 name  : 'projects-manager',
-                title : 'Projekt-Manager',
+                title : Locale.get( lg, 'projects.project.manager.title' ),
                 icon  : 'icon-home'
             });
 
@@ -74,7 +77,7 @@ define('controls/projects/Manager', [
         {
             this.addCategory({
                 name   : 'edit_projects',
-                text   : 'Projekte verwalten',
+                text   : Locale.get( lg, 'projects.project.manager.projects.edit' ),
                 icon   : 'icon-list',
                 events : {
                     onClick : this.openList
@@ -83,7 +86,7 @@ define('controls/projects/Manager', [
 
             this.addCategory({
                 name   : 'add_project',
-                text   : 'Neues Projekte erstellen',
+                text   : Locale.get( lg, 'projects.project.manager.project.create' ),
                 icon   : 'icon-plus',
                 events : {
                     onClick : this.openAddProject
@@ -134,17 +137,17 @@ define('controls/projects/Manager', [
                     dataType  : 'button',
                     width     : 50
                 }, {
-                    header    : 'Projekt',
+                    header    : Locale.get( lg, 'project' ),
                     dataIndex : 'project',
                     dataType  : 'string',
                     width     : 150
                 }, {
-                    header    : 'Sprache',
+                    header    : Locale.get( lg, 'language' ),
                     dataIndex : 'lang',
                     dataType  : 'string',
                     width     : 150
                 }, {
-                    header    : 'Sprachen',
+                    header    : Locale.get( lg, 'languages' ),
                     dataIndex : 'langs',
                     dataType  : 'string',
                     width     : 150
@@ -173,8 +176,8 @@ define('controls/projects/Manager', [
 
                         settingsbtn : {
                             icon    : 'icon-gear',
-                            title   : 'Projekt Einstellungen öffnen',
-                            alt     : 'Projekt Einstellungen öffnen',
+                            title   : Locale.get( lg, 'projects.project.manager.open.settings' ),
+                            alt     : Locale.get( lg, 'projects.project.manager.open.settings' ),
                             project : project,
                             events  : {
                                 onClick : Control.$clickBtnProjectSettings
@@ -229,7 +232,7 @@ define('controls/projects/Manager', [
                 });
 
                 new QUIButton({
-                    text   : 'Projekt anlegen',
+                    text   : Locale.get( lg, 'projects.project.manager.btn.create.project' ),
                     events : {
                         onClick : Control.$submitCreateProject
                     }

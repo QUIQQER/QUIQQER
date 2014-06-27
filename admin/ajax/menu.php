@@ -1,13 +1,24 @@
 <?php
 
 /**
- * Baut das obere Menü auf
- *
+ * This file includes ajax_menu
+ */
+
+use \QUI\Controls\Contextmenu\Bar;
+use \QUI\Controls\Contextmenu\Baritem;
+use \QUI\Controls\Contextmenu\Menuitem;
+
+use \QUI\Utils\XML as XML;
+
+/**
+ * Return the administration menu
  * @return Array
  */
+
 function ajax_menu()
 {
-    $cache = 'qui/admin/menu';
+    $User  = \QUI::getUserBySession();
+    $cache = 'qui/admin/menu/'. $User->getLang();
 
     try
     {
@@ -19,14 +30,17 @@ function ajax_menu()
     }
 
 
-    $User = \QUI::getUserBySession();
-    $Menu = new \QUI\Controls\Contextmenu\Bar(array(
+    \QUI::getLocale()->setCurrent(
+        $User->getLocale()->getCurrent()
+    );
+
+    $Menu = new Bar(array(
         'name'   => 'menu',
         'parent' => 'menubar',
         'id'	 => 'menu'
     ));
 
-    \QUI\Utils\XML::addXMLFileToMenu( $Menu, SYS_DIR .'menu.xml' );
+    XML::addXMLFileToMenu( $Menu, SYS_DIR .'menu.xml' );
 
     // projects settings
     $projects = \QUI\Projects\Manager::getProjects();
@@ -40,7 +54,7 @@ function ajax_menu()
         }
 
         $Projects->appendChild(
-            new \QUI\Controls\Contextmenu\Menuitem(array(
+            new Menuitem(array(
                 'text'    => $project,
                 'icon'    => 'icon-home',
                 'onclick' => '',
@@ -77,7 +91,7 @@ function ajax_menu()
     // create the menu setting entries
     foreach ( $files as $file )
     {
-        $windows = \QUI\Utils\XML::getSettingWindowsFromXml( $file );
+        $windows = XML::getSettingWindowsFromXml( $file );
 
         if ( !$windows ) {
             continue;
@@ -85,7 +99,7 @@ function ajax_menu()
 
         foreach ( $windows as $Window )
         {
-            $Win = new \QUI\Controls\Contextmenu\Menuitem();
+            $Win = new Menuitem();
 
             $Win->setAttribute( 'name', '/settings/'. $Window->getAttribute( 'name' ) .'/' );
             $Win->setAttribute( 'onClick', 'QUI.Menu.menuClick' );
@@ -142,7 +156,7 @@ function ajax_menu()
     $files = \QUI\Utils\System\File::readDir( $dir );
 
     foreach ( $files as $file ) {
-        \QUI\Utils\XML::addXMLFileToMenu( $Menu, $dir . $file );
+        XML::addXMLFileToMenu( $Menu, $dir . $file );
     }
 
     \QUI\Cache\Manager::set( $cache , $Menu->toArray() );

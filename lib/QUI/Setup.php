@@ -70,7 +70,6 @@ class Setup
         file_put_contents( USR_DIR .'header.php', $str );
         file_put_contents( OPT_DIR .'header.php', $str );
 
-
         /**
          * Project Setup
          */
@@ -108,6 +107,7 @@ class Setup
                 $PackageManager->setup( $package .'/'. $sub );
             }
         }
+
 
         // import permissions
         \QUI\Update::importAllPermissionsXMLs();

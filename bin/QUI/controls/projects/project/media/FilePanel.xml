@@ -1,0 +1,24 @@
+<locales>
+
+<!-- js -->
+    <groups name="quiqqer/system" datatype="js">
+        <locale name="projects.project.site.media.input.select.alt">
+            <de><![CDATA[Bild auswählen]]></de>
+            <en><![CDATA[Select image]]></en>
+        </locale>
+        <locale name="projects.project.site.media.input.select.title">
+            <de><![CDATA[Bild auswählen]]></de>
+            <en><![CDATA[Select image]]></en>
+        </locale>
+
+        <locale name="projects.project.site.media.input.clear.alt">
+            <de><![CDATA[Eingabe leeren]]></de>
+            <en><![CDATA[Clear]]></en>
+        </locale>
+        <locale name="projects.project.site.media.input.clear.title">
+            <de><![CDATA[Eingabe leeren]]></de>
+            <en><![CDATA[Clear]]></en>
+        </locale>
+    </groups>
+
+</locales>

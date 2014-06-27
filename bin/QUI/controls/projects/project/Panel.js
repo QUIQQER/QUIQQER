@@ -24,11 +24,27 @@ define('controls/projects/project/Panel', [
     'qui/controls/sitemap/Item',
     'qui/controls/sitemap/Filter',
 
+    'Locale',
+
     'css!controls/projects/project/Panel.css'
 
-], function(QUIPanel, Projects, ProjectSitemap, PanelUtils, QUIButton, QUIButtonSeperator, QUISitemap, QUISitemapItem, QUISitemapFilter)
+], function()
 {
     "use strict";
+
+    // classes
+    var QUIPanel           = arguments[ 0 ],
+        Projects           = arguments[ 1 ],
+        ProjectSitemap     = arguments[ 2 ],
+        PanelUtils         = arguments[ 3 ],
+
+        QUIButton          = arguments[ 4 ],
+        QUIButtonSeperator = arguments[ 5 ],
+        QUISitemap         = arguments[ 6 ],
+        QUISitemapItem     = arguments[ 7 ],
+        QUISitemapFilter   = arguments[ 8 ],
+
+        Locale             = arguments[ 9 ];
 
     /**
      * @class controls/projects/project/Panel
@@ -55,7 +71,10 @@ define('controls/projects/project/Panel', [
                 name    : 'projects-panel',
                 project : false,
                 lang    : false,
-                title   : 'Projekte',
+                title   : Locale.get(
+                    'quiqqer/system',
+                    'projects.project.panel.title'
+                ),
                 icon    : 'icon-home'
             });
 
@@ -134,8 +153,8 @@ define('controls/projects/project/Panel', [
             // site search
             new QUIButton({
                 icon   : 'icon-search',
-                title  : 'Seiten suchen öffnen',
-                alt    : 'Seiten suchen öffnen',
+                title  : Locale.get('quiqqer/system', 'projects.project.panel.open.search'),
+                alt    : Locale.get('quiqqer/system', 'projects.project.panel.open.search'),
                 events :
                 {
                     onClick : function()
@@ -336,7 +355,7 @@ define('controls/projects/project/Panel', [
                     // Media
                     Project.appendChild(
                         new QUISitemapItem({
-                            text    : 'Media',
+                            text    : Locale.get('quiqqer/system', 'projects.project.panel.media'),
                             icon    : 'icon-picture',
                             project : i,
                             events  : {
@@ -348,7 +367,7 @@ define('controls/projects/project/Panel', [
                     // Media
                     Project.appendChild(
                         new QUISitemapItem({
-                            text    : 'Papierkorb',
+                            text    : Locale.get('quiqqer/system', 'projects.project.panel.tash'),
                             icon    : 'icon-trash',
                             project : i,
                             events  : {

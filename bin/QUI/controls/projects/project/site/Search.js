@@ -11,12 +11,15 @@ define('controls/projects/project/site/Search', [
     'controls/projects/project/site/Panel',
     'Projects',
     'Ajax',
+    'Locale',
 
     'css!controls/projects/project/site/Search.css'
 
-], function(QUI, QUIPanel, QUIButton, Grid, SitePanel, Projects, Ajax)
+], function(QUI, QUIPanel, QUIButton, Grid, SitePanel, Projects, Ajax, Locale)
 {
     "use strict";
+
+    var lg = 'quiqqer/system';
 
     return new Class({
 
@@ -32,7 +35,7 @@ define('controls/projects/project/site/Search', [
 
         options : {
             icon  : 'icon-search',
-            title : 'Seitensuche'
+            title : Locale.get( lg, 'projects.project.site.search.title' )
         },
 
         initialize : function(options)
@@ -65,20 +68,20 @@ define('controls/projects/project/site/Search', [
                 'html',
 
                 '<div class="control-site-search-label box">'+
-                    '<label for="">Suche:</label>' +
+                    '<label for="">'+ Locale.get( lg, 'projects.project.site.search.label' ) +'</label>' +
 
                     '<select name="field">' +
-                        '<option value="">Alle Attribute</option>' +
-                        '<option value="id">ID</option>' +
-                        '<option value="name">Name</option>' +
-                        '<option value="title">Title</option>' +
+                        '<option value="">'+ Locale.get( lg, 'projects.project.site.search.all_attributes' ) +'</option>' +
+                        '<option value="id">'+ Locale.get( lg, 'id' ) +'</option>' +
+                        '<option value="name">'+ Locale.get( lg, 'name' ) +'</option>' +
+                        '<option value="title">'+ Locale.get( lg, 'title' ) +'</option>' +
                     '</select>' +
                     '<select name="project">' +
-                        '<option value="">Alle Projekte</option>' +
+                        '<option value="">'+ Locale.get( lg, 'projects.project.site.search.all_projects' ) +'</option>' +
                     '</select>' +
-                    '<input type="text" name="search" placeholder="Seite suchen..." />' +
+                    '<input type="text" name="search" />' +
                 '</div>' +
-                '<label>Ergebnisse:</label>'
+                '<label>'+ Locale.get( lg, 'projects.project.site.results.label' ) +'</label>'
             );
 
             this.$LabelContainer = Content.getElement( '.control-site-search-label' );
@@ -86,8 +89,13 @@ define('controls/projects/project/site/Search', [
             this.$ProjectList    = Content.getElement( '[name="project"]' );
             this.$FieldList      = Content.getElement( '[name="field"]' );
 
+            this.$searchInput.set(
+                'placeholder',
+                Locale.get( lg, 'projects.project.site.search.placeholder' )
+            );
+
             new QUIButton({
-                text : 'Suche starten',
+                text : Locale.get( lg, 'projects.project.site.btn.start' ),
                 textimage : 'icon-search',
                 events :
                 {
@@ -119,27 +127,27 @@ define('controls/projects/project/site/Search', [
                     width     : 50
                 }, {
                     dataType  : 'integer',
-                    header    : 'ID',
+                    header    : Locale.get( lg, 'id' ),
                     dataIndex : 'id',
                     width     : 100
                 }, {
                     dataType  : 'string',
-                    header    : 'name',
+                    header    : Locale.get( lg, 'name' ),
                     dataIndex : 'name',
                     width     : 150
                 }, {
                     dataType  : 'string',
-                    header    : 'Title',
+                    header    : Locale.get( lg, 'title' ),
                     dataIndex : 'title',
                     width     : 150
                 }, {
                     dataType  : 'string',
-                    header    : 'type',
+                    header    : Locale.get( lg, 'type' ),
                     dataIndex : 'type',
                     width     : 150
                 }, {
                     dataType  : 'string',
-                    header    : 'Projekt',
+                    header    : Locale.get( lg, 'project' ),
                     dataIndex : 'project',
                     width     : 150
                 }],
@@ -163,7 +171,10 @@ define('controls/projects/project/site/Search', [
             {
                 self.$ProjectList.set(
                     'html',
-                    '<option value="">Alle Projekte</option>'
+
+                    '<option value="">'+
+                        Locale.get( lg, 'projects.project.site.search.all_projects' ) +
+                    '</option>'
                 );
 
                 for ( var project in list )
@@ -225,8 +236,8 @@ define('controls/projects/project/site/Search', [
                         icon        : 'icon-file-alt',
                         siteid      : data[ i ].id,
                         siteproject : data[ i ].project,
-                        title       : 'Seite öffnen',
-                        alt         : 'Seite öffnen',
+                        title       : Locale.get( lg, 'open.site' ),
+                        alt         : Locale.get( lg, 'open.site' ),
                         events : {
                             onClick : self.$openSite
                         }

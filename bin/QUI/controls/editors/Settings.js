@@ -11,9 +11,10 @@ define('controls/editors/Settings', [
     'qui/controls/windows/Confirm',
     'qui/controls/windows/Prompt',
     'controls/grid/Grid',
-    'Ajax'
+    'Ajax',
+    'Locale'
 
-], function(QUI, QUIPanel, QUIConfirm, QUIPrompt, Grid, Ajax)
+], function(QUI, QUIPanel, QUIConfirm, QUIPrompt, Grid, Ajax, Locale)
 {
     "use strict";
 
@@ -35,7 +36,7 @@ define('controls/editors/Settings', [
         ],
 
         options : {
-            title : 'WYSIWYG-Editor Einstellungen',
+            title : Locale.get( 'quiqqer/system', 'editors.settings.title' ),
             icon  : 'icon-font'
         },
 
@@ -60,10 +61,13 @@ define('controls/editors/Settings', [
             var self = this;
 
             this.addButton({
-                name      : 'toolbarAdd',
-                text      : 'Toolbar hinzufügen',
+                name : 'toolbarAdd',
+                text : Locale.get(
+                    'quiqqer/system',
+                    'editors.settings.btn.add.toolbar'
+                ),
                 textimage : 'icon-plus',
-                events    : {
+                events : {
                     onClick : this.openAddToolbarWindow
                 }
             });
@@ -73,21 +77,28 @@ define('controls/editors/Settings', [
             });
 
             this.addButton({
-                name      : 'toolbarEdit',
-                text      : 'Markierte Toolbar editieren',
+                name : 'toolbarEdit',
+                text : Locale.get(
+                    'quiqqer/system',
+                    'editors.settings.btn.edit.toolbar'
+                ),
                 textimage : 'icon-edit',
-                disabled  : true,
-                events    : {
+                disabled : true,
+                events : {
                     onClick : this.editToolbar
                 }
             });
 
             this.addButton({
-                name      : 'toolbarDelete',
-                text      : 'Markierte Toolbar löschen',
+                name : 'toolbarDelete',
+                text : Locale.get(
+                    'quiqqer/system',
+                    'editors.settings.btn.delete.toolbar'
+                ),
                 textimage : 'icon-trash',
-                disabled  : true,
-                events    : {
+                disabled : true,
+                events :
+                {
                     onClick : function()
                     {
                         var sel = self.getGrid().getSelectedData();
@@ -103,10 +114,13 @@ define('controls/editors/Settings', [
 
             this.$Grid = new Grid( Container, {
                 columnModel : [{
-                    header    : 'Toolbar-Name',
+                    header : Locale.get(
+                        'quiqqer/system',
+                        'editors.settings.table.toolbar.name'
+                    ),
                     dataIndex : 'toolbar',
-                    dataType  : 'string',
-                    width     : 200
+                    dataType : 'string',
+                    width : 200
                 }],
                 onrefresh : function() {
                     self.loadToolbars();
@@ -204,13 +218,16 @@ define('controls/editors/Settings', [
         editToolbar : function(toolbar)
         {
             this.createSheet({
-                title  : 'Toolbar '+ toolbar +' editieren',
+                title  : Locale.get(
+                    'quiqqer/system',
+                    'editors.settings.editsheet.title',
+                    { toolbar : toolbar }
+                ),
                 icon   : 'icon-edit',
                 events :
                 {
                     onOpen : function(Sheet)
                     {
-                        // Sheet.Loader.show();
                         var Content = Sheet.getContent();
 
                         require([
@@ -222,7 +239,10 @@ define('controls/editors/Settings', [
                             });
 
                             Sheet.addButton({
-                                text : 'Änderungen speichern',
+                                text : Locale.get(
+                                    'quiqqer/system',
+                                    'editors.settings.editsheet.btn.save'
+                                ),
                                 textimage : 'icon-save',
                                 events :
                                 {
@@ -289,9 +309,16 @@ define('controls/editors/Settings', [
             var self = this;
 
             new QUIConfirm({
-                title  : 'Toolbar wirklich löschen?',
-                icon   : 'icon-trash',
-                text   : 'Möchten Sie die Toolbar '+ toolbar +' wirklich löschen?',
+                title  : Locale.get(
+                    'quiqqer/system',
+                    'editors.settings.delete.window.title'
+                ),
+                icon : 'icon-trash',
+                text : Locale.get(
+                    'quiqqer/system',
+                    'editors.settings.delete.window.text',
+                    {toolbar: toolbar}
+                ),
                 events :
                 {
                     onSubmit : function(Win)
@@ -309,17 +336,24 @@ define('controls/editors/Settings', [
 
         /**
          * Opens the dialog for add a toolbar
-         *
-         * @param {String} toolbar - Name of the toolbar
          */
         openAddToolbarWindow : function()
         {
             var self = this;
 
             new QUIPrompt({
-                title : 'Toolbar hinzufügen',
-                icon  : 'icon-plus',
-                information : 'Geben Sie bitte einen neuen Toolbarnamen ein',
+                maxWidth : 460,
+                maxHeight : 280,
+                icon : 'icon-plus',
+                titleicon : 'icon-plus',
+                title : Locale.get(
+                    'quiqqer/system',
+                    'editors.settings.add.window.title'
+                ),
+                information : Locale.get(
+                    'quiqqer/system',
+                    'editors.settings.add.window.text'
+                ),
                 events :
                 {
                     onSubmit : function(toolbar, Win)
@@ -327,7 +361,9 @@ define('controls/editors/Settings', [
                         self.addToolbar(toolbar, function()
                         {
                             self.refresh();
-                            self.editToolbar( toolbar.replace('\.xml', '') +'.xml' );
+                            self.editToolbar(
+                                toolbar.replace('\.xml', '') +'.xml.php'
+                            );
                         });
                     }
                 }
@@ -351,6 +387,8 @@ define('controls/editors/Settings', [
 
         /**
          * onclick on the grid
+         *
+         * @param {option} data - grid data
          */
         $gridClick : function(data)
         {
@@ -374,6 +412,8 @@ define('controls/editors/Settings', [
 
         /**
          * dblclick on the grid
+         *
+         * @param {option} data - grid data
          */
         $gridDblClick : function(data)
         {

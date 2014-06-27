@@ -1,0 +1,215 @@
+<locales>
+
+    <groups name="quiqqer/system">
+
+        <locale name="projects.project.site.no.permissions">
+            <de><![CDATA[Sie besitzen keine Rechte diese Seite anzuzeigen.]]></de>
+            <en><![CDATA[You do not have permission to access this page.]]></en>
+        </locale>
+        <locale name="projects.project.site.no.edit.permissions">
+            <de><![CDATA[Sie besitzen keine Rechte diese Seite zu bearbeiten.]]></de>
+            <en><![CDATA[You do not have permission to edit this page.]]></en>
+        </locale>
+
+        <locale name="projects.project.site.messages.marcate">
+            <de><![CDATA[Diese Seite wird gerade bearbeitet von: [username]]]></de>
+            <en><![CDATA[This page is currently being edited by: [username]]]></en>
+        </locale>
+
+        <locale name="projects.project.site.information">
+            <de><![CDATA[Information]]></de>
+            <en><![CDATA[Information]]></en>
+        </locale>
+        <locale name="projects.project.site.content">
+            <de><![CDATA[Inhalt]]></de>
+            <en><![CDATA[Content]]></en>
+        </locale>
+        <locale name="projects.project.site.settings">
+            <de><![CDATA[Einstellungen]]></de>
+            <en><![CDATA[Settings]]></en>
+        </locale>
+
+        <locale name="projects.project.site.btn.new.text">
+            <de><![CDATA[Neu]]></de>
+            <en><![CDATA[New]]></en>
+        </locale>
+            <locale name="projects.project.site.btn.new.help">
+                <de><![CDATA[Erzeugen Sie eine neue Unterseite]]></de>
+                <en><![CDATA[Create a new page under the current page]]></en>
+            </locale>
+            <locale name="projects.project.site.btn.new.alt">
+                <de><![CDATA[Erzeugen Sie eine neue Unterseite]]></de>
+                <en><![CDATA[Create a new page under the current page]]></en>
+            </locale>
+            <locale name="projects.project.site.btn.new.new">
+                <de><![CDATA[Erzeugen Sie eine neue Unterseite]]></de>
+                <en><![CDATA[Create a new page under the current page]]></en>
+            </locale>
+        <locale name="projects.project.site.btn.save.text">
+            <de><![CDATA[Speichern]]></de>
+            <en><![CDATA[Save]]></en>
+        </locale>
+            <locale name="projects.project.site.btn.save.help">
+                <de><![CDATA[Speichern Sie Ihre Änderungen.]]></de>
+                <en><![CDATA[Save your changes.]]></en>
+            </locale>
+            <locale name="projects.project.site.btn.save.alt">
+                <de><![CDATA[Speichern Sie Ihre Änderungen.]]></de>
+                <en><![CDATA[Save your changes.]]></en>
+            </locale>
+            <locale name="projects.project.site.btn.save.new">
+                <de><![CDATA[Speichern Sie Ihre Änderungen.]]></de>
+                <en><![CDATA[Save your changes.]]></en>
+            </locale>
+        <locale name="projects.project.site.btn.delete.text">
+            <de><![CDATA[Löschen]]></de>
+            <en><![CDATA[Delete]]></en>
+        </locale>
+            <locale name="projects.project.site.btn.delete.help">
+                <de><![CDATA[
+                    Löschen Sie die Seite, die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden
+                ]]></de>
+                <en><![CDATA[
+                    Delete the page, the page is placed in the trash and can be restored
+                ]]></en>
+            </locale>
+            <locale name="projects.project.site.btn.delete.alt">
+                <de><![CDATA[
+                    Löschen Sie die Seite, die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden
+                ]]></de>
+                <en><![CDATA[
+                    Delete the page, the page is placed in the trash and can be restored
+                ]]></en>
+            </locale>
+            <locale name="projects.project.site.btn.delete.new">
+                <de><![CDATA[
+                    Löschen Sie die Seite, die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden
+                ]]></de>
+                <en><![CDATA[
+                    Delete the page, the page is placed in the trash and can be restored
+                ]]></en>
+            </locale>
+
+        <locale name="projects.project.site.btn.preview.text">
+            <de><![CDATA[Vorschau]]></de>
+            <en><![CDATA[Preview]]></en>
+        </locale>
+        <locale name="projects.project.site.btn.activate.text">
+            <de><![CDATA[Aktivieren]]></de>
+            <en><![CDATA[Activate]]></en>
+        </locale>
+        <locale name="projects.project.site.btn.deactivate.text">
+            <de><![CDATA[Deaktivieren]]></de>
+            <en><![CDATA[Deactivate]]></en>
+        </locale>
+
+
+
+
+        <locale name="projects.project.site.panel.information.title">
+            <de><![CDATA[Daten von Seite: #[id]]]></de>
+            <en><![CDATA[Data from site: #[id]]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.information.nameUrl">
+            <de><![CDATA[Name / URL]]></de>
+            <en><![CDATA[Name / URL]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.information.title">
+            <de><![CDATA[Titel]]></de>
+            <en><![CDATA[Title]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.information.short">
+            <de><![CDATA[Kurzbeschreibung]]></de>
+            <en><![CDATA[Short]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.information.type">
+            <de><![CDATA[Seitentyp]]></de>
+            <en><![CDATA[Sitetype]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.information.date">
+            <de><![CDATA[Datum]]></de>
+            <en><![CDATA[Date]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.information.created">
+            <de><![CDATA[erstellt am]]></de>
+            <en><![CDATA[created on]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.information.edited">
+            <de><![CDATA[geändert am]]></de>
+            <en><![CDATA[edited on]]></en>
+        </locale>
+
+        <locale name="projects.project.site.panel.extras.title">
+            <de><![CDATA[Extras]]></de>
+            <en><![CDATA[Extras]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.extras.nav_hide">
+            <de><![CDATA[Nicht in Navigation anzeigen]]></de>
+            <en><![CDATA[Do not show in navigation]]></en>
+        </locale>
+
+
+        <locale name="projects.project.site.panel.langlinking">
+            <de><![CDATA[Sprach-Verknüpfungen]]></de>
+            <en><![CDATA[Language linking]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.langlinking.notexist">
+            <de><![CDATA[Keine Sprach-Verknüpfung für [lang]]]></de>
+            <en><![CDATA[No language linking for [lang]]]></en>
+        </locale>
+
+
+        <locale name="projects.project.site.panel.linking">
+            <de><![CDATA[Verknüpfungen]]></de>
+            <en><![CDATA[Linkings]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.linking.notexist">
+            <de><![CDATA[Es existieren keine Verknüpfungen zu dieser Seite]]></de>
+            <en><![CDATA[There are no links to this page]]></en>
+        </locale>
+
+
+        <locale name="projects.project.site.panel.settings.publication">
+            <de><![CDATA[Veröffentlichung]]></de>
+            <en><![CDATA[Publication]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.settings.publication.from">
+            <de><![CDATA[Veröffentlich von]]></de>
+            <en><![CDATA[Publishing from]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.settings.publication.to">
+            <de><![CDATA[Veröffentlichung bis]]></de>
+            <en><![CDATA[Publishing to]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.settings.publication.info">
+            <de><![CDATA[
+                Beachten Sie:<br />
+                Damit die Seite automatisiert veröffentlicht wird, muss im Cron-Manager der Veröffentlichungs-Cron eingerichtet sein.
+            ]]></de>
+            <en><![CDATA[
+                Note: <br />
+                To publish the page automatically, Publication Cron must be set in the cron manager.
+            ]]>
+            </en>
+        </locale>
+
+
+        <locale name="projects.project.site.panel.settings.media">
+            <de><![CDATA[Media Einstellungen]]></de>
+            <en><![CDATA[Media settings]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.settings.media.info">
+            <de><![CDATA[Legen Sie fest welche Bilder Ihrer Seite zugeordnet sind.]]></de>
+            <en><![CDATA[Specify which images are associated with your site.]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.settings.media.emotion_image">
+            <de><![CDATA[Emotion-Bild]]></de>
+            <en><![CDATA[Emotion image]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.settings.media.site_image">
+            <de><![CDATA[Seiten-Bild]]></de>
+            <en><![CDATA[Site image]]></en>
+        </locale>
+    </groups>
+
+</locales>

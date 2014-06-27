@@ -153,6 +153,7 @@ class Media extends \QUI\QDOM
                 'c_user' => \QUI::getUserBySession()->getId(),
                 'type'   => 'folder'
             ));
+
         } else
         {
             // check if id 1 is a folder, id 1 MUST BE a folder

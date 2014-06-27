@@ -11,15 +11,18 @@ define('controls/projects/project/media/Manager', [
     'qui/controls/desktop/Panel',
     'qui/controls/buttons/Button',
     'qui/controls/contextmenu/Item',
+    'Locale',
     'Ajax',
     'Projects',
     'utils/Template',
 
     'css!controls/projects/project/media/Manager.css'
 
-], function(QUIPanel, QUIButton, QUIContextmenuItem, Ajax, Projects, UtilsTemplate)
+], function(QUIPanel, QUIButton, QUIContextmenuItem, Locale, Ajax, Projects, UtilsTemplate)
 {
     "use strict";
+
+    var lg = 'quiqqer/system';
 
     /**
      * Media administration
@@ -43,7 +46,7 @@ define('controls/projects/project/media/Manager', [
             icon      : 'icon-picture',
             id        : 'projects-media-manager',
             name      : 'projects-media-manager',
-            title     : 'Media Verwaltung',
+            title     : Locale.get( lg, 'projects.project.site.media.manager.title' ),
             container : false,
             fileid    : false
         },
@@ -70,8 +73,8 @@ define('controls/projects/project/media/Manager', [
             this.Loader.show();
 
             this.addCategory({
-                title   : 'Allemein',
-                text    : 'Allemein',
+                title   : Locale.get( lg, 'projects.project.site.media.manager.general.title' ),
+                text    : Locale.get( lg, 'projects.project.site.media.manager.general.text' ),
                 image   : 'icon-picture',
                 body    : '&nbsp;',
                 Control : this,
@@ -104,15 +107,15 @@ define('controls/projects/project/media/Manager', [
 
                 self.$MD5 = new QUIButton({
                     name      : 'calcmd5',
-                    text      : 'Projekt für MD5 Berechnung auswählen...',
+                    text      : Locale.get( lg, 'projects.project.site.media.manager.calcmd5.select' ),
                     textimage : 'icon-picture'
                 }).inject( MD5Parent );
 
                 self.$MD5Start = new QUIButton({
                     name    : 'calcmd5',
                     image   : 'icon-play',
-                    title   : 'Berechnung starten',
-                    alt     : 'Berechnung starten',
+                    title   : Locale.get( lg, 'projects.project.site.media.manager.calcmd5.start.title' ),
+                    alt     : Locale.get( lg, 'projects.project.site.media.manager.calcmd5.start.alt' ),
                     events  :
                     {
                         onClick : function(Btn)
@@ -132,15 +135,15 @@ define('controls/projects/project/media/Manager', [
 
                 self.$SHA1 = new QUIButton({
                     name   : 'calcsha1',
-                    text   : 'Projekt für SHA1 Berechnung auswählen...',
+                    text   : Locale.get( lg, 'projects.project.site.media.manager.calcsha1.select' ),
                     textimage : 'icon-picture'
                 }).inject( SHA1Parent );
 
                 self.$SHA1Start = new QUIButton({
                     name    : 'calcmd5',
                     image   : 'icon-play',
-                    title   : 'Berechnung starten',
-                    alt     : 'Berechnung starten',
+                    title   : Locale.get( lg, 'projects.project.site.media.manager.calcsha1.start.title' ),
+                    alt     : Locale.get( lg, 'projects.project.site.media.manager.calcsha1.start.alt' ),
                     Manager : this,
                     events  :
                     {
@@ -215,7 +218,6 @@ define('controls/projects/project/media/Manager', [
 
                     self.$SHA1.enable();
                     self.$SHA1.setAttribute('textimage', 'icon-picture');
-
                 });
 
                 self.Loader.hide();

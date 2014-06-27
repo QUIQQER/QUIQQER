@@ -16,8 +16,10 @@ define('controls/projects/project/Sitemap', [
     'qui/controls/sitemap/Item',
     'qui/controls/contextmenu/Item',
     'qui/controls/contextmenu/Seperator',
+
     'Projects',
     'Ajax',
+    'Locale',
     'Clipboard'
 
 ], function(QUIControl, QUISitemap, QUISitemapItem, QUIContextmenuItem, QUIContextmenuSeperator, Projects, Ajax, Clipboard)
@@ -183,7 +185,10 @@ define('controls/projects/project/Sitemap', [
                     {
                         self.$Map.appendChild(
                             new QUISitemapItem({
-                                text   : 'Media',
+                                text   : Locale.get(
+                                    'quiqqer/system',
+                                    'projects.project.sitemap.media'
+                                ),
                                 icon   : 'icon-picture',
                                 events :
                                 {
@@ -511,10 +516,11 @@ define('controls/projects/project/Sitemap', [
             // contextmenu
             var ContextMenu = Itm.getContextMenu();
 
-            ContextMenu.clearChildren().appendChild(
+            ContextMenu.clearChildren()
+                .appendChild(
                     new QUIContextmenuItem({
                         name   : 'copy',
-                        text   : 'kopieren',
+                        text   : Locale.get('quiqqer/system', 'copy'),
                         icon   : 'icon-copy',
                         events :
                         {
@@ -533,7 +539,7 @@ define('controls/projects/project/Sitemap', [
                 ).appendChild(
                     new QUIContextmenuItem({
                         name   : 'cut',
-                        text   : 'ausschneiden',
+                        text   : Locale.get('quiqqer/system', 'cut'),
                         icon   : 'icon-cut',
                         events :
                         {
@@ -555,7 +561,7 @@ define('controls/projects/project/Sitemap', [
                     new QUIContextmenuItem({
                         disabled : true,
                         name   : 'paste',
-                        text   : 'einfügen',
+                        text   : Locale.get('quiqqer/system', 'paste'),
                         icon   : 'icon-paste',
                         events :
                         {
@@ -567,7 +573,7 @@ define('controls/projects/project/Sitemap', [
                 ).appendChild(
                     new QUIContextmenuItem({
                         disabled : true,
-                        name   : 'linked-paste',
+                        name   : Locale.get('quiqqer/system', 'linked-paste'),
                         text   : 'Verknüpfung einfügen',
                         icon   : 'icon-paste',
                         events :

@@ -5,7 +5,7 @@
         <thead>
             <tr>
                 <th colspan="2">
-                    Projekte Einstellungen
+                    {t}quiqqer/system projects.project.settings.panel.settings.title{/t}
                 </th>
             </tr>
         </thead>
@@ -13,7 +13,9 @@
         <tbody>
             <tr class="{cycle values="odd,even"}">
                 <td class="first">
-                    <label for="default_lang">Standard Sprache</label>
+                    <label for="default_lang">
+                        {t}quiqqer/system projects.project.settings.panel.language.default{/t}
+                    </label>
                 </td>
                 <td>
                     <select name="default_lang"></select>
@@ -21,7 +23,9 @@
             </tr>
             <tr class="{cycle values="odd,even"}">
                 <td class="first">
-                    <label for="langs">Verfügbare Sprachen</label>
+                    <label for="langs">
+                        {t}quiqqer/system projects.project.settings.panel.language.available{/t}
+                    </label>
                 </td>
                 <td>
                     <select name="langs" size="3"></select>
@@ -29,11 +33,15 @@
             </tr>
             <tr class="{cycle values="odd,even"}">
                 <td class="first">
-                    <label for="template">Standard Template</label>
+                    <label for="template">
+                        {t}quiqqer/system projects.project.settings.panel.templates.default{/t}
+                    </label>
                 </td>
                 <td>
                     <select name="template">
-                        <option value="">Kein Template verwenden</option>
+                        <option value="">
+                            {t}quiqqer/system projects.project.settings.panel.templates.no.template{/t}
+                        </option>
 
                         {assign var=PM value=$QUI->getPackageManager()}
 
@@ -48,7 +56,9 @@
             </tr>
             <tr class="{cycle values="odd,even"}">
                 <td class="first">
-                    <label for="templates">Verfügbare Templates für dieses Projekt</label>
+                    <label for="templates">
+                        {t}quiqqer/system projects.project.settings.panel.templates.available{/t}
+                    </label>
                 </td>
                 <td>
                     <select name="templates" multiple="multiple" size="5">
@@ -65,7 +75,9 @@
             </tr>
             <tr class="{cycle values="odd,even"}">
                 <td class="first">
-                    <label for="templates">Administrations E-Mail</label>
+                    <label for="templates">
+                        {t}quiqqer/system projects.project.settings.panel.admin.email{/t}
+                    </label>
                 </td>
                 <td>
                     <input type="text" name="admin_mail" value="" />
@@ -74,7 +86,9 @@
 
             <tr class="{cycle values="odd,even"}">
                 <td class="first">
-                    <label for="templates">Als standard Projekt setzen</label>
+                    <label for="templates">
+                        {t}quiqqer/system projects.project.settings.panel.set.standard{/t}
+                    </label>
                 </td>
                 <td>
                     <input type="checkbox" name="standard" />

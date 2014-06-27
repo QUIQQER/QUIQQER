@@ -4,20 +4,20 @@
  *
  * @author www.pcsg.de (Henning Leutz)
  *
- * @module controls/projects/Entry
- *
- * @require controls/Control
+ * @require qui/controls/Control
  * @require Projects
+ * @require Locale
  */
 
 define('controls/projects/project/Entry', [
 
     'qui/controls/Control',
     'Projects',
+    'Locale',
 
     'css!controls/projects/project/Entry.css'
 
-], function(QUIControl, Projects)
+], function(QUIControl, Projects, Locale)
 {
     "use strict";
 
@@ -124,8 +124,14 @@ define('controls/projects/project/Entry', [
             });
 
             this.$Close.set({
-                alt   : 'Projekt entfernen',
-                title : 'Projekt entfernen'
+                alt : Locale.get(
+                    'quiqqer/system',
+                    'projects.project.panel.entry.delete.project'
+                ),
+                title : Locale.get(
+                    'quiqqer/system',
+                    'projects.project.panel.entry.delete.project'
+                )
             });
 
             this.getProject().addEvent( 'onRefresh', this.$onProjectUpdate );

@@ -3,6 +3,7 @@
  * Link Plugin for a WYSIWYG Editor
  *
  * @author www.pcsg.de (Henning Leutz)
+ * @depricated maybe
  */
 
 define('controls/editors/windows/ImageWindow', [

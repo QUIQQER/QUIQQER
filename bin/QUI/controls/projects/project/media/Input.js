@@ -9,10 +9,11 @@ define('controls/projects/project/media/Input', [
     'qui/controls/buttons/Button',
     'controls/projects/project/media/Popup',
     'Ajax',
+    'Locale',
 
     'css!controls/projects/project/media/Input.css'
 
-], function(QUIControl, QUIButton, MediaPopup, Ajax)
+], function(QUIControl, QUIButton, MediaPopup, Ajax, Locale)
 {
     "use strict";
 
@@ -79,8 +80,8 @@ define('controls/projects/project/media/Input', [
 
             this.$MediaButton = new QUIButton({
                 icon   : 'icon-picture',
-                alt    : 'Bild auswählen',
-                title  : 'Bild auswählen',
+                alt    : Locale.get('quiqqer/system', 'projects.project.site.media.input.select.alt'),
+                title  : Locale.get('quiqqer/system', 'projects.project.site.media.input.select.title'),
                 events :
                 {
                     onClick : function()
@@ -106,8 +107,8 @@ define('controls/projects/project/media/Input', [
 
             this.$ClearButton = new QUIButton({
                 icon : 'icon-remove',
-                alt    : 'Eingabe leeren',
-                title  : 'Eingabe leeren',
+                alt    : Locale.get('quiqqer/system', 'projects.project.site.media.input.clear.alt'),
+                title  : Locale.get('quiqqer/system', 'projects.project.site.media.input.clear.alt'),
                 events :
                 {
                     onClick : function() {

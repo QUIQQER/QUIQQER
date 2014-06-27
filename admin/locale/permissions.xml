@@ -168,7 +168,7 @@
     </groups>
 
 
-    <groups name="locale/permissions">
+    <groups name="locale/permissions" datatype="js">
         <locale name="quiqqer._title">
             <de><![CDATA[QUIQQER]]></de>
             <en><![CDATA[QUIQQER]]></en>

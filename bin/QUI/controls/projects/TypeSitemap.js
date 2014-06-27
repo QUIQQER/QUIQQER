@@ -19,9 +19,10 @@ define('controls/projects/TypeSitemap', [
     'qui/controls/Control',
     'qui/controls/sitemap/Map',
     'qui/controls/sitemap/Item',
-    'Ajax'
+    'Ajax',
+    'Locale'
 
-], function(QUIControl, QUISitemap, QUISitemapItem, Ajax)
+], function(QUIControl, QUISitemap, QUISitemapItem, Ajax, Locale)
 {
     "use strict";
 
@@ -83,8 +84,8 @@ define('controls/projects/TypeSitemap', [
                 name  : 1,
                 index : 1,
                 value : 1,
-                text  : 'Seitentypen',
-                alt   : 'Seitentypen',
+                text  : Locale.get( 'quiqqer/system', 'projects.typesitemap.firstChild' ),
+                alt   : Locale.get( 'quiqqer/system', 'projects.typesitemap.firstChild' ),
                 icon  : 'icon-magic',
                 hasChildren : false
             });
@@ -129,7 +130,7 @@ define('controls/projects/TypeSitemap', [
                 {
                     First.setAttribute(
                         'text',
-                        'Es stehen keine Seitentypen zur Verfügung'
+                        Locale.get( 'quiqqer/system', 'projects.typesitemap.message.no.types' )
                     );
 
                     return;

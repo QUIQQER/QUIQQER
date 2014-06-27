@@ -4,22 +4,26 @@
 <thead>
     <tr>
         <th colspan="2">
-            Veröffentlichung
+            {t}quiqqer/system projects.project.site.panel.settings.publication{/t}
         </th>
     </tr>
 </thead>
 <tbody>
     <tr class="{cycle values="odd,even"}">
-        <td class="grid-20">Veröffentlichen von</td>
+        <td class="grid-20">
+            {t}quiqqer/system projects.project.site.panel.settings.publication.from{/t}
+        </td>
         <td class="grid-80"><input type="date" name="release_from" /></td>
     </tr>
     <tr class="{cycle values="odd,even"}">
-        <td class="grid-20">Veröffentlichen bis</td>
+        <td class="grid-20">
+            {t}quiqqer/system projects.project.site.panel.settings.publication.to{/t}
+        </td>
         <td class="grid-80"><input type="date" name="release_to" /></td>
     </tr>
     <tr>
         <td colspan="2" class="desc {cycle values="odd,even"}">
-            Beachten Sie: Damit die Seite automatisiert veröffentlicht wird muss im Cron-Manager der Veröffentlichungs-Cron eingerichtet sein.
+            {t}quiqqer/system projects.project.site.panel.settings.publication.info{/t}
         </td>
     </tr>
 </tbody>
@@ -30,23 +34,31 @@
 <thead>
     <tr>
         <th colspan="2">
-            Media Einstellungen
+            {t}quiqqer/system projects.project.site.panel.settings.media{/t}
         </th>
     </tr>
     <tr>
         <td class="{cycle values="odd,even" reset=true}" colspan="2">
-            Legen Sie fest welche Bilder Ihrer Seite zugeordnet sind.
+            {t}quiqqer/system projects.project.site.panel.settings.media.info{/t}
         </td>
     </tr>
 </thead>
 <tbody>
     <tr class="{cycle values="odd,even"}">
-        <td class="grid-20">Emotion-Bild</td>
-        <td class="grid-80"><input type="text" name="image_emotion" class="media-image" /></td>
+        <td class="grid-20">
+            {t}quiqqer/system projects.project.site.panel.settings.media.emotion_image{/t}
+        </td>
+        <td class="grid-80">
+            <input type="text" name="image_emotion" class="media-image" />
+        </td>
     </tr>
     <tr class="{cycle values="odd,even"}">
-        <td class="grid-20">Seiten-Bild</td>
-        <td class="grid-80"><input type="text" name="image_site" class="media-image" /></td>
+        <td class="grid-20">
+            {t}quiqqer/system projects.project.site.panel.settings.media.site_image{/t}
+        </td>
+        <td class="grid-80">
+            <input type="text" name="image_site" class="media-image" />
+        </td>
     </tr>
 </tbody>
 </table>

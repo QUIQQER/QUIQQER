@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<locales>
+    <groups name="quiqqer/system" datatype="js">
+
+        <locale name="projects.project.panel.title">
+            <de><![CDATA[Projekte]]></de>
+            <en><![CDATA[Projects]]></en>
+        </locale>
+        <locale name="projects.project.panel.open.search">
+            <de><![CDATA[Seitensuche öffnen]]></de>
+            <en><![CDATA[Open the site search]]></en>
+        </locale>
+        <locale name="projects.project.panel.tash">
+            <de><![CDATA[Papierkorb]]></de>
+            <en><![CDATA[Trash]]></en>
+        </locale>
+        <locale name="projects.project.panel.media">
+            <de><![CDATA[Media]]></de>
+            <en><![CDATA[Media]]></en>
+        </locale>
+
+    </groups>
+</locales>

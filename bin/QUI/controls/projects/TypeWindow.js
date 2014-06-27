@@ -19,9 +19,10 @@ define('controls/projects/TypeWindow', [
     'qui/controls/windows/Confirm',
     'qui/controls/sitemap/Map',
     'qui/controls/sitemap/Item',
-    'controls/projects/TypeSitemap'
+    'controls/projects/TypeSitemap',
+    'Locale'
 
-], function(QUIConfirm, QUI_Item, QUI_SitemapItem, QUI_TypeSitemap)
+], function(QUIConfirm, QUI_Item, QUI_SitemapItem, QUI_TypeSitemap, Locale)
 {
     "use strict";
 
@@ -48,7 +49,7 @@ define('controls/projects/TypeWindow', [
             multible : false,
             project  : false,
 
-            title     : 'Seitentypen Auswahl',
+            title     : Locale.get( 'quiqqer/system', 'projects.typewindow.title' ),
             icon      : 'icon-magic',
             maxHeight : 500,
             maxWidth  : 400,

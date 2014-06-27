@@ -438,14 +438,14 @@ class QUI
     }
 
     /**
-     * Retrusn all available languages
+     * Returns all available languages
      *
      * @return Array
      */
     static function availableLanguages()
     {
-        $projects = \QUI\Projects\Manager::getConfig()->toArray();
-        $langs    = array();
+        $projects = \QUI::getProjectManager()->getConfig()->toArray();
+        $langs    = array('de', 'en');
 
         foreach ( $projects as $project ) {
             $langs = array_merge( $langs, explode( ',', $project['langs'] ) );

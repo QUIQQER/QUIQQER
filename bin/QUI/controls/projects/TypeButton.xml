@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<locales>
+    <groups name="quiqqer/system" datatype="js">
+
+        <locale name="projects.typebutton.title">
+            <de><![CDATA[Seitentypen ändern]]></de>
+            <en><![CDATA[Change site type]]></en>
+        </locale>
+
+    </groups>
+</locales>

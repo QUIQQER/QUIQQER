@@ -13,11 +13,12 @@ define('controls/projects/Popup', [
     'qui/controls/windows/Confirm',
     'qui/controls/buttons/Select',
     'Projects',
+    'Locale',
     'controls/projects/project/Sitemap',
 
     'css!controls/projects/Popup.css'
 
-], function(QUIPopup, QUISelect, Projects, ProjectMap)
+], function(QUIPopup, QUISelect, Projects, Locale, ProjectMap)
 {
     "use strict";
 
@@ -35,7 +36,7 @@ define('controls/projects/Popup', [
             lang      : false,
             langs     : false,
             icon      : 'icon-home',
-            title     : 'Projekte',
+            title     : Locale.get( 'quiqqer/system', 'projects' ),
             maxWidth  : 400,
             maxHeight : 600,
             autoclose : true,

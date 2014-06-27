@@ -19,10 +19,11 @@ define('controls/projects/project/Settings', [
     'controls/lang/Popup',
     'Projects',
     'Ajax',
+    'Locale',
 
     'css!controls/projects/project/Settings.css'
 
-], function(QUIPanel, QUIButton, QUIConfirm, QUIFormUtils, UtilsTemplate, LangPopup, Projects, Ajax)
+], function(QUIPanel, QUIButton, QUIConfirm, QUIFormUtils, UtilsTemplate, LangPopup, Projects, Ajax, Locale)
 {
     "use strict";
 
@@ -108,7 +109,10 @@ define('controls/projects/project/Settings', [
             this.getContent().addClass( 'qui-project-settings' );
 
             this.addButton({
-                text      : 'Speichern',
+                text : Locale.get(
+                    'quiqqer/system',
+                    'projects.project.panel.settings.btn.save'
+                ),
                 textimage : 'icon-save',
                 events : {
                     onClick : this.save
@@ -116,7 +120,10 @@ define('controls/projects/project/Settings', [
             });
 
             this.addButton({
-                text      : 'Löschen',
+                text : Locale.get(
+                    'quiqqer/system',
+                    'projects.project.panel.settings.btn.remove'
+                ),
                 textimage : 'icon-remove',
                 events : {
                     onClick : this.del
@@ -124,8 +131,11 @@ define('controls/projects/project/Settings', [
             });
 
             this.addCategory({
-                name   : 'settings',
-                text   : 'Einstellungen',
+                name : 'settings',
+                text : Locale.get(
+                    'quiqqer/system',
+                    'projects.project.panel.settings.btn.settings'
+                ),
                 icon   : 'icon-gear',
                 events : {
                     onActive : this.openSettings
@@ -134,7 +144,10 @@ define('controls/projects/project/Settings', [
 
             this.addCategory({
                 name   : 'meta',
-                text   : 'Meta Angaben',
+                text   : Locale.get(
+                    'quiqqer/system',
+                    'projects.project.panel.settings.btn.meta'
+                ),
                 icon   : 'icon-inbox',
                 events : {
                     onActive : this.openMeta
@@ -196,21 +209,35 @@ define('controls/projects/project/Settings', [
             var self = this;
 
             new QUIConfirm({
-                icon        : 'icon-exclamation-sign',
-                title       : 'Projekt löschen',
-                text        : 'Projekt wirlich löschen?',
-                texticon    : 'icon-exclamation-sign',
-                information : 'Das Projekt kann nicht wieder hergestellt werden und die Löschung ist unwiderruflich',
-
+                icon : 'icon-exclamation-sign',
+                title : Locale.get(
+                    'quiqqer/system',
+                    'projects.project.project.delete.window.title'
+                ),
+                text : Locale.get(
+                    'quiqqer/system',
+                    'projects.project.project.delete.window.text'
+                ),
+                texticon : 'icon-exclamation-sign',
+                information : Locale.get(
+                    'quiqqer/system',
+                    'projects.project.project.delete.window.information'
+                ),
                 events :
                 {
                     onSubmit : function()
                     {
                         new QUIConfirm({
-                            icon        : 'icon-exclamation-sign',
-                            title       : 'Projekt löschen',
-                            text        : 'Sind Sie sicher das Sie das Projekt löschen möchten?',
-                            texticon    : 'icon-exclamation-sign',
+                            icon : 'icon-exclamation-sign',
+                            title : Locale.get(
+                                'quiqqer/system',
+                                'projects.project.project.delete.window.title'
+                            ),
+                            text : Locale.get(
+                                'quiqqer/system',
+                                'projects.project.project.delete.window.text.2'
+                            ),
+                            texticon : 'icon-exclamation-sign',
 
                             events :
                             {
@@ -269,7 +296,10 @@ define('controls/projects/project/Settings', [
                 }
 
                 new QUIButton({
-                    text : 'Sprache hinzufügen',
+                    text : Locale.get(
+                        'quiqqer/system',
+                        'projects.project.panel.btn.addlanguage'
+                    ),
                     textimage : 'icon-plus',
                     styles : {
                         width : 200,

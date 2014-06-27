@@ -1,0 +1,41 @@
+<locales>
+
+<!-- js -->
+    <groups name="quiqqer/system" datatype="js">
+
+        <locale name="projects.project.site.search.title">
+            <de><![CDATA[Seitensuche]]></de>
+            <en><![CDATA[Site search]]></en>
+        </locale>
+
+        <locale name="projects.project.site.search.label">
+            <de><![CDATA[Suche:]]></de>
+            <en><![CDATA[Search:]]></en>
+        </locale>
+        <locale name="projects.project.site.search.placeholder">
+            <de><![CDATA[Seite suchen...]]></de>
+            <en><![CDATA[Search site...]]></en>
+        </locale>
+        <locale name="projects.project.site.results.label">
+            <de><![CDATA[Ergebnisse:]]></de>
+            <en><![CDATA[Results:]]></en>
+        </locale>
+        <locale name="projects.project.site.btn.start">
+            <de><![CDATA[Suche starten]]></de>
+            <en><![CDATA[Search]]></en>
+        </locale>
+
+        <locale name="projects.project.site.search.all_attributes">
+            <de><![CDATA[Alle Attribute]]></de>
+            <en><![CDATA[All attributes]]></en>
+        </locale>
+        <locale name="projects.project.site.search.all_projects">
+            <de><![CDATA[Alle Projekte]]></de>
+            <en><![CDATA[All projects]]></en>
+        </locale>
+
+
+
+    </groups>
+
+</locales>

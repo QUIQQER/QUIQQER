@@ -31,13 +31,30 @@ define('controls/projects/project/media/Panel', [
     'controls/upload/Form',
     'classes/request/Upload',
     'Ajax',
+    'Locale',
     'utils/Media',
 
     'css!controls/projects/project/media/Panel.css'
 
-], function(QUI, QUIPanel, Media, MediaSitemap, PanelDOMEvents, PanelContextMenu, BreadcrumbItem, GridControl, UploadForm, RequestUpload, Ajax, MediaUtils)
+], function()
 {
     "use strict";
+
+    var lg = 'quiqqer/system';
+
+    var QUI              = arguments[ 0 ],
+        QUIPanel         = arguments[ 1 ],
+        Media            = arguments[ 2 ],
+        MediaSitemap     = arguments[ 3 ],
+        PanelDOMEvents   = arguments[ 4 ],
+        PanelContextMenu = arguments[ 5 ],
+        BreadcrumbItem   = arguments[ 6 ],
+        GridControl      = arguments[ 7 ],
+        UploadForm       = arguments[ 8 ],
+        RequestUpload    = arguments[ 9 ],
+        Ajax             = arguments[ 10 ],
+        Locale           = arguments[ 11 ],
+        MediaUtils       = arguments[ 12 ];
 
     /**
      * A Media-Panel, opens the Media in an Apppanel
@@ -127,33 +144,6 @@ define('controls/projects/project/media/Panel', [
         },
 
         /**
-         * Create the Media Panel
-         * create a MUI.Apppanel and start the Media loading
-         *
-         * @method controls/projects/project/media/Panel#create
-         */
-//        create : function()
-//        {
-//            var Panel = new QUI.controls.desktop.Panel({
-//                id         : this.getAttribute('id'),
-//                icon       : URL_BIN_DIR +'images/loader.gif',
-//                tabbar     : false,
-//                breadcrumb : true,
-//                events : {
-//                    onContextMenu : this.$PanelContextMenu.createPanelMenu.bind( this )
-//                }
-//            });
-//
-//            QUI.Controls.getByType( 'QUI.controls.desktop.Tasks' )[0].appendChild(
-//                Panel
-//            );
-//
-//            this.$Panel = Panel;
-//            this.$Panel.Loader.show();
-//            this.load();
-//        },
-
-        /**
          * Load the Media and the Tabs to the Panel
          *
          * @method controls/projects/project/media/Panel#load
@@ -180,11 +170,11 @@ define('controls/projects/project/media/Panel', [
             {
                 self.addButton(
                     new QUIButton({
-                        name    : 'left-sitemap-media-button',
-                        image   : 'icon-sitemap',
-                        alt     : 'Sitemap anzeigen',
-                        title   : 'Sitemap anzeigen',
-                        events  :
+                        name   : 'left-sitemap-media-button',
+                        image  : 'icon-sitemap',
+                        alt    : Locale.get( lg, 'projects.project.site.media.panel.btn.sitemap.show' ),
+                        title  : Locale.get( lg, 'projects.project.site.media.panel.btn.sitemap.show' ),
+                        events :
                         {
                             onClick : function(Btn)
                             {
@@ -209,67 +199,72 @@ define('controls/projects/project/media/Panel', [
                 // views
                 var View = new QUIButton({
                     textimage : 'icon-th',
-                    text      : 'Ansicht: Symbolansicht',
-                    change    : function(Item)
+                    text      : '',
+                    methods :
                     {
-                        var Btn = Item.getAttribute('Button');
+                        change : function(Item)
+                        {
+                            var Btn = Item.getAttribute('Button');
 
-                        Btn.setAttribute('Active', Item);
-                        Btn.setAttribute('text', 'Ansicht: '+ Item.getAttribute('text'));
-                        Btn.setAttribute('textimage', Item.getAttribute('icon'));
+                            var viewText = Locale.get( lg, 'projects.project.site.media.panel.btn.view.title'),
+                                viewText = viewText +' '+ Item.getAttribute('text');
 
-                        self.setAttribute('view', Item.getAttribute('name'));
-                        self.$view( self.$children );
+                            Btn.setAttribute('Active', Item);
+                            Btn.setAttribute('text', viewText);
+                            Btn.setAttribute('textimage', Item.getAttribute('icon'));
 
-                        Btn.getParent().resize();
+                            self.setAttribute('view', Item.getAttribute('name'));
+                            self.$view( self.$children );
+
+                            Btn.getParent().resize();
+                        }
                     }
                 });
 
                 View.appendChild(
                     new ContextmenuItem({
                         name   : 'symbols',
-                        text   : 'Symbolansicht',
+                        text   : Locale.get( lg, 'projects.project.site.media.panel.btn.view.symbols' ),
                         icon   : 'icon-th',
                         events :
                         {
-                            onMouseDown : function(Item, event)
-                            {
-                                Item.getAttribute('Button')
-                                    .getAttribute('change')( Item );
+                            onMouseDown : function(Item, event) {
+                                View.change( Item );
                             }
                         }
                     })
                 ).appendChild(
                     new ContextmenuItem({
                         name   : 'details',
-                        text   : 'Detailsansicht',
+                        text   : Locale.get( lg, 'projects.project.site.media.panel.btn.view.details' ),
                         icon   : 'icon-list-alt',
                         events :
                         {
-                            onMouseDown : function(Item, event)
-                            {
-                                Item.getAttribute('Button')
-                                    .getAttribute('change')( Item );
+                            onMouseDown : function(Item, event) {
+                                View.change( Item );
                             }
                         }
                     })
                 ).appendChild(
                     new ContextmenuItem({
                         name   : 'preview',
-                        text   : 'Vorschau',
+                        text   : Locale.get( lg, 'projects.project.site.media.panel.btn.view.preview' ),
                         icon   : 'icon-eye-open',
                         events :
                         {
-                            onMouseDown : function(Item, event)
-                            {
-                                Item.getAttribute('Button')
-                                    .getAttribute('change')( Item );
+                            onMouseDown : function(Item, event) {
+                                View.change( Item );
                             }
                         }
                     })
                 );
 
                 self.addButton( View );
+
+                View.getContextMenu(function(Menu) {
+                    View.change( Menu.firstChild() );
+                });
+
 
                 self.addButton(
                     new QUISeperator()
@@ -278,7 +273,7 @@ define('controls/projects/project/media/Panel', [
                 self.addButton(
                     new QUIButton({
                         name      : 'create_folder',
-                        text      : 'Neuen Ordner erstellen',
+                        text      : Locale.get( lg, 'projects.project.site.media.panel.btn.create' ),
                         textimage : 'icon-folder-open-alt',
                         events    :
                         {
@@ -292,13 +287,13 @@ define('controls/projects/project/media/Panel', [
                 // Upload
                 var Upload = new QUIButton({
                     textimage : 'icon-upload',
-                    text      : 'Dateien hochladen'
+                    text      : Locale.get( lg, 'projects.project.site.media.panel.btn.upload' )
                 });
 
                 Upload.appendChild(
                     new ContextmenuItem({
                         name   : 'upload_files',
-                        text   : 'Dateien hochladen',
+                        text   : Locale.get( lg, 'projects.project.site.media.panel.btn.upload.files' ),
                         icon   : 'icon-file',
                         events :
                         {
@@ -310,7 +305,7 @@ define('controls/projects/project/media/Panel', [
                 ).appendChild(
                     new ContextmenuItem({
                         name   : 'upload_archive',
-                        text   : 'Archiv hochladen und entpacken',
+                        text   : Locale.get( lg, 'projects.project.site.media.panel.btn.upload.archive' ),
                         icon   : 'icon-archive',
                         events :
                         {
@@ -614,16 +609,13 @@ define('controls/projects/project/media/Panel', [
                     if ( extract )
                     {
                         Parent = new Element('div.qui-media-upload', {
-                            html : '<h2><span class="icon-upload"></span>Archiv Upload</h2>' +
-                                   '<p>Laden Sie Archiv Dateien in den Media Ordner hoch.</p>' +
-                                   '<p>Diese Archivdateien werden direkt entpackt.</p>'
+                            html : Locale.get( lg, 'projects.project.site.media.panel.upload.extract.text' )
                         }).inject( Content );
 
                     } else
                     {
                         Parent = new Element('div.qui-media-upload', {
-                            html : '<h2><span class="icon-upload"></span>Datei Upload</h2>' +
-                                   '<p>Laden Sie Dateien in den Media Ordner hoch.</p>'
+                            html : Locale.get( lg, 'projects.project.site.media.panel.upload.text' )
                         }).inject( Content );
                     }
 
@@ -1278,27 +1270,27 @@ define('controls/projects/project/media/Panel', [
                     dataType  : 'image',
                     width     : 30
                 }, {
-                    header    : 'ID',
+                    header    : Locale.get( lg, 'id' ),
                     dataIndex : 'id',
                     dataType  : 'integer',
                     width     : 50
                 }, {
-                    header    : 'Name',
+                    header    : Locale.get( lg, 'name' ),
                     dataIndex : 'name',
                     dataType  : 'string',
                     width     : 150
                 }, {
-                    header    : 'Title',
+                    header    : Locale.get( lg, 'title' ),
                     dataIndex : 'title',
-                    dataType  : 'stringr',
+                    dataType  : 'string',
                     width     : 150
                 }, {
-                    header    : 'Größe',
+                    header    : Locale.get( lg, 'size' ),
                     dataIndex : 'size',
                     dataType  : 'string',
                     width     : 150
                 }, {
-                    header    : 'Erstellungs Datum',
+                    header    : Locale.get( lg, 'createdate' ),
                     dataIndex : 'cdate',
                     dataType  : 'date',
                     width     : 150
@@ -1411,9 +1403,9 @@ define('controls/projects/project/media/Panel', [
             require(['qui/controls/windows/Prompt'], function(Prompt)
             {
                 new Prompt({
-                    title       : 'Neuer Ordner anlegen',
+                    title       : Locale.get( lg, 'projects.project.site.folder.create.title' ),
                     titleicon   : 'icon-folder-open-alt',
-                    information : 'Geben Sie bitte den neuen Ordnernamen ein',
+                    information : Locale.get( lg, 'projects.project.site.folder.create.information' ),
                     icon        : 'icon-folder-open-alt',
                     maxHeight   : 280,
                     maxWidth    : 500,

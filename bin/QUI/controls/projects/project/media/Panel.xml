@@ -1,0 +1,79 @@
+<locales>
+
+<!-- js -->
+    <groups name="quiqqer/system" datatype="js">
+
+        <locale name="projects.project.site.media.panel.btn.sitemap.show">
+            <de><![CDATA[Sitemap anzeigen]]></de>
+            <en><![CDATA[Show Sitemap]]></en>
+        </locale>
+        <locale name="projects.project.site.media.panel.btn.view.title">
+            <de><![CDATA[Ansicht:]]></de>
+            <en><![CDATA[View:]]></en>
+        </locale>
+        <locale name="projects.project.site.media.panel.btn.view.symbols">
+            <de><![CDATA[Symbolansicht]]></de>
+            <en><![CDATA[Icon view]]></en>
+        </locale>
+        <locale name="projects.project.site.media.panel.btn.view.details">
+            <de><![CDATA[Detailsansicht]]></de>
+            <en><![CDATA[Detail view]]></en>
+        </locale>
+        <locale name="projects.project.site.media.panel.btn.view.preview">
+            <de><![CDATA[Vorschau]]></de>
+            <en><![CDATA[Preview]]></en>
+        </locale>
+        <locale name="projects.project.site.media.panel.btn.create">
+            <de><![CDATA[Neuen Ordner erstellen]]></de>
+            <en><![CDATA[Create new folder]]></en>
+        </locale>
+        <locale name="projects.project.site.media.panel.btn.upload">
+            <de><![CDATA[Dateien hochladen]]></de>
+            <en><![CDATA[Upload files]]></en>
+        </locale>
+        <locale name="projects.project.site.media.panel.btn.upload.files">
+            <de><![CDATA[Dateien hochladen]]></de>
+            <en><![CDATA[Upload files]]></en>
+        </locale>
+        <locale name="projects.project.site.media.panel.btn.upload.archive">
+            <de><![CDATA[Archiv hochladen und entpacken]]></de>
+            <en><![CDATA[Upload an archiv and extract it]]></en>
+        </locale>
+
+        <locale name="projects.project.site.media.panel.upload.extract.text">
+            <de><![CDATA[
+                <h2><span class="icon-upload"></span>Archiv Upload</h2>
+                <p>Laden Sie Archiv Dateien in den Media Ordner hoch.</p>
+                <p>Diese Archivdateien werden direkt entpackt.</p>
+            ]]></de>
+            <en><![CDATA[
+                <h2><span class="icon-upload"></span>Upload archivefile</h2>
+                <p>Upload archive files to the media folder.</p>
+                <p>These archive files are unpacked directly.</p>
+            ]]></en>
+        </locale>
+        <locale name="projects.project.site.media.panel.upload.text">
+            <de><![CDATA[
+                <h2><span class="icon-upload"></span>Datei Upload</h2>
+                <p>Laden Sie Dateien in den Media Ordner hoch.</p>
+            ]]></de>
+            <en><![CDATA[
+                <h2><span class="icon-upload"></span>Upload file</h2>
+                <p>Upload files to the media folder.</p>
+            ]]></en>
+        </locale>
+
+
+        <locale name="projects.project.site.folder.create.title">
+            <de><![CDATA[Neuer Ordner anlegen]]></de>
+            <en><![CDATA[Creating a new folder]]></en>
+        </locale>
+        <locale name="projects.project.site.folder.create.information">
+            <de><![CDATA[Bitte geben Sie den neuen Ordnernamen ein.]]></de>
+            <en><![CDATA[Please enter the new folder name.]]></en>
+        </locale>
+
+
+    </groups>
+
+</locales>
