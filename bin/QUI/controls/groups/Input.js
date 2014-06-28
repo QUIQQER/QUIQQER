@@ -20,10 +20,11 @@ define('controls/groups/Input', [
     'controls/groups/Entry',
     'controls/groups/sitemap/Window',
     'Ajax',
+    'Locale',
 
     'css!controls/groups/Input.css'
 
-], function(QUIControl, QUIButton, GroupEntry, GroupSitemapWindow, Ajax)
+], function(QUIControl, QUIButton, GroupEntry, GroupSitemapWindow, Ajax, Locale)
 {
     "use strict";
 
@@ -353,7 +354,7 @@ define('controls/groups/Input', [
                 if ( !data.length )
                 {
                     new Element('div', {
-                        html   : 'Keine Ergebnisse gefunden',
+                        html   : Locale.get( 'quiqqer/system', 'groups.input.no.results' ),
                         styles : {
                             'float' : 'left',
                             'clear' : 'both',

@@ -1,0 +1,13 @@
+<locales>
+
+    <!--general locales -->
+    <groups name="quiqqer/system" datatype="js">
+        <locale name="groups.entry.btn.remove">
+            <de><![CDATA[Gruppe entfernen]]></de>
+            <en><![CDATA[Remove group]]></en>
+        </locale>
+
+
+    </groups>
+
+</locales>

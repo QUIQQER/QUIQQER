@@ -2,6 +2,15 @@
 
     <!--general locales -->
     <groups name="quiqqer/system" datatype="js,php">
+        <locale name="yes">
+            <de><![CDATA[Ja]]></de>
+            <en><![CDATA[Yes]]></en>
+        </locale>
+        <locale name="no">
+            <de><![CDATA[Nein]]></de>
+            <en><![CDATA[No]]></en>
+        </locale>
+
         <locale name="id">
             <de><![CDATA[ID]]></de>
             <en><![CDATA[ID]]></en>
@@ -30,7 +39,6 @@
             <de><![CDATA[nach]]></de>
             <en><![CDATA[to]]></en>
         </locale>
-
         <locale name="up">
             <de><![CDATA[Hoch]]></de>
             <en><![CDATA[Up]]></en>
@@ -38,6 +46,22 @@
         <locale name="down">
             <de><![CDATA[Runter]]></de>
             <en><![CDATA[Down]]></en>
+        </locale>
+        <locale name="status">
+            <de><![CDATA[Status]]></de>
+            <en><![CDATA[Status]]></en>
+        </locale>
+        <locale name="email">
+            <de><![CDATA[E-Mail]]></de>
+            <en><![CDATA[E-mail]]></en>
+        </locale>
+        <locale name="firstname">
+            <de><![CDATA[Vorname]]></de>
+            <en><![CDATA[Firstname]]></en>
+        </locale>
+        <locale name="lastname">
+            <de><![CDATA[Nachname]]></de>
+            <en><![CDATA[Lastname]]></en>
         </locale>
 
         <locale name="username">
@@ -51,6 +75,15 @@
         <locale name="user_ip_adress">
             <de><![CDATA[IP Adresse des Benutzers]]></de>
             <en><![CDATA[The user's IP address]]></en>
+        </locale>
+
+        <locale name="groupname">
+            <de><![CDATA[Gruppenname]]></de>
+            <en><![CDATA[Groupname]]></en>
+        </locale>
+        <locale name="group_id">
+            <de><![CDATA[Gruppen-ID]]></de>
+            <en><![CDATA[Group ID]]></en>
         </locale>
 
         <locale name="cancel">

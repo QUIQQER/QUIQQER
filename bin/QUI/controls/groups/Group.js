@@ -17,15 +17,18 @@ define('controls/groups/Group', [
     'Groups',
     'Ajax',
     'Editors',
+    'Locale',
     'qui/controls/buttons/Button',
     'qui/utils/Form',
     'utils/Controls',
 
     'css!controls/groups/Group.css'
 
-], function(Panel, Grid, Groups, Ajax, Editors, QUIButton, FormUtils, ControlUtils)
+], function(Panel, Grid, Groups, Ajax, Editors, Locale, QUIButton, FormUtils, ControlUtils)
 {
     "use strict";
+
+    var lg = 'quiqqer/system';
 
     /**
      * @class controls/groups/Group
@@ -107,13 +110,14 @@ define('controls/groups/Group', [
             require(['qui/controls/windows/Confirm'], function(Submit)
             {
                 new Submit({
-                    name        : 'DeleteUser'+ self.getGroup().getId(),
-                    title       : 'Möchten Sie die Gruppe wirklich löschen?',
-                    icon        : 'icon-trash',
-                    texticon    : 'icon-trash',
-                    text        : 'Die Gruppe '+ self.getGroup().getAttribute('name') +' wirklich löschen?',
-                    information : 'Die Gruppe wird komplett aus dem System entfernt und ' +
-                                  'kann nicht wieder hergestellt werden',
+                    name     : 'DeleteUser'+ self.getGroup().getId(),
+                    title    : Locale.get( lg, 'groups.group.delete.title' ),
+                    icon     : 'icon-trash',
+                    texticon : 'icon-trash',
+                    text : Locale.get( lg, 'groups.group.delete.text', {
+                        group : self.getGroup().getAttribute('name')
+                    }),
+                    information : Locale.get( lg, 'groups.group.delete.information' ),
                     width  : 500,
                     height : 150,
                     events :
@@ -140,10 +144,7 @@ define('controls/groups/Group', [
             require(['controls/permissions/Panel'], function(PermPanel)
             {
                 Parent.appendChild(
-                    new PermPanel(
-                        null,
-                        Group
-                    )
+                    new PermPanel( null, Group )
                 );
             });
         },
@@ -296,7 +297,7 @@ define('controls/groups/Group', [
         {
             this.addButton({
                 name      : 'groupSave',
-                text      : 'Änderungen speichern',
+                text      : Locale.get( lg, 'groups.group.btn.save' ),
                 textimage : 'icon-save',
                 events    : {
                     onClick : this.save
@@ -305,7 +306,7 @@ define('controls/groups/Group', [
 
             this.addButton({
                 name      : 'groupDelete',
-                text      : 'Gruppe löschen',
+                text      : Locale.get( lg, 'groups.group.btn.delete' ),
                 textimage : 'icon-trash',
                 events    : {
                     onClick : this.del
@@ -315,8 +316,8 @@ define('controls/groups/Group', [
             // permissions
             new QUIButton({
                 image  : 'icon-gears',
-                alt    : 'Gruppen Zugriffsrechte einstellen',
-                title  : 'Gruppen Zugriffsrechte einstellen',
+                alt    : Locale.get( lg, 'groups.group.btn.permissions.alt' ),
+                title  : Locale.get( lg, 'groups.group.btn.permissions.title' ),
                 styles : {
                     'float' : 'right'
                 },
@@ -481,37 +482,37 @@ define('controls/groups/Group', [
 
             this.$UserGrid = new Grid(GridCon, {
                 columnModel : [{
-                    header    : 'Status',
+                    header    : Locale.get( lg, 'status' ),
                     dataIndex : 'status',
                     dataType  : 'node',
                     width     : 50
                 }, {
-                    header    : 'Benutzer-ID',
+                    header    : Locale.get( lg, 'user_id' ),
                     dataIndex : 'id',
                     dataType  : 'integer',
                     width     : 150
                 }, {
-                    header    : 'Benutzername',
+                    header    : Locale.get( lg, 'username' ),
                     dataIndex : 'username',
                     dataType  : 'integer',
                     width     : 150
                 }, {
-                    header    : 'E-Mail',
+                    header    : Locale.get( lg, 'email' ),
                     dataIndex : 'email',
                     dataType  : 'string',
                     width     : 150
                 }, {
-                    header    : 'Vorname',
+                    header    : Locale.get( lg, 'firstname' ),
                     dataIndex : 'firstname',
                     dataType  : 'string',
                     width     : 150
                 }, {
-                    header    : 'Nachname',
+                    header    : Locale.get( lg, 'lastname' ),
                     dataIndex : 'lastname',
                     dataType  : 'string',
                     width     : 150
                 }, {
-                    header    : 'Erstellungsdatum',
+                    header    : Locale.get( lg, 'c_date' ),
                     dataIndex : 'regdate',
                     dataType  : 'date',
                     width     : 150

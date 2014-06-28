@@ -1,0 +1,18 @@
+<locales>
+
+    <!--general locales -->
+    <groups name="quiqqer/system" datatype="js">
+        <locale name="groups.sitemap.window.title">
+            <de><![CDATA[Gruppenauswahl]]></de>
+            <en><![CDATA[Group selection]]></en>
+        </locale>
+        <locale name="groups.sitemap.window.text">
+            <de><![CDATA[Wählen Sie bitte eine Gruppe aus.]]></de>
+            <en><![CDATA[Please choose a group.]]></en>
+        </locale>
+
+
+
+    </groups>
+
+</locales>

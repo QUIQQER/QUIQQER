@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<locales>
+    <groups name="quiqqer/system" datatype="js">
+
+        <locale name="groups.panel.title">
+            <de><![CDATA[Gruppenverwaltung]]></de>
+            <en><![CDATA[Group manager]]></en>
+        </locale>
+
+        <locale name="groups.panel.btn.activate">
+            <de><![CDATA[Gruppe aktivieren]]></de>
+            <en><![CDATA[Activate group]]></en>
+        </locale>
+        <locale name="groups.panel.btn.deactivate">
+            <de><![CDATA[Gruppe deaktivieren]]></de>
+            <en><![CDATA[Deactivate group]]></en>
+        </locale>
+        <locale name="groups.panel.btn.search">
+            <de><![CDATA[Gruppe suche]]></de>
+            <en><![CDATA[Search group]]></en>
+        </locale>
+        <locale name="groups.panel.btn.create">
+            <de><![CDATA[Neue Gruppe anlegen]]></de>
+            <en><![CDATA[Create new group]]></en>
+        </locale>
+        <locale name="groups.panel.btn.edit">
+            <de><![CDATA[Gruppe bearbeiten]]></de>
+            <en><![CDATA[Edit group]]></en>
+        </locale>
+        <locale name="groups.panel.btn.delete">
+            <de><![CDATA[Gruppe löschen]]></de>
+            <en><![CDATA[Delete group]]></en>
+        </locale>
+
+        <locale name="groups.panel.grid.admin">
+            <de><![CDATA[Darf in den Administration]]></de>
+            <en><![CDATA[Keep in of the Administration]]></en>
+        </locale>
+
+        <locale name="groups.panel.search.title">
+            <de><![CDATA[Gruppen Suche]]></de>
+            <en><![CDATA[Group search]]></en>
+        </locale>
+        <locale name="groups.panel.search.btn.search">
+            <de><![CDATA[Suche starten ...]]></de>
+            <en><![CDATA[Start search ...]]></en>
+        </locale>
+        <locale name="groups.panel.search.active.message">
+            <de><![CDATA[
+                Sucheparameter sind aktiviert.<br />
+                Klicken Sie hier um die Suche zu beenden und alle Gruppen wieder anzeigen zu lassen.
+            ]]></de>
+            <en><![CDATA[
+                Search parameters are enabled. <br />
+                Click here to stop the searc and view all the groups again.
+            ]]></en>
+        </locale>
+
+        <locale name="groups.panel.create.window.title">
+            <de><![CDATA[Gruppe erstellen]]></de>
+            <en><![CDATA[Create group]]></en>
+        </locale>
+        <locale name="groups.panel.create.window.sitemap.text">
+            <de><![CDATA[Unter welcher Gruppe soll die neue Gruppe angelegt werden?]]></de>
+            <en><![CDATA[Under which group should the new group to be created?]]></en>
+        </locale>
+        <locale name="groups.panel.create.window.new.group.title">
+            <de><![CDATA[Neuer Gruppennamen]]></de>
+            <en><![CDATA[New group name]]></en>
+        </locale>
+        <locale name="groups.panel.create.window.new.group.text">
+            <de><![CDATA[Bitte geben Sie den neuen Gruppennamen an]]></de>
+            <en><![CDATA[Please enter the new group name in]]></en>
+        </locale>
+
+        <locale name="groups.panel.delete.window.title">
+            <de><![CDATA[Gruppen löschen]]></de>
+            <en><![CDATA[Delete groups]]></en>
+        </locale>
+        <locale name="groups.panel.delete.window.text">
+            <de><![CDATA[Sie möchten folgende Gruppen löschen:]]></de>
+            <en><![CDATA[You want to delete the following groups:]]></en>
+        </locale>
+        <locale name="groups.panel.delete.window.information">
+            <de><![CDATA[Die Gruppen werden komplett aus dem System entfernt und können nicht wieder hergestellt werden]]></de>
+            <en><![CDATA[The groups are completely removed from the system and can not be restored]]></en>
+        </locale>
+
+
+
+
+    </groups>
+</locales>

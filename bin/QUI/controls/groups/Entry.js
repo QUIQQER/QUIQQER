@@ -8,16 +8,18 @@
  *
  * @require controls/Control
  * @require Groups
+ * @require Locale
  */
 
 define('controls/groups/Entry', [
 
     'qui/controls/Control',
     'Groups',
+    'Locale',
 
     'css!controls/groups/Entry.css'
 
-], function(QUIControl, Groups)
+], function(QUIControl, Groups, Locale)
 {
     "use strict";
 
@@ -78,8 +80,8 @@ define('controls/groups/Entry', [
 
             Close.addEvent( 'click', this.destroy);
             Close.set({
-                alt   : 'Gruppe entfernen',
-                title : 'Gruppe entfernen'
+                alt   : Locale.get( 'quiqqer/system', 'groups.entry.btn.remove' ),
+                title : Locale.get( 'quiqqer/system', 'groups.entry.btn.remove' )
             });
 
             this.$Group.addEvent( 'onRefresh', this.$onGroupUpdate );
@@ -90,6 +92,8 @@ define('controls/groups/Entry', [
 
         /**
          * event : on entry destroy
+         *
+         * @method controls/groups/Entry#$onDestroy
          */
         $onDestroy : function()
         {
@@ -99,6 +103,7 @@ define('controls/groups/Entry', [
         /**
          * Refresh the data of the group
          *
+         * @method controls/groups/Entry#refresh
          * @return {this}
          */
         refresh : function()
@@ -123,6 +128,7 @@ define('controls/groups/Entry', [
         /**
          * Update the group name
          *
+         * @method controls/groups/Entry#$onGroupUpdate
          * @param {classes/groups/Group}
          * @return {this}
          */
