@@ -126,7 +126,7 @@ define('classes/groups/Group', [
 
                 self.fireEvent( 'refresh', [ self ] );
 
-                require(['Groups'], function(self) {
+                require(['Groups'], function(Groups) {
                     Groups.refreshGroup( self );
                 });
 

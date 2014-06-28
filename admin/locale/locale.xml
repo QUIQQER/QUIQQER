@@ -79,7 +79,7 @@
 
         <locale name="groupname">
             <de><![CDATA[Gruppenname]]></de>
-            <en><![CDATA[Groupname]]></en>
+            <en><![CDATA[Group name]]></en>
         </locale>
         <locale name="group_id">
             <de><![CDATA[Gruppen-ID]]></de>

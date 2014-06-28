@@ -673,7 +673,7 @@ define('controls/groups/Panel', [
 
                 Grid.setData( result );
 
-                Panel.setAttribute( 'title', 'Gruppenverwaltung' );
+                Panel.setAttribute( 'title', Locale.get( lg, 'groups.panel.title') );
                 Panel.setAttribute( 'icon', 'icon-group' );
                 Panel.refresh();
 

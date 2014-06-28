@@ -2,6 +2,12 @@
 
     <!--general locales -->
     <groups name="quiqqer/system" datatype="js">
+
+        <locale name="groups.group.title">
+            <de><![CDATA[Gruppe: [group]]]></de>
+            <en><![CDATA[Group: [group]]]></en>
+        </locale>
+
         <locale name="groups.group.delete.title">
             <de><![CDATA[Möchten Sie die Gruppe wirklich löschen?]]></de>
             <en><![CDATA[Are you sure you want to delete the group?]]></en>

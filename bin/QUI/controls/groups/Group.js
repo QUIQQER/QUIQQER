@@ -221,7 +221,10 @@ define('controls/groups/Group', [
         {
             this.setAttribute(
                 'title',
-                'Gruppe: '+ this.getGroup().getAttribute( 'name' )
+
+                Locale.get( lg, 'groups.group.title', {
+                    group : this.getGroup().getAttribute( 'name' )
+                })
             );
 
             this.refresh();

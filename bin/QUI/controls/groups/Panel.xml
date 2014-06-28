@@ -35,7 +35,7 @@
 
         <locale name="groups.panel.grid.admin">
             <de><![CDATA[Darf in den Administration]]></de>
-            <en><![CDATA[Keep in of the Administration]]></en>
+            <en><![CDATA[Allowed to enter the administration]]></en>
         </locale>
 
         <locale name="groups.panel.search.title">
