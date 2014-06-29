@@ -8,15 +8,18 @@ define('controls/logs/Panel', [
     'qui/controls/desktop/Panel',
     'controls/grid/Grid',
     'Ajax',
+    'Locale',
     'qui/controls/buttons/Button',
     'qui/controls/buttons/Seperator',
     'qui/controls/windows/Confirm',
 
     'css!controls/logs/Panel.css'
 
-], function(Panel, Grid, Ajax, QUIButton, QUIButtonSeperator, QUIConfirm)
+], function(Panel, Grid, Ajax, Locale, QUIButton, QUIButtonSeperator, QUIConfirm)
 {
     "use strict";
+
+    var lg = 'quiqqer/system';
 
     /**
      * @class controls/logs/Panel
@@ -51,7 +54,7 @@ define('controls/logs/Panel', [
         initialize: function(options)
         {
             // defaults
-            this.setAttribute( 'title', 'Logs' );
+            this.setAttribute( 'title', Locale.get( lg, 'logs.panel.title' ) );
             this.setAttribute( 'icon', 'icon-terminal' );
 
             this.parent( options );
@@ -87,10 +90,17 @@ define('controls/logs/Panel', [
                 for ( var i = 0, len = result.data.length; i < len; i++ )
                 {
                     result.data[ i ].open = {
-                        image  : URL_BIN_DIR +'16x16/actions/klipper_dock.png',
-                        alt    : 'Log vom '+ result.data[ i ].mdate  +' öffnen',
-                        title  : 'Log vom '+ result.data[ i ].mdate  +' öffnen',
-                        file   : result.data[ i ].file,
+                        image : URL_BIN_DIR +'16x16/actions/klipper_dock.png',
+                        file  : result.data[ i ].file,
+
+                        alt : Locale.get( lg, 'logs.panel.btn.open.log', {
+                            date : result.data[ i ].mdate
+                        }),
+
+                        title : Locale.get( lg, 'logs.panel.btn.open.log', {
+                            date : result.data[ i ].mdate
+                        }),
+
                         events : {
                             onClick : self.$btnOpenLog
                         }
@@ -124,7 +134,12 @@ define('controls/logs/Panel', [
             Control.$openLog = true;
             Control.$file    = file;
 
-            Control.setAttribute( 'title', 'Logs: '+ file );
+            Control.setAttribute(
+                'title',
+                Locale.get( lg, 'logs.panel.log.title', {
+                    file : file
+                })
+            );
 
             Control.$Fx.animate({
                 width : Control.getAttribute( 'site-width' )
@@ -172,9 +187,11 @@ define('controls/logs/Panel', [
                 sel  = this.$Grid.getSelectedData();
 
             new QUIConfirm({
-                title  : 'Log löschen: '+ sel[0].file,
+                title  : Locale.get( lg, 'logs.panel.delete.window.title', {
+                    file : sel[0].file
+                }),
                 icon   : 'icon-remove',
-                text   : 'Möchten Sie wirklich die Log löschen?',
+                text   : Locale.get( lg, 'logs.panel.delete.window.text' ),
                 events :
                 {
                     onSubmit : function()
@@ -247,12 +264,12 @@ define('controls/logs/Panel', [
                     dataType  : 'button',
                     width     : 40
                 }, {
-                    header    : 'Log',
+                    header    : Locale.get( lg, 'logs.panel.log.file' ),
                     dataIndex : 'file',
                     dataType  : 'string',
                     width     : 200
                 }, {
-                    header    : 'Datum',
+                    header    : Locale.get( lg, 'date' ),
                     dataIndex : 'mdate',
                     dataType  : 'date',
                     width     : 200
@@ -270,7 +287,7 @@ define('controls/logs/Panel', [
 
             this.$Search = new Element('input', {
                 'class'     : 'qui-logs-search',
-                placeholder : 'Suche nach...',
+                placeholder : Locale.get( lg, 'logs.panel.search.placeholder' ),
                 events :
                 {
                     keyup : function(event)
@@ -288,8 +305,8 @@ define('controls/logs/Panel', [
                 new QUIButton({
                     name      : 'search',
                     image     : 'icon-search',
-                    alt       : 'Suche starten',
-                    title     : 'Suche starten',
+                    alt       : Locale.get( lg, 'logs.panel.search.btn.start.alt' ),
+                    title     : Locale.get( lg, 'logs.panel.search.btn.start.title' ),
                     events    :
                     {
                         onClick : function(Btn)
@@ -313,7 +330,7 @@ define('controls/logs/Panel', [
             this.addButton(
                 new QUIButton({
                     name      : 'refresh',
-                    text      : 'Log aktualisieren',
+                    text      : Locale.get( lg, 'logs.panel.btn.refresh' ),
                     textimage : 'icon-refresh',
                     disabled  : true,
                     events    : {
@@ -329,7 +346,7 @@ define('controls/logs/Panel', [
             this.addButton(
                 new QUIButton({
                     name      : 'delete',
-                    text      : 'Markierte Logs löschen',
+                    text      : Locale.get( lg, 'logs.panel.btn.delete.marked' ),
                     textimage : 'icon-trash',
                     disabled  : true,
                     events    : {
