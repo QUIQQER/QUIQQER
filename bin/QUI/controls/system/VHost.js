@@ -21,9 +21,22 @@ define('controls/system/VHost', [
 
     'css!controls/system/VHost.css'
 
-], function(QUI, QUIControl, QUILoader, FormUtils, Grid, ControlUtils, StringUtils, Ajax, Locale, Projects)
+], function()
 {
     "use strict";
+
+    var lg = 'quiqqer/system';
+
+    var QUI          = arguments[ 0 ],
+        QUIControl   = arguments[ 1 ],
+        QUILoader    = arguments[ 2 ],
+        FormUtils    = arguments[ 3 ],
+        Grid         = arguments[ 4 ],
+        ControlUtils = arguments[ 5 ],
+        StringUtils  = arguments[ 6 ],
+        Ajax         = arguments[ 7 ],
+        Locale       = arguments[ 8 ],
+        Projects     = arguments[ 9 ];
 
 
     return new Class({
@@ -108,13 +121,17 @@ define('controls/system/VHost', [
                     '<table class="data-table">' +
                     '<thead>' +
                         '<tr>' +
-                            '<th colspan="2">Host Daten</th>' +
+                            '<th colspan="2">'+
+                                Locale.get( lg, 'system.vhost.table.hostdata' ) +
+                            '</th>' +
                         '</th>' +
                     '</thead>' +
                     '<tbody>' +
                         '<tr class="odd">' +
                             '<td style="width: 150px;">' +
-                                '<label for="">Domain</label>' +
+                                '<label for="">'+
+                                    Locale.get( lg, 'system.vhost.label.domain' ) +
+                                '</label>' +
                             '</td>' +
                             '<td>' +
                                 '<input type="text" name="domain" disabled="disabled" />' +
@@ -122,7 +139,9 @@ define('controls/system/VHost', [
                         '</tr>' +
                         '<tr class="even">' +
                             '<td>' +
-                                '<label for="">Projekt</label>' +
+                                '<label for="">' +
+                                    Locale.get( lg, 'project' ) +
+                                '</label>' +
                             '</td>' +
                             '<td>' +
                                 '<input type="text" class="project" name="project" />' +
@@ -130,7 +149,9 @@ define('controls/system/VHost', [
                         '</tr>' +
                         '<tr class="odd">' +
                             '<td>' +
-                                '<label for="">Template</label>' +
+                                '<label for="">' +
+                                    Locale.get( lg, 'template' ) +
+                                '</label>' +
                             '</td>' +
                             '<td>' +
                                 '<select name="template"></select>' +
@@ -138,7 +159,9 @@ define('controls/system/VHost', [
                         '</tr>' +
                         '<tr class="even">' +
                             '<td>' +
-                                '<label for="">Fehler-Seite</label>' +
+                                '<label for="">'+
+                                    Locale.get( lg, 'system.vhost.label.errorsite' ) +
+                                '</label>' +
                             '</td>' +
                             '<td>' +
                                 '<input name="error" class="project-site" />' +
@@ -146,7 +169,9 @@ define('controls/system/VHost', [
                         '</tr>' +
                         '<tr class="odd">' +
                             '<td>' +
-                                '<label for="">HTTPS-Host</label>' +
+                                '<label for="">'+
+                                    Locale.get( lg, 'system.vhost.label.httpshost' ) +
+                                '</label>' +
                             '</td>' +
                             '<td>' +
                                 '<input name="httpshost" />' +
@@ -156,9 +181,11 @@ define('controls/system/VHost', [
                     '</table>' +
 
                     '<table class="data-table control-system-vhost-languages">' +
-                    '<thead colspan="2">' +
+                    '<thead>' +
                         '<tr>' +
-                            '<th>Sprach Zuweisungen</th>' +
+                            '<th colspan="2">' +
+                                Locale.get( lg, 'system.vhost.table.languages' ) +
+                            '</th>' +
                         '</th>' +
                     '</thead>' +
                     '<tbody></tbody>' +

@@ -14,11 +14,14 @@ define('controls/system/VHosts', [
     'controls/grid/Grid',
     'controls/system/VHost',
     'controls/system/VHostServerCode',
-    'Ajax'
+    'Ajax',
+    'Locale'
 
-], function(QUI, QUIPanel, QUIPrompt, QUIConfirm, Grid, Vhost, VhostServerCode, Ajax)
+], function(QUI, QUIPanel, QUIPrompt, QUIConfirm, Grid, Vhost, VhostServerCode, Ajax, Locale)
 {
     "use strict";
+
+    var lg = 'quiqqer/system';
 
     return new Class({
 
@@ -34,7 +37,7 @@ define('controls/system/VHosts', [
         ],
 
         options : {
-            title : 'Virtual Hosts Einstellungen',
+            title : Locale.get( lg, 'system.vhosts.title' ),
             icon  : 'icon-external-link'
         },
 
@@ -57,7 +60,7 @@ define('controls/system/VHosts', [
 
             // buttons
             this.addButton({
-                text : 'Virtuellen Host hinzufügen',
+                text : Locale.get( lg, 'system.vhosts.btn.add' ),
                 textimage : 'icon-plus',
                 events :
                 {
@@ -73,7 +76,7 @@ define('controls/system/VHosts', [
 
             this.addButton({
                 name : 'editVhost',
-                text : 'Markierten Host editieren',
+                text : Locale.get( lg, 'system.vhosts.btn.edit.marked' ),
                 textimage : 'icon-edit',
                 disabled  : true,
                 events :
@@ -86,7 +89,7 @@ define('controls/system/VHosts', [
 
             this.addButton({
                 name : 'delVhost',
-                text : 'Markierte Hosts löschen',
+                text : Locale.get( lg, 'system.vhosts.btn.del.marked' ),
                 textimage : 'icon-trash',
                 disabled  : true,
                 events :
@@ -105,22 +108,22 @@ define('controls/system/VHosts', [
 
             this.$Grid = new Grid( Container, {
                 columnModel : [{
-                    header    : 'Domain',
+                    header    : Locale.get( lg, 'system.vhosts.table.domain' ),
                     dataIndex : 'host',
                     dataType  : 'string',
                     width     : 200
                 }, {
-                    header    : 'Projekt',
+                    header    : Locale.get( lg, 'project' ),
                     dataIndex : 'project',
                     dataType  : 'string',
                     width     : 200
                 }, {
-                    header    : 'Projektsprache',
+                    header    : Locale.get( lg, 'language' ),
                     dataIndex : 'lang',
                     dataType  : 'string',
                     width     : 200
                 }, {
-                    header    : 'Template',
+                    header    : Locale.get( lg, 'template' ),
                     dataIndex : 'template',
                     dataType  : 'string',
                     width     : 200
@@ -279,9 +282,8 @@ define('controls/system/VHosts', [
 
             new QUIPrompt({
                 icon  : 'icon-plus',
-                title : 'Neuen Virtuellen-Host hinzufügen',
-                information : 'Bitte geben Sie den neuen Host ein oder einen Server-Error-Code.<br />' +
-                              'Zum Beispiel: www.meine-domain.de order einfach nur 404',
+                title : Locale.get( lg, 'system.vhosts.add.window.title' ),
+                information : Locale.get( lg, 'system.vhosts.add.window.information' ),
                 events :
                 {
                     onSubmit : function(value, Win)
@@ -319,7 +321,9 @@ define('controls/system/VHosts', [
             }
 
             var Sheet = this.createSheet({
-                title  : vhost +' editieren',
+                title  : Locale.get( lg, 'system.vhosts.edit.sheet.title', {
+                    vhost : vhost
+                }),
                 icon   : 'icon-external-link',
                 events :
                 {
@@ -345,7 +349,7 @@ define('controls/system/VHosts', [
 
 
                         Sheet.addButton({
-                            text      : 'Speichern',
+                            text      : Locale.get( lg, 'system.vhosts.edit.sheet.btn.save' ),
                             textimage : 'icon-save',
                             events    :
                             {
@@ -394,16 +398,18 @@ define('controls/system/VHosts', [
 
 
             new QUIConfirm({
-                title : 'Virtuellen-Host löschen',
+                title : Locale.get( lg, 'system.vhosts.del.window.title' ),
                 icon  : 'icon-trash',
-                text  : 'Möchten Sie den Host '+ vhost +' wirklich löschen?',
+                text  : Locale.get( lg, 'system.vhosts.del.window.text', {
+                    vhost : vhost
+                }),
                 texticon    : 'icon-trash',
-                information : 'Beachten Sie, der Host Eintrag ist nicht wieder herstellbar und wird unwiederruflich gelöscht',
+                information : Locale.get( lg, 'system.vhosts.del.window.information' ),
 
-                closeButtonText : 'Abbrechen',
+                closeButtonText : Locale.get( lg, 'cancel' ),
 
                 ok_button : {
-                    text      : 'Löschen',
+                    text      : Locale.get( lg, 'delete' ),
                     textimage : 'icon-trash'
                 },
 

@@ -102,6 +102,14 @@
             <de><![CDATA[Übernehmen]]></de>
             <en><![CDATA[Accept]]></en>
         </locale>
+        <locale name="delete">
+            <de><![CDATA[Löschen]]></de>
+            <en><![CDATA[Delete]]></en>
+        </locale>
+        <locale name="save">
+            <de><![CDATA[Speichern]]></de>
+            <en><![CDATA[Save]]></en>
+        </locale>
 
 
         <locale name="project">
@@ -128,6 +136,10 @@
         <locale name="e_date">
             <de><![CDATA[Editierungsdatum]]></de>
             <en><![CDATA[Edit date]]></en>
+        </locale>
+        <locale name="site_id">
+            <de><![CDATA[Seite-ID]]></de>
+            <en><![CDATA[Site ID]]></en>
         </locale>
 
         <locale name="manually">
@@ -191,6 +203,11 @@
         <locale name="languages">
             <de><![CDATA[Sprachen]]></de>
             <en><![CDATA[Languages]]></en>
+        </locale>
+
+        <locale name="template">
+            <de><![CDATA[Template]]></de>
+            <en><![CDATA[Template]]></en>
         </locale>
 
     </groups>
