@@ -76,6 +76,10 @@
             <de><![CDATA[IP Adresse des Benutzers]]></de>
             <en><![CDATA[The user's IP address]]></en>
         </locale>
+        <locale name="password">
+            <de><![CDATA[Passwort]]></de>
+            <en><![CDATA[Password]]></en>
+        </locale>
 
         <locale name="groupname">
             <de><![CDATA[Gruppenname]]></de>

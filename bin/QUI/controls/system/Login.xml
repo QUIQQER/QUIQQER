@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<locales>
+
+    <groups name="quiqqer/system" datatype="js">
+        <locale name="login.title">
+            <de><![CDATA[Login]]></de>
+            <en><![CDATA[Login]]></en>
+        </locale>
+
+    </groups>
+
+</locales>

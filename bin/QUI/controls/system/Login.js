@@ -34,7 +34,7 @@ define('controls/system/Login', [
         ],
 
         options : {
-            title     : 'Login',
+            title     : Locale.get( 'quiqqer/system', 'login.title' ),
             icon      : 'icon-signin',
             maxHeight : 300,
             maxWidth  : 500,
@@ -44,6 +44,10 @@ define('controls/system/Login', [
         initialize : function(options)
         {
             this.parent( options );
+
+            this.addEvent('cancel', function() {
+                window.location = window.location;
+            });
         },
 
         /**
@@ -63,11 +67,11 @@ define('controls/system/Login', [
 
                 '<form class="qui-control-login">' +
                     '<label>' +
-                        'Benutzername' +
+                        Locale.get( 'quiqqer/system', 'username' ) +
                     '</label>' +
                     '<input type="text" value="" name="username" />' +
                     '<label>' +
-                        'Passwort' +
+                        Locale.get( 'quiqqer/system', 'password' ) +
                     '</label>' +
                     '<input type="password" value="" name="password" />' +
                 '</form>'
