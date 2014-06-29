@@ -16,13 +16,22 @@ define('controls/upload/Manager', [
     'qui/controls/windows/Alert',
     'controls/upload/File',
     'Ajax',
+    'Locale',
 
     'css!controls/upload/Manager.css'
 
-], function(QUI, QUIPanel, QUIProgressbar, QUIAlert, UploadFile, Ajax)
+], function(QUI, QUIPanel, QUIProgressbar, QUIAlert, UploadFile, Ajax, Locale)
 {
     "use strict";
 
+    var lg = 'quiqqer/system';
+
+    /**
+     * @class controls/upload/Manager
+     *
+     * @param {Object} options
+     * @memberof! <global>
+     */
     return new Class({
 
         Extends : QUIPanel,
@@ -33,7 +42,7 @@ define('controls/upload/Manager', [
         ],
 
         options : {
-            title : 'Uploads',
+            title : Locale.get( lg, 'upload.manager.title' ),
             icon  : 'icon-upload'
         },
 
@@ -123,24 +132,6 @@ define('controls/upload/Manager', [
                 extract = params.extract;
             }
 
-            console.info( params );
-
-//            if ( typeof params.extract === 'undefined' ) {
-//                extract = true;
-//            }
-//
-//            if ( params.extract === true )
-//            {
-//                extract = {};
-//
-//                for ( i = 0, len = files.length; i < len; i++ )
-//                {
-//                    if ( files[i].type === 'application/zip' ) {
-//                        extract[ files[i].name ] = true;
-//                    }
-//                }
-//            }
-
             // check for archive files (like zip or tar)
             // if undefined, ask for it
             if ( !extract )
@@ -164,7 +155,9 @@ define('controls/upload/Manager', [
                     list = list +'<div>' +
                             '<input id="upload-file-'+ i +'" type="checkbox" value="'+ archiveFiles[i].name +'" />' +
                             '<label for="upload-file-'+ i +'" style="line-height: 20px; margin-left: 10px;">'+
-                                archiveFiles[i].name +' entpacken' +
+                                Locale.get( lg, 'upload.manager.message.archivfile.label', {
+                                    file: archiveFiles[i].name
+                                })
                             '</label>'+
                         '</div>';
                 }
@@ -172,10 +165,9 @@ define('controls/upload/Manager', [
 
                 // ask for extraction
                 new QUIAlert({
-                    title       : 'Archiv Dateien gefunden',
-                    content     : 'Sie möchten folgende Archivdateien hochladen. ' +
-                                  'Möchten Sie diese direkt entpacken?' + list,
-                    closeButtonText : 'Upload starten',
+                    title   : Locale.get( lg, 'upload.manager.message.archivfile.title' ),
+                    content : Locale.get( lg, 'upload.manager.message.archivfile.text' ) +'<br />'+ list,
+                    closeButtonText : Locale.get( lg, 'upload.manager.message.archivfile.btn.start' ),
                     events      :
                     {
                         onClose : function(Win)
@@ -283,8 +275,7 @@ define('controls/upload/Manager', [
                 QUI.getMessageHandler(function(MH)
                 {
                     MH.addInformation(
-                        'Sie haben nicht fertig gestellte Uploads im Upload Manager. ' +
-                        'Führen Sie die Uploads bitte fort oder brechen Sie diese ab.'
+                        Locale.get( lg, 'upload.manager.message.not.finish' )
                     );
                 });
 
@@ -336,10 +327,10 @@ define('controls/upload/Manager', [
                     if ( this.$Container ) {
                         QUIFile.inject( this.$Container, 'top');
                     }
+
                     QUIFile.refresh();
                 }
             });
         }
-
     });
 });

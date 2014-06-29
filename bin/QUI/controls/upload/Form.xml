@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<locales>
+    <groups name="quiqqer/system" datatype="js">
+
+        <locale name="upload.form.btn.add.text">
+            <de><![CDATA[Upload hinzufügen]]></de>
+            <en><![CDATA[Add upload]]></en>
+        </locale>
+
+        <locale name="upload.form.btn.send.text">
+            <de><![CDATA[Hochladen beginnen]]></de>
+            <en><![CDATA[Start upload]]></en>
+        </locale>
+        <locale name="upload.form.btn.send.title">
+            <de><![CDATA[Upload starten]]></de>
+            <en><![CDATA[Start upload]]></en>
+        </locale>
+        <locale name="upload.form.btn.send.alt">
+            <de><![CDATA[Upload starten]]></de>
+            <en><![CDATA[Start upload]]></en>
+        </locale>
+
+        <locale name="upload.form.btn.change.alt">
+            <de><![CDATA[Upload starten]]></de>
+            <en><![CDATA[Start upload]]></en>
+        </locale>
+        <locale name="upload.form.btn.change.title">
+            <de><![CDATA[Per Klick können Sie eine andere Datei auswählen ...]]></de>
+            <en><![CDATA[By clicking, you can select another file ...]]></en>
+        </locale>
+
+        <locale name="upload.form.message.limit">
+            <de><![CDATA[Es sind nur [limit] Uploads erlaubt.]]></de>
+            <en><![CDATA[There are only allowed [limit] uploads.]]></en>
+        </locale>
+
+        <locale name="upload.form.info.text">
+            <de><![CDATA[Hochladen ...]]></de>
+            <en><![CDATA[Uploading ...]]></en>
+        </locale>
+
+
+
+    </groups>
+</locales>

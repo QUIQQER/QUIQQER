@@ -22,10 +22,11 @@ define('controls/usersAndGroups/Input', [
     'controls/users/Entry',
     'controls/groups/Entry',
     'Ajax',
+    'Locale',
 
     'css!controls/usersAndGroups/Input.css'
 
-], function(QUIControl, QUIButton, UsersEntry, GroupsEntry, Ajax)
+], function(QUIControl, QUIButton, UsersEntry, GroupsEntry, Ajax, Locale)
 {
     "use strict";
 
@@ -125,7 +126,7 @@ define('controls/usersAndGroups/Input', [
 
             this.$Search = new Element('input', {
                 'class'     : 'qui-users-and-groups-search radius5',
-                placeholder : 'Suche nach einer Gruppe oder Benutzer...',
+                placeholder : Locale.get( 'quiqqer/system', 'usersAndGroups.input.search.placeholder' ),
                 events :
                 {
                     keyup : function(event)
@@ -270,7 +271,7 @@ define('controls/usersAndGroups/Input', [
                 if ( !data.length )
                 {
                     new Element('div', {
-                        html   : 'Keine Ergebnisse gefunden',
+                        html   : Locale.get( 'quiqqer/system', 'usersAndGroups.no.results' ),
                         styles : {
                             'float' : 'left',
                             'clear' : 'both',

@@ -171,6 +171,15 @@
             <en><![CDATA[Release date descending]]></en>
         </locale>
 
+        <locale name="pause">
+            <de><![CDATA[Pause]]></de>
+            <en><![CDATA[Pause]]></en>
+        </locale>
+        <locale name="Resume">
+            <de><![CDATA[Forsetzen]]></de>
+            <en><![CDATA[Resume]]></en>
+        </locale>
+
         <locale name="language">
             <de><![CDATA[Sprache]]></de>
             <en><![CDATA[Language]]></en>

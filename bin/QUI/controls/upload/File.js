@@ -5,7 +5,18 @@
  *
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires controls/Control
+ * @requires qui/QUI
+ * @requires qui/controls/Control
+ * @requires qui/controls/contextmenu/Menu
+ * @requires qui/controls/contextmenu/Item
+ * @requires qui/controls/buttons/Button
+ * @requires qui/controls/utils/Progressbar
+ * @requires qui/controls/windows/Prompt
+ * @requires qui/controls/messages/Error
+ * @requires qui/utils/Math
+ * @requires qui/utils/Object
+ * @requires Ajax
+ * @requires Locale
  *
  * @module controls/upload/File
  * @class controls/upload/File
@@ -23,11 +34,28 @@ define('controls/upload/File', [
     'qui/controls/messages/Error',
     'qui/utils/Math',
     'qui/utils/Object',
-    'Ajax'
+    'Ajax',
+    'Locale'
 
-], function(QUI, QUIControl, QUIContextMenu, QUIContextmenuItem, QUIButton, QUIProgressbar, QUIPrompt, MessageError, MathUtils, ObjectUtils, Ajax)
+], function()
 {
     "use strict";
+
+    var lg = 'quiqqer/system';
+
+    var QUI                = arguments[ 0 ],
+        QUIControl         = arguments[ 1 ],
+        QUIContextMenu     = arguments[ 2 ],
+        QUIContextmenuItem = arguments[ 3 ],
+        QUIButton          = arguments[ 4 ],
+        QUIProgressbar     = arguments[ 5 ],
+        QUIPrompt          = arguments[ 6 ],
+        MessageError       = arguments[ 7 ],
+        MathUtils          = arguments[ 8 ],
+        ObjectUtils        = arguments[ 9 ],
+        Ajax               = arguments[ 10 ],
+        Locale             = arguments[ 11 ];
+
 
     /**
      * @class controls/upload/File
@@ -78,8 +106,7 @@ define('controls/upload/File', [
                 QUI.getMessageHandler(function(MessageHandler)
                 {
                     MessageHandler.addError(
-                        'Die Datei ist fehlerhaft und kann nicht hochgeladen werden. ' +
-                        'Bitte laden Sie eine andere Datei hoch.'
+                        Locale.get( lg, 'file.message.corrupt.file' )
                     );
                 });
 
@@ -90,7 +117,7 @@ define('controls/upload/File', [
 
             this.$is_paused    = false;
             this.$file_size    = this.$File.size;
-            this.$chunk_size   = (1024 * 100);
+            this.$chunk_size   = ( 1024 * 100 );
             this.$range_start  = 0;
             this.$range_end    = this.$chunk_size;
             this.$upload_time  = null;
@@ -240,15 +267,14 @@ define('controls/upload/File', [
                         self.pause();
 
                         new QUIPrompt({
-                            name   : 'cancel-upload-window',
-                            title  : 'Upload abbrechen',
-                            text   : 'Möchten Sie den Upload abbrechen?',
-                            information : '' +
-                                'Möchten Sie den Upload der Datei '+
-                                    '<b>'+ self.getFilename() +'</b>'+
-                                ' wirklich abbrechen?',
-                            height  : 150,
-                            events  :
+                            name  : 'cancel-upload-window',
+                            title : Locale.get( lg, 'file.upload.cancel.title' ),
+                            text  : Locale.get( lg, 'file.upload.cancel.title' ),
+                            information : Locale.get( lg, 'file.upload.cancel.information', {
+                                file : self.getFilename()
+                            }),
+                            height : 150,
+                            events :
                             {
                                 onSubmit : function(Win) {
                                     self.cancel();
@@ -265,7 +291,7 @@ define('controls/upload/File', [
 
             this.$PauseResume = new QUIButton({
                 name    : 'continue-upload',
-                text    : 'pause',
+                text    : Locale.get( lg, 'pause' ),
                 Control : this,
                 events  :
                 {
@@ -285,7 +311,7 @@ define('controls/upload/File', [
             });
 
             if ( this.$is_paused ) {
-                this.$PauseResume.setAttribute('text', 'forführen');
+                this.$PauseResume.setAttribute( 'text', Locale.get( lg, 'resume' ) );
             }
 
             this.$Cancel.inject( Buttons );
@@ -304,12 +330,12 @@ define('controls/upload/File', [
 
             this.$ContextMenu.appendChild(
                 new QUIContextmenuItem({
-                    text   : 'Von der Liste entfernen',
+                    text   : Locale.get( lg, 'file.upload.remove' ),
                     File   : this,
                     events :
                     {
                         onClick : function(Item, event) {
-                            Item.getAttribute('File').getElm().destroy();
+                            Item.getAttribute( 'File' ).getElm().destroy();
                         }
                     }
                 })
@@ -382,9 +408,7 @@ define('controls/upload/File', [
                 QUI.getMessageHandler(function(MessageHandler)
                 {
                     MessageHandler.addError(
-                        'Die Dateiart ist unbekannt. ' +
-                        'Bitte wählen Sie für den Upload nur Dateien und Bilder aus.' +
-                        'Ordner können nur gepackt hochgeladen werden.'
+                        Locale.get( lg, 'file.upload.unknown.filetype' )
                     );
                 });
 
@@ -707,7 +731,6 @@ define('controls/upload/File', [
             if ( res.result ) {
                 this.$result = res.result;
             }
-
         }
     });
 });

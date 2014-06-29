@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<locales>
+    <groups name="quiqqer/system" datatype="js">
+
+        <locale name="usersAndGroups.input.search.placeholder">
+            <de><![CDATA[Suche nach einer Gruppe oder Benutzer...]]></de>
+            <en><![CDATA[Search for a group or user ...]]></en>
+        </locale>
+        <locale name="usersAndGroups.no.results">
+            <de><![CDATA[Keine Ergebnisse gefunden]]></de>
+            <en><![CDATA[No results found]]></en>
+        </locale>
+
+    </groups>
+</locales>

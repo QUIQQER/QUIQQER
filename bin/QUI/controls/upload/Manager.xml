@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<locales>
+    <groups name="quiqqer/system" datatype="js">
+
+        <locale name="upload.manager.title">
+            <de><![CDATA[Uploads]]></de>
+            <en><![CDATA[Upload]]></en>
+        </locale>
+        <locale name="upload.manager.message.not.finish">
+            <de><![CDATA[
+                Sie haben nicht fertiggestellte Uploads im Upload-Manager.<br />
+                Führen Sie die Uploads bitte fort oder brechen Sie diese ab.
+            ]]></de>
+            <en><![CDATA[
+                You have unfinished uploads in the Upload Manager.<br />
+                Please resume or cancel the uploads.
+            ]]></en>
+        </locale>
+
+        <locale name="upload.manager.message.archivfile.title">
+            <de><![CDATA[Archiv Dateien gefunden]]></de>
+            <en><![CDATA[Found archive files]]></en>
+        </locale>
+        <locale name="upload.manager.message.archivfile.text">
+            <de><![CDATA[
+                Sie möchten folgende Archivdateien hochladen.<br />
+                Möchten Sie diese direkt entpacken?
+            ]]></de>
+            <en><![CDATA[
+                You want to upload the following archive files.<br />
+                Do you want to extract it directly?
+            ]]></en>
+        </locale>
+        <locale name="upload.manager.message.archivfile.btn.start">
+            <de><![CDATA[Upload starten]]></de>
+            <en><![CDATA[Start Upload]]></en>
+        </locale>
+
+        <locale name="upload.manager.message.archivfile.label">
+            <de><![CDATA[[file] entpacken]]></de>
+            <en><![CDATA[[file] extracing]]></en>
+        </locale>
+
+    </groups>
+</locales>
