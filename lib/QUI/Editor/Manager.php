@@ -204,7 +204,7 @@ class Manager
             throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
-                    'exception.editor.toolbar.exist'
+                    'exception.lib.qui.editor.manager.toolbar.exist'
                 )
             );
         }
@@ -234,7 +234,7 @@ class Manager
             throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
-                    'exception.editor.toolbar.not.exist'
+                    'exception.lib.qui.editor.manager.toolbar.exist'
                 )
             );
         }
@@ -252,7 +252,7 @@ class Manager
             throw new \QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
-                    'exception.editor.toolbar.xml.error',
+                    'exception.lib.qui.editor.manager.toolbar.xml.error',
                     array( 'error' => $errors[0]->message )
                 )
             );

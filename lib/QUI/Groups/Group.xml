@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<locales>
+
+    <groups name="quiqqer/system" datatype="php">
+        <locale name="exception.lib.qui.group.doesnt.exist">
+            <de>Die Gruppe existiert nicht.</de>
+            <en>The group doesnt exist.</en>
+        </locale>
+        <locale name="exception.lib.qui.group.root.delete">
+            <de>Die Root Gruppe kann nicht gelöscht werden.</de>
+            <en>The root group can not be deleted</en>
+        </locale>
+        <locale name="exception.lib.qui.group.no.edit.permissions">
+            <de>Sie haben keine Rchte um Gruppen zu bearbeiten.</de>
+            <en>You have no rights to edit groups.</en>
+        </locale>
+        <locale name="exception.lib.qui.group.user.not.found">
+            <de>Benutzer wurde nicht gefunden.</de>
+            <en>User not found.</en>
+        </locale>
+    </groups>
+
+</locales>

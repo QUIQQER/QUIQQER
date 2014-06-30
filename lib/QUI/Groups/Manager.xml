@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<locales>
+
+    <groups name="quiqqer/system" datatype="php">
+        <locale name="exception.lib.qui.manager.no.groupid">
+            <de>Es wurde keine Gruppen ID übergeben.</de>
+            <en>No group ID is passed.</en>
+        </locale>
+
+    </groups>
+
+</locales>

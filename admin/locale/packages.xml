@@ -5,41 +5,6 @@
             <de><![CDATA[System, Plugins und Packet Manager]]></de>
             <en><![CDATA[System, Plugins and Package Manager]]></en>
         </locale>
-
-        <locale name="message.packages.server.add.successfuly">
-            <de><![CDATA[Der Server [server] wurde erfolgreich hinzugefügt.]]></de>
-            <en><![CDATA[The Server [server] was successfuly added.]]></en>
-        </locale>
-        <locale name="message.packages.server.remove.successfuly">
-            <de><![CDATA[Die Server wurden erfolgreich entfernt.]]></de>
-            <en><![CDATA[The servers were successfully removed.]]></en>
-        </locale>
-        <locale name="message.packages.no.updates.available">
-            <de><![CDATA[Es wurden keine Updates gefunden. Ihr System ist auf dem aktuellsten Stand.]]></de>
-            <en><![CDATA[No updates were found. Your system is up to date.]]></en>
-        </locale>
-
-
-        <locale name="exception.packages.update.check">
-            <de><![CDATA[Die Prüfung auf Updates konnte nicht durchgeführt werden.]]></de>
-            <en><![CDATA[Could not check for updates.]]></en>
-        </locale>
-        <locale name="exception.no.quiqqer.update.archive">
-            <de><![CDATA[Das Update konnte nicht durchgeführt werden. Das Archiv ist kein QUIQQER Archiv.]]></de>
-            <en><![CDATA[The update is not possible. The archive is not a QUIQQER archive.]]></en>
-        </locale>
-        <locale name="exception.packages.update.archive.not.found">
-            <de><![CDATA[Das Update Archiv wurde nicht gefunden.]]></de>
-            <en><![CDATA[The update archiv could not be found.]]></en>
-        </locale>
-        <locale name="exception.packages.exec.not.found.composer">
-            <de><![CDATA[Konnte Composer nicht finden.]]></de>
-            <en><![CDATA[Could not found composer.]]></en>
-        </locale>
-        <locale name="exception.packages.update.version.not.found">
-            <de><![CDATA[Das Update konnte nicht durchgeführt werden. Es wurde keine aktuellere Version gefunden.]]></de>
-            <en><![CDATA[The Update could not be executed. A newer Version could not be found.]]></en>
-        </locale>
     </groups>
 
 </locales>

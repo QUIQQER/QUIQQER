@@ -11,7 +11,6 @@ namespace QUI\Cache;
  * Easy access fot different cache types
  *
  * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.system.cache
  */
 
 class Manager
@@ -291,8 +290,15 @@ class Manager
         $Item = self::getStash( $name );
         $data = $Item->get();
 
-        if ( $Item->isMiss() ) {
-            throw new \QUI\Cache\Exception( 'Cache existiert nicht', 404 );
+        if ( $Item->isMiss() )
+        {
+            throw new \QUI\Cache\Exception(
+                \QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.lib.cache.manager.not.exist'
+                ),
+                404
+            );
         }
 
         return $data;

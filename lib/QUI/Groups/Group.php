@@ -57,7 +57,7 @@ class Group extends \QUI\QDOM
         try
         {
             // falls cache vorhanden ist
-            $cache = \QUI\Cache\Manager::get('pcsg.groups-'. $this->getId());
+            $cache = \QUI\Cache\Manager::get('qui/groups/group/'. $this->getId());
 
             $this->_parentids = $cache['parentids'];
             $this->_rights    = $cache['rights'];
@@ -86,8 +86,15 @@ class Group extends \QUI\QDOM
             'limit' => '1'
         ));
 
-        if ( !isset( $result[0] ) ) {
-            throw new \QUI\Exception('Group doesnt exist', 404);
+        if ( !isset( $result[0] ) )
+        {
+            throw new \QUI\Exception(
+                \QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.lib.qui.group.doesnt.exist'
+                ),
+                404
+            );
         }
 
         foreach ( $result[0] as $key => $value ) {
@@ -112,8 +119,14 @@ class Group extends \QUI\QDOM
     public function delete()
     {
         // Rootgruppe kann nicht gelöscht werden
-        if ( (int)\QUI::conf('globals','root') === $this->getId() ) {
-            throw new \QUI\Exception('Die Root Gruppe kann nicht gelöscht werden');
+        if ( (int)\QUI::conf('globals','root') === $this->getId() )
+        {
+            throw new \QUI\Exception(
+                \QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.lib.qui.group.root.delete'
+                )
+            );
         }
 
         // Rekursiv die Kinder bekommen
@@ -140,7 +153,7 @@ class Group extends \QUI\QDOM
                 )
             ));
 
-        \QUI\Cache\Manager::clear('pcsg.groups-'. $this->getId());
+        \QUI\Cache\Manager::clear('qui/groups/group/'. $this->getId());
     }
 
     /**
@@ -287,8 +300,14 @@ class Group extends \QUI\QDOM
     {
         $User = \QUI::getUserBySession();
 
-        if ( !$User->isSU() ) {
-            throw new \QUI\Exception( 'Sie dürfe keine Gruppen bearbeiten' );
+        if ( !$User->isSU() )
+        {
+            throw new \QUI\Exception(
+                \QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.lib.qui.group.no.edit.permissions'
+                )
+            );
         }
 
         foreach ( $rights as $k => $v ) {
@@ -334,11 +353,18 @@ class Group extends \QUI\QDOM
             'limit'  => '1'
         ));
 
-        if ( !isset( $result[0] ) ) {
-            throw new \QUI\Exception( 'User not found', 404 );
+        if ( !isset( $result[0] ) )
+        {
+            throw new \QUI\Exception(
+                \QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.lib.qui.group.user.not.found'
+                ),
+                404
+            );
         }
 
-        return \QUI::getUsers()->get($result[0]['id']);
+        return \QUI::getUsers()->get( $result[0]['id'] );
     }
 
     /**
@@ -657,7 +683,7 @@ class Group extends \QUI\QDOM
     private function _createCache()
     {
         // Cache aufbauen
-        \QUI\Cache\Manager::set('pcsg.groups-'. $this->getId(), array(
+        \QUI\Cache\Manager::set('qui/groups/group/'. $this->getId(), array(
             'parentids'  => $this->getParentIds(true),
             'attributes' => $this->getAllAttributes(),
             'rights'     => $this->_rights

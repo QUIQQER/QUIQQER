@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<locales>
+
+    <groups name="quiqqer/system" datatype="php">
+        <locale name="exception.lib.qui.exceptions.handler.nocallback">
+            <de>Keine callback funktion definiert [function]</de>
+            <en>No callback passed to [function] method</en>
+        </locale>
+        <locale name="exception.lib.qui.exceptions.handler.invalid">
+            <de>Der Methode [function] wurde eine ungültige Funktion übergeben.</de>
+            <en>Invalid callback passed to the [function] method</en>
+        </locale>
+        <locale name="lib.qui.exceptions.handler.mail.subject">
+            <de>Fehler auf [host] bei [url]</de>
+            <en>Error on [host] at [url]</en>
+        </locale>
+    </groups>
+
+</locales>
