@@ -465,7 +465,7 @@ class DOM
         $loc = $Node->getElementsByTagName( 'locale' );
 
         if ( !$loc->length ) {
-            return self::parseVar( trim( $Texts->item( 0 )->nodeValue ) );
+            return self::parseVar( trim( $Node->nodeValue ) );
         }
 
         return \QUI::getLocale()->get(
@@ -999,7 +999,7 @@ class DOM
             if ( $defaults && $defaults->length )
             {
                 $default = self::parseVar(
-                    $defaults->item( 0 )
+                    $defaults->item( 0 )->nodeValue
                 );
             }
 
