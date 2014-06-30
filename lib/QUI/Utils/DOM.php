@@ -56,21 +56,8 @@ class DOM
                 $image = self::parseVar( $Images->item( 0 )->nodeValue );
             }
 
-            if ( $Texts && $Texts->item( 0 ) )
-            {
-                // locale?
-                $loc = $Texts->getElementsByTagName( 'locale' );
-
-                if ( $loc->length )
-                {
-                    $text = \QUI::getLocale()->get(
-                        $loc->item( 0 )->getAttribute( 'group' ),
-                        $loc->item( 0 )->getAttribute( 'var' )
-                    );
-                } else
-                {
-                    $text = self::parseVar( $Texts->item( 0 )->nodeValue );
-                }
+            if ( $Texts && $Texts->item( 0 ) ) {
+                $text = self::getTextFromNode( $Texts->item( 0 ) );
             }
 
             if ( $Tab->getAttribute( 'type' ) ) {
@@ -150,7 +137,7 @@ class DOM
         $Text = $Button->getElementsByTagName( 'text' );
 
         if ( $Text->length ) {
-            $text = $Text->item( 0 )->nodeValue;
+            $text = self::getTextFromNode( $Text->item( 0 ) );
         }
 
 
@@ -412,6 +399,12 @@ class DOM
                 {
                     case 'text':
                     case 'title':
+                        $Button->setAttribute(
+                            $btnParams->item( $b )->nodeName,
+                            self::getTextFromNode( $btnParams->item( $b ) )
+                        );
+                    break;
+
                     case 'onclick':
                         $Button->setAttribute(
                             $btnParams->item( $b )->nodeName,
@@ -461,6 +454,27 @@ class DOM
     }
 
     /**
+     * Search a <locale> node into the DOMNode and parse it
+     * if no <locale exist, it return the nodeValue
+     *
+     * @param \DOMNode $Node
+     * @return String
+     */
+    static function getTextFromNode(\DOMNode $Node)
+    {
+        $loc = $Node->getElementsByTagName( 'locale' );
+
+        if ( !$loc->length ) {
+            return self::parseVar( trim( $Texts->item( 0 )->nodeValue ) );
+        }
+
+        return \QUI::getLocale()->get(
+            $loc->item( 0 )->getAttribute( 'group' ),
+            $loc->item( 0 )->getAttribute( 'var' )
+        );
+    }
+
+    /**
      * Wandelt <group> in einen String für die Einstellung um
      *
      * @param \DOMNode $Group
@@ -477,14 +491,20 @@ class DOM
 
         $text = $Group->getElementsByTagName( 'text' );
 
-        if ( $text->length ) {
-            $string .= '<span>'. $text->item( 0 )->nodeValue .'</span>';
+        if ( $text->length )
+        {
+            $string .= '<span>'.
+                self::getTextFromNode( $text->item( 0 ) ) .
+            '</span>';
         }
 
         $desc = $Group->getElementsByTagName( 'description' );
 
-        if ( $desc->length ) {
-            $string .= '<div class="description">'. $desc->item( 0 )->nodeValue .'</div>';
+        if ( $desc->length )
+        {
+            $string .= '<div class="description">'.
+                self::getTextFromNode( $desc->item( 0 ) ) .
+            '</div>';
         }
 
         $string .= '</p>';
@@ -568,13 +588,13 @@ class DOM
                 if ( $Param->getAttribute( 'type' ) == 'project' )
                 {
                     foreach ( $projects as $project ) {
-                        $result[ $project ] = \QUI\Utils\DOM::parseConfs( $confs );
+                        $result[ $project ] = self::parseConfs( $confs );
                     }
 
                     continue;
                 }
 
-                $result[ $name ] = \QUI\Utils\DOM::parseConfs( $confs );
+                $result[ $name ] = self::parseConfs( $confs );
             }
         }
 
@@ -614,8 +634,12 @@ class DOM
         // titel
         $titles = $Settings->getElementsByTagName('title');
 
-        if ( $titles->item( 0 ) ) {
-            $Win->setAttribute( 'title', $titles->item( 0 )->nodeValue );
+        if ( $titles->item( 0 ) )
+        {
+            $Win->setAttribute(
+                'title',
+                self::getTextFromNode( $titles->item( 0 ) )
+            );
         }
 
         // Window Parameter
@@ -741,7 +765,7 @@ class DOM
             if ( $Entry->nodeName == 'title' )
             {
                 $result .= '<table class="data-table"><thead><tr><th>';
-                $result .= $Entry->nodeValue;
+                $result .= self::getTextFromNode( $Entry );
                 $result .= '</th></tr></thead></table>';
 
                 continue;
@@ -760,7 +784,7 @@ class DOM
                 if ( $titles->length )
                 {
                     $result .= '<thead><tr><th>';
-                    $result .= $titles->item( 0 )->nodeValue;
+                    $result .= self::getTextFromNode( $titles->item( 0 ) );
                     $result .= '</th></tr></thead>';
                 }
 
@@ -782,7 +806,7 @@ class DOM
                     switch ( $Set->nodeName )
                     {
                         case 'text':
-                            $result .= '<div>'. $Set->nodeValue .'</div>';
+                            $result .= '<div>'. self::getTextFromNode( $Set ) .'</div>';
                         break;
 
                         case 'input':
@@ -886,7 +910,7 @@ class DOM
             {
                 $string .= '<label for="'. $id .'">'.
                     $input .
-                    $text->item( 0 )->nodeValue .
+                    self::getTextFromNode( $text->item( 0 ) ) .
                 '</label>';
             } else
             {
@@ -898,7 +922,7 @@ class DOM
             if ( $text->length )
             {
                 $string .= '<label for="'. $id .'">'.
-                    $text->item( 0 )->nodeValue .
+                    self::getTextFromNode( $text->item( 0 ) ) .
                 '</label>';
             }
 
@@ -907,8 +931,11 @@ class DOM
 
         $desc = $Input->getElementsByTagName( 'description' );
 
-        if ( $desc->length ) {
-            $string .= '<div class="description">'. $desc->item( 0 )->nodeValue .'</div>';
+        if ( $desc->length )
+        {
+            $string .= '<div class="description">'.
+                self::getTextFromNode( $desc->item( 0 ) ) .
+            '</div>';
         }
 
         $string .= '</p>';
@@ -937,7 +964,7 @@ class DOM
         $text = $Textarea->getElementsByTagName( 'text' );
 
         if ( $text->length ) {
-            $string .= '<span>'. $text->item( 0 )->nodeValue .'</span>';
+            $string .= '<span>'. self::getTextFromNode( $text->item( 0 ) ) .'</span>';
         }
 
         $string .= '</p>';
@@ -972,7 +999,7 @@ class DOM
             if ( $defaults && $defaults->length )
             {
                 $default = self::parseVar(
-                    $defaults->item( 0 )->nodeValue
+                    $defaults->item( 0 )
                 );
             }
 
@@ -1045,7 +1072,7 @@ class DOM
         $text = $Select->getElementsByTagName( 'text' );
 
         if ( $text->length ) {
-            $string .= '<span>'. $text->item(0)->nodeValue .'</span>';
+            $string .= '<span>'. self::getTextFromNode( $text->item(0) ) .'</span>';
         }
 
         $string .= '</p>';
