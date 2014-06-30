@@ -14,7 +14,7 @@ define('controls/users/Entry', [
 
     'qui/controls/Control',
     'Users',
-    'Locale'
+    'Locale',
 
     'css!controls/users/Entry.css'
 

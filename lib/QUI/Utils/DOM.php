@@ -56,8 +56,21 @@ class DOM
                 $image = self::parseVar( $Images->item( 0 )->nodeValue );
             }
 
-            if ( $Texts && $Texts->item( 0 ) ) {
-                $text = self::parseVar( $Texts->item( 0 )->nodeValue );
+            if ( $Texts && $Texts->item( 0 ) )
+            {
+                // locale?
+                $loc = $Texts->getElementsByTagName( 'locale' );
+
+                if ( $loc->length )
+                {
+                    $text = \QUI::getLocale()->get(
+                        $loc->item( 0 )->getAttribute( 'group' ),
+                        $loc->item( 0 )->getAttribute( 'var' )
+                    );
+                } else
+                {
+                    $text = self::parseVar( $Texts->item( 0 )->nodeValue );
+                }
             }
 
             if ( $Tab->getAttribute( 'type' ) ) {
@@ -334,7 +347,7 @@ class DOM
                     $Engine->assign(array(
                         'Site'    => $Object,
                         'Project' => $Object->getProject(),
-                        'Plugins' => \QUI::getPlugins(),
+                        'Plugins' => \QUI::getPluginManager(),
                         'QUI'     => new \QUI()
                     ));
 
@@ -699,7 +712,7 @@ class DOM
             {
                 $Engine->assign(array(
                     'Plugin'  => $Plugin,
-                    'Plugins' => \QUI::getPlugins(),
+                    'Plugins' => \QUI::getPluginManager(),
                     'QUI'     => new \QUI()
                 ));
 
