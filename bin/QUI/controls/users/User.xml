@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<locales>
+    <groups name="quiqqer/system" datatype="js">
+
+        <locale name="users.user.title">
+            <de><![CDATA[Benutzer: [username]]]></de>
+            <en><![CDATA[User: [username]]]></en>
+        </locale>
+        <locale name="users.user.btn.save">
+            <de><![CDATA[Änderungen speichern]]></de>
+            <en><![CDATA[Save changes]]></en>
+        </locale>
+        <locale name="users.user.btn.delete">
+            <de><![CDATA[Benutzer löschen]]></de>
+            <en><![CDATA[Delete user]]></en>
+        </locale>
+        <locale name="users.user.btn.permissions.title">
+            <de><![CDATA[Benutzer Zugriffsrechte einstellen]]></de>
+            <en><![CDATA[Set user permissions]]></en>
+        </locale>
+        <locale name="users.user.btn.permissions.alt">
+            <de><![CDATA[Benutzer Zugriffsrechte einstellen]]></de>
+            <en><![CDATA[Set user permissions]]></en>
+        </locale>
+        <locale name="users.user.btn.password.save">
+            <de><![CDATA[Passwort speichern]]></de>
+            <en><![CDATA[Save password]]></en>
+        </locale>
+
+        <locale name="users.user.window.delete.title">
+            <de><![CDATA[Benutzer löschen]]></de>
+            <en><![CDATA[Delete user]]></en>
+        </locale>
+        <locale name="users.user.window.delete.information">
+            <de><![CDATA[Der Benutzer wird komplett aus dem System entfernt und kann nicht wiederhergestellt werden.]]></de>
+            <en><![CDATA[The user is completely removed from the system and can not be restored]]></en>
+        </locale>
+        <locale name="users.user.window.delete.text">
+            <de><![CDATA[Sie möchten folgenden Benutzer löschen:<br /><br />[userid]]]></de>
+            <en><![CDATA[You want to delete the following user:<br /><br />[userid]]]></en>
+        </locale>
+
+        <locale name="users.user.address.table.phone">
+            <de><![CDATA[Tel / Fax / Mobil]]></de>
+            <en><![CDATA[Tel / Fax / Mobil]]></en>
+        </locale>
+        <locale name="users.user.address.table.btn.add">
+            <de><![CDATA[Adresse hinzufügen]]></de>
+            <en><![CDATA[Add address]]></en>
+        </locale>
+        <locale name="users.user.address.table.btn.delete">
+            <de><![CDATA[Adresse löschen]]></de>
+            <en><![CDATA[Delete address]]></en>
+        </locale>
+        <locale name="users.user.address.table.btn.edit">
+            <de><![CDATA[Adresse editieren]]></de>
+            <en><![CDATA[Edit address]]></en>
+        </locale>
+
+        <locale name="users.user.table.phone">
+            <de><![CDATA[Tel / Fax / Mobil]]></de>
+            <en><![CDATA[Tel / Fax / Mobil]]></en>
+        </locale>
+
+        <locale name="users.user.address.edit">
+            <de><![CDATA[Adresse editieren]]></de>
+            <en><![CDATA[Edit address]]></en>
+        </locale>
+
+        <locale name="users.user.address.window.delete.title">
+            <de><![CDATA[Adresse löschen]]></de>
+            <en><![CDATA[Delete address]]></en>
+        </locale>
+        <locale name="users.user.address.window.delete.text">
+            <de><![CDATA[Möchten Sie die Adresse wirklich löschen?]]></de>
+            <en><![CDATA[Would you really want to delete the address?]]></en>
+        </locale>
+        <locale name="users.user.address.window.delete.information">
+            <de><![CDATA[Die Adresse ist nicht wiederherstellbar]]></de>
+            <en><![CDATA[The address can not be restored]]></en>
+        </locale>
+
+
+
+    </groups>
+</locales>

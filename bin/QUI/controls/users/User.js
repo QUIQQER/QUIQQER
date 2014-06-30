@@ -17,12 +17,15 @@ define('controls/users/User', [
     'utils/Controls',
     'Users',
     'Ajax',
+    'Locale',
 
     'css!controls/users/User.css'
 
-], function(QUI, QUIPanel, QUIButton, QUIConfirm, Grid, FormUtils, ControlUtils, Users, Ajax)
+], function(QUI, QUIPanel, QUIButton, QUIConfirm, Grid, FormUtils, ControlUtils, Users, Ajax, Locale)
 {
     "use strict";
+
+    var lg = 'quiqqer/system';
 
     /**
      * @class controls/users/User
@@ -105,7 +108,7 @@ define('controls/users/User', [
                 events    : {
                     onClick : this.$onClickSave
                 },
-                text      : 'Änderungen speichern',
+                text      : Locale.get( lg, 'users.user.btn.save' ),
                 textimage : 'icon-save'
             });
 
@@ -114,15 +117,15 @@ define('controls/users/User', [
                 events    : {
                     onClick : this.$onClickDel
                 },
-                text      : 'Benutzer löschen',
+                text      : Locale.get( lg, 'users.user.btn.delete' ),
                 textimage : 'icon-trash'
             });
 
             // permissions
             new QUIButton({
                 image  : 'icon-gears',
-                alt    : 'Gruppen Zugriffsrechte einstellen',
-                title  : 'Gruppen Zugriffsrechte einstellen',
+                alt    : Locale.get( lg, 'users.user.btn.permissions.alt' ),
+                title  : Locale.get( lg, 'users.user.btn.permissions.title' ),
                 styles : {
                     'float' : 'right'
                 },
@@ -161,7 +164,9 @@ define('controls/users/User', [
 
                 self.setAttribute(
                     'title',
-                    'Benutzer: '+ User.getAttribute( 'username' )
+                    Locale.get( lg, 'users.user.title', {
+                        username : User.getAttribute( 'username' )
+                    })
                 );
 
             }, {
@@ -224,7 +229,7 @@ define('controls/users/User', [
                     PasswordField.setStyle( 'float', 'left' );
 
                     new QUIButton({
-                        text   : 'Passwort speichern',
+                        text   : Locale.get( lg, 'users.user.btn.password.save' ),
                         events : {
                             onClick : self.savePassword
                         }
@@ -318,8 +323,6 @@ define('controls/users/User', [
                 Frm     = Content.getElement( 'form' ),
                 data    = FormUtils.getFormData( Frm );
 
-            console.log( data );
-
             if ( data.expire_date ) {
                 data.expire = data.expire_date;
             }
@@ -334,7 +337,10 @@ define('controls/users/User', [
          */
         $onUserRefresh : function(User)
         {
-            this.setAttribute( 'title', 'Benutzer: '+ this.getUser().getAttribute( 'username' ) );
+            this.setAttribute( 'title', Locale.get( lg, 'users.user.title', {
+                username : this.getUser().getAttribute( 'username' )
+            }) );
+
             this.setAttribute( 'icon', 'icon-user' );
 
             this.refresh();
@@ -401,23 +407,23 @@ define('controls/users/User', [
         $onClickDel : function()
         {
             new QUIConfirm({
-                name        : 'DeleteUser',
-                title       : 'Benutzer löschen',
-                icon        : 'icon-trash',
-                text        : 'Sie möchten folgenden Benutzer löschen:<br /><br />'+ this.getUser().getId(),
+                name  : 'DeleteUser',
+                title : Locale.get( lg, 'users.user.window.delete.title' ),
+                icon  : 'icon-trash',
+                text  : Locale.get( lg, 'users.user.window.delete.text', {
+                    userid   : this.getUser().getId(),
+                    username : this.getUser().getName()
+                }),
                 texticon    : 'icon-trash',
-                information : 'Der Benutzer wird komplett aus dem System entfernt und kann nicht wieder hergestellt werden',
+                information : Locale.get( lg, 'users.user.window.delete.information' ),
 
-                width    : 500,
-                height   : 150,
-                uid      : this.getUser().getId(),
-                events   :
+                width  : 500,
+                height : 150,
+                uid    : this.getUser().getId(),
+                events :
                 {
-                    onSubmit : function(Win)
-                    {
-                        Users.deleteUsers(
-                            [ Win.getAttribute( 'uid' ) ]
-                        );
+                    onSubmit : function(Win) {
+                        Users.deleteUsers( [ Win.getAttribute( 'uid' ) ] );
                     }
                 }
             }).open();
@@ -475,57 +481,57 @@ define('controls/users/User', [
 
             this.$AddressGrid = new Grid( AddressList, {
                 columnModel : [{
-                    header : 'ID',
+                    header : Locale.get( lg, 'id' ),
                     dataIndex : 'id',
                     dataType : 'string',
                     width : 60
                 }, {
-                    header : 'Anrede',
+                    header : Locale.get( lg, 'salutation' ),
                     dataIndex : 'salutation',
                     dataType : 'string',
                     width : 60
                 }, {
-                    header : 'Vornamen',
+                    header : Locale.get( lg, 'firstname' ),
                     dataIndex : 'firstname',
                     dataType : 'string',
                     width : 100
                 }, {
-                    header : 'Nachnamen',
+                    header : Locale.get( lg, 'lastname' ),
                     dataIndex : 'lastname',
                     dataType : 'string',
                     width : 100
                 }, {
-                    header : 'Tel / Fax / Mobil',
+                    header : Locale.get( lg, 'users.user.address.table.phone' ),
                     dataIndex : 'phone',
                     dataType : 'string',
                     width : 100
                 }, {
-                    header : 'E-Mail',
+                    header : Locale.get( lg, 'email' ),
                     dataIndex : 'mail',
                     dataType : 'string',
                     width : 100
                 }, {
-                    header : 'Firma',
+                    header : Locale.get( lg, 'company' ),
                     dataIndex : 'company',
                     dataType : 'string',
                     width : 100
                 }, {
-                    header : 'Strasse',
+                    header : Locale.get( lg, 'street' ),
                     dataIndex : 'street_no',
                     dataType : 'string',
                     width : 100
                 }, {
-                    header : 'PLZ',
+                    header : Locale.get( lg, 'zip' ),
                     dataIndex : 'zip',
                     dataType : 'string',
                     width : 100
                 }, {
-                    header : 'Stadt',
+                    header : Locale.get( lg, 'city' ),
                     dataIndex : 'city',
                     dataType : 'string',
                     width : 100
                 }, {
-                    header : 'Land',
+                    header : Locale.get( lg, 'country' ),
                     dataIndex : 'country',
                     dataType : 'string',
                     width : 100
@@ -533,7 +539,7 @@ define('controls/users/User', [
 
                 buttons : [{
                     name : 'add',
-                    text : 'Adresse hinzufügen',
+                    text : Locale.get( lg, 'users.user.address.table.btn.add' ),
                     textimage : 'icon-plus',
                     events :
                     {
@@ -545,7 +551,7 @@ define('controls/users/User', [
                     type : 'seperator'
                 }, {
                     name : 'edit',
-                    text : 'Adresse editieren',
+                    text : Locale.get( lg, 'users.user.address.table.btn.edit' ),
                     textimage : 'icon-edit',
                     disabled : true,
                     events :
@@ -559,7 +565,7 @@ define('controls/users/User', [
                     }
                 }, {
                     name : 'delete',
-                    text : 'Adresse löschen',
+                    text : Locale.get( lg, 'users.user.address.table.btn.delete' ),
                     textimage : 'icon-remove',
                     disabled : true,
                     events :
@@ -662,7 +668,7 @@ define('controls/users/User', [
         {
             var self  = this,
                 Sheet = this.createSheet({
-                    title : 'Adresse bearbeiten',
+                    title : Locale.get( lg, 'users.user.address.edit' ),
                     icon  : 'icon-edit'
                 });
 
@@ -686,7 +692,7 @@ define('controls/users/User', [
 
                         Sheet.addButton({
                             textimage : 'icon-save',
-                            text   : 'speichern',
+                            text   : Locale.get( lg, 'save' ),
                             events :
                             {
                                 onClick : function() {
@@ -711,9 +717,9 @@ define('controls/users/User', [
             var self = this;
 
             new QUIConfirm({
-                title : 'Adresse löschen',
-                text  : 'Möchten Sie die Adresse wirklich löschen?',
-                information : 'Die Adresse ist nicht wieder herstellbar',
+                title : Locale.get( lg, 'users.user.address.window.delete.title' ),
+                text  : Locale.get( lg, 'users.user.address.window.delete.text' ),
+                information : Locale.get( lg, 'users.user.address.window.delete.information' ),
                 events :
                 {
                     onSubmit : function()

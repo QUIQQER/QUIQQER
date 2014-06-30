@@ -18,12 +18,27 @@ define('controls/users/Panel', [
     'qui/controls/buttons/Button',
     'utils/Template',
     'utils/Controls',
+    'Locale',
 
     'css!controls/users/Panel.css'
 
-], function(QUI, Panel, Grid, Users, Attention, QUIConfirm, QUIPrompt, QUIButton, Template, ControlUtils)
+], function()
 {
     "use strict";
+
+    var lg = 'quiqqer/system';
+
+    var QUI          = arguments[ 0 ],
+        Panel        = arguments[ 1 ],
+        Grid         = arguments[ 2 ],
+        Users        = arguments[ 3 ],
+        Attention    = arguments[ 4 ],
+        QUIConfirm   = arguments[ 5 ],
+        QUIPrompt    = arguments[ 6 ],
+        QUIButton    = arguments[ 7 ],
+        Template     = arguments[ 8 ],
+        ControlUtils = arguments[ 9 ],
+        Locale       = arguments[ 10 ];
 
     /**
      * @class controls/users/Panel
@@ -93,10 +108,10 @@ define('controls/users/Panel', [
 
 
             this.active_image = 'icon-ok';
-            this.active_text  = 'Benutzer ist aktiviert';
+            this.active_text  = Locale.get( lg, 'users.panel.user.is.active' );
 
             this.deactive_image = 'icon-remove';
-            this.deactive_text  = 'Benutzer ist deaktiviert';
+            this.deactive_text  = Locale.get( lg, 'users.panel.user.is.deactive' );
         },
 
         /**
@@ -117,8 +132,8 @@ define('controls/users/Panel', [
             this.addButton({
                 name   : 'userSearch',
                 Users  : this,
-                alt    : 'Benutzer suchen',
-                title  : 'Benutzer suchen',
+                alt    : Locale.get( lg, 'users.panel.btn.search.alt' ),
+                title  : Locale.get( lg, 'users.panel.btn.search.title' ),
                 image  : 'icon-search',
                 events : {
                     onClick: this.search
@@ -136,13 +151,13 @@ define('controls/users/Panel', [
                 events : {
                     onClick : this.createUser
                 },
-                text : 'Neuen Benutzer anlegen'
+                text : Locale.get( lg, 'users.panel.btn.create' )
             });
 
             this.addButton({
                 name      : 'userEdit',
                 Users     : this,
-                text      : 'Benutzer bearbeiten',
+                text      : Locale.get( lg, 'users.panel.btn.edit' ),
                 disabled  : true,
                 textimage : 'icon-pencil',
                 events    : {
@@ -153,7 +168,7 @@ define('controls/users/Panel', [
             this.addButton({
                 name      : 'userDel',
                 Users     : this,
-                text      : 'Benutzer löschen',
+                text      : Locale.get( lg, 'users.panel.btn.delete' ),
                 disabled  : true,
                 textimage : 'icon-trash',
                 events    : {
@@ -169,42 +184,42 @@ define('controls/users/Panel', [
 
             this.$Grid = new Grid(this.$Container, {
                 columnModel : [{
-                    header    : 'Status',
+                    header    : Locale.get( lg, 'status' ),
                     dataIndex : 'activebtn',
                     dataType  : 'button',
                     width     : 50
                 }, {
-                    header    : 'Benutzer-ID',
+                    header    : Locale.get( lg, 'user_id' ),
                     dataIndex : 'id',
                     dataType  : 'integer',
                     width     : 150
                 }, {
-                    header    : 'Benutzername',
+                    header    : Locale.get( lg, 'username' ),
                     dataIndex : 'username',
                     dataType  : 'integer',
                     width     : 150
                 }, {
-                    header    : 'Gruppe',
+                    header    : Locale.get( lg, 'group' ),
                     dataIndex : 'usergroup',
                     dataType  : 'integer',
                     width     : 150
                 }, {
-                    header    : 'E-Mail',
+                    header    : Locale.get( lg, 'email' ),
                     dataIndex : 'email',
                     dataType  : 'string',
                     width     : 150
                 }, {
-                    header    : 'Vorname',
+                    header    : Locale.get( lg, 'firstname' ),
                     dataIndex : 'firstname',
                     dataType  : 'string',
                     width     : 150
                 }, {
-                    header    : 'Nachname',
+                    header    : Locale.get( lg, 'lastname' ),
                     dataIndex : 'lastname',
                     dataType  : 'string',
                     width     : 150
                 }, {
-                    header    : 'Erstellungsdatum',
+                    header    : Locale.get( lg, 'c_date' ),
                     dataIndex : 'regdate',
                     dataType  : 'date',
                     width     : 150
@@ -292,7 +307,7 @@ define('controls/users/Panel', [
 
             var self  = this,
                 Sheet = this.createSheet({
-                    title : 'Benutzer suchen',
+                    title : Locale.get( lg, 'users.panel.search.title' ),
                     icon  : 'icon-search'
                 });
 
@@ -374,7 +389,7 @@ define('controls/users/Panel', [
                     // search button
                     new QUIButton({
                         textimage : 'icon-search',
-                        text : 'Suche starten ...',
+                        text : Locale.get( lg, 'users.panel.search.btn.start' ),
                         events :
                         {
                             onClick : function(Btn) {
@@ -444,10 +459,10 @@ define('controls/users/Panel', [
 
             new QUIPrompt({
                 name        : 'CreateUser',
-                title       : 'Neuen Benutzer anlegen',
+                title       : Locale.get( lg, 'users.panel.create.window.title' ),
                 icon        : 'icon-user',
-                text        : 'Neuer Benutzername:',
-                information : 'Geben Sie einen neuen Benutzernamen an. Der Benutzer wird inaktiv angelegt.',
+                text        : Locale.get( lg, 'users.panel.create.window.text' ),
+                information : Locale.get( lg, 'users.panel.create.window.information' ),
 
                 width  : 500,
                 height : 150,
@@ -467,8 +482,7 @@ define('controls/users/Panel', [
                                 QUI.getMessageHandler(function(MH)
                                 {
                                     MH.addAttention(
-                                        'Der Benutzername existiert schon.' +
-                                        'Bitte geben Sie einen anderen Benutzernamen an.'
+                                        Locale.get( lg, 'exception.create.user.exists' )
                                     );
                                 });
 
@@ -584,7 +598,7 @@ define('controls/users/Panel', [
 
             this.Loader.show();
 
-            this.setAttribute( 'title', 'Benutzerverwaltung' );
+            this.setAttribute( 'title', Locale.get( lg, 'users.panel.title' ) );
             this.setAttribute( 'icon', 'icon-refresh icon-spin' );
             this.refresh();
 
@@ -593,9 +607,7 @@ define('controls/users/Panel', [
             {
                 var Msg = new Attention({
                     Users   : this,
-                    message : 'Suchparameter sind aktiviert. '+
-                              'Klicken Sie hier um die Suche zu beenden und alle Benutzer '+
-                              'wieder anzeigen zu lassen.',
+                    message : Locale.get( lg, 'users.panel.search.info' ),
                     events  :
                     {
                         onClick : function(Message, event)
@@ -640,7 +652,7 @@ define('controls/users/Panel', [
 
                 Grid.setData( result );
 
-                self.setAttribute( 'title', 'Benutzerverwaltung' );
+                self.setAttribute( 'title', Locale.get( lg, 'users.panel.title' ) );
                 self.setAttribute( 'icon', 'icon-user' );
                 self.refresh();
 
@@ -818,12 +830,14 @@ define('controls/users/Panel', [
             }
 
             new QUIConfirm({
-                name        : 'DeleteUsers',
-                title       : 'Benutzer löschen',
-                icon        : 'icon-trashcan',
-                text        : 'Sie möchten folgende Benutzer löschen:<br /><br />'+ uids.join(', '),
+                name  : 'DeleteUsers',
+                title : Locale.get( lg, 'users.panel.delete.window.title' ),
+                icon  : 'icon-trashcan',
+                text  : Locale.get( lg, 'users.panel.delete.window.text', {
+                    userids : uids.join(', ')
+                }),
                 texticon    : 'icon-trashcan',
-                information : 'Die Benutzer werden komplett aus dem System entfernt und können nicht wieder hergestellt werden',
+                information : Locale.get( lg, 'users.panel.delete.window.information' ),
 
                 width  : 500,
                 height : 150,

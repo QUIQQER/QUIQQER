@@ -14,10 +14,11 @@ define('controls/users/Entry', [
 
     'qui/controls/Control',
     'Users',
+    'Locale'
 
     'css!controls/users/Entry.css'
 
-], function(QUIControl, Users)
+], function(QUIControl, Users, Locale)
 {
     "use strict";
 
@@ -87,8 +88,8 @@ define('controls/users/Entry', [
             });
 
             Close.set({
-                alt   : 'Benutzer entfernen',
-                title : 'Benutzer entfernen'
+                alt   : Locale.get( 'quiqqer/system', 'users.entry.user.remove' ),
+                title : Locale.get( 'quiqqer/system', 'users.entry.user.remove' )
             });
 
             this.$User.addEvent( 'onRefresh', this.$onUserUpdate );

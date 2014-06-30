@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<locales>
+    <groups name="quiqqer/system" datatype="js">
+
+        <locale name="users.address.btn.add">
+            <de><![CDATA[Tel, Fax, Handy hinzufügen]]></de>
+            <en><![CDATA[Add tel, fax, mobile]]></en>
+        </locale>
+        <locale name="users.address.btn.edit">
+            <de><![CDATA[Markierte Nummer editieren]]></de>
+            <en><![CDATA[Edit marked number]]></en>
+        </locale>
+        <locale name="users.address.btn.delete">
+            <de><![CDATA[Markierten Nummer löschen]]></de>
+            <en><![CDATA[Delete marked number]]></en>
+        </locale>
+
+        <locale name="users.address.mail.btn.add">
+            <de><![CDATA[E-Mail Adresse hinzufügen]]></de>
+            <en><![CDATA[Add email address]]></en>
+        </locale>
+        <locale name="users.address.mail.btn.edit">
+            <de><![CDATA[Markierte E-Mail editieren]]></de>
+            <en><![CDATA[Edit marked email]]></en>
+        </locale>
+        <locale name="users.address.mail.btn.delete">
+            <de><![CDATA[Markierte E-Mail löschen]]></de>
+            <en><![CDATA[Delete marked email]]></en>
+        </locale>
+
+        <locale name="users.address.phone.window.title">
+            <de><![CDATA[Telefon / Fax / Handy]]></de>
+            <en><![CDATA[Telephone / Fax / Mobile]]></en>
+        </locale>
+        <locale name="users.address.phone.window.text">
+            <de><![CDATA[Geben Sie bitte eine Telefon-, Fax- oder Handy Nummer ein.]]></de>
+            <en><![CDATA[Please enter a phone, fax, or mobile number.]]></en>
+        </locale>
+        <locale name="users.address.phone.window.information">
+            <de><![CDATA[Telefon / Fax / Handy]]></de>
+            <en><![CDATA[Telephone / Fax / Mobile]]></en>
+        </locale>
+        <locale name="users.address.phone.window.input.placeholder">
+            <de><![CDATA[Telefon-, Fax- oder Handy Nummer ...]]></de>
+            <en><![CDATA[Telephone, fax or mobile number ...]]></en>
+        </locale>
+
+        <locale name="users.address.phone.delete.window.title">
+            <de><![CDATA[Telefon / Fax / Handy]]></de>
+            <en><![CDATA[Telephone / Fax / Mobile]]></en>
+        </locale>
+        <locale name="users.address.phone.delete.window.text">
+            <de><![CDATA[Möchten Sie den Telefoneintrag wirklich löschen?]]></de>
+            <en><![CDATA[Do you want to delete the telephone entry?]]></en>
+        </locale>
+        <locale name="users.address.phone.delete.window.information">
+            <de><![CDATA[Der Eintrag ist nicht wieder herstellbar.]]></de>
+            <en><![CDATA[The entry can not be restored.]]></en>
+        </locale>
+
+        <locale name="users.address.email.window.title">
+            <de><![CDATA[E-Mail-Adresse]]></de>
+            <en><![CDATA[Email address]]></en>
+        </locale>
+        <locale name="users.address.email.window.text">
+            <de><![CDATA[Bitte geben Sie bitte eine E-Mail-Adresse ein.]]></de>
+            <en><![CDATA[Please enter an email address.]]></en>
+        </locale>
+        <locale name="users.address.email.window.input.placeholder">
+            <de><![CDATA[E-Mail-Adresse eingeben ...]]></de>
+            <en><![CDATA[Insert an email address]]></en>
+        </locale>
+
+        <locale name="users.address.email.delete.window.title">
+            <de><![CDATA[E-Mail-Adresse löschen]]></de>
+            <en><![CDATA[Delete email address]]></en>
+        </locale>
+        <locale name="users.address.email.delete.window.text">
+            <de><![CDATA[Möchten Sie die E-Mail Adresse wirklich löschen?]]></de>
+            <en><![CDATA[Would you really want to delete the email address?]]></en>
+        </locale>
+        <locale name="users.address.email.delete.window.information">
+            <de><![CDATA[Der Eintrag ist nicht wieder herstellbar.]]></de>
+            <en><![CDATA[The entry can not be restored.]]></en>
+        </locale>
+
+
+    </groups>
+</locales>

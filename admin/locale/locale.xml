@@ -80,7 +80,35 @@
             <de><![CDATA[Passwort]]></de>
             <en><![CDATA[Password]]></en>
         </locale>
+        <locale name="salutation">
+            <de><![CDATA[Anrede]]></de>
+            <en><![CDATA[Salutation]]></en>
+        </locale>
+        <locale name="company">
+            <de><![CDATA[Firma]]></de>
+            <en><![CDATA[Company]]></en>
+        </locale>
+        <locale name="street">
+            <de><![CDATA[Strasse]]></de>
+            <en><![CDATA[Street]]></en>
+        </locale>
+        <locale name="zip">
+            <de><![CDATA[PLZ]]></de>
+            <en><![CDATA[Zip]]></en>
+        </locale>
+        <locale name="city">
+            <de><![CDATA[Stadt]]></de>
+            <en><![CDATA[City]]></en>
+        </locale>
+        <locale name="country">
+            <de><![CDATA[Land]]></de>
+            <en><![CDATA[Country]]></en>
+        </locale>
 
+        <locale name="group">
+            <de><![CDATA[Gruppe]]></de>
+            <en><![CDATA[Group]]></en>
+        </locale>
         <locale name="groupname">
             <de><![CDATA[Gruppenname]]></de>
             <en><![CDATA[Group name]]></en>
@@ -209,6 +237,24 @@
             <de><![CDATA[Template]]></de>
             <en><![CDATA[Template]]></en>
         </locale>
+        <locale name="number">
+            <de><![CDATA[Nummer]]></de>
+            <en><![CDATA[Number]]></en>
+        </locale>
+
+        <locale name="tel">
+            <de><![CDATA[Telefon]]></de>
+            <en><![CDATA[Telephone]]></en>
+        </locale>
+        <locale name="fax">
+            <de><![CDATA[Fax]]></de>
+            <en><![CDATA[Fax]]></en>
+        </locale>
+        <locale name="mobile">
+            <de><![CDATA[Handy / Mobil]]></de>
+            <en><![CDATA[Mobile]]></en>
+        </locale>
+
 
     </groups>
 

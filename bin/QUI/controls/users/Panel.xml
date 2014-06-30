@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<locales>
+    <groups name="quiqqer/system" datatype="js">
+
+        <locale name="users.panel.title">
+            <de><![CDATA[Benutzerverwaltung]]></de>
+            <en><![CDATA[User manager]]></en>
+        </locale>
+        <locale name="users.panel.search.info">
+            <de><![CDATA[
+                Suchparameter sind aktiviert.<br />
+                Klicken Sie hier um die Suche zu beenden und alle Benutzer wieder anzeigen zu lassen.
+            ]]></de>
+            <en><![CDATA[
+                Search parameters are activated. <br />
+                Click here to end the search and to display all users again.
+            ]]></en>
+        </locale>
+
+        <locale name="users.panel.user.is.active">
+            <de><![CDATA[Benutzer ist aktiviert]]></de>
+            <en><![CDATA[User is active]]></en>
+        </locale>
+        <locale name="users.panel.user.is.deactive">
+            <de><![CDATA[Benutzer ist deaktiviert]]></de>
+            <en><![CDATA[User is deactive]]></en>
+        </locale>
+
+        <locale name="users.panel.btn.search.alt">
+            <de><![CDATA[Benutzer suchen]]></de>
+            <en><![CDATA[Search user]]></en>
+        </locale>
+        <locale name="users.panel.btn.search.title">
+            <de><![CDATA[Benutzer suchen]]></de>
+            <en><![CDATA[Search user]]></en>
+        </locale>
+        <locale name="users.panel.btn.create">
+            <de><![CDATA[Neuen Benutzer anlegen]]></de>
+            <en><![CDATA[Create new user]]></en>
+        </locale>
+        <locale name="users.panel.btn.delete">
+            <de><![CDATA[Benutzer bearbeiten]]></de>
+            <en><![CDATA[Edit user]]></en>
+        </locale>
+        <locale name="users.panel.btn.remove">
+            <de><![CDATA[Benutzer löschen]]></de>
+            <en><![CDATA[Delete user]]></en>
+        </locale>
+
+        <locale name="users.panel.search.title">
+            <de><![CDATA[Benutzer suchen]]></de>
+            <en><![CDATA[Search user]]></en>
+        </locale>
+        <locale name="users.panel.search.btn.start">
+            <de><![CDATA[Suche starten ...]]></de>
+            <en><![CDATA[Search ...]]></en>
+        </locale>
+
+
+        <locale name="users.panel.create.window.title">
+            <de><![CDATA[Neuen Benutzer anlegen]]></de>
+            <en><![CDATA[Create new user]]></en>
+        </locale>
+        <locale name="users.panel.create.window.text">
+            <de><![CDATA[Neuer Benutzername:]]></de>
+            <en><![CDATA[New username:]]></en>
+        </locale>
+        <locale name="users.panel.create.window.information">
+            <de><![CDATA[Geben Sie einen neuen Benutzernamen an. Der Benutzer wird inaktiv angelegt.]]></de>
+            <en><![CDATA[Enter a new user name. The user is created inactive.]]></en>
+        </locale>
+        <locale name="exception.create.user.exists">
+            <de><![CDATA[
+                Der Benutzername existiert schon.<br />
+                Bitte geben Sie einen anderen Benutzernamen an.
+            ]]></de>
+            <en><![CDATA[
+                The username already exists. <br />
+                 Please enter a different username.
+            ]]></en>
+        </locale>
+
+        <locale name="users.panel.delete.window.title">
+            <de><![CDATA[Benutzer löschen]]></de>
+            <en><![CDATA[Delete users]]></en>
+        </locale>
+        <locale name="users.panel.delete.window.text">
+            <de><![CDATA[Sie möchten folgende Benutzer löschen:<br /><br />[userids]]]></de>
+            <en><![CDATA[You want to delete the following users:<br /><br />[userids]]]></en>
+        </locale>
+        <locale name="users.panel.delete.window.information">
+            <de><![CDATA[Die Benutzer werden komplett aus dem System entfernt und können nicht wieder hergestellt werden.]]></de>
+            <en><![CDATA[Users are completely removed from the system and can not be restored.]]></en>
+        </locale>
+
+
+    </groups>
+</locales>
