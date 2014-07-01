@@ -1,156 +1,158 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<settings>
+<quiqqer>
+    <settings>
 
-    <config name="cache">
-        <section name="handlers">
-            <conf name="filesystem">
-                <type><![CDATA[bool]]></type>
-            </conf>
-            <conf name="apc">
-                <type><![CDATA[bool]]></type>
-            </conf>
-            <conf name="memcache">
-                <type><![CDATA[bool]]></type>
-            </conf>
-            <conf name="sqlite">
-                <type><![CDATA[bool]]></type>
-            </conf>
-       </section>
+        <config name="cache">
+            <section name="handlers">
+                <conf name="filesystem">
+                    <type><![CDATA[bool]]></type>
+                </conf>
+                <conf name="apc">
+                    <type><![CDATA[bool]]></type>
+                </conf>
+                <conf name="memcache">
+                    <type><![CDATA[bool]]></type>
+                </conf>
+                <conf name="sqlite">
+                    <type><![CDATA[bool]]></type>
+                </conf>
+           </section>
 
-       <section name="apc">
-            <conf name="ttl">
-                <type><![CDATA[string]]></type>
-                <defaultvalue>43200</defaultvalue>
-            </conf>
-            <conf name="namespace">
-                <type><![CDATA[string]]></type>
-                <defaultvalue>CMS_DIR</defaultvalue>
-            </conf>
-        </section>
+           <section name="apc">
+                <conf name="ttl">
+                    <type><![CDATA[string]]></type>
+                    <defaultvalue>43200</defaultvalue>
+                </conf>
+                <conf name="namespace">
+                    <type><![CDATA[string]]></type>
+                    <defaultvalue>CMS_DIR</defaultvalue>
+                </conf>
+            </section>
 
-        <section name="memcache">
-            <conf name="servers">
-                <type><![CDATA[integer]]></type>
-            </conf>
-            <conf name="prefix_key">
-                <type><![CDATA[string]]></type>
-            </conf>
-            <conf name="libketama_compatible">
-                <type><![CDATA[bool]]></type>
-            </conf>
-            <conf name="cache_lookups">
-                <type><![CDATA[bool]]></type>
-            </conf>
-            <conf name="serializer">
-                <type><![CDATA[string]]></type>
-            </conf>
-        </section>
-        <!--
-        <section name="memcache$">
-            <conf name="host">
-                <type><![CDATA[string]]></type>
-            </conf>
-            <conf name="post">
-                <type><![CDATA[integer]]></type>
-            </conf>
-            <conf name="weight">
-                <type><![CDATA[integer]]></type>
-            </conf>
-        </section>
-         -->
+            <section name="memcache">
+                <conf name="servers">
+                    <type><![CDATA[integer]]></type>
+                </conf>
+                <conf name="prefix_key">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="libketama_compatible">
+                    <type><![CDATA[bool]]></type>
+                </conf>
+                <conf name="cache_lookups">
+                    <type><![CDATA[bool]]></type>
+                </conf>
+                <conf name="serializer">
+                    <type><![CDATA[string]]></type>
+                </conf>
+            </section>
+            <!--
+            <section name="memcache$">
+                <conf name="host">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="post">
+                    <type><![CDATA[integer]]></type>
+                </conf>
+                <conf name="weight">
+                    <type><![CDATA[integer]]></type>
+                </conf>
+            </section>
+             -->
 
-        <section name="filesystem">
-            <conf name="path">
-                <type><![CDATA[string]]></type>
-            </conf>
-        </section>
+            <section name="filesystem">
+                <conf name="path">
+                    <type><![CDATA[string]]></type>
+                </conf>
+            </section>
 
-        <section name="sqlite">
-            <conf name="path">
-                <type><![CDATA[string]]></type>
-            </conf>
-        </section>
-    </config>
+            <section name="sqlite">
+                <conf name="path">
+                    <type><![CDATA[string]]></type>
+                </conf>
+            </section>
+        </config>
 
-    <window>
-        <title>Cache Verwaltung</title>
+        <window>
+            <title>Cache Verwaltung</title>
 
-        <params>
-            <icon>icon-sort-by-attributes-alt</icon>
-        </params>
+            <params>
+                <icon>icon-sort-by-attributes-alt</icon>
+            </params>
 
-        <categories>
-            <category name="settings">
-                <title>Welche Cache Arten sollen genutzt werden?</title>
-                <text>Cache Arten</text>
-                <settings title="caches" name="caches">
-                    <input conf="handlers.filesystem" type="checkbox">
-                        <text>Dateisystem</text>
-                    </input>
-                    <input conf="handlers.apc" type="checkbox">
-                        <text>APC</text>
-                    </input>
-                    <input conf="handlers.memcache" type="checkbox">
-                        <text>MemCache</text>
-                    </input>
-                    <input conf="handlers.sqlite" type="checkbox">
-                        <text>SQLite</text>
-                    </input>
-                </settings>
-            </category>
+            <categories>
+                <category name="settings">
+                    <title>Welche Cache Arten sollen genutzt werden?</title>
+                    <text>Cache Arten</text>
+                    <settings title="caches" name="caches">
+                        <input conf="handlers.filesystem" type="checkbox">
+                            <text>Dateisystem</text>
+                        </input>
+                        <input conf="handlers.apc" type="checkbox">
+                            <text>APC</text>
+                        </input>
+                        <input conf="handlers.memcache" type="checkbox">
+                            <text>MemCache</text>
+                        </input>
+                        <input conf="handlers.sqlite" type="checkbox">
+                            <text>SQLite</text>
+                        </input>
+                    </settings>
+                </category>
 
-            <category name="apc">
-                <title>APC Einstellungen</title>
-                <text>APC</text>
-                <settings title="apc" name="apc">
-                    <input conf="apc.namespace" type="text">
-                        <text>Namespace</text>
-                    </input>
+                <category name="apc">
+                    <title>APC Einstellungen</title>
+                    <text>APC</text>
+                    <settings title="apc" name="apc">
+                        <input conf="apc.namespace" type="text">
+                            <text>Namespace</text>
+                        </input>
 
-                    <input conf="apc.ttl" type="text">
-                        <text>Ablaufzeit (ttl)</text>
-                    </input>
-                </settings>
-            </category>
+                        <input conf="apc.ttl" type="text">
+                            <text>Ablaufzeit (ttl)</text>
+                        </input>
+                    </settings>
+                </category>
 
-            <category name="memcache">
-                <title>MemCache Einstellungen</title>
-                <text>MemCache</text>
-                <settings title="memcache" name="memcache">
-                    <input conf="memcache.servers" type="text">
-                        <text>Anzahl der Server</text>
-                    </input>
+                <category name="memcache">
+                    <title>MemCache Einstellungen</title>
+                    <text>MemCache</text>
+                    <settings title="memcache" name="memcache">
+                        <input conf="memcache.servers" type="text">
+                            <text>Anzahl der Server</text>
+                        </input>
 
-                    <input conf="memcache.prefix_key" type="text">
-                        <text>Cache Präfix</text>
-                    </input>
+                        <input conf="memcache.prefix_key" type="text">
+                            <text>Cache Präfix</text>
+                        </input>
 
-                    <input conf="memcache.serializer" type="text">
-                        <text>Serializer (json, php, igbinary)</text>
-                    </input>
+                        <input conf="memcache.serializer" type="text">
+                            <text>Serializer (json, php, igbinary)</text>
+                        </input>
 
-                    <input conf="memcache.libketama_compatible" type="checkbox">
-                        <text>libketama Kompatibel?</text>
-                    </input>
+                        <input conf="memcache.libketama_compatible" type="checkbox">
+                            <text>libketama Kompatibel?</text>
+                        </input>
 
-                    <input conf="memcache.cache_lookups" type="checkbox">
-                        <text>DNS Cache Lookup</text>
-                    </input>
-                </settings>
-            </category>
+                        <input conf="memcache.cache_lookups" type="checkbox">
+                            <text>DNS Cache Lookup</text>
+                        </input>
+                    </settings>
+                </category>
 
-            <category name="filesystem">
-                <title>Dateisystem (Filesystem) Einstellungen</title>
-                <text>Dateisystem</text>
-                <settings title="filesystem" name="filesystem">
-                    <input conf="filesystem.path" type="text">
-                        <text>Pfad zum Cache</text>
-                        <description>Falls kein Pfad angegeben wurde, wird im Standard VAR Ordner ein cache/stack/ Verzeichnis angelegt</description>
-                    </input>
-                </settings>
-            </category>
+                <category name="filesystem">
+                    <title>Dateisystem (Filesystem) Einstellungen</title>
+                    <text>Dateisystem</text>
+                    <settings title="filesystem" name="filesystem">
+                        <input conf="filesystem.path" type="text">
+                            <text>Pfad zum Cache</text>
+                            <description>Falls kein Pfad angegeben wurde, wird im Standard VAR Ordner ein cache/stack/ Verzeichnis angelegt</description>
+                        </input>
+                    </settings>
+                </category>
 
-        </categories>
-    </window>
+            </categories>
+        </window>
 
-</settings>
+    </settings>
+</quiqqer>

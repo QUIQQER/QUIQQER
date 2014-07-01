@@ -23,9 +23,21 @@
             <de><![CDATA[Titel]]></de>
             <en><![CDATA[Title]]></en>
         </locale>
+        <locale name="short">
+            <de><![CDATA[Kurzbeschreibung]]></de>
+            <en><![CDATA[Short description]]></en>
+        </locale>
+        <locale name="content">
+            <de><![CDATA[Inhalt]]></de>
+            <en><![CDATA[Content]]></en>
+        </locale>
         <locale name="size">
             <de><![CDATA[Größe]]></de>
             <en><![CDATA[Size]]></en>
+        </locale>
+        <locale name="description">
+            <de><![CDATA[Beschreibung]]></de>
+            <en><![CDATA[Description]]></en>
         </locale>
         <locale name="createdate">
             <de><![CDATA[Erstellungsdatum]]></de>
@@ -103,6 +115,10 @@
         <locale name="country">
             <de><![CDATA[Land]]></de>
             <en><![CDATA[Country]]></en>
+        </locale>
+        <locale name="file">
+            <de><![CDATA[Datei]]></de>
+            <en><![CDATA[File]]></en>
         </locale>
 
         <locale name="group">
@@ -374,7 +390,7 @@
         <!-- Gehe zu -->
         <locale name="menu.extras.rights.text">
             <de><![CDATA[Rechte]]></de>
-            <en><![CDATA[Rechte]]></en>
+            <en><![CDATA[Rights]]></en>
         </locale>
         <locale name="menu.extras.permissions.text">
             <de><![CDATA[Zugriffsrechte]]></de>
@@ -411,80 +427,231 @@
                 <en><![CDATA[QUIQQER Changelog]]></en>
             </locale>
 
-        <!-- Projects -->
-        <locale name="projects.project.settings.panel.settings.title">
-            <de><![CDATA[Projekte Einstellungen]]></de>
-            <en><![CDATA[Projects settings]]></en>
+        <!-- quiqqer settings  -->
+        <locale name="quiqqer.settings.title">
+            <de><![CDATA[QUIQQER Einstellungen]]></de>
+            <en><![CDATA[QUIQQER Settings]]></en>
         </locale>
-        <locale name="projects.project.settings.panel.language.default">
-            <de><![CDATA[Standard Sprache]]></de>
-            <en><![CDATA[Default language]]></en>
+        <locale name="quiqqer.settings.general.title">
+            <de><![CDATA[Allgemein]]></de>
+            <en><![CDATA[General]]></en>
         </locale>
-        <locale name="projects.project.settings.panel.language.available">
-            <de><![CDATA[Verfügbare Sprachen]]></de>
-            <en><![CDATA[Available languages]]></en>
+        <locale name="quiqqer.settings.general.globals.title">
+            <de><![CDATA[Allgemeine Einstellungen]]></de>
+            <en><![CDATA[General settings]]></en>
         </locale>
-        <locale name="projects.project.settings.panel.templates.default">
-            <de><![CDATA[Standard Template]]></de>
-            <en><![CDATA[Default template]]></en>
+        <locale name="quiqqer.settings.general.globals.mailprotection">
+            <de><![CDATA[E-Mail-Schutz]]></de>
+            <en><![CDATA[Email protection]]></en>
         </locale>
-        <locale name="projects.project.settings.panel.templates.no.template">
-            <de><![CDATA[Kein Template verwenden]]></de>
-            <en><![CDATA[Do not use a template]]></en>
-        </locale>
-        <locale name="projects.project.settings.panel.templates.available">
-            <de><![CDATA[Verfügbare Templates für dieses Projekt]]></de>
-            <en><![CDATA[Available templates for this project]]></en>
-        </locale>
-        <locale name="projects.project.settings.panel.admin.email">
-            <de><![CDATA[Administrations E-Mail]]></de>
-            <en><![CDATA[Administration E-mail]]></en>
-        </locale>
-        <locale name="projects.project.settings.panel.set.standard">
-            <de><![CDATA[Als standard Projekt setzen]]></de>
-            <en><![CDATA[Set as default project]]></en>
+        <locale name="quiqqer.settings.general.globals.mailprotection.description">
+            <de><![CDATA[Alle E-Mail Adressen werden für SpyBots unkenntlich gemacht]]></de>
+            <en><![CDATA[All email addresses are defaced for spybots]]></en>
         </locale>
 
-        <locale name="projects.project.settings.meta.settings.title">
-            <de><![CDATA[Meta Angaben]]></de>
-            <en><![CDATA[Meta data]]></en>
+        <locale name="quiqqer.settings.general.template.title">
+            <de><![CDATA[Template-Engine Einstellungen]]></de>
+            <en><![CDATA[Template engine settings]]></en>
         </locale>
-        <locale name="projects.project.settings.meta.author">
-            <de><![CDATA[Autor]]></de>
-            <en><![CDATA[Author]]></en>
+        <locale name="quiqqer.settings.general.template.use">
+            <de><![CDATA[Verwendete Template Engine]]></de>
+            <en><![CDATA[Used template engine]]></en>
         </locale>
-        <locale name="projects.project.settings.meta.publisher">
-            <de><![CDATA[Publisher]]></de>
-            <en><![CDATA[Publisher]]></en>
+        <locale name="quiqqer.settings.general.template.compilecheck">
+            <de><![CDATA[Smarty Compile Prüfung]]></de>
+            <en><![CDATA[Smarty compile check]]></en>
         </locale>
-        <locale name="projects.project.settings.meta.copyright">
-            <de><![CDATA[Copyright]]></de>
-            <en><![CDATA[Copyright]]></en>
+
+        <locale name="quiqqer.settings.general.dev.title">
+            <de><![CDATA[Einstellungen für Entwickler]]></de>
+            <en><![CDATA[Developer settings]]></en>
         </locale>
-        <locale name="projects.project.settings.meta.indexing">
-            <de><![CDATA[Suchmaschinen Indizierung]]></de>
-            <en><![CDATA[Search engine indexing]]></en>
+        <locale name="quiqqer.settings.general.dev.maintenance">
+            <de><![CDATA[Wartungsarbeiten atkivieren]]></de>
+            <en><![CDATA[Activate Maintenance]]></en>
         </locale>
-        <locale name="projects.project.settings.meta.indexing.index">
-            <de><![CDATA[Indizierung der Seite erlauben]]></de>
-            <en><![CDATA[Allow indexing of the site]]></en>
+        <locale name="quiqqer.settings.general.dev.debug">
+            <de><![CDATA[Debug Modus (für Entwickler)]]></de>
+            <en><![CDATA[Debug mode (for developers)]]></en>
         </locale>
-        <locale name="projects.project.settings.meta.indexing.noindex">
-            <de><![CDATA[Indizierung der Seite nicht erlauben]]></de>
-            <en><![CDATA[Not allow indexing of the site]]></en>
+        <locale name="quiqqer.settings.general.dev.development">
+            <de><![CDATA[Entwicklungs Modus (für Entwickler)]]></de>
+            <en><![CDATA[Development mode (for developers)]]></en>
         </locale>
-        <locale name="projects.project.settings.meta.indexing.nofollow">
-            <de><![CDATA[Untergeordnete Seiten / Dateien nicht besuchen]]></de>
-            <en><![CDATA[Not visit subsidiary pages / files]]></en>
+        <locale name="quiqqer.settings.general.updates.title">
+            <de><![CDATA[Aktualisierung]]></de>
+            <en><![CDATA[Updates]]></en>
         </locale>
-        <locale name="projects.project.settings.meta.indexing.noindex_nofollow">
-            <de><![CDATA[Indizierung der Seite nicht erlaubt und untergeordnete Seiten / Dateien nicht besuchen]]></de>
-            <en><![CDATA[Indexing of the site is not allowed and does not visit the child pages / files]]></en>
+        <locale name="quiqqer.settings.general.updates.stability">
+            <de><![CDATA[Maximale Stabilität der Pakete und des Systems]]></de>
+            <en><![CDATA[Maximum stability of the packets and the system]]></en>
         </locale>
-        <locale name="projects.project.settings.meta.indexing.all">
-            <de><![CDATA[Inhalte der Seite und aus untergeordneten Seiten besuchen und indizieren]]></de>
-            <en><![CDATA[Visit the contents page and from child pages and index]]></en>
+        <locale name="quiqqer.settings.general.version.title">
+            <de><![CDATA[Version des QUIQQER Systems]]></de>
+            <en><![CDATA[Version of the QUIQQER system]]></en>
         </locale>
+
+        <locale name="quiqqer.settings.database">
+            <de><![CDATA[Datenbank]]></de>
+            <en><![CDATA[Database]]></en>
+        </locale>
+        <locale name="quiqqer.settings.database.title">
+            <de><![CDATA[Datenbank Einstellungen]]></de>
+            <en><![CDATA[Database settings]]></en>
+        </locale>
+        <locale name="quiqqer.settings.database.type">
+            <de><![CDATA[Datenbank Typ]]></de>
+            <en><![CDATA[Database type]]></en>
+        </locale>
+        <locale name="quiqqer.settings.database.host">
+            <de><![CDATA[Datenbank Host]]></de>
+            <en><![CDATA[Database host]]></en>
+        </locale>
+        <locale name="quiqqer.settings.database.name">
+            <de><![CDATA[Datenbank Name]]></de>
+            <en><![CDATA[Database name]]></en>
+        </locale>
+        <locale name="quiqqer.settings.database.user">
+            <de><![CDATA[Datenbank Benutzer]]></de>
+            <en><![CDATA[Database user]]></en>
+        </locale>
+        <locale name="quiqqer.settings.database.password">
+            <de><![CDATA[Datenbank Passwort]]></de>
+            <en><![CDATA[Database password]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.email.title">
+            <de><![CDATA[E-Mail Einstellungen]]></de>
+            <en><![CDATA[Email settings]]></en>
+        </locale>
+        <locale name="quiqqer.settings.email.admin">
+            <de><![CDATA[Administrations E-Mail]]></de>
+            <en><![CDATA[Administration email]]></en>
+        </locale>
+        <locale name="quiqqer.settings.email.admin.desc">
+            <de><![CDATA[Fehlermeldungen / Informationen werden an diese E-Mail gesendet]]></de>
+            <en><![CDATA[Error messages / information will be sent to this e-mail]]></en>
+        </locale>
+        <locale name="quiqqer.settings.email.smtp.title">
+            <de><![CDATA[SMTP Einstellungen]]></de>
+            <en><![CDATA[SMTP settings]]></en>
+        </locale>
+        <locale name="quiqqer.settings.email.smtp.activasion">
+            <de><![CDATA[SMTP E-Mail Versand aktivieren]]></de>
+            <en><![CDATA[Activate SMTP e-mail delivery]]></en>
+        </locale>
+        <locale name="quiqqer.settings.email.smtp.server">
+            <de><![CDATA[SMTP Server]]></de>
+            <en><![CDATA[SMTP Server]]></en>
+        </locale>
+        <locale name="quiqqer.settings.email.smtp.auth.title">
+            <de><![CDATA[SMTP Authentifizierung]]></de>
+            <en><![CDATA[SMTP authentication]]></en>
+        </locale>
+        <locale name="quiqqer.settings.email.smtp.auth.activasion">
+            <de><![CDATA[SMTP Authentifizierung aktivieren?]]></de>
+            <en><![CDATA[Activate SMTP authentication?]]></en>
+        </locale>
+        <locale name="quiqqer.settings.email.smtp.auth.user">
+            <de><![CDATA[SMTP Benutzer]]></de>
+            <en><![CDATA[SMTP user]]></en>
+        </locale>
+        <locale name="quiqqer.settings.email.smtp.auth.password">
+            <de><![CDATA[SMTP Passwort]]></de>
+            <en><![CDATA[SMTP password]]></en>
+        </locale>
+        <locale name="quiqqer.settings.email.smtp.auth.MAILFrom">
+            <de><![CDATA[Angezeigte Versand E-Mail Adresse]]></de>
+            <en><![CDATA[Mail from email address]]></en>
+        </locale>
+        <locale name="quiqqer.settings.email.smtp.auth.MAILFrom.description">
+            <de><![CDATA[Zum Beispiel: info@quiqqer.com]]></de>
+            <en><![CDATA[For example: info@quiqqer.com]]></en>
+        </locale>
+        <locale name="quiqqer.settings.email.smtp.auth.MAILFrom">
+            <de><![CDATA[Angezeigter Versandname]]></de>
+            <en><![CDATA[Displayed name]]></en>
+        </locale>
+        <locale name="quiqqer.settings.email.smtp.auth.MAILFrom.description">
+            <de><![CDATA[Zum Beispiel: Thomas Meier]]></de>
+            <en><![CDATA[For example: Thomas Meier]]></en>
+        </locale>
+        <locale name="quiqqer.settings.email.smtp.auth.MAILReplyTo">
+            <de><![CDATA[Antwort E-Mail Adresse]]></de>
+            <en><![CDATA[Reply to email address]]></en>
+        </locale>
+        <locale name="quiqqer.settings.email.smtp.auth.MAILReplyTo.description">
+            <de><![CDATA[Zum Beispiel: Thomas Meier]]></de>
+            <en><![CDATA[For example: Thomas Meier]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.auth">
+            <de><![CDATA[Authentifizierung]]></de>
+            <en><![CDATA[Authentication]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.emaillogin">
+            <de><![CDATA[Login über die E-Mail Adresse zulassen]]></de>
+            <en><![CDATA[Allow login via the email address]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.type">
+            <de><![CDATA[Authentifizierungstyp]]></de>
+            <en><![CDATA[Authentication type]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.type.standard">
+            <de><![CDATA[standard]]></de>
+            <en><![CDATA[standard]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.session">
+            <de><![CDATA[Sitzung]]></de>
+            <en><![CDATA[Session]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.session.maxlife">
+            <de><![CDATA[Maximale inaktive Zeit eines Benutzers (max session life time)]]></de>
+            <en><![CDATA[Maximum user idle time (max session lifetime)]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.auth.memcached">
+            <de><![CDATA[Memcached Server]]></de>
+            <en><![CDATA[Memcached server]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.memcached.text">
+            <de><![CDATA[
+                Geben Sie hier einen Memcached Server an damit die Sitzungsdaten über einen Memcached Server verwaltet werden
+            ]]></de>
+            <en><![CDATA[
+                Enter a memcached server to ensure that the session data is managed via a memcached server
+            ]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.memcached.host">
+            <de><![CDATA[Host]]></de>
+            <en><![CDATA[Host]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.memcached.port">
+            <de><![CDATA[Port]]></de>
+            <en><![CDATA[Port]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.auth.memcache">
+            <de><![CDATA[Memcache Server]]></de>
+            <en><![CDATA[Memcache server]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.memcache.text">
+            <de><![CDATA[
+                Geben Sie hier einen Memcache Server an damit die Sitzungsdaten über einen Memcache Server verwaltet werden
+            ]]></de>
+            <en><![CDATA[
+                Enter a memcache server to ensure that the session data is managed via a memcache server
+            ]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.memcache.host">
+            <de><![CDATA[Host]]></de>
+            <en><![CDATA[Host]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.memcache.port">
+            <de><![CDATA[Port]]></de>
+            <en><![CDATA[Port]]></en>
+        </locale>
+
 
 
         <!-- Exception  -->

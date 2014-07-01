@@ -1,47 +1,47 @@
 <form name="global_auth">
-	<table class="setting" style="margin-left: 10px; margin-top: 10px;">
-	<tr>
-		<td style="width: 10px;">
-			<input type="checkbox" name="emaillogin" />
-		</td>
-		<td>
-			Login per E-Mail zulassen
-		</td>
-	</tr>
-	</table>
+    <table class="setting" style="margin-left: 10px; margin-top: 10px;">
+    <tr>
+        <td style="width: 10px;">
+            <input type="checkbox" name="emaillogin" />
+        </td>
+        <td>
+            Login per E-Mail zulassen ------
+        </td>
+    </tr>
+    </table>
 
-	{title text="Sitzungsdauer"}
-	<table class="setting" style="margin-left: 10px;">
-	<tr>
-		<td style="width: 170px;">
-			Maximale Länge einer Sitzung
-		</td>
-		<td>
-			<input type="text" name="max_life_time" value="" style="width: 70px; margin-right: 10px;" /> Sekunden
-		</td>
-	</tr>
-	</table>
+    {title text="Sitzungsdauer"}
+    <table class="setting" style="margin-left: 10px;">
+    <tr>
+        <td style="width: 170px;">
+            Maximale Länge einer Sitzung
+        </td>
+        <td>
+            <input type="text" name="max_life_time" value="" style="width: 70px; margin-right: 10px;" /> Sekunden
+        </td>
+    </tr>
+    </table>
 
-	{title text="Authentifizierungs Methode"}
-	<table class="setting" style="margin-left: 10px;">
-	<tr>
-		<td>
-			<select name="auth_type" onchange="_pcsg.settings.authtypes()">
-				<option value="">Standard</option>
-				<option value="AD">MS Active Directory</option>
-			</select>
-		</td>
-	</tr>
-	</table>
+    {title text="Authentifizierungs Methode"}
+    <table class="setting" style="margin-left: 10px;">
+    <tr>
+        <td>
+            <select name="auth_type" onchange="_pcsg.settings.authtypes()">
+                <option value="">Standard</option>
+                <option value="AD">MS Active Directory</option>
+            </select>
+        </td>
+    </tr>
+    </table>
 
-	<div id="auth_explain" style="border: 1px solid #FF9900; background-color: #FFE6BF; width: 400px; margin: 10px auto; padding: 10px;">
+    <div id="auth_explain" style="border: 1px solid #FF9900; background-color: #FFE6BF; width: 400px; margin: 10px auto; padding: 10px;">
 
-	</div>
+    </div>
 
-	<div id="auth_settings" style="display: none;">
-		{title text="Einstellungen"}
-		<div id="auth_settings_params">
+    <div id="auth_settings" style="display: none;">
+        {title text="Einstellungen"}
+        <div id="auth_settings_params">
 
-		</div>
-	</div>
+        </div>
+    </div>
 </form>

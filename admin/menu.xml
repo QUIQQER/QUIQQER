@@ -1,34 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <menu>
-    <item parent="/" name="file"
-          group="quiqqer/system"
-          var="menu.file.text"
-    >
-        Datei
+    <item parent="/" name="file">
+        <locale group="quiqqer/system" var="menu.file.text" />
     </item>
-    <item parent="/" name="extras"
-          group="quiqqer/system"
-          var="menu.goto.text"
-    >
-        Gehe zu ...
+    <item parent="/" name="extras">
+        <locale group="quiqqer/system" var="menu.goto.text" />
     </item>
-    <item parent="/" name="settings"
-          group="quiqqer/system"
-          var="menu.settings.text"
-    >
-        Einstellungen
+    <item parent="/" name="settings">
+        <locale group="quiqqer/system" var="menu.settings.text" />
     </item>
-    <item parent="/" name="profil"
-          group="quiqqer/system"
-          var="menu.profil.text"
-    >
-        Einstellungen
+    <item parent="/" name="profil">
+        <locale group="quiqqer/system" var="menu.profil.text" />
     </item>
-    <item parent="/" name="help"
-          group="quiqqer/system"
-          var="menu.help.text"
-    >
-        Hilfe
+    <item parent="/" name="help">
+        <locale group="quiqqer/system" var="menu.help.text" />
     </item>
 
     <!-- File Menu -->
@@ -36,25 +21,23 @@
               name="search"
               icon="icon-search"
               require="controls/projects/project/site/Search"
-              group="quiqqer/system"
-              var="menu.file.search.text"
-        />
+        >
+            <locale  group="quiqqer/system" var="menu.file.search.text" />
+        </item>
         <item parent="/file/"
               name="file_close"
               icon="icon-remove-sign"
               group="quiqqer/system"
               var="menu.file.close.text"
         >
-            Schließen
+            <locale group="quiqqer/system" var="menu.file.close.text" />
         </item>
         <item parent="/file/"
               name="file_exit"
               icon="icon-off"
-              group="quiqqer/system"
-              var="menu.file.logout.text"
               exec="logout();"
         >
-            Beenden
+            <locale group="quiqqer/system" var="menu.file.logout.text" />
         </item>
 
     <!-- Edit -->
@@ -127,103 +110,95 @@
               name="packages"
               icon="URL_BIN_DIR/16x16/quiqqer.png"
               require="controls/packages/Panel"
-              group="quiqqer/system"
-              var="menu.extras.packages.text"
-        />
+        >
+            <locale group="quiqqer/system" var="menu.extras.packages.text" />
+        </item>
         <!-- Projekt Verwaltung -->
         <item parent="/extras/"
               name="projects"
               icon="icon-home"
               require="controls/projects/Manager"
-              group="quiqqer/system"
-              var="menu.extras.projects.text"
-        />
+        >
+            <locale group="quiqqer/system" var="menu.extras.projects.text" />
+        </item>
         <!-- Zugriffsrechte bearbeiten -->
         <item parent="/extras/"
               name="rights"
               icon="icon-unlock-alt"
-              group="quiqqer/system"
-              var="menu.extras.rights.text"
-        />
+        >
+            <locale group="quiqqer/system" var="menu.extras.rights.text" />
+        </item>
             <!-- Zugriffsrechte bearbeiten -->
             <item parent="/extras/rights/"
                   name="permissions"
                   icon="icon-gears"
                   require="controls/permissions/Panel"
-                  group="quiqqer/system"
-                  var="menu.extras.permissions.text"
-            />
+            >
+                <locale group="quiqqer/system" var="menu.extras.permissions.text" />
+            </item>
             <!-- Gruppen -->
             <item parent="/extras/rights/"
                   name="groups"
                   icon="icon-group"
                   require="controls/groups/Panel"
-                  group="quiqqer/system"
-                  var="menu.extras.groups.text"
-            />
+            >
+                <locale group="quiqqer/system" var="menu.extras.groups.text" />
+            </item>
             <!-- Benutzer -->
             <item parent="/extras/rights/"
                   name="users"
                   icon="icon-user"
                   require="controls/users/Panel"
-                  group="quiqqer/system"
-                  var="menu.extras.users.text"
-            />
+            >
+                <locale group="quiqqer/system" var="menu.extras.users.text" />
+            </item>
 
         <!-- Logs -->
         <item parent="/extras/"
               name="logs"
               icon="icon-terminal"
               require="controls/logs/Panel"
-              group="quiqqer/system"
-              var="menu.extras.logs.text"
-        />
+        >
+            <locale group="quiqqer/system" var="menu.extras.logs.text" />
+        </item>
         <!-- Papierkorb -->
         <item parent="/extras/"
               name="trash"
               icon="icon-trash"
               require="controls/trash/Panel"
-              group="quiqqer/system"
-              var="menu.extras.trash.text"
-        />
-
+        >
+            <locale group="quiqqer/system" var="menu.extras.trash.text" />
+        </item>
 
     <!-- Settings -->
         <item parent="/settings/"
               name="projects"
               icon="icon-home"
-              group="quiqqer/system"
-              var="menu.settings.projects.text"
-        />
+        >
+            <locale group="quiqqer/system" var="menu.settings.projects.text" />
+        </item>
         <item parent="/settings/"
               name="media"
               icon="icon-picture"
               require="controls/projects/project/media/Manager"
-              group="quiqqer/system"
-              var="menu.settings.media.text"
         >
-            Media Einstellungen
+            <locale group="quiqqer/system" var="menu.settings.media.text" />
         </item>
 
         <item parent="/settings/"
               name="media"
               icon="icon-font"
               require="controls/editors/Settings"
-              group="quiqqer/system"
-              var="menu.settings.editor.text"
         >
-            WYSIWYG-Editor Einstellungen
+            <locale group="quiqqer/system" var="menu.settings.editor.text" />
         </item>
-
 
         <item parent="/settings/"
               name="vhosts"
               icon="icon-external-link"
               require="controls/system/VHosts"
-              group="quiqqer/system"
-              var="menu.settings.vhosts.text"
         >
-            Virtual Hosts
+            <locale group="quiqqer/system" var="menu.settings.vhosts.text" />
         </item>
 
 
@@ -232,9 +207,9 @@
               name="about"
               icon="URL_BIN_DIR/16x16/quiqqer.png"
               require="controls/help/About"
-              group="quiqqer/system"
-              var="menu.help.about.text"
-        />
+        >
+            <locale group="quiqqer/system" var="menu.help.about.text" />
+        </item>
 
         <item parent="/help/"
               name="changelog"
@@ -242,7 +217,8 @@
               require="controls/help/Changelog"
               group="quiqqer/system"
               var="menu.help.changelog.text"
-        />
-
+        >
+            <locale group="quiqqer/system" var="menu.help.changelog.text" />
+        </item>
 
 </menu>

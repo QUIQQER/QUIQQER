@@ -1,37 +1,64 @@
 <form name="create_project" action="" class="qui-projects-manager-create">
 
-    <h1>Projekt erstellen</h1>
-    <p class="desc">
-        Legen Sie ein neues Projekt im System an.
-    </p>
-    <p class="desc">
-        Dieses Projekt kann eine Webseite, Firmenseite, Shop oder auch ein Blog sein.
-    </p>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th colspan="2">
+                    <h1>
+                        {t}quiqqer/system template.project.create.header{/t}
+                    </h1>
+                    <p class="description">
+                        {t}quiqqer/system template.project.create.description{/t}
+                    </p>
+                </th>
+            </tr>
+        </thead>
 
-    <p>
-        <label for="">Projekt-Namen</label>
-        <input type="text" name="project" value="" />
-    </p>
+        <tbody>
+            <tr class="odd">
+                <td>
+                    <label for="">
+                        {t}quiqqer/system template.project.label.name{/t}
+                    </label>
+                </td>
+                <td>
+                    <input type="text" name="project" value="" />
+                </td>
+            </tr>
+            <tr class="even">
+                <td>
+                    <label for="">
+                        {t}quiqqer/system template.project.label.language{/t}
+                    </label>
+                </td>
+                <td>
+                    <input type="text" name="lang" value="" />
+                </td>
+            </tr>
+            <tr class="odd">
+                <td>
+                    <label for="">
+                        {t}quiqqer/system template.project.label.template{/t}
+                    </label>
+                </td>
+                <td>
+                    <select name="template">
+                        <option value="">
+                            {t}quiqqer/system template.project.no.template{/t}
+                        </option>
 
-    <p>
-        <label for="">Projekt-Sprache</label>
-        <input type="text" name="lang" value="" />
-    </p>
+                        {assign var=PM value=$QUI->getPackageManager()}
 
-    <p>
-        <label for="">Project Template</label>
-        <select name="template">
-            <option value="">Kein Template verwenden</option>
+                        {array var=params type="quiqqer-template"}
+                        {assign var=templates value=$PM->getInstalled( $params )}
 
-            {assign var=PM value=$QUI->getPackageManager()}
-
-            {array var=params type="quiqqer-template"}
-            {assign var=templates value=$PM->getInstalled( $params )}
-
-            {foreach from=$templates item=tpl}
-                <option value="{$tpl.name}">{$tpl.name}</option>
-            {/foreach}
-        </select>
-    </p>
+                        {foreach from=$templates item=tpl}
+                            <option value="{$tpl.name}">{$tpl.name}</option>
+                        {/foreach}
+                    </select>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
 </form>

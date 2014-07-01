@@ -2,39 +2,53 @@
     <form name="site-search" class="qui-search-form">
 
         <div class="qui-search-elements">
-            <label for="qui-search-string">Suche</label>
+            <label for="qui-search-string">
+                {t}quiqqer/system template.project.site.search.title{/t}
+            </label>
             <input type="text" name="qui-search-string" />
         </div>
 
         <fieldset>
-            <legend>Felder die durchsucht werden</legend>
+            <legend>
+                {t}quiqqer/system template.project.site.search.legend{/t}
+            </legend>
 
             <div class="qui-search-checkbox-container">
                 <input type="checkbox" name="id" />
-                <label for="id">ID</label>
+                <label for="id">
+                    {t}quiqqer/system id{/t}
+                </label>
             </div>
 
             <div class="qui-search-checkbox-container">
                 <input type="checkbox" name="name" />
-                <label for="name">Name</label>
+                <label for="name">
+                    {t}quiqqer/system name{/t}
+                </label>
             </div>
 
             <div class="qui-search-checkbox-container">
                 <input type="checkbox" name="title" />
-                <label for="title">Title</label>
+                <label for="title">
+                    {t}quiqqer/system title{/t}
+                </label>
             </div>
 
             <div class="qui-search-checkbox-container">
                 <input type="checkbox" name="short" />
-                <label for="short">Kurzbeschreibung</label>
+                <label for="short">
+                    {t}quiqqer/system short{/t}
+                </label>
             </div>
 
             <div class="qui-search-checkbox-container">
                 <input type="checkbox" name="content" />
-                <label for="content">Inhalt</label>
+                <label for="content">
+                    {t}quiqqer/system content{/t}
+                </label>
             </div>
-
         </fieldset>
+
     </form>
 
     <div class="qui-search-results"></div>

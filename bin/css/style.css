@@ -47,6 +47,11 @@ address .icon {
     width: 20px;
 }
 
+.description {
+    clear: both;
+    font-style: italic;
+}
+
 /** logo, title
  * ====================================================== */
 

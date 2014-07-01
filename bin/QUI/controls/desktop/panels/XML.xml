@@ -1,0 +1,14 @@
+<locales>
+
+    <groups name="quiqqer/system" datatype="js">
+        <locale name="desktop.panels.xml.btn.cancel">
+            <de><![CDATA[Änderungen verwerfen]]></de>
+            <en><![CDATA[Cancel changes]]></en>
+        </locale>
+        <locale name="desktop.panels.xml.btn.save">
+            <de><![CDATA[Änderungen speichern]]></de>
+            <en><![CDATA[Save changes]]></en>
+        </locale>
+    </groups>
+
+</locales>

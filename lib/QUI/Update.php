@@ -539,5 +539,16 @@ class Update
         foreach ( $list as $file ) {
             self::importLocale( trim($file) );
         }
+
+        // admin templates
+        $list = shell_exec(
+            'find "'. SYS_DIR .'template/" -iname \*.xml -type f'
+        );
+
+        $list = explode( "\n", $list );
+
+        foreach ( $list as $file ) {
+            self::importLocale( trim($file) );
+        }
     }
 }
