@@ -14,6 +14,12 @@
             <de><![CDATA[Markierte Server löschen]]></de>
             <en><![CDATA[Delete marked servers]]></en>
         </locale>
+        <locale name="packages.btn.execute.setup.alt">
+            <de><![CDATA[[pkg] setup ausführen]]></de>
+            <en><![CDATA[Execute the [pkg] setup]]></en>
+        </locale>
+
+
 
         <locale name="packages.category.updates">
             <de><![CDATA[Updates]]></de>
@@ -87,23 +93,23 @@
 
         <locale name="packages.grid.title.name">
             <de><![CDATA[Name]]></de>
-            <en><![CDATA[name]]></en>
+            <en><![CDATA[Name]]></en>
         </locale>
         <locale name="packages.grid.title.version">
             <de><![CDATA[Version]]></de>
-            <en><![CDATA[version]]></en>
+            <en><![CDATA[Version]]></en>
         </locale>
         <locale name="packages.grid.title.desc">
             <de><![CDATA[Beschreibung]]></de>
-            <en><![CDATA[description]]></en>
+            <en><![CDATA[Description]]></en>
         </locale>
         <locale name="packages.grid.title.homepage">
             <de><![CDATA[Website]]></de>
-            <en><![CDATA[homepage]]></en>
+            <en><![CDATA[Homepage]]></en>
         </locale>
         <locale name="packages.grid.title.type">
             <de><![CDATA[Typ]]></de>
-            <en><![CDATA[type]]></en>
+            <en><![CDATA[Type]]></en>
         </locale>
         <locale name="packages.grid.title.lastupdate">
             <de><![CDATA[Letztes verfügbares Updates]]></de>
@@ -124,15 +130,15 @@
         </locale>
         <locale name="packages.server.grid.title.status">
             <de><![CDATA[Status]]></de>
-            <en><![CDATA[status]]></en>
+            <en><![CDATA[Status]]></en>
         </locale>
         <locale name="packages.server.grid.title.server">
             <de><![CDATA[Server]]></de>
-            <en><![CDATA[server]]></en>
+            <en><![CDATA[Server]]></en>
         </locale>
         <locale name="packages.server.grid.title.type">
             <de><![CDATA[Typ]]></de>
-            <en><![CDATA[type]]></en>
+            <en><![CDATA[Type]]></en>
         </locale>
 
         <locale name="packages.search.title">
@@ -214,6 +220,33 @@
             <de><![CDATA[Fügen Sie einen neuen Update-Server hinzu. Geben Sie Host, IP oder die Serveradresse vom Update-Server ein.]]></de>
             <en><![CDATA[Add a new update-server. Enter the host, or the server IP address from the update server.]]></en>
         </locale>
+
+        <locale name="packages.systemhealth.text">
+            <de><![CDATA[
+                <h1>Haben sich Dateien verändert?</h1>
+                <p>Führen Sie einen Selbstcheck durch oder prüfen Sie Ihr System mit unseren Online Servern.</p>
+            ]]></de>
+            <en><![CDATA[
+                <h1>Have changed files?</h1>
+                <p>Start a system self-check or check your system with our online servers.</p>
+            ]]></en>
+        </locale>
+        <locale name="packages.grid.healthcheck.systemcheck">
+            <de><![CDATA[Systemcheck durchfünre]]></de>
+            <en><![CDATA[Start a system check]]></en>
+        </locale>
+
+        <locale name="packages.btn.execute.health.alt">
+            <de><![CDATA[Lokalen systemcheck für [pkg] durchführen]]></de>
+            <en><![CDATA[Start a local system check for [pkg]]]></en>
+        </locale>
+        <locale name="packages.btn.execute.onlinehealth">
+            <de><![CDATA[Online systemcheck für [pkg] durchführen]]></de>
+            <en><![CDATA[Start a online system check for [pkg]]]></en>
+        </locale>
+
+
+
     </groups>
 
 </locales>

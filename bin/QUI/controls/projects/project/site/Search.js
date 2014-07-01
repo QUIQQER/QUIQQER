@@ -89,7 +89,7 @@ define('controls/projects/project/site/Search', [
             this.$ProjectList    = Content.getElement( '[name="project"]' );
             this.$FieldList      = Content.getElement( '[name="field"]' );
 
-            this.$searchInput.set(
+            this.$SearchInput.set(
                 'placeholder',
                 Locale.get( lg, 'projects.project.site.search.placeholder' )
             );
@@ -155,6 +155,22 @@ define('controls/projects/project/site/Search', [
                 onrefresh : function() {
                     self.search();
                 }
+            });
+
+            this.$Grid.addEvent('onDblClick', function(data)
+            {
+                var data    = data.target.getDataByRow( data.row ),
+                    siteId  = data.id,
+
+                    projectData = data.project;
+
+
+                projectData = projectData.replace('(', '').replace(')', '').split(' ');
+
+                var Project = Projects.get( projectData[ 0 ], projectData[ 1 ] ),
+                    Site    = Project.get( siteId );
+
+                new SitePanel( Site ).inject( self.getParent() );
             });
         },
 
