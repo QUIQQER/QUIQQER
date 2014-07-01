@@ -171,13 +171,15 @@ class Manager
 
         $template = str_replace(
             '{$repositories}',
-            json_encode( $repositories ),
+            json_encode( $repositories, \JSON_PRETTY_PRINT ),
             $template
         );
 
+        $composerParams = $this->_getComposerJSON();
+
         // standard require
         $list    = $this->_getList();
-        $require = $this->_require;
+        $require = $composerParams['require'];
 
         $quiqqerVersion = '1.*';
 
@@ -185,24 +187,25 @@ class Manager
             $quiqqerVersion = \QUI::conf( 'globals', 'quiqqer_version' );
         }
 
-        $require["php"] = ">=5.3.2";
-        $require["quiqqer/quiqqer"] = $quiqqerVersion;
-        $require["tedivm/stash"] = "0.11.*";
+        // must have
+        $require["php"]                     = ">=5.3.2";
+        $require["quiqqer/quiqqer"]         = $quiqqerVersion;
+        $require["tedivm/stash"]            = "0.11.*";
         $require["symfony/http-foundation"] = "*";
 
-        foreach ( $list as $entry )
-        {
-            $version = $entry['version'];
+//         foreach ( $list as $entry )
+//         {
+//             $version = $entry['version'];
 
-            // so, we get newer versions
-            if ( !preg_match( "/[\<\>\=\*]/", $version ) &&
-                  preg_match( "/[0-9]/", $version ) )
-            {
-                $version = '>='. $version;
-            }
+//             // so, we get newer versions
+//             if ( !preg_match( "/[\<\>\=\*]/", $version ) &&
+//                   preg_match( "/[0-9]/", $version ) )
+//             {
+//                 $version = '>='. $version;
+//             }
 
-            $require[ $entry['name'] ] = $version;
-        }
+//             $require[ $entry['name'] ] = $version;
+//         }
 
         // composer and component installer should not be overwritten
         $require["composer/composer"] = "1.0.*@dev";
@@ -210,7 +213,7 @@ class Manager
 
         $template = str_replace(
             '{$REQUIRE}',
-            json_encode( $require ),
+            json_encode( $require, \JSON_PRETTY_PRINT ),
             $template
         );
 
@@ -226,6 +229,23 @@ class Manager
     /**
      * Package Methods
      */
+
+    /**
+     * Return the composer array
+     *
+     * @return array
+     */
+    protected function _getComposerJSON()
+    {
+        if ( !file_exists( $this->_composer_json ) ) {
+            return array();
+        }
+
+        $json   = file_get_contents( $this->_composer_json );
+        $result = json_decode( $json, true );
+
+        return $result;
+    }
 
     /**
      * internal get list method
@@ -957,9 +977,6 @@ class Manager
      */
     protected function _execComposer($command, $params=array())
     {
-        \QUI\System\Log::addDebug( $command );
-        \QUI\System\Log::addDebug( print_r($params, true) );
-
         // composer output some warnings that composer/cache is not empty
         try
         {
@@ -988,12 +1005,40 @@ class Manager
             $PackageManager->Events->fireEvent( 'output', array( $message ) );
         });
 
+        \QUI\System\Log::addDebug( print_r($params, true) );
+
         // run application
         $this->_getApplication()->run( $Input, $Output );
-
         \QUI\Cache\Manager::clear( self::CACHE_NAME_TYPES );
 
-        return $Output->getMessages();
+        $messages = $Output->getMessages();
+        $result   = array();
+
+        foreach ( $messages as $entry )
+        {
+            if ( empty( $entry ) ) {
+                continue;
+            }
+
+            if ( strpos( $entry, '<error>' ) !== false )
+            {
+                preg_match( "#<error>(.*?)</error>#si", $entry, $match );
+
+                \QUI::getMessagesHandler()->addError( $match[ 0 ] );
+                continue;
+            }
+
+            if ( strpos( $entry, '<info>' ) !== false ) {
+                continue;
+            }
+
+
+            $result[] = $entry;
+        }
+
+        \QUI\System\Log::addDebug( print_r($result, true) );
+
+        return $result;
 
 
 //         $exec_var = str_replace( CMS_DIR, '', $this->_vardir );

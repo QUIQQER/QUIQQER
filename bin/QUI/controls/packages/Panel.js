@@ -390,7 +390,7 @@ define('controls/packages/Panel', [
             {
                 Btn.setAttribute( 'textimage', 'icon-refresh' );
 
-                if ( !result.length )
+                if ( !result || !result.length )
                 {
                     self.Loader.hide();
                     return;
