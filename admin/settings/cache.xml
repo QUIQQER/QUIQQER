@@ -74,7 +74,9 @@
         </config>
 
         <window>
-            <title>Cache Verwaltung</title>
+            <title>
+                <locale group="quiqqer/system" var="quiqqer.settings.cache" />
+            </title>
 
             <params>
                 <icon>icon-sort-by-attributes-alt</icon>
@@ -82,71 +84,113 @@
 
             <categories>
                 <category name="settings">
-                    <title>Welche Cache Arten sollen genutzt werden?</title>
-                    <text>Cache Arten</text>
+                    <title>
+                        <locale group="quiqqer/system" var="quiqqer.settings.cache.title" />
+                    </title>
+                    <text>
+                        <locale group="quiqqer/system" var="quiqqer.settings.cache.text" />
+                    </text>
                     <settings title="caches" name="caches">
                         <input conf="handlers.filesystem" type="checkbox">
-                            <text>Dateisystem</text>
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.cache.handler.filesystem" />
+                            </text>
                         </input>
                         <input conf="handlers.apc" type="checkbox">
-                            <text>APC</text>
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.cache.handler.apc" />
+                            </text>
                         </input>
                         <input conf="handlers.memcache" type="checkbox">
-                            <text>MemCache</text>
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.cache.handler.memcache" />
+                            </text>
                         </input>
                         <input conf="handlers.sqlite" type="checkbox">
-                            <text>SQLite</text>
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.cache.handler.sqlite" />
+                            </text>
                         </input>
                     </settings>
                 </category>
 
                 <category name="apc">
-                    <title>APC Einstellungen</title>
-                    <text>APC</text>
+                    <title>
+                        <locale group="quiqqer/system" var="quiqqer.settings.cache.apc.title" />
+                    </title>
+                    <text>
+                        <locale group="quiqqer/system" var="quiqqer.settings.cache.apc.text" />
+                    </text>
                     <settings title="apc" name="apc">
                         <input conf="apc.namespace" type="text">
-                            <text>Namespace</text>
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.cache.apc.namespace" />
+                            </text>
                         </input>
 
                         <input conf="apc.ttl" type="text">
-                            <text>Ablaufzeit (ttl)</text>
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.cache.apc.ttl" />
+                            </text>
                         </input>
                     </settings>
                 </category>
 
                 <category name="memcache">
-                    <title>MemCache Einstellungen</title>
-                    <text>MemCache</text>
+                    <title>
+                        <locale group="quiqqer/system" var="quiqqer.settings.memcache.title" />
+                    </title>
+                    <text>
+                        <locale group="quiqqer/system" var="quiqqer.settings.memcache.text" />
+                    </text>
                     <settings title="memcache" name="memcache">
                         <input conf="memcache.servers" type="text">
-                            <text>Anzahl der Server</text>
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.memcache.servers" />
+                            </text>
                         </input>
 
                         <input conf="memcache.prefix_key" type="text">
-                            <text>Cache Präfix</text>
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.memcache.prefix_key" />
+                            </text>
                         </input>
 
                         <input conf="memcache.serializer" type="text">
-                            <text>Serializer (json, php, igbinary)</text>
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.memcache.serializer" />
+                            </text>
                         </input>
 
                         <input conf="memcache.libketama_compatible" type="checkbox">
-                            <text>libketama Kompatibel?</text>
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.memcache.libketama_compatible" />
+                            </text>
                         </input>
 
                         <input conf="memcache.cache_lookups" type="checkbox">
-                            <text>DNS Cache Lookup</text>
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.memcache.cache_lookups" />
+                            </text>
                         </input>
                     </settings>
                 </category>
 
                 <category name="filesystem">
-                    <title>Dateisystem (Filesystem) Einstellungen</title>
-                    <text>Dateisystem</text>
+                    <title>
+                        <locale group="quiqqer/system" var="quiqqer.settings.filesystem.title" />
+                    </title>
+                    <text>
+                        <locale group="quiqqer/system" var="quiqqer.settings.filesystem.text" />
+                    </text>
                     <settings title="filesystem" name="filesystem">
                         <input conf="filesystem.path" type="text">
-                            <text>Pfad zum Cache</text>
-                            <description>Falls kein Pfad angegeben wurde, wird im Standard VAR Ordner ein cache/stack/ Verzeichnis angelegt</description>
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.filesystem.path" />
+                            </text>
+                            <description>
+                                <locale group="quiqqer/system" var="quiqqer.settings.filesystem.path.description" />
+                            </description>
                         </input>
                     </settings>
                 </category>

@@ -652,6 +652,102 @@
             <en><![CDATA[Port]]></en>
         </locale>
 
+        <!-- quiqqer cache settings  -->
+        <locale name="quiqqer.settings.cache">
+            <de><![CDATA[Cache Verwaltung]]></de>
+            <en><![CDATA[Cache management]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.title">
+            <de><![CDATA[Welche Cache Arten sollen genutzt werden?]]></de>
+            <en><![CDATA[Which cache types should be used?]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.text">
+            <de><![CDATA[Cache Arten]]></de>
+            <en><![CDATA[Cache types]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.handler.filesystem">
+            <de><![CDATA[Dateisystem]]></de>
+            <en><![CDATA[Filesystem]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.handler.apc">
+            <de><![CDATA[APC]]></de>
+            <en><![CDATA[APC]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.handler.memcache">
+            <de><![CDATA[MemCache]]></de>
+            <en><![CDATA[MemCache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.handler.sqlite">
+            <de><![CDATA[SQLite]]></de>
+            <en><![CDATA[SQLite]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.apc.title">
+            <de><![CDATA[APC Einstellungen]]></de>
+            <en><![CDATA[APC settings]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.apc.text">
+            <de><![CDATA[APC]]></de>
+            <en><![CDATA[APC]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.apc.namespace">
+            <de><![CDATA[Namespace]]></de>
+            <en><![CDATA[Namespace]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.apc.ttl">
+            <de><![CDATA[Ablaufzeit (ttl)]]></de>
+            <en><![CDATA[Expiration time (ttl)]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.memcache.title">
+            <de><![CDATA[MemCache Einstellungen]]></de>
+            <en><![CDATA[MemCache settings]]></en>
+        </locale>
+        <locale name="quiqqer.settings.memcache.text">
+            <de><![CDATA[MemCache]]></de>
+            <en><![CDATA[MemCache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.memcache.servers">
+            <de><![CDATA[Anzahl der Server]]></de>
+            <en><![CDATA[Number of servers]]></en>
+        </locale>
+        <locale name="quiqqer.settings.memcache.prefix_key">
+            <de><![CDATA[Cache Prefix]]></de>
+            <en><![CDATA[Cache prefix]]></en>
+        </locale>
+        <locale name="quiqqer.settings.memcache.serializer">
+            <de><![CDATA[Serializer (json, php, igbinary)]]></de>
+            <en><![CDATA[Serializer (json, php, igbinary)]]></en>
+        </locale>
+        <locale name="quiqqer.settings.memcache.libketama_compatible">
+            <de><![CDATA[libketama kompatibel?]]></de>
+            <en><![CDATA[libketama compatible?]]></en>
+        </locale>
+        <locale name="quiqqer.settings.memcache.cache_lookups">
+            <de><![CDATA[DNS Cache Lookup]]></de>
+            <en><![CDATA[DNS cache lookup]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.filesystem.title">
+            <de><![CDATA[Dateisystem (Filesystem) Einstellungen]]></de>
+            <en><![CDATA[Filesystem settings]]></en>
+        </locale>
+        <locale name="quiqqer.settings.filesystem.text">
+            <de><![CDATA[Dateisystem]]></de>
+            <en><![CDATA[Filesystem]]></en>
+        </locale>
+        <locale name="quiqqer.settings.filesystem.path">
+            <de><![CDATA[Pfad zum Cache]]></de>
+            <en><![CDATA[Path to the cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.filesystem.path.description">
+            <de><![CDATA[
+                Falls kein Pfad angegeben wurde, wird im standard VAR Ordner ein cache/stack/ Verzeichnis angelegt
+            ]]></de>
+            <en><![CDATA[
+                If no path is specified, a cache/stack/ directory will be created in the standard VAR folder
+            ]]></en>
+        </locale>
+
 
 
         <!-- Exception  -->
