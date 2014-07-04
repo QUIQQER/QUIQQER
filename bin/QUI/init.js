@@ -75,9 +75,6 @@ require( requireList, function()
 {
     "use strict";
 
-    /**
-     *
-     */
     var QUI           = arguments[ 0 ],
         Locale        = arguments[ 1 ],
         Ajax          = arguments[ 2 ],

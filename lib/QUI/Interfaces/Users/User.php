@@ -148,6 +148,12 @@ interface User
     public function setAttribute($key, $value);
 
     /**
+     * set multible attributes
+     * @param Array $attributes
+     */
+    public function setAttributes($attributes);
+
+    /**
      * Get a attribute of the user
      *
      * @param String $var
@@ -162,30 +168,6 @@ interface User
      * @return String
      */
     public function getAvatar($url=false);
-
-    /**
-     * Set a extra fiel of the user
-     *
-     * @param String $field
-     * @param String|Integer|array $value
-     */
-    public function setExtra($field, $value);
-
-    /**
-     * Load the extra attribute from a project
-     *
-     * @param \QUI\Projects\Project $Project
-     */
-    public function loadExtra(\QUI\Projects\Project $Project);
-
-    /**
-     * Returns a extra attribute
-     *
-     * @param String $field
-     * @return String|Integer|array
-     */
-    public function getExtra($field);
-
 
     /**
      * Set the password of the user
@@ -220,5 +202,3 @@ interface User
      */
     public function isOnline();
 }
-
-?>

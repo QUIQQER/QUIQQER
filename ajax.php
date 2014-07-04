@@ -10,22 +10,22 @@
 require_once "header.php";
 require_once LIB_DIR .'Ajax.php';
 
-if (!isset($_REQUEST['_url'])) {
+if ( !isset( $_REQUEST['_url'] ) ) {
     $_REQUEST['_url'] = '';
 };
 
 /**
  * Sprache
  */
-if (isset($_REQUEST['lang']) && strlen($_REQUEST['lang']) === 2) {
-    QUI::getLocale()->setCurrent( $_REQUEST['lang'] );
+if ( isset( $_REQUEST['lang'] ) && strlen( $_REQUEST['lang'] ) ===  2) {
+    \QUI::getLocale()->setCurrent( $_REQUEST['lang'] );
 }
 
-$User = QUI::getUserBySession();
+$User = \QUI::getUserBySession();
 
 // Falls Benutzer eingeloggt ist, dann seine Sprache nehmen
-if ($User->getId() && $User->getLang()) {
-    QUI::getLocale()->setCurrent( $User->getLang() );
+if ( $User->getId() && $User->getLang() ) {
+    \QUI::getLocale()->setCurrent( $User->getLang() );
 }
 
 
@@ -34,7 +34,7 @@ if ($User->getId() && $User->getLang()) {
  * @var $ajax Ajax
  */
 $ajax = new PT_Ajax(array(
-    'db_errors' => QUI::conf('error','mysql_ajax_errors_frontend')
+    'db_errors' => \QUI::conf('error','mysql_ajax_errors_frontend')
 ));
 
 

@@ -315,10 +315,30 @@ class Template extends \QUI\QDOM
             }
         }
 
+        // locale files
+        try
+        {
+            $files = \QUI\Translator::getJSTranslationFiles(
+                $Project->getLang()
+            );
+
+        } catch ( \QUI\Exception $Exception )
+        {
+
+        }
+
+        $locales = array();
+
+        foreach ( $files as $package => $file ) {
+            $locales[] = $package .'/'. $Project->getLang();
+        }
+
+        // assign
         $Engine->assign(array(
-            'Project' => $Project,
-            'Site'    => $Site,
-            'Engine'  => $Engine
+            'Project'     => $Project,
+            'Site'        => $Site,
+            'Engine'      => $Engine,
+            'localeFiles' => $locales
         ));
 
         return $Engine->fetch( LIB_DIR .'templates/header.html' );
