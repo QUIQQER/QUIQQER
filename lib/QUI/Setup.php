@@ -100,6 +100,10 @@ class Setup
                 continue;
             }
 
+            if ( $package == 'bin' ) {
+                continue;
+            }
+
             if ( !is_dir( OPT_DIR .'/'. $package ) ) {
                 continue;
             }
