@@ -135,7 +135,7 @@
         {
             $files = \QUI\Translator::getJSTranslationFiles( $User->getLang() );
 
-        } catch ( \QUI\Exception $e )
+        } catch ( \QUI\Exception $Exception )
         {
 
         }

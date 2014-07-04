@@ -732,6 +732,18 @@ class User implements \QUI\Interfaces\Users\User
     }
 
     /**
+     * set attributes
+     *
+     * @param Array $attributes
+     */
+    public function setAttributes($attributes)
+    {
+        foreach ( $attributes as $key => $value ) {
+            $this->setAttribute( $key, $value );
+        }
+    }
+
+    /**
      * (non-PHPdoc)
      * @see \QUI\Interfaces\Users\User::getAttribute()
      *
@@ -757,20 +769,7 @@ class User implements \QUI\Interfaces\Users\User
      */
     public function getAllAttributes()
     {
-        $params = $this->_settings;
-
-        $params['id']       = $this->getId();
-        $params['active']   = $this->_active;
-        $params['deleted']  = $this->_deleted;
-        $params['admin']    = $this->isAdmin();
-        $params['avatar']   = $this->getAvatar();
-        $params['su']		= $this->isSU();
-
-        $params['usergroup'] = $this->getGroups( false );
-        $params['username']  = $this->getName();
-        $params['extras']    = $this->_extra;
-
-        return $params;
+        return self::getAttributes();
     }
 
     /**

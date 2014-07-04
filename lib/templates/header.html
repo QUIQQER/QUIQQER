@@ -25,10 +25,6 @@
     <meta name="revisit-after" content="2 days" />
     <!-- [end] meta -->
 
-    {* depricated *}
-    {if $Template->getAttribute('requirejs')}
-    <script type="text/javascript" src="{$URL_BIN_DIR}js/mvc/require.js"></script>
-    {/if}
 
     <script type="text/javascript">
         var URL_DIR          = '{$URL_DIR}';
@@ -45,36 +41,13 @@
 
         var QUIQQER_USER = {
             id   : '{$User->getId()}',
-            name : '{$User->getName()}'
+            name : '{$User->getName()}',
+            lang : '{$User->getLang()}'
         };
 
-        {if $Template->getAttribute('requirejs')}
-        {literal}
-        require.config({
-            baseUrl : URL_DIR,
-            paths   : {
-                "mvc"     : URL_BIN_DIR +'js/mvc/',
-                "package" : URL_OPT_DIR,
-                "locale"  : URL_VAR_DIR +'locale/bin/'
-            },
-
-            waitSeconds : 0,
-            locale      : "de-de",
-            catchError  : true,
-            map: {
-                '*': {
-                    'css': 'mvc/css'
-                }
-            }
-        });
-        {/literal}
-        {/if}
+        var QUIQQER_LOCALE = {$localeFiles|json_encode:true}
     </script>
 
-    {* depricated *}
-    {if $Template->getAttribute('QUI')}
-    <script type="text/javascript" src="{$URL_BIN_DIR}js/mvc/QUI.js"></script>
-    {/if}
 
     {assign var=canonical value=false}
     {capture assign=_url}{$smarty.const.HOST}{$smarty.const.URL_DIR}{if isset($smarty.request._url)}{$smarty.request._url}{/if}{/capture}
