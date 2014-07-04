@@ -34,7 +34,7 @@ define('controls/lang/Popup', [
         ],
 
         options : {
-            title     : 'Verfügbare Sprachen',
+            title     : Locale.get( 'quiqqer/system', 'lang.popup.title' ),
             maxHeight : 600,
             maxWidth  : 500,
             autoclose : false
@@ -105,7 +105,7 @@ define('controls/lang/Popup', [
                     dataType  : 'string',
                     width     : 50
                 }, {
-                    header    : 'Sprache',
+                    header    : Locale.get( 'quiqqer/system', 'language' ),
                     dataIndex : 'text',
                     dataType  : 'string',
                     width     : 250

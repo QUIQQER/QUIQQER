@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<locales>
+
+    <groups name="quiqqer/system">
+        <locale name="projects.project.settings.panel.settings.title">
+            <de><![CDATA[Projekte Einstellungen]]></de>
+            <en><![CDATA[Projects settings]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.language.default">
+            <de><![CDATA[Standard Sprache]]></de>
+            <en><![CDATA[Default language]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.language.available">
+            <de><![CDATA[Verfügbare Sprachen]]></de>
+            <en><![CDATA[Available languages]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.templates.default">
+            <de><![CDATA[Standard Template]]></de>
+            <en><![CDATA[Default template]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.templates.no.template">
+            <de><![CDATA[Kein Template verwenden]]></de>
+            <en><![CDATA[Do not use a template]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.templates.available">
+            <de><![CDATA[Verfügbare Templates für dieses Projekt]]></de>
+            <en><![CDATA[Available templates for this project]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.admin.email">
+            <de><![CDATA[Administrations E-Mail]]></de>
+            <en><![CDATA[Administration E-mail]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.set.standard">
+            <de><![CDATA[Als standard Projekt setzen]]></de>
+            <en><![CDATA[Set as default project]]></en>
+        </locale>
+    </groups>
+
+</locales>

@@ -883,6 +883,8 @@ define('controls/grid/Grid', [
 
         toggleIconClick: function(evt)
         {
+            evt.stop();
+
             this.accordianOpen(
                 this.getLiParent( evt.target )
             );

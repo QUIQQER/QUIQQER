@@ -73,6 +73,24 @@ class Output extends \Symfony\Component\Console\Output\Output
     }
 
     /**
+     * (non-PHPdoc)
+     * @see \Symfony\Component\Console\Output\Output::write()
+     */
+    public function write($messages, $newline=false, $type=self::OUTPUT_RAW)
+    {
+        parent::write( $messages, $newline, $type );
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see \Symfony\Component\Console\Output\Output::writeln()
+     */
+    public function writeln($messages, $type=self::OUTPUT_RAW)
+    {
+        $this->write($messages, true, $type);
+    }
+
+    /**
      * Return all messages
      * @return Array
      */

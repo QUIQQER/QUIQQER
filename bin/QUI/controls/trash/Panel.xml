@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<locales>
+    <groups name="quiqqer/system" datatype="js">
+
+        <locale name="trash.panel.title">
+            <de><![CDATA[Papierkorb]]></de>
+            <en><![CDATA[Trash]]></en>
+        </locale>
+        <locale name="trash.panel.btn.delete">
+            <de><![CDATA[Markierte Einträge löschen]]></de>
+            <en><![CDATA[Delete marked entries]]></en>
+        </locale>
+        <locale name="trash.panel.btn.restore">
+            <de><![CDATA[Markierte Einträge wiederherstellen]]></de>
+            <en><![CDATA[Restore marked entries]]></en>
+        </locale>
+
+        <locale name="trash.panel.window.delete.title">
+            <de><![CDATA[Markierte Einträge Löschen?]]></de>
+            <en><![CDATA[Delete marked entries?]]></en>
+        </locale>
+        <locale name="trash.panel.window.delete.text">
+            <de><![CDATA[Möchten Sie folgende Einträge unwiderruflich löschen?]]></de>
+            <en><![CDATA[Do you want to delete the following entries permanently?]]></en>
+        </locale>
+
+        <locale name="trash.panel.window.restore.site.question">
+            <de><![CDATA[Bitte wählen Sie die Elternseite aus unter welcher die Seite(n) eingefügt werden soll(en).]]></de>
+            <en><![CDATA[Please select the parent page under which the page(s) should be insert.]]></en>
+        </locale>
+
+
+    </groups>
+</locales>

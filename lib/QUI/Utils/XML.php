@@ -37,18 +37,8 @@ class XML
                 continue;
             }
 
-            $text = trim( $Item->nodeValue );
-
-            if ( $Item->getAttribute( 'group' ) && $Item->getAttribute( 'var' ) )
-            {
-                $text = \QUI::getLocale()->get(
-                    $Item->getAttribute( 'group' ),
-                    $Item->getAttribute( 'var' )
-                );
-            }
-
             $params = array(
-                'text'    => $text,
+                'text'    => \QUI\Utils\DOM::getTextFromNode( $Item ),
                 'name'    => $Item->getAttribute( 'name' ),
                 'icon'    => \QUI\Utils\DOM::parseVar( $Item->getAttribute( 'icon' ) ),
                 'require' => $Item->getAttribute( 'require' ),

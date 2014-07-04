@@ -15,12 +15,16 @@ define('controls/users/Address', [
     'qui/controls/windows/Confirm',
     'controls/grid/Grid',
     'Ajax',
+    'Locale',
 
     'css!controls/users/Address.css'
 
-], function(QUI, QUIControl, QUILoader, QUIConfirm, Grid, Ajax)
+], function(QUI, QUIControl, QUILoader, QUIConfirm, Grid, Ajax, Locale)
 {
     "use strict";
+
+    var lg = 'quiqqer/system';
+
 
     return new Class({
 
@@ -116,19 +120,19 @@ define('controls/users/Address', [
                 // tel fax handy grid
                 self.$PhoneGrid  = new Grid( Elm.getElement( '.user-address-edit-tel' ), {
                     columnModel : [{
-                        header    : 'Nummer',
+                        header    : Locale.get( lg, 'number' ),
                         dataIndex : 'no',
                         dataType  : 'string',
                         width     : 200
                     }, {
-                        header    : 'Type',
+                        header    : Locale.get( lg, 'type' ),
                         dataIndex : 'type',
                         dataType  : 'string',
                         width     : 200
                     }],
                     buttons : [{
                         name      : 'add',
-                        text      : 'hinzufügen',
+                        text      : Locale.get( lg, 'users.address.btn.add' ),
                         textimage : 'icon-plus',
                         events    :
                         {
@@ -140,7 +144,7 @@ define('controls/users/Address', [
                         type : 'seperator'
                     }, {
                         name      : 'edit',
-                        text      : 'Markierten Eintrag editieren',
+                        text      : Locale.get( lg, 'users.address.btn.edit' ),
                         textimage : 'icon-edit',
                         disabled  : true,
                         events    :
@@ -154,7 +158,7 @@ define('controls/users/Address', [
                         }
                     }, {
                         name      : 'delete',
-                        text      : 'Markierten Eintrag löschen',
+                        text      : Locale.get( lg, 'users.address.btn.delete' ),
                         textimage : 'icon-remove',
                         disabled  : true,
                         events    :
@@ -204,14 +208,14 @@ define('controls/users/Address', [
                 // email grid
                 self.$MailGrid = new Grid( Elm.getElement( '.user-address-edit-mail' ), {
                     columnModel : [{
-                        header    : 'E-Mail',
+                        header    : Locale.get( lg, 'email' ),
                         dataIndex : 'email',
                         dataType  : 'string',
                         width     : 200
                     }],
                     buttons : [{
                         name      : 'add',
-                        text      : 'hinzufügen',
+                        text      : Locale.get( lg, 'users.address.mail.btn.add' ),
                         textimage : 'icon-plus',
                         events    :
                         {
@@ -223,7 +227,7 @@ define('controls/users/Address', [
                         type : 'seperator'
                     }, {
                         name      : 'edit',
-                        text      : 'Markierten Eintrag editieren',
+                        text      : Locale.get( lg, 'users.address.mail.btn.edit' ),
                         textimage : 'icon-edit',
                         disabled  : true,
                         events    :
@@ -237,7 +241,7 @@ define('controls/users/Address', [
                         }
                     }, {
                         name      : 'delete',
-                        text      : 'Markierten Eintrag löschen',
+                        text      : Locale.get( lg, 'users.address.mail.btn.delete' ),
                         textimage : 'icon-remove',
                         disabled  : true,
                         events    :
@@ -436,15 +440,15 @@ define('controls/users/Address', [
             var self = this;
 
             new QUIConfirm({
-                title : 'Telefon / Fax / Handy',
+                title : Locale.get( lg, 'users.address.phone.window.title' ),
                 icon  : 'icon-tel',
-                text  : 'Geben Sie bitte eine Telefon-, Fax- oder Handy Nummer ein',
+                text  : Locale.get( lg, 'users.address.phone.window.text' ),
                 information : '<form style="text-align: center; width: 100%">'+
-                                  '<input type="text" name="number" value="" placeholder="Telefon-, Fax- oder Handy Nummer ..." />' +
+                                  '<input type="text" name="number" value="" placeholder="" />' +
                                   '<select name="type">' +
-                                      '<option value="tel">Telefon</option>' +
-                                      '<option value="fax">Fax</option>' +
-                                      '<option value="mobile">Handy</option>' +
+                                      '<option value="tel">'+ Locale.get( lg, 'tel' ) +'</option>' +
+                                      '<option value="fax">'+ Locale.get( lg, 'fax' ) +'</option>' +
+                                      '<option value="mobile">'+ Locale.get( lg, 'mobile' ) +'</option>' +
                                   '</select>' +
                               '</form>',
                 maxWidth : 600,
@@ -456,6 +460,11 @@ define('controls/users/Address', [
                             InputNumber = Content.getElement( '[name="number"]' ),
                             InputType   = Content.getElement( '[name="type"]' ),
                             Form        = Content.getElement( 'form' );
+
+                        InputNumber.set(
+                            'placeholder',
+                            Locale.get( lg, 'users.address.phone.window.input.placeholder' )
+                        );
 
                         (function()
                         {
@@ -520,10 +529,10 @@ define('controls/users/Address', [
             var self = this;
 
             new QUIConfirm({
-                title  : 'Telefon / Fax / Handy',
-                icon   : 'icon-remove',
-                text   : 'Möchten Sie den Telefon Eintrag wirklich löschen?',
-                information : 'Der Eintrag ist nicht wieder herstellbar',
+                title : Locale.get( lg, 'users.address.phone.delete.window.title' ),
+                icon  : 'icon-remove',
+                text  : Locale.get( lg, 'users.address.phone.delete.window.text' ),
+                information : Locale.get( lg, 'users.address.phone.delete.window.information' ),
                 events :
                 {
                     onSubmit : function() {
@@ -543,11 +552,11 @@ define('controls/users/Address', [
             var self = this;
 
             new QUIConfirm({
-                title  : 'E-Mail-Adresse',
+                title  : Locale.get( lg, 'users.address.email.window.title' ),
                 icon   : 'icon-email',
-                text   : 'Geben Sie bitte eine E-Mail-Adresse ein',
+                text   : Locale.get( lg, 'users.address.email.window.text' ),
                 information : '<form style="text-align: center; width: 100%">'+
-                                  '<input type="text" name="email" value="" placeholder="E-Mail-Adresse ..." />' +
+                                  '<input type="text" name="email" value="" placeholder="" />' +
                               '</form>',
                 maxWidth : 600,
                 events   :
@@ -557,6 +566,11 @@ define('controls/users/Address', [
                         var Content     = Win.getContent(),
                             InputEmail  = Content.getElement( '[name="email"]' ),
                             Form        = Content.getElement( 'form' );
+
+                        InputEmail.set(
+                            'placeholder',
+                            Locale.get( lg, 'users.address.email.window.input.placeholder' )
+                        );
 
                         (function()
                         {
@@ -616,10 +630,10 @@ define('controls/users/Address', [
             var self = this;
 
             new QUIConfirm({
-                title  : 'E-Mail Eintrag löschen',
+                title  : Locale.get( lg, 'users.address.email.delete.window.title' ),
                 icon   : 'icon-remove',
-                text   : 'Möchten Sie den E-Mail Eintrag wirklich löschen?',
-                information : 'Der Eintrag ist nicht wieder herstellbar',
+                text   : Locale.get( lg, 'users.address.email.delete.window.text' ),
+                information : Locale.get( lg, 'users.address.email.delete.window.information' ),
                 events :
                 {
                     onSubmit : function() {

@@ -86,8 +86,14 @@ class Manager extends \QUI\QDOM
      */
     public function get($id)
     {
-        if ( !$id ) {
-            throw new \QUI\Exception( 'Es wurde keine Gruppen ID übergeben' );
+        if ( !$id )
+        {
+            throw new \QUI\Exception(
+                \QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.lib.qui.manager.no.groupid'
+                )
+            );
         }
 
         if ( isset( $this->_groups[ $id ] ) ) {

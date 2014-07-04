@@ -77,7 +77,12 @@ class Handler extends \QUI\QDOM
         if ( empty( $callback ) )
         {
             throw new \QUI\Exception(
-                'No callback passed to '. __FUNCTION__ .' method', E_USER_ERROR
+                \QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.lib.qui.exceptions.handler.nocallback',
+                    array( 'function' => __FUNCTION__ )
+                ),
+                E_USER_ERROR
             );
 
             return false;
@@ -86,13 +91,19 @@ class Handler extends \QUI\QDOM
         if ( !is_callable( $callback[0] ) )
         {
             throw new \QUI\Exception(
-                'Invalid callback passed to the '.__FUNCTION__.' method', E_USER_ERROR
+                \QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.lib.qui.exceptions.handler.invalid',
+                    array( 'function' => __FUNCTION__ )
+                ),
+                E_USER_ERROR
             );
 
             return false;
         }
 
         $this->_shutdowncallbacks[] = $callback;
+
         return true;
     }
 
@@ -120,80 +131,80 @@ class Handler extends \QUI\QDOM
      */
     public function writeErrorToLog($errno, $errstr, $errfile='', $errline='')
     {
-        if ($this->getAttribute('ERROR_'. $errno) == false) {
+        if ( $this->getAttribute('ERROR_'. $errno) == false ) {
             return;
         }
 
         $log = false;
 
-        if ($this->getAttribute('logdir'))
+        if ( $this->getAttribute('logdir') )
         {
             $log = $this->getAttribute('logdir') .'error'. date('-Y-m-d').'.log';
 
             // Log Verzeichnis erstellen
-            \QUI\Utils\System\File::mkdir($this->getAttribute('logdir'));
+            \QUI\Utils\System\File::mkdir( $this->getAttribute('logdir') );
         }
 
-        if ($log && !file_exists($log)) {
-            file_put_contents($log, ' ');
+        if ( $log && !file_exists( $log ) ) {
+            file_put_contents( $log, ' ' );
         }
 
         $err_msg = "\n\n==== Date: ". date('Y-m-d H:i:s') ." ============================================\n";
 
-        if ($this->getAttribute('show_request'))
+        if ( $this->getAttribute('show_request') )
         {
-            if (isset($_SERVER['REQUEST_URI'])) {
-                $err_msg .= 'REQUEST URI: '.$_SERVER['REQUEST_URI']."\n";
+            if ( isset( $_SERVER['REQUEST_URI'] ) ) {
+                $err_msg .= 'REQUEST URI: '. $_SERVER['REQUEST_URI'] ."\n";
             }
 
-            if (isset($_SERVER['HTTP_HOST'])) {
-                $err_msg .= 'HTTP_HOST: '.$_SERVER['HTTP_HOST']."\n";
+            if ( isset( $_SERVER['HTTP_HOST'] ) ) {
+                $err_msg .= 'HTTP_HOST: '. $_SERVER['HTTP_HOST'] ."\n";
             }
 
-            if (isset($_SERVER['REMOTE_ADDR'])) {
-                $err_msg .= 'REMOTE_ADDR: '.$_SERVER['REMOTE_ADDR']."\n";
+            if ( isset( $_SERVER['REMOTE_ADDR'] ) ) {
+                $err_msg .= 'REMOTE_ADDR: '. $_SERVER['REMOTE_ADDR'] ."\n";
             }
 
-            if (isset($_SERVER['HTTP_USER_AGENT'])) {
-                $err_msg .= 'HTTP_USER_AGENT: '.$_SERVER['HTTP_USER_AGENT']."\n";
+            if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
+                $err_msg .= 'HTTP_USER_AGENT: '. $_SERVER['HTTP_USER_AGENT'] ."\n";
             }
 
-            if (isset($_REQUEST['_url'])) {
-                $err_msg .= '$_REQUEST[\'_url\']: '.$_REQUEST['_url']."\n";
+            if ( isset( $_REQUEST['_url'] ) ) {
+                $err_msg .= '$_REQUEST[\'_url\']: '. $_REQUEST['_url'] ."\n";
             }
 
-            unset($_REQUEST['REQUEST_URI']);
-            unset($_REQUEST['HTTP_HOST']);
-            unset($_REQUEST['REMOTE_ADDR']);
-            unset($_REQUEST['HTTP_USER_AGENT']);
-            unset($_REQUEST['_url']);
+            unset( $_REQUEST['REQUEST_URI'] );
+            unset( $_REQUEST['HTTP_HOST'] );
+            unset( $_REQUEST['REMOTE_ADDR'] );
+            unset( $_REQUEST['HTTP_USER_AGENT'] );
+            unset( $_REQUEST['_url'] );
 
             $err_msg .= '$_REQUEST: '. print_r($_REQUEST, true) ."\n\n";
         }
 
         $err_msg .= "\nMessage:\n". $errstr ."\n";
 
-        if ($errno) {
+        if ( $errno ) {
             $err_msg .= "Error No: ERROR_". $errno ."\n";
         }
 
-        if ($errfile) {
+        if ( $errfile ) {
             $err_msg .= "Error File:". $errfile ."\n";
         }
 
-        if ($errline) {
+        if ( $errline ) {
             $err_msg .= "Error Line:". $errline ."\n";
         }
 
         // Nutzerdaten
-        if (isset($_SERVER['SERVER_ADDR']))
+        if ( isset( $_SERVER['SERVER_ADDR'] ) )
         {
             $err_msg .= "IP: ". $_SERVER['SERVER_ADDR'] ."\n";
             $err_msg .= "Host: ". gethostbyaddr($_SERVER['SERVER_ADDR']) ."\n";
         }
 
         // Backtrace
-        if ($this->getAttribute('backtrace'))
+        if ( $this->getAttribute('backtrace') )
         {
             ob_start( ) ;
             debug_print_backtrace() ;
@@ -208,15 +219,22 @@ class Handler extends \QUI\QDOM
             defined('ERROR_MAIL') && ERROR_MAIL &&
             class_exists('Mail'))
         {
-            $Mail = new QUI_Mail();
+            $Mail = new \QUI\Mail();
             $Mail->send(array(
-                'MailTo' 	=> ERROR_MAIL,
-                'Subject' 	=> 'Fehler auf '. $_SERVER['HTTP_HOST'] .' --> '. $_SERVER['REQUEST_URI'],
-                'Body' 		=> $err_msg,
-                'IsHTML' 	=> false
+                'MailTo'  => ERROR_MAIL,
+                'Subject' => \QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'lib.qui.exceptions.handler.mail.subject',
+                    array(
+                        'host' => $_SERVER['HTTP_HOST'],
+                        'url'  => $_SERVER['REQUEST_URI']
+                    )
+                ),
+                'Body'   => $err_msg,
+                'IsHTML' => false
             ));
         }
 
-        error_log($err_msg, 3, $log);
+        error_log( $err_msg, 3, $log );
     }
 }

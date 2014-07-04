@@ -22,7 +22,8 @@ define('controls/help/About', [
         ],
 
         options : {
-            maxHeight : 350
+            maxHeight : 350,
+            title     : 'About'
         },
 
         initialize : function(options)

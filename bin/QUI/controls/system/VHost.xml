@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<locales>
+
+    <groups name="quiqqer/system" datatype="js">
+
+        <locale name="system.vhost.table.hostdata">
+            <de><![CDATA[Host Daten]]></de>
+            <en><![CDATA[Host data]]></en>
+        </locale>
+        <locale name="system.vhost.table.languages">
+            <de><![CDATA[Sprach Zuweisungen]]></de>
+            <en><![CDATA[Language assignments]]></en>
+        </locale>
+
+        <locale name="system.vhost.label.domain">
+            <de><![CDATA[Domain]]></de>
+            <en><![CDATA[Domain]]></en>
+        </locale>
+        <locale name="system.vhost.label.errorsite">
+            <de><![CDATA[Fehlerseite]]></de>
+            <en><![CDATA[Error site]]></en>
+        </locale>
+        <locale name="system.vhost.label.httpshost">
+            <de><![CDATA[HTTPS-Host]]></de>
+            <en><![CDATA[HTTPS-Host]]></en>
+        </locale>
+
+
+    </groups>
+
+</locales>

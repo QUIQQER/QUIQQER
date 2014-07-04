@@ -14,11 +14,26 @@ define('controls/trash/Panel', [
     'controls/projects/Popup',
     'controls/projects/project/media/Popup',
     'Projects',
-    'Ajax'
+    'Ajax',
+    'Locale'
 
-], function(QUI, QUIPanel, QUISelect, QUIConfirm, Grid, ProjectPopup, MediaPopup, Projects, Ajax)
+], function()
 {
     "use strict";
+
+    var lg = 'quiqqer/system';
+
+    var QUI          = arguments[ 0 ],
+        QUIPanel     = arguments[ 1 ],
+        QUISelect    = arguments[ 2 ],
+        QUIConfirm   = arguments[ 3 ],
+        Grid         = arguments[ 4 ],
+        ProjectPopup = arguments[ 5 ],
+        MediaPopup   = arguments[ 6 ],
+        Projects     = arguments[ 7 ],
+        Ajax         = arguments[ 8 ],
+        Locale       = arguments[ 9 ];
+
 
     return new Class({
 
@@ -36,7 +51,7 @@ define('controls/trash/Panel', [
 
         options : {
             icon  : 'icon-trash',
-            title : 'Papierkorb'
+            title : Locale.get( lg, 'trash.panel.title' )
         },
 
         initialize : function(options)
@@ -76,7 +91,7 @@ define('controls/trash/Panel', [
 
             this.addButton({
                 name : 'remove',
-                text : 'Markierte Elemente löschen',
+                text : Locale.get( lg, 'trash.panel.btn.delete' ),
                 textimage : 'icon-remove',
                 disabled  : true,
                 events : {
@@ -86,7 +101,7 @@ define('controls/trash/Panel', [
 
             this.addButton({
                 name : 'restore',
-                text : 'Markierte Elemente wiederherstellen',
+                text : Locale.get( lg, 'trash.panel.btn.restore' ),
                 textimage : 'icon-reply-all',
                 disabled  : true,
                 events : {
@@ -234,9 +249,9 @@ define('controls/trash/Panel', [
             information = information + '<ul>';
 
             new QUIConfirm({
-                title : 'Markierte Elemente Löschen?',
+                title : Locale.get( lg, 'trash.panel.window.delete.title' ),
                 icon  : 'icon-remove',
-                text  : 'Möchten Sie folgende Elemente unwiederruflich löschen?',
+                text  : Locale.get( lg, 'trash.panel.window.delete.text' ),
                 information : information,
                 events :
                 {
@@ -310,7 +325,7 @@ define('controls/trash/Panel', [
                     project : params[ 0 ],
                     lang    : params[ 1 ],
                     disableProjectSelect : true,
-                    information : 'Bitte wählen Sie die Elternseite aus unter welcher die Seite(n) eingehängt werden sollen',
+                    information : Locale.get( lg, 'trash.panel.window.restore.site.question' ),
                     events :
                     {
                         onSubmit : function(Popup, params)
@@ -381,32 +396,32 @@ define('controls/trash/Panel', [
 
             this.$ProjectGrid = new Grid(Container, {
                  columnModel : [{
-                     header    : 'ID',
+                     header    : Locale.get( lg, 'id' ),
                      dataIndex : 'id',
                      dataType  : 'string',
                      width     : 50
                  }, {
-                     header    : 'Name',
+                     header    : Locale.get( lg, 'name' ),
                      dataIndex : 'name',
                      dataType  : 'string',
                      width     : 200
                  }, {
-                     header    : 'Title',
+                     header    : Locale.get( lg, 'title' ),
                      dataIndex : 'title',
                      dataType  : 'string',
                      width     : 200
                  }, {
-                     header    : 'Type',
+                     header    : Locale.get( lg, 'type' ),
                      dataIndex : 'type',
                      dataType  : 'string',
                      width     : 100
                  }, {
-                     header    : 'Last edit',
+                     header    : Locale.get( lg, 'e_date' ),
                      dataIndex : 'e_date',
                      dataType  : 'date',
                      width     : 150
                  }, {
-                     header    : 'Last from',
+                     header    : Locale.get( lg, 'user_id' ),
                      dataIndex : 'e_user',
                      dataType  : 'integer',
                      width     : 100
@@ -523,32 +538,32 @@ define('controls/trash/Panel', [
 
             this.$MediaGrid = new Grid(Container, {
                  columnModel : [{
-                     header    : 'ID',
+                     header    : Locale.get( lg, 'id'),
                      dataIndex : 'id',
                      dataType  : 'string',
                      width     : 50
                  }, {
-                     header    : 'Name',
+                     header    : Locale.get( lg, 'name'),
                      dataIndex : 'name',
                      dataType  : 'string',
                      width     : 200
                  }, {
-                     header    : 'Title',
+                     header    : Locale.get( lg, 'title'),
                      dataIndex : 'title',
                      dataType  : 'string',
                      width     : 200
                  }, {
-                     header    : 'Type',
+                     header    : Locale.get( lg, 'type'),
                      dataIndex : 'type',
                      dataType  : 'string',
                      width     : 100
                  }, {
-                     header    : 'Last edit',
+                     header    : Locale.get( lg, 'e_date'),
                      dataIndex : 'e_date',
                      dataType  : 'date',
                      width     : 150
                  }, {
-                     header    : 'Last from',
+                     header    : Locale.get( lg, 'user_id' ),
                      dataIndex : 'e_user',
                      dataType  : 'integer',
                      width     : 100

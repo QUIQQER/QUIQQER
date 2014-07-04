@@ -23,7 +23,8 @@ define('controls/help/Changelog', [
         ],
 
         options : {
-            maxHeight : 350
+            maxHeight : 350,
+            title     : 'Changelog'
         },
 
         initialize : function(options)

@@ -12,10 +12,11 @@ define('controls/desktop/panels/XML', [
     'qui/controls/buttons/Button',
     'qui/utils/Object',
     'Ajax',
+    'Locale',
 
     'css!controls/desktop/panels/XML.css'
 
-], function(QUIPanel, QUIButton, QUIObjectUtils, Ajax)
+], function(QUIPanel, QUIButton, QUIObjectUtils, Ajax, Locale)
 {
     "use strict";
 
@@ -95,8 +96,8 @@ define('controls/desktop/panels/XML', [
 
                 // load buttons
                 self.addButton({
-                    name : 'save',
-                    text : 'Änderungen übernehmen',
+                    name      : 'save',
+                    text      : Locale.get( 'quiqqer/system', 'desktop.panels.xml.btn.save' ),
                     textimage : 'icon-save',
                     events : {
                         onClick : self.save
@@ -104,8 +105,8 @@ define('controls/desktop/panels/XML', [
                 });
 
                 self.addButton({
-                    name : 'reload',
-                    text : 'Änderungen verwerfen',
+                    name      : 'reload',
+                    text      : Locale.get( 'quiqqer/system', 'desktop.panels.xml.btn.cancel' ),
                     textimage : 'icon-ban-circle',
                     events : {
                         onClick : self.$onCreate

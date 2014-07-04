@@ -112,15 +112,7 @@ function ajax_menu()
             if ( $titles->item( 0 ) )
             {
                 $Title = $titles->item( 0 );
-                $text  = trim( $titles->item( 0 )->nodeValue );
-
-                if ( $Title->getAttribute( 'group' ) && $Title->getAttribute( 'var' ) )
-                {
-                    $text = \QUI::getLocale()->get(
-                        $Title->getAttribute( 'group' ),
-                        $Title->getAttribute( 'var' )
-                    );
-                }
+                $text  = \QUI\Utils\DOM::getTextFromNode( $titles->item( 0 ) );
 
                 $Win->setAttribute( 'text', $text );
             }

@@ -15,7 +15,13 @@
  * @fires onDragend [event, DOMNode, controls/upload/Form]
  * @fires onDrop [event, files, Elm, Upload]
  *
- * @requires controls/Control
+ * @requires qui/QUI
+ * @requires qui/controls/Control
+ * @requires qui/controls/utils/Progressbar
+ * @requires qui/controls/buttons/Button
+ * @requires utils/Media
+ * @requires classes/request/Upload
+ * @requires Locale
  *
  * @module controls/upload/Form
  * @class controls/upload/Form
@@ -29,12 +35,15 @@ define('controls/upload/Form', [
     'qui/controls/buttons/Button',
     'utils/Media',
     'classes/request/Upload',
+    'Locale',
 
     'css!controls/upload/Form.css'
 
-], function(QUI, QUIControl, QUIProgressbar, QUIButton, MediaUtils, Upload)
+], function(QUI, QUIControl, QUIProgressbar, QUIButton, MediaUtils, Upload, Locale)
 {
     "use strict";
+
+    var lg = 'quiqqer/system';
 
     /**
      * @class controls/upload/Form
@@ -216,7 +225,7 @@ define('controls/upload/Form', [
             {
                 this.$Add = new QUIButton({
                     textimage : URL_BIN_DIR +'16x16/add.png',
-                    text      : 'Upload hinzufügen',
+                    text      : Locale.get( lg, 'upload.form.btn.add.text' ),
                     events    :
                     {
                         onClick : function(Btn) {
@@ -233,10 +242,9 @@ define('controls/upload/Form', [
             {
                 new QUIButton({
                     textimage : 'icon-upload',
-                    text    : 'Hochladen beginnen',
-                    alt     : 'Upload starten',
-                    title   : 'Upload starten',
-
+                    text   : Locale.get( lg, 'upload.form.btn.send.text' ),
+                    alt    : Locale.get( lg, 'upload.form.btn.send.alt' ),
+                    title  : Locale.get( lg, 'upload.form.btn.send.title' ),
                     events :
                     {
                         onClick : function(Btn) {
@@ -282,7 +290,9 @@ define('controls/upload/Form', [
                 QUI.getMessageHandler(function(MH)
                 {
                     MH.addError(
-                        'Es sind nur '+ this.getAttribute( 'maxuploads' ) +' Uploads erlaubt.'
+                        Locale.get( lg, 'upload.form.message.limit', {
+                            limit : this.getAttribute( 'maxuploads' )
+                        })
                     );
                 });
 
@@ -304,8 +314,8 @@ define('controls/upload/Form', [
 
             new Element('div', {
                 'class' : 'qui-form-fileinfo smooth radius5',
-                alt     : 'Per Klick können Sie eine andere Datei auswählen ...',
-                title   : 'Per Klick können Sie eine andere Datei auswählen ...',
+                alt     : Locale.get( lg, 'upload.form.btn.change.alt' ),
+                title   : Locale.get( lg, 'upload.form.btn.change.title' ),
                 events  :
                 {
                     click : function(event)
@@ -418,7 +428,9 @@ define('controls/upload/Form', [
         createInfo : function()
         {
             this.$Info = new Element('div', {
-                html : '<div class="file-name">Uploading ...</div>' +
+                html : '<div class="file-name">'+
+                           Locale.get( lg, 'upload.form.info.text' ) +
+                       '</div>' +
                        '<div class="upload-time"></div>' +
                        '<div class="progress"></div>',
                 'class' : 'upload-manager-file box smooth'
@@ -623,7 +635,9 @@ define('controls/upload/Form', [
                         QUI.getMessageHandler(function(MH)
                         {
                             MH.addError(
-                                'Es sind nur '+ self.getAttribute( 'maxuploads' ) +' Uploads erlaubt.'
+                                Locale.get( lg, 'upload.form.message.limit', {
+                                    limit : self.getAttribute( 'maxuploads' )
+                                })
                             );
                         });
                     }
@@ -638,6 +652,5 @@ define('controls/upload/Form', [
                 }
             });
         }
-
     });
 });

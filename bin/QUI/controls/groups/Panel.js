@@ -18,6 +18,7 @@ define('controls/groups/Panel', [
 
     'qui/controls/desktop/Panel',
     'Groups',
+    'Locale',
     'controls/grid/Grid',
     'utils/Controls',
     'controls/groups/sitemap/Window',
@@ -29,9 +30,23 @@ define('controls/groups/Panel', [
 
     'css!controls/groups/Panel.css'
 
-], function(Panel, Groups, Grid, ControlUtils, GroupSitemapWindow, Template, Attention, QUIPrompt, QUIConfirm, QUIButton)
+], function()
 {
     "use strict";
+
+    var lg = 'quiqqer/system';
+
+    var Panel              = arguments[ 0 ],
+        Groups             = arguments[ 1 ],
+        Locale             = arguments[ 2 ],
+        Grid               = arguments[ 3 ],
+        ControlUtils       = arguments[ 4 ],
+        GroupSitemapWindow = arguments[ 5 ],
+        Template           = arguments[ 6 ],
+        Attention          = arguments[ 7 ],
+        QUIPrompt          = arguments[ 8 ],
+        QUIConfirm         = arguments[ 9 ],
+        QUIButton          = arguments[ 10 ];
 
     /**
      * @class qui/controls/groups/Panel
@@ -63,10 +78,10 @@ define('controls/groups/Panel', [
 
         options : {
             active_image : 'icon-ok',     		// [optional]
-            active_text  : 'Gruppe aktivieren', // [optional]
+            active_text  : Locale.get( lg, 'groups.panel.btn.activate' ), // [optional]
 
             deactive_image : 'icon-remove',         // [optional]
-            deactive_text  : 'Gruppe deaktivieren', // [optional]
+            deactive_text  : Locale.get( lg, 'groups.panel.btn.deactivate' ), // [optional]
 
             field : 'name',
             order : 'ASC',
@@ -129,8 +144,8 @@ define('controls/groups/Panel', [
                         self.search();
                     }
                 },
-                alt   : 'Gruppe suchen',
-                title : 'Gruppe suchen',
+                alt   : Locale.get( lg, 'groups.panel.btn.search' ),
+                title : Locale.get( lg, 'groups.panel.btn.search' ),
                 image : 'icon-search'
             });
 
@@ -143,7 +158,7 @@ define('controls/groups/Panel', [
                 events : {
                     onMousedown : this.createGroup
                 },
-                text : 'Neue Gruppe anlegen'
+                text : Locale.get( lg, 'groups.panel.btn.create' )
             });
 
             this.addButton({
@@ -151,7 +166,7 @@ define('controls/groups/Panel', [
                 events : {
                     onMousedown : this.$onButtonEditClick
                 },
-                text      : 'Gruppe bearbeiten',
+                text      : Locale.get( lg, 'groups.panel.btn.edit' ),
                 disabled  : true,
                 textimage : 'icon-pencil'
             });
@@ -161,7 +176,7 @@ define('controls/groups/Panel', [
                 events : {
                     onMousedown : this.$onButtonDelClick
                 },
-                text      : 'Gruppe löschen',
+                text      : Locale.get( lg, 'groups.panel.btn.delete' ),
                 disabled  : true,
                 textimage : 'icon-trash'
             });
@@ -176,22 +191,22 @@ define('controls/groups/Panel', [
 
             this.$Grid = new Grid(this.$GridContainer, {
                 columnModel : [{
-                    header    : 'Status',
+                    header    : Locale.get( lg, 'status' ),
                     dataIndex : 'status',
                     dataType  : 'button',
                     width     : 50
                 }, {
-                    header    : 'Gruppen-ID',
+                    header    : Locale.get( lg, 'group_id' ),
                     dataIndex : 'id',
                     dataType  : 'integer',
                     width     : 150
                 }, {
-                    header    : 'Gruppenname',
+                    header    : Locale.get( lg, 'groupname' ),
                     dataIndex : 'name',
                     dataType  : 'integer',
                     width     : 150
                 }, {
-                    header    : 'Darf in den Admin',
+                    header    : Locale.get( lg, 'groups.panel.grid.admin' ),
                     dataIndex : 'admin',
                     dataType  : 'string',
                     width     : 150
@@ -280,7 +295,7 @@ define('controls/groups/Panel', [
 
             var self  = this,
                 Sheet = this.createSheet({
-                    title : 'Gruppe suchen...'
+                    title : Locale.get( lg, 'groups.panel.search.title' )
                 });
 
             Sheet.addEvent('onOpen', function(Sheet)
@@ -337,7 +352,7 @@ define('controls/groups/Panel', [
                     // search button
                     new QUIButton({
                         textimage : 'icon-search',
-                        text      : 'Suche starten ...',
+                        text      : Locale.get( lg, 'groups.panel.search.btn.search' ),
                         events    :
                         {
                             onClick : function(Btn) {
@@ -397,8 +412,8 @@ define('controls/groups/Panel', [
             var self = this;
 
             new GroupSitemapWindow({
-                title  : 'Gruppe erstellen',
-                text   : 'Unter welcher Gruppe soll die neue Gruppe angelegt werden?',
+                title  : Locale.get( lg, 'groups.panel.create.window.title' ),
+                text   : Locale.get( lg, 'groups.panel.create.window.sitemap.text' ),
                 events :
                 {
                     // now we need a groupname
@@ -409,16 +424,16 @@ define('controls/groups/Panel', [
                         }
 
                         new QUIPrompt({
-                            title   : 'Neuer Gruppennamen',
-                            icon    : 'icon-group',
-                            height  : 220,
-                            width   : 450,
-                            text    : 'Bitte geben Sie den neuen Gruppennamen an',
-                            pid     : result[ 0 ],
+                            title  : Locale.get( lg, 'groups.panel.create.window.new.group.title' ),
+                            icon   : 'icon-group',
+                            height : 220,
+                            width  : 450,
+                            text   : Locale.get( lg, 'groups.panel.create.window.new.group.text' ),
+                            pid    : result[ 0 ],
                             events :
                             {
                                 onDrawEnd : function(Win) {
-                                    Win.getBody().getElement('input').focus();
+                                    Win.getBody().getElement( 'input' ).focus();
                                 },
 
                                 onSubmit : function(result, Win)
@@ -439,7 +454,6 @@ define('controls/groups/Panel', [
                                 }
                             }
                         }).open();
-
                     }
                 }
             }).open();
@@ -458,11 +472,11 @@ define('controls/groups/Panel', [
                 status  : false,
                 id      : Group.getId(),
                 name    : Group.getAttribute( 'name' ),
-                admin   : '---'
+                admin   : Locale.get( lg, 'no' )
             };
 
             if ( Group.getAttribute( 'admin' ) ) {
-                data.admin = 'Ja';
+                data.admin = Locale.get( lg, 'yes' );
             }
 
             data.status = {
@@ -575,7 +589,7 @@ define('controls/groups/Panel', [
 
             this.Loader.show();
 
-            this.setAttribute( 'title', 'Gruppenverwaltung' );
+            this.setAttribute( 'title', Locale.get( lg, 'groups.panel.title') );
             this.setAttribute( 'icon', 'icon-refresh icon-spin' );
             this.refresh();
 
@@ -583,9 +597,7 @@ define('controls/groups/Panel', [
                  !this.getBody().getElement( '.messages-message' ) )
             {
                 var Msg = new Attention({
-                    message : 'Sucheparameter sind aktiviert. '+
-                              'Klicken Sie hier um die Suche zu beenden und alle Gruppen '+
-                              'wieder anzeigen zu lassen.',
+                    message : Locale.get( lg, 'groups.panel.search.active.message' ),
                     events  :
                     {
                         onClick : function(Message, event)
@@ -635,10 +647,10 @@ define('controls/groups/Panel', [
                     admin = ( data[i].admin ).toInt();
 
                     data[i].active = ( data[i].active ).toInt();
-                    data[i].admin  = '---';
+                    data[i].admin  = Locale.get( lg, 'no' );
 
                     if ( admin ) {
-                        data[i].admin = 'Ja';
+                        data[i].admin = Locale.get( lg, 'yes' );
                     }
 
                     data[i].status = {
@@ -646,11 +658,11 @@ define('controls/groups/Panel', [
                         value  : data[i].id,
                         gid    : data[i].id,
                         image  : data[i].active ?
-                                Panel.getAttribute( 'active_image' ) :
+                                    Panel.getAttribute( 'active_image' ) :
                                     Panel.getAttribute( 'deactive_image' ),
 
                         alt : data[i].active ?
-                                Panel.getAttribute( 'deactive_text' ) :
+                                    Panel.getAttribute( 'deactive_text' ) :
                                     Panel.getAttribute( 'active_text' ),
 
                         events : {
@@ -661,7 +673,7 @@ define('controls/groups/Panel', [
 
                 Grid.setData( result );
 
-                Panel.setAttribute( 'title', 'Gruppenverwaltung' );
+                Panel.setAttribute( 'title', Locale.get( lg, 'groups.panel.title') );
                 Panel.setAttribute( 'icon', 'icon-group' );
                 Panel.refresh();
 
@@ -853,11 +865,11 @@ define('controls/groups/Panel', [
 
             new QUIConfirm({
                 name        : 'DeleteGroups',
-                title       : 'Gruppen löschen',
                 icon        : URL_BIN_DIR +'16x16/trashcan_full.png',
-                text        : 'Sie möchten folgende Gruppen löschen:<br /><br />'+ gids.join(', '),
                 texticon    : URL_BIN_DIR +'32x32/trashcan_full.png',
-                information : 'Die Gruppen werden komplett aus dem System entfernt und können nicht wieder hergestellt werden',
+                title       : Locale.get( lg, 'groups.panel.delete.window.title' ),
+                text        : Locale.get( lg, 'groups.panel.delete.window.text' ) +'<br /><br />'+ gids.join(', '),
+                information : Locale.get( lg, 'groups.panel.delete.window.information' ),
 
                 width  : 500,
                 height : 150,
@@ -873,6 +885,5 @@ define('controls/groups/Panel', [
                 }
             }).open();
         }
-
     });
 });

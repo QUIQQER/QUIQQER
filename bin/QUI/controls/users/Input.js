@@ -19,10 +19,11 @@ define('controls/users/Input', [
     'qui/controls/buttons/Button',
     'controls/users/Entry',
     'Ajax',
+    'Locale',
 
     'css!controls/users/Input.css'
 
-], function(QUI, QUIControl, QUIButton, UserEntry, Ajax)
+], function(QUI, QUIControl, QUIButton, UserEntry, Ajax, Locale)
 {
     "use strict";
 
@@ -348,7 +349,7 @@ define('controls/users/Input', [
                 if ( !data.length )
                 {
                     new Element('div', {
-                        html   : 'Keine Ergebnisse gefunden',
+                        html   : Locale.get( 'quiqqer/system', 'users.input.no.results' ),
                         styles : {
                             'float' : 'left',
                             'clear' : 'both',

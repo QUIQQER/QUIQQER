@@ -1,8 +1,15 @@
 
 v 1.0.9
 
+    QUIQQER
+
     - Image Optimierung
     - Übersetzung
+
+    Development
+
+    - Fix : Grid Toggle Icon öffnet den Renderer
+    - Packet Manager überarbeitet -> geht über die composer.json
 
 v 1.0.8
 

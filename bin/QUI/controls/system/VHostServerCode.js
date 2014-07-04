@@ -28,6 +28,7 @@ define('controls/system/VHostServerCode', [
 ) {
     "use strict";
 
+    var lg = 'quiqqer/system';
 
     return new Class({
 
@@ -98,13 +99,17 @@ define('controls/system/VHostServerCode', [
                     '<table class="data-table">' +
                     '<thead>' +
                         '<tr>' +
-                            '<th colspan="2">Host Daten</th>' +
+                            '<th colspan="2">' +
+                                Locale.get( lg, 'system.vhost.table.hostdata' ) +
+                            '</th>' +
                         '</th>' +
                     '</thead>' +
                     '<tbody>' +
                         '<tr class="odd">' +
                             '<td style="width: 150px;">' +
-                                '<label for="">Domain</label>' +
+                                '<label for="">' +
+                                    Locale.get( lg, 'system.vhost.label.domain' ) +
+                                '</label>' +
                             '</td>' +
                             '<td>' +
                                 '<input type="text" name="host" disabled="disabled" />' +
@@ -113,7 +118,9 @@ define('controls/system/VHostServerCode', [
 
                         '<tr class="even">' +
                             '<td style="width: 150px;">' +
-                                '<label for="">Projekt</label>' +
+                                '<label for="">' +
+                                    Locale.get( lg, 'project' ) +
+                                '</label>' +
                             '</td>' +
                             '<td>' +
                                 '<input type="text" name="project" />' +
@@ -122,7 +129,9 @@ define('controls/system/VHostServerCode', [
 
                         '<tr class="odd">' +
                             '<td style="width: 150px;">' +
-                                '<label for="">Projekt-Sprache</label>' +
+                                '<label for="">'+
+                                    Locale.get( lg, 'language' ) +
+                                '</label>' +
                             '</td>' +
                             '<td>' +
                                 '<input type="text" name="lang" />' +
@@ -131,7 +140,9 @@ define('controls/system/VHostServerCode', [
 
                         '<tr class="even">' +
                             '<td style="width: 150px;">' +
-                                '<label for="">Seiten-ID</label>' +
+                                '<label for="">' +
+                                    Locale.get( lg, 'site_id' ) +
+                                '</label>' +
                             '</td>' +
                             '<td>' +
                                 '<input type="text" name="id" />' +

@@ -1,0 +1,15 @@
+<locales>
+
+    <groups name="quiqqer/system">
+        <locale name="template.project.site.search.title">
+            <de><![CDATA[Suche]]></de>
+            <en><![CDATA[Search]]></en>
+        </locale>
+        <locale name="template.project.site.search.legend">
+            <de><![CDATA[Felder, die durchsucht werden]]></de>
+            <en><![CDATA[Fields that will be searched]]></en>
+        </locale>
+
+    </groups>
+
+</locales>

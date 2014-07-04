@@ -1,390 +1,495 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<settings>
+<quiqqer>
+    <settings>
 
-    <config name="conf">
+        <config name="conf">
 
-        <section name="globals">
-            <conf name="cms_dir">
-                <type><![CDATA[string]]></type>
-            </conf>
-            <conf name="lib_dir">
-                <type><![CDATA[string]]></type>
-            </conf>
-            <conf name="bin_dir">
-                <type><![CDATA[string]]></type>
-            </conf>
-            <conf name="var_dir">
-                <type><![CDATA[string]]></type>
-            </conf>
-            <conf name="usr_dir">
-                <type><![CDATA[string]]></type>
-            </conf>
-            <conf name="sys_dir">
-                <type><![CDATA[string]]></type>
-            </conf>
-            <conf name="opt_dir">
-                <type><![CDATA[string]]></type>
-            </conf>
-            <conf name="pkg_dir">
-                <type><![CDATA[string]]></type>
-            </conf>
-            <conf name="url_dir">
-                <type><![CDATA[string]]></type>
-            </conf>
-            <conf name="salt">
-                <type><![CDATA[string]]></type>
-            </conf>
-            <conf name="saltlength">
-                <type><![CDATA[string]]></type>
-            </conf>
-            <conf name="rootuser">
-                <type><![CDATA[integer]]></type>
-            </conf>
-            <conf name="root">
-                <type><![CDATA[integer]]></type>
-            </conf>
-            <conf name="system_changed">
-                <type><![CDATA[bool]]></type>
-            </conf>
-            <conf name="debug_mode">
-                <type><![CDATA[bool]]></type>
-                <defaultvalue>0</defaultvalue>
-            </conf>
-            <conf name="stability">
-                <type><![CDATA[string]]></type>
-                <defaultvalue>stable</defaultvalue>
-            </conf>
-            <conf name="quiqqer_version">
-                <type><![CDATA[string]]></type>
-                <defaultvalue>master-dev</defaultvalue>
-            </conf>
-            <conf name="mailprotection">
-                <type><![CDATA[bool]]></type>
-                <defaultvalue>0</defaultvalue>
-            </conf>
-            <conf name="cache">
-                <type><![CDATA[bool]]></type>
-                <defaultvalue>0</defaultvalue>
-            </conf>
-            <conf name="development">
-                <type><![CDATA[bool]]></type>
-                <defaultvalue>0</defaultvalue>
-            </conf>
-            <conf name="emaillogin">
-                <type><![CDATA[bool]]></type>
-                <defaultvalue>0</defaultvalue>
-            </conf>
-            <conf name="maintenance">
-                <type><![CDATA[bool]]></type>
-                <defaultvalue>0</defaultvalue>
-            </conf>
+            <section name="globals">
+                <conf name="cms_dir">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="lib_dir">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="bin_dir">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="var_dir">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="usr_dir">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="sys_dir">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="opt_dir">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="pkg_dir">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="url_dir">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="salt">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="saltlength">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="rootuser">
+                    <type><![CDATA[integer]]></type>
+                </conf>
+                <conf name="root">
+                    <type><![CDATA[integer]]></type>
+                </conf>
+                <conf name="system_changed">
+                    <type><![CDATA[bool]]></type>
+                </conf>
+                <conf name="debug_mode">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue>0</defaultvalue>
+                </conf>
+                <conf name="stability">
+                    <type><![CDATA[string]]></type>
+                    <defaultvalue>stable</defaultvalue>
+                </conf>
+                <conf name="quiqqer_version">
+                    <type><![CDATA[string]]></type>
+                    <defaultvalue>master-dev</defaultvalue>
+                </conf>
+                <conf name="mailprotection">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue>0</defaultvalue>
+                </conf>
+                <conf name="cache">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue>0</defaultvalue>
+                </conf>
+                <conf name="development">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue>0</defaultvalue>
+                </conf>
+                <conf name="emaillogin">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue>0</defaultvalue>
+                </conf>
+                <conf name="maintenance">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue>0</defaultvalue>
+                </conf>
 
-            <conf name="host">
-                <type><![CDATA[string]]></type>
-            </conf>
-            <conf name="httpshost">
-                <type><![CDATA[string]]></type>
-            </conf>
-        </section>
+                <conf name="host">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="httpshost">
+                    <type><![CDATA[string]]></type>
+                </conf>
+            </section>
 
-        <section name="db">
-            <conf name="driver">
-                <type><![CDATA[string]]></type>
-            </conf>
-            <conf name="host">
-                <type><![CDATA[string]]></type>
-            </conf>
-            <conf name="database">
-                <type><![CDATA[string]]></type>
-            </conf>
-            <conf name="user">
-                <type><![CDATA[string]]></type>
-            </conf>
-            <conf name="password">
-                <type><![CDATA[string]]></type>
-            </conf>
-        </section>
+            <section name="db">
+                <conf name="driver">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="host">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="database">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="user">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="password">
+                    <type><![CDATA[string]]></type>
+                </conf>
+            </section>
 
-        <section name="mail">
-            <conf name="admin_mail">
-                <type><![CDATA[string]]></type>
-            </conf>
-            <conf name="SMTP">
-                <type><![CDATA[bool]]></type>
-            </conf>
-            <conf name="SMTPServer">
-                <type><![CDATA[string]]></type>
-            </conf>
-            <conf name="SMTPAuth">
-                <type><![CDATA[bool]]></type>
-            </conf>
-            <conf name="SMTPUser">
-                <type><![CDATA[string]]></type>
-            </conf>
-            <conf name="SMTPPass">
-                <type><![CDATA[string]]></type>
-            </conf>
-            <conf name="MAILFrom">
-                <type><![CDATA[string]]></type>
-            </conf>
-            <conf name="MAILFromText">
-                <type><![CDATA[string]]></type>
-            </conf>
-            <conf name="MAILReplyTo">
-                <type><![CDATA[string]]></type>
-            </conf>
-        </section>
+            <section name="mail">
+                <conf name="admin_mail">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="SMTP">
+                    <type><![CDATA[bool]]></type>
+                </conf>
+                <conf name="SMTPServer">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="SMTPAuth">
+                    <type><![CDATA[bool]]></type>
+                </conf>
+                <conf name="SMTPUser">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="SMTPPass">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="MAILFrom">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="MAILFromText">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="MAILReplyTo">
+                    <type><![CDATA[string]]></type>
+                </conf>
+            </section>
 
-        <section name="session">
-            <conf name="max_life_time">
-                <type><![CDATA[integer]]></type>
-                <defaultvalue>14000</defaultvalue>
-            </conf>
-            <conf name="memcached_host">
-                <type><![CDATA[string]]></type>
-            </conf>
-            <conf name="memcached_port">
-                <type><![CDATA[integer]]></type>
-            </conf>
-            <conf name="memcache_host">
-                <type><![CDATA[string]]></type>
-            </conf>
-            <conf name="memcache_port">
-                <type><![CDATA[integer]]></type>
-            </conf>
-        </section>
+            <section name="session">
+                <conf name="max_life_time">
+                    <type><![CDATA[integer]]></type>
+                    <defaultvalue>14000</defaultvalue>
+                </conf>
+                <conf name="memcached_host">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="memcached_port">
+                    <type><![CDATA[integer]]></type>
+                </conf>
+                <conf name="memcache_host">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="memcache_port">
+                    <type><![CDATA[integer]]></type>
+                </conf>
+            </section>
 
-        <section name="error">
-            <conf name="mail">
-                <type><![CDATA[string]]></type>
-            </conf>
-            <conf name="send">
-                <type><![CDATA[bool]]></type>
-                <defaultvalue>0</defaultvalue>
-            </conf>
-            <conf name="log404">
-                <type><![CDATA[bool]]></type>
-                <defaultvalue>1</defaultvalue>
-            </conf>
-            <conf name="mysql_ajax_errors_frontend">
-                <type><![CDATA[bool]]></type>
-                <defaultvalue>0</defaultvalue>
-            </conf>
-            <conf name="mysql_ajax_errors_backend">
-                <type><![CDATA[bool]]></type>
-                <defaultvalue>0</defaultvalue>
-            </conf>
-        </section>
+            <section name="error">
+                <conf name="mail">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="send">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue>0</defaultvalue>
+                </conf>
+                <conf name="log404">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue>1</defaultvalue>
+                </conf>
+                <conf name="mysql_ajax_errors_frontend">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue>0</defaultvalue>
+                </conf>
+                <conf name="mysql_ajax_errors_backend">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue>0</defaultvalue>
+                </conf>
+            </section>
 
-        <section name="auth">
-            <conf name="type">
-                <type><![CDATA[string]]></type>
-                <defaultvalue>standard</defaultvalue>
-            </conf>
-        </section>
+            <section name="auth">
+                <conf name="type">
+                    <type><![CDATA[string]]></type>
+                    <defaultvalue>standard</defaultvalue>
+                </conf>
+            </section>
 
-        <section name="template">
-            <conf name="engine">
-                <type><![CDATA[string]]></type>
-                <defaultvalue>smarty3</defaultvalue>
-            </conf>
-        </section>
+            <section name="template">
+                <conf name="engine">
+                    <type><![CDATA[string]]></type>
+                    <defaultvalue>smarty3</defaultvalue>
+                </conf>
+            </section>
 
-        <section name="smarty">
-            <conf name="compile_check">
-                <type><![CDATA[bool]]></type>
-                <defaultvalue>0</defaultvalue>
-            </conf>
-        </section>
-    </config>
+            <section name="smarty">
+                <conf name="compile_check">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue>0</defaultvalue>
+                </conf>
+            </section>
+        </config>
 
-    <window>
-        <title>QUIQQER Einstellungen</title>
-        <params>
-            <icon>URL_BIN_DIR/16x16/quiqqer.png</icon>
-        </params>
+        <window>
+            <title>
+                <locale group="quiqqer/system" var="quiqqer.settings.title" />
+            </title>
+            <params>
+                <icon>URL_BIN_DIR/16x16/quiqqer.png</icon>
+            </params>
 
-        <categories>
-            <category name="settings">
-                <text>Allgemein</text>
-                <icon>URL_BIN_DIR/22x22/quiqqer.png</icon>
-                <settings title="globals" name="globals">
-                    <title>Allgemeine Einstellungen</title>
-                    <input conf="globals.mailprotection" type="checkbox">
-                        <text>E-Mail-Schutz</text>
-                        <description>
-                            Alle E-Mail Adressen werden für SpyBots unkenntlich gemacht
-                        </description>
-                    </input>
-                </settings>
+            <categories>
+                <category name="settings">
+                    <text>
+                        <locale group="quiqqer/system" var="quiqqer.settings.general.title" />
+                    </text>
+                    <icon>URL_BIN_DIR/22x22/quiqqer.png</icon>
+                    <settings title="globals" name="globals">
+                        <title>
+                            <locale group="quiqqer/system"
+                                    var="quiqqer.settings.general.globals.title"
+                            />
+                        </title>
+                        <input conf="globals.mailprotection" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.general.globals.mailprotection" />
+                            </text>
+                            <description>
+                                <locale group="quiqqer/system" var="quiqqer.settings.general.globals.mailprotection.description" />
+                            </description>
+                        </input>
+                    </settings>
 
-                <settings title="templateengine" name="templateengine">
-                    <title>Template-Engine Einstellungen</title>
-                    <input conf="template.engine" type="text">
-                        <text>Verwendete Template Engine</text>
-                    </input>
-                    <input conf="smarty.compile_check" type="checkbox">
-                        <text>Smarty Compile Prüfung</text>
-                    </input>
-                </settings>
+                    <settings title="templateengine" name="templateengine">
+                        <title>
+                            <locale group="quiqqer/system" var="quiqqer.settings.general.template.title" />
+                        </title>
+                        <input conf="template.engine" type="text">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.general.template.use" />
+                            </text>
+                        </input>
+                        <input conf="smarty.compile_check" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.general.template.compilecheck" />
+                            </text>
+                        </input>
+                    </settings>
 
-                <settings title="globals" name="globals">
-                    <title>Einstellungen für Entwickler</title>
-                    <input conf="globals.maintenance" type="checkbox">
-                        <text>Wartungsarbeiten atkivieren</text>
-                    </input>
-                    <input conf="globals.debug_mode" type="checkbox">
-                        <text>Debug Modus (für Entwickler)</text>
-                    </input>
-                    <input conf="globals.development" type="checkbox">
-                        <text>Entwicklungs Modus (für Entwickler)</text>
-                    </input>
-                </settings>
+                    <settings title="globals" name="globals">
+                        <title>
+                            <locale group="quiqqer/system" var="quiqqer.settings.general.dev.title" />
+                        </title>
+                        <input conf="globals.maintenance" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.general.dev.maintenance" />
+                            </text>
+                        </input>
+                        <input conf="globals.debug_mode" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.general.dev.debug" />
+                            </text>
+                        </input>
+                        <input conf="globals.development" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.general.dev.development" />
+                            </text>
+                        </input>
+                    </settings>
 
-                 <settings title="globals" name="globals">
-                    <title>Aktualisierung</title>
-                    <select conf="globals.stability">
-                        <text>Minimale Stabilität der Packete und des Systems</text>
-                        <option value="stable">stable</option>
-                        <option value="RC">RC</option>
-                        <option value="beta">beta</option>
-                        <option value="alpha">alpha</option>
-                        <option value="dev">dev</option>
-                    </select>
+                     <settings title="globals" name="globals">
+                        <title>
+                            <locale group="quiqqer/system" var="quiqqer.settings.general.updates.title" />
+                        </title>
+                        <select conf="globals.stability">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.general.updates.stability" />
+                            </text>
+                            <option value="stable">stable</option>
+                            <option value="RC">RC</option>
+                            <option value="beta">beta</option>
+                            <option value="alpha">alpha</option>
+                            <option value="dev">dev</option>
+                        </select>
 
-                    <input conf="globals.quiqqer_version">
-                        <text>Version des QUIQQER Systems</text>
-                    </input>
-                </settings>
-            </category>
+                        <input conf="globals.quiqqer_version">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.general.version.title" />
+                            </text>
+                        </input>
+                    </settings>
+                </category>
 
-            <category name="database">
-                <text>Datenbank</text>
-                <icon>icon-briefcase</icon>
+                <category name="database">
+                    <text>
+                        <locale group="quiqqer/system" var="quiqqer.settings.database" />
+                    </text>
+                    <icon>icon-briefcase</icon>
 
-                <settings title="database" name="database">
-                    <title>Datenbank Einstellungen</title>
-                    <input conf="db.driver" type="text">
-                        <text>Datenbank Typ</text>
-                    </input>
-                    <input conf="db.host" type="text">
-                        <text>Host</text>
-                    </input>
-                    <input conf="db.database" type="text">
-                        <text>Datenbank Name</text>
-                    </input>
-                    <input conf="db.user" type="text">
-                        <text>Datenbank Benutzer</text>
-                    </input>
-                    <input conf="db.password" type="password">
-                        <text>Datenbank Passwort</text>
-                    </input>
-                </settings>
-            </category>
+                    <settings title="database" name="database">
+                        <title>
+                            <locale group="quiqqer/system" var="quiqqer.settings.database.title" />
+                        </title>
+                        <input conf="db.driver" type="text">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.database.type" />
+                            </text>
+                        </input>
+                        <input conf="db.host" type="text">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.database.host" />
+                            </text>
+                        </input>
+                        <input conf="db.database" type="text">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.database.name" />
+                            </text>
+                        </input>
+                        <input conf="db.user" type="text">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.database.user" />
+                            </text>
+                        </input>
+                        <input conf="db.password" type="password">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.database.password" />
+                            </text>
+                        </input>
+                    </settings>
+                </category>
 
-            <category name="mail">
-                <text>E-Mail</text>
-                <icon>icon-envelope-alt</icon>
+                <category name="mail">
+                    <text>
+                        <locale group="quiqqer/system" var="email" />
+                    </text>
+                    <icon>icon-envelope-alt</icon>
 
-                <settings title="mail" name="mail">
-                    <title>E-Mail Einstellungen</title>
-                    <input conf="mail.admin_mail" type="text">
-                        <text>Administrations E-Mail</text>
-                        <description>
-                            Fehlermeldungen / Informationen werden an diese E-Mail gesendet
-                        </description>
-                    </input>
-                </settings>
+                    <settings title="mail" name="mail">
+                        <title>
+                            <locale group="quiqqer/system" var="quiqqer.settings.email.title" />
+                        </title>
+                        <input conf="mail.admin_mail" type="text">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.admin" />
+                            </text>
+                            <description>
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.admin.desc" />
+                            </description>
+                        </input>
+                    </settings>
 
-                <settings title="smtp" name="smtp">
-                    <title>SMTP Einstellungen</title>
-                    <input conf="mail.SMTP" type="checkbox">
-                        <text>SMTP E-Mail Versand aktivieren</text>
-                    </input>
-                    <input conf="mail.SMTPServer" type="text">
-                        <text>SMTP Server</text>
-                    </input>
-                </settings>
+                    <settings title="smtp" name="smtp">
+                        <title>
+                            <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.title" />
+                        </title>
+                        <input conf="mail.SMTP" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.activasion" />
+                            </text>
+                        </input>
+                        <input conf="mail.SMTPServer" type="text">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.server" />
+                            </text>
+                        </input>
+                    </settings>
 
-                <settings title="smtp" name="smtp">
-                    <title>SMTP Authentifizierung</title>
-                    <input conf="mail.SMTPAuth" type="checkbox">
-                        <text>SMTP Authentifizierung aktivieren?</text>
-                    </input>
-                    <input conf="mail.SMTPUser" type="text">
-                        <text>SMTP Benutzer</text>
-                    </input>
-                    <input conf="mail.SMTPPass" type="password">
-                        <text>SMTP Password</text>
-                    </input>
-                    <input conf="mail.MAILFrom" type="text">
-                        <text>Angezeigte Versand E-Mail Adresse</text>
-                        <description>Zum Beispiel: info@quiqqer.com</description>
-                    </input>
-                    <input conf="mail.MAILFromText" type="text">
-                        <text>Angezeigter Versandname</text>
-                        <description>Zum Beispiel: Thomas Meyer</description>
-                    </input>
-                    <input conf="mail.MAILReplyTo" type="text">
-                        <text>Antwort E-Mail Adresse</text>
-                        <description>Zum Beispiel: support@quiqqer.com</description>
-                    </input>
-                </settings>
-            </category>
+                    <settings title="smtp" name="smtp">
+                        <title>
+                            <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.title" />
+                        </title>
+                        <input conf="mail.SMTPAuth" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.activasion" />
+                            </text>
+                        </input>
+                        <input conf="mail.SMTPUser" type="text">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.user" />
+                            </text>
+                        </input>
+                        <input conf="mail.SMTPPass" type="password">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.password" />
+                            </text>
+                        </input>
+                        <input conf="mail.MAILFrom" type="text">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.MAILFrom" />
+                            </text>
+                            <description>
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.MAILFrom.description" />
+                            </description>
+                        </input>
+                        <input conf="mail.MAILFromText" type="text">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.MAILFrom" />
+                            </text>
+                            <description>
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.MAILFrom.description" />
+                            </description>
+                        </input>
+                        <input conf="mail.MAILReplyTo" type="text">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.MAILReplyTo" />
+                            </text>
+                            <description>
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.MAILReplyTo.description" />
+                            </description>
+                        </input>
+                    </settings>
+                </category>
 
-            <category name="auth">
-                <text>Authentifizierung</text>
-                <icon>icon-user</icon>
+                <category name="auth">
+                    <text>
+                        <locale group="quiqqer/system" var="quiqqer.settings.auth" />
+                    </text>
+                    <icon>icon-user</icon>
 
-                <settings title="auth" name="auth">
-                    <title>Authentifizierung</title>
+                    <settings title="auth" name="auth">
+                        <title>
+                            <locale group="quiqqer/system" var="quiqqer.settings.auth" />
+                        </title>
 
-                    <input conf="globals.emaillogin" type="checkbox">
-                        <text>Login über die E-Mail Adresse zulassen</text>
-                    </input>
-                    <select conf="auth.type" type="text">
-                        <text>Authentifierungsart</text>
-                        <option value="standard">standard</option>
-                    </select>
-                </settings>
+                        <input conf="globals.emaillogin" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.emaillogin" />
+                            </text>
+                        </input>
+                        <select conf="auth.type" type="text">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.type" />
+                            </text>
+                            <option value="standard">
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.standard" />
+                            </option>
+                        </select>
+                    </settings>
 
-                <settings title="auth-session" name="auth-session">
-                    <title>Sitzung</title>
+                    <settings title="auth-session" name="auth-session">
+                        <title>
+                            <locale group="quiqqer/system" var="quiqqer.settings.auth.session" />
+                        </title>
 
-                    <input conf="session.max_life_time">
-                        <text>Maximale inaktive Zeit eines Benutzers (max session life time)</text>
-                    </input>
-                </settings>
+                        <input conf="session.max_life_time">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.session.maxlife" />
+                            </text>
+                        </input>
+                    </settings>
 
-                <settings title="auth-memcached" name="auth-memcached">
-                    <title>Memcached Server</title>
-                    <text>Geben Sie hier einen Memcached Server an damit die Sitzungsdaten über einen Memcached Server verwaltet werden</text>
-                    <input conf="session.memcached_host">
-                        <text>Host</text>
-                    </input>
+                    <settings title="auth-memcached" name="auth-memcached">
+                        <title>
+                            <locale group="quiqqer/system" var="quiqqer.settings.auth.memcached" />
+                        </title>
+                        <text>
+                            <locale group="quiqqer/system" var="quiqqer.settings.auth.memcached.text" />
+                        </text>
+                        <input conf="session.memcached_host">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.memcached.host" />
+                            </text>
+                        </input>
 
-                    <input conf="session.memcached_port">
-                        <text>Port</text>
-                    </input>
+                        <input conf="session.memcached_port">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.memcached.port" />
+                            </text>
+                        </input>
+                    </settings>
 
-                </settings>
+                    <settings title="auth-memcache" name="auth-memcache">
+                        <title>
+                            <locale group="quiqqer/system" var="quiqqer.settings.auth.memcache" />
+                        </title>
+                        <text>
+                            <locale group="quiqqer/system" var="quiqqer.settings.auth.memcache.text" />
+                        </text>
+                        <input conf="session.memcache_host">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.memcache.host" />
+                            </text>
+                        </input>
 
-                <settings title="auth-memcache" name="auth-memcache">
-                    <title>Memcache Server</title>
-                    <text>Geben Sie hier einen Memcache Server an damit die Sitzungsdaten über einen Memcache Server verwaltet werden</text>
-                    <input conf="session.memcache_host">
-                        <text>Host</text>
-                    </input>
+                        <input conf="session.memcache_port">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.memcache.port" />
+                            </text>
+                        </input>
+                    </settings>
 
-                    <input conf="session.memcache_port">
-                        <text>Port</text>
-                    </input>
+                </category>
 
-                </settings>
-
-            </category>
-
-        </categories>
-    </window>
-
-</settings>
+            </categories>
+        </window>
+    </settings>
+</quiqqer>

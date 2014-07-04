@@ -12,9 +12,10 @@
 define('controls/groups/sitemap/Window', [
 
     'qui/controls/windows/Confirm',
-    'controls/groups/Sitemap'
+    'controls/groups/Sitemap',
+    'Locale'
 
-], function(QUIConfirm, GroupSitemap)
+], function(QUIConfirm, GroupSitemap, Locale)
 {
     "use strict";
 
@@ -36,8 +37,8 @@ define('controls/groups/sitemap/Window', [
         options : {
             multible : false,
             message  : false,
-            title    : 'Gruppenauswahl',
-            text     : 'Wählen Sie eine Gruppe aus',
+            title    : Locale.get( 'quiqqer/system', 'groups.sitemap.window.title' ),
+            text     : Locale.get( 'quiqqer/system', 'groups.sitemap.window.text' ),
             icon     : 'icon-group',
             maxHeight   : 600,
             maxWidth    : 450
