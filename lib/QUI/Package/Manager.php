@@ -11,6 +11,19 @@ if ( !defined('STDIN') ) {
     define( 'STDIN', fopen("php://stdin","r") );
 }
 
+if ( !defined( 'JSON_UNESCAPED_SLASHES' ) ) {
+    define( 'JSON_UNESCAPED_SLASHES', 64 );
+}
+
+if ( !defined( 'JSON_PRETTY_PRINT' ) ) {
+    define( 'JSON_PRETTY_PRINT', 128 );
+}
+
+if ( !defined( 'JSON_UNESCAPED_UNICODE' ) ) {
+    define( 'JSON_UNESCAPED_UNICODE', 256 );
+}
+
+
 use Composer\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
