@@ -439,11 +439,11 @@ class Manager
      */
     public function install($package)
     {
-        $this->_require[ $package ] = 'dev-master';
+        //$this->_require[ $package ] = 'dev-master';
         $this->_createComposerJSON();
 
-        $result = $this->_execComposer('update', array(
-            'packages' => array($package)
+        $result = $this->_execComposer('require', array(
+            'tokens' => $package .':dev-master'
         ));
 
         \QUI\System\Log::writeRecursive( $result );
