@@ -90,6 +90,10 @@ class Update
 
             foreach ( $list as $sub )
             {
+                if ( !is_dir( $package_dir .'/'. $sub ) ) {
+                    continue;
+                }
+
                 // database setup
                 self::importDatabase(
                     $package_dir .'/'. $sub .'/database.xml',
@@ -121,6 +125,10 @@ class Update
 
             foreach ( $list as $sub )
             {
+                if ( !is_dir( $package_dir .'/'. $sub ) ) {
+                    continue;
+                }
+
                 // register template engines, if exist in a package
                 self::importTemplateEngines(
                     $package_dir .'/'. $sub .'/engines.xml',
