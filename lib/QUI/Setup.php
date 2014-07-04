@@ -100,6 +100,10 @@ class Setup
                 continue;
             }
 
+            if ( !is_dir( OPT_DIR .'/'. $package ) ) {
+                continue;
+            }
+
             $package_dir = OPT_DIR .'/'. $package;
             $list        = \QUI\Utils\System\File::readDir( $package_dir );
 

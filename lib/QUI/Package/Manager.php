@@ -572,6 +572,10 @@ class Manager
     {
         $dir = OPT_DIR . $package .'/';
 
+        if ( !is_dir( $dir ) ) {
+            return;
+        }
+
         \QUI\Update::importDatabase( $dir .'database.xml' );
         \QUI\Update::importTemplateEngines( $dir .'engines.xml' );
         \QUI\Update::importEditors( $dir .'wysiwyg.xml' );
@@ -1073,6 +1077,10 @@ class Manager
 
         foreach ( $packages as $package )
         {
+            if ( !is_dir( OPT_DIR . $package[ 'name' ] ) ) {
+                continue;
+            }
+
             $file = OPT_DIR . $package[ 'name' ] .'/site.xml';
 
             if ( !file_exists( $file ) ) {
