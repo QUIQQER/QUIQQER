@@ -443,7 +443,7 @@ class Manager
         $this->_createComposerJSON();
 
         $result = $this->_execComposer('require', array(
-            'tokens' => $package .':dev-master'
+            'packages' => $package .':dev-master'
         ));
 
         \QUI\System\Log::writeRecursive( $result );
