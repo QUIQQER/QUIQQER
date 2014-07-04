@@ -443,7 +443,9 @@ class Manager
         $this->_createComposerJSON();
 
         $result = $this->_execComposer('require', array(
-            'packages' => $package .':dev-master'
+            'packages' => array(
+                $package .':dev-master'
+            )
         ));
 
         \QUI\System\Log::writeRecursive( $result );
