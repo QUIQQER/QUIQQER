@@ -88,8 +88,8 @@ define('controls/projects/project/media/Input', [
                     {
                         var project = '';
 
-                        if ( self.$Input.get( 'date-project' ) ) {
-                            project = self.$Input.get( 'project' );
+                        if ( self.$Input.get( 'data-project' ) ) {
+                            project = self.$Input.get( 'data-project' );
                         }
 
                         new MediaPopup({
