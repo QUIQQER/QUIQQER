@@ -93,9 +93,16 @@ class VhostManager
         }
 
         // daten prüfen
-        $data = \QUI\Utils\Security\Orthos::clearArray( $data );
+        $result = array();
 
-        $Config->setSection( $vhost, $data );
+        foreach ( $data as $key => $value )
+        {
+            $key = \QUI\Utils\Security\Orthos::clear( $key );
+
+            $result[ $key ] = $value;
+        }
+
+        $Config->setSection( $vhost, $result );
         $Config->save();
     }
 
