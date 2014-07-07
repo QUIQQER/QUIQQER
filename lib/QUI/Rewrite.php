@@ -834,14 +834,23 @@ class Rewrite
                 $vhosts = $this->getVHosts();
 
                 // Falls der Host eine eigene Fehlerseite zugewiesen bekommen hat
-                if (isset($vhosts[$_SERVER['HTTP_HOST']]) &&
-                    isset($vhosts[$_SERVER['HTTP_HOST']]['error']))
+                if ( isset( $vhosts[ $_SERVER['HTTP_HOST'] ]) &&
+                     isset( $vhosts[ $_SERVER['HTTP_HOST'] ]['error'] ) )
                 {
-                    $error = $vhosts[$_SERVER['HTTP_HOST']]['error'];
-                    $error = explode(',', $error);
+                    $error = $vhosts[ $_SERVER['HTTP_HOST'] ]['error'];
+                    $error = explode( ',', $error );
 
                     try
                     {
+                        if ( !isset( $error[0] ) )
+                        {
+                            $Standard = \QUI::getProjectManager()->getStandard();
+
+                            $error[0] = $Standard->getName();
+                            $error[1] = $Standard->getLang();
+                            $error[2] = 1;
+                        }
+
                         $this->_project = \QUI::getProject(
                             $error[0],
                             $error[1]
@@ -851,10 +860,9 @@ class Rewrite
 
                         return true;
 
-                    } catch (\QUI\Exception $e)
+                    } catch ( \QUI\Exception $Exception )
                     {
-                        // nothing
-                        \QUI\System\Log::writeException($e);
+                        \QUI\System\Log::writeException( $Exception );
                     }
                 }
 
