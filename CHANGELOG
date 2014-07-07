@@ -5,11 +5,13 @@ v 1.0.9
 
     - Image Optimierung
     - Übersetzung
+    - VHosts -> Templates werden richtig gespeichert
 
     Development
 
     - Fix : Grid Toggle Icon öffnet den Renderer
     - Packet Manager überarbeitet -> geht über die composer.json
+    - Media Button beachtet das aktuelle Projekt
 
 v 1.0.8
 
