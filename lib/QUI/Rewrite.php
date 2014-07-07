@@ -842,7 +842,7 @@ class Rewrite
 
                     try
                     {
-                        if ( !isset( $error[0] ) )
+                        if ( !isset( $error[0] ) || !isset( $error[1] ) || !isset( $error[2] ))
                         {
                             $Standard = \QUI::getProjectManager()->getStandard();
 
