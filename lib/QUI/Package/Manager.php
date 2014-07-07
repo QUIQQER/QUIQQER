@@ -11,6 +11,19 @@ if ( !defined('STDIN') ) {
     define( 'STDIN', fopen("php://stdin","r") );
 }
 
+if ( !defined( 'JSON_UNESCAPED_SLASHES' ) ) {
+    define( 'JSON_UNESCAPED_SLASHES', 64 );
+}
+
+if ( !defined( 'JSON_PRETTY_PRINT' ) ) {
+    define( 'JSON_PRETTY_PRINT', 128 );
+}
+
+if ( !defined( 'JSON_UNESCAPED_UNICODE' ) ) {
+    define( 'JSON_UNESCAPED_UNICODE', 256 );
+}
+
+
 use Composer\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
@@ -426,11 +439,13 @@ class Manager
      */
     public function install($package)
     {
-        $this->_require[ $package ] = 'dev-master';
+        //$this->_require[ $package ] = 'dev-master';
         $this->_createComposerJSON();
 
-        $result = $this->_execComposer('update', array(
-            'packages' => array($package)
+        $result = $this->_execComposer('require', array(
+            'packages' => array(
+                $package .':dev-master'
+            )
         ));
 
         \QUI\System\Log::writeRecursive( $result );
@@ -571,6 +586,10 @@ class Manager
     public function setup($package)
     {
         $dir = OPT_DIR . $package .'/';
+
+        if ( !is_dir( $dir ) ) {
+            return;
+        }
 
         \QUI\Update::importDatabase( $dir .'database.xml' );
         \QUI\Update::importTemplateEngines( $dir .'engines.xml' );
@@ -1073,6 +1092,10 @@ class Manager
 
         foreach ( $packages as $package )
         {
+            if ( !is_dir( OPT_DIR . $package[ 'name' ] ) ) {
+                continue;
+            }
+
             $file = OPT_DIR . $package[ 'name' ] .'/site.xml';
 
             if ( !file_exists( $file ) ) {

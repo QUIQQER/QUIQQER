@@ -118,7 +118,7 @@ class Session
     /**
      * Session setup
      */
-    static function setup()
+    public function setup()
     {
         $DBTable = \QUI::getDataBase()->Table();
 

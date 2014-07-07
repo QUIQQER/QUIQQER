@@ -53,7 +53,7 @@ class Update
         \QUI::getLocale()->setCurrent( 'en' );
 
         // session table
-        \QUI\Session::setup();
+        \QUI::getSession()->setup();
 
         // rights setup, so we have all importend tables
         \QUI\Rights\Manager::setup();
@@ -90,6 +90,10 @@ class Update
 
             foreach ( $list as $sub )
             {
+                if ( !is_dir( $package_dir .'/'. $sub ) ) {
+                    continue;
+                }
+
                 // database setup
                 self::importDatabase(
                     $package_dir .'/'. $sub .'/database.xml',
@@ -121,6 +125,10 @@ class Update
 
             foreach ( $list as $sub )
             {
+                if ( !is_dir( $package_dir .'/'. $sub ) ) {
+                    continue;
+                }
+
                 // register template engines, if exist in a package
                 self::importTemplateEngines(
                     $package_dir .'/'. $sub .'/engines.xml',
@@ -406,6 +414,10 @@ class Update
 
             foreach ( $list as $sub )
             {
+                if ( !is_dir( $package_dir .'/'. $sub ) ) {
+                    continue;
+                }
+
                 // register menu entries
                 self::importMenu(
                     $package_dir .'/'. $sub .'/menu.xml'
@@ -439,6 +451,10 @@ class Update
 
             foreach ( $list as $sub )
             {
+                if ( !is_dir( $package_dir .'/'. $sub ) ) {
+                    continue;
+                }
+
                 // register permissions entries
                 self::importPermissions(
                     $package_dir .'/'. $sub .'/permissions.xml',
@@ -487,6 +503,10 @@ class Update
 
             foreach ( $list as $sub )
             {
+                if ( !is_dir( $package_dir .'/'. $sub ) ) {
+                    continue;
+                }
+
                 // locale setup
                 self::importLocale(
                     $package_dir .'/'. $sub .'/locale.xml'
