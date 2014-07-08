@@ -47,6 +47,16 @@ class Template extends \QUI\QDOM
     protected $_typetpl = '';
 
     /**
+     * constructor
+     */
+    public function __construct()
+    {
+        $this->setAttribute( 'mootools' , true );
+        $this->setAttribute( 'requirejs' , true );
+        $this->setAttribute( 'html5' , true );
+    }
+
+    /**
      * Load the registered engines
      */
     public function load()
@@ -182,9 +192,6 @@ class Template extends \QUI\QDOM
         $Users   = \QUI::getUsers();
         $Rewrite = \QUI::getRewrite();
         $Locale  = \QUI::getLocale();
-
-        // defaults
-        $this->setAttribute( 'html5', true );
 
         $User = $Users->getUserBySession();
 
