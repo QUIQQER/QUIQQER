@@ -45,7 +45,8 @@
             lang : '{$User->getLang()}'
         };
 
-        var QUIQQER_LOCALE = {$localeFiles|json_encode:true}
+        var QUIQQER_ONLOAD_MODULES = {$loadModuleFiles|json_encode:true},
+            QUIQQER_LOCALE         = {$localeFiles|json_encode:true}
     </script>
 
 
@@ -73,6 +74,9 @@
     {if isset( $siteScript )}
         <script type="text/javascript" src="{$siteScript}"></script>
     {/if}
+
+
+    {* packages *}
 
     <title>
         {$Template->getAttribute('site_title_prefix')}

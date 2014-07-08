@@ -9,7 +9,7 @@
 function ajax_project_html_sitemap($project, $lang)
 {
     $Project  = \QUI\Projects\Manager::getProject( $project, $lang );
-    $Template = \QUI\Template::getEngine();
+    $Template = \QUI::getTemplateManager()->getEngine();
 
     $Template->assign(array(
         'Project' => $Project,

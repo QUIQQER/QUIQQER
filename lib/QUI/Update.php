@@ -211,7 +211,7 @@ class Update
                 continue;
             }
 
-            \QUI\Template::registerEngine(
+            \QUI::getTemplateManager()->registerEngine(
                 trim( $Engine->nodeValue ),
                 $Engine->getAttribute( 'class_name' )
             );

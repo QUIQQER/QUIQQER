@@ -343,7 +343,7 @@ class Address extends \QUI\QDOM
      */
     public function getDisplay($active=false)
     {
-        $Engine = \QUI\Template::getEngine( true );
+        $Engine = \QUI::getTemplateManager()->getEngine( true );
 
         $Engine->assign(array(
             'User'      => $this->_User,

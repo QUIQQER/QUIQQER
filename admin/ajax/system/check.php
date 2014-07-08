@@ -7,7 +7,7 @@
  */
 function ajax_system_check()
 {
-    $Engine = \QUI\Template::getEngine();
+    $Engine = \QUI::getTemplateManager()->getEngine();
     $Engine->assign(array(
         'checks' => \QUI\System\Checks\Manager::standard()
     ));

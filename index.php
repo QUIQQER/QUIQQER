@@ -27,7 +27,7 @@ if ( function_exists( 'gzcompress' ) ) {
 
 require_once 'bootstrap.php';
 
-$Engine = \QUI\Template::getEngine();
+$Engine = \QUI::getTemplateManager()->getEngine();
 
 // UTF 8 Prüfung für umlaute in url
 if ( isset( $_REQUEST['_url'] ) ) {
@@ -98,7 +98,7 @@ if (
     header('Retry-After: 3600');
     header('X-Powered-By:');
 
-    $Smarty = \QUI\Template::getEngine();
+    $Smarty = \QUI::getTemplateManager()->getEngine();
 
     $Smarty->assign(array(
         'Project' => $Project
@@ -144,7 +144,7 @@ if ( CACHE && file_exists( $site_cache_file ) && $Site->getAttribute('nocache') 
 {
     $cache_content = file_get_contents( $site_cache_file );
     $_content      = $Rewrite->outputFilter( $cache_content );
-    $_content      = \QUI\Template::setAdminMenu( $_content );
+    $_content      = \QUI::getTemplateManager()->setAdminMenu( $_content );
 
     // Content Ausgabe
     echo $_content;
@@ -168,7 +168,7 @@ if ( $Site->getAttribute('nocache') != true )
 }
 
 $content = $Rewrite->outputFilter( $content );
-$content = \QUI\Template::setAdminMenu( $content );
+$content = $Template->setAdminMenu( $content );
 
 \QUI\Utils\System\Debug::marker('output Filter');
 

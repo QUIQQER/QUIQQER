@@ -329,7 +329,7 @@ class DOM
 
                 if ( file_exists( $file ) )
                 {
-                    $Engine = \QUI\Template::getEngine( true );
+                    $Engine = \QUI::getTemplateManager()->getEngine( true );
 
                     $Engine->assign(array(
                         'Site'    => $Object,
@@ -723,7 +723,7 @@ class DOM
             return '';
         }
 
-        $Engine   = \QUI\Template::getEngine( true );
+        $Engine   = \QUI::getTemplateManager()->getEngine( true );
         $template = $Category->getElementsByTagName( 'template' );
 
         // Falls ein Template angegeben wurde

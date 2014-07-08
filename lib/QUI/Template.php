@@ -10,7 +10,8 @@ namespace QUI;
  * Template Engine Manager
  *
  * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.template
+ *
+ * @event onTemplateGetHeader [ $this ]
  */
 
 class Template extends \QUI\QDOM
@@ -19,19 +20,25 @@ class Template extends \QUI\QDOM
      * Registered template engines
      * @var array
      */
-    static $_engines = array();
+    protected $_engines = array();
 
     /**
      * Header extentions
      * @var array
      */
-    static $_header = array();
+    protected $_header = array();
 
     /**
      * assigned vars
      * @var array
      */
-    static $_assigned = array();
+    protected $_assigned = array();
+
+    /**
+     * modules that loaded after the onload event
+     * @var Array
+     */
+    protected $_onLoadModules = array();
 
     /**
      * site type tpl
@@ -42,9 +49,9 @@ class Template extends \QUI\QDOM
     /**
      * Load the registered engines
      */
-    static function load()
+    public function load()
     {
-        self::$_engines = self::getConfig()->toArray();
+        $this->_engines = self::getConfig()->toArray();
     }
 
     /**
@@ -54,9 +61,9 @@ class Template extends \QUI\QDOM
      * @param unknown $param
      * @param unknown $value
      */
-    static function assignGlobalParam($param, $value)
+    public function assignGlobalParam($param, $value)
     {
-        self::$_assigned[ $param ] = $value;
+        $this->_assigned[ $param ] = $value;
     }
 
     /**
@@ -80,19 +87,19 @@ class Template extends \QUI\QDOM
      * @param Integer $admin - is the template for the admin or frontend? <- param depricated
      * @return \QUI\Interfaces\Template\Engine
      */
-    static function getEngine($admin=false)
+    public function getEngine($admin=false)
     {
-        if ( empty( self::$_engines ) ) {
-            self::load();
+        if ( empty( $this->_engines ) ) {
+            $this->load();
         }
 
         $engine = \QUI::conf( 'template', 'engine' );
 
-        if ( !isset( self::$_engines[ $engine ] ) ) {
+        if ( !isset( $this->_engines[ $engine ] ) ) {
             throw new \QUI\Exception( 'Template Engine not found!' );
         }
 
-        $Engine     = new self::$_engines[ $engine ]( $admin );
+        $Engine     = new $this->_engines[ $engine ]( $admin );
         $implements = class_implements( $Engine );
 
         if ( !isset( $implements['QUI\\Interfaces\\Template\\Engine'] ) )
@@ -102,8 +109,8 @@ class Template extends \QUI\QDOM
             );
         }
 
-        if ( !empty( self::$_assigned ) ) {
-            $Engine->assign( self::$_assigned );
+        if ( !empty( $this->_assigned ) ) {
+            $Engine->assign( $this->_assigned );
         }
 
         return $Engine;
@@ -128,18 +135,27 @@ class Template extends \QUI\QDOM
      * @param String $str
      * @param Integer $prio
      */
-    static function extendHeader($str, $prio=3)
+    public function extendHeader($str, $prio=3)
     {
         $prio = (int)$prio;
 
-        if ( !isset( self::$_header[ $prio ] ) ) {
-            self::$_header[ $prio ] = '';
+        if ( !isset( $this->_header[ $prio ] ) ) {
+            $this->_header[ $prio ] = '';
         }
 
-        $_str  = self::$_header[ $prio ];
+        $_str  = $this->_header[ $prio ];
         $_str .= $str;
 
-        self::$_header[ $prio ] = $_str;
+        $this->_header[ $prio ] = $_str;
+    }
+
+    /**
+     * Add a javascript module, that laoded at the onload event
+     * @param String $module
+     */
+    public function addOnloadJavaScriptModule($module)
+    {
+        $this->_onLoadModules[] = $module;
     }
 
     /**
@@ -162,7 +178,7 @@ class Template extends \QUI\QDOM
         /* @var $Site \QUI\Projects\Site */
         $Project = $Site->getProject();
 
-        $Engine  = self::getEngine();
+        $Engine  = $this->getEngine();
         $Users   = \QUI::getUsers();
         $Rewrite = \QUI::getRewrite();
         $Locale  = \QUI::getLocale();
@@ -173,7 +189,7 @@ class Template extends \QUI\QDOM
         $User = $Users->getUserBySession();
 
         // header
-        $_header = \QUI\Template::$_header;
+        $_header = $this->_header;
 
         foreach ( $_header as $key => $str ) {
             $Engine->extendHeader( $str, $key );
@@ -315,6 +331,8 @@ class Template extends \QUI\QDOM
             }
         }
 
+        \QUI::getEvents()->fireEvent( 'templateGetHeader', array( $this ) );
+
         // locale files
         try
         {
@@ -335,10 +353,11 @@ class Template extends \QUI\QDOM
 
         // assign
         $Engine->assign(array(
-            'Project'     => $Project,
-            'Site'        => $Site,
-            'Engine'      => $Engine,
-            'localeFiles' => $locales
+            'Project'         => $Project,
+            'Site'            => $Site,
+            'Engine'          => $Engine,
+            'localeFiles'     => $locales,
+            'loadModuleFiles' => $this->_onLoadModules
         ));
 
         return $Engine->fetch( LIB_DIR .'templates/header.html' );
