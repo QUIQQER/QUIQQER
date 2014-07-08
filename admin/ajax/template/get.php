@@ -9,7 +9,7 @@
 
 function ajax_template_get($template)
 {
-    $Engine   = \QUI\Template::getEngine( true );
+    $Engine   = \QUI::getTemplateManager()->getEngine( true );
     $dir      = SYS_DIR .'template/';
     $template = $dir . str_replace( '_', '/', $template ) .'.html';
 

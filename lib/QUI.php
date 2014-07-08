@@ -159,6 +159,12 @@ class QUI
     static $Countries = null;
 
     /**
+     * Template Manager
+     * @var \QUI\Template
+     */
+    static $Template = null;
+
+    /**
      * Set all important pathes and load QUIQQER
      */
     static function load()
@@ -846,6 +852,19 @@ class QUI
         }
 
         return self::$Temp;
+    }
+
+    /**
+     * Return the Template Manager
+     * @return \QUI\Template
+     */
+    static function getTemplateManager()
+    {
+        if ( is_null( self::$Template ) ) {
+            self::$Template = new \QUI\Template();
+        }
+
+        return self::$Template;
     }
 
     /**

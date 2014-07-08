@@ -12,6 +12,9 @@ v 1.0.9
     - Fix : Grid Toggle Icon öffnet den Renderer
     - Packet Manager überarbeitet -> geht über die composer.json
     - Media Button beachtet das aktuelle Projekt
+    - \QUI\Template static methoden reduziert
+    - \QUI::getTemplateManager()
+    - \QUI\Template neues Event: onTemplateGetHeader
 
 v 1.0.8
 

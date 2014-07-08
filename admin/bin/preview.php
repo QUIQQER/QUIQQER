@@ -8,7 +8,7 @@
 
 require_once '../header.php';
 
-if ( !QUI::getUserBySession()->isAdmin() )
+if ( !\QUI::getUserBySession()->isAdmin() )
 {
     header( "HTTP/1.1 404 Not Found" );
     exit;
@@ -37,7 +37,7 @@ foreach ( $_POST['siteData'] as $key => $value ) {
     $Site->setAttribute( $key, $value );
 }
 
-$Template = new \QUI\Template();
+$Template = new \QUI::getTemplateManager();
 $content  = $Template->fetchTemplate( $Site );
 
 echo $content;

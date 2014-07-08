@@ -73,7 +73,7 @@ class Utils
     {
         $Groups = \QUI::getGroups();
         $Group  = $Groups->get( $gid );
-        $Engine = \QUI\Template::getEngine( true );
+        $Engine = \QUI::getTemplateManager()->getEngine( true );
 
         $Engine->assign(array(
             'Group' => $Group
@@ -94,7 +94,7 @@ class Utils
             $Project = \QUI\Projects\Manager::getProject( $tab[1] );
             $file    = USR_DIR .'lib/'. $Project->getAttribute('name') .'/rights.xml';
 
-            $Engine = \QUI\Template::getEngine( true );
+            $Engine = \QUI::getTemplateManager()->getEngine( true );
             $rights = QUI_Rights_Parser::getGroups(
                 QUI_Rights_Parser::parse( $file )
             );

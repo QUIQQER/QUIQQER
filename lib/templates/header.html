@@ -25,7 +25,6 @@
     <meta name="revisit-after" content="2 days" />
     <!-- [end] meta -->
 
-
     <script type="text/javascript">
         var URL_DIR          = '{$URL_DIR}';
             URL_OPT_DIR      = '{$URL_OPT_DIR}',
@@ -45,8 +44,38 @@
             lang : '{$User->getLang()}'
         };
 
-        var QUIQQER_LOCALE = {$localeFiles|json_encode:true}
+        var QUIQQER_ONLOAD_MODULES = {$loadModuleFiles|json_encode:true},
+            QUIQQER_LOCALE         = {$localeFiles|json_encode:true}
     </script>
+
+    {if $Template->getAttribute('mootools')}
+        <!-- mootools -->
+        <script src="{$URL_OPT_DIR}bin/qui/build/qui/lib/mootools-core.js"></script>
+        <script src="{$URL_OPT_DIR}bin/qui/build/qui/lib/mootools-more.js"></script>
+        <script src="{$URL_OPT_DIR}bin/qui/build/qui/lib/moofx.js"></script>
+    {/if}
+
+    {if $Template->getAttribute('requirejs')}
+        <!-- include components -->
+        <script src="{$URL_OPT_DIR}bin/require-built.js"></script>
+        <script>
+            require.config({
+                baseUrl : URL_DIR,
+                paths   : {
+                    "package" : URL_OPT_DIR +'bin/'
+                },
+                waitSeconds : 0,
+                locale      : QUIQQER_USER.lang +"-"+ QUIQQER_USER.lang,
+                catchError  : true,
+
+                map : {
+                    '*': {
+                        'css': URL_OPT_DIR +'bin/qui/build/qui/lib/css'
+                    }
+                }
+            });
+        </script>
+    {/if}
 
 
     {assign var=canonical value=false}
@@ -73,6 +102,7 @@
     {if isset( $siteScript )}
         <script type="text/javascript" src="{$siteScript}"></script>
     {/if}
+
 
     <title>
         {$Template->getAttribute('site_title_prefix')}

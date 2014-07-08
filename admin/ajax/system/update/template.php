@@ -8,7 +8,7 @@
  */
 function ajax_system_update_template($tpltype)
 {
-    $Engine  = \QUI\Template::getEngine();
+    $Engine  = \QUI::getTemplateManager()->getEngine();
     $Plugins = \QUI::getPlugins();
 
     if ( $tpltype == 'plugin' )

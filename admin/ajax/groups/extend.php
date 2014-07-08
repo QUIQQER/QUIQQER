@@ -9,10 +9,10 @@
 function ajax_groups_extend($id, $eproject)
 {
     $Group   = \QUI::getGroups()->get( $id );
-    $Engine  = \QUI\Template::getEngine( true );
+    $Engine  = \QUI::getTemplateManager()->getEngine( true );
     $Project = \QUI::getProject( $eproject );
 
-    $Rights = \QUI::getRights();
+    $Rights = \QUI::getPermissionManager();
     $rights = $Rights->getProjectRightGroups( $Project );
 
     $Engine->assign(array(

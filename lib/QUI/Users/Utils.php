@@ -99,7 +99,7 @@ class Utils
         $User  = $Users->get( (int)$uid );
 
         // assign user as global var
-        \QUI\Template::assignGlobalParam( 'User', $User );
+        \QUI::getTemplateManager()->assignGlobalParam( 'User', $User );
 
         // System
         if ( $plugin === 'pcsg' )

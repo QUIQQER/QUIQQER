@@ -77,7 +77,7 @@ try
     header( 'HTTP/1.1 503 Service Temporarily Unavailable' );
     header( 'Status: 503 Service Temporarily Unavailable' );
 
-    $Template = \QUI\Template::getEngine();
+    $Template = \QUI::getTemplateManager()->getEngine();
     $file     = LIB_DIR .'templates/db_error.html';
 
     if ( \QUI::conf( 'db', 'error_html' ) &&
