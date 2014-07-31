@@ -13,10 +13,11 @@ define('controls/desktop/panels/XML', [
     'qui/utils/Object',
     'Ajax',
     'Locale',
+    'utils/Controls',
 
     'css!controls/desktop/panels/XML.css'
 
-], function(QUIPanel, QUIButton, QUIObjectUtils, Ajax, Locale)
+], function(QUIPanel, QUIButton, QUIObjectUtils, Ajax, Locale, ControlUtils)
 {
     "use strict";
 
@@ -184,6 +185,8 @@ define('controls/desktop/panels/XML', [
 
                     Elm.value = value;
                 }
+
+                ControlUtils.parse( Body );
 
 
                 // require?

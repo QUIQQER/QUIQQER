@@ -1327,7 +1327,7 @@ class Project
                 'title'       => 'tinytext',
                 'short'       => 'text',
                 'content'     => 'longtext',
-                'type'        => 'varchar(32) default NULL',
+                'type'        => 'varchar(200) default NULL',
                 'active'      => 'tinyint(1) NOT NULL',
                 'deleted'     => 'tinyint(1) NOT NULL',
                 'c_date'      => 'timestamp NULL default NULL',
@@ -1350,7 +1350,11 @@ class Project
                 'ALTER TABLE `'. $table .'` CHANGE `order_type` `order_type` VARCHAR( 100 ) NULL DEFAULT NULL'
             );
 
-            if ( !$Table->issetPrimaryKey($table, 'id' ) ) {
+            $DataBase->getPDO()->exec(
+                'ALTER TABLE `'. $table .'` CHANGE `type` `type` VARCHAR( 200 ) NULL DEFAULT NULL'
+            );
+
+            if ( !$Table->issetPrimaryKey( $table, 'id' ) ) {
                 $Table->setPrimaryKey( $table, 'id' );
             }
 

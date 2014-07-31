@@ -5,13 +5,23 @@
     margin-right: 10px;
 }
 
+.qui-xml-panel p {
+    width: 100%;
+}
+
 .qui-xml-panel label {
     cursor: pointer;
+}
+
+.qui-xml-panel label.checkbox-label {
+    width: 90%;
 }
 
 .qui-xml-panel .description {
     clear: both;
     float: left;
-    margin-top: 10px;
     font-style: italic;
+    margin: 10px 0 0 5px;
 }
+
+

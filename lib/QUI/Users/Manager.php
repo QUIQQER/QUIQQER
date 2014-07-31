@@ -281,7 +281,7 @@ class Manager
             );
         }
 
-        $username = \QUI\Utils\Security\Orthos::clearMySQL( $params['username'] );
+        $username = $params['username'];
         $password = $this->genHash( $params['password'] );
 
         // unerlaubte zeichen prüfen
@@ -354,9 +354,11 @@ class Manager
             $regparams['referal'] = $Session->get( 'ref' );
         }
 
-        $result = \QUI::getDB()->addData( self::Table(), $regparams );
+        \QUI::getDataBase()->insert( self::Table(), $regparams );
 
-        return $this->get( (int)$result );
+        $lastId = \QUI::getDataBase()->getPDO()->lastInsertId( 'id' );
+
+        return $this->get( (int)$lastId );
     }
 
     /**
@@ -366,7 +368,7 @@ class Manager
      */
     public function countAllUsers()
     {
-        $result = \QUI::getDB()->select(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'count' => 'count',
             'from' 	=> self::Table()
         ));
@@ -388,7 +390,7 @@ class Manager
     {
         if ( $objects == false )
         {
-            return \QUI::getDB()->select(array(
+            return \QUI::getDataBase()->fetch(array(
                 'from'  => self::Table(),
                 'order' => 'username'
             ));
@@ -401,9 +403,9 @@ class Manager
         {
             try
             {
-                $result[] = $this->get((int)$id['id']);
+                $result[] = $this->get( (int)$id['id'] );
 
-            } catch (\QUI\Exception $e)
+            } catch ( \QUI\Exception $Exception )
             {
                 // nothing
             }
@@ -419,7 +421,7 @@ class Manager
      */
     public function getAllUserIds()
     {
-        $result = \QUI::getDB()->select(array(
+        $result = \QUI::getDataBase()->fetch(array(
             'select' => 'id',
             'from'   => self::Table(),
             'order'  => 'username'
@@ -439,20 +441,21 @@ class Manager
         $params['select'] = 'id';
         $params['from']   = self::Table();
 
-        $result = \QUI::getDB()->select($params);
+        $result = \QUI::getDataBase()->fetch( $params );
 
-        if (!isset($result[0])) {
+        if ( !isset( $result[0] ) ) {
             return array();
         }
 
         $Users = array();
 
-        foreach ($result as $entry)
+        foreach ( $result as $entry )
         {
             try
             {
                 $Users[] = $this->get((int)$entry['id']);
-            } catch (\QUI\Exception $e)
+
+            } catch ( \QUI\Exception $Exception )
             {
                 // nothing
             }
@@ -1173,7 +1176,7 @@ class Manager
      */
     static function clearUsername($username)
     {
-        return preg_replace('/[^a-zA-Z0-9-_äöüß]/', '', $username);
+        return preg_replace('/[^a-zA-Z0-9-_äöüß@\.]/', '', $username);
     }
 
     /**
@@ -1185,7 +1188,11 @@ class Manager
      */
     static function checkUsernameSigns($username)
     {
-        if ($username != self::clearUsername($username))
+
+        \QUI\System\Log::writeRecursive( self::clearUsername( $username ) );
+        \QUI\System\Log::writeRecursive( $username );
+
+        if ( $username != self::clearUsername( $username ) )
         {
             throw new \QUI\Exception(
                 \QUI::getLocale()->get('system', 'exception.lib.user.illegal.signs')
