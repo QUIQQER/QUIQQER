@@ -328,7 +328,7 @@ class Manager
                 foreach ( $_gids as $gid )
                 {
                     if ( !empty( $gid ) && $gid != $rootid ) {
-                        $gids[] = $gid;
+                        $gids[] = (int)$gid;
                     }
                 }
 
@@ -336,7 +336,8 @@ class Manager
                 continue;
             }
 
-            $regparams[ $key ] = \QUI\Utils\Security\Orthos::clearMySQL( $params[ $key ] );
+            // $regparams[ $key ] = \QUI\Utils\Security\Orthos::clearMySQL( $params[ $key ] );
+            $regparams[ $key ] = $params[ $key ];
         }
 
         $Session = \QUI::getSession();
