@@ -12,10 +12,9 @@ namespace QUI;
  * @author www.pcsg.de (Moritz Scholz)
  * @author www.pcsg.de (Henning Leutz)
  *
- * @package com.pcsg.qui
  * @requires phpmailer/phpmailer
  *
- * @example $Mail = new QUI_Mail(array(
+ * @example $Mail = new \QUI\Mail(array(
         'MAILFrom'     => $MAILFrom,
         'MAILFromText' => $MAILFromText,
         'MAILReplyTo'  => $MAILReplyTo
@@ -87,7 +86,7 @@ class Mail
         );
 
         // Übergebene Config übernehmen
-        if ($config != false)
+        if ( $config != false )
         {
             if ( isset( $config['IsSMTP'] ) ) {
                 $this->_config['IsSMTP'] = $config['IsSMTP'];
@@ -267,7 +266,7 @@ class Mail
 
         if ( $IsHTML )
         {
-            $Html2Text = new \html2text( $Body );
+            $Html2Text = new \Html2Text\Html2Text( $Body );
 
             $this->_mail->AltBody = $Html2Text->get_text();
         }
@@ -280,6 +279,9 @@ class Mail
 
         \QUI::getErrorHandler()->setAttribute( 'ERROR_8192', true );
 
-        throw new \QUI\Exception( 'Mail Error: '. $this->_mail->ErrorInfo, 500 );
+        throw new \QUI\Exception(
+            'Mail Error: '. $this->_mail->ErrorInfo,
+            500
+        );
     }
 }
