@@ -340,6 +340,12 @@ class Manager
             $regparams[ $key ] = $params[ $key ];
         }
 
+        $useragent = '';
+
+        if ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
+            $useragent = $_SERVER['HTTP_USER_AGENT'];
+        }
+
         $Session = \QUI::getSession();
 
         $regparams['id']         = $this->_newId();
@@ -350,6 +356,7 @@ class Manager
         $regparams['activation'] = \QUI\Utils\Security\Orthos::getPassword(20);
         $regparams['regdate']    = time();
         $regparams['lastedit']   = date('Y-m-d H:i:s');
+        $regparams['user_agent'] = $useragent;
 
         if ( $Session->get( 'ref' ) ) {
             $regparams['referal'] = $Session->get( 'ref' );
