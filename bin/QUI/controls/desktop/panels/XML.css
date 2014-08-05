@@ -1,7 +1,6 @@
 
 .qui-xml-panel input {
     float: left;
-    line-height: 20px;
     margin-right: 10px;
 }
 
@@ -11,6 +10,7 @@
 
 .qui-xml-panel label {
     cursor: pointer;
+    margin-top: 5px;
 }
 
 .qui-xml-panel label.checkbox-label {
