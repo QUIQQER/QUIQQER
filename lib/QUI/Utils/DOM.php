@@ -1037,11 +1037,11 @@ class DOM
         $value = str_replace(
             array(
                 'URL_BIN_DIR', 'URL_OPT_DIR', 'URL_USR_DIR',
-                'BIN_DIR', 'OPT_DIR', 'URL_DIR', 'SYS_DIR', 'CMS_DIR'
+                'BIN_DIR', 'OPT_DIR', 'URL_DIR', 'SYS_DIR', 'CMS_DIR', 'USR_DIR'
             ),
             array(
                 URL_BIN_DIR, URL_OPT_DIR, URL_USR_DIR,
-                BIN_DIR, OPT_DIR, URL_DIR, SYS_DIR, CMS_DIR
+                BIN_DIR, OPT_DIR, URL_DIR, SYS_DIR, CMS_DIR, USR_DIR
             ),
             $value
         );

@@ -168,25 +168,29 @@ class XML
      */
     static function getConsoleToolsFromXml($file)
     {
-        $Dom     = self::getDomFromXml( $file );
-        $console = $Dom->getElementsByTagName( 'console' );
+        $Dom  = self::getDomFromXml( $file );
+        $Path = new \DOMXPath( $Dom );
 
-        if ( !$console->length ) {
-            return array();
-        }
-
-        $Console = $console->item( 0 );
-        $tools   = $Console->getElementsByTagName( 'tool' );
+        $tools = $Path->query( "//console/tool" );
+        $list  = array();
 
         if ( !$tools->length ) {
             return array();
         }
 
-        $list = array();
-
         for ( $i = 0; $i < $tools->length; $i++ )
         {
             $exec = $tools->item( $i )->getAttribute('exec');
+            $file = $tools->item( $i )->getAttribute('file');
+
+            if ( !empty( $file ) )
+            {
+                $file = \QUI\Utils\DOM::parseVar( $file );
+
+                if ( file_exists( $file ) ) {
+                    require_once $file;
+                }
+            }
 
             if ( !empty( $exec ) ) {
                 $list[] = $exec;
