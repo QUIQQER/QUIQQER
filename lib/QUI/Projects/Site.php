@@ -1337,7 +1337,7 @@ class Site extends \QUI\QDOM
         if ( \QUI::conf('system', 'geturl') )
         {
             $plugins = explode(',', \QUI::conf('system', 'geturl'));
-            $Plugins = \QUI::getPlugins();
+            $Plugins = \QUI::getPluginManager();
 
             foreach ( $plugins as $plugin )
             {
