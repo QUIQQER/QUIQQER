@@ -565,7 +565,13 @@ class Project
             return $this->_config['host'];
         }
 
-        return \QUI::conf( 'globals', 'host' );
+        $host = \QUI::conf( 'globals', 'host' );
+
+        if ( !empty( $host ) ) {
+            return $host;
+        }
+
+        return $_SERVER['HTTP_HOST'];
     }
 
     /**
