@@ -2003,8 +2003,8 @@ define('controls/grid/Grid', [
                     var Btn  = new QUIButton( _btn );
                     var node = Btn.create();
 
-                    node.removeClass( 'qui-button' );
-                    node.addClass( 'button' );
+                    //node.removeClass( 'button' );
+                    //node.addClass( 'button' );
                     node.addClass( 'btn-silver' );
 
                     _btn.data.quiid = Btn.getId();
@@ -2220,8 +2220,8 @@ define('controls/grid/Grid', [
                     node = bt[ bt[i].name ].create();
                     node.removeProperty('tabindex'); // focus eigenschaft nehmen
 
-                    node.removeClass( 'qui-button' );
-                    node.addClass( 'button' );
+                    //node.removeClass( 'qui-button' );
+                    //node.addClass( 'button' );
                     node.addClass( 'btn-silver' );
 
                     node.inject( tDiv );
