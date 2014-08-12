@@ -35,7 +35,7 @@ require.config({
     baseUrl : URL_BIN_DIR +'QUI/',
     paths : {
         "package" : URL_OPT_DIR +'bin/',
-        "qui"     : URL_OPT_DIR +'bin/qui/src',
+        "qui"     : URL_OPT_DIR +'bin/qui/qui',
         "locale"  : URL_VAR_DIR +'locale/bin'
     },
 
@@ -45,7 +45,7 @@ require.config({
 
     map : {
         '*': {
-            'css': URL_OPT_DIR +'bin/qui/src/lib/css.js'
+            'css': URL_OPT_DIR +'bin/qui/qui/lib/css.js'
         }
     }
 });
