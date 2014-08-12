@@ -45,7 +45,8 @@
         "quiqqer/utils" : "dev-master",
         "quiqqer/installer" : "dev-master",
         "quiqqer/cron" : "dev-master",
-        "quiqqer/log" : "dev-master"
+        "quiqqer/log" : "dev-master",
+        "google/apiclient": "1.0.*@dev"
     },
 
     "config": {

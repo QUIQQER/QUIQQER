@@ -50,6 +50,12 @@ class Mail
     private $_mail;
 
     /**
+     * Mail template
+     * @var \QUI\Mail\Template
+     */
+    public $Template;
+
+    /**
      * constructor
      * The E-Mail class uses the internal QUIQQER config settings
      *
@@ -127,6 +133,7 @@ class Mail
 
         // Mail Klasse laden und einstellungen übergeben
         $this->_mail = new \PHPMailer();
+        $this->Mail  = new \QUI\Mail\Template();
 
         if ( $this->_config['IsSMTP'] == true )
         {
@@ -153,7 +160,6 @@ class Mail
      * @example send(array(
      * 		'MailTo' 	=> 'cms@pcsg.de',
      * 		'Subject' 	=> 'CMS Newsletter',
-     * 		'Body' 		=> 'Newsletter Inhalt<br />',
      * 		'IsHTML' 	=> true,
      * 		'files' 	=> array('datei1', 'datei2', 'datei3')
      * ));

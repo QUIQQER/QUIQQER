@@ -17,7 +17,7 @@ require(['Ajax'], function(Ajax)
 
  */
 
-define('Ajax', [
+define([
 
     'qui/QUI',
     'qui/classes/request/Ajax',
