@@ -841,10 +841,11 @@ class User implements \QUI\Interfaces\Users\User
      * @see \QUI\Interfaces\Users\User::setPassword()
      *
      * @param String $new - new password
+     * @param \QUI\Users\User|false - $ParentUser
      */
-    public function setPassword($new)
+    public function setPassword($new, $ParentUser=false)
     {
-        $this->_checkRights();
+        $this->_checkRights( $ParentUser );
 
         if ( empty( $new ) )
         {
@@ -1075,9 +1076,9 @@ class User implements \QUI\Interfaces\Users\User
      * (non-PHPdoc)
      * @see \QUI\Interfaces\Users\User::save()
      */
-    public function save()
+    public function save($ParentUser=false)
     {
-        $this->_checkRights();
+        $this->_checkRights( $ParentUser );
 
         $expire   = '0000-00-00 00:00:00';
         $birthday = '0000-00-00';
@@ -1279,22 +1280,20 @@ class User implements \QUI\Interfaces\Users\User
      * @return true
      * @throws \QUI\Exceptions
      */
-    protected function _checkRights()
+    protected function _checkRights($ParentUser=false)
     {
-        $User = false;
+        $Users       = \QUI::getUsers();
+        $SessionUser = $Users->getUserBySession();
 
-        $Users = \QUI::getUsers();
-        $SUser = $Users->getUserBySession();
-
-        if ( $User && $User->getType() == 'QUI\\Users\\SystemUser' ) {
+        if ( $ParentUser && $ParentUser->getType() == 'QUI\\Users\\SystemUser' ) {
             return true;
         }
 
-        if ( $SUser->isSU() ) {
+        if ( $SessionUser->isSU() ) {
             return true;
         }
 
-        if ( $SUser->getId() == $this->getId() ) {
+        if ( $SessionUser->getId() == $SessionUser->getId() ) {
             return true;
         }
 
@@ -1361,7 +1360,6 @@ class User implements \QUI\Interfaces\Users\User
      */
     protected function _readAttributesFromUserXML($file)
     {
-
         $Dom  = \QUI\Utils\XML::getDomFromXml( $file );
         $Attr = $Dom->getElementsByTagName( 'attributes' );
 

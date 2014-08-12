@@ -53,8 +53,10 @@ interface User
 
     /**
      * Save all attributes of the user
+     *
+     * @param \QUI\Users\User|false $ParentUser
      */
-    public function save();
+    public function save($ParentUser=false);
 
     /**
      * Delete the user
@@ -173,8 +175,9 @@ interface User
      * Set the password of the user
      *
      * @param String $new - new password
+     * @param \QUI\Users\User|false $ParentUser
      */
-    public function setPassword($new);
+    public function setPassword($new, $ParentUser=false);
 
     /**
      * Checks the password if it's the user from

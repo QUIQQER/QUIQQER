@@ -840,6 +840,10 @@ class XML
 
         foreach ( $params as $section => $param )
         {
+            if ( !is_array( $param ) ) {
+                continue;
+            }
+
             foreach ( $param as $key => $value )
             {
                 if ( !isset( $defaults[ $section ] ) ) {

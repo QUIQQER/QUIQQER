@@ -101,7 +101,7 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
      * (non-PHPdoc)
      * @see \QUI\Interfaces\Users\User::save()
      */
-    public function save() {
+    public function save($ParentUser=false) {
         return false;
     }
 
@@ -353,8 +353,9 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
      * @see \QUI\Interfaces\Users\User::setPassword()
      *
      * @param String $new - new password
+     * @param \QUI\Users\User|false $ParentUser
      */
-    public function setPassword($new) {
+    public function setPassword($new, $ParentUser=false) {
         return false;
     }
 
