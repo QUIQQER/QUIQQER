@@ -27,7 +27,7 @@ namespace QUI;
          'IsHTML'  => true
     ));
 
- * @example QUI_Mail::init()->send(array(
+ * @example $Mail->send(array(
          'MailTo'  => $MailTo,
          'Subject' => $Subject,
          'Body'    => $Body,
@@ -277,6 +277,18 @@ class Mail
             $this->_mail->AltBody = $Html2Text->get_text();
         }
 
+        // with mail queue?
+        if ( \QUI::conf( 'mail', 'queue' ) )
+        {
+            $Queue = new \QUI\Mail\Queue();
+            $id    = $Queue->addToQueue( $this );
+
+            $Queue->sendById( $id );
+
+            return true;
+        }
+
+
         if ( $this->_mail->Send() )
         {
             \QUI::getErrorHandler()->setAttribute( 'ERROR_8192', true );
@@ -288,6 +300,45 @@ class Mail
         throw new \QUI\Exception(
             'Mail Error: '. $this->_mail->ErrorInfo,
             500
+        );
+    }
+
+    /**
+     * Return the internal PHPMailer object
+     * @return \PHPMailer
+     */
+    public function getPHPMailer()
+    {
+        return $this->_mail;
+    }
+
+    /**
+     * Mail params to array
+     *
+     * @return Array
+     */
+    public function toArray()
+    {
+        $IsHTML = true;
+
+        if ( $this->_mail->ContentType === 'text/plain' ) {
+            $IsHTML = false;
+        }
+
+        return array(
+            'subject'  => $this->_mail->Subject,
+            'body'     => $this->_mail->Body,
+            'text'     => $this->_mail->AltBody,
+            'from'     => $this->_mail->From,
+            'fromName' => $this->_mail->FromName,
+            'ishtml'   => $IsHTML ? 1 : 0,
+
+            'mailto'  => $this->_mail->getAllRecipientAddresses(),
+            'replyto' => $this->_mail->getReplyToAddresses(),
+            'cc'      => $this->_mail->getCcAddresses(),
+            'bcc'     => $this->_mail->getBccAddresses(),
+
+            'attachements' => $this->_mail->getAttachments()
         );
     }
 }
