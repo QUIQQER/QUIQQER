@@ -367,7 +367,6 @@ define('controls/projects/project/media/Panel', [
 
             this.Loader.show();
 
-
             // set loader image
             this.setOptions({
                 icon  : 'icon-spinner icon-spin',

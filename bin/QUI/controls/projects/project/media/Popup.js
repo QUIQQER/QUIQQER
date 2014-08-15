@@ -10,9 +10,10 @@ define('controls/projects/project/media/Popup', [
     'qui/controls/buttons/Button',
     'controls/projects/project/media/Panel',
     'Projects',
-    'Locale'
+    'Locale',
+    'Ajax'
 
-], function(QUIPopup, QUIButton, MediaPanel, Projects, Locale)
+], function(QUIPopup, QUIButton, MediaPanel, Projects, Locale, Ajax)
 {
     "use strict";
 
@@ -27,6 +28,7 @@ define('controls/projects/project/media/Popup', [
 
         options : {
             project         : false,
+            fileid          : false,
             closeButtonText : Locale.get('quiqqer/system', 'cancel'),
 
             selectable           : true,
@@ -78,32 +80,42 @@ define('controls/projects/project/media/Popup', [
                 })
             );
 
-            this.$Panel = new MediaPanel(Media, {
-                selectable           : true,
-                selectable_types     : this.getAttribute( 'selectable_types' ),
-                selectable_mimetypes : this.getAttribute( 'selectable_mimetypes' ),
-                events :
-                {
-                    onCreate : function() {
-                        self.Loader.hide();
-                    },
+            Ajax.get('ajax_media_file_getParentId', function(parentId)
+            {
+                self.$Panel = new MediaPanel(Media, {
+                    startid : parentId,
 
-                    onChildClick : function(Popup, imageData)
+                    selectable           : true,
+                    selectable_types     : self.getAttribute( 'selectable_types' ),
+                    selectable_mimetypes : self.getAttribute( 'selectable_mimetypes' ),
+
+                    events :
                     {
-                        if ( imageData.type == 'folder' )
+                        onCreate : function() {
+                            self.Loader.hide();
+                        },
+
+                        onChildClick : function(Popup, imageData)
                         {
-                            self.$Panel.openID( imageData.id );
-                            self.$folderData = imageData;
-                            return;
+                            if ( imageData.type == 'folder' )
+                            {
+                                self.$Panel.openID( imageData.id );
+                                self.$folderData = imageData;
+                                return;
+                            }
+
+                            self.close();
+                            self.fireEvent( 'submit', [ self, imageData ] );
                         }
-
-                        self.close();
-                        self.fireEvent( 'submit', [ self, imageData ] );
                     }
-                }
-            });
+                });
 
-            this.$Panel.inject( this.getContent() );
+                self.$Panel.inject( self.getContent() );
+
+            }, {
+                fileid  : this.getAttribute( 'fileid' ),
+                project : Project.getName()
+            });
         }
     });
 

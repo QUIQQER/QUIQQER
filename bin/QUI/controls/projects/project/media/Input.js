@@ -9,13 +9,14 @@ define('controls/projects/project/media/Input', [
 
     'qui/controls/Control',
     'qui/controls/buttons/Button',
+    'qui/utils/String',
     'controls/projects/project/media/Popup',
     'Ajax',
     'Locale',
 
     'css!controls/projects/project/media/Input.css'
 
-], function(QUIControl, QUIButton, MediaPopup, Ajax, Locale)
+], function(QUIControl, QUIButton, QUIStringUtils, MediaPopup, Ajax, Locale)
 {
     "use strict";
 
@@ -45,7 +46,8 @@ define('controls/projects/project/media/Input', [
         {
             this.parent( options );
 
-            this.$Input = Input || null;
+            this.$Input   = Input || null;
+            this.$Preview = null;
         },
 
         /**
@@ -77,8 +79,13 @@ define('controls/projects/project/media/Input', [
             }
 
             this.$Input.setStyles({
-                'float' : 'left'
+                display : 'none'
             });
+
+            // preview
+            this.$Preview = new Element('div', {
+                'class' : 'qui-controls-project-media-input-preview'
+            }).inject( this.$Elm );
 
             this.$MediaButton = new QUIButton({
                 icon   : 'icon-picture',
@@ -88,18 +95,31 @@ define('controls/projects/project/media/Input', [
                 {
                     onClick : function()
                     {
-                        var project = '';
+                        var value   = self.$Input.value,
+                            project = '',
+                            fileid  = false;
 
                         if ( self.$Input.get( 'data-project' ) ) {
                             project = self.$Input.get( 'data-project' );
                         }
 
+                        if ( value !== '' )
+                        {
+                            var urlParams = QUIStringUtils.getUrlParams( value );
+
+                            fileid  = urlParams.id;
+                            project = urlParams.project;
+                        }
+
                         new MediaPopup({
                             project : project,
+                            fileid  : fileid,
                             events :
                             {
-                                onSubmit : function(Popup, params) {
+                                onSubmit : function(Popup, params)
+                                {
                                     self.$Input.value = params.url;
+                                    self.$refreshPreview();
                                 }
                             }
                         }).open();
@@ -108,13 +128,15 @@ define('controls/projects/project/media/Input', [
             }).inject( this.$Elm );
 
             this.$ClearButton = new QUIButton({
-                icon : 'icon-remove',
+                icon   : 'icon-remove',
                 alt    : Locale.get('quiqqer/system', 'projects.project.site.media.input.clear.alt'),
                 title  : Locale.get('quiqqer/system', 'projects.project.site.media.input.clear.alt'),
                 events :
                 {
-                    onClick : function() {
+                    onClick : function()
+                    {
                         self.$Input.value = '';
+                        self.$refreshPreview();
                     }
                 }
             }).inject( this.$Elm );
@@ -126,7 +148,39 @@ define('controls/projects/project/media/Input', [
                 }
             });
 
+            this.$refreshPreview();
+
             return this.$Elm;
+        },
+
+        /**
+         * refresh the preview
+         */
+        $refreshPreview : function()
+        {
+            var value = this.$Input.value;
+
+            if ( value === '' )
+            {
+                this.$Preview.setStyle( 'background', null );
+                return;
+            }
+
+            var self = this;
+
+            Ajax.get('ajax_media_url_resized', function(result)
+            {
+                if ( !self.$Preview ) {
+                    return;
+                }
+
+                self.$Preview.setStyle( 'background', 'url('+ result +') no-repeat center center' );
+
+            }, {
+                fileurl   : value,
+                maxWidth  : 40,
+                maxHeight : 40
+            });
         }
     });
 
