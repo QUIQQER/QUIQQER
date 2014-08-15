@@ -33,6 +33,9 @@ namespace QUI;
          'Body'    => $Body,
          'IsHTML'  => true
     ));
+
+ *
+ * @deprecated
  */
 
 class Mail
@@ -133,7 +136,6 @@ class Mail
 
         // Mail Klasse laden und einstellungen übergeben
         $this->_mail = new \PHPMailer();
-        $this->Mail  = new \QUI\Mail\Template();
 
         if ( $this->_config['IsSMTP'] == true )
         {

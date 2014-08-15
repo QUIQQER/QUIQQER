@@ -40,8 +40,9 @@ require.config({
     },
 
     waitSeconds : 0,
-    locale : USER.lang +"-"+ USER.lang,
-    catchError : true,
+    locale      : USER.lang +"-"+ USER.lang,
+    catchError  : true,
+    urlArgs     : "d="+ QUIQQER_VERSION.replace(/\./g, '_'),
 
     map : {
         '*': {
@@ -89,6 +90,10 @@ require( requireList, function()
 
     Locale.setCurrent( USER.lang );
 
+    QUI.addEvent('onError', function( err, url, line ) {
+        console.error( err +' - '+ url +' - '+ line );
+    });
+
     // load the default workspace
     var doc_size  = document.body.getSize(),
         Container = document.getElement( '.qui-workspace-container' ),
@@ -116,6 +121,46 @@ require( requireList, function()
     MyWorkspace.appendChild( LeftColumn );
     MyWorkspace.appendChild( MiddleColumn );
     MyWorkspace.appendChild( RightColumn );
+
+    // workspace button
+    new Button({
+        icon   : 'icon-rocket',
+        title  : 'Arbeitsbereich festsetzen',
+        styles : {
+            'float'      : 'right',
+            'fontSize'   : 20,
+            'fontWeight' : 'normal',
+            'lineHeight' : 40
+        },
+        events    :
+        {
+            onClick : function(Btn)
+            {
+                if ( Btn.isActive() )
+                {
+                    Btn.setNormal();
+                } else
+                {
+                    Btn.setActive();
+                }
+            },
+
+            onActive : function(Btn)
+            {
+                MyWorkspace.unfix();
+                Btn.setAttribute( 'title' , 'Arbeitsbereich ist flexibel' );
+            },
+
+            onNormal : function(Btn)
+            {
+                MyWorkspace.fix();
+                Btn.setAttribute( 'title' , 'Arbeitsbereich ist festgesetzt' );
+            }
+        }
+    }).inject( document.getElement( '.qui-logo-container' ) )
+      .getElm()
+      .style.borderBottomLeftRadius = '40px';
+
 
     // projects panel
     LeftColumn.appendChild(

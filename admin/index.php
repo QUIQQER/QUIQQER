@@ -158,20 +158,15 @@
 
     <div id="wrapper">
         <div class="qui-logo-container grid-100 grid-parent">
-            <img src="<?php echo URL_BIN_DIR; ?>quiqqer_logo_mini.png" />
-
-            <p>
-                QUIQQER Managament System - www.quiqqer.com
-            </p>
+            <a href="/admin/">
+                <img src="<?php echo URL_BIN_DIR; ?>quiqqer_logo_mini.png"
+                    title="QUIQQER - Content Management System for Entrepreneurs"
+                />
+            </a>
         </div>
 
-        <div class="qui-menu-container grid-100 grid-parent">
-
-        </div>
-
-        <div class="qui-workspace-container grid-100 grid-parent">
-
-        </div>
+        <div class="qui-menu-container grid-100 grid-parent"></div>
+        <div class="qui-workspace-container grid-100 grid-parent"></div>
     </div>
 
     <noscript>

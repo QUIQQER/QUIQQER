@@ -7,7 +7,7 @@
 namespace QUI\Mail;
 
 /**
- *
+ * Mail queue
  * @author www.pcsg.de (Henning Leutz)
  */
 
@@ -56,7 +56,7 @@ class Queue
      * @param \QUI\Mail $Mail
      * @return Integer - Mailqueue-ID
      */
-    static function addToQueue(\QUI\Mail $Mail)
+    static function addToQueue(\QUI\Mail\Mailer $Mail)
     {
         $params = $Mail->toArray();
 
@@ -168,7 +168,7 @@ class Queue
      */
     protected function _sendMail($params)
     {
-        $PhpMailer = $this->_getMail();
+        $PhpMailer = \QUI::getMailManager()->getPHPMailer();
 
         $mailto  = json_decode( $params['mailto'], true );
         $replyto = json_decode( $params['replyto'], true );
@@ -178,7 +178,7 @@ class Queue
         $attachements = json_decode( $params['attachements'], true );
 
         // mailto
-        foreach ( $mailto as $address => $value ) {
+        foreach ( $mailto as $address ) {
             $PhpMailer->addAddress( $address );
         }
 
@@ -210,7 +210,7 @@ class Queue
         $PhpMailer->Body     = $params['body'];
 
 
-        if ( $PhpMailer->Send() ) {
+        if ( $PhpMailer->send() ) {
             return true;
         }
 
@@ -248,32 +248,5 @@ class Queue
         return \QUI::getDataBase()->fetch(array(
             'from' => self::Table()
         ));
-    }
-
-    /**
-     * Return the PHPMailer object
-     *
-     * @return \PHPMailer
-     */
-    protected function _getMail()
-    {
-        $config = \QUI::conf( 'mail' );
-        $Mail   = new \PHPMailer();
-
-        if ( $config['SMTP'] == true )
-        {
-            //$this->_mail->IsSMTP();
-            $Mail->Mailer   = 'smtp';
-            $Mail->Host     = $config['SMTPServer'];
-            $Mail->SMTPAuth = $config['SMTPAuth'];
-            $Mail->Username = $config['SMTPUser'];
-            $Mail->Password = $config['SMTPPass'];
-        }
-
-        $Mail->From     = $config['MAILFrom'];
-        $Mail->FromName = $config['MAILFromText'];
-        $Mail->CharSet  = 'UTF-8';
-
-        return $Mail;
     }
 }

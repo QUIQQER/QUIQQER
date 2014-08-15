@@ -19,13 +19,16 @@ class Template extends \QUI\QDOM
      *
      * @param Array $params
      */
-    public function __construc($params=array())
+    public function __construct($params=array())
     {
         $this->setAttributes(array(
+            'body'      => '',
             'Project'   => false,
-            'TplHeader' => LIB_DIR .'templates/mail/header.html',
-            'TplFooter' => LIB_DIR .'templates/mail/footer.html'
+            'TplHeader' => 'mails/header.html',
+            'TplFooter' => 'mails/footer.html'
         ));
+
+        $this->setAttributes( $params );
     }
 
     /**
@@ -33,9 +36,28 @@ class Template extends \QUI\QDOM
      *
      * @return String
      */
-    public function get()
+    public function getHTML()
     {
         $Engine = \QUI::getTemplateManager()->getEngine();
+        $Engine->assign( $this->getAttributes() );
+
+        $header = $Engine->fetch( $this->getHeaderTemplate() );
+        $footer = $Engine->fetch( $this->getFooterTemplate() );
+        $body   = $this->getAttribute( 'body' );
+
+        return $header . $body . $footer;
+    }
+
+    /**
+     * Return the complete mail as text, without html
+     *
+     * @return String
+     */
+    public function getText()
+    {
+        $Html2Text = new \Html2Text\Html2Text( $this->getHTML() );
+
+        return $Html2Text->get_text();
     }
 
     /**
@@ -55,7 +77,7 @@ class Template extends \QUI\QDOM
      */
     public function setBody($html)
     {
-
+        $this->setAttribute( 'body', $html );
     }
 
     /**
@@ -151,6 +173,4 @@ class Template extends \QUI\QDOM
 
         return $standardTpl;
     }
-
-
 }
