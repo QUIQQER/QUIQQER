@@ -1,3 +1,4 @@
+
 /**
  * The main loading script for the quiqqer administration
  *
@@ -101,8 +102,9 @@ require( requireList, function()
         Menu      = document.getElement( '.qui-menu-container' );
 
     Container.setStyles({
-        height : doc_size.y - Logo.getSize().y - Menu.getSize().y,
-        width  : doc_size.x - 10 // -10, wegen der scrollbar
+        overflow : 'hidden',
+        height   : doc_size.y - Logo.getSize().y - Menu.getSize().y,
+        width    : '100%'
     });
 
     var MyWorkspace = new Workspace().inject( Container );
@@ -121,6 +123,10 @@ require( requireList, function()
     MyWorkspace.appendChild( LeftColumn );
     MyWorkspace.appendChild( MiddleColumn );
     MyWorkspace.appendChild( RightColumn );
+    MyWorkspace.fix();
+
+    LeftColumn.setAttribute( 'width', 300 );
+    LeftColumn.resize();
 
     // workspace button
     new Button({
@@ -132,7 +138,7 @@ require( requireList, function()
             'fontWeight' : 'normal',
             'lineHeight' : 40
         },
-        events    :
+        events :
         {
             onClick : function(Btn)
             {
@@ -258,20 +264,19 @@ require( requireList, function()
         MyWorkspace.resize();
     }).delay( 100 );
 
+
+    var resizeWorkspaceDelay = null;
+
     window.addEvent('resize', function()
     {
         // load the default workspace
-        var doc_size  = document.body.getSize(),
-            Container = document.getElement( '.qui-workspace-container' ),
-            Logo      = document.getElement( '.qui-logo-container' ),
-            Menu      = document.getElement( '.qui-menu-container' );
+        var docSize = document.body.getSize();
 
         Container.setStyles({
-            height : doc_size.y - Logo.getSize().y - Menu.getSize().y,
-            width  : doc_size.x - 10 // -10, wegen der scrollbar
+            height : docSize.y - Logo.getSize().y - Menu.getSize().y
         });
 
-        (function() {
+        resizeWorkspaceDelay = (function() {
             MyWorkspace.resize();
         }).delay( 100 );
     });
@@ -292,11 +297,13 @@ require( requireList, function()
 
     ], function(UploadManager, MessagePanel, Help)
     {
-        new MessagePanel().inject( RightColumn );
-        new Help().inject( RightColumn );
+        new MessagePanel({
+            height : doc_size.y / 2
+        }).inject( RightColumn );
 
         UploadManager.inject( RightColumn );
-        UploadManager.toggle();
+
+        new Help().inject( RightColumn ).minimize();
 
         QUI.getMessageHandler(function(MessageHandler)
         {

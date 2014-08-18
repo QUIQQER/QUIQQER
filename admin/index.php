@@ -99,7 +99,7 @@
     /* <![CDATA[ */
         var USER = {
             isSU : <?php echo $User->isSU() ? 1 : 0; ?>,
-            id   : <?php echo $User->getId(); ?>,
+            id   : <?php echo $User->getId() ? $User->getId() : 0; ?>,
             lang : "<?php echo $User->getLang(); ?>"
         };
 
