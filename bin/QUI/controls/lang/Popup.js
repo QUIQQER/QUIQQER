@@ -13,7 +13,7 @@ define('controls/lang/Popup', [
     'Locale',
     'controls/grid/Grid',
 
-    'css!controls/lang/Popup'
+    'css!controls/lang/Popup.css'
 
 ], function(QUIConfirm, QUIButton, Locale, Grid)
 {
