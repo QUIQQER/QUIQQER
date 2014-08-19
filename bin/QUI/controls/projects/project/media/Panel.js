@@ -685,7 +685,7 @@ define('controls/projects/project/media/Panel', [
                         Form.setParam( 'extract', 1 );
                     } else
                     {
-                        Form.setParam( 'extract', 1 );
+                        Form.setParam( 'extract', 0 );
                     }
 
                     Form.inject( Parent );
