@@ -228,7 +228,7 @@ define('controls/projects/project/Panel', [
 
                 Projects.getList(function(result)
                 {
-                    if ( false && Object.getLength( result ) > 1 )
+                    if ( Object.getLength( result ) > 1 )
                     {
                         self.$Button.click();
                         return;
