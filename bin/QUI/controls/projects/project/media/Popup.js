@@ -53,7 +53,7 @@ define('controls/projects/project/media/Popup', [
         {
             this.Loader.show();
 
-            var Media, Project;
+            var Media, Project, Content;
 
             var self    = this,
                 project = this.getAttribute( 'project' );
@@ -64,6 +64,7 @@ define('controls/projects/project/media/Popup', [
 
             Project = Projects.get( project );
             Media   = Project.getMedia();
+            Content = this.getContent();
 
             this.addButton(
                 new QUIButton({
@@ -80,22 +81,30 @@ define('controls/projects/project/media/Popup', [
                 })
             );
 
+            Content.setStyles({
+                padding : 0
+            });
+
             Ajax.get('ajax_media_file_getParentId', function(parentId)
             {
                 self.$Panel = new MediaPanel(Media, {
                     startid : parentId,
 
+                    dragable             : false,
+                    collapsible          : false,
                     selectable           : true,
                     selectable_types     : self.getAttribute( 'selectable_types' ),
                     selectable_mimetypes : self.getAttribute( 'selectable_mimetypes' ),
 
                     events :
                     {
-                        onCreate : function() {
+                        onCreate : function(Panel)
+                        {
+                            Panel.getElm().setStyle( 'borderRadius', 0 );
                             self.Loader.hide();
                         },
 
-                        onChildClick : function(Popup, imageData)
+                        onChildClick : function(Panel, imageData)
                         {
                             if ( imageData.type == 'folder' )
                             {
@@ -110,7 +119,7 @@ define('controls/projects/project/media/Popup', [
                     }
                 });
 
-                self.$Panel.inject( self.getContent() );
+                self.$Panel.inject( Content );
 
             }, {
                 fileid  : this.getAttribute( 'fileid' ),
