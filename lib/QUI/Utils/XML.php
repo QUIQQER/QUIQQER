@@ -579,8 +579,8 @@ class XML
      * Return the site types from a xml file
      * https://dev.quiqqer.com/quiqqer/quiqqer/wikis/Site-Xml
      *
-     * @param unknown $file
-     * @return boolean|array
+     * @param String $file
+     * @return Array
      */
     static function getTypesFromXml($file)
     {
@@ -588,7 +588,7 @@ class XML
         $sites = $Dom->getElementsByTagName( 'site' );
 
         if ( !$sites->length ) {
-            return false;
+            return array();
         }
 
 
@@ -596,7 +596,7 @@ class XML
         $types = $Sites->getElementsByTagName( 'types' );
 
         if ( !$types->length ) {
-            return false;
+            return array();
         }
 
         $Types    = $types->item( 0 );

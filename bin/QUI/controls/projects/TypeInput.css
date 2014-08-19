@@ -1,0 +1,12 @@
+@CHARSET "UTF-8";
+
+.qui-projects-type-input {
+    float: left;
+    padding: 5px;
+    width: 100%;
+}
+
+.qui-projects-type-input-text {
+    float: left;
+    padding: 6px 10px;
+}

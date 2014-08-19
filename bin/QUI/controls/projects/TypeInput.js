@@ -16,7 +16,9 @@ define('controls/projects/TypeInput', [
     'qui/controls/Control',
     'controls/projects/TypeButton',
     'controls/projects/TypeWindow',
-    'Plugins'
+    'Plugins',
+
+    'css!controls/projects/TypeInput.css'
 
 ], function(QUIControl, TypeButton, TypeWindow, Plugins)
 {
@@ -71,7 +73,10 @@ define('controls/projects/TypeInput', [
 
             this.$Input.type = 'hidden';
 
-            this.$Elm = new Element( 'div' );
+            this.$Elm = new Element('div', {
+                'class' : 'qui-projects-type-input'
+            });
+
             this.$Elm.wraps( this.$Input );
 
             // create the type button
@@ -87,13 +92,7 @@ define('controls/projects/TypeInput', [
             }).inject( this.$Elm ) ;
 
 
-            this.$Text = new Element('div.types-text', {
-                styles : {
-                    margin  : '0 5px',
-                    'float' : 'left'
-                }
-            });
-
+            this.$Text = new Element('div.qui-projects-type-input-text');
             this.$Text.inject( this.$Elm );
 
             // load the user type name

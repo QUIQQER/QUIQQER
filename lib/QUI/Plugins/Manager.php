@@ -205,7 +205,10 @@ class Manager extends \QUI\QDOM
             {
                 $types[ $name ][] = array(
                     'type' => $name .':'. $Type->getAttribute('type'),
-                    'icon' => $Type->getAttribute('icon')
+                    'icon' => $Type->getAttribute('icon'),
+                    'text' => $this->getTypeName(
+                        $name .':'. $Type->getAttribute('type')
+                    )
                 );
             }
         }
@@ -446,6 +449,14 @@ class Manager extends \QUI\QDOM
         // \QUI\System\Log::write( $type );
         $data = $this->_getSiteXMLDataByType( $type );
 
+        if ( isset( $data['locale'] ) )
+        {
+            return \QUI::getLocale()->get(
+                $data['locale']['group'],
+                $data['locale']['var']
+            );
+        }
+
         if ( !isset( $data['value'] ) || empty( $data['value'] ) ) {
             return $type;
         }
@@ -497,7 +508,7 @@ class Manager extends \QUI\QDOM
         }
 
         if ( strpos( $type, ':' ) === false ) {
-            return '';
+            return false;
         }
 
         $explode = explode( ':', $type );
@@ -529,7 +540,19 @@ class Manager extends \QUI\QDOM
             $data['extend'] = $Type->getAttribute( 'extend' );
         }
 
+        $loc = $Type->getElementsByTagName( 'locale' );
+
+        if ( $loc->length )
+        {
+            $data['locale'] = array(
+                 'group' => $loc->item( 0 )->getAttribute( 'group' ),
+                 'var'   => $loc->item( 0 )->getAttribute( 'var' )
+            );
+        }
+
         $data['value'] = trim( $Type->nodeValue );
+
+        \QUI\Cache\Manager::set( $cache, $data );
 
         return $data;
     }

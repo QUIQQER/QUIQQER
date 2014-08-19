@@ -17,7 +17,7 @@ function ajax_project_types_get_list($project)
         $Project = \QUI\Projects\Manager::getProject( $project );
     }
 
-    return \QUI::getPlugins()->getAvailableTypes( $Project );
+    return \QUI::getPluginManager()->getAvailableTypes( $Project );
 }
 
 \QUI::$Ajax->register(
