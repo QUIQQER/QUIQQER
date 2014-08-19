@@ -218,11 +218,33 @@ define('controls/projects/project/Panel', [
         {
             var self = this;
 
+            this.Loader.show();
+
             // resize after insert
             (function()
             {
                 self.resize();
-                self.$Button.click();
+                self.Loader.show();
+
+                Projects.getList(function(result)
+                {
+                    if ( false && Object.getLength( result ) > 1 )
+                    {
+                        self.$Button.click();
+                        return;
+                    }
+
+                    for ( var key in result )
+                    {
+                        self.setAttribute( 'project', key );
+                        self.setAttribute( 'lang', result[ key ].default_lang );
+                        break;
+                    }
+
+                    self.openProject();
+                    self.Loader.hide();
+                });
+
             }).delay( 250 );
         },
 
