@@ -75,7 +75,6 @@ class Manager
             $old_config = $projects[ $project ];
         }
 
-
         // generate new config for the project
         foreach ( $config as $key => $value )
         {
@@ -118,6 +117,24 @@ class Manager
         // execute the project setup
         $Project = self::getProject( $project );
         $Project->setup();
+
+
+        // if this project should be the standard,
+        // all other projects are not
+        if ( !isset( $config['standard'] ) || $config['standard'] != 1 ) {
+            return;
+        }
+
+        $projects = $Config->toArray();
+
+        foreach ( $projects as $_project => $settings )
+        {
+            if ( $_project != $project ) {
+                $Config->setValue( $_project, 'standard', 0 );
+            }
+        }
+
+        $Config->save();
     }
 
     /**

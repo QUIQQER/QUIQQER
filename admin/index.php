@@ -42,7 +42,7 @@
     <!-- HTML5
         ================================================== -->
 
-    <title>QUIQQER Content Management System - <?php echo HOST ?></title>
+    <title>QUIQQER - Open Source Management System - <?php echo HOST ?></title>
 
     <link href="<?php echo URL_DIR; ?>favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
 
@@ -160,7 +160,7 @@
         <div class="qui-logo-container grid-100 grid-parent">
             <a href="/admin/">
                 <img src="<?php echo URL_BIN_DIR; ?>quiqqer_logo_mini.png"
-                    title="QUIQQER - Content Management System for Entrepreneurs"
+                    title="QUIQQER - Open Source Management System for Entrepreneurs"
                 />
             </a>
         </div>
