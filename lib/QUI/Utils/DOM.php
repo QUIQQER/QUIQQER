@@ -889,11 +889,24 @@ class DOM
             return '';
         }
 
-        $type = 'text';
+        $type  = 'text';
+        $class = '';
 
         if ( $Input->getAttribute( 'type' ) ) {
             $type = $Input->getAttribute( 'type' );
         }
+
+        switch ( $type )
+        {
+            case 'group':
+            case 'groups':
+            case 'user':
+            case 'users':
+                $class = ' class="'. $type .'"';
+                $type  = 'text';
+            break;
+        }
+
 
         $id = $Input->getAttribute( 'conf' ) .'-'. time();
 
@@ -902,13 +915,14 @@ class DOM
         $input   = '<input type="'. $type .'"
                            name="'. $Input->getAttribute( 'conf' ) .'"
                            id="'. $id .'"
+                           '. $class .'
                     />';
 
         if ( $type == 'checkbox' || $type == 'radio' )
         {
             if ( $text->length )
             {
-                $string .= '<label for="'. $id .'">'.
+                $string .= '<label for="'. $id .'" class="checkbox-label">'.
                     $input .
                     self::getTextFromNode( $text->item( 0 ) ) .
                 '</label>';
@@ -1023,11 +1037,11 @@ class DOM
         $value = str_replace(
             array(
                 'URL_BIN_DIR', 'URL_OPT_DIR', 'URL_USR_DIR',
-                'BIN_DIR', 'OPT_DIR', 'URL_DIR', 'SYS_DIR', 'CMS_DIR'
+                'BIN_DIR', 'OPT_DIR', 'URL_DIR', 'SYS_DIR', 'CMS_DIR', 'USR_DIR'
             ),
             array(
                 URL_BIN_DIR, URL_OPT_DIR, URL_USR_DIR,
-                BIN_DIR, OPT_DIR, URL_DIR, SYS_DIR, CMS_DIR
+                BIN_DIR, OPT_DIR, URL_DIR, SYS_DIR, CMS_DIR, USR_DIR
             ),
             $value
         );

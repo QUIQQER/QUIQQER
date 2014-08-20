@@ -22,9 +22,20 @@ define('controls/projects/project/Sitemap', [
     'Locale',
     'Clipboard'
 
-], function(QUIControl, QUISitemap, QUISitemapItem, QUIContextmenuItem, QUIContextmenuSeperator, Projects, Ajax, Clipboard)
+], function()
 {
     "use strict";
+
+    var QUIControl              = arguments[ 0 ],
+        QUISitemap              = arguments[ 1 ],
+        QUISitemapItem          = arguments[ 2 ],
+        QUIContextmenuItem      = arguments[ 3 ],
+        QUIContextmenuSeperator = arguments[ 4 ],
+
+        Projects  = arguments[ 5 ],
+        Ajax      = arguments[ 6 ],
+        Locale    = arguments[ 7 ],
+        Clipboard = arguments[ 8 ];
 
     /**
      * A project sitemap
@@ -185,7 +196,7 @@ define('controls/projects/project/Sitemap', [
                     {
                         self.$Map.appendChild(
                             new QUISitemapItem({
-                                text   : Locale.get(
+                                text : Locale.get(
                                     'quiqqer/system',
                                     'projects.project.sitemap.media'
                                 ),

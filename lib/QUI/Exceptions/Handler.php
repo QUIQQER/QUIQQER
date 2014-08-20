@@ -219,10 +219,9 @@ class Handler extends \QUI\QDOM
             defined('ERROR_MAIL') && ERROR_MAIL &&
             class_exists('Mail'))
         {
-            $Mail = new \QUI\Mail();
-            $Mail->send(array(
-                'MailTo'  => ERROR_MAIL,
-                'Subject' => \QUI::getLocale()->get(
+            \QUI::getMailManager()->send(
+                ERROR_MAIL,
+                \QUI::getLocale()->get(
                     'quiqqer/system',
                     'lib.qui.exceptions.handler.mail.subject',
                     array(
@@ -230,9 +229,8 @@ class Handler extends \QUI\QDOM
                         'url'  => $_SERVER['REQUEST_URI']
                     )
                 ),
-                'Body'   => $err_msg,
-                'IsHTML' => false
-            ));
+                $err_msg
+            );
         }
 
         error_log( $err_msg, 3, $log );

@@ -195,7 +195,7 @@ define('controls/projects/TypeSitemap', [
                         new QUISitemapItem({
                             name  : i,
                             value : data.type,
-                            text  : data.type.split(':')[1],
+                            text  : data.text || data.type.split(':')[1],
                             alt   : data.type,
                             icon  : icon
                         }).inject( Plugin );

@@ -93,6 +93,12 @@ class QUI
     static $Locale = null;
 
     /**
+     * QUI Mail Manager
+     * @var \QUI\Mail\Manager
+     */
+    static $MailManager = null;
+
+    /**
      * QUI Pluginmanager, use \QUI::getPlugins();
      * @var \QUI\Plugins\Manager
      */
@@ -475,7 +481,7 @@ class QUI
             return $package['version'];
         }
 
-        return '#unknown';
+        return '1';
     }
 
     /**
@@ -742,6 +748,19 @@ class QUI
         }
 
         return self::$Locale;
+    }
+
+    /**
+     * Return the mail manager
+     * @return \QUI\Mail\Manager
+     */
+    static function getMailManager()
+    {
+        if ( is_null( self::$MailManager ) ) {
+            self::$MailManager = new \QUI\Mail\Manager();
+        }
+
+        return self::$MailManager;
     }
 
     /**

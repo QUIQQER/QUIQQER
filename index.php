@@ -4,7 +4,7 @@
 // xdebug_start_trace();
 
 /**
- * @author www.namerobot.com (Henning Leutz)
+ * @author www.pcsg.com (Henning Leutz)
  */
 
 // Mailto

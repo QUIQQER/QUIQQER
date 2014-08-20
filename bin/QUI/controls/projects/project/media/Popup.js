@@ -10,9 +10,10 @@ define('controls/projects/project/media/Popup', [
     'qui/controls/buttons/Button',
     'controls/projects/project/media/Panel',
     'Projects',
-    'Locale'
+    'Locale',
+    'Ajax'
 
-], function(QUIPopup, QUIButton, MediaPanel, Projects, Locale)
+], function(QUIPopup, QUIButton, MediaPanel, Projects, Locale, Ajax)
 {
     "use strict";
 
@@ -27,6 +28,7 @@ define('controls/projects/project/media/Popup', [
 
         options : {
             project         : false,
+            fileid          : false,
             closeButtonText : Locale.get('quiqqer/system', 'cancel'),
 
             selectable           : true,
@@ -51,7 +53,7 @@ define('controls/projects/project/media/Popup', [
         {
             this.Loader.show();
 
-            var Media, Project;
+            var Media, Project, Content;
 
             var self    = this,
                 project = this.getAttribute( 'project' );
@@ -62,6 +64,7 @@ define('controls/projects/project/media/Popup', [
 
             Project = Projects.get( project );
             Media   = Project.getMedia();
+            Content = this.getContent();
 
             this.addButton(
                 new QUIButton({
@@ -78,32 +81,50 @@ define('controls/projects/project/media/Popup', [
                 })
             );
 
-            this.$Panel = new MediaPanel(Media, {
-                selectable           : true,
-                selectable_types     : this.getAttribute( 'selectable_types' ),
-                selectable_mimetypes : this.getAttribute( 'selectable_mimetypes' ),
-                events :
-                {
-                    onCreate : function() {
-                        self.Loader.hide();
-                    },
-
-                    onChildClick : function(Popup, imageData)
-                    {
-                        if ( imageData.type == 'folder' )
-                        {
-                            self.$Panel.openID( imageData.id );
-                            self.$folderData = imageData;
-                            return;
-                        }
-
-                        self.close();
-                        self.fireEvent( 'submit', [ self, imageData ] );
-                    }
-                }
+            Content.setStyles({
+                padding : 0
             });
 
-            this.$Panel.inject( this.getContent() );
+            Ajax.get('ajax_media_file_getParentId', function(parentId)
+            {
+                self.$Panel = new MediaPanel(Media, {
+                    startid : parentId,
+
+                    dragable             : false,
+                    collapsible          : false,
+                    selectable           : true,
+                    selectable_types     : self.getAttribute( 'selectable_types' ),
+                    selectable_mimetypes : self.getAttribute( 'selectable_mimetypes' ),
+
+                    events :
+                    {
+                        onCreate : function(Panel)
+                        {
+                            Panel.getElm().setStyle( 'borderRadius', 0 );
+                            self.Loader.hide();
+                        },
+
+                        onChildClick : function(Panel, imageData)
+                        {
+                            if ( imageData.type == 'folder' )
+                            {
+                                self.$Panel.openID( imageData.id );
+                                self.$folderData = imageData;
+                                return;
+                            }
+
+                            self.close();
+                            self.fireEvent( 'submit', [ self, imageData ] );
+                        }
+                    }
+                });
+
+                self.$Panel.inject( Content );
+
+            }, {
+                fileid  : this.getAttribute( 'fileid' ),
+                project : Project.getName()
+            });
         }
     });
 

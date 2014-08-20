@@ -18,7 +18,7 @@ if ( (int)$_SERVER['SERVER_PORT'] !== 443 && \QUI::conf( 'globals', 'httpshost' 
 $Users = \QUI::getUsers();
 $User  = $Users->getUserBySession();
 
-if ( strpos($_SERVER['SCRIPT_NAME'], 'admin.php') !== false &&
+if ( strpos( $_SERVER['SCRIPT_NAME'], 'index.php' ) !== false &&
      ($Users->isAuth($User) == false || $User->isAdmin() == false))
 {
     require_once 'login.php';

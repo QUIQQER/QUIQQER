@@ -62,6 +62,24 @@ foreach ( $_rf_files as $key => $file )
     }
 }
 
+// ajax project loader
+if ( isset( $_REQUEST['project'] ) )
+{
+    $projectDir = USR_DIR . $_REQUEST['project'];
+    $firstpart = 'project_'. $_REQUEST['project'] .'_';
+
+    foreach ( $_rf_files as $key => $file )
+    {
+        $file = str_replace( $firstpart, '', $file );
+        $file = $projectDir .'/lib/'. str_replace( '_', '/', $file ) .'.php';
+
+        if ( file_exists( $file ) ) {
+            require_once $file;
+        }
+    }
+}
+
+
 
 /**
  * Ajax Ausgabe

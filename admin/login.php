@@ -211,9 +211,9 @@
     </style>
 
     <script src="<?php echo URL_OPT_DIR; ?>bin/require.js"></script>
-    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/src/lib/mootools-core.js"></script>
-    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/src/lib/mootools-more.js"></script>
-    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/src/lib/moofx.js"></script>
+    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-core.js"></script>
+    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-more.js"></script>
+    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/moofx.js"></script>
 
     <script type="text/javascript">
 

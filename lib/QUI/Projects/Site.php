@@ -270,7 +270,11 @@ class Site extends \QUI\QDOM
         $Types = $XPath->query( '//type[@type="'. $type .'"]' );
 
         $Type   = $Types->item( 0 );
-        $extend = $Type->getAttribute( 'extend' );
+        $extend = false;
+
+        if ( $Type ) {
+            $extend = $Type->getAttribute( 'extend' );
+        }
 
         if ( $extend )
         {
@@ -282,34 +286,34 @@ class Site extends \QUI\QDOM
         return $this;
 
 
-        $Project = $this->getProject();
+//         $Project = $this->getProject();
 
-        if ( $plugin )
-        {
-            $Plugins = \QUI::getPlugins();
-            $Plugins->get( $plugin );
+//         if ( $plugin )
+//         {
+//             $Plugins = \QUI::getPlugins();
+//             $Plugins->get( $plugin );
 
-            $this->_loadPlugin( $Plugins->get( $plugin ) );
+//             $this->_loadPlugin( $Plugins->get( $plugin ) );
 
-            return $this;
-        }
+//             return $this;
+//         }
 
 
-        $this->_load_plugins();
+//         $this->_load_plugins();
 
-        $Plugins = $this->_getLoadedPlugins();
+//         $Plugins = $this->_getLoadedPlugins();
 
-        // first the database data
-        foreach ( $Plugins as $Plugin ) {
-            $this->_loadDatabases( $Plugin );
-        }
+//         // first the database data
+//         foreach ( $Plugins as $Plugin ) {
+//             $this->_loadDatabases( $Plugin );
+//         }
 
-        // then the plugin attributes
-        foreach ( $Plugins as $Plugin ) {
-            $this->_loadPlugin( $Plugin );
-        }
+//         // then the plugin attributes
+//         foreach ( $Plugins as $Plugin ) {
+//             $this->_loadPlugin( $Plugin );
+//         }
 
-        return $this;
+//         return $this;
     }
 
     /**
@@ -1333,7 +1337,7 @@ class Site extends \QUI\QDOM
         if ( \QUI::conf('system', 'geturl') )
         {
             $plugins = explode(',', \QUI::conf('system', 'geturl'));
-            $Plugins = \QUI::getPlugins();
+            $Plugins = \QUI::getPluginManager();
 
             foreach ( $plugins as $plugin )
             {

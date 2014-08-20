@@ -1,5 +1,6 @@
+
 /**
- * @depricated
+ * @todo -> irgendwann als package manager
  */
 
 define('classes/plugins/Manager', [
@@ -23,7 +24,8 @@ define('classes/plugins/Manager', [
         {
             this.parent( options );
 
-            this.$plugins = {};
+            this.$plugins    = {};
+            this.$typesNames = {};
         },
 
         /**
@@ -41,6 +43,7 @@ define('classes/plugins/Manager', [
 
             this.$plugins[ plugin ] = new Plugin( options );
         },
+
 
         get : function(plugin, onfinish)
         {
@@ -88,14 +91,23 @@ define('classes/plugins/Manager', [
          */
         getTypeName : function(type, onfinish, params)
         {
+            if ( typeof this.$typesNames[ type ] !== 'undefined' )
+            {
+                if ( typeof onfinish === 'function' ) {
+                    onfinish( this.$typesNames[ type ] );
+                }
+
+                return;
+            }
+
             params = ObjectUtils.combine(params, {
                 sitetype : type
             });
 
-            Ajax.get('ajax_project_types_get_title', function(result, Ajax)
+            Ajax.get('ajax_project_types_get_title', function(result)
             {
                 if ( typeof onfinish === 'function' ) {
-                    onfinish( result, Ajax );
+                    onfinish( result );
                 }
             }, params);
         },

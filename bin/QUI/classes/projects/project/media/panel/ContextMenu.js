@@ -8,9 +8,10 @@
 define('classes/projects/project/media/panel/ContextMenu', [
 
     'qui/controls/contextmenu/Item',
-    'qui/controls/contextmenu/Seperator'
+    'qui/controls/contextmenu/Seperator',
+    'qui/utils/Elements'
 
-], function(QUIContextmenuItem, QUIContextmenuSeperator)
+], function(QUIContextmenuItem, QUIContextmenuSeperator, QUIElementUtil)
 {
     "use strict";
 
@@ -67,6 +68,12 @@ define('classes/projects/project/media/panel/ContextMenu', [
             {
                 Menu = this.getFileMenu( Elm );
             }
+
+            // zIndex
+            Menu.getElm().setStyle(
+                'zIndex',
+                QUIElementUtil.getComputedZIndex( Elm ) + 1
+            );
 
             Menu.setPosition( event.page.x, event.page.y )
                 .setTitle( Elm.get('title') )

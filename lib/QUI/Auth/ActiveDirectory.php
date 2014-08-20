@@ -2,6 +2,8 @@
 
 /**
  * This file contains \QUI\Auth\ActiveDirectory
+ *
+ * @deprecated
  */
 
 namespace QUI\Auth;

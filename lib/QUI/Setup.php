@@ -35,6 +35,9 @@ class Setup
         \QUI\Utils\System\File::mkdir( OPT_DIR );
         \QUI\Utils\System\File::mkdir( VAR_DIR );
 
+        // mail queue setup
+        \QUI\Mail\Queue::setup();
+
         // Gruppen erstellen
         \QUI::getGroups()->setup();
 

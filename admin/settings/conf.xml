@@ -107,6 +107,9 @@
             </section>
 
             <section name="mail">
+                <conf name="queue">
+                    <type><![CDATA[bool]]></type>
+                </conf>
                 <conf name="admin_mail">
                     <type><![CDATA[string]]></type>
                 </conf>
@@ -345,6 +348,14 @@
                                 <locale group="quiqqer/system" var="quiqqer.settings.email.admin.desc" />
                             </description>
                         </input>
+                        <input conf="mail.queue" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.queue" />
+                            </text>
+                            <description>
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.queue.desc" />
+                            </description>
+                        </input>
                     </settings>
 
                     <settings title="smtp" name="smtp">
@@ -392,10 +403,10 @@
                         </input>
                         <input conf="mail.MAILFromText" type="text">
                             <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.MAILFrom" />
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.MAILFromText" />
                             </text>
                             <description>
-                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.MAILFrom.description" />
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.MAILFromText.description" />
                             </description>
                         </input>
                         <input conf="mail.MAILReplyTo" type="text">

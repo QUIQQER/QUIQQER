@@ -12,10 +12,9 @@ namespace QUI;
  * @author www.pcsg.de (Moritz Scholz)
  * @author www.pcsg.de (Henning Leutz)
  *
- * @package com.pcsg.qui
  * @requires phpmailer/phpmailer
  *
- * @example $Mail = new QUI_Mail(array(
+ * @example $Mail = new \QUI\Mail(array(
         'MAILFrom'     => $MAILFrom,
         'MAILFromText' => $MAILFromText,
         'MAILReplyTo'  => $MAILReplyTo
@@ -28,12 +27,15 @@ namespace QUI;
          'IsHTML'  => true
     ));
 
- * @example QUI_Mail::init()->send(array(
+ * @example $Mail->send(array(
          'MailTo'  => $MailTo,
          'Subject' => $Subject,
          'Body'    => $Body,
          'IsHTML'  => true
     ));
+
+ *
+ * @deprecated
  */
 
 class Mail
@@ -49,6 +51,12 @@ class Mail
      * @var \PHPMailer
      */
     private $_mail;
+
+    /**
+     * Mail template
+     * @var \QUI\Mail\Template
+     */
+    public $Template;
 
     /**
      * constructor
@@ -87,7 +95,7 @@ class Mail
         );
 
         // Übergebene Config übernehmen
-        if ($config != false)
+        if ( $config != false )
         {
             if ( isset( $config['IsSMTP'] ) ) {
                 $this->_config['IsSMTP'] = $config['IsSMTP'];
@@ -154,7 +162,6 @@ class Mail
      * @example send(array(
      * 		'MailTo' 	=> 'cms@pcsg.de',
      * 		'Subject' 	=> 'CMS Newsletter',
-     * 		'Body' 		=> 'Newsletter Inhalt<br />',
      * 		'IsHTML' 	=> true,
      * 		'files' 	=> array('datei1', 'datei2', 'datei3')
      * ));
@@ -267,10 +274,22 @@ class Mail
 
         if ( $IsHTML )
         {
-            $Html2Text = new \html2text( $Body );
+            $Html2Text = new \Html2Text\Html2Text( $Body );
 
             $this->_mail->AltBody = $Html2Text->get_text();
         }
+
+        // with mail queue?
+        if ( \QUI::conf( 'mail', 'queue' ) )
+        {
+            $Queue = new \QUI\Mail\Queue();
+            $id    = $Queue->addToQueue( $this );
+
+            $Queue->sendById( $id );
+
+            return true;
+        }
+
 
         if ( $this->_mail->Send() )
         {
@@ -280,6 +299,48 @@ class Mail
 
         \QUI::getErrorHandler()->setAttribute( 'ERROR_8192', true );
 
-        throw new \QUI\Exception( 'Mail Error: '. $this->_mail->ErrorInfo, 500 );
+        throw new \QUI\Exception(
+            'Mail Error: '. $this->_mail->ErrorInfo,
+            500
+        );
+    }
+
+    /**
+     * Return the internal PHPMailer object
+     * @return \PHPMailer
+     */
+    public function getPHPMailer()
+    {
+        return $this->_mail;
+    }
+
+    /**
+     * Mail params to array
+     *
+     * @return Array
+     */
+    public function toArray()
+    {
+        $IsHTML = true;
+
+        if ( $this->_mail->ContentType === 'text/plain' ) {
+            $IsHTML = false;
+        }
+
+        return array(
+            'subject'  => $this->_mail->Subject,
+            'body'     => $this->_mail->Body,
+            'text'     => $this->_mail->AltBody,
+            'from'     => $this->_mail->From,
+            'fromName' => $this->_mail->FromName,
+            'ishtml'   => $IsHTML ? 1 : 0,
+
+            'mailto'  => $this->_mail->getAllRecipientAddresses(),
+            'replyto' => $this->_mail->getReplyToAddresses(),
+            'cc'      => $this->_mail->getCcAddresses(),
+            'bcc'     => $this->_mail->getBccAddresses(),
+
+            'attachements' => $this->_mail->getAttachments()
+        );
     }
 }

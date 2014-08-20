@@ -1,17 +1,27 @@
 
 .qui-xml-panel input {
     float: left;
-    line-height: 20px;
     margin-right: 10px;
+}
+
+.qui-xml-panel p {
+    width: 100%;
 }
 
 .qui-xml-panel label {
     cursor: pointer;
+    margin-top: 5px;
+}
+
+.qui-xml-panel label.checkbox-label {
+    width: 90%;
 }
 
 .qui-xml-panel .description {
     clear: both;
     float: left;
-    margin-top: 10px;
     font-style: italic;
+    margin: 10px 0 0 5px;
 }
+
+

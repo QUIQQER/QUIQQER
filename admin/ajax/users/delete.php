@@ -25,6 +25,5 @@ function ajax_users_delete($uid)
 
     return true;
 }
-QUI::$Ajax->register('ajax_users_delete', array('uid'), 'Permission::checkSU');
 
-?>
+\QUI::$Ajax->register('ajax_users_delete', array('uid'), 'Permission::checkSU');

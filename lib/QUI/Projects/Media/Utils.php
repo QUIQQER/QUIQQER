@@ -200,7 +200,7 @@ class Utils
      * Return the media item
      *
      * @param String $url - image.php? url
-     * @return MediaFile || \QUI\Exception
+     * @return \QUI\Projects\Media\Item || \QUI\Exception
      */
     static function getImageByUrl($url)
     {
@@ -511,6 +511,29 @@ class Utils
         }
 
         if ( $Unknown->getType() === 'QUI\\Projects\\Media\\Folder' ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Is the variable a image object?
+     *
+     * @param unknown_type $Unknown
+     * @return Bool
+     */
+    static function isImage($Unknown)
+    {
+        if ( !is_object( $Unknown ) ) {
+            return false;
+        }
+
+        if ( !method_exists( $Unknown, 'getType' ) ) {
+            return false;
+        }
+
+        if ( $Unknown->getType() === 'QUI\\Projects\\Media\\Image' ) {
             return true;
         }
 

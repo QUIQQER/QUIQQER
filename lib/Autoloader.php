@@ -74,13 +74,22 @@ class Autoloader
 
             self::$ComposerLoader = new \Composer\Autoload\ClassLoader();
 
+            // include paths
+            if ( file_exists( OPT_DIR .'composer/include_paths.php' ) )
+            {
+                $includePaths = require OPT_DIR .'composer/include_paths.php';
+
+                array_push( $includePaths, get_include_path() );
+                set_include_path( join( PATH_SEPARATOR, $includePaths ) );
+            }
+
+            // namespaces
             $map      = require OPT_DIR .'composer/autoload_namespaces.php';
             $classMap = require OPT_DIR .'composer/autoload_classmap.php';
             $psr4     = require OPT_DIR .'composer/autoload_psr4.php';
 
             // add lib to the namespace
             self::$ComposerLoader->add( 'QUI', LIB_DIR );
-
 
             foreach ( $map as $namespace => $path ) {
                 self::$ComposerLoader->add( $namespace, $path );

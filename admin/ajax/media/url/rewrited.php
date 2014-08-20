@@ -1,3 +1,4 @@
+
 <?php
 
 /**
@@ -8,8 +9,7 @@
  */
 function ajax_media_url_rewrited($fileurl)
 {
-    if ( strpos( $fileurl, 'qui=1' ) === false ||
-         strpos( $fileurl, 'image.php' ) === false ) {
+    if ( \QUI\Projects\Media\Utils::isMediaUrl( $fileurl ) === false ) {
         return $fileurl;
     }
 
@@ -24,7 +24,7 @@ function ajax_media_url_rewrited($fileurl)
 
         return $url;
 
-    } catch ( \QUI\Exception $e )
+    } catch ( \QUI\Exception $Exception )
     {
 
     }
@@ -32,10 +32,8 @@ function ajax_media_url_rewrited($fileurl)
     return $fileurl;
 }
 
-QUI::$Ajax->register(
+\QUI::$Ajax->register(
     'ajax_media_url_rewrited',
     array( 'fileurl' ),
     'Permission::checkAdminUser'
 );
-
-?>

@@ -1,3 +1,4 @@
+
 /**
  * The main loading script for the quiqqer administration
  *
@@ -35,17 +36,18 @@ require.config({
     baseUrl : URL_BIN_DIR +'QUI/',
     paths : {
         "package" : URL_OPT_DIR +'bin/',
-        "qui"     : URL_OPT_DIR +'bin/qui/src',
+        "qui"     : URL_OPT_DIR +'bin/qui/qui',
         "locale"  : URL_VAR_DIR +'locale/bin'
     },
 
     waitSeconds : 0,
-    locale : USER.lang +"-"+ USER.lang,
-    catchError : true,
+    locale      : USER.lang +"-"+ USER.lang,
+    catchError  : true,
+    urlArgs     : "d="+ QUIQQER_VERSION.replace(/\./g, '_'),
 
     map : {
         '*': {
-            'css': URL_OPT_DIR +'bin/qui/src/lib/css.js'
+            'css': URL_OPT_DIR +'bin/qui/qui/lib/css.js'
         }
     }
 });
@@ -89,6 +91,10 @@ require( requireList, function()
 
     Locale.setCurrent( USER.lang );
 
+    QUI.addEvent('onError', function( err, url, line ) {
+        console.error( err +' - '+ url +' - '+ line );
+    });
+
     // load the default workspace
     var doc_size  = document.body.getSize(),
         Container = document.getElement( '.qui-workspace-container' ),
@@ -96,8 +102,9 @@ require( requireList, function()
         Menu      = document.getElement( '.qui-menu-container' );
 
     Container.setStyles({
-        height : doc_size.y - Logo.getSize().y - Menu.getSize().y,
-        width  : doc_size.x - 10 // -10, wegen der scrollbar
+        overflow : 'hidden',
+        height   : doc_size.y - Logo.getSize().y - Menu.getSize().y,
+        width    : '100%'
     });
 
     var MyWorkspace = new Workspace().inject( Container );
@@ -116,6 +123,50 @@ require( requireList, function()
     MyWorkspace.appendChild( LeftColumn );
     MyWorkspace.appendChild( MiddleColumn );
     MyWorkspace.appendChild( RightColumn );
+    MyWorkspace.fix();
+
+    LeftColumn.setAttribute( 'width', 300 );
+    LeftColumn.resize();
+
+    // workspace button
+    new Button({
+        icon   : 'icon-rocket',
+        title  : 'Arbeitsbereich festsetzen',
+        styles : {
+            'float'      : 'right',
+            'fontSize'   : 20,
+            'fontWeight' : 'normal',
+            'lineHeight' : 40
+        },
+        events :
+        {
+            onClick : function(Btn)
+            {
+                if ( Btn.isActive() )
+                {
+                    Btn.setNormal();
+                } else
+                {
+                    Btn.setActive();
+                }
+            },
+
+            onActive : function(Btn)
+            {
+                MyWorkspace.unfix();
+                Btn.setAttribute( 'title' , 'Arbeitsbereich ist flexibel' );
+            },
+
+            onNormal : function(Btn)
+            {
+                MyWorkspace.fix();
+                Btn.setAttribute( 'title' , 'Arbeitsbereich ist festgesetzt' );
+            }
+        }
+    }).inject( document.getElement( '.qui-logo-container' ) )
+      .getElm()
+      .style.borderBottomLeftRadius = '40px';
+
 
     // projects panel
     LeftColumn.appendChild(
@@ -213,20 +264,19 @@ require( requireList, function()
         MyWorkspace.resize();
     }).delay( 100 );
 
+
+    var resizeWorkspaceDelay = null;
+
     window.addEvent('resize', function()
     {
         // load the default workspace
-        var doc_size  = document.body.getSize(),
-            Container = document.getElement( '.qui-workspace-container' ),
-            Logo      = document.getElement( '.qui-logo-container' ),
-            Menu      = document.getElement( '.qui-menu-container' );
+        var docSize = document.body.getSize();
 
         Container.setStyles({
-            height : doc_size.y - Logo.getSize().y - Menu.getSize().y,
-            width  : doc_size.x - 10 // -10, wegen der scrollbar
+            height : docSize.y - Logo.getSize().y - Menu.getSize().y
         });
 
-        (function() {
+        resizeWorkspaceDelay = (function() {
             MyWorkspace.resize();
         }).delay( 100 );
     });
@@ -247,11 +297,13 @@ require( requireList, function()
 
     ], function(UploadManager, MessagePanel, Help)
     {
-        new MessagePanel().inject( RightColumn );
-        new Help().inject( RightColumn );
+        new MessagePanel({
+            height : doc_size.y / 2
+        }).inject( RightColumn );
 
         UploadManager.inject( RightColumn );
-        UploadManager.toggle();
+
+        new Help().inject( RightColumn ).minimize();
 
         QUI.getMessageHandler(function(MessageHandler)
         {

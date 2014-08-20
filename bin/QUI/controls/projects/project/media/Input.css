@@ -2,3 +2,13 @@
 .qui-controls-project-media-input {
 
 }
+
+.qui-controls-project-media-input-preview {
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    float: left;
+    height: 30px;
+    margin: 0 5px 0 0;
+    position: relative;
+    width: 30px;
+}

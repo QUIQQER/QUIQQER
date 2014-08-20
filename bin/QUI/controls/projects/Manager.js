@@ -265,6 +265,10 @@ define('controls/projects/Manager', [
                 Form.elements.template.value,
                 function(result)
                 {
+                    if ( !result ) {
+                        return;
+                    }
+
                     self.openList();
                     self.openProjectSettings( result );
                 }

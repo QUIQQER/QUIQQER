@@ -42,7 +42,7 @@
     <!-- HTML5
         ================================================== -->
 
-    <title>QUIQQER Content Management System - <?php echo HOST ?></title>
+    <title>QUIQQER - Open Source Management System - <?php echo HOST ?></title>
 
     <link href="<?php echo URL_DIR; ?>favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
 
@@ -99,7 +99,7 @@
     /* <![CDATA[ */
         var USER = {
             isSU : <?php echo $User->isSU() ? 1 : 0; ?>,
-            id   : <?php echo $User->getId(); ?>,
+            id   : <?php echo $User->getId() ? $User->getId() : 0; ?>,
             lang : "<?php echo $User->getLang(); ?>"
         };
 
@@ -158,20 +158,15 @@
 
     <div id="wrapper">
         <div class="qui-logo-container grid-100 grid-parent">
-            <img src="<?php echo URL_BIN_DIR; ?>quiqqer_logo_mini.png" />
-
-            <p>
-                QUIQQER Managament System - www.quiqqer.com
-            </p>
+            <a href="/admin/">
+                <img src="<?php echo URL_BIN_DIR; ?>quiqqer_logo_mini.png"
+                    title="QUIQQER - Open Source Management System for Entrepreneurs"
+                />
+            </a>
         </div>
 
-        <div class="qui-menu-container grid-100 grid-parent">
-
-        </div>
-
-        <div class="qui-workspace-container grid-100 grid-parent">
-
-        </div>
+        <div class="qui-menu-container grid-100 grid-parent"></div>
+        <div class="qui-workspace-container grid-100 grid-parent"></div>
     </div>
 
     <noscript>
@@ -183,11 +178,11 @@
     <script src="<?php echo URL_BIN_DIR; ?>QUI/polyfills/Promise.js"></script>
 
     <script src="<?php echo URL_OPT_DIR; ?>bin/require.js"></script>
-    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/src/lib/mootools-core.js"></script>
-    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/src/lib/mootools-more.js"></script>
-    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/src/lib/moofx.js"></script>
-    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/src/lib/ElementQuery.js"></script>
-    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/src/lib/ResizeSensor.js"></script>
+    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-core.js"></script>
+    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-more.js"></script>
+    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/moofx.js"></script>
+    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/ElementQuery.js"></script>
+    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/ResizeSensor.js"></script>
 
     <!-- load the quiqqer admin -->
     <script src="<?php echo URL_BIN_DIR; ?>QUI/init.js"></script>

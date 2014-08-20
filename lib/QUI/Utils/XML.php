@@ -168,25 +168,29 @@ class XML
      */
     static function getConsoleToolsFromXml($file)
     {
-        $Dom     = self::getDomFromXml( $file );
-        $console = $Dom->getElementsByTagName( 'console' );
+        $Dom  = self::getDomFromXml( $file );
+        $Path = new \DOMXPath( $Dom );
 
-        if ( !$console->length ) {
-            return array();
-        }
-
-        $Console = $console->item( 0 );
-        $tools   = $Console->getElementsByTagName( 'tool' );
+        $tools = $Path->query( "//console/tool" );
+        $list  = array();
 
         if ( !$tools->length ) {
             return array();
         }
 
-        $list = array();
-
         for ( $i = 0; $i < $tools->length; $i++ )
         {
             $exec = $tools->item( $i )->getAttribute('exec');
+            $file = $tools->item( $i )->getAttribute('file');
+
+            if ( !empty( $file ) )
+            {
+                $file = \QUI\Utils\DOM::parseVar( $file );
+
+                if ( file_exists( $file ) ) {
+                    require_once $file;
+                }
+            }
 
             if ( !empty( $exec ) ) {
                 $list[] = $exec;
@@ -575,8 +579,8 @@ class XML
      * Return the site types from a xml file
      * https://dev.quiqqer.com/quiqqer/quiqqer/wikis/Site-Xml
      *
-     * @param unknown $file
-     * @return boolean|array
+     * @param String $file
+     * @return Array
      */
     static function getTypesFromXml($file)
     {
@@ -584,7 +588,7 @@ class XML
         $sites = $Dom->getElementsByTagName( 'site' );
 
         if ( !$sites->length ) {
-            return false;
+            return array();
         }
 
 
@@ -592,7 +596,7 @@ class XML
         $types = $Sites->getElementsByTagName( 'types' );
 
         if ( !$types->length ) {
-            return false;
+            return array();
         }
 
         $Types    = $types->item( 0 );
@@ -840,6 +844,10 @@ class XML
 
         foreach ( $params as $section => $param )
         {
+            if ( !is_array( $param ) ) {
+                continue;
+            }
+
             foreach ( $param as $key => $value )
             {
                 if ( !isset( $defaults[ $section ] ) ) {

@@ -17,7 +17,7 @@ require(['Ajax'], function(Ajax)
 
  */
 
-define('Ajax', [
+define([
 
     'qui/QUI',
     'qui/classes/request/Ajax',
@@ -129,6 +129,13 @@ define('Ajax', [
          */
         get : function(call, callback, params)
         {
+            // chrome cache get request, so we must extend the request
+            if ( typeof params === 'undefined' ) {
+                params = {};
+            }
+
+            params.preventCache = String.uniqueID();
+
             return this.request( call, 'get', callback, params );
         },
 
@@ -155,14 +162,33 @@ define('Ajax', [
             );
         },
 
-
+        /**
+         *
+         */
         put : function(call, callback, params)
         {
+            // chrome cache get request, so we must extend the request
+            if ( typeof params === 'undefined' ) {
+                params = {};
+            }
+
+            params.preventCache = String.uniqueID();
+
             return this.request( call, 'put', callback, params );
         },
 
-        del : function()
+        /**
+         *
+         */
+        del : function(call, callback, params)
         {
+            // chrome cache get request, so we must extend the request
+            if ( typeof params === 'undefined' ) {
+                params = {};
+            }
+
+            params.preventCache = String.uniqueID();
+
             return this.request( call, 'delete', callback, params );
         }
     };
