@@ -34,6 +34,7 @@
         "robloach/component-installer" : "*",
         "phpmailer/phpmailer" : "dev-master",
         "symfony/http-foundation" : "*",
+        "html2text/html2text" : "*",
         "quiqqer/qui" : "*@dev",
         "quiqqer/qui-php" : "*@dev",
         "quiqqer/smarty": "3.*",
@@ -45,8 +46,7 @@
         "quiqqer/utils" : "*@dev",
         "quiqqer/installer" : "*@dev",
         "quiqqer/cron" : "*@dev",
-        "quiqqer/log" : "*@dev",
-        "google/apiclient": "1.0.*@dev"
+        "quiqqer/log" : "*@dev"
     },
 
     "config": {
