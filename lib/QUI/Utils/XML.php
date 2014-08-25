@@ -378,7 +378,8 @@ class XML
                 }
 
                 $params = array(
-                    'name' => $Locale->getAttribute( 'name' )
+                    'name' => $Locale->getAttribute( 'name' ),
+                    'html' => $Locale->getAttribute( 'html' ) ? true : false
                 );
 
                 $translations = $Locale->childNodes;
