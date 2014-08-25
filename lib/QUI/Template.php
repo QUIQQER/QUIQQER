@@ -358,13 +358,23 @@ class Template extends \QUI\QDOM
             $locales[] = $package .'/'. $Project->getLang();
         }
 
+
+        $headers      = $this->_header;
+        $headerExtend = '';
+
+        foreach ( $headers as $_str ) {
+            $headerExtend .= $_str;
+        }
+
+
         // assign
         $Engine->assign(array(
             'Project'         => $Project,
             'Site'            => $Site,
             'Engine'          => $Engine,
             'localeFiles'     => $locales,
-            'loadModuleFiles' => $this->_onLoadModules
+            'loadModuleFiles' => $this->_onLoadModules,
+            'headerExtend'    => $headerExtend
         ));
 
         return $Engine->fetch( LIB_DIR .'templates/header.html' );

@@ -190,7 +190,7 @@ require( requireList, function()
 
                     User.load(function()
                     {
-                        var data = User.getAttribute( 'qui-bookmarks' );
+                        var data = JSON.decode( User.getAttribute( 'qui-bookmarks' ) );
 
                         if ( !data )
                         {
@@ -212,7 +212,7 @@ require( requireList, function()
                 {
                     var User = Users.get( USER.id );
 
-                    User.setAttribute( 'qui-bookmarks', Panel.serialize() );
+                    User.setAttribute( 'qui-bookmarks', JSON.encode( Panel.serialize() ) );
 
                     User.save(function() {
                         Panel.Loader.hide();
@@ -228,7 +228,7 @@ require( requireList, function()
                 {
                     var User = Users.get( USER.id );
 
-                    User.setExtra( 'qui-bookmarks', Panel.serialize() );
+                    User.setExtra( 'qui-bookmarks', JSON.encode( Panel.serialize() ) );
 
                     User.save(function() {
                         Panel.Loader.hide();

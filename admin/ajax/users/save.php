@@ -24,7 +24,6 @@ function ajax_users_save($uid, $attributes, $rights)
     }
     */
 
-
     foreach ( $attributes as $key => $value ) {
         $User->setAttribute( $key, $value );
     }
