@@ -68,7 +68,7 @@ var requireList = [
    'qui/controls/desktop/Panel',
    'qui/controls/desktop/Tasks',
    'qui/controls/buttons/Button',
-   'qui/controls/bookmarks/Panel',
+   'controls/desktop/panels/Bookmarks',
    'controls/projects/project/Panel'
 ].append( QUIQQER_LOCALE || [] );
 
