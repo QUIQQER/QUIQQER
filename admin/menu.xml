@@ -9,8 +9,8 @@
     <item parent="/" name="settings">
         <locale group="quiqqer/system" var="menu.settings.text" />
     </item>
-    <item parent="/" name="profil">
-        <locale group="quiqqer/system" var="menu.profil.text" />
+    <item parent="/" name="profile">
+        <locale group="quiqqer/system" var="menu.profile.text" />
     </item>
     <item parent="/" name="help">
         <locale group="quiqqer/system" var="menu.help.text" />
@@ -219,6 +219,15 @@
               var="menu.help.changelog.text"
         >
             <locale group="quiqqer/system" var="menu.help.changelog.text" />
+        </item>
+
+    <!-- profile -->
+        <item parent="/profile/"
+              name="workspaces"
+              icon="icon-laptop"
+              require="controls/help/Changelog"
+        >
+            <locale group="quiqqer/system" var="menu.profile.workspace.text" />
         </item>
 
 </menu>

@@ -33,22 +33,21 @@ define([
         $url        : typeof URL_DIR === 'undefined' ? '' : URL_DIR +'admin/ajax.php',
 
         /**
-         * Send a Request
+         * Send a Request async
          *
          * @method Ajax#request
          *
-         * @param {String} call            - PHP function
-         * @param {String} method         - Send Method -> post or get
-         * @param {Function} callback     - Callback function if the request is finish
-         * @param {Object} params         - PHP parameter (optional)
+         * @param {String} call       - PHP function
+         * @param {String} method     - Send Method -> post or get
+         * @param {Function} callback - Callback function if the request is finish
+         * @param {Object} params     - PHP parameter (optional)
          *
          * @return {Ajax}
          */
         request : function(call, method, callback, params)
         {
          // if sync, the browser freeze
-            var async = false,
-                id    = String.uniqueID();
+            var id = String.uniqueID();
 
             method   = method || 'post'; // is post, put, get or delete
             callback = callback || function() {};
@@ -63,6 +62,7 @@ define([
                     callback : callback,
                     method   : method,
                     url      : this.$url,
+                    async    : true,
                     events   :
                     {
                         onSuccess : callback,
@@ -93,9 +93,63 @@ define([
 
             this.$onprogress[ id ].send( params );
 
-            if ( async ) {
-                return this.$onprogress[ id ].getResult();
-            }
+            return this.$onprogress[ id ].getResult();
+        },
+
+        /**
+         * Send a Request sync
+         *
+         * @method Ajax#syncRequest
+         *
+         * @param {String} call        - PHP function
+         * @param {String} method      - Send Method -> post or get
+         * @param {Object} params      - PHP parameter (optional)
+         *
+         * @return {Ajax}
+         */
+        syncRequest : function(call, method, params)
+        {
+            var id = String.uniqueID();
+
+            method   = method || 'post'; // is post, put, get or delete
+
+            params = Utils.combine(params, {
+                _rf : call
+            });
+
+            this.$onprogress[ id ] = new QUIAjax(
+                // combine all params, so, they are available in the Request Object
+                Utils.combine(params, {
+                    method   : method,
+                    url      : this.$url,
+                    async    : false,
+                    events   :
+                    {
+                        onCancel : function(Request)
+                        {
+                            if ( Request.getAttribute( 'onCancel' ) ) {
+                                return Request.getAttribute( 'onCancel' )( Request );
+                            }
+                        },
+
+                        onError : function(Exception, Request)
+                        {
+                            QUI.getMessageHandler(function(MessageHandler) {
+                                MessageHandler.addException( Exception );
+                            });
+
+
+                            if ( Request.getAttribute( 'onError' ) ) {
+                                return Request.getAttribute( 'onError' )( Exception, Request );
+                            }
+
+                            QUI.triggerError( Exception, Request );
+                        }
+                    }
+                })
+            );
+
+            this.$onprogress[ id ].send( params );
 
             return this.$onprogress[ id ];
         },

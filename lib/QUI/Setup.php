@@ -53,6 +53,9 @@ class Setup
         // Events Setup
         \QUI\Events\Manager::setup();
 
+        // workspaces
+        \QUI\Workspace\Manager::setup();
+
         // Upload Manager
         $UploadManager = new \QUI\Upload\Manager();
         $UploadManager->setup();
