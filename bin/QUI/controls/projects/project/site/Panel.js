@@ -85,18 +85,23 @@ define([
 
         initialize : function(Site, options)
         {
-            var Project = Site.getProject(),
+            this.$Site = null;
 
-                id = 'panel-'+
-                     Project.getName() +'-'+
-                     Project.getLang() +'-'+
-                     Site.getId();
+            if ( typeOf( Site ) === 'classes/projects/project/Site' )
+            {
+                var Project = Site.getProject(),
 
-            // default id
-            this.setAttribute( 'id', id );
-            this.setAttribute( 'name', id );
+                    id = 'panel-'+
+                         Project.getName() +'-'+
+                         Project.getLang() +'-'+
+                         Site.getId();
 
-            this.$Site = Site;
+                // default id
+                this.setAttribute( 'id', id );
+                this.setAttribute( 'name', id );
+
+                this.$Site = Site;
+            }
 
             this.parent( options );
 

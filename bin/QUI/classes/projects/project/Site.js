@@ -1,13 +1,12 @@
 /**
  * A project Site Object
  *
+ * @module classes/projects/project/Site
  * @author www.pcsg.de (Henning Leutz)
  *
  * @requires controls/Control
  * @requires controls/contextmenu/Menu
  * @requires controls/contextmenu/Item
- *
- * @module classes/projects/project/Site
  *
  * @event onLoad [ this ]
  * @event onGetChildren [ this, {Array} ]
@@ -17,7 +16,7 @@
  * @event createChild [ this ]
  */
 
-define('classes/projects/project/Site', [
+define([
 
     'qui/QUI',
     'qui/classes/DOM',
