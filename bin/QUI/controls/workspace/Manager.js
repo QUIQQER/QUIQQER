@@ -16,7 +16,9 @@ define([
     'qui/controls/desktop/Column',
     'qui/controls/desktop/Panel',
     'qui/controls/desktop/Tasks',
+    'qui/controls/windows/Popup',
     'qui/controls/messages/Panel',
+
     'controls/welcome/Panel',
     'controls/desktop/panels/Help',
     'controls/desktop/panels/Bookmarks',
@@ -30,20 +32,22 @@ define([
 {
     "use strict";
 
-    var QUI           = arguments[ 0 ],
-        QUIControl    = arguments[ 1 ],
-        QUILoader     = arguments[ 2 ],
-        QUIWorkspace  = arguments[ 3 ],
-        QUIColumn     = arguments[ 4 ],
-        QUIPanel      = arguments[ 5 ],
-        QUITasks      = arguments[ 6 ],
-        MessagePanel  = arguments[ 7 ],
-        WelcomePanel  = arguments[ 8 ],
-        HelpPanel     = arguments[ 9 ],
-        BookmarkPanel = arguments[ 10 ],
-        ProjectPanel  = arguments[ 11 ],
-        Ajax          = arguments[ 12 ],
-        UploadManager = arguments[ 13 ];
+    var QUI             = arguments[ 0 ],
+        QUIControl      = arguments[ 1 ],
+        QUILoader       = arguments[ 2 ],
+        QUIWorkspace    = arguments[ 3 ],
+        QUIColumn       = arguments[ 4 ],
+        QUIPanel        = arguments[ 5 ],
+        QUITasks        = arguments[ 6 ],
+        QUIWindow       = arguments[ 7 ],
+        QUIMessagePanel = arguments[ 8 ],
+
+        WelcomePanel  = arguments[ 9 ],
+        HelpPanel     = arguments[ 10 ],
+        BookmarkPanel = arguments[ 11 ],
+        ProjectPanel  = arguments[ 12 ],
+        Ajax          = arguments[ 13 ],
+        UploadManager = arguments[ 14 ];
 
 
     return new Class({
@@ -58,7 +62,8 @@ define([
         ],
 
         options : {
-            autoResize : true
+            autoResize  : true,
+            workspaceId : false
         },
 
         initialize : function(options)
@@ -164,32 +169,187 @@ define([
             {
                 if ( !list || !list.length )
                 {
-                    var size = self.$Elm.getSize();
+                    // create default workspaces
+                    var colums2, colums3;
 
-                    if ( size.x < 1300 )
-                    {
-                        self.$loadDefault2Column();
-                    } else
-                    {
-                        self.$loadDefault3Column();
-                    }
+                    var Workspace = new QUIWorkspace(),
+                        Parent    = self.$Elm.clone();
 
-                    self.resize();
-                    self.Loader.hide();
+                    Workspace.inject( Parent );
+
+                    // 2 columns
+                    self.$loadDefault2Column( Workspace );
+
+                    colums2 = {
+                        title     : '2 Spalten',
+                        data      : JSON.encode( Workspace.serialize() ),
+                        minHeight : self.$minHeight,
+                        minWidth  : self.$minWidth
+                    };
+
+                    // 3 columns
+                    Workspace.clear();
+
+                    self.$loadDefault3Column( Workspace );
+
+                    colums3 = {
+                        title     : '3 Spalten',
+                        data      : JSON.encode( Workspace.serialize() ),
+                        minHeight : self.$minHeight,
+                        minWidth  : self.$minWidth
+                    };
+
+                    // add workspaces
+                    self.add( colums2, function()
+                    {
+                        self.add( colums3, function()
+                        {
+                            self.load();
+                        });
+                    });
+
                     return;
                 }
 
-                for ( var i = 0, len = list.length; i < len; i++ ) {
+                var Standard = false;
+
+                for ( var i = 0, len = list.length; i < len; i++ )
+                {
                     self.$spaces[ list[ i ].id ] = list[ i ];
+
+                    if ( list[ i ].standard &&
+                         ( list[ i ].standard ).toInt() === 1 )
+                    {
+                        Standard = list[ i ];
+                    }
                 }
 
+                // ask which workspace
+                if ( !Standard )
+                {
+                    self.$openWorkspaceListWindow();
+                    return;
+                }
 
-
-                console.log( list );
-
-                self.resize();
-                self.Loader.hide();
+                // load standard workspace
+                self.$loadWorkspace( Standard.id );
             });
+        },
+
+        /**
+         * Load a workspace
+         *
+         * @param {Integer} id
+         */
+        $loadWorkspace : function(id)
+        {
+            this.Loader.show();
+
+            if ( !id || id === '' )
+            {
+                this.$useBestWorkspace();
+                return;
+            }
+
+            if ( typeof this.$spaces[ id ] === 'undefined' )
+            {
+                QUI.getMessageHandler(function(MH) {
+                    MH.addError( 'Workspace not found' );
+                });
+
+                return;
+            }
+
+            this.Workspace.clear();
+            this.Workspace.unserialize(
+                JSON.decode( this.$spaces[ id ].data )
+            );
+
+            this.Workspace.fix();
+            this.Workspace.resize();
+
+            this.setAttribute( 'workspaceId', id );
+
+            this.Loader.hide();
+        },
+
+        /**
+         * Opens a window with the workspace list
+         * the user can choose the standard workspace
+         */
+        $openWorkspaceListWindow : function()
+        {
+            var self = this;
+
+            new QUIWindow({
+                title     : 'Standard Arbeitsbereich wählen',
+                maxHeight : 200,
+                maxWidth  : 500,
+                autoclose : false,
+                buttons   : false,
+                events    :
+                {
+                    onOpen : function(Win)
+                    {
+                        var Body = Win.getContent().set(
+                                'html',
+
+                                '<p>Bitte wählen Sie einen Arbeitsbereich aus welchen Sie nutzen möchten</p>' +
+                                '<select></select>'
+                            ),
+
+                            Select = Body.getElement( 'select' );
+
+                        Select.setStyles({
+                            display : 'block',
+                            margin  : '10px auto',
+                            width   : 200
+                        });
+
+                        Select.addEvents({
+                            change : function()
+                            {
+                                var value = this.value;
+
+                                Win.Loader.show();
+
+                                Ajax.post('ajax_desktop_workspace_setStandard', function()
+                                {
+                                    self.$loadWorkspace( value );
+                                    Win.close();
+                                }, {
+                                    id : value
+                                });
+                            }
+                        });
+
+                        new Element('option', {
+                            html  : '',
+                            value : ''
+                        }).inject( Select );
+
+                        for ( var i in self.$spaces )
+                        {
+                            new Element('option', {
+                                html  : self.$spaces[ i ].title,
+                                value : self.$spaces[ i ].id
+                            }).inject( Select );
+                        }
+                    },
+
+                    onCancel : function() {
+                        self.$useBestWorkspace();
+                    }
+                }
+            }).open();
+        },
+
+        /**
+         * Search the best workspace that fits in space
+         */
+        $useBestWorkspace : function()
+        {
+
         },
 
         /**
@@ -198,7 +358,32 @@ define([
         save : function()
         {
             Ajax.syncRequest('ajax_desktop_workspace_save', 'post', {
-                data : JSON.encode( this.Workspace.serialize() )
+                data : JSON.encode( this.Workspace.serialize() ),
+                id   : this.getAttribute( 'workspaceId' )
+            });
+        },
+
+        /**
+         * Add an Workspace
+         *
+         * @param {Object} data - workspace data {
+         * 		title
+         * 		data
+         * 		minWidth
+         * 		minHeight
+         * }
+         * @param {Function} callback - callback function
+         */
+        add : function(data, callback)
+        {
+            Ajax.post('ajax_desktop_workspace_add', function(result)
+            {
+                if ( typeof callback !== 'undefined' ) {
+                    callback();
+                }
+
+            }, {
+                data : JSON.encode( data )
             });
         },
 
@@ -220,8 +405,10 @@ define([
 
         /**
          * load the default 3 column workspace
+         *
+         * @param {qui/controls/desktop/Workspace} Workspace
          */
-        $loadDefault3Column : function()
+        $loadDefault3Column : function(Workspace)
         {
             this.$minWidth  = 1000;
             this.$minHeight = 500;
@@ -246,9 +433,9 @@ define([
                 });
 
 
-            this.Workspace.appendChild( LeftColumn );
-            this.Workspace.appendChild( MiddleColumn );
-            this.Workspace.appendChild( RightColumn );
+            Workspace.appendChild( LeftColumn );
+            Workspace.appendChild( MiddleColumn );
+            Workspace.appendChild( RightColumn );
 
             // panels
             panels.Bookmarks.setAttribute( 'height', 400 );
@@ -268,13 +455,15 @@ define([
 
             panels.Help.minimize();
 
-            this.Workspace.fix();
+            Workspace.fix();
         },
 
         /**
          * loads the default 2 column workspace
+         *
+         * @param {qui/controls/desktop/Workspace} Workspace
          */
-        $loadDefault2Column : function()
+        $loadDefault2Column : function(Workspace)
         {
             this.$minWidth  = 800;
             this.$minHeight = 500;
@@ -293,8 +482,8 @@ define([
                 });
 
 
-            this.Workspace.appendChild( LeftColumn );
-            this.Workspace.appendChild( MiddleColumn );
+            Workspace.appendChild( LeftColumn );
+            Workspace.appendChild( MiddleColumn );
 
             panels.Bookmarks.setAttribute( 'height', 300 );
             panels.Messages.setAttribute( 'height', 100 );
@@ -311,7 +500,7 @@ define([
 
             panels.Help.minimize();
 
-            this.Workspace.fix();
+            Workspace.fix();
         },
 
         /**
@@ -400,7 +589,7 @@ define([
                 Projects  : new ProjectPanel(),
                 Bookmarks : Bookmarks,
                 Tasks     : Tasks,
-                Messages  : new MessagePanel(),
+                Messages  : new QUIMessagePanel(),
                 Uploads   : UploadManager,
                 Help      : new HelpPanel()
             };

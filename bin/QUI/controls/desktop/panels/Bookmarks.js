@@ -1,11 +1,10 @@
 
 /**
- *
+ * QUIQQER Bookmars
  *
  * @author www.pcsg.de (Henning Leutz)
  * @module controls/desktop/panels/Bookmarks
  */
-
 
 define(['qui/controls/bookmarks/Panel'], function(QUIBooksmarks)
 {
@@ -14,7 +13,7 @@ define(['qui/controls/bookmarks/Panel'], function(QUIBooksmarks)
     return new Class({
 
         Extends : QUIBooksmarks,
-        Type    : 'qui/controls/panels/Bookmarks',
+        Type    : 'controls/desktop/panels/Bookmarks',
 
         /**
          * overwrite appendChild, because we must use some special click events

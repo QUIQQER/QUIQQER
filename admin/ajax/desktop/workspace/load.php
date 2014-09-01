@@ -7,9 +7,11 @@
  */
 function ajax_desktop_workspace_load()
 {
-    return \QUI\Workspace\Manager::getListByUser(
+    $list = \QUI\Workspace\Manager::getWorkspacesByUser(
         \QUI::getUserBySession()
     );
+
+    return $list;
 }
 
 \QUI::$Ajax->register(

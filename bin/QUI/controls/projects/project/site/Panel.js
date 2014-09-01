@@ -1,6 +1,7 @@
 /**
  * Displays a Site in a Panel
  *
+ * @module controls/projects/project/site/Panel
  * @author www.pcsg.de (Henning Leutz)
  *
  * @requires qui/controls/desktop/Panel
@@ -10,11 +11,9 @@
  * @requires qui/controls/buttons/Button
  * @requires qui/utils/Form
  * @requires Locale
- *
- * @module controls/projects/site/Panel
  */
 
-define('controls/projects/project/site/Panel', [
+define([
 
     'qui/controls/desktop/Panel',
     'Projects',
@@ -123,7 +122,8 @@ define('controls/projects/project/site/Panel', [
                 attributes : this.getAttributes(),
                 id         : this.getSite().getId(),
                 lang       : Project.getLang(),
-                project    : Project.getName()
+                project    : Project.getName(),
+                type       : this.getType()
             };
         },
 
