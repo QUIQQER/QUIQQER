@@ -33,6 +33,7 @@ define('controls/projects/project/media/Panel', [
     'Ajax',
     'Locale',
     'utils/Media',
+    'Projects',
 
     'css!controls/projects/project/media/Panel.css'
 
@@ -54,7 +55,8 @@ define('controls/projects/project/media/Panel', [
         RequestUpload    = arguments[ 9 ],
         Ajax             = arguments[ 10 ],
         Locale           = arguments[ 11 ],
-        MediaUtils       = arguments[ 12 ];
+        MediaUtils       = arguments[ 12 ],
+        Projects         = arguments[ 13 ];
 
     /**
      * A Media-Panel, opens the Media in an Apppanel
@@ -104,23 +106,20 @@ define('controls/projects/project/media/Panel', [
             this.setAttribute( 'id', 'projects-media-panel' );
             this.setAttribute( 'name', 'projects-media-panel' );
 
-            this.setAttribute(
-                'title',
-                Media.getProject().getName()
-            );
+            if ( typeOf( Media ) === 'object' ) {
+                this.parent( options );
+            }
+
+            if ( typeOf( Media ) === 'classes/projects/project/Media' ) {
+                this.setAttribute( 'title', Media.getProject().getName() );
+            }
 
             this.setAttribute( 'icon', 'icon-picture' );
-
-//            var view = QUI.Storage.get( 'qui-media-panel-view' );
-//
-//            if ( view ) {
-//                this.setAttribute('view', view);
-//            }
 
             this.parent( options );
 
             this.$Map      = null;
-            this.$Media    = Media;
+            this.$Media    = Media || null;
             this.$File     = null;
             this.$children = [];
             this.$selected = [];
@@ -131,6 +130,38 @@ define('controls/projects/project/media/Panel', [
             this.addEvents({
                 onCreate : this.$onCreate
             });
+        },
+
+        /**
+         * Save the site panel to the workspace
+         *
+         * @method controls/projects/project/site/Panel#serialize
+         * @return {Object} data
+         */
+        serialize : function()
+        {
+            return {
+                attributes : this.getAttributes(),
+                project    : this.$Media.getProject().getName(),
+                type       : this.getType()
+            };
+        },
+
+        /**
+         * import the saved data form the workspace
+         *
+         * @method controls/projects/project/site/Panel#unserialize
+         * @param {Object} data
+         * @return {this}
+         */
+        unserialize : function(data)
+        {
+            var Project = Projects.get( data.project );
+
+            this.setAttributes( data.attributes );
+            this.$Media = Project.getMedia();
+
+            return this;
         },
 
         /**

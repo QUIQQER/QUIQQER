@@ -394,8 +394,12 @@ require( requireList, function()
     // logout function
     window.logout = function()
     {
+        // save workspace
+        Workspace.save();
+
+        // logout
         Ajax.post('ajax_user_logout', function() {
-            window.location = '/admin/admin.php';
+            window.location = '/admin/';
         });
     };
 

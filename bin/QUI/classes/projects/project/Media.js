@@ -1,6 +1,7 @@
 /**
  * Media for a Project
  *
+ * @module classes/projects/project/Media
  * @author www.pcsg.de (Henning Leutz)
  *
  * @requires qui/classes/DOM
@@ -10,12 +11,9 @@
  * @requires classes/projects/project/media/File
  * @requires classes/projects/project/media/Folder
  * @requires classes/projects/project/media/Trash
- *
- * @module classes/projects/project/Media
- * @package com.pcsg.quiqqer
  */
 
-define('classes/projects/project/Media', [
+define([
 
     'qui/classes/DOM',
     'qui/utils/Object',
@@ -40,7 +38,7 @@ define('classes/projects/project/Media', [
     return new Class({
 
         Extends : DOM,
-        Type    : 'classes/projects/Media',
+        Type    : 'classes/projects/project/Media',
 
         initialize : function(Project)
         {
