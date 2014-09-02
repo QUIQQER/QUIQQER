@@ -75,7 +75,9 @@ require.config({
     paths : {
         "package" : URL_OPT_DIR +'bin/',
         "qui"     : URL_OPT_DIR +'bin/qui/qui',
-        "locale"  : URL_VAR_DIR +'locale/bin'
+        "locale"  : URL_VAR_DIR +'locale/bin',
+        "OPT_DIR" : URL_OPT_DIR,
+        "BIN_DIR" : URL_BIN_DIR,
     },
 
     waitSeconds : 0,
