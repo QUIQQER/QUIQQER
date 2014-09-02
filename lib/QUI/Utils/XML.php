@@ -942,9 +942,12 @@ class XML
                 $suffix = $table['suffix'];
                 $fields = $table['fields'];
 
-                $fields = array(
-                    'id' => 'bigint(20) NOT NULL'
-                ) + $fields;
+                if ( $table['no-site-reference'] !== false )
+                {
+                    $fields = array(
+                        'id' => 'bigint(20) NOT NULL PRIMARY KEY'
+                    ) + $fields;
+                }
 
 
                 // Projekte durchgehen

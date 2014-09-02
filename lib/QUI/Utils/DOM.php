@@ -163,8 +163,14 @@ class DOM
     static function dbTableDomToArray(\DOMNode $Table)
     {
         $result = array(
-            'suffix' => $Table->getAttribute( 'name' )
+            'suffix' => $Table->getAttribute( 'name' ),
+            'no-site-reference' => false
         );
+
+        if ( $Table->getAttribute( 'no-site-reference' ) === 1 ) {
+            $result[ 'no-site-reference' ] = true;
+        }
+
 
         $_fields = array();
 
