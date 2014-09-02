@@ -245,7 +245,7 @@ class Site extends \QUI\QDOM
 
             $dir = OPT_DIR . $package['name'] .'/';
 
-            $this->_loadDatabases( $dir );
+            $this->_loadDatabases( $dir, $package['name'] );
         }
 
         // load type
@@ -321,10 +321,11 @@ class Site extends \QUI\QDOM
      * database.xml
      *
      * @param String $dir - Path to the package
+     * @param String $package - name of the package
      *
      * @rewrite it to events
      */
-    protected function _loadDatabases($dir)
+    protected function _loadDatabases($dir, $package)
     {
         $databaseXml = $dir .'database.xml';
 
@@ -369,6 +370,9 @@ class Site extends \QUI\QDOM
                     'limit' => 1
                 ));
 
+                // package.package.table.attribute
+                $attributePrfx = str_replace('/', '.', $package .'.'. $fields['suffix'] );
+
                 foreach ( $fields as $field )
                 {
                     if ( $field == 'id' ) {
@@ -379,7 +383,10 @@ class Site extends \QUI\QDOM
                         continue;
                     }
 
-                    $this->setAttribute( $field, $result[0][ $field ] );
+                    $this->setAttribute(
+                        $attributePrfx .'.'. $field,
+                        $result[0][ $field ]
+                    );
                 }
             }
         }

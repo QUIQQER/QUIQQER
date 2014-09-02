@@ -568,13 +568,14 @@ class Edit extends \QUI\Projects\Site
 
                 $table = \QUI::getDBTableName( $name .'_'. $lang .'_'. $suffix );
                 $data  = array();
+                $attributePrfx = str_replace('/', '.', $package .'.'. $suffix); // package.package.table.attribute
 
                 for ( $f = 0, $flen = $fields->length; $f < $flen; $f++ )
                 {
                     $Field     = $fields->item( $f );
                     $attribute = trim( $Field->nodeValue );
 
-                    $data[ $attribute ] = $this->getAttribute( $attribute );
+                    $data[ $attribute ] = $this->getAttribute( $attributePrfx .'.'. $attribute );
                 }
             }
 
