@@ -167,7 +167,7 @@ class DOM
             'no-site-reference' => false
         );
 
-        if ( $Table->getAttribute( 'no-site-reference' ) === 1 ) {
+        if ( (int)$Table->getAttribute( 'no-site-reference' ) === 1 ) {
             $result[ 'no-site-reference' ] = true;
         }
 
