@@ -9,9 +9,6 @@ function ajax_desktop_workspace_save($id, $data)
 {
     $User = \QUI::getUserBySession();
 
-    \QUI\System\Log::writeRecursive( $id );
-    \QUI\System\Log::writeRecursive( $data );
-
     \QUI\Workspace\Manager::saveWorkspace($User, $id, array(
         'data' => $data
     ));
