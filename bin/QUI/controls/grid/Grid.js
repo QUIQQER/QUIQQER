@@ -337,6 +337,19 @@ define('controls/grid/Grid', [
             t.altRow();
         },
 
+        /**
+         * Return pagination data for ajax request
+         *
+         * @return {Object}
+         */
+        getPaginationData : function()
+        {
+            return  {
+                perPage : this.getAttribute( 'perPage' ),
+                page    : this.getAttribute( 'page' )
+            };
+        },
+
         // API
         // pretvara zadanu columnu u inline edit mode
         // options = {
