@@ -577,30 +577,31 @@ class Edit extends \QUI\Projects\Site
 
                     $data[ $attribute ] = $this->getAttribute( $attributePrfx .'.'. $attribute );
                 }
-            }
 
-            if ( empty( $data ) ) {
-                continue;
-            }
 
-            $result = \QUI::getDataBase()->fetch(array(
-                'from'  => $table,
-                'where' => array(
-                    'id' => $this->getId()
-                ),
-                'limit' => 1
-            ));
+                if ( !isset( $data ) || empty( $data ) ) {
+                    continue;
+                }
 
-            if ( !isset( $result[ 0 ] ) )
-            {
-                \QUI::getDataBase()->insert($table, array(
+                $result = \QUI::getDataBase()->fetch(array(
+                    'from'  => $table,
+                    'where' => array(
+                        'id' => $this->getId()
+                    ),
+                    'limit' => 1
+                ));
+
+                if ( !isset( $result[ 0 ] ) )
+                {
+                    \QUI::getDataBase()->insert($table, array(
+                        'id' => $this->getId()
+                    ));
+                }
+
+                \QUI::getDataBase()->update($table, $data, array(
                     'id' => $this->getId()
                 ));
             }
-
-            \QUI::getDataBase()->update($table, $data, array(
-                'id' => $this->getId()
-            ));
         }
 
 
