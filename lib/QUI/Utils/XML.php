@@ -942,7 +942,7 @@ class XML
                 $suffix = $table['suffix'];
                 $fields = $table['fields'];
 
-                if ( $table['no-site-reference'] !== false )
+                if ( $table['no-site-reference'] !== true )
                 {
                     $fields = array(
                         'id' => 'bigint(20) NOT NULL PRIMARY KEY'
