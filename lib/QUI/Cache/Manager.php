@@ -219,6 +219,19 @@ class Manager
             }
         }
 
+        // all handlers false, so we use filesystem
+        if ( empty( $handlers ) )
+        {
+            $conf   = $Config->get('filesystem');
+            $params = array( 'path' => VAR_DIR .'cache/stack/' );
+
+            if ( !empty( $conf['path'] ) && is_dir( $conf['path'] ) ) {
+                $params['path'] = $conf['path'];
+            }
+
+            $handlers[] = new \Stash\Driver\FileSystem( $params );
+        }
+
         $Handler = new \Stash\Driver\Composite(array(
             'drivers' => $handlers
         ));
