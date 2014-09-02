@@ -922,24 +922,14 @@ class Edit extends \QUI\Projects\Site
             $new_name = $params['name'];
         }
 
-
         if ( $this->existNameInChildren( $new_name ) ) {
             throw new \QUI\Exception( 'Name exist', 401 );
         }
 
-        // Prüfung des Namens - Länge
-        if ( strlen( $new_name ) <= 2 ) {
-            throw new \QUI\Exception( 'Error Name: 2 signs or lower', 701 );
-        }
+        // can we use this name?
+        self::checkName( $new_name );
 
-        if ( strlen( $new_name ) > 200 ) {
-            throw new \QUI\Exception( 'Error Name: 200 signs or higher', 704 );
-        }
 
-        // Prüfung des Namens - Sonderzeichen
-        if ( preg_match( "@[-.,:;#`!§$%&/?<>\=\'\"]@", $new_name ) ) {
-            throw new \QUI\Exception( 'Error Name: Not supported signs in Name', 702 );
-        }
 
         $childCount = $this->hasChildren( true );
 
