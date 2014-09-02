@@ -215,6 +215,19 @@ class Site extends \QUI\QDOM
     }
 
     /**
+     * Returns the Edit Site object from this Site
+     *
+     * @return \QUI\Projects\Site\Edit
+     */
+    public function getEdit()
+    {
+        return new \QUI\Projects\Site\Edit(
+            $this->getProject(),
+            $this->getId()
+        );
+    }
+
+    /**
      * Return the project object of the site
      *
      * @return \QUI\Projects\Project
