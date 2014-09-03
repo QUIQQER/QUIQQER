@@ -7,11 +7,11 @@
 
 // extend mootools with desktop drag drop
 Object.append(Element.NativeEvents, {
-    dragenter: 2,
-    dragleave: 2,
-    dragover: 2,
-    dragend: 2,
-    drop: 2
+    dragenter : 2,
+    dragleave : 2,
+    dragover  : 2,
+    dragend   : 2,
+    drop      : 2
 });
 
 // custome select
@@ -76,8 +76,8 @@ require.config({
         "package" : URL_OPT_DIR +'bin/',
         "qui"     : URL_OPT_DIR +'bin/qui/qui',
         "locale"  : URL_VAR_DIR +'locale/bin',
-        "OPT_DIR" : URL_OPT_DIR,
-        "BIN_DIR" : URL_BIN_DIR,
+        "URL_OPT_DIR" : URL_OPT_DIR,
+        "URL_BIN_DIR" : URL_BIN_DIR,
     },
 
     waitSeconds : 0,
