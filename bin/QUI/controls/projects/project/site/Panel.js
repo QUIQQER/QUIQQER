@@ -85,7 +85,8 @@ define([
 
         initialize : function(Site, options)
         {
-            this.$Site = null;
+            this.$Site            = null;
+            this.$CategoryControl = null;
 
             if ( typeOf( Site ) === 'classes/projects/project/Site' )
             {
@@ -710,17 +711,18 @@ define([
          */
         $categoryOnLoad : function(Category)
         {
-            var self = this;
+            var self = this,
 
-            if ( Category.getAttribute( 'onload_require' ) )
+                onloadRequire = Category.getAttribute( 'onload_require' ),
+                onload        = Category.getAttribute( 'onload' );
+
+            if ( onloadRequire )
             {
-                require([
-                    Category.getAttribute( 'onload_require' )
-                ], function(Plugin)
+                require([ onloadRequire ], function(Plugin)
                 {
-                    if ( Category.getAttribute( 'onload' ) )
+                    if ( onload )
                     {
-                        eval( Category.getAttribute( 'onload' ) +'( Category, self );' );
+                        eval( onload +'( Category, self );' );
                         return;
                     }
 
@@ -734,14 +736,14 @@ define([
 
                     if ( type === 'class' )
                     {
-                        var Obj = new Plugin({
+                        self.$CategoryControl = new Plugin({
                             Site : self.getSite()
                         });
 
-                        if ( QUI.Controls.isControl( Obj ) )
+                        if ( QUI.Controls.isControl( self.$CategoryControl ) )
                         {
-                            Obj.inject( self.getContent() );
-                            Obj.setParent( self );
+                            self.$CategoryControl.inject( self.getContent() );
+                            self.$CategoryControl.setParent( self );
 
                             self.Loader.hide();
 
@@ -753,9 +755,9 @@ define([
                 return;
             }
 
-            if ( Category.getAttribute( 'onload' ) )
+            if ( onload )
             {
-                eval( Category.getAttribute( 'onload' ) +'( Category, self );' );
+                eval( onload +'( Category, self );' );
                 return;
             }
 
@@ -817,6 +819,12 @@ define([
                     callback();
                 }
 
+                if ( this.$CategoryControl )
+                {
+                    this.$CategoryControl.destroy();
+                    this.$CategoryControl = null;
+                }
+
                 return;
             }
 
@@ -842,31 +850,32 @@ define([
             // unload params
             for ( var i = 0, len = elements.length; i < len; i++ )
             {
-                if ( elements[ i ].name )
-                {
-                    Site.setAttribute(
-                        elements[ i ].name,
-                        elements[ i ].value
-                    );
+                if ( elements[ i ].name ) {
+                    Site.setAttribute( elements[ i ].name, elements[ i ].value );
                 }
             }
 
-            var self = this;
+            var self = this,
 
-            if ( Category.getAttribute( 'onunload_require' ) )
+                onunloadRequire = Category.getAttribute( 'onunload_require' ),
+                onunload        = Category.getAttribute( 'onunload' );
+
+            if ( onunloadRequire )
             {
-                require([
-                    Category.getAttribute( 'onunload_require' )
-                ], function(Plugin)
+                require([ onunloadRequire ], function(Plugin)
                 {
-                    eval( Category.getAttribute( 'onunload' ) +'( Category, self );' );
+                    eval( onunload +'( Category, self );' );
 
                     if ( typeof callback !== 'undefined' ) {
                         callback();
                     }
                 });
+            }
 
-                return;
+            if ( this.$CategoryControl )
+            {
+                this.$CategoryControl.destroy();
+                this.$CategoryControl = null;
             }
         },
 

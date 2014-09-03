@@ -261,6 +261,11 @@ class Site extends \QUI\QDOM
             $this->_loadDatabases( $dir, $package['name'] );
         }
 
+        // onLoad event
+        $this->Events->fireEvent( 'load', array( $this ) );
+        \QUI::getEvents()->fireEvent( 'siteLoad', array( $this ) );
+
+
         // load type
         $type = $this->getAttribute('type');
 
