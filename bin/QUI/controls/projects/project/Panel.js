@@ -565,7 +565,7 @@ define('controls/projects/project/Panel', [
         $openSitePanel : function(Item)
         {
             var self    = this,
-                id      = Item.getAttribute( 'value' ),
+                id      = ( Item.getAttribute( 'value' ) ).toInt(),
                 project = this.getAttribute( 'project' ),
                 lang    = this.getAttribute( 'lang' );
 
