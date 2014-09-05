@@ -317,6 +317,7 @@ class Template extends \QUI\QDOM
             $package = $siteType[ 0 ];
             $type    = $siteType[ 1 ];
 
+            // @todo needed?
             // type css
             $siteStyle  = OPT_DIR . $package .'/bin/'. $type .'.css';
             $siteScript = OPT_DIR . $package .'/bin/'. $type .'.js';

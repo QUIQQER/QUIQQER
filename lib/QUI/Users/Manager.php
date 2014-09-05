@@ -625,7 +625,6 @@ class Manager
                 // on login event
                 \QUI::getEvents()->fireEvent('userDisable', array($User));
 
-
                 return $User;
             }
         }

@@ -300,6 +300,17 @@ class Manager
      */
     static function get($name)
     {
+        if ( self::getConfig()->get( 'general', 'nocache' ) )
+        {
+            throw new \QUI\Cache\Exception(
+                \QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.lib.cache.manager.not.exist'
+                ),
+                404
+            );
+        }
+
         $Item = self::getStash( $name );
         $data = $Item->get();
 
