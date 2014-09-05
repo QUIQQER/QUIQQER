@@ -1,0 +1,27 @@
+<locales>
+
+    <groups name="quiqqer/controls" datatype="js,php">
+        <locale name="controls.sheets.first.page" html="true">
+            <de><![CDATA[«]]></de>
+            <en><![CDATA[«]]></en>
+        </locale>
+        <locale name="controls.sheets.back">
+            <de><![CDATA[vor]]></de>
+            <en><![CDATA[forward]]></en>
+        </locale>
+
+        <locale name="controls.sheets.next">
+            <de><![CDATA[vor]]></de>
+            <en><![CDATA[forward]]></en>
+        </locale>
+        <locale name="controls.sheets.last.page" html="true">
+            <de><![CDATA[»]]></de>
+            <en><![CDATA[»]]></en>
+        </locale>
+
+
+
+
+    </groups>
+
+</locales>
