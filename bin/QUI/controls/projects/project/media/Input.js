@@ -174,6 +174,10 @@ define('controls/projects/project/media/Input', [
                     return;
                 }
 
+                if ( result.substr( 0, 10 ) == 'image.php?' ) {
+                    result = URL_DIR + result;
+                }
+
                 self.$Preview.setStyle( 'background', 'url('+ result +') no-repeat center center' );
 
             }, {
