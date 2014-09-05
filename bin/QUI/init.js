@@ -103,7 +103,8 @@ var requireList = [
    'Locale',
    'Ajax',
    'controls/workspace/Manager',
-   'qui/controls/buttons/Button'
+   'qui/controls/buttons/Button',
+   'qui/controls/contextmenu/Item'
 ].append( QUIQQER_LOCALE || [] );
 
 
@@ -115,7 +116,10 @@ require( requireList, function()
         Locale    = arguments[ 1 ],
         Ajax      = arguments[ 2 ],
         WSManager = arguments[ 3 ],
-        QUIButton = arguments[ 4 ];
+        QUIButton = arguments[ 4 ],
+
+        QUIContextmenuItem = arguments[ 5 ];
+
 
     Locale.setCurrent( USER.lang );
 
@@ -140,9 +144,57 @@ require( requireList, function()
 
     document.id( 'wrapper' ).setStyle( 'height', '100%' );
 
-    // load workspace
+    /**
+     * Workspace
+     */
     var Workspace = new WSManager({
-        autoResize : false
+        autoResize : false,
+        events     :
+        {
+            onWorkspaceLoaded : function(WS)
+            {
+                var createMenu = function(Menu)
+                {
+                    var list = WS.getList(),
+                        Bar  = Menu.getChildren(),
+
+                        Workspaces = Bar.getChildren( 'profile' )
+                                        .getChildren( 'workspaces' );
+
+                    Workspaces.clear();
+
+                    Object.each(list, function(Entry)
+                    {
+                        Workspaces.appendChild(
+                            new QUIContextmenuItem({
+                                text   : Entry.title,
+                                wid    : Entry.id,
+                                events :
+                                {
+                                    onClick : function(Item) {
+                                        WS.loadWorkspace( Item.getAttribute( 'wid' ) );
+                                    }
+                                }
+                            })
+                        );
+                    });
+                }
+
+                require(['Menu'], function(Menu)
+                {
+                    if ( !Menu.isLoaded() )
+                    {
+                        Menu.addEvent('onMenuLoaded', function() {
+                            createMenu( Menu );
+                        });
+
+                        return;
+                    }
+
+                    createMenu( Menu );
+                });
+            }
+        }
     }).inject( Container );
 
     // resizing
@@ -158,30 +210,6 @@ require( requireList, function()
         });
     });
 
-
-
-
-
-//    var MyWorkspace = new Workspace().inject( Container );
-//
-//    // Columns
-//    var LeftColumn = new Column(),
-//
-//        MiddleColumn = new Column({
-//            width : doc_size.x * 0.8
-//        }),
-//
-//        RightColumn = new Column({
-//            width : doc_size.x * 0.2
-//        });
-//
-//    MyWorkspace.appendChild( LeftColumn );
-//    MyWorkspace.appendChild( MiddleColumn );
-//    MyWorkspace.appendChild( RightColumn );
-//    MyWorkspace.fix();
-//
-//    LeftColumn.setAttribute( 'width', 300 );
-//    LeftColumn.resize();
 
     // workspace button
     new QUIButton({
@@ -222,158 +250,10 @@ require( requireList, function()
       .getElm()
       .style.borderBottomLeftRadius = '40px';
 
-
-//    // projects panel
-//    LeftColumn.appendChild(
-//        new ProjectPanel()
-//    );
-//
-//    // bookmarks panel
-//    var Bookmarks = new BookmarkPanel({
-//        title  : 'Bookmarks',
-//        icon   : 'icon-bookmark',
-//        name   : 'qui-bookmarks',
-//        events :
-//        {
-//            onInject : function(Panel)
-//            {
-//                Panel.Loader.show();
-//
-//                require(['Users'], function(Users)
-//                {
-//                    var User = Users.get( USER.id );
-//
-//                    User.load(function()
-//                    {
-//                        var data = JSON.decode( User.getAttribute( 'qui-bookmarks' ) );
-//
-//                        if ( !data )
-//                        {
-//                            Panel.Loader.hide();
-//                            return;
-//                        }
-//
-//                        Panel.unserialize( data );
-//                        Panel.Loader.hide();
-//                    });
-//                });
-//            },
-//
-//            onAppendChild : function(Panel, Item)
-//            {
-//                Panel.Loader.show();
-//
-//                require(['Users'], function(Users)
-//                {
-//                    var User = Users.get( USER.id );
-//
-//                    User.setAttribute( 'qui-bookmarks', JSON.encode( Panel.serialize() ) );
-//
-//                    User.save(function() {
-//                        Panel.Loader.hide();
-//                    });
-//                });
-//            },
-//
-//            onRemoveChild : function(Panel)
-//            {
-//                Panel.Loader.show();
-//
-//                require(['Users'], function(Users)
-//                {
-//                    var User = Users.get( USER.id );
-//
-//                    User.setExtra( 'qui-bookmarks', JSON.encode( Panel.serialize() ) );
-//
-//                    User.save(function() {
-//                        Panel.Loader.hide();
-//                    });
-//                });
-//            }
-//        }
-//    });
-//
-//    LeftColumn.appendChild( Bookmarks );
-//
-//    // Bookmarks.toggle();
-//
-//    // task panel
-//    MiddleColumn.appendChild(
-//        new TaskPanel({
-//            title : 'My Panel 1',
-//            icon  : 'icon-heart',
-//            name  : 'tasks'
-//        })
-//    );
-//
-//    MiddleColumn.getChildren( 'tasks' ).appendChild(
-//        new Welcome()
-//    );
-//
-//    // resize the worksapce
-//    // we have a resize bug
-//    // because the scrollbar have 16 pixel
-//    MyWorkspace.resize();
-//
-//    (function() {
-//        MyWorkspace.resize();
-//    }).delay( 100 );
-//
-//
-//    var resizeWorkspaceDelay = null;
-//
-//    window.addEvent('resize', function()
-//    {
-//        // load the default workspace
-//        var docSize = document.body.getSize();
-//
-//        Container.setStyles({
-//            height : docSize.y - Logo.getSize().y - Menu.getSize().y
-//        });
-//
-//        resizeWorkspaceDelay = (function() {
-//            MyWorkspace.resize();
-//        }).delay( 100 );
-//    });
-
     /**
      * Menu
      */
     require(['Menu']);
-
-    /**
-     * UploadManager && MessageHandler
-     */
-//    require([
-//
-//        'UploadManager',
-//        'qui/controls/messages/Panel',
-//        'controls/desktop/panels/Help'
-//
-//    ], function(UploadManager, MessagePanel, Help)
-//    {
-//        new MessagePanel({
-//            height : doc_size.y / 2
-//        }).inject( RightColumn );
-//
-//        UploadManager.inject( RightColumn );
-//
-//        new Help().inject( RightColumn ).minimize();
-//
-//        QUI.getMessageHandler(function(MessageHandler)
-//        {
-//            // if 404 -> not loged in, than login pop
-//            MessageHandler.addEvent('onAdd', function(MH, Message)
-//            {
-//                if ( Message.getAttribute( 'code' ) == 401 )
-//                {
-//                    require(['controls/system/Login'], function(Login) {
-//                        new Login().open();
-//                    });
-//                }
-//            });
-//        });
-//    });
 
     /**
      * If files were droped to quiqqer
@@ -405,45 +285,4 @@ require( requireList, function()
         });
     };
 
-//    require(['controls/projects/Popup'], function(Popup) {
-//        new Popup({
-//            events :
-//            {
-//                onSubmit : function(Control, result)
-//                {
-//                    console.warn( result );
-//                }
-//            }
-//        }).open();
-//    });
-
-    // media popup test
-//    require(['controls/projects/project/media/Popup'], function(Popup)
-//    {
-//        new Popup({
-//            events :
-//            {
-//                onSubmit : function(Popup, imageData)
-//                {
-//                    console.warn( imageData );
-//                }
-//            }
-//        }).open();
-//    });
-
-    // contextmenu
-//    require([
-//        'Menu',
-//        'qui/controls/contextmenu/Item'
-//    ], function(Menu, ContextmenuItem)
-//    {
-//        // Bookmar text
-//        Bookmarks.appendChild(
-//            new ContextmenuItem({
-//                text : 'test'
-//            })
-//        );
-//
-//        Bookmarks.Loader.hide();
-//    });
 });

@@ -4,8 +4,26 @@
  *
  * @author www.pcsg.de (Henning Leutz)
  * @module controls/workspace/Manager
+ *
+ * @require qui/QUI
+ * @require qui/controls/Control
+ * @require qui/controls/loader/Loader
+ * @require qui/controls/desktop/Workspace
+ * @require qui/controls/desktop/Column
+ * @require qui/controls/desktop/Panel
+ * @require qui/controls/desktop/Tasks
+ * @require qui/controls/windows/Popup
+ * @require qui/controls/messages/Panel
+ * @require controls/welcome/Panel
+ * @require controls/desktop/panels/Help
+ * @require controls/desktop/panels/Bookmarks
+ * @require controls/projects/project/Panel
+ * @require Ajax
+ * @require UploadManager
+ * @require css!controls/workspace/Manager.css
+ *
+ * @event onWorkspaceLoaded [ {self} ]
  */
-
 
 define([
 
@@ -69,6 +87,8 @@ define([
         initialize : function(options)
         {
             var self = this;
+
+            this.parent( options );
 
             this.Loader    = new QUILoader();
             this.Workspace = new QUIWorkspace();
@@ -202,8 +222,7 @@ define([
                     // add workspaces
                     self.add( colums2, function()
                     {
-                        self.add( colums3, function()
-                        {
+                        self.add( colums3, function() {
                             self.load();
                         });
                     });
@@ -224,6 +243,8 @@ define([
                     }
                 }
 
+                self.fireEvent( 'workspaceLoaded', [ self ] );
+
                 // ask which workspace
                 if ( !Standard )
                 {
@@ -234,6 +255,48 @@ define([
                 // load standard workspace
                 self.$loadWorkspace( Standard.id );
             });
+        },
+
+        /**
+         * Return the workspace list, available workspaces
+         *
+         * @return {Object} List
+         */
+        getList : function()
+        {
+            return this.$spaces;
+        },
+
+        /**
+         * load another Workspace
+         * Saves the current workspace and load the new wanted
+         *
+         * @param {Integer} id - workspace id
+         */
+        loadWorkspace : function(id)
+        {
+            if ( typeof this.$spaces[ id ] === 'undefined' )
+            {
+                QUI.getMessageHandler(function(MH) {
+                    MH.addError( 'Workspace not found' );
+                });
+
+                return;
+            }
+
+            this.save();
+            this.Workspace.clear();
+
+            this.Workspace.unserialize(
+                JSON.decode( this.$spaces[ id ].data )
+            );
+
+            this.Workspace.fix();
+            this.Workspace.resize();
+
+            this.setAttribute( 'workspaceId', id );
+
+            this.Loader.hide();
         },
 
         /**
