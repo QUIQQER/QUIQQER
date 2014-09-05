@@ -430,6 +430,8 @@ define([
         {
             this.$onCategoryLeave( this.getActiveCategory() );
             this.getSite().save();
+
+            this.$onCategoryEnter( this.getActiveCategory() );
         },
 
         /**
