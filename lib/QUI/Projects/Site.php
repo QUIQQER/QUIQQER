@@ -356,56 +356,61 @@ class Site extends \QUI\QDOM
         $DataBaseXML = \QUI\Utils\XML::getDomFromXml( $databaseXml );
         $projects    = $DataBaseXML->getElementsByTagName( 'projects' );
 
-        if ( $projects && $projects->length )
+        if ( !$projects || $projects->length )
         {
-            $tables = $projects->item( 0 )->getElementsByTagName( 'table' );
+            return;
+        }
 
-            for ( $i = 0; $i < $tables->length; $i++ )
+        $project_name = $this->getProject()->getName();
+        $project_lang = $this->getProject()->getLang();
+
+        $tables = $projects->item( 0 )->getElementsByTagName( 'table' );
+
+        for ( $i = 0; $i < $tables->length; $i++ )
+        {
+            $Table = $tables->item( $i );
+
+            if ( (int)$Table->getAttribute( 'no-site-reference' ) == 1 ) {
+                continue;
+            }
+
+            $fields = \QUI\Utils\DOM::dbTableDomToArray( $Table );
+
+            if ( !isset( $fields['suffix'] ) ||
+                 !isset( $fields['fields'] ) )
             {
-                $Table = $tables->item( $i );
+                continue;
+            }
 
-                if ( $Table->getAttribute( 'type' ) != 'site' ) {
+            $tbl       = $project_name .'_'. $project_lang .'_'. $fields['suffix'];
+            $fieldList = array_keys( $fields['fields'] );
+
+            $result = \QUI::getDataBase()->fetch(array(
+                'select' => $fieldList,
+                'from'   => $tbl,
+                'where'  => array(
+                    'id' => $this->getId()
+                ),
+                'limit' => 1
+            ));
+
+            // package.package.table.attribute
+            $attributePrfx = str_replace('/', '.', $package .'.'. $fields['suffix'] );
+
+            foreach ( $fieldList as $field )
+            {
+                if ( $field == 'id' ) {
                     continue;
                 }
 
-                $fields = \QUI\Utils\DOM::dbTableDomToArray( $Table );
-
-                if ( !isset( $fields['suffix'] ) ||
-                     !isset( $fields['fields'] ) )
-                {
+                if ( !isset( $result[0][ $field ] ) ) {
                     continue;
                 }
 
-                $tbl    = $project_name .'_'. $project_lang .'_'. $fields['suffix'];
-                $fields = array_keys( $fields['fields'] );
-
-                $result = \QUI::getDataBase()->fetch(array(
-                    'select' => $fields,
-                    'from'   => $tbl,
-                    'where'  => array(
-                        'id' => $this->getId()
-                    ),
-                    'limit' => 1
-                ));
-
-                // package.package.table.attribute
-                $attributePrfx = str_replace('/', '.', $package .'.'. $fields['suffix'] );
-
-                foreach ( $fields as $field )
-                {
-                    if ( $field == 'id' ) {
-                        continue;
-                    }
-
-                    if ( !isset( $result[0][ $field ] ) ) {
-                        continue;
-                    }
-
-                    $this->setAttribute(
-                        $attributePrfx .'.'. $field,
-                        $result[0][ $field ]
-                    );
-                }
+                $this->setAttribute(
+                    $attributePrfx .'.'. $field,
+                    $result[0][ $field ]
+                );
             }
         }
     }
