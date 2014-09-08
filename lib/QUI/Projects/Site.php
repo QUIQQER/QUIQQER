@@ -356,8 +356,7 @@ class Site extends \QUI\QDOM
         $DataBaseXML = \QUI\Utils\XML::getDomFromXml( $databaseXml );
         $projects    = $DataBaseXML->getElementsByTagName( 'projects' );
 
-        if ( !$projects || $projects->length )
-        {
+        if ( !$projects || !$projects->length ) {
             return;
         }
 
