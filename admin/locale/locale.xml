@@ -368,6 +368,10 @@
                 <de><![CDATA[Arbeitsbereiche]]></de>
                 <en><![CDATA[Workspaces]]></en>
             </locale>
+            <locale name="menu.profile.userProfile.text">
+                <de><![CDATA[Profil]]></de>
+                <en><![CDATA[Profile]]></en>
+            </locale>
 
         <locale name="menu.goto.text">
             <de><![CDATA[Gehe zu ...]]></de>

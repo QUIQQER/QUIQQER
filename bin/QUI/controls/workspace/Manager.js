@@ -284,6 +284,10 @@ define([
                 return;
             }
 
+            var self = this;
+
+            this.Loader.show();
+
             this.save();
             this.Workspace.clear();
 
@@ -296,7 +300,13 @@ define([
 
             this.setAttribute( 'workspaceId', id );
 
-            this.Loader.hide();
+            Ajax.post('ajax_desktop_workspace_setStandard', function()
+            {
+                self.Loader.hide();
+            }, {
+                'package' : 'quiqqer/tags',
+                id        : id
+            });
         },
 
         /**

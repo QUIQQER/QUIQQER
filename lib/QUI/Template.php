@@ -337,6 +337,19 @@ class Template extends \QUI\QDOM
                     URL_OPT_DIR . $package .'/bin/'. $type .'.js'
                 );
             }
+
+            $realSitePath = OPT_DIR . $package .'/'. $type .'.css';
+
+            if ( file_exists( $realSitePath ) )
+            {
+                $css = file_get_contents( $realSitePath );
+
+                $this->extendHeader(
+                    '<style>'. file_get_contents( $realSitePath ) .'</style>'
+                );
+            }
+
+
         }
 
         \QUI::getEvents()->fireEvent( 'templateGetHeader', array( $this ) );

@@ -201,6 +201,14 @@
             <locale group="quiqqer/system" var="menu.settings.vhosts.text" />
         </item>
 
+    <!-- Profil -->
+        <item parent="/profile/"
+              name="userProfile"
+              icon="icon-user"
+              require="controls/system/Profile"
+        >
+            <locale group="quiqqer/system" var="menu.profile.userProfile.text" />
+        </item>
 
     <!-- Menu -->
         <item parent="/help/"
