@@ -2,8 +2,8 @@
 /**
  * QUIQQER Bookmars
  *
- * @author www.pcsg.de (Henning Leutz)
  * @module controls/desktop/panels/Bookmarks
+ * @author www.pcsg.de (Henning Leutz)
  */
 
 define(['qui/controls/bookmarks/Panel'], function(QUIBooksmarks)

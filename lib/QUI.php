@@ -481,7 +481,7 @@ class QUI
             return $package['version'];
         }
 
-        return '1';
+        return self::getPackageManager()->getVersion();
     }
 
     /**

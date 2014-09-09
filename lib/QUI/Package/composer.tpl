@@ -17,7 +17,7 @@
         "role": "Developer"
     }],
 
-    "minimum-stability": "{$stability}",
+    "minimum-stability": "stable",
 
     "support" : {
         "email": "support@pcsg.de",

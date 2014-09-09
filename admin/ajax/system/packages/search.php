@@ -45,7 +45,7 @@ function ajax_system_packages_search($str, $from, $max)
     return $result;
 }
 
-QUI::$Ajax->register(
+\QUI::$Ajax->register(
     'ajax_system_packages_search',
     array( 'str', 'from', 'max' ),
     array(

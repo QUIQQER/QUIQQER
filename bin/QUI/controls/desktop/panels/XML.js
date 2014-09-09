@@ -1,3 +1,4 @@
+
 /**
  * a panel based on a xml file
  * eg settings.xml
@@ -6,7 +7,7 @@
  * @module controls/desktop/panels/XML
  */
 
-define('controls/desktop/panels/XML', [
+define([
 
     'qui/controls/desktop/Panel',
     'qui/controls/buttons/Button',
@@ -40,12 +41,49 @@ define('controls/desktop/panels/XML', [
 
         initialize: function(xmlfile, options)
         {
-            this.$file   = xmlfile;
-            this.$config = null;
+            this.$file    = xmlfile;
+            this.$config  = null;
+            this.$Control = null;
 
             this.addEvent( 'onCreate', this.$onCreate );
 
             this.parent( options );
+        },
+
+        /**
+         * Return the data for the workspace
+         *
+         * @method qui/controls/desktop/Tasks#serialize
+         * @return {Object}
+         */
+        serialize : function()
+        {
+            return {
+                attributes : this.getAttributes(),
+                type       : this.getType(),
+                file       : this.$file,
+                config     : this.$config
+            };
+        },
+
+        /**
+         * Import the saved data
+         *
+         * @method qui/controls/desktop/Tasks#unserialize
+         * @param {Object} data
+         */
+        unserialize : function(data)
+        {
+            this.setAttributes( data.attributes );
+
+            this.$file    = data.file;
+            this.$config  = data.config;
+
+            if ( !this.$Elm )
+            {
+                this.$serialize = data;
+                return this;
+            }
         },
 
         /**
@@ -202,19 +240,32 @@ define('controls/desktop/panels/XML', [
 
                         } else if ( type == 'class' )
                         {
-                            new R().inject( self.getContent() );
+                            self.$Control = new R( self );
+
+                            if ( self.getContent().get( 'html' ) == '' )
+                            {
+                                self.$Control.inject( self.$Control );
+
+                            } else
+                            {
+                                self.$Control.import( self.$Control );
+                            }
+
+                        } else
+                        {
+                            self.Loader.show();
                         }
 
-                        self.Loader.hide();
-
-                    }, function()
+                    }, function(err)
                     {
                         QUI.getMessageHandler(function(MH)
                         {
-                            MH.addWarning(
+                            MH.addAttention(
                                 'Some error occured. Control could not be loaded: ' +
                                 Category.getAttribute( 'require' )
                             );
+
+                            console.error( err );
                         });
 
                         self.Loader.hide();
@@ -280,6 +331,12 @@ define('controls/desktop/panels/XML', [
                 tok = namespace.split( '.' );
 
                 this.$config[ tok[0] ][ tok[1] ] = values[ namespace ];
+            }
+
+            if ( this.$Control )
+            {
+                this.$Control.destroy();
+                this.$Control = null;
             }
         },
 
