@@ -814,6 +814,8 @@ class Manager
     {
         $this->_checkComposer();
 
+        $packages = array();
+
         $result = $this->_execComposer( 'update', array(
             '--dry-run' => true
         ));
