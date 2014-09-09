@@ -107,6 +107,11 @@ define([
                         {
                             var id = Win.getId();
 
+                            result.push( 'quiqqer/qui' )
+                                  .push( 'quiqqer/quiqqer' )
+                                  .push( 'quiqqer/qui-php' ).
+                                  .push( 'quiqqer/utils' );
+
                             for ( var i = 0, len = result.length; i < len; i++ )
                             {
                                 new Element('div', {
