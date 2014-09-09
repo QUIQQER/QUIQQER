@@ -159,6 +159,81 @@ define(['qui/controls/Control'], function(Control)
         },
 
         /**
+         * Return the buttons
+         */
+        getButtons : function(callback)
+        {
+            if ( this.getAttribute( 'buttons' ) )
+            {
+                callback( this.getAttribute( 'buttons' ) );
+                return;
+            }
+
+            var self = this;
+
+            this.getManager().getToolbar(function(buttons)
+            {
+                self.setAttribute( 'buttons', buttons );
+
+                callback( buttons );
+            });
+        },
+
+        /**
+         * Switch to source
+         * can be overwritten
+         */
+        switchToSource : function()
+        {
+
+        },
+
+        /**
+         * Switch to WYSIWYG
+         * can be overwritten
+         */
+        switchToWYSIWYG : function()
+        {
+
+        },
+
+        /**
+         * Hide toolbar
+         * can be overwritten
+         */
+        hideToolbar : function()
+        {
+
+        },
+
+        /**
+         * Show toolbar
+         * can be overwritten
+         */
+        showToolbar : function()
+        {
+
+        },
+
+        /**
+         * Set the editor height
+         * can be overwritten
+         */
+        setHeight : function(height)
+        {
+
+        },
+
+        /**
+         * Set the editor width
+         * can be overwritten
+         */
+        setWidth : function(width)
+        {
+
+        },
+
+        /**
          * Set the editor instance
          *
          * @method controls/editors/Editor#setInstance

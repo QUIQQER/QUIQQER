@@ -568,38 +568,40 @@ class Edit extends \QUI\Projects\Site
 
                 $table = \QUI::getDBTableName( $name .'_'. $lang .'_'. $suffix );
                 $data  = array();
+                $attributePrfx = str_replace('/', '.', $package .'.'. $suffix); // package.package.table.attribute
 
                 for ( $f = 0, $flen = $fields->length; $f < $flen; $f++ )
                 {
                     $Field     = $fields->item( $f );
                     $attribute = trim( $Field->nodeValue );
 
-                    $data[ $attribute ] = $this->getAttribute( $attribute );
+                    $data[ $attribute ] = $this->getAttribute( $attributePrfx .'.'. $attribute );
                 }
-            }
 
-            if ( empty( $data ) ) {
-                continue;
-            }
 
-            $result = \QUI::getDataBase()->fetch(array(
-                'from'  => $table,
-                'where' => array(
-                    'id' => $this->getId()
-                ),
-                'limit' => 1
-            ));
+                if ( !isset( $data ) || empty( $data ) ) {
+                    continue;
+                }
 
-            if ( !isset( $result[ 0 ] ) )
-            {
-                \QUI::getDataBase()->insert($table, array(
+                $result = \QUI::getDataBase()->fetch(array(
+                    'from'  => $table,
+                    'where' => array(
+                        'id' => $this->getId()
+                    ),
+                    'limit' => 1
+                ));
+
+                if ( !isset( $result[ 0 ] ) )
+                {
+                    \QUI::getDataBase()->insert($table, array(
+                        'id' => $this->getId()
+                    ));
+                }
+
+                \QUI::getDataBase()->update($table, $data, array(
                     'id' => $this->getId()
                 ));
             }
-
-            \QUI::getDataBase()->update($table, $data, array(
-                'id' => $this->getId()
-            ));
         }
 
 
@@ -920,24 +922,14 @@ class Edit extends \QUI\Projects\Site
             $new_name = $params['name'];
         }
 
-
         if ( $this->existNameInChildren( $new_name ) ) {
             throw new \QUI\Exception( 'Name exist', 401 );
         }
 
-        // Prüfung des Namens - Länge
-        if ( strlen( $new_name ) <= 2 ) {
-            throw new \QUI\Exception( 'Error Name: 2 signs or lower', 701 );
-        }
+        // can we use this name?
+        self::checkName( $new_name );
 
-        if ( strlen( $new_name ) > 200 ) {
-            throw new \QUI\Exception( 'Error Name: 200 signs or higher', 704 );
-        }
 
-        // Prüfung des Namens - Sonderzeichen
-        if ( preg_match( "@[-.,:;#`!§$%&/?<>\=\'\"]@", $new_name ) ) {
-            throw new \QUI\Exception( 'Error Name: Not supported signs in Name', 702 );
-        }
 
         $childCount = $this->hasChildren( true );
 

@@ -521,7 +521,7 @@ class Update
         {
             // locale setup
             self::importLocale(
-                USR_DIR . $project .'/lib/locale.xml'
+                USR_DIR . $project .'/locale.xml'
             );
         }
 

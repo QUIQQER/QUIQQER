@@ -317,6 +317,7 @@ class Template extends \QUI\QDOM
             $package = $siteType[ 0 ];
             $type    = $siteType[ 1 ];
 
+            // @todo needed?
             // type css
             $siteStyle  = OPT_DIR . $package .'/bin/'. $type .'.css';
             $siteScript = OPT_DIR . $package .'/bin/'. $type .'.js';
@@ -336,6 +337,19 @@ class Template extends \QUI\QDOM
                     URL_OPT_DIR . $package .'/bin/'. $type .'.js'
                 );
             }
+
+            $realSitePath = OPT_DIR . $package .'/'. $type .'.css';
+
+            if ( file_exists( $realSitePath ) )
+            {
+                $css = file_get_contents( $realSitePath );
+
+                $this->extendHeader(
+                    '<style>'. file_get_contents( $realSitePath ) .'</style>'
+                );
+            }
+
+
         }
 
         \QUI::getEvents()->fireEvent( 'templateGetHeader', array( $this ) );
@@ -358,13 +372,23 @@ class Template extends \QUI\QDOM
             $locales[] = $package .'/'. $Project->getLang();
         }
 
+
+        $headers      = $this->_header;
+        $headerExtend = '';
+
+        foreach ( $headers as $_str ) {
+            $headerExtend .= $_str;
+        }
+
+
         // assign
         $Engine->assign(array(
             'Project'         => $Project,
             'Site'            => $Site,
             'Engine'          => $Engine,
             'localeFiles'     => $locales,
-            'loadModuleFiles' => $this->_onLoadModules
+            'loadModuleFiles' => $this->_onLoadModules,
+            'headerExtend'    => $headerExtend
         ));
 
         return $Engine->fetch( LIB_DIR .'templates/header.html' );

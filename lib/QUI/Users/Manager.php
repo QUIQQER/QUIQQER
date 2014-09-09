@@ -625,7 +625,6 @@ class Manager
                 // on login event
                 \QUI::getEvents()->fireEvent('userDisable', array($User));
 
-
                 return $User;
             }
         }
@@ -1196,10 +1195,6 @@ class Manager
      */
     static function checkUsernameSigns($username)
     {
-
-        \QUI\System\Log::writeRecursive( self::clearUsername( $username ) );
-        \QUI\System\Log::writeRecursive( $username );
-
         if ( $username != self::clearUsername( $username ) )
         {
             throw new \QUI\Exception(

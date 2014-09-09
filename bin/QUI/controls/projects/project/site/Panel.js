@@ -1,6 +1,7 @@
 /**
  * Displays a Site in a Panel
  *
+ * @module controls/projects/project/site/Panel
  * @author www.pcsg.de (Henning Leutz)
  *
  * @requires qui/controls/desktop/Panel
@@ -10,11 +11,9 @@
  * @requires qui/controls/buttons/Button
  * @requires qui/utils/Form
  * @requires Locale
- *
- * @module controls/projects/site/Panel
  */
 
-define('controls/projects/project/site/Panel', [
+define([
 
     'qui/controls/desktop/Panel',
     'Projects',
@@ -86,18 +85,24 @@ define('controls/projects/project/site/Panel', [
 
         initialize : function(Site, options)
         {
-            var Project = Site.getProject(),
+            this.$Site            = null;
+            this.$CategoryControl = null;
 
-                id = 'panel-'+
-                     Project.getName() +'-'+
-                     Project.getLang() +'-'+
-                     Site.getId();
+            if ( typeOf( Site ) === 'classes/projects/project/Site' )
+            {
+                var Project = Site.getProject(),
 
-            // default id
-            this.setAttribute( 'id', id );
-            this.setAttribute( 'name', id );
+                    id = 'panel-'+
+                         Project.getName() +'-'+
+                         Project.getLang() +'-'+
+                         Site.getId();
 
-            this.$Site = Site;
+                // default id
+                this.setAttribute( 'id', id );
+                this.setAttribute( 'name', id );
+
+                this.$Site = Site;
+            }
 
             this.parent( options );
 
@@ -123,7 +128,8 @@ define('controls/projects/project/site/Panel', [
                 attributes : this.getAttributes(),
                 id         : this.getSite().getId(),
                 lang       : Project.getLang(),
-                project    : Project.getName()
+                project    : Project.getName(),
+                type       : this.getType()
             };
         },
 
@@ -424,6 +430,8 @@ define('controls/projects/project/site/Panel', [
         {
             this.$onCategoryLeave( this.getActiveCategory() );
             this.getSite().save();
+
+            this.$onCategoryEnter( this.getActiveCategory() );
         },
 
         /**
@@ -705,17 +713,18 @@ define('controls/projects/project/site/Panel', [
          */
         $categoryOnLoad : function(Category)
         {
-            var self = this;
+            var self = this,
 
-            if ( Category.getAttribute( 'onload_require' ) )
+                onloadRequire = Category.getAttribute( 'onload_require' ),
+                onload        = Category.getAttribute( 'onload' );
+
+            if ( onloadRequire )
             {
-                require([
-                    Category.getAttribute( 'onload_require' )
-                ], function(Plugin)
+                require([ onloadRequire ], function(Plugin)
                 {
-                    if ( Category.getAttribute( 'onload' ) )
+                    if ( onload )
                     {
-                        eval( Category.getAttribute( 'onload' ) +'( Category, self );' );
+                        eval( onload +'( Category, self );' );
                         return;
                     }
 
@@ -729,14 +738,14 @@ define('controls/projects/project/site/Panel', [
 
                     if ( type === 'class' )
                     {
-                        var Obj = new Plugin({
+                        self.$CategoryControl = new Plugin({
                             Site : self.getSite()
                         });
 
-                        if ( QUI.Controls.isControl( Obj ) )
+                        if ( QUI.Controls.isControl( self.$CategoryControl ) )
                         {
-                            Obj.inject( self.getContent() );
-                            Obj.setParent( self );
+                            self.$CategoryControl.inject( self.getContent() );
+                            self.$CategoryControl.setParent( self );
 
                             self.Loader.hide();
 
@@ -748,9 +757,9 @@ define('controls/projects/project/site/Panel', [
                 return;
             }
 
-            if ( Category.getAttribute( 'onload' ) )
+            if ( onload )
             {
-                eval( Category.getAttribute( 'onload' ) +'( Category, self );' );
+                eval( onload +'( Category, self );' );
                 return;
             }
 
@@ -812,6 +821,12 @@ define('controls/projects/project/site/Panel', [
                     callback();
                 }
 
+                if ( this.$CategoryControl )
+                {
+                    this.$CategoryControl.destroy();
+                    this.$CategoryControl = null;
+                }
+
                 return;
             }
 
@@ -837,31 +852,32 @@ define('controls/projects/project/site/Panel', [
             // unload params
             for ( var i = 0, len = elements.length; i < len; i++ )
             {
-                if ( elements[ i ].name )
-                {
-                    Site.setAttribute(
-                        elements[ i ].name,
-                        elements[ i ].value
-                    );
+                if ( elements[ i ].name ) {
+                    Site.setAttribute( elements[ i ].name, elements[ i ].value );
                 }
             }
 
-            var self = this;
+            var self = this,
 
-            if ( Category.getAttribute( 'onunload_require' ) )
+                onunloadRequire = Category.getAttribute( 'onunload_require' ),
+                onunload        = Category.getAttribute( 'onunload' );
+
+            if ( onunloadRequire )
             {
-                require([
-                    Category.getAttribute( 'onunload_require' )
-                ], function(Plugin)
+                require([ onunloadRequire ], function(Plugin)
                 {
-                    eval( Category.getAttribute( 'onunload' ) +'( Category, self );' );
+                    eval( onunload +'( Category, self );' );
 
                     if ( typeof callback !== 'undefined' ) {
                         callback();
                     }
                 });
+            }
 
-                return;
+            if ( this.$CategoryControl )
+            {
+                this.$CategoryControl.destroy();
+                this.$CategoryControl = null;
             }
         },
 

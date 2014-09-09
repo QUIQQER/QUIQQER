@@ -1,0 +1,58 @@
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th colspan="2">
+                {title text="Details"}
+            </th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr class="{cycle values="odd,even"}">
+            <td>Benutzername</td>
+            <td><input type="text" name="username" value="" /></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>E-Mail</td>
+            <td><input type="text" name="email" value="" /></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>Benutzer-Sprache</td>
+            <td>
+                <select name="lang">
+                {assign var=langs value=$QUI->availableLanguages()}
+                {foreach from=$langs item=lang}
+                    <option value="{$lang}">{$lang}</option>
+                {/foreach}
+                </select>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th colspan="2">
+                Persönliche Daten
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="{cycle values="odd,even" reset=true}">
+            <td style="width: 80px">Vorname</td>
+            <td><input type="text" name="firstname" value="" /></td>
+        </tr>
+
+        <tr class="{cycle values="odd,even"}">
+            <td>Nachname</td>
+            <td><input type="text" name="lastname" /></td>
+        </tr>
+
+        <tr class="{cycle values="odd,even"}">
+            <td>Geburtstag</td>
+            <td><input type="date" name="birthday" /></td>
+        </tr>
+    </tbody>
+</table>

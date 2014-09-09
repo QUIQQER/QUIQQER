@@ -279,7 +279,7 @@ define('classes/users/Manager', [
                 }
             }
 
-            attributes.extra = User.getExtras();
+            // attributes.extra = User.getExtras();
 
             params = ObjectUtils.combine(params, {
                 uid        : User.getId(),

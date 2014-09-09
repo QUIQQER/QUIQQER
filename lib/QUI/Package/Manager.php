@@ -89,12 +89,6 @@ class Manager
     protected $_require = array();
 
     /**
-     *
-     * @var String
-     */
-    protected $_stability = 'stable';
-
-    /**
      * Composer Application
      * @var Application
      */
@@ -141,6 +135,36 @@ class Manager
     }
 
     /**
+     * Return the version from the composer json
+     *
+     * @return String
+     */
+    public function getVersion()
+    {
+        if ( !file_exists( $this->_composer_json ) ) {
+            return '';
+        }
+
+        $data = file_get_contents( $this->_composer_json );
+        $data = json_decode( $data, true );
+
+        return $data['version'];
+    }
+
+    /**
+     * Checks if the composer.json exists
+     * if not, the system will try to create the composer.json (with all installed packages)
+     */
+    protected function _checkComposer()
+    {
+        if ( file_exists( $this->_composer_json ) ) {
+            return;
+        }
+
+        $this->_createComposerJSON();
+    }
+
+    /**
      * Create the composer.json file for the system
      */
     protected function _createComposerJSON()
@@ -163,10 +187,10 @@ class Manager
                 continue;
             }
 
-           $repositories[] = array(
-               'type' => $params['type'],
-               'url'  => $server
-           );
+            $repositories[] = array(
+                'type' => $params['type'],
+                'url'  => $server
+            );
         }
 
         if ( isset( $servers['packagist'] ) &&
@@ -177,7 +201,7 @@ class Manager
             );
         }
 
-        $template = str_replace( '{$stability}', $this->_stability, $template );
+
         $template = str_replace( '{$PACKAGE_DIR}', OPT_DIR, $template );
         $template = str_replace( '{$VAR_COMPOSER_DIR}', $this->_vardir, $template );
         $template = str_replace( '{$LIB_DIR}', LIB_DIR, $template );
@@ -188,11 +212,8 @@ class Manager
             $template
         );
 
-        $composerParams = $this->_getComposerJSON();
-
         // standard require
-        $list    = $this->_getList();
-        $require = $composerParams['require'];
+        $list = $this->_getList();
 
         $quiqqerVersion = '1.*';
 
@@ -201,28 +222,19 @@ class Manager
         }
 
         // must have
+        $require = array();
         $require["php"]                     = ">=5.3.2";
         $require["quiqqer/quiqqer"]         = $quiqqerVersion;
         $require["tedivm/stash"]            = "0.11.*";
         $require["symfony/http-foundation"] = "*";
-
-//         foreach ( $list as $entry )
-//         {
-//             $version = $entry['version'];
-
-//             // so, we get newer versions
-//             if ( !preg_match( "/[\<\>\=\*]/", $version ) &&
-//                   preg_match( "/[0-9]/", $version ) )
-//             {
-//                 $version = '>='. $version;
-//             }
-
-//             $require[ $entry['name'] ] = $version;
-//         }
-
-        // composer and component installer should not be overwritten
-        $require["composer/composer"] = "1.0.*@dev";
+        $require["composer/composer"]       = "1.0.*@dev";
         $require["robloach/component-installer"] = "*";
+
+        foreach ( $list as $package ) {
+            $require[ $package['name'] ] = $package['version'];
+        }
+
+        ksort( $require );
 
         $template = str_replace(
             '{$REQUIRE}',
@@ -230,7 +242,7 @@ class Manager
             $template
         );
 
-        \QUI\System\Log::addDebug( $template );
+        $template = json_encode( json_decode( $template, true ), \JSON_PRETTY_PRINT );
 
         if ( file_exists( $this->_composer_json ) ) {
             unlink( $this->_composer_json );
@@ -246,13 +258,11 @@ class Manager
     /**
      * Return the composer array
      *
-     * @return array
+     * @return Array
      */
     protected function _getComposerJSON()
     {
-        if ( !file_exists( $this->_composer_json ) ) {
-            return array();
-        }
+        $this->_checkComposer();
 
         $json   = file_get_contents( $this->_composer_json );
         $result = json_decode( $json, true );
@@ -435,20 +445,58 @@ class Manager
     /**
      * Install Package
      *
-     * @param String $package
+     * @param String $package - name of the package
+     * @param String $version - [optional] version of the package default = dev-master
      */
-    public function install($package)
+    public function install($package, $version=false)
     {
-        //$this->_require[ $package ] = 'dev-master';
-        $this->_createComposerJSON();
+        $this->_checkComposer();
+
+        if ( !$version ) {
+            $version = 'dev-master';
+        }
 
         $result = $this->_execComposer('require', array(
             'packages' => array(
-                $package .':dev-master'
+                $package .':'. $version
             )
         ));
 
         \QUI\System\Log::writeRecursive( $result );
+    }
+
+
+    /**
+     * Add a Package to the composer json
+     *
+     * @param String|Array $package - name of the package
+     * @param String $version - [optional] version of the package default = dev-master
+     */
+    public function setPackage($package, $version=false)
+    {
+        if ( !$version ) {
+            $version = 'dev-master';
+        }
+
+        $json = $this->_getComposerJSON();
+
+        if ( is_array( $package ) )
+        {
+            foreach ( $package as $pkg ) {
+                $json['require'][ $pkg ] = $version;
+            }
+        } else
+        {
+            $json['require'][ $package ] = $version;
+        }
+
+        $json = json_encode( $json, \JSON_PRETTY_PRINT );
+
+        if ( file_exists( $this->_composer_json ) ) {
+            unlink( $this->_composer_json );
+        }
+
+        file_put_contents( $this->_composer_json, $json );
     }
 
     /**
@@ -621,7 +669,48 @@ class Manager
      */
     public function refreshServerList()
     {
-        $this->_createComposerJSON();
+        $this->checkUpdates();
+
+        $json = $this->_getComposerJSON();
+
+
+        // make the repository list
+        $servers      = $this->getServerList();
+        $repositories = array();
+
+        foreach ( $servers as $server => $params )
+        {
+            if ( $server == 'packagist' ) {
+                continue;
+            }
+
+            if ( !isset($params['active']) || $params['active'] != 1 ) {
+                continue;
+            }
+
+            $repositories[] = array(
+                'type' => $params['type'],
+                'url'  => $server
+            );
+        }
+
+        if ( isset( $servers['packagist'] ) &&
+             $servers['packagist']['active'] == 0 )
+        {
+            $repositories[] = array(
+                'packagist' => false
+            );
+        }
+
+
+        $json['repositories'] = $repositories;
+        $json = json_encode( $json, \JSON_PRETTY_PRINT );
+
+        if ( file_exists( $this->_composer_json ) ) {
+            unlink( $this->_composer_json );
+        }
+
+        file_put_contents( $this->_composer_json, $json );
     }
 
     /**
@@ -657,7 +746,7 @@ class Manager
         $Config->setValue( $server, 'active', $status );
         $Config->save();
 
-        $this->_createComposerJSON();
+        $this->refreshServerList();
     }
 
     /**
@@ -686,7 +775,7 @@ class Manager
 
         $Config->save();
 
-        $this->_createComposerJSON();
+        $this->refreshServerList();
     }
 
     /**
@@ -710,7 +799,7 @@ class Manager
 
         $Config->save();
 
-        $this->_createComposerJSON();
+        $this->refreshServerList();
     }
 
 /**
@@ -723,11 +812,14 @@ class Manager
      */
     public function checkUpdates()
     {
-        $this->_createComposerJSON();
+        $this->_checkComposer();
 
         $result = $this->_execComposer( 'update', array(
             '--dry-run' => true
         ));
+
+
+        \QUI\System\Log::addDebug( print_r($result, true) );
 
         foreach ( $result as $line )
         {
@@ -761,7 +853,7 @@ class Manager
                 if ( isset( $versions[ 1 ][ 0 ] ) )
                 {
                     $from = $versions[ 1 ][ 0 ];
-                    $to   = $versions[ 1 ][ 0 ]; // if to is not set
+                    $to   = $versions[ 1 ][ 0 ]; // if "to" isn't set
                 }
 
                 if ( isset( $versions[ 1 ][ 1 ] ) ) {

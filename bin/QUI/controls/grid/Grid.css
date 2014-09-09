@@ -49,6 +49,8 @@
     padding-left:5px;
     -moz-user-select:text;
     cursor:pointer;
+
+    box-sizing: content-box;
 }
 
 .omnigrid  div.bDiv .td [class^="icon-"],

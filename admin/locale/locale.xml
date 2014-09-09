@@ -360,10 +360,18 @@
                 <en><![CDATA[Logout]]></en>
             </locale>
 
-        <locale name="menu.profil.text">
+        <locale name="menu.profile.text">
             <de><![CDATA[Profil]]></de>
             <en><![CDATA[Profile]]></en>
         </locale>
+            <locale name="menu.profile.workspace.text">
+                <de><![CDATA[Arbeitsbereiche]]></de>
+                <en><![CDATA[Workspaces]]></en>
+            </locale>
+            <locale name="menu.profile.userProfile.text">
+                <de><![CDATA[Profil]]></de>
+                <en><![CDATA[Profile]]></en>
+            </locale>
 
         <locale name="menu.goto.text">
             <de><![CDATA[Gehe zu ...]]></de>
@@ -664,6 +672,10 @@
         <locale name="quiqqer.settings.cache.text">
             <de><![CDATA[Cache Arten]]></de>
             <en><![CDATA[Cache types]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.general.nocache">
+            <de><![CDATA[Kompletten Cache ausschalten. Nur im Entwicklungsmodus empfohlen.]]></de>
+            <en><![CDATA[Set the complete entire cache off. Recommended only in development mode.]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.handler.filesystem">
             <de><![CDATA[Dateisystem]]></de>

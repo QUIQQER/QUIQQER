@@ -219,6 +219,19 @@ class Manager
             }
         }
 
+        // all handlers false, so we use filesystem
+        if ( empty( $handlers ) )
+        {
+            $conf   = $Config->get('filesystem');
+            $params = array( 'path' => VAR_DIR .'cache/stack/' );
+
+            if ( !empty( $conf['path'] ) && is_dir( $conf['path'] ) ) {
+                $params['path'] = $conf['path'];
+            }
+
+            $handlers[] = new \Stash\Driver\FileSystem( $params );
+        }
+
         $Handler = new \Stash\Driver\Composite(array(
             'drivers' => $handlers
         ));
@@ -287,6 +300,17 @@ class Manager
      */
     static function get($name)
     {
+        if ( self::getConfig()->get( 'general', 'nocache' ) )
+        {
+            throw new \QUI\Cache\Exception(
+                \QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.lib.cache.manager.not.exist'
+                ),
+                404
+            );
+        }
+
         $Item = self::getStash( $name );
         $data = $Item->get();
 

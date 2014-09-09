@@ -565,30 +565,30 @@ define('controls/projects/project/media/FilePanel', [
             // open button
             var Inp = Body.getElement('input[name="file_url"]');
 
-            if ( Inp && typeof this.$OpenInNewWindow === 'undefined')
-            {
-                this.$OpenInNewWindow = new QUIButton({
-                    name    : 'show_file',
-                    image   : 'icon-eye-open',
-                    title   : Locale.get( lg, 'projects.project.site.media.filePanel.btn.openFile.title' ),
-                    alt     : Locale.get( lg, 'projects.project.site.media.filePanel.btn.openFile.alt' ),
-                    events  :
-                    {
-                        onClick : function(Btn) {
-                            window.open( self.getFile().getAttribute( 'cache_url' ) );
-                        }
-                    },
-                    styles : {
-                        'float' : 'right'
-                    }
-                });
-
-                if ( this.$File.getAttribute( 'active' ) ) {
-                    this.$OpenInNewWindow.disable();
-                }
-
-                this.$OpenInNewWindow.inject( Inp, 'after' );
-            }
+//            if ( Inp && typeof this.$OpenInNewWindow === 'undefined')
+//            {
+//                this.$OpenInNewWindow = new QUIButton({
+//                    name    : 'show_file',
+//                    image   : 'icon-eye-open',
+//                    title   : Locale.get( lg, 'projects.project.site.media.filePanel.btn.openFile.title' ),
+//                    alt     : Locale.get( lg, 'projects.project.site.media.filePanel.btn.openFile.alt' ),
+//                    events  :
+//                    {
+//                        onClick : function(Btn) {
+//                            window.open( self.getFile().getAttribute( 'cache_url' ) );
+//                        }
+//                    },
+//                    styles : {
+//                        'float' : 'right'
+//                    }
+//                });
+//
+//                if ( this.$File.getAttribute( 'active' ) ) {
+//                    this.$OpenInNewWindow.disable();
+//                }
+//
+//                this.$OpenInNewWindow.inject( Inp, 'after' );
+//            }
 
             if ( Inp && typeof this.$Download === 'undefined' )
             {

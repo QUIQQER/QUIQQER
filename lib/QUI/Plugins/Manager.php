@@ -270,7 +270,7 @@ class Manager extends \QUI\QDOM
                 return false;
             }
 
-        } catch ( \QUI\Cache\Exception $e )
+        } catch ( \QUI\Cache\Exception $Exception )
         {
             return false;
         }

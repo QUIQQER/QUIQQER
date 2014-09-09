@@ -235,16 +235,23 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
 
         $Statement->bindValue( 'oldpath', $old_path .'/' );
         $Statement->bindValue( 'newpath', $new_path .'/' );
-        $Statement->bindValue( 'search', $old_path ."%" );
+        $Statement->bindValue( 'search', $old_path ."/%" );
 
         $Statement->execute();
+
+        $title = $this->getAttribute( 'title' );
+
+        if ( $title == $this->getAttribute( 'name' ) ) {
+            $title = $newname;
+        }
 
         // update me
         \QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array(
-                'name' => $newname,
-                'file' => $new_path
+                'name'  => $newname,
+                'file'  => $new_path,
+                'title' => $title
             ),
             array('id' => $this->getId())
         );
@@ -789,7 +796,7 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
             );
         }
 
-        $new_file = $this->getFullPath() . $filename;
+        $new_file = $this->getFullPath() .'/'. $filename;
 
         if ( file_exists( $new_file ) ) {
             throw new \QUI\Exception( $filename .' existiert bereits', 705 );
@@ -811,11 +818,12 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
             $new_file_info['filename'] = time();
         }
 
+
         \QUI::getDataBase()->insert($table, array(
             'name' 	    => $new_file_info['filename'],
             'title'     => $title,
             'short'     => $title,
-            'file' 	    => $this->getAttribute('file') . $new_file_info['basename'],
+            'file' 	    => $this->getAttribute('file') .'/'. $new_file_info['basename'],
             'alt' 	    => $title,
             'c_date'    => date('Y-m-d h:i:s'),
             'e_date'    => date('Y-m-d h:i:s'),

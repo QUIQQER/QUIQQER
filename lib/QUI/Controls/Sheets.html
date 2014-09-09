@@ -1,0 +1,98 @@
+
+
+<div class="quiqqer-sheets-mobile hide-on-desktop">
+    <select name="select-sheet" class="hide-on-desktop" onchange="window.location = this.value">
+        {section name=sheets start=0 loop=$count}
+            {assign var=num value=$smarty.section.sheets.index}
+            <option value="{url site=$Site sheet=$num}"
+            {if $num == $active}
+                selected="selected"
+            {/if}
+            >{locale group="quiqqer/system"
+                value="controls.sheets.mobile.option"
+                from=$num
+                max=$count
+            }</option>
+        {/section}
+    </select>
+</div>
+
+<div class="quiqqer-sheets-desktop hide-on-mobile">
+    {if !isset($smarty.request.sheet) || $active == 1}
+        <span class="disabled fa fa-angle-double-left"
+            title="{t}quiqqer/system controls.sheets.first.page{/t}">
+        </span>
+    {else}
+        <a href="{url site=$Site sheet=1}"
+            class="fa fa-angle-double-left"
+            title="{t}quiqqer/system controls.sheets.first.page{/t}">
+        </a>
+    {/if}
+
+    {if !isset($smarty.request.sheet) || $active <= 1}
+        <span class="disabled fa fa-angle-left"
+            title="{t}quiqqer/system controls.sheets.back{/t}">
+        </span>
+    {else}
+        {math
+            assign=backward
+            equation="x - y"
+            x=$active
+            y=1
+        }
+
+        <a href="{url site=$Site sheet=$backward}"
+            class="fa fa-angle-left"
+            title="{t}quiqqer/system controls.sheets.back{/t}">
+        </a>
+    {/if}
+
+    {if $start > 1}
+        <span class="more">...</span>
+    {/if}
+
+
+    {section name=sheets start=$start loop=$end+1}
+        {assign var=num value=$smarty.section.sheets.index}
+        {if $num == $active}
+            <span class="current">{$num}</span>
+        {else}
+            <a href="{url site=$Site sheet=$num}">{$num}</a>
+        {/if}
+    {/section}
+
+
+    {if $end < $count}
+        <span class="more">...</span>
+    {/if}
+
+    {if $active >= $count}
+        <span class="disabled fa fa-angle-right"
+            title="{t}quiqqer/system controls.sheets.next{/t}"
+        >
+        </span>
+    {else}
+        {math
+            assign=forward
+            equation="x + y"
+            x=$active
+            y=1
+        }
+        <a href="{url site=$Site sheet=$forward}"
+           class="fa fa-angle-right"
+           title="{t}quiqqer/system controls.sheets.next{/t}"
+        >
+        </a>
+    {/if}
+
+    {if $active >= $count}
+        <span class="disabled fa fa-angle-double-right"
+            title="{t}quiqqer/system controls.sheets.last.page{/t}"
+        ></span>
+    {else}
+        <a href="{url site=$Site sheet=$count}"
+            title="{t}quiqqer/system controls.sheets.last.page{/t}"
+            class="fa fa-angle-double-right"
+        ></a>
+    {/if}
+</div>

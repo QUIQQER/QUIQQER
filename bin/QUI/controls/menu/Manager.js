@@ -1,5 +1,8 @@
+
 /**
+ * QUIQQER Main Menu
  *
+ * @author www.pcsg.de (Henning Leutz)
  */
 
 define('controls/menu/Manager', [
@@ -20,12 +23,14 @@ define('controls/menu/Manager', [
     return new Class({
 
         Extends : Control,
-        Type    : 'classes/menu/Manager',
+        Type    : 'controls/menu/Manager',
 
         initialize : function(options)
         {
             this.$Bar = null;
             this.parent( options );
+
+            this.$isLoaded = false;
         },
 
         /**
@@ -42,11 +47,25 @@ define('controls/menu/Manager', [
 
             this.$Bar.setParent( this );
 
-            Ajax.get('ajax_menu', function(result) {
+            Ajax.get('ajax_menu', function(result)
+            {
                 self.$Bar.insert( result );
+
+                self.$isLoaded = true;
+                self.fireEvent( 'menuLoaded' );
             });
 
             return this.$Bar.create();
+        },
+
+        /**
+         * Is the menu loaded?
+         *
+         * @return {Bool}
+         */
+        isLoaded : function()
+        {
+            return self.$isLoaded;
         },
 
         /**

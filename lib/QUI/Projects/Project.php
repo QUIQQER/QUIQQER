@@ -924,7 +924,8 @@ class Project
         try
         {
             return \QUI\Cache\Manager::get( $this->_cache_files['types'] );
-        } catch ( \QUI\Cache\Exception $e )
+
+        } catch ( \QUI\Cache\Exception $Exception )
         {
 
         }
@@ -970,7 +971,8 @@ class Project
         try
         {
             return \QUI\Cache\Manager::get( $this->_cache_files['gtypes'] );
-        } catch ( \QUI\Cache\Exception $e )
+
+        } catch ( \QUI\Cache\Exception $Exception )
         {
 
         }

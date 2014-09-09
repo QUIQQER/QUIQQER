@@ -1,0 +1,57 @@
+@CHARSET "UTF-8";
+
+.quiqqer-sheets-mobile select {
+    width: 100%;
+}
+
+
+.quiqqer-sheets-desktop {
+    border-right: 1px solid #D0D3D3;
+    float: left;
+    margin: 0;
+    width: 100%;
+}
+
+.quiqqer-sheets-desktop:last-child {
+    margin: 20px 0;
+}
+
+.quiqqer-sheets-desktop a,
+.quiqqer-sheets-desktop span {
+    float: left;
+    padding: 0px 10px;
+    margin: 0;
+    border: 1px solid #D0D3D3;
+    border-top: 1px solid #D0D3D3;
+    border-bottom: 1px solid #D0D3D3;
+    background: #FFFFFF;
+    text-decoration: none;
+    line-height: 24px;
+
+-webkit-box-sizing: border-box;
+   -moz-box-sizing: border-box;
+        box-sizing: border-box;
+}
+
+.quiqqer-sheets-desktop a {
+    color: #0A82B6;
+}
+
+.quiqqer-sheets-desktop span.disabled {
+    color: #AAAAAA;
+    border-color: #DDDDDD;
+    cursor: normal;
+}
+
+.quiqqer-sheets-desktop span.current {
+    color: #FFFFFF;
+    background: #42A9D7;
+    border-color: #42A9D7;
+    cursor: normal;
+}
+
+.quiqqer-sheets-desktop a:hover {
+    background: #B1C6CE;
+    color: #FFFFFF;
+    text-decoration: none !important;
+}

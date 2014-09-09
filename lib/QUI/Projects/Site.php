@@ -215,6 +215,19 @@ class Site extends \QUI\QDOM
     }
 
     /**
+     * Returns the Edit Site object from this Site
+     *
+     * @return \QUI\Projects\Site\Edit
+     */
+    public function getEdit()
+    {
+        return new \QUI\Projects\Site\Edit(
+            $this->getProject(),
+            $this->getId()
+        );
+    }
+
+    /**
      * Return the project object of the site
      *
      * @return \QUI\Projects\Project
@@ -245,8 +258,13 @@ class Site extends \QUI\QDOM
 
             $dir = OPT_DIR . $package['name'] .'/';
 
-            $this->_loadDatabases( $dir );
+            $this->_loadDatabases( $dir, $package['name'] );
         }
+
+        // onLoad event
+        $this->Events->fireEvent( 'load', array( $this ) );
+        \QUI::getEvents()->fireEvent( 'siteLoad', array( $this ) );
+
 
         // load type
         $type = $this->getAttribute('type');
@@ -321,10 +339,11 @@ class Site extends \QUI\QDOM
      * database.xml
      *
      * @param String $dir - Path to the package
+     * @param String $package - name of the package
      *
      * @rewrite it to events
      */
-    protected function _loadDatabases($dir)
+    protected function _loadDatabases($dir, $package)
     {
         $databaseXml = $dir .'database.xml';
 
@@ -337,50 +356,60 @@ class Site extends \QUI\QDOM
         $DataBaseXML = \QUI\Utils\XML::getDomFromXml( $databaseXml );
         $projects    = $DataBaseXML->getElementsByTagName( 'projects' );
 
-        if ( $projects && $projects->length )
+        if ( !$projects || !$projects->length ) {
+            return;
+        }
+
+        $project_name = $this->getProject()->getName();
+        $project_lang = $this->getProject()->getLang();
+
+        $tables = $projects->item( 0 )->getElementsByTagName( 'table' );
+
+        for ( $i = 0; $i < $tables->length; $i++ )
         {
-            $tables = $projects->item( 0 )->getElementsByTagName( 'table' );
+            $Table = $tables->item( $i );
 
-            for ( $i = 0; $i < $tables->length; $i++ )
+            if ( (int)$Table->getAttribute( 'no-site-reference' ) == 1 ) {
+                continue;
+            }
+
+            $fields = \QUI\Utils\DOM::dbTableDomToArray( $Table );
+
+            if ( !isset( $fields['suffix'] ) ||
+                 !isset( $fields['fields'] ) )
             {
-                $Table = $tables->item( $i );
+                continue;
+            }
 
-                if ( $Table->getAttribute( 'type' ) != 'site' ) {
+            $tbl       = $project_name .'_'. $project_lang .'_'. $fields['suffix'];
+            $fieldList = array_keys( $fields['fields'] );
+
+            $result = \QUI::getDataBase()->fetch(array(
+                'select' => $fieldList,
+                'from'   => $tbl,
+                'where'  => array(
+                    'id' => $this->getId()
+                ),
+                'limit' => 1
+            ));
+
+            // package.package.table.attribute
+            $attributePrfx = str_replace('/', '.', $package .'.'. $fields['suffix'] );
+
+            foreach ( $fieldList as $field )
+            {
+                if ( $field == 'id' ) {
                     continue;
                 }
 
-                $fields = \QUI\Utils\DOM::dbTableDomToArray( $Table );
-
-                if ( !isset( $fields['suffix'] ) ||
-                     !isset( $fields['fields'] ) )
-                {
+                if ( !isset( $result[0][ $field ] ) ) {
                     continue;
                 }
 
-                $tbl    = $project_name .'_'. $project_lang .'_'. $fields['suffix'];
-                $fields = array_keys( $fields['fields'] );
-
-                $result = \QUI::getDataBase()->fetch(array(
-                    'select' => $fields,
-                    'from'   => $tbl,
-                    'where'  => array(
-                        'id' => $this->getId()
-                    ),
-                    'limit' => 1
-                ));
-
-                foreach ( $fields as $field )
-                {
-                    if ( $field == 'id' ) {
-                        continue;
-                    }
-
-                    if ( !isset( $result[0][ $field ] ) ) {
-                        continue;
-                    }
-
-                    $this->setAttribute( $field, $result[0][ $field ] );
-                }
+                $this->setAttribute(
+                    $attributePrfx .'.'. $field,
+                    $result[0][ $field ]
+                );
             }
         }
     }

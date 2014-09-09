@@ -7,10 +7,9 @@
 namespace QUI\Utils;
 
 /**
- * Helper for the javascript QUI.control.grid.Grid
+ * Helper for the javascript controls/grid/Grid
  *
  * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.utils
  */
 
 class Grid extends \QUI\QDOM

@@ -378,7 +378,8 @@ class XML
                 }
 
                 $params = array(
-                    'name' => $Locale->getAttribute( 'name' )
+                    'name' => $Locale->getAttribute( 'name' ),
+                    'html' => $Locale->getAttribute( 'html' ) ? true : false
                 );
 
                 $translations = $Locale->childNodes;
@@ -941,9 +942,12 @@ class XML
                 $suffix = $table['suffix'];
                 $fields = $table['fields'];
 
-                $fields = array(
-                    'id' => 'bigint(20) NOT NULL'
-                ) + $fields;
+                if ( $table['no-site-reference'] !== true )
+                {
+                    $fields = array(
+                        'id' => 'bigint(20) NOT NULL PRIMARY KEY'
+                    ) + $fields;
+                }
 
 
                 // Projekte durchgehen

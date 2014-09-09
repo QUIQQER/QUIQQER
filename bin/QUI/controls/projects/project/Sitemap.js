@@ -81,6 +81,8 @@ define('controls/projects/project/Sitemap', [
                 multible : this.getAttribute( 'multible' )
             });
 
+            this.$Map.setParent( this );
+
             this.$Project = Projects.get(
                 this.getAttribute( 'project' ),
                 this.getAttribute( 'lang' )
@@ -200,8 +202,10 @@ define('controls/projects/project/Sitemap', [
                                     'quiqqer/system',
                                     'projects.project.sitemap.media'
                                 ),
-                                icon   : 'icon-picture',
-                                events :
+                                value    : 'media',
+                                icon     : 'icon-picture',
+                                dragable : true,
+                                events   :
                                 {
                                     onClick : function()
                                     {
@@ -489,7 +493,8 @@ define('controls/projects/project/Sitemap', [
                 text  : result.title,
                 alt   : result.name +'.html',
                 icon  : result.icon || 'icon-file-alt',
-                hasChildren : ( result.has_children ).toInt()
+                hasChildren : ( result.has_children ).toInt(),
+                dragable : true
             });
 
             if ( result.nav_hide == '1' )

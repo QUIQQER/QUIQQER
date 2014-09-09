@@ -1322,7 +1322,6 @@ class User implements \QUI\Interfaces\Users\User
 
         }
 
-
         $list       = \QUI::getPackageManager()->getInstalled();
         $attributes = array();
 
@@ -1348,7 +1347,7 @@ class User implements \QUI\Interfaces\Users\User
 
         \QUI\Cache\Manager::set( 'user/plugin-attribute-list', $attributes );
 
-        return \QUI\Cache\Manager::get( 'user/plugin-attribute-list' );
+        return $attributes;
     }
 
     /**

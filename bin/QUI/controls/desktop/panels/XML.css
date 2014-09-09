@@ -1,7 +1,12 @@
 
-.qui-xml-panel input {
+.qui-xml-panel input,
+.qui-xml-panel select {
     float: left;
     margin-right: 10px;
+}
+
+.qui-xml-panel select {
+    width: 150px;
 }
 
 .qui-xml-panel p {
@@ -23,5 +28,3 @@
     font-style: italic;
     margin: 10px 0 0 5px;
 }
-
-

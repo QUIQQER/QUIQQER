@@ -3,6 +3,13 @@
     <settings>
 
         <config name="cache">
+
+            <section name="general">
+                <conf name="nocache">
+                    <type><![CDATA[bool]]></type>
+                </conf>
+            </section>
+
             <section name="handlers">
                 <conf name="filesystem">
                     <type><![CDATA[bool]]></type>
@@ -84,6 +91,18 @@
 
             <categories>
                 <category name="settings">
+                    <title>
+                        <locale group="quiqqer/system" var="quiqqer.settings.general.title" />
+                    </title>
+                    <settings title="general" name="general">
+                        <input conf="general.nocache" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.cache.general.nocache" />
+                            </text>
+                        </input>
+                    </settings>
+
+
                     <title>
                         <locale group="quiqqer/system" var="quiqqer.settings.cache.title" />
                     </title>

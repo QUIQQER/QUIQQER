@@ -63,7 +63,8 @@
                 baseUrl : URL_DIR,
                 paths   : {
                     "package" : URL_OPT_DIR +'bin/',
-                    "locale"  : URL_VAR_DIR +'locale/bin'
+                    "locale"  : URL_VAR_DIR +'locale/bin',
+                    "qui"     : URL_OPT_DIR +'bin/qui/build/qui',
                 },
                 waitSeconds : 0,
                 locale      : QUIQQER_USER.lang +"-"+ QUIQQER_USER.lang,
@@ -104,6 +105,7 @@
         <script type="text/javascript" src="{$siteScript}"></script>
     {/if}
 
+    {$headerExtend}
 
     <title>
         {$Template->getAttribute('site_title_prefix')}

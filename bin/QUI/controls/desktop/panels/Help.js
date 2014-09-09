@@ -1,10 +1,11 @@
 /**
  * Help panel
  *
+ * @module controls/desktop/panels/Help
  * @author www.pcsg.de (Henning Leutz)
  */
 
-define('controls/desktop/panels/Help', [
+define([
 
     'qui/QUI',
     'qui/controls/desktop/Panel',

@@ -51,10 +51,6 @@
                     <type><![CDATA[bool]]></type>
                     <defaultvalue>0</defaultvalue>
                 </conf>
-                <conf name="stability">
-                    <type><![CDATA[string]]></type>
-                    <defaultvalue>stable</defaultvalue>
-                </conf>
                 <conf name="quiqqer_version">
                     <type><![CDATA[string]]></type>
                     <defaultvalue>master-dev</defaultvalue>
@@ -211,7 +207,7 @@
             </params>
 
             <categories>
-                <category name="settings">
+                <category name="settings" require="controls/system/settings/Config">
                     <text>
                         <locale group="quiqqer/system" var="quiqqer.settings.general.title" />
                     </text>
@@ -273,22 +269,11 @@
                         <title>
                             <locale group="quiqqer/system" var="quiqqer.settings.general.updates.title" />
                         </title>
-                        <select conf="globals.stability">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.general.updates.stability" />
-                            </text>
-                            <option value="stable">stable</option>
-                            <option value="RC">RC</option>
-                            <option value="beta">beta</option>
-                            <option value="alpha">alpha</option>
-                            <option value="dev">dev</option>
-                        </select>
-
-                        <input conf="globals.quiqqer_version">
+                        <select conf="globals.quiqqer_version">
                             <text>
                                 <locale group="quiqqer/system" var="quiqqer.settings.general.version.title" />
                             </text>
-                        </input>
+                        </select>
                     </settings>
                 </category>
 
