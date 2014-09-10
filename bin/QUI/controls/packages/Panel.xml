@@ -30,7 +30,7 @@
             <en><![CDATA[Plugins]]></en>
         </locale>
         <locale name="packages.category.packages">
-            <de><![CDATA[Packete]]></de>
+            <de><![CDATA[Pakete]]></de>
             <en><![CDATA[Packages]]></en>
         </locale>
         <locale name="packages.category.server">
@@ -38,7 +38,7 @@
             <en><![CDATA[Server management]]></en>
         </locale>
         <locale name="packages.category.search">
-            <de><![CDATA[Packete / Plugins suchen und installieren]]></de>
+            <de><![CDATA[Pakete / Plugins suchen und installieren]]></de>
             <en><![CDATA[Packages / Plugin search and installation]]></en>
         </locale>
         <locale name="packages.category.system.health">
@@ -53,7 +53,7 @@
         </locale>
         <locale name="packages.grid.update.information">
             <de><![CDATA[
-                <p>Alle Plugins, Packete und auch QUIQQER selbst werden auf neuere Versionen geprüft.</p>
+                <p>Alle Plugins, Pakete und auch QUIQQER selbst werden auf neuere Versionen geprüft.</p>
                 <p>Klicken Sie "Auf Update prüfen" um die Prüfung zu starten.</p>
             ]]></de>
             <en><![CDATA[
@@ -120,7 +120,7 @@
             <en><![CDATA[Dependencies]]></en>
         </locale>
         <locale name="packages.grid.other.package.dependencies">
-            <de><![CDATA[Packete die Abhängig sind von [pkg]]]></de>
+            <de><![CDATA[Pakete die Abhängig sind von [pkg]]]></de>
             <en><![CDATA[Packages that are dependent of [pkg]]]></en>
         </locale>
 
@@ -142,11 +142,11 @@
         </locale>
 
         <locale name="packages.search.title">
-            <de><![CDATA[Packete / Plugins suchen und installieren]]></de>
+            <de><![CDATA[Pakete / Plugins suchen und installieren]]></de>
             <en><![CDATA[Packages / Plugin search and installation]]></en>
         </locale>
         <locale name="packages.search.description">
-            <de><![CDATA[Suchen und installieren Sie neue Packete und Plugins.]]></de>
+            <de><![CDATA[Suchen und installieren Sie neue Pakete und Plugins.]]></de>
             <en><![CDATA[Search and install new packages and plugins.]]></en>
         </locale>
 
