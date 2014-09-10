@@ -465,7 +465,6 @@ class Manager
         \QUI\System\Log::writeRecursive( $result );
     }
 
-
     /**
      * Add a Package to the composer json
      *

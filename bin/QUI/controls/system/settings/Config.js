@@ -23,8 +23,7 @@ define([
         Type    : 'controls/system/settings/Config',
 
         Binds : [
-            '$onImport',
-            '$onDestroy'
+            '$onImport'
         ],
 
         initialize : function(Panel)
@@ -32,8 +31,7 @@ define([
             this.$Panel = Panel;
 
             this.addEvents({
-                onImport  : this.$onImport,
-                onDestroy : this.$onDestroy
+                onImport : this.$onImport
             });
         },
 
@@ -107,10 +105,12 @@ define([
                         {
                             var id = Win.getId();
 
-                            result.push( 'quiqqer/qui' )
-                                  .push( 'quiqqer/quiqqer' )
-                                  .push( 'quiqqer/qui-php' ).
-                                  .push( 'quiqqer/utils' );
+                            result.push(
+                                { name : 'quiqqer/qui' },
+                                { name : 'quiqqer/quiqqer' },
+                                { name : 'quiqqer/qui-php' },
+                                { name : 'quiqqer/utils' }
+                            );
 
                             for ( var i = 0, len = result.length; i < len; i++ )
                             {
