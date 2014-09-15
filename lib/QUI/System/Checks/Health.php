@@ -157,4 +157,57 @@ class Health
         return $result;
     }
 
+    /**
+     * check if all files are writable
+     *
+     * @throws \QUI\Exception
+     */
+    static function checkWritable()
+    {
+        // check files
+        $md5hashFile = CMS_DIR .'checklist.md5';
+        $lines       = file( $md5hashFile );
+        $notWritable = array();
+
+        foreach ( $lines as $line )
+        {
+            $line = explode( ' ', $line );
+
+            if ( !is_writable( CMS_DIR . $line[ 1 ] ) ) {
+                $notWritable[] = CMS_DIR . $line[ 1 ];
+            }
+        }
+
+        if ( !empty( $notWritable ) )
+        {
+            throw new \QUI\Exception(
+                \QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.system.health.not.writable'
+                )
+            );
+        }
+
+        // check folders
+        $result = shell_exec( 'find '. CMS_DIR .' -not -path \'*/\.*\' -type d' );
+        $lines  = explode( "\n", trim( $result ) );
+
+        foreach ( $lines as $line )
+        {
+            if ( !is_writable( $line ) ) {
+                $notWritable[] = $line;
+            }
+        }
+
+        if ( !empty( $notWritable ) )
+        {
+            throw new \QUI\Exception(
+                \QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.system.health.not.writable'
+                )
+            );
+        }
+    }
 }
+

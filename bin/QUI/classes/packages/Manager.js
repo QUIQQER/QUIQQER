@@ -117,7 +117,7 @@ define([
         {
             var self = this;
 
-            Ajax.get('ajax_system_packages_setVersion', function(result)
+            Ajax.post('ajax_system_packages_setVersion', function(result)
             {
                 self.update(pkg, function()
                 {
@@ -127,8 +127,8 @@ define([
                 });
 
             }, {
-                'package' : pkg,
-                version   : version
+                packages : JSON.encode( pkg ),
+                version  : version
             });
         }
     });

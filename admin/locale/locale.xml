@@ -767,6 +767,11 @@
             <de><![CDATA[Template wurde nicht gefunden.]]></de>
             <en><![CDATA[Template not found.]]></en>
         </locale>
+        <locale name="exception.system.health.not.writable">
+            <de><![CDATA[Bitte überprüfen Sie Ihre Dateirechte. Einige Datein und oder Ordner sind nicht beschreibbar.]]></de>
+            <en><![CDATA[Please check your file permissions. Some Folders or Files are not writable.]]></en>
+        </locale>
+
 
 
     </groups>
