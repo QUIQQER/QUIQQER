@@ -61,6 +61,10 @@
                 <p>Click "Check for updates" to start the check.</p>
             ]]></en>
         </locale>
+        <locale name="packages.grid.update.btn.execute">
+            <de><![CDATA[Komplettes Update durchführen.]]></de>
+            <en><![CDATA[Exceute a complete update.]]></en>
+        </locale>
         <locale name="packages.grid.update.btn.start">
             <de><![CDATA[Auf Updates prüfen]]></de>
             <en><![CDATA[Check for updates]]></en>
