@@ -25,6 +25,7 @@ define('controls/projects/project/Panel', [
     'qui/controls/sitemap/Filter',
 
     'Locale',
+    'controls/projects/Manager',
 
     'css!controls/projects/project/Panel.css'
 
@@ -44,7 +45,8 @@ define('controls/projects/project/Panel', [
         QUISitemapItem     = arguments[ 7 ],
         QUISitemapFilter   = arguments[ 8 ],
 
-        Locale             = arguments[ 9 ];
+        Locale             = arguments[ 9 ],
+        ProjectManager     = arguments[ 10 ];
 
     /**
      * @class controls/projects/project/Panel
@@ -234,14 +236,43 @@ define('controls/projects/project/Panel', [
                         return;
                     }
 
-                    for ( var key in result )
+                    if ( Object.getLength( result ) )
                     {
-                        self.setAttribute( 'project', key );
-                        self.setAttribute( 'lang', result[ key ].default_lang );
-                        break;
+                        for ( var key in result )
+                        {
+                            self.setAttribute( 'project', key );
+                            self.setAttribute( 'lang', result[ key ].default_lang );
+                            break;
+                        }
+
+                        self.openProject();
+                        self.Loader.hide();
+                        return;
                     }
 
-                    self.openProject();
+                    // no projects exists
+                    var Body = self.getBody();
+
+                    Body.set( 'html', '<p>Leider existieren noch keine Projekte</p>' );
+
+                    new QUIButton({
+                        textimage : 'icon-home',
+                        text : 'Projekt erstellen',
+                        events :
+                        {
+                            onClick : function()
+                            {
+                                var PM = new ProjectManager();
+
+                                PanelUtils.openPanelInTasks( PM );
+                                PM.openAddProject();
+                            }
+                        },
+                        styles : {
+                            margin : '10px 0 0 0'
+                        }
+                    }).inject( Body );
+
                     self.Loader.hide();
                 });
 
@@ -287,6 +318,13 @@ define('controls/projects/project/Panel', [
 
             Projects.getList(function(result)
             {
+                if ( !Object.getLength( result ) )
+                {
+                    self.Loader.hide();
+                    return;
+                }
+
+
                 var i, l, langs, len,
                     scrollsize, Map, Project,
                     func_project_click, func_media_click, func_trash_click;
