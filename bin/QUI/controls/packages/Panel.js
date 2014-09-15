@@ -7,16 +7,19 @@
 
 define('controls/packages/Panel', [
 
-    'qui/controls/desktop/Panel',
     'Locale',
     'Ajax',
+    'classes/packages/Manager',
     'controls/grid/Grid',
+    'controls/packages/DetailWindow',
+    'qui/controls/desktop/Panel',
     'qui/controls/windows/Confirm',
+    'qui/controls/windows/Popup',
     'qui/controls/buttons/Button',
 
     'css!controls/packages/Panel.css'
 
-],function(QUIPanel, Locale, Ajax, Grid, QUIConfirm, QUIButton)
+],function(Locale, Ajax, PackageManager, Grid, DetailWindow, QUIPanel, QUIConfirm, QUIWindow, QUIButton)
 {
     "use strict";
 
@@ -93,6 +96,7 @@ define('controls/packages/Panel', [
             this.$SearchGrid = null;
             this.$HealthGrid = null;
 
+            this.$Manager  = new PackageManager();
             this.$packages = {};
 
             this.addEvents({
@@ -357,7 +361,7 @@ define('controls/packages/Panel', [
                 }
             }
 
-            Ajax.post('ajax_system_setup', function(result, Request)
+            this.$Manager.setup( pkg, function()
             {
                 if ( typeof Btn === 'undefined' ) {
                     return;
@@ -370,8 +374,6 @@ define('controls/packages/Panel', [
                 if ( Btn.getAttribute( 'icon' ) ) {
                     Btn.setAttribute( 'icon', 'icon-hdd' );
                 }
-            }, {
-                'package' : pkg || false
             });
         },
 
@@ -386,7 +388,7 @@ define('controls/packages/Panel', [
 
             Btn.setAttribute( 'textimage', 'icon-refresh icon-spin' );
 
-            Ajax.get('ajax_system_update_check', function(result, Request)
+            this.$Manager.checkUpdate(function(result)
             {
                 Btn.setAttribute( 'textimage', 'icon-refresh' );
 
@@ -458,14 +460,7 @@ define('controls/packages/Panel', [
          */
         update : function(callback, pkg)
         {
-           Ajax.post('ajax_system_update', function(result, Request)
-           {
-               if ( typeof callback !== 'undefined' ) {
-                   callback( result, Request );
-               }
-           }, {
-               'package' : pkg || false
-           });
+            this.$Manager.update( pkg, callback );
         },
 
         /**
@@ -477,7 +472,7 @@ define('controls/packages/Panel', [
         {
             Btn.setAttribute( 'image', 'icon-refresh icon-spin' );
 
-            this.update(function(result, Request)
+            this.$Manager.update(function(result)
             {
                 Btn.setAttribute( 'image', 'icon-ok' );
 
@@ -578,7 +573,8 @@ define('controls/packages/Panel', [
                 multipleSelection : true,
                 resizeHeaderOnly  : true,
 
-                accordion : true,
+                accordion             : true,
+                openAccordionOnClick  : false,
                 accordionLiveRenderer : function(data)
                 {
                     var GridObj = data.grid,
@@ -643,6 +639,9 @@ define('controls/packages/Panel', [
             }
 
             GridObj.refresh();
+            GridObj.addEvent('onDblClick', function(event) {
+                self.openPackageDetails( GridObj.getDataByRow( event.row ).name );
+            });
         },
 
         /**
@@ -737,24 +736,111 @@ define('controls/packages/Panel', [
          */
         getPackage : function(pkg, onfinish)
         {
-            if ( this.$packages[ pkg ] )
-            {
-                onfinish( this.$packages[ pkg ] );
-                return;
-            }
+            this.$Manager.getPackage( pkg, onfinish );
+        },
 
+        /**
+         * Open package detail window
+         */
+        openPackageDetails : function(pkg)
+        {
             var self = this;
 
-            Ajax.get('ajax_system_packages_get', function(result, Request)
-            {
-                self.$packages[ pkg ] = result;
-
-                if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( result, Request );
-                }
-            }, {
+            new DetailWindow({
                 'package' : pkg
-            });
+            }).open();
+
+return;
+            new QUIWindow({
+                title     : 'Paket Details '+ pkg,
+                maxWidth  : 400,
+                maxHeight : 500,
+                events :
+                {
+                    onOpen : function(Win)
+                    {
+                        Win.Loader.show();
+
+                        self.getPackage(pkg, function(result)
+                        {
+                            var Content = Win.getContent();
+
+                            Win.getContent().set(
+                                'html',
+
+                                '<table class="data-table qui-packages-package-window-details">'+
+                                    '<thead>'+
+                                        '<tr colspan="2">'+
+                                            '<th class="package-name"></th>'+
+                                        '</tr>'+
+                                    '</thead>'+
+                                    '<tbody>'+
+                                        '<tr class="odd">'+
+                                            '<td>Beschreibung</td>'+
+                                            '<td class="package-desc"></td>'+
+                                        '</tr>'+
+                                        '<tr class="even">'+
+                                            '<td>Aktuelle Version</td>'+
+                                            '<td class="package-version"></td>'+
+                                        '</tr>'+
+                                        '<tr class="odd">'+
+                                            '<td>Verfügbare Versionen</td>'+
+                                            '<td>'+
+                                                '<select name="versions"></select>'+
+                                            '</td>'+
+                                        '</tr>'+
+                                        '<tr class="even">'+
+                                            '<td>Benötigte Pakete</td>'+
+                                            '<td class="package-require"></td>'+
+                                        '</tr>'+
+                                    '</tbody>'+
+                                '</table>'
+                            );
+
+                            var versions = result.versions || [],
+                                Versions = Content.getElement( '[name="versions"]' ),
+                                Name     = Content.getElement( '.package-name' ),
+                                Desc     = Content.getElement( '.package-desc' ),
+                                Require  = Content.getElement( '.package-require' ),
+                                Version  = Content.getElement( '.package-version' );
+
+
+                            Name.set( 'html', result.name );
+                            Desc.set( 'html', result.description );
+                            Version.set( 'html', result.version );
+                            Require.set( 'html', '' );
+
+                            for ( var i = 0, len = versions.length; i < len; i++ )
+                            {
+                                new Element('option', {
+                                    value : versions[ i ],
+                                    html  : versions[ i ]
+                                }).inject( Versions );
+                            }
+
+                            var RequireList = new Element('ul').inject( Require );
+
+                            Object.each( result.require, function(version, key)
+                            {
+                                new Element('li', {
+                                    html : key +' - '+ version
+                                }).inject( RequireList );
+                            });
+
+                            // version change
+                            Versions.addEvent('change', function()
+                            {
+                                Win.openSheet(function(Sheet)
+                                {
+
+                                });
+                            });
+
+                            Win.Loader.hide();
+                        });
+                    }
+                }
+            }).open();
         },
 
     /**
