@@ -1,15 +1,13 @@
 <?php
 
 /**
- *
- * @author hen
- *
+ * \QUI\System\Console\Tools\Setup
  */
 namespace QUI\System\Console\Tools;
 
 /**
- *
- * @author hen
+ * Execute the system setup
+ * @author www.pcsg.de (Henning Leutz)
  */
 class Setup extends \QUI\System\Console\Tool
 {
