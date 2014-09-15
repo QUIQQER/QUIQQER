@@ -457,6 +457,12 @@ class Console
      */
     public function title()
     {
+        $params = $this->_read_argv();
+
+        if ( isset( $params['--noLogo'] ) ) {
+            return;
+        }
+
         $str = '
          _______          _________ _______  _______  _______  _______
         (  ___  )|\     /|\__   __/(  ___  )(  ___  )(  ____ \(  ____ )
