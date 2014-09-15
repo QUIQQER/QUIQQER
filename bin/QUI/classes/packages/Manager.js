@@ -127,7 +127,7 @@ define([
                 });
 
             }, {
-                'package' : pkg,
+                'package' : JSON.encode( pkg ),
                 version   : version
             });
         }

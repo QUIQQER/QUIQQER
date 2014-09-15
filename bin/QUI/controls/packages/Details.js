@@ -128,10 +128,7 @@ define([
 
                 for ( var i = 0, len = versions.length; i < len; i++ )
                 {
-                    // because, dev-master could be display with a *
-                    if ( versions[ i ].contains( 'dev-master' ) ) {
-                        versions[ i ] = 'dev-master';
-                    }
+                    versions[ i ] = versions[ i ].replace('* ', '');
 
                     new Element('option', {
                         value : versions[ i ],
