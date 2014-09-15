@@ -23,8 +23,7 @@ define([
         Type    : 'controls/system/settings/Config',
 
         Binds : [
-            '$onImport',
-            '$onDestroy'
+            '$onImport'
         ],
 
         initialize : function(Panel)
@@ -32,8 +31,7 @@ define([
             this.$Panel = Panel;
 
             this.addEvents({
-                onImport  : this.$onImport,
-                onDestroy : this.$onDestroy
+                onImport : this.$onImport
             });
         },
 
@@ -106,6 +104,13 @@ define([
                         Ajax.get('ajax_system_packages_list', function(result)
                         {
                             var id = Win.getId();
+
+                            result.push(
+                                { name : 'quiqqer/qui' },
+                                { name : 'quiqqer/quiqqer' },
+                                { name : 'quiqqer/qui-php' },
+                                { name : 'quiqqer/utils' }
+                            );
 
                             for ( var i = 0, len = result.length; i < len; i++ )
                             {

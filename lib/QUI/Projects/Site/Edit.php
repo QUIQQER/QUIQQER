@@ -544,6 +544,7 @@ class Edit extends \QUI\Projects\Site
         $packages = \QUI::getPackageManager()->getPackageDatabaseXmlList();
         $name     = $Project->getName();
         $lang     = $Project->getLang();
+        $siteType = $this->getAttribute( 'type' );
 
         // @todo fields and table list must cached -> performance
         foreach ( $packages as $package )
@@ -562,6 +563,24 @@ class Edit extends \QUI\Projects\Site
                 if ( $Table->getAttribute( 'no-auto-update' ) ) {
                     continue;
                 }
+
+                // types check
+                $types = $Table->getAttribute( 'site-types' );
+
+                if ( $types ) {
+                    $types = explode( ',', $types );
+                }
+
+                if ( !empty( $types ) )
+                {
+                    foreach ( $types as $allowedType )
+                    {
+                        if ( !StringUtils::match( $allowedType, $siteType ) ) {
+                            continue;
+                        }
+                    }
+                }
+
 
                 $suffix = $Table->getAttribute( 'name' );
                 $fields = $Table->getElementsByTagName( 'field' );

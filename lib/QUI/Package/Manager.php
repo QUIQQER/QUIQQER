@@ -465,7 +465,6 @@ class Manager
         \QUI\System\Log::writeRecursive( $result );
     }
 
-
     /**
      * Add a Package to the composer json
      *
@@ -507,7 +506,19 @@ class Manager
      */
     public function getPackage($package)
     {
-        $list = $this->_getList();
+        $cache = 'packages/cache/info/'. $package;
+
+        try
+        {
+            return \QUI\Cache\Manager::get( $cache );
+
+        } catch ( \QUI\Exception $Exception )
+        {
+            \QUI\System\Log::addDebug( $Exception->getMessage() );
+        }
+
+        $list   = $this->_getList();
+        $result = array();
 
         foreach ( $list as $pkg )
         {
@@ -518,58 +529,24 @@ class Manager
             if ( $pkg['name'] == $package )
             {
                 $pkg['dependencies'] = $this->getDependencies( $package );
-
-                return $pkg;
+                $result = $pkg;
+                break;
             }
         }
 
-        // show command
-        if ( $this->_exec )
-        {
-            $params  = array();
-            $package = \QUI\Utils\Security\Orthos::clear( $package );
+        $showData = $this->show( $package );
 
-            $exec_result = $this->_execComposer('show', array(
-               'tokens' => $package
-            ));
-
-            foreach ( $exec_result as $key => $line )
-            {
-                if ( strpos( $line, '[InvalidArgumentException]' ) !== false ) {
-                    break;
-                }
-
-                if ( strpos( $line, 'Fatal error' ) !== false ) {
-                    break;
-                }
-
-                if ( strpos( $line, ':' ) )
-                {
-                    $parts = explode( ':', $line );
-
-                    $key   = trim( $parts[0] );
-                    $value = trim( $parts[1] );
-
-                    if ( $key == 'descrip.' ) {
-                        $key = 'description';
-                    }
-
-                    $params[ $key ] = $value;
-                }
-
-                if ( $line == 'requires' )
-                {
-                    $_temp = $exec_result;
-
-                    $params[ 'require' ] = array_slice( $_temp, $key + 1 );
-                }
-            }
-
-            return $params;
+        if ( isset( $showData['versions'] ) ) {
+            $result['versions'] = $showData['versions'];
         }
 
+        if ( isset( $showData['require'] ) ) {
+            $result['require'] = $showData['require'];
+        }
 
-        return array();
+        \QUI\Cache\Manager::set( $cache, $result, 3600 );
+
+        return $result;
     }
 
     /**
@@ -594,6 +571,71 @@ class Manager
                 $result[] = $pkg['name'];
             }
         }
+
+        return $result;
+    }
+
+    /**
+     * Return package details
+     *
+     * @param String $package
+     * @return Array
+     */
+    public function show($package)
+    {
+        $cache = 'packages/cache/show/'. $package;
+
+        try
+        {
+            return \QUI\Cache\Manager::get( $cache );
+
+        } catch ( \QUI\Exception $Exception )
+        {
+            \QUI\System\Log::addDebug( $Exception->getMessage() );
+        }
+
+        $this->_checkComposer();
+
+        $result = array();
+
+        $show = $this->_execComposer('show', array(
+            'package' => $package
+        ), true);
+
+        foreach ( $show as $k => $line )
+        {
+            if ( strpos( $line , '<info>') === false ) {
+                continue;
+            }
+
+            if ( strpos( $line , ':') === false ) {
+                continue;
+            }
+
+            $line   = explode( ':', $line );
+            $key    = trim( strip_tags( $line[ 0 ] ) );
+            $value  = trim( strip_tags( $line[ 1 ] ) );
+
+            if ( $key == 'versions' ) {
+                $value = array_map( 'trim',  explode( ',', $value ) );
+            }
+
+            if ( $key == 'descrip.' ) {
+                $key = 'description';
+            }
+
+            if ( $line == 'requires' )
+            {
+                $_temp = $show;
+                $result[ 'require' ] = array_slice( $_temp, $k + 1 );
+
+                continue;
+            }
+
+            $result[ $key ] = $value;
+        }
+
+        \QUI\Cache\Manager::set( $cache, $result, 3600 );
 
         return $result;
     }
@@ -813,6 +855,8 @@ class Manager
     public function checkUpdates()
     {
         $this->_checkComposer();
+
+        $packages = array();
 
         $result = $this->_execComposer( 'update', array(
             '--dry-run' => true
@@ -1086,7 +1130,7 @@ class Manager
      * @param String $command
      * @param Array $params
      */
-    protected function _execComposer($command, $params=array())
+    protected function _execComposer($command, $params=array(), $showInfo=false)
     {
         // composer output some warnings that composer/cache is not empty
         try
@@ -1139,7 +1183,7 @@ class Manager
                 continue;
             }
 
-            if ( strpos( $entry, '<info>' ) !== false ) {
+            if ( $showInfo === false && strpos( $entry, '<info>' ) !== false ) {
                 continue;
             }
 

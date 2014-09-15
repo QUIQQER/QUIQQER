@@ -1,0 +1,14 @@
+@CHARSET "UTF-8";
+
+
+/** details
+ =============================================== */
+
+.qui-packages-package-window-details ul {
+    padding: 0;
+    margin: 0;
+}
+
+.qui-packages-package-window-details li {
+    list-style-type: none;
+}

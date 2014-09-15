@@ -475,12 +475,6 @@ class QUI
      */
     static function version()
     {
-        $package = self::getPackageManager()->getPackage( 'quiqqer/quiqqer' );
-
-        if ( $package && isset( $package['version'] ) ) {
-            return $package['version'];
-        }
-
         return self::getPackageManager()->getVersion();
     }
 

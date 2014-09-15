@@ -6,6 +6,8 @@
 
 namespace QUI\Projects;
 
+use \QUI\Utils\String as StringUtils;
+
 /**
  * Site Objekt - eine einzelne Seite
  *
@@ -362,6 +364,7 @@ class Site extends \QUI\QDOM
 
         $project_name = $this->getProject()->getName();
         $project_lang = $this->getProject()->getLang();
+        $siteType     = $this->getAttribute( 'type' );
 
         $tables = $projects->item( 0 )->getElementsByTagName( 'table' );
 
@@ -373,6 +376,24 @@ class Site extends \QUI\QDOM
                 continue;
             }
 
+            // type check
+            $types = $Table->getAttribute( 'site-types' );
+
+            if ( $types ) {
+                $types = explode( ',', $types );
+            }
+
+            if ( !empty( $types ) )
+            {
+                foreach ( $types as $allowedType )
+                {
+                    if ( !StringUtils::match( $allowedType, $siteType ) ) {
+                        continue;
+                    }
+                }
+            }
+
+            // get database fields
             $fields = \QUI\Utils\DOM::dbTableDomToArray( $Table );
 
             if ( !isset( $fields['suffix'] ) ||
@@ -381,6 +402,7 @@ class Site extends \QUI\QDOM
                 continue;
             }
 
+            // get data
             $tbl       = $project_name .'_'. $project_lang .'_'. $fields['suffix'];
             $fieldList = array_keys( $fields['fields'] );
 
@@ -413,56 +435,6 @@ class Site extends \QUI\QDOM
             }
         }
     }
-
-    /**
-     * Load the Plugin into the site
-     * site.xml and onLoad method
-     *
-     * @param unknown_type $Plugin
-     */
-//     protected function _loadPlugin($Plugin)
-//     {
-//         $Project  = $this->getProject();
-//         $site_xml = $Plugin->getAttribute( '_folder_' ) .'site.xml';
-
-//         if ( method_exists( $Plugin, 'onLoad' ) ) {
-//             $Plugin->onLoad( $this, $Project );
-//         }
-
-//         // site.xml
-//         if ( !file_exists( $site_xml ) ) {
-//             return;
-//         }
-
-//         $SiteXML    = \QUI\Utils\XML::getDomFromXml( $site_xml );
-//         $attributes = $SiteXML->getElementsByTagName( 'attribute' );
-
-//         if ( !$attributes->length ) {
-//             return;
-//         }
-
-//         for ( $c = 0; $c < $attributes->length; $c++ )
-//         {
-//             $Attribute = $attributes->item( $c );
-
-//             $attr  = $Attribute->getAttribute( 'name' );
-//             $value = $Attribute->getAttribute( 'value' );
-
-//             $field    = $Attribute->getAttribute( 'field' );
-//             $database = $Attribute->getAttribute( 'database' );
-
-//             $this->setAttribute( $attr, $value );
-
-//             if ( isset( $this->_database_data[ $database ] ) &&
-//                  isset( $this->_database_data[ $database ][ $field ] ) )
-//             {
-//                 $this->setAttribute(
-//                     $attr,
-//                     $this->_database_data[ $database ][ $field ]
-//                 );
-//             }
-//         }
-//     }
 
     /**
      * Serialisierungsdaten
