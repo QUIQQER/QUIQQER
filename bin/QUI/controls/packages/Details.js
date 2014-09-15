@@ -172,6 +172,23 @@ define([
         },
 
         /**
+         * Set the version of the package
+         *
+         * @param {String} version - wanted version
+         */
+        setVersion : function(version)
+        {
+            var self = this;
+
+            this.Loader.show();
+
+            this.$Manager.setVersion( this.getAttribute( 'package' ), version, function()
+            {
+                self.Loader.hide();
+            });
+        },
+
+        /**
          * event : version change
          */
         $onVersionChange : function()
@@ -184,7 +201,9 @@ define([
             {
                 Content.set(
                     'html',
-                    '<p>Möchten Sie wirklich auf die die Version '+ self.$Versions.value +' wechseln?</p>'
+
+                    '<p>Möchten Sie wirklich auf die die Version '+ self.$Versions.value +' wechseln?</p>'+
+                    '<p>Es wird ein Update des Packates durchgeführt</p>'
                 );
 
                 Content.setStyles({
@@ -192,7 +211,7 @@ define([
                 });
 
                 new QUIButton({
-                    text : 'Abbrechen',
+                    text   : 'Abbrechen',
                     events :
                     {
                         onClick : function()
@@ -209,11 +228,14 @@ define([
                 }).inject( Content );
 
                 new QUIButton({
-                    text : 'Übernehmen',
+                    text   : 'Übernehmen',
                     events :
                     {
-                        onClick : function() {
+                        onClick : function()
+                        {
+                            Sheet.fireEvent( 'close' );
 
+                            self.setVersion( self.$Versions.value );
                         }
                     },
                     styles : {

@@ -104,8 +104,33 @@ define([
             }, {
                 'package' : pkg
             });
-        }
+        },
 
+        /**
+         * Change / Set the Version for a package
+         *
+         * @param {String} pkg - Name of the package
+         * @param {Strng} version - Version of the package
+         * @param {Function} callback - callback function
+         */
+        setVersion : function(pkg, version, callback)
+        {
+            var self = this;
+
+            Ajax.get('ajax_system_packages_setVersion', function(result)
+            {
+                self.update(pkg, function()
+                {
+                    if ( typeof callback !== 'undefined' ) {
+                        callback( result );
+                    }
+                });
+
+            }, {
+                'package' : pkg,
+                version   : version
+            });
+        }
     });
 
 });
