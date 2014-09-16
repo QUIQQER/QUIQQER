@@ -589,8 +589,8 @@ define('controls/projects/project/Sitemap', [
                 ).appendChild(
                     new QUIContextmenuItem({
                         disabled : true,
-                        name   : Locale.get('quiqqer/system', 'linked-paste'),
-                        text   : 'Verknüpfung einfügen',
+                        name   : 'linked-paste',
+                        text   : Locale.get('quiqqer/system', 'linked-paste'),
                         icon   : 'icon-paste',
                         events :
                         {

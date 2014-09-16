@@ -13,6 +13,7 @@
  * @require qui/controls/desktop/Panel
  * @require qui/controls/desktop/Tasks
  * @require qui/controls/windows/Popup
+ * @require qui/controls/windows/Submit
  * @require qui/controls/messages/Panel
  * @require controls/welcome/Panel
  * @require controls/desktop/panels/Help
@@ -35,6 +36,7 @@ define([
     'qui/controls/desktop/Panel',
     'qui/controls/desktop/Tasks',
     'qui/controls/windows/Popup',
+    'qui/controls/windows/Confirm',
     'qui/controls/messages/Panel',
 
     'controls/welcome/Panel',
@@ -58,14 +60,15 @@ define([
         QUIPanel        = arguments[ 5 ],
         QUITasks        = arguments[ 6 ],
         QUIWindow       = arguments[ 7 ],
-        QUIMessagePanel = arguments[ 8 ],
+        QUIConfirm      = arguments[ 8 ],
+        QUIMessagePanel = arguments[ 9 ],
 
-        WelcomePanel  = arguments[ 9 ],
-        HelpPanel     = arguments[ 10 ],
-        BookmarkPanel = arguments[ 11 ],
-        ProjectPanel  = arguments[ 12 ],
-        Ajax          = arguments[ 13 ],
-        UploadManager = arguments[ 14 ];
+        WelcomePanel  = arguments[ 10 ],
+        HelpPanel     = arguments[ 11 ],
+        BookmarkPanel = arguments[ 12 ],
+        ProjectPanel  = arguments[ 13 ],
+        Ajax          = arguments[ 14 ],
+        UploadManager = arguments[ 15 ];
 
 
     return new Class({
@@ -666,7 +669,154 @@ define([
                 Uploads   : UploadManager,
                 Help      : new HelpPanel()
             };
+        },
+
+
+        /**
+         * windows
+         */
+
+        /**
+         * Opens the create workspace window
+         */
+        openCreateWindow : function()
+        {
+            var self = this;
+
+            new QUIConfirm({
+                title     : 'Neuen Arbeitsbereich erstellen',
+                icon      : 'icon-rocket',
+                maxWidth  : 400,
+                maxHeight : 500,
+                autoclose : false,
+                ok_button : {
+                    text      : 'Erstellen',
+                    textimage : 'icon-ok'
+                },
+                cancel_button : {
+                    text      : 'Abbrechen',
+                    textimage : 'icon-remove'
+                },
+                events    :
+                {
+                    onOpen : function(Win)
+                    {
+                        var Content = Win.getContent(),
+                            id      = Win.getId(),
+                            size    = document.getSize();
+
+                        Content.addClass( 'qui-workspace-manager-window' );
+
+                        Content.set(
+                            'html',
+
+                            '<table class="data-table">' +
+                                '<thead>' +
+                                    '<tr>' +
+                                        '<th colspan="2">Arbeitsbereich Einstellungen</th>' +
+                                    '</tr>' +
+                                '</thead>' +
+                                '<tbody>' +
+
+                                    '<tr class="odd">' +
+                                        '<td><label for="workspace-title-'+ id +'">Titel</label></td>' +
+                                        '<td><input id="workspace-title-'+ id +'" name="workspace-title" type="text" value="" /></td>' +
+                                    '</tr>' +
+                                    '<tr class="even">' +
+                                        '<td><label for="workspace-columns-'+ id +'">Spalten</label></td>' +
+                                        '<td><input id="workspace-columns-'+ id +'" name="workspace-columns" type="number" min="1" value="1" /></td>' +
+                                    '</tr>' +
+
+                                '</tbody>' +
+                            '</table>' +
+
+                            '<table class="data-table">' +
+                                '<thead>' +
+                                    '<tr>' +
+                                        '<th colspan="2">Nutzung bei</th>' +
+                                    '</tr>' +
+                                '</thead>' +
+                                '<tbody>' +
+
+                                    '<tr class="odd">' +
+                                        '<td><label for="workspace-minWidth-'+ id +'">Fenster Breite</label></td>' +
+                                        '<td><input id="workspace-minWidth-'+ id +'" name="workspace-minWidth" type="number" min="1" value="'+ size.x +'" /></td>' +
+                                    '</tr>' +
+                                    '<tr class="even">' +
+                                        '<td><label for="workspace-minHeight-'+ id +'">Fenster Höhe</label></td>' +
+                                        '<td><input id="workspace-minHeight-'+ id +'" name="workspace-minHeight" type="number" min="1" value="'+ size.y +'" /></td>' +
+                                    '</tr>' +
+
+                                '</tbody>' +
+                            '</table>'
+                        );
+                    },
+
+                    onSubmit : function(Win)
+                    {
+                        var Content = Win.getContent(),
+                            id      = Win.getId(),
+                            size    = document.getSize(),
+
+                            Title      = Content.getElement( 'input[name="workspace-title"]' ),
+                            Columns    = Content.getElement( 'input[name="workspace-columns"]' ),
+                            minWidth   = Content.getElement( 'input[name="workspace-minWidth"]' ),
+                            minHeight  = Content.getElement( 'input[name="workspace-minHeight"]' );
+
+                        if ( Title.value === '' ) {
+                            return;
+                        }
+
+                        if ( Columns.value === '' ) {
+                            return;
+                        }
+
+
+                        Win.Loader.show();
+
+                        // create workspace for serialize
+                        var Workspace = new QUIWorkspace(),
+                            Parent    = self.$Elm.clone(),
+                            columns   = ( Columns.value ).toInt();
+
+                        Workspace.inject( Parent );
+
+                        for ( var i = 0; i < columns; i++ )
+                        {
+                            Workspace.appendChild(
+                                new QUIColumn({
+                                    height : size.y,
+                                    width  : ( size.x / columns ).ceil()
+                                })
+                            );
+                        }
+
+                        self.add({
+                            title     : Title.value,
+                            data      : JSON.encode( Workspace.serialize() ),
+                            minWidth  : minWidth.value,
+                            minHeight : minHeight.value
+                        }, function()
+                        {
+                            Win.close();
+
+                            self.load();
+                        });
+                    }
+                }
+            }).open();
+        },
+
+        /**
+         * Open
+         */
+        openPanelList : function(Column)
+        {
+
+
+
         }
+
     });
 
 });

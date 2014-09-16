@@ -104,7 +104,8 @@ var requireList = [
    'Ajax',
    'controls/workspace/Manager',
    'qui/controls/buttons/Button',
-   'qui/controls/contextmenu/Item'
+   'qui/controls/contextmenu/Item',
+   'qui/controls/contextmenu/Seperator'
 ].append( QUIQQER_LOCALE || [] );
 
 
@@ -118,7 +119,8 @@ require( requireList, function()
         WSManager = arguments[ 3 ],
         QUIButton = arguments[ 4 ],
 
-        QUIContextmenuItem = arguments[ 5 ];
+        QUIContextmenuItem      = arguments[ 5 ],
+        QUIContextmenuSeperator = arguments[ 6 ];
 
 
     Locale.setCurrent( USER.lang );
@@ -162,6 +164,23 @@ require( requireList, function()
                                         .getChildren( 'workspaces' );
 
                     Workspaces.clear();
+
+                    Workspaces.appendChild(
+                        new QUIContextmenuItem({
+                            text   : 'Neuer Arbeitsbereich',
+                            icon   : 'icon-plus',
+                            events :
+                            {
+                                onClick : function(Item) {
+                                    WS.openCreateWindow();
+                                }
+                            }
+                        })
+                    );
+
+                    Workspaces.appendChild(
+                        new QUIContextmenuSeperator({})
+                    );
 
                     Object.each(list, function(Entry)
                     {
