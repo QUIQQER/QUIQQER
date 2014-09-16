@@ -38,6 +38,9 @@ define([
     'qui/controls/windows/Popup',
     'qui/controls/windows/Confirm',
     'qui/controls/messages/Panel',
+    'qui/controls/contextmenu/Item',
+    'qui/controls/contextmenu/Seperator',
+    'qui/utils/Controls',
 
     'controls/welcome/Panel',
     'controls/desktop/panels/Help',
@@ -62,13 +65,16 @@ define([
         QUIWindow       = arguments[ 7 ],
         QUIConfirm      = arguments[ 8 ],
         QUIMessagePanel = arguments[ 9 ],
+        QUIContextmenuItem      = arguments[ 10 ],
+        QUIContextmenuSeperator = arguments[ 11 ],
+        QUIControlUtils         = arguments[ 12 ],
 
-        WelcomePanel  = arguments[ 10 ],
-        HelpPanel     = arguments[ 11 ],
-        BookmarkPanel = arguments[ 12 ],
-        ProjectPanel  = arguments[ 13 ],
-        Ajax          = arguments[ 14 ],
-        UploadManager = arguments[ 15 ];
+        WelcomePanel  = arguments[ 13 ],
+        HelpPanel     = arguments[ 14 ],
+        BookmarkPanel = arguments[ 15 ],
+        ProjectPanel  = arguments[ 16 ],
+        Ajax          = arguments[ 17 ],
+        UploadManager = arguments[ 18 ];
 
 
     return new Class({
@@ -79,7 +85,9 @@ define([
         Binds : [
             'resize',
             'save',
-            '$onInject'
+            '$onInject',
+            '$onColumnContextMenu',
+            '$onColumnContextMenuBlur'
         ],
 
         options : {
@@ -94,7 +102,11 @@ define([
             this.parent( options );
 
             this.Loader    = new QUILoader();
-            this.Workspace = new QUIWorkspace();
+            this.Workspace = new QUIWorkspace({
+                events : {
+                    onColumnContextMenu : this.$onColumnContextMenu
+                }
+            });
 
             this.$spaces = {};
 
@@ -268,6 +280,12 @@ define([
         getList : function()
         {
             return this.$spaces;
+        },
+
+
+        getAvailablePanels : function()
+        {
+
         },
 
         /**
@@ -671,6 +689,113 @@ define([
             };
         },
 
+        /**
+         * Column helpers
+         */
+
+        /**
+         * event : on workspace context menu -> on column context menu
+         * Create the contextmenu for the column edit
+         *
+         * @param {qui/controls/desktop/Workspace} Workspace
+         * @param {qui/controls/desktop/Column} Column
+         * @param {DOMEvent}
+         */
+        $onColumnContextMenu : function(Workspace, Column, event)
+        {
+            event.stop();
+
+            Column.highlight();
+
+            var self   = this,
+                Menu   = Column.$ContextMenu,
+                panels = Column.getChildren();
+
+            Menu.addEvents({
+                onBlur : this.$onColumnContextMenuBlur
+            });
+
+            Menu.clearChildren();
+            Menu.setTitle( 'Column' );
+
+            // add panels
+            Menu.appendChild(
+                new QUIContextmenuItem({
+                    text   : 'Panels hinzufügen',
+                    icon   : 'icon-plus',
+                    name   : 'addPanelsToColumn',
+                    events :
+                    {
+                        onClick : function() {
+                            self.openPanelList( Column );
+                        }
+                    }
+                })
+            );
+
+
+            // remove panels
+            if ( Object.getLength( panels ) )
+            {
+                // remove panels
+                var RemovePanels = new QUIContextmenuItem({
+                    text : 'Panel löschen',
+                    name : 'removePanelOfColumn',
+                    icon : 'icon-trash'
+                });
+
+                Menu.appendChild( RemovePanels );
+
+                Object.each( panels, function(Panel)
+                {
+                    RemovePanels.appendChild(
+                        new QUIContextmenuItem({
+                            text   : Panel.getAttribute( 'title' ),
+                            icon   : Panel.getAttribute( 'icon' ),
+                            name   : Panel.getAttribute( 'name' ),
+                            events : {
+//                                onActive    : this.$onEnterRemovePanel,
+//                                onNormal    : this.$onLeaveRemovePanel,
+//                                onMouseDown : this.$onClickRemovePanel
+                            }
+                        })
+                    );
+                });
+            }
+
+            Menu.appendChild( new QUIContextmenuSeperator() );
+
+            Menu.appendChild(
+                new QUIContextmenuItem({
+                    text   : 'Spalte löschen',
+                    icon   : 'icon-trash',
+                    name   : 'removeColumn',
+                    events :
+                    {
+                        onClick : function() {
+                            Column.destroy();
+                        }
+                    }
+                })
+            );
+
+
+            Menu.setPosition(
+                event.page.x,
+                event.page.y
+            ).show().focus();
+        },
+
+        /**
+         * event : column context onBlur
+         *
+         * @param {qui/controls/contextmenu/Menu}
+         */
+        $onColumnContextMenuBlur : function(Menu)
+        {
+            Menu.getAttribute( 'Column' ).normalize();
+            Menu.removeEvent( 'onBlur', this.$onColumnContextMenuBlur );
+        },
 
         /**
          * windows
@@ -808,15 +933,98 @@ define([
         },
 
         /**
-         * Open
+         * Open available panel window
+         *
+         * @param {qui/controls/desktop/Column} Column - parent column
          */
         openPanelList : function(Column)
         {
+            if ( typeof Column === 'undefined' ) {
+                return;
+            }
+
+            var self = this;
+
+            new QUIWindow({
+                title     : 'Panel Liste',
+                buttons   : false,
+                maxWidth  : 500,
+                maxHeight : 700,
+                events    :
+                {
+                    onResize : function() {
+                        Column.highlight();
+                    },
+
+                    onOpen : function(Win)
+                    {
+                        Win.Loader.show();
+
+                        Column.highlight();
+
+                        // loads available panels
+                        Ajax.get('ajax_desktop_workspace_getAvailablePanels', function(panels)
+                        {
+                            var i, len, Elm, Icon;
+                            var Content = Win.getContent();
+
+                            for ( i = 0, len = panels.length; i < len; i++ )
+                            {
+                                Icon = null;
+
+                                Elm = new Element('div', {
+                                    html : '<h2>'+ panels[ i ].title +'</h2>'+
+                                           '<p>'+ panels[ i ].text +'</p>',
+                                    'class' : 'qui-controls-workspace-panelList-panel smooth',
+                                    'data-require' : panels[ i ].require,
+                                    events :
+                                    {
+                                        click : function()
+                                        {
+                                            self.appendControlToColumn(
+                                                this.get( 'data-require' ),
+                                                Column
+                                            );
+                                        }
+                                    }
+                                }).inject( Content );
 
 
+                                if ( QUIControlUtils.isFontAwesomeClass( panels[ i ].image ) )
+                                {
+                                    Icon = new Element('div', {
+                                        'class' : 'qui-controls-workspace-panelList-panel-icon'
+                                    });
 
+                                    Icon.addClass( panels[ i ].image );
+                                    Icon.inject( Elm, 'top' );
+                                }
+                            }
+
+
+                            Win.Loader.hide();
+                        });
+                    },
+
+                    onCancel : function() {
+                        Column.normalize();
+                    }
+                }
+            }).open();
+        },
+
+        /**
+         * Insert a control into a Column
+         *
+         * @param {String} panelRequire - panel require
+         * @param {qui/controls/desktop/Column} Column - Parent Column
+         */
+        appendControlToColumn : function(panelRequire, Column)
+        {
+            require([ panelRequire ], function(cls) {
+                new cls().inject( Column );
+            });
         }
-
     });
 
 });

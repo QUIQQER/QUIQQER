@@ -659,6 +659,46 @@ class DOM
     }
 
     /**
+     *
+     * @param \DOMNode $Node
+     * @return Array
+     */
+    static function parsePanelToArray(\DOMNode $Node)
+    {
+        if ( $Node->nodeName != 'panel' ) {
+            return array();
+        }
+
+        $require = $Node->getAttribute( 'require' );
+        $Titles  = $Node->getElementsByTagName('title');
+        $Texts   = $Node->getElementsByTagName('text');
+        $Images  = $Node->getElementsByTagName('image');
+
+        $image = '';
+        $title = '';
+        $text  = '';
+
+        if ( $Titles && $Titles->length ) {
+            $title = self::getTextFromNode( $Titles->item( 0 ) );
+        }
+
+        if ( $Texts && $Texts->length ) {
+            $text = self::getTextFromNode( $Texts->item( 0 ) );
+        }
+
+        if ( $Images && $Images->item( 0 ) ) {
+            $image = self::parseVar( $Images->item( 0 )->nodeValue );
+        }
+
+        return array(
+            'image'   => $image,
+            'title'   => $title,
+            'text'    => $text,
+            'require' => $require
+        );
+    }
+
+    /**
      * Parse a DOMNode permission to an array
      *
      * @param \DOMNode $Node

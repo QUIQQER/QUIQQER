@@ -443,10 +443,39 @@ class XML
     }
 
     /**
+     * Return the panel nodes from an *.xml file
+     *
+     * @param String $file - path to the xml file
+     * @return Array
+     */
+    static function getPanelsFromXMLFile($file)
+    {
+        $Dom  = self::getDomFromXml( $file );
+        $Path = new \DOMXPath( $Dom );
+
+        $panels = $Path->query( "//quiqqer/panels/panel" );
+
+        if ( !$panels->length ) {
+            return array();
+        }
+
+        $result = array();
+
+        for ( $i = 0, $len = $panels->length; $i < $len; $i++ )
+        {
+            $result[] = \QUI\Utils\DOM::parsePanelToArray(
+                $panels->item( $i )
+            );
+        }
+
+        return $result;
+    }
+
+    /**
      * Read the permissions from an *.xml file
      *
      * @param String $file - path to the xml file
-     * @return array
+     * @return Array
      */
     static function getPermissionsFromXml($file)
     {

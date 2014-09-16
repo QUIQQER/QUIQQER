@@ -209,4 +209,38 @@ class Manager
             )
         );
     }
+
+    /**
+     * Return the available panels
+     *
+     * @return Array
+     */
+    static function getAvailablePanels()
+    {
+        $cache = 'quiqqer/panels/list';
+
+        try
+        {
+            return \QUI\Cache\Manager::get( $cache );
+
+        } catch ( \QUI\Exception $Exception )
+        {
+
+        }
+
+        $panels   = array();
+        $xmlFiles = array( SYS_DIR .'panels.xml' );
+
+        foreach ( $xmlFiles as $file )
+        {
+            $panels = array_merge(
+                $panels,
+                \QUI\Utils\XML::getPanelsFromXMLFile( $file )
+            );
+        }
+
+        \QUI\Cache\Manager::set( $cache, $panels );
+
+        return $panels;
+    }
 }

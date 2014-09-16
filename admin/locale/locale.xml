@@ -760,6 +760,31 @@
             ]]></en>
         </locale>
 
+        <!-- panels -->
+        <locale name="panels.project.title">
+            <de><![CDATA[Projekte / Projekt Panel]]></de>
+            <en><![CDATA[Projects / Project Panel]]></en>
+        </locale>
+        <locale name="panels.help.title">
+            <de><![CDATA[QUIQQER Hilfe]]></de>
+            <en><![CDATA[QUIQQER Help]]></en>
+        </locale>
+        <locale name="panels.bookmarks.title">
+            <de><![CDATA[Bookmarks]]></de>
+            <en><![CDATA[Bookmarks]]></en>
+        </locale>
+        <locale name="panels.upload.title">
+            <de><![CDATA[Uploads]]></de>
+            <en><![CDATA[Uploads]]></en>
+        </locale>
+        <locale name="panels.messages.title">
+            <de><![CDATA[Nachrichten]]></de>
+            <en><![CDATA[Messages]]></en>
+        </locale>
+        <locale name="panels.tasks.title">
+            <de><![CDATA[Task Panel]]></de>
+            <en><![CDATA[Task panel]]></en>
+        </locale>
 
 
         <!-- Exception  -->
@@ -771,7 +796,6 @@
             <de><![CDATA[Bitte überprüfen Sie Ihre Dateirechte. Einige Datein und oder Ordner sind nicht beschreibbar.]]></de>
             <en><![CDATA[Please check your file permissions. Some Folders or Files are not writable.]]></en>
         </locale>
-
 
 
     </groups>
