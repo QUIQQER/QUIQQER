@@ -234,16 +234,10 @@ class Manager
         // standard require
         $list = $this->_getList();
 
-        $quiqqerVersion = '1.*';
-
-        if ( \QUI::conf( 'globals', 'quiqqer_version' ) ) {
-            $quiqqerVersion = \QUI::conf( 'globals', 'quiqqer_version' );
-        }
-
         // must have
         $require = array();
         $require["php"]                     = ">=5.3.2";
-        $require["quiqqer/quiqqer"]         = $quiqqerVersion;
+        $require["quiqqer/quiqqer"]         = "dev-master";
         $require["tedivm/stash"]            = "0.11.*";
         $require["symfony/http-foundation"] = "*";
         $require["composer/composer"]       = "1.0.*@dev";
