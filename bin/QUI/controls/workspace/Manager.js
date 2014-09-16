@@ -24,6 +24,7 @@
  * @require css!controls/workspace/Manager.css
  *
  * @event onWorkspaceLoaded [ {self} ]
+ * @event onLoadWorkspace [ {self} ]
  */
 
 define([
@@ -323,7 +324,9 @@ define([
 
             Ajax.post('ajax_desktop_workspace_setStandard', function()
             {
+                self.fireEvent( 'loadWorkspace', [ self ] );
                 self.Loader.hide();
+                self.Workspace.focus();
             }, {
                 'package' : 'quiqqer/tags',
                 id        : id

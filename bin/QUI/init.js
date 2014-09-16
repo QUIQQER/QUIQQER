@@ -153,6 +153,32 @@ require( requireList, function()
         autoResize : false,
         events     :
         {
+            onLoadWorkspace : function(WS)
+            {
+                require(['Menu'], function(Menu)
+                {
+                    var children, Workspaces;
+
+                    var list = WS.getList(),
+                        Bar  = Menu.getChildren(),
+                        wid  = WS.getAttribute( 'workspaceId' );
+
+                    Workspaces = Bar.getChildren( 'profile' )
+                                    .getChildren( 'workspaces' );
+
+                    children = Workspaces.getChildren();
+
+                    for ( var i = 0, len = children.length; i < len; i++ )
+                    {
+                        children[ i ].setAttribute( 'icon', '' );
+
+                        if ( children[ i ].getAttribute( 'wid' ) == wid ) {
+                            children[ i ].setAttribute( 'icon', 'icon-laptop' );
+                        }
+                    }
+                });
+            },
+
             onWorkspaceLoaded : function(WS)
             {
                 var createMenu = function(Menu)
@@ -188,6 +214,7 @@ require( requireList, function()
                             new QUIContextmenuItem({
                                 text   : Entry.title,
                                 wid    : Entry.id,
+                                icon   : ( Entry.standard ).toInt() ? 'icon-laptop' : false,
                                 events :
                                 {
                                     onClick : function(Item) {
