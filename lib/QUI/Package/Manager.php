@@ -477,17 +477,40 @@ class Manager
             $version = 'dev-master';
         }
 
-        $json = $this->_getComposerJSON();
+        $json    = $this->_getComposerJSON();
+        $quiqqer = false;
 
         if ( is_array( $package ) )
         {
-            foreach ( $package as $pkg ) {
+            foreach ( $package as $pkg )
+            {
                 $json['require'][ $pkg ] = $version;
+
+                if ( $pkg == 'quiqer/quiqqer' ) {
+                    $quiqqer = true;
+                }
             }
+
         } else
         {
             $json['require'][ $package ] = $version;
+
+            if ( $package == 'quiqer/quiqqer' ) {
+                $quiqqer = true;
+            }
         }
+
+
+        // minimum-stability
+        if ( $quiqqer && $version == 'dev-dev' )
+        {
+            $json['minimum-stability'] = 'dev';
+
+        } else if ( $quiqqer )
+        {
+            $json['minimum-stability'] = 'stable';
+        }
+
 
         $json = json_encode( $json, \JSON_PRETTY_PRINT );
 
