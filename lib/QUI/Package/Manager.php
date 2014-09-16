@@ -89,6 +89,12 @@ class Manager
     protected $_require = array();
 
     /**
+     * QUIQQER Version ->getVersion()
+     * @var String
+     */
+    protected $_version = null;
+
+    /**
      * Composer Application
      * @var Application
      */
@@ -141,6 +147,10 @@ class Manager
      */
     public function getVersion()
     {
+        if ( $this->_version ) {
+            return $this->_version;
+        }
+
         if ( !file_exists( $this->_composer_json ) ) {
             return '';
         }
@@ -148,7 +158,16 @@ class Manager
         $data = file_get_contents( $this->_composer_json );
         $data = json_decode( $data, true );
 
-        return $data['version'];
+        if ( isset( $data['require']['quiqqer/quiqqer'] ) )
+        {
+            $this->_version = $data['require']['quiqqer/quiqqer'];
+
+        } else
+        {
+            $this->_version = $data['version'];
+        }
+
+        return $this->_version;
     }
 
     /**
