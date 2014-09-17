@@ -578,7 +578,7 @@ class Edit extends \QUI\Projects\Site
                     foreach ( $types as $allowedType )
                     {
                         if ( !StringUtils::match( $allowedType, $siteType ) ) {
-                            continue;
+                            continue 2;
                         }
                     }
                 }
