@@ -197,8 +197,10 @@ define([
 
         /**
          * load the workspace for the user
+         *
+         * @param {Function} callback - [optional] callback function
          */
-        load : function()
+        load : function(callback)
         {
             var self = this;
 
@@ -242,12 +244,15 @@ define([
                     self.add( colums2, function()
                     {
                         self.add( colums3, function() {
-                            self.load();
+                            self.load( callback );
                         });
                     });
 
                     return;
                 }
+
+                self.$spaces = {};
+
 
                 var Standard = false;
 
@@ -263,6 +268,10 @@ define([
                 }
 
                 self.fireEvent( 'workspaceLoaded', [ self ] );
+
+                if ( typeof callback !== 'undefined' ) {
+                    callback();
+                }
 
                 // ask which workspace
                 if ( !Standard )
@@ -542,6 +551,25 @@ define([
             }, {
                 id   : id,
                 data : JSON.encode( data )
+            });
+        },
+
+        /**
+         * Delete workspaces
+         *
+         * @param {Array} ids - list of workspace ids
+         * @param {Function} callback - [optional] callback function
+         */
+        del : function(ids, callback)
+        {
+            Ajax.post('ajax_desktop_workspace_delete', function(result)
+            {
+                if ( typeof callback !== 'undefined' ) {
+                    callback();
+                }
+
+            }, {
+                ids : JSON.encode( ids )
             });
         },
 
@@ -1134,7 +1162,53 @@ define([
                             buttons : [{
                                 text      : 'Markierte Arbeitsbereiche löschen',
                                 textimage : 'icon-trash',
-                                disabled  : true
+                                disabled  : true,
+                                events    :
+                                {
+                                    onClick : function(Btn)
+                                    {
+                                        // delete selected workspaces
+                                        var Grid = Btn.getAttribute( 'Grid' ),
+                                            data = Grid.getSelectedData(),
+                                            ids  = [];
+
+                                        for ( var i = 0, len = data.length; i < len; i++ ) {
+                                            ids.push( data[ i ].id );
+                                        }
+
+                                        Win.close();
+
+                                        new QUIConfirm({
+                                            icon   : 'icon-trash',
+                                            title  : 'Arbeitsbereiche löschen?',
+                                            text   : 'Möchten Sie folgende Arbeitsbereiche wirklich löschen?',
+                                            information : ids.join( ',' ),
+                                            maxWidth  : 500,
+                                            maxHeight : 400,
+                                            autoclose : false,
+                                            events :
+                                            {
+                                                onCancel : function() {
+                                                    self.openWorkspaceEdit();
+                                                },
+                                                onSubmit : function(Win)
+                                                {
+                                                    Win.Loader.show();
+
+                                                    self.del(ids, function()
+                                                    {
+                                                        self.load(function()
+                                                        {
+                                                            Win.close();
+
+                                                            self.openWorkspaceEdit();
+                                                        });
+                                                    });
+                                                }
+                                            }
+                                        }).open();
+                                    }
+                                }
                             }],
                             showHeader : true,
                             sortHeader : true,
@@ -1186,8 +1260,9 @@ define([
 
                                 self.edit( Data.id, newData, function()
                                 {
-                                    Win.Loader.hide();
-                                    self.load();
+                                    self.load(function() {
+                                        Win.Loader.hide();
+                                    });
                                 });
                             }
                         });

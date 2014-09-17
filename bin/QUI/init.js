@@ -201,11 +201,17 @@ require( requireList, function()
 
                     Object.each(list, function(Entry)
                     {
+                        var standard = false;
+
+                        if ( "standard" in Entry && Entry.standard && ( Entry.standard ).toInt() ) {
+                            standard = true;
+                        }
+
                         Workspaces.appendChild(
                             new QUIContextmenuItem({
                                 text   : Entry.title,
                                 wid    : Entry.id,
-                                icon   : ( Entry.standard ).toInt() ? 'icon-laptop' : false,
+                                icon   : standard ? 'icon-laptop' : false,
                                 events :
                                 {
                                     onClick : function(Item) {

@@ -73,6 +73,20 @@ class Manager
     }
 
     /**
+     * Delete a workspace
+     *
+     * @param Integer $id - Workspace ID
+     * @param \QUI\Users\User $User - User of the Workspace
+     */
+    static function deleteWorkspace($id, $User)
+    {
+        \QUI::getDataBase()->delete(self::Table(), array(
+            'uid' => $User->getId(),
+            'id'  => (int)$id
+        ));
+    }
+
+    /**
      * Return the workspaces list from an user
      *
      * @param \QUI\Users\User $User
