@@ -6,6 +6,8 @@
 
 namespace QUI\Projects\Site;
 
+use \QUI\Utils\String as StringUtils;
+
 /**
  * Site Objekt für den Admibereich
  *
