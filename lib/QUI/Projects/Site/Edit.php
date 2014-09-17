@@ -317,6 +317,116 @@ class Edit extends \QUI\Projects\Site
     }
 
     /**
+     * Zerstört die Seite
+     * Die Seite wird komplett aus der DB gelöscht und auch alle Beziehungen
+     * Funktioniert nur wenn die Seite gelöscht ist
+     */
+    public function destroy()
+    {
+        if ( $this->getAttribute( 'deleted' ) != 1 ) {
+            return;
+        }
+
+        /**
+         * package destroy
+         */
+        $Project  = $this->getProject();
+        $packages = \QUI::getPackageManager()->getPackageDatabaseXmlList();
+        $name     = $Project->getName();
+        $lang     = $Project->getLang();
+        $siteType = $this->getAttribute( 'type' );
+
+        // @todo fields and table list must cached -> performance
+        foreach ( $packages as $package )
+        {
+            $file = OPT_DIR . $package .'/database.xml';
+
+            $Dom  = \QUI\Utils\XML::getDomFromXml( $file );
+            $Path = new \DOMXPath( $Dom );
+
+            $tableList = $Path->query( "//database/projects/table" );
+
+            for ( $i = 0, $len = $tableList->length; $i < $len; $i++ )
+            {
+                $Table = $tableList->item( $i );
+
+                if ( $Table->getAttribute( 'no-auto-update' ) ) {
+                    continue;
+                }
+
+                // types check
+                $types = $Table->getAttribute( 'site-types' );
+
+                if ( $types ) {
+                    $types = explode( ',', $types );
+                }
+
+                if ( !empty( $types ) )
+                {
+                    foreach ( $types as $allowedType )
+                    {
+                        if ( !StringUtils::match( $allowedType, $siteType ) ) {
+                            continue 2;
+                        }
+                    }
+                }
+
+                // destroy package sites
+                $suffix = $Table->getAttribute( 'name' );
+                $fields = $Table->getElementsByTagName( 'field' );
+
+                $table = \QUI::getDBTableName( $name .'_'. $lang .'_'. $suffix );
+
+                $result = \QUI::getDataBase()->fetch(array(
+                    'from' => $table,
+                    'where' => array(
+                        'id' => $this->getId()
+                    )
+                ));
+
+                if ( isset( $result[0] ) )
+                {
+                    \QUI::getDataBase()->delete($table, array(
+                        'id' => $this->getId()
+                    ));
+                }
+            }
+        }
+
+        // on destroy event
+        $this->Events->fireEvent( 'destroy', array($this) );
+
+        \QUI::getEvents()->fireEvent( 'siteDestroy', array($this) );
+
+
+        /**
+         * Site destroy
+         */
+
+        // Daten löschen
+        \QUI::getDataBase()->delete($this->_TABLE, array(
+            'id' => $this->getId()
+        ));
+
+        // sich als Kind löschen
+        \QUI::getDataBase()->delete($this->_RELTABLE, array(
+            'child' => $this->getId()
+        ));
+
+        // sich als parent löschen
+        \QUI::getDataBase()->delete($this->_RELTABLE, array(
+            'parent' => $this->getId()
+        ));
+
+        // Rechte löschen
+        $Manager = \QUI::getPermissionManager();
+        $Manager->removeSitePermissions( $this );
+
+        // Cache löschen
+        $this->deleteCache();
+    }
+
+    /**
      * Vom TempFile aktualisieren
      */
     /*
@@ -1375,6 +1485,7 @@ class Edit extends \QUI\Projects\Site
      *
      * @param unknown_type $name
      * @throws \QUI\Exception
+     * @return Bool
      */
     static function checkName($name)
     {
