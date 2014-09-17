@@ -47,6 +47,7 @@ define([
     'controls/desktop/panels/Help',
     'controls/desktop/panels/Bookmarks',
     'controls/projects/project/Panel',
+    'controls/grid/Grid',
     'Ajax',
     'UploadManager',
 
@@ -74,8 +75,9 @@ define([
         HelpPanel     = arguments[ 14 ],
         BookmarkPanel = arguments[ 15 ],
         ProjectPanel  = arguments[ 16 ],
-        Ajax          = arguments[ 17 ],
-        UploadManager = arguments[ 18 ];
+        Grid          = arguments[ 17 ],
+        Ajax          = arguments[ 18 ],
+        UploadManager = arguments[ 19 ];
 
 
     return new Class({
@@ -114,6 +116,7 @@ define([
             this.$minWidth   = false;
             this.$minHeight  = false;
             this.$ParentNode = null;
+            this.$availablePanels = null;
 
             this.addEvents({
                 onInject : this.$onInject
@@ -284,9 +287,41 @@ define([
         },
 
 
-        getAvailablePanels : function()
+        /**
+         * Insert a control into a Column
+         *
+         * @param {String} panelRequire - panel require
+         * @param {qui/controls/desktop/Column} Column - Parent Column
+         */
+        appendControlToColumn : function(panelRequire, Column)
         {
+            require([ panelRequire ], function(cls) {
+                new cls().inject( Column );
+            });
+        },
 
+        /**
+         * Return all available panels
+         *
+         * @param {Function} callback - callback function
+         */
+        getAvailablePanels : function(callback)
+        {
+            if ( this.$availablePanels )
+            {
+                callback( this.$availablePanels );
+                return;
+            }
+
+            var self = this;
+
+            // loads available panels
+            Ajax.get('ajax_desktop_workspace_getAvailablePanels', function(panels)
+            {
+                self.$availablePanels = panels;
+
+                callback( panels );
+            });
         },
 
         /**
@@ -461,7 +496,7 @@ define([
         },
 
         /**
-         * Add an Workspace
+         * Add a Workspace
          *
          * @param {Object} data - workspace data {
          * 		title
@@ -480,6 +515,32 @@ define([
                 }
 
             }, {
+                data : JSON.encode( data )
+            });
+        },
+
+        /**
+         * Edit a Workspace
+         *
+         * @param {Integer} id - Workspace-ID
+         * @param {Object} data - workspace data {
+         * 		title [optional]
+         * 		data [optional]
+         * 		minWidth [optional]
+         * 		minHeight [optional]
+         * }
+         * @param {Function} callback - callback function
+         */
+        edit : function(id, data, callback)
+        {
+            Ajax.post('ajax_desktop_workspace_edit', function(result)
+            {
+                if ( typeof callback !== 'undefined' ) {
+                    callback();
+                }
+
+            }, {
+                id   : id,
                 data : JSON.encode( data )
             });
         },
@@ -966,7 +1027,7 @@ define([
                         Column.highlight();
 
                         // loads available panels
-                        Ajax.get('ajax_desktop_workspace_getAvailablePanels', function(panels)
+                        self.getAvailablePanels(function(panels)
                         {
                             var i, len, Elm, Icon;
                             var Content = Win.getContent();
@@ -1017,16 +1078,124 @@ define([
         },
 
         /**
-         * Insert a control into a Column
-         *
-         * @param {String} panelRequire - panel require
-         * @param {qui/controls/desktop/Column} Column - Parent Column
+         * opens the workspace edit window
+         * edit / delete your workspaces
          */
-        appendControlToColumn : function(panelRequire, Column)
+        openWorkspaceEdit : function()
         {
-            require([ panelRequire ], function(cls) {
-                new cls().inject( Column );
-            });
+            var self = this;
+
+            new QUIWindow({
+                title     : 'Arbeitsbereiche',
+                buttons   : false,
+                maxWidth  : 500,
+                maxHeight : 700,
+                events    :
+                {
+                    onOpen : function(Win)
+                    {
+                        Win.Loader.show();
+
+                        var Content       = Win.getContent(),
+                            size          = Content.getSize(),
+                            GridContainer = new Element( 'div' ).inject( Content );
+
+                        new Element('p', {
+                            html : 'Editieren Sie per Doppelklick ihre Arbeitsbereiche',
+                            styles : {
+                                marginBottom : 10
+                            }
+                        }).inject( Content, 'top' );
+
+                        var EditGrid = new Grid(GridContainer, {
+                            columnModel : [{
+                                dataIndex : 'id',
+                                dataType  : 'Integer',
+                                hidden  : true
+                            }, {
+                                header    : 'Title',
+                                dataIndex : 'title',
+                                dataType  : 'string',
+                                width     : 200,
+                                editable  : true
+                            }, {
+                                header    : 'Fenster Breite',
+                                dataIndex : 'minWidth',
+                                dataType  : 'string',
+                                width     : 100,
+                                editable  : true
+                            }, {
+                                header    : 'Fenster Höhe',
+                                dataIndex : 'minHeight',
+                                dataType  : 'string',
+                                width     : 100,
+                                editable  : true
+                            }],
+                            buttons : [{
+                                text      : 'Markierte Arbeitsbereiche löschen',
+                                textimage : 'icon-trash',
+                                disabled  : true
+                            }],
+                            showHeader : true,
+                            sortHeader : true,
+                            width      : size.x - 40,
+                            height     : size.y - 60,
+                            multipleSelection : true,
+                            editable          : true,
+                            editondblclick    : true
+                        });
+
+                        var workspaces = self.getList(),
+                            data       = [];
+
+                        Object.each( workspaces, function(Workspace) {
+                            data.push( Workspace )
+                        });
+
+                        EditGrid.setData({
+                            data : data
+                        });
+
+                        var DelButton = EditGrid.getButtons()[ 0 ];
+
+                        EditGrid.addEvents({
+                            onClick : function(event)
+                            {
+                                var sels = EditGrid.getSelectedData();
+
+                                if ( sels.length )
+                                {
+                                    DelButton.enable();
+                                } else
+                                {
+                                    DelButton.disable();
+                                }
+                            },
+
+                            onEditComplete : function(data)
+                            {
+                                Win.Loader.show();
+
+                                var newValue = data.input.value,
+                                    oldValue = data.oldvalue,
+                                    index    = data.columnModel.dataIndex,
+                                    Data     = EditGrid.getDataByRow( data.row ),
+                                    newData  = {};
+
+                                newData[ index ] = newValue;
+
+                                self.edit( Data.id, newData, function()
+                                {
+                                    Win.Loader.hide();
+                                    self.load();
+                                });
+                            }
+                        });
+
+                        Win.Loader.hide();
+                    }
+                }
+            }).open();
         }
     });
 

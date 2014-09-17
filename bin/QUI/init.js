@@ -153,30 +153,8 @@ require( requireList, function()
         autoResize : false,
         events     :
         {
-            onLoadWorkspace : function(WS)
-            {
-                require(['Menu'], function(Menu)
-                {
-                    var children, Workspaces;
-
-                    var list = WS.getList(),
-                        Bar  = Menu.getChildren(),
-                        wid  = WS.getAttribute( 'workspaceId' );
-
-                    Workspaces = Bar.getChildren( 'profile' )
-                                    .getChildren( 'workspaces' );
-
-                    children = Workspaces.getChildren();
-
-                    for ( var i = 0, len = children.length; i < len; i++ )
-                    {
-                        children[ i ].setAttribute( 'icon', '' );
-
-                        if ( children[ i ].getAttribute( 'wid' ) == wid ) {
-                            children[ i ].setAttribute( 'icon', 'icon-laptop' );
-                        }
-                    }
-                });
+            onLoadWorkspace : function(WS) {
+                WS.load();
             },
 
             onWorkspaceLoaded : function(WS)
@@ -193,7 +171,20 @@ require( requireList, function()
 
                     Workspaces.appendChild(
                         new QUIContextmenuItem({
-                            text   : 'Neuer Arbeitsbereich',
+                            text   : 'Arbeitsbereiche bearbeiten',
+                            icon   : 'icon-edit',
+                            events :
+                            {
+                                onClick : function(Item) {
+                                    WS.openWorkspaceEdit();
+                                }
+                            }
+                        })
+                    );
+
+                    Workspaces.appendChild(
+                        new QUIContextmenuItem({
+                            text   : 'Arbeitsbereich erstellen',
                             icon   : 'icon-plus',
                             events :
                             {

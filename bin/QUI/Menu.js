@@ -1,12 +1,12 @@
+
 /**
  * Global Menu manager
  *
- * @author www.pcsg.de (Henning Leutz)
- *
  * @module Menu
+ * @author www.pcsg.de (Henning Leutz)
  */
 
-define('Menu', ['controls/menu/Manager'], function(Menu)
+define(['controls/menu/Manager'], function(Menu)
 {
     "use strict";
 

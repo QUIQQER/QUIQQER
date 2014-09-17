@@ -1,3 +1,4 @@
+
 /**
  * OmniGrid Table Object
  *
@@ -5,6 +6,9 @@
  * Version: OmniGrid 1.2.6
  *
  * Complete rewrited by www.pcsg.de (Henning Leutz)
+ *
+ * @module controls/grid/Grid
+ * @author www.pcsg.de (Henning Leutz)
  *
  * @fires onClick
  * @fires onDblClick
@@ -27,11 +31,11 @@
  *
  * @licence: MIT licence
  *
- * @requires controls/Control
- *
- * @module controls/grid/Grid
-
- * @author www.pcsg.de (Henning Leutz)
+ * @require qui/controls/Control
+ * @require qui/controls/buttons/Button
+ * @require qui/controls/buttons/Seperator
+ * @require qui/utils/Controls
+ * @require css!controls/grid/Grid.css
  */
 
 define('controls/grid/Grid', [

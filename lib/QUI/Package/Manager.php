@@ -1163,12 +1163,13 @@ class Manager
     /**
      * Execute a composer command
      *
-     * @param String $command
-     * @param Array $params
+     * @param String $command - composer command
+     * @param Array $params - composer argument params
+     * @param Bool $showInfo - standard = false; shows messages with <info> or not
      */
     protected function _execComposer($command, $params=array(), $showInfo=false)
     {
-        // composer output some warnings that composer/cache is not empty
+        // composer output, some warnings that composer/cache is not empty
         try
         {
             \QUI::getTemp()->moveToTemp( $this->_vardir .'cache' );
