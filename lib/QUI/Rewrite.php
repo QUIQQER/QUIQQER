@@ -1426,15 +1426,25 @@ class Rewrite
         $exp = explode( '.', $url );
         $url = $exp[0];
 
-        foreach ( $params as $key => $param )
+        foreach ( $params as $param => $value )
         {
-            if ( $param == 'phpMyAdmin' ) {
+            if ( is_integer( $param ) )
+            {
+                $url .= self::URL_PARAM_SEPERATOR . $value;
                 continue;
             }
 
-            if ( $key != 'suffix' ) {
-                $url .= self::URL_PARAM_SEPERATOR . $key . self::URL_PARAM_SEPERATOR . $param;
+            if ( $param == 'suffix' ) {
+                continue;
             }
+
+            if ( (int)$param == $param || $param == '0' )
+            {
+                $url .= self::URL_PARAM_SEPERATOR . $value;
+                continue;
+            }
+
+            $url .= self::URL_PARAM_SEPERATOR . $param . self::URL_PARAM_SEPERATOR . $value;
         }
 
         if ( isset( $params['suffix'] ) ) {

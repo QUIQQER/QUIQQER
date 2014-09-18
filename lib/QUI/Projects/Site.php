@@ -1309,15 +1309,27 @@ class Site extends \QUI\QDOM
 
             $url = '';
 
+            // in rewrite zeile 1420 ->_extendUrlWidthPrams wird dies auch noch gemacht
+            // somit kann ein url cache aufgebaut werden
             foreach ( $params as $param => $value )
             {
-                if ( $param != 'suffix' && !empty( $value )  )
+                if ( is_integer( $param ) )
                 {
-                    $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $param . \QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
+                    $url .= self::URL_PARAM_SEPERATOR . $value;
                     continue;
                 }
 
-                $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $param;
+                if ( $param == 'suffix' ) {
+                    continue;
+                }
+
+                if ( is_int( $param ) )
+                {
+                    $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
+                    continue;
+                }
+
+                $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $param . \QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
             }
 
             if ( isset( $params['suffix'] ) ) {
@@ -1379,13 +1391,23 @@ class Site extends \QUI\QDOM
 
         foreach ( $params as $param => $value )
         {
-            if ( $param != 'suffix' && !empty( $value ) )
+            if ( is_integer( $param ) )
             {
-                $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $param . \QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
+                $url .= self::URL_PARAM_SEPERATOR . $value;
                 continue;
             }
 
-            $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $param;
+            if ( $param == 'suffix' ) {
+                continue;
+            }
+
+            if ( is_int( $param ) )
+            {
+                $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
+                continue;
+            }
+
+            $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $param . \QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
         }
 
         if ( isset( $params['suffix'] ) ) {
