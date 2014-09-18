@@ -381,6 +381,10 @@
             <de><![CDATA[Einstellungen]]></de>
             <en><![CDATA[Settings]]></en>
         </locale>
+            <locale name="menu.settings.quiqqer.text">
+                <de><![CDATA[QUIQQER]]></de>
+                <en><![CDATA[QUIQQER]]></en>
+            </locale>
             <locale name="menu.settings.media.text">
                 <de><![CDATA[Media Einstellungen]]></de>
                 <en><![CDATA[Media settings]]></en>

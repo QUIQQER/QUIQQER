@@ -101,6 +101,8 @@ function ajax_menu()
         {
             $Win = new Menuitem();
 
+            $menuParent = $Window->getAttribute( 'menu-parent' );
+
             $Win->setAttribute( 'name', '/settings/'. $Window->getAttribute( 'name' ) .'/' );
             $Win->setAttribute( 'onClick', 'QUI.Menu.menuClick' );
             $Win->setAttribute( 'qui-window', true );
@@ -134,7 +136,21 @@ function ajax_menu()
                 }
             }
 
-            $Settings->appendChild( $Win );
+            if ( !$menuParent )
+            {
+                $Settings->appendChild( $Win );
+                continue;
+            }
+
+            $Parent = $Menu->getElementByPath( $menuParent );
+
+            if ( !$Parent )
+            {
+                $Settings->appendChild( $Win );
+                continue;
+            }
+
+            $Parent->appendChild( $Win );
         }
     }
 
@@ -168,23 +184,6 @@ function ajax_menu()
             'image'  => URL_BIN_DIR .'16x16/configure.png',
             'needle' => 'lib/Maintenance',
             'click'  => 'QUI.lib.Maintenance.open'
-        ))
-    );
-
-    // Menüpunkt für Plugineinstellungen
-    $SettingsPlugins = new Controls_Contextmenu_Menuitem(array(
-        'text'  => 'Plugins',
-        'name'  => 'settings_plugins',
-        'image' => URL_BIN_DIR .'16x16/plugins.png'
-    ));
-    $Settings->appendChild($SettingsPlugins);
-
-    $SettingsPlugins->appendChild(
-        new Controls_Contextmenu_Menuitem(array(
-            'text'    => 'Dienste Verwaltung',
-            'name'    => 'cron_manager',
-            'image'   => URL_BIN_DIR .'16x16/tasks.png',
-            'onclick' => defined('ADMIN2') ? '_pcsg.crons.open();' : '_pcsg.crons.open'
         ))
     );
 

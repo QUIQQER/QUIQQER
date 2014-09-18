@@ -648,7 +648,25 @@ class DOM
             );
         }
 
-        // Window Parameter
+        // window parameter
+        $params = $Window->getElementsByTagName( 'params' );
+
+        if ( $params->item( 0 ) )
+        {
+            $icon = $params->item( 0 )->getElementsByTagName( 'icon' );
+
+            if ( $icon->item( 0 ) )
+            {
+                $Win->setAttribute(
+                    'icon',
+                    \QUI\Utils\DOM::parseVar(
+                        $icon->item( 0 )->nodeValue
+                    )
+                );
+            }
+        }
+
+        // Window buttons
         $btnList = self::getButtonsFromWindow( $Window );
 
         foreach ( $btnList as $Button ) {

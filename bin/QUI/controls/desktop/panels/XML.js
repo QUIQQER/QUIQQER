@@ -100,7 +100,7 @@ define([
                 'ajax_settings_window',
                 'ajax_settings_get'
 
-            ], function(result, config, Request)
+            ], function(result, config)
             {
                 var categories = result.categories || [],
                     buttons    = result.buttons || [];
