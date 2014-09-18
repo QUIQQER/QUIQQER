@@ -162,9 +162,17 @@ require( requireList, function()
                 var createMenu = function(Menu)
                 {
                     var list = WS.getList(),
-                        Bar  = Menu.getChildren(),
+                        Bar  = Menu.getChildren();
 
-                        Workspaces = Bar.getChildren( 'profile' )
+                    if ( !Bar.getChildren( 'profile' ) ) {
+                        return;
+                    }
+
+                    if ( !Bar.getChildren( 'profile' ).getChildren( 'workspaces' ) ) {
+                        return;
+                    }
+
+                    var Workspaces = Bar.getChildren( 'profile' )
                                         .getChildren( 'workspaces' );
 
                     Workspaces.clear();

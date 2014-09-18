@@ -65,7 +65,14 @@ define([
                     async    : true,
                     events   :
                     {
-                        onSuccess : callback,
+                        onSuccess : function()
+                        {
+                            if ( this.getAttribute( 'logout' ) ) {
+                                return;
+                            }
+
+                            callback.apply( this, arguments );
+                        },
 
                         onCancel : function(Request)
                         {
@@ -79,6 +86,15 @@ define([
                             QUI.getMessageHandler(function(MessageHandler) {
                                 MessageHandler.addException( Exception );
                             });
+
+                            if ( Exception.getCode() === 401 )
+                            {
+                                Request.setAttribute( 'logout', true );
+
+                                require(['controls/system/Login'], function(Login) {
+                                    new Login().open();
+                                });
+                            }
 
 
                             if ( Request.getAttribute( 'onError' ) ) {
