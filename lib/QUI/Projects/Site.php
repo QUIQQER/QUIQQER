@@ -1311,13 +1311,13 @@ class Site extends \QUI\QDOM
 
             foreach ( $params as $param => $value )
             {
-                if ( $param == 'phpMyAdmin' ) {
+                if ( $param != 'suffix' && !empty( $value )  )
+                {
+                    $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $param . \QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
                     continue;
                 }
 
-                if ( $param != 'suffix' ) {
-                    $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $param . \QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
-                }
+                $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $param;
             }
 
             if ( isset( $params['suffix'] ) ) {
@@ -1379,13 +1379,13 @@ class Site extends \QUI\QDOM
 
         foreach ( $params as $param => $value )
         {
-            if ( $param == 'phpMyAdmin' ) {
+            if ( $param != 'suffix' && !empty( $value ) )
+            {
+                $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $param . \QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
                 continue;
             }
 
-            if ( $param != 'suffix' ) {
-                $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $param . \QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
-            }
+            $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $param;
         }
 
         if ( isset( $params['suffix'] ) ) {
