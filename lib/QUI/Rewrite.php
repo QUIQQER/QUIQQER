@@ -1240,6 +1240,26 @@ class Rewrite
     }
 
     /**
+     * Return the url params as index array
+     *
+     * @return Array
+     */
+    public function getUrlParamsList()
+    {
+        if ( !isset( $_REQUEST['_url'] ) ) {
+            return array();
+        }
+
+        $url = $_REQUEST['_url'];
+        $url = explode('.', $url );
+        $url = explode('_', $url[ 0 ] );
+
+        array_shift( $url );
+
+        return $url;
+    }
+
+    /**
      * Gibt die sprechende URL einer Seite zurück
      *
      * @param array $params
