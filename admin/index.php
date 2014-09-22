@@ -183,6 +183,7 @@
     <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/moofx.js"></script>
     <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/ElementQuery.js"></script>
     <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/ResizeSensor.js"></script>
+    <script src="<?php echo URL_BIN_DIR; ?>QUI/lib/Assets.js"></script>
 
     <!-- load the quiqqer admin -->
     <script src="<?php echo URL_BIN_DIR; ?>QUI/init.js"></script>

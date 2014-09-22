@@ -178,7 +178,43 @@ define('controls/projects/project/media/Input', [
                     result = URL_DIR + result;
                 }
 
-                self.$Preview.setStyle( 'background', 'url('+ result +') no-repeat center center' );
+                self.$Preview.getElements( '.icon-refresh' ).destroy();
+                self.$Preview.getElements( '.icon-warning-sign ' ).destroy();
+
+                // loader image
+                var MiniLoader = new Element('div', {
+                    'class' : 'icon-refresh icon-spin',
+                    styles  : {
+                        fontSize  : 18,
+                        height    : 20,
+                        left      : 4,
+                        position  : 'relative',
+                        textAlign : 'center',
+                        top       : 4,
+                        width     : 20
+
+                    }
+                }).inject( self.$Preview );
+
+                // load the image
+                Asset.image( result, {
+                    onLoad : function()
+                    {
+                        MiniLoader.destroy();
+                        self.$Preview.setStyle( 'background', 'url('+ result +') no-repeat center center' );
+                    },
+                    onError : function(Elm)
+                    {
+                        console.log( result );
+                        console.error( Elm );
+
+                        self.$Preview.getElements( '.icon-refresh' )
+                                     .removeClass( 'icon-refresh' )
+                                     .removeClass( 'icon-spin' )
+                                     .addClass( 'icon-warning-sign' );
+
+                    }
+                })
 
             }, {
                 fileurl   : value,

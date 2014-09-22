@@ -596,7 +596,7 @@ class Utils
 
         $parts[] = $file_name;
 
-        return $Media->getChildByPath( implode( '/', $parts ) );
+        return $Media->getChildByPath( '/'. implode( '/', $parts ) );
     }
 
     /**

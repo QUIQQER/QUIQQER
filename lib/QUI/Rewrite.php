@@ -275,14 +275,17 @@ class Rewrite
                     }
                 }
 
-            } catch ( \QUI\Exception $e )
+            } catch ( \QUI\Exception $Exception )
             {
                 // Falls Bild nicht mehr existiert oder ein falscher Aufruf gemacht wurde
                 $this->_showErrorHeader( 404 );
-            } catch ( \QUI\ExceptionDBError $e )
+                exit;
+
+            } catch ( \QUI\ExceptionDBError $Exception )
             {
                 // Falls Bild nicht mehr existiert oder ein falscher Aufruf gemacht wurde
                 $this->_showErrorHeader( 404 );
+                exit;
             }
 
             if ( $Item->getType() === 'QUI\\Projects\\Media\\Image' )
