@@ -28,6 +28,7 @@ class Contact extends \QUI\Control
         );
 
         $this->setAttribute( 'class', 'quiqqer-contact grid-100 grid-parent' );
+        $this->setAttribute( 'data-qui', "Controls/Contact" );
         $this->setAttribute( 'labels', true );
     }
 

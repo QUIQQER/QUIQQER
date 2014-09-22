@@ -790,6 +790,13 @@
             <en><![CDATA[Task panel]]></en>
         </locale>
 
+        <!-- Messages  -->
+        <locale name="message.contact.successful">
+            <de><![CDATA[Vielen Dank für Ihre E-Mail. Wir werden uns bei Ihnen schnellstmöglich melden.]]></de>
+            <en><![CDATA[Thank you for your email. We will contact you as soon as possible.]]></en>
+        </locale>
+
+
 
         <!-- Exception  -->
         <locale name="exception.template.not.found">
@@ -799,6 +806,26 @@
         <locale name="exception.system.health.not.writable">
             <de><![CDATA[Bitte überprüfen Sie Ihre Dateirechte. Einige Datein und oder Ordner sind nicht beschreibbar.]]></de>
             <en><![CDATA[Please check your file permissions. Some Folders or Files are not writable.]]></en>
+        </locale>
+
+        <locale name="exception.contact.params.empty">
+            <de><![CDATA[Kontakt E-mail konnte nicht versendet werden. Bitte füllen Sie alle Pflichtfelder aus.]]></de>
+            <en><![CDATA[Contact E-mail could not be sent. Please complete all required fields.]]></en>
+        </locale>
+        <locale name="exception.contact.wrong.email">
+            <de><![CDATA[Kontakt E-mail konnte nicht versendet werden. Bitte geben Sie eine korrekte E-Mail an.]]></de>
+            <en><![CDATA[Contact E-mail could not be sent. Please enter a valid email.]]></en>
+        </locale>
+        <locale name="exception.contact.send.mail">
+            <de><![CDATA[
+                Kontakt E-mail konnte nicht versendet werden.
+                Fehler beim Versenden der Kontakt E-Mail.
+                Bitte versuchen Sie es zu einem späteren Zeitpunkt.
+            ]]></de>
+            <en><![CDATA[
+                Contact E-mail could not be sent.
+                Error while sending E-mail. Please try again at a later.
+            ]]></en>
         </locale>
 
 
