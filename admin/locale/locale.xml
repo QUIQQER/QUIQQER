@@ -790,6 +790,32 @@
             <en><![CDATA[Task panel]]></en>
         </locale>
 
+        <!-- Contact  -->
+        <locale name="control.contact.name">
+            <de><![CDATA[Name]]></de>
+            <en><![CDATA[Name]]></en>
+        </locale>
+        <locale name="control.contact.name.placeholder">
+            <de><![CDATA[Bitte Ihr Vor- und Nachnamen hier eingeben...]]></de>
+            <en><![CDATA[Please enter Your First and Last Name here ...]]></en>
+        </locale>
+        <locale name="control.contact.email">
+            <de><![CDATA[E-Mail]]></de>
+            <en><![CDATA[Email]]></en>
+        </locale>
+        <locale name="control.contact.email.placeholder">
+            <de><![CDATA[Bitte Ihre E-Mail Adresse hier eingeben...]]></de>
+            <en><![CDATA[Please enter your email address here ...]]></en>
+        </locale>
+        <locale name="control.contact.message">
+            <de><![CDATA[Nachricht]]></de>
+            <en><![CDATA[Message]]></en>
+        </locale>
+        <locale name="control.contact.message.placeholder">
+            <de><![CDATA[Ihre Nachricht an uns]]></de>
+            <en><![CDATA[Your message to us]]></en>
+        </locale>
+
         <!-- Messages  -->
         <locale name="message.contact.successful">
             <de><![CDATA[Vielen Dank für Ihre E-Mail. Wir werden uns bei Ihnen schnellstmöglich melden.]]></de>
