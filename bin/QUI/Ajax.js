@@ -21,9 +21,10 @@ define([
 
     'qui/QUI',
     'qui/classes/request/Ajax',
-    'qui/utils/Object'
+    'qui/utils/Object',
+    'Locale'
 
-], function(QUI, QUIAjax, Utils)
+], function(QUI, QUIAjax, Utils, Locale)
 {
     "use strict";
 
@@ -55,6 +56,10 @@ define([
             params = Utils.combine(params, {
                 _rf : call
             });
+
+            if ( typeof params.lang === 'undefined' ) {
+                params.lang = Locale.getCurrent();
+            }
 
             this.$onprogress[ id ] = new QUIAjax(
                 // combine all params, so, they are available in the Request Object
