@@ -233,6 +233,9 @@ class Utils
         $size = array();
         $img  = '';
 
+        $width  = false;
+        $height = false;
+
         if ( isset( $attributes['style'] ) )
         {
             $style = \QUI\Utils\String::splitStyleAttributes(
@@ -240,19 +243,27 @@ class Utils
             );
 
             if ( isset( $style['width'] ) ) {
-                $size['width'] = (int)$style['width'];
+                $width = $style['width'];
             }
 
             if ( isset( $style['height'] ) ) {
-                $size['height'] = (int)$style['height'];
+                $height = $style['height'];
             }
 
         } elseif ( isset( $attributes['width'] ) )
         {
-            $size['width'] = (int)$attributes['width'];
+            $width = $attributes['width'];
         } elseif ( isset( $attributes['height'] ) )
         {
-            $size['height'] = (int)$attributes['height'];
+            $height = $attributes['height'];
+        }
+
+        if ( strpos( $width, '%') === false ) {
+            $size['width']  = $width;
+        }
+
+        if ( strpos( $height, '%') === false ) {
+            $size['height']  = $height;
         }
 
 
@@ -260,6 +271,7 @@ class Utils
 
         if ( $src )
         {
+            // @todo responsive images <picture> or srcset?
             $img = '<img src="'. $src .'" ';
 
             foreach ( $attributes as $key => $value ) {
