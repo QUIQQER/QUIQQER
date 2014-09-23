@@ -2,10 +2,11 @@
 /**
  * VHost Panel
  *
+ * @module controls/system/VHosts
  * @author www.pcsg.de (Henning Leutz)
  */
 
-define('controls/system/VHosts', [
+define([
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
@@ -177,16 +178,19 @@ define('controls/system/VHosts', [
                 var host, entry;
                 var data = [];
 
-                for ( host in result )
+                if ( Object.getLength( result ) )
                 {
-                    entry = result[ host ];
+                    for ( host in result )
+                    {
+                        entry = result[ host ];
 
-                    data.push({
-                        host     : host,
-                        project  : entry.project,
-                        lang     : entry.lang,
-                        template : entry.template
-                    });
+                        data.push({
+                            host     : host,
+                            project  : entry.project,
+                            lang     : entry.lang,
+                            template : entry.template
+                        });
+                    }
                 }
 
                 self.$Grid.setData({
