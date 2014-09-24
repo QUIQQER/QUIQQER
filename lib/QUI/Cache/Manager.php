@@ -355,6 +355,6 @@ class Manager
     {
         \QUI\Utils\System\File::unlink( VAR_DIR .'cache/' );
 
-        self::getStash('qui/')->clear();
+        self::getStash( '' )->clear();
     }
 }
