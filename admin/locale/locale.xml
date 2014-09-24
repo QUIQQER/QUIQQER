@@ -271,6 +271,27 @@
             <en><![CDATA[Mobile]]></en>
         </locale>
 
+        <!-- controls -->
+        <locale name="controls.sheets.mobile.option">
+            <de><![CDATA[Seite [from] von [max]]]></de>
+            <en><![CDATA[Page [from] of [max]]]></en>
+        </locale>
+        <locale name="controls.sheets.first.page">
+            <de><![CDATA[Erste Seite]]></de>
+            <en><![CDATA[First page]]></en>
+        </locale>
+        <locale name="controls.sheets.back">
+            <de><![CDATA[zurück]]></de>
+            <en><![CDATA[back]]></en>
+        </locale>
+        <locale name="controls.sheets.next">
+            <de><![CDATA[vor]]></de>
+            <en><![CDATA[next]]></en>
+        </locale>
+        <locale name="controls.sheets.last.page">
+            <de><![CDATA[Letzte Seite]]></de>
+            <en><![CDATA[Last page]]></en>
+        </locale>
 
     </groups>
 
