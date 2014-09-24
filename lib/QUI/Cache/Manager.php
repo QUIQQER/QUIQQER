@@ -77,7 +77,7 @@ class Manager
         }
 
         if ( $key !== false ) {
-            $key = 'qui/'. $key;
+            $key = md5( __FILE__ ) .'/qui/'. $key;
         }
 
         if ( !is_null( self::$Stash ) ) {
