@@ -168,7 +168,8 @@ if ( $Site->getAttribute('nocache') != true )
 }
 
 $content = $Rewrite->outputFilter( $content );
-$content = $Template->setAdminMenu( $content );
+// $content = $Template->setAdminMenu( $content );
+$content = \QUI\Control\Manager::setCSSToHead( $content );
 
 \QUI\Utils\System\Debug::marker('output Filter');
 

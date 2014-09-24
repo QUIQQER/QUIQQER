@@ -348,8 +348,6 @@ class Template extends \QUI\QDOM
                     '<style>'. file_get_contents( $realSitePath ) .'</style>'
                 );
             }
-
-
         }
 
         \QUI::getEvents()->fireEvent( 'templateGetHeader', array( $this ) );
@@ -388,7 +386,8 @@ class Template extends \QUI\QDOM
             'Engine'          => $Engine,
             'localeFiles'     => $locales,
             'loadModuleFiles' => $this->_onLoadModules,
-            'headerExtend'    => $headerExtend
+            'headerExtend'    => $headerExtend,
+            'ControlManager'  => new \QUI\Control\Manager()
         ));
 
         return $Engine->fetch( LIB_DIR .'templates/header.html' );
@@ -558,6 +557,7 @@ class Template extends \QUI\QDOM
      *
      * @param String $html - html
      * @return String
+     * @deprecated
      */
     static function setAdminMenu($html)
     {

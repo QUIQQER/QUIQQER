@@ -1441,7 +1441,7 @@ class Rewrite
                 continue;
             }
 
-            if ( (int)$param == $param || $param == '0' )
+            if ( $param === "0" )
             {
                 $url .= self::URL_PARAM_SEPERATOR . $value;
                 continue;
