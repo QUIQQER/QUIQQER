@@ -75,12 +75,6 @@ class Site extends \QUI\QDOM
     protected $_plugins = array();
 
     /**
-     * site extra fields
-     * @var array
-     */
-    protected $_extra = array();
-
-    /**
      * the site url
      * @var String
      */
@@ -445,7 +439,7 @@ class Site extends \QUI\QDOM
     {
         $att = $this->getAttributes();
 
-        $att['extra']         = $this->_extra;
+//         $att['extra']         = $this->_extra;
         $att['linked_parent'] = $this->_LINKED_PARENT;
         $att['_type']         = $this->_type;
         $att['_extend']       = $this->_extend;
@@ -471,12 +465,6 @@ class Site extends \QUI\QDOM
 
         if ( $decode['deleted'] == 1 ) {
             throw new \QUI\Exception( 'Site not exist', 404 );
-        }
-
-        if ( isset( $decode['extra'] ) )
-        {
-            $this->_extra = $decode['extra'];
-            unset($decode['extra']);
         }
 
         if ( isset( $decode['linked_parent'] ) )
@@ -564,7 +552,12 @@ class Site extends \QUI\QDOM
 
         if ( isset( $result[0]['extra'] ) )
         {
-            $this->_extra = json_decode( $result[0]['extra'], true );
+            $extra = json_decode( $result[0]['extra'], true );
+
+            foreach ( $extra as $key => $value ) {
+                $this->setAttribute( $key, $value );
+            }
+
             unset( $result[0]['extra'] );
         }
 
@@ -1638,21 +1631,6 @@ class Site extends \QUI\QDOM
 
         // Cache löschen
         $this->deleteCache();
-    }
-
-    /**
-     * Gibt eine Extra Eigenschaft zurück
-     *
-     * @param String $name
-     * @return unknown
-     */
-    public function getExtra($name)
-    {
-        if ( isset( $this->_extra[ $name ] ) ) {
-            return $this->_extra[ $name ];
-        }
-
-        return false;
     }
 
     /**
