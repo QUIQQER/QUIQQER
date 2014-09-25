@@ -335,6 +335,14 @@ class DOM
 
                 if ( file_exists( $file ) )
                 {
+                    // site extra settings
+                    $extra = '';
+
+                    if ( $file == SYS_DIR .'template/site/settings.html' ) {
+                        $extra = self::getSiteExtraSettings( $Object );
+                    }
+
+                    // generate html
                     $Engine = \QUI::getTemplateManager()->getEngine( true );
 
                     $Engine->assign(array(
@@ -344,7 +352,7 @@ class DOM
                         'QUI'     => new \QUI()
                     ));
 
-                    return $Engine->fetch( $file );
+                    return $Engine->fetch( $file ) . $extra;
                 }
             }
 
@@ -363,6 +371,36 @@ class DOM
         }
 
         return $str;
+    }
+
+    /**
+     * Search extra settings for the site
+     *
+     * @param \QUI\Projects\Site|\QUI\Projects\Edit $Site
+     * @return String
+     */
+    static function getSiteExtraSettings($Site)
+    {
+        $type    = explode( ':', $Site->getAttribute( 'type' ) );
+        $dir     = OPT_DIR . $type[ 0 ];
+        $siteXML = $dir .'/site.xml';
+
+        if ( !file_exists( $siteXML ) ) {
+            return '';
+        }
+
+        $Dom  = \QUI\Utils\XML::getDomFromXml( $siteXML );
+        $Path = new \DOMXPath( $Dom );
+        $expr = "//site/types/type[@type='". $type[ 1 ] ."']/settings/category";
+
+        $cats   = $Path->query( $expr );
+        $result = '';
+
+        foreach ( $cats as $Category ) {
+            $result .= self::parseCategorieToHTML( $Category );
+        }
+
+        return $result;
     }
 
     /**

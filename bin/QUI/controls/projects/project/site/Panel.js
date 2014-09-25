@@ -579,7 +579,7 @@ define([
 
                 var Form;
 
-                Body.set( 'html', '<form>'+ result +'</form>' );
+                Body.set( 'html', '<form class="qui-site-data">'+ result +'</form>' );
 
                 Form = Body.getElement( 'form' );
                 Form.addEvent('submit', function(event) {
