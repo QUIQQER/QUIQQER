@@ -394,7 +394,7 @@ class Utils
     static function checkFolderName($str)
     {
         // Prüfung des Namens - Sonderzeichen
-        if ( preg_match('/[^0-9_a-zA-Z -]/', $str) )
+        if ( preg_match('/[^0-9_a-zA-Z \-]/', $str) )
         {
             throw new \QUI\Exception(
                 'Nicht erlaubte Zeichen wurden im Namen "'. $str .'" gefunden.
@@ -447,7 +447,7 @@ class Utils
     static function checkMediaName($filename)
     {
         // Prüfung des Namens - Sonderzeichen
-        if ( preg_match('/[^0-9_a-zA-Z -.]/', $filename) )
+        if ( preg_match('/[^0-9_a-zA-Z \-.]/', $filename) )
         {
             throw new \QUI\Exception(
                 'Nicht erlaubte Zeichen wurden im Namen "'. $filename .'" gefunden.
