@@ -297,7 +297,12 @@ abstract class Item extends \QUI\QDOM
         }
 
         // throws the \QUI\Exception
-        \QUI\Projects\Media\Utils::checkMediaName( $new_file );
+        $fileParts = explode( '/', $new_file );
+
+        foreach ( $fileParts as $filePart ) {
+            \QUI\Projects\Media\Utils::checkMediaName( $filePart );
+        }
+
 
         if ( $Parent->childWithNameExists( $newname ) )
         {
