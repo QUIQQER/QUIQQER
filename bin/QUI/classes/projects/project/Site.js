@@ -1,12 +1,13 @@
+
 /**
  * A project Site Object
  *
  * @module classes/projects/project/Site
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires controls/Control
- * @requires controls/contextmenu/Menu
- * @requires controls/contextmenu/Item
+ * @require controls/Control
+ * @require controls/contextmenu/Menu
+ * @require controls/contextmenu/Item
  *
  * @event onLoad [ this ]
  * @event onGetChildren [ this, {Array} ]

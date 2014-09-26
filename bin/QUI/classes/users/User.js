@@ -1,6 +1,8 @@
+
 /**
  * A QUIQQER User
  *
+ * @module classes/users/User
  * @author www.pcsg.de (Henning Leutz)
  *
  * @require qui/QUI
@@ -11,7 +13,7 @@
  * @event onRefresh [ {classes/users/User} ]
  */
 
-define('classes/users/User', [
+define([
 
     'qui/QUI',
     'qui/classes/DOM',

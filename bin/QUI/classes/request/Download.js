@@ -1,18 +1,14 @@
+
 /**
  * QUI download class for download files to the QUIQQER from external resources
  *
+ * @module classes/request/Download
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires classes/DOM
- *
- * @module classes/request/Download
+ * @require classes/DOM
  */
 
-define('classes/request/Download', [
-
-    'classes/DOM'
-
-], function(DOM)
+define(['classes/DOM'], function(DOM)
 {
     "use strict";
 

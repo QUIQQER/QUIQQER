@@ -1,12 +1,12 @@
+
 /**
  * Media DOM event handling for a media panel
  *
- * @author www.pcsg.de (Henning Leutz)
- *
  * @module classes/projects/project/media/panel/DOMEvents
+ * @author www.pcsg.de (Henning Leutz)
  */
 
-define('classes/projects/project/media/panel/DOMEvents', [
+define([
 
    'qui/QUI',
    'qui/controls/windows/Prompt',

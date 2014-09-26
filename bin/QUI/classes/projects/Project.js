@@ -1,25 +1,23 @@
+
 /**
  * A QUIQQER project
  *
+ * @module classes/projects/Project
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires qui/classes/DOM
- * @requires classes/projects/Site
- * @requires classes/projects/Media
- * @requires classes/projects/Trash
- *
- * @module classes/projects/Project
+ * @require qui/classes/DOM
+ * @require classes/projects/Site
+ * @require classes/projects/Media
+ * @require classes/projects/Trash
  *
  * @events onSiteDelete [this, {Integer}]
  * @events onSiteSave [this, {classes/projects/project/Site}]
  * @events onSiteCreate [this, {classes/projects/project/Site}]
  * @events onSiteActivate [this, {classes/projects/project/Site}]
  * @events onSiteDeactivate [this, {classes/projects/project/Site}]
- *
- * @todo Trash
  */
 
-define('classes/projects/Project', [
+define([
 
     'qui/classes/DOM',
     'Ajax',

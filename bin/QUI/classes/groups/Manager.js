@@ -3,12 +3,10 @@
  * Group Manager (Model)
  *
  * @author www.pcsg.de (Henning Leutz)
+ * @module classes/groups/Manager
  *
  * @require classes/DOM
  * @require classes/groups/Group
- *
- * @module classes/groups/Groups
- * @package classes/groups/Manager
  *
  * @event onActivate [this, result, Request]
  * @event onDeactivate [this, result, Request]
@@ -16,7 +14,7 @@
  * @event onRefresh [this, Group]
  */
 
-define('classes/groups/Manager', [
+define([
 
     'qui/classes/DOM',
     'classes/groups/Group',

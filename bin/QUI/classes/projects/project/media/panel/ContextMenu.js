@@ -1,11 +1,12 @@
+
 /**
  * Media ContextMenu for a Media Panel
  *
- * @author www.pcsg.de (Henning Leutz)
  * @module classes/projects/project/media/panel/ContextMenu
+ * @author www.pcsg.de (Henning Leutz)
  */
 
-define('classes/projects/project/media/panel/ContextMenu', [
+define([
 
     'qui/controls/contextmenu/Item',
     'qui/controls/contextmenu/Seperator',

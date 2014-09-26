@@ -3,17 +3,15 @@
  *
  * The editor manager creates the editors and load all required classes
  *
+ * @module classes/editor/Manager
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires qui/QUI
- * @requires qui/classes/DOM
- * @requires Ajax
- *
- * @module controls/editor/Manager
- * @package com.pcsg.quiqqer
+ * @require qui/QUI
+ * @require qui/classes/DOM
+ * @require Ajax
  */
 
-define('classes/editor/Manager', [
+define([
 
     'qui/QUI',
     'qui/classes/DOM',

@@ -4,6 +4,7 @@
  * it shows the upload status for one file
  *
  * @author www.pcsg.de (Henning Leutz)
+ * @module controls/upload/File
  *
  * @requires qui/QUI
  * @requires qui/controls/Control
@@ -17,12 +18,9 @@
  * @requires qui/utils/Object
  * @requires Ajax
  * @requires Locale
- *
- * @module controls/upload/File
- * @class controls/upload/File
  */
 
-define('controls/upload/File', [
+define([
 
     'qui/QUI',
     'qui/controls/Control',

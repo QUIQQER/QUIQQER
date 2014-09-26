@@ -1,11 +1,14 @@
+
 /**
- * User Manager (Model)
- *
- * @author www.pcsg.de (Henning Leutz)
- *
- * @requires classes/DOM
+ * User Manager - class
  *
  * @module classes/users/Manager
+ * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/classes/DOM
+ * @require classes/users/User
+ * @require Ajax
+ * @require qui/utils/Object
  *
  * @event onSwitchStatus [this, result, Request]
  * @event onActivate [this, result, Request]
@@ -15,7 +18,7 @@
  * @event onSave [this, User]
  */
 
-define('classes/users/Manager', [
+define([
 
     'qui/classes/DOM',
     'classes/users/User',

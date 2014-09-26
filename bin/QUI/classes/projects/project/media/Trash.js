@@ -1,11 +1,12 @@
+
 /**
  * Media trash
  *
- * @author www.pcsg.de (Henning Leutz)
  * @module classes/projects/media/Trash
+ * @author www.pcsg.de (Henning Leutz)
  */
 
-define('classes/projects/media/Trash', [
+define([
 
     'classes/DOM',
     'Ajax',
