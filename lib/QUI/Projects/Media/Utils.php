@@ -251,6 +251,7 @@ class Utils
         } elseif ( isset( $attributes['width'] ) )
         {
             $width = $attributes['width'];
+
         } elseif ( isset( $attributes['height'] ) )
         {
             $height = $attributes['height'];
@@ -282,7 +283,7 @@ class Utils
         $src = $Image->getSizeCacheUrl( $width, $height );
 
         // image string
-        $img = '<img src="'. $src .'" ';
+        $img = '<img ';
 
         foreach ( $attributes as $key => $value ) {
             $img .= $key .'="'. $value .'" ';
@@ -299,17 +300,16 @@ class Utils
             $sizes  = array();
             $srcset = array();
 
-            for ( ; $start < $end; $start += 100 )
-            {
-                $sizes[]  = "(min-width: {$start}px) {$start}vw";
+            for ( ; $start < $end; $start += 100 ) {
                 $srcset[] = $Image->getSizeCacheUrl( $start ) ." {$start}w";
             }
 
-//             $img .= ' sizes="'. implode(', ', $sizes) .'"';
-//             $img .= ' srcset="'. implode(', ', $srcset) .'"';
+            // not optimal, but maybe we found a better solution
+            $img .= ' sizes="(max-width: 30em) 100vw, (max-width: 50em) 50vw, calc(33vw - 100px)"';
+            $img .= ' srcset="'. implode(",\n", $srcset) .'"';
         }
 
-        $img .= ' />';
+        $img .= ' src="'. $src .'" />';
 
         return $img;
     }

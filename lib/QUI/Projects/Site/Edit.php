@@ -652,18 +652,6 @@ class Edit extends \QUI\Projects\Site
         }
 
 
-        /*
-        $packages = \QUI::getPackageManager()->getPackageDatabaseXmlList();
-
-        // @todo fields and table list must cached -> performance
-        foreach ( $packages as $package )
-        {
-            $this->_saveDatabaseXML( OPT_DIR . $package .'/database.xml' );
-            $this->_saveSiteXML( OPT_DIR . $package .'/site.xml' );
-        }
-        */
-
-
         //$this->deleteTemp($User);
         $Project->clearCache();
 
