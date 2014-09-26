@@ -141,12 +141,34 @@ class Utils
             {
                 $Table = $tableList->item( $i );
 
+                if ( $Table->getAttribute( 'no-auto-update' ) ) {
+                    continue;
+                }
+
+                // types check
+                $types = $Table->getAttribute( 'site-types' );
+
+                if ( $types ) {
+                    $types = explode( ',', $types );
+                }
+
+                if ( !empty( $types ) )
+                {
+                    foreach ( $types as $allowedType )
+                    {
+                        if ( !StringUtils::match( $allowedType, $siteType ) ) {
+                            continue 2;
+                        }
+                    }
+                }
+
+
                 $suffix = $Table->getAttribute( 'name' );
                 $fields = $Table->getElementsByTagName( 'field' );
 
                 $table = \QUI::getDBTableName( $name .'_'. $lang .'_'. $suffix );
                 $data  = array();
-                $attributePrfx = str_replace('/', '.', $package .'.'. $suffix); // package.package.table.attribute
+
 
                 for ( $f = 0, $flen = $fields->length; $f < $flen; $f++ )
                 {
