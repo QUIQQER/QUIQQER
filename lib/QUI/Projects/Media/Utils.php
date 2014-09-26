@@ -219,14 +219,12 @@ class Utils
     }
 
     /**
-     * Statische getHTML Methode
-     * Gibt einen komplette HTML Tag <img /> von dem Bild aus
+     * Return <img /> from image attributes
+     * considered responsive images, too
      *
      * @param String $src
      * @param String $attributes
      * @return String
-     *
-     * @todo do we really need this? think about it
      */
     static function getImageHTML($src, $attributes)
     {
@@ -258,28 +256,60 @@ class Utils
             $height = $attributes['height'];
         }
 
-        if ( strpos( $width, '%') === false ) {
-            $size['width']  = $width;
+        if ( strpos( $width, '%') !== false ) {
+            $width = false;
         }
 
-        if ( strpos( $height, '%') === false ) {
-            $size['height']  = $height;
+        if ( strpos( $height, '%') !== false ) {
+            $height = false;
         }
 
 
-        $src = self::getRewritedUrl( $src, $size );
-
-        if ( $src )
+        try
         {
-            // @todo responsive images <picture> or srcset?
-            $img = '<img src="'. $src .'" ';
+            $Image = self::getImageByUrl( $src );
 
-            foreach ( $attributes as $key => $value ) {
-                $img .= $key .'="'. $value .'" ';
+        } catch ( \QUI\Exception $Exception )
+        {
+            return '';
+        }
+
+        if ( !self::isImage( $Image ) ) {
+            return '';
+        }
+
+        /* @var $Image \QUI\Projects\Media\Image */
+        $src = $Image->getSizeCacheUrl( $width, $height );
+
+        // image string
+        $img = '<img src="'. $src .'" ';
+
+        foreach ( $attributes as $key => $value ) {
+            $img .= $key .'="'. $value .'" ';
+        }
+
+        // responsive image
+        $imageWidth = $Image->getWidth();
+
+        if ( $imageWidth )
+        {
+            $end   = $imageWidth > 1000 ? 1000 : $imageWidth;
+            $start = 100;
+
+            $sizes  = array();
+            $srcset = array();
+
+            for ( ; $start < $end; $start += 100 )
+            {
+                $sizes[]  = "(min-width: {$start}px) {$start}vw";
+                $srcset[] = $Image->getSizeCacheUrl( $start ) ." {$start}w";
             }
 
-            $img .= ' />';
+//             $img .= ' sizes="'. implode(', ', $sizes) .'"';
+//             $img .= ' srcset="'. implode(', ', $srcset) .'"';
         }
+
+        $img .= ' />';
 
         return $img;
     }

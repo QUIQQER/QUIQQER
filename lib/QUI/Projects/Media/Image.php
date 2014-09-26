@@ -6,6 +6,8 @@
 
 namespace QUI\Projects\Media;
 
+use \QUI\Utils\System\File;
+
 /**
  * A media image
  *
@@ -15,6 +17,46 @@ namespace QUI\Projects\Media;
 
 class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects\Media\File
 {
+    /**
+     * Return the real with of the image
+     *
+     * @return Integer | false
+     */
+    public function getWidth()
+    {
+        if ( $this->getAttribute( 'image_width' ) ) {
+            return $this->getAttribute( 'image_width' );
+        }
+
+        $data = File::getInfo( $this->getFullPath(), array( 'imagesize' => true ) );
+
+        if ( isset( $data[ 'width' ] ) ) {
+            return $data[ 'width' ];
+        }
+
+        return false;
+    }
+
+    /**
+     * Return the real height of the image
+     *
+     * @return Integer | false
+     */
+    public function getHeight()
+    {
+        if ( $this->getAttribute( 'image_height' ) ) {
+            return $this->getAttribute( 'image_height' );
+        }
+
+        $data = File::getInfo( $this->getFullPath(), array( 'imagesize' => true ) );
+
+        if ( isset( $data[ 'height' ] ) ) {
+            return $data[ 'height' ];
+        }
+
+        return false;
+    }
+
     /**
      * (non-PHPdoc)
      * @see \QUI\Interfaces\Projects\Media\File::createCache()
@@ -32,6 +74,14 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
      */
     public function getSizeCachePath($maxwidth=false, $maxheight=false)
     {
+        if ( $maxwidth > 1200 ) {
+            $maxwidth = 1200;
+        }
+
+        if ( $maxheight > 1200 ) {
+            $maxheight = 1200;
+        }
+
         $params = $this->getResizeSize(
             $maxwidth,
             $maxheight
@@ -84,8 +134,8 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
     /**
      * Return the image url
      *
-     * @param string $maxwidth
-     * @param string $maxheight
+     * @param string $maxwidth - width
+     * @param string $maxheight - height
      */
     public function getSizeCacheUrl($maxwidth=false, $maxheight=false)
     {
@@ -174,6 +224,16 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
         if ( !$maxheight ) {
             $maxheight = $height;
         }
+
+        // max höhe breite auf 1200
+        if ( $maxwidth > 1200 ) {
+            $maxwidth = 1200;
+        }
+
+        if ( $maxheight > 1200 ) {
+            $maxheight = 1200;
+        }
+
 
         // Breite
         if ( $newwidth > $maxwidth )

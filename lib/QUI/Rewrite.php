@@ -6,6 +6,8 @@
 
 namespace QUI;
 
+use \QUI\Projects\Media\Utils as MediaUtils;
+
 /**
  * Rewrite - URL Verwaltung (sprechende URLS)
  *
@@ -256,7 +258,7 @@ class Rewrite
         {
             try
             {
-                $Item = \QUI\Projects\Media\Utils::getElement( $_REQUEST['_url'] );
+                $Item = MediaUtils::getElement( $_REQUEST['_url'] );
 
                 if (strpos($_REQUEST['_url'], '__') !== false)
                 {
@@ -1089,9 +1091,7 @@ class Rewrite
     {
         try
         {
-            $url = \QUI\Projects\Media\Utils::getRewritedUrl(
-                'image.php?'. $output[3]
-            );
+            $url = MediaUtils::getRewritedUrl( 'image.php?'. $output[3] );
 
         } catch ( \QUI\Exception $Excxeption )
         {
@@ -1117,7 +1117,7 @@ class Rewrite
             return $this->_image_cache[ $img ];
         }
 
-        if ( !\QUI\Projects\Media\Utils::isMediaUrl( $img ) ) {
+        if ( !MediaUtils::isMediaUrl( $img ) ) {
             return $output[0];
         }
 
@@ -1135,7 +1135,7 @@ class Rewrite
         {
             try
             {
-                $Image = \QUI\Projects\Media\Utils::getImageByUrl( $src );
+                $Image = MediaUtils::getImageByUrl( $src );
 
                 $att['alt']   = $Image->getAttribute('alt') ? $Image->getAttribute('alt') : '';
                 $att['title'] = $Image->getAttribute('title') ? $Image->getAttribute('title') : '';
@@ -1146,7 +1146,7 @@ class Rewrite
             }
         }
 
-        $this->_image_cache[ $img ] = \QUI\Projects\Media\Utils::getImageHTML( $src, $att );
+        $this->_image_cache[ $img ] = MediaUtils::getImageHTML( $src, $att );
 
         return $this->_image_cache[ $img ];
     }

@@ -403,12 +403,11 @@ class QUI
 
                 if ( \QUI::conf( 'mail','admin_mail' ) )
                 {
-                    \QUI_Mail::init()->send(array(
-                         'MailTo'  => \QUI::conf( 'mail','admin_mail' ),
-                         'Subject' => 'Memory limit reached at http://'. $_SERVER["HTTP_HOST"],
-                         'Body'    => $message,
-                         'IsHTML'  => false
-                    ));
+                    \QUI::getMailManager()->send(
+                        \QUI::conf( 'mail','admin_mail' ),
+                        'Memory limit reached at http://'. $_SERVER["HTTP_HOST"],
+                        $message
+                    );
                 }
 
                 \QUI\System\Log::write( $message, 'error' );
