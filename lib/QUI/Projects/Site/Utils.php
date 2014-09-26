@@ -160,7 +160,12 @@ class Utils
                     continue;
                 }
 
-                $result[ $table ] = $data;
+                $result[] = array(
+                    'table'   => $table,
+                    'data'    => $data,
+                    'package' => $package,
+                    'suffix'  => $suffix
+                );
             }
         }
 

@@ -615,12 +615,20 @@ class Edit extends \QUI\Projects\Site
         // save package automatic site data (database.xml)
         $dataList = Utils::getDataListForSite( $this );
 
-        foreach ( $dataList as $table => $fieldList )
+        foreach ( $dataList as $dataEntry )
         {
             $data = array();
 
+            $table     = $dataEntry[ 'table' ];
+            $fieldList = $dataEntry[ 'data' ];
+            $package   = $dataEntry[ 'package' ];
+            $suffix    = $dataEntry[ 'suffix' ];
+
+            $attributeSuffix = $package .'.'. $suffix .'.';
+            $attributeSuffix = str_replace( '/', '.', $attributeSuffix );
+
             foreach ( $fieldList as $siteAttribute ) {
-                 $data[ $siteAttribute ] = $this->getAttribute( $siteAttribute );
+                 $data[ $siteAttribute ] = $this->getAttribute( $attributeSuffix . $siteAttribute );
             }
 
             $result = \QUI::getDataBase()->fetch(array(
