@@ -102,12 +102,12 @@ var requireList = [
    'qui/QUI',
    'Locale',
    'Ajax',
+   'Projects',
    'controls/workspace/Manager',
    'qui/controls/buttons/Button',
    'qui/controls/contextmenu/Item',
    'qui/controls/contextmenu/Seperator'
 ].append( QUIQQER_LOCALE || [] );
-
 
 require( requireList, function()
 {
@@ -116,12 +116,12 @@ require( requireList, function()
     var QUI       = arguments[ 0 ],
         Locale    = arguments[ 1 ],
         Ajax      = arguments[ 2 ],
-        WSManager = arguments[ 3 ],
-        QUIButton = arguments[ 4 ],
+        Projects  = arguments[ 3 ],
+        WSManager = arguments[ 4 ],
+        QUIButton = arguments[ 5 ],
 
-        QUIContextmenuItem      = arguments[ 5 ],
-        QUIContextmenuSeperator = arguments[ 6 ];
-
+        QUIContextmenuItem      = arguments[ 6 ],
+        QUIContextmenuSeperator = arguments[ 7 ];
 
     Locale.setCurrent( USER.lang );
 

@@ -1,10 +1,12 @@
+
 /**
  * Plugins
  *
+ * @module Plugins
  * @author www.pcsg.de (Henning Leutz)
  */
 
-define('Plugins', ['classes/plugins/Manager'], function(PluginManager)
+define(['classes/plugins/Manager'], function(PluginManager)
 {
     "use strict";
 

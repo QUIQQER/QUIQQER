@@ -1,3 +1,4 @@
+
 /**
  * Ajax request for QUIQQER
  * Ajax Manager, collect, exec multible requests

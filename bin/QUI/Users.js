@@ -1,12 +1,12 @@
+
 /**
  * Global User Manager object
  *
- * @author www.pcsg.de (Henning Leutz)
- *
  * @module Users
+ * @author www.pcsg.de (Henning Leutz)
  */
 
-define('Users', ['classes/users/Manager'], function(Users)
+define(['classes/users/Manager'], function(Users)
 {
     "use strict";
 

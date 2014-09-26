@@ -1,12 +1,12 @@
+
 /**
  * Global Group Manager object
  *
- * @author www.pcsg.de (Henning Leutz)
- *
  * @module Groups
+ * @author www.pcsg.de (Henning Leutz)
  */
 
-define('Groups', ['classes/groups/Manager'], function(Groups)
+define(['classes/groups/Manager'], function(Groups)
 {
     "use strict";
 

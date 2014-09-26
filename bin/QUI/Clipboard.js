@@ -1,13 +1,15 @@
+
 /**
  * A mini Clipboard for QUI
  * You can save text data eq for copy and paste a sitemap item
  *
  * its not a real clipboard
  *
+ * @module Clipboard
  * @author www.pcsg.de (Henning Leutz)
  */
 
-define('Clipboard', function()
+define(function()
 {
     "use strict";
 

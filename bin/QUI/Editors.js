@@ -1,13 +1,13 @@
+
 /**
  * Global Editor manager
  * define: QUI.Editors
  *
- * @author www.pcsg.de (Henning Leutz)
- *
  * @module Editors
+ * @author www.pcsg.de (Henning Leutz)
  */
 
-define('Editors', ['classes/editor/Manager'], function(Editors)
+define(['classes/editor/Manager'], function(Editors)
 {
     "use strict";
 

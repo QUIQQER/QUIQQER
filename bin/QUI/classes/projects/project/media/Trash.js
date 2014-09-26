@@ -7,16 +7,14 @@
  *
  * @require qui/classes/DOM
  * @require Ajax
- * @require controls/projects/project/media/Trash
  */
 
 define([
 
     'qui/classes/DOM',
-    'Ajax',
-    'controls/trash/Panel'
+    'Ajax'
 
-], function(QDOM, Ajax, TrashPanel)
+], function(QDOM, Ajax)
 {
     "use strict";
 
@@ -54,14 +52,14 @@ define([
          *
          * @return {controls/projects/media/Trash}
          */
-        getControl : function()
-        {
-            return new TrashPanel(
-                this.$Media,
-                this.getAttributes(),
-                this
-            );
-        },
+//        getControl : function()
+//        {
+//           return new TrashPanel(
+//                this.$Media,
+//                this.getAttributes(),
+//                this
+//            );
+//        },
 
         /**
          * Return the sites in the trash
