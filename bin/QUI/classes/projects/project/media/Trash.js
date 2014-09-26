@@ -4,15 +4,19 @@
  *
  * @module classes/projects/media/Trash
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/classes/DOM
+ * @require Ajax
+ * @require controls/projects/project/media/Trash
  */
 
 define([
 
-    'classes/DOM',
+    'qui/classes/DOM',
     'Ajax',
-    'controls/projects/media/Trash'
+    'controls/trash/Panel'
 
-], function(QDOM, Ajax, MediaTrash)
+], function(QDOM, Ajax, TrashPanel)
 {
     "use strict";
 
@@ -52,7 +56,7 @@ define([
          */
         getControl : function()
         {
-            return new MediaTrash(
+            return new TrashPanel(
                 this.$Media,
                 this.getAttributes(),
                 this

@@ -5,8 +5,10 @@
  * @author www.pcsg.de (Henning Leutz)
  * @module classes/groups/Manager
  *
- * @require classes/DOM
+ * @require qui/classes/DOM
  * @require classes/groups/Group
+ * @require Ajax
+ * @require qui/utils/Object
  *
  * @event onActivate [this, result, Request]
  * @event onDeactivate [this, result, Request]
