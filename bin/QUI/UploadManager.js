@@ -1,12 +1,12 @@
+
 /**
  * Global Upload Manager
  *
- * @author www.pcsg.de (Henning Leutz)
- *
  * @module UploadManager
+ * @author www.pcsg.de (Henning Leutz)
  */
 
-define('UploadManager', ['controls/upload/Manager'], function(UploadManager)
+define(['controls/upload/Manager'], function(UploadManager)
 {
     "use strict";
 

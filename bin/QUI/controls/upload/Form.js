@@ -4,6 +4,7 @@
  * the control creates a upload formular
  * the formular sends the selected file to the upload manager
  *
+ * @module controls/upload/Form
  * @author www.pcsg.de (Henning Leutz)
  *
  * @fires onBegin [this]
@@ -15,19 +16,17 @@
  * @fires onDragend [event, DOMNode, controls/upload/Form]
  * @fires onDrop [event, files, Elm, Upload]
  *
- * @requires qui/QUI
- * @requires qui/controls/Control
- * @requires qui/controls/utils/Progressbar
- * @requires qui/controls/buttons/Button
- * @requires utils/Media
- * @requires classes/request/Upload
- * @requires Locale
- *
- * @module controls/upload/Form
- * @class controls/upload/Form
+ * @require qui/QUI
+ * @require qui/controls/Control
+ * @require qui/controls/utils/Progressbar
+ * @require qui/controls/buttons/Button
+ * @require utils/Media
+ * @require classes/request/Upload
+ * @require Locale
+ * @require css!controls/upload/Form.css
  */
 
-define('controls/upload/Form', [
+define([
 
     'qui/QUI',
     'qui/controls/Control',

@@ -3,12 +3,19 @@
  * Uploads files and show the upload status
  *
  * @author www.pcsg.de (Henning Leutz)
- *
  * @module controls/upload/Manager
- * @package com.pcsg.quiqqer
+ *
+ * @require qui/QUI
+ * @require qui/controls/desktop/Panel
+ * @require qui/controls/utils/Progressbar
+ * @require qui/controls/windows/Alert
+ * @require controls/upload/File
+ * @require Ajax
+ * @require Locale
+ * @require css!controls/upload/Manager.css
  */
 
-define('controls/upload/Manager', [
+define([
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
