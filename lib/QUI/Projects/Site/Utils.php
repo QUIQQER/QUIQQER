@@ -251,17 +251,21 @@ class Utils
 
         // extra type attributes
         $type = explode( ':', $siteType );
-        $expr = '//site/types/type[@type="'. $type[ 1 ] .'"]/attributes/attribute';
 
-        $siteXmlFile = OPT_DIR . $type[ 0 ] .'/site.xml';
+        if ( isset( $type[ 1 ] ) )
+        {
+            $expr = '//site/types/type[@type="'. $type[ 1 ] .'"]/attributes/attribute';
 
-        $Dom  = XML::getDomFromXml( $siteXmlFile );
-        $Path = new \DOMXPath( $Dom );
+            $siteXmlFile = OPT_DIR . $type[ 0 ] .'/site.xml';
 
-        $attributes = $Path->query( $expr );
+            $Dom  = XML::getDomFromXml( $siteXmlFile );
+            $Path = new \DOMXPath( $Dom );
 
-        foreach ( $attributes as $Attribute ) {
-            $result[] = trim( $Attribute->nodeValue );
+            $attributes = $Path->query( $expr );
+
+            foreach ( $attributes as $Attribute ) {
+                $result[] = trim( $Attribute->nodeValue );
+            }
         }
 
         \QUI\Cache\Manager::set( $cache , $result );
