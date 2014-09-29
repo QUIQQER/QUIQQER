@@ -125,8 +125,13 @@ require( requireList, function()
 
     Locale.setCurrent( USER.lang );
 
-    QUI.addEvent('onError', function( err, url, line ) {
+    QUI.addEvent('onError', function( err, url, line )
+    {
         console.error( err +' - '+ url +' - '+ line );
+
+        if ( typeof Error !== 'undefined' ) {
+            console.warn( new Error().stack );
+        }
     });
 
     // load the default workspace
