@@ -6,13 +6,14 @@
 
 namespace QUI\Utils;
 
+use QUI\Projects\Site\Utils;
+
 /**
  * QUIQQER DOM Helper
  *
  * \QUI\Utils\DOM helps with quiqqer .xml files and DOMNode Elements
  *
  * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.utils
  */
 
 class DOM
@@ -311,14 +312,14 @@ class DOM
         if ( is_string( $Object ) )
         {
             if ( file_exists( $Object ) ) {
-                $tabs = \QUI\Utils\XML::getTabsFromXml( $Object );
+                $tabs = XML::getTabsFromXml( $Object );
             }
 
         } else if ( get_class( $Object ) === 'QUI\\Projects\\Project' )
         {
             /* @var $Object \QUI\Projects\Project */
             // tabs welche ein projekt zur Verfügung stellt
-            $tabs = \QUI\Utils\XML::getTabsFromUserXml(
+            $tabs = XML::getTabsFromUserXml(
                 USR_DIR .'lib/'. $Object->getAttribute( 'name' ) .'/user.xml'
             );
 
@@ -339,7 +340,7 @@ class DOM
                     $extra = '';
 
                     if ( $file == SYS_DIR .'template/site/settings.html' ) {
-                        $extra = self::getSiteExtraSettings( $Object );
+                        $extra = Utils::getExtraSettingsForSite( $Object );
                     }
 
                     // generate html
@@ -371,36 +372,6 @@ class DOM
         }
 
         return $str;
-    }
-
-    /**
-     * Search extra settings for the site
-     *
-     * @param \QUI\Projects\Site|\QUI\Projects\Edit $Site
-     * @return String
-     */
-    static function getSiteExtraSettings($Site)
-    {
-        $type    = explode( ':', $Site->getAttribute( 'type' ) );
-        $dir     = OPT_DIR . $type[ 0 ];
-        $siteXML = $dir .'/site.xml';
-
-        if ( !file_exists( $siteXML ) ) {
-            return '';
-        }
-
-        $Dom  = \QUI\Utils\XML::getDomFromXml( $siteXML );
-        $Path = new \DOMXPath( $Dom );
-        $expr = "//site/types/type[@type='". $type[ 1 ] ."']/settings/category";
-
-        $cats   = $Path->query( $expr );
-        $result = '';
-
-        foreach ( $cats as $Category ) {
-            $result .= self::parseCategorieToHTML( $Category );
-        }
-
-        return $result;
     }
 
     /**
@@ -461,7 +432,7 @@ class DOM
 
                         $Button->setAttribute(
                             $btnParams->item( $b )->nodeName,
-                            \QUI\Utils\DOM::parseVar( $value )
+                            self::parseVar( $value )
                         );
                     break;
                 }
@@ -697,9 +668,7 @@ class DOM
             {
                 $Win->setAttribute(
                     'icon',
-                    \QUI\Utils\DOM::parseVar(
-                        $icon->item( 0 )->nodeValue
-                    )
+                    self::parseVar( $icon->item( 0 )->nodeValue )
                 );
             }
         }
@@ -1148,7 +1117,7 @@ class DOM
             $value
         );
 
-        $value = \QUI\Utils\String::replaceDblSlashes( $value );
+        $value = String::replaceDblSlashes( $value );
 
         return $value;
     }
@@ -1165,34 +1134,40 @@ class DOM
             return '';
         }
 
-        $string  = '<p>';
-        $string .= '<select
+        $id = $Select->getAttribute( 'conf' ) .'-'. time();
+
+        $select = '<select
             name="'. $Select->getAttribute( 'conf' ) .'"
+            id="'. $id .'"
         >';
 
         // Options
-        $Dom = new \DOMDocument();
+        $options = $Select->getElementsByTagName( 'option' );
 
-        foreach ( $Select->childNodes as $Child )
+        foreach ( $options as $Option )
         {
-            if ( $Dom->nodeName == 'text' ) {
-                continue;
-            }
+            $value = $Option->getAttribute( 'value' );
+            $html  = self::getTextFromNode( $Option );
 
-            $Dom->appendChild( $Dom->importNode( $Child, true ) );
+            $select .= '<option value="'. $value .'">'. $html .'</option>';
         }
 
-        $string .= $Dom->saveHtml();
-        $string .= '</select>';
+        $select .= '</select>';
 
-        $text = $Select->getElementsByTagName( 'text' );
 
-        if ( $text->length ) {
-            $string .= '<span>'. self::getTextFromNode( $text->item(0) ) .'</span>';
+        $text   = $Select->getElementsByTagName( 'text' );
+        $result = '<p>';
+
+        if ( $text->length )
+        {
+            $result .= '<label for="'. $id .'">'.
+                self::getTextFromNode( $text->item( 0 ) ) .
+            '</label>';
         }
 
-        $string .= '</p>';
+        $result .= $select;
+        $result .= '</p>';
 
-        return $string;
+        return $result;
     }
 }

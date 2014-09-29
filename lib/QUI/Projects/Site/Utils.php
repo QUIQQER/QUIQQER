@@ -7,8 +7,8 @@
 namespace QUI\Projects\Site;
 
 use \QUI\Utils\String as StringUtils;
-use \QUI\Utils\XML as XML;
-
+use \QUI\Utils\XML;
+use \QUI\Utils\DOM;
 
 /**
  * Site Utils - Site Helper
@@ -262,6 +262,77 @@ class Utils
 
         foreach ( $attributes as $Attribute ) {
             $result[] = trim( $Attribute->nodeValue );
+        }
+
+        \QUI\Cache\Manager::set( $cache , $result );
+
+        return $result;
+    }
+
+    /**
+     * Return the extra settings from site.xml's
+     *
+     * @param \QUI\Projects\Site $Site
+     * @return String
+     */
+    static function getExtraSettingsForSite($Site)
+    {
+        $Project  = $Site->getProject();
+        $name     = $Project->getName();
+        $lang     = $Project->getLang();
+        $siteType = $Site->getAttribute( 'type' );
+        $cache    = "site/site-extra-settings/project/{$name}-{$lang}/type/{$siteType}";
+
+        try
+        {
+            return \QUI\Cache\Manager::get( $cache );
+
+        } catch ( \QUI\Exception $Exception )
+        {
+
+        }
+
+
+        // global extra
+        $siteXmlList = \QUI::getPackageManager()->getPackageSiteXmlList();
+        $result      = '';
+
+        foreach ( $siteXmlList as $package )
+        {
+            $file = OPT_DIR . $package .'/site.xml';
+
+            if ( !file_exists( $file ) ) {
+                continue;
+            }
+
+            $Dom  = XML::getDomFromXml( $file );
+            $Path = new \DOMXPath( $Dom );
+            $cats = $Path->query( "//site/settings/category" );
+
+            foreach ( $cats as $Category ) {
+                $result .= DOM::parseCategorieToHTML( $Category );
+            }
+        }
+
+
+        // site type extra xml
+        $type    = explode( ':', $Site->getAttribute( 'type' ) );
+        $dir     = OPT_DIR . $type[ 0 ];
+        $siteXML = $dir .'/site.xml';
+
+        if ( file_exists( $siteXML ) )
+        {
+            $Dom    = XML::getDomFromXml( $siteXML );
+            $Path   = new \DOMXPath( $Dom );
+
+            // type extra
+            $cats = $Path->query(
+                "//site/types/type[@type='". $type[ 1 ] ."']/settings/category"
+            );
+
+            foreach ( $cats as $Category ) {
+                $result .= DOM::parseCategorieToHTML( $Category );
+            }
         }
 
         \QUI\Cache\Manager::set( $cache , $result );
