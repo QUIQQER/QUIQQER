@@ -208,6 +208,11 @@ class Site extends \QUI\QDOM
         if ( !$this->getAttribute( 'type' ) ) {
             $this->setAttribute( 'type', 'standard' );
         }
+
+
+        // onInit event
+        $this->Events->fireEvent( 'init', array( $this ) );
+        \QUI::getEvents()->fireEvent( 'siteInit', array( $this ) );
     }
 
     /**

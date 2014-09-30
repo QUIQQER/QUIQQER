@@ -845,10 +845,11 @@ define([
                             text   : Panel.getAttribute( 'title' ),
                             icon   : Panel.getAttribute( 'icon' ),
                             name   : Panel.getAttribute( 'name' ),
+                            Panel  : Panel,
                             events : {
-//                                onActive    : this.$onEnterRemovePanel,
-//                                onNormal    : this.$onLeaveRemovePanel,
-//                                onMouseDown : this.$onClickRemovePanel
+                                onActive    : self.$onEnterRemovePanel,
+                                onNormal    : self.$onLeaveRemovePanel,
+                                onMouseDown : self.$onClickRemovePanel
                             }
                         })
                     );
@@ -888,6 +889,37 @@ define([
             Menu.getAttribute( 'Column' ).normalize();
             Menu.removeEvent( 'onBlur', this.$onColumnContextMenuBlur );
         },
+
+        /**
+         * event : on mouse enter at a contextmenu item -> remove panel
+         *
+         * @param {qui/controls/contextmenu/Item} Item
+         */
+        $onEnterRemovePanel : function(Item)
+        {
+            Item.getAttribute( 'Panel' ).highlight();
+        },
+
+        /**
+         * event : on mouse leave at a contextmenu item -> remove panel
+         *
+         * @param {qui/controls/contextmenu/Item} Item
+         */
+        $onLeaveRemovePanel : function(Item)
+        {
+            Item.getAttribute( 'Panel' ).normalize();
+        },
+
+        /**
+         * event : on mouse click at a contextmenu item -> remove panel
+         *
+         * @param {qui/controls/contextmenu/Item} Item
+         */
+        $onClickRemovePanel : function(ContextItem)
+        {
+            ContextItem.getAttribute( 'Panel' ).destroy();
+        },
+
 
         /**
          * windows

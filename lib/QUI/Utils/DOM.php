@@ -1041,17 +1041,25 @@ class DOM
             return '';
         }
 
-        $string  = '<p>';
-        $string .= '<textarea
-            name="'. $Textarea->getAttribute( 'conf' ) .'"
-        ></textarea>';
-
+        $id   = $Textarea->getAttribute( 'conf' ) .'-'. time();
         $text = $Textarea->getElementsByTagName( 'text' );
 
-        if ( $text->length ) {
-            $string .= '<span>'. self::getTextFromNode( $text->item( 0 ) ) .'</span>';
+        $textarea = '<textarea
+            name="'. $Textarea->getAttribute( 'conf' ) .'"
+            id="'. $id .'"
+        ></textarea>';
+
+
+        $string  = '<p>';
+
+        if ( $text->length )
+        {
+            $string .= '<label for="'. $id .'">'.
+                self::getTextFromNode( $text->item( 0 ) ) .
+            '</label>';
         }
 
+        $string .= $textarea;
         $string .= '</p>';
 
         return $string;

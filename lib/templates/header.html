@@ -2,27 +2,26 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
     {if $Template->getAttribute('html5') === false}
-    <meta http-equiv="content-language" content="{$Project->getAttribute('lang')}" />
+    <meta http-equiv="content-language" content="{$Project->getlang()}" />
     <meta name="page-topic" content="{$Site->getAttribute('title')|escape:"html"}" />
 
     <meta name="date" content="{$Site->getAttribute('e_date')}" />
-    <meta name="lang" content="{$Project->getAttribute('lang')}" />
-    <meta name="copyright" content="{$Project->getConfig('copyright')}" />
-    <meta name="publisher" content="{$Project->getConfig('publisher')}" />
+    <meta name="lang" content="{$Project->getLang()}" />
+    <meta name="copyright" content="{$Project->getConfig('meta.copyright')}" />
+    <meta name="publisher" content="{$Project->getConfig('meta.publisher')}" />
     {/if}
 
-    <meta name="description" content="{if $Site->getAttribute('pcsg.base.description')}{$Site->getAttribute('pcsg.base.description')|escape:"html"}{else}{$Project->getConfig('description')|escape:"html"}{/if}" />
-    <meta name="keywords" content="{if $Site->getAttribute('pcsg.base.keywords')}{$Site->getAttribute('pcsg.base.keywords')|escape:"html"}{else}{$Project->getConfig('keywords')|escape:"html"}{/if}" />
-
+    <meta name="description" content="{$Site->getAttribute('meta.description')|escape:"html"}" />
+    <meta name="keywords" content="{$Site->getAttribute('meta.keywords')|escape:"html"}" />
     {if $Locale->no_translation}
-        <meta name="robots" content="noindex" />
+    <meta name="robots" content="noindex" />
     {else}
-        <meta name="robots" content="{if $Site->getAttribute('pcsg.base.robots')}{$Site->getAttribute('pcsg.base.robots')}{else}{$Project->getConfig('robots')}{/if}" />
+    <meta name="robots" content="{$Site->getAttribute('meta.robots')}" />
     {/if}
 
     <meta name="generator" content="{$smarty.const.GENERATOR}" />
-    <meta name="author" content="{$Project->getConfig('author')}" />
-    <meta name="revisit-after" content="2 days" />
+    <meta name="author" content="{$Site->getAttribute('meta.author')}" />
+    <meta name="revisit-after" content="{$Site->getAttribute('meta.revisit')}" />
     <!-- [end] meta -->
 
     <script type="text/javascript">
@@ -120,7 +119,7 @@
 
     <title>
         {$Template->getAttribute('site_title_prefix')}
-        {$Site->getAttribute('pcsg.base.seotitle')|escape:"html"}
+        {$Site->getAttribute('meta.seotitle')|escape:"html"}
         {$Template->getAttribute('site_title_suffix')}
         {$Template->getAttribute('site_title')}
     </title>

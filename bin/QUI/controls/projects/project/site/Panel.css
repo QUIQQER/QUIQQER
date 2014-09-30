@@ -18,7 +18,7 @@
     height: 120px;
 }
 
-/** settings
+/** site settings
  * ====================================== */
 
 .qui-site-data .data-table p {
@@ -27,4 +27,15 @@
 
 .qui-site-data .data-table p label {
     width: 20%;
+}
+
+.qui-site-data .data-table input,
+.qui-site-data .data-table select,
+.qui-site-data .data-table textarea {
+    max-width: 100%;
+    width: 300px;
+}
+
+.qui-site-data .data-table textarea {
+    min-height: 100px;
 }

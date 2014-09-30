@@ -95,6 +95,10 @@ class Edit extends \QUI\Projects\Site
                 $plg->onLoad( $this );
             }
         }
+
+        // onInit event
+        $this->Events->fireEvent( 'init', array( $this ) );
+        \QUI::getEvents()->fireEvent( 'siteInit', array( $this ) );
     }
 
     /**
