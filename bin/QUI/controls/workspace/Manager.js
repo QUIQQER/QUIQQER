@@ -305,7 +305,7 @@ define([
         appendControlToColumn : function(panelRequire, Column)
         {
             require([ panelRequire ], function(cls) {
-                new cls().inject( Column );
+                Column.appendChild( new cls() );
             });
         },
 
