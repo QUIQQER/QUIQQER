@@ -6,6 +6,8 @@
 
 namespace QUI\Projects\Media;
 
+use \QUI\Utils\System\File as QUIFile;
+
 /**
  * A media item
  * the parent class of each media entry
@@ -56,7 +58,7 @@ abstract class Item extends \QUI\QDOM
             return;
         }
 
-        $this->setAttribute( 'filesize', \QUI\Utils\System\File::getFileSize( $this->_file ) );
+        $this->setAttribute( 'filesize', QUIFile::getFileSize( $this->_file ) );
         $this->setAttribute( 'cache_url', URL_DIR . $this->_Media->getCacheDir() . $this->getPath() );
         $this->setAttribute( 'url', $this->getUrl() );
     }
@@ -84,7 +86,8 @@ abstract class Item extends \QUI\QDOM
         {
             // activate the parents, otherwise the file is not accessible
             $this->getParent()->activate();
-        } catch ( \QUI\Exception $e )
+
+        } catch ( \QUI\Exception $Exception )
         {
             // has no parent
         }
@@ -185,7 +188,7 @@ abstract class Item extends \QUI\QDOM
 
         try
         {
-            \QUI\Utils\System\File::unlink( $var_folder . $this->getId() );
+            QUIFile::unlink( $var_folder . $this->getId() );
 
         } catch ( \QUI\Exception $Exception )
         {
@@ -196,8 +199,8 @@ abstract class Item extends \QUI\QDOM
 
         try
         {
-            \QUI\Utils\System\File::mkdir( $var_folder );
-            \QUI\Utils\System\File::move( $original, $var_folder . $this->getId() );
+            QUIFile::mkdir( $var_folder );
+            QUIFile::move( $original, $var_folder . $this->getId() );
 
         } catch ( \QUI\Exception $Exception )
         {
@@ -246,13 +249,15 @@ abstract class Item extends \QUI\QDOM
             throw new \QUI\Exception( 'Only deleted files can be destroyed' );
         }
 
+        $Media = $this->_Media;
+
         // get the trash file and destroy it
         $var_folder = VAR_DIR .'media/'. $Media->getProject()->getAttribute('name') .'/';
         $var_file   = $var_folder . $this->getId();
 
-        \QUI\Utils\System\File::unlink( $var_file );
+        QUIFile::unlink( $var_file );
 
-        \QUI::getDataBase()->delete($table, array(
+        \QUI::getDataBase()->delete($this->_Media->getTable(), array(
             'id' => $this->getId()
         ));
     }
@@ -340,7 +345,7 @@ abstract class Item extends \QUI\QDOM
         $this->setAttribute( 'name', $newname );
         $this->setAttribute( 'file', $new_file );
 
-        \QUI\Utils\System\File::move( $original, $new_full_file );
+        QUIFile::move( $original, $new_full_file );
 
         if ( method_exists($this, 'createCache') ) {
             $this->createCache();
@@ -529,7 +534,7 @@ abstract class Item extends \QUI\QDOM
         );
 
         // move file on the real directory
-        \QUI\Utils\System\File::move( $old_path, $new_path );
+        QUIFile::move( $old_path, $new_path );
 
 
         // delete the file cache
