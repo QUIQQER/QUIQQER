@@ -94,7 +94,7 @@ define([
         ],
 
         options : {
-            autoResize  : true,
+            autoResize  : true, // resize workspace on window resize
             workspaceId : false
         },
 
@@ -116,16 +116,32 @@ define([
             this.$minWidth   = false;
             this.$minHeight  = false;
             this.$ParentNode = null;
-            this.$availablePanels = null;
+
+            this.$availablePanels = null; // cache
+            this.$resizeDelay     = null;
 
             this.addEvents({
                 onInject : this.$onInject
             });
 
-            if ( this.getAttribute( 'autoResize' ) ) {
-                window.addEvent( 'resize', this.resize );
+            if ( this.getAttribute( 'autoResize' ) )
+            {
+                window.addEvent( 'resize', function()
+                {
+                    // delay,
+                    if ( self.$resizeDelay ) {
+                        clearTimeout( self.$resizeDelay );
+                    }
+
+                    this.$resizeDelay = (function() {
+                        self.resize();
+                    }).delay( 200 );
+                });
             }
 
+            // @todo besser als onChange event von den panels
+            // ansonsten kann es sein das es so aussieht das das browser fenster sich nicht schließen lässt
+            // bei langsamer verbindung
             window.addEvent( 'beforeunload', this.save );
         },
 
@@ -175,20 +191,19 @@ define([
 
             this.$Elm.setStyle( 'overflow', null );
 
-            if ( width < this.$minWidth )
+            if ( this.$minWidth && width < this.$minWidth )
             {
                 width = this.$minWidth;
 
                 this.$Elm.setStyle( 'overflow', 'auto' );
             }
 
-            if ( height < this.$minHeight )
+            if ( this.$minHeight && height < this.$minHeight )
             {
                 height = this.$minHeight;
 
                 this.$Elm.setStyle( 'overflow', 'auto' );
             }
-
 
             this.Workspace.setWidth( width );
             this.Workspace.setHeight( height );
@@ -401,14 +416,18 @@ define([
                 return;
             }
 
+            var workspace = this.$spaces[ id ];
+
+            this.$minWidth  = workspace.minWidth;
+            this.$minHeight = workspace.minHeight;
+
             this.Workspace.clear();
             this.Workspace.unserialize(
-                JSON.decode( this.$spaces[ id ].data )
+                JSON.decode( workspace.data )
             );
 
             this.Workspace.fix();
             this.Workspace.resize();
-
             this.setAttribute( 'workspaceId', id );
 
             this.Loader.hide();
@@ -858,6 +877,59 @@ define([
 
             Menu.appendChild( new QUIContextmenuSeperator() );
 
+            // add columns
+            var AddColumn = new QUIContextmenuItem({
+                text : 'Spalte hinzufügen',
+                name : 'add_columns',
+                icon : 'icon-plus'
+            });
+
+            AddColumn.appendChild(
+                new QUIContextmenuItem({
+                    text   : 'Spalte davor einfügen',
+                    name   : 'addColumnBefore',
+                    icon   : 'icon-long-arrow-left',
+                    events :
+                    {
+                        onClick : function()
+                        {
+                            self.Workspace.appendChild(
+                                new QUIColumn({
+                                    height : '100%',
+                                    width  : 200
+                                }),
+                                'before',
+                                Column
+                            );
+                        }
+                    }
+                })
+            ).appendChild(
+                new QUIContextmenuItem({
+                    text   : 'Spalte danach einfügen',
+                    name   : 'addColumnAfter',
+                    icon   : 'icon-long-arrow-right',
+                    events :
+                    {
+                        onClick : function()
+                        {
+                            self.Workspace.appendChild(
+                                new QUIColumn({
+                                    height : '100%',
+                                    width  : 200
+                                }),
+                                'after',
+                                Column
+                            );
+                        }
+                    }
+                })
+            );
+
+            Menu.appendChild( AddColumn );
+
+
+            // remove column
             Menu.appendChild(
                 new QUIContextmenuItem({
                     text   : 'Spalte löschen',
@@ -918,6 +990,8 @@ define([
         $onClickRemovePanel : function(ContextItem)
         {
             ContextItem.getAttribute( 'Panel' ).destroy();
+
+            this.focus();
         },
 
 
