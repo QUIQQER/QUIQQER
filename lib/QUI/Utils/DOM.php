@@ -164,12 +164,17 @@ class DOM
     static function dbTableDomToArray(\DOMNode $Table)
     {
         $result = array(
-            'suffix' => $Table->getAttribute( 'name' ),
-            'no-site-reference' => false
+            'suffix'            => $Table->getAttribute( 'name' ),
+            'no-site-reference' => false,
+            'no-project-lang'   => false
         );
 
         if ( (int)$Table->getAttribute( 'no-site-reference' ) === 1 ) {
             $result[ 'no-site-reference' ] = true;
+        }
+
+        if ( (int)$Table->getAttribute( 'no-project-lang' ) === 1 ) {
+            $result[ 'no-project-lang' ] = true;
         }
 
 

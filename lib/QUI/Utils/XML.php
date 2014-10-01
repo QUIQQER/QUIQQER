@@ -258,7 +258,7 @@ class XML
             }
         }
 
-        // projects
+        // projects lang tables
         if ( $project && $project->length )
         {
             $tables = $project->item(0)->getElementsByTagName( 'table' );
@@ -270,6 +270,7 @@ class XML
                 );
             }
         }
+
 
         return $dbfields;
     }
@@ -970,14 +971,18 @@ class XML
 
                 $suffix = $table['suffix'];
                 $fields = $table['fields'];
+                $noLang = false;
 
-                if ( $table['no-site-reference'] !== true )
+                if ( $table['no-project-lang'] ) {
+                    $noLang = true;
+                }
+
+                if ( $table['no-site-reference'] !== true && $noLang === false )
                 {
                     $fields = array(
                         'id' => 'bigint(20) NOT NULL PRIMARY KEY'
                     ) + $fields;
                 }
-
 
                 // Projekte durchgehen
                 foreach ( $projects as $name => $params )
@@ -987,6 +992,10 @@ class XML
                     foreach ( $langs as $lang )
                     {
                         $tbl = \QUI::getDBTableName( $name .'_'. $lang .'_'. $suffix );
+
+                        if ( $noLang ) {
+                            $tbl = \QUI::getDBTableName( $name .'_'. $suffix );
+                        }
 
                         $Table->appendFields( $tbl, $fields );
 

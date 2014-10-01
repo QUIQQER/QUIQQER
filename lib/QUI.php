@@ -516,10 +516,16 @@ class QUI
      * Return the tablename with the QUI Prefix and table params
      *
      * @param String $table
+     * @param \QUI\Projects\Project
+     * @param Bool $lang - language in the table name? default = true
      * @return String
      */
-    static function getDBProjectTableName($table, \QUI\Projects\Project $Project)
+    static function getDBProjectTableName($table, \QUI\Projects\Project $Project, $lang=true)
     {
+        if ( $lang === false ) {
+            return QUI_DB_PRFX . $Project->getName() .'_'. $table;
+        }
+
         return QUI_DB_PRFX . $Project->getName() .'_'. $Project->getLang() .'_'. $table;
     }
 

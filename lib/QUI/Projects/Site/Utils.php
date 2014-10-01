@@ -70,6 +70,11 @@ class Utils
                     continue;
                 }
 
+                if ( $Table->getAttribute( 'no-project-lang' ) ) {
+                    continue;
+                }
+
+
                 // types check
                 $types = $Table->getAttribute( 'site-types' );
 
@@ -144,6 +149,11 @@ class Utils
                 if ( $Table->getAttribute( 'no-auto-update' ) ) {
                     continue;
                 }
+
+                if ( $Table->getAttribute( 'no-project-lang' ) ) {
+                    continue;
+                }
+
 
                 // types check
                 $types = $Table->getAttribute( 'site-types' );
