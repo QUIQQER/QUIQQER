@@ -382,6 +382,10 @@ class Media extends \QUI\QDOM
 
         \QUI\Utils\System\File::move($file, $real_file);
 
+        if ( isset( $this->_children[ $id ] ) ) {
+            unset( $this->_children[ $id ] );
+        }
+
         $File = $this->get( $id );
         $File->deleteCache();
 
