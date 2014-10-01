@@ -239,11 +239,11 @@ abstract class Item extends \QUI\QDOM
     public function destroy()
     {
         if ( $this->isActive() ) {
-            throw \QUI\Exception( 'Only inactive files can be destroyed' );
+            throw new \QUI\Exception( 'Only inactive files can be destroyed' );
         }
 
         if ( $this->isDeleted() ) {
-            throw \QUI\Exception( 'Only deleted files can be destroyed' );
+            throw new \QUI\Exception( 'Only deleted files can be destroyed' );
         }
 
         // get the trash file and destroy it
