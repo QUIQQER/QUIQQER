@@ -965,11 +965,16 @@ class DOM
             return '';
         }
 
-        $type  = 'text';
-        $class = '';
+        $type    = 'text';
+        $class   = '';
+        $dataQui = '';
 
         if ( $Input->getAttribute( 'type' ) ) {
             $type = $Input->getAttribute( 'type' );
+        }
+
+        if ( $Input->getAttribute( 'data-qui') ) {
+            $dataQui = ' data-qui="'. $Input->getAttribute( 'data-qui') .'"';
         }
 
         switch ( $type )
@@ -992,6 +997,7 @@ class DOM
                            name="'. $Input->getAttribute( 'conf' ) .'"
                            id="'. $id .'"
                            '. $class .'
+                           '. $dataQui .'
                     />';
 
         if ( $type == 'checkbox' || $type == 'radio' )
@@ -1049,9 +1055,16 @@ class DOM
         $id   = $Textarea->getAttribute( 'conf' ) .'-'. time();
         $text = $Textarea->getElementsByTagName( 'text' );
 
+        $dataQui = '';
+
+        if ( $Textarea->getAttribute( 'data-qui') ) {
+            $dataQui = ' data-qui="'. $Textarea->getAttribute( 'data-qui') .'"';
+        }
+
         $textarea = '<textarea
             name="'. $Textarea->getAttribute( 'conf' ) .'"
             id="'. $id .'"
+            '. $dataQui .'
         ></textarea>';
 
 
@@ -1147,11 +1160,17 @@ class DOM
             return '';
         }
 
-        $id = $Select->getAttribute( 'conf' ) .'-'. time();
+        $id      = $Select->getAttribute( 'conf' ) .'-'. time();
+        $dataQui = '';
+
+        if ( $Select->getAttribute( 'data-qui') ) {
+            $dataQui = ' data-qui="'. $Select->getAttribute( 'data-qui') .'"';
+        }
 
         $select = '<select
             name="'. $Select->getAttribute( 'conf' ) .'"
             id="'. $id .'"
+            '. $dataQui .'
         >';
 
         // Options

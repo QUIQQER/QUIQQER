@@ -93,6 +93,9 @@
     {assign var=canonical value=false}
     {capture assign=_url}{$smarty.const.HOST}{$smarty.const.URL_DIR}{if isset($smarty.request._url)}{$smarty.request._url}{/if}{/capture}
 
+    <!-- canonical -->
+    <!-- {$_url} -->
+    <!-- {$Site->getCanonical()} -->
     {* @todo nicht original url mit parameter beachten *}
     {if $Site->getId() != 1 && $_url && $_url != $Site->getCanonical() && empty($smarty.get)}
         <link rel="canonical" href="{$Site->getCanonical()}" />

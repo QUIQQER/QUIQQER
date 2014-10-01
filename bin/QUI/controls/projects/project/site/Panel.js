@@ -557,6 +557,7 @@ define([
             {
                 this.getContent().set( 'html', '' );
                 this.$categoryOnLoad( Category );
+                QUI.parse( Category );
 
                 return;
             }
@@ -694,6 +695,7 @@ define([
                 }
 
                 ControlUtils.parse( Form );
+                QUI.parse( Form );
 
                 self.$categoryOnLoad( Category );
 
