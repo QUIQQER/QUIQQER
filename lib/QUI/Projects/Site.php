@@ -375,6 +375,10 @@ class Site extends \QUI\QDOM
                 continue;
             }
 
+            if ( (int)$Table->getAttribute( 'no-project-lang' ) === 1 ) {
+                continue;
+            }
+
             // type check
             $types = $Table->getAttribute( 'site-types' );
 
