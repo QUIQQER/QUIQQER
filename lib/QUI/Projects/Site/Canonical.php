@@ -67,7 +67,7 @@ class Canonical
         {
             // check if https host exist,
             // if true, and request ist not https, canonical is https
-            if ( $httpsHostExists && \QUI\Utils\System::isProtocolHTTPS() === false ) {
+            if ( $httpsHostExists && \QUI\Utils\System::isProtocolSecure() === false ) {
                 return $this->_getLinkRel( $httpsHost . URL_DIR . $requestUrl );
             }
 
