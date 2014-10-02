@@ -387,7 +387,8 @@ class Template extends \QUI\QDOM
             'localeFiles'     => $locales,
             'loadModuleFiles' => $this->_onLoadModules,
             'headerExtend'    => $headerExtend,
-            'ControlManager'  => new \QUI\Control\Manager()
+            'ControlManager'  => new \QUI\Control\Manager(),
+            'Canonical'       => new \QUI\Projects\Site\Canonical( $Site )
         ));
 
         return $Engine->fetch( LIB_DIR .'templates/header.html' );

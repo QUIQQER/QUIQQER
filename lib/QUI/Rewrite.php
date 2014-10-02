@@ -125,13 +125,16 @@ class Rewrite
      */
     public function exec()
     {
-        global $_REQUEST;
-
         if ( !isset( $_REQUEST['_url'] ) ) {
             $_REQUEST['_url'] = '';
         }
 
-        \QUI::getEvents()->fireEvent( 'QUI::request', array( $_REQUEST['_url'] ) );
+        \QUI::getEvents()->fireEvent( 'request', array( $this, $_REQUEST['_url'] ) );
+
+        //wenn seite existiert, dann muss nichts mehr gemacht werden
+        if ( isset( $this->_site ) && $this->_site ) {
+            return;
+        }
 
         $Session = \QUI::getSession();
         $vhosts  = $this->getVHosts();
@@ -333,24 +336,6 @@ class Rewrite
             exit;
         }
 
-        \QUI::getEvents()->fireEvent( 'QUI::access' );
-
-
-        if ( isset( $exit ) && $exit ) {
-            return;
-        }
-
-        // Projekt request
-        $rewrite_project_file = USR_DIR .'lib/'. $this->getProject()->getAttribute('template') .'/rewrite.php';
-
-        if ( file_exists( $rewrite_project_file ) )
-        {
-           require $rewrite_project_file;
-
-            if (isset($exit) && $exit) {
-                return;
-            }
-        }
 
         // Falls kein suffix dann 301 weiterleiten auf .html
         if ( !empty( $_REQUEST['_url'] ) &&

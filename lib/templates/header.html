@@ -89,17 +89,16 @@
         require(['polyfills/picturefill.min']);
     </script>
 
-
-    {assign var=canonical value=false}
-    {capture assign=_url}{$smarty.const.HOST}{$smarty.const.URL_DIR}{if isset($smarty.request._url)}{$smarty.request._url}{/if}{/capture}
-
     <!-- canonical -->
-    <!-- {$_url} -->
-    <!-- {$Site->getCanonical()} -->
+    {$Canonical->output()}
+
     {* @todo nicht original url mit parameter beachten *}
+    {*
     {if $Site->getId() != 1 && $_url && $_url != $Site->getCanonical() && empty($smarty.get)}
         <link rel="canonical" href="{$Site->getCanonical()}" />
     {/if}
+    *}
+
 
     {if $Template->getAttribute('rel_next')}
         <link rel="next" href="{url site=$Smarty->getHeaderAttribute('rel_next')}" />

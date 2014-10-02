@@ -440,7 +440,7 @@ class Project
             if ( $params['project'] == $this->getAttribute('name') &&
                  $params['lang'] == $this->getAttribute('lang') )
             {
-                if ( $ssl && isset( $params['httpshost'] ) ) {
+                if ( $ssl && isset( $params['httpshost'] ) && !empty( $params['httpshost'] ) ) {
                     return $with_protocol ? 'https://'. $params['httpshost'] : $params['httpshost'];
                 }
 
