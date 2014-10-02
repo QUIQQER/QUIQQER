@@ -818,12 +818,18 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
             $new_file_info['filename'] = time();
         }
 
+        $filePath = $this->getAttribute('file') .'/'. $new_file_info['basename'];
+
+        if ( $this->getId() == 1 ) {
+            $filePath = $new_file_info['basename'];
+        }
+
 
         \QUI::getDataBase()->insert($table, array(
             'name' 	    => $new_file_info['filename'],
             'title'     => $title,
             'short'     => $title,
-            'file' 	    => $this->getAttribute('file') .'/'. $new_file_info['basename'],
+            'file' 	    => $filePath,
             'alt' 	    => $title,
             'c_date'    => date('Y-m-d h:i:s'),
             'e_date'    => date('Y-m-d h:i:s'),

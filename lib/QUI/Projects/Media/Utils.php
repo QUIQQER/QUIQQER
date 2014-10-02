@@ -630,7 +630,6 @@ class Utils
             $pos_dot    = strpos( $file_name, '.', $lastpos_ul );
 
             $size      = substr( $file_name, $lastpos_ul, ( $pos_dot - $lastpos_ul ) );
-            $part_size = explode( 'x', $size );
 
             $file_name = substr( $file_name, 0, ( $lastpos_ul - 2 ) ) .
                          substr( $file_name, $pos_dot );
@@ -638,7 +637,7 @@ class Utils
 
         $parts[] = $file_name;
 
-        return $Media->getChildByPath( '/'. implode( '/', $parts ) );
+        return $Media->getChildByPath( implode( '/', $parts ) );
     }
 
     /**
