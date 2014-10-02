@@ -31,6 +31,7 @@ define('utils/Panels', function()
                 var n      = 'panel-'+ project +'-'+ lang +'-'+ id,
                     panels = QUI.Controls.get( n );
 
+                console.log( panels );
 
                 if ( panels.length )
                 {
@@ -52,22 +53,8 @@ define('utils/Panels', function()
                     return;
                 }
 
-                var Site = Projects.get( project, lang ).get( id );
-
-                var Panel = new SitePanel(Site, {
-                    events :
-                    {
-                        onShow : function(Panel)
-                        {
-//                            if ( Panel.getType() != 'controls/projects/project/site/Panel' ) {
-//                                return;
-//                            }
-                            // if it is a sitepanel
-                            // set the item in the map active
-                            // self.openSite( Panel.getSite().getId() );
-                        }
-                    }
-                });
+                var Site  = Projects.get( project, lang ).get( id ),
+                    Panel = new SitePanel( Site );
 
                 panels[ 0 ].appendChild( Panel );
 

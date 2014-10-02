@@ -102,6 +102,16 @@ define([
                 this.setAttribute( 'name', id );
 
                 this.$Site = Site;
+            } else
+            {
+                // serialize data
+                if ( typeof Site.attributes !== 'undefined' &&
+                     typeof Site.project !== 'undefined' &&
+                     typeof Site.lang !== 'undefined' &&
+                     typeof Site.id !== 'undefined' )
+                {
+                    this.unserialize( Site );
+                }
             }
 
             this.parent( options );
