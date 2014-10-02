@@ -267,8 +267,7 @@ define('controls/projects/project/Sitemap', [
             {
                 var i, len, items;
 
-                var Control = Request.getAttribute( 'Control' ),
-                    Map     = Control.getMap();
+                var Map = self.getMap();
 
                 result.push( Request.getAttribute( 'id' ) );
 
@@ -280,7 +279,7 @@ define('controls/projects/project/Sitemap', [
                     return;
                 }
 
-                var open_event = function(SitemapItem, Control)
+                var open_event = function(SitemapItem)
                 {
                     var i, id, len, items;
 
@@ -301,9 +300,7 @@ define('controls/projects/project/Sitemap', [
                             // open parent
                             items = Map.getChildrenByValue( ids[ i - 1 ] );
 
-                            if ( items.length &&
-                                 items[0].isOpen() === false )
-                            {
+                            if ( items.length && items[0].isOpen() === false ) {
                                 items[0].open();
                             }
 
@@ -319,21 +316,20 @@ define('controls/projects/project/Sitemap', [
 
                     items[0].select();
 
-                    delete Control.$openids;
+                    delete self.$openids;
 
-                    Control.removeEvent( 'onOpenEnd', open_event );
+                    self.removeEvent( 'onOpenEnd', open_event );
                 };
 
-                Control.$openids = result;
-                Control.addEvent( 'onOpenEnd', open_event );
+                self.$openids = result;
+                self.addEvent( 'onOpenEnd', open_event );
 
-                Control.open();
+                self.open();
 
             }, {
                 project : this.getAttribute( 'project' ),
                 lang    : this.getAttribute( 'lang' ),
-                id      : id,
-                Control : this
+                id      : id
             });
         },
 
@@ -382,16 +378,14 @@ define('controls/projects/project/Sitemap', [
          */
         $getFirstChild : function(callback)
         {
-            Ajax.get('ajax_project_firstchild', function(result, Request)
+            Ajax.get('ajax_project_firstchild', function(result)
             {
                 if ( typeof callback !== 'undefined' ) {
-                    callback( result, Request );
+                    callback( result );
                 }
             }, {
-                project  : this.getAttribute( 'project' ),
-                lang     : this.getAttribute( 'lang' ),
-                Control  : this,
-                onfinish : callback
+                project : this.getAttribute( 'project' ),
+                lang    : this.getAttribute( 'lang' )
             });
         },
 
@@ -407,10 +401,10 @@ define('controls/projects/project/Sitemap', [
          */
         $getSite : function(id, callback)
         {
-            Ajax.get('ajax_site_get', function(result, Request)
+            Ajax.get('ajax_site_get', function(result)
             {
                 if ( typeof callback !== 'undefined' ) {
-                    callback( result, Request );
+                    callback( result );
                 }
             }, {
                 project  : this.getAttribute( 'project' ),
@@ -515,10 +509,6 @@ define('controls/projects/project/Sitemap', [
                 Itm.removeIcon( URL_BIN_DIR +'16x16/linked.png' );
             }
 
-
-            if ( result.icon_16x16 ) {
-                Itm.setAttribute( 'icon', result.icon_16x16 );
-            }
 
             // Activ / Inactive
             if ( result.active.toInt() === 0 )
@@ -789,7 +779,7 @@ define('controls/projects/project/Sitemap', [
         },
 
         /**
-         * Site event handling - if a site changes, the sitemap must change to
+         * Site event handling - if a site has changes, the sitemap must change, too
          */
 
         /**

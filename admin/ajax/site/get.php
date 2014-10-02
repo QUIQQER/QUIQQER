@@ -14,8 +14,14 @@ function ajax_site_get($project, $lang, $id)
     $Project = \QUI::getProject( $project, $lang );
     $Site    = new \QUI\Projects\Site\Edit( $Project, (int)$id );
 
+    $attributes = $Site->getAttributes();
+
+    $attributes['icon'] = \QUI::getPluginManager()->getIconByType(
+        $Site->getAttribute('type')
+    );
+
     return array(
-        'attributes'   => $Site->getAttributes(),
+        'attributes'   => $attributes,
         'has_children' => $Site->hasChildren(),
         'parentid'     => $Site->getParentId()
     );
