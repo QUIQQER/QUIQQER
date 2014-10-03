@@ -482,8 +482,23 @@ class Manager
      */
     public function login($username, $pass)
     {
+        if ( !is_string( $username ) )
+        {
+            throw new \QUI\Exception(
+                \QUI::getLocale()->get( 'system', 'exception.login.fail' ),
+                401
+            );
+        }
+
+        if ( !is_string( $pass ) )
+        {
+            throw new \QUI\Exception(
+                \QUI::getLocale()->get( 'system', 'exception.login.fail' ),
+                401
+            );
+        }
+
         $username = \QUI\Utils\Security\Orthos::clear( $username );
-        //$pass     = \QUI\Utils\Security\Orthos::clear($pass);
 
         if ( !get_magic_quotes_gpc() )
         {
