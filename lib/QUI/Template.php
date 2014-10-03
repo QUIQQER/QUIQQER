@@ -54,6 +54,16 @@ class Template extends \QUI\QDOM
         $this->setAttribute( 'mootools' , true );
         $this->setAttribute( 'requirejs' , true );
         $this->setAttribute( 'html5' , true );
+
+        // defaults
+        $this->setAttributes(array(
+            'mootools'  => true,
+            'requirejs' => true,
+            'html5'     => true,
+
+            'content-header' => true,
+            'content-body'   => true
+        ));
     }
 
     /**
@@ -400,11 +410,15 @@ class Template extends \QUI\QDOM
      *
      * @return String
      */
-    public function getBody()
+    public function getBody($params=array())
     {
         /* @var $Project \QUI\Projects\Project */
         /* @var $Site \QUI\Projects\Site */
         /* @var $Engine \QUI\Interfaces\Template\Engine */
+
+        if ( is_array( $params ) ) {
+            $this->setAttributes( $params );
+        }
 
         $Project = $this->getAttribute( 'Project' );
         $Site    = $this->getAttribute( 'Site' );
@@ -479,42 +493,6 @@ class Template extends \QUI\QDOM
         }
 
         return $Engine->fetch( $template );
-
-        // Seitentyp Skript einbinden
-//         if ( is_array( $this->types ) && isset( $this->types['script'] ) )
-//         {
-//             $script = $this->type .'/'. $this->types['script'];
-//             $file   = OPT_DIR . $script;
-
-//             // schauen ob es im projekt ein seitentyp skript gibt
-//             if ( file_exists( USR_DIR .'lib/'. $this->template .'/'. $script ) ) {
-//                 $file = USR_DIR .'lib/'. $this->template .'/'. $script;
-//             }
-
-//             if ( file_exists( $file ) ) {
-//                 require $file;
-//             }
-//         }
-
-        // Globale index.php für das Design
-//         if ( file_exists( USR_DIR .'lib/'. $this->template .'/index.php' ) ) {
-//             require USR_DIR .'lib/'. $this->template .'/index.php';
-//         }
-
-//         // Template + Suffix
-//         $tpl = $this->_getTypeTemplate( $this->types, $this->type, $this->template );
-
-//         if ( $suffix == '.html' ) {
-//             return $tpl;
-//         }
-
-//         $_tpl = str_replace( '.html', $suffix, $tpl );
-
-//         if ( file_exists( $_tpl ) ) {
-//             return $_tpl;
-//         }
-
-//         return $tpl;
     }
 
     /**
