@@ -31,8 +31,6 @@ define('utils/Panels', function()
                 var n      = 'panel-'+ project +'-'+ lang +'-'+ id,
                     panels = QUI.Controls.get( n );
 
-                console.log( panels );
-
                 if ( panels.length )
                 {
                     panels[ 0 ].open();
