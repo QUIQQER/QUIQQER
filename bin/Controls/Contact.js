@@ -18,7 +18,7 @@ define([
 ], function(QUI, QUIControl, QUIButton, QUILoader, Ajax, Locale)
 {
     "use strict";
-
+console.log(21);
 
     return new Class({
 

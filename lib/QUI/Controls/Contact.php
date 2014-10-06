@@ -28,7 +28,7 @@ class Contact extends \QUI\Control
         );
 
         $this->setAttribute( 'class', 'quiqqer-contact grid-100 grid-parent' );
-        $this->setAttribute( 'data-qui', "Controls/Contact" );
+        $this->setAttribute( 'qui-class', "Controls/Contact" );
         $this->setAttribute( 'labels', true );
     }
 
@@ -38,7 +38,7 @@ class Contact extends \QUI\Control
      */
     public function getBody()
     {
-        $Engine  = \QUI::getTemplateManager()->getEngine();
+        $Engine = \QUI::getTemplateManager()->getEngine();
 
         $Engine->assign(array(
             'this' => $this
