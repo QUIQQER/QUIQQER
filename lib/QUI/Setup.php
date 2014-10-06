@@ -6,6 +6,8 @@
 
 namespace QUI;
 
+use \QUI\Utils\System\File as SystemFile;
+
 /**
  * QUIQQER Setup
  *
@@ -29,11 +31,11 @@ class Setup
         }
 
         // create dirs
-        \QUI\Utils\System\File::mkdir( BIN_DIR );
-        \QUI\Utils\System\File::mkdir( LIB_DIR );
-        \QUI\Utils\System\File::mkdir( USR_DIR );
-        \QUI\Utils\System\File::mkdir( OPT_DIR );
-        \QUI\Utils\System\File::mkdir( VAR_DIR );
+        SystemFile::mkdir( BIN_DIR );
+        SystemFile::mkdir( LIB_DIR );
+        SystemFile::mkdir( USR_DIR );
+        SystemFile::mkdir( OPT_DIR );
+        SystemFile::mkdir( VAR_DIR );
 
         // mail queue setup
         \QUI\Mail\Queue::setup();
@@ -97,7 +99,7 @@ class Setup
          * composer setup
          */
         $PackageManager = \QUI::getPackageManager();
-        $packages       = \QUI\Utils\System\File::readDir( OPT_DIR );
+        $packages       = SystemFile::readDir( OPT_DIR );
 
         // first we need all databases
         foreach ( $packages as $package )
@@ -115,7 +117,7 @@ class Setup
             }
 
             $package_dir = OPT_DIR .'/'. $package;
-            $list        = \QUI\Utils\System\File::readDir( $package_dir );
+            $list        = SystemFile::readDir( $package_dir );
 
             foreach ( $list as $sub ) {
                 $PackageManager->setup( $package .'/'. $sub );

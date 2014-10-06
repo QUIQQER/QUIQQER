@@ -910,7 +910,7 @@ class User implements \QUI\Interfaces\Users\User
         }
 
         // benutzer ist schon aktiv, aktivierung kann nicht durchgeführt werden
-        if ( $this->getAttribute( 'active' ) )
+        if ( $this->isActive() )
         {
             throw new \QUI\Exception(
                 \QUI::getLocale()->get(
@@ -1045,7 +1045,7 @@ class User implements \QUI\Interfaces\Users\User
 
         \QUI::getEvents()->fireEvent('userDisable', array( $this ));
 
-        \QUI::getDB()->updateData(
+        \QUI::getDataBase()->update(
             \QUI\Users\Manager::Table(),
             array(
                 'active'     => -1,
@@ -1117,22 +1117,6 @@ class User implements \QUI\Interfaces\Users\User
 
         \QUI::getEvents()->fireEvent('userSave', array($this));
 
-        /*
-        foreach ($this->_plugins as $Plugin)
-        {
-            if (method_exists($Plugin, 'onSave')) {
-                $Plugin->onSave($this);
-            }
-        }
-        */
-        /*
-        $Plugins = \QUI::getPlugins();
-        $plugins = $Plugins->get();
-
-        foreach ( $plugins as $Plugin ) {
-            $Plugin->onUserSave( $this );
-        }
-        */
 
         return \QUI::getDataBase()->update(
             \QUI\Users\Manager::Table(),

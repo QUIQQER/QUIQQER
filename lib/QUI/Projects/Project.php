@@ -1082,7 +1082,7 @@ class Project
         {
             // Falls kein Query dann alle Seiten hohlen
             // @notice - Kann performancefressend sein
-            return \QUI::getDB()->select(array(
+            return \QUI::getDataBase()->fetch(array(
                 'select' => 'id',
                 'from'   => $this->getAttribute('db_table')
             ));
@@ -1161,7 +1161,7 @@ class Project
             $sql['where_relation'] = $params['where_relation'];
         }
 
-        return \QUI::getDB()->select($sql);
+        return \QUI::getDataBase()->fetch($sql);
     }
 
     /**
