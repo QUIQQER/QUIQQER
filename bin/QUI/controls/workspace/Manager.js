@@ -319,7 +319,14 @@ define([
          */
         appendControlToColumn : function(panelRequire, Column)
         {
-            require([ panelRequire ], function(cls) {
+            require([ panelRequire ], function(cls)
+            {
+                if ( QUI.Controls.isControl( cls ) )
+                {
+                    Column.appendChild( cls );
+                    return;
+                }
+
                 Column.appendChild( new cls() );
             });
         },

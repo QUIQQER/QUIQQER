@@ -8,6 +8,7 @@ namespace QUI\Projects\Media;
 
 use \QUI\Projects\Media\Utils as MediaUtils;
 use \QUI\Utils\System\File as FileUtils;
+use \QUI\Utils\String as StringUtils;
 
 /**
  * A media folder
@@ -297,8 +298,8 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
         $old_path = $this->getPath();
         $new_path = $Folder->getPath() .'/'. $this->getAttribute('name');
 
-        $old_path = \QUI\Utils\String::replaceDblSlashes( $old_path );
-        $new_path = \QUI\Utils\String::replaceDblSlashes( $new_path );
+        $old_path = StringUtils::replaceDblSlashes( $old_path );
+        $new_path = StringUtils::replaceDblSlashes( $new_path );
 
 
         // update children paths
@@ -826,6 +827,8 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
         if ( $this->getId() == 1 ) {
             $filePath = $new_file_info['basename'];
         }
+
+        $filePath = StringUtils::replaceDblSlashes( $filePath );
 
 
         \QUI::getDataBase()->insert($table, array(

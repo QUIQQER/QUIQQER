@@ -30,6 +30,8 @@ class Setup
             \QUI\Rights\Permission::checkSU();
         }
 
+        \QUI::getSession()->setup();
+
         // create dirs
         SystemFile::mkdir( BIN_DIR );
         SystemFile::mkdir( LIB_DIR );
