@@ -828,15 +828,15 @@ class Edit extends \QUI\Projects\Site
         }
 
         // Tabs der Plugins hohlen
-        $Plugins = $this->_getLoadedPlugins();
+//         $Plugins = $this->_getLoadedPlugins();
         $Project = $this->getProject();
 
-        foreach ( $Plugins as $Plugin )
-        {
-            if ( method_exists( $Plugin, 'onGetChildren' ) ) {
-               $params = $Plugin->onGetChildren( $this, $params );
-            }
-        }
+//         foreach ( $Plugins as $Plugin )
+//         {
+//             if ( method_exists( $Plugin, 'onGetChildren' ) ) {
+//                $params = $Plugin->onGetChildren( $this, $params );
+//             }
+//         }
 
         /*
         $this->Events->fireEvent( 'getChildren', array( $this, $params ) );
