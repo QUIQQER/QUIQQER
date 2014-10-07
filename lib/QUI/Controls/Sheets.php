@@ -80,6 +80,15 @@ class Sheets extends \QUI\Control
                 continue;
             }
 
+            if ( $key == 'sheets' ) {
+                continue;
+            }
+
+            if ( $key == 'showmax' ) {
+                continue;
+            }
+
+
             if ( is_string( $value ) || is_int( $value ) ) {
                 $params[ $key ] = $value;
             }
