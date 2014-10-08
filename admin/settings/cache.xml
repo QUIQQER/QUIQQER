@@ -214,6 +214,44 @@
                     </settings>
                 </category>
 
+                <category name="management" require="controls/cache/Settings">
+                    <title>
+                        <locale group="quiqqer/system" var="quiqqer.settings.cache.management.title" />
+                    </title>
+                    <text>
+                        <locale group="quiqqer/system" var="quiqqer.settings.cache.management.text" />
+                    </text>
+                    <settings title="clearCache" name="clearCache">
+                        <title>
+                            <locale group="quiqqer/system" var="quiqqer.settings.cache.clear.title" />
+                        </title>
+                        <input conf="compile" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.cache.clear.compile" />
+                            </text>
+                        </input>
+
+                        <input conf="plugins" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.cache.clear.plugins" />
+                            </text>
+                        </input>
+
+                        <input conf="clearCache" type="button"></input>
+
+                    </settings>
+
+                    <settings title="clearCache" name="clearCache">
+                        <title>
+                            <locale group="quiqqer/system" var="quiqqer.settings.cache.purge.title" />
+                        </title>
+
+                        <input conf="purgeCache" type="button"></input>
+
+                    </settings>
+
+                </category>
+
             </categories>
         </window>
 

@@ -293,6 +293,16 @@
             <en><![CDATA[Last page]]></en>
         </locale>
 
+        <!-- messages -->
+        <locale name="message.clear.cache.successful">
+            <de><![CDATA[Der Cache wurde erfolgreich gelöscht.]]></de>
+            <en><![CDATA[Cache successful cleared.]]></en>
+        </locale>
+        <locale name="message.clear.cache.purged">
+            <de><![CDATA[Der Cache wurde erfolgreich gesäubert.]]></de>
+            <en><![CDATA[Cache successful purged.]]></en>
+        </locale>
+
     </groups>
 
 
@@ -485,6 +495,34 @@
             <de><![CDATA[Alle E-Mail Adressen werden für SpyBots unkenntlich gemacht]]></de>
             <en><![CDATA[All email addresses are defaced for spybots]]></en>
         </locale>
+
+        <locale name="quiqqer.settings.cache.management.title">
+            <de><![CDATA[Cache Verwaltung]]></de>
+            <en><![CDATA[Cache management]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.management.text">
+            <de><![CDATA[Cache Verwaltung]]></de>
+            <en><![CDATA[Cache management]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.title">
+            <de><![CDATA[Cache leeren]]></de>
+            <en><![CDATA[Cache cleaning]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.purge.title">
+            <de><![CDATA[Cache säubern]]></de>
+            <en><![CDATA[Cache purging]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.cache.clear.compile">
+            <de><![CDATA[System-Cache leeren.]]></de>
+            <en><![CDATA[Clear the system cache.]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.plugins">
+            <de><![CDATA[Plugin-Cache leeren.]]></de>
+            <en><![CDATA[Clear the plugin cache.]]></en>
+        </locale>
+
+
 
         <locale name="quiqqer.settings.general.template.title">
             <de><![CDATA[Template-Engine Einstellungen]]></de>

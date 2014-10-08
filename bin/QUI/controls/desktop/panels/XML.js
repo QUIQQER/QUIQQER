@@ -244,11 +244,11 @@ define([
 
                             if ( self.getContent().get( 'html' ) == '' )
                             {
-                                self.$Control.inject( self.$Control );
+                                self.$Control.inject( Body );
 
                             } else
                             {
-                                self.$Control.import( self.$Control );
+                                self.$Control.import( Body );
                             }
 
                         } else
@@ -330,7 +330,9 @@ define([
 
                 tok = namespace.split( '.' );
 
-                this.$config[ tok[0] ][ tok[1] ] = values[ namespace ];
+                if ( typeof tok[0] !== 'undefined' && typeof tok[1] !== 'undefined' ) {
+                    this.$config[ tok[0] ][ tok[1] ] = values[ namespace ];
+                }
             }
 
             if ( this.$Control )
