@@ -2246,7 +2246,8 @@ define([
 
                 // button drop down
                 this.$Menu = new QUIButton({
-                    image : 'icon-double-angle-down fa fa-angle-double-down'
+                    image        : 'icon-double-angle-down fa fa-angle-double-down',
+                    dropDownIcon : false
                 }).inject( tDiv );
 
                 var bt = this.getAttribute('buttons');
