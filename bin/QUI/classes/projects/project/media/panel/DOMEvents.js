@@ -28,8 +28,18 @@ define([
 
         initialize : function(MediaPanel)
         {
-            this.$MediaPanel = MediaPanel;
-            this.$Media      = MediaPanel.$Media;
+            this.$Panel = MediaPanel;
+        },
+
+        /**
+         * Return the media of the panel
+         *
+         * @method classes/projects/project/media/panel/DOMEvents#getMedia
+         * @param {qui/classes/projects/project/Media} Media
+         */
+        getMedia : function()
+        {
+            return this.$Panel.getMedia();
         },
 
         /**
@@ -44,15 +54,15 @@ define([
 
             this.$createLoaderItem( List );
 
-            this.$Media.activate(this.$getIds( List ), function(items)
+            this.getMedia().activate( this.$getIds( List ), function(items)
             {
                 self.$destroyLoaderItem( List );
 
                 for ( var i = 0, len = List.length; i < len; i++ )
                 {
-                    List[i].set('data-active', 1);
-                    List[i].removeClass('qmi-deactive');
-                    List[i].addClass('qmi-active');
+                    List[ i ].set('data-active', 1);
+                    List[ i ].removeClass('qmi-deactive');
+                    List[ i ].addClass('qmi-active');
                 }
             });
         },
@@ -69,7 +79,7 @@ define([
 
             this.$createLoaderItem( List );
 
-            this.$Media.deactivate(this.$getIds( List ), function(items)
+            this.getMedia().deactivate(this.$getIds( List ), function(items)
             {
                 self.$destroyLoaderItem( List );
 
@@ -91,8 +101,7 @@ define([
         del : function(List)
         {
             var self    = this,
-                Control = this.$MediaPanel,
-                Media   = this.$Media,
+                Media   = this.getMedia(),
                 items   = [],
                 list    = [];
 
@@ -163,10 +172,10 @@ define([
                             return;
                         }
 
-                        Control.Loader.show();
+                        self.$Panel.Loader.show();
 
                         Media.del( list, function(result) {
-                            Control.refresh();
+                            self.$Panel.refresh();
                         });
                     }
                 }
@@ -181,17 +190,15 @@ define([
          */
         rename : function(DOMNode)
         {
-            new QUIPrompt({
-                name    : 'rename_item',
-                title   : 'Ordner umbenennen',
-                icon    : URL_BIN_DIR +'16x16/folder.png',
-                Control : this.$MediaPanel,
-                PDE     : this,
-                DOMNode : DOMNode,
+            var self = this;
 
+            new QUIPrompt({
+                name  : 'rename_item',
+                title : 'Ordner umbenennen',
+                icon  : URL_BIN_DIR +'16x16/folder.png',
                 check : function(Win)
                 {
-                    Win.fireEvent('submit', [Win.getValue(), Win]);
+                    Win.fireEvent( 'submit', [ Win.getValue(), Win ] );
                     return false;
                 },
 
@@ -201,75 +208,47 @@ define([
                     {
                         Win.Loader.show();
 
-                        var PDE     = Win.getAttribute( 'PDE' ),
-                            Control = Win.getAttribute( 'Control' ),
-                            DOMNode = Win.getAttribute( 'DOMNode' ),
-                            itemid  = DOMNode.get('data-id');
+                        var itemid = DOMNode.get('data-id');
 
-                        PDE.$Media.get( itemid, function(Item, Request)
+                        self.getMedia().get( itemid, function(Item)
                         {
-                            this.setValue( Item.getAttribute( 'name' ) );
-                            this.Loader.hide();
-
-                        }.bind( Win ));
+                            Win.setValue( Item.getAttribute( 'name' ) );
+                            Win.Loader.hide();
+                        });
                     },
 
                     onSubmit : function(result, Win)
                     {
-                        var PDE     = Win.getAttribute( 'PDE' ),
-                            Control = Win.getAttribute( 'Control' ),
-                            DOMNode = Win.getAttribute( 'DOMNode' ),
-                            itemid  = DOMNode.get('data-id');
+                        var itemid = DOMNode.get('data-id');
 
-                        Win.setAttribute('newname', result);
+                        Win.setAttribute( 'newname', result );
 
+                        self.$createLoaderItem( DOMNode );
 
-                        PDE.$createLoaderItem( DOMNode );
-
-                        PDE.$Media.get( itemid, function(Item, Request)
+                        self.getMedia().get( itemid, function(Item)
                         {
-                            Item.rename(
-                                this.getAttribute('newname'),
-                                function(result, Request)
-                                {
-                                    var Win     = Request.getAttribute('Win'),
-                                        PDE     = Win.getAttribute( 'PDE' ),
-                                        Control = Win.getAttribute( 'Control' ),
-                                        DOMNode = Win.getAttribute( 'DOMNode' );
-
-                                    if ( !DOMNode ) {
-                                        return;
-                                    }
-
-                                    DOMNode.set({
-                                        alt   : result,
-                                        title : result
-                                    });
-
-                                    DOMNode.getElement('span').set( 'html', result );
-
-                                    PDE.$destroyLoaderItem( DOMNode );
-
-                                    Win.close();
-                                }, {
-                                    Win : this
+                            Item.rename( this.getAttribute('newname'), function(result)
+                            {
+                                if ( !DOMNode ) {
+                                    return;
                                 }
-                            );
 
-                        }.bind( Win ));
+                                DOMNode.set({
+                                    alt   : result,
+                                    title : result
+                                });
+
+                                DOMNode.getElement('span').set( 'html', result );
+
+                                self.$destroyLoaderItem( DOMNode );
+
+                                Win.close();
+                            });
+                        });
                     },
-                    onCancel : function(Win)
-                    {
-                        var PDE     = Win.getAttribute( 'PDE' ),
-                            Control = Win.getAttribute( 'Control' ),
-                            DOMNode = Win.getAttribute( 'DOMNode' ),
-                            itemid  = DOMNode.get('data-id');
 
-                        if ( !DOMNode ) {
-                            return;
-                        }
-
-                        PDE.$destroyLoaderItem( DOMNode );
+                    onCancel : function(Win) {
+                        self.$destroyLoaderItem( DOMNode );
                     }
                 }
             }).open();
@@ -370,7 +349,7 @@ define([
 
                             Form.setParam('onstart', 'ajax_media_checkreplace');
                             Form.setParam('onfinish', 'ajax_media_replace');
-                            Form.setParam('project', self.$Media.getProject().getName());
+                            Form.setParam('project', self.getMedia().getProject().getName());
                             Form.setParam('fileid', DOMNode.get('data-id'));
 
                             Form.inject( Content );

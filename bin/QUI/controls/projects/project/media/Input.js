@@ -205,9 +205,6 @@ define('controls/projects/project/media/Input', [
                     },
                     onError : function(Elm)
                     {
-                        console.log( result );
-                        console.error( Elm );
-
                         self.$Preview.getElements( '.icon-refresh' )
                                      .removeClass( 'icon-refresh' )
                                      .removeClass( 'icon-spin' )

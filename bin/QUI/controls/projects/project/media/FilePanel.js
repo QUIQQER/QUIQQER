@@ -102,6 +102,27 @@ define('controls/projects/project/media/FilePanel', [
         },
 
         /**
+         * Return the Media object of the panel
+         *
+         * @method controls/projects/project/media/FilePanel#getMedia
+         * @return {classes/projects/project/Media} Media
+         */
+        getMedia : function()
+        {
+            return this.$Media;
+        },
+
+        /**
+         * Return the Project object of the Media
+         *
+         * @return {classes/projects/Project} Project
+         */
+        getProject : function()
+        {
+            return this.$Media.getProject();
+        },
+
+        /**
          * Close and destroy the panel
          *
          * @method controls/projects/project/media/FilePanel#close
