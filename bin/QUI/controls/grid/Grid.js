@@ -2314,6 +2314,12 @@ define([
                                 return;
                             }
 
+                            if ( key === 'image' || key === 'textimage' )
+                            {
+                                this.setAttribute( 'icon', value );
+                                return;
+                            }
+
                         }.bind( Item )
                     });
 
