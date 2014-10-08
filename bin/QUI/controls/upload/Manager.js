@@ -49,7 +49,7 @@ define([
         ],
 
         options : {
-            title : Locale.get( lg, 'upload.manager.title' ),
+            title : false,
             icon  : 'icon-upload'
         },
 
@@ -73,6 +73,10 @@ define([
          */
         $onCreate : function()
         {
+            if ( !this.getAttribute( 'title' ) ) {
+                this.setAttribute( 'title', Locale.get( lg, 'upload.manager.title' ) );
+            }
+
             this.$Container = new Element('div', {
                 'class' : 'upload-manager'
             }).inject( this.getContent() );
@@ -122,8 +126,6 @@ define([
             if ( !files.length ) {
                 return;
             }
-
-            // this.create();
 
             // application/zip
             var i, len;
@@ -239,8 +241,17 @@ define([
 
                 this.$files.push( QUIFile );
 
-                if ( this.$Container ) {
+                if ( this.$Container )
+                {
                     QUIFile.inject( this.$Container, 'top');
+                } else
+                {
+                    // exist upload container? ... not nice but functional
+                    var Container = document.getElement( '.qui-panel-content .upload-manager' );
+
+                    if ( Container ) {
+                        QUIFile.inject( Container, 'top');
+                    }
                 }
 
                 QUIFile.upload();

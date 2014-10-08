@@ -331,9 +331,13 @@
 
 
         <!-- controls -->
+        <locale name="upload.manager.title">
+            <de><![CDATA[Uploads]]></de>
+            <en><![CDATA[Uploads]]></en>
+        </locale>
+
 
         <!-- project controls -->
-
         <locale name="projects.project.sitemap.media">
             <de><![CDATA[Media]]></de>
             <en><![CDATA[Media]]></en>

@@ -1393,8 +1393,6 @@ define([
                         };
 
 
-                        console.info( GridData );
-
                         self.fireEvent( 'childClick', [ self, imageData ] );
 
                         return;
