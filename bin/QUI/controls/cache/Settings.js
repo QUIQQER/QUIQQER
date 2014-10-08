@@ -88,14 +88,16 @@ define([
         clear : function(callback)
         {
             var params = {
-                plugins : true,
-                compile : true
+                plugins  : true,
+                compile  : true,
+                complete : true
             };
 
             if ( this.$Elm )
             {
-                params.compile = this.$Elm.getElement('[name="compile"]').checked;
-                params.plugins = this.$Elm.getElement('[name="plugins"]').checked;
+                params.compile  = this.$Elm.getElement( '[name="compile"]' ).checked;
+                params.plugins  = this.$Elm.getElement( '[name="plugins"]' ).checked;
+                params.complete	= this.$Elm.getElement( '[name="complete"]' ).checked;
             }
 
             Ajax.get('ajax_system_cache_clear', function()

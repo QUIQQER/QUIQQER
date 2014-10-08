@@ -225,12 +225,17 @@
                         <title>
                             <locale group="quiqqer/system" var="quiqqer.settings.cache.clear.title" />
                         </title>
+
+                        <input conf="complete" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.cache.clear.complete" />
+                            </text>
+                        </input>
                         <input conf="compile" type="checkbox">
                             <text>
                                 <locale group="quiqqer/system" var="quiqqer.settings.cache.clear.compile" />
                             </text>
                         </input>
-
                         <input conf="plugins" type="checkbox">
                             <text>
                                 <locale group="quiqqer/system" var="quiqqer.settings.cache.clear.plugins" />

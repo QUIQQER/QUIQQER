@@ -513,6 +513,10 @@
             <en><![CDATA[Cache purging]]></en>
         </locale>
 
+        <locale name="quiqqer.settings.cache.clear.complete">
+            <de><![CDATA[Kompletten Cache leeren.]]></de>
+            <en><![CDATA[Clear the complete cache.]]></en>
+        </locale>
         <locale name="quiqqer.settings.cache.clear.compile">
             <de><![CDATA[System-Cache leeren.]]></de>
             <en><![CDATA[Clear the system cache.]]></en>
