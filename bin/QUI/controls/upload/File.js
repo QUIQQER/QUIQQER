@@ -591,6 +591,10 @@ define([
                     filetype : this.$File.type
                 });
 
+            if ( typeof params.lang === 'undefined' ) {
+                params.lang = Locale.getCurrent();
+            }
+
             // $project, $parentid, $file, $data
             var url = URL_LIB_DIR +'QUI/Upload/bin/upload.php?';
                 url = url + Object.toQueryString( params );
