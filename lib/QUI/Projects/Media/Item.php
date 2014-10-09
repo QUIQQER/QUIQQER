@@ -180,11 +180,26 @@ abstract class Item extends \QUI\QDOM
      */
     public function delete()
     {
+        if ( $this->isDeleted() ) {
+            throw new \QUI\Exception( 'File is already deleted', 400 );
+        }
+
+
         $Media = $this->_Media;
+        $First = $Media->firstChild();
 
         // Move file to the temp folder
         $original   = $this->getFullPath();
         $var_folder = VAR_DIR .'media/'. $Media->getProject()->getAttribute('name') .'/';
+
+        if ( !is_file( $original ) ) {
+            throw new \QUI\Exception( 'Original File is not a File', 400 );
+        }
+
+        if ( $First->getFullPath() == $original ) {
+            throw new \QUI\Exception( 'You cannot delete the root file', 400 );
+        }
+
 
         try
         {

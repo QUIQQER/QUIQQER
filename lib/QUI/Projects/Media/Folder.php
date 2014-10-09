@@ -104,6 +104,15 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
      */
     public function delete()
     {
+        if ( $this->isDeleted() ) {
+            throw new \QUI\Exception( 'Folder is already deleted', 400 );
+        }
+
+        if ( $this->getId() == 1 ) {
+            throw new \QUI\Exception( 'Root cannot deleted', 400 );
+        }
+
+
         $children = $this->_getAllRecursiveChildrenIds();
 
         // move files to the temp folder
@@ -216,6 +225,13 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
             return;
         }
 
+        if ( $this->getId() == 1 )
+        {
+            throw new \QUI\Exception(
+                'Der Media-Root-Verzeichnis eines Projektes kann nicht umbenannt werden'
+            );
+        }
+
         // check if a folder with the new name exist
         $Parent = $this->getParent();
 
@@ -227,8 +243,12 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
         }
 
         $PDO      = \QUI::getDataBase()->getPDO();
-        $old_path = $this->getPath();
-        $new_path = $Parent->getPath() . $newname;
+        $old_path = $this->getPath() .'/';
+        $new_path = $Parent->getPath() .'/'. $newname;
+
+        $new_path = StringUtils::replaceDblSlashes( $new_path );
+        $old_path = StringUtils::replaceDblSlashes( $old_path );
+
 
         // update children paths
         $Statement = $PDO->prepare(
@@ -254,7 +274,7 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
             $this->_Media->getTable(),
             array(
                 'name'  => $newname,
-                'file'  => $new_path,
+                'file'  => StringUtils::replaceDblSlashes( $new_path .'/' ),
                 'title' => $title
             ),
             array('id' => $this->getId())
