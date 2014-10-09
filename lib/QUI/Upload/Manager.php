@@ -285,8 +285,12 @@ class Manager
                 require_once $_rf_file;
             }
 
-            if ( !function_exists( $function ) ) {
-                return '';
+            if ( !function_exists( $function ) )
+            {
+                throw new \QUI\Exception(
+                    'Function '. $function .' not found',
+                    404
+                );
             }
 
             $_REQUEST = array_merge( $_REQUEST, $params, array(
@@ -314,7 +318,10 @@ class Manager
             return \QUI::$Ajax->call();
         }
 
-        return '';
+        throw new \QUI\Exception(
+            'Function '. $function .' not found',
+            404
+        );
     }
 
     /**
