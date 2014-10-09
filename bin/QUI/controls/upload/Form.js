@@ -7,6 +7,7 @@
  * @module controls/upload/Form
  * @author www.pcsg.de (Henning Leutz)
  *
+ * @fires onAdd [this, File]
  * @fires onBegin [this]
  * @fires onComplete [this]
  * @fires onSubmit [Array, this]
@@ -415,6 +416,8 @@ define([
                 'background-image',
                 'url('+ MediaUtils.getIconByMimeType( File.type ) +')'
             );
+
+            this.fireEvent( 'add', [ self, File ] );
 
             Input.setStyle('display', 'none');
         },
