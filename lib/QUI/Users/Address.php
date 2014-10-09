@@ -362,7 +362,7 @@ class Address extends \QUI\QDOM
      */
     public function toJSON()
     {
-        $attributes       = $this->getAllAttributes();
+        $attributes       = $this->getAttributes();
         $attributes['id'] = $this->getId();
 
         return json_encode($attributes);
