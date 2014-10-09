@@ -244,14 +244,10 @@ class Manager
             $File->setAttribute( 'upload-dir', $uploaddir );
             $File->setAttribute( 'params', $Data->getAttribute('params') );
 
-            $result = '';
+            $result = $this->_callFunction($onfinish, array(
+                'File' => $File
+            ));
 
-            if ( $onfinish )
-            {
-                $result = $this->_callFunction($onfinish, array(
-                    'File' => $File
-                ));
-            }
 
             // delete the file from the database
             $this->_delete( $filename );
@@ -289,12 +285,8 @@ class Manager
                 require_once $_rf_file;
             }
 
-            if ( !function_exists( $function ) )
-            {
-                throw new \QUI\Exception(
-                    'Function '. $function .' not found',
-                    404
-                );
+            if ( !function_exists( $function ) ) {
+                return '';
             }
 
             $_REQUEST = array_merge( $_REQUEST, $params, array(
@@ -322,10 +314,7 @@ class Manager
             return \QUI::$Ajax->call();
         }
 
-        throw new \QUI\Exception(
-            'Function '. $function .' not found',
-            404
-        );
+        return '';
     }
 
     /**
