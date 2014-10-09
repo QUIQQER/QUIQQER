@@ -293,6 +293,21 @@
             <en><![CDATA[Last page]]></en>
         </locale>
 
+        <locale name="address.salutation.male">
+            <de><![CDATA[Herr]]></de>
+            <en><![CDATA[Mr]]></en>
+        </locale>
+        <locale name="address.salutation.female">
+            <de><![CDATA[Frau]]></de>
+            <en><![CDATA[Mrs.]]></en>
+        </locale>
+        <locale name="address.salutation.company">
+            <de><![CDATA[Firma]]></de>
+            <en><![CDATA[Company]]></en>
+        </locale>
+
+
+
         <!-- messages -->
         <locale name="message.clear.cache.successful">
             <de><![CDATA[Der Cache wurde erfolgreich gelöscht.]]></de>
