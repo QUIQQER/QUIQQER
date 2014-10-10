@@ -6,6 +6,8 @@
 
 namespace QUI\Users;
 
+use \QUI\Utils\Security\Orthos as Orthos;
+
 /**
  * A user
  *
@@ -162,7 +164,7 @@ class User implements \QUI\Interfaces\Users\User
     public function refresh()
     {
         $data = \QUI::getDataBase()->fetch(array(
-            'from'  => \QUI\Users\Manager::Table(),
+            'from'  => Manager::Table(),
             'where' => array(
                 'id' => $this->_id
             ),
@@ -702,7 +704,7 @@ class User implements \QUI\Interfaces\Users\User
             case "username":
             case "name":
                 // Falls der Name geändert wird muss geprüft werden das es diesen nicht schon gibt
-                \QUI\Users\Manager::checkUsernameSigns($value);
+                Manager::checkUsernameSigns($value);
 
                 if ($this->_name != $value &&
                     $this->_Users->existsUsername($value))
@@ -860,11 +862,11 @@ class User implements \QUI\Interfaces\Users\User
         \QUI::getEvents()->fireEvent('userSetPassword', array( $this ));
 
 
-        $newpass         = \QUI\Users\Manager::genHash( $new );
+        $newpass         = Manager::genHash( $new );
         $this->_password = $newpass;
 
         \QUI::getDataBase()->update(
-            \QUI\Users\Manager::Table(),
+            Manager::Table(),
             array( 'password' => $newpass ),
             array( 'id'       => $this->getId() )
         );
@@ -943,7 +945,7 @@ class User implements \QUI\Interfaces\Users\User
         \QUI::getEvents()->fireEvent('userActivate', array( $this ));
 
         $res = \QUI::getDataBase()->update(
-            \QUI\Users\Manager::Table(),
+            Manager::Table(),
             array( 'active' => 1 ),
             array( 'id'     => $this->getId() )
         );
@@ -993,7 +995,7 @@ class User implements \QUI\Interfaces\Users\User
         \QUI::getEvents()->fireEvent('userDeactivate', array( $this ));
 
         \QUI::getDataBase()->update(
-            \QUI\Users\Manager::Table(),
+            Manager::Table(),
             array('active' => 0),
             array('id'     => $this->getId())
         );
@@ -1046,7 +1048,7 @@ class User implements \QUI\Interfaces\Users\User
         \QUI::getEvents()->fireEvent('userDisable', array( $this ));
 
         \QUI::getDataBase()->update(
-            \QUI\Users\Manager::Table(),
+            Manager::Table(),
             array(
                 'active'     => -1,
                 'password'   => '',
@@ -1088,7 +1090,7 @@ class User implements \QUI\Interfaces\Users\User
             // Datumsprüfung auf Syntax
             $value = trim( $this->getAttribute( 'expire' ) );
 
-            if ( \QUI\Utils\Security\Orthos::checkMySqlDatetimeSyntax( $value ) ) {
+            if ( Orthos::checkMySqlDatetimeSyntax( $value ) ) {
                 $expire = $value;
             }
         }
@@ -1102,7 +1104,7 @@ class User implements \QUI\Interfaces\Users\User
                 $value .= ' 00:00:00';
             }
 
-            if ( \QUI\Utils\Security\Orthos::checkMySqlDatetimeSyntax( $value ) ) {
+            if ( Orthos::checkMySqlDatetimeSyntax( $value ) ) {
                 $birthday = substr( $value, 0, 10 );
             }
         }
@@ -1119,7 +1121,7 @@ class User implements \QUI\Interfaces\Users\User
 
 
         return \QUI::getDataBase()->update(
-            \QUI\Users\Manager::Table(),
+            Manager::Table(),
             array(
                 'username' 	=> $this->getName(),
                 'usergroup' => $this->getGroups(false),
@@ -1249,7 +1251,7 @@ class User implements \QUI\Interfaces\Users\User
         */
 
         \QUI::getDataBase()->delete(
-            \QUI\Users\Manager::Table(),
+            Manager::Table(),
             array('id' => $this->getId())
         );
 
@@ -1379,7 +1381,7 @@ class User implements \QUI\Interfaces\Users\User
      * @param Array $params
      * @return \QUI\Users\Address
      */
-    public function addAddress($params)
+    public function addAddress($params=array())
     {
         $_params = array();
         $needles = array(
@@ -1388,6 +1390,10 @@ class User implements \QUI\Interfaces\Users\User
             'delivery', 'street_no', 'zip', 'city',
             'country'
         );
+
+        if ( !is_array( $params ) ) {
+            $params = array();
+        }
 
         foreach ( $needles as $needle )
         {
@@ -1400,15 +1406,13 @@ class User implements \QUI\Interfaces\Users\User
             if ( is_array( $params[ $needle ] ) )
             {
                 $_params[ $needle ] = json_encode(
-                    \QUI\Utils\Security\Orthos::clearArray( $params[ $needle ] )
+                    Orthos::clearArray( $params[ $needle ] )
                 );
 
                 continue;
             }
 
-            $_params[ $needle ] = \QUI\Utils\Security\Orthos::clear(
-                $params[ $needle ]
-            );
+            $_params[ $needle ] = Orthos::clear( $params[ $needle ] );
         }
 
         $tmp_first = $this->getAttribute( 'firstname' );
@@ -1425,7 +1429,7 @@ class User implements \QUI\Interfaces\Users\User
         $_params[ 'uid' ] = $this->getId();
 
         $Statement = \QUI::getDataBase()->insert(
-            \QUI\Users\Manager::TableAddress(),
+            Manager::TableAddress(),
             $_params
         );
 
@@ -1442,7 +1446,7 @@ class User implements \QUI\Interfaces\Users\User
     public function getAddressList()
     {
         $result = \QUI::getDataBase()->fetch(array(
-            'from'   => \QUI\Users\Manager::TableAddress(),
+            'from'   => Manager::TableAddress(),
             'select' => 'id',
             'where'  => array(
                 'uid' => $this->getId()
@@ -1484,16 +1488,31 @@ class User implements \QUI\Interfaces\Users\User
     }
 
     /**
-     * return the standard address from the user
+     * Return the standard address from the user
+     * If no standard address set, the first address will be returned
      *
+     * @throws \QUI\Exception
      * @return \QUI\Users\Address|false
      */
     public function getStandardAddress()
     {
-        if ( $this->getAttribute( 'address' ) === false ) {
-            return false;
+        if ( $this->getAttribute( 'address' ) ) {
+            return $this->getAddress( $this->getAttribute( 'address' ) );
         }
 
-        return $this->getAddress( $this->getAttribute( 'address' ) );
+        $list = $this->getAddressList();
+
+        if ( count( $list ) )
+        {
+            reset( $list );
+            return current( $list );
+        }
+
+        throw new \QUI\Exception(
+            \QUI::getLocale()->get(
+                'quiqqer/system',
+                'exception.user.no.address.exists'
+            )
+        );
     }
 }

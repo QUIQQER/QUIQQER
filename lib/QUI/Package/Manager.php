@@ -32,6 +32,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 
 use \QUI\Utils\XML as XML;
+use Composer\Package\Package;
 
 /**
  * Package Manager for the QUIQQER System
@@ -93,6 +94,12 @@ class Manager
      * @var String
      */
     protected $_version = null;
+
+    /**
+     * List of packages objects
+     * @var Array
+     */
+    protected $_packages = array();
 
     /**
      * Composer Application
@@ -456,6 +463,22 @@ class Manager
     }
 
     /**
+     * Return a package object
+     *
+     * @param String $package - name of the package
+     * @return \QUI\Package\Package
+     * @throws \QUI\Exception
+     */
+    public function getInstalledPackage($package)
+    {
+        if ( !isset( $this->_packages[ $package ] ) ) {
+            $this->_packages[ $package ] = new \QUI\Package\Package( $package );
+        }
+
+        return $this->_packages[ $package ];
+    }
+
+    /**
      * Install Package
      *
      * @param String $package - name of the package
@@ -536,6 +559,7 @@ class Manager
 
     /**
      * Return the params of an installed package
+     * Makes dependencies requests. If you want the Package Object, you should use getInstalledPackage
      *
      * @param String $package
      * @return Array

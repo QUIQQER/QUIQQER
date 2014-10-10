@@ -330,7 +330,11 @@ define([
 
                 tok = namespace.split( '.' );
 
-                if ( typeof tok[0] !== 'undefined' && typeof tok[1] !== 'undefined' ) {
+                if ( typeof tok[0] !== 'undefined' &&
+                     typeof tok[1] !== 'undefined' &&
+                     typeof this.$config[ tok[0] ] !== 'undefined' &&
+                     typeof this.$config[ tok[0] ][ tok[1] ] !== 'undefined' )
+                {
                     this.$config[ tok[0] ][ tok[1] ] = values[ namespace ];
                 }
             }
