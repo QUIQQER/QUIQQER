@@ -181,7 +181,9 @@ define([
         {
             var self = this;
 
-            this.$Elm = new Element( 'div' );
+            this.$Elm = new Element( 'div', {
+                'class' : 'controls-upload-form'
+            });
 
             this.$Frame = new Element('iframe', {
                 name   : 'upload'+ this.getId(),
@@ -253,7 +255,7 @@ define([
                     },
 
                     styles : {
-                        clear : 'both',
+                        clear     : 'both',
                         marginTop : '20px'
                     }
                 }).inject( this.$Elm );
@@ -357,6 +359,7 @@ define([
                     }
 
                 }).inject( Container, 'top' );
+
             } else
             {
                 // placeholder

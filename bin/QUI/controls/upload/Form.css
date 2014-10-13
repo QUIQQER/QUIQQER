@@ -1,8 +1,13 @@
 
+.controls-upload-form form {
+    width: 100%;
+}
+
 .qui-form-upload {
-    float: left;
     clear: both;
+    float: left;
     margin: 2px 0;
+    width: 100%;
 }
 
 .qui-form-upload input {
