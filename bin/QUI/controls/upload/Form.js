@@ -326,8 +326,12 @@ define([
                             Input    = Container.getElement( 'input[type="file"]' ),
                             id       = Slick.uidOf( Input );
 
-                        FileInfo.setStyle( 'background-image', '' );
-                        FileInfo.set(' html', '' );
+                        FileInfo.set({
+                            html : '',
+                            styles : {
+                                backgroundImage : null
+                            }
+                        });
 
                         Input.setStyle( 'display', 'inline' );
 
@@ -415,6 +419,7 @@ define([
                 FileInfo  = Container.getElement( '.qui-form-fileinfo' );
 
             FileInfo.set( 'html', File.name );
+
             FileInfo.setStyle(
                 'background-image',
                 'url('+ MediaUtils.getIconByMimeType( File.type ) +')'
@@ -422,7 +427,7 @@ define([
 
             this.fireEvent( 'add', [ self, File ] );
 
-            Input.setStyle('display', 'none');
+            Input.setStyle( 'display', 'none' );
         },
 
         /**
