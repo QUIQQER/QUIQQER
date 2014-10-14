@@ -45,7 +45,12 @@
         };
 
         var QUIQQER_ONLOAD_MODULES = {$loadModuleFiles|json_encode:true},
-            QUIQQER_LOCALE         = {$localeFiles|json_encode:true}
+            QUIQQER_LOCALE         = {$localeFiles|json_encode:true};
+
+        {if "LOGIN_FAILED"|defined}
+        var QUIQQER_LOGIN_FAILED = "{$smarty.const.LOGIN_FAILED}";
+        {/if}
+
     </script>
 
     {if $Template->getAttribute('mootools')}

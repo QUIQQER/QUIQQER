@@ -197,7 +197,7 @@ class Manager
             {
                 throw new \QUI\Exception(
                     \QUI::getLocale()->get(
-                        'system',
+                        'quiqqer/system',
                         'exception.lib.user.exist'
                     )
                 );
@@ -265,7 +265,7 @@ class Manager
         {
             throw new \QUI\Exception(
                 \QUI::getLocale()->get(
-                    'system',
+                    'quiqqer/system',
                     'exception.lib.user.register.specify.username'
                 )
             );
@@ -275,7 +275,7 @@ class Manager
         {
             throw new \QUI\Exception(
                 \QUI::getLocale()->get(
-                    'system',
+                    'quiqqer/system',
                     ''
                 )
             );
@@ -291,7 +291,7 @@ class Manager
         {
             throw new \QUI\Exception(
                 \QUI::getLocale()->get(
-                    'system',
+                    'quiqqer/system',
                     'exception.lib.user.register.specify.password'
                 )
             );
@@ -485,7 +485,7 @@ class Manager
         if ( !is_string( $username ) )
         {
             throw new \QUI\Exception(
-                \QUI::getLocale()->get( 'system', 'exception.login.fail' ),
+                \QUI::getLocale()->get( 'quiqqer/system', 'exception.login.fail' ),
                 401
             );
         }
@@ -493,7 +493,7 @@ class Manager
         if ( !is_string( $pass ) )
         {
             throw new \QUI\Exception(
-                \QUI::getLocale()->get( 'system', 'exception.login.fail' ),
+                \QUI::getLocale()->get( 'quiqqer/system', 'exception.login.fail' ),
                 401
             );
         }
@@ -592,7 +592,7 @@ class Manager
                 strtotime($uparams['expire']) < time())
             {
                 throw new \QUI\Exception(
-                    \QUI::getLocale()->get('system', 'exception.login.expire', array(
+                    \QUI::getLocale()->get('quiqqer/system', 'exception.login.expire', array(
                         'expire' => $uparams['expire']
                     ))
                 );
@@ -645,7 +645,7 @@ class Manager
         }
 
         throw new \QUI\Exception(
-            \QUI::getLocale()->get( 'system', 'exception.login.fail' ),
+            \QUI::getLocale()->get( 'quiqqer/system', 'exception.login.fail' ),
             401
         );
     }
@@ -762,7 +762,7 @@ class Manager
         {
             throw new \QUI\Exception(
                 \QUI::getLocale()->get(
-                    'system',
+                    'quiqqer/system',
                     'exception.lib.user.user.not.found'
                 ),
                 404
@@ -794,7 +794,7 @@ class Manager
         {
             throw new \QUI\Exception(
                 \QUI::getLocale()->get(
-                    'system',
+                    'quiqqer/system',
                     'exception.lib.user.user.not.found'
                 ),
                 404
@@ -1213,7 +1213,7 @@ class Manager
         if ( $username != self::clearUsername( $username ) )
         {
             throw new \QUI\Exception(
-                \QUI::getLocale()->get('system', 'exception.lib.user.illegal.signs')
+                \QUI::getLocale()->get('quiqqer/system', 'exception.lib.user.illegal.signs')
             );
         }
 
