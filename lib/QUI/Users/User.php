@@ -1020,6 +1020,7 @@ class User implements \QUI\Interfaces\Users\User
         \QUI::getDataBase()->update(
             Manager::Table(),
             array(
+                'username'   => '',
                 'active'     => -1,
                 'password'   => '',
                 'usergroup'  => '',
