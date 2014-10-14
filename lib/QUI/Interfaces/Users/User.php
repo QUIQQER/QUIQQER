@@ -47,8 +47,10 @@ interface User
     /**
      * Disable a user
      * The user data will be lost, but the user still exist
+     *
+     * @param \QUI\Users\User|false $ParentUser
      */
-    public function disable();
+    public function disable($ParentUser=false);
 
 
     /**

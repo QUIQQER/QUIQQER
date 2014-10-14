@@ -1010,40 +1010,10 @@ class User implements \QUI\Interfaces\Users\User
      * (non-PHPdoc)
      * @see \QUI\Interfaces\Users\User::disable()
      */
-    public function disable()
+    public function disable($ParentUser=false)
     {
-        $this->_checkRights();
+        $this->_checkRights( $ParentUser );
 
-        // Pluginerweiterungen - onDisable Event
-        /*
-        foreach ( $this->_plugins as $Plugin )
-        {
-            if ( method_exists( $Plugin, 'onDisable') ) {
-                $Plugin->onDisable( $this );
-            }
-        }
-        */
-
-        // Extra von den Projekten
-        /*
-        $projects = \QUI\Projects\Manager::getProjects( true );
-
-        foreach ( $projects as $Project )
-        {
-            try
-            {
-                $Extend = $this->loadExtra($Project);
-
-                if ( method_exists( $Extend, 'onDisable' ) ) {
-                    $Extend->onDelete();
-                }
-
-            } catch ( \QUI\Exception $e )
-            {
-
-            }
-        }
-        */
 
         \QUI::getEvents()->fireEvent('userDisable', array( $this ));
 
