@@ -322,6 +322,7 @@ class Template extends \QUI\QDOM
         $siteType = $Site->getAttribute( 'type' );
         $siteType = explode( ':', $siteType );
 
+
         if ( isset( $siteType[ 0 ] ) && isset( $siteType[ 1 ] ) )
         {
             $package = $siteType[ 0 ];

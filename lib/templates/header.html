@@ -48,7 +48,7 @@
             QUIQQER_LOCALE         = {$localeFiles|json_encode:true};
 
         {if "LOGIN_FAILED"|defined}
-        var QUIQQER_LOGIN_FAILED = "{$smarty.const.LOGIN_FAILED}";
+        var QUIQQER_LOGIN_FAILED = "{locale group="quiqqer/system" value="exception.login.fail"}";
         {/if}
 
     </script>
@@ -96,13 +96,6 @@
 
     <!-- canonical -->
     {$Canonical->output()}
-
-    {* @todo nicht original url mit parameter beachten *}
-    {*
-    {if $Site->getId() != 1 && $_url && $_url != $Site->getCanonical() && empty($smarty.get)}
-        <link rel="canonical" href="{$Site->getCanonical()}" />
-    {/if}
-    *}
 
 
     {if $Template->getAttribute('rel_next')}
