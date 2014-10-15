@@ -59,6 +59,5 @@ Message: {$message}
 
 \QUI::$Ajax->register(
     'ajax_contact',
-    array( 'email', 'name', 'message' ),
-    'Permission::checkAdminUser'
+    array( 'email', 'name', 'message' )
 );
