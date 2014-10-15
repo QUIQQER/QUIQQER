@@ -18,11 +18,14 @@ if ( (int)$_SERVER['SERVER_PORT'] !== 443 && \QUI::conf( 'globals', 'httpshost' 
 $Users = \QUI::getUsers();
 $User  = $Users->getUserBySession();
 
-if ( strpos( $_SERVER['SCRIPT_NAME'], 'index.php' ) !== false &&
-     ($Users->isAuth($User) == false || $User->isAdmin() == false))
+
+if ( strpos( $_SERVER['SCRIPT_NAME'], 'index.php' ) !== false )
 {
-    require_once 'login.php';
-    exit;
+    if ( !$User->isAdmin() || !$Users->isAuth( $User ) )
+    {
+        require_once 'login.php';
+        exit;
+    }
 }
 
 //Adminbereich markieren

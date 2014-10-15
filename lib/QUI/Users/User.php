@@ -1119,24 +1119,9 @@ class User implements \QUI\Interfaces\Users\User
             return $this->_admin;
         }
 
-        $this->_admin = false;
+        $this->_admin = \QUI\Rights\Permission::isAdmin();
 
-        $groups = $this->getGroups();
-
-        if ( !is_array( $groups ) ) {
-            return false;
-        }
-
-        foreach ( $groups as $Group )
-        {
-            if ( $Group->getAttribute('admin') )
-            {
-                $this->_admin = true;
-                return true;
-            }
-        }
-
-        return false;
+        return $this->_admin;
     }
 
     /**
