@@ -151,6 +151,9 @@
         echo 'var QUIQQER_LOCALE = '. json_encode( $locales, true );
         echo '/* ]]> */';
         echo '</script>';
+
+        \QUI::getEvents()->fireEvent( 'adminLoad' );
+
     ?>
 
 </head>

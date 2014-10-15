@@ -5,6 +5,10 @@
  * @author www.pcsg.de (Henning Leutz)
  */
 
+//monitorEvents(document.body,'click');
+//monitorEvents(document.body,'mousedown');
+//monitorEvents(document.body,'dblclick');
+
 // extend mootools with desktop drag drop
 Object.append(Element.NativeEvents, {
     dragenter : 2,
