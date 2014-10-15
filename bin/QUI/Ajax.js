@@ -65,11 +65,12 @@ define([
             this.$onprogress[ id ] = new QUIAjax(
                 // combine all params, so, they are available in the Request Object
                 Utils.combine(params, {
-                    callback : callback,
-                    method   : method,
-                    url      : this.$url,
-                    async    : true,
-                    events   :
+                    callback  : callback,
+                    method    : method,
+                    url       : this.$url,
+                    async     : true,
+                    showError : typeof params.showError !== 'undefined' ? params.showError : true,
+                    events    :
                     {
                         onSuccess : function()
                         {
@@ -89,9 +90,12 @@ define([
 
                         onError : function(Exception, Request)
                         {
-                            QUI.getMessageHandler(function(MessageHandler) {
-                                MessageHandler.addException( Exception );
-                            });
+                            if ( Request.getAttribute( 'showError' ) )
+                            {
+                                QUI.getMessageHandler(function(MessageHandler) {
+                                    MessageHandler.addException( Exception );
+                                });
+                            }
 
                             if ( Exception.getCode() === 401 )
                             {
