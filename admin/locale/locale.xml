@@ -924,6 +924,10 @@
             <de><![CDATA[Kontakt E-mail konnte nicht versendet werden. Bitte geben Sie eine korrekte E-Mail an.]]></de>
             <en><![CDATA[Contact E-mail could not be sent. Please enter a valid email.]]></en>
         </locale>
+        <locale name="exception.not.correct.email">
+            <de><![CDATA[Bitte geben Sie eine korrekte E-Mail an.]]></de>
+            <en><![CDATA[Please enter a valid email.]]></en>
+        </locale>
         <locale name="exception.contact.send.mail">
             <de><![CDATA[
                 Kontakt E-mail konnte nicht versendet werden.
