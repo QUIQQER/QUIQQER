@@ -201,7 +201,7 @@ class User implements \QUI\Interfaces\Users\User
             {
                 $this->setGroups( $data[0]['usergroup'] );
 
-            } catch ( \QUI\Exception $e )
+            } catch ( \QUI\Exception $Exception )
             {
                 // nohting
             }
@@ -266,15 +266,6 @@ class User implements \QUI\Interfaces\Users\User
 
         // Event
         \QUI::getEvents()->fireEvent( 'userLoad', array( $this ));
-
-        /*
-        $Plugins = \QUI::getPluginManager();
-        $plugins = $Plugins->get();
-
-        foreach ( $plugins as $Plugin ) {
-            $Plugin->onUserLoad( $this );
-        }
-        */
     }
 
     /**
@@ -536,11 +527,11 @@ class User implements \QUI\Interfaces\Users\User
         {
             $aTmp = array();
 
-            foreach ($groups as $group)
+            foreach ( $groups as $group )
             {
-                $tg = $Groups->get($group);
+                $tg = $Groups->get( $group );
 
-                if ($tg)
+                if ( $tg )
                 {
                     $this->Group[] = $tg;
                     $aTmp[]        = $group;
@@ -549,20 +540,20 @@ class User implements \QUI\Interfaces\Users\User
 
             $this->_groups = implode($aTmp, ',');
 
-        } elseif (is_string($groups) && strpos($groups,',') !== false)
+        } elseif ( is_string( $groups ) && strpos( $groups,',' ) !== false )
         {
-            $groups = explode(',', $groups);
+            $groups = explode( ',', $groups );
             $aTmp   = array();
 
-            foreach ($groups as $g)
+            foreach ( $groups as $g )
             {
-                if (empty($g)) {
+                if ( empty( $g ) ) {
                     continue;
                 }
 
                 try
                 {
-                    $this->Group[] = $Groups->get($g);
+                    $this->Group[] = $Groups->get( $g );
                     $aTmp[] = $g;
 
                 } catch ( \QUI\Exception $Exception )
@@ -571,13 +562,13 @@ class User implements \QUI\Interfaces\Users\User
                 }
             }
 
-            $this->_groups = ','. implode($aTmp, ',') .',';
+            $this->_groups = ','. implode( $aTmp, ',' ) .',';
 
-        } elseif (is_string($groups))
+        } elseif ( is_string( $groups ) )
         {
             try
             {
-                $this->Group[] = $Groups->get($groups);
+                $this->Group[] = $Groups->get( $groups );
                 $this->_groups = ','.$groups.',';
 
             } catch ( \QUI\Exception $Exception )
@@ -617,25 +608,25 @@ class User implements \QUI\Interfaces\Users\User
     {
         $Groups = \QUI::getGroups();
 
-        if (is_string($Group) || is_int($Group)) {
-            $Group = $Groups->get((int)$Group);
+        if ( is_string( $Group ) || is_int( $Group ) ) {
+            $Group = $Groups->get( (int)$Group );
         }
 
-        $groups = $this->getGroups(true);
+        $groups = $this->getGroups( true );
         $new_gr = array();
 
-        if (!is_array($groups)) {
+        if ( !is_array( $groups ) ) {
             $groups = array();
         }
 
-        foreach ($groups as $key => $UserGroup)
+        foreach ( $groups as $key => $UserGroup )
         {
-            if ($UserGroup->getId() != $Group->getId()) {
+            if ( $UserGroup->getId() != $Group->getId() ) {
                 $new_gr[] = $UserGroup->getId();
             }
         }
 
-        $this->setGroups($new_gr);
+        $this->setGroups( $new_gr );
     }
 
     /**
@@ -646,7 +637,7 @@ class User implements \QUI\Interfaces\Users\User
     public function addGroup($gid)
     {
         /* @todo Root Gruppe darf nur in Root Gruppe */
-        if ($gid == \QUI::conf('globals', 'root')) {
+        if ( $gid == \QUI::conf('globals', 'root') ) {
             return; // bad fix, mal provisorisch
         }
 
@@ -657,16 +648,16 @@ class User implements \QUI\Interfaces\Users\User
         $new_gr = array();
         $_tmp   = array();
 
-        if (!is_array($groups)) {
+        if ( !is_array( $groups ) ) {
             $groups = array();
         }
 
         $groups[] = $Group;
 
 
-        foreach ($groups as $key => $UserGroup)
+        foreach ( $groups as $key => $UserGroup )
         {
-            if (isset($_tmp[ $UserGroup->getId() ])) {
+            if ( isset( $_tmp[ $UserGroup->getId() ] ) ) {
                 continue;
             }
 
@@ -730,6 +721,26 @@ class User implements \QUI\Interfaces\Users\User
             default:
                 $this->_settings[$key] = $value;
             break;
+        }
+    }
+
+    /**
+     * Remove an attribute
+     *
+     * @param String $key
+     */
+    public function removeAttribute($key)
+    {
+        if ( !$key ||
+             $key == 'id' ||
+             $key == 'password' ||
+             $key == 'user_agent' )
+        {
+            return;
+        }
+
+        if ( isset( $this->_settings[ $key ] ) ) {
+            unset( $this->_settings[ $key ]  );
         }
     }
 
@@ -916,7 +927,7 @@ class User implements \QUI\Interfaces\Users\User
         {
             throw new \QUI\Exception(
                 \QUI::getLocale()->get(
-                    'system',
+                    'quiqqer/system',
                     'exception.lib.user.activasion.user.is.activated'
                 )
             );
@@ -962,35 +973,6 @@ class User implements \QUI\Interfaces\Users\User
     public function deactivate()
     {
         $this->_checkRights();
-
-        // Pluginerweiterungen - onDisable Event
-        /*
-        foreach ( $this->_plugins as $Plugin )
-        {
-            if ( method_exists( $Plugin, 'onUserDeactivate' ) ) {
-                $Plugin->onDisable( $this );
-            }
-        }
-
-        // Extra von den Projekten
-        $projects = \QUI\Projects\Manager::getProjects(true);
-
-        foreach ( $projects as $Project )
-        {
-            try
-            {
-                $Extend = $this->loadExtra( $Project) ;
-
-                if ( method_exists( $Extend, 'onDeactivate' ) ) {
-                    $Extend->onDelete();
-                }
-
-            } catch ( \QUI\Exception $e )
-            {
-
-            }
-        }
-        */
 
         \QUI::getEvents()->fireEvent('userDeactivate', array( $this ));
 
@@ -1103,7 +1085,7 @@ class User implements \QUI\Interfaces\Users\User
                 'email' 	=> $this->getAttribute( 'email' ),
                 'avatar' 	=> $this->getAvatar(),
                 'su'		=> $this->isSU(),
-                'extra' 	=> json_encode( $extra ), //,
+                'extra' 	=> json_encode( $extra ),
                 'lang' 	    => $this->getAttribute( 'lang' ),
                 'lastedit'  => date( "Y-m-d H:i:s" ),
                 'expire'    => $expire,
@@ -1192,34 +1174,6 @@ class User implements \QUI\Interfaces\Users\User
     {
         // Pluginerweiterungen - onDelete Event
         \QUI::getEvents()->fireEvent('userDelete', array($this));
-
-        /*
-        foreach ( $this->_plugins as $Plugin )
-        {
-            if ( method_exists( $Plugin, 'onDelete' ) ) {
-                $Plugin->onDelete( $this );
-            }
-        }
-
-        // Extra von den Projekten
-        $projects = \QUI\Projects\Manager::getProjects( true );
-
-        foreach ( $projects as $Project )
-        {
-            try
-            {
-                $Extend = $this->loadExtra($Project);
-
-                if ( method_exists( $Extend, 'onDelete' ) ) {
-                    $Extend->onDelete();
-                }
-
-            } catch ( \QUI\Exception $e )
-            {
-
-            }
-        }
-        */
 
         \QUI::getDataBase()->delete(
             Manager::Table(),

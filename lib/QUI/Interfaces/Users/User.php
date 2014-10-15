@@ -144,6 +144,13 @@ interface User
     public function getCountry();
 
     /**
+     * Remove an attribute
+     *
+     * @param String $key
+     */
+    public function removeAttribute($key);
+
+    /**
      * Set a attribute of the user
      *
      * @param String $key
