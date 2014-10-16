@@ -1,17 +1,14 @@
+
 /**
  * SyntaxHighlighter
  *
+ * @module classes/utils/SyntaxHighlighter
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires qui/classes/DOM
- * @module classes/utils/SyntaxHighlighter
+ * @require qui/classes/DOM
  */
 
-define('classes/utils/SyntaxHighlighter', [
-
-    'qui/classes/DOM'
-
-], function(DOM)
+define(['qui/classes/DOM'], function(DOM)
 {
     "use strict";
 

@@ -172,6 +172,29 @@
 
     <!-- Settings -->
         <item parent="/settings/"
+              name="quiqqer"
+              icon="URL_BIN_DIR/16x16/quiqqer.png"
+        >
+            <locale group="quiqqer/system" var="menu.settings.quiqqer.text" />
+        </item>
+            <item parent="/settings/quiqqer/"
+                  name="media"
+                  icon="icon-font"
+                  require="controls/editors/Settings"
+            >
+                <locale group="quiqqer/system" var="menu.settings.editor.text" />
+            </item>
+
+            <item parent="/settings/quiqqer/"
+                  name="vhosts"
+                  icon="icon-external-link"
+                  require="controls/system/VHosts"
+            >
+                <locale group="quiqqer/system" var="menu.settings.vhosts.text" />
+            </item>
+
+
+        <item parent="/settings/"
               name="projects"
               icon="icon-home"
         >
@@ -185,21 +208,6 @@
             <locale group="quiqqer/system" var="menu.settings.media.text" />
         </item>
 
-        <item parent="/settings/"
-              name="media"
-              icon="icon-font"
-              require="controls/editors/Settings"
-        >
-            <locale group="quiqqer/system" var="menu.settings.editor.text" />
-        </item>
-
-        <item parent="/settings/"
-              name="vhosts"
-              icon="icon-external-link"
-              require="controls/system/VHosts"
-        >
-            <locale group="quiqqer/system" var="menu.settings.vhosts.text" />
-        </item>
 
     <!-- Profil -->
         <item parent="/profile/"

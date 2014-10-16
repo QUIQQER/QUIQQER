@@ -47,8 +47,10 @@ interface User
     /**
      * Disable a user
      * The user data will be lost, but the user still exist
+     *
+     * @param \QUI\Users\User|false $ParentUser
      */
-    public function disable();
+    public function disable($ParentUser=false);
 
 
     /**
@@ -140,6 +142,13 @@ interface User
      * @return \QUI\Countries\Country|boolean
      */
     public function getCountry();
+
+    /**
+     * Remove an attribute
+     *
+     * @param String $key
+     */
+    public function removeAttribute($key);
 
     /**
      * Set a attribute of the user

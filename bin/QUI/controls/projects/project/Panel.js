@@ -1,17 +1,25 @@
 /**
  * Displays a Project in a Panel
  *
+ * @module controls/projects/project/Panel
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires controls/Control
- * @requires Projects
- * @requires buttons/Button
- * @requires controls/projects/Sitemap
+ * @require qui/controls/desktop/Panel
+ * @require Projects
+ * @require controls/projects/project/Sitemap
+ * @require utils/Panels
+ * @require qui/controls/buttons/Button
+ * @require qui/controls/buttons/Seperator
+ * @require qui/controls/sitemap/Map
+ * @require qui/controls/sitemap/Item
+ * @require qui/controls/sitemap/Filter
+ * @require Locale
+ * @require controls/projects/Manager
+ * @require css!controls/projects/project/Panel.css'
  *
- * @module controls/projects/Panel
  */
 
-define('controls/projects/project/Panel', [
+define([
 
     'qui/controls/desktop/Panel',
     'Projects',

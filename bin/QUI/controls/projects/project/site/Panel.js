@@ -102,6 +102,16 @@ define([
                 this.setAttribute( 'name', id );
 
                 this.$Site = Site;
+            } else
+            {
+                // serialize data
+                if ( typeof Site.attributes !== 'undefined' &&
+                     typeof Site.project !== 'undefined' &&
+                     typeof Site.lang !== 'undefined' &&
+                     typeof Site.id !== 'undefined' )
+                {
+                    this.unserialize( Site );
+                }
             }
 
             this.parent( options );
@@ -557,6 +567,7 @@ define([
             {
                 this.getContent().set( 'html', '' );
                 this.$categoryOnLoad( Category );
+                QUI.parse( Category );
 
                 return;
             }
@@ -579,7 +590,7 @@ define([
 
                 var Form;
 
-                Body.set( 'html', '<form>'+ result +'</form>' );
+                Body.set( 'html', '<form class="qui-site-data">'+ result +'</form>' );
 
                 Form = Body.getElement( 'form' );
                 Form.addEvent('submit', function(event) {
@@ -694,6 +705,7 @@ define([
                 }
 
                 ControlUtils.parse( Form );
+                QUI.parse( Form );
 
                 self.$categoryOnLoad( Category );
 

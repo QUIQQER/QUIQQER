@@ -59,13 +59,13 @@ define([
         update : function(pkg, callback)
         {
             Ajax.post('ajax_system_update', function(result)
-           {
-               if ( typeof callback !== 'undefined' ) {
-                   callback( result );
-               }
-           }, {
-               'package' : pkg || false
-           });
+            {
+                if ( typeof callback !== 'undefined' ) {
+                    callback( result );
+                }
+            }, {
+                'package' : pkg || false
+            });
         },
 
         /**

@@ -3,12 +3,19 @@
  * Uploads files and show the upload status
  *
  * @author www.pcsg.de (Henning Leutz)
- *
  * @module controls/upload/Manager
- * @package com.pcsg.quiqqer
+ *
+ * @require qui/QUI
+ * @require qui/controls/desktop/Panel
+ * @require qui/controls/utils/Progressbar
+ * @require qui/controls/windows/Alert
+ * @require controls/upload/File
+ * @require Ajax
+ * @require Locale
+ * @require css!controls/upload/Manager.css
  */
 
-define('controls/upload/Manager', [
+define([
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
@@ -42,7 +49,7 @@ define('controls/upload/Manager', [
         ],
 
         options : {
-            title : Locale.get( lg, 'upload.manager.title' ),
+            title : false,
             icon  : 'icon-upload'
         },
 
@@ -66,6 +73,10 @@ define('controls/upload/Manager', [
          */
         $onCreate : function()
         {
+            if ( !this.getAttribute( 'title' ) ) {
+                this.setAttribute( 'title', Locale.get( lg, 'upload.manager.title' ) );
+            }
+
             this.$Container = new Element('div', {
                 'class' : 'upload-manager'
             }).inject( this.getContent() );
@@ -115,8 +126,6 @@ define('controls/upload/Manager', [
             if ( !files.length ) {
                 return;
             }
-
-            // this.create();
 
             // application/zip
             var i, len;
@@ -232,8 +241,17 @@ define('controls/upload/Manager', [
 
                 this.$files.push( QUIFile );
 
-                if ( this.$Container ) {
+                if ( this.$Container )
+                {
                     QUIFile.inject( this.$Container, 'top');
+                } else
+                {
+                    // exist upload container? ... not nice but functional
+                    var Container = document.getElement( '.qui-panel-content .upload-manager' );
+
+                    if ( Container ) {
+                        QUIFile.inject( Container, 'top');
+                    }
                 }
 
                 QUIFile.upload();

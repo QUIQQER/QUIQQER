@@ -100,10 +100,11 @@ class Session
         }
 
         return new PdoSessionHandler( \QUI::getDataBase()->getPDO(), array(
-            'db_table'    => $this->_table,
-            'db_id_col'   => 'session_id',
-            'db_data_col' => 'session_value',
-            'db_time_col' => 'session_time',
+            'db_table'        => $this->_table,
+            'db_id_col'       => 'session_id',
+            'db_data_col'     => 'session_value',
+            'db_time_col'     => 'session_time',
+            'db_lifetime_col' => 'session_lifetime'
         ));
     }
 
@@ -125,10 +126,11 @@ class Session
         // pdo mysql options db
         // more at http://symfony.com/doc/current/cookbook/configuration/pdo_session_storage.html
         $DBTable->appendFields($this->_table, array(
-            'session_id'    => 'varchar(255) NOT NULL',
-            'session_value' => 'text NOT NULL',
-            'session_time'  => 'int(11) NOT NULL',
-            'uid'           => 'int(11) NOT NULL'
+            'session_id'       => 'varchar(255) NOT NULL',
+            'session_value'    => 'text NOT NULL',
+            'session_time'     => 'int(11) NOT NULL',
+            'session_lifetime' => 'int(12) NOT NULL',
+            'uid'              => 'int(11) NOT NULL'
         ));
 
         $DBTable->setPrimaryKey( $this->_table , 'session_id' );

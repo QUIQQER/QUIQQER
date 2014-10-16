@@ -258,7 +258,7 @@ class XML
             }
         }
 
-        // projects
+        // projects lang tables
         if ( $project && $project->length )
         {
             $tables = $project->item(0)->getElementsByTagName( 'table' );
@@ -270,6 +270,7 @@ class XML
                 );
             }
         }
+
 
         return $dbfields;
     }
@@ -443,10 +444,39 @@ class XML
     }
 
     /**
+     * Return the panel nodes from an *.xml file
+     *
+     * @param String $file - path to the xml file
+     * @return Array
+     */
+    static function getPanelsFromXMLFile($file)
+    {
+        $Dom  = self::getDomFromXml( $file );
+        $Path = new \DOMXPath( $Dom );
+
+        $panels = $Path->query( "//quiqqer/panels/panel" );
+
+        if ( !$panels->length ) {
+            return array();
+        }
+
+        $result = array();
+
+        for ( $i = 0, $len = $panels->length; $i < $len; $i++ )
+        {
+            $result[] = \QUI\Utils\DOM::parsePanelToArray(
+                $panels->item( $i )
+            );
+        }
+
+        return $result;
+    }
+
+    /**
      * Read the permissions from an *.xml file
      *
      * @param String $file - path to the xml file
-     * @return array
+     * @return Array
      */
     static function getPermissionsFromXml($file)
     {
@@ -861,7 +891,7 @@ class XML
 
                 $default = $defaults[ $section ][ $key ];
 
-                if ( empty( $value ) ) {
+                if ( empty( $value ) && $value !== 0 ) {
                     $value = $default['default'];
                 }
 
@@ -941,14 +971,18 @@ class XML
 
                 $suffix = $table['suffix'];
                 $fields = $table['fields'];
+                $noLang = false;
 
-                if ( $table['no-site-reference'] !== true )
+                if ( $table['no-project-lang'] ) {
+                    $noLang = true;
+                }
+
+                if ( $table['no-site-reference'] !== true && $noLang === false )
                 {
                     $fields = array(
                         'id' => 'bigint(20) NOT NULL PRIMARY KEY'
                     ) + $fields;
                 }
-
 
                 // Projekte durchgehen
                 foreach ( $projects as $name => $params )
@@ -958,6 +992,10 @@ class XML
                     foreach ( $langs as $lang )
                     {
                         $tbl = \QUI::getDBTableName( $name .'_'. $lang .'_'. $suffix );
+
+                        if ( $noLang ) {
+                            $tbl = \QUI::getDBTableName( $name .'_'. $suffix );
+                        }
 
                         $Table->appendFields( $tbl, $fields );
 

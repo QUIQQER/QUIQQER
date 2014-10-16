@@ -5,6 +5,10 @@
  * @author www.pcsg.de (Henning Leutz)
  */
 
+//monitorEvents(document.body,'click');
+//monitorEvents(document.body,'mousedown');
+//monitorEvents(document.body,'dblclick');
+
 // extend mootools with desktop drag drop
 Object.append(Element.NativeEvents, {
     dragenter : 2,
@@ -102,11 +106,12 @@ var requireList = [
    'qui/QUI',
    'Locale',
    'Ajax',
+   'Projects',
    'controls/workspace/Manager',
    'qui/controls/buttons/Button',
-   'qui/controls/contextmenu/Item'
+   'qui/controls/contextmenu/Item',
+   'qui/controls/contextmenu/Seperator'
 ].append( QUIQQER_LOCALE || [] );
-
 
 require( requireList, function()
 {
@@ -115,16 +120,22 @@ require( requireList, function()
     var QUI       = arguments[ 0 ],
         Locale    = arguments[ 1 ],
         Ajax      = arguments[ 2 ],
-        WSManager = arguments[ 3 ],
-        QUIButton = arguments[ 4 ],
+        Projects  = arguments[ 3 ],
+        WSManager = arguments[ 4 ],
+        QUIButton = arguments[ 5 ],
 
-        QUIContextmenuItem = arguments[ 5 ];
-
+        QUIContextmenuItem      = arguments[ 6 ],
+        QUIContextmenuSeperator = arguments[ 7 ];
 
     Locale.setCurrent( USER.lang );
 
-    QUI.addEvent('onError', function( err, url, line ) {
+    QUI.addEvent('onError', function( err, url, line )
+    {
         console.error( err +' - '+ url +' - '+ line );
+
+        if ( typeof Error !== 'undefined' ) {
+            console.warn( new Error().stack );
+        }
     });
 
     // load the default workspace
@@ -151,24 +162,73 @@ require( requireList, function()
         autoResize : false,
         events     :
         {
+            onLoadWorkspace : function(WS) {
+                WS.load();
+            },
+
             onWorkspaceLoaded : function(WS)
             {
                 var createMenu = function(Menu)
                 {
                     var list = WS.getList(),
-                        Bar  = Menu.getChildren(),
+                        Bar  = Menu.getChildren();
 
-                        Workspaces = Bar.getChildren( 'profile' )
+                    if ( !Bar.getChildren( 'profile' ) ) {
+                        return;
+                    }
+
+                    if ( !Bar.getChildren( 'profile' ).getChildren( 'workspaces' ) ) {
+                        return;
+                    }
+
+                    var Workspaces = Bar.getChildren( 'profile' )
                                         .getChildren( 'workspaces' );
 
                     Workspaces.clear();
 
+                    Workspaces.appendChild(
+                        new QUIContextmenuItem({
+                            text   : 'Arbeitsbereiche bearbeiten',
+                            icon   : 'icon-edit',
+                            events :
+                            {
+                                onClick : function(Item) {
+                                    WS.openWorkspaceEdit();
+                                }
+                            }
+                        })
+                    );
+
+                    Workspaces.appendChild(
+                        new QUIContextmenuItem({
+                            text   : 'Arbeitsbereich erstellen',
+                            icon   : 'icon-plus',
+                            events :
+                            {
+                                onClick : function(Item) {
+                                    WS.openCreateWindow();
+                                }
+                            }
+                        })
+                    );
+
+                    Workspaces.appendChild(
+                        new QUIContextmenuSeperator({})
+                    );
+
                     Object.each(list, function(Entry)
                     {
+                        var standard = false;
+
+                        if ( "standard" in Entry && Entry.standard && ( Entry.standard ).toInt() ) {
+                            standard = true;
+                        }
+
                         Workspaces.appendChild(
                             new QUIContextmenuItem({
                                 text   : Entry.title,
                                 wid    : Entry.id,
+                                icon   : standard ? 'icon-laptop' : false,
                                 events :
                                 {
                                     onClick : function(Item) {

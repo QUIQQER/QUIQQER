@@ -6,6 +6,8 @@
 
 namespace QUI;
 
+use \QUI\Projects\Media\Utils as MediaUtils;
+
 /**
  * Rewrite - URL Verwaltung (sprechende URLS)
  *
@@ -123,13 +125,16 @@ class Rewrite
      */
     public function exec()
     {
-        global $_REQUEST;
-
         if ( !isset( $_REQUEST['_url'] ) ) {
             $_REQUEST['_url'] = '';
         }
 
-        \QUI::getEvents()->fireEvent( 'QUI::request', array( $_REQUEST['_url'] ) );
+        \QUI::getEvents()->fireEvent( 'request', array( $this, $_REQUEST['_url'] ) );
+
+        //wenn seite existiert, dann muss nichts mehr gemacht werden
+        if ( isset( $this->_site ) && $this->_site ) {
+            return;
+        }
 
         $Session = \QUI::getSession();
         $vhosts  = $this->getVHosts();
@@ -256,7 +261,7 @@ class Rewrite
         {
             try
             {
-                $Item = \QUI\Projects\Media\Utils::getElement( $_REQUEST['_url'] );
+                $Item = MediaUtils::getElement( $_REQUEST['_url'] );
 
                 if (strpos($_REQUEST['_url'], '__') !== false)
                 {
@@ -275,14 +280,17 @@ class Rewrite
                     }
                 }
 
-            } catch ( \QUI\Exception $e )
+            } catch ( \QUI\Exception $Exception )
             {
                 // Falls Bild nicht mehr existiert oder ein falscher Aufruf gemacht wurde
                 $this->_showErrorHeader( 404 );
-            } catch ( \QUI\ExceptionDBError $e )
+                exit;
+
+            } catch ( \QUI\ExceptionDBError $Exception )
             {
                 // Falls Bild nicht mehr existiert oder ein falscher Aufruf gemacht wurde
                 $this->_showErrorHeader( 404 );
+                exit;
             }
 
             if ( $Item->getType() === 'QUI\\Projects\\Media\\Image' )
@@ -328,24 +336,6 @@ class Rewrite
             exit;
         }
 
-        \QUI::getEvents()->fireEvent( 'QUI::access' );
-
-
-        if ( isset( $exit ) && $exit ) {
-            return;
-        }
-
-        // Projekt request
-        $rewrite_project_file = USR_DIR .'lib/'. $this->getProject()->getAttribute('template') .'/rewrite.php';
-
-        if ( file_exists( $rewrite_project_file ) )
-        {
-           require $rewrite_project_file;
-
-            if (isset($exit) && $exit) {
-                return;
-            }
-        }
 
         // Falls kein suffix dann 301 weiterleiten auf .html
         if ( !empty( $_REQUEST['_url'] ) &&
@@ -1086,9 +1076,7 @@ class Rewrite
     {
         try
         {
-            $url = \QUI\Projects\Media\Utils::getRewritedUrl(
-                'image.php?'. $output[3]
-            );
+            $url = MediaUtils::getRewritedUrl( 'image.php?'. $output[3] );
 
         } catch ( \QUI\Exception $Excxeption )
         {
@@ -1114,7 +1102,7 @@ class Rewrite
             return $this->_image_cache[ $img ];
         }
 
-        if ( !\QUI\Projects\Media\Utils::isMediaUrl( $img ) ) {
+        if ( !MediaUtils::isMediaUrl( $img ) ) {
             return $output[0];
         }
 
@@ -1132,7 +1120,7 @@ class Rewrite
         {
             try
             {
-                $Image = \QUI\Projects\Media\Utils::getImageByUrl( $src );
+                $Image = MediaUtils::getImageByUrl( $src );
 
                 $att['alt']   = $Image->getAttribute('alt') ? $Image->getAttribute('alt') : '';
                 $att['title'] = $Image->getAttribute('title') ? $Image->getAttribute('title') : '';
@@ -1143,7 +1131,7 @@ class Rewrite
             }
         }
 
-        $this->_image_cache[ $img ] = \QUI\Projects\Media\Utils::getImageHTML( $src, $att );
+        $this->_image_cache[ $img ] = MediaUtils::getImageHTML( $src, $att );
 
         return $this->_image_cache[ $img ];
     }
@@ -1235,6 +1223,26 @@ class Rewrite
         if ( substr($url,-5) == '_html' ) {
             $url = substr($url, 0, -5).'.html';
         }
+
+        return $url;
+    }
+
+    /**
+     * Return the url params as index array
+     *
+     * @return Array
+     */
+    public function getUrlParamsList()
+    {
+        if ( !isset( $_REQUEST['_url'] ) ) {
+            return array();
+        }
+
+        $url = $_REQUEST['_url'];
+        $url = explode('.', $url );
+        $url = explode('_', $url[ 0 ] );
+
+        array_shift( $url );
 
         return $url;
     }
@@ -1406,15 +1414,25 @@ class Rewrite
         $exp = explode( '.', $url );
         $url = $exp[0];
 
-        foreach ( $params as $key => $param )
+        foreach ( $params as $param => $value )
         {
-            if ( $param == 'phpMyAdmin' ) {
+            if ( is_integer( $param ) )
+            {
+                $url .= self::URL_PARAM_SEPERATOR . $value;
                 continue;
             }
 
-            if ( $key != 'suffix' ) {
-                $url .= self::URL_PARAM_SEPERATOR . $key . self::URL_PARAM_SEPERATOR . $param;
+            if ( $param == 'suffix' ) {
+                continue;
             }
+
+            if ( $param === "0" )
+            {
+                $url .= self::URL_PARAM_SEPERATOR . $value;
+                continue;
+            }
+
+            $url .= self::URL_PARAM_SEPERATOR . $param . self::URL_PARAM_SEPERATOR . $value;
         }
 
         if ( isset( $params['suffix'] ) ) {

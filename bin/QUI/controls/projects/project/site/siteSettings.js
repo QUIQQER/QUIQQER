@@ -1,5 +1,5 @@
 /**
- *
+ * @depricated
  */
 
 define('controls/projects/project/site/siteSettings', [

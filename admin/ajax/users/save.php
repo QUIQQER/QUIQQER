@@ -9,32 +9,12 @@
  */
 function ajax_users_save($uid, $attributes, $rights)
 {
-    $User = \QUI::getUsers()->get( $uid );
-
+    $User       = \QUI::getUsers()->get( $uid );
     $attributes = json_decode( $attributes, true );
-    //$rights     = json_decode( $rights, true );
-    /*
-    if ( isset( $attributes['extra'] ) )
-    {
-        foreach ( $attributes['extra'] as $key => $value ) {
-            $User->setExtra( $key, $value );
-        }
-
-        unset( $attributes['extra'] );
-    }
-    */
 
     foreach ( $attributes as $key => $value ) {
         $User->setAttribute( $key, $value );
     }
-
-    /*
-    foreach ( $rights as $k => $v ) {
-        //$User->setAttribute( $k, $v );
-    }
-    */
-
-    $User->save();
 
     // aktivieren / deaktivieren
     if ( isset( $attributes['active'] ) )
@@ -50,6 +30,8 @@ function ajax_users_save($uid, $attributes, $rights)
             $User->deactivate();
         }
     }
+
+    $User->save();
 
     \QUI::getMessagesHandler()->addInformation(
         'Der Benutzer '. $User->getName() .' ('. $User->getId() .') wurde erfolgreich gespeichert'

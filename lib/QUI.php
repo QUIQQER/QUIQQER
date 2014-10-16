@@ -403,12 +403,11 @@ class QUI
 
                 if ( \QUI::conf( 'mail','admin_mail' ) )
                 {
-                    \QUI_Mail::init()->send(array(
-                         'MailTo'  => \QUI::conf( 'mail','admin_mail' ),
-                         'Subject' => 'Memory limit reached at http://'. $_SERVER["HTTP_HOST"],
-                         'Body'    => $message,
-                         'IsHTML'  => false
-                    ));
+                    \QUI::getMailManager()->send(
+                        \QUI::conf( 'mail','admin_mail' ),
+                        'Memory limit reached at http://'. $_SERVER["HTTP_HOST"],
+                        $message
+                    );
                 }
 
                 \QUI\System\Log::write( $message, 'error' );
@@ -517,10 +516,16 @@ class QUI
      * Return the tablename with the QUI Prefix and table params
      *
      * @param String $table
+     * @param \QUI\Projects\Project
+     * @param Bool $lang - language in the table name? default = true
      * @return String
      */
-    static function getDBProjectTableName($table, \QUI\Projects\Project $Project)
+    static function getDBProjectTableName($table, \QUI\Projects\Project $Project, $lang=true)
     {
+        if ( $lang === false ) {
+            return QUI_DB_PRFX . $Project->getName() .'_'. $table;
+        }
+
         return QUI_DB_PRFX . $Project->getName() .'_'. $Project->getLang() .'_'. $table;
     }
 

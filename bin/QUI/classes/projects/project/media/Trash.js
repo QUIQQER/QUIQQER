@@ -1,17 +1,20 @@
+
 /**
  * Media trash
  *
- * @author www.pcsg.de (Henning Leutz)
  * @module classes/projects/media/Trash
+ * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/classes/DOM
+ * @require Ajax
  */
 
-define('classes/projects/media/Trash', [
+define([
 
-    'classes/DOM',
-    'Ajax',
-    'controls/projects/media/Trash'
+    'qui/classes/DOM',
+    'Ajax'
 
-], function(QDOM, Ajax, MediaTrash)
+], function(QDOM, Ajax)
 {
     "use strict";
 
@@ -49,14 +52,14 @@ define('classes/projects/media/Trash', [
          *
          * @return {controls/projects/media/Trash}
          */
-        getControl : function()
-        {
-            return new MediaTrash(
-                this.$Media,
-                this.getAttributes(),
-                this
-            );
-        },
+//        getControl : function()
+//        {
+//           return new TrashPanel(
+//                this.$Media,
+//                this.getAttributes(),
+//                this
+//            );
+//        },
 
         /**
          * Return the sites in the trash

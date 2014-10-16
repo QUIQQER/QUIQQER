@@ -1,3 +1,4 @@
+
 /**
  * Ajax request for QUIQQER
  * Ajax Manager, collect, exec multible requests
@@ -21,9 +22,10 @@ define([
 
     'qui/QUI',
     'qui/classes/request/Ajax',
-    'qui/utils/Object'
+    'qui/utils/Object',
+    'Locale'
 
-], function(QUI, QUIAjax, Utils)
+], function(QUI, QUIAjax, Utils, Locale)
 {
     "use strict";
 
@@ -56,16 +58,28 @@ define([
                 _rf : call
             });
 
+            if ( typeof params.lang === 'undefined' ) {
+                params.lang = Locale.getCurrent();
+            }
+
             this.$onprogress[ id ] = new QUIAjax(
                 // combine all params, so, they are available in the Request Object
                 Utils.combine(params, {
-                    callback : callback,
-                    method   : method,
-                    url      : this.$url,
-                    async    : true,
-                    events   :
+                    callback  : callback,
+                    method    : method,
+                    url       : this.$url,
+                    async     : true,
+                    showError : typeof params.showError !== 'undefined' ? params.showError : true,
+                    events    :
                     {
-                        onSuccess : callback,
+                        onSuccess : function()
+                        {
+                            if ( this.getAttribute( 'logout' ) ) {
+                                return;
+                            }
+
+                            callback.apply( this, arguments );
+                        },
 
                         onCancel : function(Request)
                         {
@@ -76,9 +90,21 @@ define([
 
                         onError : function(Exception, Request)
                         {
-                            QUI.getMessageHandler(function(MessageHandler) {
-                                MessageHandler.addException( Exception );
-                            });
+                            if ( Request.getAttribute( 'showError' ) )
+                            {
+                                QUI.getMessageHandler(function(MessageHandler) {
+                                    MessageHandler.addException( Exception );
+                                });
+                            }
+
+                            if ( Exception.getCode() === 401 )
+                            {
+                                Request.setAttribute( 'logout', true );
+
+                                require(['controls/system/Login'], function(Login) {
+                                    new Login().open();
+                                });
+                            }
 
 
                             if ( Request.getAttribute( 'onError' ) ) {

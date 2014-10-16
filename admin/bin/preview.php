@@ -37,7 +37,7 @@ foreach ( $_POST['siteData'] as $key => $value ) {
     $Site->setAttribute( $key, $value );
 }
 
-$Template = new \QUI::getTemplateManager();
+$Template = \QUI::getTemplateManager();
 $content  = $Template->fetchTemplate( $Site );
 
 echo $content;

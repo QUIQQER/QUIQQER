@@ -1,16 +1,17 @@
+
 /**
  * Media for a Project
  *
  * @module classes/projects/project/Media
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires qui/classes/DOM
- * @requires qui/utils/Object
- * @requires Ajax
- * @requires classes/projects/project/media/Image
- * @requires classes/projects/project/media/File
- * @requires classes/projects/project/media/Folder
- * @requires classes/projects/project/media/Trash
+ * @require qui/classes/DOM
+ * @require qui/utils/Object
+ * @require Ajax
+ * @require classes/projects/project/media/Image
+ * @require classes/projects/project/media/File
+ * @require classes/projects/project/media/Folder
+ * @require classes/projects/project/media/Trash
  */
 
 define([

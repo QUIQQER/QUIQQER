@@ -6,13 +6,14 @@
 
 namespace QUI\Utils;
 
+use QUI\Projects\Site\Utils;
+
 /**
  * QUIQQER DOM Helper
  *
  * \QUI\Utils\DOM helps with quiqqer .xml files and DOMNode Elements
  *
  * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.utils
  */
 
 class DOM
@@ -163,12 +164,17 @@ class DOM
     static function dbTableDomToArray(\DOMNode $Table)
     {
         $result = array(
-            'suffix' => $Table->getAttribute( 'name' ),
-            'no-site-reference' => false
+            'suffix'            => $Table->getAttribute( 'name' ),
+            'no-site-reference' => false,
+            'no-project-lang'   => false
         );
 
         if ( (int)$Table->getAttribute( 'no-site-reference' ) === 1 ) {
             $result[ 'no-site-reference' ] = true;
+        }
+
+        if ( (int)$Table->getAttribute( 'no-project-lang' ) === 1 ) {
+            $result[ 'no-project-lang' ] = true;
         }
 
 
@@ -311,14 +317,14 @@ class DOM
         if ( is_string( $Object ) )
         {
             if ( file_exists( $Object ) ) {
-                $tabs = \QUI\Utils\XML::getTabsFromXml( $Object );
+                $tabs = XML::getTabsFromXml( $Object );
             }
 
         } else if ( get_class( $Object ) === 'QUI\\Projects\\Project' )
         {
             /* @var $Object \QUI\Projects\Project */
             // tabs welche ein projekt zur Verfügung stellt
-            $tabs = \QUI\Utils\XML::getTabsFromUserXml(
+            $tabs = XML::getTabsFromUserXml(
                 USR_DIR .'lib/'. $Object->getAttribute( 'name' ) .'/user.xml'
             );
 
@@ -335,6 +341,14 @@ class DOM
 
                 if ( file_exists( $file ) )
                 {
+                    // site extra settings
+                    $extra = '';
+
+                    if ( $file == SYS_DIR .'template/site/settings.html' ) {
+                        $extra = Utils::getExtraSettingsForSite( $Object );
+                    }
+
+                    // generate html
                     $Engine = \QUI::getTemplateManager()->getEngine( true );
 
                     $Engine->assign(array(
@@ -344,7 +358,7 @@ class DOM
                         'QUI'     => new \QUI()
                     ));
 
-                    return $Engine->fetch( $file );
+                    return $Engine->fetch( $file ) . $extra;
                 }
             }
 
@@ -423,7 +437,7 @@ class DOM
 
                         $Button->setAttribute(
                             $btnParams->item( $b )->nodeName,
-                            \QUI\Utils\DOM::parseVar( $value )
+                            self::parseVar( $value )
                         );
                     break;
                 }
@@ -648,7 +662,23 @@ class DOM
             );
         }
 
-        // Window Parameter
+        // window parameter
+        $params = $Window->getElementsByTagName( 'params' );
+
+        if ( $params->item( 0 ) )
+        {
+            $icon = $params->item( 0 )->getElementsByTagName( 'icon' );
+
+            if ( $icon->item( 0 ) )
+            {
+                $Win->setAttribute(
+                    'icon',
+                    self::parseVar( $icon->item( 0 )->nodeValue )
+                );
+            }
+        }
+
+        // Window buttons
         $btnList = self::getButtonsFromWindow( $Window );
 
         foreach ( $btnList as $Button ) {
@@ -656,6 +686,46 @@ class DOM
         }
 
         return $Win;
+    }
+
+    /**
+     *
+     * @param \DOMNode $Node
+     * @return Array
+     */
+    static function parsePanelToArray(\DOMNode $Node)
+    {
+        if ( $Node->nodeName != 'panel' ) {
+            return array();
+        }
+
+        $require = $Node->getAttribute( 'require' );
+        $Titles  = $Node->getElementsByTagName('title');
+        $Texts   = $Node->getElementsByTagName('text');
+        $Images  = $Node->getElementsByTagName('image');
+
+        $image = '';
+        $title = '';
+        $text  = '';
+
+        if ( $Titles && $Titles->length ) {
+            $title = self::getTextFromNode( $Titles->item( 0 ) );
+        }
+
+        if ( $Texts && $Texts->length ) {
+            $text = self::getTextFromNode( $Texts->item( 0 ) );
+        }
+
+        if ( $Images && $Images->item( 0 ) ) {
+            $image = self::parseVar( $Images->item( 0 )->nodeValue );
+        }
+
+        return array(
+            'image'   => $image,
+            'title'   => $title,
+            'text'    => $text,
+            'require' => $require
+        );
     }
 
     /**
@@ -895,11 +965,16 @@ class DOM
             return '';
         }
 
-        $type  = 'text';
-        $class = '';
+        $type    = 'text';
+        $class   = '';
+        $dataQui = '';
 
         if ( $Input->getAttribute( 'type' ) ) {
             $type = $Input->getAttribute( 'type' );
+        }
+
+        if ( $Input->getAttribute( 'data-qui') ) {
+            $dataQui = ' data-qui="'. $Input->getAttribute( 'data-qui') .'"';
         }
 
         switch ( $type )
@@ -922,6 +997,7 @@ class DOM
                            name="'. $Input->getAttribute( 'conf' ) .'"
                            id="'. $id .'"
                            '. $class .'
+                           '. $dataQui .'
                     />';
 
         if ( $type == 'checkbox' || $type == 'radio' )
@@ -976,17 +1052,32 @@ class DOM
             return '';
         }
 
-        $string  = '<p>';
-        $string .= '<textarea
-            name="'. $Textarea->getAttribute( 'conf' ) .'"
-        ></textarea>';
-
+        $id   = $Textarea->getAttribute( 'conf' ) .'-'. time();
         $text = $Textarea->getElementsByTagName( 'text' );
 
-        if ( $text->length ) {
-            $string .= '<span>'. self::getTextFromNode( $text->item( 0 ) ) .'</span>';
+        $dataQui = '';
+
+        if ( $Textarea->getAttribute( 'data-qui') ) {
+            $dataQui = ' data-qui="'. $Textarea->getAttribute( 'data-qui') .'"';
         }
 
+        $textarea = '<textarea
+            name="'. $Textarea->getAttribute( 'conf' ) .'"
+            id="'. $id .'"
+            '. $dataQui .'
+        ></textarea>';
+
+
+        $string  = '<p>';
+
+        if ( $text->length )
+        {
+            $string .= '<label for="'. $id .'">'.
+                self::getTextFromNode( $text->item( 0 ) ) .
+            '</label>';
+        }
+
+        $string .= $textarea;
         $string .= '</p>';
 
         return $string;
@@ -1052,7 +1143,7 @@ class DOM
             $value
         );
 
-        $value = \QUI\Utils\String::replaceDblSlashes( $value );
+        $value = String::replaceDblSlashes( $value );
 
         return $value;
     }
@@ -1069,34 +1160,46 @@ class DOM
             return '';
         }
 
-        $string  = '<p>';
-        $string .= '<select
+        $id      = $Select->getAttribute( 'conf' ) .'-'. time();
+        $dataQui = '';
+
+        if ( $Select->getAttribute( 'data-qui') ) {
+            $dataQui = ' data-qui="'. $Select->getAttribute( 'data-qui') .'"';
+        }
+
+        $select = '<select
             name="'. $Select->getAttribute( 'conf' ) .'"
+            id="'. $id .'"
+            '. $dataQui .'
         >';
 
         // Options
-        $Dom = new \DOMDocument();
+        $options = $Select->getElementsByTagName( 'option' );
 
-        foreach ( $Select->childNodes as $Child )
+        foreach ( $options as $Option )
         {
-            if ( $Dom->nodeName == 'text' ) {
-                continue;
-            }
+            $value = $Option->getAttribute( 'value' );
+            $html  = self::getTextFromNode( $Option );
 
-            $Dom->appendChild( $Dom->importNode( $Child, true ) );
+            $select .= '<option value="'. $value .'">'. $html .'</option>';
         }
 
-        $string .= $Dom->saveHtml();
-        $string .= '</select>';
+        $select .= '</select>';
 
-        $text = $Select->getElementsByTagName( 'text' );
 
-        if ( $text->length ) {
-            $string .= '<span>'. self::getTextFromNode( $text->item(0) ) .'</span>';
+        $text   = $Select->getElementsByTagName( 'text' );
+        $result = '<p>';
+
+        if ( $text->length )
+        {
+            $result .= '<label for="'. $id .'">'.
+                self::getTextFromNode( $text->item( 0 ) ) .
+            '</label>';
         }
 
-        $string .= '</p>';
+        $result .= $select;
+        $result .= '</p>';
 
-        return $string;
+        return $result;
     }
 }

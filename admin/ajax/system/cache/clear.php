@@ -15,14 +15,11 @@ function ajax_system_cache_clear($params)
         \QUI\Plugins\Manager::clearCache();
     }
 
-    if ( !isset($params['compile']) || $params['compile'] != 1 &&
-         !isset($params['plugins']) || $params['plugins'] != 1 )
+    if ( isset($params['complete']) || $params['complete'] == 1 )
     {
-        return;
+        \QUI\Cache\Manager::clearAll();
+        \QUI\Plugins\Manager::clearCache();
     }
-
-    \QUI\Cache\Manager::clearAll();
-    \QUI\Plugins\Manager::clearCache();
 }
 
 \QUI::$Ajax->register(

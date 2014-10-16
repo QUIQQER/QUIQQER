@@ -1,18 +1,14 @@
+
 /**
  * A media file
  *
+ * @module classes/projects/project/media/File
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires classes/projects/media/Item
- *
- * @module classes/projects/project/media/File
+ * @require classes/projects/media/Item
  */
 
-define('classes/projects/project/media/File', [
-
-    'classes/projects/project/media/Item'
-
-], function(MediaItem)
+define(['classes/projects/project/media/Item'], function(MediaItem)
 {
     "use strict";
 

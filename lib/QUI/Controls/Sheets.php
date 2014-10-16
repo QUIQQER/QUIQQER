@@ -42,9 +42,9 @@ class Sheets extends \QUI\Control
         $count   = $this->getAttribute( 'sheets' );
         $showmax = $this->getAttribute( 'showmax' );
 
-        $active  = 1;
-        $start   = 1;
-        $end     = $count;
+        $active = 1;
+        $start  = 1;
+        $end    = $count;
 
         if ( $showmax <= $count ) {
             $showmax = false;
@@ -71,11 +71,35 @@ class Sheets extends \QUI\Control
             $end = $count;
         }
 
+        $attributes = $this->getAttributes();
+        $params     = array();
+
+        foreach ( $attributes as $key => $value )
+        {
+            if ( $key == 'class' ) {
+                continue;
+            }
+
+            if ( $key == 'sheets' ) {
+                continue;
+            }
+
+            if ( $key == 'showmax' ) {
+                continue;
+            }
+
+
+            if ( is_string( $value ) || is_int( $value ) ) {
+                $params[ $key ] = $value;
+            }
+        }
+
         $Engine->assign(array(
-            'count'   => $count,
-            'start'   => $start,
-            'end'     => $end,
-            'active'  => $active,
+            'count'     => $count,
+            'start'     => $start,
+            'end'       => $end,
+            'active'    => $active,
+            'urlParams' => $params,
 
             'Site'    => $Site,
             'Project' => $Project

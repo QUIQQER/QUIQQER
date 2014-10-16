@@ -100,7 +100,7 @@ define([
                 'ajax_settings_window',
                 'ajax_settings_get'
 
-            ], function(result, config, Request)
+            ], function(result, config)
             {
                 var categories = result.categories || [],
                     buttons    = result.buttons || [];
@@ -244,11 +244,11 @@ define([
 
                             if ( self.getContent().get( 'html' ) == '' )
                             {
-                                self.$Control.inject( self.$Control );
+                                self.$Control.inject( Body );
 
                             } else
                             {
-                                self.$Control.import( self.$Control );
+                                self.$Control.import( Body );
                             }
 
                         } else
@@ -330,7 +330,13 @@ define([
 
                 tok = namespace.split( '.' );
 
-                this.$config[ tok[0] ][ tok[1] ] = values[ namespace ];
+                if ( typeof tok[0] !== 'undefined' &&
+                     typeof tok[1] !== 'undefined' &&
+                     typeof this.$config[ tok[0] ] !== 'undefined' &&
+                     typeof this.$config[ tok[0] ][ tok[1] ] !== 'undefined' )
+                {
+                    this.$config[ tok[0] ][ tok[1] ] = values[ namespace ];
+                }
             }
 
             if ( this.$Control )

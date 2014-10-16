@@ -51,7 +51,6 @@ define('controls/projects/project/Settings', [
             'save',
             'del',
             'openSettings',
-            'openMeta',
             'openBackup',
             'openWatersign'
         ],
@@ -68,12 +67,6 @@ define('controls/projects/project/Settings', [
             this.$Project = Projects.get(
                 this.getAttribute( 'project' )
             );
-
-            this.setAttributes({
-                name  : 'projects-panel',
-                icon  : 'icon-home',
-                title : this.getAttribute( 'project' )
-            });
 
             this.$config = {};
 
@@ -142,18 +135,6 @@ define('controls/projects/project/Settings', [
                 }
             });
 
-            this.addCategory({
-                name   : 'meta',
-                text   : Locale.get(
-                    'quiqqer/system',
-                    'projects.project.panel.settings.btn.meta'
-                ),
-                icon   : 'icon-inbox',
-                events : {
-                    onActive : this.openMeta
-                }
-            });
-
             Ajax.get('ajax_project_panel_categories_get', function(list)
             {
                 for ( var i = 0, len = list.length; i < len; i++) {
@@ -162,6 +143,12 @@ define('controls/projects/project/Settings', [
 
                 self.getProject().getConfig(function(result, Request)
                 {
+                    self.setAttributes({
+                        name  : 'projects-panel',
+                        icon  : 'icon-home',
+                        title : self.getProject().getName()
+                    });
+
                     self.$config = result;
                     self.getCategoryBar().firstChild().click();
                 });
@@ -332,42 +319,6 @@ define('controls/projects/project/Settings', [
         },
 
         /**
-         * Opens the Meta
-         *
-         * @method controls/projects/project/Settings#openMeta
-         */
-        openMeta : function(Plup)
-        {
-            this.Loader.show();
-
-            var self = this,
-                Body = this.getContent();
-
-            UtilsTemplate.get('project/meta', function(result)
-            {
-                Body.set( 'html', result );
-                Body.getElements('tr td:first-child').addClass( 'first' );
-
-                QUIFormUtils.setDataToForm(
-                    self.$config,
-                    Body.getElement( 'form' )
-                );
-
-                self.Loader.hide();
-            });
-
-            /*
-            Autor
-            Herausgeber
-            Copyright
-            Suchmaschinen Indizierung
-            Stichworte
-            Beschreibung
-            */
-
-        },
-
-        /**
          * Opens the Watermark
          *
          * @method controls/projects/project/Settings#openWatersign
@@ -461,7 +412,7 @@ define('controls/projects/project/Settings', [
                 name = Category.getAttribute( 'name' ),
                 file = Category.getAttribute( 'file' );
 
-            if ( name == 'settings' || name == 'meta' ) {
+            if ( name == 'settings' ) {
                 return;
             }
 

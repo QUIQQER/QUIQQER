@@ -1,3 +1,4 @@
+
 /**
  * OmniGrid Table Object
  *
@@ -5,6 +6,9 @@
  * Version: OmniGrid 1.2.6
  *
  * Complete rewrited by www.pcsg.de (Henning Leutz)
+ *
+ * @module controls/grid/Grid
+ * @author www.pcsg.de (Henning Leutz)
  *
  * @fires onClick
  * @fires onDblClick
@@ -27,23 +31,25 @@
  *
  * @licence: MIT licence
  *
- * @requires controls/Control
- *
- * @module controls/grid/Grid
-
- * @author www.pcsg.de (Henning Leutz)
+ * @require qui/controls/Control
+ * @require qui/controls/buttons/Button
+ * @require qui/controls/buttons/Seperator
+ * @require qui/utils/Controls
+ * @require css!controls/grid/Grid.css
  */
 
-define('controls/grid/Grid', [
+define([
 
     'qui/controls/Control',
     'qui/controls/buttons/Button',
     'qui/controls/buttons/Seperator',
+    'qui/controls/contextmenu/Menu',
+    'qui/controls/contextmenu/Item',
     'qui/utils/Controls',
 
     'css!controls/grid/Grid.css'
 
-], function(Control, QUIButton, QUISeperator, ControlUtils)
+], function(QUIControl, QUIButton, QUISeperator, QUIContextMenu, QUIContextItem, ControlUtils)
 {
     "use strict";
 
@@ -54,7 +60,7 @@ define('controls/grid/Grid', [
      */
     return new Class({
 
-        Extends : Control,
+        Extends : QUIControl,
         Type    : 'controls/grid/Grid',
 
         options : {
@@ -137,7 +143,9 @@ define('controls/grid/Grid', [
             this._stopdrag  = false;
             this._dragtimer = false;
             this._mousedown = false;
-            this.$data       = [];
+
+            this.$data = [];
+            this.$Menu = false;
 
             if ( !this.container ) {
                 return;
@@ -164,6 +172,7 @@ define('controls/grid/Grid', [
             });
 
             this.draw();
+            this.resize();
             this.reset();
             this.loadData();
         },
@@ -335,6 +344,40 @@ define('controls/grid/Grid', [
             }, t);
 
             t.altRow();
+        },
+
+        /**
+         * Resize the grid
+         */
+        resize : function()
+        {
+            var Container = this.container,
+                width     = Container.getSize().x,
+                buttons   = Container.getElements( '.tDiv button' );
+
+            var sumWidth = buttons.map(function(Button) {
+                return Button.getComputedSize().width;
+            }).sum() + ( buttons.length * 15 );
+
+
+            if ( sumWidth > width )
+            {
+                // hide buttons
+                buttons.setStyle( 'display', 'none' );
+
+                if ( this.$Menu ) {
+                    this.$Menu.show();
+                }
+
+            } else
+            {
+                // show buttons
+                buttons.setStyle( 'display', null );
+
+                if ( this.$Menu ) {
+                    this.$Menu.hide();
+                }
+            }
         },
 
         /**
@@ -1345,11 +1388,7 @@ define('controls/grid/Grid', [
             });
 
             var bDiv = container.getElement('.bDiv');
-            /*
-            var top = 1;
-                top += c.getElement('.tDiv') ? c.getElement('.tDiv').getSize().y : 0;
-                top += c.getElement('.hDiv') ? c.getElement('.hDiv').getSize().y : 0;
-            */
+
             gBlock.setStyles({
                 width  : this.getAttribute('width'),
                 height : this.getAttribute('height')-1,
@@ -2205,8 +2244,14 @@ define('controls/grid/Grid', [
 
                 container.appendChild( tDiv );
 
+                // button drop down
+                this.$Menu = new QUIButton({
+                    image        : 'icon-double-angle-down fa fa-angle-double-down',
+                    dropDownIcon : false
+                }).inject( tDiv );
+
                 var bt = this.getAttribute('buttons');
-                var cBt, fBt, spanBt, node;
+                var cBt, fBt, spanBt, node, Btn;
 
                 var func_fbOver = function() {
                     this.addClass('fbOver');
@@ -2226,53 +2271,65 @@ define('controls/grid/Grid', [
                         continue;
                     }
 
-                    bt[i].List     = this;
-                    bt[i].Grid     = this;
-                    bt[bt[i].name] = new QUIButton(bt[i]);
+                    bt[i].List = this;
+                    bt[i].Grid = this;
 
-                    node = bt[ bt[i].name ].create();
-                    node.removeProperty('tabindex'); // focus eigenschaft nehmen
+                    Btn = new QUIButton( bt[i] );
 
-                    //node.removeClass( 'qui-button' );
-                    //node.addClass( 'button' );
+                    bt[ bt[i].name ] = Btn;
+
+                    node = Btn.create();
+                    node.removeProperty( 'tabindex' ); // focus eigenschaft nehmen
                     node.addClass( 'btn-silver' );
-
                     node.inject( tDiv );
 
+                    var Item = new QUIContextItem({
+                        text    : Btn.getAttribute( 'text' ),
+                        icon    : Btn.getAttribute( 'image' ) || Btn.getAttribute( 'textimage' ),
+                        events  :
+                        {
+                            onClick : function() {
+                                this.click();
+                            }.bind( Btn )
+                        }
+                    });
 
-//
-//                    fBt = new Element('div', {
-//                        'class' : 'fbutton'
-//                    });
-//
-//                    tDiv.appendChild(fBt);
-//
-//                    if (bt[i].separator)
-//                    {
-//                        fBt.addClass('btnseparator');
-//                        continue;
-//                    }
-//
-//                    cBt = new Element('div', {
-//                        events :
-//                        {
-//                            click     : bt[i].onclick.bind(t, [bt[i].bclass, t]),
-//                            mouseover : func_fbOver,
-//                            mouseout  : func_fbOut
-//                        }
-//                    });
-//
-//                    fBt.appendChild( cBt );
-//
-//                    spanBt = new Element('span', {
-//                        'html'  : bt[i].name,
-//                        'class' : bt[i].bclass,
-//                        styles  : {
-//                            'padding-left' : 20
-//                        }
-//                    });
-//
-//                    cBt.appendChild( spanBt );
+                    Btn.addEvents({
+                        onDisable : function() {
+                            this.disable();
+                        }.bind( Item ),
+
+                        onNormalize : function() {
+                            this.enable();
+                        }.bind( Item ),
+
+                        onEnable : function() {
+                            this.enable();
+                        }.bind( Item ),
+
+                        onSetAttribute : function(key, value)
+                        {
+                            if ( key === 'text' )
+                            {
+                                this.setAttribute( key, value );
+                                return;
+                            }
+
+                            if ( key === 'image' || key === 'textimage' )
+                            {
+                                this.setAttribute( 'icon', value );
+                                return;
+                            }
+
+                        }.bind( Item )
+                    });
+
+                    // context menu
+                    this.$Menu.appendChild( Item );
+
+                    if ( Btn.isDisabled() ) {
+                        Item.disable();
+                    }
                 }
             }
 

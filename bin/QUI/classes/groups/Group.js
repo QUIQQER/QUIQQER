@@ -2,20 +2,19 @@
 /**
  * Group (Model)
  *
+ * @module classes/groups/Group
  * @author www.pcsg.de (Henning Leutz)
  *
  * @require qui/classes/DOM
  * @require Ajax
  * @require qui/utils/Object
  *
- * @module classes/groups/Group
- *
  * @event onRefresh [ {classes/groups/Group} ]
  * @event onActivate [ {classes/groups/Group} ]
  * @event onDeactivate [ {classes/groups/Group} ]
  */
 
-define('classes/groups/Group', [
+define([
 
     'qui/classes/DOM',
     'Ajax',

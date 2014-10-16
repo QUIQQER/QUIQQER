@@ -65,7 +65,7 @@ define('controls/menu/Manager', [
          */
         isLoaded : function()
         {
-            return self.$isLoaded;
+            return this.$isLoaded;
         },
 
         /**

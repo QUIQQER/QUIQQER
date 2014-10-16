@@ -17,3 +17,38 @@
     width: 100%;
     height: 120px;
 }
+
+.site-date input[name="c_date"],
+.site-date input[name="c_user_ip"],
+.site-date input[name="e_date"],
+.site-date input[name="e_user_ip"] {
+    width: 150px !important;
+}
+
+
+/** site settings
+ * ====================================== */
+
+.qui-site-data .data-table p {
+    width: 100%;
+}
+
+.qui-site-data .data-table p label {
+    width: 20%;
+}
+
+.qui-site-data .data-table input,
+.qui-site-data .data-table select,
+.qui-site-data .data-table textarea {
+    max-width: 100%;
+    width: 300px;
+}
+
+.qui-site-data .data-table input[type="checkbox"],
+.qui-site-data .data-table input[type="radio"] {
+    width: 20px;
+}
+
+.qui-site-data .data-table textarea {
+    min-height: 100px;
+}

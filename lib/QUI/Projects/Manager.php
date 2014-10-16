@@ -7,7 +7,8 @@
 namespace QUI\Projects;
 
 use QUI\Rights\Permission;
-use QUI\Utils\Security\Orthos as Orthos;
+use QUI\Utils\Security\Orthos;
+use QUI\Utils\DOM;
 
 
 /**
@@ -59,7 +60,7 @@ class Manager
     {
         $Project = self::getProject( $project );
 
-        \QUI\Rights\Permission::checkProjectPermission(
+        Permission::checkProjectPermission(
             'quiqqer.projects.setconfig',
             $Project
         );
@@ -102,7 +103,6 @@ class Manager
         $langs = array_unique( $langs );
 
         $config['langs'] = implode( ',', $langs );
-
 
         $Config->setSection( $project, $config );
         $Config->save();
@@ -162,12 +162,6 @@ class Manager
             "admin_mail"   => "support@pcsg.de",
             "template"     => "",
             "image_text"   => "0",
-            "keywords"     => "",
-            "description"  => "",
-            "robots"       => "index",
-            "author"       => "",
-            "publisher"    => "",
-            "copyright"    => "",
             "standard"     => "1"
         );
 
@@ -184,7 +178,7 @@ class Manager
             for ( $i = 0, $len = $settingsList->length; $i < $len; $i++ )
             {
                 $Settings = $settingsList->item( $i );
-                $sections = \QUI\Utils\DOM::getConfigParamsFromDOM( $Settings );
+                $sections = DOM::getConfigParamsFromDOM( $Settings );
 
                 $settingsName = $Settings->getAttribute('name');
 
@@ -196,7 +190,7 @@ class Manager
                 {
                     foreach ( $entry as $key => $param )
                     {
-                        $config[ $section .'.'. $key ] = '';
+                        $config[ $settingsName . $section .'.'. $key ] = '';
 
                         if ( isset( $param[ 'default' ] ) ) {
                             $config[ $settingsName . $section .'.'. $key ] = $param[ 'default' ];
@@ -205,6 +199,7 @@ class Manager
                 }
             }
         }
+
 
         \QUI\Cache\Manager::set( $cache, $config );
 
@@ -406,7 +401,7 @@ class Manager
      */
     static function createProject($name, $lang, $template=false)
     {
-        \QUI\Rights\Permission::checkPermission(
+        Permission::checkPermission(
             'quiqqer.projects.create'
         );
 
@@ -619,7 +614,7 @@ class Manager
      */
     static function deleteProject(\QUI\Projects\Project $Project)
     {
-        \QUI\Rights\Permission::checkProjectPermission(
+        Permission::checkProjectPermission(
             'quiqqer.projects.destroy',
              $Project
         );

@@ -6,6 +6,10 @@
 
 namespace QUI\Projects\Media;
 
+use \QUI\Projects\Media\Utils as MediaUtils;
+use \QUI\Utils\System\File as FileUtils;
+use \QUI\Utils\String as StringUtils;
+
 /**
  * A media folder
  *
@@ -100,6 +104,15 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
      */
     public function delete()
     {
+        if ( $this->isDeleted() ) {
+            throw new \QUI\Exception( 'Folder is already deleted', 400 );
+        }
+
+        if ( $this->getId() == 1 ) {
+            throw new \QUI\Exception( 'Root cannot deleted', 400 );
+        }
+
+
         $children = $this->_getAllRecursiveChildrenIds();
 
         // move files to the temp folder
@@ -110,7 +123,7 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
             {
                 $File = $this->_Media->get( $id );
 
-                if ( \QUI\Projects\Media\Utils::isFolder( $File ) === false ) {
+                if ( MediaUtils::isFolder( $File ) === false ) {
                     $File->delete();
                 }
 
@@ -129,7 +142,7 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
             {
                 $File = $this->_Media->get( $id );
 
-                if ( \QUI\Projects\Media\Utils::isFolder( $File ) === false ) {
+                if ( MediaUtils::isFolder( $File ) === false ) {
                     continue;
                 }
 
@@ -162,7 +175,7 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
             array('child'  => $this->getId())
         );
 
-        \QUI\Utils\System\File::unlink( $this->getFullPath() );
+        FileUtils::unlink( $this->getFullPath() );
 
 
         // delete cache
@@ -212,6 +225,13 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
             return;
         }
 
+        if ( $this->getId() == 1 )
+        {
+            throw new \QUI\Exception(
+                'Der Media-Root-Verzeichnis eines Projektes kann nicht umbenannt werden'
+            );
+        }
+
         // check if a folder with the new name exist
         $Parent = $this->getParent();
 
@@ -223,8 +243,12 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
         }
 
         $PDO      = \QUI::getDataBase()->getPDO();
-        $old_path = $this->getPath();
-        $new_path = $Parent->getPath() . $newname;
+        $old_path = $this->getPath() .'/';
+        $new_path = $Parent->getPath() .'/'. $newname;
+
+        $new_path = StringUtils::replaceDblSlashes( $new_path );
+        $old_path = StringUtils::replaceDblSlashes( $old_path );
+
 
         // update children paths
         $Statement = $PDO->prepare(
@@ -250,13 +274,13 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
             $this->_Media->getTable(),
             array(
                 'name'  => $newname,
-                'file'  => $new_path,
+                'file'  => StringUtils::replaceDblSlashes( $new_path .'/' ),
                 'title' => $title
             ),
             array('id' => $this->getId())
         );
 
-        \QUI\Utils\System\File::move(
+        FileUtils::move(
             $this->_Media->getFullPath() . $old_path,
             $this->_Media->getFullPath() . $new_path
         );
@@ -294,8 +318,8 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
         $old_path = $this->getPath();
         $new_path = $Folder->getPath() .'/'. $this->getAttribute('name');
 
-        $old_path = \QUI\Utils\String::replaceDblSlashes( $old_path );
-        $new_path = \QUI\Utils\String::replaceDblSlashes( $new_path );
+        $old_path = StringUtils::replaceDblSlashes( $old_path );
+        $new_path = StringUtils::replaceDblSlashes( $new_path );
 
 
         // update children paths
@@ -332,7 +356,7 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
             )
         );
 
-        \QUI\Utils\System\File::move(
+        FileUtils::move(
             $this->_Media->getFullPath() . $old_path,
             $this->_Media->getFullPath() . $new_path
         );
@@ -662,7 +686,7 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
 
         $cache_dir = CMS_DIR . $this->_Media->getCacheDir() . $this->getAttribute('file');
 
-        if ( \QUI\Utils\System\File::mkdir($cache_dir) ) {
+        if ( FileUtils::mkdir($cache_dir) ) {
             return true;
         }
 
@@ -678,7 +702,7 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
      */
     public function deleteCache()
     {
-        \QUI\Utils\System\File::unlink(
+        FileUtils::unlink(
             $this->_Media->getAttribute('cache_dir') . $this->getAttribute('file')
         );
 
@@ -695,7 +719,7 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
     public function createFolder($foldername)
     {
         // Namensprüfung wegen unerlaubten Zeichen
-        \QUI\Projects\Media\Utils::checkFolderName( $foldername );
+        MediaUtils::checkFolderName( $foldername );
 
         // Whitespaces am Anfang und am Ende rausnehmen
         $new_name = trim( $foldername );
@@ -727,7 +751,7 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
             }
         }
 
-        \QUI\Utils\System\File::mkdir( $dir . $new_name );
+        FileUtils::mkdir( $dir . $new_name );
 
         $table     = $this->_Media->getTable();
         $table_rel = $this->_Media->getTable('relations');
@@ -785,13 +809,13 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
             return $this->_uploadFolder( $file );
         }
 
-        $fileinfo = \QUI\Utils\System\File::getInfo( $file );
-        $filename = \QUI\Projects\Media\Utils::stripMediaName( $fileinfo['basename'] );
+        $fileinfo = FileUtils::getInfo( $file );
+        $filename = MediaUtils::stripMediaName( $fileinfo['basename'] );
 
         // if no ending, we search for one
         if ( !isset( $fileinfo['extension'] ) || empty( $fileinfo['extension'] ) )
         {
-            $filename .= \QUI\Utils\System\File::getExtensionByMimeType(
+            $filename .= FileUtils::getExtensionByMimeType(
                 $fileinfo['mime_type']
             );
         }
@@ -803,7 +827,7 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
         }
 
         // copy the file to the media
-        \QUI\Utils\System\File::copy( $file, $new_file );
+        FileUtils::copy( $file, $new_file );
 
 
         // create the database entry
@@ -811,19 +835,27 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
         $table     = $this->_Media->getTable();
         $table_rel = $this->_Media->getTable( 'relations' );
 
-        $new_file_info = \QUI\Utils\System\File::getInfo( $new_file );
+        $new_file_info = FileUtils::getInfo( $new_file );
         $title         = str_replace( '_', ' ', $new_file_info['filename'] );
 
         if ( empty( $new_file_info['filename'] ) ) {
             $new_file_info['filename'] = time();
         }
 
+        $filePath = $this->getAttribute('file') .'/'. $new_file_info['basename'];
+
+        if ( $this->getId() == 1 ) {
+            $filePath = $new_file_info['basename'];
+        }
+
+        $filePath = StringUtils::replaceDblSlashes( $filePath );
+
 
         \QUI::getDataBase()->insert($table, array(
             'name' 	    => $new_file_info['filename'],
             'title'     => $title,
             'short'     => $title,
-            'file' 	    => $this->getAttribute('file') .'/'. $new_file_info['basename'],
+            'file' 	    => $filePath,
             'alt' 	    => $title,
             'c_date'    => date('Y-m-d h:i:s'),
             'e_date'    => date('Y-m-d h:i:s'),
@@ -831,7 +863,7 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
             'e_user'    => $User->getId(),
             'mime_type' => $new_file_info['mime_type'],
 
-            'type' => \QUI\Projects\Media\Utils::getMediaTypeByMimeType(
+            'type' => MediaUtils::getMediaTypeByMimeType(
                 $new_file_info['mime_type']
             ),
 
@@ -864,14 +896,14 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
      */
     protected function _uploadFolder($path, $Folder=false)
     {
-        $files = \QUI\Utils\System\File::readDir( $path );
+        $files = FileUtils::readDir( $path );
 
         foreach ( $files as $file )
         {
             // subfolders
             if ( is_dir( $path .'/'. $file ) )
             {
-                $foldername = \QUI\Projects\Media\Utils::stripFolderName( $file );
+                $foldername = MediaUtils::stripFolderName( $file );
 
                 try
                 {

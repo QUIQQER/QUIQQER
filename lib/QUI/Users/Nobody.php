@@ -93,7 +93,7 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
      * (non-PHPdoc)
      * @see \QUI\Interfaces\Users\User::disable()
      */
-    public function disable() {
+    public function disable($ParentUser=false) {
         return false;
     }
 

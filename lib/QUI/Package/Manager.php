@@ -32,6 +32,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 
 use \QUI\Utils\XML as XML;
+use Composer\Package\Package;
 
 /**
  * Package Manager for the QUIQQER System
@@ -89,6 +90,18 @@ class Manager
     protected $_require = array();
 
     /**
+     * QUIQQER Version ->getVersion()
+     * @var String
+     */
+    protected $_version = null;
+
+    /**
+     * List of packages objects
+     * @var Array
+     */
+    protected $_packages = array();
+
+    /**
      * Composer Application
      * @var Application
      */
@@ -141,6 +154,10 @@ class Manager
      */
     public function getVersion()
     {
+        if ( $this->_version ) {
+            return $this->_version;
+        }
+
         if ( !file_exists( $this->_composer_json ) ) {
             return '';
         }
@@ -148,7 +165,16 @@ class Manager
         $data = file_get_contents( $this->_composer_json );
         $data = json_decode( $data, true );
 
-        return $data['version'];
+        if ( isset( $data['require']['quiqqer/quiqqer'] ) )
+        {
+            $this->_version = $data['require']['quiqqer/quiqqer'];
+
+        } else
+        {
+            $this->_version = $data['version'];
+        }
+
+        return $this->_version;
     }
 
     /**
@@ -215,16 +241,10 @@ class Manager
         // standard require
         $list = $this->_getList();
 
-        $quiqqerVersion = '1.*';
-
-        if ( \QUI::conf( 'globals', 'quiqqer_version' ) ) {
-            $quiqqerVersion = \QUI::conf( 'globals', 'quiqqer_version' );
-        }
-
         // must have
         $require = array();
         $require["php"]                     = ">=5.3.2";
-        $require["quiqqer/quiqqer"]         = $quiqqerVersion;
+        $require["quiqqer/quiqqer"]         = "dev-master";
         $require["tedivm/stash"]            = "0.11.*";
         $require["symfony/http-foundation"] = "*";
         $require["composer/composer"]       = "1.0.*@dev";
@@ -443,6 +463,22 @@ class Manager
     }
 
     /**
+     * Return a package object
+     *
+     * @param String $package - name of the package
+     * @return \QUI\Package\Package
+     * @throws \QUI\Exception
+     */
+    public function getInstalledPackage($package)
+    {
+        if ( !isset( $this->_packages[ $package ] ) ) {
+            $this->_packages[ $package ] = new \QUI\Package\Package( $package );
+        }
+
+        return $this->_packages[ $package ];
+    }
+
+    /**
      * Install Package
      *
      * @param String $package - name of the package
@@ -477,17 +513,40 @@ class Manager
             $version = 'dev-master';
         }
 
-        $json = $this->_getComposerJSON();
+        $json    = $this->_getComposerJSON();
+        $quiqqer = false;
 
         if ( is_array( $package ) )
         {
-            foreach ( $package as $pkg ) {
+            foreach ( $package as $pkg )
+            {
                 $json['require'][ $pkg ] = $version;
+
+                if ( $pkg == 'quiqer/quiqqer' ) {
+                    $quiqqer = true;
+                }
             }
+
         } else
         {
             $json['require'][ $package ] = $version;
+
+            if ( $package == 'quiqer/quiqqer' ) {
+                $quiqqer = true;
+            }
         }
+
+
+        // minimum-stability
+        if ( $quiqqer && $version == 'dev-dev' )
+        {
+            $json['minimum-stability'] = 'dev';
+
+        } else if ( $quiqqer )
+        {
+            $json['minimum-stability'] = 'stable';
+        }
+
 
         $json = json_encode( $json, \JSON_PRETTY_PRINT );
 
@@ -500,6 +559,7 @@ class Manager
 
     /**
      * Return the params of an installed package
+     * Makes dependencies requests. If you want the Package Object, you should use getInstalledPackage
      *
      * @param String $package
      * @return Array
@@ -1127,12 +1187,13 @@ class Manager
     /**
      * Execute a composer command
      *
-     * @param String $command
-     * @param Array $params
+     * @param String $command - composer command
+     * @param Array $params - composer argument params
+     * @param Bool $showInfo - standard = false; shows messages with <info> or not
      */
     protected function _execComposer($command, $params=array(), $showInfo=false)
     {
-        // composer output some warnings that composer/cache is not empty
+        // composer output, some warnings that composer/cache is not empty
         try
         {
             \QUI::getTemp()->moveToTemp( $this->_vardir .'cache' );

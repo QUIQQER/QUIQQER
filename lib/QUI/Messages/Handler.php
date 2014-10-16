@@ -38,6 +38,14 @@ class Handler
     }
 
     /**
+     * Clears the current message list
+     */
+    static function clear()
+    {
+        $this->_messages = array();
+    }
+
+    /**
      * Return all new messages for an user and delete it in the queue
      *
      * @param \QUI\Users\User|\QUI\Users\Nobody $User

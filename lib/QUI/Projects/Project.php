@@ -440,7 +440,7 @@ class Project
             if ( $params['project'] == $this->getAttribute('name') &&
                  $params['lang'] == $this->getAttribute('lang') )
             {
-                if ( $ssl && isset( $params['httpshost'] ) ) {
+                if ( $ssl && isset( $params['httpshost'] ) && !empty( $params['httpshost'] ) ) {
                     return $with_protocol ? 'https://'. $params['httpshost'] : $params['httpshost'];
                 }
 
@@ -1082,7 +1082,7 @@ class Project
         {
             // Falls kein Query dann alle Seiten hohlen
             // @notice - Kann performancefressend sein
-            return \QUI::getDB()->select(array(
+            return \QUI::getDataBase()->fetch(array(
                 'select' => 'id',
                 'from'   => $this->getAttribute('db_table')
             ));
@@ -1161,7 +1161,7 @@ class Project
             $sql['where_relation'] = $params['where_relation'];
         }
 
-        return \QUI::getDB()->select($sql);
+        return \QUI::getDataBase()->fetch($sql);
     }
 
     /**
@@ -1330,23 +1330,23 @@ class Project
             $table = QUI_DB_PRFX . $this->_name .'_'. $lang .'_sites';
 
             $Table->appendFields($table, array(
-                'id'          => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY',
-                'name'        => 'varchar(200) NOT NULL',
-                'title'       => 'tinytext',
-                'short'       => 'text',
-                'content'     => 'longtext',
-                'type'        => 'varchar(200) default NULL',
-                'active'      => 'tinyint(1) NOT NULL',
-                'deleted'     => 'tinyint(1) NOT NULL',
-                'c_date'      => 'timestamp NULL default NULL',
-                'e_date'      => 'timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP',
-                'c_user'      => 'int(11) default NULL',
-                'e_user'      => 'int(11) default NULL',
-                'nav_hide'    => 'tinyint(1) NOT NULL',
-                'order_type'  => 'varchar(100) default NULL',
-                'order_field' => 'bigint(20) default NULL',
-                'extra'       => 'text NULL',
-                'c_user_ip'   => 'varchar(40)',
+                'id'            => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY',
+                'name'          => 'varchar(200) NOT NULL',
+                'title'         => 'tinytext',
+                'short'         => 'text',
+                'content'       => 'longtext',
+                'type'          => 'varchar(200) default NULL',
+                'active'        => 'tinyint(1) NOT NULL',
+                'deleted'       => 'tinyint(1) NOT NULL',
+                'c_date'        => 'timestamp NULL default NULL',
+                'e_date'        => 'timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP',
+                'c_user'        => 'int(11) default NULL',
+                'e_user'        => 'int(11) default NULL',
+                'nav_hide'      => 'tinyint(1) NOT NULL',
+                'order_type'    => 'varchar(100) default NULL',
+                'order_field'   => 'bigint(20) default NULL',
+                'extra'         => 'text NULL',
+                'c_user_ip'     => 'varchar(40)',
                 'image_emotion' => 'text',
                 'image_site'    => 'text',
                 'release_from'  => 'timestamp NULL default NULL',

@@ -1,0 +1,39 @@
+
+<form method="POST" action="">
+
+    {if $this->getAttribute('labels')}
+    <label for="qui-contact-name">
+        {locale group="quiqqer/system" value="control.contact.name"}
+    </label>
+    {/if}
+    <input type="text"
+        name="name"
+        id="qui-contact-name"
+        required="required"
+        placeholder="{locale group="quiqqer/system" value="control.contact.name.placeholder"}"
+    />
+
+    {if $this->getAttribute('labels')}
+    <label for="qui-contact-email">
+        {locale group="quiqqer/system" value="control.contact.email"}
+    </label>
+    {/if}
+    <input type="email"
+        name="email"
+        id="qui-contact-email"
+        required="required"
+        placeholder="{locale group="quiqqer/system" value="control.contact.email.placeholder"}"
+    />
+
+    {if $this->getAttribute('labels')}
+    <label for="qui-contact-message">
+        {locale group="quiqqer/system" value="control.contact.message"}
+    </label>
+    {/if}
+    <textarea name="message"
+        id="qui-contact-message"
+        required="required"
+        placeholder="{locale group="quiqqer/system" value="control.contact.message.placeholder"}"
+    ></textarea>
+
+</form>

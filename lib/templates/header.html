@@ -2,33 +2,33 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
     {if $Template->getAttribute('html5') === false}
-    <meta http-equiv="content-language" content="{$Project->getAttribute('lang')}" />
+    <meta http-equiv="content-language" content="{$Project->getlang()}" />
     <meta name="page-topic" content="{$Site->getAttribute('title')|escape:"html"}" />
 
     <meta name="date" content="{$Site->getAttribute('e_date')}" />
-    <meta name="lang" content="{$Project->getAttribute('lang')}" />
-    <meta name="copyright" content="{$Project->getConfig('copyright')}" />
-    <meta name="publisher" content="{$Project->getConfig('publisher')}" />
+    <meta name="lang" content="{$Project->getLang()}" />
+    <meta name="copyright" content="{$Project->getConfig('meta.copyright')}" />
+    <meta name="publisher" content="{$Project->getConfig('meta.publisher')}" />
     {/if}
 
-    <meta name="description" content="{if $Site->getAttribute('pcsg.base.description')}{$Site->getAttribute('pcsg.base.description')|escape:"html"}{else}{$Project->getConfig('description')|escape:"html"}{/if}" />
-    <meta name="keywords" content="{if $Site->getAttribute('pcsg.base.keywords')}{$Site->getAttribute('pcsg.base.keywords')|escape:"html"}{else}{$Project->getConfig('keywords')|escape:"html"}{/if}" />
-
+    <meta name="description" content="{$Site->getAttribute('meta.description')|escape:"html"}" />
+    <meta name="keywords" content="{$Site->getAttribute('meta.keywords')|escape:"html"}" />
     {if $Locale->no_translation}
-        <meta name="robots" content="noindex" />
+    <meta name="robots" content="noindex" />
     {else}
-        <meta name="robots" content="{if $Site->getAttribute('pcsg.base.robots')}{$Site->getAttribute('pcsg.base.robots')}{else}{$Project->getConfig('robots')}{/if}" />
+    <meta name="robots" content="{$Site->getAttribute('meta.robots')}" />
     {/if}
 
     <meta name="generator" content="{$smarty.const.GENERATOR}" />
-    <meta name="author" content="{$Project->getConfig('author')}" />
-    <meta name="revisit-after" content="2 days" />
+    <meta name="author" content="{$Site->getAttribute('meta.author')}" />
+    <meta name="revisit-after" content="{$Site->getAttribute('meta.revisit')}" />
     <!-- [end] meta -->
 
     <script type="text/javascript">
         var URL_DIR          = '{$URL_DIR}';
             URL_OPT_DIR      = '{$URL_OPT_DIR}',
             URL_BIN_DIR      = '{$URL_BIN_DIR}',
+            URL_LIB_DIR      = '{$URL_LIB_DIR}';
             URL_VAR_DIR      = '{$URL_VAR_DIR}',
             URL_PROJECT_DIR  = '{$URL_USR_DIR}{$Project->getName()}/',
             URL_TEMPLATE_DIR = '{$URL_OPT_DIR}{$Project->getAttribute('template')}/';
@@ -45,7 +45,12 @@
         };
 
         var QUIQQER_ONLOAD_MODULES = {$loadModuleFiles|json_encode:true},
-            QUIQQER_LOCALE         = {$localeFiles|json_encode:true}
+            QUIQQER_LOCALE         = {$localeFiles|json_encode:true};
+
+        {if "LOGIN_FAILED"|defined}
+        var QUIQQER_LOGIN_FAILED = "{locale group="quiqqer/system" value="exception.login.fail"}";
+        {/if}
+
     </script>
 
     {if $Template->getAttribute('mootools')}
@@ -62,9 +67,14 @@
             require.config({
                 baseUrl : URL_DIR,
                 paths   : {
-                    "package" : URL_OPT_DIR +'bin/',
-                    "locale"  : URL_VAR_DIR +'locale/bin',
-                    "qui"     : URL_OPT_DIR +'bin/qui/build/qui',
+                    "package"   : URL_OPT_DIR,
+                    "locale"    : URL_VAR_DIR +'locale/bin',
+                    "qui"       : URL_OPT_DIR +'bin/qui/qui',
+                    "Controls"  : URL_BIN_DIR +'Controls',
+                    "classes"   : URL_BIN_DIR +'QUI/classes',
+                    "controls"  : URL_BIN_DIR +'QUI/controls',
+                    "utils"     : URL_BIN_DIR +'QUI/utils',
+                    "polyfills" : URL_BIN_DIR +'QUI/polyfills'
                 },
                 waitSeconds : 0,
                 locale      : QUIQQER_USER.lang +"-"+ QUIQQER_USER.lang,
@@ -79,14 +89,14 @@
         </script>
     {/if}
 
+    <!-- picture fill polyfill -->
+    <script>
+        require(['polyfills/picturefill.min']);
+    </script>
 
-    {assign var=canonical value=false}
-    {capture assign=_url}{$smarty.const.HOST}{$smarty.const.URL_DIR}{if isset($smarty.request._url)}{$smarty.request._url}{/if}{/capture}
+    <!-- canonical -->
+    {$Canonical->output()}
 
-    {* @todo nicht original url mit parameter beachten *}
-    {if $Site->getId() != 1 && $_url && $_url != $Site->getCanonical() && empty($smarty.get)}
-        <link rel="canonical" href="{$Site->getCanonical()}" />
-    {/if}
 
     {if $Template->getAttribute('rel_next')}
         <link rel="next" href="{url site=$Smarty->getHeaderAttribute('rel_next')}" />
@@ -109,7 +119,7 @@
 
     <title>
         {$Template->getAttribute('site_title_prefix')}
-        {$Site->getAttribute('pcsg.base.seotitle')|escape:"html"}
+        {$Site->getAttribute('meta.seotitle')|escape:"html"}
         {$Template->getAttribute('site_title_suffix')}
         {$Template->getAttribute('site_title')}
     </title>

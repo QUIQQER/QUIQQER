@@ -73,6 +73,20 @@ class Manager
     }
 
     /**
+     * Delete a workspace
+     *
+     * @param Integer $id - Workspace ID
+     * @param \QUI\Users\User $User - User of the Workspace
+     */
+    static function deleteWorkspace($id, $User)
+    {
+        \QUI::getDataBase()->delete(self::Table(), array(
+            'uid' => $User->getId(),
+            'id'  => (int)$id
+        ));
+    }
+
+    /**
      * Return the workspaces list from an user
      *
      * @param \QUI\Users\User $User
@@ -208,5 +222,39 @@ class Manager
                 'uid' => $User->getId()
             )
         );
+    }
+
+    /**
+     * Return the available panels
+     *
+     * @return Array
+     */
+    static function getAvailablePanels()
+    {
+        $cache = 'quiqqer/panels/list';
+
+        try
+        {
+            return \QUI\Cache\Manager::get( $cache );
+
+        } catch ( \QUI\Exception $Exception )
+        {
+
+        }
+
+        $panels   = array();
+        $xmlFiles = array( SYS_DIR .'panels.xml' );
+
+        foreach ( $xmlFiles as $file )
+        {
+            $panels = array_merge(
+                $panels,
+                \QUI\Utils\XML::getPanelsFromXMLFile( $file )
+            );
+        }
+
+        \QUI\Cache\Manager::set( $cache, $panels );
+
+        return $panels;
     }
 }

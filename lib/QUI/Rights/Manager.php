@@ -728,6 +728,28 @@ class Manager
     }
 
     /**
+     * Remove all permissions from the site
+     *
+     * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit|\QUI\Projects\Site\OnlyDB $Site
+     */
+    public function removeSitePermissions($Site)
+    {
+        // @todo check rights?
+
+        $Project = $Site->getProject();
+        $table   = \QUI::getDBTableName( self::TABLE );
+
+        \QUI::getDataBase()->delete(
+            $table .'2sites',
+            array(
+                'project' => $Project->getName(),
+                'lang'    => $Project->getLang(),
+                'id'      => $Site->getId()
+            )
+        );
+    }
+
+    /**
      * Set the permissions for a project object
      *
      * @param \QUI\Projects\Project $Project

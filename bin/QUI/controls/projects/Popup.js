@@ -8,7 +8,7 @@
  * @module controls/projects/Popup
  */
 
-define('controls/projects/Popup', [
+define([
 
     'qui/controls/windows/Confirm',
     'qui/controls/buttons/Select',

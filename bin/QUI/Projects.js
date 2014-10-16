@@ -1,20 +1,14 @@
+
 /**
  * Global projects manager
  *
- * @author www.pcsg.de (Henning Leutz)
- *
  * @module Projects
+ * @author www.pcsg.de (Henning Leutz)
  */
 
-define('Projects', ['classes/projects/Manager'], function(Projects)
+define(['classes/projects/Manager'], function(Manager)
 {
     "use strict";
 
-    if ( typeof QUI.Projects !== 'undefined' ) {
-        return QUI.Projects;
-    }
-
-    QUI.Projects = new Projects();
-
-    return QUI.Projects;
+    return new Manager();
 });

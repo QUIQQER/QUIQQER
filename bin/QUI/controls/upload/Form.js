@@ -4,8 +4,10 @@
  * the control creates a upload formular
  * the formular sends the selected file to the upload manager
  *
+ * @module controls/upload/Form
  * @author www.pcsg.de (Henning Leutz)
  *
+ * @fires onAdd [this, File]
  * @fires onBegin [this]
  * @fires onComplete [this]
  * @fires onSubmit [Array, this]
@@ -15,19 +17,17 @@
  * @fires onDragend [event, DOMNode, controls/upload/Form]
  * @fires onDrop [event, files, Elm, Upload]
  *
- * @requires qui/QUI
- * @requires qui/controls/Control
- * @requires qui/controls/utils/Progressbar
- * @requires qui/controls/buttons/Button
- * @requires utils/Media
- * @requires classes/request/Upload
- * @requires Locale
- *
- * @module controls/upload/Form
- * @class controls/upload/Form
+ * @require qui/QUI
+ * @require qui/controls/Control
+ * @require qui/controls/utils/Progressbar
+ * @require qui/controls/buttons/Button
+ * @require utils/Media
+ * @require classes/request/Upload
+ * @require Locale
+ * @require css!controls/upload/Form.css
  */
 
-define('controls/upload/Form', [
+define([
 
     'qui/QUI',
     'qui/controls/Control',
@@ -181,7 +181,9 @@ define('controls/upload/Form', [
         {
             var self = this;
 
-            this.$Elm = new Element( 'div' );
+            this.$Elm = new Element( 'div', {
+                'class' : 'controls-upload-form'
+            });
 
             this.$Frame = new Element('iframe', {
                 name   : 'upload'+ this.getId(),
@@ -253,7 +255,7 @@ define('controls/upload/Form', [
                     },
 
                     styles : {
-                        clear : 'both',
+                        clear     : 'both',
                         marginTop : '20px'
                     }
                 }).inject( this.$Elm );
@@ -324,8 +326,12 @@ define('controls/upload/Form', [
                             Input    = Container.getElement( 'input[type="file"]' ),
                             id       = Slick.uidOf( Input );
 
-                        FileInfo.setStyle( 'background-image', '' );
-                        FileInfo.set(' html', '' );
+                        FileInfo.set({
+                            html : '',
+                            styles : {
+                                backgroundImage : null
+                            }
+                        });
 
                         Input.setStyle( 'display', 'inline' );
 
@@ -357,6 +363,7 @@ define('controls/upload/Form', [
                     }
 
                 }).inject( Container, 'top' );
+
             } else
             {
                 // placeholder
@@ -412,12 +419,15 @@ define('controls/upload/Form', [
                 FileInfo  = Container.getElement( '.qui-form-fileinfo' );
 
             FileInfo.set( 'html', File.name );
+
             FileInfo.setStyle(
                 'background-image',
                 'url('+ MediaUtils.getIconByMimeType( File.type ) +')'
             );
 
-            Input.setStyle('display', 'none');
+            this.fireEvent( 'add', [ self, File ] );
+
+            Input.setStyle( 'display', 'none' );
         },
 
         /**

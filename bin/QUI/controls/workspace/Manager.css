@@ -5,3 +5,51 @@
     height: 100%;
     width: 100%;
 }
+
+.qui-workspace-manager-window label {
+    cursor: pointer;
+    width: 100px !important;
+}
+
+.qui-workspace-manager-window input {
+    width: 100%;
+}
+
+.qui-workspace-manager-window td:first-child {
+    padding-top: 15px;
+    width: 100px;
+}
+
+/** window - panel liste
+ * ===================================================== */
+
+.qui-controls-workspace-panelList-panel {
+    border-bottom: 1px solid #ddd;
+    clear: both;
+    cursor: pointer;
+    float: left;
+    padding: 20px;
+    width: 100%;
+}
+
+.qui-controls-workspace-panelList-panel:hover {
+    border-bottom: 1px solid #2F8FC6;
+    background: #2F8FC6;
+    color: #FFF;
+}
+
+.qui-controls-workspace-panelList-panel h2 {
+    font-size: 18px;
+    margin: 0 0 10px 0;
+}
+
+.qui-controls-workspace-panelList-panel p {
+    clear: none;
+}
+
+.qui-controls-workspace-panelList-panel-icon {
+    float: left;
+    font-size: 48px;
+    margin-right: 10px;
+    width: 62px;
+}

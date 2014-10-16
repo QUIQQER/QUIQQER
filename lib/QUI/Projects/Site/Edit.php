@@ -6,6 +6,8 @@
 
 namespace QUI\Projects\Site;
 
+use \QUI\Utils\String as StringUtils;
+
 /**
  * Site Objekt für den Admibereich
  *
@@ -93,6 +95,10 @@ class Edit extends \QUI\Projects\Site
                 $plg->onLoad( $this );
             }
         }
+
+        // onInit event
+        $this->Events->fireEvent( 'init', array( $this ) );
+        \QUI::getEvents()->fireEvent( 'siteInit', array( $this ) );
     }
 
     /**
@@ -196,7 +202,14 @@ class Edit extends \QUI\Projects\Site
                     continue;
                 }
 
-                $this->_extra = json_decode( $a_val, true );
+                // @todo get extra attribute list
+
+                $extra = json_decode( $a_val, true );
+
+                foreach ( $extra as $key => $value ) {
+                    $this->setAttribute( $key, $value );
+                }
+
                 continue;
             }
 
@@ -315,60 +328,70 @@ class Edit extends \QUI\Projects\Site
     }
 
     /**
-     * Vom TempFile aktualisieren
+     * Zerstört die Seite
+     * Die Seite wird komplett aus der DB gelöscht und auch alle Beziehungen
+     * Funktioniert nur wenn die Seite gelöscht ist
      */
-    /*
-    public function updateFromTemp()
+    public function destroy()
     {
-        // User Prüfung
-        $User = \QUI::getUserBySession();
+        if ( $this->getAttribute( 'deleted' ) != 1 ) {
+            return;
+        }
 
-        // Rechte Prüfung
-        if (!$this->getRights()->hasRights($User, $this, 'view'))
+        /**
+         * package destroy
+         */
+        $Project  = $this->getProject();
+        $packages = \QUI::getPackageManager()->getPackageDatabaseXmlList();
+        $name     = $Project->getName();
+        $lang     = $Project->getLang();
+        $siteType = $this->getAttribute( 'type' );
+
+        $dataList = Utils::getDataListForSite( $this );
+
+        foreach ( $dataList as $dataEntry )
         {
-            $result = \QUI::getDataBase()->fetch(array(
-                'select' => 'name',
-                'from'   => $this->_TABLE,
-                'where'  => array(
-                    'id'  => $this->getId()
-                ),
-                'limit' => '1'
+            $table = $dataEntry[ 'table' ];
+
+            \QUI::getDataBase()->delete($table, array(
+                'id' => $this->getId()
             ));
-
-            if (isset($result[0]) && isset($result[0]['name'])) {
-                $this->setAttribute('name', $result[0]['name']);
-            }
-
-            return false;
         }
 
-        // Eigenschaften aus Temp hohlen
-        $att = json_decode($this->_getTempFileContent(), true);
 
-        if (!isset($att['field']) || !is_array($att['field'])) {
-            return false;
-        }
+        // on destroy event
+        $this->Events->fireEvent( 'destroy', array($this) );
 
-        foreach ($att['field'] as $key => $value)
-        {
-            switch ($key)
-            {
-                case "project":
-                    // project wird nicht gesetzt
-                break;
+        \QUI::getEvents()->fireEvent( 'siteDestroy', array($this) );
 
-                case "site_name":
-                case "name":
-                    $this->setAttribute('name', $value);
-                break;
 
-                default:
-                    $this->setAttribute($key, $value);
-                break;
-            }
-        }
+        /**
+         * Site destroy
+         */
+
+        // Daten löschen
+        \QUI::getDataBase()->delete($this->_TABLE, array(
+            'id' => $this->getId()
+        ));
+
+        // sich als Kind löschen
+        \QUI::getDataBase()->delete($this->_RELTABLE, array(
+            'child' => $this->getId()
+        ));
+
+        // sich als parent löschen
+        \QUI::getDataBase()->delete($this->_RELTABLE, array(
+            'parent' => $this->getId()
+        ));
+
+        // Rechte löschen
+        $Manager = \QUI::getPermissionManager();
+        $Manager->removeSitePermissions( $this );
+
+        // Cache löschen
+        $this->deleteCache();
     }
-    */
+
     /**
      * Saves the site
      *
@@ -508,6 +531,14 @@ class Edit extends \QUI\Projects\Site
             }
         }
 
+        // save extra package attributes (site.xml)
+        $extraAttributes = Utils::getExtraAttributeListForSite( $this );
+        $siteExtra       = array();
+
+        foreach ( $extraAttributes as $attribute ) {
+            $siteExtra[ $attribute ] = $this->getAttribute( $attribute );
+        }
+
         // save main data
         $update = \QUI::getDataBase()->update(
             $this->_TABLE,
@@ -533,94 +564,50 @@ class Edit extends \QUI\Projects\Site
                 'release_to'   => $release_to,
 
                 // Extra-Feld
-                'extra' => json_encode( $this->_extra )
+                'extra' => json_encode( $siteExtra )
             ),
             array(
                 'id' => $this->getId()
             )
         );
 
-        // save package automatic site data
-        $packages = \QUI::getPackageManager()->getPackageDatabaseXmlList();
-        $name     = $Project->getName();
-        $lang     = $Project->getLang();
-        $siteType = $this->getAttribute( 'type' );
+        // save package automatic site data (database.xml)
+        $dataList = Utils::getDataListForSite( $this );
 
-        // @todo fields and table list must cached -> performance
-        foreach ( $packages as $package )
+        foreach ( $dataList as $dataEntry )
         {
-            $file = OPT_DIR . $package .'/database.xml';
+            $data = array();
 
-            $Dom  = \QUI\Utils\XML::getDomFromXml( $file );
-            $Path = new \DOMXPath( $Dom );
+            $table     = $dataEntry[ 'table' ];
+            $fieldList = $dataEntry[ 'data' ];
+            $package   = $dataEntry[ 'package' ];
+            $suffix    = $dataEntry[ 'suffix' ];
 
-            $tableList = $Path->query( "//database/projects/table" );
+            $attributeSuffix = $package .'.'. $suffix .'.';
+            $attributeSuffix = str_replace( '/', '.', $attributeSuffix );
 
-            for ( $i = 0, $len = $tableList->length; $i < $len; $i++ )
+            foreach ( $fieldList as $siteAttribute ) {
+                 $data[ $siteAttribute ] = $this->getAttribute( $attributeSuffix . $siteAttribute );
+            }
+
+            $result = \QUI::getDataBase()->fetch(array(
+                'from'  => $table,
+                'where' => array(
+                    'id' => $this->getId()
+                ),
+                'limit' => 1
+            ));
+
+            if ( !isset( $result[ 0 ] ) )
             {
-                $Table = $tableList->item( $i );
-
-                if ( $Table->getAttribute( 'no-auto-update' ) ) {
-                    continue;
-                }
-
-                // types check
-                $types = $Table->getAttribute( 'site-types' );
-
-                if ( $types ) {
-                    $types = explode( ',', $types );
-                }
-
-                if ( !empty( $types ) )
-                {
-                    foreach ( $types as $allowedType )
-                    {
-                        if ( !StringUtils::match( $allowedType, $siteType ) ) {
-                            continue;
-                        }
-                    }
-                }
-
-
-                $suffix = $Table->getAttribute( 'name' );
-                $fields = $Table->getElementsByTagName( 'field' );
-
-                $table = \QUI::getDBTableName( $name .'_'. $lang .'_'. $suffix );
-                $data  = array();
-                $attributePrfx = str_replace('/', '.', $package .'.'. $suffix); // package.package.table.attribute
-
-                for ( $f = 0, $flen = $fields->length; $f < $flen; $f++ )
-                {
-                    $Field     = $fields->item( $f );
-                    $attribute = trim( $Field->nodeValue );
-
-                    $data[ $attribute ] = $this->getAttribute( $attributePrfx .'.'. $attribute );
-                }
-
-
-                if ( !isset( $data ) || empty( $data ) ) {
-                    continue;
-                }
-
-                $result = \QUI::getDataBase()->fetch(array(
-                    'from'  => $table,
-                    'where' => array(
-                        'id' => $this->getId()
-                    ),
-                    'limit' => 1
-                ));
-
-                if ( !isset( $result[ 0 ] ) )
-                {
-                    \QUI::getDataBase()->insert($table, array(
-                        'id' => $this->getId()
-                    ));
-                }
-
-                \QUI::getDataBase()->update($table, $data, array(
+                \QUI::getDataBase()->insert($table, array(
                     'id' => $this->getId()
                 ));
             }
+
+            \QUI::getDataBase()->update($table, $data, array(
+                'id' => $this->getId()
+            ));
         }
 
 
@@ -796,15 +783,15 @@ class Edit extends \QUI\Projects\Site
         }
 
         // Tabs der Plugins hohlen
-        $Plugins = $this->_getLoadedPlugins();
+//         $Plugins = $this->_getLoadedPlugins();
         $Project = $this->getProject();
 
-        foreach ( $Plugins as $Plugin )
-        {
-            if ( method_exists( $Plugin, 'onGetChildren' ) ) {
-               $params = $Plugin->onGetChildren( $this, $params );
-            }
-        }
+//         foreach ( $Plugins as $Plugin )
+//         {
+//             if ( method_exists( $Plugin, 'onGetChildren' ) ) {
+//                $params = $Plugin->onGetChildren( $this, $params );
+//             }
+//         }
 
         /*
         $this->Events->fireEvent( 'getChildren', array( $this, $params ) );
@@ -1235,29 +1222,6 @@ class Edit extends \QUI\Projects\Site
     }
 
     /**
-     * Enter description here...
-     *
-     * @param unknown_type $name
-     * @param unknown_type $value
-     */
-    public function setExtra($name, $value)
-    {
-        $this->_extra[ $name ] = $value;
-    }
-
-    /**
-     * Extra Feld löschen
-     *
-     * @param unknown_type $name
-     */
-    public function removeExtra($name)
-    {
-        if ( isset( $this->_extra[ $name ] ) ) {
-            unset( $this->_extra[ $name ] );
-        }
-    }
-
-    /**
      * Prüft ob die Seite gerade bearbeitet wird
      * Wenn die Seite von einem selbst bearbeitet wird, kommt auch false zurück.
      *
@@ -1373,6 +1337,7 @@ class Edit extends \QUI\Projects\Site
      *
      * @param unknown_type $name
      * @throws \QUI\Exception
+     * @return Bool
      */
     static function checkName($name)
     {

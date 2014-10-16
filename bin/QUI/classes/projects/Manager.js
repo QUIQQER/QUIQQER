@@ -2,10 +2,15 @@
 /**
  * The Project Manager
  *
+ * @module classes/projects/Manager
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/classes/DOM
+ * @require classes/projects/Project
+ * @require Ajax
  */
 
-define('classes/projects/Manager', [
+define([
 
     'qui/classes/DOM',
     'classes/projects/Project',

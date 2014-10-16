@@ -135,7 +135,7 @@ class Event implements \QUI\Interfaces\Events
 
             if ( $args === false )
             {
-                $results[ $fn ] = $fn();
+                $results[ $fn ] = call_user_func( $fn );
                 continue;
             }
 

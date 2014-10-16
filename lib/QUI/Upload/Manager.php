@@ -244,10 +244,10 @@ class Manager
             $File->setAttribute( 'upload-dir', $uploaddir );
             $File->setAttribute( 'params', $Data->getAttribute('params') );
 
-
             $result = $this->_callFunction($onfinish, array(
                 'File' => $File
             ));
+
 
             // delete the file from the database
             $this->_delete( $filename );

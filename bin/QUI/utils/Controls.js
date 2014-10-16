@@ -132,7 +132,7 @@ define({
         var self = this;
 
         require([
-            'package/quiqqer/calendar/bin/Calendar',
+            'URL_OPT_DIR/quiqqer/calendar/bin/Calendar',
             'qui/controls/buttons/Button',
             'qui/utils/Elements'
         ], function(DatePicker, QUIButton, ElementUtils)

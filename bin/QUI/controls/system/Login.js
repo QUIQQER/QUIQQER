@@ -1,12 +1,14 @@
+
 /**
  * List all available languages
  *
+ * @module controls/system/Login
  * @author www.pcsg.de (Henning Leutz)
  *
  * @event onSubmit [ {Array}, {this} ]
  */
 
-define('controls/system/Login', [
+define([
 
     'qui/controls/windows/Confirm',
     'qui/controls/buttons/Button',

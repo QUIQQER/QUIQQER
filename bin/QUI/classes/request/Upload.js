@@ -1,15 +1,15 @@
+
 /**
  * QUI upload class for multible files
  *
  * drag/drop upload script
  * add dragdrop Events to the elements
  *
+ * @module classes/request/Upload
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires classes/DOM
- * @requires classes/exceptions/Exception
- *
- * @module classes/request/Upload
+ * @require qui/QUI
+ * @require qui/classes/DOM
  *
  * @event onDragenter [{DOMEvent}, {DOMNode Target}, {self}]
  * @event onDragleave [{DOMEvent}, {DOMNode Target}, {self}]
@@ -18,7 +18,7 @@
  * @event onDragend [{DOMEvent}, {DOMNode Target}, {self}]
  */
 
-define('classes/request/Upload', [
+define([
 
     'qui/QUI',
     'qui/classes/DOM'

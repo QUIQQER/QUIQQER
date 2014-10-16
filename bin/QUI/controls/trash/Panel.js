@@ -1,10 +1,12 @@
+
 /**
  * The main trash panel
  *
+ * @module controls/trash/Panel
  * @author www.pcsg.de (Henning Leutz)
  */
 
-define('controls/trash/Panel', [
+define([
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
@@ -33,7 +35,6 @@ define('controls/trash/Panel', [
         Projects     = arguments[ 7 ],
         Ajax         = arguments[ 8 ],
         Locale       = arguments[ 9 ];
-
 
     return new Class({
 

@@ -198,7 +198,7 @@
             </section>
         </config>
 
-        <window>
+        <window menu-parent="/settings/quiqqer/">
             <title>
                 <locale group="quiqqer/system" var="quiqqer.settings.title" />
             </title>

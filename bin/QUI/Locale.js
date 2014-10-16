@@ -1,12 +1,12 @@
+
 /**
  * Global locale object
  *
- * @author www.pcsg.de (Henning Leutz)
- *
  * @module Locale
+ * @author www.pcsg.de (Henning Leutz)
  */
 
-define('Locale', ['qui/Locale'], function(Locale)
+define(['qui/Locale'], function(Locale)
 {
     "use strict";
 

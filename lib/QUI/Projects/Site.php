@@ -75,12 +75,6 @@ class Site extends \QUI\QDOM
     protected $_plugins = array();
 
     /**
-     * site extra fields
-     * @var array
-     */
-    protected $_extra = array();
-
-    /**
      * the site url
      * @var String
      */
@@ -200,7 +194,7 @@ class Site extends \QUI\QDOM
                 \QUI\Cache\Manager::get( $this->_CACHENAME )
             );
 
-        } catch ( \QUI\Cache\Exception $Exception )
+        } catch ( \QUI\Exception $Exception )
         {
             // Daten aus der DB hohlen
             $this->refresh();
@@ -214,6 +208,11 @@ class Site extends \QUI\QDOM
         if ( !$this->getAttribute( 'type' ) ) {
             $this->setAttribute( 'type', 'standard' );
         }
+
+
+        // onInit event
+        $this->Events->fireEvent( 'init', array( $this ) );
+        \QUI::getEvents()->fireEvent( 'siteInit', array( $this ) );
     }
 
     /**
@@ -376,6 +375,10 @@ class Site extends \QUI\QDOM
                 continue;
             }
 
+            if ( (int)$Table->getAttribute( 'no-project-lang' ) === 1 ) {
+                continue;
+            }
+
             // type check
             $types = $Table->getAttribute( 'site-types' );
 
@@ -445,7 +448,7 @@ class Site extends \QUI\QDOM
     {
         $att = $this->getAttributes();
 
-        $att['extra']         = $this->_extra;
+//         $att['extra']         = $this->_extra;
         $att['linked_parent'] = $this->_LINKED_PARENT;
         $att['_type']         = $this->_type;
         $att['_extend']       = $this->_extend;
@@ -471,12 +474,6 @@ class Site extends \QUI\QDOM
 
         if ( $decode['deleted'] == 1 ) {
             throw new \QUI\Exception( 'Site not exist', 404 );
-        }
-
-        if ( isset( $decode['extra'] ) )
-        {
-            $this->_extra = $decode['extra'];
-            unset($decode['extra']);
         }
 
         if ( isset( $decode['linked_parent'] ) )
@@ -564,7 +561,12 @@ class Site extends \QUI\QDOM
 
         if ( isset( $result[0]['extra'] ) )
         {
-            $this->_extra = json_decode( $result[0]['extra'], true );
+            $extra = json_decode( $result[0]['extra'], true );
+
+            foreach ( $extra as $key => $value ) {
+                $this->setAttribute( $key, $value );
+            }
+
             unset( $result[0]['extra'] );
         }
 
@@ -1309,15 +1311,27 @@ class Site extends \QUI\QDOM
 
             $url = '';
 
+            // in rewrite zeile 1420 ->_extendUrlWidthPrams wird dies auch noch gemacht
+            // somit kann ein url cache aufgebaut werden
             foreach ( $params as $param => $value )
             {
-                if ( $param == 'phpMyAdmin' ) {
+                if ( is_integer( $param ) )
+                {
+                    $url .= self::URL_PARAM_SEPERATOR . $value;
                     continue;
                 }
 
-                if ( $param != 'suffix' ) {
-                    $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $param . \QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
+                if ( $param == 'suffix' ) {
+                    continue;
                 }
+
+                if ( is_int( $param ) )
+                {
+                    $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
+                    continue;
+                }
+
+                $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $param . \QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
             }
 
             if ( isset( $params['suffix'] ) ) {
@@ -1379,13 +1393,23 @@ class Site extends \QUI\QDOM
 
         foreach ( $params as $param => $value )
         {
-            if ( $param == 'phpMyAdmin' ) {
+            if ( is_integer( $param ) )
+            {
+                $url .= self::URL_PARAM_SEPERATOR . $value;
                 continue;
             }
 
-            if ( $param != 'suffix' ) {
-                $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $param . \QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
+            if ( $param == 'suffix' ) {
+                continue;
             }
+
+            if ( is_int( $param ) )
+            {
+                $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
+                continue;
+            }
+
+            $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $param . \QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
         }
 
         if ( isset( $params['suffix'] ) ) {
@@ -1619,21 +1643,6 @@ class Site extends \QUI\QDOM
     }
 
     /**
-     * Gibt eine Extra Eigenschaft zurück
-     *
-     * @param String $name
-     * @return unknown
-     */
-    public function getExtra($name)
-    {
-        if ( isset( $this->_extra[ $name ] ) ) {
-            return $this->_extra[ $name ];
-        }
-
-        return false;
-    }
-
-    /**
      * Canonical URL - Um doppelte Inhalt zu vermeiden
      *
      * @return String
@@ -1646,7 +1655,7 @@ class Site extends \QUI\QDOM
 
         $this->setAttribute(
             'canonical',
-            $this->getProject()->getHost() . URL_DIR . $this->getUrlRewrited()
+            $this->getProject()->getVHost( true, true ) . URL_DIR . $this->getUrlRewrited()
         );
 
         return $this->getAttribute( 'canonical' );

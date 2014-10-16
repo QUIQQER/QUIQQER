@@ -1,16 +1,16 @@
+
 /**
  * A media file
  *
+ * @module classes/projects/project/media/Folder
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires classes/projects/project/media/Item
- * @requires Ajax
- * @requires UploadManager
- *
- * @module classes/projects/project/media/Folder
+ * @require classes/projects/project/media/Item
+ * @require Ajax
+ * @require UploadManager
  */
 
-define('classes/projects/project/media/Folder', [
+define([
 
     'classes/projects/project/media/Item',
     'Ajax',

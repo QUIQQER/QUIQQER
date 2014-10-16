@@ -42,11 +42,6 @@ class Permission
 
         }
 
-        // old
-        if ( $User->isAdmin() ) {
-            return true;
-        }
-
         return false;
     }
 

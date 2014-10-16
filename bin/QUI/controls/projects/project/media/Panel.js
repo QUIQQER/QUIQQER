@@ -1,24 +1,23 @@
 /**
  * Displays a Media in a Panel
  *
+ * @module controls/projects/project/media/Panel
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires controls/Control
- * @requires classes/projects/Media
- * @requires classes/request/Upload
- * @requires controls/projects/media/Sitemap
- * @requires controls/grid/Grid
- * @requires controls/projects/project/media/PanelDOMEvents
- * @requires controls/projects/project/media/PanelContextMenu
- * @requires controls/upload/Form
+ * @require controls/Control
+ * @require classes/projects/Media
+ * @require classes/request/Upload
+ * @require controls/projects/media/Sitemap
+ * @require controls/grid/Grid
+ * @require controls/projects/project/media/PanelDOMEvents
+ * @require controls/projects/project/media/PanelContextMenu
+ * @require controls/upload/Form
  *
  * @event onDragDropComplete [this, event]
  * @event childClick [ this, imageData ]
- *
- * @module controls/projects/project/media/Panel
  */
 
-define('controls/projects/project/media/Panel', [
+define([
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
@@ -292,8 +291,24 @@ define('controls/projects/project/media/Panel', [
 
                 self.addButton( View );
 
-                View.getContextMenu(function(Menu) {
-                    View.change( Menu.firstChild() );
+                View.getContextMenu(function(Menu)
+                {
+                    var Item = false,
+                        view = QUI.Storage.get( 'qui-media-panel-view' );
+
+                    if ( !view ) {
+                        view = self.getAttribute( 'view' );
+                    }
+
+                    if ( view ) {
+                        Item = Menu.getChildren( view );
+                    }
+
+                    if ( !Item ) {
+                        Item = Menu.firstChild();
+                    }
+
+                    View.change( Item );
                 });
 
 
@@ -349,8 +364,6 @@ define('controls/projects/project/media/Panel', [
 
                 self.addButton( Upload );
 
-
-                //this.$Panel.Buttons.resize();
 
                 if ( self.getAttribute('startid') )
                 {
@@ -872,9 +885,9 @@ define('controls/projects/project/media/Panel', [
         },
 
         /**
-         * list the children
+         * List the children with the specific view
          *
-         * @method controls/projects/project/media/Panel#$viewSymbols
+         * @method controls/projects/project/media/Panel#$view
          * @params {array} children
          */
         $view : function(children)
@@ -911,10 +924,11 @@ define('controls/projects/project/media/Panel', [
 //                MediaBody.set('title', this.$File.getAttribute('title'));
 //            }
 
-//            QUI.Storage.set(
-//                'qui-media-panel-view',
-//                this.getAttribute('view')
-//            );
+
+            QUI.Storage.set(
+                'qui-media-panel-view',
+                this.getAttribute('view')
+            );
 
 
             switch ( this.getAttribute('view') )
@@ -1378,8 +1392,6 @@ define('controls/projects/project/media/Panel', [
                             type    : ''
                         };
 
-
-                        console.info( GridData );
 
                         self.fireEvent( 'childClick', [ self, imageData ] );
 

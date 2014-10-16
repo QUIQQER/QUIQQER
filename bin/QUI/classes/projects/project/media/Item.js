@@ -1,8 +1,8 @@
 /**
  * Parent class for all media items like file, image, folder
  *
- * @author www.pcsg.de (Henning Leutz)
  * @module classes/projects/project/media/Item
+ * @author www.pcsg.de (Henning Leutz)
  *
  * @event onRefresh [ {self} ]
  * @event onSave [ {self} ]
@@ -10,12 +10,12 @@
  * @event onActivate [ {self} ]
  * @event onDeactivate [ {self} ]
  *
- * @requires qui/classes/DOM
- * @requires Ajax
- * @requires qui/utils/Object
+ * @require qui/classes/DOM
+ * @require Ajax
+ * @require qui/utils/Object
  */
 
-define('classes/projects/project/media/Item', [
+define([
 
     'qui/classes/DOM',
     'Ajax',

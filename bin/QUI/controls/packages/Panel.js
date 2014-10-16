@@ -301,11 +301,19 @@ define('controls/packages/Panel', [
                 }],
 
                 buttons : [{
+                    text      : Locale.get( 'quiqqer/system', 'packages.grid.update.btn.execute' ),
+                    textimage : 'icon-double-angle-down',
+                    events : {
+                        onClick : this.executeCompleteUpdate
+                    }
+                }, {
                     text      : Locale.get( 'quiqqer/system', 'packages.grid.update.btn.start' ),
                     textimage : 'icon-refresh',
                     events : {
                         onClick : this.checkUpdates
                     }
+                }, {
+                    type : 'seperator'
                 }, {
                     text      : Locale.get( 'quiqqer/system', 'packages.grid.update.btn.upload' ),
                     textimage : 'icon-upload',
@@ -374,6 +382,18 @@ define('controls/packages/Panel', [
                 if ( Btn.getAttribute( 'icon' ) ) {
                     Btn.setAttribute( 'icon', 'icon-hdd' );
                 }
+            });
+        },
+
+        /**
+         * Execute a system update
+         */
+        executeCompleteUpdate : function(Btn)
+        {
+            Btn.setAttribute( 'textimage', 'icon-refresh icon-spin' );
+
+            this.$Manager.update(function(result) {
+                Btn.setAttribute( 'textimage', 'icon-double-angle-down' );
             });
         },
 

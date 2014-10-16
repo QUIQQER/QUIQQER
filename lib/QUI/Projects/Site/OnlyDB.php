@@ -11,7 +11,6 @@ namespace QUI\Projects\Site;
  * Without performing file system operations (cache etc.)
  *
  * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.project
  */
 
 class OnlyDB extends \QUI\Projects\Site
@@ -24,7 +23,6 @@ class OnlyDB extends \QUI\Projects\Site
      */
     public function __construct(\QUI\Projects\Project $Project, $id)
     {
-        $this->_db    = \QUI::getDB();
         $this->_users = \QUI::getUsers();
         $this->_user  = $this->_users->getUserBySession();
 
@@ -42,6 +40,11 @@ class OnlyDB extends \QUI\Projects\Site
 
         // Daten aus der DB hohlen
         $this->refresh();
+
+
+        // onInit event
+        $this->Events->fireEvent( 'init', array( $this ) );
+        \QUI::getEvents()->fireEvent( 'siteInit', array( $this ) );
     }
 
     /**
@@ -100,10 +103,7 @@ class OnlyDB extends \QUI\Projects\Site
      */
     public function __destroy()
     {
-        $this->_db    = null;
         $this->_users = null;
         $this->_user  = null;
     }
 }
-
-?>

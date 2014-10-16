@@ -219,19 +219,20 @@ class Utils
     }
 
     /**
-     * Statische getHTML Methode
-     * Gibt einen komplette HTML Tag <img /> von dem Bild aus
+     * Return <img /> from image attributes
+     * considered responsive images, too
      *
      * @param String $src
      * @param String $attributes
      * @return String
-     *
-     * @todo do we really need this? think about it
      */
     static function getImageHTML($src, $attributes)
     {
         $size = array();
         $img  = '';
+
+        $width  = false;
+        $height = false;
 
         if ( isset( $attributes['style'] ) )
         {
@@ -240,34 +241,75 @@ class Utils
             );
 
             if ( isset( $style['width'] ) ) {
-                $size['width'] = (int)$style['width'];
+                $width = $style['width'];
             }
 
             if ( isset( $style['height'] ) ) {
-                $size['height'] = (int)$style['height'];
+                $height = $style['height'];
             }
 
         } elseif ( isset( $attributes['width'] ) )
         {
-            $size['width'] = (int)$attributes['width'];
+            $width = $attributes['width'];
+
         } elseif ( isset( $attributes['height'] ) )
         {
-            $size['height'] = (int)$attributes['height'];
+            $height = $attributes['height'];
+        }
+
+        if ( strpos( $width, '%') !== false ) {
+            $width = false;
+        }
+
+        if ( strpos( $height, '%') !== false ) {
+            $height = false;
         }
 
 
-        $src = self::getRewritedUrl( $src, $size );
-
-        if ( $src )
+        try
         {
-            $img = '<img src="'. $src .'" ';
+            $Image = self::getImageByUrl( $src );
 
-            foreach ( $attributes as $key => $value ) {
-                $img .= $key .'="'. $value .'" ';
+        } catch ( \QUI\Exception $Exception )
+        {
+            return '';
+        }
+
+        if ( !self::isImage( $Image ) ) {
+            return '';
+        }
+
+        /* @var $Image \QUI\Projects\Media\Image */
+        $src = $Image->getSizeCacheUrl( $width, $height );
+
+        // image string
+        $img = '<img ';
+
+        foreach ( $attributes as $key => $value ) {
+            $img .= $key .'="'. $value .'" ';
+        }
+
+        // responsive image
+        $imageWidth = $Image->getWidth();
+
+        if ( $imageWidth )
+        {
+            $end   = $imageWidth > 1000 ? 1000 : $imageWidth;
+            $start = 100;
+
+            $sizes  = array();
+            $srcset = array();
+
+            for ( ; $start < $end; $start += 100 ) {
+                $srcset[] = $Image->getSizeCacheUrl( $start ) ." {$start}w";
             }
 
-            $img .= ' />';
+            // not optimal, but maybe we found a better solution
+            $img .= ' sizes="(max-width: 30em) 100vw, (max-width: 50em) 50vw, calc(33vw - 100px)"';
+            $img .= ' srcset="'. implode(",\n", $srcset) .'"';
         }
+
+        $img .= ' src="'. $src .'" />';
 
         return $img;
     }
@@ -382,7 +424,7 @@ class Utils
     static function checkFolderName($str)
     {
         // Prüfung des Namens - Sonderzeichen
-        if ( preg_match('/[^0-9_a-zA-Z -]/', $str) )
+        if ( preg_match('/[^0-9_a-zA-Z \-]/', $str) )
         {
             throw new \QUI\Exception(
                 'Nicht erlaubte Zeichen wurden im Namen "'. $str .'" gefunden.
@@ -435,7 +477,7 @@ class Utils
     static function checkMediaName($filename)
     {
         // Prüfung des Namens - Sonderzeichen
-        if ( preg_match('/[^0-9_a-zA-Z -.]/', $filename) )
+        if ( preg_match('/[^0-9_a-zA-Z \-.]/', $filename) )
         {
             throw new \QUI\Exception(
                 'Nicht erlaubte Zeichen wurden im Namen "'. $filename .'" gefunden.
@@ -588,7 +630,6 @@ class Utils
             $pos_dot    = strpos( $file_name, '.', $lastpos_ul );
 
             $size      = substr( $file_name, $lastpos_ul, ( $pos_dot - $lastpos_ul ) );
-            $part_size = explode( 'x', $size );
 
             $file_name = substr( $file_name, 0, ( $lastpos_ul - 2 ) ) .
                          substr( $file_name, $pos_dot );
