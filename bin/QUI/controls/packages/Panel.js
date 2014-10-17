@@ -382,6 +382,14 @@ define([
                 if ( Btn.getAttribute( 'icon' ) ) {
                     Btn.setAttribute( 'icon', 'icon-hdd' );
                 }
+
+                QUI.getMessageHandler(function(MH)
+                {
+                    MH.addSuccess(
+                        Locale.get( lg, 'message.setup.successfull' )
+                    );
+                });
+
             });
         },
 
