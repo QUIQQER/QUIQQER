@@ -902,8 +902,7 @@ class Edit extends \QUI\Projects\Site
             $User = \QUI::getUserBySession();
         }
 
-        // @todo Prüfen ob der Benutzer Kinder anlegen darf
-
+        $this->checkPermission( 'quiqqer.projects.site.edit' );
 
 
         $Project = $this->getProject();
