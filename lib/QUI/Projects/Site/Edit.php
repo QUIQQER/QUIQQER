@@ -902,7 +902,7 @@ class Edit extends \QUI\Projects\Site
             $User = \QUI::getUserBySession();
         }
 
-        $this->checkPermission( 'quiqqer.projects.site.edit' );
+        $this->checkPermission( 'quiqqer.projects.site.new' );
 
 
         $Project = $this->getProject();
