@@ -1,11 +1,12 @@
+
 /**
- * Package Manager
+ * Package Manager / System Update
  *
  * @author www.pcsg.de (Henning Leutz)
  * @module controls/packages/Panel
  */
 
-define('controls/packages/Panel', [
+define([
 
     'Locale',
     'Ajax',
@@ -22,6 +23,8 @@ define('controls/packages/Panel', [
 ],function(Locale, Ajax, PackageManager, Grid, DetailWindow, QUIPanel, QUIConfirm, QUIWindow, QUIButton)
 {
     "use strict";
+
+    var lg = 'quiqqer/system';
 
     /**
      * @class controls/packages/Panel
@@ -80,10 +83,7 @@ define('controls/packages/Panel', [
 
             // defaults
             this.setAttribute( 'title',
-                Locale.get(
-                    'quiqqer/system',
-                    'packages.panel.title'
-                )
+                Locale.get( lg, 'packages.panel.title' )
             );
 
             this.setAttribute( 'icon', URL_BIN_DIR +'16x16/quiqqer.png' );
@@ -112,7 +112,7 @@ define('controls/packages/Panel', [
         {
             this.addCategory({
                 name   : 'updates',
-                text   : Locale.get( 'quiqqer/system', 'packages.category.updates' ),
+                text   : Locale.get( lg, 'packages.category.updates' ),
                 image  : 'icon-refresh',
                 events : {
                     onActive : this.loadUpdates,
@@ -122,7 +122,7 @@ define('controls/packages/Panel', [
 
             this.addCategory({
                 name   : 'plugins',
-                text   : Locale.get( 'quiqqer/system', 'packages.category.plugins' ),
+                text   : Locale.get( lg, 'packages.category.plugins' ),
                 image  : 'icon-puzzle-piece',
                 events :
                 {
@@ -138,7 +138,7 @@ define('controls/packages/Panel', [
 
             this.addCategory({
                 name   : 'packages',
-                text   : Locale.get( 'quiqqer/system', 'packages.category.packages' ),
+                text   : Locale.get( lg, 'packages.category.packages' ),
                 image  : 'icon-puzzle-piece',
                 events :
                 {
@@ -154,7 +154,7 @@ define('controls/packages/Panel', [
 
             this.addCategory({
                 name   : 'server',
-                text   : Locale.get( 'quiqqer/system', 'packages.category.server' ),
+                text   : Locale.get( lg, 'packages.category.server' ),
                 image  : 'icon-building',
                 events : {
                     onActive : this.loadServers,
@@ -164,7 +164,7 @@ define('controls/packages/Panel', [
 
             this.addCategory({
                 name   : 'search',
-                text   : Locale.get( 'quiqqer/system', 'packages.category.search' ),
+                text   : Locale.get( lg, 'packages.category.search' ),
                 image  : 'icon-search',
                 events : {
                     onActive : this.loadSearch,
@@ -174,7 +174,7 @@ define('controls/packages/Panel', [
 
             this.addCategory({
                 name   : 'health',
-                text   : Locale.get( 'quiqqer/system', 'packages.category.system.health' ),
+                text   : Locale.get( lg, 'packages.category.system.health' ),
                 image  : 'icon-medkit',
                 events : {
                     onActive : this.loadHealth,
@@ -268,46 +268,46 @@ define('controls/packages/Panel', [
 
 
             var Title = new Element('h1', {
-                html : Locale.get( 'quiqqer/system', 'packages.grid.update.title' )
+                html : Locale.get( lg, 'packages.grid.update.title' )
             }).inject( Body, 'top' );
 
             var Information = new Element('div.description', {
-                html : Locale.get( 'quiqqer/system', 'packages.grid.update.information' )
+                html : Locale.get( lg, 'packages.grid.update.information' )
             }).inject( Title, 'after' );
 
         // Grid
             this.$UpdateGrid = new Grid(Container, {
 
                 columnModel : [{
-                    header    : Locale.get( 'quiqqer/system', 'packages.grid.update.title.updatebtn' ),
+                    header    : Locale.get( lg, 'packages.grid.update.title.updatebtn' ),
                     dataIndex : 'update',
                     dataType  : 'button',
                     width     : 60
                 }, {
-                    header    : Locale.get( 'quiqqer/system', 'packages.grid.update.title.package' ),
+                    header    : Locale.get( lg, 'packages.grid.update.title.package' ),
                     dataIndex : 'package',
                     dataType  : 'string',
                     width     : 150
                 }, {
-                    header    : Locale.get( 'quiqqer/system', 'packages.grid.update.title.version.from' ),
+                    header    : Locale.get( lg, 'packages.grid.update.title.version.from' ),
                     dataIndex : 'from',
                     dataType  : 'string',
                     width     : 200
                 }, {
-                    header    : Locale.get( 'quiqqer/system', 'packages.grid.update.title.version.to' ),
+                    header    : Locale.get( lg, 'packages.grid.update.title.version.to' ),
                     dataIndex : 'to',
                     dataType  : 'string',
                     width     : 200
                 }],
 
                 buttons : [{
-                    text      : Locale.get( 'quiqqer/system', 'packages.grid.update.btn.execute' ),
+                    text      : Locale.get( lg, 'packages.grid.update.btn.execute' ),
                     textimage : 'icon-double-angle-down',
                     events : {
                         onClick : this.executeCompleteUpdate
                     }
                 }, {
-                    text      : Locale.get( 'quiqqer/system', 'packages.grid.update.btn.start' ),
+                    text      : Locale.get( lg, 'packages.grid.update.btn.start' ),
                     textimage : 'icon-refresh',
                     events : {
                         onClick : this.checkUpdates
@@ -315,13 +315,13 @@ define('controls/packages/Panel', [
                 }, {
                     type : 'seperator'
                 }, {
-                    text      : Locale.get( 'quiqqer/system', 'packages.grid.update.btn.upload' ),
+                    text      : Locale.get( lg, 'packages.grid.update.btn.upload' ),
                     textimage : 'icon-upload',
                     events : {
                         onClick : this.uploadUpdates
                     }
                 }, {
-                    text      : Locale.get( 'quiqqer/system', 'packages.grid.update.btn.setup' ),
+                    text      : Locale.get( lg, 'packages.grid.update.btn.setup' ),
                     textimage : 'icon-hdd',
                     events :
                     {
@@ -390,11 +390,26 @@ define('controls/packages/Panel', [
          */
         executeCompleteUpdate : function(Btn)
         {
-            Btn.setAttribute( 'textimage', 'icon-refresh icon-spin' );
+            var self = this;
 
-            this.$Manager.update(function(result) {
-                Btn.setAttribute( 'textimage', 'icon-double-angle-down' );
-            });
+            new QUIConfirm({
+                title     : Locale.get( lg, 'packages.update.window.title' ),
+                maxHeight : 200,
+                maxWidth  : 550,
+                texticon  : 'icon-double-angle-down fa fa-angle-double-down',
+                text      : Locale.get( lg, 'packages.update.window.text'),
+                events :
+                {
+                    onSubmit : function()
+                    {
+                        Btn.setAttribute( 'textimage', 'icon-refresh icon-spin' );
+
+                        self.$Manager.update(function(result) {
+                            Btn.setAttribute( 'textimage', 'icon-double-angle-down' );
+                        });
+                    }
+                }
+            }).open();
         },
 
         /**
@@ -455,13 +470,8 @@ define('controls/packages/Panel', [
             return;
 
             var Win = new QUI.controls.windows.Upload({
-                title : Locale.get(
-                    'quiqqer/system',
-                    'packages.grid.update.btn.upload'
-                ),
-
+                title : Locale.get( lg, 'packages.grid.update.btn.upload' ),
                 server_finish : 'ajax_system_update_byfile',
-
                 events :
                 {
                     onDrawEnd : function(Win) {
@@ -535,32 +545,32 @@ define('controls/packages/Panel', [
                     dataType  : 'button',
                     width     : 60
                 }, {
-                    header    : Locale.get( 'quiqqer/system', 'packages.grid.title.name' ),
+                    header    : Locale.get( lg, 'packages.grid.title.name' ),
                     dataIndex : 'name',
                     dataType  : 'string',
                     width     : 150
                 }, {
-                    header    : Locale.get( 'quiqqer/system', 'packages.grid.title.version' ),
+                    header    : Locale.get( lg, 'packages.grid.title.version' ),
                     dataIndex : 'version',
                     dataType  : 'string',
                     width     : 100
                 }, {
-                    header    : Locale.get( 'quiqqer/system', 'packages.grid.title.desc' ),
+                    header    : Locale.get( lg, 'packages.grid.title.desc' ),
                     dataIndex : 'description',
                     dataType  : 'String',
                     width     : 200
                 }, {
-                    header    : Locale.get( 'quiqqer/system', 'packages.grid.title.homepage' ),
+                    header    : Locale.get( lg, 'packages.grid.title.homepage' ),
                     dataIndex : 'homepage',
                     dataType  : 'string',
                     width     : 100
                 }, {
-                    header    : Locale.get( 'quiqqer/system', 'packages.grid.title.type' ),
+                    header    : Locale.get( lg, 'packages.grid.title.type' ),
                     dataIndex : 'type',
                     dataType  : 'string',
                     width     : 100
                 }, {
-                    header    : Locale.get( 'quiqqer/system', 'packages.grid.title.lastupdate' ),
+                    header    : Locale.get( lg, 'packages.grid.title.lastupdate' ),
                     dataIndex : 'time',
                     dataType  : 'string',
                     width     : 150
@@ -618,7 +628,7 @@ define('controls/packages/Panel', [
                         {
                             str = str +'<div class="package-require">';
                             str = str +'<h2>'+
-                                Locale.get( 'quiqqer/system', 'packages.grid.dependencies' ) +
+                                Locale.get( lg, 'packages.grid.dependencies' ) +
                             '</h2>';
 
                             for ( pkg in result.require ) {
@@ -632,7 +642,7 @@ define('controls/packages/Panel', [
                         {
                             str = str +'<div class="package-require">';
                             str = str +'<h2>'+
-                                Locale.get( 'quiqqer/system', 'packages.grid.other.package.dependencies', {
+                                Locale.get( lg, 'packages.grid.other.package.dependencies', {
                                     pkg : result.name
                                 }) +
                             '</h2>';
@@ -719,7 +729,7 @@ define('controls/packages/Panel', [
 
                     pkg = result.data[ i ].name;
 
-                    alt = Locale.get( 'quiqqer/system', 'packages.btn.execute.setup.alt', {
+                    alt = Locale.get( lg, 'packages.btn.execute.setup.alt', {
                         pkg : pkg
                     });
 
@@ -902,37 +912,28 @@ return;
                 }).inject( Body, 'top' ),
 
                 Title = new Element('h1', {
-                    html : Locale.get( 'quiqqer/system', 'packages.search.title' )
+                    html : Locale.get( lg, 'packages.search.title' )
                 }).inject( Body, 'top' ),
 
                 Information = new Element('div.description', {
-                    html : Locale.get( 'quiqqer/system', 'packages.search.description' )
+                    html : Locale.get( lg, 'packages.search.description' )
                 }).inject( Title, 'after' );
 
 
             // search grid
             this.$SearchGrid = new Grid(Container, {
                 columnModel : [{
-                    header : Locale.get(
-                        'quiqqer/system',
-                        'packages.search.grid.title.btn'
-                    ),
+                    header    : Locale.get( lg, 'packages.search.grid.title.btn' ),
                     dataIndex : 'install',
                     dataType  : 'button',
                     width     : 60
                 }, {
-                    header : Locale.get(
-                        'quiqqer/system',
-                        'packages.search.grid.title.package'
-                    ),
+                    header    : Locale.get( lg, 'packages.search.grid.title.package' ),
                     dataIndex : 'package',
                     dataType  : 'string',
                     width     : 200
                 }, {
-                    header : Locale.get(
-                        'quiqqer/system',
-                        'packages.search.grid.title.description'
-                    ),
+                    header    : Locale.get( lg, 'packages.search.grid.title.description' ),
                     dataIndex : 'description',
                     dataType  : 'string',
                     width     : 400
@@ -999,17 +1000,13 @@ return;
 
                         result.data[ i ].install = {
                             'package' : result.data[ i ]['package'],
-                            image     : 'icon-download',
-                            title     : Locale.get(
-                                'quiqqer/system',
-                                'packages.search.grid.setup.btn.title',
-                                {'package' : result.data[ i ]['package'] }
-                            ),
-                            alt : Locale.get(
-                                'quiqqer/system',
-                                'packages.search.grid.setup.btn.alt',
-                                {'package' : result.data[ i ]['package'] }
-                            ),
+                            image : 'icon-download',
+                            title : Locale.get( lg, 'packages.search.grid.setup.btn.title', {
+                                'package' : result.data[ i ]['package']
+                            }),
+                            alt : Locale.get( lg, 'packages.search.grid.setup.btn.alt', {
+                                'package' : result.data[ i ]['package']
+                            }),
                             events : {
                                 onClick : self.dialogInstall
                             }
@@ -1071,25 +1068,18 @@ return;
                 self = this;
 
             new QUIConfirm({
-                title : Locale.get(
-                    'quiqqer/system',
-                    'packages.server.win.install.package.title'
-                ),
+                title : Locale.get( lg, 'packages.server.win.install.package.title' ),
                 icon : 'icon-download',
-                text : Locale.get(
-                    'quiqqer/system',
-                    'packages.server.win.install.package.text',
-                    { 'package' : pkg }
-                ),
-
+                text : Locale.get( lg, 'packages.server.win.install.package.text', {
+                    'package' : pkg
+                }),
                 texticon  : 'icon-download',
                 Control   : this,
                 autoclose : false,
 
-                ok_button :
-                {
+                ok_button : {
                     textimage : 'icon-download',
-                    text      : Locale.get( 'quiqqer/system', 'packages.server.win.install.submit.btn' )
+                    text : Locale.get( lg, 'packages.server.win.install.submit.btn' )
                 },
 
                 events  :
@@ -1167,29 +1157,29 @@ return;
 
             this.$ServerGrid = new Grid(Container, {
                 columnModel : [{
-                    header    : Locale.get( 'quiqqer/system', 'packages.server.grid.title.status' ),
+                    header    : Locale.get( lg, 'packages.server.grid.title.status' ),
                     dataIndex : 'status',
                     dataType  : 'button',
                     width     : 60
                 }, {
-                    header    : Locale.get( 'quiqqer/system', 'packages.server.grid.title.server' ),
+                    header    : Locale.get( lg, 'packages.server.grid.title.server' ),
                     dataIndex : 'server',
                     dataType  : 'string',
                     width     : 400
                 }, {
-                    header    : Locale.get( 'quiqqer/system', 'packages.server.grid.title.type' ),
+                    header    : Locale.get( lg, 'packages.server.grid.title.type' ),
                     dataIndex : 'type',
                     dataType  : 'string',
                     width     : 100
                 }],
                 buttons : [{
-                    text      : Locale.get( 'quiqqer/system', 'packages.btn.add.server' ),
+                    text      : Locale.get( lg, 'packages.btn.add.server' ),
                     textimage : 'icon-plus',
                     events : {
                         onClick : this.dialogAddServer
                     }
                 }, {
-                    text      : Locale.get( 'quiqqer/system', 'packages.btn.del.server' ),
+                    text      : Locale.get( lg, 'packages.btn.del.server' ),
                     name      : 'delServers',
                     textimage : 'icon-trash',
                     disabled  : true,
@@ -1243,15 +1233,8 @@ return;
 
                         for ( i = 0, len = result.length; i < len; i++ )
                         {
-                            alt = Locale.get(
-                                'quiqqer/system',
-                                'packages.server.grid.btn.activate.title'
-                            );
-
-                            title = Locale.get(
-                                'quiqqer/system',
-                                'packages.server.grid.btn.activate.title'
-                            );
+                            alt   = Locale.get( lg, 'packages.server.grid.btn.activate.title' );
+                            title = Locale.get( lg, 'packages.server.grid.btn.activate.title' );
 
                             icon = 'icon-ok';
 
@@ -1259,15 +1242,8 @@ return;
                             {
                                 icon = 'icon-remove';
 
-                                alt = Locale.get(
-                                    'quiqqer/system',
-                                    'packages.server.grid.btn.deactivate.title'
-                                );
-
-                                title = Locale.get(
-                                    'quiqqer/system',
-                                    'packages.server.grid.btn.deactivate.title'
-                                );
+                                alt   = Locale.get( lg, 'packages.server.grid.btn.deactivate.title' );
+                                title = Locale.get( lg, 'packages.server.grid.btn.deactivate.title' );
                             }
 
                             result[ i ].status = {
@@ -1324,12 +1300,12 @@ return;
 
             new QUIConfirm({
                 title : Locale.get(
-                    'quiqqer/system',
+                    lg,
                     'packages.server.win.add.title'
                 ),
                 icon : 'icon-building',
                 text : Locale.get(
-                    'quiqqer/system',
+                    lg,
                     'packages.server.win.add.text'
                 ),
 
@@ -1394,23 +1370,14 @@ return;
             var self = this;
 
             new QUIConfirm({
-                title : Locale.get(
-                    'quiqqer/system',
-                    'packages.server.win.remove.title'
-                ),
+                title : Locale.get( lg, 'packages.server.win.remove.title' ),
                 icon : 'icon-trash',
-                text : Locale.get(
-                    'quiqqer/system',
-                    'packages.server.win.remove.text'
-                ),
+                text : Locale.get( lg, 'packages.server.win.remove.text' ),
                 texticon    : 'icon-trash',
                 information : list.join( '<br />' ) +
                               '<p>&nbsp;</p>'+
                               '<p>'+
-                                  Locale.get(
-                                      'quiqqer/system',
-                                      'packages.server.win.remove.information'
-                                  ) +
+                                  Locale.get( lg, 'packages.server.win.remove.information' ) +
                               '</p>',
                 autoclose : false,
                 list : list,
@@ -1536,7 +1503,7 @@ return;
             this.getBody().set(
                 'html',
 
-                Locale.get( 'quiqqer/system', 'packages.systemhealth.text' )
+                Locale.get( lg, 'packages.systemhealth.text' )
             );
 
             var Body = this.getBody(),
@@ -1558,14 +1525,14 @@ return;
                     dataType  : 'button',
                     width     : 60
                 }, {
-                    header    : Locale.get( 'quiqqer/system', 'packages.grid.update.title.package' ),
+                    header    : Locale.get( lg, 'packages.grid.update.title.package' ),
                     dataIndex : 'name',
                     dataType  : 'string',
                     width     : 250
                 }],
 
                 buttons : [{
-                    text      : Locale.get( 'quiqqer/system', 'packages.grid.healthcheck.systemcheck' ),
+                    text      : Locale.get( lg, 'packages.grid.healthcheck.systemcheck' ),
                     textimage : 'icon-play',
                     events    :
                     {
@@ -1594,7 +1561,7 @@ return;
                     entry = result.data[ i ];
                     pkg   = entry.name;
 
-                    alt = Locale.get( 'quiqqer/system', 'packages.btn.execute.health.alt', {
+                    alt = Locale.get( lg, 'packages.btn.execute.health.alt', {
                         pkg : pkg
                     });
 

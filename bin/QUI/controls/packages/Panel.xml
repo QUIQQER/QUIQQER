@@ -20,7 +20,6 @@
         </locale>
 
 
-
         <locale name="packages.category.updates">
             <de><![CDATA[Updates]]></de>
             <en><![CDATA[Update]]></en>
@@ -236,7 +235,7 @@
             ]]></en>
         </locale>
         <locale name="packages.grid.healthcheck.systemcheck">
-            <de><![CDATA[Systemcheck durchfünre]]></de>
+            <de><![CDATA[Systemcheck durchführen]]></de>
             <en><![CDATA[Start a system check]]></en>
         </locale>
 
@@ -250,6 +249,14 @@
         </locale>
 
 
+        <locale name="packages.update.window.title">
+            <de><![CDATA[Update durchführen?]]></de>
+            <en><![CDATA[Start the update?]]></en>
+        </locale>
+        <locale name="packages.update.window.text">
+            <de><![CDATA[Das System Update wirklich ausführen?]]></de>
+            <en><![CDATA[Really starting the system update?]]></en>
+        </locale>
 
     </groups>
 
