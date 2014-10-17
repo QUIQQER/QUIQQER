@@ -45,7 +45,8 @@ define([
         Type    : 'controls/upload/Manager',
 
         Binds : [
-            '$onCreate'
+            '$onCreate',
+            'uploadFiles'
         ],
 
         options : {
@@ -125,6 +126,31 @@ define([
 
             if ( !files.length ) {
                 return;
+            }
+
+            // is an upload panel existent and open?
+            if ( this.isOpen() === false )
+            {
+                if ( this.$Content )
+                {
+                    this.open();
+
+                } else
+                {
+                    var Container = document.getElement( '.qui-panel-content .upload-manager' ),
+                        Content   = Container.getParent();
+
+                    if ( Content.getStyle( 'display' ) == 'none' )
+                    {
+                        var Panel = QUI.Controls.getById(
+                            Content.getParent( '.qui-panel' ).get( 'data-quiid' )
+                        );
+
+                        if ( Panel ) {
+                            Panel.open();
+                        }
+                    }
+                }
             }
 
             // application/zip
