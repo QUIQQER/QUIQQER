@@ -40,7 +40,7 @@ class Handler
     /**
      * Clears the current message list
      */
-    static function clear()
+    public function clear()
     {
         $this->_messages = array();
     }
