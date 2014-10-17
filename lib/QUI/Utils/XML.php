@@ -6,6 +6,8 @@
 
 namespace QUI\Utils;
 
+use \QUI\Utils\DOM;
+
 /**
  * QUIQQER XML Util class
  *
@@ -38,9 +40,9 @@ class XML
             }
 
             $params = array(
-                'text'    => \QUI\Utils\DOM::getTextFromNode( $Item ),
+                'text'    => DOM::getTextFromNode( $Item ),
                 'name'    => $Item->getAttribute( 'name' ),
-                'icon'    => \QUI\Utils\DOM::parseVar( $Item->getAttribute( 'icon' ) ),
+                'icon'    => DOM::parseVar( $Item->getAttribute( 'icon' ) ),
                 'require' => $Item->getAttribute( 'require' ),
                 'exec'    => $Item->getAttribute( 'exec' ),
                 'onClick' => 'QUI.Menu.menuClick'
@@ -155,7 +157,7 @@ class XML
      */
     static function getConfigParamsFromXml($file)
     {
-        return \QUI\Utils\DOM::getConfigParamsFromDOM(
+        return DOM::getConfigParamsFromDOM(
             self::getDomFromXml( $file )
         );
     }
@@ -185,7 +187,7 @@ class XML
 
             if ( !empty( $file ) )
             {
-                $file = \QUI\Utils\DOM::parseVar( $file );
+                $file = DOM::parseVar( $file );
 
                 if ( file_exists( $file ) ) {
                     require_once $file;
@@ -248,7 +250,7 @@ class XML
 
             for ( $i = 0; $i < $tables->length; $i++ )
             {
-                $dbfields['globals'][] = \QUI\Utils\DOM::dbTableDomToArray(
+                $dbfields['globals'][] = DOM::dbTableDomToArray(
                     $tables->item( $i )
                 );
             }
@@ -265,7 +267,7 @@ class XML
 
             for ( $i = 0; $i < $tables->length; $i++ )
             {
-                $dbfields['projects'][] = \QUI\Utils\DOM::dbTableDomToArray(
+                $dbfields['projects'][] = DOM::dbTableDomToArray(
                     $tables->item( $i )
                 );
             }
@@ -464,7 +466,7 @@ class XML
 
         for ( $i = 0, $len = $panels->length; $i < $len; $i++ )
         {
-            $result[] = \QUI\Utils\DOM::parsePanelToArray(
+            $result[] = DOM::parsePanelToArray(
                 $panels->item( $i )
             );
         }
@@ -498,7 +500,7 @@ class XML
 
         for ( $i = 0; $i < $permission->length; $i++ )
         {
-            $result[] = \QUI\Utils\DOM::parsePermissionToArray(
+            $result[] = DOM::parsePermissionToArray(
                 $permission->item( $i )
             );
         }
@@ -814,7 +816,7 @@ class XML
                 if ( $Widget->getAttribute( 'src' ) )
                 {
                     $file   = $Widget->getAttribute( 'src' );
-                    $file   = \QUI\Utils\DOM::parseVar( $file );
+                    $file   = DOM::parseVar( $file );
                     $Widget = self::getWidgetFromXml( $file );
 
                     if ( $Widget ) {

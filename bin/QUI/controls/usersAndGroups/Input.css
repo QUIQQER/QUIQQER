@@ -2,9 +2,9 @@
 
 .qui-users-and-groups {
     float: left;
+    padding: 2px;
     position: relative;
     width: 400px;
-    padding: 2px;
 }
 
 .qui-users-and-groups-list {
@@ -14,79 +14,67 @@
 
 .qui-users-and-groups-list .group-entry,
 .qui-users-and-groups-list .users-entry {
-    float: left;
+    border-radius: 0px;
     clear: both;
-    width: 100%;
-    padding: 5px;
-    margin: 0px;
     cursor: default;
-
--webkit-box-sizing: border-box;
-   -moz-box-sizing: border-box;
-        box-sizing: border-box;
-
--webkit-border-radius: 0px;
-   -moz-border-radius: 0px;
-        border-radius: 0px;
+    float: left;
+    margin: 0px;
+    padding: 5px;
+    width: 100%;
 }
 
 .qui-users-and-groups-list .group-entry .text,
 .qui-users-and-groups-list .users-entry .text {
-    width: 80%;
     margin:0px;
-
--webkit-box-sizing: border-box;
-   -moz-box-sizing: border-box;
-        box-sizing: border-box;
+    width: 80%;
 }
 
 .qui-users-and-groups-list .group-entry .close,
 .qui-users-and-groups-list .users-entry .close {
-    width: 20%;
     background-position: center right;
+    width: 20%;
 }
 
 .qui-users-and-groups-list {
-    float: left;
-    overflow: auto;
-
-    width: 100%;
-    height: 100px;
-
-    border: 1px solid #AAAAAA;
     background: #fff;
+    border: 1px solid #AAAAAA;
+    border-radius: 3px;
+    float: left;
+    height: 100px;
+    overflow: auto;
+    width: 100%;
 }
 
 .qui-users-and-groups-search {
-    float: left;
     clear: both;
-    width: 100%;
+    float: left;
     margin-top: 2px;
+    width: 100%;
 }
 
 /** DropDown
  ======================================================= */
 
 .qui-users-and-groups-dropdown {
-    position : absolute;
-    z-index  : 10;
-    width    : 200px;
-    padding  : 5px;
-    border   : 1px solid #dedede;
     background : #fff;
+    border   : 1px solid #dedede;
+    padding  : 5px;
+    position : absolute;
+    width    : 200px;
+    z-index  : 10;
 }
 
 .qui-users-and-groups-dropdown .mark {
-    font-weight: bold;
     color: red;
+    font-weight: bold;
 }
 
 .qui-users-and-groups-dropdown-entry {
-    float: left;
     clear: both;
     cursor: pointer;
-    width: 100%;
+    float: left;
     padding: 5px;
+    width: 100%;
 }
 
 .qui-users-and-groups-dropdown-entry-hover {

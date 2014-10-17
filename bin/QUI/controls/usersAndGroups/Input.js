@@ -121,11 +121,11 @@ define('controls/usersAndGroups/Input', [
 
 
             this.$List = new Element('div', {
-                'class' : 'qui-users-and-groups-list radius5'
+                'class' : 'qui-users-and-groups-list'
             }).inject( this.$Elm );
 
             this.$Search = new Element('input', {
-                'class'     : 'qui-users-and-groups-search radius5',
+                'class'     : 'qui-users-and-groups-search',
                 placeholder : Locale.get( 'quiqqer/system', 'usersAndGroups.input.search.placeholder' ),
                 events :
                 {
@@ -178,7 +178,19 @@ define('controls/usersAndGroups/Input', [
                 }
 
                 Label.inject( this.$Elm, 'top' );
+
+                if ( Label.get('data-desc') && Label.get('data-desc') != '&nbsp;' )
+                {
+                    new Element('div', {
+                        'class' : 'description',
+                        html    : Label.get('data-desc'),
+                        styles  : {
+                            marginBottom: 10
+                        }
+                    }).inject( Label, 'after' );
+                }
             }
+
 
             // load values
             if ( !this.$Input.value || this.$Input.value !== '' )

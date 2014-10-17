@@ -2,16 +2,13 @@
  * Permissions Utils
  * Helper for the permissions controls
  *
+ * @module utils/permissions/Utils
  * @author www.pcsg.de (Henning Leutz)
  *
- * @module controls/permissions/Utils
+ * @require css!utils/permissions/Utils.css
  */
 
-define('utils/permissions/Utils', [
-
-    'css!utils/permissions/Utils.css'
-
-], function()
+define(['css!utils/permissions/Utils.css'], function()
 {
     "use strict";
 
@@ -52,32 +49,11 @@ define('utils/permissions/Utils', [
             Label.inject( Entry );
 
 
-            if ( params.desc )
-            {
-                var Container = new Element('div', {
-                    styles : {
-                        'float' : 'left',
-                        marginLeft : 10
-                    }
-                });
-
-                Container.wraps( Label );
-
-                Label.setStyles({
-                    cursor : 'pointer',
-                    margin : 0
-                });
-
-                new Element('p', {
-                    html : params.desc,
-                    styles : {
-                        margin : 0
-                    }
-                }).inject( Container );
+            if ( params.desc ) {
+                Label.set( 'data-desc', params.desc);
             }
 
             return Entry;
         }
-
     };
 });

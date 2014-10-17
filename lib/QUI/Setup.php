@@ -46,7 +46,7 @@ class Setup
         \QUI::getGroups()->setup();
 
         // Rechte setup
-        \QUI::getRights()->setup();
+        \QUI::getPermissionManager()->setup();
 
         // Benutzer erstellen
         \QUI::getUsers()->setup();
@@ -126,16 +126,15 @@ class Setup
             }
         }
 
-
-        // import permissions
-        \QUI\Update::importAllPermissionsXMLs();
-
         // generate translations
         \QUI\Update::importAllLocaleXMLs();
         \QUI\Translator::create();
 
         // generate menu
         \QUI\Update::importAllMenuXMLs();
+
+        // import permissions
+        \QUI\Update::importAllPermissionsXMLs();
 
         // clear cache
         \QUI\Cache\Manager::clearAll();

@@ -49,10 +49,6 @@
     <!--  Darf Projekt Einstellungen machen -->
     <permission name="quiqqer.projects.setconfig" type="users_and_groups" area="project" />
 
-    <!-- Darf Seiten editieren - generelles recht -->
-    <!-- für was ist dieses recht? -->
-    <!--<permission name="quiqqer.projects.sites.edit" type="users_and_groups" area="project" />-->
-
 
 <!-- Site permissions  -->
 
@@ -61,10 +57,6 @@
 
     <!-- Seite editieren -->
     <permission name="quiqqer.projects.site.edit" type="users_and_groups" area="site" />
-
-    <!-- Darf Kind Seiten anlegen -->
-    <permission name="quiqqer.projects.site.createChild" type="users_and_groups" area="site" />
-
 
     <!-- Seite löschen -->
     <permission name="quiqqer.projects.site.del" type="users_and_groups" area="site" />

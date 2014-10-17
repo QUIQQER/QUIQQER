@@ -8,6 +8,10 @@ namespace QUI;
 
 use Composer\Script\Event;
 
+use QUI\Utils\System\File as QUIFile;
+use QUI\System\Log;
+use QUI\Utils\XML;
+
 /**
  * Update from QUIQQER
  *
@@ -28,7 +32,7 @@ class Update
      */
     static function onInstall(Event $Event)
     {
-        // \QUI\System\Log::writeRecursive( $event, 'error' );
+        // Log::writeRecursive( $event, 'error' );
 
         $IO = $Event->getIO();
 
@@ -74,7 +78,7 @@ class Update
             $packages_dir = OPT_DIR;
         }
 
-        $packages = \QUI\Utils\System\File::readDir( $packages_dir );
+        $packages = QUIFile::readDir( $packages_dir );
 
         $IO->write('Start QUIQQER updating ...');
 
@@ -86,7 +90,7 @@ class Update
             }
 
             $package_dir = $packages_dir .'/'. $package;
-            $list        = \QUI\Utils\System\File::readDir( $package_dir );
+            $list        = QUIFile::readDir( $package_dir );
 
             foreach ( $list as $sub )
             {
@@ -121,7 +125,7 @@ class Update
             }
 
             $package_dir = $packages_dir .'/'. $package;
-            $list        = \QUI\Utils\System\File::readDir( $package_dir );
+            $list        = QUIFile::readDir( $package_dir );
 
             foreach ( $list as $sub )
             {
@@ -199,9 +203,9 @@ class Update
             return;
         }
 
-        \QUI\System\Log::write( 'Read: '. $xml_file );
+        Log::write( 'Read: '. $xml_file );
 
-        $engines = \QUI\Utils\XML::getTemplateEnginesFromXml( $xml_file );
+        $engines = XML::getTemplateEnginesFromXml( $xml_file );
 
         foreach ( $engines as $Engine )
         {
@@ -230,9 +234,9 @@ class Update
             return;
         }
 
-        \QUI\System\Log::write( 'Read: '. $xml_file );
+        Log::write( 'Read: '. $xml_file );
 
-        $editors = \QUI\Utils\XML::getWysiwygEditorsFromXml( $xml_file );
+        $editors = XML::getWysiwygEditorsFromXml( $xml_file );
 
         foreach ( $editors as $Editor )
         {
@@ -261,9 +265,9 @@ class Update
             return;
         }
 
-        \QUI\System\Log::write( 'Read: '. $xml_file );
+        Log::write( 'Read: '. $xml_file );
 
-        $events = \QUI\Utils\XML::getEventsFromXml( $xml_file );
+        $events = XML::getEventsFromXml( $xml_file );
         $Events = \QUI::getEvents();
 
         foreach ( $events as $Event )
@@ -292,9 +296,9 @@ class Update
             return;
         }
 
-        \QUI\System\Log::write( 'Read: '. $xml_file );
+        Log::write( 'Read: '. $xml_file );
 
-        $items = \QUI\Utils\XML::getMenuItemsXml( $xml_file );
+        $items = XML::getMenuItemsXml( $xml_file );
 
         if ( !count( $items ) ) {
             return;
@@ -309,7 +313,7 @@ class Update
         $dir      = VAR_DIR .'cache/menu/';
         $cachfile = $dir . $file;
 
-        \QUI\Utils\System\File::mkdir( $dir );
+        QUIFile::mkdir( $dir );
 
         if ( file_exists( $cachfile ) ) {
             unlink( $cachfile );
@@ -331,9 +335,9 @@ class Update
             return;
         }
 
-        \QUI\System\Log::write( 'Read: '. $xml_file );
+        Log::write( 'Read: '. $xml_file );
 
-        \QUI\Utils\XML::importDataBaseFromXml( $xml_file );
+        XML::importDataBaseFromXml( $xml_file );
     }
 
     /**
@@ -349,7 +353,7 @@ class Update
             return;
         }
 
-        \QUI\System\Log::write( 'Read: '. $xml_file );
+        Log::write( 'Read: '. $xml_file );
 
         \QUI\Translator::import( $xml_file, false );
     }
@@ -368,9 +372,9 @@ class Update
             return;
         }
 
-        \QUI\System\Log::write( 'Read: '. $xml_file );
+        Log::write( 'Read: '. $xml_file );
 
-        \QUI\Utils\XML::importPermissionsFromXml( $xml_file, $src );
+        XML::importPermissionsFromXml( $xml_file, $src );
     }
 
     /**
@@ -400,7 +404,7 @@ class Update
             return;
         }
 
-        $packages = \QUI\Utils\System\File::readDir( OPT_DIR );
+        $packages = QUIFile::readDir( OPT_DIR );
 
         // then we can read the rest xml files
         foreach ( $packages as $package )
@@ -410,7 +414,7 @@ class Update
             }
 
             $package_dir = OPT_DIR .'/'. $package;
-            $list        = \QUI\Utils\System\File::readDir( $package_dir );
+            $list        = QUIFile::readDir( $package_dir );
 
             foreach ( $list as $sub )
             {
@@ -433,7 +437,21 @@ class Update
     static function importAllPermissionsXMLs()
     {
         $packages_dir = OPT_DIR;
-        $packages     = \QUI\Utils\System\File::readDir( OPT_DIR );
+        $packages     = QUIFile::readDir( OPT_DIR );
+
+        // clear system permissions
+        \QUI::getDataBase()->delete(
+            \QUI::getDBTableName( \QUI\Rights\Manager::TABLE ),
+            array(
+                'src' => array(
+                    'type'  => 'NOT',
+                    'value' => 'user'
+                )
+            )
+        );
+
+        \QUI::$Rights = null; // so we have nor permission cache
+
 
         self::importPermissions(
             CMS_DIR .'/admin/permissions.xml',
@@ -447,7 +465,7 @@ class Update
             }
 
             $package_dir = OPT_DIR .'/'. $package;
-            $list        = \QUI\Utils\System\File::readDir( $package_dir );
+            $list        = QUIFile::readDir( $package_dir );
 
             foreach ( $list as $sub )
             {
@@ -490,7 +508,7 @@ class Update
             return;
         }
 
-        $packages = \QUI\Utils\System\File::readDir( $packages_dir );
+        $packages = QUIFile::readDir( $packages_dir );
 
         foreach ( $packages as $package )
         {
@@ -499,7 +517,7 @@ class Update
             }
 
             $package_dir = $packages_dir .'/'. $package;
-            $list        = \QUI\Utils\System\File::readDir( $package_dir );
+            $list        = QUIFile::readDir( $package_dir );
 
             foreach ( $list as $sub )
             {
@@ -526,7 +544,7 @@ class Update
         }
 
         // system xmls
-        $File       = new \QUI\Utils\System\File();
+        $File       = new QUIFile();
         $locale_dir = CMS_DIR .'admin/locale/';
         $locales    = $File->readDirRecursiv( $locale_dir, true );
 

@@ -1,12 +1,12 @@
+
 /**
- * Comment here
- *
- * @author www.pcsg.de (Henning Leutz)
+ * Permissions Panel
  *
  * @module controls/permissions/Panel
+ * @author www.pcsg.de (Henning Leutz)
  */
 
-define('controls/permissions/Panel', [
+define([
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
@@ -24,12 +24,27 @@ define('controls/permissions/Panel', [
 
     'css!controls/permissions/Panel.css'
 
-], function(
-    QUI, Panel, Utils, ControlUtils, ObjectUtils, Locale, Ajax,
-    QUIButton, QUIButtonSeperator, Sitemap, SitemapItem, QUIPrompt, QUIConfirm
-)
+], function()
 {
     "use strict";
+
+    var QUI                = arguments[ 0 ],
+        Panel              = arguments[ 1 ],
+        Utils              = arguments[ 2 ],
+        ControlUtils       = arguments[ 3 ],
+        ObjectUtils        = arguments[ 4 ],
+        Locale             = arguments[ 5 ],
+        Ajax               = arguments[ 6 ],
+        QUIButton          = arguments[ 7 ],
+        QUIButtonSeperator = arguments[ 8 ],
+        Sitemap            = arguments[ 9 ],
+        SitemapItem        = arguments[ 10 ],
+        QUIPrompt          = arguments[ 11 ],
+        QUIConfirm         = arguments[ 12 ];
+
+
+    var lg = 'quiqqer/system';
+
 
     /**
      * @class controls/permissions/Panel
@@ -60,10 +75,7 @@ define('controls/permissions/Panel', [
         {
             // defaults
             this.setAttribute( 'title',
-                Locale.get(
-                    'quiqqer/system',
-                    'permissions.panel.title'
-                )
+                Locale.get( lg, 'permissions.panel.title' )
             );
 
             this.setAttribute( 'icon', 'icon-gears' );
@@ -157,10 +169,7 @@ define('controls/permissions/Panel', [
             {
                 var Container = new Element('div.qui-permissions-select-sheet', {
                     html   : '<h1>'+
-                                 Locale.get(
-                                     'quiqqer/system',
-                                     'permissions.panel.select.group.title'
-                                 ) +
+                                 Locale.get( lg, 'permissions.panel.select.group.title' ) +
                              '</h1>' +
                              '<div class="buttons"></div>'+
                              '<div class="search"></div>',
@@ -176,10 +185,7 @@ define('controls/permissions/Panel', [
 
                 btnList.push(
                     new QUIButton({
-                        text : Locale.get(
-                            'quiqqer/system',
-                            'permissions.panel.btn.select.user'
-                        ),
+                        text    : Locale.get( lg, 'permissions.panel.btn.select.user' ),
                         icon    : 'icon-user',
                         styles  : {
                             width : 200
@@ -195,10 +201,7 @@ define('controls/permissions/Panel', [
 
                 btnList.push(
                     new QUIButton({
-                        text : Locale.get(
-                            'quiqqer/system',
-                            'permissions.panel.btn.select.group'
-                        ),
+                        text   : Locale.get( lg, 'permissions.panel.btn.select.group' ),
                         icon   : 'icon-group',
                         events :
                         {
@@ -211,10 +214,7 @@ define('controls/permissions/Panel', [
 
                 btnList.push(
                     new QUIButton({
-                        text : Locale.get(
-                            'quiqqer/system',
-                            'permissions.panel.btn.select.site'
-                        ),
+                        text   : Locale.get( lg, 'permissions.panel.btn.select.site' ),
                         icon   : 'icon-file-alt',
                         events :
                         {
@@ -232,10 +232,7 @@ define('controls/permissions/Panel', [
 
                 btnList.push(
                     new QUIButton({
-                        text : Locale.get(
-                            'quiqqer/system',
-                            'permissions.panel.btn.select.project'
-                        ),
+                        text   : Locale.get( lg, 'permissions.panel.btn.select.project' ),
                         icon   : 'icon-home',
                         events :
                         {
@@ -248,10 +245,7 @@ define('controls/permissions/Panel', [
 
                 btnList.push(
                     new QUIButton({
-                        text : Locale.get(
-                            'quiqqer/system',
-                            'permissions.panel.btn.select.manage'
-                        ),
+                        text   : Locale.get( lg, 'permissions.panel.btn.select.manage' ),
                         icon   : 'icon-gears',
                         events :
                         {
@@ -313,10 +307,7 @@ define('controls/permissions/Panel', [
                     'html',
 
                     '<h2>' +
-                        Locale.get(
-                            'quiqqer/system',
-                            'permissions.panel.select.group.title'
-                        ) +
+                        Locale.get( lg, 'permissions.panel.select.group.title' ) +
                     '</h2>'
                 );
 
@@ -367,10 +358,7 @@ define('controls/permissions/Panel', [
                     'html',
 
                     '<h2>' +
-                        Locale.get(
-                            'quiqqer/system',
-                            'permissions.panel.select.user.title'
-                        ) +
+                        Locale.get( lg, 'permissions.panel.select.user.title' ) +
                     '</h2>'
                 );
 
@@ -422,10 +410,7 @@ define('controls/permissions/Panel', [
                     'html',
 
                     '<h2>' +
-                        Locale.get(
-                            'quiqqer/system',
-                            'permissions.panel.select.project.title'
-                        ) +
+                        Locale.get( lg, 'permissions.panel.select.project.title' ) +
                     '</h2>'
                 );
 
@@ -466,30 +451,21 @@ define('controls/permissions/Panel', [
             var self = this;
 
             new QUIPrompt({
-                title : Locale.get(
-                    'quiqqer/system',
-                    'permissions.panel.window.add.title'
-                ),
-                icon : 'icon-add',
-                text : Locale.get(
-                    'quiqqer/system',
-                    'permissions.panel.window.add.text'
-                ),
-
-                information : Locale.get(
-                    'quiqqer/system',
-                    'permissions.panel.window.add.information'
-                ),
-
-                autoclose : false,
-                width     : 600,
-
+                title       : Locale.get( lg, 'permissions.panel.window.add.title' ),
+                icon        : 'icon-add',
+                text        : Locale.get( lg, 'permissions.panel.window.add.text' ),
+                information : Locale.get( lg, 'permissions.panel.window.add.information' ),
+                autoclose   : false,
+                maxWidth    : 600,
                 events :
                 {
-                    onDrawEnd : function(Win)
+                    onOpen : function(Win)
                     {
-                        var Body  = Win.getBody(),
-                            Input = Body.getElement( 'input' );
+                        var Body       = Win.getContent(),
+                            PromptBody = Body.getElement( '.qui-windows-prompt' ),
+                            Input      = Body.getElement( 'input' );
+
+                        PromptBody.setStyle( 'height', null );
 
                         Input.setStyles({
                             width   : 200,
@@ -525,7 +501,7 @@ define('controls/permissions/Panel', [
                             }
                         }).inject( Area, 'after' );
 
-                        Body.getElement( '.information' ).setStyle( 'clear', 'both' );
+                        Body.getElement( '.qui-windows-prompt-information' ).setStyle( 'clear', 'both' );
 
                         if ( !self.$Map ) {
                             return;
@@ -553,8 +529,8 @@ define('controls/permissions/Panel', [
                             }
                         }, {
                             permission     : value,
-                            area           : Win.getBody().getElement( '[name="area"]' ).value,
-                            permissiontype : Win.getBody().getElement( '[name="type"]' ).value,
+                            area           : Win.getContent().getElement( '[name="area"]' ).value,
+                            permissiontype : Win.getContent().getElement( '[name="type"]' ).value,
                             onError : function(Exception, Request)
                             {
                                 QUI.getMessageHandler(function(MessageHandler) {
@@ -567,7 +543,7 @@ define('controls/permissions/Panel', [
                     }
                 }
 
-            }).create();
+            }).open();
         },
 
         /**
@@ -589,24 +565,13 @@ define('controls/permissions/Panel', [
             var self = this;
 
             new QUIConfirm({
-                title : Locale.get(
-                    'quiqqer/system',
-                    'permissions.panel.window.delete.title'
-                ),
-                text  : Locale.get(
-                    'quiqqer/system',
-                    'permissions.panel.window.delete.text',
-                    {
-                        right : right
-                    }
-                ),
-                information : Locale.get(
-                    'quiqqer/system',
-                    'permissions.panel.window.delete.information',
-                    {
-                        right : right
-                    }
-                ),
+                title : Locale.get( lg, 'permissions.panel.window.delete.title' ),
+                text  : Locale.get( lg, 'permissions.panel.window.delete.text', {
+                    right : right
+                }),
+                information : Locale.get( lg, 'permissions.panel.window.delete.information', {
+                    right : right
+                }),
                 icon      : 'icon-false',
                 texticon  : 'icon-gears',
                 autoclose : false,
@@ -709,17 +674,11 @@ define('controls/permissions/Panel', [
             }).inject( this.getBody() );
 
             this.addButton({
-                name    : 'permissions-sitemap',
-                image   : 'icon-sitemap',
-                alt     : Locale.get(
-                    'quiqqer/system',
-                    'permissions.panel.btn.sitemap.alt'
-                ),
-                title   : Locale.get(
-                    'quiqqer/system',
-                    'permissions.panel.btn.sitemap.title'
-                ),
-                events  :
+                name   : 'permissions-sitemap',
+                image  : 'icon-sitemap',
+                alt    : Locale.get( lg, 'permissions.panel.btn.sitemap.alt' ),
+                title  : Locale.get( lg, 'permissions.panel.btn.sitemap.title' ),
+                events :
                 {
                     onClick : function(Btn)
                     {
@@ -737,17 +696,11 @@ define('controls/permissions/Panel', [
             });
 
             this.addButton({
-                name    : 'permissions-select',
-                image   : 'icon-gears',
-                alt     : Locale.get(
-                    'quiqqer/system',
-                    'permissions.panel.btn.select.open.alt'
-                ),
-                title   : Locale.get(
-                    'quiqqer/system',
-                    'permissions.panel.btn.select.open.alt'
-                ),
-                events  : {
+                name   : 'permissions-select',
+                image  : 'icon-gears',
+                alt    : Locale.get( lg, 'permissions.panel.btn.select.open.alt' ),
+                title  : Locale.get( lg, 'permissions.panel.btn.select.open.alt' ),
+                events : {
                     onClick : this.openSearch
                 }
             });
@@ -758,20 +711,9 @@ define('controls/permissions/Panel', [
                 name      : 'permissions-add',
                 textimage : 'icon-plus',
                 disabled  : true,
-
-                alt : Locale.get(
-                    'quiqqer/system',
-                    'permissions.panel.btn.add.alt'
-                ),
-                title : Locale.get(
-                    'quiqqer/system',
-                    'permissions.panel.btn.add.title'
-                ),
-                text : Locale.get(
-                    'quiqqer/system',
-                    'permissions.panel.btn.add.text'
-                ),
-                Control : this,
+                alt     : Locale.get( lg, 'permissions.panel.btn.add.alt' ),
+                title   : Locale.get( lg, 'permissions.panel.btn.add.title' ),
+                text    : Locale.get( lg, 'permissions.panel.btn.add.text' ),
                 events  : {
                     onClick : this.addPermission
                 }
@@ -782,18 +724,9 @@ define('controls/permissions/Panel', [
                 textimage : 'icon-save',
                 disabled  : true,
 
-                alt : Locale.get(
-                    'quiqqer/system',
-                    'permissions.panel.btn.save.alt'
-                ),
-                title : Locale.get(
-                    'quiqqer/system',
-                    'permissions.panel.btn.save.title'
-                ),
-                text : Locale.get(
-                    'quiqqer/system',
-                    'permissions.panel.btn.save.text'
-                ),
+                alt     : Locale.get( lg, 'permissions.panel.btn.save.alt' ),
+                title   : Locale.get( lg, 'permissions.panel.btn.save.title' ),
+                text    : Locale.get( lg, 'permissions.panel.btn.save.text' ),
                 Control : this,
                 events  : {
                     onClick : this.save
@@ -1121,9 +1054,9 @@ define('controls/permissions/Panel', [
 
             var list, right, Elm;
 
-            var i     = 0,
-                len   = 0,
-                val   = Item.getAttribute( 'value' ) +'.';
+            var i   = 0,
+                len = 0,
+                val = Item.getAttribute( 'value' ) +'.';
 
             this.$Container.set( 'html', '' );
 
@@ -1149,7 +1082,6 @@ define('controls/permissions/Panel', [
                     );
 
                     i++;
-
                     continue;
                 }
 
@@ -1175,11 +1107,7 @@ define('controls/permissions/Panel', [
             {
                 new Element('tr', {
                     'class' : 'odd',
-                    html    : '<td>'+ Locale.get(
-                                'quiqqer/system',
-                                'permissions.panel.message.no.rights'
-                            ) +
-                        '</td>'
+                    html    : '<td>'+ Locale.get( lg, 'permissions.panel.message.no.rights' ) + '</td>'
                 }).inject( Table );
             }
 
@@ -1308,21 +1236,13 @@ define('controls/permissions/Panel', [
                 if ( right.src == 'user' )
                 {
                     new QUIButton({
-                        icon   : 'icon-remove',
-                        title  : Locale.get(
-                            'quiqqer/system',
-                            'permissions.panel.btn.delete.right.alt',
-                            {
-                                right : right.name
-                            }
-                        ),
-                        alt : Locale.get(
-                            'quiqqer/system',
-                            'permissions.panel.btn.delete.right.title',
-                            {
-                                right : right.name
-                            }
-                        ),
+                        icon  : 'icon-remove',
+                        title : Locale.get( lg, 'permissions.panel.btn.delete.right.alt', {
+                            right : right.name
+                        }),
+                        alt : Locale.get( lg, 'permissions.panel.btn.delete.right.title', {
+                            right : right.name
+                        }),
                         value  : right.name,
                         events : {
                             onClick : this.delPermission
@@ -1334,6 +1254,5 @@ define('controls/permissions/Panel', [
             Node.inject( Row.getElement( 'td' ) );
             Row.inject( Table );
         }
-
     });
 });
