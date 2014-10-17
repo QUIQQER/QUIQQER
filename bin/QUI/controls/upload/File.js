@@ -248,9 +248,11 @@ define([
                     }
                 },
                 styles : {
+                    bottom     : 0,
                     opacity    : 0,
                     position   : 'absolute',
-                    visibility : 'hidden'
+                    right      : 0,
+                    visibility : 'hidden',
                 }
             });
 
