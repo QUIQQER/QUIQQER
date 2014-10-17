@@ -82,10 +82,7 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
             $maxheight = 1200;
         }
 
-        $params = $this->getResizeSize(
-            $maxwidth,
-            $maxheight
-        );
+        $params = $this->getResizeSize( $maxwidth, $maxheight );
 
         $width  = $params['width'];
         $height = $params['height'];
@@ -156,10 +153,7 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
      */
     public function createSizeCacheUrl($maxwidth=false, $maxheight=false)
     {
-        $params = $this->getResizeSize(
-            $maxwidth,
-            $maxheight
-        );
+        $params = $this->getResizeSize( $maxwidth, $maxheight );
 
         $cacheUrl = $this->createSizeCache(
             $params['width'],
@@ -181,10 +175,7 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
      */
     public function createResizeCache($maxwidth=false, $maxheight=false)
     {
-        $params = $this->getResizeSize(
-            $maxwidth,
-            $maxheight
-        );
+        $params = $this->getResizeSize( $maxwidth, $maxheight );
 
         return $this->createSizeCache(
             $params['width'],
