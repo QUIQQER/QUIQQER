@@ -48,7 +48,7 @@ function ajax_system_phpinfo()
     foreach ( $phpinfo as $name => $section )
     {
         $str .= "<h2>$name</h2>";
-        $str .= "<table class=\"data-table\">\n";
+        $str .= "<table class=\"data-table\" style=\"width: 100%;\">\n";
 
         $i = 0;
 
@@ -65,11 +65,11 @@ function ajax_system_phpinfo()
             } elseif ( is_string( $key ) )
             {
                 $str .= "<td>$key</td>";
-                $str .= "<td>$val</td>";
+                $str .= "<td colspan=\"2\">$val</td>";
 
             } else
             {
-                $str .= "<td>$val</td>";
+                $str .= "<td colspan=\"3\">$val</td>";
             }
 
             $str .= "</tr>";

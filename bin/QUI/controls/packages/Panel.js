@@ -67,8 +67,7 @@ define([
             'loadHealth',
             'unloadHealth',
 
-            'loadPHPInfo',
-            'unloadPHPInfo'
+            'loadPHPInfo'
         ],
 
         options : {
@@ -190,8 +189,7 @@ define([
                 text   : Locale.get( lg, 'packages.category.system.phpInfo' ),
                 image  : 'icon-info-sign',
                 events : {
-                    onActive : this.loadPHPInfo,
-                    onNormal : this.unloadPHPInfo
+                    onActive : this.loadPHPInfo
                 }
             });
 
@@ -1790,14 +1788,6 @@ return;
                 Body.set( 'html', result );
                 self.Loader.hide();
             });
-        },
-
-        /**
-         *
-         */
-        unloadPHPInfo : function()
-        {
-
         }
 
     });
