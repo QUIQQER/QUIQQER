@@ -44,6 +44,10 @@
             <de><![CDATA[Systemgesundheit]]></de>
             <en><![CDATA[Systemhealth]]></en>
         </locale>
+        <locale name="packages.category.system.phpInfo">
+            <de><![CDATA[PHP-Info]]></de>
+            <en><![CDATA[PHP-Info]]></en>
+        </locale>
 
 
         <locale name="packages.grid.update.title">

@@ -65,7 +65,10 @@ define([
             'dialogInstall',
 
             'loadHealth',
-            'unloadHealth'
+            'unloadHealth',
+
+            'loadPHPInfo',
+            'unloadPHPInfo'
         ],
 
         options : {
@@ -181,6 +184,17 @@ define([
                     onNormal : this.unloadHealth
                 }
             });
+
+            this.addCategory({
+                name   : 'phpInfo',
+                text   : Locale.get( lg, 'packages.category.system.phpInfo' ),
+                image  : 'icon-info-sign',
+                events : {
+                    onActive : this.loadPHPInfo,
+                    onNormal : this.unloadPHPInfo
+                }
+            });
+
 
 
             this.getCategoryBar().firstChild().click();
@@ -1668,23 +1682,48 @@ return;
                     {
                         var i, icon, html;
 
-                        var c = 0,
-                            Content = Sheet.getContent();
-
-                        Content.setStyles({
-                            padding: 20
-                        });
-
-                        html = '<table class="data-table"><thead>' +
-                               '<tr>' +
-                                   '<th colspan="2">Ergebnis</th>' +
-                               '</tr>' +
-                               '</thead>' +
-                               '<tbody>';
+                        var c        = 0,
+                            sumOk    = 0,
+                            sumError = 0,
+                            sumNotFo = 0,
+                            Content  = Sheet.getContent();
 
                         var iconOK       = '<span class="icon-ok"></span>',
                             iconError    = '<span class="icon-exclamation"></span>',
                             iconNotFound = '<span class="icon-question"></span>';
+
+                        Content.setStyles({
+                            overflow : 'auto',
+                            padding  : 20
+                        });
+
+                        Content.addClass( 'packages-health-sumSheet' );
+
+                        html = '<table class="data-table"><thead>' +
+                                    '<tr>' +
+                                    '<th colspan="2">Zusammenfassung</th>' +
+                                '</tr>' +
+                                '</thead>' +
+                                '<tbody>' +
+                                    '<tr class="odd">' +
+                                        '<td>'+ iconOK +'</td>' +
+                                        '<td class="sum-ok"></td>' +
+                                    '</tr>'+
+                                    '<tr class="even">' +
+                                        '<td>'+ iconError +'</td>' +
+                                        '<td class="sum-error"></td>' +
+                                    '</tr>'+
+                                    '<tr class="odd">' +
+                                        '<td>'+ iconNotFound +'</td>' +
+                                        '<td class="sum-notFound"></td>' +
+                                    '</tr>'+
+                                '</tbody></table>'+
+                                '<table class="data-table"><thead>' +
+                                '<tr>' +
+                                    '<th colspan="2">Ergebnis</th>' +
+                                '</tr>' +
+                                '</thead>' +
+                                '<tbody>';
 
 
                         for ( i in result )
@@ -1694,16 +1733,18 @@ return;
                             if ( result[ i ] === -1 )
                             {
                                 icon = iconError;
+                                sumError++;
 
                             } else if ( result[ i ] === 1 )
                             {
                                 icon = iconOK;
+                                sumOk++;
 
                             } else if ( result[ i ] === 0 )
                             {
                                 icon = iconNotFound;
+                                sumNotFo++;
                             }
-
 
                             html = html +
                                    '<tr class="'+ (c % 2 ? 'even' : 'odd') +'">' +
@@ -1716,11 +1757,47 @@ return;
 
                         html = html + '</tbody></table>';
 
-
                         Content.set( 'html', html );
+
+
+                        Content.getElement( '.sum-ok' ).set( 'html', sumOk +' Dateien ok.' );
+                        Content.getElement( '.sum-error' ).set( 'html', sumError +' Dateien fehlerhaft.' );
+                        Content.getElement( '.sum-notFound' ).set( 'html', sumNotFo +' Dateien konnten nicht geprüft werden.' );
                     }
                 }
             }).show();
+        },
+
+
+    /**
+     * PHP Info
+     */
+
+        /**
+         * Shows the php info
+         */
+        loadPHPInfo : function()
+        {
+            var self = this,
+                Body = this.getContent();
+
+            this.Loader.show();
+
+            Body.set( 'html', '' );
+
+            Ajax.get('ajax_system_phpinfo', function(result)
+            {
+                Body.set( 'html', result );
+                self.Loader.hide();
+            });
+        },
+
+        /**
+         *
+         */
+        unloadPHPInfo : function()
+        {
+
         }
 
     });
