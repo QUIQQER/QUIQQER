@@ -345,9 +345,7 @@ class Manager
                 continue;
             }
 
-            if ( empty( $params['area'] ) &&
-                 ( $area == 'user' || $area == 'groups' ) )
-            {
+            if ( empty( $params['area'] ) && ($area == 'user' || $area == 'groups') ) {
                 $result[ $key ] = $params;
             }
         }
@@ -449,6 +447,11 @@ class Manager
      */
     public function getSitePermissions($Site)
     {
+        if ( \QUI\Projects\Site\Utils::isSiteObject( $Site ) === false ) {
+            return array();
+        }
+
+
         $data  = $this->_getData( $Site );
         $_list = $this->getPermissionList( 'site' );
 
@@ -639,19 +642,17 @@ class Manager
      */
     public function setSitePermissions($Site, $permissions)
     {
-        switch ( get_class( $Site ) )
-        {
-            case 'QUI\\Projects\\Site':
-            case 'QUI\\Projects\\Site\\Edit':
-            case 'QUI\\Projects\\Site\\OnlyDB':
-            break;
-
-            default:
-                return;
+        if ( \QUI\Projects\Site\Utils::isSiteObject( $Site ) === false ) {
+            return;
         }
 
+        $Site->checkPermission( 'quiqqer.project.sites.edit' );
+
+
         $_data = $this->_getData( $Site );
-        $list  = $this->getPermissionList( 'site' );
+
+        $data = array();
+        $list = $this->getPermissionList( 'site' );
 
         // look at permission list and cleanup the values
         foreach ( $list as $permission => $params )
@@ -734,7 +735,8 @@ class Manager
      */
     public function removeSitePermissions($Site)
     {
-        // @todo check rights?
+        $Site->checkPermission( 'quiqqer.projects.site.edit' );
+
 
         $Project = $Site->getProject();
         $table   = \QUI::getDBTableName( self::TABLE );

@@ -8,6 +8,11 @@ namespace QUI\Projects\Site;
 
 use \QUI\Utils\String as StringUtils;
 
+use \QUI\Rights\Permission;
+
+use \QUI\Users\User;
+use \QUI\Groups\Group;
+
 /**
  * Site Objekt für den Admibereich
  *
@@ -402,7 +407,7 @@ class Edit extends \QUI\Projects\Site
         try
         {
             // Prüfen ob der Benutzer die Seite bearbeiten darf
-            $this->checkPermission( 'quiqqer.project.site.edit' );
+            $this->checkPermission( 'quiqqer.projects.site.edit' );
 
         } catch ( \QUI\Exception $Exception )
         {
@@ -782,16 +787,7 @@ class Edit extends \QUI\Projects\Site
             }
         }
 
-        // Tabs der Plugins hohlen
-//         $Plugins = $this->_getLoadedPlugins();
         $Project = $this->getProject();
-
-//         foreach ( $Plugins as $Plugin )
-//         {
-//             if ( method_exists( $Plugin, 'onGetChildren' ) ) {
-//                $params = $Plugin->onGetChildren( $this, $params );
-//             }
-//         }
 
         /*
         $this->Events->fireEvent( 'getChildren', array( $this, $params ) );
@@ -1290,6 +1286,37 @@ class Edit extends \QUI\Projects\Site
             unlink( $this->_marcatefile );
         }
     }
+
+    /**
+     * permissions
+     */
+
+    /**
+     * Add an user to the permission
+     *
+     * @param String $permission - name of the permission
+     * @param User $User - User Object
+     */
+    public function addUserToPermission(User $User, $permission)
+    {
+        Permission::addUserToSitePermission( $User, $this, $permission );
+    }
+
+    /**
+     * add an group to the permission
+     *
+     * @param unknown $permission
+     * @param Group $Group
+     */
+    public function addgroupToPermission($permission, Group $Group)
+    {
+        Permission::addGroupToSitePermission( $User, $this, $permission );
+    }
+
+
+    /**
+     * Utils
+     */
 
     /**
      * Säubert eine URL macht sie schön

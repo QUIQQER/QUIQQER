@@ -353,4 +353,26 @@ class Utils
 
         return $result;
     }
+
+    /**
+     * is the object one of the site objects
+     *
+     * @param QUI\Projects\Site|QUI\Projects\Site\Edit|QUI\Projects\Site\OnlyDB $Site
+     * @return boolean
+     */
+    static function isSiteObject($Site)
+    {
+        switch ( get_class( $Site ) )
+        {
+            case 'QUI\\Projects\\Site':
+            case 'QUI\\Projects\\Site\\Edit':
+            case 'QUI\\Projects\\Site\\OnlyDB':
+            break;
+
+            default:
+                return false;
+        }
+
+        return true;
+    }
 }

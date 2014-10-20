@@ -6,6 +6,9 @@
 
 namespace QUI\Rights;
 
+use \QUI\Users\User;
+use \QUI\Groups\Group;
+
 /**
  * Provides methods for quick rights checking
  *
@@ -97,29 +100,6 @@ class Permission
     }
 
     /**
-     * has the User the permission at the site?
-     *
-     * @param String $perm
-     * @param \QUI\Projects\Site $Site
-     * @param \QUI\Users\User|false $User - optional
-     *
-     * @return Ambigous <false, string, permission, unknown, boolean>|boolean
-     */
-    static function hasSitePermission($perm, $Site, $User=false)
-    {
-        try
-        {
-            return self::checkSitePermission($perm, $Site, $User);
-
-        } catch ( \QUI\Exception $Exception )
-        {
-
-        }
-
-        return false;
-    }
-
-    /**
      * Prüft ob der Benutzer in den Adminbereich darf
      *
      * @param \QUI\Users\User|false $User - optional
@@ -194,27 +174,6 @@ class Permission
             ),
             403
         );
-    }
-
-    /**
-     * Checks if the User have the permission of the Site
-     *
-     * @param String $perm
-     * @param unknown_type $Site
-     * @param \QUI\Users\User|false $User - optional
-     *
-     * @throws \QUI\Exception
-     */
-    static function checkSitePermission($perm, $Site, $User=false)
-    {
-        if ( $User === false ) {
-            $User = \QUI::getUserBySession();
-        }
-
-        $Manager     = \QUI::getPermissionManager();
-        $permissions = $Manager->getSitePermissions( $Site );
-
-        return self::checkPermissionList( $permissions, $perm, $User );
     }
 
     /**
@@ -404,22 +363,6 @@ class Permission
     }
 
     /**
-     * Return the Site Permission
-     *
-     * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
-     * @param String $perm
-     *
-     * @return unknown_type|boolean
-     */
-    static function getSitePermission($Site, $perm)
-    {
-        $Manager     = \QUI::getRights();
-        $permissions = $Manager->getSitePermissions( $Site );
-
-        return isset( $permissions[ $perm ] ) ? $permissions[ $perm ] : false;
-    }
-
-    /**
      * Checks if the permission is set
      *
      * @param String $perm
@@ -433,7 +376,7 @@ class Permission
             $User = \QUI::getUserBySession();
         }
 
-        $Manager     = \QUI::getRights();
+        $Manager     = \QUI::getPermissionManager();
         $permissions = $Manager->getPermissions( $User );
 
         // first check user permission
@@ -455,6 +398,120 @@ class Permission
         return false;
     }
 
+
+    /**
+     * Sites
+     */
+
+
+    /**
+     * Add an user to the permission
+     *
+     * @param \QUI\Users\User $User
+     * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
+     * @param String $permission - name of the permission
+     */
+    static function addUserToSitePermission(User $User, $Site, $permission)
+    {
+        if ( \QUI\Projects\Site\Utils::isSiteObject( $Site ) === false ) {
+            return array();
+        }
+
+        /* @var $Site \QUI\Projects\Site */
+        $Site->checkPermission( 'quiqqer.projects.site.edit' );
+
+        $Manager     = \QUI::getPermissionManager();
+        $permissions = $Manager->getSitePermissions( $Site );
+
+        if ( !isset( $permissions[ $permission ] ) )  {
+            return;
+        }
+
+        $permList = array();
+        $user     = 'u'. $User->getId();
+
+        if ( !empty( $permissions[ $permission ] ) ) {
+            $permList = explode( ',', trim( $permissions[ $permission ], ' ,' ) );
+        }
+
+        $flip = array_flip( $permList );
+
+        // user is in the permissions
+        if ( isset( $flip[ $user ] ) ) {
+            return;
+        }
+
+        $permList[] = $user;
+
+        $Manager->setSitePermissions( $Site, array( $permission => $permList) );
+    }
+
+
+    /**
+     * Add a group to the permission
+     *
+     * @param \QUI\Groups\Group $Group
+     * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
+     * @param String $permission - name of the permission
+     */
+    static function addGroupToSitePermission(Group $Group, $Site, $permission)
+    {
+        if ( \QUI\Projects\Site\Utils::isSiteObject( $Site ) === false ) {
+            return array();
+        }
+
+        /* @var $Site \QUI\Projects\Site */
+        $Site->checkPermission( 'quiqqer.projects.site.edit' );
+
+        $Manager     = \QUI::getPermissionManager();
+        $permissions = $Manager->getSitePermissions( $Site );
+
+        if ( !isset( $permissions[ $permission ] ) )  {
+            return;
+        }
+
+        $permList = array();
+        $group    = 'g'. $Group->getId();
+
+        if ( !empty( $permissions[ $permission ] ) ) {
+            $permList = explode( ',', trim( $permissions[ $permission ], ' ,' ) );
+        }
+
+        $flip = array_flip( $permList );
+
+        // user is in the permissions
+        if ( isset( $flip[ $group ] ) ) {
+            return;
+        }
+
+        $permList[] = $group;
+
+        $Manager->setSitePermissions( $Site, array( $permission => $permList) );
+    }
+
+
+    /**
+     * Checks if the User have the permission of the Site
+     *
+     * @param String $perm
+     * @param unknown_type $Site
+     * @param \QUI\Users\User|false $User - optional
+     *
+     * @throws \QUI\Exception
+     */
+    static function checkSitePermission($perm, $Site, $User=false)
+    {
+        if ( $User === false ) {
+            $User = \QUI::getUserBySession();
+        }
+
+        $Manager     = \QUI::getPermissionManager();
+        $permissions = $Manager->getSitePermissions( $Site );
+
+        return self::checkPermissionList( $permissions, $perm, $User );
+    }
+
+
     /**
      * Checks if the permission exists in the Site
      *
@@ -468,9 +525,48 @@ class Permission
             $User = \QUI::getUserBySession();
         }
 
-        $Manager     = \QUI::getRights();
+        $Manager     = \QUI::getPermissionManager();
         $permissions = $Manager->getSitePermissions( $Site );
 
         return isset( $permissions[ $perm ] ) ? true : false;
+    }
+
+    /**
+     * Return the Site Permission
+     *
+     * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
+     * @param String $perm
+     *
+     * @return unknown_type|boolean
+     */
+    static function getSitePermission($Site, $perm)
+    {
+        $Manager     = \QUI::getPermissionManager();
+        $permissions = $Manager->getSitePermissions( $Site );
+
+        return isset( $permissions[ $perm ] ) ? $permissions[ $perm ] : false;
+    }
+
+    /**
+     * has the User the permission at the site?
+     *
+     * @param String $perm
+     * @param \QUI\Projects\Site $Site
+     * @param \QUI\Users\User|false $User - optional
+     *
+     * @return Ambigous <false, string, permission, unknown, boolean>|boolean
+     */
+    static function hasSitePermission($perm, $Site, $User=false)
+    {
+        try
+        {
+            return self::checkSitePermission($perm, $Site, $User);
+
+        } catch ( \QUI\Exception $Exception )
+        {
+
+        }
+
+        return false;
     }
 }

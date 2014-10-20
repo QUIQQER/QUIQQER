@@ -151,6 +151,58 @@ define([
         },
 
         /**
+         * Get the permission list
+         *
+         * @param {Function} callback - callback function
+         */
+        getPermissionList : function(callback)
+        {
+            if ( !this.$Bind )
+            {
+                Ajax.get( ['ajax_permissions_list'], callback );
+                return;
+            }
+
+            var self   = this,
+                params = {
+                    id : this.$Bind.getId()
+                };
+
+            switch ( this.$Bind.getType() )
+            {
+                case 'classes/projects/Project':
+                    params.project = this.$Bind.getName();
+                break;
+
+                case 'classes/projects/project/Site':
+                    var Project = this.$Bind.getProject();
+
+                    params.project = Project.getName();
+                    params.lang    = Project.getLang();
+                break;
+            }
+
+
+            Ajax.get([
+                'ajax_permissions_get',
+                'ajax_permissions_list'
+            ], function(permissions, allPermissions)
+            {
+                for ( var key in permissions )
+                {
+                    if ( typeof allPermissions[ key ] !== 'undefined' ) {
+                        permissions[ key ] = allPermissions[ key ];
+                    }
+                }
+
+                callback( permissions );
+            }, {
+                params : JSON.encode( params ),
+                btype  : this.$Bind.getType()
+            });
+        },
+
+        /**
          * Opens the search for groups / users
          *
          * @method controls/permissions/Panel#openSearch
@@ -594,7 +646,7 @@ define([
                         });
                     }
                 }
-            }).create();
+            }).open();
         },
 
         /**
@@ -952,6 +1004,8 @@ define([
                 this.$Map.destroy();
             }
 
+            var self = this;
+
             this.$Map = new Sitemap();
 
             this.$Map.appendChild(
@@ -969,19 +1023,17 @@ define([
                 this.getBody().getElement( '.qui-permissions-sitemap' )
             );
 
-            Ajax.get('ajax_permissions_list', function(result, Request)
+
+            this.getPermissionList(function(result)
             {
-                var arr, right;
-
-                var tmp     = {},
-                    Control = Request.getAttribute( 'Control' ),
-                    Map     = Control.$Map;
-
-                Control.$rights = result;
-
-                if ( !Map ) {
+                if ( !self.$Map ) {
                     return;
                 }
+
+                var right, arr;
+                var tmp = {};
+
+                self.$rights = result;
 
                 for ( right in result )
                 {
@@ -994,15 +1046,43 @@ define([
                 }
 
                 // create the children
-                Control.$appendSitemapItemTo( Map.firstChild(), '', tmp );
+                self.$appendSitemapItemTo( self.$Map.firstChild(), '', tmp );
 
-                //Map.firstChild().open();
-                Map.openAll();
-                Map.firstChild().click();
-
-            }, {
-                Control : this
+                self.$Map.openAll();
+                self.$Map.firstChild().click();
             });
+
+//
+//            Ajax.get('ajax_permissions_get', function(result)
+//            {
+//                var arr, right;
+//
+//                var tmp = {},
+//                    Map = self.$Map;
+//
+//                self.$rights = result;
+//
+//                if ( !Map ) {
+//                    return;
+//                }
+//
+//                for ( right in result )
+//                {
+//                    arr = right.split( '.' );
+//                    arr.pop(); // drop the last element
+//
+//                    if ( arr.length ) {
+//                        ObjectUtils.namespace( arr.join( '.' ), tmp );
+//                    }
+//                }
+//
+//                // create the children
+//                self.$appendSitemapItemTo( Map.firstChild(), '', tmp );
+//
+//                //Map.firstChild().open();
+//                Map.openAll();
+//                Map.firstChild().click();
+//            });
         },
 
         /**
