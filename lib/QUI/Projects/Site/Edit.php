@@ -795,7 +795,9 @@ class Edit extends \QUI\Projects\Site
         */
 
         // if active = '0&1', project -> getchildren returns all children
-        $params['active'] = '0&1';
+        if ( !isset( $params['active'] ) ) {
+            $params['active'] = '0&1';
+        }
 
         $children = array();
         $result   = $this->getChildrenIds( $params );
