@@ -1308,11 +1308,32 @@ class Edit extends \QUI\Projects\Site
      * @param unknown $permission
      * @param Group $Group
      */
-    public function addgroupToPermission($permission, Group $Group)
+    public function addgroupToPermission(Group $Group, $permission)
     {
-        Permission::addGroupToSitePermission( $User, $this, $permission );
+        Permission::addGroupToSitePermission( $Group, $this, $permission );
     }
 
+    /**
+     * Remove an user from the permission
+     *
+     * @param String $permission - name of the permission
+     * @param User $User - User Object
+     */
+    public function removeUserFromSitePermission(User $User, $permission)
+    {
+        Permission::removeUserFromSitePermission( $User, $this, $permission );
+    }
+
+    /**
+     * Remove a group from the permission
+     *
+     * @param String $permission - name of the permission
+     * @param User $User - User Object
+     */
+    public function removeGroupFromSitePermission(Group $Group, $permission)
+    {
+        Permission::removeGroupFromSitePermission( $Group, $this, $permission );
+    }
 
     /**
      * Utils

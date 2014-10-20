@@ -403,7 +403,6 @@ class Permission
      * Sites
      */
 
-
     /**
      * Add an user to the permission
      *
@@ -443,7 +442,10 @@ class Permission
 
         $permList[] = $user;
 
-        $Manager->setSitePermissions( $Site, array( $permission => $permList) );
+        $Manager->setSitePermissions(
+            $Site,
+            array( $permission => implode(',', $permList) )
+        );
     }
 
 
@@ -486,7 +488,11 @@ class Permission
 
         $permList[] = $group;
 
-        $Manager->setSitePermissions( $Site, array( $permission => $permList) );
+
+        $Manager->setSitePermissions(
+            $Site,
+            array( $permission => implode(',', $permList) )
+        );
     }
 
 
@@ -569,4 +575,98 @@ class Permission
 
         return false;
     }
+
+    /**
+     * Remove a group from the permission
+     *
+     * @param \QUI\Users\User $User
+     * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
+     * @param String $permission
+     */
+    static function removeGroupFromSitePermission(Group $Group, $Site, $permission)
+    {
+        if ( \QUI\Projects\Site\Utils::isSiteObject( $Site ) === false ) {
+            return array();
+        }
+
+        /* @var $Site \QUI\Projects\Site */
+        $Site->checkPermission( 'quiqqer.projects.site.edit' );
+
+        $Manager     = \QUI::getPermissionManager();
+        $permissions = $Manager->getSitePermissions( $Site );
+
+        if ( !isset( $permissions[ $permission ] ) )  {
+            return;
+        }
+
+        $permList = array();
+        $group     = 'g'. $Group->getId();
+
+        if ( !empty( $permissions[ $permission ] ) ) {
+            $permList = explode( ',', trim( $permissions[ $permission ], ' ,' ) );
+        }
+
+        $flip = array_flip( $permList );
+
+        // user is in the permissions, than unset it
+        if ( isset( $flip[ $group ] ) ) {
+            unset( $flip[ $group ] );
+        }
+
+        $permList = array_flip( $flip );
+
+
+        $Manager->setSitePermissions(
+            $Site,
+            array( $permission => implode(',', $permList) )
+        );
+    }
+
+    /**
+     * Remove an user from the permission
+     *
+     * @param \QUI\Users\User $User
+     * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
+     * @param String $permission
+     */
+    static function removeUserFromSitePermission(User $User, $Site, $permission)
+    {
+        if ( \QUI\Projects\Site\Utils::isSiteObject( $Site ) === false ) {
+            return array();
+        }
+
+        /* @var $Site \QUI\Projects\Site */
+        $Site->checkPermission( 'quiqqer.projects.site.edit' );
+
+        $Manager     = \QUI::getPermissionManager();
+        $permissions = $Manager->getSitePermissions( $Site );
+
+        if ( !isset( $permissions[ $permission ] ) )  {
+            return;
+        }
+
+        $permList = array();
+        $user     = 'u'. $User->getId();
+
+        if ( !empty( $permissions[ $permission ] ) ) {
+            $permList = explode( ',', trim( $permissions[ $permission ], ' ,' ) );
+        }
+
+        $flip = array_flip( $permList );
+
+        // user is in the permissions, than unset it
+        if ( isset( $flip[ $user ] ) ) {
+            unset( $flip[ $user ] );
+        }
+
+        $permList = array_flip( $flip );
+
+
+        $Manager->setSitePermissions(
+            $Site,
+            array( $permission => implode(',', $permList) )
+        );
+    }
+
+
 }
