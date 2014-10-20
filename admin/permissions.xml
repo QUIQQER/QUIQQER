@@ -43,6 +43,9 @@
     <!-- Darf Projekte anlegen -->
     <permission name="quiqqer.projects.create" type="users_and_groups" />
 
+    <!-- Darf Projektdaten verändern -->
+    <permission name="quiqqer.projects.edit" type="users_and_groups" area="project" />
+
     <!-- Darf Projekte löschen -->
     <permission name="quiqqer.projects.destroy" type="users_and_groups" area="project" />
 

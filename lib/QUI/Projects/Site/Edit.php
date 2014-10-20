@@ -9,7 +9,6 @@ namespace QUI\Projects\Site;
 use \QUI\Utils\String as StringUtils;
 
 use \QUI\Rights\Permission;
-
 use \QUI\Users\User;
 use \QUI\Groups\Group;
 

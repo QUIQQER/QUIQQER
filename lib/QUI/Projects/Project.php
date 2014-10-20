@@ -6,6 +6,12 @@
 
 namespace QUI\Projects;
 
+use \QUI\Rights\Permission;
+use \QUI\Users\User;
+use \QUI\Groups\Group;
+
+use \QUI\Utils\Security\Orthos;
+
 /**
  * Ein Projekt
  *
@@ -731,38 +737,38 @@ class Project
      *
      * @return Array
      */
-    public function getPlugins()
-    {
-        if ( !is_null( $this->_plugins ) ) {
-            return $this->_plugins;
-        }
+//     public function getPlugins()
+//     {
+//         if ( !is_null( $this->_plugins ) ) {
+//             return $this->_plugins;
+//         }
 
-        $Plugins = \QUI::getPlugins();
+//         $Plugins = \QUI::getPlugins();
 
-        if ( !isset( $this->_config['plugins'] ) )
-        {
-              // Falls für das Projekt keine Plugins freigeschaltet wurden dann alle
-            $this->_plugins = $Plugins->get();
-            return $this->_plugins;
-        }
+//         if ( !isset( $this->_config['plugins'] ) )
+//         {
+//               // Falls für das Projekt keine Plugins freigeschaltet wurden dann alle
+//             $this->_plugins = $Plugins->get();
+//             return $this->_plugins;
+//         }
 
-        // Plugins einlesen falls dies noch nicht getan wurde
-        $_plugins = explode( ',', trim( $this->_config['plugins'], ',' ) );
+//         // Plugins einlesen falls dies noch nicht getan wurde
+//         $_plugins = explode( ',', trim( $this->_config['plugins'], ',' ) );
 
-        for ( $i = 0, $len = count($_plugins); $i < $len; $i++ )
-        {
-            try
-            {
-                $this->_plugins[ $_plugins[$i] ] = $Plugins->get( $_plugins[$i] );
+//         for ( $i = 0, $len = count($_plugins); $i < $len; $i++ )
+//         {
+//             try
+//             {
+//                 $this->_plugins[ $_plugins[$i] ] = $Plugins->get( $_plugins[$i] );
 
-            } catch ( \QUI\Exception $Exception )
-            {
-                //nothing
-            }
-        }
+//             } catch ( \QUI\Exception $Exception )
+//             {
+//                 //nothing
+//             }
+//         }
 
-        return $this->_plugins;
-    }
+//         return $this->_plugins;
+//     }
 
     /**
      * Return the children ids from a site
@@ -919,104 +925,104 @@ class Project
      *
      * @return Array
      */
-    public function getTypes()
-    {
-        try
-        {
-            return \QUI\Cache\Manager::get( $this->_cache_files['types'] );
+//     public function getTypes()
+//     {
+//         try
+//         {
+//             return \QUI\Cache\Manager::get( $this->_cache_files['types'] );
 
-        } catch ( \QUI\Cache\Exception $Exception )
-        {
+//         } catch ( \QUI\Cache\Exception $Exception )
+//         {
 
-        }
+//         }
 
-        $types   = array();
-        $Plugins = \QUI::getPlugins(); /* @var $Plugins Plugins */
-        $plugins = $Plugins->get();
+//         $types   = array();
+//         $Plugins = \QUI::getPlugins(); /* @var $Plugins Plugins */
+//         $plugins = $Plugins->get();
 
-        foreach ( $plugins as $Plugin )
-        {
-            /* @var $Plugin Plugin */
-            $name = $Plugin->getAttribute( 'name' );
+//         foreach ( $plugins as $Plugin )
+//         {
+//             /* @var $Plugin Plugin */
+//             $name = $Plugin->getAttribute( 'name' );
 
-            // Ajax Skripte aufnehmen
-            if ( $Plugin->getAttribute('types') ) {
-                $types[$name]['types'] = $Plugin->getAttribute( 'types' );
-            }
+//             // Ajax Skripte aufnehmen
+//             if ( $Plugin->getAttribute('types') ) {
+//                 $types[$name]['types'] = $Plugin->getAttribute( 'types' );
+//             }
 
-            $config = $Plugin->getAttribute( 'config' );
-            $types[$name]['name'] = '';
+//             $config = $Plugin->getAttribute( 'config' );
+//             $types[$name]['name'] = '';
 
-            if ( isset($config['name']) ) {
-                $types[$name]['name'] = $config['name'];
-            }
-        }
+//             if ( isset($config['name']) ) {
+//                 $types[$name]['name'] = $config['name'];
+//             }
+//         }
 
-        // Cache erstellen
-        \QUI\Cache\Manager::set( $this->_cache_files['types'], $types );
+//         // Cache erstellen
+//         \QUI\Cache\Manager::set( $this->_cache_files['types'], $types );
 
-        return $types;
-    }
+//         return $types;
+//     }
 
     /**
      * Globale Sachen der Seitentypen bekommen
      *
      * @return Array
      */
-    public function getGlobalTypes()
-    {
-        $dir   = VAR_DIR .'cache/projects/';
-        $cache = $dir . $this->getAttribute('name') .'_globaltypes';
+//     public function getGlobalTypes()
+//     {
+//         $dir   = VAR_DIR .'cache/projects/';
+//         $cache = $dir . $this->getAttribute('name') .'_globaltypes';
 
-        try
-        {
-            return \QUI\Cache\Manager::get( $this->_cache_files['gtypes'] );
+//         try
+//         {
+//             return \QUI\Cache\Manager::get( $this->_cache_files['gtypes'] );
 
-        } catch ( \QUI\Cache\Exception $Exception )
-        {
+//         } catch ( \QUI\Cache\Exception $Exception )
+//         {
 
-        }
+//         }
 
-        $globaltypes = array();
-        $Plugins     = \QUI::getPlugins(); /* @var $Plugins Plugins */
-        $plugins     = $Plugins->get();
+//         $globaltypes = array();
+//         $Plugins     = \QUI::getPlugins(); /* @var $Plugins Plugins */
+//         $plugins     = $Plugins->get();
 
-        foreach ( $plugins as $Plugin )
-        {
-            /* @var $Plugin Plugin */
-            $name = $Plugin->getAttribute('name');
+//         foreach ( $plugins as $Plugin )
+//         {
+//             /* @var $Plugin Plugin */
+//             $name = $Plugin->getAttribute('name');
 
-            // Ajax Skripte aufnehmen
-            if ( $Plugin->getAttribute('global_ajax') ) {
-                $globaltypes['ajax'][$name][] = $Plugin->getAttribute('global_ajax');
-            }
+//             // Ajax Skripte aufnehmen
+//             if ( $Plugin->getAttribute('global_ajax') ) {
+//                 $globaltypes['ajax'][$name][] = $Plugin->getAttribute('global_ajax');
+//             }
 
-            // Admin Skripte aufnehmen
-            if ( $Plugin->getAttribute('admin') ) {
-                $globaltypes['admin'][$name][] = $Plugin->getAttribute('admin');
-            }
+//             // Admin Skripte aufnehmen
+//             if ( $Plugin->getAttribute('admin') ) {
+//                 $globaltypes['admin'][$name][] = $Plugin->getAttribute('admin');
+//             }
 
-            // Upload Skripte aufnehmen
-            if ( $Plugin->getAttribute('upload') ) {
-                $globaltypes['upload'][$name][] = $Plugin->getAttribute('upload');
-            }
+//             // Upload Skripte aufnehmen
+//             if ( $Plugin->getAttribute('upload') ) {
+//                 $globaltypes['upload'][$name][] = $Plugin->getAttribute('upload');
+//             }
 
-            $config = $Plugin->getAttribute('config');
+//             $config = $Plugin->getAttribute('config');
 
-            if ( isset($config['name']) )
-            {
-                $globaltypes['upload'][$name]['name'] = $config['name'];
-            } else
-            {
-                $globaltypes['upload'][$name]['name'] = $name;
-            }
-        }
+//             if ( isset($config['name']) )
+//             {
+//                 $globaltypes['upload'][$name]['name'] = $config['name'];
+//             } else
+//             {
+//                 $globaltypes['upload'][$name]['name'] = $name;
+//             }
+//         }
 
-        // Cachefile anlegen
-        \QUI\Cache\Manager::set($this->_cache_files['gtypes'], $globaltypes);
+//         // Cachefile anlegen
+//         \QUI\Cache\Manager::set($this->_cache_files['gtypes'], $globaltypes);
 
-        return $globaltypes;
-    }
+//         return $globaltypes;
+//     }
 
     /**
      * Informationen von einem Seitentyp bekommen
@@ -1026,48 +1032,48 @@ class Project
      * @return unknown
      * @deprecated use Plugins->getTypeName()
      */
-    public function getType($type, $value=false)
-    {
-        if ($type == 'standard' || empty($type))
-        {
-            if ($value == 'name') {
-                return 'standard';
-            }
+//     public function getType($type, $value=false)
+//     {
+//         if ($type == 'standard' || empty($type))
+//         {
+//             if ($value == 'name') {
+//                 return 'standard';
+//             }
 
-            if ($value == false)
-            {
-                return array(
-                    'name' => 'Standard'
-                );
-            }
+//             if ($value == false)
+//             {
+//                 return array(
+//                     'name' => 'Standard'
+//                 );
+//             }
 
-            return '';
-        }
+//             return '';
+//         }
 
-        // Falls kein Standardtyp
-        $all_types = $this->getTypes();
-        $type      = explode('/', $type);
+//         // Falls kein Standardtyp
+//         $all_types = $this->getTypes();
+//         $type      = explode('/', $type);
 
-        if (isset($type[0]) &&
-            isset($type[1]) &&
-             isset($all_types[$type[0]]) &&
-             isset($all_types[$type[0]]['types'][$type[1]]))
-        {
-            switch($value)
-            {
-                default:
-                    return $all_types[$type[0]]['types'][$type[1]];
-                break;
+//         if (isset($type[0]) &&
+//             isset($type[1]) &&
+//              isset($all_types[$type[0]]) &&
+//              isset($all_types[$type[0]]['types'][$type[1]]))
+//         {
+//             switch($value)
+//             {
+//                 default:
+//                     return $all_types[$type[0]]['types'][$type[1]];
+//                 break;
 
-                case 'name':
-                    $types = $all_types[$type[0]];
-                    return $types['name'] .' / '. $types['types'][$type[1]]['name'];
-                break;
-            }
-        }
+//                 case 'name':
+//                     $types = $all_types[$type[0]];
+//                     return $types['name'] .' / '. $types['types'][$type[1]]['name'];
+//                 break;
+//             }
+//         }
 
-        return $type;
-    }
+//         return $type;
+//     }
 
     /**
      * Ids von bestimmten Seiten bekommen
@@ -1208,105 +1214,105 @@ class Project
      * @param Bool $template - Templates sichern
      * @deprecated
      */
-    public function createBackup($config=true, $project=true, $media=true, $template=true)
-    {
-        $User = \QUI::getUserBySession();
+//     public function createBackup($config=true, $project=true, $media=true, $template=true)
+//     {
+//         $User = \QUI::getUserBySession();
 
-        if (!$User->isSU()) {
-            throw new \QUI\Exception('You must be an Superuser to create a Backup');
-        }
+//         if (!$User->isSU()) {
+//             throw new \QUI\Exception('You must be an Superuser to create a Backup');
+//         }
 
-        if (file_exists(VAR_DIR .'backup/start')) {
-            throw new \QUI\Exception('There currently running a backup. Please try again later');
-        }
+//         if (file_exists(VAR_DIR .'backup/start')) {
+//             throw new \QUI\Exception('There currently running a backup. Please try again later');
+//         }
 
-        $time  = time();
-        $dir   = VAR_DIR .'backup/'. $this->getAttribute('name') .'/'. $time.'/';
-        $cfile = VAR_DIR .'backup/'. $this->getAttribute('name') .'/c'. $time;
+//         $time  = time();
+//         $dir   = VAR_DIR .'backup/'. $this->getAttribute('name') .'/'. $time.'/';
+//         $cfile = VAR_DIR .'backup/'. $this->getAttribute('name') .'/c'. $time;
 
-        if (is_dir($dir)) {
-            throw new \QUI\Exception('Cannot create Backup; Backupfolder exists');
-        }
+//         if (is_dir($dir)) {
+//             throw new \QUI\Exception('Cannot create Backup; Backupfolder exists');
+//         }
 
-        \QUI\Utils\System\File::mkdir($dir);
+//         \QUI\Utils\System\File::mkdir($dir);
 
-        // Backup creation file - zeigt an ob das Backup gerade läuft
-        file_put_contents($cfile, 'start');
+//         // Backup creation file - zeigt an ob das Backup gerade läuft
+//         file_put_contents($cfile, 'start');
 
-        if ($project)
-        {
-            // jede Sprache durchgehen
-            foreach ($this->_langs as $lang)
-            {
-                $tbl_sites     = $this->getAttribute('name') .'_'. $lang .'_sites';
-                $tbl_rel_sites = $tbl_sites.'_relations';
+//         if ($project)
+//         {
+//             // jede Sprache durchgehen
+//             foreach ($this->_langs as $lang)
+//             {
+//                 $tbl_sites     = $this->getAttribute('name') .'_'. $lang .'_sites';
+//                 $tbl_rel_sites = $tbl_sites.'_relations';
 
-                // Backup erstellen
-                \QUI::getDB()->backup($tbl_sites, $dir.$tbl_sites);
-                \QUI::getDB()->backup($tbl_rel_sites, $dir.$tbl_rel_sites);
-            }
+//                 // Backup erstellen
+//                 \QUI::getDB()->backup($tbl_sites, $dir.$tbl_sites);
+//                 \QUI::getDB()->backup($tbl_rel_sites, $dir.$tbl_rel_sites);
+//             }
 
-            // Multilingual
-            try
-            {
-                $tbl_multilingual = $this->getAttribute('name') .'_multilingual';
-                \QUI::getDB()->backup($tbl_multilingual, $dir.$tbl_multilingual);
-            } catch (\QUI\Exception $e)
-            {
-                // wenn es nur eine Sprache gibt
-            }
-        }
+//             // Multilingual
+//             try
+//             {
+//                 $tbl_multilingual = $this->getAttribute('name') .'_multilingual';
+//                 \QUI::getDB()->backup($tbl_multilingual, $dir.$tbl_multilingual);
+//             } catch (\QUI\Exception $e)
+//             {
+//                 // wenn es nur eine Sprache gibt
+//             }
+//         }
 
-        if ($media)
-        {
-            // Mediafiles sichern
-            \QUI\Utils\System\File::mkdir($dir.'media/');
+//         if ($media)
+//         {
+//             // Mediafiles sichern
+//             \QUI\Utils\System\File::mkdir($dir.'media/');
 
-            $mediadir = CMS_DIR .'media/sites/'. $this->getAttribute('name') .'/';
-            \QUI\Utils\System\File::dircopy($mediadir, $dir.'media/');
+//             $mediadir = CMS_DIR .'media/sites/'. $this->getAttribute('name') .'/';
+//             \QUI\Utils\System\File::dircopy($mediadir, $dir.'media/');
 
-            //Mediadb
-            $tbl_media     = $this->getAttribute('name') .'_de_media';
-            $tbl_rel_media = $tbl_media.'_relations';
+//             //Mediadb
+//             $tbl_media     = $this->getAttribute('name') .'_de_media';
+//             $tbl_rel_media = $tbl_media.'_relations';
 
-            // Backup erstellen
-            \QUI::getDB()->backup($tbl_media, $dir.$tbl_media);
-            \QUI::getDB()->backup($tbl_rel_media, $dir.$tbl_rel_media);
-        }
+//             // Backup erstellen
+//             \QUI::getDB()->backup($tbl_media, $dir.$tbl_media);
+//             \QUI::getDB()->backup($tbl_rel_media, $dir.$tbl_rel_media);
+//         }
 
-        // Templates sichern
-        if ($template)
-        {
-            $b_bindir = $dir .'templates/bin';
-            $b_libdir = $dir .'templates/lib';
+//         // Templates sichern
+//         if ($template)
+//         {
+//             $b_bindir = $dir .'templates/bin';
+//             $b_libdir = $dir .'templates/lib';
 
-            \QUI\Utils\System\File::mkdir($b_bindir);
-            \QUI\Utils\System\File::mkdir($b_libdir);
+//             \QUI\Utils\System\File::mkdir($b_bindir);
+//             \QUI\Utils\System\File::mkdir($b_libdir);
 
-            $bindir = USR_DIR .'bin/'. $this->getAttribute('template') .'/';
-            $libdir = USR_DIR .'lib/'. $this->getAttribute('template') .'/';
+//             $bindir = USR_DIR .'bin/'. $this->getAttribute('template') .'/';
+//             $libdir = USR_DIR .'lib/'. $this->getAttribute('template') .'/';
 
-            \QUI\Utils\System\File::dircopy($bindir, $b_bindir);
-            \QUI\Utils\System\File::dircopy($libdir, $b_libdir);
-        }
+//             \QUI\Utils\System\File::dircopy($bindir, $b_bindir);
+//             \QUI\Utils\System\File::dircopy($libdir, $b_libdir);
+//         }
 
-        // config
-        if ($config)
-        {
-            $f_config = $dir.'conf.ini.php';
-            file_put_contents($f_config, '');
+//         // config
+//         if ($config)
+//         {
+//             $f_config = $dir.'conf.ini.php';
+//             file_put_contents($f_config, '');
 
-            $Config = new \QUI\Config($f_config);
-            $Config->setSection($this->getAttribute('name') ,$this->_config);
-            $Config->save();
-        }
+//             $Config = new \QUI\Config($f_config);
+//             $Config->setSection($this->getAttribute('name') ,$this->_config);
+//             $Config->save();
+//         }
 
-        // Archiv erstellen Verzeichnis packen
-        $PT_Zip = new \QUI\Archiver\Zip();
-        $PT_Zip->zip($dir, VAR_DIR.'backup/'.$this->getAttribute('name').'/'.$time.'.zip');
+//         // Archiv erstellen Verzeichnis packen
+//         $PT_Zip = new \QUI\Archiver\Zip();
+//         $PT_Zip->zip($dir, VAR_DIR.'backup/'.$this->getAttribute('name').'/'.$time.'.zip');
 
-        unlink($cfile);
-    }
+//         unlink($cfile);
+//     }
 
     /**
      * Execute the project setup
@@ -1436,10 +1442,48 @@ class Project
             unlink( $edate_file );
         }
 
-        $date = \QUI\Utils\Security\Orthos::clear( $edate_file );
+        $date = Orthos::clear( $edate_file );
 
         $this->_edate = $date;
         file_put_contents( $edate_file, $date );
     }
+
+    /**
+     * permissions
+     */
+
+    /**
+     * Add an user to the project permission
+     *
+     * @param String $permission - name of the permission
+     * @param User $User - User Object
+     */
+    public function addUserToPermission(User $User, $permission)
+    {
+        Permission::addUserToProjectPermission( $User, $this, $permission );
+    }
+
+    /**
+     * Add an group to the project permission
+     *
+     * @param String $permission - name of the permission
+     * @param Group $Group - Group Object
+     */
+    public function addGroupToPermission(Group $Group, $permission)
+    {
+        Permission::addGroupToProjectPermission( $Group, $this, $permission );
+    }
+
+    /**
+     * Remove the user from the project permission
+     *
+     * @param String $permission - name of the permission
+     * @param User $User - User Object
+     */
+    public function removeUserFromPermission(User $User, $permission)
+    {
+        Permission::removeUserFromProjectPermission( $User, $this, $permission );
+    }
+
 }
 
