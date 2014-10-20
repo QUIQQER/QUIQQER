@@ -953,12 +953,11 @@ class Edit extends \QUI\Projects\Site
             $_params['short'] = $params['short'];
         }
 
-        if (isset($params['content'])) {
+        if ( isset( $params['content'] ) ) {
             $_params['content'] = $params['content'];
         }
 
         $DataBase = \QUI::getDataBase();
-
         $DataBase->insert( $this->_TABLE , $_params );
 
         $newId = $DataBase->getPDO()->lastInsertId();
@@ -971,6 +970,28 @@ class Edit extends \QUI\Projects\Site
         // Aufruf der createChild Methode im TempSite - für den Adminbereich
         $this->Events->fireEvent('createChild', array($newId, $this));
         \QUI::getEvents()->fireEvent( 'siteCreateChild', array($newId, $this) );
+
+        // copy permissions to the child
+        $PermManager    = \QUI::getPermissionManager();
+        $permissions    = $PermManager->getSitePermissions( $this );
+        $newPermissions = array();
+
+        foreach ( $permissions as $permission => $value )
+        {
+            if ( empty( $value ) ) {
+                continue;
+            }
+
+            $newPermissions[ $permission ] = $value;
+        }
+
+        if ( !empty( $newPermissions ) )
+        {
+            $Child = $this->getChild( $newId );
+
+            $PermManager->setSitePermissions( $Child, $newPermissions );
+        }
+
 
         return $newId;
     }
