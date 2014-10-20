@@ -277,6 +277,7 @@
                     </settings>
                 </category>
 
+                <!--
                 <category name="database">
                     <text>
                         <locale group="quiqqer/system" var="quiqqer.settings.database" />
@@ -314,6 +315,7 @@
                         </input>
                     </settings>
                 </category>
+                -->
 
                 <category name="mail">
                     <text>

@@ -580,30 +580,7 @@ class Manager
                     array( 'group_id'    => $Obj->getId() )
                 );
             break;
-/*
-            case 'project':
 
-                if ( !isset( $_data[0] ) )
-                {
-                    $DataBase->insert(
-                        $table2projects,
-                        array(
-                            'project' => $Obj->getAttribute( 'project' ),
-                            'lang'    => $Obj->getAttribute( 'lang' )
-                        )
-                    );
-                }
-
-                $DataBase->update(
-                    $table2projects,
-                    array( 'permissions' => json_encode( $data ) ),
-                    array(
-                        'project' => $Obj->getName(),
-                        'lang'    => $Obj->getLang()
-                    )
-                );
-            break;
-*/
             case 'media':
                 $Project = $Obj->getProject();
 

@@ -517,37 +517,17 @@ class XML
      */
     static function getSettingCategoriesFromXml($file, $name)
     {
-        $Dom      = self::getDomFromXml( $file );
-        $settings = $Dom->getElementsByTagName( 'settings') ;
+        $Dom  = self::getDomFromXml( $file );
+        $Path = new \DOMXPath( $Dom );
 
-        if ( !$settings->length ) {
-            return false;
-        }
-
-        $Settings = $settings->item( 0 );
-        $winlist  = $Settings->getElementsByTagName( 'window' );
-
-        if ( !$winlist->length ) {
-            return false;
-        }
-
-        $Window     = $winlist->item( 0 );
-        $categories = $Window->getElementsByTagName( 'categories' );
+        $categories = $Path->query( "//quiqqer/settings/window/categories/category" );
 
         if ( !$categories->length ) {
             return false;
         }
 
-        $Categories = $categories->item(0)->childNodes;
-
-        for ( $c=0; $c < $Categories->length; $c++ )
+        foreach ( $categories as $Category )
         {
-            $Category = $Categories->item( $c );
-
-            if ( $Category->nodeName == '#text' ) {
-                continue;
-            }
-
             if ( $Category->getAttribute('name') == $name ) {
                 return $Category;
             }
