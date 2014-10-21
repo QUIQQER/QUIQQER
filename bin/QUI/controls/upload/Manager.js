@@ -137,17 +137,23 @@ define([
 
                 } else
                 {
-                    var Container = document.getElement( '.qui-panel-content .upload-manager' ),
-                        Content   = Container.getParent();
+                    var Container = document.getElement(
+                        '.qui-panel-content .upload-manager'
+                    );
 
-                    if ( Content.getStyle( 'display' ) == 'none' )
+                    if ( Container )
                     {
-                        var Panel = QUI.Controls.getById(
-                            Content.getParent( '.qui-panel' ).get( 'data-quiid' )
-                        );
+                        var Content = Container.getParent();
 
-                        if ( Panel ) {
-                            Panel.open();
+                        if ( Content && Content.getStyle( 'display' ) == 'none' )
+                        {
+                            var Panel = QUI.Controls.getById(
+                                Content.getParent( '.qui-panel' ).get( 'data-quiid' )
+                            );
+
+                            if ( Panel ) {
+                                Panel.open();
+                            }
                         }
                     }
                 }
