@@ -77,7 +77,7 @@ try
 require.config({
     baseUrl : URL_BIN_DIR +'QUI/',
     paths : {
-        "package" : URL_OPT_DIR +'bin/',
+        "package" : URL_OPT_DIR,
         "qui"     : URL_OPT_DIR +'bin/qui/qui',
         "locale"  : URL_VAR_DIR +'locale/bin',
         "URL_OPT_DIR" : URL_OPT_DIR,
