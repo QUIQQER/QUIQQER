@@ -3,7 +3,7 @@
 <div class="quiqqer-sheets-mobile hide-on-desktop">
     <select name="select-sheet" class="hide-on-desktop" onchange="window.location = this.value">
         {section name=sheets start=0 loop=$count}
-            {assign var=num value=$smarty.section.sheets.index}
+            {assign var=num value=$smarty.section.sheets.index+1}
             <option value="{url site=$Site sheet=$num params=$urlParams}"
             {if $num == $active}
                 selected="selected"
