@@ -521,8 +521,8 @@ class Manager
 
         $data = array();
 
-        if ( isset( $_data[0] ) ) {
-            $data = $_data[0];
+        if ( isset( $_data[0] ) && isset( $_data[0]['permissions'] ) ) {
+            $data = json_decode( $_data[0]['permissions'], true );
         }
 
         foreach ( $list as $permission => $params )
@@ -557,6 +557,10 @@ class Manager
                     );
                 }
 
+                if ( isset( $data['permissions'] ) ) {
+                    unset( $data['permissions'] );
+                }
+
                 $DataBase->update(
                     $table2users,
                     array( 'permissions' => json_encode( $data ) ),
@@ -573,6 +577,11 @@ class Manager
                         array( 'group_id' => $Obj->getId() )
                     );
                 }
+
+                if ( isset( $data['permissions'] ) ) {
+                    unset( $data['permissions'] );
+                }
+
 
                 $DataBase->update(
                     $table2groups,
@@ -960,7 +969,7 @@ class Manager
 
     /**
      * Rechte vom Benutzer bekommen
-     * Geht bessert über User->getPermission('right')
+     * Geht besser über User->getPermission('right')
      *
      * @deprecated
      *
