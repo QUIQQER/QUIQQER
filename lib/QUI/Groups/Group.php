@@ -190,7 +190,7 @@ class Group extends \QUI\QDOM
      */
     public function save()
     {
-        $this->_rights = \QUI::getPermissionManager()->getRightParamsFromGroup($this);
+        $this->_rights = \QUI::getPermissionManager()->getRightParamsFromGroup( $this );
 
         // Felder bekommen
         \QUI::getDataBase()->update(
@@ -251,14 +251,24 @@ class Group extends \QUI\QDOM
      *
      * @param String $right
      * @return Bool|String
+     * @deprecated
      */
     public function hasRight($right)
     {
-        if ( isset( $this->_rights[ $right ] ) ) {
-            return $this->_rights[ $right ];
-        }
+        return $this->hasPermission( $right );
+    }
 
-        return false;
+    /**
+     * Has the group the permission?
+     *
+     * @param String $permission
+     * @return Bool|String
+     */
+    public function hasPermission($permission)
+    {
+        $list = \QUI::getPermissionManager()->getRightParamsFromGroup( $this );
+
+        return isset( $list[ $permission ] ) ? $list[ $permission ] : false;
     }
 
     /**

@@ -66,6 +66,10 @@ define([
             sendbutton : false   // insert a send button
         },
 
+        Binds : [
+            '$onFileUploadFinish'
+        ],
+
         /**
          * constructor
          *
@@ -526,6 +530,8 @@ define([
             {
                 self.fireEvent( 'begin', [ self ] );
 
+                UploadManager.addEvent( 'onFileComplete', self.$onFileUploadFinish );
+
                 UploadManager.uploadFiles(
                     files,
                     self.getParam( 'onfinish' ),
@@ -661,6 +667,14 @@ define([
                     self.fireEvent( 'dragend', [ event, Elm, self ] );
                 }
             });
+        },
+
+        /**
+         * Event, if one upload file is finish
+         */
+        $onFileUploadFinish : function(UploadManager, File)
+        {
+
         }
     });
 });

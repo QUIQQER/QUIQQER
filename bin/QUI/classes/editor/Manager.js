@@ -145,9 +145,7 @@ Manager.register('package/ckeditor4', {
                 delete this.$instances[ id ];
             }
 
-            if ( typeof QUI.$storage[ id ] !== 'undefined' ) {
-                delete QUI.$storage[ id ];
-            }
+            QUI.Controls.destroy( Editor );
         },
 
         /**

@@ -6,14 +6,15 @@
 
 namespace QUI\Rights;
 
+use QUI\Groups\Group;
+
 /**
  * Allgemeine Permission Sotierungs Handling Methoden
  *
  * @example $User->getPermission($perm, 'max_integer');
  * @example $User->getPermission($perm, 'min_integer');
  *
- * @author www.pcsg,de (Henning Leutz)
- * @package com.pcsg.qui.rights
+ * @author www.pcsg.de (Henning Leutz)
  *
  */
 class PermissionOrder
@@ -21,46 +22,96 @@ class PermissionOrder
     /**
      * Gibt den Maximalen Integer Rechte Wert zurück
      *
-     * @param unknown_type $params
+     * @param String $permission - permission name
+     * @param Array $groups - List of groups
      * @return Integer
      */
-    static function max_integer($params)
+    static function max_integer($permission, $groups)
     {
-        $right = $params['right'];
-        $res   = (int)$params['result'];
-        $Group = $params['Group'];
+        $result = 0;
 
-        if ( $Group->hasPermission( $right ) === false ) {
-            return $res;
+        /* @var $Group Group */
+        foreach ( $groups as $Group )
+        {
+            if ( $Group->hasPermission( $permission ) === false ) {
+                continue;
+            }
+
+            if ( (int)$Group->hasPermission( $permission ) > $result ) {
+                $result = (int)$Group->hasPermission( $permission );
+            }
         }
 
-        if ( (int)$Group->hasPermission( $right ) > $res ) {
-            return (int)$Group->hasPermission( $right );
-        }
-
-        return $res;
+        return $result;
     }
 
     /**
      * Gibt den Minimalen Integer Rechte Wert zurück
      *
-     * @param unknown_type $params
+     * @param String $permission - permission name
+     * @param Array $groups - List of groups
      * @return Integer
      */
-    static function min_integer($params)
+    static function min_integer($permission, $groups)
     {
-        $right = $params['right'];
-        $res   = (int)$params['result'];
-        $Group = $params['Group'];
+        $result = null;
 
-        if ( $Group->hasPermission( $right ) === false ) {
-            return $res;
+        /* @var $Group Group */
+        foreach ( $groups as $Group )
+        {
+            if ( $Group->hasPermission( $permission ) === false ) {
+                continue;
+            }
+
+            if ( is_null( $result ) || (int)$Group->hasPermission( $permission ) < $result ) {
+                $result = (int)$Group->hasPermission( $permission );
+            }
         }
 
-        if ( (int)$Group->hasPermission( $right ) < $res ) {
-            return (int)$Group->hasPermission( $right );
+        return $result;
+    }
+
+    /**
+     * Prüft die Rechte und gibt das Recht welches Geltung hat zurück
+     *
+     * @param String $permission - permission name
+     * @param Array $groups - List of groups
+     * @return boolean|Ambigous <boolean, string>|Ambigous <boolean, number, string>
+     */
+    static function permission($permission, $groups)
+    {
+        $result = false;
+
+        /* @var $Group Group */
+        foreach ( $groups as $Group )
+        {
+            $right = $Group->hasPermission( $permission );
+
+            // falls wert bool ist
+            if ( $right === true ) {
+                return true;
+            }
+
+            // falls integer ist
+            if ( is_int( $right ) )
+            {
+                if ( is_bool( $result ) ) {
+                    $result = 0;
+                }
+
+                if ( $right > $result ) {
+                    $result = $right;
+                }
+
+                continue;
+            }
+
+            // falls wert string ist
+            if ( $right ) {
+                return $right;
+            }
         }
 
-        return $res;
+        return $result;
     }
 }

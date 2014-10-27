@@ -13,6 +13,8 @@
  * @require Ajax
  * @require Locale
  * @require css!controls/upload/Manager.css
+ *
+ * @event onFileComplete [ {self}, {File} ]
  */
 
 define([
@@ -265,6 +267,10 @@ define([
                     phpfunc : rf,
                     params  : file_params,
                     events  : events
+                });
+
+                QUIFile.addEvent('onComplete', function(File) {
+                    self.fireEvent( 'fileComplete', [ self, File ] );
                 });
 
                 if ( file_params.phponstart ) {

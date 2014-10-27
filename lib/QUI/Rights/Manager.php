@@ -6,6 +6,10 @@
 
 namespace QUI\Rights;
 
+use QUI\Groups\Group;
+use QUI\Users\User;
+use QUI\Utils\Security\Orthos;
+
 /**
  * Rights management
  *
@@ -946,11 +950,11 @@ class Manager
                 break;
 
             case 'array':
-                $val = \QUI\Utils\Security\Orthos::clearArray( $val );
+                $val = Orthos::clearArray( $val );
                 break;
 
             case 'string':
-                $val = \QUI\Utils\Security\Orthos::clearMySQL( $val );
+                $val = Orthos::clearMySQL( $val );
                 break;
 
             default:
@@ -971,17 +975,14 @@ class Manager
      * Rechte vom Benutzer bekommen
      * Geht besser über User->getPermission('right')
      *
-     * @deprecated
-     *
      * @param User $User
      * @param String $right
-     * @param Function || String $ruleset
+     * @param Function|String $ruleset
      *
      * @return unknown_type
      *
-     *
        @example
-        $result = getUserPermission($User, 'namerobot.myarray', function($params)
+        $result = getUserPermission($User, 'name.of.the.permission', function($params)
         {
             return $params['result'];
         });
@@ -989,85 +990,63 @@ class Manager
        @example
         $right = $User->getPermission($perm, 'max_integer');
      */
-    public function getUserPermission($User, $right, $ruleset=false)
+    public function getUserPermission($User, $permission, $ruleset=false)
     {
         /* @var $User User  */
-        $groups  = $User->getGroups();
-        $integer = false;
+        $groups = $User->getGroups();
+        $result = false;
 
-        $_rulesetresult = null;
+        if ( !$User->getId() ) {
+            return false;
+        }
 
-        foreach ( $groups as $Group ) /* @var $Group Group */
+        // user permission check
+        $userPermissions = $this->_getData( $User );
+
+        if ( isset( $userPermissions[ 0 ] ) &&
+             isset( $userPermissions[ 0 ][ 'permissions' ] ) )
         {
-            if ( $ruleset )
+            $userPermissions = json_decode( $userPermissions[ 0 ][ 'permissions' ], true );
+
+            if ( isset( $userPermissions[ $permission ] ) ) {
+                return $userPermissions[ $permission ];
+            }
+        }
+
+
+        // group permissions
+        if ( $ruleset )
+        {
+            if ( is_string( $ruleset ) && method_exists( '\QUI\Rights\PermissionOrder', $ruleset ) )
             {
-                $ruleparams = array(
-                    'right'  => $right,
-                    'result' => $_rulesetresult,
-                    'Group'  => $Group
-                );
+                $result = \QUI\Rights\PermissionOrder::$ruleset( $permission, $groups );
 
-                if ( is_string( $ruleset ) &&
-                     method_exists( '\QUI\Rights\PermissionOrder', $rulese ) )
-                {
-                    $_rulesetresult = \QUI\Rights\PermissionOrder::$ruleset( $ruleparams );
-                    continue;
-                }
-
-                if ( is_string( $ruleset ) ) {
-                    throw new \QUI\Exception( 'Unbekanntes Regelset [getUserPermission]' );
-                }
-
-                $_rulesetresult = $ruleset( $ruleparams );
-                continue;
-            }
-
-            $_right = $Group->hasRight( $right );
-
-            // falls wert bool ist
-            if ( $_right === true ) {
-                return true;
-            }
-
-            // falls integer ist
-            if ( is_int( $_right ) )
+            } else if ( is_callable( $ruleset ) )
             {
-                if ( is_bool( $integer ) ) {
-                    $integer = 0;
-                }
 
-                if ( $_right > $integer ) {
-                    $integer = $_right;
-                }
-
-                continue;
+            } else
+            {
+                throw new \QUI\Exception( 'Unknown ruleset [getUserPermission]' );
             }
 
-            // falls wert string ist
-            if ( $_right ) {
-                return $_right;
-            }
+        } else
+        {
+            $result = \QUI\Rights\PermissionOrder::permission( $permission, $groups );
         }
 
-        if ( $_rulesetresult ) {
-            return $_rulesetresult;
-        }
-
-        if ( !is_bool( $integer ) ) {
-            return $integer;
-        }
-
-        return false;
+        return $result;
     }
 
     /**
      * Rechte Array einer Gruppe aus den Attributen erstellen
      * Wird zum Beispiel zum Speichern einer Gruppe verwendet
      *
+     * @todo das muss vielleicht überdacht werden
+     *
      * @param \QUI\Groups\Group $Group
      * @return Array
      */
-    public function getRightParamsFromGroup(\QUI\Groups\Group $Group)
+    public function getRightParamsFromGroup(Group $Group)
     {
         $result = array();
         $rights = \QUI::getDataBase()->fetch(array(
@@ -1075,16 +1054,16 @@ class Manager
             'from'   => self::TABLE
         ));
 
-        foreach ($rights as $right)
+        foreach ( $rights as $right )
         {
-            if ($Group->existsRight($right['name']) === false) {
+            if ( $Group->existsRight( $right['name'] ) === false ) {
                 continue;
             }
 
-            $val = $Group->hasRight($right['name']);
+            $val = $Group->hasPermission( $right['name'] );
 
             // bool, string, int, group, array
-            switch ($right['type'])
+            switch ( $right['type'] )
             {
                 case 'int':
                     $val = (int)$val;
@@ -1096,11 +1075,11 @@ class Manager
                 break;
 
                 case 'array':
-                    $val = \QUI\Utils\Security\Orthos::clearArray($val);
+                    $val = Orthos::clearArray($val);
                 break;
 
                 case 'string':
-                    $val = \QUI\Utils\Security\Orthos::clearMySQL( $val );
+                    $val = Orthos::clearMySQL( $val );
                 break;
 
                 default:

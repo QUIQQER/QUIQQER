@@ -6,18 +6,23 @@
  * @author www.pcsg.de (Henning Leutz)
  * @module controls/upload/File
  *
- * @requires qui/QUI
- * @requires qui/controls/Control
- * @requires qui/controls/contextmenu/Menu
- * @requires qui/controls/contextmenu/Item
- * @requires qui/controls/buttons/Button
- * @requires qui/controls/utils/Progressbar
- * @requires qui/controls/windows/Prompt
- * @requires qui/controls/messages/Error
- * @requires qui/utils/Math
- * @requires qui/utils/Object
- * @requires Ajax
- * @requires Locale
+ * @require qui/QUI
+ * @require qui/controls/Control
+ * @require qui/controls/contextmenu/Menu
+ * @require qui/controls/contextmenu/Item
+ * @require qui/controls/buttons/Button
+ * @require qui/controls/utils/Progressbar
+ * @require qui/controls/windows/Prompt
+ * @require qui/controls/messages/Error
+ * @require qui/utils/Math
+ * @require qui/utils/Object
+ * @require Ajax
+ * @require Locale
+ *
+ * @fires onClick [this]
+ * @fires onCancel [this]
+ * @fires onComplete [this]
+ * @fires onError [qui/controls/messages/Error, this]
  */
 
 define([
@@ -57,11 +62,6 @@ define([
 
     /**
      * @class controls/upload/File
-     *
-     * @fires onClick [this]
-     * @fires onCancel [this]
-     * @fires onComplete [this]
-     * @fires onError [qui/controls/messages/Error, this]
      *
      * @param {Object} options
      *
