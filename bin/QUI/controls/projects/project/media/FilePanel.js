@@ -1,16 +1,23 @@
 /**
  * Displays a Media in a Panel
  *
+ * @module controls/projects/project/media/FilePanel
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires controls/Control
- * @requires controls/Utils
- * @requires controls/projects/media/PanelDOMEvents
- *
- * @module controls/projects/media/Panel
+ * @requir qui/QUI
+ * @requir qui/controls/desktop/Panel
+ * @requir classes/projects/project/media/panel/DOMEvents
+ * @requir qui/controls/buttons/Button
+ * @requir qui/controls/buttons/Seperator
+ * @requir qui/controls/windows/Confirm
+ * @requir utils/Template
+ * @requir qui/utils/Form
+ * @requir utils/Controls
+ * @requir Locale
+ * @requir css!controls/projects/project/media/FilePanel.css
  */
 
-define('controls/projects/project/media/FilePanel', [
+define([
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
@@ -142,15 +149,8 @@ define('controls/projects/project/media/FilePanel', [
             this.Loader.show();
             this.getContent().set( 'data-id', this.$File.getId() );
 
-            this.setAttribute(
-                'title',
-                this.$File.getAttribute( 'file' )
-            );
-
-            this.setAttribute(
-                'icon',
-                this.$File.getAttribute( 'icon' )
-            );
+            this.setAttribute( 'title', this.$File.getAttribute( 'file' ) );
+            this.setAttribute( 'icon', this.$File.getAttribute( 'icon' ) );
 
             this.$createTabs();
             this.$createButtons();
@@ -340,27 +340,19 @@ define('controls/projects/project/media/FilePanel', [
             var self = this;
 
             new QUIConfirm({
-                icon  : 'icon-trash',
+                icon     : 'icon-trash',
                 texticon : 'icon-trash',
 
-                title : Locale.get(
-                    'quiqqer/system',
-                    'projects.project.site.media.filePanel.window.delete.title',
-                    { file : this.$File.getAttribute('file') }
-                ),
+                title : Locale.get( 'quiqqer/system', 'projects.project.site.media.filePanel.window.delete.title', {
+                    file : this.$File.getAttribute('file')
+                }),
 
-                text : Locale.get(
-                    'quiqqer/system',
-                    'projects.project.site.media.filePanel.window.delete.text',
-                    { file : this.$File.getAttribute('file') }
-                ),
+                text : Locale.get( 'quiqqer/system', 'projects.project.site.media.filePanel.window.delete.text', {
+                    file : this.$File.getAttribute('file')
+                }),
 
-                information : Locale.get(
-                    'quiqqer/system',
-                    'projects.project.site.media.filePanel.window.delete.text'
-                ),
-
-                autoclose : true,
+                information : Locale.get( 'quiqqer/system', 'projects.project.site.media.filePanel.window.delete.text' ),
+                autoclose   : true,
                 events :
                 {
                     onSubmit : function(Win)
@@ -553,7 +545,7 @@ define('controls/projects/project/media/FilePanel', [
                             new Element('img', {
                                 src    : URL_DIR + self.$File.getAttribute( 'url' ),
                                 styles : {
-                                    margin : 20
+                                    maxWidth : '100%'
                                 }
                             }).inject( Preview );
                         },
