@@ -1,15 +1,16 @@
 /**
  * Displays a sitemap from a media
  *
+ * @module controls/projects/project/media/Sitemap
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires controls/Control
- * @requires controls/sitemap/Map
- *
- * @module controls/projects/media/Sitemap
+ * @require qui/controls/Control
+ * @require qui/controls/sitemap/Map
+ * @require qui/controls/sitemap/Item
+ * @require Ajax
  */
 
-define('controls/projects/project/media/Sitemap', [
+define([
 
     'qui/controls/Control',
     'qui/controls/sitemap/Map',

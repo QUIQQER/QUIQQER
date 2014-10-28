@@ -1,12 +1,21 @@
+
 /**
  * Media Manager
  *
+ * @module controls/projects/project/media/Manager
  * @author www.pcsg.de (Henning Leutz)
  *
- * @module controls/projects/media/Manager
+ * @require qui/controls/desktop/Panel
+ * @require qui/controls/buttons/Button
+ * @require qui/controls/contextmenu/Item
+ * @require Locale
+ * @require Ajax
+ * @require Projects
+ * @require utils/Template
+ * @require css!controls/projects/project/media/Manager.css
  */
 
-define('controls/projects/project/media/Manager', [
+define([
 
     'qui/controls/desktop/Panel',
     'qui/controls/buttons/Button',

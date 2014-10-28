@@ -2,10 +2,19 @@
 /**
  * Image input
  *
+ * @module controls/projects/project/media/Input
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/controls/Control
+ * @require qui/controls/buttons/Button
+ * @require qui/utils/String
+ * @require controls/projects/project/media/Popup
+ * @require Ajax
+ * @require Locale
+ * @require css!controls/projects/project/media/Input.css
  */
 
-define('controls/projects/project/media/Input', [
+define([
 
     'qui/controls/Control',
     'qui/controls/buttons/Button',
@@ -220,5 +229,4 @@ define('controls/projects/project/media/Input', [
             });
         }
     });
-
 });
