@@ -805,12 +805,20 @@ class Manager
     }
 
     /**
+     * @deprecated use usernameExists()
+     */
+    public function existsUsername($username)
+    {
+        return $this->usernameExists( $username );
+    }
+
+    /**
      * Checks if the username already exists
      *
      * @param String $username
      * @return Bool
      */
-    public function existsUsername($username)
+    public function usernameExists($username)
     {
         if ( empty( $username ) ) {
             return false;
@@ -829,15 +837,19 @@ class Manager
     }
 
     /**
-     * Checks if the username already exists
-     * @param String $username
-     *
-     * @deprecated
-     * use existsUsername
+     * @deprecated use existsUsername
      */
     public function checkUsername($username)
     {
-        return $this->existsUsername( $username );
+        return $this->usernameExists( $username );
+    }
+
+    /**
+     * @deprecated use emailExists
+     */
+    public function existEmail($email)
+    {
+        return $this->emailExists( $email );
     }
 
     /**
@@ -846,7 +858,7 @@ class Manager
      * @param String $email
      * @return Bool
      */
-    public function existEmail($email)
+    public function emailExists($email)
     {
         $result = \QUI::getDataBase()->fetch(array(
             'select' => 'email',

@@ -117,10 +117,11 @@ define([
                 self.Loader.hide();
 
             }, {
-                message : this.$Text.value,
-                email   : this.$Email.value,
-                name    : this.$Name.value,
-                onError : function(Exception)
+                message   : this.$Text.value,
+                email     : this.$Email.value,
+                name      : this.$Name.value,
+                showError : false,
+                onError   : function(Exception)
                 {
                     self.Loader.hide();
 

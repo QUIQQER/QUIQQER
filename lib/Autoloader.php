@@ -61,6 +61,25 @@ class Autoloader
             return true;
         }
 
+        // Projects
+        if ( strpos( $classname, 'Projects\\' ) === 0 )
+        {
+            $file = USR_DIR . substr( $classname, 9 ) .'.php';
+            $file = str_replace( '\\', '/', $file );
+
+            if ( file_exists( $file ) ) {
+                require $file;
+            }
+
+            if ( class_exists( $classname ) ) {
+                return true;
+            }
+
+            if ( interface_exists( $classname ) ) {
+                return true;
+            }
+        }
+
         // use now the composer loader
         if ( !self::$ComposerLoader )
         {

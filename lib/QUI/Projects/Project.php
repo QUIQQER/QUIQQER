@@ -1427,6 +1427,30 @@ class Project
 
         // Media Setup
         $this->getMedia()->setup();
+
+
+        // read xml files
+        $dir = USR_DIR . $this->_name .'/';
+
+        \QUI\Update::importDatabase( $dir .'database.xml' );
+        \QUI\Update::importTemplateEngines( $dir .'engines.xml' );
+        \QUI\Update::importEditors( $dir .'wysiwyg.xml' );
+        \QUI\Update::importMenu( $dir .'menu.xml' );
+        \QUI\Update::importPermissions( $dir .'permissions.xml', 'project/'.$this->_name );
+        \QUI\Update::importEvents( $dir .'events.xml' );
+        \QUI\Update::importMenu( $dir .'menu.xml' );
+
+        // settings
+        if ( !file_exists( $dir .'settings.xml' ) ) {
+            return;
+        }
+
+//         $defaults = \QUI\Utils\XML::getConfigParamsFromXml( $dir .'settings.xml' );
+//         $Config   = \QUI\Utils\XML::getConfigFromXml( $dir .'settings.xml' );
+
+//         if ( $Config ) {
+//             $Config->save();
+//         }
     }
 
     /**

@@ -94,7 +94,7 @@ class Setup
             \QUI::getPlugins()->setup( $Project );
 
             // Media Setup
-            $Project->getMedia()->setup();
+            // $Project->getMedia()->setup();
         }
 
         /**
