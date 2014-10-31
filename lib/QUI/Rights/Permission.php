@@ -486,6 +486,11 @@ class Permission
             $User = \QUI::getUserBySession();
         }
 
+        if ( $User->isSU() ) {
+            return true;
+        }
+
+
         $Manager     = \QUI::getPermissionManager();
         $permissions = $Manager->getSitePermissions( $Site );
 

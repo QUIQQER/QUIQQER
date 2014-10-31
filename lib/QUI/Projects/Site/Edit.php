@@ -391,12 +391,12 @@ class Edit extends \QUI\Projects\Site
      *
      * @throws \QUI\Exception
      */
-    public function save()
+    public function save($User=false)
     {
         try
         {
             // Prüfen ob der Benutzer die Seite bearbeiten darf
-            $this->checkPermission( 'quiqqer.projects.site.edit' );
+            $this->checkPermission( 'quiqqer.projects.site.edit', $User );
 
         } catch ( \QUI\Exception $Exception )
         {
