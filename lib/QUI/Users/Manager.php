@@ -156,6 +156,25 @@ class Manager
     }
 
     /**
+     * Is the Object a systemuser?
+     *
+     * @param unknown_type $User
+     * @return Bool
+     */
+    public function isSystemUser($User)
+    {
+        if ( !is_object( $User ) ) {
+            return false;
+        }
+
+        if ( get_class( $User ) === 'QUI\\Users\\SystemUser' ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Setzt das interne Projekt
      *
      * Für was???
@@ -193,7 +212,7 @@ class Manager
 
         if ( $username )
         {
-            if ( $this->existsUsername( $username ) )
+            if ( $this->usernameExists( $username ) )
             {
                 throw new \QUI\Exception(
                     \QUI::getLocale()->get(
@@ -210,7 +229,7 @@ class Manager
             $newname = 'Neuer Benutzer';
             $i = 0;
 
-            while ( $this->existsUsername( $newname ) )
+            while ( $this->usernameExists( $newname ) )
             {
                 $newname = 'Neuer Benutzer ('. $i .')';
                 $i++;
@@ -287,7 +306,7 @@ class Manager
         // unerlaubte zeichen prüfen
         self::checkUsernameSigns( $username );
 
-        if ( $this->existsUsername( $username ) )
+        if ( $this->usernameExists( $username ) )
         {
             throw new \QUI\Exception(
                 \QUI::getLocale()->get(
@@ -514,39 +533,39 @@ class Manager
         $auth_type = \QUI::conf( 'auth', 'type' );
         $loginuser = false;
 
-        switch ( $auth_type )
-        {
-            /**
-             * Active Directory Authentifizierung
-             */
-            case 'AD':
-                try
-                {
-                    $server = \QUI::conf('auth', 'server');
-                    $server = explode(';', $server);
+//         switch ( $auth_type )
+//         {
+//             /**
+//              * Active Directory Authentifizierung
+//              */
+//             case 'AD':
+//                 try
+//                 {
+//                     $server = \QUI::conf('auth', 'server');
+//                     $server = explode(';', $server);
 
-                    $Auth = new \QUI\Auth\ActiveDirectory();
-                    $Auth->setAttribute('dc', $server);
-                    $Auth->setAttribute('base_dn', \QUI::conf('auth', 'base_dn') );
-                    $Auth->setAttribute('domain', \QUI::conf('auth', 'domain') );
+//                     $Auth = new \QUI\Auth\ActiveDirectory();
+//                     $Auth->setAttribute('dc', $server);
+//                     $Auth->setAttribute('base_dn', \QUI::conf('auth', 'base_dn') );
+//                     $Auth->setAttribute('domain', \QUI::conf('auth', 'domain') );
 
-                    if ($Auth->auth($username, $pass))
-                    {
-                        $loginuser = \QUI::getDataBase()->fetch(array(
-                            'from'  => self::Table(),
-                            'where' => array(
-                                'username' => $username
-                            ),
-                            'limit' => '0,1'
-                        ));
-                    }
-                } catch ( \QUI\Exception $e )
-                {
-                    \QUI\Exception::setErrorLog($e->getMessage(), false);
-                }
+//                     if ($Auth->auth($username, $pass))
+//                     {
+//                         $loginuser = \QUI::getDataBase()->fetch(array(
+//                             'from'  => self::Table(),
+//                             'where' => array(
+//                                 'username' => $username
+//                             ),
+//                             'limit' => '0,1'
+//                         ));
+//                     }
+//                 } catch ( \QUI\Exception $e )
+//                 {
+//                     \QUI\Exception::setErrorLog($e->getMessage(), false);
+//                 }
 
-            break;
-        }
+//             break;
+//         }
 
         if ( $loginuser == false )
         {
@@ -638,7 +657,7 @@ class Manager
 
 
                 // on login event
-                \QUI::getEvents()->fireEvent('userDisable', array($User));
+                \QUI::getEvents()->fireEvent('userLogin', array($User));
 
                 return $User;
             }

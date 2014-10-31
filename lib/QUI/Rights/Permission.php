@@ -490,6 +490,10 @@ class Permission
             return true;
         }
 
+        if ( \QUI::getUsers()->isSystemUser($User) ) {
+            return true;
+        }
+
 
         $Manager     = \QUI::getPermissionManager();
         $permissions = $Manager->getSitePermissions( $Site );
