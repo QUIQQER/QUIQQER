@@ -370,10 +370,11 @@ define([
          *
          * @method classes/projects/project/Site#createChild
          *
-         * @param {String} newname    - new name of the child
+         * @param {String|Object} newname - String = new name of the child, Object = { name:'', title:'' }
          * @param {Function} onfinish - [optional] callback function
+         * @param {Function} onrror   - [optional] function, that is triggered if an error occurred
          */
-        createChild : function(newname, onfinish)
+        createChild : function(newname, onfinish, onerror)
         {
             if ( typeof newname === 'undefined' ) {
                 return;
@@ -382,9 +383,23 @@ define([
             var Site   = this,
                 params = this.ajaxParams();
 
-            params.attributes = JSON.encode({
-                name : newname
-            });
+            if ( typeOf( newname ) == 'object' )
+            {
+                params.attributes = JSON.encode( newname );
+
+            } else
+            {
+                params.attributes = JSON.encode({
+                    name : newname
+                });
+            }
+
+
+            if ( typeof onerror !== 'undefined' )
+            {
+                params.showError = false;
+                params.onError   = onerror;
+            }
 
             Ajax.post('ajax_site_children_create', function(result, Request)
             {

@@ -6,9 +6,10 @@
 
 namespace QUI\Projects\Site;
 
-use \QUI\Utils\String as StringUtils;
-use \QUI\Utils\XML;
-use \QUI\Utils\DOM;
+use QUI;
+use QUI\Utils\String as StringUtils;
+use QUI\Utils\XML;
+use QUI\Utils\DOM;
 
 /**
  * Site Utils - Site Helper
@@ -17,6 +18,91 @@ use \QUI\Utils\DOM;
  */
 class Utils
 {
+    /**
+     * Prüft ob der Name erlaubt ist
+     *
+     * @param unknown_type $name
+     * @throws \QUI\Exception
+     * @return Bool
+     */
+    static function checkName($name)
+    {
+        if ( !isset( $name ) )
+        {
+            throw new \QUI\Exception(
+                'Bitte gebe einen Titel ein'
+            );
+        }
+
+        if ( strlen( $name ) <= 2 )
+        {
+            throw new \QUI\Exception(
+                'Die URL muss mehr als 2 Zeichen lang sein',
+                701
+            );
+        }
+
+        if ( strlen( $name ) > 200 )
+        {
+            throw new \QUI\Exception(
+                'Die URL darf nicht länger als 200 Zeichen lang sein',
+                704
+            );
+        }
+
+        // Prüfung des Namens - Sonderzeichen
+        if ( preg_match("@[-.,:;#`!§$%&/?<>\=\'\"\@\_\]\[\+]@", $name ))
+        {
+            throw new \QUI\Exception(
+                'In der URL "'. $name .'" dürfen folgende Zeichen nicht verwendet werden: _-.,:;#@`!§$%&/?<>=\'"[]+',
+                702
+            );
+        }
+
+        return true;
+    }
+
+    /**
+     * Säubert eine URL macht sie schön
+     *
+     * @param String $url
+     * @param \QUI\Projects\Project $Project - Project clear extension
+     * @return String
+     */
+    static function clearUrl($url, \QUI\Projects\Project $Project)
+    {
+        $signs = array(
+            '-', '.', ',', ':', ';',
+            '#', '`', '!', '§', '$',
+            '%', '&', '?', '<', '>',
+            '=', '\'', '"', '@', '_',
+            ']', '[', '+', '/'
+        );
+
+        $url = str_replace($signs, '', $url);
+        //$url = preg_replace('[-.,:;#`!§$%&/?<>\=\'\"\@\_\]\[\+]', '', $url);
+
+        // doppelte leerzeichen löschen
+        $url = preg_replace('/([ ]){2,}/', "$1", $url);
+
+        // @todo als event
+        // URL Filter
+        $name   = $Project->getAttribute('name');
+        $filter = USR_DIR .'lib/'. $name .'/url.filter.php';
+        $func   = 'url_filter_'. $name;
+
+        if ( file_exists( $filter ) )
+        {
+            require_once $filter;
+
+            if ( function_exists( $func ) ) {
+                $url = $func( $url );
+            }
+        }
+
+        return $url;
+    }
+
     /**
      * Return database.xml list for the Site Object
      *

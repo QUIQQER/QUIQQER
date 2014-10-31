@@ -4,13 +4,13 @@
  * @module controls/projects/project/site/Panel
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires qui/controls/desktop/Panel
- * @requires Projects
- * @requires Ajax
- * @requires classes/projects/project/Site
- * @requires qui/controls/buttons/Button
- * @requires qui/utils/Form
- * @requires Locale
+ * @require qui/controls/desktop/Panel
+ * @require Projects
+ * @require Ajax
+ * @require classes/projects/project/Site
+ * @require qui/controls/buttons/Button
+ * @require qui/utils/Form
+ * @require Locale
  */
 
 define([
@@ -40,6 +40,8 @@ define([
         ControlUtils = arguments[ 6 ],
         PanelUtils   = arguments[ 7 ],
         Locale       = arguments[ 8 ];
+
+    var lg = 'quiqqer/system';
 
     /**
      * An SitePanel, opens the Site in an Apppanel
@@ -220,8 +222,8 @@ define([
             // permissions
             var PermissionButton = new QUIButton({
                 image  : 'icon-gears',
-                alt    : Locale.get('quiqqer/system','projects.project.site.panel.btn.permissions'),
-                title  : Locale.get('quiqqer/system','projects.project.site.panel.btn.permissions'),
+                alt    : Locale.get( lg, 'projects.project.site.panel.btn.permissions' ),
+                title  : Locale.get( lg, 'projects.project.site.panel.btn.permissions' ),
                 styles : {
                     'border-left-width' : 1,
                     'float' : 'right'
@@ -233,8 +235,8 @@ define([
 
             var MediaButton = new QUIButton({
                 image  : 'icon-picture',
-                alt    : Locale.get('quiqqer/system','projects.project.site.panel.btn.media'),
-                title  : Locale.get('quiqqer/system','projects.project.site.panel.btn.media'),
+                alt    : Locale.get( lg, 'projects.project.site.panel.btn.media' ),
+                title  : Locale.get( lg, 'projects.project.site.panel.btn.media' ),
                 styles : {
                     'border-left-width' : 1,
                     'float' : 'right'
@@ -246,8 +248,8 @@ define([
 
             var SortButton = new QUIButton({
                 image  : 'icon-sort',
-                alt    : Locale.get('quiqqer/system','projects.project.site.panel.btn.sort'),
-                title  : Locale.get('quiqqer/system','projects.project.site.panel.btn.sort'),
+                alt    : Locale.get( lg, 'projects.project.site.panel.btn.sort' ),
+                title  : Locale.get( lg, 'projects.project.site.panel.btn.sort' ),
                 styles : {
                     'border-left-width' : 1,
                     'float' : 'right'
@@ -408,15 +410,11 @@ define([
                 Project = Site.getProject();
 
             this.createSheet({
-                title : Locale.get(
-                    'quiqqer/system',
-                    'projects.project.site.panel.sort.title',
-                    {
-                        id    : Site.getId(),
-                        title : Site.getAttribute('title'),
-                        name  : Site.getAttribute('name')
-                    }
-                ),
+                title : Locale.get( lg, 'projects.project.site.panel.sort.title', {
+                    id    : Site.getId(),
+                    title : Site.getAttribute('title'),
+                    name  : Site.getAttribute('name')
+                }),
                 events :
                 {
                     onOpen : function(Sheet)
@@ -454,23 +452,13 @@ define([
             require(['qui/controls/windows/Confirm'], function(Confirm)
             {
                 new Confirm({
-                    title : Locale.get(
-                        'quiqqer/system',
-                        'projects.project.site.panel.window.delete.title'
-                    ),
+                    title     : Locale.get( lg, 'projects.project.site.panel.window.delete.title' ),
                     titleicon : 'icon-trash',
-                    text : Locale.get(
-                        'quiqqer/system',
-                        'projects.project.site.panel.window.delete.text',
-                        {
-                            id  : Site.getId(),
-                            url : Site.getAttribute( 'name' ) +'.html'
-                        }
-                    ),
-                    information : Locale.get(
-                        'quiqqer/system',
-                        'projects.project.site.panel.window.delete.information'
-                    ),
+                    text : Locale.get( lg, 'projects.project.site.panel.window.delete.text', {
+                        id  : Site.getId(),
+                        url : Site.getAttribute( 'name' ) +'.html'
+                    }),
+                    information : Locale.get( lg, 'projects.project.site.panel.window.delete.information' ),
                     height : 200,
                     events :
                     {
@@ -490,35 +478,105 @@ define([
          * @param {String} newname - [optional, if no newname was passed,
          *         a window would be open]
          */
-        createNewChild : function()
+        createNewChild : function(value)
         {
-            var self = this,
-                Site = self.getSite();
+            var self    = this,
+                Site    = self.getSite(),
+                Project = Site.getProject();
+
+            if ( typeof value === 'undefined' ) {
+                value = '';
+            }
 
             require(['qui/controls/windows/Prompt'], function(Prompt)
             {
                 new Prompt({
-                    title : Locale.get(
-                        'quiqqer/system',
-                        'projects.project.site.panel.window.create.title'
-                    ),
-                    text : Locale.get(
-                        'quiqqer/system',
-                        'projects.project.site.panel.window.create.text'
-                    ),
-                    texticon : 'icon-file',
-                    information : Locale.get(
-                        'quiqqer/system',
-                        'projects.project.site.panel.window.create.information',
-                        {
-                            name : Site.getAttribute( 'name' ),
-                            id   : Site.getId()
-                        }
-                    ),
-                    events :
+                    title : Locale.get( lg, 'projects.project.site.panel.window.create.title' ),
+                    text  : Locale.get( lg, 'projects.project.site.panel.window.create.text' ),
+                    texticon    : 'icon-file',
+                    information : Locale.get( lg, 'projects.project.site.panel.window.create.information', {
+                        name : Site.getAttribute( 'name' ),
+                        id   : Site.getId()
+                    }),
+                    value     : value,
+                    autoclose : false,
+                    events    :
                     {
-                        onSubmit : function(result, Win) {
-                            Site.createChild( result );
+                        onSubmit : function(value, Win)
+                        {
+                            Site.createChild( value, function()
+                            {
+                                Win.close();
+
+                            }, function(Exception)
+                            {
+                                // on error
+                                if ( Exception.getCode() == 702 )
+                                {
+                                    Ajax.get('ajax_site_clear', function(newName)
+                                    {
+                                        Win.close();
+
+
+                                        require(['qui/controls/windows/Confirm'], function(QUIConfirm)
+                                        {
+                                            new QUIConfirm({
+                                                title : 'Unerlaubte Zeichen im Namen',
+                                                text  : 'Unerlaubte Zeichen im Namen.',
+                                                icon  : 'icon-warning-sign fa fa-warning',
+                                                maxWidth    : 600,
+                                                maxHeight   : 500,
+                                                autoclose   : false,
+                                                information : 'Der Name der Seite beinhaltet Zeichen die nicht erlaubt sind. <br />' +
+                                                              ' Sollen aus dem Namen die Sonderzeichen herausgefiltert werden und ' +
+                                                              'der ursprüngliche Name als Titel verwendet werden?' +
+                                                              '<br /><br />'+
+                                                              '<p>Neuer Name der Seite: <b>'+ newName +'</b></p>' +
+                                                              '<p>Neuer Title der Seite: <b>'+ value +'</b></p>',
+                                                events :
+                                                {
+                                                    onSubmit : function(Win)
+                                                    {
+                                                        Win.Loader.show();
+
+                                                        Site.createChild({
+                                                            name  : newName,
+                                                            title : value
+                                                        }, function()
+                                                        {
+                                                            Win.close();
+
+                                                        }, function(Exception)
+                                                        {
+                                                            Win.close();
+
+                                                            self.createNewChild( newName );
+
+                                                            QUI.getMessageHandler(function(MH) {
+                                                                MH.addError( Exception.getMessage() );
+                                                            });
+                                                        });
+                                                    }
+                                                }
+                                            }).open();
+                                        });
+
+
+                                    }, {
+                                        project : Project.getName(),
+                                        lang    : Project.getLang(),
+                                        name    : value
+                                    });
+
+                                    return;
+                                }
+
+                                QUI.getMessageHandler(function(MH) {
+                                    MH.addError( Exception.getMessage() );
+                                });
+
+                                Win.Loader.hide();
+                            } );
                         }
                     }
                 }).open();
@@ -567,6 +625,7 @@ define([
             {
                 this.getContent().set( 'html', '' );
                 this.$categoryOnLoad( Category );
+
                 QUI.parse( Category );
 
                 return;
@@ -625,10 +684,7 @@ define([
                         var rowList = LinkinLangTable.getElements( 'tbody tr' );
 
                         new QUIButton({
-                            text : Locale.get(
-                                'quiqqer/system',
-                                'projects.project.site.panel.linked.btn.add'
-                            ),
+                            text   : Locale.get( lg, 'projects.project.site.panel.linked.btn.add' ),
                             styles : {
                                 float : 'right'
                             },
@@ -654,8 +710,8 @@ define([
 
                             new QUIButton({
                                 icon   : 'icon-file-alt',
-                                alt    : Locale.get('quiqqer/system', 'open.site'),
-                                title  : Locale.get('quiqqer/system', 'open.site'),
+                                alt    : Locale.get( lg, 'open.site' ),
+                                title  : Locale.get( lg, 'open.site' ),
                                 lang   : Row.get( 'data-lang' ),
                                 siteId : Row.get( 'data-id' ),
                                 styles : {
@@ -675,16 +731,10 @@ define([
                             }).inject( LastCell );
 
                             new QUIButton({
-                                icon : 'icon-remove',
-                                alt : Locale.get(
-                                    'quiqqer/system',
-                                    'projects.project.site.panel.linked.btn.delete'
-                                ),
-                                title : Locale.get(
-                                    'quiqqer/system',
-                                    'projects.project.site.panel.linked.btn.delete'
-                                ),
-                                lang : Row.get( 'data-lang' ),
+                                icon   : 'icon-remove',
+                                alt    : Locale.get( lg, 'projects.project.site.panel.linked.btn.delete' ),
+                                title  : Locale.get( lg, 'projects.project.site.panel.linked.btn.delete' ),
+                                lang   : Row.get( 'data-lang' ),
                                 siteId : Row.get( 'data-id' ),
                                 styles : {
                                     'float' : 'right'
@@ -1114,15 +1164,9 @@ define([
                     Project = Site.getProject();
 
                 new QUIConfirm({
-                    title : Locale.get(
-                        'quiqqer/system',
-                        'projects.project.site.panel.linked.window.delete.title'
-                    ),
-                    icon : 'icon-remove',
-                    text : Locale.get(
-                        'quiqqer/system',
-                        'projects.project.site.panel.linked.window.delete.text'
-                    ),
+                    title  : Locale.get( lg, 'projects.project.site.panel.linked.window.delete.title' ),
+                    icon   : 'icon-remove',
+                    text   : Locale.get( lg, 'projects.project.site.panel.linked.window.delete.text' ),
                     events :
                     {
                         onSubmit : function(Confirm)

@@ -12,16 +12,8 @@ use \QUI\Utils\String as StringUtils;
  * Site Objekt - eine einzelne Seite
  *
  * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.project
  *
- * @copyright  2008 PCSG
- * @version    $Revision: 4657 $
- *
- * @errorcodes
- * <ul>
- * <li>400	- __construct() Error; Bad Request; Aufruf ist falsch</li>
- * <li>404	- __construct() Error; Not Found; Seite wurde nicht gefunden. Seite ist entweder inaktiv oder die Rechte fehlen</li>
- * </ul>
+ * @errorcodes 7XX = Site Errors -> look at Site/Edit
  */
 
 class Site extends \QUI\QDOM
@@ -164,7 +156,7 @@ class Site extends \QUI\QDOM
         $this->Events   = new \QUI\Events\Event();
 
         if ( empty( $this->_id ) ) {
-            throw new \QUI\Exception( 'Site Error; No ID given:'. $id, 400 );
+            throw new \QUI\Exception( 'Site Error; No ID given:'. $id, 700 );
         }
 
         // DB Tables
@@ -469,11 +461,11 @@ class Site extends \QUI\QDOM
         $decode  = json_decode( $params, true );
 
         if ( $decode['active'] != 1 ) {
-            throw new \QUI\Exception( 'Site not exist', 404 );
+            throw new \QUI\Exception( 'Site not exist', 705 );
         }
 
         if ( $decode['deleted'] == 1 ) {
-            throw new \QUI\Exception( 'Site not exist', 404 );
+            throw new \QUI\Exception( 'Site not exist', 705 );
         }
 
         if ( isset( $decode['linked_parent'] ) )
@@ -507,7 +499,7 @@ class Site extends \QUI\QDOM
                     'quiqqer/system',
                     'exception.site.not.found'
                 ),
-                404
+                705
             );
         }
 
@@ -520,7 +512,7 @@ class Site extends \QUI\QDOM
                     'quiqqer/system',
                     'exception.site.not.found'
                 ),
-                404
+                705
             );
         }
 
@@ -531,7 +523,7 @@ class Site extends \QUI\QDOM
                     'quiqqer/system',
                     'exception.site.not.found'
                 ),
-                404
+                705
             );
         }
 
@@ -1065,7 +1057,7 @@ class Site extends \QUI\QDOM
         }
 
         throw new \QUI\Exception(
-            'No Child found with name '. $name, 404
+            'No Child found with name '. $name, 705
         );
     }
 
@@ -1097,7 +1089,7 @@ class Site extends \QUI\QDOM
         ));
 
         if ( !isset( $result[0] ) ) {
-            throw new \QUI\Exception( 'Child not found', 404 );
+            throw new \QUI\Exception( 'Child not found', 705 );
         }
 
         $this->_children[ $id ] = $this->getProject()->get( $id );

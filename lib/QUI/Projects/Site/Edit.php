@@ -13,23 +13,19 @@ use \QUI\Users\User;
 use \QUI\Groups\Group;
 
 /**
- * Site Objekt für den Admibereich
- *
- * Stellt Methoden für den Admibereich zur Verfügung welche auf der Seite nicht benötig werden
- * Hauptänderung ist das Cacheing von Änderungen und das Speichern aus der Tempdatei
+ * Site Objekt für den Adminbereich
+ * Stellt Methoden für das Bearbeiten von einer Seite zur Verfügung
  *
  * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.project
  *
- * @copyright  2008 PCSG
- * @since      Class available since Release QUIQQER 0.1
- *
- * @errorcodes
+ * @errorcodes 7XX = Site Errors
  * <ul>
- * <li>701 - Error Name: 2 signs or lower</li>
- * <li>702 - Error Name: Not supported signs in Name</li>
- * <li>703 - Error Name: Duplicate Entry in Parent; Child width the same Name exist</li>
- * <li>704 - Error Name: 200 signs or higher</li>
+ * <li>700 - Error Site: Bad Request; Aufruf ist falsch</li>
+ * <li>701 - Error Site Name: 2 signs or lower</li>
+ * <li>702 - Error Site Name: Not supported signs in Name</li>
+ * <li>703 - Error Site Name: Duplicate Entry in Parent; Child width the same Name exist</li>
+ * <li>704 - Error Site Name: 200 signs or higher</li>
+ * <li>705 - Error Site  : Site not found</li>
  * </ul>
  *
  * @todo Sortierung als eigene Methoden
@@ -189,11 +185,8 @@ class Edit extends \QUI\Projects\Site
         if ( !isset( $result[0] ) )
         {
             throw new \QUI\Exception(
-                \QUI::getLocale()->get(
-                    'quiqqer/system',
-                    'exception.site.not.found'
-                ),
-                404
+                \QUI::getLocale()->get( 'quiqqer/system', 'exception.site.not.found' ),
+                705
             );
         }
 
@@ -235,10 +228,7 @@ class Edit extends \QUI\Projects\Site
         } catch ( \QUI\Exception $Exception )
         {
             throw new \QUI\Exception(
-                \QUI::getLocale()->get(
-                    'quiqqer/system',
-                    'exception.permissions.edit'
-                )
+                \QUI::getLocale()->get( 'quiqqer/system', 'exception.permissions.edit' )
             );
         }
 
@@ -457,7 +447,7 @@ class Edit extends \QUI\Projects\Site
         // check the name, unallowed signs?
         $name = $this->getAttribute( 'name' );
 
-        self::checkName( $name );
+        \QUI\Projects\Site\Utils::checkName( $name );
 
 
         /* @var $Project \QUI\Projects\Project */
@@ -925,11 +915,11 @@ class Edit extends \QUI\Projects\Site
         }
 
         if ( $this->existNameInChildren( $new_name ) ) {
-            throw new \QUI\Exception( 'Name exist', 401 );
+            throw new \QUI\Exception( 'Name exist', 703 );
         }
 
         // can we use this name?
-        self::checkName( $new_name );
+        \QUI\Projects\Site\Utils::checkName( $new_name );
 
 
 
@@ -1119,7 +1109,7 @@ class Edit extends \QUI\Projects\Site
         {
             throw new \QUI\Exception(
                 'Es kann keine Verknüpfung in dieser Ebene erstellt werden,
-                da eine Verknüpfung oder die original Seite bereits in dieser Ebene existiert', 400
+                da eine Verknüpfung oder die original Seite bereits in dieser Ebene existiert', 703
             );
         }
 
@@ -1136,7 +1126,7 @@ class Edit extends \QUI\Projects\Site
             {
                 throw new \QUI\Exception(
                     'Es kann keine Verknüpfung in dieser Ebene erstellt werden,
-                    da eine Verknüpfung oder die original Seite bereits in dieser Ebene existiert', 400
+                    da eine Verknüpfung oder die original Seite bereits in dieser Ebene existiert', 703
                 );
             }
         }
@@ -1367,38 +1357,11 @@ class Edit extends \QUI\Projects\Site
      * @param String $url
      * @param \QUI\Projects\Project $Project - Project clear extension
      * @return String
+     * @deprecated use \QUI\Projects\Site\Utils::clearUrl
      */
     static function clearUrl($url, \QUI\Projects\Project $Project)
     {
-        $signs = array(
-            '-', '.', ',', ':', ';',
-            '#', '`', '!', '§', '$',
-            '%', '&', '?', '<', '>',
-            '=', '\'', '"', '@', '_',
-            ']', '[', '+', '/'
-        );
-
-        $url = str_replace($signs, '', $url);
-        //$url = preg_replace('[-.,:;#`!§$%&/?<>\=\'\"\@\_\]\[\+]', '', $url);
-
-        // doppelte leerzeichen löschen
-        $url = preg_replace('/([ ]){2,}/', "$1", $url);
-
-        // URL Filter
-        $name   = $Project->getAttribute('name');
-        $filter = USR_DIR .'lib/'. $name .'/url.filter.php';
-        $func   = 'url_filter_'. $name;
-
-        if ( file_exists( $filter ) )
-        {
-            require_once $filter;
-
-            if ( function_exists( $func ) ) {
-                $url = $func( $url );
-            }
-        }
-
-        return $url;
+        return \QUI\Projects\Site\Utils::clearUrl( $url, $Project );
     }
 
     /**
@@ -1407,41 +1370,10 @@ class Edit extends \QUI\Projects\Site
      * @param unknown_type $name
      * @throws \QUI\Exception
      * @return Bool
+     * @deprecated use \QUI\Projects\Site\Utils::checkName
      */
     static function checkName($name)
     {
-        if ( !isset( $name ) )
-        {
-            throw new \QUI\Exception(
-                'Bitte gebe einen Titel ein'
-            );
-        }
-
-        if ( strlen( $name ) <= 2 )
-        {
-            throw new \QUI\Exception(
-                'Die URL muss mehr als 2 Zeichen lang sein',
-                701
-            );
-        }
-
-        if ( strlen( $name ) > 200 )
-        {
-            throw new \QUI\Exception(
-                'Die URL darf nicht länger als 200 Zeichen lang sein',
-                704
-            );
-        }
-
-        // Prüfung des Namens - Sonderzeichen
-        if ( preg_match("@[-.,:;#`!§$%&/?<>\=\'\"\@\_\]\[\+]@", $name ))
-        {
-            throw new \QUI\Exception(
-                'In der URL "'. $name .'" dürfen folgende Zeichen nicht verwendet werden: _-.,:;#@`!§$%&/?<>=\'"[]+',
-                702
-            );
-        }
-
-        return true;
+        return \QUI\Projects\Site\Utils::checkName( $name );
     }
 }
