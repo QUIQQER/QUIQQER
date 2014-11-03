@@ -45,6 +45,7 @@ define([
             '$serverGridBlur',
             'setup',
 
+            'executeCompleteUpdate',
             'loadUpdates',
             'unloadUpdates',
             'checkUpdates',
