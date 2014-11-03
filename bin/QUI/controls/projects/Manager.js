@@ -216,12 +216,13 @@ define('controls/projects/Manager', [
          */
         openAddProject : function()
         {
+            var self = this;
+
             this.Loader.show();
 
-            UtilsTemplate.get('project/create', function(result, Request)
+            UtilsTemplate.get('project/create', function(result)
             {
-                var Control = Request.getAttribute( 'Control' ),
-                    Body    = Control.getBody();
+                var Body = self.getBody();
 
                 Body.set( 'html', result );
 
@@ -234,7 +235,7 @@ define('controls/projects/Manager', [
                 new QUIButton({
                     text   : Locale.get( lg, 'projects.project.manager.btn.create.project' ),
                     events : {
-                        onClick : Control.$submitCreateProject
+                        onClick : self.$submitCreateProject
                     }
                 }).inject(
                     new Element('p').inject(
@@ -242,10 +243,7 @@ define('controls/projects/Manager', [
                     )
                 );
 
-                Control.Loader.hide();
-
-            }, {
-                Control : this
+                self.Loader.hide();
             });
         },
 
