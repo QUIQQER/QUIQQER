@@ -520,7 +520,7 @@ class XML
         $Dom  = self::getDomFromXml( $file );
         $Path = new \DOMXPath( $Dom );
 
-        $categories = $Path->query( "//quiqqer/settings/window/categories/category" );
+        $categories = $Path->query( "//settings/window/categories/category" );
 
         if ( !$categories->length ) {
             return false;
