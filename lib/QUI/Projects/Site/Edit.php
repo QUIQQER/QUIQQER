@@ -76,74 +76,11 @@ class Edit extends \QUI\Projects\Site
         // Temp Dir abfragen ob existiert
         \QUI\Utils\System\File::mkdir( VAR_DIR .'admin/' );
 
-        // Erste Rechteprüfung
-        $User = \QUI::getUserBySession();
-
-        if ( !$User->getId() ) {
-            return false;
-        }
-
         $this->load();
-
-
-        // Onload der Plugins ausführen
-        $Plugins = $this->_getLoadedPlugins();
-
-        foreach ( $Plugins as $plg )
-        {
-            if ( method_exists( $plg, 'onLoad' ) ) {
-                $plg->onLoad( $this );
-            }
-        }
 
         // onInit event
         $this->Events->fireEvent( 'init', array( $this ) );
         \QUI::getEvents()->fireEvent( 'siteInit', array( $this ) );
-    }
-
-    /**
-     * Plugins laden
-     * @todo anschauen wegen admin zeugs
-     */
-    protected function _load_plugins()
-    {
-        // Globale requireds
-        $Project = $this->getProject();
-        $Plugin  = \QUI::getPluginManager();
-
-        // Plugins laden
-        parent::_load_plugins();
-
-        // zusätzlich noch globale Sachen
-        // @todo muss noch in die Plugin Klasse
-        $global_scripts = $Project->getGlobalTypes();
-
-        if ( !isset( $global_scripts['admin'] ) ) {
-            return;
-        }
-
-        foreach ( $global_scripts['admin'] as $plug => $p )
-        {
-            $class = 'Global_'.$plug;
-
-            if ( !class_exists( $class ) )
-            {
-                if ( !is_array( $p ) ) {
-                    continue;
-                }
-
-                foreach ( $p as $p_file )
-                {
-                    if ( file_exists( $p_file ) ) {
-                        require_once $p_file;
-                    }
-                }
-            }
-
-            if ( class_exists( $class ) ) {
-                $this->_plugins[] = new $class();
-            }
-        }
     }
 
     /**
@@ -567,6 +504,9 @@ class Edit extends \QUI\Projects\Site
 
         // save package automatic site data (database.xml)
         $dataList = Utils::getDataListForSite( $this );
+
+        \QUI\System\Log::writeRecursive( $this->getAttributes() );
+
 
         foreach ( $dataList as $dataEntry )
         {
