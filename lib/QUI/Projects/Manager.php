@@ -20,7 +20,10 @@ use QUI\Utils\DOM;
  *
  * @event onProjectConfigSave [ String project, Array config ]
  * @event onCreateProject [ String \QUI\Projects\Project ]
+ *
+ * @errorcodes 8xx Project Errors -> Look at Project.php
  */
+
 class Manager
 {
     /**
@@ -413,7 +416,7 @@ class Manager
                     'quiqqer/system',
                     'exception.project.longer.two.signs'
                 ),
-                701
+                801
             );
         }
 
@@ -424,7 +427,7 @@ class Manager
                     'quiqqer/system',
                     'exception.project.lang.not.two.signs'
                 ),
-                701
+                801
             );
         }
 
@@ -444,7 +447,7 @@ class Manager
                         'signs' => implode( ' ', $not_allowed_signs )
                     )
                 ),
-                702
+                802
             );
         }
 
@@ -456,7 +459,8 @@ class Manager
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.project.not.allowed.signs'
-                )
+                ),
+                802
             );
         }
 

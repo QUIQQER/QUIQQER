@@ -13,18 +13,19 @@ use \QUI\Groups\Group;
 use \QUI\Utils\Security\Orthos;
 
 /**
- * Ein Projekt
+ * A project
  *
  * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.projects
- *
- * @copyright  2008 PCSG
- * @since      Class available since Release QUIQQER 0.1
  *
  * @errorcodes
  * <ul>
- * <li>400	- Bad Request; Aufruf ist falsch</li>
- * <li>404	- Not Found; Project wurde nicht gefunden. Project existiert nicht</li>
+ * <li>
+ * <li>801 - Project Create Error: name must longer than two signs</li>
+ * <li>802 - Project Create Error: not allowed signs</li>
+ * <li>803 - Project Error: Project has no languages</li>
+ * <li>804 - Project Error: Project not found</li>
+ * <li>805 - Project Error: Project has default language</li>
+ * <li>806 - Project Error: Project language not found</li>
  * </ul>
  */
 
@@ -146,7 +147,7 @@ class Project
                     'quiqqer/system',
                     'exception.project.not.found'
                 ),
-                404
+                804
             );
         }
 
@@ -161,7 +162,7 @@ class Project
                     'quiqqer/system',
                     'exception.project.has.no.langs'
                 ),
-                500
+                803
             );
         }
 
@@ -175,7 +176,7 @@ class Project
                     'quiqqer/system',
                     'exception.project.lang.no.default'
                 ),
-                500
+                805
             );
         }
 
@@ -195,11 +196,12 @@ class Project
                             'lang' => $lang
                         )
                     ),
-                    500
+                    806
                 );
             }
 
             $this->_lang = $lang;
+
         } else
         {
             // Falls keine Sprache angegeben wurde wird die Standardsprache verwendet
@@ -210,7 +212,7 @@ class Project
                         'quiqqer/system',
                         'exception.project.lang.no.default'
                     ),
-                    500
+                    805
                 );
             }
 
@@ -1204,115 +1206,6 @@ class Project
 
         return $sites;
     }
-
-    /**
-     * Erstellt ein Backup vom Projekt
-     *
-     * @param Bool $config - Konfiguration sichern
-     * @param Bool $project - Projektdb sichern
-     * @param Bool $media - Media-Center sichern
-     * @param Bool $template - Templates sichern
-     * @deprecated
-     */
-//     public function createBackup($config=true, $project=true, $media=true, $template=true)
-//     {
-//         $User = \QUI::getUserBySession();
-
-//         if (!$User->isSU()) {
-//             throw new \QUI\Exception('You must be an Superuser to create a Backup');
-//         }
-
-//         if (file_exists(VAR_DIR .'backup/start')) {
-//             throw new \QUI\Exception('There currently running a backup. Please try again later');
-//         }
-
-//         $time  = time();
-//         $dir   = VAR_DIR .'backup/'. $this->getAttribute('name') .'/'. $time.'/';
-//         $cfile = VAR_DIR .'backup/'. $this->getAttribute('name') .'/c'. $time;
-
-//         if (is_dir($dir)) {
-//             throw new \QUI\Exception('Cannot create Backup; Backupfolder exists');
-//         }
-
-//         \QUI\Utils\System\File::mkdir($dir);
-
-//         // Backup creation file - zeigt an ob das Backup gerade läuft
-//         file_put_contents($cfile, 'start');
-
-//         if ($project)
-//         {
-//             // jede Sprache durchgehen
-//             foreach ($this->_langs as $lang)
-//             {
-//                 $tbl_sites     = $this->getAttribute('name') .'_'. $lang .'_sites';
-//                 $tbl_rel_sites = $tbl_sites.'_relations';
-
-//                 // Backup erstellen
-//                 \QUI::getDB()->backup($tbl_sites, $dir.$tbl_sites);
-//                 \QUI::getDB()->backup($tbl_rel_sites, $dir.$tbl_rel_sites);
-//             }
-
-//             // Multilingual
-//             try
-//             {
-//                 $tbl_multilingual = $this->getAttribute('name') .'_multilingual';
-//                 \QUI::getDB()->backup($tbl_multilingual, $dir.$tbl_multilingual);
-//             } catch (\QUI\Exception $e)
-//             {
-//                 // wenn es nur eine Sprache gibt
-//             }
-//         }
-
-//         if ($media)
-//         {
-//             // Mediafiles sichern
-//             \QUI\Utils\System\File::mkdir($dir.'media/');
-
-//             $mediadir = CMS_DIR .'media/sites/'. $this->getAttribute('name') .'/';
-//             \QUI\Utils\System\File::dircopy($mediadir, $dir.'media/');
-
-//             //Mediadb
-//             $tbl_media     = $this->getAttribute('name') .'_de_media';
-//             $tbl_rel_media = $tbl_media.'_relations';
-
-//             // Backup erstellen
-//             \QUI::getDB()->backup($tbl_media, $dir.$tbl_media);
-//             \QUI::getDB()->backup($tbl_rel_media, $dir.$tbl_rel_media);
-//         }
-
-//         // Templates sichern
-//         if ($template)
-//         {
-//             $b_bindir = $dir .'templates/bin';
-//             $b_libdir = $dir .'templates/lib';
-
-//             \QUI\Utils\System\File::mkdir($b_bindir);
-//             \QUI\Utils\System\File::mkdir($b_libdir);
-
-//             $bindir = USR_DIR .'bin/'. $this->getAttribute('template') .'/';
-//             $libdir = USR_DIR .'lib/'. $this->getAttribute('template') .'/';
-
-//             \QUI\Utils\System\File::dircopy($bindir, $b_bindir);
-//             \QUI\Utils\System\File::dircopy($libdir, $b_libdir);
-//         }
-
-//         // config
-//         if ($config)
-//         {
-//             $f_config = $dir.'conf.ini.php';
-//             file_put_contents($f_config, '');
-
-//             $Config = new \QUI\Config($f_config);
-//             $Config->setSection($this->getAttribute('name') ,$this->_config);
-//             $Config->save();
-//         }
-
-//         // Archiv erstellen Verzeichnis packen
-//         $PT_Zip = new \QUI\Archiver\Zip();
-//         $PT_Zip->zip($dir, VAR_DIR.'backup/'.$this->getAttribute('name').'/'.$time.'.zip');
-
-//         unlink($cfile);
-//     }
 
     /**
      * Execute the project setup

@@ -10,9 +10,11 @@ namespace QUI\Plugins;
  * Plugin Manager
  *
  * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.plugins
  *
  * @todo Plugin Methoden Benennung sollte bisschen überdacht werden
+ *
+ * @errorcodes 8XX = Project Errors
+ *
  */
 
 class Manager extends \QUI\QDOM
