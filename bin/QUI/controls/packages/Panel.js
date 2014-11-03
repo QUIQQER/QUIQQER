@@ -131,7 +131,9 @@ define([
                 {
                     onActive : function()
                     {
+                        this.setAttribute( 'page', 1 );
                         this.setAttribute( 'type', 'quiqqer-library' );
+
                         this.loadPackages();
                     }.bind( this ),
 
@@ -147,7 +149,9 @@ define([
                 {
                     onActive : function()
                     {
+                        this.setAttribute( 'page', 1 );
                         this.setAttribute( 'type', '' );
+
                         this.loadPackages();
                     }.bind( this ),
 
@@ -690,6 +694,7 @@ define([
             }
 
             GridObj.refresh();
+
             GridObj.addEvent('onDblClick', function(event) {
                 self.openPackageDetails( GridObj.getDataByRow( event.row ).name );
             });
@@ -700,6 +705,8 @@ define([
          */
         unloadPackages : function(Btn)
         {
+            this.setAttribute( 'page', 1 );
+
             if ( this.$Grid && Btn.getAttribute( 'name' ) == 'packages' )
             {
                 this.$Grid.destroy();
