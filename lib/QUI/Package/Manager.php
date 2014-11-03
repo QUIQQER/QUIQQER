@@ -1005,6 +1005,10 @@ class Manager
         // exception?
         foreach ( $output as $key => $msg )
         {
+            if ( !is_string( $package ) ) {
+                continue;
+            }
+
             // if not installed
             if ( strpos( $msg, $package ) !== false &&
                  strpos( $msg, 'not installed' ) !== false )
