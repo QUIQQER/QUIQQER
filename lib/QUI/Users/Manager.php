@@ -749,6 +749,10 @@ class Manager
             return new \QUI\Users\Nobody();
         }
 
+        if ( $id == 5 ) {
+            return new \QUI\Users\SystemUser();
+        }
+
         if ( isset( $this->_users[ $id ] ) ) {
             return $this->_users[ $id ];
         }
