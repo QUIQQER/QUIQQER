@@ -767,22 +767,26 @@ class Site extends \QUI\QDOM
         // Falls kein Order übergeben wird das eingestellte Site Order
         if ( !isset( $params['order'] ) )
         {
-            switch ( $this->getAttribute( 'order_type' ) )
+            switch ( $this->getAttribute('order_type') )
             {
-                case 'name_down':
-                    $params['order'] = 'name DESC';
+                case 'manuell':
+                case 'name ASC':
+                case 'name DESC':
+                case 'title ASC':
+                case 'title DESC':
+
+                case 'c_date ASC':
+                case 'c_date DESC':
+                case 'd_date ASC':
+                case 'd_date DESC':
+
+                case 'release_from ASC':
+                case 'release_from DESC':
+                    $params['order'] = $this->getAttribute('order_type');
                 break;
 
-                case 'name_up':
-                    $params['order'] = 'name ASC';
-                break;
-
-                case 'date_down':
-                    $params['order'] = 'c_date DESC, name ASC';
-                break;
-
-                case 'date_up':
-                    $params['order'] = 'c_date ASC, name ASC';
+                default:
+                    $params['order'] = 'order_field';
                 break;
             }
         }
@@ -824,42 +828,15 @@ class Site extends \QUI\QDOM
 
                 $children[] = $Child;
 
-            } catch ( \QUI\Exception $e )
+            } catch ( \QUI\Exception $Exception )
             {
                 if ( DEBUG_MODE ) {
-                    \QUI\System\Log::writeException( $e );
+                    \QUI\System\Log::writeException( $Exception );
                 }
             }
         }
 
         return $children;
-    }
-
-    /**
-     * Zur Verfügung stehende Sortierungen der Kinder
-     *
-     * @return Array
-     */
-    public function getSorts()
-    {
-        // Tabs der Plugins hohlen
-        $Plugins = $this->_getLoadedPlugins();
-        $sorts   = array(
-            'manuel'    => 'Manuelle Sortierung',
-            'name_down' => 'Namen absteigend',
-            'name_up'   => 'Namen aufsteigend',
-            'date_down' => 'Erstellungsdatum absteigend',
-            'date_up'   => 'Erstellungsdatum aufsteigend'
-        );
-
-        foreach ($Plugins as $plg)
-        {
-            if (method_exists($plg, 'onGetSorts')) {
-                $sorts = array_merge($sorts, $plg->onGetSorts($this));
-            }
-        }
-
-        return $sorts;
     }
 
     /**

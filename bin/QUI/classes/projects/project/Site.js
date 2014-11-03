@@ -15,6 +15,7 @@
  * @event onDeactivate [ this ]
  * @event onDelete [ this ]
  * @event createChild [ this ]
+ * @event sortSave [ this ] --> triggerd by SiteChildren.js
  */
 
 define([

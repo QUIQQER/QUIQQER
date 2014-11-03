@@ -1,15 +1,22 @@
+
 /**
  * Displays a Sitemap from a project
  *
+ * @module controls/projects/project/Sitemap
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires qui/controls/Control
- * @requires qui/controls/sitemap/Map
- *
- * @module controls/projects/project/Sitemap
+ * @require qui/controls/Control
+ * @require qui/controls/sitemap/Map
+ * @require qui/controls/sitemap/Item
+ * @require qui/controls/contextmenu/Item
+ * @require qui/controls/contextmenu/Seperator
+ * @require Projects
+ * @require Ajax
+ * @require Locale
+ * @require Clipboard
  */
 
-define('controls/projects/project/Sitemap', [
+define([
 
     'qui/controls/Control',
     'qui/controls/sitemap/Map',
@@ -101,7 +108,8 @@ define('controls/projects/project/Sitemap', [
                     onSiteSave       : self.onSiteChange,
                     onSiteActivate   : self.onSiteChange,
                     onSiteDeactivate : self.onSiteChange,
-                    onSiteDelete     : self.onSiteDelete
+                    onSiteDelete     : self.onSiteDelete,
+                    onSiteSortSave   : self.onSiteChange
                 });
 
             });
@@ -112,7 +120,8 @@ define('controls/projects/project/Sitemap', [
                 onSiteSave       : this.onSiteChange,
                 onSiteActivate   : this.onSiteChange,
                 onSiteDeactivate : this.onSiteChange,
-                onSiteDelete     : this.onSiteDelete
+                onSiteDelete     : this.onSiteDelete,
+                onSiteSortSave   : this.onSiteChange
             });
 
             // copy and paste ids
@@ -795,7 +804,8 @@ define('controls/projects/project/Sitemap', [
             }
 
             var children = this.$Map.getChildrenByValue( Site.getId() );
-
+console.log( 'onSiteChange' );
+console.log( children );
             if ( !children.length ) {
                 return;
             }
@@ -811,6 +821,10 @@ define('controls/projects/project/Sitemap', [
                 params.has_children = Site.hasChildren() ? 1 : 0;
 
                 this.$parseArrayToSitemapitem( params, Item );
+
+                if ( Item.isOpen() ) {
+                    this.$open( Item );
+                }
             }
         },
 

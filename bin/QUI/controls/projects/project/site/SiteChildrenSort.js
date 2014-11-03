@@ -312,6 +312,8 @@ define('controls/projects/project/site/SiteChildrenSort', [
          */
         save : function(callback)
         {
+            var self = this;
+
             if ( this.$Select.value !== 'manuell' )
             {
                 this.$Site.setAttribute( 'order', this.$Select.value );
@@ -321,6 +323,8 @@ define('controls/projects/project/site/SiteChildrenSort', [
                     if ( typeof callback !== 'undefined' ) {
                         callback();
                     }
+
+                    self.$Site.fireEvent( 'sortSave', [ self.$Site ] );
                 });
 
                 return;
@@ -344,6 +348,9 @@ define('controls/projects/project/site/SiteChildrenSort', [
                 if ( typeof callback !== 'undefined' ) {
                     callback();
                 }
+
+                self.$Site.fireEvent( 'sortSave', [ self.$Site ] );
+
             }, {
                 project : Project.getName(),
                 lang    : Project.getLang(),

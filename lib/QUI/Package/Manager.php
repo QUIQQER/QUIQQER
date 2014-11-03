@@ -995,7 +995,7 @@ class Manager
             $package = false;
         }
 
-        if ( !is_string( $package ) && is_bool( $package ) ) {
+        if ( !is_string( $package ) && !is_bool( $package ) ) {
             $package = false;
         }
 

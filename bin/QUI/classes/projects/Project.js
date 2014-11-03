@@ -81,11 +81,12 @@ define([
             var Site = new ProjectSite( this, id );
 
             Site.addEvents({
-                'onDelete'      : this.$onSiteDelete,
-                'onSave'        : this.$onSiteSave,
-                'onActivate'    : this.$onSiteActivate,
-                'onDeactivate'  : this.$onSiteDeactivate,
-                'onCreateChild' : this.$onSiteCreate
+                onDelete      : this.$onSiteDelete,
+                onSave        : this.$onSiteSave,
+                onActivate    : this.$onSiteActivate,
+                onDeactivate  : this.$onSiteDeactivate,
+                onCreateChild : this.$onSiteCreate,
+                onSortSave    : this.$onSiteSortSave
             });
 
             this.$ids[ id ] = Site;
@@ -260,6 +261,18 @@ define([
         $onSiteDeactivate : function(Site)
         {
             this.fireEvent( 'siteDeactivate', [ this, Site ] );
+        },
+
+
+        /**
+         * event : on Site sort saving
+         *
+         * @param {classes/projects/project/Site} Site
+         * @fires sortSave
+         */
+        $onSiteSortSave : function(Site)
+        {
+            this.fireEvent( 'siteSortSave', [ this, Site ] );
         }
     });
 });

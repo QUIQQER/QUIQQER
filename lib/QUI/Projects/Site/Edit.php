@@ -750,24 +750,24 @@ class Edit extends \QUI\Projects\Site
     public function getChildren($params=array(), $recursiv=false)
     {
         if ( !isset($params['order']) )
-        // Falls kein Ordner übergeben wird das eingestellte Site Ordner
+        // Falls kein order übergeben wird, wird das eingestellte Site order
         {
             switch ( $this->getAttribute('order_type') )
             {
-                case 'name_down':
-                    $params['order'] = 'name DESC';
-                break;
+                case 'manuell':
+                case 'name ASC':
+                case 'name DESC':
+                case 'title ASC':
+                case 'title DESC':
 
-                case 'name_up':
-                    $params['order'] = 'name ASC';
-                break;
+                case 'c_date ASC':
+                case 'c_date DESC':
+                case 'd_date ASC':
+                case 'd_date DESC':
 
-                case 'date_down':
-                    $params['order'] = 'c_date DESC, name ASC';
-                break;
-
-                case 'date_up':
-                    $params['order'] = 'c_date ASC, name ASC';
+                case 'release_from ASC':
+                case 'release_from DESC':
+                    $params['order'] = $this->getAttribute('order_type');
                 break;
 
                 default:
