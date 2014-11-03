@@ -11,12 +11,10 @@ function ajax_system_packages_server_status($server, $status)
 }
 
 QUI::$Ajax->register(
-	'ajax_system_packages_server_status',
+    'ajax_system_packages_server_status',
     array( 'server', 'status' ),
     array(
-    	'Permission::checkAdminUser',
+        'Permission::checkAdminUser',
         'quiqqer.system.update'
     )
 );
-
-?>

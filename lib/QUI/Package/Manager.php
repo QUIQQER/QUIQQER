@@ -209,7 +209,7 @@ class Manager
                 continue;
             }
 
-            if ( !isset($params['active']) || $params['active'] != 1 ) {
+            if ( !isset( $params['active'] ) || $params['active'] != 1 ) {
                 continue;
             }
 
@@ -852,7 +852,7 @@ class Manager
         $Config->setValue( $server, 'active', $status );
         $Config->save();
 
-        $this->refreshServerList();
+        $this->_createComposerJSON();
     }
 
     /**
