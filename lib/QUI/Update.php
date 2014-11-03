@@ -16,7 +16,6 @@ use QUI\Utils\XML;
  * Update from QUIQQER
  *
  * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui
  *
  * @todo Backup vor dem Einspielen machen
  */

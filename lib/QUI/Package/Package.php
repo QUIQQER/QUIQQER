@@ -92,4 +92,12 @@ class Package extends \QUI\QDOM
 
         return $this->_Config;
     }
+
+    /**
+     * Execute the package setup
+     */
+    public function setup()
+    {
+        \QUI::getPackageManager()->setup( $this->getName() );
+    }
 }

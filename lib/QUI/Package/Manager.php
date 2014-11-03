@@ -499,6 +499,9 @@ class Manager
         ));
 
         \QUI\System\Log::writeRecursive( $result );
+
+        // execute setup of the new package
+        $this->setup( $package );
     }
 
     /**
@@ -731,6 +734,7 @@ class Manager
     /**
      * Execute a setup for a package
      *
+     * @todo direkt in das packet packen
      * @param String $package
      */
     public function setup($package)
