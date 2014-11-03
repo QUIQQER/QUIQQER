@@ -6,6 +6,7 @@
 
 namespace QUI\Projects;
 
+use QUI;
 use QUI\Rights\Permission;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\DOM;
@@ -47,7 +48,7 @@ class Manager
      */
     static function getConfig()
     {
-        return \QUI::getConfig('etc/projects.ini');
+        return QUI::getConfig('etc/projects.ini');
     }
 
     /**
@@ -107,7 +108,7 @@ class Manager
         $Config->setSection( $project, $config );
         $Config->save();
 
-        \QUI::getEvents()->fireEvent( 'projectConfigSave', array( $project, $config ) );
+        QUI::getEvents()->fireEvent( 'projectConfigSave', array( $project, $config ) );
 
         // remove the project from the temp
         if ( self::$projects[ $project ] ) {
@@ -149,9 +150,9 @@ class Manager
 
         try
         {
-            return \QUI\Cache\Manager::get( $cache );
+            return QUI\Cache\Manager::get( $cache );
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
 
         }
@@ -170,7 +171,7 @@ class Manager
 
         foreach ( $settingsXml as $file )
         {
-            $Dom  = \QUI\Utils\XML::getDomFromXml( $file );
+            $Dom  = QUI\Utils\XML::getDomFromXml( $file );
             $Path = new \DOMXPath( $Dom );
 
             $settingsList = $Path->query( "//project/settings" );
@@ -201,7 +202,7 @@ class Manager
         }
 
 
-        \QUI\Cache\Manager::set( $cache, $config );
+        QUI\Cache\Manager::set( $cache, $config );
 
         return $config;
     }
@@ -227,7 +228,7 @@ class Manager
      */
     static function get()
     {
-        $Rewrite = \QUI::getRewrite();
+        $Rewrite = QUI::getRewrite();
 
         if ( $Rewrite->getParam( 'project' ) )
         {
@@ -278,18 +279,18 @@ class Manager
         }
 
         // Wenn der RAM zu voll wird, Objekte mal leeren
-        if ( \QUI\Utils\System::memUsageToHigh() ) {
+        if ( QUI\Utils\System::memUsageToHigh() ) {
             self::$projects = array();
         }
 
 
         if ( $lang === false )
         {
-            self::$projects[ $project ][ '_standard' ] = new \QUI\Projects\Project( $project );
+            self::$projects[ $project ][ '_standard' ] = new QUI\Projects\Project( $project );
             return self::$projects[ $project ][ '_standard' ];
         }
 
-        self::$projects[ $project ][ $lang ] = new \QUI\Projects\Project(
+        self::$projects[ $project ][ $lang ] = new QUI\Projects\Project(
             $project,
             $lang,
             $template
@@ -331,7 +332,7 @@ class Manager
                     $list[] = $project;
                 }
 
-            } catch ( \QUI\Exception $Exception )
+            } catch ( QUI\Exception $Exception )
             {
 
             }
@@ -354,7 +355,7 @@ class Manager
 
         if ( !count( $config ) )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 'No project exist'
             );
         }
@@ -373,13 +374,13 @@ class Manager
 
         if ( is_null( self::$Standard ) )
         {
-            \QUI\System\Log::addAlert(
+            QUI\System\Log::addAlert(
                 'No standard project are set. Please define a standard projekt'
             );
 
             $project = key( $config );
 
-            self::$Standard = \QUI\Projects\Manager::getProject(
+            self::$Standard = QUI\Projects\Manager::getProject(
                 $project,
                 $config[ key( $config ) ]['default_lang']
             );
@@ -407,8 +408,8 @@ class Manager
 
         if ( strlen( $name ) <= 2 )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.project.longer.two.signs'
                 ),
@@ -418,8 +419,8 @@ class Manager
 
         if ( strlen( $lang ) != 2 )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.project.lang.not.two.signs'
                 ),
@@ -435,8 +436,8 @@ class Manager
 
         if ( preg_match( "@[-.,:;#`!§$%&/?<>\=\'\" ]@", $name ) )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.project.not.allowed.signs',
                     array(
@@ -451,17 +452,17 @@ class Manager
 
         if ( isset( $projects[ $name ] ) )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.project.not.allowed.signs'
                 )
             );
         }
 
-        $name = \QUI\Utils\Security\Orthos::clear( $name );
+        $name = QUI\Utils\Security\Orthos::clear( $name );
 
-        $DataBase = \QUI::getDataBase();
+        $DataBase = QUI::getDataBase();
         $Table    = $DataBase->Table();
 
 
@@ -508,8 +509,8 @@ class Manager
             "active"  => 1,
             "deleted" => 0,
             "c_date"  => date( 'Y-m-d H:i:s' ),
-            "c_user"  => \QUI::getUserBySession()->getId(),
-            "e_user"  => \QUI::getUserBySession()->getId(),
+            "c_user"  => QUI::getUserBySession()->getId(),
+            "e_user"  => QUI::getUserBySession()->getId(),
             "nav_hide"    => '',
             "order_type"  => "",
             "order_field" => ""
@@ -557,16 +558,16 @@ class Manager
             "active"  => 1,
             "deleted" => 0,
             "c_date"  => date( 'Y-m-d H:i:s' ),
-            "c_user"  => \QUI::getUserBySession()->getId(),
-            "e_user"  => \QUI::getUserBySession()->getId()
+            "c_user"  => QUI::getUserBySession()->getId(),
+            "e_user"  => QUI::getUserBySession()->getId()
         ));
 
 
         /**
          * Create the file system folders
          */
-        \QUI\Utils\System\File::mkdir( CMS_DIR .'media/sites/'. $name .'/' );
-        \QUI\Utils\System\File::mkdir( USR_DIR . $name .'/' );
+        QUI\Utils\System\File::mkdir( CMS_DIR .'media/sites/'. $name .'/' );
+        QUI\Utils\System\File::mkdir( USR_DIR . $name .'/' );
 
 
         /**
@@ -599,11 +600,14 @@ class Manager
         $Project = self::getProject( $name );
         $Project->setup();
 
+        // Package / Plugin Setup
+        \QUI::getPluginManager()->setup( $Project );
+
         // Projekt Cache löschen
-        \QUI\Cache\Manager::clear( 'QUI::config' );
+        QUI\Cache\Manager::clear( 'QUI::config' );
 
         // project create event
-        \QUI::getEvents()->fireEvent( 'createProject', array( $Project ) );
+        QUI::getEvents()->fireEvent( 'createProject', array( $Project ) );
 
         return $Project;
     }
@@ -622,18 +626,18 @@ class Manager
         $project = $Project->getName();
         $langs   = $Project->getAttribute('langs');
 
-        $DataBase = \QUI::getDataBase();
+        $DataBase = QUI::getDataBase();
         $Table    = $DataBase->Table();
 
         // delete site tables for all languages
         foreach ( $langs as $lang )
         {
-            $table_site     = \QUI::getDBTableName( $project .'_'. $lang .'_sites' );
-            $table_site_rel = \QUI::getDBTableName( $project .'_'. $lang .'_sites_relations' );
-            $table_multi    = \QUI::getDBTableName( $project .'_multilingual' );
+            $table_site     = QUI::getDBTableName( $project .'_'. $lang .'_sites' );
+            $table_site_rel = QUI::getDBTableName( $project .'_'. $lang .'_sites_relations' );
+            $table_multi    = QUI::getDBTableName( $project .'_multilingual' );
 
-            $table_media     = \QUI::getDBTableName( $project .'_media' );
-            $table_media_rel = \QUI::getDBTableName( $project .'_media_relations' );
+            $table_media     = QUI::getDBTableName( $project .'_media' );
+            $table_media_rel = QUI::getDBTableName( $project .'_media_relations' );
 
 
             $Table->delete( $table_site );
@@ -644,7 +648,7 @@ class Manager
         }
 
         // delete database tables from plugins
-        $packages = \QUI::getPackageManager()->getInstalled();
+        $packages = QUI::getPackageManager()->getInstalled();
 
         foreach ( $packages as $package )
         {
@@ -655,7 +659,7 @@ class Manager
                 continue;
             }
 
-            $dbfields = \QUI\Utils\XML::getDataBaseFromXml( $databaseXml );
+            $dbfields = QUI\Utils\XML::getDataBaseFromXml( $databaseXml );
 
             if ( !isset( $dbfields['projects'] ) ) {
                 continue;
@@ -666,7 +670,7 @@ class Manager
             {
                 foreach ( $langs as $lang )
                 {
-                    $tbl = \QUI::getDBTableName(
+                    $tbl = QUI::getDBTableName(
                         $project .'_'. $lang .'_'. $table['suffix']
                     );
 
@@ -676,15 +680,15 @@ class Manager
         }
 
         // delete projects permissions
-        \QUI::getDataBase()->delete(
-            \QUI::getDBTableName( \QUI\Rights\Manager::TABLE ) .'2projects',
+        QUI::getDataBase()->delete(
+            QUI::getDBTableName( QUI\Rights\Manager::TABLE ) .'2projects',
             array(
                 'project' => $project
             )
         );
 
-        \QUI::getDataBase()->delete(
-            \QUI::getDBTableName( \QUI\Rights\Manager::TABLE ) .'2sites',
+        QUI::getDataBase()->delete(
+            QUI::getDBTableName( QUI\Rights\Manager::TABLE ) .'2sites',
             array(
                 'project' => $project
             )
@@ -695,11 +699,11 @@ class Manager
         $Config->del( $project );
         $Config->save();
 
-        \QUI\Cache\Manager::clear( 'QUI::config' );
+        QUI\Cache\Manager::clear( 'QUI::config' );
 
 
         // project create event
-        \QUI::getEvents()->fireEvent( 'deleteProject', array( $project ) );
+        QUI::getEvents()->fireEvent( 'deleteProject', array( $project ) );
     }
 
     /**
@@ -722,7 +726,7 @@ class Manager
         }
 
         // vhosts und templates schauen
-        $vhosts = \QUI::getRewrite()->getVHosts();
+        $vhosts = QUI::getRewrite()->getVHosts();
 
         foreach ( $vhosts as $vhost )
         {
@@ -762,15 +766,15 @@ class Manager
 
         try
         {
-            return \QUI\Cache\Manager::get( $cache );
+            return QUI\Cache\Manager::get( $cache );
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
 
         }
 
         $list      = array();
-        $packages  = \QUI::getPackageManager()->getInstalled();
+        $packages  = QUI::getPackageManager()->getInstalled();
 
         $templates = self::getRelatedTemplates( $Project );
         $templates = array_flip( $templates );
@@ -793,7 +797,7 @@ class Manager
                 continue;
             }
 
-            $Dom  = \QUI\Utils\XML::getDomFromXml( $file );
+            $Dom  = QUI\Utils\XML::getDomFromXml( $file );
             $Path = new \DOMXPath( $Dom );
 
             $Settings = $Path->query( "//project/settings" );
@@ -803,7 +807,7 @@ class Manager
             }
         }
 
-        \QUI\Cache\Manager::set( 'qui/projects/', $list );
+        QUI\Cache\Manager::set( 'qui/projects/', $list );
 
         return $list;
     }
