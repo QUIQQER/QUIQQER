@@ -754,7 +754,6 @@ class Edit extends \QUI\Projects\Site
         {
             switch ( $this->getAttribute('order_type') )
             {
-                case 'manuell':
                 case 'name ASC':
                 case 'name DESC':
                 case 'title ASC':
@@ -770,6 +769,7 @@ class Edit extends \QUI\Projects\Site
                     $params['order'] = $this->getAttribute('order_type');
                 break;
 
+                case 'manuell':
                 default:
                     $params['order'] = 'order_field';
                 break;

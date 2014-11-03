@@ -769,7 +769,6 @@ class Site extends \QUI\QDOM
         {
             switch ( $this->getAttribute('order_type') )
             {
-                case 'manuell':
                 case 'name ASC':
                 case 'name DESC':
                 case 'title ASC':
@@ -785,6 +784,7 @@ class Site extends \QUI\QDOM
                     $params['order'] = $this->getAttribute('order_type');
                 break;
 
+                case 'manuell':
                 default:
                     $params['order'] = 'order_field';
                 break;
