@@ -243,6 +243,8 @@ define('controls/projects/Manager', [
                     )
                 );
 
+
+                self.getCategoryBar().getElement( 'add_project' ).setActive();
                 self.Loader.hide();
             });
         },
