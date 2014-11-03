@@ -505,9 +505,6 @@ class Edit extends \QUI\Projects\Site
         // save package automatic site data (database.xml)
         $dataList = Utils::getDataListForSite( $this );
 
-        \QUI\System\Log::writeRecursive( $this->getAttributes() );
-
-
         foreach ( $dataList as $dataEntry )
         {
             $data = array();
