@@ -1,16 +1,18 @@
+
 /**
  * A user field / display
  * the display updates itself
  *
+ * @module controls/users/Entry
  * @author www.pcsg.de (Henning Leutz)
  *
- * @module controls/users/Entry
- *
- * @require controls/Control
- * @require users
+ * @require qui/controls/Control
+ * @require Users
+ * @require Locale
+ * @require css!controls/users/Entry.css
  */
 
-define('controls/users/Entry', [
+define([
 
     'qui/controls/Control',
     'Users',

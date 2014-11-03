@@ -1,18 +1,22 @@
+
 /**
  * Makes an input field to a user selection field
  *
+ * @module controls/users/Input
  * @author www.pcsg.de (Henning Leutz)
  *
- * @module controls/users/Input
- *
- * @require controls/Control
- * @require controls/buttons/Button
+ * @require qui/QUI
+ * @require qui/controls/Control
+ * @require qui/controls/buttons/Button
  * @require controls/users/Entry
+ * @require Ajax
+ * @require Locale
+ * @require css!controls/users/Input.css
  *
- * @event onAdd [this, userid]
+ * @event onAdd [ {this}, {String} userid ]
  */
 
-define('controls/users/Input', [
+define([
 
     'qui/QUI',
     'qui/controls/Control',
