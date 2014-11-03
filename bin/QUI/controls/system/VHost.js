@@ -1,11 +1,13 @@
+
 /**
  * VHost control
  * edit and change a vhost entry
  *
+ * @module controls/system/VHost
  * @author www.pcsg.de (Henning Leutz)
  */
 
-define('controls/system/VHost', [
+define([
 
     'qui/QUI',
     'qui/controls/Control',
@@ -209,7 +211,7 @@ define('controls/system/VHost', [
                 {
                     error = error.split(',');
 
-                    self.$ErrorSite.value = 'index.php?' +Object.toQueryString({
+                    self.$ErrorSite.value = 'index.php?'+ Object.toQueryString({
                         project : error[ 0 ],
                         lang    : error[ 1 ],
                         id      : error[ 2 ],
@@ -225,6 +227,11 @@ define('controls/system/VHost', [
                 );
 
                 // create template select
+                new Element('option', {
+                    value : '',
+                    html  : ''
+                }).inject( self.$TemplateSelect );
+
                 for ( i = 0, len = templates.length; i < len; i++ )
                 {
                     new Element('option', {
@@ -232,6 +239,11 @@ define('controls/system/VHost', [
                         html  : templates[ i ].name
                     }).inject( self.$TemplateSelect );
                 }
+
+                if ( typeof vhostData.template !== 'undefined' ) {
+                    self.$TemplateSelect.value = vhostData.template;
+                }
+
 
                 // get projects langs
                 if ( project )
@@ -259,8 +271,8 @@ define('controls/system/VHost', [
         {
             var i, len, data, langFields, siteParts;
 
-            var self        = this,
-                errorSite   = '',
+            var self      = this,
+                errorSite = '',
 
                 projectData = {
                     project : '',
