@@ -24,7 +24,7 @@ use \QUI\Utils\Security\Orthos;
  * <li>802 - Project Create Error: not allowed signs</li>
  * <li>803 - Project Error: Project has no languages</li>
  * <li>804 - Project Error: Project not found</li>
- * <li>805 - Project Error: Project has default language</li>
+ * <li>805 - Project Error: Project has no default language</li>
  * <li>806 - Project Error: Project language not found</li>
  * </ul>
  */
