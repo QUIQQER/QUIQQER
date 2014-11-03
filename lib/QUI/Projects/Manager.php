@@ -601,7 +601,7 @@ class Manager
         $Project->setup();
 
         // Package / Plugin Setup
-        \QUI::getPluginManager()->setup( $Project );
+        QUI::getPluginManager()->setup( $Project );
 
         // Projekt Cache löschen
         QUI\Cache\Manager::clear( 'QUI::config' );
