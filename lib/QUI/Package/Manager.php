@@ -991,6 +991,15 @@ class Manager
      */
     public function update($package=false)
     {
+        if ( is_string( $package ) && empty( $package ) ) {
+            $package = false;
+        }
+
+        if ( !is_string( $package ) && is_bool( $package ) ) {
+            $package = false;
+        }
+
+
         if ( $package )
         {
             $output = $this->_execComposer('update', array(
@@ -1008,6 +1017,8 @@ class Manager
             if ( !is_string( $package ) ) {
                 continue;
             }
+
+            $msg = trim( $msg );
 
             // if not installed
             if ( strpos( $msg, $package ) !== false &&

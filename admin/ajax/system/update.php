@@ -8,13 +8,11 @@ function ajax_system_update($package)
     \QUI::getPackageManager()->update( $package );
 }
 
-QUI::$Ajax->register(
-	'ajax_system_update',
+\QUI::$Ajax->register(
+    'ajax_system_update',
     array( 'package' ),
     array(
-    	'Permission::checkAdminUser',
+        'Permission::checkAdminUser',
         'quiqqer.system.update'
     )
 );
-
-?>
