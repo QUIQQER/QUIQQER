@@ -28,7 +28,7 @@ class PermissionOrder
      */
     static function max_integer($permission, $groups)
     {
-        $result = 0;
+        $result = null;
 
         /* @var $Group Group */
         foreach ( $groups as $Group )
@@ -37,8 +37,19 @@ class PermissionOrder
                 continue;
             }
 
-            if ( (int)$Group->hasPermission( $permission ) > $result ) {
+            if ( is_null( $result ) || (int)$Group->hasPermission( $permission ) > $result ) {
                 $result = (int)$Group->hasPermission( $permission );
+            }
+        }
+
+        // default
+        if ( is_null( $result ) )
+        {
+            $Manager  = \QUI::getPermissionManager();
+            $permData = $Manager->getPermissionData( $permission );
+
+            if ( isset( $permData['defaultvalue'] ) && !empty( $permData['defaultvalue'] ) ) {
+                return $permData['defaultvalue'];
             }
         }
 
@@ -65,6 +76,17 @@ class PermissionOrder
 
             if ( is_null( $result ) || (int)$Group->hasPermission( $permission ) < $result ) {
                 $result = (int)$Group->hasPermission( $permission );
+            }
+        }
+
+        // default
+        if ( is_null( $result ) )
+        {
+            $Manager  = \QUI::getPermissionManager();
+            $permData = $Manager->getPermissionData( $permission );
+
+            if ( isset( $permData['defaultvalue'] ) && !empty( $permData['defaultvalue'] ) ) {
+                return $permData['defaultvalue'];
             }
         }
 

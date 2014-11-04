@@ -155,7 +155,8 @@ class Manager
             'area'  => 'varchar(20)  NOT NULL',
             'title' => 'varchar(255) NULL',
             'desc'  => 'text NULL',
-            'src'   => 'varchar(200) NULL'
+            'src'   => 'varchar(200) NULL',
+            'defaultvalue' => 'text NULL'
         ));
 
         $DBTable->setIndex( $table, 'name' );
@@ -213,7 +214,7 @@ class Manager
     public function addPermission($params)
     {
         $DataBase = \QUI::getDataBase();
-        $needles  = array( 'name', 'title', 'desc', 'type', 'area', 'src' );
+        $needles  = array( 'name', 'title', 'desc', 'type', 'area', 'src', 'defaultvalue' );
 
         foreach ( $needles as $needle )
         {
@@ -236,7 +237,8 @@ class Manager
                     'desc'  => trim( $params['desc'] ),
                     'type'  => self::parseType( $params['type'] ),
                     'area'  => self::parseArea( $params['area'] ),
-                    'src'   => $params['src']
+                    'src'   => $params['src'],
+                    'defaultvalue' => $params['defaultvalue']
                 ),
                 array(
                     'name'  => $params['name']
@@ -255,7 +257,8 @@ class Manager
                 'desc'  => trim( $params['desc'] ),
                 'type'  => self::parseType( $params['type'] ),
                 'area'  => self::parseArea( $params['area'] ),
-                'src'   => $params['src']
+                'src'   => $params['src'],
+                'defaultvalue' => $params['defaultvalue']
             )
         );
 
@@ -321,6 +324,11 @@ class Manager
         foreach ( $permissions as $permission )
         {
             $permission['src'] = $src;
+            $permission['defaultvalue'] = '';
+
+            if ( isset( $permission['default'] ) ) {
+                $permission['defaultvalue'] = $permission['default'];
+            }
 
             $this->addPermission( $permission );
         }
@@ -1033,6 +1041,7 @@ class Manager
         {
             $result = \QUI\Rights\PermissionOrder::permission( $permission, $groups );
         }
+
 
         return $result;
     }

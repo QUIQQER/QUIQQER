@@ -166,11 +166,17 @@ class Permission
             }
         }
 
+        // defaults
+        $Manager  = \QUI::getPermissionManager();
+        $permData = $Manager->getPermissionData( $perm );
+
+        if ( isset( $permData['defaultvalue'] ) && !empty( $permData['defaultvalue'] ) ) {
+            return $permData['defaultvalue'];
+        }
+
+
         throw new \QUI\Exception(
-            \QUI::getLocale()->get(
-                'quiqqer/system',
-                'exception.no.permission'
-            ),
+            \QUI::getLocale()->get( 'quiqqer/system', 'exception.no.permission' ),
             403
         );
     }
