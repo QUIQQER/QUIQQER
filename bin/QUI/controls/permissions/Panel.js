@@ -4,6 +4,21 @@
  *
  * @module controls/permissions/Panel
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/QUI
+ * @require qui/controls/desktop/Panel
+ * @require utils/permissions/Utils
+ * @require utils/Controls
+ * @require qui/utils/Object
+ * @require Locale
+ * @require Ajax
+ * @require qui/controls/buttons/Button
+ * @require qui/controls/buttons/Seperator
+ * @require qui/controls/sitemap/Map
+ * @require qui/controls/sitemap/Item
+ * @require qui/controls/windows/Prompt
+ * @require qui/controls/windows/Confirm
+ * @require css!controls/permissions/Panel.css
  */
 
 define([
@@ -1225,6 +1240,10 @@ define([
                         Elm.checked = true;
                     }
 
+                    continue;
+                }
+
+                if ( typeOf( perms[ Elm.name ] ) == 'boolean' ) {
                     continue;
                 }
 

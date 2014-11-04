@@ -120,6 +120,8 @@ define([
             this.$availablePanels = null; // cache
             this.$resizeDelay     = null;
 
+            this.$resizeQuestionWindow = false; // if resize quesion window open?
+
             this.addEvents({
                 onInject : this.$onInject
             });
@@ -181,19 +183,28 @@ define([
          */
         resize : function()
         {
+            if ( this.$resizeQuestionWindow ) {
+                return;
+            }
+
             if ( !this.$ParentNode ) {
                 return;
             }
 
+            console.log( 11 );
+
             var size   = this.$ParentNode.getSize(),
                 width  = size.x,
-                height = size.y;
+                height = size.y,
+
+                rq = false;
 
             this.$Elm.setStyle( 'overflow', null );
 
             if ( this.$minWidth && width < this.$minWidth )
             {
                 width = this.$minWidth;
+                rq    = true;
 
                 this.$Elm.setStyle( 'overflow', 'auto' );
             }
@@ -201,6 +212,7 @@ define([
             if ( this.$minHeight && height < this.$minHeight )
             {
                 height = this.$minHeight;
+                rq     = true;
 
                 this.$Elm.setStyle( 'overflow', 'auto' );
             }
@@ -208,6 +220,65 @@ define([
             this.Workspace.setWidth( width );
             this.Workspace.setHeight( height );
             this.Workspace.resize();
+
+            if ( !rq ) {
+                return;
+            }
+
+            // resize question, workspace not fit in
+            this.$resizeQuestionWindow = true;
+
+            var self = this;
+
+            new QUIConfirm({
+                title     : 'Der Arbeitsbereich zu gross',
+                autoclose : false,
+                maxWidth  : 600,
+                events    :
+                {
+                    onOpen : function(Win)
+                    {
+                        var i, Select;
+                        var Content = Win.getContent();
+
+                        Content.set(
+                            'html',
+
+                            '<h1>Der Arbeitsbereich ist zu gross</h1>'+
+                            '<p>Der Arbeitsbereich ist leider zu gross für Ihr Browserfenster.' +
+                            'Bitte wählen Sie bitte einen passenden Arbeitsbereich.</p><br />'+
+                            '<select></select>'
+                        );
+
+                        Select = Content.getElement( 'select' );
+
+                        Select.setStyles({
+                            clear   : 'both',
+                            display : 'block',
+                            margin  : '0px auto',
+                            width   : 200
+                        });
+
+                        for ( i in self.$spaces )
+                        {
+                            new Element('option', {
+                                value : self.$spaces[ i ].id,
+                                html  : self.$spaces[ i ].title
+                            }).inject( Select );
+                        }
+                    },
+
+                    onSubmit : function()
+                    {
+
+                    },
+
+                    onClose : function()
+                    {
+                        this.$resizeQuestionWindow = false;
+                    }
+                }
+            }).open();
         },
 
         /**

@@ -1,3 +1,4 @@
+
 /**
  * Groups manager panel
  *
@@ -5,16 +6,21 @@
  *
  * @module controls/groups/Panel
  *
- * @require controls/desktop/Panel
+ * @require qui/controls/desktop/Panel
  * @require Groups
+ * @require Locale
  * @require controls/grid/Grid
- * @require controls/Utils
- * @require classes/messages
+ * @require utils/Controls
  * @require controls/groups/sitemap/Window
- * @require controls/windows/Submit
+ * @require utils/Template
+ * @require qui/controls/messages/Attention
+ * @require qui/controls/windows/Prompt
+ * @require qui/controls/windows/Confirm
+ * @require qui/controls/buttons/Button
+ * @require css!controls/groups/Panel.css
  */
 
-define('controls/groups/Panel', [
+define([
 
     'qui/controls/desktop/Panel',
     'Groups',
@@ -56,7 +62,7 @@ define('controls/groups/Panel', [
     return new Class({
 
         Extends : Panel,
-        Type    : 'qui/controls/groups/Panel',
+        Type    : 'controls/groups/Panel',
 
         Binds : [
              '$onCreate',
