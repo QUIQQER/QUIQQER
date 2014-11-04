@@ -191,8 +191,6 @@ define([
                 return;
             }
 
-            console.log( 11 );
-
             var size   = this.$ParentNode.getSize(),
                 width  = size.x,
                 height = size.y,
@@ -225,60 +223,7 @@ define([
                 return;
             }
 
-            // resize question, workspace not fit in
-            this.$resizeQuestionWindow = true;
-
-            var self = this;
-
-            new QUIConfirm({
-                title     : 'Der Arbeitsbereich zu gross',
-                autoclose : false,
-                maxWidth  : 600,
-                events    :
-                {
-                    onOpen : function(Win)
-                    {
-                        var i, Select;
-                        var Content = Win.getContent();
-
-                        Content.set(
-                            'html',
-
-                            '<h1>Der Arbeitsbereich ist zu gross</h1>'+
-                            '<p>Der Arbeitsbereich ist leider zu gross für Ihr Browserfenster.' +
-                            'Bitte wählen Sie bitte einen passenden Arbeitsbereich.</p><br />'+
-                            '<select></select>'
-                        );
-
-                        Select = Content.getElement( 'select' );
-
-                        Select.setStyles({
-                            clear   : 'both',
-                            display : 'block',
-                            margin  : '0px auto',
-                            width   : 200
-                        });
-
-                        for ( i in self.$spaces )
-                        {
-                            new Element('option', {
-                                value : self.$spaces[ i ].id,
-                                html  : self.$spaces[ i ].title
-                            }).inject( Select );
-                        }
-                    },
-
-                    onSubmit : function()
-                    {
-
-                    },
-
-                    onClose : function()
-                    {
-                        this.$resizeQuestionWindow = false;
-                    }
-                }
-            }).open();
+            this.openResizQuestionWindow();
         },
 
         /**
@@ -1140,11 +1085,11 @@ define([
                                 '<tbody>' +
 
                                     '<tr class="odd">' +
-                                        '<td><label for="workspace-minWidth-'+ id +'">Fenster Breite</label></td>' +
+                                        '<td><label for="workspace-minWidth-'+ id +'">Minimale Fensterbreite</label></td>' +
                                         '<td><input id="workspace-minWidth-'+ id +'" name="workspace-minWidth" type="number" min="1" value="'+ size.x +'" /></td>' +
                                     '</tr>' +
                                     '<tr class="even">' +
-                                        '<td><label for="workspace-minHeight-'+ id +'">Fenster Höhe</label></td>' +
+                                        '<td><label for="workspace-minHeight-'+ id +'">Minimale Fensterhöhe</label></td>' +
                                         '<td><input id="workspace-minHeight-'+ id +'" name="workspace-minHeight" type="number" min="1" value="'+ size.y +'" /></td>' +
                                     '</tr>' +
 
@@ -1455,7 +1400,123 @@ define([
                     }
                 }
             }).open();
+        },
+
+        /**
+         * Opens the question window, if the workspace is to big for the window
+         */
+        openResizQuestionWindow : function()
+        {
+            if ( this.$resizeQuestionWindow ) {
+                return;
+            }
+
+            if ( !this.$ParentNode ) {
+                return;
+            }
+
+            this.$resizeQuestionWindow = true;
+
+            var self = this,
+                size = this.$ParentNode.getSize();
+
+
+            new QUIConfirm({
+                title     : 'Der Arbeitsbereich zu gross',
+                autoclose : false,
+                maxWidth  : 600,
+                maxHeight : 400,
+                events    :
+                {
+                    onOpen : function(Win)
+                    {
+                        var i, Select, Workspace;
+
+                        var Content = Win.getContent(),
+                            width   = size.x,
+                            height  = size.y;
+
+                        Content.set(
+                            'html',
+
+                            '<h1>Der Arbeitsbereich ist zu gross</h1>' +
+                            '<p>Der Arbeitsbereich ist leider zu gross für Ihr Browserfenster.' +
+                            'Bitte wählen Sie einen passenden Arbeitsbereich.</p>' +
+                            '<h2>Verfügbare passende Arbeitsbereiche</h2>' +
+                            '<select></select>'
+                        );
+
+                        Select = Content.getElement( 'select' );
+
+                        Select.setStyles({
+                            clear   : 'both',
+                            display : 'block',
+                            margin  : '0px auto',
+                            width   : 200
+                        });
+
+                        for ( i in self.$spaces )
+                        {
+                            Workspace = self.$spaces[ i ];
+
+                            if ( width < Workspace.minWidth ) {
+                                continue;
+                            }
+
+                            if ( height < Workspace.minHeight ) {
+                                continue;
+                            }
+
+                            new Element('option', {
+                                value : Workspace.id,
+                                html  : Workspace.title
+                            }).inject( Select );
+                        }
+
+                        if ( Select.length ) {
+                            return;
+                        }
+
+                        // no workspaces available
+                        Content.set(
+                            'html',
+
+                            '<h1>Der Arbeitsbereich ist zu gross</h1>' +
+                            '<p>Der Arbeitsbereich ist leider zu gross und kein passender Arbeitsbereich existiert.</p>'+
+                            '<p>Möchten Sie einen neuen Arbeitsbereich anlegen?</p>'
+                        );
+                    },
+
+                    onSubmit : function(Win)
+                    {
+                        var Content = Win.getContent(),
+                            Select  = Content.getElement( 'select' );
+
+                        // no workspaces available
+                        if ( !Select )
+                        {
+                            self.openCreateWindow();
+                            Win.close();
+
+                            return;
+                        }
+
+                        if ( Select.value == '' ) {
+                            return;
+                        }
+
+                        self.loadWorkspace( Select.value );
+
+                        Win.close();
+                        self.resize();
+                    },
+
+                    onClose : function(Win)
+                    {
+                        self.$resizeQuestionWindow = false;
+                    }
+                }
+            }).open();
         }
     });
-
 });
