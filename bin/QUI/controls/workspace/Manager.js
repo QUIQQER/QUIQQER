@@ -693,7 +693,7 @@ define([
          */
         $loadDefault2Column : function(Workspace)
         {
-            this.$minWidth  = 800;
+            this.$minWidth  = 700;
             this.$minHeight = 500;
 
             var self   = this,
