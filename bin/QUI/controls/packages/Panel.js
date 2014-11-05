@@ -375,6 +375,8 @@ define([
          */
         setup : function(pkg, Btn)
         {
+            var self = this;
+
             if ( typeof Btn !== 'undefined' )
             {
                 if ( Btn.getAttribute( 'textimage' ) ) {
@@ -386,28 +388,31 @@ define([
                 }
             }
 
-            this.$Manager.setup( pkg, function()
+
+            QUI.getMessageHandler(function(MH)
             {
-                if ( typeof Btn === 'undefined' ) {
-                    return;
-                }
-
-                if ( Btn.getAttribute( 'textimage' ) ) {
-                    Btn.setAttribute( 'textimage', 'icon-hdd' );
-                }
-
-                if ( Btn.getAttribute( 'icon' ) ) {
-                    Btn.setAttribute( 'icon', 'icon-hdd' );
-                }
-
-                QUI.getMessageHandler(function(MH)
+                MH.addLoading('Setup wird durchgeführt', function(Loading)
                 {
-                    MH.addSuccess(
-                        Locale.get( lg, 'message.setup.successfull' )
-                    );
-                });
 
-            });
+                    self.$Manager.setup( pkg, function()
+                    {
+                        if ( typeof Btn === 'undefined' ) {
+                            return;
+                        }
+
+                        if ( Btn.getAttribute( 'textimage' ) ) {
+                            Btn.setAttribute( 'textimage', 'icon-hdd' );
+                        }
+
+                        if ( Btn.getAttribute( 'icon' ) ) {
+                            Btn.setAttribute( 'icon', 'icon-hdd' );
+                        }
+
+                        Loading.finish( Locale.get( lg, 'message.setup.successfull' ) );
+                    });
+
+                });
+            })
         },
 
         /**
