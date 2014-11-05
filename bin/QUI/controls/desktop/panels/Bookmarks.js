@@ -6,13 +6,13 @@
  * @author www.pcsg.de (Henning Leutz)
  */
 
-define(['qui/controls/bookmarks/Panel'], function(QUIBooksmarks)
+define(['qui/controls/bookmarks/Panel'], function(QUIBookmarks)
 {
     "use strict";
 
     return new Class({
 
-        Extends : QUIBooksmarks,
+        Extends : QUIBookmarks,
         Type    : 'controls/desktop/panels/Bookmarks',
 
         /**
