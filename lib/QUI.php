@@ -659,7 +659,7 @@ class QUI
      *
      * You can also use \QUI\Projects\Manager::getProject()
      *
-     * @param String $project 	- Project name
+     * @param String|Array $project 	- Project name | array('name' => , 'lang' => , 'template' => )
      * @param String $lang		- Project lang (optional)
      * @param String $template  - Project template (optional)
      *
@@ -668,6 +668,24 @@ class QUI
      */
     static function getProject($project, $lang=false, $template=false)
     {
+        if ( is_array( $project ) )
+        {
+            $lang     = false;
+            $template = false;
+
+            if ( isset( $project[ 'lang' ] ) ) {
+                $lang = $project[ 'lang' ];
+            }
+
+            if ( isset( $project[ 'template' ] ) ) {
+                $template = $project[ 'template' ];
+            }
+
+            if ( isset( $project[ 'project' ] ) ) {
+                $project = $project[ 'project' ];
+            }
+        }
+
         return \QUI\Projects\Manager::getProject( $project, $lang, $template );
     }
 
