@@ -15,6 +15,7 @@
  * @require css!controls/upload/Manager.css
  *
  * @event onFileComplete [ {self}, {File} ]
+ * @event onFileUploadRefresh [ {self}, {Integer} percent ]
  */
 
 define([
@@ -23,13 +24,14 @@ define([
     'qui/controls/desktop/Panel',
     'qui/controls/utils/Progressbar',
     'qui/controls/windows/Alert',
+    'qui/utils/Math',
     'controls/upload/File',
     'Ajax',
     'Locale',
 
     'css!controls/upload/Manager.css'
 
-], function(QUI, QUIPanel, QUIProgressbar, QUIAlert, UploadFile, Ajax, Locale)
+], function(QUI, QUIPanel, QUIProgressbar, QUIAlert, MathUtils,  UploadFile, Ajax, Locale)
 {
     "use strict";
 
@@ -48,7 +50,8 @@ define([
 
         Binds : [
             '$onCreate',
-            'uploadFiles'
+            'uploadFiles',
+            '$onFileUploadRefresh'
         ],
 
         options : {
@@ -60,9 +63,12 @@ define([
         {
             this.parent( options );
 
-            this.$files     = [];
-            this.$container = null;
-            this.$uploads   = {};
+            this.$files      = [];
+            this.$container  = null;
+            this.$uploads    = {};
+
+            this.$maxPercent     = 0;
+            this.$uploadPerCents = {};
 
             this.$Container = null;
 
@@ -244,6 +250,8 @@ define([
             var file_params;
             var events = false;
 
+            this.$maxPercent = files.length * 100;
+
             for ( i = 0, len = files.length; i < len; i++ )
             {
                 file_params = Object.clone( params );
@@ -269,8 +277,15 @@ define([
                     events  : events
                 });
 
-                QUIFile.addEvent('onComplete', function(File) {
-                    self.fireEvent( 'fileComplete', [ self, File ] );
+                QUIFile.addEvents({
+                    onComplete : function(File) {
+                        self.fireEvent( 'fileComplete', [ self, File ] );
+                    },
+                    onRefresh : function(File, percent)
+                    {
+                        self.$uploadPerCents[ File.getId() ] = percent;
+                        self.$onFileUploadRefresh();
+                    }
                 });
 
                 if ( file_params.phponstart ) {
@@ -282,6 +297,7 @@ define([
                 if ( this.$Container )
                 {
                     QUIFile.inject( this.$Container, 'top');
+
                 } else
                 {
                     // exist upload container? ... not nice but functional
@@ -387,6 +403,20 @@ define([
                     QUIFile.refresh();
                 }
             });
+        },
+
+        /**
+         * event : on file upload refresh
+         * display the percent of the upload
+         */
+        $onFileUploadRefresh : function()
+        {
+            var percent = MathUtils.percent(
+                Object.values( this.$uploadPerCents ).sum(),
+                this.$maxPercent
+            );
+
+            this.fireEvent( 'fileUploadRefresh', [ this, percent ] );
         }
     });
 });

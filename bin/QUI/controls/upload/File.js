@@ -23,6 +23,7 @@
  * @fires onCancel [this]
  * @fires onComplete [this]
  * @fires onError [qui/controls/messages/Error, this]
+ * @fires onRefresh [this, {Integer} percent]
  */
 
 define([
@@ -383,13 +384,15 @@ define([
          */
         refresh : function()
         {
+            var percent = MathUtils.percent( this.$range_start, this.$file_size );
+
+            this.fireEvent( 'refresh', [ this, percent ] );
+
             if ( !this.$Progress ) {
                 return;
             }
 
-            this.$Progress.set(
-                MathUtils.percent( this.$range_start, this.$file_size )
-            );
+            this.$Progress.set( percent );
         },
 
         /**

@@ -67,7 +67,8 @@ define([
         },
 
         Binds : [
-            '$onFileUploadFinish'
+            '$onFileUploadFinish',
+            '$onFileUploadRefresh'
         ],
 
         /**
@@ -92,6 +93,9 @@ define([
             this.$Frame  = null;
             this.$files  = {};
             this.$params = {};
+
+            this.$Progress = null;
+            this.$Info     = null;
 
             this.addEvents({
                 onDestroy : function()
@@ -144,9 +148,7 @@ define([
          */
         setParams : function(params)
         {
-            var n;
-
-            for ( n in param ) {
+            for ( var n in param ) {
                 this.addParam( n, param[n] );
             }
         },
@@ -158,8 +160,8 @@ define([
          */
         getParam : function(n)
         {
-            if ( typeof this.$params[n] !== 'undefined' ) {
-                return this.$params[n];
+            if ( typeof this.$params[ n ] !== 'undefined' ) {
+                return this.$params[ n ];
             }
 
             return false;
@@ -451,7 +453,7 @@ define([
             });
 
             this.$Progress = new QUIProgressbar({
-                startPercentage : 99
+                startPercentage : 0
             });
 
             this.$Progress.inject( this.$Info.getElement( '.progress' ) );
@@ -475,9 +477,7 @@ define([
                 this.$Form.getElements( 'input[type="hidden"]' ).destroy();
 
                 // create the params into the form
-                var n;
-
-                for ( n in this.$params )
+                for ( var n in this.$params )
                 {
                     new Element('input', {
                         type  : 'hidden',
@@ -530,7 +530,13 @@ define([
             {
                 self.fireEvent( 'begin', [ self ] );
 
-                UploadManager.addEvent( 'onFileComplete', self.$onFileUploadFinish );
+                UploadManager.addEvents({
+                    onFileComplete      : self.$onFileUploadFinish,
+                    onFileUploadRefresh : self.$onFileUploadRefresh
+                });
+
+                self.$Elm.set( 'html', '' );
+                self.createInfo().inject( self.$Elm );
 
                 UploadManager.uploadFiles(
                     files,
@@ -548,12 +554,12 @@ define([
          */
         finish : function(File, result)
         {
-            if ( typeof this.$Progress !== 'undefined' ) {
+            if ( this.$Progress ) {
                 this.$Progress.set( 100 );
             }
 
-            if ( typeof this.$Info !== 'undefined' ) {
-                this.$Info.getElement( '.file-name' ).set( 'html', 'Upload finish' );
+            if ( this.$Info ) {
+                this.$Info.getElement( '.file-name' ).set( 'html', '' );
             }
 
             this.fireEvent( 'complete', [ this, File, result ] );
@@ -582,11 +588,10 @@ define([
          */
         getFiles : function()
         {
-            var i;
             var files  = [],
                 _files = this.$files;
 
-            for ( i in _files )
+            for ( var i in _files )
             {
                 if ( _files.hasOwnProperty( i ) ) {
                     files.push( _files[ i ] );
@@ -670,11 +675,24 @@ define([
         },
 
         /**
+         *
+         */
+        $onFileUploadRefresh : function(UploadManager, percent)
+        {
+            if ( !this.$Progress ) {
+                return
+            }
+
+            this.$Progress.set( percent );
+        },
+
+        /**
          * Event, if one upload file is finish
          */
         $onFileUploadFinish : function(UploadManager, File)
         {
 
         }
+
     });
 });
