@@ -540,8 +540,14 @@ define([
          */
         save : function()
         {
+            var workspace = this.Workspace.serialize();
+
+            if ( !workspace.length ) {
+                return;
+            }
+
             Ajax.syncRequest('ajax_desktop_workspace_save', 'post', {
-                data : JSON.encode( this.Workspace.serialize() ),
+                data : JSON.encode( workspace ),
                 id   : this.getAttribute( 'workspaceId' )
             });
         },

@@ -283,6 +283,28 @@ class Update
     }
 
     /**
+     * Import / register quiqqer site events
+     *
+     * @param String $xml_file - path to an engine.xml
+     * @param $IO - Composer InputOutput
+     */
+    static function importSiteEvents($xml_file, $IO=null)
+    {
+        if ( !file_exists( $xml_file ) ) {
+            return;
+        }
+
+        Log::write( 'Read: '. $xml_file );
+
+        $events = XML::getSiteEventsFromXml( $xml_file );
+        $Events = \QUI::getEvents();
+
+        foreach ( $events as $event ) {
+            $Events->addSiteEvent( $event['on'], $event['fire'], $event['type'] );
+        }
+    }
+
+    /**
      * Import / register the menu items
      * it create a cache file for the package
      *

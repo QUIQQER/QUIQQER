@@ -18,6 +18,12 @@ namespace QUI\Events;
 class Manager implements \QUI\Interfaces\Events
 {
     /**
+     * Site Events
+     * @var Array
+     */
+    protected $_siteEvents = array();
+
+    /**
      * construct
      */
     public function __construct()
@@ -31,7 +37,10 @@ class Manager implements \QUI\Interfaces\Events
             }
 
             $list = \QUI::getDataBase()->fetch(array(
-                'from' => self::Table()
+                'from'  => self::Table(),
+                'where' => array(
+                    'sitetype' => null
+                )
             ));
 
             foreach ( $list as $params )
@@ -41,6 +50,18 @@ class Manager implements \QUI\Interfaces\Events
                     $params['callback']
                 );
             }
+
+            $list = \QUI::getDataBase()->fetch(array(
+                'from'  => self::Table(),
+                'where' => array(
+                    'sitetype' => array(
+                        'type'  => 'NOT',
+                        'value' => null
+                    )
+                )
+            ));
+
+            $this->_siteEvents = $list;
 
         } catch ( \QUI\Database\Exception $Exception )
         {
@@ -67,7 +88,8 @@ class Manager implements \QUI\Interfaces\Events
 
         $DBTable->appendFields(self::Table(), array(
             'event'    => 'varchar(200)',
-            'callback' => 'text'
+            'callback' => 'text',
+            'sitetype' => 'text'
         ));
 
         self::clear();
@@ -94,6 +116,26 @@ class Manager implements \QUI\Interfaces\Events
     }
 
     /**
+     * Return a complete list of registered events for a specific site type
+     *
+     * @param String $type
+     * @return Array
+     */
+    public function getSiteListByType($type)
+    {
+        $result = array();
+
+        foreach ( $this->_siteEvents as $event )
+        {
+            if ( $event['sitetype'] == $type ) {
+                $result[] = $type;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Adds an event
      * If $fn is a string, the event would be save in the database
      * if you want to register events for the runtime, please use lambda function
@@ -115,6 +157,28 @@ class Manager implements \QUI\Interfaces\Events
         }
 
         $this->_Events->addEvent( $event, $fn );
+    }
+
+    /**
+     * Adds an site event entry
+     *
+     * @example $EventManager->addEvent('onSave', '\Namespace\Class::exec', 'quiqqer/blog:blog/entry' });
+     *
+     * @param String $event - The type of event (e.g. 'complete').
+     * @param Function $fn - The function to execute.
+     * @param String $sitetype - type of the site
+     */
+    public function addSiteEvent($event, $fn, $sitetype)
+    {
+        if ( !is_string( $fn ) ) {
+            return;
+        }
+
+        \QUI::getDataBase()->insert(self::Table(), array(
+            'event'    => $event,
+            'callback' => $fn,
+            'sitetype' => $sitetype
+        ));
     }
 
     /**

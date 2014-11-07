@@ -328,6 +328,38 @@ class XML
     }
 
     /**
+     *
+     * @param unknown $file
+     * @return Array
+     */
+    static function getSiteEventsFromXml($file)
+    {
+        $Dom  = self::getDomFromXml( $file );
+        $Path = new \DOMXPath( $Dom );
+
+        $types  = $Path->query( "//site/types/type" );
+        $result = array();
+
+        $package = str_replace( OPT_DIR, '', dirname( $file ) );
+
+        foreach ( $types as $Type )
+        {
+            $events = $Type->getElementsByTagName( 'event' );
+
+            foreach ( $events as $Event )
+            {
+                $result[] = array(
+                    'on'   => $Event->getAttribute( 'on' ),
+                    'fire' => $Event->getAttribute( 'fire' ),
+                    'type' => $package .':'. $Type->getAttribute( 'type' )
+                );
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Sucht die Übersetzungsgruppe aus einem DOMDocument Objekt
      *
      * @param DOMDocument $Dom

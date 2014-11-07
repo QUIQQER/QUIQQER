@@ -175,6 +175,17 @@ class Site extends \QUI\QDOM
         // view permission check
         $this->checkPermission( 'quiqqer.site.view' );
 
+
+        // site events
+        $events = \QUI::getEvents()->getSiteListByType(
+            $this->getAttribute('type')
+        );
+
+        foreach ( $events as $event ) {
+            $this->Events->addEvent( $event['event'], $event['callback'] );
+        }
+
+
         // Im Adminbereich wird kein Cache verwendet
         if ( defined( 'ADMIN' ) && ADMIN == 1 ) {
             return true;

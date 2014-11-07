@@ -750,8 +750,11 @@ class Manager
         \QUI\Update::importEditors( $dir .'wysiwyg.xml' );
         \QUI\Update::importMenu( $dir .'menu.xml' );
         \QUI\Update::importPermissions( $dir .'permissions.xml', $package );
-        \QUI\Update::importEvents( $dir .'events.xml' );
         \QUI\Update::importMenu( $dir .'menu.xml' );
+
+        // events
+        \QUI\Update::importEvents( $dir .'events.xml' );
+        \QUI\Update::importSiteEvents( $dir .'site.xml' );
 
         // settings
         if ( !file_exists( $dir .'settings.xml' ) ) {
