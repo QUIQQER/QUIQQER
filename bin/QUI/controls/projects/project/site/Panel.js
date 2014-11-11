@@ -104,6 +104,7 @@ define([
                 this.setAttribute( 'name', id );
 
                 this.$Site = Site;
+
             } else
             {
                 // serialize data
@@ -184,16 +185,22 @@ define([
          */
         load : function()
         {
-            var title   = '',
-                Site    = this.getSite(),
-                Project = Site.getProject();
+            var title       = '',
+                description = '',
+                Site        = this.getSite(),
+                Project     = Site.getProject();
 
-            title = title + Project.getName();
-            title = title + ' - '+ Site.getAttribute( 'name' ) +' ('+ Site.getId() +')';
+            title = Site.getAttribute( 'name' ).replace(/ /g, '-') +
+                    '.html ('+ Site.getId() +')';
+
+            description = Site.getAttribute( 'name' ).replace(/ /g, '-') +'.html : '+
+                          Site.getId() +' : ' +
+                          Project.getName();
 
             this.setAttributes({
-                title : title,
-                icon  : URL_BIN_DIR +'16x16/flags/'+ Project.getLang() +'.png'
+                title       : title,
+                description : description,
+                icon        : URL_BIN_DIR +'16x16/flags/'+ Project.getLang() +'.png'
             });
 
             this.refresh();
@@ -202,7 +209,6 @@ define([
             if ( this.getActiveCategory() )
             {
                 this.$onCategoryEnter( this.getActiveCategory() );
-                // .click();
 
             } else
             {
