@@ -963,7 +963,7 @@
     <groups name="quiqqer/system">
         <!-- Menu  -->
         <locale name="menu.extras.projects.text">
-            <de><![CDATA[Projekt Verwaltung]]></de>
+            <de><![CDATA[Projektverwaltung]]></de>
             <en><![CDATA[Projects manager]]></en>
         </locale>
         <locale name="menu.settings.projects.text">

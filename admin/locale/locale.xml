@@ -451,8 +451,8 @@
 
         <!-- Gehe zu -->
         <locale name="menu.extras.rights.text">
-            <de><![CDATA[Rechte]]></de>
-            <en><![CDATA[Rights]]></en>
+            <de><![CDATA[Benutzerverwaltung]]></de>
+            <en><![CDATA[User management]]></en>
         </locale>
         <locale name="menu.extras.permissions.text">
             <de><![CDATA[Zugriffsrechte]]></de>
