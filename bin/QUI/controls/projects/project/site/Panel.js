@@ -691,7 +691,7 @@ define([
                     // filter
                     var sitePath   = siteUrl.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '') +'/',
                         notAllowed = Object.keys( SiteUtils.notAllowedUrlSigns() ).join('|'),
-                        reg        = new RegExp( '['+ notAllowed +']', 'g' );;
+                        reg        = new RegExp( '['+ notAllowed +']', "g" );
 
                     NameInput.set({
                         value  : Site.getAttribute( 'name' ),
@@ -700,9 +700,14 @@ define([
                             keyup : function(event)
                             {
                                 this.value = this.value.replace( reg, '' );
-                                this.value = this.value.replace( ' ', QUIQQER.Rewrite.URL_SPACE_CHARACTER );
+                                this.value = this.value.replace( / /g, QUIQQER.Rewrite.URL_SPACE_CHARACTER );
 
                                 UrlDisplay.set( 'html', sitePath + this.value +'.html' );
+                            },
+
+                            blur : function(event)
+                            {
+                                this.fireEvent( 'keyup' );
                             }
                         }
                     });
