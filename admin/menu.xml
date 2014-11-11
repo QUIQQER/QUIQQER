@@ -105,14 +105,6 @@
      -->
 
     <!-- goto -->
-        <!-- Plugins und Packages -->
-        <item parent="/extras/"
-              name="packages"
-              icon="URL_BIN_DIR/16x16/quiqqer.png"
-              require="controls/packages/Panel"
-        >
-            <locale group="quiqqer/system" var="menu.extras.packages.text" />
-        </item>
         <!-- Projekt Verwaltung -->
         <item parent="/extras/"
               name="projects"
@@ -235,6 +227,15 @@
               var="menu.help.changelog.text"
         >
             <locale group="quiqqer/system" var="menu.help.changelog.text" />
+        </item>
+
+        <!-- Plugins und Packages -->
+        <item parent="/help/"
+              name="packages"
+              icon="URL_BIN_DIR/16x16/quiqqer.png"
+              require="controls/packages/Panel"
+        >
+            <locale group="quiqqer/system" var="menu.extras.packages.text" />
         </item>
 
     <!-- profile -->

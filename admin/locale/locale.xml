@@ -477,8 +477,8 @@
 
 
         <locale name="menu.help.text">
-            <de><![CDATA[Hilfe]]></de>
-            <en><![CDATA[Help]]></en>
+            <de><![CDATA[QUIQQER]]></de>
+            <en><![CDATA[QUIQQER]]></en>
         </locale>
             <locale name="menu.help.about.text">
                 <de><![CDATA[Über QUIQQER]]></de>
