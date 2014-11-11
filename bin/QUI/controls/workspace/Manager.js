@@ -2,8 +2,8 @@
 /**
  * Workspace Manager
  *
- * @author www.pcsg.de (Henning Leutz)
  * @module controls/workspace/Manager
+ * @author www.pcsg.de (Henning Leutz)
  *
  * @require qui/QUI
  * @require qui/controls/Control
@@ -144,6 +144,7 @@ define([
             // @todo besser als onChange event von den panels
             // ansonsten kann es sein das es so aussieht das das browser fenster sich nicht schließen lässt
             // bei langsamer verbindung
+
             window.addEvent( 'beforeunload', this.save );
         },
 
@@ -325,7 +326,6 @@ define([
         {
             return this.$spaces;
         },
-
 
         /**
          * Insert a control into a Column
@@ -537,12 +537,31 @@ define([
 
         /**
          * Save the workspace
+         *
+         * @param {Bool} async - [optional] asynchrone save, default = false
+         * @param {Function} callback - [optional] callback function, triggered only at async=true
          */
-        save : function()
+        save : function(async, callback)
         {
             var workspace = this.Workspace.serialize();
 
             if ( !workspace.length ) {
+                return;
+            }
+
+            if ( typeof async !== 'undefined' && async )
+            {
+                Ajax.post('ajax_desktop_workspace_save', function()
+                {
+                    if ( typeof callback !== 'undefined' ) {
+                        callback();
+                    }
+
+                }, {
+                    data : JSON.encode( workspace ),
+                    id   : this.getAttribute( 'workspaceId' )
+                });
+
                 return;
             }
 
@@ -635,6 +654,7 @@ define([
         fix : function()
         {
             this.Workspace.fix();
+            this.save( true );
         },
 
         /**

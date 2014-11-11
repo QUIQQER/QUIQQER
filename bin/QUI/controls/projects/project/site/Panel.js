@@ -190,8 +190,7 @@ define([
                 Site        = this.getSite(),
                 Project     = Site.getProject();
 
-            title = Site.getAttribute( 'name' ).replace(/ /g, '-') +
-                    '.html ('+ Site.getId() +')';
+            title = Site.getAttribute( 'title') +' ('+ Site.getId() +')';
 
             description = Site.getAttribute( 'name' ).replace(/ /g, '-') +'.html : '+
                           Site.getId() +' : ' +
