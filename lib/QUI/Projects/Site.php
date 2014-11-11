@@ -1297,7 +1297,7 @@ class Site extends \QUI\QDOM
             {
                 if ( is_integer( $param ) )
                 {
-                    $url .= self::URL_PARAM_SEPERATOR . $value;
+                    $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
                     continue;
                 }
 

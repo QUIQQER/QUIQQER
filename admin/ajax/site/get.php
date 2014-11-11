@@ -23,7 +23,8 @@ function ajax_site_get($project, $lang, $id)
     return array(
         'attributes'   => $attributes,
         'has_children' => $Site->hasChildren(),
-        'parentid'     => $Site->getParentId()
+        'parentid'     => $Site->getParentId(),
+        'url'          => URL_DIR . $Site->getUrlRewrited()
     );
 }
 

@@ -87,6 +87,7 @@ define([
 
                 Site.$has_children = result.has_children || false;
                 Site.$parentid     = result.parentid || false;
+                Site.$url          = result.url || '';
 
                 Site.fireEvent( 'load', [ Site ] );
 
@@ -118,6 +119,20 @@ define([
         getProject : function()
         {
             return this.$Project;
+        },
+
+        /**
+         * Return the rewrited url
+         *
+         * @return {String}
+         */
+        getUrl : function()
+        {
+            if ( typeof this.$url !== 'undefined' ) {
+                return this.$url;
+            }
+
+            return '';
         },
 
         /**

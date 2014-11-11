@@ -1,3 +1,4 @@
+
 /**
  * Displays a Site in a Panel
  *
@@ -10,7 +11,11 @@
  * @require classes/projects/project/Site
  * @require qui/controls/buttons/Button
  * @require qui/utils/Form
+ * @require utils/Controls
+ * @require utils/Panels
+ * @require utils/Site
  * @require Locale
+ * @require css!controls/projects/project/site/Panel.css
  */
 
 define([
@@ -23,6 +28,7 @@ define([
     'qui/utils/Form',
     'utils/Controls',
     'utils/Panels',
+    'utils/Site',
     'Locale',
 
     'css!controls/projects/project/site/Panel.css'
@@ -39,7 +45,8 @@ define([
         QUIFormUtils = arguments[ 5 ],
         ControlUtils = arguments[ 6 ],
         PanelUtils   = arguments[ 7 ],
-        Locale       = arguments[ 8 ];
+        SiteUtils    = arguments[ 8 ],
+        Locale       = arguments[ 9 ];
 
     var lg = 'quiqqer/system';
 
@@ -675,8 +682,30 @@ define([
                 // information tab
                 if ( Category.getAttribute( 'name' ) === 'information' )
                 {
-                    Body.getElements( 'input[name="site-name"]' )
-                        .set('value', Site.getAttribute( 'name' ) );
+                    var NameInput  = Body.getElements( 'input[name="site-name"]' ),
+                        UrlDisplay = Body.getElements( '.site-url-display' ),
+                        siteUrl    = Site.getUrl();
+
+                    UrlDisplay.set( 'html', Site.getUrl() );
+
+                    // filter
+                    var sitePath   = siteUrl.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '') +'/',
+                        notAllowed = Object.keys( SiteUtils.notAllowedUrlSigns() ).join('|'),
+                        reg        = new RegExp( '['+ notAllowed +']', 'g' );;
+
+                    NameInput.set({
+                        value  : Site.getAttribute( 'name' ),
+                        events :
+                        {
+                            keyup : function(event)
+                            {
+                                this.value = this.value.replace( reg, '' );
+                                this.value = this.value.replace( ' ', QUIQQER.Rewrite.URL_SPACE_CHARACTER );
+
+                                UrlDisplay.set( 'html', sitePath + this.value +'.html' );
+                            }
+                        }
+                    });
 
 
                     // site linking

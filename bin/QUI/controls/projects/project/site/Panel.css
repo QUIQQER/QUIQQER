@@ -25,6 +25,9 @@
     width: 150px !important;
 }
 
+.site-url-display {
+    padding: 5px 0;
+}
 
 /** site settings
  * ====================================== */
