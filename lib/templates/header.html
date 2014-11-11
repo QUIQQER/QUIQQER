@@ -44,6 +44,11 @@
             lang : '{$User->getLang()}'
         };
 
+        var QUIQQER_SITE = {
+            id   : '{$Site->getId()}',
+            type : '{$Site->getAttribute("type")}'
+        };
+
         var QUIQQER_ONLOAD_MODULES = {$loadModuleFiles|json_encode:true},
             QUIQQER_LOCALE         = {$localeFiles|json_encode:true};
 
