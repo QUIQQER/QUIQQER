@@ -971,6 +971,10 @@ class XML
                 if ( isset( $table[ 'auto_increment' ] ) ) {
                     $Table->setAutoIncrement( $tbl, $table[ 'auto_increment' ] );
                 }
+
+                if ( isset( $table[ 'fulltext' ] ) ) {
+                    $Table->setFulltext( $tbl, $table[ 'fulltext' ] );
+                }
             }
         }
 
@@ -1023,6 +1027,10 @@ class XML
 
                         if ( isset( $table[ 'auto_increment' ] ) ) {
                             $Table->setAutoIncrement( $tbl, $table[ 'auto_increment' ] );
+                        }
+
+                        if ( isset( $table[ 'fulltext' ] ) ) {
+                            $Table->setFulltext( $tbl, $table[ 'fulltext' ] );
                         }
                     }
                 }

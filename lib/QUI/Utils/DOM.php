@@ -213,6 +213,7 @@ class DOM
             );
         }
 
+        // auto increment
         $autoincrement = $Table->getElementsByTagName( 'auto_increment' );
 
         for ( $i = 0; $i < $autoincrement->length; $i++ )
@@ -222,6 +223,18 @@ class DOM
                 self::dbAutoIncrementDomToArray( $autoincrement->item( $i ) )
             );
         }
+
+        // fulltext
+        $fulltext = $Table->getElementsByTagName( 'fulltext' );
+
+        for ( $i = 0; $i < $fulltext->length; $i++ )
+        {
+            $result = array_merge(
+                $result,
+                self::dbAutoFullextDomToArray( $fulltext->item( $i ) )
+            );
+        }
+
 
         $result['fields'] = $_fields;
 
@@ -285,7 +298,7 @@ class DOM
     static function dbIndexDomToArray(\DOMNode $Index)
     {
         return array(
-            'index' => $Index->nodeValue
+            'index' => trim( $Index->nodeValue )
         );
     }
 
@@ -298,7 +311,20 @@ class DOM
     static function dbAutoIncrementDomToArray(\DOMNode $AI)
     {
         return array(
-            'auto_increment' => $AI->nodeValue
+            'auto_increment' => trim( $AI->nodeValue )
+        );
+    }
+
+    /**
+     * FULLTEXT Datenbank DOMNode Objekt in ein Array umwandeln
+     *
+     * @param \DOMNode $Index
+     * @return Array
+     */
+    static function dbAutoFullextDomToArray(\DOMNode $Fulltext)
+    {
+        return array(
+            'fulltext' => trim( $Fulltext->nodeValue )
         );
     }
 
