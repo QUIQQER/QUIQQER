@@ -848,7 +848,17 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
             $filePath = $new_file_info['basename'];
         }
 
-        $filePath = StringUtils::replaceDblSlashes( $filePath );
+        $filePath    = StringUtils::replaceDblSlashes( $filePath );
+        $imageWidth  = '';
+        $imageHeight = '';
+
+        if ( isset( $new_file_info['width'] ) && $new_file_info['width'] ) {
+            $imageWidth = $new_file_info['width'];
+        }
+
+        if ( isset( $new_file_info['height'] ) && $new_file_info['height'] ) {
+            $imageHeight = $new_file_info['height'];
+        }
 
 
         \QUI::getDataBase()->insert($table, array(
@@ -862,6 +872,8 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
             'c_user'    => $User->getId(),
             'e_user'    => $User->getId(),
             'mime_type' => $new_file_info['mime_type'],
+            'image_width'  => $imageWidth,
+            'image_height' => $imageHeight,
 
             'type' => MediaUtils::getMediaTypeByMimeType(
                 $new_file_info['mime_type']
@@ -882,6 +894,38 @@ class Folder extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Project
         $File = $this->_Media->get( $id );
         $File->generateMD5();
         $File->generateSHA1();
+
+
+        // if it is an image, than resize -> if needed
+        if ( Utils::isImage( $File ) )
+        {
+            $resizeData = $File->getResizeSize( 1200, 1200 );
+
+            if ( $new_file_info['width'] > 1200 ||
+                 $new_file_info['height'] > 1200 )
+            {
+                try
+                {
+                    \QUI\Utils\Image::resize(
+                        $new_file,
+                        $new_file,
+                        $resizeData['width'],
+                        $resizeData['height']
+                    );
+
+                    \QUI::getDataBase()->update($table, array(
+                        'image_width'  => $resizeData['width'],
+                        'image_height' => $resizeData['height'],
+                    ), array(
+                        'id' => $id
+                    ));
+
+                } catch ( \QUI\Exception $Exception )
+                {
+                    \QUI\System\Log::writeException( $Exception );
+                }
+            }
+        }
 
         return $File;
     }
