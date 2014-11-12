@@ -1,15 +1,22 @@
 
 /**
- * List all available languages
+ * Login Window
  *
  * @module controls/system/Login
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/controls/windows/Confirm
+ * @require qui/controls/buttons/Button
+ * @require Locale
+ * @require Ajax
+ * @require css!controls/system/Login.css
  *
  * @event onSubmit [ {Array}, {this} ]
  */
 
 define([
 
+    'qui/QUI',
     'qui/controls/windows/Confirm',
     'qui/controls/buttons/Button',
     'Locale',
@@ -17,7 +24,7 @@ define([
 
     'css!controls/system/Login.css'
 
-], function(QUIConfirm, QUIButton, Locale, Ajax)
+], function(QUI, QUIConfirm, QUIButton, Locale, Ajax)
 {
     "use strict";
 
@@ -46,6 +53,7 @@ define([
         initialize : function(options)
         {
             this.parent( options );
+            this.$opened = false;
 
             this.addEvent('cancel', function() {
                 window.location = window.location;
@@ -53,10 +61,26 @@ define([
         },
 
         /**
-         * event : onCreate
+         * Open the Login
          */
         open : function()
         {
+            // check if one login window is still open
+            var logins = QUI.Controls.getByType( 'controls/system/Login' );
+
+            if ( logins.length >= 2 )
+            {
+                for ( var i = 0, len = logins.length; i < len; i++ )
+                {
+                    if ( logins[ i ].$opened )
+                    {
+                        this.destroy();
+                        return;
+                    }
+                }
+            }
+
+            this.$opened = true;
             this.parent();
 
             var self    = this,
@@ -78,6 +102,15 @@ define([
                     '<input type="password" value="" name="password" />' +
                 '</form>'
             );
+        },
+
+        /**
+         * Close the Login
+         */
+        close : function()
+        {
+            this.$opened = false;
+            this.parent();
         },
 
         /**
@@ -107,5 +140,4 @@ define([
             });
         }
     });
-
 });
