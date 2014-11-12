@@ -926,16 +926,20 @@ class Rewrite
     {
         $path = $this->_path;
 
-        if ($start == true)
+        if ( !isset( $path[0] ) ) {
+            return array();
+        }
+
+        if ( $start == true )
         {
-            if (isset($path) && is_array($path) &&
-               (!isset($this->_path[0]) || $this->_path[0]->getId() != 1))
+            if ( isset( $path ) && is_array( $path ) &&
+               ( !isset( $path[0] ) || $path[0]->getId() != 1 ) )
             {
-                array_unshift($path, $this->_first_child);
+                array_unshift( $path, $this->_first_child );
             }
         }
 
-        if ($me == false)
+        if ( $me == false )
         {
 
         }
