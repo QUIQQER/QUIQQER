@@ -2,13 +2,17 @@
 <locales>
 
     <groups name="quiqqer/system">
-        <locale name="projects.project.site.panel.information.title">
+        <locale name="projects.project.site.panel.information.header">
             <de><![CDATA[Daten von Seite: #[id]]]></de>
             <en><![CDATA[Data from site: #[id]]]></en>
         </locale>
         <locale name="projects.project.site.panel.information.nameUrl">
             <de><![CDATA[Name / URL]]></de>
             <en><![CDATA[Name / URL]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.information.title">
+            <de><![CDATA[Title]]></de>
+            <en><![CDATA[Title]]></en>
         </locale>
         <locale name="projects.project.site.panel.information.short">
             <de><![CDATA[Kurzbeschreibung]]></de>
