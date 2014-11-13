@@ -66,6 +66,21 @@ define([
         },
 
         /**
+         * Decode the project
+         * eq for ajax requesr
+         *
+         * @return {Object}
+         */
+        decode : function()
+        {
+            return JSON.decode({
+                project  : this.getName(),
+                lang     : this.getLang(),
+                template : this.getAttribute('template')
+            });
+        },
+
+        /**
          * Get a site from the project
          *
          * @method classes/projects/Project#get

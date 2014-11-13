@@ -50,8 +50,11 @@ class Utils
             );
         }
 
+        $signs = '@[.,:;#`!§$%&/?<>\=\'\"\@\_\]\[\+\-]@';
+        $signs = str_replace( \QUI\Rewrite::URL_SPACE_CHARACTER, '', $signs );
+
         // Prüfung des Namens - Sonderzeichen
-        if ( preg_match("@[-.,:;#`!§$%&/?<>\=\'\"\@\_\]\[\+]@", $name ))
+        if ( preg_match( $signs, $name ) )
         {
             throw new \QUI\Exception(
                 'In der URL "'. $name .'" dürfen folgende Zeichen nicht verwendet werden: _-.,:;#@`!§$%&/?<>=\'"[]+',
@@ -71,6 +74,10 @@ class Utils
      */
     static function clearUrl($url, \QUI\Projects\Project $Project)
     {
+        // space seperator
+        $url = str_replace( \QUI\Rewrite::URL_SPACE_CHARACTER , ' ', $url );
+
+        // clear
         $signs = array(
             '-', '.', ',', ':', ';',
             '#', '`', '!', '§', '$',
@@ -99,6 +106,8 @@ class Utils
                 $url = $func( $url );
             }
         }
+
+        $url = str_replace( ' ', \QUI\Rewrite::URL_SPACE_CHARACTER, $url );
 
         return $url;
     }
