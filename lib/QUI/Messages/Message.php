@@ -49,4 +49,13 @@ class Message extends \QUI\QDOM
     {
         return $this->getAttribute( 'code' );
     }
+
+    /**
+     * Return the md5 string of the message
+     * @return string
+     */
+    public function getHash()
+    {
+        return md5( $this->getMessage() );
+    }
 }

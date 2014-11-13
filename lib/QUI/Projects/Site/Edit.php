@@ -541,7 +541,6 @@ class Edit extends \QUI\Projects\Site
             ));
         }
 
-
         //$this->deleteTemp($User);
         $Project->clearCache();
 

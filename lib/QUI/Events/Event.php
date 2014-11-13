@@ -21,6 +21,8 @@ class Event implements \QUI\Interfaces\Events
      */
     protected $_events = array();
 
+    protected $_currentRunning = array();
+
     /**
      * (non-PHPdoc)
      * @see \QUI\Interfaces\Events::getList()
@@ -102,10 +104,11 @@ class Event implements \QUI\Interfaces\Events
      * @param String $event - The type of event (e.g. 'onComplete').
      * @param Array $args   - (optional) the argument(s) to pass to the function.
      *                        The arguments must be in an array.
+     * @param Bool $force   - no recursion check, optional, default = false
      *
      * @return Array - Event results, assoziative array
      */
-    public function fireEvent($event, $args=false)
+    public function fireEvent($event, $args=false, $force=false)
     {
         $results = array();
 
@@ -113,10 +116,27 @@ class Event implements \QUI\Interfaces\Events
             $event = 'on'. ucfirst( $event );
         }
 
+
+        // recursion check
+        if ( isset( $this->_currentRunning[ $event ] ) &&
+             $this->_currentRunning[ $event ] &&
+             $force === false )
+        {
+            return $results;
+        }
+
         if ( !isset( $this->_events[ $event ] ) ) {
             return $results;
         }
 
+        if ( $event == 'onSave' || $event == 'save' ) {
+            \QUI\System\Log::writeRecursive( $this->_currentRunning );
+        }
+
+
+        $this->_currentRunning[ $event ] = true;
+
+        // execute events
         foreach ( $this->_events[ $event ] as $fn )
         {
             if ( !is_string( $fn ) )
@@ -141,6 +161,8 @@ class Event implements \QUI\Interfaces\Events
 
             $results[ $fn ] = call_user_func_array( $fn, $args );
         }
+
+        $this->_currentRunning[ $event ] = false;
 
         return $results;
     }

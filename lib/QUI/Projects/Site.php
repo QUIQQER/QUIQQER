@@ -19,6 +19,12 @@ use \QUI\Utils\String as StringUtils;
 class Site extends \QUI\QDOM
 {
     /**
+     * Edit site
+     * @var \QUI\Projects\Site\Edit
+     */
+    protected $_Edit = null;
+
+    /**
      * $Events - manage and fires events
      * @var \QUI\Events\Event
      */
@@ -225,10 +231,19 @@ class Site extends \QUI\QDOM
      */
     public function getEdit()
     {
-        return new \QUI\Projects\Site\Edit(
-            $this->getProject(),
-            $this->getId()
-        );
+        if ( get_class( $this ) == 'QUI\Projects\Site\Edit' ) {
+            return $this;
+        }
+
+        if ( !$this->_Edit )
+        {
+            $this->_Edit = new \QUI\Projects\Site\Edit(
+                $this->getProject(),
+                $this->getId()
+            );
+        }
+
+        return $this->_Edit;
     }
 
     /**

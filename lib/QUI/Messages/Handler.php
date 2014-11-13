@@ -139,7 +139,7 @@ class Handler
      */
     public function addMessage($Message)
     {
-        $this->_messages[] = $Message;
+        $this->_messages[ $Message->getHash() ] = $Message;
     }
 
     /**

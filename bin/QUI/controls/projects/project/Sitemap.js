@@ -804,8 +804,7 @@ define([
             }
 
             var children = this.$Map.getChildrenByValue( Site.getId() );
-console.log( 'onSiteChange' );
-console.log( children );
+
             if ( !children.length ) {
                 return;
             }

@@ -51,7 +51,11 @@ class Utils
         }
 
         $signs = '@[.,:;#`!§$%&/?<>\=\'\"\@\_\]\[\+\-]@';
-        $signs = str_replace( \QUI\Rewrite::URL_SPACE_CHARACTER, '', $signs );
+
+
+        if ( \QUI\Rewrite::URL_SPACE_CHARACTER == '-' ) {
+            $signs = '@[.,:;#`!§$%&/?<>\=\'\"\@\_\]\[\+]@';
+        }
 
         // Prüfung des Namens - Sonderzeichen
         if ( preg_match( $signs, $name ) )
