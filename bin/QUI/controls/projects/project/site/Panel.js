@@ -699,10 +699,14 @@ define([
                         {
                             keyup : function(event)
                             {
+                                var old = this.value;
+
                                 this.value = this.value.replace( reg, '' );
                                 this.value = this.value.replace( / /g, QUIQQER.Rewrite.URL_SPACE_CHARACTER );
 
-                                UrlDisplay.set( 'html', sitePath + this.value +'.html' );
+                                if ( old != this.value ) {
+                                    UrlDisplay.set( 'html', sitePath + this.value +'.html' );
+                                }
                             },
 
                             blur : function(event)
