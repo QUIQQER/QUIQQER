@@ -26,6 +26,7 @@ define([
     'classes/projects/project/Site',
     'qui/controls/buttons/Button',
     'qui/utils/Form',
+    'qui/utils/Elements',
     'utils/Controls',
     'utils/Panels',
     'utils/Site',
@@ -43,10 +44,11 @@ define([
         Site         = arguments[ 3 ],
         QUIButton    = arguments[ 4 ],
         QUIFormUtils = arguments[ 5 ],
-        ControlUtils = arguments[ 6 ],
-        PanelUtils   = arguments[ 7 ],
-        SiteUtils    = arguments[ 8 ],
-        Locale       = arguments[ 9 ];
+        QUIElmUtils  = arguments[ 6 ],
+        ControlUtils = arguments[ 7 ],
+        PanelUtils   = arguments[ 8 ],
+        SiteUtils    = arguments[ 9 ],
+        Locale       = arguments[ 10 ];
 
     var lg = 'quiqqer/system';
 
@@ -693,10 +695,16 @@ define([
                         notAllowed = Object.keys( SiteUtils.notAllowedUrlSigns() ).join('|'),
                         reg        = new RegExp( '['+ notAllowed +']', "g" );
 
+                    var lastPos = null;
+
                     NameInput.set({
                         value  : Site.getAttribute( 'name' ),
                         events :
                         {
+                            keydown : function(event) {
+                                lastPos = QUIElmUtils.getCursorPosition( event.target );
+                            },
+
                             keyup : function(event)
                             {
                                 var old = this.value;
@@ -704,12 +712,20 @@ define([
                                 this.value = this.value.replace( reg, '' );
                                 this.value = this.value.replace( / /g, QUIQQER.Rewrite.URL_SPACE_CHARACTER );
 
-                                if ( old != this.value ) {
+                                if ( old != this.value )
+                                {
                                     UrlDisplay.set( 'html', sitePath + this.value +'.html' );
+
+                                    QUIElmUtils.setCursorPosition( this, lastPos );
                                 }
                             },
 
                             blur : function(event)
+                            {
+                                this.fireEvent( 'keyup' );
+                            },
+
+                            focus : function(event)
                             {
                                 this.fireEvent( 'keyup' );
                             }
