@@ -105,6 +105,7 @@ class Sheets extends \QUI\Control
             'end'       => $end,
             'active'    => $active,
             'urlParams' => $params,
+            'anchor'    => $anchor,
 
             'Site'    => $Site,
             'Project' => $Project
