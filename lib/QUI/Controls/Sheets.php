@@ -93,6 +93,10 @@ class Sheets extends \QUI\Control
                 continue;
             }
 
+            if ( $key == 'anchor' ) {
+                continue;
+            }
+
 
             if ( is_string( $value ) || is_int( $value ) ) {
                 $params[ $key ] = $value;
