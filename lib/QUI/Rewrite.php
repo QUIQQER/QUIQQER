@@ -1191,7 +1191,7 @@ class Rewrite
                 $anchor = '#'. $parseUrl['fragment'];
             }
 
-            $this->_url_cache[ $components ] = $url;
+            $this->_url_cache[ $components ] = $url . $anchor;
 
             return $output[1] .'="'. $url . $anchor .'"';
 
