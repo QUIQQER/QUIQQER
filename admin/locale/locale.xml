@@ -338,7 +338,7 @@
 
         <!-- contextmenu -->
         <locale name="copy">
-            <de><![CDATA[Kokpieren]]></de>
+            <de><![CDATA[Kopieren]]></de>
             <en><![CDATA[Copy]]></en>
         </locale>
         <locale name="cut">

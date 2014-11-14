@@ -27,7 +27,8 @@ define([
     'Projects',
     'Ajax',
     'Locale',
-    'Clipboard'
+    'Clipboard',
+    'utils/Site'
 
 ], function()
 {
@@ -42,7 +43,8 @@ define([
         Projects  = arguments[ 5 ],
         Ajax      = arguments[ 6 ],
         Locale    = arguments[ 7 ],
-        Clipboard = arguments[ 8 ];
+        Clipboard = arguments[ 8 ],
+        SiteUtils = arguments[ 9 ];
 
     /**
      * A project sitemap
@@ -589,7 +591,7 @@ define([
                     new QUIContextmenuItem({
                         disabled : true,
                         name   : 'linked-paste',
-                        text   : Locale.get('quiqqer/system', 'linked-paste'),
+                        text   : Locale.get('quiqqer/system', 'linked.paste'),
                         icon   : 'icon-paste',
                         events :
                         {
@@ -598,11 +600,32 @@ define([
                             }
                         }
                     })
+                ).appendChild(
+                    new QUIContextmenuSeperator()
+                ).appendChild(
+                    new QUIContextmenuItem({
+                        name   : 'create-new-site',
+                        text   : Locale.get('quiqqer/system', 'projects.project.site.btn.new.text'),
+                        icon   : 'icon-file-text fa fa-file-text',
+                        events :
+                        {
+                            onClick : function(ContextItem, event)
+                            {
+                                self.$createChild({
+                                    project : self.getAttribute( 'project' ),
+                                    lang    : self.getAttribute( 'lang' ),
+                                    id      : Itm.getAttribute( 'value' ),
+                                });
+                            }
+                        }
+                    })
                 );
 
             ContextMenu.addEvents({
                 onShow : function(ContextMenu)
                 {
+                    Itm.highlight();
+
                     var data   = Clipboard.get(),
                         Paste  = ContextMenu.getChildren( 'paste' ),
                         Linked = ContextMenu.getChildren( 'linked-paste' ),
@@ -633,6 +656,11 @@ define([
 
                     Paste.enable();
                     Linked.enable();
+                },
+
+                onBlur : function()
+                {
+                    Itm.deHighlight();
                 }
             });
 
@@ -784,6 +812,27 @@ define([
                 {
                     self.$open( NewParentItem );
                 }
+            });
+        },
+
+        /**
+         * Opens the child create confirm
+         *
+         * @param {Object} data - data.project, data.lang, data.id
+         */
+        $createChild : function(data)
+        {
+            var Project = Projects.get( data.project, data.lang ),
+                Site    = Project.get( data.id );
+
+            if ( Site.getAttribute( 'name' ) )
+            {
+                SiteUtils.openCreateChild( Site );
+                return;
+            }
+
+            Site.load(function() {
+                SiteUtils.openCreateChild( Site );
             });
         },
 

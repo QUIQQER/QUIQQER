@@ -1,5 +1,16 @@
 <locales>
 
+    <groups name="quiqqer/system" datatype="php,js">
+        <locale name="projects.project.site.btn.new.text">
+            <de><![CDATA[Neue Unterseite]]></de>
+            <en><![CDATA[New childsite]]></en>
+        </locale>
+        <locale name="projects.project.site.btn.new.title">
+            <de><![CDATA[Neue Unterseite anlegen]]></de>
+            <en><![CDATA[Create a new childsite]]></en>
+        </locale>
+    </groups>
+
     <groups name="quiqqer/system">
         <locale name="projects.project.site.no.permissions">
             <de><![CDATA[Sie besitzen keine Rechte diese Seite anzuzeigen.]]></de>
@@ -28,10 +39,6 @@
             <en><![CDATA[Settings]]></en>
         </locale>
 
-        <locale name="projects.project.site.btn.new.text">
-            <de><![CDATA[Neu]]></de>
-            <en><![CDATA[New]]></en>
-        </locale>
             <locale name="projects.project.site.btn.new.help">
                 <de><![CDATA[Erzeugen Sie eine neue Unterseite]]></de>
                 <en><![CDATA[Create a new page under the current page]]></en>
