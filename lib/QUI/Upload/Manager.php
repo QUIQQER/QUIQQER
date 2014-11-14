@@ -46,7 +46,7 @@ class Manager
         \QUI::getDataBase()->Table()->appendFields(
             $this->_table,
             array(
-                'file'   => 'varchar(50)',
+                'file'   => 'varchar(255)',
                 'user'   => 'int(11)',
                 'params' => 'text'
             )
