@@ -45,6 +45,11 @@ class Sheets extends \QUI\Control
         $active = 1;
         $start  = 1;
         $end    = $count;
+        $anchor = '';
+
+        if ( $this->getAttribute( 'anchor' ) ) {
+            $anchor = $this->getAttribute( 'anchor' );
+        }
 
         if ( $showmax <= $count ) {
             $showmax = false;
