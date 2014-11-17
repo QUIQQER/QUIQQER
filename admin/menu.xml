@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <menu>
-    <item parent="/" name="file">
-        <locale group="quiqqer/system" var="menu.file.text" />
-    </item>
     <item parent="/" name="extras">
         <locale group="quiqqer/system" var="menu.goto.text" />
     </item>
@@ -17,27 +14,12 @@
     </item>
 
     <!-- File Menu -->
-        <item parent="/file/"
+        <item parent="/extras/"
               name="search"
               icon="icon-search"
               require="controls/projects/project/site/Search"
         >
             <locale  group="quiqqer/system" var="menu.file.search.text" />
-        </item>
-        <item parent="/file/"
-              name="file_close"
-              icon="icon-remove-sign"
-              group="quiqqer/system"
-              var="menu.file.close.text"
-        >
-            <locale group="quiqqer/system" var="menu.file.close.text" />
-        </item>
-        <item parent="/file/"
-              name="file_exit"
-              icon="icon-off"
-              exec="logout();"
-        >
-            <locale group="quiqqer/system" var="menu.file.logout.text" />
         </item>
 
     <!-- Edit -->

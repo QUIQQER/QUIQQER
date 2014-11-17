@@ -313,7 +313,22 @@ require( requireList, function()
     /**
      * Menu
      */
-    require(['Menu']);
+    require(['Menu'], function()
+    {
+        // logout
+        new Element('div', {
+            'class' : 'qui-contextmenu-baritem smooth ',
+            html    : '<span class="qui-contextmenu-baritem-text">Abmelden</span>',
+            title   : 'Angemeldet als: '+ USER.name,
+            styles  : {
+                'float' : 'right'
+            },
+            events  : {
+                click : window.logout
+            }
+        }).inject( Menu );
+
+    });
 
     /**
      * If files were droped to quiqqer
@@ -333,15 +348,30 @@ require( requireList, function()
         }
     });
 
+
+    window.onbeforeunload = function()
+    {
+        Workspace.save();
+
+        return "Bitte melden Sie sich vor dem schließen der Administration ab." +
+               "Ansonsten können bestehende Daten verloren gehen." +
+               "Möchten Sie trotzdem weiter fortfahren?"
+    };
+
     // logout function
     window.logout = function()
     {
-        // save workspace
-        Workspace.save();
+        Workspace.Loader.show();
 
-        // logout
-        Ajax.post('ajax_user_logout', function() {
-            window.location = '/admin/';
+        // save workspace
+        Workspace.save(true, function()
+        {
+            // logout
+            Ajax.post('ajax_user_logout', function()
+            {
+                window.onbeforeunload = null;
+                window.location = '/admin/';
+            });
         });
     };
 

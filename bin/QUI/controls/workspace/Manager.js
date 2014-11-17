@@ -140,12 +140,6 @@ define([
                     }).delay( 200 );
                 });
             }
-
-            // @todo besser als onChange event von den panels
-            // ansonsten kann es sein das es so aussieht das das browser fenster sich nicht schließen lässt
-            // bei langsamer verbindung
-
-            window.addEvent( 'beforeunload', this.save );
         },
 
         /**
