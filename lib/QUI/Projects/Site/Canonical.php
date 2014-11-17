@@ -53,7 +53,7 @@ class Canonical
         $Site    = $this->_Site;
         $Project = $Site->getProject();
 
-        $canonical = $this->_Site->getCanonical();
+        $canonical = ltrim( $this->_Site->getCanonical(), '/' );
         $httpsHost = $Project->getVHost( true, true );
 
         $httpsHostExists = false;
@@ -61,7 +61,6 @@ class Canonical
         if ( strpos( $httpsHost , 'https:' ) !== false ) {
             $httpsHostExists = true;
         }
-
 
         if ( empty( $canonical ) || $canonical == $requestUrl )
         {

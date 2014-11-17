@@ -1648,10 +1648,7 @@ class Site extends \QUI\QDOM
             return $this->getAttribute( 'canonical' );
         }
 
-        $this->setAttribute(
-            'canonical',
-            $this->getProject()->getVHost( true, true ) . URL_DIR . $this->getUrlRewrited()
-        );
+        $this->setAttribute( 'canonical', URL_DIR . $this->getUrlRewrited() );
 
         return $this->getAttribute( 'canonical' );
     }
