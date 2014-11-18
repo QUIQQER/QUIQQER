@@ -27,6 +27,7 @@ class Rewrite
     const URL_PARAM_SEPERATOR   = '_';
     const URL_SPACE_CHARACTER   = '-';
     const URL_PROJECT_CHARACTER = '^';
+    const URL_DEFAULT_SUFFIX    = '.html';
 
     /**
      * site request parameter
