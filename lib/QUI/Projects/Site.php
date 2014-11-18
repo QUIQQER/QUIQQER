@@ -1333,7 +1333,7 @@ class Site extends \QUI\QDOM
                 return $url .'.'. $params['suffix'];
             }
 
-            return $url .'.html';
+            return $url . \QUI\Rewrite::URL_DEFAULT_SUFFIX;
         }
 
         $url     = '';
@@ -1411,7 +1411,7 @@ class Site extends \QUI\QDOM
             return $url .'.'. $params['suffix'];
         }
 
-        return $url .'.html';
+        return $url . \QUI\Rewrite::URL_DEFAULT_SUFFIX;
     }
 
     /**

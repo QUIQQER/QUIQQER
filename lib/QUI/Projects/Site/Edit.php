@@ -169,10 +169,6 @@ class Edit extends \QUI\Projects\Site
             );
         }
 
-        $this->Events->fireEvent( 'activate', array( $this ) );
-
-        \QUI::getEvents()->fireEvent( 'siteActivate', array( $this ) );
-
 
         /*
         $release_from = strtotime(
@@ -207,6 +203,11 @@ class Edit extends \QUI\Projects\Site
                 'id' => $this->getId()
             )
         ));
+
+        $this->setAttribute( 'active', 1 );
+        $this->Events->fireEvent( 'activate', array( $this ) );
+
+        \QUI::getEvents()->fireEvent( 'siteActivate', array( $this ) );
 
         $this->deleteCache();
         $this->getProject()->clearCache();
