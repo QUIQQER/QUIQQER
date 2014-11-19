@@ -575,6 +575,13 @@ define([
                     Elm.set( 'data-project', Project.getName() );
                 });
 
+                // minimize setting tables
+                if ( Category.getAttribute( 'name' ) == 'settings' )
+                {
+                    Body.getElements( '.data-table:not(.site-data)' )
+                        .addClass( 'data-table-closed' );
+                }
+
                 // set data
                 QUIFormUtils.setDataToForm(
                     self.getSite().getAttributes(),

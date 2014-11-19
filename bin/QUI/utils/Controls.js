@@ -78,6 +78,10 @@ define({
             this.parseProjectSite( Elm );
         }
 
+        // data table
+        if ( Elm.getElement( '.data-table' ) ) {
+            this.parseDataTables( Elm );
+        }
 
 
         // disabled fields
@@ -120,6 +124,98 @@ define({
                 }).inject( Child );
             }
         });
+    },
+
+    /**
+     * Search all .data-tables and make it flexible
+     *
+     * @param {DOMNode} Elm - parent node, this element in which is searched for
+     */
+    parseDataTables : function(Elm)
+    {
+        var i, len, Header;
+        var theaders = Elm.getElements( '.data-table tr ^ th' );
+
+        var dataTableOpen = function()
+        {
+            var Table  = this.getParent( 'table' ),
+                TBody  = Table.getElement( 'tbody' ),
+                THead  = Table.getElement( 'thead' ),
+                Toggle = Table.getElement( '.data-table-toggle' );
+
+            Toggle.set( 'html', '<span class="icon-minus"></span>' );
+
+            moofx( Table ).animate({
+                height : Table.getScrollSize().y
+            }, {
+                equation : 'ease-out',
+                duration : 250,
+                callback : function()
+                {
+                    Table.setStyles({
+                        display  : null,
+                        overflow : null
+                    });
+                }
+            });
+        };
+
+        var dataTableClose = function()
+        {
+            var Table  = this.getParent( 'table' ),
+                TBody  = Table.getElement( 'tbody' ),
+                THead  = Table.getElement( 'thead' ),
+                Toggle = Table.getElement( '.data-table-toggle' );
+
+            Toggle.set( 'html', '<span class="icon-plus"></span>' );
+
+            Table.setStyles({
+                display  : 'block',
+                overflow : 'hidden'
+            });
+
+            moofx( Table ).animate({
+                height : THead.getSize().y
+            }, {
+                equation: 'ease-out',
+                duration : 250
+            });
+        };
+
+        var dataTableClick = function()
+        {
+            var Table  = this.getParent( 'table' ),
+                TBody  = Table.getElement( 'tbody' ),
+                Toggle = Table.getElement( '.data-table-toggle' );
+
+            if ( Toggle.getElement( '.icon-minus' ) )
+            {
+                dataTableClose.call( this );
+            } else
+            {
+                dataTableOpen.call( this );
+            }
+        };
+
+        for ( var i = 0, len = theaders.length; i < len; i++ )
+        {
+            Header = theaders[ i ];
+
+            Header.addEvent( 'click', dataTableClick );
+            Header.setStyle( 'cursor', 'pointer' );
+
+            new Element('div', {
+                'class' : 'data-table-toggle',
+                html    : '<span class="icon-minus"></span>',
+                styles  : {
+
+                }
+            }).inject( Header, 'top' );
+
+            if ( Header.getParent( 'table' ).hasClass( 'data-table-closed' ) ) {
+                dataTableClick.call( Header );
+            }
+        }
     },
 
     /**

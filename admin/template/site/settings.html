@@ -1,39 +1,4 @@
 
-
-<table class="data-table site-data">
-<thead>
-    <tr>
-        <th colspan="2">
-            {t}quiqqer/system projects.project.site.panel.settings.publication{/t}
-        </th>
-    </tr>
-</thead>
-<tbody>
-    <tr class="{cycle values="odd,even"}">
-        <td class="grid-20">
-            {t}quiqqer/system projects.project.site.panel.settings.publication.from{/t}
-        </td>
-        <td class="grid-80">
-            <input type="datetime" name="release_from" />
-        </td>
-    </tr>
-    <tr class="{cycle values="odd,even"}">
-        <td class="grid-20">
-            {t}quiqqer/system projects.project.site.panel.settings.publication.to{/t}
-        </td>
-        <td class="grid-80">
-            <input type="datetime" name="release_to" />
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2" class="desc {cycle values="odd,even"}">
-            {t}quiqqer/system projects.project.site.panel.settings.publication.info{/t}
-        </td>
-    </tr>
-</tbody>
-</table>
-
-
 <table class="data-table site-data">
 <thead>
     <tr>
@@ -62,6 +27,40 @@
         </td>
         <td class="grid-80">
             <input type="text" name="image_site" class="media-image" />
+        </td>
+    </tr>
+</tbody>
+</table>
+
+
+<table class="data-table site-data data-table-closed">
+<thead>
+    <tr>
+        <th colspan="2">
+            {t}quiqqer/system projects.project.site.panel.settings.publication{/t}
+        </th>
+    </tr>
+</thead>
+<tbody>
+    <tr class="{cycle values="odd,even" reset=true}">
+        <td class="grid-20">
+            {t}quiqqer/system projects.project.site.panel.settings.publication.from{/t}
+        </td>
+        <td class="grid-80">
+            <input type="datetime" name="release_from" />
+        </td>
+    </tr>
+    <tr class="{cycle values="odd,even"}">
+        <td class="grid-20">
+            {t}quiqqer/system projects.project.site.panel.settings.publication.to{/t}
+        </td>
+        <td class="grid-80">
+            <input type="datetime" name="release_to" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="desc {cycle values="odd,even"}">
+            {t}quiqqer/system projects.project.site.panel.settings.publication.info{/t}
         </td>
     </tr>
 </tbody>
