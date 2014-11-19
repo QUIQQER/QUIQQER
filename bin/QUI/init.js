@@ -280,7 +280,12 @@ require( requireList, function()
         // workspace edit
         new Element('div', {
             'class' : 'qui-contextmenu-baritem smooth ',
-            html    : '<span class="qui-contextmenu-baritem-text icon-rocket"></span>',
+            html    : '<span class="qui-contextmenu-baritem-text">'+
+                          '<span class="icon-stack">'+
+                              '<i class="icon-laptop icon-stack-base"></i>'+
+                              '<i class="icon-resize-full" style="font-size: 0.9em; margin: -3px 0 0 1px;"></i>'+
+                          '</span>'+
+                      '</span>',
             title   : 'Arbeitsbereich festsetzen',
             styles  : {
                 'borderLeft' : '1px solid #d1d4da',
