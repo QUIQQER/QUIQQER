@@ -276,7 +276,6 @@ require( requireList, function()
      */
     require(['Menu'], function()
     {
-
         // workspace edit
         new Element('div', {
             'class' : 'qui-contextmenu-baritem smooth ',
@@ -286,7 +285,7 @@ require( requireList, function()
                               '<i class="icon-resize-full" style="font-size: 0.9em; margin: -3px 0 0 1px;"></i>'+
                           '</span>'+
                       '</span>',
-            title   : 'Arbeitsbereich festsetzen',
+            title   : 'Arbeitsbereich ist festgesetzt',
             styles  : {
                 'borderLeft' : '1px solid #d1d4da',
                 'float'      : 'right',
@@ -314,7 +313,6 @@ require( requireList, function()
             }
         }).inject( Menu );
 
-
         // logout
         new Element('div', {
             'class' : 'qui-contextmenu-baritem smooth ',
@@ -327,7 +325,6 @@ require( requireList, function()
                 click : window.logout
             }
         }).inject( Menu );
-
     });
 
     /**
