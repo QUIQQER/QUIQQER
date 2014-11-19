@@ -271,45 +271,6 @@ require( requireList, function()
     });
 
 
-    // workspace button
-//    new QUIButton({
-//        icon   : 'icon-rocket',
-//        title  : 'Arbeitsbereich festsetzen',
-//        styles : {
-//            'float'      : 'right',
-//            'fontSize'   : 20,
-//            'fontWeight' : 'normal',
-//            'lineHeight' : 40
-//        },
-//        events :
-//        {
-//            onClick : function(Btn)
-//            {
-//                if ( Btn.isActive() )
-//                {
-//                    Btn.setNormal();
-//                } else
-//                {
-//                    Btn.setActive();
-//                }
-//            },
-//
-//            onActive : function(Btn)
-//            {
-//                Workspace.unfix();
-//                Btn.setAttribute( 'title' , 'Arbeitsbereich ist flexibel' );
-//            },
-//
-//            onNormal : function(Btn)
-//            {
-//                Workspace.fix();
-//                Btn.setAttribute( 'title' , 'Arbeitsbereich ist festgesetzt' );
-//            }
-//        }
-//    }).inject( document.getElement( '.qui-logo-container' ) )
-//      .getElm()
-//      .style.borderBottomLeftRadius = '40px';
-
     /**
      * Menu
      */
