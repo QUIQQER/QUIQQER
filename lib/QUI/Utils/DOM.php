@@ -826,27 +826,27 @@ class DOM
         }
 
         $Engine   = \QUI::getTemplateManager()->getEngine( true );
-        $template = $Category->getElementsByTagName( 'template' );
+//         $template = $Category->getElementsByTagName( 'template' );
 
         // Falls ein Template angegeben wurde
-        if ( $template && $template->length )
-        {
-            $Template = $template->item( 0 );
-            $file     = self::parseVar( $Template->nodeValue );
+//         if ( $template && $template->length )
+//         {
+//             $Template = $template->item( 0 );
+//             $file     = self::parseVar( $Template->nodeValue );
 
-            if ( file_exists( $file ) )
-            {
-                $Engine->assign(array(
-                    'Plugin'  => $Plugin,
-                    'Plugins' => \QUI::getPluginManager(),
-                    'QUI'     => new \QUI()
-                ));
+//             if ( file_exists( $file ) )
+//             {
+//                 $Engine->assign(array(
+//                     'Plugin'  => $Plugin,
+//                     'Plugins' => \QUI::getPluginManager(),
+//                     'QUI'     => new \QUI()
+//                 ));
 
-                return $Engine->fetch( $file );
-            }
+//                 return $Engine->fetch( $file );
+//             }
 
-            return '';
-        }
+//             return '';
+//         }
 
 
         $result = '';
@@ -861,6 +861,24 @@ class DOM
                  $Entry->nodeName == 'text' ||
                  $Entry->nodeName == 'image' )
             {
+                continue;
+            }
+
+            if ( $Entry->nodeName == 'template' )
+            {
+                $file = self::parseVar( $Entry->nodeValue );
+
+                if ( file_exists( $file ) )
+                {
+                    $Engine->assign(array(
+                        'Plugin'  => $Plugin,
+                        'Plugins' => \QUI::getPluginManager(),
+                        'QUI'     => new \QUI()
+                    ));
+
+                    $result .= $Engine->fetch( $file );
+                }
+
                 continue;
             }
 
@@ -898,6 +916,7 @@ class DOM
                     $Set = $settings->item( $s );
 
                     if ( $Set->nodeName == '#text' ||
+                         $Set->nodeName == '#comment' ||
                          $Set->nodeName == 'title' )
                     {
                         continue;
@@ -929,6 +948,21 @@ class DOM
 
                         case 'button':
                             $result .= self::buttonDomToString( $Set );
+                        break;
+
+                        case 'template':
+                            $file = self::parseVar( $Set->nodeValue );
+
+                            if ( file_exists( $file ) )
+                            {
+                                $Engine->assign(array(
+                                    'Plugin'  => $Plugin,
+                                    'Plugins' => \QUI::getPluginManager(),
+                                    'QUI'     => new \QUI()
+                                ));
+
+                                $result .= $Engine->fetch( $file );
+                            }
                         break;
                     }
 
@@ -1157,6 +1191,8 @@ class DOM
      */
     static function parseVar($value)
     {
+        $value = trim( $value );
+
         $value = str_replace(
             array(
                 'URL_BIN_DIR', 'URL_OPT_DIR', 'URL_USR_DIR',
