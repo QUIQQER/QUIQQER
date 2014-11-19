@@ -871,12 +871,17 @@ define([
             }
 
             // unload params
-            for ( var i = 0, len = elements.length; i < len; i++ )
+            var FormData = QUIFormUtils.getFormData( Form );
+
+            for ( var key in FormData )
             {
-                if ( elements[ i ].name ) {
-                    Site.setAttribute( elements[ i ].name, elements[ i ].value );
+                if ( key === '' ) {
+                    continue;
                 }
+
+                Site.setAttribute( key, FormData[ key ] );
             }
+
 
             var self = this,
 
