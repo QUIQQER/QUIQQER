@@ -272,49 +272,83 @@ require( requireList, function()
 
 
     // workspace button
-    new QUIButton({
-        icon   : 'icon-rocket',
-        title  : 'Arbeitsbereich festsetzen',
-        styles : {
-            'float'      : 'right',
-            'fontSize'   : 20,
-            'fontWeight' : 'normal',
-            'lineHeight' : 40
-        },
-        events :
-        {
-            onClick : function(Btn)
-            {
-                if ( Btn.isActive() )
-                {
-                    Btn.setNormal();
-                } else
-                {
-                    Btn.setActive();
-                }
-            },
-
-            onActive : function(Btn)
-            {
-                Workspace.unfix();
-                Btn.setAttribute( 'title' , 'Arbeitsbereich ist flexibel' );
-            },
-
-            onNormal : function(Btn)
-            {
-                Workspace.fix();
-                Btn.setAttribute( 'title' , 'Arbeitsbereich ist festgesetzt' );
-            }
-        }
-    }).inject( document.getElement( '.qui-logo-container' ) )
-      .getElm()
-      .style.borderBottomLeftRadius = '40px';
+//    new QUIButton({
+//        icon   : 'icon-rocket',
+//        title  : 'Arbeitsbereich festsetzen',
+//        styles : {
+//            'float'      : 'right',
+//            'fontSize'   : 20,
+//            'fontWeight' : 'normal',
+//            'lineHeight' : 40
+//        },
+//        events :
+//        {
+//            onClick : function(Btn)
+//            {
+//                if ( Btn.isActive() )
+//                {
+//                    Btn.setNormal();
+//                } else
+//                {
+//                    Btn.setActive();
+//                }
+//            },
+//
+//            onActive : function(Btn)
+//            {
+//                Workspace.unfix();
+//                Btn.setAttribute( 'title' , 'Arbeitsbereich ist flexibel' );
+//            },
+//
+//            onNormal : function(Btn)
+//            {
+//                Workspace.fix();
+//                Btn.setAttribute( 'title' , 'Arbeitsbereich ist festgesetzt' );
+//            }
+//        }
+//    }).inject( document.getElement( '.qui-logo-container' ) )
+//      .getElm()
+//      .style.borderBottomLeftRadius = '40px';
 
     /**
      * Menu
      */
     require(['Menu'], function()
     {
+
+        // workspace edit
+        new Element('div', {
+            'class' : 'qui-contextmenu-baritem smooth ',
+            html    : '<span class="qui-contextmenu-baritem-text icon-rocket"></span>',
+            title   : 'Arbeitsbereich festsetzen',
+            styles  : {
+                'borderLeft' : '1px solid #d1d4da',
+                'float'      : 'right',
+                'marginLeft' : 5
+            },
+            events :
+            {
+                click : function()
+                {
+                    if ( this.hasClass( 'qui-contextmenu-baritem-active' ) )
+                    {
+                        this.removeClass( 'qui-contextmenu-baritem-active' );
+
+                        Workspace.fix();
+                        this.set( 'title' , 'Arbeitsbereich ist festgesetzt' );
+
+                        return;
+                    }
+
+                    this.addClass( 'qui-contextmenu-baritem-active' );
+
+                    Workspace.unfix();
+                    this.set( 'title' , 'Arbeitsbereich ist flexibel' );
+                }
+            }
+        }).inject( Menu );
+
+
         // logout
         new Element('div', {
             'class' : 'qui-contextmenu-baritem smooth ',
