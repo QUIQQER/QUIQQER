@@ -282,7 +282,7 @@ require( requireList, function()
             html    : '<span class="qui-contextmenu-baritem-text">'+
                           '<span class="icon-stack">'+
                               '<i class="icon-laptop icon-stack-base"></i>'+
-                              '<i class="icon-resize-full" style="font-size: 0.9em; margin: -3px 0 0 1px;"></i>'+
+                              '<i class="icon-pencil" style="font-size: 0.8em; margin: -3px 0 0 1px;"></i>'+
                           '</span>'+
                       '</span>',
             title   : 'Arbeitsbereich ist festgesetzt',
