@@ -42,8 +42,7 @@
     width: 100%;
 }
 
-.data-table th .data-table-toggle,
-.data-table-no-width th .data-table-toggle {
+.data-table-toggle {
     float: left;
     margin-right: 10px;
 }
