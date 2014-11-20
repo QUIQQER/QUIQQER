@@ -169,6 +169,8 @@ class Edit extends \QUI\Projects\Site
             );
         }
 
+        $this->Events->fireEvent( 'checkActivate', array( $this ) );
+        \QUI::getEvents()->fireEvent( 'siteCheckActivate', array( $this ) );
 
         /*
         $release_from = strtotime(
@@ -205,8 +207,8 @@ class Edit extends \QUI\Projects\Site
         ));
 
         $this->setAttribute( 'active', 1 );
-        $this->Events->fireEvent( 'activate', array( $this ) );
 
+        $this->Events->fireEvent( 'activate', array( $this ) );
         \QUI::getEvents()->fireEvent( 'siteActivate', array( $this ) );
 
         $this->deleteCache();
@@ -235,11 +237,7 @@ class Edit extends \QUI\Projects\Site
             );
         }
 
-        // fire events
-        $this->Events->fireEvent( 'deactivate', array( $this ) );
-
-        \QUI::getEvents()->fireEvent( 'siteDeactivate', array( $this ) );
-
+        \QUI::getEvents()->fireEvent( 'siteCheckDeactivate', array( $this ) );
 
         // deactivate
         \QUI::getDataBase()->exec(array(
@@ -257,6 +255,10 @@ class Edit extends \QUI\Projects\Site
 
         //$this->deleteTemp();
         $this->deleteCache();
+
+
+        $this->Events->fireEvent( 'deactivate', array( $this ) );
+        \QUI::getEvents()->fireEvent( 'siteDeactivate', array( $this ) );
     }
 
     /**
