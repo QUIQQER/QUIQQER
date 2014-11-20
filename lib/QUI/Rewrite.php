@@ -1380,6 +1380,7 @@ class Rewrite
             }
 
             $url = URL_DIR . $this->_project_prefix . $url;
+            $url = \QUI\Utils\String::replaceDblSlashes( $url );
 
         } else if ( $Project->getAttribute('default_lang') !== $lang )
         {
