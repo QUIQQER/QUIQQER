@@ -8,7 +8,7 @@ use \QUI\Controls\Contextmenu\Bar;
 use \QUI\Controls\Contextmenu\Baritem;
 use \QUI\Controls\Contextmenu\Menuitem;
 
-use \QUI\Utils\XML as XML;
+use \QUI\Utils\XML;
 
 /**
  * Return the administration menu

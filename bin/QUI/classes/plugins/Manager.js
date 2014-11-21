@@ -132,7 +132,5 @@ define('classes/plugins/Manager', [
                 }
             }, params);
         }
-
     });
-
 });
