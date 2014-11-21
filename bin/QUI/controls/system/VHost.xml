@@ -8,8 +8,18 @@
             <en><![CDATA[Host data]]></en>
         </locale>
         <locale name="system.vhost.table.languages">
-            <de><![CDATA[Sprach Zuweisungen]]></de>
+            <de><![CDATA[Sprachzuweisungen]]></de>
             <en><![CDATA[Language assignments]]></en>
+        </locale>
+        <locale name="system.vhost.table.language.noproject.info">
+            <de><![CDATA[Sie müssen ein Projekt auswählen damit Sie Sprachzuweisungen machen können.]]></de>
+            <en><![CDATA[You must select a project so that you can make language assignments.]]></en>
+        </locale>
+        <locale name="system.vhost.table.language.description">
+            <de><![CDATA[
+                Wenn Sie mehrere Sprachen im Projekt haben, können Sie hier die Hosts der weiteren Sprache bestimmen.
+            ]]></de>
+            <en><![CDATA[]]></en>
         </locale>
 
         <locale name="system.vhost.label.domain">
@@ -24,7 +34,6 @@
             <de><![CDATA[HTTPS-Host]]></de>
             <en><![CDATA[HTTPS-Host]]></en>
         </locale>
-
 
     </groups>
 

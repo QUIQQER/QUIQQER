@@ -182,6 +182,7 @@ define([
                 {
                     for ( host in result )
                     {
+
                         entry = result[ host ];
 
                         data.push({

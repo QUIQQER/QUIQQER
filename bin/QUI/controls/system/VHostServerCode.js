@@ -2,6 +2,7 @@
  * VHost control
  * edit and change a vhost entry
  *
+ * @module controls/system/VHostServerCode
  * @author www.pcsg.de (Henning Leutz)
  */
 

@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Gibt die Daten eines Benutzers zurück
+ * Return the vhost data
  *
- * @param String / Integer $uid
+ * @param String $vhost - vhost
  * @return Array
  */
 function ajax_vhosts_get($vhost)

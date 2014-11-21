@@ -187,6 +187,9 @@ define([
                         '<tr>' +
                             '<th colspan="2">' +
                                 Locale.get( lg, 'system.vhost.table.languages' ) +
+                                '<div class="description">'+
+                                    Locale.get( lg, 'system.vhost.table.language.description' ) +
+                                '</div>'+
                             '</th>' +
                         '</th>' +
                     '</thead>' +
@@ -214,7 +217,7 @@ define([
                     self.$ErrorSite.value = 'index.php?'+ Object.toQueryString({
                         project : error[ 0 ],
                         lang    : error[ 1 ],
-                        id      : error[ 2 ],
+                        id      : error[ 2 ]
                     });
                 }
 
@@ -245,17 +248,13 @@ define([
                 }
 
 
-                // get projects langs
-                if ( project )
-                {
-                    self.$loadProjectLangs(function() {
-                        self.Loader.show();
-                    });
+                self.$ProjectInput.addEvent('change', function() {
+                    self.$loadProjectLangs();
+                });
 
-                    return;
-                }
-
-                self.Loader.show();
+                self.$loadProjectLangs(function() {
+                    self.Loader.show();
+                });
 
             }, {
                 vhost : this.getAttribute( 'host' )
@@ -341,14 +340,22 @@ define([
             var self = this,
                 data = JSON.decode( this.$ProjectInput.value );
 
+            // no project
             if ( typeof data[ 0 ] === 'undefined' || !data[ 0 ].project )
             {
                 var TBody = self.$Elm.getElement(
                     '.control-system-vhost-languages tbody'
                 );
 
-                if ( TBody ) {
-                    TBody.set( 'html', '' );
+                if ( TBody )
+                {
+                    TBody.set(
+                        'html',
+
+                        '<tr class="odd"><td>'+
+                            Locale.get( lg, 'system.vhost.table.language.noproject.info' ) +
+                        '<td></tr>'
+                    );
                 }
 
                 if ( typeof callback !== 'undefined' ) {
@@ -358,12 +365,6 @@ define([
                 return;
             }
 
-
-            this.$ProjectInput.addEvents({
-                change : function() {
-                    self.$loadProjectLangs();
-                }
-            });
 
             // get the project langs
             Projects.get( data[ 0 ].project ).getConfig(function(config)
@@ -381,32 +382,46 @@ define([
                 TBody.set( 'html', '' );
 
                 // create the language data
-                var i, len, lang, host;
+                var i, len, lang, host, Row;
 
                 var cssClass  = 'even',
                     vhostData = self.getAttribute( 'data' );
 
                 for ( i = 0, len = langs.length; i < len; i++ )
                 {
-                    if ( data[ 0 ].lang == langs[ i ] ) {
+                    if ( data[ 0 ].lang === langs[ i ] ) {
                         continue;
                     }
 
-                    cssClass = cssClass == 'odd' ? 'even' : 'odd';
+                    cssClass = cssClass === 'odd' ? 'even' : 'odd';
                     lang     = langs[ i ];
                     host     = '';
 
-                    if ( vhostData[ lang ] )  {
-                        host = vhostData[ lang ];
-                    }
-
-                    new Element('tr', {
+                    Row = new Element('tr', {
                         'class' : cssClass,
                         html    : '<td style="width: 150px;">'+ lang +'</td>' +
                                   '<td>' +
-                                      '<input type="text" value="'+ host +'" name="'+ lang +'" />' +
+                                      '<input type="text" value="'+ host +'" name="'+ lang +'" placeholder="http://www.host.tld" />' +
                                   '</td>'
                     }).inject( TBody );
+
+                    // set host
+                    if ( vhostData[ lang ] )
+                    {
+                        Row.getElement( 'input' ).value = vhostData[ lang ];
+                        continue;
+                    }
+
+                    // find host
+                    Ajax.get('ajax_vhosts_getHostByProject', function(result)
+                    {
+                        Row.getElement( 'input' ).value = result;
+                    }.bind( Row ), {
+                        project : JSON.encode({
+                            name : data[ 0 ].project,
+                            lang : lang
+                        })
+                    });
                 }
 
                 if ( typeof callback !== 'undefined' ) {

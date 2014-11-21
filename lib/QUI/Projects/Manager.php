@@ -224,6 +224,42 @@ class Manager
     }
 
     /**
+     * Decode project data
+     * Decode a project json string to a Project or decode a project array to a Project
+     *
+     * @param String|Array $project - project data
+     * @return \QUI\Projects\Project
+     * @throws \QUI\Exception
+     */
+    static function decode($project)
+    {
+        if ( is_string( $project ) ) {
+            $project = json_decode( $project, true );
+        }
+
+        if ( !isset( $project['name'] ) )
+        {
+            throw new \QUI\Exception(
+                'Could not decode project data'
+            );
+        }
+
+        $projectName = $project['name'];
+        $projectLang = false;
+        $projectTpl  = false;
+
+        if ( isset( $project['lang'] ) ) {
+            $projectLang = $project['lang'];
+        }
+
+        if ( isset( $project['template'] ) ) {
+            $projectTpl = $project['template'];
+        }
+
+        return self::getProject( $projectName, $projectLang, $projectTpl );
+    }
+
+    /**
      * Returns the current project
      *
      * @return Project
@@ -260,9 +296,9 @@ class Manager
     /**
      * Returns a project
      *
-     * @param String $project   - Project name
-     * @param String $lang		- Project lang, optional (if not set, the standard language used)
-     * @param String $template  - used templaed, optional (if not set, the standard templaed used)
+     * @param String $project        - Project name
+     * @param String|Bool $lang		 - Project lang, optional (if not set, the standard language used)
+     * @param String|Bool $template  - used template, optional (if not set, the standard templaed used)
      *
      * @return \QUI\Projects\Project
      */

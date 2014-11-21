@@ -74,7 +74,7 @@ define([
         decode : function()
         {
             return JSON.decode({
-                project  : this.getName(),
+                name     : this.getName(),
                 lang     : this.getLang(),
                 template : this.getAttribute('template')
             });
