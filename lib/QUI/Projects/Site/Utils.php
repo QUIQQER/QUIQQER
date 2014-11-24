@@ -21,7 +21,7 @@ class Utils
     /**
      * Prüft ob der Name erlaubt ist
      *
-     * @param unknown_type $name
+     * @param String $name
      * @throws \QUI\Exception
      * @return Bool
      */

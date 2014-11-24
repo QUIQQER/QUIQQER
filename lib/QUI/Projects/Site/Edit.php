@@ -6,11 +6,13 @@
 
 namespace QUI\Projects\Site;
 
-use \QUI\Utils\String as StringUtils;
+use QUI;
 
-use \QUI\Rights\Permission;
-use \QUI\Users\User;
-use \QUI\Groups\Group;
+use QUI\Projects\Site;
+use QUI\Projects\Project;
+use QUI\Rights\Permission;
+use QUI\Users\User;
+use QUI\Groups\Group;
 
 /**
  * Site Objekt für den Adminbereich
@@ -43,7 +45,7 @@ use \QUI\Groups\Group;
  * @event onSave [ \QUI\Projects\Site\Edit ]
  */
 
-class Edit extends \QUI\Projects\Site
+class Edit extends Site
 {
     const ESAVE  = 3;
     const EACCES = 4;
@@ -57,30 +59,29 @@ class Edit extends \QUI\Projects\Site
     /**
      * Konstruktor
      *
-     * @param \QUI\Projects\Project $Project
-     * @param unknown_type $id
+     * @param QUI\Projects\Project $Project
+     * @param Integer $id
      */
-    public function __construct(\QUI\Projects\Project $Project, $id)
+    public function __construct(Project $Project, $id)
     {
         parent::__construct( $Project, $id );
 
         $this->refresh();
 
-        $id       = $this->getId();
-        $DataBase = \QUI::getDataBase();
+        $id = $this->getId();
 
         $this->_marcatefile = VAR_DIR .'marcate/'.
                               $Project->getAttribute( 'name' ) .'_'.
                               $id .'_'. $Project->getAttribute( 'lang' );
 
         // Temp Dir abfragen ob existiert
-        \QUI\Utils\System\File::mkdir( VAR_DIR .'admin/' );
+        QUI\Utils\System\File::mkdir( VAR_DIR .'admin/' );
 
         $this->load();
 
         // onInit event
         $this->Events->fireEvent( 'init', array( $this ) );
-        \QUI::getEvents()->fireEvent( 'siteInit', array( $this ) );
+        QUI::getEvents()->fireEvent( 'siteInit', array( $this ) );
     }
 
     /**
@@ -88,7 +89,7 @@ class Edit extends \QUI\Projects\Site
      */
     public function refresh()
     {
-        $result = \QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch(array(
             'from'  => $this->_TABLE,
             'where' => array(
                 'id' => $this->getId()
@@ -99,7 +100,7 @@ class Edit extends \QUI\Projects\Site
         // Verknüpfung hohlen
         if ( $this->getId() != 1 )
         {
-            $relresult = \QUI::getDataBase()->fetch(array(
+            $relresult = QUI::getDataBase()->fetch(array(
                 'from'  => $this->_RELTABLE,
                 'where' => array(
                     'child' => $this->getId()
@@ -121,8 +122,8 @@ class Edit extends \QUI\Projects\Site
 
         if ( !isset( $result[0] ) )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get( 'quiqqer/system', 'exception.site.not.found' ),
+            throw new QUI\Exception(
+                QUI::getLocale()->get( 'quiqqer/system', 'exception.site.not.found' ),
                 705
             );
         }
@@ -154,7 +155,7 @@ class Edit extends \QUI\Projects\Site
     /**
      * Activate a site
      *
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      */
     public function activate()
     {
@@ -162,15 +163,15 @@ class Edit extends \QUI\Projects\Site
         {
             $this->checkPermission( 'quiqqer.projects.site.edit' );
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get( 'quiqqer/system', 'exception.permissions.edit' )
+            throw new QUI\Exception(
+                QUI::getLocale()->get( 'quiqqer/system', 'exception.permissions.edit' )
             );
         }
 
         $this->Events->fireEvent( 'checkActivate', array( $this ) );
-        \QUI::getEvents()->fireEvent( 'siteCheckActivate', array( $this ) );
+        QUI::getEvents()->fireEvent( 'siteCheckActivate', array( $this ) );
 
         /*
         $release_from = strtotime(
@@ -183,33 +184,42 @@ class Edit extends \QUI\Projects\Site
 
         if ( $release_from && $release_from > time() )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 'Die Seite kann nicht aktiviert werden, da das Datum "Veröffentlichen von" in der Zukunft liegt'
             );
         }
 
         if ( $release_until && $release_until < time() )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 'Die Seite kann nicht aktiviert werden, da das Datum "Veröffentlichen bis" in der Vergangenheit liegt'
             );
         }
         */
 
-        \QUI::getDataBase()->exec(array(
-            'update' => $this->_TABLE,
-            'set'    => array(
-                'active' => 1
-            ),
-            'where'  => array(
-                'id' => $this->getId()
-            )
+        if ( !$this->getAttribute( 'release_from' ) ||
+              $this->getAttribute( 'release_from' ) == '0000-00-00 00:00:00' )
+        {
+            $release_from = date('Y-m-d H:i:s' );
+
+            $this->setAttribute( 'release_from', $release_from );
+        }
+
+        $release_from = $this->getAttribute( 'release_from' );
+        $release_from = date('Y-m-d H:i:s', strtotime( $release_from ) );
+
+
+        QUI::getDataBase()->update($this->_TABLE, array(
+            'active'       => 1,
+            'release_from' => $release_from
+        ), array(
+            'id' => $this->getId()
         ));
 
         $this->setAttribute( 'active', 1 );
 
         $this->Events->fireEvent( 'activate', array( $this ) );
-        \QUI::getEvents()->fireEvent( 'siteActivate', array( $this ) );
+        QUI::getEvents()->fireEvent( 'siteActivate', array( $this ) );
 
         $this->deleteCache();
         $this->getProject()->clearCache();
@@ -218,7 +228,7 @@ class Edit extends \QUI\Projects\Site
     /**
      * Deactivate a site
      *
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      */
     public function deactivate()
     {
@@ -227,20 +237,20 @@ class Edit extends \QUI\Projects\Site
             // Prüfen ob der Benutzer die Seite bearbeiten darf
            $this->checkPermission( 'quiqqer.projects.site.edit' );
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.permissions.edit'
                 )
             );
         }
 
-        \QUI::getEvents()->fireEvent( 'siteCheckDeactivate', array( $this ) );
+        QUI::getEvents()->fireEvent( 'siteCheckDeactivate', array( $this ) );
 
         // deactivate
-        \QUI::getDataBase()->exec(array(
+        QUI::getDataBase()->exec(array(
             'update' => $this->_TABLE,
             'set'    => array(
                 'active' => 0
@@ -258,7 +268,7 @@ class Edit extends \QUI\Projects\Site
 
 
         $this->Events->fireEvent( 'deactivate', array( $this ) );
-        \QUI::getEvents()->fireEvent( 'siteDeactivate', array( $this ) );
+        QUI::getEvents()->fireEvent( 'siteDeactivate', array( $this ) );
     }
 
     /**
@@ -275,19 +285,13 @@ class Edit extends \QUI\Projects\Site
         /**
          * package destroy
          */
-        $Project  = $this->getProject();
-        $packages = \QUI::getPackageManager()->getPackageDatabaseXmlList();
-        $name     = $Project->getName();
-        $lang     = $Project->getLang();
-        $siteType = $this->getAttribute( 'type' );
-
         $dataList = Utils::getDataListForSite( $this );
 
         foreach ( $dataList as $dataEntry )
         {
             $table = $dataEntry[ 'table' ];
 
-            \QUI::getDataBase()->delete($table, array(
+            QUI::getDataBase()->delete($table, array(
                 'id' => $this->getId()
             ));
         }
@@ -296,7 +300,7 @@ class Edit extends \QUI\Projects\Site
         // on destroy event
         $this->Events->fireEvent( 'destroy', array($this) );
 
-        \QUI::getEvents()->fireEvent( 'siteDestroy', array($this) );
+        QUI::getEvents()->fireEvent( 'siteDestroy', array($this) );
 
 
         /**
@@ -304,22 +308,22 @@ class Edit extends \QUI\Projects\Site
          */
 
         // Daten löschen
-        \QUI::getDataBase()->delete($this->_TABLE, array(
+        QUI::getDataBase()->delete($this->_TABLE, array(
             'id' => $this->getId()
         ));
 
         // sich als Kind löschen
-        \QUI::getDataBase()->delete($this->_RELTABLE, array(
+        QUI::getDataBase()->delete($this->_RELTABLE, array(
             'child' => $this->getId()
         ));
 
         // sich als parent löschen
-        \QUI::getDataBase()->delete($this->_RELTABLE, array(
+        QUI::getDataBase()->delete($this->_RELTABLE, array(
             'parent' => $this->getId()
         ));
 
         // Rechte löschen
-        $Manager = \QUI::getPermissionManager();
+        $Manager = QUI::getPermissionManager();
         $Manager->removeSitePermissions( $this );
 
         // Cache löschen
@@ -329,7 +333,8 @@ class Edit extends \QUI\Projects\Site
     /**
      * Saves the site
      *
-     * @throws \QUI\Exception
+     * @param QUI\Users\User|Bool $User - [optional] User to save
+     * @throws QUI\Exception
      */
     public function save($User=false)
     {
@@ -338,10 +343,10 @@ class Edit extends \QUI\Projects\Site
             // Prüfen ob der Benutzer die Seite bearbeiten darf
             $this->checkPermission( 'quiqqer.projects.site.edit', $User );
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.permissions.edit'
                 )
@@ -354,17 +359,17 @@ class Edit extends \QUI\Projects\Site
         {
             try
             {
-                $User = \QUI::getUsers()->get( $mid );
+                $User = QUI::getUsers()->get( (int)$mid );
 
-            } catch ( \QUI\Exception $Exception )
+            } catch ( QUI\Exception $Exception )
             {
 
             }
 
             if ( isset( $User ) )
             {
-                throw new \QUI\Exception(
-                    \QUI::getLocale()->get(
+                throw new QUI\Exception(
+                    QUI::getLocale()->get(
                         'quiqqer/system',
                         'exception.site.is.being.edited.user',
                         array(
@@ -375,8 +380,8 @@ class Edit extends \QUI\Projects\Site
                 );
             }
 
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.site.is.being.edited'
                 ),
@@ -387,10 +392,10 @@ class Edit extends \QUI\Projects\Site
         // check the name, unallowed signs?
         $name = $this->getAttribute( 'name' );
 
-        \QUI\Projects\Site\Utils::checkName( $name );
+        QUI\Projects\Site\Utils::checkName( $name );
 
 
-        /* @var $Project \QUI\Projects\Project */
+        /* @var $Project QUI\Projects\Project */
         $Project = $this->getProject();
 
         // check if a name in the same level exists
@@ -401,12 +406,12 @@ class Edit extends \QUI\Projects\Site
 
             foreach ( $parent_ids as $pid )
             {
-                $Parent = new \QUI\Projects\Site\Edit( $Project, $pid );
+                $Parent = new QUI\Projects\Site\Edit( $Project, $pid );
 
                 if ( $Parent->existNameInChildren( $name ) > 1 )
                 {
-                    throw new \QUI\Exception(
-                        \QUI::getLocale()->get(
+                    throw new QUI\Exception(
+                        QUI::getLocale()->get(
                             'quiqqer/system',
                             'exception.site.same.name',
                             array(
@@ -447,14 +452,20 @@ class Edit extends \QUI\Projects\Site
         $release_from = '';
         $release_to   = '';
 
-        if ( $this->getAttribute( 'release_from' ) )
+        if ( $this->getAttribute( 'release_from' ) &&
+             $this->getAttribute( 'release_from' ) != '0000-00-00 00:00:00' )
         {
             $rf = strtotime( $this->getAttribute( 'release_from' ) );
 
             if ( $rf ) {
                 $release_from = date('Y-m-d H:i:s', $rf);
             }
+
+        } else if ( $this->getAttribute( 'active' ) )
+        {
+            $release_from = date('Y-m-d H:i:s', strtotime( $this->getAttribute( 'e_date' ) ) );
         }
+
 
         if ( $this->getAttribute( 'release_to' ) )
         {
@@ -474,7 +485,7 @@ class Edit extends \QUI\Projects\Site
         }
 
         // save main data
-        $update = \QUI::getDataBase()->update(
+        $update = QUI::getDataBase()->update(
             $this->_TABLE,
             array(
                 'name'     => $this->getAttribute( 'name' ),
@@ -483,7 +494,7 @@ class Edit extends \QUI\Projects\Site
                 'content'  => $this->getAttribute( 'content' ),
                 'type' 	   => $this->getAttribute( 'type' ),
                 'nav_hide' => $this->getAttribute( 'nav_hide' ) ? 1 : 0,
-                'e_user'   => \QUI::getUserBySession()->getId(),
+                'e_user'   => QUI::getUserBySession()->getId(),
 
                 // ORDER
                 'order_type'  => $order_type,
@@ -524,7 +535,7 @@ class Edit extends \QUI\Projects\Site
                  $data[ $siteAttribute ] = $this->getAttribute( $attributeSuffix . $siteAttribute );
             }
 
-            $result = \QUI::getDataBase()->fetch(array(
+            $result = QUI::getDataBase()->fetch(array(
                 'from'  => $table,
                 'where' => array(
                     'id' => $this->getId()
@@ -534,12 +545,12 @@ class Edit extends \QUI\Projects\Site
 
             if ( !isset( $result[ 0 ] ) )
             {
-                \QUI::getDataBase()->insert($table, array(
+                QUI::getDataBase()->insert($table, array(
                     'id' => $this->getId()
                 ));
             }
 
-            \QUI::getDataBase()->update($table, $data, array(
+            QUI::getDataBase()->update($table, $data, array(
                 'id' => $this->getId()
             ));
         }
@@ -559,13 +570,13 @@ class Edit extends \QUI\Projects\Site
 
         // on save event
         $this->Events->fireEvent( 'save', array($this) );
-        \QUI::getEvents()->fireEvent( 'siteSave', array($this) );
+        QUI::getEvents()->fireEvent( 'siteSave', array($this) );
 
 
         if ( $update )
         {
-            \QUI::getMessagesHandler()->addSuccess(
-                \QUI::getLocale()->get(
+            QUI::getMessagesHandler()->addSuccess(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'message.site.save.success',
                     array(
@@ -579,8 +590,8 @@ class Edit extends \QUI\Projects\Site
             return true;
         }
 
-        throw new \QUI\Exception(
-            \QUI::getLocale()->get(
+        throw new QUI\Exception(
+            QUI::getLocale()->get(
                 'quiqqer/system',
                 'exception.site.save.error'
             ),
@@ -594,6 +605,7 @@ class Edit extends \QUI\Projects\Site
      *
      * @param Integer $pid - Parent - ID
      * @param array $params
+     * @return Array
      */
     public function getChildrenIdsFromParentId($pid, $params=array())
     {
@@ -610,7 +622,7 @@ class Edit extends \QUI\Projects\Site
         } elseif (isset($params['where']) && is_string($params['where']))
         {
             // @todo where als param String
-            \QUI\System\Log::write('WIRD NICHT verwendet'. $params['where'], 'error');
+            QUI\System\Log::write('WIRD NICHT verwendet'. $params['where'], 'error');
             $where = $where_1;
         } else
         {
@@ -630,7 +642,7 @@ class Edit extends \QUI\Projects\Site
             }
         }
 
-        $result = \QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch(array(
             'select' => $this->_TABLE .'.id',
             'count'  => isset($params['count']) ? 'count' : false,
             'from' 	 => array(
@@ -662,7 +674,7 @@ class Edit extends \QUI\Projects\Site
                   `{$this->_TABLE}`.`deleted` = 0
         ";
 
-        $PDO   = \QUI::getDataBase()->getPDO();
+        $PDO   = QUI::getDataBase()->getPDO();
         $Stmnt = $PDO->prepare( $query );
 
         $Stmnt->bindValue( ':name', $name, \PDO::PARAM_STR );
@@ -720,7 +732,7 @@ class Edit extends \QUI\Projects\Site
         /*
         $this->Events->fireEvent( 'getChildren', array( $this, $params ) );
 
-        \QUI::getEvents()->fireEvent( 'getChildren', array( $this, $params ) );
+        QUI::getEvents()->fireEvent( 'getChildren', array( $this, $params ) );
         */
 
         // if active = '0&1', project -> getchildren returns all children
@@ -735,7 +747,7 @@ class Edit extends \QUI\Projects\Site
         {
             foreach ( $result as $id )
             {
-                $child      = new \QUI\Projects\Site\Edit( $Project, (int)$id );
+                $child      = new Edit( $Project, (int)$id );
                 $children[] = $child;
             }
         }
@@ -760,7 +772,7 @@ class Edit extends \QUI\Projects\Site
 
         $id = (int)$id;
 
-        $result = \QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch(array(
             'from' 	=> $this->_RELLANGTABLE,
             'where' => array(
                 $p_lang => $this->getId()
@@ -770,7 +782,7 @@ class Edit extends \QUI\Projects\Site
 
         if ( isset( $result[0] ) )
         {
-             return \QUI::getDataBase()->exec(array(
+             return QUI::getDataBase()->exec(array(
                 'update' => $this->_RELLANGTABLE,
                 'set'    => array(
                      $lang => $id
@@ -781,7 +793,7 @@ class Edit extends \QUI\Projects\Site
             ));
         }
 
-        return \QUI::getDataBase()->exec(array(
+        return QUI::getDataBase()->exec(array(
             'insert' => $this->_RELLANGTABLE,
             'set'    => array(
                 $p_lang => $this->getId(),
@@ -802,7 +814,7 @@ class Edit extends \QUI\Projects\Site
 
         $Project = $this->getProject();
 
-        return \QUI::getDataBase()->exec(array(
+        return QUI::getDataBase()->exec(array(
             'update' => $this->_RELLANGTABLE,
             'set'    => array(
                  $lang => 0
@@ -817,21 +829,19 @@ class Edit extends \QUI\Projects\Site
      * Erstellt ein neues Kind
      *
      * @param array $params
-     * @param Bool|\QUI\Users\User|\QUI\Users\SystemUser $User - the user which create the site, optional
+     * @param Bool|QUI\Users\User|QUI\Users\SystemUser $User - the user which create the site, optional
      *
      * @return Int
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      */
     public function createChild($params=array(), $User=false)
     {
         if ( $User == false ) {
-            $User = \QUI::getUserBySession();
+            $User = QUI::getUserBySession();
         }
 
         $this->checkPermission( 'quiqqer.projects.site.new' );
 
-
-        $Project = $this->getProject();
 
         //$newid    = $Project->getNewId();
         $new_name = 'Neue Seite';
@@ -854,11 +864,11 @@ class Edit extends \QUI\Projects\Site
         }
 
         if ( $this->existNameInChildren( $new_name ) ) {
-            throw new \QUI\Exception( 'Name exist', 703 );
+            throw new QUI\Exception( 'Name exist', 703 );
         }
 
         // can we use this name?
-        \QUI\Projects\Site\Utils::checkName( $new_name );
+        QUI\Projects\Site\Utils::checkName( $new_name );
 
 
 
@@ -871,7 +881,7 @@ class Edit extends \QUI\Projects\Site
             'e_user' => $User->getId(),
             'c_user' => $User->getId(),
 
-            'c_user_ip'   => \QUI\Utils\System::getClientIP(),
+            'c_user_ip'   => QUI\Utils\System::getClientIP(),
             'order_field' => $childCount + 1
         );
 
@@ -887,7 +897,7 @@ class Edit extends \QUI\Projects\Site
             $_params['content'] = $params['content'];
         }
 
-        $DataBase = \QUI::getDataBase();
+        $DataBase = QUI::getDataBase();
         $DataBase->insert( $this->_TABLE , $_params );
 
         $newId = $DataBase->getPDO()->lastInsertId();
@@ -899,10 +909,10 @@ class Edit extends \QUI\Projects\Site
 
         // Aufruf der createChild Methode im TempSite - für den Adminbereich
         $this->Events->fireEvent('createChild', array($newId, $this));
-        \QUI::getEvents()->fireEvent( 'siteCreateChild', array($newId, $this) );
+        QUI::getEvents()->fireEvent( 'siteCreateChild', array($newId, $this) );
 
         // copy permissions to the child
-        $PermManager    = \QUI::getPermissionManager();
+        $PermManager    = QUI::getPermissionManager();
         $permissions    = $PermManager->getSitePermissions( $this );
         $newPermissions = array();
 
@@ -943,7 +953,7 @@ class Edit extends \QUI\Projects\Site
 
         if ( !in_array($pid, $children) && $pid != $this->getId() )
         {
-            \QUI::getDataBase()->update(
+            QUI::getDataBase()->update(
                 $this->_RELTABLE,
                 array('parent' => $Parent->getId()),
                 'child = '. $this->getId() .' AND oparent IS NULL'
@@ -962,8 +972,8 @@ class Edit extends \QUI\Projects\Site
      * Kopiert die Seite
      *
      * @param Integer $pid - ID des Parents unter welches die Kopie eingehängt werden soll
-     *
      * @return Bool
+     * @throws QUI\Exception
      *
      * @todo Rekursiv kopieren
      */
@@ -973,8 +983,8 @@ class Edit extends \QUI\Projects\Site
         $this->checkPermission( 'quiqqer.projects.site.edit' );
 
         $Project   = $this->getProject();
-        $Parent    = new \QUI\Projects\Site\Edit( $Project, (int)$pid );
-        $attribues = $this->getAllAttributes();
+        $Parent    = new QUI\Projects\Site\Edit( $Project, (int)$pid );
+        $attribues = $this->getAttributes();
 
         // Prüfen ob es eine Seite mit dem gleichen Namen im Parent schon gibt
         try
@@ -982,7 +992,7 @@ class Edit extends \QUI\Projects\Site
             $Child = $Parent->getChildIdByName(
                 $this->getAttribute('name')
             );
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
             // es wurde kein Kind gefunden
             $Child  = false;
@@ -1000,7 +1010,7 @@ class Edit extends \QUI\Projects\Site
             }
 
             // Es wurde ein Kind gefunde
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 'Eine Seite mit dem Namen '. $this->getAttribute('name') .' befindet sich schon unter '. $path
             );
         }
@@ -1012,12 +1022,12 @@ class Edit extends \QUI\Projects\Site
         ));
 
         // Erstmal Seitentyp setzn
-        $Site = new \QUI\Projects\Site\Edit( $Project, (int)$site_id );
+        $Site = new QUI\Projects\Site\Edit( $Project, (int)$site_id );
         $Site->setAttribute( 'type', $this->getAttribute('type') );
         $Site->save( false );
 
         // Alle Attribute setzen
-        $Site = new \QUI\Projects\Site\Edit( $Project, (int)$site_id );
+        $Site = new QUI\Projects\Site\Edit( $Project, (int)$site_id );
 
         foreach ( $attribues as $key => $value ) {
             $Site->setAttribute( $key, $value );
@@ -1032,6 +1042,8 @@ class Edit extends \QUI\Projects\Site
      * Erstellt eine Verknüpfung
      *
      * @param Int $pid
+     * @return Bool
+     * @throws QUI\Exception
      */
     public function linked($pid)
     {
@@ -1040,19 +1052,18 @@ class Edit extends \QUI\Projects\Site
         $table = $Project->getAttribute('name') .'_'.
                  $Project->getAttribute('lang') .'_sites_relations';
 
-        $NewParent = new \QUI\Projects\Site\Edit($Project, (int)$pid);
-        $Parent    = $this->getParent();
+        $Parent = $this->getParent();
 
         // Prüfen ob die Seite schon in dem Parent ist
-        if ($Parent->getId() == $pid)
+        if ( $Parent->getId() == $pid )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 'Es kann keine Verknüpfung in dieser Ebene erstellt werden,
                 da eine Verknüpfung oder die original Seite bereits in dieser Ebene existiert', 703
             );
         }
 
-        $links = \QUI::getDataBase()->fetch(array(
+        $links = QUI::getDataBase()->fetch(array(
             'from'  => $table,
             'where' => array(
                 'child' => $this->getId()
@@ -1063,14 +1074,14 @@ class Edit extends \QUI\Projects\Site
         {
             if ( $entry['parent'] == $pid )
             {
-                throw new \QUI\Exception(
+                throw new QUI\Exception(
                     'Es kann keine Verknüpfung in dieser Ebene erstellt werden,
                     da eine Verknüpfung oder die original Seite bereits in dieser Ebene existiert', 703
                 );
             }
         }
 
-        return \QUI::getDataBase()->insert($table, array(
+        return QUI::getDataBase()->insert($table, array(
             'parent'  => $pid,
             'child'   => $this->getId(),
             'oparent' => $Parent->getId()
@@ -1083,6 +1094,7 @@ class Edit extends \QUI\Projects\Site
      * @param Integer $pid - Parent ID
      * @param Integer $all - Alle Verknüpfungen und Original Seite löschen
      * @param Bool $orig   - Delete the original site, too
+     * @return Bool
      *
      * @todo refactor -> use PDO
      */
@@ -1092,12 +1104,12 @@ class Edit extends \QUI\Projects\Site
 
         $Project  = $this->getProject();
         $Parent   = $this->getParent();
-        $DataBase = \QUI::getDataBase();
+        $DataBase = QUI::getDataBase();
 
         $table = $Project->getAttribute('name') .'_'.
                  $Project->getAttribute('lang') .'_sites_relations';
 
-        if ( \QUI\Utils\Bool::JSBool( $value ) )
+        if ( QUI\Utils\Bool::JSBool( $value ) )
         {
             // Seite löschen
             $this->delete();
@@ -1162,7 +1174,7 @@ class Edit extends \QUI\Projects\Site
         $link_cache_dir  = VAR_DIR .'cache/links/'. $Project->getAttribute('name') .'/';
         $link_cache_file = $link_cache_dir . $this->getId() .'_'. $Project->getAttribute('name') .'_'. $Project->getAttribute('lang');
 
-        \QUI\Utils\System\File::mkdir( $link_cache_dir );
+        QUI\Utils\System\File::mkdir( $link_cache_dir );
 
         file_put_contents( $link_cache_file, URL_DIR . $this->getUrlRewrited() );
     }
@@ -1183,12 +1195,12 @@ class Edit extends \QUI\Projects\Site
 
         $uid = file_get_contents( $this->_marcatefile );
 
-        if ( \QUI::getUserBySession()->getId() == $uid ) {
+        if ( QUI::getUserBySession()->getId() == $uid ) {
             return false;
         }
 
         $time = time() - filemtime( $this->_marcatefile );
-        $max_life_time = \QUI::conf('session', 'max_life_time');
+        $max_life_time = QUI::conf('session', 'max_life_time');
 
         if ( $time > $max_life_time )
         {
@@ -1209,7 +1221,7 @@ class Edit extends \QUI\Projects\Site
             return;
         }
 
-        file_put_contents( $this->_marcatefile, \QUI::getUserBySession()->getId() );
+        file_put_contents( $this->_marcatefile, QUI::getUserBySession()->getId() );
     }
 
     /**
@@ -1229,7 +1241,7 @@ class Edit extends \QUI\Projects\Site
      */
     public function demarcateWithRights()
     {
-        if ( !\QUI::getUserBySession()->isSU() ) {
+        if ( !QUI::getUserBySession()->isSU() ) {
             return;
         }
 
@@ -1256,8 +1268,8 @@ class Edit extends \QUI\Projects\Site
     /**
      * add an group to the permission
      *
-     * @param unknown $permission
      * @param Group $Group
+     * @param String $permission
      */
     public function addgroupToPermission(Group $Group, $permission)
     {
@@ -1278,8 +1290,8 @@ class Edit extends \QUI\Projects\Site
     /**
      * Remove a group from the permission
      *
+     * @param Group $Group
      * @param String $permission - name of the permission
-     * @param User $User - User Object
      */
     public function removeGroupFromSitePermission(Group $Group, $permission)
     {
@@ -1294,25 +1306,25 @@ class Edit extends \QUI\Projects\Site
      * Säubert eine URL macht sie schön
      *
      * @param String $url
-     * @param \QUI\Projects\Project $Project - Project clear extension
+     * @param QUI\Projects\Project $Project - Project clear extension
      * @return String
-     * @deprecated use \QUI\Projects\Site\Utils::clearUrl
+     * @deprecated use QUI\Projects\Site\Utils::clearUrl
      */
-    static function clearUrl($url, \QUI\Projects\Project $Project)
+    static function clearUrl($url, QUI\Projects\Project $Project)
     {
-        return \QUI\Projects\Site\Utils::clearUrl( $url, $Project );
+        return QUI\Projects\Site\Utils::clearUrl( $url, $Project );
     }
 
     /**
      * Prüft ob der Name erlaubt ist
      *
-     * @param unknown_type $name
+     * @param String $name
      * @throws \QUI\Exception
      * @return Bool
      * @deprecated use \QUI\Projects\Site\Utils::checkName
      */
     static function checkName($name)
     {
-        return \QUI\Projects\Site\Utils::checkName( $name );
+        return QUI\Projects\Site\Utils::checkName( $name );
     }
 }

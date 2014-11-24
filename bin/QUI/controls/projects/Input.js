@@ -16,13 +16,14 @@ define('controls/projects/Input', [
 
     'qui/controls/Control',
     'qui/controls/buttons/Button',
+    'qui/utils/Elements',
     'controls/projects/project/Entry',
     'Ajax',
     'Locale',
 
     'css!controls/projects/Input.css'
 
-], function(QUIControl, QUIButton, ProjectEntry, Ajax, Locale)
+], function(QUIControl, QUIButton, ElementUtils, ProjectEntry, Ajax, Locale)
 {
     "use strict";
 
@@ -231,7 +232,8 @@ define('controls/projects/Input', [
                 styles : {
                     display : '',
                     top     : this.$Input.getPosition().y + this.$Input.getSize().y,
-                    left    : this.$Input.getPosition().x
+                    left    : this.$Input.getPosition().x,
+                    zIndex  : ElementUtils.getComputedZIndex( this.$Input )
                 }
             });
 

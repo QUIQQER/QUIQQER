@@ -1,4 +1,13 @@
 {
-  "evil": true,
-  "strict": true
+    "evil"     : true,
+    "strict"   : true,
+    "undef"    : true,
+    "unused"   : true,
+    "mootools" : true,
+    "browser"  : true,
+
+    "predef"  : [
+        "define",
+        "URL_DIR", "URL_BIN_DIR", "URL_OPT_DIR"
+    ]
 }

@@ -6,7 +6,8 @@
 
 namespace QUI\Projects;
 
-use \QUI\Utils\String as StringUtils;
+use QUI;
+use QUI\Utils\String as StringUtils;
 
 /**
  * Site Objekt - eine einzelne Seite
@@ -1031,7 +1032,9 @@ class Site extends \QUI\QDOM
     /**
      * Gibt ein Kind zurück welches den Namen hat
      *
-     * @param unknown_type $name
+     * @param String $name
+     * @return Integer
+     * @throws QUI\Exception
      */
     public function getChildIdByName($name)
     {
@@ -1578,31 +1581,7 @@ class Site extends \QUI\QDOM
         /**
          *  Plugins Tabellen löschen
          */
-        $Plugins = $this->_getLoadedPlugins();
-        $Project = $this->getProject();
-
         $DataBase = \QUI::getDataBase();
-
-        foreach ( $Plugins as $Plugin )
-        {
-            if ( method_exists( $Plugin, 'onDestroy' ) )
-            {
-                try
-                {
-                    $Plugin->onDestroy( $this, $Project, $DataBase );
-                } catch ( \QUI\Exception $e )
-                {
-                    \QUI\System\Log::writeException( $e );
-                }
-            }
-
-            // Falls im AdminPlugin noch was gesetzt wurde
-            $AdminPlugin = $Plugin->getAdminPlugin();
-
-            if ( method_exists( $AdminPlugin, 'onDestroy' ) ) {
-                $plugins->onDestroy( $this, $Project, $DataBase );
-            }
-        }
 
         // Daten löschen
         $DataBase->exec(array(
@@ -1658,7 +1637,7 @@ class Site extends \QUI\QDOM
      */
     public function deleteCache()
     {
-        \QUI\Cache\Manager::clear( $this->_CACHENAME );
+        QUI\Cache\Manager::clear( $this->_CACHENAME );
     }
 
     /**
@@ -1666,19 +1645,19 @@ class Site extends \QUI\QDOM
      */
     public function createCache()
     {
-        \QUI\Cache\Manager::set( $this->_CACHENAME, $this->encode() );
+        QUI\Cache\Manager::set( $this->_CACHENAME, $this->encode() );
     }
 
     /**
      * Shortcut for \QUI\Rights\Permission::hasSitePermission
      *
      * @param string $permission - name of the permission
-     * @param \QUI\Users\User $User - optional
+     * @param QUI\Users\User|Bool $User - optional
      * @return Bool|Integer
      */
     public function hasPermission($permission, $User=false)
     {
-        return \QUI\Rights\Permission::hasSitePermission(
+        return QUI\Rights\Permission::hasSitePermission(
             $permission,
             $this,
             $User
@@ -1689,12 +1668,12 @@ class Site extends \QUI\QDOM
      * Shortcut for \QUI\Rights\Permission::checkSitePermission
      *
      * @param string $permission - name of the permission
-     * @param \QUI\Users\User $User - optional
-     * @throws \QUI\Exception
+     * @param QUI\Users\User|Bool $User - optional
+     * @throws QUI\Exception
      */
     public function checkPermission($permission, $User=false)
     {
-        \QUI\Rights\Permission::checkSitePermission(
+        QUI\Rights\Permission::checkSitePermission(
             $permission,
             $this,
             $User

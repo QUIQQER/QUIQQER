@@ -6,10 +6,10 @@
 
 namespace QUI\Rights;
 
-use \QUI\System\Log;
-use \QUI\Projects\Project;
-use \QUI\Users\User;
-use \QUI\Groups\Group;
+use QUI;
+use QUI\Projects\Project;
+use QUI\Users\User;
+use QUI\Groups\Group;
 
 /**
  * Provides methods for quick rights checking
@@ -21,7 +21,6 @@ use \QUI\Groups\Group;
  * all methods with get return the permission entries
  *
  * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.rights
  */
 
 class Permission
@@ -29,7 +28,7 @@ class Permission
     /**
      * Checks, if the user is an admin user
      *
-     * @param \QUI\Users\User|false $User - optional
+     * @param \QUI\Users\User|Bool $User - optional
      * @return Bool
      */
     static function isAdmin($User=false)
@@ -53,7 +52,7 @@ class Permission
     /**
      * Prüft den Benutzer auf SuperUser
      *
-     * @param \QUI\Users\User|false $User - optional
+     * @param \QUI\Users\User|Bool $User - optional
      * @return Bool
      */
     static function isSU($User=false)
@@ -187,10 +186,9 @@ class Permission
      * @param array $permissions - list of permissions
      * @param String $perm
      * @param  $User
+     * @return Bool
      *
      * @throws \QUI\Exception
-     *
-     * @return boolean
      */
     static function checkPermissionList($permissions, $perm, $User=false)
     {
@@ -481,8 +479,9 @@ class Permission
      * Checks if the User have the permission of the Site
      *
      * @param String $perm
-     * @param unknown_type $Site
+     * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
      * @param \QUI\Users\User|false $User - optional
+     * @return Bool
      *
      * @throws \QUI\Exception
      */

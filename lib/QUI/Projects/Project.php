@@ -1349,7 +1349,7 @@ class Project
     /**
      * Setzt das letzte Editierungsdatum
      *
-     * @param unknown_type $date
+     * @param Integer $date
      */
     public function setEditDate($date)
     {
