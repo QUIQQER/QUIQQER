@@ -197,7 +197,7 @@ class Media extends \QUI\QDOM
      * Return a media object
      *
      * @param Integer $id - media id
-     * @return \QUI\Projects\Media\Item
+     * @return \QUI\Projects\Media\Item|\QUI\Projects\Media\Image|\QUI\Projects\Media\File
      * @throws \QUI\Exception
      */
     public function get($id)

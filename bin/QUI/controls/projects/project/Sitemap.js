@@ -14,9 +14,10 @@
  * @require Ajax
  * @require Locale
  * @require Clipboard
+ * @require utils/Site
  */
 
-define([
+define('controls/projects/project/Sitemap', [
 
     'qui/controls/Control',
     'qui/controls/sitemap/Map',
@@ -146,7 +147,7 @@ define([
          * Create the DOMNode of the sitemap
          *
          * @method controls/projects/project/Sitemap#create
-         * @return {DOMNode} Main DOM-Node Element
+         * @return {HTMLElement} Main DOM-Node Element
          */
         create : function()
         {
@@ -193,7 +194,7 @@ define([
 
             if ( this.getAttribute( 'id' ) === false )
             {
-                this.$getFirstChild(function(result, Request)
+                this.$getFirstChild(function(result)
                 {
                     self.$Map.clearChildren();
 
@@ -238,7 +239,7 @@ define([
 
             this.$getSite(
                 this.getAttribute( 'id' ),
-                function(result, Request)
+                function(result)
                 {
                     self.$Map.clearChildren();
 
@@ -256,7 +257,7 @@ define([
          * Open the Sitemap to the specific id
          *
          * @method controls/projects/project/Sitemap#openSite
-         * @param {Integer} id - Site ID
+         * @param {integer} id - Site ID
          */
         openSite : function(id)
         {
@@ -276,8 +277,7 @@ define([
             // if not exist, search the path
             Ajax.get('ajax_site_path', function(result, Request)
             {
-                var i, len, items;
-
+                var items;
                 var Map = self.getMap();
 
                 result.push( Request.getAttribute( 'id' ) );
@@ -290,7 +290,7 @@ define([
                     return;
                 }
 
-                var open_event = function(SitemapItem)
+                var open_event = function()
                 {
                     var i, id, len, items;
 
@@ -404,7 +404,7 @@ define([
          * Get the attributes from a site
          *
          * @method controls/projects/project/Sitemap#$getSite
-         * @param {Integer} id - Seiten ID
+         * @param {integer} id - Seiten ID
          * @param {Function} callback - call back function, if ajax is finish
          *
          * @private
@@ -541,7 +541,7 @@ define([
                         icon   : 'icon-copy',
                         events :
                         {
-                            onClick : function(ContextItem, event)
+                            onClick : function()
                             {
                                 Clipboard.set({
                                     project  : self.getAttribute( 'project' ),
@@ -560,7 +560,7 @@ define([
                         icon   : 'icon-cut',
                         events :
                         {
-                            onClick : function(ContextItem, event)
+                            onClick : function()
                             {
                                 Clipboard.set({
                                     project  : self.getAttribute( 'project' ),
@@ -582,7 +582,7 @@ define([
                         icon   : 'icon-paste',
                         events :
                         {
-                            onClick : function(ContextItem, event) {
+                            onClick : function() {
                                 self.$pasteSite( Itm );
                             }
                         }
@@ -595,7 +595,7 @@ define([
                         icon   : 'icon-paste',
                         events :
                         {
-                            onClick : function(ContextItem, event) {
+                            onClick : function() {
                                 self.$linkSite( Itm );
                             }
                         }
@@ -609,12 +609,12 @@ define([
                         icon   : 'icon-file-text fa fa-file-text',
                         events :
                         {
-                            onClick : function(ContextItem, event)
+                            onClick : function()
                             {
                                 self.$createChild({
                                     project : self.getAttribute( 'project' ),
                                     lang    : self.getAttribute( 'lang' ),
-                                    id      : Itm.getAttribute( 'value' ),
+                                    id      : Itm.getAttribute( 'value' )
                                 });
                             }
                         }
@@ -703,7 +703,7 @@ define([
 
             this.fireEvent( 'openBegin', [ Item, this ] );
 
-            this.$loadChildren(Item, function(Item, Request) {
+            this.$loadChildren(Item, function(Item) {
                 self.fireEvent( 'openEnd', [ Item, self ] );
             });
         },
@@ -800,8 +800,7 @@ define([
 
             var self    = this,
                 Project = Projects.get( data.project, data.lang ),
-                Site    = Project.get( data.id ),
-                Item    = data.Item;
+                Site    = Project.get( data.id );
 
             Site.linked( NewParentItem.getAttribute('value'), function()
             {
@@ -881,9 +880,8 @@ define([
          *
          * @param {classes/projects/Project} Project - Project of the Site that are changed
          * @param {classes/projects/project/Site} Site - Site that create the child
-         * @param {Integer} newid - new child id
          */
-        onSiteCreate : function(Project, Site, newid)
+        onSiteCreate : function(Project, Site)
         {
             if ( !this.$Map ) {
                 return;
@@ -912,7 +910,7 @@ define([
          * event - on site delete
          *
          * @param {classes/projects/Project} Project - Project of the Site that are changed
-         * @param {Integer} siteid - siteid that are deleted
+         * @param {integer} siteid - siteid that are deleted
          */
         onSiteDelete : function(Project, siteid)
         {

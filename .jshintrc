@@ -7,7 +7,7 @@
     "browser"  : true,
 
     "predef"  : [
-        "define",
+        "define", "require",
         "URL_DIR", "URL_BIN_DIR", "URL_OPT_DIR"
     ]
 }

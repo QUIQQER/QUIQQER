@@ -159,9 +159,9 @@ define('controls/projects/project/site/Search', [
 
             this.$Grid.addEvent('onDblClick', function(data)
             {
-                var data    = data.target.getDataByRow( data.row ),
-                    siteId  = data.id,
+                data = data.target.getDataByRow( data.row );
 
+                var siteId  = data.id,
                     projectData = data.project;
 
 
@@ -291,5 +291,4 @@ define('controls/projects/project/site/Search', [
             new SitePanel( Site ).inject( this.getParent() );
         }
     });
-
 });

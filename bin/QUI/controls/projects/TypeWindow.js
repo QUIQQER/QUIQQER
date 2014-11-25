@@ -1,17 +1,18 @@
+
 /**
  * The type window for the project
  *
  * The type window create a qui/controls/windows/Confirm
  * with all available types for the project
  *
+ * @module controls/projects/TypeWindow
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires controls/Control
- * @requires controls/sitemap/Map
- * @requires controls/sitemap/Item
- * @requires controls/projects/TypeSitemap
- *
- * @module controls/projects/TypeSitemap
+ * @require qui/controls/windows/Confirm
+ * @require qui/controls/sitemap/Map
+ * @require qui/controls/sitemap/Item
+ * @require controls/projects/TypeSitemap
+ * @require Locale
  */
 
 define('controls/projects/TypeWindow', [
@@ -48,6 +49,7 @@ define('controls/projects/TypeWindow', [
         options : {
             multible : false,
             project  : false,
+            pluginsSelectable : false,
 
             title     : Locale.get( 'quiqqer/system', 'projects.typewindow.title' ),
             icon      : 'icon-magic',
@@ -72,7 +74,6 @@ define('controls/projects/TypeWindow', [
          * Create the Window with a type sitemap
          *
          * @method controls/projects/TypeWindow#create
-         * @return {DOMNode}
          */
         $onOpen : function()
         {
@@ -93,9 +94,10 @@ define('controls/projects/TypeWindow', [
 
             require(['controls/projects/TypeSitemap'], function(TyeSitemap)
             {
-                self.$Sitemap = new TyeSitemap(SitemapBody, {
+                self.$Sitemap = new TyeSitemap({
                     project  : self.getAttribute( 'project' ),
-                    multible : self.getAttribute( 'multible' )
+                    multible : self.getAttribute( 'multible' ),
+                    pluginsSelectable : self.getAttribute( 'pluginsSelectable' )
                 }).inject( SitemapBody );
 
                 self.$Sitemap.open();

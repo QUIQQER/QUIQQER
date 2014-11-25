@@ -1,17 +1,18 @@
+
 /**
  * The type sitemap for the project
  *
  * The type sitemap displays / create a qui/controls/sitemap/Map
  * with all available types for the project
  *
+ * @module controls/projects/TypeSitemap
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires controls/Control
- * @requires controls/sitemap/Map
- * @requires controls/sitemap/Item
- *
- * @module controls/projects/TypeSitemap
- * @package com.pcsg.quiqqer
+ * @require qui/controls/Control
+ * @require qui/controls/sitemap/Map
+ * @require qui/controls/sitemap/Item
+ * @require Ajax
+ * @require Locale
  */
 
 define('controls/projects/TypeSitemap', [
@@ -37,7 +38,7 @@ define('controls/projects/TypeSitemap', [
      * @fires onItemClick
      * @fires onItemDblClick
      *
-     * @param {DOMNode} Container
+     * @param {HTMLElement} Container
      * @param {Object} options
      *
      * @memberof! <global>
@@ -49,7 +50,8 @@ define('controls/projects/TypeSitemap', [
 
         options : {
             multible : false,
-            project  : false
+            project  : false,
+            pluginsSelectable : false
         },
 
         Binds : [
@@ -68,12 +70,10 @@ define('controls/projects/TypeSitemap', [
         /**
          * return the domnode
          *
-         * @return {DOMNode}
+         * @return {HTMLElement}
          */
         create : function()
         {
-            var self = this;
-
             this.$Map = new QUISitemap({
                 name     : 'Type-Sitemap',
                 multible : this.getAttribute('multible')
@@ -138,9 +138,13 @@ define('controls/projects/TypeSitemap', [
 
                 var c, i, len, data, icon, Plugin;
 
-                var func_itm_click = function(Itm, event)
+                var func_itm_click = function(Itm)
                 {
                     Itm.open();
+
+                    if ( self.getAttribute( 'pluginsSelectable' ) ) {
+                        return;
+                    }
 
                     if ( Itm.firstChild() )
                     {

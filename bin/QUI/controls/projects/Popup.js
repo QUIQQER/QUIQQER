@@ -1,14 +1,22 @@
+
 /**
  * Projects Sitemap Popup
  *
  * In this Popup you can select a site from a project and submit it
  * eq for insert a link into a input element or editor
  *
- * @author www.pcsg.de (Henning Leutz)
  * @module controls/projects/Popup
+ * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/controls/windows/Confirm
+ * @require qui/controls/buttons/Select
+ * @require Projects
+ * @require Locale
+ * @require controls/projects/project/Sitemap
+ * @require css!controls/projects/Popup.css
  */
 
-define([
+define('controls/projects/Popup', [
 
     'qui/controls/windows/Confirm',
     'qui/controls/buttons/Select',
@@ -88,7 +96,9 @@ define([
                 this.$Information = new Element('div', {
                     'class' : 'qui-project-popup-information box',
                     html    : this.getAttribute( 'information' )
-                }).inject( Content, 'top' );
+                });
+
+                this.$Information.inject( Content, 'top' );
             }
 
             var Select = new QUISelect({
@@ -98,7 +108,7 @@ define([
                 },
                 events :
                 {
-                    onChange : function(Sel)
+                    onChange : function()
                     {
                         var value = this.getValue().split( ',' );
 

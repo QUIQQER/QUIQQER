@@ -1082,7 +1082,7 @@ class Project
      *
      * @param Array $params
      * @todo Muss mal echt überarbeitet werden, bad code
-     * @return unknown
+     * @return Array
      */
     function getSitesIds($params=array())
     {

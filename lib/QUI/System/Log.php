@@ -10,7 +10,7 @@ namespace QUI\System;
  * Writes Logs into the logdir
  *
  * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.system
+ * @package quiqqer/quiqqer
  *
  * @event logWrite
  */
@@ -78,7 +78,7 @@ class Log
     /**
      * Writes with print_r the object into a log file
      *
-     * @param Object $object
+     * @param Object|String|Integer $object
      * @param Integer $loglevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
      * @param String $filename - [optional] name of the log eq: messages, database,
      */
@@ -90,7 +90,7 @@ class Log
     /**
      * Writes an Exception to a log file
      *
-     * @param QEcxeption|exception $Exception
+     * @param \Exception $Exception
      * @param Integer $loglevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
      * @param String $filename - [optional] name of the log eq: messages, database,
      */
@@ -105,7 +105,8 @@ class Log
     /**
      * Adds a log record at the DEBUG level.
      *
-     * @param string $message The log message
+     * @param String $message The log message
+     * @param String $filename - [optional] name of the log eq: messages, database (default = error)
      */
     static function addDebug($message, $filename='error')
     {
@@ -116,6 +117,7 @@ class Log
      * Adds a log record at the INFO level.
      *
      * @param string $message The log message
+     * @param String $filename - [optional] name of the log eq: messages, database (default = error)
      */
     static function addInfo($message, $filename='error')
     {
@@ -126,6 +128,7 @@ class Log
      * Adds a log record at the NOTICE level.
      *
      * @param string $message The log message
+     * @param String $filename - [optional] name of the log eq: messages, database (default = error)
      */
     static function addNotice($message, $filename='error')
     {
@@ -136,6 +139,7 @@ class Log
      * Adds a log record at the WARNING level.
      *
      * @param string $message The log message
+     * @param String $filename - [optional] name of the log eq: messages, database (default = error)
      */
     static function addWarning($message, $filename='error')
     {
@@ -146,6 +150,7 @@ class Log
      * Adds a log record at the ERROR level.
      *
      * @param string $message The log message
+     * @param String $filename - [optional] name of the log eq: messages, database (default = error)
      */
     static function addError($message, $filename='error')
     {
@@ -156,6 +161,7 @@ class Log
      * Adds a log record at the CRITICAL level.
      *
      * @param string $message The log message
+     * @param String $filename - [optional] name of the log eq: messages, database (default = error)
      */
     static function addCritical($message, $filename='error')
     {
@@ -166,6 +172,7 @@ class Log
      * Adds a log record at the ALERT level.
      *
      * @param string $message The log message
+     * @param String $filename - [optional] name of the log eq: messages, database (default = error)
      */
     static function addAlert($message, $filename='error')
     {
@@ -176,6 +183,7 @@ class Log
      * Adds a log record at the EMERGENCY level.
      *
      * @param string $message The log message
+     * @param String $filename - [optional] name of the log eq: messages, database (default = error)
      */
     static function addEmergency($message, $filename='error')
     {

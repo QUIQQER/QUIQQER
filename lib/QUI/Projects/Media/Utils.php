@@ -6,6 +6,11 @@
 
 namespace QUI\Projects\Media;
 
+use QUI;
+use QUI\System\Log;
+use QUI\Utils\String as StringUtils;
+
+
 /**
  * Helper for the Media Center Manager
  *
@@ -26,6 +31,7 @@ class Utils
     {
         if ( $Item->getId() === 1 )
         {
+            /* @var $Item \QUI\Projects\Media\Folder */
             return array(
                 'icon'      => 'icon-picture',
                 'icon80x80' => URL_BIN_DIR .'80x80/media.png',
@@ -197,23 +203,29 @@ class Utils
     }
 
     /**
-     * Return the media item
+     * Return the media image
+     * If it is no image, its throws an exception
      *
      * @param String $url - image.php? url
-     * @return \QUI\Projects\Media\Item || \QUI\Exception
+     * @return QUI\Projects\Media\Image
+     * @throws QUI\Exception
      */
     static function getImageByUrl($url)
     {
         if ( self::isMediaUrl( $url ) === false ) {
-            throw new \QUI\Exception( 'Its not a QUIQQER image url', 400 );
+            throw new QUI\Exception( 'Its not an QUIQQER image url' );
         }
 
         // Parameter herrausfinden
-        $params = \QUI\Utils\String::getUrlAttributes( $url );
+        $params = StringUtils::getUrlAttributes( $url );
 
-        $Project = \QUI::getProject( $params['project'] );
+        $Project = QUI::getProject( $params['project'] );
         $Media   = $Project->getMedia();
-        $Obj     = $Media->get( (int)$params['id'] ); /* @var $Obj MediaFile */
+        $Obj     = $Media->get( (int)$params['id'] ); /* @var $Obj QUI\Projects\Media\File */
+
+        if ( !self::isImage( $Obj ) )  {
+            throw new QUI\Exception( 'Its not an image' );
+        }
 
         return $Obj;
     }
@@ -223,20 +235,17 @@ class Utils
      * considered responsive images, too
      *
      * @param String $src
-     * @param String $attributes
+     * @param Array $attributes
      * @return String
      */
-    static function getImageHTML($src, $attributes)
+    static function getImageHTML($src, $attributes=array())
     {
-        $size = array();
-        $img  = '';
-
         $width  = false;
         $height = false;
 
         if ( isset( $attributes['style'] ) )
         {
-            $style = \QUI\Utils\String::splitStyleAttributes(
+            $style = StringUtils::splitStyleAttributes(
                 $attributes['style']
             );
 
@@ -270,7 +279,7 @@ class Utils
         {
             $Image = self::getImageByUrl( $src );
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
             return '';
         }
@@ -297,7 +306,6 @@ class Utils
             $end   = $imageWidth > 1000 ? 1000 : $imageWidth;
             $start = 100;
 
-            $sizes  = array();
             $srcset = array();
 
             for ( ; $start < $end; $start += 100 ) {
@@ -317,8 +325,8 @@ class Utils
     /**
      * Return the rewrited url from a image.php? url
      *
-     * @param unknown $output
-     * @param unknown $size
+     * @param String $output
+     * @param Array $size
      * @return String
      */
     static function getRewritedUrl($output, $size=array())
@@ -328,7 +336,7 @@ class Utils
         }
 
         // Parameter herrausfinden
-        $params = \QUI\Utils\String::getUrlAttributes( $output );
+        $params = StringUtils::getUrlAttributes( $output );
 
         $id      = $params['id'];
         $project = $params['project'];
@@ -339,9 +347,9 @@ class Utils
         // exist cache?
         try
         {
-            $url = \QUI\Cache\Manager::get( $cache );
+            $url = QUI\Cache\Manager::get( $cache );
 
-        } catch ( \QUI\Cache\Exception $Exception )
+        } catch ( QUI\Cache\Exception $Exception )
         {
 
         }
@@ -353,15 +361,15 @@ class Utils
                 $Obj = self::getImageByUrl( $output );
                 $url = $Obj->getUrl( true );
 
-            } catch ( \QUI\Exception $Exception )
+            } catch ( QUI\Exception $Exception )
             {
-                \QUI\System\Log::writeException( $Exception );
+                Log::writeException( $Exception );
 
                 return URL_DIR . $output;
 
             } catch ( \Exception $Exception )
             {
-                \QUI\System\Log::writeException( $Exception );
+                Log::writeException( $Exception );
 
                 return URL_DIR . $output;
             }
@@ -390,7 +398,7 @@ class Utils
 
         if ( !file_exists( CMS_DIR . $url ) )
         {
-            $Project = \QUI::getProject( $project );
+            $Project = QUI::getProject( $project );
             $Media   = $Project->getMedia();
             $Obj     = $Media->get( (int)$id );
 
@@ -419,14 +427,15 @@ class Utils
      * checks if the string can be used for a media folder name
      *
      * @param String $str - foldername
-     * @throws \QUI\Exception
+     * @return Bool
+     * @throws QUI\Exception
      */
     static function checkFolderName($str)
     {
         // Prüfung des Namens - Sonderzeichen
         if ( preg_match('/[^0-9_a-zA-Z \-]/', $str) )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 'Nicht erlaubte Zeichen wurden im Namen "'. $str .'" gefunden.
                 Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -',
                 702
@@ -435,7 +444,7 @@ class Utils
 
         if ( strpos($str, '__') !== false )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 'Nicht erlaubte Zeichen wurden im Namen gefunden.
                 Doppelte __ dürfen nicht verwendet werden.',
                 702
@@ -472,14 +481,14 @@ class Utils
      * checks if the string can be used for a media item
      *
      * @param String $filename - the complete filename: my_file.jpg
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      */
     static function checkMediaName($filename)
     {
         // Prüfung des Namens - Sonderzeichen
         if ( preg_match('/[^0-9_a-zA-Z \-.]/', $filename) )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 'Nicht erlaubte Zeichen wurden im Namen "'. $filename .'" gefunden.
                 Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -',
                 702
@@ -489,7 +498,7 @@ class Utils
         // mehr als zwei punkte
          if ( substr_count($filename, '.') > 1 )
          {
-             throw new \QUI\Exception(
+             throw new QUI\Exception(
                 'Punkte dürfe nicht im Namen enthalten sein',
                 702
             );
@@ -497,7 +506,7 @@ class Utils
 
         if ( strpos($filename, '__') !== false )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 'Nicht erlaubte Zeichen wurden im Namen gefunden.
                 Doppelte __ dürfen nicht verwendet werden.',
                 702
@@ -524,7 +533,7 @@ class Utils
 
         // delete the dots but not the last dot
         $str = str_replace('.', '_', $str);
-        $str = \QUI\Utils\String::replaceLast('_', '.', $str);
+        $str = QUI\Utils\String::replaceLast('_', '.', $str);
 
         // FIX
         $str = preg_replace('/[_]{2,}/', "_", $str);
@@ -539,7 +548,7 @@ class Utils
     /**
      * Is the variable a folder object?
      *
-     * @param unknown_type $Unknown
+     * @param String|Bool|Object $Unknown
      * @return Bool
      */
     static function isFolder($Unknown)
@@ -562,7 +571,7 @@ class Utils
     /**
      * Is the variable a image object?
      *
-     * @param unknown_type $Unknown
+     * @param String|Bool|Object $Unknown
      * @return Bool
      */
     static function isImage($Unknown)
@@ -605,14 +614,14 @@ class Utils
      *
      * @param String $url
      * @return \QUI\Projects\Media\Item
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      */
     static function getElement($url)
     {
         $parts = explode( 'media/cache/', $url );
 
         if ( !isset( $parts[1] ) ) {
-            throw new \QUI\Exception( 'File not found', 404 );
+            throw new QUI\Exception( 'File not found', 404 );
         }
 
         $parts   = explode( '/', $parts[1] );
@@ -629,8 +638,6 @@ class Utils
             $lastpos_ul = strrpos( $file_name, '__' ) + 2;
             $pos_dot    = strpos( $file_name, '.', $lastpos_ul );
 
-            $size      = substr( $file_name, $lastpos_ul, ( $pos_dot - $lastpos_ul ) );
-
             $file_name = substr( $file_name, 0, ( $lastpos_ul - 2 ) ) .
                          substr( $file_name, $pos_dot );
         }
@@ -643,13 +650,13 @@ class Utils
     /**
      * Check the upload params if a replacement can do
      *
-     * @param \QUI\Projects\Media $Media
+     * @param QUI\Projects\Media $Media
      * @param Integer $fileid 	  - The File which will be replaced
      * @param Array $uploadparams - Array with file information array('name' => '', 'type' => '')
      *
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      */
-    static function checkReplace(\QUI\Projects\Media $Media, $fileid, $uploadparams)
+    static function checkReplace(QUI\Projects\Media $Media, $fileid, $uploadparams)
     {
         $fileid = (int)$fileid;
 
@@ -662,7 +669,7 @@ class Utils
         ));
 
         if ( !isset( $result[0] ) ) {
-            throw new \QUI\Exception( 'File entry not found', 404 );
+            throw new QUI\Exception( 'File entry not found', 404 );
         }
 
         $data = $result[0];
@@ -683,7 +690,7 @@ class Utils
 
         if ( $Parent->fileWithNameExists( $uploadparams['name'] ) )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 'A file with the name '. $uploadparams['name'] .' already exist.',
                 403
             );
@@ -694,6 +701,7 @@ class Utils
      * Generate the MD5 hash of a file object
      *
      * @param \QUI\Projects\Media\File|\QUI\Projects\Media\Image $File
+     * @return String
      */
     static function generateMD5($File)
     {
@@ -705,6 +713,7 @@ class Utils
      * Generate the SHA1 hash of a file object
      *
      * @param \QUI\Projects\Media\File|\QUI\Projects\Media\Image $File
+     * @return String
      */
     static function generateSHA1($File)
     {

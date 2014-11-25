@@ -31,7 +31,7 @@ define('controls/projects/Input', [
      * @class controls/projects/Input
      *
      * @param {Object} options
-     * @param {DOMNode Input} Input [optional] -> if no input given, one would be created
+     * @param {Element} Input [optional] -> if no input given, one would be created
      *
      * @memberof! <global>
      */
@@ -72,7 +72,7 @@ define('controls/projects/Input', [
          * Return the DOMNode of the projects search
          *
          * @method controls/projects/Input#create
-         * @return {DOMNode} Main DOM-Node Element
+         * @return {Element} Main DOM-Node Element
          */
         create : function()
         {
@@ -165,7 +165,6 @@ define('controls/projects/Input', [
             if ( this.$Parent.value === '' ) {
                 return this.$Elm;
             }
-
 
             var i, len;
             var values = JSON.decode( this.$Parent.value.toString() );

@@ -6,7 +6,7 @@
  * @author www.pcsg.de (Henning Leutz)
  */
 
-define(['classes/projects/Manager'], function(Manager)
+define('Projects', ['classes/projects/Manager'], function(Manager)
 {
     "use strict";
 
