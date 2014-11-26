@@ -188,7 +188,7 @@ define('controls/projects/Input', [
         /**
          * updates the projects search field
          *
-         * @param {Function} callback - [optional] callback function on finish
+         * @param {Function} [callback] - optional, callback function on finish
          * @method controls/projects/Input#refresh
          */
         refresh : function(callback)
@@ -296,7 +296,7 @@ define('controls/projects/Input', [
          *
          * @method controls/projects/Input#addProject
          * @param {String} project - Project name
-         * @param {String} lang - [optional] Project language
+         * @param {String} [lang] - optional, Project language
          */
         addProject : function(project, lang)
         {
@@ -447,7 +447,7 @@ define('controls/projects/Input', [
          * keyup - projects dropdown selection one step up
          *
          * @method controls/projects/Input#up
-         * @return {this} self
+         * @return {Object} this (controls/projects/Input)
          */
         up : function()
         {
@@ -479,7 +479,7 @@ define('controls/projects/Input', [
          * keydown - projects dropdown selection one step down
          *
          * @method controls/projects/Input#down
-         * @return {this} self
+         * @return {Object} this (controls/projects/Input)
          */
         down : function()
         {
@@ -538,7 +538,7 @@ define('controls/projects/Input', [
          * Set the focus to the input field
          *
          * @method controls/projects/Input#focus
-         * @return {this} self
+         * @return {Object} this (controls/projects/Input)
          */
         focus : function()
         {
