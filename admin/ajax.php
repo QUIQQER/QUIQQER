@@ -21,10 +21,6 @@ if ( isset( $_REQUEST['lang'] ) && strlen( $_REQUEST['lang'] ) === 2 ) {
 }
 
 
-/**
- * @var \QUI\Utils\Request\Ajax $ajax
- */
-
 $_rf_files = array();
 
 if ( isset( $_REQUEST['_rf'] ) ) {
@@ -45,8 +41,9 @@ if ( isset( $_REQUEST['package'] ) )
 
         $_rf_file = $dir . $package . str_replace( '_', '/', $ending ) .'.php';
         $_rf_file = \QUI\Utils\Security\Orthos::clearPath( $_rf_file );
+        $_rf_file = realpath( $_rf_file );
 
-        if ( file_exists( $_rf_file ) ) {
+        if ( strpos( $_rf_file, $dir ) !== false && file_exists( $_rf_file ) ) {
             require_once $_rf_file;
         }
     }
@@ -56,8 +53,12 @@ if ( isset( $_REQUEST['package'] ) )
 foreach ( $_rf_files as $key => $file )
 {
     $_rf_file = CMS_DIR .'admin/'. str_replace( '_', '/', $file ) .'.php';
+    $_rf_file = \QUI\Utils\Security\Orthos::clearPath( $_rf_file );
+    $_rf_file = realpath( $_rf_file );
 
-    if ( file_exists( $_rf_file ) ) {
+    $dir = CMS_DIR .'admin/';
+
+    if ( strpos( $_rf_file, CMS_DIR.'admin/' ) !== false && file_exists( $_rf_file ) ) {
         require_once $_rf_file;
     }
 }
@@ -72,8 +73,12 @@ if ( isset( $_REQUEST['project'] ) )
     {
         $file = str_replace( $firstpart, '', $file );
         $file = $projectDir .'/lib/'. str_replace( '_', '/', $file ) .'.php';
+        $file = \QUI\Utils\Security\Orthos::clearPath( $file );
+        $file = realpath( $file );
 
-        if ( file_exists( $file ) ) {
+        $dir = $projectDir.'/lib/';
+
+        if ( strpos( $file, $dir ) !== false && file_exists( $file ) ) {
             require_once $file;
         }
     }
