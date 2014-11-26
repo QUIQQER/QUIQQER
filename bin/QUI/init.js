@@ -292,7 +292,7 @@ require( requireList, function()
     /**
      * Menu
      */
-    require(['Menu'], function(QuiMenu)
+    require(['Menu'], function()
     {
         // workspace edit
         new Element('div', {

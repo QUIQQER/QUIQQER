@@ -8,7 +8,7 @@
 
     "predef"  : [
         "define", "require", "moofx",
-        "USER",
+        "USER", "QUIQQER_VERSION",
         "URL_DIR", "URL_BIN_DIR", "URL_OPT_DIR", "URL_VAR_DIR"
     ]
 }
