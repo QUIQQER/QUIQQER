@@ -136,7 +136,7 @@ define('controls/projects/project/Sitemap', [
          * Returns the qui/controls/sitemap/Map Control
          *
          * @method controls/projects/project/Sitemap#getMap
-         * @return {qui/controls/sitemap/Map} Binded Map Object
+         * @return {Object} Binded Map Object (qui/controls/sitemap/Map)
          */
         getMap : function()
         {
@@ -428,7 +428,7 @@ define('controls/projects/project/Sitemap', [
          * Load the Children asynchron
          *
          * @method controls/projects/project/Sitemap#$loadChildren
-         * @param {qui/controls/sitemap/Item} Item - Parent sitemap item
+         * @param {Object} Item - (qui/controls/sitemap/Item) Parent sitemap item
          * @param {Function} callback - callback function, if ajax is finish
          *
          * @ignore
@@ -478,8 +478,8 @@ define('controls/projects/project/Sitemap', [
          *
          * @method controls/projects/project/Sitemap#$parseArrayToSitemapitem
          * @param {Array} result
-         * @param {qui/controls/sitemap/Item} Itm
-         * @return {qui/controls/sitemap/Item}
+         * @param {Object} Itm - qui/controls/sitemap/Item
+         * @return {Object} qui/controls/sitemap/Item
          *
          * @private
          */
@@ -496,6 +496,7 @@ define('controls/projects/project/Sitemap', [
                 index : result.id,
                 value : result.id,
                 text  : result.title,
+                title : result.title,
                 alt   : result.name +'.html',
                 icon  : result.icon || 'icon-file-alt',
                 hasChildren : ( result.has_children ).toInt(),
@@ -673,8 +674,8 @@ define('controls/projects/project/Sitemap', [
          *
          * @method controls/projects/project/Sitemap#$addSitemapItem
          *
-         * @param {qui/controls/sitemap/Item} Parent
-         * @param {qui/controls/sitemap/Item} Child
+         * @param {Object} Parent - qui/controls/sitemap/Item
+         * @param {Object} Child - qui/controls/sitemap/Item
          *
          * @private
          * @ignore
@@ -692,7 +693,7 @@ define('controls/projects/project/Sitemap', [
          * Opens a Sitemap Item
          *
          * @method controls/projects/project/Sitemap#$open
-         * @param {qui/controls/sitemap/Item} Item
+         * @param {Object} Item - qui/controls/sitemap/Item
          *
          * @private
          * @ignore
@@ -712,7 +713,7 @@ define('controls/projects/project/Sitemap', [
          * sitemap item close action
          *
          * @method controls/projects/project/Sitemap#$close
-         * @param {qui/controls/sitemap/Item} Item
+         * @param {Object} Item - qui/controls/sitemap/Item
          *
          * @private
          * @ignore
@@ -725,7 +726,7 @@ define('controls/projects/project/Sitemap', [
         /**
          * Move a site to a new parent
          *
-         * @param {qui/controls/sitemap/Item} ParentItem
+         * @param {Object} NewParentItem - qui/controls/sitemap/Item
          */
         $pasteSite : function(NewParentItem)
         {
@@ -781,7 +782,7 @@ define('controls/projects/project/Sitemap', [
         /**
          * Link a site into a new parent
          *
-         * @param {qui/controls/sitemap/Item} ParentItem
+         * @param {Object} NewParentItem - qui/controls/sitemap/Item
          */
         $linkSite : function(NewParentItem)
         {
@@ -842,8 +843,8 @@ define('controls/projects/project/Sitemap', [
         /**
          * event - onSiteActivate. onSiteDeactivate, onSiteSave
          *
-         * @param {classes/projects/Project} Project - Project of the Site that are changed
-         * @param {classes/projects/project/Site} Site - Site that are changed
+         * @param {Object} Project - (classes/projects/Project) Project of the Site that are changed
+         * @param {Object} Site - (classes/projects/project/Site) Site that are changed
          */
         onSiteChange : function(Project, Site)
         {
@@ -878,8 +879,8 @@ define('controls/projects/project/Sitemap', [
         /**
          * event - onSiteCreate
          *
-         * @param {classes/projects/Project} Project - Project of the Site that are changed
-         * @param {classes/projects/project/Site} Site - Site that create the child
+         * @param {Object} Project - (classes/projects/Project) Project of the Site that are changed
+         * @param {Object} Site - (classes/projects/project/Site) Site that create the child
          */
         onSiteCreate : function(Project, Site)
         {
@@ -909,7 +910,7 @@ define('controls/projects/project/Sitemap', [
         /**
          * event - on site delete
          *
-         * @param {classes/projects/Project} Project - Project of the Site that are changed
+         * @param {Object} Project - (classes/projects/Project) Project of the Site that are changed
          * @param {integer} siteid - siteid that are deleted
          */
         onSiteDelete : function(Project, siteid)
