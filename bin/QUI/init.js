@@ -38,6 +38,8 @@ try
 //requestAnimationFrame polyfill
 (function()
 {
+    "use strict";
+
     var lastTime = 0;
     var vendors = ['webkit', 'moz'];
 
@@ -50,7 +52,7 @@ try
 
     if ( !window.requestAnimationFrame )
     {
-        window.requestAnimationFrame = function(callback, element)
+        window.requestAnimationFrame = function(callback)
         {
             var currTime   = new Date().getTime();
             var timeToCall = Math.max(0, 16 - (currTime - lastTime));
@@ -62,14 +64,14 @@ try
             lastTime = currTime + timeToCall;
 
             return id;
-        }
+        };
     }
 
     if ( !window.cancelAnimationFrame )
     {
         window.cancelAnimationFrame = function(id) {
             clearTimeout(id);
-        }
+        };
     }
 }());
 
@@ -81,7 +83,7 @@ require.config({
         "qui"     : URL_OPT_DIR +'bin/qui/qui',
         "locale"  : URL_VAR_DIR +'locale/bin',
         "URL_OPT_DIR" : URL_OPT_DIR,
-        "URL_BIN_DIR" : URL_BIN_DIR,
+        "URL_BIN_DIR" : URL_BIN_DIR
     },
 
     waitSeconds : 0,
@@ -141,15 +143,13 @@ require( requireList, function()
     // load the default workspace
     var doc_size  = document.body.getSize(),
         Container = document.getElement( '.qui-workspace-container' ),
-        Logo      = document.getElement( '.qui-logo-container' ),
         Menu      = document.getElement( '.qui-menu-container' );
 
-    var logoY = Logo.getSize().y,
-        menuY = Menu.getSize().y;
+    var menuY = Menu.getComputedSize().height;
 
     Container.setStyles({
         overflow : 'hidden',
-        height   : doc_size.y - logoY - menuY,
+        height   : doc_size.y - menuY,
         width    : '100%'
     });
 
@@ -173,6 +173,24 @@ require( requireList, function()
                     var list = WS.getList(),
                         Bar  = Menu.getChildren();
 
+                    // logo
+                    if ( Bar.getChildren( 'quiqqer' ) )
+                    {
+                        var Quiqqer = Bar.getChildren( 'quiqqer' );
+
+                        if ( Quiqqer )
+                        {
+                            var Img = Quiqqer.getElm().getElement( 'img' );
+
+                            Img.setStyles({
+                                height   : 22,
+                                position : 'relative',
+                                top      : 6
+                            });
+                        }
+                    }
+
+
                     if ( !Bar.getChildren( 'profile' ) ) {
                         return;
                     }
@@ -192,7 +210,7 @@ require( requireList, function()
                             icon   : 'icon-edit',
                             events :
                             {
-                                onClick : function(Item) {
+                                onClick : function() {
                                     WS.openWorkspaceEdit();
                                 }
                             }
@@ -205,7 +223,7 @@ require( requireList, function()
                             icon   : 'icon-plus',
                             events :
                             {
-                                onClick : function(Item) {
+                                onClick : function() {
                                     WS.openCreateWindow();
                                 }
                             }
@@ -238,7 +256,7 @@ require( requireList, function()
                             })
                         );
                     });
-                }
+                };
 
                 require(['Menu'], function(Menu)
                 {
@@ -260,7 +278,7 @@ require( requireList, function()
     // resizing
     window.addEvent( 'resize', function()
     {
-        window.requestAnimationFrame(function(time)
+        window.requestAnimationFrame(function()
         {
             Container.setStyles({
                 height : document.body.getSize().y - logoY - menuY
@@ -274,7 +292,7 @@ require( requireList, function()
     /**
      * Menu
      */
-    require(['Menu'], function()
+    require(['Menu'], function(QuiMenu)
     {
         // workspace edit
         new Element('div', {
@@ -352,7 +370,7 @@ require( requireList, function()
 
         return "Bitte melden Sie sich vor dem schließen der Administration ab." +
                "Ansonsten können bestehende Daten verloren gehen." +
-               "Möchten Sie trotzdem weiter fortfahren?"
+               "Möchten Sie trotzdem weiter fortfahren?";
     };
 
     // logout function

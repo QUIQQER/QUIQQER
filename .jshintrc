@@ -8,6 +8,7 @@
 
     "predef"  : [
         "define", "require", "moofx",
-        "URL_DIR", "URL_BIN_DIR", "URL_OPT_DIR"
+        "USER",
+        "URL_DIR", "URL_BIN_DIR", "URL_OPT_DIR", "URL_VAR_DIR"
     ]
 }

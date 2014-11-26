@@ -129,7 +129,7 @@
             Rewrite : {
                 URL_PARAM_SEPERATOR   : "<?php echo \QUI\Rewrite::URL_PARAM_SEPERATOR; ?>",
                 URL_SPACE_CHARACTER   : "<?php echo \QUI\Rewrite::URL_SPACE_CHARACTER; ?>",
-                URL_PROJECT_CHARACTER : "<?php echo \QUI\Rewrite::URL_PROJECT_CHARACTER; ?>",
+                URL_PROJECT_CHARACTER : "<?php echo \QUI\Rewrite::URL_PROJECT_CHARACTER; ?>"
             }
         };
 
@@ -169,6 +169,7 @@
 <body class="<?php echo $User->getLang(); ?>">
 
     <div id="wrapper">
+        <!--
         <div class="qui-logo-container grid-100 grid-parent">
             <a href="/admin/">
                 <img src="<?php echo URL_BIN_DIR; ?>quiqqer_logo_mini.png"
@@ -176,6 +177,7 @@
                 />
             </a>
         </div>
+        -->
 
         <div class="qui-menu-container grid-100 grid-parent"></div>
         <div class="qui-workspace-container grid-100 grid-parent"></div>

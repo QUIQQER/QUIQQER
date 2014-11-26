@@ -2,7 +2,17 @@
 /**
  * QUIQQER Main Menu
  *
+ * @module controls/menu/Manager
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/QUI
+ * @require qui/controls/Control
+ * @require qui/controls/contextmenu/Bar
+ * @require qui/controls/contextmenu/BarItem
+ * @require qui/controls/contextmenu/Item
+ * @require qui/controls/desktop/Panel
+ * @require Ajax
+ * @require utils/Panels
  */
 
 define('controls/menu/Manager', [
@@ -35,6 +45,8 @@ define('controls/menu/Manager', [
 
         /**
          * Create the topic menu
+         *
+         * @return {HTMLElement}
          */
         create : function()
         {
@@ -61,7 +73,7 @@ define('controls/menu/Manager', [
         /**
          * Is the menu loaded?
          *
-         * @return {Bool}
+         * @return {Boolean}
          */
         isLoaded : function()
         {
@@ -71,7 +83,7 @@ define('controls/menu/Manager', [
         /**
          * Return the ContextBar
          *
-         * @return qui/controls/contextmenu/Bar
+         * @return {Object} qui/controls/contextmenu/Bar
          */
         getChildren : function()
         {
@@ -81,7 +93,7 @@ define('controls/menu/Manager', [
         /**
          * Menu click helper method
          *
-         * @param {qui/controls/contextmenu/Item} Item - Menu Item
+         * @param {Object} Item - (qui/controls/contextmenu/Item) Menu Item
          */
         menuClick : function(Item)
         {
@@ -105,7 +117,6 @@ define('controls/menu/Manager', [
                     if ( instanceOf( Ctrl, Panel ) )
                     {
                         self.openPanelInTasks( Ctrl );
-
                         return;
                     }
 
@@ -146,5 +157,4 @@ define('controls/menu/Manager', [
             PanelUtils.openPanelInTasks( Panel );
         }
     });
-
 });

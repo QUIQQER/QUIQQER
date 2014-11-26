@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <menu>
+    <item parent="/" name="quiqqer">
+        <locale group="quiqqer/system" var="menu.quiqqer.text" />
+    </item>
+
     <item parent="/" name="extras">
         <locale group="quiqqer/system" var="menu.goto.text" />
     </item>
@@ -9,9 +13,34 @@
     <item parent="/" name="profile">
         <locale group="quiqqer/system" var="menu.profile.text" />
     </item>
-    <item parent="/" name="help">
-        <locale group="quiqqer/system" var="menu.help.text" />
-    </item>
+
+    <!-- QUIQQER Menu -->
+        <item parent="/quiqqer/"
+              name="about"
+              icon="URL_BIN_DIR/16x16/quiqqer.png"
+              require="controls/help/About"
+                >
+            <locale group="quiqqer/system" var="menu.help.about.text" />
+        </item>
+
+        <item parent="/quiqqer/"
+              name="changelog"
+              icon="URL_BIN_DIR/16x16/quiqqer.png"
+              require="controls/help/Changelog"
+              group="quiqqer/system"
+              var="menu.help.changelog.text"
+                >
+            <locale group="quiqqer/system" var="menu.help.changelog.text" />
+        </item>
+        <!-- Plugins und Packages -->
+        <item parent="/quiqqer/"
+              name="packages"
+              icon="URL_BIN_DIR/16x16/quiqqer.png"
+              require="controls/packages/Panel"
+                >
+            <locale group="quiqqer/system" var="menu.extras.packages.text" />
+        </item>
+
 
     <!-- File Menu -->
         <item parent="/extras/"
@@ -192,33 +221,6 @@
             <locale group="quiqqer/system" var="menu.profile.userProfile.text" />
         </item>
 
-    <!-- Menu -->
-        <item parent="/help/"
-              name="about"
-              icon="URL_BIN_DIR/16x16/quiqqer.png"
-              require="controls/help/About"
-        >
-            <locale group="quiqqer/system" var="menu.help.about.text" />
-        </item>
-
-        <item parent="/help/"
-              name="changelog"
-              icon="URL_BIN_DIR/16x16/quiqqer.png"
-              require="controls/help/Changelog"
-              group="quiqqer/system"
-              var="menu.help.changelog.text"
-        >
-            <locale group="quiqqer/system" var="menu.help.changelog.text" />
-        </item>
-
-        <!-- Plugins und Packages -->
-        <item parent="/help/"
-              name="packages"
-              icon="URL_BIN_DIR/16x16/quiqqer.png"
-              require="controls/packages/Panel"
-        >
-            <locale group="quiqqer/system" var="menu.extras.packages.text" />
-        </item>
 
     <!-- profile -->
         <item parent="/profile/"

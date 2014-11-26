@@ -397,18 +397,10 @@
     <groups name="quiqqer/system">
 
         <!-- Menu  -->
-        <locale name="menu.file.text">
-            <de><![CDATA[Datei]]></de>
-            <en><![CDATA[File]]></en>
+        <locale name="menu.quiqqer.text">
+            <de><![CDATA[<img src="/bin/quiqqer_logo_mini.png" />]]></de>
+            <en><![CDATA[<img src="/bin/quiqqer_logo_mini.png" />]]></en>
         </locale>
-            <locale name="menu.file.close.text">
-                <de><![CDATA[Schließen]]></de>
-                <en><![CDATA[Close]]></en>
-            </locale>
-            <locale name="menu.file.logout.text">
-                <de><![CDATA[Abmelden]]></de>
-                <en><![CDATA[Logout]]></en>
-            </locale>
 
         <locale name="menu.profile.text">
             <de><![CDATA[Profil]]></de>

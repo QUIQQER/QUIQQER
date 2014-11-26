@@ -86,7 +86,8 @@ address .icon {
     background: #F2F2F2;
     border-bottom: 2px solid #e3e4e8;
     float: left;
-    height: 40px;
+    height: 60px;
+    padding-top: 20px;
     width: 100%;
 }
 
