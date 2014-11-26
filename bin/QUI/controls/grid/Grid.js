@@ -2067,6 +2067,15 @@ define([
                     continue;
                 }
 
+                if ( columnModel.dataType == 'code' && this.$data[ r ][ columnDataIndex ] )
+                {
+                    var val = rowdata[ columnDataIndex ];
+
+                    div.set( 'text', val );
+
+                    continue;
+                }
+
                 if ( columnModel.dataType == "checkbox" )
                 {
                     var input = new Element('input', {type:"checkbox"});
