@@ -114,6 +114,12 @@ class Rewrite
     private $_output_content = '';
 
     /**
+     * Standard header code
+     * @var int
+     */
+    private $_headerCode = 200;
+
+    /**
      *
      */
     public function __construct()
@@ -483,7 +489,7 @@ class Rewrite
      * Parameter der Rewrite
      *
      * @param String $name
-     * @return unknown_type
+     * @return String|Bool
      */
     public function getParam($name)
     {
@@ -516,9 +522,18 @@ class Rewrite
     }
 
     /**
+     * Return the current header code
+     * @return Int
+     */
+    public function getHeaderCode()
+    {
+        return $this->_headerCode;
+    }
+
+    /**
      * Enter description here...
      *
-     * @return unknown
+     * @return String
      */
     public function getProjectPrefix()
     {
@@ -528,9 +543,9 @@ class Rewrite
     /**
      * Enter description here...
      *
-     * @param unknown_type $url
+     * @param String $url
      * @param Bool $setpath
-     * @return unknown
+     * @return \QUI\Projects\Site|false
      */
     public function getSiteByUrl($url, $setpath=true)
     {
@@ -777,15 +792,18 @@ class Rewrite
      *
      * @param Integer $code - Error Code
      * @param String $url - Bei manchen Error Codes muss eine URL übergeben werden (30*)
+     * @return Bool
      */
     private function _showErrorHeader($code=404, $url='')
     {
         // Im Admin gibt es keine Error Header
-        if (defined('ADMIN')) {
-            return;
+        if ( defined( 'ADMIN' ) ) {
+            return false;
         }
 
-        switch ($code)
+        $this->_headerCode = $code;
+
+        switch ( $code )
         {
             // Client Request Redirected
             case 301:
@@ -816,6 +834,9 @@ class Rewrite
             // Client Request Errors
             case 404:
             default:
+
+                $this->_headerCode = 404;
+
                 header("HTTP/1.0 404 Not Found");
 
                 if (!defined('ERROR_HEADER')) {
@@ -885,11 +906,13 @@ class Rewrite
                 header('X-Powered-By:');
             break;
         }
+
+        return true;
     }
 
     /**
      * Gibt die aktuelle Seite zurück
-     * @return Site
+     * @return \QUI\Projects\Site
      */
     public function getSite()
     {
