@@ -281,7 +281,7 @@ require( requireList, function()
         window.requestAnimationFrame(function()
         {
             Container.setStyles({
-                height : document.body.getSize().y - logoY - menuY
+                height : document.body.getSize().y - menuY
             });
 
             Workspace.resize();
