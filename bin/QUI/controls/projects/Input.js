@@ -1,15 +1,20 @@
 /**
  * Makes an input field to a project selection field
  *
+ * @module controls/projects/Input
  * @author www.pcsg.de (Henning Leutz)
  *
- * @module controls/projects/Input
+ * @require qui/controls/Control
+ * @require qui/controls/buttons/Button
+ * @require qui/utils/Elements
+ * @require controls/projects/project/Entry
+ * @require Ajax
+ * @require Locale
+ * @require Projects
+ * @require css!controls/projects/Input.css
  *
- * @require controls/Control
- * @require controls/buttons/Button
- * @require controls/projects/Entry
- *
- * @event onAdd [this, project, lang]
+ * @event onAdd [ this, project, lang ]
+ * @event onChange [ this ]
  */
 
 define('controls/projects/Input', [
@@ -20,10 +25,11 @@ define('controls/projects/Input', [
     'controls/projects/project/Entry',
     'Ajax',
     'Locale',
+    'Projects',
 
     'css!controls/projects/Input.css'
 
-], function(QUIControl, QUIButton, ElementUtils, ProjectEntry, Ajax, Locale)
+], function(QUIControl, QUIButton, ElementUtils, ProjectEntry, Ajax, Locale, Projects)
 {
     "use strict";
 
@@ -72,7 +78,7 @@ define('controls/projects/Input', [
          * Return the DOMNode of the projects search
          *
          * @method controls/projects/Input#create
-         * @return {Element} Main DOM-Node Element
+         * @return {HTMLElement} Main DOM-Node Element
          */
         create : function()
         {
@@ -197,12 +203,10 @@ define('controls/projects/Input', [
             }
 
             // set value
-            var i, len;
-
             var list = this.$Container.getElements( '.project-entry' ),
                 data = [];
 
-            for ( i = 0, len = list.length; i < len; i++ )
+            for ( var i = 0, len = list.length; i < len; i++ )
             {
                 data.push({
                     project : list[i].get( 'data-project' ),
@@ -215,6 +219,30 @@ define('controls/projects/Input', [
             if ( typeof callback !== 'undefined' ) {
                 callback();
             }
+        },
+
+        /**
+         * Return the project list
+         *
+         * @return {Array}
+         */
+        getProjects : function()
+        {
+            var i, len, Project;
+            var result = [],
+                list   = this.$Container.getElements( '.project-entry' );
+
+            for ( i = 0, len = list.length; i < len; i++ )
+            {
+                Project = Projects.get(
+                    list[ i ].get( 'data-project' ),
+                    list[ i ].get( 'data-lang' )
+                );
+
+                result.push( Project );
+            }
+
+            return result;
         },
 
         /**
@@ -308,8 +336,10 @@ define('controls/projects/Input', [
                     {
                         (function()
                         {
-                            self.refresh(function() {
+                            self.refresh(function()
+                            {
                                 self.$Parent.fireEvent( 'change', [ this ] );
+                                self.fireEvent( 'change', [ this ] );
                             });
                         }).delay( 250 );
                     }
@@ -318,8 +348,10 @@ define('controls/projects/Input', [
 
             this.fireEvent( 'add', [ this, project, lang ] );
 
-            this.refresh(function() {
+            this.refresh(function()
+            {
                 self.$Parent.fireEvent( 'change', [ this ] );
+                self.fireEvent( 'change', [ this ] );
             });
         },
 
