@@ -45,7 +45,7 @@ define('controls/editors/ToolbarConfigurator', [
         /**
          * Create the DOMNode Element
          *
-         * @return {DOMNode}
+         * @return {HTMLElement}
          */
         create : function()
         {

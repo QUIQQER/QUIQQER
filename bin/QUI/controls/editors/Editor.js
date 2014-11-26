@@ -66,7 +66,7 @@ define(['qui/controls/Control'], function(Control)
             this.$Container = null;
 
             this.addEvents({
-                onLoaded : function(Editor, Instance)
+                onLoaded : function()
                 {
                     if ( self.getAttribute( 'bodyId' ) ) {
                         self.getDocument().body.id = self.getAttribute( 'bodyId' );

@@ -202,7 +202,7 @@ define('controls/editors/Settings', [
          */
         addToolbar : function(toolbar, callback)
         {
-            Ajax.get('ajax_editor_toolbar_add', function(list)
+            Ajax.get('ajax_editor_toolbar_add', function()
             {
                 callback();
             }, {
@@ -356,7 +356,7 @@ define('controls/editors/Settings', [
                 ),
                 events :
                 {
-                    onSubmit : function(toolbar, Win)
+                    onSubmit : function(toolbar)
                     {
                         self.addToolbar(toolbar, function()
                         {
