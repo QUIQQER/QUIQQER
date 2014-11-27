@@ -200,7 +200,7 @@ define([
                     header    : Locale.get( lg, 'status' ),
                     dataIndex : 'activebtn',
                     dataType  : 'button',
-                    width     : 50
+                    width     : 60
                 }, {
                     header    : Locale.get( lg, 'user_id' ),
                     dataIndex : 'id',
@@ -297,8 +297,8 @@ define([
         /**
          * create a user panel
          *
-         * @param {Integer} uid - User-ID
-         * @return {this}
+         * @param {Number} uid - User-ID
+         * @return {Object} this
          */
         openUser : function(uid)
         {
@@ -326,7 +326,7 @@ define([
 
             Sheet.addEvent('onOpen', function(Sheet)
             {
-                Template.get('users_searchtpl', function(result, Request)
+                Template.get('users_searchtpl', function(result)
                 {
                     var i, len, inputs, new_id, Frm, Search, Label;
 
@@ -405,7 +405,7 @@ define([
                         text : Locale.get( lg, 'users.panel.search.btn.start' ),
                         events :
                         {
-                            onClick : function(Btn) {
+                            onClick : function() {
                                 self.execSearch( Sheet );
                             }
                         }
@@ -421,7 +421,7 @@ define([
         /**
          * Execute the search
          *
-         * @param {qui/desktop/panels/Sheet}
+         * @param {Object} Sheet - qui/desktop/panels/Sheet
          */
         execSearch : function(Sheet)
         {
@@ -487,7 +487,7 @@ define([
 
                     Users.existsUsername(
                         Win.getValue(),
-                        function(result, Request)
+                        function(result)
                         {
                             // Benutzer existiert schon
                             if ( result === true )
@@ -513,9 +513,9 @@ define([
 
                 events :
                 {
-                    onsubmit : function(value, Win)
+                    onsubmit : function(value)
                     {
-                        Users.createUser(value, function(result, Request) {
+                        Users.createUser(value, function(result) {
                             self.openUser( result );
                         });
                     }
@@ -560,7 +560,7 @@ define([
         /**
          * onblur on the grid
          */
-        $gridBlur : function(data)
+        $gridBlur : function()
         {
             this.getGrid().unselectAll();
             this.getGrid().removeSections();
@@ -618,12 +618,12 @@ define([
             if ( this.getAttribute( 'search' ) &&
                  !this.getBody().getElement( '.messages-message' ) )
             {
-                var Msg = new Attention({
+                new Attention({
                     Users   : this,
                     message : Locale.get( lg, 'users.panel.search.info' ),
                     events  :
                     {
-                        onClick : function(Message, event)
+                        onClick : function(Message)
                         {
                             self.setAttribute( 'search', false );
                             self.setAttribute( 'searchSettings', {} );
@@ -651,7 +651,7 @@ define([
                 search         : this.getAttribute( 'search' ),
                 searchSettings : this.getAttribute( 'searchSettings' )
 
-            }, function(result, Request)
+            }, function(result)
             {
                 var Grid = self.getGrid();
 
@@ -686,12 +686,12 @@ define([
         /**
          * if a user status is changed
          *
-         * @param {classes/users/Users} Users
+         * @param {Object} Users - classes/users/Users
          * @param {Object} ids - User-IDs
          */
         $onSwitchStatus : function(Users, ids)
         {
-            var i, id, len, Btn, entry, status;
+            var i, len, Btn, entry, status;
 
             var Grid = this.getGrid(),
                 data = Grid.getData();
@@ -725,8 +725,8 @@ define([
         /**
          * if a user status is changed
          *
-         * @param {classes/users/Users} Users
-         * @param {classes/users/User} User
+         * @param {Object} Users - classes/users/Users
+         * @param {Object} User - classes/users/User
          */
         $onUserRefresh : function(Users, User)
         {
@@ -909,7 +909,7 @@ define([
         /**
          * Parse the attributes to grid data entry
          *
-         * @param {classes/users/User} User
+         * @param {Object} User - classes/users/User
          * @return {Object}
          */
         userToGridData : function(User)
