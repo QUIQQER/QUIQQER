@@ -6,7 +6,8 @@
 
 namespace QUI\Users;
 
-use \QUI\Utils\Security\Orthos as Orthos;
+use QUI;
+use QUI\Utils\Security\Orthos as Orthos;
 
 /**
  * A user
@@ -22,14 +23,8 @@ use \QUI\Utils\Security\Orthos as Orthos;
  * @event onUserDeactivate [ \QUI\Users\User ]
  */
 
-class User implements \QUI\Interfaces\Users\User
+class User implements QUI\Interfaces\Users\User
 {
-    /**
-     * Project extention
-     * @var UserExtend
-     */
-    public $Extend = null;
-
     /**
      * The groups in which the user is
      * @var array|\QUI\Groups\Group
@@ -133,22 +128,20 @@ class User implements \QUI\Interfaces\Users\User
      * @param \QUI\Users\Manager $Users - the user manager
      * @throws \QUI\Exception
      */
-    public function __construct($id, \QUI\Users\Manager $Users)
+    public function __construct($id, Manager $Users)
     {
         $id = (int)$id;
 
         if ( !$id || $id <= 10 )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.user.wrong.uid'
                 ),
                 404
             );
         }
-
-        $Groups = \QUI::getGroups();
 
         $this->_Users = $Users;
         $this->_id    = $id;
@@ -159,11 +152,11 @@ class User implements \QUI\Interfaces\Users\User
     /**
      * refresh the data from the database
      *
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      */
     public function refresh()
     {
-        $data = \QUI::getDataBase()->fetch(array(
+        $data = QUI::getDataBase()->fetch(array(
             'from'  => Manager::Table(),
             'where' => array(
                 'id' => $this->_id
@@ -173,8 +166,8 @@ class User implements \QUI\Interfaces\Users\User
 
         if ( !isset( $data[0] ) )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale(
+            throw new QUI\Exception(
+                QUI::getLocale(
                     'quiqqer/system',
                     'exception.lib.user.not.found'
                 ),
@@ -201,7 +194,7 @@ class User implements \QUI\Interfaces\Users\User
             {
                 $this->setGroups( $data[0]['usergroup'] );
 
-            } catch ( \QUI\Exception $Exception )
+            } catch ( QUI\Exception $Exception )
             {
                 // nohting
             }
@@ -265,15 +258,15 @@ class User implements \QUI\Interfaces\Users\User
         }
 
         // Event
-        \QUI::getEvents()->fireEvent( 'userLoad', array( $this ));
+        QUI::getEvents()->fireEvent( 'userLoad', array( $this ));
     }
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Users\User::getPermission()
+     * @see QUI\Interfaces\Users\User::getPermission()
      *
      * @param String $right
-     * @param array $ruleset - optional, you can specific a ruleset, a rules = array with rights
+     * @param Array|Bool $ruleset - optional, you can specific a ruleset, a rules = array with rights
      *
      * @return Bool
      */
@@ -281,12 +274,12 @@ class User implements \QUI\Interfaces\Users\User
     {
         //@todo Benutzer muss erster prüfen ob bei ihm das recht seperat gesetzt ist
 
-        return \QUI::getPermissionManager()->getUserPermission( $this, $right, $ruleset );
+        return QUI::getPermissionManager()->getUserPermission( $this, $right, $ruleset );
     }
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Users\User::getType()
+     * @see QUI\Interfaces\Users\User::getType()
      */
     public function getType()
     {
@@ -295,7 +288,7 @@ class User implements \QUI\Interfaces\Users\User
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Users\User::getExtra()
+     * @see QUI\Interfaces\Users\User::getExtra()
      *
      * @param String $field
      * @return String|Integer|array
@@ -308,7 +301,7 @@ class User implements \QUI\Interfaces\Users\User
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Users\User::setExtra()
+     * @see QUI\Interfaces\Users\User::setExtra()
      *
      * @param String $field
      * @param String|Integer|array $value
@@ -316,18 +309,19 @@ class User implements \QUI\Interfaces\Users\User
      */
     public function setExtra($field, $value)
     {
-        $this->getAttribute( $field, $value );
+        $this->setAttribute( $field, $value );
     }
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Users\User::loadExtra()
+     * @see QUI\Interfaces\Users\User::loadExtra()
      *
-     * @param \QUI\Projects\Project $Project
+     * @param QUI\Projects\Project $Project
      * @todo für projekte wieder realiseren, vorerst ausgeschaltet
      * @deprecated use user.xml
+     * @return false
      */
-    public function loadExtra(\QUI\Projects\Project $Project)
+    public function loadExtra(QUI\Projects\Project $Project)
     {
         return false;
 
@@ -350,7 +344,7 @@ class User implements \QUI\Interfaces\Users\User
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Users\User::getId()
+     * @see QUI\Interfaces\Users\User::getId()
      */
     public function getId()
     {
@@ -359,7 +353,7 @@ class User implements \QUI\Interfaces\Users\User
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Users\User::getName()
+     * @see QUI\Interfaces\Users\User::getName()
      */
     public function getName()
     {
@@ -368,7 +362,7 @@ class User implements \QUI\Interfaces\Users\User
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Users\User::getLang()
+     * @see QUI\Interfaces\Users\User::getLang()
      */
     public function getLang()
     {
@@ -376,8 +370,8 @@ class User implements \QUI\Interfaces\Users\User
             return $this->_lang;
         }
 
-        $lang  = \QUI::getLocale()->getCurrent();
-        $langs = \QUI::availableLanguages();
+        $lang  = QUI::getLocale()->getCurrent();
+        $langs = QUI::availableLanguages();
 
         if ( $this->getAttribute( 'lang' ) ) {
             $lang = $this->getAttribute( 'lang' );
@@ -392,9 +386,9 @@ class User implements \QUI\Interfaces\Users\User
         {
             try
             {
-                $this->_lang = \QUI\Projects\Manager::get()->getAttribute( 'lang' );
+                $this->_lang = QUI\Projects\Manager::get()->getAttribute( 'lang' );
 
-            } catch ( \QUI\Exception $Exception )
+            } catch ( QUI\Exception $Exception )
             {
 
             }
@@ -402,7 +396,7 @@ class User implements \QUI\Interfaces\Users\User
 
         // wird noch gebraucht?
         if ( !$this->_lang ) {
-            $this->_lang = \QUI::getLocale()->getCurrent();
+            $this->_lang = QUI::getLocale()->getCurrent();
         }
 
         return $this->_lang;
@@ -418,7 +412,7 @@ class User implements \QUI\Interfaces\Users\User
             return $this->Locale;
         }
 
-        $this->Locale = new \QUI\Locale();
+        $this->Locale = new QUI\Locale();
         $this->Locale->setCurrent( $this->getLang() );
 
         return $this->Locale;
@@ -426,7 +420,7 @@ class User implements \QUI\Interfaces\Users\User
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Users\User::getStatus()
+     * @see QUI\Interfaces\Users\User::getStatus()
      */
     public function getStatus()
     {
@@ -447,7 +441,7 @@ class User implements \QUI\Interfaces\Users\User
     {
         if ( $this->getAttribute( 'currency' ) )
         {
-            if ( \QUI\Currency::existCurrency( $this->getAttribute( 'currency' ) ) ) {
+            if ( QUI\Currency::existCurrency( $this->getAttribute( 'currency' ) ) ) {
                 return $this->getAttribute( 'currency' );
             }
         }
@@ -458,18 +452,18 @@ class User implements \QUI\Interfaces\Users\User
         {
             $currency = $Country->getCurrencyCode();
 
-            if ( \QUI\Currency::existCurrency( $currency ) ) {
+            if ( QUI\Currency::existCurrency( $currency ) ) {
                 return $currency;
             }
         }
 
-        return \QUI\Currency::getDefaultCurrency();
+        return QUI\Currency::getDefaultCurrency();
     }
 
     /**
      * Return the Country from the
      *
-     * @return \QUI\Countries\Country|boolean
+     * @return QUI\Countries\Country|boolean
      */
     public function getCountry()
     {
@@ -483,7 +477,7 @@ class User implements \QUI\Interfaces\Users\User
                 return $Country;
             }
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
 
         }
@@ -493,11 +487,11 @@ class User implements \QUI\Interfaces\Users\User
         {
             try
             {
-                return \QUI\Countries\Manager::get(
+                return QUI\Countries\Manager::get(
                     $_SERVER[ "GEOIP_COUNTRY_CODE" ]
                 );
 
-            } catch ( \QUI\Exception $Exception )
+            } catch ( QUI\Exception $Exception )
             {
 
             }
@@ -508,7 +502,7 @@ class User implements \QUI\Interfaces\Users\User
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Users\User::setGroups()
+     * @see QUI\Interfaces\Users\User::setGroups()
      *
      * @param array|String $groups
      */
@@ -518,7 +512,7 @@ class User implements \QUI\Interfaces\Users\User
             return;
         }
 
-        $Groups = \QUI::getGroups();
+        $Groups = QUI::getGroups();
 
         $this->Group   = array();
         $this->_groups = false;
@@ -556,7 +550,7 @@ class User implements \QUI\Interfaces\Users\User
                     $this->Group[] = $Groups->get( $g );
                     $aTmp[] = $g;
 
-                } catch ( \QUI\Exception $Exception )
+                } catch ( QUI\Exception $Exception )
                 {
                     // nothing
                 }
@@ -571,7 +565,7 @@ class User implements \QUI\Interfaces\Users\User
                 $this->Group[] = $Groups->get( $groups );
                 $this->_groups = ','.$groups.',';
 
-            } catch ( \QUI\Exception $Exception )
+            } catch ( QUI\Exception $Exception )
             {
 
             }
@@ -580,7 +574,7 @@ class User implements \QUI\Interfaces\Users\User
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Users\User::getGroups()
+     * @see QUI\Interfaces\Users\User::getGroups()
      *
      * @param Bool $array - returns the groups as objects (true) or as an array (false)
      * @return array
@@ -602,11 +596,11 @@ class User implements \QUI\Interfaces\Users\User
     /**
      * Remove a group from the user
      *
-     * @param \QUI\Groups\Group|Integer $Group
+     * @param QUI\Groups\Group|Integer $Group
      */
     public function removeGroup($Group)
     {
-        $Groups = \QUI::getGroups();
+        $Groups = QUI::getGroups();
 
         if ( is_string( $Group ) || is_int( $Group ) ) {
             $Group = $Groups->get( (int)$Group );
@@ -621,6 +615,7 @@ class User implements \QUI\Interfaces\Users\User
 
         foreach ( $groups as $key => $UserGroup )
         {
+            /* @var $UserGroup QUI\Groups\Group */
             if ( $UserGroup->getId() != $Group->getId() ) {
                 $new_gr[] = $UserGroup->getId();
             }
@@ -637,11 +632,11 @@ class User implements \QUI\Interfaces\Users\User
     public function addGroup($gid)
     {
         /* @todo Root Gruppe darf nur in Root Gruppe */
-        if ( $gid == \QUI::conf('globals', 'root') ) {
+        if ( $gid == QUI::conf('globals', 'root') ) {
             return; // bad fix, mal provisorisch
         }
 
-        $Groups = \QUI::getGroups();
+        $Groups = QUI::getGroups();
         $Group  = $Groups->get($gid);
 
         $groups = $this->getGroups(true);
@@ -657,6 +652,7 @@ class User implements \QUI\Interfaces\Users\User
 
         foreach ( $groups as $key => $UserGroup )
         {
+            /* @var $UserGroup QUI\Groups\Group */
             if ( isset( $_tmp[ $UserGroup->getId() ] ) ) {
                 continue;
             }
@@ -671,10 +667,12 @@ class User implements \QUI\Interfaces\Users\User
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Users\User::setAttribute()
+     * @see QUI\Interfaces\Users\User::setAttribute()
      *
      * @param String $key
      * @param String|Integer|Array $value
+     * @return void
+     * @throws QUI\Exception
      */
     public function setAttribute($key, $value)
     {
@@ -698,9 +696,9 @@ class User implements \QUI\Interfaces\Users\User
                 Manager::checkUsernameSigns($value);
 
                 if ($this->_name != $value &&
-                    $this->_Users->existsUsername($value))
+                    $this->_Users->usernameExists($value))
                 {
-                    throw new \QUI\Exception('Name existiert bereits');
+                    throw new QUI\Exception('Name existiert bereits');
                 }
 
                 $this->_name = $value;
@@ -758,10 +756,10 @@ class User implements \QUI\Interfaces\Users\User
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Users\User::getAttribute()
+     * @see QUI\Interfaces\Users\User::getAttribute()
      *
      * @param String $var
-     * @return String|Ineteger|array
+     * @return String|Integer|array
      */
     public function getAttribute($var)
     {
@@ -809,7 +807,7 @@ class User implements \QUI\Interfaces\Users\User
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Users\User::getAvatar()
+     * @see QUI\Interfaces\Users\User::getAvatar()
      *
      * @param Bool $url - get the avatar with the complete url string
      * @return String
@@ -830,7 +828,7 @@ class User implements \QUI\Interfaces\Users\User
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Users\User::logout()
+     * @see QUI\Interfaces\Users\User::logout()
      */
     public function logout()
     {
@@ -839,22 +837,23 @@ class User implements \QUI\Interfaces\Users\User
         }
 
         // Wenn der Benutzer dieser hier ist
-        $Users    = \QUI::getUsers();
+        $Users    = QUI::getUsers();
         $SessUser = $Users->getUserBySession();
 
         if ( $SessUser->getId() == $this->getId() )
         {
-            $Session = \QUI::getSession();
+            $Session = QUI::getSession();
             $Session->destroy();
         }
     }
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Users\User::setPassword()
+     * @see QUI\Interfaces\Users\User::setPassword()
      *
      * @param String $new - new password
-     * @param \QUI\Users\User|false - $ParentUser
+     * @param QUI\Users\User|Bool $ParentUser
+     * @throws QUI\Exception
      */
     public function setPassword($new, $ParentUser=false)
     {
@@ -862,28 +861,28 @@ class User implements \QUI\Interfaces\Users\User
 
         if ( empty( $new ) )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.user.empty.password'
                 )
             );
         }
 
-        \QUI::getEvents()->fireEvent('userSetPassword', array( $this ));
+        QUI::getEvents()->fireEvent('userSetPassword', array( $this ));
 
 
         $newpass         = Manager::genHash( $new );
         $this->_password = $newpass;
 
-        \QUI::getDataBase()->update(
+        QUI::getDataBase()->update(
             Manager::Table(),
             array( 'password' => $newpass ),
             array( 'id'       => $this->getId() )
         );
 
-        \QUI::getMessagesHandler()->addSuccess(
-            \QUI::getLocale()->get(
+        QUI::getMessagesHandler()->addSuccess(
+            QUI::getLocale()->get(
                 'quiqqer/system',
                 'message.password.save.success'
             )
@@ -892,10 +891,11 @@ class User implements \QUI\Interfaces\Users\User
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Users\User::checkPassword()
+     * @see QUI\Interfaces\Users\User::checkPassword()
      *
      * @param String $pass 		- Password
      * @param Bool $encrypted	- is the given password already encrypted?
+     * @return Bool
      */
     public function checkPassword($pass, $encrypted=false)
     {
@@ -912,9 +912,11 @@ class User implements \QUI\Interfaces\Users\User
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Users\User::activate()
+     * @see QUI\Interfaces\Users\User::activate()
      *
-     * @param String $code - activasion code [optional]
+     * @param String|Bool $code - activasion code [optional]
+     * @return Bool
+     * @throws QUI\Exception
      */
     public function activate($code=false)
     {
@@ -925,8 +927,8 @@ class User implements \QUI\Interfaces\Users\User
         // benutzer ist schon aktiv, aktivierung kann nicht durchgeführt werden
         if ( $this->isActive() )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.user.activasion.user.is.activated'
                 )
@@ -935,8 +937,8 @@ class User implements \QUI\Interfaces\Users\User
 
         if ( $code && $code != $this->getAttribute( 'activation' ) )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.user.activasion.wrong.code'
                 )
@@ -945,17 +947,17 @@ class User implements \QUI\Interfaces\Users\User
 
         if ( $this->_password == '' )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.user.activasion.no.password'
                 )
             );
         }
 
-        \QUI::getEvents()->fireEvent('userActivate', array( $this ));
+        QUI::getEvents()->fireEvent('userActivate', array( $this ));
 
-        $res = \QUI::getDataBase()->update(
+        QUI::getDataBase()->update(
             Manager::Table(),
             array( 'active' => 1 ),
             array( 'id'     => $this->getId() )
@@ -963,20 +965,21 @@ class User implements \QUI\Interfaces\Users\User
 
         $this->_active = true;
 
-        return $res;
+        return $this->_active;
     }
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Users\User::deactivate()
+     * @see QUI\Interfaces\Users\User::deactivate()
      */
     public function deactivate()
     {
         $this->_checkRights();
+        $this->_canBeDeleted();
 
-        \QUI::getEvents()->fireEvent('userDeactivate', array( $this ));
+        QUI::getEvents()->fireEvent('userDeactivate', array( $this ));
 
-        \QUI::getDataBase()->update(
+        QUI::getDataBase()->update(
             Manager::Table(),
             array('active' => 0),
             array('id'     => $this->getId())
@@ -990,16 +993,20 @@ class User implements \QUI\Interfaces\Users\User
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Users\User::disable()
+     * @see QUI\Interfaces\Users\User::disable()
+     *
+     * @param QUI\Users\User|Bool $ParentUser
+     * @return Bool
+     * @throws QUI\Exception
      */
     public function disable($ParentUser=false)
     {
         $this->_checkRights( $ParentUser );
+        $this->_canBeDeleted();
 
+        QUI::getEvents()->fireEvent('userDisable', array( $this ));
 
-        \QUI::getEvents()->fireEvent('userDisable', array( $this ));
-
-        \QUI::getDataBase()->update(
+        QUI::getDataBase()->update(
             Manager::Table(),
             array(
                 'username'   => '',
@@ -1029,7 +1036,11 @@ class User implements \QUI\Interfaces\Users\User
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Users\User::save()
+     * @see QUI\Interfaces\Users\User::save()
+     *
+     * @param QUI\Users\User|Bool $ParentUser
+     * @return Bool
+     * @throws QUI\Exception
      */
     public function save($ParentUser=false)
     {
@@ -1070,10 +1081,10 @@ class User implements \QUI\Interfaces\Users\User
             $extra[ $attribute ] = $this->getAttribute( $attribute );
         }
 
-        \QUI::getEvents()->fireEvent('userSave', array($this));
+        QUI::getEvents()->fireEvent('userSave', array($this));
 
 
-        return \QUI::getDataBase()->update(
+        return QUI::getDataBase()->update(
             Manager::Table(),
             array(
                 'username' 	=> $this->getName(),
@@ -1098,7 +1109,7 @@ class User implements \QUI\Interfaces\Users\User
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Users\User::isSU()
+     * @see QUI\Interfaces\Users\User::isSU()
      */
     public function isSU()
     {
@@ -1111,7 +1122,7 @@ class User implements \QUI\Interfaces\Users\User
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Users\User::isAdmin()
+     * @see QUI\Interfaces\Users\User::isAdmin()
      */
     public function isAdmin()
     {
@@ -1119,14 +1130,14 @@ class User implements \QUI\Interfaces\Users\User
             return $this->_admin;
         }
 
-        $this->_admin = \QUI\Rights\Permission::isAdmin();
+        $this->_admin = QUI\Rights\Permission::isAdmin();
 
         return $this->_admin;
     }
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Users\User::isDeleted()
+     * @see QUI\Interfaces\Users\User::isDeleted()
      */
     public function isDeleted()
     {
@@ -1135,7 +1146,7 @@ class User implements \QUI\Interfaces\Users\User
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Users\User::isActive()
+     * @see QUI\Interfaces\Users\User::isActive()
      */
     public function isActive()
     {
@@ -1144,23 +1155,25 @@ class User implements \QUI\Interfaces\Users\User
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Users\User::isOnline()
+     * @see QUI\Interfaces\Users\User::isOnline()
      */
     public function isOnline()
     {
-        return \QUI::getSession()->isUserOnline( $this->getId() );
+        return QUI::getSession()->isUserOnline( $this->getId() );
     }
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Users\User::delete()
+     * @see QUI\Interfaces\Users\User::delete()
      */
     public function delete()
     {
-        // Pluginerweiterungen - onDelete Event
-        \QUI::getEvents()->fireEvent('userDelete', array($this));
+        $this->_canBeDeleted();
 
-        \QUI::getDataBase()->delete(
+        // Pluginerweiterungen - onDelete Event
+        QUI::getEvents()->fireEvent('userDelete', array($this));
+
+        QUI::getDataBase()->delete(
             Manager::Table(),
             array('id' => $this->getId())
         );
@@ -1173,12 +1186,13 @@ class User implements \QUI\Interfaces\Users\User
     /**
      * Checks the edit rights of a user
      *
-     * @return true
-     * @throws \QUI\Exceptions
+     * @param QUI\Users\User|Bool $ParentUser
+     * @return Bool - true
+     * @throws QUI\Exception
      */
     protected function _checkRights($ParentUser=false)
     {
-        $Users       = \QUI::getUsers();
+        $Users       = QUI::getUsers();
         $SessionUser = $Users->getUserBySession();
 
         if ( $ParentUser && $ParentUser->getType() == 'QUI\\Users\\SystemUser' ) {
@@ -1193,8 +1207,8 @@ class User implements \QUI\Interfaces\Users\User
             return true;
         }
 
-        throw new \QUI\Exception(
-            \QUI::getLocale()->get(
+        throw new QUI\Exception(
+            QUI::getLocale()->get(
                 'quiqqer/system',
                 'exception.lib.user.no.edit.rights'
             )
@@ -1212,13 +1226,13 @@ class User implements \QUI\Interfaces\Users\User
     {
         try
         {
-            return \QUI\Cache\Manager::get( 'user/plugin-attribute-list' );
+            return QUI\Cache\Manager::get( 'user/plugin-attribute-list' );
 
-        } catch ( \QUI\Exception $Exception ) {
+        } catch ( QUI\Exception $Exception ) {
 
         }
 
-        $list       = \QUI::getPackageManager()->getInstalled();
+        $list       = QUI::getPackageManager()->getInstalled();
         $attributes = array();
 
         foreach ( $list as $entry )
@@ -1241,7 +1255,7 @@ class User implements \QUI\Interfaces\Users\User
             $this->_readAttributesFromUserXML( SYS_DIR .'user.xml' )
         );
 
-        \QUI\Cache\Manager::set( 'user/plugin-attribute-list', $attributes );
+        QUI\Cache\Manager::set( 'user/plugin-attribute-list', $attributes );
 
         return $attributes;
     }
@@ -1255,13 +1269,14 @@ class User implements \QUI\Interfaces\Users\User
      */
     protected function _readAttributesFromUserXML($file)
     {
-        $Dom  = \QUI\Utils\XML::getDomFromXml( $file );
+        $Dom  = QUI\Utils\XML::getDomFromXml( $file );
         $Attr = $Dom->getElementsByTagName( 'attributes' );
 
         if ( !$Attr->length ) {
             return array();
         }
 
+        /* @var $Attributes \DOMElement */
         $Attributes = $Attr->item( 0 );
         $list       = $Attributes->getElementsByTagName( 'attribute' );
 
@@ -1289,7 +1304,7 @@ class User implements \QUI\Interfaces\Users\User
      * Add a address to the user
      *
      * @param Array $params
-     * @return \QUI\Users\Address
+     * @return QUI\Users\Address
      */
     public function addAddress($params=array())
     {
@@ -1338,13 +1353,13 @@ class User implements \QUI\Interfaces\Users\User
 
         $_params[ 'uid' ] = $this->getId();
 
-        $Statement = \QUI::getDataBase()->insert(
+        QUI::getDataBase()->insert(
             Manager::TableAddress(),
             $_params
         );
 
         return $this->getAddress(
-            \QUI::getDataBase()->getPDO()->lastInsertId()
+            QUI::getDataBase()->getPDO()->lastInsertId()
         );
     }
 
@@ -1355,7 +1370,7 @@ class User implements \QUI\Interfaces\Users\User
      */
     public function getAddressList()
     {
-        $result = \QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch(array(
             'from'   => Manager::TableAddress(),
             'select' => 'id',
             'where'  => array(
@@ -1382,7 +1397,7 @@ class User implements \QUI\Interfaces\Users\User
      * Get a address from the user
      *
      * @param Integer $id - address ID
-     * @return \QUI\Users\Address
+     * @return QUI\Users\Address
      */
     public function getAddress($id)
     {
@@ -1392,7 +1407,7 @@ class User implements \QUI\Interfaces\Users\User
             return $this->_address_list[ $id ];
         }
 
-        $this->_address_list[ $id ] = new \QUI\Users\Address( $this, $id );
+        $this->_address_list[ $id ] = new QUI\Users\Address( $this, $id );
 
         return $this->_address_list[ $id ];
     }
@@ -1401,8 +1416,8 @@ class User implements \QUI\Interfaces\Users\User
      * Return the standard address from the user
      * If no standard address set, the first address will be returned
      *
-     * @throws \QUI\Exception
-     * @return \QUI\Users\Address|false
+     * @throws QUI\Exception
+     * @return QUI\Users\Address|false
      */
     public function getStandardAddress()
     {
@@ -1418,11 +1433,51 @@ class User implements \QUI\Interfaces\Users\User
             return current( $list );
         }
 
-        throw new \QUI\Exception(
-            \QUI::getLocale()->get(
+        throw new QUI\Exception(
+            QUI::getLocale()->get(
                 'quiqqer/system',
                 'exception.user.no.address.exists'
             )
         );
+    }
+
+    /**
+     * Could the user be deleted?
+     *
+     * @throws QUI\Exception
+     */
+    protected function _canBeDeleted()
+    {
+        if ( $this->isSU() )
+        {
+            $suUsers = QUI::getUsers()->getUserIds(array(
+                'where' => array(
+                    'active' => 1,
+                    'su'     => 1
+                )
+            ));
+
+            if ( count( $suUsers ) <= 1 )
+            {
+                throw new QUI\Exception(
+                    'User cant be destroyed or deactivated. At least it must be one super user exist in the system.'
+                );
+            }
+        }
+
+        // check if the user is the only active one in the system
+        // if it is so, no the user cant be deleted
+        $activeUsers = QUI::getUsers()->getUserIds(array(
+            'where' => array(
+                'active' => 1
+            )
+        ));
+
+        if ( count($activeUsers) <= 1 )
+        {
+            throw new QUI\Exception(
+                'User cant be destroyed or deactivated. At least it must be one user exist in the system.'
+            );
+        }
     }
 }

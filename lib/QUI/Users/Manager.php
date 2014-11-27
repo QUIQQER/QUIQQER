@@ -465,10 +465,7 @@ class Manager
      */
     public function getUsers($params=array())
     {
-        $params['select'] = 'id';
-        $params['from']   = self::Table();
-
-        $result = \QUI::getDataBase()->fetch( $params );
+        $result = $this->getUserIds( $params );
 
         if ( !isset( $result[0] ) ) {
             return array();
@@ -489,6 +486,20 @@ class Manager
         }
 
         return $Users;
+    }
+
+    /**
+     * Get specific users ids
+     *
+     * @param Array $params -> SQL Array
+     * @return Array
+     */
+    public function getUserIds($params=array())
+    {
+        $params['select'] = 'id';
+        $params['from']   = self::Table();
+
+        return \QUI::getDataBase()->fetch( $params );
     }
 
     /**
@@ -941,7 +952,8 @@ class Manager
     /**
      * Anzahl der Rechnungen
      *
-     * @param array $params - Search parameter
+     * @param Array $params - Search parameter
+     * @return Array
      */
     public function count($params)
     {
@@ -958,8 +970,9 @@ class Manager
      *
      * @todo where params
      *
-     * @param array $params
-     * @return array
+     * @param Array $params
+     * @return Array
+     * @throws \QUI\Database\Exception
      */
     protected function _search($params)
     {
@@ -975,7 +988,8 @@ class Manager
             'lastname'  => true,
             'birthday'  => true,
             'active'    => true,
-            'regdate'   => true
+            'regdate'   => true,
+            'su'        => true
         );
 
         $max   = 10;
@@ -1158,7 +1172,7 @@ class Manager
 
         foreach ( $binds as $key => $value )
         {
-            if ( $key == ':active' )
+            if ( $key == ':active' || $key == ':su' )
             {
                 $Statement->bindValue( $key, $value, \PDO::PARAM_INT );
 
@@ -1172,14 +1186,14 @@ class Manager
         {
             $Statement->execute();
 
-        } catch ( \PDOException $e )
+        } catch ( \PDOException $Exception )
         {
-            $message  = $e->getMessage();
+            $message  = $Exception->getMessage();
             $message .= print_r($query, true);
 
             throw new \QUI\Database\Exception(
                 $message,
-                $e->getCode()
+                $Exception->getCode()
             );
         }
 

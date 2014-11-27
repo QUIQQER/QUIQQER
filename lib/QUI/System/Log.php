@@ -78,7 +78,7 @@ class Log
     /**
      * Writes with print_r the object into a log file
      *
-     * @param Object|String|Integer $object
+     * @param Object|String|Integer|Array $object
      * @param Integer $loglevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
      * @param String $filename - [optional] name of the log eq: messages, database,
      */
