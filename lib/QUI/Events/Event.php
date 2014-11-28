@@ -6,6 +6,8 @@
 
 namespace QUI\Events;
 
+use QUI;
+
 /**
  * Events Handling
  * Extends a class with the events interface
@@ -13,7 +15,7 @@ namespace QUI\Events;
  * @author www.pcsg.de (Henning Leutz)
  */
 
-class Event implements \QUI\Interfaces\Events
+class Event implements QUI\Interfaces\Events
 {
     /**
      * Registered events
@@ -37,7 +39,7 @@ class Event implements \QUI\Interfaces\Events
      * @see \QUI\Interfaces\Events::addEvent()
      *
      * @param String $event - The type of event (e.g. 'complete').
-     * @param Function $fn - The function to execute.
+     * @param callback $fn - The function to execute.
      */
     public function addEvent($event, $fn)
     {
@@ -62,7 +64,7 @@ class Event implements \QUI\Interfaces\Events
      * @see \QUI\Interfaces\Events::removeEvent()
      *
      * @param String $event - The type of event (e.g. 'complete').
-     * @param Function $fn - (optional) The function to remove.
+     * @param callback|Bool $fn - (optional) The function to remove.
      */
     public function removeEvent($event, $fn=false)
     {
@@ -88,7 +90,7 @@ class Event implements \QUI\Interfaces\Events
      * (non-PHPdoc)
      * @see \QUI\Interfaces\Events::removeEvents()
      *
-     * @param array $events - [optional] If not passed removes all events of all types.
+     * @param Array $events - (optional) If not passed removes all events of all types.
      */
     public function removeEvents(array $events)
     {
@@ -102,9 +104,9 @@ class Event implements \QUI\Interfaces\Events
      * @see \QUI\Interfaces\Events::fireEvent()
      *
      * @param String $event - The type of event (e.g. 'onComplete').
-     * @param Array $args   - (optional) the argument(s) to pass to the function.
-     *                        The arguments must be in an array.
-     * @param Bool $force   - no recursion check, optional, default = false
+     * @param Array|Bool $args   - (optional) the argument(s) to pass to the function.
+     *                            The arguments must be in an array.
+     * @param Bool $force   - (optional) no recursion check, optional, default = false
      *
      * @return Array - Event results, assoziative array
      */
@@ -130,7 +132,7 @@ class Event implements \QUI\Interfaces\Events
         }
 
         if ( $event == 'onSave' || $event == 'save' ) {
-            \QUI\System\Log::writeRecursive( $this->_currentRunning );
+            QUI\System\Log::writeRecursive( $this->_currentRunning );
         }
 
 

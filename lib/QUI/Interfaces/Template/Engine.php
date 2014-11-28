@@ -18,16 +18,24 @@ interface Engine
     /**
      * Return the complete template
      *
-     * @param String $template - path to the template
-     * @return String
+     * @param string $template - path to the template
+     * @return string
      */
     public function fetch($template);
 
     /**
      * Assign a Variable to the engine
      *
-     * @param array|String $var
-     * @param unknown_type $value - optional
+     * @param array|string $var
+     * @param mixed $value - optional
      */
     public function assign($var, $value=false);
+
+    /**
+     * Extend the html header
+     *
+     * @param String $str
+     * @param Integer $prio
+     */
+    public function extendHeader($str, $prio=3);
 }

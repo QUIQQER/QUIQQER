@@ -8,6 +8,7 @@ namespace QUI;
 
 use Composer\Script\Event;
 
+use QUI;
 use QUI\Utils\System\File as QUIFile;
 use QUI\System\Log;
 use QUI\Utils\XML;
@@ -35,9 +36,9 @@ class Update
 
         $IO = $Event->getIO();
 
-        \QUI::load();
+        QUI::load();
 
-        $IO->write( '\QUI\Update->onInstall' );
+        $IO->write( 'QUI\Update->onInstall' );
         $IO->write( CMS_DIR );
     }
 
@@ -52,23 +53,23 @@ class Update
         $Composer = $Event->getComposer();
 
         // load quiqqer
-        \QUI::load();
-        \QUI::getLocale()->setCurrent( 'en' );
+        QUI::load();
+        QUI::getLocale()->setCurrent( 'en' );
 
         // session table
-        \QUI::getSession()->setup();
+        QUI::getSession()->setup();
 
         // rights setup, so we have all importend tables
-        \QUI\Rights\Manager::setup();
+        QUI\Rights\Manager::setup();
 
         // WYSIWYG Setup
-        \QUI\Editor\Manager::setup();
+        QUI\Editor\Manager::setup();
 
         // Events setup
-        \QUI\Events\Manager::setup();
-        \QUI\Events\Manager::clear();
+        QUI\Events\Manager::setup();
+        QUI\Events\Manager::clear();
 
-        \QUI\Messages\Handler::setup();
+        QUI\Messages\Handler::setup();
 
 
         $packages_dir = $Composer->getConfig()->get( 'vendor-dir' );
@@ -113,7 +114,7 @@ class Update
         // so the new translations are available
         $IO->write( 'Execute QUIQQER Translator' );
 
-        \QUI\Translator::create();
+        QUI\Translator::create();
 
 
         // then we can read the rest xml files
@@ -178,9 +179,9 @@ class Update
         // quiqqer setup
         $IO->write( 'Starting QUIQQER setup' );
 
-        if ( \QUI::getUserBySession()->getId() )
+        if ( QUI::getUserBySession()->getId() )
         {
-            \QUI::setup();
+            QUI::setup();
 
             $IO->write( 'QUIQQER Setup finish' );
 
@@ -208,13 +209,14 @@ class Update
 
         foreach ( $engines as $Engine )
         {
+            /* @var $Engine \DOMElement */
             if ( !$Engine->getAttribute( 'class_name' ) ||
                  empty( $Engine->nodeValue ) )
             {
                 continue;
             }
 
-            \QUI::getTemplateManager()->registerEngine(
+            QUI::getTemplateManager()->registerEngine(
                 trim( $Engine->nodeValue ),
                 $Engine->getAttribute( 'class_name' )
             );
@@ -239,13 +241,14 @@ class Update
 
         foreach ( $editors as $Editor )
         {
+            /* @var $Editor \DOMElement */
             if ( !$Editor->getAttribute( 'package' ) ||
                  empty( $Editor->nodeValue ) )
             {
                 continue;
             }
 
-            \QUI\Editor\Manager::registerEditor(
+            QUI\Editor\Manager::registerEditor(
                 trim( $Editor->nodeValue ),
                 $Editor->getAttribute( 'package' )
             );
@@ -256,7 +259,7 @@ class Update
      * Import / register quiqqer events
      *
      * @param String $xml_file - path to an engine.xml
-     * @param $IO - Composer InputOutput
+     * @param $IO - (optional) Composer InputOutput
      */
     static function importEvents($xml_file, $IO=null)
     {
@@ -267,10 +270,11 @@ class Update
         Log::write( 'Read: '. $xml_file );
 
         $events = XML::getEventsFromXml( $xml_file );
-        $Events = \QUI::getEvents();
+        $Events = QUI::getEvents();
 
         foreach ( $events as $Event )
         {
+            /* @var $Event \DOMElement */
             if ( $Event->getAttribute( 'on' ) &&
                  $Event->getAttribute( 'fire' ) )
             {
@@ -286,7 +290,7 @@ class Update
      * Import / register quiqqer site events
      *
      * @param String $xml_file - path to an engine.xml
-     * @param $IO - Composer InputOutput
+     * @param $IO - (optional)  Composer InputOutput
      */
     static function importSiteEvents($xml_file, $IO=null)
     {
@@ -297,7 +301,7 @@ class Update
         Log::write( 'Read: '. $xml_file );
 
         $events = XML::getSiteEventsFromXml( $xml_file );
-        $Events = \QUI::getEvents();
+        $Events = QUI::getEvents();
 
         foreach ( $events as $event ) {
             $Events->addSiteEvent( $event['on'], $event['fire'], $event['type'] );
@@ -376,7 +380,7 @@ class Update
 
         Log::write( 'Read: '. $xml_file );
 
-        \QUI\Translator::import( $xml_file, false );
+        QUI\Translator::import( $xml_file, false );
     }
 
     /**
@@ -403,6 +407,7 @@ class Update
      * Read all packages and import the menu.xml files to the quiqqer system
      *
      * @param Composer $Composer - optional
+     * @throws QUI\Exception
      */
     static function importAllMenuXMLs($Composer=null)
     {
@@ -418,11 +423,9 @@ class Update
 
         if ( !$packages_dir )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 'Could not import menu.xml. Package-Dir not found'
             );
-
-            return;
         }
 
         $packages = QUIFile::readDir( OPT_DIR );
@@ -457,12 +460,11 @@ class Update
      */
     static function importAllPermissionsXMLs()
     {
-        $packages_dir = OPT_DIR;
-        $packages     = QUIFile::readDir( OPT_DIR );
+        $packages = QUIFile::readDir( OPT_DIR );
 
         // clear system permissions
-        \QUI::getDataBase()->delete(
-            \QUI::getDBTableName( \QUI\Rights\Manager::TABLE ),
+        QUI::getDataBase()->delete(
+            QUI::getDBTableName( QUI\Rights\Manager::TABLE ),
             array(
                 'src' => array(
                     'type'  => 'NOT',
@@ -471,7 +473,7 @@ class Update
             )
         );
 
-        \QUI::$Rights = null; // so we have nor permission cache
+        QUI::$Rights = null; // so we have nor permission cache
 
 
         self::importPermissions(
@@ -507,6 +509,7 @@ class Update
      * Reimportation from all locale.xml files
      *
      * @param Composer $Composer - optional
+     * @throws QUI\Exception
      */
     static function importAllLocaleXMLs($Composer=null)
     {
@@ -522,11 +525,9 @@ class Update
 
         if ( !$packages_dir )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 'Could not import menu.xml. Package-Dir not found'
             );
-
-            return;
         }
 
         $packages = QUIFile::readDir( $packages_dir );
@@ -554,7 +555,7 @@ class Update
         }
 
         // projects
-        $projects = \QUI::getProjectManager()->getProjects();
+        $projects = QUI::getProjectManager()->getProjects();
 
         foreach ( $projects as $project )
         {

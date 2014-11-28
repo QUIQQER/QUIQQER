@@ -6,6 +6,10 @@
 
 namespace QUI\Editor;
 
+use QUI;
+use QUI\Utils\Security\Orthos;
+use QUI\Utils\System\File as QUIFile;
+
 /**
  * Wysiwyg manager
  *
@@ -36,7 +40,7 @@ class Manager
      */
     static function setup()
     {
-        \QUI\Utils\System\File::mkdir( self::getToolbarsPath() );
+        QUIFile::mkdir( self::getToolbarsPath() );
 
         if ( !file_exists( CMS_DIR .'etc/wysiwyg/conf.ini.php' ) ) {
             file_put_contents( CMS_DIR .'etc/wysiwyg/conf.ini.php', '' );
@@ -68,7 +72,7 @@ class Manager
     /**
      * Return the main editor manager (wyiswyg) config object
      *
-     * @return \QUI\Config
+     * @return QUI\Config
      */
     static function getConf()
     {
@@ -111,6 +115,7 @@ class Manager
      * URL bei Bildern richtig setzen damit diese im Admin angezeigt werden
      *
      * @param String $html
+     * @return String
      */
     public function load($html)
     {
@@ -139,7 +144,7 @@ class Manager
     static function getToolbars()
     {
         $folder = self::getToolbarsPath();
-        $files  = \QUI\Utils\System\File::readDir( $folder, true );
+        $files  = QUIFile::readDir( $folder, true );
 
 //         try
 //         {
@@ -169,14 +174,14 @@ class Manager
      */
     static function deleteToolbar($toolbar)
     {
-        \QUI\Rights\Permission::hasPermission(
+        QUI\Rights\Permission::hasPermission(
             'quiqqer.editors.toolbar.delete'
         );
 
         $folder = self::getToolbarsPath();
         $path   = $folder . $toolbar;
 
-        $path = \QUI\Utils\Security\Orthos::clearPath( $path );
+        $path = Orthos::clearPath( $path );
 
         if ( file_exists( $path ) ) {
             unlink( $path );
@@ -187,10 +192,11 @@ class Manager
      * Add a new toolbar
      *
      * @param String $toolbar - Name of the tools (myNewToolbar)
+     * @throws QUI\Exception
      */
     static function addToolbar($toolbar)
     {
-        \QUI\Rights\Permission::hasPermission(
+        QUI\Rights\Permission::hasPermission(
             'quiqqer.editors.toolbar.add'
         );
 
@@ -201,15 +207,15 @@ class Manager
 
         if ( file_exists( $file ) )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.qui.editor.manager.toolbar.exist'
                 )
             );
         }
 
-        \QUI\Utils\System\File::mkfile( $file );
+        QUIFile::mkfile( $file );
     }
 
     /**
@@ -217,10 +223,11 @@ class Manager
      *
      * @param String $toolbar - toolbar name
      * @param String $xml - toolbar xml
+     * @throws QUI\Exception
      */
     static function saveToolbar($toolbar, $xml)
     {
-        \QUI\Rights\Permission::hasPermission(
+        QUI\Rights\Permission::hasPermission(
             'quiqqer.editors.toolbar.save'
         );
 
@@ -231,7 +238,7 @@ class Manager
 
         if ( !file_exists( $file ) )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.qui.editor.manager.toolbar.exist'
@@ -249,7 +256,7 @@ class Manager
 
         if ( !empty( $errors ) )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.qui.editor.manager.toolbar.xml.error',
@@ -264,7 +271,7 @@ class Manager
     /**
      * Buttonliste vom aktuellen Benutzer bekommen
      *
-     * @return array
+     * @return Array
      */
     static function getToolbarButtonsFromUser()
     {
@@ -272,11 +279,11 @@ class Manager
         $Users = \QUI::getUsers();
         $User  = $Users->getUserBySession();
 
-        $toolbar = $User->getExtra( 'wysiwyg-toolbar' );
+        $toolbar = $User->getAttribute( 'wysiwyg-toolbar' );
 
         if ( !empty( $toolbar ) )
         {
-            $toolbar = self::getToolbarsPath() . $User->getExtra( 'wysiwyg-toolbar' );
+            $toolbar = self::getToolbarsPath() . $User->getAttribute( 'wysiwyg-toolbar' );
 
             if ( file_exists( $toolbar ) ) {
                 return self::parseXmlFileToArray( $toolbar );
@@ -319,7 +326,7 @@ class Manager
     /**
      * Toolbar auslesen
      *
-     * @param unknown_type $file
+     * @param String $file - path to the file
      * @return array
      */
     static function parseXmlFileToArray($file)
@@ -328,16 +335,16 @@ class Manager
 
         try
         {
-            return \QUI\Cache\Manager::get( $cache );
+            return QUI\Cache\Manager::get( $cache );
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
 
         }
 
-        \QUI\System\Log::write( $file );
+        QUI\System\Log::write( $file );
 
-        $Dom     = \QUI\Utils\XML::getDomFromXml( $file );
+        $Dom     = QUI\Utils\XML::getDomFromXml( $file );
         $toolbar = $Dom->getElementsByTagName( 'toolbar' );
 
         if ( !$toolbar->length ) {
@@ -364,7 +371,7 @@ class Manager
             }
         }
 
-        \QUI\Cache\Manager::set( $cache, $result );
+        QUI\Cache\Manager::set( $cache, $result );
 
         return $result;
     }
@@ -372,7 +379,7 @@ class Manager
     /**
      * Parse an XML <line> node
      *
-     * @param DOMNode $Node
+     * @param \DOMNode $Node
      * @return boolean|array
      */
     static function parseXMLLineNode($Node)
@@ -403,7 +410,7 @@ class Manager
     /**
      * Parse an XML <group> node
      *
-     * @param DOMNode $Node
+     * @param \DOMNode $Node
      * @return boolean|array
      */
     static function parseXMLGroupNode($Node)
@@ -449,6 +456,7 @@ class Manager
      *
      * @uses Tidy, if enabled
      * @param String $html
+     * @return String
      */
     public function cleanHTML($html)
     {
@@ -463,7 +471,7 @@ class Manager
 
         if ( class_exists( 'tidy' ) )
         {
-            $Tidy = new Tidy();
+            $Tidy = new \Tidy();
 
             $config = array(
                 "char-encoding"     => "utf8",
@@ -527,8 +535,8 @@ class Manager
     /**
      * Entfernt Zeilenumbrüche in HTML
      *
-     * @param unknown_type $params
-     * @return unknown
+     * @param Array $params
+     * @return String
      */
     protected function _deleteLineBreaksInHtml($params)
     {
@@ -546,8 +554,8 @@ class Manager
     /**
      * Image Src sauber machen
      *
-     * @param unknown_type $html
-     * @return unknown
+     * @param Array $html
+     * @return String
      */
     public function cleanSrc($html)
     {
@@ -566,8 +574,8 @@ class Manager
     /**
      * HREF Src sauber machen
      *
-     * @param unknown_type $html
-     * @return unknown
+     * @param Array $html
+     * @return String
      */
     public function cleanHref($html)
     {
@@ -592,8 +600,8 @@ class Manager
     /**
      * Bereitet HTML für den Editor
      *
-     * @param unknown_type $html
-     * @return unknown
+     * @param Array $html
+     * @return Array
      */
     public function cleanAdminSrc($html)
     {

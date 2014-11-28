@@ -12,7 +12,6 @@ namespace QUI;
  * it includes the composer autoloader
  *
  * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui
  */
 
 class Autoloader

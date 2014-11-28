@@ -6,6 +6,8 @@
 
 namespace QUI\Controls;
 
+use QUI;
+
 /**
  * Mini contact control
  * {control control="\QUI\Controls\Contact" labels=false}
@@ -13,7 +15,7 @@ namespace QUI\Controls;
  * @author www.pcsg.de (Henning Leutz)
  */
 
-class Contact extends \QUI\Control
+class Contact extends QUI\Control
 {
     /**
      * constructor
@@ -38,7 +40,7 @@ class Contact extends \QUI\Control
      */
     public function getBody()
     {
-        $Engine = \QUI::getTemplateManager()->getEngine();
+        $Engine = QUI::getTemplateManager()->getEngine();
 
         $Engine->assign(array(
             'this' => $this

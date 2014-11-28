@@ -6,6 +6,8 @@
 
 namespace QUI\Events;
 
+use QUI;
+
 /**
  * The Event Manager
  * Registered and set global events
@@ -15,7 +17,7 @@ namespace QUI\Events;
  *
  * @author www.pcsg.de (Henning Leutz)
  */
-class Manager implements \QUI\Interfaces\Events
+class Manager implements QUI\Interfaces\Events
 {
     /**
      * Site Events
@@ -28,15 +30,15 @@ class Manager implements \QUI\Interfaces\Events
      */
     public function __construct()
     {
-        $this->_Events = new \QUI\Events\Event();
+        $this->_Events = new Event();
 
         try
         {
-            if ( !\QUI::getDataBase()->Table()->exist( self::Table() ) ) {
+            if ( !QUI::getDataBase()->Table()->exist( self::Table() ) ) {
                 return;
             }
 
-            $list = \QUI::getDataBase()->fetch(array(
+            $list = QUI::getDataBase()->fetch(array(
                 'from'  => self::Table(),
                 'where' => array(
                     'sitetype' => null
@@ -51,7 +53,7 @@ class Manager implements \QUI\Interfaces\Events
                 );
             }
 
-            $list = \QUI::getDataBase()->fetch(array(
+            $list = QUI::getDataBase()->fetch(array(
                 'from'  => self::Table(),
                 'where' => array(
                     'sitetype' => array(
@@ -63,7 +65,7 @@ class Manager implements \QUI\Interfaces\Events
 
             $this->_siteEvents = $list;
 
-        } catch ( \QUI\Database\Exception $Exception )
+        } catch ( QUI\Database\Exception $Exception )
         {
 
         }
@@ -84,7 +86,7 @@ class Manager implements \QUI\Interfaces\Events
      */
     static function setup()
     {
-        $DBTable = \QUI::getDataBase()->Table();
+        $DBTable = QUI::getDataBase()->Table();
 
         $DBTable->appendFields(self::Table(), array(
             'event'    => 'varchar(200)',
@@ -100,7 +102,7 @@ class Manager implements \QUI\Interfaces\Events
      */
     static function clear()
     {
-        \QUI::getDataBase()->Table()->truncate(
+        QUI::getDataBase()->Table()->truncate(
             self::Table()
         );
     }
@@ -143,14 +145,14 @@ class Manager implements \QUI\Interfaces\Events
      * @example $EventManager->addEvent('myEvent', function() { });
      *
      * @param String $event - The type of event (e.g. 'complete').
-     * @param Function $fn - The function to execute.
+     * @param callback $fn - The function to execute.
      */
     public function addEvent($event, $fn)
     {
         // add the event to the db
         if ( is_string( $fn ) )
         {
-            \QUI::getDataBase()->insert(self::Table(), array(
+            QUI::getDataBase()->insert(self::Table(), array(
                 'event'    => $event,
                 'callback' => $fn
             ));
@@ -165,7 +167,7 @@ class Manager implements \QUI\Interfaces\Events
      * @example $EventManager->addEvent('onSave', '\Namespace\Class::exec', 'quiqqer/blog:blog/entry' });
      *
      * @param String $event - The type of event (e.g. 'complete').
-     * @param Function $fn - The function to execute.
+     * @param callback $fn - The function to execute.
      * @param String $sitetype - type of the site
      */
     public function addSiteEvent($event, $fn, $sitetype)
@@ -174,7 +176,7 @@ class Manager implements \QUI\Interfaces\Events
             return;
         }
 
-        \QUI::getDataBase()->insert(self::Table(), array(
+        QUI::getDataBase()->insert(self::Table(), array(
             'event'    => $event,
             'callback' => $fn,
             'sitetype' => $sitetype
@@ -196,7 +198,7 @@ class Manager implements \QUI\Interfaces\Events
      * It remove the events from the database, too.
      *
      * @param String $event - The type of event (e.g. 'complete').
-     * @param Function $fn - (optional) The function to remove.
+     * @param callback|bool $fn - (optional) The function to remove.
      */
     public function removeEvent($event, $fn=false)
     {
@@ -204,14 +206,14 @@ class Manager implements \QUI\Interfaces\Events
 
         if ( $fn === false )
         {
-            \QUI::getDataBase()->delete(self::Table(), array(
+            QUI::getDataBase()->delete(self::Table(), array(
                 'event' => $event
             ));
         }
 
         if ( is_string( $fn ) )
         {
-            \QUI::getDataBase()->delete(self::Table(), array(
+            QUI::getDataBase()->delete(self::Table(), array(
                 'event'    => $event,
                 'callback' => $fn
             ));
@@ -234,8 +236,8 @@ class Manager implements \QUI\Interfaces\Events
      * (non-PHPdoc)
      * @see \QUI\Interfaces\Events::fireEvent()
      *
-     * @param String $event - The type of event (e.g. 'onComplete').
-     * @param Array $args   - (optional) the argument(s) to pass to the function.
+     * @param string $event - The type of event (e.g. 'onComplete').
+     * @param array|bool $args   - (optional) the argument(s) to pass to the function.
      *                        The arguments must be in an array.
      */
     public function fireEvent($event, $args=false)

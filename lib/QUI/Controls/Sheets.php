@@ -6,13 +6,15 @@
 
 namespace QUI\Controls;
 
+use QUI;
+
 /**
  * Sheetlist
  *
  * @author www.pcsg.de (Henning Leutz)
  */
 
-class Sheets extends \QUI\Control
+class Sheets extends QUI\Control
 {
     /**
      * constructor
@@ -35,7 +37,7 @@ class Sheets extends \QUI\Control
      */
     public function getBody()
     {
-        $Engine  = \QUI::getTemplateManager()->getEngine();
+        $Engine  = QUI::getTemplateManager()->getEngine();
         $Site    = $this->getAttribute('Site');
         $Project = $Site->getProject();
 
@@ -43,8 +45,6 @@ class Sheets extends \QUI\Control
         $showmax = $this->getAttribute( 'showmax' );
 
         $active = 1;
-        $start  = 1;
-        $end    = $count;
         $anchor = '';
 
         if ( $this->getAttribute( 'anchor' ) ) {

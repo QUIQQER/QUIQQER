@@ -40,7 +40,7 @@ class QUI
 
     /**
      * QUI Error Handler, use \QUI::getErrorHandler();
-     * @var \QUI\ExceptionHandler
+     * @var \QUI\Exceptions\Handler
      */
     static $ErrorHandler = null;
 
@@ -58,15 +58,9 @@ class QUI
 
     /**
      * QUI Ajax
-     * @var \QUI\Utils\Request\Ajax
+     * @var \QUI\Ajax
      */
     static $Ajax = null;
-
-    /**
-     * QUI Desktop Manager
-     * @var QUI_Desktop_Manager
-     */
-    static $Desktop = null;
 
     /**
      * QUI GroupManager, use \QUI::getGroups()
@@ -364,7 +358,7 @@ class QUI
         }
 
         // Load Packages
-        $QPM = self::getPackageManager();
+        self::getPackageManager();
 
         // register ajax
         self::$Ajax = new \QUI\Ajax(array(
@@ -437,7 +431,8 @@ class QUI
      * Get a QUIQQER main configuration entry
      *
      * @param String $section
-     * @param String $key
+     * @param String|null $key (optional)
+     * @return mixed
      */
     static function conf($section, $key=null)
     {
@@ -470,7 +465,7 @@ class QUI
     /**
      * Return the QUIQQER version
      *
-     * @return {String}
+     * @return String
      */
     static function version()
     {
@@ -617,20 +612,6 @@ class QUI
     }
 
     /**
-     * Return the Desktop Manager
-     *
-     * @return QUI_Desktop_Manager
-     */
-    static function getDesktopManager()
-    {
-        if ( is_null( self::$Desktop ) ) {
-            self::$Desktop = new \QUI_Desktop_Manager();
-        }
-
-        return self::$Desktop;
-    }
-
-    /**
      * Returns the globals Events object
      *
      * @return \QUI\Events\Manager
@@ -660,8 +641,8 @@ class QUI
      * You can also use \QUI\Projects\Manager::getProject()
      *
      * @param String|Array $project 	- Project name | array('name' => , 'lang' => , 'template' => )
-     * @param String $lang		- Project lang (optional)
-     * @param String $template  - Project template (optional)
+     * @param String|Bool $lang		- Project lang (optional)
+     * @param String|Bool $template  - Project template (optional)
      *
      * @return \QUI\Projects\Project
      * @uses \QUI\Projects\Manager

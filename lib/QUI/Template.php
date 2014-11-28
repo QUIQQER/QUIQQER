@@ -1,10 +1,13 @@
 <?php
 
 /**
- * This file contains \QUI\Template
+ * This file contains QUI\Template
  */
 
 namespace QUI;
+
+use QUI;
+use QUI\Utils\Security\Orthos;
 
 /**
  * Template Engine Manager
@@ -14,7 +17,7 @@ namespace QUI;
  * @event onTemplateGetHeader [ $this ]
  */
 
-class Template extends \QUI\QDOM
+class Template extends QUI\QDOM
 {
     /**
      * Registered template engines
@@ -78,8 +81,8 @@ class Template extends \QUI\QDOM
      * Register a param for the Template engine
      * This registered param would be assigned to the Template Engine at the getEngine() method
      *
-     * @param unknown $param
-     * @param unknown $value
+     * @param String $param
+     * @param mixed $value
      */
     public function assignGlobalParam($param, $value)
     {
@@ -88,7 +91,7 @@ class Template extends \QUI\QDOM
 
     /**
      * Return the Template Config object
-     * @return \QUI\Config
+     * @return QUI\Config
      */
     static function getConfig()
     {
@@ -96,7 +99,7 @@ class Template extends \QUI\QDOM
             file_put_contents( CMS_DIR .'etc/templates.ini.php', '' );
         }
 
-        return \QUI::getConfig( 'etc/templates.ini.php' );
+        return QUI::getConfig( 'etc/templates.ini.php' );
     }
 
     /**
@@ -104,8 +107,9 @@ class Template extends \QUI\QDOM
      *
      * if $admin=true, admin template plugins were loaded
      *
-     * @param Integer $admin - is the template for the admin or frontend? <- param depricated
-     * @return \QUI\Interfaces\Template\Engine
+     * @param Bool $admin - (optionsl) is the template for the admin or frontend? <- param depricated
+     * @return QUI\Interfaces\Template\Engine
+     * @throws QUI\Exception
      */
     public function getEngine($admin=false)
     {
@@ -113,19 +117,20 @@ class Template extends \QUI\QDOM
             $this->load();
         }
 
-        $engine = \QUI::conf( 'template', 'engine' );
+        $engine = QUI::conf( 'template', 'engine' );
 
         if ( !isset( $this->_engines[ $engine ] ) ) {
-            throw new \QUI\Exception( 'Template Engine not found!' );
+            throw new QUI\Exception( 'Template Engine not found!' );
         }
 
+        /* @var $Engine QUI\Interfaces\Template\Engine */
         $Engine     = new $this->_engines[ $engine ]( $admin );
         $implements = class_implements( $Engine );
 
         if ( !isset( $implements['QUI\\Interfaces\\Template\\Engine'] ) )
         {
-            throw new \QUI\Exception(
-                'The Template Engine implements not from \QUI\Interfaces\Template\Engine'
+            throw new QUI\Exception(
+                'The Template Engine implements not from QUI\Interfaces\Template\Engine'
             );
         }
 
@@ -140,7 +145,7 @@ class Template extends \QUI\QDOM
      * Register a template engine
      *
      * @param String $name
-     * @param String $class - must a class that implements \QUI\Interfaces\Template\Engine
+     * @param String $class - must a class that implements QUI\Interfaces\Template\Engine
      */
     static function registerEngine($name, $class)
     {
@@ -190,18 +195,18 @@ class Template extends \QUI\QDOM
     /**
      * Prepares the contents of a template
      *
-     * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
+     * @param QUI\Projects\Site|QUI\Projects\Site\Edit $Site
      * @return String
      */
     public function fetchTemplate($Site)
     {
-        /* @var $Site \QUI\Projects\Site */
+        /* @var $Site QUI\Projects\Site */
         $Project = $Site->getProject();
 
         $Engine  = $this->getEngine();
-        $Users   = \QUI::getUsers();
-        $Rewrite = \QUI::getRewrite();
-        $Locale  = \QUI::getLocale();
+        $Users   = QUI::getUsers();
+        $Rewrite = QUI::getRewrite();
+        $Locale  = QUI::getLocale();
 
         $User = $Users->getUserBySession();
 
@@ -301,7 +306,7 @@ class Template extends \QUI\QDOM
 
         } catch ( \Exception $Exception )
         {
-            \QUI\System\Log::writeException( $Exception );
+            QUI\System\Log::writeException( $Exception );
         }
 
         return '';
@@ -321,7 +326,7 @@ class Template extends \QUI\QDOM
 
         $siteType = $Site->getAttribute( 'type' );
         $siteType = explode( ':', $siteType );
-
+        $files    = array();
 
         if ( isset( $siteType[ 0 ] ) && isset( $siteType[ 1 ] ) )
         {
@@ -353,7 +358,7 @@ class Template extends \QUI\QDOM
 
             if ( file_exists( $realSitePath ) )
             {
-                $css = file_get_contents( $realSitePath );
+                //$css = file_get_contents( $realSitePath );
 
                 $this->extendHeader(
                     '<style>'. file_get_contents( $realSitePath ) .'</style>'
@@ -361,16 +366,16 @@ class Template extends \QUI\QDOM
             }
         }
 
-        \QUI::getEvents()->fireEvent( 'templateGetHeader', array( $this ) );
+        QUI::getEvents()->fireEvent( 'templateGetHeader', array( $this ) );
 
         // locale files
         try
         {
-            $files = \QUI\Translator::getJSTranslationFiles(
+            $files = QUI\Translator::getJSTranslationFiles(
                 $Project->getLang()
             );
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
 
         }
@@ -398,8 +403,8 @@ class Template extends \QUI\QDOM
             'localeFiles'     => $locales,
             'loadModuleFiles' => $this->_onLoadModules,
             'headerExtend'    => $headerExtend,
-            'ControlManager'  => new \QUI\Control\Manager(),
-            'Canonical'       => new \QUI\Projects\Site\Canonical( $Site )
+            'ControlManager'  => new QUI\Control\Manager(),
+            'Canonical'       => new QUI\Projects\Site\Canonical( $Site )
         ));
 
         return $Engine->fetch( LIB_DIR .'templates/header.html' );
@@ -409,13 +414,14 @@ class Template extends \QUI\QDOM
      * Return the Body of the Template
      * -> body.html
      *
+     * @param array $params - body params
      * @return String
      */
     public function getBody($params=array())
     {
-        /* @var $Project \QUI\Projects\Project */
-        /* @var $Site \QUI\Projects\Site */
-        /* @var $Engine \QUI\Interfaces\Template\Engine */
+        /* @var $Project QUI\Projects\Project */
+        /* @var $Site QUI\Projects\Site */
+        /* @var $Engine QUI\Interfaces\Template\Engine */
 
         if ( is_array( $params ) ) {
             $this->setAttributes( $params );
@@ -425,24 +431,9 @@ class Template extends \QUI\QDOM
         $Site    = $this->getAttribute( 'Site' );
         $Engine  = $this->getAttribute( 'Engine' );
 
-        // abwärtskompatibilität
-        $smarty  = $Engine;
-        $Users   = \QUI::getUsers();
-        $Rewrite = \QUI::getRewrite();
-        $User    = $Users->getUserBySession();
-        $suffix  = $Rewrite->getSuffix();
-
-        // $this->types    = $Project->getType( $Site->getAttribute('type') );
-        // $this->type     = $Site->getAttribute('type');
-        $this->template = $Project->getAttribute('template');
-
-        $package = false;
-        $type    = false;
-
         $template = LIB_DIR .'templates/standard.html';
 
         $siteScript    = false;
-        $siteStyle     = false;
         $projectScript = false;
 
         $siteType = $Site->getAttribute( 'type' );
@@ -471,8 +462,8 @@ class Template extends \QUI\QDOM
             }
 
             // project template
-            $projectTemplate = USR_DIR .'lib/'. $this->template .'/'. $type .'.html';
-            $projectScript   = USR_DIR .'lib/'. $this->template .'/'. $type .'.php';
+            $projectTemplate = USR_DIR .'lib/'. $Project->getAttribute('template') .'/'. $type .'.html';
+            $projectScript   = USR_DIR .'lib/'. $Project->getAttribute('template') .'/'. $type .'.php';
 
             if ( file_exists( $projectTemplate ) ) {
                 $template = $projectTemplate;
@@ -480,12 +471,22 @@ class Template extends \QUI\QDOM
         }
 
         // includes
-        if ( $siteScript && file_exists( $siteScript ) ) {
-            require $siteScript;
+        if ( $siteScript )
+        {
+            $siteScript = Orthos::clearPath( realpath( $siteScript ) );
+
+            if ( file_exists( $siteScript ) ) {
+                require $siteScript;
+            }
         }
 
-        if ( $projectScript && file_exists( $projectScript ) ) {
-            require $projectScript;
+        if ( $projectScript )
+        {
+            $projectScript = Orthos::clearPath( realpath( $projectScript ) );
+
+            if ( file_exists( $projectScript ) ) {
+                require $projectScript;
+            }
         }
 
 
@@ -531,54 +532,54 @@ class Template extends \QUI\QDOM
         return LIB_DIR .'templates/standard.html';
     }
 
-    /**
-     * Set the admin menu to the template
-     * If the user is an administrator the admin will be insert
-     *
-     * @param String $html - html
-     * @return String
-     * @deprecated
-     */
-    static function setAdminMenu($html)
-    {
-        $User = \QUI::getUserBySession();
-
-        // Nur bei Benutzer die in den Adminbereich dürfen macht das Menü Sinn
-        if ( $User->isAdmin() == false ) {
-            return $html;
-        }
-
-        $Project = \QUI\Projects\Manager::get();
-        $Site    = \QUI::getRewrite()->getSite();
-
-        // letzte body ersetzen
-        $string  = $html;
-        $search  = '</body>';
-        $replace = '
-            <script type="text/javascript">
-            /* <![CDATA[ */
-                if (typeof _pcsg == "undefined") {
-                    var _pcsg = {};
-                };
-
-                _pcsg.Project = {
-                    name : "'. $Project->getAttribute('name') .'",
-                    lang : "'. $Project->getAttribute('lang') .'"
-                };
-
-                _pcsg.Site = {id : '. $Site->getId() .'};
-                _pcsg.admin = {
-                    link : "'. URL_SYS_DIR .'admin.php"
-                };
-            /* ]]> */
-            </script>
-            <script type="text/javascript" src="'. URL_BIN_DIR .'js/AdminPageMenu.js"></script></body>';
-
-        return substr_replace(
-            $html,
-            $search,
-            strrpos( $string, $search ),
-            strlen( $search )
-        );
-    }
+//    /**
+//     * Set the admin menu to the template
+//     * If the user is an administrator the admin will be insert
+//     *
+//     * @param String $html - html
+//     * @return String
+//     * @deprecated
+//     */
+//    static function setAdminMenu($html)
+//    {
+//        $User = QUI::getUserBySession();
+//
+//        // Nur bei Benutzer die in den Adminbereich dürfen macht das Menü Sinn
+//        if ( $User->isAdmin() == false ) {
+//            return $html;
+//        }
+//
+//        $Project = QUI\Projects\Manager::get();
+//        $Site    = QUI::getRewrite()->getSite();
+//
+//        // letzte body ersetzen
+//        $string  = $html;
+//        $search  = '</body>';
+//        $replace = '
+//            <script type="text/javascript">
+//            /* <![CDATA[ */
+//                if (typeof _pcsg == "undefined") {
+//                    var _pcsg = {};
+//                };
+//
+//                _pcsg.Project = {
+//                    name : "'. $Project->getAttribute('name') .'",
+//                    lang : "'. $Project->getAttribute('lang') .'"
+//                };
+//
+//                _pcsg.Site = {id : '. $Site->getId() .'};
+//                _pcsg.admin = {
+//                    link : "'. URL_SYS_DIR .'admin.php"
+//                };
+//            /* ]]> */
+//            </script>
+//            <script type="text/javascript" src="'. URL_BIN_DIR .'js/AdminPageMenu.js"></script></body>';
+//
+//        return substr_replace(
+//            $html,
+//            $search,
+//            strrpos( $string, $search ),
+//            strlen( $search )
+//        );
+//    }
 }

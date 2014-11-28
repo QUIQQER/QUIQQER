@@ -6,6 +6,8 @@
 
 namespace QUI\Exceptions;
 
+use QUI;
+
 /**
  * Exception and Error Manager
  *
@@ -13,10 +15,9 @@ namespace QUI\Exceptions;
  * You can define the error level, which error leben would be loged
  *
  * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui
  */
 
-class Handler extends \QUI\QDOM
+class Handler extends QUI\QDOM
 {
     /**
      * registered shutdown callback functions
@@ -64,10 +65,11 @@ class Handler extends \QUI\QDOM
     /**
      * Register shutdown funktions
      *
-     * @example \QUI\ExceptionHandler->registerShutdown('function', 'param');
-     * \QUI\ExceptionHandler->registerShutdown(array($Object, 'dynamicMethod'));
-     * \QUI\ExceptionHandler->registerShutdown('class::staticMethod');
+     * @example QUI\ExceptionHandler->registerShutdown('function', 'param');
+     * QUI\ExceptionHandler->registerShutdown(array($Object, 'dynamicMethod'));
+     * QUI\ExceptionHandler->registerShutdown('class::staticMethod');
      *
+     * @throws QUI\Exception
      * @return Bool
      */
     public function registerShutdown()
@@ -76,30 +78,26 @@ class Handler extends \QUI\QDOM
 
         if ( empty( $callback ) )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.qui.exceptions.handler.nocallback',
                     array( 'function' => __FUNCTION__ )
                 ),
                 E_USER_ERROR
             );
-
-            return false;
         }
 
         if ( !is_callable( $callback[0] ) )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.qui.exceptions.handler.invalid',
                     array( 'function' => __FUNCTION__ )
                 ),
                 E_USER_ERROR
             );
-
-            return false;
         }
 
         $this->_shutdowncallbacks[] = $callback;
@@ -126,8 +124,8 @@ class Handler extends \QUI\QDOM
      *
      * @param Integer $errno   - Fehlercode
      * @param String $errstr   - Fehler
-     * @param String $errfile  - Datei in welcher der Fehler auftaucht
-     * @param Integer $errline - Zeile in welcher der Fehler auftaucht
+     * @param String $errfile  - (optional) Datei in welcher der Fehler auftaucht
+     * @param Integer|String $errline - (optional) Zeile in welcher der Fehler auftaucht
      */
     public function writeErrorToLog($errno, $errstr, $errfile='', $errline='')
     {
@@ -142,7 +140,7 @@ class Handler extends \QUI\QDOM
             $log = $this->getAttribute('logdir') .'error'. date('-Y-m-d').'.log';
 
             // Log Verzeichnis erstellen
-            \QUI\Utils\System\File::mkdir( $this->getAttribute('logdir') );
+            QUI\Utils\System\File::mkdir( $this->getAttribute('logdir') );
         }
 
         if ( $log && !file_exists( $log ) ) {
