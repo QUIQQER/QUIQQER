@@ -6,6 +6,9 @@
 
 namespace QUI\Messages;
 
+use \QUI\Users\User;
+use \QUI\Utils\Security\Orthos;
+
 /**
  * Message Handler for QUIQQER
  * @author www.pcsg.de (Henning Leutz)
@@ -77,31 +80,31 @@ class Handler
             switch ( $entry )
             {
                 case 'QUI\\Messages\\Attention':
-                    $Message = new \QUI\Messages\Attention(array(
+                    $Message = new Attention(array(
                         'message' => $str
                     ));
                 break;
 
                 case 'QUI\\Messages\\Error':
-                    $Message = new \QUI\Messages\Error(array(
+                    $Message = new Error(array(
                         'message' => $str
                     ));
                 break;
 
                 case 'QUI\\Messages\\Information':
-                    $Message = new \QUI\Messages\Information(array(
+                    $Message = new Information(array(
                         'message' => $str
                     ));
                 break;
 
                 case 'QUI\\Messages\\Success':
-                    $Message = new \QUI\Messages\Success(array(
+                    $Message = new Success(array(
                         'message' => $str
                     ));
                 break;
 
                 default:
-                    $Message = new \QUI\Messages\Message(array(
+                    $Message = new Message(array(
                         'message' => $str
                     ));
             }
@@ -125,6 +128,7 @@ class Handler
         $result   = array();
         $messages = $this->getNewMessages( $User );
 
+        /* @var $Message Message */
         foreach ( $messages as $Message ) {
             $result[] = $Message->getAttributes();
         }
@@ -150,7 +154,7 @@ class Handler
     public function addAttention($str)
     {
         $this->addMessage(
-            new \QUI\Messages\Attention(array(
+            new Attention(array(
                 'message' => $str
             ))
         );
@@ -164,7 +168,7 @@ class Handler
     public function addError($str)
     {
         $this->addMessage(
-            new \QUI\Messages\Error(array(
+            new Error(array(
                 'message' => $str
             ))
         );
@@ -178,7 +182,7 @@ class Handler
     public function addInformation($str)
     {
         $this->addMessage(
-            new \QUI\Messages\Information(array(
+            new Information(array(
                 'message' => $str
             ))
         );
@@ -192,7 +196,7 @@ class Handler
     public function addSuccess($str)
     {
         $this->addMessage(
-            new \QUI\Messages\Success(array(
+            new Success(array(
                 'message' => $str
             ))
         );
@@ -201,13 +205,13 @@ class Handler
     /**
      * Send a message to an user and save it to the database
      *
-     * @param \QUI\Users\User $User
-     * @param \QUi\Messages\Message $Message
+     * @param User $User
+     * @param \QUI\Messages\Message $Message
      */
-    public function sendMessage(\QUI\Users\User $User, \QUI\Messages\Message $Message)
+    public function sendMessage(User $User, Message $Message)
     {
         $message = $Message->getMessage();
-        $message = \QUI\Utils\Security\Orthos::clearMySQL( $message );
+        $message = Orthos::clearMySQL( $message );
 
         \QUI::getDataBase()->insert(self::Table(), array(
             'uid'     => $User->getId(),
@@ -221,14 +225,14 @@ class Handler
     /**
      * Send an information to an user and save it to the database
      *
-     * @param \QUI\Users\User $User
+     * @param User $User
      * @param String $str
      */
-    public function sendAttention(\QUI\Users\User $User, $str)
+    public function sendAttention(User $User, $str)
     {
         $this->sendMessage(
             $User,
-            new \QUI\Messages\Attention(array(
+            new Attention(array(
                 'message' => $str
             ))
         );
@@ -237,14 +241,14 @@ class Handler
     /**
      * Send an error to an user and save it to the database
      *
-     * @param \QUI\Users\User $User
+     * @param User $User
      * @param String $str
      */
-    public function sendError(\QUI\Users\User $User, $str)
+    public function sendError(User $User, $str)
     {
         $this->sendMessage(
             $User,
-            new \QUI\Messages\Error(array(
+            new Error(array(
                 'message' => $str
             ))
         );
@@ -253,14 +257,14 @@ class Handler
     /**
      * Send a information to an user and save it to the database
      *
-     * @param \QUI\Users\User $User
+     * @param User $User
      * @param String $str
      */
-    public function sendInformation(\QUI\Users\User $User, $str)
+    public function sendInformation(User $User, $str)
     {
         $this->sendMessage(
             $User,
-            new \QUI\Messages\Information(array(
+            new Information(array(
                 'message' => $str
             ))
         );
@@ -269,14 +273,14 @@ class Handler
     /**
      * Send a success message to an user and save it to the database
      *
-     * @param \QUI\Users\User $User
+     * @param User $User
      * @param String $str
      */
-    public function sendSuccess(\QUI\Users\User $User, $str)
+    public function sendSuccess(User $User, $str)
     {
         $this->sendMessage(
             $User,
-            new \QUI\Messages\Success(array(
+            new Success(array(
                 'message' => $str
             ))
         );

@@ -6,13 +6,16 @@
 
 namespace QUI\Mail;
 
+use QUI;
+use Html2Text\Html2Text;
+
 /**
  * Mail Template
  *
  * @author www.pcsg.de (Henning Leutz)
  */
 
-class Template extends \QUI\QDOM
+class Template extends QUI\QDOM
 {
     /**
      * Constructor
@@ -38,7 +41,7 @@ class Template extends \QUI\QDOM
      */
     public function getHTML()
     {
-        $Engine = \QUI::getTemplateManager()->getEngine();
+        $Engine = QUI::getTemplateManager()->getEngine();
         $Engine->assign( $this->getAttributes() );
 
         $header = $Engine->fetch( $this->getHeaderTemplate() );
@@ -55,7 +58,7 @@ class Template extends \QUI\QDOM
      */
     public function getText()
     {
-        $Html2Text = new \Html2Text\Html2Text( $this->getHTML() );
+        $Html2Text = new Html2Text( $this->getHTML() );
 
         return $Html2Text->get_text();
     }
@@ -65,7 +68,7 @@ class Template extends \QUI\QDOM
      *
      * @param \QUI\Projects\Project $Project
      */
-    public function setProject(\QUI\Projects\Project $Project)
+    public function setProject(QUI\Projects\Project $Project)
     {
         $this->setAttribute( 'Project', $Project );
     }
@@ -83,7 +86,7 @@ class Template extends \QUI\QDOM
     /**
      * Set the Header template
      *
-     * @param unknown $template
+     * @param String $template
      */
     public function setHeaderTemplate($template)
     {
@@ -93,7 +96,7 @@ class Template extends \QUI\QDOM
     /**
      * Set the Header template
      *
-     * @param unknown $template
+     * @param String $template
      */
     public function setFooterTemplate($template)
     {

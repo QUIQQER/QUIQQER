@@ -29,7 +29,7 @@ class Manager
      */
     public function send($to, $subject, $body)
     {
-        $Mailer = new \QUI\Mail\Mailer();
+        $Mailer = new Mailer();
 
         $Mailer->addRecipient( $to );
         $Mailer->setSubject( $subject );
@@ -46,7 +46,7 @@ class Manager
     public function getQueue()
     {
         if ( is_null( $this->_Queue ) ) {
-            $this->_Queue = new \QUI\Mail\Queue();
+            $this->_Queue = new Queue();
         }
 
         return $this->_Queue;

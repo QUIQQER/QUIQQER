@@ -6,6 +6,9 @@
 
 namespace QUI\Mail;
 
+use QUI;
+use Html2Text\Html2Text;
+
 /**
  * Mailer class sends a mail
  * Its the main mail wrapper for the php mailer
@@ -15,7 +18,7 @@ namespace QUI\Mail;
  * @author www.pcsg.de (Henning Leutz)
  */
 
-class Mailer extends \QUI\QDOM
+class Mailer extends QUI\QDOM
 {
     /**
      * Mail template
@@ -55,6 +58,8 @@ class Mailer extends \QUI\QDOM
 
     /**
      * constructor
+     *
+     * @param array $attributes
      */
     public function __construct($attributes=array())
     {
@@ -79,7 +84,7 @@ class Mailer extends \QUI\QDOM
         $this->setAttributes( $attributes );
 
         // html mail template
-        $this->Template = new \QUI\Mail\Template(array(
+        $this->Template = new Template(array(
             'Project' => $this->getAttribute('Project')
         ));
     }
@@ -91,7 +96,7 @@ class Mailer extends \QUI\QDOM
      */
     public function send()
     {
-        $PHPMailer = \QUI::getMailManager()->getPHPMailer();
+        $PHPMailer = QUI::getMailManager()->getPHPMailer();
 
         $PHPMailer->Subject = $this->getAttribute( 'subject' );
         $PHPMailer->Body    = $this->Template->getHTML();
@@ -99,7 +104,7 @@ class Mailer extends \QUI\QDOM
         // html ?
         if ( $this->getAttribute( 'html' ) )
         {
-            $Html2Text = new \Html2Text\Html2Text( $PHPMailer->Body );
+            $Html2Text = new Html2Text( $PHPMailer->Body );
             $PHPMailer->AltBody = $Html2Text->get_text();
         }
 
@@ -127,7 +132,7 @@ class Mailer extends \QUI\QDOM
                 continue;
             }
 
-            $infos = \QUI\Utils\System\File::getInfo( $file );
+            $infos = QUI\Utils\System\File::getInfo( $file );
 
             if ( !isset( $infos['mime_type'] ) ) {
                 $infos['mime_type'] = 'application/octet-stream';
@@ -138,9 +143,9 @@ class Mailer extends \QUI\QDOM
 
 
         // with mail queue?
-        if ( \QUI::conf( 'mail', 'queue' ) )
+        if ( QUI::conf( 'mail', 'queue' ) )
         {
-            $Queue = new \QUI\Mail\Queue();
+            $Queue = new Queue();
             $id    = $Queue->addToQueue( $this );
 
             $Queue->sendById( $id );
@@ -155,7 +160,7 @@ class Mailer extends \QUI\QDOM
             return true;
         }
 
-        throw new \QUI\Exception(
+        throw new QUI\Exception(
             'Mail Error: '. $PHPMailer->ErrorInfo
         );
     }
@@ -239,7 +244,7 @@ class Mailer extends \QUI\QDOM
      * Set the project object, for the mailer and the mailer template
      * @param \QUI\Projects\Project $Project
      */
-    public function setProject(\QUI\Projects\Project $Project)
+    public function setProject(QUI\Projects\Project $Project)
     {
         $this->setAttribute( 'Project', $Project );
         $this->Template->setAttribute( 'Project', $Project );

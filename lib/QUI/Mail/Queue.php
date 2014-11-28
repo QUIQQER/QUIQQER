@@ -6,6 +6,8 @@
 
 namespace QUI\Mail;
 
+use QUI;
+
 /**
  * Mail queue
  * @author www.pcsg.de (Henning Leutz)
@@ -27,7 +29,7 @@ class Queue
      */
     static function setup()
     {
-        $Table = \QUI::getDataBase()->Table();
+        $Table = QUI::getDataBase()->Table();
 
         $Table->appendFields(self::Table(), array(
             'id'       => 'int(11) NOT NULL',
@@ -53,10 +55,10 @@ class Queue
     /**
      * Add a mail to the mail queue
      *
-     * @param \QUI\Mail $Mail
+     * @param Mailer $Mail
      * @return Integer - Mailqueue-ID
      */
-    static function addToQueue(\QUI\Mail\Mailer $Mail)
+    static function addToQueue(Mailer $Mail)
     {
         $params = $Mail->toArray();
 
@@ -66,9 +68,9 @@ class Queue
         $params['bcc']     = json_encode( $params['bcc'] );
         $params['attachements'] = json_encode( $params['attachements'] );
 
-        \QUI::getDataBase()->insert( self::Table(), $params );
+        QUI::getDataBase()->insert( self::Table(), $params );
 
-        return \QUI::getDataBase()->getPDO()->lastInsertId( 'id' );
+        return QUI::getDataBase()->getPDO()->lastInsertId( 'id' );
     }
 
     /**
@@ -78,7 +80,7 @@ class Queue
      */
     public function send()
     {
-        $params = \QUI::getDataBase()->fetch(array(
+        $params = QUI::getDataBase()->fetch(array(
             'from'   => self::Table(),
             'limit'  => 1
         ));
@@ -94,16 +96,16 @@ class Queue
             // successful send
             if ( $send )
             {
-                \QUI::getDataBase()->delete( self::Table(), array(
+                QUI::getDataBase()->delete( self::Table(), array(
                     'id' => $params[ 0 ]['id']
                 ));
 
                 return true;
             }
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
-            \QUI\System\Log::addError( $Exception->getMessage(), 'mail_queue' );
+            QUI\System\Log::addError( $Exception->getMessage(), 'mail_queue' );
         }
 
         return false;
@@ -117,7 +119,7 @@ class Queue
      */
     public function sendById($id)
     {
-        $params = \QUI::getDataBase()->fetch(array(
+        $params = QUI::getDataBase()->fetch(array(
             'from'  => self::Table(),
             'where' => array(
                 'id' => (int)$id
@@ -127,8 +129,8 @@ class Queue
 
         if ( !isset( $params[ 0 ] ) )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale(
+            throw new QUI\Exception(
+                QUI::getLocale(
                     'system',
                     'exception.mailqueue.mail.not.found'
                 ),
