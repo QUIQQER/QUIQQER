@@ -301,21 +301,21 @@ class Utils
         // responsive image
         $imageWidth = $Image->getWidth();
 
-        if ( $imageWidth )
-        {
-            $end   = $imageWidth > 1000 ? 1000 : $imageWidth;
-            $start = 100;
-
-            $srcset = array();
-
-            for ( ; $start < $end; $start += 100 ) {
-                $srcset[] = $Image->getSizeCacheUrl( $start ) ." {$start}w";
-            }
-
-            // not optimal, but maybe we found a better solution
-            $img .= ' sizes="(max-width: 30em) 100vw, (max-width: 50em) 50vw, calc(33vw - 100px)"';
-            $img .= ' srcset="'. implode(",\n", $srcset) .'"';
-        }
+//        if ( $imageWidth )
+//        {
+//            $end   = $imageWidth > 1000 ? 1000 : $imageWidth;
+//            $start = 100;
+//
+//            $srcset = array();
+//
+//            for ( ; $start < $end; $start += 100 ) {
+//                $srcset[] = $Image->getSizeCacheUrl( $start ) ." {$start}w";
+//            }
+//
+//            // not optimal, but maybe we found a better solution
+//            $img .= ' sizes="(max-width: 30em) 100vw, (max-width: 50em) 50vw, calc(33vw - 100px)"';
+//            $img .= ' srcset="'. implode(",\n", $srcset) .'"';
+//        }
 
         $img .= ' src="'. $src .'" />';
 
