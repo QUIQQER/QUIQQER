@@ -10,6 +10,7 @@ use QUI;
 use QUI\Utils\String as StringUtils;
 use QUI\Utils\XML;
 use QUI\Utils\DOM;
+use QUI\Utils\Security\Orthos;
 
 /**
  * Site Utils - Site Helper
@@ -22,21 +23,21 @@ class Utils
      * Prüft ob der Name erlaubt ist
      *
      * @param String $name
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      * @return Bool
      */
     static function checkName($name)
     {
         if ( !isset( $name ) )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 'Bitte gebe einen Titel ein'
             );
         }
 
         if ( strlen( $name ) <= 2 )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 'Die URL muss mehr als 2 Zeichen lang sein',
                 701
             );
@@ -44,7 +45,7 @@ class Utils
 
         if ( strlen( $name ) > 200 )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 'Die URL darf nicht länger als 200 Zeichen lang sein',
                 704
             );
@@ -53,14 +54,14 @@ class Utils
         $signs = '@[.,:;#`!§$%&/?<>\=\'\"\@\_\]\[\+\-]@';
 
 
-        if ( \QUI\Rewrite::URL_SPACE_CHARACTER == '-' ) {
+        if ( QUI\Rewrite::URL_SPACE_CHARACTER == '-' ) {
             $signs = '@[.,:;#`!§$%&/?<>\=\'\"\@\_\]\[\+]@';
         }
 
         // Prüfung des Namens - Sonderzeichen
         if ( preg_match( $signs, $name ) )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 'In der URL "'. $name .'" dürfen folgende Zeichen nicht verwendet werden: _-.,:;#@`!§$%&/?<>=\'"[]+',
                 702
             );
@@ -73,13 +74,13 @@ class Utils
      * Säubert eine URL macht sie schön
      *
      * @param String $url
-     * @param \QUI\Projects\Project $Project - Project clear extension
+     * @param QUI\Projects\Project $Project - Project clear extension
      * @return String
      */
-    static function clearUrl($url, \QUI\Projects\Project $Project)
+    static function clearUrl($url, QUI\Projects\Project $Project)
     {
         // space seperator
-        $url = str_replace( \QUI\Rewrite::URL_SPACE_CHARACTER , ' ', $url );
+        $url = str_replace( QUI\Rewrite::URL_SPACE_CHARACTER , ' ', $url );
 
         // clear
         $signs = array(
@@ -102,6 +103,8 @@ class Utils
         $filter = USR_DIR .'lib/'. $name .'/url.filter.php';
         $func   = 'url_filter_'. $name;
 
+        $filter = Orthos::clearPath( realpath( $filter ) );
+
         if ( file_exists( $filter ) )
         {
             require_once $filter;
@@ -111,7 +114,7 @@ class Utils
             }
         }
 
-        $url = str_replace( ' ', \QUI\Rewrite::URL_SPACE_CHARACTER, $url );
+        $url = str_replace( ' ', QUI\Rewrite::URL_SPACE_CHARACTER, $url );
 
         return $url;
     }
@@ -119,7 +122,7 @@ class Utils
     /**
      * Return database.xml list for the Site Object
      *
-     * @param \QUI\Projects\Site $Site
+     * @param QUI\Projects\Site $Site
      * @return Array
      */
     static function getDataBaseXMLListForSite($Site)
@@ -132,19 +135,16 @@ class Utils
 
         try
         {
-            return \QUI\Cache\Manager::get( $cache );
+            return QUI\Cache\Manager::get( $cache );
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
 
         }
 
-        $dbXmlList = \QUI::getPackageManager()->getPackageDatabaseXmlList();
+        $dbXmlList = QUI::getPackageManager()->getPackageDatabaseXmlList();
         $result    = array();
 
-        $Project  = $Site->getProject();
-        $name     = $Project->getName();
-        $lang     = $Project->getLang();
         $siteType = $Site->getAttribute( 'type' );
 
 
@@ -163,6 +163,7 @@ class Utils
 
             for ( $i = 0, $len = $tableList->length; $i < $len; $i++ )
             {
+                /* @var $Table \DOMElement */
                 $Table = $tableList->item( $i );
 
                 if ( $Table->getAttribute( 'no-auto-update' ) ) {
@@ -199,7 +200,7 @@ class Utils
             }
         }
 
-        \QUI\Cache\Manager::set( $cache , $result );
+        QUI\Cache\Manager::set( $cache , $result );
 
         return $result;
     }
@@ -209,7 +210,7 @@ class Utils
      * a list of the extra database and extra attributes for saving the site
      * the extra attributes are all from database.xml files
      *
-     * @param \QUI\Projects\Site $Site
+     * @param QUI\Projects\Site $Site
      * @return Array
      */
     static function getDataListForSite($Site)
@@ -224,9 +225,9 @@ class Utils
 
         try
         {
-            return \QUI\Cache\Manager::get( $cache );
+            return QUI\Cache\Manager::get( $cache );
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
 
         }
@@ -243,6 +244,7 @@ class Utils
 
             for ( $i = 0, $len = $tableList->length; $i < $len; $i++ )
             {
+                /* @var $Table \DOMElement */
                 $Table = $tableList->item( $i );
 
                 if ( $Table->getAttribute( 'no-auto-update' ) ) {
@@ -275,7 +277,7 @@ class Utils
                 $suffix = $Table->getAttribute( 'name' );
                 $fields = $Table->getElementsByTagName( 'field' );
 
-                $table = \QUI::getDBTableName( $name .'_'. $lang .'_'. $suffix );
+                $table = QUI::getDBTableName( $name .'_'. $lang .'_'. $suffix );
                 $data  = array();
 
 
@@ -300,7 +302,7 @@ class Utils
             }
         }
 
-        \QUI\Cache\Manager::set( $cache , $result );
+        QUI\Cache\Manager::set( $cache , $result );
 
 
         return $result;
@@ -310,7 +312,7 @@ class Utils
      /**
      * Return database.xml list for the Site Object
      *
-     * @param \QUI\Projects\Site $Site
+     * @param QUI\Projects\Site $Site
      * @return Array
      */
     static function getExtraAttributeListForSite($Site)
@@ -323,21 +325,18 @@ class Utils
 
         try
         {
-            return \QUI\Cache\Manager::get( $cache );
+            return QUI\Cache\Manager::get( $cache );
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
 
         }
 
 
         // global extra attributes
-        $siteXmlList = \QUI::getPackageManager()->getPackageSiteXmlList();
+        $siteXmlList = QUI::getPackageManager()->getPackageSiteXmlList();
         $result      = array();
 
-        $Project = $Site->getProject();
-        $name    = $Project->getName();
-        $lang    = $Project->getLang();
 
         foreach ( $siteXmlList as $package )
         {
@@ -377,7 +376,7 @@ class Utils
             }
         }
 
-        \QUI\Cache\Manager::set( $cache , $result );
+        QUI\Cache\Manager::set( $cache , $result );
 
         return $result;
     }
@@ -385,7 +384,7 @@ class Utils
     /**
      * Return the extra settings from site.xml's
      *
-     * @param \QUI\Projects\Site $Site
+     * @param QUI\Projects\Site $Site
      * @return String
      */
     static function getExtraSettingsForSite($Site)
@@ -398,16 +397,16 @@ class Utils
 
         try
         {
-            return \QUI\Cache\Manager::get( $cache );
+            return QUI\Cache\Manager::get( $cache );
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
 
         }
 
 
         // global extra
-        $siteXmlList = \QUI::getPackageManager()->getPackageSiteXmlList();
+        $siteXmlList = QUI::getPackageManager()->getPackageSiteXmlList();
         $result      = '';
 
         foreach ( $siteXmlList as $package )
@@ -448,7 +447,7 @@ class Utils
             }
         }
 
-        \QUI\Cache\Manager::set( $cache , $result );
+        QUI\Cache\Manager::set( $cache , $result );
 
         return $result;
     }

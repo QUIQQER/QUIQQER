@@ -6,7 +6,10 @@
 
 namespace QUI\Projects\Media;
 
-use \QUI\Utils\System\File;
+use QUI;
+use QUI\Utils\System\File as QUIFile;
+use QUI\Utils\String as QUIString;
+use QUI\Utils\Image as QUIImage;
 
 /**
  * A media image
@@ -15,7 +18,7 @@ use \QUI\Utils\System\File;
  * @package com.pcsg.qui.projects.media
  */
 
-class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects\Media\File
+class Image extends Item implements QUI\Interfaces\Projects\Media\File
 {
     /**
      * Return the real with of the image
@@ -28,7 +31,7 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
             return $this->getAttribute( 'image_width' );
         }
 
-        $data = File::getInfo( $this->getFullPath(), array( 'imagesize' => true ) );
+        $data = QUIFile::getInfo( $this->getFullPath(), array( 'imagesize' => true ) );
 
         if ( isset( $data[ 'width' ] ) ) {
             return $data[ 'width' ];
@@ -48,7 +51,7 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
             return $this->getAttribute( 'image_height' );
         }
 
-        $data = File::getInfo( $this->getFullPath(), array( 'imagesize' => true ) );
+        $data = QUIFile::getInfo( $this->getFullPath(), array( 'imagesize' => true ) );
 
         if ( isset( $data[ 'height' ] ) ) {
             return $data[ 'height' ];
@@ -59,7 +62,7 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Projects\Media\File::createCache()
+     * @see QUI\Interfaces\Projects\Media\File::createCache()
      */
     public function createCache()
     {
@@ -69,8 +72,9 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
     /**
      * Return the image path
      *
-     * @param string $maxwidth
-     * @param string $maxheight
+     * @param string|bool $maxwidth - (optional)
+     * @param string|bool $maxheight - (optional)
+     * @return string
      */
     public function getSizeCachePath($maxwidth=false, $maxheight=false)
     {
@@ -87,15 +91,12 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
         $width  = $params['width'];
         $height = $params['height'];
 
-        $Media   = $this->_Media; /* @var $Media \QUI\Projects\Media */
-        $Project = $Media->getProject();
+        $Media = $this->_Media; /* @var $Media QUI\Projects\Media */
 
-        $mdir = CMS_DIR . $Media->getPath();
         $cdir = CMS_DIR . $Media->getCacheDir();
         $file = $this->getAttribute('file');
 
-        $original = $mdir . $file;
-        $extra    = '';
+        $extra = '';
 
         if ( $this->getAttribute('reflection') ) {
             $extra = '_reflection';
@@ -105,10 +106,10 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
         if ( $width || $height )
         {
             $part      = explode('.', $file);
-            $cachefile = $cdir . $part[0] .'__'. $width .'x'. $height . $extra .'.'. \QUI\Utils\String::toLower( end($part) );
+            $cachefile = $cdir . $part[0] .'__'. $width .'x'. $height . $extra .'.'. QUIString::toLower( end($part) );
 
             if ( empty( $height ) ) {
-                $cachefile = $cdir . $part[0] .'__'. $width . $extra .'.'. \QUI\Utils\String::toLower( end($part) );
+                $cachefile = $cdir . $part[0] .'__'. $width . $extra .'.'. QUIString::toLower( end($part) );
             }
 
             if ( $this->getAttribute('reflection') )
@@ -131,8 +132,9 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
     /**
      * Return the image url
      *
-     * @param string $maxwidth - width
-     * @param string $maxheight - height
+     * @param string|bool $maxwidth - (optional) width
+     * @param string|bool $maxheight - (optional) height
+     * @return string
      */
     public function getSizeCacheUrl($maxwidth=false, $maxheight=false)
     {
@@ -186,8 +188,8 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
     /**
      * Return the Image specific max resize params
      *
-     * @param unknown_type $maxwidth
-     * @param unknown_type $maxheight
+     * @param Bool|Integer $maxwidth - (optional)
+     * @param Bool|Integer $maxheight - (optional)
      * @return array - array('width' => 100, 'height' => 100)
      */
     public function getResizeSize($maxwidth=false, $maxheight=false)
@@ -197,7 +199,7 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
 
         if ( !$width || !$height )
         {
-            $info = \QUI\Utils\System\File::getInfo($this->getFullPath(), array(
+            $info = QUIFile::getInfo($this->getFullPath(), array(
                 'imagesize' => true
             ));
 
@@ -253,9 +255,9 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
     /**
      * Create a cache file with the new width and height
      *
-     * @param Integer $width
-     * @param Integer $height
-     * @return String - URL to the cachefile
+     * @param integer|bool $width - (optional)
+     * @param integer|bool $height - (optional)
+     * @return string - URL to the cachefile
      */
     public function createSizeCache($width=false, $height=false)
     {
@@ -263,11 +265,10 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
             return false;
         }
 
-        $Media   = $this->_Media; /* @var $Media \QUI\Projects\Media */
+        $Media   = $this->_Media; /* @var $Media QUI\Projects\Media */
         $Project = $Media->getProject();
 
         $mdir = CMS_DIR . $Media->getPath();
-        $cdir = CMS_DIR . $Media->getCacheDir();
         $file = $this->getAttribute('file');
 
         $original  = $mdir . $file;
@@ -289,22 +290,22 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
         {
             try
             {
-                \QUI\Utils\System\File::copy( $original, $cachefile );
+                QUIFile::copy( $original, $cachefile );
 
-            } catch ( \QUI\Exception $Exception )
+            } catch ( QUI\Exception $Exception )
             {
                 // Fehler loggen
-                \QUI\System\Log::writeException( $Exception );
+                QUI\System\Log::writeException( $Exception );
             }
         }
 
         // Spiegelung
         if ( $this->getAttribute('reflection') )
         {
-            \QUI\Utils\Image::reflection( $original, $cachefile );
+            QUIImage::reflection( $original, $cachefile );
 
             if ( $width || $height ) {
-                \QUI\Utils\Image::resize( $cachefile, $cachefile, (int)$width, (int)$height );
+                QUIImage::resize( $cachefile, $cachefile, (int)$width, (int)$height );
             }
         }
 
@@ -323,14 +324,14 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
             {
                 try
                 {
-                    \QUI\Utils\Image::roundCorner($cachefile, $cachefile, array(
+                    QUIImage::roundCorner($cachefile, $cachefile, array(
                         'radius' 	 => (int)$roundcorner['radius'],
                         'background' => $roundcorner['background']
                     ));
 
-                } catch ( \QUI\Exception $Exception )
+                } catch ( QUI\Exception $Exception )
                 {
-                    \QUI\System\Log::writeException( $Exception );
+                    QUI\System\Log::writeException( $Exception );
                 }
             }
         }
@@ -365,7 +366,7 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
         }
 
 
-        $params = \QUI\Utils\String::getUrlAttributes( $watermark['image'] );
+        $params = QUIString::getUrlAttributes( $watermark['image'] );
 
         if ( !isset( $params['id'] ) || !isset( $params['project'] ) ) {
             return $cachefile;
@@ -373,7 +374,7 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
 
         try
         {
-            $WZ_Project = \QUI::getProject($params['project']);
+            $position   = 'bottomright';
             $WZ_Media   = $Project->getMedia();
             $_Image     = $WZ_Media->get( (int)$params['id'] );
 
@@ -381,8 +382,7 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
                 return $cachefile;
             }
 
-            /* @var $_Image MF_Image */
-
+            /* @var $_Image Image */
             $d_media = $WZ_Media->getAttribute('media_dir');
             $f_water = $d_media . $_Image->getPath();
 
@@ -410,12 +410,12 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
 
 
 
-            $c_info = \QUI\Utils\System\File::getInfo(
+            $c_info = QUIFile::getInfo(
                 $cachefile,
                 array('imagesize' => true)
                );
 
-            $w_info = \QUI\Utils\System\File::getInfo(
+            $w_info = QUIFile::getInfo(
                 $f_water,
                 array('imagesize' => true)
             );
@@ -433,23 +433,23 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
 
                 // Resize des Wasserzeichens
                 if ( !file_exists( $watermark_temp ) ) {
-                    \QUI\Utils\System\File::copy( $f_water, $watermark_temp );
+                    QUIFile::copy( $f_water, $watermark_temp );
                 }
 
-                \QUI\Utils\Image::resize(
+                QUIImage::resize(
                     $watermark_temp,
                     $watermark_temp,
                     $watermark_width
                 );
 
-                \QUI\Utils\Image::resize(
+                QUIImage::resize(
                     $watermark_temp,
                     $watermark_temp,
                     0,
                     $watermark_height
                 );
 
-                $w_info = \QUI\Utils\System\File::getInfo(
+                $w_info = QUIFile::getInfo(
                     $watermark_temp,
                     array('imagesize' => true)
                 );
@@ -482,12 +482,12 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
                 break;
             }
 
-            \QUI\Utils\Image::watermark( $cachefile, $f_water, false, $top, $left );
+            QUIImage::watermark( $cachefile, $f_water, false, $top, $left );
 
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
-            \QUI\System\Log::writeException( $Exception );
+            QUI\System\Log::writeException( $Exception );
         }
 
         return $cachefile;
@@ -495,7 +495,7 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
 
     /**
      * (non-PHPdoc)
-     * @see \QUI\Interfaces\Projects\Media\File::deleteCache()
+     * @see QUI\Interfaces\Projects\Media\File::deleteCache()
      */
     public function deleteCache()
     {
@@ -510,18 +510,18 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
         $path  = pathinfo( $cachefile );
         $parts = explode('.', $file);
 
-        $files = \QUI\Utils\System\File::readDir($path['dirname'], true);
+        $files = QUIFile::readDir($path['dirname'], true);
 
         foreach ( $files as $file )
         {
             $len = strlen( $parts[0] );
 
             if ( substr($file,0, $len+2) == $parts[0] .'__' ) {
-                \QUI\Utils\System\File::unlink( $path['dirname'] .'/'. $file );
+                QUIFile::unlink( $path['dirname'] .'/'. $file );
             }
         }
 
-        \QUI\Utils\System\File::unlink( $cachefile );
+        QUIFile::unlink( $cachefile );
 
         // delete admin cache
         $cache_folder = VAR_DIR .'media_cache/'. $Project->getAttribute('name') .'/';
@@ -530,14 +530,14 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
             return;
         }
 
-        $list  = \QUI\Utils\System\File::readDir( $cache_folder );
+        $list  = QUI\Utils\System\File::readDir( $cache_folder );
         $id    = $this->getId();
         $cache = $id .'_';
 
         foreach ( $list as $file )
         {
             if ( strpos($file, $cache) !== false ) {
-                \QUI\Utils\System\File::unlink( $cache_folder . $file );
+                QUIFile::unlink( $cache_folder . $file );
             }
         }
     }
@@ -558,16 +558,16 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
 
         try
         {
-            return \QUI\Utils\Image::resize(
+            return QUIImage::resize(
                 $original,
                 $new_image,
                 $new_width,
                 $new_height
             );
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
-            \QUI\System\Log::writeException( $Exception );
+            QUI\System\Log::writeException( $Exception );
         }
 
         return $original;
@@ -576,17 +576,18 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
     /**
      * Set the attribute for round corners
      *
-     * @param String $background - #FFFFFF
-     * @param Integer $radius    - 10
+     * @param String $background     - #FFFFFF
+     * @param Integer|String $radius - 10
+     * @throws QUI\Exception
      */
     public function setRoundCorners($background='', $radius='')
     {
-        if ( empty($background) ) {
-            throw new \QUI\Exception('Please set a background color');
+        if ( empty( $background ) ) {
+            throw new QUI\Exception('Please set a background color');
         }
 
-        if ( empty($radius) ) {
-            throw new \QUI\Exception('Please set a radius');
+        if ( empty( $radius ) ) {
+            throw new QUI\Exception('Please set a radius');
         }
 
         $roundcorners = array(
@@ -642,7 +643,7 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
 
         $this->setAttribute('md5hash', $md5);
 
-        \QUI::getDataBase()->update(
+        QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array('md5hash' => $md5),
             array('id' => $this->getId())
@@ -658,7 +659,7 @@ class Image extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects
 
         $this->setAttribute('sha1hash', $sha1);
 
-        \QUI::getDataBase()->update(
+        QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array('sha1hash' => $sha1),
             array('id' => $this->getId())

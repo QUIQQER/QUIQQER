@@ -1005,6 +1005,7 @@ class Edit extends Site
 
             $path    = '';
 
+            /* @var $Prt QUI\Projects\Site */
             foreach ( $parents as $Prt ) {
                 $path .= '/'. $Prt->getAttribute('name');
             }
@@ -1092,8 +1093,8 @@ class Edit extends Site
      * Löscht eine Verknüpfung
      *
      * @param Integer $pid - Parent ID
-     * @param Integer $all - Alle Verknüpfungen und Original Seite löschen
-     * @param Bool $orig   - Delete the original site, too
+     * @param Integer|Bool $all - (optional) Alle Verknüpfungen und Original Seite löschen
+     * @param Bool $orig   - (optional) Delete the original site, too
      * @return Bool
      *
      * @todo refactor -> use PDO
@@ -1109,7 +1110,7 @@ class Edit extends Site
         $table = $Project->getAttribute('name') .'_'.
                  $Project->getAttribute('lang') .'_sites_relations';
 
-        if ( QUI\Utils\Bool::JSBool( $value ) )
+        if ( QUI\Utils\Bool::JSBool( $all ) )
         {
             // Seite löschen
             $this->delete();

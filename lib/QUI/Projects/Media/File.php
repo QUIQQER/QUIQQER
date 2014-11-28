@@ -6,6 +6,9 @@
 
 namespace QUI\Projects\Media;
 
+use QUI;
+use QUI\Utils\System\File as QUIFile;
+
 /**
  * A media file
  *
@@ -13,7 +16,7 @@ namespace QUI\Projects\Media;
  * @package com.pcsg.qui.projects.media
  */
 
-class File extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects\Media\File
+class File extends Item implements QUI\Interfaces\Projects\Media\File
 {
     /**
      * (non-PHPdoc)
@@ -34,8 +37,7 @@ class File extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects\
             'psd'
         );
 
-        $Media   = $this->_Media; /* @var $Media \QUI\Projects\Media */
-        $Project = $Media->getProject();
+        $Media = $this->_Media; /* @var $Media \QUI\Projects\Media */
 
         $mdir = CMS_DIR . $Media->getPath();
         $cdir = CMS_DIR . $Media->getCacheDir();
@@ -44,11 +46,11 @@ class File extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects\
         $original  = $mdir . $file;
         $cachefile = $cdir . $file;
 
-        $extension = \QUI\Utils\String::pathinfo($original, PATHINFO_EXTENSION);
+        $extension = QUI\Utils\String::pathinfo($original, PATHINFO_EXTENSION);
 
         if ( !in_array( $extension, $WHITE_LIST_EXTENSION ) )
         {
-            \QUI\Utils\System\File::unlink( $cachefile );
+            QUIFile::unlink( $cachefile );
 
             return $original;
         }
@@ -63,9 +65,9 @@ class File extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects\
 
         try
         {
-            \QUI\Utils\System\File::copy( $original, $cachefile );
+            QUIFile::copy( $original, $cachefile );
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
             // nothing
         }
@@ -79,13 +81,12 @@ class File extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects\
      */
     public function deleteCache()
     {
-        $Media   = $this->_Media;
-        $Project = $Media->getProject();
+        $Media = $this->_Media;
 
         $cdir = CMS_DIR . $Media->getCacheDir();
         $file = $this->getAttribute( 'file' );
 
-        \QUI\Utils\System\File::unlink( $cdir . $file );
+        QUIFile::unlink( $cdir . $file );
     }
 
     /**
@@ -97,7 +98,7 @@ class File extends \QUI\Projects\Media\Item implements \QUI\Interfaces\Projects\
 
         $this->setAttribute('md5hash', $md5);
 
-        \QUI::getDataBase()->update(
+        QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array('md5hash' => $md5),
             array('id' => $this->getId())
