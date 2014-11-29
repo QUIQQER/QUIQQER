@@ -6,7 +6,8 @@
 
 namespace QUI;
 
-use \QUI\Utils\System\File as SystemFile;
+use QUI;
+use QUI\Utils\System\File as SystemFile;
 
 /**
  * QUIQQER Setup
@@ -27,7 +28,7 @@ class Setup
              ( isset( $_SERVER['argv'][0] ) && strpos($_SERVER['argv'][0], 'phpunit') === false) )
         {
             // nur Super User darf dies
-            \QUI\Rights\Permission::checkSU();
+            Rights\Permission::checkSU();
         }
 
         \QUI::getSession()->setup();
@@ -40,28 +41,28 @@ class Setup
         SystemFile::mkdir( VAR_DIR );
 
         // mail queue setup
-        \QUI\Mail\Queue::setup();
+        Mail\Queue::setup();
 
         // Gruppen erstellen
-        \QUI::getGroups()->setup();
+        QUI::getGroups()->setup();
 
         // Rechte setup
-        \QUI::getPermissionManager()->setup();
+        QUI::getPermissionManager()->setup();
 
         // Benutzer erstellen
-        \QUI::getUsers()->setup();
+        QUI::getUsers()->setup();
 
         // Cron Setup
-        \QUI::getMessagesHandler()->setup();
+        QUI::getMessagesHandler()->setup();
 
         // Events Setup
-        \QUI\Events\Manager::setup();
+        Events\Manager::setup();
 
         // workspaces
-        \QUI\Workspace\Manager::setup();
+        Workspace\Manager::setup();
 
         // Upload Manager
-        $UploadManager = new \QUI\Upload\Manager();
+        $UploadManager = new Upload\Manager();
         $UploadManager->setup();
 
         /**
@@ -83,7 +84,7 @@ class Setup
         /**
          * Project Setup
          */
-        $projects = \QUI\Projects\Manager::getProjects( true );
+        $projects = Projects\Manager::getProjects( true );
 
         foreach ( $projects as $Project )
         {
@@ -91,7 +92,7 @@ class Setup
             $Project->setup();
 
             // Plugin Setup
-            \QUI::getPlugins()->setup( $Project );
+            QUI::getPlugins()->setup( $Project );
 
             // Media Setup
             // $Project->getMedia()->setup();
@@ -100,7 +101,7 @@ class Setup
         /**
          * composer setup
          */
-        $PackageManager = \QUI::getPackageManager();
+        $PackageManager = QUI::getPackageManager();
         $packages       = SystemFile::readDir( OPT_DIR );
 
         // first we need all databases
@@ -127,16 +128,16 @@ class Setup
         }
 
         // generate translations
-        \QUI\Update::importAllLocaleXMLs();
-        \QUI\Translator::create();
+        Update::importAllLocaleXMLs();
+        Translator::create();
 
         // generate menu
-        \QUI\Update::importAllMenuXMLs();
+        Update::importAllMenuXMLs();
 
         // import permissions
-        \QUI\Update::importAllPermissionsXMLs();
+        Update::importAllPermissionsXMLs();
 
         // clear cache
-        \QUI\Cache\Manager::clearAll();
+        Cache\Manager::clearAll();
     }
 }

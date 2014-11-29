@@ -55,17 +55,17 @@ class Queue
     /**
      * Add a mail to the mail queue
      *
-     * @param Mailer $Mail
+     * @param Mailer|QUI\Mail $Mail
      * @return Integer - Mailqueue-ID
      */
-    static function addToQueue(Mailer $Mail)
+    static function addToQueue($Mail)
     {
         $params = $Mail->toArray();
 
-        $params['mailto']  = json_encode( $params['mailto'] );
-        $params['replyto'] = json_encode( $params['replyto'] );
-        $params['cc']      = json_encode( $params['cc'] );
-        $params['bcc']     = json_encode( $params['bcc'] );
+        $params['mailto']       = json_encode( $params['mailto'] );
+        $params['replyto']      = json_encode( $params['replyto'] );
+        $params['cc']           = json_encode( $params['cc'] );
+        $params['bcc']          = json_encode( $params['bcc'] );
         $params['attachements'] = json_encode( $params['attachements'] );
 
         QUI::getDataBase()->insert( self::Table(), $params );
@@ -116,6 +116,7 @@ class Queue
      *
      * @param Integer $id
      * @return Bool
+     * @throws QUI\Exception
      */
     public function sendById($id)
     {
@@ -146,16 +147,16 @@ class Queue
             // successful send
             if ( $send )
             {
-                \QUI::getDataBase()->delete( self::Table(), array(
+                QUI::getDataBase()->delete( self::Table(), array(
                     'id' => $params[ 0 ]['id']
                 ));
 
                 return true;
             }
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
-            \QUI\System\Log::addError( $Exception->getMessage(), 'mail_queue' );
+            QUI\System\Log::addError( $Exception->getMessage(), 'mail_queue' );
         }
 
         return false;
@@ -167,10 +168,11 @@ class Queue
      * @throws \QUI\Exception
      * @param Array $params - mail data
      * @return Boolean
+     * @todo attachments
      */
     protected function _sendMail($params)
     {
-        $PhpMailer = \QUI::getMailManager()->getPHPMailer();
+        $PhpMailer = QUI::getMailManager()->getPHPMailer();
 
         $mailto  = json_decode( $params['mailto'], true );
         $replyto = json_decode( $params['replyto'], true );
@@ -216,7 +218,7 @@ class Queue
             return true;
         }
 
-        throw new \QUI\Exception(
+        throw new QUI\Exception(
             'Mail Error: '. $PhpMailer->ErrorInfo,
             500
         );
@@ -229,7 +231,7 @@ class Queue
      */
     public function count()
     {
-        $result = \QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch(array(
             'from'   => self::Table(),
             'count'  => array(
                 'select' => 'id',
@@ -247,7 +249,7 @@ class Queue
      */
     public function getList()
     {
-        return \QUI::getDataBase()->fetch(array(
+        return QUI::getDataBase()->fetch(array(
             'from' => self::Table()
         ));
     }

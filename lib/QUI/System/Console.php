@@ -6,6 +6,9 @@
 
 namespace QUI\System;
 
+use QUI;
+use QUI\Utils\Security\Orthos;
+
 /**
  * The QUIQQER Console
  *
@@ -135,14 +138,14 @@ class Console
 
         try
         {
-            $User = \QUI::getUsers()->login(
+            $User = QUI::getUsers()->login(
                 $params[ '--username' ],
                 $params[ '--password' ]
             );
 
-        } catch ( \QUI\Exception $e )
+        } catch ( QUI\Exception $Exception )
         {
-            $this->writeLn( $e->getMessage() ."\n\n", 'red' );
+            $this->writeLn( $Exception->getMessage() ."\n\n", 'red' );
             exit;
         }
 
@@ -233,6 +236,7 @@ class Console
 
         foreach ( $tools as $Tool )
         {
+            /* @var $Tool Console\Tool */
             $this->writeLn( " - " );
             $this->write( $Tool->getName(), 'green' );
 
@@ -258,11 +262,13 @@ class Console
 
         if ( $Exec )
         {
+            /* @var $Exec Console\Tool */
+
             try
             {
                 $Exec->execute();
 
-            } catch ( \QUI\Exception $Exception )
+            } catch ( QUI\Exception $Exception )
             {
                 $this->writeLn( $Exception->getMessage(), 'red' );
                 $this->writeLn();
@@ -280,13 +286,11 @@ class Console
      * Return a tool
      *
      * @param Bool|String $tool - Bool true = all Tools | String = specific tool
-     * @return Array|System_Console_Tool
+     * @return Array|Console\Tool
      */
     public function get($tool)
     {
-        if ( isset( $this->_tools[ $tool ] ) &&
-             is_object( $this->_tools[ $tool ] ) )
-        {
+        if ( isset( $this->_tools[ $tool ] ) && is_object( $this->_tools[ $tool ] ) ) {
             return $this->_tools[ $tool ];
         }
 
@@ -312,7 +316,7 @@ class Console
             {
                 $tool->execute();
 
-            } catch ( \QUI\Exception $Exception )
+            } catch ( QUI\Exception $Exception )
             {
                 $this->writeLn( $Exception->getMessage(), 'red' );
                 $this->writeLn();
@@ -327,7 +331,7 @@ class Console
     {
         // Standard Konsoletools
         $path  = LIB_DIR .'QUI/System/Console/Tools/';
-        $files = \QUI\Utils\System\File::readDir( $path, true );
+        $files = QUI\Utils\System\File::readDir( $path, true );
 
         for ( $i = 0, $len = count( $files ); $i < $len; $i++ )
         {
@@ -354,7 +358,7 @@ class Console
 
             $tools = array_merge(
                $tools,
-               \QUI\Utils\XML::getConsoleToolsFromXml( $dir .'/console.xml' )
+               QUI\Utils\XML::getConsoleToolsFromXml( $dir .'/console.xml' )
             );
         }
 
@@ -372,7 +376,7 @@ class Console
 
             $tools = array_merge(
                $tools,
-               \QUI\Utils\XML::getConsoleToolsFromXml( $dir .'/console.xml' )
+               QUI\Utils\XML::getConsoleToolsFromXml( $dir .'/console.xml' )
             );
         }
 
@@ -380,6 +384,7 @@ class Console
         // init tools
         foreach ( $tools as $cls )
         {
+            /* @var $Tool Console\Tool */
             $Tool = new $cls();
             $Tool->setAttribute( 'parent', $this );
 
@@ -396,10 +401,17 @@ class Console
      *
      * @param String $file
      * @param String $dir
+     * @throws QUI\Exception
      */
     protected function _includeClasses($file, $dir)
     {
-        require_once $dir . $file;
+        $file = Orthos::clearPath( realpath( $file, $dir ) );
+
+        if ( !file_exists( $file ) ) {
+            throw new QUI\Exception( 'console tool not exists' );
+        }
+
+        require_once $file;
 
         $class = str_replace( '.php', '', $dir . $file );
         $class = str_replace( LIB_DIR, '', $class );
@@ -409,6 +421,7 @@ class Console
             return;
         }
 
+        /* @var $Tool Console\Tool */
         $Tool = new $class();
         $Tool->setAttribute( 'parent', $this );
 
@@ -506,9 +519,9 @@ class Console
     /**
      * Write a new line
      *
-     * @param String $msg   - [optional] the printed message
-     * @param String $color - [optional] textcolor
-     * @param String $bg    - [optional] background color
+     * @param string $msg        - (optional) the printed message
+     * @param string|bool $color - (optional) textcolor
+     * @param string|bool $bg    - (optional) background color
      */
     public function writeLn($msg='', $color=false, $bg=false)
     {
@@ -518,9 +531,9 @@ class Console
     /**
      * alternative for message()
      *
-     * @param String $msg   - Message to output
-     * @param String $color - [optional] textcolor
-     * @param String $bg    - [optional] background color
+     * @param string $msg        - Message to output
+     * @param string|bool $color - (optional) textcolor
+     * @param string|bool $bg    - (optional) background color
      */
     public function write($msg, $color=false, $bg=false)
     {
@@ -530,9 +543,9 @@ class Console
     /**
      * Output a message
      *
-     * @param String $msg   - Message to output
-     * @param String $color - [optional] textcolor
-     * @param String $bg    - [optional] background color
+     * @param string $msg   - Message to output
+     * @param string|bool $color - (optional) textcolor
+     * @param string|bool $bg    - (optional) background color
      */
     public function message($msg, $color=false, $bg=false)
     {

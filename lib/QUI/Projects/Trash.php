@@ -6,6 +6,8 @@
 
 namespace QUI\Projects;
 
+use QUI;
+
 /**
  * Trash from a Project
  *
@@ -13,7 +15,7 @@ namespace QUI\Projects;
  * @package com.pcsg.qui.projects
  */
 
-class Trash extends \QUI\QDOM implements \QUI\Interfaces\Projects\Trash
+class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
 {
     /**
      * The Project of the trash
@@ -26,7 +28,7 @@ class Trash extends \QUI\QDOM implements \QUI\Interfaces\Projects\Trash
      *
      * @param \QUI\Projects\Project $Project
      */
-    public function __construct(\QUI\Projects\Project $Project)
+    public function __construct(Project $Project)
     {
         $this->_Project = $Project;
     }
@@ -46,7 +48,7 @@ class Trash extends \QUI\QDOM implements \QUI\Interfaces\Projects\Trash
     public function getList($params=array())
     {
         // create grid
-        $Grid = new \QUI\Utils\Grid();
+        $Grid = new QUI\Utils\Grid();
 
         $_params = $Grid->parseDBParams($params);
 
@@ -97,6 +99,7 @@ class Trash extends \QUI\QDOM implements \QUI\Interfaces\Projects\Trash
 
         foreach ( $sites as $Site )
         {
+            /* @var $Site Site */
             $result[] = array(
                 'icon'  => URL_BIN_DIR .'16x16/page.png',
                 'name'  => $Site->getAttribute('name'),
@@ -116,7 +119,7 @@ class Trash extends \QUI\QDOM implements \QUI\Interfaces\Projects\Trash
             'count' => true
         ));
 
-        return $Grid->parseResult( $result, $total );
+        return $Grid->parseResult( $result, (int)$total );
     }
 
     /**
@@ -125,7 +128,7 @@ class Trash extends \QUI\QDOM implements \QUI\Interfaces\Projects\Trash
      * @param \QUI\Projects\Project $Project
      * @param Array $ids
      */
-    public function destroy(\QUI\Projects\Project $Project, $ids=array())
+    public function destroy(Project $Project, $ids=array())
     {
         if ( !is_array( $ids ) ) {
             return;
@@ -133,7 +136,7 @@ class Trash extends \QUI\QDOM implements \QUI\Interfaces\Projects\Trash
 
         foreach ( $ids as $id )
         {
-            $Site = new \QUI\Projects\Site\Edit( $Project, (int)$id );
+            $Site = new Site\Edit( $Project, (int)$id );
             $Site->destroy();
         }
     }
@@ -145,13 +148,13 @@ class Trash extends \QUI\QDOM implements \QUI\Interfaces\Projects\Trash
      * @param Array $ids
      * @param Integer $parentid
      */
-    public function restore(\QUI\Projects\Project $Project, $ids, $parentid)
+    public function restore(Project $Project, $ids, $parentid)
     {
-        $Parent = new \QUI\Projects\Site\Edit( $Project, (int)$parentid );
+        $Parent = new Site\Edit( $Project, (int)$parentid );
 
         foreach ( $ids as $id )
         {
-            $Site = new \QUI\Projects\Site\Edit( $Project, $id );
+            $Site = new Site\Edit( $Project, $id );
 
             $Site->restore();
             $Site->move( $Parent->getId() );

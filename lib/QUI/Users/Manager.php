@@ -158,7 +158,7 @@ class Manager
     /**
      * Is the Object a systemuser?
      *
-     * @param unknown_type $User
+     * @param mixed $User
      * @return Bool
      */
     public function isSystemUser($User)

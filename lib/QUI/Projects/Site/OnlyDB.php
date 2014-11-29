@@ -6,6 +6,8 @@
 
 namespace QUI\Projects\Site;
 
+use QUI;
+
 /**
  * This object is only used to get data purely from the DataBase
  * Without performing file system operations (cache etc.)
@@ -13,15 +15,16 @@ namespace QUI\Projects\Site;
  * @author www.pcsg.de (Henning Leutz)
  */
 
-class OnlyDB extends \QUI\Projects\Site
+class OnlyDB extends QUI\Projects\Site
 {
     /**
      * constructor
      *
      * @param \QUI\Projects\Project $Project
      * @param Integer $id - Site ID
+     * @throws QUI\Exception
      */
-    public function __construct(\QUI\Projects\Project $Project, $id)
+    public function __construct(QUI\Projects\Project $Project, $id)
     {
         $this->_users = \QUI::getUsers();
         $this->_user  = $this->_users->getUserBySession();
@@ -33,7 +36,7 @@ class OnlyDB extends \QUI\Projects\Site
         $id = (int)$id;
 
         if ( empty($id) ) {
-            throw new \QUI\Exception( 'Site Error; No ID given:'. $id, 400 );
+            throw new QUI\Exception( 'Site Error; No ID given:'. $id, 400 );
         }
 
         $this->_id = $id;
@@ -52,7 +55,7 @@ class OnlyDB extends \QUI\Projects\Site
      */
     public function refresh()
     {
-        $result = \QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch(array(
             'from'  => $this->_TABLE,
             'where' => array(
                 'id' => $this->getId()
@@ -61,10 +64,8 @@ class OnlyDB extends \QUI\Projects\Site
         ));
 
         if ( !isset( $result[0] ) ) {
-            throw new \QUI\Exception( 'Site not exist', 404 );
+            throw new QUI\Exception( 'Site not exist', 404 );
         }
-
-        $params = $result[0];
 
         // Verknüpfung hohlen
         if ( $this->getId() != 1 )
@@ -89,7 +90,7 @@ class OnlyDB extends \QUI\Projects\Site
             }
         }
 
-        if ( isset($result[0]['extra']) )
+        if ( isset($result[0]['extra']) ) /* deprecated */
         {
             $this->_extra = json_decode( $result[0]['extra'], true );
             unset($result[0]['extra']);

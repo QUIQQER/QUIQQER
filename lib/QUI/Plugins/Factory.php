@@ -11,6 +11,7 @@ namespace QUI\Plugins;
  *
  * @author www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui.plugins
+ * @depricated
  *
  * @todo Factory Klasse für Plugins umsetzen
  * @todo ???

@@ -49,7 +49,7 @@ interface File
 
     /**
      * Return what type is the file
-     * @return String \QUI\Projects\Media\Image|\QUI\Projects\Media\Folder|\QUI\Projects\Media\File
+     * @return String - \QUI\Projects\Media\Image | \QUI\Projects\Media\Folder | \QUI\Projects\Media\File
      */
     public function getType();
 
@@ -114,4 +114,16 @@ interface File
      * @param \QUI\Projects\Media\Folder $Folder
      */
     public function copyTo(\QUI\Projects\Media\Folder $Folder);
+
+    /**
+     * Return the Media of the file
+     * @return \QUI\Projects\Media
+     */
+    public function getMedia();
+
+    /**
+     * Return the Project of the file
+     * @return \QUI\Projects\Project
+     */
+    public function getProject();
 }

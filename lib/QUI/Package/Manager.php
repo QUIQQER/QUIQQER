@@ -25,14 +25,15 @@ if ( !defined( 'JSON_UNESCAPED_UNICODE' ) ) {
 
 
 use Composer\Console\Application;
+use Composer\Package\Package;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 
-use \QUI\Utils\XML as XML;
-use Composer\Package\Package;
+use QUI;
+use QUI\Utils\XML as XML;
 
 /**
  * Package Manager for the QUIQQER System
@@ -109,7 +110,7 @@ class Manager
 
     /**
      * internal event manager
-     * @var \QUI\Events\Manager
+     * @var QUI\Events\Manager
      */
     public $Events;
 
@@ -123,7 +124,7 @@ class Manager
 
         $this->_composer_json = $this->_vardir .'composer.json';
 
-        $this->Events = new \QUI\Events\Manager();
+        $this->Events = new QUI\Events\Manager();
     }
 
     /**
@@ -140,7 +141,7 @@ class Manager
         $this->_Application = new Application();
         $this->_Application->setAutoExit( false );
 
-        \QUI\Utils\System\File::mkdir( $this->_vardir );
+        QUI\Utils\System\File::mkdir( $this->_vardir );
 
         putenv( "COMPOSER_HOME=". $this->_vardir );
 
@@ -304,11 +305,11 @@ class Manager
 
         try
         {
-            $this->_list = \QUI\Cache\Manager::get( self::CACHE_NAME_TYPES );
+            $this->_list = QUI\Cache\Manager::get( self::CACHE_NAME_TYPES );
 
             return $this->_list;
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
 
         }
@@ -360,7 +361,7 @@ class Manager
             $this->_list = $result;
         }
 
-        \QUI\Cache\Manager::set( self::CACHE_NAME_TYPES , $this->_list );
+        QUI\Cache\Manager::set( self::CACHE_NAME_TYPES , $this->_list );
 
         return $this->_list;
     }
@@ -423,7 +424,7 @@ class Manager
     /**
      * Return the installed packages
      *
-     * @param {Array} $params - [optional] search / limit params
+     * @param Array $params - [optional] search / limit params
      * @return Array
      */
     public function getInstalled($params=array())
@@ -456,7 +457,7 @@ class Manager
             $limit = (int)$params['limit'];
             $page  = (int)$params['page'];
 
-            return \QUI\Utils\Grid::getResult( $result, $page, $limit );
+            return QUI\Utils\Grid::getResult( $result, $page, $limit );
         }
 
         return $result;
@@ -466,13 +467,13 @@ class Manager
      * Return a package object
      *
      * @param String $package - name of the package
-     * @return \QUI\Package\Package
-     * @throws \QUI\Exception
+     * @return QUI\Package\Package
+     * @throws QUI\Exception
      */
     public function getInstalledPackage($package)
     {
         if ( !isset( $this->_packages[ $package ] ) ) {
-            $this->_packages[ $package ] = new \QUI\Package\Package( $package );
+            $this->_packages[ $package ] = new QUI\Package\Package( $package );
         }
 
         return $this->_packages[ $package ];
@@ -482,7 +483,7 @@ class Manager
      * Install Package
      *
      * @param String $package - name of the package
-     * @param String $version - [optional] version of the package default = dev-master
+     * @param String|bool $version - (optional) version of the package default = dev-master
      */
     public function install($package, $version=false)
     {
@@ -498,7 +499,7 @@ class Manager
             )
         ));
 
-        \QUI\System\Log::writeRecursive( $result );
+        QUI\System\Log::writeRecursive( $result );
 
         // execute setup of the new package
         $this->setup( $package );
@@ -508,7 +509,7 @@ class Manager
      * Add a Package to the composer json
      *
      * @param String|Array $package - name of the package
-     * @param String $version - [optional] version of the package default = dev-master
+     * @param String|bool $version - (optional) version of the package default = dev-master
      */
     public function setPackage($package, $version=false)
     {
@@ -573,11 +574,11 @@ class Manager
 
         try
         {
-            return \QUI\Cache\Manager::get( $cache );
+            return QUI\Cache\Manager::get( $cache );
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
-            \QUI\System\Log::addDebug( $Exception->getMessage() );
+            QUI\System\Log::addDebug( $Exception->getMessage() );
         }
 
         $list   = $this->_getList();
@@ -607,7 +608,7 @@ class Manager
             $result['require'] = $showData['require'];
         }
 
-        \QUI\Cache\Manager::set( $cache, $result, 3600 );
+        QUI\Cache\Manager::set( $cache, $result, 3600 );
 
         return $result;
     }
@@ -616,6 +617,7 @@ class Manager
      * Return the dependencies of a package
      *
      * @param String $package - package name
+     * @return array - list of dependencies
      */
     public function getDependencies($package)
     {
@@ -650,11 +652,11 @@ class Manager
 
         try
         {
-            return \QUI\Cache\Manager::get( $cache );
+            return QUI\Cache\Manager::get( $cache );
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
-            \QUI\System\Log::addDebug( $Exception->getMessage() );
+            QUI\System\Log::addDebug( $Exception->getMessage() );
         }
 
         $this->_checkComposer();
@@ -698,7 +700,7 @@ class Manager
             $result[ $key ] = $value;
         }
 
-        \QUI\Cache\Manager::set( $cache, $result, 3600 );
+        QUI\Cache\Manager::set( $cache, $result, 3600 );
 
         return $result;
     }
@@ -712,8 +714,8 @@ class Manager
     public function searchPackage($str)
     {
         $result = array();
-        $str    = \QUI\Utils\Security\Orthos::clearShell( $str );
-        $list   = $this->_getList();
+        $str    = QUI\Utils\Security\Orthos::clearShell( $str );
+        // $list   = $this->_getList();
 
         $list = $this->_execComposer('search', array(
             'tokens' => array( $str )
@@ -745,23 +747,23 @@ class Manager
             return;
         }
 
-        \QUI\Update::importDatabase( $dir .'database.xml' );
-        \QUI\Update::importTemplateEngines( $dir .'engines.xml' );
-        \QUI\Update::importEditors( $dir .'wysiwyg.xml' );
-        \QUI\Update::importMenu( $dir .'menu.xml' );
-        \QUI\Update::importPermissions( $dir .'permissions.xml', $package );
-        \QUI\Update::importMenu( $dir .'menu.xml' );
+        QUI\Update::importDatabase( $dir .'database.xml' );
+        QUI\Update::importTemplateEngines( $dir .'engines.xml' );
+        QUI\Update::importEditors( $dir .'wysiwyg.xml' );
+        QUI\Update::importMenu( $dir .'menu.xml' );
+        QUI\Update::importPermissions( $dir .'permissions.xml', $package );
+        QUI\Update::importMenu( $dir .'menu.xml' );
 
         // events
-        \QUI\Update::importEvents( $dir .'events.xml' );
-        \QUI\Update::importSiteEvents( $dir .'site.xml' );
+        QUI\Update::importEvents( $dir .'events.xml' );
+        QUI\Update::importSiteEvents( $dir .'site.xml' );
 
         // settings
         if ( !file_exists( $dir .'settings.xml' ) ) {
             return;
         }
 
-        $defaults = XML::getConfigParamsFromXml( $dir .'settings.xml' );
+        // $defaults = XML::getConfigParamsFromXml( $dir .'settings.xml' );
         $Config   = XML::getConfigFromXml( $dir .'settings.xml' );
 
         if ( $Config ) {
@@ -831,9 +833,9 @@ class Manager
     {
         try
         {
-            return \QUI::getConfig( 'etc/source.list.ini.php' )->toArray();
+            return QUI::getConfig( 'etc/source.list.ini.php' )->toArray();
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
 
         }
@@ -849,7 +851,7 @@ class Manager
      */
     public function setServerStatus($server, $status)
     {
-        $Config  = \QUI::getConfig( 'etc/source.list.ini.php' );
+        $Config  = QUI::getConfig( 'etc/source.list.ini.php' );
         $status = (bool)$status ? 1 : 0;
 
         $Config->setValue( $server, 'active', $status );
@@ -875,7 +877,7 @@ class Manager
         }
 
 
-        $Config = \QUI::getConfig( 'etc/source.list.ini.php' );
+        $Config = QUI::getConfig( 'etc/source.list.ini.php' );
         $Config->setValue( $server, 'active', 0 );
 
         if ( isset( $params['type'] ) ) {
@@ -894,7 +896,7 @@ class Manager
      */
     public function removeServer($server)
     {
-        $Config = \QUI::getConfig( 'etc/source.list.ini.php' );
+        $Config = QUI::getConfig( 'etc/source.list.ini.php' );
 
         if ( is_array( $server ) )
         {
@@ -917,7 +919,7 @@ class Manager
 
     /**
      * Check for updates
-     * @throws \\QUI\Exception
+     * @throws \QUI\Exception
      */
     public function checkUpdates()
     {
@@ -930,7 +932,7 @@ class Manager
         ));
 
 
-        \QUI\System\Log::addDebug( print_r($result, true) );
+        QUI\System\Log::addDebug( print_r($result, true) );
 
         foreach ( $result as $line )
         {
@@ -985,9 +987,8 @@ class Manager
     /**
      * Update a package or the entire system
      *
-     * @param String|false $package - optional, package name, if false, it updates the complete system
-     *
-     * @throws \QUI\Exception
+     * @param string|bool $package - optional, package name, if false, it updates the complete system
+     * @throws QUI\Exception
      *
      * @todo if exception uncommited changes -> own error message
      * @todo if exception uncommited changes -> interactive mode
@@ -1032,27 +1033,27 @@ class Manager
 
             if ( strpos( $msg, 'Exception' ) )
             {
-                throw new \QUI\Exception(
+                throw new QUI\Exception(
                     $output[ $key + 1 ]
                 );
             }
         }
 
-        \QUI\System\Log::addInfo( implode("\n", $output) );
+        QUI\System\Log::addInfo( implode("\n", $output) );
     }
 
     /**
      * Update a package or the entire system from a package archive
      *
      * @param String $packagepath - path to the ZIP archive
-     * @throws \\QUI\Exception
+     * @throws \QUI\Exception
      */
     public function updatePackage($packagepath)
     {
         if ( !file_exists( $packagepath ) )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.packages.update.archive.not.found'
                 )
@@ -1060,9 +1061,9 @@ class Manager
         }
 
         // extract the archive
-        $folder = \QUI::getTemp()->createFolder();
+        $folder = QUI::getTemp()->createFolder();
 
-        \QUI\Archiver\Zip::unzip( $packagepath, $folder );
+        QUI\Archiver\Zip::unzip( $packagepath, $folder );
 
         // read composer file
         $composer     = $folder .'composer.json';
@@ -1070,8 +1071,8 @@ class Manager
 
         if ( !file_exists( $composer ) )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.no.quiqqer.update.archive'
                 )
@@ -1086,8 +1087,8 @@ class Manager
             unlink( $update_file );
         }
 
-        \QUI\Utils\System\File::mkdir( $package_dir );
-        \QUI\Utils\System\File::move( $packagepath, $update_file );
+        QUI\Utils\System\File::mkdir( $package_dir );
+        QUI\Utils\System\File::move( $packagepath, $update_file );
 
 
         // create packages.json
@@ -1179,8 +1180,8 @@ class Manager
 
         if ( !count( $result ) )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.packages.exec.not.found.composer'
                 )
@@ -1195,8 +1196,8 @@ class Manager
 
         if ( $last == 'Nothing to install or update' )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.packages.update.version.not.found'
                 )
@@ -1209,20 +1210,21 @@ class Manager
     /**
      * Execute a composer command
      *
-     * @param String $command - composer command
-     * @param Array $params - composer argument params
-     * @param Bool $showInfo - standard = false; shows messages with <info> or not
+     * @param string $command - composer command
+     * @param array $params - composer argument params
+     * @param bool $showInfo - standard = false; shows messages with <info> or not
+     * @return array - result list
      */
     protected function _execComposer($command, $params=array(), $showInfo=false)
     {
         // composer output, some warnings that composer/cache is not empty
         try
         {
-            \QUI::getTemp()->moveToTemp( $this->_vardir .'cache' );
+            QUI::getTemp()->moveToTemp( $this->_vardir .'cache' );
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
-            \QUI\System\Log::addInfo( $Exception->getMessage() );
+            QUI\System\Log::addInfo( $Exception->getMessage() );
         }
 
         if ( !isset( $params['--working-dir'] ) ) {
@@ -1234,7 +1236,7 @@ class Manager
         ), $params);
 
         $Input  = new ArrayInput( $params );
-        $Output = new \QUI\Package\Output();
+        $Output = new QUI\Package\Output();
 
         // output events
         $PackageManager = $this;
@@ -1243,11 +1245,11 @@ class Manager
             $PackageManager->Events->fireEvent( 'output', array( $message ) );
         });
 
-        \QUI\System\Log::addDebug( print_r($params, true) );
+        QUI\System\Log::addDebug( print_r($params, true) );
 
         // run application
         $this->_getApplication()->run( $Input, $Output );
-        \QUI\Cache\Manager::clear( self::CACHE_NAME_TYPES );
+        QUI\Cache\Manager::clear( self::CACHE_NAME_TYPES );
 
         $messages = $Output->getMessages();
         $result   = array();
@@ -1262,7 +1264,7 @@ class Manager
             {
                 preg_match( "#<error>(.*?)</error>#si", $entry, $match );
 
-                \QUI::getMessagesHandler()->addError( $match[ 0 ] );
+                QUI::getMessagesHandler()->addError( $match[ 0 ] );
                 continue;
             }
 
@@ -1274,7 +1276,7 @@ class Manager
             $result[] = $entry;
         }
 
-        \QUI\System\Log::addDebug( print_r($result, true) );
+        QUI\System\Log::addDebug( print_r($result, true) );
 
         return $result;
 
@@ -1299,9 +1301,9 @@ class Manager
     {
         try
         {
-            return \QUI\Cache\Manager::get( 'qui/packages/list/haveSiteXml' );
+            return QUI\Cache\Manager::get( 'qui/packages/list/haveSiteXml' );
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
 
         }
@@ -1324,7 +1326,7 @@ class Manager
             $result[] = $package[ 'name' ];
         }
 
-        \QUI\Cache\Manager::set( 'qui/packages/list/haveSiteXml', $result );
+        QUI\Cache\Manager::set( 'qui/packages/list/haveSiteXml', $result );
 
         return $result;
     }
@@ -1338,9 +1340,9 @@ class Manager
     {
         try
         {
-            return \QUI\Cache\Manager::get( 'qui/packages/list/haveDatabaseXml' );
+            return QUI\Cache\Manager::get( 'qui/packages/list/haveDatabaseXml' );
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
 
         }
@@ -1359,7 +1361,7 @@ class Manager
             $result[] = $package[ 'name' ];
         }
 
-        \QUI\Cache\Manager::set( 'qui/packages/list/haveDatabaseXml', $result );
+        QUI\Cache\Manager::set( 'qui/packages/list/haveDatabaseXml', $result );
 
         return $result;
     }

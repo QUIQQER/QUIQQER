@@ -6,7 +6,9 @@
 
 namespace QUI\Projects\Media;
 
-use \QUI\Utils\System\File as QUIFile;
+use QUI;
+use QUI\Projects\Media;
+use QUI\Utils\System\File as QUIFile;
 
 /**
  * A media item
@@ -16,11 +18,11 @@ use \QUI\Utils\System\File as QUIFile;
  * @package com.pcsg.qui.projects.media
  */
 
-abstract class Item extends \QUI\QDOM
+abstract class Item extends QUI\QDOM
 {
     /**
      * internal media object
-     * @var \QUI\Projects\Media
+     * @var QUI\Projects\Media
      */
     protected $_Media = null;
 
@@ -42,7 +44,7 @@ abstract class Item extends \QUI\QDOM
      * @param array $params 		- item attributes
      * @param \QUI\Projects\Media $Media - Media of the file
      */
-    public function __construct($params, \QUI\Projects\Media $Media)
+    public function __construct($params, Media $Media)
     {
         $this->_Media = $Media;
         $this->setAttributes( $params );
@@ -51,7 +53,7 @@ abstract class Item extends \QUI\QDOM
 
         if ( !file_exists( $this->_file ) )
         {
-            \QUI::getMessagesHandler()->addAttention(
+            QUI::getMessagesHandler()->addAttention(
                 'File '. $this->_file .' ('. $this->getId() .') doesn\'t exist'
             );
 
@@ -87,12 +89,12 @@ abstract class Item extends \QUI\QDOM
             // activate the parents, otherwise the file is not accessible
             $this->getParent()->activate();
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
             // has no parent
         }
 
-        \QUI::getDataBase()->update(
+        QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array('active' => 1),
             array('id' => $this->getId())
@@ -116,7 +118,7 @@ abstract class Item extends \QUI\QDOM
      */
     public function deactivate()
     {
-        \QUI::getDataBase()->update(
+        QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array('active' => 0),
             array('id' => $this->getId())
@@ -151,7 +153,7 @@ abstract class Item extends \QUI\QDOM
             $roundcorners = json_encode( $roundcorners );
         }
 
-        \QUI::getDataBase()->update(
+        QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array(
                 'title' => $this->getAttribute('title'),
@@ -177,11 +179,13 @@ abstract class Item extends \QUI\QDOM
 
     /**
      * Delete the file and move it to the trash
+     *
+     * @throws QUI\Exception
      */
     public function delete()
     {
         if ( $this->isDeleted() ) {
-            throw new \QUI\Exception( 'File is already deleted', 400 );
+            throw new QUI\Exception( 'File is already deleted', 400 );
         }
 
 
@@ -193,11 +197,11 @@ abstract class Item extends \QUI\QDOM
         $var_folder = VAR_DIR .'media/'. $Media->getProject()->getAttribute('name') .'/';
 
         if ( !is_file( $original ) ) {
-            throw new \QUI\Exception( 'Original File is not a File', 400 );
+            throw new QUI\Exception( 'Original File is not a File', 400 );
         }
 
         if ( $First->getFullPath() == $original ) {
-            throw new \QUI\Exception( 'You cannot delete the root file', 400 );
+            throw new QUI\Exception( 'You cannot delete the root file', 400 );
         }
 
 
@@ -205,7 +209,7 @@ abstract class Item extends \QUI\QDOM
         {
             QUIFile::unlink( $var_folder . $this->getId() );
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
             \QUI::getMessagesHandler()->addAttention(
                 $Exception->getMessage()
@@ -217,7 +221,7 @@ abstract class Item extends \QUI\QDOM
             QUIFile::mkdir( $var_folder );
             QUIFile::move( $original, $var_folder . $this->getId() );
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
             \QUI::getMessagesHandler()->addAttention(
                 $Exception->getMessage()
@@ -226,7 +230,7 @@ abstract class Item extends \QUI\QDOM
 
 
         // change db entries
-        \QUI::getDataBase()->update(
+        QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array(
                 'deleted' => 1,
@@ -238,7 +242,7 @@ abstract class Item extends \QUI\QDOM
             )
         );
 
-        \QUI::getDataBase()->delete(
+        QUI::getDataBase()->delete(
             $this->_Media->getTable('relations'),
             array('child' => $this->getId())
         );
@@ -252,16 +256,17 @@ abstract class Item extends \QUI\QDOM
     /**
      * Destroy the File complete from the DataBase and from the Filesystem
      *
+     * @throws QUI\Exception
      * @todo muss in den trash
      */
     public function destroy()
     {
         if ( $this->isActive() ) {
-            throw new \QUI\Exception( 'Only inactive files can be destroyed' );
+            throw new QUI\Exception( 'Only inactive files can be destroyed' );
         }
 
         if ( $this->isDeleted() ) {
-            throw new \QUI\Exception( 'Only deleted files can be destroyed' );
+            throw new QUI\Exception( 'Only deleted files can be destroyed' );
         }
 
         $Media = $this->_Media;
@@ -272,7 +277,7 @@ abstract class Item extends \QUI\QDOM
 
         QUIFile::unlink( $var_file );
 
-        \QUI::getDataBase()->delete($this->_Media->getTable(), array(
+        QUI::getDataBase()->delete($this->_Media->getTable(), array(
             'id' => $this->getId()
         ));
     }
@@ -306,7 +311,7 @@ abstract class Item extends \QUI\QDOM
     public function rename($newname)
     {
         $original  = $this->getFullPath();
-        $extension = \QUI\Utils\String::pathinfo( $original, PATHINFO_EXTENSION );
+        $extension = QUI\Utils\String::pathinfo( $original, PATHINFO_EXTENSION );
         $Parent    = $this->getParent();
 
         $new_full_file = $Parent->getFullPath() . $newname .'.'. $extension;
@@ -320,13 +325,13 @@ abstract class Item extends \QUI\QDOM
         $fileParts = explode( '/', $new_file );
 
         foreach ( $fileParts as $filePart ) {
-            \QUI\Projects\Media\Utils::checkMediaName( $filePart );
+            Utils::checkMediaName( $filePart );
         }
 
 
         if ( $Parent->childWithNameExists( $newname ) )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 'Eine Datei mit dem Namen '. $newname .'existiert bereits.
                 Bitte wählen Sie einen anderen Namen.'
             );
@@ -334,7 +339,7 @@ abstract class Item extends \QUI\QDOM
 
         if ( $Parent->fileWithNameExists( $newname .'.'. $extension ) )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 'Eine Datei mit dem Namen '. $newname .'existiert bereits.
                 Bitte wählen Sie einen anderen Namen.'
             );
@@ -501,20 +506,19 @@ abstract class Item extends \QUI\QDOM
     /**
      * move the item to another folder
      * @param \QUI\Projects\Media\Folder $Folder - the new folder of the file
+     * @throws QUI\Exception
      */
-    public function moveTo(\QUI\Projects\Media\Folder $Folder)
+    public function moveTo(Folder $Folder)
     {
         // check if a child with the same name exist
         if ( $Folder->fileWithNameExists( $this->getAttribute('name') ) )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 'File with a same Name exist in folder '. $Folder->getAttribute('name')
             );
         }
 
-        $Parent = $this->getParent();
-
-        $old_file = $this->getAttribute('file');
+        $Parent   = $this->getParent();
         $old_path = $this->getFullPath();
 
         $new_file = str_replace(
@@ -526,7 +530,7 @@ abstract class Item extends \QUI\QDOM
         $new_path = $this->_Media->getFullPath() . $new_file;
 
         // update file path
-        \QUI::getDataBase()->update(
+        QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array(
                 'file' => $new_file
@@ -537,7 +541,7 @@ abstract class Item extends \QUI\QDOM
         );
 
         // set the new parent relationship
-        \QUI::getDataBase()->update(
+        QUI::getDataBase()->update(
             $this->_Media->getTable('relations'),
             array(
                 'parent' => $Folder->getId()
@@ -569,7 +573,7 @@ abstract class Item extends \QUI\QDOM
      * @param \QUI\Projects\Media\Folder $Folder
      * @return \QUI\Projects\Media\Item - The new file
      */
-    public function copyTo(\QUI\Projects\Media\Folder $Folder)
+    public function copyTo(Folder $Folder)
     {
         $File = $Folder->uploadFile( $this->getFullPath() );
 
@@ -582,5 +586,23 @@ abstract class Item extends \QUI\QDOM
         $File->save();
 
         return $File;
+    }
+
+    /**
+     * Return the Media of the item
+     *
+     * @return QUI\Projects\Media
+     */
+    public function getMedia()
+    {
+        return $this->_Media;
+    }
+
+    /**
+     * Return the Project of the item
+     */
+    public function getProject()
+    {
+        return $this->getMedia()->getProject();
     }
 }

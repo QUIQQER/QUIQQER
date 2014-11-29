@@ -6,6 +6,9 @@
 
 namespace QUI\Projects\Media;
 
+use QUI;
+use QUI\Projects\Media;
+
 /**
  * The media trash
  *
@@ -13,24 +16,24 @@ namespace QUI\Projects\Media;
  * @package com.pcsg.qui.projects.media
  */
 
-class Trash implements \QUI\Interfaces\Projects\Trash
+class Trash implements QUI\Interfaces\Projects\Trash
 {
     /**
      * The media
-     * @var \QUI\Projects\Media
+     * @var QUI\Projects\Media
      */
     protected $_Media;
 
     /**
      * Konstruktor
      *
-     * @param \QUI\Projects\Media $Media
+     * @param QUI\Projects\Media $Media
      */
-    public function __construct(\QUI\Projects\Media $Media)
+    public function __construct(Media $Media)
     {
         $this->_Media = $Media;
 
-        \QUI\Utils\System\File::mkdir( $this->getPath() );
+        QUI\Utils\System\File::mkdir( $this->getPath() );
     }
 
     /**
@@ -46,12 +49,12 @@ class Trash implements \QUI\Interfaces\Projects\Trash
     /**
      * Returns the items in the trash
      *
-     * @param Array $params - \QUI\Utils\Grid parameters
+     * @param Array $params - QUI\Utils\Grid parameters
      * @return array
      */
     public function getList($params=array())
     {
-        $Grid  = new \QUI\Utils\Grid();
+        $Grid  = new QUI\Utils\Grid();
 
         $query = $Grid->parseDBParams( $params );
         $query['from']  = $this->_Media->getTable();
@@ -60,7 +63,7 @@ class Trash implements \QUI\Interfaces\Projects\Trash
         );
 
         // count
-        $count = \QUI::getDataBase()->fetch(array(
+        $count = QUI::getDataBase()->fetch(array(
             'from'  => $this->_Media->getTable(),
             'count' => 'count',
             'where' => array(
@@ -68,12 +71,12 @@ class Trash implements \QUI\Interfaces\Projects\Trash
             )
         ));
 
-        $data = \QUI::getDataBase()->fetch( $query );
+        $data = QUI::getDataBase()->fetch( $query );
 
         foreach ( $data as $key => $entry )
         {
-            $data[ $key ]['icon'] = \QUI\Projects\Media\Utils::getIconByExtension(
-                \QUI\Projects\Media\Utils::getExtension( $entry['file'] )
+            $data[ $key ]['icon'] = Utils::getIconByExtension(
+                Utils::getExtension( $entry['file'] )
             );
         }
 
@@ -85,6 +88,7 @@ class Trash implements \QUI\Interfaces\Projects\Trash
      * After it, its impossible to restore the item
      *
      * @param Integer $id
+     * @throws QUI\Exception
      */
     public function destroy($id)
     {
@@ -93,39 +97,40 @@ class Trash implements \QUI\Interfaces\Projects\Trash
 
         if ( !$File->isDeleted() )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 'Only deleted Files can be destroyed. Please delete the file'
             );
         }
 
-        \QUI::getDataBase()->delete(
+        QUI::getDataBase()->delete(
             $this->_Media->getTable(),
             array('id' => $id)
         );
 
-        \QUI\Utils\System\File::unlink( $this->getPath() . $id );
+        QUI\Utils\System\File::unlink( $this->getPath() . $id );
     }
 
     /**
      * Restore a item to a folder
      *
      * @param Integer $id
-     * @param \QUI\Projects\Media\Folder $Folder
-     * @return \QUI\Projects\Media\Item
+     * @param QUI\Projects\Media\Folder $Folder
+     * @return QUI\Projects\Media\Item
+     * @throws QUI\Exception
      */
-    public function restore($id, \QUI\Projects\Media\Folder $Folder)
+    public function restore($id, Folder $Folder)
     {
         $file = $this->getPath() . $id;
 
         if ( !file_exists( $file ) )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 'Could not find the file '. $id .' in the Trash'
             );
         }
 
         // search old db entry for data
-        $data = \QUI::getDataBase()->fetch(array(
+        $data = QUI::getDataBase()->fetch(array(
             'from' 	=> $this->_Media->getTable(),
             'where' => array(
                 'id' => $id
@@ -135,20 +140,20 @@ class Trash implements \QUI\Interfaces\Projects\Trash
 
         if ( !isset( $data[0] ) )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 'No data for the file found. Can\'t restore the file'
             );
         }
 
 
         // rename the file for upload
-        $extension = \QUI\Utils\System\File::getExtensionByMimeType(
+        $extension = QUI\Utils\System\File::getEndingByMimeType(
             $data[0]['mime_type']
         );
 
         $newFile = $this->getPath() . $data[0]['name'] . $extension;
 
-        \QUI\Utils\System\File::move( $file , $newFile );
+        QUI\Utils\System\File::move( $file , $newFile );
 
         // insert the file
         $Item = $Folder->uploadFile( $newFile );
@@ -163,7 +168,7 @@ class Trash implements \QUI\Interfaces\Projects\Trash
         $Item->save();
 
         // delete the old db entry
-        \QUI::getDataBase()->delete(
+        QUI::getDataBase()->delete(
             $this->_Media->getTable(),
             array('id' => $id)
         );

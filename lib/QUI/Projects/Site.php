@@ -17,17 +17,17 @@ use QUI\Utils\String as StringUtils;
  * @errorcodes 7XX = Site Errors -> look at Site/Edit
  */
 
-class Site extends \QUI\QDOM
+class Site extends QUI\QDOM
 {
     /**
      * Edit site
-     * @var \QUI\Projects\Site\Edit
+     * @var QUI\Projects\Site\Edit
      */
     protected $_Edit = null;
 
     /**
      * $Events - manage and fires events
-     * @var \QUI\Events\Event
+     * @var QUI\Events\Event
      */
     public $Events;
 
@@ -153,17 +153,18 @@ class Site extends \QUI\QDOM
     /**
      * Constructor
      *
-     * @param \QUI\Projects\Project $Project
+     * @param QUI\Projects\Project $Project
      * @param Integer $id
+     * @throws QUI\Exception
      */
-    public function __construct(\QUI\Projects\Project $Project, $id)
+    public function __construct(Project $Project, $id)
     {
         $this->_id      = (int)$id;
         $this->_Project = $Project;
-        $this->Events   = new \QUI\Events\Event();
+        $this->Events   = new QUI\Events\Event();
 
         if ( empty( $this->_id ) ) {
-            throw new \QUI\Exception( 'Site Error; No ID given:'. $id, 700 );
+            throw new QUI\Exception( 'Site Error; No ID given:'. $id, 700 );
         }
 
         // DB Tables
@@ -184,7 +185,7 @@ class Site extends \QUI\QDOM
 
 
         // site events
-        $events = \QUI::getEvents()->getSiteListByType(
+        $events = QUI::getEvents()->getSiteListByType(
             $this->getAttribute('type')
         );
 
@@ -201,17 +202,17 @@ class Site extends \QUI\QDOM
         try
         {
             $this->decode(
-                \QUI\Cache\Manager::get( $this->_CACHENAME )
+                QUI\Cache\Manager::get( $this->_CACHENAME )
             );
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
             // Daten aus der DB hohlen
             $this->refresh();
 
             // Falls ein PHP Cache vorhanden ist
             // dann diesen nutzen anstatt das Filesystem
-            \QUI\Cache\Manager::set( $this->_CACHENAME, $this->encode() );
+            QUI\Cache\Manager::set( $this->_CACHENAME, $this->encode() );
         }
 
         // set the default type if no type is set
@@ -222,13 +223,15 @@ class Site extends \QUI\QDOM
 
         // onInit event
         $this->Events->fireEvent( 'init', array( $this ) );
-        \QUI::getEvents()->fireEvent( 'siteInit', array( $this ) );
+        QUI::getEvents()->fireEvent( 'siteInit', array( $this ) );
+
+        return true;
     }
 
     /**
      * Returns the Edit Site object from this Site
      *
-     * @return \QUI\Projects\Site\Edit
+     * @return QUI\Projects\Site\Edit
      */
     public function getEdit()
     {
@@ -238,7 +241,7 @@ class Site extends \QUI\QDOM
 
         if ( !$this->_Edit )
         {
-            $this->_Edit = new \QUI\Projects\Site\Edit(
+            $this->_Edit = new Site\Edit(
                 $this->getProject(),
                 $this->getId()
             );
@@ -250,7 +253,7 @@ class Site extends \QUI\QDOM
     /**
      * Return the project object of the site
      *
-     * @return \QUI\Projects\Project
+     * @return QUI\Projects\Project
      */
     public function getProject()
     {
@@ -260,14 +263,14 @@ class Site extends \QUI\QDOM
     /**
      * Lädt die Plugins der Seite
      *
-     * @param String $plugin - Plugin welches geladen werden soll, optional, ansonsten werden alle geladen
+     * @param String|bool $plugin - Plugin welches geladen werden soll, optional, ansonsten werden alle geladen
      * @return Site
      */
     public function load($plugin=false)
     {
         $this->_loadflag = true;
 
-        $PackageManager = \QUI::getPackageManager();
+        $PackageManager = QUI::getPackageManager();
         $packages       = $PackageManager->getInstalled();
 
         foreach ( $packages as $package )
@@ -283,7 +286,7 @@ class Site extends \QUI\QDOM
 
         // onLoad event
         $this->Events->fireEvent( 'load', array( $this ) );
-        \QUI::getEvents()->fireEvent( 'siteLoad', array( $this ) );
+        QUI::getEvents()->fireEvent( 'siteLoad', array( $this ) );
 
 
         // load type
@@ -303,10 +306,11 @@ class Site extends \QUI\QDOM
 
         $siteXml = OPT_DIR . $package .'/site.xml';
 
-        $Dom   = \QUI\Utils\XML::getDomFromXml( $siteXml );
+        $Dom   = QUI\Utils\XML::getDomFromXml( $siteXml );
         $XPath = new \DOMXPath( $Dom );
         $Types = $XPath->query( '//type[@type="'. $type .'"]' );
 
+        /* @var $Type \DOMElement */
         $Type   = $Types->item( 0 );
         $extend = false;
 
@@ -317,7 +321,7 @@ class Site extends \QUI\QDOM
         if ( $extend )
         {
             $this->_extend  = $extend;
-            $this->_Extends = new $extend();
+            $this->_Extends = new $extend(); // @todo check if can be deleted
         }
 
 
@@ -328,7 +332,7 @@ class Site extends \QUI\QDOM
 
 //         if ( $plugin )
 //         {
-//             $Plugins = \QUI::getPlugins();
+//             $Plugins = QUI::getPlugins();
 //             $Plugins->get( $plugin );
 
 //             $this->_loadPlugin( $Plugins->get( $plugin ) );
@@ -373,7 +377,7 @@ class Site extends \QUI\QDOM
         }
 
 
-        $DataBaseXML = \QUI\Utils\XML::getDomFromXml( $databaseXml );
+        $DataBaseXML =QUI\Utils\XML::getDomFromXml( $databaseXml );
         $projects    = $DataBaseXML->getElementsByTagName( 'projects' );
 
         if ( !$projects || !$projects->length ) {
@@ -388,6 +392,8 @@ class Site extends \QUI\QDOM
 
         for ( $i = 0; $i < $tables->length; $i++ )
         {
+            /* @var $tables \DOMNodeList */
+            /* @var $Table \DOMElement */
             $Table = $tables->item( $i );
 
             if ( (int)$Table->getAttribute( 'no-site-reference' ) == 1 ) {
@@ -416,7 +422,7 @@ class Site extends \QUI\QDOM
             }
 
             // get database fields
-            $fields = \QUI\Utils\DOM::dbTableDomToArray( $Table );
+            $fields = QUI\Utils\DOM::dbTableDomToArray( $Table );
 
             if ( !isset( $fields['suffix'] ) ||
                  !isset( $fields['fields'] ) )
@@ -428,7 +434,7 @@ class Site extends \QUI\QDOM
             $tbl       = $project_name .'_'. $project_lang .'_'. $fields['suffix'];
             $fieldList = array_keys( $fields['fields'] );
 
-            $result = \QUI::getDataBase()->fetch(array(
+            $result = QUI::getDataBase()->fetch(array(
                 'select' => $fieldList,
                 'from'   => $tbl,
                 'where'  => array(
@@ -481,24 +487,24 @@ class Site extends \QUI\QDOM
      * Setzt JSON Parameter
      *
      * @param String $params - JSON encoded string
+     * @throws QUI\Exception
      */
     public function decode($params)
     {
-        $Project = $this->getProject();
-        $decode  = json_decode( $params, true );
+        $decode = json_decode( $params, true );
 
         if ( $decode['active'] != 1 ) {
-            throw new \QUI\Exception( 'Site not exist', 705 );
+            throw new QUI\Exception( 'Site not exist', 705 );
         }
 
         if ( $decode['deleted'] == 1 ) {
-            throw new \QUI\Exception( 'Site not exist', 705 );
+            throw new QUI\Exception( 'Site not exist', 705 );
         }
 
         if ( isset( $decode['linked_parent'] ) )
         {
             $this->_LINKED_PARENT = $decode['linked_parent'];
-            unset($decode['linked_parent']);
+            unset( $decode['linked_parent'] );
         }
 
         $this->_attributes = $decode;
@@ -511,7 +517,7 @@ class Site extends \QUI\QDOM
     {
         $this->_loadflag = false;
 
-        $result = \QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch(array(
             'from'  => $this->_TABLE,
             'where' => array(
                 'id' => $this->getId()
@@ -521,8 +527,8 @@ class Site extends \QUI\QDOM
 
         if ( !isset( $result[0] ) )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.site.not.found'
                 ),
@@ -534,8 +540,8 @@ class Site extends \QUI\QDOM
 
         if ( $params['active'] != 1 )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.site.not.found'
                 ),
@@ -545,8 +551,8 @@ class Site extends \QUI\QDOM
 
         if ( $params['deleted'] == 1 )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.site.not.found'
                 ),
@@ -558,7 +564,7 @@ class Site extends \QUI\QDOM
         // Verknüpfung hohlen
         if ( $this->getId() != 1 )
         {
-            $relresult = \QUI::getDataBase()->fetch(array(
+            $relresult = QUI::getDataBase()->fetch(array(
                 'from'  => $this->_RELTABLE,
                 'where' => array(
                     'child' => $this->getId()
@@ -595,7 +601,7 @@ class Site extends \QUI\QDOM
     /**
      * Prüft ob es eine Verknüpfung ist
      *
-     * @return unknown
+     * @return Bool|Integer
      */
     public function isLinked()
     {
@@ -640,16 +646,16 @@ class Site extends \QUI\QDOM
 
         try
         {
-            $_Project = \QUI::getProject(
+            $_Project = QUI::getProject(
                 $Project->getAttribute('name'),
                 $lang
             );
 
-            $_Site = $_Project->get( $lang_id );
+            $_Project->get( $lang_id );
 
             return true;
 
-        } catch ( \QUI\Exception $e )
+        } catch ( QUI\Exception $Exception )
         {
             // nothing
         }
@@ -670,7 +676,7 @@ class Site extends \QUI\QDOM
         {
             $Project = $this->getProject();
 
-            $dbResult = \QUI::getDataBase()->fetch(array(
+            $dbResult = QUI::getDataBase()->fetch(array(
                 'from'  => $Project->getAttribute('name') .'_multilingual',
                 'where' => array(
                     $Project->getAttribute('lang') => $this->getId()
@@ -690,7 +696,7 @@ class Site extends \QUI\QDOM
                 $result[ $lang ] = false;
             }
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
 
         }
@@ -702,7 +708,7 @@ class Site extends \QUI\QDOM
      * Return the ID of the site,
      * or the ID of the sibling (linked) site of another languager
      *
-     * @param String $lang - optional, if it is set, then the language of the wanted linked sibling site
+     * @param String|bool $lang - optional, if it is set, then the language of the wanted linked sibling site
      * @return Integer
      */
     public function getId($lang=false)
@@ -730,7 +736,7 @@ class Site extends \QUI\QDOM
         $lang_table = $pname .'_'. $lang.'_sites';
         $rel_table  = $pname .'_multilingual';
 
-        $PDO = \QUI::getPDO();
+        $PDO = QUI::getPDO();
 
         $Statment = $PDO->prepare('
             SELECT `'. $rel_table .'`.`'. $lang .'`
@@ -762,13 +768,13 @@ class Site extends \QUI\QDOM
      */
     protected function _load_plugins()
     {
-        $this->_plugins = \QUI\Projects\Sites::getPlugins( $this );
+        $this->_plugins = Sites::getPlugins( $this );
     }
 
     /**
      * Gibt die geladenen Plugins zurück
      *
-     * @return unknown
+     * @return array
      */
     protected function _getLoadedPlugins()
     {
@@ -855,10 +861,10 @@ class Site extends \QUI\QDOM
 
                 $children[] = $Child;
 
-            } catch ( \QUI\Exception $Exception )
+            } catch ( QUI\Exception $Exception )
             {
                 if ( DEBUG_MODE ) {
-                    \QUI\System\Log::writeException( $Exception );
+                    QUI\System\Log::writeException( $Exception );
                 }
             }
         }
@@ -869,8 +875,8 @@ class Site extends \QUI\QDOM
     /**
      * Liefert die nächstfolgende Seite
      *
-     * @return \QUI\Projects\Site
-     * @throws \QUI\Exception
+     * @return QUI\Projects\Site
+     * @throws QUI\Exception
      */
     public function nextSibling()
     {
@@ -885,7 +891,7 @@ class Site extends \QUI\QDOM
             }
         }
 
-        throw new \QUI\Exception('Die Seite besitzt keine nächstfolgende Seite');
+        throw new QUI\Exception('Die Seite besitzt keine nächstfolgende Seite');
     }
 
     /**
@@ -917,7 +923,7 @@ class Site extends \QUI\QDOM
                     try
                     {
                         $result[] = $Project->get( (int)$list[ $key + $i ] );
-                    } catch (\QUI\Exception $e)
+                    } catch (QUI\Exception $e)
                     {
 
                     }
@@ -931,8 +937,8 @@ class Site extends \QUI\QDOM
     /**
      * Liefert die vorhergehenden Seite
      *
-     * @return \QUI\Projects\Site
-     * @throws \QUI\Exception
+     * @return QUI\Projects\Site
+     * @throws QUI\Exception
      */
     public function previousSibling()
     {
@@ -947,7 +953,7 @@ class Site extends \QUI\QDOM
             }
         }
 
-        throw new \QUI\Exception('Die Seite besitzt keine vorhergehenden Seite');
+        throw new QUI\Exception('Die Seite besitzt keine vorhergehenden Seite');
     }
 
     /**
@@ -979,7 +985,7 @@ class Site extends \QUI\QDOM
                     try
                     {
                         $result[] = $Project->get( (int)$list[ $key - $i ] );
-                    } catch (\QUI\Exception $e)
+                    } catch (QUI\Exception $e)
                     {
 
                     }
@@ -994,7 +1000,7 @@ class Site extends \QUI\QDOM
      * Gibt das erste Kind der Seite zurück
      *
      * @param Array $params
-     * @return \QUI\Projects\Site | false
+     * @return QUI\Projects\Site | false
      */
     public function firstChild($params=array())
     {
@@ -1017,6 +1023,7 @@ class Site extends \QUI\QDOM
      * Gibt die Kinder zurück achtet aber auf "Nicht in Navigation anzeigen" und Rechte
      *
      * @param array $params
+     * @return array
      */
     public function getNavigation($params=array())
     {
@@ -1038,7 +1045,7 @@ class Site extends \QUI\QDOM
      */
     public function getChildIdByName($name)
     {
-         $result = \QUI::getDataBase()->fetch(array(
+         $result = QUI::getDataBase()->fetch(array(
             'from' 	=> array(
                 $this->_RELTABLE,
                 $this->_TABLE
@@ -1062,7 +1069,7 @@ class Site extends \QUI\QDOM
             return $result[0]["id"];
         }
 
-        throw new \QUI\Exception(
+        throw new QUI\Exception(
             'No Child found with name '. $name, 705
         );
     }
@@ -1071,21 +1078,22 @@ class Site extends \QUI\QDOM
      * Return a children by id
      *
      * @param Integer $id
-     * @return \QUI\Projects\Site
+     * @return QUI\Projects\Site
+     * @throws QUI\Exception
      */
     public function getChild($id)
     {
         $id = (int)$id;
 
         if ( $id == $this->getId() ) {
-            throw new \QUI\Exception( 'Page can not be a child of itself' );
+            throw new QUI\Exception( 'Page can not be a child of itself' );
         }
 
         if ( isset( $this->_children[ $id ] ) ) {
             return $this->_children[ $id ];
         }
 
-        $result = \QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch(array(
             'from' 	=> $this->_RELTABLE,
             'where' => array(
                 'parent' => $this->getId(),
@@ -1095,7 +1103,7 @@ class Site extends \QUI\QDOM
         ));
 
         if ( !isset( $result[0] ) ) {
-            throw new \QUI\Exception( 'Child not found', 705 );
+            throw new QUI\Exception( 'Child not found', 705 );
         }
 
         $this->_children[ $id ] = $this->getProject()->get( $id );
@@ -1107,7 +1115,7 @@ class Site extends \QUI\QDOM
      * Gibt die ID's der Kinder zurück
      * Wenn nur die ID's verwendet werden sollte dies vor getChildren verwendet werden
      *
-     * @param $params Parameter für die Childrenausgabe
+     * @param Array $params Parameter für die Childrenausgabe
      * 			$params['where']
      * 			$params['limit']
      *
@@ -1139,18 +1147,18 @@ class Site extends \QUI\QDOM
      * Bereitet die ID's der Kinder vor -> getChildrenIds()
      * Funktion welche rekursiv aufgerufen wird
      *
-     * @param unknown_type $pid
-     * @param unknown_type $params
+     * @param integer $pid
+     * @param array $params
      */
     protected function _recursivHelper($pid, $params=array())
     {
-        $ids = $this->getProject()->getChildrenIdsFrom($pid, $params);
+        $ids = $this->getProject()->getChildrenIdsFrom( $pid, $params );
 
-        if (empty($ids)) {
+        if ( empty( $ids ) ) {
             return;
         }
 
-        foreach ($ids as $id)
+        foreach ( $ids as $id )
         {
             $this->_childs_container[] = $id;
             $this->_recursivHelper($id, $params);
@@ -1186,7 +1194,7 @@ class Site extends \QUI\QDOM
         }
 
         // statement
-        $Statement = \QUI::getPDO()->prepare(
+        $Statement = QUI::getPDO()->prepare(
             'SELECT COUNT(id) AS idc
             FROM `'. $this->_RELTABLE .'`, `'. $this->_TABLE .'`
             WHERE '. $where .'
@@ -1211,7 +1219,7 @@ class Site extends \QUI\QDOM
         // Rekursiv alle Kinder bekommen
         $children = $this->getChildrenIdsRecursive();
 
-        \QUI::getDataBase()->update(
+        QUI::getDataBase()->update(
             $this->_TABLE,
             array( 'deleted' => 1 ),
             array( 'id' => $this->getId() )
@@ -1219,7 +1227,7 @@ class Site extends \QUI\QDOM
 
         foreach ( $children as $child )
         {
-            \QUI::getDataBase()->update(
+            QUI::getDataBase()->update(
                 $this->_TABLE,
                 array( 'deleted' => 1 ),
                 array( 'id' => $child )
@@ -1237,7 +1245,7 @@ class Site extends \QUI\QDOM
      */
     protected function _existNameInChildren($name)
     {
-        $result = \QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch(array(
             'from' 	=> array(
                 $this->_RELTABLE,
                 $this->_TABLE
@@ -1264,7 +1272,7 @@ class Site extends \QUI\QDOM
      */
     public function getUrl($params=array(), $rewrited=false)
     {
-        $Rewrite = \QUI::getRewrite();
+        $Rewrite = QUI::getRewrite();
 
         if ( !is_array( $params ) ) {
             $params = array();
@@ -1315,7 +1323,7 @@ class Site extends \QUI\QDOM
             {
                 if ( is_integer( $param ) )
                 {
-                    $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
+                    $url .= QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
                     continue;
                 }
 
@@ -1325,32 +1333,28 @@ class Site extends \QUI\QDOM
 
                 if ( is_int( $param ) )
                 {
-                    $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
+                    $url .= QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
                     continue;
                 }
 
-                $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $param . \QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
+                $url .= QUI\Rewrite::URL_PARAM_SEPERATOR . $param . QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
             }
 
             if ( isset( $params['suffix'] ) ) {
                 return $url .'.'. $params['suffix'];
             }
 
-            return $url . \QUI\Rewrite::URL_DEFAULT_SUFFIX;
+            return $url . QUI\Rewrite::URL_DEFAULT_SUFFIX;
         }
 
-        $url     = '';
-        $Project = $this->getProject();
-        $lang    = $Project->getAttribute('lang');
-
-        $default_lang = $Project->getAttribute('default_lang');
+        $url = '';
 
         // Plugins können hier eingreifen
         // @todo event
-        if ( \QUI::conf('system', 'geturl') )
+        if ( QUI::conf('system', 'geturl') )
         {
-            $plugins = explode(',', \QUI::conf('system', 'geturl'));
-            $Plugins = \QUI::getPluginManager();
+            $plugins = explode(',', QUI::conf('system', 'geturl'));
+            $Plugins = QUI::getPluginManager();
 
             foreach ( $plugins as $plugin )
             {
@@ -1380,20 +1384,20 @@ class Site extends \QUI\QDOM
                 $this->_getUrl($this->getId());
 
                 foreach ( array_reverse($this->_parents) as $parent ) {
-                    $url .= \QUI\Rewrite::replaceUrlSigns( $parent, true ).'/'; // URL auch Slash ersetzen
+                    $url .= QUI\Rewrite::replaceUrlSigns( $parent, true ).'/'; // URL auch Slash ersetzen
                 }
             }
 
             $this->_url = $url;
         }
 
-        $url .= \QUI\Rewrite::replaceUrlSigns( $this->getAttribute('name'), true );
+        $url .= QUI\Rewrite::replaceUrlSigns( $this->getAttribute('name'), true );
 
         foreach ( $params as $param => $value )
         {
             if ( is_integer( $param ) )
             {
-                $url .= self::URL_PARAM_SEPERATOR . $value;
+                $url .= QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
                 continue;
             }
 
@@ -1403,18 +1407,18 @@ class Site extends \QUI\QDOM
 
             if ( is_int( $param ) )
             {
-                $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
+                $url .= QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
                 continue;
             }
 
-            $url .= \QUI\Rewrite::URL_PARAM_SEPERATOR . $param . \QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
+            $url .= QUI\Rewrite::URL_PARAM_SEPERATOR . $param . QUI\Rewrite::URL_PARAM_SEPERATOR . $value;
         }
 
         if ( isset( $params['suffix'] ) ) {
             return $url .'.'. $params['suffix'];
         }
 
-        return $url . \QUI\Rewrite::URL_DEFAULT_SUFFIX;
+        return $url . QUI\Rewrite::URL_DEFAULT_SUFFIX;
     }
 
     /**
@@ -1450,9 +1454,7 @@ class Site extends \QUI\QDOM
             return $this->_parent_id;
         }
 
-        $this->_parent_id = $this->getProject()->getParentIdFrom(
-            $this->getId()
-        );
+        $this->_parent_id = $this->getProject()->getParentIdFrom( $this->getId() );
 
         return $this->_parent_id;
     }
@@ -1477,7 +1479,7 @@ class Site extends \QUI\QDOM
             return $this->_parents_id;
         }
 
-        $result = \QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch(array(
             'select' => 'parent',
             'from' 	 => $this->_RELTABLE,
             'where'  => array(
@@ -1544,7 +1546,7 @@ class Site extends \QUI\QDOM
                     $search = false;
                 }
 
-            } catch ( \QUI\Exception $e )
+            } catch ( QUI\Exception $e )
             {
                 $search = false;
             }
@@ -1560,7 +1562,7 @@ class Site extends \QUI\QDOM
      */
     public function restore()
     {
-        \QUI::getDataBase()->update(
+        QUI::getDataBase()->update(
             $this->_TABLE,
             array( 'deleted' => 0 ),
             array( 'id' => $this->getId() )
@@ -1581,7 +1583,7 @@ class Site extends \QUI\QDOM
         /**
          *  Plugins Tabellen löschen
          */
-        $DataBase = \QUI::getDataBase();
+        $DataBase = QUI::getDataBase();
 
         // Daten löschen
         $DataBase->exec(array(
@@ -1649,7 +1651,7 @@ class Site extends \QUI\QDOM
     }
 
     /**
-     * Shortcut for \QUI\Rights\Permission::hasSitePermission
+     * Shortcut for QUI\Rights\Permission::hasSitePermission
      *
      * @param string $permission - name of the permission
      * @param QUI\Users\User|Bool $User - optional
@@ -1665,7 +1667,7 @@ class Site extends \QUI\QDOM
     }
 
     /**
-     * Shortcut for \QUI\Rights\Permission::checkSitePermission
+     * Shortcut for QUI\Rights\Permission::checkSitePermission
      *
      * @param string $permission - name of the permission
      * @param QUI\Users\User|Bool $User - optional

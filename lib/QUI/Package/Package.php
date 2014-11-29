@@ -6,13 +6,15 @@
 
 namespace QUI\Package;
 
+use QUI;
+
 /**
  * An installed package
  *
  * @author www.pcsg.de
  */
 
-class Package extends \QUI\QDOM
+class Package extends QUI\QDOM
 {
     /**
      * Name of the package
@@ -34,7 +36,7 @@ class Package extends \QUI\QDOM
 
     /**
      * Package Config
-     * @var \QUI\Config
+     * @var QUI\Config
      */
     protected $_Config = null;
 
@@ -42,13 +44,14 @@ class Package extends \QUI\QDOM
      * constructor
      *
      * @param String $package - Name of the Package
+     * @throws QUI\Exception
      */
     public function __construct($package)
     {
         $packageDir = OPT_DIR . $package;
 
         if ( is_dir( $package ) ) {
-            throw new \QUI\Exception( 'Package not exists', 404 );
+            throw new QUI\Exception( 'Package not exists', 404 );
         }
 
         $this->_packageDir = $packageDir;
@@ -87,7 +90,7 @@ class Package extends \QUI\QDOM
     public function getConfig()
     {
         if ( !$this->_Config ) {
-            $this->_Config = new \QUI\Config( $this->_configPath );
+            $this->_Config = new QUI\Config( $this->_configPath );
         }
 
         return $this->_Config;
@@ -98,6 +101,6 @@ class Package extends \QUI\QDOM
      */
     public function setup()
     {
-        \QUI::getPackageManager()->setup( $this->getName() );
+        QUI::getPackageManager()->setup( $this->getName() );
     }
 }

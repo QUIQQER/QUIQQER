@@ -6,6 +6,8 @@
 
 namespace QUI\System\Console;
 
+use QUI;
+
 /**
  * Parent class for a console tool
  *
@@ -13,7 +15,7 @@ namespace QUI\System\Console;
  * @package com.pcsg.qui.system.console
  */
 
-class Tool extends \QUI\QDOM
+abstract class Tool extends QUI\QDOM
 {
     /**
      * Console parameter
@@ -30,6 +32,7 @@ class Tool extends \QUI\QDOM
     /**
      * Set the name of the Tool
      * @param String $name
+     * @return Tool this
      */
     public function setName($name)
     {
@@ -40,7 +43,8 @@ class Tool extends \QUI\QDOM
 
     /**
      * Set the description of the Tool
-     * @param String $desc
+     * @param String $description
+     * @return Tool this
      */
     public function setDescription($description)
     {
@@ -51,7 +55,8 @@ class Tool extends \QUI\QDOM
 
     /**
      * Set the help of the Tool
-     * @param String $desc
+     * @param String $help
+     * @return Tool this
      */
     public function setHelp($help)
     {
@@ -65,6 +70,7 @@ class Tool extends \QUI\QDOM
      *
      * @param String $name
      * @param String|Bool $value
+     * @return Tool this
      */
     public function setArgument($name, $value)
     {
@@ -104,6 +110,7 @@ class Tool extends \QUI\QDOM
      * Return the value of an argument
      *
      * @param String
+     * @return string|bool
      */
     public function getArgument($name)
     {
@@ -126,8 +133,8 @@ class Tool extends \QUI\QDOM
      * Output a line to the parent
      *
      * @param String $msg	- Message
-     * @param String $color - optional, Text color
-     * @param String $bg	- optional, Background color
+     * @param String|bool $color - (optional) Text color
+     * @param String|bool $bg	- (optional) Background color
      */
     public function writeLn($msg, $color=false, $bg=false)
     {
@@ -140,8 +147,8 @@ class Tool extends \QUI\QDOM
      * Alternative to ->message()
      *
      * @param String $msg	- Message
-     * @param String $color - optional, Text color
-     * @param String $bg	- optional, Background color
+     * @param String|bool $color - optional, Text color
+     * @param String|bool $bg	- optional, Background color
      */
     public function write($msg, $color=false, $bg=false)
     {
@@ -152,8 +159,8 @@ class Tool extends \QUI\QDOM
      * Print a message
      *
      * @param String $msg	- Message
-     * @param String $color - optional, Text color
-     * @param String $bg	- optional, Background color
+     * @param String|bool $color - optional, Text color
+     * @param String|bool $bg	- optional, Background color
      */
     public function message($msg, $color=false, $bg=false)
     {

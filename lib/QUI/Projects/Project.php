@@ -6,11 +6,12 @@
 
 namespace QUI\Projects;
 
-use \QUI\Rights\Permission;
-use \QUI\Users\User;
-use \QUI\Groups\Group;
+use QUI;
+use QUI\Rights\Permission;
+use QUI\Users\User;
+use QUI\Groups\Group;
 
-use \QUI\Utils\Security\Orthos;
+use QUI\Utils\Security\Orthos;
 
 /**
  * A project
@@ -98,12 +99,6 @@ class Project
     private $_template;
 
     /**
-     * loaded plugins of the project
-     * @var array
-     */
-    private $_plugins = null;
-
-    /**
      * loaded sites
      * @var array
      */
@@ -131,19 +126,20 @@ class Project
      * Konstruktor eines Projektes
      *
      * @param String $name - Name of the Project
-     * @param String $lang - Language of the Project - optional
-     * @param String $template - Template of the Project
+     * @param string|bool $lang - (optional) Language of the Project - optional
+     * @param string|bool $template - (optional) Template of the Project
+     * @throws QUI\Exception
      */
     public function __construct($name, $lang=false, $template=false)
     {
-        $config = \QUI\Projects\Manager::getConfig()->toArray();
+        $config = Manager::getConfig()->toArray();
         $name   = (string)$name;
 
         // Konfiguration einlesen
         if ( !isset( $config[ $name ] ) )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.project.not.found'
                 ),
@@ -157,8 +153,8 @@ class Project
         // Langs
         if ( !isset( $this->_config[ 'langs' ] ) )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.project.has.no.langs'
                 ),
@@ -171,7 +167,7 @@ class Project
         // Default Lang
         if ( !isset( $this->_config[ 'default_lang' ] ) )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.project.lang.no.default'
@@ -188,8 +184,8 @@ class Project
         {
             if ( !in_array( $lang, $this->_langs ) )
             {
-                throw new \QUI\Exception(
-                    \QUI::getLocale()->get(
+                throw new QUI\Exception(
+                    QUI::getLocale()->get(
                         'quiqqer/system',
                         'exception.project.lang.not.found',
                         array(
@@ -207,8 +203,8 @@ class Project
             // Falls keine Sprache angegeben wurde wird die Standardsprache verwendet
             if ( !isset( $this->_config['default_lang'] ) )
             {
-                throw new \QUI\Exception(
-                    \QUI::getLocale()->get(
+                throw new QUI\Exception(
+                    QUI::getLocale()->get(
                         'quiqqer/system',
                         'exception.project.lang.no.default'
                     ),
@@ -229,7 +225,7 @@ class Project
         }
 
         // vhosts
-        $vhosts = \QUI::vhosts();
+        $vhosts = QUI::vhosts();
 
         foreach ( $vhosts as $host => $vhost )
         {
@@ -282,7 +278,7 @@ class Project
 
     /**
      * ToString
-     * @return unknown
+     * @return String
      */
     public function __toString()
     {
@@ -292,7 +288,7 @@ class Project
     /**
      * Projekt JSON Notation
      *
-     * @return unknown
+     * @return String
      */
     public function toJSON()
     {
@@ -325,10 +321,10 @@ class Project
     /**
      * Durchsucht das Projekt nach Seiten
      *
-     * @param String $search - Suchwort
-     * @param Array $select - in welchen Feldern gesucht werden soll array('name', 'title', 'short', 'content')
+     * @param string $search - Suchwort
+     * @param array|bool $select - (optional) in welchen Feldern gesucht werden soll array('name', 'title', 'short', 'content')
      *
-     * @return Array
+     * @return array
      */
     public function search($search, $select=false)
     {
@@ -404,6 +400,7 @@ class Project
 
         foreach ( $Groups as $Group )
         {
+            /* @var $Group \QUI\Groups\Group */
             $childids   = $Group->getChildrenIds(true);
             $childids[] = $Group->getId();
 
@@ -530,7 +527,7 @@ class Project
     /**
      * Gibt die gesuchte Einstellung vom Projekt zurück
      *
-     * @param String $name
+     * @param string|bool $name - name of the config, default = false, returns complete configs
      * @return false|String|Array
      */
     public function getConfig($name=false)
@@ -585,11 +582,11 @@ class Project
     /**
      * Get the Trash from the Project
      *
-     * @return Project_Trash
+     * @return QUI\Projects\Trash
      */
     public function getTrash()
     {
-        return new \QUI\Projects\Trash( $this );
+        return new Trash( $this );
     }
 
     /**
@@ -637,25 +634,25 @@ class Project
         if ( $link == true )
         {
             $cache = VAR_DIR.'cache/links/'. $this->getAttribute('name') .'/';
-            $files = \QUI\Utils\System\File::readDir($cache);
+            $files = QUI\Utils\System\File::readDir($cache);
 
             foreach ( $files as $file ) {
-                \QUI\Utils\System\File::unlink( $cache . $file );
+                QUI\Utils\System\File::unlink( $cache . $file );
             }
         }
 
         if ( $site == true )
         {
             $cache = VAR_DIR.'cache/sites/'. $this->getAttribute('name') .'/';
-            $files = \QUI\Utils\System\File::readDir($cache);
+            $files = QUI\Utils\System\File::readDir($cache);
 
             foreach ( $files as $file ) {
-                \QUI\Utils\System\File::unlink( $cache . $file );
+                QUI\Utils\System\File::unlink( $cache . $file );
             }
         }
 
         foreach ( $this->_cache_files as $cache ) {
-            \QUI\Cache\Manager::clear( $cache );
+            QUI\Cache\Manager::clear( $cache );
         }
     }
 
@@ -663,19 +660,19 @@ class Project
      * Eine Seite bekommen
      *
      * @param Integer $id - ID der Seite
-     * @return Site
+     * @return Site|Site\Edit
      */
     public function get($id)
     {
         if ( defined('ADMIN') && ADMIN == 1 ) {
-            return new \QUI\Projects\Site\Edit( $this, (int)$id );
+            return new Site\Edit( $this, (int)$id );
         }
 
         if ( isset( $this->_children[ $id ] ) ) {
             return $this->_children[ $id ];
         }
 
-        $Site = new \QUI\Projects\Site( $this, (int)$id );
+        $Site = new Site( $this, (int)$id );
         $this->_children[ $id ] = $Site;
 
         return $Site;
@@ -712,7 +709,7 @@ class Project
      */
     public function getNewId()
     {
-        $maxid = \QUI::getDataBase()->fetch(array(
+        $maxid = QUI::getDataBase()->fetch(array(
             'select' => 'id',
             'from'   => $this->getAttribute('db_table'),
             'limit'  => '0,1',
@@ -731,7 +728,7 @@ class Project
      */
     public function getMedia()
     {
-        return new \QUI\Projects\Media( $this );
+        return new QUI\Projects\Media( $this );
     }
 
     /**
@@ -860,6 +857,7 @@ class Project
      * Returns the parent id from a site
      *
      * @param Integer $id
+     * @return Integer
      * @deprecated
      */
     public function getParentId($id)
@@ -875,7 +873,7 @@ class Project
      */
     public function getParentIdFrom( $id )
     {
-        if ($id <= 0) {
+        if ( $id <= 0 ) {
             return 0;
         }
 
@@ -1026,14 +1024,14 @@ class Project
 //         return $globaltypes;
 //     }
 
-    /**
-     * Informationen von einem Seitentyp bekommen
-     *
-     * @param String $type - Seitentyp welche gesucht ist
-     * @param String $value - Welche Informationen gewollt ist, wenn nicht übergeben wird ein Array zurück gegeben mit allen Informationen
-     * @return unknown
-     * @deprecated use Plugins->getTypeName()
-     */
+//    /**
+//     * Informationen von einem Seitentyp bekommen
+//     *
+//     * @param String $type - Seitentyp welche gesucht ist
+//     * @param String $value - Welche Informationen gewollt ist, wenn nicht übergeben wird ein Array zurück gegeben mit allen Informationen
+//     * @return unknown
+//     * @deprecated use Plugins->getTypeName()
+//     */
 //     public function getType($type, $value=false)
 //     {
 //         if ($type == 'standard' || empty($type))
@@ -1175,8 +1173,8 @@ class Project
     /**
      * Alle Seiten bekommen
      *
-     * @param Array $params
-     * @return Array
+     * @param array|bool $params
+     * @return array|integer - if count is given, return is an integer, otherwise an array
      */
     public function getSites($params=false)
     {
@@ -1212,9 +1210,9 @@ class Project
      */
     public function setup()
     {
-        $DataBase = \QUI::getDataBase();
+        $DataBase = QUI::getDataBase();
         $Table    = $DataBase->Table();
-        $User     = \QUI::getUserBySession();
+        $User     = QUI::getUserBySession();
 
         // multi lingual table
         $multiLingualTable = QUI_DB_PRFX . $this->_name .'_multilingual';
@@ -1292,7 +1290,7 @@ class Project
                     'type'   => 'standard',
                     'c_date' => date( 'Y-m-d H:i:s' ),
                     'c_user' => $User->getId(),
-                    'c_user_ip' => \QUI\Utils\System::getClientIP()
+                    'c_user_ip' => QUI\Utils\System::getClientIP()
                 ));
             }
 
@@ -1315,7 +1313,7 @@ class Project
             );
 
             // Translation Setup
-            \QUI\Translator::addLang( $lang );
+            QUI\Translator::addLang( $lang );
         }
 
         // Media Setup
@@ -1325,13 +1323,13 @@ class Project
         // read xml files
         $dir = USR_DIR . $this->_name .'/';
 
-        \QUI\Update::importDatabase( $dir .'database.xml' );
-        \QUI\Update::importTemplateEngines( $dir .'engines.xml' );
-        \QUI\Update::importEditors( $dir .'wysiwyg.xml' );
-        \QUI\Update::importMenu( $dir .'menu.xml' );
-        \QUI\Update::importPermissions( $dir .'permissions.xml', 'project/'.$this->_name );
-        \QUI\Update::importEvents( $dir .'events.xml' );
-        \QUI\Update::importMenu( $dir .'menu.xml' );
+        QUI\Update::importDatabase( $dir .'database.xml' );
+        QUI\Update::importTemplateEngines( $dir .'engines.xml' );
+        QUI\Update::importEditors( $dir .'wysiwyg.xml' );
+        QUI\Update::importMenu( $dir .'menu.xml' );
+        QUI\Update::importPermissions( $dir .'permissions.xml', 'project/'.$this->_name );
+        QUI\Update::importEvents( $dir .'events.xml' );
+        QUI\Update::importMenu( $dir .'menu.xml' );
 
         // settings
         if ( !file_exists( $dir .'settings.xml' ) ) {
@@ -1353,16 +1351,17 @@ class Project
      */
     public function setEditDate($date)
     {
-        $edate_file = VAR_DIR .'cache/projects/edate_'. $this->getName() .'_'. $this->getLang();
+        $edateFile = VAR_DIR .'cache/projects/edate_'. $this->getName() .'_'. $this->getLang();
+        $edateFile = Orthos::clearPath( realpath( $edateFile ) );
 
-        if ( file_exists( $edate_file ) ) {
-            unlink( $edate_file );
+        if ( file_exists( $edateFile ) ) {
+            unlink( $edateFile );
         }
 
-        $date = Orthos::clear( $edate_file );
+        $date = (int)$date;
 
         $this->_edate = $date;
-        file_put_contents( $edate_file, $date );
+        file_put_contents( $edateFile, $date );
     }
 
     /**
@@ -1401,6 +1400,4 @@ class Project
     {
         Permission::removeUserFromProjectPermission( $User, $this, $permission );
     }
-
 }
-

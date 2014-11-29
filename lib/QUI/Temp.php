@@ -6,6 +6,9 @@
 
 namespace QUI;
 
+use QUI;
+use QUI\Utils\System\File as QUIFile;
+
 /**
  * Temp managed the temp folder
  * It creates temp folders and delete it, provides methods for tempfiles / folders
@@ -26,7 +29,7 @@ class Temp
         $this->_folder = rtrim( $tempfolder, '/' ) .'/';
 
         if ( !is_dir( $this->_folder ) ) {
-            \QUI\Utils\System\File::mkdir( $this->_folder );
+            QUIFile::mkdir( $this->_folder );
         }
     }
 
@@ -47,7 +50,7 @@ class Temp
             ) .'/';
         } while ( file_exists( $folder ) );
 
-        \QUI\Utils\System\File::mkdir( $folder );
+        QUIFile::mkdir( $folder );
 
         return $folder;
     }
@@ -59,13 +62,13 @@ class Temp
     {
         if ( system( 'rm -rf '.  $this->_folder ) )
         {
-            \QUI\Utils\System\File::mkdir( $this->_folder );
+            QUIFile::mkdir( $this->_folder );
             return;
         }
 
         // system is not allowed
-        \QUI\Utils\System\File::deleteDir( $this->_folder );
-        \QUI\Utils\System\File::mkdir( $this->_folder );
+        QUIFile::deleteDir( $this->_folder );
+        QUIFile::mkdir( $this->_folder );
     }
 
     /**
@@ -76,7 +79,7 @@ class Temp
      */
     public function moveToTemp($folder)
     {
-        \QUI\Utils\System\File::move(
+        QUIFile::move(
             $folder,
             self::createFolder() . md5($folder)
         );

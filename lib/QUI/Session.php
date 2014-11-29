@@ -70,7 +70,7 @@ class Session
     /**
      * Return the storage type
      *
-     * @return SessionHandlerInterface
+     * @return \SessionHandlerInterface
      */
     protected function _getStorage()
     {
@@ -216,6 +216,7 @@ class Session
     /**
      * Return the last login from the session-id
      * @param String $sid - Session-ID
+     * @return Integer
      */
     public function getLastRefreshFrom($sid)
     {

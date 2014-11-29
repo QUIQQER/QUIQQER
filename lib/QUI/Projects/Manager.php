@@ -147,7 +147,7 @@ class Manager
      * @param \QUI\Projects\Project $Project
      * @return Array
      */
-    static function getProjectConfigList(\QUI\Projects\Project $Project)
+    static function getProjectConfigList(QUI\Projects\Project $Project)
     {
         $cache = 'qui/projects/'. $Project->getName() .'/configList';
 
@@ -181,6 +181,7 @@ class Manager
 
             for ( $i = 0, $len = $settingsList->length; $i < $len; $i++ )
             {
+                /* @var $Settings \DOMElement */
                 $Settings = $settingsList->item( $i );
                 $sections = DOM::getConfigParamsFromDOM( $Settings );
 
@@ -239,7 +240,7 @@ class Manager
 
         if ( !isset( $project['name'] ) )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 'Could not decode project data'
             );
         }
@@ -383,6 +384,7 @@ class Manager
     /**
      * Standard Projekt bekommen
      * @return \QUI\Projects\Project
+     * @throws QUI\Exception
      */
     static function getStandard()
     {
@@ -433,13 +435,12 @@ class Manager
      *
      * @param String $name - Project name
      * @param String $lang - Project lang
-     * @param String $template - template, optional
      * @return \QUI\Projects\Project
      * @throws \QUI\Exception
      *
      * @todo noch einmal anschauen und übersichtlicher schreiben
      */
-    static function createProject($name, $lang, $template=false)
+    static function createProject($name, $lang)
     {
         Permission::checkPermission(
             'quiqqer.projects.create'
@@ -656,7 +657,7 @@ class Manager
      * Delete a project
      * @param \QUI\Projects\Project $Project
      */
-    static function deleteProject(\QUI\Projects\Project $Project)
+    static function deleteProject(QUI\Projects\Project $Project)
     {
         Permission::checkProjectPermission(
             'quiqqer.projects.destroy',
@@ -753,7 +754,7 @@ class Manager
      * @param \QUI\Projects\Project $Project
      * @return Array
      */
-    static function getRelatedTemplates(\QUI\Projects\Project $Project)
+    static function getRelatedTemplates(QUI\Projects\Project $Project)
     {
         $result    = array();
         $templates = array();
@@ -800,7 +801,7 @@ class Manager
      * @param \QUI\Projects\Project $Project
      * @return Array
      */
-    static function getRelatedSettingsXML(\QUI\Projects\Project $Project)
+    static function getRelatedSettingsXML(QUI\Projects\Project $Project)
     {
         $cache = 'qui/projects/'. $Project->getName() .'/relatedSettingsXml';
 

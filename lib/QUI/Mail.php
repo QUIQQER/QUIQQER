@@ -6,6 +6,9 @@
 
 namespace QUI;
 
+use QUI;
+use Html2Text\Html2Text;
+
 /**
  * E-Mail
  *
@@ -62,7 +65,7 @@ class Mail
      * constructor
      * The E-Mail class uses the internal QUIQQER config settings
      *
-     * @param Array $config = array(
+     * @param Array|bool $config - (optional) array(
      * 	'IsSMTP',
      * 	'SMTPServer',
      * 	'SMTPAuth',
@@ -168,23 +171,24 @@ class Mail
      *
      * @param Array $mailconf
      * @return true
+     * @throws QUI\Exception
      */
     public function send($mailconf)
     {
         if ( !is_array( $mailconf ) ) {
-            throw new \QUI\Exception( 'Mail Error: send() Fehlender Paramater', 400 );
+            throw new QUI\Exception( 'Mail Error: send() Fehlender Paramater', 400 );
         }
 
         if ( !isset( $mailconf['MailTo'] ) ) {
-            throw new \QUI\Exception( 'Mail Error: send() Fehlender Paramater MailTo', 400 );
+            throw new QUI\Exception( 'Mail Error: send() Fehlender Paramater MailTo', 400 );
         }
 
         if ( !isset( $mailconf['Subject'] ) ) {
-            throw new \QUI\Exception( 'Mail Error: send() Fehlender Paramater Subject', 400 );
+            throw new QUI\Exception( 'Mail Error: send() Fehlender Paramater Subject', 400 );
         }
 
         if ( !isset( $mailconf['Body'] ) ) {
-            throw new \QUI\Exception( 'Mail Error: send() Fehlender Paramater Body', 400 );
+            throw new QUI\Exception( 'Mail Error: send() Fehlender Paramater Body', 400 );
         }
 
         $Body    = $mailconf['Body'];
@@ -259,7 +263,7 @@ class Mail
                     continue;
                 }
 
-                $infos = \QUI\Utils\System\File::getInfo( $file );
+                $infos = QUI\Utils\System\File::getInfo( $file );
 
                 if ( !isset( $infos['mime_type'] ) ) {
                     $infos['mime_type'] = 'application/octet-stream';
@@ -274,15 +278,15 @@ class Mail
 
         if ( $IsHTML )
         {
-            $Html2Text = new \Html2Text\Html2Text( $Body );
+            $Html2Text = new Html2Text( $Body );
 
             $this->_mail->AltBody = $Html2Text->get_text();
         }
 
         // with mail queue?
-        if ( \QUI::conf( 'mail', 'queue' ) )
+        if ( QUI::conf( 'mail', 'queue' ) )
         {
-            $Queue = new \QUI\Mail\Queue();
+            $Queue = new Mail\Queue();
             $id    = $Queue->addToQueue( $this );
 
             $Queue->sendById( $id );
@@ -293,13 +297,13 @@ class Mail
 
         if ( $this->_mail->Send() )
         {
-            \QUI::getErrorHandler()->setAttribute( 'ERROR_8192', true );
+            QUI::getErrorHandler()->setAttribute( 'ERROR_8192', true );
             return true;
         }
 
-        \QUI::getErrorHandler()->setAttribute( 'ERROR_8192', true );
+        QUI::getErrorHandler()->setAttribute( 'ERROR_8192', true );
 
-        throw new \QUI\Exception(
+        throw new QUI\Exception(
             'Mail Error: '. $this->_mail->ErrorInfo,
             500
         );

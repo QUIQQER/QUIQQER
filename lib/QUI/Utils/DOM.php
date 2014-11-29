@@ -35,7 +35,7 @@ class DOM
     /**
      * Fügt DOM XML Tabs in eine Toolbar ein
      *
-     * @param Array $tabs
+     * @param Array|\DOMNodeList $tabs
      * @param \QUI\Controls\Toolbar\Bar $Tabbar
      * @param $plugin - optional
      */

@@ -6,6 +6,8 @@
 
 namespace QUI;
 
+use QUI;
+
 /**
  * QUIQQER Ajax
  * Communication between JavaScript and PHP
@@ -13,7 +15,7 @@ namespace QUI;
  * @author www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui.utils.request
  */
-class Ajax extends \QUI\QDOM
+class Ajax extends QUI\QDOM
 {
     /**
      * Available ajax functions
@@ -37,16 +39,17 @@ class Ajax extends \QUI\QDOM
         self::setAttributes( $params );
 
         // Shutdown Handling
-        $ErrorHandler = \QUI::getErrorHandler();
+        $ErrorHandler = QUI::getErrorHandler();
         $ErrorHandler->registerShutdown( array($this, 'onShutdown') );
     }
 
     /**
      * Registered functions which are available via Ajax
      *
-     * @param String $reg_function - Function which exists in Ajax
-     * @param String $reg_vars     - Variables which has the function of
-     * @param String $user_perm    - rights, optional
+     * @param string $reg_function - Function which exists in Ajax
+     * @param array $reg_vars     - Variables which has the function of
+     * @param bool|string $user_perm    - rights, optional
+     * @return bool
      */
     static function register($reg_function, $reg_vars=array(), $user_perm=false)
     {
@@ -63,12 +66,14 @@ class Ajax extends \QUI\QDOM
         if ( $user_perm ) {
             self::$_permissions[ $reg_function ] = $user_perm;
         }
+
+        return true;
     }
 
     /**
      * Checks the rights if a function has a checkPermissions routine
      *
-     * @param String|Closure $reg_function
+     * @param String|callback $reg_function
      * @throws \QUI\Exception
      */
     static function checkPermissions($reg_function)
@@ -95,7 +100,7 @@ class Ajax extends \QUI\QDOM
             // if it is a real permission
             if ( strpos( $func, '::' ) === false )
             {
-                \QUI\Rights\Permission::checkPermission( $func );
+                Rights\Permission::checkPermission( $func );
                 return;
             }
 
@@ -104,7 +109,7 @@ class Ajax extends \QUI\QDOM
             }
 
             if ( !is_callable( $func ) ) {
-                throw new \QUI\Exception( 'Permission denied', 503 );
+                throw new QUI\Exception( 'Permission denied', 503 );
             }
 
             call_user_func( $func );
@@ -114,7 +119,8 @@ class Ajax extends \QUI\QDOM
     /**
      * ajax processing
      *
-     * @return false|JSON
+     * @return String - quiqqer XML
+     * @throws QUI\Exception
      */
     public function call()
     {
@@ -123,7 +129,7 @@ class Ajax extends \QUI\QDOM
              count( $_REQUEST['_rf'] ) > 1 )
         {
             return $this->writeException(
-                new \QUI\Exception( 'Bad Request', 400 )
+                new QUI\Exception( 'Bad Request', 400 )
             );
         }
 
@@ -134,10 +140,10 @@ class Ajax extends \QUI\QDOM
             $result[ $_rf ] = $this->_call_rf( $_rf );
         }
 
-        if ( \QUI::getMessagesHandler() )
+        if ( QUI::getMessagesHandler() )
         {
             $result['message_handler'] = \QUI::getMessagesHandler()->getMessagesAsArray(
-                \QUI::getUserBySession()
+                QUI::getUserBySession()
             );
         }
 
@@ -155,11 +161,11 @@ class Ajax extends \QUI\QDOM
         if ( !isset( self::$_functions[ $_rf ] ) )
         {
             if ( defined( 'DEVELOPMENT' ) && DEVELOPMENT ) {
-                \QUI\System\Log::write( 'Funktion '. $_rf .' nicht gefunden' );
+                System\Log::write( 'Funktion '. $_rf .' nicht gefunden' );
             }
 
             return $this->writeException(
-                new \QUI\Exception( 'Bad Request', 400 )
+                new QUI\Exception( 'Bad Request', 400 )
             );
         }
 
@@ -167,13 +173,10 @@ class Ajax extends \QUI\QDOM
         try
         {
             $this->checkPermissions( $_rf );
-        } catch ( \QUI\Exception $e )
-        {
-            return $this->writeException( $e );
 
-        } catch ( \QUI\ExceptionDBError $e )
+        } catch ( QUI\Exception $Exception )
         {
-            return $this->writeException( $e );
+            return $this->writeException( $Exception );
         }
 
 
@@ -218,17 +221,15 @@ class Ajax extends \QUI\QDOM
                 'result' => call_user_func_array( $_rf, $params )
             );
 
-        } catch ( \QUI\Exception $e )
+        } catch ( QUI\Exception $Exception )
         {
-            return $this->writeException( $e );
+            return $this->writeException( $Exception );
 
-        } catch ( \PDOException $e )
+        } catch ( \PDOException $Exception )
         {
-            return $this->writeException( $e );
-        } catch ( \QUI\ExceptionDBError $e )
-        {
-            return $this->writeException( $e );
+            return $this->writeException( $Exception );
         }
+
 
         // json errors bekommen
         if ( function_exists( 'json_last_error' ) )
@@ -245,7 +246,7 @@ class Ajax extends \QUI\QDOM
                 case JSON_ERROR_SYNTAX:
                 case JSON_ERROR_UTF8:
                 default:
-                    \QUI\System\Log::write(
+                    System\Log::write(
                         'JSON Error: '. json_last_error() . ' :: '. print_r( $return, true ),
                         'error'
                     );
@@ -259,7 +260,7 @@ class Ajax extends \QUI\QDOM
     /**
      * Exceptions xml / json return
      *
-     * @param \QUI\Exception|\QUI\ExceptionDBError $Exception
+     * @param \QUI\Exception|\PDOException $Exception
      * @return Array
      */
     public function writeException($Exception)
@@ -277,7 +278,7 @@ class Ajax extends \QUI\QDOM
             case 'PDOException':
             case 'QUI\\Database\\Exception':
                 // DB Fehler immer loggen
-                \QUI\System\Log::writeException( $Exception );
+                System\Log::writeException( $Exception );
 
                 if ( $this->getAttribute('db_errors') )
                 {

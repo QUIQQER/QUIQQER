@@ -6,6 +6,7 @@
 
 namespace QUI\Workspace;
 
+use QUI;
 use QUI\Utils\Security\Orthos;
 
 /**
@@ -30,7 +31,7 @@ class Manager
      */
     static function setup()
     {
-        $Table = \QUI::getDataBase()->Table();
+        $Table = QUI::getDataBase()->Table();
 
         $Table->appendFields(self::Table(), array(
             'id'        => 'int(11) NOT NULL',
@@ -54,6 +55,7 @@ class Manager
      * @param String $data - Workspace profile
      * @param Integer $minHeight - minimum height of the workspace
      * @param Integer $minWidth - minimum width of the workspace
+     * @return Integer - new Workspace ID
      */
     static function addWorkspace($User, $title, $data, $minHeight, $minWidth)
     {
@@ -61,7 +63,7 @@ class Manager
         $minHeight = (int)$minHeight;
         $minWidth  = (int)$minWidth;
 
-        \QUI::getDataBase()->insert( self::Table(), array(
+        QUI::getDataBase()->insert( self::Table(), array(
             'uid'       => $User->getId(),
             'title'     => $title,
             'data'      => $data,
@@ -69,7 +71,7 @@ class Manager
             'minWidth'  => $minWidth
         ));
 
-        return \QUI::getDataBase()->getPDO()->lastInsertId( 'id' );
+        return QUI::getDataBase()->getPDO()->lastInsertId( 'id' );
     }
 
     /**
@@ -80,7 +82,7 @@ class Manager
      */
     static function deleteWorkspace($id, $User)
     {
-        \QUI::getDataBase()->delete(self::Table(), array(
+        QUI::getDataBase()->delete(self::Table(), array(
             'uid' => $User->getId(),
             'id'  => (int)$id
         ));
@@ -92,9 +94,9 @@ class Manager
      * @param \QUI\Users\User $User
      * @return Array
      */
-    static function getWorkspacesByUser(\QUI\Users\User $User)
+    static function getWorkspacesByUser(QUI\Users\User $User)
     {
-        $result = \QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch(array(
             'from'  => self::Table(),
             'where' => array(
                 'uid' => $User->getId()
@@ -109,11 +111,12 @@ class Manager
      *
      * @throws \QUI\Exception
      * @param Integer $id - id of the workspace
+     * @param \QUI\Users\User $User
      * @return Array
      */
     static function getWorkspaceById($id, $User)
     {
-        $result = \QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch(array(
             'from'  => self::Table(),
             'where' => array(
                 'id'  => $id,
@@ -124,8 +127,8 @@ class Manager
 
         if ( !isset( $result[ 0 ] ) )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.workspace.not.found'
                 ),
@@ -142,7 +145,7 @@ class Manager
      * @param \QUI\Users\User $User
      * @return Array
      */
-    static function getWorkspacesTitlesByUser(\QUI\Users\User $User)
+    static function getWorkspacesTitlesByUser(QUI\Users\User $User)
     {
         $workspaces = self::getWorkspacesByUser( $User );
         $result     = array();
@@ -161,7 +164,7 @@ class Manager
      * @param Integer $id
      * @param Array $data
      */
-    static function saveWorkspace(\QUI\Users\User $User, $id, $data=array())
+    static function saveWorkspace(QUI\Users\User $User, $id, $data=array())
     {
         $workspace = self::getWorkspaceById( $id, $User );
 
@@ -204,17 +207,17 @@ class Manager
      * @param \QUI\Users\User $User
      * @param Integer $id
      */
-    static function setStandardWorkspace(\QUI\Users\User $User, $id)
+    static function setStandardWorkspace(QUI\Users\User $User, $id)
     {
         // all to no standard
-        \QUI::getDataBase()->update(
+        QUI::getDataBase()->update(
             self::Table(),
             array( 'standard' => 0 ),
             array( 'uid' => $User->getId() )
         );
 
         // standard
-        \QUI::getDataBase()->update(
+        QUI::getDataBase()->update(
             self::Table(),
             array( 'standard' => 1 ),
             array(
@@ -235,9 +238,9 @@ class Manager
 
         try
         {
-            return \QUI\Cache\Manager::get( $cache );
+            return QUI\Cache\Manager::get( $cache );
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
 
         }
@@ -249,11 +252,11 @@ class Manager
         {
             $panels = array_merge(
                 $panels,
-                \QUI\Utils\XML::getPanelsFromXMLFile( $file )
+                QUI\Utils\XML::getPanelsFromXMLFile( $file )
             );
         }
 
-        \QUI\Cache\Manager::set( $cache, $panels );
+        QUI\Cache\Manager::set( $cache, $panels );
 
         return $panels;
     }

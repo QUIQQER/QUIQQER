@@ -62,7 +62,7 @@ class Security
     static function b64encrypt($pass, $switch=3)
     {
         // Passwort drehn
-        $newpass = substr($pass, 3) . substr($pass, 0, 3);
+        $newpass = substr($pass, $switch) . substr($pass, 0, $switch);
 
         return base64_encode($newpass);
     }
@@ -79,6 +79,6 @@ class Security
     {
         $newpass = base64_decode($pass);
 
-        return substr($newpass, -3) . substr($newpass, 0, -3);
+        return substr($newpass, - $switch) . substr($newpass, 0, - $switch);
     }
 }

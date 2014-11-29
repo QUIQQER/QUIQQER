@@ -11,7 +11,7 @@ namespace QUI\Plugins;
  * Alle Plugins müssen von dieser Klasse erben
  *
  * @author www.pcsg.de (Henning Leutz)
- * @todo komplett überarbeiten
+ * @todo komplett überarbeiten -> als Paket
  */
 
 class Plugin extends \QUI\QDOM

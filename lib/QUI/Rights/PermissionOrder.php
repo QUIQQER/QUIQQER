@@ -98,7 +98,7 @@ class PermissionOrder
      *
      * @param String $permission - permission name
      * @param Array $groups - List of groups
-     * @return boolean|Ambigous <boolean, string>|Ambigous <boolean, number, string>
+     * @return boolean
      */
     static function permission($permission, $groups)
     {
