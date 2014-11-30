@@ -2,6 +2,12 @@
 
 /**
  * Default contact mail
+ *
+ * @param string $email
+ * @param string $name
+ * @param string $message
+ * @return bool
+ * @throws \QUI\Exception
  */
 
 function ajax_contact($email, $name, $message)

@@ -5,7 +5,7 @@
  *
  * @return String
  */
-function ajax_login_template($lang)
+function ajax_login_template()
 {
     $Engine = \QUI::getTemplateManager()->getEngine( true );
 
@@ -14,4 +14,4 @@ function ajax_login_template($lang)
     );
 }
 
-\QUI::$Ajax->register( 'ajax_login_template', array('lang') );
+\QUI::$Ajax->register( 'ajax_login_template' );

@@ -1,8 +1,10 @@
 <?php
 
 /**
- * Erste Seite vom Projekt bekommen
+ * user login
  *
+ * @param string $username - name of the user / email of the user
+ * @param string $password - password
  * @return Array
  */
 function ajax_login_login($username, $password)

@@ -100,7 +100,7 @@ function ajax_menu()
         foreach ( $windows as $Window )
         {
             $Win = new Menuitem();
-
+            /* @var $Window \DOMElement */
             $menuParent = $Window->getAttribute( 'menu-parent' );
 
             $Win->setAttribute( 'name', '/settings/'. $Window->getAttribute( 'name' ) .'/' );
@@ -109,12 +109,13 @@ function ajax_menu()
             $Win->setAttribute( 'qui-xml-file', $file );
 
             // titel
+            /* @var $Title \DOMElement */
             $titles = $Window->getElementsByTagName( 'title' );
+            $Title  = $titles->item( 0 );
 
-            if ( $titles->item( 0 ) )
+            if ( $Title )
             {
-                $Title = $titles->item( 0 );
-                $text  = \QUI\Utils\DOM::getTextFromNode( $titles->item( 0 ) );
+                $text = \QUI\Utils\DOM::getTextFromNode( $Title );
 
                 $Win->setAttribute( 'text', $text );
             }
