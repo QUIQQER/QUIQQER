@@ -75,12 +75,6 @@ class QUI
     static $MessageHandler = null;
 
     /**
-     * QUI Licence, use \QUI::getLicence()
-     * @var \QUI\Licence
-     */
-    static $Licence = null;
-
-    /**
      * QUI Locale Object, use \QUI::getLocale()
      * @var \QUI\Locale
      */
@@ -720,19 +714,6 @@ class QUI
         }
 
         return self::$MessageHandler;
-    }
-
-    /**
-     * Returns the QUIQQER licence object
-     * @return \QUI\Licence
-     */
-    static function getLicence()
-    {
-        if ( is_null( self::$Licence ) ) {
-            self::$Licence = new \QUI\Licence();
-        }
-
-        return self::$Licence;
     }
 
     /**
