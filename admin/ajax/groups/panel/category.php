@@ -3,11 +3,11 @@
 /**
  * Return the content of a panel category
  *
- * @param unknown_type $uid
- * @param unknown_type $plugin
- * @param unknown_type $tab
+ * @param integer $gid
+ * @param string $plugin
+ * @param string $tab
  *
- * @return String
+ * @return string
  */
 function ajax_groups_panel_category($gid, $plugin, $tab)
 {

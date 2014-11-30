@@ -3,7 +3,7 @@
 /**
  * Return all widgets of a desktop
  *
- * @param Integer $did - Desktop-ID
+ * @param string $data - workspace data, json array
  */
 function ajax_desktop_workspace_add($data)
 {

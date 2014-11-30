@@ -3,9 +3,8 @@
 /**
  * Gruppen suchen
  *
- * @param String $id
- * @param String $lang
- * @param String $project
+ * @param string $params - json array
+ * @return array
  */
 function ajax_groups_search($params)
 {
@@ -34,6 +33,5 @@ function ajax_groups_search($params)
 		'data'  => $search
 	);
 }
-QUI::$Ajax->register( 'ajax_groups_search', array('params'), 'Permission::checkAdminUser' );
 
-?>
+\QUI::$Ajax->register( 'ajax_groups_search', array('params'), 'Permission::checkAdminUser' );

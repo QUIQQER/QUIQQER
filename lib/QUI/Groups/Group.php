@@ -653,7 +653,7 @@ class Group extends QUI\QDOM
      * Create a subgroup
      *
      * @param String $name - name of the subgroup
-     * @return QUI\Groups\Manager
+     * @return QUI\Groups\Group
      * @throws QUI\Exception
      */
     public function createChild($name)

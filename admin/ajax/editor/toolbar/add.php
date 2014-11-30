@@ -7,7 +7,7 @@
  */
 function ajax_editor_toolbar_add($toolbar)
 {
-    return \QUI\Editor\Manager::addToolbar( $toolbar );
+    \QUI\Editor\Manager::addToolbar( $toolbar );
 }
 
 \QUI::$Ajax->register(

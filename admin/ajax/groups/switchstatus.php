@@ -3,7 +3,7 @@
 /**
  * Switch the groups status
  *
- * @param {JSON Integer|JSON Array} $gid
+ * @param string $gid - JSON Integer | JSON Array
  * @return Array
  */
 function ajax_groups_switchstatus($gid)
@@ -35,7 +35,10 @@ function ajax_groups_switchstatus($gid)
 
         } catch ( \QUI\Exception $Exception )
         {
-            \QUI::getMessagesHandler()->addException( $Exception );
+            \QUI::getMessagesHandler()->addError(
+                $Exception->getMessage()
+            );
+
             continue;
         }
     }
@@ -43,10 +46,8 @@ function ajax_groups_switchstatus($gid)
     return $result;
 }
 
-QUI::$Ajax->register(
+\QUI::$Ajax->register(
 	'ajax_groups_switchstatus',
     array('gid'),
     'Permission::checkSU'
 );
-
-?>

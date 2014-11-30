@@ -3,7 +3,7 @@
 /**
  * Return all available panels
  *
- * @return Array
+ * @return array
  */
 
 function ajax_desktop_workspace_getAvailablePanels()

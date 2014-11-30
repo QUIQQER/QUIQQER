@@ -13,6 +13,5 @@ function ajax_groups_root()
         (int)QUI::conf('globals', 'root')
     );
 }
-QUI::$Ajax->register('ajax_groups_root', false, 'Permission::checkSU')
 
-?>
+\QUI::$Ajax->register('ajax_groups_root', false, 'Permission::checkSU');

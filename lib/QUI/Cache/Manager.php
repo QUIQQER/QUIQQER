@@ -129,7 +129,7 @@ class Manager
                     try
                     {
                         array_unshift( $handlers, new Stash\Driver\Apc( $params ) );
-                    } catch ( Stash\Exception\RuntimeException $e )
+                    } catch ( Stash\Exception\RuntimeException $Exception )
                     {
 
                     }
@@ -149,7 +149,7 @@ class Manager
                     try
                     {
                         $handlers[] = new Stash\Driver\FileSystem( $params );
-                    } catch ( Stash\Exception\RuntimeException $e )
+                    } catch ( Stash\Exception\RuntimeException $Exception )
                     {
 
                     }
@@ -168,7 +168,7 @@ class Manager
                     try
                     {
                         $handlers[] = new Stash\Driver\Sqlite( $params );
-                    } catch ( Stash\Exception\RuntimeException $e )
+                    } catch ( Stash\Exception\RuntimeException $Exception )
                     {
 
                     }
@@ -221,7 +221,7 @@ class Manager
                     try
                     {
                         array_unshift( $handlers, new Stash\Driver\Memcache( $params ) );
-                    } catch ( Stash\Exception\RuntimeException $e )
+                    } catch ( Stash\Exception\RuntimeException $Exception )
                     {
 
                     }

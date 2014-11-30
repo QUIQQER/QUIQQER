@@ -17,6 +17,5 @@ function ajax_groups_get($gid)
 
 	return $attr;
 }
-QUI::$Ajax->register('ajax_groups_get', array('gid'), 'Permission::checkSU')
 
-?>
+\QUI::$Ajax->register('ajax_groups_get', array('gid'), 'Permission::checkSU');

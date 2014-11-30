@@ -1,10 +1,9 @@
 <?php
 
 /**
- * Edit a workspace
+ * Delete workspaces
  *
- * @param Integer $id - Workspace ID
- * @param String $data - JSON Data Array; Workspace data
+ * @param string $ids - Workspace IDs, json array
  */
 function ajax_desktop_workspace_delete($ids)
 {

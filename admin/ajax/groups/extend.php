@@ -3,8 +3,9 @@
 /**
  * Gruppen Erweiterungen laden
  *
- * @param unknown_type $id
- * @param unknown_type $eproject
+ * @param integer $id
+ * @param string $eproject
+ * @deprecated
  */
 function ajax_groups_extend($id, $eproject)
 {

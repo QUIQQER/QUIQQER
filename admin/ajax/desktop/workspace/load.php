@@ -1,9 +1,7 @@
 <?php
 
 /**
- * Return all widgets of a desktop
- *
- * @param Integer $did - Desktop-ID
+ * Return current workspace
  */
 function ajax_desktop_workspace_load()
 {

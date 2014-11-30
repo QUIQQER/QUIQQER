@@ -4,6 +4,7 @@
  * Saves the desktop for the user
  *
  * @param String $widgets - Desktop Widget Params
+ * @deprecated
  */
 function ajax_desktop_save($did, $widgets)
 {

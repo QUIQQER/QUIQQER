@@ -3,8 +3,8 @@
 /**
  * Gibt die Buttons für den Benutzer zurück
  *
- * @param String / Integer $uid
- * @return Array
+ * @param string|integer $gid
+ * @return array
  */
 function ajax_groups_panel_categories($gid)
 {

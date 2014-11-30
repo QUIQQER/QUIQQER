@@ -1,10 +1,10 @@
 <?php
 
 /**
- * Toolbars bekommen welche zur Verfügung stehen
+ * Return the toolbar
  *
- * @param String / Integer $uid
- * @return Array
+ * @param string $toolbar - toolbar name
+ * @return string
  */
 function ajax_editor_get_toolbar_xml($toolbar)
 {

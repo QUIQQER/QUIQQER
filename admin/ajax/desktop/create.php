@@ -4,6 +4,7 @@
  * Create a Desktop for the user
  *
  * @param String $title - Desktop title
+ * @deprecated
  */
 function ajax_desktop_create($title)
 {

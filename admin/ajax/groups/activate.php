@@ -3,7 +3,7 @@
 /**
  * Gruppe aktivieren
  *
- * @param Int $uid - Gruppen-ID
+ * @param Int $gid - Gruppen-ID
  * @return Bool
  */
 function ajax_groups_activate($gid)
@@ -28,7 +28,10 @@ function ajax_groups_activate($gid)
 
         } catch ( \QUI\Exception $Exception )
         {
-            \QUI::getMessagesHandler()->addException( $Exception );
+            \QUI::getMessagesHandler()->addError(
+                $Exception->getMessage()
+            );
+
             continue;
         }
     }

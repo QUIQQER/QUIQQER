@@ -4,6 +4,7 @@
  * Return the desktop list from the session user
  *
  * @param array
+ * @deprecated
  */
 function ajax_desktop_get()
 {

@@ -3,9 +3,9 @@
 /**
  * Save the group
  *
- * @param Int $gid - Group-ID
- * @param JSON String $attributes - Attributes
- * @param JSON String $rights     - Rights
+ * @param integer $gid - Group-ID
+ * @param string $attributes - Attributes, json array
+ * @param string $rights     - Rights, json array
  */
 function ajax_groups_save($gid, $attributes, $rights)
 {
@@ -35,10 +35,8 @@ function ajax_groups_save($gid, $attributes, $rights)
     );
 }
 
-QUI::$Ajax->register(
+\QUI::$Ajax->register(
 	'ajax_groups_save',
     array( 'gid', 'attributes', 'rights' ),
     'Permission::checkSU'
 );
-
-?>

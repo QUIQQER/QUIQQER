@@ -16,10 +16,8 @@ function ajax_groups_create($groupname, $pid)
 	return $Group->getId();
 }
 
-QUI::$Ajax->register(
+\QUI::$Ajax->register(
 	'ajax_groups_create',
     array('groupname', 'pid'),
     'Permission::checkUser'
 );
-
-?>

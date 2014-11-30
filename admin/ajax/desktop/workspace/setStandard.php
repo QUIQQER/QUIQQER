@@ -3,7 +3,7 @@
 /**
  * Set the standard workspace
  *
- * @param Integer $id - workspace id
+ * @param integer $id - Workspace-ID
  */
 function ajax_desktop_workspace_setStandard($id)
 {

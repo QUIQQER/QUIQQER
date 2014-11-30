@@ -1,9 +1,10 @@
 <?php
 
 /**
- * Toolbar löschen
+ * Save toolbar
  *
  * @param String $toolbar
+ * @param String $xml
  */
 function ajax_editor_toolbar_save($toolbar, $xml)
 {

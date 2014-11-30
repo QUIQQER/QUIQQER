@@ -3,13 +3,15 @@
 /**
  * Benutzer bekommen welche in der Gruppe sind
  *
- * @param Integer $id
- * @return Array
+ * @param integer $gid - Group-ID
+ * @param string $params - json array, search params
+ * @return array
  */
 function ajax_groups_users($gid, $params)
 {
     $params = json_decode( $params, true );
 
+    $start  = 0;
     $page   = 1;
 	$limit  = 20;
 
@@ -92,6 +94,5 @@ function ajax_groups_users($gid, $params)
 	);
 
 }
-QUI::$Ajax->register('ajax_groups_users', array('gid', 'params'), 'Permission::checkSU');
 
-?>
+\QUI::$Ajax->register('ajax_groups_users', array('gid', 'params'), 'Permission::checkSU');

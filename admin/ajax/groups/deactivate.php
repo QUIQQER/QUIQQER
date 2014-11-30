@@ -3,14 +3,14 @@
 /**
  * Gruppe deaktivieren
  *
- * @param Int $uid - Gruppen-ID
- * @return Bool
+ * @param integer $gid - Gruppen-ID
+ * @return bool
  */
 function ajax_groups_deactivate($gid)
 {
     $gid = json_decode( $gid, true );
 
-    if ( !is_array($gid) ) {
+    if ( !is_array( $gid ) ) {
         $gid = array( $gid );
     }
 
@@ -28,7 +28,10 @@ function ajax_groups_deactivate($gid)
 
         } catch ( \QUI\Exception $Exception )
         {
-            \QUI::getMessagesHandler()->addException( $Exception );
+            \QUI::getMessagesHandler()->addError(
+                $Exception->getMessage()
+            );
+
             continue;
         }
     }
@@ -36,10 +39,8 @@ function ajax_groups_deactivate($gid)
     return $result;
 }
 
-QUI::$Ajax->register(
+\QUI::$Ajax->register(
 	'ajax_groups_deactivate',
     array('gid'),
     'Permission::checkSU'
 );
-
-?>

@@ -4,6 +4,7 @@
  * Return all widgets of a desktop
  *
  * @param Integer $did - Desktop-ID
+ * @deprecated
  */
 function ajax_desktop_load($did)
 {

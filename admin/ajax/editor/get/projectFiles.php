@@ -3,6 +3,7 @@
 /**
  * Konfiguration bekommen welche zur Verfügung stehen
  *
+ * @param string $project - project data
  * @return Array
  */
 function ajax_editor_get_projectFiles($project)

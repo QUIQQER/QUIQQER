@@ -47,7 +47,7 @@ class Ajax extends QUI\QDOM
      * Registered functions which are available via Ajax
      *
      * @param string $reg_function - Function which exists in Ajax
-     * @param array $reg_vars     - Variables which has the function of
+     * @param array|bool $reg_vars     - Variables which has the function of
      * @param bool|string $user_perm    - rights, optional
      * @return bool
      */

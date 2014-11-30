@@ -3,8 +3,8 @@
 /**
  * Delete groups
  *
- * @param JSON(Int|Array) $gid - Group-IDs
- * @return Array - Group-IDs which have been deleted
+ * @param string $gids - Group-IDs, json array
+ * @return array - Group-IDs which have been deleted
  */
 function ajax_groups_delete($gids)
 {
@@ -38,10 +38,8 @@ function ajax_groups_delete($gids)
     return $result;
 }
 
-QUI::$Ajax->register(
+\QUI::$Ajax->register(
 	'ajax_groups_delete',
     array( 'gids' ),
     'Permission::checkSU'
 );
-
-?>

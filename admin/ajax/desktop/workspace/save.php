@@ -1,9 +1,10 @@
 <?php
 
 /**
- * Return all widgets of a desktop
+ * Save the workspace
  *
- * @param Integer $did - Desktop-ID
+ * @param integer $id - Workspace-ID
+ * @param string $data - workspace data, json array
  */
 function ajax_desktop_workspace_save($id, $data)
 {
