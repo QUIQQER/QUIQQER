@@ -159,7 +159,7 @@ class Session
      * returns a variable from the session
      *
      * @param String $name - name of the variable
-     * @return false|Array
+     * @return mixed
      */
     public function get($name)
     {
@@ -179,7 +179,7 @@ class Session
     /**
      * Checks the validity of the session
      *
-     * @return Bool
+     * @return bool
      */
     public function check()
     {

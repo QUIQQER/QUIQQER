@@ -6,7 +6,8 @@
 
 namespace QUI\Users;
 
-use \QUI\Utils\Security\Orthos as Orthos;
+use QUI;
+use QUI\Utils\Security\Orthos as Orthos;
 
 /**
  * User Address
@@ -14,11 +15,11 @@ use \QUI\Utils\Security\Orthos as Orthos;
  * @author www.pcsg.de (Henning Leutz)
  */
 
-class Address extends \QUI\QDOM
+class Address extends QUI\QDOM
 {
     /**
      * The user
-     * @var \QUI\Users\User
+     * @var QUI\Users\User
      */
     protected $_User = null;
 
@@ -31,13 +32,14 @@ class Address extends \QUI\QDOM
     /**
      * constructor
      *
-     * @param \QUI\Users\User $User  - User
+     * @param QUI\Users\User $User  - User
      * @param Integer $id - Address id
+     * @throws QUI\Exception
      */
-    public function __construct(\QUI\Users\User $User, $id)
+    public function __construct(User $User, $id)
     {
-        $result = \QUI::getDataBase()->fetch(array(
-            'from'  => \QUI\Users\Manager::TableAddress(),
+        $result = QUI::getDataBase()->fetch(array(
+            'from'  => Manager::TableAddress(),
             'where' => array(
                 'id'  => (int)$id,
                 'uid' => $User->getId()
@@ -50,8 +52,8 @@ class Address extends \QUI\QDOM
 
         if ( !isset( $result[0] ) )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'system',
                     'exception.lib.user.address.not.found'
                 )
@@ -124,8 +126,8 @@ class Address extends \QUI\QDOM
     /**
      * Editier ein bestehenden Eintrag
      *
-     * @param unknown_type $index
-     * @param unknown_type $phone
+     * @param integer $index
+     * @param string $phone
      */
     public function editPhone($index, $phone)
     {
@@ -181,14 +183,15 @@ class Address extends \QUI\QDOM
     /**
      * Add a EMail address
      *
-     * @param String $mail
+     * @param string $mail - new mail address
+     * @throws QUI\Exception
      */
     public function addMail($mail)
     {
         if ( Orthos::checkMailSyntax( $mail ) == false )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'system',
                     'exception.lib.user.address.mail.wrong.syntax'
                 )
@@ -217,15 +220,16 @@ class Address extends \QUI\QDOM
     /**
      * E-Mail Eintrag editieren
      *
-     * @param unknown_type $index
-     * @param unknown_type $mail
+     * @param integer $index - index of the mail
+     * @param string $mail - E-Mail (eq: my@mail.com)
+     * @throws QUI\Exception
      */
     public function editMail($index, $mail)
     {
         if ( Orthos::checkMailSyntax( $mail ) == false )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'system',
                     'exception.lib.user.address.mail.wrong.syntax'
                 )
@@ -259,14 +263,15 @@ class Address extends \QUI\QDOM
     /**
      * Länder bekommen
      *
-     * @return \QUI\Countries\Country
+     * @return QUI\Countries\Country
+     * @throws QUI\Exception
      */
     public function getCountry()
     {
         if ( $this->getAttribute('country') === false )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'system',
                     'exception.lib.user.address.no.country'
                 )
@@ -275,17 +280,17 @@ class Address extends \QUI\QDOM
 
         try
         {
-            return \QUI\Countries\Manager::get(
+            return QUI\Countries\Manager::get(
                 $this->getAttribute('country')
             );
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
 
         }
 
-        throw new \QUI\Exception(
-            \QUI::getLocale()->get(
+        throw new QUI\Exception(
+            QUI::getLocale()->get(
                 'system',
                 'exception.lib.user.address.no.country'
             )
@@ -300,8 +305,8 @@ class Address extends \QUI\QDOM
         $mail  = json_encode( $this->getMailList() );
         $phone = json_encode( $this->getPhoneList() );
 
-        \QUI::getDataBase()->update(
-            \QUI\Users\Manager::TableAddress(),
+        QUI::getDataBase()->update(
+            Manager::TableAddress(),
             array(
                 'salutation' => Orthos::clear( $this->getAttribute('salutation') ),
                 'firstname'  => Orthos::clear( $this->getAttribute('firstname') ),
@@ -325,9 +330,9 @@ class Address extends \QUI\QDOM
      */
     public function delete()
     {
-        \QUI::getDataBase()->exec(array(
+        QUI::getDataBase()->exec(array(
             'delete' => true,
-            'from'   => \QUI\Users\Manager::TableAddress(),
+            'from'   => Manager::TableAddress(),
             'where'  => array(
                 'id'  => $this->getId(),
                 'uid' => $this->_User->getId()
@@ -343,13 +348,13 @@ class Address extends \QUI\QDOM
      */
     public function getDisplay($active=false)
     {
-        $Engine = \QUI::getTemplateManager()->getEngine( true );
+        $Engine = QUI::getTemplateManager()->getEngine( true );
 
         $Engine->assign(array(
             'User'      => $this->_User,
             'Address'   => $this,
             'active'    => $active,
-            'Countries' => new \QUI\Countries\Manager()
+            'Countries' => new QUI\Countries\Manager()
         ));
 
         return $Engine->fetch( SYS_DIR .'template/users/address/display.html' );

@@ -6,6 +6,8 @@
 
 namespace QUI\Users;
 
+use QUI;
+
 /**
  * The standard user
  * Nobody has no rights
@@ -13,7 +15,7 @@ namespace QUI\Users;
  * @author www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui.users
  */
-class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
+class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
 {
     /**
      * constructor
@@ -76,6 +78,7 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
      * @see \QUI\Interfaces\Users\User::activate()
      *
      * @param String $code - activasion code [optional]
+     * @return bool
      */
     public function activate($code) {
         return false;
@@ -84,6 +87,8 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      * @see \QUI\Interfaces\Users\User::deactivate()
+     *
+     * @return bool
      */
     public function deactivate() {
         return false;
@@ -92,6 +97,9 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      * @see \QUI\Interfaces\Users\User::disable()
+     *
+     * @param bool|User $ParentUser
+     * @return bool
      */
     public function disable($ParentUser=false) {
         return false;
@@ -100,6 +108,9 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      * @see \QUI\Interfaces\Users\User::save()
+     *
+     * @param bool|User $ParentUser
+     * @return bool
      */
     public function save($ParentUser=false) {
         return false;
@@ -108,6 +119,8 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      * @see \QUI\Interfaces\Users\User::delete()
+     *
+     * @return bool
      */
     public function delete() {
         return false;
@@ -122,8 +135,8 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
      */
     public function addAddress($params)
     {
-        throw new \QUI\Exception(
-            \QUI::getLocale(
+        throw new QUI\Exception(
+            QUI::getLocale(
                 'system',
                 'exception.lib.user.nobody.add.address'
             )
@@ -134,8 +147,8 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
      * (non-PHPdoc)
      * @see \QUI\Interfaces\Users\User::getExtra()
      *
-     * @param String $field
-     * @return false
+     * @param string $field
+     * @return bool
      */
     public function getExtra($field) {
         return false;
@@ -202,14 +215,14 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
      * This method is useless for nobody
      * \QUI\Users\Nobody cannot have a address
      *
-     * @param Integer $id
+     * @param integer $id
      * @throws \QUI\Exception
      * @ignore
      */
     public function getAddress($id)
     {
-        throw new \QUI\Exception(
-            \QUI::getLocale('system', 'exception.lib.user.nobody.get.address')
+        throw new QUI\Exception(
+            QUI::getLocale('system', 'exception.lib.user.nobody.get.address')
         );
     }
 
@@ -226,9 +239,9 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
         {
             try
             {
-                return \QUI\Countries\Manager::get( $_SERVER[ "GEOIP_COUNTRY_CODE" ] );
+                return QUI\Countries\Manager::get( $_SERVER[ "GEOIP_COUNTRY_CODE" ] );
 
-            } catch ( \QUI\Exception $Exception )
+            } catch ( QUI\Exception $Exception )
             {
 
             }
@@ -243,11 +256,11 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
      */
     public function getCurrency()
     {
-        if ( \QUI::getSession()->get( 'currency' ) )
+        if ( QUI::getSession()->get( 'currency' ) )
         {
-            $currency = \QUI::getSession()->get( 'currency' );
+            $currency = QUI::getSession()->get( 'currency' );
 
-            if ( \QUI\Currency::existCurrency( $currency ) ) {
+            if ( QUI\Currency::existCurrency( $currency ) ) {
                 return $currency;
             }
         }
@@ -258,12 +271,12 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
         {
             $currency = $Country->getCurrencyCode();
 
-            if ( \QUI\Currency::existCurrency( $currency ) ) {
+            if ( QUI\Currency::existCurrency( $currency ) ) {
                 return $currency;
             }
         }
 
-        return \QUI\Currency::getDefaultCurrency();
+        return QUI\Currency::getDefaultCurrency();
     }
 
     /**
@@ -280,6 +293,7 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      * @see \QUI\Interfaces\Users\User::getStatus()
+     * @return bool
      */
     public function getStatus() {
         return true;
@@ -289,7 +303,8 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
      * (non-PHPdoc)
      * @see \QUI\Interfaces\Users\User::setGroups()
      *
-     * @param String|array
+     * @param string|array $groups
+     * @return bool
      */
     public function setGroups($groups) {
         return false;
@@ -300,6 +315,7 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
      * @see \QUI\Interfaces\Users\User::getGroups()
      *
      * @param Bool $array - returns the groups as objects (true) or as an array (false)
+     * @return bool
      */
     public function getGroups($array=true) {
         return false;
@@ -309,6 +325,7 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
      * (non-PHPdoc)
      * @see \QUI\Interfaces\Users\User::getAvatar()
      * @param Bool $url - get the avatar with the complete url string
+     * @return bool
      */
     public function getAvatar($url=false) {
         return false;
@@ -320,6 +337,7 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
      *
      * @param String $right
      * @param array $ruleset - optional, you can specific a ruleset, a rules = array with rights
+     * @return bool
      *
      */
     public function getPermission($right, $ruleset=false) {
@@ -333,6 +351,7 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
      *
      * @param String $field
      * @param String|Integer|array $value
+     * @return bool
      */
     public function setExtra($field, $value) {
         return false;
@@ -343,8 +362,9 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
      * @see \QUI\Interfaces\Users\User::loadExtra()
      *
      * @param \QUI\Projects\Project $Project
+     * @return bool
      */
-    public function loadExtra(\QUI\Projects\Project $Project) {
+    public function loadExtra(QUI\Projects\Project $Project) {
         return false;
     }
 
@@ -353,7 +373,8 @@ class Nobody extends \QUI\QDOM implements \QUI\Interfaces\Users\User
      * @see \QUI\Interfaces\Users\User::setPassword()
      *
      * @param String $new - new password
-     * @param \QUI\Users\User|false $ParentUser
+     * @param \QUI\Users\User|bool $ParentUser
+     * @return bool
      */
     public function setPassword($new, $ParentUser=false) {
         return false;

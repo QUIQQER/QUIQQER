@@ -7,7 +7,7 @@
 namespace QUI\Utils;
 
 use QUI;
-use QUI\Utils\DOM;
+use QUI\Utils\Security\Orthos;
 
 /**
  * QUIQQER XML Util class
@@ -196,6 +196,7 @@ class XML
             if ( !empty( $file ) )
             {
                 $file = DOM::parseVar( $file );
+                $file = Orthos::clearPath( realpath( $file ) );
 
                 if ( file_exists( $file ) ) {
                     require_once $file;

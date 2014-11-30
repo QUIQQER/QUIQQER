@@ -6,12 +6,14 @@
 
 namespace QUI\Utils;
 
+use QUI;
 use QUI\Projects\Site\Utils;
+use QUI\Controls\Toolbar;
 
 /**
  * QUIQQER DOM Helper
  *
- * \QUI\Utils\DOM helps with quiqqer .xml files and DOMNode Elements
+ * QUI\Utils\DOM helps with quiqqer .xml files and DOMNode Elements
  *
  * @author www.pcsg.de (Henning Leutz)
  */
@@ -19,14 +21,14 @@ use QUI\Projects\Site\Utils;
 class DOM
 {
     /**
-     * Converts an array into an \QUI\QDOM object
+     * Converts an array into an QUI\QDOM object
      *
      * @param array $array
-     * @return \QUI\QDOM
+     * @return QUI\QDOM
      */
     static function arrayToQDOM(array $array)
     {
-        $DOM = new \QUI\QDOM();
+        $DOM = new QUI\QDOM();
         $DOM->setAttributes( $array );
 
         return $DOM;
@@ -36,13 +38,14 @@ class DOM
      * Fügt DOM XML Tabs in eine Toolbar ein
      *
      * @param Array|\DOMNodeList $tabs
-     * @param \QUI\Controls\Toolbar\Bar $Tabbar
+     * @param QUI\Controls\Toolbar\Bar $Tabbar
      * @param $plugin - optional
      */
-    static function addTabsToToolbar($tabs, \QUI\Controls\Toolbar\Bar $Tabbar, $plugin='')
+    static function addTabsToToolbar($tabs, Toolbar\Bar $Tabbar, $plugin='')
     {
         foreach ( $tabs as $Tab )
         {
+            /* @var $Tab \DOMElement */
             $text  = '';
             $image = '';
             $type  = '';
@@ -65,7 +68,7 @@ class DOM
                 $type = $Tab->getAttribute( 'type' );
             }
 
-            $ToolbarTab = new \QUI\Controls\Toolbar\Tab(array(
+            $ToolbarTab = new Toolbar\Tab(array(
                 'name'    => $Tab->getAttribute( 'name' ),
                 'text'    => $text,
                 'image'   => $image,
@@ -125,7 +128,7 @@ class DOM
     /**
      * Button Element
      *
-     * @param \DOMNode $Button
+     * @param \DOMNode|\DOMElement $Button
      * @return String
      */
     static function buttonDomToString(\DOMNode $Button)
@@ -158,7 +161,7 @@ class DOM
     /**
      * Table Datenbank DOmNode Objekt in ein Array umwandeln
      *
-     * @param \DOMNode $Table
+     * @param \DOMNode|\DOMElement $Table
      * @return Array
      */
     static function dbTableDomToArray(\DOMNode $Table)
@@ -245,7 +248,7 @@ class DOM
     /**
      * Field Datenbank DOmNode Objekt in ein Array umwandeln
      *
-     * @param \DOMNode $Field
+     * @param \DOMNode|\DOMElement $Field
      * @return Array
      */
     static function dbFieldDomToArray(\DOMNode $Field)
@@ -293,7 +296,7 @@ class DOM
      * Index Datenbank DOMNode Objekt in ein Array umwandeln
      *
      * @param \DOMNode $Index
-     * @return Array
+     * @return array
      */
     static function dbIndexDomToArray(\DOMNode $Index)
     {
@@ -305,8 +308,8 @@ class DOM
     /**
      * AUTO_INCREMENT Datenbank DOMNode Objekt in ein Array umwandeln
      *
-     * @param \DOMNode $Index
-     * @return Array
+     * @param \DOMNode $AI
+     * @return array
      */
     static function dbAutoIncrementDomToArray(\DOMNode $AI)
     {
@@ -318,7 +321,7 @@ class DOM
     /**
      * FULLTEXT Datenbank DOMNode Objekt in ein Array umwandeln
      *
-     * @param \DOMNode $Index
+     * @param \DOMNode $Fulltext
      * @return Array
      */
     static function dbAutoFullextDomToArray(\DOMNode $Fulltext)
@@ -332,7 +335,7 @@ class DOM
      * HTML eines DOM Tabs
      *
      * @param String $name
-     * @param Plugin | \QUI\Projects\Project | String $Object - String = path to user.xml File
+     * @param QUI\Projects\Project|String|QUI\Projects\Site|QUI\Projects\Site\Edit $Object - String = path to user.xml File
      *
      * @return String
      */
@@ -348,9 +351,9 @@ class DOM
 
         } else if ( get_class( $Object ) === 'QUI\\Projects\\Project' )
         {
-            /* @var $Object \QUI\Projects\Project */
+            /* @var $Object QUI\Projects\Project */
             // tabs welche ein projekt zur Verfügung stellt
-            $tabs = XML::getTabsFromUserXml(
+            $tabs = XML::getTabsFromXml(
                 USR_DIR .'lib/'. $Object->getAttribute( 'name' ) .'/user.xml'
             );
 
@@ -358,7 +361,7 @@ class DOM
             get_class( $Object ) === 'QUI\\Projects\\Site' ||
             get_class( $Object ) === 'QUI\\Projects\\Site\\Edit' )
         {
-            $Tabbar = \QUI\Projects\Sites::getTabs( $Object );
+            $Tabbar = QUI\Projects\Sites::getTabs( $Object );
             $Tab    = $Tabbar->getElementByName( $name );
 
             if ( $Tab->getAttribute( 'template' ) )
@@ -375,13 +378,13 @@ class DOM
                     }
 
                     // generate html
-                    $Engine = \QUI::getTemplateManager()->getEngine( true );
+                    $Engine = QUI::getTemplateManager()->getEngine( true );
 
                     $Engine->assign(array(
                         'Site'    => $Object,
                         'Project' => $Object->getProject(),
-                        'Plugins' => \QUI::getPluginManager(),
-                        'QUI'     => new \QUI()
+                        'Plugins' => QUI::getPluginManager(),
+                        'QUI'     => new QUI()
                     ));
 
                     return $Engine->fetch( $file ) . $extra;
@@ -395,6 +398,7 @@ class DOM
 
         foreach ( $tabs as $Tab )
         {
+            /* @var $Tab \DOMElement */
             if ( $Tab->getAttribute( 'name' ) != $name ) {
                 continue;
             }
@@ -424,18 +428,19 @@ class DOM
 
         for ( $i = 0; $i < $children->length; $i++ )
         {
+            /* @var $Param \DOMElement */
             $Param = $children->item( $i );
 
             if ( $Param->nodeName != 'category' ) {
                 continue;
             }
 
-            $Button = new \QUI\Controls\Buttons\Button();
+            $Button = new QUI\Controls\Buttons\Button();
             $Button->setAttribute( 'name', $Param->getAttribute( 'name' ) );
             $Button->setAttribute( 'require', $Param->getAttribute( 'require' ) );
 
-            $onload   = $Param->getElementsByTagName( 'onload' );
-            $onunload = $Param->getElementsByTagName( 'onunload' );
+//            $onload   = $Param->getElementsByTagName( 'onload' );
+//            $onunload = $Param->getElementsByTagName( 'onunload' );
 
             $btnParams = $Param->childNodes;
 
@@ -471,7 +476,7 @@ class DOM
 
             if ( $Param->getAttribute( 'type' ) == 'projects' )
             {
-                $projects = \QUI\Projects\Manager::getProjects();
+                $projects = QUI\Projects\Manager::getProjects();
 
                 foreach ( $projects as $project )
                 {
@@ -503,7 +508,7 @@ class DOM
      * Search a <locale> node into the DOMNode and parse it
      * if no <locale exist, it return the nodeValue
      *
-     * @param \DOMNode $Node
+     * @param \DOMNode|\DOMElement $Node
      * @return String
      */
     static function getTextFromNode(\DOMNode $Node)
@@ -514,7 +519,7 @@ class DOM
             return self::parseVar( trim( $Node->nodeValue ) );
         }
 
-        return \QUI::getLocale()->get(
+        return QUI::getLocale()->get(
             $loc->item( 0 )->getAttribute( 'group' ),
             $loc->item( 0 )->getAttribute( 'var' )
         );
@@ -523,7 +528,7 @@ class DOM
     /**
      * Wandelt <group> in einen String für die Einstellung um
      *
-     * @param \DOMNode $Group
+     * @param \DOMNode|\DOMElement $Group
      * @return String
      */
     static function groupDomToString(\DOMNode $Group)
@@ -614,12 +619,13 @@ class DOM
             return array();
         }
 
-        $projects = \QUI\Projects\Manager::getProjects();
+        $projects = QUI\Projects\Manager::getProjects();
         $children = $configs->item( 0 )->childNodes;
         $result   = array();
 
         for ( $i = 0; $i < $children->length; $i++ )
         {
+            /* @var $Param \DOMElement */
             $Param = $children->item( $i );
 
             if ( $Param->nodeName == '#text' ) {
@@ -651,8 +657,8 @@ class DOM
      * Parse a DOMDocument to a settings window
      * if a settings window exist in it
      *
-     * @param \DomDocument|DomElement $Dom
-     * @return \QUI\Controls\Windows\Setting|false
+     * @param \DomDocument|\DOMElement $Dom
+     * @return QUI\Controls\Windows\Window|bool
      */
     static function parseDomToWindow($Dom)
     {
@@ -662,6 +668,7 @@ class DOM
             return false;
         }
 
+        /* @var $Settings \DOMElement */
         $Settings = $settings->item( 0 );
         $winlist  = $Settings->getElementsByTagName( 'window' );
 
@@ -669,8 +676,9 @@ class DOM
             return false;
         }
 
+        /* @var $Window \DOMElement */
         $Window = $winlist->item( 0 );
-        $Win    = new \QUI\Controls\Windows\Window();
+        $Win    = new QUI\Controls\Windows\Window();
 
         // name
         if ( $Window->getAttribute( 'name' ) ) {
@@ -716,7 +724,7 @@ class DOM
 
     /**
      *
-     * @param \DOMNode $Node
+     * @param \DOMNode|\DOMElement $Node
      * @return Array
      */
     static function parsePanelToArray(\DOMNode $Node)
@@ -757,7 +765,7 @@ class DOM
     /**
      * Parse a DOMNode permission to an array
      *
-     * @param \DOMNode $Node
+     * @param \DOMNode|\DOMElement $Node
      * @return Array
      */
     static function parsePermissionToArray(\DOMNode $Node)
@@ -767,8 +775,6 @@ class DOM
         }
 
         $perm    = $Node->getAttribute( 'name' );
-        $desc    = '';
-        $title   = '';
         $default = false;
 
         $Default = $Node->getElementsByTagName( 'defaultvalue' );
@@ -777,21 +783,21 @@ class DOM
             $default = $Default->item(0)->nodeValue;
         }
 
-        $title = \QUI::getLocale()->get(
+        $title = QUI::getLocale()->get(
             'locale/permissions',
             $perm .'._title'
         );
 
-        $desc = \QUI::getLocale()->get(
+        $desc = QUI::getLocale()->get(
             'locale/permissions',
             $perm .'._description'
         );
 
-        $type = \QUI\Rights\Manager::parseType(
+        $type = QUI\Rights\Manager::parseType(
             $Node->getAttribute( 'type' )
         );
 
-        $area = \QUI\Rights\Manager::parseArea(
+        $area = QUI\Rights\Manager::parseArea(
             $Node->getAttribute( 'area' )
         );
 
@@ -818,14 +824,13 @@ class DOM
             return '';
         }
 
-        $result   = '';
         $children = $Category->childNodes;
 
         if ( !$children->length ) {
             return '';
         }
 
-        $Engine   = \QUI::getTemplateManager()->getEngine( true );
+        $Engine   = QUI::getTemplateManager()->getEngine( true );
 //         $template = $Category->getElementsByTagName( 'template' );
 
         // Falls ein Template angegeben wurde
@@ -838,8 +843,8 @@ class DOM
 //             {
 //                 $Engine->assign(array(
 //                     'Plugin'  => $Plugin,
-//                     'Plugins' => \QUI::getPluginManager(),
-//                     'QUI'     => new \QUI()
+//                     'Plugins' => QUI::getPluginManager(),
+//                     'QUI'     => new QUI()
 //                 ));
 
 //                 return $Engine->fetch( $file );
@@ -855,6 +860,7 @@ class DOM
 
         for ( $c = 0; $c < $children->length; $c++ )
         {
+            /* @param \DOMElement */
             $Entry = $children->item( $c );
 
             if ( $Entry->nodeName == '#text' ||
@@ -872,8 +878,8 @@ class DOM
                 {
                     $Engine->assign(array(
                         'Plugin'  => $Plugin,
-                        'Plugins' => \QUI::getPluginManager(),
-                        'QUI'     => new \QUI()
+                        'Plugins' => QUI::getPluginManager(),
+                        'QUI'     => new QUI()
                     ));
 
                     $result .= $Engine->fetch( $file );
@@ -957,8 +963,8 @@ class DOM
                             {
                                 $Engine->assign(array(
                                     'Plugin'  => $Plugin,
-                                    'Plugins' => \QUI::getPluginManager(),
-                                    'QUI'     => new \QUI()
+                                    'Plugins' => QUI::getPluginManager(),
+                                    'QUI'     => new QUI()
                                 ));
 
                                 $result .= $Engine->fetch( $file );
@@ -1016,7 +1022,7 @@ class DOM
     /**
      * Eingabe Element Input in einen String für die Einstellung umwandeln
      *
-     * @param \DOMNode $Input
+     * @param \DOMNode|\DOMElement $Input
      * @return String
      */
     static function inputDomToString(\DOMNode $Input)
@@ -1102,7 +1108,7 @@ class DOM
     /**
      * Eingabe Element Textarea in einen String für die Einstellung umwandeln
      *
-     * @param \DOMNode $Textarea
+     * @param \DOMNode|\DOMElement $Textarea
      *
      * @return String
      */
@@ -1146,7 +1152,7 @@ class DOM
     /**
      * Parse config entries to an array
      *
-     * @param \DOMNode $confs
+     * @param \DOMNode|\DOMNodeList $confs
      * @return Array
      */
     static function parseConfs($confs)
@@ -1155,6 +1161,7 @@ class DOM
 
         foreach ( $confs as $Conf )
         {
+            /* @var $Conf \DOMElement */
             $type    = 'string';
             $default = '';
 
@@ -1213,7 +1220,7 @@ class DOM
     /**
      * Eingabe Element Select in einen String für die Einstellung umwandeln
      *
-     * @param \DOMNode $Select
+     * @param \DOMNode|\DOMElement $Select
      * @return String
      */
     static function selectDomToString(\DOMNode $Select)
@@ -1240,6 +1247,7 @@ class DOM
 
         foreach ( $options as $Option )
         {
+            /* @var $Option \DOMElement */
             $value = $Option->getAttribute( 'value' );
             $html  = self::getTextFromNode( $Option );
 

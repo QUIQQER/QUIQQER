@@ -6,6 +6,9 @@
 
 namespace QUI\Groups;
 
+use QUI;
+use QUI\Utils\Security\Orthos;
+
 /**
  * Group Manager
  *
@@ -13,7 +16,7 @@ namespace QUI\Groups;
  * @package com.pcsg.qui.groups
  */
 
-class Manager extends \QUI\QDOM
+class Manager extends QUI\QDOM
 {
     const TYPE_BOOL    = 1;
     const TYPE_TEXT    = 2;
@@ -47,7 +50,7 @@ class Manager extends \QUI\QDOM
      */
     public function setup()
     {
-        $DataBase = \QUI::getDataBase();
+        $DataBase = QUI::getDataBase();
         $Table    = $DataBase->Table();
 
         $Table->appendFields(self::Table(), array(
@@ -67,12 +70,12 @@ class Manager extends \QUI\QDOM
     /**
      * Returns the first group
      *
-     * @return \QUI\Groups\Manager
+     * @return QUI\Groups\Manager
      */
     public function firstChild()
     {
         return $this->get(
-            \QUI::conf( 'globals','root' )
+            QUI::conf( 'globals','root' )
         );
     }
 
@@ -80,16 +83,16 @@ class Manager extends \QUI\QDOM
      * Return a group by ID
      *
      * @param Integer $id - ID of the Group
-     * @return \QUI\Groups\Manager
+     * @return QUI\Groups\Group
      *
-     * @throws \QUI\Exception
+     * @throws QUI\Exception
      */
     public function get($id)
     {
         if ( !$id )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.qui.manager.no.groupid'
                 )
@@ -100,7 +103,7 @@ class Manager extends \QUI\QDOM
             return $this->_groups[ $id ];
         }
 
-        $this->_groups[ $id ] = new \QUI\Groups\Group( $id );
+        $this->_groups[ $id ] = new Group( $id );
 
         return $this->_groups[ $id ];
     }
@@ -123,7 +126,7 @@ class Manager extends \QUI\QDOM
     /**
      * Search / Scanns the groups
      *
-     * @param array $params - \QUI\Database\DB params
+     * @param array $params - QUI\Database\DB params
      * @return array
      */
     public function search($params)
@@ -134,7 +137,8 @@ class Manager extends \QUI\QDOM
     /**
      * Count the groups
      *
-     * @param array $params - \QUI\Database\DB params
+     * @param array $params - QUI\Database\DB params
+     * @return integer
      */
     public function count($params)
     {
@@ -161,8 +165,8 @@ class Manager extends \QUI\QDOM
      */
     protected function _search($params)
     {
-        $DataBase = \QUI::getDataBase();
-        $params   = \QUI\Utils\Security\Orthos::clearArray( $params );
+        $DataBase = QUI::getDataBase();
+        $params   = Orthos::clearArray( $params );
 
         $allowOrderFields = array(
             'id', 'name', 'admin', 'parent', 'active'

@@ -18,8 +18,8 @@ interface Auth
     /**
      * Authentifiziert einen Benutzer
      *
-     * @param unknown_type $username
-     * @param unknown_type $password
+     * @param string $username
+     * @param string $password
      * @return Bool
      */
     public function auth($username, $password);
@@ -27,8 +27,8 @@ interface Auth
     /**
      * Gibt die Daten eines Benutzers zurück
      *
-     * @param String $username
-     * @param String $fields
+     * @param string $username
+     * @param string|bool $fields
      */
     public function getUser($username, $fields=false);
 
@@ -40,7 +40,7 @@ interface Auth
     /**
      * Gibt die Daten einer Gruppe zurück
      *
-     * @param String $groupname
+     * @param string $groupname
      */
     public function getGroup($groupname);
 

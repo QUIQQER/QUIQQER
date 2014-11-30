@@ -13,7 +13,7 @@ use QUI;
  *
  * @author www.pcsg.de (Henning Leutz)
  */
-class Everyone extends \QUI\Groups\Group
+class Everyone extends QUI\Groups\Group
 {
     /**
      * constructor
@@ -33,8 +33,8 @@ class Everyone extends \QUI\Groups\Group
     public function delete()
     {
         // Rootgruppe kann nicht gelöscht werden
-        throw new \QUI\Exception(
-            \QUI::getLocale()->get(
+        throw new QUI\Exception(
+            QUI::getLocale()->get(
                 'quiqqer/system',
                 'exception.everyone.group.cannot.be.deleted'
             )
@@ -75,11 +75,11 @@ class Everyone extends \QUI\Groups\Group
      */
     public function save()
     {
-        $this->_rights = \QUI::getPermissionManager()->getRightParamsFromGroup( $this );
+        $this->_rights = QUI::getPermissionManager()->getRightParamsFromGroup( $this );
 
         // Felder bekommen
-        \QUI::getDataBase()->update(
-            \QUI\Groups\Manager::Table(),
+        QUI::getDataBase()->update(
+            QUI\Groups\Manager::Table(),
             array(
                 'name'    => $this->getAttribute('name'),
                 'toolbar' => $this->getAttribute('toolbar'),
@@ -105,8 +105,8 @@ class Everyone extends \QUI\Groups\Group
      */
     public function deactivate()
     {
-        throw new \QUI\Exception(
-            \QUI::getLocale()->get(
+        throw new QUI\Exception(
+            QUI::getLocale()->get(
                 'quiqqer/system',
                 'exception.everyone.group.cannot.be.deactivated'
             )
@@ -195,11 +195,12 @@ class Everyone extends \QUI\Groups\Group
      *
      * @param String $name - name of the subgroup
      * @return \QUI\Groups\Manager
+     * @throws QUI\Exception
      */
     public function createChild($name)
     {
-        throw new \QUI\Exception(
-            \QUI::getLocale()->get(
+        throw new QUI\Exception(
+            QUI::getLocale()->get(
                 'quiqqer/system',
                 'exception.cannot.create.children'
             )

@@ -6,6 +6,10 @@
 
 namespace QUI\Groups;
 
+use QUI;
+use QUI\Utils\DOM;
+use QUI\Utils\XML;
+
 /**
  * Helper for groups
  *
@@ -23,12 +27,12 @@ class Utils
      */
     static function getGroupToolbar($Group)
     {
-        $Tabbar = new \QUI\Controls\Toolbar\Bar(array(
+        $Tabbar = new QUI\Controls\Toolbar\Bar(array(
             'name'  => 'UserToolbar'
         ));
 
-        \QUI\Utils\DOM::addTabsToToolbar(
-            \QUI\Utils\XML::getTabsFromXml( SYS_DIR .'groups.xml' ),
+        DOM::addTabsToToolbar(
+            XML::getTabsFromXml( SYS_DIR .'groups.xml' ),
             $Tabbar,
             'pcsg'
         );
@@ -71,9 +75,9 @@ class Utils
      */
     static function getTab($gid, $plugin, $tab)
     {
-        $Groups = \QUI::getGroups();
+        $Groups = QUI::getGroups();
         $Group  = $Groups->get( $gid );
-        $Engine = \QUI::getTemplateManager()->getEngine( true );
+        $Engine = QUI::getTemplateManager()->getEngine( true );
 
         $Engine->assign(array(
             'Group' => $Group
@@ -82,7 +86,7 @@ class Utils
         // System
         if ( $plugin === 'pcsg' )
         {
-            return \QUI\Utils\DOM::getTabHTML(
+            return DOM::getTabHTML(
                 $tab, SYS_DIR .'groups.xml'
             );
         }

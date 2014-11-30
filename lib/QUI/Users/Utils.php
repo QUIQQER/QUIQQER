@@ -6,6 +6,11 @@
 
 namespace QUI\Users;
 
+use QUI;
+use QUI\Utils\DOM;
+use QUI\Utils\XML;
+
+
 /**
  * Helper for users
  *
@@ -23,12 +28,12 @@ class Utils
      */
     static function getUserToolbar($User)
     {
-        $Tabbar = new \QUI\Controls\Toolbar\Bar(array(
+        $Tabbar = new QUI\Controls\Toolbar\Bar(array(
             'name'  => 'UserToolbar'
         ));
 
-        \QUI\Utils\DOM::addTabsToToolbar(
-            \QUI\Utils\XML::getTabsFromXml( LIB_DIR .'xml/user.xml' ),
+        DOM::addTabsToToolbar(
+            XML::getTabsFromXml( LIB_DIR .'xml/user.xml' ),
             $Tabbar,
             'pcsg'
         );
@@ -40,7 +45,7 @@ class Utils
         /**
          * user extention from plugins
          */
-        $list = \QUI::getPackageManager()->getInstalled();
+        $list = QUI::getPackageManager()->getInstalled();
 
         foreach ( $list as $entry )
         {
@@ -50,8 +55,8 @@ class Utils
                 continue;
             }
 
-            \QUI\Utils\DOM::addTabsToToolbar(
-                \QUI\Utils\XML::getTabsFromXml( $userXml ),
+            DOM::addTabsToToolbar(
+                XML::getTabsFromXml( $userXml ),
                 $Tabbar,
                 'plugin.'. $entry['name']
             );
@@ -70,12 +75,12 @@ class Utils
         /**
          * user extention from projects
          */
-        $projects = \QUI\Projects\Manager::getProjects();
+        $projects = QUI\Projects\Manager::getProjects();
 
         foreach ( $projects as $project )
         {
-            \QUI\Utils\DOM::addTabsToToolbar(
-                \QUI\Utils\XML::getTabsFromXml( USR_DIR .'lib/'. $project .'/user.xml' ),
+            DOM::addTabsToToolbar(
+                XML::getTabsFromXml( USR_DIR .'lib/'. $project .'/user.xml' ),
                 $Tabbar,
                 'project.'. $project
             );
@@ -95,16 +100,16 @@ class Utils
      */
     static function getTab($uid, $plugin, $tab)
     {
-        $Users = \QUI::getUsers();
+        $Users = QUI::getUsers();
         $User  = $Users->get( (int)$uid );
 
         // assign user as global var
-        \QUI::getTemplateManager()->assignGlobalParam( 'User', $User );
+        QUI::getTemplateManager()->assignGlobalParam( 'User', $User );
 
         // System
         if ( $plugin === 'pcsg' )
         {
-            return \QUI\Utils\DOM::getTabHTML(
+            return DOM::getTabHTML(
                 $tab,
                 LIB_DIR .'xml/user.xml'
             );
@@ -115,21 +120,21 @@ class Utils
         {
             $project = explode( 'project.', $plugin );
 
-            return \QUI\Utils\DOM::getTabHTML(
+            return DOM::getTabHTML(
                 $tab,
-                \QUI::getProject( $project[1] )
+                QUI::getProject( $project[1] )
             );
         }
 
         // Plugin extention
         $plugin  = str_replace( 'plugin.', '', $plugin );
-        $package = \QUI::getPackageManager()->getPackage( $plugin );
+        $package = QUI::getPackageManager()->getPackage( $plugin );
 
         if ( !$package || !isset( $package['name'] ) ) {
             return '';
         }
 
-        return \QUI\Utils\DOM::getTabHTML(
+        return DOM::getTabHTML(
             $tab,
             OPT_DIR . $package['name'] .'/user.xml'
         );

@@ -48,7 +48,7 @@ interface User
      * Disable a user
      * The user data will be lost, but the user still exist
      *
-     * @param \QUI\Users\User|false $ParentUser
+     * @param \QUI\Users\User|bool $ParentUser
      */
     public function disable($ParentUser=false);
 
@@ -56,7 +56,7 @@ interface User
     /**
      * Save all attributes of the user
      *
-     * @param \QUI\Users\User|false $ParentUser
+     * @param \QUI\Users\User|bool $ParentUser
      */
     public function save($ParentUser=false);
 
@@ -107,7 +107,7 @@ interface User
      * Has the user the right?
      *
      * @param String $right
-     * @param array $ruleset - optional, you can specific a ruleset, a rules = array with rights
+     * @param array|bool $ruleset - (optional), you can specific a ruleset, a rules = array with rights
      *
      * @return Bool
      */
@@ -168,7 +168,7 @@ interface User
      * Get a attribute of the user
      *
      * @param String $var
-     * @return String|Ineteger|array
+     * @return String|Integer|array
      */
     public function getAttribute($var);
 
@@ -184,7 +184,7 @@ interface User
      * Set the password of the user
      *
      * @param String $new - new password
-     * @param \QUI\Users\User|false $ParentUser
+     * @param \QUI\Users\User|bool $ParentUser
      */
     public function setPassword($new, $ParentUser=false);
 

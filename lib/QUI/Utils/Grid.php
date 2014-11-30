@@ -6,13 +6,15 @@
 
 namespace QUI\Utils;
 
+use QUI;
+
 /**
  * Helper for the javascript controls/grid/Grid
  *
  * @author www.pcsg.de (Henning Leutz)
  */
 
-class Grid extends \QUI\QDOM
+class Grid extends QUI\QDOM
 {
     /**
      * constructor
@@ -60,8 +62,8 @@ class Grid extends \QUI\QDOM
     /**
      * Prepares the result for the Grid
      *
-     * @param Array $data
-     * @param Integer $count
+     * @param array $data
+     * @param integer|bool $count
      *
      * @return Array
      */
@@ -84,6 +86,7 @@ class Grid extends \QUI\QDOM
      * @param Array $data
      * @param Integer $page
      * @param Integer $limit
+     * @return array
      */
     static function getResult($data, $page, $limit)
     {
