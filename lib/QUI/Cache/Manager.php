@@ -84,6 +84,10 @@ class Manager
             $key = md5( __FILE__ ) .'/qui/'. $key;
         }
 
+        if ( empty( $key ) ) {
+            $key = md5( __FILE__ ) .'/qui/';
+        }
+
         if ( !is_null( self::$Stash ) ) {
             return self::$Stash->getItem( $key );
         }

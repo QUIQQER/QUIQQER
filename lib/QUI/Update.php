@@ -473,7 +473,7 @@ class Update
             )
         );
 
-        QUI::$Rights = null; // so we have nor permission cache
+        QUI::$Rights = null; // so we have no permission cache
 
 
         self::importPermissions(
