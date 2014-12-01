@@ -15,6 +15,8 @@ define({
      */
     parse : function(Elm)
     {
+        "use strict";
+
         var Form = false;
 
         if ( Elm.nodeName == 'FORM' ) {
@@ -102,10 +104,12 @@ define({
     /**
      * Search all Elements with .btn-button and convert it to a button
      *
-     * @param {DOMNode} Elm - parent node, this element in which is searched for
+     * @param {HTMLElement} Elm - parent node, this element in which is searched for
      */
     parseButtons : function(Elm)
     {
+        "use strict";
+
         require(['qui/controls/buttons/Button'], function(QUIButton)
         {
             // buttons
@@ -129,18 +133,18 @@ define({
     /**
      * Search all .data-tables and make it flexible
      *
-     * @param {DOMNode} Elm - parent node, this element in which is searched for
+     * @param {HTMLElement} Elm - parent node, this element in which is searched for
      */
     parseDataTables : function(Elm)
     {
+        "use strict";
+
         var i, len, Header;
         var theaders = Elm.getElements( '.data-table tr ^ th' );
 
         var dataTableOpen = function()
         {
             var Table  = this.getParent( 'table' ),
-                TBody  = Table.getElement( 'tbody' ),
-                THead  = Table.getElement( 'thead' ),
                 Toggle = Table.getElement( '.data-table-toggle' );
 
             Toggle.set( 'html', '<span class="icon-minus"></span>' );
@@ -163,7 +167,6 @@ define({
         var dataTableClose = function()
         {
             var Table  = this.getParent( 'table' ),
-                TBody  = Table.getElement( 'tbody' ),
                 THead  = Table.getElement( 'thead' ),
                 Toggle = Table.getElement( '.data-table-toggle' );
 
@@ -185,7 +188,6 @@ define({
         var dataTableClick = function()
         {
             var Table  = this.getParent( 'table' ),
-                TBody  = Table.getElement( 'tbody' ),
                 Toggle = Table.getElement( '.data-table-toggle' );
 
             if ( Toggle.getElement( '.icon-minus' ) )
@@ -197,7 +199,7 @@ define({
             }
         };
 
-        for ( var i = 0, len = theaders.length; i < len; i++ )
+        for ( i = 0, len = theaders.length; i < len; i++ )
         {
             Header = theaders[ i ];
 
@@ -221,14 +223,14 @@ define({
     /**
      * Search all input[type="date"] and make a control
      *
-     * @param {DOMNode} Elm - parent node, this element in which is searched for
+     * @param {HTMLElement} Elm - parent node, this element in which is searched for
      */
     parseDate : function(Elm)
     {
-        var self = this;
+        "use strict";
 
         require([
-            'URL_OPT_DIR/quiqqer/calendar/bin/Calendar',
+            'package/quiqqer/calendar/bin/Calendar',
             'qui/controls/buttons/Button',
             'qui/utils/Elements'
         ], function(DatePicker, QUIButton, ElementUtils)
@@ -271,7 +273,7 @@ define({
                         y: 0
                     },
                     pickerClass : 'datepicker_dashboard',
-                    onSelect    : function(UserDate, elmList, Obj)
+                    onSelect    : function(UserDate, elmList)
                     {
                         var i, len;
 
@@ -322,7 +324,7 @@ define({
                 }).inject( Child.getParent() );
             }
 
-        }, function(err)
+        }, function()
         {
             require(['qui/QUI'], function(QUI)
             {
@@ -340,22 +342,20 @@ define({
     /**
      * Search all input[class="groups"] and convert it to a control
      *
-     * @param {DOMNode} Elm - parent node, this element in which is searched for
+     * @param {HTMLElement} Elm - parent node, this element in which is searched for
      */
     parseGroups : function(Elm)
     {
+        "use strict";
+
         require(['controls/groups/Input'], function(GroupInput)
         {
             var i, len, elements;
 
             elements = Elm.getElements( 'input.groups,input.group' );
 
-            for ( i = 0, len = elements.length; i < len; i++ )
-            {
-                new GroupInput(
-                    null,
-                    elements[ i ]
-                ).create();
+            for ( i = 0, len = elements.length; i < len; i++ ) {
+                new GroupInput( null, elements[ i ] ).create();
             }
         });
     },
@@ -363,22 +363,18 @@ define({
     /**
      * Search all input[class="media-image"] and convert it to a control
      *
-     * @param {DOMNode} Elm - parent node, this element in which is searched for
+     * @param {HTMLElement} Elm - parent node, this element in which is searched for
      */
     parseMediaInput : function(Elm)
     {
+        "use strict";
+
         require(['controls/projects/project/media/Input'], function(ProjectMediaInput)
         {
-            var i, len, elements;
+            var elements = Elm.getElements( 'input.media-image' );
 
-            elements = Elm.getElements( 'input.media-image' );
-
-            for ( i = 0, len = elements.length; i < len; i++ )
-            {
-                new ProjectMediaInput(
-                    null,
-                    elements[ i ]
-                ).create();
+            for ( var i = 0, len = elements.length; i < len; i++ ) {
+                new ProjectMediaInput( null, elements[ i ] ).create();
             }
         });
     },
@@ -386,10 +382,12 @@ define({
     /**
      * Search all input[class="project"] and convert it to a control
      *
-     * @param {DOMNode} Elm - parent node, this element in which is searched for
+     * @param {HTMLElement} Elm - parent node, this element in which is searched for
      */
     parseProject : function(Elm)
     {
+        "use strict";
+
         require(['controls/projects/Input'], function(ProjectInput)
         {
             var i, len, elements;
@@ -399,7 +397,7 @@ define({
             for ( i = 0, len = elements.length; i < len; i++ )
             {
                 new ProjectInput({
-                    multible : false,
+                    multible : false
                 }, elements[ i ] ).create();
             }
         });
@@ -408,22 +406,20 @@ define({
     /**
      * Search all input[class="project-types"] and convert it to a control
      *
-     * @param {DOMNode} Elm - parent node, this element in which is searched for
+     * @param {HTMLElement} Elm - parent node, this element in which is searched for
      */
     parseProjectTypes : function(Elm)
     {
+        "use strict";
+
         require(['controls/projects/TypeInput'], function(TypeInput)
         {
             var i, len, elements;
 
             elements = Elm.getElements( 'input.project-types' );
 
-            for ( i = 0, len = elements.length; i < len; i++ )
-            {
-                new TypeInput(
-                    null,
-                    elements[ i ]
-                ).create();
+            for ( i = 0, len = elements.length; i < len; i++ ) {
+                new TypeInput( null, elements[ i ] ).create();
             }
         });
     },
@@ -431,22 +427,20 @@ define({
     /**
      * Search all input[class="project-site"] and convert it to a control
      *
-     * @param {DOMNode} Elm - parent node, this element in which is searched for
+     * @param {HTMLElement} Elm - parent node, this element in which is searched for
      */
     parseProjectSite : function(Elm)
     {
+        "use strict";
+
         require(['controls/projects/project/site/Input'], function(SiteInput)
         {
             var i, len, elements;
 
             elements = Elm.getElements( 'input.project-site' );
 
-            for ( i = 0, len = elements.length; i < len; i++ )
-            {
-                new SiteInput(
-                    null,
-                    elements[ i ]
-                ).create();
+            for ( i = 0, len = elements.length; i < len; i++ ) {
+                new SiteInput( null, elements[ i ] ).create();
             }
         });
     },
@@ -454,22 +448,21 @@ define({
     /**
      * Search all Elements with the class users_and_groups and convert it to a control
      *
-     * @param {DOMNode} Elm - parent node, this element in which is searched for
+     * @param {HTMLElement} Elm - parent node, this element in which is searched for
      */
     parseUserAndGroups : function(Elm)
     {
+        "use strict";
+
         require(['controls/usersAndGroups/Input'], function(UserAndGroup)
         {
-            var i, len, elements, Label, Control;
+            var elements, Label, Control;
 
             elements = Elm.getElements( '.users_and_groups' );
 
-            for ( i = 0, len = elements.length; i < len; i++ )
+            for ( var i = 0, len = elements.length; i < len; i++ )
             {
-                Control = new UserAndGroup(
-                    null,
-                    elements[ i ]
-                );
+                Control = new UserAndGroup( null, elements[ i ] );
 
                 if ( elements[ i ].id )
                 {
@@ -488,10 +481,12 @@ define({
     /**
      * Search all Elements with the class user and convert it to a control
      *
-     * @param {DOMNode} Elm - parent node, this element in which is searched for
+     * @param {HTMLElement} Elm - parent node, this element in which is searched for
      */
     parseUser : function(Elm)
     {
+        "use strict";
+
         require(['controls/users/Input'], function(UserInput)
         {
             var i, len, elements, Label, Control;
@@ -500,12 +495,9 @@ define({
 
             for ( i = 0, len = elements.length; i < len; i++ )
             {
-                Control = new UserInput(
-                    {
-                        max : 1
-                    },
-                    elements[ i ]
-                );
+                Control = new UserInput({
+                    max : 1
+                }, elements[ i ] );
 
                 if ( elements[ i ].id )
                 {
