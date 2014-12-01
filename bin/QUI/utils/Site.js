@@ -5,15 +5,20 @@
  * @module utils/Site
  * @author www.pcsg.de (Henning Leutz)
  *
+ * @require qui/QUI
+ * @require utils/Panels
  * @require Locale
+ * @require Ajax
  */
 
-define([
+define('utils/Site', [
 
+    'qui/QUI',
     'utils/Panels',
-    'Locale'
+    'Locale',
+    'Ajax'
 
-], function(PanelUtils, Locale)
+], function(QUI, PanelUtils, Locale, Ajax)
 {
     "use strict";
 
@@ -76,9 +81,8 @@ define([
         /**
          * Create a child site, opens the confirm window
          *
-         *
-         * @param {String} newname - [optional, if no newname was passed,
-         *         a window would be open]
+         * @param {Object} ParentSite - classes/projects/Site
+         * @param {String} [value] - new name of the site, if no newname was passed, a window would be open
          */
         openCreateChild : function(ParentSite, value)
         {

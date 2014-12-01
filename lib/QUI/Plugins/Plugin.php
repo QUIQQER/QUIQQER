@@ -386,8 +386,8 @@ class Plugin extends \QUI\QDOM
     /**
      * Gibt eine Einstellung / Konfiguration des Plugins zurück
      *
-     * @param unknown_type $section
-     * @param unknown_type $key
+     * @param string $section
+     * @param string|null $key - (optional)
      *
      * @return String || Bool
      */
@@ -405,9 +405,9 @@ class Plugin extends \QUI\QDOM
     /**
      * Setzt einen Config Parameter, prüft gleich den Typ, Rechte und ob dieser gesetzt werden darf
      *
-     * @param unknown_type $section
-     * @param unknown_type $key
-     * @param unknown_type $value
+     * @param string $section
+     * @param string $key
+     * @param string $value
      */
     public function setSettings($section=false, $key=null, $value=null)
     {

@@ -1,10 +1,14 @@
+
 /**
  * Template Manager
  * Use the Template Manager for getting HTML Templates
  *
+ * @module utils/Template
  * @author www.pcsg.de (Henning Leutz)
  *
- * @module utils/Template
+ * @require qui/classes/DOM
+ * @require qui/utils/Object
+ * @require Ajax
  */
 
 define('utils/Template', [
@@ -31,7 +35,7 @@ define('utils/Template', [
          *
          * @param {String} template
          * @param {Function} oncomplete - callback function
-         * @param {Object} param        - [optional]
+         * @param {Object} [params]     - optional
          */
         get : function(template, oncomplete, params)
         {
@@ -76,7 +80,7 @@ define('utils/Template', [
          * Get the hash of the params
          *
          * @param {String} f - template name
-         * @param {Function}
+         * @param {Object} params
          *
          * @return {String}
          */
@@ -144,7 +148,7 @@ define('utils/Template', [
             o.id        = hash;
             o.innerHTML = '<!-- '+ html +' -->';
 
-            var Parent = $('pcsg-ajax-html-cache');
+            var Parent = document.id('pcsg-ajax-html-cache');
 
             if ( !Parent )
             {
@@ -155,7 +159,7 @@ define('utils/Template', [
                 document.body.appendChild( Parent );
             }
 
-            $('pcsg-ajax-html-cache').appendChild( o );
+            document.id('pcsg-ajax-html-cache').appendChild( o );
         }
     };
 });

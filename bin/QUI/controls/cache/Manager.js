@@ -13,10 +13,11 @@ define('controls/cache/Manager', [
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
+    'Ajax',
 
     'css!controls/cache/Manager.css'
 
-], function(QUI, QUIPanel)
+], function(QUI, QUIPanel, Ajax)
 {
     "use strict";
 
@@ -153,6 +154,8 @@ define('controls/cache/Manager', [
          * The purge function removes stale data from the cache backends while leaving current data intact.
          * Depending on the size of the cache and the specific drivers in use this can take some time,
          * so it is best called as part of a separate maintenance task or as part of a cron job.
+         *
+         * @param {function} [oncomplete]
          */
         purge : function(oncomplete)
         {
@@ -166,6 +169,9 @@ define('controls/cache/Manager', [
 
         /**
          * Clear the specific cache
+         *
+         * @param {object} params
+         * @param {function} [oncomplete]
          */
         clear : function(params, oncomplete)
         {
@@ -198,10 +204,10 @@ define('controls/cache/Manager', [
                 if ( Elm && Elm.checked )
                 {
                     params[ n ] = true;
-                } else
-                {
-                    params[ n ] = false;
+                    continue;
                 }
+
+                params[ n ] = false;
             }
 
 
@@ -232,7 +238,7 @@ define('controls/cache/Manager', [
 
             this.$Control.purge(function()
             {
-                this.$Purge.setAttribute('textimage', URL_BIN_DIR +'16x16/cache.png');
+                self.$Purge.setAttribute('textimage', URL_BIN_DIR +'16x16/cache.png');
 
                 QUI.getMessageHandler(function(MH)
                 {
@@ -240,8 +246,7 @@ define('controls/cache/Manager', [
                         'Der Cache wurde erfolgreich gesäubert'
                     );
                 });
-
-            }.bind( this ));
+            });
         },
 
         /**

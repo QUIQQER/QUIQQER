@@ -102,7 +102,6 @@ define(function()
 
 
                 var Project = Projects.get( project ),
-                    Media   = Project.getMedia(),
                     Panel   = new MediaPanel( Project.getMedia() );
 
                 panels[ 0 ].appendChild( Panel );
