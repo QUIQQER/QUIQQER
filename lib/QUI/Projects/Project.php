@@ -69,18 +69,6 @@ class Project
     private $_lang;
 
     /**
-     * last edit date
-     * @var Integer
-     */
-    private $_edate;
-
-    /**
-     * Last edit file
-     * @var String
-     */
-    private $_edate_file = null;
-
-    /**
      * default language
      * @var String
      */
@@ -256,9 +244,6 @@ class Project
         $this->_RELTABLE     = QUI_DB_PRFX . $this->_TABLE .'_relations';
         $this->_RELLANGTABLE = QUI_DB_PRFX . $this->_name .'_multilingual';
 
-
-        // Last Edit File -> auslagern als methode, nicht beim construct
-        // $this->_edate_file = VAR_DIR .'cache/projects/edate_'. $this->_name .'_'. $this->_lang;
 
         // cache files
         $this->_cache_files = array(
@@ -504,18 +489,7 @@ class Project
             break;
 
             case "e_date":
-
-                if ( $this->_edate ) {
-                    return $this->_edate;
-                }
-
-                if ( !file_exists( $this->_edate_file ) ) {
-                    return time();
-                }
-
-                $this->_edate = file_get_contents( $this->_edate_file );
-
-                return $this->_edate;
+                return $this->getLastEditDate();
             break;
 
             default:
@@ -1345,23 +1319,38 @@ class Project
     }
 
     /**
-     * Setzt das letzte Editierungsdatum
+     * Set the last edit date in the project
      *
      * @param Integer $date
      */
     public function setEditDate($date)
     {
-        $edateFile = VAR_DIR .'cache/projects/edate_'. $this->getName() .'_'. $this->getLang();
-        $edateFile = Orthos::clearPath( realpath( $edateFile ) );
+        QUI\Cache\Manager::set(
+            'projects/edate/'. md5( $this->getName() .'_'. $this->getLang() ),
+            (int)$date
+        );
+    }
 
-        if ( file_exists( $edateFile ) ) {
-            unlink( $edateFile );
+    /**
+     * Return the last edit date in the project
+     *
+     * @return Integer
+     */
+    public function getLastEditDate()
+    {
+
+        try
+        {
+            return (int)QUI\Cache\Manager::get(
+                'projects/edate/'. md5( $this->getName() .'_'. $this->getLang() )
+            );
+
+        } catch ( QUI\Exception $Exception )
+        {
+
         }
 
-        $date = (int)$date;
-
-        $this->_edate = $date;
-        file_put_contents( $edateFile, $date );
+        return 0;
     }
 
     /**

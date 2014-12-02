@@ -20,6 +20,7 @@
 
 define([
 
+    'qui/QUI',
     'qui/controls/desktop/Panel',
     'Projects',
     'Ajax',
@@ -38,17 +39,18 @@ define([
 {
     "use strict";
 
-    var QUIPanel     = arguments[ 0 ],
-        Projects     = arguments[ 1 ],
-        Ajax         = arguments[ 2 ],
-        Site         = arguments[ 3 ],
-        QUIButton    = arguments[ 4 ],
-        QUIFormUtils = arguments[ 5 ],
-        QUIElmUtils  = arguments[ 6 ],
-        ControlUtils = arguments[ 7 ],
-        PanelUtils   = arguments[ 8 ],
-        SiteUtils    = arguments[ 9 ],
-        Locale       = arguments[ 10 ];
+    var QUI          = arguments[ 0 ],
+        QUIPanel     = arguments[ 1 ],
+        Projects     = arguments[ 2 ],
+        Ajax         = arguments[ 3 ],
+        Site         = arguments[ 4 ],
+        QUIButton    = arguments[ 5 ],
+        QUIFormUtils = arguments[ 6 ],
+        QUIElmUtils  = arguments[ 7 ],
+        ControlUtils = arguments[ 8 ],
+        PanelUtils   = arguments[ 9 ],
+        SiteUtils    = arguments[ 10 ],
+        Locale       = arguments[ 11 ];
 
     var lg = 'quiqqer/system';
 
@@ -180,7 +182,7 @@ define([
          * Return the Site object from the panel
          *
          * @method controls/projects/project/site/Panel#getSite
-         * @return {classes/projects/Site}
+         * @return {Object} classes/projects/Site
          */
         getSite : function()
         {
@@ -194,10 +196,10 @@ define([
          */
         load : function()
         {
-            var title       = '',
-                description = '',
-                Site        = this.getSite(),
-                Project     = Site.getProject();
+            var title, description;
+
+            var Site    = this.getSite(),
+                Project = Site.getProject();
 
             title = Site.getAttribute( 'title') +' ('+ Site.getId() +')';
 
@@ -234,7 +236,7 @@ define([
             this.Loader.show();
 
             // permissions
-            var PermissionButton = new QUIButton({
+            new QUIButton({
                 image  : 'icon-gears',
                 alt    : Locale.get( lg, 'projects.project.site.panel.btn.permissions' ),
                 title  : Locale.get( lg, 'projects.project.site.panel.btn.permissions' ),
@@ -247,7 +249,7 @@ define([
                 }
             }).inject( this.getHeader() );
 
-            var MediaButton = new QUIButton({
+            new QUIButton({
                 image  : 'icon-picture',
                 alt    : Locale.get( lg, 'projects.project.site.panel.btn.media' ),
                 title  : Locale.get( lg, 'projects.project.site.panel.btn.media' ),
@@ -260,7 +262,7 @@ define([
                 }
             }).inject( this.getHeader() );
 
-            var SortButton = new QUIButton({
+            new QUIButton({
                 image  : 'icon-sort',
                 alt    : Locale.get( lg, 'projects.project.site.panel.btn.sort' ),
                 title  : Locale.get( lg, 'projects.project.site.panel.btn.sort' ),
@@ -281,7 +283,7 @@ define([
             Ajax.get([
                 'ajax_site_categories_get',
                 'ajax_site_buttons_get'
-            ], function(categories, buttons, Request)
+            ], function(categories, buttons)
             {
                 var i, ev, fn, len, events, category, Category;
 
@@ -321,16 +323,17 @@ define([
 
                     for ( ev in events  )
                     {
+                        if ( !events.hasOwnProperty( ev ) ) {
+                            continue;
+                        }
+
                         try
                         {
                             eval( 'fn = '+ events[ ev ] );
 
                             Category.addEvent( ev, fn );
 
-                        } catch ( e )
-                        {
-                            continue;
-                        }
+                        } catch ( e ) {}
                     }
 
                     self.addCategory( Category );
@@ -419,9 +422,7 @@ define([
          */
         openSort : function()
         {
-            var self    = this,
-                Site    = this.getSite(),
-                Project = Site.getProject();
+            var Site = this.getSite();
 
             this.createSheet({
                 title : Locale.get( lg, 'projects.project.site.panel.sort.title', {
@@ -476,7 +477,7 @@ define([
                     height : 200,
                     events :
                     {
-                        onSubmit : function(Win) {
+                        onSubmit : function() {
                             Site.del();
                         }
                     }
@@ -489,7 +490,7 @@ define([
          *
          * @method controls/projects/project/site/Panel#createChild
          *
-         * @param {String} newname - [optional, if no newname was passed,
+         * @param {String} [value] - [optional, if no newname was passed,
          *         a window would be open]
          */
         createNewChild : function(value)
@@ -505,7 +506,7 @@ define([
          * @method controls/projects/project/site/Panel#$tabEnter
          * @fires onSiteTabLoad
          *
-         * @param {qui/controls/toolbar/Button} Category
+         * @param {Object} Category - qui/controls/toolbar/Button
          */
         $onCategoryEnter : function(Category)
         {
@@ -541,7 +542,6 @@ define([
                 this.$categoryOnLoad( Category );
 
                 QUI.parse( Category );
-
                 return;
             }
 
@@ -549,7 +549,7 @@ define([
                 Site    = this.getSite(),
                 Project = Site.getProject();
 
-            Ajax.get('ajax_site_categories_template', function(result, Request)
+            Ajax.get('ajax_site_categories_template', function(result)
             {
                 var Body = self.getContent();
 
@@ -612,7 +612,7 @@ define([
                                 lastPos = QUIElmUtils.getCursorPosition( event.target );
                             },
 
-                            keyup : function(event)
+                            keyup : function()
                             {
                                 var old = this.value;
 
@@ -627,12 +627,12 @@ define([
                                 }
                             },
 
-                            blur : function(event)
+                            blur : function()
                             {
                                 this.fireEvent( 'keyup' );
                             },
 
-                            focus : function(event)
+                            focus : function()
                             {
                                 this.fireEvent( 'keyup' );
                             }
@@ -737,7 +737,7 @@ define([
          * Load the category
          *
          * @method controls/projects/project/site/Panel#$categoryOnLoad
-         * @param {qui/controls/buttons/Button} Category
+         * @param {Object} Category - qui/controls/buttons/Button
          */
         $categoryOnLoad : function(Category)
         {
@@ -776,8 +776,6 @@ define([
                             self.$CategoryControl.setParent( self );
 
                             self.Loader.hide();
-
-                            return;
                         }
                     }
                 });
@@ -800,8 +798,8 @@ define([
          * @method controls/projects/project/site/Panel#$tabLeave
          * @fires onSiteTabUnLoad
          *
-         * @param {qui/controls/buttons/Button} Category
-         * @param {Function} callback - [optional] callback function
+         * @param {Object} Category - qui/controls/buttons/Button
+         * @param {Function} [callback] - (optional) callback function
          */
         $onCategoryLeave : function(Category, callback)
         {
@@ -886,18 +884,19 @@ define([
                     continue;
                 }
 
-                Site.setAttribute( key, FormData[ key ] );
+                if ( FormData.hasOwnProperty( key ) ) {
+                    Site.setAttribute( key, FormData[ key ] );
+                }
             }
 
 
-            var self = this,
-
+            var self            = this,
                 onunloadRequire = Category.getAttribute( 'onunload_require' ),
                 onunload        = Category.getAttribute( 'onunload' );
 
             if ( onunloadRequire )
             {
-                require([ onunloadRequire ], function(Plugin)
+                require([ onunloadRequire ], function()
                 {
                     eval( onunload +'( Category, self );' );
 
@@ -918,12 +917,10 @@ define([
          * Execute the panel onclick from PHP
          *
          * @method controls/projects/project/site/Panel#$onPanelButtonClick
-         * @param {qui/controls/buttons/Button} Btn
+         * @param {Object} Btn - qui/controls/buttons/Button
          */
         $onPanelButtonClick : function(Btn)
         {
-            var Panel = this;
-
             eval( Btn.getAttribute( '_onclick' ) +'();' );
         },
 
@@ -1029,7 +1026,7 @@ define([
                         Editor.setAttribute( 'bodyClass', result.bodyClass );
 
                         for ( var i = 0, len = result.cssFiles.length; i < len; i++) {
-                            Editor.addCSS( result[ i ] )
+                            Editor.addCSS( result[ i ] );
                         }
 
                         Editor.addEvent( 'onLoaded', self.$onEditorLoad );
@@ -1047,10 +1044,8 @@ define([
          * if the editor is finished
          *
          * @method controls/projects/project/site/Panel#$onEditorLoad
-         * @param Editor
-         * @param Instance
          */
-        $onEditorLoad : function(Editor, Instance)
+        $onEditorLoad : function()
         {
             this.Loader.hide();
         },
@@ -1060,9 +1055,8 @@ define([
          * if the editor would be destroyed
          *
          * @method controls/projects/project/site/Panel#$onEditorDestroy
-         * @param Editor
          */
-        $onEditorDestroy : function(Editor)
+        $onEditorDestroy : function()
         {
             this.setAttribute( 'Editor', false );
         },
@@ -1123,7 +1117,7 @@ define([
          * Open the remove languag link popup
          *
          * @param {String} lang - lang of the language link
-         * @param {String} id - Site id of the language link
+         * @param {String} id - Site-ID of the language link
          */
         removeLanguagLink : function(lang, id)
         {
@@ -1184,11 +1178,7 @@ define([
                     target : '_blank'
                 });
 
-                var attributes = Site.getAttributes(),
-                    project = Project.getName(),
-                    lang    = Project.getLang(),
-                    id      = Site.getId();
-
+                var attributes = Site.getAttributes();
 
                 new Element('input', {
                     type  : 'hidden',
@@ -1211,11 +1201,14 @@ define([
 
                 for ( var key in attributes )
                 {
-                    new Element('input', {
-                        type  : 'hidden',
-                        value : attributes[ key ],
-                        name  : 'siteData['+ key +']'
-                    }).inject( Form );
+                    if ( attributes.hasOwnProperty( key ) )
+                    {
+                        new Element('input', {
+                            type  : 'hidden',
+                            value : attributes[ key ],
+                            name  : 'siteData['+ key +']'
+                        }).inject( Form );
+                    }
                 }
 
                 Form.inject( document.body );

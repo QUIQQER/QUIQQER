@@ -32,7 +32,7 @@ define([
      * @class classes/projects/project/Site
      *
      * @param {classes/projects/Project} Project
-     * @param {Integer} id - Site ID
+     * @param {Number} id - Site ID
      *
      * @fires onStatusEditBegin - this
      * @fires onStatusEditEnd   - this
@@ -73,7 +73,7 @@ define([
          * Get all attributes from the DB
          *
          * @method classes/projects/project/Site#load
-         * @param {Function} onfinish - [optional] callback Function
+         * @param {Function} [onfinish] - (optional) callback Function
          * @return {this} self
          */
         load : function(onfinish)
@@ -103,7 +103,7 @@ define([
          * Get the site ID
          *
          * @method classes/projects/project/Site#getId
-         * @return {Integer}
+         * @return {Number}
          */
         getId : function()
         {
@@ -148,7 +148,7 @@ define([
         /**
          * Return the children count
          *
-         * @param {Integer}
+         * @return {Number}
          */
         countChild : function()
         {
@@ -159,9 +159,9 @@ define([
          * Get the children
          *
          * @method classes/projects/project/Site#getChildren
-         * @param {Function} onfinish - [optional] callback function
-         * @param {Object} params - [optional]
-         * @returns {this}
+         * @param {Function} [onfinish] - (optional), callback function
+         * @param {Object} [params] - (optional)
+         * @returns {Object} this (classes/projects/project/Site)
          */
         getChildren : function(onfinish, params)
         {
@@ -187,7 +187,7 @@ define([
          * Return the parent
          *
          * @method classes/projects/project/Site#getParent
-         * @return {classes/projects/project/Site|false}
+         * @return {Object|Boolean} classes/projects/project/Site | false
          */
         getParent : function()
         {
@@ -203,8 +203,8 @@ define([
          *
          * @method classes/projects/project/Site#ajaxParams
          * @fires activate
-         * @param {Function} onfinish - [optional] callback function
-         * @return {this}
+         * @param {Function} [onfinish] - (optional), callback function
+         * @return {Object} this (classes/projects/project/Site)
          */
         activate : function(onfinish)
         {
@@ -230,8 +230,8 @@ define([
          *
          * @method classes/projects/project/Site#deactivate
          * @fires deactivate
-         * @param {Function} onfinish - [optional] callback function
-         * @return {this}
+         * @param {Function} [onfinish] - (optional), callback function
+         * @return {Object} this (classes/projects/project/Site)
          */
         deactivate : function(onfinish)
         {
@@ -311,8 +311,8 @@ define([
         /**
          * Move the site to another parent site
          *
-         * @param {Integer} newParentId - ID of the new parent
-         * @param {Function} onfinish - [optional] callback function
+         * @param {Number} newParentId - ID of the new parent
+         * @param {Function} [callback] - (optional), callback function
          */
         move : function(newParentId, callback)
         {
@@ -336,8 +336,8 @@ define([
         /**
          * Copy the site to another parent site
          *
-         * @param {Integer} newParentId - ID of the new parent
-         * @param {Function} onfinish - [optional] callback function
+         * @param {Number} newParentId - ID of the new parent
+         * @param {Function} [callback] - (optional) callback function
          */
         copy : function(newParentId, callback)
         {
@@ -360,8 +360,8 @@ define([
         /**
          * Create a link into the parent to the site
          *
-         * @param {Integer} newParentId - ID of the parent
-         * @param {Function} onfinish - [optional] callback function
+         * @param {Number} newParentId - ID of the parent
+         * @param {Function} [callback] - (optional) callback function
          */
         linked : function(newParentId, callback)
         {
@@ -387,8 +387,8 @@ define([
          * @method classes/projects/project/Site#createChild
          *
          * @param {String|Object} newname - String = new name of the child, Object = { name:'', title:'' }
-         * @param {Function} onfinish - [optional] callback function
-         * @param {Function} onrror   - [optional] function, that is triggered if an error occurred
+         * @param {Function} [onfinish] - (optional) callback function
+         * @param {Function} [onerror]   - (optional) function, that is triggered if an error occurred
          */
         createChild : function(newname, onfinish, onerror)
         {
@@ -396,8 +396,7 @@ define([
                 return;
             }
 
-            var Site   = this,
-                params = this.ajaxParams();
+            var params = this.ajaxParams();
 
             if ( typeOf( newname ) == 'object' )
             {
@@ -416,6 +415,8 @@ define([
                 params.showError = false;
                 params.onError   = onerror;
             }
+
+            var Site = this;
 
             Ajax.post('ajax_site_children_create', function(result, Request)
             {
@@ -436,7 +437,7 @@ define([
          * Is the Site active?
          *
          * @method classes/projects/project/Site#getAttribute
-         * @return {Bool}
+         * @return {Boolean}
          */
         isActive : function()
         {
@@ -452,7 +453,7 @@ define([
          *
          * @method classes/projects/project/Site#getAttribute
          * @param {String} k - Attribute name
-         * @return {unknown_type}
+         * @return {Boolean|Function|Number|String|Object}
          */
         getAttribute : function(k)
         {
@@ -492,7 +493,7 @@ define([
          * @method classes/projects/project/Site#setAttribute
          *
          * @param {String} k        - Name of the Attribute
-         * @param {unknown_type} v - Value of the Attribute
+         * @param {Boolean|Number|Function|Object} v - Value of the Attribute
          */
         setAttribute : function(k, v)
         {
@@ -517,8 +518,11 @@ define([
         {
             attributes = attributes || {};
 
-            for ( var k in attributes ) {
-                this.setAttribute( k, attributes[ k ] );
+            for ( var k in attributes )
+            {
+                if ( attributes.hasOwnProperty( k ) ) {
+                    this.setAttribute( k, attributes[ k ] );
+                }
             }
 
             return this;

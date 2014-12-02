@@ -523,9 +523,13 @@ define('controls/projects/project/Sitemap', [
 
 
             // Activ / Inactive
+            var active = true;
+
             if ( result.active.toInt() === 0 )
             {
                 Itm.deactivate();
+
+                active = false;
             } else
             {
                 Itm.activate();
@@ -603,6 +607,35 @@ define('controls/projects/project/Sitemap', [
                     })
                 ).appendChild(
                     new QUIContextmenuSeperator()
+                ).appendChild(
+                    new QUIContextmenuItem({
+                        name   : 'de-activate-site',
+                        text   : active ?
+                                 Locale.get('quiqqer/system', 'projects.project.site.btn.deactivate.text') :
+                                 Locale.get('quiqqer/system', 'projects.project.site.btn.activate.text'),
+                        icon   : active ? 'icon-remove fa fa-remove' : 'icon-remove fa fa-ok',
+                        events :
+                        {
+                            onClick : function()
+                            {
+                                if ( active )
+                                {
+                                    self.$deactivateSite({
+                                        project : self.getAttribute('project'),
+                                        lang    : self.getAttribute('lang'),
+                                        id      : Itm.getAttribute('value')
+                                    });
+                                } else
+                                {
+                                    self.$activateSite({
+                                        project : self.getAttribute('project'),
+                                        lang    : self.getAttribute('lang'),
+                                        id      : Itm.getAttribute('value')
+                                    });
+                                }
+                            }
+                        }
+                    })
                 ).appendChild(
                     new QUIContextmenuItem({
                         name   : 'create-new-site',
@@ -834,6 +867,32 @@ define('controls/projects/project/Sitemap', [
             Site.load(function() {
                 SiteUtils.openCreateChild( Site );
             });
+        },
+
+        /**
+         * Acivate the site
+         *
+         * @param {Object} data - data.project, data.lang, data.id
+         */
+        $activateSite : function(data)
+        {
+            var Project = Projects.get( data.project, data.lang ),
+                Site    = Project.get( data.id );
+
+            Site.activate();
+        },
+
+        /**
+         * Acivate the site
+         *
+         * @param {Object} data - data.project, data.lang, data.id
+         */
+        $deactivateSite : function(data)
+        {
+            var Project = Projects.get( data.project, data.lang ),
+                Site    = Project.get( data.id );
+
+            Site.deactivate();
         },
 
         /**
