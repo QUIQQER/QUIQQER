@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Verfügbare Projekte bekommen
+ * Return the project list
  *
  * @return Array
  */

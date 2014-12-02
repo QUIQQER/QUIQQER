@@ -9,9 +9,10 @@ define('classes/plugins/Manager', [
     'classes/plugins/Plugin',
     'qui/utils/Object',
     'Ajax',
-    'Plugins'
+    'Plugins',
+    'Projects'
 
-],function(DOM, Plugin, ObjectUtils, Ajax, Plugins)
+],function(DOM, Plugin, ObjectUtils, Ajax, Plugins, Projects)
 {
     "use strict";
 
@@ -87,7 +88,8 @@ define('classes/plugins/Manager', [
          * Return the name of a type
          *
          * @param {String} type
-         * @param {Function} onfinish
+         * @param {Function} [onfinish]
+         * @param {Object} [params]
          */
         getTypeName : function(type, onfinish, params)
         {
@@ -116,14 +118,19 @@ define('classes/plugins/Manager', [
          * Return all available types of a project
          *
          * @param {String} project - project name
-         * @param {Function} onfinish -
+         * @param {Function} [onfinish] - callback
+         * @param {Object} [params]
          */
         getTypes : function(project, onfinish, params)
         {
-            project = project || Projects.getName();
-            params  = params || {};
+            var Project = Projects.get();
 
-            params.project = project;
+            if ( typeof project !== 'undefined' ) {
+                Project = Projects.get( project );
+            }
+
+            params = params || {};
+            params.project = Project.encode();
 
             Ajax.get('ajax_project_types_get_list', function(result, Ajax)
             {

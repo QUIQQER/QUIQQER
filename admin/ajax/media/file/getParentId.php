@@ -1,8 +1,11 @@
 <?php
 
 /**
- * Returns the template for the file panel
- * @return String
+ * Returns the Parent-ID from a media file
+ *
+ * @param String $project - Name of the project
+ * @param String|Integer $fileid - File-ID
+ * @return Integer
  */
 function ajax_media_file_getParentId($project, $fileid)
 {

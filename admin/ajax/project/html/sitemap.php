@@ -1,14 +1,14 @@
 <?php
 
 /**
+ * Return the project sitemap
  *
- * @param unknown $project
- * @param unknown $lang
+ * @param String $project - JSON Array; Project data
  * @return string
  */
-function ajax_project_html_sitemap($project, $lang)
+function ajax_project_html_sitemap($project)
 {
-    $Project  = \QUI\Projects\Manager::getProject( $project, $lang );
+    $Project  = \QUI::getProjectManager()->decode( $project );
     $Template = \QUI::getTemplateManager()->getEngine();
 
     $Template->assign(array(
@@ -21,4 +21,4 @@ function ajax_project_html_sitemap($project, $lang)
     );
 }
 
-\QUI\Ajax::register('ajax_project_html_sitemap', array('project', 'lang'));
+\QUI\Ajax::register('ajax_project_html_sitemap', array('project'));

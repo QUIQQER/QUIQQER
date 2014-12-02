@@ -1,17 +1,17 @@
 <?php
 
 /**
- * Seite aktivieren
+ * Remove a language link
  *
- * @param String $id
- * @param String $lang
  * @param String $project
+ * @param String $id
+ * @param String $linkedParams - JSON Array
  */
-function ajax_site_language_remove($project, $lang, $id, $linkedParams)
+function ajax_site_language_remove($project, $id, $linkedParams)
 {
     $linkedParams = json_decode( $linkedParams, true );
 
-    $Project = \QUI::getProject( $project, $lang );
+    $Project = \QUI::getProjectManager()->decode( $project );
     $Site    = new \QUI\Projects\Site\Edit( $Project, (int)$id );
 
     $Site->removeLanguageLink( $linkedParams['lang'] );
@@ -19,6 +19,6 @@ function ajax_site_language_remove($project, $lang, $id, $linkedParams)
 
 \QUI::$Ajax->register(
     'ajax_site_language_remove',
-    array('project', 'lang', 'id', 'linkedParams'),
+    array('project', 'id', 'linkedParams'),
     'Permission::checkAdminUser'
 );

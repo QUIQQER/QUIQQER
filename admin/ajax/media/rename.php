@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Media item roh daten bekommen
+ * Rename a media item
  *
- * @param String $project
- * @param String $parentid
- *
+ * @param String $project - Name of the project
+ * @param String $id - File-ID
+ * @param String $newname - new name
  * @return Array
  */
 function ajax_media_rename($project, $id, $newname)

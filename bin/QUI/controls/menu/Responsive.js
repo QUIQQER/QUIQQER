@@ -58,7 +58,7 @@ define('controls/menu/Responsive', [
         /**
          * Create the DOMNode
          *
-         * @return {DOMNode}
+         * @return {HTMLElement}
          */
         create : function()
         {
@@ -206,7 +206,7 @@ define('controls/menu/Responsive', [
         /**
          * Display the children
          *
-         * @param {Integer} siteid - ID of the parent site
+         * @param {Number} siteid - ID of the parent site
          */
         showChildren : function(siteid)
         {
@@ -306,9 +306,11 @@ define('controls/menu/Responsive', [
                 self.$Loader.hide();
 
             }, {
-                project : self.getAttribute( 'project' ),
-                lang    : self.getAttribute( 'lang' ),
-                id      : siteid
+                project : JSON.encode({
+                    name : self.getAttribute( 'project' ),
+                    lang : self.getAttribute( 'lang' )
+                }),
+                id : siteid
             });
         },
 

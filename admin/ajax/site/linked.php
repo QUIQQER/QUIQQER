@@ -1,18 +1,17 @@
 <?php
 
 /**
- * Seite speichern
+ * Create a linkage / shortcut
  *
  * @param String $project
- * @param String $lang
  * @param Integer $id
- * @param JSON Array $attributes
+ * @param Integer $newParentId
  *
  * @return Array
  */
-function ajax_site_linked($project, $lang, $id, $newParentId)
+function ajax_site_linked($project, $id, $newParentId)
 {
-    $Project = \QUI::getProject( $project, $lang );
+    $Project = \QUI::getProjectManager()->decode( $project );
     $Site    = new \QUI\Projects\Site\Edit( $Project, (int)$id );
 
     $Site->linked( (int)$newParentId );
@@ -20,6 +19,6 @@ function ajax_site_linked($project, $lang, $id, $newParentId)
 
 \QUI::$Ajax->register(
     'ajax_site_linked',
-    array( 'project', 'lang', 'id', 'newParentId' ),
+    array( 'project', 'id', 'newParentId' ),
     'Permission::checkAdminUser'
 );

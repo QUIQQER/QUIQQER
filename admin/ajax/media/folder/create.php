@@ -1,12 +1,13 @@
 <?php
 
 /**
- * Media item roh daten bekommen
+ * Create a new folder
  *
- * @param String $project
- * @param String $parentid
- *
+ * @param String $project - Name of the project
+ * @param String $parentid - Parent-ID of the new folder
+ * @param String $newfolder - Name of the new Folder
  * @return Array
+ * @throws \QUI\Exception
  */
 function ajax_media_folder_create($project, $parentid, $newfolder)
 {

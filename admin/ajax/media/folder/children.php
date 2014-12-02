@@ -1,12 +1,10 @@
 <?php
 
 /**
- * Nur subfolders bekommen
+ * Return the children of a media folder
  *
- * @param String $project
- * @param String $lang
- * @param String $fileid
- *
+ * @param String $project - Name of the project
+ * @param String|Integer $folderid - Folder-ID
  * @return Array
  */
 function ajax_media_folder_children($project, $folderid)

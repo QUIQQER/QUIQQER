@@ -1,17 +1,15 @@
 <?php
 
 /**
- * Daten der Seite bekommen
+ * Return the parent ids
  *
- * @param String $id
- * @param String $lang
  * @param String $project
- *
+ * @param String $id
  * @return Array
  */
-function ajax_site_path($project, $lang, $id)
+function ajax_site_path($project, $id)
 {
-    $Project = \QUI::getProject( $project, $lang );
+    $Project = \QUI::getProjectManager()->decode( $project );
     $Site    = new \QUI\Projects\Site\Edit( $Project, (int)$id );
 
     $pids    = array();
@@ -26,6 +24,6 @@ function ajax_site_path($project, $lang, $id)
 
 \QUI::$Ajax->register(
     'ajax_site_path',
-    array('project', 'lang', 'id'),
+    array('project', 'id'),
     'Permission::checkAdminUser'
 );

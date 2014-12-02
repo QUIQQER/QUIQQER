@@ -183,8 +183,7 @@ define('utils/Site', [
 
 
                                     }, {
-                                        project : Project.getName(),
-                                        lang    : Project.getLang(),
+                                        project : Project.decode(),
                                         name    : value
                                     });
 

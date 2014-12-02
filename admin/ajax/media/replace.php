@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Replace  a file with another file
+ * Replace a file with another file
  *
- * @param String $project
+ * @param String $project - name of the project
  * @param Integer $fileid
  * @param $file
  */
@@ -11,11 +11,10 @@ function ajax_media_replace($project, $fileid, $File)
 {
     $Project = \QUI\Projects\Manager::getProject( $project );
     $Media   = $Project->getMedia();
-    $User    = \QUI::getUserBySession();
 
     $file = $File->getAttribute('filepath');
 
-    if ( !file_exists($file) ) {
+    if ( !file_exists( $file ) ) {
         return;
     }
 

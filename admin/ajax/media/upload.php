@@ -3,15 +3,16 @@
 /**
  * Upload a file
  *
- * @param unknown_type $project
+ * @param String $project - Name of the project
+ * @param Integer|String $parentid
  * @param unknown_type $file
+ * @throws \QUI\Exception
  */
 function ajax_media_upload($project, $parentid, $File)
 {
     $Project = \QUI\Projects\Manager::getProject( $project );
     $Media   = $Project->getMedia();
     $Folder  = $Media->get( (int)$parentid );
-    $User    = \QUI::getUserBySession();
 
     if ( $Folder->getType() != 'QUI\\Projects\\Media\\Folder' )
     {

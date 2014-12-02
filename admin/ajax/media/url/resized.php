@@ -5,7 +5,9 @@ use \QUI\Projects\Media\Utils as Utils;
 /**
  * Return the rewrited url from an image.php url
  *
- * @param String $image_url
+ * @param String $fileurl - File url
+ * @param String|Integer $maxWidth - wanted width of the file
+ * @param String|Integer $maxHeight - wanted height of the file
  * @return String
  */
 function ajax_media_url_resized($fileurl, $maxWidth, $maxHeight)

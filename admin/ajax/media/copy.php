@@ -3,9 +3,10 @@
 /**
  * Copy files to a folder
  *
- * @param String $project
+ * @param String $project - Name of the project
  * @param String $to	- folder id
  * @param String $ids	- ids which copied
+ * @throws \QUI\Exception
  */
 function ajax_media_copy($project, $to, $ids)
 {
@@ -22,6 +23,7 @@ function ajax_media_copy($project, $to, $ids)
         );
     }
 
+    /* @var $Folder \QUI\Projects\Media\Folder */
     foreach ( $ids as $id )
     {
         try
@@ -29,9 +31,11 @@ function ajax_media_copy($project, $to, $ids)
             $Item = $Media->get( (int)$id );
             $Item->copyTo( $Folder );
 
-        } catch ( \QUI\Exception $e )
+        } catch ( \QUI\Exception $Exception )
         {
-            // @todo Fehler sammeln und an den handler weiter reichen
+            \QUI::getMessagesHandler()->addError(
+                $Exception->getMessage()
+            );
         }
     }
 }

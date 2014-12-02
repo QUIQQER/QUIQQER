@@ -1,10 +1,11 @@
 <?php
 
 /**
- * Search a project
+ * Execute a site search
  *
  * @param String $search - search string
- * @param {Array}
+ * @param String $params - JSON Array
+ * @return Array
  */
 function ajax_site_search($search, $params)
 {

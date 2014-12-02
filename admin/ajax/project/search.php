@@ -3,8 +3,8 @@
 /**
  * Search a project
  *
- * @param String $search - search string
- * @param {Array}
+ * @param String $params - search string
+ * @return Array
  */
 function ajax_project_search($params)
 {

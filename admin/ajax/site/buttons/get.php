@@ -1,17 +1,16 @@
 <?php
 
 /**
- * return the action buttons from the site
+ * Return the action buttons from the site
  *
  * @param String $id
- * @param String $lang
  * @param String $project
  *
  * @return Array
  */
-function ajax_site_buttons_get($project, $lang, $id)
+function ajax_site_buttons_get($project, $id)
 {
-    $Project = \QUI::getProject( $project, $lang );
+    $Project = \QUI::getProjectManager()->decode( $project );
     $Site    = new \QUI\Projects\Site\Edit( $Project, (int)$id );
 
     return \QUI\Projects\Sites::getButtons( $Site )->toArray();
@@ -19,6 +18,6 @@ function ajax_site_buttons_get($project, $lang, $id)
 
 \QUI::$Ajax->register(
     'ajax_site_buttons_get',
-    array( 'project', 'lang', 'id' ),
+    array( 'project', 'id' ),
     'Permission::checkAdminUser'
 );

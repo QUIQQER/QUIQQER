@@ -352,8 +352,7 @@ define('controls/projects/project/site/SiteChildrenSort', [
                 self.$Site.fireEvent( 'sortSave', [ self.$Site ] );
 
             }, {
-                project : Project.getName(),
-                lang    : Project.getLang(),
+                project : Project.encode(),
                 ids     : JSON.encode( ids ),
                 start   : (page - 1) * perPage
             });

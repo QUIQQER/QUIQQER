@@ -1,24 +1,23 @@
 <?php
 
 /**
- * Kinder einer Seite bekommen
+ * Return the site children
  *
+ * @param String $project
  * @param Integer $id
- * @param String $lang
- * @param String $project_name
+ * @param String $params - JSON Array
+ *
  *
  * @return Array
  */
-function ajax_site_getchildren($project, $lang, $id, $params)
+function ajax_site_getchildren($project, $id, $params)
 {
-    $Project = \QUI::getProject( $project, $lang );
+    $Project = \QUI::getProjectManager()->decode( $project );
     $Site    = new \QUI\Projects\Site\Edit( $Project, (int)$id );
     $params  = json_decode( $params, true );
 
-    $PackageManager = \QUI::getPackageManager();
-    $PluginManager  = \QUI::getPluginManager();
-
-    $attributes = false;
+    $PluginManager = \QUI::getPluginManager();
+    $attributes    = false;
 
     if ( isset( $params['attributes'] ) ) {
         $attributes = explode( ',', $params['attributes'] );
@@ -89,8 +88,8 @@ function ajax_site_getchildren($project, $lang, $id, $params)
     return $childs;
 }
 
-QUI::$Ajax->register(
+\QUI::$Ajax->register(
     'ajax_site_getchildren',
-    array('project', 'lang', 'id', 'params'),
+    array('project', 'id', 'params'),
     'Permission::checkAdminUser'
 );

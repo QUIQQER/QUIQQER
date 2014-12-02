@@ -4,7 +4,8 @@
  * Send the file to the browser
  * The file must be opend directly in the browser
  *
- * @return Binary
+ * @param String $project - Name of the project
+ * @param String|Integer $fileid - File-ID
  * @throws \QUI\Exception
  */
 function ajax_media_file_preview($project, $fileid)

@@ -3,10 +3,10 @@
 /**
  * Return the rewrited url of a file
  *
- * @param unknown_type $project
- * @param unknown_type $fileid
- *
+ * @param String $project - Name of the project
+ * @param String|Integer $fileid - File-ID
  * @return String
+ * @throws \QUI\Exception
  */
 function ajax_media_url_get($project, $fileid)
 {

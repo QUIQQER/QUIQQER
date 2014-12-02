@@ -1,22 +1,21 @@
 <?php
 
 /**
- * Seite deaktivieren
+ * Deactivate a site
  *
- * @param String $id
- * @param String $lang
  * @param String $project
+ * @param String $id
  */
-function ajax_site_deactivate($project, $lang, $id)
+function ajax_site_deactivate($project, $id)
 {
-    $Project = \QUI::getProject($project, $lang);
+    $Project = \QUI::getProjectManager()->decode( $project );
     $Site    = new \QUI\Projects\Site\Edit($Project, (int)$id);
 
-    return $Site->deactivate();
+    $Site->deactivate();
 }
 
 \QUI::$Ajax->register(
     'ajax_site_deactivate',
-    array('project', 'lang', 'id'),
+    array('project', 'id'),
     'Permission::checkAdminUser'
 );

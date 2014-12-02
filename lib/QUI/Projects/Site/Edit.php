@@ -972,7 +972,7 @@ class Edit extends Site
      * Kopiert die Seite
      *
      * @param Integer $pid - ID des Parents unter welches die Kopie eingehängt werden soll
-     * @return Bool
+     * @return QUI\Projects\Site\Edit
      * @throws QUI\Exception
      *
      * @todo Rekursiv kopieren

@@ -3,19 +3,22 @@
 /**
  * Search sites in a project
  *
+ * @param String $project - Project data; JSON Array
  * @param String $search - search string
- * @param {Array}
+ * @param String $params - JSON Array, search parameter
+ * @return Array
  */
-function ajax_project_sites_search($project, $lang, $search, $params)
+function ajax_project_sites_search($project, $search, $params)
 {
     $params  = json_decode( $params, true );
-    $Project = \QUI\Projects\Manager::getProject($project, $lang);
+    $Project  = \QUI::getProjectManager()->decode( $project );
 
     $sites  = $Project->search( $search, $params['fields'] );
     $result = array();
 
     foreach ( $sites as $Site )
     {
+        /* @var $Site \QUI\Projects\Site */
         $result[] = array(
             'id'     => $Site->getId(),
             'name'   => $Site->getAttribute( 'name' ),
@@ -32,6 +35,6 @@ function ajax_project_sites_search($project, $lang, $search, $params)
 
 \QUI::$Ajax->register(
     'ajax_project_sites_search',
-    array( 'project', 'lang', 'search', 'params' ),
+    array( 'project', 'search', 'params' ),
     'Permission::checkAdminUser'
 );

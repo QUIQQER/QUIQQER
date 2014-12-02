@@ -1,17 +1,15 @@
 <?php
 
 /**
- * Tabs bekommen
+ * Return the tabs / categories
  *
- * @param String $id
- * @param String $lang
  * @param String $project
- *
+ * @param String $id
  * @return Array
  */
-function ajax_site_categories_get($project, $lang, $id)
+function ajax_site_categories_get($project, $id)
 {
-    $Project = \QUI::getProject( $project, $lang );
+    $Project = \QUI::getProjectManager()->decode( $project );
     $Site    = new \QUI\Projects\Site\Edit( $Project, (int)$id );
 
     $Tabbar   = \QUI\Projects\Sites::getTabs( $Site );
@@ -28,6 +26,6 @@ function ajax_site_categories_get($project, $lang, $id)
 
 \QUI::$Ajax->register(
     'ajax_site_categories_get',
-    array('project', 'lang', 'id'),
+    array('project', 'id'),
     'Permission::checkAdminUser'
 );

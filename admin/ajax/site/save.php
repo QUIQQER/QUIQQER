@@ -1,18 +1,16 @@
 <?php
 
 /**
- * Seite speichern
+ * Saves a site
  *
- * @param String $project
- * @param String $lang
- * @param Integer $id
- * @param JSON Array $attributes
- *
+ * @param String $project - project data
+ * @param Integer $id - Site ID
+ * @param String $attributes - JSON Array
  * @return Array
  */
-function ajax_site_save($project, $lang, $id, $attributes)
+function ajax_site_save($project, $id, $attributes)
 {
-    $Project = \QUI::getProject( $project, $lang );
+    $Project = \QUI::getProjectManager()->decode( $project );
     $Site    = new \QUI\Projects\Site\Edit( $Project, (int)$id );
 
     $attributes = json_decode( $attributes, true );
@@ -28,6 +26,6 @@ function ajax_site_save($project, $lang, $id, $attributes)
 
 \QUI::$Ajax->register(
     'ajax_site_save',
-    array( 'project', 'lang', 'id', 'attributes' ),
+    array( 'project', 'id', 'attributes' ),
     'Permission::checkAdminUser'
 );

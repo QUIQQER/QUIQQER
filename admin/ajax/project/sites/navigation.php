@@ -1,14 +1,15 @@
 <?php
 
 /**
- * Search sites in a project
+ * Return the sub sites from a site
  *
- * @param String $search - search string
- * @param {Array}
+ * @param String $project -JSON Array, Project Data
+ * @param Integer|String $id - Site ID
+ * @return Array
  */
-function ajax_project_sites_navigation($project, $lang, $id)
+function ajax_project_sites_navigation($project, $id)
 {
-    $Project = \QUI\Projects\Manager::getProject( $project, $lang );
+    $Project  = \QUI::getProjectManager()->decode( $project );
     $Site    = $Project->get( $id );
 
     $result = array();
@@ -16,6 +17,7 @@ function ajax_project_sites_navigation($project, $lang, $id)
 
     foreach ( $list as $Child )
     {
+        /* @var $Child \QUI\Projects\Site */
         $result[] = array(
             'id'    => $Child->getAttribute( 'id' ),
             'name'  => $Child->getAttribute( 'name' ),
@@ -33,5 +35,5 @@ function ajax_project_sites_navigation($project, $lang, $id)
 
 \QUI::$Ajax->register(
     'ajax_project_sites_navigation',
-    array( 'project', 'lang', 'id' )
+    array( 'project', 'id' )
 );

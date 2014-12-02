@@ -1,18 +1,17 @@
 <?php
 
 /**
- * Seite speichern
+ * Move a site under another site
  *
- * @param String $project
- * @param String $lang
- * @param Integer $id
- * @param JSON Array $attributes
+ * @param String $project - project data
+ * @param Integer $id - site ID
+ * @param Integer $newParentId - new parent ID
  *
  * @return Array
  */
-function ajax_site_move($project, $lang, $id, $newParentId)
+function ajax_site_move($project, $id, $newParentId)
 {
-    $Project = \QUI::getProject( $project, $lang );
+    $Project = \QUI::getProjectManager()->decode( $project );
     $Site    = new \QUI\Projects\Site\Edit( $Project, (int)$id );
 
     $Site->move( (int)$newParentId );
@@ -20,6 +19,6 @@ function ajax_site_move($project, $lang, $id, $newParentId)
 
 \QUI::$Ajax->register(
     'ajax_site_move',
-    array( 'project', 'lang', 'id', 'newParentId' ),
+    array( 'project', 'id', 'newParentId' ),
     'Permission::checkAdminUser'
 );

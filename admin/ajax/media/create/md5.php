@@ -1,9 +1,10 @@
 <?php
 
 /**
- * Activate the file / files
+ * generate md hashes of the media files
  *
- * @throws \QUI\Exception
+ * @param String $project - name of the project
+ * @param String $params - JSON Array
  */
 function ajax_media_create_md5($project, $params)
 {
@@ -33,6 +34,9 @@ function ajax_media_create_md5($project, $params)
         }
     }
 }
-QUI::$Ajax->register('ajax_media_create_md5', array('project', 'params'), 'Permission::checkAdminUser');
 
-?>
+\QUI::$Ajax->register(
+    'ajax_media_create_md5',
+    array('project', 'params'),
+    'Permission::checkAdminUser'
+);

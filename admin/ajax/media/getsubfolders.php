@@ -1,13 +1,12 @@
 <?php
 
 /**
- * Nur subfolders bekommen
+ * Returns the children folders
  *
- * @param String $project
- * @param String $lang
- * @param String $fileid
- *
+ * @param String $project - Name of the project
+ * @param String $fileid - FileID
  * @return Array
+ * @throws \QUI\Exception
  */
 function ajax_media_getsubfolders($project, $fileid)
 {
@@ -15,6 +14,14 @@ function ajax_media_getsubfolders($project, $fileid)
     $Media   = $Project->getMedia();
     $File    = $Media->get( $fileid );
 
+    if ( !\QUI\Projects\Media\Utils::isFolder( $File ) )
+    {
+        throw new \QUI\Exception(
+            'Bitte wählen Sie ein Ordner aus um die Dateie zu verschieben.'
+        );
+    }
+
+    /* @var $File \QUI\Projects\Media\Folder */
     $children  = array();
     $_children = $File->getSubFolders();
 

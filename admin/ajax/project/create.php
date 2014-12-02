@@ -3,7 +3,8 @@
 /**
  * Create a new project
  *
- * @param Array $params
+ * @param String $params - JSON Array
+ * @return String - Name of the project
  */
 function ajax_project_create($params)
 {

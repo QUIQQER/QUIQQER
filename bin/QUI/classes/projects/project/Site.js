@@ -537,8 +537,7 @@ define([
         ajaxParams : function()
         {
             return {
-                project : this.getProject().getName(),
-                lang    : this.getProject().getLang(),
+                project : this.getProject().encode(),
                 id      : this.getId()
             };
         }

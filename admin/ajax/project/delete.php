@@ -1,14 +1,15 @@
 <?php
 
 /**
- * Create a new project
+ * Delete a project
  *
- * @param Array $params
+ * @param String $project - Project data, JSON Array
+ * @throws QUI\Exception
  */
 function ajax_project_delete($project)
 {
-    return \QUI::getProjectManager()->deleteProject(
-        \QUI::getProjectManager()->getProject( $project )
+    \QUI::getProjectManager()->deleteProject(
+        \QUI::getProjectManager()->decode( $project )
     );
 }
 

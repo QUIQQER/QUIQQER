@@ -1,12 +1,10 @@
 <?php
 
 /**
- * ID daten bekommen
+ * Returns the file data
  *
- * @param String $project
- * @param String $lang
- * @param String $fileid
- *
+ * @param String $project - Name of the project
+ * @param String $fileid - File-ID
  * @return Array
  */
 function ajax_media_get($project, $fileid)

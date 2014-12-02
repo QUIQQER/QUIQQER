@@ -2,8 +2,10 @@
 
 /**
  * Set the config of an project
+ *
+ * @param String $project - project name
+ * @param String $params - JSON Array
  */
-
 function ajax_project_set_config($project, $params)
 {
     \QUI\Projects\Manager::setConfigForProject(

@@ -4,7 +4,7 @@
 /**
  * Return the rewrited url from an image.php url
  *
- * @param String $image_url
+ * @param String $fileurl - image.php string
  * @return String
  */
 function ajax_media_url_rewrited($fileurl)

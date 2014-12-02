@@ -1,7 +1,11 @@
 <?php
 
 /**
- * Returns the template for the file panel
+ * Saves the data of a media file
+ *
+ * @param String $project - Name of the project
+ * @param String|Integer - File-ID
+ * @param String $attributes - JSON Array, new file attributes
  * @return String
  */
 function ajax_media_file_save($project, $fileid, $attributes)

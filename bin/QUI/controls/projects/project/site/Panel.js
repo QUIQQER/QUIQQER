@@ -350,8 +350,7 @@ define([
                 Site.load();
 
             }, {
-                project : Project.getName(),
-                lang    : Project.getLang(),
+                project : Project.encode(),
                 id      : Site.getId()
             });
         },
@@ -727,8 +726,7 @@ define([
 
             }, {
                 id      : Site.getId(),
-                project : Project.getName(),
-                lang    : Project.getLang(),
+                project : Project.encode(),
                 tab     : Category.getAttribute( 'name' )
             });
         },
@@ -1098,8 +1096,7 @@ define([
 
                                     self.load();
                                 }, {
-                                    project : Project.getName(),
-                                    lang    : Project.getLang(),
+                                    project : Project.encode(),
                                     id      : Site.getId(),
                                     linkedParams : JSON.encode({
                                         lang : result.lang,
@@ -1144,8 +1141,7 @@ define([
 
                                 self.load();
                             }, {
-                                project : Project.getName(),
-                                lang    : Project.getLang(),
+                                project : Project.encode(),
                                 id      : Site.getId(),
                                 linkedParams : JSON.encode({
                                     lang : lang,

@@ -9,7 +9,6 @@
  * @require Ajax
  * @require classes/projects/Site
  * @require classes/projects/Media
- * @require classes/projects/Trash
  *
  * @events onSiteDelete [this, {Integer}]
  * @events onSiteSave [this, {classes/projects/project/Site}]
@@ -23,10 +22,9 @@ define([
     'qui/classes/DOM',
     'Ajax',
     'classes/projects/project/Site',
-    'classes/projects/project/Media',
-    'classes/projects/project/Trash'
+    'classes/projects/project/Media'
 
-], function(QDOM, Ajax, ProjectSite, Media, Trash)
+], function(QDOM, Ajax, ProjectSite, Media)
 {
     "use strict";
 
@@ -69,13 +67,13 @@ define([
 
         /**
          * Decode the project
-         * eq for ajax requesr
+         * eq for ajax request
          *
          * @return {Object}
          */
-        decode : function()
+        encode : function()
         {
-            return JSON.decode({
+            return JSON.encode({
                 name     : this.getName(),
                 lang     : this.getLang(),
                 template : this.getAttribute('template')
@@ -172,12 +170,8 @@ define([
             return this.$Media;
         },
 
-        /**
-         * Return the Trash Object for the Project
-         *
-         * @method classes/projects/Project#getTrash
-         * @return {Object} classes/projects/project/Trash
-         */
+        /*
+
         getTrash : function()
         {
             if ( !this.$Trash ) {
@@ -185,7 +179,7 @@ define([
             }
 
             return this.$Trash;
-        },
+        },*/
 
         /**
          * Return the Project name

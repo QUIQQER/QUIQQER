@@ -1,7 +1,10 @@
 <?php
 
 /**
- * Returns the template for the file panel
+ * Return the file(s)
+ *
+ * @param String $project - Name of the project
+ * @param String|Integer $fileid - File-ID or list of file ids (JSON array)
  * @return String
  */
 function ajax_media_delete($project, $fileid)
@@ -12,8 +15,16 @@ function ajax_media_delete($project, $fileid)
 
     if ( is_array($fileid) )
     {
-        foreach ( $fileid as $id ) {
-            $Media->get( $id )->delete();
+        foreach ( $fileid as $id )
+        {
+            try
+            {
+                $Media->get( $id )->delete();
+
+            } catch ( QUI\Exception $Exception )
+            {
+                \QUI::getMessagesHandler()->addError( $Exception->getMessage() );
+            }
         }
 
         return;

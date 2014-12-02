@@ -1,17 +1,18 @@
 <?php
 
 /**
- * Erste Seite vom Projekt bekommen
+ * Return the first child of a project
  *
+ * @param String $project - Project Data, JSON Array
  * @return Array
  */
-function ajax_project_firstchild($project, $lang)
+function ajax_project_firstchild($project)
 {
-    $Project = \QUI::getProject($project, $lang);
+    $Project = \QUI::getProjectManager()->decode( $project );
     $First   = $Project->firstChild();
-    $Temp    = new \QUI\Projects\Site\Edit($Project, $First->getId());
+    $Temp    = new \QUI\Projects\Site\Edit( $Project, $First->getId() );
 
-    $result = $Temp->getAllAttributes();
+    $result = $Temp->getAttributes();
     $result['has_children'] = 1;
 
     return $result;

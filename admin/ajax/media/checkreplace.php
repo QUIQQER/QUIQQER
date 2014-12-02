@@ -1,11 +1,12 @@
 <?php
 
 /**
- * Replace  a file with another file
+ * Checks, if a replacement of the file can be executed
  *
- * @param String $project
- * @param Integer $fileid
- * @param $file
+ * @param String $project - Name of the project
+ * @param Integer $fileid - File-ID
+ * @param String $filename - File name
+ * @param String $filetype - File type
  */
 function ajax_media_checkreplace($project, $fileid, $filename, $filetype)
 {

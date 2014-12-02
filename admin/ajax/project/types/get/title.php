@@ -1,12 +1,9 @@
 <?php
 
 /**
- * Seitetyp Title bekommen
+ * Return the site type title
  *
- * @param String $id
- * @param String $lang
- * @param String $project
- *
+ * @param String $sitetype - name of the sitetype
  * @return String
  */
 function ajax_project_types_get_title($sitetype)

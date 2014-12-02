@@ -338,8 +338,7 @@ define('controls/projects/project/Sitemap', [
                 self.open();
 
             }, {
-                project : this.getAttribute( 'project' ),
-                lang    : this.getAttribute( 'lang' ),
+                project : this.$Project.encode(),
                 id      : id
             });
         },
@@ -395,8 +394,7 @@ define('controls/projects/project/Sitemap', [
                     callback( result );
                 }
             }, {
-                project : this.getAttribute( 'project' ),
-                lang    : this.getAttribute( 'lang' )
+                project : this.$Project.encode()
             });
         },
 
@@ -418,9 +416,8 @@ define('controls/projects/project/Sitemap', [
                     callback( result );
                 }
             }, {
-                project  : this.getAttribute( 'project' ),
-                lang     : this.getAttribute( 'lang' ),
-                id       : id
+                project : this.$Project.encode(),
+                id      : id
             });
         },
 
@@ -464,8 +461,7 @@ define('controls/projects/project/Sitemap', [
                 }
 
             }, {
-                project : this.getAttribute( 'project' ),
-                lang    : this.getAttribute( 'lang' ),
+                project : this.$Project.encode(),
                 id      : Item.getAttribute( 'value' ),
                 params  : JSON.encode({
                     attributes : 'id,name,title,has_children,nav_hide,linked,active,icon'

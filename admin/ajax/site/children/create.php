@@ -1,16 +1,16 @@
 <?php
 
 /**
- * Erzeugt ein kind
+ * Creates a child
  *
  * @param String $project	- Project name
- * @param String $lang 		- Project lang
  * @param Integer $id 		- Parent ID
- * @param JSON Array $attributes - child attributes
+ * @param String $attributes - JSON Array, child attributes
+ * @return Array
  */
-function ajax_site_children_create($project, $lang, $id, $attributes)
+function ajax_site_children_create($project, $id, $attributes)
 {
-    $Project = \QUI::getProject($project, $lang);
+    $Project = \QUI::getProjectManager()->decode( $project );
     $Site    = new \QUI\Projects\Site\Edit($Project, (int)$id);
 
     $childid = $Site->createChild(
@@ -19,10 +19,10 @@ function ajax_site_children_create($project, $lang, $id, $attributes)
 
     $Child = new \QUI\Projects\Site\Edit($Project, $childid);
 
-    return $Child->getAllAttributes();
+    return $Child->getAttributes();
 }
 
 \QUI::$Ajax->register(
     'ajax_site_children_create',
-    array('project', 'lang', 'id', 'attributes')
+    array('project', 'id', 'attributes')
 );

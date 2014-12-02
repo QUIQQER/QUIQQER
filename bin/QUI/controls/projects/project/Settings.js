@@ -154,7 +154,7 @@ define('controls/projects/project/Settings', [
                 });
 
             }, {
-                project : this.getProject().getName()
+                project : this.getProject().encode()
             });
 
 

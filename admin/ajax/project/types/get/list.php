@@ -1,21 +1,14 @@
 <?php
 
 /**
- * Alle Seitentypen
+ * Return the sitetypes of the project
  *
- * @param String $id
- * @param String $lang
- * @param String $project
- *
+ * @param String $project - project data; JSON Array
  * @return Array
  */
 function ajax_project_types_get_list($project)
 {
-    $Project = false;
-
-    if ( !empty( $project ) ) {
-        $Project = \QUI\Projects\Manager::getProject( $project );
-    }
+    $Project = \QUI::getProjectManager()->decode( $project );
 
     return \QUI::getPluginManager()->getAvailableTypes( $Project );
 }

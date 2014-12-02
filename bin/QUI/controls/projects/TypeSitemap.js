@@ -209,7 +209,9 @@ define('controls/projects/TypeSitemap', [
                 First.open();
 
             }, {
-                project : this.getAttribute( 'project' )
+                project : JSON.encode({
+                    name : this.getAttribute( 'project' )
+                })
             });
         },
 

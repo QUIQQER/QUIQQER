@@ -1,12 +1,10 @@
 <?php
 
 /**
- * ID daten bekommen
+ * Return the data of the parents
  *
- * @param String $project
- * @param String $lang
- * @param String $fileid
- *
+ * @param String $project - Name of the project
+ * @param String $fileid - File-ID
  * @return Array
  */
 function ajax_media_breadcrumb($project, $fileid)

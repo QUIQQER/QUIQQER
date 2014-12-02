@@ -1,12 +1,9 @@
 <?php
 
 /**
- * Tabs bekommen
+ * Return the project panel categories / tabs
  *
- * @param String $id
- * @param String $lang
- * @param String $project
- *
+ * @param String $project - name of the project
  * @return Array
  */
 function ajax_project_panel_categories_get($project)
