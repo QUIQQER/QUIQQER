@@ -333,7 +333,7 @@ class Edit extends Site
     /**
      * Saves the site
      *
-     * @param QUI\Users\User|Bool $User - [optional] User to save
+     * @param QUI\Interfaces\Users\User|Bool $User - [optional] User to save
      * @throws QUI\Exception
      */
     public function save($User=false)
