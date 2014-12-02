@@ -1,16 +1,15 @@
 <?php
 
 /**
- * Erzeugt ein kind
+ * Sort the children
  *
- * @param String $project	- Project name
- * @param String $lang 		- Project lang
- * @param Integer $id 		- Parent ID
- * @param JSON Array $attributes - child attributes
+ * @param String $project - Project name
+ * @param Integer $ids 	  - children ids
+ * @param Integer $from   - Sheet number
  */
-function ajax_site_children_sort($project, $lang, $ids, $from)
+function ajax_site_children_sort($project, $ids, $from)
 {
-    $Project = \QUI::getProject( $project, $lang );
+    $Project = \QUI::getProjectManager()->decode( $project );
     $ids     = json_decode( $ids, true );
 
     $from = (int)$from;
@@ -27,5 +26,5 @@ function ajax_site_children_sort($project, $lang, $ids, $from)
 
 \QUI::$Ajax->register(
     'ajax_site_children_sort',
-    array('project', 'lang', 'ids', 'from')
+    array('project', 'ids', 'from')
 );

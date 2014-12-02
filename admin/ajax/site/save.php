@@ -21,7 +21,7 @@ function ajax_site_save($project, $id, $attributes)
 
     require_once 'get.php';
 
-    return ajax_site_get( $project, $lang, $id );
+    return ajax_site_get( array( 'project' => $project ), $id );
 }
 
 \QUI::$Ajax->register(

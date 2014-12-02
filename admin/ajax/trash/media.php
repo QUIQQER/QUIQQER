@@ -1,15 +1,15 @@
 <?php
 
 /**
- * Get the media trash list
+ * Get the elements in the media trash
  *
- * @param unknown_type $project
- * @param unknown_type $lang
- * @param unknown_type $params
+ * @param String $project - Project data, JSON Array
+ * @param String $params
+ * @return Array
  */
 function ajax_trash_media($project, $params)
 {
-    $Project = \QUI::getProject( $project );
+    $Project = \QUI::getProjectManager()->decode( $project );
     $Media   = $Project->getMedia();
     $Trash   = $Media->getTrash();
 

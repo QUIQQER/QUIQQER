@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Seiten wiederherstellen
+ * Restore media files
  *
- * @param String $project
- * @param String $lang
- * @param JSON Array $ids
+ * @param String $project - Name of the project
+ * @param String $ids - JSON Array, File IDs
+ * @param String|Integer $parentid - Folder-ID
  */
 function ajax_trash_media_restore($project, $ids, $parentid)
 {

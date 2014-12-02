@@ -4,6 +4,17 @@
  *
  * @module controls/trash/Panel
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/QUI
+ * @require qui/controls/desktop/Panel
+ * @require qui/controls/buttons/Select
+ * @require qui/controls/windows/Confirm
+ * @require controls/grid/Grid
+ * @require controls/projects/Popup
+ * @require controls/projects/project/media/Popup
+ * @require Projects
+ * @require Ajax
+ * @require Locale
  */
 
 define([
@@ -116,6 +127,10 @@ define([
 
                 for ( project in result )
                 {
+                    if ( !result.hasOwnProperty( project ) ) {
+                        continue;
+                    }
+
                     langs = result[ project ].langs.split(',');
 
                     for ( i = 0, len = langs.length; i < len; i++ )
@@ -172,9 +187,8 @@ define([
          * event : select on change
          *
          * @param {String} value - value of the select control
-         * @param {qui/controls/buttons/Select} Select
          */
-        $onSelectChange : function(value, Select)
+        $onSelectChange : function(value)
         {
             value = value.split(',');
 
@@ -296,7 +310,7 @@ define([
                 return;
             }
 
-            var i, len, selectedData, information;
+            var i, len, selectedData;
 
             var self   = this,
                 type   = 'project',
@@ -461,8 +475,10 @@ define([
                 self.$ProjectGrid.setData( data );
                 self.Loader.hide();
             }, {
-                project : project,
-                lang    : lang,
+                project : JSON.encode({
+                    name : project,
+                    lang : lang
+                }),
                 params  : JSON.encode({
                     page    : options.page,
                     perPage : options.perPage
@@ -476,7 +492,7 @@ define([
          * @param {String} project - Name of the project
          * @param {String} lang - Lang of the project
          * @param {Array} ids - Array of the site ids
-         * @param {Function} callback . [optional]  callback function on finish
+         * @param {Function} [callback] - callback function on finish
          */
         destroyProjectItems : function(project, lang, ids, callback)
         {
@@ -486,9 +502,11 @@ define([
                     callback();
                 }
             }, {
-                project : project,
-                lang    : lang,
-                ids     : JSON.encode( ids )
+                project : JSON.encode({
+                    name : project,
+                    lang : lang
+                }),
+                ids : JSON.encode( ids )
             });
         },
 
@@ -497,9 +515,9 @@ define([
          *
          * @param {String} project
          * @param {String} lang
-         * @param {Integer} parentId - ID of the parent id
+         * @param {Number} parentId - ID of the parent id
          * @param {Array} restoreIds - IDs to the restored ids
-         * @param {Function} callback . [optional]  callback function on finish
+         * @param {Function} [callback] - callback function on finish
          */
         restoreProjectItems : function(project, lang, parentId, restoreIds, callback)
         {
@@ -509,8 +527,10 @@ define([
                     callback();
                 }
             }, {
-                project  : project,
-                lang     : lang,
+                project  : JSON.encode({
+                    name : project,
+                    lang : lang
+                }),
                 parentid : parentId,
                 ids      : JSON.encode( restoreIds )
             });
@@ -634,7 +654,7 @@ define([
          * Restore the ids into the parentId
          *
          * @param {String} project
-         * @param {Integer} parentId - ID of the parent id
+         * @param {Number} parentId - ID of the parent id
          * @param {Array} restoreIds - IDs to the restored ids
          * @param {Function} callback . [optional]  callback function on finish
          */

@@ -1,15 +1,15 @@
 <?php
 
 /**
- * Get Trash sites
+ * Return the sites in the trash
  *
- * @param unknown_type $project
- * @param unknown_type $lang
- * @param unknown_type $params
+ * @param String $project - Project data, JSON Array
+ * @param String $params - JSON Array
+ * @return Array
  */
-function ajax_trash_sites($project, $lang, $params)
+function ajax_trash_sites($project, $params)
 {
-    $Project = \QUI::getProject($project, $lang);
+    $Project = \QUI::getProjectManager()->decode( $project );
     $Trash   = $Project->getTrash();
 
     return $Trash->getList(
