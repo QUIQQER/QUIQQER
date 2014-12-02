@@ -46,17 +46,7 @@ Henning and Moritz from PCSG / QUIQQER
 
 Packages
 
-- Mail Queue Server
 - Desktop Manager
-- Crons
 - Systemcheck
-- RSS
 - Linkchecker
 - patch system
-
-
-Muss geprüft werden
-
-- Countries
-- Message Handler
-- QUI Controls (php)

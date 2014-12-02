@@ -6,31 +6,6 @@
 
 require 'bootstrap.php';
 
-if ( isset( $_REQUEST['desktop'] ) )
-{
-    require BIN_DIR .'js/controls/desktop/desktop.php';
-    exit;
-}
-
-/**
- * Cron execution
- */
-if ( isset( $_REQUEST['cron'] ) )
-{
-    define( 'SYSTEM_INTERN', true );
-
-    ignore_user_abort( true );
-
-    // @todo cron plugin
-    System_Cron_Manager::exec(
-        \QUI::getUsers()->getSystemUser()
-    );
-
-    exit;
-}
-
-
-
 // no console
 if ( php_sapi_name() != 'cli' ) {
     exit;
