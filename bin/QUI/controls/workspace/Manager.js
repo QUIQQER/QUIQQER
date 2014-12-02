@@ -100,8 +100,6 @@ define([
 
         initialize : function(options)
         {
-            var self = this;
-
             this.parent( options );
 
             this.Loader    = new QUILoader();
@@ -128,6 +126,8 @@ define([
 
             if ( this.getAttribute( 'autoResize' ) )
             {
+                var self = this;
+
                 window.addEvent( 'resize', function()
                 {
                     // delay,
@@ -135,7 +135,7 @@ define([
                         clearTimeout( self.$resizeDelay );
                     }
 
-                    this.$resizeDelay = (function() {
+                    self.$resizeDelay = (function() {
                         self.resize();
                     }).delay( 200 );
                 });
@@ -145,7 +145,7 @@ define([
         /**
          * Create the DOMNode Element
          *
-         * @return {DOMNode}
+         * @return {HTMLElement}
          */
         create : function()
         {
@@ -224,7 +224,7 @@ define([
         /**
          * load the workspace for the user
          *
-         * @param {Function} callback - [optional] callback function
+         * @param {Function} [callback] - (optional) callback function
          */
         load : function(callback)
         {
@@ -325,19 +325,19 @@ define([
          * Insert a control into a Column
          *
          * @param {String} panelRequire - panel require
-         * @param {qui/controls/desktop/Column} Column - Parent Column
+         * @param {Object} Column - qui/controls/desktop/Column, Parent Column
          */
         appendControlToColumn : function(panelRequire, Column)
         {
-            require([ panelRequire ], function(cls)
+            require([ panelRequire ], function(Cls)
             {
-                if ( QUI.Controls.isControl( cls ) )
+                if ( QUI.Controls.isControl( Cls ) )
                 {
-                    Column.appendChild( cls );
+                    Column.appendChild( Cls );
                     return;
                 }
 
-                Column.appendChild( new cls() );
+                Column.appendChild( new Cls() );
             });
         },
 
@@ -369,7 +369,7 @@ define([
          * load another Workspace
          * Saves the current workspace and load the new wanted
          *
-         * @param {Integer} id - workspace id
+         * @param {Number} id - workspace id
          */
         loadWorkspace : function(id)
         {
@@ -381,8 +381,6 @@ define([
 
                 return;
             }
-
-            var self = this;
 
             this.Loader.show();
 
@@ -398,6 +396,8 @@ define([
 
             this.setAttribute( 'workspaceId', id );
 
+            var self = this;
+
             Ajax.post('ajax_desktop_workspace_setStandard', function()
             {
                 self.fireEvent( 'loadWorkspace', [ self ] );
@@ -412,13 +412,17 @@ define([
         /**
          * Load a workspace
          *
-         * @param {Integer} id
+         * @param {Number} id
          */
         $loadWorkspace : function(id)
         {
             this.Loader.show();
 
-            if ( !id || id === '' )
+            if ( typeof id !== 'undefined' ) {
+                id = id.toInt();
+            }
+
+            if ( !id || typeOf( id ) != 'number' )
             {
                 this.$useBestWorkspace();
                 return;
@@ -438,10 +442,23 @@ define([
             this.$minWidth  = workspace.minWidth;
             this.$minHeight = workspace.minHeight;
 
+            var data;
+
+            try
+            {
+                data = JSON.decode( workspace.data );
+
+            } catch ( e )
+            {
+                alert( 'Die Daten Ihres Arbeitsbereiches sind fehlerhaft.' );
+
+                this.Workspace.clear();
+                this.Loader.hide();
+                return;
+            }
+
             this.Workspace.clear();
-            this.Workspace.unserialize(
-                JSON.decode( workspace.data )
-            );
+            this.Workspace.unserialize( data );
 
             this.Workspace.fix();
             this.Workspace.resize();
@@ -507,10 +524,13 @@ define([
 
                         for ( var i in self.$spaces )
                         {
-                            new Element('option', {
-                                html  : self.$spaces[ i ].title,
-                                value : self.$spaces[ i ].id
-                            }).inject( Select );
+                            if ( self.$spaces.hasOwnProperty( i ) )
+                            {
+                                new Element('option', {
+                                    html  : self.$spaces[ i ].title,
+                                    value : self.$spaces[ i ].id
+                                }).inject( Select );
+                            }
                         }
                     },
 
@@ -532,8 +552,8 @@ define([
         /**
          * Save the workspace
          *
-         * @param {Bool} async - [optional] asynchrone save, default = false
-         * @param {Function} callback - [optional] callback function, triggered only at async=true
+         * @param {Boolean} [async] - (optional) asynchrone save, default = false
+         * @param {Function} [callback] - (optional) callback function, triggered only at async=true
          */
         save : function(async, callback)
         {
@@ -578,7 +598,7 @@ define([
          */
         add : function(data, callback)
         {
-            Ajax.post('ajax_desktop_workspace_add', function(result)
+            Ajax.post('ajax_desktop_workspace_add', function()
             {
                 if ( typeof callback !== 'undefined' ) {
                     callback();
@@ -592,7 +612,7 @@ define([
         /**
          * Edit a Workspace
          *
-         * @param {Integer} id - Workspace-ID
+         * @param {Number} id - Workspace-ID
          * @param {Object} data - workspace data {
          * 		title [optional]
          * 		data [optional]
@@ -603,7 +623,7 @@ define([
          */
         edit : function(id, data, callback)
         {
-            Ajax.post('ajax_desktop_workspace_edit', function(result)
+            Ajax.post('ajax_desktop_workspace_edit', function()
             {
                 if ( typeof callback !== 'undefined' ) {
                     callback();
@@ -619,11 +639,11 @@ define([
          * Delete workspaces
          *
          * @param {Array} ids - list of workspace ids
-         * @param {Function} callback - [optional] callback function
+         * @param {Function} [callback] - (optional), callback function
          */
         del : function(ids, callback)
         {
-            Ajax.post('ajax_desktop_workspace_delete', function(result)
+            Ajax.post('ajax_desktop_workspace_delete', function()
             {
                 if ( typeof callback !== 'undefined' ) {
                     callback();
@@ -654,15 +674,14 @@ define([
         /**
          * load the default 3 column workspace
          *
-         * @param {qui/controls/desktop/Workspace} Workspace
+         * @param {Object} Workspace - qui/controls/desktop/Workspace
          */
         $loadDefault3Column : function(Workspace)
         {
             this.$minWidth  = 1000;
             this.$minHeight = 500;
 
-            var self   = this,
-                size   = this.$Elm.getSize(),
+            var size   = this.$Elm.getSize(),
                 panels = this.$getDefaultPanels();
 
             // Columns
@@ -709,15 +728,14 @@ define([
         /**
          * loads the default 2 column workspace
          *
-         * @param {qui/controls/desktop/Workspace} Workspace
+         * @param {Object} Workspace - qui/controls/desktop/Workspace
          */
         $loadDefault2Column : function(Workspace)
         {
             this.$minWidth  = 700;
             this.$minHeight = 500;
 
-            var self   = this,
-                size   = this.$Elm.getSize(),
+            var size   = this.$Elm.getSize(),
                 panels = this.$getDefaultPanels(),
 
                 LeftColumn = new QUIColumn({
@@ -788,7 +806,7 @@ define([
                         });
                     },
 
-                    onAppendChild : function(Panel, Item)
+                    onAppendChild : function(Panel)
                     {
                         Panel.Loader.show();
 
@@ -851,9 +869,9 @@ define([
          * event : on workspace context menu -> on column context menu
          * Create the contextmenu for the column edit
          *
-         * @param {qui/controls/desktop/Workspace} Workspace
-         * @param {qui/controls/desktop/Column} Column
-         * @param {DOMEvent}
+         * @param {Object} Workspace - qui/controls/desktop/Workspace
+         * @param {Object} Column - qui/controls/desktop/Column
+         * @param {DOMEvent} event
          */
         $onColumnContextMenu : function(Workspace, Column, event)
         {
@@ -997,7 +1015,7 @@ define([
         /**
          * event : column context onBlur
          *
-         * @param {qui/controls/contextmenu/Menu}
+         * @param {Object} Menu - qui/controls/contextmenu/Menu
          */
         $onColumnContextMenuBlur : function(Menu)
         {
@@ -1008,7 +1026,7 @@ define([
         /**
          * event : on mouse enter at a contextmenu item -> remove panel
          *
-         * @param {qui/controls/contextmenu/Item} Item
+         * @param {Object} Item - qui/controls/contextmenu/Item
          */
         $onEnterRemovePanel : function(Item)
         {
@@ -1018,7 +1036,7 @@ define([
         /**
          * event : on mouse leave at a contextmenu item -> remove panel
          *
-         * @param {qui/controls/contextmenu/Item} Item
+         * @param {Object} Item - qui/controls/contextmenu/Item
          */
         $onLeaveRemovePanel : function(Item)
         {
@@ -1028,7 +1046,7 @@ define([
         /**
          * event : on mouse click at a contextmenu item -> remove panel
          *
-         * @param {qui/controls/contextmenu/Item} Item
+         * @param {Object} ContextItem - qui/controls/contextmenu/Item
          */
         $onClickRemovePanel : function(ContextItem)
         {
@@ -1121,7 +1139,6 @@ define([
                     onSubmit : function(Win)
                     {
                         var Content = Win.getContent(),
-                            id      = Win.getId(),
                             size    = document.getSize(),
 
                             Title      = Content.getElement( 'input[name="workspace-title"]' ),
@@ -1176,7 +1193,7 @@ define([
         /**
          * Open available panel window
          *
-         * @param {qui/controls/desktop/Column} Column - parent column
+         * @param {Object} Column - qui/controls/desktop/Column, parent column
          */
         openPanelList : function(Column)
         {
@@ -1372,7 +1389,7 @@ define([
                             data       = [];
 
                         Object.each( workspaces, function(Workspace) {
-                            data.push( Workspace )
+                            data.push( Workspace );
                         });
 
                         EditGrid.setData({
@@ -1382,7 +1399,7 @@ define([
                         var DelButton = EditGrid.getButtons()[ 0 ];
 
                         EditGrid.addEvents({
-                            onClick : function(event)
+                            onClick : function()
                             {
                                 var sels = EditGrid.getSelectedData();
 
@@ -1400,7 +1417,6 @@ define([
                                 Win.Loader.show();
 
                                 var newValue = data.input.value,
-                                    oldValue = data.oldvalue,
                                     index    = data.columnModel.dataIndex,
                                     Data     = EditGrid.getDataByRow( data.row ),
                                     newData  = {};
@@ -1521,7 +1537,7 @@ define([
                             return;
                         }
 
-                        if ( Select.value == '' ) {
+                        if ( Select.value === '' ) {
                             return;
                         }
 
@@ -1531,7 +1547,7 @@ define([
                         self.resize();
                     },
 
-                    onClose : function(Win)
+                    onClose : function()
                     {
                         self.$resizeQuestionWindow = false;
                     }

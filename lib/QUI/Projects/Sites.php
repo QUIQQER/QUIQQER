@@ -318,6 +318,10 @@ class Sites
 
         foreach ( $templates as $template )
         {
+            if ( empty( $template ) ) {
+                continue;
+            }
+
             $file = OPT_DIR . $template['name'] .'/site.xml';
 
             if ( !file_exists( $file ) ) {
