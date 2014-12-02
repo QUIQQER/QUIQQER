@@ -6,6 +6,7 @@
  * @author www.pcsg.de (Henning Leutz)
  *
  * @require qui/classes/DOM
+ * @require Ajax
  * @require classes/projects/Site
  * @require classes/projects/Media
  * @require classes/projects/Trash
@@ -22,9 +23,10 @@ define([
     'qui/classes/DOM',
     'Ajax',
     'classes/projects/project/Site',
-    'classes/projects/project/Media'
+    'classes/projects/project/Media',
+    'classes/projects/project/Trash'
 
-], function(QDOM, Ajax, ProjectSite, Media)
+], function(QDOM, Ajax, ProjectSite, Media, Trash)
 {
     "use strict";
 
@@ -57,8 +59,8 @@ define([
         },
 
         $ids   : {},
-        $Media : null,
-        $Trash : null,
+        $Media : false,
+        $Trash : false,
 
         initialize : function(options)
         {
@@ -84,8 +86,8 @@ define([
          * Get a site from the project
          *
          * @method classes/projects/Project#get
-         * @param {Integer} id - ID of the site
-         * @return {classes/projects/project/Site}
+         * @param {Number} id - ID of the site
+         * @return {Object} classes/projects/project/Site
          */
         get : function(id)
         {
@@ -113,8 +115,8 @@ define([
         /**
          * Return the configuration of the project
          *
-         * @param {Function} callback - callback function
-         * @param {String} param - param name
+         * @param {Function} [callback] - callback function
+         * @param {String} [param] - param name
          */
         getConfig : function(callback, param)
         {
@@ -139,19 +141,19 @@ define([
          * Set the config for a project
          * You can set a single config parameter or multible parameters
          *
-         * @param {Function} callback
-         * @param {Object} params - one ore more params
+         * @param {Function} [callback]
+         * @param {Object} [params] - one ore more params
          */
         setConfig : function(callback, params)
         {
-            Ajax.get('ajax_project_set_config', function(result, Request)
+            Ajax.get('ajax_project_set_config', function(result)
             {
                 if ( typeof callback !== 'undefined' ) {
                     callback( result );
                 }
             }, {
                 project : this.getName(),
-                params  : JSON.encode( params )
+                params  : JSON.encode( params || false )
             });
         },
 
@@ -159,7 +161,7 @@ define([
          * Return the Media Object for the Project
          *
          * @method classes/projects/Project#getMedia
-         * @return {classes/projects/project/Media}
+         * @return {Object} classes/projects/project/Media
          */
         getMedia : function()
         {
@@ -174,7 +176,7 @@ define([
          * Return the Trash Object for the Project
          *
          * @method classes/projects/Project#getTrash
-         * @return {classes/projects/project/Trash}
+         * @return {Object} classes/projects/project/Trash
          */
         getTrash : function()
         {
@@ -189,7 +191,6 @@ define([
          * Return the Project name
          *
          * @method classes/projects/Project#getName
-         *
          * @return {String}
          */
         getName : function()
@@ -216,8 +217,8 @@ define([
          * event : on Site deletion
          *
          * @method classes/projects/Project#$onChildDelete
-         * @param {classes/projects/project/Site} Site
-         * @return {this}
+         * @param {Object} Site - classes/projects/project/Site
+         * @return {Object} this (classes/projects/Project)
          * @fires siteDelete
          */
         $onSiteDelete : function(Site)
@@ -236,7 +237,7 @@ define([
         /**
          * event : on Site saving
          *
-         * @param {classes/projects/project/Site} Site
+         * @param {Object} Site - classes/projects/project/Site
          * @fires siteSave
          */
         $onSiteSave : function(Site)
@@ -247,8 +248,8 @@ define([
         /**
          * event : on Site create
          *
-         * @param {classes/projects/project/Site} Site
-         * @param {Integer} newchildid - id of the new child
+         * @param {Object} Site - classes/projects/project/Site
+         * @param {Number} newchildid - id of the new child
          * @fires siteCreate
          */
         $onSiteCreate : function(Site, newchildid)
@@ -259,7 +260,7 @@ define([
         /**
          * event : on Site activasion
          *
-         * @param {classes/projects/project/Site} Site
+         * @param {Object} Site - classes/projects/project/Site
          * @fires Activate
          */
         $onSiteActivate : function(Site)
@@ -270,7 +271,7 @@ define([
         /**
          * event : on Site deactivasion
          *
-         * @param {classes/projects/project/Site} Site
+         * @param {Object} Site - classes/projects/project/Site
          * @fires Activate
          */
         $onSiteDeactivate : function(Site)
@@ -282,7 +283,7 @@ define([
         /**
          * event : on Site sort saving
          *
-         * @param {classes/projects/project/Site} Site
+         * @param {Object} Site - classes/projects/project/Site
          * @fires sortSave
          */
         $onSiteSortSave : function(Site)

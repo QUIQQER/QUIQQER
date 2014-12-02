@@ -73,7 +73,7 @@ define([
         /**
          * Refresh the params from the database to the file
          *
-         * @param {Function} oncomplete - [optional] callback function
+         * @param {Function} oncomplete - (optional) callback function
          * @return {Promise}
          */
         refresh : function(oncomplete)
@@ -107,7 +107,7 @@ define([
          * Returns the ID of the item
          *
          * @method classes/projects/project/media/Item#getId
-         * @return {Integer}
+         * @return {Number}
          */
         getId : function()
         {
@@ -136,8 +136,8 @@ define([
          *
          * @method classes/projects/project/media/Item#save
          * @fires onSave [this]
-         * @param {Function} oncomplete - [optional] callback Function
-         * @params {Object} params      - [optional], parameters that are linked to the request object
+         * @param {Function} [oncomplete] - (optional) callback Function
+         * @param {Object} [params]      - (optional), parameters that are linked to the request object
          */
         save : function(oncomplete, params)
         {
@@ -153,7 +153,7 @@ define([
             Ajax.post('ajax_media_file_save', function(result, Request)
             {
                 self.setAttributes( result );
-                self.fireEvent( 'save', [ File ] );
+                self.fireEvent( 'save', [ self ] );
 
                 if ( typeOf( oncomplete ) === 'function' ) {
                     oncomplete( result, Request );
@@ -168,8 +168,8 @@ define([
          *
          * @fires onDelete [this]
          *
-         * @param {Function} oncomplete - [optional] callback Function
-         * @params {Object} params      - [optional], parameters that are linked to the request object
+         * @param {Function} [oncomplete] - (optional) callback Function
+         * @param {Object} [params]       - (optional), parameters that are linked to the request object
          */
         del : function(oncomplete, params)
         {
@@ -184,8 +184,8 @@ define([
          *
          * @fires onActivate [this]
          *
-         * @param {Function} oncomplete - [optional] callback Function
-         * @params {Object} params      - [optional], parameters that are linked to the request object
+         * @param {Function} [oncomplete] - (optional) callback Function
+         * @param {Object} [params]      - (optional), parameters that are linked to the request object
          */
         activate : function(oncomplete, params)
         {
@@ -200,8 +200,8 @@ define([
          *
          * @fires onDeactivate [this]
          *
-         * @param {Function} oncomplete - [optional] callback Function
-         * @params {Object} params      - [optional], parameters that are linked to the request object
+         * @param {Function} [oncomplete] - (optional) callback Function
+         * @param {Object} [params]      - (optional), parameters that are linked to the request object
          */
         deactivate : function(oncomplete, params)
         {
@@ -226,7 +226,7 @@ define([
             });
 
             // create a iframe
-            if ( !$('download-frame') )
+            if ( !document.id('download-frame') )
             {
                 new Element('iframe#download-frame', {
                     styles : {
@@ -239,7 +239,7 @@ define([
                 }).inject( document.body );
             }
 
-            $('download-frame').set('src', url);
+            document.id('download-frame').set('src', url);
         },
 
         /**
@@ -260,7 +260,7 @@ define([
          * Returns if the File is active or not
          *
          * @method classes/projects/project/media/Item#isActive
-         * @return {Bool}
+         * @return {Boolean}
          */
         isActive : function()
         {
@@ -274,7 +274,7 @@ define([
          *
          * @param {String} newname      - New folder name
          * @param {Function} oncomplete - callback() function
-         * @params {Object} params      - [optional], parameters that are linked to the request object
+         * @param {Object} [params]     - (optional), parameters that are linked to the request object
          */
         rename : function(newname, oncomplete, params)
         {

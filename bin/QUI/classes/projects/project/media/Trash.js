@@ -42,24 +42,10 @@ define([
             page  : 1
         },
 
-        initialize : function(Media, options)
+        initialize : function(Media)
         {
             this.$Media = Media;
         },
-
-        /**
-         * Return the Trash Project Control
-         *
-         * @return {controls/projects/media/Trash}
-         */
-//        getControl : function()
-//        {
-//           return new TrashPanel(
-//                this.$Media,
-//                this.getAttributes(),
-//                this
-//            );
-//        },
 
         /**
          * Return the sites in the trash
@@ -92,7 +78,7 @@ define([
          * @method classes/projects/media/Trash#restore
          *
          * @param {Array} ids         - IDs of the deleted files
-         * @param {Integer} parentid  - Parent Folder ID
+         * @param {Number} parentid  - Parent Folder ID
          * @param {Function} callback - Callback function if the ids destroyed
          */
         restore : function(ids, parentid, callback)

@@ -32,7 +32,7 @@ define([
     /**
      * @class classes/projects/project/Media
      *
-     * @param {classes/projects/Project} Project
+     * @param {Object} Project - classes/projects/Project
      *
      * @memberof! <global>
      */
@@ -52,7 +52,7 @@ define([
          * Return the Project from the Media
          *
          * @method classes/projects/project/Media#getProject
-         * @return {classes/projects/Project}
+         * @return {Object} classes/projects/Project
          */
         getProject : function()
         {
@@ -63,7 +63,7 @@ define([
          * Return the Trash from the Media
          *
          * @method classes/projects/project/Media#getTrash
-         * @return {classes/projects/project/media/Trash}
+         * @return {Object} classes/projects/project/media/Trash
          */
         getTrash : function()
         {
@@ -75,12 +75,12 @@ define([
          *
          * @method classes/projects/project/Media#get
          *
-         * @param {Integer|Array} id      - ID of the file or an id list
+         * @param {Number|Array} id       - ID of the file or an id list
          * @param {Function|Array} params - Item params or a callback function
          *
-         * @return {Promise}
+         * @return {Object} Promise
          */
-        get : function(id, params, onerror)
+        get : function(id, params)
         {
             var self = this;
 
@@ -162,10 +162,10 @@ define([
          *
          * @method classes/projects/project/Media#getData
          *
-         * @param {Integer|Array} id  - ID of the file or an id list
+         * @param {Number|Array} id  - ID of the file or an id list
          * @param {Function} onfinish - [optional] callback function
          *
-         * @return {Promise}
+         * @return {Object} Promise
          */
         getData : function(id, onfinish)
         {
@@ -173,7 +173,7 @@ define([
 
             return new Promise(function(resolve, reject)
             {
-                Ajax.get('ajax_media_details', function(result, Request)
+                Ajax.get('ajax_media_details', function(result)
                 {
                     if ( typeOf( onfinish ) == 'function' ) {
                         onfinish( result );
@@ -195,7 +195,7 @@ define([
          * get the first child of the media
          *
          * @method classes/projects/project/Media#get
-         * @return {Promise}
+         * @return {Object} Promise
          */
         firstChild : function(callback)
         {
@@ -207,7 +207,7 @@ define([
          *
          * @method classes/projects/project/Media#download
          *
-         * @param {Integer} childid   - the Mediafile ID
+         * @param {Number} childid   - the Mediafile ID
          * @param {File} File         - Browser File Object
          * @param {Function} onfinish - callback function after the upload is finish
          *                              onfinish( {controls/upload/File} )
@@ -235,9 +235,9 @@ define([
          *
          * @method classes/projects/project/Media#activate
          *
-         * @param {Integer|Array}       - Item list or an Item id
-         * @param {Function} oncomplete - [optional] callback Function
-         * @params {Object} params      - [optional], parameters that are linked to the request object
+         * @param {Number|Array} id       - Item list or an Item id
+         * @param {Function} [oncomplete] - [optional] callback Function
+         * @param {Object} [params]       - [optional], parameters that are linked to the request object
          */
         activate : function(id, oncomplete, params)
         {
@@ -259,9 +259,9 @@ define([
          *
          * @method classes/projects/project/Media#deactivate
          *
-         * @param {Integer|Array}       - Item list or an Item id
-         * @param {Function} oncomplete - [optional] callback Function
-         * @params {Object} params      - [optional], parameters that are linked to the request object
+         * @param {Number|Array} id       - Item list or an Item id
+         * @param {Function} [oncomplete] - [optional] callback Function
+         * @param {Object} [params]       - [optional], parameters that are linked to the request object
          */
         deactivate : function(id, oncomplete, params)
         {
@@ -283,16 +283,16 @@ define([
          *
          * @method classes/projects/project/Media#del
          *
-         * @param {Integer|Array}       - Item list or an Item id
-         * @param {Function} oncomplete - [optional] callback Function
-         * @params {Object} params      - [optional], parameters that are linked to the request object
+         * @param {Number|Array} id       - Item list or an Item id
+         * @param {Function} [oncomplete] - [optional] callback Function
+         * @param {Object} [params]       - [optional], parameters that are linked to the request object
          */
         del : function(id, oncomplete, params)
         {
             if ( !id.length )
             {
                 if ( typeof oncomplete !== 'undefined' ) {
-                    oncomplete( result, Request );
+                    oncomplete( false );
                 }
 
                 return;
@@ -304,10 +304,10 @@ define([
                 fileid  : JSON.encode( id )
             });
 
-            Ajax.post('ajax_media_delete', function(result, Request)
+            Ajax.post('ajax_media_delete', function(result)
             {
                 if ( typeof oncomplete !== 'undefined' ) {
-                    oncomplete( result, Request );
+                    oncomplete( result );
                 }
             }, params);
         },
@@ -315,7 +315,7 @@ define([
         /**
          * Parse the get result to a file object
          *
-         * @return {classes/projects/project/media/Item|Array}
+         * @return {Object|Array} classes/projects/project/media/Item
          */
         $parseResultToItem : function(result)
         {
@@ -344,9 +344,10 @@ define([
 
                 case "folder":
                     return new MediaFolder( result, this );
-            }
 
-            return new MediaFile( result, this );
+                default:
+                    return new MediaFile( result, this );
+            }
         }
     });
 });

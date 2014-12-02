@@ -42,7 +42,7 @@ define([
         {
             var self = this;
 
-            Ajax.post('ajax_media_folder_create', function(result, Request)
+            Ajax.post('ajax_media_folder_create', function(result)
             {
                 oncomplete(
                     self.getMedia().$parseResultToItem( result )
@@ -55,16 +55,15 @@ define([
         },
 
         /**
-         * create a sub folder
+         * Return the children
          *
          * @method classes/projects/project/media/Folder#createFolder
          *
-         * @param {String} newfolder    - New folder name
          * @param {Function} oncomplete - callback( children ) function
          */
         getChildren : function(oncomplete)
         {
-            Ajax.get('ajax_media_folder_children', function(result, Request)
+            Ajax.get('ajax_media_folder_children', function(result)
             {
                 oncomplete( result );
             }, {
@@ -78,8 +77,8 @@ define([
          *
          * @method classes/projects/project/media/Folder#uploadFiles
          *
-         * @param {Array|Filelist} files
-         * @param {Function} onfinish - callback function
+         * @param {Array|Object} files - Array | Filelist
+         * @param {Function} [onfinish] - callback function
          */
         uploadFiles : function(files, onfinish)
         {

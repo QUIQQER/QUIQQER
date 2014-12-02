@@ -30,7 +30,7 @@ define([
         Extends : QDOM,
         Type    : 'classes/projects/Manager',
 
-        $Project  : null,
+        $Project  : false,
         $projects : {},
 
         /**
@@ -64,10 +64,10 @@ define([
          * Return the wanted project
          * If no name and lang given, the current project will be return
          *
-         * @param {String} name - [optional] Name of the project
-         * @param {String lang - [optional] Lang of the project
+         * @param {String} [name] - (optional), Name of the project
+         * @param {String} [lang] - (optional), Lang of the project
          *
-         * @return {classes/projects/Project}
+         * @return {Object} classes/projects/Project
          */
         get : function(name, lang)
         {
@@ -151,7 +151,7 @@ define([
          * @param {String} project
          * @param {String} lang
          * @param {String} template
-         * @params {Function} onfinish
+         * @param {Function} [onfinish]
          */
         createNewProject : function(project, lang, template, onfinish)
         {
