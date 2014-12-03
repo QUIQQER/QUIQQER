@@ -31,7 +31,7 @@ class Setup
             Rights\Permission::checkSU();
         }
 
-        \QUI::getSession()->setup();
+        QUI::getSession()->setup();
 
         // create dirs
         SystemFile::mkdir( BIN_DIR );
