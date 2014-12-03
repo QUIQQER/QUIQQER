@@ -2,7 +2,14 @@
 /**
  * Select a site input field
  *
+ * @module controls/projects/project/site/Input
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/controls/Control
+ * @require qui/controls/buttons/Button
+ * @require controls/projects/Popup
+ * @require Ajax
+ * @require css!controls/projects/project/site/Input.css
  */
 
 define('controls/projects/project/site/Input', [
@@ -22,7 +29,7 @@ define('controls/projects/project/site/Input', [
      * @class controls/projects/Input
      *
      * @param {Object} options
-     * @param {DOMNode Input} Input [optional] -> if no input given, one would be created
+     * @param {HTMLElement} [Input] - (optional), if no input given, one would be created
      *
      * @memberof! <global>
      */
@@ -44,19 +51,17 @@ define('controls/projects/project/site/Input', [
         {
             this.parent( options );
 
-            this.$Input = Input || null;
+            this.$Input      = Input || null;
             this.$SiteButton = null;
         },
 
         /**
          * Create the DOMNode
          *
-         * @return {DOMNode}
+         * @return {HTMLElement}
          */
         create : function()
         {
-            var self = this;
-
             this.$Elm = new Element('div', {
                 'class' : 'qui-controls-project-site-input box'
             });
@@ -80,6 +85,8 @@ define('controls/projects/project/site/Input', [
                 'float' : 'left'
             });
 
+            var self = this;
+
             this.$SiteButton = new QUIButton({
                 icon   : 'icon-file-alt',
                 events :
@@ -98,16 +105,10 @@ define('controls/projects/project/site/Input', [
                 }
             }).inject( this.$Elm );
 
-            this.$ClearButton = new QUIButton({
-                icon : 'icon-remove',
-                alt : Locale.get(
-                    'quiqqer/system',
-                    'projects.project.site.input.clear'
-                ),
-                title : Locale.get(
-                    'quiqqer/system',
-                    'projects.project.site.input.clear'
-                ),
+            new QUIButton({
+                icon   : 'icon-remove',
+                alt    : Locale.get( 'quiqqer/system', 'projects.project.site.input.clear' ),
+                title  : Locale.get( 'quiqqer/system', 'projects.project.site.input.clear' ),
                 events :
                 {
                     onClick : function() {
@@ -126,5 +127,4 @@ define('controls/projects/project/site/Input', [
             return this.$Elm;
         }
     });
-
 });

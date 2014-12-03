@@ -1,7 +1,7 @@
 
 /**
  *
- * @module
+ * @module controls/projects/project/site/Select
  * @author www.pcsg.de (Henning Leutz)
  */
 
@@ -292,7 +292,7 @@ define('controls/projects/project/site/Select', [
         /**
          * Add a site ID to the select
          *
-         * @param {integer} siteId
+         * @param {number} siteId
          */
         addSiteId : function(siteId)
         {

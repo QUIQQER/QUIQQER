@@ -53,7 +53,7 @@ define('controls/projects/project/site/SiteChildrenSort', [
         /**
          * Create the DOMNode
          *
-         * @return {DOMNode}
+         * @return {HTMLElement}
          */
         create : function()
         {
@@ -205,9 +205,6 @@ define('controls/projects/project/site/SiteChildrenSort', [
 
         /**
          * Display the children in the grid
-         *
-         * @param {controls/projects/project/Panel} Panel - Site Panel
-         * @param {controls/grid/Grid} GridTable - grid in the site panel
          */
         displayChildren : function()
         {
@@ -307,8 +304,7 @@ define('controls/projects/project/site/SiteChildrenSort', [
         /**
          * Save the actually sort of the children
          *
-         * @param {classes/projects/project/Site} Site
-         * @param {Function} callback - [optional] callback function
+         * @param {Function} [callback] - (optional), callback function
          */
         save : function(callback)
         {

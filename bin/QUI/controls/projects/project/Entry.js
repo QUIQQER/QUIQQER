@@ -69,7 +69,7 @@ define('controls/projects/project/Entry', [
          * Return the binded project
          *
          * @method controls/projects/project/Entry#getProject
-         * @return {classes/projects/Project} Binded Project
+         * @return {Object} Binded Project - classes/projects/Project
          */
         getProject : function()
         {
@@ -80,7 +80,7 @@ define('controls/projects/project/Entry', [
          * Create the DOMNode of the entry
          *
          * @method controls/projects/project/Entry#create
-         * @return {DOMNode} Main DOM-Node Element
+         * @return {HTMLElement} Main DOM-Node Element
          */
         create : function()
         {
@@ -175,7 +175,7 @@ define('controls/projects/project/Entry', [
          * Refresh the data of the projects
          *
          * @method controls/projects/project/Entry#refresh
-         * @return {this} self
+         * @return {Object} this (controls/projects/project/Entry)
          */
         refresh : function()
         {
@@ -199,7 +199,7 @@ define('controls/projects/project/Entry', [
          *
          * @method controls/projects/project/Entry#$onProjectUpdate
          * @param {classes/projects/Project} Project
-         * @return {this} self
+         * @return {Object} this (controls/projects/project/Entry)
          */
         $onProjectUpdate : function(Project)
         {

@@ -1,14 +1,21 @@
+
 /**
  * Project settings panel
  *
+ * @module controls/projects/project/Settings
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires controls/Control
- * @requires Projects
- *
- * @module controls/projects/Settings
+ * @require qui/controls/desktop/Panel
+ * @require qui/controls/buttons/Button
+ * @require qui/controls/windows/Confirm
+ * @require qui/utils/Form
+ * @require utils/Template
+ * @require controls/lang/Popup
+ * @require Projects
+ * @require Ajax
+ * @require Locale
+ * @require css!controls/projects/project/Settings.css
  */
-
 define('controls/projects/project/Settings', [
 
     'qui/controls/desktop/Panel',
@@ -141,7 +148,7 @@ define('controls/projects/project/Settings', [
                     self.addCategory( list[ i ] );
                 }
 
-                self.getProject().getConfig(function(result, Request)
+                self.getProject().getConfig(function(result)
                 {
                     self.setAttributes({
                         name  : 'projects-panel',
@@ -297,9 +304,8 @@ define('controls/projects/project/Settings', [
                         onClick : function()
                         {
                             new LangPopup({
-                                events :
-                                {
-                                    onSubmit : function(value, Popup) {
+                                events : {
+                                    onSubmit : function(value) {
                                         self.addLangToProject( value[0] );
                                     }
                                 }
@@ -379,6 +385,8 @@ define('controls/projects/project/Settings', [
 
         /**
          * Add a language to the project
+         *
+         * @param {String} lang
          */
         addLangToProject : function(lang)
         {
@@ -403,14 +411,13 @@ define('controls/projects/project/Settings', [
         /**
          * event : on category enter
          *
-         * @param {qui/controls/desktop/Panel} Panel
-         * @param {qui/controls/buttons/Button} Category
+         * @param {Object} Panel - qui/controls/desktop/Panel
+         * @param {Object} Category - qui/controls/buttons/Button
          */
         $onCategoryEnter : function(Panel, Category)
         {
             var self = this,
-                name = Category.getAttribute( 'name' ),
-                file = Category.getAttribute( 'file' );
+                name = Category.getAttribute( 'name' );
 
             if ( name == 'settings' ) {
                 return;
@@ -419,7 +426,7 @@ define('controls/projects/project/Settings', [
             this.Loader.show();
             this.getBody().set( 'html', '' );
 
-            Ajax.get('ajax_settings_category', function(result, Request)
+            Ajax.get('ajax_settings_category', function(result)
             {
                 var Body = self.getBody();
 
