@@ -14,7 +14,7 @@
  * @require css!controls/projects/project/media/Input.css
  */
 
-define([
+define('controls/projects/project/media/Input', [
 
     'qui/controls/Control',
     'qui/controls/buttons/Button',
@@ -33,7 +33,7 @@ define([
      * @class controls/projects/Input
      *
      * @param {Object} options
-     * @param {DOMNode Input} Input [optional] -> if no input given, one would be created
+     * @param {HTMLElement} [Input] - (optional) if no input given, one would be created
      *
      * @memberof! <global>
      */
@@ -62,7 +62,7 @@ define([
         /**
          * Create the DOMNode
          *
-         * @return {DOMNode}
+         * @return {HTMLElement}
          */
         create : function()
         {
@@ -136,7 +136,7 @@ define([
                 }
             }).inject( this.$Elm );
 
-            this.$ClearButton = new QUIButton({
+            new QUIButton({
                 icon   : 'icon-remove',
                 alt    : Locale.get('quiqqer/system', 'projects.project.site.media.input.clear.alt'),
                 title  : Locale.get('quiqqer/system', 'projects.project.site.media.input.clear.alt'),
@@ -212,7 +212,7 @@ define([
                         MiniLoader.destroy();
                         self.$Preview.setStyle( 'background', 'url('+ result +') no-repeat center center' );
                     },
-                    onError : function(Elm)
+                    onError : function()
                     {
                         self.$Preview.getElements( '.icon-refresh' )
                                      .removeClass( 'icon-refresh' )
@@ -220,7 +220,7 @@ define([
                                      .addClass( 'icon-warning-sign' );
 
                     }
-                })
+                });
 
             }, {
                 fileurl   : value,

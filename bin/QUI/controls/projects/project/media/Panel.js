@@ -5,20 +5,27 @@
  * @module controls/projects/project/media/Panel
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require controls/Control
- * @require classes/projects/Media
- * @require classes/request/Upload
- * @require controls/projects/media/Sitemap
+ * @require qui/QUI
+ * @require qui/controls/desktop/Panel
+ * @require classes/projects/project/Media
+ * @require controls/projects/project/media/Sitemap
+ * @require classes/projects/project/media/panel/DOMEvents
+ * @require classes/projects/project/media/panel/ContextMenu
+ * @require qui/controls/breadcrumb/Item
  * @require controls/grid/Grid
- * @require controls/projects/project/media/PanelDOMEvents
- * @require controls/projects/project/media/PanelContextMenu
  * @require controls/upload/Form
+ * @require classes/request/Upload
+ * @require Ajax
+ * @require Locale
+ * @require utils/Media
+ * @require Projects
+ * @require css!controls/projects/project/media/Panel.css
  *
  * @event onDragDropComplete [this, event]
  * @event childClick [ this, imageData ]
  */
 
-define([
+define('controls/projects/project/media/Panel', [
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
@@ -63,7 +70,7 @@ define([
      *
      * @class controls/projects/project/media/Panel
      *
-     * @param {classes/projects/project/Media} Media
+     * @param {Object} Media - classes/projects/project/Media
      * @param {Object} options
      *
      * @memberof! <global>
@@ -236,9 +243,9 @@ define([
                         change : function(Item)
                         {
                             var Btn = Item.getAttribute('Button');
+                            var viewText = Locale.get( lg, 'projects.project.site.media.panel.btn.view.title');
 
-                            var viewText = Locale.get( lg, 'projects.project.site.media.panel.btn.view.title'),
-                                viewText = viewText +' '+ Item.getAttribute('text');
+                            viewText = viewText +' '+ Item.getAttribute('text');
 
                             Btn.setAttribute('Active', Item);
                             Btn.setAttribute('text', viewText);
@@ -259,7 +266,7 @@ define([
                         icon   : 'icon-th',
                         events :
                         {
-                            onMouseDown : function(Item, event) {
+                            onMouseDown : function(Item) {
                                 View.change( Item );
                             }
                         }
@@ -271,7 +278,7 @@ define([
                         icon   : 'icon-list-alt',
                         events :
                         {
-                            onMouseDown : function(Item, event) {
+                            onMouseDown : function(Item) {
                                 View.change( Item );
                             }
                         }
@@ -283,7 +290,7 @@ define([
                         icon   : 'icon-eye-open',
                         events :
                         {
-                            onMouseDown : function(Item, event) {
+                            onMouseDown : function(Item) {
                                 View.change( Item );
                             }
                         }
@@ -324,7 +331,7 @@ define([
                         textimage : 'icon-folder-open-alt',
                         events    :
                         {
-                            onClick : function(Item) {
+                            onClick : function() {
                                 self.createFolder();
                             }
                         }
@@ -344,7 +351,7 @@ define([
                         icon   : 'icon-file',
                         events :
                         {
-                            onMouseDown : function(Item, event) {
+                            onMouseDown : function() {
                                 self.uploadFiles();
                             }
                         }
@@ -356,7 +363,7 @@ define([
                         icon   : 'icon-archive',
                         events :
                         {
-                            onMouseDown : function(Item, event) {
+                            onMouseDown : function() {
                                 self.uploadArchive();
                             }
                         }
@@ -402,8 +409,7 @@ define([
          * Opens the file and load the breadcrumb
          *
          * @method controls/projects/project/media/Panel#openID
-         *
-         * @param {Integer} fileid
+         * @param {Number} fileid
          */
         openID : function(fileid)
         {
@@ -452,13 +458,13 @@ define([
                 self.setAttribute( 'fileid', MediaFile.getId() );
 
                 // load children
-                MediaFile.getChildren(function(children, Request)
+                MediaFile.getChildren(function(children)
                 {
                     self.$children = children;
                     self.$view( children );
 
                     // load breadcrumb
-                    self.$File.getBreadcrumb(function(result, Request)
+                    self.$File.getBreadcrumb(function(result)
                     {
                         self.$createBreadCrumb( result );
 
@@ -476,7 +482,7 @@ define([
         /**
          * Return the Media object of the panel
          *
-         * @return {classes/projects/project/Media} Media
+         * @return {Object} Media - classes/projects/project/Media
          */
         getMedia : function()
         {
@@ -486,7 +492,7 @@ define([
         /**
          * Return the Project object of the Media
          *
-         * @return {classes/projects/Project} Project
+         * @return {Object} Project - classes/projects/Project
          */
         getProject : function()
         {
@@ -496,7 +502,7 @@ define([
         /**
          * Return the current displayed media folder
          *
-         * @return {classes/projects/project/media/Folder} Folder
+         * @return {Object} Folder - classes/projects/project/media/Folder
          */
         getCurrentFile : function()
         {
@@ -631,7 +637,7 @@ define([
          *
          * @method controls/projects/project/media/Panel#uploadArchive
          *
-         * @param {Bool} extract - [optional] extrat = true => archiv upload,
+         * @param {Boolean} [extract] - (optional), extrat = true => archiv upload,
          *                                    extrat = false => standard upload
          */
         $upload : function(extract)
@@ -678,7 +684,7 @@ define([
                         fileid : self.getAttribute('fileid'),
                         events :
                         {
-                            onDragenter: function(event, Elm, Upload)
+                            onDragenter: function(event, Elm)
                             {
                                 if ( !Elm.hasClass( 'qui-panel-sheet-body' )  ) {
                                     Elm = Elm.getParent( 'qui-panel-sheet-body' );
@@ -692,25 +698,25 @@ define([
                                 event.stop();
                             },
 
-                            onDragleave: function(event, Elm, Upload)
+                            onDragleave: function(event, Elm)
                             {
                                 if ( Elm.hasClass( 'qui-panel-sheet-body' ) ) {
                                     Elm.removeClass( 'qui-media-drag' );
                                 }
                             },
 
-                            onDragend : function(event, Elm, Upload)
+                            onDragend : function(event, Elm)
                             {
                                 if ( Elm.hasClass( 'qui-panel-sheet-body' ) ) {
                                     Elm.removeClass( 'qui-media-drag' );
                                 }
                             },
 
-                            onBegin : function(Control) {
+                            onBegin : function() {
                                 Sheet.hide();
                             },
 
-                            onComplete : function(Control)
+                            onComplete : function()
                             {
                                 var panels = QUI.Controls.get( 'projects-media-panel' );
 
@@ -746,7 +752,7 @@ define([
          * Download the file
          *
          * @method controls/projects/project/media/Panel#downloadFile
-         * @param {Integer} fileid - ID of the file
+         * @param {Number} fileid - ID of the file
          */
         downloadFile : function(fileid)
         {
@@ -778,7 +784,7 @@ define([
                 id      : this.getAttribute( 'startid' ),
                 events  :
                 {
-                    onItemClick : function(Item, Sitemap)
+                    onItemClick : function(Item)
                     {
                         self.openID(
                             Item.getAttribute( 'value' )
@@ -814,7 +820,7 @@ define([
             var self       = this,
                 Breadcrumb = this.getBreadcrumb(),
 
-                func_open = function(Item, event) {
+                func_open = function(Item) {
                     self.openID( Item.getAttribute( 'id' ) );
                 };
 
@@ -895,12 +901,7 @@ define([
         {
             var self     = this,
                 Body     = this.getContent(),
-                Media    = this.$Media,
-                Project  = Media.getProject(),
-                droplist = [],
-                project  = Project.getName(),
-
-                Breadcrumb = this.Breadcrumb;
+                droplist = [];
 
             // create the media body
             var MediaBody;
@@ -920,11 +921,6 @@ define([
                 'data-id'   : this.getAttribute('fileid'),
                 'data-type' : 'folder'
             });
-
-//            if ( this.$File ) {
-//                MediaBody.set('title', this.$File.getAttribute('title'));
-//            }
-
 
             QUI.Storage.set(
                 'qui-media-panel-view',
@@ -953,14 +949,14 @@ define([
             // Upload events
             new RequestUpload(droplist, {
 
-                onDragenter: function(event, Elm, Upload)
+                onDragenter: function(event, Elm)
                 {
                     self.$dragEnter( event, Elm );
 
                     event.stop();
                 },
 
-                onDragend : function(event, Elm, Upload)
+                onDragend : function(event, Elm)
                 {
                     self.$dragLeave( event, Elm );
 
@@ -974,12 +970,11 @@ define([
         /**
          * OnDrop Event
          *
-         * @param {DOMEvent} event                - DragDrop Event
-         * @param {Array|FileList} files          - List of droped files
-         * @param {DOMNode} Elm          		  - Droped Parent Element
-         * @param {classes/request/Upload} Upload - Upload control
+         * @param {DOMEvent} event       - DragDrop Event
+         * @param {Array|FileList} files - List of droped files
+         * @param {HTMLElement} Elm      - Droped Parent Element
          */
-        $viewOnDrop : function(event, files, Elm, Upload)
+        $viewOnDrop : function(event, files, Elm)
         {
             if ( !files.length ) {
                 return;
@@ -988,28 +983,6 @@ define([
             if ( Elm.hasClass('qui-media-content') )
             {
                 this.$PanelContextMenu.showDragDropMenu( files, Elm, event );
-
-                /*
-                this.$Media.get( this.getAttribute('fileid'), function(Item)
-                {
-                    Item.uploadFiles( files, function(File)
-                    {
-                        var i, len;
-
-                        var params   = File.getAttribute('params'),
-                            parentid = params.parentid,
-                            project  = params.project,
-
-                            panels   = QUI.Controls.get( 'projects-media-panel' );
-
-                        for ( i = 0, len = panels.length; i < len; i++ ) {
-                            panels[ i ].refresh();
-                        }
-
-                    } );
-                });
-                */
-
                 return;
             }
 
@@ -1031,13 +1004,13 @@ define([
          * list the children as symbol icons
          *
          * @method controls/projects/project/media/Panel#$viewSymbols
-         * @params {array} children
-         * @params {DOMNode} Container - Parent Container for the DOMNodes
-         * @return {array} the drop-upload-list
+         * @params {Array} children
+         * @params {HTMLElement} Container - Parent Container for the DOMNodes
+         * @return {Array} the drop-upload-list
          */
         $viewSymbols : function(children, Container)
         {
-            var i, len, Elm, Child, func_context;
+            var i, len, Elm, Child;
 
             var droplist = [],
                 Media    = this.$Media,
@@ -1119,14 +1092,13 @@ define([
          * preview for images
          *
          * @method controls/projects/project/media/Panel#$viewSymbols
-         * @params {array} children
-         * @params {DOMNode} Container - Parent Container for the DOMNodes
-         * @return {array} the drop-upload-list
+         * @params {Array} children
+         * @params {HTMLElement} Container - Parent Container for the DOMNodes
+         * @return {Array} the drop-upload-list
          */
         $viewPreview : function(children, Container)
         {
-            var i, len, url,
-                Child, Elm, func_context;
+            var i, len, url, Child, Elm;
 
             var droplist = [],
                 Media    = this.$Media,
@@ -1254,8 +1226,7 @@ define([
                     type    : Target.get('data-type')
                 };
 
-                this.fireEvent( 'childClick', [ self, imageData ] );
-
+                this.fireEvent( 'childClick', [ this, imageData ] );
                 return;
             }
 
@@ -1293,9 +1264,9 @@ define([
          *
          * @method controls/projects/project/media/Panel#$viewDetails
          *
-         * @params {array} children
+         * @params {Array} children
          * @params {DOMNode} Container - Parent Container for the DOMNodes
-         * @return {array} the drop-upload-list
+         * @return {Array} the drop-upload-list
          */
         $viewDetails : function(children, Container)
         {
@@ -1371,7 +1342,7 @@ define([
             });
 
             Grid.addEvents({
-                onClick : function(data, Item)
+                onClick : function(data)
                 {
                     var Grid = data.target,
                         row  = data.row;
@@ -1454,9 +1425,9 @@ define([
                     maxWidth    : 500,
                     events      :
                     {
-                        onSubmit : function(value, Win)
+                        onSubmit : function(value)
                         {
-                            self.$File.createFolder( value, function(Folder, Request)
+                            self.$File.createFolder( value, function(Folder)
                             {
                                 if ( typeOf( Folder ) == 'classes/projects/project/media/Folder' ) {
                                     self.openID( Folder.getId() );
@@ -1472,9 +1443,9 @@ define([
          * Activate the media item from the DOMNode
          *
          * @method controls/projects/project/media/Panel#activateItem
-         * @param {DOMNode} DOMNode
+         * @param {HTMLElement} DOMNode
          *
-         * @depricated this.$DOMEvents.activate
+         * @deprecated this.$DOMEvents.activate
          */
         activateItem : function(DOMNode)
         {
@@ -1485,9 +1456,9 @@ define([
          * Activate the media items
          *
          * @method controls/projects/project/media/Panel#activateItem
-         * @param {Array} DOMNode List
+         * @param {Array} DOMNode - List
          *
-         * @depricated this.$DOMEvents.activate
+         * @deprecated this.$DOMEvents.activate
          */
         activateItems : function(DOMNode)
         {
@@ -1498,9 +1469,9 @@ define([
          * Deactivate the media item from the DOMNode
          *
          * @method controls/projects/project/media/Panel#deactivateItem
-         * @param {DOMNode} DOMNode
+         * @param {Array} DOMNode - List
          *
-         * @depricated this.$DOMEvents.deactivate
+         * @deprecated this.$DOMEvents.deactivate
          */
         deactivateItem : function(DOMNode)
         {
@@ -1511,9 +1482,9 @@ define([
          * Deactivate the media item from the DOMNode
          *
          * @method controls/projects/project/media/Panel#deactivateItem
-         * @param {DOMNode} DOMNode
+         * @param {Array} DOMNode - List
          *
-         * @depricated this.$DOMEvents.deactivate
+         * @deprecated this.$DOMEvents.deactivate
          */
         deactivateItems : function(DOMNode)
         {
@@ -1524,7 +1495,7 @@ define([
          * Delete the media item from the DOMNode
          *
          * @method controls/projects/project/media/Panel#deleteItem
-         * @param {DOMNode} DOMNode
+         * @param {Array|NodeList|HTMLElement} DOMNode - list
          */
         deleteItem : function(DOMNode)
         {
@@ -1535,7 +1506,7 @@ define([
          * Delete the media items
          *
          * @method controls/projects/project/media/Panel#deleteItems
-         * @param {Array} DOMNode List
+         * @param {Array|NodeList} items List
          */
         deleteItems : function(items)
         {
@@ -1546,7 +1517,7 @@ define([
          * Rename the folder
          *
          * @method controls/projects/project/media/Panel#renameItem
-         * @param {DOMNode} DOMNode
+         * @param {HTMLElement} DOMNode
          */
         renameItem : function(DOMNode)
         {
@@ -1557,7 +1528,7 @@ define([
          * Opens the replace dialoge
          *
          * @method controls/projects/project/media/Panel#replaceItem
-         * @param {DOMNode} DOMNode
+         * @param {HTMLElement} DOMNode
          */
         replaceItem : function(DOMNode)
         {
@@ -1591,7 +1562,7 @@ define([
          *
          * @return {Array}
          */
-        getSelectedItems : function(Item)
+        getSelectedItems : function()
         {
             return this.$selected;
         },
@@ -1599,8 +1570,8 @@ define([
         /**
          * Is the item selectable
          *
-         * @param {Object|DOMNode} Item
-         * @return {Bool}
+         * @param {Object|HTMLElement} Item
+         * @return {Boolean}
          */
         isItemSelectable : function(Item)
         {
@@ -1659,17 +1630,13 @@ define([
                 return true;
             }
 
-            if ( typeFound && mimeTypeFound ) {
-                return true;
-            }
-
-            return false;
+            return ( typeFound && mimeTypeFound );
         },
 
         /**
          * Copy Items to a folder
          *
-         * @param {Integer} folderid - Folder which copy the files into
+         * @param {Number} folderid - Folder which copy the files into
          * @param {Array} ids        - file ids
          */
         copyTo : function(folderid, ids)
@@ -1682,7 +1649,7 @@ define([
 
             self.Loader.show();
 
-            Ajax.post('ajax_media_copy', function(result, Request)
+            Ajax.post('ajax_media_copy', function()
             {
                 self.Loader.hide();
 
@@ -1697,7 +1664,7 @@ define([
         /**
          * Move Items to a folder
          *
-         * @param {Integer} folderid - Folder which copy the files into
+         * @param {Number} folderid - Folder which copy the files into
          * @param {Array} ids        - file ids
          */
         moveTo : function(folderid, ids)
@@ -1710,7 +1677,7 @@ define([
 
             self.Loader.show();
 
-            Ajax.post('ajax_media_move', function(result, Request)
+            Ajax.post('ajax_media_move', function()
             {
                 self.openID( self.getAttribute('fileid') );
             }, {
@@ -1833,8 +1800,8 @@ define([
         /**
          * If the DragDrop was dropped to a droppable element
          *
-         * @param {DOMNode} Element   - the dropabble element (media item div)
-         * @param {DOMNode} Droppable - drop box element (folder)
+         * @param {HTMLElement} Element   - the dropabble element (media item div)
+         * @param {HTMLElement} Droppable - drop box element (folder)
          * @param {DOMEvent} event
          */
         $drop : function(Element, Droppable, event)
@@ -1858,10 +1825,7 @@ define([
                     ids     = Element.get( 'data-ids' ),
                     Media   = this.getMedia(),
                     Project = Media.getProject(),
-
-                    lang    = Project.getLang(),
                     project = Project.getName();
-
 
                 ids = ids.split( ',' );
 
@@ -1885,10 +1849,8 @@ define([
 
         /**
          * Stops the Drag Drop
-         *
-         * @param {DOMEvent} event
          */
-        $dragStop : function(event)
+        $dragStop : function()
         {
             if ( Browser.ie8 ) {
                 return;
@@ -1922,7 +1884,7 @@ define([
          *
          * @param {DOMEvent} event
          */
-        $dragComplete : function(event, Element, Droppable)
+        $dragComplete : function(event)
         {
             this.fireEvent( 'dragDropComplete', [ this, event ] );
             this.$dragStop();
@@ -1932,7 +1894,7 @@ define([
          * on drag enter
          *
          * @param {DOMEvent} event
-         * @param {DOMNode} Elm -> node for dropable
+         * @param {HTMLElement} Elm -> node for dropable
          */
         $dragEnter : function(event, Elm)
         {
@@ -1991,7 +1953,7 @@ define([
          * on drag leave
          *
          * @param {DOMEvent} event
-         * @param {DOMNode} Elm -> node for dropable
+         * @param {HTMLElement} Elm -> node for dropable
          */
         $dragLeave : function(event, Elm)
         {

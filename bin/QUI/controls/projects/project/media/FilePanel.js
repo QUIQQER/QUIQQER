@@ -18,7 +18,7 @@
  * @requir css!controls/projects/project/media/FilePanel.css
  */
 
-define([
+define('controls/projects/project/media/FilePanel', [
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
@@ -162,10 +162,9 @@ define([
                 }
             });
 
-            Template.get('project_media_file', function(result, Request)
+            Template.get('project_media_file', function(result)
             {
-                var File = self.$File,
-                    Body = self.getContent();
+                var Body = self.getContent();
 
                 Body.set(
                   'html',
@@ -319,7 +318,7 @@ define([
 
             this.Loader.show();
 
-            File.save(function(result, Request)
+            File.save(function()
             {
                 QUI.getMessageHandler(function(MH) {
                     MH.addSuccess(
@@ -360,7 +359,7 @@ define([
                     {
                         Win.Loader.show();
 
-                        self.getFile().del(function(result, Request)
+                        self.getFile().del(function()
                         {
                            self.close();
                            Win.close();
@@ -426,7 +425,7 @@ define([
                     textimage : 'icon-save',
                     events    :
                     {
-                        onClick : function(Btn) {
+                        onClick : function() {
                             self.save();
                         }
                     }
@@ -437,7 +436,7 @@ define([
                     textimage : 'icon-trash',
                     events    :
                     {
-                        onClick : function(Btn) {
+                        onClick : function() {
                             self.del();
                         }
                     }
@@ -448,7 +447,7 @@ define([
                     textimage : 'icon-upload',
                     events    :
                     {
-                        onClick : function(Btn) {
+                        onClick : function() {
                             self.replace();
                         }
                     }
@@ -468,7 +467,7 @@ define([
                         Control   : this,
                         events    :
                         {
-                            onClick : function(Btn) {
+                            onClick : function() {
                                 self.deactivate();
                             }
                         }
@@ -485,7 +484,7 @@ define([
                         Control   : this,
                         events    :
                         {
-                            onClick : function(Btn) {
+                            onClick : function() {
                                 self.activate();
                             }
                         }
@@ -514,11 +513,11 @@ define([
                     icon    : 'icon-file-alt',
                     events  :
                     {
-                        onActive : function(Tab) {
+                        onActive : function() {
                             self.$openDetails();
                         },
 
-                        onNormal : function(Tab)
+                        onNormal : function()
                         {
                             var Body = self.getContent();
 
@@ -535,7 +534,7 @@ define([
                     Control : this,
                     events  :
                     {
-                        onActive : function(Tab)
+                        onActive : function()
                         {
                             var Body    = self.getContent(),
                                 Preview = Body.getElement('.qui-media-file-preview');
@@ -551,7 +550,7 @@ define([
                             }).inject( Preview );
                         },
 
-                        onNormal : function(Tab)
+                        onNormal : function()
                         {
                             var Body = self.getContent();
 
@@ -607,13 +606,13 @@ define([
             if ( Inp && typeof this.$Download === 'undefined' )
             {
                 this.$Download = new QUIButton({
-                    name    : 'download_file',
-                    image   : 'icon-download',
-                    title   : Locale.get( lg, 'projects.project.site.media.filePanel.btn.downloadFile.title' ),
-                    alt     : Locale.get( lg, 'projects.project.site.media.filePanel.btn.downloadFile.alt' ),
-                    events  :
+                    name   : 'download_file',
+                    image  : 'icon-download',
+                    title  : Locale.get( lg, 'projects.project.site.media.filePanel.btn.downloadFile.title' ),
+                    alt    : Locale.get( lg, 'projects.project.site.media.filePanel.btn.downloadFile.alt' ),
+                    events :
                     {
-                        onClick : function(Btn) {
+                        onClick : function() {
                             self.getFile().download();
                         }
                     },

@@ -1,6 +1,8 @@
 
 /**
  * Panel for the QUIQQER Logs
+ *
+ * @maybe deprecated, if not, move it to the log package
  */
 
 define('controls/logs/Panel', [
@@ -149,10 +151,8 @@ define('controls/logs/Panel', [
                     var Body   = Control.getContent(),
                         Parent = Body.getParent();
 
-                    var File = Parent.getElement( '.qui-logs-file' );
-
-                    if ( !File ) {
-                        File = new Element('div.qui-logs-file').inject( Parent );
+                    if ( !Parent.getElement( '.qui-logs-file' ) ) {
+                        new Element('div.qui-logs-file').inject( Parent );
                     }
 
                     Control.refreshFile();
@@ -164,11 +164,11 @@ define('controls/logs/Panel', [
          * Delete a log
          *
          * @param {String} file - name of the log
-         * @param {Function} callback - callback function
+         * @param {Function} [callback] - callback function
          */
         deleteLog : function(file, callback)
         {
-            Ajax.get('ajax_system_logs_delete', function(result)
+            Ajax.get('ajax_system_logs_delete', function()
             {
                 if ( typeof callback !== 'undefined' ) {
                     callback();
@@ -284,7 +284,6 @@ define('controls/logs/Panel', [
                 onDblClick : this.$gridDblClick
             });
 
-
             this.$Search = new Element('input', {
                 'class'     : 'qui-logs-search',
                 placeholder : Locale.get( lg, 'logs.panel.search.placeholder' ),
@@ -309,7 +308,7 @@ define('controls/logs/Panel', [
                     title     : Locale.get( lg, 'logs.panel.search.btn.start.title' ),
                     events    :
                     {
-                        onClick : function(Btn)
+                        onClick : function()
                         {
                             Control.setAttribute(
                                 'search',
@@ -431,19 +430,17 @@ define('controls/logs/Panel', [
         /**
          * Click on the log button to open the log
          *
-         * @param {qui/controls/buttons/button} Btn
+         * @param {Object} Btn - qui/controls/buttons/Button
          */
         $btnOpenLog : function(Btn)
         {
-            this.openLog(
-                Btn.getAttribute( 'file' )
-            );
+            this.openLog( Btn.getAttribute( 'file' ) );
         },
 
         /**
          * event : grid refresh
          *
-         * @param {controls/grid/Grid} Grid
+         * @param {Object} Grid - controls/grid/Grid
          */
         $gridRefresh : function(Grid)
         {
@@ -467,22 +464,17 @@ define('controls/logs/Panel', [
 
             Delete.disable();
 
-            if ( len )
-            {
+            if ( len ) {
                 Delete.enable();
-                return;
             }
         },
 
         /**
          * event : on grid dbl click
-         *
-         * @param {Object} data - Grid Data
          */
-        $gridDblClick : function(data)
+        $gridDblClick : function()
         {
-            var target = data.target,
-                sel    = this.$Grid.getSelectedData();
+            var sel = this.$Grid.getSelectedData();
 
             this.openLog( sel[ 0 ].file );
         }

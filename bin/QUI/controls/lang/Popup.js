@@ -1,7 +1,15 @@
+
 /**
  * List all available languages
  *
+ * @module controls/lang/Popup
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/controls/windows/Confirm
+ * @require qui/controls/buttons/Button
+ * @require Locale
+ * @require controls/grid/Grid
+ * @require css!controls/lang/Popup.css
  *
  * @event onSubmit [ {Array}, {this} ]
  */
@@ -83,8 +91,7 @@ define('controls/lang/Popup', [
          */
         $onCreate : function()
         {
-            var self    = this,
-                Content = this.getContent(),
+            var Content = this.getContent(),
                 langs   = this.getLanguages();
 
             var GridContainer = new Element('div', {

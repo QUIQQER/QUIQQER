@@ -15,7 +15,7 @@
  * @require css!controls/projects/project/media/Manager.css
  */
 
-define([
+define('controls/projects/project/media/Manager', [
 
     'qui/controls/desktop/Panel',
     'qui/controls/buttons/Button',
@@ -180,7 +180,7 @@ define([
 
                 Projects.getList(function(result)
                 {
-                    var event_click = function(Itm, event)
+                    var event_click = function(Itm)
                     {
                         var Menu   = Itm.getParent(),
                             Button = Menu.getParent();
@@ -199,6 +199,10 @@ define([
 
                     for ( var project in result )
                     {
+                        if ( !result.hasOwnProperty( project ) ) {
+                            continue;
+                        }
+
                         self.$MD5.appendChild(
                             new QUIContextmenuItem({
                                 icon   : 'icon-picture',
@@ -237,6 +241,7 @@ define([
          * Starts the MD5 calculation for the specific media
          *
          * @param {String} project - Project name of the media
+         * @param {Function} oncomplete
          */
         calcMD5 : function(project, oncomplete)
         {
@@ -249,6 +254,7 @@ define([
          * Starts the SHA1 calculation for the specific media
          *
          * @param {String} project - Project name of the media
+         * @param {Function} oncomplete
          */
         calcSHA1 : function(project, oncomplete)
         {

@@ -4,6 +4,10 @@
  *
  * @module classes/projects/project/media/panel/ContextMenu
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/controls/contextmenu/Item
+ * @require qui/controls/contextmenu/Seperator
+ * @require qui/utils/Elements
  */
 
 define([
@@ -71,10 +75,7 @@ define([
             }
 
             // zIndex
-            Menu.getElm().setStyle(
-                'zIndex',
-                QUIElementUtil.getComputedZIndex( Elm ) + 1
-            );
+            Menu.getElm().setStyle( 'zIndex', QUIElementUtil.getComputedZIndex( Elm ) + 1 );
 
             Menu.setPosition( event.page.x, event.page.y )
                 .setTitle( Elm.get('title') )
@@ -86,7 +87,7 @@ define([
          * Create the context menu for the panel
          *
          * @method classes/projects/project/media/panel/ContextMenu#createPanelMenu
-         * @param {qui/controls/contextmenu/Menu} Menu
+         * @param {Object} Menu - qui/controls/contextmenu/Menu
          */
         createPanelMenu : function(Menu)
         {
@@ -100,7 +101,7 @@ define([
                         Control : this,
                         events  :
                         {
-                            onMouseDown : function(Item, event)
+                            onMouseDown : function(Item)
                             {
                                 Item.getAttribute('Control')
                                     .getPanel()
@@ -114,7 +115,7 @@ define([
         /**
          * Return the context menu für a media item
          *
-         * @param {DOMNode} DOMNode - DOM media item element
+         * @param {HTMLElement} DOMNode - DOM media item element
          * @return {qui/controls/contextmenu/Menu}
          */
         getFileMenu : function(DOMNode)
@@ -149,7 +150,7 @@ define([
                     icon   : 'icon-trash',
                     events :
                     {
-                        onMouseDown : function(Item, event)
+                        onMouseDown : function()
                         {
                             if ( !DOMNode ) {
                                 return;
@@ -173,7 +174,7 @@ define([
                         text   : DOMNode.get('title'),
                         events :
                         {
-                            onMouseDown : function(Item, event)
+                            onMouseDown : function()
                             {
                                 if ( !DOMNode ) {
                                     return;
@@ -189,7 +190,7 @@ define([
                         text   : 'Alle markierte Elemente',
                         events :
                         {
-                            onMouseDown : function(Item, event)
+                            onMouseDown : function()
                             {
                                 var Panel   = self.getPanel(),
                                     sels    = Panel.getSelectedItems();
@@ -217,7 +218,7 @@ define([
                     icon   : 'icon-retweet',
                     events :
                     {
-                        onMouseDown : function(Item, event)
+                        onMouseDown : function()
                         {
                             if ( !DOMNode ) {
                                 return;
@@ -239,7 +240,7 @@ define([
                         icon   : 'icon-download',
                         events :
                         {
-                            onMouseDown : function(Item, event)
+                            onMouseDown : function()
                             {
                                 if ( !DOMNode ) {
                                     return;
@@ -260,8 +261,8 @@ define([
         /**
          * If the DragDrop was dropped to a droppable element
          *
-         * @param {DOMNode|File} Element   - the dropabble element (media item div or File)
-         * @param {DOMNode} Droppable - drop box element (folder)
+         * @param {HTMLElement|File} Element   - the dropabble element (media item div or File)
+         * @param {HTMLElement} Droppable - drop box element (folder)
          * @param {DOMEvent} event
          */
         showDragDropMenu : function(Element, Droppable, event)
@@ -311,7 +312,7 @@ define([
                                 Panel.$Media.replace(
                                     Droppable.get('data-id'),
                                     Element,
-                                    function(File)
+                                    function()
                                     {
                                         Panel.refresh();
                                     }
@@ -430,8 +431,8 @@ define([
         /**
          * Return the context menu for the folder
          *
-         * @param {DOMNode} DOMNode - DOM media item element
-         * @return {qui/controls/contextmenu/Menu}
+         * @param {HTMLElement} DOMNode - DOM media item element
+         * @return {Object} qui/controls/contextmenu/Menu
          */
         getFolderMenu : function(DOMNode)
         {
@@ -461,7 +462,7 @@ define([
                     icon   : 'icon-font',
                     events :
                     {
-                        onMouseDown : function(Item, event)
+                        onMouseDown : function()
                         {
                             if ( !DOMNode ) {
                                 return;
@@ -478,7 +479,7 @@ define([
                     icon   : 'icon-trash',
                     events :
                     {
-                        onMouseDown : function(Item, event)
+                        onMouseDown : function()
                         {
                             if ( !DOMNode ) {
                                 return;
@@ -496,8 +497,8 @@ define([
         /**
          * Return the activation menu item
          *
-         * @param {DOMNode} DOMNode - DOM media item element
-         * @return {qui/controls/contextmenu/Item}
+         * @param {HTMLElement} DOMNode - DOM media item element
+         * @return {Object} qui/controls/contextmenu/Item
          */
         getActivateItem : function(DOMNode)
         {
@@ -512,7 +513,7 @@ define([
                     icon   : 'icon-ok',
                     events :
                     {
-                        onMouseDown : function(Item, event)
+                        onMouseDown : function()
                         {
                             if ( !DOMNode ) {
                                 return;
@@ -536,13 +537,13 @@ define([
                     text   : DOMNode.get('title'),
                     events :
                     {
-                        onMouseDown : function(Item, event)
+                        onMouseDown : function()
                         {
                             if ( !DOMNode ) {
                                 return;
                             }
 
-                            Control.getPanel().activateItem( DOMNode );
+                            self.getPanel().activateItem( DOMNode );
                         }
                     }
                 })
@@ -552,10 +553,10 @@ define([
                     text   : 'Alle markierte Elemente',
                     events :
                     {
-                        onMouseDown : function(Item, event)
+                        onMouseDown : function()
                         {
-                            var Panel   = self.getPanel(),
-                                sels    = Panel.getSelectedItems();
+                            var Panel = self.getPanel(),
+                                sels  = Panel.getSelectedItems();
 
                             self.getPanel().activateItems( sels );
                         }
@@ -569,8 +570,8 @@ define([
         /**
          * Return the deactivation menu item
          *
-         * @param {DOMNode} DOMNode - DOM media item element
-         * @return {qui/controls/contextmenu/Item}
+         * @param {HTMLElement} DOMNode - DOM media item element
+         * @return {Object} qui/controls/contextmenu/Item
          */
         getDeActivateItem : function(DOMNode)
         {
@@ -585,7 +586,7 @@ define([
                     icon    : 'icon-remove',
                     events  :
                     {
-                        onMouseDown : function(Item, event)
+                        onMouseDown : function()
                         {
                             if ( !DOMNode ) {
                                 return;
@@ -609,7 +610,7 @@ define([
                     text   : DOMNode.get('title'),
                     events :
                     {
-                        onMouseDown : function(Item, event)
+                        onMouseDown : function()
                         {
                             if ( !DOMNode ) {
                                 return;
@@ -625,7 +626,7 @@ define([
                     text   : 'Alle markierte Elemente',
                     events :
                     {
-                        onMouseDown : function(Item, event)
+                        onMouseDown : function()
                         {
                             var Panel   = self.getPanel(),
                                 sels    = Panel.getSelectedItems();
