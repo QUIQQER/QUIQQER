@@ -38,7 +38,7 @@
  * @require css!controls/grid/Grid.css
  */
 
-define([
+define('controls/grid/Grid', [
 
     'qui/controls/Control',
     'qui/controls/buttons/Button',
@@ -353,12 +353,21 @@ define([
         {
             var Container = this.container,
                 width     = Container.getSize().x,
-                buttons   = Container.getElements( '.tDiv button' );
+                buttons   = Container.getElements( '.tDiv button'),
+                menuWidth = 0;
+
+            buttons.setStyle( 'display', null );
+
+            if ( this.$Menu )
+            {
+                this.$Menu.hide();
+
+                menuWidth = this.$Menu.getElm().getSize().x;
+            }
 
             var sumWidth = buttons.map(function(Button) {
-                return Button.getComputedSize().width;
-            }).sum() + ( buttons.length * 15 );
-
+                return Button.getComputedSize().totalWidth;
+            }).sum() - menuWidth + ( buttons.length * 10 );
 
             if ( sumWidth > width )
             {
@@ -1387,8 +1396,6 @@ define([
                 }
             });
 
-            var bDiv = container.getElement('.bDiv');
-
             gBlock.setStyles({
                 width  : this.getAttribute('width'),
                 height : this.getAttribute('height')-1,
@@ -1650,7 +1657,7 @@ define([
             container.setStyle( 'width', this.getAttribute('width') );
             container.setStyle( 'height', this.getAttribute('height') );
 
-            var width = this.getAttribute('width') - 2;
+            var width = this.getAttribute('width');
 
             if ( this.getAttribute('buttons') ) {
                 tDiv.setStyle('width', width);
@@ -1819,7 +1826,7 @@ define([
             t.rePosDrag();
         },
 
-        onColumnDragStart : function(target)
+        onColumnDragStart : function()
         {
             this.dragging = true;
         },
@@ -1920,7 +1927,7 @@ define([
             this.setAttribute('width', width);
 
             this.container.setStyle('width', width);
-            this.container.getElement('.bDiv').setStyle('width', width-2);
+            this.container.getElement('.bDiv').setStyle('width', width);
         },
 
         renderData : function()
@@ -1973,10 +1980,10 @@ define([
          *
          * @method controls/grid/Grid#renderRow
          *
-         * @param {Integer} row - row number
+         * @param {Number} row - row number
          * @param {Object} data - data for the row
          *
-         * @return {DOMNode} li
+         * @return {HTMLElement} li
          */
         renderRow : function(row, data)
         {
@@ -2324,10 +2331,8 @@ define([
                                 return;
                             }
 
-                            if ( key === 'image' || key === 'textimage' )
-                            {
+                            if ( key === 'image' || key === 'textimage' ) {
                                 this.setAttribute( 'icon', value );
-                                return;
                             }
 
                         }.bind( Item )

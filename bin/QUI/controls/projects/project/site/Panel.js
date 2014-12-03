@@ -376,7 +376,12 @@ define([
          */
         $onResize : function()
         {
-
+            if ( this.$CategoryControl )
+            {
+                if ( "resize" in this.$CategoryControl ) {
+                    this.$CategoryControl.resize();
+                }
+            }
         },
 
         /**
