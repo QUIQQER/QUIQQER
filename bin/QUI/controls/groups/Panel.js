@@ -22,6 +22,7 @@
 
 define([
 
+    'qui/QUI',
     'qui/controls/desktop/Panel',
     'Groups',
     'Locale',
@@ -42,17 +43,18 @@ define([
 
     var lg = 'quiqqer/system';
 
-    var Panel              = arguments[ 0 ],
-        Groups             = arguments[ 1 ],
-        Locale             = arguments[ 2 ],
-        Grid               = arguments[ 3 ],
-        ControlUtils       = arguments[ 4 ],
-        GroupSitemapWindow = arguments[ 5 ],
-        Template           = arguments[ 6 ],
-        Attention          = arguments[ 7 ],
-        QUIPrompt          = arguments[ 8 ],
-        QUIConfirm         = arguments[ 9 ],
-        QUIButton          = arguments[ 10 ];
+    var QUI                = arguments[ 0 ],
+        Panel              = arguments[ 1 ],
+        Groups             = arguments[ 2 ],
+        Locale             = arguments[ 3 ],
+        Grid               = arguments[ 4 ],
+        ControlUtils       = arguments[ 5 ],
+        GroupSitemapWindow = arguments[ 6 ],
+        Template           = arguments[ 7 ],
+        Attention          = arguments[ 8 ],
+        QUIPrompt          = arguments[ 9 ],
+        QUIConfirm         = arguments[ 10 ],
+        QUIButton          = arguments[ 11 ];
 
     /**
      * @class qui/controls/groups/Panel
@@ -121,7 +123,7 @@ define([
             var self = this;
 
             this.addEvent('onDestroy', function() {
-                Groups.removeEvent( 'switchStatus', this.$onSwitchStatus );
+                Groups.removeEvent( 'switchStatus', self.$onSwitchStatus );
             });
         },
 
@@ -146,7 +148,7 @@ define([
                 name   : 'groupSearch',
                 events :
                 {
-                    onMousedown : function(Btn) {
+                    onMousedown : function() {
                         self.search();
                     }
                 },
@@ -200,7 +202,7 @@ define([
                     header    : Locale.get( lg, 'status' ),
                     dataIndex : 'status',
                     dataType  : 'button',
-                    width     : 50
+                    width     : 60
                 }, {
                     header    : Locale.get( lg, 'group_id' ),
                     dataIndex : 'id',
@@ -276,7 +278,7 @@ define([
         /**
          * create a group panel
          *
-         * @param {Integer} gid - Group-ID
+         * @param {Number} gid - Group-ID
          * @return {this}
          */
         openGroup : function(gid)
@@ -306,7 +308,7 @@ define([
 
             Sheet.addEvent('onOpen', function(Sheet)
             {
-                Template.get('groups_searchtpl', function(result, Request)
+                Template.get('groups_searchtpl', function(result)
                 {
                     var i, len, Frm, Search;
 
@@ -361,7 +363,7 @@ define([
                         text      : Locale.get( lg, 'groups.panel.search.btn.search' ),
                         events    :
                         {
-                            onClick : function(Btn) {
+                            onClick : function() {
                                 self.execSearch( Sheet );
                             }
                         }
@@ -377,7 +379,7 @@ define([
         /**
          * Execute the search
          *
-         * @param {qui/desktop/panels/Sheet}
+         * @param {Object} Sheet - qui/desktop/panels/Sheet
          */
         execSearch : function(Sheet)
         {
@@ -468,7 +470,7 @@ define([
         /**
          * Convert a Group to a grid data field
          *
-         * @param {controls/groups/Group} Group
+         * @param {Object} Group - controls/groups/Group
          * @return {Object}
          */
         groupToData : function(Group)
@@ -527,7 +529,9 @@ define([
             Edit.enable();
             Delete.enable();
 
-            data.evt.stop();
+            if ( "evt" in data ) {
+                data.evt.stop();
+            }
         },
 
         /**
@@ -602,11 +606,11 @@ define([
             if ( this.getAttribute( 'search' ) &&
                  !this.getBody().getElement( '.messages-message' ) )
             {
-                var Msg = new Attention({
+                new Attention({
                     message : Locale.get( lg, 'groups.panel.search.active.message' ),
                     events  :
                     {
-                        onClick : function(Message, event)
+                        onClick : function(Message)
                         {
                             self.setAttribute( 'search', false );
                             self.setAttribute( 'searchSettings', {} );
@@ -633,11 +637,11 @@ define([
                 page   : this.getAttribute( 'page' ),
                 search : this.getAttribute( 'search' ),
                 searchSettings : this.getAttribute( 'searchfields' )
-            }, function(result, Request)
+            }, function(result)
             {
-                var i, len, data, group, admin;
+                var i, len, data, admin;
 
-                var Panel = Request.getAttribute( 'Panel' ),
+                var Panel = self,
                     Grid  = Panel.getGrid();
 
                 if ( !Grid )
@@ -692,7 +696,7 @@ define([
         /**
          * execute a group status switch
          *
-         * @param {qui/controls/buttons/Button} Btn
+         * @param {Object} Btn - qui/controls/buttons/Button
          */
         $btnSwitchStatus : function(Btn)
         {
@@ -707,12 +711,12 @@ define([
          * event : status change of a group
          * if a group status is changed
          *
-         * @param {classes/groups/Manager} Groups
+         * @param {Object} Groups - classes/groups/Manager
          * @param {Object} ids - Group-IDs with status
          */
         $onSwitchStatus : function(Groups, ids)
         {
-            var i, id, len, Btn, entry, status;
+            var i, len, Btn, entry, status;
 
             var Grid = this.getGrid(),
                 data = Grid.getData();
@@ -746,8 +750,8 @@ define([
          * event : group fresh
          * if a group is refreshed
          *
-         * @param {classes/groups/Manager} Groups
-         * @param {classes/groups/Group} Group
+         * @param {Object} Groups - classes/groups/Manager
+         * @param {Object} Group - classes/groups/Group
          */
         $onRefreshGroup : function(Groups, Group)
         {
