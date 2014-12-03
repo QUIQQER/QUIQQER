@@ -919,6 +919,8 @@ define([
          */
         $onPanelButtonClick : function(Btn)
         {
+            var Panel = this; // maybe in eval
+
             eval( Btn.getAttribute( '_onclick' ) +'();' );
         },
 

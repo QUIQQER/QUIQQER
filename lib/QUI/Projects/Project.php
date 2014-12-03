@@ -273,14 +273,24 @@ class Project
     /**
      * Projekt JSON Notation
      *
-     * @return String
+     * @return string
      */
     public function toJSON()
     {
-        return json_encode(array(
+        return json_encode( $this->toArray() );
+    }
+
+    /**
+     * Projekt Array Notation
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return array(
             'name'  => $this->getAttribute( 'name' ),
             'lang'  => $this->getAttribute( 'lang' )
-        ));
+        );
     }
 
     /**

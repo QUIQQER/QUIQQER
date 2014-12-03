@@ -177,6 +177,10 @@
             <de><![CDATA[Erstellungsdatum]]></de>
             <en><![CDATA[Creation date]]></en>
         </locale>
+        <locale name="c_user">
+            <de><![CDATA[Ersteller]]></de>
+            <en><![CDATA[Creator]]></en>
+        </locale>
         <locale name="e_date">
             <de><![CDATA[Editierungsdatum]]></de>
             <en><![CDATA[Edit date]]></en>
