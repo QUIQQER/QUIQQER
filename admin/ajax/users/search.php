@@ -1,11 +1,10 @@
 <?php
 
 /**
- * Seite suchen
+ * Search users
  *
- * @param String $id
- * @param String $lang
- * @param String $project
+ * @param String $params - JSON Array
+ * @return Array
  */
 function ajax_users_search($params)
 {
@@ -62,7 +61,8 @@ function ajax_users_search($params)
             try
             {
                 $groupnames .= $Groups->getGroupNameById( $gid ) .',';
-            } catch (\QUI\Exception $e)
+
+            } catch ( \QUI\Exception $Exception )
             {
                 $groupnames .= $gid .',';
             }
@@ -83,6 +83,9 @@ function ajax_users_search($params)
         'data'  => $result
     );
 }
-QUI::$Ajax->register('ajax_users_search', array('params'), 'Permission::checkAdminUser');
 
-?>
+\QUI::$Ajax->register(
+    'ajax_users_search',
+    array('params'),
+    'Permission::checkAdminUser'
+);
