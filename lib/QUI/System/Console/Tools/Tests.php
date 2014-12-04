@@ -58,6 +58,8 @@ class Tests extends QUI\System\Console\Tool
         $this->writeLn( 'Execute Tests: '. count($list) );
         $this->writeLn( '=================================' );
 
+        $failed = 0;
+
         foreach ( $list as $Test )
         {
             /* @var $Test \QUI\Interfaces\System\Test */
@@ -69,12 +71,22 @@ class Tests extends QUI\System\Console\Tool
             {
                 $message = '[ -- ] ';
                 $color   = 'red';
+
+                $failed++;
             }
 
             $message .= $Test->getTitle();
 
             $this->writeLn( $message, $color );
             $this->resetColor();
+        }
+
+        if ( $failed )
+        {
+            $this->writeLn( '' );
+
+            $this->writeLn( 'Some tests are failed!!' );
+            $this->writeLn( 'Please check the failed tests, QUIQQER may not function properly under some circumstances.' );
         }
 
 
