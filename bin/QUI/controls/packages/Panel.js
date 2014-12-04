@@ -2,12 +2,23 @@
 /**
  * Package Manager / System Update
  *
- * @author www.pcsg.de (Henning Leutz)
  * @module controls/packages/Panel
+ * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require Locale
+ * @require Ajax
+ * @require classes/packages/Manager
+ * @require controls/grid/Grid
+ * @require controls/packages/DetailWindow
+ * @require qui/controls/desktop/Panel
+ * @require qui/controls/windows/Confirm
+ * @require qui/controls/windows/Popup
+ * @require qui/controls/buttons/Button
+ * @require css!controls/packages/Panel.css
  */
+define('controls/packages/Panel', [
 
-define([
-
+    'qui/QUI',
     'Locale',
     'Ajax',
     'classes/packages/Manager',
@@ -20,7 +31,7 @@ define([
 
     'css!controls/packages/Panel.css'
 
-],function(Locale, Ajax, PackageManager, Grid, DetailWindow, QUIPanel, QUIConfirm, QUIWindow, QUIButton)
+],function(QUI, Locale, Ajax, PackageManager, Grid, DetailWindow, QUIPanel, QUIConfirm, QUIWindow, QUIButton)
 {
     "use strict";
 
@@ -239,6 +250,7 @@ define([
 
                 this.$UpdateGrid.setHeight( height );
                 this.$UpdateGrid.setWidth( size.x - 50 );
+                this.$UpdateGrid.resize();
             }
 
             if ( this.$SearchGrid )
@@ -259,6 +271,7 @@ define([
 
                 this.$SearchGrid.setHeight( height );
                 this.$SearchGrid.setWidth( size.x - 40 );
+                this.$SearchGrid.resize();
             }
         },
 
@@ -288,7 +301,7 @@ define([
                 html : Locale.get( lg, 'packages.grid.update.title' )
             }).inject( Body, 'top' );
 
-            var Information = new Element('div.description', {
+            new Element('div.description', {
                 html : Locale.get( lg, 'packages.grid.update.information' )
             }).inject( Title, 'after' );
 
@@ -370,8 +383,8 @@ define([
         /**
          * Execute a system setup
          *
-         * @param {String} pkg - [optional] Package name, if no package name given, complete setup are executed
-         * @param {qui/controls/buttons/Button} Btn - [optional]
+         * @param {String} [pkg] - (optional), Package name, if no package name given, complete setup are executed
+         * @param {Object} [Btn] - (optional), qui/controls/buttons/Button
          */
         setup : function(pkg, Btn)
         {
@@ -393,7 +406,6 @@ define([
             {
                 MH.addLoading('Setup wird durchgeführt', function(Loading)
                 {
-
                     self.$Manager.setup( pkg, function()
                     {
                         if ( typeof Btn === 'undefined' ) {
@@ -410,13 +422,14 @@ define([
 
                         Loading.finish( Locale.get( lg, 'message.setup.successfull' ) );
                     });
-
                 });
-            })
+            });
         },
 
         /**
          * Execute a system update
+         *
+         * @param {Object} Btn - qui/controls/buttons/Button
          */
         executeCompleteUpdate : function(Btn)
         {
@@ -434,7 +447,7 @@ define([
                     {
                         Btn.setAttribute( 'textimage', 'icon-refresh icon-spin' );
 
-                        self.$Manager.update(function(result) {
+                        self.$Manager.update(function() {
                             Btn.setAttribute( 'textimage', 'icon-double-angle-down' );
                         });
                     }
@@ -445,7 +458,7 @@ define([
         /**
          * Check if updates exist
          *
-         * @param {Function} callback - callback function
+         * @param {Object} Btn - qui/controls/buttons/Button
          */
         checkUpdates : function(Btn)
         {
@@ -497,25 +510,24 @@ define([
          */
         uploadUpdates : function()
         {
-            return;
 
-            var Win = new QUI.controls.windows.Upload({
-                title : Locale.get( lg, 'packages.grid.update.btn.upload' ),
-                server_finish : 'ajax_system_update_byfile',
-                events :
-                {
-                    onDrawEnd : function(Win) {
-                        Win.getForm().setParam( 'extract', false );
-                    }
-                }
-            }).create();
+            //var Win = new QUI.controls.windows.Upload({
+            //    title : Locale.get( lg, 'packages.grid.update.btn.upload' ),
+            //    server_finish : 'ajax_system_update_byfile',
+            //    events :
+            //    {
+            //        onDrawEnd : function(Win) {
+            //            Win.getForm().setParam( 'extract', false );
+            //        }
+            //    }
+            //}).create();
         },
 
         /**
          * Update a package or the entire quiqqer system
          *
-         * @param {Fucction} callback - Callback function
-         * @param {String|false} pkg - [optional] package name
+         * @param {Function} callback - Callback function
+         * @param {String|Boolean} [pkg] - (optional), package name
          *
          */
         update : function(callback, pkg)
@@ -526,13 +538,13 @@ define([
         /**
          * Update button click
          *
-         * @param {qui/controls/buttons/Button} Btn
+         * @param {Object} Btn - qui/controls/buttons/Button
          */
         $clickUpdateBtn : function(Btn)
         {
             Btn.setAttribute( 'image', 'icon-refresh icon-spin' );
 
-            this.$Manager.update(function(result)
+            this.$Manager.update(function()
             {
                 Btn.setAttribute( 'image', 'icon-ok' );
 
@@ -647,7 +659,7 @@ define([
                         '<img src="'+ URL_BIN_DIR +'images/loader.gif" style="margin: 10px;" />'
                     );
 
-                    self.getPackage( rowdata.name, function(result, Request)
+                    self.getPackage( rowdata.name, function(result)
                     {
                         var pkg;
                         var str = '<div class="qui-packages-panel-package-info">' +
@@ -707,6 +719,8 @@ define([
 
         /**
          * unload the packages, destroy the package grid
+         *
+         * @param {Object} Btn - qui/controls/buttons/Button
          */
         unloadPackages : function(Btn)
         {
@@ -734,7 +748,7 @@ define([
 
             var self = this;
 
-            Ajax.get('ajax_system_packages_list', function(result, Request)
+            Ajax.get('ajax_system_packages_list', function(result)
             {
                 var i, alt, len, pkg, entry;
                 var GridObj = null;
@@ -807,102 +821,8 @@ define([
          */
         openPackageDetails : function(pkg)
         {
-            var self = this;
-
             new DetailWindow({
                 'package' : pkg
-            }).open();
-
-return;
-            new QUIWindow({
-                title     : 'Paket Details '+ pkg,
-                maxWidth  : 400,
-                maxHeight : 500,
-                events :
-                {
-                    onOpen : function(Win)
-                    {
-                        Win.Loader.show();
-
-                        self.getPackage(pkg, function(result)
-                        {
-                            var Content = Win.getContent();
-
-                            Win.getContent().set(
-                                'html',
-
-                                '<table class="data-table qui-packages-package-window-details">'+
-                                    '<thead>'+
-                                        '<tr colspan="2">'+
-                                            '<th class="package-name"></th>'+
-                                        '</tr>'+
-                                    '</thead>'+
-                                    '<tbody>'+
-                                        '<tr class="odd">'+
-                                            '<td>Beschreibung</td>'+
-                                            '<td class="package-desc"></td>'+
-                                        '</tr>'+
-                                        '<tr class="even">'+
-                                            '<td>Aktuelle Version</td>'+
-                                            '<td class="package-version"></td>'+
-                                        '</tr>'+
-                                        '<tr class="odd">'+
-                                            '<td>Verfügbare Versionen</td>'+
-                                            '<td>'+
-                                                '<select name="versions"></select>'+
-                                            '</td>'+
-                                        '</tr>'+
-                                        '<tr class="even">'+
-                                            '<td>Benötigte Pakete</td>'+
-                                            '<td class="package-require"></td>'+
-                                        '</tr>'+
-                                    '</tbody>'+
-                                '</table>'
-                            );
-
-                            var versions = result.versions || [],
-                                Versions = Content.getElement( '[name="versions"]' ),
-                                Name     = Content.getElement( '.package-name' ),
-                                Desc     = Content.getElement( '.package-desc' ),
-                                Require  = Content.getElement( '.package-require' ),
-                                Version  = Content.getElement( '.package-version' );
-
-
-                            Name.set( 'html', result.name );
-                            Desc.set( 'html', result.description );
-                            Version.set( 'html', result.version );
-                            Require.set( 'html', '' );
-
-                            for ( var i = 0, len = versions.length; i < len; i++ )
-                            {
-                                new Element('option', {
-                                    value : versions[ i ],
-                                    html  : versions[ i ]
-                                }).inject( Versions );
-                            }
-
-                            var RequireList = new Element('ul').inject( Require );
-
-                            Object.each( result.require, function(version, key)
-                            {
-                                new Element('li', {
-                                    html : key +' - '+ version
-                                }).inject( RequireList );
-                            });
-
-                            // version change
-                            Versions.addEvent('change', function()
-                            {
-                                Win.openSheet(function(Sheet)
-                                {
-
-                                });
-                            });
-
-                            Win.Loader.hide();
-                        });
-                    }
-                }
             }).open();
         },
 
@@ -946,11 +866,12 @@ return;
 
                 Title = new Element('h1', {
                     html : Locale.get( lg, 'packages.search.title' )
-                }).inject( Body, 'top' ),
+                }).inject( Body, 'top' );
 
-                Information = new Element('div.description', {
-                    html : Locale.get( lg, 'packages.search.description' )
-                }).inject( Title, 'after' );
+
+            new Element('div.description', {
+                html : Locale.get( lg, 'packages.search.description' )
+            }).inject( Title, 'after' );
 
 
             // search grid
@@ -1023,7 +944,7 @@ return;
             this.Loader.show();
 
             var self     = this,
-                onResult = function(result, Request)
+                onResult = function(result)
                 {
                     for ( var i = 0, len = result.data.length; i < len; i++ )
                     {
@@ -1067,8 +988,8 @@ return;
          *
          * @param {String} str
          * @param {Function} callback
-         * @param {Integer} start - [optional]
-         * @param {Integer} max - [optional]
+         * @param {Number} [start] - (optional)
+         * @param {Number} [max] - (optional)
          */
         search : function(str, callback, start, max)
         {
@@ -1094,6 +1015,8 @@ return;
 
         /**
          * Dialog : Package install?
+         *
+         * @param {Object} Btn - qui/controls/buttons/Button
          */
         dialogInstall : function(Btn)
         {
@@ -1121,7 +1044,7 @@ return;
                     {
                         Win.Loader.show();
 
-                        Ajax.get('ajax_system_packages_get', function(result, Request)
+                        Ajax.get('ajax_system_packages_get', function(result)
                         {
                             if ( typeof result.require === 'undefined' &&
                                  typeof result.description === 'undefined' )
@@ -1151,7 +1074,7 @@ return;
                     {
                         Win.Loader.show();
 
-                        Ajax.get('ajax_system_packages_install', function(result, Request)
+                        Ajax.get('ajax_system_packages_install', function()
                         {
                             Win.close();
                             self.startSearch();
@@ -1218,7 +1141,7 @@ return;
                     disabled  : true,
                     events :
                     {
-                        onClick : function(Btn)
+                        onClick : function()
                         {
                             var server = [],
                                 data   = this.$ServerGrid.getSelectedData();
@@ -1238,9 +1161,9 @@ return;
                 sortHeader : true,
                 width      : size.x - 40,
                 height     : size.y - 40,
-                onrefresh  : function(me)
+                onrefresh  : function()
                 {
-                    Ajax.get('ajax_system_packages_server_list', function(result, Request)
+                    Ajax.get('ajax_system_packages_server_list', function(result)
                     {
                         var i, len, alt, title, icon;
 
@@ -1420,7 +1343,7 @@ return;
                     {
                         Win.Loader.show();
 
-                        Ajax.post( 'ajax_system_packages_server_remove', function(result, Request)
+                        Ajax.post( 'ajax_system_packages_server_remove', function()
                         {
                             Win.close();
 
@@ -1466,7 +1389,7 @@ return;
         {
             var self = this;
 
-            Ajax.post('ajax_system_packages_server_status', function(result, Request)
+            Ajax.post('ajax_system_packages_server_status', function()
             {
                 if ( self.$ServerGrid ) {
                     self.$ServerGrid.refresh();
@@ -1487,7 +1410,7 @@ return;
         {
             var self = this;
 
-            Ajax.post('ajax_system_packages_server_status', function(result, Request)
+            Ajax.post('ajax_system_packages_server_status', function()
             {
                 if ( self.$ServerGrid ) {
                     self.$ServerGrid.refresh();
@@ -1503,12 +1426,13 @@ return;
          * Add a server to the update server list
          *
          * @param {String} server - server name
+         * @param {Object} params - server params
          */
         addServer : function(server, params)
         {
             var self = this;
 
-            Ajax.post('ajax_system_packages_server_add', function(result, Request)
+            Ajax.post('ajax_system_packages_server_add', function()
             {
                 if ( self.$ServerGrid ) {
                     self.$ServerGrid.refresh();
@@ -1682,8 +1606,6 @@ return;
          */
         $openHealthCheckSheet : function(result)
         {
-            var self = this;
-
             this.createSheet({
                 title  : 'Healthcheck Ergebnis',
                 icon   : 'icon-health',
@@ -1739,6 +1661,10 @@ return;
 
                         for ( i in result )
                         {
+                            if ( !result.hasOwnProperty( i ) ) {
+                                continue;
+                            }
+
                             icon = '';
 
                             if ( result[ i ] === -1 )
