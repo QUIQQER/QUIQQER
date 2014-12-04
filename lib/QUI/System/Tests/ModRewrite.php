@@ -22,7 +22,7 @@ class ModRewrite extends QUI\System\Test
     public function __construct()
     {
         $this->setAttributes(array(
-            'title'       => 'Apache mod_rewrite Test',
+            'title'       => 'Apache mod_rewrite installed',
             'description' => ''
         ));
 
