@@ -241,7 +241,7 @@ define('controls/packages/Panel', [
                 Title       = Body.getElement( 'h1' );
                 Information = Body.getElement( '.description' );
 
-                if ( !Title || !Information) {
+                if ( !Title || !Information ) {
                     return;
                 }
 
@@ -673,8 +673,11 @@ define('controls/packages/Panel', [
                                 Locale.get( lg, 'packages.grid.dependencies' ) +
                             '</h2>';
 
-                            for ( pkg in result.require ) {
-                                str = str + pkg +': '+ result.require[ pkg ] +'<br />';
+                            for ( pkg in result.require )
+                            {
+                                if ( result.require.hasOwnProperty( pkg ) ) {
+                                    str = str + pkg + ': ' + result.require[pkg] + '<br />';
+                                }
                             }
 
                             str = str +'</div>';
