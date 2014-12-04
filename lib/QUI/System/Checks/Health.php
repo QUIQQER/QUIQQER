@@ -6,6 +6,8 @@
 
 namespace QUI\System\Checks;
 
+use QUI;
+
 /**
  * Healthcheck
  * Checks the system or a package to health
@@ -30,7 +32,7 @@ class Health
      */
     static function systemCheck()
     {
-        $File = new \QUI\Utils\System\File();
+        $File = new QUI\Utils\System\File();
         $md5  = CMS_DIR .'checklist.md5';
 
         $bin_dir = str_replace( CMS_DIR, '', BIN_DIR );
@@ -63,6 +65,7 @@ class Health
      * Package Healthcheck
      * Return the result of the package healthcheck
      *
+     * @param string $plugin
      * @return Array
      */
     static function packageCheck($plugin)
@@ -78,34 +81,38 @@ class Health
      *
      * @param String $md5Checkfile - path to the md5 checkfile
      * @param String $dir - dir name, path to the dir
+     * @return array
+     * @throws \QUI\Exception
      */
     static function check($md5Checkfile, $dir)
     {
         if ( !file_exists( $md5Checkfile ) )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 'Checkfile not exist. Could not check the directory'
             );
         }
 
         if ( !is_dir( $dir ) )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 'Could not read directory.'
             );
         }
 
-        $File    = new \QUI\Utils\System\File();
+        $File    = new QUI\Utils\System\File();
         $dirList = $File->readDirRecursiv( $dir );
 
-        return self::checkArray( $md5Checkfile, $dirList );
+        return self::checkArray( $md5Checkfile, $dirList, $dir );
     }
 
     /**
      * compare the folder with an file list array
      *
-     * @param String $md5Checkfile - path to the md5 checkfile
-     * @param String $fileList     - file list array
+     * @param string $md5Checkfile  - path to the md5 checkfile
+     * @param array $fileList       - file list array
+     * @param string $dir           - directory
+     * @return array
      */
     static function checkArray($md5Checkfile, $fileList, $dir)
     {
@@ -180,7 +187,7 @@ class Health
 
         if ( !empty( $notWritable ) )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.system.health.not.writable'
@@ -201,8 +208,8 @@ class Health
 
         if ( !empty( $notWritable ) )
         {
-            throw new \QUI\Exception(
-                \QUI::getLocale()->get(
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.system.health.not.writable'
                 )

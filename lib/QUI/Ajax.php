@@ -136,6 +136,10 @@ class Ajax extends QUI\QDOM
         $_rfs   = json_decode( $_REQUEST['_rf'], true );
         $result = array();
 
+        if ( !is_array( $_rfs ) ) {
+            $_rfs = array( $_rfs );
+        }
+
         foreach ( $_rfs as $_rf ) {
             $result[ $_rf ] = $this->_call_rf( $_rf );
         }

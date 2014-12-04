@@ -405,7 +405,7 @@ class Console
      */
     protected function _includeClasses($file, $dir)
     {
-        $file = Orthos::clearPath( realpath( $file, $dir ) );
+        $file = Orthos::clearPath( realpath( $dir . $file ) );
 
         if ( !file_exists( $file ) ) {
             throw new QUI\Exception( 'console tool not exists' );
@@ -413,9 +413,9 @@ class Console
 
         require_once $file;
 
-        $class = str_replace( '.php', '', $dir . $file );
-        $class = str_replace( LIB_DIR, '', $class );
-        $class = str_replace( '/', '\\', $class );
+        $class = str_replace( '.php', '', $file );
+        $class = explode( LIB_DIR, $class );
+        $class = str_replace( '/', '\\', $class[1] );
 
         if ( !class_exists( $class ) ) {
             return;

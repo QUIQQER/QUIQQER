@@ -20,11 +20,15 @@ if ( isset( $_REQUEST['lang'] ) && strlen( $_REQUEST['lang'] ) === 2 ) {
     \QUI::getLocale()->setCurrent( $_REQUEST['lang'] );
 }
 
+if ( !isset( $_REQUEST['_rf'] ) ) {
+    exit;
+}
 
-$_rf_files = array();
+$_rf_files = json_decode( $_REQUEST['_rf'], true );
 
-if ( isset( $_REQUEST['_rf'] ) ) {
-    $_rf_files = json_decode( $_REQUEST['_rf'], true );
+
+if ( !is_array( $_rf_files ) ) {
+    $_rf_files = array( $_rf_files );
 }
 
 
