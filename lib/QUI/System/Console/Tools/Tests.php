@@ -72,6 +72,10 @@ class Tests extends QUI\System\Console\Tool
                 $message = '[ -- ] ';
                 $color   = 'red';
 
+                if ( $Test->isOptional() ) {
+                    $color   = 'purple';
+                }
+
                 $failed++;
             }
 
@@ -87,6 +91,7 @@ class Tests extends QUI\System\Console\Tool
 
             $this->writeLn( 'Some tests are failed!!' );
             $this->writeLn( 'Please check the failed tests, QUIQQER may not function properly under some circumstances.' );
+            $this->writeLn( '' );
         }
 
 

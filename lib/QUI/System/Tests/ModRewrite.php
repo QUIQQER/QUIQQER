@@ -82,10 +82,17 @@ class ModRewrite extends QUI\System\Test
             return self::STATUS_ERROR;
         }
 
+        try
+        {
+            $result = QUI\Utils\Request\Url::get(
+                'http://' . $host . '/' . URL_SYS_DIR . '/ajax.php?_rf=["ajax_system_modRewrite"]'
+            );
 
-        $result = QUI\Utils\Request\Url::get(
-            'http://'. $host .'/'. URL_SYS_DIR .'/ajax.php?_rf=["ajax_system_modRewrite"]'
-        );
+        } catch ( QUI\Exception $Exception )
+        {
+            return self::STATUS_ERROR;
+        }
+
 
         if ( strpos( $result, '<quiqqer>' ) === false ) {
             return self::STATUS_ERROR;
