@@ -48,7 +48,7 @@ class Tests extends QUI\System\Console\Tool
 
             $Test = new $cls();
 
-            if ( !($Test instanceof \QUI\Interfaces\System\Test) ) {
+            if ( !($Test instanceof QUI\Interfaces\System\Test) ) {
                 continue;
             }
 

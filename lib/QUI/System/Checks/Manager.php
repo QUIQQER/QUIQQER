@@ -17,6 +17,7 @@ namespace QUI\System\Checks;
  * @todo create a gui, api, console api for \QUI\System\Checks\Manager
  * @todo create a Systemcheck class
  * @todo create a systemcheck exception
+ * @deprecated
  */
 
 class Manager
