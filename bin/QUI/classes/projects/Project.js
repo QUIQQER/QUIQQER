@@ -53,7 +53,8 @@ define([
 
         options : {
             name : '',
-            lang : 'de'
+            lang : 'de',
+            host : false
         },
 
         $ids   : {},
@@ -205,6 +206,73 @@ define([
         getLang : function()
         {
             return this.getAttribute( 'lang' );
+        },
+
+        /**
+         * Return the project host
+         *
+         * @method classes/projects/Project#getHost
+         * @param {Function} callback - callback function
+         */
+        getHost : function(callback)
+        {
+            if ( this.getAttribute( 'host' ) )
+            {
+                callback( this.getAttribute( 'host' ) );
+                return;
+            }
+
+            var self = this;
+
+            Ajax.get([
+                'ajax_project_get_config',
+                'ajax_vhosts_getList'
+            ], function(config, vhosts)
+            {
+                var vhost       = config.vhost,
+                    projectName = self.getName(),
+                    projectLang = self.getLang();
+
+                for ( var h in vhosts )
+                {
+                    if ( !vhosts.hasOwnProperty( h ) ) {
+                        continue;
+                    }
+
+                    if ( h == 404 || h == 301 ) {
+                        continue;
+                    }
+
+                    if ( vhosts[ h ].project != projectName ) {
+                        continue;
+                    }
+
+                    if ( vhosts[ h ].lang != projectLang ) {
+                        continue;
+                    }
+
+                    if ( 'httpshost' in vhosts[ h ] && vhosts[ h ].httpshost !== '' )
+                    {
+                        vhost = 'https://'+ vhosts[ h ];
+                        break;
+                    }
+
+                    vhost = h;
+                    break;
+                }
+
+                if ( !vhost.match( 'http://' ) && !vhost.match( 'https://' ) ) {
+                    vhost = 'http://'+ vhost;
+                }
+
+                self.setAttribute( 'host', vhost );
+
+                callback( self.getAttribute( 'host' ) );
+
+            }, {
+                project : this.getName(),
+                params  : false
+            });
         },
 
         /**
