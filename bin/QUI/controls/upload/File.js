@@ -83,8 +83,8 @@ define([
             params  : {}
         },
 
-        $File     : null,
-        $Progress : null,
+        $File     : false,
+        $Progress : false,
 
         /**
          * constructor
@@ -149,21 +149,9 @@ define([
 
             this.parent( options );
 
-            //this.addEvent('onError', function(Exception)
-            //{
-            //    // check if error handling registered
-            //
-            //
-            //
-            //    QUI.getMessageHandler(function(MessageHandler) {
-            //        MessageHandler.add( Exception );
-            //    });
-            //});
-
-
             // if something has already been uploaded
             // eg: the file is from the upload manager
-            if ( typeof this.$File.uploaded !== 'undefined' )
+            if ( 'uploaded' in this.$File )
             {
                 this.$is_paused   = true;
                 this.$range_start = this.$File.uploaded;
@@ -553,11 +541,11 @@ define([
          * is the upload is finish = true else false
          *
          * @method controls/upload/File#isFinished
-         * @return {Bool}
+         * @return {Boolean}
          */
         isFinished : function()
         {
-            return this.$range_end === this.$file_size ?  true : false;
+            return this.$range_end === this.$file_size;
         },
 
         /**
