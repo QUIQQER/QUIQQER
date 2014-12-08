@@ -108,6 +108,8 @@ define([
 
         /**
          * Trigger function for the php upload
+         *
+         * @param {Number|String} uploadid
          */
         isFinish : function(uploadid)
         {
@@ -208,7 +210,7 @@ define([
                             '<label for="upload-file-'+ i +'" style="line-height: 20px; margin-left: 10px;">'+
                                 Locale.get( lg, 'upload.manager.message.archivfile.label', {
                                     file: archiveFiles[i].name
-                                })
+                                }) +
                             '</label>'+
                         '</div>';
                 }
@@ -223,7 +225,7 @@ define([
                     {
                         onClose : function(Win)
                         {
-                            var i, n, len;
+                            var i, len;
 
                             var Body      = Win.getContent(),
                                 checkboxs = Body.getElements( 'input[type="checkbox"]' ),
@@ -349,7 +351,7 @@ define([
          */
         getUnfinishedUploads : function()
         {
-            Ajax.get('ajax_uploads_unfinished', function(files, Request)
+            Ajax.get('ajax_uploads_unfinished', function(files)
             {
                 if ( !files.length ) {
                     return;
@@ -368,7 +370,7 @@ define([
                 // events
                 func_oncancel = function(File)
                 {
-                    Ajax.post('ajax_uploads_cancel', function(result, Request)
+                    Ajax.post('ajax_uploads_cancel', function()
                     {
                         File.destroy();
                     }, {
@@ -376,8 +378,7 @@ define([
                     });
                 };
 
-                func_oncomplete = function(File)
-                {
+                func_oncomplete = function() {
 
                 };
 
