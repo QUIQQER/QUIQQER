@@ -59,9 +59,9 @@ define([
          * Return the group list
          *
          * @method classes/groups/Manager#getList
-         * @param {Object} search     - search options
-         * @param {Function} onfinish - [optional] callback function
-         * @param {Object} params     - [optional] extra params
+         * @param {Object} search       - search options
+         * @param {Function} [onfinish] - (optional), callback function
+         * @param {Object} [params]     - (optional), extra params
          */
         getList : function(search, onfinish, params)
         {
@@ -82,9 +82,9 @@ define([
          * Switch the status to activate or deactivate of the group
          *
          * @method classes/groups/Manager#switchStatus
-         * @param {Array|Integer} uid - search options
-         * @param {Function} onfinish - [optional] callback function
-         * @param {Object} params     - [optional] extra params
+         * @param {Array|Number} gid    - search options
+         * @param {Function} [onfinish] - (optional), callback function
+         * @param {Object} [params]     - (optional), extra params
          */
         switchStatus : function(gid, onfinish, params)
         {
@@ -123,7 +123,7 @@ define([
          * Activate a group
          *
          * @method classes/groups/Manager#activate
-         * @param {Array|Integer} gid - group id
+         * @param {Array|Number} gid - group id
          * @param {Function} onfinish - callback function after activasion
          * @param {Object} params     - callback parameter
          */
@@ -207,8 +207,8 @@ define([
          * @method classes/groups/Manager#createGroup
          * @param {String} groupname  - Name of the group
          * @param {Inetegr} parentid  - ID of the parent group
-         * @param {Function} onfinish - [optional] callback function
-         * @param {Object} params     - [optional] extra params
+         * @param {Function} [onfinish] - (optional), callback function
+         * @param {Object} [params]     - (optional), extra params
          */
         createGroup : function(groupname, parentid, onfinish, params)
         {
@@ -231,8 +231,8 @@ define([
          *
          * @method classes/groups/Manager#deleteGroups
          * @param {Array} gids - Group-IDs
-         * @param {Function} onfinish - [optional] callback function
-         * @param {Object} params     - [optional] extra params
+         * @param {Function} [onfinish] - (optional), callback function
+         * @param {Object} [params]     - (optional), extra params
          */
         deleteGroups : function(gids, onfinish, params)
         {

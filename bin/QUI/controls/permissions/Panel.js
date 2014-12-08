@@ -65,7 +65,7 @@ define([
      * @class controls/permissions/Panel
      *
      * @param {Object} options - QDOM panel params
-     * @param {classes/groups/Group|classes/users/User} Bind - [optional]
+     * @param {Object} [Bind] - (optional), classes/groups/Group | classes/users/User
      *
      * @memberof! <global>
      */

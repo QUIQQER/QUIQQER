@@ -5,9 +5,21 @@
  *
  * @module controls/system/VHost
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/QUI
+ * @require qui/controls/Control
+ * @require qui/controls/loader/Loader
+ * @require qui/utils/Form
+ * @require controls/grid/Grid
+ * @require utils/Controls
+ * @require qui/utils/String
+ * @require Ajax
+ * @require Locale
+ * @require Projects
+ * @require css!controls/system/VHost.css
  */
 
-define([
+define('controls/system/VHost', [
 
     'qui/QUI',
     'qui/controls/Control',
@@ -75,7 +87,7 @@ define([
         /**
          * Create the DOMNode Element
          *
-         * @return {DOMNode}
+         * @return {HTMLElement}
          */
         create : function()
         {
@@ -264,7 +276,7 @@ define([
         /**
          * Save the settings to the vhost
          *
-         * @param {Function} callback - [optional] callback function after saving
+         * @param {Function} [callback] - (optional), callback function after saving
          */
         save : function(callback)
         {
@@ -333,7 +345,7 @@ define([
         /**
          * load the project langs
          *
-         * @param {Function} callback - [optional] callback on end
+         * @param {Function} [callback] - (optional), callback on end
          */
         $loadProjectLangs : function(callback)
         {

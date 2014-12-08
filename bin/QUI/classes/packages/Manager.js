@@ -34,12 +34,12 @@ define([
         /**
          * Execute a system or plugin setup
          *
-         * @param {String} pkg - [optional] Package name, if no package name given, complete setup are executed
-         * @param {Function} callback - [optional] callback function
+         * @param {String} [pkg] - (optional), Package name, if no package name given, complete setup are executed
+         * @param {Function} [callback] - (optional), callback function
          */
         setup : function(pkg, callback)
         {
-            Ajax.post('ajax_system_setup', function(result, Request)
+            Ajax.post('ajax_system_setup', function()
             {
                 if ( typeof callback !== 'undefined' ) {
                     callback();
@@ -53,8 +53,8 @@ define([
         /**
          * Execute a system or plugin update
          *
-         * @param {String} pkg - [optional] Package name, if no package name given, complete update are executed
-         * @param {Function} callback - [optional] callback function
+         * @param {String} [pkg] - (optional), Package name, if no package name given, complete update are executed
+         * @param {Function} [callback] - (optional), callback function
          */
         update : function(pkg, callback)
         {
@@ -71,7 +71,7 @@ define([
         /**
          * Check, if updates are available
          *
-         * @param {Function} callback - [optional] callback function
+         * @param {Function} callback - callback function
          */
         checkUpdate : function(callback)
         {
@@ -82,7 +82,7 @@ define([
          * Return the data of one package
          *
          * @param {String} pkg        - Package name
-         * @param {Function} onfinish - callback function
+         * @param {Function} callback - callback function
          */
         getPackage : function(pkg, callback)
         {
@@ -110,7 +110,7 @@ define([
          * Change / Set the Version for a package
          *
          * @param {String} pkg - Name of the package
-         * @param {Strng} version - Version of the package
+         * @param {String} version - Version of the package
          * @param {Function} callback - callback function
          */
         setVersion : function(pkg, version, callback)

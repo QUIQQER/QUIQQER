@@ -34,7 +34,7 @@ define('controls/usersAndGroups/Input', [
      * @class controls/usersAndGroups/Input
      *
      * @param {Object} options
-     * @param {DOMNode Input} Input [optional] -> if no input given, one would be created
+     * @param {HTMLInputElement} [Input]  - (optional), if no input given, one would be created
      *
      * @memberof! <global>
      */
@@ -78,7 +78,7 @@ define('controls/usersAndGroups/Input', [
          * Return the DOMNode of the users and groups search
          *
          * @method controls/usersAndGroups/Input#create
-         * @return {DOMNode} The main DOM-Node Element
+         * @return {HTMLElement} The main DOM-Node Element
          */
         create : function()
         {
@@ -461,12 +461,10 @@ define('controls/usersAndGroups/Input', [
          * Add a object to the list
          * eq: over dragdrop
          *
-         * @param Obj
          * @return {this} self
          */
-        appendChild : function(Obj)
+        appendChild : function()
         {
-
             return this;
         },
 

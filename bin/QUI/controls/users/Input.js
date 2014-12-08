@@ -35,7 +35,7 @@ define([
      * @class controls/users/Input
      *
      * @param {Object} options
-     * @param {DOMNode Input} Input [optional] -> if no input given, one would be created
+     * @param {HTMLInputElement} [Input] - (optional), if no input given, one would be created
      *
      * @memberof! <global>
      */
@@ -75,7 +75,7 @@ define([
         /**
          * Return the DOMNode of the users search
          *
-         * @return {DOMNode}
+         * @return {HTMLElement}
          */
         create : function()
         {
@@ -194,7 +194,7 @@ define([
                 // disable children
                 var list = this.$getUserEntries();
 
-                for ( var i = 0, len = list.length; i < len; i++ ) {
+                for ( i = 0, len = list.length; i < len; i++ ) {
                     list[ i ].disable();
                 }
             }
@@ -292,7 +292,7 @@ define([
         /**
          * Add a users to the field
          *
-         * @param {Integer} uid - User-ID
+         * @param {Number} uid - User-ID
          */
         addUser : function(uid)
         {

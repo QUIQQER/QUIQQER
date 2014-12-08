@@ -83,8 +83,7 @@ define([
             this.$opened = true;
             this.parent();
 
-            var self    = this,
-                Content = this.getContent();
+            var Content = this.getContent();
 
             Content.getElements( '.submit-body' ).destroy();
 
@@ -131,7 +130,7 @@ define([
 
             this.Loader.show();
 
-            Ajax.post('ajax_login_login', function(result)
+            Ajax.post('ajax_login_login', function()
             {
                 self.close();
             }, {

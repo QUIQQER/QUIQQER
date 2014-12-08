@@ -79,7 +79,7 @@ define([
 
         options : {
             phpfunc    : '',
-            phponstart : '', // [optional] php function which called before the upload starts
+            phponstart : '', // (optional) php function which called before the upload starts
             params  : {}
         },
 

@@ -85,11 +85,11 @@ define([
         ],
 
         options : {
-            active_image : 'icon-ok',     		// [optional]
-            active_text  : Locale.get( lg, 'groups.panel.btn.activate' ), // [optional]
+            active_image : 'icon-ok',     		// (optional)
+            active_text  : Locale.get( lg, 'groups.panel.btn.activate' ), // (optional)
 
-            deactive_image : 'icon-remove',         // [optional]
-            deactive_text  : Locale.get( lg, 'groups.panel.btn.deactivate' ), // [optional]
+            deactive_image : 'icon-remove',         // (optional)
+            deactive_text  : Locale.get( lg, 'groups.panel.btn.deactivate' ), // (optional)
 
             field : 'name',
             order : 'ASC',

@@ -163,7 +163,7 @@ define([
          * @method classes/projects/project/Media#getData
          *
          * @param {Number|Array} id  - ID of the file or an id list
-         * @param {Function} onfinish - [optional] callback function
+         * @param {Function} [onfinish] - (optional), callback function
          *
          * @return {Object} Promise
          */
@@ -236,8 +236,8 @@ define([
          * @method classes/projects/project/Media#activate
          *
          * @param {Number|Array} id       - Item list or an Item id
-         * @param {Function} [oncomplete] - [optional] callback Function
-         * @param {Object} [params]       - [optional], parameters that are linked to the request object
+         * @param {Function} [oncomplete] - (optional), callback Function
+         * @param {Object} [params]       - (optional), parameters that are linked to the request object
          */
         activate : function(id, oncomplete, params)
         {
@@ -260,8 +260,8 @@ define([
          * @method classes/projects/project/Media#deactivate
          *
          * @param {Number|Array} id       - Item list or an Item id
-         * @param {Function} [oncomplete] - [optional] callback Function
-         * @param {Object} [params]       - [optional], parameters that are linked to the request object
+         * @param {Function} [oncomplete] - (optional), callback Function
+         * @param {Object} [params]       - (optional), parameters that are linked to the request object
          */
         deactivate : function(id, oncomplete, params)
         {
@@ -284,8 +284,8 @@ define([
          * @method classes/projects/project/Media#del
          *
          * @param {Number|Array} id       - Item list or an Item id
-         * @param {Function} [oncomplete] - [optional] callback Function
-         * @param {Object} [params]       - [optional], parameters that are linked to the request object
+         * @param {Function} [oncomplete] - (optional), callback Function
+         * @param {Object} [params]       - (optional), parameters that are linked to the request object
          */
         del : function(id, oncomplete, params)
         {

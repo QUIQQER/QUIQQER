@@ -32,7 +32,7 @@ define('controls/groups/Input', [
      * @class controls/groups/Input
      *
      * @param {Object} options
-     * @param {DOMNode Input} Input [optional] -> if no input given, one would be created
+     * @param {HTMLInputElement} [Input]  - (optional), -> if no input given, one would be created
      *
      * @memberof! <global>
      */

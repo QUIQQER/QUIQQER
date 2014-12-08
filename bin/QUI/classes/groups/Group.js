@@ -47,7 +47,7 @@ define([
          * Return the Group-ID
          *
          * @method classes/groups/Group#getId
-         * @return {Integer} Group-ID
+         * @return {Number} Group-ID
          */
         getId : function()
         {
@@ -58,7 +58,7 @@ define([
          * Load the group attributes from the db
          *
          * @method classes/groups/Group#load
-         * @param {Function} onfinish - [optional] callback
+         * @param {Function} [onfinish] - (optional), callback
          */
         load: function(onfinish)
         {
@@ -83,8 +83,8 @@ define([
          * Return the children groups of the group
          *
          * @method classes/groups/Group#load
-         * @param {Function} onfinish - [optional] callback
-         * @param {Object} params - [optional] binded params at the request
+         * @param {Function} [onfinish] - (optional), callback
+         * @param {Object} [params] - (optional), binded params at the request
          */
         getChildren : function(onfinish, params)
         {
@@ -104,8 +104,8 @@ define([
          * Save the group with its actualy attributes
          *
          * @method classes/groups/Group#save
-         * @param {Function} onfinish - [optional] callback
-         * @param {Object} params - [optional] binded params at the request
+         * @param {Function} [onfinish] - (optional), callback
+         * @param {Object} [params] - (optional), binded params at the request
          */
         save : function(onfinish, params)
         {
@@ -136,7 +136,7 @@ define([
          * Is the Group active?
          *
          * @method classes/groups/Group#isActive
-         * @return {Bool} true or false
+         * @return {Boolean} true or false
          */
         isActive : function()
         {
@@ -149,7 +149,7 @@ define([
          * @method classes/groups/Group#getUsers
          * @param {Function} onfinish - Callback function
          *         the return of the function: {Array}
-         * @param {Object} params - limit params (limit, page, field, order)
+         * @param {Object} limits - limit params (limit, page, field, order)
          *
          * @return {this} self
          */
@@ -184,7 +184,7 @@ define([
          *
          * @method classes/groups/Group#setAttribute
          * @param {String} k - Name of the Attribute
-         * @param {Object|String|Integer|Array} v - value
+         * @param {Object|String|Number|Array} v - value
          * @return {this} self
          */
         setAttribute : function(k, v)
@@ -210,8 +210,11 @@ define([
         {
             attributes = attributes || {};
 
-            for ( var k in attributes ) {
-                this.setAttribute( k, attributes[ k ] );
+            for ( var k in attributes )
+            {
+                if ( attributes.hasOwnProperty( k ) ) {
+                    this.setAttribute( k, attributes[ k ] );
+                }
             }
 
             return this;
@@ -222,8 +225,8 @@ define([
          * returns the not the default attributes, too
          *
          * @method classes/groups/Group#setAttribute
-         * @param {Object} attributes - Object width attributes
-         * @return {unknown_type|Bool} wanted attribute
+         * @param {Object} k - Object width attributes
+         * @return {Boolean|Number|Object|Array|String} wanted attribute
          */
         getAttribute : function(k)
         {
@@ -250,15 +253,11 @@ define([
          *
          * @method classes/groups/Group#existAttribute
          * @param {String} k - wanted attribute
-         * @return {Bool} true | false
+         * @return {Boolean} true | false
          */
         existAttribute : function(k)
         {
-            if ( typeof this.attributes[ k ] !== 'undefined' ) {
-                return true;
-            }
-
-            return false;
+            return typeof this.attributes[ k ] !== 'undefined';
         }
     });
 });

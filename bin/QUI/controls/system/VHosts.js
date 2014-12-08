@@ -4,9 +4,19 @@
  *
  * @module controls/system/VHosts
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/QUI
+ * @require qui/controls/desktop/Panel
+ * @require qui/controls/windows/Prompt
+ * @require qui/controls/windows/Confirm
+ * @require controls/grid/Grid
+ * @require controls/system/VHost
+ * @require controls/system/VHostServerCode
+ * @require Ajax
+ * @require Locale
  */
 
-define([
+define('controls/system/VHosts', [
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
@@ -129,7 +139,7 @@ define([
                     dataType  : 'string',
                     width     : 200
                 }],
-                onrefresh  : function(me) {
+                onrefresh  : function() {
                     self.load();
                 }
             });
@@ -182,6 +192,9 @@ define([
                 {
                     for ( host in result )
                     {
+                        if ( !result.hasOwnProperty( host ) ) {
+                            continue;
+                        }
 
                         entry = result[ host ];
 
@@ -206,13 +219,13 @@ define([
          * add a vhost
          *
          * @param {String} host - name of the host
-         * @param {Function} callback - [optional] callback function
+         * @param {Function} [callback] - (optional), callback function
          */
         addVhost : function(host, callback)
         {
             var self = this;
 
-            Ajax.get('ajax_vhosts_add', function(result)
+            Ajax.get('ajax_vhosts_add', function()
             {
                 self.load();
 
@@ -229,7 +242,7 @@ define([
          *
          * @param {String} host - virtual host eq: www.something.com
          * @param {Array} data - virtual host data
-         * @param {Function} callback - [optional] callback function
+         * @param {Function} [callback] - (optional), callback function
          */
         editVhost : function(host, data, callback)
         {
@@ -237,7 +250,7 @@ define([
 
             this.Loader.show();
 
-            Ajax.get('ajax_vhosts_edit', function(result)
+            Ajax.get('ajax_vhosts_edit', function()
             {
                 self.load();
 
@@ -254,7 +267,7 @@ define([
          * Delete a vhost
          *
          * @param {String} host - virtual host eq: www.something.com
-         * @param {Function} callback - [optional] callback function
+         * @param {Function} [callback] - (optional), callback function
          */
         removeVhost : function(host, callback)
         {
@@ -262,7 +275,7 @@ define([
 
             this.Loader.show();
 
-            Ajax.get('ajax_vhosts_remove', function(result)
+            Ajax.get('ajax_vhosts_remove', function()
             {
                 self.load();
 
@@ -306,7 +319,7 @@ define([
         /**
          * Open the edit sheet
          *
-         * @param {String} vhost - host name
+         * @param {String} [vhost] - (optional), host name
          */
         openEditVhost : function(vhost)
         {
@@ -382,7 +395,7 @@ define([
         /**
          * Open the remove window
          *
-         * @param {String} vhost - host name
+         * @param {String} [vhost] - (optional), host name
          */
         openRemoveVhost : function(vhost)
         {

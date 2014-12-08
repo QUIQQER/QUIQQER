@@ -256,7 +256,7 @@ define([
          *
          * @method classes/projects/project/Site#save
          * @fires save
-         * @param {Function} onfinish - [optional] callback function
+         * @param {Function} [onfinish] - (optional), callback function
          * @return {this}
          */
         save : function(onfinish)
@@ -291,7 +291,7 @@ define([
          * Delete it in the Database, too
          *
          * @method classes/projects/project/Site#del
-         * @param {Function} onfinish - [optional] callback function
+         * @param {Function} [onfinish] - (optional), callback function
          */
         del : function(onfinish)
         {

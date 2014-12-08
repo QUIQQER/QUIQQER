@@ -50,7 +50,7 @@ define([
          * Get user id
          *
          * @method classes/users/User#getId
-         * @return {Integer} User-ID
+         * @return {Number} User-ID
          */
         getId : function()
         {
@@ -72,7 +72,7 @@ define([
          * Load the user attributes from the db
          *
          * @method classes/users/User#load
-         * @param {Function} onfinish - [optional] callback
+         * @param {Function} [onfinish] - (optional), callback
          */
         load: function(onfinish)
         {
@@ -108,7 +108,7 @@ define([
         /**
          * the user has been loaded once?
          *
-         * @return {Bool}
+         * @return {Boolean}
          */
         isLoaded : function()
         {
@@ -119,8 +119,8 @@ define([
          * Save the user attributes to the database
          *
          * @method classes/users/User#save
-         * @param {Function} callback - [optional]
-         * @param {params} Object     - [optional] extra ajax params
+         * @param {Function} [callback] - (optional),
+         * @param {Object} [params]     - (optional), extra ajax params
          */
         save : function(callback, params)
         {
@@ -135,32 +135,39 @@ define([
          * Activate the user
          *
          * @method classes/users/User#activate
-         *
-         * @param {Function} onfinish     - callback function, calls if activation is finish
-         * @param {Object} params         - callback params
+         * @param {Function} [onfinish] - (optional), callback function, calls if activation is finish
          */
-        activate : function(onfinish, params)
+        activate : function(onfinish)
         {
             var self = this;
 
-            require(['Users'], function(Users) {
-                Users.activate( [ Users.getId() ] );
+            require(['Users'], function(Users)
+            {
+                Users.activate( [ self.getId() ] );
+
+                if ( typeof onfinish !== 'undefined' ) {
+                    onfinish();
+                }
             });
         },
 
         /**
-         * Activate the user
+         * Deactivate the user
          *
          * @method classes/users/User#deactivate
-         * @param {Function} onfinish     - callback function, calls if deactivation is finish
-         * @param {Object} params         - callback params
+         * @param {Function} [onfinish] - (optional), callback function, calls if deactivation is finish
          */
-        deactivate : function(onfinish, params)
+        deactivate : function(onfinish)
         {
             var self = this;
 
-            require(['Users'], function(Users) {
+            require(['Users'], function(Users)
+            {
                 Users.deactivate( [ self.getId() ] );
+
+                if ( typeof onfinish !== 'undefined' ) {
+                    onfinish();
+                }
             });
         },
 
@@ -170,8 +177,8 @@ define([
          * @method classes/users/User#deactivate
          * @param {String} pass1 - Password
          * @param {String} pass2 - Password repeat
-         * @param {Object} options - [optional]
-         * @param {Function} onfinish - [optional] callback
+         * @param {Object} [options]    - (optional),
+         * @param {Function} [onfinish] - (optional), callback
          */
         savePassword : function(pass1, pass2, options, onfinish)
         {
@@ -212,7 +219,7 @@ define([
         /**
          * Is the user activated?
          *
-         * @return {Integer} 0, 1, -1
+         * @return {Number} 0, 1, -1
          */
         isActive : function()
         {

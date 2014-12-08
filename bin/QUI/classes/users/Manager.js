@@ -46,7 +46,7 @@ define([
          * Return a user
          *
          * @method classes/users/Manager#get
-         * @return {controls/users/User} User
+         * @return {Object} User - controls/users/User
          */
         get : function(uid)
         {
@@ -61,7 +61,7 @@ define([
          * Return the loged in user (session user)
          *
          * @method classes/users/Manager#getUserBySession
-         * @return {controls/users/User} User
+         * @return {Object} User - controls/users/User
          */
         getUserBySession : function()
         {
@@ -77,8 +77,8 @@ define([
          *
          * @method classes/users/Manager#getList
          * @param {Object} search     - search options
-         * @param {Function} onfinish - [optional] callback function
-         * @param {Object} params     - [optional] extra params
+         * @param {Function} [onfinish] - (optional), callback function
+         * @param {Object} [params]     - (optional), extra params
          */
         getList : function(search, onfinish, params)
         {
@@ -98,9 +98,9 @@ define([
          * Switch the status to activate or deactivate from an user
          *
          * @method classes/users/Manager#switchStatus
-         * @param {Array|Integer} uid - search options
-         * @param {Function} onfinish - [optional] callback function
-         * @param {Object} params     - [optional] extra params
+         * @param {Array|Number} uid - search options
+         * @param {Function} [onfinish] - (optional), callback function
+         * @param {Object} [params]     - (optional), extra params
          */
         switchStatus : function(uid, onfinish, params)
         {
@@ -125,9 +125,9 @@ define([
          * Activate the user / users
          *
          * @method classes/users/Manager#activate
-         * @param {Array|Integer} uid - search options
-         * @param {Function} onfinish - [optional] callback function
-         * @param {Object} params     - [optional] extra params
+         * @param {Array|Number} uid - search options
+         * @param {Function} [onfinish] - (optional), callback function
+         * @param {Object} [params]     - (optional), extra params
          */
         activate : function(uid, onfinish, params)
         {
@@ -152,9 +152,9 @@ define([
          * Deactivate the user / users
          *
          * @method classes/users/Manager#deactivate
-         * @param {Array|Integer} uid - search options
-         * @param {Function} onfinish - [optional] callback function
-         * @param {Object} params     - [optional] extra params
+         * @param {Array|Number} uid    - search options
+         * @param {Function} [onfinish] - (optional), callback function
+         * @param {Object} [params]     - (optional), extra params
          */
         deactivate : function(uid, onfinish, params)
         {
@@ -181,7 +181,7 @@ define([
          * @method classes/users/Manager#existsUsername
          * @param {String} username   - Username
          * @param {Function} onfinish - callback function
-         * @param {Object} params     - [optional] extra params
+         * @param {Object} [params]   - (optional), extra params
          */
         existsUsername : function(username, onfinish, params)
         {
@@ -199,9 +199,9 @@ define([
          * create a new user
          *
          * @method classes/users/Manager#createUser
-         * @param {String} username   - Username
-         * @param {Function} onfinish - [optional] callback function
-         * @param {Object} params     - [optional] extra params
+         * @param {String} username     - Username
+         * @param {Function} [onfinish] - (optional), callback function
+         * @param {Object} [params]     - (optional), extra params
          */
         createUser : function(username, onfinish, params)
         {
@@ -221,9 +221,9 @@ define([
          * Delete users
          *
          * @method classes/users/Manager#deleteUsers
-         * @param {Array} uids - User-IDs
-         * @param {Function} onfinish - [optional] callback function
-         * @param {Object} params     - [optional] extra params
+         * @param {Array} uids          - User-IDs
+         * @param {Function} [onfinish] - (optional), callback function
+         * @param {Object} [params]     - (optional), extra params
          */
         deleteUsers : function(uids, onfinish, params)
         {
@@ -255,7 +255,7 @@ define([
          * Triggerd by an user
          *
          * @method classes/users/Manager#onRefreshUser
-         * @param {controls/users/User} User
+         * @param {Object} User - controls/users/User
          */
         onRefreshUser : function(User)
         {
@@ -266,9 +266,9 @@ define([
          * Save a user with its attributes and rights
          *
          * @method classes/users/Manager#saveUser
-         * @param {controls/users/User} User
-         * @param {Function} onfinish - [optional] callback
-         * @param {params} Object     - [optional] extra params
+         * @param {Object} User         - controls/users/User
+         * @param {Function} [onfinish] - (optional), callback
+         * @param {Object} [params]     - (optional), extra params
          */
         saveUser : function(User, onfinish, params)
         {

@@ -1,23 +1,21 @@
+
 /**
  * The type input set the type control to an input field
  *
+ * @module controls/projects/TypeInput
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires qui/controls/Control
- * @requires controls/projects/TypeButton
- * @requires controls/projects/TypeWindow
- * @requires Plugins
- *
- * @module controls/projects/TypeInput
+ * @require qui/controls/Control
+ * @require controls/projects/TypeButton
+ * @require controls/projects/TypeWindow
+ * @require Plugins
  */
-
 define('controls/projects/TypeInput', [
 
     'qui/controls/Control',
     'controls/projects/TypeButton',
     'controls/projects/TypeWindow',
     'Plugins',
-
     'css!controls/projects/TypeInput.css'
 
 ], function(QUIControl, TypeButton, TypeWindow, Plugins)
@@ -31,7 +29,7 @@ define('controls/projects/TypeInput', [
      * @fires onCancel [Win]
      *
      * @param {Object} options
-     * @param {DOMNode} Input - Input field [optional]
+     * @param {HTMLInputElement} [Input] - (optional), Input field
      *
      * @memberof! <global>
      */
@@ -58,7 +56,7 @@ define('controls/projects/TypeInput', [
          * Create the button and the type field
          *
          * @method controls/projects/TypeInput#create
-         * @return {DOMNode}
+         * @return {HTMLElement}
          */
         create : function()
         {
@@ -115,13 +113,13 @@ define('controls/projects/TypeInput', [
                 '<img src="'+ URL_BIN_DIR +'images/loader.gif" />'
             );
 
-            Plugins.getTypeName(this.$Input.value, function(result, Request)
+            Plugins.getTypeName(this.$Input.value, function(result)
             {
                 if ( self.$Text ) {
                     self.$Text.set( 'html', result );
                 }
             }, {
-                onError : function(Exception, Request)
+                onError : function()
                 {
                     if ( self.$Text )
                     {
