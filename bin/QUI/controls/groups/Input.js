@@ -73,7 +73,7 @@ define('controls/groups/Input', [
          * Return the DOMNode of the group search
          *
          * @method controls/groups/Input#create
-         * @return {DOMNode} DOM-Element
+         * @return {HTMLElement} DOM-Element
          */
         create : function()
         {
@@ -106,7 +106,7 @@ define('controls/groups/Input', [
                 Control : this,
                 events  :
                 {
-                    onClick : function(Btn, event)
+                    onClick : function(Btn)
                     {
                         var Control = Btn.getAttribute('Control');
 
@@ -241,7 +241,7 @@ define('controls/groups/Input', [
          * fire the search
          *
          * @method controls/groups/Input#fireSearch
-         * @return {this} self
+         * @return {Object} this (controls/groups/Input)
          */
         fireSearch : function()
         {
@@ -265,7 +265,7 @@ define('controls/groups/Input', [
          * cancel the search timeout
          *
          * @method controls/groups/Input#cancelSearch
-         * @return {this} self
+         * @return {Object} this (controls/groups/Input)
          */
         cancelSearch : function()
         {
@@ -280,7 +280,7 @@ define('controls/groups/Input', [
          * close the group search
          *
          * @method controls/groups/Input#close
-         * @return {this} self
+         * @return {Object} this (controls/groups/Input)
          */
         close : function()
         {
@@ -295,8 +295,8 @@ define('controls/groups/Input', [
          * Add a group to the field
          *
          * @method controls/groups/Input#addGroup
-         * @param {Integer} gid - Group-ID
-         * @return {this} self
+         * @param {Number|String} gid - Group-ID
+         * @return {Object} this (controls/groups/Input)
          */
         addGroup : function(gid)
         {
@@ -425,7 +425,7 @@ define('controls/groups/Input', [
          * keyup - group dropdown selection one step up
          *
          * @method controls/groups/Input#up
-         * @return {this} self
+         * @return {Object} this (controls/groups/Input)
          */
         up : function()
         {
@@ -457,7 +457,7 @@ define('controls/groups/Input', [
          * keydown - group dropdown selection one step down
          *
          * @method controls/groups/Input#down
-         * @return {this} self
+         * @return {Object} this (controls/groups/Input)
          */
         down : function()
         {
@@ -491,7 +491,7 @@ define('controls/groups/Input', [
          * select the selected group
          *
          * @method controls/groups/Input#submit
-         * @return {this} self
+         * @return {Object} this (controls/groups/Input)
          */
         submit : function()
         {
@@ -515,7 +515,7 @@ define('controls/groups/Input', [
          * Set the focus to the input field
          *
          * @method controls/groups/Input#focus
-         * @return {this} self
+         * @return {Object} this (controls/groups/Input)
          */
         focus : function()
         {

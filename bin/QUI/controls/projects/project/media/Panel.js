@@ -159,7 +159,7 @@ define('controls/projects/project/media/Panel', [
          *
          * @method controls/projects/project/site/Panel#unserialize
          * @param {Object} data
-         * @return {this}
+         * @return {Object} this (controls/projects/project/site/Panel)
          */
         unserialize : function(data)
         {

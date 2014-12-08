@@ -66,7 +66,7 @@ define('controls/projects/Popup', [
         /**
          * Open the Project Sitemap Window
          *
-         * @return {Self}
+         * @return {Object} this (controls/projects/Popup)
          */
         open : function()
         {
@@ -142,6 +142,10 @@ define('controls/projects/Popup', [
 
                 for ( project in result )
                 {
+                    if ( !result.hasOwnProperty( project ) ) {
+                        continue;
+                    }
+
                     langs = result[ project ].langs.split( ',' );
 
                     for ( i = 0, len = langs.length; i < len; i++ )
@@ -175,7 +179,7 @@ define('controls/projects/Popup', [
         /**
          * Load the Sitemap of the Popup
          *
-         * @return {this}
+         * @return {Object} this (controls/projects/Popup)
          */
         loadMap : function()
         {

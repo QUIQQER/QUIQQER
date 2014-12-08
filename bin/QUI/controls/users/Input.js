@@ -16,7 +16,7 @@
  * @event onAdd [ {this}, {String} userid ]
  */
 
-define([
+define('controls/users/Input', [
 
     'qui/QUI',
     'qui/controls/Control',
@@ -425,7 +425,7 @@ define([
         /**
          * keyup - users dropdown selection one step up
          *
-         * @return {this}
+         * @return {Object} this (controls/users/Input)
          */
         up : function()
         {
@@ -460,7 +460,7 @@ define([
         /**
          * keydown - users dropdown selection one step down
          *
-         * @return {this}
+         * @return {Object} this (controls/users/Input)
          */
         down : function()
         {
@@ -516,7 +516,7 @@ define([
         /**
          * Set the focus to the input field
          *
-         * @return {this}
+         * @return {Object} this (controls/users/Input)
          */
         focus : function()
         {

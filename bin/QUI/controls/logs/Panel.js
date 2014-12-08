@@ -209,7 +209,7 @@ define('controls/logs/Panel', [
         /**
          * Refresh the current file
          *
-         * @return {this} self
+         * @return {Object} this (controls/logs/Panel)
          */
         refreshFile : function()
         {

@@ -28,7 +28,7 @@ define([
      * A QUIQQER Group
      *
      * @class classes/groups/Group
-     * @param {Integer} gid - Group-ID
+     * @param {Number} gid - Group-ID
      * @memberof! <global>
      */
     return new Class({
@@ -151,7 +151,7 @@ define([
          *         the return of the function: {Array}
          * @param {Object} limits - limit params (limit, page, field, order)
          *
-         * @return {this} self
+         * @return {Object} this (classes/groups/Group)
          */
         getUsers : function(onfinish, limits)
         {
@@ -185,7 +185,7 @@ define([
          * @method classes/groups/Group#setAttribute
          * @param {String} k - Name of the Attribute
          * @param {Object|String|Number|Array} v - value
-         * @return {this} self
+         * @return {Object} this (classes/groups/Group)
          */
         setAttribute : function(k, v)
         {
@@ -198,8 +198,8 @@ define([
          *
          * @method classes/groups/Group#setAttribute
          *
-         * @param {Object} attributes - Object with attributes
-         * @return {this} self
+         * @param {Object} [attributes] - Object with attributes
+         * @return {Object} this (classes/groups/Group)
          *
          * @example Object.setAttributes({
          *   attr1 : '1',

@@ -15,7 +15,7 @@
  * @require css!controls/upload/Manager.css
  *
  * @event onFileComplete [ {self}, {File} ]
- * @event onFileUploadRefresh [ {self}, {Integer} percent ]
+ * @event onFileUploadRefresh [ {self}, {Number} percent ]
  */
 
 define([

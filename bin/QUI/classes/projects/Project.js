@@ -10,7 +10,7 @@
  * @require classes/projects/Site
  * @require classes/projects/Media
  *
- * @events onSiteDelete [this, {Integer}]
+ * @events onSiteDelete [this, {Number}]
  * @events onSiteSave [this, {classes/projects/project/Site}]
  * @events onSiteCreate [this, {classes/projects/project/Site}]
  * @events onSiteActivate [this, {classes/projects/project/Site}]

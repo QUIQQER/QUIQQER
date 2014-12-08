@@ -84,7 +84,7 @@ define([
         /**
          * Return the user of the panel
          *
-         * @return {classes/users/User}
+         * @return {Object} classes/users/User
          */
         getUser : function()
         {
@@ -151,7 +151,7 @@ define([
             Users.addEvent( 'onSave', this.$onUserRefresh );
 
 
-            Ajax.get('ajax_users_getCategories', function(result, Request)
+            Ajax.get('ajax_users_getCategories', function(result)
             {
                 var i, len;
                 var User = self.getUser();
@@ -345,10 +345,8 @@ define([
 
         /**
          * Refresh the Panel if the user is refreshed
-         *
-         * @param {qui/classes/users/User} User
          */
-        $onUserRefresh : function(User)
+        $onUserRefresh : function()
         {
             this.setAttribute( 'title', Locale.get( lg, 'users.user.title', {
                 username : this.getUser().getAttribute( 'username' )
@@ -379,7 +377,7 @@ define([
         /**
          * event on user delete
          *
-         * @param {qui/classes/users/Manager} Users
+         * @param {Object} Users - qui/classes/users/Manager
          * @param {Array} uids - user ids, which are deleted
          */
         $onUserDelete : function(Users, uids)
@@ -466,7 +464,7 @@ define([
                 Pass1.value,
                 Pass2.value,
                 {},
-                function(result, Request)
+                function()
                 {
                     Control.Loader.hide();
                 }
@@ -675,7 +673,7 @@ define([
         /**
          * Edit an address
          *
-         * @param {Integer} addressId - ID of the address
+         * @param {Number} addressId - ID of the address
          */
         editAddress : function(addressId)
         {
@@ -723,7 +721,7 @@ define([
         /**
          * Delete an address
          *
-         * @param {Integer} addressId - ID of the address
+         * @param {Number} addressId - ID of the address
          */
         deleteAddress : function(addressId)
         {

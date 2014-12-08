@@ -257,7 +257,7 @@ define('controls/projects/project/Sitemap', [
          * Open the Sitemap to the specific id
          *
          * @method controls/projects/project/Sitemap#openSite
-         * @param {integer} id - Site ID
+         * @param {Number} id - Site ID
          */
         openSite : function(id)
         {

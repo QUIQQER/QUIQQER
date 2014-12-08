@@ -1228,7 +1228,7 @@ define([
 
                             for ( i = 0, len = panels.length; i < len; i++ )
                             {
-                                Icon = null;
+                                Icon = false;
 
                                 Elm = new Element('div', {
                                     html : '<h2>'+ panels[ i ].title +'</h2>'+
@@ -1416,12 +1416,11 @@ define([
                             {
                                 Win.Loader.show();
 
-                                var newValue = data.input.value,
-                                    index    = data.columnModel.dataIndex,
+                                var index    = data.columnModel.dataIndex,
                                     Data     = EditGrid.getDataByRow( data.row ),
                                     newData  = {};
 
-                                newData[ index ] = newValue;
+                                newData[ index ] = data.input.value;
 
                                 self.edit( Data.id, newData, function()
                                 {

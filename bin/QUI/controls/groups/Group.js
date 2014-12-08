@@ -33,7 +33,7 @@ define('controls/groups/Group', [
     /**
      * @class controls/groups/Group
      *
-     * @param {Integer} gid - Group-ID
+     * @param {Number} gid - Group-ID
      *
      * @memberof! <global>
      */
@@ -83,7 +83,7 @@ define('controls/groups/Group', [
         /**
          * Return the assigned group
          *
-         * @return {classes/groups/Group}
+         * @return {Object} classes/groups/Group
          */
         getGroup : function()
         {
@@ -122,7 +122,7 @@ define('controls/groups/Group', [
                     height : 150,
                     events :
                     {
-                        onSubmit : function(Win)
+                        onSubmit : function()
                         {
                             Groups.deleteGroups([
                                 self.getGroup().getId()
@@ -369,7 +369,7 @@ define('controls/groups/Group', [
         /**
          * event: on category click
          *
-         * @param {qui/controls/buttons/Button} Category
+         * @param {Object} Category - qui/controls/buttons/Button
          */
         $onCategoryLoad : function(Category)
         {
@@ -381,8 +381,7 @@ define('controls/groups/Group', [
             {
                 var Form;
 
-                var Panel    = Request.getAttribute( 'Panel' ),
-                    Category = Request.getAttribute( 'Category' ),
+                var Category = Request.getAttribute( 'Category' ),
                     Group    = self.getGroup(),
                     Body     = self.getBody();
 
@@ -442,8 +441,7 @@ define('controls/groups/Group', [
             {
                 var i, len, Sel;
 
-                var Group   = this.getGroup(),
-                    Content = this.getBody(),
+                var Content = this.getBody(),
                     Toolbar = Content.getElement( '.toolbar-listing' );
 
                 if ( !Toolbar ) {
@@ -475,9 +473,7 @@ define('controls/groups/Group', [
          */
         $onCategoryUsersLoad : function()
         {
-            var Group   = this.getGroup(),
-                Content = this.getBody(),
-
+            var Content = this.getBody(),
                 GridCon = new Element('div');
 
             Content.set( 'html', '' );
@@ -563,7 +559,7 @@ define('controls/groups/Group', [
         /**
          * Refresh the user grid
          *
-         * @return {this}
+         * @return {Object} this (controls/groups/Group)
          */
         refreshUser : function()
         {

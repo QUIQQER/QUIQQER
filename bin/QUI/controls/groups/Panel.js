@@ -20,7 +20,7 @@
  * @require css!controls/groups/Panel.css
  */
 
-define([
+define('controls/groups/Panel', [
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
@@ -279,7 +279,7 @@ define([
          * create a group panel
          *
          * @param {Number} gid - Group-ID
-         * @return {this}
+         * @return {Object} this (controls/groups/Panel)
          */
         openGroup : function(gid)
         {

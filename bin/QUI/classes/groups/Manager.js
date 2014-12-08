@@ -44,7 +44,7 @@ define([
          * Return a group
          *
          * @method classes/groups/Manager#get
-         * @return {classes/groups/Group} Group
+         * @return {Object} Group - classes/groups/Group
          */
         get : function(gid)
         {
@@ -105,6 +105,10 @@ define([
                 // groups refresh if the object exist
                 for ( var id in result )
                 {
+                    if ( !result.hasOwnProperty( id ) ) {
+                        continue;
+                    }
+
                     if ( Groups.$groups[ id ] )
                     {
                         Groups.$groups[ id ].setAttribute(
@@ -146,6 +150,10 @@ define([
                 // groups refresh if the object exist
                 for ( var id in result )
                 {
+                    if ( !result.hasOwnProperty( id ) ) {
+                        continue;
+                    }
+
                     if ( Groups.$groups[ id ] )
                     {
                         Groups.$groups[ id ].setAttribute(
@@ -164,7 +172,7 @@ define([
          * Dectivate a group
          *
          * @method classes/groups/Manager#deactivate
-         * @param {Array|Integer} gid - group id
+         * @param {Array|Number} gid - group id
          * @param {Function} onfinish - callback function after activasion
          * @param {Object} params     - callback parameter
          */
@@ -176,7 +184,7 @@ define([
                 onfinish : onfinish
             });
 
-            Ajax.post('ajax_groups_deactivate', function(result, Ajax)
+            Ajax.post('ajax_groups_deactivate', function(result, Request)
             {
                 if ( Request.getAttribute( 'onfinish' ) ) {
                     Request.getAttribute( 'onfinish' )( result, Request );
@@ -187,6 +195,10 @@ define([
                 // groups refresh if the object exist
                 for ( var id in result )
                 {
+                    if ( !result.hasOwnProperty( id ) ) {
+                        continue;
+                    }
+
                     if ( Groups.$groups[ id ] )
                     {
                         Groups.$groups[ id ].setAttribute(
@@ -206,7 +218,7 @@ define([
          *
          * @method classes/groups/Manager#createGroup
          * @param {String} groupname  - Name of the group
-         * @param {Inetegr} parentid  - ID of the parent group
+         * @param {Number} parentid  - ID of the parent group
          * @param {Function} [onfinish] - (optional), callback function
          * @param {Object} [params]     - (optional), extra params
          */
@@ -265,7 +277,7 @@ define([
          * Trigger the refresh event
          *
          * @method classes/groups/Manager#refreshGroup
-         * @param {classes/groups/Group} Group
+         * @param {Object} Group - classes/groups/Group
          */
         refreshGroup : function(Group)
         {

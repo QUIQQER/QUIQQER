@@ -18,7 +18,7 @@ define(function()
          *
          * @param {String} project - name of the Project
          * @param {String} lang - languag of the Project
-         * @param {Integer} id - ID of the Site
+         * @param {Number} id - ID of the Site
          * @param {Function} callback - callback function, only triggered if the panel is not exist
          */
         openSitePanel : function(project, lang, id, callback)
@@ -116,7 +116,7 @@ define(function()
          * opens a trash panel
          * if the panel exists, there will be used
          *
-         * @param {Function} callback - callback function
+         * @param {Function} [callback] - callback function
          */
         openTrashPanel : function(callback)
         {
@@ -164,7 +164,7 @@ define(function()
          * Open a panel in a task panel
          * it search the first taskpanel
          *
-         * @param {qui/controls/desktop/Panel} Panel
+         * @param {Object} Panel - qui/controls/desktop/Panel
          */
         openPanelInTasks : function(Panel)
         {

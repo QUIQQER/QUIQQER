@@ -23,7 +23,7 @@
  * @fires onCancel [this]
  * @fires onComplete [this]
  * @fires onError [qui/controls/messages/Error, this]
- * @fires onRefresh [this, {Integer} percent]
+ * @fires onRefresh [this, {Number} percent]
  */
 
 define([

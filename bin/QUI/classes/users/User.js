@@ -28,7 +28,7 @@ define([
      * A QUIQQER User
      *
      * @class classes/users/User
-     * @param {Integer} uid - the user id
+     * @param {Number} uid - the user id
      *
      * @memberof! <global>
      */
@@ -238,9 +238,9 @@ define([
          * @method classes/users/User#setAttribute
          *
          * @param {String} k - Name of the Attribute
-         * @param {Object|String|Integer|Array} v - value
+         * @param {Object|String|Number|Array} v - value
          *
-         * @return {this} self
+         * @return {Object} this (classes/users/User)
          */
         setAttribute : function(k, v)
         {
@@ -254,7 +254,7 @@ define([
          * @method classes/users/User#setAttribute
          *
          * @param {Object} attributes - Object with attributes
-         * @return {this} self
+         * @return {Object} this (classes/users/User)
          *
          * @example Object.setAttributes({
          *   attr1 : '1',
@@ -265,8 +265,11 @@ define([
         {
             attributes = attributes || {};
 
-            for ( var k in attributes ) {
-                this.setAttribute( k, attributes[k] );
+            for ( var k in attributes )
+            {
+                if ( attributes.hasOwnProperty( k ) ) {
+                    this.setAttribute( k, attributes[ k ] );
+                }
             }
 
             return this;
@@ -278,8 +281,8 @@ define([
          *
          * @method classes/users/User#setAttribute
          *
-         * @param {Object} attributes - Object width attributes
-         * @return {unknown_type|Bool} The wanted attribute or false
+         * @param {Object} k - Object width attributes
+         * @return {Boolean|String} The wanted attribute or false
          */
         getAttribute : function(k)
         {
@@ -306,22 +309,18 @@ define([
          *
          * @method classes/users/User#existAttribute
          * @param {String} k - wanted attribute
-         * @return {Bool} true or false
+         * @return {Boolean} true or false
          */
         existAttribute : function(k)
         {
-            if ( typeof this.attributes[ k ] !== 'undefined' ) {
-                return true;
-            }
-
-            return false;
+            return typeof this.attributes[ k ] !== 'undefined';
         },
 
         /**
          * Return the extra entry
          *
-         * @param {String} $field
-         * @return {String|Integer|Array|Bool}
+         * @param {String} field
+         * @return {String|Number|Array|Boolean}
          */
         getExtra : function(field)
         {
@@ -336,7 +335,7 @@ define([
          * Set a extra attribute
          *
          * @param {String} field - Name of the extra field
-         * @param {String|Bool} value - Value of the extra field
+         * @param {String|Boolean} value - Value of the extra field
          */
         setExtra : function(field, value)
         {

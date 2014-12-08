@@ -26,7 +26,7 @@ define('controls/groups/Entry', [
     /**
      * @class controls/groups/Entry
      *
-     * @param {Integer} gid - Group-ID
+     * @param {Number} gid - Group-ID
      * @param {Object} options
      *
      * @memberof! <global>
@@ -52,7 +52,7 @@ define('controls/groups/Entry', [
         /**
          * Return the binded Group
          *
-         * @return {classes/groups/Group}
+         * @return {Object} classes/groups/Group
          */
         getGroup : function()
         {
@@ -63,7 +63,7 @@ define('controls/groups/Entry', [
          * Create the DOMNode of the entry
          *
          * @method controls/groups/Entry#create
-         * @return {DOMNode}
+         * @return {HTMLElement}
          */
         create : function()
         {
@@ -104,7 +104,7 @@ define('controls/groups/Entry', [
          * Refresh the data of the group
          *
          * @method controls/groups/Entry#refresh
-         * @return {this}
+         * @return {Object} this (controls/groups/Entry)
          */
         refresh : function()
         {
@@ -129,8 +129,8 @@ define('controls/groups/Entry', [
          * Update the group name
          *
          * @method controls/groups/Entry#$onGroupUpdate
-         * @param {classes/groups/Group}
-         * @return {this}
+         * @param {Object} Group - classes/groups/Group
+         * @return {Object} this (controls/groups/Entry)
          */
         $onGroupUpdate : function(Group)
         {

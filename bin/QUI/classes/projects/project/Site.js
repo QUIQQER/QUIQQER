@@ -74,7 +74,7 @@ define([
          *
          * @method classes/projects/project/Site#load
          * @param {Function} [onfinish] - (optional) callback Function
-         * @return {this} self
+         * @return {Object} this (classes/projects/project/Site)
          */
         load : function(onfinish)
         {
@@ -257,7 +257,7 @@ define([
          * @method classes/projects/project/Site#save
          * @fires save
          * @param {Function} [onfinish] - (optional), callback function
-         * @return {this}
+         * @return {Object} this (classes/projects/project/Site)
          */
         save : function(onfinish)
         {
@@ -506,7 +506,7 @@ define([
          * @method classes/projects/project/Site#setAttributes
          *
          * @param {Object} attributes - Object with attributes
-         * @return {this}
+         * @return {Object} this (classes/projects/project/Site)
          *
          * @example
          * Site.setAttributes({

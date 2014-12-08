@@ -91,7 +91,6 @@ define([
             this.parent( options );
 
             this.$Map         = null;
-            this.$opensites   = null;
             this.$projectmaps = {};
             this.$Filter      = null;
             this.$Button      = null;
@@ -122,11 +121,9 @@ define([
                 '<div class="project-search"></div>'
             );
 
-            var Content    = this.getBody(),
-                Body       = Content.getParent(),
-                List       = Content.getElement( '.project-list' ),
-                Container  = Content.getElement( '.project-container' ),
-                ProjectCon = Content.getElement( '.project-content' );
+            var Content   = this.getBody(),
+                List      = Content.getElement( '.project-list' ),
+                Container = Content.getElement( '.project-container' );
 
             Container.setStyles({
                 height : '100%'
@@ -196,17 +193,21 @@ define([
 
                         if ( Btn.isActive() )
                         {
-                            var Content = self.getBody(),
-                                List    = Content.getElement( '.project-list' ),
-                                first   = null;
-
                             // get the first projects map
-                            for ( first in self.$projectmaps ) {
+                            for ( var first in self.$projectmaps )
+                            {
+                                if ( self.$projectmaps.hasOwnProperty( first ) ) {
+                                    continue;
+                                }
+
                                 break;
                             }
 
-                            // select the first languag of the project
-                            self.$projectmaps[ first ].firstChild().firstChild().click();
+                            if ( self.$projectmaps.hasOwnProperty( first ) )
+                            {
+                                // select the first languag of the project
+                                self.$projectmaps[ first ].firstChild().firstChild().click();
+                            }
 
                             return;
                         }
@@ -248,6 +249,10 @@ define([
                     {
                         for ( var key in result )
                         {
+                            if ( !result.hasOwnProperty( key ) ) {
+                                continue;
+                            }
+
                             self.setAttribute( 'project', key );
                             self.setAttribute( 'lang', result[ key ].default_lang );
                             break;
@@ -293,7 +298,6 @@ define([
         $onResize : function()
         {
             var Body      = this.getBody(),
-                height    = this.getAttribute( 'height' ),
                 Container = Body.getElement( '.project-container' ),
                 Search    = Body.getElement( '.project-search' );
 
@@ -333,8 +337,7 @@ define([
                 }
 
 
-                var i, l, langs, len,
-                    scrollsize, Map, Project,
+                var i, l, langs, len, Map, Project,
                     func_project_click, func_media_click, func_trash_click;
 
                 var Content   = self.getContent(),
@@ -344,7 +347,7 @@ define([
                 List.set( 'html', '' );
 
                 // click events
-                func_project_click = function(Itm, event)
+                func_project_click = function(Itm)
                 {
                     self.setAttribute( 'project', Itm.getAttribute( 'project' ) );
                     self.setAttribute( 'lang', Itm.getAttribute( 'lang' ) );
@@ -352,7 +355,7 @@ define([
                     self.openProject();
                 };
 
-                func_media_click = function(Itm, event)
+                func_media_click = function(Itm)
                 {
                     self.openMediaPanel(
                         Itm.getAttribute( 'project' )
@@ -372,6 +375,10 @@ define([
                 // create
                 for ( i in result )
                 {
+                    if ( !result.hasOwnProperty( i ) ) {
+                        continue;
+                    }
+
                     if ( !result[i].langs ) {
                         continue;
                     }
@@ -456,10 +463,9 @@ define([
                 List.setStyle( 'display', null );
 
                 moofx( List ).animate({
-                    left : 0,
-
+                    left : 0
                 }, {
-                    callback : function(time)
+                    callback : function()
                     {
                         self.$Button.setActive();
                         self.Loader.hide();
@@ -554,8 +560,8 @@ define([
          *
          * @method controls/projects/project/Panel#selectSitemapItemById
          *
-         * @param {Integer} id - the site id
-         * @return {this}
+         * @param {Number} id - the site id
+         * @return {Object} (this) controls/projects/project/Panel
          */
         selectSitemapItemById : function(id)
         {
@@ -593,7 +599,7 @@ define([
          * Opens the sitemap and open the site panel
          *
          * @method controls/projects/project/Panel#openSite
-         * @param {Integer} id - ID from the wanted site
+         * @param {Number} id - ID from the wanted site
          */
         openSite : function(id)
         {
@@ -606,7 +612,7 @@ define([
          * event: click on sitemap item -> opens a site panel
          *
          * @method controls/projects/project/Panel#$openSitePanel
-         * @param {qui/controls/sitemap/Item} Item
+         * @param {Object} Item - qui/controls/sitemap/Item
          */
         $openSitePanel : function(Item)
         {
@@ -639,7 +645,7 @@ define([
          * opens a media panel from a project
          *
          * @method controls/projects/project/Panel#$openSitePanel
-         * @param {String} Project name
+         * @param {String} project - Name of the project
          */
         openMediaPanel : function(project)
         {

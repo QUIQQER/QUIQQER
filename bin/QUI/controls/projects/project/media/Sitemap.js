@@ -59,7 +59,7 @@ define([
          *
          * @method controls/projects/project/media/Sitemap#getMap
          *
-         * @return {qui/controls/sitemap/Map}
+         * @return {Object} qui/controls/sitemap/Map
          */
         getMap : function()
         {
@@ -71,7 +71,7 @@ define([
          *
          * @method controls/projects/project/media/Sitemap#create
          *
-         * @return {DOMNode}
+         * @return {HTMLElement}
          */
         create : function()
         {
@@ -97,7 +97,7 @@ define([
 
             this.$getItem(
                 this.getAttribute('id') || 1,
-                function(result, Request)
+                function(result)
                 {
                     self.$Map.clearChildren();
 
@@ -117,7 +117,7 @@ define([
          * the sitemap search the parents and opens the path
          *
          * @method controls/projects/project/media/Sitemap#selectChildrenByValue
-         * @param {Integer} fileid
+         * @param {Number} fileid
          */
         selectFolder : function(fileid)
         {
@@ -133,8 +133,6 @@ define([
                         Itm.open();
                     }
                 });
-
-                return;
             }
         },
 
@@ -157,7 +155,7 @@ define([
          *
          * @method controls/projects/project/media/Sitemap#getChildrenByValue
          *
-         * @param {String|Integer} value
+         * @param {String|Number} value
          * @return {Array}
          */
         getChildrenByValue : function(value)
@@ -181,7 +179,7 @@ define([
          *
          * @method controls/projects/project/media/Sitemap#$getSite
          *
-         * @param {Integer} id - Item ID
+         * @param {Number} id - Item ID
          * @param {Function} callback - call back function, if ajax is finish
          *
          * @private
@@ -202,7 +200,7 @@ define([
          * @method controls/projects/project/media/Sitemap#$parseArrayToSitemapitem
          *
          * @param {Array} result
-         * @return {qui/controls/sitemap/Item}
+         * @return {Object} qui/controls/sitemap/Item
          *
          * @private
          * @ignore
@@ -277,7 +275,7 @@ define([
                         });
                     },
 
-                    onClick : function(Itm, event)
+                    onClick : function(Itm)
                     {
                         Itm.getAttribute('Control').fireEvent('itemClick', [
                             Itm,
@@ -300,8 +298,8 @@ define([
          *
          * @method controls/projects/project/media/Sitemap#$addSitemapItem
          *
-         * @param {qui/controls/sitemap/Item} Parent
-         * @param {qui/controls/sitemap/Item} Child
+         * @param {Object} Parent - qui/controls/sitemap/Item
+         * @param {Object} Child - qui/controls/sitemap/Item
          *
          * @private
          * @ignore
@@ -313,7 +311,6 @@ define([
             }
 
             Child.setAttribute('Control', this);
-
             Parent.appendChild( Child );
         }
     });

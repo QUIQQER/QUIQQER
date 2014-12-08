@@ -115,8 +115,7 @@ define([
         /**
          * Set the object for which the rights are
          *
-         * @param {classes/groups/Group|classes/users/User|
-         *         classes/projects/project/Site|classes/projects/Project} Bind
+         * @param {Object} Bind - classes/groups/Group | classes/users/User | classes/projects/project/Site | classes/projects/Project
          */
         setBind : function(Bind)
         {
@@ -178,8 +177,7 @@ define([
                 return;
             }
 
-            var self   = this,
-                params = {
+            var params = {
                     id : this.$Bind.getId()
                 };
 
@@ -205,6 +203,10 @@ define([
             {
                 for ( var key in permissions )
                 {
+                    if ( !permissions.hasOwnProperty( key ) ) {
+                        continue;
+                    }
+
                     if ( typeof allPermissions[ key ] !== 'undefined' ) {
                         permissions[ key ] = allPermissions[ key ];
                     }
@@ -259,7 +261,7 @@ define([
                         },
                         events :
                         {
-                            onClick : function(Btn) {
+                            onClick : function() {
                                 self.$loadUserSearch( Sheet );
                             }
                         }
@@ -272,7 +274,7 @@ define([
                         icon   : 'icon-group',
                         events :
                         {
-                            onClick : function(Btn) {
+                            onClick : function() {
                                 self.$loadGroupSearch( Sheet );
                             }
                         }
@@ -285,7 +287,7 @@ define([
                         icon   : 'icon-file-alt',
                         events :
                         {
-                            onClick : function(Btn)
+                            onClick : function()
                             {
                                 /*
                                 Btn.getAttribute( 'Control' ).$loadSiteSearch(
@@ -303,7 +305,7 @@ define([
                         icon   : 'icon-home',
                         events :
                         {
-                            onClick : function(Btn) {
+                            onClick : function() {
                                 self.$loadProjectSearch( Sheet );
                             }
                         }
@@ -316,7 +318,7 @@ define([
                         icon   : 'icon-gears',
                         events :
                         {
-                            onClick : function(Btn)
+                            onClick : function()
                             {
                                 Sheet.hide();
 
@@ -358,7 +360,7 @@ define([
          * Load the group control, to select a group
          *
          * @method controls/permissions/Panel#$loadGroupSearch
-         * @param {qui/controls/desktop/panels/Sheet} Sheet
+         * @param {Object} Sheet - qui/controls/desktop/panels/Sheet
          */
         $loadGroupSearch : function(Sheet)
         {
@@ -409,7 +411,7 @@ define([
          * Load the group control, to select a group
          *
          * @method controls/permissions/Panel#$loadUserSearch
-         * @param {qui/controls/desktop/panels/Sheet} Sheet
+         * @param {Object} Sheet - qui/controls/desktop/panels/Sheet
          */
         $loadUserSearch : function(Sheet)
         {
@@ -461,7 +463,7 @@ define([
          * Load the project control, to select a project
          *
          * @method controls/permissions/Panel#$loadProjectSearch
-         * @param {qui/controls/desktop/panels/Sheet} Sheet
+         * @param {Object} Sheet - qui/controls/desktop/panels/Sheet
          */
         $loadProjectSearch : function(Sheet)
         {
@@ -551,7 +553,7 @@ define([
                             }
                         }).inject( Input, 'after' );
 
-                        var Type = new Element('select', {
+                        new Element('select', {
                             name : 'type',
                             html : '<option value="bool" selected="selected">bool</option>' +
                                    '<option value="string">string</option>' +
@@ -587,7 +589,7 @@ define([
                     {
                         Win.Loader.show();
 
-                        Ajax.post('ajax_permissions_add', function(result, Request)
+                        Ajax.post('ajax_permissions_add', function(result)
                         {
                             if ( result )
                             {
@@ -598,7 +600,7 @@ define([
                             permission     : value,
                             area           : Win.getContent().getElement( '[name="area"]' ).value,
                             permissiontype : Win.getContent().getElement( '[name="type"]' ).value,
-                            onError : function(Exception, Request)
+                            onError : function(Exception)
                             {
                                 QUI.getMessageHandler(function(MessageHandler) {
                                     MessageHandler.addException( Exception );
@@ -617,7 +619,7 @@ define([
          * Opens the dialog for delete a permission
          *
          * @method controls/permissions/Panel#delPermission
-         * @param {qui/controls/buttons/Button|String} right
+         * @param {Object|String} right - qui/controls/buttons/Button | String
          */
         delPermission : function(right)
         {
@@ -651,11 +653,10 @@ define([
                     {
                         Win.Loader.show();
 
-                        Ajax.post('ajax_permissions_delete', function(result, Request)
+                        Ajax.post('ajax_permissions_delete', function()
                         {
                             Win.close();
                             self.$createSitemap();
-
                         }, {
                             permission : Win.getAttribute( 'right' )
                         });
@@ -703,7 +704,7 @@ define([
 
             var self = this;
 
-            Ajax.post('ajax_permissions_save', function(result, Request)
+            Ajax.post('ajax_permissions_save', function()
             {
                 if ( self.getButtons( 'permissions-save' ) )
                 {
@@ -986,8 +987,7 @@ define([
             }, {
                 callback : function(Container)
                 {
-                    var Body  = this.getBody(),
-                        Items = this.$Container;
+                    var Items = this.$Container;
 
                     Container.destroy();
 
@@ -1052,6 +1052,10 @@ define([
 
                 for ( right in result )
                 {
+                    if ( !result.hasOwnProperty( right ) ) {
+                        continue;
+                    }
+
                     arr = right.split( '.' );
                     arr.pop(); // drop the last element
 
@@ -1104,7 +1108,7 @@ define([
          * Recursive append item helper for sitemap
          *
          * @method controls/permissions/Panel#$appendSitemapItemTo
-         * @param {qui/controls/sitemap/Item} Parent
+         * @param {Object} Parent - qui/controls/sitemap/Item
          * @param {String} name
          * @param {Object} params
          */
@@ -1114,6 +1118,10 @@ define([
 
             for ( right in params )
             {
+                if ( !params.hasOwnProperty( right ) ) {
+                    continue;
+                }
+
                 if ( name.length )
                 {
                     _name = name +'.'+ right;
@@ -1141,7 +1149,7 @@ define([
          * event : on sitemap item click
          *
          * @method controls/permissions/Panel#$onSitemapItemClick
-         * @param {qui/controls/sitemap/Item} Item
+         * @param {Object} Item - qui/controls/sitemap/Item
          */
         $onSitemapItemClick : function(Item)
         {
@@ -1164,6 +1172,10 @@ define([
             // maybe to php?
             for ( right in this.$rights )
             {
+                if ( !this.$rights.hasOwnProperty( right ) ) {
+                    continue;
+                }
+
                 if ( val == '.' && right.match( /\./ ) ) {
                     continue;
                 }
@@ -1290,12 +1302,12 @@ define([
          *
          * @method controls/permissions/Panel#$createPermissionRow
          * @param {String} right - right name
-         * @param {Integer} i - row counter
-         * @param {DOMNode }Table - <table> Node Element
+         * @param {Number} i - row counter
+         * @param {HTMLTableElement} Table - <table> Node Element
          */
         $createPermissionRow : function(right, i, Table)
         {
-            var list, Node, Row, Elm;
+            var Node, Row;
 
             Row = new Element('tr', {
                 'class' : i % 2 ? 'even' : 'odd',
