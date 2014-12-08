@@ -149,12 +149,16 @@ define([
 
             this.parent( options );
 
-            this.addEvent('onError', function(Exception)
-            {
-                QUI.getMessageHandler(function(MessageHandler) {
-                    MessageHandler.add( Exception );
-                });
-            });
+            //this.addEvent('onError', function(Exception)
+            //{
+            //    // check if error handling registered
+            //
+            //
+            //
+            //    QUI.getMessageHandler(function(MessageHandler) {
+            //        MessageHandler.add( Exception );
+            //    });
+            //});
 
 
             // if something has already been uploaded
@@ -181,7 +185,7 @@ define([
          * Create the DOMNode
          *
          * @method controls/upload/File#create
-         * @return {DOMNode}
+         * @return {HTMLElement}
          */
         create : function()
         {
@@ -196,11 +200,9 @@ define([
             });
 
             this.$Elm.addEvents({
-
-                click : function(event) {
+                click : function() {
                     self.fireEvent( 'click', [ self ] );
                 },
-
                 contextmenu : function(event)
                 {
                     event.stop();
@@ -222,9 +224,9 @@ define([
             var Buttons = this.$Elm.getElement('.buttons');
 
             Buttons.set({
-                html :  '<form action="" method=""">' +
-                            '<input type="file" name="files" value="upload" />' +
-                        '</form>',
+                html : '<form action="" method=""">' +
+                           '<input type="file" name="files" value="upload" />' +
+                       '</form>',
                 styles : {
                     'float' : 'right',
                     clear   : 'both',
@@ -253,7 +255,7 @@ define([
                     opacity    : 0,
                     position   : 'absolute',
                     right      : 0,
-                    visibility : 'hidden',
+                    visibility : 'hidden'
                 }
             });
 
@@ -263,7 +265,7 @@ define([
                 Control : this,
                 events  :
                 {
-                    onClick : function(Btn)
+                    onClick : function()
                     {
                         self.pause();
 
@@ -277,11 +279,11 @@ define([
                             height : 150,
                             events :
                             {
-                                onSubmit : function(Win) {
+                                onSubmit : function() {
                                     self.cancel();
                                 },
 
-                                onCancel : function(Win) {
+                                onCancel : function() {
                                     //Win.getAttribute('Control').resume();
                                 }
                             }
@@ -296,7 +298,7 @@ define([
                 Control : this,
                 events  :
                 {
-                    onClick : function(Btn)
+                    onClick : function()
                     {
                         if ( self.$is_paused )
                         {
@@ -335,7 +337,7 @@ define([
                     File   : this,
                     events :
                     {
-                        onClick : function(Item, event) {
+                        onClick : function(Item) {
                             Item.getAttribute( 'File' ).getElm().destroy();
                         }
                     }
@@ -638,14 +640,12 @@ define([
          * Parse the request result from the server
          * send errors to the message handler and cancel the request if some errores exist
          *
-         * @param {String} str - server answer
+         * @param {String} responseText - server answer
          *
          * @todo better to use the direct classes.request.Ajax.$parseResult method
          */
-        $parseResult : function(responseText, responseXML)
+        $parseResult : function(responseText)
         {
-            var i;
-
             var str   = responseText || '',
                 len   = str.length,
                 start = 9,
@@ -672,17 +672,15 @@ define([
                 return this.fireEvent('error', [
                     new MessageError({
                         message : 'No QUIQQER XML',
-                        code    :  500
+                        code    : 500
                     }),
                     this
                 ]);
             }
 
             // callback
-            var res, func;
-
-            var result = eval( '('+ str.substring( start, end ) +')' ),
-                params = this.getAttribute( 'params' );
+            var res;
+            var result = eval( '('+ str.substring( start, end ) +')' );
 
             // exist messages?
             if ( result.message_handler &&
@@ -692,9 +690,7 @@ define([
 
                 QUI.getMessageHandler(function(MH)
                 {
-                    var i, len;
-
-                    for ( i = 0, len = messages.length; i < len; i++ )
+                    for ( var i = 0, len = messages.length; i < len; i++ )
                     {
                         MH.parse( messages[ i ], function(Message) {
                             MH.add( Message );

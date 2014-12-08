@@ -9,6 +9,6 @@
     "predef"  : [
         "define", "require", "moofx", "Promise", "File", "FileList",
         "USER", "QUIQQER_VERSION", "QUIQQER_CONFIG", "QUIQQER_PROJECT",
-        "URL_DIR", "URL_BIN_DIR", "URL_OPT_DIR", "URL_VAR_DIR", "URL_SYS_DIR"
+        "URL_DIR", "URL_BIN_DIR", "URL_OPT_DIR", "URL_VAR_DIR", "URL_SYS_DIR", "URL_LIB_DIR"
     ]
 }

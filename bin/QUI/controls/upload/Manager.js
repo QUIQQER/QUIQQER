@@ -123,8 +123,8 @@ define([
          * @method controls/upload/Manager#uploadFiles
          *
          * @param {Array} files - Array of file list
-         * @param {String} php request function
-         * @param {object} the params what would be send, too
+         * @param {String} rf - php request function
+         * @param {object} params - the params what would be send, too
          */
         uploadFiles : function(files, rf, params)
         {
@@ -136,6 +136,8 @@ define([
                 return;
             }
 
+            var Container;
+
             // is an upload panel existent and open?
             if ( this.isOpen() === false )
             {
@@ -145,7 +147,7 @@ define([
 
                 } else
                 {
-                    var Container = document.getElement(
+                    Container = document.getElement(
                         '.qui-panel-content .upload-manager'
                     );
 
@@ -285,6 +287,18 @@ define([
                     {
                         self.$uploadPerCents[ File.getId() ] = percent;
                         self.$onFileUploadRefresh();
+                    },
+                    onError : function(Exception)
+                    {
+                        if ( 'error' in self.$events )
+                        {
+                            self.fireEvent( 'error', [ Exception ] );
+                            return;
+                        }
+
+                        QUI.getMessageHandler(function(MessageHandler) {
+                            MessageHandler.add( Exception );
+                        });
                     }
                 });
 
@@ -301,7 +315,7 @@ define([
                 } else
                 {
                     // exist upload container? ... not nice but functional
-                    var Container = document.getElement( '.qui-panel-content .upload-manager' );
+                    Container = document.getElement( '.qui-panel-content .upload-manager' );
 
                     if ( Container ) {
                         QUIFile.inject( Container, 'top');

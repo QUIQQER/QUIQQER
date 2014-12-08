@@ -16,6 +16,7 @@
  * @fires onDragleave [event, DOMNode, controls/upload/Form]
  * @fires onDragend [event, DOMNode, controls/upload/Form]
  * @fires onDrop [event, files, Elm, Upload]
+ * @fires onError [ qui/controls/messages/Error }
  *
  * @require qui/QUI
  * @require qui/controls/Control
@@ -68,7 +69,8 @@ define([
 
         Binds : [
             '$onFileUploadFinish',
-            '$onFileUploadRefresh'
+            '$onFileUploadRefresh',
+            '$onError'
         ],
 
         /**
@@ -121,7 +123,6 @@ define([
                          self.getAttribute( 'maxuploads' ).toInt() > elms.length )
                     {
                         self.$Add.enable();
-                        return;
                     }
                 }
             });
@@ -134,7 +135,7 @@ define([
          * @method controls/upload/Form#addParam
          *
          * @param {String} param         - param name
-         * @param {String|Integer} value - param value
+         * @param {String|Number} value - param value
          */
         setParam : function(param, value)
         {
@@ -148,15 +149,18 @@ define([
          */
         setParams : function(params)
         {
-            for ( var n in param ) {
-                this.addParam( n, param[n] );
+            for ( var n in params )
+            {
+                if ( params.hasOwnProperty( n ) ) {
+                    this.addParam( n, params[ n ] );
+                }
             }
         },
 
         /**
          * Return a form param
          *
-         * @return {unknown_type} Form parameter
+         * @return {Boolean|Number|String|Object} Form parameter
          */
         getParam : function(n)
         {
@@ -181,7 +185,7 @@ define([
          * Create the Form DOMNode
          *
          * @method controls/upload/Form#create
-         * @return {DOMNode} Form
+         * @return {HTMLElement} Form
          */
         create : function()
         {
@@ -236,7 +240,7 @@ define([
                     text      : Locale.get( lg, 'upload.form.btn.add.text' ),
                     events    :
                     {
-                        onClick : function(Btn) {
+                        onClick : function() {
                             self.addInput();
                         }
                     },
@@ -255,7 +259,7 @@ define([
                     title  : Locale.get( lg, 'upload.form.btn.send.title' ),
                     events :
                     {
-                        onClick : function(Btn) {
+                        onClick : function() {
                             self.submit();
                         }
                     },
@@ -299,7 +303,7 @@ define([
                 {
                     MH.addError(
                         Locale.get( lg, 'upload.form.message.limit', {
-                            limit : this.getAttribute( 'maxuploads' )
+                            limit : self.getAttribute( 'maxuploads' )
                         })
                     );
                 });
@@ -309,7 +313,7 @@ define([
 
             var Container = new Element( 'div.qui-form-upload' );
 
-            var Upload = new Element('input', {
+            new Element('input', {
                 type   : "file",
                 name   : "files",
                 events : {
@@ -326,7 +330,7 @@ define([
                 title   : Locale.get( lg, 'upload.form.btn.change.title' ),
                 events  :
                 {
-                    click : function(event)
+                    click : function()
                     {
                         var FileInfo = Container.getElement( '.qui-form-fileinfo' ),
                             Input    = Container.getElement( 'input[type="file"]' ),
@@ -358,7 +362,7 @@ define([
                     image  : 'icon-remove',
                     events :
                     {
-                        onClick : function(Btn)
+                        onClick : function()
                         {
                             Container.destroy();
                             self.fireEvent( 'inputDestroy' );
@@ -396,7 +400,7 @@ define([
          * Add an upload container to the form
          *
          * @param {File} File
-         * @param {DOMNode} Parent - [optional] Parent Element
+         * @param {HTMLElement} [Input] - (optional), Parent Element
          */
         addUpload : function(File, Input)
         {
@@ -431,7 +435,7 @@ define([
                 'url('+ MediaUtils.getIconByMimeType( File.type ) +')'
             );
 
-            this.fireEvent( 'add', [ self, File ] );
+            this.fireEvent( 'add', [ this, File ] );
 
             Input.setStyle( 'display', 'none' );
         },
@@ -439,7 +443,7 @@ define([
         /**
          * Create an info container element
          *
-         * @return {DOMNode}
+         * @return {HTMLElement}
          */
         createInfo : function()
         {
@@ -479,6 +483,10 @@ define([
                 // create the params into the form
                 for ( var n in this.$params )
                 {
+                    if ( !this.$params.hasOwnProperty( n ) ) {
+                        continue;
+                    }
+
                     new Element('input', {
                         type  : 'hidden',
                         value : this.$params[ n ],
@@ -511,15 +519,15 @@ define([
                 files  = self.getFiles();
 
             params.events = {
-                onComplete : this.finish.bind( this )
+                onComplete : this.finish.bind( this ),
+                onError    : this.$onError
             };
 
             if ( "extract" in params && params.extract )
             {
                 var extract = {};
 
-                for ( var i = 0, len = files.length; i < len; i++ )
-                {
+                for ( var i = 0, len = files.length; i < len; i++ ) {
                     extract[ files[i].name ] = true;
                 }
 
@@ -550,7 +558,7 @@ define([
          * Set the status to finish and fires the onFinish Event
          *
          * @param {controls/upload/Form} File
-         * @param {unknown_type} result - result of the upload
+         * @param {Object|Array|String|Boolean} result - result of the upload
          */
         finish : function(File, result)
         {
@@ -632,19 +640,19 @@ define([
 
             new Upload(this.getAttribute('Drops'), {
 
-                onDragenter: function(event, Elm, Upload) {
+                onDragenter: function(event, Elm) {
                     self.fireEvent( 'dragenter', [ event, Elm, self ] );
                 },
 
-                onDragleave: function(event, Elm, Upload) {
+                onDragleave: function(event, Elm) {
                     self.fireEvent( 'dragleave', [ event, Elm, self ] );
                 },
 
-                onDragend : function(event, Elm, Upload) {
+                onDragend : function(event, Elm) {
                     self.fireEvent( 'dragend', [ event, Elm, self ] );
                 },
 
-                onDrop : function(event, files, Elm, Upload)
+                onDrop : function(event, files, Elm)
                 {
                     if ( !files.length ) {
                         return;
@@ -680,7 +688,7 @@ define([
         $onFileUploadRefresh : function(UploadManager, percent)
         {
             if ( !this.$Progress ) {
-                return
+                return;
             }
 
             this.$Progress.set( percent );
@@ -689,10 +697,19 @@ define([
         /**
          * Event, if one upload file is finish
          */
-        $onFileUploadFinish : function(UploadManager, File)
+        $onFileUploadFinish : function()
         {
 
-        }
+        },
 
+        /**
+         * Event on error
+         *
+         * @param {Object} Error - qui/controls/messages/Error
+         */
+        $onError : function(Error)
+        {
+            this.fireEvent( 'error', [ this, Error ] );
+        }
     });
 });
