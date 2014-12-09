@@ -1039,8 +1039,24 @@ class DOM
             $type = $Input->getAttribute( 'type' );
         }
 
-        if ( $Input->getAttribute( 'data-qui') ) {
+        if ( $Input->getAttribute( 'data-qui') )
+        {
             $dataQui = ' data-qui="'. $Input->getAttribute( 'data-qui') .'"';
+
+            // qui options
+            $attributes = $Input->attributes;
+
+            foreach ( $attributes as $Attribute )
+            {
+                /* @var $Attribute \DOMAttr */
+                $name  = $Attribute->name;
+                $value = $Attribute->value;
+
+                if ( strpos( $name, 'data-qui-options-' ) !== false ) {
+                    $dataQui .= " {$name}=\"{$value}\"";
+                }
+            }
+
         }
 
         switch ( $type )
