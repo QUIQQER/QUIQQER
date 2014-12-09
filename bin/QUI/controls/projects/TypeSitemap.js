@@ -157,6 +157,10 @@ define('controls/projects/TypeSitemap', [
                 // create the map
                 for ( i in result )
                 {
+                    if ( !result.hasOwnProperty( i ) ) {
+                        continue;
+                    }
+
                     if ( i == 'standard' )
                     {
                         new QUISitemapItem({
