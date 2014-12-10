@@ -299,17 +299,7 @@ class Template extends QUI\QDOM
             require $template_index;
         }
 
-
-        try
-        {
-            return $Engine->fetch( $tpl );
-
-        } catch ( \Exception $Exception )
-        {
-            QUI\System\Log::writeException( $Exception );
-        }
-
-        return '';
+        return $Engine->fetch( $tpl );
     }
 
     /**
