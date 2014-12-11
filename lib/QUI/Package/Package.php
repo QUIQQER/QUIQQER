@@ -7,13 +7,16 @@
 namespace QUI\Package;
 
 use QUI;
+use QUI\Update;
+use QUI\Utils\XML;
 
 /**
  * An installed package
  *
  * @author www.pcsg.de
+ *
+ * @event onPackageSetup [ this ]
  */
-
 class Package extends QUI\QDOM
 {
     /**
@@ -48,14 +51,29 @@ class Package extends QUI\QDOM
      */
     public function __construct($package)
     {
-        $packageDir = OPT_DIR . $package;
+        $packageDir = OPT_DIR . $package .'/';
 
-        if ( is_dir( $package ) ) {
+        if ( !is_dir( $packageDir ) ) {
             throw new QUI\Exception( 'Package not exists', 404 );
         }
 
         $this->_packageDir = $packageDir;
         $this->_name       = $package;
+
+        // no composer.json, no real package
+        if ( !file_exists( $packageDir .'composer.json' ) ) {
+            return;
+        }
+
+        $composer = json_decode( file_get_contents( $packageDir .'composer.json' ), true );
+
+        if ( !isset( $composer['type'] ) ) {
+            return;
+        }
+
+        if ( strpos( $composer['type'], 'quiqqer-') === false ) {
+            return;
+        }
 
         $this->_configPath = CMS_DIR .'etc/plugins/'. $this->getName() .'.ini.php';
 
@@ -86,9 +104,15 @@ class Package extends QUI\QDOM
 
     /**
      * Return the package config
+     *
+     * @return QUI\Config|Bool
      */
     public function getConfig()
     {
+        if ( empty( $this->_configPath ) ) {
+            return false;
+        }
+
         if ( !$this->_Config ) {
             $this->_Config = new QUI\Config( $this->_configPath );
         }
@@ -101,6 +125,54 @@ class Package extends QUI\QDOM
      */
     public function setup()
     {
-        QUI::getPackageManager()->setup( $this->getName() );
+        $dir = $this->getDir();
+
+        Update::importDatabase( $dir .'database.xml' );
+        Update::importTemplateEngines( $dir .'engines.xml' );
+        Update::importEditors( $dir .'wysiwyg.xml' );
+        Update::importMenu( $dir .'menu.xml' );
+        Update::importPermissions( $dir .'permissions.xml', $this->getName() );
+        Update::importMenu( $dir .'menu.xml' );
+
+        // events
+        Update::importEvents( $dir .'events.xml' );
+        Update::importSiteEvents( $dir .'site.xml' );
+
+        // settings
+        if ( !file_exists( $dir .'settings.xml' ) )
+        {
+            QUI::getEvents()->fireEvent( 'packageSetup', array( $this ) );
+            return;
+        }
+
+        // $defaults = XML::getConfigParamsFromXml( $dir .'settings.xml' );
+        $Config = XML::getConfigFromXml( $dir .'settings.xml' );
+
+        if ( $Config ) {
+            $Config->save();
+        }
+
+        QUI::getEvents()->fireEvent( 'packageSetup', array( $this ) );
+    }
+
+    /**
+     * Execute first install
+     */
+    public function install()
+    {
+        $this->setup();
+
+        QUI::getEvents()->fireEvent( 'packageInstall', array( $this ) );
+    }
+
+
+    /**
+     * Excecute uninstall
+     */
+    public function uninstall()
+    {
+
+
+        QUI::getEvents()->fireEvent( 'packageUninstall', array( $this ) );
     }
 }

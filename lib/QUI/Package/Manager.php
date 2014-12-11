@@ -128,6 +128,19 @@ class Manager
     }
 
     /**
+     * Return the available quiqqer package types
+     *
+     * @return array
+     */
+    static function getPackageTypes()
+    {
+        return array(
+            'quiqqer-library',
+            'quiqqer-plugin'
+        );
+    }
+
+    /**
      * Return the Composer Application
      * @return \Composer\Console\Application
      */
@@ -501,7 +514,9 @@ class Manager
 
         QUI\System\Log::writeRecursive( $result );
 
-        // execute setup of the new package
+        $this->getInstalledPackage( $package )->install();
+
+        // execute setup of all packages
         $this->setup( $package );
     }
 
@@ -741,34 +756,47 @@ class Manager
      */
     public function setup($package)
     {
-        $dir = OPT_DIR . $package .'/';
+        try
+        {
+            $Package = $this->getInstalledPackage( $package );
+            $Package->setup();
 
-        if ( !is_dir( $dir ) ) {
-            return;
+        } catch ( QUI\Exception $Exception )
+        {
+            QUI\System\Log::addWarning( $Exception->getMessage() );
         }
 
-        QUI\Update::importDatabase( $dir .'database.xml' );
-        QUI\Update::importTemplateEngines( $dir .'engines.xml' );
-        QUI\Update::importEditors( $dir .'wysiwyg.xml' );
-        QUI\Update::importMenu( $dir .'menu.xml' );
-        QUI\Update::importPermissions( $dir .'permissions.xml', $package );
-        QUI\Update::importMenu( $dir .'menu.xml' );
 
-        // events
-        QUI\Update::importEvents( $dir .'events.xml' );
-        QUI\Update::importSiteEvents( $dir .'site.xml' );
+//
+//        $dir = OPT_DIR . $package .'/';
+//
+//        if ( !is_dir( $dir ) ) {
+//            return;
+//        }
 
-        // settings
-        if ( !file_exists( $dir .'settings.xml' ) ) {
-            return;
-        }
 
-        // $defaults = XML::getConfigParamsFromXml( $dir .'settings.xml' );
-        $Config   = XML::getConfigFromXml( $dir .'settings.xml' );
-
-        if ( $Config ) {
-            $Config->save();
-        }
+//        QUI\Update::importDatabase( $dir .'database.xml' );
+//        QUI\Update::importTemplateEngines( $dir .'engines.xml' );
+//        QUI\Update::importEditors( $dir .'wysiwyg.xml' );
+//        QUI\Update::importMenu( $dir .'menu.xml' );
+//        QUI\Update::importPermissions( $dir .'permissions.xml', $package );
+//        QUI\Update::importMenu( $dir .'menu.xml' );
+//
+//        // events
+//        QUI\Update::importEvents( $dir .'events.xml' );
+//        QUI\Update::importSiteEvents( $dir .'site.xml' );
+//
+//        // settings
+//        if ( !file_exists( $dir .'settings.xml' ) ) {
+//            return;
+//        }
+//
+//        // $defaults = XML::getConfigParamsFromXml( $dir .'settings.xml' );
+//        $Config   = XML::getConfigFromXml( $dir .'settings.xml' );
+//
+//        if ( $Config ) {
+//            $Config->save();
+//        }
     }
 
     /**
@@ -1204,7 +1232,7 @@ class Manager
             );
         }
 
-        $result = $this->_execComposer('update');
+        $this->_execComposer('update');
     }
 
     /**
