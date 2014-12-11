@@ -6,7 +6,8 @@
 
 namespace QUI;
 
-use \QUI\Projects\Media\Utils as MediaUtils;
+use QUI;
+use QUI\Projects\Media\Utils as MediaUtils;
 
 /**
  * Rewrite - URL Verwaltung (sprechende URLS)
@@ -124,7 +125,7 @@ class Rewrite
      */
     public function __construct()
     {
-        $this->Events = new \QUI\Events\Event();
+        $this->Events = new QUI\Events\Event();
     }
 
     /**
@@ -143,8 +144,7 @@ class Rewrite
             return;
         }
 
-        $Session = \QUI::getSession();
-        $vhosts  = $this->getVHosts();
+        $vhosts = $this->getVHosts();
 
         if ( !isset( $_SERVER['HTTP_HOST'] ) ) {
             $_SERVER['HTTP_HOST'] = '';
@@ -224,7 +224,7 @@ class Rewrite
             if (isset($_url[0]) && (strlen($_url[0]) == 2 || strlen( str_replace('.html', '', $_url[0]) ) == 2))
             {
                 $this->_lang = str_replace('.html', '', $_url[0]);
-                \QUI::getLocale()->setCurrent($this->_lang);
+                QUI::getLocale()->setCurrent($this->_lang);
 
                 unset($_url[0]);
 
@@ -245,11 +245,11 @@ class Rewrite
 
                     // und es nicht der https host ist
                     (int)$_SERVER['SERVER_PORT'] !== 443 &&
-                    \QUI::conf('globals', 'httpshost') != 'https://'.$_SERVER['HTTP_HOST'])
+                    QUI::conf('globals', 'httpshost') != 'https://'.$_SERVER['HTTP_HOST'])
                 {
                     $url = implode('/', $_url);
                     $url = $vhosts[$_SERVER['HTTP_HOST']][$this->_lang] . URL_DIR . $url;
-                    $url = \QUI\Utils\String::replaceDblSlashes($url);
+                    $url = QUI\Utils\String::replaceDblSlashes($url);
                     $url = 'http://'. $this->_project_prefix . $url;
 
                     $this->_showErrorHeader(301, $url);
@@ -287,13 +287,7 @@ class Rewrite
                     }
                 }
 
-            } catch ( \QUI\Exception $Exception )
-            {
-                // Falls Bild nicht mehr existiert oder ein falscher Aufruf gemacht wurde
-                $this->_showErrorHeader( 404 );
-                exit;
-
-            } catch ( \QUI\ExceptionDBError $Exception )
+            } catch ( QUI\Exception $Exception )
             {
                 // Falls Bild nicht mehr existiert oder ein falscher Aufruf gemacht wurde
                 $this->_showErrorHeader( 404 );
@@ -314,12 +308,13 @@ class Rewrite
                 $file = $Item->createSizeCache( $width, $height );
             } else
             {
+                /* @var $Item \QUI\Projects\Media\File */
                 $file = $Item->createCache();
             }
 
             if ( !file_exists($file) )
             {
-                \QUI\System\Log::write('File not exist: '. $file , 'error');
+                QUI\System\Log::write('File not exist: '. $file , 'error');
                 exit;
             }
 
@@ -352,8 +347,11 @@ class Rewrite
 
             if ( !isset( $pathinfo['extension'] ) )
             {
+                $url = URL_DIR . $_REQUEST['_url'] .'.html';
+                $url = QUI\Utils\String::replaceDblSlashes( $url );
+
                 // Falls keine Extension (.html) dann auf .html
-                $this->_showErrorHeader( 301, $_REQUEST['_url'] .'.html' );
+                $this->_showErrorHeader( 301, $url );
             }
         }
 
@@ -367,9 +365,10 @@ class Rewrite
         {
             try
             {
+
                 $this->_site = $this->getSiteByUrl( $_REQUEST['_url'], true );
 
-            } catch ( \QUI\Exception $e )
+            } catch ( QUI\Exception $Exception )
             {
                 if ( $this->_showErrorHeader( 404 ) ) {
                     return;
@@ -387,12 +386,12 @@ class Rewrite
 
                 // und es nicht der https host ist
                 (int)$_SERVER['SERVER_PORT'] !== 443 &&
-                \QUI::conf('globals', 'httpshost') != 'https://'.$_SERVER['HTTP_HOST']
+                QUI::conf('globals', 'httpshost') != 'https://'.$_SERVER['HTTP_HOST']
             )
             {
                 $url = $this->_site->getUrlRewrited();
                 $url = $vhosts[$_SERVER['HTTP_HOST']][$this->_lang] . URL_DIR . $url;
-                $url = \QUI\Utils\String::replaceDblSlashes($url);
+                $url = QUI\Utils\String::replaceDblSlashes($url);
                 $url = 'http://'. $this->_project_prefix . $url;
 
                 $this->_showErrorHeader(301, $url);
@@ -420,8 +419,7 @@ class Rewrite
 
         } else
         {
-            $vhosts  = $this->getVHosts();
-            $Project = $this->getProject();
+            $vhosts = $this->getVHosts();
 
             //$url = $this->_first_child->getUrlRewrited();
 
@@ -434,7 +432,7 @@ class Rewrite
                  isset( $vhosts[ $_SERVER['HTTP_HOST'] ][ $this->_lang ] ) )
             {
                 $url = $vhosts[ $_SERVER['HTTP_HOST'] ][ $this->_lang ] . URL_DIR;
-                $url = \QUI\Utils\String::replaceDblSlashes( $url );
+                $url = QUI\Utils\String::replaceDblSlashes( $url );
                 $url = 'http://'. $this->_project_prefix . $url;
 
                 if ( isset( $_SERVER['REQUEST_URI'] ) && $_SERVER['REQUEST_URI'] != URL_DIR )
@@ -621,7 +619,7 @@ class Rewrite
         }
 
         if ( is_string( $this->_project_str ) && !empty( $this->_project_str ) ) {
-            return \QUI\Projects\Manager::get();
+            return QUI\Projects\Manager::get();
         }
 
         // Vhosts
@@ -637,8 +635,8 @@ class Rewrite
          */
 
         // Falls keine Projekt Parameter existieren wird das standard Projekt verwendet
-        $Config = \QUI\Projects\Manager::getConfig();
-        $config = $Config->toArray();
+//        $Config = QUI\Projects\Manager::getConfig();
+//        $config = $Config->toArray();
 
         // wenn standard vhost nicht der gewünschte ist, dann 404
         $host = '';
@@ -654,20 +652,20 @@ class Rewrite
         }
 
         // Standard Projekt verwenden wenn kein vhost existiert
-        foreach ( $config as $p => $e )
-        {
-            if ( isset( $e['standard']) && $e['standard'] == 1 )
-            {
-                $pname = $p;
-                break;
-            }
-        }
+//        foreach ( $config as $p => $e )
+//        {
+//            if ( isset( $e['standard']) && $e['standard'] == 1 )
+//            {
+//                $pname = $p;
+//                break;
+//            }
+//        }
 
         try
         {
-            $Project = \QUI\Projects\Manager::get();
+            $Project = QUI\Projects\Manager::get();
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
             $Project = false;
         }
@@ -682,12 +680,12 @@ class Rewrite
         // Projekt mit der Sprache exitiert nicht
         $this->_showErrorHeader( 404 );
 
-        $Project = \QUI\Projects\Manager::getStandard();
+        $Project = QUI\Projects\Manager::getStandard();
 
         $this->_project = $Project;
         $this->_lang    = $Project->getAttribute( 'lang' );
 
-        \QUI::getLocale()->setCurrent(
+        QUI::getLocale()->setCurrent(
             $Project->getAttribute( 'lang' )
         );
 
@@ -741,7 +739,7 @@ class Rewrite
                 $template
             );
 
-        } catch( \Exception $Exception )
+        } catch( QUI\Exception $Exception )
         {
             // nothing todo
             $Project = false;
@@ -751,7 +749,7 @@ class Rewrite
         {
             $this->_project = $Project;
 
-            \QUI::getLocale()->setCurrent(
+            QUI::getLocale()->setCurrent(
                 $Project->getAttribute( 'lang' )
             );
 
@@ -772,7 +770,7 @@ class Rewrite
             return $this->_vhosts;
         }
 
-        $this->_vhosts = \QUI::vhosts();
+        $this->_vhosts = QUI::vhosts();
 
         return $this->_vhosts;
     }
@@ -856,25 +854,22 @@ class Rewrite
                     {
                         if ( !isset( $error[0] ) || !isset( $error[1] ) || !isset( $error[2] ))
                         {
-                            $Standard = \QUI::getProjectManager()->getStandard();
+                            $Standard = QUI::getProjectManager()->getStandard();
 
                             $error[0] = $Standard->getName();
                             $error[1] = $Standard->getLang();
                             $error[2] = 1;
                         }
 
-                        $this->_project = \QUI::getProject(
-                            $error[0],
-                            $error[1]
-                        );
+                        $this->_project = QUI::getProject( $error[0], $error[1] );
 
                         $this->_site = $this->_project->get( $error[2] );
 
                         return true;
 
-                    } catch ( \QUI\Exception $Exception )
+                    } catch ( QUI\Exception $Exception )
                     {
-                        \QUI\System\Log::writeException( $Exception );
+                        QUI\System\Log::writeException( $Exception );
                     }
                 }
 
@@ -890,10 +885,10 @@ class Rewrite
 
                         return true;
 
-                    } catch ( \QUI\Exception $e )
+                    } catch ( QUI\Exception $Exception )
                     {
                         // nothing
-                        \QUI\System\Log::writeException($e);
+                        QUI\System\Log::writeException( $Exception );
                     }
                 }
 
@@ -997,7 +992,7 @@ class Rewrite
      *
      * @param \QUI\Projects\Site $Site - seite die hinzugefügt wird
      */
-    private function _set_path(\QUI\Projects\Site $Site)
+    private function _set_path(QUI\Projects\Site $Site)
     {
         $this->_path[] = $Site;
         array_push($this->_ids_in_path, $Site->getId());
@@ -1058,7 +1053,7 @@ class Rewrite
     /**
      * Output Content setzen
      *
-     * @param unknown_type $str
+     * @param String $str
      */
     public function setOutputContent($str)
     {
@@ -1134,7 +1129,7 @@ class Rewrite
             return $output[0];
         }
 
-        $att = \QUI\Utils\String::getHTMLAttributes( $img );
+        $att = QUI\Utils\String::getHTMLAttributes( $img );
 
         if ( !isset( $att['src'] ) ) {
             return $output[0];
@@ -1153,7 +1148,7 @@ class Rewrite
                 $att['alt']   = $Image->getAttribute('alt') ? $Image->getAttribute('alt') : '';
                 $att['title'] = $Image->getAttribute('title') ? $Image->getAttribute('title') : '';
 
-            } catch ( \QUI\Exception $Exception )
+            } catch ( QUI\Exception $Exception )
             {
 
             }
@@ -1221,11 +1216,7 @@ class Rewrite
 
         } catch ( \Exception $Exception )
         {
-            \QUI\System\Log::writeException( $Exception );
-
-        } catch ( \QUI\Exception $Exception )
-        {
-            \QUI\System\Log::writeException( $Exception );
+            QUI\System\Log::writeException( $Exception );
         }
 
         return $output[0];
@@ -1287,6 +1278,7 @@ class Rewrite
      * 	$params['project'] => (String) project - Projektnamen
      *
      * @return String
+     * @throws QUI\Exception
      */
     public function getUrlFromSite($params=array())
     {
@@ -1323,15 +1315,15 @@ class Rewrite
         // Wenn nicht alles da ist dann wird ein Exception geworfen
         if ( !isset( $id ) || !isset( $project ) )
         {
-            throw new \QUI\Exception(
+            throw new QUI\Exception(
                 'Params missing Rewrite::getUrlFromPage'
             );
         }
 
-        \QUI\Utils\System\File::mkdir( VAR_DIR .'cache/links' );
+        QUI\Utils\System\File::mkdir( VAR_DIR .'cache/links' );
 
         $link_cache_dir = VAR_DIR .'cache/links/'. $project .'/';
-        \QUI\Utils\System\File::mkdir( $link_cache_dir );
+        QUI\Utils\System\File::mkdir( $link_cache_dir );
 
         $link_cache_file = $link_cache_dir . $id .'_'. $project .'_'. $lang;
 
@@ -1350,7 +1342,7 @@ class Rewrite
                 $Project = \QUI::getProject( $project, $lang ); /* @var $Project \QUI\Projects\Project */
                 $Site    = $Project->get( (int)$id ); /* @var $s \QUI\Projects\Site */
 
-            } catch ( \QUI\Exception $Exception )
+            } catch ( QUI\Exception $Exception )
             {
                 // Seite existiert nicht
                 return '';
@@ -1396,28 +1388,28 @@ class Rewrite
                 // und die Sprache nicht die vom jetzigen Projekt ist
                 // dann Host davor setzen
                 $url = $vhosts[$_SERVER['HTTP_HOST']][$lang] . URL_DIR . $url;
-                $url = \QUI\Utils\String::replaceDblSlashes($url);
+                $url = QUI\Utils\String::replaceDblSlashes($url);
                 $url = 'http://'. $this->_project_prefix . $url;
 
                 return $url;
             }
 
             $url = URL_DIR . $this->_project_prefix . $url;
-            $url = \QUI\Utils\String::replaceDblSlashes( $url );
+            $url = QUI\Utils\String::replaceDblSlashes( $url );
 
         } else if ( $Project->getAttribute('default_lang') !== $lang )
         {
             // Falls kein Host Eintrag gibt
             // Und nicht die Standardsprache dann das Sprachenflag davor setzen
             $url = URL_DIR . $this->_project_prefix . $lang .'/'. $url;
-            $url = \QUI\Utils\String::replaceDblSlashes( $url );
+            $url = QUI\Utils\String::replaceDblSlashes( $url );
         }
 
         // falls host anderst ist, dann muss dieser dran gehängt werden
         // damit kein doppelter content entsteht
         if ( $_SERVER['HTTP_HOST'] != $Project->getHost() )
         {
-            $url = $Project->getHost() . \QUI\Utils\String::replaceDblSlashes( URL_DIR . $url );
+            $url = $Project->getHost() . QUI\Utils\String::replaceDblSlashes( URL_DIR . $url );
 
             if ( strpos( $url, 'http://' ) === false ) {
                 $url = 'http://'. $url;
