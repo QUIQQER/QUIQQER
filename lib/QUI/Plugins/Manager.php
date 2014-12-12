@@ -15,6 +15,7 @@ namespace QUI\Plugins;
  * @todo Muss neu geschrieben werden -> als Paket (Package) und PaketManager (PackageManager)
  *
  * @errorcodes 8XX = Project Errors
+ * @deprecated
  */
 
 class Manager extends \QUI\QDOM

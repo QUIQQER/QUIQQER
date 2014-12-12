@@ -13,9 +13,11 @@ use QUI\Utils\XML;
 /**
  * An installed package
  *
- * @author www.pcsg.de
+ * @author www.pcsg.de (Henning Leutz)
  *
  * @event onPackageSetup [ this ]
+ * @event onPackageInstall [ this ]
+ * @event onPackageUninstall [ String PackageName ]
  */
 class Package extends QUI\QDOM
 {
@@ -165,14 +167,24 @@ class Package extends QUI\QDOM
         QUI::getEvents()->fireEvent( 'packageInstall', array( $this ) );
     }
 
-
     /**
-     * Excecute uninstall
+     * Uninstall the package / plugin
+     * it doesn't destroy the database data, its only uninstall the package
      */
     public function uninstall()
     {
 
 
-        QUI::getEvents()->fireEvent( 'packageUninstall', array( $this ) );
+        QUI::getEvents()->fireEvent( 'packageUninstall', array( $this->getName() ) );
+    }
+
+    /**
+     * Destroy the complete package / plugin
+     * it destroy the database data, too
+     */
+    public function destroy()
+    {
+
+        QUI::getEvents()->fireEvent( 'packageUninstall', array( $this->getName() ) );
     }
 }
