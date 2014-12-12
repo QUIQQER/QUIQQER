@@ -1209,6 +1209,8 @@ class Site extends QUI\QDOM
 
     /**
      * Setzt das delete Flag
+     *
+     * @todo move to Site/Edit
      */
     public function delete()
     {
@@ -1233,6 +1235,10 @@ class Site extends QUI\QDOM
                 array( 'id' => $child )
             );
         }
+
+        // on destroy event
+        $this->Events->fireEvent( 'delete', array($this) );
+        QUI::getEvents()->fireEvent( 'siteDelete', array($this) );
 
         return true;
     }

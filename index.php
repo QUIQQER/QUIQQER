@@ -208,7 +208,7 @@ try
         $content = $Template->fetchTemplate( $Project->firstChild() );
     }
 
-    
+
     $content = $Rewrite->outputFilter( $content );
     $content = QUI\Control\Manager::setCSSToHead( $content );
 
