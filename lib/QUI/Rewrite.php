@@ -157,7 +157,7 @@ class Rewrite
             $url  = $_REQUEST['_url'];
             $host = $vhosts['301'][ $_SERVER['HTTP_HOST'] ];
 
-            $this->_showErrorHeader( 301, $host .'/'. $url );
+            $this->showErrorHeader( 301, $host .'/'. $url );
             exit;
         }
 
@@ -170,7 +170,7 @@ class Rewrite
             $_REQUEST['_url'] = substr( $_REQUEST['_url'], 0, -1 ) .'.html';
 
             // 301 weiterleiten
-            $this->_showErrorHeader( 301, URL_DIR . $_REQUEST['_url'] );
+            $this->showErrorHeader( 301, URL_DIR . $_REQUEST['_url'] );
         }
 
         // Suffix
@@ -252,7 +252,7 @@ class Rewrite
                     $url = QUI\Utils\String::replaceDblSlashes($url);
                     $url = 'http://'. $this->_project_prefix . $url;
 
-                    $this->_showErrorHeader(301, $url);
+                    $this->showErrorHeader(301, $url);
                 }
             }
 
@@ -290,7 +290,7 @@ class Rewrite
             } catch ( QUI\Exception $Exception )
             {
                 // Falls Bild nicht mehr existiert oder ein falscher Aufruf gemacht wurde
-                $this->_showErrorHeader( 404 );
+                $this->showErrorHeader( 404 );
                 exit;
             }
 
@@ -351,7 +351,7 @@ class Rewrite
                 $url = QUI\Utils\String::replaceDblSlashes( $url );
 
                 // Falls keine Extension (.html) dann auf .html
-                $this->_showErrorHeader( 301, $url );
+                $this->showErrorHeader( 301, $url );
             }
         }
 
@@ -370,7 +370,7 @@ class Rewrite
 
             } catch ( QUI\Exception $Exception )
             {
-                if ( $this->_showErrorHeader( 404 ) ) {
+                if ( $this->showErrorHeader( 404 ) ) {
                     return;
                 }
 
@@ -394,7 +394,7 @@ class Rewrite
                 $url = QUI\Utils\String::replaceDblSlashes($url);
                 $url = 'http://'. $this->_project_prefix . $url;
 
-                $this->_showErrorHeader(301, $url);
+                $this->showErrorHeader(301, $url);
             }
 
             // REQUEST setzen
@@ -445,7 +445,7 @@ class Rewrite
                         VAR_DIR .'log/rewrite'. date('-Y-m-d').'.log'
                     );
 
-                    //$this->_showErrorHeader(301, $url);
+                    //$this->showErrorHeader(301, $url);
                 }
             }
         }
@@ -647,7 +647,7 @@ class Rewrite
 
         if ( $host != $_SERVER['HTTP_HOST'] && $this->_project )
         {
-            $this->_showErrorHeader( 404 );
+            $this->showErrorHeader( 404 );
             return $this->_project;
         }
 
@@ -678,7 +678,7 @@ class Rewrite
         }
 
         // Projekt mit der Sprache exitiert nicht
-        $this->_showErrorHeader( 404 );
+        $this->showErrorHeader( 404 );
 
         $Project = QUI\Projects\Manager::getStandard();
 
@@ -792,7 +792,7 @@ class Rewrite
      * @param String $url - Bei manchen Error Codes muss eine URL übergeben werden (30*)
      * @return Bool
      */
-    private function _showErrorHeader($code=404, $url='')
+    public function showErrorHeader($code=404, $url='')
     {
         // Im Admin gibt es keine Error Header
         if ( defined( 'ADMIN' ) ) {
@@ -841,55 +841,18 @@ class Rewrite
                     define('ERROR_HEADER', 404);
                 }
 
-                $vhosts = $this->getVHosts();
-
-                // Falls der Host eine eigene Fehlerseite zugewiesen bekommen hat
-                if ( isset( $vhosts[ $_SERVER['HTTP_HOST'] ]) &&
-                     isset( $vhosts[ $_SERVER['HTTP_HOST'] ]['error'] ) )
+                try
                 {
-                    $error = $vhosts[ $_SERVER['HTTP_HOST'] ]['error'];
-                    $error = explode( ',', $error );
+                    $ErrorSite = $this->getErrorSite();
 
-                    try
-                    {
-                        if ( !isset( $error[0] ) || !isset( $error[1] ) || !isset( $error[2] ))
-                        {
-                            $Standard = QUI::getProjectManager()->getStandard();
+                    $this->_project = $ErrorSite->getProject();
+                    $this->_site    = $ErrorSite;
 
-                            $error[0] = $Standard->getName();
-                            $error[1] = $Standard->getLang();
-                            $error[2] = 1;
-                        }
+                    return true;
 
-                        $this->_project = QUI::getProject( $error[0], $error[1] );
-
-                        $this->_site = $this->_project->get( $error[2] );
-
-                        return true;
-
-                    } catch ( QUI\Exception $Exception )
-                    {
-                        QUI\System\Log::writeException( $Exception );
-                    }
-                }
-
-                if (isset($vhosts[404]) &&
-                    isset($vhosts[404]['id']) &&
-                    isset($vhosts[404]['project']) &&
-                    isset($vhosts[404]['lang']))
+                } catch ( QUI\Exception $Exception )
                 {
-                    try
-                    {
-                        $this->_project = \QUI::getProject($vhosts[404]['project'], $vhosts[404]['lang']);
-                        $this->_site    = $this->_project->get($vhosts[404]['id']);
-
-                        return true;
-
-                    } catch ( QUI\Exception $Exception )
-                    {
-                        // nothing
-                        QUI\System\Log::writeException( $Exception );
-                    }
+                    QUI\System\Log::writeException( $Exception );
                 }
 
             break;
@@ -906,6 +869,70 @@ class Rewrite
     }
 
     /**
+     * Shows the 404 site
+     *
+     * @return QUI\Projects\Site
+     * @throws QUI\Exception
+     */
+    public function getErrorSite()
+    {
+        $vhosts = $this->getVHosts();
+
+        // Falls der Host eine eigene Fehlerseite zugewiesen bekommen hat
+        if ( isset( $vhosts[ $_SERVER['HTTP_HOST'] ]) &&
+             isset( $vhosts[ $_SERVER['HTTP_HOST'] ]['error'] ) )
+        {
+            $error = $vhosts[ $_SERVER['HTTP_HOST'] ]['error'];
+            $error = explode( ',', $error );
+
+            try
+            {
+                if ( !isset( $error[0] ) || !isset( $error[1] ) || !isset( $error[2] ))
+                {
+                    $Standard = QUI::getProjectManager()->getStandard();
+
+                    $error[0] = $Standard->getName();
+                    $error[1] = $Standard->getLang();
+                    $error[2] = 1;
+                }
+
+                $Project = QUI::getProject( $error[0], $error[1] );
+                $Site    = $Project->get( $error[2] );
+
+                return $Site;
+
+            } catch ( QUI\Exception $Exception )
+            {
+                // no error site found, dry it global
+            }
+        }
+
+        if ( isset( $vhosts[ 404 ] ) &&
+             isset( $vhosts[ 404 ]['id'] ) &&
+             isset( $vhosts[ 404 ]['project'] ) &&
+             isset( $vhosts[ 404 ]['lang'] ) )
+        {
+            try
+            {
+                $Project = \QUI::getProject(
+                    $vhosts[ 404 ]['project'],
+                    $vhosts[ 404 ]['lang']
+                );
+
+                $Site = $Project->get( $vhosts[404]['id'] );
+
+                return $Site;
+
+            } catch ( QUI\Exception $Exception )
+            {
+
+            }
+        }
+
+        throw new QUI\Exception( 'Error Site not exist', 404 );
+    }
+
+    /**
      * Gibt die aktuelle Seite zurück
      * @return \QUI\Projects\Site
      */
@@ -915,7 +942,7 @@ class Rewrite
             return $this->_site;
         }
 
-        if ( $this->_showErrorHeader() ) {
+        if ( $this->showErrorHeader() ) {
             return $this->_site;
         }
 

@@ -134,19 +134,6 @@ $site_cache_dir    = VAR_DIR .'cache/sites/';
 $project_cache_dir = $site_cache_dir . $Project->getAttribute('name') .'/';
 $site_cache_file   = $project_cache_dir . $Site->getId() .'_'. $Project->getAttribute('name') .'_'. $Project->getAttribute('lang');
 
-$suffix = '.html';
-
-/* @todo Suffixe müssen variabel erweiterbar sein */
-
-if ($Rewrite->getSuffix() == '.print')
-{
-    $suffix = '.print';
-    $site_cache_file .= $suffix;
-} else
-{
-    $suffix = $Rewrite->getSuffix();
-}
-
 // Event onstart
 QUI::getEvents()->fireEvent( 'start' );
 
@@ -170,7 +157,7 @@ if ( CACHE && file_exists( $site_cache_file ) && $Site->getAttribute('nocache') 
 try
 {
     $Template = new QUI\Template();
-    $content = $Template->fetchTemplate($Site);
+    $content = $Template->fetchTemplate( $Site );
 
     Debug::marker('fetch Template');
 
@@ -188,24 +175,6 @@ try
 
     Debug::marker('output Filter');
 
-//    // Suffix Verarbeitung
-//    $suffix_class_file = USR_DIR . 'lib/' . $Project->getAttribute('name') . '/Suffix.php';
-//    $suffix_class_name = 'Suffix' . ucfirst( strtolower( $Project->getAttribute('name') ) );
-//
-//    if ( file_exists( $suffix_class_file ) )
-//    {
-//        require $suffix_class_file;
-//
-//        if ( class_exists( $suffix_class_name ) )
-//        {
-//            $class = new $suffix_class_name();
-//
-//            if ( method_exists( $class, 'suffix' ) ) {
-//                $class->suffix( $content );
-//            }
-//        }
-//    }
-
     echo $content;
 
     Debug::marker('content');
@@ -216,11 +185,17 @@ try
 
 } catch ( \QUI\Exception $Exception )
 {
-    header("HTTP/1.0 404 Not Found");
-
-    if ( !defined( 'ERROR_HEADER') ) {
-        define( 'ERROR_HEADER', 404 );
-    }
+    // error
+    $Rewrite->showErrorHeader();
 
     Log::addError( $Exception->getMessage() );
+
+    $Template = new QUI\Template();
+
+    $content = $Template->fetchTemplate( $Rewrite->getErrorSite() );
+    $content = $Rewrite->outputFilter( $content );
+    $content = QUI\Control\Manager::setCSSToHead( $content );
+
+    echo $content;
+    exit;
 }
