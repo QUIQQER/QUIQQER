@@ -48,9 +48,9 @@ if ( !QUI::getProjectManager()->count() )
     header( "HTTP/1.0 404 Not Found" );
 
     // no project exist
-    echo '<div style="text-align: center; margin-top: 100px;">
-                <img src="'. URL_BIN_DIR .'quiqqer_logo.png" style="max-width: 100%;" />
-          </div>';
+    echo '<div style="text-align: center; margin-top: 100px;">'.
+                '<img src="'. URL_BIN_DIR .'quiqqer_logo.png" style="max-width: 100%;" />'.
+          '</div>';
     exit;
 }
 
@@ -87,7 +87,7 @@ if ( isset( $Locale ) )
  */
 
 if ( isset( $_REQUEST['ref'] ) ) {
-    $Session->set( 'ref', Orthos::clear( $_REQUEST['ref'] ) );
+    QUI::getSession()->set( 'ref', Orthos::clear( $_REQUEST['ref'] ) );
 }
 
 /**
@@ -188,23 +188,23 @@ try
 
     Debug::marker('output Filter');
 
-    // Suffix Verarbeitung
-    $suffix_class_file = USR_DIR . 'lib/' . $Project->getAttribute('name') . '/Suffix.php';
-    $suffix_class_name = 'Suffix' . ucfirst( strtolower( $Project->getAttribute('name') ) );
-
-    if ( file_exists( $suffix_class_file ) )
-    {
-        require $suffix_class_file;
-
-        if ( class_exists( $suffix_class_name ) )
-        {
-            $class = new $suffix_class_name();
-
-            if ( method_exists( $class, 'suffix' ) ) {
-                $class->suffix( $content );
-            }
-        }
-    }
+//    // Suffix Verarbeitung
+//    $suffix_class_file = USR_DIR . 'lib/' . $Project->getAttribute('name') . '/Suffix.php';
+//    $suffix_class_name = 'Suffix' . ucfirst( strtolower( $Project->getAttribute('name') ) );
+//
+//    if ( file_exists( $suffix_class_file ) )
+//    {
+//        require $suffix_class_file;
+//
+//        if ( class_exists( $suffix_class_name ) )
+//        {
+//            $class = new $suffix_class_name();
+//
+//            if ( method_exists( $class, 'suffix' ) ) {
+//                $class->suffix( $content );
+//            }
+//        }
+//    }
 
     echo $content;
 
