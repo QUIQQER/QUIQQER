@@ -1234,11 +1234,14 @@ class Site extends QUI\QDOM
                 array( 'deleted' => 1 ),
                 array( 'id' => $child )
             );
+
+            $this->Events->fireEvent( 'delete', array($child) );
+            QUI::getEvents()->fireEvent( 'siteDelete', array($child) );
         }
 
         // on destroy event
-        $this->Events->fireEvent( 'delete', array($this) );
-        QUI::getEvents()->fireEvent( 'siteDelete', array($this) );
+        $this->Events->fireEvent( 'delete', array( $this->getId() ) );
+        QUI::getEvents()->fireEvent( 'siteDelete', array( $this->getId() ) );
 
         return true;
     }
