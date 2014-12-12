@@ -185,14 +185,30 @@ try
 
 } catch ( \QUI\Exception $Exception )
 {
-    // error
-    $Rewrite->showErrorHeader();
+    if ( $Exception->getCode() == 404 )
+    {
+        $Rewrite->showErrorHeader();
+
+    } else
+    {
+        $Rewrite->showErrorHeader( 503 );
+    }
+
 
     Log::addError( $Exception->getMessage() );
 
     $Template = new QUI\Template();
 
-    $content = $Template->fetchTemplate( $Rewrite->getErrorSite() );
+    try
+    {
+        $content = $Template->fetchTemplate( $Rewrite->getErrorSite() );
+
+    } catch ( \QUI\Exception $Exception )
+    {
+        $content = $Template->fetchTemplate( $Project->firstChild() );
+    }
+
+    
     $content = $Rewrite->outputFilter( $content );
     $content = QUI\Control\Manager::setCSSToHead( $content );
 
