@@ -1220,6 +1220,7 @@ class Site extends QUI\QDOM
 
         // Rekursiv alle Kinder bekommen
         $children = $this->getChildrenIdsRecursive();
+        $Project  = $this->getProject();
 
         QUI::getDataBase()->update(
             $this->_TABLE,
@@ -1236,12 +1237,12 @@ class Site extends QUI\QDOM
             );
 
             $this->Events->fireEvent( 'delete', array($child) );
-            QUI::getEvents()->fireEvent( 'siteDelete', array($child) );
+            QUI::getEvents()->fireEvent( 'siteDelete', array( $child, $Project ) );
         }
 
         // on destroy event
         $this->Events->fireEvent( 'delete', array( $this->getId() ) );
-        QUI::getEvents()->fireEvent( 'siteDelete', array( $this->getId() ) );
+        QUI::getEvents()->fireEvent( 'siteDelete', array( $this->getId(), $Project ) );
 
         return true;
     }
