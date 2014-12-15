@@ -601,7 +601,7 @@ define('controls/packages/Panel', [
         },
 
         /**
-         *
+         * Execute an update wiith the local update server
          */
         updateWithLocalServer : function()
         {
@@ -611,8 +611,7 @@ define('controls/packages/Panel', [
             {
                 MH.addLoading('Setup wird durchgeführt...', function(Loading)
                 {
-                    self.$Manager.updateWithLocalServer(function()
-                    {
+                    self.$Manager.updateWithLocalServer(function() {
                         Loading.finish( Locale.get( lg, 'message.setup.successfull' ) );
                     });
                 });
@@ -1342,16 +1341,9 @@ define('controls/packages/Panel', [
             var self = this;
 
             new QUIConfirm({
-                title : Locale.get(
-                    lg,
-                    'packages.server.win.add.title'
-                ),
-                icon : 'icon-building',
-                text : Locale.get(
-                    lg,
-                    'packages.server.win.add.text'
-                ),
-
+                title : Locale.get( lg, 'packages.server.win.add.title' ),
+                icon  : 'icon-building',
+                text  : Locale.get( lg, 'packages.server.win.add.text' ),
                 information : '<form class="qui-packages-panel-addserver">' +
                                   '<input type="text" name="server" value="" placeholder="Server" />' +
                                   '<select name="types">' +
@@ -1359,6 +1351,7 @@ define('controls/packages/Panel', [
                                       '<option value="vcs">vcs</option>' +
                                       '<option value="pear">pear</option>' +
                                       '<option value="package">package</option>' +
+                                      '<option value="artifact">artifact</option>' +
                                   '</select>' +
                               '</form>',
 

@@ -882,8 +882,18 @@ class Manager
         $Config = QUI::getConfig( 'etc/source.list.ini.php' );
         $Config->setValue( $server, 'active', 0 );
 
-        if ( isset( $params['type'] ) ) {
-            $Config->setValue( $server, 'type', $params['type'] );
+        if ( isset( $params['type'] ) )
+        {
+            switch ( $params['type'] )
+            {
+                case "composer":
+                case "vcs":
+                case "pear":
+                case "package":
+                case "artifact":
+                    $Config->setValue( $server, 'type', $params['type'] );
+                break;
+            }
         }
 
         $Config->save();
