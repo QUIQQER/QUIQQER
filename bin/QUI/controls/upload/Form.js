@@ -28,7 +28,7 @@
  * @require css!controls/upload/Form.css
  */
 
-define([
+define('controls/upload/Form', [
 
     'qui/QUI',
     'qui/controls/Control',
@@ -135,7 +135,7 @@ define([
          * @method controls/upload/Form#addParam
          *
          * @param {String} param         - param name
-         * @param {String|Number} value - param value
+         * @param {String|Number|Boolean} value - param value
          */
         setParam : function(param, value)
         {

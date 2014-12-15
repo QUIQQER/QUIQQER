@@ -510,17 +510,83 @@ define('controls/packages/Panel', [
          */
         uploadUpdates : function()
         {
+            var self = this;
 
-            //var Win = new QUI.controls.windows.Upload({
-            //    title : Locale.get( lg, 'packages.grid.update.btn.upload' ),
-            //    server_finish : 'ajax_system_update_byfile',
-            //    events :
-            //    {
-            //        onDrawEnd : function(Win) {
-            //            Win.getForm().setParam( 'extract', false );
-            //        }
-            //    }
-            //}).create();
+            new QUIConfirm({
+                title     : Locale.get( lg, 'packages.grid.update.btn.upload' ),
+                maxHeight : 500,
+                maxWidth  : 600,
+                autoclose : false,
+                events :
+                {
+                    onOpen : function(Win)
+                    {
+                        Win.Loader.show();
+
+                        require(['controls/upload/Form'], function(UploadForm)
+                        {
+                            var Form = new UploadForm({
+                                maxuploads : 1000,
+                                multible   : true,
+                                sendbutton : false,
+                                styles     : {
+                                    clear  : 'both',
+                                    float  : 'left',
+                                    margin : 0,
+                                    width  : '100%'
+                                },
+                                Drops  : [],
+                                events :
+                                {
+                                    onDragenter: function(event, Elm)
+                                    {
+                                        Elm.addClass( 'highlight' );
+                                        event.stop();
+                                    },
+
+                                    onDragleave: function(event, Elm)
+                                    {
+
+                                    },
+                                    //
+                                    //onDragend : function(event, Elm)
+                                    //{
+                                    //
+                                    //},
+
+                                    onComplete : function()
+                                    {
+                                        Win.close();
+                                        self.updateWithLocalServer();
+                                    }
+                                }
+                            });
+
+                            Form.setParam( 'onfinish', 'ajax_system_packages_upload_package' );
+                            Form.setParam( 'extract', false );
+
+                            Form.inject( Win.getContent() );
+
+                            Win.setAttribute( 'Form', Form );
+                            Win.Loader.hide();
+                        });
+                    },
+
+                    onSubmit : function(Win)
+                    {
+                        var Form = Win.getAttribute( 'Form' );
+
+                        if ( !Form )
+                        {
+                            Win.close();
+                            return;
+                        }
+
+                        Form.submit();
+                        Win.close();
+                    }
+                }
+            }).open();
         },
 
         /**
@@ -528,11 +594,29 @@ define('controls/packages/Panel', [
          *
          * @param {Function} callback - Callback function
          * @param {String|Boolean} [pkg] - (optional), package name
-         *
          */
         update : function(callback, pkg)
         {
             this.$Manager.update( pkg, callback );
+        },
+
+        /**
+         *
+         */
+        updateWithLocalServer : function()
+        {
+            var self = this;
+
+            QUI.getMessageHandler(function(MH)
+            {
+                MH.addLoading('Setup wird durchgeführt...', function(Loading)
+                {
+                    self.$Manager.updateWithLocalServer(function()
+                    {
+                        Loading.finish( Locale.get( lg, 'message.setup.successfull' ) );
+                    });
+                });
+            });
         },
 
         /**

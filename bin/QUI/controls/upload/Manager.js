@@ -2,8 +2,8 @@
  * Upload manager
  * Uploads files and show the upload status
  *
- * @author www.pcsg.de (Henning Leutz)
  * @module controls/upload/Manager
+ * @author www.pcsg.de (Henning Leutz)
  *
  * @require qui/QUI
  * @require qui/controls/desktop/Panel
@@ -18,7 +18,7 @@
  * @event onFileUploadRefresh [ {self}, {Number} percent ]
  */
 
-define([
+define('controls/upload/Manager', [
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
@@ -187,14 +187,14 @@ define([
 
             // check for archive files (like zip or tar)
             // if undefined, ask for it
-            if ( !extract )
+            if ( typeof params.extract === 'undefined' )
             {
                 for ( i = 0, len = files.length; i < len; i++ )
                 {
                     if ( files[i].type === 'application/zip' )
                     {
-                        foundPackageFiles = true;
                         archiveFiles.push( files[i] );
+                        foundPackageFiles = true;
                     }
                 }
             }
@@ -259,13 +259,10 @@ define([
             for ( i = 0, len = files.length; i < len; i++ )
             {
                 file_params = Object.clone( params );
+                file_params.extract = false;
 
-                if ( extract && extract[ files[ i ].name ] )
-                {
+                if (  extract && extract[ files[ i ].name ] ) {
                     file_params.extract = true;
-                } else
-                {
-                    file_params.extract = false;
                 }
 
                 if ( typeof file_params.events !== 'undefined' )

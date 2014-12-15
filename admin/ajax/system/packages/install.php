@@ -2,13 +2,15 @@
 
 /**
  * Install a wanted package
+ *
+ * @param String $package - Name of the package
  */
 function ajax_system_packages_install($package)
 {
-    return \QUI::getPackageManager()->install( $package );
+    \QUI::getPackageManager()->install( $package );
 }
 
-QUI::$Ajax->register(
+\QUI::$Ajax->register(
     'ajax_system_packages_install',
     array( 'package' ),
     array(
@@ -16,5 +18,3 @@ QUI::$Ajax->register(
         'quiqqer.system.update'
     )
 );
-
-?>

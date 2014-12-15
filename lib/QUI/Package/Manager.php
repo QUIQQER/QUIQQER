@@ -34,6 +34,7 @@ use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 
 use QUI;
 use QUI\Utils\XML as XML;
+use QUI\Utils\System\File as QUIFile;
 
 /**
  * Package Manager for the QUIQQER System
@@ -113,6 +114,12 @@ class Manager
      * @var QUI\Events\Manager
      */
     public $Events;
+
+    /**
+     * Path to the local repository
+     * @var String
+     */
+    protected $_localRepository;
 
     /**
      * constructor
@@ -578,7 +585,7 @@ class Manager
 
     /**
      * Return the params of an installed package
-     * Makes dependencies requests. If you want the Package Object, you should use getInstalledPackage
+     * If you want the Package Object, you should use getInstalledPackage
      *
      * @param String $package
      * @return Array
@@ -751,7 +758,6 @@ class Manager
     /**
      * Execute a setup for a package
      *
-     * @todo direkt in das packet packen
      * @param String $package
      */
     public function setup($package)
@@ -765,38 +771,6 @@ class Manager
         {
             QUI\System\Log::addWarning( $Exception->getMessage() );
         }
-
-
-//
-//        $dir = OPT_DIR . $package .'/';
-//
-//        if ( !is_dir( $dir ) ) {
-//            return;
-//        }
-
-
-//        QUI\Update::importDatabase( $dir .'database.xml' );
-//        QUI\Update::importTemplateEngines( $dir .'engines.xml' );
-//        QUI\Update::importEditors( $dir .'wysiwyg.xml' );
-//        QUI\Update::importMenu( $dir .'menu.xml' );
-//        QUI\Update::importPermissions( $dir .'permissions.xml', $package );
-//        QUI\Update::importMenu( $dir .'menu.xml' );
-//
-//        // events
-//        QUI\Update::importEvents( $dir .'events.xml' );
-//        QUI\Update::importSiteEvents( $dir .'site.xml' );
-//
-//        // settings
-//        if ( !file_exists( $dir .'settings.xml' ) ) {
-//            return;
-//        }
-//
-//        // $defaults = XML::getConfigParamsFromXml( $dir .'settings.xml' );
-//        $Config   = XML::getConfigFromXml( $dir .'settings.xml' );
-//
-//        if ( $Config ) {
-//            $Config->save();
-//        }
     }
 
     /**
@@ -808,7 +782,7 @@ class Manager
      */
     public function refreshServerList()
     {
-        $this->checkUpdates();
+        $this->_checkComposer();
 
         $json = $this->_getComposerJSON();
 
@@ -1073,166 +1047,61 @@ class Manager
     /**
      * Update a package or the entire system from a package archive
      *
-     * @param String $packagepath - path to the ZIP archive
-     * @throws \QUI\Exception
+     * @param String|Boolean $package - Name of the package
+     * @throws QUI\Exception
      */
-    public function updatePackage($packagepath)
+    public function updateWithLocalRepository($package=false)
     {
-        if ( !file_exists( $packagepath ) )
+        $serverDir = $this->_getUploadPackageDir();
+
+        if ( !is_dir( $serverDir ) ) {
+            throw new QUI\Exception( 'Locale Repository not found' );
+        }
+
+        // add local repository if it not in the server list
+        $serverList = $this->getServerList();
+
+        if ( !is_string( $package ) ) {
+            $package = false;
+        }
+
+        $localArchivContains = false;
+
+        foreach ( $serverList as $server => $entry )
         {
-            throw new QUI\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/system',
-                    'exception.packages.update.archive.not.found'
-                )
-            );
+            if ( !$entry['active'] ) {
+                continue;
+            }
+
+            if ( !isset( $entry['type'] ) ) {
+                continue;
+            }
+
+            if ( $server == $serverDir && $entry['type'] == 'artifact' )
+            {
+                $localArchivContains = true;
+                break;
+            }
         }
 
-        // extract the archive
-        $folder = QUI::getTemp()->createFolder();
-
-        QUI\Archiver\Zip::unzip( $packagepath, $folder );
-
-        // read composer file
-        $composer     = $folder .'composer.json';
-        $repositories = VAR_DIR .'repository/bin/';
-
-        if ( !file_exists( $composer ) )
+        if ( $localArchivContains === false )
         {
-            throw new QUI\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/system',
-                    'exception.no.quiqqer.update.archive'
-                )
-            );
+            $this->addServer( $serverDir, array(
+                "type" => "artifact"
+            ));
+
+            $this->setServerStatus( $serverDir, 1 );
         }
 
-        $package     = json_decode( file_get_contents( $composer ), true );
-        $package_dir = $repositories . $package['name'] .'/';
-        $update_file = $package_dir . $package['version'] .'.zip';
 
-        if ( file_exists( $update_file ) ) {
-            unlink( $update_file );
+        // execute update
+        $this->update( $package );
+
+
+        // remove the local server
+        if ( $localArchivContains === false ) {
+            $this->removeServer( $serverDir );
         }
-
-        QUI\Utils\System\File::mkdir( $package_dir );
-        QUI\Utils\System\File::move( $packagepath, $update_file );
-
-
-        // create packages.json
-        $server_json     = $repositories .'packages.json';
-        $server_packages = '';
-
-        if ( file_exists( $server_json ) ) {
-            $server_packages = json_decode( $server_json, true );
-        }
-
-        if ( !is_array( $server_packages ) ||
-             !isset( $server_packages[ 'packages' ] ) )
-        {
-            $server_packages = array(
-                'packages' => array()
-            );
-        }
-
-        $version = $package['version'];
-
-        $server_packages[ 'packages' ] = array(
-            $package['name'] => array(
-                $version => array(
-                    "name" => $package[ 'name' ],
-                    "version" => $version,
-                    "dist" => array(
-                        "url"  => HOST .'/'. str_replace( VAR_DIR, URL_VAR_DIR, $update_file ),
-                        "type" => "zip"
-                    ),
-
-                    "require"     => $package['require'],
-                    "type"        => $package['type'],
-                    "description" => $package['description']
-                )
-            )
-        );
-
-        file_put_contents( $server_json, json_encode( $server_packages ) );
-
-        // create composer json file for working dir
-        $template = file_get_contents(
-            dirname( __FILE__ ) .'/composer.tpl'
-        );
-
-        // make the repository list
-        $list = array(
-            'packagist' => false,
-            array(
-                "type" => "composer",
-                "url"  => HOST .'/'. str_replace( VAR_DIR, URL_VAR_DIR, $repositories )
-            )
-        );
-
-        $template = str_replace(
-            '{$repositories}',
-            json_encode( $list ),
-            $template
-        );
-
-        $template = str_replace(
-            '{$PACKAGE_DIR}',
-            OPT_DIR,
-            $template
-        );
-
-        $template = str_replace(
-            '{$VAR_COMPOSER_DIR}',
-            $this->_vardir,
-            $template
-        );
-
-        $template = str_replace(
-            '{$LIB_DIR}',
-            LIB_DIR,
-            $template
-        );
-
-
-        if ( file_exists( $repositories .'composer.json' ) ) {
-            unlink( $repositories .'composer.json' );
-        }
-
-        file_put_contents( $repositories .'composer.json', $template );
-
-        // make an update from the repository archive source
-        $result = $this->_execComposer('', array(
-            '--working-dir' => $repositories
-        ));
-
-        if ( !count( $result ) )
-        {
-            throw new QUI\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/system',
-                    'exception.packages.exec.not.found.composer'
-                )
-            );
-        }
-
-        $result = $this->_execComposer('update', array(
-            '--dry-run' => true
-        ));
-
-        $last = end( $result );
-
-        if ( $last == 'Nothing to install or update' )
-        {
-            throw new QUI\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/system',
-                    'exception.packages.update.version.not.found'
-                )
-            );
-        }
-
-        $this->_execComposer('update');
     }
 
     /**
@@ -1392,5 +1261,52 @@ class Manager
         QUI\Cache\Manager::set( 'qui/packages/list/haveDatabaseXml', $result );
 
         return $result;
+    }
+
+    /**
+     * @return mixed|String
+     */
+    protected function _getUploadPackageDir()
+    {
+        $updatePath = QUI::conf( 'update', 'updatePath' );
+
+        if ( !empty( $updatePath ) && is_dir( $updatePath ) ) {
+            return $updatePath;
+        }
+
+        return QUI::getTemp()->createFolder( 'quiqqerUpdate' );
+    }
+
+    /**
+     * Upload a archiv file to the local quiqqer repository
+     *
+     * @param String $file - Path to the package archive file
+     * @throws QUI\Exception
+     */
+    public function uploadPackage($file)
+    {
+        $dir = $this->_getUploadPackageDir();
+
+        if ( !is_dir( $dir ) ) {
+            throw new QUI\Exception( 'Local Repository not exist' );
+        }
+
+        if ( !file_exists( $file ) ) {
+            throw new QUI\Exception( 'Archiv file not found' );
+        }
+
+        $fileInfos = QUIFile::getInfo($file, array(
+            'filesize'  => true,
+            'mime_type' => true,
+            'pathinfo'  => true
+        ));
+
+        $tempFile = $dir .'/'. $fileInfos['basename'];
+
+        if ( file_exists( $tempFile ) ) {
+            unlink( $tempFile );
+        }
+
+        QUIFile::move( $file, $tempFile );
     }
 }

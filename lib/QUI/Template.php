@@ -465,7 +465,7 @@ class Template extends QUI\QDOM
         {
             $siteScript = Orthos::clearPath( realpath( $siteScript ) );
 
-            if ( file_exists( $siteScript ) ) {
+            if ( $siteScript ) {
                 require $siteScript;
             }
         }
@@ -474,7 +474,7 @@ class Template extends QUI\QDOM
         {
             $projectScript = Orthos::clearPath( realpath( $projectScript ) );
 
-            if ( file_exists( $projectScript ) ) {
+            if ( $projectScript ) {
                 require $projectScript;
             }
         }

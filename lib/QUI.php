@@ -846,7 +846,7 @@ class QUI
     static function getTemp()
     {
         if ( is_null( self::$Temp ) ) {
-            self::$Temp = new \QUI\Temp( VAR_DIR .'temp' );
+            self::$Temp = new \QUI\Temp( VAR_DIR .'tmp' );
         }
 
         return self::$Temp;

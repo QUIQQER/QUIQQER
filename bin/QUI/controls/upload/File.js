@@ -26,7 +26,7 @@
  * @fires onRefresh [this, {Number} percent]
  */
 
-define([
+define('controls/upload/File', [
 
     'qui/QUI',
     'qui/controls/Control',
@@ -514,7 +514,7 @@ define([
          * Return the File object
          *
          * @method controls/upload/File#upload
-         * @return {File}
+         * @return {File|Boolean}
          */
         getFile : function()
         {

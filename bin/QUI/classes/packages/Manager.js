@@ -6,15 +6,13 @@
  * @author www.pcsg.de (Henning Leutz)
  */
 
-define([
+define('classes/packages/Manager', [
 
     'qui/QUI',
     'qui/classes/DOM',
+    'Ajax'
 
-    'Ajax',
-    'Locale'
-
-], function(QUI, QDOM, Ajax, Locale)
+], function(QUI, QDOM, Ajax)
 {
     "use strict";
 
@@ -65,6 +63,21 @@ define([
                 }
             }, {
                 'package' : pkg || false
+            });
+        },
+
+        /**
+         * Execute a system or plugin update with an internal local server
+         *
+         * @param {Function} [callback]
+         */
+        updateWithLocalServer : function(callback)
+        {
+            Ajax.post('ajax_system_updateWithLocalServer', function(result)
+            {
+                if ( typeof callback !== 'undefined' ) {
+                    callback( result );
+                }
             });
         },
 
