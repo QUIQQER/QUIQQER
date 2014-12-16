@@ -14,7 +14,7 @@
  * @event onSubmit [ {Array}, {this} ]
  */
 
-define([
+define('controls/system/Login', [
 
     'qui/QUI',
     'qui/controls/windows/Confirm',
@@ -101,6 +101,13 @@ define([
                     '<input type="password" value="" name="password" />' +
                 '</form>'
             );
+
+            Content.getElements( 'input' ).addEvent('keyup', function(event)
+            {
+                if ( event.key == 'enter' ) {
+                    this.submit();
+                }
+            }.bind( this ));
         },
 
         /**
