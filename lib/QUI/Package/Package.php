@@ -73,7 +73,10 @@ class Package extends QUI\QDOM
             return;
         }
 
-        $this->_composerData = json_decode( file_get_contents( $packageDir .'composer.json' ), true );
+        $this->_composerData = json_decode(
+            file_get_contents( $packageDir .'composer.json' ),
+            true
+        );
 
         if ( !isset( $this->_composerData['type'] ) ) {
             return;
@@ -130,25 +133,37 @@ class Package extends QUI\QDOM
 
     /**
      * Return the composer data of the package
+     *
      * @return array|bool|mixed
+     * @throws QUI\Exception
      */
     public function getComposerData()
     {
-        return $this->_composerData;
+        if ( $this->_composerData ) {
+            return $this->_composerData;
+        }
+
+        $composer = QUI::getPackageManager()->show( $this->getName() );
+
+        if ( !isset( $composer[ 'name' ] ) ) {
+            $composer[ 'name' ] = $this->getName();
+        }
+
+        $this->_composerData = $composer;
+
+        return $composer;
     }
 
     /**
-     * Return the requirements of the package
+     * Return the requirements / dependencies of the package
      * @return array
      */
-    public function getRequirements()
+    public function getDependencies()
     {
-        if ( !$this->_composerData ) {
-            return array();
-        }
+        $composer = $this->getComposerData();
 
-        if ( isset( $this->_composerData[ 'require' ] ) ) {
-            return $this->_composerData[ 'require' ];
+        if ( isset( $composer[ 'require' ] ) ) {
+            return $composer[ 'require' ];
         }
 
         return array();
