@@ -1,13 +1,16 @@
 <?php
 
 /**
- * Return all installed packages
+ * Return the composer data of the package
  *
+ * @param string $package - Name of the package
  * @return Array
  */
 function ajax_system_packages_get($package)
 {
-    return \QUI::getPackageManager()->getPackage( $package );
+    return \QUI::getPackageManager()->
+                 getInstalledPackage( $package )->
+                 getComposerData();
 }
 
 \QUI::$Ajax->register(

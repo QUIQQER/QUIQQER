@@ -23,19 +23,25 @@ class Package extends QUI\QDOM
 {
     /**
      * Name of the package
-     * @var String
+     * @var string
      */
     protected $_name = '';
 
     /**
      * Directory of the package
-     * @var String
+     * @var string
      */
     protected $_packageDir = '';
 
     /**
+     * Package composer data from the composer file
+     * @var bool|array
+     */
+    protected $_composerData = false;
+
+    /**
      * Path to the Config
-     * @var String
+     * @var string
      */
     protected $_configPath = '';
 
@@ -67,13 +73,13 @@ class Package extends QUI\QDOM
             return;
         }
 
-        $composer = json_decode( file_get_contents( $packageDir .'composer.json' ), true );
+        $this->_composerData = json_decode( file_get_contents( $packageDir .'composer.json' ), true );
 
-        if ( !isset( $composer['type'] ) ) {
+        if ( !isset( $this->_composerData['type'] ) ) {
             return;
         }
 
-        if ( strpos( $composer['type'], 'quiqqer-') === false ) {
+        if ( strpos( $this->_composerData['type'], 'quiqqer-') === false ) {
             return;
         }
 
@@ -120,6 +126,32 @@ class Package extends QUI\QDOM
         }
 
         return $this->_Config;
+    }
+
+    /**
+     * Return the composer data of the package
+     * @return array|bool|mixed
+     */
+    public function getComposerData()
+    {
+        return $this->_composerData;
+    }
+
+    /**
+     * Return the requirements of the package
+     * @return array
+     */
+    public function getRequirements()
+    {
+        if ( !$this->_composerData ) {
+            return array();
+        }
+
+        if ( isset( $this->_composerData[ 'require' ] ) ) {
+            return $this->_composerData[ 'require' ];
+        }
+
+        return array();
     }
 
     /**
