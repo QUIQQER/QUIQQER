@@ -194,25 +194,7 @@ define('controls/projects/project/site/Panel', [
          */
         load : function()
         {
-            var title, description;
-
-            var Site    = this.getSite(),
-                Project = Site.getProject();
-
-            title = Site.getAttribute( 'title') +' ('+ Site.getId() +')';
-
-            description = Site.getAttribute( 'name' ).replace(/ /g, '-') +'.html : '+
-                          Site.getId() +' : ' +
-                          Project.getName();
-
-            this.setAttributes({
-                title       : title,
-                description : description,
-                icon        : URL_BIN_DIR +'16x16/flags/'+ Project.getLang() +'.png'
-            });
-
             this.refresh();
-
 
             if ( this.getActiveCategory() )
             {
@@ -222,6 +204,35 @@ define('controls/projects/project/site/Panel', [
             {
                 this.getCategoryBar().firstChild().click();
             }
+        },
+
+        /**
+         * Refresh the site panel
+         */
+        refresh : function()
+        {
+            var title, description;
+
+            var Site    = this.getSite(),
+                Project = Site.getProject();
+
+            title = Site.getAttribute( 'title') +' ('+ Site.getId() +')';
+
+            description = Site.getAttribute( 'name' ) +' - '+
+                          Site.getId() +' - ' +
+                          Project.getName();
+
+            if ( Site.getId() != 1 ) {
+                description = description +' - '+ Site.getUrl();
+            }
+
+            this.setAttributes({
+                title       : title,
+                description : description,
+                icon        : URL_BIN_DIR +'16x16/flags/'+ Project.getLang() +'.png'
+            });
+
+            this.parent();
         },
 
         /**
@@ -453,10 +464,13 @@ define('controls/projects/project/site/Panel', [
          */
         save : function()
         {
-            this.$onCategoryLeave( this.getActiveCategory() );
-            this.getSite().save();
+            var self = this;
 
-            this.$onCategoryEnter( this.getActiveCategory() );
+            this.$onCategoryLeave( this.getActiveCategory() );
+
+            this.getSite().save(function() {
+                self.refresh();
+            });
         },
 
         /**

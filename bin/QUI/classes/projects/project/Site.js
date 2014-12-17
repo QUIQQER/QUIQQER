@@ -275,7 +275,7 @@ define([
 
             params.attributes = JSON.encode( this.getAttributes() );
 
-            Ajax.post('ajax_site_save', function(result, Request)
+            Ajax.post('ajax_site_save', function(result)
             {
                 if ( result && result.attributes ) {
                     Site.setAttributes( result.attributes );
@@ -283,9 +283,10 @@ define([
 
                 Site.$has_children = result && result.has_children || false;
                 Site.$parentid     = result && result.parentid || false;
+                Site.$url          = result && result.url || '';
 
                 if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( result, Request );
+                    onfinish( result );
                 }
 
                 Site.fireEvent( 'save', [ Site ] );
@@ -330,10 +331,10 @@ define([
 
             params.newParentId = newParentId;
 
-            Ajax.post('ajax_site_move', function(result, Request)
+            Ajax.post('ajax_site_move', function(result)
             {
                 if ( typeof callback !== 'undefined' ) {
-                    callback( result, Request );
+                    callback( result );
                 }
 
                 Site.fireEvent( 'move', [ Site, newParentId ] );
@@ -355,10 +356,10 @@ define([
 
             params.newParentId = newParentId;
 
-            Ajax.post('ajax_site_copy', function(result, Request)
+            Ajax.post('ajax_site_copy', function(result)
             {
                 if ( typeof callback !== 'undefined' ) {
-                    callback( result, Request );
+                    callback( result );
                 }
 
                 Site.fireEvent( 'copy', [ Site, newParentId ] );
@@ -379,10 +380,10 @@ define([
 
             params.newParentId = newParentId;
 
-            Ajax.post('ajax_site_linked', function(result, Request)
+            Ajax.post('ajax_site_linked', function(result)
             {
                 if ( typeof callback !== 'undefined' ) {
-                    callback( result, Request );
+                    callback( result );
                 }
 
                 Site.fireEvent( 'linked', [ Site, newParentId ] );
@@ -427,14 +428,14 @@ define([
 
             var Site = this;
 
-            Ajax.post('ajax_site_children_create', function(result, Request)
+            Ajax.post('ajax_site_children_create', function(result)
             {
                 if ( !result ) {
                     return;
                 }
 
                 if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( result, Request );
+                    onfinish( result );
                 }
 
                 Site.fireEvent( 'createChild', [ Site, result.id ] );
