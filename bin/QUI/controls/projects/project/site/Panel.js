@@ -18,13 +18,12 @@
  * @require css!controls/projects/project/site/Panel.css
  */
 
-define([
+define('controls/projects/project/site/Panel', [
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
     'Projects',
     'Ajax',
-    'classes/projects/project/Site',
     'qui/controls/buttons/Button',
     'qui/utils/Form',
     'qui/utils/Elements',
@@ -43,14 +42,13 @@ define([
         QUIPanel     = arguments[ 1 ],
         Projects     = arguments[ 2 ],
         Ajax         = arguments[ 3 ],
-        Site         = arguments[ 4 ],
-        QUIButton    = arguments[ 5 ],
-        QUIFormUtils = arguments[ 6 ],
-        QUIElmUtils  = arguments[ 7 ],
-        ControlUtils = arguments[ 8 ],
-        PanelUtils   = arguments[ 9 ],
-        SiteUtils    = arguments[ 10 ],
-        Locale       = arguments[ 11 ];
+        QUIButton    = arguments[ 4 ],
+        QUIFormUtils = arguments[ 5 ],
+        QUIElmUtils  = arguments[ 6 ],
+        ControlUtils = arguments[ 7 ],
+        PanelUtils   = arguments[ 8 ],
+        SiteUtils    = arguments[ 9 ],
+        Locale       = arguments[ 10 ];
 
     var lg = 'quiqqer/system';
 
@@ -59,7 +57,7 @@ define([
      *
      * @class controls/projects/project/site/Panel
      *
-     * @param {classes/projects/Site} Site
+     * @param {Object} Site - classes/projects/Site
      * @param {Object} options
      *
      * @memberof! <global>
@@ -595,53 +593,7 @@ define([
                 // information tab
                 if ( Category.getAttribute( 'name' ) === 'information' )
                 {
-                    var NameInput  = Body.getElements( 'input[name="site-name"]' ),
-                        UrlDisplay = Body.getElements( '.site-url-display' ),
-                        siteUrl    = Site.getUrl();
-
-                    UrlDisplay.set( 'html', Site.getUrl() );
-
-                    // filter
-                    var sitePath   = siteUrl.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '') +'/',
-                        notAllowed = Object.keys( SiteUtils.notAllowedUrlSigns() ).join('|'),
-                        reg        = new RegExp( '['+ notAllowed +']', "g" );
-
-                    var lastPos = null;
-
-                    NameInput.set({
-                        value  : Site.getAttribute( 'name' ),
-                        events :
-                        {
-                            keydown : function(event) {
-                                lastPos = QUIElmUtils.getCursorPosition( event.target );
-                            },
-
-                            keyup : function()
-                            {
-                                var old = this.value;
-
-                                this.value = this.value.replace( reg, '' );
-                                this.value = this.value.replace( / /g, QUIQQER.Rewrite.URL_SPACE_CHARACTER );
-
-                                if ( old != this.value )
-                                {
-                                    UrlDisplay.set( 'html', sitePath + this.value +'.html' );
-
-                                    QUIElmUtils.setCursorPosition( this, lastPos );
-                                }
-                            },
-
-                            blur : function()
-                            {
-                                this.fireEvent( 'keyup' );
-                            },
-
-                            focus : function()
-                            {
-                                this.fireEvent( 'keyup' );
-                            }
-                        }
-                    });
+                    self.$bindNameInputUrlFilter();
 
 
                     // site linking
@@ -948,6 +900,65 @@ define([
 
             eval( Btn.getAttribute( '_onclick' ) +'();' );
         },
+
+        /**
+         *
+         */
+        $bindNameInputUrlFilter : function()
+        {
+            var Site = this.getSite(),
+                Body = this.getContent();
+
+            var NameInput  = Body.getElements( 'input[name="site-name"]' ),
+                UrlDisplay = Body.getElements( '.site-url-display' ),
+                siteUrl    = Site.getUrl();
+
+            if ( Site.getId() != 1 ) {
+                UrlDisplay.set( 'html', Site.getUrl() );
+            }
+
+            // filter
+            var sitePath   = siteUrl.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '') +'/',
+                notAllowed = Object.keys( SiteUtils.notAllowedUrlSigns() ).join('|'),
+                reg        = new RegExp( '['+ notAllowed +']', "g" );
+
+            var lastPos = null;
+
+            NameInput.set({
+                value  : Site.getAttribute( 'name' ),
+                events :
+                {
+                    keydown : function(event) {
+                        lastPos = QUIElmUtils.getCursorPosition( event.target );
+                    },
+
+                    keyup : function()
+                    {
+                        var old = this.value;
+
+                        this.value = this.value.replace( reg, '' );
+                        this.value = this.value.replace( / /g, QUIQQER.Rewrite.URL_SPACE_CHARACTER );
+
+                        if ( old != this.value ) {
+                            QUIElmUtils.setCursorPosition( this, lastPos );
+                        }
+
+                        if ( Site.getId() != 1 ) {
+                            UrlDisplay.set('html', sitePath + this.value + '.html');
+                        }
+                    },
+
+                    blur : function() {
+                        this.fireEvent( 'keyup' );
+                    },
+
+                    focus : function() {
+                        this.fireEvent( 'keyup' );
+                    }
+                }
+            });
+        },
+
 
         /**
          * Site event methods
