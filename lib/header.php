@@ -29,14 +29,14 @@ if ( DEVELOPMENT == 1 )
     error_reporting( 0 );
 }
 
-define('GENERATOR', 'QUIQQER /www.pcsg.de');
+define( 'GENERATOR', 'QUIQQER /www.pcsg.de');
 
-define('URL_LIB_DIR', URL_DIR . str_replace( CMS_DIR, '', LIB_DIR ) );
-define('URL_BIN_DIR', URL_DIR . str_replace( CMS_DIR, '', BIN_DIR ) );
-define('URL_USR_DIR', URL_DIR . str_replace( CMS_DIR, '', USR_DIR ) );
-define('URL_SYS_DIR', URL_DIR . str_replace( CMS_DIR, '', SYS_DIR ) );
-define('URL_OPT_DIR', URL_DIR . str_replace( CMS_DIR, '', OPT_DIR ) );
-define('URL_VAR_DIR', URL_DIR . str_replace( CMS_DIR, '', VAR_DIR ) );
+define( 'URL_LIB_DIR', URL_DIR . str_replace( CMS_DIR, '', LIB_DIR ) );
+define( 'URL_BIN_DIR', URL_DIR . str_replace( CMS_DIR, '', BIN_DIR ) );
+define( 'URL_USR_DIR', URL_DIR . str_replace( CMS_DIR, '', USR_DIR ) );
+define( 'URL_SYS_DIR', URL_DIR . str_replace( CMS_DIR, '', SYS_DIR ) );
+define( 'URL_OPT_DIR', URL_DIR . str_replace( CMS_DIR, '', OPT_DIR ) );
+define( 'URL_VAR_DIR', URL_DIR . str_replace( CMS_DIR, '', VAR_DIR ) );
 
 define( 'HOST',         \QUI::conf( 'globals','host' ) );
 define( 'CACHE',        \QUI::conf( 'globals','cache' ) );
@@ -99,9 +99,6 @@ try
     exit;
 }
 
-/**
- * @var $User User
- */
 
 // User ist Standard Nobody
 $User = \QUI::getUsers()->getNobody();
@@ -149,6 +146,15 @@ if ( isset( $_GET['logout'] ) )
         header( 'Location: '. str_replace( 'logout=1', '', $_SERVER['REQUEST_URI'] ) );
         exit;
     }
+}
+
+if ( $User->getId() )
+{
+    // loged in users, no cache
+    header( "Cache-Control: no-cache, must-revalidate" ); //HTTP 1.1
+    header( "Pragma: no-cache" ); //HTTP 1.0
+    header( "Expires: Sat, 26 Jul 1997 05:00:00 GMT" ); // Date in the past
+    header( 'Expires: ' . gmdate('D, d M Y H:i:s', time()-60) . ' GMT' );
 }
 
 \QUI\Utils\System\Debug::marker( 'header end' );
