@@ -31,7 +31,7 @@ define([
     /**
      * @class classes/projects/project/Site
      *
-     * @param {classes/projects/Project} Project
+     * @param {Object} Project - classes/projects/Project
      * @param {Number} id - Site ID
      *
      * @fires onStatusEditBegin - this
@@ -114,7 +114,7 @@ define([
          * Get the site project
          *
          * @method classes/projects/project/Site#getProject
-         * @return {classes/projects/Project}
+         * @return {Object} classes/projects/Project
          */
         getProject : function()
         {
@@ -210,15 +210,19 @@ define([
         {
             var Site = this;
 
-            Ajax.post('ajax_site_activate', function(result, Request)
+            Ajax.post('ajax_site_activate', function(result)
             {
-                Site.setAttribute( 'active', 1 );
-
-                if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( result, Request );
+                if ( result ) {
+                    Site.setAttribute( 'active', 1 );
                 }
 
-                Site.fireEvent( 'activate', [ Site ] );
+                if ( typeof onfinish !== 'undefined' ) {
+                    onfinish( result );
+                }
+
+                if ( result ) {
+                    Site.fireEvent( 'activate', [ Site ] );
+                }
 
             }, this.ajaxParams());
 
@@ -237,15 +241,20 @@ define([
         {
             var Site = this;
 
-            Ajax.post('ajax_site_deactivate', function(result, Request)
+            Ajax.post('ajax_site_deactivate', function(result)
             {
-                Site.setAttribute( 'active', 0 );
-
-                if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( result, Request );
+                if ( result === 0 ) {
+                    Site.setAttribute( 'active', 0 );
                 }
 
-                Site.fireEvent( 'deactivate', [ Site ] );
+                if ( typeof onfinish !== 'undefined' ) {
+                    onfinish( result );
+                }
+
+                if ( result === 0 ) {
+                    Site.fireEvent('deactivate', [Site]);
+                }
+
             }, this.ajaxParams());
 
             return this;
