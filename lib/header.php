@@ -153,7 +153,6 @@ if ( $User->getId() )
     // loged in users, no cache
     header( "Cache-Control: no-cache, must-revalidate" ); //HTTP 1.1
     header( "Pragma: no-cache" ); //HTTP 1.0
-    header( "Expires: Sat, 26 Jul 1997 05:00:00 GMT" ); // Date in the past
     header( 'Expires: ' . gmdate('D, d M Y H:i:s', time()-60) . ' GMT' );
 }
 

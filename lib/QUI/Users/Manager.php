@@ -690,7 +690,7 @@ class Manager
     /**
      * Get the Session user
      *
-     * @internal id in Session, bedänklich??
+     * @todo id in Session, bedänklich??
      * @return QUI\Users\User
      *
      * @todo Sicherheitsabfragen neu schreiben

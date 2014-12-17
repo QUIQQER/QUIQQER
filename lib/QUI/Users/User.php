@@ -852,7 +852,7 @@ class User implements QUI\Interfaces\Users\User
      * @see QUI\Interfaces\Users\User::setPassword()
      *
      * @param String $new - new password
-     * @param QUI\Users\User|Bool $ParentUser
+     * @param QUI\Interfaces\Users\User|Bool $ParentUser
      * @throws QUI\Exception
      */
     public function setPassword($new, $ParentUser=false)
@@ -995,7 +995,7 @@ class User implements QUI\Interfaces\Users\User
      * (non-PHPdoc)
      * @see QUI\Interfaces\Users\User::disable()
      *
-     * @param QUI\Users\User|Bool $ParentUser
+     * @param QUI\Interfaces\Users\User|Bool $ParentUser
      * @return Bool
      * @throws QUI\Exception
      */
@@ -1038,7 +1038,7 @@ class User implements QUI\Interfaces\Users\User
      * (non-PHPdoc)
      * @see QUI\Interfaces\Users\User::save()
      *
-     * @param QUI\Users\User|Bool $ParentUser
+     * @param QUI\Interfaces\Users\User|Bool $ParentUser
      * @return Bool
      * @throws QUI\Exception
      */

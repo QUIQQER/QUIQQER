@@ -8,6 +8,11 @@ require_once 'header.php';
 
 header( "Content-Type: text/plain" );
 
+// expire date in the past
+header( "Cache-Control: no-cache, must-revalidate" );
+header( "Pragma: no-cache" );
+header( 'Expires: ' . gmdate('D, d M Y H:i:s', time()-60) . ' GMT' );
+
 $User = \QUI::getUserBySession();
 
 // Falls Benutzer eingeloggt ist, dann seine Sprache nehmen
