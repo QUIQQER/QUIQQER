@@ -1052,6 +1052,13 @@ class Manager
         }
 
         QUI\System\Log::addInfo( implode("\n", $output) );
+
+        // composer optimize
+        $optimize = $this->_execComposer('dump-autoload', array(
+            '--optimize' => true
+        ));
+
+        QUI\System\Log::addInfo( implode("\n", $optimize) );
     }
 
     /**
