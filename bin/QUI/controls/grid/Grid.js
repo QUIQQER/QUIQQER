@@ -139,7 +139,7 @@ define('controls/grid/Grid', [
             this.parent( options );
 
 
-            this.container  = typeOf(container) === 'string' ? $(container) : container;
+            this.container  = typeOf(container) === 'string' ? document.id(container) : container;
             this._stopdrag  = false;
             this._dragtimer = false;
             this._mousedown = false;
@@ -2261,15 +2261,17 @@ define('controls/grid/Grid', [
                 }).inject( tDiv );
 
                 var bt = this.getAttribute('buttons');
-                var cBt, fBt, spanBt, node, Btn;
 
-                var func_fbOver = function() {
-                    this.addClass('fbOver');
-                };
+                var node, Btn;
 
-                var func_fbOut = function() {
-                    this.removeClass('fbOver');
-                };
+                //var cBt, fBt, spanBt;
+                //var func_fbOver = function() {
+                //    this.addClass('fbOver');
+                //};
+                //
+                //var func_fbOut = function() {
+                //    this.removeClass('fbOver');
+                //};
 
                 for ( i = 0, len = bt.length; i < len; i++ )
                 {
@@ -3037,8 +3039,6 @@ define('controls/grid/Grid', [
 
             var func_export_btn_click = function(Btn)
             {
-                var Data = t.setExportData();
-
                 Btn.getAttribute('Grid').exportGrid(
                     Btn.getAttribute('exportType')
                 );
@@ -3063,8 +3063,8 @@ define('controls/grid/Grid', [
                 text   : 'Abbrechen',
                 events :
                 {
-                    click : function(Btn) {
-                        $$('.exportSelectDiv').destroy();
+                    click : function() {
+                        document.getElement('.exportSelectDiv').destroy();
                     }
                 },
                 textimage : 'icon-remove'
@@ -3095,7 +3095,7 @@ define('controls/grid/Grid', [
                     continue;
                 }
 
-                if ( !$('export_'+ dataIndex).checked ) {
+                if ( !document.id('export_'+ dataIndex).checked ) {
                     continue;
                 }
 
@@ -3122,7 +3122,7 @@ define('controls/grid/Grid', [
             }
 
             this.setAttribute('exportData', data);
-            $$('.exportSelectDiv').destroy();
+            document.getElement('.exportSelectDiv').destroy();
 
             return data;
         },
@@ -3165,8 +3165,7 @@ define('controls/grid/Grid', [
                     scrolling   : 'auto'
                 }).inject( this.container );
 
-                setTimeout('$(\'exportDataField\').destroy(); $(\'gridExportFrame\').destroy();', 10000);
-                return;
+                setTimeout('document.id(\'exportDataField\').destroy(); document.id(\'gridExportFrame\').destroy();', 10000);
             }
 
             // @todo print funktion bauen
