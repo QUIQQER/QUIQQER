@@ -410,11 +410,8 @@ define('controls/grid/Grid', [
         edit: function(options)
         {
             var li;
-            var t = this,
-                o = t.getAttributes(),
-
+            var t    = this,
                 sels = t.getSelectedIndices();
-
 
             if ( !sels || sels.length === 0 || !t.getAttribute('editable') ) {
                 return;
@@ -463,7 +460,6 @@ define('controls/grid/Grid', [
             var td       = li.getElements('div.td')[c],
                 data     = this.$data[ sels[0] ],
                 width    = td.getStyle('width').toInt()-5,
-                height   = 15,
                 html     = data[ colmod.dataIndex ],
                 editType = colmod.editType ? colmod.editType : this.getAttribute('editType');
 
@@ -471,9 +467,9 @@ define('controls/grid/Grid', [
 
             var input = new Element(editType, {
                 'class' : 'inline',
-                style : "width: " + width + "px; height: auto;",
-                value : html,
-                title : 'Doppelklick oder Enter um die änderungen zu übernehmen',
+                style   : "width: " + width + "px; height: auto;",
+                value   : html,
+                title   : 'Doppelklick oder Enter um die änderungen zu übernehmen',
                 events : {
                     keyup    : t.finishEditing.bind( this ),
                     blur     : t.finishEditing.bind( this ),
@@ -652,24 +648,24 @@ define('controls/grid/Grid', [
             }
         },
 
-        focus : function(evt)
+        focus : function()
         {
             this.fireEvent( 'focus' );
         },
 
-        blur : function(evt)
+        blur : function()
         {
-            this.fireEvent( 'blur', [this] );
+            this.fireEvent( 'blur', [ this ] );
         },
 
-        mousedown : function(evt)
+        mousedown : function()
         {
-            this.fireEvent( 'mouseDown', [this] );
+            this.fireEvent( 'mouseDown', [ this ] );
         },
 
-        mouseup : function(evt)
+        mouseup : function()
         {
-            this.fireEvent( 'mouseUp', [this] );
+            this.fireEvent( 'mouseUp', [ this ] );
         },
 
         onRowMouseOver : function(evt)
@@ -864,9 +860,9 @@ define('controls/grid/Grid', [
                 return;
             }
 
+            var ondblclick;
             var target = evt.target,
-                row    = li.retrieve('row'),
-                ondblclick = false;
+                row    = li.retrieve('row');
 
             if ( !target.hasClass( 'td' ) && target.getParent( '.td' ) ) {
                 target = target.getParent( '.td' );
@@ -913,7 +909,7 @@ define('controls/grid/Grid', [
                     }
                 } else
                 {
-                    ondblclick(li, t.$data[ row ]);
+                    ondblclick(li, this.$data[ row ]);
                 }
             }
 
@@ -1073,7 +1069,8 @@ define('controls/grid/Grid', [
         // API
         loadData : function(url)
         {
-            var container = this.container;
+            var options   = this.getAttributes(),
+                container = this.container;
 
             if ( !this.getAttribute('url') && !this.getAttribute('dataProvider') ) {
                 return;
@@ -1115,8 +1112,8 @@ define('controls/grid/Grid', [
             }
 
             var request = new Request.JSON({
-                url  : (url !== null) ? url : o.url,
-                data : param
+                url  : (url !== null) ? url : options.url,
+                data : data
             });
 
             request.addEvent("complete", this.onLoadData.bind( this ));
@@ -1180,7 +1177,7 @@ define('controls/grid/Grid', [
                 return buttons;
             }
 
-            var i, len, Btn;
+            var i, len;
 
             for ( i = 0, len = btns.length; i < len; i++ )
             {
@@ -1358,7 +1355,7 @@ define('controls/grid/Grid', [
             );
         },
 
-        hideWhiteOverflow: function(i)
+        hideWhiteOverflow: function()
         {
             var gBlock, pReload;
 
@@ -1371,7 +1368,7 @@ define('controls/grid/Grid', [
             }
         },
 
-        showWhiteOverflow: function(i)
+        showWhiteOverflow: function()
         {
             var pReload, gBlock;
             var container = this.container;
@@ -1484,7 +1481,7 @@ define('controls/grid/Grid', [
             Row.addClass('selected');
         },
 
-        unSelectRow : function(Row, event)
+        unSelectRow : function(Row)
         {
             Row.removeClass('selected');
 
@@ -1764,7 +1761,6 @@ define('controls/grid/Grid', [
                 scrollX  = t.container.getElement('div.bDiv').getScroll().x,
                 dragSt   = cDrag.getElements('div')[colindex],
                 browser  = false, //Browser.Engine.trident,
-                options  = t.getAttributes(),
                 cModel   = this.$columnModel,
 
                 pos = 0,
@@ -1799,7 +1795,7 @@ define('controls/grid/Grid', [
             t.sumWidth += pos;
 
             t.ulBody.setStyle( 'width', t.sumWidth + visibleColumns * (browser ? 1 : 1) );
-            var hDivBox = $(t.options.name+'_hDivBox');
+            var hDivBox = document.id(t.options.name+'_hDivBox');
 
             hDivBox.setStyle( 'width', t.sumWidth + visibleColumns * 2 );
 
@@ -1810,7 +1806,7 @@ define('controls/grid/Grid', [
             columnObj.setStyle('width', pos-(browser ? 6 : 6));
 
             // sve kolone u body
-            elements.each(function(el, i)
+            elements.each(function(el)
             {
                 el.setStyle('width', t.sumWidth + 2 * visibleColumns); // inace se Div-ovi wrapaju
 
@@ -1939,10 +1935,9 @@ define('controls/grid/Grid', [
                 return;
             }
 
-            var columnCount = this.$columnModel.length,
-                rowCount    = this.$data.length;
+            var rowCount = this.$data.length;
 
-            for (var r = 0; r < rowCount; r++)
+            for ( var r = 0; r < rowCount; r++ )
             {
                 var rowdata = this.$data[r],
                     li      = this.renderRow(r, rowdata);
@@ -1959,7 +1954,7 @@ define('controls/grid/Grid', [
                 {
                     var li2 = new Element('li.section');
                         li2.addClass('section-'+r);
-                        li2.setStyle('width', t.sumWidth+2*t.visibleColumns);
+                        li2.setStyle('width', this.sumWidth + 2*this.visibleColumns);
 
                     this.ulBody.appendChild(li2);
 
@@ -2008,13 +2003,12 @@ define('controls/grid/Grid', [
                 li.addClass( this.$data[r].cssClass );
             }
 
-            var columnModel, columnDataIndex, div;
+            var columnModel, columnDataIndex, div, val;
             var firstvisible = -1;
 
             var func_input_click = function(data)
             {
-                var rowdata = data.list.$data[ data.row ],
-                    index   = data.columnModel.dataIndex;
+                var index = data.columnModel.dataIndex;
 
                 data.list.$data[ data.row ][ index ] = data.input.checked ? 1 : 0;
             };
@@ -2076,7 +2070,7 @@ define('controls/grid/Grid', [
 
                 if ( columnModel.dataType == 'code' && this.$data[ r ][ columnDataIndex ] )
                 {
-                    var val = rowdata[ columnDataIndex ];
+                    val = rowdata[ columnDataIndex ];
 
                     div.set( 'text', val );
 
@@ -2096,7 +2090,7 @@ define('controls/grid/Grid', [
 
                     div.appendChild( input );
 
-                    var val = rowdata[ columnDataIndex ];
+                    val = rowdata[ columnDataIndex ];
 
                     if (val == 1 || val=='t') {
                         input.set('checked', true);
@@ -2620,7 +2614,7 @@ define('controls/grid/Grid', [
                 {
                     pDiv2.getElement('input').addEvents({
                         keydown   : this.pageChange.bind(this),
-                        mousedown : function(event) {
+                        mousedown : function() {
                             this.focus();
                         }
                     });
@@ -2632,7 +2626,7 @@ define('controls/grid/Grid', [
                     {
                         pDiv2.getElement('input.cfilter').addEvents({
                             keyup     : this.filerData.bind( this ), // goto 1 & refresh
-                            mousedown : function(event) {
+                            mousedown : function() {
                                 this.focus();
                             }
                         });
