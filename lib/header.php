@@ -5,7 +5,8 @@
  */
 
 header( "Content-Type: text/html; charset=utf-8" );
-header( "Cache-Control: public, max-age=". 15 * 60 ); // 15min public caching for proxys
+header( "Cache-Control: no-cache, must-revalidate" );
+header( "Pragma: no-cache" );
 
 date_default_timezone_set( 'Europe/Zurich' );
 
@@ -146,14 +147,6 @@ if ( isset( $_GET['logout'] ) )
         header( 'Location: '. str_replace( 'logout=1', '', $_SERVER['REQUEST_URI'] ) );
         exit;
     }
-}
-
-if ( $User->getId() )
-{
-    // loged in users, no cache
-    header( "Cache-Control: no-cache, must-revalidate" ); //HTTP 1.1
-    header( "Pragma: no-cache" ); //HTTP 1.0
-    header( 'Expires: ' . gmdate('D, d M Y H:i:s', time()-60) . ' GMT' );
 }
 
 \QUI\Utils\System\Debug::marker( 'header end' );
