@@ -1,0 +1,36 @@
+<section class="grid-100 mobile-grid-100 grid-parent quiqqer-breadcrumb">
+    <div class="grid-100 mobile-grid-100 grid-parent quiqqer-breadcrumb-container">
+        <span>
+            {locale group="project/kapitalschutztv" value="breadcrumb.text"}
+        </span>
+
+        <ul class="fa-ul">
+            {assign var=Path value=$Rewrite->getPath()}
+            {assign var=Project value=$Rewrite->getProject()}
+            {assign var=Site value=$Rewrite->getSite()}
+            {assign var=First value=$Project->firstChild()}
+
+            {if $Site->getId() === 1}
+            <li>
+                <a href="{url site=$First}"
+                   title="{$First->getAttribute('title')|escape:"html"}"
+                >
+                    <span class="fa fa-angle-right"></span>
+                    <span>{$First->getAttribute('title')}</span>
+                </a>
+            </li>
+            {/if}
+
+            {foreach from=$Path item=Crumb}
+            <li>
+                <a href="{url site=$Crumb}"
+                   title="{$Crumb->getAttribute('title')|escape:"html"}"
+                >
+                    <span class="fa fa-angle-right"></span>
+                    <span>{$Crumb->getAttribute('title')}</span>
+                </a>
+            </li>
+            {/foreach}
+        </ul>
+    </div>
+</section>
