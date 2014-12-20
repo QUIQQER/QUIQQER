@@ -143,7 +143,8 @@ class Manager
     {
         return array(
             'quiqqer-library',
-            'quiqqer-plugin'
+            'quiqqer-plugin',
+            'quiqqer-template'
         );
     }
 
