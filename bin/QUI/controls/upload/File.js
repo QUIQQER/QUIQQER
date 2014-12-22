@@ -122,6 +122,7 @@ define('controls/upload/File', [
             this.$upload_time  = null;
             this.$execute      = true; // false if no excute of the update routine
             this.$result       = null;
+            this.$error        = false;
 
 
             this.$slice_method = 'slice';
@@ -451,7 +452,10 @@ define('controls/upload/File', [
                     this.getElm().getElement('.buttons').destroy();
                 }
 
-                this.fireEvent( 'complete', [ this, this.$result ] );
+                if ( this.$error === false ) {
+                    this.fireEvent( 'complete', [ this, this.$result ] );
+                }
+
                 return;
             }
 
@@ -645,6 +649,8 @@ define('controls/upload/File', [
 
             if ( !str.match('<quiqqer>') || !str.match('</quiqqer>') )
             {
+                this.$error = true;
+
                 return this.fireEvent('error', [
                     new MessageError({
                         message : 'No QUIQQER XML',
@@ -657,6 +663,8 @@ define('controls/upload/File', [
             if ( str.substring(0, start) != '<quiqqer>' ||
                  str.substring(end, len) != '</quiqqer>' )
             {
+                this.$error = true;
+
                 return this.fireEvent('error', [
                     new MessageError({
                         message : 'No QUIQQER XML',
@@ -690,6 +698,8 @@ define('controls/upload/File', [
             // exist a main exception?
             if ( result.Exception )
             {
+                this.$error = true;
+
                 return this.fireEvent('error', [
                     new MessageError({
                         message : result.Exception.message || '',
@@ -709,6 +719,8 @@ define('controls/upload/File', [
 
             if ( res.Exception )
             {
+                this.$error = true;
+
                 this.fireEvent('error', [
                     new MessageError({
                         message : res.Exception.message || '',
