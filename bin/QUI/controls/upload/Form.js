@@ -212,23 +212,7 @@ define('controls/upload/Form', [
                 this.$Elm.setStyles( this.getAttribute( 'styles' ) );
             }
 
-            this.$Form = new Element('form', {
-                enctype : "multipart/form-data",
-                method  : this.getAttribute( 'method' ),
-                action  : this.getAttribute( 'action' ),
-                target  : 'upload'+ this.getId()
-            });
-
-            this.$Form.addEvent('submit', function(event)
-            {
-                if ( typeof FileReader === 'undefined' ) {
-                    return true;
-                }
-
-                event.stop();
-                self.submit();
-            });
-
+            this.$Form = this.createForm();
             this.$Form.inject( this.$Elm );
 
 
@@ -281,6 +265,37 @@ define('controls/upload/Form', [
             }
 
             return this.$Elm;
+        },
+
+        /**
+         * Return an upload form element
+         *
+         * @return {HTMLElement}
+         */
+        createForm : function()
+        {
+            var Form = new Element('form', {
+                enctype : "multipart/form-data",
+                method  : this.getAttribute( 'method' ),
+                action  : this.getAttribute( 'action' ),
+                target  : 'upload'+ this.getId()
+            });
+
+            var self = this;
+
+            Form.addEvent('submit', function(event)
+            {
+                if ( typeof FileReader === 'undefined' ) {
+                    return true;
+                }
+
+                event.stop();
+                self.submit();
+            });
+
+            Form.inject( this.$Elm );
+
+            return Form;
         },
 
         /**
@@ -519,8 +534,7 @@ define('controls/upload/Form', [
                 files  = self.getFiles();
 
             params.events = {
-                onComplete : this.finish.bind( this ),
-                onError    : this.$onError
+                onComplete : this.finish.bind( this )
             };
 
             if ( "extract" in params && params.extract )
@@ -540,7 +554,8 @@ define('controls/upload/Form', [
 
                 UploadManager.addEvents({
                     onFileComplete      : self.$onFileUploadFinish,
-                    onFileUploadRefresh : self.$onFileUploadRefresh
+                    onFileUploadRefresh : self.$onFileUploadRefresh,
+                    onError             : self.$onError
                 });
 
                 self.$Elm.set( 'html', '' );
@@ -709,6 +724,43 @@ define('controls/upload/Form', [
          */
         $onError : function(Error)
         {
+            if ( this.$Progress ) {
+                this.$Progress.hide();
+            }
+
+            if ( this.$Info ) {
+                this.$Info.getElement( '.file-name' ).set( 'html', '' );
+            }
+
+            var self = this;
+
+            new Element('div', {
+                'class' : 'box',
+                html    : Error.getMessage(),
+                styles  : {
+                    clear      : 'both',
+                    'float'    : 'left',
+                    width      : '100%',
+                    padding    : '10px 0 0 20px',
+                    background : 'url('+ URL_BIN_DIR +'16x16/error.png) no-repeat left center'
+                },
+                events :
+                {
+                    click : function()
+                    {
+                        self.getElm().set( 'html', '' );
+
+                        self.$files = {};
+                        self.$Form  = self.createForm();
+                        self.$Form.inject( self.getElm() );
+
+                        for ( var i = 0, len = self.getAttribute( 'uploads' ); i < len; i++ ) {
+                            self.addInput();
+                        }
+                    }
+                }
+            }).inject( this.$Info );
+
             this.fireEvent( 'error', [ this, Error ] );
         }
     });
