@@ -1,6 +1,7 @@
 /**
  * With the Project-Manager you can create, delete and edit projects
  *
+ * @module controls/projects/Manager
  * @author www.pcsg.de (Henning Leutz)
  *
  * @requires qui/controls/Control
@@ -8,8 +9,6 @@
  * @requires controls/projects/Settings
  * @requires Projects
  * @requires controls/grid/Grid
- *
- * @module controls/projects/Manager
  */
 
 define('controls/projects/Manager', [
@@ -157,7 +156,7 @@ define('controls/projects/Manager', [
                 height : size.y - 40
             });
 
-            Projects.getList(function(result, Request)
+            Projects.getList(function(result)
             {
                 if ( !Object.getLength( result ) )
                 {
@@ -169,6 +168,10 @@ define('controls/projects/Manager', [
 
                 for ( var project in result )
                 {
+                    if ( !result.hasOwnProperty( project ) ) {
+                        continue;
+                    }
+
                     data.push({
                         project : project,
                         lang    : result[ project ].default_lang,
@@ -279,7 +282,7 @@ define('controls/projects/Manager', [
          * Opens the project settings
          *
          * @method controls/projects/Manager#$clickBtnProjectSettings
-         * @param {qui/controls/buttons/Button} Btn
+         * @param {Object} Btn - qui/controls/buttons/Button
          */
         $clickBtnProjectSettings : function(Btn)
         {
