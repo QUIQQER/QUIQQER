@@ -322,6 +322,10 @@ class Sites
                 continue;
             }
 
+            if ( !isset( $template['name'] ) ) {
+                continue;
+            }
+
             $file = OPT_DIR . $template['name'] .'/site.xml';
 
             if ( !file_exists( $file ) ) {

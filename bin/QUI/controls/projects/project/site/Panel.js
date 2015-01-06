@@ -469,7 +469,7 @@ define('controls/projects/project/site/Panel', [
             this.$onCategoryLeave( this.getActiveCategory() );
 
             this.getSite().save(function() {
-                self.refresh();
+                self.load();
             });
         },
 

@@ -443,7 +443,7 @@ class Template extends QUI\QDOM
             {
                 $Engine->assign(
                     'siteStyle',
-                    URL_OPT_DIR . $package .'/'. $type .'.css'
+                    URL_OPT_DIR . $package .'/bin/'. $type .'.css'
                 );
             }
 
@@ -457,6 +457,26 @@ class Template extends QUI\QDOM
 
             if ( file_exists( $projectTemplate ) ) {
                 $template = $projectTemplate;
+            }
+        }
+
+        if ( $siteType[ 0 ] == 'standard' )
+        {
+            // site template
+            $siteTemplate = OPT_DIR . $Project->getAttribute('template') .'/standard.html';
+            $siteScript   = OPT_DIR . $Project->getAttribute('template') .'/standard.php';
+            $siteStyle    = OPT_DIR . $Project->getAttribute('template') .'/bin/standard.css';
+
+            if ( file_exists( $siteStyle ) )
+            {
+                $Engine->assign(
+                    'siteStyle',
+                    URL_OPT_DIR . $Project->getAttribute('template') .'/standard.css'
+                );
+            }
+
+            if ( file_exists( $siteTemplate ) ) {
+                $template = $siteTemplate;
             }
         }
 
