@@ -841,7 +841,7 @@ class Manager
             $Dom  = QUI\Utils\XML::getDomFromXml( $file );
             $Path = new \DOMXPath( $Dom );
 
-            $Settings = $Path->query( "//project/settings" );
+            $Settings = $Path->query( "//quiqqer/project/settings" );
 
             if ( $Settings->length ) {
                 $list[] = $file;

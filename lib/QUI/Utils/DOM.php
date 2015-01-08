@@ -1059,6 +1059,10 @@ class DOM
 
         }
 
+        if ( $Input->getAttribute( 'class' ) ) {
+            $class = ' class="'. $Input->getAttribute( 'class' ) .'"';
+        }
+
         switch ( $type )
         {
             case 'group':

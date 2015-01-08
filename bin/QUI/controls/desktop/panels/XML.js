@@ -7,10 +7,12 @@
  * @module controls/desktop/panels/XML
  */
 
-define([
+define('controls/desktop/panels/XML', [
 
+    'qui/QUI',
     'qui/controls/desktop/Panel',
     'qui/controls/buttons/Button',
+    'qui/controls/buttons/Seperator',
     'qui/utils/Object',
     'Ajax',
     'Locale',
@@ -18,7 +20,7 @@ define([
 
     'css!controls/desktop/panels/XML.css'
 
-], function(QUIPanel, QUIButton, QUIObjectUtils, Ajax, Locale, ControlUtils)
+], function(QUI, QUIPanel, QUIButton, QUISeperator, QUIObjectUtils, Ajax, Locale, ControlUtils)
 {
     "use strict";
 
@@ -178,13 +180,13 @@ define([
         /**
          * Request the category
          *
-         * @param {qui/controls/buttons/Button} Category
+         * @param {Object} Category - qui/controls/buttons/Button
          */
         loadCategory : function(Category)
         {
             var self = this;
 
-            Ajax.get('ajax_settings_category', function(result, Request)
+            Ajax.get('ajax_settings_category', function(result)
             {
                 var Body = self.getBody();
 
@@ -201,7 +203,7 @@ define([
                 );
 
                 // set the form
-                var i, len, parts, Elm, value;
+                var i, len, Elm, value;
 
                 var elements = Body.getElement( 'form' ).elements,
                     config   = self.$config;
@@ -234,15 +236,15 @@ define([
                     {
                         var type = typeOf( R );
 
-                        if ( type == 'function' )
+                        if ( type === 'function' )
                         {
                             R( self );
 
-                        } else if ( type == 'class' )
+                        } else if ( type === 'class' )
                         {
                             self.$Control = new R( self );
 
-                            if ( self.getContent().get( 'html' ) == '' )
+                            if ( self.getContent().get( 'html' ) === '' )
                             {
                                 self.$Control.inject( Body );
 
@@ -284,13 +286,10 @@ define([
 
         /**
          * Unload the Category and set all settings
-         *
-         * @param {qui/controls/buttons/Button} Category
          */
-        unloadCategory : function(Category)
+        unloadCategory : function()
         {
-            var i, j, len, Elm, name, tok,
-                conf, namespace;
+            var i, len, Elm, name, tok, namespace;
 
             var Body   = this.getBody(),
                 Form   = Body.getElement( 'form' ),
@@ -322,6 +321,10 @@ define([
             // set the values to the $config
             for ( namespace in values )
             {
+                if ( !values.hasOwnProperty( namespace ) ) {
+                    continue;
+                }
+
                 if ( !namespace.match( '.' ) )
                 {
                     this.$config[ namespace ] = values[ namespace ];
@@ -357,7 +360,7 @@ define([
 
             Save.setAttribute( 'textimage', 'icon-refresh icon-rotate' );
 
-            Ajax.post('ajax_settings_save', function(result, Request)
+            Ajax.post('ajax_settings_save', function()
             {
                 Save.setAttribute( 'textimage', 'icon-save' );
             }, {

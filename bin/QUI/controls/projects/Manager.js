@@ -134,7 +134,7 @@ define('controls/projects/Manager', [
                     header    : '',
                     dataIndex : 'settingsbtn',
                     dataType  : 'button',
-                    width     : 50
+                    width     : 60
                 }, {
                     header    : Locale.get( lg, 'project' ),
                     dataIndex : 'project',
