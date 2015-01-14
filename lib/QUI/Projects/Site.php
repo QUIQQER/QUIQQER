@@ -1470,7 +1470,7 @@ class Site extends QUI\QDOM
     }
 
     /**
-     * Gibt alle Eltern Ids zurück
+     * Gibt alle direkten Eltern Ids zurück
      *
      * Site
      * ->Parent
@@ -1511,6 +1511,41 @@ class Site extends QUI\QDOM
         $this->_parents_id = $pids;
 
         return $pids;
+    }
+
+    /**
+     * Return the Parent ID List
+     *
+     * @return Array
+     */
+    public function getParentIdTree()
+    {
+        $Project = $this->getProject();
+        $parents = array();
+
+        $search  = true;
+        $id      = $this->getParentId();
+
+        while ( $search )
+        {
+            try
+            {
+                $Parent    = $Project->get( $id );
+                $parents[] = $id;
+
+                $id = $Parent->getParentId();
+
+                if ( $id == 0 ) {
+                    $search = false;
+                }
+
+            } catch ( QUI\Exception $Exception )
+            {
+                $search = false;
+            }
+        }
+
+        return array_reverse( $parents );
     }
 
     /**
