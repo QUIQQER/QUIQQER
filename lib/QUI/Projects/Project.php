@@ -129,7 +129,8 @@ class Project
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
-                    'exception.project.not.found'
+                    'exception.project.not.found',
+                    array( 'name' => $name )
                 ),
                 804
             );

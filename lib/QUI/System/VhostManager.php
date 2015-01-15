@@ -135,7 +135,7 @@ class VhostManager
         {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'system',
+                    'quiqqer/system',
                     'exception.vhost.not.found'
                 )
             );

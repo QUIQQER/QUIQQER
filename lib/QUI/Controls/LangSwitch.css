@@ -1,0 +1,13 @@
+
+.quiqqer-langSwitch {
+    float: left;
+}
+
+.quiqqer-langSwitch-lang {
+    float: left;
+    padding: 5px 10px;
+}
+
+.quiqqer-langSwitch-lang-icon {
+    margin-right: 5px;
+}
