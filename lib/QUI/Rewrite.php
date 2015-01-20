@@ -137,10 +137,10 @@ class Rewrite
             $_REQUEST['_url'] = '';
         }
 
-        \QUI::getEvents()->fireEvent( 'request', array( $this, $_REQUEST['_url'] ) );
-
         //wenn seite existiert, dann muss nichts mehr gemacht werden
-        if ( isset( $this->_site ) && $this->_site ) {
+        if ( isset( $this->_site ) && $this->_site )
+        {
+            \QUI::getEvents()->fireEvent( 'request', array( $this, $_REQUEST['_url'] ) );
             return;
         }
 
@@ -157,6 +157,8 @@ class Rewrite
             $url  = $_REQUEST['_url'];
             $host = $vhosts['301'][ $_SERVER['HTTP_HOST'] ];
 
+            \QUI::getEvents()->fireEvent( 'request', array( $this, $_REQUEST['_url'] ) );
+
             $this->showErrorHeader( 301, $host .'/'. $url );
             exit;
         }
@@ -169,16 +171,18 @@ class Rewrite
         {
             $_REQUEST['_url'] = substr( $_REQUEST['_url'], 0, -1 ) .'.html';
 
+            \QUI::getEvents()->fireEvent( 'request', array( $this, $_REQUEST['_url'] ) );
+
             // 301 weiterleiten
             $this->showErrorHeader( 301, URL_DIR . $_REQUEST['_url'] );
         }
 
         // Suffix
-        if (substr($_REQUEST['_url'], -6) == '.print') {
+        if ( substr( $_REQUEST['_url'], -6 ) == '.print' ) {
             $this->_suffix = '.print';
         }
 
-        if (substr($_REQUEST['_url'], -4) == '.pdf') {
+        if ( substr( $_REQUEST['_url'], -4 ) == '.pdf' ) {
             $this->_suffix = '.pdf';
         }
 
@@ -187,14 +191,17 @@ class Rewrite
             $_url = explode('/', $_REQUEST['_url']);
 
             // projekt
-            if (isset($_url[0]) && substr($_url[0], 0, 1) == self::URL_PROJECT_CHARACTER)
+            if ( isset( $_url[0] ) && substr( $_url[0], 0, 1 ) == self::URL_PROJECT_CHARACTER )
             {
                 $this->_project_str = str_replace('.html', '', substr($_url[0], 1 ));
 
                 // if a second project_character, its the template
-                if ( strpos($this->_project_str, self::URL_PROJECT_CHARACTER) )
+                if ( strpos( $this->_project_str, self::URL_PROJECT_CHARACTER ) )
                 {
-                    $_project_split = explode(self::URL_PROJECT_CHARACTER, $this->_project_str);
+                    $_project_split = explode(
+                        self::URL_PROJECT_CHARACTER,
+                        $this->_project_str
+                    );
 
                     $this->_project_str  = $_project_split[0];
                     $this->_template_str = $_project_split[1];
@@ -221,12 +228,13 @@ class Rewrite
             }
 
             // Sprache
-            if (isset($_url[0]) && (strlen($_url[0]) == 2 || strlen( str_replace('.html', '', $_url[0]) ) == 2))
+            if ( isset( $_url[0] ) &&
+                 (strlen($_url[0]) == 2 || strlen( str_replace('.html', '', $_url[0]) ) == 2))
             {
-                $this->_lang = str_replace('.html', '', $_url[0]);
-                QUI::getLocale()->setCurrent($this->_lang);
+                $this->_lang = str_replace( self::URL_DEFAULT_SUFFIX , '', $_url[0] );
+                QUI::getLocale()->setCurrent( $this->_lang );
 
-                unset($_url[0]);
+                unset( $_url[0] );
 
                 $_new_url = array();
 
@@ -252,6 +260,8 @@ class Rewrite
                     $url = QUI\Utils\String::replaceDblSlashes($url);
                     $url = 'http://'. $this->_project_prefix . $url;
 
+                    \QUI::getEvents()->fireEvent( 'request', array( $this, $_REQUEST['_url'] ) );
+
                     $this->showErrorHeader(301, $url);
                 }
             }
@@ -266,6 +276,8 @@ class Rewrite
         // Media Center Datei, falls nicht im Cache ist
         if ( isset( $_REQUEST['_url'] ) && strpos( $_REQUEST['_url'], 'media/cache' ) !== false )
         {
+            \QUI::getEvents()->fireEvent( 'request', array( $this, $_REQUEST['_url'] ) );
+
             try
             {
                 $Item = MediaUtils::getElement( $_REQUEST['_url'] );
@@ -338,6 +350,7 @@ class Rewrite
             exit;
         }
 
+        \QUI::getEvents()->fireEvent( 'request', array( $this, $_REQUEST['_url'] ) );
 
         // Falls kein suffix dann 301 weiterleiten auf .html
         if ( !empty( $_REQUEST['_url'] ) &&
@@ -625,13 +638,22 @@ class Rewrite
         // Vhosts
         $Project = $this->_getProjectByVhost();
 
-        if ( $Project ) {
+        if ( $Project )
+        {
+            if ( $this->_lang &&
+                 $this->_lang != $Project->getLang() )
+            {
+                $Project = QUI\Projects\Manager::getProject(
+                    $Project->getName(),
+                    $this->_lang
+                );
+            }
+
             return $Project;
         }
 
-
         /**
-         * If no vhost was found
+         * If a vhost wasn't found
          */
 
         // Falls keine Projekt Parameter existieren wird das standard Projekt verwendet
@@ -683,11 +705,9 @@ class Rewrite
         $Project = QUI\Projects\Manager::getStandard();
 
         $this->_project = $Project;
-        $this->_lang    = $Project->getAttribute( 'lang' );
+        $this->_lang    = $Project->getLang();
 
-        QUI::getLocale()->setCurrent(
-            $Project->getAttribute( 'lang' )
-        );
+        QUI::getLocale()->setCurrent( $Project->getLang() );
 
         return $Project;
     }

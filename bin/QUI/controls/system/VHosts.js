@@ -225,12 +225,12 @@ define('controls/system/VHosts', [
         {
             var self = this;
 
-            Ajax.get('ajax_vhosts_add', function()
+            Ajax.get('ajax_vhosts_add', function(newHost)
             {
                 self.load();
 
                 if ( typeOf( callback ) === 'function' ) {
-                    callback( host );
+                    callback( newHost );
                 }
             }, {
                 vhost : host
