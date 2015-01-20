@@ -19,7 +19,7 @@
  * @require css!controls/users/User.css
  */
 
-define([
+define('controls/users/User', [
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
@@ -53,6 +53,7 @@ define([
         Binds : [
             'openPermissions',
             'savePassword',
+            'generatePassword',
 
             '$onCreate',
             '$onDestroy',
@@ -202,7 +203,7 @@ define([
          * the button active event
          * load the template of the category, parse the controls and insert the values
          *
-         * @param {qui/controls/buttons/Button} Btn
+         * @param {Object} Btn - qui/controls/buttons/Button
          */
         $onButtonActive : function(Btn)
         {
@@ -235,6 +236,7 @@ define([
                 // password save
                 var PasswordField  = Body.getElement( 'input[name="password2"]' ),
                     PasswordExpire = Body.getElements( 'input[name="expire"]' ),
+                    ShowPasswords  = Body.getElement( 'input[name="showPasswords"]' ),
                     AddressList    = Body.getElement( '.address-list' );
 
                 if ( PasswordField )
@@ -242,11 +244,31 @@ define([
                     PasswordField.setStyle( 'float', 'left' );
 
                     new QUIButton({
-                        text   : Locale.get( lg, 'users.user.btn.password.save' ),
+                        textimage : 'icon-lock',
+                        text      : Locale.get( lg, 'users.user.btn.password.generate' ),
                         events : {
-                            onClick : self.savePassword
+                            onClick : self.generatePassword
                         }
                     }).inject( PasswordField, 'after' );
+
+                    ShowPasswords.addEvent('change', function()
+                    {
+                        var PasswordFields = Body.getElements(
+                            '[name="password2"],[name="password"]'
+                        );
+
+                        if ( this.checked )
+                        {
+                            PasswordFields.set( 'type', 'text' );
+                            return;
+                        }
+
+                        PasswordFields.set( 'type', 'password' );
+                    });
+
+                    if ( ShowPasswords.checked ) {
+                        ShowPasswords.checked = false;
+                    }
                 }
 
                 // password expire
@@ -327,10 +349,8 @@ define([
         /**
          * if the button was active and know normal
          * = unload event of the button
-         *
-         * @param {qui/controls/buttons/Button} Btn
          */
-        $onButtonNormal : function(Btn)
+        $onButtonNormal : function()
         {
             var Content = this.getBody(),
                 Frm     = Content.getElement( 'form' ),
@@ -401,13 +421,23 @@ define([
          */
         $onClickSave : function()
         {
-            var Active = this.getActiveCategory();
+            var Active = this.getActiveCategory(),
+                User   = this.getUser().save();
 
             if ( Active ) {
                 this.$onButtonNormal( Active );
             }
 
-            this.getUser().save();
+            if ( this.getUser().getAttribute( 'password' ) )
+            {
+                this.savePassword(function() {
+                    User.save();
+                });
+
+                return;
+            }
+
+            User.save();
         },
 
         /**
@@ -445,8 +475,9 @@ define([
          * only triggerd if the password tab are open
          *
          * @method controls/users/User#savePassword
+         * @param {Function} callback -  callback function
          */
-        savePassword : function()
+        savePassword : function(callback)
         {
             var Control = this,
                 Body    = this.getBody(),
@@ -467,10 +498,41 @@ define([
                 function()
                 {
                     Control.Loader.hide();
+
+                    if ( typeof callback === 'function' ) {
+                        callback();
+                    }
                 }
             );
         },
 
+        /**
+         * Generate a random password and set it to the password fields
+         * it saves not the passwords!!
+         */
+        generatePassword : function()
+        {
+            var Body  = this.getBody(),
+                Form  = Body.getElement( 'form' ),
+                Pass1 = Form.elements.password,
+                Pass2 = Form.elements.password2,
+                Show  = Form.elements.showPasswords;
+
+            if ( !Pass1 || !Pass2 ) {
+                return;
+            }
+
+            var newPassword = Math.random().toString(36).slice(-8);
+
+            Pass1.value = newPassword;
+            Pass2.value = newPassword;
+
+            if ( !Show.checked )
+            {
+                Show.checked = true;
+                Show.fireEvent( 'change' );
+            }
+        },
 
         /**
          * Addresses

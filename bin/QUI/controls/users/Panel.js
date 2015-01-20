@@ -19,7 +19,7 @@
  * @require css!controls/users/Panel.css
  */
 
-define([
+define('controls/users/Panel', [
 
     'qui/QUI',
     'qui/controls/desktop/Panel',

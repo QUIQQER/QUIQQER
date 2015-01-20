@@ -26,6 +26,10 @@
             <de><![CDATA[Passwort speichern]]></de>
             <en><![CDATA[Save password]]></en>
         </locale>
+        <locale name="users.user.btn.password.generate">
+            <de><![CDATA[Passwort generieren]]></de>
+            <en><![CDATA[generate password]]></en>
+        </locale>
 
         <locale name="users.user.window.delete.title">
             <de><![CDATA[Benutzer löschen]]></de>
