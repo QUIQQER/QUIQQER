@@ -1059,6 +1059,11 @@ class Manager
             '--optimize' => true
         ));
 
+        // set last update
+        $Last = new QUI\Config( CMS_DIR .'etc/last_update.ini.php' );
+        $Last->set( 'quiqqer', 'lastUpdate', time() );
+        $Last->save();
+
         QUI\System\Log::addInfo( implode("\n", $optimize) );
     }
 
