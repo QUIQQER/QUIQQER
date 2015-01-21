@@ -1060,6 +1060,10 @@ class Manager
         ));
 
         // set last update
+        if ( !file_exists( CMS_DIR .'etc/last_update.ini.php' ) ) {
+            file_put_contents( CMS_DIR .'etc/last_update.ini.php', '' );
+        }
+
         $Last = new QUI\Config( CMS_DIR .'etc/last_update.ini.php' );
         $Last->set( 'quiqqer', 'lastUpdate', time() );
         $Last->save();
