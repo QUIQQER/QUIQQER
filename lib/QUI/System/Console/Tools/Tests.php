@@ -30,6 +30,23 @@ class Tests extends QUI\System\Console\Tool
      */
     public function execute()
     {
+        QUI::getErrorHandler()->registerShutdown(function()
+        {
+            $last_error = error_get_last();
+
+            if ( $last_error['type'] === E_ERROR )
+            {
+                $this->writeLn( "" );
+
+                $this->writeLn(
+                    $last_error['message'] .' at line '. $last_error['line'] .' :: '. $last_error['file'],
+                    'red'
+                );
+
+                $this->writeLn( "" );
+            }
+        });
+
         // read tests
         $testDir = LIB_DIR . 'QUI/System/Tests/';
         $tests   = QUI\Utils\System\File::readDir( $testDir );
@@ -63,7 +80,15 @@ class Tests extends QUI\System\Console\Tool
         foreach ( $list as $Test )
         {
             /* @var $Test \QUI\Interfaces\System\Test */
-            $result  = $Test->execute();
+            try
+            {
+                $result = $Test->execute();
+
+            } catch ( \ErrorException $Exception )
+            {
+                $result = QUI\System\Test::STATUS_ERROR;
+            }
+
             $message = '[ OK ] ';
             $color   = 'green';
 

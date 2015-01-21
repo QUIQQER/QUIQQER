@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file contains the autoloader and exception_error_handler
+ * This file contains the autoloader and exception_error_handler and exception_handler
  */
 
 /**
@@ -11,7 +11,7 @@
  * @return Bool
  *
  * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui
+ * @package quiqqer/quiqqer
  */
 
 require dirname( __FILE__ ) .'/Autoloader.php';
@@ -23,6 +23,7 @@ if ( function_exists( 'spl_autoload_register' ) )
     }
 
     spl_autoload_register( '__quiqqer_autoload' );
+
 } else
 {
     /**
@@ -30,7 +31,6 @@ if ( function_exists( 'spl_autoload_register' ) )
      * Call the QUIQQER Autoloader function
      *
      * @param String $classname
-     * @package com.pcsg.qui
      */
     function __autoload( $classname ) {
         __quiqqer_autoload( $classname );
@@ -41,7 +41,7 @@ if ( function_exists( 'spl_autoload_register' ) )
  * Main QUIQQER Autoload function
  *
  * @param String $classname
- * @package com.pcsg.qui
+ * @return bool
  */
 function __quiqqer_autoload($classname)
 {
@@ -50,15 +50,16 @@ function __quiqqer_autoload($classname)
 
 
 /**
- * Exception Handler
+ * Error Handler
+ *
+ * @author www.pcsg.de (Henning Leutz)
  *
  * @param Integer $errno
  * @param String $errstr
  * @param String $errfile
  * @param String $errline
- *
- * @author www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui
+ * @return bool
+ * @throws ErrorException
  */
 function exception_error_handler($errno, $errstr, $errfile, $errline)
 {
@@ -71,6 +72,79 @@ function exception_error_handler($errno, $errstr, $errfile, $errline)
         return true;
     }
 
-    \QUI::getErrorHandler()->writeErrorToLog( $errno, $errstr, $errfile, $errline );
-    return true;
+    $l = error_reporting();
+
+    if ( $l & $errno )
+    {
+        $exit = false;
+
+        switch ( $errno )
+        {
+            case E_USER_ERROR:
+                $type = 'Fatal Error';
+                $exit = true;
+            break;
+
+            case E_USER_WARNING:
+            case E_WARNING:
+                $type = 'Warning';
+            break;
+
+            case E_USER_NOTICE:
+            case E_NOTICE:
+            case @E_STRICT:
+                $type = 'Notice';
+            break;
+
+            case @E_RECOVERABLE_ERROR:
+                $type = 'Catchable';
+            break;
+
+            default:
+                $type = 'Unknown Error';
+                $exit = true;
+            break;
+        }
+
+        $exception = new \ErrorException(
+            $type.': '.$errstr,
+            0,
+            $errno,
+            $errfile,
+            $errline
+        );
+
+        if ( $exit )
+        {
+            exception_handler( $exception );
+            exit();
+
+        } else
+        {
+            throw $exception;
+        }
+    }
+
+    return false;
+}
+
+/**
+ * Exception handler
+ * @param Exception $Exception
+ */
+function exception_handler($Exception)
+{
+    \QUI::getErrorHandler()->writeErrorToLog(
+        $Exception->getCode(),
+        $Exception->getMessage(),
+        $Exception->getFile(),
+        $Exception->getLine()
+    );
+
+    if ( DEVELOPMENT )
+    {
+        print(
+            $Exception->getMessage() . "\n" . $Exception->getTraceAsString() . "\n"
+        );
+    }
 }
