@@ -158,6 +158,18 @@ class Manager
     }
 
     /**
+     * Set the last update date to now
+     *
+     * @throws QUI\Exception
+     */
+    public function setLastUpdateDate()
+    {
+        $Last = $this->_getUpdateConf();
+        $Last->set( 'quiqqer', 'lastUpdate', time() );
+        $Last->save();
+    }
+
+    /**
      * Return the Composer Application
      * @return \Composer\Console\Application
      */
