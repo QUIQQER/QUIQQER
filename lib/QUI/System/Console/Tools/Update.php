@@ -1,15 +1,13 @@
 <?php
 
 /**
- *
- * @author hen
- *
+ * This file contains QUI\System\Console\Tools\Update
  */
 namespace QUI\System\Console\Tools;
 
 /**
- *
- * @author hen
+ * Update command for the console
+ * @author www.pcsg.de (Henning Leutz)
  */
 class Update extends \QUI\System\Console\Tool
 {
@@ -37,10 +35,28 @@ class Update extends \QUI\System\Console\Tool
             $self->writeLn( $message );
         });
 
-        $PM->refreshServerList();
-        $PM->update();
+        try
+        {
+            $PM->refreshServerList();
+            $PM->update();
 
-        $this->write( ' [ok]' );
-        $this->writeLn( '' );
+            $this->write( ' [ok]' );
+            $this->writeLn( '' );
+
+        } catch ( \Exception $Exception )
+        {
+            $this->write( ' [error]', 'red' );
+            $this->writeLn( '' );
+            $this->writeLn( 'Something went wrong::'. $Exception->getMessage(), 'red' );
+            $this->writeLn( 'If the setup didn\'t worked properly, please test the following command for the update:', 'red' );
+            $this->writeLn( '' );
+
+            $this->writeLn(
+                'php var/composer/composer.phar --working-dir="'. VAR_DIR .'composer" update', 'red'
+            );
+
+            $this->resetColor();
+            $this->writeLn( '' );
+        }
     }
 }
