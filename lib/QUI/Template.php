@@ -394,7 +394,8 @@ class Template extends QUI\QDOM
             'loadModuleFiles' => $this->_onLoadModules,
             'headerExtend'    => $headerExtend,
             'ControlManager'  => new QUI\Control\Manager(),
-            'Canonical'       => new QUI\Projects\Site\Canonical( $Site )
+            'Canonical'       => new QUI\Projects\Site\Canonical( $Site ),
+            'lastUpdate'      => QUI::getPackageManager()->getLastUpdateDate()
         ));
 
         return $Engine->fetch( LIB_DIR .'templates/header.html' );

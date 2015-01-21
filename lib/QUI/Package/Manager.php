@@ -149,6 +149,15 @@ class Manager
     }
 
     /**
+     * Return the last update date
+     * @return integer
+     */
+    public function getLastUpdateDate()
+    {
+        return (int)$this->_getUpdateConf()->get( 'quiqqer', 'lastUpdate' );
+    }
+
+    /**
      * Return the Composer Application
      * @return \Composer\Console\Application
      */
@@ -1060,15 +1069,26 @@ class Manager
         ));
 
         // set last update
-        if ( !file_exists( CMS_DIR .'etc/last_update.ini.php' ) ) {
-            file_put_contents( CMS_DIR .'etc/last_update.ini.php', '' );
-        }
-
-        $Last = new QUI\Config( CMS_DIR .'etc/last_update.ini.php' );
+        $Last = $this->_getUpdateConf();
         $Last->set( 'quiqqer', 'lastUpdate', time() );
         $Last->save();
 
         QUI\System\Log::addInfo( implode("\n", $optimize) );
+    }
+
+    /**
+     * Returns the update config object
+     *
+     * @return QUI\Config
+     */
+    protected function _getUpdateConf()
+    {
+        // set last update
+        if ( !file_exists( CMS_DIR .'etc/last_update.ini.php' ) ) {
+            file_put_contents( CMS_DIR .'etc/last_update.ini.php', '' );
+        }
+
+        return new QUI\Config( CMS_DIR .'etc/last_update.ini.php' );
     }
 
     /**
