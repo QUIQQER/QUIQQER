@@ -230,13 +230,14 @@ class Template extends QUI\QDOM
             'URL_OPT_DIR' => URL_OPT_DIR,
             'URL_USR_DIR' => URL_USR_DIR,
 
-            'User'     => $User,
-            'Locale'   => $Locale,
-            'L'        => $Locale,
-            'Template' => $this,
-            'Site'     => $Site,
-            'Project'  => $Project,
-            'Rewrite'  => $Rewrite
+            'User'       => $User,
+            'Locale'     => $Locale,
+            'L'          => $Locale,
+            'Template'   => $this,
+            'Site'       => $Site,
+            'Project'    => $Project,
+            'Rewrite'    => $Rewrite,
+            'lastUpdate' => QUI::getPackageManager()->getLastUpdateDate()
         ));
 
         /**
