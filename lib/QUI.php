@@ -402,6 +402,7 @@ class QUI
             }
         });
 
+
         // there are system changes?
         // then make a setup
         if ( $Config->get( 'globals', 'system_changed' ) )

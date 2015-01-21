@@ -11,13 +11,13 @@ header( "Pragma: no-cache" );
 date_default_timezone_set( 'Europe/Zurich' );
 
 error_reporting( E_ALL );
-ini_set( 'display_errors', true );
+
+ini_set( 'display_errors', false );
+ini_set( "log_errors", "on" );
 
 \QUI::load();
 \QUI\Utils\System\Debug::marker( 'header start' );
 
-ini_set( 'display_errors', false );
-ini_set( "log_errors", "on" );
 ini_set( "error_log", VAR_DIR .'log/error'. date('-Y-m-d') .'.log' );
 
 set_error_handler( "exception_error_handler" );
@@ -25,9 +25,10 @@ set_error_handler( "exception_error_handler" );
 if ( DEVELOPMENT == 1 )
 {
     error_reporting( E_ALL );
+
 } else
 {
-    error_reporting( 0 );
+    error_reporting( E_ALL ^ E_NOTICE );
 }
 
 define( 'GENERATOR', 'QUIQQER /www.pcsg.de');
@@ -148,5 +149,7 @@ if ( isset( $_GET['logout'] ) )
         exit;
     }
 }
+
+\QUI::getEvents()->fireEvent( 'headerLoaded' );
 
 \QUI\Utils\System\Debug::marker( 'header end' );
