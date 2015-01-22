@@ -75,7 +75,6 @@
             <de><![CDATA[Nachname]]></de>
             <en><![CDATA[Lastname]]></en>
         </locale>
-
         <locale name="username">
             <de><![CDATA[Benutzername]]></de>
             <en><![CDATA[Username]]></en>
@@ -119,6 +118,23 @@
         <locale name="file">
             <de><![CDATA[Datei]]></de>
             <en><![CDATA[File]]></en>
+        </locale>
+
+        <locale name="minute">
+            <de><![CDATA[Minute]]></de>
+            <en><![CDATA[Minute]]></en>
+        </locale>
+        <locale name="hour">
+            <de><![CDATA[Stunde]]></de>
+            <en><![CDATA[Hour]]></en>
+        </locale>
+        <locale name="month">
+            <de><![CDATA[Monat]]></de>
+            <en><![CDATA[Month]]></en>
+        </locale>
+        <locale name="day">
+            <de><![CDATA[Tag]]></de>
+            <en><![CDATA[Day]]></en>
         </locale>
 
         <locale name="group">
