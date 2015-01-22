@@ -4,18 +4,26 @@
  *
  * @module controls/projects/project/media/Popup
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/controls/windows/Popup
+ * @require qui/controls/buttons/Button
+ * @require controls/projects/project/media/Panel
+ * @require Projects
+ * @require Locale
+ * @require Ajax
  */
 
-define([
+define('controls/projects/project/media/Popup', [
 
     'qui/controls/windows/Popup',
+    'qui/controls/windows/Confirm',
     'qui/controls/buttons/Button',
     'controls/projects/project/media/Panel',
     'Projects',
     'Locale',
     'Ajax'
 
-], function(QUIPopup, QUIButton, MediaPanel, Projects, Locale, Ajax)
+], function(QUIPopup, QUIConfirm, QUIButton, MediaPanel, Projects, QUILocale, Ajax)
 {
     "use strict";
 
@@ -31,7 +39,7 @@ define([
         options : {
             project         : false,
             fileid          : false,
-            closeButtonText : Locale.get('quiqqer/system', 'cancel'),
+            closeButtonText : QUILocale.get('quiqqer/system', 'cancel'),
 
             selectable           : true,
             selectable_types     : false,   // you can specified which types are selectable
@@ -72,12 +80,9 @@ define([
                 new QUIButton({
                     text      : Locale.get( 'quiqqer/system', 'accept' ),
                     textimage : 'icon-ok',
-                    events    :
-                    {
-                        onClick : function()
-                        {
-                            self.close();
-                            self.fireEvent( 'submit', [ self, self.$folderData ] );
+                    events    : {
+                        onClick : function() {
+                            self.$itemClick( self.$folderData );
                         }
                     }
                 })
@@ -90,14 +95,12 @@ define([
             Ajax.get('ajax_media_file_getParentId', function(parentId)
             {
                 self.$Panel = new MediaPanel(Media, {
-                    startid : parentId,
-
-                    dragable             : false,
-                    collapsible          : false,
-                    selectable           : true,
+                    startid     : parentId,
+                    dragable    : false,
+                    collapsible : false,
+                    selectable  : true,
                     selectable_types     : self.getAttribute( 'selectable_types' ),
                     selectable_mimetypes : self.getAttribute( 'selectable_mimetypes' ),
-
                     events :
                     {
                         onCreate : function(Panel)
@@ -106,17 +109,8 @@ define([
                             self.Loader.hide();
                         },
 
-                        onChildClick : function(Panel, imageData)
-                        {
-                            if ( imageData.type == 'folder' )
-                            {
-                                self.$Panel.openID( imageData.id );
-                                self.$folderData = imageData;
-                                return;
-                            }
-
-                            self.close();
-                            self.fireEvent( 'submit', [ self, imageData ] );
+                        onChildClick : function(Panel, imageData) {
+                            self.$itemClick( imageData );
                         }
                     }
                 });
@@ -126,6 +120,112 @@ define([
             }, {
                 fileid  : this.getAttribute( 'fileid' ),
                 project : Project.getName()
+            });
+        },
+
+        /**
+         * If item is inactive
+         * @param {Object} imageData - data of the image
+         */
+        $activateItem : function(imageData)
+        {
+            var self = this;
+
+            this.close();
+
+            var Confirm = new QUIConfirm({
+                title       : QUILocale.get( 'quiqqer/system', 'projects.project.site.media.popup.window.activate.title' ),
+                text        : QUILocale.get('quiqqer/system', 'projects.project.site.media.popup.window.activate.text' ),
+                information : QUILocale.get('quiqqer/system', 'projects.project.site.media.popup.window.activate.information' ),
+                autoclose   : false,
+                events :
+                {
+                    onCancel : function()
+                    {
+                        require([
+                            'controls/projects/project/media/Popup'
+                        ], function(MediaPopup)
+                        {
+                            var MP = new MediaPopup( self.getAttributes() );
+
+                            if ( "submit" in self.$events )
+                            {
+                                self.$events.submit.each(function(f) {
+                                    MP.addEvent( 'submit', f );
+                                });
+                            }
+
+                            MP.open();
+                        });
+                    },
+
+                    onSubmit : function(Win)
+                    {
+                        // activate file
+                        Win.Loader.show();
+
+                        Ajax.post('ajax_media_activate', function()
+                        {
+                            Win.close();
+                            self.$submit( imageData );
+                        }, {
+                            project : imageData.project,
+                            fileid  : imageData.id
+                        });
+                    }
+                }
+            });
+
+            (function() {
+                Confirm.open();
+            }).delay( 500 );
+        },
+
+        /**
+         * submit
+         * @param {Object} imageData -  data of the image
+         */
+        $submit : function(imageData)
+        {
+            if ( typeof imageData === 'undefined' ) {
+                return;
+            }
+
+            if ( imageData.type == 'folder' )
+            {
+                this.$Panel.openID( imageData.id );
+                this.$folderData = imageData;
+                return;
+            }
+
+            this.close();
+            this.fireEvent( 'submit', [ this, imageData ] );
+        },
+
+        /**
+         * event : click on item
+         * @param {Object} imageData -  data of the image
+         */
+        $itemClick : function(imageData)
+        {
+            var self = this;
+
+            this.$Panel.Loader.hide();
+
+            Ajax.get('ajax_media_details', function(data)
+            {
+                if ( !( data.active ).toInt() )
+                {
+                    self.$Panel.Loader.hide();
+                    self.$activateItem( imageData );
+                    return;
+                }
+
+                self.$submit( imageData );
+
+            }, {
+                project : imageData.project,
+                fileid  : imageData.id
             });
         }
     });
