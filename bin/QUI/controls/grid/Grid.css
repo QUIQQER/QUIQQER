@@ -6,7 +6,7 @@
     font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
     font-size: 11px;
     position: relative;
-    border: 0px solid #eee;
+    border: 0 solid #eee;
     overflow:hidden;
     color: #000;
     clear: both;
@@ -21,13 +21,13 @@
     background: #fafafa url(omnigrid/fhbg.gif) repeat-x bottom;
     position: relative;
     border: 1px solid #ccc;
-    border-bottom: 0px;
+    border-bottom: 0;
     overflow: hidden;
 }
 
 .omnigrid div.bDiv {
     border: 1px solid #ccc;
-    border-top: 0px;
+    border-top: 0;
     background: #fff;
     overflow: auto;
     position: relative;
@@ -144,7 +144,7 @@
     background: #fafafa url(omnigrid/bg.gif) repeat-x top;
     position: relative;
     border: 1px solid #ccc;
-    border-bottom: 0px;
+    border-bottom: 0;
     overflow: hidden;
 
     height:25px;
@@ -171,12 +171,12 @@
 }
 
 .omnigrid div.fbutton.fbOver {
-    padding: 0px;
+    padding: 0;
     border: 1px solid #ccc;
 }
 
 .omnigrid div.fbutton.fbOver div {
-    padding: 0px 2px;
+    padding: 0 2px;
     border-left: 1px solid #fff;
     border-top: 1px solid #fff;
     border-right: 1px solid #eee;
@@ -262,7 +262,8 @@
 .omnigrid div.pDiv {
     background: url(omnigrid/wbg.gif) repeat-x 0 -1px;
     border: 1px solid #ccc;
-    border-top: 0px;
+    border-top: 0;
+    line-height: 20px;
     overflow: hidden;
     white-space: nowrap;
 }
@@ -278,14 +279,14 @@ div.pGroup {
     float: left;
     background: none;
     height: 24px;
-    margin: 0px 5px;
+    margin: 0 5px;
 }
 
 .omnigrid div.pDiv .pPageStat,
 .omnigrid div.pDiv .pcontrol
 {
     position: relative;
-    top: 0px;
+    top: 0;
     overflow: visible;
     font-size:10px;
     color:#777777;
@@ -314,10 +315,10 @@ div.pGroup {
     float: left;
     width:16px;
     height:16px;
-    border: 0px;
+    border: 0;
     cursor: pointer;
     overflow: hidden;
-    margin-top:3px;
+    margin-top:4px;
 }
 
 .omnigrid div.pDiv div.pButton:hover,
@@ -424,7 +425,7 @@ div.pGroup {
 
 .section table {
   border-collapse: collapse;
-  border: 0px solid;
+  border: 0 solid;
   font: normal 11px verdana, arial, helvetica, sans-serif;
   color: #363636;
   background: #f6f6f6;
@@ -436,7 +437,7 @@ div.pGroup {
     text-align: center;
     font: bold 16px arial, helvetica, sans-serif;
     background: transparent;
-    padding:6px 4px 8px 0px;
+    padding:6px 4px 8px 0;
     color: #CC00FF;
     text-transform: uppercase;
 }
@@ -516,9 +517,9 @@ div.pGroup {
 .exportSelectBtnDiv {
     width: 95%;
     position: absolute;
-    bottom:0px;
+    bottom:0;
     border-top: 1px solid #DDDDDD;
-    padding: 3px 0px 3px 3px;
+    padding: 3px 0 3px 3px;
 }
 
 .exportItemDiv {
@@ -551,8 +552,8 @@ div.pGroup {
    width   : 500px;
    height  : 500px;
    position: absolute;
-   left    : 0px;
-   top     : 0px;
+   left    : 0;
+   top     : 0;
 }
 
 /** Drag and Drop Element
@@ -561,11 +562,10 @@ div.pGroup {
 .omni-drag-drop {
     min-width: 100px;
     height: 20px;
-    border: 1px solid red;
+    border: 5px solid #ddd;
     background-color: #fff;
     line-height: 20px;
     padding: 0 10px;
-    border: 5px solid #ddd;
 
     border-radius: 2px;
     cursor: pointer;
