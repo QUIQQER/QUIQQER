@@ -155,7 +155,7 @@ class Console
             exit;
         }
 
-        if ( !$User->isSU() )
+        if ( !QUI\Rights\Permission::checkPermission( 'quiqqer.system.console' ) )
         {
             $this->writeLn( "Missing rights to use the console\n\n", 'red' );
             exit;

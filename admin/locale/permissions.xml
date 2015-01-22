@@ -68,6 +68,10 @@
                 <de><![CDATA[Darf Cache löschen.]]></de>
                 <en><![CDATA[Is allowed to delet the cache.]]></en>
             </locale>
+            <locale name="quiqqer.system.console._title">
+                <de><![CDATA[Darf sich in die QUIQQER Konsole einloggen.]]></de>
+                <en><![CDATA[Is allowed to login in the QUIQQER Console.]]></en>
+            </locale>
 
 
         <locale name="quiqqer.admin._title">
