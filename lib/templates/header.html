@@ -112,6 +112,14 @@
         <link rel="prev" href="{url site=$Smarty->getHeaderAttribute('rel_prev')}" />
     {/if}
 
+    {assign var=projectLang value=$Project->getLang()}
+    {assign var=projectLangs value=$Project->getAttribute('langs')}
+    {foreach from=$projectLangs item=lang}
+    {if $projectLang != $lang && $Site->existLang( $lang )}
+        <link rel="alternate" hreflang="{$lang}" href="{url id=$Site->getId( $lang ) lang=$lang}" />
+    {/if}
+    {/foreach}
+
     {* type Files *}
     {if isset( $siteStyle )}
         <link href="{$siteStyle}" rel="stylesheet" />
