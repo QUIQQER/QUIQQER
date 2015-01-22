@@ -21,8 +21,8 @@
             <en><![CDATA[Delete site #[id]]]></en>
         </locale>
         <locale name="projects.project.site.panel.window.delete.text">
-            <de><![CDATA[Möchten Sie die Seite #[id] [url] wirklich löschen?]]></de>
-            <en><![CDATA[Are you sure you want to delete the page #[id] [url]?]]></en>
+            <de><![CDATA[Möchten Sie die Seite #[id] "[title]" wirklich löschen?]]></de>
+            <en><![CDATA[Are you sure you want to delete the page #[id] "[title]"?]]></en>
         </locale>
         <locale name="projects.project.site.panel.window.delete.information">
             <de><![CDATA[

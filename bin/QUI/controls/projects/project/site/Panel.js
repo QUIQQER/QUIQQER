@@ -486,13 +486,19 @@ define('controls/projects/project/site/Panel', [
                     title     : Locale.get( lg, 'projects.project.site.panel.window.delete.title' ),
                     titleicon : 'icon-trash',
                     text : Locale.get( lg, 'projects.project.site.panel.window.delete.text', {
-                        id  : Site.getId(),
-                        url : Site.getAttribute( 'name' ) +'.html'
+                        id    : Site.getId(),
+                        url   : Site.getAttribute( 'name' ) +'.html',
+                        name  : Site.getAttribute( 'name' ),
+                        title : Site.getAttribute( 'title' )
                     }),
-                    information : Locale.get( lg, 'projects.project.site.panel.window.delete.information' ),
+                    information : Locale.get( lg, 'projects.project.site.panel.window.delete.information', {
+                        id    : Site.getId(),
+                        url   : Site.getAttribute( 'name' ) +'.html',
+                        name  : Site.getAttribute( 'name' ),
+                        title : Site.getAttribute( 'title' )
+                    }),
                     height : 200,
-                    events :
-                    {
+                    events : {
                         onSubmit : function() {
                             Site.del();
                         }
