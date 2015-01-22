@@ -29,17 +29,22 @@ define(['qui/controls/bookmarks/Panel'], function(QUIBookmarks)
             // parse qui/controls/contextmenu/Item to an Bookmark
             if ( Item.getType() == 'qui/controls/contextmenu/Item' )
             {
-                var path = Item.getPath();
+                var path    = Item.getPath(),
+                    xmlFile = Item.getAttribute( 'qui-xml-file' );
+
+                if ( xmlFile ) {
+                    path = 'xmlFile:'+ xmlFile;
+                }
 
                 Child = this.$createEntry({
-                    text : Item.getAttribute( 'text' ),
-                    icon : Item.getAttribute( 'icon' ),
-                    path : path
+                    text  : Item.getAttribute( 'text' ),
+                    icon  : Item.getAttribute( 'icon' ),
+                    path  : path,
+                    click : 'BookmarkPanel.xmlMenuClick(path)'
                 }).inject( this.$Container );
 
             } else if ( Item.getType() == 'qui/controls/sitemap/Item' )
             {
-                // @todo in quiqqer integrieren, panel überschreiben und append Child anpassen
                 var ProjectSitemap = Item.getMap().getParent(),
 
                     project = ProjectSitemap.getAttribute( 'project' ),
@@ -77,6 +82,26 @@ define(['qui/controls/bookmarks/Panel'], function(QUIBookmarks)
             this.fireEvent( 'appendChild', [ this, Child ] );
 
             return this;
+        },
+
+        /**
+         * XML menu click
+         * @param {String} path - path of the xml file eq: xmlFile:path/settings.xml
+         */
+        xmlMenuClick : function(path)
+        {
+            if ( path.match( 'xmlFile:' ) )
+            {
+                require([
+                    'Menu',
+                    'controls/desktop/panels/XML'
+                ], function(Menu, XMLPanel)
+                {
+                    Menu.openPanelInTasks(
+                        new XMLPanel( path.substr( 8 ) )
+                    );
+                });
+            }
         }
     });
 });
