@@ -26,7 +26,8 @@ class LangSwitch extends QUI\Control
         $this->setAttributes(array(
             'Site'      => false,
             'showFlags' => true,
-            'showText'  => true
+            'showText'  => true,
+            'DropDown'  => false
         ));
 
         parent::setAttributes( $attributes );
