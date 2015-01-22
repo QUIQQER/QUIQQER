@@ -6,8 +6,9 @@
 
 namespace QUI\Messages;
 
-use \QUI\Users\User;
-use \QUI\Utils\Security\Orthos;
+use QUI;
+use QUI\Users\User;
+use QUI\Utils\Security\Orthos;
 
 /**
  * Message Handler for QUIQQER
@@ -31,7 +32,7 @@ class Handler
      */
     static function setup()
     {
-        \QUI::getDataBase()->Table()->appendFields(self::Table(), array(
+        QUI::getDataBase()->Table()->appendFields(self::Table(), array(
             'uid'     => 'int(11)',
             'message' => 'text',
             'mtype'   => 'varchar(100)',
@@ -58,18 +59,18 @@ class Handler
     {
         $result = $this->_messages;
 
-        if ( $User->getId() ) {
+        if ( !$User->getId() ) {
              return $result;
         }
 
-        $list = \QUI::getDataBase()->fetch(array(
+        $list = QUI::getDataBase()->fetch(array(
             'from'  => self::Table(),
             'where' => array(
                 'uid' => $User->getId()
             )
         ));
 
-        \QUI::getDataBase()->delete(self::Table(), array(
+        QUI::getDataBase()->delete(self::Table(), array(
             'uid' => $User->getId()
         ));
 
@@ -77,7 +78,7 @@ class Handler
         {
             $str = $entry['message'];
 
-            switch ( $entry )
+            switch ( $entry['mtype'] )
             {
                 case 'QUI\\Messages\\Attention':
                     $Message = new Attention(array(
@@ -213,12 +214,12 @@ class Handler
         $message = $Message->getMessage();
         $message = Orthos::clearMySQL( $message );
 
-        \QUI::getDataBase()->insert(self::Table(), array(
+        QUI::getDataBase()->insert(self::Table(), array(
             'uid'     => $User->getId(),
             'message' => $message,
             'mcode'   => (int)$Message->getCode(),
             'mtime'   => (int)$Message->getAttribute('time'),
-            'mtype'   => get_class( $Message )
+            'mtype'   => $Message->getType()
         ));
     }
 

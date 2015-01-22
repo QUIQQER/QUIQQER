@@ -20,6 +20,8 @@
 
     }
 
+    \QUI::getEvents()->fireEvent( 'adminLoaded' );
+
 ?>
 <!doctype html>
 <!--[if lt IE 7 ]><html class="ie ie6" lang="<?php echo $User->getLang(); ?>"> <![endif]-->

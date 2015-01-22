@@ -19,7 +19,7 @@ class Message extends \QUI\QDOM
      *
      * @param array $params
      */
-    public function __construct($params)
+    public function __construct($params=array())
     {
         // defaults
         $this->setAttributes(array(
