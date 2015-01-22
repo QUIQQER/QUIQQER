@@ -2,9 +2,8 @@
 /**
  * Groups manager panel
  *
- * @author www.pcsg.de (Henning Leutz)
- *
  * @module controls/groups/Panel
+ * @author www.pcsg.de (Henning Leutz)
  *
  * @require qui/controls/desktop/Panel
  * @require Groups

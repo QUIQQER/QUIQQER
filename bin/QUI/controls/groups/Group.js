@@ -1,9 +1,9 @@
+
 /**
  * A group panel
  *
- * @author www.pcsg.de (Henning Leutz)
- *
  * @module controls/groups/Group
+ * @author www.pcsg.de (Henning Leutz)
  *
  * @require controls/desktop/Panel
  * @require controls/grid/Grid
@@ -594,6 +594,10 @@ define('controls/groups/Group', [
         $onGroupGetUser : function(result)
         {
             if ( typeof this.$UserGrid === 'undefined' ) {
+                return;
+            }
+
+            if ( typeof result.data === 'undefined' ) {
                 return;
             }
 

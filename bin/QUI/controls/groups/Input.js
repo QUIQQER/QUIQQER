@@ -1,9 +1,9 @@
+
 /**
  * Makes an input field to a group selection field
  *
- * @author www.pcsg.de (Henning Leutz)
- *
  * @module controls/groups/Input
+ * @author www.pcsg.de (Henning Leutz)
  *
  * @require controls/Control
  * @require controls/buttons/Button
@@ -77,6 +77,8 @@ define('controls/groups/Input', [
          */
         create : function()
         {
+            var self = this;
+
             this.$Elm = new Element( 'div.group-input' );
 
             if ( !this.$Parent )
@@ -98,30 +100,27 @@ define('controls/groups/Input', [
 
             // sitemap button
             new QUIButton({
-                name    : 'groupSitemapBtn',
-                image   : 'icon-plus',
-                styles  : {
+                name   : 'groupSitemapBtn',
+                image  : 'icon-plus',
+                styles : {
                     marginTop : 4
                 },
-                Control : this,
                 events  :
                 {
-                    onClick : function(Btn)
+                    onClick : function()
                     {
-                        var Control = Btn.getAttribute('Control');
-
                         new GroupSitemapWindow({
-                            multible : Control.getAttribute('multible'),
+                            multible : self.getAttribute('multible'),
                             events   :
                             {
                                 onSubmit : function(Window, values)
                                 {
                                     for ( var i = 0, len = values.length; i < len; i++ ) {
-                                        this.addGroup( values[i] );
+                                        self.addGroup( values[i] );
                                     }
-                                }.bind( Control )
+                                }
                             }
-                        }).create();
+                        }).open();
                     }
                 }
             }).inject( this.$Parent, 'before' );

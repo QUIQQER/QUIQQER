@@ -1,10 +1,10 @@
+
 /**
  * A group field / display
  * the display updates itself
  *
- * @author www.pcsg.de (Henning Leutz)
- *
  * @module controls/groups/Entry
+ * @author www.pcsg.de (Henning Leutz)
  *
  * @require controls/Control
  * @require Groups

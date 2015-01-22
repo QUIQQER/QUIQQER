@@ -11,8 +11,6 @@ use QUI\Rights\Permission;
 use QUI\Users\User;
 use QUI\Groups\Group;
 
-use QUI\Utils\Security\Orthos;
-
 /**
  * A project
  *

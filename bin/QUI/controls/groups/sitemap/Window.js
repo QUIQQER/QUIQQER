@@ -1,10 +1,13 @@
+
 /**
  * Groups Sitemapwindow
  *
+ * @module controls/groups/sitemap/Window
  * @author www.pcsg.de (Henning Leutz)
  *
- * @module controls/groups/sitemap/Window
- * @class controls/groups/sitemap/Window
+ * @require qui/controls/windows/Confirm
+ * @require controls/groups/Sitemap
+ * @require Locale
  *
  * @event onSubmit [ this, values ]
  */
@@ -41,7 +44,7 @@ define('controls/groups/sitemap/Window', [
             text     : Locale.get( 'quiqqer/system', 'groups.sitemap.window.text' ),
             icon     : 'icon-group',
             maxHeight   : 600,
-            maxWidth    : 450
+            maxWidth    : 470
         },
 
         initialize : function(options)
@@ -59,8 +62,7 @@ define('controls/groups/sitemap/Window', [
         {
             this.parent();
 
-            var Content    = this.getContent(),
-                SubmitBody = Content.getElement( '.submit-body' );
+            var Content = this.getContent();
 
             var SitemapBody = new Element('div', {
                 'class' : 'group-sitemap'
