@@ -155,9 +155,10 @@ class Console
             exit;
         }
 
-        if ( !QUI\Rights\Permission::checkPermission( 'quiqqer.system.console' ) )
+        if ( !QUI\Rights\Permission::hasPermission( 'quiqqer.system.console' ) )
         {
             $this->writeLn( "Missing rights to use the console\n\n", 'red' );
+            $this->clearMsg();
             exit;
         }
 
