@@ -19,9 +19,6 @@
     {
 
     }
-
-    \QUI::getEvents()->fireEvent( 'adminLoaded' );
-
 ?>
 <!doctype html>
 <!--[if lt IE 7 ]><html class="ie ie6" lang="<?php echo $User->getLang(); ?>"> <![endif]-->
@@ -142,6 +139,9 @@
         /**
          * locale file
          */
+
+        $files = array();
+
         try
         {
             $files = \QUI\Translator::getJSTranslationFiles( $User->getLang() );
@@ -164,7 +164,6 @@
         echo '</script>';
 
         \QUI::getEvents()->fireEvent( 'adminLoad' );
-
     ?>
 
 </head>
@@ -203,6 +202,10 @@
 
     <!-- load the quiqqer admin -->
     <script src="<?php echo URL_BIN_DIR; ?>QUI/init.js"></script>
+
+    <?php
+        \QUI::getEvents()->fireEvent( 'adminLoadFooter' );
+    ?>
 
 </body>
 </html>
