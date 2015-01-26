@@ -1,3 +1,11 @@
+
+    <title>
+        {$Template->getAttribute('site_title_prefix')}
+        {$Site->getAttribute('meta.seotitle')|escape:"html"}
+        {$Template->getAttribute('site_title_suffix')}
+        {$Template->getAttribute('site_title')}
+    </title>
+
     <!-- [begin] meta -->
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
@@ -130,10 +138,3 @@
     {/if}
 
     {$headerExtend}
-
-    <title>
-        {$Template->getAttribute('site_title_prefix')}
-        {$Site->getAttribute('meta.seotitle')|escape:"html"}
-        {$Template->getAttribute('site_title_suffix')}
-        {$Template->getAttribute('site_title')}
-    </title>
