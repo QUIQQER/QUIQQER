@@ -326,8 +326,6 @@
             <en><![CDATA[Company]]></en>
         </locale>
 
-
-
         <!-- messages -->
         <locale name="message.clear.cache.successful">
             <de><![CDATA[Der Cache wurde erfolgreich gelöscht.]]></de>
@@ -336,6 +334,10 @@
         <locale name="message.clear.cache.purged">
             <de><![CDATA[Der Cache wurde erfolgreich gesäubert.]]></de>
             <en><![CDATA[Cache successful purged.]]></en>
+        </locale>
+        <locale name="message.contact.successful">
+            <de><![CDATA[Vielen Dank für Ihre E-Mail. Wir werden uns bei Ihnen schnellstmöglich melden.]]></de>
+            <en><![CDATA[Thank you for your email. We will contact you as soon as possible.]]></en>
         </locale>
 
     </groups>
@@ -911,10 +913,6 @@
         </locale>
 
         <!-- Messages  -->
-        <locale name="message.contact.successful">
-            <de><![CDATA[Vielen Dank für Ihre E-Mail. Wir werden uns bei Ihnen schnellstmöglich melden.]]></de>
-            <en><![CDATA[Thank you for your email. We will contact you as soon as possible.]]></en>
-        </locale>
         <locale name="message.setup.successfull">
             <de><![CDATA[Das Setup wurde erfolgreich ausgeführt.]]></de>
             <en><![CDATA[The setup was successfully completed.]]></en>
