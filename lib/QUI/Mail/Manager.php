@@ -5,6 +5,7 @@
  */
 
 namespace QUI\Mail;
+use QUI\System\Log;
 
 /**
  * Mail Manager

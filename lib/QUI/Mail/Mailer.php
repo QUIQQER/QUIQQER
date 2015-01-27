@@ -138,7 +138,7 @@ class Mailer extends QUI\QDOM
                 $infos['mime_type'] = 'application/octet-stream';
             }
 
-            $PHPMailer->addAttachment( $file, '', 'base64', $infos['mime_type'] );
+            $PHPMailer->addAttachment( $file, $infos['basename'], 'base64', $infos['mime_type'] );
         }
 
 
