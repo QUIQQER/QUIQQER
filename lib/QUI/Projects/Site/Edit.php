@@ -951,7 +951,7 @@ class Edit extends Site
 
         $children = $this->getChildrenIds( $this->getId(), array(), true );
 
-        if ( !in_array($pid, $children) && $pid != $this->getId() )
+        if ( !in_array( $pid, $children ) && $pid != $this->getId() )
         {
             QUI::getDataBase()->update(
                 $this->_RELTABLE,
@@ -961,6 +961,14 @@ class Edit extends Site
 
             //$this->deleteTemp();
             $this->deleteCache();
+
+            // remove internal parent ids
+            $this->_parents_id = false;
+            $this->_parent_id  = false;
+
+
+            $this->Events->fireEvent( 'move', array( $this, $pid ) );
+            QUI::getEvents()->fireEvent( 'siteMove', array( $this, $pid ) );
 
             return true;
         }
