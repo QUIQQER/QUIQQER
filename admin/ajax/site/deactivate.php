@@ -14,7 +14,7 @@ function ajax_site_deactivate($project, $id)
 
     $Site->deactivate();
 
-    return $Site->getAttribute('active');
+    return !$Site->getAttribute('active') ? 0 : 1;
 }
 
 \QUI::$Ajax->register(

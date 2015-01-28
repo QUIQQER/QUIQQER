@@ -13,6 +13,7 @@ use QUI\Projects\Project;
 use QUI\Rights\Permission;
 use QUI\Users\User;
 use QUI\Groups\Group;
+use QUI\Utils\Security\Orthos;
 
 /**
  * Site Objekt für den Adminbereich
@@ -153,6 +154,53 @@ class Edit extends Site
     }
 
     /**
+     * Check if the release from date is in the future or the release until is in the past
+     * throws exception if the site cant activated
+     *
+     * @throws QUI\Exception
+     */
+    protected function _checkReleaseDate()
+    {
+        // check release date
+        $release_from = $this->getAttribute( 'release_from' );
+        $release_to   = $this->getAttribute( 'release_to' );
+
+        if ( !$release_from || $release_from == '0000-00-00 00:00:00' )
+        {
+            $release_from = date('Y-m-d H:i:s' );
+            $this->setAttribute( 'release_from', $release_from );
+        }
+
+        $release_from = strtotime( $release_from );
+
+        if ( $release_from && $release_from > time() )
+        {
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.release.from.inFuture'
+                )
+            );
+        }
+
+        if ( !$release_to || $release_to == '0000-00-00 00:00:00' ) {
+            return;
+        }
+
+        $release_to = strtotime( $release_to );
+
+        if ( $release_to && $release_to < time() )
+        {
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.release.to.inPast'
+                )
+            );
+        }
+    }
+
+    /**
      * Activate a site
      *
      * @throws QUI\Exception
@@ -173,45 +221,20 @@ class Edit extends Site
         $this->Events->fireEvent( 'checkActivate', array( $this ) );
         QUI::getEvents()->fireEvent( 'siteCheckActivate', array( $this ) );
 
-        /*
-        $release_from = strtotime(
-            $this->getAttribute('pcsg.base.release_from')
-        );
 
-        $release_until = strtotime(
-            $this->getAttribute('pcsg.base.release_until')
-        );
+        // check release date
+        $this->_checkReleaseDate();
 
-        if ( $release_from && $release_from > time() )
-        {
-            throw new QUI\Exception(
-                'Die Seite kann nicht aktiviert werden, da das Datum "Veröffentlichen von" in der Zukunft liegt'
-            );
+        $releaseFrom = $this->getAttribute( 'release_from' );
+
+        if ( !Orthos::checkMySqlDatetimeSyntax( $releaseFrom ) ) {
+            $releaseFrom = date('Y-m-d H:i:s' );
         }
 
-        if ( $release_until && $release_until < time() )
-        {
-            throw new QUI\Exception(
-                'Die Seite kann nicht aktiviert werden, da das Datum "Veröffentlichen bis" in der Vergangenheit liegt'
-            );
-        }
-        */
-
-        if ( !$this->getAttribute( 'release_from' ) ||
-              $this->getAttribute( 'release_from' ) == '0000-00-00 00:00:00' )
-        {
-            $release_from = date('Y-m-d H:i:s' );
-
-            $this->setAttribute( 'release_from', $release_from );
-        }
-
-        $release_from = $this->getAttribute( 'release_from' );
-        $release_from = date('Y-m-d H:i:s', strtotime( $release_from ) );
-
-
+        // save
         QUI::getDataBase()->update($this->_TABLE, array(
             'active'       => 1,
-            'release_from' => $release_from
+            'release_from' => $releaseFrom
         ), array(
             'id' => $this->getId()
         ));
@@ -260,7 +283,7 @@ class Edit extends Site
             )
         ));
 
-        $this->setAttribute('active', 0);
+        $this->setAttribute( 'active', 0 );
         $this->getProject()->clearCache();
 
         //$this->deleteTemp();
@@ -334,6 +357,7 @@ class Edit extends Site
      * Saves the site
      *
      * @param QUI\Interfaces\Users\User|Bool $User - [optional] User to save
+     * @return Bool
      * @throws QUI\Exception
      */
     public function save($User=false)
@@ -458,23 +482,41 @@ class Edit extends Site
             $rf = strtotime( $this->getAttribute( 'release_from' ) );
 
             if ( $rf ) {
-                $release_from = date('Y-m-d H:i:s', $rf);
+                $release_from = date( 'Y-m-d H:i:s', $rf );
             }
 
         } else if ( $this->getAttribute( 'active' ) )
         {
-            $release_from = date('Y-m-d H:i:s', strtotime( $this->getAttribute( 'e_date' ) ) );
+            $release_from = date(
+                'Y-m-d H:i:s',
+                strtotime( $this->getAttribute( 'e_date' ) )
+            );
         }
-
 
         if ( $this->getAttribute( 'release_to' ) )
         {
             $rf = strtotime( $this->getAttribute( 'release_to' ) );
 
             if ( $rf ) {
-                $release_to = date('Y-m-d H:i:s', $rf);
+                $release_to = date( 'Y-m-d H:i:s', $rf );
             }
         }
+
+        $this->setAttribute( 'release_from', $release_from );
+        $this->setAttribute( 'release_to', $release_to );
+
+
+        try
+        {
+            $this->_checkReleaseDate();
+
+        } catch ( QUI\Exception $Exception )
+        {
+            // if release date trigger an error, deactivate the site
+            $this->deactivate();
+        }
+
+
 
         // save extra package attributes (site.xml)
         $extraAttributes = Utils::getExtraAttributeListForSite( $this );

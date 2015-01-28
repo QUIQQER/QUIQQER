@@ -14,7 +14,7 @@ function ajax_site_activate($project, $id)
 
     $Site->activate();
 
-    return $Site->getAttribute( 'active' );
+    return $Site->getAttribute( 'active' ) ? 1 : 0;
 }
 
 \QUI::$Ajax->register(

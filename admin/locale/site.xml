@@ -46,7 +46,14 @@
             <en><![CDATA[Errors occurred while saving the page.]]></en>
         </locale>
 
-
+        <locale name="exception.site.release.from.inFuture">
+            <de><![CDATA[Die Seite kann nicht aktiviert werden, da das Datum "Veröffentlichen von" in der Zukunft liegt.]]></de>
+            <en><![CDATA[The page can not be activated because the date "release from" is in the future.]]></en>
+        </locale>
+        <locale name="exception.release.to.inPast">
+            <de><![CDATA[Die Seite kann nicht aktiviert werden, da das Datum "Veröffentlichen bis" in der Vergangenheit liegt.]]></de>
+            <en><![CDATA[The page can not be activated because the date "release until" is in the past.]]></en>
+        </locale>
 
     </groups>
 

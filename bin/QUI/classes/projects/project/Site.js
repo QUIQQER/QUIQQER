@@ -252,7 +252,7 @@ define([
                 }
 
                 if ( result === 0 ) {
-                    Site.fireEvent('deactivate', [Site]);
+                    Site.fireEvent( 'deactivate', [ Site ] );
                 }
 
             }, this.ajaxParams());
@@ -271,7 +271,8 @@ define([
         save : function(onfinish)
         {
             var Site   = this,
-                params = this.ajaxParams();
+                params = this.ajaxParams(),
+                status = this.getAttribute( 'active' );
 
             params.attributes = JSON.encode( this.getAttributes() );
 
@@ -284,6 +285,18 @@ define([
                 Site.$has_children = result && result.has_children || false;
                 Site.$parentid     = result && result.parentid || false;
                 Site.$url          = result && result.url || '';
+
+                // if status change, trigger events
+                if ( Site.getAttribute( 'active' ) != status )
+                {
+                    if ( Site.getAttribute( 'active' ) == 1 )
+                    {
+                        Site.fireEvent( 'activate', [ Site ] );
+                    } else
+                    {
+                        Site.fireEvent( 'deactivate', [ Site ] );
+                    }
+                }
 
                 if ( typeof onfinish !== 'undefined' ) {
                     onfinish( result );
