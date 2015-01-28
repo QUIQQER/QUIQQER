@@ -10,6 +10,7 @@
         "define", "require", "moofx", "Promise", "File", "FileList",
         "USER", "QUIQQER_VERSION", "QUIQQER_CONFIG", "QUIQQER_PROJECT", "QUIQQER_USER",
         "URL_DIR", "URL_BIN_DIR", "URL_OPT_DIR", "URL_VAR_DIR",
-        "URL_SYS_DIR", "URL_LIB_DIR", "URL_PROJECT_DIR"
+        "URL_SYS_DIR", "URL_LIB_DIR", "URL_PROJECT_DIR",
+        "QUIQQER_LOCALE", "QUIQQER_ONLOAD_MODULES", "QUIQQER_SITE"
     ]
 }
