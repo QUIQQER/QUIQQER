@@ -601,8 +601,9 @@ class Manager
                     ),
                     'limit' => 1
                 ));
+            }
 
-            } else
+            if ( $loginuser == false )
             {
                 $loginuser = QUI::getDataBase()->fetch(array(
                     'from'  => self::Table(),
