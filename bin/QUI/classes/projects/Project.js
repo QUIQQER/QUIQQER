@@ -17,7 +17,7 @@
  * @events onSiteDeactivate [this, {classes/projects/project/Site}]
  */
 
-define([
+define('classes/projects/Project', [
 
     'qui/classes/DOM',
     'Ajax',

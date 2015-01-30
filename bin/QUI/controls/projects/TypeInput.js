@@ -50,6 +50,8 @@ define('controls/projects/TypeInput', [
             this.$Input = Input || null;
             this.$Elm   = null;
             this.$Text  = null;
+
+            this.$TypeButton = null;
         },
 
         /**
@@ -72,14 +74,16 @@ define('controls/projects/TypeInput', [
             this.$Input.type = 'hidden';
 
             this.$Elm = new Element('div', {
-                'class' : 'qui-projects-type-input'
+                'class'      : 'qui-projects-type-input',
+                'data-quiid' : this.getId()
             });
 
             this.$Elm.wraps( this.$Input );
 
             // create the type button
-            new TypeButton({
-                events :
+            this.$TypeButton = new TypeButton({
+                project : this.getAttribute( 'project' ),
+                events  :
                 {
                     onSubmit : function(Btn, result)
                     {
@@ -97,6 +101,20 @@ define('controls/projects/TypeInput', [
             this.loadTypeName();
 
             return this.$Elm;
+        },
+
+        /**
+         * Set the project to the control
+         *
+         * @param {Object} Project - classes/projects/Project
+         */
+        setProject : function(Project)
+        {
+            this.setAttribute( 'project', Project.getName() );
+
+            if ( this.$TypeButton ) {
+                this.$TypeButton.setAttribute( 'project', Project.getName() );
+            }
         },
 
         /**

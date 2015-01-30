@@ -5,460 +5,419 @@
  * @author www.pcsg.de (Henning Leutz)
  */
 
-define({
+define('utils/Controls', [
 
-    /**
-     * Parse an DOM Node Element
-     *
-     * Search all control elements in the node element
-     * and parse it to the specific control
-     */
-    parse : function(Elm)
-    {
-        "use strict";
+    'qui/QUI',
+    'qui/controls/buttons/Button',
+    'qui/utils/Elements',
 
-        var Form = false;
+    'controls/groups/Input',
+    'controls/users/Input',
+    'controls/projects/project/media/Input',
+    'controls/projects/Input',
+    'controls/projects/TypeInput',
+    'controls/projects/project/site/Input',
+    'controls/usersAndGroups/Input'
 
-        if ( Elm.nodeName == 'FORM' ) {
-            Form = Elm;
-        }
+], function(QUI, QUIButton, ElementUtils, GroupInput, UserInput, ProjectMediaInput, ProjectInput, TypeInput, SiteInput, UserAndGroup)
+{
+    "use strict";
 
-        if ( !Form ) {
-            Form = Elm.getElement( 'form' );
-        }
+    return {
 
-        if ( Form )
+        /**
+         * Parse an DOM Node Element
+         *
+         * Search all control elements in the node element
+         * and parse it to the specific control
+         *
+         * @param {HTMLElement} Elm
+         * @param {Function} callback
+         */
+        parse: function(Elm, callback)
         {
-            // ist that good?
-            Form.addEvent('submit', function(event) {
-                event.stop();
-            });
-        }
+            var Form = false;
 
-        // Button
-        if ( Elm.getElement( '.btn-button' ) ) {
-            this.parseButtons( Elm );
-        }
+            if ( Elm.nodeName == 'FORM' ) {
+                Form = Elm;
+            }
 
-        // Date
-        if ( Elm.getElement( 'input[type="date"],input[type="datetime"]' ) ) {
-            this.parseDate( Elm );
-        }
+            if ( !Form ) {
+                Form = Elm.getElement('form');
+            }
 
-        // Groups
-        if ( Elm.getElement( 'input.groups,input.group' ) ) {
-            this.parseGroups( Elm );
-        }
+            if ( Form )
+            {
+                // ist that good?
+                Form.addEvent('submit', function(event) {
+                    event.stop();
+                });
+            }
 
-        // Media Types
-        if ( Elm.getElement( 'input.media-image' ) ) {
-            this.parseMediaInput( Elm );
-        }
+            // Button
+            if ( Elm.getElement('.btn-button') ) {
+                this.parseButtons( Elm );
+            }
 
-        // User And Groups
-        if ( Elm.getElement( 'input.users_and_groups' ) ) {
-            this.parseUserAndGroups( Elm );
-        }
+            // Date
+            if ( Elm.getElement('input[type="date"],input[type="datetime"]') ) {
+                this.parseDate( Elm );
+            }
 
-        // User And Groups
-        if ( Elm.getElement( 'input.user' ) ) {
-            this.parseUser( Elm );
-        }
+            // Groups
+            if ( Elm.getElement('input.groups,input.group') ) {
+                this.parseGroups( Elm );
+            }
 
-        // projects
-        if ( Elm.getElement( 'input.project' ) ) {
-            this.parseProject( Elm );
-        }
+            // Media Types
+            if ( Elm.getElement('input.media-image') ) {
+                this.parseMediaInput( Elm );
+            }
 
-        // Project Types
-        if ( Elm.getElement( 'input.project-types' ) ) {
-            this.parseProjectTypes( Elm );
-        }
+            // User And Groups
+            if ( Elm.getElement('input.users_and_groups') ) {
+                this.parseUserAndGroups( Elm );
+            }
 
-        // project site
-        if ( Elm.getElement( 'input.project-site' ) ) {
-            this.parseProjectSite( Elm );
-        }
+            // User And Groups
+            if ( Elm.getElement('input.user') ) {
+                this.parseUser( Elm );
+            }
 
-        // data table
-        if ( Elm.getElement( '.data-table' ) ) {
-            this.parseDataTables( Elm );
-        }
+            // projects
+            if ( Elm.getElement('input.project') ) {
+                this.parseProject( Elm );
+            }
+
+            // Project Types
+            if ( Elm.getElement('input.project-types') ) {
+                this.parseProjectTypes( Elm );
+            }
+
+            // project site
+            if ( Elm.getElement('input.project-site') ) {
+                this.parseProjectSite( Elm );
+            }
+
+            // data table
+            if ( Elm.getElement('.data-table') ) {
+                this.parseDataTables( Elm );
+            }
 
 
-        // disabled fields
 
+            if ( typeof callback === 'function' ) {
+                callback();
+            }
+        },
 
-        // hidden fields
-        /*
-        elements = Elm.getElements( 'input[disabled="disabled"]' );
-
-        for ( i = 0, len = elements.length; i < len; i++ )
-        {
-            elements[ i ].setStyles({
-                border : 'none'
-            });
-        }*/
-    },
-
-    /**
-     * Search all Elements with .btn-button and convert it to a button
-     *
-     * @param {HTMLElement} Elm - parent node, this element in which is searched for
-     */
-    parseButtons : function(Elm)
-    {
-        "use strict";
-
-        require(['qui/controls/buttons/Button'], function(QUIButton)
+        /**
+         * Search all Elements with .btn-button and convert it to a button
+         *
+         * @param {HTMLElement} Elm - parent node, this element in which is searched for
+         */
+        parseButtons: function(Elm)
         {
             // buttons
             var i, len, Child, elements;
 
-            elements = Elm.getElements( '.btn-button' );
+            elements = Elm.getElements('.btn-button');
 
             for ( i = 0, len = elements.length; i < len; i++ )
             {
                 Child = elements[ i ];
 
                 new QUIButton({
-                    text   : Child.get( 'data-text' ),
-                    image  : Child.get( 'data-image' ),
-                    click  : Child.get( 'data-click' )
+                    text  : Child.get( 'data-text' ),
+                    image : Child.get( 'data-image' ),
+                    click : Child.get( 'data-click' )
                 }).inject( Child );
             }
-        });
-    },
+        },
 
-    /**
-     * Search all .data-tables and make it flexible
-     *
-     * @param {HTMLElement} Elm - parent node, this element in which is searched for
-     */
-    parseDataTables : function(Elm)
-    {
-        "use strict";
-
-        var i, len, Header;
-        var theaders = Elm.getElements( '.data-table tr ^ th' );
-
-        var dataTableOpen = function()
+        /**
+         * Search all .data-tables and make it flexible
+         *
+         * @param {HTMLElement} Elm - parent node, this element in which is searched for
+         */
+        parseDataTables: function(Elm)
         {
-            var Table  = this.getParent( 'table' ),
-                Toggle = Table.getElement( '.data-table-toggle' );
+            var i, len, Header;
+            var theaders = Elm.getElements('.data-table tr ^ th');
 
-            Toggle.set( 'html', '<span class="icon-minus"></span>' );
+            var dataTableOpen = function()
+            {
+                var Table  = this.getParent('table'),
+                    Toggle = Table.getElement('.data-table-toggle');
 
-            moofx( Table ).animate({
-                height : Table.getScrollSize().y
-            }, {
-                equation : 'ease-out',
-                duration : 250,
-                callback : function()
+                Toggle.set( 'html', '<span class="icon-minus"></span>' );
+
+                moofx( Table ).animate({
+                    height: Table.getScrollSize().y
+                }, {
+                    equation : 'ease-out',
+                    duration : 250,
+                    callback : function()
+                    {
+                        Table.setStyles({
+                            display  : null,
+                            overflow : null
+                        });
+                    }
+                });
+            };
+
+            var dataTableClose = function()
+            {
+                var Table  = this.getParent('table'),
+                    THead  = Table.getElement('thead'),
+                    Toggle = Table.getElement('.data-table-toggle');
+
+                Toggle.set('html', '<span class="icon-plus"></span>');
+
+                Table.setStyles({
+                    display: 'block',
+                    overflow: 'hidden'
+                });
+
+                moofx( Table ).animate({
+                    height: THead.getSize().y
+                }, {
+                    equation: 'ease-out',
+                    duration: 250
+                });
+            };
+
+            var dataTableClick = function()
+            {
+                var Table  = this.getParent('table'),
+                    Toggle = Table.getElement('.data-table-toggle');
+
+                if ( Toggle.getElement('.icon-minus') )
                 {
-                    Table.setStyles({
-                        display  : null,
-                        overflow : null
-                    });
-                }
-            });
-        };
-
-        var dataTableClose = function()
-        {
-            var Table  = this.getParent( 'table' ),
-                THead  = Table.getElement( 'thead' ),
-                Toggle = Table.getElement( '.data-table-toggle' );
-
-            Toggle.set( 'html', '<span class="icon-plus"></span>' );
-
-            Table.setStyles({
-                display  : 'block',
-                overflow : 'hidden'
-            });
-
-            moofx( Table ).animate({
-                height : THead.getSize().y
-            }, {
-                equation: 'ease-out',
-                duration : 250
-            });
-        };
-
-        var dataTableClick = function()
-        {
-            var Table  = this.getParent( 'table' ),
-                Toggle = Table.getElement( '.data-table-toggle' );
-
-            if ( Toggle.getElement( '.icon-minus' ) )
-            {
-                dataTableClose.call( this );
-            } else
-            {
-                dataTableOpen.call( this );
-            }
-        };
-
-        for ( i = 0, len = theaders.length; i < len; i++ )
-        {
-            Header = theaders[ i ];
-
-            Header.addEvent( 'click', dataTableClick );
-            Header.setStyle( 'cursor', 'pointer' );
-
-            new Element('div', {
-                'class' : 'data-table-toggle',
-                html    : '<span class="icon-minus"></span>',
-                styles  : {
-
-                }
-            }).inject( Header, 'top' );
-
-            if ( Header.getParent( 'table' ).hasClass( 'data-table-closed' ) ) {
-                dataTableClick.call( Header );
-            }
-        }
-    },
-
-    /**
-     * Search all input[type="date"] and make a control
-     *
-     * @param {HTMLElement} Elm - parent node, this element in which is searched for
-     */
-    parseDate : function(Elm)
-    {
-        "use strict";
-
-        require([
-            'package/quiqqer/calendar/bin/Calendar',
-            'qui/controls/buttons/Button',
-            'qui/utils/Elements'
-        ], function(DatePicker, QUIButton, ElementUtils)
-        {
-            var i, len, elements, datetime,
-                Child, Parent, Picker;
-
-            elements = Elm.getElements( 'input[type="date"],input[type="datetime"]' );
-
-            // Date Buttons
-            for ( i = 0, len = elements.length; i < len; i++ )
-            {
-                Child    = elements[i];
-                Parent   = new Element( 'div' ).wraps( Child );
-                datetime = Parent.getElement( 'input[type="datetime"]' ) ? true : false;
-
-                if ( datetime )
-                {
-                    Child.placeholder = 'YYYY-MM-DD HH:MM:SS';
-                    Child.set( 'data-type', 'datetime' );
+                    dataTableClose.call( this );
                 } else
                 {
-                    Child.placeholder = 'YYYY-MM-DD';
-                    Child.set( 'data-type', 'date' );
+                    dataTableOpen.call( this );
                 }
+            };
 
+            for ( i = 0, len = theaders.length; i < len; i++ )
+            {
+                Header = theaders[i];
 
-                Child.autocomplete = 'off';
+                Header.addEvent('click', dataTableClick);
+                Header.setStyle('cursor', 'pointer');
 
-                Child.setStyles({
-                    'float'  : 'left',
-                    'cursor' : 'pointer'
-                });
+                new Element('div', {
+                    'class' : 'data-table-toggle',
+                    html    : '<span class="icon-minus"></span>',
+                    styles  : {}
+                }).inject(Header, 'top');
 
-                Picker = new DatePicker(Child, {
-                    timePicker     : datetime ? true : false,
-                    datetime       : datetime,
-                    positionOffset : {
-                        x: 5,
-                        y: 0
-                    },
-                    pickerClass : 'datepicker_dashboard',
-                    onSelect    : function(UserDate, elmList)
+                if ( Header.getParent('table').hasClass('data-table-closed') ) {
+                    dataTableClick.call( Header );
+                }
+            }
+        },
+
+        /**
+         * Search all input[type="date"] and make a control
+         *
+         * @param {HTMLElement} Elm - parent node, this element in which is searched for
+         */
+        parseDate: function(Elm)
+        {
+            require(['package/quiqqer/calendar/bin/Calendar'], function(DatePicker)
+            {
+                var i, len, elements, datetime,
+                    Child, Parent, Picker;
+
+                elements = Elm.getElements('input[type="date"],input[type="datetime"]');
+
+                // Date Buttons
+                for ( i = 0, len = elements.length; i < len; i++ )
+                {
+                    Child    = elements[i];
+                    Parent   = new Element('div').wraps(Child);
+                    datetime = Parent.getElement('input[type="datetime"]') ? true : false;
+
+                    if ( datetime )
                     {
-                        var i, len;
+                        Child.placeholder = 'YYYY-MM-DD HH:MM:SS';
+                        Child.set('data-type', 'datetime');
 
-                        if ( typeOf( elmList ) === 'array' )
+                    } else
+                    {
+                        Child.placeholder = 'YYYY-MM-DD';
+                        Child.set('data-type', 'date');
+                    }
+
+
+                    Child.autocomplete = 'off';
+
+                    Child.setStyles({
+                        'float'  : 'left',
+                        'cursor' : 'pointer'
+                    });
+
+                    Picker = new DatePicker(Child, {
+                        timePicker : datetime ? true : false,
+                        datetime   : datetime,
+                        positionOffset: {
+                            x: 5,
+                            y: 0
+                        },
+                        pickerClass: 'datepicker_dashboard',
+                        onSelect: function(UserDate, elmList)
                         {
-                            for ( i = 0, len = elmList.length; i < len; i++ )
+                            var i, len;
+
+                            if ( typeOf( elmList ) === 'array' )
                             {
-                                if ( elmList[ i ].get( 'data-type' ) == 'date' )
+                                for ( i = 0, len = elmList.length; i < len; i++ )
                                 {
-                                    elmList[ i ].value = UserDate.format( '%Y-%m-%d' );
+                                    if ( elmList[i].get('data-type') == 'date' )
+                                    {
+                                        elmList[i].value = UserDate.format('%Y-%m-%d');
+                                    } else
+                                    {
+                                        elmList[i].value = UserDate.format('db');
+                                    }
+                                }
+
+                            } else if ( typeOf( elmList ) === 'element' )
+                            {
+                                if ( elmList.get('data-type') == 'date' )
+                                {
+                                    elmList.value = UserDate.format('%Y-%m-%d');
+
                                 } else
                                 {
-                                    elmList[ i ].value = UserDate.format( 'db' );
+                                    elmList.value = UserDate.format('db');
                                 }
                             }
+                        }
+                    });
 
-                        } else if ( typeOf( elmList ) === 'element' )
+                    Picker.picker.setStyles({
+                        zIndex: ElementUtils.getComputedZIndex(Child)
+                    });
+
+                    new QUIButton({
+                        image  : 'icon-remove',
+                        alt    : 'Datum leeren',
+                        title  : 'Datum leeren',
+                        Input  : Child,
+                        events :
                         {
-                            if ( elmList.get('data-type') == 'date' )
-                            {
-                                elmList.value = UserDate.format( '%Y-%m-%d' );
-                            } else
-                            {
-                                elmList.value = UserDate.format( 'db' );
+                            onClick: function (Btn) {
+                                Btn.getAttribute('Input').value = '';
                             }
+                        },
+                        styles: {
+                            top: 1
                         }
-                    }
-                });
+                    }).inject( Child.getParent() );
+                }
 
-                Picker.picker.setStyles({
-                    zIndex : ElementUtils.getComputedZIndex( Child )
-                });
-
-                new QUIButton({
-                    image   : 'icon-remove',
-                    alt     : 'Datum leeren',
-                    title   : 'Datum leeren',
-                    Input   : Child,
-                    events  :
-                    {
-                        onClick : function(Btn) {
-                            Btn.getAttribute( 'Input' ).value = '';
-                        }
-                    },
-                    styles : {
-                        top : 1
-                    }
-                }).inject( Child.getParent() );
-            }
-
-        }, function()
-        {
-            require(['qui/QUI'], function(QUI)
+            }, function()
             {
-                QUI.getMessageHandler(function(MH)
+                require(['qui/QUI'], function(QUI)
                 {
-                    MH.addAttention(
-                        'Das Kalender Packet konnte nicht gefunden werden.' +
-                        'Bitte installieren Sie quiqqer/calendar'
-                    );
+                    QUI.getMessageHandler(function(MH)
+                    {
+                        MH.addAttention(
+                            'Das Kalender Packet konnte nicht gefunden werden.' +
+                            'Bitte installieren Sie quiqqer/calendar'
+                        );
+                    });
                 });
             });
-        });
-    },
+        },
 
-    /**
-     * Search all input[class="groups"] and convert it to a control
-     *
-     * @param {HTMLElement} Elm - parent node, this element in which is searched for
-     */
-    parseGroups : function(Elm)
-    {
-        "use strict";
-
-        require(['controls/groups/Input'], function(GroupInput)
+        /**
+         * Search all input[class="groups"] and convert it to a control
+         *
+         * @param {HTMLElement} Elm - parent node, this element in which is searched for
+         */
+        parseGroups: function(Elm)
         {
-            var i, len, elements;
+            var elements = Elm.getElements('input.groups,input.group');
 
-            elements = Elm.getElements( 'input.groups,input.group' );
-
-            for ( i = 0, len = elements.length; i < len; i++ ) {
+            for ( var i = 0, len = elements.length; i < len; i++ ) {
                 new GroupInput( null, elements[ i ] ).create();
             }
-        });
-    },
+        },
 
-    /**
-     * Search all input[class="media-image"] and convert it to a control
-     *
-     * @param {HTMLElement} Elm - parent node, this element in which is searched for
-     */
-    parseMediaInput : function(Elm)
-    {
-        "use strict";
-
-        require(['controls/projects/project/media/Input'], function(ProjectMediaInput)
+        /**
+         * Search all input[class="media-image"] and convert it to a control
+         *
+         * @param {HTMLElement} Elm - parent node, this element in which is searched for
+         */
+        parseMediaInput: function(Elm)
         {
-            var elements = Elm.getElements( 'input.media-image' );
+            var elements = Elm.getElements('input.media-image');
 
             for ( var i = 0, len = elements.length; i < len; i++ ) {
                 new ProjectMediaInput( null, elements[ i ] ).create();
             }
-        });
-    },
+        },
 
-    /**
-     * Search all input[class="project"] and convert it to a control
-     *
-     * @param {HTMLElement} Elm - parent node, this element in which is searched for
-     */
-    parseProject : function(Elm)
-    {
-        "use strict";
-
-        require(['controls/projects/Input'], function(ProjectInput)
+        /**
+         * Search all input[class="project"] and convert it to a control
+         *
+         * @param {HTMLElement} Elm - parent node, this element in which is searched for
+         */
+        parseProject: function(Elm)
         {
-            var i, len, elements;
+            var elements = Elm.getElements('input.project');
 
-            elements = Elm.getElements( 'input.project' );
-
-            for ( i = 0, len = elements.length; i < len; i++ )
+            for ( var i = 0, len = elements.length; i < len; i++ )
             {
                 new ProjectInput({
-                    multible : false
-                }, elements[ i ] ).create();
+                    multible: false
+                }, elements[i]).create();
             }
-        });
-    },
+        },
 
-    /**
-     * Search all input[class="project-types"] and convert it to a control
-     *
-     * @param {HTMLElement} Elm - parent node, this element in which is searched for
-     */
-    parseProjectTypes : function(Elm)
-    {
-        "use strict";
-
-        require(['controls/projects/TypeInput'], function(TypeInput)
+        /**
+         * Search all input[class="project-types"] and convert it to a control
+         *
+         * @param {HTMLElement} Elm - parent node, this element in which is searched for
+         */
+        parseProjectTypes: function(Elm)
         {
-            var i, len, elements;
+            var elements = Elm.getElements('input.project-types');
 
-            elements = Elm.getElements( 'input.project-types' );
-
-            for ( i = 0, len = elements.length; i < len; i++ ) {
+            for ( var i = 0, len = elements.length; i < len; i++ ) {
                 new TypeInput( null, elements[ i ] ).create();
             }
-        });
-    },
+        },
 
-    /**
-     * Search all input[class="project-site"] and convert it to a control
-     *
-     * @param {HTMLElement} Elm - parent node, this element in which is searched for
-     */
-    parseProjectSite : function(Elm)
-    {
-        "use strict";
-
-        require(['controls/projects/project/site/Input'], function(SiteInput)
+        /**
+         * Search all input[class="project-site"] and convert it to a control
+         *
+         * @param {HTMLElement} Elm - parent node, this element in which is searched for
+         */
+        parseProjectSite: function(Elm)
         {
-            var i, len, elements;
+            var elements = Elm.getElements( 'input.project-site' );
 
-            elements = Elm.getElements( 'input.project-site' );
-
-            for ( i = 0, len = elements.length; i < len; i++ ) {
+            for ( var i = 0, len = elements.length; i < len; i++ ) {
                 new SiteInput( null, elements[ i ] ).create();
             }
-        });
-    },
+        },
 
-    /**
-     * Search all Elements with the class users_and_groups and convert it to a control
-     *
-     * @param {HTMLElement} Elm - parent node, this element in which is searched for
-     */
-    parseUserAndGroups : function(Elm)
-    {
-        "use strict";
-
-        require(['controls/usersAndGroups/Input'], function(UserAndGroup)
+        /**
+         * Search all Elements with the class users_and_groups and convert it to a control
+         *
+         * @param {HTMLElement} Elm - parent node, this element in which is searched for
+         */
+        parseUserAndGroups: function(Elm)
         {
-            var elements, Label, Control;
-
-            elements = Elm.getElements( '.users_and_groups' );
+            var Label, Control;
+            var elements = Elm.getElements('.users_and_groups');
 
             for ( var i = 0, len = elements.length; i < len; i++ )
             {
@@ -466,7 +425,7 @@ define({
 
                 if ( elements[ i ].id )
                 {
-                    Label = document.getElement( 'label[for="'+ elements[ i ].id +'"]' );
+                    Label = document.getElement( 'label[for="' + elements[ i ].id + '"]' );
 
                     if ( Label ) {
                         Control.setAttribute( 'label', Label );
@@ -475,33 +434,28 @@ define({
 
                 Control.create();
             }
-        });
-    },
+        },
 
-    /**
-     * Search all Elements with the class user and convert it to a control
-     *
-     * @param {HTMLElement} Elm - parent node, this element in which is searched for
-     */
-    parseUser : function(Elm)
-    {
-        "use strict";
-
-        require(['controls/users/Input'], function(UserInput)
+        /**
+         * Search all Elements with the class user and convert it to a control
+         *
+         * @param {HTMLElement} Elm - parent node, this element in which is searched for
+         */
+        parseUser: function(Elm)
         {
             var i, len, elements, Label, Control;
 
-            elements = Elm.getElements( '.user' );
+            elements = Elm.getElements('.user');
 
             for ( i = 0, len = elements.length; i < len; i++ )
             {
                 Control = new UserInput({
-                    max : 1
-                }, elements[ i ] );
+                    max: 1
+                }, elements[i]);
 
                 if ( elements[ i ].id )
                 {
-                    Label = document.getElement( 'label[for="'+ elements[ i ].id +'"]' );
+                    Label = document.getElement( 'label[for="' + elements[ i ].id + '"]' );
 
                     if ( Label ) {
                         Control.setAttribute( 'label', Label );
@@ -510,6 +464,6 @@ define({
 
                 Control.create();
             }
-        });
-    }
+        }
+    };
 });

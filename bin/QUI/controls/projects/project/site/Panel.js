@@ -712,7 +712,7 @@ define('controls/projects/project/site/Panel', [
 
                 ControlUtils.parse( Form );
 
-                QUI.parse( Form, function()
+                QUI.parse(Form, function()
                 {
                     // set the project to the controls
                     var i, len, Control;
@@ -720,7 +720,7 @@ define('controls/projects/project/site/Panel', [
 
                     for ( i = 0, len = quiids.length; i < len; i++ )
                     {
-                        Control = QUI.Controls.getById( quiids[ i].get('data-quiid') );
+                        Control = QUI.Controls.getById( quiids[ i ].get('data-quiid') );
 
                         if ( !Control ) {
                             continue;
@@ -731,7 +731,7 @@ define('controls/projects/project/site/Panel', [
                         }
                     }
 
-                } );
+                });
 
                 self.$categoryOnLoad( Category );
 
