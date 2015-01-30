@@ -250,7 +250,7 @@ define('controls/desktop/panels/XML', [
 
                             } else
                             {
-                                self.$Control.import( Body );
+                                self.$Control.imports( Body );
                             }
 
                         } else
