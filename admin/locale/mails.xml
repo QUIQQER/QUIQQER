@@ -7,11 +7,11 @@
             <de><![CDATA[]]></de>
             <en><![CDATA[]]></en>
         </locale>
-        <locale name="templates.mail.footer.links">
+        <locale name="templates.mail.footer.links" html="true">
             <de><![CDATA[]]></de>
             <en><![CDATA[]]></en>
         </locale>
-        <locale name="templates.mail.footer.text">
+        <locale name="templates.mail.footer.text" html="true">
             <de><![CDATA[]]></de>
             <en><![CDATA[]]></en>
         </locale>
