@@ -1,0 +1,21 @@
+<locales>
+
+<!-- php -->
+    <groups name="quiqqer/system">
+
+        <locale name="templates.mail.header.title">
+            <de><![CDATA[]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+        <locale name="templates.mail.footer.links">
+            <de><![CDATA[]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+        <locale name="templates.mail.footer.text">
+            <de><![CDATA[]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+
+    </groups>
+
+</locales>
