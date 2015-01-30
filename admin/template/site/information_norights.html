@@ -53,24 +53,9 @@
             {t}quiqqer/system projects.project.site.panel.information.type{/t}
         </td>
         <td>
-            {assign var=type value=$Site->getAttribute('type')}
-            <span style="float:left; position:relative; top: 7px;" id="type_field">
-                {if $Site->getAttribute('type') == 'standard' || $Site->getAttribute('type') == ''}
-                    standard
-                {else}
-
-                    {assign var=types value=$Project->getTypes()}
-                    {assign var=t_ value='/'|explode:$type}
-                    {assign var=parent_type value=$t_.0}
-
-                    {$types.$parent_type.name}
-
-                    /
-
-                    {$Project->getType($type, "name")}
-
-                {/if}
-            </span>
+            <td>
+                {$Site->getAttribute('type')}
+            </td>
         </td>
     </tr>
 </tbody>

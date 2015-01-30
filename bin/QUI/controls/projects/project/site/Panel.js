@@ -291,11 +291,12 @@ define('controls/projects/project/site/Panel', [
 
             Ajax.get([
                 'ajax_site_categories_get',
-                'ajax_site_buttons_get'
-            ], function(categories, buttons)
+                'ajax_site_buttons_get',
+                'ajax_site_isMarcateFromOther',
+                'ajax_site_marcate'
+            ], function(categories, buttons, isMarkate)
             {
                 var i, ev, fn, len, events, category, Category;
-
 
                 for ( i = 0, len = buttons.length; i < len; i++ )
                 {
@@ -356,6 +357,10 @@ define('controls/projects/project/site/Panel', [
                     onDelete     : self.$onSiteDelete
                 });
 
+                if ( isMarkate ) {
+                    self.setMarkate();
+                }
+
                 Site.load();
 
             }, {
@@ -369,13 +374,19 @@ define('controls/projects/project/site/Panel', [
          */
         $onDestroy : function()
         {
-            var Site = this.getSite();
+            var Site    = this.getSite(),
+                Project = Site.getProject();
 
             Site.removeEvent( 'onLoad', this.load );
             Site.removeEvent( 'onActivate', this.$onSiteActivate );
             Site.removeEvent( 'onDeactivate', this.$onSiteDeactivate );
             Site.removeEvent( 'onSave', this.$onSiteSave );
             Site.removeEvent( 'onDelete', this.$onSiteDelete );
+
+            Ajax.get(['ajax_site_demarcate'], false, {
+                project : Project.encode(),
+                id      : Site.getId()
+            });
         },
 
         /**
@@ -571,7 +582,10 @@ define('controls/projects/project/site/Panel', [
                 Site    = this.getSite(),
                 Project = Site.getProject();
 
-            Ajax.get('ajax_site_categories_template', function(result)
+            Ajax.get([
+                'ajax_site_categories_template',
+                'ajax_site_marcate'
+            ], function(result)
             {
                 var Body = self.getContent();
 
@@ -979,6 +993,35 @@ define('controls/projects/project/site/Panel', [
             });
         },
 
+        /**
+         * Disable the buttons, if the site is markate
+         */
+        setMarkate : function()
+        {
+            var buttons = this.getButtons();
+
+            for ( var i = 0, len = buttons.length; i < len; i++ )
+            {
+                if ( "disable" in buttons[ i ] ) {
+                    buttons[ i ].disable();
+                }
+            }
+        },
+
+        /**
+         * Enable the buttons, if the site is unmarkated
+         */
+        setUnMarkate : function()
+        {
+            var buttons = this.getButtons();
+
+            for ( var i = 0, len = buttons.length; i < len; i++ )
+            {
+                if ( "enable" in buttons[ i ] ) {
+                    buttons[i].enable();
+                }
+            }
+        },
 
         /**
          * Site event methods
@@ -1090,7 +1133,6 @@ define('controls/projects/project/site/Panel', [
                     }, {
                         project : Project.getName()
                     });
-
                 });
             });
         },

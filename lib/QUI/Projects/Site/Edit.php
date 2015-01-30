@@ -1231,20 +1231,18 @@ class Edit extends Site
     }
 
     /**
-     * Prüft ob die Seite gerade bearbeitet wird
-     * Wenn die Seite von einem selbst bearbeitet wird, kommt auch false zurück.
+     * is the page currently edited from another user than me?
+     * @todo muss überarbeitet werden, file operationen?
      *
-     * Falls die Seite von jemand anderes bearbeitet wird, wird die ID des Benutzers zurück gegeben
-     *
-     * @return false || Integer
+     * @return bool|Integer
      */
-    public function isMarcate()
+    public function isMarcateFromOther()
     {
-        if ( !file_exists( $this->_marcatefile ) ) {
+        $uid = $this->isMarcate();
+
+        if ( $uid === false ) {
             return false;
         }
-
-        $uid = file_get_contents( $this->_marcatefile );
 
         if ( QUI::getUserBySession()->getId() == $uid ) {
             return false;
@@ -1263,16 +1261,48 @@ class Edit extends Site
     }
 
     /**
+     * is the page currently edited
+     * @todo muss überarbeitet werden, file operationen?
+     *
+     * @return bool|string
+     */
+    public function isMarcate()
+    {
+        if ( !file_exists( $this->_marcatefile ) ) {
+            return false;
+        }
+
+        return file_get_contents( $this->_marcatefile );
+    }
+
+    /**
      * Markiert die Seite -> die Seite wird gerade bearbeitet
      * Markiert nur wenn die Seite nicht markiert ist
+     * @todo muss überarbeitet werden, file operationen?
+     *
+     * @return Bool - true if it worked, false if it not worked
      */
     public function marcate()
     {
+        if ( $this->isMarcateFromOther() ) {
+            return false;
+        }
+
         if ( $this->isMarcate() ) {
-            return;
+            return true;
+        }
+
+        try
+        {
+            $this->checkPermission('quiqqer.projects.site.edit');
+
+        } catch ( QUI\Exception $Exception )
+        {
+            return false;
         }
 
         file_put_contents( $this->_marcatefile, QUI::getUserBySession()->getId() );
+        return true;
     }
 
     /**
@@ -1280,11 +1310,13 @@ class Edit extends Site
      */
     public function demarcate()
     {
-        if ( !file_exists( $this->_marcatefile ) ) {
-            return;
+        if ( $this->isMarcateFromOther() ) {
+            return false;
         }
 
-        unlink( $this->_marcatefile );
+        if ( $this->isMarcate() ) {
+            unlink( $this->_marcatefile );
+        }
     }
 
     /**

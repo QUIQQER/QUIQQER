@@ -751,8 +751,6 @@ class Rewrite
 
         try
         {
-            $_REQUEST['project'] = $pname;
-
             $Project = \QUI::getProject(
                 $pname,
                 $this->_lang,

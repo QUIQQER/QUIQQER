@@ -180,7 +180,7 @@ class Sites
 
 
         // Wenn die Seite bearbeitet wird
-        if ( $Site->isMarcate() )
+        if ( $Site->isMarcateFromOther() )
         {
             $Tabbar->appendChild(
                 new Toolbar\Tab(array(

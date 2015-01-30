@@ -194,7 +194,7 @@ class Ajax extends QUI\QDOM
         // Params
         foreach ( self::$_functions[ $_rf ] as $var )
         {
-            if ( !isset($_REQUEST[ $var ]) )
+            if ( !isset( $_REQUEST[ $var ] ) )
             {
                 $params[ $var ] = '';
                 continue;

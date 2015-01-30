@@ -6,6 +6,9 @@
 
 require_once 'header.php';
 
+use QUI;
+use QUI\Utils\Security\Orthos;
+
 header( "Content-Type: text/plain" );
 
 // expire date in the past
@@ -13,16 +16,16 @@ header( "Cache-Control: no-cache, must-revalidate" );
 header( "Pragma: no-cache" );
 header( 'Expires: ' . gmdate('D, d M Y H:i:s', time()-60) . ' GMT' );
 
-$User = \QUI::getUserBySession();
+$User = QUI::getUserBySession();
 
 // Falls Benutzer eingeloggt ist, dann seine Sprache nehmen
 if ( $User->getId() && $User->getLang() ) {
-    \QUI::getLocale()->setCurrent( $User->getLang() );
+    QUI::getLocale()->setCurrent( $User->getLang() );
 }
 
 // language
 if ( isset( $_REQUEST['lang'] ) && strlen( $_REQUEST['lang'] ) === 2 ) {
-    \QUI::getLocale()->setCurrent( $_REQUEST['lang'] );
+    QUI::getLocale()->setCurrent( $_REQUEST['lang'] );
 }
 
 if ( !isset( $_REQUEST['_rf'] ) ) {
@@ -49,7 +52,7 @@ if ( isset( $_REQUEST['package'] ) )
         $ending    = str_replace( $firstpart, '', $file );
 
         $_rf_file = $dir . $package . str_replace( '_', '/', $ending ) .'.php';
-        $_rf_file = \QUI\Utils\Security\Orthos::clearPath( $_rf_file );
+        $_rf_file = Orthos::clearPath( $_rf_file );
         $_rf_file = realpath( $_rf_file );
 
         if ( strpos( $_rf_file, $dir ) !== false && file_exists( $_rf_file ) ) {
@@ -62,7 +65,7 @@ if ( isset( $_REQUEST['package'] ) )
 foreach ( $_rf_files as $key => $file )
 {
     $_rf_file = CMS_DIR .'admin/'. str_replace( '_', '/', $file ) .'.php';
-    $_rf_file = \QUI\Utils\Security\Orthos::clearPath( $_rf_file );
+    $_rf_file = Orthos::clearPath( $_rf_file );
     $_rf_file = realpath( $_rf_file );
 
     $dir = CMS_DIR .'admin/';
@@ -75,14 +78,25 @@ foreach ( $_rf_files as $key => $file )
 // ajax project loader
 if ( isset( $_REQUEST['project'] ) )
 {
-    $projectDir = USR_DIR . $_REQUEST['project'];
-    $firstpart = 'project_'. $_REQUEST['project'] .'_';
+    try
+    {
+        $Project = QUI::getProjectManager()->decode($_REQUEST['project']);
+
+    } catch ( QUI\Exception $Exception )
+    {
+        $Project = QUI::getProjectManager()->getProject(
+            $_REQUEST['project']
+        );
+    }
+
+    $projectDir = USR_DIR . $Project->getName();
+    $firstpart = 'project_'. $Project->getName() .'_';
 
     foreach ( $_rf_files as $key => $file )
     {
         $file = str_replace( $firstpart, '', $file );
         $file = $projectDir .'/lib/'. str_replace( '_', '/', $file ) .'.php';
-        $file = \QUI\Utils\Security\Orthos::clearPath( $file );
+        $file = Orthos::clearPath( $file );
         $file = realpath( $file );
 
         $dir = $projectDir.'/lib/';
@@ -98,5 +112,5 @@ if ( isset( $_REQUEST['project'] ) )
 /**
  * Ajax Ausgabe
  */
-echo \QUI::$Ajax->call();
+echo QUI::$Ajax->call();
 exit;
