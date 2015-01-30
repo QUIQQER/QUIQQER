@@ -8,12 +8,12 @@
             <en><![CDATA[]]></en>
         </locale>
         <locale name="templates.mail.footer.links" html="true">
-            <de><![CDATA[]]></de>
-            <en><![CDATA[]]></en>
+            <de><![CDATA[&nbsp;]]></de>
+            <en><![CDATA[&nbsp;]]></en>
         </locale>
         <locale name="templates.mail.footer.text" html="true">
-            <de><![CDATA[]]></de>
-            <en><![CDATA[]]></en>
+            <de><![CDATA[&nbsp;]]></de>
+            <en><![CDATA[&nbsp;]]></en>
         </locale>
 
     </groups>
