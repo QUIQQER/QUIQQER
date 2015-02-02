@@ -203,13 +203,14 @@ class Edit extends Site
     /**
      * Activate a site
      *
+     * @param QUI\Interfaces\Users\User|Bool $User - [optional] User to save
      * @throws QUI\Exception
      */
-    public function activate()
+    public function activate($User=false)
     {
         try
         {
-            $this->checkPermission( 'quiqqer.projects.site.edit' );
+            $this->checkPermission( 'quiqqer.projects.site.edit', $User );
 
         } catch ( QUI\Exception $Exception )
         {
@@ -251,14 +252,15 @@ class Edit extends Site
     /**
      * Deactivate a site
      *
+     * @param QUI\Interfaces\Users\User|Bool $User - [optional] User to save
      * @throws QUI\Exception
      */
-    public function deactivate()
+    public function deactivate($User=false)
     {
         try
         {
             // Prüfen ob der Benutzer die Seite bearbeiten darf
-           $this->checkPermission( 'quiqqer.projects.site.edit' );
+           $this->checkPermission( 'quiqqer.projects.site.edit', $User );
 
         } catch ( QUI\Exception $Exception )
         {
@@ -356,16 +358,16 @@ class Edit extends Site
     /**
      * Saves the site
      *
-     * @param QUI\Interfaces\Users\User|Bool $User - [optional] User to save
+     * @param QUI\Interfaces\Users\User|Bool $SaveUser - [optional] User to save
      * @return Bool
      * @throws QUI\Exception
      */
-    public function save($User=false)
+    public function save($SaveUser=false)
     {
         try
         {
             // Prüfen ob der Benutzer die Seite bearbeiten darf
-            $this->checkPermission( 'quiqqer.projects.site.edit', $User );
+            $this->checkPermission( 'quiqqer.projects.site.edit', $SaveUser );
 
         } catch ( QUI\Exception $Exception )
         {
@@ -377,7 +379,7 @@ class Edit extends Site
             );
         }
 
-        $mid = $this->isMarcate();
+        $mid = $this->isMarcateFromOther();
 
         if ( $mid )
         {
@@ -513,9 +515,8 @@ class Edit extends Site
         } catch ( QUI\Exception $Exception )
         {
             // if release date trigger an error, deactivate the site
-            $this->deactivate();
+            $this->deactivate( $SaveUser );
         }
-
 
 
         // save extra package attributes (site.xml)
@@ -611,8 +612,17 @@ class Edit extends Site
         $Project->setEditDate( time() );
 
         // on save event
-        $this->Events->fireEvent( 'save', array($this) );
-        QUI::getEvents()->fireEvent( 'siteSave', array($this) );
+        try
+        {
+            $this->Events->fireEvent('save', array($this));
+            QUI::getEvents()->fireEvent('siteSave', array($this));
+
+        } catch ( QUI\Exception $Exception )
+        {
+            QUI::getMessagesHandler()->addError(
+                'site on save -> event error:: '. $Exception->getMessage()
+            );
+        }
 
 
         if ( $update )
