@@ -78,20 +78,28 @@ class Queue
         $params['replyto']      = json_encode( $params['replyto'] );
         $params['cc']           = json_encode( $params['cc'] );
         $params['bcc']          = json_encode( $params['bcc'] );
-        // $params['attachements'] = json_encode( $params['attachements'] );
+
+        $attachements = array();
+
+        if ( isset( $params['attachements'] ) )
+        {
+            $attachements = $params['attachements'];
+            unset( $params['attachements'] );
+        }
+
 
         QUI::getDataBase()->insert( self::Table(), $params );
 
         $newMailId = QUI::getDataBase()->getPDO()->lastInsertId('id');
 
         // attachements
-        if ( is_array( $params['attachements'] ) )
+        if ( is_array( $attachements ) )
         {
             $mailQueueDir = self::getAttachmentDir( $newMailId );
 
             File::mkdir( $mailQueueDir );
 
-            foreach ( $params['attachements'] as $attachement )
+            foreach ( $attachements as $attachement )
             {
                 if ( !file_exists( $attachement ) ) {
                     continue;
