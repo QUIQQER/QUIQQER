@@ -1,0 +1,73 @@
+
+.qui-type-details {
+    overflow: hidden;
+    width: 100%;
+}
+
+.qui-type-details-container {
+    padding: 10px;
+    position: relative;
+    top: 0;
+}
+
+.qui-type-details-entry {
+    border-bottom: 1px solid #ddd;
+    clear: both;
+    cursor: pointer;
+    float: left;
+    width: 100%;
+}
+
+.qui-type-details-entry:hover {
+    background: #2F8FC6;
+    color: #FFF;
+}
+
+.qui-type-details-entry-active {
+    background: #0069B4;
+    color: #FFF;
+}
+
+.qui-type-details-entry-icon {
+    float: left;
+    font-size: 22px;
+    padding: 10px 0;
+    text-align: center;
+    width: 40px;
+}
+
+.qui-type-details-entry-text {
+    float: left;
+    padding: 10px 0;
+    width: calc( 100% - 40px );
+}
+
+.qui-type-details-entry-isPlugin .qui-type-details-entry-text {
+    float: left;
+    width: calc( 100% - 80px );
+}
+
+.qui-type-details-entry-opentypes {
+    float: left;
+    font-size: 22px;
+    padding: 10px 0;
+    text-align: center;
+    width: 40px;
+}
+
+.qui-type-details-container-levelUp {
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    padding: 10px;
+    width: 100%;
+}
+
+.qui-type-details-container-levelUp:hover {
+    background: #2F8FC6;
+    color: #FFF;
+}
+
+
+.qui-type-details-container-levelUp-text {
+    padding-left: 10px;
+}

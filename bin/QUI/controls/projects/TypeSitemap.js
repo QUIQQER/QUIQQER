@@ -13,6 +13,8 @@
  * @require qui/controls/sitemap/Item
  * @require Ajax
  * @require Locale
+ *
+ * @event onLoad [ self ]
  */
 
 define('controls/projects/TypeSitemap', [
@@ -208,6 +210,8 @@ define('controls/projects/TypeSitemap', [
                             icon  : icon
                         }).inject( Plugin );
                     }
+
+                    self.fireEvent( 'load', [ self ] );
                 }
 
                 First.open();
