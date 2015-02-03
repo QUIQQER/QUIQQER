@@ -292,8 +292,9 @@ define('controls/projects/project/site/Panel', [
             Ajax.get([
                 'ajax_site_categories_get',
                 'ajax_site_buttons_get',
-                'ajax_site_isMarcateFromOther'
-            ], function(categories, buttons, isMarcate)
+                'ajax_site_isLockedFromOther',
+                'ajax_site_lock'
+            ], function(categories, buttons, isMarkate)
             {
                 var i, ev, fn, len, events, category, Category;
 
@@ -356,7 +357,7 @@ define('controls/projects/project/site/Panel', [
                     onDelete     : self.$onSiteDelete
                 });
 
-                if ( isMarcate ) {
+                if ( isMarkate ) {
                     self.setMarkate();
                 }
 
@@ -382,7 +383,7 @@ define('controls/projects/project/site/Panel', [
             Site.removeEvent( 'onSave', this.$onSiteSave );
             Site.removeEvent( 'onDelete', this.$onSiteDelete );
 
-            Ajax.get(['ajax_site_demarcate'], false, {
+            Ajax.get(['ajax_site_unlock'], false, {
                 project : Project.encode(),
                 id      : Site.getId()
             });
@@ -581,7 +582,10 @@ define('controls/projects/project/site/Panel', [
                 Site    = this.getSite(),
                 Project = Site.getProject();
 
-            Ajax.get(['ajax_site_categories_template'], function(result)
+            Ajax.get([
+                'ajax_site_categories_template',
+                'ajax_site_lock'
+            ], function(result)
             {
                 var Body = self.getContent();
 

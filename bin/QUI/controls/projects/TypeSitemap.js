@@ -180,7 +180,7 @@ define('controls/projects/TypeSitemap', [
                     Plugin = new QUISitemapItem({
                         name  : i,
                         value : i,
-                        text  : i,
+                        text  : Locale.get( i, 'package.title' ),
                         alt   : i,
                         icon  : 'icon-puzzle-piece',
                         hasChildren : true,
