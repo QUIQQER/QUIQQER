@@ -13,7 +13,7 @@
  * @event onRefresh [ {classes/users/User} ]
  */
 
-define([
+define('classes/users/User', [
 
     'qui/QUI',
     'qui/classes/DOM',
@@ -78,9 +78,38 @@ define([
         {
             var self = this;
 
-            Ajax.get('ajax_users_get', function(result, Request)
+            Ajax.get('ajax_users_get', function(result)
             {
                 self.$loaded = true;
+
+                var uid = 0;
+
+                if ( "id" in result && result.id > 10 ) {
+                    uid = result.id;
+                }
+
+                // user not found
+                if ( !uid )
+                {
+                    self.$uid = 0;
+
+                    self.setAttributes({
+                        'username' : 'not found'
+                    });
+
+                    if ( typeof onfinish !== 'undefined' ) {
+                        onfinish( self );
+                    }
+
+                    self.fireEvent( 'refresh', [ self ] );
+
+                    require(['Users'], function(Users) {
+                        Users.onRefreshUser( self );
+                    });
+
+                    return;
+                }
+
 
                 if ( result.extras )
                 {
@@ -91,7 +120,7 @@ define([
                 self.setAttributes( result );
 
                 if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( self, Request );
+                    onfinish( self );
                 }
 
                 self.fireEvent( 'refresh', [ self ] );
@@ -124,6 +153,12 @@ define([
          */
         save : function(callback, params)
         {
+            if ( !this.$uid )
+            {
+                callback();
+                return;
+            }
+
             var self = this;
 
             require(['Users'], function(Users) {
@@ -139,6 +174,12 @@ define([
          */
         activate : function(onfinish)
         {
+            if ( !this.$uid )
+            {
+                onfinish();
+                return;
+            }
+
             var self = this;
 
             require(['Users'], function(Users)
@@ -159,6 +200,12 @@ define([
          */
         deactivate : function(onfinish)
         {
+            if ( !this.$uid )
+            {
+                onfinish();
+                return;
+            }
+
             var self = this;
 
             require(['Users'], function(Users)
@@ -182,6 +229,12 @@ define([
          */
         savePassword : function(pass1, pass2, options, onfinish)
         {
+            if ( !this.$uid )
+            {
+                onfinish( false, false );
+                return;
+            }
+
             options = options || {};
 
             if ( pass1 != pass2 )
@@ -223,6 +276,10 @@ define([
          */
         isActive : function()
         {
+            if ( !this.$uid ) {
+                return 0;
+            }
+
             return ( this.getAttribute( 'active' ) ).toInt();
         },
 

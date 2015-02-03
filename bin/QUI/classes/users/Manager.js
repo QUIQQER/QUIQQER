@@ -18,14 +18,16 @@
  * @event onSave [this, User]
  */
 
-define([
+define('classes/users/Manager', [
 
     'qui/classes/DOM',
     'classes/users/User',
+    'classes/users/Nobody',
+    'classes/users/SystemUser',
     'Ajax',
     'qui/utils/Object'
 
-], function(DOM, User, Ajax, ObjectUtils)
+], function(DOM, User, Nobody, SystemUser, Ajax, ObjectUtils)
 {
     "use strict";
 
@@ -46,10 +48,21 @@ define([
          * Return a user
          *
          * @method classes/users/Manager#get
+         * @param {Number} uid - Id of the User
          * @return {Object} User - controls/users/User
          */
         get : function(uid)
         {
+            uid = ( uid ).toInt();
+
+            if ( uid === 0 ) {
+                return new Nobody();
+            }
+
+            if ( uid === 5 ) {
+                return new SystemUser();
+            }
+
             if ( typeof this.$users[ uid ] === 'undefined' ) {
                 this.$users[ uid ] = new User( uid );
             }

@@ -221,12 +221,14 @@ define('controls/users/Input', [
             var list = this.$Container.getElements('.users-entry'),
                 ids  = [];
 
-            if ( !list.length ) {
+            if ( !list.length )
+            {
+                this.enable();
                 return;
             }
 
             for ( i = 0, len = list.length; i < len; i++ ) {
-                ids.push( list[i].get( 'data-id' ) );
+                ids.push( list[ i ].get( 'data-id' ) );
             }
 
 
@@ -300,7 +302,7 @@ define('controls/users/Input', [
                 return this;
             }
 
-            if ( !uid ) {
+            if ( typeof uid === 'undefined' ) {
                 return;
             }
 
@@ -316,9 +318,19 @@ define('controls/users/Input', [
                 return;
             }
 
+            var self = this;
+
+            uid = ( uid ).toInt();
+
             var User = new UserEntry(uid, {
-                events : {
-                    onDestroy : this.update
+                events :
+                {
+                    onDestroy : function()
+                    {
+                        (function() { // delay, because enable event is too early
+                            self.update();
+                        }).delay( 300 );
+                    }
                 }
             }).inject( this.$Container );
 

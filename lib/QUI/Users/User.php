@@ -167,7 +167,7 @@ class User implements QUI\Interfaces\Users\User
         if ( !isset( $data[0] ) )
         {
             throw new QUI\Exception(
-                QUI::getLocale(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.user.not.found'
                 ),
