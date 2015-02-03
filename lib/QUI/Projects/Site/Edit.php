@@ -71,12 +71,13 @@ class Edit extends Site
 
         $id = $this->getId();
 
-        $this->_marcatefile = VAR_DIR .'marcate/'.
-                              $Project->getAttribute( 'name' ) .'_'.
-                              $id .'_'. $Project->getAttribute( 'lang' );
+        $this->_lockfile = VAR_DIR .'lock/'.
+                           $Project->getAttribute( 'name' ) .'_'.
+                           $id .'_'. $Project->getAttribute( 'lang' );
 
         // Temp Dir abfragen ob existiert
         QUI\Utils\System\File::mkdir( VAR_DIR .'admin/' );
+        QUI\Utils\System\File::mkdir( VAR_DIR .'lock/' );
 
         $this->load();
 
@@ -379,7 +380,7 @@ class Edit extends Site
             );
         }
 
-        $mid = $this->isMarcateFromOther();
+        $mid = $this->isLockedFromOther();
 
         if ( $mid )
         {
@@ -1246,9 +1247,9 @@ class Edit extends Site
      *
      * @return bool|Integer
      */
-    public function isMarcateFromOther()
+    public function isLockedFromOther()
     {
-        $uid = $this->isMarcate();
+        $uid = $this->isLocked();
 
         if ( $uid === false ) {
             return false;
@@ -1258,12 +1259,12 @@ class Edit extends Site
             return false;
         }
 
-        $time = time() - filemtime( $this->_marcatefile );
+        $time = time() - filemtime( $this->_lockfile );
         $max_life_time = QUI::conf('session', 'max_life_time');
 
         if ( $time > $max_life_time )
         {
-            $this->demarcate();
+            $this->_unlock();
             return false;
         }
 
@@ -1276,13 +1277,13 @@ class Edit extends Site
      *
      * @return bool|string
      */
-    public function isMarcate()
+    public function isLocked()
     {
-        if ( !file_exists( $this->_marcatefile ) ) {
+        if ( !file_exists( $this->_lockfile ) ) {
             return false;
         }
 
-        return file_get_contents( $this->_marcatefile );
+        return file_get_contents( $this->_lockfile );
     }
 
     /**
@@ -1292,13 +1293,13 @@ class Edit extends Site
      *
      * @return Bool - true if it worked, false if it not worked
      */
-    public function marcate()
+    public function lock()
     {
-        if ( $this->isMarcateFromOther() ) {
+        if ( $this->isLockedFromOther() ) {
             return false;
         }
 
-        if ( $this->isMarcate() ) {
+        if ( $this->isLocked() ) {
             return true;
         }
 
@@ -1311,35 +1312,45 @@ class Edit extends Site
             return false;
         }
 
-        file_put_contents( $this->_marcatefile, QUI::getUserBySession()->getId() );
+        file_put_contents( $this->_lockfile, QUI::getUserBySession()->getId() );
         return true;
     }
 
     /**
      * Demarkiert die Seite, die Seite wird nicht mehr bearbeitet
      */
-    public function demarcate()
+    protected function _unlock()
     {
-        if ( $this->isMarcateFromOther() ) {
-            return false;
-        }
-
-        if ( $this->isMarcate() ) {
-            unlink( $this->_marcatefile );
+        if ( file_exists( $this->_lockfile ) ) {
+            unlink( $this->_lockfile );
         }
     }
 
     /**
      * Ein SuperUser kann eine Seite trotzdem demakieren wenn er möchte
      */
-    public function demarcateWithRights()
+    public function unlockWithRights()
     {
-        if ( !QUI::getUserBySession()->isSU() ) {
+        $lock = $this->isLocked();
+
+        if ( !$lock ) {
             return;
         }
 
-        if ( file_exists( $this->_marcatefile ) ) {
-            unlink( $this->_marcatefile );
+        if ( QUI::getUserBySession()->isSU() )
+        {
+            if ( file_exists( $this->_lockfile ) ) {
+                unlink( $this->_lockfile );
+            }
+
+            return;
+        }
+
+        if ( $lock === QUI::getUserBySession()->getId() )
+        {
+            if ( file_exists( $this->_lockfile ) ) {
+                unlink( $this->_lockfile );
+            }
         }
     }
 
