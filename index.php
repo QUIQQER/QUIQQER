@@ -1,6 +1,6 @@
 <?php
 
-use QUI;
+//use QUI;
 use QUI\Utils\System\Debug;
 use QUI\Utils\Security\Orthos;
 use QUI\System\Log;

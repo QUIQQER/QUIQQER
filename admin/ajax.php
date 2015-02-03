@@ -6,7 +6,7 @@
 
 require_once 'header.php';
 
-use QUI;
+// use QUI;
 use QUI\Utils\Security\Orthos;
 
 header( "Content-Type: text/plain" );
