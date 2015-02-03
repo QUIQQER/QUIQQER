@@ -33,7 +33,7 @@
             <en><![CDATA[You do not have permission to edit this page.]]></en>
         </locale>
 
-        <locale name="projects.project.site.messages.marcate">
+        <locale name="projects.project.site.messages.lock">
             <de><![CDATA[Diese Seite wird gerade bearbeitet von: [username]]]></de>
             <en><![CDATA[This page is currently being edited by: [username]]]></en>
         </locale>

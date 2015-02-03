@@ -1,12 +1,12 @@
 
-{assign var=uid value=$Site->isMarcate()}
+{assign var=uid value=$Site->isLockedFromOther()}
 {user id=$uid var=MarcateUser}
 
-{if $Site->isMarcate()}
+{if $Site->isLockedFromOther()}
     <div class="message box-sizing message-attention" style="margin-bottom: 20px; padding-left: 20px;">
         <span class="msg">
-            {t username=$MarcateUser->getName()}quiqqer/system projects.project.site.messages.marcate{/t}
-        </div>
+            {t username=$MarcateUser->getName()}quiqqer/system projects.project.site.messages.lock{/t}
+        </span>
     </div>
 {/if}
 

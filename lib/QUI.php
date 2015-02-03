@@ -336,7 +336,7 @@ class QUI
             VAR_DIR .'sessions/',
             VAR_DIR .'uid_sess/',
             VAR_DIR .'backup/',
-            VAR_DIR .'marcate/',
+            VAR_DIR .'lock/',
 
             // Cache - noch nötig?
             VAR_DIR .'cache/url/',
