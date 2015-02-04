@@ -35,8 +35,11 @@ define('utils/Controls', [
             if ( Form )
             {
                 // ist that good?
-                Form.addEvent('submit', function (event) {
-                    event.stop();
+                Form.addEvent('submit', function(event)
+                {
+                    if ( typeOf( event ) === 'domevent' ) {
+                        event.stop();
+                    }
                 });
             }
 
