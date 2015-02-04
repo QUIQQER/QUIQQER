@@ -1234,11 +1234,11 @@ define('controls/grid/Grid', [
                 options.total   = data.total;
                 options.maxpage = Math.ceil(options.total/options.perPage);
 
-                container.getElement('div.pDiv input').value = data.page;
+                container.getElements('div.pDiv input').set('value', data.page);
                 var to = (data.page * options.perPage) > data.total ? data.total : (data.page*options.perPage);
 
-                container.getElement('div.pDiv .pPageStat').set('html', ((data.page-1)*options.perPage+1)+'..'+to+' / '+data.total);
-                container.getElement('div.pDiv .pcontrol span').set('html', options.maxpage);
+                container.getElements('div.pDiv .pPageStat').set('html', ((data.page-1)*options.perPage+1)+'..'+to+' / '+data.total);
+                container.getElements('div.pDiv .pcontrol span').set('html', options.maxpage);
             }
 
             if ( cm && this.$columnModel != cm )
