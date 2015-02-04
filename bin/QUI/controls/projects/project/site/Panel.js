@@ -710,28 +710,30 @@ define('controls/projects/project/site/Panel', [
                     }
                 }
 
-                ControlUtils.parse( Form );
-
-                QUI.parse(Form, function()
+                ControlUtils.parse(Form, function()
                 {
-                    // set the project to the controls
-                    var i, len, Control;
-                    var quiids = Form.getElements( '[data-quiid]' );
-
-                    for ( i = 0, len = quiids.length; i < len; i++ )
+                    QUI.parse(Form, function()
                     {
-                        Control = QUI.Controls.getById( quiids[ i ].get('data-quiid') );
+                        // set the project to the controls
+                        var i, len, Control;
+                        var quiids = Form.getElements( '[data-quiid]' );
 
-                        if ( !Control ) {
-                            continue;
+                        for ( i = 0, len = quiids.length; i < len; i++ )
+                        {
+                            Control = QUI.Controls.getById( quiids[ i ].get('data-quiid') );
+
+                            if ( !Control ) {
+                                continue;
+                            }
+
+                            if ( typeOf( Control.setProject ) == 'function' ) {
+                                Control.setProject( Project );
+                            }
                         }
 
-                        if ( typeOf( Control.setProject ) == 'function' ) {
-                            Control.setProject( Project );
-                        }
-                    }
-
+                    });
                 });
+
 
                 self.$categoryOnLoad( Category );
 
