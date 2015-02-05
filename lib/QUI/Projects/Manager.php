@@ -167,7 +167,7 @@ class Manager
             "template"        => "",
             "image_text"      => "0",
             "standard"        => "1",
-            "adminSitemapMax" => 10
+            "adminSitemapMax" => 20
         );
 
         // settings.xml
