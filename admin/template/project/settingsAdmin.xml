@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <locales>
 
-    <groups name="quiqqer/system" type="php,js">
+    <groups name="quiqqer/system" datatype="php,js">
 
         <locale name="projects.project.panel.settings.btn.adminSettings">
             <de><![CDATA[Backend Einstellungen]]></de>

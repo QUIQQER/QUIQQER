@@ -328,8 +328,6 @@ define('controls/projects/project/Settings', [
 
             UtilsTemplate.get('project/settingsAdmin', function(result)
             {
-                console.log( result );
-
                 Body.set( 'html', result );
 
                 QUIFormUtils.setDataToForm( self.$config, Body.getElement( 'Form' ) );
