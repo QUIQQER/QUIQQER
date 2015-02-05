@@ -426,7 +426,7 @@ define('controls/projects/project/Sitemap', [
          *
          * @method controls/projects/project/Sitemap#$loadChildren
          * @param {Object} Item - (qui/controls/sitemap/Item) Parent sitemap item
-         * @param {Function} callback - callback function, if ajax is finish
+         * @param {Function} [callback] - callback function, if ajax is finish
          *
          * @ignore
          */
@@ -434,38 +434,101 @@ define('controls/projects/project/Sitemap', [
         {
             var self = this;
 
-            Item.clearChildren();
-
             Item.setAttribute( 'oicon', Item.getAttribute( 'icon' ) );
             Item.addIcon( 'icon-refresh icon-spin' );
             Item.removeIcon( Item.getAttribute( 'icon' ) );
 
+            Item.clearChildren();
 
-            Ajax.get('ajax_site_getchildren', function(result, Request)
+            this.$Project.getConfig(function(config)
             {
-                Item.clearChildren();
+                // limits
+                var start        = 0,
+                    limitStart   = Item.getAttribute( 'limitStart' ),
+                    projectLimit = 10;
 
-                for ( var i = 0, len = result.length; i < len; i++ )
+                if ( "adminSitemapMax" in config ) {
+                    projectLimit = parseInt( config.adminSitemapMax );
+                }
+
+
+                if ( limitStart === false ) {
+                    limitStart = -1;
+                }
+
+                start = ( limitStart + 1 ) * projectLimit;
+
+                // request
+                Ajax.get('ajax_site_getchildren', function(result)
                 {
-                    self.$addSitemapItem(
-                        Item,
-                        self.$parseArrayToSitemapitem( result[ i ] )
-                    );
-                }
+                    var count    = result.count,
+                        children = result.children,
+                        end      = start + projectLimit;
 
-                Item.addIcon( Item.getAttribute( 'oicon' ) );
-                Item.removeIcon( 'icon-refresh' );
+                    Item.clearChildren();
 
-                if ( typeof callback !== 'undefined' ) {
-                    callback( Item, Request );
-                }
+                    if ( start > 0 )
+                    {
+                        Item.appendChild(
+                            new QUISitemapItem({
+                                icon : 'icon-level-up',
+                                text : '...',
+                                events :
+                                {
+                                    click : function()
+                                    {
+                                        Item.setAttribute( 'limitStart', limitStart-1 );
+                                        self.$loadChildren( Item );
+                                    }
+                                }
+                            })
+                        );
+                    }
 
-            }, {
-                project : this.$Project.encode(),
-                id      : Item.getAttribute( 'value' ),
-                params  : JSON.encode({
-                    attributes : 'id,name,title,has_children,nav_hide,linked,active,icon'
-                })
+
+                    for ( var i = 0, len = children.length; i < len; i++ )
+                    {
+                        self.$addSitemapItem(
+                            Item,
+                            self.$parseArrayToSitemapitem( children[ i ] )
+                        );
+                    }
+
+
+                    if ( end < count )
+                    {
+                        Item.appendChild(
+                            new QUISitemapItem({
+                                icon   : 'icon-level-down',
+                                text   : '...',
+                                events :
+                                {
+                                    click : function()
+                                    {
+                                        Item.setAttribute( 'limitStart', limitStart+1 );
+                                        self.$loadChildren( Item );
+                                    }
+                                }
+                            })
+                        );
+                    }
+
+                    Item.addIcon( Item.getAttribute( 'oicon' ) );
+                    Item.removeIcon( 'icon-refresh' );
+
+
+                    if ( typeof callback === 'function' ) {
+                        callback( Item );
+                    }
+
+                }, {
+                    project : self.$Project.encode(),
+                    id      : Item.getAttribute( 'value' ),
+                    params  : JSON.encode({
+                        attributes : 'id,name,title,has_children,nav_hide,linked,active,icon',
+                        limit      : start +','+ projectLimit
+                    })
+                });
             });
         },
 

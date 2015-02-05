@@ -170,13 +170,15 @@ define([
 
             data.params = JSON.encode( params || {} );
 
-            Ajax.get('ajax_site_getchildren', function(result, Request)
+            Ajax.get('ajax_site_getchildren', function(result)
             {
-                if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( result, Request );
+                var children = result.children;
+
+                if ( typeof onfinish === 'function' ) {
+                    onfinish( children );
                 }
 
-                Site.fireEvent( 'getChildren', [ Site, result ] );
+                Site.fireEvent( 'getChildren', [ Site, children ] );
 
             }, data);
 

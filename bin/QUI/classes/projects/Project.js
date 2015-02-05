@@ -64,6 +64,8 @@ define('classes/projects/Project', [
         initialize : function(options)
         {
             this.parent( options );
+
+            this.$config = false;
         },
 
         /**
@@ -106,7 +108,6 @@ define('classes/projects/Project', [
             });
 
             this.$ids[ id ] = Site;
-            this.$config    = null;
 
             return this.$ids[ id ];
         },
@@ -114,25 +115,42 @@ define('classes/projects/Project', [
         /**
          * Return the configuration of the project
          *
-         * @param {Function} [callback] - callback function
+         * @param {Function} callback - callback function
          * @param {String} [param] - param name
          */
         getConfig : function(callback, param)
         {
+            param = param || false;
+
             if ( this.$config )
             {
+                if ( param )
+                {
+                    callback( this.$config[ param ] );
+                    return;
+                }
+
                 callback( this.$config );
                 return;
             }
 
-            Ajax.get('ajax_project_get_config', function(result, Request)
+
+            var self = this;
+
+            Ajax.get('ajax_project_get_config', function(result)
             {
-                if ( typeof callback !== 'undefined' ) {
-                    callback( result, Request );
+                self.$config = result;
+
+                if ( param )
+                {
+                    callback( self.$config[ param ] );
+                    return;
                 }
+
+                callback( self.$config );
+
             }, {
-                project : this.getName(),
-                param   : param || false
+                project : this.getName()
             });
         },
 
@@ -145,9 +163,13 @@ define('classes/projects/Project', [
          */
         setConfig : function(callback, params)
         {
+            var self = this;
+
             Ajax.get('ajax_project_set_config', function(result)
             {
-                if ( typeof callback !== 'undefined' ) {
+                self.$config = false;
+
+                if ( typeof callback === 'function' ) {
                     callback( result );
                 }
             }, {

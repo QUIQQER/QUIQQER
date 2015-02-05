@@ -62,6 +62,7 @@ define('controls/projects/project/Settings', [
             'save',
             'del',
             'openSettings',
+            'openAdminSettings',
             'openBackup',
             'openWatersign'
         ],
@@ -138,6 +139,15 @@ define('controls/projects/project/Settings', [
                 icon : 'icon-gear',
                 events : {
                     onActive : this.openSettings
+                }
+            });
+
+            this.addCategory({
+                name : 'adminSettings',
+                text : Locale.get( lg, 'projects.project.panel.settings.btn.adminSettings' ),
+                icon : 'icon-gear',
+                events : {
+                    onActive : this.openAdminSettings
                 }
             });
 
@@ -305,6 +315,30 @@ define('controls/projects/project/Settings', [
         },
 
         /**
+         * Opens the Settings for the administration
+         *
+         * @method controls/projects/project/Settings#openAdminSettings
+         */
+        openAdminSettings : function()
+        {
+            this.Loader.show();
+
+            var self = this,
+                Body = this.getBody();
+
+            UtilsTemplate.get('project/settingsAdmin', function(result)
+            {
+                console.log( result );
+
+                Body.set( 'html', result );
+
+                QUIFormUtils.setDataToForm( self.$config, Body.getElement( 'Form' ) );
+
+                self.Loader.hide();
+            });
+        },
+
+        /**
          * Opens the Watermark
          *
          * @method controls/projects/project/Settings#openWatersign
@@ -402,7 +436,7 @@ define('controls/projects/project/Settings', [
             var self = this,
                 name = Category.getAttribute( 'name' );
 
-            if ( name == 'settings' ) {
+            if ( name == 'settings' || name == "adminSettings" ) {
                 return;
             }
 

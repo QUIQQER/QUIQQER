@@ -96,7 +96,7 @@ define('utils/Controls', [
             }
 
 
-            Promise.all( needles ).then(function(res)
+            Promise.all( needles ).then(function()
             {
                 if ( typeof callback === 'function' ) {
                     callback();
