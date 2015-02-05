@@ -498,10 +498,14 @@ class Edit extends Site
 
         if ( $this->getAttribute( 'release_to' ) )
         {
-            $rf = strtotime( $this->getAttribute( 'release_to' ) );
+            $rt = strtotime( $this->getAttribute( 'release_to' ) );
 
-            if ( $rf ) {
-                $release_to = date( 'Y-m-d H:i:s', $rf );
+            if ( $rt && $rt > 0 )
+            {
+                $release_to = date( 'Y-m-d H:i:s', $rt );
+            } else
+            {
+                $release_to = '';
             }
         }
 
