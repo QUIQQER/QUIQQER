@@ -114,7 +114,6 @@ define('controls/projects/project/Sitemap', [
                     onSiteDelete     : self.onSiteDelete,
                     onSiteSortSave   : self.onSiteChange
                 });
-
             });
 
             // projects events

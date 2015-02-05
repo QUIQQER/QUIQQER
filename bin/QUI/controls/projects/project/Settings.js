@@ -195,13 +195,28 @@ define('controls/projects/project/Settings', [
             this.Loader.show();
             this.$onCategoryLeave();
 
-            Ajax.post('ajax_project_set_config', function()
+            // clear config for projects
+            var name = this.getProject().getName();
+
+
+            for ( var project in Projects.$projects )
+            {
+                if ( !Projects.$projects.hasOwnProperty( project ) ) {
+                    continue;
+                }
+
+                if ( project.match( name +'-' ) )
+                {
+                    if ( "$config" in Projects.$projects[ project ] ) {
+                        Projects.$projects[ project].$config = false;
+                    }
+                }
+            }
+
+            this.getProject().setConfig(function()
             {
                 self.Loader.hide();
-            }, {
-                project : this.$Project.getName(),
-                params  : JSON.encode( this.$config )
-            });
+            }, this.$config);
         },
 
         /**
