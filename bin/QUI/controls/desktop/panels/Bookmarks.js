@@ -6,7 +6,14 @@
  * @author www.pcsg.de (Henning Leutz)
  */
 
-define(['qui/controls/bookmarks/Panel'], function(QUIBookmarks)
+define('controls/desktop/panels/Bookmarks', [
+
+    'qui/controls/bookmarks/Panel',
+    'classes/utils/Sortables',
+
+    'css!controls/desktop/panels/Bookmarks.css'
+
+], function(QUIBookmarks, Sortables)
 {
     "use strict";
 
@@ -14,6 +21,140 @@ define(['qui/controls/bookmarks/Panel'], function(QUIBookmarks)
 
         Extends : QUIBookmarks,
         Type    : 'controls/desktop/panels/Bookmarks',
+
+        /**
+         * Booksmarks not editable
+         */
+        fix : function()
+        {
+            this.$fixed = true;
+            this.getButtonBar().clear();
+        },
+
+        /**
+         * Booksmarks are editable
+         */
+        unfix : function()
+        {
+            var self = this;
+
+            this.$fixed = false;
+
+            this.addButton({
+                text : 'Sortierung',
+                textimage : 'icon-sort',
+                events :
+                {
+                    onClick : function(Btn)
+                    {
+                        if ( Btn.isActive() )
+                        {
+                            Btn.setNormal();
+                            self.disableSorting();
+                            return;
+                        }
+
+                        Btn.setActive();
+                        self.enableSorting();
+                    }
+                }
+            });
+        },
+
+        /**
+         * enable sorting
+         */
+        enableSorting : function()
+        {
+            var self = this;
+            var List = this.$Elm.getElements( '.qui-bookmark' );
+
+            this.$Container.addClass( 'qui-bookmark-list' );
+
+            // set placeholder divs
+            List.each(function(Child)
+            {
+                new Element('div', {
+                    'class' : 'qui-bookmark-placeholder',
+                    html    : '<span class="icon-move"></span>'+
+                    Child.getElement( '.qui-bookmark-text' ).get( 'text' )
+                }).inject( Child );
+            });
+
+            // dragdrop sort
+            this.$Sortables = new Sortables( this.$Container, {
+                handles: List,
+                revert: {
+                    duration   : 500,
+                    transition : 'elastic:out'
+                },
+                clone : function(event)
+                {
+                    var Target = event.target;
+
+                    if ( !Target.hasClass( '.qui-bookmark' ) ) {
+                        Target = Target.getParent( '.qui-bookmark' );
+                    }
+
+                    var size = Target.getSize(),
+                        pos  = Target.getPosition( self.$Container );
+
+                    Target.addClass( 'qui-bookmark-active' );
+
+                    return new Element('div', {
+                        styles : {
+                            background : 'rgba(0,0,0,0.3)',
+                            height     : size.y,
+                            top        : pos.y,
+                            width      : size.x,
+                            zIndex     : 1000
+                        }
+                    });
+                },
+
+                onStart : function()
+                {
+                    self.$Container.addClass( 'qui-bookmark-dd-active' );
+
+                    self.$Container.getElements( '.qui-bookmark-placeholder' )
+                        .set( 'display', 'none' );
+
+                    self.$Container.setStyles({
+                        height   : self.$Container.getSize().y,
+                        overflow : 'hidden',
+                        width    : self.$Container.getSize().x
+                    });
+                },
+
+                onComplete : function()
+                {
+                    self.$Container.removeClass( 'qui-bookmark-dd-active' );
+
+                    self.$Container.getElements( '.qui-bookmark-active' )
+                        .removeClass( 'qui-bookmark-active' );
+
+                    self.$Container.getElements( '.qui-bookmark-placeholder')
+                        .set( 'display', null );
+
+                    self.$Container.setStyles({
+                        height   : null,
+                        overflow : null,
+                        width    : null
+                    });
+                }
+            });
+        },
+
+        /**
+         * disable sorting
+         */
+        disableSorting : function()
+        {
+            this.$Container.removeClass( 'qui-bookmark-list' );
+            this.$Container.getElements( '.qui-bookmark-placeholder').destroy();
+
+            this.$Sortables = null;
+        },
 
         /**
          * overwrite appendChild, because we must use some special click events
@@ -102,6 +243,21 @@ define(['qui/controls/bookmarks/Panel'], function(QUIBookmarks)
                     );
                 });
             }
+        },
+
+        /**
+         * make a click on a menu item by path
+         *
+         * @param {String} path - Path to the menu item
+         * @return {Boolean}
+         */
+        $clickMenuItem : function(path)
+        {
+            if ( this.$fixed ) {
+                return true;
+            }
+
+            return this.parent( path );
         }
     });
 });
