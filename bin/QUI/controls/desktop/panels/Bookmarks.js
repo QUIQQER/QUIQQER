@@ -28,7 +28,7 @@ define('controls/desktop/panels/Bookmarks', [
         fix : function()
         {
             this.$fixed = true;
-            
+
             this.$normalizeButtons();
             this.getButtonBar().clear();
         },
