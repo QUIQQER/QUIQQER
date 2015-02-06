@@ -321,7 +321,10 @@ define('controls/users/Panel', [
             var self  = this,
                 Sheet = this.createSheet({
                     title : Locale.get( lg, 'users.panel.search.title' ),
-                    icon  : 'icon-search'
+                    icon  : 'icon-search',
+                    closeButton : {
+                        text : 'schließen'
+                    }
                 });
 
             Sheet.addEvent('onOpen', function(Sheet)
@@ -410,6 +413,17 @@ define('controls/users/Panel', [
                             }
                         }
                     }).inject( Search, 'after' );
+
+                    Sheet.addButton({
+                        textimage : 'icon-search',
+                        text : Locale.get( lg, 'users.panel.search.btn.start' ),
+                        events :
+                        {
+                            onClick : function() {
+                                self.execSearch( Sheet );
+                            }
+                        }
+                    });
 
                     self.Loader.hide();
                 });
