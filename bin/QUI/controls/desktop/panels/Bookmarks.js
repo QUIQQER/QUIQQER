@@ -28,6 +28,8 @@ define('controls/desktop/panels/Bookmarks', [
         fix : function()
         {
             this.$fixed = true;
+            
+            this.$normalizeButtons();
             this.getButtonBar().clear();
         },
 
@@ -41,7 +43,8 @@ define('controls/desktop/panels/Bookmarks', [
             this.$fixed = false;
 
             this.addButton({
-                text : 'Sortierung',
+                name      : 'sort',
+                text      : 'Sortierung',
                 textimage : 'icon-sort',
                 events :
                 {
@@ -49,16 +52,91 @@ define('controls/desktop/panels/Bookmarks', [
                     {
                         if ( Btn.isActive() )
                         {
-                            Btn.setNormal();
-                            self.disableSorting();
+                            self.$normalizeButtons();
                             return;
                         }
 
+                        self.$normalizeButtons();
                         Btn.setActive();
+                    },
+
+                    onActive : function() {
                         self.enableSorting();
+                    },
+
+                    onNormal : function() {
+                        self.disableSorting();
                     }
                 }
             });
+
+
+            this.addButton({
+                name      : 'edit',
+                text      : 'Editieren',
+                textimage : 'icon-edit',
+                events :
+                {
+                    onClick : function(Btn)
+                    {
+                        if ( Btn.isActive() )
+                        {
+                            self.$normalizeButtons();
+                            return;
+                        }
+
+                        self.$normalizeButtons();
+                        Btn.setActive();
+                    },
+
+                    onActive : function() {
+                        self.enableEdit();
+                    },
+
+                    onNormal : function() {
+                        self.disableEdit();
+                    }
+                }
+            });
+        },
+
+        /**
+         *
+         */
+        enableEdit : function()
+        {
+            var i, len, text, Elm;
+            var bookmarks = this.$Container.getElements( '.qui-bookmark-text' );
+
+            for ( i = 0, len = bookmarks.length; i < len; i++ )
+            {
+                Elm  = bookmarks[ i ];
+                text = bookmarks[ i ].get( 'text' );
+
+                Elm.set( 'html', '' );
+
+                new Element('input', {
+                    value  : text,
+                    styles : {
+                        width: '100%'
+                    }
+                }).inject( Elm );
+            }
+        },
+
+        /**
+         * disable sorting
+         */
+        disableEdit : function()
+        {
+            var i, len, text;
+            var fields = this.$Container.getElements( '.qui-bookmark-text input' );
+
+            for ( i = 0, len = fields.length; i < len; i++ )
+            {
+                text = fields[ i ].value;
+                fields[ i].getParent().set( 'html', text );
+            }
         },
 
         /**
@@ -153,7 +231,14 @@ define('controls/desktop/panels/Bookmarks', [
             this.$Container.removeClass( 'qui-bookmark-list' );
             this.$Container.getElements( '.qui-bookmark-placeholder').destroy();
 
-            this.$Sortables = null;
+            if ( typeof this.$Sortables !== 'undefined' )
+            {
+                if ( this.$Sortables && "detach" in this.$Sortables ) {
+                    this.$Sortables.detach();
+                }
+
+                this.$Sortables = null;
+            }
         },
 
         /**
@@ -253,11 +338,21 @@ define('controls/desktop/panels/Bookmarks', [
          */
         $clickMenuItem : function(path)
         {
-            if ( this.$fixed ) {
+            if ( this.$fixed === false ) {
                 return true;
             }
 
             return this.parent( path );
+        },
+
+        /**
+         * Set all buttons to normal status
+         */
+        $normalizeButtons : function()
+        {
+            this.getButtonBar().getChildren().each(function(Btn) {
+                Btn.setNormal();
+            });
         }
     });
 });
