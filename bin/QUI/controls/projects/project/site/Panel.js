@@ -294,7 +294,7 @@ define('controls/projects/project/site/Panel', [
                 'ajax_site_buttons_get',
                 'ajax_site_isLockedFromOther',
                 'ajax_site_lock'
-            ], function(categories, buttons, isMarkate)
+            ], function(categories, buttons, isLocked)
             {
                 var i, ev, fn, len, events, category, Category;
 
@@ -357,8 +357,8 @@ define('controls/projects/project/site/Panel', [
                     onDelete     : self.$onSiteDelete
                 });
 
-                if ( isMarkate ) {
-                    self.setMarkate();
+                if ( isLocked ) {
+                    self.setLocked();
                 }
 
                 Site.load();
@@ -633,7 +633,8 @@ define('controls/projects/project/site/Panel', [
                     // site linking
                     var i, len, Row, LastCell;
 
-                    var LinkinLangTable = Body.getElement( '.site-langs' );
+                    var LinkinLangTable = Body.getElement( '.site-langs'),
+                        Locked          = Body.getElement( '[data-locked]' );
 
                     if ( LinkinLangTable )
                     {
@@ -707,6 +708,28 @@ define('controls/projects/project/site/Panel', [
                                 }
                             }).inject( LastCell );
                         }
+                    }
+
+
+                    // locked
+                    if ( Locked )
+                    {
+                        new QUIButton({
+                            text   : 'Trotzdem freischalten',
+                            styles : {
+                                clear : 'both',
+                                display : 'block',
+                                'float' : 'none',
+                                margin : '10px auto',
+                                width : 200
+                            },
+                            events :
+                            {
+                                onClick : function() {
+                                    self.unlockSite();
+                                }
+                            }
+                        }).inject( Locked );
                     }
                 }
 
@@ -996,9 +1019,9 @@ define('controls/projects/project/site/Panel', [
         },
 
         /**
-         * Disable the buttons, if the site is markate
+         * Disable the buttons, if the site is locked
          */
-        setMarkate : function()
+        setLocked : function()
         {
             var buttons = this.getButtons();
 
@@ -1011,18 +1034,44 @@ define('controls/projects/project/site/Panel', [
         },
 
         /**
-         * Enable the buttons, if the site is unmarkated
+         * Enable the buttons, if the site is unlocked
          */
-        setUnMarkate : function()
+        setUnlocked : function()
         {
             var buttons = this.getButtons();
 
             for ( var i = 0, len = buttons.length; i < len; i++ )
             {
                 if ( "enable" in buttons[ i ] ) {
-                    buttons[i].enable();
+                    buttons[ i ].enable();
                 }
             }
+        },
+
+        /**
+         * unlock the site, only if the user has the permission
+         */
+        unlockSite : function()
+        {
+            var self    = this,
+                Site    = this.getSite(),
+                Project = Site.getProject();
+
+            this.Loader.show();
+
+            Site.unlock(function()
+            {
+                require(['utils/Panels'], function(Utils)
+                {
+                    self.destroy();
+
+                    Utils.openSitePanel(
+                        Project.getName(),
+                        Project.getLang(),
+                        Site.getId()
+                    );
+                });
+            });
         },
 
         /**

@@ -32,6 +32,10 @@
 /** site settings
  * ====================================== */
 
+form.qui-site-data {
+    width: 100%;
+}
+
 .qui-site-data .data-table p {
     width: 100%;
 }

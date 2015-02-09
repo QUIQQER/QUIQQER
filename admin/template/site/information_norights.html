@@ -3,9 +3,19 @@
 {user id=$uid var=MarcateUser}
 
 {if $Site->isLockedFromOther()}
-    <div class="messages-message box-sizing message-attention" style="margin-bottom: 20px; padding-left: 20px;">
+    <div class="messages-message message-attention"
+         style="margin-bottom: 20px; padding-left: 20px;"
+         data-locked="1"
+    >
         <span class="msg">
-            {t username=$MarcateUser->getName()}quiqqer/system projects.project.site.messages.lock{/t}
+            {assign var=lastlogin value=$MarcateUser->getAttribute('lastvisit')|date_format:"%d.%m.%Y %H:%M:%S"}
+
+            {locale
+                username=$MarcateUser->getName()
+                group="quiqqer/system"
+                var="projects.project.site.messages.lock"
+                lastlogin=$lastlogin
+            }
         </span>
     </div>
 {/if}

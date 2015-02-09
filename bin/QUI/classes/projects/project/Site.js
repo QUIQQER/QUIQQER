@@ -406,6 +406,27 @@ define([
             }, params);
         },
 
+        lock : function()
+        {
+
+        },
+
+        /**
+         * unlock the site
+         *
+         * @param {function} callback
+         */
+        unlock : function( callback )
+        {
+            Ajax.post('ajax_site_unlock', function()
+            {
+                if ( typeof callback !== 'undefined' ) {
+                    callback();
+                }
+
+            }, this.ajaxParams());
+        },
+
         /**
          * Create a child site
          *
