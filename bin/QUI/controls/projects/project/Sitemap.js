@@ -24,12 +24,15 @@ define('controls/projects/project/Sitemap', [
     'qui/controls/sitemap/Item',
     'qui/controls/contextmenu/Item',
     'qui/controls/contextmenu/Seperator',
+    'qui/controls/windows/Confirm',
 
     'Projects',
     'Ajax',
     'Locale',
     'Clipboard',
-    'utils/Site'
+    'utils/Site',
+
+    'css!controls/projects/project/Sitemap.css'
 
 ], function()
 {
@@ -40,12 +43,13 @@ define('controls/projects/project/Sitemap', [
         QUISitemapItem          = arguments[ 2 ],
         QUIContextmenuItem      = arguments[ 3 ],
         QUIContextmenuSeperator = arguments[ 4 ],
+        QUIConfirm              = arguments[ 5 ],
 
-        Projects  = arguments[ 5 ],
-        Ajax      = arguments[ 6 ],
-        Locale    = arguments[ 7 ],
-        Clipboard = arguments[ 8 ],
-        SiteUtils = arguments[ 9 ];
+        Projects  = arguments[ 6 ],
+        Ajax      = arguments[ 7 ],
+        Locale    = arguments[ 8 ],
+        Clipboard = arguments[ 9 ],
+        SiteUtils = arguments[ 10 ];
 
     /**
      * A project sitemap
@@ -462,7 +466,8 @@ define('controls/projects/project/Sitemap', [
                 {
                     var count    = result.count,
                         children = result.children,
-                        end      = start + projectLimit;
+                        end      = start + projectLimit,
+                        sheets   = ( count / projectLimit ).ceil();
 
                     Item.clearChildren();
 
@@ -472,12 +477,23 @@ define('controls/projects/project/Sitemap', [
                             new QUISitemapItem({
                                 icon : 'icon-level-up',
                                 text : '...',
+                                contextmenu : false,
+                                sheets : sheets,
+                                Item   : Item,
                                 events :
                                 {
-                                    click : function()
+                                    onClick : function()
                                     {
                                         Item.setAttribute( 'limitStart', limitStart-1 );
                                         self.$loadChildren( Item );
+                                    },
+                                    onInject : function(Me)
+                                    {
+                                        Me.getElm().addEvent('contextmenu', function(event)
+                                        {
+                                            event.stop();
+                                            self.$openSitemapItemSheetsWindow( Me );
+                                        });
                                     }
                                 }
                             })
@@ -500,12 +516,23 @@ define('controls/projects/project/Sitemap', [
                             new QUISitemapItem({
                                 icon   : 'icon-level-down',
                                 text   : '...',
+                                contextmenu : false,
+                                sheets : sheets,
+                                Item   : Item,
                                 events :
                                 {
-                                    click : function()
+                                    onClick : function()
                                     {
                                         Item.setAttribute( 'limitStart', limitStart+1 );
                                         self.$loadChildren( Item );
+                                    },
+                                    onInject : function(Me)
+                                    {
+                                        Me.getElm().addEvent('contextmenu', function(event)
+                                        {
+                                            event.stop();
+                                            self.$openSitemapItemSheetsWindow( Me );
+                                        });
                                     }
                                 }
                             })
@@ -748,6 +775,8 @@ define('controls/projects/project/Sitemap', [
 
                     Paste.enable();
                     Linked.enable();
+
+                    ContextMenu.focus();
                 },
 
                 onBlur : function()
@@ -778,6 +807,66 @@ define('controls/projects/project/Sitemap', [
             Child.addEvent( 'onClose', this.$close );
 
             Parent.appendChild( Child );
+        },
+
+        /**
+         * Opens the sheet window for an item
+         *
+         * @ignore
+         * @param Item
+         */
+        $openSitemapItemSheetsWindow : function(Item)
+        {
+            if ( !Item.getAttribute( 'sheets' ) ) {
+                return;
+            }
+
+            var self     = this,
+                sheets   = ( Item.getAttribute( 'sheets' ) ).toInt(),
+                Select   = new Element( 'select'),
+                SiteItem = Item.getAttribute( 'Item' );
+
+            for ( var i = 0, len = sheets; i < len; i++ )
+            {
+                new Element('option', {
+                    html  : 'Blatt '+ ( i + 1 ),
+                    value : i
+                }).inject( Select );
+            }
+
+            if ( SiteItem.getAttribute( 'limitStart' ) !== false ) {
+                Select.value = ( SiteItem.getAttribute('limitStart') ).toInt() + 1;
+            }
+
+
+            new QUIConfirm({
+                title     : 'Blätterfunktion',
+                maxHeight : 300,
+                maxWidth  : 500,
+                events    :
+                {
+                    onOpen : function(Win)
+                    {
+                        var Content = Win.getContent();
+
+                        Content.set({
+                            html    : '<p>Welche Einträge der Seite sollen angezeigt werden?</p>',
+                            'class' : 'qui-projects-sitemap-sheetsWindow'
+                        });
+
+                        Select.inject( Content );
+                    },
+
+                    onSubmit : function(Win)
+                    {
+                        var Select = Win.getContent().getElement( 'select'),
+                            sheet  = ( Select.value ).toInt();
+
+                        SiteItem.setAttribute( 'limitStart', sheet-1 );
+                        self.$loadChildren( SiteItem );
+                    }
+                }
+            }).open();
         },
 
         /**
