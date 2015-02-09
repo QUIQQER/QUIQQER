@@ -63,12 +63,42 @@ class Session
         ini_set( 'session.gc_maxlifetime', $this->_max_life_time );
         ini_set( 'session.gc_probability', 100 );
 
-        if ( !class_exists( 'NativeSessionStorage' ) ) {
-            return;
+
+        if ( !class_exists( 'NativeSessionStorage' ) )
+        {
+            $nativeSessionFile = OPT_DIR .'symfony/http-foundation/Symfony/Component/HttpFoundation/Session/Storage/NativeSessionStorage.php';
+
+            if ( file_exists( $nativeSessionFile ) ) {
+                require_once $nativeSessionFile;
+            }
+
+            if ( class_exists( '\Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage' ) ) {
+                $this->_Storage = new \Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage( array(), $this->_getStorage() );
+            }
+
+        } else
+        {
+            $this->_Storage = new NativeSessionStorage( array(), $this->_getStorage() );
         }
 
-        $this->_Storage = new NativeSessionStorage( array(), $this->_getStorage() );
-        $this->_Session = new SymfonySession( $this->_Storage );
+
+
+        if ( !class_exists( 'NativeSessionStorage' ) )
+        {
+            $essionFile = OPT_DIR .'symfony/http-foundation/Symfony/Component/HttpFoundation/Session/Session.php';
+
+            if ( file_exists( $essionFile ) ) {
+                require_once $nativeSessionFile;
+            }
+
+            if ( class_exists( '\Symfony\Component\HttpFoundation\Session\Session' ) ) {
+                $this->_Session = new \Symfony\Component\HttpFoundation\Session\Session( $this->_Storage );
+            }
+
+        } else
+        {
+            $this->_Session = new SymfonySession( $this->_Storage );
+        }
     }
 
     /**
