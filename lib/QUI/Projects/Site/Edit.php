@@ -1332,6 +1332,8 @@ class Edit extends Site
 
     /**
      * Ein SuperUser kann eine Seite trotzdem demakieren wenn er möchte
+     *
+     * @todo eigenes recht dafür einführen
      */
     public function unlockWithRights()
     {

@@ -477,6 +477,7 @@ define('controls/projects/project/Sitemap', [
                             new QUISitemapItem({
                                 icon : 'icon-level-up',
                                 text : '...',
+                                title  : 'Zurück - Rechtsklick für weitere Optionen',
                                 contextmenu : false,
                                 sheets : sheets,
                                 Item   : Item,
@@ -516,6 +517,7 @@ define('controls/projects/project/Sitemap', [
                             new QUISitemapItem({
                                 icon   : 'icon-level-down',
                                 text   : '...',
+                                title  : 'Vor - Rechtsklick für weitere Optionen',
                                 contextmenu : false,
                                 sheets : sheets,
                                 Item   : Item,
