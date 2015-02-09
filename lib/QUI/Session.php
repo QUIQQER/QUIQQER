@@ -181,7 +181,11 @@ class Session
      */
     public function getId()
     {
-        return $this->_Session->getId();
+        if ( $this->_Session ) {
+            return $this->_Session->getId();
+        }
+
+        return md5( microtime() );
     }
 
     /**
