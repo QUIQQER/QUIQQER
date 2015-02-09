@@ -33,13 +33,13 @@ class Session
      * Session handler
      * @var \Symfony\Component\HttpFoundation\Session\Session
      */
-    private $_Session;
+    private $_Session = false;
 
     /**
      * Storage handler
      * @var \Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
      */
-    private $_Storage;
+    private $_Storage = false;
 
     /**
      * Database table
@@ -117,7 +117,9 @@ class Session
      */
     public function start()
     {
-        $this->_Session->start();
+        if ( $this->_Session ) {
+            $this->_Session->start();
+        }
     }
 
     /**
@@ -148,7 +150,9 @@ class Session
      */
     public function set($name, $value)
     {
-        $this->_Session->set( $name, $value );
+        if ( $this->_Session ) {
+            $this->_Session->set( $name, $value );
+        }
     }
 
     /**
