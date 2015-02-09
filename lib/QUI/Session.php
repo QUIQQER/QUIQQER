@@ -201,6 +201,10 @@ class Session
      */
     public function check()
     {
+        if ( !$this->_Session ) {
+            return false;
+        }
+
         $idle = time() - $this->_Session->getMetadataBag()->getLastUsed();
 
         if ( $idle > $this->_max_life_time )
@@ -219,7 +223,9 @@ class Session
      */
     public function del($var)
     {
-        $this->_Session->remove( $var );
+        if ( $this->_Session ) {
+            $this->_Session->remove( $var );
+        }
     }
 
     /**
@@ -227,6 +233,10 @@ class Session
      */
     public function destroy()
     {
+        if ( !$this->_Session ) {
+            return;
+        }
+
         $this->_Session->clear();
         $this->_Session->invalidate();
     }
