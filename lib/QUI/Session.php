@@ -63,6 +63,10 @@ class Session
         ini_set( 'session.gc_maxlifetime', $this->_max_life_time );
         ini_set( 'session.gc_probability', 100 );
 
+        if ( !class_exists( 'NativeSessionStorage' ) ) {
+            return;
+        }
+
         $this->_Storage = new NativeSessionStorage( array(), $this->_getStorage() );
         $this->_Session = new SymfonySession( $this->_Storage );
     }
