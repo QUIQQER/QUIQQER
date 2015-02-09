@@ -712,7 +712,7 @@ define('controls/projects/project/site/Panel', [
 
 
                     // locked
-                    if ( Locked )
+                    if ( Locked && USER.isSU )
                     {
                         new QUIButton({
                             text   : 'Trotzdem freischalten',
