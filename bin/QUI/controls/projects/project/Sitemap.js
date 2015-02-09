@@ -566,6 +566,15 @@ define('controls/projects/project/Sitemap', [
          * @param {Object} Itm - qui/controls/sitemap/Item
          * @return {Object} qui/controls/sitemap/Item
          *
+         * @param {{name:string}} result
+         * @param {{id:string}} result
+         * @param {{title:string}} result
+         * @param {{icon:string}} result
+         * @param {{has_children:string}} result
+         * @param {{nav_hide:string}} result
+         * @param {{linked:string}} result
+         * @param {{active:string}} result
+         *
          * @private
          */
         $parseArrayToSitemapitem : function(result, Itm)
