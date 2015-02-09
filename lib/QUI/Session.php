@@ -160,7 +160,9 @@ class Session
      */
     public function refresh()
     {
-        $this->_Session->migrate();
+        if ( $this->_Session ) {
+            $this->_Session->migrate();
+        }
     }
 
     /**
@@ -171,7 +173,11 @@ class Session
      */
     public function get($name)
     {
-        return $this->_Session->get( $name, false );
+        if ( $this->_Session ) {
+            return $this->_Session->get( $name, false );
+        }
+
+        return false;
     }
 
     /**
