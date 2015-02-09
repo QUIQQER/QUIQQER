@@ -156,20 +156,29 @@ define('utils/Controls', [
 
                 var dataTableOpen = function()
                 {
-                    var Table  = this.getParent('table'),
-                        Toggle = Table.getElement('.data-table-toggle');
+                    var Table  = this.getParent( 'table' ),
+                        TBody  = Table.getElement( 'tbody' ),
+                        Toggle = Table.getElement( '.data-table-toggle' );
 
-                    Toggle.set('html', '<span class="icon-minus"></span>');
+                    Toggle.set( 'html', '<span class="icon-minus"></span>' );
+
 
                     moofx( Table ).animate({
                         height: Table.getScrollSize().y
                     }, {
                         equation: 'ease-out',
                         duration: 250,
-                        callback: function () {
+                        callback: function ()
+                        {
                             Table.setStyles({
-                                display: null,
-                                overflow: null
+                                display  : null,
+                                overflow : null
+                            });
+
+                            moofx( TBody ).animate({
+                                opacity : 1
+                            }, {
+                                duration : 250
                             });
                         }
                     });
@@ -177,22 +186,31 @@ define('utils/Controls', [
 
                 var dataTableClose = function()
                 {
-                    var Table  = this.getParent('table'),
-                        THead  = Table.getElement('thead'),
-                        Toggle = Table.getElement('.data-table-toggle');
+                    var Table  = this.getParent( 'table' ),
+                        THead  = Table.getElement( 'thead' ),
+                        TBody  = Table.getElement( 'tbody' ),
+                        Toggle = Table.getElement( '.data-table-toggle' );
 
-                    Toggle.set('html', '<span class="icon-plus"></span>');
+                    Toggle.set( 'html', '<span class="icon-plus"></span>' );
 
-                    Table.setStyles({
-                        display  : 'block',
-                        overflow : 'hidden'
-                    });
-
-                    moofx( Table ).animate({
-                        height: THead.getSize().y
+                    moofx( TBody ).animate({
+                        opacity : 0
                     }, {
-                        equation: 'ease-out',
-                        duration: 250
+                        duration : 250,
+                        callback : function()
+                        {
+                            Table.setStyles({
+                                display  : 'block',
+                                overflow : 'hidden'
+                            });
+
+                            moofx( Table ).animate({
+                                height: THead.getSize().y
+                            }, {
+                                equation: 'ease-out',
+                                duration: 250
+                            });
+                        }
                     });
                 };
 

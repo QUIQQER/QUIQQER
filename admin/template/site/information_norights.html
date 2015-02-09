@@ -3,7 +3,7 @@
 {user id=$uid var=MarcateUser}
 
 {if $Site->isLockedFromOther()}
-    <div class="message box-sizing message-attention" style="margin-bottom: 20px; padding-left: 20px;">
+    <div class="messages-message box-sizing message-attention" style="margin-bottom: 20px; padding-left: 20px;">
         <span class="msg">
             {t username=$MarcateUser->getName()}quiqqer/system projects.project.site.messages.lock{/t}
         </span>
@@ -69,7 +69,7 @@
 </thead>
 
 <tbody>
-<tr>
+<tr class="{cycle values="odd,even"}">
     <td>
         {t}quiqqer/system projects.project.site.panel.information.created{/t}
     </td>
@@ -84,7 +84,7 @@
         {/if}
     </td>
 </tr>
-<tr>
+<tr class="{cycle values="odd,even"}">
     <td>
         {t}quiqqer/system projects.project.site.panel.information.edited{/t}
     </td>
@@ -112,7 +112,7 @@
 </thead>
 
 <tbody>
-    <tr>
+    <tr class="{cycle values="odd,even"}">
         <td style="width: 20px">
             <input type="checkbox" name="nav_hide" {if $Site->getAttribute('nav_hide') == 1}checked="checked"{/if} disabled="disabled" />
         </td>
