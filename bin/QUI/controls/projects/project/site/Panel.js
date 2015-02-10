@@ -379,44 +379,70 @@ define('controls/projects/project/site/Panel', [
          */
         $onInject : function()
         {
-            console.log( '$onInject' );
-            console.log( this.getSite().getWorkingStorage() );
+            var Site = this.getSite();
 
-            if ( !this.getSite().hasWorkingStorage() )
+            if ( !Site.hasWorkingStorage() )
             {
-                this.getSite().load();
+                Site.load();
                 return;
             }
+
 
             var self = this;
 
             this.Loader.show();
 
-            require(['qui/controls/windows/Confirm'], function(QUIConfirm)
-            {
-                new QUIConfirm({
-                    title   : 'Wiederherstellung',
-                    content : 'Es wurde nicht gespeicherte Daten der Seite #'+ self.getSite().getId() +' gefunden. ' +
-                              'Sollen die Daten wieder hergestellt werden?',
-                    maxWidth  : 500,
-                    maxHeight : 200,
-                    events :
-                    {
-                        onSubmit : function()
-                        {
-                            self.getSite().restoreWorkingStorage();
-                            self.load();
-                        },
+            var Sheet = this.createSheet({
+                title : 'Wiederherstellung der Seite #'+ Site.getId()
+            });
 
-                        onCancel : function()
-                        {
-                            self.getSite().clearWorkingStorage();
-                            self.getSite().load(function() {
-                                self.load();
-                            });
-                        }
+            Sheet.getContent().set(
+                'html',
+
+                '<div class="qui-panel-dataRestore">' +
+                    '<p>Es wurde nicht gespeicherte Daten der Seite #'+ Site.getId() +' gefunden.</p>'+
+                    '<p>Sollen die Daten wieder hergestellt werden?</p>' +
+                '</div>'
+            );
+
+            Sheet.clearButtons();
+
+            Sheet.addButton({
+                text   : 'Daten verwerfen',
+                events :
+                {
+                    onClick : function()
+                    {
+                        Sheet.hide(function() {
+                            Sheet.destroy();
+                        });
+
+                        Site.clearWorkingStorage();
+                        Site.load(function() {
+                            self.load();
+                        });
                     }
-                }).open();
+                }
+            });
+
+            Sheet.addButton({
+                text   : 'Daten übernehmen',
+                events :
+                {
+                    onClick : function()
+                    {
+                        Sheet.hide(function() {
+                            Sheet.destroy();
+                        });
+
+                        Site.restoreWorkingStorage();
+                        self.load();
+                    }
+                }
+            });
+
+            Sheet.show(function() {
+                self.Loader.hide();
             });
         },
 
