@@ -357,6 +357,10 @@
             <de><![CDATA[Abmelden]]></de>
             <en><![CDATA[Logout]]></en>
         </locale>
+        <locale name="login">
+            <de><![CDATA[Anmelden]]></de>
+            <en><![CDATA[Login]]></en>
+        </locale>
 
         <!-- contextmenu -->
         <locale name="copy">

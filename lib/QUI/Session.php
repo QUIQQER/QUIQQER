@@ -68,8 +68,12 @@ class Session
         {
             $nativeSessionFile = OPT_DIR .'symfony/http-foundation/Symfony/Component/HttpFoundation/Session/Storage/NativeSessionStorage.php';
 
-            if ( file_exists( $nativeSessionFile ) ) {
+            if ( file_exists( $nativeSessionFile ) )
+            {
                 require_once $nativeSessionFile;
+            } else
+            {
+                throw new \Exception( 'Session File not found '. $nativeSessionFile );
             }
 
             if ( class_exists( '\Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage' ) ) {
@@ -82,13 +86,16 @@ class Session
         }
 
 
-
         if ( !class_exists( 'NativeSessionStorage' ) )
         {
-            $essionFile = OPT_DIR .'symfony/http-foundation/Symfony/Component/HttpFoundation/Session/Session.php';
+            $sessionFile = OPT_DIR .'symfony/http-foundation/Symfony/Component/HttpFoundation/Session/Session.php';
 
-            if ( file_exists( $essionFile ) ) {
-                require_once $nativeSessionFile;
+            if ( file_exists( $sessionFile ) )
+            {
+                require_once $sessionFile;
+            } else
+            {
+                throw new \Exception( 'Session File not found '. $sessionFile );
             }
 
             if ( class_exists( '\Symfony\Component\HttpFoundation\Session\Session' ) ) {

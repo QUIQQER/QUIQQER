@@ -47,7 +47,15 @@ define('controls/system/Login', [
             icon      : 'icon-signin',
             maxHeight : 300,
             maxWidth  : 500,
-            autoclose : false
+            autoclose : false,
+            cancel_button : {
+                text      : Locale.get( 'quiqqer/system', 'logout' ),
+                textimage : 'icon-remove fa fa-remove'
+            },
+            ok_button : {
+                text      : Locale.get( 'quiqqer/system', 'login' ),
+                textimage : 'icon-ok fa fa-check'
+            }
         },
 
         initialize : function(options)
@@ -55,8 +63,10 @@ define('controls/system/Login', [
             this.parent( options );
             this.$opened = false;
 
-            this.addEvent('cancel', function() {
-                window.location = window.location;
+            this.addEvent('cancel', function()
+            {
+                window.onbeforeunload = null;
+                window.location = '/admin/';
             });
         },
 
