@@ -14,7 +14,7 @@
  * @require classes/projects/project/media/Trash
  */
 
-define([
+define('classes/projects/project/Media', [
 
     'qui/classes/DOM',
     'qui/utils/Object',

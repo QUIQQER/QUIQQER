@@ -77,6 +77,7 @@ define('controls/projects/project/site/Panel', [
             '$onCreate',
             '$onDestroy',
             '$onResize',
+            '$onInject',
             '$onCategoryEnter',
             '$onCategoryLeave',
             '$onEditorLoad',
@@ -132,7 +133,8 @@ define('controls/projects/project/site/Panel', [
             this.addEvents({
                 onCreate  : this.$onCreate,
                 onResize  : this.$onResize,
-                onDestroy : this.$onDestroy
+                onDestroy : this.$onDestroy,
+                onInject  : this.$onInject
             });
         },
 
@@ -197,6 +199,7 @@ define('controls/projects/project/site/Panel', [
         {
             this.refresh();
 
+
             if ( this.getActiveCategory() )
             {
                 this.$onCategoryEnter( this.getActiveCategory() );
@@ -246,6 +249,7 @@ define('controls/projects/project/site/Panel', [
             this.Loader.show();
 
             window.addEvent( 'login', this.$onLogin );
+
 
             // permissions
             new QUIButton({
@@ -364,11 +368,55 @@ define('controls/projects/project/site/Panel', [
                     self.setLocked();
                 }
 
-                Site.load();
-
             }, {
                 project : Project.encode(),
                 id      : Site.getId()
+            });
+        },
+
+        /**
+         * event : on inject
+         */
+        $onInject : function()
+        {
+            console.log( '$onInject' );
+            console.log( this.getSite().getWorkingStorage() );
+
+            if ( !this.getSite().hasWorkingStorage() )
+            {
+                this.getSite().load();
+                return;
+            }
+
+            var self = this;
+
+            this.Loader.show();
+
+            require(['qui/controls/windows/Confirm'], function(QUIConfirm)
+            {
+                new QUIConfirm({
+                    title   : 'Wiederherstellung',
+                    content : 'Es wurde nicht gespeicherte Daten der Seite #'+ self.getSite().getId() +' gefunden. ' +
+                              'Sollen die Daten wieder hergestellt werden?',
+                    maxWidth  : 500,
+                    maxHeight : 200,
+                    events :
+                    {
+                        onSubmit : function()
+                        {
+                            self.getSite().restoreWorkingStorage();
+                            self.load();
+                        },
+
+                        onCancel : function()
+                        {
+                            self.getSite().clearWorkingStorage();
+                            self.getSite().load(function() {
+                                self.load();
+                            });
+                        }
+                    }
+                }).open();
             });
         },
 
@@ -385,6 +433,8 @@ define('controls/projects/project/site/Panel', [
             Site.removeEvent( 'onDeactivate', this.$onSiteDeactivate );
             Site.removeEvent( 'onSave', this.$onSiteSave );
             Site.removeEvent( 'onDelete', this.$onSiteDelete );
+
+            Site.clearWorkingStorage();
 
             window.removeEvent( 'login', this.$onLogin );
 
@@ -846,6 +896,7 @@ define('controls/projects/project/site/Panel', [
 
             var Site  = this.getSite(),
                 Body  = this.getBody();
+
 
             // main content
             if ( Category.getAttribute( 'name' ) === 'content' )

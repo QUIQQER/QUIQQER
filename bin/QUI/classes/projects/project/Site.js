@@ -18,7 +18,7 @@
  * @event sortSave [ this ] --> triggerd by SiteChildren.js
  */
 
-define([
+define('classes/projects/project/Site', [
 
     'qui/QUI',
     'qui/classes/DOM',
@@ -62,6 +62,12 @@ define([
             this.$Project      = Project;
             this.$has_children = false;
             this.$parentid     = false;
+            this.$loaded       = false;
+
+            this.$workingId = 'site-'+
+                              Project.getName() +'-'+
+                              Project.getLang() +'-'+
+                              id;
 
             this.parent({
                 id : id
@@ -84,14 +90,16 @@ define([
             Ajax.get('ajax_site_get', function(result, Request)
             {
                 Site.setAttributes( result.attributes );
+                Site.clearWorkingStorage();
 
                 Site.$has_children = result.has_children || false;
                 Site.$parentid     = result.parentid || false;
                 Site.$url          = result.url || '';
+                Site.$loaded       = true;
 
                 Site.fireEvent( 'load', [ Site ] );
 
-                if ( typeof onfinish !== 'undefined' ) {
+                if ( typeof onfinish === 'function' ) {
                     onfinish( Site, Request );
                 }
             }, params);
@@ -214,11 +222,13 @@ define([
 
             Ajax.post('ajax_site_activate', function(result)
             {
-                if ( result ) {
+                if ( result )
+                {
                     Site.setAttribute( 'active', 1 );
+                    Site.clearWorkingStorage();
                 }
 
-                if ( typeof onfinish !== 'undefined' ) {
+                if ( typeof onfinish === 'function' ) {
                     onfinish( result );
                 }
 
@@ -245,11 +255,13 @@ define([
 
             Ajax.post('ajax_site_deactivate', function(result)
             {
-                if ( result === 0 ) {
+                if ( result === 0 )
+                {
                     Site.setAttribute( 'active', 0 );
+                    Site.clearWorkingStorage();
                 }
 
-                if ( typeof onfinish !== 'undefined' ) {
+                if ( typeof onfinish === 'function' ) {
                     onfinish( result );
                 }
 
@@ -288,6 +300,8 @@ define([
                 Site.$parentid     = result && result.parentid || false;
                 Site.$url          = result && result.url || '';
 
+                Site.clearWorkingStorage();
+
                 // if status change, trigger events
                 if ( Site.getAttribute( 'active' ) != status )
                 {
@@ -300,7 +314,7 @@ define([
                     }
                 }
 
-                if ( typeof onfinish !== 'undefined' ) {
+                if ( typeof onfinish === 'function' ) {
                     onfinish( result );
                 }
 
@@ -322,10 +336,10 @@ define([
         {
             var Site = this;
 
-            Ajax.post('ajax_site_delete', function(result, Request)
+            Ajax.post('ajax_site_delete', function(result)
             {
-                if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( result, Request );
+                if ( typeof onfinish === 'function' ) {
+                    onfinish( result );
                 }
 
                 Site.fireEvent( 'delete', [ Site ] );
@@ -348,7 +362,7 @@ define([
 
             Ajax.post('ajax_site_move', function(result)
             {
-                if ( typeof callback !== 'undefined' ) {
+                if ( typeof callback === 'function' ) {
                     callback( result );
                 }
 
@@ -373,7 +387,7 @@ define([
 
             Ajax.post('ajax_site_copy', function(result)
             {
-                if ( typeof callback !== 'undefined' ) {
+                if ( typeof callback === 'function' ) {
                     callback( result );
                 }
 
@@ -397,7 +411,7 @@ define([
 
             Ajax.post('ajax_site_linked', function(result)
             {
-                if ( typeof callback !== 'undefined' ) {
+                if ( typeof callback === 'function' ) {
                     callback( result );
                 }
 
@@ -406,9 +420,19 @@ define([
             }, params);
         },
 
-        lock : function()
+        /**
+         * lock the site
+         *
+         * @param {function} callback
+         */
+        lock : function(callback)
         {
-
+            Ajax.post('ajax_site_lock', function()
+            {
+                if ( typeof callback === 'function' ) {
+                    callback();
+                }
+            }, this.ajaxParams());
         },
 
         /**
@@ -420,7 +444,7 @@ define([
         {
             Ajax.post('ajax_site_unlock', function()
             {
-                if ( typeof callback !== 'undefined' ) {
+                if ( typeof callback === 'function' ) {
                     callback();
                 }
 
@@ -470,7 +494,7 @@ define([
                     return;
                 }
 
-                if ( typeof onfinish !== 'undefined' ) {
+                if ( typeof onfinish === 'function' ) {
                     onfinish( result );
                 }
 
@@ -488,6 +512,66 @@ define([
         isActive : function()
         {
             return this.getAttribute( 'active' );
+        },
+
+        /**
+         * Working data
+         */
+
+        /**
+         * clears the working storage for the site
+         */
+        clearWorkingStorage : function()
+        {
+            QUI.Storage.remove( this.getWorkingStorageId() );
+        },
+
+        /**
+         * return the working storage id of the site
+         *
+         * @return {string}
+         */
+        getWorkingStorageId : function()
+        {
+            return this.$workingId;
+        },
+
+        /**
+         * Has the site an working storage?
+         *
+         * @return {boolean}
+         */
+        hasWorkingStorage : function()
+        {
+            return QUI.Storage.get( this.getWorkingStorageId() ) ? true : false;
+        },
+
+        /**
+         * Return the data of the working storage
+         *
+         * @returns {object|null|boolean}
+         */
+        getWorkingStorage : function()
+        {
+            var storage = QUI.Storage.get( this.getWorkingStorageId() );
+
+            if ( !storage ) {
+                return false;
+            }
+
+            return JSON.decode( storage );
+        },
+
+        /**
+         * Set the working storage data to the site
+         */
+        restoreWorkingStorage : function()
+        {
+            var data = this.getWorkingStorage();
+
+            if ( data ) {
+                this.options.attributes = data;
+            }
         },
 
         /**
@@ -544,6 +628,16 @@ define([
         setAttribute : function(k, v)
         {
             this.options.attributes[ k ] = v;
+
+            if ( this.$loaded === false ) {
+                return;
+            }
+
+            // locale storage
+            QUI.Storage.set(
+                this.getWorkingStorageId(),
+                JSON.encode( this.options.attributes )
+            );
         },
 
         /**
