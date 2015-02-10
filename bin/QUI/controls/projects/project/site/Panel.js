@@ -82,6 +82,7 @@ define('controls/projects/project/site/Panel', [
             '$onEditorLoad',
             '$onEditorDestroy',
             '$onPanelButtonClick',
+            '$onLogin',
 
             '$onSiteActivate',
             '$onSiteDeactivate',
@@ -244,6 +245,8 @@ define('controls/projects/project/site/Panel', [
         {
             this.Loader.show();
 
+            window.addEvent( 'login', this.$onLogin );
+
             // permissions
             new QUIButton({
                 image  : 'icon-gears',
@@ -382,6 +385,8 @@ define('controls/projects/project/site/Panel', [
             Site.removeEvent( 'onDeactivate', this.$onSiteDeactivate );
             Site.removeEvent( 'onSave', this.$onSiteSave );
             Site.removeEvent( 'onDelete', this.$onSiteDelete );
+
+            window.removeEvent( 'login', this.$onLogin );
 
             Ajax.get(['ajax_site_unlock'], false, {
                 project : Project.encode(),
@@ -1053,25 +1058,63 @@ define('controls/projects/project/site/Panel', [
          */
         unlockSite : function()
         {
+            var self = this,
+                Site = this.getSite();
+
+            this.Loader.show();
+
+            Site.unlock(function() {
+                self.$destroyRefresh();
+            });
+        },
+
+        /**
+         * destroy and refresh the panel
+         *
+         * @private
+         */
+        $destroyRefresh : function()
+        {
             var self    = this,
                 Site    = this.getSite(),
                 Project = Site.getProject();
 
-            this.Loader.show();
-
-            Site.unlock(function()
+            require(['utils/Panels'], function(Utils)
             {
-                require(['utils/Panels'], function(Utils)
-                {
-                    self.destroy();
+                self.destroy();
 
-                    Utils.openSitePanel(
-                        Project.getName(),
-                        Project.getLang(),
-                        Site.getId()
-                    );
-                });
+                Utils.openSitePanel(
+                    Project.getName(),
+                    Project.getLang(),
+                    Site.getId()
+                );
             });
+        },
+
+        /**
+         * event : on login
+         */
+        $onLogin : function()
+        {
+            var Active = this.getActiveCategory(),
+                Task   = this.getAttribute( 'Task' );
+
+            // if task exists, check if task is active
+            if ( Task &&
+                 typeOf( Task ) === 'qui/controls/taskbar/Task' &&
+                 Task.isActive() === false
+            ) {
+                return;
+            }
+
+            // no active category? something is wrong, so reload the panel
+            if ( !Active )
+            {
+                this.$destroyRefresh();
+                return;
+            }
+
+            this.$onCategoryEnter( this.getActiveCategory() );
         },
 
         /**

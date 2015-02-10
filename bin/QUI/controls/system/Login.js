@@ -149,6 +149,8 @@ define('controls/system/Login', [
 
             Ajax.post('ajax_login_login', function()
             {
+                window.fireEvent( 'login' );
+
                 self.close();
             }, {
                 username : Content.getElement( '[name="username"]' ).value,

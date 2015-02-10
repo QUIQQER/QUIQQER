@@ -106,6 +106,19 @@ define([
                                 });
                             }
 
+                            if ( "QUIQQER" in window &&
+                                 "inAdministration" in QUIQQER &&
+                                 QUIQQER.inAdministration &&
+                                 Exception.getCode() === 440
+                            )
+                            {
+                                Request.setAttribute( 'logout', true );
+
+                                require(['controls/system/Login'], function(Login) {
+                                    new Login().open();
+                                });
+                            }
+
 
                             if ( Request.getAttribute( 'onError' ) ) {
                                 return Request.getAttribute( 'onError' )( Exception, Request );

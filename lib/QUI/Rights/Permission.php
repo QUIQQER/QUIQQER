@@ -120,7 +120,7 @@ class Permission
                     'quiqqer/system',
                     'exception.no.permission'
                 ),
-                403
+                440
             );
         }
     }

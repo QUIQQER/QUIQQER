@@ -129,7 +129,8 @@
                 URL_PARAM_SEPERATOR   : "<?php echo \QUI\Rewrite::URL_PARAM_SEPERATOR; ?>",
                 URL_SPACE_CHARACTER   : "<?php echo \QUI\Rewrite::URL_SPACE_CHARACTER; ?>",
                 URL_PROJECT_CHARACTER : "<?php echo \QUI\Rewrite::URL_PROJECT_CHARACTER; ?>"
-            }
+            },
+            inAdministration : true
         };
 
     /* ]]> */

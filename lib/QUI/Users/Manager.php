@@ -719,6 +719,11 @@ class Manager
                 $User->getAttribute('user_agent') != $_SERVER['HTTP_USER_AGENT'] &&
                 strpos($_SERVER['HTTP_USER_AGENT'], 'chromeframe') === false)
             {
+                QUI::getSession()->destroy();
+
+                // @todo mehrfachanmeldung mit dem gleichen benutzer, muss hier hin
+                // @todo Issue #1
+
                 return $this->getNobody();
             }
 
