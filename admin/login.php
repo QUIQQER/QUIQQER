@@ -15,6 +15,13 @@
     </title>
 
     <style type="text/css">
+
+        * {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
         html, body {
             margin: 0;
             padding: 0;
@@ -28,7 +35,7 @@
         }
 
         .container {
-            height: 300px;
+            height: 380px;
             background: #fff;
             padding: 40px 0;
             margin: 50px 0 0;
@@ -83,7 +90,7 @@
 
         input[type="submit"] {
             cursor: pointer;
-            width: 150px;
+            width: 200px;
 
             color: #e9e9e9 !important;
             border: solid 1px #555 !important;
@@ -242,17 +249,24 @@
         />
 
         <div class="entry">
-            <label for="username">Benutzer</label>
+            <label for="username">
+                <?php echo QUI::getLocale()->get( 'quiqqer/system', 'username' ) ?>
+            </label>
             <input id="username" name="username" type="text" value="" />
         </div>
 
         <div class="entry">
-            <label for="password">Passwort</label>
+            <label for="password">
+                <?php echo QUI::getLocale()->get( 'quiqqer/system', 'password' ) ?>
+            </label>
             <input id="password" name="password" type="password" value="" />
         </div>
 
         <div class="logininput">
-            <input type="submit" name="login" value="login" />
+            <input type="submit"
+                   name="login"
+                   value="<?php echo QUI::getLocale()->get( 'quiqqer/system', 'login' ) ?>"
+            />
         </div>
 
     </form>

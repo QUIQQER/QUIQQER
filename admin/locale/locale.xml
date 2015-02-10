@@ -2,6 +2,15 @@
 
     <!--general locales -->
     <groups name="quiqqer/system" datatype="js,php">
+        <locale name="logout">
+            <de><![CDATA[Abmelden]]></de>
+            <en><![CDATA[Logout]]></en>
+        </locale>
+        <locale name="login">
+            <de><![CDATA[Anmelden]]></de>
+            <en><![CDATA[Login]]></en>
+        </locale>
+
         <locale name="yes">
             <de><![CDATA[Ja]]></de>
             <en><![CDATA[Yes]]></en>
@@ -352,14 +361,6 @@
         <locale name="development.info">
             <de><![CDATA[System ist im Entwicklungs-Modus]]></de>
             <en><![CDATA[System is in development mode]]></en>
-        </locale>
-        <locale name="logout">
-            <de><![CDATA[Abmelden]]></de>
-            <en><![CDATA[Logout]]></en>
-        </locale>
-        <locale name="login">
-            <de><![CDATA[Anmelden]]></de>
-            <en><![CDATA[Login]]></en>
         </locale>
 
         <!-- contextmenu -->
