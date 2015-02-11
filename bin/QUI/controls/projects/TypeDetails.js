@@ -164,7 +164,7 @@ define('controls/projects/TypeDetails', [
                 Entry.addClass( 'qui-type-details-entry-isPlugin' );
                 Entry.set( 'data-plugin', data.plugin );
 
-                Entry.addEvent('click', function()
+                Entry.addEvent('click', function(event)
                 {
                     var Elm = event.target;
 
