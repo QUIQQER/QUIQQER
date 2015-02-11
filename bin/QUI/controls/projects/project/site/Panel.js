@@ -400,7 +400,7 @@ define('controls/projects/project/site/Panel', [
                 'html',
 
                 '<div class="qui-panel-dataRestore">' +
-                    '<p>Es wurde nicht gespeicherte Daten der Seite #'+ Site.getId() +' gefunden.</p>'+
+                    '<p>Es wurden nicht gespeicherte Daten der Seite #'+ Site.getId() +' gefunden.</p>'+
                     '<p>Sollen die Daten wieder hergestellt werden?</p>' +
                 '</div>'
             );
