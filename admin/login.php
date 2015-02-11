@@ -238,7 +238,11 @@
 
 </head>
 <body>
+<?php
 
+    QUI::getLocale()->setCurrent( 'de' );
+
+?>
 <div class="container">
     <form action="" method="POST" name="login">
 
