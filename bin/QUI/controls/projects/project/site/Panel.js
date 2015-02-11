@@ -174,7 +174,8 @@ define('controls/projects/project/site/Panel', [
                 data.lang
             );
 
-            this.$Site = Project.get( data.id );
+            this.$Site      = Project.get( data.id );
+            this.$delayTest = 0;
 
             return this;
         },
@@ -199,15 +200,39 @@ define('controls/projects/project/site/Panel', [
         {
             this.refresh();
 
-
             if ( this.getActiveCategory() )
             {
                 this.$onCategoryEnter( this.getActiveCategory() );
+                return;
+            }
 
-            } else
+            if ( this.getCategoryBar().firstChild() )
             {
                 this.getCategoryBar().firstChild().click();
+                return;
             }
+
+            // if dom is not loaded, we wait 200ms
+            (function()
+            {
+                if ( this.$delayTest > 10 )
+                {
+                    QUI.getMessageHandler(function(MH)
+                    {
+                        MH.addError(
+                            'Seitenpanel mit der Seiten ID #'+ this.getSite().getId() +
+                            ' konnte nicht geladen werden. Das Panel wurde wieder geschlossen'
+                        );
+                    });
+
+                    this.destroy();
+                    return;
+                }
+
+                this.$delayTest++;
+                this.load();
+
+            }).delay( 200, this );
         },
 
         /**
@@ -356,14 +381,6 @@ define('controls/projects/project/site/Panel', [
                     self.addCategory( Category );
                 }
 
-                Site.addEvents({
-                    onLoad       : self.load,
-                    onActivate   : self.$onSiteActivate,
-                    onDeactivate : self.$onSiteDeactivate,
-                    onSave       : self.$onSiteSave,
-                    onDelete     : self.$onSiteDelete
-                });
-
                 if ( isLocked ) {
                     self.setLocked();
                 }
@@ -380,6 +397,14 @@ define('controls/projects/project/site/Panel', [
         $onInject : function()
         {
             var Site = this.getSite();
+
+            Site.addEvents({
+                onLoad       : this.load,
+                onActivate   : this.$onSiteActivate,
+                onDeactivate : this.$onSiteDeactivate,
+                onSave       : this.$onSiteSave,
+                onDelete     : this.$onSiteDelete
+            });
 
             if ( !Site.hasWorkingStorage() )
             {

@@ -87,7 +87,7 @@ define('classes/projects/project/Site', [
             var params = this.ajaxParams(),
                 Site   = this;
 
-            Ajax.get('ajax_site_get', function(result, Request)
+            Ajax.get('ajax_site_get', function(result)
             {
                 Site.setAttributes( result.attributes );
                 Site.clearWorkingStorage();
@@ -100,7 +100,7 @@ define('classes/projects/project/Site', [
                 Site.fireEvent( 'load', [ Site ] );
 
                 if ( typeof onfinish === 'function' ) {
-                    onfinish( Site, Request );
+                    onfinish( Site );
                 }
             }, params);
 
