@@ -294,17 +294,25 @@ div.pGroup {
 
 .omnigrid div.pDiv select {
     font-size:10px;
+    line-height: 14px;
     margin-top:2px;
     padding: 2px 5px;
 }
 
 .omnigrid div.pDiv input {
-    vertical-align: text-top;
-    position: relative;
-    top: 2px;
     font-size:10px;
     float: left;
+    line-height: 14px;
     padding: 2px 5px;
+    position: relative;
+    top: 2px;
+    vertical-align: text-top;
+}
+
+.omnigrid div.pDiv span {
+    float: left;
+    line-height: 24px;
+    padding: 0 2px;
 }
 
 .omnigrid div.pDiv .btnseparator{

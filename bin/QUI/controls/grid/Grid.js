@@ -193,8 +193,7 @@ define('controls/grid/Grid', [
         // API
         reset : function()
         {
-            var t = this,
-                o = t.getAttributes();
+            var t = this;
 
             t.renderData();
 
@@ -1234,11 +1233,17 @@ define('controls/grid/Grid', [
                 options.total   = data.total;
                 options.maxpage = Math.ceil(options.total/options.perPage);
 
-                container.getElements('div.pDiv input').set('value', data.page);
+                var cPage = container.getElements('div.pDiv input.cpage');
+
+                cPage.set('value', data.page);
+                cPage.setStyle( 'width', 32 );
+
                 var to = (data.page * options.perPage) > data.total ? data.total : (data.page*options.perPage);
 
-                container.getElements('div.pDiv .pPageStat').set('html', ((data.page-1)*options.perPage+1)+'..'+to+' / '+data.total);
-                container.getElements('div.pDiv .pcontrol span').set('html', options.maxpage);
+                container.getElements('div.pDiv .pPageStat')
+                         .set('html', ((data.page-1)*options.perPage+1) +'<span>..</span>'+ to +'<span> / </span>'+ data.total);
+
+                cPage.getNext( 'span.cpageMax' ).set( 'html', options.maxpage );
             }
 
             if ( cm && this.$columnModel != cm )
@@ -1945,7 +1950,7 @@ define('controls/grid/Grid', [
                 this.ulBody.appendChild( li );
 
                 if (this.getAttribute('tooltip')) {
-                    this.getAttribute('tooltip').attach( tr );
+                    this.getAttribute('tooltip').attach( li );
                 }
 
                 if (this.getAttribute('accordion') &&
@@ -2547,10 +2552,16 @@ define('controls/grid/Grid', [
                     h = h +'</select></div>';
 
                     h = h +'<div class="btnseparator"></div><div class="pGroup"><div class="pFirst pButton"></div><div class="pPrev pButton"></div></div>';
-                    h = h +'<div class="btnseparator"></div><div class="pGroup"><span class="pcontrol"><input class="cpage" type="text" value="1" size="4" style="text-align:center"/> / <span></span></span></div>';
+                    h = h +'<div class="btnseparator"></div><div class="pGroup">' +
+                                '<span class="pcontrol">' +
+                                    '<input class="cpage" type="text" value="1" size="4" style="text-align:center" /> ' +
+                                    '<span>/</span> ' +
+                                    '<span class="cpageMax"></span>' +
+                                '</span>' +
+                            '</div>';
                     h = h +'<div class="btnseparator"></div><div class="pGroup"><div class="pNext pButton"></div><div class="pLast pButton"></div></div>';
                     h = h +'<div class="btnseparator"></div><div class="pGroup"><div class="pReload pButton"></div></div>';
-                    h = h +'<div class="btnseparator"></div><div class="pGroup"><span class="pPageStat"></div>';
+                    h = h +'<div class="btnseparator"></div><div class="pGroup"><span class="pPageStat"></span></div>';
                 }
 
                 if ( options.multipleSelection )
@@ -2574,7 +2585,7 @@ define('controls/grid/Grid', [
                                 h = h +'style="" ';
                                 h = h +'placeholder="Filter..." ';
                             h = h +'/>';
-                            h = h +'<span>';
+                        h = h +'<span>';
                     h = h +'</div>';
                 }
 
@@ -2908,12 +2919,8 @@ define('controls/grid/Grid', [
         // API
         filter : function(key)
         {
-            var col     = 0,
-                options = this.getAttributes(),
-
-                filterHide        = this.getAttribute( 'filterHide' ),
-                filterHideCls     = this.getAttribute( 'filterHideCls' ),
-                filterSelectedCls = this.getAttribute( 'filterSelectedCls' );
+            var filterHide    = this.getAttribute( 'filterHide' ),
+                filterHideCls = this.getAttribute( 'filterHideCls' );
 
             if ( !key.length || key === '' )
             {
