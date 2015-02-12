@@ -39,6 +39,10 @@
             <de><![CDATA[Neuen Benutzer anlegen]]></de>
             <en><![CDATA[Create new user]]></en>
         </locale>
+        <locale name="users.panel.btn.edit">
+            <de><![CDATA[Benutzer bearbeiten]]></de>
+            <en><![CDATA[Edit user]]></en>
+        </locale>
         <locale name="users.panel.btn.delete">
             <de><![CDATA[Benutzer löschen]]></de>
             <en><![CDATA[Delete user]]></en>
