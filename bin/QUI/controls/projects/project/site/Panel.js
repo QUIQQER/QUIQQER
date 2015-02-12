@@ -94,14 +94,17 @@ define('controls/projects/project/site/Panel', [
         ],
 
         options : {
-            id        : 'projects-site-panel',
-            container : false
+            id            : 'projects-site-panel',
+            container     : false,
+            editorPeriode : 2000
         },
 
         initialize : function(Site, options)
         {
             this.$Site            = null;
             this.$CategoryControl = null;
+
+            this.$editorPeriodicalSave = false; // delay for the wysiwyg editor, to save to the locale storage
 
             if ( typeOf( Site ) === 'classes/projects/project/Site' )
             {
@@ -463,6 +466,7 @@ define('controls/projects/project/site/Panel', [
                         });
 
                         Site.restoreWorkingStorage();
+                        Site.clearWorkingStorage();
                         self.load();
                     }
                 }
@@ -995,6 +999,7 @@ define('controls/projects/project/site/Panel', [
                     callback();
                 }
 
+                this.$clearEditorPeriodicalSave();
                 this.Loader.hide();
                 return;
             }
@@ -1011,6 +1016,7 @@ define('controls/projects/project/site/Panel', [
                     callback();
                 }
 
+                this.$clearEditorPeriodicalSave();
                 this.Loader.hide();
                 return;
             }
@@ -1404,6 +1410,8 @@ define('controls/projects/project/site/Panel', [
                             Editor.addCSS( result[ i ] );
                         }
 
+                        self.$startEditorPeriodicalSave();
+
                         Editor.addEvent( 'onLoaded', self.$onEditorLoad );
 
                     }, {
@@ -1433,6 +1441,51 @@ define('controls/projects/project/site/Panel', [
         $onEditorDestroy : function()
         {
             this.setAttribute( 'Editor', false );
+        },
+
+        /**
+         * Start the periodical editor save
+         */
+        $startEditorPeriodicalSave : function()
+        {
+            if ( this.$editorPeriodicalSave ) {
+                this.$clearEditorPeriodicalSave();
+            }
+
+            var Category  = this.getActiveCategory(),
+                attribute = false;
+
+            if ( Category.getAttribute( 'name' ) === 'content' ) {
+                attribute = 'content';
+            }
+
+            if ( Category.getAttribute( 'type' ) == 'wysiwyg' ) {
+                attribute = Category.getAttribute('name');
+            }
+
+            this.$editorPeriodicalSave = (function(attr)
+            {
+                var Editor = this.getAttribute('Editor');
+
+                if ( !Editor ) {
+                    return;
+                }
+
+                this.getSite().setAttribute( attr, Editor.getContent() );
+
+            }).periodical( this.getAttribute('editorPeriode'), this, [ attribute ] );
+        },
+
+        /**
+         * clear / stop the periodical editor save
+         */
+        $clearEditorPeriodicalSave : function()
+        {
+            if ( this.$editorPeriodicalSave )
+            {
+                clearInterval( this.$editorPeriodicalSave );
+                this.$editorPeriodicalSave = false;
+            }
         },
 
         /**
