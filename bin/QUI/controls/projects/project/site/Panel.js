@@ -995,11 +995,12 @@ define('controls/projects/project/site/Panel', [
                     this.getAttribute( 'Editor' ).getContent()
                 );
 
+                this.$clearEditorPeriodicalSave();
+
                 if ( typeof callback === 'function' ) {
                     callback();
                 }
 
-                this.$clearEditorPeriodicalSave();
                 this.Loader.hide();
                 return;
             }
@@ -1012,11 +1013,12 @@ define('controls/projects/project/site/Panel', [
                     this.getAttribute( 'Editor' ).getContent()
                 );
 
+                this.$clearEditorPeriodicalSave();
+
                 if ( typeof callback === 'function' ) {
                     callback();
                 }
 
-                this.$clearEditorPeriodicalSave();
                 this.Loader.hide();
                 return;
             }
@@ -1085,6 +1087,12 @@ define('controls/projects/project/site/Panel', [
                         callback();
                     }
                 });
+
+            } else
+            {
+                if ( typeof callback === 'function' ) {
+                    callback();
+                }
             }
 
             if ( this.$CategoryControl )
