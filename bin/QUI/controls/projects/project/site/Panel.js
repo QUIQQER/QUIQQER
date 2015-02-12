@@ -25,6 +25,7 @@ define('controls/projects/project/site/Panel', [
     'Projects',
     'Ajax',
     'qui/controls/buttons/Button',
+    'qui/controls/windows/Confirm',
     'qui/utils/Form',
     'qui/utils/Elements',
     'utils/Controls',
@@ -43,12 +44,13 @@ define('controls/projects/project/site/Panel', [
         Projects     = arguments[ 2 ],
         Ajax         = arguments[ 3 ],
         QUIButton    = arguments[ 4 ],
-        QUIFormUtils = arguments[ 5 ],
-        QUIElmUtils  = arguments[ 6 ],
-        ControlUtils = arguments[ 7 ],
-        PanelUtils   = arguments[ 8 ],
-        SiteUtils    = arguments[ 9 ],
-        Locale       = arguments[ 10 ];
+        QUIConfirm   = arguments[ 5 ],
+        QUIFormUtils = arguments[ 6 ],
+        QUIElmUtils  = arguments[ 7 ],
+        ControlUtils = arguments[ 8 ],
+        PanelUtils   = arguments[ 9 ],
+        SiteUtils    = arguments[ 10 ],
+        Locale       = arguments[ 11 ];
 
     var lg = 'quiqqer/system';
 
@@ -583,10 +585,11 @@ define('controls/projects/project/site/Panel', [
         {
             var self = this;
 
-            this.$onCategoryLeave( this.getActiveCategory() );
-
-            this.getSite().save(function() {
-                self.load();
+            this.$onCategoryLeave( this.getActiveCategory(), function()
+            {
+                self.getSite().save(function() {
+                    self.load();
+                });
             });
         },
 
@@ -823,11 +826,11 @@ define('controls/projects/project/site/Panel', [
                         new QUIButton({
                             text   : 'Trotzdem freischalten',
                             styles : {
-                                clear : 'both',
+                                clear   : 'both',
                                 display : 'block',
                                 'float' : 'none',
-                                margin : '10px auto',
-                                width : 200
+                                margin  : '10px auto',
+                                width   : 200
                             },
                             events :
                             {
@@ -957,7 +960,7 @@ define('controls/projects/project/site/Panel', [
                     this.getAttribute( 'Editor' ).getContent()
                 );
 
-                if ( typeof callback !== 'undefined' ) {
+                if ( typeof callback === 'function' ) {
                     callback();
                 }
 
@@ -973,7 +976,7 @@ define('controls/projects/project/site/Panel', [
                     this.getAttribute( 'Editor' ).getContent()
                 );
 
-                if ( typeof callback !== 'undefined' ) {
+                if ( typeof callback === 'function' ) {
                     callback();
                 }
 
@@ -984,7 +987,7 @@ define('controls/projects/project/site/Panel', [
             // form unload
             if ( !Body.getElement( 'form' ) )
             {
-                if ( typeof callback !== 'undefined' ) {
+                if ( typeof callback === 'function' ) {
                     callback();
                 }
 
@@ -1009,7 +1012,7 @@ define('controls/projects/project/site/Panel', [
                 Site.setAttribute( 'nav_hide', elements.nav_hide.checked );
                 Site.setAttribute( 'type', elements.type.value );
 
-                if ( typeof callback !== 'undefined' ) {
+                if ( typeof callback === 'function' ) {
                     callback();
                 }
 
@@ -1041,7 +1044,7 @@ define('controls/projects/project/site/Panel', [
                 {
                     eval( onunload +'( Category, self );' );
 
-                    if ( typeof callback !== 'undefined' ) {
+                    if ( typeof callback === 'function' ) {
                         callback();
                     }
                 });
@@ -1062,7 +1065,49 @@ define('controls/projects/project/site/Panel', [
          */
         $onPanelButtonClick : function(Btn)
         {
-            var Panel = this; // maybe in eval
+            var Panel = this,
+                Site  = Panel.getSite(); // maybe in eval
+
+            if ( Btn.getAttribute( 'name' ) === 'status' )
+            {
+                this.$onCategoryLeave( this.getActiveCategory(), function()
+                {
+                    // check if site must be saved
+                    if ( !Site.hasWorkingStorage() )
+                    {
+                        eval( Btn.getAttribute( '_onclick' ) +'();' );
+                        return;
+                    }
+
+                    new QUIConfirm({
+                        title   : 'Die Seite besitzt Änderungen',
+                        content : 'Die Seite besitzt Änderungen.<br />Möchten Sie diese Änderungen auch speichern?',
+                        maxHeight : 200,
+                        maxWidth  : 500,
+                        ok_button : {
+                            text : 'Änderungen auch speichern'
+                        },
+                        cancel_button : {
+                            text : 'Status nur ändern'
+                        },
+                        events :
+                        {
+                            onSubmit : function()
+                            {
+                                Site.save(function() {
+                                    eval( Btn.getAttribute( '_onclick' ) +'();' );
+                                });
+                            },
+
+                            onCancel : function() {
+                                eval( Btn.getAttribute( '_onclick' ) +'();' );
+                            }
+                        }
+                    }).open();
+                });
+
+                return;
+            }
 
             eval( Btn.getAttribute( '_onclick' ) +'();' );
         },
@@ -1247,6 +1292,8 @@ define('controls/projects/project/site/Panel', [
                 'text'      : Status.getAttribute( 'dtext' ),
                 '_onclick'  : 'Panel.getSite().deactivate'
             });
+
+            this.Loader.hide();
         },
 
         /**
@@ -1265,6 +1312,8 @@ define('controls/projects/project/site/Panel', [
                 'text'      : Status.getAttribute( 'atext' ),
                 '_onclick'  : 'Panel.getSite().activate'
             });
+
+            this.Loader.hide();
         },
 
         /**

@@ -222,11 +222,11 @@ define('classes/projects/project/Site', [
 
             Ajax.post('ajax_site_activate', function(result)
             {
-                if ( result )
-                {
+                if ( result ) {
                     Site.setAttribute( 'active', 1 );
-                    Site.clearWorkingStorage();
                 }
+
+                Site.clearWorkingStorage();
 
                 if ( typeof onfinish === 'function' ) {
                     onfinish( result );
@@ -255,11 +255,11 @@ define('classes/projects/project/Site', [
 
             Ajax.post('ajax_site_deactivate', function(result)
             {
-                if ( result === 0 )
-                {
+                if ( result === 0 ) {
                     Site.setAttribute( 'active', 0 );
-                    Site.clearWorkingStorage();
                 }
+
+                Site.clearWorkingStorage();
 
                 if ( typeof onfinish === 'function' ) {
                     onfinish( result );
@@ -342,6 +342,7 @@ define('classes/projects/project/Site', [
                     onfinish( result );
                 }
 
+                Site.clearWorkingStorage();
                 Site.fireEvent( 'delete', [ Site ] );
 
             }, this.ajaxParams());
@@ -619,6 +620,7 @@ define('classes/projects/project/Site', [
 
         /**
          * Set an site attribute
+         * -> bool vars converted to 1 and 0
          *
          * @method classes/projects/project/Site#setAttribute
          *
@@ -627,9 +629,25 @@ define('classes/projects/project/Site', [
          */
         setAttribute : function(k, v)
         {
+            // convert bool to 1 and 0
+            if ( typeOf( v ) === 'boolean' ) {
+                v = v ? 1 : 0;
+            }
+
+            // if the value not changed, do nothing
+            if ( k in this.options.attributes &&
+                 v == this.options.attributes[ k ] )
+            {
+                return;
+            }
+
             this.options.attributes[ k ] = v;
 
             if ( this.$loaded === false ) {
+                return;
+            }
+
+            if ( k == 'id' ) {
                 return;
             }
 
