@@ -4,6 +4,7 @@
  * Has the user the permission?
  *
  * @param $permission - name of the permission
+ * @return false|string
  */
 function ajax_permissions_session_hasPermission($permission)
 {

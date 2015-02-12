@@ -140,6 +140,10 @@ class Permission
             $User = QUI::getUserBySession();
         }
 
+        if ( $User->isSU() ) {
+            return true;
+        }
+
         self::checkUser( $User );
 
         $Manager     = QUI::getPermissionManager();
@@ -161,14 +165,6 @@ class Permission
             if ( isset( $permissions[ $perm ] ) && !empty( $permissions[ $perm ] ) ) {
                 return $permissions[ $perm ];
             }
-        }
-
-        // defaults
-        $Manager  = QUI::getPermissionManager();
-        $permData = $Manager->getPermissionData( $perm );
-
-        if ( isset( $permData['defaultvalue'] ) && !empty( $permData['defaultvalue'] ) ) {
-            return $permData['defaultvalue'];
         }
 
 

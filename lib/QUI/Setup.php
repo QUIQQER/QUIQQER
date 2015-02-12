@@ -137,6 +137,9 @@ class Setup
         // import permissions
         Update::importAllPermissionsXMLs();
 
+        Rights\Manager::importPermissionsForGroups();
+
+
         // setup set the last update date
         QUI::getPackageManager()->setLastUpdateDate();
 
