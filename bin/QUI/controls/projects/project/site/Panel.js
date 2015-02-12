@@ -554,9 +554,11 @@ define('controls/projects/project/site/Panel', [
          */
         openSort : function()
         {
-            var Site = this.getSite();
+            var self = this,
+                Site = this.getSite(),
+                Sort = false;
 
-            this.createSheet({
+            var Sheets = this.createSheet({
                 title : Locale.get( lg, 'projects.project.site.panel.sort.title', {
                     id    : Site.getId(),
                     title : Site.getAttribute('title'),
@@ -569,11 +571,41 @@ define('controls/projects/project/site/Panel', [
                         require([
                             'controls/projects/project/site/SiteChildrenSort'
                         ], function(SiteSort) {
-                            new SiteSort( Site ).inject( Sheet.getContent() );
+                            Sort = new SiteSort( Site ).inject( Sheet.getContent() );
                         });
                     }
                 }
-            }).show();
+            });
+
+            Sheets.clearButtons();
+
+            Sheets.addButton({
+                name      : 'sortSave',
+                textimage : 'icon-save',
+                text      : Locale.get( lg, 'projects.project.site.childrensort.save' ),
+                events    :
+                {
+                    onClick : function(Btn)
+                    {
+                        if ( !Sort ) {
+                            return;
+                        }
+
+                        Btn.setAttribute( 'textimage', 'icon-refresh icon-spin' );
+
+                        Sort.save(function()
+                        {
+                            Btn.setAttribute( 'textimage', 'icon-save' );
+
+                            Sheets.hide(function() {
+                                Sheets.destroy();
+                            });
+                        });
+                    }
+                }
+            });
+
+            Sheets.show();
         },
 
         /**
