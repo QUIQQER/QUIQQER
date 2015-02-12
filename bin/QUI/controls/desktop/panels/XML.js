@@ -36,6 +36,7 @@ define('controls/desktop/panels/XML', [
 
         Binds : [
             '$onCreate',
+            '$onCategoryActive',
             'loadCategory',
             'unloadCategory',
             'save'
@@ -128,8 +129,7 @@ define('controls/desktop/panels/XML', [
                     );
 
                     Category.addEvents({
-                        onActive : self.loadCategory,
-                        onNormal : self.unloadCategory
+                        onActive : self.$onCategoryActive
                     });
 
                     self.addCategory( Category );
@@ -194,18 +194,13 @@ define('controls/desktop/panels/XML', [
                     result = '';
                 }
 
-                Body.set(
-                    'html',
-
-                    '<form class="qui-xml-panel">'+
-                        result +
-                    '</form>'
-                );
+                Body.set( 'html', '<form class="qui-xml-panel">'+ result + '</form>' );
 
                 // set the form
                 var i, len, Elm, value;
 
-                var elements = Body.getElement( 'form' ).elements,
+                var Form     = Body.getElement( 'form'),
+                    elements = Form.elements,
                     config   = self.$config;
 
                 for ( i = 0, len = elements.length; i < len; i++)
@@ -246,11 +241,11 @@ define('controls/desktop/panels/XML', [
 
                             if ( self.getContent().get( 'html' ) === '' )
                             {
-                                self.$Control.inject( Body );
+                                self.$Control.inject( Form );
 
                             } else
                             {
-                                self.$Control.imports( Body );
+                                self.$Control.imports( Form );
                             }
 
                         } else
@@ -295,26 +290,28 @@ define('controls/desktop/panels/XML', [
                 Form   = Body.getElement( 'form' ),
                 values = {};
 
-            for ( i = 0, len = Form.elements.length; i < len; i++ )
+            if ( Form )
             {
-                Elm  = Form.elements[ i ];
-                name = Elm.name;
-
-                if ( Elm.type == 'radio' ||
-                     Elm.type == 'checkbox' )
+                for ( i = 0, len = Form.elements.length; i < len; i++ )
                 {
-                    if ( Elm.checked )
+                    Elm = Form.elements[i];
+                    name = Elm.name;
+
+                    if ( Elm.type == 'radio' || Elm.type == 'checkbox' )
                     {
-                        values[ name ] = 1;
-                    } else
-                    {
-                        values[ name ] = 0;
+                        if ( Elm.checked )
+                        {
+                            values[name] = 1;
+                        } else
+                        {
+                            values[name] = 0;
+                        }
+
+                        continue;
                     }
 
-                    continue;
+                    values[name] = Elm.value;
                 }
-
-                values[ name ] = Elm.value;
             }
 
 
@@ -347,6 +344,17 @@ define('controls/desktop/panels/XML', [
                 this.$Control.destroy();
                 this.$Control = null;
             }
+        },
+
+        /**
+         * event : click on category button
+         *
+         * @param {Object} Category - qui/controls/buttons/Button
+         */
+        $onCategoryActive : function(Category)
+        {
+            this.unloadCategory();
+            this.loadCategory( Category );
         },
 
         /**

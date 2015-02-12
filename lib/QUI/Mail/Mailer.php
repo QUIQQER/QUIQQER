@@ -260,7 +260,12 @@ class Mailer extends QUI\QDOM
      */
     public function addRecipient($email)
     {
-        $this->_recipients[] = $email;
+        $email = trim( $email );
+        $email = explode(',', $email);
+
+        foreach ( $email as $mail ) {
+            $this->_recipients[] = $mail;
+        }
     }
 
     /**
@@ -269,7 +274,12 @@ class Mailer extends QUI\QDOM
      */
     public function addReplyTo($email)
     {
-        $this->_reply[] = $email;
+        $email = trim( $email );
+        $email = explode(',', $email);
+
+        foreach ( $email as $mail ) {
+            $this->_reply[] = $mail;
+        }
     }
 
     /**
@@ -278,7 +288,12 @@ class Mailer extends QUI\QDOM
      */
     public function addCC($email)
     {
-        $this->_cc[] = $email;
+        $email = trim( $email );
+        $email = explode(',', $email);
+
+        foreach ( $email as $mail ) {
+            $this->_cc[] = $mail;
+        }
     }
 
     /**
@@ -287,7 +302,12 @@ class Mailer extends QUI\QDOM
      */
     public function addBCC($email)
     {
-        $this->_bcc[] = $email;
+        $email = trim( $email );
+        $email = explode(',', $email);
+
+        foreach ( $email as $mail ) {
+            $this->_bcc[] = $mail;
+        }
     }
 
     /**
@@ -295,7 +315,7 @@ class Mailer extends QUI\QDOM
      * @param String $file - path to the file
      * @return Bool
      */
-    public function addAttachments($file)
+    public function addAttachment($file)
     {
         if ( !file_exists( $file ) ) {
             return false;
@@ -303,5 +323,24 @@ class Mailer extends QUI\QDOM
 
         $this->_attachments[] = $file;
         return true;
+    }
+
+    /**
+     * Add a files to the mail
+     * @param Array|String $files - array with file paths eq:
+     *                              addAttachments( array('path/file1.end', 'path/file2.end') )
+     *                              addAttachments( 'path/file1.end' )
+     */
+    public function addAttachments($files)
+    {
+        if ( !is_array( $files ) )
+        {
+            $this->addAttachment( $files );
+            return;
+        }
+
+        foreach ( $files as $file ) {
+            $this->addAttachment( $file );
+        }
     }
 }

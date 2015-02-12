@@ -6,7 +6,7 @@
  * @author www.pcsg.de (Henning Leutz)
  */
 
-define([
+define('controls/system/settings/Config', [
 
     'qui/QUI',
     'qui/controls/Control',
