@@ -554,8 +554,7 @@ define('controls/projects/project/site/Panel', [
          */
         openSort : function()
         {
-            var self = this,
-                Site = this.getSite(),
+            var Site = this.getSite(),
                 Sort = false;
 
             var Sheets = this.createSheet({
