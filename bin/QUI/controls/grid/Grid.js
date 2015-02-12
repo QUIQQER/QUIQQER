@@ -2316,7 +2316,7 @@ define('controls/grid/Grid', [
                             this.disable();
                         }.bind( Item ),
 
-                        onNormalize : function() {
+                        onNormal : function() {
                             this.enable();
                         }.bind( Item ),
 

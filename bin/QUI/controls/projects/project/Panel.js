@@ -19,7 +19,7 @@
  *
  */
 
-define([
+define('controls/projects/project/Panel', [
 
     'qui/controls/desktop/Panel',
     'Projects',
