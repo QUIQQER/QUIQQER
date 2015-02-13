@@ -1238,10 +1238,16 @@ define('controls/grid/Grid', [
                 cPage.set('value', data.page);
                 cPage.setStyle( 'width', 32 );
 
-                var to = (data.page * options.perPage) > data.total ? data.total : (data.page*options.perPage);
+                var to   = (data.page * options.perPage) > data.total ? data.total : (data.page*options.perPage),
+                    page = ((data.page-1)*options.perPage+1);
 
-                container.getElements('div.pDiv .pPageStat')
-                         .set('html', ((data.page-1)*options.perPage+1) +'<span>..</span>'+ to +'<span> / </span>'+ data.total);
+                var stats = '<span>'+ page +'</span>' +
+                            '<span>..</span>' +
+                            '<span>'+ to +'</span>' +
+                            '<span> / </span>' +
+                            '<span>'+ data.total +'</span>';
+
+                container.getElements('div.pDiv .pPageStat').set('html', stats);
 
                 cPage.getNext( 'span.cpageMax' ).set( 'html', options.maxpage );
             }
