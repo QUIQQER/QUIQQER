@@ -162,6 +162,7 @@ define([
                     method   : method,
                     url      : this.$url,
                     async    : false,
+                    timeout  : 5000,
                     events   :
                     {
                         onCancel : function(Request)
