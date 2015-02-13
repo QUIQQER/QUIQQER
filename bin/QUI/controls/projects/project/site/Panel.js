@@ -1081,24 +1081,30 @@ define('controls/projects/project/site/Panel', [
             {
                 require([ onunloadRequire ], function()
                 {
+                    if ( self.$CategoryControl )
+                    {
+                        self.$CategoryControl.destroy();
+                        self.$CategoryControl = null;
+                    }
+
+
                     eval( onunload +'( Category, self );' );
 
                     if ( typeof callback === 'function' ) {
                         callback();
                     }
                 });
-
-            } else
-            {
-                if ( typeof callback === 'function' ) {
-                    callback();
-                }
             }
+
 
             if ( this.$CategoryControl )
             {
                 this.$CategoryControl.destroy();
                 this.$CategoryControl = null;
+            }
+
+            if ( typeof callback === 'function' ) {
+                callback();
             }
         },
 

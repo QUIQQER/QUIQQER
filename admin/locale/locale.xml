@@ -896,7 +896,7 @@
             <de><![CDATA[Sie befinden sich hier:]]></de>
             <en><![CDATA[You are here:]]></en>
         </locale>
-        
+
         <!-- Contact  -->
         <locale name="control.contact.name">
             <de><![CDATA[Name]]></de>
