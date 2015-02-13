@@ -68,7 +68,8 @@ define('controls/projects/TypeWindow', [
 
             this.$Sitemap = null;
             this.$Elm     = null;
-            this.$Buttons = null;
+
+            this.$HeaderButtons = null;
 
             this.$ShowSitemap = null;
             this.$ShowDetails = null;
@@ -105,8 +106,8 @@ define('controls/projects/TypeWindow', [
 
             this.$Elm.addClass( 'qui-type-window' );
 
-            this.$Buttons = this.$Elm.getElement( '.qui-type-window-buttons' );
-            this.$CC      = this.$Elm.getElement( '.qui-type-window-cc' );
+            this.$HeaderButtons = this.$Elm.getElement( '.qui-type-window-buttons' );
+            this.$CC = this.$Elm.getElement( '.qui-type-window-cc' );
 
             Content.setStyles({
                 padding : 0
@@ -118,7 +119,7 @@ define('controls/projects/TypeWindow', [
                 events    : {
                     click : this.sitemapView
                 }
-            }).inject( this.$Buttons );
+            }).inject( this.$HeaderButtons );
 
             this.$ShowDetails = new QUIButton({
                 textimage : 'icon-file-text',
@@ -126,7 +127,7 @@ define('controls/projects/TypeWindow', [
                 events    : {
                     click : this.detailsView
                 }
-            }).inject( this.$Buttons );
+            }).inject( this.$HeaderButtons );
 
 
             if ( this.getAttribute( 'message')  )
@@ -174,22 +175,26 @@ define('controls/projects/TypeWindow', [
 
             this.$CC.set( 'html', '' );
 
+            this.setAttribute( 'maxWidth', 400 );
 
-            require(['controls/projects/TypeSitemap'], function(TyeSitemap)
+            this.resize(true, function()
             {
-                self.$Sitemap = new TyeSitemap({
-                    project  : self.getAttribute( 'project' ),
-                    multible : self.getAttribute( 'multible' ),
-                    pluginsSelectable : self.getAttribute( 'pluginsSelectable' ),
-                    events :
-                    {
-                        onLoad : function() {
-                            self.Loader.hide();
+                require(['controls/projects/TypeSitemap'], function (TyeSitemap)
+                {
+                    self.$Sitemap = new TyeSitemap({
+                        project  : self.getAttribute( 'project' ),
+                        multible : self.getAttribute( 'multible' ),
+                        pluginsSelectable : self.getAttribute( 'pluginsSelectable' ),
+                        events :
+                        {
+                            onLoad: function () {
+                                self.Loader.hide();
+                            }
                         }
-                    }
-                }).inject( self.$CC );
+                    }).inject( self.$CC );
 
-                self.$Sitemap.open();
+                    self.$Sitemap.open();
+                });
             });
         },
 
@@ -207,22 +212,26 @@ define('controls/projects/TypeWindow', [
 
             this.$CC.set( 'html', '' );
 
+            this.setAttribute( 'maxWidth', 700 );
 
-            require(['controls/projects/TypeDetails'], function(TypeDetails)
+            this.resize(true, function()
             {
-                self.$Sitemap = new TypeDetails({
-                    project  : self.getAttribute( 'project' ),
-                    multible : self.getAttribute( 'multible' ),
-                    pluginsSelectable : self.getAttribute( 'pluginsSelectable' ),
-                    events :
-                    {
-                        onLoad : function() {
-                            self.Loader.hide();
+                require(['controls/projects/TypeDetails'], function(TypeDetails)
+                {
+                    self.$Sitemap = new TypeDetails({
+                        project  : self.getAttribute( 'project' ),
+                        multible : self.getAttribute( 'multible' ),
+                        pluginsSelectable : self.getAttribute( 'pluginsSelectable' ),
+                        events :
+                        {
+                            onLoad : function() {
+                                self.Loader.hide();
+                            }
                         }
-                    }
-                }).inject( self.$CC );
+                    }).inject( self.$CC );
 
-                self.$Sitemap.open();
+                    self.$Sitemap.open();
+                });
             });
         }
     });

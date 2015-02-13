@@ -36,8 +36,14 @@
     width: 40px;
 }
 
+.qui-type-details-entry-title {
+    font-size: 15px;
+    font-weight: bold;
+}
+
 .qui-type-details-entry-text {
     float: left;
+    font-size: 13px;
     padding: 10px 0;
     width: calc( 100% - 40px );
 }
