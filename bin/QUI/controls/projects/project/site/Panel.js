@@ -1026,14 +1026,14 @@ define('controls/projects/project/site/Panel', [
             // form unload
             if ( !Body.getElement( 'form' ) )
             {
-                if ( typeof callback === 'function' ) {
-                    callback();
-                }
-
                 if ( this.$CategoryControl )
                 {
                     this.$CategoryControl.destroy();
                     this.$CategoryControl = null;
+                }
+
+                if ( typeof callback === 'function' ) {
+                    callback();
                 }
 
                 return;
