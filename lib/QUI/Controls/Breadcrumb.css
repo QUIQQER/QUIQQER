@@ -36,9 +36,23 @@
         padding: 20px 0;
     }
 
+    .quiqqer-breadcrumb-title {
+        padding: 5px;
+    }
+
+    .quiqqer-breadcrumb ul {
+        margin-left: 0;
+    }
+
     .quiqqer-breadcrumb ul,
     .quiqqer-breadcrumb li,
-    .quiqqer-breadcrumb span {
+    .quiqqer-breadcrumb a {
         clear: both;
+        padding: 0;
+        width: 100%;
+    }
+
+    .quiqqer-breadcrumb a {
+        padding: 5px;
     }
 }
