@@ -244,6 +244,16 @@ define('utils/Controls', [
                     }
                 }
 
+                // hasCheckboxLabels
+                var checkboxList = Elm.getElements(
+                    '.data-table label [type="checkbox"]'
+                );
+
+                for ( i = 0, len = checkboxList.length; i < len; i++ ) {
+                    checkboxList[ i ].getParent('label').addClass( 'hasCheckbox' );
+                }
+
+
                 resolve();
             });
         },

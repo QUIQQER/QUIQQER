@@ -490,6 +490,9 @@ class Edit extends Site
 
         } else if ( $this->getAttribute( 'active' ) )
         {
+            // nur bei aktiven seiten das e_date setzen
+            // wenn der cron läuft, darf eine inaktive seite nicht sofort aktiviert werden
+            // daher werden nur aktive seite beachten
             $release_from = date(
                 'Y-m-d H:i:s',
                 strtotime( $this->getAttribute( 'e_date' ) )
