@@ -87,7 +87,11 @@
                     "controls"  : URL_BIN_DIR +'QUI/controls',
                     "utils"     : URL_BIN_DIR +'QUI/utils',
                     "polyfills" : URL_BIN_DIR +'QUI/polyfills',
-                    "Controls"  : URL_BIN_DIR +'Controls'
+                    "Controls"  : URL_BIN_DIR +'Controls',
+
+                    "Ajax"          : URL_BIN_DIR +'QUI/Ajax',
+                    "Locale"        : URL_BIN_DIR +'QUI/Locale',
+                    "UploadManager" : URL_BIN_DIR +'QUI/UploadManager'
                 },
                 waitSeconds : 0,
                 locale      : QUIQQER_USER.lang +"-"+ QUIQQER_USER.lang,
@@ -96,10 +100,7 @@
 
                 map : {
                     '*': {
-                        'css'    : URL_OPT_DIR +'bin/qui/build/qui/lib/css.js',
-                        "Ajax"   : URL_BIN_DIR +'QUI/Ajax.js',
-                        "Locale" : URL_BIN_DIR +'QUI/Locale.js',
-                        "UploadManager" : URL_BIN_DIR +'QUI/UploadManager.js'
+                        'css'    : URL_OPT_DIR +'bin/qui/build/qui/lib/css.js'
                     }
                 }
             });

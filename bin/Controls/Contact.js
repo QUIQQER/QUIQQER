@@ -106,8 +106,7 @@ define('Controls/Contact', [
 
             this.Loader.show();
 
-
-
+            
             Ajax.post('ajax_contact', function(result)
             {
                 if ( result ) {
