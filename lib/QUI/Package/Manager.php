@@ -339,7 +339,7 @@ class Manager extends QUI\QDOM
 
         File::copy(
             $this->_composer_json,
-            $backupDir .'composer_'. date('Y-m-d_H:i:s') .'.json'
+            $backupDir .'composer_'. date('Y-m-d__H-i-s') .'.json'
         );
     }
 
@@ -911,6 +911,7 @@ class Manager extends QUI\QDOM
         $Config->setValue( $server, 'active', $status );
         $Config->save();
 
+        $this->createComposerBackup();
         $this->_createComposerJSON();
     }
 
