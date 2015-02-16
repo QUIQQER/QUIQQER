@@ -52,7 +52,7 @@ class UpdateServer extends QUI\System\Test
             }
         }
 
-        
+
         if ( $composerServer && $updateServer ) {
             return self::STATUS_OK;
         }

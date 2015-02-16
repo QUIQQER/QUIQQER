@@ -43,7 +43,7 @@ use QUI\Utils\System\File as QUIFile;
  * @event onOutput [ String $message ]
  */
 
-class Manager
+class Manager extends QUI\QDOM
 {
     const CACHE_NAME_TYPES = 'qui/packages/types';
 
@@ -124,14 +124,20 @@ class Manager
     /**
      * constructor
      */
-    public function __construct()
+    public function __construct($attributes=array())
     {
+        // defaults
+        $this->setAttributes(array(
+            '--prefer-dist' => true
+        ));
+
         $this->_dir    = OPT_DIR; // CMS_DIR .'packages/';
         $this->_vardir = VAR_DIR .'composer/';
 
         $this->_composer_json = $this->_vardir .'composer.json';
 
         $this->Events = new QUI\Events\Manager();
+        $this->setAttributes( $attributes );
     }
 
     /**
@@ -1186,6 +1192,11 @@ class Manager
         if ( !isset( $params['--working-dir'] ) ) {
             $params['--working-dir'] = $this->_vardir;
         }
+
+        if ( $this->getAttribute( '--prefer-dist' ) ) {
+            $params['--prefer-dist'] = true;
+        }
+
 
         $params = array_merge(array(
             'command' => $command
