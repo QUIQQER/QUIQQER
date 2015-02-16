@@ -441,21 +441,48 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
     /**
      * Return the children ids ( not resursive )
+     * folders first, files seconds
      *
-     * @todo implement order
+     * @param string $order - [optional] order field
      * @return array
      */
-    public function getChildrenIds()
+    public function getChildrenIds($order='name')
     {
         $table     = $this->_Media->getTable();
-        $table_rel = $this->_Media->getTable('relations');
+        $table_rel = $this->_Media->getTable( 'relations' );
 
         // Sortierung
-        $order = 'name';
-
         switch ( $order )
         {
             case 'c_date':
+            case 'c_date ASC':
+            case 'c_date DESC':
+            case 'name ASC':
+            case 'name':
+            case 'name DESC':
+            case 'id':
+            case 'id ASC':
+            case 'id DESC':
+            break;
+
+            default:
+                $order = 'name';
+        }
+
+
+        switch ( $order )
+        {
+            case 'id':
+            case 'id ASC':
+                $order_by = 'find_in_set('. $table .'.type, \'folder\') DESC, '. $table .'.id';
+            break;
+
+            case 'id DESC':
+                $order_by = 'find_in_set('. $table .'.type, \'folder\') DESC, '. $table .'.id DESC';
+            break;
+
+            case 'c_date':
+            case 'c_date ASC':
                 $order_by = 'find_in_set('. $table .'.type, \'folder\') DESC, '. $table .'.c_date';
             break;
 
@@ -463,8 +490,13 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 $order_by = 'find_in_set('. $table .'.type, \'folder\') DESC, '. $table .'.c_date DESC';
             break;
 
+            case 'name ASC':
+                $order_by = 'find_in_set('. $table .'.type, \'folder\') ASC, '. $table .'.name';
+            break;
+
             default:
             case 'name':
+            case 'name DESC':
                 $order_by = 'find_in_set('. $table .'.type, \'folder\') DESC, '. $table .'.name';
             break;
         }

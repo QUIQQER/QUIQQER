@@ -1860,14 +1860,26 @@ define('controls/grid/Grid', [
                 return;
             }
 
-            var colindex    = evt.target.getAttribute('column'),
-                columnModel = this.$columnModel[colindex] || {};
+            var Target      = evt.target,
+                colindex    = Target.getAttribute('column'),
+                columnModel = this.$columnModel[ colindex ] || {},
+                colSort     = this.getAttribute( 'sortBy' );
 
-            evt.target.removeClass(columnModel.sort);
-            columnModel.sort = ( columnModel.sort == 'ASC' ) ? 'DESC' : 'ASC';
-            evt.target.addClass( columnModel.sort );
+            if ( !colSort ) {
+                colSort = 'DESC';
+            }
 
-            this.sort( colindex, columnModel.sort );
+            Target.removeClass( 'ASC' );
+            Target.removeClass( 'DESC' );
+
+            colSort = ( colSort == 'ASC' ) ? 'DESC' : 'ASC';
+
+            this.setAttribute( 'sortBy', colSort );
+            this.setAttribute( 'sortOn', columnModel.dataIndex );
+
+            Target.addClass( colSort );
+
+            this.sort( colindex, colSort );
         },
 
         overHeaderColumn : function(evt)
@@ -2373,6 +2385,8 @@ define('controls/grid/Grid', [
             t.sumWidth       = 0;
             t.visibleColumns = 0; // razlikuje se od columnCount jer podaci za neke kolone su ocitani ali se ne prikazuju, npr. bitno kod li width
 
+            var sortBy = this.getAttribute( 'sortBy' );
+
             for ( i = 0; i < columnCount; i++ )
             {
                 columnModel = this.$columnModel[i] || {};
@@ -2386,7 +2400,13 @@ define('controls/grid/Grid', [
                     columnModel.width = 100;
                 }
 
-                columnModel.sort = 'ASC';
+                if ( sortBy )
+                {
+                    columnModel.sort = sortBy;
+                } else
+                {
+                    columnModel.sort = 'ASC';
+                }
 
                 // Header events
                 if ( this.getAttribute('sortHeader') )

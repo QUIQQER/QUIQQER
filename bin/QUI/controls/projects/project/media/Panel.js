@@ -243,15 +243,18 @@ define('controls/projects/project/media/Panel', [
                         change : function(Item)
                         {
                             var Btn = Item.getAttribute('Button');
-                            var viewText = Locale.get( lg, 'projects.project.site.media.panel.btn.view.title');
+
+                            var viewText = Locale.get(
+                                lg, 'projects.project.site.media.panel.btn.view.title'
+                            );
 
                             viewText = viewText +' '+ Item.getAttribute('text');
 
-                            Btn.setAttribute('Active', Item);
-                            Btn.setAttribute('text', viewText);
-                            Btn.setAttribute('textimage', Item.getAttribute('icon'));
+                            Btn.setAttribute( 'Active', Item );
+                            Btn.setAttribute( 'text', viewText );
+                            Btn.setAttribute( 'textimage', Item.getAttribute('icon') );
 
-                            self.setAttribute('view', Item.getAttribute('name'));
+                            self.setAttribute( 'view', Item.getAttribute('name') );
                             self.$view( self.$children );
 
                             Btn.getParent().resize();
@@ -475,6 +478,8 @@ define('controls/projects/project/media/Panel', [
 
                         self.Loader.hide();
                     });
+                }, {
+                    order : self.getAttribute( 'field' ) +' '+ self.getAttribute( 'order' )
                 });
             });
         },
@@ -906,7 +911,7 @@ define('controls/projects/project/media/Panel', [
             // create the media body
             var MediaBody;
 
-            if ( !Body.getElement('.qui-media-content') )
+            if ( !Body.getElement( '.qui-media-content' ) )
             {
                 MediaBody = new Element('div', {
                     'class' : 'qui-media-content box smooth'
@@ -1275,7 +1280,6 @@ define('controls/projects/project/media/Panel', [
             var self          = this,
                 GridContainer = new Element('div');
 
-
             GridContainer.inject( Container );
 
             var Grid = new GridControl(GridContainer, {
@@ -1314,9 +1318,10 @@ define('controls/projects/project/media/Panel', [
 
                 pagination : false,
                 filterInput: true,
-                perPage    : this.getAttribute('limit'),
-                page       : this.getAttribute('page'),
-                sortOn     : this.getAttribute('field'),
+                perPage    : this.getAttribute( 'limit' ),
+                page       : this.getAttribute( 'page' ),
+                sortOn     : this.getAttribute( 'field' ),
+                sortBy     : this.getAttribute( 'order' ),
                 serverSort : true,
                 showHeader : true,
                 sortHeader : true,
@@ -1326,14 +1331,13 @@ define('controls/projects/project/media/Panel', [
                 {
                     var options = me.options;
 
-                    self.setAttribute('field', options.sortOn);
-                    self.setAttribute('order', options.sortBy);
-                    self.setAttribute('limit', options.perPage);
-                    self.setAttribute('page', options.page);
+                    self.setAttribute( 'field', options.sortOn );
+                    self.setAttribute( 'order', options.sortBy );
+                    self.setAttribute( 'limit', options.perPage );
+                    self.setAttribute( 'page', options.page );
 
                     self.refresh();
                 },
-
                 alternaterows     : true,
                 resizeColumns     : true,
                 selectable        : true,
@@ -1366,7 +1370,6 @@ define('controls/projects/project/media/Panel', [
 
 
                         self.fireEvent( 'childClick', [ self, imageData ] );
-
                         return;
                     }
 
