@@ -632,7 +632,8 @@ define('controls/projects/project/Sitemap', [
             }
 
             // contextmenu
-            var ContextMenu = Itm.getContextMenu();
+            var ContextMenu = Itm.getContextMenu(),
+                copyData    = Clipboard.get();
 
             ContextMenu.clearChildren()
                 .appendChild(
@@ -784,9 +785,21 @@ define('controls/projects/project/Sitemap', [
                         return;
                     }
 
+                    var dataString = ' '+ data.project +' ('+ data.lang +') ' +
+                                     '#'+ data.id +'';
+
+                    Paste.setAttribute(
+                        'text', Locale.get('quiqqer/system', 'paste') + dataString
+                    );
+
+                    Linked.setAttribute(
+                        'text', Locale.get('quiqqer/system', 'linked.paste') + dataString
+                    );
+
                     Paste.enable();
                     Linked.enable();
 
+                    ContextMenu.resize();
                     ContextMenu.focus();
                 },
 
