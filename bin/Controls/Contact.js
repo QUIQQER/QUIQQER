@@ -6,7 +6,7 @@
  * @module Controls\Contact
  */
 
-define([
+define('Controls/Contact', [
 
     'qui/QUI',
     'qui/controls/Control',
@@ -22,7 +22,7 @@ define([
     return new Class({
 
         Extends : QUIControl,
-        Type    : 'Controls\Contact',
+        Type    : 'Controls/Contact',
 
         Binds : ['$onImport'],
 
