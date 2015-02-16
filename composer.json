@@ -33,7 +33,7 @@
         "tedivm/stash" : "0.11.6",
         "robloach/component-installer" : "0.0.12",
         "phpmailer/phpmailer" : "v5.2.9",
-        "symfony/http-foundation" : "v2.5.10",
+        "symfony/http-foundation" : "2.6.1",
         "html2text/html2text" : "1.0.1",
         "quiqqer/qui" : "*@dev",
         "quiqqer/qui-php" : "*@dev",
