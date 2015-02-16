@@ -151,6 +151,10 @@ class Ajax extends QUI\QDOM
             );
         }
 
+        // maintenance flag
+        $result['maintenance'] = QUI::conf( 'globals', 'maintenance' ) ? 1 : 0;
+
+
         return '<quiqqer>'. json_encode( $result ) .'</quiqqer>';
     }
 

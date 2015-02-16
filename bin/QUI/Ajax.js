@@ -18,7 +18,7 @@ require(['Ajax'], function(Ajax)
 
  */
 
-define([
+define('Ajax', [
 
     'qui/QUI',
     'qui/classes/request/Ajax',
@@ -49,7 +49,8 @@ define([
         request : function(call, method, callback, params)
         {
          // if sync, the browser freeze
-            var id = String.uniqueID();
+            var self = this,
+                id   = String.uniqueID();
 
             method   = method || 'post'; // is post, put, get or delete
             callback = callback || function() {};
@@ -78,6 +79,15 @@ define([
                                 return;
                             }
 
+                            // maintenance?
+                            if ( id in self.$onprogress &&
+                                 "$result" in self.$onprogress[ id ] &&
+                                 "maintenance" in self.$onprogress[ id ].$result &&
+                                 self.$onprogress[ id ].$result.maintenance )
+                            {
+                                self.showMaintennceMessage();
+                            }
+
                             callback.apply( this, arguments );
                         },
 
@@ -90,6 +100,16 @@ define([
 
                         onError : function(Exception, Request)
                         {
+                            // maintenance?
+                            if ( id in self.$onprogress &&
+                                 "$result" in self.$onprogress[ id ] &&
+                                 "maintenance" in self.$onprogress[ id ].$result &&
+                                 self.$onprogress[ id ].$result.maintenance )
+                            {
+                                self.showMaintennceMessage();
+                            }
+
+
                             if ( Request.getAttribute( 'showError' ) )
                             {
                                 QUI.getMessageHandler(function(MessageHandler) {
@@ -133,6 +153,20 @@ define([
             this.$onprogress[ id ].send( params );
 
             return this.$onprogress[ id ].getResult();
+        },
+
+        /**
+         * show a maintenance message
+         */
+        showMaintennceMessage : function()
+        {
+            QUI.getMessageHandler(function(MH) {
+                MH.addInformation(
+                    'Derzeit werden Wartungsarbeiten getätigt.<br />' +
+                    'Unter Umstände ist das System nur eingeschränkt nutzbar.<br />' +
+                    'Bitte wenden Sie sich an ihren Administrator.'
+                );
+            });
         },
 
         /**
