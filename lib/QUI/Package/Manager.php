@@ -26,6 +26,7 @@ if ( !defined( 'JSON_UNESCAPED_UNICODE' ) ) {
 
 use Composer\Console\Application;
 use Composer\Package\Package;
+use QUI\Utils\System\File;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\Console\ConsoleEvents;
@@ -321,6 +322,28 @@ class Manager extends QUI\QDOM
     }
 
     /**
+     * Creates a backup from the composer.json file
+     */
+    public function createComposerBackup()
+    {
+        if ( !file_exists( $this->_composer_json ) )
+        {
+            throw new QUI\Exception(
+                'Composer File not found'
+            );
+        }
+
+        $backupDir = VAR_DIR .'backup/composer/';
+
+        File::mkdir( $backupDir );
+
+        File::copy(
+            $this->_composer_json,
+            $backupDir .'composer_'. date('Y-m-d_H:i:s') .'.json'
+        );
+    }
+
+    /**
      * Package Methods
      */
 
@@ -535,6 +558,7 @@ class Manager extends QUI\QDOM
      */
     public function install($package, $version=false)
     {
+        $this->createComposerBackup();
         $this->_checkComposer();
 
         if ( !$version ) {
@@ -906,6 +930,7 @@ class Manager extends QUI\QDOM
             return;
         }
 
+        $this->createComposerBackup();
 
         $Config = QUI::getConfig( 'etc/source.list.ini.php' );
         $Config->setValue( $server, 'active', 0 );
@@ -950,6 +975,7 @@ class Manager extends QUI\QDOM
 
         $Config->save();
 
+        $this->createComposerBackup();
         $this->refreshServerList();
     }
 
@@ -1035,6 +1061,9 @@ class Manager extends QUI\QDOM
      */
     public function update($package=false)
     {
+        $this->createComposerBackup();
+
+
         if ( is_string( $package ) && empty( $package ) ) {
             $package = false;
         }
@@ -1122,6 +1151,9 @@ class Manager extends QUI\QDOM
         if ( !is_dir( $serverDir ) ) {
             throw new QUI\Exception( 'Locale Repository not found' );
         }
+
+        // backup
+        $this->createComposerBackup();
 
         // add local repository if it not in the server list
         $serverList = $this->getServerList();
