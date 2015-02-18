@@ -1086,6 +1086,10 @@ class Project
             $sql['where'] = $params['where'];
         }
 
+        if ( isset( $params['where_or'] ) ) {
+            $sql['where_or'] = $params['where_or'];
+        }
+
         // Aktivflag abfragen
         if (isset($sql['where']) && is_array($sql['where']) && !isset($sql['where']['active']))
         {
@@ -1142,8 +1146,11 @@ class Project
             $sql['order'] = 'order_field';
         }
 
-        if (isset($params['debug'])) {
+        if (isset($params['debug']))
+        {
             $sql['debug'] = true;
+
+            QUI\System\Log::writeRecursive( $sql );
         }
 
         if (isset($params['where_relation'])) {
