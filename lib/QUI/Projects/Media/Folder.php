@@ -556,6 +556,60 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
+     * Return the images
+     */
+    public function getImages($params=array())
+    {
+        $table     = $this->_Media->getTable();
+        $table_rel = $this->_Media->getTable( 'relations' );
+
+        $dbQuery = array(
+            'select' => 'id',
+            'from'   => array(
+                $table,
+                $table_rel
+            ),
+            'where' => array(
+                $table_rel .'.parent' => $this->getId(),
+                $table_rel .'.child'  => '`'. $table .'.id`',
+                $table .'.deleted'    => 0,
+                'type' => 'image'
+            )
+        );
+
+        if ( isset( $params['count'] ) )
+        {
+            $dbQuery['count'] = 'count';
+            $fetch = QUI::getDataBase()->fetch( $dbQuery );
+
+            return (int)$fetch[ 0 ][ 'count' ];
+
+        }
+
+        if ( isset( $params['limit'] ) ) {
+            $dbQuery['limit'] = $params['limit'];
+        }
+
+
+        $fetch  = QUI::getDataBase()->fetch( $dbQuery );
+        $result = array();
+
+        foreach ( $fetch as $entry )
+        {
+            try
+            {
+                $result[] = $this->_Media->get( (int)$entry['id'] );
+
+            } catch ( QUI\Exception $Exception )
+            {
+                QUI\System\Log::addDebug( $Exception->getMessage() );
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Returns the count of the children
      *
      * @return Integer
