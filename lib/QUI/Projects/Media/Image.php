@@ -506,18 +506,18 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $file = $this->getAttribute('file');
 
         $cachefile = $cdir . $file;
+        $cacheData = pathinfo( $cachefile );
 
-        $path  = pathinfo( $cachefile );
-        $parts = explode('.', $file);
-
-        $files = QUIFile::readDir($path['dirname'], true);
+        $fileData = QUIFile::getInfo( $this->getFullPath() );
+        $files    = QUIFile::readDir( $cacheData['dirname'], true );
+        $filename = $fileData['filename'];
 
         foreach ( $files as $file )
         {
-            $len = strlen( $parts[0] );
+            $len = strlen( $filename );
 
-            if ( substr($file,0, $len+2) == $parts[0] .'__' ) {
-                QUIFile::unlink( $path['dirname'] .'/'. $file );
+            if ( substr($file, 0, $len+2) == $filename .'__' ) {
+                QUIFile::unlink( $cacheData['dirname'] .'/'. $file );
             }
         }
 
