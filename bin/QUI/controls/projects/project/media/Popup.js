@@ -78,11 +78,15 @@ define('controls/projects/project/media/Popup', [
 
             this.addButton(
                 new QUIButton({
-                    text      : Locale.get( 'quiqqer/system', 'accept' ),
+                    text      : QUILocale.get( 'quiqqer/system', 'accept' ),
                     textimage : 'icon-ok',
-                    events    : {
-                        onClick : function() {
-                            self.$itemClick( self.$folderData );
+                    events    :
+                    {
+                        onClick : function()
+                        {
+                            self.$getDetails(self.$folderData, function(data) {
+                                self.$submit( data, true );
+                            });
                         }
                     }
                 })
@@ -167,7 +171,7 @@ define('controls/projects/project/media/Popup', [
                         Ajax.post('ajax_media_activate', function()
                         {
                             Win.close();
-                            self.$submit( imageData );
+                            self.$submit( imageData, true );
                         }, {
                             project : imageData.project,
                             fileid  : imageData.id
@@ -183,13 +187,30 @@ define('controls/projects/project/media/Popup', [
 
         /**
          * submit
-         * @param {Object} imageData -  data of the image
+         * @param {Object} imageData      - data of the image
+         * @param {Boolean} [folderCheck] - (optional) make folder submit check?
          */
-        $submit : function(imageData)
+        $submit : function(imageData, folderCheck)
         {
+            folderCheck = folderCheck || false;
+
             if ( typeof imageData === 'undefined' ) {
                 return;
             }
+
+            // if folder is in the selectable_types, than you can select the folder
+            if ( folderCheck )
+            {
+                var folders = this.getAttribute( 'selectable_types' );
+
+                if ( folders && folders.contains( 'folder' ) )
+                {
+                    this.close();
+                    this.fireEvent( 'submit', [ this, imageData ] );
+                    return;
+                }
+            }
+
 
             if ( imageData.type == 'folder' )
             {
@@ -212,7 +233,7 @@ define('controls/projects/project/media/Popup', [
 
             this.$Panel.Loader.hide();
 
-            Ajax.get('ajax_media_details', function(data)
+            this.$getDetails(imageData, function(data)
             {
                 if ( !( data.active ).toInt() )
                 {
@@ -222,8 +243,16 @@ define('controls/projects/project/media/Popup', [
                 }
 
                 self.$submit( imageData );
+            });
+        },
 
-            }, {
+        /**
+         *
+         * @param imageData
+         */
+        $getDetails : function(imageData, callback)
+        {
+            Ajax.get('ajax_media_details', callback, {
                 project : imageData.project,
                 fileid  : imageData.id
             });

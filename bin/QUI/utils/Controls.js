@@ -61,7 +61,7 @@ define('utils/Controls', [
             }
 
             // Media Types
-            if ( Elm.getElement('input.media-image') ) {
+            if ( Elm.getElement('input.media-image,input.media-folder') ) {
                 needles.push( this.parseMediaInput( Elm ) );
             }
 
@@ -426,10 +426,22 @@ define('utils/Controls', [
             {
                 require(['controls/projects/project/media/Input'], function(ProjectMediaInput)
                 {
-                    var elements = Elm.getElements('input.media-image');
+                    var i, len;
+                    var mediaImages = Elm.getElements('input.media-image'),
+                        mediaFolder = Elm.getElements('input.media-folder');
 
-                    for ( var i = 0, len = elements.length; i < len; i++ ) {
-                        new ProjectMediaInput( null, elements[ i ] ).create();
+                    for ( i = 0, len = mediaImages.length; i < len; i++ )
+                    {
+                        new ProjectMediaInput({
+                            selectable_types : [ 'image', 'file' ]
+                        }, mediaImages[ i ] ).create();
+                    }
+
+                    for ( i = 0, len = mediaFolder.length; i < len; i++ )
+                    {
+                        new ProjectMediaInput({
+                            selectable_types : [ 'folder' ]
+                        }, mediaFolder[ i ] ).create();
                     }
 
                     resolve();

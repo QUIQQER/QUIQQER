@@ -751,7 +751,7 @@ define('controls/projects/project/site/Panel', [
                 });
 
                 // set to the media inputs the right project
-                Body.getElements( '.media-image' ).each(function(Elm) {
+                Body.getElements( '.media-image,.media-folder' ).each(function(Elm) {
                     Elm.set( 'data-project', Project.getName() );
                 });
 
