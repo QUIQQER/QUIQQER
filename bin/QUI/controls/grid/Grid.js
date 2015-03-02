@@ -1285,6 +1285,16 @@ define('controls/grid/Grid', [
         },
 
         // API
+        getRowElement : function(row)
+        {
+            if ( typeof this.elements[ row ] !== 'undefined' ) {
+                return this.elements[ row ];
+            }
+
+            return false;
+        },
+
+        // API
         setDataByRow : function(row, data)
         {
             if ( row < 0 ) {
@@ -2986,6 +2996,7 @@ define('controls/grid/Grid', [
 
                     if ( typeof dat[ cml.dataIndex ] !== 'undefined' &&
                          typeOf( dat[ cml.dataIndex ] ) !== 'function' &&
+                         dat[ cml.dataIndex ] !== null &&
                          dat[ cml.dataIndex ].toString().toLowerCase().indexOf( key ) > -1 )
                     {
                         el.removeClass( filterHideCls );

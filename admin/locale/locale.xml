@@ -348,6 +348,10 @@
             <de><![CDATA[Vielen Dank für Ihre E-Mail. Wir werden uns bei Ihnen schnellstmöglich melden.]]></de>
             <en><![CDATA[Thank you for your email. We will contact you as soon as possible.]]></en>
         </locale>
+        <locale name="message.setup.successfull">
+            <de><![CDATA[Das Setup wurde erfolgreich ausgeführt.]]></de>
+            <en><![CDATA[The setup was successfully completed.]]></en>
+        </locale>
 
     </groups>
 
@@ -924,11 +928,6 @@
         </locale>
 
         <!-- Messages  -->
-        <locale name="message.setup.successfull">
-            <de><![CDATA[Das Setup wurde erfolgreich ausgeführt.]]></de>
-            <en><![CDATA[The setup was successfully completed.]]></en>
-        </locale>
-
 
         <!-- Exception  -->
         <locale name="exception.template.not.found">
