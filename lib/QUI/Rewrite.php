@@ -855,8 +855,12 @@ class Rewrite
 
                 header("HTTP/1.0 404 Not Found");
 
-                if (!defined('ERROR_HEADER')) {
-                    define('ERROR_HEADER', 404);
+                if ( !defined( 'ERROR_HEADER' ) ) {
+                    define( 'ERROR_HEADER', 404 );
+                }
+
+                if ( !empty( $url ) ) {
+                    header( "Location: ". $url );
                 }
 
                 try
