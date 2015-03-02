@@ -1,4 +1,8 @@
 
 .quiqqer-navigation ul {
+    margin: 10px 0 0;
+}
+
+.quiqqer-navigation ul li:last-child {
     margin: 0;
 }
