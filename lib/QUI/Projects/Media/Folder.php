@@ -573,9 +573,17 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 $table_rel .'.parent' => $this->getId(),
                 $table_rel .'.child'  => '`'. $table .'.id`',
                 $table .'.deleted'    => 0,
-                'type' => 'image'
+                $table .'.type'       => 'image'
             )
         );
+
+        if ( isset( $params['active'] ) )
+        {
+            $dbQuery['where']['active'] = $params['active'];
+        } else
+        {
+            $dbQuery['where']['active'] = 1;
+        }
 
         if ( isset( $params['count'] ) )
         {
@@ -589,7 +597,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         if ( isset( $params['limit'] ) ) {
             $dbQuery['limit'] = $params['limit'];
         }
-
 
         $fetch  = QUI::getDataBase()->fetch( $dbQuery );
         $result = array();
