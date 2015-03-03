@@ -12,6 +12,10 @@
             <de><![CDATA[Die Seite [id] [title] wurde erfogreich gespeichert.]]></de>
             <en><![CDATA[The page [id] [title] are successfuly saved.]]]></en>
         </locale>
+        <locale name="message.site.save.sort.success">
+            <de><![CDATA[Die Sortierung der Seiten [ids] wurde erfogreich gespeichert.]]></de>
+            <en><![CDATA[The sort of the pages [ids] are successfuly saved.]]]></en>
+        </locale>
 
         <!-- Exception  -->
         <locale name="exception.site.not.found">
