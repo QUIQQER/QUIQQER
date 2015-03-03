@@ -221,6 +221,13 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function rename($newname)
     {
+        if ( empty( $newname ) )
+        {
+            throw new QUI\Exception(
+                'Dieser Name ist ungültig'
+            );
+        }
+
         // filter illegal characters
         $newname = Utils::stripFolderName( $newname );
 
