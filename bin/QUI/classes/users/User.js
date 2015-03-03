@@ -94,7 +94,7 @@ define('classes/users/User', [
                     self.$uid = 0;
 
                     self.setAttributes({
-                        'username' : 'not found'
+                        username : 'not found'
                     });
 
                     if ( typeof onfinish !== 'undefined' ) {
@@ -182,13 +182,8 @@ define('classes/users/User', [
 
             var self = this;
 
-            require(['Users'], function(Users)
-            {
-                Users.activate( [ self.getId() ] );
-
-                if ( typeof onfinish !== 'undefined' ) {
-                    onfinish();
-                }
+            require(['Users'], function(Users) {
+                Users.activate( [ self.getId() ], onfinish );
             });
         },
 
@@ -208,13 +203,8 @@ define('classes/users/User', [
 
             var self = this;
 
-            require(['Users'], function(Users)
-            {
-                Users.deactivate( [ self.getId() ] );
-
-                if ( typeof onfinish !== 'undefined' ) {
-                    onfinish();
-                }
+            require(['Users'], function(Users) {
+                Users.deactivate( [ self.getId() ], onfinish );
             });
         },
 

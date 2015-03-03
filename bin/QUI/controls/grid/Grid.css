@@ -595,3 +595,23 @@ div.pGroup {
     height : 30px;
     margin-top: 3px;
 }
+
+/** QUI Elements
+ ***********************************************/
+
+.omnigrid .qui-switch {
+    border: 2px solid #ddd;
+    box-shadow: none;
+    margin: 3px 0;
+}
+
+.qui-switch-button {
+    box-shadow: 0 0 3px 0 #585858;
+}
+
+.omnigrid .qui-switch-text-on,
+.omnigrid .qui-switch-text-off,
+.omnigrid .qui-switch-icon-on,
+.omnigrid .qui-switch-icon-off {
+    font-size: 12px !important;
+}

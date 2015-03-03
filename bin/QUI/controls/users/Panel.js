@@ -29,6 +29,7 @@ define('controls/users/Panel', [
     'qui/controls/windows/Confirm',
     'qui/controls/windows/Prompt',
     'qui/controls/buttons/Button',
+    'qui/controls/buttons/Switch',
     'utils/Template',
     'utils/Controls',
     'Locale',
@@ -49,9 +50,10 @@ define('controls/users/Panel', [
         QUIConfirm   = arguments[ 5 ],
         QUIPrompt    = arguments[ 6 ],
         QUIButton    = arguments[ 7 ],
-        Template     = arguments[ 8 ],
-        ControlUtils = arguments[ 9 ],
-        Locale       = arguments[ 10 ];
+        QUISwitch    = arguments[ 8 ],
+        Template     = arguments[ 9 ],
+        ControlUtils = arguments[ 10 ],
+        Locale       = arguments[ 11 ];
 
     /**
      * @class controls/users/Panel
@@ -67,6 +69,7 @@ define('controls/users/Panel', [
             '$onCreate',
             '$onResize',
             '$onSwitchStatus',
+            '$btnSwitchStatus',
             '$onDeleteUser',
             '$onUserRefresh',
             '$onButtonEditClick',
@@ -198,8 +201,8 @@ define('controls/users/Panel', [
             this.$Grid = new Grid(this.$Container, {
                 columnModel : [{
                     header    : Locale.get( lg, 'status' ),
-                    dataIndex : 'activebtn',
-                    dataType  : 'button',
+                    dataIndex : 'status',
+                    dataType  : 'QUI',
                     width     : 60
                 }, {
                     header    : Locale.get( lg, 'user_id' ),
@@ -689,12 +692,70 @@ define('controls/users/Panel', [
 
         /**
          * execute a user user status switch
+         *
+         * @param {Object} Switch - qui/controls/buttons/Switch
          */
-        $btnSwitchStatus : function(Btn)
+        $btnSwitchStatus : function(Switch)
         {
-            Users.switchStatus(
-                Btn.getAttribute( 'uid' )
-            );
+            var self = this,
+                User = Users.get( Switch.getAttribute( 'uid' ) );
+
+            if ( !User.isLoaded() )
+            {
+                User.load(function() {
+                    self.$btnSwitchStatus( Switch );
+                });
+
+                return;
+            }
+
+            var userStatus = User.isActive() ? true : false;
+
+            // status is the same as the switch, we must do nothing
+            if ( userStatus === Switch.getStatus() ) {
+                return;
+            }
+
+            if ( Switch.getStatus() === false )
+            {
+                new QUIConfirm({
+                    title : Locale.get( lg, 'users.panel.deactivate.window.title' ),
+                    text  : Locale.get( lg, 'users.panel.deactivate.window.text', {
+                        userid   : User.getId(),
+                        username : User.getName()
+                    }),
+                    information : Locale.get( lg, 'users.panel.deactivate.window.information' ),
+                    maxHeight : 400,
+                    maxWidth  : 600,
+                    autoclose : false,
+                    events    :
+                    {
+                        onSubmit : function(Win)
+                        {
+                            Win.Loader.show();
+
+                            Users.deactivate(Switch.getAttribute( 'uid' ), function()
+                            {
+                                var Switch = self.$getUserSwitch( User );
+
+                                if ( Switch ) {
+                                    Switch.off();
+                                }
+
+                                Win.close();
+                            });
+                        },
+
+                        onCancel : function() {
+                            Switch.on();
+                        }
+                    }
+                }).open();
+
+                return;
+            }
+
+            Users.activate( Switch.getAttribute( 'uid' ) );
         },
 
         /**
@@ -705,11 +766,10 @@ define('controls/users/Panel', [
          */
         $onSwitchStatus : function(Users, ids)
         {
-            var i, len, Btn, entry, status;
+            var i, len, Switch, entry, status;
 
             var Grid = this.getGrid(),
                 data = Grid.getData();
-
 
             for ( i = 0, len = data.length; i < len; i++ )
             {
@@ -720,19 +780,19 @@ define('controls/users/Panel', [
                 entry = data[ i ];
 
                 status = ( entry.active ).toInt();
-                Btn    = QUI.Controls.getById( entry.activebtn.data.quiid );
+                Switch = entry.status;
 
                 // user is active
-                if ( ids[ data[ i ].id ] === 1 )
+                if ( status )
                 {
-                    Btn.setAttribute( 'alt', this.active_text );
-                    Btn.setAttribute( 'image', this.active_image );
+                    Switch.setAttribute( 'alt', this.active_text );
+                    Switch.on();
                     continue;
                 }
 
                 // user is deactive
-                Btn.setAttribute( 'alt', this.deactive_text );
-                Btn.setAttribute( 'image', this.deactive_image );
+                Switch.setAttribute( 'alt', this.deactive_text );
+                Switch.off();
             }
         },
 
@@ -895,30 +955,56 @@ define('controls/users/Panel', [
          */
         $parseDataForGrid : function(data)
         {
-            for ( var i = 0, len = data.length; i < len; i++ )
-            {
-                data[i].active    = ( data[i].active ).toInt();
-                data[i].usergroup = data[i].usergroup || '';
+            var i, len, entry;
 
-                if ( data[i].active == -1 ) {
+            for ( i = 0, len = data.length; i < len; i++ )
+            {
+                entry = data[ i ];
+
+                data[ i ].active    = ( entry.active ).toInt();
+                data[ i ].usergroup = entry.usergroup || '';
+
+                if ( entry.active == -1 ) {
                     continue;
                 }
 
-                data[i].activebtn = {
-                    status   : data[i].active,
-                    value    : data[i].id,
-                    uid      : data[i].id,
-                    username : data[i].username,
-                    image    : data[i].active ? this.active_image  : this.deactive_image,
-                    alt      : data[i].active ? this.active_text : this.deactive_text,
+                data[ i ].status = new QUISwitch({
+                    status : entry.active == 1 ? true : false,
+                    uid    : entry.id,
+                    title  : entry.active ? this.active_text : this.deactive_text,
                     events : {
-                        onClick : this.$btnSwitchStatus
+                        onChange : this.$btnSwitchStatus
                     }
-                };
+                });
             }
 
             return data;
         },
+
+        /**
+         * Return the Switch button for the user entry
+         *
+         * @param {Object} User - classes/users/User
+         * @returns {Object|Boolean} (qui/controls/buttons/Switch)
+         */
+        $getUserSwitch : function(User)
+        {
+            var Grid = this.getGrid(),
+                data = Grid.getData(),
+                id   = User.getId();
+
+            for ( var i = 0, len = data.length; i < len; i++ )
+            {
+                if ( data[ i ].id != id ) {
+                    continue;
+                }
+
+                return Grid.getDataByRow( i ).status;
+            }
+
+            return false;
+        },
+
 
         /**
          * Parse the attributes to grid data entry
@@ -936,17 +1022,14 @@ define('controls/users/Panel', [
 
             if ( active != -1 )
             {
-                result.activebtn = {
-                    status   : active,
-                    value    : id,
-                    uid      : id,
-                    username : User.getName(),
-                    image    : active ? this.active_image  : this.deactive_image,
-                    alt      : active ? this.active_text : this.deactive_text,
+                result.status = new QUISwitch({
+                    status : active == 1 ? true : false,
+                    uid    : id,
+                    title  : active ? this.active_text : this.deactive_text,
                     events : {
-                        onClick : this.$btnSwitchStatus
+                        onChange : this.$btnSwitchStatus
                     }
-                };
+                });
             }
 
             return result;

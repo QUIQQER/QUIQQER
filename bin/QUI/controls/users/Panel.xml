@@ -98,6 +98,32 @@
             <en><![CDATA[Users are completely removed from the system and can not be restored.]]></en>
         </locale>
 
+        <locale name="users.panel.deactivate.window.title">
+            <de><![CDATA[Benutzer deaktivieren]]></de>
+            <en><![CDATA[Delete deaktivieren]]></en>
+        </locale>
+        <locale name="users.panel.deactivate.window.information" html="true">
+            <de><![CDATA[
+                <p>Möchten Sie den Benutzer wirklich deaktivieren?</p>
+                <p>Der Benutzer kann sich nicht mehr am System anmelden.</p>
+            ]]></de>
+            <en><![CDATA[
+                <p>Do you realy want to deactivate the user?</p>
+                <p>The User is not be able to log in to the system.</p>
+            ]]></en>
+        </locale>
+        <locale name="users.panel.deactivate.window.text" html="true">
+            <de><![CDATA[
+                Sie möchten folgenden Benutzer deaktivieren:
+                <br /><br />
+                [userid] - [username]
+            ]]></de>
+            <en><![CDATA[
+                You want to deactivate the following user:
+                <br /><br />
+                [userid] - [username]
+            ]]></en>
+        </locale>
 
     </groups>
 </locales>

@@ -111,7 +111,7 @@ define('classes/users/Manager', [
          * Switch the status to activate or deactivate from an user
          *
          * @method classes/users/Manager#switchStatus
-         * @param {Array|Number} uid - search options
+         * @param {Array|Number} uid    - search options
          * @param {Function} [onfinish] - (optional), callback function
          * @param {Object} [params]     - (optional), extra params
          */
@@ -125,6 +125,10 @@ define('classes/users/Manager', [
 
             Ajax.post('ajax_users_switchstatus', function(result, Request)
             {
+                if ( uid in result && uid in self.$users ) {
+                    self.$users[ uid ].setAttribute( 'active', result[ uid ] );
+                }
+
                 if ( typeof onfinish !== 'undefined' ) {
                     onfinish( result, Request );
                 }
@@ -152,11 +156,16 @@ define('classes/users/Manager', [
 
             Ajax.post('ajax_users_activate', function(result, Request)
             {
+                if ( uid in result && uid in self.$users ) {
+                    self.$users[ uid ].setAttribute( 'active', result[ uid ] );
+                }
+
                 if ( typeof onfinish !== 'undefined' ) {
                     onfinish( result, Request );
                 }
 
                 self.fireEvent( 'activate', [ self, result, Request ] );
+                self.fireEvent( 'switchStatus', [ self, result, Request ] );
 
             }, params);
         },
@@ -179,11 +188,16 @@ define('classes/users/Manager', [
 
             Ajax.post('ajax_users_deactivate', function(result, Request)
             {
+                if ( uid in result && uid in self.$users ) {
+                    self.$users[ uid ].setAttribute( 'active', result[ uid ] );
+                }
+
                 if ( typeof onfinish !== 'undefined' ) {
                     onfinish( result, Request );
                 }
 
                 self.fireEvent( 'deactivate', [ self, result, Request ] );
+                self.fireEvent( 'switchStatus', [ self, result, Request ] );
 
             }, params);
         },

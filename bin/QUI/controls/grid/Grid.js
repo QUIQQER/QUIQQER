@@ -2036,7 +2036,7 @@ define('controls/grid/Grid', [
                 li.addClass( this.$data[r].cssClass );
             }
 
-            var columnModel, columnDataIndex, div, val;
+            var columnModel, columnDataIndex, columnData, div, val;
             var firstvisible = -1;
 
             var func_input_click = function(data)
@@ -2050,6 +2050,7 @@ define('controls/grid/Grid', [
             {
                 columnModel     = this.$columnModel[c];
                 columnDataIndex = columnModel.dataIndex;
+                columnData      = this.$data[ r ][ columnDataIndex ] || false;
 
                 div = new Element('div.td', {
                     styles : {
@@ -2078,7 +2079,7 @@ define('controls/grid/Grid', [
                     div.title = rowdata[columnModel.title];
                 }
 
-                if ( columnModel.dataType == 'button' && this.$data[ r ][ columnDataIndex ] )
+                if ( columnModel.dataType == 'button' && columnData )
                 {
                     var _btn  = this.$data[ r ][ columnDataIndex ];
                     _btn.data = this.$data[ r ];
@@ -2101,7 +2102,13 @@ define('controls/grid/Grid', [
                     continue;
                 }
 
-                if ( columnModel.dataType == 'code' && this.$data[ r ][ columnDataIndex ] )
+                if ( columnModel.dataType == 'QUI' && columnData )
+                {
+                    columnData.inject( div );
+                    continue;
+                }
+
+                if ( columnModel.dataType == 'code' && columnData )
                 {
                     val = rowdata[ columnDataIndex ];
 
