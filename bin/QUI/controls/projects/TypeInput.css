@@ -8,5 +8,9 @@
 
 .qui-projects-type-input-text {
     float: left;
+    overflow: hidden;
     padding: 6px 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: calc(100% - 50px);
 }

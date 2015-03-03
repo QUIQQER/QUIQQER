@@ -126,25 +126,29 @@ define('controls/projects/TypeInput', [
         {
             var self = this;
 
-            this.$Text.set(
-                'html',
-                '<img src="'+ URL_BIN_DIR +'images/loader.gif" />'
-            );
+            this.$Text.set({
+                html  : '<span class="icon-spinner icon-spin"></span>',
+                title : '...'
+            });
 
             Plugins.getTypeName(this.$Input.value, function(result)
             {
-                if ( self.$Text ) {
-                    self.$Text.set( 'html', result );
+                if ( self.$Text )
+                {
+                    self.$Text.set({
+                        html  : result,
+                        title : result
+                    });
                 }
             }, {
                 onError : function()
                 {
                     if ( self.$Text )
                     {
-                        self.$Text.set(
-                            'html',
-                            '<span style="color: red">#unknown</span>'
-                        );
+                        self.$Text.set({
+                            html  : '<span style="color: red">#unknown</span>',
+                            title : null
+                        });
                     }
                 }
             });
