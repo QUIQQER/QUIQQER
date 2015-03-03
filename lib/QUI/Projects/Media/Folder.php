@@ -260,8 +260,11 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $new_path = $Parent->getPath() .'/'. $newname;
 
         $new_path = StringUtils::replaceDblSlashes( $new_path );
+        $new_path = ltrim( $new_path, '/' );
+
         $old_path = StringUtils::replaceDblSlashes( $old_path );
         $old_path = rtrim( $old_path, '/' );
+        $old_path = ltrim( $old_path, '/' );
 
 
         // update children paths

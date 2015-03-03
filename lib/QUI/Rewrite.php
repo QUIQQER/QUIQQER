@@ -282,7 +282,7 @@ class Rewrite
             {
                 $Item = MediaUtils::getElement( $_REQUEST['_url'] );
 
-                if (strpos($_REQUEST['_url'], '__') !== false)
+                if ( strpos($_REQUEST['_url'], '__') !== false )
                 {
                     $lastpos_ul = strrpos( $_REQUEST['_url'], '__' ) + 2;
                     $pos_dot    = strpos( $_REQUEST['_url'], '.', $lastpos_ul );
@@ -301,11 +301,13 @@ class Rewrite
 
             } catch ( QUI\Exception $Exception )
             {
+                QUI\System\Log::addDebug( $Exception->getMessage() );
+
                 // Falls Bild nicht mehr existiert oder ein falscher Aufruf gemacht wurde
                 $this->showErrorHeader( 404 );
                 exit;
             }
-
+            
             if ( $Item->getType() === 'QUI\\Projects\\Media\\Image' )
             {
                 /* @var $Item \QUI\Projects\Media\Image */
