@@ -607,11 +607,40 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             $fetch = QUI::getDataBase()->fetch( $dbQuery );
 
             return (int)$fetch[ 0 ][ 'count' ];
-
         }
 
         if ( isset( $params['limit'] ) ) {
             $dbQuery['limit'] = $params['limit'];
+        }
+
+        if ( isset( $params['order'] ) )
+        {
+            switch ( $params['order'] )
+            {
+                case 'title':
+                case 'title DESC':
+                case 'title ASC':
+
+                case 'name':
+                case 'name DESC':
+                case 'name ASC':
+
+                case 'c_date':
+                case 'c_date DESC':
+                case 'c_date ASC':
+
+                case 'e_date':
+                case 'e_date ASC':
+                case 'e_date DESC':
+                    $order = $params['order'];
+                break;
+
+                default:
+                    $order = 'title ASC'; // title aufsteigend
+                break;
+            }
+
+            $dbQuery['order'] = $order;
         }
 
         $fetch  = QUI::getDataBase()->fetch( $dbQuery );
