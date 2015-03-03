@@ -657,10 +657,10 @@ define('controls/projects/project/Sitemap', [
 
 
             // Activ / Inactive
+            var active = true;
+
             if ( "active" in result )
             {
-                var active = true;
-
                 if ( result.active.toInt() === 0 )
                 {
                     Itm.deactivate();

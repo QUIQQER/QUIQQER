@@ -139,8 +139,8 @@ define('controls/projects/project/media/Popup', [
 
             var Confirm = new QUIConfirm({
                 title       : QUILocale.get( 'quiqqer/system', 'projects.project.site.media.popup.window.activate.title' ),
-                text        : QUILocale.get('quiqqer/system', 'projects.project.site.media.popup.window.activate.text' ),
-                information : QUILocale.get('quiqqer/system', 'projects.project.site.media.popup.window.activate.information' ),
+                text        : QUILocale.get( 'quiqqer/system', 'projects.project.site.media.popup.window.activate.text' ),
+                information : QUILocale.get( 'quiqqer/system', 'projects.project.site.media.popup.window.activate.information' ),
                 autoclose   : false,
                 events :
                 {

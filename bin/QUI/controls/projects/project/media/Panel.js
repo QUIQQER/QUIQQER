@@ -1615,13 +1615,13 @@ define('controls/projects/project/media/Panel', [
                 mimeType = Item.mimetype;
             }
 
+            if ( elmtype == 'folder' ) {
+                return true;
+            }
+
 
             var mimeTypeFound = selectableMimeTypes.contains(  mimeType ),
                 typeFound     = selectableTypes.contains(  elmtype );
-
-            if ( elmtype == 'folder' ) {
-                allMimes = true;
-            }
 
             // if all mime types allowed and the allowed type is correct
             if ( allMimes && typeFound ) {
