@@ -221,6 +221,11 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function rename($newname)
     {
+        // filter illegal characters
+        $newname = Utils::stripFolderName( $newname );
+
+        // rename
+
         if ( $newname == $this->getAttribute('name') ) {
             return;
         }
@@ -231,6 +236,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 'Der Media-Root-Verzeichnis eines Projektes kann nicht umbenannt werden'
             );
         }
+
 
         // check if a folder with the new name exist
         $Parent = $this->getParent();
