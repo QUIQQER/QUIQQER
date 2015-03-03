@@ -587,53 +587,94 @@ define('controls/projects/project/Sitemap', [
                 Itm = new QUISitemapItem();
             }
 
-            Itm.setAttributes({
-                name  : result.name,
-                index : result.id,
-                value : result.id,
-                text  : result.title,
-                title : result.title,
-                alt   : result.name +'.html',
-                icon  : result.icon || 'icon-file-alt',
+            var attributes = {
                 hasChildren : ( result.has_children ).toInt(),
-                dragable : true
-            });
+                dragable    : true
+            };
 
-            if ( result.nav_hide == '1' )
+            if ( "name" in result )
             {
-                Itm.addIcon( URL_BIN_DIR +'16x16/navigation_hidden.png' );
-            } else
-            {
-                Itm.removeIcon( URL_BIN_DIR +'16x16/navigation_hidden.png' );
+                attributes.name = result.name;
+                attributes.alt  = result.name +'.html';
             }
 
-            if ( result.linked == '1' )
+            if ( "id" in result )
             {
-                Itm.setAttribute( 'linked', true );
-                Itm.addIcon( URL_BIN_DIR +'16x16/linked.png' );
-            } else
+                attributes.index = result.id;
+                attributes.value = result.id;
+            }
+
+            if ( "title" in result )
             {
-                Itm.setAttribute( 'linked', false );
-                Itm.removeIcon( URL_BIN_DIR +'16x16/linked.png' );
+                attributes.text = result.title;
+                attributes.title = result.title;
+            }
+
+            attributes.icon = 'icon-file-alt';
+
+            if ( "icon" in result ) {
+                attributes.icon = result.icon || 'icon-file-alt';
+            }
+
+            Itm.setAttributes( attributes );
+
+
+            //Itm.setAttributes({
+            //    name  : result.name,
+            //    index : result.id,
+            //    value : result.id,
+            //    text  : result.title,
+            //    title : result.title,
+            //    alt   : result.name +'.html',
+            //    icon  : result.icon || 'icon-file-alt',
+            //    hasChildren : ( result.has_children ).toInt(),
+            //    dragable : true
+            //});
+
+            if ( "nav_hide" in result )
+            {
+                if ( result.nav_hide == '1' )
+                {
+                    Itm.addIcon( URL_BIN_DIR +'16x16/navigation_hidden.png' );
+                } else
+                {
+                    Itm.removeIcon( URL_BIN_DIR +'16x16/navigation_hidden.png' );
+                }
+            }
+
+            if ( "linked" in result )
+            {
+                if ( result.linked == '1' )
+                {
+                    Itm.setAttribute( 'linked', true );
+                    Itm.addIcon( URL_BIN_DIR +'16x16/linked.png' );
+                } else
+                {
+                    Itm.setAttribute( 'linked', false );
+                    Itm.removeIcon( URL_BIN_DIR +'16x16/linked.png' );
+                }
             }
 
 
             // Activ / Inactive
-            var active = true;
-
-            if ( result.active.toInt() === 0 )
+            if ( "active" in result )
             {
-                Itm.deactivate();
+                var active = true;
 
-                active = false;
-            } else
-            {
-                Itm.activate();
+                if ( result.active.toInt() === 0 )
+                {
+                    Itm.deactivate();
+
+                    active = false;
+                } else
+                {
+                    Itm.activate();
+                }
             }
 
+
             // contextmenu
-            var ContextMenu = Itm.getContextMenu(),
-                copyData    = Clipboard.get();
+            var ContextMenu = Itm.getContextMenu();
 
             ContextMenu.clearChildren()
                 .appendChild(

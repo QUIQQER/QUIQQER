@@ -99,7 +99,7 @@
 .qui-media-upload h2 {
     /*background: url('../../../../22x22/up.png') no-repeat left center;*/
     line-height: 22px;
-    padding-bottom: 0px;
+    padding-bottom: 0;
 }
 
 .qui-media-upload p {
