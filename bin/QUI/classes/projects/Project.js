@@ -44,6 +44,7 @@ define('classes/projects/Project', [
 
         Binds : [
             '$onChildDelete',
+            '$onSiteLoad',
             '$onSiteSave',
             '$onSiteCreate',
             '$onSiteActivate',
@@ -104,7 +105,8 @@ define('classes/projects/Project', [
                 onActivate    : this.$onSiteActivate,
                 onDeactivate  : this.$onSiteDeactivate,
                 onCreateChild : this.$onSiteCreate,
-                onSortSave    : this.$onSiteSortSave
+                onSortSave    : this.$onSiteSortSave,
+                onLoad        : this.$onSiteLoad
             });
 
             this.$ids[ id ] = Site;
@@ -319,6 +321,19 @@ define('classes/projects/Project', [
         },
 
         /**
+         * event : on Site deletion
+         *
+         * @method classes/projects/Project#$onChildDelete
+         * @param {Object} Site - classes/projects/project/Site
+         * @return {Object} this (classes/projects/Project)
+         * @fires siteLoad
+         */
+        $onSiteLoad : function(Site)
+        {
+            this.fireEvent( 'siteLoad', [ this, Site ] );
+        },
+
+        /**
          * event : on Site saving
          *
          * @param {Object} Site - classes/projects/project/Site
@@ -362,7 +377,6 @@ define('classes/projects/Project', [
         {
             this.fireEvent( 'siteDeactivate', [ this, Site ] );
         },
-
 
         /**
          * event : on Site sort saving

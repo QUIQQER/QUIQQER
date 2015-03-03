@@ -92,10 +92,22 @@ define('classes/projects/project/Site', [
                 Site.setAttributes( result.attributes );
                 Site.clearWorkingStorage();
 
-                Site.$has_children = result.has_children || false;
-                Site.$parentid     = result.parentid || false;
-                Site.$url          = result.url || '';
+                Site.$has_children = false;
+                Site.$parentid     = false;
+                Site.$url          = '';
                 Site.$loaded       = true;
+
+                if ( "has_children" in result ) {
+                    Site.$has_children = ( result.has_children ).toInt();
+                }
+
+                if ( "parentid" in result ) {
+                    Site.$parentid = result.parentid;
+                }
+
+                if ( "url" in result ) {
+                    Site.$url = result.url;
+                }
 
                 Site.fireEvent( 'load', [ Site ] );
 
@@ -494,6 +506,8 @@ define('classes/projects/project/Site', [
                 if ( !result ) {
                     return;
                 }
+
+                Site.$has_children = Site.countChild() + 1;
 
                 if ( typeof onfinish === 'function' ) {
                     onfinish( result );

@@ -116,7 +116,8 @@ define('controls/projects/project/Sitemap', [
                     onSiteActivate   : self.onSiteChange,
                     onSiteDeactivate : self.onSiteChange,
                     onSiteDelete     : self.onSiteDelete,
-                    onSiteSortSave   : self.onSiteChange
+                    onSiteSortSave   : self.onSiteChange,
+                    onSiteLoad       : self.onSiteChange
                 });
             });
 
@@ -127,7 +128,8 @@ define('controls/projects/project/Sitemap', [
                 onSiteActivate   : this.onSiteChange,
                 onSiteDeactivate : this.onSiteChange,
                 onSiteDelete     : this.onSiteDelete,
-                onSiteSortSave   : this.onSiteChange
+                onSiteSortSave   : this.onSiteChange,
+                onSiteLoad       : this.onSiteChange
             });
 
             // copy and paste ids
@@ -464,11 +466,12 @@ define('controls/projects/project/Sitemap', [
                 // request
                 Ajax.get('ajax_site_getchildren', function(result)
                 {
-                    var count    = result.count,
+                    var count    = ( result.count ).toInt(),
                         children = result.children,
                         end      = start + projectLimit,
                         sheets   = ( count / projectLimit ).ceil();
 
+                    Item.setAttribute( 'hasChildren', count );
                     Item.clearChildren();
 
                     if ( start > 0 )
@@ -618,18 +621,6 @@ define('controls/projects/project/Sitemap', [
 
             Itm.setAttributes( attributes );
 
-
-            //Itm.setAttributes({
-            //    name  : result.name,
-            //    index : result.id,
-            //    value : result.id,
-            //    text  : result.title,
-            //    title : result.title,
-            //    alt   : result.name +'.html',
-            //    icon  : result.icon || 'icon-file-alt',
-            //    hasChildren : ( result.has_children ).toInt(),
-            //    dragable : true
-            //});
 
             if ( "nav_hide" in result )
             {
@@ -1166,7 +1157,9 @@ define('controls/projects/project/Sitemap', [
                 return;
             }
 
-            for ( var i = 0, len = children.length; i < len; i++ )
+            var i, len, count;
+
+            for ( i = 0, len = children.length; i < len; i++ )
             {
                 if ( children[ i ].isOpen() )
                 {
@@ -1174,6 +1167,18 @@ define('controls/projects/project/Sitemap', [
                     return;
                 }
 
+                count = children[ i].getAttribute( 'hasChildren' );
+
+                if ( typeOf( count ) === 'number' )
+                {
+                    count++;
+
+                } else
+                {
+                    count = 1;
+                }
+
+                children[ i ].setAttribute( 'hasChildren', count );
                 children[ i ].open();
             }
         },
@@ -1196,7 +1201,19 @@ define('controls/projects/project/Sitemap', [
                 return;
             }
 
-            for ( var i = 0, len = children.length; i < len; i++ ) {
+            var i, len, Site, Parent;
+
+            for ( i = 0, len = children.length; i < len; i++ )
+            {
+                // refresh parent item
+                Parent = children[ i ].getParent();
+
+                if ( Parent )
+                {
+                    Site = this.$Project.get( Parent.getAttribute( 'value' ) );
+                    Site.load();
+                }
+
                 children[ i ].destroy();
             }
         }
