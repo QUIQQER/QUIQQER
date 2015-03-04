@@ -1,5 +1,10 @@
 <?php
 
+//use QUI;
+use QUI\Utils\System\Debug;
+use QUI\Utils\Security\Orthos;
+use QUI\System\Log;
+
 //$start_test = microtime();
 // xdebug_start_trace();
 
@@ -27,34 +32,34 @@ if ( function_exists( 'gzcompress' ) ) {
 
 require_once 'bootstrap.php';
 
-$Engine = \QUI::getTemplateManager()->getEngine();
+$Engine = QUI::getTemplateManager()->getEngine();
 
 // UTF 8 Prüfung für umlaute in url
 if ( isset( $_REQUEST['_url'] ) ) {
-    $_REQUEST['_url'] = \QUI\Utils\String::toUTF8( $_REQUEST['_url'] );
+    $_REQUEST['_url'] = QUI\Utils\String::toUTF8( $_REQUEST['_url'] );
 }
 
 //\QUI\Utils\System\Debug::$run = true;
-\QUI\Utils\System\Debug::marker( 'index start' );
+Debug::marker( 'index start' );
 
 // check if one projects exists
-if ( !\QUI::getProjectManager()->count() )
+if ( !QUI::getProjectManager()->count() )
 {
     header( "HTTP/1.0 404 Not Found" );
 
     // no project exist
-    echo '<div style="text-align: center; margin-top: 100px;">
-                <img src="'. URL_BIN_DIR .'quiqqer_logo.png" style="max-width: 100%;" />
-          </div>';
+    echo '<div style="text-align: center; margin-top: 100px;">'.
+                '<img src="'. URL_BIN_DIR .'quiqqer_logo.png" style="max-width: 100%;" />'.
+          '</div>';
     exit;
 }
 
 
 // start
-$Rewrite = \QUI::getRewrite();
+$Rewrite = QUI::getRewrite();
 $Rewrite->exec();
 
-\QUI::getLocale()->setCurrent(
+QUI::getLocale()->setCurrent(
     $Rewrite->getProject()->getLang()
 );
 
@@ -63,7 +68,7 @@ $Rewrite->exec();
 if ( isset( $_REQUEST['lang'] ) && $_REQUEST['lang'] == 'false' )
 {
     header("X-Robots-Tag: noindex, nofollow", true);
-    \QUI::getLocale()->no_translation = true;
+    QUI::getLocale()->no_translation = true;
 }
 
 $Project = $Rewrite->getProject();
@@ -74,7 +79,7 @@ $Site->load();
 if ( isset( $Locale ) )
 {
     unset( $Locale );
-    $Locale = \QUI::getLocale();
+    $Locale = QUI::getLocale();
 }
 
 /**
@@ -82,15 +87,15 @@ if ( isset( $Locale ) )
  */
 
 if ( isset( $_REQUEST['ref'] ) ) {
-    $Session->set( 'ref', \QUI\Utils\Security\Orthos::clear( $_REQUEST['ref'] ) );
+    QUI::getSession()->set( 'ref', Orthos::clear( $_REQUEST['ref'] ) );
 }
 
 /**
  * Wartungsarbeiten
  */
 if (
-    \QUI::conf('globals','maintenance') &&
-    !(\QUI::getUserBySession()->getId() && \QUI::getUserBySession()->isSu())
+    QUI::conf('globals','maintenance') &&
+    !(QUI::getUserBySession()->getId() && QUI::getUserBySession()->isSu())
 )
 {
     header('HTTP/1.1 503 Service Temporarily Unavailable');
@@ -98,7 +103,7 @@ if (
     header('Retry-After: 3600');
     header('X-Powered-By:');
 
-    $Smarty = \QUI::getTemplateManager()->getEngine();
+    $Smarty = QUI::getTemplateManager()->getEngine();
 
     $Smarty->assign(array(
         'Project' => $Project,
@@ -129,30 +134,17 @@ $site_cache_dir    = VAR_DIR .'cache/sites/';
 $project_cache_dir = $site_cache_dir . $Project->getAttribute('name') .'/';
 $site_cache_file   = $project_cache_dir . $Site->getId() .'_'. $Project->getAttribute('name') .'_'. $Project->getAttribute('lang');
 
-$suffix = '.html';
-
-/* @todo Suffixe müssen variabel erweiterbar sein */
-
-if ($Rewrite->getSuffix() == '.print')
-{
-    $suffix = '.print';
-    $site_cache_file .= $suffix;
-} else
-{
-    $suffix = $Rewrite->getSuffix();
-}
-
 // Event onstart
-\QUI::getEvents()->fireEvent( 'start' );
+QUI::getEvents()->fireEvent( 'start' );
 
-\QUI\Utils\System\Debug::marker('objekte initialisiert');
+Debug::marker('objekte initialisiert');
 
 // Wenn es ein Cache gibt und die Seite auch gecached werden soll
 if ( CACHE && file_exists( $site_cache_file ) && $Site->getAttribute('nocache') != true )
 {
     $cache_content = file_get_contents( $site_cache_file );
     $_content      = $Rewrite->outputFilter( $cache_content );
-    $_content      = \QUI::getTemplateManager()->setAdminMenu( $_content );
+    //$_content      = QUI::getTemplateManager()->setAdminMenu( $_content );
 
     // Content Ausgabe
     echo $_content;
@@ -162,50 +154,64 @@ if ( CACHE && file_exists( $site_cache_file ) && $Site->getAttribute('nocache') 
 /**
  * Template Content generieren
  */
-$Template = new \QUI\Template();
-$content  = $Template->fetchTemplate( $Site );
-
-\QUI\Utils\System\Debug::marker('fetch Template');
-
-// cachefile erstellen
-if ( $Site->getAttribute('nocache') != true )
+try
 {
-    \QUI\Utils\System\File::mkdir($site_cache_dir . $Project->getAttribute('name') .'/');
+    $Template = new QUI\Template();
+    $content = $Template->fetchTemplate( $Site );
 
-    file_put_contents($site_cache_file, $content);
-}
+    Debug::marker('fetch Template');
 
-$content = $Rewrite->outputFilter( $content );
-// $content = $Template->setAdminMenu( $content );
-$content = \QUI\Control\Manager::setCSSToHead( $content );
-
-\QUI\Utils\System\Debug::marker('output Filter');
-
-// Suffix Verarbeitung
-$suffix_class_file = USR_DIR .'lib/'. $Project->getAttribute('name') .'/Suffix.php';
-$suffix_class_name = 'Suffix'. ucfirst(strtolower($Project->getAttribute('name')));
-
-if ( file_exists( $suffix_class_file ) )
-{
-    require $suffix_class_file;
-
-    if ( class_exists( $suffix_class_name ) )
+    // cachefile erstellen
+    if ( $Site->getAttribute('nocache') != true )
     {
-        $class = new $suffix_class_name();
+        QUI\Utils\System\File::mkdir($site_cache_dir . $Project->getAttribute('name') . '/');
 
-        if ( method_exists( $class, 'suffix' ) ) {
-            $class->suffix( $content );
-        }
+        file_put_contents($site_cache_file, $content);
     }
-}
 
-echo $content;
+    $content = $Rewrite->outputFilter($content);
+    // $content = $Template->setAdminMenu( $content );
+    $content = QUI\Control\Manager::setCSSToHead($content);
 
-\QUI\Utils\System\Debug::marker('content');
+    Debug::marker('output Filter');
 
-if ( \QUI\Utils\System\Debug::$run )
+    echo $content;
+
+    Debug::marker('content');
+
+    if ( Debug::$run ) {
+        Log( Debug::output() );
+    }
+
+} catch ( \QUI\Exception $Exception )
 {
-    \QUI\System\Log(
-        \QUI\Utils\System\Debug::output()
-    );
+    if ( $Exception->getCode() == 404 )
+    {
+        $Rewrite->showErrorHeader();
+
+    } else
+    {
+        $Rewrite->showErrorHeader( 503 );
+    }
+
+
+    Log::addError( $Exception->getMessage() );
+
+    $Template = new QUI\Template();
+
+    try
+    {
+        $content = $Template->fetchTemplate( $Rewrite->getErrorSite() );
+
+    } catch ( \QUI\Exception $Exception )
+    {
+        $content = $Template->fetchTemplate( $Project->firstChild() );
+    }
+
+
+    $content = $Rewrite->outputFilter( $content );
+    $content = QUI\Control\Manager::setCSSToHead( $content );
+
+    echo $content;
+    exit;
 }

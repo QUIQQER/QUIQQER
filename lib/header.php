@@ -5,18 +5,19 @@
  */
 
 header( "Content-Type: text/html; charset=utf-8" );
-header( "Cache-Control: public, max-age=". 15 * 60 ); // 15min public caching for proxys
+header( "Cache-Control: no-cache, must-revalidate" );
+header( "Pragma: no-cache" );
 
 date_default_timezone_set( 'Europe/Zurich' );
 
 error_reporting( E_ALL );
-ini_set( 'display_errors', true );
+
+ini_set( 'display_errors', false );
+ini_set( "log_errors", "on" );
 
 \QUI::load();
 \QUI\Utils\System\Debug::marker( 'header start' );
 
-ini_set( 'display_errors', false );
-ini_set( "log_errors", "on" );
 ini_set( "error_log", VAR_DIR .'log/error'. date('-Y-m-d') .'.log' );
 
 set_error_handler( "exception_error_handler" );
@@ -24,19 +25,20 @@ set_error_handler( "exception_error_handler" );
 if ( DEVELOPMENT == 1 )
 {
     error_reporting( E_ALL );
+
 } else
 {
-    error_reporting( 0 );
+    error_reporting( E_ALL ^ E_NOTICE );
 }
 
-define('GENERATOR', 'QUIQQER /www.pcsg.de');
+define( 'GENERATOR', 'QUIQQER /www.pcsg.de');
 
-define('URL_LIB_DIR', URL_DIR . str_replace( CMS_DIR, '', LIB_DIR ) );
-define('URL_BIN_DIR', URL_DIR . str_replace( CMS_DIR, '', BIN_DIR ) );
-define('URL_USR_DIR', URL_DIR . str_replace( CMS_DIR, '', USR_DIR ) );
-define('URL_SYS_DIR', URL_DIR . str_replace( CMS_DIR, '', SYS_DIR ) );
-define('URL_OPT_DIR', URL_DIR . str_replace( CMS_DIR, '', OPT_DIR ) );
-define('URL_VAR_DIR', URL_DIR . str_replace( CMS_DIR, '', VAR_DIR ) );
+define( 'URL_LIB_DIR', URL_DIR . str_replace( CMS_DIR, '', LIB_DIR ) );
+define( 'URL_BIN_DIR', URL_DIR . str_replace( CMS_DIR, '', BIN_DIR ) );
+define( 'URL_USR_DIR', URL_DIR . str_replace( CMS_DIR, '', USR_DIR ) );
+define( 'URL_SYS_DIR', URL_DIR . str_replace( CMS_DIR, '', SYS_DIR ) );
+define( 'URL_OPT_DIR', URL_DIR . str_replace( CMS_DIR, '', OPT_DIR ) );
+define( 'URL_VAR_DIR', URL_DIR . str_replace( CMS_DIR, '', VAR_DIR ) );
 
 define( 'HOST',         \QUI::conf( 'globals','host' ) );
 define( 'CACHE',        \QUI::conf( 'globals','cache' ) );
@@ -99,9 +101,6 @@ try
     exit;
 }
 
-/**
- * @var $User User
- */
 
 // User ist Standard Nobody
 $User = \QUI::getUsers()->getNobody();
@@ -150,5 +149,7 @@ if ( isset( $_GET['logout'] ) )
         exit;
     }
 }
+
+\QUI::getEvents()->fireEvent( 'headerLoaded' );
 
 \QUI\Utils\System\Debug::marker( 'header end' );

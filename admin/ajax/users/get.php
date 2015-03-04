@@ -9,7 +9,14 @@
 
 function ajax_users_get($uid)
 {
-    return \QUI::getUsers()->get( (int)$uid )->getAllAttributes();
+    try
+    {
+        return \QUI::getUsers()->get((int)$uid)->getAttributes();
+
+    } catch ( QUI\Exception $Exception )
+    {
+        return \QUI::getUsers()->getNobody()->getAttributes();
+    }
 }
 
 \QUI::$Ajax->register(

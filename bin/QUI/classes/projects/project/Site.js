@@ -18,7 +18,7 @@
  * @event sortSave [ this ] --> triggerd by SiteChildren.js
  */
 
-define([
+define('classes/projects/project/Site', [
 
     'qui/QUI',
     'qui/classes/DOM',
@@ -31,7 +31,7 @@ define([
     /**
      * @class classes/projects/project/Site
      *
-     * @param {classes/projects/Project} Project
+     * @param {Object} Project - classes/projects/Project
      * @param {Number} id - Site ID
      *
      * @fires onStatusEditBegin - this
@@ -62,6 +62,12 @@ define([
             this.$Project      = Project;
             this.$has_children = false;
             this.$parentid     = false;
+            this.$loaded       = false;
+
+            this.$workingId = 'site-'+
+                              Project.getName() +'-'+
+                              Project.getLang() +'-'+
+                              id;
 
             this.parent({
                 id : id
@@ -74,25 +80,39 @@ define([
          *
          * @method classes/projects/project/Site#load
          * @param {Function} [onfinish] - (optional) callback Function
-         * @return {this} self
+         * @return {Object} this (classes/projects/project/Site)
          */
         load : function(onfinish)
         {
             var params = this.ajaxParams(),
                 Site   = this;
 
-            Ajax.get('ajax_site_get', function(result, Request)
+            Ajax.get('ajax_site_get', function(result)
             {
                 Site.setAttributes( result.attributes );
+                Site.clearWorkingStorage();
 
-                Site.$has_children = result.has_children || false;
-                Site.$parentid     = result.parentid || false;
-                Site.$url          = result.url || '';
+                Site.$has_children = false;
+                Site.$parentid     = false;
+                Site.$url          = '';
+                Site.$loaded       = true;
+
+                if ( "has_children" in result ) {
+                    Site.$has_children = ( result.has_children ).toInt();
+                }
+
+                if ( "parentid" in result ) {
+                    Site.$parentid = result.parentid;
+                }
+
+                if ( "url" in result ) {
+                    Site.$url = result.url;
+                }
 
                 Site.fireEvent( 'load', [ Site ] );
 
-                if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( Site, Request );
+                if ( typeof onfinish === 'function' ) {
+                    onfinish( Site );
                 }
             }, params);
 
@@ -114,7 +134,7 @@ define([
          * Get the site project
          *
          * @method classes/projects/project/Site#getProject
-         * @return {classes/projects/Project}
+         * @return {Object} classes/projects/Project
          */
         getProject : function()
         {
@@ -170,13 +190,15 @@ define([
 
             data.params = JSON.encode( params || {} );
 
-            Ajax.get('ajax_site_getchildren', function(result, Request)
+            Ajax.get('ajax_site_getchildren', function(result)
             {
-                if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( result, Request );
+                var children = result.children;
+
+                if ( typeof onfinish === 'function' ) {
+                    onfinish( children );
                 }
 
-                Site.fireEvent( 'getChildren', [ Site, result ] );
+                Site.fireEvent( 'getChildren', [ Site, children ] );
 
             }, data);
 
@@ -210,15 +232,21 @@ define([
         {
             var Site = this;
 
-            Ajax.post('ajax_site_activate', function(result, Request)
+            Ajax.post('ajax_site_activate', function(result)
             {
-                Site.setAttribute( 'active', 1 );
-
-                if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( result, Request );
+                if ( result ) {
+                    Site.setAttribute( 'active', 1 );
                 }
 
-                Site.fireEvent( 'activate', [ Site ] );
+                Site.clearWorkingStorage();
+
+                if ( typeof onfinish === 'function' ) {
+                    onfinish( result );
+                }
+
+                if ( result ) {
+                    Site.fireEvent( 'activate', [ Site ] );
+                }
 
             }, this.ajaxParams());
 
@@ -237,15 +265,22 @@ define([
         {
             var Site = this;
 
-            Ajax.post('ajax_site_deactivate', function(result, Request)
+            Ajax.post('ajax_site_deactivate', function(result)
             {
-                Site.setAttribute( 'active', 0 );
-
-                if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( result, Request );
+                if ( result === 0 ) {
+                    Site.setAttribute( 'active', 0 );
                 }
 
-                Site.fireEvent( 'deactivate', [ Site ] );
+                Site.clearWorkingStorage();
+
+                if ( typeof onfinish === 'function' ) {
+                    onfinish( result );
+                }
+
+                if ( result === 0 ) {
+                    Site.fireEvent( 'deactivate', [ Site ] );
+                }
+
             }, this.ajaxParams());
 
             return this;
@@ -256,17 +291,18 @@ define([
          *
          * @method classes/projects/project/Site#save
          * @fires save
-         * @param {Function} onfinish - [optional] callback function
-         * @return {this}
+         * @param {Function} [onfinish] - (optional), callback function
+         * @return {Object} this (classes/projects/project/Site)
          */
         save : function(onfinish)
         {
             var Site   = this,
-                params = this.ajaxParams();
+                params = this.ajaxParams(),
+                status = this.getAttribute( 'active' );
 
             params.attributes = JSON.encode( this.getAttributes() );
 
-            Ajax.post('ajax_site_save', function(result, Request)
+            Ajax.post('ajax_site_save', function(result)
             {
                 if ( result && result.attributes ) {
                     Site.setAttributes( result.attributes );
@@ -274,9 +310,24 @@ define([
 
                 Site.$has_children = result && result.has_children || false;
                 Site.$parentid     = result && result.parentid || false;
+                Site.$url          = result && result.url || '';
 
-                if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( result, Request );
+                Site.clearWorkingStorage();
+
+                // if status change, trigger events
+                if ( Site.getAttribute( 'active' ) != status )
+                {
+                    if ( Site.getAttribute( 'active' ) == 1 )
+                    {
+                        Site.fireEvent( 'activate', [ Site ] );
+                    } else
+                    {
+                        Site.fireEvent( 'deactivate', [ Site ] );
+                    }
+                }
+
+                if ( typeof onfinish === 'function' ) {
+                    onfinish( result );
                 }
 
                 Site.fireEvent( 'save', [ Site ] );
@@ -291,18 +342,19 @@ define([
          * Delete it in the Database, too
          *
          * @method classes/projects/project/Site#del
-         * @param {Function} onfinish - [optional] callback function
+         * @param {Function} [onfinish] - (optional), callback function
          */
         del : function(onfinish)
         {
             var Site = this;
 
-            Ajax.post('ajax_site_delete', function(result, Request)
+            Ajax.post('ajax_site_delete', function(result)
             {
-                if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( result, Request );
+                if ( typeof onfinish === 'function' ) {
+                    onfinish( result );
                 }
 
+                Site.clearWorkingStorage();
                 Site.fireEvent( 'delete', [ Site ] );
 
             }, this.ajaxParams());
@@ -321,10 +373,10 @@ define([
 
             params.newParentId = newParentId;
 
-            Ajax.post('ajax_site_move', function(result, Request)
+            Ajax.post('ajax_site_move', function(result)
             {
-                if ( typeof callback !== 'undefined' ) {
-                    callback( result, Request );
+                if ( typeof callback === 'function' ) {
+                    callback( result );
                 }
 
                 Site.fireEvent( 'move', [ Site, newParentId ] );
@@ -346,10 +398,10 @@ define([
 
             params.newParentId = newParentId;
 
-            Ajax.post('ajax_site_copy', function(result, Request)
+            Ajax.post('ajax_site_copy', function(result)
             {
-                if ( typeof callback !== 'undefined' ) {
-                    callback( result, Request );
+                if ( typeof callback === 'function' ) {
+                    callback( result );
                 }
 
                 Site.fireEvent( 'copy', [ Site, newParentId ] );
@@ -370,15 +422,46 @@ define([
 
             params.newParentId = newParentId;
 
-            Ajax.post('ajax_site_linked', function(result, Request)
+            Ajax.post('ajax_site_linked', function(result)
             {
-                if ( typeof callback !== 'undefined' ) {
-                    callback( result, Request );
+                if ( typeof callback === 'function' ) {
+                    callback( result );
                 }
 
                 Site.fireEvent( 'linked', [ Site, newParentId ] );
 
             }, params);
+        },
+
+        /**
+         * lock the site
+         *
+         * @param {function} callback
+         */
+        lock : function(callback)
+        {
+            Ajax.post('ajax_site_lock', function()
+            {
+                if ( typeof callback === 'function' ) {
+                    callback();
+                }
+            }, this.ajaxParams());
+        },
+
+        /**
+         * unlock the site
+         *
+         * @param {function} callback
+         */
+        unlock : function( callback )
+        {
+            Ajax.post('ajax_site_unlock', function()
+            {
+                if ( typeof callback === 'function' ) {
+                    callback();
+                }
+
+            }, this.ajaxParams());
         },
 
         /**
@@ -418,14 +501,16 @@ define([
 
             var Site = this;
 
-            Ajax.post('ajax_site_children_create', function(result, Request)
+            Ajax.post('ajax_site_children_create', function(result)
             {
                 if ( !result ) {
                     return;
                 }
 
-                if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( result, Request );
+                Site.$has_children = Site.countChild() + 1;
+
+                if ( typeof onfinish === 'function' ) {
+                    onfinish( result );
                 }
 
                 Site.fireEvent( 'createChild', [ Site, result.id ] );
@@ -442,6 +527,66 @@ define([
         isActive : function()
         {
             return this.getAttribute( 'active' );
+        },
+
+        /**
+         * Working data
+         */
+
+        /**
+         * clears the working storage for the site
+         */
+        clearWorkingStorage : function()
+        {
+            QUI.Storage.remove( this.getWorkingStorageId() );
+        },
+
+        /**
+         * return the working storage id of the site
+         *
+         * @return {string}
+         */
+        getWorkingStorageId : function()
+        {
+            return this.$workingId;
+        },
+
+        /**
+         * Has the site an working storage?
+         *
+         * @return {boolean}
+         */
+        hasWorkingStorage : function()
+        {
+            return QUI.Storage.get( this.getWorkingStorageId() ) ? true : false;
+        },
+
+        /**
+         * Return the data of the working storage
+         *
+         * @returns {object|null|boolean}
+         */
+        getWorkingStorage : function()
+        {
+            var storage = QUI.Storage.get( this.getWorkingStorageId() );
+
+            if ( !storage ) {
+                return false;
+            }
+
+            return JSON.decode( storage );
+        },
+
+        /**
+         * Set the working storage data to the site
+         */
+        restoreWorkingStorage : function()
+        {
+            var data = this.getWorkingStorage();
+
+            if ( data ) {
+                this.options.attributes = data;
+            }
         },
 
         /**
@@ -489,6 +634,7 @@ define([
 
         /**
          * Set an site attribute
+         * -> bool vars converted to 1 and 0
          *
          * @method classes/projects/project/Site#setAttribute
          *
@@ -497,7 +643,33 @@ define([
          */
         setAttribute : function(k, v)
         {
+            // convert bool to 1 and 0
+            if ( typeOf( v ) === 'boolean' ) {
+                v = v ? 1 : 0;
+            }
+
+            // if the value not changed, do nothing
+            if ( k in this.options.attributes &&
+                 v == this.options.attributes[ k ] )
+            {
+                return;
+            }
+
             this.options.attributes[ k ] = v;
+
+            if ( this.$loaded === false ) {
+                return;
+            }
+
+            if ( k == 'id' ) {
+                return;
+            }
+
+            // locale storage
+            QUI.Storage.set(
+                this.getWorkingStorageId(),
+                JSON.encode( this.options.attributes )
+            );
         },
 
         /**
@@ -506,7 +678,7 @@ define([
          * @method classes/projects/project/Site#setAttributes
          *
          * @param {Object} attributes - Object with attributes
-         * @return {this}
+         * @return {Object} this (classes/projects/project/Site)
          *
          * @example
          * Site.setAttributes({

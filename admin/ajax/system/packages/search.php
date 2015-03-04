@@ -3,6 +3,9 @@
 /**
  * Return all installed packages
  *
+ * @param String $str - Search string
+ * @param String|Integer $from - Sheet start
+ * @param String|Integer $max - Limit of the results
  * @return Array
  */
 function ajax_system_packages_search($str, $from, $max)

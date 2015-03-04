@@ -3,9 +3,10 @@
 /**
  * Save the available permissions to a user or a group
  *
- * @param Integer $bid		  - bind id (user id or group id)
+ * @param String $params      - JSON Array
  * @param String $btype		  - bind type (QUI.controls.users.User or QUI.controls.groups.Group)
  * @param String $permissions - JSON permissions
+ * @throws \QUI\Exception
  */
 function ajax_permissions_save($params, $btype, $permissions)
 {

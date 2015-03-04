@@ -110,18 +110,28 @@ class XML
 
         /* @var $Conf \DOMElement */
         $Conf = $configs->item( 0 );
+        $name = $Conf->getAttribute( 'name' );
 
-        if ( !$Conf->getAttribute( 'name' ) ) {
-            return false;
+        if ( !$name || empty( $name ) )
+        {
+            // plugin conf???
+            $dirname = dirname( $file );
+            $package = str_replace( dirname(dirname($dirname)).'/', '', $dirname );
+
+            try
+            {
+                QUI::getPackageManager()->getInstalledPackage( $package );
+
+                $name = 'plugins/'. $package;
+
+            } catch ( QUI\Exception $Exception )
+            {
+                return false;
+            }
         }
 
 
-        $ini_file = CMS_DIR .'etc/' . $Conf->getAttribute( 'name' ) .'.ini.php';
-
-        if ( !$Conf->getAttribute( 'name' ) ) {
-            $ini_file .= $Conf->getAttribute( 'name' ) .'.ini.php';
-        }
-
+        $ini_file = CMS_DIR .'etc/'. $name .'.ini.php';
 
         QUI\Utils\System\File::mkdir( dirname( $ini_file ) );
 

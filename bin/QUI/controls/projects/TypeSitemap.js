@@ -13,6 +13,8 @@
  * @require qui/controls/sitemap/Item
  * @require Ajax
  * @require Locale
+ *
+ * @event onLoad [ self ]
  */
 
 define('controls/projects/TypeSitemap', [
@@ -157,6 +159,10 @@ define('controls/projects/TypeSitemap', [
                 // create the map
                 for ( i in result )
                 {
+                    if ( !result.hasOwnProperty( i ) ) {
+                        continue;
+                    }
+
                     if ( i == 'standard' )
                     {
                         new QUISitemapItem({
@@ -174,7 +180,7 @@ define('controls/projects/TypeSitemap', [
                     Plugin = new QUISitemapItem({
                         name  : i,
                         value : i,
-                        text  : i,
+                        text  : Locale.get( i, 'package.title' ),
                         alt   : i,
                         icon  : 'icon-puzzle-piece',
                         hasChildren : true,
@@ -204,6 +210,8 @@ define('controls/projects/TypeSitemap', [
                             icon  : icon
                         }).inject( Plugin );
                     }
+
+                    self.fireEvent( 'load', [ self ] );
                 }
 
                 First.open();

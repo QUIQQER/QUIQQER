@@ -2,9 +2,8 @@
 /**
  * Groups manager panel
  *
- * @author www.pcsg.de (Henning Leutz)
- *
  * @module controls/groups/Panel
+ * @author www.pcsg.de (Henning Leutz)
  *
  * @require qui/controls/desktop/Panel
  * @require Groups
@@ -20,7 +19,7 @@
  * @require css!controls/groups/Panel.css
  */
 
-define([
+define('controls/groups/Panel', [
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
@@ -85,11 +84,11 @@ define([
         ],
 
         options : {
-            active_image : 'icon-ok',     		// [optional]
-            active_text  : Locale.get( lg, 'groups.panel.btn.activate' ), // [optional]
+            active_image : 'icon-ok',     		// (optional)
+            active_text  : Locale.get( lg, 'groups.panel.btn.activate' ), // (optional)
 
-            deactive_image : 'icon-remove',         // [optional]
-            deactive_text  : Locale.get( lg, 'groups.panel.btn.deactivate' ), // [optional]
+            deactive_image : 'icon-remove',         // (optional)
+            deactive_text  : Locale.get( lg, 'groups.panel.btn.deactivate' ), // (optional)
 
             field : 'name',
             order : 'ASC',
@@ -279,7 +278,7 @@ define([
          * create a group panel
          *
          * @param {Number} gid - Group-ID
-         * @return {this}
+         * @return {Object} this (controls/groups/Panel)
          */
         openGroup : function(gid)
         {

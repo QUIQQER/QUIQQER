@@ -1,16 +1,18 @@
+
 /**
- * A sitemap that listet the groups
- *
- * @author www.pcsg.de (Henning Leutz)
+ * A sitemap that list the groups
  *
  * @module controls/groups/Sitemap
+ * @author www.pcsg.de (Henning Leutz)
  *
  * @events onItemClick [ this, {qui/controls/sitemap/Item} ]
  * @events onItemDblClick [ this, {qui/controls/sitemap/Item} ]
  *
- * @require controls/Control
- * @require controls/sitemap/Map
- * @require controls/sitemap/Item
+ * @require qui/controls/Control
+ * @require qui/controls/sitemap/Map
+ * @require qui/controls/sitemap/Item
+ * @require Ajax
+ * @require Groups
  */
 
 define('controls/groups/Sitemap', [
@@ -62,7 +64,7 @@ define('controls/groups/Sitemap', [
         /**
          * Create the DomNode Element of the Control
          *
-         * @return {DOMNode}
+         * @return {HTMLElement}
          */
         create : function()
         {
@@ -132,7 +134,7 @@ define('controls/groups/Sitemap', [
         /**
          * Display the children of the sitemap item
          *
-         * @param {qui/controls/sitemap/Item} Parent
+         * @param {Object} Parent - qui/controls/sitemap/Item
          */
         getChildren : function(Parent)
         {
@@ -142,7 +144,7 @@ define('controls/groups/Sitemap', [
             var self  = this,
                 Group = Groups.get( Parent.getAttribute('value') );
 
-            Group.getChildren(function(result, Request)
+            Group.getChildren(function(result)
             {
                 var i, len, entry;
 
@@ -201,7 +203,7 @@ define('controls/groups/Sitemap', [
         /**
          * event : click on a sitemap item
          *
-         * @param {qui/controls/sitemap/Item} Item
+         * @param {Object} Item - qui/controls/sitemap/Item
          */
         $onItemClick : function(Item)
         {
@@ -211,7 +213,7 @@ define('controls/groups/Sitemap', [
         /**
          * event : click on a sitemap item
          *
-         * @param {qui/controls/sitemap/Item} Item
+         * @param {Object} Item - qui/controls/sitemap/Item
          */
         $onItemDblClick : function(Item)
         {

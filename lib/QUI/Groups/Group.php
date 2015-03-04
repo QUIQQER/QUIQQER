@@ -694,7 +694,12 @@ class Group extends QUI\QDOM
             )
         );
 
-        return QUI::getGroups()->get( $newid );
+        $Group = QUI::getGroups()->get( $newid );
+
+        // set standard permissions
+        QUI::getPermissionManager()->importPermissionsForGroup( $Group );
+
+        return $Group;
     }
 
     /**

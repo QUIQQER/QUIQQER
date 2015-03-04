@@ -9,7 +9,7 @@
  * @require Ajax
  */
 
-define([
+define('classes/projects/media/Trash', [
 
     'qui/classes/DOM',
     'Ajax'

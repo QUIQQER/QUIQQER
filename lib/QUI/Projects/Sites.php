@@ -90,7 +90,7 @@ class Sites
         $Save = $Toolbar->getElementByName( '_Save' );
         $Del  = $Toolbar->getElementByName( '_Del' );
 
-        if ( $Site->isMarcate() ) // wenn die Seite bearbeitet wird
+        if ( $Site->isLockedFromOther() ) // wenn die Seite bearbeitet wird
         {
             $Save->setDisable();
             $Del->setDisable();
@@ -112,7 +112,7 @@ class Sites
         }
 
         // Wenn das Bearbeiten Recht vorhanden ist
-        if ( $Site->hasPermission( 'quiqqer.projects.site.edit') && !$Site->isMarcate() )
+        if ( $Site->hasPermission( 'quiqqer.projects.site.edit') && !$Site->isLockedFromOther() )
         {
             $Toolbar->appendChild(
                 new Seperator(array(
@@ -180,7 +180,7 @@ class Sites
 
 
         // Wenn die Seite bearbeitet wird
-        if ( $Site->isMarcate() )
+        if ( $Site->isLockedFromOther() )
         {
             $Tabbar->appendChild(
                 new Toolbar\Tab(array(
@@ -319,6 +319,10 @@ class Sites
         foreach ( $templates as $template )
         {
             if ( empty( $template ) ) {
+                continue;
+            }
+
+            if ( !isset( $template['name'] ) ) {
                 continue;
             }
 

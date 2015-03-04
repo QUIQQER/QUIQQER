@@ -21,7 +21,7 @@ function ajax_system_packages_server_add($server, $params)
     );
 }
 
-QUI::$Ajax->register(
+\QUI::$Ajax->register(
 	'ajax_system_packages_server_add',
     array( 'server', 'params' ),
     array(
@@ -29,5 +29,3 @@ QUI::$Ajax->register(
         'quiqqer.system.update'
     )
 );
-
-?>

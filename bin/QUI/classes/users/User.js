@@ -13,7 +13,7 @@
  * @event onRefresh [ {classes/users/User} ]
  */
 
-define([
+define('classes/users/User', [
 
     'qui/QUI',
     'qui/classes/DOM',
@@ -28,7 +28,7 @@ define([
      * A QUIQQER User
      *
      * @class classes/users/User
-     * @param {Integer} uid - the user id
+     * @param {Number} uid - the user id
      *
      * @memberof! <global>
      */
@@ -50,7 +50,7 @@ define([
          * Get user id
          *
          * @method classes/users/User#getId
-         * @return {Integer} User-ID
+         * @return {Number} User-ID
          */
         getId : function()
         {
@@ -72,15 +72,44 @@ define([
          * Load the user attributes from the db
          *
          * @method classes/users/User#load
-         * @param {Function} onfinish - [optional] callback
+         * @param {Function} [onfinish] - (optional), callback
          */
         load: function(onfinish)
         {
             var self = this;
 
-            Ajax.get('ajax_users_get', function(result, Request)
+            Ajax.get('ajax_users_get', function(result)
             {
                 self.$loaded = true;
+
+                var uid = 0;
+
+                if ( "id" in result && result.id > 10 ) {
+                    uid = result.id;
+                }
+
+                // user not found
+                if ( !uid )
+                {
+                    self.$uid = 0;
+
+                    self.setAttributes({
+                        username : 'not found'
+                    });
+
+                    if ( typeof onfinish !== 'undefined' ) {
+                        onfinish( self );
+                    }
+
+                    self.fireEvent( 'refresh', [ self ] );
+
+                    require(['Users'], function(Users) {
+                        Users.onRefreshUser( self );
+                    });
+
+                    return;
+                }
+
 
                 if ( result.extras )
                 {
@@ -91,7 +120,7 @@ define([
                 self.setAttributes( result );
 
                 if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( self, Request );
+                    onfinish( self );
                 }
 
                 self.fireEvent( 'refresh', [ self ] );
@@ -108,7 +137,7 @@ define([
         /**
          * the user has been loaded once?
          *
-         * @return {Bool}
+         * @return {Boolean}
          */
         isLoaded : function()
         {
@@ -119,11 +148,17 @@ define([
          * Save the user attributes to the database
          *
          * @method classes/users/User#save
-         * @param {Function} callback - [optional]
-         * @param {params} Object     - [optional] extra ajax params
+         * @param {Function} [callback] - (optional),
+         * @param {Object} [params]     - (optional), extra ajax params
          */
         save : function(callback, params)
         {
+            if ( !this.$uid )
+            {
+                callback();
+                return;
+            }
+
             var self = this;
 
             require(['Users'], function(Users) {
@@ -135,32 +170,41 @@ define([
          * Activate the user
          *
          * @method classes/users/User#activate
-         *
-         * @param {Function} onfinish     - callback function, calls if activation is finish
-         * @param {Object} params         - callback params
+         * @param {Function} [onfinish] - (optional), callback function, calls if activation is finish
          */
-        activate : function(onfinish, params)
+        activate : function(onfinish)
         {
+            if ( !this.$uid )
+            {
+                onfinish();
+                return;
+            }
+
             var self = this;
 
             require(['Users'], function(Users) {
-                Users.activate( [ Users.getId() ] );
+                Users.activate( [ self.getId() ], onfinish );
             });
         },
 
         /**
-         * Activate the user
+         * Deactivate the user
          *
          * @method classes/users/User#deactivate
-         * @param {Function} onfinish     - callback function, calls if deactivation is finish
-         * @param {Object} params         - callback params
+         * @param {Function} [onfinish] - (optional), callback function, calls if deactivation is finish
          */
-        deactivate : function(onfinish, params)
+        deactivate : function(onfinish)
         {
+            if ( !this.$uid )
+            {
+                onfinish();
+                return;
+            }
+
             var self = this;
 
             require(['Users'], function(Users) {
-                Users.deactivate( [ self.getId() ] );
+                Users.deactivate( [ self.getId() ], onfinish );
             });
         },
 
@@ -170,11 +214,17 @@ define([
          * @method classes/users/User#deactivate
          * @param {String} pass1 - Password
          * @param {String} pass2 - Password repeat
-         * @param {Object} options - [optional]
-         * @param {Function} onfinish - [optional] callback
+         * @param {Object} [options]    - (optional),
+         * @param {Function} [onfinish] - (optional), callback
          */
         savePassword : function(pass1, pass2, options, onfinish)
         {
+            if ( !this.$uid )
+            {
+                onfinish( false, false );
+                return;
+            }
+
             options = options || {};
 
             if ( pass1 != pass2 )
@@ -212,10 +262,14 @@ define([
         /**
          * Is the user activated?
          *
-         * @return {Integer} 0, 1, -1
+         * @return {Number} 0, 1, -1
          */
         isActive : function()
         {
+            if ( !this.$uid ) {
+                return 0;
+            }
+
             return ( this.getAttribute( 'active' ) ).toInt();
         },
 
@@ -231,9 +285,9 @@ define([
          * @method classes/users/User#setAttribute
          *
          * @param {String} k - Name of the Attribute
-         * @param {Object|String|Integer|Array} v - value
+         * @param {Object|String|Number|Array} v - value
          *
-         * @return {this} self
+         * @return {Object} this (classes/users/User)
          */
         setAttribute : function(k, v)
         {
@@ -247,7 +301,7 @@ define([
          * @method classes/users/User#setAttribute
          *
          * @param {Object} attributes - Object with attributes
-         * @return {this} self
+         * @return {Object} this (classes/users/User)
          *
          * @example Object.setAttributes({
          *   attr1 : '1',
@@ -258,8 +312,11 @@ define([
         {
             attributes = attributes || {};
 
-            for ( var k in attributes ) {
-                this.setAttribute( k, attributes[k] );
+            for ( var k in attributes )
+            {
+                if ( attributes.hasOwnProperty( k ) ) {
+                    this.setAttribute( k, attributes[ k ] );
+                }
             }
 
             return this;
@@ -271,8 +328,8 @@ define([
          *
          * @method classes/users/User#setAttribute
          *
-         * @param {Object} attributes - Object width attributes
-         * @return {unknown_type|Bool} The wanted attribute or false
+         * @param {Object} k - Object width attributes
+         * @return {Boolean|String} The wanted attribute or false
          */
         getAttribute : function(k)
         {
@@ -299,22 +356,18 @@ define([
          *
          * @method classes/users/User#existAttribute
          * @param {String} k - wanted attribute
-         * @return {Bool} true or false
+         * @return {Boolean} true or false
          */
         existAttribute : function(k)
         {
-            if ( typeof this.attributes[ k ] !== 'undefined' ) {
-                return true;
-            }
-
-            return false;
+            return typeof this.attributes[ k ] !== 'undefined';
         },
 
         /**
          * Return the extra entry
          *
-         * @param {String} $field
-         * @return {String|Integer|Array|Bool}
+         * @param {String} field
+         * @return {String|Number|Array|Boolean}
          */
         getExtra : function(field)
         {
@@ -329,7 +382,7 @@ define([
          * Set a extra attribute
          *
          * @param {String} field - Name of the extra field
-         * @param {String|Bool} value - Value of the extra field
+         * @param {String|Boolean} value - Value of the extra field
          */
         setExtra : function(field, value)
         {

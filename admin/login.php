@@ -15,6 +15,13 @@
     </title>
 
     <style type="text/css">
+
+        * {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
         html, body {
             margin: 0;
             padding: 0;
@@ -28,7 +35,7 @@
         }
 
         .container {
-            height: 300px;
+            height: 380px;
             background: #fff;
             padding: 40px 0;
             margin: 50px 0 0;
@@ -77,27 +84,24 @@
         }
 
         .logininput {
-            width: 160px;
             margin: 0 auto;
+            padding-left: 100px;
+            width: 360px;
         }
 
         input[type="submit"] {
             cursor: pointer;
-            width: 150px;
+            float: left;
+
+            width: 140px;
 
             color: #e9e9e9 !important;
             border: solid 1px #555 !important;
             background: #6e6e6e !important;
-            background: -webkit-gradient(linear, left top, left bottom, from(#888), to(#575757)) !important;
-            background: -moz-linear-gradient(top,  #888,  #575757) !important;
-            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#888888', endColorstr='#575757') !important;
         }
 
         input[type="submit"]:hover {
             background: #616161 !important;
-            background: -webkit-gradient(linear, left top, left bottom, from(#757575), to(#4b4b4b)) !important;
-            background: -moz-linear-gradient(top,  #757575,  #4b4b4b) !important;
-            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#757575', endColorstr='#4b4b4b') !important;
         }
 
         #username,
@@ -217,21 +221,152 @@
 
     <script type="text/javascript">
 
+    // require config
+    require.config({
+        baseUrl : '<?php echo URL_BIN_DIR; ?>QUI/',
+        paths : {
+            "package" : "<?php echo URL_OPT_DIR; ?>",
+            "qui"     : '<?php echo URL_OPT_DIR; ?>bin/qui/qui',
+            "locale"  : '<?php echo URL_VAR_DIR; ?>locale/bin',
+            "URL_OPT_DIR" : "<?php echo URL_OPT_DIR; ?>",
+            "URL_BIN_DIR" : "<?php echo URL_BIN_DIR; ?>"
+        },
+        waitSeconds : 0,
+        catchError  : true,
+        map : {
+            '*': {
+                'css': '<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/css.js'
+            }
+        }
+    });
+
     document.id( window ).addEvent('load', function()
     {
-        var Logo = document.getElement( '.logo' );
+        require(['qui/controls/buttons/Select'], function(QUISelect)
+        {
+            var Logo = document.getElement( '.logo'),
+                Linp = document.getElement( '.logininput' );
 
-        Logo.addClass( 'animated' );
-        Logo.addClass( 'swing' );
+            Logo.addClass( 'animated' );
+            Logo.addClass( 'swing' );
 
-        document.id( 'username' ).focus();
+            document.id( 'username' ).focus();
+
+            window.LangSelect = new QUISelect({
+                styles : {
+                    marginLeft: 10,
+                    width: 50
+                },
+                events :
+                {
+                    onChange : function(val) {
+                        setLanguage( val );
+                    }
+                }
+            }).inject( Linp );
+
+            window.LangSelect.appendChild(
+                'Deutsch',
+                'de',
+                '<?php echo URL_BIN_DIR; ?>16x16/flags/de.png'
+            );
+
+            window.LangSelect.appendChild(
+                'English',
+                'en',
+                '<?php echo URL_BIN_DIR; ?>16x16/flags/en.png'
+            );
+
+
+            // browser language
+            var lang = 'en';
+
+            if ( "language" in navigator )
+            {
+                lang = navigator.language;
+
+            } else if ( "browserLanguage" in navigator )
+            {
+                lang = navigator.browserLanguage;
+
+            } else if ( "systemLanguage" in navigator )
+            {
+                lang = navigator.systemLanguage;
+
+            } else if ( "userLanguage" in navigator)
+            {
+                lang = navigator.userLanguage;
+            }
+
+            lang = lang.substr( 0, 2 );
+
+            switch ( lang )
+            {
+                case 'de':
+                case 'en':
+                break;
+
+                default:
+                    lang = 'en';
+                break;
+            }
+
+            window.setLanguage( lang );
+        });
     });
+
+    var setLanguage = function(lang)
+    {
+        switch ( lang )
+        {
+            case 'de':
+            case 'en':
+                break;
+
+            default:
+                lang = 'en';
+                break;
+        }
+
+        if ( window.LangSelect.getValue() != lang )
+        {
+            window.LangSelect.setValue( lang );
+            return;
+        }
+
+        require([
+            'Locale',
+            'locale/quiqqer/system/'+ lang
+        ], function(QUILocale)
+        {
+            QUILocale.setCurrent( lang );
+
+            document.getElements( '[for="username"]').set(
+                'html',
+                QUILocale.get( 'quiqqer/system', 'username' )
+            );
+
+            document.getElements( '[for="password"]').set(
+                'html',
+                QUILocale.get( 'quiqqer/system', 'password' )
+            );
+
+            document.getElements( '[name="login"]').set(
+                'value',
+                QUILocale.get( 'quiqqer/system', 'login' )
+            );
+        });
+    };
 
     </script>
 
 </head>
 <body>
+<?php
 
+    QUI::getLocale()->setCurrent( 'de' );
+
+?>
 <div class="container">
     <form action="" method="POST" name="login">
 
@@ -242,17 +377,24 @@
         />
 
         <div class="entry">
-            <label for="username">Benutzer</label>
+            <label for="username">
+                <?php echo QUI::getLocale()->get( 'quiqqer/system', 'username' ) ?>
+            </label>
             <input id="username" name="username" type="text" value="" />
         </div>
 
         <div class="entry">
-            <label for="password">Passwort</label>
+            <label for="password">
+                <?php echo QUI::getLocale()->get( 'quiqqer/system', 'password' ) ?>
+            </label>
             <input id="password" name="password" type="password" value="" />
         </div>
 
         <div class="logininput">
-            <input type="submit" name="login" value="login" />
+            <input type="submit"
+                   name="login"
+                   value="<?php echo QUI::getLocale()->get( 'quiqqer/system', 'login' ) ?>"
+            />
         </div>
 
     </form>

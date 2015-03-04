@@ -22,6 +22,16 @@ function ajax_site_children_sort($project, $ids, $from)
         $Child->setAttribute( 'order_field', $from );
         $Child->save();
     }
+
+    QUI::getMessagesHandler()->clear();
+
+    QUI::getMessagesHandler()->addSuccess(
+        QUI::getLocale()->get(
+            'quiqqer/system',
+            'message.site.save.sort.success',
+            array( 'ids' => implode( ',', $ids) )
+        )
+    );
 }
 
 \QUI::$Ajax->register(

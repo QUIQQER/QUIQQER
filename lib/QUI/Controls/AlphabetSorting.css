@@ -1,0 +1,47 @@
+@CHARSET "UTF-8";
+
+.quiqqer-alphabetSorting {
+    border-bottom: 1px solid #CCC;
+    float: left;
+    margin-bottom: 0;
+    position: relative;
+    width: 100%;
+    z-index: 6;
+
+}
+
+.quiqqer-alphabetSorting ul {
+    margin: 0 0 0 20px;
+    padding: 0;
+}
+
+.quiqqer-alphabetSorting li {
+    float: left;
+    height: 27px;
+    list-style-type: none;
+}
+
+.quiqqer-alphabetSorting li a {
+    background-color: #E5E5E5;
+    border-color: #FFF #FFF #AAA #FFF;
+    border-style: solid;
+    border-width: 1px 1px 0 1px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    color: #777;
+    float: left;
+    margin: 0 2px;
+    padding: 4px 1em 4px;
+    text-decoration: none;
+}
+
+.quiqqer-alphabetSorting li.active a {
+    background-color: #FFF;
+    border-color: #CCC #CCC #FFF #CCC;
+    color: #000;
+    padding: 4px 1em 5px;
+}
+
+.quiqqer-alphabetSorting li a:hover {
+    background-color: #F5F5F5;
+}

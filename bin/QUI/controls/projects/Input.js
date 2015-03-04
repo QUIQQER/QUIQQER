@@ -37,7 +37,7 @@ define('controls/projects/Input', [
      * @class controls/projects/Input
      *
      * @param {Object} options
-     * @param {Element} Input [optional] -> if no input given, one would be created
+     * @param {HTMLInputElement} [Input] - (optional) -> if no input given, one would be created
      *
      * @memberof! <global>
      */

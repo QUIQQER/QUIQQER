@@ -83,7 +83,7 @@ define([
         /**
          * Clear the cache
          *
-         * @param {Function} callback - [optional] callback function
+         * @param {Function} [callback] - (optional), callback function
          */
         clear : function(callback)
         {
@@ -120,7 +120,7 @@ define([
         /**
          * Purge the cache
          *
-         * @param {Function} callback - [optional] callback function
+         * @param {Function} [callback] - (optional), callback function
          */
         purge : function(callback)
         {

@@ -198,6 +198,46 @@ class Manager
     }
 
     /**
+     * Search all groups and set the default permissions if the permissions not exists
+     */
+    static function importPermissionsForGroups()
+    {
+        $Groups = QUI::getGroups();
+        $groups = $Groups->search();
+
+        foreach ( $groups as $groupData )
+        {
+            try
+            {
+                self::importPermissionsForGroup(
+                    $Groups->get( $groupData['id'] )
+                );
+
+            } catch ( QUI\Exception $Exception )
+            {
+                QUI\System\Log::addError(
+                    '\QUI\Rights\Manager::importPermissionsForGroups() -> '.
+                    $Exception->getMessage()
+                );
+            }
+        }
+    }
+
+    /**
+     * Set the default permissions for the group
+     *
+     * @param Group $Group
+     * @throws QUI\Exception
+     */
+    static function importPermissionsForGroup(Group $Group)
+    {
+        $Manager     = QUI::getPermissionManager();
+        $permissions = $Manager->getPermissions( $Group );
+
+        $Manager->setPermissions( $Group, $permissions );
+    }
+
+    /**
      * Add a permission
      *
      * @param array $params - Permission params

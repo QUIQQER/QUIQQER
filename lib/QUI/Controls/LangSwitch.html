@@ -1,0 +1,70 @@
+{assign var=Site value=$this->getAttribute('Site')}
+{assign var=siteLang value=$Project->getLang()}
+
+{if count( $langs ) > 1}
+{strip}
+{*
+    No DropDown
+*}
+    {if !$this->getAttribute('DropDown')}
+        <div class="quiqqer-langSwitch">
+            {foreach from=$langs item=lang}
+            {if $siteLang != $lang && $Site->existLang( $lang )}
+            <a class="quiqqer-langSwitch-lang" href="{url id=$Site->getId( $lang ) lang=$lang}">
+                {if $this->getAttribute('showFlags')}
+                <span class="quiqqer-langSwitch-lang-icon">
+                    <img src="{$smarty.const.URL_BIN_DIR}16x16/flags/{$lang}.png" />
+                </span>
+                {/if}
+
+                {if $this->getAttribute('showText')}
+                <span class="quiqqer-langSwitch-lang-text">
+                    {$lang}
+                </span>
+                {/if}
+            </a>
+            {/if}
+            {/foreach}
+        </div>
+    {else}
+{*
+    DropDown
+*}
+        <div class="quiqqer-langSwitch-dropdown">
+            <div class="quiqqer-langSwitch-dropdown-text">
+                <span class="fa fa-caret-down"></span>
+                {if $this->getAttribute('showFlags')}
+                <span class="quiqqer-langSwitch-lang-icon">
+                    <img src="{$smarty.const.URL_BIN_DIR}16x16/flags/{$siteLang}.png" />
+                </span>
+                {/if}
+
+                {if $this->getAttribute('showText')}
+                <span class="quiqqer-langSwitch-lang-text">
+                    {$siteLang}
+                </span>
+                {/if}
+            </div>
+            <div class="quiqqer-langSwitch-dropdown-dd">
+                {foreach from=$langs item=lang}
+                    {if $siteLang != $lang && $Site->existLang( $lang )}
+                    <a class="quiqqer-langSwitch-lang" href="{url id=$Site->getId( $lang ) lang=$lang}">
+                        {if $this->getAttribute('showFlags')}
+                        <span class="quiqqer-langSwitch-lang-icon">
+                            <img src="{$smarty.const.URL_BIN_DIR}16x16/flags/{$lang}.png" />
+                        </span>
+                        {/if}
+
+                        {if $this->getAttribute('showText')}
+                        <span class="quiqqer-langSwitch-lang-text">
+                            {$lang}
+                        </span>
+                        {/if}
+                    </a>
+                    {/if}
+                {/foreach}
+            </div>
+        </div>
+    {/if}
+{/strip}
+{/if}

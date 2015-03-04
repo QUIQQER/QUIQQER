@@ -8,10 +8,10 @@
  */
 function ajax_project_panel_categories_get($project)
 {
+    $Project = \QUI::getProjectManager()->decode( $project );
+
     $buttonList  = array();
-    $settingsXml = \QUI::getProjectManager()->getRelatedSettingsXML(
-        \QUI::getProject( $project )
-    );
+    $settingsXml = \QUI::getProjectManager()->getRelatedSettingsXML( $Project );
 
     // read template config
     foreach ( $settingsXml as $file )

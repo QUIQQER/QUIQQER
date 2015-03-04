@@ -14,7 +14,7 @@
  * @event onSubmit [ {Array}, {this} ]
  */
 
-define([
+define('controls/system/Login', [
 
     'qui/QUI',
     'qui/controls/windows/Confirm',
@@ -47,7 +47,15 @@ define([
             icon      : 'icon-signin',
             maxHeight : 300,
             maxWidth  : 500,
-            autoclose : false
+            autoclose : false,
+            cancel_button : {
+                text      : Locale.get( 'quiqqer/system', 'logout' ),
+                textimage : 'icon-remove fa fa-remove'
+            },
+            ok_button : {
+                text      : Locale.get( 'quiqqer/system', 'login' ),
+                textimage : 'icon-ok fa fa-check'
+            }
         },
 
         initialize : function(options)
@@ -55,8 +63,10 @@ define([
             this.parent( options );
             this.$opened = false;
 
-            this.addEvent('cancel', function() {
-                window.location = window.location;
+            this.addEvent('cancel', function()
+            {
+                window.onbeforeunload = null;
+                window.location = '/admin/';
             });
         },
 
@@ -83,8 +93,7 @@ define([
             this.$opened = true;
             this.parent();
 
-            var self    = this,
-                Content = this.getContent();
+            var Content = this.getContent();
 
             Content.getElements( '.submit-body' ).destroy();
 
@@ -102,6 +111,13 @@ define([
                     '<input type="password" value="" name="password" />' +
                 '</form>'
             );
+
+            Content.getElements( 'input' ).addEvent('keyup', function(event)
+            {
+                if ( event.key == 'enter' ) {
+                    this.submit();
+                }
+            }.bind( this ));
         },
 
         /**
@@ -131,12 +147,17 @@ define([
 
             this.Loader.show();
 
-            Ajax.post('ajax_login_login', function(result)
+            Ajax.post('ajax_login_login', function()
             {
+                window.fireEvent( 'login' );
+
                 self.close();
             }, {
                 username : Content.getElement( '[name="username"]' ).value,
-                password : Content.getElement( '[name="password"]' ).value
+                password : Content.getElement( '[name="password"]' ).value,
+                onError : function() {
+                    self.Loader.hide();
+                }
             });
         }
     });

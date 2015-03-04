@@ -5,6 +5,7 @@
  */
 
 namespace QUI\Mail;
+use QUI\System\Log;
 
 /**
  * Mail Manager
@@ -31,10 +32,15 @@ class Manager
     {
         $Mailer = new Mailer();
 
-        $Mailer->addRecipient( $to );
+        $to = trim( $to );
+        $to = explode(',', $to);
+
+        foreach ( $to as $mail ) {
+            $Mailer->addRecipient( $mail );
+        }
+
         $Mailer->setSubject( $subject );
         $Mailer->setBody( $body );
-
         $Mailer->send();
     }
 

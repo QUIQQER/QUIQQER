@@ -371,6 +371,7 @@ define('controls/projects/project/site/SiteChildrenSort', [
                 size   = Parent.getSize();
 
             this.$GridTable.setHeight( size.y - 100 );
+            this.$GridTable.resize();
         }
     });
 

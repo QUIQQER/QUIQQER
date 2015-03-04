@@ -26,6 +26,9 @@
     <!-- Darf Cache löschen -->
     <permission name="quiqqer.system.cache" type="bool" />
 
+    <!-- Darf sich über die Konsole einloggen -->
+    <permission name="quiqqer.system.console" type="bool" />
+
     <!-- Darf die Gruppenverwaltung sehen -->
     <permission name="quiqqer.admin.groups.view" type="bool" />
 

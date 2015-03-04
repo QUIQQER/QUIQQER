@@ -16,6 +16,7 @@
  * @require Locale
  * @require css!controls/projects/project/Settings.css
  */
+
 define('controls/projects/project/Settings', [
 
     'qui/controls/desktop/Panel',
@@ -27,12 +28,15 @@ define('controls/projects/project/Settings', [
     'Projects',
     'Ajax',
     'Locale',
+    'utils/Controls',
 
     'css!controls/projects/project/Settings.css'
 
-], function(QUIPanel, QUIButton, QUIConfirm, QUIFormUtils, UtilsTemplate, LangPopup, Projects, Ajax, Locale)
+], function(QUIPanel, QUIButton, QUIConfirm, QUIFormUtils, UtilsTemplate, LangPopup, Projects, Ajax, Locale, ControlUtils)
 {
     "use strict";
+
+    var lg = 'quiqqer/system';
 
     /**
      * The Project settings panel
@@ -58,6 +62,7 @@ define('controls/projects/project/Settings', [
             'save',
             'del',
             'openSettings',
+            'openAdminSettings',
             'openBackup',
             'openWatersign'
         ],
@@ -69,6 +74,10 @@ define('controls/projects/project/Settings', [
         initialize : function(options)
         {
             this.parent( options );
+
+            if ( !this.getAttribute( 'project' ) && "attributes" in options ) {
+                this.parent( options.attributes );
+            }
 
             // defaults
             this.$Project = Projects.get(
@@ -89,7 +98,7 @@ define('controls/projects/project/Settings', [
          * Return the Project of the Panel
          *
          * @method controls/projects/project/Settings#getProject
-         * @return {classes/projects/Project} Project of the Panel
+         * @return {Object} classes/projects/Project -  Project of the Panel
          */
         getProject : function()
         {
@@ -109,10 +118,7 @@ define('controls/projects/project/Settings', [
             this.getContent().addClass( 'qui-project-settings' );
 
             this.addButton({
-                text : Locale.get(
-                    'quiqqer/system',
-                    'projects.project.panel.settings.btn.save'
-                ),
+                text : Locale.get( lg, 'projects.project.panel.settings.btn.save' ),
                 textimage : 'icon-save',
                 events : {
                     onClick : this.save
@@ -120,10 +126,7 @@ define('controls/projects/project/Settings', [
             });
 
             this.addButton({
-                text : Locale.get(
-                    'quiqqer/system',
-                    'projects.project.panel.settings.btn.remove'
-                ),
+                text : Locale.get( lg, 'projects.project.panel.settings.btn.remove' ),
                 textimage : 'icon-remove',
                 events : {
                     onClick : this.del
@@ -132,13 +135,19 @@ define('controls/projects/project/Settings', [
 
             this.addCategory({
                 name : 'settings',
-                text : Locale.get(
-                    'quiqqer/system',
-                    'projects.project.panel.settings.btn.settings'
-                ),
-                icon   : 'icon-gear',
+                text : Locale.get( lg, 'projects.project.panel.settings.btn.settings' ),
+                icon : 'icon-gear',
                 events : {
                     onActive : this.openSettings
+                }
+            });
+
+            this.addCategory({
+                name : 'adminSettings',
+                text : Locale.get( lg, 'projects.project.panel.settings.btn.adminSettings' ),
+                icon : 'icon-gear',
+                events : {
+                    onActive : this.openAdminSettings
                 }
             });
 
@@ -186,13 +195,28 @@ define('controls/projects/project/Settings', [
             this.Loader.show();
             this.$onCategoryLeave();
 
-            Ajax.post('ajax_project_set_config', function()
+            // clear config for projects
+            var name = this.getProject().getName();
+
+
+            for ( var project in Projects.$projects )
+            {
+                if ( !Projects.$projects.hasOwnProperty( project ) ) {
+                    continue;
+                }
+
+                if ( project.match( name +'-' ) )
+                {
+                    if ( "$config" in Projects.$projects[ project ] ) {
+                        Projects.$projects[ project].$config = false;
+                    }
+                }
+            }
+
+            this.getProject().setConfig(function()
             {
                 self.Loader.hide();
-            }, {
-                project : this.$Project.getName(),
-                params  : JSON.encode( this.$config )
-            });
+            }, this.$config);
         },
 
         /**
@@ -203,36 +227,20 @@ define('controls/projects/project/Settings', [
             var self = this;
 
             new QUIConfirm({
-                icon : 'icon-exclamation-sign',
-                title : Locale.get(
-                    'quiqqer/system',
-                    'projects.project.project.delete.window.title'
-                ),
-                text : Locale.get(
-                    'quiqqer/system',
-                    'projects.project.project.delete.window.text'
-                ),
+                icon  : 'icon-exclamation-sign',
+                title : Locale.get( lg, 'projects.project.project.delete.window.title' ),
+                text  : Locale.get( lg, 'projects.project.project.delete.window.text' ),
                 texticon : 'icon-exclamation-sign',
-                information : Locale.get(
-                    'quiqqer/system',
-                    'projects.project.project.delete.window.information'
-                ),
+                information : Locale.get( lg, 'projects.project.project.delete.window.information' ),
                 events :
                 {
                     onSubmit : function()
                     {
                         new QUIConfirm({
-                            icon : 'icon-exclamation-sign',
-                            title : Locale.get(
-                                'quiqqer/system',
-                                'projects.project.project.delete.window.title'
-                            ),
-                            text : Locale.get(
-                                'quiqqer/system',
-                                'projects.project.project.delete.window.text.2'
-                            ),
+                            icon  : 'icon-exclamation-sign',
+                            title : Locale.get( lg, 'projects.project.project.delete.window.title' ),
+                            text  : Locale.get( lg, 'projects.project.project.delete.window.text.2' ),
                             texticon : 'icon-exclamation-sign',
-
                             events :
                             {
                                 onSubmit : function()
@@ -290,10 +298,7 @@ define('controls/projects/project/Settings', [
                 }
 
                 new QUIButton({
-                    text : Locale.get(
-                        'quiqqer/system',
-                        'projects.project.panel.btn.addlanguage'
-                    ),
+                    text : Locale.get( lg, 'projects.project.panel.btn.addlanguage' ),
                     textimage : 'icon-plus',
                     styles : {
                         width : 200,
@@ -319,6 +324,28 @@ define('controls/projects/project/Settings', [
                 Template.value = self.$config.template;
 
                 QUIFormUtils.setDataToForm( self.$config, Form );
+
+                self.Loader.hide();
+            });
+        },
+
+        /**
+         * Opens the Settings for the administration
+         *
+         * @method controls/projects/project/Settings#openAdminSettings
+         */
+        openAdminSettings : function()
+        {
+            this.Loader.show();
+
+            var self = this,
+                Body = this.getBody();
+
+            UtilsTemplate.get('project/settingsAdmin', function(result)
+            {
+                Body.set( 'html', result );
+
+                QUIFormUtils.setDataToForm( self.$config, Body.getElement( 'Form' ) );
 
                 self.Loader.hide();
             });
@@ -367,8 +394,11 @@ define('controls/projects/project/Settings', [
 
             var data = QUIFormUtils.getFormData( Form );
 
-            for ( var i in data ) {
-                this.$config[ i ] = data[ i ];
+            for ( var i in data )
+            {
+                if ( data.hasOwnProperty( i ) ) {
+                    this.$config[ i ] = data[ i ];
+                }
             }
 
             // exist langs?
@@ -419,7 +449,7 @@ define('controls/projects/project/Settings', [
             var self = this,
                 name = Category.getAttribute( 'name' );
 
-            if ( name == 'settings' ) {
+            if ( name == 'settings' || name == "adminSettings" ) {
                 return;
             }
 
@@ -446,6 +476,7 @@ define('controls/projects/project/Settings', [
 
                 // set data to the form
                 QUIFormUtils.setDataToForm( self.$config, Form );
+                ControlUtils.parse( Body );
 
                 self.Loader.hide();
             }, {

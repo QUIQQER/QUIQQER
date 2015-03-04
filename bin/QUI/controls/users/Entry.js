@@ -12,7 +12,7 @@
  * @require css!controls/users/Entry.css
  */
 
-define([
+define('controls/users/Entry', [
 
     'qui/controls/Control',
     'Users',
@@ -27,7 +27,7 @@ define([
     /**
      * @class controls/users/Entry
      *
-     * @param {Integer} uid - user-ID
+     * @param {Number} uid - user-ID
      * @param {Object} options
      *
      * @memberof! <global>
@@ -54,7 +54,7 @@ define([
         /**
          * Return the binded user
          *
-         * @return {classes/users/User}
+         * @return {Object} classes/users/User
          */
         getUser : function()
         {
@@ -64,7 +64,7 @@ define([
         /**
          * Create the DOMNode of the entry
          *
-         * @return {DOMNode}
+         * @return {HTMLElement}
          */
         create : function()
         {
@@ -111,7 +111,7 @@ define([
         /**
          * Refresh the data of the users
          *
-         * @return {this}
+         * @return {Object} this (controls/users/Entry)
          */
         refresh : function()
         {
@@ -135,8 +135,8 @@ define([
         /**
          * Update the user name
          *
-         * @param {classes/users/User}
-         * @return {this}
+         * @param {Object} User - classes/users/User
+         * @return {Object} this (controls/users/Entry)
          */
         $onUserUpdate : function(User)
         {

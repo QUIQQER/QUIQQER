@@ -16,7 +16,7 @@
             <en><![CDATA[Icon view]]></en>
         </locale>
         <locale name="projects.project.site.media.panel.btn.view.details">
-            <de><![CDATA[Detailsansicht]]></de>
+            <de><![CDATA[Detail-Liste]]></de>
             <en><![CDATA[Detail view]]></en>
         </locale>
         <locale name="projects.project.site.media.panel.btn.view.preview">

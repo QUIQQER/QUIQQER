@@ -4,7 +4,6 @@
     width: 100%;
 }
 
-
 .quiqqer-sheets-desktop {
     float: left;
     margin: 0;
@@ -17,40 +16,31 @@
 
 .quiqqer-sheets-desktop a,
 .quiqqer-sheets-desktop span {
-    float: left;
-    padding: 0px 10px;
-    margin: 0;
     border: 1px solid #D0D3D3;
     border-top: 1px solid #D0D3D3;
     border-bottom: 1px solid #D0D3D3;
-    background: #FFFFFF;
+    float: left;
+    line-height: 30px;
+    margin: 0;
+    text-align: center;
     text-decoration: none;
-    line-height: 24px;
-
--webkit-box-sizing: border-box;
-   -moz-box-sizing: border-box;
-        box-sizing: border-box;
+    width: 30px;
 }
 
-.quiqqer-sheets-desktop a {
-    color: #0A82B6;
-}
-
-.quiqqer-sheets-desktop span.disabled {
+.quiqqer-sheets-desktop-disabled {
     color: #AAAAAA;
+    cursor: default;
     border-color: #DDDDDD;
-    cursor: normal;
 }
 
-.quiqqer-sheets-desktop span.current {
+.quiqqer-sheets-desktop-current {
     color: #FFFFFF;
-    background: #42A9D7;
-    border-color: #42A9D7;
-    cursor: normal;
+    cursor: default;
+    background: #666;
+    border-color: #666;
 }
 
 .quiqqer-sheets-desktop a:hover {
-    background: #B1C6CE;
     color: #FFFFFF;
     text-decoration: none !important;
 }

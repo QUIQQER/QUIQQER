@@ -2,6 +2,7 @@
 
 .control-system-vhost {
     height: 100%;
+    overflow: auto;
     padding: 20px;
     width: 100%;
 }

@@ -2,6 +2,15 @@
 
     <!--general locales -->
     <groups name="quiqqer/system" datatype="js,php">
+        <locale name="logout">
+            <de><![CDATA[Abmelden]]></de>
+            <en><![CDATA[Logout]]></en>
+        </locale>
+        <locale name="login">
+            <de><![CDATA[Anmelden]]></de>
+            <en><![CDATA[Login]]></en>
+        </locale>
+
         <locale name="yes">
             <de><![CDATA[Ja]]></de>
             <en><![CDATA[Yes]]></en>
@@ -75,7 +84,6 @@
             <de><![CDATA[Nachname]]></de>
             <en><![CDATA[Lastname]]></en>
         </locale>
-
         <locale name="username">
             <de><![CDATA[Benutzername]]></de>
             <en><![CDATA[Username]]></en>
@@ -119,6 +127,23 @@
         <locale name="file">
             <de><![CDATA[Datei]]></de>
             <en><![CDATA[File]]></en>
+        </locale>
+
+        <locale name="minute">
+            <de><![CDATA[Minute]]></de>
+            <en><![CDATA[Minute]]></en>
+        </locale>
+        <locale name="hour">
+            <de><![CDATA[Stunde]]></de>
+            <en><![CDATA[Hour]]></en>
+        </locale>
+        <locale name="month">
+            <de><![CDATA[Monat]]></de>
+            <en><![CDATA[Month]]></en>
+        </locale>
+        <locale name="day">
+            <de><![CDATA[Tag]]></de>
+            <en><![CDATA[Day]]></en>
         </locale>
 
         <locale name="group">
@@ -310,8 +335,6 @@
             <en><![CDATA[Company]]></en>
         </locale>
 
-
-
         <!-- messages -->
         <locale name="message.clear.cache.successful">
             <de><![CDATA[Der Cache wurde erfolgreich gelöscht.]]></de>
@@ -320,6 +343,14 @@
         <locale name="message.clear.cache.purged">
             <de><![CDATA[Der Cache wurde erfolgreich gesäubert.]]></de>
             <en><![CDATA[Cache successful purged.]]></en>
+        </locale>
+        <locale name="message.contact.successful">
+            <de><![CDATA[Vielen Dank für Ihre E-Mail. Wir werden uns bei Ihnen schnellstmöglich melden.]]></de>
+            <en><![CDATA[Thank you for your email. We will contact you as soon as possible.]]></en>
+        </locale>
+        <locale name="message.setup.successfull">
+            <de><![CDATA[Das Setup wurde erfolgreich ausgeführt.]]></de>
+            <en><![CDATA[The setup was successfully completed.]]></en>
         </locale>
 
     </groups>
@@ -334,10 +365,6 @@
         <locale name="development.info">
             <de><![CDATA[System ist im Entwicklungs-Modus]]></de>
             <en><![CDATA[System is in development mode]]></en>
-        </locale>
-        <locale name="logout">
-            <de><![CDATA[Abmelden]]></de>
-            <en><![CDATA[Logout]]></en>
         </locale>
 
         <!-- contextmenu -->
@@ -869,6 +896,12 @@
         </locale>
 
         <!-- Contact  -->
+        <locale name="control.breadcrumb.text">
+            <de><![CDATA[Sie befinden sich hier:]]></de>
+            <en><![CDATA[You are here:]]></en>
+        </locale>
+
+        <!-- Contact  -->
         <locale name="control.contact.name">
             <de><![CDATA[Name]]></de>
             <en><![CDATA[Name]]></en>
@@ -895,15 +928,6 @@
         </locale>
 
         <!-- Messages  -->
-        <locale name="message.contact.successful">
-            <de><![CDATA[Vielen Dank für Ihre E-Mail. Wir werden uns bei Ihnen schnellstmöglich melden.]]></de>
-            <en><![CDATA[Thank you for your email. We will contact you as soon as possible.]]></en>
-        </locale>
-        <locale name="message.setup.successfull">
-            <de><![CDATA[Das Setup wurde erfolgreich ausgeführt.]]></de>
-            <en><![CDATA[The setup was successfully completed.]]></en>
-        </locale>
-
 
         <!-- Exception  -->
         <locale name="exception.template.not.found">

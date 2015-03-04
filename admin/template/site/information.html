@@ -9,40 +9,39 @@
     </thead>
     <tbody>
         <tr class="odd">
-            <td class="first-td">
-                {t}quiqqer/system projects.project.site.panel.information.nameUrl{/t}
-            </td>
-            <td class="scnd-td site-copy-from-name"></td>
-            <td class="third-td">
+            <td>
+                <label>
+                    {t}quiqqer/system projects.project.site.panel.information.nameUrl{/t}
+                </label>
+
                 <input type="text" name="site-name" value="" /> .html
                 <div class="site-url-display"></div>
             </td>
         </tr>
         <tr class="even">
             <td>
-                {t}quiqqer/system projects.project.site.panel.information.title{/t}
-            </td>
-            <td class="site-copy-from-title"></td>
-            <td>
+                <label>
+                    {t}quiqqer/system projects.project.site.panel.information.title{/t}
+                </label>
                 <input type="text" name="title" value="" />
             </td>
         </tr>
         <tr class="odd">
             <td>
-                {t}quiqqer/system projects.project.site.panel.information.short{/t}
-            </td>
-            <td></td>
-            <td>
+                <label>
+                    {t}quiqqer/system projects.project.site.panel.information.short{/t}
+                </label>
                 <textarea class="site-short" name="short"></textarea>
             </td>
         </tr>
         <tr class="even">
             <td>
-                {t}quiqqer/system projects.project.site.panel.information.type{/t}
-            </td>
-            <td></td>
-            <td>
-                <input type="text" name="type" value="" class="project-types" />
+                <label>
+                    {t}quiqqer/system projects.project.site.panel.information.type{/t}
+                </label>
+                <div class="site-data-project-types-container">
+                    <input type="text" name="type" value="" class="project-types" />
+                </div>
             </td>
         </tr>
     </tbody>
@@ -157,7 +156,7 @@
     <table class="data-table site-date">
     <thead>
         <tr>
-            <th colspan="3">
+            <th colspan="5">
                 {t}quiqqer/system projects.project.site.panel.information.date{/t}
             </th>
         </tr>

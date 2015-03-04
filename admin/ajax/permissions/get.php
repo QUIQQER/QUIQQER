@@ -3,10 +3,10 @@
 /**
  * Return the rights for the binded type (group or user)
  *
- * @param $bid   - binded object id
- * @param $btype - binded object type
- *
+ * @param String $params - JSON array
+ * @param String $btype  - binded object type
  * @return array
+ * @throws \QUI\Exception
  */
 function ajax_permissions_get($params, $btype)
 {

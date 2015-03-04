@@ -18,7 +18,7 @@ function ajax_media_url_resized($fileurl, $maxWidth, $maxHeight)
 
     try
     {
-        $File = Utils::getImageByUrl( $fileurl );
+        $File = Utils::getMediaItemByUrl( $fileurl );
 
         if ( !Utils::isImage( $File ) )
         {

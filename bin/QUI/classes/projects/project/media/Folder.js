@@ -10,7 +10,7 @@
  * @require UploadManager
  */
 
-define([
+define('classes/projects/project/media/Folder', [
 
     'classes/projects/project/media/Item',
     'Ajax',
@@ -60,15 +60,19 @@ define([
          * @method classes/projects/project/media/Folder#createFolder
          *
          * @param {Function} oncomplete - callback( children ) function
+         * @param {Object} [params] - order params
          */
-        getChildren : function(oncomplete)
+        getChildren : function(oncomplete, params)
         {
+            params = params || {};
+
             Ajax.get('ajax_media_folder_children', function(result)
             {
                 oncomplete( result );
             }, {
-                project    : this.getMedia().getProject().getName(),
-                folderid   : this.getId()
+                project  : this.getMedia().getProject().getName(),
+                folderid : this.getId(),
+                params   : JSON.encode( params )
             });
         },
 

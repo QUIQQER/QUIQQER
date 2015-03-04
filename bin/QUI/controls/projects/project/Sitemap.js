@@ -24,12 +24,15 @@ define('controls/projects/project/Sitemap', [
     'qui/controls/sitemap/Item',
     'qui/controls/contextmenu/Item',
     'qui/controls/contextmenu/Seperator',
+    'qui/controls/windows/Confirm',
 
     'Projects',
     'Ajax',
     'Locale',
     'Clipboard',
-    'utils/Site'
+    'utils/Site',
+
+    'css!controls/projects/project/Sitemap.css'
 
 ], function()
 {
@@ -40,12 +43,13 @@ define('controls/projects/project/Sitemap', [
         QUISitemapItem          = arguments[ 2 ],
         QUIContextmenuItem      = arguments[ 3 ],
         QUIContextmenuSeperator = arguments[ 4 ],
+        QUIConfirm              = arguments[ 5 ],
 
-        Projects  = arguments[ 5 ],
-        Ajax      = arguments[ 6 ],
-        Locale    = arguments[ 7 ],
-        Clipboard = arguments[ 8 ],
-        SiteUtils = arguments[ 9 ];
+        Projects  = arguments[ 6 ],
+        Ajax      = arguments[ 7 ],
+        Locale    = arguments[ 8 ],
+        Clipboard = arguments[ 9 ],
+        SiteUtils = arguments[ 10 ];
 
     /**
      * A project sitemap
@@ -112,9 +116,9 @@ define('controls/projects/project/Sitemap', [
                     onSiteActivate   : self.onSiteChange,
                     onSiteDeactivate : self.onSiteChange,
                     onSiteDelete     : self.onSiteDelete,
-                    onSiteSortSave   : self.onSiteChange
+                    onSiteSortSave   : self.onSiteChange,
+                    onSiteLoad       : self.onSiteChange
                 });
-
             });
 
             // projects events
@@ -124,7 +128,8 @@ define('controls/projects/project/Sitemap', [
                 onSiteActivate   : this.onSiteChange,
                 onSiteDeactivate : this.onSiteChange,
                 onSiteDelete     : this.onSiteDelete,
-                onSiteSortSave   : this.onSiteChange
+                onSiteSortSave   : this.onSiteChange,
+                onSiteLoad       : this.onSiteChange
             });
 
             // copy and paste ids
@@ -257,7 +262,7 @@ define('controls/projects/project/Sitemap', [
          * Open the Sitemap to the specific id
          *
          * @method controls/projects/project/Sitemap#openSite
-         * @param {integer} id - Site ID
+         * @param {Number} id - Site ID
          */
         openSite : function(id)
         {
@@ -426,7 +431,7 @@ define('controls/projects/project/Sitemap', [
          *
          * @method controls/projects/project/Sitemap#$loadChildren
          * @param {Object} Item - (qui/controls/sitemap/Item) Parent sitemap item
-         * @param {Function} callback - callback function, if ajax is finish
+         * @param {Function} [callback] - callback function, if ajax is finish
          *
          * @ignore
          */
@@ -434,38 +439,127 @@ define('controls/projects/project/Sitemap', [
         {
             var self = this;
 
-            Item.clearChildren();
-
             Item.setAttribute( 'oicon', Item.getAttribute( 'icon' ) );
             Item.addIcon( 'icon-refresh icon-spin' );
             Item.removeIcon( Item.getAttribute( 'icon' ) );
 
+            Item.clearChildren();
 
-            Ajax.get('ajax_site_getchildren', function(result, Request)
+            this.$Project.getConfig(function(config)
             {
-                Item.clearChildren();
+                // limits
+                var start        = 0,
+                    limitStart   = Item.getAttribute( 'limitStart' ),
+                    projectLimit = 10;
 
-                for ( var i = 0, len = result.length; i < len; i++ )
+                if ( "adminSitemapMax" in config ) {
+                    projectLimit = parseInt( config.adminSitemapMax );
+                }
+
+
+                if ( limitStart === false ) {
+                    limitStart = -1;
+                }
+
+                start = ( limitStart + 1 ) * projectLimit;
+
+                // request
+                Ajax.get('ajax_site_getchildren', function(result)
                 {
-                    self.$addSitemapItem(
-                        Item,
-                        self.$parseArrayToSitemapitem( result[ i ] )
-                    );
-                }
+                    var count    = ( result.count ).toInt(),
+                        children = result.children,
+                        end      = start + projectLimit,
+                        sheets   = ( count / projectLimit ).ceil();
 
-                Item.addIcon( Item.getAttribute( 'oicon' ) );
-                Item.removeIcon( 'icon-refresh' );
+                    Item.setAttribute( 'hasChildren', count );
+                    Item.clearChildren();
 
-                if ( typeof callback !== 'undefined' ) {
-                    callback( Item, Request );
-                }
+                    if ( start > 0 )
+                    {
+                        Item.appendChild(
+                            new QUISitemapItem({
+                                icon : 'icon-level-up',
+                                text : '...',
+                                title  : 'Zurück - Rechtsklick für weitere Optionen',
+                                contextmenu : false,
+                                sheets : sheets,
+                                Item   : Item,
+                                events :
+                                {
+                                    onClick : function()
+                                    {
+                                        Item.setAttribute( 'limitStart', limitStart-1 );
+                                        self.$loadChildren( Item );
+                                    },
+                                    onInject : function(Me)
+                                    {
+                                        Me.getElm().addEvent('contextmenu', function(event)
+                                        {
+                                            event.stop();
+                                            self.$openSitemapItemSheetsWindow( Me );
+                                        });
+                                    }
+                                }
+                            })
+                        );
+                    }
 
-            }, {
-                project : this.$Project.encode(),
-                id      : Item.getAttribute( 'value' ),
-                params  : JSON.encode({
-                    attributes : 'id,name,title,has_children,nav_hide,linked,active,icon'
-                })
+
+                    for ( var i = 0, len = children.length; i < len; i++ )
+                    {
+                        self.$addSitemapItem(
+                            Item,
+                            self.$parseArrayToSitemapitem( children[ i ] )
+                        );
+                    }
+
+
+                    if ( end < count )
+                    {
+                        Item.appendChild(
+                            new QUISitemapItem({
+                                icon   : 'icon-level-down',
+                                text   : '...',
+                                title  : 'Vor - Rechtsklick für weitere Optionen',
+                                contextmenu : false,
+                                sheets : sheets,
+                                Item   : Item,
+                                events :
+                                {
+                                    onClick : function()
+                                    {
+                                        Item.setAttribute( 'limitStart', limitStart+1 );
+                                        self.$loadChildren( Item );
+                                    },
+                                    onInject : function(Me)
+                                    {
+                                        Me.getElm().addEvent('contextmenu', function(event)
+                                        {
+                                            event.stop();
+                                            self.$openSitemapItemSheetsWindow( Me );
+                                        });
+                                    }
+                                }
+                            })
+                        );
+                    }
+
+                    Item.addIcon( Item.getAttribute( 'oicon' ) );
+                    Item.removeIcon( 'icon-refresh' );
+
+
+                    if ( typeof callback === 'function' ) {
+                        callback( Item );
+                    }
+
+                }, {
+                    project : self.$Project.encode(),
+                    id      : Item.getAttribute( 'value' ),
+                    params  : JSON.encode({
+                        attributes : 'id,name,title,has_children,nav_hide,linked,active,icon',
+                        limit      : start +','+ projectLimit
+                    })
+                });
             });
         },
 
@@ -477,6 +571,15 @@ define('controls/projects/project/Sitemap', [
          * @param {Object} Itm - qui/controls/sitemap/Item
          * @return {Object} qui/controls/sitemap/Item
          *
+         * @param {{name:string}} result
+         * @param {{id:string}} result
+         * @param {{title:string}} result
+         * @param {{icon:string}} result
+         * @param {{has_children:string}} result
+         * @param {{nav_hide:string}} result
+         * @param {{linked:string}} result
+         * @param {{active:string}} result
+         *
          * @private
          */
         $parseArrayToSitemapitem : function(result, Itm)
@@ -487,49 +590,79 @@ define('controls/projects/project/Sitemap', [
                 Itm = new QUISitemapItem();
             }
 
-            Itm.setAttributes({
-                name  : result.name,
-                index : result.id,
-                value : result.id,
-                text  : result.title,
-                title : result.title,
-                alt   : result.name +'.html',
-                icon  : result.icon || 'icon-file-alt',
+            var attributes = {
                 hasChildren : ( result.has_children ).toInt(),
-                dragable : true
-            });
+                dragable    : true
+            };
 
-            if ( result.nav_hide == '1' )
+            if ( "name" in result )
             {
-                Itm.addIcon( URL_BIN_DIR +'16x16/navigation_hidden.png' );
-            } else
-            {
-                Itm.removeIcon( URL_BIN_DIR +'16x16/navigation_hidden.png' );
+                attributes.name = result.name;
+                attributes.alt  = result.name +'.html';
             }
 
-            if ( result.linked == '1' )
+            if ( "id" in result )
             {
-                Itm.setAttribute( 'linked', true );
-                Itm.addIcon( URL_BIN_DIR +'16x16/linked.png' );
-            } else
+                attributes.index = result.id;
+                attributes.value = result.id;
+            }
+
+            if ( "title" in result )
             {
-                Itm.setAttribute( 'linked', false );
-                Itm.removeIcon( URL_BIN_DIR +'16x16/linked.png' );
+                attributes.text = result.title;
+                attributes.title = result.title;
+            }
+
+            attributes.icon = 'icon-file-alt';
+
+            if ( "icon" in result ) {
+                attributes.icon = result.icon || 'icon-file-alt';
+            }
+
+            Itm.setAttributes( attributes );
+
+
+            if ( "nav_hide" in result )
+            {
+                if ( result.nav_hide == '1' )
+                {
+                    Itm.addIcon( URL_BIN_DIR +'16x16/navigation_hidden.png' );
+                } else
+                {
+                    Itm.removeIcon( URL_BIN_DIR +'16x16/navigation_hidden.png' );
+                }
+            }
+
+            if ( "linked" in result )
+            {
+                if ( result.linked == '1' )
+                {
+                    Itm.setAttribute( 'linked', true );
+                    Itm.addIcon( URL_BIN_DIR +'16x16/linked.png' );
+                } else
+                {
+                    Itm.setAttribute( 'linked', false );
+                    Itm.removeIcon( URL_BIN_DIR +'16x16/linked.png' );
+                }
             }
 
 
             // Activ / Inactive
             var active = true;
 
-            if ( result.active.toInt() === 0 )
+            if ( "active" in result )
             {
-                Itm.deactivate();
+                if ( result.active.toInt() === 0 )
+                {
+                    Itm.deactivate();
 
-                active = false;
-            } else
-            {
-                Itm.activate();
+                    active = false;
+                } else
+                {
+                    Itm.activate();
+                }
             }
+
 
             // contextmenu
             var ContextMenu = Itm.getContextMenu();
@@ -684,8 +817,22 @@ define('controls/projects/project/Sitemap', [
                         return;
                     }
 
+                    var dataString = ' '+ data.project +' ('+ data.lang +') ' +
+                                     '#'+ data.id +'';
+
+                    Paste.setAttribute(
+                        'text', Locale.get('quiqqer/system', 'paste') + dataString
+                    );
+
+                    Linked.setAttribute(
+                        'text', Locale.get('quiqqer/system', 'linked.paste') + dataString
+                    );
+
                     Paste.enable();
                     Linked.enable();
+
+                    ContextMenu.resize();
+                    ContextMenu.focus();
                 },
 
                 onBlur : function()
@@ -716,6 +863,66 @@ define('controls/projects/project/Sitemap', [
             Child.addEvent( 'onClose', this.$close );
 
             Parent.appendChild( Child );
+        },
+
+        /**
+         * Opens the sheet window for an item
+         *
+         * @ignore
+         * @param Item
+         */
+        $openSitemapItemSheetsWindow : function(Item)
+        {
+            if ( !Item.getAttribute( 'sheets' ) ) {
+                return;
+            }
+
+            var self     = this,
+                sheets   = ( Item.getAttribute( 'sheets' ) ).toInt(),
+                Select   = new Element( 'select'),
+                SiteItem = Item.getAttribute( 'Item' );
+
+            for ( var i = 0, len = sheets; i < len; i++ )
+            {
+                new Element('option', {
+                    html  : 'Blatt '+ ( i + 1 ),
+                    value : i
+                }).inject( Select );
+            }
+
+            if ( SiteItem.getAttribute( 'limitStart' ) !== false ) {
+                Select.value = ( SiteItem.getAttribute('limitStart') ).toInt() + 1;
+            }
+
+
+            new QUIConfirm({
+                title     : 'Blätterfunktion',
+                maxHeight : 300,
+                maxWidth  : 500,
+                events    :
+                {
+                    onOpen : function(Win)
+                    {
+                        var Content = Win.getContent();
+
+                        Content.set({
+                            html    : '<p>Welche Einträge der Seite sollen angezeigt werden?</p>',
+                            'class' : 'qui-projects-sitemap-sheetsWindow'
+                        });
+
+                        Select.inject( Content );
+                    },
+
+                    onSubmit : function(Win)
+                    {
+                        var Select = Win.getContent().getElement( 'select'),
+                            sheet  = ( Select.value ).toInt();
+
+                        SiteItem.setAttribute( 'limitStart', sheet-1 );
+                        self.$loadChildren( SiteItem );
+                    }
+                }
+            }).open();
         },
 
         /**
@@ -950,7 +1157,9 @@ define('controls/projects/project/Sitemap', [
                 return;
             }
 
-            for ( var i = 0, len = children.length; i < len; i++ )
+            var i, len, count;
+
+            for ( i = 0, len = children.length; i < len; i++ )
             {
                 if ( children[ i ].isOpen() )
                 {
@@ -958,6 +1167,18 @@ define('controls/projects/project/Sitemap', [
                     return;
                 }
 
+                count = children[ i].getAttribute( 'hasChildren' );
+
+                if ( typeOf( count ) === 'number' )
+                {
+                    count++;
+
+                } else
+                {
+                    count = 1;
+                }
+
+                children[ i ].setAttribute( 'hasChildren', count );
                 children[ i ].open();
             }
         },
@@ -980,7 +1201,19 @@ define('controls/projects/project/Sitemap', [
                 return;
             }
 
-            for ( var i = 0, len = children.length; i < len; i++ ) {
+            var i, len, Site, Parent;
+
+            for ( i = 0, len = children.length; i < len; i++ )
+            {
+                // refresh parent item
+                Parent = children[ i ].getParent();
+
+                if ( Parent )
+                {
+                    Site = this.$Project.get( Parent.getAttribute( 'value' ) );
+                    Site.load();
+                }
+
                 children[ i ].destroy();
             }
         }

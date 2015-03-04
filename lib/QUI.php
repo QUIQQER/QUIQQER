@@ -336,7 +336,7 @@ class QUI
             VAR_DIR .'sessions/',
             VAR_DIR .'uid_sess/',
             VAR_DIR .'backup/',
-            VAR_DIR .'marcate/',
+            VAR_DIR .'lock/',
 
             // Cache - noch nötig?
             VAR_DIR .'cache/url/',
@@ -401,6 +401,7 @@ class QUI
                 \QUI\System\Log::write( $message, 'error' );
             }
         });
+
 
         // there are system changes?
         // then make a setup
@@ -846,7 +847,7 @@ class QUI
     static function getTemp()
     {
         if ( is_null( self::$Temp ) ) {
-            self::$Temp = new \QUI\Temp( VAR_DIR .'temp' );
+            self::$Temp = new \QUI\Temp( VAR_DIR .'tmp' );
         }
 
         return self::$Temp;

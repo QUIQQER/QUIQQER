@@ -221,6 +221,18 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function rename($newname)
     {
+        if ( empty( $newname ) )
+        {
+            throw new QUI\Exception(
+                'Dieser Name ist ungültig'
+            );
+        }
+
+        // filter illegal characters
+        $newname = Utils::stripFolderName( $newname );
+
+        // rename
+
         if ( $newname == $this->getAttribute('name') ) {
             return;
         }
@@ -231,6 +243,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 'Der Media-Root-Verzeichnis eines Projektes kann nicht umbenannt werden'
             );
         }
+
 
         // check if a folder with the new name exist
         $Parent = $this->getParent();
@@ -247,7 +260,11 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $new_path = $Parent->getPath() .'/'. $newname;
 
         $new_path = StringUtils::replaceDblSlashes( $new_path );
+        $new_path = ltrim( $new_path, '/' );
+
         $old_path = StringUtils::replaceDblSlashes( $old_path );
+        $old_path = rtrim( $old_path, '/' );
+        $old_path = ltrim( $old_path, '/' );
 
 
         // update children paths
@@ -440,21 +457,48 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
     /**
      * Return the children ids ( not resursive )
+     * folders first, files seconds
      *
-     * @todo implement order
+     * @param string $order - [optional] order field
      * @return array
      */
-    public function getChildrenIds()
+    public function getChildrenIds($order='name')
     {
         $table     = $this->_Media->getTable();
-        $table_rel = $this->_Media->getTable('relations');
+        $table_rel = $this->_Media->getTable( 'relations' );
 
         // Sortierung
-        $order = 'name';
-
         switch ( $order )
         {
             case 'c_date':
+            case 'c_date ASC':
+            case 'c_date DESC':
+            case 'name ASC':
+            case 'name':
+            case 'name DESC':
+            case 'id':
+            case 'id ASC':
+            case 'id DESC':
+            break;
+
+            default:
+                $order = 'name';
+        }
+
+
+        switch ( $order )
+        {
+            case 'id':
+            case 'id ASC':
+                $order_by = 'find_in_set('. $table .'.type, \'folder\') DESC, '. $table .'.id';
+            break;
+
+            case 'id DESC':
+                $order_by = 'find_in_set('. $table .'.type, \'folder\') DESC, '. $table .'.id DESC';
+            break;
+
+            case 'c_date':
+            case 'c_date ASC':
                 $order_by = 'find_in_set('. $table .'.type, \'folder\') DESC, '. $table .'.c_date';
             break;
 
@@ -462,8 +506,13 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 $order_by = 'find_in_set('. $table .'.type, \'folder\') DESC, '. $table .'.c_date DESC';
             break;
 
+            case 'name ASC':
+                $order_by = 'find_in_set('. $table .'.type, \'folder\') ASC, '. $table .'.name';
+            break;
+
             default:
             case 'name':
+            case 'name DESC':
                 $order_by = 'find_in_set('. $table .'.type, \'folder\') DESC, '. $table .'.name';
             break;
         }
@@ -520,6 +569,96 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         return 0;
+    }
+
+    /**
+     * Return the images
+     */
+    public function getImages($params=array())
+    {
+        $table     = $this->_Media->getTable();
+        $table_rel = $this->_Media->getTable( 'relations' );
+
+        $dbQuery = array(
+            'select' => 'id',
+            'from'   => array(
+                $table,
+                $table_rel
+            ),
+            'where' => array(
+                $table_rel .'.parent' => $this->getId(),
+                $table_rel .'.child'  => '`'. $table .'.id`',
+                $table .'.deleted'    => 0,
+                $table .'.type'       => 'image'
+            )
+        );
+
+        if ( isset( $params['active'] ) )
+        {
+            $dbQuery['where']['active'] = $params['active'];
+        } else
+        {
+            $dbQuery['where']['active'] = 1;
+        }
+
+        if ( isset( $params['count'] ) )
+        {
+            $dbQuery['count'] = 'count';
+            $fetch = QUI::getDataBase()->fetch( $dbQuery );
+
+            return (int)$fetch[ 0 ][ 'count' ];
+        }
+
+        if ( isset( $params['limit'] ) ) {
+            $dbQuery['limit'] = $params['limit'];
+        }
+
+        if ( isset( $params['order'] ) )
+        {
+            switch ( $params['order'] )
+            {
+                case 'title':
+                case 'title DESC':
+                case 'title ASC':
+
+                case 'name':
+                case 'name DESC':
+                case 'name ASC':
+
+                case 'c_date':
+                case 'c_date DESC':
+                case 'c_date ASC':
+
+                case 'e_date':
+                case 'e_date ASC':
+                case 'e_date DESC':
+                    $order = $params['order'];
+                break;
+
+                default:
+                    $order = 'title ASC'; // title aufsteigend
+                break;
+            }
+
+            $dbQuery['order'] = $order;
+        }
+
+        $fetch  = QUI::getDataBase()->fetch( $dbQuery );
+        $result = array();
+
+        foreach ( $fetch as $entry )
+        {
+            try
+            {
+                $result[] = $this->_Media->get( (int)$entry['id'] );
+
+            } catch ( QUI\Exception $Exception )
+            {
+                QUI\System\Log::addDebug( $Exception->getMessage() );
+            }
+        }
+
+        return $result;
     }
 
     /**

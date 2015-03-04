@@ -230,13 +230,14 @@ class Template extends QUI\QDOM
             'URL_OPT_DIR' => URL_OPT_DIR,
             'URL_USR_DIR' => URL_USR_DIR,
 
-            'User'     => $User,
-            'Locale'   => $Locale,
-            'L'        => $Locale,
-            'Template' => $this,
-            'Site'     => $Site,
-            'Project'  => $Project,
-            'Rewrite'  => $Rewrite
+            'User'       => $User,
+            'Locale'     => $Locale,
+            'L'          => $Locale,
+            'Template'   => $this,
+            'Site'       => $Site,
+            'Project'    => $Project,
+            'Rewrite'    => $Rewrite,
+            'lastUpdate' => QUI::getPackageManager()->getLastUpdateDate()
         ));
 
         /**
@@ -299,17 +300,7 @@ class Template extends QUI\QDOM
             require $template_index;
         }
 
-
-        try
-        {
-            return $Engine->fetch( $tpl );
-
-        } catch ( \Exception $Exception )
-        {
-            QUI\System\Log::writeException( $Exception );
-        }
-
-        return '';
+        return $Engine->fetch( $tpl );
     }
 
     /**
@@ -404,7 +395,8 @@ class Template extends QUI\QDOM
             'loadModuleFiles' => $this->_onLoadModules,
             'headerExtend'    => $headerExtend,
             'ControlManager'  => new QUI\Control\Manager(),
-            'Canonical'       => new QUI\Projects\Site\Canonical( $Site )
+            'Canonical'       => new QUI\Projects\Site\Canonical( $Site ),
+            'lastUpdate'      => QUI::getPackageManager()->getLastUpdateDate()
         ));
 
         return $Engine->fetch( LIB_DIR .'templates/header.html' );
@@ -453,7 +445,7 @@ class Template extends QUI\QDOM
             {
                 $Engine->assign(
                     'siteStyle',
-                    URL_OPT_DIR . $package .'/'. $type .'.css'
+                    URL_OPT_DIR . $package .'/bin/'. $type .'.css'
                 );
             }
 
@@ -470,12 +462,32 @@ class Template extends QUI\QDOM
             }
         }
 
+        if ( $siteType[ 0 ] == 'standard' )
+        {
+            // site template
+            $siteTemplate = OPT_DIR . $Project->getAttribute('template') .'/standard.html';
+            $siteScript   = OPT_DIR . $Project->getAttribute('template') .'/standard.php';
+            $siteStyle    = OPT_DIR . $Project->getAttribute('template') .'/bin/standard.css';
+
+            if ( file_exists( $siteStyle ) )
+            {
+                $Engine->assign(
+                    'siteStyle',
+                    URL_OPT_DIR . $Project->getAttribute('template') .'/standard.css'
+                );
+            }
+
+            if ( file_exists( $siteTemplate ) ) {
+                $template = $siteTemplate;
+            }
+        }
+
         // includes
         if ( $siteScript )
         {
             $siteScript = Orthos::clearPath( realpath( $siteScript ) );
 
-            if ( file_exists( $siteScript ) ) {
+            if ( $siteScript ) {
                 require $siteScript;
             }
         }
@@ -484,7 +496,7 @@ class Template extends QUI\QDOM
         {
             $projectScript = Orthos::clearPath( realpath( $projectScript ) );
 
-            if ( file_exists( $projectScript ) ) {
+            if ( $projectScript ) {
                 require $projectScript;
             }
         }

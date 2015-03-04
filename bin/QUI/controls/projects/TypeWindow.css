@@ -1,0 +1,41 @@
+
+.qui-type-window {
+
+}
+
+.qui-type-window-cc {
+    clear: both;
+    float: left;
+    height: calc( 100% - 40px );
+    overflow: auto;
+    width: 100%;
+}
+
+
+.qui-type-window-buttons {
+    background: #e1e4e9;
+    border-bottom: 1px solid #dedede;
+    clear: both;
+    float: left;
+    height: 40px;
+    width: 100%;
+}
+
+.qui-type-window-buttons button {
+    background: transparent;
+    border-color: #e1e4e9;
+    border-radius: 0;
+    border-style: solid;
+    border-width: 0 1px 0 0;
+    box-shadow: none;
+    color: #8f9399;
+    height: 40px;
+    line-height: 40px;
+    margin: 0;
+    padding: 0 10px;
+}
+
+.qui-type-window-buttons button.qui-button-active {
+    background: #c3c3c3;
+    color: #222;
+}

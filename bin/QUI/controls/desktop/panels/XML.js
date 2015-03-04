@@ -7,10 +7,12 @@
  * @module controls/desktop/panels/XML
  */
 
-define([
+define('controls/desktop/panels/XML', [
 
+    'qui/QUI',
     'qui/controls/desktop/Panel',
     'qui/controls/buttons/Button',
+    'qui/controls/buttons/Seperator',
     'qui/utils/Object',
     'Ajax',
     'Locale',
@@ -18,7 +20,7 @@ define([
 
     'css!controls/desktop/panels/XML.css'
 
-], function(QUIPanel, QUIButton, QUIObjectUtils, Ajax, Locale, ControlUtils)
+], function(QUI, QUIPanel, QUIButton, QUISeperator, QUIObjectUtils, Ajax, Locale, ControlUtils)
 {
     "use strict";
 
@@ -34,6 +36,7 @@ define([
 
         Binds : [
             '$onCreate',
+            '$onCategoryActive',
             'loadCategory',
             'unloadCategory',
             'save'
@@ -126,8 +129,7 @@ define([
                     );
 
                     Category.addEvents({
-                        onActive : self.loadCategory,
-                        onNormal : self.unloadCategory
+                        onActive : self.$onCategoryActive
                     });
 
                     self.addCategory( Category );
@@ -178,13 +180,13 @@ define([
         /**
          * Request the category
          *
-         * @param {qui/controls/buttons/Button} Category
+         * @param {Object} Category - qui/controls/buttons/Button
          */
         loadCategory : function(Category)
         {
             var self = this;
 
-            Ajax.get('ajax_settings_category', function(result, Request)
+            Ajax.get('ajax_settings_category', function(result)
             {
                 var Body = self.getBody();
 
@@ -192,18 +194,13 @@ define([
                     result = '';
                 }
 
-                Body.set(
-                    'html',
-
-                    '<form class="qui-xml-panel">'+
-                        result +
-                    '</form>'
-                );
+                Body.set( 'html', '<form class="qui-xml-panel">'+ result + '</form>' );
 
                 // set the form
-                var i, len, parts, Elm, value;
+                var i, len, Elm, value;
 
-                var elements = Body.getElement( 'form' ).elements,
+                var Form     = Body.getElement( 'form'),
+                    elements = Form.elements,
                     config   = self.$config;
 
                 for ( i = 0, len = elements.length; i < len; i++)
@@ -234,21 +231,21 @@ define([
                     {
                         var type = typeOf( R );
 
-                        if ( type == 'function' )
+                        if ( type === 'function' )
                         {
                             R( self );
 
-                        } else if ( type == 'class' )
+                        } else if ( type === 'class' )
                         {
                             self.$Control = new R( self );
 
-                            if ( self.getContent().get( 'html' ) == '' )
+                            if ( self.getContent().get( 'html' ) === '' )
                             {
-                                self.$Control.inject( Body );
+                                self.$Control.inject( Form );
 
                             } else
                             {
-                                self.$Control.import( Body );
+                                self.$Control.imports( Form );
                             }
 
                         } else
@@ -284,44 +281,47 @@ define([
 
         /**
          * Unload the Category and set all settings
-         *
-         * @param {qui/controls/buttons/Button} Category
          */
-        unloadCategory : function(Category)
+        unloadCategory : function()
         {
-            var i, j, len, Elm, name, tok,
-                conf, namespace;
+            var i, len, Elm, name, tok, namespace;
 
             var Body   = this.getBody(),
                 Form   = Body.getElement( 'form' ),
                 values = {};
 
-            for ( i = 0, len = Form.elements.length; i < len; i++ )
+            if ( Form )
             {
-                Elm  = Form.elements[ i ];
-                name = Elm.name;
-
-                if ( Elm.type == 'radio' ||
-                     Elm.type == 'checkbox' )
+                for ( i = 0, len = Form.elements.length; i < len; i++ )
                 {
-                    if ( Elm.checked )
+                    Elm = Form.elements[i];
+                    name = Elm.name;
+
+                    if ( Elm.type == 'radio' || Elm.type == 'checkbox' )
                     {
-                        values[ name ] = 1;
-                    } else
-                    {
-                        values[ name ] = 0;
+                        if ( Elm.checked )
+                        {
+                            values[name] = 1;
+                        } else
+                        {
+                            values[name] = 0;
+                        }
+
+                        continue;
                     }
 
-                    continue;
+                    values[name] = Elm.value;
                 }
-
-                values[ name ] = Elm.value;
             }
 
 
             // set the values to the $config
             for ( namespace in values )
             {
+                if ( !values.hasOwnProperty( namespace ) ) {
+                    continue;
+                }
+
                 if ( !namespace.match( '.' ) )
                 {
                     this.$config[ namespace ] = values[ namespace ];
@@ -347,6 +347,17 @@ define([
         },
 
         /**
+         * event : click on category button
+         *
+         * @param {Object} Category - qui/controls/buttons/Button
+         */
+        $onCategoryActive : function(Category)
+        {
+            this.unloadCategory();
+            this.loadCategory( Category );
+        },
+
+        /**
          * Send the configuration to the server
          */
         save : function()
@@ -357,7 +368,7 @@ define([
 
             Save.setAttribute( 'textimage', 'icon-refresh icon-rotate' );
 
-            Ajax.post('ajax_settings_save', function(result, Request)
+            Ajax.post('ajax_settings_save', function()
             {
                 Save.setAttribute( 'textimage', 'icon-save' );
             }, {
