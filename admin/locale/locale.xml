@@ -869,11 +869,18 @@
             ]]></en>
         </locale>
 
-        <!-- panels -->
-        <locale name="panels.project.title">
-            <de><![CDATA[Projekte / Projekt Panel]]></de>
-            <en><![CDATA[Projects / Project Panel]]></en>
+        <!-- quiqqer date format settings -->
+        <locale name="quiqqer.settings.date_formats">
+            <de><![CDATA[Datumsformat]]></de>
+            <en><![CDATA[Date format]]></en>
         </locale>
+        <locale name="quiqqer.settings.date_formats.title">
+            <de><![CDATA[Globale Datumsformat Einstellungen]]></de>
+            <en><![CDATA[Global date format settings]]></en>
+        </locale>
+
+
+        <!-- panels -->
         <locale name="panels.help.title">
             <de><![CDATA[QUIQQER Hilfe]]></de>
             <en><![CDATA[QUIQQER Help]]></en>

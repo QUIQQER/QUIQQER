@@ -8,7 +8,8 @@ header( "Content-Type: text/html; charset=utf-8" );
 header( "Cache-Control: no-cache, must-revalidate" );
 header( "Pragma: no-cache" );
 
-date_default_timezone_set( 'Europe/Zurich' );
+// date_default_timezone_set( 'Europe/Zurich' );
+date_default_timezone_set( 'UTC' );
 
 error_reporting( E_ALL );
 
@@ -49,6 +50,11 @@ define( 'DEBUG_MEMORY', false );
 
 // Cacheflag setzen
 \QUI\Cache\Manager::set( 'qui_cache_test', 1 );
+
+if ( \QUI::conf( 'globals','timezone' ) ) {
+    date_default_timezone_set( \QUI::conf( 'globals','timezone' ) );
+}
+
 
 try
 {

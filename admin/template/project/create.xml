@@ -253,6 +253,10 @@
             <de><![CDATA[Aegypten]]></de>
             <en><![CDATA[Egypt]]></en>
         </locale>
+        <locale name="lang.en">
+            <de><![CDATA[England]]></de>
+            <en><![CDATA[England]]></en>
+        </locale>
         <locale name="lang.sv">
             <de><![CDATA[El Salvador]]></de>
             <en><![CDATA[El Salvador]]></en>

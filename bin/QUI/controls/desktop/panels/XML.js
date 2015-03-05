@@ -222,6 +222,7 @@ define('controls/desktop/panels/XML', [
                 }
 
                 ControlUtils.parse( Body );
+                QUI.parse( Body );
 
 
                 // require?
