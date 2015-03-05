@@ -85,7 +85,7 @@
 
                 <conf name="timezone">
                     <type><![CDATA[string]]></type>
-                    <defaultvalue>Europe/Zurich</defaultvalue>
+                    <defaultvalue>Europe/Berlin</defaultvalue>
                 </conf>
             </section>
 
