@@ -152,11 +152,6 @@ class Locale
             $this->_dateFormats = array();
         }
 
-        $this->_dateFormats = array(
-            'de' => '%d. %B %Y',
-            'en' => '%d. %B %Y'
-        );
-
         return $this->_dateFormats;
     }
 
