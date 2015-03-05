@@ -82,6 +82,11 @@
                 <conf name="httpshost">
                     <type><![CDATA[string]]></type>
                 </conf>
+
+                <conf name="timezone">
+                    <type><![CDATA[string]]></type>
+                    <defaultvalue>Europe/Zurich</defaultvalue>
+                </conf>
             </section>
 
             <section name="db">
@@ -197,9 +202,8 @@
                 </conf>
             </section>
 
-
             <section name="date_formats">
-                <conf name="**">
+                <conf name="??">
                     <type><![CDATA[string]]></type>
                 </conf>
             </section>
@@ -499,14 +503,33 @@
                     </text>
                     <icon>icon-calendar</icon>
 
+
+                    <settings title="date_timezone" name="date_timezone">
+                        <title>
+                            <locale group="quiqqer/system" var="quiqqer.settings.timezone.title" />
+                        </title>
+                        <input conf="globals.timezone" type="string">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.general.globals.timezone" />
+                            </text>
+                            <description>
+                                <locale group="quiqqer/system" var="quiqqer.settings.general.globals.timezone.description" />
+                            </description>
+                        </input>
+                    </settings>
+
                     <settings title="date_formats" name="date_formats">
                         <title>
                             <locale group="quiqqer/system" var="quiqqer.settings.date_formats.title" />
                         </title>
 
-                        <input conf="date_formats.*"
+                        <input conf="date_formats"
                                data-qui="controls/system/AvailableLanguages"
-                        />
+                        >
+                            <description>
+                                <locale group="quiqqer/system" var="quiqqer.settings.date_formats.description" />
+                            </description>
+                        </input>
                     </settings>
                 </category>
 

@@ -870,6 +870,31 @@
         </locale>
 
         <!-- quiqqer date format settings -->
+        <locale name="quiqqer.settings.timezone.title">
+            <de><![CDATA[Zeitzonen Einstellung]]></de>
+            <en><![CDATA[Timezone settings]]></en>
+        </locale>
+        <locale name="quiqqer.settings.general.globals.timezone">
+            <de><![CDATA[Zeitzone]]></de>
+            <en><![CDATA[Timezone]]></en>
+        </locale>
+        <locale name="quiqqer.settings.general.globals.timezone.description" html="true">
+            <de><![CDATA[
+                <p>Diese Einstellung beeinflusst alle Zeit und Datumsangaben.</p>
+                <p>
+                    Eine Liste aller Zeitzonen finden Sie unter:
+                    <a href="http://php.net/manual/de/timezones.php" target="_blank">http://php.net/manual/de/timezones.php</a>
+                </p>
+            ]]></de>
+            <en><![CDATA[
+                <p>This setting affects all time and dates</p>
+                <p>
+                    You can find a complete list of all timezones at:
+                    <a href="http://php.net/manual/en/timezones.php" target="_blank">http://php.net/manual/en/timezones.php</a>
+                </p>
+            ]]></en>
+        </locale>
+
         <locale name="quiqqer.settings.date_formats">
             <de><![CDATA[Datumsformat]]></de>
             <en><![CDATA[Date format]]></en>
@@ -878,7 +903,24 @@
             <de><![CDATA[Globale Datumsformat Einstellungen]]></de>
             <en><![CDATA[Global date format settings]]></en>
         </locale>
-
+        <locale name="quiqqer.settings.date_formats.description" html="true">
+            <de><![CDATA[
+                <p>Einstellungen und oder mögliche Datumsformate finden Sie unter:</p>
+                <p>
+                    <a href="http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters" target="_blank">
+                        http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters
+                    </a>
+                </p>
+            ]]></de>
+            <en><![CDATA[
+                <p>Einstellungen und oder mögliche Datumsformate finden Sie unter:</p>
+                <p>
+                    <a href="http://php.net/manual/en/function.strftime.php#refsect1-function.strftime-parameters" target="_blank">
+                        http://php.net/manual/en/function.strftime.php#refsect1-function.strftime-parameters
+                    </a>
+                </p>
+            ]]></en>
+        </locale>
 
         <!-- panels -->
         <locale name="panels.help.title">

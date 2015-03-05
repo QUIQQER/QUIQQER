@@ -32,11 +32,16 @@ define('controls/system/AvailableLanguages', [
             '$onImport'
         ],
 
+        options : {
+            values : false
+        },
+
         initialize : function(options)
         {
             this.parent( options );
 
-            this.$Input = null;
+            this.$Input  = null;
+            this.$loaded = false;
 
             this.Loader = new QUILoader();
 
@@ -68,6 +73,43 @@ define('controls/system/AvailableLanguages', [
         },
 
         /**
+         * set the values to the fields
+         *
+         * @param {Object} values - list of the lang values
+         */
+        setValue : function(values)
+        {
+            if ( typeOf( values ) !== 'object' ) {
+                return;
+            }
+
+            if ( this.$loaded === false || !this.$Input )
+            {
+                this.setAttribute( 'values', values );
+                return;
+            }
+
+            var lang, name, Input;
+            var parentName = this.$Input.get( 'name' );
+
+            for ( lang in values )
+            {
+                if ( !values.hasOwnProperty( lang ) ) {
+                    continue;
+                }
+
+                name  = parentName +'.'+ lang;
+                Input = this.$Elm.getElement( '[name="'+ name +'"]' );
+
+                if ( Input ) {
+                    Input.value = values[ lang ];
+                }
+            }
+
+            this.setAttribute( 'values', values );
+        },
+
+        /**
          * event on inject
          */
         $onInject : function()
@@ -78,7 +120,9 @@ define('controls/system/AvailableLanguages', [
 
             this.getAvailableLanguages(function(list)
             {
-                var i, len, flag, langtext;
+                var i, len, flag, name, langtext;
+
+                var parentName = self.$Input.get( 'name' );
 
                 for ( i = 0, len = list.length; i < len; i++ )
                 {
@@ -87,15 +131,22 @@ define('controls/system/AvailableLanguages', [
                            '</span>';
 
                     langtext = QUILocale.get( 'quiqqer/system', 'lang.'+list[ i ] );
+                    name     = parentName +'.'+ list[ i ];
 
                     new Element('label', {
                         'class'     : 'quiqqer-available-languages-entry',
                         'data-lang' : list[ i ],
-                        html        : '<input type="text" placeholder="D M j" />'+
+                        html        : '<input type="text" name="'+ name +'" placeholder="%D" />'+
                                       '<span class="quiqqer-available-languages-entry-text">'+
                                           flag + langtext +
                                       '</span>'
                     }).inject( self.getElm() );
+                }
+
+                self.$loaded = true;
+
+                if ( self.getAttribute( 'values' ) ) {
+                    self.setValue( self.getAttribute( 'values' ) );
                 }
 
                 self.Loader.hide();

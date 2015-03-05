@@ -5,6 +5,16 @@
  *
  * @author www.pcsg.de (Henning Leutz)
  * @module controls/desktop/panels/XML
+ *
+ * @require qui/QUI
+ * @require qui/controls/desktop/Panel
+ * @require qui/controls/buttons/Button
+ * @require qui/controls/buttons/Seperator
+ * @require qui/utils/Object
+ * @require Ajax
+ * @require Locale
+ * @require utils/Controls
+ * @require css!controls/desktop/panels/XML.css
  */
 
 define('controls/desktop/panels/XML', [
@@ -79,8 +89,8 @@ define('controls/desktop/panels/XML', [
         {
             this.setAttributes( data.attributes );
 
-            this.$file    = data.file;
-            this.$config  = data.config;
+            this.$file   = data.file;
+            this.$config = data.config;
 
             if ( !this.$Elm )
             {
@@ -124,9 +134,7 @@ define('controls/desktop/panels/XML', [
                 // load categories
                 for ( var i = 0, len = categories.length; i < len; i++ )
                 {
-                    var Category = new QUIButton(
-                        categories[ i ]
-                    );
+                    var Category = new QUIButton( categories[ i ] );
 
                     Category.addEvents({
                         onActive : self.$onCategoryActive
@@ -186,6 +194,8 @@ define('controls/desktop/panels/XML', [
         {
             var self = this;
 
+            this.Loader.show();
+
             Ajax.get('ajax_settings_category', function(result)
             {
                 var Body = self.getBody();
@@ -221,13 +231,54 @@ define('controls/desktop/panels/XML', [
                     Elm.value = value;
                 }
 
-                ControlUtils.parse( Body );
-                QUI.parse( Body );
+                // parse controls
+                Promise.all([
 
+                    QUI.parse( Body ),
+                    ControlUtils.parse( Body )
 
-                // require?
-                if ( Category.getAttribute( 'require' ) )
+                ]).then(function()
                 {
+                    var i, len, Node, Control, nodeName;
+                    var quiElements = Body.getElements( '[data-quiid]' );
+
+                    for ( i = 0, len = quiElements.length; i < len; i++ )
+                    {
+                        Node     = quiElements[ i ];
+                        nodeName = Node.nodeName;
+
+                        if ( nodeName != 'INPUT' &&
+                             nodeName != 'TEXTAREA' &&
+                             nodeName != 'SELECT' )
+                        {
+                            continue;
+                        }
+
+                        Control = QUI.Controls.getById( Node.get( 'data-quiid' ) );
+
+                        if ( !Control ) {
+                            continue;
+                        }
+
+                        if ( !("setValue" in Control) ) {
+                            continue;
+                        }
+
+                        if ( !(Node.get( 'name' ) in self.$config) ) {
+                            continue;
+                        }
+
+                        Control.setValue( self.$config[ Node.get( 'name' ) ] );
+                    }
+
+
+                    // require?
+                    if ( !Category.getAttribute( 'require' ) )
+                    {
+                        self.Loader.hide();
+                        return;
+                    }
+
                     require([ Category.getAttribute( 'require' ) ], function(R)
                     {
                         var type = typeOf( R );
@@ -249,10 +300,9 @@ define('controls/desktop/panels/XML', [
                                 self.$Control.imports( Form );
                             }
 
-                        } else
-                        {
-                            self.Loader.show();
                         }
+
+                        self.Loader.hide();
 
                     }, function(err)
                     {
@@ -268,11 +318,7 @@ define('controls/desktop/panels/XML', [
 
                         self.Loader.hide();
                     });
-
-                    return;
-                }
-
-                self.Loader.hide();
+                });
 
             }, {
                 file     : this.$file,

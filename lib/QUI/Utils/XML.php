@@ -155,6 +155,11 @@ class XML
 
             foreach ( $key as $value => $entry )
             {
+                // no special characters allowed
+                if ( preg_match( '/[^0-9_a-zA-Z]/', $value ) ) {
+                    continue;
+                }
+
                 if ( $Config->existValue( $section, $value ) === false ) {
                     $Config->setValue( $section, $value, $entry['default'] );
                 }
@@ -928,6 +933,22 @@ class XML
         $defaults = self::getConfigParamsFromXml( $file );
         $Config   = self::getConfigFromXml( $file );
 
+        $checkFnMatch = function($key, $keyList)
+        {
+            if ( !is_array( $keyList ) ) {
+                return false;
+            }
+
+            foreach ( $keyList as $keyEntry )
+            {
+                if ( fnmatch( $keyEntry, $key ) ) {
+                    return $keyEntry;
+                }
+            }
+
+            return false;
+        };
+
         foreach ( $params as $section => $param )
         {
             if ( !is_array( $param ) ) {
@@ -940,11 +961,26 @@ class XML
                     continue;
                 }
 
-                if ( !isset( $defaults[ $section ][ $key ] ) ) {
+                // no special characters allowed
+                if ( preg_match( '/[^0-9_a-zA-Z]/', $key ) ) {
                     continue;
                 }
 
-                $default = $defaults[ $section ][ $key ];
+                // default key for fn match
+                $defaultkeys  = array_keys( $defaults[ $section ] );
+                $fnMatchFound = $checkFnMatch( $key, $defaultkeys );
+
+                if ( !$fnMatchFound && !isset( $defaults[ $section ][ $key ] ) ) {
+                    continue;
+                }
+
+                if ( $fnMatchFound )
+                {
+                    $default = $defaults[ $section ][ $fnMatchFound ];
+                } else
+                {
+                    $default = $defaults[ $section ][ $key ];
+                }
 
                 if ( empty( $value ) && $value !== 0 ) {
                     $value = $default['default'];

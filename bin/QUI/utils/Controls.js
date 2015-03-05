@@ -1,15 +1,14 @@
+
 /**
  * control utils - helper for all controls
  *
  * @module utils/Controls
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @return polyfills/Promise
  */
 
-define('utils/Controls', [
-
-    'polyfills/Promise'
-
-], function()
+define('utils/Controls', ['qui/lib/polyfills/Promise'], function()
 {
     "use strict";
 
@@ -19,6 +18,8 @@ define('utils/Controls', [
          *
          * Search all control elements in the node element
          * and parse it to the specific control
+         *
+         * @return Promise
          */
         parse: function(Elm, callback)
         {
@@ -95,12 +96,19 @@ define('utils/Controls', [
                 needles.push( this.parseDataTables( Elm )  );
             }
 
-
-            Promise.all( needles ).then(function()
+            return new Promise(function(resolve, reject)
             {
-                if ( typeof callback === 'function' ) {
-                    callback();
-                }
+                Promise.all( needles ).done(function()
+                {
+                    if ( typeof callback === 'function' ) {
+                        callback();
+                    }
+
+                    resolve();
+
+                }, function() {
+                    reject();
+                });
             });
         },
 
