@@ -12,7 +12,7 @@ function ajax_downloadTest()
     QUI\Utils\System\File::downloadHeader( CMS_DIR .'README.md' );
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_downloadTest',
     false,
     'Permission::checkAdminUser'
