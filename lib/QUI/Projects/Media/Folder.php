@@ -1009,7 +1009,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         QUI::getDataBase()->insert($table, array(
             'name' 	    => $new_file_info['filename'],
             'title'     => $title,
-            'short'     => $title,
+            'short'     => '',
             'file' 	    => $filePath,
             'alt' 	    => $title,
             'c_date'    => date('Y-m-d h:i:s'),
