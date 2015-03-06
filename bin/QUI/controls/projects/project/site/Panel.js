@@ -1420,8 +1420,14 @@ define('controls/projects/project/site/Panel', [
                         Editor.setAttribute( 'bodyId', result.bodyId );
                         Editor.setAttribute( 'bodyClass', result.bodyClass );
 
-                        for ( var i = 0, len = result.cssFiles.length; i < len; i++) {
-                            Editor.addCSS( result[ i ] );
+                        var cssFiles = [];
+
+                        if ( "cssFiles" in result ) {
+                            cssFiles = result.cssFiles;
+                        }
+
+                        for ( var i = 0, len = cssFiles.length; i < len; i++) {
+                            Editor.addCSS( cssFiles[ i ] );
                         }
 
                         self.$startEditorPeriodicalSave();

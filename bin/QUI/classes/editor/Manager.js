@@ -11,7 +11,7 @@
  * @require Ajax
  */
 
-define([
+define('classes/editor/Manager', [
 
     'qui/QUI',
     'qui/classes/DOM',
@@ -36,7 +36,7 @@ define([
 
         },
 
-        initialize : function(options)
+        initialize : function()
         {
             this.$config    = null;
             this.$editors   = {};
@@ -61,7 +61,7 @@ Manager.register('package/ckeditor4', {
 
          *
          * @param {String} name
-         * @param {Object} onload - Editor parameters, see example
+         * @param {Object} onload_params - Editor parameters, see example
          */
         register : function(name, onload_params)
         {
@@ -72,7 +72,7 @@ Manager.register('package/ckeditor4', {
          * Register an editor instance
          *
          * @method classes/editor/Manager#$registerEditor
-         * @param {controls/editors/Editor} Instance
+         * @param {Object} Instance - controls/editors/Editor
          *
          * @ignore
          */
@@ -121,7 +121,7 @@ Manager.register('package/ckeditor4', {
                 return;
             }
 
-            this.getConfig(function(result)
+            this.getConfig(function()
             {
                 require([ self.$config.editors[ name ] ], function(Editor)
                 {
@@ -135,7 +135,7 @@ Manager.register('package/ckeditor4', {
          * Destroy an editor
          *
          * @method classes/editor/Manager#destroyEditor
-         * @param {controls/editors/Editor} Editor
+         * @param {Object} Editor (controls/editors/Editor)
          */
         destroyEditor : function(Editor)
         {

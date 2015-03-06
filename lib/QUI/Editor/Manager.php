@@ -345,8 +345,6 @@ class Manager
 
         }
 
-        QUI\System\Log::write( $file );
-
         $Dom     = QUI\Utils\XML::getDomFromXml( $file );
         $toolbar = $Dom->getElementsByTagName( 'toolbar' );
 

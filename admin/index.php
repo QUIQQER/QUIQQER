@@ -130,7 +130,8 @@
                 URL_SPACE_CHARACTER   : "<?php echo \QUI\Rewrite::URL_SPACE_CHARACTER; ?>",
                 URL_PROJECT_CHARACTER : "<?php echo \QUI\Rewrite::URL_PROJECT_CHARACTER; ?>"
             },
-            inAdministration : true
+            inAdministration : true,
+            lu : "<?php echo QUI::getPackageManager()->getLastUpdateDate(); ?>"
         };
 
     /* ]]> */

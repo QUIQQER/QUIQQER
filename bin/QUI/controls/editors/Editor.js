@@ -5,7 +5,7 @@
  * The editor main class is the parent class for all WYSIWYG editors.
  * Every WYSIWYG editor must inherit from this class
  *
- * @module controls/editor/Editor
+ * @module controls/editors/Editor
  * @author www.pcsg.de (Henning Leutz)
  *
  * @require qui/controls/Control
@@ -17,7 +17,11 @@
  * @event onAddCSS [ {String} file, {self} ]
  */
 
-define(['qui/controls/Control'], function(Control)
+define('controls/editors/Editor', [
+
+    'qui/controls/Control'
+
+], function(Control)
 {
     "use strict";
 
@@ -41,7 +45,7 @@ define(['qui/controls/Control'], function(Control)
     return new Class({
 
         Extends : Control,
-        Type    : 'controls/editor/Editor',
+        Type    : 'controls/editors/Editor',
 
         Binds : [
             '$onDrop'
@@ -277,6 +281,28 @@ define(['qui/controls/Control'], function(Control)
          */
         addCSS : function(file)
         {
+            if ( typeof file === 'undefined' || !file ) {
+                return;
+            }
+
+            if ( file.indexOf( "//" ) === 0 ||
+                 file.indexOf( "https://" ) === 0 ||
+                 file.indexOf( "http://" ) === 0 )
+            {
+                this.fireEvent( 'addCSS', [ file, this ] );
+                return;
+            }
+
+            if ( !file.indexOf( '?' ) )
+            {
+                this.fireEvent( 'addCSS', [ file, this ] );
+                return;
+            }
+
+            if ( "QUIQQER" in window && 'lu' in QUIQQER ) {
+                file = file +'?lu='+ QUIQQER.lu;
+            }
+
             this.fireEvent( 'addCSS', [ file, this ] );
         },
 
