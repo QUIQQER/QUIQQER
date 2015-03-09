@@ -544,6 +544,7 @@ class Edit extends Site
                 'short'    => $this->getAttribute( 'short' ),
                 'content'  => $this->getAttribute( 'content' ),
                 'type' 	   => $this->getAttribute( 'type' ),
+                'layout'   => $this->getAttribute( 'layout' ),
                 'nav_hide' => $this->getAttribute( 'nav_hide' ) ? 1 : 0,
                 'e_user'   => QUI::getUserBySession()->getId(),
 

@@ -403,6 +403,51 @@ class Template extends QUI\QDOM
     }
 
     /**
+     * Return the layout of the template
+     * If a template is set to the project
+     *
+     * @param array $params - body params
+     * @return String
+     */
+    public function getLayout($params=array())
+    {
+        /* @var $Project QUI\Projects\Project */
+        /* @var $Site QUI\Projects\Site */
+        /* @var $Engine QUI\Interfaces\Template\Engine */
+
+        if ( is_array( $params ) ) {
+            $this->setAttributes( $params );
+        }
+
+        $Project = $this->getAttribute( 'Project' );
+        $Site    = $this->getAttribute( 'Site' );
+
+        $layout   = $Site->getAttribute( 'layout' );
+        $template = OPT_DIR . $Project->getAttribute( 'template' );
+        $siteXML  = $template .'/site.xml';
+
+
+        if ( !$layout ) {
+            $layout = $Project->getAttribute( 'layout' );
+        }
+
+        if ( !$layout || !is_dir( $template ) && !file_exists( $siteXML ) ) {
+            return $this->getBody( $params );
+        }
+
+        $Layout     = QUI\Utils\XML::getLayoutFromXml( $siteXML, $layout );
+        $layoutFile = $template .'/'. $layout .'.html';
+
+        if ( !$Layout || !file_exists( $layoutFile ) ) {
+            return $this->getBody( $params );
+        }
+
+        $Engine = $this->getAttribute( 'Engine' );
+
+        return $Engine->fetch( $layoutFile );
+    }
+
+    /**
      * Return the Body of the Template
      * -> body.html
      *

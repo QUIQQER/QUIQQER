@@ -715,6 +715,62 @@ class Project
     }
 
     /**
+     *
+     */
+    public function getLayouts()
+    {
+        $VHosts    = new QUI\System\VhostManager();
+        $vhostList = $VHosts->getHostsByProject( $this->getName() );
+        $template  = OPT_DIR . $this->getAttribute( 'template' );
+
+        $siteXMLs = array(
+            $template .'/site.xml'
+        );
+
+        foreach ( $vhostList as $vhost )
+        {
+            $hostData = $VHosts->getVhost( $vhost );
+
+            if ( isset( $hostData['template'] ) && !empty( $hostData['template'] ) ) {
+                $siteXMLs[] = OPT_DIR . $hostData['template'] .'/site.xml';
+            }
+        }
+
+        $result   = array();
+        $siteXMLs = array_unique( $siteXMLs );
+
+        foreach ( $siteXMLs as $siteXML )
+        {
+            $layouts = QUI\Utils\XML::getLayoutsFromXml( $siteXML );
+
+            foreach ( $layouts as $Layout )
+            {
+                $data = array(
+                    'type'  => $Layout->getAttribute( 'type' ),
+                    'title' => '',
+                    'description' => ''
+                );
+
+                $title = $Layout->getElementsByTagName( 'title' );
+                $desc  = $Layout->getElementsByTagName( 'description' );
+
+                if ( $title->length ) {
+                    $data['title'] = QUI\Utils\DOM::getTextFromNode( $title->item( 0 ) );
+                }
+
+                if ( $desc->length ) {
+                    $data['description'] = QUI\Utils\DOM::getTextFromNode( $desc->item( 0 ) );
+                }
+
+                $result[] = $data;
+            }
+        }
+
+        return $result;
+    }
+
+
+    /**
      * Gibt die Namen der eingebundenen Plugins zurück
      *
      * @return Array
@@ -1218,11 +1274,12 @@ class Project
 
             $Table->appendFields($table, array(
                 'id'            => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY',
-                'name'          => 'varchar(200) NOT NULL',
+                'name'          => 'varchar(255) NOT NULL',
                 'title'         => 'tinytext',
                 'short'         => 'text',
                 'content'       => 'longtext',
-                'type'          => 'varchar(200) default NULL',
+                'type'          => 'varchar(255) default NULL',
+                'layout'        => 'varchar(255) default NULL',
                 'active'        => 'tinyint(1) NOT NULL',
                 'deleted'       => 'tinyint(1) NOT NULL',
                 'c_date'        => 'timestamp NULL default NULL',
@@ -1230,7 +1287,7 @@ class Project
                 'c_user'        => 'int(11) default NULL',
                 'e_user'        => 'int(11) default NULL',
                 'nav_hide'      => 'tinyint(1) NOT NULL',
-                'order_type'    => 'varchar(100) default NULL',
+                'order_type'    => 'varchar(255) default NULL',
                 'order_field'   => 'bigint(20) default NULL',
                 'extra'         => 'text NULL',
                 'c_user_ip'     => 'varchar(40)',
@@ -1242,11 +1299,15 @@ class Project
 
             // fix for old tables
             $DataBase->getPDO()->exec(
-                'ALTER TABLE `'. $table .'` CHANGE `order_type` `order_type` VARCHAR( 100 ) NULL DEFAULT NULL'
+                'ALTER TABLE `'. $table .'` CHANGE `name` `name` VARCHAR( 255 ) NOT NULL'
             );
 
             $DataBase->getPDO()->exec(
-                'ALTER TABLE `'. $table .'` CHANGE `type` `type` VARCHAR( 200 ) NULL DEFAULT NULL'
+                'ALTER TABLE `'. $table .'` CHANGE `order_type` `order_type` VARCHAR( 255 ) NULL DEFAULT NULL'
+            );
+
+            $DataBase->getPDO()->exec(
+                'ALTER TABLE `'. $table .'` CHANGE `type` `type` VARCHAR( 255 ) NULL DEFAULT NULL'
             );
 
             if ( !$Table->issetPrimaryKey( $table, 'id' ) ) {

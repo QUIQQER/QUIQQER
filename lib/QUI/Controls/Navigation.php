@@ -9,7 +9,10 @@ namespace QUI\Controls;
 use QUI;
 use QUI\Projects\Site\Utils;
 
-
+/**
+ * Class Navigation
+ * @package quiqqer/quiqqer
+ */
 class Navigation extends QUI\Control
 {
     /**

@@ -227,7 +227,7 @@ define('controls/projects/project/site/Panel', [
                         MH.addError(
                             'Seitenpanel mit der Seiten ID #'+ this.getSite().getId() +
                             ' konnte nicht geladen werden. Das Panel wurde wieder geschlossen'
-                        );
+                        ); // #locale
                     });
 
                     this.destroy();
@@ -432,13 +432,13 @@ define('controls/projects/project/site/Panel', [
                 '<div class="qui-panel-dataRestore">' +
                     '<p>Es wurden nicht gespeicherte Daten der Seite #'+ Site.getId() +' gefunden.</p>'+
                     '<p>Sollen die Daten wieder hergestellt werden?</p>' +
-                '</div>'
+                '</div>' // #locale
             );
 
             Sheet.clearButtons();
 
             Sheet.addButton({
-                text   : 'Daten verwerfen',
+                text   : 'Daten verwerfen',  // #locale
                 events :
                 {
                     onClick : function()
@@ -456,7 +456,7 @@ define('controls/projects/project/site/Panel', [
             });
 
             Sheet.addButton({
-                text   : 'Daten übernehmen',
+                text   : 'Daten übernehmen', // #locale
                 events :
                 {
                     onClick : function()
@@ -859,7 +859,7 @@ define('controls/projects/project/site/Panel', [
                     if ( Locked && USER.isSU )
                     {
                         new QUIButton({
-                            text   : 'Trotzdem freischalten',
+                            text   : 'Trotzdem freischalten', // #locale
                             styles : {
                                 clear   : 'both',
                                 display : 'block',
@@ -1050,6 +1050,7 @@ define('controls/projects/project/site/Panel', [
                 Site.setAttribute( 'short', elements.short.value );
                 Site.setAttribute( 'nav_hide', elements.nav_hide.checked );
                 Site.setAttribute( 'type', elements.type.value );
+                Site.setAttribute( 'layout', elements.layout.value );
 
                 if ( typeof callback === 'function' ) {
                     callback();
@@ -1130,6 +1131,7 @@ define('controls/projects/project/site/Panel', [
                         return;
                     }
 
+                    // #locale
                     new QUIConfirm({
                         title   : 'Die Seite besitzt Änderungen',
                         content : 'Die Seite besitzt Änderungen.<br />Möchten Sie diese Änderungen auch speichern?',

@@ -44,6 +44,24 @@
                 </div>
             </td>
         </tr>
+        <tr class="even">
+            <td>
+                <label>
+                    {t}quiqqer/system projects.project.site.panel.information.layout{/t}
+                </label>
+                <div>
+                    {assign var=layouts value=$Project->getLayouts()}
+                    <select name="layout">
+                        <option value=""></option>
+                        {foreach from=$layouts item=layout}
+                            <option value="{$layout.type}">
+                                {$layout.title}
+                            </option>
+                        {/foreach}
+                    </select>
+                </div>
+            </td>
+        </tr>
     </tbody>
     </table>
 
