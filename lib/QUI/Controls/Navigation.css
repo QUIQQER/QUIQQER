@@ -1,8 +1,10 @@
 
 .quiqqer-navigation ul {
-    margin: 10px 0 0;
+    list-style: circle inside;
+    margin: 0 0 0 1.5em;
 }
 
 .quiqqer-navigation ul li:last-child {
     margin: 0;
 }
+

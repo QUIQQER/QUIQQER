@@ -203,10 +203,11 @@ class Template extends QUI\QDOM
         /* @var $Site QUI\Projects\Site */
         $Project = $Site->getProject();
 
-        $Engine  = $this->getEngine();
-        $Users   = QUI::getUsers();
-        $Rewrite = QUI::getRewrite();
-        $Locale  = QUI::getLocale();
+        $Engine   = $this->getEngine();
+        $Users    = QUI::getUsers();
+        $Rewrite  = QUI::getRewrite();
+        $Locale   = QUI::getLocale();
+        $Template = $this;
 
         $User = $Users->getUserBySession();
 
@@ -233,7 +234,7 @@ class Template extends QUI\QDOM
             'User'       => $User,
             'Locale'     => $Locale,
             'L'          => $Locale,
-            'Template'   => $this,
+            'Template'   => $Template,
             'Site'       => $Site,
             'Project'    => $Project,
             'Rewrite'    => $Rewrite,
@@ -411,40 +412,54 @@ class Template extends QUI\QDOM
      */
     public function getLayout($params=array())
     {
-        /* @var $Project QUI\Projects\Project */
-        /* @var $Site QUI\Projects\Site */
-        /* @var $Engine QUI\Interfaces\Template\Engine */
-
         if ( is_array( $params ) ) {
             $this->setAttributes( $params );
         }
 
+        $Project  = $this->getAttribute( 'Project' );
+        $layout   = $this->getLayoutType();
+        $template = OPT_DIR . $Project->getAttribute( 'template' );
+
+        if ( !$layout ) {
+            return $this->getBody( $params );
+        }
+
+        $layoutFile = $template .'/'. $layout .'.html';
+        $Engine     = $this->getAttribute( 'Engine' );
+
+        return $Engine->fetch( $layoutFile );
+    }
+
+    /**
+     * Return the layout type
+     *
+     * @return String|false
+     */
+    public function getLayoutType()
+    {
         $Project = $this->getAttribute( 'Project' );
         $Site    = $this->getAttribute( 'Site' );
-
-        $layout   = $Site->getAttribute( 'layout' );
-        $template = OPT_DIR . $Project->getAttribute( 'template' );
-        $siteXML  = $template .'/site.xml';
-
+        $layout  = $Site->getAttribute( 'layout' );
 
         if ( !$layout ) {
             $layout = $Project->getAttribute( 'layout' );
         }
 
+        $template = OPT_DIR . $Project->getAttribute( 'template' );
+        $siteXML  = $template .'/site.xml';
+
         if ( !$layout || !is_dir( $template ) && !file_exists( $siteXML ) ) {
-            return $this->getBody( $params );
+            return false;
         }
 
         $Layout     = QUI\Utils\XML::getLayoutFromXml( $siteXML, $layout );
         $layoutFile = $template .'/'. $layout .'.html';
 
         if ( !$Layout || !file_exists( $layoutFile ) ) {
-            return $this->getBody( $params );
+            return false;
         }
 
-        $Engine = $this->getAttribute( 'Engine' );
-
-        return $Engine->fetch( $layoutFile );
+        return $layout;
     }
 
     /**

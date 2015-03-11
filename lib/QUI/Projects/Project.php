@@ -85,6 +85,12 @@ class Project
     private $_template;
 
     /**
+     * layout of the project
+     * @var array
+     */
+    private $_layout = '';
+
+    /**
      * loaded sites
      * @var array
      */
@@ -165,6 +171,9 @@ class Project
 
         $this->_default_lang = $this->_config['default_lang'];
 
+        if ( isset( $this->_config['layout'] ) ) {
+            $this->_layout = $this->_config['layout'];
+        }
 
         // Sprache
         if ( $lang != false )
@@ -235,6 +244,10 @@ class Project
                  $vhost['project'] == $this->_name )
             {
                 $this->_config['vhost'] = $host;
+
+                if ( isset( $vhost['layout'] ) ) {
+                    $this->_layout = $vhost['layout'];
+                }
             }
         }
 
@@ -485,6 +498,10 @@ class Project
 
             case "template":
                 return $this->_template;
+            break;
+
+            case "layout":
+                return $this->_layout;
             break;
 
             case "db_table":

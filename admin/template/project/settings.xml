@@ -34,6 +34,14 @@
             <de><![CDATA[Als standard Projekt setzen]]></de>
             <en><![CDATA[Set as default project]]></en>
         </locale>
+        <locale name="projects.project.settings.panel.settings.template.title">
+            <de><![CDATA[Template Einstellungen]]></de>
+            <en><![CDATA[Template settings]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.layout">
+            <de><![CDATA[Standard Layout]]></de>
+            <en><![CDATA[Default layout]]></en>
+        </locale>
     </groups>
 
 </locales>

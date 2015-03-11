@@ -85,7 +85,7 @@ define('controls/projects/project/Panel', [
                     'quiqqer/system',
                     'projects.project.panel.title'
                 ),
-                icon    : 'icon-home'
+                icon : 'icon-home'
             });
 
             this.parent( options );

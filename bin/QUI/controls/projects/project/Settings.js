@@ -167,6 +167,7 @@ define('controls/projects/project/Settings', [
 
                     self.$config = result;
                     self.getCategoryBar().firstChild().click();
+                    self.refresh();
                 });
 
             }, {
@@ -272,7 +273,7 @@ define('controls/projects/project/Settings', [
             var self = this,
                 Body = this.getBody();
 
-            UtilsTemplate.get('project/settings', function(result)
+            Ajax.get('ajax_project_panel_settings', function(result)
             {
                 Body.set( 'html', result );
 
@@ -326,6 +327,8 @@ define('controls/projects/project/Settings', [
                 QUIFormUtils.setDataToForm( self.$config, Form );
 
                 self.Loader.hide();
+            }, {
+                project : this.getProject().encode()
             });
         },
 

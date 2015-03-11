@@ -165,6 +165,7 @@ class Manager
             "langs"           => "de",
             "admin_mail"      => "support@pcsg.de",
             "template"        => "",
+            "layout"          => "",
             "image_text"      => "0",
             "standard"        => "1",
             "adminSitemapMax" => 20
