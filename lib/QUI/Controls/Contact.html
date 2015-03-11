@@ -10,6 +10,7 @@
         name="name"
         id="qui-contact-name"
         required="required"
+        value="{$this->getAttribute('POST_NAME')}"
         placeholder="{locale group="quiqqer/system" value="control.contact.name.placeholder"}"
     />
 
@@ -22,6 +23,7 @@
         name="email"
         id="qui-contact-email"
         required="required"
+        value="{$this->getAttribute('POST_EMAIL')}"
         placeholder="{locale group="quiqqer/system" value="control.contact.email.placeholder"}"
     />
 
@@ -34,6 +36,6 @@
         id="qui-contact-message"
         required="required"
         placeholder="{locale group="quiqqer/system" value="control.contact.message.placeholder"}"
-    ></textarea>
+    >{$this->getAttribute('POST_MESSAGE')}</textarea>
 
 </form>

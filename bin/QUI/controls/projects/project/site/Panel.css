@@ -66,6 +66,11 @@ form.qui-site-data {
     width: 20px;
 }
 
+.qui-site-data input.project-site {
+    width: calc( 100% - 220px );
+}
+
+
 .qui-site-data .data-table textarea {
     min-height: 100px;
 }

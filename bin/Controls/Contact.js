@@ -65,6 +65,14 @@ define('Controls/Contact', [
 
             this.$Elm.getElement('form').addEvent('submit', function(event)
             {
+                var sendViaAjax = self.getElm().get('data-ajax').toInt();
+
+                if ( sendViaAjax === 0 )
+                {
+                    self.getElm().getElement('form').submit();
+                    return;
+                }
+
                 if ( typeof event !== 'undefined' ) {
                     event.stop();
                 }

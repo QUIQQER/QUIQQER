@@ -344,7 +344,7 @@
             <de><![CDATA[Der Cache wurde erfolgreich gesäubert.]]></de>
             <en><![CDATA[Cache successful purged.]]></en>
         </locale>
-        <locale name="message.contact.successful">
+        <locale name="message.contact.successful" html="true">
             <de><![CDATA[Vielen Dank für Ihre E-Mail. Wir werden uns bei Ihnen schnellstmöglich melden.]]></de>
             <en><![CDATA[Thank you for your email. We will contact you as soon as possible.]]></en>
         </locale>
@@ -997,18 +997,17 @@
             <en><![CDATA[Contact E-mail could not be sent. Please enter a valid email.]]></en>
         </locale>
         <locale name="exception.not.correct.email">
-            <de><![CDATA[Bitte geben Sie eine korrekte E-Mail an.]]></de>
-            <en><![CDATA[Please enter a valid email.]]></en>
+            <de><![CDATA[Bitte geben Sie eine korrekte E-Mail Adresse an.]]></de>
+            <en><![CDATA[Please enter a valid email address.]]></en>
         </locale>
-        <locale name="exception.contact.send.mail">
+        <locale name="exception.contact.send.mail" html="true">
             <de><![CDATA[
-                Kontakt E-mail konnte nicht versendet werden.
-                Fehler beim Versenden der Kontakt E-Mail.
-                Bitte versuchen Sie es zu einem späteren Zeitpunkt.
+                <p>Leider konnte die Kontakt E-mail nicht versendet werden.</p>
+                <p>Bitte versuchen Sie es zu einem späteren Zeitpunkt.</p>
             ]]></de>
             <en><![CDATA[
-                Contact E-mail could not be sent.
-                Error while sending E-mail. Please try again at a later.
+                <p>Sorry, cour contact E-mail could not be sent.</p>
+                <p>Please try again at a later.</p>
             ]]></en>
         </locale>
 
