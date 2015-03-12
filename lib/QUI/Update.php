@@ -591,7 +591,7 @@ class Update
 
         // lib
         $list = shell_exec(
-            'find "'. LIB_DIR .'" -iname \*.xml -type f'
+            'find "'. LIB_DIR .'locale/" -iname \*.xml -type f'
         );
 
         $list = explode( "\n", $list );
