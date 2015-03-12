@@ -169,7 +169,9 @@ class DOM
         $result = array(
             'suffix'            => $Table->getAttribute( 'name' ),
             'no-site-reference' => false,
-            'no-project-lang'   => false
+            'no-project-lang'   => false,
+            'no-auto-update'    => false,
+            'site-types'        => false
         );
 
         if ( (int)$Table->getAttribute( 'no-site-reference' ) === 1 ) {
@@ -180,6 +182,16 @@ class DOM
             $result[ 'no-project-lang' ] = true;
         }
 
+        if ( (int)$Table->getAttribute( 'no-auto-update' ) === 1 ) {
+            $result[ 'no-auto-update' ] = true;
+        }
+
+        if ( $Table->getAttribute( 'site-types' ) )
+        {
+            $result[ 'site-types' ] = explode( ',',
+                $Table->getAttribute( 'site-types' )
+            );
+        }
 
         $_fields = array();
 
@@ -271,7 +283,13 @@ class DOM
             $str .= 'NULL';
         } else
         {
-            $str .= 'NOT NULL';
+            $structure = QUI\Utils\String::toLower(
+                $Field->getAttribute( 'type' )
+            );
+
+            if ( mb_strpos( $structure, 'not null' ) === false ) {
+                $str .= 'NOT NULL';
+            }
         }
 
         return array(
