@@ -78,7 +78,16 @@ class DBCheck extends QUI\System\Test
                     continue;
                 }
 
-                $this->_checkIntegrity( $databaseXml );
+                try
+                {
+                    $this->_checkIntegrity( $databaseXml );
+
+                } catch ( \Exception $Exception )
+                {
+                    QUI\System\Log::addWarning( $databaseXml );
+                    QUI\System\Log::addWarning( $Exception->getMessage() );
+                    QUI\System\Log::addWarning( $Exception->getTraceAsString() );
+                }
             }
         }
 
