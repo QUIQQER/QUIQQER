@@ -19,6 +19,7 @@
 
 define('controls/projects/project/Settings', [
 
+    'qui/QUI',
     'qui/controls/desktop/Panel',
     'qui/controls/buttons/Button',
     'qui/controls/windows/Confirm',
@@ -32,7 +33,7 @@ define('controls/projects/project/Settings', [
 
     'css!controls/projects/project/Settings.css'
 
-], function(QUIPanel, QUIButton, QUIConfirm, QUIFormUtils, UtilsTemplate, LangPopup, Projects, Ajax, Locale, ControlUtils)
+], function(QUI, QUIPanel, QUIButton, QUIConfirm, QUIFormUtils, UtilsTemplate, LangPopup, Projects, Ajax, Locale, ControlUtils)
 {
     "use strict";
 
@@ -479,9 +480,29 @@ define('controls/projects/project/Settings', [
 
                 // set data to the form
                 QUIFormUtils.setDataToForm( self.$config, Form );
-                ControlUtils.parse( Body );
 
-                self.Loader.hide();
+                ControlUtils.parse( Body ).then(function()
+                {
+                    var i, len, Control;
+                    var quiids = Body.getElements( '[data-quiid]' );
+
+                    for ( i = 0, len = quiids.length; i < len; i++ )
+                    {
+                        Control = QUI.Controls.getById( quiids[ i ].get('data-quiid') );
+
+                        if ( !Control ) {
+                            continue;
+                        }
+
+                        if ( typeOf( Control.setProject ) == 'function' ) {
+                            Control.setProject( self.getProject() );
+                        }
+                    }
+
+                    self.Loader.hide();
+                });
+
+
             }, {
                 file     : Category.getAttribute( 'file' ),
                 category : Category.getAttribute( 'name' )

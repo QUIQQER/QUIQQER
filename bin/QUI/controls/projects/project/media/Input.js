@@ -60,6 +60,21 @@ define('controls/projects/project/media/Input', [
 
             this.$Input   = Input || null;
             this.$Preview = null;
+            this.$Project = null;
+        },
+
+        /**
+         * Set the internal project
+         *
+         * @param {Object} Project - classes/projects/project
+         */
+        setProject : function(Project)
+        {
+            this.$Project = Project;
+
+            if ( this.$Input ) {
+                this.$Input.set( 'data-project', Project.getName() );
+            }
         },
 
         /**
@@ -72,7 +87,8 @@ define('controls/projects/project/media/Input', [
             var self = this;
 
             this.$Elm = new Element('div', {
-                'class' : 'qui-controls-project-media-input box'
+                'class'      : 'qui-controls-project-media-input box',
+                'data-quiid' : this.getId()
             });
 
             if ( !this.$Input )
@@ -113,6 +129,10 @@ define('controls/projects/project/media/Input', [
 
                         if ( self.$Input.get( 'data-project' ) ) {
                             project = self.$Input.get( 'data-project' );
+                        }
+
+                        if ( self.$Project ) {
+                            project = self.$Project.getName();
                         }
 
                         if ( value !== '' )
