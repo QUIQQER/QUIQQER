@@ -54,10 +54,12 @@ class Tests extends QUI\System\Console\Tool
 
         foreach ( $tests as $testFile )
         {
-            require $testDir . $testFile;
-
             $cls = 'QUI/System/Tests/'. str_replace( '.php', '', $testFile );
             $cls = str_replace( '/', '\\', $cls );
+
+            if ( !class_exists( $cls ) ) {
+                require $testDir . $testFile;
+            }
 
             if ( !class_exists( $cls ) ) {
                 continue;
