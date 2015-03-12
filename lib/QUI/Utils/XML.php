@@ -392,72 +392,6 @@ class XML
     }
 
     /**
-     * Return the layout types from a xml file
-     * https://dev.quiqqer.com/quiqqer/quiqqer/wikis/Site-Xml
-     *
-     * @param String $file
-     * @return Array
-     */
-    static function getLayoutsFromXml($file)
-    {
-        $Dom   = self::getDomFromXml( $file );
-        $sites = $Dom->getElementsByTagName( 'site' );
-
-        if ( !$sites->length ) {
-            return array();
-        }
-
-        /* @var $Sites \DOMElement */
-        $Sites   = $sites->item( 0 );
-        $layouts = $Sites->getElementsByTagName( 'layouts' );
-
-        if ( !$layouts->length ) {
-            return array();
-        }
-
-        /* @var $Layouts \DOMElement */
-        $Layouts    = $layouts->item( 0 );
-        $layoutList = $Layouts->getElementsByTagName( 'layout' );
-
-        $result = array();
-
-        for ( $c = 0; $c < $layoutList->length; $c++ )
-        {
-            $Layout = $layoutList->item( $c );
-
-            if ( $Layout->nodeName == '#text' ) {
-                continue;
-            }
-
-            $result[] = $Layout;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Return a specific layout DOM Node entry by its layout name
-     *
-     * @param String $file       - path to the xml file
-     * @param String $layoutName - name of the layout type
-     * @return bool|\DOMElement
-     */
-    static function getLayoutFromXml($file, $layoutName)
-    {
-        $layouts = self::getLayoutsFromXml( $file );
-
-        foreach ( $layouts as $Layout )
-        {
-            /* @var $Layout \DOMElement */
-            if ( $Layout->getAttribute('type') == $layoutName ) {
-                return $Layout;
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * Sucht die Übersetzungsgruppe aus einem DOMDocument Objekt
      *
      * @param \DOMDocument $Dom
@@ -1202,6 +1136,7 @@ class XML
      * Import a database.xml
      *
      * @param String $xmlfile - Path to the file
+     * @throws QUI\Exception
      */
     static function importDataBaseFromXml($xmlfile)
     {
@@ -1211,7 +1146,18 @@ class XML
             return;
         }
 
-        self::importDataBase( $dbfields );
+        try
+        {
+            self::importDataBase( $dbfields );
+            
+        } catch ( QUI\Exception $Exception )
+        {
+            QUI\System\Log::addError(
+                "Error on XML database import ($xmlfile): " . $Exception->getMessage()
+            );
+
+            throw $Exception;
+        }
     }
 
     /**
