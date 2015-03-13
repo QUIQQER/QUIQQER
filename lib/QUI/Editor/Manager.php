@@ -292,16 +292,19 @@ class Manager
 
         // Dann Gruppenspezifische Toolbar
         $groups = $User->getGroups();
-        $Group  = end( $groups );
 
-        $toolbar = $Group->getAttribute( 'toolbar' );
-
-        if ( !empty( $toolbar ) )
+        if ( $groups )
         {
-            $toolbar = self::getToolbarsPath() . $Group->getAttribute( 'toolbar' );
+            $Group  = end( $groups );
+            $toolbar = $Group->getAttribute('toolbar');
 
-            if ( file_exists( $toolbar ) ) {
-                return self::parseXmlFileToArray( $toolbar );
+            if ( !empty( $toolbar ) )
+            {
+                $toolbar = self::getToolbarsPath() . $Group->getAttribute('toolbar');
+
+                if ( file_exists( $toolbar ) ) {
+                    return self::parseXmlFileToArray( $toolbar );
+                }
             }
         }
 
@@ -341,8 +344,6 @@ class Manager
         {
 
         }
-
-        QUI\System\Log::write( $file );
 
         $Dom     = QUI\Utils\XML::getDomFromXml( $file );
         $toolbar = $Dom->getElementsByTagName( 'toolbar' );

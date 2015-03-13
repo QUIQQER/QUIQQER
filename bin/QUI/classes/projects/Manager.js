@@ -10,7 +10,7 @@
  * @require Ajax
  */
 
-define([
+define('classes/projects/Manager', [
 
     'qui/classes/DOM',
     'classes/projects/Project',

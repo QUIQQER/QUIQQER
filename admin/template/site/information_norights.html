@@ -1,12 +1,22 @@
 
-{assign var=uid value=$Site->isMarcate()}
+{assign var=uid value=$Site->isLockedFromOther()}
 {user id=$uid var=MarcateUser}
 
-{if $Site->isMarcate()}
-    <div class="message box-sizing message-attention" style="margin-bottom: 20px; padding-left: 20px;">
+{if $Site->isLockedFromOther()}
+    <div class="messages-message message-attention"
+         style="margin-bottom: 20px; padding-left: 20px;"
+         data-locked="1"
+    >
         <span class="msg">
-            {t username=$MarcateUser->getName()}quiqqer/system projects.project.site.messages.marcate{/t}
-        </div>
+            {assign var=lastlogin value=$MarcateUser->getAttribute('lastvisit')|date_format:"%d.%m.%Y %H:%M:%S"}
+
+            {locale
+                username=$MarcateUser->getName()
+                group="quiqqer/system"
+                var="projects.project.site.messages.lock"
+                lastlogin=$lastlogin
+            }
+        </span>
     </div>
 {/if}
 
@@ -53,24 +63,7 @@
             {t}quiqqer/system projects.project.site.panel.information.type{/t}
         </td>
         <td>
-            {assign var=type value=$Site->getAttribute('type')}
-            <span style="float:left; position:relative; top: 7px;" id="type_field">
-                {if $Site->getAttribute('type') == 'standard' || $Site->getAttribute('type') == ''}
-                    standard
-                {else}
-
-                    {assign var=types value=$Project->getTypes()}
-                    {assign var=t_ value='/'|explode:$type}
-                    {assign var=parent_type value=$t_.0}
-
-                    {$types.$parent_type.name}
-
-                    /
-
-                    {$Project->getType($type, "name")}
-
-                {/if}
-            </span>
+            {$Site->getAttribute('type')}
         </td>
     </tr>
 </tbody>
@@ -86,7 +79,7 @@
 </thead>
 
 <tbody>
-<tr>
+<tr class="{cycle values="odd,even"}">
     <td>
         {t}quiqqer/system projects.project.site.panel.information.created{/t}
     </td>
@@ -101,7 +94,7 @@
         {/if}
     </td>
 </tr>
-<tr>
+<tr class="{cycle values="odd,even"}">
     <td>
         {t}quiqqer/system projects.project.site.panel.information.edited{/t}
     </td>
@@ -129,7 +122,7 @@
 </thead>
 
 <tbody>
-    <tr>
+    <tr class="{cycle values="odd,even"}">
         <td style="width: 20px">
             <input type="checkbox" name="nav_hide" {if $Site->getAttribute('nav_hide') == 1}checked="checked"{/if} disabled="disabled" />
         </td>

@@ -16,10 +16,17 @@ use QUI;
  * @package com.pcsg.qui
  *
  * @use gettext - if enable
+ * @todo integrate http://php.net/intl
  */
 
 class Locale
 {
+    /**
+     * The current lang
+     * @var String
+     */
+    protected $_dateFormats = false;
+
     /**
      * The current lang
      * @var String
@@ -50,6 +57,13 @@ class Locale
     protected $_inis = array();
 
     /**
+     * List of internal locale list for setlocale()
+     * @var array
+     */
+    protected $_localeList = array();
+
+
+    /**
      * Locale toString
      * @return String
      */
@@ -76,6 +90,143 @@ class Locale
     public function getCurrent()
     {
         return $this->_current;
+    }
+
+    /**
+     * Format a date timestamp
+     *
+     * @param $timestamp
+     * @param bool|string $format - (optional) ;if not given, it uses the quiqqer system format
+     * @return String
+     */
+    public function formatDate($timestamp, $format=false)
+    {
+        if ( !is_numeric( $timestamp ) ) {
+            $timestamp = strtotime( $timestamp );
+        }
+
+        $current = $this->getCurrent();
+
+        if ( $format )
+        {
+            $oldlocale = setlocale( LC_TIME, "0" );
+            setlocale( LC_TIME, $this->_getLocalesByLang( $current ) );
+
+            $result = strftime( $format, $timestamp );
+
+            setlocale( LC_TIME, $oldlocale );
+
+            return $result;
+        }
+
+        $formats = $this->_getDateFormats();
+
+        if ( isset( $formats[ $current ] ) )
+        {
+            $oldlocale = setlocale( LC_TIME, "0" );
+            setlocale( LC_TIME, $this->_getLocalesByLang( $current ) );
+
+            $result = strftime( $formats[ $current ], $timestamp );
+
+            setlocale( LC_TIME, $oldlocale );
+
+            return $result;
+        }
+
+        return strftime( '%D', $timestamp );
+    }
+
+    /**
+     * Return all available dateformats
+     * @return Array
+     */
+    protected function _getDateFormats()
+    {
+        if ( $this->_dateFormats ) {
+            return $this->_dateFormats;
+        }
+
+        $this->_dateFormats = QUI::conf( 'date_formats' );
+
+        if ( !$this->_dateFormats ) {
+            $this->_dateFormats = array();
+        }
+
+        return $this->_dateFormats;
+    }
+
+    /**
+     * Return the locale list for a language
+     *
+     * @param {String} $lang - Language code (de, en, fr ...)
+     * @return {Array}
+     */
+    public function _getLocalesByLang($lang)
+    {
+        if ( isset( $this->_localeList[ $lang ] ) ) {
+            return $this->_localeList[ $lang ];
+        }
+
+        // no shell
+        if ( !QUI\Utils\System::isShellFunctionEnabled( 'locale' ) )
+        {
+            // if we cannot read locale list, so we must guess
+            $langCode = strtolower( $lang ) .'_'. strtoupper( $lang );
+
+            $this->_localeList[ $lang ] = array(
+                $langCode,
+                $langCode .'.utf8',
+                $langCode .'.UTF-8',
+                $langCode .'@euro'
+            );
+
+            return $this->_localeList[ $lang ];
+        }
+
+
+        // via shell
+        $locales = shell_exec( 'locale -a' );
+        $locales = explode( "\n" , $locales );
+
+        $langList = array();
+
+        foreach ( $locales as $locale )
+        {
+            if ( strpos( $locale, $lang ) !== 0 ) {
+                continue;
+            }
+
+            $langList[] = $locale;
+        }
+
+        $langCode = strtolower( $lang ) .'_'. strtoupper( $lang );
+
+        // not the best solution
+        if ( $lang == 'en' ) {
+            $langCode = 'en_GB';
+        }
+
+        // sort, main locale to the top
+        usort($langList, function($a, $b) use ($langCode)
+        {
+            if ( $a == $b ) {
+                return 0;
+            }
+
+            if ( strpos( $a, $langCode ) === 0 ) {
+                return -1;
+            }
+
+            if ( strpos( $b, $langCode ) === 0 ) {
+                return 1;
+            }
+
+            return $a > $b;
+        });
+
+        $this->_localeList[ $lang ] = $langList;
+
+        return $this->_localeList[ $lang ];
     }
 
     /**

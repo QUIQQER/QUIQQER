@@ -13,6 +13,7 @@ use QUI\Projects\Project;
 use QUI\Rights\Permission;
 use QUI\Users\User;
 use QUI\Groups\Group;
+use QUI\Utils\Security\Orthos;
 
 /**
  * Site Objekt für den Adminbereich
@@ -70,12 +71,13 @@ class Edit extends Site
 
         $id = $this->getId();
 
-        $this->_marcatefile = VAR_DIR .'marcate/'.
-                              $Project->getAttribute( 'name' ) .'_'.
-                              $id .'_'. $Project->getAttribute( 'lang' );
+        $this->_lockfile = VAR_DIR .'lock/'.
+                           $Project->getAttribute( 'name' ) .'_'.
+                           $id .'_'. $Project->getAttribute( 'lang' );
 
         // Temp Dir abfragen ob existiert
         QUI\Utils\System\File::mkdir( VAR_DIR .'admin/' );
+        QUI\Utils\System\File::mkdir( VAR_DIR .'lock/' );
 
         $this->load();
 
@@ -153,15 +155,63 @@ class Edit extends Site
     }
 
     /**
-     * Activate a site
+     * Check if the release from date is in the future or the release until is in the past
+     * throws exception if the site cant activated
      *
      * @throws QUI\Exception
      */
-    public function activate()
+    protected function _checkReleaseDate()
+    {
+        // check release date
+        $release_from = $this->getAttribute( 'release_from' );
+        $release_to   = $this->getAttribute( 'release_to' );
+
+        if ( !$release_from || $release_from == '0000-00-00 00:00:00' )
+        {
+            $release_from = date('Y-m-d H:i:s' );
+            $this->setAttribute( 'release_from', $release_from );
+        }
+
+        $release_from = strtotime( $release_from );
+
+        if ( $release_from && $release_from > time() )
+        {
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.release.from.inFuture'
+                )
+            );
+        }
+
+        if ( !$release_to || $release_to == '0000-00-00 00:00:00' ) {
+            return;
+        }
+
+        $release_to = strtotime( $release_to );
+
+        if ( $release_to && $release_to < time() )
+        {
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.release.to.inPast'
+                )
+            );
+        }
+    }
+
+    /**
+     * Activate a site
+     *
+     * @param QUI\Interfaces\Users\User|Bool $User - [optional] User to save
+     * @throws QUI\Exception
+     */
+    public function activate($User=false)
     {
         try
         {
-            $this->checkPermission( 'quiqqer.projects.site.edit' );
+            $this->checkPermission( 'quiqqer.projects.site.edit', $User );
 
         } catch ( QUI\Exception $Exception )
         {
@@ -173,45 +223,20 @@ class Edit extends Site
         $this->Events->fireEvent( 'checkActivate', array( $this ) );
         QUI::getEvents()->fireEvent( 'siteCheckActivate', array( $this ) );
 
-        /*
-        $release_from = strtotime(
-            $this->getAttribute('pcsg.base.release_from')
-        );
 
-        $release_until = strtotime(
-            $this->getAttribute('pcsg.base.release_until')
-        );
+        // check release date
+        $this->_checkReleaseDate();
 
-        if ( $release_from && $release_from > time() )
-        {
-            throw new QUI\Exception(
-                'Die Seite kann nicht aktiviert werden, da das Datum "Veröffentlichen von" in der Zukunft liegt'
-            );
+        $releaseFrom = $this->getAttribute( 'release_from' );
+
+        if ( !Orthos::checkMySqlDatetimeSyntax( $releaseFrom ) ) {
+            $releaseFrom = date('Y-m-d H:i:s' );
         }
 
-        if ( $release_until && $release_until < time() )
-        {
-            throw new QUI\Exception(
-                'Die Seite kann nicht aktiviert werden, da das Datum "Veröffentlichen bis" in der Vergangenheit liegt'
-            );
-        }
-        */
-
-        if ( !$this->getAttribute( 'release_from' ) ||
-              $this->getAttribute( 'release_from' ) == '0000-00-00 00:00:00' )
-        {
-            $release_from = date('Y-m-d H:i:s' );
-
-            $this->setAttribute( 'release_from', $release_from );
-        }
-
-        $release_from = $this->getAttribute( 'release_from' );
-        $release_from = date('Y-m-d H:i:s', strtotime( $release_from ) );
-
-
+        // save
         QUI::getDataBase()->update($this->_TABLE, array(
             'active'       => 1,
-            'release_from' => $release_from
+            'release_from' => $releaseFrom
         ), array(
             'id' => $this->getId()
         ));
@@ -228,14 +253,15 @@ class Edit extends Site
     /**
      * Deactivate a site
      *
+     * @param QUI\Interfaces\Users\User|Bool $User - [optional] User to save
      * @throws QUI\Exception
      */
-    public function deactivate()
+    public function deactivate($User=false)
     {
         try
         {
             // Prüfen ob der Benutzer die Seite bearbeiten darf
-           $this->checkPermission( 'quiqqer.projects.site.edit' );
+           $this->checkPermission( 'quiqqer.projects.site.edit', $User );
 
         } catch ( QUI\Exception $Exception )
         {
@@ -260,7 +286,7 @@ class Edit extends Site
             )
         ));
 
-        $this->setAttribute('active', 0);
+        $this->setAttribute( 'active', 0 );
         $this->getProject()->clearCache();
 
         //$this->deleteTemp();
@@ -333,15 +359,16 @@ class Edit extends Site
     /**
      * Saves the site
      *
-     * @param QUI\Interfaces\Users\User|Bool $User - [optional] User to save
+     * @param QUI\Interfaces\Users\User|Bool $SaveUser - [optional] User to save
+     * @return Bool
      * @throws QUI\Exception
      */
-    public function save($User=false)
+    public function save($SaveUser=false)
     {
         try
         {
             // Prüfen ob der Benutzer die Seite bearbeiten darf
-            $this->checkPermission( 'quiqqer.projects.site.edit', $User );
+            $this->checkPermission( 'quiqqer.projects.site.edit', $SaveUser );
 
         } catch ( QUI\Exception $Exception )
         {
@@ -353,7 +380,7 @@ class Edit extends Site
             );
         }
 
-        $mid = $this->isMarcate();
+        $mid = $this->isLockedFromOther();
 
         if ( $mid )
         {
@@ -458,23 +485,47 @@ class Edit extends Site
             $rf = strtotime( $this->getAttribute( 'release_from' ) );
 
             if ( $rf ) {
-                $release_from = date('Y-m-d H:i:s', $rf);
+                $release_from = date( 'Y-m-d H:i:s', $rf );
             }
 
         } else if ( $this->getAttribute( 'active' ) )
         {
-            $release_from = date('Y-m-d H:i:s', strtotime( $this->getAttribute( 'e_date' ) ) );
+            // nur bei aktiven seiten das e_date setzen
+            // wenn der cron läuft, darf eine inaktive seite nicht sofort aktiviert werden
+            // daher werden nur aktive seite beachten
+            $release_from = date(
+                'Y-m-d H:i:s',
+                strtotime( $this->getAttribute( 'e_date' ) )
+            );
         }
-
 
         if ( $this->getAttribute( 'release_to' ) )
         {
-            $rf = strtotime( $this->getAttribute( 'release_to' ) );
+            $rt = strtotime( $this->getAttribute( 'release_to' ) );
 
-            if ( $rf ) {
-                $release_to = date('Y-m-d H:i:s', $rf);
+            if ( $rt && $rt > 0 )
+            {
+                $release_to = date( 'Y-m-d H:i:s', $rt );
+            } else
+            {
+                $release_to = '';
             }
         }
+
+        $this->setAttribute( 'release_from', $release_from );
+        $this->setAttribute( 'release_to', $release_to );
+
+
+        try
+        {
+            $this->_checkReleaseDate();
+
+        } catch ( QUI\Exception $Exception )
+        {
+            // if release date trigger an error, deactivate the site
+            $this->deactivate( $SaveUser );
+        }
+
 
         // save extra package attributes (site.xml)
         $extraAttributes = Utils::getExtraAttributeListForSite( $this );
@@ -493,6 +544,7 @@ class Edit extends Site
                 'short'    => $this->getAttribute( 'short' ),
                 'content'  => $this->getAttribute( 'content' ),
                 'type' 	   => $this->getAttribute( 'type' ),
+                'layout'   => $this->getAttribute( 'layout' ),
                 'nav_hide' => $this->getAttribute( 'nav_hide' ) ? 1 : 0,
                 'e_user'   => QUI::getUserBySession()->getId(),
 
@@ -569,8 +621,17 @@ class Edit extends Site
         $Project->setEditDate( time() );
 
         // on save event
-        $this->Events->fireEvent( 'save', array($this) );
-        QUI::getEvents()->fireEvent( 'siteSave', array($this) );
+        try
+        {
+            $this->Events->fireEvent('save', array($this));
+            QUI::getEvents()->fireEvent('siteSave', array($this));
+
+        } catch ( QUI\Exception $Exception )
+        {
+            QUI::getMessagesHandler()->addError(
+                'site on save -> event error:: '. $Exception->getMessage()
+            );
+        }
 
 
         if ( $update )
@@ -951,7 +1012,7 @@ class Edit extends Site
 
         $children = $this->getChildrenIds( $this->getId(), array(), true );
 
-        if ( !in_array($pid, $children) && $pid != $this->getId() )
+        if ( !in_array( $pid, $children ) && $pid != $this->getId() )
         {
             QUI::getDataBase()->update(
                 $this->_RELTABLE,
@@ -961,6 +1022,14 @@ class Edit extends Site
 
             //$this->deleteTemp();
             $this->deleteCache();
+
+            // remove internal parent ids
+            $this->_parents_id = false;
+            $this->_parent_id  = false;
+
+
+            $this->Events->fireEvent( 'move', array( $this, $pid ) );
+            QUI::getEvents()->fireEvent( 'siteMove', array( $this, $pid ) );
 
             return true;
         }
@@ -1181,31 +1250,29 @@ class Edit extends Site
     }
 
     /**
-     * Prüft ob die Seite gerade bearbeitet wird
-     * Wenn die Seite von einem selbst bearbeitet wird, kommt auch false zurück.
+     * is the page currently edited from another user than me?
+     * @todo muss überarbeitet werden, file operationen?
      *
-     * Falls die Seite von jemand anderes bearbeitet wird, wird die ID des Benutzers zurück gegeben
-     *
-     * @return false || Integer
+     * @return bool|Integer
      */
-    public function isMarcate()
+    public function isLockedFromOther()
     {
-        if ( !file_exists( $this->_marcatefile ) ) {
+        $uid = $this->isLocked();
+
+        if ( $uid === false ) {
             return false;
         }
-
-        $uid = file_get_contents( $this->_marcatefile );
 
         if ( QUI::getUserBySession()->getId() == $uid ) {
             return false;
         }
 
-        $time = time() - filemtime( $this->_marcatefile );
+        $time = time() - filemtime( $this->_lockfile );
         $max_life_time = QUI::conf('session', 'max_life_time');
 
         if ( $time > $max_life_time )
         {
-            $this->demarcate();
+            $this->_unlock();
             return false;
         }
 
@@ -1213,41 +1280,87 @@ class Edit extends Site
     }
 
     /**
-     * Markiert die Seite -> die Seite wird gerade bearbeitet
-     * Markiert nur wenn die Seite nicht markiert ist
+     * is the page currently edited
+     * @todo muss überarbeitet werden, file operationen?
+     *
+     * @return bool|string
      */
-    public function marcate()
+    public function isLocked()
     {
-        if ( $this->isMarcate() ) {
-            return;
+        if ( !file_exists( $this->_lockfile ) ) {
+            return false;
         }
 
-        file_put_contents( $this->_marcatefile, QUI::getUserBySession()->getId() );
+        return file_get_contents( $this->_lockfile );
+    }
+
+    /**
+     * Markiert die Seite -> die Seite wird gerade bearbeitet
+     * Markiert nur wenn die Seite nicht markiert ist
+     * @todo muss überarbeitet werden, file operationen?
+     *
+     * @return Bool - true if it worked, false if it not worked
+     */
+    public function lock()
+    {
+        if ( $this->isLockedFromOther() ) {
+            return false;
+        }
+
+        if ( $this->isLocked() ) {
+            return true;
+        }
+
+        try
+        {
+            $this->checkPermission('quiqqer.projects.site.edit');
+
+        } catch ( QUI\Exception $Exception )
+        {
+            return false;
+        }
+
+        file_put_contents( $this->_lockfile, QUI::getUserBySession()->getId() );
+        return true;
     }
 
     /**
      * Demarkiert die Seite, die Seite wird nicht mehr bearbeitet
      */
-    public function demarcate()
+    protected function _unlock()
     {
-        if ( !file_exists( $this->_marcatefile ) ) {
-            return;
+        if ( file_exists( $this->_lockfile ) ) {
+            unlink( $this->_lockfile );
         }
-
-        unlink( $this->_marcatefile );
     }
 
     /**
      * Ein SuperUser kann eine Seite trotzdem demakieren wenn er möchte
+     *
+     * @todo eigenes recht dafür einführen
      */
-    public function demarcateWithRights()
+    public function unlockWithRights()
     {
-        if ( !QUI::getUserBySession()->isSU() ) {
+        $lock = $this->isLocked();
+
+        if ( !$lock ) {
             return;
         }
 
-        if ( file_exists( $this->_marcatefile ) ) {
-            unlink( $this->_marcatefile );
+        if ( QUI::getUserBySession()->isSU() )
+        {
+            if ( file_exists( $this->_lockfile ) ) {
+                unlink( $this->_lockfile );
+            }
+
+            return;
+        }
+
+        if ( $lock === QUI::getUserBySession()->getId() )
+        {
+            if ( file_exists( $this->_lockfile ) ) {
+                unlink( $this->_lockfile );
+            }
         }
     }
 

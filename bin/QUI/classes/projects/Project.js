@@ -10,14 +10,14 @@
  * @require classes/projects/Site
  * @require classes/projects/Media
  *
- * @events onSiteDelete [this, {Integer}]
+ * @events onSiteDelete [this, {Number}]
  * @events onSiteSave [this, {classes/projects/project/Site}]
  * @events onSiteCreate [this, {classes/projects/project/Site}]
  * @events onSiteActivate [this, {classes/projects/project/Site}]
  * @events onSiteDeactivate [this, {classes/projects/project/Site}]
  */
 
-define([
+define('classes/projects/Project', [
 
     'qui/classes/DOM',
     'Ajax',
@@ -44,6 +44,7 @@ define([
 
         Binds : [
             '$onChildDelete',
+            '$onSiteLoad',
             '$onSiteSave',
             '$onSiteCreate',
             '$onSiteActivate',
@@ -53,7 +54,8 @@ define([
 
         options : {
             name : '',
-            lang : 'de'
+            lang : 'de',
+            host : false
         },
 
         $ids   : {},
@@ -63,6 +65,8 @@ define([
         initialize : function(options)
         {
             this.parent( options );
+
+            this.$config = false;
         },
 
         /**
@@ -101,11 +105,11 @@ define([
                 onActivate    : this.$onSiteActivate,
                 onDeactivate  : this.$onSiteDeactivate,
                 onCreateChild : this.$onSiteCreate,
-                onSortSave    : this.$onSiteSortSave
+                onSortSave    : this.$onSiteSortSave,
+                onLoad        : this.$onSiteLoad
             });
 
             this.$ids[ id ] = Site;
-            this.$config    = null;
 
             return this.$ids[ id ];
         },
@@ -113,25 +117,42 @@ define([
         /**
          * Return the configuration of the project
          *
-         * @param {Function} [callback] - callback function
+         * @param {Function} callback - callback function
          * @param {String} [param] - param name
          */
         getConfig : function(callback, param)
         {
+            param = param || false;
+
             if ( this.$config )
             {
+                if ( param )
+                {
+                    callback( this.$config[ param ] );
+                    return;
+                }
+
                 callback( this.$config );
                 return;
             }
 
-            Ajax.get('ajax_project_get_config', function(result, Request)
+
+            var self = this;
+
+            Ajax.get('ajax_project_get_config', function(result)
             {
-                if ( typeof callback !== 'undefined' ) {
-                    callback( result, Request );
+                self.$config = result;
+
+                if ( param )
+                {
+                    callback( self.$config[ param ] );
+                    return;
                 }
+
+                callback( self.$config );
+
             }, {
-                project : this.getName(),
-                param   : param || false
+                project : this.getName()
             });
         },
 
@@ -144,9 +165,13 @@ define([
          */
         setConfig : function(callback, params)
         {
+            var self = this;
+
             Ajax.get('ajax_project_set_config', function(result)
             {
-                if ( typeof callback !== 'undefined' ) {
+                self.$config = false;
+
+                if ( typeof callback === 'function' ) {
                     callback( result );
                 }
             }, {
@@ -208,6 +233,73 @@ define([
         },
 
         /**
+         * Return the project host
+         *
+         * @method classes/projects/Project#getHost
+         * @param {Function} callback - callback function
+         */
+        getHost : function(callback)
+        {
+            if ( this.getAttribute( 'host' ) )
+            {
+                callback( this.getAttribute( 'host' ) );
+                return;
+            }
+
+            var self = this;
+
+            Ajax.get([
+                'ajax_project_get_config',
+                'ajax_vhosts_getList'
+            ], function(config, vhosts)
+            {
+                var vhost       = config.vhost,
+                    projectName = self.getName(),
+                    projectLang = self.getLang();
+
+                for ( var h in vhosts )
+                {
+                    if ( !vhosts.hasOwnProperty( h ) ) {
+                        continue;
+                    }
+
+                    if ( h == 404 || h == 301 ) {
+                        continue;
+                    }
+
+                    if ( vhosts[ h ].project != projectName ) {
+                        continue;
+                    }
+
+                    if ( vhosts[ h ].lang != projectLang ) {
+                        continue;
+                    }
+
+                    if ( 'httpshost' in vhosts[ h ] && vhosts[ h ].httpshost !== '' )
+                    {
+                        vhost = 'https://'+ vhosts[ h ];
+                        break;
+                    }
+
+                    vhost = h;
+                    break;
+                }
+
+                if ( !vhost.match( 'http://' ) && !vhost.match( 'https://' ) ) {
+                    vhost = 'http://'+ vhost;
+                }
+
+                self.setAttribute( 'host', vhost );
+
+                callback( self.getAttribute( 'host' ) );
+
+            }, {
+                project : this.getName(),
+                params  : false
+            });
+        },
+
+        /**
          * event : on Site deletion
          *
          * @method classes/projects/Project#$onChildDelete
@@ -226,6 +318,19 @@ define([
             this.fireEvent( 'siteDelete', [ this, id ] );
 
             return this;
+        },
+
+        /**
+         * event : on Site deletion
+         *
+         * @method classes/projects/Project#$onChildDelete
+         * @param {Object} Site - classes/projects/project/Site
+         * @return {Object} this (classes/projects/Project)
+         * @fires siteLoad
+         */
+        $onSiteLoad : function(Site)
+        {
+            this.fireEvent( 'siteLoad', [ this, Site ] );
         },
 
         /**
@@ -272,7 +377,6 @@ define([
         {
             this.fireEvent( 'siteDeactivate', [ this, Site ] );
         },
-
 
         /**
          * event : on Site sort saving

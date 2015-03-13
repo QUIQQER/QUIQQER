@@ -16,7 +16,7 @@
  * @event onAdd [ {this}, {String} userid ]
  */
 
-define([
+define('controls/users/Input', [
 
     'qui/QUI',
     'qui/controls/Control',
@@ -35,7 +35,7 @@ define([
      * @class controls/users/Input
      *
      * @param {Object} options
-     * @param {DOMNode Input} Input [optional] -> if no input given, one would be created
+     * @param {HTMLInputElement} [Input] - (optional), if no input given, one would be created
      *
      * @memberof! <global>
      */
@@ -75,7 +75,7 @@ define([
         /**
          * Return the DOMNode of the users search
          *
-         * @return {DOMNode}
+         * @return {HTMLElement}
          */
         create : function()
         {
@@ -194,7 +194,7 @@ define([
                 // disable children
                 var list = this.$getUserEntries();
 
-                for ( var i = 0, len = list.length; i < len; i++ ) {
+                for ( i = 0, len = list.length; i < len; i++ ) {
                     list[ i ].disable();
                 }
             }
@@ -221,12 +221,14 @@ define([
             var list = this.$Container.getElements('.users-entry'),
                 ids  = [];
 
-            if ( !list.length ) {
+            if ( !list.length )
+            {
+                this.enable();
                 return;
             }
 
             for ( i = 0, len = list.length; i < len; i++ ) {
-                ids.push( list[i].get( 'data-id' ) );
+                ids.push( list[ i ].get( 'data-id' ) );
             }
 
 
@@ -292,7 +294,7 @@ define([
         /**
          * Add a users to the field
          *
-         * @param {Integer} uid - User-ID
+         * @param {Number} uid - User-ID
          */
         addUser : function(uid)
         {
@@ -300,7 +302,7 @@ define([
                 return this;
             }
 
-            if ( !uid ) {
+            if ( typeof uid === 'undefined' ) {
                 return;
             }
 
@@ -316,9 +318,19 @@ define([
                 return;
             }
 
+            var self = this;
+
+            uid = ( uid ).toInt();
+
             var User = new UserEntry(uid, {
-                events : {
-                    onDestroy : this.update
+                events :
+                {
+                    onDestroy : function()
+                    {
+                        (function() { // delay, because enable event is too early
+                            self.update();
+                        }).delay( 300 );
+                    }
                 }
             }).inject( this.$Container );
 
@@ -425,7 +437,7 @@ define([
         /**
          * keyup - users dropdown selection one step up
          *
-         * @return {this}
+         * @return {Object} this (controls/users/Input)
          */
         up : function()
         {
@@ -460,7 +472,7 @@ define([
         /**
          * keydown - users dropdown selection one step down
          *
-         * @return {this}
+         * @return {Object} this (controls/users/Input)
          */
         down : function()
         {
@@ -516,7 +528,7 @@ define([
         /**
          * Set the focus to the input field
          *
-         * @return {this}
+         * @return {Object} this (controls/users/Input)
          */
         focus : function()
         {

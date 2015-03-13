@@ -3,6 +3,15 @@
  *
  * @module controls/projects/project/site/Select
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/QUI
+ * @require qui/controls/Control
+ * @require qui/controls/buttons/Button
+ * @require qui/controls/windows/Popup
+ * @require controls/projects/TypeWindow
+ * @require controls/projects/Popup
+ * @require Projects
+ * @require css!controls/projects/project/site/Select.css
  */
 
 define('controls/projects/project/site/Select', [
@@ -33,25 +42,27 @@ define('controls/projects/project/site/Select', [
         ],
 
         options : {
-            styles  : false,
-            name    : '',
-            value   : '',
+            styles      : false,
+            name        : '',
+            value       : '',
             projectName : false,
             projectLang : false,
-            placeholder : ''
+            placeholder : '',
+            selectids   : true,
+            selecttypes : true
         },
 
         initialize : function(options)
         {
             this.parent( options );
 
-            this.$Input     = null;
-            this.$Buttons   = null;
-            this.$Container = null;
-            this.$Project   = null;
+            this.$Input     = false;
+            this.$Buttons   = false;
+            this.$Container = false;
+            this.$Project   = false;
 
-            this.$ButtonTypes = null;
-            this.$ButtonSite  = null;
+            this.$ButtonTypes = false;
+            this.$ButtonSite  = false;
 
             this.addEvents({
                 onImport : this.$onImport
@@ -61,7 +72,7 @@ define('controls/projects/project/site/Select', [
         /**
          * Return the domnode element
          *
-         * @return {Element}
+         * @return {HTMLElement}
          */
         create : function()
         {
@@ -94,29 +105,35 @@ define('controls/projects/project/site/Select', [
             );
 
 
-            this.$ButtonTypes = new QUIButton({
-                name   : 'add-types',
-                text   : 'Seiten Typ hinzufügen',
-                styles : {
-                    width : '50%'
-                },
-                events : {
-                    onClick : this.openSiteTypes
-                },
-                disabled : true
-            }).inject( this.$Buttons );
+            if ( this.getAttribute( 'selecttypes' ) )
+            {
+                this.$ButtonTypes = new QUIButton({
+                    name: 'add-types',
+                    text: 'Seiten Typ hinzufügen',
+                    styles: {
+                        width: this.getAttribute( 'selectids' ) ? '50%' : '100%'
+                    },
+                    events: {
+                        onClick: this.openSiteTypes
+                    },
+                    disabled: true
+                }).inject(this.$Buttons);
+            }
 
-            this.$ButtonSite = new QUIButton({
-                name   : 'add-site',
-                text   : 'Seiten ID hinzufügen',
-                styles : {
-                    width : '50%'
-                },
-                events : {
-                    onClick : this.openSitemap
-                },
-                disabled : true
-            }).inject( this.$Buttons );
+            if ( this.getAttribute( 'selectids' ) )
+            {
+                this.$ButtonSite = new QUIButton({
+                    name: 'add-site',
+                    text: 'Seiten ID hinzufügen',
+                    styles: {
+                        width: this.getAttribute( 'selecttypes' ) ? '50%' : '100%'
+                    },
+                    events: {
+                        onClick: this.openSitemap
+                    },
+                    disabled: true
+                }).inject(this.$Buttons);
+            }
 
             return this.$Elm;
         },
@@ -185,11 +202,26 @@ define('controls/projects/project/site/Select', [
         /**
          * Set the project
          *
-         * @param {String} project - Name of the Project
-         * @param {String} lang - Language of the Project
+         * @param {String|Object} project - Name of the Project
+         * @param {String} [lang] - Language of the Project
          */
         setProject : function(project, lang)
         {
+            if ( typeOf( project ) == 'classes/projects/Project' )
+            {
+                this.$Project = project;
+
+                if ( this.$ButtonTypes ) {
+                    this.$ButtonTypes.enable();
+                }
+
+                if ( this.$ButtonSite ) {
+                    this.$ButtonSite.enable();
+                }
+
+                return;
+            }
+
             this.setAttribute( 'projectName', project );
             this.setAttribute( 'projectLang', lang );
 
@@ -206,8 +238,15 @@ define('controls/projects/project/site/Select', [
                 this.getAttribute('projectLang')
             );
 
-            this.$ButtonTypes.enable();
-            this.$ButtonSite.enable();
+
+            if ( this.$ButtonTypes ) {
+                this.$ButtonTypes.enable();
+            }
+
+            if ( this.$ButtonSite ) {
+                this.$ButtonSite.enable();
+            }
+
         },
 
         /**
@@ -267,7 +306,9 @@ define('controls/projects/project/site/Select', [
          */
         openSiteTypes : function()
         {
-            if ( !this.$Project ) {
+            if ( !this.$Project )
+            {
+                console.error( 'No Project was given.' );
                 return;
             }
 
@@ -354,7 +395,7 @@ define('controls/projects/project/site/Select', [
         /**
          * Create an entry element
          *
-         * @param {String} value
+         * @param {String|Number} value
          * @returns {HTMLElement}
          */
         createEntry : function(value)

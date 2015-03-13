@@ -5,7 +5,7 @@
  *
  * @param String $project - Name of the project
  * @param Integer|String $parentid
- * @param unknown_type $file
+ * @param \QUI\QDOM $File
  * @throws \QUI\Exception
  */
 function ajax_media_upload($project, $parentid, $File)
@@ -21,6 +21,7 @@ function ajax_media_upload($project, $parentid, $File)
         );
     }
 
+    /* @var $Folder QUI\Projects\Media\Folder */
     $file = $File->getAttribute('filepath');
 
     if ( !file_exists($file) ) {

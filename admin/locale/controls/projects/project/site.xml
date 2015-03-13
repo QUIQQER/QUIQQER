@@ -33,9 +33,9 @@
             <en><![CDATA[You do not have permission to edit this page.]]></en>
         </locale>
 
-        <locale name="projects.project.site.messages.marcate">
-            <de><![CDATA[Diese Seite wird gerade bearbeitet von: [username]]]></de>
-            <en><![CDATA[This page is currently being edited by: [username]]]></en>
+        <locale name="projects.project.site.messages.lock">
+            <de><![CDATA[Diese Seite wird gerade bearbeitet von: [username]. Letzter Login von [username] war am [lastlogin]]]></de>
+            <en><![CDATA[This page is currently being edited by: [username]. Tha last login from [username] was at [lastlogin]]]></en>
         </locale>
 
         <locale name="projects.project.site.information">

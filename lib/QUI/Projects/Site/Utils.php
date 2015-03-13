@@ -7,6 +7,7 @@
 namespace QUI\Projects\Site;
 
 use QUI;
+use QUI\Projects;
 use QUI\Utils\String as StringUtils;
 use QUI\Utils\XML;
 use QUI\Utils\DOM;
@@ -472,5 +473,71 @@ class Utils
         }
 
         return true;
+    }
+
+    /**
+     * is the link a quiqqer site link?
+     * eq: index.php?project=test&lang=de&id=1
+     *
+     * @param string $link - index.php?project=test&lang=de&id=1
+     * @return boolean
+     */
+    static function isSiteLink($link)
+    {
+        if ( strpos( $link, 'index.php' ) === false ) {
+            return false;
+        }
+
+        if ( strpos( $link, 'project=' ) === false ) {
+            return false;
+        }
+
+        if ( strpos( $link, 'lang=' ) === false ) {
+            return false;
+        }
+
+        if ( strpos( $link, 'id=' ) === false ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Return the site object of the quiqqer site link
+     * eq: getSiteByLink( index.php?project=test&lang=de&id=1 )
+     *
+     * @param string $link - index.php?project=test&lang=de&id=1
+     * @return Projects\Site
+     * @throws QUI\Exception
+     */
+    static function getSiteByLink($link)
+    {
+        if ( !self::isSiteLink( $link ) )
+        {
+            throw new QUI\Exception(
+                QUI::getLocale()->get( 'quiqqer/system', 'exception.site.not.found' ),
+                705
+            );
+        }
+
+        $parseUrl = parse_url( $link );
+
+        if ( !isset( $parseUrl['query'] ) || empty( $parseUrl['query'] ) )
+        {
+            throw new QUI\Exception(
+                QUI::getLocale()->get( 'quiqqer/system', 'exception.site.not.found' ),
+                705
+            );
+        }
+
+        parse_str( $parseUrl['query'], $urlQueryParams );
+
+        $Project = QUI::getProject(
+            $urlQueryParams['project'],
+            $urlQueryParams['lang']
+        );
+
+        return $Project->get( $urlQueryParams[ 'id' ] );
     }
 }

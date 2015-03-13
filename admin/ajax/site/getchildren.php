@@ -24,7 +24,7 @@ function ajax_site_getchildren($project, $id, $params)
     }
 
     // forerst kein limit
-    if ( isset( $params['limit'] ) )
+    if ( isset( $params['limit'] ) && $params['limit'] )
     {
         $children = $Site->getChildren(array(
             'limit' => $params['limit']
@@ -80,12 +80,13 @@ function ajax_site_getchildren($project, $id, $params)
                     $Child->getAttribute('type')
                 );
             }
-
-
         }
     }
 
-    return $childs;
+    return array(
+        'count'    => $Site->hasChildren( true ),
+        'children' => $childs
+    );
 }
 
 \QUI::$Ajax->register(

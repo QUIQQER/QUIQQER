@@ -633,9 +633,9 @@ define([
         /**
          * Destroy the ids in an project media trash
          *
-         * @param {String} project - Name of the project
-         * @param {Array} ids - Array of the site ids
-         * @param {Function} callback . [optional]  callback function on finish
+         * @param {String} project      - Name of the project
+         * @param {Array} ids           - Array of the site ids
+         * @param {Function} [callback] - (optional), callback function on finish
          */
         destroyMediaItems : function(project, ids, callback)
         {
@@ -654,9 +654,9 @@ define([
          * Restore the ids into the parentId
          *
          * @param {String} project
-         * @param {Number} parentId - ID of the parent id
-         * @param {Array} restoreIds - IDs to the restored ids
-         * @param {Function} callback . [optional]  callback function on finish
+         * @param {Number} parentId     - ID of the parent id
+         * @param {Array} restoreIds    - IDs to the restored ids
+         * @param {Function} [callback] - (optional), callback function on finish
          */
         restoreProjectMediaItems : function(project, parentId, restoreIds, callback)
         {
@@ -689,7 +689,6 @@ define([
             {
                 Remove.disable();
                 Restore.disable();
-
                 return;
             }
 

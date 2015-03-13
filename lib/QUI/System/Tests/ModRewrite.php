@@ -72,12 +72,27 @@ class ModRewrite extends QUI\System\Test
      */
     protected function _checkViaHTTP()
     {
-        $Project = QUI::getProjectManager()->getStandard();
-        $host    = $Project->getHost();
+        try
+        {
+            $Project = QUI::getProjectManager()->getStandard();
+            $host = $Project->getHost();
 
-        $result = QUI\Utils\Request\Url::get(
-            'http://'. $host .'/'. URL_SYS_DIR .'/ajax.php?_rf=["ajax_system_modRewrite"]'
-        );
+        } catch ( QUI\Exception $Exception )
+        {
+            return self::STATUS_ERROR;
+        }
+
+        try
+        {
+            $result = QUI\Utils\Request\Url::get(
+                'http://' . $host . '/' . URL_SYS_DIR . '/ajax.php?_rf=["ajax_system_modRewrite"]'
+            );
+
+        } catch ( QUI\Exception $Exception )
+        {
+            return self::STATUS_ERROR;
+        }
+
 
         if ( strpos( $result, '<quiqqer>' ) === false ) {
             return self::STATUS_ERROR;

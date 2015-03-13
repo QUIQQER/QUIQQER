@@ -1,0 +1,18 @@
+
+.quiqqer-available-languages-entry {
+    border-bottom: 1px solid rgba( 0, 0, 0, 0.1 );
+    clear: both;
+    float: left;
+    padding: 10px 0;
+    width: 100% !important;
+}
+
+.quiqqer-available-languages-entry-text {
+    float: left;
+    padding: 8px 10px 0 0;
+}
+
+.quiqqer-available-flag {
+    float: left;
+    padding: 0 10px 0 0;
+}

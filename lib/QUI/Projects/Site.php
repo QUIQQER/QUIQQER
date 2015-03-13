@@ -1209,6 +1209,8 @@ class Site extends QUI\QDOM
 
     /**
      * Setzt das delete Flag
+     *
+     * @todo move to Site/Edit
      */
     public function delete()
     {
@@ -1218,6 +1220,7 @@ class Site extends QUI\QDOM
 
         // Rekursiv alle Kinder bekommen
         $children = $this->getChildrenIdsRecursive();
+        $Project  = $this->getProject();
 
         QUI::getDataBase()->update(
             $this->_TABLE,
@@ -1232,7 +1235,14 @@ class Site extends QUI\QDOM
                 array( 'deleted' => 1 ),
                 array( 'id' => $child )
             );
+
+            $this->Events->fireEvent( 'delete', array($child) );
+            QUI::getEvents()->fireEvent( 'siteDelete', array( $child, $Project ) );
         }
+
+        // on destroy event
+        $this->Events->fireEvent( 'delete', array( $this->getId() ) );
+        QUI::getEvents()->fireEvent( 'siteDelete', array( $this->getId(), $Project ) );
 
         return true;
     }
@@ -1460,7 +1470,7 @@ class Site extends QUI\QDOM
     }
 
     /**
-     * Gibt alle Eltern Ids zurück
+     * Gibt alle direkten Eltern Ids zurück
      *
      * Site
      * ->Parent
@@ -1501,6 +1511,41 @@ class Site extends QUI\QDOM
         $this->_parents_id = $pids;
 
         return $pids;
+    }
+
+    /**
+     * Return the Parent ID List
+     *
+     * @return Array
+     */
+    public function getParentIdTree()
+    {
+        $Project = $this->getProject();
+        $parents = array();
+
+        $search  = true;
+        $id      = $this->getParentId();
+
+        while ( $search )
+        {
+            try
+            {
+                $Parent    = $Project->get( $id );
+                $parents[] = $id;
+
+                $id = $Parent->getParentId();
+
+                if ( $id == 0 ) {
+                    $search = false;
+                }
+
+            } catch ( QUI\Exception $Exception )
+            {
+                $search = false;
+            }
+        }
+
+        return array_reverse( $parents );
     }
 
     /**

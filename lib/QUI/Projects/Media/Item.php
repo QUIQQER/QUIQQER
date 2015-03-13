@@ -188,7 +188,6 @@ abstract class Item extends QUI\QDOM
             throw new QUI\Exception( 'File is already deleted', 400 );
         }
 
-
         $Media = $this->_Media;
         $First = $Media->firstChild();
 
@@ -204,7 +203,12 @@ abstract class Item extends QUI\QDOM
             throw new QUI\Exception( 'You cannot delete the root file', 400 );
         }
 
+        // first, delete the cache
+        if ( method_exists( $this, 'deleteCache' ) ) {
+            $this->deleteCache();
+        }
 
+        // second, move the file to the trash
         try
         {
             QUIFile::unlink( $var_folder . $this->getId() );
@@ -228,7 +232,6 @@ abstract class Item extends QUI\QDOM
             );
         }
 
-
         // change db entries
         QUI::getDataBase()->update(
             $this->_Media->getTable(),
@@ -246,11 +249,6 @@ abstract class Item extends QUI\QDOM
             $this->_Media->getTable('relations'),
             array('child' => $this->getId())
         );
-
-        // Cache vom File löschen
-        if ( method_exists( $this, 'deleteCache' ) ) {
-            $this->deleteCache();
-        }
     }
 
     /**

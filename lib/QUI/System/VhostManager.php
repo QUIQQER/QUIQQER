@@ -65,8 +65,16 @@ class VhostManager
                 continue;
             }
 
-            $Project = \QUI::getProject( $data[ 'project' ] );
-            $langs   = $Project->getAttribute( 'langs' );
+            try
+            {
+                $Project = \QUI::getProject($data['project']);
+                $langs = $Project->getAttribute('langs');
+
+            } catch ( QUI\Exception $Exception )
+            {
+                QUI::getMessagesHandler()->addError( $Exception->getMessage() );
+                continue;
+            }
 
             foreach ( $langs as $lang )
             {
@@ -82,8 +90,10 @@ class VhostManager
             }
         }
 
-
         $Config->save();
+
+        // clearing cache
+        QUI\Cache\Manager::clear();
     }
 
     /**
@@ -99,11 +109,20 @@ class VhostManager
     /**
      * Add a vhost
      *
-     * @param String $vhost - host name (eq: www.something.com)
+     * @param string $vhost - host name (eq: www.something.com)
+     * @return string - clean vhost
      * @throws \QUI\Exception
      */
     public function addVhost($vhost)
     {
+        if ( strpos( $vhost, '://' ) !== false )
+        {
+            $parts = explode( '://', $vhost );
+            $vhost = $parts[1];
+        }
+
+        $vhost = trim( $vhost, '/' );
+
         $Config = $this->_getConfig();
 
         if ( $Config->existValue( $vhost ) )
@@ -118,6 +137,10 @@ class VhostManager
 
         $Config->setSection( $vhost, array() );
         $Config->save();
+
+        $this->repair();
+
+        return $vhost;
     }
 
     /**
@@ -135,7 +158,7 @@ class VhostManager
         {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'system',
+                    'quiqqer/system',
                     'exception.vhost.not.found'
                 )
             );
@@ -204,6 +227,9 @@ class VhostManager
 
         $Config->del( $vhost );
         $Config->save();
+
+        // clearing cache
+        QUI\Cache\Manager::clear();
     }
 
     /**

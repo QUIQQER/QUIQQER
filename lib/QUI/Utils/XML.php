@@ -110,18 +110,28 @@ class XML
 
         /* @var $Conf \DOMElement */
         $Conf = $configs->item( 0 );
+        $name = $Conf->getAttribute( 'name' );
 
-        if ( !$Conf->getAttribute( 'name' ) ) {
-            return false;
+        if ( !$name || empty( $name ) )
+        {
+            // plugin conf???
+            $dirname = dirname( $file );
+            $package = str_replace( dirname(dirname($dirname)).'/', '', $dirname );
+
+            try
+            {
+                QUI::getPackageManager()->getInstalledPackage( $package );
+
+                $name = 'plugins/'. $package;
+
+            } catch ( QUI\Exception $Exception )
+            {
+                return false;
+            }
         }
 
 
-        $ini_file = CMS_DIR .'etc/' . $Conf->getAttribute( 'name' ) .'.ini.php';
-
-        if ( !$Conf->getAttribute( 'name' ) ) {
-            $ini_file .= $Conf->getAttribute( 'name' ) .'.ini.php';
-        }
-
+        $ini_file = CMS_DIR .'etc/'. $name .'.ini.php';
 
         QUI\Utils\System\File::mkdir( dirname( $ini_file ) );
 
@@ -145,6 +155,11 @@ class XML
 
             foreach ( $key as $value => $entry )
             {
+                // no special characters allowed
+                if ( preg_match( '/[^0-9_a-zA-Z]/', $value ) ) {
+                    continue;
+                }
+
                 if ( $Config->existValue( $section, $value ) === false ) {
                     $Config->setValue( $section, $value, $entry['default'] );
                 }
@@ -374,6 +389,71 @@ class XML
         }
 
         return $result;
+    }
+
+    /**
+     * Return the layout types from a xml file
+     * https://dev.quiqqer.com/quiqqer/quiqqer/wikis/Site-Xml
+     *
+     * @param String $file
+     * @return Array
+     */
+    static function getLayoutsFromXml($file)
+    {
+        $Dom   = self::getDomFromXml( $file );
+        $sites = $Dom->getElementsByTagName( 'site' );
+
+        if ( !$sites->length ) {
+            return array();
+        }
+
+        /* @var $Sites \DOMElement */
+        $Sites   = $sites->item( 0 );
+        $layouts = $Sites->getElementsByTagName( 'layouts' );
+
+        if ( !$layouts->length ) {
+                return array();
+        }
+
+        /* @var $Layouts \DOMElement */
+        $Layouts    = $layouts->item( 0 );
+        $layoutList = $Layouts->getElementsByTagName( 'layout' );
+
+        $result = array();
+
+        for ( $c = 0; $c < $layoutList->length; $c++ )
+        {
+            $Layout = $layoutList->item( $c );
+            if ( $Layout->nodeName == '#text' ) {
+                    continue;
+            }
+
+            $result[] = $Layout;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Return a specific layout DOM Node entry by its layout name
+     *
+     * @param String $file       - path to the xml file
+     * @param String $layoutName - name of the layout type
+     * @return bool|\DOMElement
+     */
+    static function getLayoutFromXml($file, $layoutName)
+    {
+        $layouts = self::getLayoutsFromXml( $file );
+
+        foreach ( $layouts as $Layout )
+        {
+            /* @var $Layout \DOMElement */
+            if ( $Layout->getAttribute('type') == $layoutName ) {
+                    return $Layout;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -918,6 +998,22 @@ class XML
         $defaults = self::getConfigParamsFromXml( $file );
         $Config   = self::getConfigFromXml( $file );
 
+        $checkFnMatch = function($key, $keyList)
+        {
+            if ( !is_array( $keyList ) ) {
+                return false;
+            }
+
+            foreach ( $keyList as $keyEntry )
+            {
+                if ( fnmatch( $keyEntry, $key ) ) {
+                    return $keyEntry;
+                }
+            }
+
+            return false;
+        };
+
         foreach ( $params as $section => $param )
         {
             if ( !is_array( $param ) ) {
@@ -930,11 +1026,26 @@ class XML
                     continue;
                 }
 
-                if ( !isset( $defaults[ $section ][ $key ] ) ) {
+                // no special characters allowed
+                if ( preg_match( '/[^0-9_a-zA-Z]/', $key ) ) {
                     continue;
                 }
 
-                $default = $defaults[ $section ][ $key ];
+                // default key for fn match
+                $defaultkeys  = array_keys( $defaults[ $section ] );
+                $fnMatchFound = $checkFnMatch( $key, $defaultkeys );
+
+                if ( !$fnMatchFound && !isset( $defaults[ $section ][ $key ] ) ) {
+                    continue;
+                }
+
+                if ( $fnMatchFound )
+                {
+                    $default = $defaults[ $section ][ $fnMatchFound ];
+                } else
+                {
+                    $default = $defaults[ $section ][ $key ];
+                }
 
                 if ( empty( $value ) && $value !== 0 ) {
                     $value = $default['default'];
@@ -1090,6 +1201,7 @@ class XML
      * Import a database.xml
      *
      * @param String $xmlfile - Path to the file
+     * @throws QUI\Exception
      */
     static function importDataBaseFromXml($xmlfile)
     {
@@ -1099,7 +1211,18 @@ class XML
             return;
         }
 
-        self::importDataBase( $dbfields );
+        try
+        {
+            self::importDataBase( $dbfields );
+            
+        } catch ( QUI\Exception $Exception )
+        {
+            QUI\System\Log::addError(
+                "Error on XML database import ($xmlfile): " . $Exception->getMessage()
+            );
+
+            throw $Exception;
+        }
     }
 
     /**

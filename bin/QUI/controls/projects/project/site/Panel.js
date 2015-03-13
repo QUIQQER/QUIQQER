@@ -18,14 +18,14 @@
  * @require css!controls/projects/project/site/Panel.css
  */
 
-define([
+define('controls/projects/project/site/Panel', [
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
     'Projects',
     'Ajax',
-    'classes/projects/project/Site',
     'qui/controls/buttons/Button',
+    'qui/controls/windows/Confirm',
     'qui/utils/Form',
     'qui/utils/Elements',
     'utils/Controls',
@@ -43,8 +43,8 @@ define([
         QUIPanel     = arguments[ 1 ],
         Projects     = arguments[ 2 ],
         Ajax         = arguments[ 3 ],
-        Site         = arguments[ 4 ],
-        QUIButton    = arguments[ 5 ],
+        QUIButton    = arguments[ 4 ],
+        QUIConfirm   = arguments[ 5 ],
         QUIFormUtils = arguments[ 6 ],
         QUIElmUtils  = arguments[ 7 ],
         ControlUtils = arguments[ 8 ],
@@ -59,7 +59,7 @@ define([
      *
      * @class controls/projects/project/site/Panel
      *
-     * @param {classes/projects/Site} Site
+     * @param {Object} Site - classes/projects/Site
      * @param {Object} options
      *
      * @memberof! <global>
@@ -79,11 +79,13 @@ define([
             '$onCreate',
             '$onDestroy',
             '$onResize',
+            '$onInject',
             '$onCategoryEnter',
             '$onCategoryLeave',
             '$onEditorLoad',
             '$onEditorDestroy',
             '$onPanelButtonClick',
+            '$onLogin',
 
             '$onSiteActivate',
             '$onSiteDeactivate',
@@ -92,14 +94,17 @@ define([
         ],
 
         options : {
-            id        : 'projects-site-panel',
-            container : false
+            id            : 'projects-site-panel',
+            container     : false,
+            editorPeriode : 2000
         },
 
         initialize : function(Site, options)
         {
             this.$Site            = null;
             this.$CategoryControl = null;
+
+            this.$editorPeriodicalSave = false; // delay for the wysiwyg editor, to save to the locale storage
 
             if ( typeOf( Site ) === 'classes/projects/project/Site' )
             {
@@ -133,7 +138,8 @@ define([
             this.addEvents({
                 onCreate  : this.$onCreate,
                 onResize  : this.$onResize,
-                onDestroy : this.$onDestroy
+                onDestroy : this.$onDestroy,
+                onInject  : this.$onInject
             });
         },
 
@@ -162,7 +168,7 @@ define([
          *
          * @method controls/projects/project/site/Panel#unserialize
          * @param {Object} data
-         * @return {this}
+         * @return {Object} this (controls/projects/project/site/Panel)
          */
         unserialize : function(data)
         {
@@ -173,7 +179,8 @@ define([
                 data.lang
             );
 
-            this.$Site = Project.get( data.id );
+            this.$Site      = Project.get( data.id );
+            this.$delayTest = 0;
 
             return this;
         },
@@ -196,6 +203,48 @@ define([
          */
         load : function()
         {
+            this.refresh();
+
+            if ( this.getActiveCategory() )
+            {
+                this.$onCategoryEnter( this.getActiveCategory() );
+                return;
+            }
+
+            if ( this.getCategoryBar().firstChild() )
+            {
+                this.getCategoryBar().firstChild().click();
+                return;
+            }
+
+            // if dom is not loaded, we wait 200ms
+            (function()
+            {
+                if ( this.$delayTest > 10 )
+                {
+                    QUI.getMessageHandler(function(MH)
+                    {
+                        MH.addError(
+                            'Seitenpanel mit der Seiten ID #'+ this.getSite().getId() +
+                            ' konnte nicht geladen werden. Das Panel wurde wieder geschlossen'
+                        ); // #locale
+                    });
+
+                    this.destroy();
+                    return;
+                }
+
+                this.$delayTest++;
+                this.load();
+
+            }).delay( 200, this );
+        },
+
+        /**
+         * Refresh the site panel
+         */
+        refresh : function()
+        {
             var title, description;
 
             var Site    = this.getSite(),
@@ -203,9 +252,13 @@ define([
 
             title = Site.getAttribute( 'title') +' ('+ Site.getId() +')';
 
-            description = Site.getAttribute( 'name' ).replace(/ /g, '-') +'.html : '+
-                          Site.getId() +' : ' +
+            description = Site.getAttribute( 'name' ) +' - '+
+                          Site.getId() +' - ' +
                           Project.getName();
+
+            if ( Site.getId() != 1 ) {
+                description = description +' - '+ Site.getUrl();
+            }
 
             this.setAttributes({
                 title       : title,
@@ -213,17 +266,7 @@ define([
                 icon        : URL_BIN_DIR +'16x16/flags/'+ Project.getLang() +'.png'
             });
 
-            this.refresh();
-
-
-            if ( this.getActiveCategory() )
-            {
-                this.$onCategoryEnter( this.getActiveCategory() );
-
-            } else
-            {
-                this.getCategoryBar().firstChild().click();
-            }
+            this.parent();
         },
 
         /**
@@ -234,6 +277,9 @@ define([
         $onCreate : function()
         {
             this.Loader.show();
+
+            window.addEvent( 'login', this.$onLogin );
+
 
             // permissions
             new QUIButton({
@@ -282,11 +328,12 @@ define([
 
             Ajax.get([
                 'ajax_site_categories_get',
-                'ajax_site_buttons_get'
-            ], function(categories, buttons)
+                'ajax_site_buttons_get',
+                'ajax_site_isLockedFromOther',
+                'ajax_site_lock'
+            ], function(categories, buttons, isLocked)
             {
                 var i, ev, fn, len, events, category, Category;
-
 
                 for ( i = 0, len = buttons.length; i < len; i++ )
                 {
@@ -339,15 +386,9 @@ define([
                     self.addCategory( Category );
                 }
 
-                Site.addEvents({
-                    onLoad       : self.load,
-                    onActivate   : self.$onSiteActivate,
-                    onDeactivate : self.$onSiteDeactivate,
-                    onSave       : self.$onSiteSave,
-                    onDelete     : self.$onSiteDelete
-                });
-
-                Site.load();
+                if ( isLocked ) {
+                    self.setLocked();
+                }
 
             }, {
                 project : Project.encode(),
@@ -356,17 +397,108 @@ define([
         },
 
         /**
+         * event : on inject
+         */
+        $onInject : function()
+        {
+            var Site = this.getSite();
+
+            Site.addEvents({
+                onLoad       : this.load,
+                onActivate   : this.$onSiteActivate,
+                onDeactivate : this.$onSiteDeactivate,
+                onSave       : this.$onSiteSave,
+                onDelete     : this.$onSiteDelete
+            });
+
+            if ( !Site.hasWorkingStorage() )
+            {
+                Site.load();
+                return;
+            }
+
+
+            var self = this;
+
+            this.Loader.show();
+
+            var Sheet = this.createSheet({
+                title : 'Wiederherstellung der Seite #'+ Site.getId()
+            });
+
+            Sheet.getContent().set(
+                'html',
+
+                '<div class="qui-panel-dataRestore">' +
+                    '<p>Es wurden nicht gespeicherte Daten der Seite #'+ Site.getId() +' gefunden.</p>'+
+                    '<p>Sollen die Daten wieder hergestellt werden?</p>' +
+                '</div>' // #locale
+            );
+
+            Sheet.clearButtons();
+
+            Sheet.addButton({
+                text   : 'Daten verwerfen',  // #locale
+                events :
+                {
+                    onClick : function()
+                    {
+                        Sheet.hide(function() {
+                            Sheet.destroy();
+                        });
+
+                        Site.clearWorkingStorage();
+                        Site.load(function() {
+                            self.load();
+                        });
+                    }
+                }
+            });
+
+            Sheet.addButton({
+                text   : 'Daten übernehmen', // #locale
+                events :
+                {
+                    onClick : function()
+                    {
+                        Sheet.hide(function() {
+                            Sheet.destroy();
+                        });
+
+                        Site.restoreWorkingStorage();
+                        Site.clearWorkingStorage();
+                        self.load();
+                    }
+                }
+            });
+
+            Sheet.show(function() {
+                self.Loader.hide();
+            });
+        },
+
+        /**
          * event : on destroy
          */
         $onDestroy : function()
         {
-            var Site = this.getSite();
+            var Site    = this.getSite(),
+                Project = Site.getProject();
 
             Site.removeEvent( 'onLoad', this.load );
             Site.removeEvent( 'onActivate', this.$onSiteActivate );
             Site.removeEvent( 'onDeactivate', this.$onSiteDeactivate );
             Site.removeEvent( 'onSave', this.$onSiteSave );
             Site.removeEvent( 'onDelete', this.$onSiteDelete );
+
+            Site.clearWorkingStorage();
+
+            window.removeEvent( 'login', this.$onLogin );
+
+            Ajax.get(['ajax_site_unlock'], false, {
+                project : Project.encode(),
+                id      : Site.getId()
+            });
         },
 
         /**
@@ -426,9 +558,10 @@ define([
          */
         openSort : function()
         {
-            var Site = this.getSite();
+            var Site = this.getSite(),
+                Sort = false;
 
-            this.createSheet({
+            var Sheets = this.createSheet({
                 title : Locale.get( lg, 'projects.project.site.panel.sort.title', {
                     id    : Site.getId(),
                     title : Site.getAttribute('title'),
@@ -441,11 +574,41 @@ define([
                         require([
                             'controls/projects/project/site/SiteChildrenSort'
                         ], function(SiteSort) {
-                            new SiteSort( Site ).inject( Sheet.getContent() );
+                            Sort = new SiteSort( Site ).inject( Sheet.getContent() );
                         });
                     }
                 }
-            }).show();
+            });
+
+            Sheets.clearButtons();
+
+            Sheets.addButton({
+                name      : 'sortSave',
+                textimage : 'icon-save',
+                text      : Locale.get( lg, 'projects.project.site.childrensort.save' ),
+                events    :
+                {
+                    onClick : function(Btn)
+                    {
+                        if ( !Sort ) {
+                            return;
+                        }
+
+                        Btn.setAttribute( 'textimage', 'icon-refresh icon-spin' );
+
+                        Sort.save(function()
+                        {
+                            Btn.setAttribute( 'textimage', 'icon-save' );
+
+                            Sheets.hide(function() {
+                                Sheets.destroy();
+                            });
+                        });
+                    }
+                }
+            });
+
+            Sheets.show();
         },
 
         /**
@@ -455,10 +618,14 @@ define([
          */
         save : function()
         {
-            this.$onCategoryLeave( this.getActiveCategory() );
-            this.getSite().save();
+            var self = this;
 
-            this.$onCategoryEnter( this.getActiveCategory() );
+            this.$onCategoryLeave( this.getActiveCategory(), function()
+            {
+                self.getSite().save(function() {
+                    self.load();
+                });
+            });
         },
 
         /**
@@ -474,13 +641,19 @@ define([
                     title     : Locale.get( lg, 'projects.project.site.panel.window.delete.title' ),
                     titleicon : 'icon-trash',
                     text : Locale.get( lg, 'projects.project.site.panel.window.delete.text', {
-                        id  : Site.getId(),
-                        url : Site.getAttribute( 'name' ) +'.html'
+                        id    : Site.getId(),
+                        url   : Site.getAttribute( 'name' ) +'.html',
+                        name  : Site.getAttribute( 'name' ),
+                        title : Site.getAttribute( 'title' )
                     }),
-                    information : Locale.get( lg, 'projects.project.site.panel.window.delete.information' ),
+                    information : Locale.get( lg, 'projects.project.site.panel.window.delete.information', {
+                        id    : Site.getId(),
+                        url   : Site.getAttribute( 'name' ) +'.html',
+                        name  : Site.getAttribute( 'name' ),
+                        title : Site.getAttribute( 'title' )
+                    }),
                     height : 200,
-                    events :
-                    {
+                    events : {
                         onSubmit : function() {
                             Site.del();
                         }
@@ -553,7 +726,10 @@ define([
                 Site    = this.getSite(),
                 Project = Site.getProject();
 
-            Ajax.get('ajax_site_categories_template', function(result)
+            Ajax.get([
+                'ajax_site_categories_template',
+                'ajax_site_lock'
+            ], function(result)
             {
                 var Body = self.getContent();
 
@@ -575,7 +751,7 @@ define([
                 });
 
                 // set to the media inputs the right project
-                Body.getElements( '.media-image' ).each(function(Elm) {
+                Body.getElements( '.media-image,.media-folder' ).each(function(Elm) {
                     Elm.set( 'data-project', Project.getName() );
                 });
 
@@ -595,59 +771,14 @@ define([
                 // information tab
                 if ( Category.getAttribute( 'name' ) === 'information' )
                 {
-                    var NameInput  = Body.getElements( 'input[name="site-name"]' ),
-                        UrlDisplay = Body.getElements( '.site-url-display' ),
-                        siteUrl    = Site.getUrl();
-
-                    UrlDisplay.set( 'html', Site.getUrl() );
-
-                    // filter
-                    var sitePath   = siteUrl.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '') +'/',
-                        notAllowed = Object.keys( SiteUtils.notAllowedUrlSigns() ).join('|'),
-                        reg        = new RegExp( '['+ notAllowed +']', "g" );
-
-                    var lastPos = null;
-
-                    NameInput.set({
-                        value  : Site.getAttribute( 'name' ),
-                        events :
-                        {
-                            keydown : function(event) {
-                                lastPos = QUIElmUtils.getCursorPosition( event.target );
-                            },
-
-                            keyup : function()
-                            {
-                                var old = this.value;
-
-                                this.value = this.value.replace( reg, '' );
-                                this.value = this.value.replace( / /g, QUIQQER.Rewrite.URL_SPACE_CHARACTER );
-
-                                if ( old != this.value )
-                                {
-                                    UrlDisplay.set( 'html', sitePath + this.value +'.html' );
-
-                                    QUIElmUtils.setCursorPosition( this, lastPos );
-                                }
-                            },
-
-                            blur : function()
-                            {
-                                this.fireEvent( 'keyup' );
-                            },
-
-                            focus : function()
-                            {
-                                this.fireEvent( 'keyup' );
-                            }
-                        }
-                    });
+                    self.$bindNameInputUrlFilter();
 
 
                     // site linking
                     var i, len, Row, LastCell;
 
-                    var LinkinLangTable = Body.getElement( '.site-langs' );
+                    var LinkinLangTable = Body.getElement( '.site-langs'),
+                        Locked          = Body.getElement( '[data-locked]' );
 
                     if ( LinkinLangTable )
                     {
@@ -722,10 +853,54 @@ define([
                             }).inject( LastCell );
                         }
                     }
+
+
+                    // locked
+                    if ( Locked && USER.isSU )
+                    {
+                        new QUIButton({
+                            text   : 'Trotzdem freischalten', // #locale
+                            styles : {
+                                clear   : 'both',
+                                display : 'block',
+                                'float' : 'none',
+                                margin  : '10px auto',
+                                width   : 200
+                            },
+                            events :
+                            {
+                                onClick : function() {
+                                    self.unlockSite();
+                                }
+                            }
+                        }).inject( Locked );
+                    }
                 }
 
-                ControlUtils.parse( Form );
-                QUI.parse( Form );
+                ControlUtils.parse(Form, function()
+                {
+                    QUI.parse(Form, function()
+                    {
+                        // set the project to the controls
+                        var i, len, Control;
+                        var quiids = Form.getElements( '[data-quiid]' );
+
+                        for ( i = 0, len = quiids.length; i < len; i++ )
+                        {
+                            Control = QUI.Controls.getById( quiids[ i ].get('data-quiid') );
+
+                            if ( !Control ) {
+                                continue;
+                            }
+
+                            if ( typeOf( Control.setProject ) == 'function' ) {
+                                Control.setProject( Project );
+                            }
+                        }
+
+                    });
+                });
+
 
                 self.$categoryOnLoad( Category );
 
@@ -811,6 +986,7 @@ define([
             var Site  = this.getSite(),
                 Body  = this.getBody();
 
+
             // main content
             if ( Category.getAttribute( 'name' ) === 'content' )
             {
@@ -819,7 +995,9 @@ define([
                     this.getAttribute( 'Editor' ).getContent()
                 );
 
-                if ( typeof callback !== 'undefined' ) {
+                this.$clearEditorPeriodicalSave();
+
+                if ( typeof callback === 'function' ) {
                     callback();
                 }
 
@@ -835,7 +1013,9 @@ define([
                     this.getAttribute( 'Editor' ).getContent()
                 );
 
-                if ( typeof callback !== 'undefined' ) {
+                this.$clearEditorPeriodicalSave();
+
+                if ( typeof callback === 'function' ) {
                     callback();
                 }
 
@@ -846,14 +1026,14 @@ define([
             // form unload
             if ( !Body.getElement( 'form' ) )
             {
-                if ( typeof callback !== 'undefined' ) {
-                    callback();
-                }
-
                 if ( this.$CategoryControl )
                 {
                     this.$CategoryControl.destroy();
                     this.$CategoryControl = null;
+                }
+
+                if ( typeof callback === 'function' ) {
+                    callback();
                 }
 
                 return;
@@ -870,8 +1050,9 @@ define([
                 Site.setAttribute( 'short', elements.short.value );
                 Site.setAttribute( 'nav_hide', elements.nav_hide.checked );
                 Site.setAttribute( 'type', elements.type.value );
+                Site.setAttribute( 'layout', elements.layout.value );
 
-                if ( typeof callback !== 'undefined' ) {
+                if ( typeof callback === 'function' ) {
                     callback();
                 }
 
@@ -901,18 +1082,30 @@ define([
             {
                 require([ onunloadRequire ], function()
                 {
+                    if ( self.$CategoryControl )
+                    {
+                        self.$CategoryControl.destroy();
+                        self.$CategoryControl = null;
+                    }
+
+
                     eval( onunload +'( Category, self );' );
 
-                    if ( typeof callback !== 'undefined' ) {
+                    if ( typeof callback === 'function' ) {
                         callback();
                     }
                 });
             }
 
+
             if ( this.$CategoryControl )
             {
                 this.$CategoryControl.destroy();
                 this.$CategoryControl = null;
+            }
+
+            if ( typeof callback === 'function' ) {
+                callback();
             }
         },
 
@@ -924,9 +1117,204 @@ define([
          */
         $onPanelButtonClick : function(Btn)
         {
-            var Panel = this; // maybe in eval
+            var Panel = this,
+                Site  = Panel.getSite(); // maybe in eval
+
+            if ( Btn.getAttribute( 'name' ) === 'status' )
+            {
+                this.$onCategoryLeave( this.getActiveCategory(), function()
+                {
+                    // check if site must be saved
+                    if ( !Site.hasWorkingStorage() )
+                    {
+                        eval( Btn.getAttribute( '_onclick' ) +'();' );
+                        return;
+                    }
+
+                    // #locale
+                    new QUIConfirm({
+                        title   : 'Die Seite besitzt Änderungen',
+                        content : 'Die Seite besitzt Änderungen.<br />Möchten Sie diese Änderungen auch speichern?',
+                        maxHeight : 200,
+                        maxWidth  : 500,
+                        ok_button : {
+                            text : 'Änderungen auch speichern'
+                        },
+                        cancel_button : {
+                            text : 'Status nur ändern'
+                        },
+                        events :
+                        {
+                            onSubmit : function()
+                            {
+                                Site.save(function() {
+                                    eval( Btn.getAttribute( '_onclick' ) +'();' );
+                                });
+                            },
+
+                            onCancel : function() {
+                                eval( Btn.getAttribute( '_onclick' ) +'();' );
+                            }
+                        }
+                    }).open();
+                });
+
+                return;
+            }
 
             eval( Btn.getAttribute( '_onclick' ) +'();' );
+        },
+
+        /**
+         *
+         */
+        $bindNameInputUrlFilter : function()
+        {
+            var Site = this.getSite(),
+                Body = this.getContent();
+
+            var NameInput  = Body.getElements( 'input[name="site-name"]' ),
+                UrlDisplay = Body.getElements( '.site-url-display' ),
+                siteUrl    = Site.getUrl();
+
+            if ( Site.getId() != 1 ) {
+                UrlDisplay.set( 'html', Site.getUrl() );
+            }
+
+            // filter
+            var sitePath   = siteUrl.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '') +'/',
+                notAllowed = Object.keys( SiteUtils.notAllowedUrlSigns() ).join('|'),
+                reg        = new RegExp( '['+ notAllowed +']', "g" );
+
+            var lastPos = null;
+
+            NameInput.set({
+                value  : Site.getAttribute( 'name' ),
+                events :
+                {
+                    keydown : function(event) {
+                        lastPos = QUIElmUtils.getCursorPosition( event.target );
+                    },
+
+                    keyup : function()
+                    {
+                        var old = this.value;
+
+                        this.value = this.value.replace( reg, '' );
+                        this.value = this.value.replace( / /g, QUIQQER.Rewrite.URL_SPACE_CHARACTER );
+
+                        if ( old != this.value ) {
+                            QUIElmUtils.setCursorPosition( this, lastPos );
+                        }
+
+                        if ( Site.getId() != 1 ) {
+                            UrlDisplay.set('html', sitePath + this.value + '.html');
+                        }
+                    },
+
+                    blur : function() {
+                        this.fireEvent( 'keyup' );
+                    },
+
+                    focus : function() {
+                        this.fireEvent( 'keyup' );
+                    }
+                }
+            });
+        },
+
+        /**
+         * Disable the buttons, if the site is locked
+         */
+        setLocked : function()
+        {
+            var buttons = this.getButtons();
+
+            for ( var i = 0, len = buttons.length; i < len; i++ )
+            {
+                if ( "disable" in buttons[ i ] ) {
+                    buttons[ i ].disable();
+                }
+            }
+        },
+
+        /**
+         * Enable the buttons, if the site is unlocked
+         */
+        setUnlocked : function()
+        {
+            var buttons = this.getButtons();
+
+            for ( var i = 0, len = buttons.length; i < len; i++ )
+            {
+                if ( "enable" in buttons[ i ] ) {
+                    buttons[ i ].enable();
+                }
+            }
+        },
+
+        /**
+         * unlock the site, only if the user has the permission
+         */
+        unlockSite : function()
+        {
+            var self = this,
+                Site = this.getSite();
+
+            this.Loader.show();
+
+            Site.unlock(function() {
+                self.$destroyRefresh();
+            });
+        },
+
+        /**
+         * destroy and refresh the panel
+         *
+         * @private
+         */
+        $destroyRefresh : function()
+        {
+            var self    = this,
+                Site    = this.getSite(),
+                Project = Site.getProject();
+
+            require(['utils/Panels'], function(Utils)
+            {
+                self.destroy();
+
+                Utils.openSitePanel(
+                    Project.getName(),
+                    Project.getLang(),
+                    Site.getId()
+                );
+            });
+        },
+
+        /**
+         * event : on login
+         */
+        $onLogin : function()
+        {
+            var Active = this.getActiveCategory(),
+                Task   = this.getAttribute( 'Task' );
+
+            // if task exists, check if task is active
+            if ( Task &&
+                 typeOf( Task ) === 'qui/controls/taskbar/Task' &&
+                 Task.isActive() === false
+            ) {
+                return;
+            }
+
+            // no active category? something is wrong, so reload the panel
+            if ( !Active )
+            {
+                this.$destroyRefresh();
+                return;
+            }
+
+            this.$onCategoryEnter( this.getActiveCategory() );
         },
 
         /**
@@ -957,6 +1345,8 @@ define([
                 'text'      : Status.getAttribute( 'dtext' ),
                 '_onclick'  : 'Panel.getSite().deactivate'
             });
+
+            this.Loader.hide();
         },
 
         /**
@@ -975,6 +1365,8 @@ define([
                 'text'      : Status.getAttribute( 'atext' ),
                 '_onclick'  : 'Panel.getSite().activate'
             });
+
+            this.Loader.hide();
         },
 
         /**
@@ -1030,16 +1422,23 @@ define([
                         Editor.setAttribute( 'bodyId', result.bodyId );
                         Editor.setAttribute( 'bodyClass', result.bodyClass );
 
-                        for ( var i = 0, len = result.cssFiles.length; i < len; i++) {
-                            Editor.addCSS( result[ i ] );
+                        var cssFiles = [];
+
+                        if ( "cssFiles" in result ) {
+                            cssFiles = result.cssFiles;
                         }
+
+                        for ( var i = 0, len = cssFiles.length; i < len; i++) {
+                            Editor.addCSS( cssFiles[ i ] );
+                        }
+
+                        self.$startEditorPeriodicalSave();
 
                         Editor.addEvent( 'onLoaded', self.$onEditorLoad );
 
                     }, {
                         project : Project.getName()
                     });
-
                 });
             });
         },
@@ -1064,6 +1463,51 @@ define([
         $onEditorDestroy : function()
         {
             this.setAttribute( 'Editor', false );
+        },
+
+        /**
+         * Start the periodical editor save
+         */
+        $startEditorPeriodicalSave : function()
+        {
+            if ( this.$editorPeriodicalSave ) {
+                this.$clearEditorPeriodicalSave();
+            }
+
+            var Category  = this.getActiveCategory(),
+                attribute = false;
+
+            if ( Category.getAttribute( 'name' ) === 'content' ) {
+                attribute = 'content';
+            }
+
+            if ( Category.getAttribute( 'type' ) == 'wysiwyg' ) {
+                attribute = Category.getAttribute('name');
+            }
+
+            this.$editorPeriodicalSave = (function(attr)
+            {
+                var Editor = this.getAttribute('Editor');
+
+                if ( !Editor ) {
+                    return;
+                }
+
+                this.getSite().setAttribute( attr, Editor.getContent() );
+
+            }).periodical( this.getAttribute('editorPeriode'), this, [ attribute ] );
+        },
+
+        /**
+         * clear / stop the periodical editor save
+         */
+        $clearEditorPeriodicalSave : function()
+        {
+            if ( this.$editorPeriodicalSave )
+            {
+                clearInterval( this.$editorPeriodicalSave );
+                this.$editorPeriodicalSave = false;
+            }
         },
 
         /**

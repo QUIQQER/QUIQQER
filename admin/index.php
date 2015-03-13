@@ -19,7 +19,6 @@
     {
 
     }
-
 ?>
 <!doctype html>
 <!--[if lt IE 7 ]><html class="ie ie6" lang="<?php echo $User->getLang(); ?>"> <![endif]-->
@@ -130,7 +129,9 @@
                 URL_PARAM_SEPERATOR   : "<?php echo \QUI\Rewrite::URL_PARAM_SEPERATOR; ?>",
                 URL_SPACE_CHARACTER   : "<?php echo \QUI\Rewrite::URL_SPACE_CHARACTER; ?>",
                 URL_PROJECT_CHARACTER : "<?php echo \QUI\Rewrite::URL_PROJECT_CHARACTER; ?>"
-            }
+            },
+            inAdministration : true,
+            lu : "<?php echo QUI::getPackageManager()->getLastUpdateDate(); ?>"
         };
 
     /* ]]> */
@@ -140,6 +141,9 @@
         /**
          * locale file
          */
+
+        $files = array();
+
         try
         {
             $files = \QUI\Translator::getJSTranslationFiles( $User->getLang() );
@@ -162,7 +166,6 @@
         echo '</script>';
 
         \QUI::getEvents()->fireEvent( 'adminLoad' );
-
     ?>
 
 </head>
@@ -195,12 +198,14 @@
     <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-core.js"></script>
     <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-more.js"></script>
     <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/moofx.js"></script>
-    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/ElementQuery.js"></script>
-    <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/ResizeSensor.js"></script>
     <script src="<?php echo URL_BIN_DIR; ?>QUI/lib/Assets.js"></script>
 
     <!-- load the quiqqer admin -->
     <script src="<?php echo URL_BIN_DIR; ?>QUI/init.js"></script>
+
+    <?php
+        \QUI::getEvents()->fireEvent( 'adminLoadFooter' );
+    ?>
 
 </body>
 </html>

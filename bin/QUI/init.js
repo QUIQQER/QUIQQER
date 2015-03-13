@@ -3,6 +3,9 @@
  * The main loading script for the quiqqer administration
  *
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * globale events
+ * window -> onLogin
  */
 
 //monitorEvents(document.body,'click');
@@ -287,7 +290,6 @@ require( requireList, function()
             Workspace.resize();
         });
     });
-
 
     /**
      * Menu

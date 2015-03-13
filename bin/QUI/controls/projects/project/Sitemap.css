@@ -1,0 +1,10 @@
+
+.qui-projects-sitemap-sheetsWindow {
+    clear: both;
+    text-align: center;
+}
+
+.qui-projects-sitemap-sheetsWindow select {
+    margin: 20px auto;
+    width: 200px;
+}

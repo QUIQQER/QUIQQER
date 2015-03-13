@@ -48,7 +48,10 @@ define('controls/projects/project/media/Input', [
 
         options : {
             name   : '',
-            styles : false
+            styles : false,
+
+            selectable_types     : false,   // you can specified which types are selectable
+            selectable_mimetypes : false  	// you can specified which mime types are selectable
         },
 
         initialize : function(options, Input)
@@ -57,6 +60,21 @@ define('controls/projects/project/media/Input', [
 
             this.$Input   = Input || null;
             this.$Preview = null;
+            this.$Project = null;
+        },
+
+        /**
+         * Set the internal project
+         *
+         * @param {Object} Project - classes/projects/project
+         */
+        setProject : function(Project)
+        {
+            this.$Project = Project;
+
+            if ( this.$Input ) {
+                this.$Input.set( 'data-project', Project.getName() );
+            }
         },
 
         /**
@@ -69,7 +87,8 @@ define('controls/projects/project/media/Input', [
             var self = this;
 
             this.$Elm = new Element('div', {
-                'class' : 'qui-controls-project-media-input box'
+                'class'      : 'qui-controls-project-media-input box',
+                'data-quiid' : this.getId()
             });
 
             if ( !this.$Input )
@@ -112,17 +131,28 @@ define('controls/projects/project/media/Input', [
                             project = self.$Input.get( 'data-project' );
                         }
 
+                        if ( self.$Project ) {
+                            project = self.$Project.getName();
+                        }
+
                         if ( value !== '' )
                         {
                             var urlParams = QUIStringUtils.getUrlParams( value );
 
-                            fileid  = urlParams.id;
-                            project = urlParams.project;
+                            if ( "id" in urlParams ) {
+                                fileid  = urlParams.id;
+                            }
+
+                            if ( "project" in urlParams ) {
+                                project = urlParams.project;
+                            }
                         }
 
                         new MediaPopup({
                             project : project,
                             fileid  : fileid,
+                            selectable_types     : self.getAttribute( 'selectable_types' ),
+                            selectable_mimetypes : self.getAttribute( 'selectable_mimetypes' ),
                             events :
                             {
                                 onSubmit : function(Popup, params)
@@ -169,7 +199,7 @@ define('controls/projects/project/media/Input', [
         {
             var value = this.$Input.value;
 
-            if ( value === '' )
+            if ( value === '' || value == '0' )
             {
                 this.$Preview.setStyle( 'background', null );
                 return;

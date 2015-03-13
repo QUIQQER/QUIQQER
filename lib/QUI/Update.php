@@ -406,7 +406,7 @@ class Update
      * Reimportation from all menu.xml files
      * Read all packages and import the menu.xml files to the quiqqer system
      *
-     * @param Composer $Composer - optional
+     * @param \Composer\Composer $Composer - optional
      * @throws QUI\Exception
      */
     static function importAllMenuXMLs($Composer=null)
@@ -508,7 +508,7 @@ class Update
     /**
      * Reimportation from all locale.xml files
      *
-     * @param Composer $Composer - optional
+     * @param \Composer\Composer $Composer - optional
      * @throws QUI\Exception
      */
     static function importAllLocaleXMLs($Composer=null)
@@ -591,7 +591,7 @@ class Update
 
         // lib
         $list = shell_exec(
-            'find "'. LIB_DIR .'" -iname \*.xml -type f'
+            'find "'. LIB_DIR .'locale/" -iname \*.xml -type f'
         );
 
         $list = explode( "\n", $list );

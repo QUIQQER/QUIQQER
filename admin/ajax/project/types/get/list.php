@@ -8,7 +8,14 @@
  */
 function ajax_project_types_get_list($project)
 {
-    $Project = \QUI::getProjectManager()->decode( $project );
+    try
+    {
+        $Project = \QUI::getProjectManager()->decode($project);
+
+    } catch ( \QUI\Exception $Exception )
+    {
+        $Project = false;
+    }
 
     return \QUI::getPluginManager()->getAvailableTypes( $Project );
 }

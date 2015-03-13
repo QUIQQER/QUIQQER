@@ -5,12 +5,24 @@
  *
  * @author www.pcsg.de (Henning Leutz)
  * @module controls/desktop/panels/XML
+ *
+ * @require qui/QUI
+ * @require qui/controls/desktop/Panel
+ * @require qui/controls/buttons/Button
+ * @require qui/controls/buttons/Seperator
+ * @require qui/utils/Object
+ * @require Ajax
+ * @require Locale
+ * @require utils/Controls
+ * @require css!controls/desktop/panels/XML.css
  */
 
-define([
+define('controls/desktop/panels/XML', [
 
+    'qui/QUI',
     'qui/controls/desktop/Panel',
     'qui/controls/buttons/Button',
+    'qui/controls/buttons/Seperator',
     'qui/utils/Object',
     'Ajax',
     'Locale',
@@ -18,7 +30,7 @@ define([
 
     'css!controls/desktop/panels/XML.css'
 
-], function(QUIPanel, QUIButton, QUIObjectUtils, Ajax, Locale, ControlUtils)
+], function(QUI, QUIPanel, QUIButton, QUISeperator, QUIObjectUtils, Ajax, Locale, ControlUtils)
 {
     "use strict";
 
@@ -34,6 +46,7 @@ define([
 
         Binds : [
             '$onCreate',
+            '$onCategoryActive',
             'loadCategory',
             'unloadCategory',
             'save'
@@ -76,8 +89,8 @@ define([
         {
             this.setAttributes( data.attributes );
 
-            this.$file    = data.file;
-            this.$config  = data.config;
+            this.$file   = data.file;
+            this.$config = data.config;
 
             if ( !this.$Elm )
             {
@@ -121,13 +134,10 @@ define([
                 // load categories
                 for ( var i = 0, len = categories.length; i < len; i++ )
                 {
-                    var Category = new QUIButton(
-                        categories[ i ]
-                    );
+                    var Category = new QUIButton( categories[ i ] );
 
                     Category.addEvents({
-                        onActive : self.loadCategory,
-                        onNormal : self.unloadCategory
+                        onActive : self.$onCategoryActive
                     });
 
                     self.addCategory( Category );
@@ -178,13 +188,15 @@ define([
         /**
          * Request the category
          *
-         * @param {qui/controls/buttons/Button} Category
+         * @param {Object} Category - qui/controls/buttons/Button
          */
         loadCategory : function(Category)
         {
             var self = this;
 
-            Ajax.get('ajax_settings_category', function(result, Request)
+            this.Loader.show();
+
+            Ajax.get('ajax_settings_category', function(result)
             {
                 var Body = self.getBody();
 
@@ -192,18 +204,13 @@ define([
                     result = '';
                 }
 
-                Body.set(
-                    'html',
-
-                    '<form class="qui-xml-panel">'+
-                        result +
-                    '</form>'
-                );
+                Body.set( 'html', '<form class="qui-xml-panel">'+ result + '</form>' );
 
                 // set the form
-                var i, len, parts, Elm, value;
+                var i, len, Elm, value;
 
-                var elements = Body.getElement( 'form' ).elements,
+                var Form     = Body.getElement( 'form'),
+                    elements = Form.elements,
                     config   = self.$config;
 
                 for ( i = 0, len = elements.length; i < len; i++)
@@ -224,37 +231,78 @@ define([
                     Elm.value = value;
                 }
 
-                ControlUtils.parse( Body );
+                // parse controls
+                Promise.all([
 
+                    QUI.parse( Body ),
+                    ControlUtils.parse( Body )
 
-                // require?
-                if ( Category.getAttribute( 'require' ) )
+                ]).then(function()
                 {
+                    var i, len, Node, Control, nodeName;
+                    var quiElements = Body.getElements( '[data-quiid]' );
+
+                    for ( i = 0, len = quiElements.length; i < len; i++ )
+                    {
+                        Node     = quiElements[ i ];
+                        nodeName = Node.nodeName;
+
+                        if ( nodeName != 'INPUT' &&
+                             nodeName != 'TEXTAREA' &&
+                             nodeName != 'SELECT' )
+                        {
+                            continue;
+                        }
+
+                        Control = QUI.Controls.getById( Node.get( 'data-quiid' ) );
+
+                        if ( !Control ) {
+                            continue;
+                        }
+
+                        if ( !("setValue" in Control) ) {
+                            continue;
+                        }
+
+                        if ( !(Node.get( 'name' ) in self.$config) ) {
+                            continue;
+                        }
+
+                        Control.setValue( self.$config[ Node.get( 'name' ) ] );
+                    }
+
+
+                    // require?
+                    if ( !Category.getAttribute( 'require' ) )
+                    {
+                        self.Loader.hide();
+                        return;
+                    }
+
                     require([ Category.getAttribute( 'require' ) ], function(R)
                     {
                         var type = typeOf( R );
 
-                        if ( type == 'function' )
+                        if ( type === 'function' )
                         {
                             R( self );
 
-                        } else if ( type == 'class' )
+                        } else if ( type === 'class' )
                         {
                             self.$Control = new R( self );
 
-                            if ( self.getContent().get( 'html' ) == '' )
+                            if ( self.getContent().get( 'html' ) === '' )
                             {
-                                self.$Control.inject( Body );
+                                self.$Control.inject( Form );
 
                             } else
                             {
-                                self.$Control.import( Body );
+                                self.$Control.imports( Form );
                             }
 
-                        } else
-                        {
-                            self.Loader.show();
                         }
+
+                        self.Loader.hide();
 
                     }, function(err)
                     {
@@ -270,11 +318,7 @@ define([
 
                         self.Loader.hide();
                     });
-
-                    return;
-                }
-
-                self.Loader.hide();
+                });
 
             }, {
                 file     : this.$file,
@@ -284,44 +328,47 @@ define([
 
         /**
          * Unload the Category and set all settings
-         *
-         * @param {qui/controls/buttons/Button} Category
          */
-        unloadCategory : function(Category)
+        unloadCategory : function()
         {
-            var i, j, len, Elm, name, tok,
-                conf, namespace;
+            var i, len, Elm, name, tok, namespace;
 
             var Body   = this.getBody(),
                 Form   = Body.getElement( 'form' ),
                 values = {};
 
-            for ( i = 0, len = Form.elements.length; i < len; i++ )
+            if ( Form )
             {
-                Elm  = Form.elements[ i ];
-                name = Elm.name;
-
-                if ( Elm.type == 'radio' ||
-                     Elm.type == 'checkbox' )
+                for ( i = 0, len = Form.elements.length; i < len; i++ )
                 {
-                    if ( Elm.checked )
+                    Elm = Form.elements[i];
+                    name = Elm.name;
+
+                    if ( Elm.type == 'radio' || Elm.type == 'checkbox' )
                     {
-                        values[ name ] = 1;
-                    } else
-                    {
-                        values[ name ] = 0;
+                        if ( Elm.checked )
+                        {
+                            values[name] = 1;
+                        } else
+                        {
+                            values[name] = 0;
+                        }
+
+                        continue;
                     }
 
-                    continue;
+                    values[name] = Elm.value;
                 }
-
-                values[ name ] = Elm.value;
             }
 
 
             // set the values to the $config
             for ( namespace in values )
             {
+                if ( !values.hasOwnProperty( namespace ) ) {
+                    continue;
+                }
+
                 if ( !namespace.match( '.' ) )
                 {
                     this.$config[ namespace ] = values[ namespace ];
@@ -347,6 +394,17 @@ define([
         },
 
         /**
+         * event : click on category button
+         *
+         * @param {Object} Category - qui/controls/buttons/Button
+         */
+        $onCategoryActive : function(Category)
+        {
+            this.unloadCategory();
+            this.loadCategory( Category );
+        },
+
+        /**
          * Send the configuration to the server
          */
         save : function()
@@ -357,7 +415,7 @@ define([
 
             Save.setAttribute( 'textimage', 'icon-refresh icon-rotate' );
 
-            Ajax.post('ajax_settings_save', function(result, Request)
+            Ajax.post('ajax_settings_save', function()
             {
                 Save.setAttribute( 'textimage', 'icon-save' );
             }, {

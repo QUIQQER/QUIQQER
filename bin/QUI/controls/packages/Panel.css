@@ -60,3 +60,42 @@
 .packages-health-sumSheet .data-table td:first-child {
     width: 40px;
 }
+
+
+/** phpinfo
+ =============================================== */
+
+.php-info-table {
+    display: block;
+    overflow-x: auto;
+    width: 100%;
+}
+
+.php-info-table tbody,
+.php-info-table tr {
+    display: block;
+    width: 100%;
+}
+
+.php-info-table tr {
+    float: left;
+}
+
+.php-info-table td {
+    float: left;
+    width: 40%;
+    word-wrap: break-word;
+}
+
+.php-info-table td:first-child {
+    float: left;
+    width: 20%;
+}
+
+.php-info-table td[colspan="2"] {
+    width: 80%;
+}
+
+.php-info-table td[colspan="3"] {
+    width: 100%;
+}

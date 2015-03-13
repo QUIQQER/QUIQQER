@@ -33,13 +33,13 @@ class Session
      * Session handler
      * @var \Symfony\Component\HttpFoundation\Session\Session
      */
-    private $_Session;
+    private $_Session = false;
 
     /**
      * Storage handler
      * @var \Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
      */
-    private $_Storage;
+    private $_Storage = false;
 
     /**
      * Database table
@@ -63,8 +63,49 @@ class Session
         ini_set( 'session.gc_maxlifetime', $this->_max_life_time );
         ini_set( 'session.gc_probability', 100 );
 
-        $this->_Storage = new NativeSessionStorage( array(), $this->_getStorage() );
-        $this->_Session = new SymfonySession( $this->_Storage );
+
+        if ( !class_exists( 'NativeSessionStorage' ) )
+        {
+            $nativeSessionFile = OPT_DIR .'symfony/http-foundation/Symfony/Component/HttpFoundation/Session/Storage/NativeSessionStorage.php';
+
+            if ( file_exists( $nativeSessionFile ) )
+            {
+                require_once $nativeSessionFile;
+            } else
+            {
+                throw new \Exception( 'Session File not found '. $nativeSessionFile );
+            }
+
+            if ( class_exists( '\Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage' ) ) {
+                $this->_Storage = new \Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage( array(), $this->_getStorage() );
+            }
+
+        } else
+        {
+            $this->_Storage = new NativeSessionStorage( array(), $this->_getStorage() );
+        }
+
+
+        if ( !class_exists( 'NativeSessionStorage' ) )
+        {
+            $sessionFile = OPT_DIR .'symfony/http-foundation/Symfony/Component/HttpFoundation/Session/Session.php';
+
+            if ( file_exists( $sessionFile ) )
+            {
+                require_once $sessionFile;
+            } else
+            {
+                throw new \Exception( 'Session File not found '. $sessionFile );
+            }
+
+            if ( class_exists( '\Symfony\Component\HttpFoundation\Session\Session' ) ) {
+                $this->_Session = new \Symfony\Component\HttpFoundation\Session\Session( $this->_Storage );
+            }
+
+        } else
+        {
+            $this->_Session = new SymfonySession( $this->_Storage );
+        }
     }
 
     /**
@@ -113,7 +154,9 @@ class Session
      */
     public function start()
     {
-        $this->_Session->start();
+        if ( $this->_Session ) {
+            $this->_Session->start();
+        }
     }
 
     /**
@@ -144,7 +187,9 @@ class Session
      */
     public function set($name, $value)
     {
-        $this->_Session->set( $name, $value );
+        if ( $this->_Session ) {
+            $this->_Session->set( $name, $value );
+        }
     }
 
     /**
@@ -152,7 +197,9 @@ class Session
      */
     public function refresh()
     {
-        $this->_Session->migrate();
+        if ( $this->_Session ) {
+            $this->_Session->migrate();
+        }
     }
 
     /**
@@ -163,7 +210,11 @@ class Session
      */
     public function get($name)
     {
-        return $this->_Session->get( $name, false );
+        if ( $this->_Session ) {
+            return $this->_Session->get( $name, false );
+        }
+
+        return false;
     }
 
     /**
@@ -173,7 +224,11 @@ class Session
      */
     public function getId()
     {
-        return $this->_Session->getId();
+        if ( $this->_Session ) {
+            return $this->_Session->getId();
+        }
+
+        return md5( microtime() );
     }
 
     /**
@@ -183,6 +238,10 @@ class Session
      */
     public function check()
     {
+        if ( !$this->_Session ) {
+            return false;
+        }
+
         $idle = time() - $this->_Session->getMetadataBag()->getLastUsed();
 
         if ( $idle > $this->_max_life_time )
@@ -201,7 +260,9 @@ class Session
      */
     public function del($var)
     {
-        $this->_Session->remove( $var );
+        if ( $this->_Session ) {
+            $this->_Session->remove( $var );
+        }
     }
 
     /**
@@ -209,6 +270,10 @@ class Session
      */
     public function destroy()
     {
+        if ( !$this->_Session ) {
+            return;
+        }
+
         $this->_Session->clear();
         $this->_Session->invalidate();
     }

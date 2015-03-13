@@ -51,7 +51,7 @@ define('controls/projects/TypeButton', [
          * Create the type button
          *
          * @method controls/projects/TypeButton#create
-         * @return {DOMNode}
+         * @return {HTMLElement}
          */
         create : function()
         {
@@ -64,10 +64,10 @@ define('controls/projects/TypeButton', [
                 title  : Locale.get( 'quiqqer/system', 'projects.typebutton.title' ),
                 events :
                 {
-                    click : function(Btn)
+                    click : function()
                     {
                         new TypeWindow({
-                            project : self.getAttribute('Project'),
+                            project : self.getAttribute('project'),
                             events  :
                             {
                                 onSubmit : function(Win, result)
@@ -77,7 +77,7 @@ define('controls/projects/TypeButton', [
                                     }
                                 },
 
-                                onCancel : function(Win) {
+                                onCancel : function() {
                                     self.fireEvent( 'cancel' );
                                 }
                             }
@@ -87,6 +87,7 @@ define('controls/projects/TypeButton', [
             });
 
             this.$Elm = this.$Button.create();
+            this.$Elm.set( 'data-quiid', this.getId() );
 
             return this.$Elm;
         }

@@ -156,14 +156,6 @@
                 <locale group="quiqqer/system" var="menu.extras.users.text" />
             </item>
 
-        <!-- Logs -->
-        <item parent="/extras/"
-              name="logs"
-              icon="icon-terminal"
-              require="controls/logs/Panel"
-        >
-            <locale group="quiqqer/system" var="menu.extras.logs.text" />
-        </item>
         <!-- Papierkorb -->
         <item parent="/extras/"
               name="trash"

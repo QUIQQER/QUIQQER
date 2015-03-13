@@ -1,15 +1,16 @@
 <?php
 
 /**
- * Gibt die Daten eines Benutzers zurück
+ * Add a new vhost and return the clean vhost
  *
  * @param String / Integer $uid
- * @return Array
+ * @return string
  */
 function ajax_vhosts_add($vhost)
 {
     $VhostManager = new \QUI\System\VhostManager();
-    $VhostManager->addVhost($vhost, array());
+
+    return $VhostManager->addVhost( $vhost, array() );
 }
 
 \QUI::$Ajax->register(

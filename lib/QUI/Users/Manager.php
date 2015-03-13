@@ -601,8 +601,9 @@ class Manager
                     ),
                     'limit' => 1
                 ));
+            }
 
-            } else
+            if ( $loginuser == false )
             {
                 $loginuser = QUI::getDataBase()->fetch(array(
                     'from'  => self::Table(),
@@ -690,7 +691,7 @@ class Manager
     /**
      * Get the Session user
      *
-     * @internal id in Session, bedänklich??
+     * @todo id in Session, bedänklich??
      * @return QUI\Users\User
      *
      * @todo Sicherheitsabfragen neu schreiben
@@ -718,6 +719,11 @@ class Manager
                 $User->getAttribute('user_agent') != $_SERVER['HTTP_USER_AGENT'] &&
                 strpos($_SERVER['HTTP_USER_AGENT'], 'chromeframe') === false)
             {
+                QUI::getSession()->destroy();
+
+                // @todo mehrfachanmeldung mit dem gleichen benutzer, muss hier hin
+                // @todo Issue #1
+
                 return $this->getNobody();
             }
 

@@ -129,7 +129,7 @@ class Manager extends QUI\QDOM
      * @param array $params - QUI\Database\DB params
      * @return array
      */
-    public function search($params)
+    public function search($params=array())
     {
         return $this->_search( $params );
     }

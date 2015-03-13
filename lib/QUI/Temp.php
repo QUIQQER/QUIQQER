@@ -8,6 +8,7 @@ namespace QUI;
 
 use QUI;
 use QUI\Utils\System\File as QUIFile;
+use QUI\Utils\Security\Orthos;
 
 /**
  * Temp managed the temp folder
@@ -36,10 +37,36 @@ class Temp
     /**
      * Create a temp folder and return the path to it
      *
+     * @param String|Bool $name - (optional), if no name, a folder would be created with a random name
      * @return String - Path to the folder
+     * @throws QUI\Exception
      */
-    public function createFolder()
+    public function createFolder($name=false)
     {
+        if ( !empty( $name ) )
+        {
+            $newFolder = $this->_folder . $name .'/';
+            $newFolder = Orthos::clearPath( $newFolder );
+
+            if ( is_dir( $newFolder  ) ) {
+                return $newFolder;
+            }
+
+            QUIFile::mkdir( $this->_folder );
+            QUIFile::mkdir( $newFolder );
+
+            if ( !is_dir( $newFolder ) ) {
+                throw new QUI\Exception( 'Folder '. $newFolder .' could not be created' );
+            }
+
+            if ( !realpath( $newFolder ) ) {
+                throw new QUI\Exception( 'Folder '. $newFolder .' could not be created' );
+            }
+
+            return $newFolder;
+        }
+
+
         // create a var_dir temp folder
         do
         {

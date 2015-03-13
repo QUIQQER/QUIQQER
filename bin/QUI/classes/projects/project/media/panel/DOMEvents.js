@@ -6,7 +6,7 @@
  * @author www.pcsg.de (Henning Leutz)
  */
 
-define([
+define('classes/projects/project/media/panel/DOMEvents', [
 
    'qui/QUI',
    'qui/controls/windows/Prompt',
@@ -35,7 +35,6 @@ define([
          * Return the media of the panel
          *
          * @method classes/projects/project/media/panel/DOMEvents#getMedia
-         * @param {qui/classes/projects/project/Media} Media
          */
         getMedia : function()
         {
@@ -46,7 +45,7 @@ define([
          * Activate the media item from the DOMNode
          *
          * @method classes/projects/project/media/panel/DOMEvents#activateItem
-         * @param {Array} DOMNode List
+         * @param {Array} List (DOMNode)
          */
         activate : function(List)
         {
@@ -54,7 +53,7 @@ define([
 
             this.$createLoaderItem( List );
 
-            this.getMedia().activate( this.$getIds( List ), function(items)
+            this.getMedia().activate( this.$getIds( List ), function()
             {
                 self.$destroyLoaderItem( List );
 
@@ -71,7 +70,7 @@ define([
          * Deactivate the media item from the DOMNode
          *
          * @method classes/projects/project/media/panel/DOMEvents#deactivateItem
-         * @param {Array} DOMNode List
+         * @param {Array} List (DOMNode)
          */
         deactivate : function(List)
         {
@@ -79,15 +78,15 @@ define([
 
             this.$createLoaderItem( List );
 
-            this.getMedia().deactivate(this.$getIds( List ), function(items)
+            this.getMedia().deactivate(this.$getIds( List ), function()
             {
                 self.$destroyLoaderItem( List );
 
                 for ( var i = 0, len = List.length; i < len; i++ )
                 {
-                    List[i].set('data-active', 0);
-                    List[i].removeClass('qmi-active');
-                    List[i].addClass('qmi-deactive');
+                    List[ i ].set('data-active', 0);
+                    List[ i ].removeClass('qmi-active');
+                    List[ i ].addClass('qmi-deactive');
                 }
             });
         },
@@ -96,7 +95,7 @@ define([
          * Delete the media items from the DOMNode
          *
          * @method classes/projects/project/media/panel/DOMEvents#deactivateItem
-         * @param {Array} DOMNode List
+         * @param {Array} List (DOMNode)
          */
         del : function(List)
         {
@@ -166,7 +165,7 @@ define([
                         });
                     },
 
-                    onSubmit : function(Win)
+                    onSubmit : function()
                     {
                         if ( !list.length ) {
                             return;
@@ -174,7 +173,7 @@ define([
 
                         self.$Panel.Loader.show();
 
-                        Media.del( list, function(result) {
+                        Media.del( list, function() {
                             self.$Panel.refresh();
                         });
                     }
@@ -186,7 +185,7 @@ define([
          * Rename the folder, show the rename dialoge
          *
          * @method classes/projects/project/media/panel/DOMEvents#renameItem
-         * @param {DOMNode} DOMNode
+         * @param {HTMLElement} DOMNode
          */
         rename : function(DOMNode)
         {
@@ -202,12 +201,14 @@ define([
                     return false;
                 },
 
-                events  :
+                events :
                 {
-                    onCreate : function(Win)
-                    {
+                    onCreate : function(Win) {
                         Win.Loader.show();
+                    },
 
+                    onOpen : function(Win)
+                    {
                         var itemid = DOMNode.get('data-id');
 
                         self.getMedia().get( itemid, function(Item)
@@ -219,15 +220,14 @@ define([
 
                     onSubmit : function(result, Win)
                     {
-                        var itemid = DOMNode.get('data-id');
-
-                        Win.setAttribute( 'newname', result );
+                        var itemid  = DOMNode.get('data-id'),
+                            newName = result;
 
                         self.$createLoaderItem( DOMNode );
 
                         self.getMedia().get( itemid, function(Item)
                         {
-                            Item.rename( this.getAttribute('newname'), function(result)
+                            Item.rename( newName, function(result)
                             {
                                 if ( !DOMNode ) {
                                     return;
@@ -247,7 +247,7 @@ define([
                         });
                     },
 
-                    onCancel : function(Win) {
+                    onCancel : function() {
                         self.$destroyLoaderItem( DOMNode );
                     }
                 }
@@ -258,7 +258,7 @@ define([
          * replace a file
          *
          * @method classes/projects/project/media/panel/DOMEvents#replace
-         * @param {DOMNode} DOMNode
+         * @param {HTMLElement} DOMNode
          */
         replace : function(DOMNode)
         {
@@ -294,11 +294,11 @@ define([
                                 },
                                 events :
                                 {
-                                    onBegin : function(Control) {
+                                    onBegin : function() {
                                         Win.close();
                                     },
 
-                                    onComplete : function(Control)
+                                    onComplete : function()
                                     {
                                         var i, len;
 
@@ -331,14 +331,13 @@ define([
                                     },
 
                                     /// drag drop events
-                                    onDragenter: function(event, Elm, Upload)
+                                    onDragenter: function(event, Elm)
                                     {
                                         Elm.addClass( 'qui-media-drag' );
-
                                         event.stop();
                                     },
 
-                                    onDragend : function(event, Elm, Upload)
+                                    onDragend : function(event, Elm)
                                     {
                                         if ( Elm.hasClass('qui-media-drag') ) {
                                             Elm.removeClass( 'qui-media-drag' );
@@ -370,7 +369,7 @@ define([
         /**
          * Create a loader item in a media item div container
          *
-         * @param {DOMNode|Array} DOMNode - Parent (Media Item) DOMNode
+         * @param {HTMLElement|Array} DOMNode - Parent (Media Item) DOMNode
          */
         $createLoaderItem : function(DOMNode)
         {
@@ -399,7 +398,7 @@ define([
         /**
          * Destroy the loader item in a media item div container
          *
-         * @param {DOMNode|Array} DOMNode - Parent (Media Item) DOMNode or DOMNode List
+         * @param {HTMLElement|Array} DOMNode - Parent (Media Item) DOMNode or DOMNode List
          */
         $destroyLoaderItem : function(DOMNode)
         {

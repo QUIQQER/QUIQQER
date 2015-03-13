@@ -161,12 +161,14 @@ class Manager
         }
 
         $config = array(
-            "default_lang" => "de",
-            "langs"        => "de",
-            "admin_mail"   => "support@pcsg.de",
-            "template"     => "",
-            "image_text"   => "0",
-            "standard"     => "1"
+            "default_lang"    => "de",
+            "langs"           => "de",
+            "admin_mail"      => "support@pcsg.de",
+            "template"        => "",
+            "layout"          => "",
+            "image_text"      => "0",
+            "standard"        => "1",
+            "adminSitemapMax" => 20
         );
 
         // settings.xml
@@ -841,7 +843,7 @@ class Manager
             $Dom  = QUI\Utils\XML::getDomFromXml( $file );
             $Path = new \DOMXPath( $Dom );
 
-            $Settings = $Path->query( "//project/settings" );
+            $Settings = $Path->query( "//quiqqer/project/settings" );
 
             if ( $Settings->length ) {
                 $list[] = $file;

@@ -129,6 +129,8 @@ define('classes/plugins/Manager', [
                 Project = Projects.get( project );
             }
 
+            console.log( Project );
+
             params = params || {};
             params.project = Project.encode();
 

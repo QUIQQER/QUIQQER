@@ -2,6 +2,15 @@
 
     <!--general locales -->
     <groups name="quiqqer/system" datatype="js,php">
+        <locale name="logout">
+            <de><![CDATA[Abmelden]]></de>
+            <en><![CDATA[Logout]]></en>
+        </locale>
+        <locale name="login">
+            <de><![CDATA[Anmelden]]></de>
+            <en><![CDATA[Login]]></en>
+        </locale>
+
         <locale name="yes">
             <de><![CDATA[Ja]]></de>
             <en><![CDATA[Yes]]></en>
@@ -75,7 +84,6 @@
             <de><![CDATA[Nachname]]></de>
             <en><![CDATA[Lastname]]></en>
         </locale>
-
         <locale name="username">
             <de><![CDATA[Benutzername]]></de>
             <en><![CDATA[Username]]></en>
@@ -119,6 +127,23 @@
         <locale name="file">
             <de><![CDATA[Datei]]></de>
             <en><![CDATA[File]]></en>
+        </locale>
+
+        <locale name="minute">
+            <de><![CDATA[Minute]]></de>
+            <en><![CDATA[Minute]]></en>
+        </locale>
+        <locale name="hour">
+            <de><![CDATA[Stunde]]></de>
+            <en><![CDATA[Hour]]></en>
+        </locale>
+        <locale name="month">
+            <de><![CDATA[Monat]]></de>
+            <en><![CDATA[Month]]></en>
+        </locale>
+        <locale name="day">
+            <de><![CDATA[Tag]]></de>
+            <en><![CDATA[Day]]></en>
         </locale>
 
         <locale name="group">
@@ -310,8 +335,6 @@
             <en><![CDATA[Company]]></en>
         </locale>
 
-
-
         <!-- messages -->
         <locale name="message.clear.cache.successful">
             <de><![CDATA[Der Cache wurde erfolgreich gelöscht.]]></de>
@@ -320,6 +343,14 @@
         <locale name="message.clear.cache.purged">
             <de><![CDATA[Der Cache wurde erfolgreich gesäubert.]]></de>
             <en><![CDATA[Cache successful purged.]]></en>
+        </locale>
+        <locale name="message.contact.successful" html="true">
+            <de><![CDATA[Vielen Dank für Ihre E-Mail. Wir werden uns bei Ihnen schnellstmöglich melden.]]></de>
+            <en><![CDATA[Thank you for your email. We will contact you as soon as possible.]]></en>
+        </locale>
+        <locale name="message.setup.successfull">
+            <de><![CDATA[Das Setup wurde erfolgreich ausgeführt.]]></de>
+            <en><![CDATA[The setup was successfully completed.]]></en>
         </locale>
 
     </groups>
@@ -334,10 +365,6 @@
         <locale name="development.info">
             <de><![CDATA[System ist im Entwicklungs-Modus]]></de>
             <en><![CDATA[System is in development mode]]></en>
-        </locale>
-        <locale name="logout">
-            <de><![CDATA[Abmelden]]></de>
-            <en><![CDATA[Logout]]></en>
         </locale>
 
         <!-- contextmenu -->
@@ -842,11 +869,60 @@
             ]]></en>
         </locale>
 
-        <!-- panels -->
-        <locale name="panels.project.title">
-            <de><![CDATA[Projekte / Projekt Panel]]></de>
-            <en><![CDATA[Projects / Project Panel]]></en>
+        <!-- quiqqer date format settings -->
+        <locale name="quiqqer.settings.timezone.title">
+            <de><![CDATA[Zeitzonen Einstellung]]></de>
+            <en><![CDATA[Timezone settings]]></en>
         </locale>
+        <locale name="quiqqer.settings.general.globals.timezone">
+            <de><![CDATA[Zeitzone]]></de>
+            <en><![CDATA[Timezone]]></en>
+        </locale>
+        <locale name="quiqqer.settings.general.globals.timezone.description" html="true">
+            <de><![CDATA[
+                <p>Diese Einstellung beeinflusst alle Zeit und Datumsangaben.</p>
+                <p>
+                    Eine Liste aller Zeitzonen finden Sie unter:
+                    <a href="http://php.net/manual/de/timezones.php" target="_blank">http://php.net/manual/de/timezones.php</a>
+                </p>
+            ]]></de>
+            <en><![CDATA[
+                <p>This setting affects all time and dates</p>
+                <p>
+                    You can find a complete list of all timezones at:
+                    <a href="http://php.net/manual/en/timezones.php" target="_blank">http://php.net/manual/en/timezones.php</a>
+                </p>
+            ]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.date_formats">
+            <de><![CDATA[Datumsformat]]></de>
+            <en><![CDATA[Date format]]></en>
+        </locale>
+        <locale name="quiqqer.settings.date_formats.title">
+            <de><![CDATA[Globale Datumsformat Einstellungen]]></de>
+            <en><![CDATA[Global date format settings]]></en>
+        </locale>
+        <locale name="quiqqer.settings.date_formats.description" html="true">
+            <de><![CDATA[
+                <p>Einstellungen und oder mögliche Datumsformate finden Sie unter:</p>
+                <p>
+                    <a href="http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters" target="_blank">
+                        http://php.net/manual/de/function.strftime.php#refsect1-function.strftime-parameters
+                    </a>
+                </p>
+            ]]></de>
+            <en><![CDATA[
+                <p>Einstellungen und oder mögliche Datumsformate finden Sie unter:</p>
+                <p>
+                    <a href="http://php.net/manual/en/function.strftime.php#refsect1-function.strftime-parameters" target="_blank">
+                        http://php.net/manual/en/function.strftime.php#refsect1-function.strftime-parameters
+                    </a>
+                </p>
+            ]]></en>
+        </locale>
+
+        <!-- panels -->
         <locale name="panels.help.title">
             <de><![CDATA[QUIQQER Hilfe]]></de>
             <en><![CDATA[QUIQQER Help]]></en>
@@ -866,6 +942,12 @@
         <locale name="panels.tasks.title">
             <de><![CDATA[Task Panel]]></de>
             <en><![CDATA[Task panel]]></en>
+        </locale>
+
+        <!-- Contact  -->
+        <locale name="control.breadcrumb.text">
+            <de><![CDATA[Sie befinden sich hier:]]></de>
+            <en><![CDATA[You are here:]]></en>
         </locale>
 
         <!-- Contact  -->
@@ -895,15 +977,6 @@
         </locale>
 
         <!-- Messages  -->
-        <locale name="message.contact.successful">
-            <de><![CDATA[Vielen Dank für Ihre E-Mail. Wir werden uns bei Ihnen schnellstmöglich melden.]]></de>
-            <en><![CDATA[Thank you for your email. We will contact you as soon as possible.]]></en>
-        </locale>
-        <locale name="message.setup.successfull">
-            <de><![CDATA[Das Setup wurde erfolgreich ausgeführt.]]></de>
-            <en><![CDATA[The setup was successfully completed.]]></en>
-        </locale>
-
 
         <!-- Exception  -->
         <locale name="exception.template.not.found">
@@ -924,18 +997,17 @@
             <en><![CDATA[Contact E-mail could not be sent. Please enter a valid email.]]></en>
         </locale>
         <locale name="exception.not.correct.email">
-            <de><![CDATA[Bitte geben Sie eine korrekte E-Mail an.]]></de>
-            <en><![CDATA[Please enter a valid email.]]></en>
+            <de><![CDATA[Bitte geben Sie eine korrekte E-Mail Adresse an.]]></de>
+            <en><![CDATA[Please enter a valid email address.]]></en>
         </locale>
-        <locale name="exception.contact.send.mail">
+        <locale name="exception.contact.send.mail" html="true">
             <de><![CDATA[
-                Kontakt E-mail konnte nicht versendet werden.
-                Fehler beim Versenden der Kontakt E-Mail.
-                Bitte versuchen Sie es zu einem späteren Zeitpunkt.
+                <p>Leider konnte die Kontakt E-mail nicht versendet werden.</p>
+                <p>Bitte versuchen Sie es zu einem späteren Zeitpunkt.</p>
             ]]></de>
             <en><![CDATA[
-                Contact E-mail could not be sent.
-                Error while sending E-mail. Please try again at a later.
+                <p>Sorry, cour contact E-mail could not be sent.</p>
+                <p>Please try again at a later.</p>
             ]]></en>
         </locale>
 

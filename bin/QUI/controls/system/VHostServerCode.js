@@ -4,6 +4,19 @@
  *
  * @module controls/system/VHostServerCode
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/QUI
+ * @require qui/controls/Control
+ * @require qui/controls/loader/Loader
+ * @require qui/controls/buttons/Button
+ * @require qui/utils/Form
+ * @require controls/projects/Popup
+ * @require utils/Controls
+ * @require qui/utils/String
+ * @require Ajax
+ * @require Locale
+ * @require Projects
+ * @require css!controls/system/VHostServerCode.css
  */
 
 define('controls/system/VHostServerCode', [
@@ -19,13 +32,12 @@ define('controls/system/VHostServerCode', [
     'qui/utils/String',
     'Ajax',
     'Locale',
-    'Projects',
 
     'css!controls/system/VHostServerCode.css'
 
 ], function(
     QUI, QUIControl, QUILoader, QUIButton, FormUtils,
-    ProjectPopup, ControlUtils, StringUtils, Ajax, Locale, Projects
+    ProjectPopup, ControlUtils, StringUtils, Ajax, Locale
 ) {
     "use strict";
 
@@ -61,7 +73,7 @@ define('controls/system/VHostServerCode', [
         /**
          * Create the DOMNode Element
          *
-         * @return {DOMNode}
+         * @return {HTMLElement}
          */
         create : function()
         {
@@ -71,7 +83,6 @@ define('controls/system/VHostServerCode', [
 
             this.Loader.inject( this.$Elm );
 
-            this.$InputHost    = null;
             this.$InputProject = null;
             this.$InputLang    = null;
             this.$InputId      = null;
@@ -88,7 +99,7 @@ define('controls/system/VHostServerCode', [
 
             this.Loader.show();
 
-            Ajax.get(['ajax_vhosts_get'], function(vhostData, templates)
+            Ajax.get(['ajax_vhosts_get'], function(vhostData)
             {
                 vhostData.host = self.getAttribute( 'host' );
 
@@ -220,7 +231,7 @@ define('controls/system/VHostServerCode', [
         /**
          * Save the settings to the vhost
          *
-         * @param {Function} callback - [optional] callback function after saving
+         * @param {Function} [callback] - (optional), callback function after saving
          */
         save : function(callback)
         {

@@ -11,8 +11,6 @@ use QUI\Rights\Permission;
 use QUI\Users\User;
 use QUI\Groups\Group;
 
-use QUI\Utils\Security\Orthos;
-
 /**
  * A project
  *
@@ -87,6 +85,12 @@ class Project
     private $_template;
 
     /**
+     * layout of the project
+     * @var array
+     */
+    private $_layout = '';
+
+    /**
      * loaded sites
      * @var array
      */
@@ -129,7 +133,8 @@ class Project
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
-                    'exception.project.not.found'
+                    'exception.project.not.found',
+                    array( 'name' => $name )
                 ),
                 804
             );
@@ -156,7 +161,7 @@ class Project
         if ( !isset( $this->_config[ 'default_lang' ] ) )
         {
             throw new QUI\Exception(
-                \QUI::getLocale()->get(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.project.lang.no.default'
                 ),
@@ -166,6 +171,9 @@ class Project
 
         $this->_default_lang = $this->_config['default_lang'];
 
+        if ( isset( $this->_config['layout'] ) ) {
+            $this->_layout = $this->_config['layout'];
+        }
 
         // Sprache
         if ( $lang != false )
@@ -236,6 +244,10 @@ class Project
                  $vhost['project'] == $this->_name )
             {
                 $this->_config['vhost'] = $host;
+
+                if ( isset( $vhost['layout'] ) ) {
+                    $this->_layout = $vhost['layout'];
+                }
             }
         }
 
@@ -352,7 +364,7 @@ class Project
 
         $query = $query . $where .' AND deleted = 0 LIMIT 0, 50';
 
-        $PDO       = \QUI::getDataBase()->getPDO();
+        $PDO       = QUI::getDataBase()->getPDO();
         $Statement = $PDO->prepare( $query );
 
         $Statement->bindValue( ':search', '%'. $search .'%', \PDO::PARAM_STR );
@@ -384,7 +396,7 @@ class Project
             return true;
         }
 
-        $User = \QUI::getUsers()->getUserBySession();
+        $User = QUI::getUsers()->getUserBySession();
 
         if ( !$User->getId() ) {
             return false;
@@ -395,7 +407,7 @@ class Project
 
         foreach ( $Groups as $Group )
         {
-            /* @var $Group \QUI\Groups\Group */
+            /* @var $Group QUI\Groups\Group */
             $childids   = $Group->getChildrenIds(true);
             $childids[] = $Group->getId();
 
@@ -425,7 +437,7 @@ class Project
      */
     public function getVHost($with_protocol=false, $ssl=false)
     {
-        $Hosts = \QUI::getRewrite()->getVHosts();
+        $Hosts = QUI::getRewrite()->getVHosts();
 
         foreach ( $Hosts as $url => $params )
         {
@@ -486,6 +498,10 @@ class Project
 
             case "template":
                 return $this->_template;
+            break;
+
+            case "layout":
+                return $this->_layout;
             break;
 
             case "db_table":
@@ -554,7 +570,7 @@ class Project
             return $this->_config['host'];
         }
 
-        $host = \QUI::conf( 'globals', 'host' );
+        $host = QUI::conf( 'globals', 'host' );
 
         if ( !empty( $host ) ) {
             return $host;
@@ -671,7 +687,7 @@ class Project
      */
     public function getNameById( $id )
     {
-        $result = \QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch(array(
             'select' => 'name',
             'from'   => $this->_TABLE,
             'where'  => array(
@@ -708,12 +724,68 @@ class Project
     /**
      * Media Objekt zum Projekt bekommen
      *
-     * @return \QUI\Projects\Media
+     * @return QUI\Projects\Media
      */
     public function getMedia()
     {
         return new QUI\Projects\Media( $this );
     }
+
+    /**
+     *
+     */
+    public function getLayouts()
+    {
+        $VHosts    = new QUI\System\VhostManager();
+        $vhostList = $VHosts->getHostsByProject( $this->getName() );
+        $template  = OPT_DIR . $this->getAttribute( 'template' );
+
+        $siteXMLs = array(
+            $template .'/site.xml'
+        );
+
+        foreach ( $vhostList as $vhost )
+        {
+            $hostData = $VHosts->getVhost( $vhost );
+
+            if ( isset( $hostData['template'] ) && !empty( $hostData['template'] ) ) {
+                $siteXMLs[] = OPT_DIR . $hostData['template'] .'/site.xml';
+            }
+        }
+
+        $result   = array();
+        $siteXMLs = array_unique( $siteXMLs );
+
+        foreach ( $siteXMLs as $siteXML )
+        {
+            $layouts = QUI\Utils\XML::getLayoutsFromXml( $siteXML );
+
+            foreach ( $layouts as $Layout )
+            {
+                $data = array(
+                    'type'  => $Layout->getAttribute( 'type' ),
+                    'title' => '',
+                    'description' => ''
+                );
+
+                $title = $Layout->getElementsByTagName( 'title' );
+                $desc  = $Layout->getElementsByTagName( 'description' );
+
+                if ( $title->length ) {
+                    $data['title'] = QUI\Utils\DOM::getTextFromNode( $title->item( 0 ) );
+                }
+
+                if ( $desc->length ) {
+                    $data['description'] = QUI\Utils\DOM::getTextFromNode( $desc->item( 0 ) );
+                }
+
+                $result[] = $data;
+            }
+        }
+
+        return $result;
+    }
+
 
     /**
      * Gibt die Namen der eingebundenen Plugins zurück
@@ -726,7 +798,7 @@ class Project
 //             return $this->_plugins;
 //         }
 
-//         $Plugins = \QUI::getPlugins();
+//         $Plugins = QUI::getPlugins();
 
 //         if ( !isset( $this->_config['plugins'] ) )
 //         {
@@ -744,7 +816,7 @@ class Project
 //             {
 //                 $this->_plugins[ $_plugins[$i] ] = $Plugins->get( $_plugins[$i] );
 
-//             } catch ( \QUI\Exception $Exception )
+//             } catch ( QUI\Exception $Exception )
 //             {
 //                 //nothing
 //             }
@@ -785,7 +857,7 @@ class Project
         } elseif ( isset($params['where'] ) && is_string( $params['where'] ) )
         {
             // @todo where als param String
-            \QUI\System\Log::write(
+            QUI\System\Log::write(
                 'Project->getChildrenIdsFrom WIRD NICHT verwendet'. $params['where'],
                 'message'
             );
@@ -809,7 +881,7 @@ class Project
             }
         }
 
-        $result = \QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch(array(
             'select' => $this->_TABLE .'.id',
             'count'  => isset( $params['count'] ) ? 'count' : false,
             'from' 	 => array(
@@ -861,7 +933,7 @@ class Project
             return 0;
         }
 
-        $result = \QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch(array(
             'select' => 'parent',
             'from' 	 => $this->_RELTABLE,
             'where'  => array(
@@ -913,15 +985,15 @@ class Project
 //     {
 //         try
 //         {
-//             return \QUI\Cache\Manager::get( $this->_cache_files['types'] );
+//             return QUI\Cache\Manager::get( $this->_cache_files['types'] );
 
-//         } catch ( \QUI\Cache\Exception $Exception )
+//         } catch ( QUI\Cache\Exception $Exception )
 //         {
 
 //         }
 
 //         $types   = array();
-//         $Plugins = \QUI::getPlugins(); /* @var $Plugins Plugins */
+//         $Plugins = QUI::getPlugins(); /* @var $Plugins Plugins */
 //         $plugins = $Plugins->get();
 
 //         foreach ( $plugins as $Plugin )
@@ -943,7 +1015,7 @@ class Project
 //         }
 
 //         // Cache erstellen
-//         \QUI\Cache\Manager::set( $this->_cache_files['types'], $types );
+//         QUI\Cache\Manager::set( $this->_cache_files['types'], $types );
 
 //         return $types;
 //     }
@@ -960,15 +1032,15 @@ class Project
 
 //         try
 //         {
-//             return \QUI\Cache\Manager::get( $this->_cache_files['gtypes'] );
+//             return QUI\Cache\Manager::get( $this->_cache_files['gtypes'] );
 
-//         } catch ( \QUI\Cache\Exception $Exception )
+//         } catch ( QUI\Cache\Exception $Exception )
 //         {
 
 //         }
 
 //         $globaltypes = array();
-//         $Plugins     = \QUI::getPlugins(); /* @var $Plugins Plugins */
+//         $Plugins     = QUI::getPlugins(); /* @var $Plugins Plugins */
 //         $plugins     = $Plugins->get();
 
 //         foreach ( $plugins as $Plugin )
@@ -1003,7 +1075,7 @@ class Project
 //         }
 
 //         // Cachefile anlegen
-//         \QUI\Cache\Manager::set($this->_cache_files['gtypes'], $globaltypes);
+//         QUI\Cache\Manager::set($this->_cache_files['gtypes'], $globaltypes);
 
 //         return $globaltypes;
 //     }
@@ -1072,7 +1144,7 @@ class Project
         {
             // Falls kein Query dann alle Seiten hohlen
             // @notice - Kann performancefressend sein
-            return \QUI::getDataBase()->fetch(array(
+            return QUI::getDataBase()->fetch(array(
                 'select' => 'id',
                 'from'   => $this->getAttribute('db_table')
             ));
@@ -1085,6 +1157,10 @@ class Project
 
         if (isset($params['where'])) {
             $sql['where'] = $params['where'];
+        }
+
+        if ( isset( $params['where_or'] ) ) {
+            $sql['where_or'] = $params['where_or'];
         }
 
         // Aktivflag abfragen
@@ -1143,15 +1219,18 @@ class Project
             $sql['order'] = 'order_field';
         }
 
-        if (isset($params['debug'])) {
+        if (isset($params['debug']))
+        {
             $sql['debug'] = true;
+
+            QUI\System\Log::writeRecursive( $sql );
         }
 
         if (isset($params['where_relation'])) {
             $sql['where_relation'] = $params['where_relation'];
         }
 
-        return \QUI::getDataBase()->fetch($sql);
+        return QUI::getDataBase()->fetch($sql);
     }
 
     /**
@@ -1212,11 +1291,12 @@ class Project
 
             $Table->appendFields($table, array(
                 'id'            => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY',
-                'name'          => 'varchar(200) NOT NULL',
+                'name'          => 'varchar(255) NOT NULL',
                 'title'         => 'tinytext',
                 'short'         => 'text',
                 'content'       => 'longtext',
-                'type'          => 'varchar(200) default NULL',
+                'type'          => 'varchar(255) default NULL',
+                'layout'        => 'varchar(255) default NULL',
                 'active'        => 'tinyint(1) NOT NULL',
                 'deleted'       => 'tinyint(1) NOT NULL',
                 'c_date'        => 'timestamp NULL default NULL',
@@ -1224,7 +1304,7 @@ class Project
                 'c_user'        => 'int(11) default NULL',
                 'e_user'        => 'int(11) default NULL',
                 'nav_hide'      => 'tinyint(1) NOT NULL',
-                'order_type'    => 'varchar(100) default NULL',
+                'order_type'    => 'varchar(255) default NULL',
                 'order_field'   => 'bigint(20) default NULL',
                 'extra'         => 'text NULL',
                 'c_user_ip'     => 'varchar(40)',
@@ -1236,11 +1316,15 @@ class Project
 
             // fix for old tables
             $DataBase->getPDO()->exec(
-                'ALTER TABLE `'. $table .'` CHANGE `order_type` `order_type` VARCHAR( 100 ) NULL DEFAULT NULL'
+                'ALTER TABLE `'. $table .'` CHANGE `name` `name` VARCHAR( 255 ) NOT NULL'
             );
 
             $DataBase->getPDO()->exec(
-                'ALTER TABLE `'. $table .'` CHANGE `type` `type` VARCHAR( 200 ) NULL DEFAULT NULL'
+                'ALTER TABLE `'. $table .'` CHANGE `order_type` `order_type` VARCHAR( 255 ) NULL DEFAULT NULL'
+            );
+
+            $DataBase->getPDO()->exec(
+                'ALTER TABLE `'. $table .'` CHANGE `type` `type` VARCHAR( 255 ) NULL DEFAULT NULL'
             );
 
             if ( !$Table->issetPrimaryKey( $table, 'id' ) ) {
@@ -1320,8 +1404,8 @@ class Project
             return;
         }
 
-//         $defaults = \QUI\Utils\XML::getConfigParamsFromXml( $dir .'settings.xml' );
-//         $Config   = \QUI\Utils\XML::getConfigFromXml( $dir .'settings.xml' );
+//         $defaults = QUI\Utils\XML::getConfigParamsFromXml( $dir .'settings.xml' );
+//         $Config   = QUI\Utils\XML::getConfigFromXml( $dir .'settings.xml' );
 
 //         if ( $Config ) {
 //             $Config->save();

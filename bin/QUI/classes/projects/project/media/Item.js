@@ -15,7 +15,7 @@
  * @require qui/utils/Object
  */
 
-define([
+define('classes/projects/project/media/Item', [
 
     'qui/classes/DOM',
     'Ajax',
@@ -33,7 +33,7 @@ define([
      * @event onActivate [this]
      * @event onDeactivate [this]
      *
-     * @param {classes/projects/project/Media} Media
+     * @param {Object} Media (classes/projects/project/Media)
      *
      * @memberof! <global>
      */
@@ -96,7 +96,7 @@ define([
          * Returns the Media Object of the item
          *
          * @method classes/projects/project/media/Item#getMedia
-         * @return {classes/projects/project/Media}
+         * @return {Object} classes/projects/project/Media
          */
         getMedia : function()
         {

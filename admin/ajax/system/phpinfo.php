@@ -48,7 +48,7 @@ function ajax_system_phpinfo()
     foreach ( $phpinfo as $name => $section )
     {
         $str .= "<h2>$name</h2>";
-        $str .= "<table class=\"data-table\" style=\"width: 100%;\">\n";
+        $str .= "<table class=\"data-table php-info-table\">\n";
 
         $i = 0;
 

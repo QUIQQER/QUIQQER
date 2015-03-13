@@ -20,7 +20,7 @@
 
 .qui-project-settings td label {
     float: left;
-    margin: 0px;
+    margin: 0;
     width: 100%;
 }
 
@@ -39,6 +39,13 @@
 .qui-project-settings input[type="radio"] {
     margin-right: 10px;
     width: 20px;
+}
+
+.qui-project-settings input[type="color"] {
+    cursor: pointer;
+    height: 30px;
+    padding: 0;
+    width: 30px;
 }
 
 .qui-project-settings .description {

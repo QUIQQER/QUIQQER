@@ -213,7 +213,29 @@ class Utils
     static function getImageByUrl($url)
     {
         if ( self::isMediaUrl( $url ) === false ) {
-            throw new QUI\Exception( 'Its not an QUIQQER image url' );
+            throw new QUI\Exception( 'Its not a QUIQQER image url' );
+        }
+
+        $Obj = self::getMediaItemByUrl( $url );
+
+        if ( !self::isImage( $Obj ) )  {
+            throw new QUI\Exception( 'Its not an image' );
+        }
+
+        return $Obj;
+    }
+
+    /**
+     * Return the media image, file, folder
+     *
+     * @param String $url - image.php? url
+     * @return QUI\Projects\Media\Item
+     * @throws QUI\Exception
+     */
+    static function getMediaItemByUrl($url)
+    {
+        if ( self::isMediaUrl( $url ) === false ) {
+            throw new QUI\Exception( 'Its not a QUIQQER image url' );
         }
 
         // Parameter herrausfinden
@@ -222,10 +244,6 @@ class Utils
         $Project = QUI::getProject( $params['project'] );
         $Media   = $Project->getMedia();
         $Obj     = $Media->get( (int)$params['id'] ); /* @var $Obj QUI\Projects\Media\File */
-
-        if ( !self::isImage( $Obj ) )  {
-            throw new QUI\Exception( 'Its not an image' );
-        }
 
         return $Obj;
     }

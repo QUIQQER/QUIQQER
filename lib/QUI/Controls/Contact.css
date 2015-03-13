@@ -22,3 +22,28 @@
 .quiqqer-contact textarea {
     margin-bottom: 10px;
 }
+
+
+/* Message & Message color
+ ================================================================= */
+
+.quiqqer-contact-message {
+    border: 1px solid #555;
+    clear: both;
+    float: left;
+    margin: 1em 0;
+    padding: 0.8em;
+    position: relative;
+    text-align: center;
+    width: 100%;
+}
+
+.quiqqer-contact-message-error {
+    background: #F2D4CE;
+    border-color: #AE432E;
+}
+
+.quiqqer-contact-message-success {
+    background: #D9E6C3;
+    border-color: #77AB13;
+}

@@ -5,7 +5,7 @@
  * The editor main class is the parent class for all WYSIWYG editors.
  * Every WYSIWYG editor must inherit from this class
  *
- * @module controls/editor/Editor
+ * @module controls/editors/Editor
  * @author www.pcsg.de (Henning Leutz)
  *
  * @require qui/controls/Control
@@ -17,7 +17,11 @@
  * @event onAddCSS [ {String} file, {self} ]
  */
 
-define(['qui/controls/Control'], function(Control)
+define('controls/editors/Editor', [
+
+    'qui/controls/Control'
+
+], function(Control)
 {
     "use strict";
 
@@ -41,7 +45,7 @@ define(['qui/controls/Control'], function(Control)
     return new Class({
 
         Extends : Control,
-        Type    : 'controls/editor/Editor',
+        Type    : 'controls/editors/Editor',
 
         Binds : [
             '$onDrop'
@@ -89,7 +93,7 @@ define(['qui/controls/Control'], function(Control)
          * Returns the Editor Manager
          *
          * @method controls/editors/Editor#getManager
-         * @return {controls/editors/Manager} Editor Manager
+         * @return {Object} Editor Manager (controls/editors/Manager)
          */
         getManager : function()
         {
@@ -101,7 +105,7 @@ define(['qui/controls/Control'], function(Control)
          *
          * @method controls/editors/Editor#create
          * @fires onDraw [DOMNode, this]
-         * @return {DOMNode} DOMNode Element
+         * @return {HTMLElement} DOMNode Element
          */
         create : function()
         {
@@ -220,26 +224,30 @@ define(['qui/controls/Control'], function(Control)
         /**
          * Set the editor height
          * can be overwritten
+         *
+         * @param {Number} height
          */
         setHeight : function(height)
         {
-
+            this.setAttribute( 'height', height );
         },
 
         /**
          * Set the editor width
          * can be overwritten
+         *
+         * @param {Number} width
          */
         setWidth : function(width)
         {
-
+            this.setAttribute( 'width', width );
         },
 
         /**
          * Set the editor instance
          *
          * @method controls/editors/Editor#setInstance
-         * @param {Editor Instance} Instance
+         * @param {Object} Instance - Editor Instance
          */
         setInstance : function(Instance)
         {
@@ -251,7 +259,7 @@ define(['qui/controls/Control'], function(Control)
          * ckeditor, tinymce and so on
          *
          * @method controls/editors/Editor#getInstance
-         * @return {Editor Instance} Instance
+         * @return {Object} Instance - Editor Instance
          */
         getInstance : function()
         {
@@ -261,7 +269,7 @@ define(['qui/controls/Control'], function(Control)
         /**
          * Return the Document DOM element of the editor frame
          *
-         * @param {DOMNode} document
+         * @return {HTMLElement} document
          */
         getDocument : function()
         {
@@ -273,6 +281,28 @@ define(['qui/controls/Control'], function(Control)
          */
         addCSS : function(file)
         {
+            if ( typeof file === 'undefined' || !file ) {
+                return;
+            }
+
+            if ( file.indexOf( "//" ) === 0 ||
+                 file.indexOf( "https://" ) === 0 ||
+                 file.indexOf( "http://" ) === 0 )
+            {
+                this.fireEvent( 'addCSS', [ file, this ] );
+                return;
+            }
+
+            if ( !file.indexOf( '?' ) )
+            {
+                this.fireEvent( 'addCSS', [ file, this ] );
+                return;
+            }
+
+            if ( "QUIQQER" in window && 'lu' in QUIQQER ) {
+                file = file +'?lu='+ QUIQQER.lu;
+            }
+
             this.fireEvent( 'addCSS', [ file, this ] );
         },
 

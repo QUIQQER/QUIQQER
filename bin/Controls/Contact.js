@@ -6,7 +6,7 @@
  * @module Controls\Contact
  */
 
-define([
+define('Controls/Contact', [
 
     'qui/QUI',
     'qui/controls/Control',
@@ -22,7 +22,7 @@ define([
     return new Class({
 
         Extends : QUIControl,
-        Type    : 'Controls\Contact',
+        Type    : 'Controls/Contact',
 
         Binds : ['$onImport'],
 
@@ -65,6 +65,14 @@ define([
 
             this.$Elm.getElement('form').addEvent('submit', function(event)
             {
+                var sendViaAjax = self.getElm().get('data-ajax').toInt();
+
+                if ( sendViaAjax === 0 )
+                {
+                    self.getElm().getElement('form').submit();
+                    return;
+                }
+
                 if ( typeof event !== 'undefined' ) {
                     event.stop();
                 }
@@ -105,7 +113,6 @@ define([
             var self = this;
 
             this.Loader.show();
-
 
 
             Ajax.post('ajax_contact', function(result)

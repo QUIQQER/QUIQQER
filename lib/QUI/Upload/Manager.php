@@ -164,7 +164,6 @@ class Manager
             $_REQUEST['extract'] = QUI\Utils\Bool::JSBool( $_REQUEST['extract'] );
         }
 
-
         /**
          * no html5 upload
          */

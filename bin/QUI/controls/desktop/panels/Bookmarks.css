@@ -1,0 +1,41 @@
+
+
+.qui-bookmark-list {
+    float: left;
+    padding: 0;
+    position: relative;
+    width: 100%;
+}
+
+.qui-bookmark {
+    position: relative;
+}
+
+
+.qui-bookmark-placeholder {
+    background: #fff;
+    cursor: pointer;
+    height: 100%;
+    left: 0;
+    line-height: 40px;
+    padding: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.qui-bookmark:hover .qui-bookmark-placeholder {
+    color: #999;
+}
+
+.qui-bookmark-placeholder .icon-move {
+    float: left;
+    line-height: 40px;
+    text-align: center;
+    width: 40px;
+}
+
+.qui-bookmark-active .qui-bookmark-placeholder {
+    background: #2f8fc6;
+    color: #fff;
+}

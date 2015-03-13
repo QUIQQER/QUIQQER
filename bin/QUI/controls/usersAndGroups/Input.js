@@ -1,9 +1,9 @@
+
 /**
  * Makes an input field to a user selection field
  *
- * @author www.pcsg.de (Henning Leutz)
- *
  * @module controls/usersAndGroups/Input
+ * @author www.pcsg.de (Henning Leutz)
  *
  * @require qui/controls/Control
  * @require qui/controls/buttons/Button
@@ -34,7 +34,7 @@ define('controls/usersAndGroups/Input', [
      * @class controls/usersAndGroups/Input
      *
      * @param {Object} options
-     * @param {DOMNode Input} Input [optional] -> if no input given, one would be created
+     * @param {HTMLInputElement} [Input]  - (optional), if no input given, one would be created
      *
      * @memberof! <global>
      */
@@ -78,7 +78,7 @@ define('controls/usersAndGroups/Input', [
          * Return the DOMNode of the users and groups search
          *
          * @method controls/usersAndGroups/Input#create
-         * @return {DOMNode} The main DOM-Node Element
+         * @return {HTMLElement} The main DOM-Node Element
          */
         create : function()
         {
@@ -393,10 +393,10 @@ define('controls/usersAndGroups/Input', [
          * Add a entry / item to the list
          *
          * @method controls/usersAndGroups/Input#add
-         * @param {Integer} id  - id of the group or the user
+         * @param {Number} id  - id of the group or the user
          * @param {String} type - group or user
          *
-         * @return {this} self
+         * @return {Object} this (controls/usersAndGroups/Input)
          */
         add : function(id, type)
         {
@@ -411,8 +411,8 @@ define('controls/usersAndGroups/Input', [
          * Add a group to the input
          *
          * @method controls/usersAndGroups/Input#addGroup
-         * @param {Integer} id - id of the group
-         * @return {this} self
+         * @param {Number|String} id - id of the group
+         * @return {Object} this (controls/usersAndGroups/Input)
          */
         addGroup : function(id)
         {
@@ -436,8 +436,8 @@ define('controls/usersAndGroups/Input', [
          * Add a user to the input
          *
          * @method controls/usersAndGroups/Input#addUser
-         * @param {Integer} id - id of the user
-         * @return {this} self
+         * @param {Number|String} id - id of the user
+         * @return {Object} this (controls/usersAndGroups/Input)
          */
         addUser : function(id)
         {
@@ -445,9 +445,7 @@ define('controls/usersAndGroups/Input', [
                 events : {
                     onDestroy : this.$onGroupUserDestroy
                 }
-            }).inject(
-                this.$List
-            );
+            }).inject( this.$List );
 
             this.$values.push( 'u'+ id );
 
@@ -461,12 +459,10 @@ define('controls/usersAndGroups/Input', [
          * Add a object to the list
          * eq: over dragdrop
          *
-         * @param Obj
-         * @return {this} self
+         * @return {Object} this (controls/usersAndGroups/Input)
          */
-        appendChild : function(Obj)
+        appendChild : function()
         {
-
             return this;
         },
 
@@ -474,7 +470,7 @@ define('controls/usersAndGroups/Input', [
          * keyup - users dropdown selection one step up
          *
          * @method controls/usersAndGroups/Input#up
-         * @return {this} self
+         * @return {Object} this (controls/usersAndGroups/Input)
          */
         up : function()
         {
@@ -515,7 +511,7 @@ define('controls/usersAndGroups/Input', [
          * keydown - users dropdown selection one step down
          *
          * @method controls/usersAndGroups/Input#down
-         * @return {this} self
+         * @return {Object} this (controls/usersAndGroups/Input)
          */
         down : function()
         {
@@ -581,7 +577,7 @@ define('controls/usersAndGroups/Input', [
          * Set the focus to the input field
          *
          * @method controls/usersAndGroups/Input#focus
-         * @return {this} self
+         * @return {Object} this (controls/usersAndGroups/Input)
          */
         focus : function()
         {
@@ -609,7 +605,7 @@ define('controls/usersAndGroups/Input', [
          * event : if a user or a groupd would be destroyed
          *
          * @method controls/usersAndGroups/Input#$onGroupUserDestroy
-         * @param {controls/groups/Entry|controls/users/Entry} Item
+         * @param {Object} Item - controls/groups/Entry|controls/users/Entry
          */
         $onGroupUserDestroy : function(Item)
         {

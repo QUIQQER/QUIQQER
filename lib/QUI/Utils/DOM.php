@@ -169,7 +169,9 @@ class DOM
         $result = array(
             'suffix'            => $Table->getAttribute( 'name' ),
             'no-site-reference' => false,
-            'no-project-lang'   => false
+            'no-project-lang'   => false,
+            'no-auto-update'    => false,
+            'site-types'        => false
         );
 
         if ( (int)$Table->getAttribute( 'no-site-reference' ) === 1 ) {
@@ -180,6 +182,16 @@ class DOM
             $result[ 'no-project-lang' ] = true;
         }
 
+        if ( (int)$Table->getAttribute( 'no-auto-update' ) === 1 ) {
+            $result[ 'no-auto-update' ] = true;
+        }
+
+        if ( $Table->getAttribute( 'site-types' ) )
+        {
+            $result[ 'site-types' ] = explode( ',',
+                $Table->getAttribute( 'site-types' )
+            );
+        }
 
         $_fields = array();
 
@@ -271,7 +283,13 @@ class DOM
             $str .= 'NULL';
         } else
         {
-            $str .= 'NOT NULL';
+            $structure = QUI\Utils\String::toLower(
+                $Field->getAttribute( 'type' )
+            );
+
+            if ( mb_strpos( $structure, 'not null' ) === false ) {
+                $str .= 'NOT NULL';
+            }
         }
 
         return array(
@@ -1039,8 +1057,28 @@ class DOM
             $type = $Input->getAttribute( 'type' );
         }
 
-        if ( $Input->getAttribute( 'data-qui') ) {
+        if ( $Input->getAttribute( 'data-qui') )
+        {
             $dataQui = ' data-qui="'. $Input->getAttribute( 'data-qui') .'"';
+
+            // qui options
+            $attributes = $Input->attributes;
+
+            foreach ( $attributes as $Attribute )
+            {
+                /* @var $Attribute \DOMAttr */
+                $name  = $Attribute->name;
+                $value = $Attribute->value;
+
+                if ( strpos( $name, 'data-qui-options-' ) !== false ) {
+                    $dataQui .= " {$name}=\"{$value}\"";
+                }
+            }
+
+        }
+
+        if ( $Input->getAttribute( 'class' ) ) {
+            $class = ' class="'. $Input->getAttribute( 'class' ) .'"';
         }
 
         switch ( $type )

@@ -77,7 +77,7 @@ define([
         /**
          * create the node element
          *
-         * @return {DOMNode}
+         * @return {HTMLElement}
          */
         create : function()
         {
@@ -86,7 +86,6 @@ define([
             });
 
             this.Loader.inject( this.$Elm );
-
 
             return this.$Elm;
         },
@@ -300,8 +299,7 @@ define([
 
 
                 // grid data
-                var mailData  = [],
-                    phoneData = [];
+                var mailData = [];
 
                 var mail  = JSON.decode( data.mail ),
                     phone = JSON.decode( data.phone );
@@ -319,8 +317,7 @@ define([
 
                 self.$PhoneGrid.setData({
                     data : phone
-                })
-
+                });
 
                 self.Loader.hide();
             }, {
@@ -380,7 +377,7 @@ define([
         /**
          * Edit a phone
          *
-         * @param {Integer} index - grid index
+         * @param {Number|String} index - grid index
          * @param {String} no - tel, fax, mobile number
          * @param {String} type - type of the number, can be tel, fax, mobile -> standard = tel
          */
@@ -395,7 +392,7 @@ define([
         /**
          * delete the phone entry
          *
-         * @param {String|Integer} index - grid index
+         * @param {String|Number} index - grid index
          */
         deletePhone : function(index)
         {
@@ -417,7 +414,7 @@ define([
         /**
          * edit an e-mail
          *
-         * @param {Integer} index - grid index
+         * @param {Number} index - grid index
          * @param {String} email - E-Mail address
          */
         editMail : function(index, email)
@@ -430,7 +427,7 @@ define([
         /**
          * delete the mail entry
          *
-         * @param {String|Integer} index - grid index
+         * @param {String|Number} index - grid index
          */
         deleteMail : function(index)
         {
@@ -444,7 +441,7 @@ define([
         /**
          * Open the add / edit window to add a tel / fax / mobile number
          *
-         * @param {String} phoneId - [optional] Grid index
+         * @param {String} [phoneId] - (optional), Grid index
          */
         openPhoneWindow : function(phoneId)
         {
@@ -533,7 +530,7 @@ define([
         /**
          * opens the delete submit window
          *
-         * @param {String|Integer} phoneId - index of the grid
+         * @param {String|Number} phoneId - index of the grid
          */
         openPhoneDeleteWindow : function(phoneId)
         {
@@ -556,7 +553,7 @@ define([
         /**
          * Open the add / edit window to add an email
          *
-         * @param {String} emailId - [optional] Grid index
+         * @param {String} [emailId] - (optional), Grid index
          */
         openEmailWindow : function(emailId)
         {
@@ -611,17 +608,12 @@ define([
 
                     onSubmit : function(Win)
                     {
-                        var Content     = Win.getContent(),
-                            InputEmail  = Content.getElement( '[name="email"]' ),
-                            Form        = Content.getElement( 'form' );
+                        var Content    = Win.getContent(),
+                            InputEmail = Content.getElement( '[name="email"]' );
 
                         if ( typeof emailId !== 'undefined' )
                         {
-                            self.editMail(
-                                emailId,
-                                InputEmail.value
-                            );
-
+                            self.editMail( emailId, InputEmail.value );
                             return;
                         }
 
@@ -634,7 +626,7 @@ define([
         /**
          * opens the delete submit window
          *
-         * @param {String|Integer} emailId - index of the grid
+         * @param {String|Number} emailId - index of the grid
          */
         openEmailDeleteWindow : function(emailId)
         {
@@ -652,6 +644,6 @@ define([
                     }
                 }
             }).open();
-        },
+        }
     });
 });

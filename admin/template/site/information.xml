@@ -22,6 +22,10 @@
             <de><![CDATA[Seitentyp]]></de>
             <en><![CDATA[Sitetype]]></en>
         </locale>
+        <locale name="projects.project.site.panel.information.layout">
+            <de><![CDATA[Layout]]></de>
+            <en><![CDATA[Layout]]></en>
+        </locale>
         <locale name="projects.project.site.panel.information.date">
             <de><![CDATA[Datum]]></de>
             <en><![CDATA[Date]]></en>

@@ -7,6 +7,7 @@
 namespace QUI\Mail;
 
 use QUI;
+use QUI\Utils\System\File;
 
 /**
  * Mail queue
@@ -53,6 +54,17 @@ class Queue
     }
 
     /**
+     * Return the path of the attachment directory
+     *
+     * @param String|Integer $mailId - ID of the Mail Queue Entry
+     * @return string
+     */
+    static function getAttachmentDir($mailId)
+    {
+        return VAR_DIR .'mailQueue/'. (int)$mailId .'/';
+    }
+
+    /**
      * Add a mail to the mail queue
      *
      * @param Mailer|QUI\Mail $Mail
@@ -66,11 +78,40 @@ class Queue
         $params['replyto']      = json_encode( $params['replyto'] );
         $params['cc']           = json_encode( $params['cc'] );
         $params['bcc']          = json_encode( $params['bcc'] );
-        $params['attachements'] = json_encode( $params['attachements'] );
+
+        $attachements = array();
+
+        if ( isset( $params['attachements'] ) )
+        {
+            $attachements = $params['attachements'];
+            unset( $params['attachements'] );
+        }
+
 
         QUI::getDataBase()->insert( self::Table(), $params );
 
-        return QUI::getDataBase()->getPDO()->lastInsertId( 'id' );
+        $newMailId = QUI::getDataBase()->getPDO()->lastInsertId('id');
+
+        // attachements
+        if ( is_array( $attachements ) )
+        {
+            $mailQueueDir = self::getAttachmentDir( $newMailId );
+
+            File::mkdir( $mailQueueDir );
+
+            foreach ( $attachements as $attachement )
+            {
+                if ( !file_exists( $attachement ) ) {
+                    continue;
+                }
+
+                $infos = File::getInfo( $attachement );
+
+                File::copy( $attachement, $mailQueueDir . $infos['basename'] );
+            }
+        }
+
+        return $newMailId;
     }
 
     /**
@@ -179,8 +220,6 @@ class Queue
         $cc      = json_decode( $params['cc'], true );
         $bcc     = json_decode( $params['bcc'], true );
 
-        $attachements = json_decode( $params['attachements'], true );
-
         // mailto
         foreach ( $mailto as $address ) {
             $PhpMailer->addAddress( $address );
@@ -201,6 +240,32 @@ class Queue
             $PhpMailer->addBCC( $entry );
         }
 
+        // exist attachements?
+        $mailQueueDir = self::getAttachmentDir( $params['id'] );
+
+        if ( is_dir( $mailQueueDir ) )
+        {
+            $files = File::readDir( $mailQueueDir );
+
+            foreach ( $files as $file )
+            {
+                $file = $mailQueueDir . $file;
+
+                if ( !file_exists( $file ) ) {
+                    continue;
+                }
+
+                $infos = File::getInfo( $file );
+
+                if ( !isset( $infos['mime_type'] ) ) {
+                    $infos['mime_type'] = 'application/octet-stream';
+                }
+
+                $PhpMailer->addAttachment( $file, $infos['basename'], 'base64', $infos['mime_type'] );
+            }
+        }
+
+
         // html mail ?
         if ( $params['ishtml'] )
         {
@@ -214,7 +279,12 @@ class Queue
         $PhpMailer->Body     = $params['body'];
 
 
-        if ( $PhpMailer->send() ) {
+        if ( $PhpMailer->send() )
+        {
+            if ( is_dir( $mailQueueDir ) ) {
+                File::deleteDir( $mailQueueDir );
+            }
+
             return true;
         }
 

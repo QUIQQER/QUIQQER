@@ -27,30 +27,49 @@
 
 .site-url-display {
     padding: 5px 0;
+    margin-left: 160px;
+}
+
+.site-data-project-types-container {
+    float: left;
+    max-width: calc(100% - 150px);
+    width: 300px;
 }
 
 /** site settings
  * ====================================== */
 
+form.qui-site-data {
+    width: 100%;
+}
+
 .qui-site-data .data-table p {
     width: 100%;
 }
 
-.qui-site-data .data-table p label {
-    width: 20%;
+.qui-site-data label {
+    margin-top: 5px;
 }
 
 .qui-site-data .data-table input,
 .qui-site-data .data-table select,
 .qui-site-data .data-table textarea {
-    max-width: 100%;
-    width: 300px;
+    width: calc( 100% - 150px );
+}
+
+.qui-site-data input[name="site-name"] {
+    width: calc( 100% - 200px );
 }
 
 .qui-site-data .data-table input[type="checkbox"],
 .qui-site-data .data-table input[type="radio"] {
     width: 20px;
 }
+
+.qui-site-data input.project-site {
+    width: calc( 100% - 220px );
+}
+
 
 .qui-site-data .data-table textarea {
     min-height: 100px;

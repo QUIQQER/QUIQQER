@@ -18,12 +18,13 @@
 define('controls/projects/TypeWindow', [
 
     'qui/controls/windows/Confirm',
-    'qui/controls/sitemap/Map',
-    'qui/controls/sitemap/Item',
+    'qui/controls/buttons/Button',
     'controls/projects/TypeSitemap',
-    'Locale'
+    'Locale',
 
-], function(QUIConfirm, QUI_Item, QUI_SitemapItem, QUI_TypeSitemap, Locale)
+    'css!controls/projects/TypeWindow.css'
+
+], function(QUIConfirm, QUIButton, QUI_TypeSitemap, QUILocale)
 {
     "use strict";
 
@@ -43,7 +44,10 @@ define('controls/projects/TypeWindow', [
         Type    : 'controls/projects/TypeWindow',
 
         Binds : [
-            '$onCreate'
+            '$onCreate',
+            '$onOpenbegin',
+            'sitemapView',
+            'detailsView'
         ],
 
         options : {
@@ -51,7 +55,7 @@ define('controls/projects/TypeWindow', [
             project  : false,
             pluginsSelectable : false,
 
-            title     : Locale.get( 'quiqqer/system', 'projects.typewindow.title' ),
+            title     : QUILocale.get( 'quiqqer/system', 'projects.typewindow.title' ),
             icon      : 'icon-magic',
             maxHeight : 500,
             maxWidth  : 400,
@@ -65,9 +69,23 @@ define('controls/projects/TypeWindow', [
             this.$Sitemap = null;
             this.$Elm     = null;
 
+            this.$HeaderButtons = null;
+
+            this.$ShowSitemap = null;
+            this.$ShowDetails = null;
+
             this.addEvents({
-                'onOpen' : this.$onOpen
+                onOpen      : this.$onOpen,
+                onOpenBegin : this.$onOpenbegin
             });
+        },
+
+        /**
+         * Event : open begin
+         */
+        $onOpenbegin : function()
+        {
+            this.Loader.show();
         },
 
         /**
@@ -77,10 +95,40 @@ define('controls/projects/TypeWindow', [
          */
         $onOpen : function()
         {
-            this.Loader.show();
-
             var Content = this.getContent();
-                Content.set( 'html', '' );
+
+            Content.set(
+                'html',
+
+                '<div class="qui-type-window-buttons"></div>' +
+                '<div class="qui-type-window-cc"></div>'
+            );
+
+            this.$Elm.addClass( 'qui-type-window' );
+
+            this.$HeaderButtons = this.$Elm.getElement( '.qui-type-window-buttons' );
+            this.$CC = this.$Elm.getElement( '.qui-type-window-cc' );
+
+            Content.setStyles({
+                padding : 0
+            });
+
+            this.$ShowSitemap = new QUIButton({
+                textimage : 'icon-sitemap',
+                text      : 'Sitemap-Anzeige',
+                events    : {
+                    click : this.sitemapView
+                }
+            }).inject( this.$HeaderButtons );
+
+            this.$ShowDetails = new QUIButton({
+                textimage : 'icon-file-text',
+                text      : 'Detail-Anzeige',
+                events    : {
+                    click : this.detailsView
+                }
+            }).inject( this.$HeaderButtons );
+
 
             if ( this.getAttribute( 'message')  )
             {
@@ -89,21 +137,7 @@ define('controls/projects/TypeWindow', [
                 }).inject( Content );
             }
 
-            var self        = this,
-                SitemapBody = new Element( 'div' ).inject( Content );
-
-            require(['controls/projects/TypeSitemap'], function(TyeSitemap)
-            {
-                self.$Sitemap = new TyeSitemap({
-                    project  : self.getAttribute( 'project' ),
-                    multible : self.getAttribute( 'multible' ),
-                    pluginsSelectable : self.getAttribute( 'pluginsSelectable' )
-                }).inject( SitemapBody );
-
-                self.$Sitemap.open();
-
-                self.Loader.hide();
-            });
+            this.sitemapView();
         },
 
         /**
@@ -119,11 +153,86 @@ define('controls/projects/TypeWindow', [
                 values = this.$Sitemap.getValues();
             }
 
+
             this.fireEvent( 'submit', [ this, values ] );
 
             if ( this.getAttribute( 'autoclose' ) ) {
                 this.close();
             }
+        },
+
+        /**
+         * show the sitemap view
+         */
+        sitemapView : function()
+        {
+            var self = this;
+
+            this.Loader.show();
+
+            this.$ShowSitemap.setActive();
+            this.$ShowDetails.setNormal();
+
+            this.$CC.set( 'html', '' );
+
+            this.setAttribute( 'maxWidth', 400 );
+
+            this.resize(true, function()
+            {
+                require(['controls/projects/TypeSitemap'], function (TyeSitemap)
+                {
+                    self.$Sitemap = new TyeSitemap({
+                        project  : self.getAttribute( 'project' ),
+                        multible : self.getAttribute( 'multible' ),
+                        pluginsSelectable : self.getAttribute( 'pluginsSelectable' ),
+                        events :
+                        {
+                            onLoad: function () {
+                                self.Loader.hide();
+                            }
+                        }
+                    }).inject( self.$CC );
+
+                    self.$Sitemap.open();
+                });
+            });
+        },
+
+        /**
+         * show the detail view
+         */
+        detailsView : function()
+        {
+            var self = this;
+
+            this.Loader.show();
+
+            this.$ShowSitemap.setNormal();
+            this.$ShowDetails.setActive();
+
+            this.$CC.set( 'html', '' );
+
+            this.setAttribute( 'maxWidth', 700 );
+
+            this.resize(true, function()
+            {
+                require(['controls/projects/TypeDetails'], function(TypeDetails)
+                {
+                    self.$Sitemap = new TypeDetails({
+                        project  : self.getAttribute( 'project' ),
+                        multible : self.getAttribute( 'multible' ),
+                        pluginsSelectable : self.getAttribute( 'pluginsSelectable' ),
+                        events :
+                        {
+                            onLoad : function() {
+                                self.Loader.hide();
+                            }
+                        }
+                    }).inject( self.$CC );
+
+                    self.$Sitemap.open();
+                });
+            });
         }
     });
 });

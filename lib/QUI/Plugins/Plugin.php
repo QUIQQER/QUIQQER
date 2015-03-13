@@ -12,6 +12,7 @@ namespace QUI\Plugins;
  *
  * @author www.pcsg.de (Henning Leutz)
  * @todo komplett überarbeiten -> als Paket
+ * @deprecated
  */
 
 class Plugin extends \QUI\QDOM
