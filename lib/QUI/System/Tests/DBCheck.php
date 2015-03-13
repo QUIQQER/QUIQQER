@@ -22,6 +22,7 @@ class DBCheck extends QUI\System\Test
 {
     protected $_Tables = null;
     protected $_error  = false;
+    protected $_errors = array();
 
     /**
      * Constructor
@@ -81,7 +82,7 @@ class DBCheck extends QUI\System\Test
                 try
                 {
                     $this->_checkIntegrity( $databaseXml );
-
+                    $this->_outputError( $databaseXml );
                 } catch ( \Exception $Exception )
                 {
                     QUI\System\Log::addWarning( $databaseXml );
@@ -254,16 +255,17 @@ class DBCheck extends QUI\System\Test
             {
                 if ( !(count( $primaryKeys ) === 1 && in_array( 'id', $primaryKeys )) )
                 {
-                    QUI\System\Log::addWarning(
-                        "Database Check Warning: " .
+                    $this->_addError(
+                        $checkData[ 'table' ],
+                        "---",
                         "Primary Key error -> " .
-                        "XML file ($xmlFile) declares a primary key for table " . $checkData[ 'table' ] .
+                        "XML file declares a primary key for table " . $checkData[ 'table' ] .
                         " You can only declare a primary key if the table has the " .
                         "-> no-site-reference=\"1\" <- attribute OR the " .
                         "-> no-project-lang=\"1\" <- attribute!"
                     );
 
-                    $this->_error = true;
+                    
                 }
             }
 
@@ -297,14 +299,13 @@ class DBCheck extends QUI\System\Test
 
         if ( !$this->_Tables->exist( $table ) )
         {
-            QUI\System\Log::addWarning(
-                "Database Check Warning: " .
+            $this->_addError(
+                $tbl,
+                $table,
                 "Missing table -> " .
                 "Table \"$table\" is not found in the database." .
                 " Please execute the QUIQQER Setup."
             );
-
-            $this->_error = true;
 
             return;
         }
@@ -322,14 +323,13 @@ class DBCheck extends QUI\System\Test
             $_dbKeys = empty( $dbKeys ) ? '(none)' : implode( ',', $dbKeys );
             $_prKeys = empty( $primaryKeys ) ? '(none)' : implode( ',', $primaryKeys );
 
-            QUI\System\Log::addWarning(
-                "Database Check Warning: " .
+            $this->_addError(
+                $tbl,
+                $table,
                 "Primary Key mismatch -> " .
-                "Database primary keys ($table): " . $_dbKeys .
-                " | XML primary keys ($xmlFile): " . $_prKeys
+                "Database primary keys: " . $_dbKeys .
+                " | XML primary keys: " . $_prKeys
             );
-
-            $this->_error = true;
         }
 
         // check if xml file declares fields that are not present in the database table
@@ -340,15 +340,14 @@ class DBCheck extends QUI\System\Test
 
         if ( !empty( $xmlFieldsDiff ) )
         {
-            QUI\System\Log::addWarning(
-                "Database Check Warning: " .
+            $this->_addError(
+                $tbl,
+                $table,
                 "Table fields mismatch -> " .
-                "The xml file ($xmlFile) declares table fields for $table that are " .
+                "The XML file declares table fields that are " .
                 "different from those currently in the database: " .
                 implode( ',', $xmlFieldsDiff )
             );
-
-            $this->_error = true;
         }
 
         // collect detailled column information from database
@@ -384,15 +383,13 @@ class DBCheck extends QUI\System\Test
                 $should = $nullable ? "NULL" : "NOT NULL";
                 $is     = $isNullable ? "NULL" : "NOT NULL";
 
-                QUI\System\Log::addWarning(
-                    "Database Check Warning: " .
+                $this->_addError(
+                    $tbl,
+                    $table,
                     "Field structure mismatch -> " .
-                    "The xml file ($xmlFile) for table $tbl says that field \"$fieldName\" " .
-                    "should be $should but the database says it is $is" .
-                    " in table $table."
+                    "The XML file says that field \"$fieldName\" " .
+                    "should be $should but the database says it is $is."
                 );
-
-                $this->_error = true;
             }
 
             /*** AUTO_INCREMENT check ***/
@@ -413,15 +410,13 @@ class DBCheck extends QUI\System\Test
                 $should = $autoIncrement ? "AUTO_INCREMENT" : "not AUTO_INCREMENT";
                 $is     = $isAutoIncrement ? "AUTO_INCREMENT" : "not AUTO_INCREMENT";
 
-                QUI\System\Log::addWarning(
-                    "Database Check Warning: " .
+                $this->_addError(
+                    $tbl,
+                    $table,
                     "Field structure mismatch -> " .
-                    "The xml file ($xmlFile) for table $tbl says that field \"$fieldName\" " .
-                    "should be $should but the database says it is $is" .
-                    " in table $table."
+                    "The XML file says that field \"$fieldName\" " .
+                    "should be $should but the database says it is $is."
                 );
-
-                $this->_error = true;
             }
 
             /*** DATATYPE check ***/
@@ -446,16 +441,49 @@ class DBCheck extends QUI\System\Test
 
             if ( mb_strpos( $fieldData, $isDatatype ) === false )
             {
-                QUI\System\Log::addWarning(
-                    "Database Check Warning: " .
+                $this->_addError(
+                    $tbl,
+                    $table,
                     "Field structure mismatch -> " .
-                    "The xml file ($xmlFile) for table $tbl says that field \"$fieldName\" " .
+                    "The XML file says that field \"$fieldName\" " .
                     "should be \"$fieldData\"" .
-                    " but the database says it is \"$isDatatype\" for table $table."
+                    " but the database says it is \"$isDatatype\"."
                 );
-
-                $this->_error = true;
             }
         }
+    }
+
+    protected function _addError($table, $dbTable, $error)
+    {
+        $this->_errors[] = array(
+            'table'   => $table,
+            'dbTable' => $dbTable,
+            'error'   => $error
+        );
+
+        $this->_error = true;
+    }
+
+    protected function _outputError($xmlFile)
+    {
+        if ( empty( $this->_errors ) ) {
+            return;
+        }
+
+        $msg  = "\n-> Database Check Errors in: $xmlFile <-\n";
+        $msg .= "\n Date: " . date('d.m.Y H:i:s');
+
+        foreach ( $this->_errors as $k => $err )
+        {
+            $msg .= "\n";
+            $msg .= "\n Error #" . ($k+1) . ":";
+            $msg .= "\n -------------------------";
+            $msg .= "\n Definition for table: \t\"" . $err[ 'table' ] . "\"";
+            $msg .= "\n Database table: \t\"" . $err[ 'dbTable' ] . "\"";
+            $msg .= "\n Error: " . $err[ 'error' ];
+        }
+
+        QUI\System\Log::addWarning( $msg );
+        $this->_errors = array();
     }
 }
