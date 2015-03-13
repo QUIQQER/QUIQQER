@@ -428,9 +428,9 @@
     <groups name="quiqqer/system">
 
         <!-- Menu  -->
-        <locale name="menu.quiqqer.text">
-            <de><![CDATA[<img src="/bin/quiqqer_logo_mini.png" />]]></de>
-            <en><![CDATA[<img src="/bin/quiqqer_logo_mini.png" />]]></en>
+        <locale name="menu.quiqqer.text" html="true">
+            <de><![CDATA[<img src="../bin/quiqqer_logo_mini.png" />]]></de>
+            <en><![CDATA[<img src="../bin/quiqqer_logo_mini.png" />]]></en>
         </locale>
 
         <locale name="menu.profile.text">

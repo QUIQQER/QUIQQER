@@ -13,6 +13,24 @@ use QUI\Utils\System\File as QUIFile;
 use QUI\System\Log;
 use QUI\Utils\XML;
 
+
+if ( ! function_exists('glob_recursive'))
+{
+    // Does not support flag GLOB_BRACE
+
+    function glob_recursive($pattern, $flags = 0)
+    {
+        $files = glob($pattern, $flags);
+
+        foreach (glob(dirname($pattern).'/*', GLOB_ONLYDIR|GLOB_NOSORT) as $dir)
+        {
+            $files = array_merge($files, glob_recursive($dir.'/'.basename($pattern), $flags));
+        }
+
+        return $files;
+    }
+}
+
 /**
  * Update from QUIQQER
  *
@@ -576,36 +594,21 @@ class Update
 
 
         // javascript
-        $controlDir = BIN_DIR .'QUI/';
-
-        $list = shell_exec(
-            'find "'. $controlDir .'" -iname \*.xml -type f'
-        );
-
-        $list = explode( "\n", $list );
+        $list = QUI\Utils\System\File::find( BIN_DIR .'QUI/', '*.xml' );
 
         foreach ( $list as $file ) {
             self::importLocale( trim($file) );
         }
 
-
         // lib
-        $list = shell_exec(
-            'find "'. LIB_DIR .'locale/" -iname \*.xml -type f'
-        );
-
-        $list = explode( "\n", $list );
+        $list = QUI\Utils\System\File::find( LIB_DIR .'xml/locale/', '*.xml' );
 
         foreach ( $list as $file ) {
             self::importLocale( trim($file) );
         }
 
         // admin templates
-        $list = shell_exec(
-            'find "'. SYS_DIR .'template/" -iname \*.xml -type f'
-        );
-
-        $list = explode( "\n", $list );
+        $list = QUI\Utils\System\File::find( SYS_DIR .'template/', '*.xml' );
 
         foreach ( $list as $file ) {
             self::importLocale( trim($file) );
