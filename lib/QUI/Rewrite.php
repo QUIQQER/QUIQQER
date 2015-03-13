@@ -1378,7 +1378,6 @@ class Rewrite
 
         $link_cache_file = $link_cache_dir . $id .'_'. $project .'_'. $lang;
 
-        $url = URL_DIR;
         // Falls es das Cachefile schon gibt
         if ( file_exists( $link_cache_file ) )
         {
@@ -1405,14 +1404,13 @@ class Rewrite
                 $_params['suffix'] = $params['suffix'];
             }
 
-            $url = URL_DIR . $Site->getUrlRewrited( $_params );
-
             // Link Cache
             file_put_contents(
                 $link_cache_file,
-                str_replace( '.print', '.html', $url )
+                str_replace( '.print', '.html', $Site->getUrlRewrited( $_params ) )
             );
 
+            $url = $Site->getUrlRewrited( $_params );
             $url = $this->_extendUrlWidthPrams( $url, $params );
         }
 
