@@ -44,7 +44,7 @@
         "quiqqer/calendar" : "*@dev",
         "quiqqer/countries" : "*@dev",
         "quiqqer/colorpicker" : "*@dev",
-        "quiqqer/translator" : "0.9.*",
+        "quiqqer/translator" : "~1",
         "quiqqer/utils" : "*@dev",
         "quiqqer/installer" : "~1",
         "quiqqer/cron" : "~1",
