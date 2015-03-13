@@ -327,8 +327,8 @@ class DBCheck extends QUI\System\Test
                 $tbl,
                 $table,
                 "Primary Key mismatch -> " .
-                "Database primary keys: " . $_dbKeys .
-                " | XML primary keys: " . $_prKeys
+                "XML primary keys: " . $_dbKeys .
+                " | Database table primary keys: " . $_prKeys
             );
         }
 
@@ -343,9 +343,9 @@ class DBCheck extends QUI\System\Test
             $this->_addError(
                 $tbl,
                 $table,
-                "Table fields mismatch -> " .
+                "Missing table fields -> " .
                 "The XML file declares table fields that are " .
-                "different from those currently in the database: " .
+                "missing in the database table: " .
                 implode( ',', $xmlFieldsDiff )
             );
         }
@@ -470,8 +470,8 @@ class DBCheck extends QUI\System\Test
             return;
         }
 
-        $msg  = "\n-> Database Check Errors in: $xmlFile <-\n";
-        $msg .= "\n Date: " . date('d.m.Y H:i:s');
+        $msg  = "\n-> Database Check Errors in: $xmlFile <-";
+//        $msg .= "\n Date: " . date('d.m.Y H:i:s');
 
         foreach ( $this->_errors as $k => $err )
         {
