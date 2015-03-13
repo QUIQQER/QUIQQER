@@ -46,9 +46,9 @@
         "quiqqer/colorpicker" : "*@dev",
         "quiqqer/translator" : "~1",
         "quiqqer/utils" : "*@dev",
-        "quiqqer/installer" : "~1",
-        "quiqqer/cron" : "~1",
-        "quiqqer/log" : "~1"
+        "quiqqer/installer" : "~1||dev-master",
+        "quiqqer/cron" : "~1||dev-master",
+        "quiqqer/log" : "~1||dev-master"
     },
 
     "config": {
