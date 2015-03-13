@@ -30,7 +30,7 @@ class DBCheck extends QUI\System\Test
     public function __construct()
     {
         $this->setAttributes(array(
-            'title'       => 'QUIQQER - Database Check',
+            'title'       => 'QUIQQER - Database Check (on failure check error log!)',
             'description' => 'Compares existing QUIQQER database tables ' .
                              'with database.xml files and detects discrepancies.'
         ));
