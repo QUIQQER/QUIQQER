@@ -44,11 +44,11 @@
         "quiqqer/calendar" : "*@dev",
         "quiqqer/countries" : "*@dev",
         "quiqqer/colorpicker" : "*@dev",
-        "quiqqer/translator" : "~1",
+        "quiqqer/translator" : "~1||dev-master",
         "quiqqer/utils" : "*@dev",
-        "quiqqer/installer" : "~1||dev-master",
-        "quiqqer/cron" : "~1||dev-master",
-        "quiqqer/log" : "~1||dev-master"
+        "quiqqer/installer" : "dev-master",
+        "quiqqer/cron" : "dev-master",
+        "quiqqer/log" : "dev-master"
     },
 
     "config": {
