@@ -77,10 +77,16 @@ define('classes/projects/Project', [
          */
         encode : function()
         {
+            var template = false;
+
+            if ( this.$config && "template" in this.$config ) {
+                template = this.$config.template;
+            }
+
             return JSON.encode({
                 name     : this.getName(),
                 lang     : this.getLang(),
-                template : this.getAttribute('template')
+                template : template
             });
         },
 

@@ -118,7 +118,7 @@ class DBCheck extends QUI\System\Test
 
             foreach ( $content[ 'projects' ] as $info )
             {
-                $checkData = $this->_extractTableData( $info, $xmlFile );
+                $checkData = $this->_extractTableData( $info );
 
                 if ( !empty( $info[ 'no-project-lang' ] ) )
                 {
@@ -142,8 +142,7 @@ class DBCheck extends QUI\System\Test
 
                         $this->_checkTableIntegrity(
                             $projectTable,
-                            $tblData,
-                            $xmlFile
+                            $tblData
                         );
                     }
                 }
@@ -166,8 +165,7 @@ class DBCheck extends QUI\System\Test
 
                             $this->_checkTableIntegrity(
                                 $projectTable,
-                                $tblData,
-                                $xmlFile
+                                $tblData
                             );
                         }
                     }
@@ -180,13 +178,13 @@ class DBCheck extends QUI\System\Test
             $globalTables = array();
 
             foreach ( $content[ 'globals' ] as $info ) {
-                $globalTables[] = $this->_extractTableData( $info, $xmlFile );
+                $globalTables[] = $this->_extractTableData( $info, true );
             }
 
             foreach ( $globalTables as $tblData )
             {
                 $table = QUI::getDBTableName( $tblData[ 'table' ] );
-                $this->_checkTableIntegrity( $table, $tblData, $xmlFile );
+                $this->_checkTableIntegrity( $table, $tblData );
             }
         }
     }
@@ -195,9 +193,10 @@ class DBCheck extends QUI\System\Test
      * Extracts check relevant data from xml table information
      *
      * @param $info
+     * @param bool $isGlobal (optional) - is a global table
      * @return array
      */
-    protected function _extractTableData($info, $xmlFile)
+    protected function _extractTableData($info, $isGlobal=false)
     {
         $primaryKeys = array();
         $checkData   = array(
@@ -271,7 +270,7 @@ class DBCheck extends QUI\System\Test
 
             // assume the xml file declares an id key
             // although technically it is created by the system in this special case
-            if ( !in_array( 'id', $primaryKeys ) )
+            if ( !$isGlobal && !in_array( 'id', $primaryKeys ) )
             {
                 $checkData[ 'primaryKeys' ][] = 'id';
                 $checkData[ 'fields' ][ 'id' ] = 'BIGINT(20) NOT NULL PRIMARY KEY';
@@ -286,9 +285,8 @@ class DBCheck extends QUI\System\Test
      *
      * @param string $table - name of the table in the database
      * @param array $tblData - the data extracted form the database.xml
-     * @param string $xmlFile
      */
-    protected function _checkTableIntegrity($table, $tblData, $xmlFile)
+    protected function _checkTableIntegrity($table, $tblData)
     {
         // xml data
         $tbl         = $tblData[ 'table' ];
@@ -327,8 +325,8 @@ class DBCheck extends QUI\System\Test
                 $tbl,
                 $table,
                 "Primary Key mismatch -> " .
-                "XML primary keys: " . $_dbKeys .
-                " | Database table primary keys: " . $_prKeys
+                "XML primary keys: " . $_prKeys .
+                " | Database table primary keys: " . $_dbKeys
             );
         }
 
