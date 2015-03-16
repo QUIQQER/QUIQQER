@@ -7,7 +7,7 @@
             <field type="INT(11) NOT NULL AUTO_INCREMENT">id</field>
             <field type="VARCHAR(50) NOT NULL DEFAULT ``">username</field>
             <field type="VARCHAR(50) NOT NULL DEFAULT ``">password</field>
-            <field type="TEXT NOT NULL DEFAULT">usergroup</field>
+            <field type="TEXT NOT NULL DEFAULT ``">usergroup</field>
             <field type="VARCHAR(50) DEFAULT NULL">email</field>
             <field type="INT(1) NOT NULL DEFAULT `0`">active</field>
             <field type="INT(11) NOT NULL DEFAULT `0`">regdate</field>
