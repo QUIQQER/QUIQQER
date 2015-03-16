@@ -1,5 +1,7 @@
 <?php
 
+use QUI\Projects\Media\Utils;
+
 /**
  * Return the data of the fileid
  *
@@ -14,20 +16,55 @@ function ajax_media_details($project, $fileid)
     $Project = \QUI\Projects\Manager::getProject( $project );
     $Media   = $Project->getMedia();
 
-    if ( is_array( $fileid ) )
+    if ( !is_array( $fileid ) )
     {
-        $list = array();
+        $File = $Media->get( $fileid );
+        $attr = $File->getAttributes();
 
-        foreach ( $fileid as $id )
-        {
-            $File   = $Media->get( $id );
-            $list[] = $File->getAttributes();
+        if ( !Utils::isImage( $File ) ) {
+            return $attr;
         }
 
-        return $list;
+
+        if ( !$attr['image_width'] ) {
+            $attr['image_width'] = $File->getWidth();
+        }
+
+        if ( !$attr['image_height'] ) {
+            $attr['image_height'] = $File->getHeight();
+        }
+
+        return $attr;
     }
 
-    return $Media->get( $fileid )->getAttributes();
+
+    $list = array();
+
+    foreach ( $fileid as $id )
+    {
+        $File = $Media->get( $id );
+
+        if ( !Utils::isImage( $File ) )
+        {
+            $list[] = $File->getAttributes();
+            continue;
+        }
+
+
+        $attributes = $File->getAttributes();
+
+        if ( !$attributes['image_width'] ) {
+            $attributes['image_width'] = $File->getWidth();
+        }
+
+        if ( !$attributes['image_height'] ) {
+            $attributes['image_height'] = $File->getHeight();
+        }
+
+        $list[] = $attributes;
+    }
+
+    return $list;
 }
 
 \QUI::$Ajax->register(

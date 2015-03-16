@@ -352,8 +352,13 @@ class Utils
 
             $attributes = $Path->query( '//site/attributes/attribute' );
 
-            foreach ( $attributes as $Attribute ) {
-                $result[] = trim( $Attribute->nodeValue );
+            /* @var $Attribute \DOMElement */
+            foreach ( $attributes as $Attribute )
+            {
+                $result[] = array(
+                    'attribute' => trim( $Attribute->nodeValue ),
+                    'default'   => $Attribute->getAttribute( 'default' )
+                );
             }
         }
 
@@ -372,8 +377,13 @@ class Utils
 
             $attributes = $Path->query( $expr );
 
-            foreach ( $attributes as $Attribute ) {
-                $result[] = trim( $Attribute->nodeValue );
+            /* @var $Attribute \DOMElement */
+            foreach ( $attributes as $Attribute )
+            {
+                $result[] = array(
+                    'attribute' => trim( $Attribute->nodeValue ),
+                    'default'   => $Attribute->getAttribute( 'default' )
+                );
             }
         }
 
