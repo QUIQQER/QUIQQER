@@ -26,7 +26,6 @@ if ( !defined( 'JSON_UNESCAPED_UNICODE' ) ) {
 
 use Composer\Console\Application;
 use Composer\Package\Package;
-use QUI\Utils\System\File;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\Console\ConsoleEvents;
@@ -124,6 +123,8 @@ class Manager extends QUI\QDOM
 
     /**
      * constructor
+     *
+     * @param array $attributes
      */
     public function __construct($attributes=array())
     {
@@ -336,11 +337,11 @@ class Manager extends QUI\QDOM
 
         $backupDir = VAR_DIR .'backup/composer/';
 
-        File::mkdir( $backupDir );
+        QUIFile::mkdir( $backupDir );
 
-        File::copy(
+        QUIFile::copy(
             $this->_composer_json,
-            $backupDir .'composer_'. date('Y-m-d__H-i-s') .'.json'
+            $backupDir .'composer_'. date( 'Y-m-d__H-i-s' ) .'.json'
         );
     }
 
@@ -407,7 +408,7 @@ class Manager extends QUI\QDOM
                     continue;
                 }
 
-                if ( $entry['type'] != 'quiqqer-library' )
+                if ( $entry['type'] != 'quiqqer-module' )
                 {
                     $result[] = $entry;
                     continue;
@@ -815,6 +816,12 @@ class Manager extends QUI\QDOM
      */
     public function setup($package)
     {
+        $packageSettingsDir = CMS_DIR .'etc/plugins/';
+
+        if ( !is_dir( $packageSettingsDir ) ) {
+            QUIFile::mkdir( $packageSettingsDir );
+        }
+
         try
         {
             $Package = $this->getInstalledPackage( $package );
