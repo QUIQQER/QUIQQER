@@ -1106,8 +1106,17 @@ class XML
                     $Table->setPrimaryKey( $tbl, $table['primary'] );
                 }
 
-                if ( isset( $table['index'] ) ) {
-                    $Table->setIndex( $tbl, $table['index'] );
+                if ( isset( $table['index'] ) )
+                {
+                    $index = $table['index'];
+
+                    if ( strpos( $index, ',' ) !== false )
+                    {
+                        $Table->setIndex( $tbl, implode( ',', $table['index'] ) );
+                    } else
+                    {
+                        $Table->setIndex( $tbl, $table['index'] );
+                    }
                 }
 
                 if ( isset( $table[ 'auto_increment' ] ) ) {
@@ -1163,8 +1172,17 @@ class XML
                             $Table->setPrimaryKey( $tbl, $table['primary'] );
                         }
 
-                        if ( isset( $table['index'] ) ) {
-                            $Table->setIndex( $tbl, $table['index'] );
+                        if ( isset( $table['index'] ) )
+                        {
+                            $index = $table['index'];
+
+                            if ( strpos( $index, ',' ) !== false )
+                            {
+                                $Table->setIndex( $tbl, implode( ',', $table['index'] ) );
+                            } else
+                            {
+                                $Table->setIndex( $tbl, $table['index'] );
+                            }
                         }
 
                         if ( isset( $table[ 'auto_increment' ] ) ) {
