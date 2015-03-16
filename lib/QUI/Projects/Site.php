@@ -584,7 +584,7 @@ class Site extends QUI\QDOM
             }
         }
 
-        if ( isset( $result[0]['extra'] ) )
+        if ( isset( $result[0]['extra'] ) && !empty( $result[0]['extra'] ) )
         {
             $extra = json_decode( $result[0]['extra'], true );
 
