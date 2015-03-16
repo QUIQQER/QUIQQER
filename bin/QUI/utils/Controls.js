@@ -170,7 +170,6 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function()
 
                     Toggle.set( 'html', '<span class="icon-minus"></span>' );
 
-
                     moofx( Table ).animate({
                         height: Table.getScrollSize().y
                     }, {
@@ -186,7 +185,10 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function()
                             moofx( TBody ).animate({
                                 opacity : 1
                             }, {
-                                duration : 250
+                                duration : 250,
+                                callback : function() {
+                                    Table.removeClass( 'data-table-closed' );
+                                }
                             });
                         }
                     });
@@ -200,6 +202,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function()
                         Toggle = Table.getElement( '.data-table-toggle' );
 
                     Toggle.set( 'html', '<span class="icon-plus"></span>' );
+                    Table.addClass( 'data-table-closed' );
 
                     moofx( TBody ).animate({
                         opacity : 0
