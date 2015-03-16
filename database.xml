@@ -5,16 +5,16 @@
 
         <table name="users">
             <field type="INT(11) NOT NULL AUTO_INCREMENT">id</field>
-            <field type="VARCHAR(50) NOT NULL DEFAULT ''">username</field>
-            <field type="VARCHAR(50) NOT NULL DEFAULT ''">password</field>
+            <field type="VARCHAR(50) NOT NULL DEFAULT ``">username</field>
+            <field type="VARCHAR(50) NOT NULL DEFAULT ``">password</field>
             <field type="TEXT NOT NULL DEFAULT">usergroup</field>
             <field type="VARCHAR(50) DEFAULT NULL">email</field>
-            <field type="INT(1) NOT NULL DEFAULT '0'">active</field>
-            <field type="INT(11) NOT NULL DEFAULT '0'">regdate</field>
-            <field type="INT(11) NOT NULL DEFAULT '0'">lastvisit</field>
+            <field type="INT(1) NOT NULL DEFAULT `0`">active</field>
+            <field type="INT(11) NOT NULL DEFAULT `0`">regdate</field>
+            <field type="INT(11) NOT NULL DEFAULT `0`">lastvisit</field>
             <field type="TINYINT(1) NOT NULL">lastvisit</field>
-            <field type="TIMESTAMP NULL DEFAULT '0000-00-00 00:00:00'">expire</field>
-            <field type="TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00'">lastedit</field>
+            <field type="TIMESTAMP NOT NULL DEFAULT `0000-00-00 00:00:00`">expire</field>
+            <field type="TIMESTAMP NOT NULL DEFAULT `0000-00-00 00:00:00`">lastedit</field>
             <field type="TEXT NOT NULL">user_agent</field>
 
             <primary>id</primary>
