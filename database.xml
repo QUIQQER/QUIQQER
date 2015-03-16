@@ -12,7 +12,7 @@
             <field type="INT(1) NOT NULL DEFAULT '0'">active</field>
             <field type="INT(11) NOT NULL DEFAULT '0'">regdate</field>
             <field type="INT(11) NOT NULL DEFAULT '0'">lastvisit</field>
-            <field type="TINYINT(1) NOT NULL">lastvisit</field>
+            <field type="TINYINT(1) NOT NULL">su</field>
             <field type="TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00'">expire</field>
             <field type="TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00'">lastedit</field>
             <field type="TEXT NOT NULL">user_agent</field>
