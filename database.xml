@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <database>
 
-    <globals>
+    <global>
 
         <table name="users">
             <field type="INT(11) NOT NULL AUTO_INCREMENT">id</field>
@@ -47,6 +47,6 @@
             <primary>session_id</primary>
         </table>
 
-    </globals>
+    </global>
 
 </database>
