@@ -4,7 +4,7 @@
     <global>
 
         <table name="users">
-            <field type="INT(11) NOT NULL AUTO_INCREMENT">id</field>
+            <field type="INT(11) NOT NULL">id</field>
             <field type="VARCHAR(50) NOT NULL DEFAULT ''">username</field>
             <field type="VARCHAR(50) NOT NULL DEFAULT ''">password</field>
             <field type="TEXT NOT NULL DEFAULT ''">usergroup</field>
@@ -19,6 +19,7 @@
 
             <primary>id</primary>
             <index>username,password</index>
+            <auto_increment>id</auto_increment>
         </table>
 
         <table name="groups">
