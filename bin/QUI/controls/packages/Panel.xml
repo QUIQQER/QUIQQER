@@ -24,9 +24,9 @@
             <de><![CDATA[Updates]]></de>
             <en><![CDATA[Update]]></en>
         </locale>
-        <locale name="packages.category.plugins">
-            <de><![CDATA[Plugins]]></de>
-            <en><![CDATA[Plugins]]></en>
+        <locale name="packages.category.modules">
+            <de><![CDATA[Module]]></de>
+            <en><![CDATA[Modules]]></en>
         </locale>
         <locale name="packages.category.packages">
             <de><![CDATA[Pakete]]></de>
