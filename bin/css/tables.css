@@ -95,3 +95,7 @@
 .data-table-nowidth input.int {
     width: 80px;
 }
+
+.data-table-closed .qui-button {
+    display: none;
+}
