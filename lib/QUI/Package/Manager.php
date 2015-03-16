@@ -816,11 +816,7 @@ class Manager extends QUI\QDOM
      */
     public function setup($package)
     {
-        $packageSettingsDir = CMS_DIR .'etc/plugins/';
-
-        if ( !is_dir( $packageSettingsDir ) ) {
-            QUIFile::mkdir( $packageSettingsDir );
-        }
+        QUIFile::mkdir( CMS_DIR .'etc/plugins/' );
 
         try
         {
