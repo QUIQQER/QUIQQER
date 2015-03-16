@@ -1112,7 +1112,7 @@ class XML
 
                     if ( strpos( $index, ',' ) !== false )
                     {
-                        $Table->setIndex( $tbl, implode( ',', $table['index'] ) );
+                        $Table->setIndex( $tbl, explode( ',', $table['index'] ) );
                     } else
                     {
                         $Table->setIndex( $tbl, $table['index'] );
@@ -1178,7 +1178,7 @@ class XML
 
                             if ( strpos( $index, ',' ) !== false )
                             {
-                                $Table->setIndex( $tbl, implode( ',', $table['index'] ) );
+                                $Table->setIndex( $tbl, explode( ',', $table['index'] ) );
                             } else
                             {
                                 $Table->setIndex( $tbl, $table['index'] );
