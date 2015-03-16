@@ -149,8 +149,9 @@ class Manager extends QUI\QDOM
     static function getPackageTypes()
     {
         return array(
-            'quiqqer-library',
+            'quiqqer-library', // deprecated
             'quiqqer-plugin',
+            'quiqqer-module',
             'quiqqer-template'
         );
     }

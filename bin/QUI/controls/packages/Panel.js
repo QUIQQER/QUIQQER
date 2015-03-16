@@ -104,7 +104,7 @@ define('controls/packages/Panel', [
 
             // init
             this.$Grid       = null;
-            this.$PluginGrid = null;
+            this.$ModuleGrid = null;
             this.$UpdateGrid = null;
             this.$ServerGrid = null;
             this.$SearchGrid = null;
@@ -135,17 +135,18 @@ define('controls/packages/Panel', [
             });
 
             this.addCategory({
-                name   : 'plugins',
-                text   : Locale.get( lg, 'packages.category.plugins' ),
+                name   : 'modules',
+                text   : Locale.get( lg, 'packages.category.modules' ),
                 image  : 'icon-puzzle-piece',
                 events :
                 {
                     onActive : function()
                     {
                         this.setAttribute( 'page', 1 );
-                        this.setAttribute( 'type', 'quiqqer-library' );
+                        this.setAttribute( 'type', 'quiqqer-module' );
 
                         this.loadPackages();
+
                     }.bind( this ),
 
                     onNormal : this.unloadPackages
@@ -230,10 +231,10 @@ define('controls/packages/Panel', [
                 this.$Grid.setWidth( size.x - 50 );
             }
 
-            if ( this.$PluginGrid )
+            if ( this.$ModuleGrid )
             {
-                this.$PluginGrid.setHeight( size.y - 0 );
-                this.$PluginGrid.setWidth( size.x - 0 );
+                this.$ModuleGrid.setHeight( size.y - 0 );
+                this.$ModuleGrid.setWidth( size.x - 0 );
             }
 
             if ( this.$UpdateGrid )
@@ -404,6 +405,7 @@ define('controls/packages/Panel', [
 
             QUI.getMessageHandler(function(MH)
             {
+                // #Locale message
                 MH.addLoading('Setup wird durchgeführt', function(Loading)
                 {
                     self.$Manager.setup( pkg, function()
@@ -543,16 +545,6 @@ define('controls/packages/Panel', [
                                         Elm.addClass( 'highlight' );
                                         event.stop();
                                     },
-
-                                    onDragleave: function(event, Elm)
-                                    {
-
-                                    },
-                                    //
-                                    //onDragend : function(event, Elm)
-                                    //{
-                                    //
-                                    //},
 
                                     onComplete : function()
                                     {
@@ -789,7 +781,7 @@ define('controls/packages/Panel', [
 
             if ( this.getAttribute( 'type' ) == 'quiqqer-library' )
             {
-                this.$PluginGrid = GridObj;
+                this.$ModuleGrid = GridObj;
 
             } else
             {
@@ -818,10 +810,10 @@ define('controls/packages/Panel', [
                 this.$Grid = null;
             }
 
-            if ( this.$PluginGrid && Btn.getAttribute( 'name' ) == 'plugins' )
+            if ( this.$ModuleGrid && Btn.getAttribute( 'name' ) == 'modules' )
             {
-                this.$PluginGrid.destroy();
-                this.$PluginGrid = null;
+                this.$ModuleGrid.destroy();
+                this.$ModuleGrid = null;
             }
         },
 
@@ -839,9 +831,9 @@ define('controls/packages/Panel', [
                 var i, alt, len, pkg, entry;
                 var GridObj = null;
 
-                if ( self.getAttribute( 'type' ) == 'quiqqer-library' )
+                if ( self.getAttribute( 'type' ) == 'quiqqer-module' )
                 {
-                    GridObj = self.$PluginGrid;
+                    GridObj = self.$ModuleGrid;
 
                 } else
                 {
@@ -939,7 +931,7 @@ define('controls/packages/Panel', [
                 Form = new Element('form', {
                     name    : 'qui-package-search',
                     'class' : 'qui-packages-panel-search',
-                    'html'  : '<input type="text" name="search" placeholder="search..." />',
+                    'html'  : '<input type="text" name="search" placeholder="search..." />',  // #Locale -> placeholder
                     events  :
                     {
                         submit : function(event)
@@ -1714,7 +1706,7 @@ define('controls/packages/Panel', [
 
                         html = '<table class="data-table"><thead>' +
                                     '<tr>' +
-                                    '<th colspan="2">Zusammenfassung</th>' +
+                                    '<th colspan="2">Zusammenfassung</th>' + // #Locale
                                 '</tr>' +
                                 '</thead>' +
                                 '<tbody>' +

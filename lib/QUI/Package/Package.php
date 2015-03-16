@@ -187,6 +187,8 @@ class Package extends QUI\QDOM
         Update::importEvents( $dir .'events.xml' );
         Update::importSiteEvents( $dir .'site.xml' );
 
+        Update::importLocale( $dir .'locale.xml' );
+
         // settings
         if ( !file_exists( $dir .'settings.xml' ) )
         {
