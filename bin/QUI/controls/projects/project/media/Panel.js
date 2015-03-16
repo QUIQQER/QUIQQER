@@ -1216,9 +1216,16 @@ define('controls/projects/project/media/Panel', [
 
             if ( event.control || this.getAttribute( 'selectable' ) )
             {
-                this.$selected.push( Target );
+                if ( !Target.hasClass( 'selected' ) )
+                {
+                    Target.addClass( 'selected' );
+                    this.$selected.push( Target );
 
-                Target.addClass( 'selected' );
+                } else
+                {
+                    Target.removeClass( 'selected' );
+                    this.$selected.erase( Target );
+                }
 
                 var id      = Target.get('data-id'),
                     project = this.getProject().getName();
