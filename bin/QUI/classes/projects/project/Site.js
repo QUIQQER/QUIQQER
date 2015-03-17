@@ -308,9 +308,12 @@ define('classes/projects/project/Site', [
                     Site.setAttributes( result.attributes );
                 }
 
-                Site.$has_children = result && result.has_children || false;
-                Site.$parentid     = result && result.parentid || false;
-                Site.$url          = result && result.url || '';
+                if ( result )
+                {
+                    Site.$has_children = ( result.has_children ).toInt() || false;
+                    Site.$parentid = ( result.parentid ).toInt() || false;
+                    Site.$url = result.url || '';
+                }
 
                 Site.clearWorkingStorage();
 

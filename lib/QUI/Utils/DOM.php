@@ -287,7 +287,8 @@ class DOM
                 $Field->getAttribute( 'type' )
             );
 
-            if ( mb_strpos( $structure, 'not null' ) === false ) {
+            // if NULL is not mentioned (neither "NULL" nor "NOT NULL") assume "NOT NULL"
+            if ( mb_strpos( $structure, 'null' ) === false ) {
                 $str .= 'NOT NULL';
             }
         }

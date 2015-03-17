@@ -531,8 +531,18 @@ class Edit extends Site
         $extraAttributes = Utils::getExtraAttributeListForSite( $this );
         $siteExtra       = array();
 
-        foreach ( $extraAttributes as $attribute ) {
-            $siteExtra[ $attribute ] = $this->getAttribute( $attribute );
+        foreach ( $extraAttributes as $data )
+        {
+            $attribute = $data['attribute'];
+            $default   = $data['default'];
+
+            if ( $this->existsAttribute( $attribute ) )
+            {
+                $siteExtra[ $attribute ] = $this->getAttribute( $attribute );
+                continue;
+            }
+
+            $siteExtra[ $attribute ] = $default;
         }
 
         // save main data

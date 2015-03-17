@@ -787,7 +787,9 @@ define('controls/projects/project/site/Panel', [
                         new QUIButton({
                             text   : Locale.get( lg, 'projects.project.site.panel.linked.btn.add' ),
                             styles : {
-                                float : 'right'
+                                position: 'absolute',
+                                right : 5,
+                                top : 5
                             },
                             events :
                             {
