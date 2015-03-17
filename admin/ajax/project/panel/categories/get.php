@@ -8,10 +8,10 @@
  */
 function ajax_project_panel_categories_get($project)
 {
-    $Project = \QUI::getProjectManager()->decode( $project );
+    $Project = QUI::getProjectManager()->decode( $project );
 
     $buttonList  = array();
-    $settingsXml = \QUI::getProjectManager()->getRelatedSettingsXML( $Project );
+    $settingsXml = QUI::getProjectManager()->getRelatedSettingsXML( $Project );
 
     // read template config
     foreach ( $settingsXml as $file )
@@ -20,11 +20,11 @@ function ajax_project_panel_categories_get($project)
             continue;
         }
 
-        $windows = \QUI\Utils\XML::getProjectSettingWindowsFromXml( $file );
+        $windows = QUI\Utils\XML::getProjectSettingWindowsFromXml( $file );
 
         foreach ( $windows as $Window )
         {
-            $buttons = \QUI\Utils\DOM::getButtonsFromWindow( $Window );
+            $buttons = QUI\Utils\DOM::getButtonsFromWindow( $Window );
 
             foreach ( $buttons as $Button )
             {
@@ -38,7 +38,7 @@ function ajax_project_panel_categories_get($project)
     return $buttonList;
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_project_panel_categories_get',
     array( 'project', 'lang' ),
     'Permission::checkAdminUser'
