@@ -51,7 +51,6 @@
         "quiqqer/log" : "dev-master"
     },
 
-
     "scripts": {
         "post-install-cmd" : [
             "QUI\\Update::onInstall"
