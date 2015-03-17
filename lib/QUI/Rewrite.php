@@ -1465,6 +1465,10 @@ class Rewrite
             }
         }
 
+        if ( empty( $url ) ) {
+            return URL_DIR;
+        }
+
         return $url;
     }
 
