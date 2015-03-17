@@ -51,12 +51,6 @@
         "quiqqer/log" : "*@dev"
     },
 
-    "config": {
-        "vendor-dir": "packages",
-        "cache-dir" : "var/composer",
-        "component-dir" : "packages/bin"
-    },
-
     "scripts": {
         "post-install-cmd" : [
             "QUI\\Update::onInstall"
