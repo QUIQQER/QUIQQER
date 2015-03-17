@@ -51,11 +51,6 @@
         "quiqqer/log" : "dev-master"
     },
 
-    "config": {
-        "vendor-dir": "packages",
-        "cache-dir" : "var/composer",
-        "component-dir" : "packages/bin"
-    },
 
     "scripts": {
         "post-install-cmd" : [
