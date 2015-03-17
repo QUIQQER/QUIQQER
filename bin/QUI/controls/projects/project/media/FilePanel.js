@@ -55,7 +55,7 @@ define('controls/projects/project/media/FilePanel', [
      *
      * @class controls/projects/project/media/FilePanel
      *
-     * @param {classes/projects/media/File} File
+     * @param {Object} File - classes/projects/media/File
      * @param {Object} options
      *
      * @memberof! <global>
@@ -67,9 +67,7 @@ define('controls/projects/project/media/FilePanel', [
 
         Binds : [
             '$onCreate',
-            '$onDestroy',
-            '$onFileActivate',
-            '$onFileDeactivate'
+            '$onDestroy'
         ],
 
         options : {
@@ -102,18 +100,13 @@ define('controls/projects/project/media/FilePanel', [
                 onCreate  : this.$onCreate,
                 onDestroy : this.$onDestroy
             });
-
-            this.$File.addEvents({
-                onActivate   : this.$onFileActivate,
-                onDeactivate : this.$onFileDeactivate
-            });
         },
 
         /**
          * Return the Media object of the panel
          *
          * @method controls/projects/project/media/FilePanel#getMedia
-         * @return {classes/projects/project/Media} Media
+         * @return {Object} Media (classes/projects/project/Media)
          */
         getMedia : function()
         {
@@ -123,7 +116,7 @@ define('controls/projects/project/media/FilePanel', [
         /**
          * Return the Project object of the Media
          *
-         * @return {classes/projects/Project} Project
+         * @return {Object} Project (classes/projects/Project)
          */
         getProject : function()
         {
@@ -186,8 +179,7 @@ define('controls/projects/project/media/FilePanel', [
          */
         $onDestroy : function()
         {
-            this.$File.removeEvent( 'onActivate', this.$onFileActivate );
-            this.$File.removeEvent( 'onDeactivate', this.$onFileDeactivate );
+
         },
 
         /**
@@ -378,7 +370,7 @@ define('controls/projects/project/media/FilePanel', [
         {
             this.getButtonBar()
                 .getElement( 'status' )
-                .setAttribute( 'textimage', URL_BIN_DIR +'images/loader.gif' );
+                .setAttribute( 'textimage', 'icon-spinner icon-spin' );
 
             this.$File.activate( this.refresh.bind( this ) );
         },
@@ -392,7 +384,7 @@ define('controls/projects/project/media/FilePanel', [
         {
             this.getButtonBar()
                 .getElement( 'status' )
-                .setAttribute( 'textimage', URL_BIN_DIR +'images/loader.gif' );
+                .setAttribute( 'textimage', 'icon-spinner icon-spin' );
 
             this.$File.deactivate( this.refresh.bind( this ) );
         },
@@ -623,26 +615,6 @@ define('controls/projects/project/media/FilePanel', [
 
                 this.$Download.inject( Inp, 'after' );
             }
-        },
-
-        /**
-         * File events
-         */
-
-        /**
-         * event : on file activate
-         */
-        $onFileActivate : function()
-        {
-            this.$OpenInNewWindow.enable();
-        },
-
-        /**
-         *event : on file deactivate
-         */
-        $onFileDeactivate : function()
-        {
-            this.$OpenInNewWindow.disable();
         }
     });
 });

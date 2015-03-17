@@ -131,7 +131,7 @@ define('controls/projects/project/media/Input', [
                             project = self.$Input.get( 'data-project' );
                         }
 
-                        if ( self.$Project ) {
+                        if ( self.$Project && "getName" in self.$Project ) {
                             project = self.$Project.getName();
                         }
 
