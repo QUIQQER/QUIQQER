@@ -398,7 +398,7 @@ class Update
 
         Log::write( 'Read: '. $xml_file );
 
-        QUI\Translator::import( $xml_file, false );
+        QUI\Translator::import( $xml_file, true, true );
     }
 
     /**
