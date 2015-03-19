@@ -291,6 +291,11 @@ class VhostManager
 
         foreach ( $config as $host => $data )
         {
+            if ( !isset( $data[ 'project' ] ) ) {
+                continue;
+            }
+
+
             if ( $data[ 'project' ] == $projectName ) {
                 $list[] = $host;
             }
