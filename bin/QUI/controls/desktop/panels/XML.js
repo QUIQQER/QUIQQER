@@ -100,6 +100,15 @@ define('controls/desktop/panels/XML', [
         },
 
         /**
+         * Return the path of the xml file
+         * @returns {String} - xml file
+         */
+        getFile : function()
+        {
+            return this.$file;
+        },
+
+        /**
          * Internal creation
          */
         $onCreate : function()
