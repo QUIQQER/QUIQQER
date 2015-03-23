@@ -220,8 +220,8 @@ define('controls/projects/project/site/Search', [
         },
 
         /**
-        * event : on resize
-        */
+         * event : on resize
+         */
         $onResize : function()
         {
             if ( !this.$Grid ) {
