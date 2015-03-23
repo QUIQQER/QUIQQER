@@ -88,9 +88,7 @@ class Package extends QUI\QDOM
 
         $this->_configPath = CMS_DIR .'etc/plugins/'. $this->getName() .'.ini.php';
 
-        if ( !file_exists( $this->_configPath ) ) {
-            file_put_contents( $this->_configPath , '' );
-        }
+        QUI\Utils\System\File::mkfile( $this->_configPath );
     }
 
     /**
