@@ -323,7 +323,7 @@ class DBCheck extends QUI\System\Test
             $dbKeys[ $k ] = $columnInfo[ 'Column_name' ];
         }
 
-        $dbFields = $this->_Tables->getFields( $table );
+        $dbFields = $this->_Tables->getFieldsInfos( $table );
 
         // compare primary keys
         $keyCompare = array_intersect( $primaryKeys, $dbKeys );

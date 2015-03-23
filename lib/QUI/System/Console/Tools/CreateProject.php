@@ -65,10 +65,18 @@ class CreateProject extends \QUI\System\Console\Tool
             $template = $this->readInput();
         }
 
-        \QUI::getProjectManager()->createProject(
-            $projectname,
-            $projectlang
-        );
+        try
+        {
+            \QUI::getProjectManager()->createProject(
+                $projectname,
+                $projectlang
+            );
+
+        } catch ( \QUI\Exception $Exception )
+        {
+            $this->writeLn( 'Could not create project: ' . $Exception->getMessage() );
+            return;
+        }
 
         \QUI::getProjectManager()->setConfigForProject($projectname, array(
             'template' => $template,
