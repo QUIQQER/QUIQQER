@@ -53,21 +53,6 @@ class Sites
             $Toolbar->getElementByName( '_Save' )->setDisable();
         }
 
-        $Toolbar->appendChild(
-            new Seperator(array(
-                'name' => '_sep'
-            ))
-        );
-
-        $Toolbar->appendChild(
-            new Button(array(
-                'name'      => '_Preview',
-                'textimage' => 'icon-eye-open',
-                'text'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.preview.text' ),
-                'onclick'   => 'Panel.openPreview'
-            ))
-        );
-
         // Wenn das Bearbeiten Recht vorhanden ist
         if ( $Site->hasPermission( 'quiqqer.projects.site.edit') && !$Site->isLockedFromOther() )
         {
@@ -107,6 +92,43 @@ class Sites
             $Toolbar->appendChild( $Status );
         }
 
+        // preview
+        $Toolbar->appendChild(
+            new Seperator(array(
+                'name' => '_sep'
+            ))
+        );
+
+        $Toolbar->appendChild(
+            new Button(array(
+                'name'      => '_Preview',
+                'textimage' => 'icon-eye-open',
+                'text'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.preview.text' ),
+                'onclick'   => 'Panel.openPreview'
+            ))
+        );
+
+        // delete site
+        $Toolbar->appendChild(
+            new Button(array(
+                'name'      => '_Del',
+                'icon'      => 'icon-trash',
+                //'text'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.delete.text' ),
+                'onclick'   => 'Panel.del',
+                'help'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.delete.help' ),
+                'title'     => QUI::getLocale()->get( $gl, 'projects.project.site.btn.delete.title' ),
+                'alt'       => QUI::getLocale()->get( $gl, 'projects.project.site.btn.delete.alt' )
+            ))
+        );
+
+        // Wenn die Seite bearbeitet wird
+        // oder wenn das Löschen Recht nicht vorhanden ist
+        if ( $Site->isLockedFromOther() ||
+             $Site->hasPermission( 'quiqqer.projects.site.del' ) == false )
+        {
+            $Toolbar->getElementByName( '_Del' )->setDisable();
+        }
+
         // new sub site
         $Toolbar->appendChild(
             new Button(array(
@@ -123,28 +145,6 @@ class Sites
         if ( $Site->hasPermission( 'quiqqer.projects.site.new' ) == false ) {
             $Toolbar->getElementByName( '_New' )->setDisable();
         }
-
-        // delete site
-        $Toolbar->appendChild(
-            new Button(array(
-                'name'      => '_Del',
-                'icon'      => 'icon-trash',
-                //'text'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.delete.text' ),
-                'onclick'   => 'Panel.del',
-                'help'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.del.help' ),
-                'title'     => QUI::getLocale()->get( $gl, 'projects.project.site.btn.del.title' ),
-                'alt'       => QUI::getLocale()->get( $gl, 'projects.project.site.btn.del.alt' )
-            ))
-        );
-
-        // Wenn die Seite bearbeitet wird
-        // oder wenn das Löschen Recht nicht vorhanden ist
-        if ( $Site->isLockedFromOther() ||
-             $Site->hasPermission( 'quiqqer.projects.site.del' ) == false )
-        {
-            $Toolbar->getElementByName( '_Del' )->setDisable();
-        }
-
 
 
 
