@@ -36,6 +36,11 @@
     width: 300px;
 }
 
+.qui-site-button-save {
+    font-weight: bold !important;
+}
+
+
 /** site settings
  * ====================================== */
 

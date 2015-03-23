@@ -99,7 +99,7 @@
                     Delete the page, the page is placed in the trash and can be restored
                 ]]></en>
             </locale>
-            <locale name="projects.project.site.btn.delete.new">
+            <locale name="projects.project.site.btn.delete.title">
                 <de><![CDATA[
                     Löschen Sie die Seite, die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden
                 ]]></de>

@@ -34,19 +34,6 @@ class Sites
 
         $gl = 'quiqqer/system';
 
-        // Standard Buttons
-        $Toolbar->appendChild(
-            new Button(array(
-                'name'      => '_New',
-                'textimage' => 'icon-page-alt',
-                'text'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.new.text' ),
-                'onclick'   => 'Panel.createNewChild',
-                'help'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.new.help' ),
-                'alt'       => QUI::getLocale()->get( $gl, 'projects.project.site.btn.new.alt' ),
-                'title'     => QUI::getLocale()->get( $gl, 'projects.project.site.btn.new.title' )
-            ))
-        );
-
         $Toolbar->appendChild(
             new Button(array(
                 'name'      => '_Save',
@@ -59,56 +46,11 @@ class Sites
             ))
         );
 
-        $Toolbar->appendChild(
-            new Button(array(
-                'name'      => '_Del',
-                'textimage' => 'icon-trash',
-                'text'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.delete.text' ),
-                'onclick'   => 'Panel.del',
-                'help'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.help.text' ),
-                'title'     => QUI::getLocale()->get( $gl, 'projects.project.site.btn.title.text' ),
-                'alt'       => QUI::getLocale()->get( $gl, 'projects.project.site.btn.alt.text' )
-            ))
-        );
-
-        $Toolbar->appendChild(
-            new Seperator(array(
-                'name' => '_sep'
-            ))
-        );
-
-        $Toolbar->appendChild(
-            new Button(array(
-                'name'      => '_Preview',
-                'textimage' => 'icon-eye-open',
-                'text'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.preview.text' ),
-                'onclick'   => 'Panel.openPreview'
-            ))
-        );
-
-        $New  = $Toolbar->getElementByName( '_New' );
-        $Save = $Toolbar->getElementByName( '_Save' );
-        $Del  = $Toolbar->getElementByName( '_Del' );
-
-        if ( $Site->isLockedFromOther() ) // wenn die Seite bearbeitet wird
+        // wenn die Seite bearbeitet wird
+        if ( $Site->isLockedFromOther() ||
+             $Site->hasPermission( 'quiqqer.projects.site.edit' ) == false )
         {
-            $Save->setDisable();
-            $Del->setDisable();
-        }
-
-        // Wenn das Kind erstellen Recht nicht vorhanden ist
-        if ( $Site->hasPermission( 'quiqqer.projects.site.new' ) ) {
-            $New->setDisable();
-        }
-
-        // Wenn das Bearbeiten Recht nicht vorhanden ist
-        if ( $Site->hasPermission( 'quiqqer.projects.site.edit' ) == false ) {
-            $Save->setDisable();
-        }
-
-        // Wenn das Löschen Recht nicht vorhanden ist
-        if ( $Site->hasPermission( 'quiqqer.projects.site.del' ) == false ) {
-            $Del->setDisable();
+            $Toolbar->getElementByName( '_Save' )->setDisable();
         }
 
         // Wenn das Bearbeiten Recht vorhanden ist
@@ -149,6 +91,63 @@ class Sites
 
             $Toolbar->appendChild( $Status );
         }
+
+        // preview
+        $Toolbar->appendChild(
+            new Seperator(array(
+                'name' => '_sep'
+            ))
+        );
+
+        $Toolbar->appendChild(
+            new Button(array(
+                'name'      => '_Preview',
+                'textimage' => 'icon-eye-open',
+                'text'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.preview.text' ),
+                'onclick'   => 'Panel.openPreview'
+            ))
+        );
+
+        // delete site
+        $Toolbar->appendChild(
+            new Button(array(
+                'name'      => '_Del',
+                'icon'      => 'icon-trash',
+                //'text'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.delete.text' ),
+                'onclick'   => 'Panel.del',
+                'help'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.delete.help' ),
+                'title'     => QUI::getLocale()->get( $gl, 'projects.project.site.btn.delete.title' ),
+                'alt'       => QUI::getLocale()->get( $gl, 'projects.project.site.btn.delete.alt' )
+            ))
+        );
+
+        // Wenn die Seite bearbeitet wird
+        // oder wenn das Löschen Recht nicht vorhanden ist
+        if ( $Site->isLockedFromOther() ||
+             $Site->hasPermission( 'quiqqer.projects.site.del' ) == false )
+        {
+            $Toolbar->getElementByName( '_Del' )->setDisable();
+        }
+
+        // new sub site
+        $Toolbar->appendChild(
+            new Button(array(
+                'name'      => '_New',
+                'icon'      => 'icon-file-alt',
+                //'text'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.new.text' ),
+                'onclick'   => 'Panel.createNewChild',
+                'help'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.new.help' ),
+                'alt'       => QUI::getLocale()->get( $gl, 'projects.project.site.btn.new.alt' ),
+                'title'     => QUI::getLocale()->get( $gl, 'projects.project.site.btn.new.title' )
+            ))
+        );
+
+        if ( $Site->hasPermission( 'quiqqer.projects.site.new' ) == false ) {
+            $Toolbar->getElementByName( '_New' )->setDisable();
+        }
+
+
+
 
         // Tabs der Plugins hohlen
         // @todo über xml's oder neue apis

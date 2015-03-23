@@ -97,6 +97,7 @@ define('controls/menu/Manager', [
          */
         menuClick : function(Item)
         {
+            var list;
             var self        = this,
                 menuRequire = Item.getAttribute( 'require' ),
                 exec        = Item.getAttribute( 'exec' ),
@@ -105,28 +106,60 @@ define('controls/menu/Manager', [
             // js require
             if ( menuRequire )
             {
-                require([ menuRequire ], function(Control)
+                list = QUI.Controls.getByType( menuRequire );
+
+                if ( list.length )
                 {
-                    var attributes = Object.merge(
-                        Item.getStorageAttributes(),
-                        Item.getAttributes()
-                    );
-
-                    var Ctrl = new Control( attributes );
-
-                    if ( instanceOf( Ctrl, Panel ) )
-                    {
-                        self.openPanelInTasks( Ctrl );
-                        return;
+                    if ( instanceOf( list[0], Panel ) ) {
+                        PanelUtils.execPanelOpen( list[0] );
                     }
 
-                    Ctrl.open();
-                });
+                } else
+                {
+                    require([ menuRequire ], function(Control)
+                    {
+                        var attributes = Object.merge(
+                            Item.getStorageAttributes(),
+                            Item.getAttributes()
+                        );
+
+                        var Ctrl = new Control( attributes );
+
+                        if ( instanceOf( Ctrl, Panel ) )
+                        {
+                            self.openPanelInTasks( Ctrl );
+                            return;
+                        }
+
+                        Ctrl.open();
+                    });
+                }
             }
 
             // xml setting file
             if ( xmlFile )
             {
+                // panel still exists?
+                list = QUI.Controls.getByType( 'controls/desktop/panels/XML' );
+
+                for ( var i = 0, len = list.length; i < len; i++ )
+                {
+                    if ( list[ i ].getFile() == xmlFile )
+                    {
+                        // if a task exist, click it and open the instance
+                        var Task = list[ i ].getAttribute( 'Task' );
+
+                        if ( Task && Task.getType() == 'qui/controls/taskbar/Task' )
+                        {
+                            list[ i ].getAttribute( 'Task' ).click();
+                            return;
+                        }
+
+                        list[ i ].open();
+                        return;
+                    }
+                }
+
                 require(['controls/desktop/panels/XML'], function(XMLPanel)
                 {
                     self.openPanelInTasks(
@@ -141,6 +174,7 @@ define('controls/menu/Manager', [
             try
             {
                 eval( exec );
+
             } catch ( e )
             {
                 QUI.getMessageHandler(function(MessageHandler) {

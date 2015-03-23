@@ -6,6 +6,8 @@
 
 namespace QUI\Projects\Site;
 
+use QUI;
+
 /**
  * Canonical meta helper
  *
@@ -36,7 +38,22 @@ class Canonical
      */
     public function output()
     {
-        if ( $this->_Site->getId() === 1 ) {
+        $Site    = $this->_Site;
+        $Project = $Site->getProject();
+
+        if ( $this->_Site->getId() === 1 )
+        {
+            $httpsHost       = $Project->getVHost( true, true );
+            $httpsHostExists = false;
+
+            if ( strpos( $httpsHost , 'https:' ) !== false ) {
+                $httpsHostExists = true;
+            }
+
+            if ( $httpsHostExists && QUI\Utils\System::isProtocolSecure() === false ) {
+                return $this->_getLinkRel( $httpsHost . URL_DIR );
+            }
+
             return '';
         }
 
@@ -49,9 +66,6 @@ class Canonical
         if ( empty( $requestUrl ) ) {
             return '';
         }
-
-        $Site    = $this->_Site;
-        $Project = $Site->getProject();
 
         $canonical = ltrim( $this->_Site->getCanonical(), '/' );
         $httpsHost = $Project->getVHost( true, true );
@@ -66,7 +80,7 @@ class Canonical
         {
             // check if https host exist,
             // if true, and request ist not https, canonical is https
-            if ( $httpsHostExists && \QUI\Utils\System::isProtocolSecure() === false ) {
+            if ( $httpsHostExists && QUI\Utils\System::isProtocolSecure() === false ) {
                 return $this->_getLinkRel( $httpsHost . URL_DIR . $requestUrl );
             }
 

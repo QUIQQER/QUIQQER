@@ -23,6 +23,8 @@ define('utils/Panels', function()
          */
         openSitePanel : function(project, lang, id, callback)
         {
+            var self = this;
+
             require([
                 'qui/QUI',
                 'qui/controls/desktop/Panel',
@@ -42,15 +44,7 @@ define('utils/Panels', function()
                         }
 
                         // if a task exist, click it and open the instance
-                        var Task = panels[ i ].getAttribute( 'Task' );
-
-                        if ( Task && Task.getType() == 'qui/controls/taskbar/Task' )
-                        {
-                            panels[ i ].getAttribute( 'Task' ).click();
-                            return;
-                        }
-
-                        panels[ i ].open();
+                        self.execPanelOpen( panels[ i ] );
                         return;
                     }
                 }
@@ -61,8 +55,9 @@ define('utils/Panels', function()
                     return;
                 }
 
-                var Site  = Projects.get( project, lang ).get( id ),
-                    Panel = new SitePanel( Site );
+                var Panel = new SitePanel(
+                    Projects.get( project, lang ).get( id )
+                );
 
                 panels[ 0 ].appendChild( Panel );
 
@@ -81,6 +76,8 @@ define('utils/Panels', function()
          */
         openMediaPanel : function(project, callback)
         {
+            var self = this;
+
             require([
                 'qui/QUI',
                 'qui/controls/desktop/Panel',
@@ -88,25 +85,20 @@ define('utils/Panels', function()
                 'Projects'
             ], function(QUI, QUIPanel, MediaPanel, Projects)
             {
-                var panels = QUI.Controls.get( 'panel-'+ project +'-media' );
+                var i, len, Panel;
+                var panels = QUI.Controls.get( 'projects-media-panel' );
 
                 if ( panels.length )
                 {
-                    for ( var i = 0, len = panels.length; i < len; i++ )
+                    for ( i = 0, len = panels.length; i < len; i++ )
                     {
-                        if ( !instanceOf( panels[ i ], QUIPanel ) ) {
+                        Panel = panels[ i ];
+
+                        if ( Panel.getProject().getName() != project ) {
                             continue;
                         }
 
-                        // if a task exist, click it and open the instance
-                        var Task = panels[ i ].getAttribute('Task');
-
-                        if (Task && Task.getType() == 'qui/controls/taskbar/Task') {
-                            panels[ i ].getAttribute('Task').click();
-                        }
-
-                        panels[ i ].open();
-
+                        self.execPanelOpen( Panel );
                         return;
                     }
                 }
@@ -117,9 +109,7 @@ define('utils/Panels', function()
                     return;
                 }
 
-
-                var Project = Projects.get( project ),
-                    Panel   = new MediaPanel( Project.getMedia() );
+                Panel = new MediaPanel( Projects.get( project ).getMedia() );
 
                 panels[ 0 ].appendChild( Panel );
 
@@ -185,23 +175,61 @@ define('utils/Panels', function()
          */
         openPanelInTasks : function(Panel)
         {
+            var self = this;
+
             require(['qui/QUI'], function(QUI)
             {
-                // if panel not exists
-                var panels = QUI.Controls.getByType( 'qui/controls/desktop/Tasks' );
+                var i, len, Child;
+                var panels = QUI.Controls.getByType( Panel.getType() );
 
-                if ( !panels.length ) {
+                if ( panels.length )
+                {
+                    for ( i = 0, len = panels.length; i < len; i++ )
+                    {
+                        Child = panels[ i ];
+
+                        if ( Panel.serialize() != Child.serialize() ) {
+                            continue;
+                        }
+
+                        // if a task exist, click it and open the instance
+                        self.execPanelOpen( Child );
+                        return;
+                    }
+                }
+
+                // if panel not exists
+                var tasks = QUI.Controls.getByType( 'qui/controls/desktop/Tasks' );
+
+                if ( !tasks.length ) {
                     return;
                 }
 
-                panels[ 0 ].appendChild( Panel );
+                tasks[ 0 ].appendChild( Panel );
 
 
                 (function() {
                     Panel.focus();
                 }).delay( 100 );
             });
-        }
+        },
 
+        /**
+         * Opens panel, if panel has a task, the task click would be executed
+         * @param {Object} Panel - qui/controls/desktop/Panel
+         */
+        execPanelOpen : function(Panel)
+        {
+            // if a task exist, click it and open the instance
+            var Task = Panel.getAttribute( 'Task' );
+
+            if  ( Task && Task.getType() == 'qui/controls/taskbar/Task')
+            {
+                Panel.getAttribute( 'Task' ).click();
+                return;
+            }
+
+            Panel.open();
+        }
     };
 });

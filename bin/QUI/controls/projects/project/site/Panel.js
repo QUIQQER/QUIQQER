@@ -333,21 +333,36 @@ define('controls/projects/project/site/Panel', [
                 'ajax_site_lock'
             ], function(categories, buttons, isLocked)
             {
-                var i, ev, fn, len, events, category, Category;
+                var i, ev, fn, len, data, events, category, Button, Category;
 
                 for ( i = 0, len = buttons.length; i < len; i++ )
                 {
-                    if ( buttons[ i ].onclick )
-                    {
-                        buttons[ i ]._onclick = buttons[ i ].onclick;
-                        delete buttons[ i ].onclick;
+                    data = buttons[ i ];
 
-                        buttons[ i ].events = {
+                    if ( data.onclick )
+                    {
+                        data._onclick = data.onclick;
+                        delete data.onclick;
+
+                        data.events = {
                             onClick : self.$onPanelButtonClick
                         };
                     }
 
-                    self.addButton( buttons[ i ] );
+                    if ( data.name === '_Del' || data.name === '_New' )
+                    {
+                        data.styles = {
+                            'float' : 'right'
+                        };
+                    }
+
+                    self.addButton( data );
+                }
+
+                var Save = self.getButtonBar().getChildren( '_Save' );
+
+                if ( Save ) {
+                    Save.getElm().addClass( 'qui-site-button-save' );
                 }
 
 

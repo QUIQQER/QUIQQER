@@ -850,6 +850,22 @@ class Manager
             }
         }
 
+        // direct - project settings
+        $projectSettings = USR_DIR . $Project->getName() .'/settings.xml';
+
+        if ( file_exists( $projectSettings ) )
+        {
+            $Dom  = QUI\Utils\XML::getDomFromXml( $projectSettings );
+            $Path = new \DOMXPath( $Dom );
+
+            $Settings = $Path->query( "//quiqqer/project/settings" );
+
+            if ( $Settings->length ) {
+                $list[] = $projectSettings;
+            }
+        }
+
+
         QUI\Cache\Manager::set( 'qui/projects/', $list );
 
         return $list;

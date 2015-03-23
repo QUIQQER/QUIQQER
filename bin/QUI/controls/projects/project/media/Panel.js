@@ -122,7 +122,6 @@ define('controls/projects/project/media/Panel', [
             }
 
             this.setAttribute( 'icon', 'icon-picture' );
-
             this.parent( options );
 
             this.$Map      = null;
@@ -975,9 +974,9 @@ define('controls/projects/project/media/Panel', [
         /**
          * OnDrop Event
          *
-         * @param {DOMEvent} event       - DragDrop Event
-         * @param {Array|FileList} files - List of droped files
-         * @param {HTMLElement} Elm      - Droped Parent Element
+         * @param {DOMEvent} event         - DragDrop Event
+         * @param {HTMLElement|File} files - List of droped files
+         * @param {HTMLElement} Elm        - Droped Parent Element
          */
         $viewOnDrop : function(event, files, Elm)
         {
