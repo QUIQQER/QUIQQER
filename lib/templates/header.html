@@ -45,9 +45,11 @@
             lu : "{$lastUpdate}"
         };
 
+        {assign var=httpshost value=$Project->getVHost( true, true )}
         var QUIQQER_PROJECT = {
             name : '{$Project->getName()}',
-            lang : '{$Project->getLang()}'
+            lang : '{$Project->getLang()}',
+            httpshost : {if strpos( $httpshost, 'https' ) !== false}'{$httpshost}'{else}false{/if}
         };
 
         var QUIQQER_USER = {
