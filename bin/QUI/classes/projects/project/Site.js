@@ -172,6 +172,10 @@ define('classes/projects/project/Site', [
          */
         countChild : function()
         {
+            if ( !this.$has_children ) {
+                return 0;
+            }
+
             return ( this.$has_children ).toInt();
         },
 

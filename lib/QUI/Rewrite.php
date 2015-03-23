@@ -1443,19 +1443,22 @@ class Rewrite
                 return $url;
             }
 
-            $url = URL_DIR . $this->_project_prefix . $url;
+            $url = $this->_project_prefix . $url;
             $url = QUI\Utils\String::replaceDblSlashes( $url );
 
         } else if ( $Project->getAttribute('default_lang') !== $lang )
         {
             // Falls kein Host Eintrag gibt
             // Und nicht die Standardsprache dann das Sprachenflag davor setzen
-            $url = URL_DIR . $this->_project_prefix . $lang .'/'. $url;
+            $url = $this->_project_prefix . $lang .'/'. $url;
             $url = QUI\Utils\String::replaceDblSlashes( $url );
         } else
         {
             $url = URL_DIR . $url;
         }
+
+        $url = URL_DIR . $url;
+
 
         // falls host anderst ist, dann muss dieser dran gehängt werden
         // damit kein doppelter content entsteht
