@@ -754,6 +754,7 @@ class Project
         }
 
         $result   = array();
+        $_resTemp = array();
         $siteXMLs = array_unique( $siteXMLs );
 
         foreach ( $siteXMLs as $siteXML )
@@ -762,11 +763,17 @@ class Project
 
             foreach ( $layouts as $Layout )
             {
+                if ( isset( $_resTemp[ $Layout->getAttribute( 'type' ) ] ) ) {
+                    continue;
+                }
+
                 $data = array(
                     'type'  => $Layout->getAttribute( 'type' ),
                     'title' => '',
                     'description' => ''
                 );
+
+                $_resTemp[ $Layout->getAttribute( 'type' ) ] = true;
 
                 $title = $Layout->getElementsByTagName( 'title' );
                 $desc  = $Layout->getElementsByTagName( 'description' );
@@ -782,6 +789,7 @@ class Project
                 $result[] = $data;
             }
         }
+
 
         return $result;
     }
