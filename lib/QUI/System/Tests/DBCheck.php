@@ -309,8 +309,21 @@ class DBCheck extends QUI\System\Test
         }
 
         // get table info from database
-        $dbKeys   = $this->_Tables->getKeys( $table, true, true );
-        $dbFields = $this->_Tables->getFields( $table );
+        $dbKeys = $this->_Tables->getKeys( $table );
+
+        // get all primary keys
+        foreach ( $dbKeys as $k => $columnInfo )
+        {
+            if ( $columnInfo[ 'Key_name' ] !== 'PRIMARY' )
+            {
+                unset( $dbKeys[ $k ] );
+                continue;
+            }
+
+            $dbKeys[ $k ] = $columnInfo[ 'Column_name' ];
+        }
+
+        $dbFields = $this->_Tables->getFieldsInfos( $table );
 
         // compare primary keys
         $keyCompare = array_intersect( $primaryKeys, $dbKeys );
@@ -349,7 +362,7 @@ class DBCheck extends QUI\System\Test
         }
 
         // collect detailled column information from database
-        $dbFieldsData = $this->_Tables->getFields( $table, false );
+        $dbFieldsData = $this->_Tables->getFieldsInfos( $table );
 
         foreach ( $dbFieldsData as $field )
         {
