@@ -35,11 +35,14 @@ define('controls/projects/project/site/Search', [
 
         options : {
             icon  : 'icon-search',
-            title : Locale.get( lg, 'projects.project.site.search.title' )
+            title : Locale.get( lg, 'projects.project.site.search.title' ),
+            value : ''
         },
 
         initialize : function(options)
         {
+            var self = this;
+
             this.parent( options );
 
             this.$Grid = null;
@@ -50,7 +53,13 @@ define('controls/projects/project/site/Search', [
             this.addEvents({
                 onCreate : this.$onCreate,
                 onResize : this.$onResize,
-                onShow   : this.$onShow
+                onShow   : this.$onShow,
+                onSetAttribute : function(key, value)
+                {
+                    if ( key === 'value' && self.$SearchInput ) {
+                        self.$SearchInput.value = value;
+                    }
+                }
             });
         },
 
@@ -113,6 +122,10 @@ define('controls/projects/project/site/Search', [
                     }
                 }
             });
+
+            if ( this.getAttribute( 'value' ) ) {
+                this.$SearchInput.value = this.getAttribute( 'value' );
+            }
 
             // Grid
             var Container = new Element('div', {
@@ -229,7 +242,7 @@ define('controls/projects/project/site/Search', [
         },
 
         /**
-         *
+         * execute the search
          */
         search : function()
         {
@@ -238,7 +251,7 @@ define('controls/projects/project/site/Search', [
 
             this.Loader.show();
 
-            if ( this.$FieldList.value.value !== '' ) {
+            if ( this.$FieldList.value !== '' ) {
                 fields.push( this.$FieldList.value );
             }
 

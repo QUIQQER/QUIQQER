@@ -167,11 +167,35 @@ define('controls/projects/project/Panel', [
                     onClick : function()
                     {
                         require([
+                            'qui/QUI',
                             'controls/projects/project/site/Search',
                             'utils/Panels'
-                        ], function(Search, PanelUtils)
+                        ], function(QUI, Search, PanelUtils)
                         {
-                            PanelUtils.openPanelInTasks( new Search() );
+                            var searchPanels = QUI.Controls.getByType(
+                                'controls/projects/project/site/Search'
+                            );
+
+                            var val = self.$Filter.getInput().value;
+
+                            if ( !searchPanels.length )
+                            {
+                                PanelUtils.openPanelInTasks(
+                                    new Search({
+                                        value : val
+                                    })
+                                );
+
+                                return;
+                            }
+
+                            var Panel = searchPanels[ 0 ];
+
+                            Panel.setAttribute( 'value', val );
+                            Panel.search();
+
+                            PanelUtils.execPanelOpen( Panel );
+
                         });
                     }
                 }
