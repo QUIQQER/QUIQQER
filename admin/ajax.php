@@ -44,7 +44,7 @@ if ( !is_array( $_rf_files ) ) {
 if ( isset( $_REQUEST['package'] ) )
 {
     $package = $_REQUEST['package'];
-    $dir     = CMS_DIR .'packages/';
+    $dir     = OPT_DIR;
 
     foreach ( $_rf_files as $key => $file )
     {
