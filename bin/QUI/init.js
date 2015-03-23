@@ -387,7 +387,7 @@ require( requireList, function()
             Ajax.post('ajax_user_logout', function()
             {
                 window.onbeforeunload = null;
-                window.location = '/admin/';
+                window.location = URL_DIR +'admin/';
             });
         });
     };
