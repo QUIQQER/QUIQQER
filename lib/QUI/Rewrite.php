@@ -1452,6 +1452,9 @@ class Rewrite
             // Und nicht die Standardsprache dann das Sprachenflag davor setzen
             $url = $this->_project_prefix . $lang .'/'. $url;
             $url = QUI\Utils\String::replaceDblSlashes( $url );
+        } else
+        {
+            $url = URL_DIR . $url;
         }
 
         $url = URL_DIR . $url;
