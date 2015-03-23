@@ -65,6 +65,12 @@ class Log
             'loglevel' => $loglevel
         ));
 
+        if ( isset( $_SERVER['REQUEST_URI'] ) && !empty( $_SERVER['REQUEST_URI'] ) ) {
+            $message = HOST . $_SERVER['REQUEST_URI'] .' : '. $message;
+        }
+
+        $message = '['. date( \DATE_ATOM ) . '] '. $message ."\n";
+
 
         $dir  = VAR_DIR .'log/';
         $file = $dir . $filename . date('-Y-m-d') .'.log';
