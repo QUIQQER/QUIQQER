@@ -27,15 +27,43 @@ class CreateProject extends \QUI\System\Console\Tool
      */
     public function execute()
     {
-        $this->writeLn( 'Enter the name of the new Project: ' );
-        $projectname = $this->readInput();
+        // project name
+        $projectname = $this->getArgument( '--projectname' );
 
-        $this->writeLn( 'Enter the available languages (comma separated): ' );
-        $projectlangs = $this->readInput();
+        if ( !$projectname )
+        {
+            $this->writeLn( 'Enter the name of the new Project: ' );
+            $projectname = $this->readInput();
+        }
+
+        // project languages
+        $projectlangs = $this->getArgument( '--projectlangs' );
+
+        if ( !$projectlangs )
+        {
+            $this->writeLn( 'Enter the available languages (comma separated): ' );
+            $projectlangs = $this->readInput();
+        }
+
         $projectlangs = explode( ',', $projectlangs );
 
-        $this->writeLn( 'Which is the standard language? : ' );
-        $projectlang = $this->readInput();
+        // project standard language
+        $projectlang = $this->getArgument( '--projectlang' );
+
+        if ( !$projectlang )
+        {
+            $this->writeLn( 'Which should be the standard language? : ' );
+            $projectlang = $this->readInput();
+        }
+
+        // project standard template
+        $template = $this->getArgument( '--template' );
+
+        if ( !$template )
+        {
+            $this->writeLn( 'Which should be the standard template? For none, leave empty. : ' );
+            $template = $this->readInput();
+        }
 
         \QUI::getProjectManager()->createProject(
             $projectname,
@@ -43,11 +71,11 @@ class CreateProject extends \QUI\System\Console\Tool
         );
 
         \QUI::getProjectManager()->setConfigForProject($projectname, array(
-            'langs' => implode( ',', $projectlangs )
+            'template' => $template,
+            'langs'    => implode( ',', $projectlangs )
         ));
 
-
-        $this->writeLn( 'Project successfuly created.' );
+        $this->writeLn( 'Project ' . $projectname . ' successfuly created.' );
         $this->writeLn( '' );
     }
 }
