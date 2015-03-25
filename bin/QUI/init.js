@@ -134,6 +134,11 @@ require( requireList, function()
 
     Locale.setCurrent( USER.lang );
 
+    QUI.setAttributes({
+        'control-loader-type'  : 'line-scale',
+        'control-loader-color' : '#2f8fc8'
+    });
+
     QUI.addEvent('onError', function( err, url, line )
     {
         console.error( err +' - '+ url +' - '+ line );
