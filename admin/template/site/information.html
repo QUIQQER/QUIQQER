@@ -44,13 +44,15 @@
                 </div>
             </td>
         </tr>
+
+        {assign var=layouts value=$Project->getLayouts()}
+        {if count($layouts)}
         <tr class="odd">
             <td>
                 <label>
                     {t}quiqqer/system projects.project.site.panel.information.layout{/t}
                 </label>
                 <div>
-                    {assign var=layouts value=$Project->getLayouts()}
                     <select name="layout">
                         <option value=""></option>
                         {foreach from=$layouts item=layout}
@@ -61,6 +63,7 @@
                     </select>
                 </div>
             </td>
+            {/if}
         </tr>
     </tbody>
     </table>
