@@ -110,8 +110,12 @@ define('controls/menu/Manager', [
 
                 if ( list.length )
                 {
-                    if ( instanceOf( list[0], Panel ) ) {
+                    if ( instanceOf( list[0], Panel ) )
+                    {
                         PanelUtils.execPanelOpen( list[0] );
+                    } else
+                    {
+                        list[0].open();
                     }
 
                 } else
