@@ -53,7 +53,11 @@ define('controls/projects/project/media/Popup', [
             this.$Panel      = null;
             this.$folderData = false;
 
-            this.addEvent( 'onCreate', this.$onCreate );
+            this.addEvent('onCreate', this.$onCreate);
+            this.addEvent('onClose', function()
+            {
+                this.$Panel.destroy();
+            }.bind(this));
         },
 
         /**

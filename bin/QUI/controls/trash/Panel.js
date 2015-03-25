@@ -622,7 +622,9 @@ define([
                 self.$MediaGrid.setData( data );
                 self.Loader.hide();
             }, {
-                project : project,
+                project : JSON.encode({
+                    name : project
+                }),
                 params  : JSON.encode({
                     page    : options.page,
                     perPage : options.perPage
@@ -645,7 +647,9 @@ define([
                     callback();
                 }
             }, {
-                project : project,
+                project : JSON.encode({
+                    name : project
+                }),
                 ids     : JSON.encode( ids )
             });
         },
@@ -666,7 +670,9 @@ define([
                     callback();
                 }
             }, {
-                project  : project,
+                project  : JSON.encode({
+                    name : project
+                }),
                 parentid : parentId,
                 ids      : JSON.encode( restoreIds )
             });

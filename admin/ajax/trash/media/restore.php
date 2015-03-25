@@ -9,7 +9,7 @@
  */
 function ajax_trash_media_restore($project, $ids, $parentid)
 {
-    $Project = \QUI::getProject($project);
+    $Project = \QUI::getProjectManager()->decode( $project );
     $Media   = $Project->getMedia();
     $Trash   = $Media->getTrash();
     $Folder  = $Media->get( $parentid );
