@@ -1067,7 +1067,10 @@ define('controls/projects/project/site/Panel', [
                 Site.setAttribute( 'short', elements.short.value );
                 Site.setAttribute( 'nav_hide', elements.nav_hide.checked );
                 Site.setAttribute( 'type', elements.type.value );
-                Site.setAttribute( 'layout', elements.layout.value );
+
+                if ( typeof elements.layout !== 'undefined' ) {
+                    Site.setAttribute( 'layout', elements.layout.value );
+                }
 
                 if ( typeof callback === 'function' ) {
                     callback();
