@@ -8,7 +8,10 @@
  * @require css!utils/permissions/Utils.css
  */
 
-define(['css!utils/permissions/Utils.css'], function()
+define('utils/permissions/Utils', [
+    'Locale',
+    'css!utils/permissions/Utils.css'
+], function(QUILocale)
 {
     "use strict";
 
@@ -18,18 +21,21 @@ define(['css!utils/permissions/Utils.css'], function()
          * Parse a permission param to a DOMNode
          *
          * @param {Object} params
-         * @return {DOMNode}
+         * @return {HTMLElement}
          */
         parse : function(params)
         {
-            var n = params.name;
+            if ( !params.hasOwnProperty( 'name' ) ) {
+                return new Element('div');
+            }
 
-            var Entry = new Element( 'div.qui-permission-entry' );
+            var name  = params.name,
+                Entry = new Element( 'div.qui-permission-entry' );
 
             var Input = new Element('input.right', {
                 type : 'text',
-                name : n,
-                id   : 'perm-'+ n,
+                name : name,
+                id   : 'perm-'+ name,
 
                 'data-area' : params.area
             });
@@ -41,16 +47,19 @@ define(['css!utils/permissions/Utils.css'], function()
             }
 
             var Label = new Element('label', {
-                'for' : 'perm-'+ n,
-                html  : params.title || params.name
+                'for' : 'perm-'+ name,
+                html  : QUILocale.get( 'locale/permissions', name +'._title' )
             });
 
             Input.inject( Entry );
             Label.inject( Entry );
 
-
-            if ( params.desc ) {
-                Label.set( 'data-desc', params.desc);
+            if ( params.desc )
+            {
+                Label.set(
+                    'data-desc',
+                    QUILocale.get( 'locale/permissions', name +'._description' )
+                );
             }
 
             return Entry;

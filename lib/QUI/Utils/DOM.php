@@ -802,23 +802,11 @@ class DOM
             $default = $Default->item(0)->nodeValue;
         }
 
-        $title = QUI::getLocale()->get(
-            'locale/permissions',
-            $perm .'._title'
-        );
+        $title = 'locale/permissions '. $perm .'._title';
+        $desc  = 'locale/permissions '. $perm .'._description';
 
-        $desc = QUI::getLocale()->get(
-            'locale/permissions',
-            $perm .'._description'
-        );
-
-        $type = QUI\Rights\Manager::parseType(
-            $Node->getAttribute( 'type' )
-        );
-
-        $area = QUI\Rights\Manager::parseArea(
-            $Node->getAttribute( 'area' )
-        );
+        $type = QUI\Rights\Manager::parseType( $Node->getAttribute( 'type' ) );
+        $area = QUI\Rights\Manager::parseArea( $Node->getAttribute( 'area' ) );
 
         return array(
             'name'    => $perm,

@@ -21,7 +21,7 @@
  * @require css!controls/permissions/Panel.css
  */
 
-define([
+define('controls/permissions/Panel', [
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
@@ -149,7 +149,7 @@ define([
             }
 
 
-            Ajax.get('ajax_permissions_get', function(result, Request)
+            Ajax.get('ajax_permissions_get', function(result)
             {
                 if ( typeOf( result ) != 'object' ) {
                     result = {};
@@ -178,8 +178,8 @@ define([
             }
 
             var params = {
-                    id : this.$Bind.getId()
-                };
+                id : this.$Bind.getId()
+            };
 
             switch ( this.$Bind.getType() )
             {
