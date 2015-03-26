@@ -1,3 +1,8 @@
+<?php
+
+$languages = QUI::availableLanguages();
+
+?>
 <!doctype html>
 <!--[if lt IE 7 ]><html class="ie ie6" lang="de"> <![endif]-->
 <!--[if IE 7 ]><html class="ie ie7" lang="de"> <![endif]-->
@@ -242,7 +247,9 @@
 
     document.id( window ).addEvent('load', function()
     {
-        require(['qui/controls/buttons/Select'], function(QUISelect)
+        require([
+            'qui/controls/buttons/Select'
+        ], function(QUISelect)
         {
             var Logo = document.getElement( '.logo'),
                 Linp = document.getElement( '.logininput' );
@@ -265,19 +272,33 @@
                 }
             }).inject( Linp );
 
-            window.LangSelect.appendChild(
-                'Deutsch',
-                'de',
-                '<?php echo URL_BIN_DIR; ?>16x16/flags/de.png'
-            );
+            <?php
 
-            window.LangSelect.appendChild(
-                'English',
-                'en',
-                '<?php echo URL_BIN_DIR; ?>16x16/flags/en.png'
-            );
+                $url_bin_dir = URL_BIN_DIR;
 
+                foreach ( $languages as $lang )
+                {
+                    $langText = '';
 
+                    switch ( $lang )
+                    {
+                        case 'de': $langText = 'Deutsch'; break;
+                        case 'en': $langText = 'English'; break;
+                    }
+
+                    echo "
+
+                        window.LangSelect.appendChild(
+                            '{$langText}',
+                            '{$lang}',
+                            '{$url_bin_dir}16x16/flags/{$lang}.png'
+                        );
+
+                    ";
+                }
+
+            ?>
+            
             // browser language
             var lang = 'en';
 
@@ -364,7 +385,9 @@
 <body>
 <?php
 
-    QUI::getLocale()->setCurrent( 'de' );
+    if ( isset( $languages[ 0 ] ) ) {
+        QUI::getLocale()->setCurrent( $languages[ 0 ] );
+    }
 
 ?>
 <div class="container">
