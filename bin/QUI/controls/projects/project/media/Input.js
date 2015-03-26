@@ -20,12 +20,13 @@ define('controls/projects/project/media/Input', [
     'qui/controls/buttons/Button',
     'qui/utils/String',
     'controls/projects/project/media/Popup',
+    'Projects',
     'Ajax',
     'Locale',
 
     'css!controls/projects/project/media/Input.css'
 
-], function(QUIControl, QUIButton, QUIStringUtils, MediaPopup, Ajax, Locale)
+], function(QUIControl, QUIButton, QUIStringUtils, MediaPopup, Projects, Ajax, Locale)
 {
     "use strict";
 
@@ -70,6 +71,10 @@ define('controls/projects/project/media/Input', [
          */
         setProject : function(Project)
         {
+            if ( typeOf( Project ) == 'string' ) {
+                Project = Projects.get( Project );
+            }
+
             this.$Project = Project;
 
             if ( this.$Input ) {
@@ -129,6 +134,10 @@ define('controls/projects/project/media/Input', [
 
                         if ( self.$Input.get( 'data-project' ) ) {
                             project = self.$Input.get( 'data-project' );
+                        }
+
+                        if ( typeOf( self.$Project ) === 'string' ) {
+                            self.$Project = Projects.get( self.$Project );
                         }
 
                         if ( self.$Project && "getName" in self.$Project ) {
