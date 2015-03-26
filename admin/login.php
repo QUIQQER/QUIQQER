@@ -298,7 +298,7 @@ $languages = QUI::availableLanguages();
                 }
 
             ?>
-            
+
             // browser language
             var lang = 'en';
 

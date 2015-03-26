@@ -445,14 +445,11 @@ class QUI
      */
     static function availableLanguages()
     {
-        $projects = \QUI::getProjectManager()->getConfig()->toArray();
-        $langs    = array('de', 'en');
+        $langs = QUI\Translator::langs();
 
-        foreach ( $projects as $project ) {
-            $langs = array_merge( $langs, explode( ',', $project['langs'] ) );
+        if ( empty( $langs ) ) {
+            $langs = array('en');
         }
-
-        $langs = array_unique( $langs );
 
         return $langs;
     }
