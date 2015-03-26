@@ -78,6 +78,15 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function getSizeCachePath($maxwidth=false, $maxheight=false)
     {
+        $Media = $this->_Media; /* @var $Media QUI\Projects\Media */
+        $cdir  = CMS_DIR . $Media->getCacheDir();
+        $file  = $this->getAttribute('file');
+
+        if ( !$maxwidth && !$maxheight ) {
+            return $cdir . $file;
+        }
+
+
         if ( $maxwidth > 1200 ) {
             $maxwidth = 1200;
         }
@@ -86,17 +95,11 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             $maxheight = 1200;
         }
 
+        $extra  = '';
         $params = $this->getResizeSize( $maxwidth, $maxheight );
 
         $width  = $params['width'];
         $height = $params['height'];
-
-        $Media = $this->_Media; /* @var $Media QUI\Projects\Media */
-
-        $cdir = CMS_DIR . $Media->getCacheDir();
-        $file = $this->getAttribute('file');
-
-        $extra = '';
 
         if ( $this->getAttribute('reflection') ) {
             $extra = '_reflection';
