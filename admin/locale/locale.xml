@@ -1175,10 +1175,6 @@
             <de><![CDATA[Wählen Sie bitte eine Gruppe aus.]]></de>
             <en><![CDATA[Please choose a group.]]></en>
         </locale>
-        <locale name="packages.panel.title">
-            <de><![CDATA[System, Plugins und Packet Manager]]></de>
-            <en><![CDATA[System, Plugins and Package Manager]]></en>
-        </locale>
         <locale name="packages.btn.add.server">
             <de><![CDATA[Server hinzufügen]]></de>
             <en><![CDATA[Add server]]></en>
@@ -1250,7 +1246,7 @@
             <en><![CDATA[&nbsp;]]></en>
         </locale>
         <locale name="packages.grid.update.title.package">
-            <de><![CDATA[Packet]]></de>
+            <de><![CDATA[Paket]]></de>
             <en><![CDATA[Package]]></en>
         </locale>
         <locale name="packages.grid.update.title.version.from">
@@ -1326,7 +1322,7 @@
             <en><![CDATA[Install [package]]]></en>
         </locale>
         <locale name="packages.search.grid.title.package">
-            <de><![CDATA[Packet]]></de>
+            <de><![CDATA[Paket]]></de>
             <en><![CDATA[Package]]></en>
         </locale>
         <locale name="packages.search.grid.title.description">
@@ -1334,7 +1330,7 @@
             <en><![CDATA[Description]]></en>
         </locale>
         <locale name="packages.server.win.install.package.title">
-            <de><![CDATA[Packet Installation]]></de>
+            <de><![CDATA[Paket Installation]]></de>
             <en><![CDATA[Package installation]]></en>
         </locale>
         <locale name="packages.server.win.install.package.text">
@@ -2970,11 +2966,11 @@
             <en><![CDATA[SMTP password]]></en>
         </locale>
         <locale name="quiqqer.settings.email.smtp.auth.MAILFrom">
-            <de><![CDATA[Angezeigter Versandname]]></de>
+            <de><![CDATA[Absender E-Mail Adresse]]></de>
             <en><![CDATA[Displayed name]]></en>
         </locale>
         <locale name="quiqqer.settings.email.smtp.auth.MAILFrom.description">
-            <de><![CDATA[Zum Beispiel: Thomas Meier]]></de>
+            <de><![CDATA[Beim Empfänger angezeigte Absender E-Mail Adresse]]></de>
             <en><![CDATA[For example: Thomas Meier]]></en>
         </locale>
         <locale name="quiqqer.settings.email.smtp.auth.MAILReplyTo">
@@ -2982,7 +2978,7 @@
             <en><![CDATA[Reply to email address]]></en>
         </locale>
         <locale name="quiqqer.settings.email.smtp.auth.MAILReplyTo.description">
-            <de><![CDATA[Zum Beispiel: Thomas Meier]]></de>
+            <de><![CDATA[E-Mail Adresse, an welche die Antwort gesendet werden soll.]]></de>
             <en><![CDATA[For example: Thomas Meier]]></en>
         </locale>
         <locale name="quiqqer.settings.auth">
@@ -3373,10 +3369,6 @@
         <locale name="template.project.no.template">
             <de><![CDATA[Kein Template verwenden]]></de>
             <en><![CDATA[Do not use a template]]></en>
-        </locale>
-        <locale name="menu.extras.packages.text">
-            <de><![CDATA[System, Plugins und Packet Manager]]></de>
-            <en><![CDATA[System, Plugins and Package Manager]]></en>
         </locale>
         <locale name="projects.project.site.no.permissions">
             <de><![CDATA[Sie besitzen keine Rechte diese Seite anzuzeigen.]]></de>
@@ -3923,24 +3915,30 @@
             <en><![CDATA[Default layout]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.standard">
-            <de><![CDATA[]]></de>
+            <de><![CDATA[Standard]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="quiqqer.settings.email.smtp.auth.MAILFromText.description">
-            <de><![CDATA[]]></de>
+            <de><![CDATA[Beim Empfänger angezeigter Name des Absenders.]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="quiqqer.settings.email.smtp.auth.MAILFromText">
-            <de><![CDATA[]]></de>
+            <de><![CDATA[Angezeigter Absendername]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="quiqqer.settings.email.queue.desc">
-            <de><![CDATA[]]></de>
+            <de><![CDATA[E-Mails werden so lange in einer Warteschlange gespeichert, bis es sicher ist, dass sie versendet wurden.]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="quiqqer.settings.email.queue">
-            <de><![CDATA[]]></de>
+            <de><![CDATA[Mail-Queue aktivieren]]></de>
             <en><![CDATA[]]></en>
+        </locale>
+    </groups>
+    <groups name="quiqqer/system" datatype="php, js">
+        <locale name="menu.extras.packages.text">
+            <de><![CDATA[System, Plugins und Paket Manager]]></de>
+            <en><![CDATA[System, Plugins and Package Manager]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="php,js">
@@ -3963,6 +3961,10 @@
         <locale name="projects.project.site.btn.deactivate.text">
             <de><![CDATA[Deaktivieren]]></de>
             <en><![CDATA[Deactivate]]></en>
+        </locale>
+        <locale name="packages.panel.title">
+            <de><![CDATA[System, Plugins und Paket Manager]]></de>
+            <en><![CDATA[System, Plugins and Package Manager]]></en>
         </locale>
         <locale name="projects.project.panel.settings.btn.adminSettings">
             <de><![CDATA[Backend Einstellungen]]></de>
