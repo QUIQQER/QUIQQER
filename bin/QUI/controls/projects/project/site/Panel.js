@@ -913,6 +913,8 @@ define('controls/projects/project/site/Panel', [
                             if ( typeOf( Control.setProject ) == 'function' ) {
                                 Control.setProject( Project );
                             }
+
+                            Control.setAttribute( 'Site', self.getSite() );
                         }
 
                     });

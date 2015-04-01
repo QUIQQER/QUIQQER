@@ -78,7 +78,7 @@ define('controls/grid/Grid', [
 
             filterSelectedCls : 'filter',
             multipleSelection : false,
-            editable          : false,   // Grid.addEvent('editcomplete', function(data)
+            editable          : false,   // Grid.addEvent('editcomplete', function(data) // selectable muss "true" sein!
             editondblclick    : false,
             editType          : 'input', // textarea | input
             resizeHeaderOnly  : false,
