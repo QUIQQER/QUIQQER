@@ -14,9 +14,9 @@ QUIQQER is a modular based management system,
 written in PHP / JavaScript from PCSG OhG.
 
 If you search a documentation, please look at www.quiqqer.com.
-The online Documentation about QUIQQER can you find at doc.quiqqer.com.
+The online Documentation about QUIQQER can you find at www.quiqqer.com.
 
-On doc.quiqqer.com you can find installation instructions, usefull help and more informations about QUIQQER.
+On www.quiqqer.com you can find installation instructions, usefull help and more informations about QUIQQER.
 
 ## Thanks
 
@@ -41,15 +41,3 @@ Thanks for all the nice lines of code.
 If we forget somebody, please not hesitate and write us an email.
 
 Henning and Moritz from PCSG / QUIQQER
-
-
-
-
-
-
-Packages
-
-- Desktop Manager
-- Systemcheck
-- Linkchecker
-- patch system
