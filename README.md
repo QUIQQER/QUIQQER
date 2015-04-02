@@ -5,6 +5,9 @@ Copyright PCSG OhG
 www.pcsg.de
 www.quiqqer.com
 
+![QUIQQER dev-dev](https://img.shields.io/badge/QUIQQER-dev-dd1144.svg)
+
+
 ## About QUIQQER
 
 QUIQQER is a modular based management system,
