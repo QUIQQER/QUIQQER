@@ -5,9 +5,9 @@
  * @module classes/projects/project/Site
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require controls/Control
- * @require controls/contextmenu/Menu
- * @require controls/contextmenu/Item
+ * @require qui/QUI
+ * @require qui/classes/DOM
+ * @require Ajax
  *
  * @event onLoad [ this ]
  * @event onGetChildren [ this, {Array} ]
@@ -107,6 +107,52 @@ define('classes/projects/project/Site', [
 
                 if ( "url" in result ) {
                     Site.$url = result.url;
+                }
+
+                if ( "modules" in result &&
+                     "js" in result.modules )
+                {
+                    var onSiteLoad = [],
+                        jsModules  = result.modules.js;
+
+                    for ( var i in jsModules )
+                    {
+                        if ( !jsModules.hasOwnProperty( i ) ) {
+                            continue;
+                        }
+
+                        if ( i == 'onSiteLoad' ) {
+                            onSiteLoad.append( jsModules[ i ] );
+                        }
+                    }
+
+                    if ( onSiteLoad.length )
+                    {
+                        require(onSiteLoad, function()
+                        {
+                            for ( var i = 0, len = onSiteLoad.length; i < len; i++ )
+                            {
+                                if ( typeOf( arguments[ i ] ) == 'class' )
+                                {
+                                    new arguments[ i ]( Site );
+                                    continue;
+                                }
+
+                                if ( typeOf( arguments[ i ] ) == 'function' ) {
+                                    arguments[ i ]( Site );
+                                }
+                            }
+
+
+                            Site.fireEvent( 'load', [ Site ] );
+
+                            if ( typeof onfinish === 'function' ) {
+                                onfinish( Site );
+                            }
+                        });
+                    }
+
+                    return;
                 }
 
                 Site.fireEvent( 'load', [ Site ] );

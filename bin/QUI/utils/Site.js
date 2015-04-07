@@ -95,6 +95,12 @@ define('utils/Site', [
                 value = '';
             }
 
+            var result = ParentSite.fireEvent( 'beforeOpenCreateChild', [ ParentSite ] );
+
+console.log( '###########' );
+console.log( result );
+console.log( event );
+
             require(['qui/controls/windows/Prompt'], function(Prompt)
             {
                 new Prompt({
@@ -109,8 +115,16 @@ define('utils/Site', [
                     autoclose : false,
                     events    :
                     {
+                        onOpen : function(Win)
+                        {
+                            ParentSite.fireEvent( 'openCreateChild', [ Win ] );
+                            Win.resize();
+                        },
+
                         onSubmit : function(value, Win)
                         {
+                            ParentSite.fireEvent( 'openCreateChildSubmit' );
+
                             Site.createChild( value, function(result)
                             {
                                 Win.close();
@@ -133,6 +147,7 @@ define('utils/Site', [
 
                                         require(['qui/controls/windows/Confirm'], function(QUIConfirm)
                                         {
+                                            // #locale
                                             new QUIConfirm({
                                                 title : 'Unerlaubte Zeichen im Namen',
                                                 text  : 'Unerlaubte Zeichen im Namen.',

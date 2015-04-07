@@ -20,6 +20,7 @@ function ajax_site_get($project, $id)
     );
 
     return array(
+        'modules'      => \QUI\Projects\Site\Utils::getAdminSiteModulesFromSite( $Site ),
         'attributes'   => $attributes,
         'has_children' => $Site->hasChildren(),
         'parentid'     => $Site->getParentId(),

@@ -464,6 +464,60 @@ class Utils
     }
 
     /**
+     * Return the admin site modules from site.xml's
+     *
+     * @param QUI\Projects\Site $Site
+     * @return Array|Bool
+     */
+    static function getAdminSiteModulesFromSite($Site)
+    {
+        $Project  = $Site->getProject();
+        $name     = $Project->getName();
+        $lang     = $Project->getLang();
+        $siteType = $Site->getAttribute('type');
+
+        $cache = "site/site-extra-settings/project/{$name}-{$lang}/adminModules/{$siteType}";
+
+        try
+        {
+            return QUI\Cache\Manager::get( $cache );
+
+        } catch (QUI\Exception $Exception) {
+
+        }
+
+        // site type extra xml
+        $type    = explode( ':', $Site->getAttribute( 'type' ) );
+        $dir     = OPT_DIR . $type[ 0 ];
+        $siteXML = $dir .'/site.xml';
+
+        $result = array();
+
+        if ( file_exists( $siteXML ) )
+        {
+            $Dom    = XML::getDomFromXml( $siteXML );
+            $Path   = new \DOMXPath( $Dom );
+
+            // type extra
+            $modules = $Path->query(
+                "//site/types/type[@type='". $type[ 1 ] ."']/admin/js"
+            );
+
+            foreach ( $modules as $Module )
+            {
+                foreach ( $Module->attributes as $Attr ) {
+                    $result['js'][ $Attr->nodeName ][] = $Attr->nodeValue;
+                }
+            }
+        }
+
+        QUI\Cache\Manager::set( $cache , $result );
+
+        return $result;
+    }
+
+
+    /**
      * is the object one of the site objects
      *
      * @param QUI\Projects\Site|QUI\Projects\Site\Edit|QUI\Projects\Site\OnlyDB $Site
