@@ -27,7 +27,7 @@
  * @event onLoadWorkspace [ {self} ]
  */
 
-define([
+define('controls/workspace/Manager', [
 
     'qui/QUI',
     'qui/controls/Control',
@@ -434,6 +434,7 @@ define([
                     MH.addError( 'Workspace not found' );
                 });
 
+                this.Loader.hide();
                 return;
             }
 
@@ -546,7 +547,7 @@ define([
          */
         $useBestWorkspace : function()
         {
-
+            this.Loader.hide();
         },
 
         /**

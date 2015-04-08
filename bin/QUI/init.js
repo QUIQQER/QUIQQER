@@ -198,6 +198,7 @@ require( requireList, function()
                         }
                     }
 
+                    WS.Loader.hide();
 
                     if ( !Bar.getChildren( 'profile' ) ) {
                         return;
