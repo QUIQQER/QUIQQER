@@ -9,6 +9,10 @@
  * @require utils/Panels
  * @require Locale
  * @require Ajax
+ *
+ * @event onBeforeOpenCreateChild [ ParentSite ]
+ * @event onOpenCreateChild [ Win, ParentSite ]
+ * @event onOpenCreateChildSubmit [ value, Win, ParentSite ]
  */
 
 define('utils/Site', [
@@ -113,13 +117,13 @@ define('utils/Site', [
                     {
                         onOpen : function(Win)
                         {
-                            ParentSite.fireEvent( 'openCreateChild', [ Win ] );
+                            ParentSite.fireEvent( 'openCreateChild', [ Win, ParentSite ] );
                             Win.resize();
                         },
 
                         onSubmit : function(value, Win)
                         {
-                            ParentSite.fireEvent( 'openCreateChildSubmit' );
+                            ParentSite.fireEvent( 'openCreateChildSubmit', [ value, Win, ParentSite ] );
 
                             Site.createChild( value, function(result)
                             {
