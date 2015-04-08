@@ -69,6 +69,8 @@ define('classes/projects/project/Site', [
                               Project.getLang() +'-'+
                               id;
 
+            this.$modulesLoaded = false;
+
             this.parent({
                 id : id
             });
@@ -109,9 +111,12 @@ define('classes/projects/project/Site', [
                     Site.$url = result.url;
                 }
 
-                if ( "modules" in result &&
+                if ( Site.$modulesLoaded === false &&
+                     "modules" in result &&
                      "js" in result.modules )
                 {
+                    Site.$modulesLoaded = true;
+
                     var onSiteLoad = [],
                         jsModules  = result.modules.js;
 

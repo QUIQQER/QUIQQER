@@ -95,11 +95,7 @@ define('utils/Site', [
                 value = '';
             }
 
-            var result = ParentSite.fireEvent( 'beforeOpenCreateChild', [ ParentSite ] );
-
-console.log( '###########' );
-console.log( result );
-console.log( event );
+            ParentSite.fireEvent( 'beforeOpenCreateChild', [ ParentSite ] );
 
             require(['qui/controls/windows/Prompt'], function(Prompt)
             {
