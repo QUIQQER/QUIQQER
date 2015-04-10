@@ -48,8 +48,7 @@
         "quiqqer/utils" : "*@dev",
         "quiqqer/installer" : "*@dev",
         "quiqqer/cron" : "*@dev",
-        "quiqqer/log" : "*@dev",
-        "quiqqer/faq": "dev-master"
+        "quiqqer/log" : "*@dev"
     },
 
     "scripts": {
