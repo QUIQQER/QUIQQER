@@ -284,14 +284,21 @@ class Utils
             $height = $attributes['height'];
         }
 
-        if ( strpos( $width, '%') !== false ) {
+        if ( strpos( $width, '%') !== false )
+        {
             $width = false;
+        } else
+        {
+            $width = (int)$width;
         }
 
-        if ( strpos( $height, '%') !== false ) {
+        if ( strpos( $height, '%') !== false )
+        {
             $height = false;
+        } else
+        {
+            $height = (int)$height;
         }
-
 
         try
         {
