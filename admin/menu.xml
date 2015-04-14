@@ -218,7 +218,6 @@
         <item parent="/profile/"
               name="workspaces"
               icon="icon-laptop"
-              require="controls/help/Changelog"
         >
             <locale group="quiqqer/system" var="menu.profile.workspace.text" />
         </item>

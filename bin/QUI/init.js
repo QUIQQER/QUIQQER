@@ -213,6 +213,34 @@ require( requireList, function()
 
                     Workspaces.clear();
 
+                    Object.each(list, function(Entry)
+                    {
+                        var standard = false;
+
+                        if ( "standard" in Entry && Entry.standard && ( Entry.standard ).toInt() ) {
+                            standard = true;
+                        }
+
+                        Workspaces.appendChild(
+                            new QUIContextmenuItem({
+                                text   : Entry.title,
+                                wid    : Entry.id,
+                                icon   : standard ? 'icon-laptop' : false,
+                                events :
+                                {
+                                    onClick : function(Item) {
+                                        WS.loadWorkspace( Item.getAttribute( 'wid' ) );
+                                    }
+                                }
+                            })
+                        );
+                    });
+
+
+                    Workspaces.appendChild(
+                        new QUIContextmenuSeperator({})
+                    );
+
                     Workspaces.appendChild(
                         new QUIContextmenuItem({
                             text   : 'Arbeitsbereiche bearbeiten',
@@ -238,33 +266,6 @@ require( requireList, function()
                             }
                         })
                     );
-
-                    Workspaces.appendChild(
-                        new QUIContextmenuSeperator({})
-                    );
-
-                    Object.each(list, function(Entry)
-                    {
-                        var standard = false;
-
-                        if ( "standard" in Entry && Entry.standard && ( Entry.standard ).toInt() ) {
-                            standard = true;
-                        }
-
-                        Workspaces.appendChild(
-                            new QUIContextmenuItem({
-                                text   : Entry.title,
-                                wid    : Entry.id,
-                                icon   : standard ? 'icon-laptop' : false,
-                                events :
-                                {
-                                    onClick : function(Item) {
-                                        WS.loadWorkspace( Item.getAttribute( 'wid' ) );
-                                    }
-                                }
-                            })
-                        );
-                    });
                 };
 
                 require(['Menu'], function(Menu)
