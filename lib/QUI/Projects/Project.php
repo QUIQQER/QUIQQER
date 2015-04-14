@@ -1446,6 +1446,8 @@ class Project
             $this
         );
 
+        QUI\Utils\System\File::mkfile( USR_DIR . $this->getName() .'/bin/custom.css' );
+
         file_put_contents(
             USR_DIR . $this->getName() .'/bin/custom.css',
             $css
