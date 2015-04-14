@@ -478,7 +478,7 @@
             <en><![CDATA[Are you sure you really want to delete the host [vhost]?]]></en>
         </locale>
         <locale name="system.vhosts.del.window.information">
-            <de><![CDATA[Beachten Sie, der Host Eintrag ist nicht wiederherstellbar und wird unwiederruflich gelöscht]]></de>
+            <de><![CDATA[Achtung! Der Host-Eintrag ist nicht wiederherstellbar und wird unwiderruflich gelöscht]]></de>
             <en><![CDATA[Note the host entry is not recoverable and is deleted irrevocably]]></en>
         </locale>
         <locale name="system.vhosts.edit.sheet.title">
@@ -570,7 +570,7 @@
             <en><![CDATA[For a group]]></en>
         </locale>
         <locale name="permissions.panel.btn.select.site">
-            <de><![CDATA[Für eine einzelne Projekt-Seite]]></de>
+            <de><![CDATA[Für eine Projekt-Seite]]></de>
             <en><![CDATA[For a single project page]]></en>
         </locale>
         <locale name="permissions.panel.btn.select.project">
@@ -578,7 +578,7 @@
             <en><![CDATA[For a project]]></en>
         </locale>
         <locale name="permissions.panel.btn.select.manage">
-            <de><![CDATA[Rechte nur verwalten]]></de>
+            <de><![CDATA[Rechte verwalten]]></de>
             <en><![CDATA[Permission management only]]></en>
         </locale>
         <locale name="permissions.panel.btn.select.open.alt">
@@ -1526,7 +1526,7 @@
             <en><![CDATA[Delete user]]></en>
         </locale>
         <locale name="users.user.window.delete.information">
-            <de><![CDATA[Der Benutzer wird komplett aus dem System entfernt und kann nicht wiederhergestellt werden.]]></de>
+            <de><![CDATA[Der Benutzer wird unwiderruflich aus dem System entfernt und kann nicht wiederhergestellt werden.]]></de>
             <en><![CDATA[The user is completely removed from the system and can not be restored]]></en>
         </locale>
         <locale name="users.user.window.delete.text">
