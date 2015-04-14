@@ -2753,9 +2753,14 @@
             <de><![CDATA[Profil]]></de>
             <en><![CDATA[Profile]]></en>
         </locale>
+
+        <locale name="menu.apps.text">
+            <de><![CDATA[Apps]]></de>
+            <en><![CDATA[Apps]]></en>
+        </locale>
         <locale name="menu.goto.text">
-            <de><![CDATA[Gehe zu ...]]></de>
-            <en><![CDATA[Go to ...]]></en>
+            <de><![CDATA[Verwaltung]]></de>
+            <en><![CDATA[Verwaltung]]></en>
         </locale>
         <locale name="menu.settings.text">
             <de><![CDATA[Einstellungen]]></de>
