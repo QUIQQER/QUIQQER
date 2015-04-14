@@ -749,6 +749,10 @@
             <de><![CDATA[Einstellungen]]></de>
             <en><![CDATA[Settings]]></en>
         </locale>
+        <locale name="projects.project.panel.settings.btn.customCSS">
+            <de><![CDATA[Custom-CSS]]></de>
+            <en><![CDATA[Custom-CSS]]></en>
+        </locale>
         <locale name="projects.project.panel.settings.btn.meta">
             <de><![CDATA[Meta Angaben]]></de>
             <en><![CDATA[Meta data]]></en>

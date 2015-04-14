@@ -173,7 +173,7 @@ define('classes/projects/Project', [
         {
             var self = this;
 
-            Ajax.get('ajax_project_set_config', function(result)
+            Ajax.post('ajax_project_set_config', function(result)
             {
                 self.$config = false;
 

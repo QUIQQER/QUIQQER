@@ -384,6 +384,7 @@ class Project
      * Rechteprüfung
      *
      * @return Bool
+     * @deprecated
      */
     protected function _checkRights()
     {
@@ -1434,13 +1435,44 @@ class Project
     }
 
     /**
+     * Set custom CSS for the project -> set it to the custom.css file
+     *
+     * @param String $css - CSS Data
+     */
+    public function setCustomCSS($css)
+    {
+        Permission::checkProjectPermission(
+            'quiqqer.projects.editCustomCSS',
+            $this
+        );
+
+        file_put_contents(
+            USR_DIR . $this->getName() .'/bin/custom.css',
+            $css
+        );
+    }
+
+    /**
+     * Return the custom css for the project
+     *
+     * @return string
+     */
+    public function getCustomCSS()
+    {
+        if ( file_exists( USR_DIR . $this->getName() .'/bin/custom.css' ) ) {
+            return file_get_contents( USR_DIR . $this->getName() .'/bin/custom.css' );
+        }
+
+        return '';
+    }
+
+    /**
      * Return the last edit date in the project
      *
      * @return Integer
      */
     public function getLastEditDate()
     {
-
         try
         {
             return (int)QUI\Cache\Manager::get(

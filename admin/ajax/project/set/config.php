@@ -8,10 +8,16 @@
  */
 function ajax_project_set_config($project, $params)
 {
-    \QUI\Projects\Manager::setConfigForProject(
-        $project,
-        json_decode( $params, true )
-    );
+    $Project = \QUI\Projects\Manager::getProject( $project );
+    $params  = json_decode( $params, true );
+
+    if ( isset( $params['project-custom-css'] ) )
+    {
+        $Project->setCustomCSS( $params['project-custom-css'] );
+        unset( $params['project-custom-css'] );
+    }
+
+    \QUI\Projects\Manager::setConfigForProject( $project, $params );
 }
 
 \QUI::$Ajax->register(

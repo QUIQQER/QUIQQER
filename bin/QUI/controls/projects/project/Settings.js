@@ -14,6 +14,7 @@
  * @require Projects
  * @require Ajax
  * @require Locale
+ * @require utils/Controls
  * @require css!controls/projects/project/Settings.css
  */
 
@@ -63,6 +64,7 @@ define('controls/projects/project/Settings', [
             'save',
             'del',
             'openSettings',
+            'openCustomCSS',
             'openAdminSettings',
             'openBackup',
             'openWatersign'
@@ -144,6 +146,15 @@ define('controls/projects/project/Settings', [
             });
 
             this.addCategory({
+                name : 'customCSS',
+                text : Locale.get( lg, 'projects.project.panel.settings.btn.customCSS' ),
+                icon : 'icon-css3',
+                events : {
+                    onActive : this.openCustomCSS
+                }
+            });
+
+            this.addCategory({
                 name : 'adminSettings',
                 text : Locale.get( lg, 'projects.project.panel.settings.btn.adminSettings' ),
                 icon : 'icon-gear',
@@ -215,8 +226,7 @@ define('controls/projects/project/Settings', [
                 }
             }
 
-            this.getProject().setConfig(function()
-            {
+            this.getProject().setConfig(function() {
                 self.Loader.hide();
             }, this.$config);
         },
@@ -356,6 +366,47 @@ define('controls/projects/project/Settings', [
         },
 
         /**
+         * Open Custom CSS
+         */
+        openCustomCSS : function()
+        {
+            this.Loader.show();
+
+            var self = this;
+
+            this.getBody().set( 'html', '<form></form>' );
+
+            require([
+                'controls/projects/project/settings/CustomCSS'
+            ], function(CustomCSS)
+            {
+                var css  = false,
+                    Form = self.getBody().getElement( 'form' );
+
+                if ( "project-custom-css" in self.$config ) {
+                    css = self.$config[ "project-custom-css" ];
+                }
+
+                new CustomCSS({
+                    Project : self.getProject(),
+                    css     : css,
+                    events  :
+                    {
+                        onLoad : function() {
+                            self.Loader.hide();
+                        }
+                    }
+                }).inject( Form );
+
+                Form.setStyles({
+                    'float' : 'left',
+                    height  : '100%',
+                    width   : '100%'
+                });
+            });
+        },
+
+        /**
          * Opens the Watermark
          *
          * @method controls/projects/project/Settings#openWatersign
@@ -453,7 +504,7 @@ define('controls/projects/project/Settings', [
             var self = this,
                 name = Category.getAttribute( 'name' );
 
-            if ( name == 'settings' || name == "adminSettings" ) {
+            if ( name == 'settings' || name == "adminSettings" || name == "customCSS" ) {
                 return;
             }
 
