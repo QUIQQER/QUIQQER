@@ -1458,6 +1458,10 @@ define('controls/projects/project/site/Panel', [
 
                         Editor.addEvent( 'onLoaded', self.$onEditorLoad );
 
+                        if ( Editor.isLoaded() ) {
+                            self.$onEditorLoad();
+                        }
+
                     }, {
                         project : Project.getName()
                     });

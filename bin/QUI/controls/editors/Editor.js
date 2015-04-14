@@ -68,6 +68,7 @@ define('controls/editors/Editor', [
 
             this.$Instance  = null;
             this.$Container = null;
+            this.$loaded    = false;
 
             this.addEvents({
                 onLoaded : function()
@@ -83,10 +84,22 @@ define('controls/editors/Editor', [
                     if ( self.getAttribute( 'content' ) ) {
                         self.setContent( self.getAttribute( 'content' ) );
                     }
+
+                    self.$loaded = true;
                 }
             });
 
             this.fireEvent( 'init', [ this ] );
+        },
+
+        /**
+         * is editor loaded?
+         *
+         * @return {Boolean}
+         */
+        isLoaded : function()
+        {
+            return this.$loaded;
         },
 
         /**
