@@ -19,9 +19,10 @@
 
 define('controls/editors/Editor', [
 
-    'qui/controls/Control'
+    'qui/controls/Control',
+    'classes/editor/Manager'
 
-], function(Control)
+], function(Control, EditorManager)
 {
     "use strict";
 
@@ -48,7 +49,8 @@ define('controls/editors/Editor', [
         Type    : 'controls/editors/Editor',
 
         Binds : [
-            '$onDrop'
+            '$onDrop',
+            '$onImport'
         ],
 
         options : {
@@ -63,6 +65,12 @@ define('controls/editors/Editor', [
             var self = this;
 
             this.$Manager = Manager;
+            this.$Elm     = null;
+            this.$Input   = null;
+
+            if ( typeof this.$Manager === 'undefined' ) {
+                this.$Manager = new EditorManager();
+            }
 
             this.parent( options );
 
@@ -86,10 +94,48 @@ define('controls/editors/Editor', [
                     }
 
                     self.$loaded = true;
-                }
+                },
+
+                onImport : this.$onImport
             });
 
             this.fireEvent( 'init', [ this ] );
+        },
+
+        /**
+         * event : on import
+         * thats not optimal, because we must generate a new editor instance with the editor manager
+         */
+        $onImport : function()
+        {
+            var self     = this,
+                nodeName = this.$Elm.nodeName;
+
+            if ( nodeName === 'INPUT' || nodeName === 'TEXTAREA' )
+            {
+                this.$Input = this.$Elm;
+                this.$Elm   = this.create();
+
+                this.$Input.set( 'type', 'hidden' );
+                this.$Elm.wraps( this.$Input );
+            }
+
+            this.getManager().getEditor(null, function(Editor)
+            {
+                Editor.inject( self.$Elm );
+                Editor.setHeight( self.$Elm.getSize().y );
+                Editor.setWidth( self.$Elm.getSize().x );
+
+                if ( self.$Input ) {
+                    Editor.setContent( self.$Input.value );
+                }
+
+                self.addEvent('onGetContent', function()
+                {
+                    self.setAttribute( 'content', Editor.getContent() );
+                    self.$Input.value = self.getAttribute( 'content' );
+                });
+            });
         },
 
         /**
