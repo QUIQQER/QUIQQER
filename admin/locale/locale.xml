@@ -2727,6 +2727,10 @@
             <de><![CDATA[England]]></de>
             <en><![CDATA[England]]></en>
         </locale>
+        <locale name="projects.project.panel.settings.btn.customCSS">
+            <de><![CDATA[Custom-CSS]]></de>
+            <en><![CDATA[Custom-CSS]]></en>
+        </locale>
         <locale name="packages.category.modules">
             <de><![CDATA[Module]]></de>
             <en><![CDATA[Modules]]></en>
@@ -2750,8 +2754,8 @@
             <en><![CDATA[Profile]]></en>
         </locale>
         <locale name="menu.goto.text">
-            <de><![CDATA[Gehe zu ...]]></de>
-            <en><![CDATA[Go to ...]]></en>
+            <de><![CDATA[Verwaltung]]></de>
+            <en><![CDATA[Verwaltung]]></en>
         </locale>
         <locale name="menu.settings.text">
             <de><![CDATA[Einstellungen]]></de>
@@ -3901,6 +3905,10 @@
         <locale name="projects.project.site.btn.delete.title">
             <de><![CDATA[Löschen Sie die Seite, die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden]]></de>
             <en><![CDATA[Delete the page, the page is placed in the trash and can be restored]]></en>
+        </locale>
+        <locale name="menu.apps.text">
+            <de><![CDATA[Apps]]></de>
+            <en><![CDATA[Apps]]></en>
         </locale>
         <locale name="projects.project.site.panel.information.layout">
             <de><![CDATA[Layout]]></de>
