@@ -528,14 +528,23 @@ class DOM
      * if no <locale exist, it return the nodeValue
      *
      * @param \DOMNode|\DOMElement $Node
-     * @return String
+     * @param Bool $translate - direct translation? default = true
+     * @return String|Array
      */
-    static function getTextFromNode(\DOMNode $Node)
+    static function getTextFromNode(\DOMNode $Node, $translate=true)
     {
         $loc = $Node->getElementsByTagName( 'locale' );
 
         if ( !$loc->length ) {
             return self::parseVar( trim( $Node->nodeValue ) );
+        }
+
+        if ( $translate === false )
+        {
+            return array(
+                $loc->item( 0 )->getAttribute( 'group' ),
+                $loc->item( 0 )->getAttribute( 'var' )
+            );
         }
 
         return QUI::getLocale()->get(
