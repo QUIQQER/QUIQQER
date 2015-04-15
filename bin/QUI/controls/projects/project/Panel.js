@@ -81,14 +81,16 @@ define('controls/projects/project/Panel', [
                 name    : 'projects-panel',
                 project : false,
                 lang    : false,
-                title   : Locale.get(
-                    'quiqqer/system',
-                    'projects.project.panel.title'
-                ),
-                icon : 'icon-home'
+                icon    : 'icon-home'
             });
 
             this.parent( options );
+
+            // must be after this.parent(), because locale must be set
+            // and maybe the title comes from the serialize cache
+            this.setAttributes({
+                title : Locale.get( 'quiqqer/system', 'projects.project.panel.title' )
+            });
 
             this.$Map         = null;
             this.$projectmaps = {};
