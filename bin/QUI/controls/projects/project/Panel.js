@@ -105,6 +105,23 @@ define('controls/projects/project/Panel', [
         },
 
         /**
+         * import the saved attributes and the data
+         *
+         * @method controls/projects/project/Panel#unserialize
+         * @param {Object} data
+         */
+        unserialize : function(data)
+        {
+            this.parent( data );
+
+            // must be after this.parent(), because locale must be set
+            // and maybe the title comes from the serialize cache
+            this.setAttributes({
+                title : Locale.get( 'quiqqer/system', 'projects.project.panel.title' )
+            });
+        },
+
+        /**
          * Create the project panel body
          *
          * @method controls/projects/project/Panel#$onCreate
@@ -292,11 +309,11 @@ define('controls/projects/project/Panel', [
                     // no projects exists
                     var Body = self.getBody();
 
-                    Body.set( 'html', '<p>Leider existieren noch keine Projekte</p>' );
+                    Body.set( 'html', '<p>Leider existieren noch keine Projekte</p>' ); // #locale
 
                     new QUIButton({
                         textimage : 'icon-home',
-                        text : 'Projekt erstellen',
+                        text : 'Projekt erstellen', // #locale
                         events :
                         {
                             onClick : function()
