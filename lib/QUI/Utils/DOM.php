@@ -9,6 +9,7 @@ namespace QUI\Utils;
 use QUI;
 use QUI\Projects\Site\Utils;
 use QUI\Controls\Toolbar;
+use QUI\Utils\Security\Orthos;
 
 /**
  * QUIQQER DOM Helper
@@ -1050,18 +1051,30 @@ class DOM
         $type    = 'text';
         $class   = '';
         $dataQui = '';
+        $data    = '';
 
         if ( $Input->getAttribute( 'type' ) ) {
             $type = $Input->getAttribute( 'type' );
+        }
+
+        $attributes = $Input->attributes;
+
+        foreach ( $attributes as $Attribute )
+        {
+            /* @var $Attribute \DOMAttr */
+            $name  = Orthos::clear( $Attribute->name );
+            $value = Orthos::clear( $Attribute->value );
+
+            if ( strpos( $name, 'data-' ) !== false ) {
+                $data .= " {$name}=\"{$value}\"";
+            }
         }
 
         if ( $Input->getAttribute( 'data-qui') )
         {
             $dataQui = ' data-qui="'. $Input->getAttribute( 'data-qui') .'"';
 
-            // qui options
-            $attributes = $Input->attributes;
-
+            // qui options -> duplicated? -> deprecated
             foreach ( $attributes as $Attribute )
             {
                 /* @var $Attribute \DOMAttr */
@@ -1072,7 +1085,6 @@ class DOM
                     $dataQui .= " {$name}=\"{$value}\"";
                 }
             }
-
         }
 
         if ( $Input->getAttribute( 'class' ) ) {
@@ -1100,6 +1112,7 @@ class DOM
                            id="'. $id .'"
                            '. $class .'
                            '. $dataQui .'
+                           '. $data .'
                     />';
 
         if ( $type == 'checkbox' || $type == 'radio' )
