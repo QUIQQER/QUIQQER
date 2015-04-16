@@ -2727,6 +2727,10 @@
             <de><![CDATA[Gruppe ist deaktiviert. Per Klick auf den Button aktivieren Sie die Gruppe.]]></de>
             <en><![CDATA[Group is inactive. Click on the button to activate the group.]]></en>
         </locale>
+        <locale name="groups.panel.group.is.active">
+            <de><![CDATA[Gruppe ist aktiviert. Per Klick auf den Button deaktivieren Sie die Gruppe.]]></de>
+            <en><![CDATA[Group is active. Click on the button to disable the group.]]></en>
+        </locale>
         <locale name="packages.category.modules">
             <de><![CDATA[Module]]></de>
             <en><![CDATA[Modules]]></en>
