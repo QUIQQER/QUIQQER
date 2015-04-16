@@ -617,6 +617,20 @@ define('controls/users/Panel', [
             }
 
             this.getGrid().setWidth( Body.getSize().x - 40 );
+
+            
+            // resize switches
+            var i, len, Control;
+            var switches = Body.getElements('.qui-switch');
+
+            for ( i = 0, len = switches.length; i < len; i++ )
+            {
+                Control = QUI.Controls.getById( switches[ i ].get('data-quiid') );
+
+                if ( Control ) {
+                    Control.resize();
+                }
+            }
         },
 
         /**

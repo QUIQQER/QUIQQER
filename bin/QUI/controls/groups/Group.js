@@ -72,9 +72,9 @@ define('controls/groups/Group', [
             this.$UserGrid = null;
 
             this.addEvents({
-                'onCreate'  : this.$onCreate,
-                'onDestroy' : this.$onDestroy,
-                'onResize'  : this.$onResize
+                onCreate  : this.$onCreate,
+                onDestroy : this.$onDestroy,
+                onResize  : this.$onResize
             });
 
             this.parent();
@@ -183,7 +183,6 @@ define('controls/groups/Group', [
                 }
 
                 self.$onGroupRefresh();
-
             });
         },
 
@@ -210,7 +209,7 @@ define('controls/groups/Group', [
          */
         $onResize : function()
         {
-
+            console.log( 'resize' );
         },
 
         /**
