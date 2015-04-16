@@ -3,7 +3,7 @@
 /**
  * Delete Users
  *
- * @param JSONArray|Int $uid - Users-IDs
+ * @param String|Int $uid - JSONArray of Users-IDs, or one User-ID
  * @return Bool
  */
 function ajax_users_delete($uid)

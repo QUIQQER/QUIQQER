@@ -3,7 +3,7 @@
 /**
  * Switch the user status of the users
  *
- * @param {JSON Integer|JSON Array} $uid
+ * @param String $uid - JSON Array | JSON Integer
  * @return Array
  */
 function ajax_users_switchstatus($uid)

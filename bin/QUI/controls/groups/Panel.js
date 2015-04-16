@@ -752,12 +752,12 @@ define('controls/groups/Panel', [
                 // group is active
                 if ( status == 1 )
                 {
-                    Status.setAttribute( 'alt', this.getAttribute( 'active_text' ) );
+                    Status.setAttribute( 'title', this.getAttribute( 'active_text' ) );
                     continue;
                 }
 
                 // group is deactive
-                Status.setAttribute( 'alt', this.getAttribute( 'deactive_text' ) );
+                Status.setAttribute( 'title', this.getAttribute( 'deactive_text' ) );
             }
         },
 

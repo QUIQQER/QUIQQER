@@ -4,10 +4,10 @@
  * Benutzer speichern
  *
  * @param Int $uid - Benutzer-ID
- * @param JSON String $attributes - Attributes
+ * @param String $attributes - JSON String of Attributes
  * @return Bool
  */
-function ajax_users_save($uid, $attributes, $rights)
+function ajax_users_save($uid, $attributes)
 {
     $User       = \QUI::getUsers()->get( $uid );
     $attributes = json_decode( $attributes, true );
@@ -35,13 +35,13 @@ function ajax_users_save($uid, $attributes, $rights)
 
     \QUI::getMessagesHandler()->addInformation(
         'Der Benutzer '. $User->getName() .' ('. $User->getId() .') wurde erfolgreich gespeichert'
-    );
+    ); // #locale
 
     return true;
 }
 
 \QUI::$Ajax->register(
     'ajax_users_save',
-    array( 'uid', 'attributes', 'rights' ),
+    array( 'uid', 'attributes' ),
     'Permission::checkSU'
 );
