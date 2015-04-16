@@ -1093,14 +1093,6 @@
             <de><![CDATA[Gruppenverwaltung]]></de>
             <en><![CDATA[Group manager]]></en>
         </locale>
-        <locale name="groups.panel.btn.activate">
-            <de><![CDATA[Gruppe aktivieren]]></de>
-            <en><![CDATA[Activate group]]></en>
-        </locale>
-        <locale name="groups.panel.btn.deactivate">
-            <de><![CDATA[Gruppe deaktivieren]]></de>
-            <en><![CDATA[Deactivate group]]></en>
-        </locale>
         <locale name="groups.panel.btn.search">
             <de><![CDATA[Gruppe suche]]></de>
             <en><![CDATA[Search group]]></en>
@@ -1660,12 +1652,12 @@
                 Click here to end the search and to display all users again.]]></en>
         </locale>
         <locale name="users.panel.user.is.active">
-            <de><![CDATA[Benutzer ist aktiviert]]></de>
-            <en><![CDATA[User is active]]></en>
+            <de><![CDATA[Benutzer ist aktiviert. Per Klick auf den Button deaktivieren Sie den Benutzer.]]></de>
+            <en><![CDATA[User is active. Click on the button to disable the user.]]></en>
         </locale>
         <locale name="users.panel.user.is.deactive">
-            <de><![CDATA[Benutzer ist deaktiviert]]></de>
-            <en><![CDATA[User is deactive]]></en>
+            <de><![CDATA[Benutzer ist deaktiviert. Per Klick auf den Button aktivieren Sie den Benutzer.]]></de>
+            <en><![CDATA[User is inactive. Click on the button to activate the user.]]></en>
         </locale>
         <locale name="users.panel.btn.search.alt">
             <de><![CDATA[Benutzer suchen]]></de>
@@ -2730,6 +2722,10 @@
         <locale name="projects.project.panel.settings.btn.customCSS">
             <de><![CDATA[Custom-CSS]]></de>
             <en><![CDATA[Custom-CSS]]></en>
+        </locale>
+        <locale name="groups.panel.group.is.deactive">
+            <de><![CDATA[Gruppe ist deaktiviert. Per Klick auf den Button aktivieren Sie die Gruppe.]]></de>
+            <en><![CDATA[Group is inactive. Click on the button to activate the group.]]></en>
         </locale>
         <locale name="packages.category.modules">
             <de><![CDATA[Module]]></de>

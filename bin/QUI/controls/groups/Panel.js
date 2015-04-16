@@ -118,8 +118,8 @@ define('controls/groups/Panel', [
             });
 
             this.setAttributes({
-                active_text   : Locale.get( lg, 'groups.panel.btn.activate' ),
-                deactive_text : Locale.get( lg, 'groups.panel.btn.deactivate' )
+                active_text   : Locale.get( lg, 'groups.panel.group.is.active' ),
+                deactive_text : Locale.get( lg, 'groups.panel.group.is.deactive' )
             });
 
             var self = this;
