@@ -618,7 +618,7 @@ define('controls/users/Panel', [
 
             this.getGrid().setWidth( Body.getSize().x - 40 );
 
-            
+
             // resize switches
             var i, len, Control;
             var switches = Body.getElements('.qui-switch');

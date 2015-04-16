@@ -209,7 +209,7 @@ define('controls/groups/Group', [
          */
         $onResize : function()
         {
-            console.log( 'resize' );
+            
         },
 
         /**
