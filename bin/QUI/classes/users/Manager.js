@@ -53,7 +53,7 @@ define('classes/users/Manager', [
          */
         get : function(uid)
         {
-            uid = ( uid ).toInt();
+            uid = parseInt( uid );
 
             if ( uid === 0 ) {
                 return new Nobody();
