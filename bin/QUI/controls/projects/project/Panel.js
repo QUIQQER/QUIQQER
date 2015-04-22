@@ -68,9 +68,11 @@ define('controls/projects/project/Panel', [
         Type    : 'controls/projects/project/Panel',
 
         Binds : [
+            'refresh',
             '$onCreate',
             '$onInject',
             '$onResize',
+            '$onDestroy',
             '$openSitePanel'
         ],
 
@@ -97,10 +99,19 @@ define('controls/projects/project/Panel', [
             this.$Filter      = null;
             this.$Button      = null;
 
+            this.$ProjectList = null;
+            this.$ProjectContainer = null;
+
+            Projects.addEvents({
+                onCreate : this.refresh, // on project create
+                onDelete : this.refresh // on project delete
+            });
+
             this.addEvents({
-                onCreate : this.$onCreate,
-                onInject : this.$onInject,
-                onResize : this.$onResize
+                onCreate  : this.$onCreate,
+                onInject  : this.$onInject,
+                onResize  : this.$onResize,
+                onDestroy : this.$onDestroy
             });
         },
 
@@ -122,6 +133,22 @@ define('controls/projects/project/Panel', [
         },
 
         /**
+         * refresh the project list
+         */
+        refresh : function()
+        {
+            if (!this.$ProjectList) {
+                return;
+            }
+
+            if (this.$ProjectList.getStyle('display') == 'none') {
+                return;
+            }
+
+            this.createList();
+        },
+
+        /**
          * Create the project panel body
          *
          * @method controls/projects/project/Panel#$onCreate
@@ -140,15 +167,16 @@ define('controls/projects/project/Panel', [
                 '<div class="project-search"></div>'
             );
 
-            var Content   = this.getBody(),
-                List      = Content.getElement( '.project-list' ),
-                Container = Content.getElement( '.project-container' );
+            var Content = this.getBody();
 
-            Container.setStyles({
+            this.$ProjectContainer = Content.getElement( '.project-container' );
+            this.$ProjectList = Content.getElement( '.project-list' );
+
+            this.$ProjectContainer.setStyles({
                 height : '100%'
             });
 
-            List.setStyles({
+            this.$ProjectList.setStyles({
                 left : -300
             });
 
@@ -172,7 +200,7 @@ define('controls/projects/project/Panel', [
                             result[ 0 ].getElm()
                         );
 
-                    }.bind( Container )
+                    }.bind( this.$ProjectContainer )
                 }
             }).inject( Content.getElement( '.project-search' ) );
 
@@ -354,6 +382,15 @@ define('controls/projects/project/Panel', [
                 'height',
                 height - Search.getComputedSize().totalHeight
             );
+        },
+
+        /**
+         * event destroy
+         */
+        $onDestroy : function()
+        {
+            Projects.removeEvent('onCreate', this.refresh);
+            Projects.removeEvent('onDelete', this.refresh);
         },
 
         /**

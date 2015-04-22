@@ -67,6 +67,10 @@ define('controls/projects/Manager', [
                 onResize : this.$onResize
             });
 
+            Projects.addEvents({
+                onDelete : this.openList
+            });
+
             this.parent( options );
         },
 
@@ -96,6 +100,14 @@ define('controls/projects/Manager', [
             });
 
             this.getCategoryBar().firstChild().click();
+        },
+
+        /**
+         * event : on destroy
+         */
+        $onDestroy : function()
+        {
+            Projects.removeEvent('onDelete', this.openList);
         },
 
         /**
@@ -228,11 +240,14 @@ define('controls/projects/Manager', [
 
             UtilsTemplate.get('project/create', function(result)
             {
+                var Form;
                 var Body = self.getBody();
 
                 Body.set( 'html', result );
 
-                Body.getElement( 'form' ).addEvents({
+                Form = Body.getElement( 'form' );
+
+                Form.addEvents({
                     submit : function(event) {
                         event.stop();
                     }
@@ -244,11 +259,10 @@ define('controls/projects/Manager', [
                         onClick : self.$submitCreateProject
                     }
                 }).inject(
-                    new Element('p').inject(
-                        Body.getElement( 'form' )
-                    )
+                    new Element('p').inject( Form )
                 );
 
+                Form.getElement('[name="project"]').focus();
 
                 self.getCategoryBar().getElement( 'add_project' ).setActive();
                 self.Loader.hide();
@@ -265,12 +279,16 @@ define('controls/projects/Manager', [
             var self = this,
                 Form = this.getBody().getElement( 'form' );
 
+            self.Loader.show();
+
             Projects.createNewProject(
                 Form.elements.project.value,
                 Form.elements.lang.value,
                 Form.elements.template.value,
                 function(result)
                 {
+                    self.Loader.hide();
+
                     if ( !result ) {
                         return;
                     }

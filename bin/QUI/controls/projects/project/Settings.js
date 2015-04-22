@@ -211,7 +211,6 @@ define('controls/projects/project/Settings', [
             // clear config for projects
             var name = this.getProject().getName();
 
-
             for ( var project in Projects.$projects )
             {
                 if ( !Projects.$projects.hasOwnProperty( project ) ) {
@@ -221,7 +220,7 @@ define('controls/projects/project/Settings', [
                 if ( project.match( name +'-' ) )
                 {
                     if ( "$config" in Projects.$projects[ project ] ) {
-                        Projects.$projects[ project].$config = false;
+                        Projects.$projects[ project ].$config = false;
                     }
                 }
             }
@@ -244,6 +243,8 @@ define('controls/projects/project/Settings', [
                 text  : Locale.get( lg, 'projects.project.project.delete.window.text' ),
                 texticon : 'icon-exclamation-sign',
                 information : Locale.get( lg, 'projects.project.project.delete.window.information' ),
+                maxWidth: 450,
+                maxHeight: 300,
                 events :
                 {
                     onSubmit : function()
@@ -253,15 +254,14 @@ define('controls/projects/project/Settings', [
                             title : Locale.get( lg, 'projects.project.project.delete.window.title' ),
                             text  : Locale.get( lg, 'projects.project.project.delete.window.text.2' ),
                             texticon : 'icon-exclamation-sign',
+                            maxWidth: 450,
+                            maxHeight: 300,
                             events :
                             {
                                 onSubmit : function()
                                 {
-                                    Ajax.post('ajax_project_delete', function()
-                                    {
-
-                                    }, {
-                                        project : self.$Project.getName()
+                                    Projects.deleteProject(self.$Project.getName(), function() {
+                                        self.destroy();
                                     });
                                 }
                             }
@@ -270,7 +270,6 @@ define('controls/projects/project/Settings', [
                 }
             }).open();
         },
-
 
         /**
          * Opens the Settings

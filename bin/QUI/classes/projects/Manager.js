@@ -155,17 +155,58 @@ define('classes/projects/Manager', [
          */
         createNewProject : function(project, lang, template, onfinish)
         {
+            var self = this;
+
             Ajax.post('ajax_project_create', function(result)
             {
                 if ( typeof onfinish !== 'undefined' ) {
                     onfinish( result );
                 }
+
+                self.fireEvent( 'create', [ project, lang ] );
             }, {
                 params : JSON.encode({
                     project  : project,
                     lang     : lang,
                     template : template
                 })
+            });
+        },
+
+        /**
+         * Delete a project
+         *
+         * @param {String} project - name of the project
+         * @param {Function} [callback] - callback function
+         */
+        deleteProject : function(project, callback)
+        {
+            var self    = this,
+                Project = this.get( project );
+
+            Ajax.post('ajax_project_delete', function()
+            {
+                var list = {};
+
+                for ( var pro in self.$projects )
+                {
+                    if ( !self.$projects.hasOwnProperty(pro) ) {
+                        continue;
+                    }
+
+                    if ( !project.contains( pro +'-') ) {
+                        list[ pro ] = self.$projects[ pro ];
+                    }
+                }
+
+                self.$projects = list;
+                self.fireEvent( 'delete', [ project ] );
+
+                if ( typeof callback === 'function' ) {
+                    callback();
+                }
+            }, {
+                project : Project.encode()
             });
         }
     });
