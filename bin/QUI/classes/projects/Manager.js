@@ -198,9 +198,6 @@ define('classes/projects/Manager', [
                         continue;
                     }
 
-                    console.info( project );
-                    console.info( pro +'-' );
-
                     if ( !pro.contains( project +'-') ) {
                         list[ pro ] = self.$projects[ pro ];
                     }
