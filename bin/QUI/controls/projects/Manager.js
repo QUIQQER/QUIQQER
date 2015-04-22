@@ -9,6 +9,9 @@
  * @requires controls/projects/Settings
  * @requires Projects
  * @requires controls/grid/Grid
+ * @require utils/Template
+ * @require Locale
+ * @require css!controls/projects/Manager.css
  */
 
 define('controls/projects/Manager', [

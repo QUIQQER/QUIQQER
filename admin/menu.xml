@@ -59,6 +59,7 @@
         <item parent="/extras/"
               name="projects"
               icon="icon-home"
+              require="controls/projects/Manager"
         >
             <locale group="quiqqer/system" var="menu.extras.projects.text" />
         </item>
