@@ -141,7 +141,7 @@ define('controls/projects/project/Settings', [
                 text : Locale.get( lg, 'projects.project.panel.settings.btn.settings' ),
                 icon : 'icon-gear',
                 events : {
-                    onActive : this.openSettings
+                    onClick : this.openSettings
                 }
             });
 
@@ -150,7 +150,7 @@ define('controls/projects/project/Settings', [
                 text : Locale.get( lg, 'projects.project.panel.settings.btn.customCSS' ),
                 icon : 'icon-css3',
                 events : {
-                    onActive : this.openCustomCSS
+                    onClick : this.openCustomCSS
                 }
             });
 
@@ -159,7 +159,7 @@ define('controls/projects/project/Settings', [
                 text : Locale.get( lg, 'projects.project.panel.settings.btn.adminSettings' ),
                 icon : 'icon-gear',
                 events : {
-                    onActive : this.openAdminSettings
+                    onClick : this.openAdminSettings
                 }
             });
 
@@ -169,18 +169,7 @@ define('controls/projects/project/Settings', [
                     self.addCategory( list[ i ] );
                 }
 
-                self.getProject().getConfig(function(result)
-                {
-                    self.setAttributes({
-                        name  : 'projects-panel',
-                        icon  : 'icon-home',
-                        title : self.getProject().getName()
-                    });
-
-                    self.$config = result;
-                    self.getCategoryBar().firstChild().click();
-                    self.refresh();
-                });
+                self.refresh();
 
             }, {
                 project : this.getProject().encode()
@@ -196,6 +185,32 @@ define('controls/projects/project/Settings', [
 //                }
 //            });
 
+        },
+
+        /**
+         * Refresh the project data
+         */
+        refresh : function()
+        {
+            this.parent();
+            this.Loader.show();
+
+            var self = this;
+
+            this.getProject().getConfig(function(result)
+            {
+                self.setAttributes({
+                    name  : 'projects-panel',
+                    icon  : 'icon-home',
+                    title : self.getProject().getName()
+                });
+
+                self.$config = result;
+
+                self.getCategoryBar().firstChild().click();
+
+                self.Loader.hide();
+            });
         },
 
         /**
@@ -485,7 +500,8 @@ define('controls/projects/project/Settings', [
 
                 self.$Project.setConfig(function()
                 {
-                    self.Loader.hide();
+                    // self.Loader.hide();
+                    self.refresh();
                 }, {
                     langs : langs.join( ',' )
                 });

@@ -157,6 +157,10 @@ define('classes/projects/Project', [
 
                 callback( self.$config );
 
+                require(['Projects'], function(Projects) {
+                    Projects.fireEvent( 'projectSave', [ self ] );
+                });
+
             }, {
                 project : this.getName()
             });
@@ -180,6 +184,8 @@ define('classes/projects/Project', [
                 if ( typeof callback === 'function' ) {
                     callback( result );
                 }
+
+                self.fireEvent( 'save' );
             }, {
                 project : this.getName(),
                 params  : JSON.encode( params || false )

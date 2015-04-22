@@ -18,6 +18,10 @@ function ajax_project_set_config($project, $params)
     }
 
     \QUI\Projects\Manager::setConfigForProject( $project, $params );
+
+    QUI::getMessagesHandler()->addSuccess(
+        QUI::getLocale()->get('quiqqer/system', 'message.project.config.save.success')
+    );
 }
 
 \QUI::$Ajax->register(

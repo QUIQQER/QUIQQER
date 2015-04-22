@@ -8,6 +8,10 @@
  * @require qui/classes/DOM
  * @require classes/projects/Project
  * @require Ajax
+ *
+ * @event onCreate
+ * @event onDelete
+ * @event onProjectSave -> triggerd via project
  */
 
 define('classes/projects/Manager', [
@@ -194,7 +198,10 @@ define('classes/projects/Manager', [
                         continue;
                     }
 
-                    if ( !project.contains( pro +'-') ) {
+                    console.info( project );
+                    console.info( pro +'-' );
+
+                    if ( !pro.contains( project +'-') ) {
                         list[ pro ] = self.$projects[ pro ];
                     }
                 }

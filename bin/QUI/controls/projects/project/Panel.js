@@ -104,7 +104,8 @@ define('controls/projects/project/Panel', [
 
             Projects.addEvents({
                 onCreate : this.refresh, // on project create
-                onDelete : this.refresh // on project delete
+                onDelete : this.refresh, // on project delete
+                onProjectSave : this.refresh // on project saved
             });
 
             this.addEvents({
@@ -391,6 +392,7 @@ define('controls/projects/project/Panel', [
         {
             Projects.removeEvent('onCreate', this.refresh);
             Projects.removeEvent('onDelete', this.refresh);
+            Projects.removeEvent('onProjectSave', this.refresh);
         },
 
         /**

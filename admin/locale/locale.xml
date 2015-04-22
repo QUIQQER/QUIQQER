@@ -3795,6 +3795,10 @@
             <de><![CDATA[Als standard Projekt setzen]]></de>
             <en><![CDATA[Set as default project]]></en>
         </locale>
+        <locale name="message.project.config.save.success">
+            <de><![CDATA[Projekt-Einstellungen wurden erfolgreich gespeichert.]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
         <locale name="template.project.media.file.header">
             <de><![CDATA[Datei Informationen]]></de>
             <en><![CDATA[File information]]></en>
