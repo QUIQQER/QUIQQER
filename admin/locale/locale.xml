@@ -82,7 +82,7 @@
             <en><![CDATA[User ID]]></en>
         </locale>
         <locale name="user_ip_adress">
-            <de><![CDATA[IP Adresse des Benutzers]]></de>
+            <de><![CDATA[IP-Adresse des Benutzers]]></de>
             <en><![CDATA[The user's IP address]]></en>
         </locale>
         <locale name="password">
@@ -178,7 +178,7 @@
             <en><![CDATA[Edit date]]></en>
         </locale>
         <locale name="site_id">
-            <de><![CDATA[Seite-ID]]></de>
+            <de><![CDATA[Seiten-ID]]></de>
             <en><![CDATA[Site ID]]></en>
         </locale>
         <locale name="manually">
@@ -306,7 +306,7 @@
             <en><![CDATA[Logout]]></en>
         </locale>
         <locale name="message.contact.successful" html="true">
-            <de><![CDATA[Vielen Dank für Ihre E-Mail. Wir werden uns bei Ihnen schnellstmöglich melden.]]></de>
+            <de><![CDATA[<p>Vielen Dank f&uuml;r Ihre E-Mail. Wir werden uns schnellstm&ouml;glich bei Ihnen melden.</p>]]></de>
             <en><![CDATA[Thank you for your email. We will contact you as soon as possible.]]></en>
         </locale>
         <locale name="message.setup.successfull">
@@ -332,7 +332,7 @@
             <en><![CDATA[Welcome [username]]]></en>
         </locale>
         <locale name="development.info">
-            <de><![CDATA[System ist im Entwicklungs-Modus]]></de>
+            <de><![CDATA[System ist im Entwicklungsmodus]]></de>
             <en><![CDATA[System is in development mode]]></en>
         </locale>
         <locale name="copy">
@@ -372,11 +372,11 @@
             <en><![CDATA[Really want to delete the project?]]></en>
         </locale>
         <locale name="projects.project.project.delete.window.information">
-            <de><![CDATA[Das Projekt kann nicht wiederhergestellt werden und die Löschung ist unwiderruflich.]]></de>
+            <de><![CDATA[Das Projekt wird unwiderruflich gelöscht. Eine Wiederherstellung ist nicht mehr möglich.]]></de>
             <en><![CDATA[The project can not be restored and the deletion is irrevocable.]]></en>
         </locale>
         <locale name="projects.project.project.delete.window.text.2">
-            <de><![CDATA[Sind Sie sicher das Sie das Projekt löschen möchten?]]></de>
+            <de><![CDATA[Sind Sie sicher, dass Sie das Projekt löschen möchten? Eine Wiederherstellung ist nicht möglich.]]></de>
             <en><![CDATA[Are you sure you want to delete this project?]]></en>
         </locale>
         <locale name="exception.user.wrong.passwords">
@@ -404,11 +404,11 @@
             <en><![CDATA[Do you want to delete the following entries permanently?]]></en>
         </locale>
         <locale name="trash.panel.window.restore.site.question">
-            <de><![CDATA[Bitte wählen Sie die Elternseite aus unter welcher die Seite(n) eingefügt werden soll(en).]]></de>
+            <de><![CDATA[Bitte wählen Sie die Elternseite aus, unter welcher die Seite(n) eingefügt werden soll(en)]]></de>
             <en><![CDATA[Please select the parent page under which the page(s) should be insert.]]></en>
         </locale>
         <locale name="system.vhost.table.hostdata">
-            <de><![CDATA[Host Daten]]></de>
+            <de><![CDATA[Host-Daten]]></de>
             <en><![CDATA[Host data]]></en>
         </locale>
         <locale name="system.vhost.table.languages">
@@ -416,7 +416,7 @@
             <en><![CDATA[Language assignments]]></en>
         </locale>
         <locale name="system.vhost.table.language.noproject.info">
-            <de><![CDATA[Sie müssen ein Projekt auswählen damit Sie Sprachzuweisungen machen können.]]></de>
+            <de><![CDATA[Sie müssen ein Projekt auswählen, damit Sie Sprachzuweisungen machen können]]></de>
             <en><![CDATA[You must select a project so that you can make language assignments.]]></en>
         </locale>
         <locale name="system.vhost.table.language.description">
@@ -460,7 +460,7 @@
             <en><![CDATA[Domain]]></en>
         </locale>
         <locale name="system.vhosts.add.window.title">
-            <de><![CDATA[Neuen Virtuellen-Host hinzufügen]]></de>
+            <de><![CDATA[Neuen Virtuellen Host hinzufügen]]></de>
             <en><![CDATA[Add new virtual host]]></en>
         </locale>
         <locale name="system.vhosts.add.window.information">
@@ -470,7 +470,7 @@
                 For example: www.meine-domain.de or just 404]]></en>
         </locale>
         <locale name="system.vhosts.del.window.title">
-            <de><![CDATA[Virtuellen-Host löschen]]></de>
+            <de><![CDATA[Virtuellen Host löschen]]></de>
             <en><![CDATA[Delete virtual host]]></en>
         </locale>
         <locale name="system.vhosts.del.window.text">
@@ -478,7 +478,7 @@
             <en><![CDATA[Are you sure you really want to delete the host [vhost]?]]></en>
         </locale>
         <locale name="system.vhosts.del.window.information">
-            <de><![CDATA[Achtung! Der Host-Eintrag ist nicht wiederherstellbar und wird unwiderruflich gelöscht]]></de>
+            <de><![CDATA[Achtung! Der Host-Eintrag wird unwiderruflich gelöscht! Eine Wiederherstellung ist nicht mehr möglich!]]></de>
             <en><![CDATA[Note the host entry is not recoverable and is deleted irrevocably]]></en>
         </locale>
         <locale name="system.vhosts.edit.sheet.title">
@@ -490,7 +490,7 @@
             <en><![CDATA[Save changes]]></en>
         </locale>
         <locale name="permissions.panel.title">
-            <de><![CDATA[Zugriffsrechte Manager]]></de>
+            <de><![CDATA[Zugriffsrechtemanager]]></de>
             <en><![CDATA[Permissions-Manager]]></en>
         </locale>
         <locale name="permissions.panel.btn.sitemap.alt">
@@ -546,7 +546,7 @@
             <en><![CDATA[You realy want to delete the permission [right]?]]></en>
         </locale>
         <locale name="permissions.panel.window.delete.information">
-            <de><![CDATA[Das Zugriffsrecht wird unwiderruflich gelöscht.]]></de>
+            <de><![CDATA[Das Zugriffsrecht wird unwiderruflich gelöscht]]></de>
             <en><![CDATA[The permission will be permanently deleted.]]></en>
         </locale>
         <locale name="permissions.panel.window.add.title">
@@ -558,7 +558,7 @@
             <en><![CDATA[Add a permission. For example: my.custom.right]]></en>
         </locale>
         <locale name="permissions.panel.window.add.information">
-            <de><![CDATA[Fügen Sie ein Zugriffsrecht für Gruppen, Benutzer, Medien-Dateien oder Seiten hinzu.]]></de>
+            <de><![CDATA[Fügen Sie ein Zugriffsrecht für Gruppen, Benutzer, Medien-Dateien oder Seiten hinzu]]></de>
             <en><![CDATA[Add a permission for groups, users, media-files or sites]]></en>
         </locale>
         <locale name="permissions.panel.btn.select.user">
@@ -570,7 +570,7 @@
             <en><![CDATA[For a group]]></en>
         </locale>
         <locale name="permissions.panel.btn.select.site">
-            <de><![CDATA[Für eine Projekt-Seite]]></de>
+            <de><![CDATA[Für eine Projektseite]]></de>
             <en><![CDATA[For a single project page]]></en>
         </locale>
         <locale name="permissions.panel.btn.select.project">
@@ -614,7 +614,7 @@
             <en><![CDATA[]]></en>
         </locale>
         <locale name="logs.panel.log.file">
-            <de><![CDATA[Log Datei]]></de>
+            <de><![CDATA[Log-Datei]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="logs.panel.log.title">
@@ -622,11 +622,11 @@
             <en><![CDATA[]]></en>
         </locale>
         <locale name="logs.panel.btn.refresh">
-            <de><![CDATA[Log Datei aktualisieren]]></de>
+            <de><![CDATA[Log-Datei aktualisieren]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="logs.panel.btn.delete.marked">
-            <de><![CDATA[Markierte Log Dateien löschen]]></de>
+            <de><![CDATA[Markierte Log-Dateien löschen]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="logs.panel.btn.open.log">
@@ -638,7 +638,7 @@
             <en><![CDATA[]]></en>
         </locale>
         <locale name="logs.panel.delete.window.text">
-            <de><![CDATA[Möchten Sie die Log Datei wirklich löschen?]]></de>
+            <de><![CDATA[Möchten Sie die Log-Datei wirklich löschen?]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="logs.panel.search.placeholder">
@@ -694,7 +694,7 @@
             <en><![CDATA[Add a toolbar]]></en>
         </locale>
         <locale name="editors.settings.add.window.text">
-            <de><![CDATA[Bitte geben Sie einen neuen Toolbarnamen ein:]]></de>
+            <de><![CDATA[Bitte geben Sie einen neuen Toolbar-Namen ein:]]></de>
             <en><![CDATA[Please enter a new toolbar name:]]></en>
         </locale>
         <locale name="projects.typebutton.title">
@@ -726,7 +726,7 @@
             <en><![CDATA[Create new project]]></en>
         </locale>
         <locale name="projects.project.manager.open.settings">
-            <de><![CDATA[Projekt Einstellungen öffnen]]></de>
+            <de><![CDATA[Projekteinstellungen öffnen]]></de>
             <en><![CDATA[Open project settings]]></en>
         </locale>
         <locale name="projects.project.manager.btn.create.project">
@@ -814,7 +814,7 @@
             <en><![CDATA[Download file]]></en>
         </locale>
         <locale name="projects.project.site.media.filePanel.btn.downloadFile.alt">
-            <de><![CDATA[Die Datei wird in den Papierkorb verschoben und kann wieder hergestellt werden.]]></de>
+            <de><![CDATA[Die Datei wird in den Papierkorb verschoben und kann wieder hergestellt werden]]></de>
             <en><![CDATA[The file is moved to the trash and can be restored.]]></en>
         </locale>
         <locale name="projects.project.site.media.filePanel.window.delete.title">
@@ -830,7 +830,7 @@
             <en><![CDATA[Are you sure you want to delete the file [file]?]]></en>
         </locale>
         <locale name="projects.project.site.media.manager.title">
-            <de><![CDATA[Media Verwaltung]]></de>
+            <de><![CDATA[Mediaverwaltung]]></de>
             <en><![CDATA[Media Manager]]></en>
         </locale>
         <locale name="projects.project.site.media.manager.general.text">
@@ -920,7 +920,7 @@
             <en><![CDATA[Creating a new folder]]></en>
         </locale>
         <locale name="projects.project.site.folder.create.information">
-            <de><![CDATA[Bitte geben Sie den neuen Ordnernamen ein.]]></de>
+            <de><![CDATA[Bitte geben Sie den neuen Ordnernamen ein]]></de>
             <en><![CDATA[Please enter the new folder name.]]></en>
         </locale>
         <locale name="projects.project.site.childrensort.order_field">
@@ -964,7 +964,7 @@
             <en><![CDATA[All projects]]></en>
         </locale>
         <locale name="projects.project.site.panel.btn.permissions">
-            <de><![CDATA[Seiten Zugriffsrechte einstellen]]></de>
+            <de><![CDATA[Seiten-Zugriffsrechte einstellen]]></de>
             <en><![CDATA[Set site permissions]]></en>
         </locale>
         <locale name="projects.project.site.panel.btn.media">
@@ -998,7 +998,7 @@
             <en><![CDATA[Please enter a name for the new page]]></en>
         </locale>
         <locale name="projects.project.site.panel.window.create.information">
-            <de><![CDATA[Sie legen eine neue Seite unter [name].html an.]]></de>
+            <de><![CDATA[Sie legen eine neue Seite unter [name].html an]]></de>
             <en><![CDATA[You create a new page under [name].html.]]></en>
         </locale>
         <locale name="projects.project.site.panel.sort.title">
@@ -1110,7 +1110,7 @@
             <en><![CDATA[Delete group]]></en>
         </locale>
         <locale name="groups.panel.grid.admin">
-            <de><![CDATA[Darf in den Administration]]></de>
+            <de><![CDATA[Darf in die Administration]]></de>
             <en><![CDATA[Allowed to enter the administration]]></en>
         </locale>
         <locale name="groups.panel.search.title">
@@ -1123,7 +1123,7 @@
         </locale>
         <locale name="groups.panel.search.active.message">
             <de><![CDATA[Sucheparameter sind aktiviert.<br />
-                Klicken Sie hier um die Suche zu beenden und alle Gruppen wieder anzeigen zu lassen.]]></de>
+                Klicken Sie hier um die Suche zu beenden und alle Gruppen wieder anzeigen zu lassen]]></de>
             <en><![CDATA[Search parameters are enabled. <br />
                 Click here to stop the searc and view all the groups again.]]></en>
         </locale>
@@ -1164,7 +1164,7 @@
             <en><![CDATA[Group selection]]></en>
         </locale>
         <locale name="groups.sitemap.window.text">
-            <de><![CDATA[Wählen Sie bitte eine Gruppe aus.]]></de>
+            <de><![CDATA[Wählen Sie bitte eine Gruppe aus]]></de>
             <en><![CDATA[Please choose a group.]]></en>
         </locale>
         <locale name="packages.btn.add.server">
@@ -1192,7 +1192,7 @@
             <en><![CDATA[Packages]]></en>
         </locale>
         <locale name="packages.category.server">
-            <de><![CDATA[Server-Verwaltung]]></de>
+            <de><![CDATA[Serververwaltung]]></de>
             <en><![CDATA[Server management]]></en>
         </locale>
         <locale name="packages.category.search">
@@ -2766,7 +2766,7 @@
             <en><![CDATA[QUIQQER]]></en>
         </locale>
         <locale name="menu.settings.media.text">
-            <de><![CDATA[Media Einstellungen]]></de>
+            <de><![CDATA[Media-Einstellungen]]></de>
             <en><![CDATA[Media settings]]></en>
         </locale>
         <locale name="menu.settings.editor.text">
@@ -2810,11 +2810,11 @@
             <en><![CDATA[About QUIQQER]]></en>
         </locale>
         <locale name="menu.help.changelog.text">
-            <de><![CDATA[QUIQQER Changelog]]></de>
+            <de><![CDATA[QUIQQER-Changelog]]></de>
             <en><![CDATA[QUIQQER Changelog]]></en>
         </locale>
         <locale name="quiqqer.settings.title">
-            <de><![CDATA[QUIQQER Einstellungen]]></de>
+            <de><![CDATA[QUIQQER-Einstellungen]]></de>
             <en><![CDATA[QUIQQER Settings]]></en>
         </locale>
         <locale name="quiqqer.settings.general.title">
@@ -2830,7 +2830,7 @@
             <en><![CDATA[Email protection]]></en>
         </locale>
         <locale name="quiqqer.settings.general.globals.mailprotection.description">
-            <de><![CDATA[Alle E-Mail Adressen werden für SpyBots unkenntlich gemacht]]></de>
+            <de><![CDATA[Alle E-Mail-Adressen werden für SpyBots unkenntlich gemacht]]></de>
             <en><![CDATA[All email addresses are defaced for spybots]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.management.title">
@@ -2838,7 +2838,7 @@
             <en><![CDATA[Cache management]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.management.text">
-            <de><![CDATA[Cache Verwaltung]]></de>
+            <de><![CDATA[Cache-Verwaltung]]></de>
             <en><![CDATA[Cache management]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.clear.title">
@@ -2882,7 +2882,7 @@
             <en><![CDATA[Activate Maintenance]]></en>
         </locale>
         <locale name="quiqqer.settings.general.dev.debug">
-            <de><![CDATA[Debug Modus (für Entwickler)]]></de>
+            <de><![CDATA[Debug-Modus (für Entwickler)]]></de>
             <en><![CDATA[Debug mode (for developers)]]></en>
         </locale>
         <locale name="quiqqer.settings.general.dev.development">
@@ -2898,7 +2898,7 @@
             <en><![CDATA[Maximum stability of the packets and the system]]></en>
         </locale>
         <locale name="quiqqer.settings.general.version.title">
-            <de><![CDATA[Version des QUIQQER Systems]]></de>
+            <de><![CDATA[Version des QUIQQER-Systems]]></de>
             <en><![CDATA[Version of the QUIQQER system]]></en>
         </locale>
         <locale name="quiqqer.settings.database">
@@ -2906,35 +2906,35 @@
             <en><![CDATA[Database]]></en>
         </locale>
         <locale name="quiqqer.settings.database.title">
-            <de><![CDATA[Datenbank Einstellungen]]></de>
+            <de><![CDATA[Datenbank-Einstellungen]]></de>
             <en><![CDATA[Database settings]]></en>
         </locale>
         <locale name="quiqqer.settings.database.type">
-            <de><![CDATA[Datenbank Typ]]></de>
+            <de><![CDATA[Datenbank-Typ]]></de>
             <en><![CDATA[Database type]]></en>
         </locale>
         <locale name="quiqqer.settings.database.host">
-            <de><![CDATA[Datenbank Host]]></de>
+            <de><![CDATA[Datenbank-Host]]></de>
             <en><![CDATA[Database host]]></en>
         </locale>
         <locale name="quiqqer.settings.database.name">
-            <de><![CDATA[Datenbank Name]]></de>
+            <de><![CDATA[Datenbank-Name]]></de>
             <en><![CDATA[Database name]]></en>
         </locale>
         <locale name="quiqqer.settings.database.user">
-            <de><![CDATA[Datenbank Benutzer]]></de>
+            <de><![CDATA[Datenbank-Benutzer]]></de>
             <en><![CDATA[Database user]]></en>
         </locale>
         <locale name="quiqqer.settings.database.password">
-            <de><![CDATA[Datenbank Passwort]]></de>
+            <de><![CDATA[Datenbank-Passwort]]></de>
             <en><![CDATA[Database password]]></en>
         </locale>
         <locale name="quiqqer.settings.email.title">
-            <de><![CDATA[E-Mail Einstellungen]]></de>
+            <de><![CDATA[E-Mail-Einstellungen]]></de>
             <en><![CDATA[Email settings]]></en>
         </locale>
         <locale name="quiqqer.settings.email.admin">
-            <de><![CDATA[Administrations E-Mail]]></de>
+            <de><![CDATA[Administrations-E-Mail]]></de>
             <en><![CDATA[Administration email]]></en>
         </locale>
         <locale name="quiqqer.settings.email.admin.desc">
@@ -2942,11 +2942,11 @@
             <en><![CDATA[Error messages / information will be sent to this e-mail]]></en>
         </locale>
         <locale name="quiqqer.settings.email.smtp.title">
-            <de><![CDATA[SMTP Einstellungen]]></de>
+            <de><![CDATA[SMTP-Einstellungen]]></de>
             <en><![CDATA[SMTP settings]]></en>
         </locale>
         <locale name="quiqqer.settings.email.smtp.activasion">
-            <de><![CDATA[SMTP E-Mail Versand aktivieren]]></de>
+            <de><![CDATA[SMTP E-Mail-Versand aktivieren]]></de>
             <en><![CDATA[Activate SMTP e-mail delivery]]></en>
         </locale>
         <locale name="quiqqer.settings.email.smtp.server">
@@ -2970,19 +2970,19 @@
             <en><![CDATA[SMTP password]]></en>
         </locale>
         <locale name="quiqqer.settings.email.smtp.auth.MAILFrom">
-            <de><![CDATA[Absender E-Mail Adresse]]></de>
+            <de><![CDATA[Absender E-Mail-Adresse]]></de>
             <en><![CDATA[Displayed name]]></en>
         </locale>
         <locale name="quiqqer.settings.email.smtp.auth.MAILFrom.description">
-            <de><![CDATA[Beim Empfänger angezeigte Absender E-Mail Adresse]]></de>
+            <de><![CDATA[Beim Empfänger angezeigte Absender E-Mail-Adresse]]></de>
             <en><![CDATA[For example: Thomas Meier]]></en>
         </locale>
         <locale name="quiqqer.settings.email.smtp.auth.MAILReplyTo">
-            <de><![CDATA[Antwort E-Mail Adresse]]></de>
+            <de><![CDATA[Antwort E-Mail-Adresse]]></de>
             <en><![CDATA[Reply to email address]]></en>
         </locale>
         <locale name="quiqqer.settings.email.smtp.auth.MAILReplyTo.description">
-            <de><![CDATA[E-Mail Adresse, an welche die Antwort gesendet werden soll.]]></de>
+            <de><![CDATA[E-Mail-Adresse, an welche die Antwort gesendet werden soll.]]></de>
             <en><![CDATA[For example: Thomas Meier]]></en>
         </locale>
         <locale name="quiqqer.settings.auth">
@@ -2990,7 +2990,7 @@
             <en><![CDATA[Authentication]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.emaillogin">
-            <de><![CDATA[Login über die E-Mail Adresse zulassen]]></de>
+            <de><![CDATA[Login über die E-Mail-Adresse zulassen]]></de>
             <en><![CDATA[Allow login via the email address]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.type">
@@ -3010,11 +3010,11 @@
             <en><![CDATA[Maximum user idle time (max session lifetime)]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.memcached">
-            <de><![CDATA[Memcached Server]]></de>
+            <de><![CDATA[Memcached-Server]]></de>
             <en><![CDATA[Memcached server]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.memcached.text">
-            <de><![CDATA[Geben Sie hier einen Memcached Server an damit die Sitzungsdaten über einen Memcached Server verwaltet werden]]></de>
+            <de><![CDATA[Geben Sie hier einen Memcached-Server an damit die Sitzungsdaten über einen Memcached-Server verwaltet werden]]></de>
             <en><![CDATA[Enter a memcached server to ensure that the session data is managed via a memcached server]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.memcached.host">
@@ -3026,11 +3026,11 @@
             <en><![CDATA[Port]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.memcache">
-            <de><![CDATA[Memcache Server]]></de>
+            <de><![CDATA[Memcache-Server]]></de>
             <en><![CDATA[Memcache server]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.memcache.text">
-            <de><![CDATA[Geben Sie hier einen Memcache Server an damit die Sitzungsdaten über einen Memcache Server verwaltet werden]]></de>
+            <de><![CDATA[Geben Sie hier einen Memcache-Server an damit die Sitzungsdaten über einen Memcache-Server verwaltet werden]]></de>
             <en><![CDATA[Enter a memcache server to ensure that the session data is managed via a memcache server]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.memcache.host">
@@ -3042,15 +3042,15 @@
             <en><![CDATA[Port]]></en>
         </locale>
         <locale name="quiqqer.settings.cache">
-            <de><![CDATA[Cache Verwaltung]]></de>
+            <de><![CDATA[Cache-Verwaltung]]></de>
             <en><![CDATA[Cache management]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.title">
-            <de><![CDATA[Welche Cache Arten sollen genutzt werden?]]></de>
+            <de><![CDATA[Welche Cache-Arten sollen genutzt werden?]]></de>
             <en><![CDATA[Which cache types should be used?]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.text">
-            <de><![CDATA[Cache Arten]]></de>
+            <de><![CDATA[Cache-Arten]]></de>
             <en><![CDATA[Cache types]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.general.nocache">
@@ -3074,7 +3074,7 @@
             <en><![CDATA[SQLite]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.apc.title">
-            <de><![CDATA[APC Einstellungen]]></de>
+            <de><![CDATA[APC-Einstellungen]]></de>
             <en><![CDATA[APC settings]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.apc.text">
@@ -3090,7 +3090,7 @@
             <en><![CDATA[Expiration time (ttl)]]></en>
         </locale>
         <locale name="quiqqer.settings.memcache.title">
-            <de><![CDATA[MemCache Einstellungen]]></de>
+            <de><![CDATA[MemCache-Einstellungen]]></de>
             <en><![CDATA[MemCache settings]]></en>
         </locale>
         <locale name="quiqqer.settings.memcache.text">
@@ -3154,7 +3154,7 @@
             <en><![CDATA[Messages]]></en>
         </locale>
         <locale name="panels.tasks.title">
-            <de><![CDATA[Task Panel]]></de>
+            <de><![CDATA[Task-Panel]]></de>
             <en><![CDATA[Task panel]]></en>
         </locale>
         <locale name="control.contact.name">
@@ -3170,7 +3170,7 @@
             <en><![CDATA[Email]]></en>
         </locale>
         <locale name="control.contact.email.placeholder">
-            <de><![CDATA[Bitte Ihre E-Mail Adresse hier eingeben...]]></de>
+            <de><![CDATA[Bitte Ihre E-Mail-Adresse hier eingeben...]]></de>
             <en><![CDATA[Please enter your email address here ...]]></en>
         </locale>
         <locale name="control.contact.message">
@@ -3186,7 +3186,7 @@
             <en><![CDATA[Template not found.]]></en>
         </locale>
         <locale name="exception.system.health.not.writable">
-            <de><![CDATA[Bitte überprüfen Sie Ihre Dateirechte. Einige Datein und oder Ordner sind nicht beschreibbar.]]></de>
+            <de><![CDATA[Bitte überprüfen Sie Ihre Dateirechte. Einige Dateien und oder Ordner sind nicht beschreibbar.]]></de>
             <en><![CDATA[Please check your file permissions. Some Folders or Files are not writable.]]></en>
         </locale>
         <locale name="exception.contact.params.empty">
@@ -3198,90 +3198,89 @@
             <en><![CDATA[Contact E-mail could not be sent. Please enter a valid email.]]></en>
         </locale>
         <locale name="exception.not.correct.email">
-            <de><![CDATA[Bitte geben Sie eine korrekte E-Mail Adresse an.]]></de>
+            <de><![CDATA[Bitte geben Sie eine korrekte E-Mail-Adresse an]]></de>
             <en><![CDATA[Please enter a valid email address.]]></en>
         </locale>
         <locale name="exception.contact.send.mail" html="true">
-            <de><![CDATA[<p>Leider konnte die Kontakt E-mail nicht versendet werden.</p>
-                <p>Bitte versuchen Sie es zu einem späteren Zeitpunkt.</p>]]></de>
+            <de><![CDATA[<p>Leider konnte die Kontakt E-Mail nicht versendet werden.</p>
+
+<p>Bitte versuchen Sie es zu einem sp&auml;teren Zeitpunkt.</p>]]></de>
             <en><![CDATA[<p>Sorry, cour contact E-mail could not be sent.</p>
                 <p>Please try again at a later.</p>]]></en>
         </locale>
         <locale name="message.password.save.success">
-            <de><![CDATA[Das Passwort wurde erfolgreich gespeichert.]]></de>
+            <de><![CDATA[Das Passwort wurde erfolgreich gespeichert]]></de>
             <en><![CDATA[The password has been successfully saved.]]></en>
         </locale>
         <locale name="exception.lib.user.exist">
-            <de><![CDATA[Dieser Benutzername existiert schon.]]></de>
+            <de><![CDATA[Dieser Benutzername existiert schon]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="exception.lib.user.specify.username">
-            <de><![CDATA[Bitte geben Sie einen Benutzernamen an.]]></de>
+            <de><![CDATA[Bitte geben Sie einen Benutzernamen an]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="exception.lib.user.register.specify.password">
-            <de><![CDATA[Dieser Benutzername existiert bereits, bitte verwenden Sie einen anderen Benutzernamen.]]></de>
+            <de><![CDATA[Dieser Benutzername existiert bereits, bitte verwenden Sie einen anderen Benutzernamen]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="exception.user.register.email.exists">
-            <de><![CDATA[Diese E-Mail Adresse existiert bereits, bitte verwenden Sie eine andere E-Mail Adresse.]]></de>
+            <de><![CDATA[Diese E-Mail-Adresse existiert bereits, bitte verwenden Sie eine andere E-Mail-Adresse]]></de>
             <en><![CDATA[This e-mail address already exists, please use a different email address.]]></en>
         </locale>
         <locale name="exception.lib.user.not.found">
-            <de><![CDATA[Der gewünschte Benutzer wurde im System nicht gefunden.]]></de>
+            <de><![CDATA[Der gewünschte Benutzer wurde im System nicht gefunden]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="exception.lib.user.illegal.signs">
             <de><![CDATA[Der Benutzername enthält unerlaubte Zeichen.
                 Bitte verwenden Sie nur Buchstaben, Zahlen und folgende Zeichen _ ä ö ü ß]]></de>
-            <en><![CDATA[
-
-            ]]></en>
+            <en><![CDATA[]]></en>
         </locale>
         <locale name="exception.lib.user.nobody.add.address">
             <de><![CDATA[Dieser Benutzer existiert nicht, daher kann keine Adresse hinterlegt werden. Bitte legen Sie einen Benutzer an.]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="exception.lib.user.nobody.get.address">
-            <de><![CDATA[Dieser Benutzer hat keine Adresse hinterlegt.]]></de>
+            <de><![CDATA[Dieser Benutzer hat keine Adresse hinterlegt]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="exception.lib.user.wrong.uid">
-            <de><![CDATA[Es wurde keine oder eine falsche Benutzer-Id übergeben.]]></de>
+            <de><![CDATA[Es wurde keine oder eine falsche Benutzer-ID übergeben]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="exception.lib.user.empty.password">
-            <de><![CDATA[Das Passwort darf nicht leer sein. Bitte geben Sie ein korrektes Passwort ein.]]></de>
+            <de><![CDATA[Das Passwort darf nicht leer sein. Bitte geben Sie ein korrektes Passwort ein]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="exception.lib.user.wrong.passwords">
-            <de><![CDATA[Die Passwörter stimmen nicht überein. Bitte geben Sie korrekte Passwörter ein.]]></de>
+            <de><![CDATA[Die Passwörter stimmen nicht überein. Bitte geben Sie korrekte Passwörter ein]]></de>
             <en><![CDATA[The passwords do not match. Please enter correct passwords.]]></en>
         </locale>
         <locale name="exception.lib.user.activasion.wrong.code">
-            <de><![CDATA[Ihr Aktivierungscode ist nicht korrekt.]]></de>
+            <de><![CDATA[Ihr Aktivierungscode ist nicht korrekt]]></de>
             <en><![CDATA[The code for the activation is not correct.]]></en>
         </locale>
         <locale name="exception.lib.user.activasion.no.password">
             <de><![CDATA[Dem Benutzer wurde noch kein Passwort gesetzt.
-                Nur mit einem Passwort kann ein Benutzer aktiviert werden.]]></de>
+                Nur mit einem Passwort kann ein Benutzer aktiviert werden]]></de>
             <en><![CDATA[There has no password been set for this user.
                 Only with a password a user can be activated.]]></en>
         </locale>
         <locale name="exception.lib.user.no.edit.rights">
-            <de><![CDATA[Sie haben keine Berechtigung diesen Benutzer zu editieren.]]></de>
+            <de><![CDATA[Sie haben keine Berechtigung diesen Benutzer zu editieren]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="exception.lib.user.address.not.found">
-            <de><![CDATA[Adresse wurde nicht gefunden.]]></de>
+            <de><![CDATA[Adresse wurde nicht gefunden]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="exception.lib.user.address.mail.wrong.syntax">
-            <de><![CDATA[E-Mail Syntax ist nicht korrekt.]]></de>
+            <de><![CDATA[E-Mail Syntax ist nicht korrekt]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="exception.lib.user.address.no.country">
-            <de><![CDATA[Der Adresse wurde kein Land zugewiesen.]]></de>
+            <de><![CDATA[Der Adresse wurde kein Land zugewiesen]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="exception.login.expire">
@@ -3293,15 +3292,15 @@
             <en><![CDATA[Login failed. Please check the username.]]></en>
         </locale>
         <locale name="message.site.save.success">
-            <de><![CDATA[Die Seite [id] [title] wurde erfogreich gespeichert.]]></de>
+            <de><![CDATA[Die Seite [id] [title] wurde erfolgreich gespeichert]]></de>
             <en><![CDATA[The page [id] [title] are successfuly saved.]]]></en>
         </locale>
         <locale name="exception.site.not.found">
-            <de><![CDATA[Diese Seite konnte nicht gefunden.]]></de>
+            <de><![CDATA[Diese Seite konnte nicht gefunden]]></de>
             <en><![CDATA[This Site could not be found.]]]></en>
         </locale>
         <locale name="exception.permissions.edit">
-            <de><![CDATA[Sie haben keine Rechte um diese Seite zu bearbeiten.]]></de>
+            <de><![CDATA[Sie haben keine Rechte um diese Seite zu bearbeiten]]></de>
             <en><![CDATA[You have no rights to edit this page.]]]></en>
         </locale>
         <locale name="exception.site.is.being.edited.user">
@@ -3313,39 +3312,39 @@
             <en><![CDATA[The page is currently being edited by a other user]]></en>
         </locale>
         <locale name="exception.site.same.name">
-            <de><![CDATA[Eine Seite ([id]) mit dem Namen "[name]" existiert bereits in der gleichen Ebene.]]></de>
+            <de><![CDATA[Eine Seite ([id]) mit dem Namen "[name]" existiert bereits in der gleichen Ebene]]></de>
             <en><![CDATA[A page ([id]) with the name "[name]" already exists on the same level.]]></en>
         </locale>
         <locale name="exception.site.save.error">
-            <de><![CDATA[Es sind Fehler beim Speichern der Seite aufgetreten.]]></de>
+            <de><![CDATA[Es sind Fehler beim Speichern der Seite aufgetreten]]></de>
             <en><![CDATA[Errors occurred while saving the page.]]></en>
         </locale>
         <locale name="permissions.message.save.success">
-            <de><![CDATA[Zugriffsrechte erfolgreich gespeichert.]]></de>
+            <de><![CDATA[Zugriffsrechte erfolgreich gespeichert]]></de>
             <en><![CDATA[Permissions successfuly saved.]]></en>
         </locale>
         <locale name="permissions.message.delete.success">
-            <de><![CDATA[Zugriffsrecht erfolgreich gelöscht.]]></de>
+            <de><![CDATA[Zugriffsrecht erfolgreich gelöscht]]></de>
             <en><![CDATA[Permission successfuly deleted.]]></en>
         </locale>
         <locale name="exception.permission.session.expired">
-            <de><![CDATA[Ihre Sitzung ist abgelaufen, bitte loggen Sie sich ein.]]></de>
+            <de><![CDATA[Ihre Sitzung ist abgelaufen, bitte loggen Sie sich ein]]></de>
             <en><![CDATA[Your session has expired, please login.]]></en>
         </locale>
         <locale name="exception.no.permission">
-            <de><![CDATA[Sie haben nicht die nötigen Rechte um diese Aktion durchzuführen.]]></de>
+            <de><![CDATA[Sie haben nicht die nötigen Rechte um diese Aktion durchzuführen]]></de>
             <en><![CDATA[You have not the necessary rights to perform this action.]]></en>
         </locale>
         <locale name="exception.permissions.exists">
-            <de><![CDATA[Das Zugriffsrecht existiert bereits.]]></de>
+            <de><![CDATA[Das Zugriffsrecht existiert bereits]]></de>
             <en><![CDATA[The Permission still exists.]]></en>
         </locale>
         <locale name="exception.permissions.permission.not.found">
-            <de><![CDATA[Das Zugriffsrecht wurde nicht gefunden.]]></de>
+            <de><![CDATA[Das Zugriffsrecht wurde nicht gefunden]]></de>
             <en><![CDATA[The Permission could not be found.]]></en>
         </locale>
         <locale name="exception.permissions.delete.only.user.permissions">
-            <de><![CDATA[Dieses Zugriffsrecht kann nicht gelöscht werden. Sie können nur Benutzer angelegt Zugriffsrechte löschen.]]></de>
+            <de><![CDATA[Dieses Zugriffsrecht kann nicht gelöscht werden. Sie können nur Benutzer angelegt Zugriffsrechte löschen]]></de>
             <en><![CDATA[This permission can not be deleted. You can only delete user created permissions.]]></en>
         </locale>
         <locale name="template.project.create.header">
@@ -3354,16 +3353,16 @@
         </locale>
         <locale name="template.project.create.description">
             <de><![CDATA[Legen Sie ein neues Projekt im System an.<br />
-                Dieses Projekt kann eine Webseite, Firmenseite, Shop oder auch ein Blog sein.]]></de>
+                Dieses Projekt kann eine Webseite, Firmenseite, Shop oder auch ein Blog sein]]></de>
             <en><![CDATA[Create a new project.<br />
                 This project can be a website, corporate website, shop or even a blog.]]></en>
         </locale>
         <locale name="template.project.label.name">
-            <de><![CDATA[Projekt-Namen]]></de>
+            <de><![CDATA[Projektnamen]]></de>
             <en><![CDATA[Project name]]></en>
         </locale>
         <locale name="template.project.label.language">
-            <de><![CDATA[Projekt-Sprache]]></de>
+            <de><![CDATA[Projektsprache]]></de>
             <en><![CDATA[Project language]]></en>
         </locale>
         <locale name="template.project.label.template">
@@ -3375,11 +3374,11 @@
             <en><![CDATA[Do not use a template]]></en>
         </locale>
         <locale name="projects.project.site.no.permissions">
-            <de><![CDATA[Sie besitzen keine Rechte diese Seite anzuzeigen.]]></de>
+            <de><![CDATA[Sie besitzen keine Rechte diese Seite anzuzeigen]]></de>
             <en><![CDATA[You do not have permission to access this page.]]></en>
         </locale>
         <locale name="projects.project.site.no.edit.permissions">
-            <de><![CDATA[Sie besitzen keine Rechte diese Seite zu bearbeiten.]]></de>
+            <de><![CDATA[Sie besitzen keine Rechte diese Seite zu bearbeiten]]></de>
             <en><![CDATA[You do not have permission to edit this page.]]></en>
         </locale>
         <locale name="projects.project.site.messages.marcate">
@@ -3415,15 +3414,15 @@
             <en><![CDATA[Save]]></en>
         </locale>
         <locale name="projects.project.site.btn.save.help">
-            <de><![CDATA[Speichern Sie Ihre Änderungen.]]></de>
+            <de><![CDATA[Speichern Sie Ihre Änderungen]]></de>
             <en><![CDATA[Save your changes.]]></en>
         </locale>
         <locale name="projects.project.site.btn.save.alt">
-            <de><![CDATA[Speichern Sie Ihre Änderungen.]]></de>
+            <de><![CDATA[Speichern Sie Ihre Änderungen]]></de>
             <en><![CDATA[Save your changes.]]></en>
         </locale>
         <locale name="projects.project.site.btn.save.new">
-            <de><![CDATA[Speichern Sie Ihre Änderungen.]]></de>
+            <de><![CDATA[Speichern Sie Ihre Änderungen]]></de>
             <en><![CDATA[Save your changes.]]></en>
         </locale>
         <locale name="projects.project.site.btn.delete.text">
@@ -3431,15 +3430,15 @@
             <en><![CDATA[Delete]]></en>
         </locale>
         <locale name="projects.project.site.btn.delete.help">
-            <de><![CDATA[Löschen Sie die Seite, die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden]]></de>
+            <de><![CDATA[Löschen Sie die Seite. Die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden]]></de>
             <en><![CDATA[Delete the page, the page is placed in the trash and can be restored]]></en>
         </locale>
         <locale name="projects.project.site.btn.delete.alt">
-            <de><![CDATA[Löschen Sie die Seite, die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden]]></de>
+            <de><![CDATA[Löschen Sie die Seite. Die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden]]></de>
             <en><![CDATA[Delete the page, the page is placed in the trash and can be restored]]></en>
         </locale>
         <locale name="projects.project.site.btn.delete.new">
-            <de><![CDATA[Löschen Sie die Seite, die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden]]></de>
+            <de><![CDATA[Löschen Sie die Seite. Die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden]]></de>
             <en><![CDATA[Delete the page, the page is placed in the trash and can be restored]]></en>
         </locale>
         <locale name="menu.file.search.text">
@@ -3664,12 +3663,12 @@
         </locale>
         <locale name="projects.project.site.panel.settings.publication.info">
             <de><![CDATA[Beachten Sie:<br />
-                Damit die Seite automatisiert veröffentlicht wird, muss im Cron-Manager der Veröffentlichungs-Cron eingerichtet sein.]]></de>
+                Damit die Seite automatisiert veröffentlicht wird, muss in der "Geplante Aufgaben"-Verwaltung die Veröffentlichungs-Aufgabe eingerichtet sein.]]></de>
             <en><![CDATA[Note: <br />
                 To publish the page automatically, Publication Cron must be set in the cron manager.]]></en>
         </locale>
         <locale name="projects.project.site.panel.settings.media">
-            <de><![CDATA[Media Einstellungen]]></de>
+            <de><![CDATA[Media-Einstellungen]]></de>
             <en><![CDATA[Media settings]]></en>
         </locale>
         <locale name="projects.project.site.panel.settings.media.info">
@@ -3689,7 +3688,7 @@
             <en><![CDATA[Projects manager]]></en>
         </locale>
         <locale name="menu.settings.projects.text">
-            <de><![CDATA[Projekt Einstellungen]]></de>
+            <de><![CDATA[Projekteinstellungen]]></de>
             <en><![CDATA[Projects settings]]></en>
         </locale>
         <locale name="exception.project.not.found">
@@ -3765,7 +3764,7 @@
             <en><![CDATA[Visit the contents page and from child pages and index]]></en>
         </locale>
         <locale name="projects.project.settings.panel.settings.title">
-            <de><![CDATA[Projekte Einstellungen]]></de>
+            <de><![CDATA[Projekteinstellungen]]></de>
             <en><![CDATA[Projects settings]]></en>
         </locale>
         <locale name="projects.project.settings.panel.language.default">
@@ -3881,7 +3880,7 @@
             <en><![CDATA[Date format]]></en>
         </locale>
         <locale name="quiqqer.settings.date_formats.title">
-            <de><![CDATA[Globale Datumsformat Einstellungen]]></de>
+            <de><![CDATA[Globales Datumsformat Einstellungen]]></de>
             <en><![CDATA[Global date format settings]]></en>
         </locale>
         <locale name="quiqqer.settings.date_formats.description" html="true">
@@ -3915,7 +3914,7 @@
             <en><![CDATA[Layout]]></en>
         </locale>
         <locale name="projects.project.settings.panel.settings.template.title">
-            <de><![CDATA[Template Einstellungen]]></de>
+            <de><![CDATA[Template-Einstellungen]]></de>
             <en><![CDATA[Template settings]]></en>
         </locale>
         <locale name="projects.project.settings.panel.layout">
@@ -3945,7 +3944,7 @@
     </groups>
     <groups name="quiqqer/system" datatype="php, js">
         <locale name="menu.extras.packages.text">
-            <de><![CDATA[System, Plugins und Paket Manager]]></de>
+            <de><![CDATA[System, Plugins und Paket-Manager]]></de>
             <en><![CDATA[System, Plugins and Package Manager]]></en>
         </locale>
     </groups>
@@ -3975,16 +3974,38 @@
             <en><![CDATA[System, Plugins and Package Manager]]></en>
         </locale>
         <locale name="projects.project.panel.settings.btn.adminSettings">
-            <de><![CDATA[Backend Einstellungen]]></de>
+            <de><![CDATA[Backend-Einstellungen]]></de>
             <en><![CDATA[Backend settings]]></en>
         </locale>
         <locale name="projects.project.settings.panel.adminSettings.title">
-            <de><![CDATA[Projekt Einstellungen für das Backend]]></de>
+            <de><![CDATA[Projekteinstellungen für das Backend]]></de>
             <en><![CDATA[Project settings for the backend]]></en>
         </locale>
         <locale name="projects.project.settings.panel.adminSitemapMax">
             <de><![CDATA[Maximale Anzahl Seiten in der Projekt Sitemap]]></de>
             <en><![CDATA[Maximum number of page in the project Sitemap]]></en>
+        </locale>
+    </groups>
+    <groups name="quiqqer/system" datatype="js.php">
+        <locale name="projects.project.site.select.btn.addSite">
+            <de><![CDATA[Eine Seite hinzufügen]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+        <locale name="projects.project.site.select.btn.addParent">
+            <de><![CDATA[Unterseiten hinzufügen]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+        <locale name="projects.project.site.select.description" html="true">
+            <de><![CDATA[<p><em>Seitentyp hinzuf&uuml;gen</em> f&uuml;gt alle Seiten des ausgew&auml;hlten Seitentyps hinzu.<br />
+<em>Seite hinzuf&uuml;gen</em> f&uuml;gt eine einzelne Seite hinzu.<br />
+<em>Unterseiten hinzuf&uuml;gen</em> f&uuml;gt alle Unterseiten der ausgew&auml;hlten Seite hinzu, es seid denn es ist ein Seitentyp gesetzt. Dann dient der Seitentyp als Filter und es werden nur alle Unterseiten des ausgew&auml;hlten Seitentyps angezeigt.</p>]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+    </groups>
+    <groups name="quiqqer/system" datatype="js,php ">
+        <locale name="projects.project.site.select.btn.addTypes">
+            <de><![CDATA[Seitentyp hinzufügen ]]></de>
+            <en><![CDATA[]]></en>
         </locale>
     </groups>
 </locales>
