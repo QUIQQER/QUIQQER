@@ -102,6 +102,8 @@ define('controls/projects/project/Panel', [
             this.$ProjectList = null;
             this.$ProjectContainer = null;
 
+            this.$__fx_run = false;
+
             Projects.addEvents({
                 onCreate : this.refresh, // on project create
                 onDelete : this.refresh, // on project delete
@@ -141,7 +143,8 @@ define('controls/projects/project/Panel', [
             if (!this.$ProjectList) {
                 return;
             }
-
+console.log(this.$ProjectList);
+console.log(this.$ProjectList.getStyle('display'));
             if (this.$ProjectList.getStyle('display') == 'none') {
                 return;
             }
@@ -402,6 +405,11 @@ define('controls/projects/project/Panel', [
          */
         createList : function()
         {
+            if (this.$__fx_run) {
+                return;
+            }
+
+            this.$__fx_run = true;
             this.Loader.show();
 
             var self = this;
@@ -549,6 +557,7 @@ define('controls/projects/project/Panel', [
                 }, {
                     callback : function()
                     {
+                        self.$__fx_run = false;
                         self.$Button.setActive();
                         self.Loader.hide();
                     }
@@ -563,7 +572,14 @@ define('controls/projects/project/Panel', [
          */
         openProject : function()
         {
-            var Content   = this.getBody(),
+            if (this.$__fx_run) {
+                return;
+            }
+
+            this.$__fx_run = true;
+
+            var self      = true,
+                Content   = this.getBody(),
                 List      = Content.getElement( '.project-list' ),
                 Container = Content.getElement( '.project-content' ),
                 lang      = this.getAttribute( 'lang' ),
@@ -577,6 +593,7 @@ define('controls/projects/project/Panel', [
                 left : List.getSize().x * -1
             }, {
                 callback : function() {
+                    self.$__fx_run = false;
                     List.setStyle( 'display', 'none' );
                 }
             });
