@@ -143,8 +143,7 @@ define('controls/projects/project/Panel', [
             if (!this.$ProjectList) {
                 return;
             }
-console.log(this.$ProjectList);
-console.log(this.$ProjectList.getStyle('display'));
+
             if (this.$ProjectList.getStyle('display') == 'none') {
                 return;
             }
