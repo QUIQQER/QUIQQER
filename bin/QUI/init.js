@@ -143,7 +143,9 @@ require( requireList, function()
     {
         console.error( err +' - '+ url +' - '+ line );
 
-        if ( typeof Error !== 'undefined' ) {
+        if ( parseInt( QUIQQER_CONFIG.globals.development ) &&
+             typeof Error !== 'undefined' )
+        {
             console.warn( new Error().stack );
         }
     });
