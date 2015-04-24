@@ -1033,7 +1033,6 @@ define('controls/projects/project/site/Panel', [
                     callback();
                 }
 
-                this.Loader.hide();
                 return;
             }
 
@@ -1051,7 +1050,6 @@ define('controls/projects/project/site/Panel', [
                     callback();
                 }
 
-                this.Loader.hide();
                 return;
             }
 
