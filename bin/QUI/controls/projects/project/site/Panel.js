@@ -529,6 +529,10 @@ define('controls/projects/project/site/Panel', [
                     this.$CategoryControl.resize();
                 }
             }
+
+            if ( this.getAttribute( 'Editor' ) ) {
+                this.getAttribute( 'Editor').resize();
+            }
         },
 
         /**
@@ -1437,6 +1441,8 @@ define('controls/projects/project/site/Panel', [
                     // draw the editor
                     Editor.setAttribute( 'Panel', self );
                     Editor.setAttribute( 'name', Site.getId() );
+                    Editor.setAttribute( 'showLoader', false );
+                    Editor.setProject( Project );
                     Editor.addEvent( 'onDestroy', self.$onEditorDestroy );
 
                     // set the site content
@@ -1447,33 +1453,13 @@ define('controls/projects/project/site/Panel', [
                     Editor.inject( Body );
                     Editor.setContent( content );
 
-                    // load css files
-                    Ajax.get('ajax_editor_get_projectFiles', function(result)
-                    {
-                        Editor.setAttribute( 'bodyId', result.bodyId );
-                        Editor.setAttribute( 'bodyClass', result.bodyClass );
+                    self.$startEditorPeriodicalSave();
 
-                        var cssFiles = [];
+                    Editor.addEvent( 'onLoaded', self.$onEditorLoad );
 
-                        if ( "cssFiles" in result ) {
-                            cssFiles = result.cssFiles;
-                        }
-
-                        for ( var i = 0, len = cssFiles.length; i < len; i++) {
-                            Editor.addCSS( cssFiles[ i ] );
-                        }
-
-                        self.$startEditorPeriodicalSave();
-
-                        Editor.addEvent( 'onLoaded', self.$onEditorLoad );
-
-                        if ( Editor.isLoaded() ) {
-                            self.$onEditorLoad();
-                        }
-
-                    }, {
-                        project : Project.getName()
-                    });
+                    if ( Editor.isLoaded() ) {
+                        self.$onEditorLoad();
+                    }
                 });
             });
         },

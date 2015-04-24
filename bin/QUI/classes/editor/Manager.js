@@ -152,12 +152,12 @@ Manager.register('package/ckeditor4', {
          * Get the main Editor config
          *
          * @method classes/editor/Manager#getConfig
-         * @param {Function} onfinish - Callback function
+         * @param {Function} callback - Callback function
          */
-        getConfig : function(onfinish)
+        getConfig : function(callback)
         {
             if ( this.$config ) {
-                return onfinish( this.$config );
+                return callback( this.$config );
             }
 
             var self = this;
@@ -166,8 +166,8 @@ Manager.register('package/ckeditor4', {
             {
                 self.$config = result;
 
-                if ( typeof onfinish === 'function' ) {
-                    onfinish( result );
+                if ( typeof callback === 'function' ) {
+                    callback( result );
                 }
             });
         },
@@ -176,22 +176,22 @@ Manager.register('package/ckeditor4', {
          * Get the toolbar for the user
          *
          * @method classes/editor/Manager#getToolbars
-         * @param {Function} onfinish - Callback function
+         * @param {Function} callback - Callback function
          */
-        getToolbar : function(onfinish)
+        getToolbar : function(callback)
         {
-            Ajax.get( 'ajax_editor_get_toolbar', onfinish );
+            Ajax.get( 'ajax_editor_get_toolbar', callback );
         },
 
         /**
          * Get all available toolbar
          *
          * @method classes/editor/Manager#getToolbars
-         * @param {Function} onfinish - Callback function
+         * @param {Function} callback - Callback function
          */
-        getToolbars : function(onfinish)
+        getToolbars : function(callback)
         {
-            Ajax.get( 'ajax_editor_get_toolbars', onfinish );
+            Ajax.get( 'ajax_editor_get_toolbars', callback );
         }
     });
 });

@@ -3162,7 +3162,7 @@
             <en><![CDATA[Name]]></en>
         </locale>
         <locale name="control.contact.name.placeholder">
-            <de><![CDATA[Bitte Ihr Vor- und Nachnamen hier eingeben...]]></de>
+            <de><![CDATA[Ihr vor- und Nachname...]]></de>
             <en><![CDATA[Please enter Your First and Last Name here ...]]></en>
         </locale>
         <locale name="control.contact.email">
@@ -3170,7 +3170,7 @@
             <en><![CDATA[Email]]></en>
         </locale>
         <locale name="control.contact.email.placeholder">
-            <de><![CDATA[Bitte Ihre E-Mail-Adresse hier eingeben...]]></de>
+            <de><![CDATA[Ihre E-Mail-Adresse...]]></de>
             <en><![CDATA[Please enter your email address here ...]]></en>
         </locale>
         <locale name="control.contact.message">
@@ -3178,7 +3178,7 @@
             <en><![CDATA[Message]]></en>
         </locale>
         <locale name="control.contact.message.placeholder">
-            <de><![CDATA[Ihre Nachricht an uns]]></de>
+            <de><![CDATA[Ihre Nachricht an uns...]]></de>
             <en><![CDATA[Your message to us]]></en>
         </locale>
         <locale name="exception.template.not.found">
@@ -3533,10 +3533,6 @@
             <de><![CDATA[Es wurde keine Gruppen ID übergeben.]]></de>
             <en><![CDATA[No group ID is passed.]]></en>
         </locale>
-        <locale name="month">
-            <de><![CDATA[Monat]]></de>
-            <en><![CDATA[Month]]></en>
-        </locale>
         <locale name="day">
             <de><![CDATA[Tag]]></de>
             <en><![CDATA[Tag]]></en>
@@ -3795,10 +3791,6 @@
             <de><![CDATA[Als standard Projekt setzen]]></de>
             <en><![CDATA[Set as default project]]></en>
         </locale>
-        <locale name="message.project.config.save.success">
-            <de><![CDATA[Projekt-Einstellungen wurden erfolgreich gespeichert.]]></de>
-            <en><![CDATA[]]></en>
-        </locale>
         <locale name="template.project.media.file.header">
             <de><![CDATA[Datei Informationen]]></de>
             <en><![CDATA[File information]]></en>
@@ -3976,6 +3968,10 @@
         <locale name="packages.panel.title">
             <de><![CDATA[System, Plugins und Paket Manager]]></de>
             <en><![CDATA[System, Plugins and Package Manager]]></en>
+        </locale>
+        <locale name="month">
+            <de><![CDATA[Monat]]></de>
+            <en><![CDATA[Month]]></en>
         </locale>
         <locale name="projects.project.panel.settings.btn.adminSettings">
             <de><![CDATA[Backend-Einstellungen]]></de>

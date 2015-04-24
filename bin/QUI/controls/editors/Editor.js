@@ -20,9 +20,11 @@
 define('controls/editors/Editor', [
 
     'qui/controls/Control',
-    'classes/editor/Manager'
+    'qui/controls/loader/Loader',
+    'classes/editor/Manager',
+    'Ajax'
 
-], function(Control, EditorManager)
+], function(QUIControl, QUILoader, EditorManager, QUIAjax)
 {
     "use strict";
 
@@ -45,28 +47,29 @@ define('controls/editors/Editor', [
      */
     return new Class({
 
-        Extends : Control,
+        Extends : QUIControl,
         Type    : 'controls/editors/Editor',
 
         Binds : [
             '$onDrop',
-            '$onImport'
+            '$onImport',
+            '$onInject',
+            '$onLoaded'
         ],
 
         options : {
-            content : '',
-
-            bodyId    : false,  // wysiwyg DOMNode body id
-            bodyClass : false   // wysiwyg DOMNode body css class
+            content    : '',
+            bodyId     : false,  // wysiwyg DOMNode body id
+            bodyClass  : false,   // wysiwyg DOMNode body css class
+            showLoader : true
         },
 
         initialize : function(Manager, options)
         {
-            var self = this;
-
             this.$Manager = Manager;
             this.$Elm     = null;
             this.$Input   = null;
+            this.$Project = null;
 
             if ( typeof this.$Manager === 'undefined' ) {
                 this.$Manager = new EditorManager();
@@ -74,32 +77,110 @@ define('controls/editors/Editor', [
 
             this.parent( options );
 
+            this.Loader = null;
+
             this.$Instance  = null;
             this.$Container = null;
             this.$loaded    = false;
 
             this.addEvents({
-                onLoaded : function()
-                {
-                    if ( self.getAttribute( 'bodyId' ) ) {
-                        self.getDocument().body.id = self.getAttribute( 'bodyId' );
-                    }
-
-                    if ( self.getAttribute( 'bodyClass' ) ) {
-                        self.getDocument().body.className = self.getAttribute( 'bodyClass' );
-                    }
-
-                    if ( self.getAttribute( 'content' ) ) {
-                        self.setContent( self.getAttribute( 'content' ) );
-                    }
-
-                    self.$loaded = true;
-                },
-
-                onImport : this.$onImport
+                onLoaded : this.$onLoaded,
+                onImport : this.$onImport,
+                onInject : this.$onInject
             });
 
             this.fireEvent( 'init', [ this ] );
+        },
+
+        /**
+         * Create the DOMNode of the Editor
+         *
+         * @method controls/editors/Editor#create
+         * @return {HTMLElement} DOMNode Element
+         */
+        create : function()
+        {
+            this.$Elm = new Element('div', {
+                html : '<div class="control-editor-container"></div>',
+                'class' : 'control-editor'
+            });
+
+            this.Loader = new QUILoader().inject( this.$Elm );
+
+            this.$Elm.addClass( 'media-drop' );
+            this.$Elm.set( 'data-quiid', this.getId() );
+
+            this.$Container = this.$Elm.getElement( '.control-editor-container' );
+
+            return this.$Elm;
+        },
+
+        /**
+         * Destroy the editor
+         *
+         * @method controls/editors/Editor#destroy
+         * @fires onDestroy [this]
+         */
+        destroy : function()
+        {
+            this.fireEvent( 'destroy', [ this ] );
+            this.removeEvents();
+
+            this.getManager().destroyEditor( this );
+        },
+
+        /**
+         * load the instance and the settings
+         *
+         * @param {Function} [callback] - callback function
+         */
+        load : function(callback)
+        {
+            var self = this;
+
+            this.getSettings(function(data)
+            {
+                self.setAttribute( 'bodyId', data.bodyId );
+                self.setAttribute( 'bodyClass', data.bodyClass );
+
+                if ( typeof callback === 'function' ) {
+                    callback( data );
+                }
+
+                self.fireEvent( 'load', [ data ] );
+            });
+        },
+
+        /**
+         * event : on loaded
+         */
+        $onLoaded : function()
+        {
+            if ( this.getAttribute( 'bodyId' ) ) {
+                this.getDocument().body.id = this.getAttribute( 'bodyId' );
+            }
+
+            if ( this.getAttribute( 'bodyClass' ) ) {
+                this.getDocument().body.className = this.getAttribute( 'bodyClass' );
+            }
+
+            if ( this.getAttribute( 'content' ) ) {
+                this.setContent( this.getAttribute( 'content' ) );
+            }
+
+            this.Loader.hide();
+        },
+
+        /**
+         * on inject
+         */
+        $onInject : function()
+        {
+            if ( this.getAttribute('showLoader') ) {
+                this.Loader.show();
+            }
+
+            this.load();
         },
 
         /**
@@ -139,6 +220,16 @@ define('controls/editors/Editor', [
         },
 
         /**
+         * Set the internal project
+         *
+         * @param {Object} Project - (classes/projects/Project)
+         */
+        setProject : function(Project)
+        {
+            this.$Project = Project;
+        },
+
+        /**
          * is editor loaded?
          *
          * @return {Boolean}
@@ -160,41 +251,14 @@ define('controls/editors/Editor', [
         },
 
         /**
-         * Draw the editor
+         * Returns the Editor Container for the editor instance
          *
-         * @method controls/editors/Editor#create
-         * @fires onDraw [DOMNode, this]
-         * @return {HTMLElement} DOMNode Element
+         * @method controls/editors/Editor#getContainer
+         * @return {HTMLElement|null} Container
          */
-        create : function()
+        getContainer : function()
         {
-            this.$Elm = new Element('div', {
-                styles : {
-                    width  : '100%',
-                    height : '100%'
-                }
-            });
-
-            this.$Elm.addClass( 'media-drop' );
-            this.$Elm.set( 'data-quiid', this.getId() );
-
-            this.fireEvent( 'draw', [ this.$Elm, this ] );
-
-            return this.$Elm;
-        },
-
-        /**
-         * Destroy the editor
-         *
-         * @method controls/editors/Editor#destroy
-         * @fires onDestroy [this]
-         */
-        destroy : function()
-        {
-            this.fireEvent( 'destroy', [ this ] );
-            this.removeEvents();
-
-            this.getManager().destroyEditor( this );
+            return this.$Container;
         },
 
         /**
@@ -333,6 +397,40 @@ define('controls/editors/Editor', [
         getDocument : function()
         {
             return this.$Elm.getElement( 'iframe' ).contentWindow.document;
+        },
+
+        /**
+         * Get the settings
+         *
+         * @param {Function} [callback] - callback function
+         */
+        getSettings : function(callback)
+        {
+            var Project = this.$Project;
+
+            if ( !Project )
+            {
+                if ( typeof callback === 'function ') {
+                    callback( false );
+                }
+
+                return;
+            }
+
+            // load css files
+            QUIAjax.get([
+                'ajax_editor_get_projectFiles',
+                'ajax_editor_get_toolbar'
+            ], function(projectData, toolbarData)
+            {
+                projectData.toolbar = toolbarData;
+
+                if ( typeof callback === 'function' ) {
+                    callback( projectData );
+                }
+            }, {
+                project : Project.getName()
+            });
         },
 
         /**
