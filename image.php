@@ -14,20 +14,17 @@ if (isset($_REQUEST['project']) && isset($_REQUEST['id'])) {
         $file = $File->getAttribute('file');
         $image = false;
 
-        /*
-        if (isset($_REQUEST['admin']) && $_REQUEST['admin'] == 1 && $Obj->getType() == 'IMAGE')
-        {
-            if (!isset($_REQUEST['width'])) {
-                $_REQUEST['width'] = false;
-            }
+        // admin image request
+        if (isset($_SERVER['HTTP_REFERER'])
+            && strpos($_SERVER['HTTP_REFERER'], $_SERVER['HTTP_HOST']) !== false
+            && strpos($_SERVER['HTTP_REFERER'], URL_SYS_DIR) !== false
+        ) {
+            \QUI\System\Log::writeRecursive($_REQUEST);
 
-            if(!isset($_REQUEST['height'])) {
-                $_REQUEST['height'] = false;
-            }
-
-            $image = $Obj->createAdminCache($_REQUEST['width'], $_REQUEST['height']);
+            $_REQUEST['maxwidth'] = 500;
+            $_REQUEST['maxheight'] = 500;
         }
-        */
+
 
         if ($File->getType() === 'QUI\\Projects\\Media\\Image'
             && (isset($_REQUEST['maxwidth']) || isset($_REQUEST['maxheight']))
@@ -47,9 +44,7 @@ if (isset($_REQUEST['project']) && isset($_REQUEST['id'])) {
         }
 
         if (!$image) {
-            $image
-                =
-                CMS_DIR.'media/sites/'.$Project->getAttribute('name').'/'.$file;
+            $image = CMS_DIR.'media/sites/'.$Project->getName().'/'.$file;
         }
 
         if (!file_exists($image)) {
@@ -75,15 +70,13 @@ if (isset($_REQUEST['project']) && isset($_REQUEST['id'])) {
         fclose($fo_image);
 
         echo $fr_image;
-
-    } catch (\QUI\Exception $e) {
-        // wenn es das Bild nicht mehr gibt
-        header("HTTP/1.0 404 Not Found");
         exit;
-    }
 
-} else {
-    // wenn es das Bild nicht mehr gibt
-    header("HTTP/1.0 404 Not Found");
-    exit;
+    } catch (\QUI\Exception $Exception) {
+
+    }
 }
+
+// wenn es das Bild nicht mehr gibt
+header("HTTP/1.0 404 Not Found");
+exit;
