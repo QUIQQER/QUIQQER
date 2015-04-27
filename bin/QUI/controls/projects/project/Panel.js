@@ -411,6 +411,8 @@ define('controls/projects/project/Panel', [
             this.$__fx_run = true;
             this.Loader.show();
 
+            this.$ProjectContainer.setStyle('overflow', 'hidden');
+
             var self = this;
 
             if ( this.$Map ) {
@@ -421,6 +423,9 @@ define('controls/projects/project/Panel', [
             {
                 if ( !Object.getLength( result ) )
                 {
+                    self.$ProjectContainer.setStyle('overflow', null);
+
+                    self.$__fx_run = false;
                     self.Loader.hide();
                     return;
                 }
@@ -548,15 +553,27 @@ define('controls/projects/project/Panel', [
 
                 Container.inject( List );
 
+                List.setStyles({
+                    boxShadow  : '0 6px 20px 0 rgba(0, 0, 0, 0.19)'
+                });
 
-                List.setStyle( 'display', null );
+                List.setStyles({
+                    display : null,
+                    opacity : 1
+                });
+
 
                 moofx( List ).animate({
-                    left : 0
+                    left    : 0,
+                    opacity : 1
                 }, {
+                    equation : 'ease-in',
+                    duration : 300,
                     callback : function()
                     {
                         self.$__fx_run = false;
+
+                        self.$ProjectContainer.setStyle('overflow', null);
                         self.$Button.setActive();
                         self.Loader.hide();
                     }
@@ -577,7 +594,7 @@ define('controls/projects/project/Panel', [
 
             this.$__fx_run = true;
 
-            var self      = true,
+            var self      = this,
                 Content   = this.getBody(),
                 List      = Content.getElement( '.project-list' ),
                 Container = Content.getElement( '.project-content' ),
@@ -588,14 +605,7 @@ define('controls/projects/project/Panel', [
                     this.getAttribute( 'lang' )
                 );
 
-            moofx( List ).animate({
-                left : List.getSize().x * -1
-            }, {
-                callback : function() {
-                    self.$__fx_run = false;
-                    List.setStyle( 'display', 'none' );
-                }
-            });
+            Container.setStyle('overflow', 'hidden');
 
             Container.set(
                 'html',
@@ -644,13 +654,30 @@ define('controls/projects/project/Panel', [
             this.$Filter.bindSitemap( this.$Sitemap );
 
             this.$Map.inject( Container );
-            this.$Map.open();
 
             this.$Map.getElm().setStyles({
                 margin : '10px 20px'
             });
 
             this.$Button.setNormal();
+
+            List.setStyle( 'boxShadow', '0 6px 20px 0 rgba(0, 0, 0, 0.19)' );
+
+            moofx( List ).animate({
+                left    : List.getSize().x * -1,
+                opacity : 0
+            }, {
+                equation : 'ease-out',
+                duration : 300,
+                callback : function()
+                {
+                    Container.setStyle('overflow', null);
+                    List.setStyle( 'display', 'none' );
+
+                    self.$Map.open();
+                    self.$__fx_run = false;
+                }
+            });
         },
 
         /**
