@@ -16,7 +16,7 @@ use QUI\Projects\Media\Utils as MediaUtils;
  * @package com.pcsg.qui
  *
  * @todo    must be rewrited, spaghetti code :(
- * @todo    comments translating
+ * @todo    translate comments
  *
  * @event   onQUI::Request
  * @event   onQUI::Access
@@ -309,6 +309,9 @@ class Rewrite
             \QUI::getEvents()
                 ->fireEvent('request', array($this, $_REQUEST['_url']));
 
+            $imageNotError = false;
+            $Item = false;
+
             try {
                 $Item = MediaUtils::getElement($_REQUEST['_url']);
 
@@ -318,7 +321,12 @@ class Rewrite
 
                     $size = substr($_REQUEST['_url'], $lastpos_ul,
                         ($pos_dot - $lastpos_ul));
+
                     $part_size = explode('x', $size);
+
+                    if (count($part_size)>2) {
+                        $imageNotError = true;
+                    }
 
                     if (isset($part_size[0])) {
                         $width = (int)$part_size[0];
@@ -332,7 +340,10 @@ class Rewrite
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::addDebug($Exception->getMessage());
 
-                // Falls Bild nicht mehr existiert oder ein falscher Aufruf gemacht wurde
+                $imageNotError = true;
+            }
+
+            if ($Item === false || $imageNotError) {
                 $this->showErrorHeader(404);
                 exit;
             }
