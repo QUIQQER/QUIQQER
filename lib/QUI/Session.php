@@ -20,29 +20,32 @@ use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHan
  *
  * @author www.pcsg.de (Henning Leutz)
  */
-
 class Session
 {
     /**
      * max time life in seconds
+     *
      * @var Integer
      */
     private $_max_life_time = 0;
 
     /**
      * Session handler
+     *
      * @var \Symfony\Component\HttpFoundation\Session\Session
      */
     private $_Session = false;
 
     /**
      * Storage handler
+     *
      * @var \Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
      */
     private $_Storage = false;
 
     /**
      * Database table
+     *
      * @var String
      */
     private $_table;
@@ -52,59 +55,58 @@ class Session
      */
     public function __construct()
     {
-        $this->_table = QUI_DB_PRFX .'sessions';
+        $this->_table = QUI_DB_PRFX.'sessions';
 
         $this->_max_life_time = 1400; // default
 
-        if ( $sess = \QUI::conf( 'session', 'max_life_time' ) ) {
+        if ($sess = \QUI::conf('session', 'max_life_time')) {
             $this->_max_life_time = $sess;
         }
 
-        ini_set( 'session.gc_maxlifetime', $this->_max_life_time );
-        ini_set( 'session.gc_probability', 100 );
+        ini_set('session.gc_maxlifetime', $this->_max_life_time);
+        ini_set('session.gc_probability', 100);
 
 
-        if ( !class_exists( 'NativeSessionStorage' ) )
-        {
-            $nativeSessionFile = OPT_DIR .'symfony/http-foundation/Symfony/Component/HttpFoundation/Session/Storage/NativeSessionStorage.php';
+        if (!class_exists('NativeSessionStorage')) {
+            $nativeSessionFile = OPT_DIR
+                .'symfony/http-foundation/Symfony/Component/HttpFoundation/Session/Storage/NativeSessionStorage.php';
 
-            if ( file_exists( $nativeSessionFile ) )
-            {
+            if (file_exists($nativeSessionFile)) {
                 require_once $nativeSessionFile;
-            } else
-            {
-                throw new \Exception( 'Session File not found '. $nativeSessionFile );
+            } else {
+                throw new \Exception('Session File not found '
+                    .$nativeSessionFile);
             }
 
-            if ( class_exists( '\Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage' ) ) {
-                $this->_Storage = new \Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage( array(), $this->_getStorage() );
+            if (class_exists('\Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage')) {
+                $this->_Storage
+                    = new \Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage(array(),
+                    $this->_getStorage());
             }
 
-        } else
-        {
-            $this->_Storage = new NativeSessionStorage( array(), $this->_getStorage() );
+        } else {
+            $this->_Storage = new NativeSessionStorage(array(),
+                $this->_getStorage());
         }
 
 
-        if ( !class_exists( 'NativeSessionStorage' ) )
-        {
-            $sessionFile = OPT_DIR .'symfony/http-foundation/Symfony/Component/HttpFoundation/Session/Session.php';
+        if (!class_exists('NativeSessionStorage')) {
+            $sessionFile = OPT_DIR
+                .'symfony/http-foundation/Symfony/Component/HttpFoundation/Session/Session.php';
 
-            if ( file_exists( $sessionFile ) )
-            {
+            if (file_exists($sessionFile)) {
                 require_once $sessionFile;
-            } else
-            {
-                throw new \Exception( 'Session File not found '. $sessionFile );
+            } else {
+                throw new \Exception('Session File not found '.$sessionFile);
             }
 
-            if ( class_exists( '\Symfony\Component\HttpFoundation\Session\Session' ) ) {
-                $this->_Session = new \Symfony\Component\HttpFoundation\Session\Session( $this->_Storage );
+            if (class_exists('\Symfony\Component\HttpFoundation\Session\Session')) {
+                $this->_Session
+                    = new \Symfony\Component\HttpFoundation\Session\Session($this->_Storage);
             }
 
-        } else
-        {
-            $this->_Session = new SymfonySession( $this->_Storage );
+        } else {
+            $this->_Session = new SymfonySession($this->_Storage);
         }
     }
 
@@ -115,32 +117,30 @@ class Session
      */
     protected function _getStorage()
     {
-        $memcached_host = \QUI::conf( 'session', 'memcached_host' );
-        $memcached_port = \QUI::conf( 'session', 'memcached_host' );
+        $memcached_host = \QUI::conf('session', 'memcached_host');
+        $memcached_port = \QUI::conf('session', 'memcached_host');
 
-        $memcache_host = \QUI::conf( 'session', 'memcache_host' );
-        $memcache_port = \QUI::conf( 'session', 'memcache_host' );
+        $memcache_host = \QUI::conf('session', 'memcache_host');
+        $memcache_port = \QUI::conf('session', 'memcache_host');
 
-        if ( !empty( $memcached_host ) &&
-             !empty( $memcached_port ) &&
-             class_exists('Memcached') )
-        {
+        if (!empty($memcached_host) && !empty($memcached_port)
+            && class_exists('Memcached')
+        ) {
             $Memcached = new \Memcached();
-            $Memcached->addServer( $memcached_host, $memcached_port );
+            $Memcached->addServer($memcached_host, $memcached_port);
 
-            return new MemcachedSessionHandler( $Memcached );
+            return new MemcachedSessionHandler($Memcached);
         }
 
-        if ( !empty( $memcache_host ) &&
-             !empty( $memcache_port ) &&
-             class_exists('Memcache') )
-        {
-            $Memcache = new \Memcache( $memcache_host, $memcache_port );
+        if (!empty($memcache_host) && !empty($memcache_port)
+            && class_exists('Memcache')
+        ) {
+            $Memcache = new \Memcache($memcache_host, $memcache_port);
 
-            return new MemcacheSessionHandler( $Memcache );
+            return new MemcacheSessionHandler($Memcache);
         }
 
-        return new PdoSessionHandler( \QUI::getDataBase()->getPDO(), array(
+        return new PdoSessionHandler(\QUI::getDataBase()->getPDO(), array(
             'db_table'        => $this->_table,
             'db_id_col'       => 'session_id',
             'db_data_col'     => 'session_value',
@@ -154,7 +154,7 @@ class Session
      */
     public function start()
     {
-        if ( $this->_Session ) {
+        if ($this->_Session) {
             $this->_Session->start();
         }
     }
@@ -176,19 +176,19 @@ class Session
             'uid'              => 'int(11) NOT NULL'
         ));
 
-        $DBTable->setPrimaryKey( $this->_table , 'session_id' );
+        $DBTable->setPrimaryKey($this->_table, 'session_id');
     }
 
     /**
      * Set a variable to the session
      *
-     * @param String $name - Name og the variable
+     * @param String $name  - Name og the variable
      * @param String $value - value of the variable
      */
     public function set($name, $value)
     {
-        if ( $this->_Session ) {
-            $this->_Session->set( $name, $value );
+        if ($this->_Session) {
+            $this->_Session->set($name, $value);
         }
     }
 
@@ -197,7 +197,7 @@ class Session
      */
     public function refresh()
     {
-        if ( $this->_Session ) {
+        if ($this->_Session) {
             $this->_Session->migrate();
         }
     }
@@ -206,12 +206,13 @@ class Session
      * returns a variable from the session
      *
      * @param String $name - name of the variable
+     *
      * @return mixed
      */
     public function get($name)
     {
-        if ( $this->_Session ) {
-            return $this->_Session->get( $name, false );
+        if ($this->_Session) {
+            return $this->_Session->get($name, false);
         }
 
         return false;
@@ -224,11 +225,11 @@ class Session
      */
     public function getId()
     {
-        if ( $this->_Session ) {
+        if ($this->_Session) {
             return $this->_Session->getId();
         }
 
-        return md5( microtime() );
+        return md5(microtime());
     }
 
     /**
@@ -238,15 +239,15 @@ class Session
      */
     public function check()
     {
-        if ( !$this->_Session ) {
+        if (!$this->_Session) {
             return false;
         }
 
         $idle = time() - $this->_Session->getMetadataBag()->getLastUsed();
 
-        if ( $idle > $this->_max_life_time )
-        {
+        if ($idle > $this->_max_life_time) {
             $this->_Session->invalidate();
+
             return false;
         }
 
@@ -260,8 +261,8 @@ class Session
      */
     public function del($var)
     {
-        if ( $this->_Session ) {
-            $this->_Session->remove( $var );
+        if ($this->_Session) {
+            $this->_Session->remove($var);
         }
     }
 
@@ -270,7 +271,7 @@ class Session
      */
     public function destroy()
     {
-        if ( !$this->_Session ) {
+        if (!$this->_Session) {
             return;
         }
 
@@ -280,7 +281,9 @@ class Session
 
     /**
      * Return the last login from the session-id
+     *
      * @param String $sid - Session-ID
+     *
      * @return Integer
      */
     public function getLastRefreshFrom($sid)
@@ -293,17 +296,18 @@ class Session
             'limit' => 1
         ));
 
-        if ( !isset( $result[ 0 ] ) ) {
+        if (!isset($result[0])) {
             return 0;
         }
 
-        return $result[ 0 ][ 'session_time' ];
+        return $result[0]['session_time'];
     }
 
     /**
      * Is the user online?
      *
      * @param Integer $uid
+     *
      * @return Bool
      */
     public function isUserOnline($uid)
@@ -316,6 +320,6 @@ class Session
             'limit' => 1
         ));
 
-        return isset( $result[ 0 ] ) ? true : false;
+        return isset($result[0]) ? true : false;
     }
 }

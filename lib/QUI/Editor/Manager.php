@@ -151,24 +151,6 @@ class Manager
         $folder = self::getToolbarsPath();
         $files = QUIFile::readDir($folder, true);
 
-//         try
-//         {
-//             $Conf     = self::getConf();
-//             $toolbars = $Conf->getSection( 'toolbars' );
-
-//             if ( !is_array( $toolbars ) ) {
-//                 return $files;
-//             }
-
-//             foreach ( $toolbars as $toolbar => $btns ) {
-//                 array_unshift( $files, $toolbar );
-//             }
-
-//         } catch ( \QUI\Exception $Exception )
-//         {
-
-//         }
-
         return $files;
     }
 
@@ -212,7 +194,7 @@ class Manager
 
             // styles
             $styles = array_merge(
-                QUI\Utils\DOM::getWysiwygStyles( $Dom ),
+                QUI\Utils\DOM::getWysiwygStyles($Dom),
                 $styles
             );
         }
@@ -285,7 +267,7 @@ class Manager
                 }
 
                 $styles = array_merge(
-                    QUI\Utils\DOM::getWysiwygStyles( $Dom ),
+                    QUI\Utils\DOM::getWysiwygStyles($Dom),
                     $styles
                 );
             }
@@ -432,11 +414,10 @@ class Manager
         $User = $Users->getUserBySession();
 
         $toolbar = $User->getAttribute('wysiwyg-toolbar');
+        $toolbarPath = self::getToolbarsPath();
 
         if (!empty($toolbar)) {
-            $toolbar
-                =
-                self::getToolbarsPath().$User->getAttribute('wysiwyg-toolbar');
+            $toolbar = $toolbarPath.$User->getAttribute('wysiwyg-toolbar');
 
             if (file_exists($toolbar)) {
                 return self::parseXmlFileToArray($toolbar);
@@ -451,8 +432,7 @@ class Manager
             $toolbar = $Group->getAttribute('toolbar');
 
             if (!empty($toolbar)) {
-                $toolbar
-                    = self::getToolbarsPath().$Group->getAttribute('toolbar');
+                $toolbar = $toolbarPath.$Group->getAttribute('toolbar');
 
                 if (file_exists($toolbar)) {
                     return self::parseXmlFileToArray($toolbar);
@@ -469,9 +449,8 @@ class Manager
         }
 
         if (strpos($toolbar, '.xml') !== false) {
-            if (file_exists(self::getToolbarsPath().$toolbar)) {
-                return self::parseXmlFileToArray(self::getToolbarsPath()
-                    .$toolbar);
+            if (file_exists($toolbarPath.$toolbar)) {
+                return self::parseXmlFileToArray($toolbarPath.$toolbar);
             }
         }
 
