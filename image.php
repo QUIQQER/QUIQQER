@@ -15,18 +15,18 @@ if (isset($_REQUEST['project']) && isset($_REQUEST['id'])) {
         $image = false;
 
         // admin image request
-        if (isset($_SERVER['HTTP_REFERER'])
+        if (!isset($_REQUEST['noresize'])
+            && isset($_SERVER['HTTP_REFERER'])
             && strpos($_SERVER['HTTP_REFERER'], $_SERVER['HTTP_HOST']) !== false
             && strpos($_SERVER['HTTP_REFERER'], URL_SYS_DIR) !== false
         ) {
-            \QUI\System\Log::writeRecursive($_REQUEST);
-
             $_REQUEST['maxwidth'] = 500;
             $_REQUEST['maxheight'] = 500;
         }
 
 
-        if ($File->getType() === 'QUI\\Projects\\Media\\Image'
+        if (!isset($_REQUEST['noresize'])
+            && $File->getType() === 'QUI\\Projects\\Media\\Image'
             && (isset($_REQUEST['maxwidth']) || isset($_REQUEST['maxheight']))
         ) {
             $maxwidth = false;

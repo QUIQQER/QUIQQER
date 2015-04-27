@@ -534,8 +534,14 @@ define('controls/projects/project/media/FilePanel', [
                             Preview.setStyle( 'display', '' );
                             Preview.set( 'html', '' );
 
+                            var url = URL_DIR + self.$File.getAttribute( 'url' );
+
+                            if (url.match('image.php')) {
+                                url = url +'&noresize=1';
+                            }
+
                             new Element('img', {
-                                src    : URL_DIR + self.$File.getAttribute( 'url' ),
+                                src    : url,
                                 styles : {
                                     maxWidth : '100%'
                                 }
