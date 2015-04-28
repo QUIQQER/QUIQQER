@@ -211,10 +211,6 @@ define('controls/projects/project/site/Select', [
                 btnSize  = this.$Buttons.getSize(),
                 descSize = this.$Description.getSize();
 
-            console.log( maxSize );
-            console.log( btnSize );
-            console.log( descSize );
-
             this.$Container.setStyle( 'height', maxSize.y - btnSize.y - descSize.y - 2 );
         },
 
@@ -459,7 +455,37 @@ define('controls/projects/project/site/Select', [
             var Elm = this.createEntry( siteId ).inject( this.$Container );
 
             new Element('span', {
-                'class' : 'icon-file-alt'
+                'class' : 'fa fa-file-o'
+            }).inject( Elm.getElement( '.control-site-select-entry-text' ) );
+
+            Elm.inject( this.$Container );
+
+
+            this.refreshValues();
+        },
+
+        /**
+         * Add a parent site ID to the select
+         *
+         * @param {number} siteId
+         */
+        addParentSiteId : function(siteId)
+        {
+            if ( typeof siteId === 'undefined' ) {
+                return;
+            }
+
+            siteId = parseInt( siteId.toString().replace( 'p', '' ) );
+
+            if ( !siteId ) {
+                return;
+            }
+
+            var value = 'p'+ siteId.toString(),
+                Elm   = this.createEntry( value ).inject( this.$Container );
+
+            new Element('span', {
+                'class' : 'icon-file'
             }).inject( Elm.getElement( '.control-site-select-entry-text' ) );
 
             Elm.inject( this.$Container );

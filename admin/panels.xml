@@ -16,7 +16,7 @@
 
         <!-- quiqqer Help panel -->
         <panel require="controls/desktop/panels/Help">
-            <image>icon-h-sign</image>
+            <image>fa fa-h-square</image>
             <title>
                 <locale group="quiqqer/system" var="panels.help.title" />
             </title>

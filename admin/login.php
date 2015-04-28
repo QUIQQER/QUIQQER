@@ -333,6 +333,9 @@ $languages = QUI::availableLanguages();
             }
 
             window.setLanguage( lang );
+
+
+            document.id('username').focus();
         });
     });
 

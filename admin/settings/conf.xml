@@ -332,7 +332,7 @@
                     <text>
                         <locale group="quiqqer/system" var="email" />
                     </text>
-                    <icon>icon-envelope-alt</icon>
+                    <icon>fa fa-envelope-o</icon>
 
                     <settings title="mail" name="mail">
                         <title>

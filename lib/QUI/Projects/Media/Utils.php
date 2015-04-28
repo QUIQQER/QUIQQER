@@ -32,12 +32,12 @@ class Utils
         if ($Item->getId() === 1) {
             /* @var $Item \QUI\Projects\Media\Folder */
             return array(
-                'icon'          => 'icon-picture',
-                'icon80x80'     => URL_BIN_DIR.'80x80/media.png',
-                'id'            => $Item->getId(),
-                'name'          => $Item->getAttribute('name'),
-                'title'         => $Item->getAttribute('title'),
-                'type'          => 'folder',
+                'icon'      => 'fa fa-picture-o',
+                'icon80x80' => URL_BIN_DIR .'80x80/media.png',
+                'id'        => $Item->getId(),
+                'name'      => $Item->getAttribute('name'),
+                'title'     => $Item->getAttribute('title'),
+                'type'      => 'folder',
                 'hasChildren'   => $Item->hasChildren(),
                 'hasSubfolders' => $Item->hasSubFolders(),
                 'active'        => true,
@@ -48,8 +48,8 @@ class Utils
         if ($Item->getType() == 'QUI\\Projects\\Media\\Folder') {
             /* @var $Item \QUI\Projects\Media\Folder */
             return array(
-                'icon'          => 'icon-folder-close-alt',
-                'icon80x80'     => URL_BIN_DIR.'80x80/extensions/folder.png',
+                'icon'          => 'fa fa-folder-o',
+                'icon80x80'     => URL_BIN_DIR .'80x80/extensions/folder.png',
                 'id'            => $Item->getId(),
                 'name'          => $Item->getAttribute('name'),
                 'title'         => $Item->getAttribute('title'),

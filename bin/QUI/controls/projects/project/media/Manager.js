@@ -52,7 +52,7 @@ define('controls/projects/project/media/Manager', [
         ],
 
         options : {
-            icon      : 'icon-picture',
+            icon      : 'fa fa-picture-o',
             id        : 'projects-media-manager',
             name      : 'projects-media-manager',
             title     : Locale.get( lg, 'projects.project.site.media.manager.title' ),
@@ -84,7 +84,7 @@ define('controls/projects/project/media/Manager', [
             this.addCategory({
                 title   : Locale.get( lg, 'projects.project.site.media.manager.general.title' ),
                 text    : Locale.get( lg, 'projects.project.site.media.manager.general.text' ),
-                image   : 'icon-picture',
+                image   : 'fa fa-picture-o',
                 body    : '&nbsp;',
                 Control : this,
                 events  : {
@@ -117,7 +117,7 @@ define('controls/projects/project/media/Manager', [
                 self.$MD5 = new QUIButton({
                     name      : 'calcmd5',
                     text      : Locale.get( lg, 'projects.project.site.media.manager.calcmd5.select' ),
-                    textimage : 'icon-picture'
+                    textimage : 'fa fa-picture-o'
                 }).inject( MD5Parent );
 
                 self.$MD5Start = new QUIButton({
@@ -145,7 +145,7 @@ define('controls/projects/project/media/Manager', [
                 self.$SHA1 = new QUIButton({
                     name   : 'calcsha1',
                     text   : Locale.get( lg, 'projects.project.site.media.manager.calcsha1.select' ),
-                    textimage : 'icon-picture'
+                    textimage : 'fa fa-picture-o'
                 }).inject( SHA1Parent );
 
                 self.$SHA1Start = new QUIButton({
@@ -205,7 +205,7 @@ define('controls/projects/project/media/Manager', [
 
                         self.$MD5.appendChild(
                             new QUIContextmenuItem({
-                                icon   : 'icon-picture',
+                                icon   : 'fa fa-picture-o',
                                 text   : project,
                                 value  : project,
                                 events : {
@@ -216,7 +216,7 @@ define('controls/projects/project/media/Manager', [
 
                         self.$SHA1.appendChild(
                             new QUIContextmenuItem({
-                                icon   : 'icon-picture',
+                                icon   : 'fa fa-picture-o',
                                 text   : project,
                                 value  : project,
                                 events : {
@@ -227,10 +227,10 @@ define('controls/projects/project/media/Manager', [
                     }
 
                     self.$MD5.enable();
-                    self.$MD5.setAttribute('textimage', 'icon-picture');
+                    self.$MD5.setAttribute('textimage', 'fa fa-picture-o');
 
                     self.$SHA1.enable();
-                    self.$SHA1.setAttribute('textimage', 'icon-picture');
+                    self.$SHA1.setAttribute('textimage', 'fa fa-picture-o');
                 });
 
                 self.Loader.hide();

@@ -191,7 +191,7 @@ define('controls/projects/project/media/FilePanel', [
         {
             var File        = this.$File,
                 dimension   = '',
-                icon        = 'icon-picture',
+                icon        = 'fa fa-picture-o',
                 CategoryBar = this.getCategoryBar();
 
             if ( File.getAttribute( 'image_width' ) &&
@@ -332,8 +332,8 @@ define('controls/projects/project/media/FilePanel', [
             var self = this;
 
             new QUIConfirm({
-                icon     : 'icon-trash',
-                texticon : 'icon-trash',
+                icon     : 'fa fa-trash-o',
+                texticon : 'fa fa-trash-o',
 
                 title : Locale.get( 'quiqqer/system', 'projects.project.site.media.filePanel.window.delete.title', {
                     file : this.$File.getAttribute('file')
@@ -425,7 +425,7 @@ define('controls/projects/project/media/FilePanel', [
             ).addButton(
                 new QUIButton({
                     text      : Locale.get( lg, 'projects.project.site.media.filePanel.btn.delete.text' ),
-                    textimage : 'icon-trash',
+                    textimage : 'fa fa-trash-o',
                     events    :
                     {
                         onClick : function() {
@@ -502,7 +502,7 @@ define('controls/projects/project/media/FilePanel', [
                     text    : Locale.get( lg, 'projects.project.site.media.filePanel.details.text' ),
                     name    : 'details',
                     Control : this,
-                    icon    : 'icon-file-alt',
+                    icon    : 'fa fa-file-o',
                     events  :
                     {
                         onActive : function() {
@@ -522,7 +522,7 @@ define('controls/projects/project/media/FilePanel', [
                 new QUIButton({
                     text    : Locale.get( lg, 'projects.project.site.media.filePanel.preview.text' ),
                     name    : 'preview',
-                    icon    : 'icon-eye-open',
+                    icon    : 'fa fa-eye',
                     Control : this,
                     events  :
                     {
@@ -580,7 +580,7 @@ define('controls/projects/project/media/FilePanel', [
 //            {
 //                this.$OpenInNewWindow = new QUIButton({
 //                    name    : 'show_file',
-//                    image   : 'icon-eye-open',
+//                    image   : 'fa fa-eye',
 //                    title   : Locale.get( lg, 'projects.project.site.media.filePanel.btn.openFile.title' ),
 //                    alt     : Locale.get( lg, 'projects.project.site.media.filePanel.btn.openFile.alt' ),
 //                    events  :

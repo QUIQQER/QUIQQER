@@ -34,7 +34,19 @@ define('controls/projects/project/Settings', [
 
     'css!controls/projects/project/Settings.css'
 
-], function(QUI, QUIPanel, QUIButton, QUIConfirm, QUIFormUtils, UtilsTemplate, LangPopup, Projects, Ajax, Locale, ControlUtils)
+], function(
+    QUI,
+    QUIPanel,
+    QUIButton,
+    QUIConfirm,
+    QUIFormUtils,
+    UtilsTemplate,
+    LangPopup,
+    Projects,
+    Ajax,
+    Locale,
+    ControlUtils
+)
 {
     "use strict";
 
@@ -146,6 +158,15 @@ define('controls/projects/project/Settings', [
             });
 
             this.addCategory({
+                name : 'adminSettings',
+                text : Locale.get( lg, 'projects.project.panel.settings.btn.adminSettings' ),
+                icon : 'icon-gear',
+                events : {
+                    onClick : this.openAdminSettings
+                }
+            });
+
+            this.addCategory({
                 name : 'customCSS',
                 text : Locale.get( lg, 'projects.project.panel.settings.btn.customCSS' ),
                 icon : 'icon-css3',
@@ -154,14 +175,6 @@ define('controls/projects/project/Settings', [
                 }
             });
 
-            this.addCategory({
-                name : 'adminSettings',
-                text : Locale.get( lg, 'projects.project.panel.settings.btn.adminSettings' ),
-                icon : 'icon-gear',
-                events : {
-                    onClick : this.openAdminSettings
-                }
-            });
 
             Ajax.get('ajax_project_panel_categories_get', function(list)
             {
@@ -179,7 +192,7 @@ define('controls/projects/project/Settings', [
 //            this.addCategory({
 //                name   : 'watersign',
 //                text   : 'Wasserzeichen',
-//                icon   : 'icon-picture',
+//                icon   : 'fa fa-picture-o',
 //                events : {
 //                    onClick : this.openWatersign
 //                }
@@ -205,10 +218,10 @@ define('controls/projects/project/Settings', [
                     title : self.getProject().getName()
                 });
 
+                self.$Title.set( 'html', self.getAttribute('title') );
                 self.$config = result;
 
                 self.getCategoryBar().firstChild().click();
-
                 self.Loader.hide();
             });
         },
@@ -253,10 +266,10 @@ define('controls/projects/project/Settings', [
             var self = this;
 
             new QUIConfirm({
-                icon  : 'icon-exclamation-sign',
+                icon  : 'fa fa-exclamation-circle',
                 title : Locale.get( lg, 'projects.project.project.delete.window.title' ),
                 text  : Locale.get( lg, 'projects.project.project.delete.window.text' ),
-                texticon : 'icon-exclamation-sign',
+                texticon : 'fa fa-exclamation-circle',
                 information : Locale.get( lg, 'projects.project.project.delete.window.information' ),
                 maxWidth: 450,
                 maxHeight: 300,
@@ -265,10 +278,10 @@ define('controls/projects/project/Settings', [
                     onSubmit : function()
                     {
                         new QUIConfirm({
-                            icon  : 'icon-exclamation-sign',
+                            icon  : 'fa fa-exclamation-circle',
                             title : Locale.get( lg, 'projects.project.project.delete.window.title' ),
                             text  : Locale.get( lg, 'projects.project.project.delete.window.text.2' ),
-                            texticon : 'icon-exclamation-sign',
+                            texticon : 'fa fa-exclamation-circle',
                             maxWidth: 450,
                             maxHeight: 300,
                             events :

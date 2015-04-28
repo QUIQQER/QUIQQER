@@ -101,7 +101,7 @@ define('controls/projects/project/site/Input', [
             var self = this;
 
             this.$SiteButton = new QUIButton({
-                icon   : 'icon-file-alt',
+                icon   : 'fa fa-file-o',
                 events :
                 {
                     onClick : function()
