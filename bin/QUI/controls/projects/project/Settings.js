@@ -192,7 +192,7 @@ define('controls/projects/project/Settings', [
 //            this.addCategory({
 //                name   : 'watersign',
 //                text   : 'Wasserzeichen',
-//                icon   : 'icon-picture',
+//                icon   : 'fa fa-picture-o',
 //                events : {
 //                    onClick : this.openWatersign
 //                }
@@ -266,10 +266,10 @@ define('controls/projects/project/Settings', [
             var self = this;
 
             new QUIConfirm({
-                icon  : 'icon-exclamation-sign',
+                icon  : 'fa fa-exclamation-circle',
                 title : Locale.get( lg, 'projects.project.project.delete.window.title' ),
                 text  : Locale.get( lg, 'projects.project.project.delete.window.text' ),
-                texticon : 'icon-exclamation-sign',
+                texticon : 'fa fa-exclamation-circle',
                 information : Locale.get( lg, 'projects.project.project.delete.window.information' ),
                 maxWidth: 450,
                 maxHeight: 300,
@@ -278,10 +278,10 @@ define('controls/projects/project/Settings', [
                     onSubmit : function()
                     {
                         new QUIConfirm({
-                            icon  : 'icon-exclamation-sign',
+                            icon  : 'fa fa-exclamation-circle',
                             title : Locale.get( lg, 'projects.project.project.delete.window.title' ),
                             text  : Locale.get( lg, 'projects.project.project.delete.window.text.2' ),
-                            texticon : 'icon-exclamation-sign',
+                            texticon : 'fa fa-exclamation-circle',
                             maxWidth: 450,
                             maxHeight: 300,
                             events :

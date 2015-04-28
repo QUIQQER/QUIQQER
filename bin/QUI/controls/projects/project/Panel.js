@@ -256,7 +256,7 @@ define('controls/projects/project/Panel', [
             // title button
             this.$Button = new QUIButton({
                 name   : 'projects',
-                image  : 'icon-circle-arrow-left',
+                image  : 'fa fa-arrow-circle-left',
                 events :
                 {
                     onClick : function(Btn, event)
@@ -525,7 +525,7 @@ define('controls/projects/project/Panel', [
                     Project.appendChild(
                         new QUISitemapItem({
                             text    : Locale.get('quiqqer/system', 'projects.project.panel.media'),
-                            icon    : 'icon-picture',
+                            icon    : 'fa fa-picture-o',
                             project : i,
                             events  : {
                                 onClick : func_media_click
@@ -537,7 +537,7 @@ define('controls/projects/project/Panel', [
                     Project.appendChild(
                         new QUISitemapItem({
                             text    : Locale.get('quiqqer/system', 'projects.project.panel.tash'),
-                            icon    : 'icon-trash',
+                            icon    : 'fa fa-trash-o',
                             project : i,
                             events  : {
                                 onClick : func_trash_click

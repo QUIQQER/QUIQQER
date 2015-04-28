@@ -220,7 +220,7 @@ define('controls/projects/project/Sitemap', [
                                     'projects.project.sitemap.media'
                                 ),
                                 value    : 'media',
-                                icon     : 'icon-picture',
+                                icon     : 'fa fa-picture-o',
                                 dragable : true,
                                 events   :
                                 {
@@ -613,10 +613,10 @@ define('controls/projects/project/Sitemap', [
                 attributes.title = result.title;
             }
 
-            attributes.icon = 'icon-file-alt';
+            attributes.icon = 'fa fa-file-o';
 
             if ( "icon" in result ) {
-                attributes.icon = result.icon || 'icon-file-alt';
+                attributes.icon = result.icon || 'fa fa-file-o';
             }
 
             Itm.setAttributes( attributes );

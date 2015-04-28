@@ -147,7 +147,7 @@ define([
                 Trash = new QUIContextmenuItem({
                     name   : 'delete',
                     text   : 'In den Mülleimer werfen',
-                    icon   : 'icon-trash',
+                    icon   : 'fa fa-trash-o',
                     events :
                     {
                         onMouseDown : function()
@@ -165,7 +165,7 @@ define([
                 Trash = new QUIContextmenuItem({
                     name : 'delete',
                     text : 'In den Mülleimer werfen',
-                    icon : 'icon-trash'
+                    icon : 'fa fa-trash-o'
                 });
 
                 Trash.appendChild(
@@ -476,7 +476,7 @@ define([
                 new QUIContextmenuItem({
                     name   : 'delete',
                     text   : 'In den Mülleimer werfen',
-                    icon   : 'icon-trash',
+                    icon   : 'fa fa-trash-o',
                     events :
                     {
                         onMouseDown : function()
@@ -510,7 +510,7 @@ define([
                 return new QUIContextmenuItem({
                     name   : 'activate',
                     text   : 'Aktivieren',
-                    icon   : 'icon-ok',
+                    icon   : 'fa fa-check',
                     events :
                     {
                         onMouseDown : function()
@@ -528,7 +528,7 @@ define([
             var Activate = new QUIContextmenuItem({
                 name    : 'activate',
                 text    : 'Aktivieren',
-                icon    : 'icon-ok'
+                icon    : 'fa fa-check'
             });
 
             Activate.appendChild(

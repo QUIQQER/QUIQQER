@@ -132,7 +132,7 @@ define('controls/users/User', [
                     onClick : this.$onClickDel
                 },
                 text      : Locale.get( lg, 'users.user.btn.delete' ),
-                textimage : 'icon-trash'
+                textimage : 'fa fa-trash-o'
             });
 
             // permissions
@@ -450,12 +450,12 @@ define('controls/users/User', [
             new QUIConfirm({
                 name  : 'DeleteUser',
                 title : Locale.get( lg, 'users.user.window.delete.title' ),
-                icon  : 'icon-trash',
+                icon  : 'fa fa-trash-o',
                 text  : Locale.get( lg, 'users.user.window.delete.text', {
                     userid   : this.getUser().getId(),
                     username : this.getUser().getName()
                 }),
-                texticon    : 'icon-trash',
+                texticon    : 'fa fa-trash-o',
                 information : Locale.get( lg, 'users.user.window.delete.information' ),
 
                 width  : 500,

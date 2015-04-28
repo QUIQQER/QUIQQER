@@ -98,7 +98,7 @@
         <!-- Papierkorb -->
         <item parent="/extras/"
               name="trash"
-              icon="icon-trash"
+              icon="fa fa-trash-o"
               require="controls/trash/Panel"
         >
             <locale group="quiqqer/system" var="menu.extras.trash.text" />
@@ -136,7 +136,7 @@
         </item>
         <item parent="/settings/"
               name="media"
-              icon="icon-picture"
+              icon="fa fa-picture-o"
               require="controls/projects/project/media/Manager"
         >
             <locale group="quiqqer/system" var="menu.settings.media.text" />

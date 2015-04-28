@@ -284,7 +284,7 @@ define('controls/permissions/Panel', [
                 btnList.push(
                     new QUIButton({
                         text   : Locale.get( lg, 'permissions.panel.btn.select.site' ),
-                        icon   : 'icon-file-alt',
+                        icon   : 'fa fa-file-o',
                         events :
                         {
                             onClick : function()
