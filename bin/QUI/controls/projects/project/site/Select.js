@@ -211,10 +211,6 @@ define('controls/projects/project/site/Select', [
                 btnSize  = this.$Buttons.getSize(),
                 descSize = this.$Description.getSize();
 
-            console.log( maxSize );
-            console.log( btnSize );
-            console.log( descSize );
-
             this.$Container.setStyle( 'height', maxSize.y - btnSize.y - descSize.y - 2 );
         },
 
