@@ -499,6 +499,36 @@ define('controls/projects/project/site/Select', [
         },
 
         /**
+         * Add a parent site ID to the select
+         *
+         * @param {number} siteId
+         */
+        addParentSiteId : function(siteId)
+        {
+            if ( typeof siteId === 'undefined' ) {
+                return;
+            }
+
+            siteId = parseInt( siteId.toString().replace( 'p', '' ) );
+
+            if ( !siteId ) {
+                return;
+            }
+
+            var value = 'p'+ siteId.toString(),
+                Elm   = this.createEntry( value ).inject( this.$Container );
+
+            new Element('span', {
+                'class' : 'icon-file'
+            }).inject( Elm.getElement( '.control-site-select-entry-text' ) );
+
+            Elm.inject( this.$Container );
+
+
+            this.refreshValues();
+        },
+
+        /**
          * Add a site type to the select or a site type selection
          *
          * @param {String} type - eq: "quiqqer/%" "quiqqer/blog:blog/entry" "quiqqer/blog:%"
