@@ -157,6 +157,10 @@ define('classes/projects/Project', [
 
                 callback( self.$config );
 
+                require(['Projects'], function(Projects) {
+                    Projects.fireEvent( 'projectSave', [ self ] );
+                });
+
             }, {
                 project : this.getName()
             });
@@ -173,13 +177,15 @@ define('classes/projects/Project', [
         {
             var self = this;
 
-            Ajax.get('ajax_project_set_config', function(result)
+            Ajax.post('ajax_project_set_config', function(result)
             {
                 self.$config = false;
 
                 if ( typeof callback === 'function' ) {
                     callback( result );
                 }
+
+                self.fireEvent( 'save' );
             }, {
                 project : this.getName(),
                 params  : JSON.encode( params || false )

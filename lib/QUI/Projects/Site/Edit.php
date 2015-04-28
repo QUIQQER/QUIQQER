@@ -526,6 +526,16 @@ class Edit extends Site
             $this->deactivate( $SaveUser );
         }
 
+        // on save before event
+        try
+        {
+            $this->Events->fireEvent( 'saveBefore', array( $this ) );
+            QUI::getEvents()->fireEvent( 'siteSaveBefore', array( $this ) );
+
+        } catch ( QUI\Exception $Exception )
+        {
+
+        }
 
         // save extra package attributes (site.xml)
         $extraAttributes = Utils::getExtraAttributeListForSite( $this );
@@ -544,6 +554,7 @@ class Edit extends Site
 
             $siteExtra[ $attribute ] = $default;
         }
+
 
         // save main data
         $update = QUI::getDataBase()->update(

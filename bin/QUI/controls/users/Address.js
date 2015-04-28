@@ -449,7 +449,7 @@ define([
 
             new QUIConfirm({
                 title : Locale.get( lg, 'users.address.phone.window.title' ),
-                icon  : 'icon-tel',
+                icon  : 'fa fa-phone',
                 text  : Locale.get( lg, 'users.address.phone.window.text' ),
                 information : '<form style="text-align: center; width: 100%">'+
                                   '<input type="text" name="number" value="" placeholder="" />' +

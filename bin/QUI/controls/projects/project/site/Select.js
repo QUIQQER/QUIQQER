@@ -23,12 +23,15 @@ define('controls/projects/project/site/Select', [
     'controls/projects/TypeWindow',
     'controls/projects/Popup',
     'Projects',
+    'Locale',
 
     'css!controls/projects/project/site/Select.css'
 
-],function(QUI, QUIControl, QUIButton, QUIPopup, TypeWindow, ProjectWindow, Projects)
+],function(QUI, QUIControl, QUIButton, QUIPopup, TypeWindow, ProjectWindow, Projects, QUILocale)
 {
     "use strict";
+
+    var lg = 'quiqqer/system';
 
     return new Class({
 
@@ -38,18 +41,20 @@ define('controls/projects/project/site/Select', [
         Binds : [
             'openSitemap',
             'openSiteTypes',
+            'openParentSitemap',
             '$onImport'
         ],
 
         options : {
-            styles      : false,
-            name        : '',
-            value       : '',
-            projectName : false,
-            projectLang : false,
-            placeholder : '',
-            selectids   : true,
-            selecttypes : true
+            styles       : false,
+            name         : '',
+            value        : '',
+            projectName  : false,
+            projectLang  : false,
+            placeholder  : '',
+            selectids    : true,
+            selecttypes  : true,
+            selectparent : true
         },
 
         initialize : function(options)
@@ -61,8 +66,9 @@ define('controls/projects/project/site/Select', [
             this.$Container = false;
             this.$Project   = false;
 
-            this.$ButtonTypes = false;
-            this.$ButtonSite  = false;
+            this.$ButtonTypes   = false;
+            this.$ButtonSite    = false;
+            this.$ButtonParents = false;
 
             this.addEvents({
                 onImport : this.$onImport
@@ -79,7 +85,8 @@ define('controls/projects/project/site/Select', [
             this.$Elm = new Element('div', {
                 'class' : 'control-site-select',
                 html    : '<div class="control-site-select-container"></div>'+
-                          '<div class="control-site-select-buttons"></div>'
+                          '<div class="control-site-select-buttons"></div>'+
+                          '<div class="control-site-select-description"></div>'
             });
 
             if ( !this.$Input )
@@ -93,8 +100,9 @@ define('controls/projects/project/site/Select', [
                 this.$Elm.setStyles( this.getAttribute( 'styles' ) );
             }
 
-            this.$Buttons   = this.$Elm.getElement( '.control-site-select-buttons' );
-            this.$Container = this.$Elm.getElement( '.control-site-select-container' );
+            this.$Buttons     = this.$Elm.getElement( '.control-site-select-buttons' );
+            this.$Container   = this.$Elm.getElement( '.control-site-select-container' );
+            this.$Description = this.$Elm.getElement( '.control-site-select-description' );
 
             this.$Container.set(
                 'html',
@@ -104,36 +112,86 @@ define('controls/projects/project/site/Select', [
                 '</p>'
             );
 
+            this.$Description.set(
+                'html',
+                QUILocale.get( lg, 'projects.project.site.select.description' )
+            );
+
+            var buttons = 0;
+            var width   = '100%';
+
+            if ( this.getAttribute( 'selecttypes' ) ) {
+                buttons++;
+            }
+
+            if ( this.getAttribute( 'selectids' ) ) {
+                buttons++;
+            }
+
+            if ( this.getAttribute( 'selectparent' ) ) {
+                buttons++;
+            }
+
+            switch ( buttons )
+            {
+                case 1:
+                    width = '100%';
+                break;
+
+                case 2:
+                    width = '50%';
+                break;
+
+                case 3:
+                    width = '33%';
+                break;
+            }
 
             if ( this.getAttribute( 'selecttypes' ) )
             {
                 this.$ButtonTypes = new QUIButton({
                     name: 'add-types',
-                    text: 'Seiten Typ hinzufügen',
+                    text: QUILocale.get( lg, 'projects.project.site.select.btn.addTypes' ), // 'Seiten Typ hinzufügen',
                     styles: {
-                        width: this.getAttribute( 'selectids' ) ? '50%' : '100%'
+                        width: width
                     },
                     events: {
                         onClick: this.openSiteTypes
                     },
                     disabled: true
-                }).inject(this.$Buttons);
+                }).inject( this.$Buttons );
             }
 
             if ( this.getAttribute( 'selectids' ) )
             {
                 this.$ButtonSite = new QUIButton({
                     name: 'add-site',
-                    text: 'Seiten ID hinzufügen',
+                    text: QUILocale.get( lg, 'projects.project.site.select.btn.addSite' ), //'Seiten ID hinzufügen', // #locale
                     styles: {
-                        width: this.getAttribute( 'selecttypes' ) ? '50%' : '100%'
+                        width: width
                     },
                     events: {
                         onClick: this.openSitemap
                     },
                     disabled: true
-                }).inject(this.$Buttons);
+                }).inject( this.$Buttons );
             }
+
+            if ( this.getAttribute( 'selectparent' ) )
+            {
+                this.$ButtonParents = new QUIButton({
+                    name: 'add-parent',
+                    text: QUILocale.get( lg, 'projects.project.site.select.btn.addParent' ), // 'Parent ID hinzufügen', // #locale
+                    styles: {
+                        width: width
+                    },
+                    events: {
+                        onClick: this.openParentSitemap
+                    },
+                    disabled: true
+                }).inject( this.$Buttons );
+            }
+
 
             return this.$Elm;
         },
@@ -149,10 +207,15 @@ define('controls/projects/project/site/Select', [
 
             this.parent();
 
-            var maxSize = this.$Elm.getSize(),
-                btnSize = this.$Buttons.getSize();
+            var maxSize  = this.$Elm.getSize(),
+                btnSize  = this.$Buttons.getSize(),
+                descSize = this.$Description.getSize();
 
-            this.$Container.setStyle( 'height', maxSize.y - btnSize.y - 2 );
+            console.log( maxSize );
+            console.log( btnSize );
+            console.log( descSize );
+
+            this.$Container.setStyle( 'height', maxSize.y - btnSize.y - descSize.y - 2 );
         },
 
         /**
@@ -219,6 +282,10 @@ define('controls/projects/project/site/Select', [
                     this.$ButtonSite.enable();
                 }
 
+                if ( this.$ButtonParents ) {
+                    this.$ButtonParents.enable();
+                }
+
                 return;
             }
 
@@ -247,6 +314,9 @@ define('controls/projects/project/site/Select', [
                 this.$ButtonSite.enable();
             }
 
+            if ( this.$ButtonParents ) {
+                this.$ButtonParents.enable();
+            }
         },
 
         /**
@@ -263,12 +333,22 @@ define('controls/projects/project/site/Select', [
             {
                 val = values[ i ];
 
-                if ( parseInt( val ) )
-                {
-                    this.addSiteId( val );
-                } else
+                if ( val.match(':') && val.match( '/' ) )
                 {
                     this.addSiteType( val );
+                    continue;
+                }
+
+                if ( val.match('p') )
+                {
+                    this.addParentSiteId( val );
+                    continue;
+                }
+
+                val = parseInt( val );
+
+                if ( val ) {
+                    this.addSiteId( val );
                 }
             }
         },
@@ -295,6 +375,34 @@ define('controls/projects/project/site/Select', [
 
                         for ( var i = 0, len = ids.length; i < len; i++ ) {
                             self.addSiteId( ids[ i ] );
+                        }
+                    }
+                }
+            }).open();
+        },
+
+        /**
+         * Opens the sitemap window, to add some parent ids
+         */
+        openParentSitemap : function()
+        {
+            if ( !this.$Project ) {
+                return;
+            }
+
+            var self = this;
+
+            new ProjectWindow({
+                project : this.$Project.getName(),
+                lang    : this.$Project.getLang(),
+                events  :
+                {
+                    onSubmit : function(Win, params)
+                    {
+                        var ids = params.ids;
+
+                        for ( var i = 0, len = ids.length; i < len; i++ ) {
+                            self.addParentSiteId( ids[ i ] );
                         }
                     }
                 }
@@ -351,7 +459,37 @@ define('controls/projects/project/site/Select', [
             var Elm = this.createEntry( siteId ).inject( this.$Container );
 
             new Element('span', {
-                'class' : 'icon-file-alt'
+                'class' : 'fa fa-file-o'
+            }).inject( Elm.getElement( '.control-site-select-entry-text' ) );
+
+            Elm.inject( this.$Container );
+
+
+            this.refreshValues();
+        },
+
+        /**
+         * Add a parent site ID to the select
+         *
+         * @param {number} siteId
+         */
+        addParentSiteId : function(siteId)
+        {
+            if ( typeof siteId === 'undefined' ) {
+                return;
+            }
+
+            siteId = parseInt( siteId.toString().replace( 'p', '' ) );
+
+            if ( !siteId ) {
+                return;
+            }
+
+            var value = 'p'+ siteId.toString(),
+                Elm   = this.createEntry( value ).inject( this.$Container );
+
+            new Element('span', {
+                'class' : 'icon-file'
             }).inject( Elm.getElement( '.control-site-select-entry-text' ) );
 
             Elm.inject( this.$Container );
@@ -439,7 +577,7 @@ define('controls/projects/project/site/Select', [
             for ( i = 0, len = list.length; i < len; i++ )
             {
                 values.push(
-                    list[ i].get( 'data-value' )
+                    list[ i ].get( 'data-value' )
                 );
             }
 

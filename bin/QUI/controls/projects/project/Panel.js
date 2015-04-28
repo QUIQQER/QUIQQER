@@ -68,9 +68,11 @@ define('controls/projects/project/Panel', [
         Type    : 'controls/projects/project/Panel',
 
         Binds : [
+            'refresh',
             '$onCreate',
             '$onInject',
             '$onResize',
+            '$onDestroy',
             '$openSitePanel'
         ],
 
@@ -81,25 +83,72 @@ define('controls/projects/project/Panel', [
                 name    : 'projects-panel',
                 project : false,
                 lang    : false,
-                title   : Locale.get(
-                    'quiqqer/system',
-                    'projects.project.panel.title'
-                ),
-                icon : 'icon-home'
+                icon    : 'icon-home'
             });
 
             this.parent( options );
+
+            // must be after this.parent(), because locale must be set
+            // and maybe the title comes from the serialize cache
+            this.setAttributes({
+                title : Locale.get( 'quiqqer/system', 'projects.project.panel.title' )
+            });
 
             this.$Map         = null;
             this.$projectmaps = {};
             this.$Filter      = null;
             this.$Button      = null;
 
-            this.addEvents({
-                onCreate : this.$onCreate,
-                onInject : this.$onInject,
-                onResize : this.$onResize
+            this.$ProjectList = null;
+            this.$ProjectContainer = null;
+
+            this.$__fx_run = false;
+
+            Projects.addEvents({
+                onCreate : this.refresh, // on project create
+                onDelete : this.refresh, // on project delete
+                onProjectSave : this.refresh // on project saved
             });
+
+            this.addEvents({
+                onCreate  : this.$onCreate,
+                onInject  : this.$onInject,
+                onResize  : this.$onResize,
+                onDestroy : this.$onDestroy
+            });
+        },
+
+        /**
+         * import the saved attributes and the data
+         *
+         * @method controls/projects/project/Panel#unserialize
+         * @param {Object} data
+         */
+        unserialize : function(data)
+        {
+            this.parent( data );
+
+            // must be after this.parent(), because locale must be set
+            // and maybe the title comes from the serialize cache
+            this.setAttributes({
+                title : Locale.get( 'quiqqer/system', 'projects.project.panel.title' )
+            });
+        },
+
+        /**
+         * refresh the project list
+         */
+        refresh : function()
+        {
+            if (!this.$ProjectList) {
+                return;
+            }
+
+            if (this.$ProjectList.getStyle('display') == 'none') {
+                return;
+            }
+
+            this.createList();
         },
 
         /**
@@ -121,15 +170,16 @@ define('controls/projects/project/Panel', [
                 '<div class="project-search"></div>'
             );
 
-            var Content   = this.getBody(),
-                List      = Content.getElement( '.project-list' ),
-                Container = Content.getElement( '.project-container' );
+            var Content = this.getBody();
 
-            Container.setStyles({
+            this.$ProjectContainer = Content.getElement( '.project-container' );
+            this.$ProjectList = Content.getElement( '.project-list' );
+
+            this.$ProjectContainer.setStyles({
                 height : '100%'
             });
 
-            List.setStyles({
+            this.$ProjectList.setStyles({
                 left : -300
             });
 
@@ -153,7 +203,7 @@ define('controls/projects/project/Panel', [
                             result[ 0 ].getElm()
                         );
 
-                    }.bind( Container )
+                    }.bind( this.$ProjectContainer )
                 }
             }).inject( Content.getElement( '.project-search' ) );
 
@@ -206,7 +256,7 @@ define('controls/projects/project/Panel', [
             // title button
             this.$Button = new QUIButton({
                 name   : 'projects',
-                image  : 'icon-circle-arrow-left',
+                image  : 'fa fa-arrow-circle-left',
                 events :
                 {
                     onClick : function(Btn, event)
@@ -290,11 +340,11 @@ define('controls/projects/project/Panel', [
                     // no projects exists
                     var Body = self.getBody();
 
-                    Body.set( 'html', '<p>Leider existieren noch keine Projekte</p>' );
+                    Body.set( 'html', '<p>Leider existieren noch keine Projekte</p>' ); // #locale
 
                     new QUIButton({
                         textimage : 'icon-home',
-                        text : 'Projekt erstellen',
+                        text : 'Projekt erstellen', // #locale
                         events :
                         {
                             onClick : function()
@@ -338,13 +388,30 @@ define('controls/projects/project/Panel', [
         },
 
         /**
+         * event destroy
+         */
+        $onDestroy : function()
+        {
+            Projects.removeEvent('onCreate', this.refresh);
+            Projects.removeEvent('onDelete', this.refresh);
+            Projects.removeEvent('onProjectSave', this.refresh);
+        },
+
+        /**
          * Create the Project list for the Panel
          *
          * @method controls/projects/project/Panel#createList
          */
         createList : function()
         {
+            if (this.$__fx_run) {
+                return;
+            }
+
+            this.$__fx_run = true;
             this.Loader.show();
+
+            this.$ProjectContainer.setStyle('overflow', 'hidden');
 
             var self = this;
 
@@ -356,6 +423,9 @@ define('controls/projects/project/Panel', [
             {
                 if ( !Object.getLength( result ) )
                 {
+                    self.$ProjectContainer.setStyle('overflow', null);
+
+                    self.$__fx_run = false;
                     self.Loader.hide();
                     return;
                 }
@@ -455,7 +525,7 @@ define('controls/projects/project/Panel', [
                     Project.appendChild(
                         new QUISitemapItem({
                             text    : Locale.get('quiqqer/system', 'projects.project.panel.media'),
-                            icon    : 'icon-picture',
+                            icon    : 'fa fa-picture-o',
                             project : i,
                             events  : {
                                 onClick : func_media_click
@@ -467,7 +537,7 @@ define('controls/projects/project/Panel', [
                     Project.appendChild(
                         new QUISitemapItem({
                             text    : Locale.get('quiqqer/system', 'projects.project.panel.tash'),
-                            icon    : 'icon-trash',
+                            icon    : 'fa fa-trash-o',
                             project : i,
                             events  : {
                                 onClick : func_trash_click
@@ -483,14 +553,27 @@ define('controls/projects/project/Panel', [
 
                 Container.inject( List );
 
+                List.setStyles({
+                    boxShadow  : '0 6px 20px 0 rgba(0, 0, 0, 0.19)'
+                });
 
-                List.setStyle( 'display', null );
+                List.setStyles({
+                    display : null,
+                    opacity : 1
+                });
+
 
                 moofx( List ).animate({
-                    left : 0
+                    left    : 0,
+                    opacity : 1
                 }, {
+                    equation : 'ease-in',
+                    duration : 300,
                     callback : function()
                     {
+                        self.$__fx_run = false;
+
+                        self.$ProjectContainer.setStyle('overflow', null);
                         self.$Button.setActive();
                         self.Loader.hide();
                     }
@@ -505,7 +588,14 @@ define('controls/projects/project/Panel', [
          */
         openProject : function()
         {
-            var Content   = this.getBody(),
+            if (this.$__fx_run) {
+                return;
+            }
+
+            this.$__fx_run = true;
+
+            var self      = this,
+                Content   = this.getBody(),
                 List      = Content.getElement( '.project-list' ),
                 Container = Content.getElement( '.project-content' ),
                 lang      = this.getAttribute( 'lang' ),
@@ -515,13 +605,7 @@ define('controls/projects/project/Panel', [
                     this.getAttribute( 'lang' )
                 );
 
-            moofx( List ).animate({
-                left : List.getSize().x * -1
-            }, {
-                callback : function() {
-                    List.setStyle( 'display', 'none' );
-                }
-            });
+            Container.setStyle('overflow', 'hidden');
 
             Container.set(
                 'html',
@@ -570,13 +654,30 @@ define('controls/projects/project/Panel', [
             this.$Filter.bindSitemap( this.$Sitemap );
 
             this.$Map.inject( Container );
-            this.$Map.open();
 
             this.$Map.getElm().setStyles({
                 margin : '10px 20px'
             });
 
             this.$Button.setNormal();
+
+            List.setStyle( 'boxShadow', '0 6px 20px 0 rgba(0, 0, 0, 0.19)' );
+
+            moofx( List ).animate({
+                left    : List.getSize().x * -1,
+                opacity : 0
+            }, {
+                equation : 'ease-out',
+                duration : 300,
+                callback : function()
+                {
+                    Container.setStyle('overflow', null);
+                    List.setStyle( 'display', 'none' );
+
+                    self.$Map.open();
+                    self.$__fx_run = false;
+                }
+            });
         },
 
         /**

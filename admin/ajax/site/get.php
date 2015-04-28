@@ -10,8 +10,8 @@
  */
 function ajax_site_get($project, $id)
 {
-    $Project = \QUI::getProjectManager()->decode( $project );
-    $Site    = new \QUI\Projects\Site\Edit( $Project, (int)$id );
+    $Project = \QUI::getProjectManager()->decode($project);
+    $Site = new \QUI\Projects\Site\Edit($Project, (int)$id);
 
     $attributes = $Site->getAttributes();
 
@@ -20,11 +20,11 @@ function ajax_site_get($project, $id)
     );
 
     return array(
-        'modules'      => \QUI\Projects\Site\Utils::getAdminSiteModulesFromSite( $Site ),
+        'modules'      => \QUI\Projects\Site\Utils::getAdminSiteModulesFromSite($Site),
         'attributes'   => $attributes,
-        'has_children' => $Site->hasChildren(),
+        'has_children' => $Site->hasChildren(true),
         'parentid'     => $Site->getParentId(),
-        'url'          => URL_DIR . $Site->getUrlRewrited()
+        'url'          => URL_DIR.$Site->getUrlRewrited()
     );
 }
 

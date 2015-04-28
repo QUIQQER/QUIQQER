@@ -388,9 +388,14 @@ class Template extends QUI\QDOM
 
         // custom css
         $customCSS = $Project->getName() .'/bin/custom.css';
+        $customJS  = $Project->getName() .'/bin/custom.js';
 
         if ( file_exists( USR_DIR . $customCSS ) ) {
             $headerExtend .= '<link rel="stylesheet" href="'. URL_USR_DIR . $customCSS .'" />';
+        }
+
+        if ( file_exists( USR_DIR . $customJS ) ) {
+            $headerExtend .= '<script src="'. URL_USR_DIR . $customJS .'"></script>';
         }
 
         // assign

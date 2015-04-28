@@ -53,7 +53,7 @@ define('classes/users/Manager', [
          */
         get : function(uid)
         {
-            uid = ( uid ).toInt();
+            uid = parseInt( uid );
 
             if ( uid === 0 ) {
                 return new Nobody();
@@ -304,6 +304,10 @@ define('classes/users/Manager', [
 
             for ( var i in attributes )
             {
+                if ( !attributes.hasOwnProperty( i ) ) {
+                    continue;
+                }
+
                 if ( typeof attributes[ i ] === 'object' ) {
                     delete attributes[ i ];
                 }

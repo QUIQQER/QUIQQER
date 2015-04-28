@@ -28,13 +28,21 @@ function ajax_users_activate($uid)
 
         } catch ( \QUI\Exception $Exception )
         {
-            \QUI::getMessagesHandler()->addException( $Exception );
+            $result[ $_uid ] = 0;
+
+            \QUI::getMessagesHandler()->addError(
+                $Exception->getMessage()
+            );
+
             continue;
         }
     }
 
     return $result;
 }
-QUI::$Ajax->register('ajax_users_activate', array('uid'), 'Permission::checkSU')
 
-?>
+\QUI::$Ajax->register(
+    'ajax_users_activate',
+    array('uid'),
+    'Permission::checkSU'
+);

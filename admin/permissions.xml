@@ -55,6 +55,9 @@
     <!--  Darf Projekt Einstellungen machen -->
     <permission name="quiqqer.projects.setconfig" type="users_and_groups" area="project" />
 
+    <!-- Darf Projekte CSS ändern -->
+    <permission name="quiqqer.projects.editCustomCSS" type="users_and_groups" area="project"  />
+
 
 <!-- Site permissions  -->
 

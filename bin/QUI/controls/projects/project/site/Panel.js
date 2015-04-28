@@ -296,7 +296,7 @@ define('controls/projects/project/site/Panel', [
             }).inject( this.getHeader() );
 
             new QUIButton({
-                image  : 'icon-picture',
+                image  : 'fa fa-picture-o',
                 alt    : Locale.get( lg, 'projects.project.site.panel.btn.media' ),
                 title  : Locale.get( lg, 'projects.project.site.panel.btn.media' ),
                 styles : {
@@ -333,7 +333,7 @@ define('controls/projects/project/site/Panel', [
                 'ajax_site_lock'
             ], function(categories, buttons, isLocked)
             {
-                var i, ev, fn, len, data, events, category, Button, Category;
+                var i, ev, fn, len, data, events, category, Category;
 
                 for ( i = 0, len = buttons.length; i < len; i++ )
                 {
@@ -529,6 +529,10 @@ define('controls/projects/project/site/Panel', [
                     this.$CategoryControl.resize();
                 }
             }
+
+            if ( this.getAttribute( 'Editor' ) ) {
+                this.getAttribute( 'Editor').resize();
+            }
         },
 
         /**
@@ -637,7 +641,19 @@ define('controls/projects/project/site/Panel', [
 
             this.$onCategoryLeave( this.getActiveCategory(), function()
             {
-                self.getSite().save(function() {
+                self.getSite().save(function()
+                {
+                    // refresh data
+                    var Form = self.getContent().getElement( 'form' );
+
+                    if ( Form )
+                    {
+                        QUIFormUtils.setDataToForm(
+                            self.getSite().getAttributes(),
+                            Form
+                        );
+                    }
+
                     self.load();
                 });
             });
@@ -654,7 +670,7 @@ define('controls/projects/project/site/Panel', [
             {
                 new Confirm({
                     title     : Locale.get( lg, 'projects.project.site.panel.window.delete.title' ),
-                    titleicon : 'icon-trash',
+                    titleicon : 'fa fa-trash-o',
                     text : Locale.get( lg, 'projects.project.site.panel.window.delete.text', {
                         id    : Site.getId(),
                         url   : Site.getAttribute( 'name' ) +'.html',
@@ -778,10 +794,7 @@ define('controls/projects/project/site/Panel', [
                 }
 
                 // set data
-                QUIFormUtils.setDataToForm(
-                    self.getSite().getAttributes(),
-                    Form
-                );
+                QUIFormUtils.setDataToForm( Site.getAttributes(), Form );
 
                 // information tab
                 if ( Category.getAttribute( 'name' ) === 'information' )
@@ -827,7 +840,7 @@ define('controls/projects/project/site/Panel', [
 
 
                             new QUIButton({
-                                icon   : 'icon-file-alt',
+                                icon   : 'fa fa-file-o',
                                 alt    : Locale.get( lg, 'open.site' ),
                                 title  : Locale.get( lg, 'open.site' ),
                                 lang   : Row.get( 'data-lang' ),
@@ -1020,7 +1033,6 @@ define('controls/projects/project/site/Panel', [
                     callback();
                 }
 
-                this.Loader.hide();
                 return;
             }
 
@@ -1038,7 +1050,6 @@ define('controls/projects/project/site/Panel', [
                     callback();
                 }
 
-                this.Loader.hide();
                 return;
             }
 
@@ -1155,15 +1166,15 @@ define('controls/projects/project/site/Panel', [
 
                     // #locale
                     new QUIConfirm({
-                        title   : 'Die Seite besitzt Änderungen',
-                        content : 'Die Seite besitzt Änderungen.<br />Möchten Sie diese Änderungen auch speichern?',
+                        title   : 'Die Seite besitzt Änderungen', // #locale
+                        content : 'Die Seite besitzt Änderungen.<br />Möchten Sie diese Änderungen auch speichern?', // #locale
                         maxHeight : 200,
                         maxWidth  : 500,
                         ok_button : {
-                            text : 'Änderungen auch speichern'
+                            text : 'Änderungen auch speichern' // #locale
                         },
                         cancel_button : {
-                            text : 'Status nur ändern'
+                            text : 'Status nur ändern' // #locale
                         },
                         events :
                         {
@@ -1346,7 +1357,7 @@ define('controls/projects/project/site/Panel', [
         /**
          * event on site save
          */
-        $onSiteSave : function()
+        $onSiteSave : function(Site)
         {
             this.Loader.hide();
         },
@@ -1428,6 +1439,8 @@ define('controls/projects/project/site/Panel', [
                     // draw the editor
                     Editor.setAttribute( 'Panel', self );
                     Editor.setAttribute( 'name', Site.getId() );
+                    Editor.setAttribute( 'showLoader', false );
+                    Editor.setProject( Project );
                     Editor.addEvent( 'onDestroy', self.$onEditorDestroy );
 
                     // set the site content
@@ -1438,29 +1451,13 @@ define('controls/projects/project/site/Panel', [
                     Editor.inject( Body );
                     Editor.setContent( content );
 
-                    // load css files
-                    Ajax.get('ajax_editor_get_projectFiles', function(result)
-                    {
-                        Editor.setAttribute( 'bodyId', result.bodyId );
-                        Editor.setAttribute( 'bodyClass', result.bodyClass );
+                    self.$startEditorPeriodicalSave();
 
-                        var cssFiles = [];
+                    Editor.addEvent( 'onLoaded', self.$onEditorLoad );
 
-                        if ( "cssFiles" in result ) {
-                            cssFiles = result.cssFiles;
-                        }
-
-                        for ( var i = 0, len = cssFiles.length; i < len; i++) {
-                            Editor.addCSS( cssFiles[ i ] );
-                        }
-
-                        self.$startEditorPeriodicalSave();
-
-                        Editor.addEvent( 'onLoaded', self.$onEditorLoad );
-
-                    }, {
-                        project : Project.getName()
-                    });
+                    if ( Editor.isLoaded() ) {
+                        self.$onEditorLoad();
+                    }
                 });
             });
         },

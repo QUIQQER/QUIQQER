@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <menu>
+
     <item parent="/" name="quiqqer">
         <locale group="quiqqer/system" var="menu.quiqqer.text" />
     </item>
-
+    <item parent="/" name="apps">
+        <locale group="quiqqer/system" var="menu.apps.text" />
+    </item>
     <item parent="/" name="extras">
         <locale group="quiqqer/system" var="menu.goto.text" />
     </item>
@@ -42,78 +45,14 @@
         </item>
 
 
-    <!-- File Menu -->
-        <item parent="/extras/"
+    <!-- Apps -->
+        <item parent="/apps/"
               name="search"
               icon="icon-search"
               require="controls/projects/project/site/Search"
         >
             <locale  group="quiqqer/system" var="menu.file.search.text" />
         </item>
-
-    <!-- Edit -->
-    <!--
-    <item parent="/edit/"
-        name="edit_cut"
-        icon="URL_DIR/bin/16x16/cut.png"
-        disabled="1">
-        Ausschneiden
-    </item>
-    <item parent="/edit/"
-        name="edit_copy"
-        icon="URL_DIR/bin/16x16/copy.png"
-        disabled="1">
-        Kopieren
-    </item>
-    <item parent="/edit/"
-        name="edit_paste"
-        icon="URL_DIR/bin/16x16/paste.png"
-        disabled="1">
-        Einfügen
-    </item>
-    <item parent="/edit/"
-        name="linked"
-        icon="URL_DIR/bin/16x16/linked.png"
-        disabled="1">
-        Verknüpfung einfügen
-    </item>
-    <item parent="/edit/"
-        name="linked_in"
-        icon="URL_DIR/bin/16x16/linked.png"
-        disabled="1">
-        Verknüpfung einfügen in ...
-    </item>
-    <item parent="/edit/" type="seperator"></item>
-    <item parent="/edit/"
-        name="search"
-        icon="URL_DIR/bin/16x16/find.png">
-        Suchen
-    </item>
-    <item parent="/edit/" type="seperator"></item>
-    <item parent="/edit/"
-        name="multilingual"
-        icon="URL_DIR/bin/16x16/lang_link.png">
-        Sprachen
-    </item>
-        <item parent="/edit/multilingual/"
-            name="langmanager"
-            icon="URL_DIR/bin/16x16/lang_link.png"
-            disabled="1">
-            Verwaltung
-        </item>
-        <item parent="/edit/multilingual/" type="seperator"></item>
-        <item parent="/edit/multilingual/"
-            name="site_links"
-            icon="URL_DIR/bin/16x16/lang_link.png"
-            disabled="1">
-            Verknüpfungen
-        </item>
-        <item parent="/edit/multilingual/"
-            name="site_links_create_in"
-            disabled="1">
-            Erstellen in
-        </item>
-     -->
 
     <!-- goto -->
         <!-- Projekt Verwaltung -->
@@ -159,7 +98,7 @@
         <!-- Papierkorb -->
         <item parent="/extras/"
               name="trash"
-              icon="icon-trash"
+              icon="fa fa-trash-o"
               require="controls/trash/Panel"
         >
             <locale group="quiqqer/system" var="menu.extras.trash.text" />
@@ -197,7 +136,7 @@
         </item>
         <item parent="/settings/"
               name="media"
-              icon="icon-picture"
+              icon="fa fa-picture-o"
               require="controls/projects/project/media/Manager"
         >
             <locale group="quiqqer/system" var="menu.settings.media.text" />
@@ -218,7 +157,6 @@
         <item parent="/profile/"
               name="workspaces"
               icon="icon-laptop"
-              require="controls/help/Changelog"
         >
             <locale group="quiqqer/system" var="menu.profile.workspace.text" />
         </item>

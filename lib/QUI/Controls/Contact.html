@@ -1,6 +1,12 @@
 
 <form method="POST" action="">
 
+    <div class="content-template">
+        {if $this->getAttribute('content')}
+            {$this->getAttribute('content')}
+        {/if}
+    </div>
+
     {if $this->getAttribute('labels')}
     <label for="qui-contact-name">
         {locale group="quiqqer/system" value="control.contact.name"}

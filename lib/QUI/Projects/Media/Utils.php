@@ -33,7 +33,7 @@ class Utils
         {
             /* @var $Item \QUI\Projects\Media\Folder */
             return array(
-                'icon'      => 'icon-picture',
+                'icon'      => 'fa fa-picture-o',
                 'icon80x80' => URL_BIN_DIR .'80x80/media.png',
                 'id'        => $Item->getId(),
                 'name'      => $Item->getAttribute('name'),
@@ -50,7 +50,7 @@ class Utils
         {
             /* @var $Item \QUI\Projects\Media\Folder */
             return array(
-                'icon'          => 'icon-folder-close-alt',
+                'icon'          => 'fa fa-folder-o',
                 'icon80x80'     => URL_BIN_DIR .'80x80/extensions/folder.png',
                 'id'            => $Item->getId(),
                 'name'          => $Item->getAttribute('name'),
@@ -284,14 +284,21 @@ class Utils
             $height = $attributes['height'];
         }
 
-        if ( strpos( $width, '%') !== false ) {
+        if ( strpos( $width, '%') !== false )
+        {
             $width = false;
+        } else
+        {
+            $width = (int)$width;
         }
 
-        if ( strpos( $height, '%') !== false ) {
+        if ( strpos( $height, '%') !== false )
+        {
             $height = false;
+        } else
+        {
+            $height = (int)$height;
         }
-
 
         try
         {

@@ -44,7 +44,7 @@ define('controls/system/Login', [
 
         options : {
             title     : Locale.get( 'quiqqer/system', 'login.title' ),
-            icon      : 'icon-signin',
+            icon      : 'fa fa-sign-in',
             maxHeight : 300,
             maxWidth  : 500,
             autoclose : false,
@@ -54,7 +54,7 @@ define('controls/system/Login', [
             },
             ok_button : {
                 text      : Locale.get( 'quiqqer/system', 'login' ),
-                textimage : 'icon-ok fa fa-check'
+                textimage : 'fa fa-check'
             }
         },
 

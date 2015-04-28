@@ -262,7 +262,7 @@ define('controls/projects/project/site/Search', [
                 for ( var i = 0, len = data.length; i < len; i++ )
                 {
                     result.data[ i ].open = {
-                        icon        : 'icon-file-alt',
+                        icon        : 'fa fa-file-o',
                         siteid      : data[ i ].id,
                         siteproject : data[ i ].project,
                         title       : Locale.get( lg, 'open.site' ),

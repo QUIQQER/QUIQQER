@@ -4,7 +4,7 @@
     border: 1px solid #cfd2d2;
     clear: both;
     float: left;
-    height: 120px;
+    height: 160px;
     max-width: 100%;
     overflow: auto;
     width: 100%;
@@ -16,10 +16,15 @@
     width: 100%;
 }
 
-.control-site-select-buttons {
+.control-site-select-buttons,
+.control-site-select-description {
     clear: both;
     float: left;
     width: 100%;
+}
+
+.control-site-select-description {
+    padding: 10px;
 }
 
 .control-site-select-entry {
@@ -34,6 +39,7 @@
     text-decoration: none;
 }
 
+.control-site-select-entry .icon-file,
 .control-site-select-entry .icon-file-alt,
 .control-site-select-entry .icon-magic {
     float: left;

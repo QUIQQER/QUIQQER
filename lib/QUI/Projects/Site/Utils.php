@@ -8,6 +8,7 @@ namespace QUI\Projects\Site;
 
 use QUI;
 use QUI\Projects;
+use QUI\Projects\Project;
 use QUI\Utils\String as StringUtils;
 use QUI\Utils\XML;
 use QUI\Utils\DOM;
@@ -603,5 +604,126 @@ class Utils
         );
 
         return $Project->get( $urlQueryParams[ 'id' ] );
+    }
+
+    /**
+     * Return sites from a site list
+     * sitelist from controls/projects/project/site/Select
+     *
+     * @param Project $Project - Project of the sites
+     * @param array|string $list - list from controls/projects/project/site/Select
+     * @param array $params - order / sort params
+     * @return array
+     */
+    static function getSitesByInputList(Project $Project, $list, $params=array())
+    {
+        $limit = 2;
+        $order = 'release_from ASC';
+
+        if ( isset( $params['limit'] ) ) {
+            $limit = (int)$params['limit'];
+        }
+
+        if ( isset( $params['order'] ) ) {
+            $order = $params['order'];
+        }
+
+        if ( is_string( $list ) )
+        {
+            $sitetypes = explode( ';', $list );
+
+        } else if ( is_array( $list ) )
+        {
+            $sitetypes = $list;
+
+        } else
+        {
+            return array();
+        }
+
+
+        $ids     = array();
+        $types   = array();
+        $parents = array();
+        $where   = array();
+
+        foreach ( $sitetypes as $sitetypeEntry )
+        {
+
+            if ( is_numeric( $sitetypeEntry ) )
+            {
+                $ids[] = (int)$sitetypeEntry;
+                continue;
+            }
+
+            if ( strpos( $sitetypeEntry, 'p' ) === 0 &&
+                 strpos( $sitetypeEntry, '/' ) === false &&
+                 strpos( $sitetypeEntry, ':' ) === false )
+            {
+                $parents[] = str_replace( 'p', '', $sitetypeEntry );
+                continue;
+            }
+
+            $types[] = $sitetypeEntry;
+        }
+
+        // query params
+        if ( !empty( $ids ) )
+        {
+            $where['id'] = array(
+                'type'  => 'IN',
+                'value' => $ids
+            );
+        }
+
+        if ( !empty( $types ) )
+        {
+            $where['type'] = array(
+                'type'  => 'IN',
+                'value' => $types
+            );
+        }
+
+        // parents are set
+        if ( count( $parents ) )
+        {
+            foreach ( $parents as $parentId )
+            {
+                try
+                {
+                    $Parent = $Project->get( (int)$parentId );
+
+                    $children = $Parent->getChildrenIds(array(
+                        'limit' => $limit,
+                        'order' => $order
+                    ));
+
+                    $ids = array_merge( $ids, $children );
+
+                } catch ( QUI\Exception $Exception )
+                {
+
+                }
+            }
+
+            $where['id'] = array(
+                'type'  => 'IN',
+                'value' => $ids
+            );
+
+            // by with parents, we use WHERE AND
+            return $Project->getSites(array(
+                'where' => $where,
+                'limit' => $limit,
+                'order' => $order
+            ));
+        }
+
+        // by no parents, we use WHERE OR
+        return $Project->getSites(array(
+            'where_or' => $where,
+            'limit'    => $limit,
+            'order'    => $order
+        ));
     }
 }

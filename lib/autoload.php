@@ -8,32 +8,32 @@
  * Autoloader for the QUIQQER CMS
  *
  * @param String $classname
+ *
  * @return Bool
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
  * @package quiqqer/quiqqer
  */
 
-require dirname( __FILE__ ) .'/Autoloader.php';
+require dirname(__FILE__).'/Autoloader.php';
 
-if ( function_exists( 'spl_autoload_register' ) )
-{
-    if ( function_exists( '__autoload' ) ) {
-        spl_autoload_register( '__autoload' );
+if (function_exists('spl_autoload_register')) {
+    if (function_exists('__autoload')) {
+        spl_autoload_register('__autoload');
     }
 
-    spl_autoload_register( '__quiqqer_autoload' );
+    spl_autoload_register('__quiqqer_autoload');
 
-} else
-{
+} else {
     /**
      * PHP Autoloader
      * Call the QUIQQER Autoloader function
      *
      * @param String $classname
      */
-    function __autoload( $classname ) {
-        __quiqqer_autoload( $classname );
+    function __autoload($classname)
+    {
+        __quiqqer_autoload($classname);
     }
 }
 
@@ -41,11 +41,12 @@ if ( function_exists( 'spl_autoload_register' ) )
  * Main QUIQQER Autoload function
  *
  * @param String $classname
+ *
  * @return bool
  */
 function __quiqqer_autoload($classname)
 {
-    return \QUI\Autoloader::load( $classname );
+    return \QUI\Autoloader::load($classname);
 }
 
 
@@ -55,18 +56,19 @@ function __quiqqer_autoload($classname)
  * @author www.pcsg.de (Henning Leutz)
  *
  * @param Integer $errno
- * @param String $errstr
- * @param String $errfile
- * @param String $errline
+ * @param String  $errstr
+ * @param String  $errfile
+ * @param String  $errline
+ *
  * @return bool
  * @throws ErrorException
  */
 function exception_error_handler($errno, $errstr, $errfile, $errline)
 {
-    if ( $errstr == 'json_encode(): Invalid UTF-8 sequence in argument' )
-    {
+    if ($errstr == 'json_encode(): Invalid UTF-8 sequence in argument') {
         \QUI::getErrorHandler()->setAttribute('show_request', true);
-        \QUI::getErrorHandler()->writeErrorToLog( $errno, $errstr, $errfile, $errline );
+        \QUI::getErrorHandler()
+            ->writeErrorToLog($errno, $errstr, $errfile, $errline);
         \QUI::getErrorHandler()->setAttribute('show_request', false);
 
         return true;
@@ -74,36 +76,34 @@ function exception_error_handler($errno, $errstr, $errfile, $errline)
 
     $l = error_reporting();
 
-    if ( $l & $errno )
-    {
+    if ($l & $errno) {
         $exit = false;
 
-        switch ( $errno )
-        {
+        switch ($errno) {
             case E_USER_ERROR:
                 $type = 'Fatal Error';
                 $exit = true;
-            break;
+                break;
 
             case E_USER_WARNING:
             case E_WARNING:
                 $type = 'Warning';
-            break;
+                break;
 
             case E_USER_NOTICE:
             case E_NOTICE:
             case @E_STRICT:
                 $type = 'Notice';
-            break;
+                break;
 
             case @E_RECOVERABLE_ERROR:
                 $type = 'Catchable';
-            break;
+                break;
 
             default:
                 $type = 'Unknown Error';
                 $exit = true;
-            break;
+                break;
         }
 
         $exception = new \ErrorException(
@@ -114,13 +114,11 @@ function exception_error_handler($errno, $errstr, $errfile, $errline)
             $errline
         );
 
-        if ( $exit )
-        {
-            exception_handler( $exception );
+        if ($exit) {
+            exception_handler($exception);
             exit();
 
-        } else
-        {
+        } else {
             throw $exception;
         }
     }
@@ -130,6 +128,7 @@ function exception_error_handler($errno, $errstr, $errfile, $errline)
 
 /**
  * Exception handler
+ *
  * @param Exception $Exception
  */
 function exception_handler($Exception)
@@ -141,10 +140,9 @@ function exception_handler($Exception)
         $Exception->getLine()
     );
 
-    if ( DEVELOPMENT )
-    {
+    if (DEVELOPMENT) {
         print(
-            $Exception->getMessage() . "\n" . $Exception->getTraceAsString() . "\n"
+            $Exception->getMessage()."\n".$Exception->getTraceAsString()."\n"
         );
     }
 }

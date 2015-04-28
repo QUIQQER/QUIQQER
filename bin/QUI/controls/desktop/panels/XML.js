@@ -422,7 +422,7 @@ define('controls/desktop/panels/XML', [
 
             var Save = this.getButtonBar().getElement( 'save' );
 
-            Save.setAttribute( 'textimage', 'icon-refresh icon-rotate' );
+            Save.setAttribute( 'textimage', 'fa fa-refresh fa-spin' );
 
             Ajax.post('ajax_settings_save', function()
             {

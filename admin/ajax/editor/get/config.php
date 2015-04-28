@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Konfiguration bekommen welche zur Verfügung stehen
+ * Return the main editor config
  *
  * @return Array
  */
 function ajax_editor_get_config()
 {
-    return \QUI\Editor\Manager::getConfig();
+    return QUI\Editor\Manager::getConfig();
 }
 
-\QUI::$Ajax->register('ajax_editor_get_config');
+QUI::$Ajax->register('ajax_editor_get_config');

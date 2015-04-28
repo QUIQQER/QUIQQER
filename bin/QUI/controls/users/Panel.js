@@ -123,7 +123,7 @@ define('controls/users/Panel', [
             }.bind( this ));
 
 
-            this.active_image = 'icon-ok';
+            this.active_image = 'fa fa-check';
             this.active_text  = Locale.get( lg, 'users.panel.user.is.active' );
 
             this.deactive_image = 'icon-remove';
@@ -186,7 +186,7 @@ define('controls/users/Panel', [
                 Users     : this,
                 text      : Locale.get( lg, 'users.panel.btn.delete' ),
                 disabled  : true,
-                textimage : 'icon-trash',
+                textimage : 'fa fa-trash-o',
                 events    : {
                     onMousedown : this.$onButtonDelClick
                 }
@@ -617,6 +617,20 @@ define('controls/users/Panel', [
             }
 
             this.getGrid().setWidth( Body.getSize().x - 40 );
+
+
+            // resize switches
+            var i, len, Control;
+            var switches = Body.getElements('.qui-switch');
+
+            for ( i = 0, len = switches.length; i < len; i++ )
+            {
+                Control = QUI.Controls.getById( switches[ i ].get('data-quiid') );
+
+                if ( Control ) {
+                    Control.resize();
+                }
+            }
         },
 
         /**
@@ -919,11 +933,11 @@ define('controls/users/Panel', [
             new QUIConfirm({
                 name  : 'DeleteUsers',
                 title : Locale.get( lg, 'users.panel.delete.window.title' ),
-                icon  : 'icon-trashcan',
+                icon  : 'fa fa-trash-o',
                 text  : Locale.get( lg, 'users.panel.delete.window.text', {
                     userids : uids.join(', ')
                 }),
-                texticon    : 'icon-trashcan',
+                texticon    : 'fa fa-trash-o',
                 information : Locale.get( lg, 'users.panel.delete.window.information' ),
 
                 width  : 500,

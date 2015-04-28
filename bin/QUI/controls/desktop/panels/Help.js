@@ -32,7 +32,7 @@ define([
             this.$Frame = null;
 
             this.setAttribute( 'title', 'QUIQQER-Hilfe' );
-            this.setAttribute( 'icon', 'icon-h-sign' );
+            this.setAttribute( 'icon', 'fa fa-h-square' );
 
             this.addEvents({
                 onCreate : this.$onCreate,

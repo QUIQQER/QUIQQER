@@ -101,7 +101,7 @@ define('controls/system/VHosts', [
             this.addButton({
                 name : 'delVhost',
                 text : Locale.get( lg, 'system.vhosts.btn.del.marked' ),
-                textimage : 'icon-trash',
+                textimage : 'fa fa-trash-o',
                 disabled  : true,
                 events :
                 {
@@ -417,18 +417,18 @@ define('controls/system/VHosts', [
 
             new QUIConfirm({
                 title : Locale.get( lg, 'system.vhosts.del.window.title' ),
-                icon  : 'icon-trash',
+                icon  : 'fa fa-trash-o',
                 text  : Locale.get( lg, 'system.vhosts.del.window.text', {
                     vhost : vhost
                 }),
-                texticon    : 'icon-trash',
+                texticon    : 'fa fa-trash-o',
                 information : Locale.get( lg, 'system.vhosts.del.window.information' ),
 
                 closeButtonText : Locale.get( lg, 'cancel' ),
 
                 ok_button : {
                     text      : Locale.get( lg, 'delete' ),
-                    textimage : 'icon-trash'
+                    textimage : 'fa fa-trash-o'
                 },
 
                 events :
