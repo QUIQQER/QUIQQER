@@ -272,6 +272,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         $Media = $this->_Media;
+
         /* @var $Media QUI\Projects\Media */
         $Project = $Media->getProject();
 
@@ -281,7 +282,6 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $original = $mdir.$file;
         $cachefile = $this->getSizeCachePath($width, $height);
 
-
         if (file_exists($cachefile)) {
             return $cachefile;
         }
@@ -289,18 +289,27 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         // Cachefolder erstellen
         $this->getParent()->createCache();
 
+        // create image
+        $Image = $Media->getImageManager()->make($original);
+
         if ($width || $height) {
-            $this->resize($cachefile, (int)$width, (int)$height);
 
-        } else {
-            try {
-                QUIFile::copy($original, $cachefile);
-
-            } catch (QUI\Exception $Exception) {
-                // Fehler loggen
-                QUI\System\Log::writeException($Exception);
+            if (!$width) {
+                $width = null;
             }
+
+            if (!$height) {
+                $height = null;
+            }
+
+            $Image->resize($width, $height);
         }
+
+
+        $Image->save($cachefile);
+
+        return $cachefile;
+
 
         // Spiegelung
         if ($this->getAttribute('reflection')) {
