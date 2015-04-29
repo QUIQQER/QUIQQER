@@ -273,9 +273,6 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
         $Media = $this->_Media;
 
-        /* @var $Media QUI\Projects\Media */
-        $Project = $Media->getProject();
-
         $mdir = CMS_DIR.$Media->getPath();
         $file = $this->getAttribute('file');
 
@@ -305,7 +302,35 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             $Image->resize($width, $height);
         }
 
+        // watermark
+        $Watermark = $this->getWatermark();
 
+        if ($Watermark) {
+
+            $pos = $this->getWatermarkPosition();
+
+            switch ($pos) {
+                case "top-left":
+                case "top":
+                case "top-right":
+                case "left":
+                case "center":
+                case "right":
+                case "bottom-left":
+                case "bottom":
+                case "bottom-right":
+                    $watermarkPosition = $pos;
+                    break;
+
+                default:
+                    $watermarkPosition = 'bottom-right';
+                    break;
+            }
+
+            $Image->insert($Watermark->getFullPath(), $watermarkPosition);
+        }
+
+        // save cache image
         $Image->save($cachefile);
 
         return $cachefile;
@@ -346,158 +371,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             }
         }
 
-        /**
-         * Wasserzeichen
-         */
-        if (!$this->getAttribute('watermark')) {
-            return $cachefile;
-        }
 
-        $watermark = $this->getAttribute('watermark');
-
-        if (!is_array($watermark)) {
-            $watermark = json_decode($watermark, true);
-        }
-
-        if (empty($watermark) || !$watermark['active']) {
-            return $cachefile;
-        }
-
-
-        // wenn kein Wasserzeichen, dann schauen ob im Projekt eines gibt
-        if (!isset($watermark['image'])
-            && $Project->getConfig('watermark_image')
-        ) {
-            $watermark['image'] = $Project->getConfig('watermark_image');
-        }
-
-        if (!isset($watermark['image'])) {
-            return $cachefile;
-        }
-
-
-        $params = QUIString::getUrlAttributes($watermark['image']);
-
-        if (!isset($params['id']) || !isset($params['project'])) {
-            return $cachefile;
-        }
-
-        try {
-            $position = 'bottomright';
-            $WZ_Media = $Project->getMedia();
-            $_Image = $WZ_Media->get((int)$params['id']);
-
-            if ($_Image->getType() != 'IMAGE') {
-                return $cachefile;
-            }
-
-            /* @var $_Image Image */
-            $d_media = $WZ_Media->getAttribute('media_dir');
-            $f_water = $d_media.$_Image->getPath();
-
-            if (!file_exists($f_water)) {
-                return $cachefile;
-            }
-
-            // falls keine position, dann die vom projekt
-            if (!isset($watermark['position'])
-                && $Project->getConfig('watermark_position')
-            ) {
-                $watermark['position']
-                    = $Project->getConfig('watermark_position');
-            }
-
-            if (isset($watermark['position'])) {
-                $position = $watermark['position'];
-            }
-
-            // falls keine prozent, dann die vom projekt
-            if ((!isset($watermark['percent']) || !$watermark['percent'])
-                && $Project->getConfig('watermark_percent')
-            ) {
-                $watermark['percent']
-                    = $Project->getConfig('watermark_percent');
-            }
-
-
-            $c_info = QUIFile::getInfo(
-                $cachefile,
-                array('imagesize' => true)
-            );
-
-            $w_info = QUIFile::getInfo(
-                $f_water,
-                array('imagesize' => true)
-            );
-
-            // Prozentuale Grösse - Wasserzeichen
-            if (isset($watermark['percent']) && $watermark['percent']) {
-                $w_width = $c_info['width'];
-                $w_height = $c_info['height'];
-
-                $watermark_width = ($w_width / 100 * $watermark['percent']);
-                $watermark_height = ($w_height / 100 * $watermark['percent']);
-
-                $watermark_temp = VAR_DIR.'tmp/'.md5($cachefile);
-
-                // Resize des Wasserzeichens
-                if (!file_exists($watermark_temp)) {
-                    QUIFile::copy($f_water, $watermark_temp);
-                }
-
-                QUIImage::resize(
-                    $watermark_temp,
-                    $watermark_temp,
-                    $watermark_width
-                );
-
-                QUIImage::resize(
-                    $watermark_temp,
-                    $watermark_temp,
-                    0,
-                    $watermark_height
-                );
-
-                $w_info = QUIFile::getInfo(
-                    $watermark_temp,
-                    array('imagesize' => true)
-                );
-
-                $f_water = $watermark_temp;
-            }
-
-
-            $top = 0;
-            $left = 0;
-
-            switch ($position) {
-                case 'topright':
-                    $left = $c_info['width'] - $w_info['width'];
-                    break;
-
-                case 'bottomleft':
-                    $top = $c_info['height'] - $w_info['height'];
-                    break;
-
-                case 'bottomright':
-                    $top = $c_info['height'] - $w_info['height'];
-                    $left = $c_info['width'] - $w_info['width'];
-                    break;
-
-                case 'center':
-                    $top = (($c_info['height'] - $w_info['height']) / 2);
-                    $left = (($c_info['width'] - $w_info['width']) / 2);
-                    break;
-            }
-
-            QUIImage::watermark($cachefile, $f_water, false, $top, $left);
-
-
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
-        }
-
-        return $cachefile;
     }
 
     /**
@@ -579,6 +453,59 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
+     * Return the Watermark image file
+     *
+     * @return Image|Boolean
+     * @throws QUI\Exception
+     */
+    public function getWatermark()
+    {
+        if ($this->getAttribute('wartermark')) {
+
+            try {
+                return Utils::getImageByUrl($this->getAttribute('wartermark'));
+
+            } catch (QUI\Exception $Exception) {
+
+            }
+        }
+
+
+        try {
+
+            $Project = $this->getProject();
+
+            return Utils::getImageByUrl($Project->getConfig('media_watermark'));
+
+        } catch (QUI\Exception $Exception) {
+
+        }
+
+        return false;
+    }
+
+    /**
+     * Return the Watermark image file
+     *
+     * @return Image|Boolean
+     * @throws QUI\Exception
+     */
+    public function getWatermarkPosition()
+    {
+        if ($this->getAttribute('wartermark_position')) {
+            return $this->getAttribute('wartermark_position');
+        }
+
+        $Project = $this->getProject();
+
+        if ($Project->getConfig('media_watermark_position')) {
+            return $Project->getConfig('media_watermark_position');
+        }
+
+        return false;
+    }
+
+    /**
      * Set the attribute for round corners
      *
      * @param String         $background - #FFFFFF
@@ -586,23 +513,23 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @throws QUI\Exception
      */
-    public function setRoundCorners($background = '', $radius = '')
-    {
-        if (empty($background)) {
-            throw new QUI\Exception('Please set a background color');
-        }
-
-        if (empty($radius)) {
-            throw new QUI\Exception('Please set a radius');
-        }
-
-        $roundcorners = array(
-            'background' => $background,
-            'radius'     => $radius
-        );
-
-        $this->setAttribute('roundcorners', $roundcorners);
-    }
+//    public function setRoundCorners($background = '', $radius = '')
+//    {
+//        if (empty($background)) {
+//            throw new QUI\Exception('Please set a background color');
+//        }
+//
+//        if (empty($radius)) {
+//            throw new QUI\Exception('Please set a radius');
+//        }
+//
+//        $roundcorners = array(
+//            'background' => $background,
+//            'radius'     => $radius
+//        );
+//
+//        $this->setAttribute('roundcorners', $roundcorners);
+//    }
 
     /**
      * Set a watermark to the image
@@ -613,38 +540,48 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      *    active
      *    percent
      */
-    public function setWatermark($params = array())
-    {
-        $watermark = $this->getAttribute('watermark');
-
-        // jetziges Wasserzeichen setzen, falls nichts übergeben wurde
-        if (isset($watermark['image']) && !isset($params['image'])) {
-            $params['image'] = $watermark['image'];
-        }
-
-        if (isset($watermark['position']) && !isset($params['position'])) {
-            $params['position'] = $watermark['position'];
-        }
-
-        if (isset($watermark['active']) && !isset($params['active'])) {
-            $params['active'] = $watermark['active'];
-        }
-
-        // falls deaktiviert
-        if ($params['active'] == 0) {
-            $this->setAttribute('watermark', '');
-
-            return;
-        }
-
-        $this->setAttribute('watermark', $params);
-    }
+//    public function setWatermark($params = array())
+//    {
+//        $watermark = $this->getAttribute('watermark');
+//
+//        // jetziges Wasserzeichen setzen, falls nichts übergeben wurde
+//        if (isset($watermark['image']) && !isset($params['image'])) {
+//            $params['image'] = $watermark['image'];
+//        }
+//
+//        if (isset($watermark['position']) && !isset($params['position'])) {
+//            $params['position'] = $watermark['position'];
+//        }
+//
+//        if (isset($watermark['active']) && !isset($params['active'])) {
+//            $params['active'] = $watermark['active'];
+//        }
+//
+//        // falls deaktiviert
+//        if ($params['active'] == 0) {
+//            $this->setAttribute('watermark', '');
+//
+//            return;
+//        }
+//
+//        $this->setAttribute('watermark', $params);
+//    }
 
     /**
      * Generate the MD5 file hash and set it to the Database and to the Object
      */
     public function generateMD5()
     {
+        if (!file_exists($this->getFullPath())) {
+            throw new QUI\Exception(
+                QUI::getLocale()
+                   ->get('quiqqer/system', 'exception.file.not.found', array(
+                       'file' => $this->getAttribute('file')
+                   )),
+                404
+            );
+        }
+
         $md5 = md5_file($this->getFullPath());
 
         $this->setAttribute('md5hash', $md5);
@@ -661,6 +598,16 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function generateSHA1()
     {
+        if (!file_exists($this->getFullPath())) {
+            throw new QUI\Exception(
+                QUI::getLocale()
+                   ->get('quiqqer/system', 'exception.file.not.found', array(
+                       'file' => $this->getAttribute('file')
+                   )),
+                404
+            );
+        }
+
         $sha1 = sha1_file($this->getFullPath());
 
         $this->setAttribute('sha1hash', $sha1);

@@ -3,14 +3,12 @@
 /**
  * Generate sha1 hashes of the media files
  *
- * @param String $project - name of the project
- * @param String $params - JSON Array
+ * @param String $project - JSON project data
  */
-function ajax_media_create_sha1($project, $params)
+function ajax_media_create_sha1($project)
 {
-    $params  = json_decode( $params, true );
-    $Project = \QUI\Projects\Manager::getProject( $project );
-    $Media   = $Project->getMedia();
+    $Project = QUI\Projects\Manager::decode($project);
+    $Media = $Project->getMedia();
 
     $ids = $Media->getChildrenIds(array(
         'where' => array(
@@ -21,22 +19,23 @@ function ajax_media_create_sha1($project, $params)
         )
     ));
 
-    foreach ( $ids as $id )
-    {
-        try
-        {
-            $Item = $Media->get( $id );
+    foreach ($ids as $id) {
+
+        try {
+            $Item = $Media->get($id);
             $Item->generateSHA1();
 
-        } catch ( \QUI\Exception $Exception )
-        {
-            \QUI::getMessagesHandler()->addException( $Exception );
+        } catch (QUI\Exception $Exception) {
+
+            QUI::getMessagesHandler()->addError(
+                $Exception->getMessage()
+            );
         }
     }
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_media_create_sha1',
-    array('project', 'params'),
+    array('project'),
     'Permission::checkAdminUser'
 );

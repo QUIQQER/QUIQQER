@@ -169,7 +169,7 @@ define('controls/projects/project/Settings', [
             this.addCategory({
                 name : 'mediaSettings',
                 text : Locale.get( lg, 'projects.project.panel.settings.btn.media' ),
-                textimage : 'icon-image',
+                icon : 'icon-picture',
                 events : {
                     onClick : this.openMediaSettings
                 }
@@ -443,7 +443,7 @@ define('controls/projects/project/Settings', [
         },
 
         /**
-         * Opens the Watermark
+         * Opens the Media Settings
          *
          * @method controls/projects/project/Settings#openMediaSettings
          */
@@ -451,14 +451,25 @@ define('controls/projects/project/Settings', [
         {
             this.Loader.show();
 
-            var Body = this.getBody();
+            var self = this,
+                Body = this.getBody();
 
             Body.set( 'html', '' );
 
-
-
-
-            this.Loader.hide();
+            require([
+                'controls/projects/project/settings/Media'
+            ], function(MediaSettings)
+            {
+                new MediaSettings({
+                    config : self.$config,
+                    Project : self.$Project,
+                    events : {
+                        onLoad : function() {
+                            self.Loader.hide();
+                        }
+                    }
+                }).inject( Body );
+            });
         },
 
         /**

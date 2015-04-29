@@ -166,9 +166,13 @@ define('controls/projects/Popup', [
                     }
                 }
 
-                Select.setValue(
-                    Select.firstChild().getAttribute( 'value' )
-                );
+                if (Select.firstChild())
+                {
+                    Select.setValue(
+                        Select.firstChild().getAttribute( 'value' )
+                    );
+                }
+
 
                 self.Loader.hide();
             });

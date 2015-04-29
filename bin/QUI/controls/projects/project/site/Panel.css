@@ -40,6 +40,9 @@
     font-weight: bold !important;
 }
 
+.qui-panel-dataRestore {
+    padding: 20px;
+}
 
 /** site settings
  * ====================================== */

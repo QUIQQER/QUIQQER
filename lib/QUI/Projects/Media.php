@@ -86,6 +86,17 @@ class Media extends QUI\QDOM
     }
 
     /**
+     * Return the complete cache path from the media
+     * (with the CMS_DIR)
+     *
+     * @return String - path to the directory, relative to the system
+     */
+    public function getFullCachePath()
+    {
+        return CMS_DIR.$this->getCacheDir();
+    }
+
+    /**
      * Return the DataBase table name
      *
      * @param String|Bool $type - (optional) standard=false; other options: relations
@@ -194,6 +205,17 @@ class Media extends QUI\QDOM
     /**
      * methods for usage
      */
+
+    /**
+     * Delete the complete media cache
+     */
+    public function clearCache()
+    {
+        $dir = $this->getFullCachePath();
+
+        QUI::getTemp()->moveToTemp($dir);
+        QUI\Utils\System\File::mkdir($dir);
+    }
 
     /**
      * Return the first child in the media

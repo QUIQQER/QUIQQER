@@ -470,7 +470,12 @@ define('controls/editors/Editor', [
          */
         openMedia : function(options)
         {
-            require(['controls/projects/project/media/Popup'], function(Popup) {
+            if ( this.$Project ) {
+                options.project = this.$Project.getName();
+            }
+
+            require(['controls/projects/project/media/Popup'], function(Popup)
+            {
                 new Popup( options ).open();
             });
         },
@@ -482,6 +487,12 @@ define('controls/editors/Editor', [
          */
         openProject : function(options)
         {
+            if ( this.$Project )
+            {
+                options.project = this.$Project.getName();
+                options.lang = this.$Project.getLang();
+            }
+
             require(['controls/projects/Popup'], function(Popup) {
                 new Popup( options ).open();
             });

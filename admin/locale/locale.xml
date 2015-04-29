@@ -841,29 +841,22 @@
             <de><![CDATA[Allgemein]]></de>
             <en><![CDATA[Generally]]></en>
         </locale>
-        <locale name="projects.project.site.media.manager.calcmd5.select">
-            <de><![CDATA[Projekt für MD5 Berechnung auswählen...]]></de>
-            <en><![CDATA[Choose project for MD5 calculation ...]]></en>
-        </locale>
-        <locale name="projects.project.site.media.manager.calcmd5.start.title">
-            <de><![CDATA[Berechnung starten]]></de>
-            <en><![CDATA[Start calculation]]></en>
+
+        <locale name="projects.project.site.media.manager.calcmd5.start.text">
+            <de><![CDATA[MD5 Berechnung starten]]></de>
+            <en><![CDATA[Start MD5 calculation]]></en>
         </locale>
         <locale name="projects.project.site.media.manager.calcmd5.start.alt">
-            <de><![CDATA[Berechnung starten]]></de>
-            <en><![CDATA[Start calculation]]></en>
+            <de><![CDATA[MD5 Berechnung starten]]></de>
+            <en><![CDATA[Start MD5 calculation]]></en>
         </locale>
-        <locale name="projects.project.site.media.manager.calcsha1.select">
-            <de><![CDATA[Projekt für SHA1 Berechnung auswählen...]]></de>
-            <en><![CDATA[Choose project for SHA1 calculation ...]]></en>
-        </locale>
-        <locale name="projects.project.site.media.manager.calcsha1.start.title">
-            <de><![CDATA[Berechnung starten]]></de>
-            <en><![CDATA[Start calculation]]></en>
+        <locale name="projects.project.site.media.manager.calcsha1.start.text">
+            <de><![CDATA[SHA1 Berechnung starten]]></de>
+            <en><![CDATA[Start SHA1 calculation]]></en>
         </locale>
         <locale name="projects.project.site.media.manager.calcsha1.start.alt">
-            <de><![CDATA[Berechnung starten]]></de>
-            <en><![CDATA[Start calculation]]></en>
+            <de><![CDATA[SHA1 Berechnung starten]]></de>
+            <en><![CDATA[Start SHA1 calculation]]></en>
         </locale>
         <locale name="projects.project.site.media.panel.btn.sitemap.show">
             <de><![CDATA[Sitemap anzeigen]]></de>
@@ -3181,6 +3174,10 @@
             <de><![CDATA[Ihre Nachricht an uns...]]></de>
             <en><![CDATA[Your message to us]]></en>
         </locale>
+        <locale name="exception.file.not.found">
+            <de><![CDATA[Datei [file] wurde nicht gefunden.]]></de>
+            <en><![CDATA[File [file] not found.]]></en>
+        </locale>
         <locale name="exception.template.not.found">
             <de><![CDATA[Template wurde nicht gefunden.]]></de>
             <en><![CDATA[Template not found.]]></en>
@@ -3984,6 +3981,14 @@
         <locale name="projects.project.settings.panel.adminSitemapMax">
             <de><![CDATA[Maximale Anzahl Seiten in der Projekt Sitemap]]></de>
             <en><![CDATA[Maximum number of page in the project Sitemap]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.title">
+            <de><![CDATA[Media-Einstellungen]]></de>
+            <en><![CDATA[Media settings]]></en>
+        </locale>
+        <locale name="projects.project.panel.settings.btn.media">
+            <de><![CDATA[Media-Einstellungen]]></de>
+            <en><![CDATA[Media settings]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js.php">

@@ -1,0 +1,74 @@
+
+<form name="projectMediaSettings" action="" class="qui-project-media-settings">
+
+    <table class="data-table">
+    <thead>
+        <tr>
+            <th colspan="2">
+                {t}quiqqer/system projects.project.settings.panel.mediaSettings.title{/t}
+            </th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr class="{cycle values="odd,even"}">
+            <td class="first">
+                Globales Wasserzeichen
+            </td>
+            <td>
+                <input type="text" class="media-image" name="media_watermark" />
+            </td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td class="first">
+                Wasserzeichen Position
+            </td>
+            <td>
+                <select name="media_watermark_position">
+                    <option value=""></option>
+                    <option value="top-left">oben links</option>
+                    <option value="top">oben zentriert</option>
+                    <option value="top-right">oben rechts</option>
+                    <option value="left">links zentriert</option>
+                    <option value="center">zentriert</option>
+                    <option value="right">rechts zentriert</option>
+                    <option value="bottom-left">unten links</option>
+                    <option value="bottom">unten zentriert</option>
+                    <option value="bottom-right">unten rechts</option>
+                </select>
+            </td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td colspan="2">
+                {t}quiqqer/system projects.project.settings.panel.mediaSettings.watermark.description{/t}
+            </td>
+        </tr>
+    </tbody>
+    </table>
+
+
+    <table class="data-table qui-media-manager-hash">
+    <thead>
+        <tr>
+            <th colspan="2">
+                {t}quiqqer/system projects.project.site.media.manager.general.tpl.title{/t}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="{cycle values="odd,even" reset=true}">
+            <td class="first">
+                {t}quiqqer/system projects.project.site.media.manager.general.recalc.md5{/t}
+            </td>
+            <td class="md5hash"></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td class="first">
+                {t}quiqqer/system projects.project.site.media.manager.general.recalc.sha1{/t}
+            </td>
+            <td class="sha1hash"></td>
+        </tr>
+    </tbody>
+    </table>
+
+</form>
