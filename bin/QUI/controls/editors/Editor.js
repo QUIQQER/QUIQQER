@@ -406,13 +406,27 @@ define('controls/editors/Editor', [
          */
         getSettings : function(callback)
         {
-            var Project = this.$Project;
+            var Project = this.$Project,
+                buttons = this.getAttribute('buttons');
 
             if ( !Project )
             {
-                if ( typeof callback === 'function ') {
-                    callback( false );
-                }
+                QUIAjax.get([
+                    'ajax_editor_get_toolbar'
+                ], function(toolbarData)
+                {
+                    var data = {
+                        toolbar : toolbarData
+                    };
+
+                    if (buttons) {
+                        data.buttons = buttons;
+                    }
+
+                    if ( typeof callback === 'function' ) {
+                        callback( data );
+                    }
+                });
 
                 return;
             }
@@ -424,6 +438,10 @@ define('controls/editors/Editor', [
             ], function(projectData, toolbarData)
             {
                 projectData.toolbar = toolbarData;
+
+                if (buttons) {
+                    projectData.buttons = buttons;
+                }
 
                 if ( typeof callback === 'function' ) {
                     callback( projectData );

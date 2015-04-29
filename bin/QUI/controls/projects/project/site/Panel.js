@@ -1448,16 +1448,16 @@ define('controls/projects/project/site/Panel', [
                         content = '';
                     }
 
+                    Editor.addEvent( 'onLoaded', self.$onEditorLoad );
+
                     Editor.inject( Body );
                     Editor.setContent( content );
 
                     self.$startEditorPeriodicalSave();
 
-                    Editor.addEvent( 'onLoaded', self.$onEditorLoad );
-
-                    if ( Editor.isLoaded() ) {
-                        self.$onEditorLoad();
-                    }
+//                    if ( Editor.isLoaded() ) {
+//                        self.$onEditorLoad();
+//                    }
                 });
             });
         },

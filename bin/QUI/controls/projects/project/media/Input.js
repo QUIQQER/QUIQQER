@@ -238,7 +238,7 @@ define('controls/projects/project/media/Input', [
             if ( value.substr( 0, 10 ) == 'image.php?' ) {
                 previewUrl = URL_DIR + value +'&maxwidth=30&maxheight=30&quiadmin=1';
             }
-            console.log(previewUrl);
+
             // load the image
             Asset.image( previewUrl, {
                 onLoad : function()
@@ -253,68 +253,6 @@ define('controls/projects/project/media/Input', [
                         .removeClass( 'icon-spin' )
                         .addClass( 'icon-warning-sign' );
                 }
-            });
-
-
-
-
-
-
-
-
-
-            return;
-
-
-            Ajax.get('ajax_media_url_resized', function(result)
-            {
-                if ( !self.$Preview ) {
-                    return;
-                }
-
-                if ( result.substr( 0, 10 ) == 'image.php?' ) {
-                    result = URL_DIR + result;
-                }
-
-                self.$Preview.getElements( '.icon-refresh' ).destroy();
-                self.$Preview.getElements( '.icon-warning-sign' ).destroy();
-
-                // loader image
-                var MiniLoader = new Element('div', {
-                    'class' : 'icon-refresh icon-spin',
-                    styles  : {
-                        fontSize  : 18,
-                        height    : 20,
-                        left      : 4,
-                        position  : 'relative',
-                        textAlign : 'center',
-                        top       : 4,
-                        width     : 20
-
-                    }
-                }).inject( self.$Preview );
-
-                // load the image
-                Asset.image( result, {
-                    onLoad : function()
-                    {
-                        MiniLoader.destroy();
-                        self.$Preview.setStyle( 'background', 'url('+ result +') no-repeat center center' );
-                    },
-                    onError : function()
-                    {
-                        self.$Preview.getElements( '.icon-refresh' )
-                                     .removeClass( 'icon-refresh' )
-                                     .removeClass( 'icon-spin' )
-                                     .addClass( 'icon-warning-sign' );
-
-                    }
-                });
-
-            }, {
-                fileurl   : value,
-                maxWidth  : 40,
-                maxHeight : 40
             });
         }
     });
