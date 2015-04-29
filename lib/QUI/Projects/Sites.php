@@ -64,7 +64,7 @@ class Sites
 
             $Status = new Button(array(
                 'name'     => 'status',
-                'aimage'   => 'fa fa-check',
+                'aimage'   => 'fa fa-check icon-ok',
                 'atext'    => QUI::getLocale()->get( $gl, 'projects.project.site.btn.activate.text' ),
                 'aonclick' => 'Panel.getSite().activate',
                 'dimage'   => 'icon-remove',
@@ -83,7 +83,7 @@ class Sites
             } else
             {
                 $Status->setAttributes(array(
-                    'textimage' => 'fa fa-check',
+                    'textimage' => 'fa fa-check icon-ok',
                     'text'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.activate.text' ),
                     'onclick'   => 'Panel.getSite().activate'
                 ));
@@ -102,7 +102,7 @@ class Sites
         $Toolbar->appendChild(
             new Button(array(
                 'name'      => '_Preview',
-                'textimage' => 'fa fa-eye',
+                'textimage' => 'fa fa-eye icon-eye-open',
                 'text'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.preview.text' ),
                 'onclick'   => 'Panel.openPreview'
             ))
@@ -112,7 +112,7 @@ class Sites
         $Toolbar->appendChild(
             new Button(array(
                 'name'      => '_Del',
-                'icon'      => 'fa fa-trash-o',
+                'icon'      => 'fa fa-trash-o icon-trash',
                 //'text'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.delete.text' ),
                 'onclick'   => 'Panel.del',
                 'help'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.delete.help' ),
@@ -133,7 +133,7 @@ class Sites
         $Toolbar->appendChild(
             new Button(array(
                 'name'      => '_New',
-                'icon'      => 'fa fa-file-o',
+                'icon'      => 'fa fa-file-o icon-file-alt',
                 //'text'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.new.text' ),
                 'onclick'   => 'Panel.createNewChild',
                 'help'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.new.help' ),
@@ -208,7 +208,7 @@ class Sites
                         'projects.project.site.information'
                     ),
                     'template' => SYS_DIR .'template/site/information.html',
-                    'icon' => 'fa fa-file-o'
+                    'icon' => 'fa fa-file-o icon-file-alt'
                 ))
             );
 
@@ -222,7 +222,7 @@ class Sites
                         'projects.project.site.information'
                     ),
                     'template' => SYS_DIR .'template/site/noview.html',
-                    'icon' => 'fa fa-file-o'
+                    'icon' => 'fa fa-file-o icon-file-alt'
                 ))
             );
 
@@ -239,7 +239,7 @@ class Sites
                         'projects.project.site.information'
                     ),
                     'template' => SYS_DIR .'template/site/information_norights.html',
-                    'icon' => 'fa fa-file-o'
+                    'icon' => 'fa fa-file-o icon-file-alt'
                 ))
             );
 
@@ -254,7 +254,7 @@ class Sites
                     'quiqqer/system',
                     'projects.project.site.content'
                 ),
-                'icon' => 'fa fa-file-text-o'
+                'icon' => 'fa fa-file-text-o icon-file-alt'
             ))
         );
 

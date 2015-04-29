@@ -223,7 +223,7 @@ class Manager extends \QUI\QDOM
 
         $types['standard'] = array(
             'type' => 'standard',
-            'icon' => 'fa fa-file-o'
+            'icon' => 'fa fa-file-o icon-file-alt'
         );
 
         $types = array_reverse( $types, true );
@@ -258,7 +258,7 @@ class Manager extends \QUI\QDOM
     /**
      * Gibt das Plugin zurück wenn ein Cachefile existiert
      *
-     * @param unknown_type $class
+     * @param String $class
      * @return unknown
      *
      * @todo mal überdenken
