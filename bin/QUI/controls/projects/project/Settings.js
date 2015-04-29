@@ -79,7 +79,7 @@ define('controls/projects/project/Settings', [
             'openCustomCSS',
             'openAdminSettings',
             'openBackup',
-            'openWatersign'
+            'openMediaSettings'
         ],
 
         options : {
@@ -163,6 +163,15 @@ define('controls/projects/project/Settings', [
                 icon : 'icon-gear',
                 events : {
                     onClick : this.openAdminSettings
+                }
+            });
+
+            this.addCategory({
+                name : 'mediaSettings',
+                text : Locale.get( lg, 'projects.project.panel.settings.btn.media' ),
+                textimage : 'icon-image',
+                events : {
+                    onClick : this.openMediaSettings
                 }
             });
 
@@ -266,10 +275,10 @@ define('controls/projects/project/Settings', [
             var self = this;
 
             new QUIConfirm({
-                icon  : 'fa fa-exclamation-circle',
+                icon  : 'fa fa-exclamation-circle icon-exclamation-sign',
                 title : Locale.get( lg, 'projects.project.project.delete.window.title' ),
                 text  : Locale.get( lg, 'projects.project.project.delete.window.text' ),
-                texticon : 'fa fa-exclamation-circle',
+                texticon : 'fa fa-exclamation-circle icon-exclamation-sign',
                 information : Locale.get( lg, 'projects.project.project.delete.window.information' ),
                 maxWidth: 450,
                 maxHeight: 300,
@@ -278,10 +287,10 @@ define('controls/projects/project/Settings', [
                     onSubmit : function()
                     {
                         new QUIConfirm({
-                            icon  : 'fa fa-exclamation-circle',
+                            icon  : 'fa fa-exclamation-circle icon-exclamation-sign',
                             title : Locale.get( lg, 'projects.project.project.delete.window.title' ),
                             text  : Locale.get( lg, 'projects.project.project.delete.window.text.2' ),
-                            texticon : 'fa fa-exclamation-circle',
+                            texticon : 'fa fa-exclamation-circle icon-exclamation-sign',
                             maxWidth: 450,
                             maxHeight: 300,
                             events :
@@ -436,20 +445,20 @@ define('controls/projects/project/Settings', [
         /**
          * Opens the Watermark
          *
-         * @method controls/projects/project/Settings#openWatersign
+         * @method controls/projects/project/Settings#openMediaSettings
          */
-        openWatersign : function()
+        openMediaSettings : function()
         {
             this.Loader.show();
-            this.$unloadCategory();
 
-            var Control = this,
-                Body    = Control.getBody();
-
-            console.warn( 'not implemented' );
+            var Body = this.getBody();
 
             Body.set( 'html', '' );
-            Control.Loader.hide();
+
+
+
+
+            this.Loader.hide();
         },
 
         /**
@@ -532,8 +541,13 @@ define('controls/projects/project/Settings', [
             var self = this,
                 name = Category.getAttribute( 'name' );
 
-            if ( name == 'settings' || name == "adminSettings" || name == "customCSS" ) {
-                return;
+            switch ( name )
+            {
+                case "settings":
+                case "adminSettings":
+                case "customCSS":
+                case "mediaSettings":
+                    return;
             }
 
             this.Loader.show();

@@ -53,7 +53,7 @@ define('Controls/Contact', [
 
             new QUIButton({
                 text   : 'senden',
-                textimage : 'fa fa-envelope-o',
+                textimage : 'fa fa-envelope-o icon-envelope-alt',
                 events :
                 {
                     onClick : function() {

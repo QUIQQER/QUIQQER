@@ -914,7 +914,7 @@ define('controls/workspace/Manager', [
                 var RemovePanels = new QUIContextmenuItem({
                     text : 'Panel löschen',
                     name : 'removePanelOfColumn',
-                    icon : 'fa fa-trash-o'
+                    icon : 'fa fa-trash-o icon-trash'
                 });
 
                 Menu.appendChild( RemovePanels );
@@ -995,7 +995,7 @@ define('controls/workspace/Manager', [
             Menu.appendChild(
                 new QUIContextmenuItem({
                     text   : 'Spalte löschen',
-                    icon   : 'fa fa-trash-o',
+                    icon   : 'fa fa-trash-o icon-trash',
                     name   : 'removeColumn',
                     events :
                     {
@@ -1076,7 +1076,7 @@ define('controls/workspace/Manager', [
                 autoclose : false,
                 ok_button : {
                     text      : 'Erstellen',
-                    textimage : 'fa fa-check'
+                    textimage : 'fa fa-check icon-ok'
                 },
                 cancel_button : {
                     text      : 'Abbrechen',
@@ -1328,7 +1328,7 @@ define('controls/workspace/Manager', [
                             }],
                             buttons : [{
                                 text      : 'Markierte Arbeitsbereiche löschen',
-                                textimage : 'fa fa-trash-o',
+                                textimage : 'fa fa-trash-o icon-trash',
                                 disabled  : true,
                                 events    :
                                 {
@@ -1346,7 +1346,7 @@ define('controls/workspace/Manager', [
                                         Win.close();
 
                                         new QUIConfirm({
-                                            icon   : 'fa fa-trash-o',
+                                            icon   : 'fa fa-trash-o icon-trash',
                                             title  : 'Arbeitsbereiche löschen?',
                                             text   : 'Möchten Sie folgende Arbeitsbereiche wirklich löschen?',
                                             information : ids.join( ',' ),

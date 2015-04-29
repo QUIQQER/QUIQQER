@@ -62,7 +62,7 @@ define([
         ],
 
         options : {
-            icon  : 'fa fa-trash-o',
+            icon  : 'fa fa-trash-o icon-trash',
             title : Locale.get( lg, 'trash.panel.title' )
         },
 
@@ -145,7 +145,7 @@ define([
                     self.$Select.appendChild(
                         project +' ( Media )',
                         project +',media',
-                        'fa fa-picture-o'
+                        'fa fa-picture-o icon-picture'
                     );
                 }
 

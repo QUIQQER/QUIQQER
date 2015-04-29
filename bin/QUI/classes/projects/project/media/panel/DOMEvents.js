@@ -107,8 +107,8 @@ define('classes/projects/project/media/panel/DOMEvents', [
             new QUIConfirm({
                 name     : 'delete_item',
                 title    : 'Ordner / Datei(en) löschen',
-                icon     : 'fa fa-trash-o',
-                texticon : 'fa fa-trash-o',
+                icon     : 'fa fa-trash-o icon-trash',
+                texticon : 'fa fa-trash-o icon-trash',
                 text     : 'Möchten Sie folgende(n) Ordner / Datei(en) wirklich löschen?',
                 information : '<div class="qui-media-file-delete"></div>',
                 events :

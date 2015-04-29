@@ -188,7 +188,7 @@ define('controls/groups/Panel', [
                 },
                 text      : Locale.get( lg, 'groups.panel.btn.delete' ),
                 disabled  : true,
-                textimage : 'fa fa-trash-o'
+                textimage : 'fa fa-trash-o icon-trash'
             });
 
 

@@ -121,7 +121,7 @@ define('controls/projects/project/media/Input', [
             }).inject( this.$Elm );
 
             this.$MediaButton = new QUIButton({
-                icon   : 'fa fa-picture-o',
+                icon   : 'fa fa-picture-o icon-picture',
                 alt    : Locale.get('quiqqer/system', 'projects.project.site.media.input.select.alt'),
                 title  : Locale.get('quiqqer/system', 'projects.project.site.media.input.select.title'),
                 events :
@@ -227,7 +227,7 @@ define('controls/projects/project/media/Input', [
                 }
 
                 self.$Preview.getElements( '.icon-refresh' ).destroy();
-                self.$Preview.getElements( '.fa-warning ' ).destroy();
+                self.$Preview.getElements( '.icon-warning-sign' ).destroy();
 
                 // loader image
                 var MiniLoader = new Element('div', {
@@ -256,7 +256,7 @@ define('controls/projects/project/media/Input', [
                         self.$Preview.getElements( '.icon-refresh' )
                                      .removeClass( 'icon-refresh' )
                                      .removeClass( 'icon-spin' )
-                                     .addClass( 'fa fa-warning' );
+                                     .addClass( 'icon-warning-sign' );
 
                     }
                 });

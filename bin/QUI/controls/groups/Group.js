@@ -112,8 +112,8 @@ define('controls/groups/Group', [
                 new Submit({
                     name     : 'DeleteUser'+ self.getGroup().getId(),
                     title    : Locale.get( lg, 'groups.group.delete.title' ),
-                    icon     : 'fa fa-trash-o',
-                    texticon : 'fa fa-trash-o',
+                    icon     : 'fa fa-trash-o icon-trash',
+                    texticon : 'fa fa-trash-o icon-trash',
                     text : Locale.get( lg, 'groups.group.delete.text', {
                         group : self.getGroup().getAttribute('name')
                     }),
@@ -309,7 +309,7 @@ define('controls/groups/Group', [
             this.addButton({
                 name      : 'groupDelete',
                 text      : Locale.get( lg, 'groups.group.btn.delete' ),
-                textimage : 'fa fa-trash-o',
+                textimage : 'fa fa-trash-o icon-trash',
                 events    : {
                     onClick : this.del
                 }
@@ -605,7 +605,7 @@ define('controls/groups/Group', [
                 if ( result.data[ i ].active )
                 {
                     result.data[ i ].status = new Element('div', {
-                        'class' : 'fa fa-check',
+                        'class' : 'fa fa-check icon-ok',
                         styles : {
                             margin : '5px 0 5px 12px'
                         }

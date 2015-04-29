@@ -86,7 +86,7 @@
             </title>
 
             <params>
-                <icon>fa fa-sort-amount-desc</icon>
+                <icon>fa fa-sort-amount-desc icon-sort-by-attributes-alt</icon>
             </params>
 
             <categories>

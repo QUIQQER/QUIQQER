@@ -220,7 +220,7 @@ define('controls/projects/project/Sitemap', [
                                     'projects.project.sitemap.media'
                                 ),
                                 value    : 'media',
-                                icon     : 'fa fa-picture-o',
+                                icon     : 'fa fa-picture-o icon-picture',
                                 dragable : true,
                                 events   :
                                 {
@@ -613,10 +613,10 @@ define('controls/projects/project/Sitemap', [
                 attributes.title = result.title;
             }
 
-            attributes.icon = 'fa fa-file-o';
+            attributes.icon = 'fa fa-file-o icon-file-alt';
 
             if ( "icon" in result ) {
-                attributes.icon = result.icon || 'fa fa-file-o';
+                attributes.icon = result.icon || 'fa fa-file-o icon-file-alt';
             }
 
             Itm.setAttributes( attributes );
@@ -742,7 +742,7 @@ define('controls/projects/project/Sitemap', [
                         text   : active ?
                                  Locale.get('quiqqer/system', 'projects.project.site.btn.deactivate.text') :
                                  Locale.get('quiqqer/system', 'projects.project.site.btn.activate.text'),
-                        icon   : active ? 'icon-remove fa fa-remove' : 'icon-remove fa fa-ok',
+                        icon   : active ? 'icon-remove fa fa-remove' : 'icon-ok fa fa-ok',
                         events :
                         {
                             onClick : function()

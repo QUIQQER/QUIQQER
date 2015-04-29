@@ -121,7 +121,7 @@ define('controls/projects/project/media/Panel', [
                 this.setAttribute( 'title', Media.getProject().getName() );
             }
 
-            this.setAttribute( 'icon', 'fa fa-picture-o' );
+            this.setAttribute( 'icon', 'fa fa-picture-o icon-picture' );
             this.parent( options );
 
             this.$Map      = null;
@@ -289,7 +289,7 @@ define('controls/projects/project/media/Panel', [
                     new ContextmenuItem({
                         name   : 'preview',
                         text   : Locale.get( lg, 'projects.project.site.media.panel.btn.view.preview' ),
-                        icon   : 'fa fa-eye',
+                        icon   : 'fa fa-eye icon-eye-open',
                         events :
                         {
                             onMouseDown : function(Item) {
@@ -330,7 +330,7 @@ define('controls/projects/project/media/Panel', [
                     new QUIButton({
                         name      : 'create_folder',
                         text      : Locale.get( lg, 'projects.project.site.media.panel.btn.create' ),
-                        textimage : 'fa fa-folder-open-o',
+                        textimage : 'fa fa-folder-open-o icon-folder-open-alt',
                         events    :
                         {
                             onClick : function() {
@@ -433,7 +433,7 @@ define('controls/projects/project/media/Panel', [
             {
                 // set media image to the panel
                 self.setOptions({
-                    icon  : 'fa fa-picture-o',
+                    icon  : 'fa fa-picture-o icon-picture',
                     title : ' Media ('+ Project.getName() +')'
                 });
 
@@ -1427,9 +1427,9 @@ define('controls/projects/project/media/Panel', [
             {
                 new Prompt({
                     title       : Locale.get( lg, 'projects.project.site.folder.create.title' ),
-                    titleicon   : 'fa fa-folder-open-o',
+                    titleicon   : 'fa fa-folder-open-o icon-folder-open-alt',
                     information : Locale.get( lg, 'projects.project.site.folder.create.information' ),
-                    icon        : 'fa fa-folder-open-o',
+                    icon        : 'fa fa-folder-open-o icon-folder-open-alt',
                     maxHeight   : 280,
                     maxWidth    : 500,
                     events      :

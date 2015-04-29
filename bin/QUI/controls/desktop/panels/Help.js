@@ -31,8 +31,8 @@ define([
 
             this.$Frame = null;
 
-            this.setAttribute( 'title', 'QUIQQER-Hilfe' );
-            this.setAttribute( 'icon', 'fa fa-h-square' );
+            this.setAttribute( 'title', 'QUIQQER-Hilfe' ); // #locale
+            this.setAttribute( 'icon', 'fa fa-h-square icon-h-sign' );
 
             this.addEvents({
                 onCreate : this.$onCreate,
@@ -53,7 +53,7 @@ define([
             });
 
             new QUIButton({
-                text : 'Hilfe laden',
+                text : 'Hilfe laden', // #locale
                 icon : 'icon-refresh',
                 styles : {
                     fontSize : 18,

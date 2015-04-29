@@ -191,7 +191,7 @@ define('controls/projects/project/media/FilePanel', [
         {
             var File        = this.$File,
                 dimension   = '',
-                icon        = 'fa fa-picture-o',
+                icon        = 'fa fa-picture-o icon-picture',
                 CategoryBar = this.getCategoryBar();
 
             if ( File.getAttribute( 'image_width' ) &&
@@ -332,8 +332,8 @@ define('controls/projects/project/media/FilePanel', [
             var self = this;
 
             new QUIConfirm({
-                icon     : 'fa fa-trash-o',
-                texticon : 'fa fa-trash-o',
+                icon     : 'fa fa-trash-o icon-trash',
+                texticon : 'fa fa-trash-o icon-trash',
 
                 title : Locale.get( 'quiqqer/system', 'projects.project.site.media.filePanel.window.delete.title', {
                     file : this.$File.getAttribute('file')
@@ -425,7 +425,7 @@ define('controls/projects/project/media/FilePanel', [
             ).addButton(
                 new QUIButton({
                     text      : Locale.get( lg, 'projects.project.site.media.filePanel.btn.delete.text' ),
-                    textimage : 'fa fa-trash-o',
+                    textimage : 'fa fa-trash-o icon-trash',
                     events    :
                     {
                         onClick : function() {
@@ -502,7 +502,7 @@ define('controls/projects/project/media/FilePanel', [
                     text    : Locale.get( lg, 'projects.project.site.media.filePanel.details.text' ),
                     name    : 'details',
                     Control : this,
-                    icon    : 'fa fa-file-o',
+                    icon    : 'fa fa-file-o icon-file-alt',
                     events  :
                     {
                         onActive : function() {
@@ -522,7 +522,7 @@ define('controls/projects/project/media/FilePanel', [
                 new QUIButton({
                     text    : Locale.get( lg, 'projects.project.site.media.filePanel.preview.text' ),
                     name    : 'preview',
-                    icon    : 'fa fa-eye',
+                    icon    : 'fa fa-eye icon-eye-open',
                     Control : this,
                     events  :
                     {

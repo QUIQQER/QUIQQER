@@ -455,7 +455,7 @@ define('controls/projects/project/site/Select', [
             var Elm = this.createEntry( siteId ).inject( this.$Container );
 
             new Element('span', {
-                'class' : 'fa fa-file-o'
+                'class' : 'fa fa-file-o icon-file-alt'
             }).inject( Elm.getElement( '.control-site-select-entry-text' ) );
 
             Elm.inject( this.$Container );

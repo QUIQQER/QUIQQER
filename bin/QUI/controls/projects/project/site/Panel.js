@@ -296,7 +296,7 @@ define('controls/projects/project/site/Panel', [
             }).inject( this.getHeader() );
 
             new QUIButton({
-                image  : 'fa fa-picture-o',
+                image  : 'fa fa-picture-o icon-picture',
                 alt    : Locale.get( lg, 'projects.project.site.panel.btn.media' ),
                 title  : Locale.get( lg, 'projects.project.site.panel.btn.media' ),
                 styles : {
@@ -670,7 +670,7 @@ define('controls/projects/project/site/Panel', [
             {
                 new Confirm({
                     title     : Locale.get( lg, 'projects.project.site.panel.window.delete.title' ),
-                    titleicon : 'fa fa-trash-o',
+                    titleicon : 'fa fa-trash-o icon-trash',
                     text : Locale.get( lg, 'projects.project.site.panel.window.delete.text', {
                         id    : Site.getId(),
                         url   : Site.getAttribute( 'name' ) +'.html',
@@ -840,7 +840,7 @@ define('controls/projects/project/site/Panel', [
 
 
                             new QUIButton({
-                                icon   : 'fa fa-file-o',
+                                icon   : 'fa fa-file-o icon-file-alt',
                                 alt    : Locale.get( lg, 'open.site' ),
                                 title  : Locale.get( lg, 'open.site' ),
                                 lang   : Row.get( 'data-lang' ),

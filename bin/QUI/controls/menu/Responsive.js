@@ -96,7 +96,7 @@ define('controls/menu/Responsive', [
 
             this.$Back = new QUIButton({
                 text : 'Zurück',
-                textimage : 'fa fa-angle-double-left',
+                textimage : 'fa fa-angle-double-left icon-double-angle-left',
                 events :
                 {
                     onClick : function() {

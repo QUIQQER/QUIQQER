@@ -83,7 +83,7 @@ define('controls/projects/project/media/Popup', [
             this.addButton(
                 new QUIButton({
                     text      : QUILocale.get( 'quiqqer/system', 'accept' ),
-                    textimage : 'fa fa-check',
+                    textimage : 'fa fa-check icon-ok',
                     events    :
                     {
                         onClick : function()

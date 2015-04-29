@@ -123,7 +123,7 @@ define('controls/users/Panel', [
             }.bind( this ));
 
 
-            this.active_image = 'fa fa-check';
+            this.active_image = 'fa fa-check icon-ok';
             this.active_text  = Locale.get( lg, 'users.panel.user.is.active' );
 
             this.deactive_image = 'icon-remove';
@@ -186,7 +186,7 @@ define('controls/users/Panel', [
                 Users     : this,
                 text      : Locale.get( lg, 'users.panel.btn.delete' ),
                 disabled  : true,
-                textimage : 'fa fa-trash-o',
+                textimage : 'fa fa-trash-o icon-trash',
                 events    : {
                     onMousedown : this.$onButtonDelClick
                 }
@@ -933,11 +933,11 @@ define('controls/users/Panel', [
             new QUIConfirm({
                 name  : 'DeleteUsers',
                 title : Locale.get( lg, 'users.panel.delete.window.title' ),
-                icon  : 'fa fa-trash-o',
+                icon  : 'fa fa-trash-o icon-trash',
                 text  : Locale.get( lg, 'users.panel.delete.window.text', {
                     userids : uids.join(', ')
                 }),
-                texticon    : 'fa fa-trash-o',
+                texticon    : 'fa fa-trash-o icon-trash',
                 information : Locale.get( lg, 'users.panel.delete.window.information' ),
 
                 width  : 500,

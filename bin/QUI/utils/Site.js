@@ -151,7 +151,7 @@ define('utils/Site', [
                                             new QUIConfirm({
                                                 title : 'Unerlaubte Zeichen im Namen',
                                                 text  : 'Unerlaubte Zeichen im Namen.',
-                                                icon  : 'fa fa-warning fa fa-warning',
+                                                icon  : 'fa fa-warning icon-warning-sign',
                                                 maxWidth    : 600,
                                                 maxHeight   : 500,
                                                 autoclose   : false,
