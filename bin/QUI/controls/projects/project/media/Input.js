@@ -214,7 +214,57 @@ define('controls/projects/project/media/Input', [
                 return;
             }
 
-            var self = this;
+            this.$Preview.getElements( '.icon-refresh' ).destroy();
+            this.$Preview.getElements( '.icon-warning-sign' ).destroy();
+
+            // loader image
+            var MiniLoader = new Element('div', {
+                'class' : 'icon-refresh icon-spin',
+                styles  : {
+                    fontSize  : 18,
+                    height    : 20,
+                    left      : 4,
+                    position  : 'relative',
+                    textAlign : 'center',
+                    top       : 4,
+                    width     : 20
+
+                }
+            }).inject( this.$Preview );
+
+            var self = this,
+                previewUrl = value;
+
+            if ( value.substr( 0, 10 ) == 'image.php?' ) {
+                previewUrl = URL_DIR + value +'&maxwidth=30&maxheight=30&quiadmin=1';
+            }
+            console.log(previewUrl);
+            // load the image
+            Asset.image( previewUrl, {
+                onLoad : function()
+                {
+                    MiniLoader.destroy();
+                    self.$Preview.setStyle( 'background', 'url('+ previewUrl +') no-repeat center center' );
+                },
+                onError : function()
+                {
+                    self.$Preview.getElements( '.icon-refresh' )
+                        .removeClass( 'icon-refresh' )
+                        .removeClass( 'icon-spin' )
+                        .addClass( 'icon-warning-sign' );
+                }
+            });
+
+
+
+
+
+
+
+
+
+            return;
+
 
             Ajax.get('ajax_media_url_resized', function(result)
             {

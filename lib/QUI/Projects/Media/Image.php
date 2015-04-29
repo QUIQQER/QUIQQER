@@ -272,11 +272,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         $Media = $this->_Media;
-
-        $mdir = CMS_DIR.$Media->getPath();
-        $file = $this->getAttribute('file');
-
-        $original = $mdir.$file;
+        $original = $this->getFullPath();
         $cachefile = $this->getSizeCachePath($width, $height);
 
         if (file_exists($cachefile)) {
