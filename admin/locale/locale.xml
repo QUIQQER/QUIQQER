@@ -3986,10 +3986,63 @@
             <de><![CDATA[Media-Einstellungen]]></de>
             <en><![CDATA[Media settings]]></en>
         </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.watermark">
+            <de><![CDATA[Globales Wasserzeichen]]></de>
+            <en><![CDATA[Global watermark]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.watermark.position">
+            <de><![CDATA[Position des Wasserzeichen]]></de>
+            <en><![CDATA[Position of the watermark]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.watermark.description">
+            <de><![CDATA[
+                Hinweis: Änderungen am Wasserzeichen löschen den kompletten Mediacache.
+            ]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+
         <locale name="projects.project.panel.settings.btn.media">
             <de><![CDATA[Media-Einstellungen]]></de>
             <en><![CDATA[Media settings]]></en>
         </locale>
+
+        <locale name="watermark.position.top.left">
+            <de><![CDATA[oben links]]></de>
+            <en><![CDATA[top left]]></en>
+        </locale>
+        <locale name="watermark.position.top">
+            <de><![CDATA[oben zentriert]]></de>
+            <en><![CDATA[centered above]]></en>
+        </locale>
+        <locale name="watermark.position.top.right">
+            <de><![CDATA[oben rechts]]></de>
+            <en><![CDATA[top right]]></en>
+        </locale>
+        <locale name="watermark.position.left">
+            <de><![CDATA[links zentriert]]></de>
+            <en><![CDATA[centered left]]></en>
+        </locale>
+        <locale name="watermark.position.center">
+            <de><![CDATA[zentriert]]></de>
+            <en><![CDATA[centered]]></en>
+        </locale>
+        <locale name="watermark.position.right">
+            <de><![CDATA[rechts zentriert]]></de>
+            <en><![CDATA[centered right]]></en>
+        </locale>
+        <locale name="watermark.position.bottom.left">
+            <de><![CDATA[unten links]]></de>
+            <en><![CDATA[bottom left]]></en>
+        </locale>
+        <locale name="watermark.position.bottom">
+            <de><![CDATA[unten zentriert]]></de>
+            <en><![CDATA[centered bottom]]></en>
+        </locale>
+        <locale name="watermark.position.bottom.right">
+            <de><![CDATA[unten rechts]]></de>
+            <en><![CDATA[bottom right]]></en>
+        </locale>
+
     </groups>
     <groups name="quiqqer/system" datatype="js.php">
         <locale name="projects.project.site.select.btn.addSite">

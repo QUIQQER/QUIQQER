@@ -260,6 +260,7 @@ $languages = QUI::availableLanguages();
             document.id( 'username' ).focus();
 
             window.LangSelect = new QUISelect({
+                maxDropDownHeight : 300,
                 styles : {
                     marginLeft: 10,
                     width: 50
@@ -284,6 +285,9 @@ $languages = QUI::availableLanguages();
                     {
                         case 'de': $langText = 'Deutsch'; break;
                         case 'en': $langText = 'English'; break;
+
+                        default:
+                            continue 2;
                     }
 
                     echo "
