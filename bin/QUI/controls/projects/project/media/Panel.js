@@ -1165,7 +1165,7 @@ define('controls/projects/project/media/Panel', [
                     url = URL_DIR + Child.url +'&quiadmin=1';
                     url = url +'&maxheight=80';
                     url = url +'&maxwidth=80';
-                    console.log(url);
+
                     // because of the browser cache
                     if ( Child.e_date ) {
                         url = url +'&edate='+ Child.e_date.replace(/[^0-9]/g, '');
