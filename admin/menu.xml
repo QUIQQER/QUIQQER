@@ -134,15 +134,7 @@
         >
             <locale group="quiqqer/system" var="menu.settings.projects.text" />
         </item>
-        <item parent="/settings/"
-              name="media"
-              icon="fa fa-picture-o icon-picture"
-              require="controls/projects/project/media/Manager"
-        >
-            <locale group="quiqqer/system" var="menu.settings.media.text" />
-        </item>
-
-
+        
     <!-- Profil -->
         <item parent="/profile/"
               name="userProfile"

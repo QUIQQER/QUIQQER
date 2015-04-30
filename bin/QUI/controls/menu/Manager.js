@@ -97,47 +97,15 @@ define('controls/menu/Manager', [
          */
         menuClick : function(Item)
         {
-            var list;
+            var i, len, list;
             var self        = this,
                 menuRequire = Item.getAttribute( 'require' ),
                 exec        = Item.getAttribute( 'exec' ),
                 xmlFile     = Item.getAttribute( 'qui-xml-file' );
 
             // js require
-            if ( menuRequire )
-            {
-                list = QUI.Controls.getByType( menuRequire );
-
-                if ( list.length )
-                {
-                    if ( instanceOf( list[0], Panel ) )
-                    {
-                        PanelUtils.execPanelOpen( list[0] );
-                    } else
-                    {
-                        list[0].open();
-                    }
-
-                } else
-                {
-                    require([ menuRequire ], function(Control)
-                    {
-                        var attributes = Object.merge(
-                            Item.getStorageAttributes(),
-                            Item.getAttributes()
-                        );
-
-                        var Ctrl = new Control( attributes );
-
-                        if ( instanceOf( Ctrl, Panel ) )
-                        {
-                            self.openPanelInTasks( Ctrl );
-                            return;
-                        }
-
-                        Ctrl.open();
-                    });
-                }
+            if ( menuRequire ) {
+                this.$menuRequire( Item );
             }
 
             // xml setting file
@@ -146,7 +114,7 @@ define('controls/menu/Manager', [
                 // panel still exists?
                 list = QUI.Controls.getByType( 'controls/desktop/panels/XML' );
 
-                for ( var i = 0, len = list.length; i < len; i++ )
+                for ( i = 0, len = list.length; i < len; i++ )
                 {
                     if ( list[ i ].getFile() == xmlFile )
                     {
@@ -185,6 +153,80 @@ define('controls/menu/Manager', [
                     MessageHandler.addError( e );
                 });
             }
+        },
+
+        /**
+         * It method has a require option
+         *
+         * @param {Object} Item - (qui/controls/contextmenu/Item)
+         */
+        $menuRequire : function(Item)
+        {
+            var i, len, list;
+
+            var menuRequire = Item.getAttribute( 'require' );
+
+            list = QUI.Controls.getByType( menuRequire );
+
+            var attributes = Object.merge(
+                Item.getStorageAttributes(),
+                Item.getAttributes()
+            );
+
+            if ( list.length )
+            {
+                if ( menuRequire == 'controls/projects/project/Settings' )
+                {
+                    for ( i = 0, len = list.length; i < len; i++ )
+                    {
+                        if ( list[ i ].getAttribute( 'project' ) == attributes.project )
+                        {
+                            PanelUtils.execPanelOpen( list[0] );
+                            return;
+                        }
+                    }
+
+                    this.$createControl( menuRequire, attributes );
+                    return;
+                }
+
+                if ( instanceOf( list[0], Panel ) )
+                {
+                    PanelUtils.execPanelOpen( list[0] );
+
+                } else
+                {
+                    list[0].open();
+                }
+
+                return;
+            }
+
+            this.$createControl( menuRequire, attributes );
+        },
+
+        /**
+         * Create the control and opened it
+         *
+         * @param {String} controlName - require of the control -> eq: controls/projects/project/Settings
+         * @param {Object} attributes - attributes of the control
+         */
+        $createControl : function(controlName, attributes)
+        {
+            var self = this;
+
+            require([ controlName ], function(Control)
+            {
+                var Ctrl = new Control( attributes );
+
+                if ( instanceOf( Ctrl, Panel ) )
+                {
+                    self.openPanelInTasks( Ctrl );
+                    return;
+                }
+
+                Ctrl.open();
+            });
         },
 
         /**

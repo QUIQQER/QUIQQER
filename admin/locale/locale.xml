@@ -2758,10 +2758,6 @@
             <de><![CDATA[QUIQQER]]></de>
             <en><![CDATA[QUIQQER]]></en>
         </locale>
-        <locale name="menu.settings.media.text">
-            <de><![CDATA[Media-Einstellungen]]></de>
-            <en><![CDATA[Media settings]]></en>
-        </locale>
         <locale name="menu.settings.editor.text">
             <de><![CDATA[WYSIWYG-Editor Einstellungen]]></de>
             <en><![CDATA[WYSIWYG-Editor settings]]></en>

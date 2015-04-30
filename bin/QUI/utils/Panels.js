@@ -87,7 +87,7 @@ define('utils/Panels', function()
             {
                 var i, len, Panel;
                 var panels = QUI.Controls.get( 'projects-media-panel' );
-console.log( panels );
+
                 if ( panels.length )
                 {
                     for ( i = 0, len = panels.length; i < len; i++ )
