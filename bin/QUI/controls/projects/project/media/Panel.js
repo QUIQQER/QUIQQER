@@ -807,7 +807,6 @@ define('controls/projects/project/media/Panel', [
                     Last       = Breadcrumb.lastChild();
 
                 MapControl.selectFolder( Last.getAttribute( 'id' ) );
-
             });
         },
 

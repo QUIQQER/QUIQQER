@@ -13,14 +13,15 @@
 }
 
 .qui-media-sitemap {
-    width: 300px;
     background: #fff;
-    height: 100%;
-    position: relative;
-    top: 0;
-    z-index: 100;
     border-right: 1px solid #bbb;
     float: left;
+    height: 100%;
+    overflow: auto;
+    position: relative;
+    top: 0;
+    width: 300px;
+    z-index: 100;
 }
 
 /** Media item style

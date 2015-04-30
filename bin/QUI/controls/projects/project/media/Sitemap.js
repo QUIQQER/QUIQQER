@@ -10,7 +10,7 @@
  * @require Ajax
  */
 
-define([
+define('controls/projects/project/media/Sitemap', [
 
     'qui/controls/Control',
     'qui/controls/sitemap/Map',
