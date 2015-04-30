@@ -481,7 +481,7 @@ abstract class Item extends QUI\QDOM
         {
             $Project = $this->_Media->getProject();
 
-            $str = 'image.php?id='. $this->getId() .'&project='. $Project->getAttribute('name') .'&qui=1';
+            $str = 'image.php?id='. $this->getId() .'&project='. $Project->getAttribute('name');
 
             if ( $this->getAttribute('maxheight') ) {
                 $str .= '&maxheight='. $this->getAttribute('maxheight');

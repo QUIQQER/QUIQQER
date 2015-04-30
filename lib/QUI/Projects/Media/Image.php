@@ -295,7 +295,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                 $height = null;
             }
 
-            $Image->resize($width, $height);
+            $Image->resize($width, $height, function ($Constraint) {
+                $Constraint->aspectRatio();
+                $Constraint->upsize();
+            });
         }
 
         // watermark

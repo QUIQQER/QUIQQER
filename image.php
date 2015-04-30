@@ -49,7 +49,19 @@ try {
 
         $Image = $Media->getImageManager()->make($File->getFullPath());
 
-        echo $Image->resize($_REQUEST['maxwidth'], $_REQUEST['maxheight'])
+        if (!isset($_REQUEST['maxwidth'])) {
+            $_REQUEST['maxwidth'] = null;
+        }
+
+        if (!isset($_REQUEST['maxheight'])) {
+            $_REQUEST['maxheight'] = null;
+        }
+
+        echo $Image->resize($_REQUEST['maxwidth'], $_REQUEST['maxheight'],
+            function ($Constraint) {
+                $Constraint->aspectRatio();
+                $Constraint->upsize();
+            })
                    ->response();
         exit;
     }
