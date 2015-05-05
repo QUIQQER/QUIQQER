@@ -114,6 +114,7 @@ class Media extends QUI\QDOM
 
     /**
      * Return the ImageManager of the Media
+     *
      * @return ImageManager
      */
     public function getImageManager()
@@ -133,28 +134,27 @@ class Media extends QUI\QDOM
 
         $DataBase = \QUI::getDataBase();
         $DataBase->Table()->appendFields($table, array(
-            'id'           => 'bigint(20) NOT NULL',
-            'name'         => 'varchar(200) NOT NULL',
-            'title'        => 'tinytext',
-            'short'        => 'text',
-            'type'         => 'varchar(32) default NULL',
-            'active'       => 'tinyint(1) NOT NULL',
-            'deleted'      => 'tinyint(1) NOT NULL',
-            'c_date'       => 'timestamp NULL default NULL',
-            'e_date'       => 'timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP',
-            'file'         => 'text',
-            'alt'          => 'text',
-            'mime_type'    => 'text',
-            'image_height' => 'int(6) default NULL',
-            'image_width'  => 'int(6) default NULL',
-            'roundcorners' => 'text',
-            'watermark'    => 'text',
-            'c_user'       => 'int(11) default NULL',
-            'e_user'       => 'int(11) default NULL',
-            'rate_users'   => 'text',
-            'rate_count'   => 'float default NULL',
-            'md5hash'      => 'varchar(32)',
-            'sha1hash'     => 'varchar(40)'
+            'id'            => 'bigint(20) NOT NULL',
+            'name'          => 'varchar(200) NOT NULL',
+            'title'         => 'tinytext',
+            'short'         => 'text',
+            'type'          => 'varchar(32) default NULL',
+            'active'        => 'tinyint(1) NOT NULL',
+            'deleted'       => 'tinyint(1) NOT NULL',
+            'c_date'        => 'timestamp NULL default NULL',
+            'e_date'        => 'timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP',
+            'file'          => 'text',
+            'alt'           => 'text',
+            'mime_type'     => 'text',
+            'image_height'  => 'int(6) default NULL',
+            'image_width'   => 'int(6) default NULL',
+            'image_effects' => 'text',
+            'c_user'        => 'int(11) default NULL',
+            'e_user'        => 'int(11) default NULL',
+            'rate_users'    => 'text',
+            'rate_count'    => 'float default NULL',
+            'md5hash'       => 'varchar(32)',
+            'sha1hash'      => 'varchar(40)'
         ));
 
         $DataBase->Table()->setIndex($table, 'id');

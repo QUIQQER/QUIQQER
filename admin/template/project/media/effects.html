@@ -1,0 +1,47 @@
+<table class="data-table">
+    <thead>
+    <tr>
+        <th colspan="2">
+            {t}quiqqer/system template.project.media.effect.header{/t}
+        </th>
+    </tr>
+    </thead>
+
+    <tbody>
+        <tr class="{cycle values="odd,even" reset="true"}">
+            <td>{t}quiqqer/system media.blur{/t}</td>
+            <td class="effect-blur"></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>{t}quiqqer/system media.brightness{/t}</td>
+            <td class="effect-brightness"></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>{t}quiqqer/system media.contrast{/t}</td>
+        <td class="effect-contrast"></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>{t}quiqqer/system media.greyscale{/t}</td>
+            <td>
+                <input type="checkbox" name="effect-greyscale" value="" />
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<table class="data-table">
+    <thead>
+    <tr>
+        <th>
+            {t}quiqqer/system template.project.media.effect.preview.header{/t}
+        </th>
+    </tr>
+    </thead>
+
+    <tbody>
+        <tr class="{cycle values="odd,even" reset="true"}">
+            <td class="preview-frame"></td>
+        </tr>
+    </tbody>
+    </table>
+</table>

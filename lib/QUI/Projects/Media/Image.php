@@ -20,6 +20,13 @@ use QUI\Utils\Image as QUIImage;
 class Image extends Item implements QUI\Interfaces\Projects\Media\File
 {
     /**
+     * internal image effect parameter
+     *
+     * @var bool|array
+     */
+    protected $_effects = false;
+
+    /**
      * Return the real with of the image
      *
      * @return Integer | false
@@ -301,6 +308,47 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             });
         }
 
+        // effects
+        $effects = $this->getEffects();
+
+        if (isset($effects['blur'])
+            && is_numeric($effects['blur'])
+        ) {
+            $blur = (int)$effects['blur'];
+
+            if ($blur > 0 && $blur <= 100) {
+                $Image->blur($blur);
+            }
+        }
+
+        if (isset($effects['brightness'])
+            && is_numeric($effects['brightness'])
+        ) {
+            $brightness = (int)$effects['brightness'];
+
+            if ($brightness !== 0 && $brightness >= -100
+                && $brightness <= 100
+            ) {
+                $Image->brightness($brightness);
+            }
+        }
+
+        if (isset($effects['contrast'])
+            && is_numeric($effects['contrast'])
+        ) {
+            $contrast = (int)$effects['contrast'];
+
+            if ($contrast !== 0 && $contrast >= -100 && $contrast <= 100) {
+                $Image->contrast($contrast);
+            }
+        }
+
+        if (isset($effects['greyscale'])
+            && $effects['greyscale'] == 1)
+        {
+            $Image->greyscale();
+        }
+
         // watermark
         $Watermark = $this->getWatermark();
 
@@ -333,44 +381,6 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $Image->save($cachefile);
 
         return $cachefile;
-
-
-        // Spiegelung
-        if ($this->getAttribute('reflection')) {
-            QUIImage::reflection($original, $cachefile);
-
-            if ($width || $height) {
-                QUIImage::resize($cachefile, $cachefile, (int)$width,
-                    (int)$height);
-            }
-        }
-
-        /**
-         *  Runde Ecken
-         */
-        if ($this->getAttribute('roundcorners')) {
-            $roundcorner = $this->getAttribute('roundcorners');
-
-            if (!is_array($roundcorner)) {
-                $roundcorner = json_decode($roundcorner, true);
-            }
-
-            if (isset($roundcorner['radius'])
-                && isset($roundcorner['background'])
-            ) {
-                try {
-                    QUIImage::roundCorner($cachefile, $cachefile, array(
-                        'radius'     => (int)$roundcorner['radius'],
-                        'background' => $roundcorner['background']
-                    ));
-
-                } catch (QUI\Exception $Exception) {
-                    QUI\System\Log::writeException($Exception);
-                }
-            }
-        }
-
-
     }
 
     /**
@@ -459,17 +469,23 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function getWatermark()
     {
-        if ($this->getAttribute('wartermark')) {
+        // own watermark?
+        $imageEffects = $this->getAttribute('image_effects');
+
+        if ($imageEffects && isset($imageEffects['wartermark'])) {
 
             try {
-                return Utils::getImageByUrl($this->getAttribute('wartermark'));
+                return Utils::getImageByUrl($imageEffects['wartermark']);
 
             } catch (QUI\Exception $Exception) {
 
             }
         }
 
+        // @todo folder watermark
 
+
+        // global watermark?
         try {
 
             $Project = $this->getProject();
@@ -491,10 +507,17 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function getWatermarkPosition()
     {
-        if ($this->getAttribute('wartermark_position')) {
-            return $this->getAttribute('wartermark_position');
+        // own watermark position?
+        $imageEffects = $this->getAttribute('image_effects');
+
+        if ($imageEffects && isset($imageEffects['wartermark_position'])) {
+            return $imageEffects['wartermark_position'];
         }
 
+        // @todo folder watermark position
+
+
+        // global watermark position?
         $Project = $this->getProject();
 
         if ($Project->getConfig('media_watermark_position')) {
@@ -505,66 +528,51 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
-     * Set the attribute for round corners
-     *
-     * @param String         $background - #FFFFFF
-     * @param Integer|String $radius     - 10
-     *
-     * @throws QUI\Exception
+     * Effects methods
      */
-//    public function setRoundCorners($background = '', $radius = '')
-//    {
-//        if (empty($background)) {
-//            throw new QUI\Exception('Please set a background color');
-//        }
-//
-//        if (empty($radius)) {
-//            throw new QUI\Exception('Please set a radius');
-//        }
-//
-//        $roundcorners = array(
-//            'background' => $background,
-//            'radius'     => $radius
-//        );
-//
-//        $this->setAttribute('roundcorners', $roundcorners);
-//    }
 
     /**
-     * Set a watermark to the image
+     * Return the effects of the image
      *
-     * @param Array $params
-     *    image
-     *    position
-     *    active
-     *    percent
+     * @return Array
      */
-//    public function setWatermark($params = array())
-//    {
-//        $watermark = $this->getAttribute('watermark');
-//
-//        // jetziges Wasserzeichen setzen, falls nichts übergeben wurde
-//        if (isset($watermark['image']) && !isset($params['image'])) {
-//            $params['image'] = $watermark['image'];
-//        }
-//
-//        if (isset($watermark['position']) && !isset($params['position'])) {
-//            $params['position'] = $watermark['position'];
-//        }
-//
-//        if (isset($watermark['active']) && !isset($params['active'])) {
-//            $params['active'] = $watermark['active'];
-//        }
-//
-//        // falls deaktiviert
-//        if ($params['active'] == 0) {
-//            $this->setAttribute('watermark', '');
-//
-//            return;
-//        }
-//
-//        $this->setAttribute('watermark', $params);
-//    }
+    public function getEffects()
+    {
+        if (is_array($this->_effects)) {
+            return $this->_effects;
+        }
+
+        $effects = $this->getAttribute('image_effects');
+
+        if (is_string($effects)) {
+            $effects = json_decode($effects, true);
+        }
+
+        if (is_array($effects)) {
+            $this->_effects = $effects;
+        } else {
+            $this->_effects = array();
+        }
+
+        return $this->_effects;
+    }
+
+    /**
+     * Set an image effect
+     *
+     * @param String               $effect - Name of the effect
+     * @param String|Integer|Float $value  - Value of the effect
+     */
+    public function setEffect($effect, $value)
+    {
+        $this->getEffects();
+
+        $this->_effects[$effect] = $value;
+    }
+
+    /**
+     * Hash methods
+     */
 
     /**
      * Generate the MD5 file hash and set it to the Database and to the Object

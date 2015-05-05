@@ -801,6 +801,10 @@
             <de><![CDATA[Vorschau]]></de>
             <en><![CDATA[Preview]]></en>
         </locale>
+        <locale name="projects.project.site.media.filePanel.image.effects.text">
+            <de><![CDATA[Bildeffekte]]></de>
+            <en><![CDATA[Picture effects]]></en>
+        </locale>
         <locale name="projects.project.site.media.filePanel.btn.openFile.title">
             <de><![CDATA[Datei öffnen]]></de>
             <en><![CDATA[Open file]]></en>

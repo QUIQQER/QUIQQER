@@ -1,76 +1,92 @@
 <div class="qui-media-file-details">
     <table class="data-table">
-        <thead>
-            <tr>
-                <th colspan="4">
-                    {t}quiqqer/system template.project.media.file.header{/t}
-                </th>
-            </tr>
-        </thead>
+    <thead>
+        <tr>
+            <th colspan="2">
+                {t}quiqqer/system template.project.media.file.header{/t}
+            </th>
+        </tr>
+    </thead>
 
-        <tbody>
-            <tr class="{cycle values="odd,even"}">
-                <td>
-                    {t}quiqqer/system name{/t}
-                </td>
-                <td><input type="text" name="file_name" value="" /></td>
-
-                <td>
-                    {t}quiqqer/system title{/t}
-                </td>
-                <td><input type="text" name="file_title" value="" /></td>
-            </tr>
-            <tr class="{cycle values="odd,even"}">
-                <td>{t}quiqqer/system template.project.media.file.alttext{/t}</td>
-                <td><input type="text" name="file_alt" value="" /></td>
-            </tr>
-
-            <tr class="{cycle values="odd,even"}">
-                <td>{t}quiqqer/system file{/t}</td>
-                <td><input type="text" name="file_file" disabled="disabled" value="" /></td>
-
-                <td>{t}quiqqer/system template.project.media.file.path{/t}</td>
-                <td><input type="text" name="file_url" disabled="disabled" value="" /></td>
-            </tr>
-
-            <tr class="{cycle values="odd,even"}">
-                <td>{t}quiqqer/system type{/t}</td>
-                <td><input type="text" name="file_type" disabled="disabled" value="" /></td>
-
-                <td>{t}quiqqer/system size{/t}</td>
-                <td><input type="text" name="file_size" disabled="disabled" value="" /></td>
-            </tr>
-            <tr class="{cycle values="odd,even"}">
-                <td>{t}quiqqer/system template.project.media.file.lastedit{/t}</td>
-                <td><input type="text" name="file_edate" disabled="disabled" value="" /></td>
-
-                <td>{t}quiqqer/system template.project.media.file.dimension{/t}</td>
-                <td><input type="text" name="file_dimension" disabled="disabled" value="" /></td>
-            </tr>
-            <tr class="{cycle values="odd,even"}">
-                <td>MD5 Hash</td>
-                <td><input type="text" name="file_md5" disabled="disabled" value="" /></td>
-
-                <td>SHA1 Hash</td>
-                <td><input type="text" name="file_sha1" disabled="disabled" value="" /></td>
-            </tr>
-        </tbody>
+    <tbody>
+        <tr class="{cycle values="odd,even" reset="true"}">
+            <td>{t}quiqqer/system name{/t}</td>
+            <td><input type="text" name="file_name" value="" /></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>{t}quiqqer/system title{/t}</td>
+            <td><input type="text" name="file_title" value="" /></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>{t}quiqqer/system template.project.media.file.alttext{/t}</td>
+            <td><input type="text" name="file_alt" value="" /></td>
+        </tr>
+    </tbody>
     </table>
 
     <table class="data-table">
-        <thead>
-            <tr>
-                <th>{t}quiqqer/system description{/t}</th>
-            </tr>
-        </thead>
+    <thead>
+        <tr>
+            <th>{t}quiqqer/system description{/t}</th>
+        </tr>
+    </thead>
 
-        <tbody>
-            <tr class="{cycle values="odd,even" reset=true}">
-                <td>
-                    <textarea name="file_short" class="box"></textarea>
-                </td>
-            </tr>
-        </tbody>
+    <tbody>
+        <tr class="{cycle values="odd,even" reset=true}">
+            <td>
+                <textarea name="file_short" class="box"></textarea>
+            </td>
+        </tr>
+    </tbody>
+    </table>
+
+
+    <table class="data-table">
+    <thead>
+        <tr>
+            <th colspan="2">
+                {t}quiqqer/system template.project.media.file.header{/t}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="{cycle values="odd,even" reset="true"}">
+            <td>{t}quiqqer/system id{/t}</td>
+            <td><input type="text" name="file_id" disabled="disabled" value="" /></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>{t}quiqqer/system file{/t}</td>
+            <td><input type="text" name="file_file" disabled="disabled" value="" /></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>{t}quiqqer/system template.project.media.file.path{/t}</td>
+            <td><input type="text" name="file_url" disabled="disabled" value="" /></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>{t}quiqqer/system type{/t}</td>
+            <td><input type="text" name="file_type" disabled="disabled" value="" /></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>{t}quiqqer/system size{/t}</td>
+            <td><input type="text" name="file_size" disabled="disabled" value="" /></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>{t}quiqqer/system template.project.media.file.lastedit{/t}</td>
+            <td><input type="text" name="file_edate" disabled="disabled" value="" /></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>{t}quiqqer/system template.project.media.file.dimension{/t}</td>
+            <td><input type="text" name="file_dimension" disabled="disabled" value="" /></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>MD5 Hash</td>
+            <td><input type="text" name="file_md5" disabled="disabled" value="" /></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>SHA1 Hash</td>
+            <td><input type="text" name="file_sha1" disabled="disabled" value="" /></td>
+        </tr>
+    </tbody>
     </table>
 
 </div>
