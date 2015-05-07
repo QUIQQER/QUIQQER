@@ -1,0 +1,35 @@
+
+.qui-media-folder-details {
+    float: left;
+    width: 100%;
+}
+
+.qui-media-folder-details textarea {
+	height: 200px;
+	padding: 10px;
+    width: 100%;
+}
+
+.qui-media-folder-details td {
+    text-align: left;
+}
+
+.qui-media-folder-details td:first-child {
+	min-width: 100px;
+    width: 30%;
+}
+
+
+.qui-media-folder-details input[name="blur"],
+.qui-media-folder-details input[name="brightness"],
+.qui-media-folder-details input[name="contrast"] {
+    float: left;
+    margin-top: 5px;
+}
+
+.qui-media-folder-details input[name="blurDisplay"],
+.qui-media-folder-details input[name="brightnessDisplay"],
+.qui-media-folder-details input[name="contrastDisplay"] {
+    padding: 5px;
+    width: 30px;
+}

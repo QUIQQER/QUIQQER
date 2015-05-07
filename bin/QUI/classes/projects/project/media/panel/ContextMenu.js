@@ -10,7 +10,7 @@
  * @require qui/utils/Elements
  */
 
-define([
+define('classes/projects/project/media/panel/ContextMenu', [
 
     'qui/controls/contextmenu/Item',
     'qui/controls/contextmenu/Seperator',
@@ -453,6 +453,7 @@ define([
                 );
             }
 
+            // #locale
             Menu.appendChild(
                 new QUIContextmenuSeperator()
             ).appendChild(
@@ -486,6 +487,43 @@ define([
                             }
 
                             self.getPanel().deleteItem( DOMNode );
+                        }
+                    }
+                })
+            ).appendChild(
+                new QUIContextmenuSeperator()
+            ).appendChild(
+                new QUIContextmenuItem({
+                    name   : 'properties',
+                    text   : 'Eigenschaften',
+                    icon   : 'fa fa-folder-open-o icon-folder-open-alt',
+                    events :
+                    {
+                        onMouseDown : function()
+                        {
+                            if ( !DOMNode ) {
+                                return;
+                            }
+
+                            var Parent = self.getPanel().getParent();
+
+                            var type = DOMNode.get('data-type'),
+                                id = DOMNode.get('data-id'),
+                                project = DOMNode.get('data-project');
+
+                            if (type != 'folder') {
+                                return;
+                            }
+
+                            require([
+                                'controls/projects/project/media/FolderPanel'
+                            ], function(FolderPanel)
+                            {
+                                new FolderPanel({
+                                    folderId : id,
+                                    project : project
+                                }).inject( Parent );
+                            });
                         }
                     }
                 })

@@ -66,6 +66,7 @@ define('classes/projects/project/media/Item', [
         {
             this.$Media = Media;
             this.$Panel = null;
+            this.$effects = null;
 
             this.parent( params );
         },
@@ -142,6 +143,9 @@ define('classes/projects/project/media/Item', [
         save : function(oncomplete, params)
         {
             var self = this;
+            var attributes = this.getAttributes();
+
+            attributes.image_effects = this.getEffects();
 
             params = Utils.combine(params, {
                 project    : this.getMedia().getProject().getName(),
@@ -288,6 +292,66 @@ define('classes/projects/project/media/Item', [
             {
                 oncomplete( result, Request );
             }, params);
+        },
+
+
+        /**
+         * Return the own image effects for the immage
+         * @returns {Object}
+         */
+        getEffects : function()
+        {
+            if ( this.$effects ) {
+                return this.$effects;
+            }
+
+            if ( !this.getAttribute('image_effects') )
+            {
+                this.$effects = {};
+                return this.$effects;
+            }
+
+            this.$effects = JSON.decode( this.getAttribute('image_effects') );
+
+            if ( !this.$effects ) {
+                this.$effects = {};
+            }
+
+            return this.$effects;
+        },
+
+        /**
+         * Get a effect value
+         *
+         * @param {String} effect
+         */
+        getEffect : function(effect)
+        {
+            var effects = this.getEffects();
+
+            return effect in effects ? effects[ effect ] : false;
+        },
+
+        /**
+         * Set a effect
+         *
+         * @param {String} effect
+         * @param {String|Number|null} value - if value is null, effect would be deleted
+         */
+        setEffect: function(effect, value)
+        {
+            this.getEffects();
+
+            if ( value === null ) {
+                delete this.$effects[ effect ];
+                return;
+            }
+
+            if (typeOf(this.$effects) !== 'object') {
+                this.$effects = {};
+            }
+
+            this.$effects[ effect ] = value;
         }
     });
 });

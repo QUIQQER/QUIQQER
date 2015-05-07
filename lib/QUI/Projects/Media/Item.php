@@ -20,6 +20,13 @@ use QUI\Utils\System\File as QUIFile;
 abstract class Item extends QUI\QDOM
 {
     /**
+     * internal image effect parameter
+     *
+     * @var bool|array
+     */
+    protected $_effects = false;
+
+    /**
      * internal media object
      *
      * @var QUI\Projects\Media
@@ -141,7 +148,7 @@ abstract class Item extends QUI\QDOM
         // Rename the file, if necessary
         $this->rename($this->getAttribute('name'));
 
-        $image_effects = $this->getAttribute('image_effects');
+        $image_effects = $this->getEffects();
 
         if (is_string($image_effects) || is_bool($image_effects)) {
             $image_effects = array();
@@ -307,6 +314,10 @@ abstract class Item extends QUI\QDOM
         $new_file = $Parent->getPath().$newname.'.'.$extension;
 
         if ($new_full_file == $original) {
+            return;
+        }
+
+        if (empty($newname)) {
             return;
         }
 
@@ -597,5 +608,59 @@ abstract class Item extends QUI\QDOM
     public function getProject()
     {
         return $this->getMedia()->getProject();
+    }
+
+
+    /**
+     * Effect methods
+     */
+
+    /**
+     * Return the effects of the item
+     *
+     * @return Array
+     */
+    public function getEffects()
+    {
+        if (is_array($this->_effects)) {
+            return $this->_effects;
+        }
+
+        $effects = $this->getAttribute('image_effects');
+
+        if (is_string($effects)) {
+            $effects = json_decode($effects, true);
+        }
+
+        if (is_array($effects)) {
+            $this->_effects = $effects;
+        } else {
+            $this->_effects = array();
+        }
+
+        return $this->_effects;
+    }
+
+    /**
+     * Set an item effect
+     *
+     * @param String               $effect - Name of the effect
+     * @param String|Integer|Float $value  - Value of the effect
+     */
+    public function setEffect($effect, $value)
+    {
+        $this->getEffects();
+
+        $this->_effects[$effect] = $value;
+    }
+
+    /**
+     * Set complete effects
+     *
+     * @param array $effects
+     */
+    public function setEffects($effects=array())
+    {
+        $this->_effects = $effects;
     }
 }

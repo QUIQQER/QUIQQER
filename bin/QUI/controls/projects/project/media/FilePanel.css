@@ -20,16 +20,16 @@
 }
 
 
-input[name="blur"],
-input[name="brightness"],
-input[name="contrast"] {
+.qui-media-file-details input[name="blur"],
+.qui-media-file-details input[name="brightness"],
+.qui-media-file-details input[name="contrast"] {
     float: left;
     margin-top: 5px;
 }
 
-input[name="blurDisplay"],
-input[name="brightnessDisplay"],
-input[name="contrastDisplay"] {
+.qui-media-file-details input[name="blurDisplay"],
+.qui-media-file-details input[name="brightnessDisplay"],
+.qui-media-file-details input[name="contrastDisplay"] {
     padding: 5px;
     width: 30px;
 }

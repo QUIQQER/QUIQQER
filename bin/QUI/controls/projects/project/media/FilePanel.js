@@ -86,8 +86,12 @@ define('controls/projects/project/media/FilePanel', [
 
         initialize : function(File, options)
         {
-            this.$DOMEvents = new PanelDOMEvents( this );
-            this.$EffectPreview = null;
+            this.$ActiveCategory   = false;
+            this.$DOMEvents        = new PanelDOMEvents( this );
+            this.$EffectPreview    = null;
+            this.$EffectBlur       = null;
+            this.$EffectBrightness = null;
+            this.$EffectContrast   = null;
 
             this.addEvents({
                 onInject  : this.$onInject,
@@ -124,7 +128,6 @@ define('controls/projects/project/media/FilePanel', [
 
 
             this.parent( options );
-
         },
 
         /**
@@ -180,47 +183,6 @@ define('controls/projects/project/media/FilePanel', [
 
                 self.getCategoryBar().firstChild().click();
             });
-
-//            var self = this;
-//
-//            this.Loader.show();
-//
-//            if ( !this.$File ) {
-//                return;
-//            }
-//
-//
-//            this.getContent().set( 'data-id', this.$File.getId() );
-//
-//            this.setAttribute( 'title', this.$File.getAttribute( 'file' ) );
-//            this.setAttribute( 'icon', this.$File.getAttribute( 'icon' ) );
-//
-//            this.$createTabs();
-//            this.$createButtons();
-//
-//            this.$File.addEvents({
-//                onSave : function() {
-//                    self.refresh();
-//                }
-//            });
-
-//            Template.get('project_media_file', function(result)
-//            {
-//                var Body = self.getContent();
-//
-//                Body.set(
-//                  'html',
-//
-//                  '<form>'+
-//                      result +
-//                      '<div class="qui-media-file-preview"></div>' +
-//                  '</form>'
-//                );
-//
-//                self.load();
-//
-//                ControlUtils.parse( Body.getElement( 'form' ) );
-//            });
         },
 
         /**
@@ -241,7 +203,7 @@ define('controls/projects/project/media/FilePanel', [
         {
             var self = this;
 
-            if ( !this.$File )
+            if ( !this.$File || this.$File.getAttribute('name') === '' )
             {
                 var Project = Projects.get( this.getAttribute('project') );
 
@@ -249,6 +211,7 @@ define('controls/projects/project/media/FilePanel', [
                 this.$Media.get( this.getAttribute('fileId') ).done(function(File)
                 {
                     self.$File = File;
+
                     self.load( callback );
                 });
 
@@ -267,7 +230,11 @@ define('controls/projects/project/media/FilePanel', [
                 title : File.getAttribute( 'file' )
             });
 
-            callback();
+            this.$refresh();
+
+            if (typeof callback === 'function') {
+                callback();
+            }
         },
 
         /**
@@ -324,7 +291,7 @@ define('controls/projects/project/media/FilePanel', [
             {
                 QUI.getMessageHandler(function(MH) {
                     MH.addSuccess(
-                        Locale.get( lg, 'projects.project.site.media.filePanel.message.save.success' )
+                        Locale.get( lg, 'projects.project.site.media.folderPanel.message.save.success' )
                     );
                 });
 
@@ -434,17 +401,6 @@ define('controls/projects/project/media/FilePanel', [
                 })
             ).addButton(
                 new QUIButton({
-                    text      : Locale.get( lg, 'projects.project.site.media.filePanel.btn.delete.text' ),
-                    textimage : 'fa fa-trash-o icon-trash',
-                    events    :
-                    {
-                        onClick : function() {
-                            self.del();
-                        }
-                    }
-                })
-            ).addButton(
-                new QUIButton({
                     text      : Locale.get( lg, 'projects.project.site.media.filePanel.btn.replace.text' ),
                     textimage : 'icon-upload',
                     events    :
@@ -493,6 +449,23 @@ define('controls/projects/project/media/FilePanel', [
                     })
                 );
             }
+
+            this.addButton(
+                new QUIButton({
+                    alt : Locale.get( lg, 'projects.project.site.media.filePanel.btn.delete.text' ),
+                    title : Locale.get( lg, 'projects.project.site.media.filePanel.btn.delete.text' ),
+                    icon : 'fa fa-trash-o icon-trash',
+                    events :
+                    {
+                        onClick : function() {
+                            self.del();
+                        }
+                    },
+                    styles : {
+                        'float' : 'right'
+                    }
+                })
+            );
         },
 
         /**
@@ -549,17 +522,25 @@ define('controls/projects/project/media/FilePanel', [
 
         /**
          * unload the category and set the data to the file
+         *
+         * @param {Object} Category - (qui/controls/buttons/Button)
          */
-        $unloadCategory : function()
+        $unloadCategory : function(Category)
         {
-            var Body = this.getContent();
-            var Form = Body.getElement('form');
-
-            if (!Form) {
+            if ( !this.$ActiveCategory ) {
                 return;
             }
 
-            var data = FormUtils.getFormData( Form),
+            this.$ActiveCategory = Category;
+
+            var Body = this.getContent();
+            var Form = Body.getElement('form');
+
+            if ( !Form || !Form.getParent() ) {
+                return;
+            }
+
+            var data = FormUtils.getFormData(Form),
                 File = this.getFile();
 
             for ( var i in data )
@@ -598,13 +579,9 @@ define('controls/projects/project/media/FilePanel', [
                 }
 
                 if ( "effect-greyscale" == i ) {
-                    console.log(data[ i ] );
                     File.setEffect( 'greyscale', data[ i ] );
                 }
             }
-
-            console.log( data );
-
         },
 
         /**
@@ -782,7 +759,7 @@ define('controls/projects/project/media/FilePanel', [
 
 
 
-                Greyscale.value = Effects.greyscale || false;
+                Greyscale.checked = Effects.greyscale || false;
                 Greyscale.addEvent('change', self.$refreshImageEffectFrame);
 
                 self.$refreshImageEffectFrame();

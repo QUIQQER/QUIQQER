@@ -325,6 +325,32 @@
             <de><![CDATA[Stunde]]></de>
             <en><![CDATA[Hour]]></en>
         </locale>
+
+        <locale name="template.project.media.effect.header">
+            <de><![CDATA[Bildeffekte]]></de>
+            <en><![CDATA[Image effects]]></en>
+        </locale>
+        <locale name="template.project.media.effect.preview.header">
+            <de><![CDATA[Bild-Vorschau]]></de>
+            <en><![CDATA[Image preview]]></en>
+        </locale>
+        <locale name="media.blur">
+            <de><![CDATA[Verwischen]]></de>
+            <en><![CDATA[Blur]]></en>
+        </locale>
+        <locale name="media.brightness">
+            <de><![CDATA[Helligkeit]]></de>
+            <en><![CDATA[Brightness]]></en>
+        </locale>
+        <locale name="media.contrast">
+            <de><![CDATA[Kontrast]]></de>
+            <en><![CDATA[Contrast]]></en>
+        </locale>
+        <locale name="media.greyscale">
+            <de><![CDATA[Graustufe]]></de>
+            <en><![CDATA[Greyscale]]></en>
+        </locale>
+
     </groups>
     <groups name="quiqqer/system" datatype="js">
         <locale name="welcome.message">
@@ -769,9 +795,26 @@
             <de><![CDATA[Eingabe leeren]]></de>
             <en><![CDATA[Clear]]></en>
         </locale>
+        <locale name="projects.project.site.media.folderPanel.message.save.success">
+            <de><![CDATA[Der Ordner wurde erfolgreich gespeichert]]></de>
+            <en><![CDATA[The Folder has been saved successfully]]></en>
+        </locale>
+        <locale name="projects.project.site.media.folderPanel.window.delete.title">
+            <de><![CDATA[Möchten Sie den Ordner [folder] wirklich löschen?]]></de>
+            <en><![CDATA[Are you sure you want to delete the folder [folder]?]]></en>
+        </locale>
+        <locale name="projects.project.site.media.folderPanel.window.delete.text">
+            <de><![CDATA[Möchten Sie den Ordner [folder] wirklich löschen?]]></de>
+            <en><![CDATA[Are you sure you want to delete the folder [folder]?]]></en>
+        </locale>
+        <locale name="projects.project.site.media.folderPanel.window.delete.information">
+            <de><![CDATA[Alle Bilder und Unterordner werden in den Papierkorb gelegt.]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+
         <locale name="projects.project.site.media.filePanel.message.save.success">
-            <de><![CDATA[Datei wurde erfolgreich gespeichert]]></de>
-            <en><![CDATA[File has been saved successfully]]></en>
+            <de><![CDATA[Die Datei wurde erfolgreich gespeichert]]></de>
+            <en><![CDATA[The File has been saved successfully]]></en>
         </locale>
         <locale name="projects.project.site.media.filePanel.btn.save.text">
             <de><![CDATA[Speichern]]></de>
@@ -919,6 +962,10 @@
         <locale name="projects.project.site.folder.create.information">
             <de><![CDATA[Bitte geben Sie den neuen Ordnernamen ein]]></de>
             <en><![CDATA[Please enter the new folder name.]]></en>
+        </locale>
+        <locale name="projects.project.site.folder.has.no.images">
+            <de><![CDATA[Es konnten keine Bilder in dem Ordner gefunden.]]></de>
+            <en><![CDATA[No images could be found in the folder.]]></en>
         </locale>
         <locale name="projects.project.site.childrensort.order_field">
             <de><![CDATA[Sortierungsfeld]]></de>

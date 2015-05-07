@@ -20,13 +20,6 @@ use QUI\Utils\Image as QUIImage;
 class Image extends Item implements QUI\Interfaces\Projects\Media\File
 {
     /**
-     * internal image effect parameter
-     *
-     * @var bool|array
-     */
-    protected $_effects = false;
-
-    /**
      * Return the real with of the image
      *
      * @return Integer | false
@@ -525,49 +518,6 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         return false;
-    }
-
-    /**
-     * Effects methods
-     */
-
-    /**
-     * Return the effects of the image
-     *
-     * @return Array
-     */
-    public function getEffects()
-    {
-        if (is_array($this->_effects)) {
-            return $this->_effects;
-        }
-
-        $effects = $this->getAttribute('image_effects');
-
-        if (is_string($effects)) {
-            $effects = json_decode($effects, true);
-        }
-
-        if (is_array($effects)) {
-            $this->_effects = $effects;
-        } else {
-            $this->_effects = array();
-        }
-
-        return $this->_effects;
-    }
-
-    /**
-     * Set an image effect
-     *
-     * @param String               $effect - Name of the effect
-     * @param String|Integer|Float $value  - Value of the effect
-     */
-    public function setEffect($effect, $value)
-    {
-        $this->getEffects();
-
-        $this->_effects[$effect] = $value;
     }
 
     /**
