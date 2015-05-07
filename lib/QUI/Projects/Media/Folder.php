@@ -911,7 +911,12 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         ));
 
         if (is_dir($dir.$new_name)) {
-            return $this->_Media->get($id);
+            $Folder = $this->_Media->get($id);
+
+            $Folder->setEffects($this->getEffects());
+            $Folder->save();
+
+            return $Folder;
         }
 
         throw new QUI\Exception(
@@ -1004,9 +1009,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             'image_height' => $imageHeight,
             'type'         => MediaUtils::getMediaTypeByMimeType(
                 $new_file_info['mime_type']
-            ),
-            'watermark'    => $this->getAttribute('watermark'),
-            'roundcorners' => $this->getAttribute('roundcorners')
+            )
         ));
 
         $id = QUI::getDataBase()->getPDO()->lastInsertId();
@@ -1020,7 +1023,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $File = $this->_Media->get($id);
         $File->generateMD5();
         $File->generateSHA1();
-
 
         // if it is an image, than resize -> if needed
         if (Utils::isImage($File)) {
@@ -1049,6 +1051,9 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                     QUI\System\Log::writeException($Exception);
                 }
             }
+
+            $File->setEffects($this->getEffects());
+            $File->save();
         }
 
         return $File;
