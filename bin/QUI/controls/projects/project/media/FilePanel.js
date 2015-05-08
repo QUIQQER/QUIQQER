@@ -487,6 +487,8 @@ define('controls/projects/project/media/FilePanel', [
          */
         $createTabs : function()
         {
+            var self = this;
+
             this.getCategoryBar().clear();
 
             this.addCategory(
@@ -495,8 +497,7 @@ define('controls/projects/project/media/FilePanel', [
                     name   : 'details',
                     icon   : 'fa fa-file-o icon-file-alt',
                     events : {
-                        onActive : this.openDetails,
-                        onClick : this.$unloadCategory
+                        onActive : this.openDetails
                     }
                 })
             );
@@ -512,8 +513,7 @@ define('controls/projects/project/media/FilePanel', [
                     name   : 'imageEffects',
                     icon   : 'fa fa-magic icon-magic',
                     events : {
-                        onActive : this.openImageEffects,
-                        onClick : this.$unloadCategory
+                        onActive : this.openImageEffects
                     }
                 })
             );
@@ -524,8 +524,7 @@ define('controls/projects/project/media/FilePanel', [
                     name    : 'preview',
                     icon    : 'fa fa-eye icon-eye-open',
                     events  : {
-                        onActive : this.openPreview,
-                        onClick : this.$unloadCategory
+                        onActive : this.openPreview
                     }
                 })
             );
@@ -534,18 +533,16 @@ define('controls/projects/project/media/FilePanel', [
         /**
          * unload the category and set the data to the file
          *
-         * @param {Object} Category - (qui/controls/buttons/Button)
+         * @param {Object} [Category] - qui/controls/buttons/Button
          */
         $unloadCategory : function(Category)
         {
+            var Body = this.getContent();
+            var Form = Body.getElement('form');
+
             if ( !this.$ActiveCategory ) {
                 return;
             }
-
-            this.$ActiveCategory = Category;
-
-            var Body = this.getContent();
-            var Form = Body.getElement('form');
 
             if ( !Form || !Form.getParent() ) {
                 return;
@@ -559,6 +556,15 @@ define('controls/projects/project/media/FilePanel', [
                 if ( !data.hasOwnProperty( i ) ) {
                     return;
                 }
+
+
+                // effects
+                if ( i.match('effect-') )
+                {
+                    File.setEffect( i.replace('effect-', ''), data[ i ] );
+                    continue;
+                }
+
 
                 if ( "file_name" == i ) {
                     File.setAttribute( 'name', data[ i ] );
@@ -575,23 +581,10 @@ define('controls/projects/project/media/FilePanel', [
                 if ( "file_short" == i ) {
                     File.setAttribute( 'short', data[ i ] );
                 }
+            }
 
-                // effects
-                if ( "effect-blur" == i ) {
-                    File.setEffect( 'blur', data[ i ] );
-                }
-
-                if ( "effect-brightness" == i ) {
-                    File.setEffect( 'brightness', data[ i ] );
-                }
-
-                if ( "effect-contrast" == i ) {
-                    File.setEffect( 'contrast', data[ i ] );
-                }
-
-                if ( "effect-greyscale" == i ) {
-                    File.setEffect( 'greyscale', data[ i ] );
-                }
+            if ( typeOf(Category) == 'qui/controls/buttons/Button' ) {
+                this.$ActiveCategory = Category;
             }
         },
 
@@ -602,6 +595,8 @@ define('controls/projects/project/media/FilePanel', [
          */
         openDetails : function()
         {
+            this.$unloadCategory();
+
             var self = this,
                 Body = this.getContent(),
                 File = this.$File;
@@ -704,6 +699,7 @@ define('controls/projects/project/media/FilePanel', [
         openImageEffects : function()
         {
             this.Loader.show();
+            this.$unloadCategory();
 
             var self = this,
                 Content = this.getContent();
