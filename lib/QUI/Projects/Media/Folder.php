@@ -898,9 +898,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             'e_date'       => date('Y-m-d h:i:s'),
             'c_user'       => $User->getId(),
             'e_user'       => $User->getId(),
-            'mime_type'    => 'folder',
-            'watermark'    => $this->getAttribute('watermark'),
-            'roundcorners' => $this->getAttribute('roundcorners')
+            'mime_type'    => 'folder'
         ));
 
         $id = QUI::getDataBase()->getPDO()->lastInsertId();

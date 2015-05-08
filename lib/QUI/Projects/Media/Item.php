@@ -583,10 +583,6 @@ abstract class Item extends QUI\QDOM
         $File->setAttribute('title', $this->getAttribute('title'));
         $File->setAttribute('alt', $this->getAttribute('alt'));
         $File->setAttribute('short', $this->getAttribute('short'));
-
-        $File->setAttribute('watermark', $this->getAttribute('watermark'));
-        $File->setAttribute('roundcorners',
-            $this->getAttribute('roundcorners'));
         $File->save();
 
         return $File;
