@@ -811,7 +811,7 @@
             <de><![CDATA[Kein Wasserzeichen]]></de>
             <en><![CDATA[No Watermark]]></en>
         </locale>
-        <locale name="projects.project.site.media.folderPanel.no.watermark">
+        <locale name="projects.project.site.media.folderPanel.project.watermark">
             <de><![CDATA[Projekt-Wasserzeichen verwenden]]></de>
             <en><![CDATA[Apply Project-Watermark]]></en>
         </locale>
@@ -833,12 +833,10 @@
                 Alle Änderungen des Ordneres werden gespeichert.
                 Die Effekte des Ordners werden rekusriv auf alle <u>Bilder</u> und <u>Ordner</u> angewendet.
             ]]></de>
-            <en><![]]></en>
+            <en><![CDATA[
+
+            ]]></en>
         </locale>
-
-
-
-
         <locale name="projects.project.site.media.folderPanel.message.save.success">
             <de><![CDATA[Der Ordner wurde erfolgreich gespeichert]]></de>
             <en><![CDATA[The Folder has been saved successfully]]></en>
