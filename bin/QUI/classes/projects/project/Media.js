@@ -118,7 +118,7 @@ define('classes/projects/project/Media', [
                         return params( self.$items[ id ] );
                     }
 
-                    resolve( self.$items[ id ] );
+                    return resolve( self.$items[ id ] );
                 }
 
                 if ( typeOf( params ) === 'object' ) {

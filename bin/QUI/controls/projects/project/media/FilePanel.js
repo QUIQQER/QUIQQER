@@ -78,7 +78,6 @@ define('controls/projects/project/media/FilePanel', [
             'openImageEffects',
             'openPreview',
             '$onInject',
-            '$onDestroy',
             '$unloadCategory',
             '$refreshImageEffectFrame'
         ],
@@ -90,7 +89,10 @@ define('controls/projects/project/media/FilePanel', [
 
         initialize : function(File, options)
         {
-            this.$ActiveCategory   = false;
+            var self = this;
+
+            this.$__injected = false;
+
             this.$DOMEvents        = new PanelDOMEvents( this );
             this.$EffectPreview    = null;
             this.$EffectBlur       = null;
@@ -98,9 +100,21 @@ define('controls/projects/project/media/FilePanel', [
             this.$EffectContrast   = null;
             this.$EffectWatermark  = null;
 
+            this.$ButtonActiv   = null;
+            this.$ButtonDetails = null;
+            this.$ButtonEffects = null;
+            this.$ButtonPreview = null;
+
             this.addEvents({
-                onInject  : this.$onInject,
-                onDestroy : this.$onDestroy
+                onInject : this.$onInject,
+                onDestroy : function()
+                {
+                    self.$ButtonDetails.destroy();
+                    self.$ButtonEffects.destroy();
+                    self.$ButtonPreview.destroy();
+
+                    self.$ButtonActiv = null;
+                }
             });
 
             if ( typeOf( File ) === 'object' )
@@ -171,6 +185,10 @@ define('controls/projects/project/media/FilePanel', [
          */
         $onInject : function()
         {
+            if (this.$__injected) {
+                return;
+            }
+
             var self = this;
 
             this.Loader.show();
@@ -186,16 +204,9 @@ define('controls/projects/project/media/FilePanel', [
                     }
                 });
 
-                self.getCategoryBar().firstChild().click();
+                self.openDetails();
+                self.$__injected = true;
             });
-        },
-
-        /**
-         * @event : on panel destroy
-         */
-        $onDestroy : function()
-        {
-
         },
 
         /**
@@ -208,7 +219,7 @@ define('controls/projects/project/media/FilePanel', [
         {
             var self = this;
 
-            if ( !this.$File || this.$File.getAttribute('name') === '' )
+            if ( !this.$File )
             {
                 var Project = Projects.get( this.getAttribute('project') );
 
@@ -487,64 +498,59 @@ define('controls/projects/project/media/FilePanel', [
          */
         $createTabs : function()
         {
-            var self = this;
-
             this.getCategoryBar().clear();
 
-            this.addCategory(
-                new QUIButton({
-                    text   : Locale.get( lg, 'projects.project.site.media.filePanel.details.text' ),
-                    name   : 'details',
-                    icon   : 'fa fa-file-o icon-file-alt',
-                    events : {
-                        onActive : this.openDetails
-                    }
-                })
-            );
+            this.$ButtonDetails = new QUIButton({
+                text   : Locale.get( lg, 'projects.project.site.media.filePanel.details.text' ),
+                name   : 'details',
+                icon   : 'fa fa-file-o icon-file-alt',
+                events : {
+                    onClick : this.openDetails
+                }
+            });
 
+            this.addCategory( this.$ButtonDetails );
 
+            // image
             if ( this.$File.getType() != 'classes/projects/project/media/Image' ) {
                 return;
             }
 
-            this.addCategory(
-                new QUIButton({
-                    text   : Locale.get( lg, 'projects.project.site.media.filePanel.image.effects.text' ),
-                    name   : 'imageEffects',
-                    icon   : 'fa fa-magic icon-magic',
-                    events : {
-                        onActive : this.openImageEffects
-                    }
-                })
-            );
+            this.$ButtonEffects = new QUIButton({
+                text   : Locale.get( lg, 'projects.project.site.media.filePanel.image.effects.text' ),
+                name   : 'imageEffects',
+                icon   : 'fa fa-magic icon-magic',
+                events : {
+                    onClick : this.openImageEffects
+                }
+            });
 
-            this.addCategory(
-                new QUIButton({
-                    text    : Locale.get( lg, 'projects.project.site.media.filePanel.preview.text' ),
-                    name    : 'preview',
-                    icon    : 'fa fa-eye icon-eye-open',
-                    events  : {
-                        onActive : this.openPreview
-                    }
-                })
-            );
+            this.$ButtonPreview = new QUIButton({
+                text    : Locale.get( lg, 'projects.project.site.media.filePanel.preview.text' ),
+                name    : 'preview',
+                icon    : 'fa fa-eye icon-eye-open',
+                events  : {
+                    onClick : this.openPreview
+                }
+            });
+
+            this.addCategory( this.$ButtonEffects );
+            this.addCategory( this.$ButtonPreview );
         },
 
         /**
          * unload the category and set the data to the file
-         *
-         * @param {Object} [Category] - qui/controls/buttons/Button
          */
-        $unloadCategory : function(Category)
+        $unloadCategory : function()
         {
-            var Body = this.getContent();
-            var Form = Body.getElement('form');
-
-            if ( !this.$ActiveCategory ) {
+            if ( !this.$ButtonActiv || this.$__injected === false ) {
                 return;
             }
 
-            if ( !Form || !Form.getParent() ) {
+            var Body = this.getContent();
+            var Form = Body.getElement('form');
+
+            if ( typeOf(Form) !== 'element' ) {
                 return;
             }
 
@@ -582,10 +588,6 @@ define('controls/projects/project/media/FilePanel', [
                     File.setAttribute( 'short', data[ i ] );
                 }
             }
-
-            if ( typeOf(Category) == 'qui/controls/buttons/Button' ) {
-                this.$ActiveCategory = Category;
-            }
         },
 
         /**
@@ -595,15 +597,22 @@ define('controls/projects/project/media/FilePanel', [
          */
         openDetails : function()
         {
+            if ( this.$ButtonDetails.isActive() ) {
+                return;
+            }
+
+            this.Loader.show();
             this.$unloadCategory();
+
+            this.$ButtonActiv = this.$ButtonDetails;
+            this.$ButtonActiv.setActive();
+
 
             var self = this,
                 Body = this.getContent(),
                 File = this.$File;
 
             Body.set( 'html', '' );
-
-            this.Loader.show();
 
             Template.get('project_media_file', function(result)
             {
@@ -675,6 +684,16 @@ define('controls/projects/project/media/FilePanel', [
          */
         openPreview : function()
         {
+            if ( this.$ButtonPreview.isActive() ) {
+                return;
+            }
+
+            this.$unloadCategory();
+
+            this.$ButtonActiv = this.$ButtonPreview;
+            this.$ButtonActiv.setActive();
+
+
             var Body = this.getContent();
 
             Body.set( 'html', '' );
@@ -698,8 +717,15 @@ define('controls/projects/project/media/FilePanel', [
          */
         openImageEffects : function()
         {
+            if ( this.$ButtonEffects.isActive() ) {
+                return;
+            }
+
             this.Loader.show();
             this.$unloadCategory();
+
+            this.$ButtonActiv = this.$ButtonEffects;
+            this.$ButtonActiv.setActive();
 
             var self = this,
                 Content = this.getContent();
