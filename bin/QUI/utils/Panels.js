@@ -188,7 +188,11 @@ define('utils/Panels', function()
                     {
                         Child = panels[ i ];
 
-                        if ( Panel.serialize() != Child.serialize() ) {
+                        if ( !Child.getParent() ) {
+                            continue;
+                        }
+
+                        if ( Panel.getAttribute('title') != Child.getAttribute('title') ) {
                             continue;
                         }
 
