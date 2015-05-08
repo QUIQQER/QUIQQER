@@ -25,11 +25,13 @@ define('controls/projects/project/media/FilePanel', [
     'classes/projects/project/media/panel/DOMEvents',
     'qui/controls/buttons/Button',
     'qui/controls/buttons/Seperator',
+    'qui/controls/buttons/Select',
     'qui/controls/windows/Confirm',
     'qui/controls/input/Range',
     'utils/Template',
     'qui/utils/Form',
     'utils/Controls',
+    'controls/projects/project/media/Input',
     'Locale',
     'Projects',
 
@@ -46,13 +48,15 @@ define('controls/projects/project/media/FilePanel', [
         PanelDOMEvents     = arguments[ 2 ],
         QUIButton          = arguments[ 3 ],
         QUIButtonSeperator = arguments[ 4 ],
-        QUIConfirm         = arguments[ 5 ],
-        QUIRange           = arguments[ 6 ],
-        Template           = arguments[ 7 ],
-        FormUtils          = arguments[ 8 ],
-        ControlUtils       = arguments[ 9 ],
-        Locale             = arguments[ 10 ],
-        Projects           = arguments[ 11 ];
+        QUISelect          = arguments[ 5 ],
+        QUIConfirm         = arguments[ 6 ],
+        QUIRange           = arguments[ 7 ],
+        Template           = arguments[ 8 ],
+        FormUtils          = arguments[ 9 ],
+        ControlUtils       = arguments[ 10 ],
+        MediaInput         = arguments[ 11 ],
+        Locale             = arguments[ 12 ],
+        Projects           = arguments[ 13 ];
 
     /**
      * A Media-Panel, opens the Media in an Desktop Panel
@@ -92,6 +96,7 @@ define('controls/projects/project/media/FilePanel', [
             this.$EffectBlur       = null;
             this.$EffectBrightness = null;
             this.$EffectContrast   = null;
+            this.$EffectWatermark  = null;
 
             this.addEvents({
                 onInject  : this.$onInject,
@@ -707,12 +712,20 @@ define('controls/projects/project/media/FilePanel', [
 
             Template.get('project_media_effects', function(result)
             {
+                var WatermarkInput;
                 var Effects = self.getFile().getEffects();
 
                 Content.set(
                     'html',
                     '<form>'+ result +'</form>'
                 );
+
+                var WatermarkPosition = Content.getElement('[name="effect-watermark_position"]'),
+                    Watermark = Content.getElement('.effect-watermark'),
+                    WatermarkCell = Content.getElement('.effect-watermark-cell'),
+                    WatermarkRow = Content.getElement('.effect-watermark-row');
+
+                self.$EffectWatermark = Content.getElement('[name="effect-watermark"]');
 
                 self.$EffectPreview = new Element('img', {
                     src : URL_LIB_DIR +'QUI/Projects/Media/bin/effectPreview.php'
@@ -732,6 +745,15 @@ define('controls/projects/project/media/FilePanel', [
                 if ( !("contrast" in Effects) ) {
                     Effects.contrast = 0;
                 }
+
+                if ( !("watermark" in Effects) ) {
+                    Effects.watermark = false;
+                }
+
+                if ( !("watermark_position" in Effects) ) {
+                    Effects.watermark_position = false;
+                }
+
 
                 self.$EffectBlur = new QUIRange({
                     name: 'effect-blur',
@@ -764,9 +786,90 @@ define('controls/projects/project/media/FilePanel', [
                 }).inject( Content.getElement('.effect-contrast') );
 
 
-
                 Greyscale.checked = Effects.greyscale || false;
                 Greyscale.addEvent('change', self.$refreshImageEffectFrame);
+
+                WatermarkPosition.value = Effects.watermark_position || '';
+                WatermarkPosition.addEvent( 'change', self.$refreshImageEffectFrame );
+
+
+                // watermark
+                var Select = new QUISelect({
+                    menuWidth : 300,
+                    styles : {
+                        width : 260
+                    },
+                    events :
+                    {
+                        onChange : function(value)
+                        {
+                            if ( value == 'default' || value === '' )
+                            {
+                                WatermarkRow.setStyle('display', 'none');
+
+                                if (WatermarkInput) {
+                                    WatermarkInput.clear();
+                                }
+
+                                self.$EffectWatermark.value = value;
+                                self.$refreshImageEffectFrame();
+                                return;
+                            }
+
+                            WatermarkRow.setStyle('display', null);
+                            self.$refreshImageEffectFrame();
+                        }
+                    }
+                }).inject( Watermark );
+
+                Select.appendChild(
+                    Locale.get(lg, 'projects.project.site.media.folderPanel.no.watermark'),
+                    '',
+                    'fa fa-remove icon-remove'
+                );
+
+                Select.appendChild(
+                    Locale.get(lg, 'projects.project.site.media.folderPanel.project.watermark'),
+                    'default',
+                    'fa fa-home icon-home'
+                );
+
+                Select.appendChild(
+                    Locale.get(lg, 'projects.project.site.media.folderPanel.own.watermark'),
+                    'own',
+                    'fa fa-picture-o icon-picture'
+                );
+
+                WatermarkInput = new MediaInput({
+                    styles : {
+                        clear : 'both',
+                        'float' : 'left',
+                        marginTop : 10
+                    },
+                    events :
+                    {
+                        onChange : function(Input, value) {
+                            self.$EffectWatermark.value = value;
+                            self.$refreshImageEffectFrame();
+                        }
+                    }
+                }).inject( WatermarkCell );
+
+                WatermarkInput.setProject( self.getProject() );
+
+                if ( Effects.watermark === '' )
+                {
+                    Select.setValue('');
+
+                } else if ( Effects.watermark.toString().match('image.php') )
+                {
+                    Select.setValue( 'own' );
+                    WatermarkInput.setValue( Effects.watermark );
+                } else
+                {
+                    Select.setValue('default');
+                }
+
 
                 self.$refreshImageEffectFrame();
                 self.Loader.hide();
@@ -788,7 +891,8 @@ define('controls/projects/project/media/FilePanel', [
             var File    = this.getFile(),
                 fileId  = File.getId(),
                 project = this.getProject().getName(),
-                Content = this.getContent();
+                Content = this.getContent(),
+                WatermarkPosition = Content.getElement('[name="effect-watermark_position"]');
 
             var Greyscale = Content.getElement('[name="effect-greyscale"]');
             var url = URL_LIB_DIR +'QUI/Projects/Media/bin/effectPreview.php?';
@@ -800,6 +904,8 @@ define('controls/projects/project/media/FilePanel', [
                 brightness : this.$EffectBrightness.getValue(),
                 contrast   : this.$EffectContrast.getValue(),
                 greyscale  : Greyscale.checked ? 1 : 0,
+                watermark  : this.$EffectWatermark.value,
+                watermark_position : WatermarkPosition.value,
                 __nocache  : String.uniqueID()
             });
 

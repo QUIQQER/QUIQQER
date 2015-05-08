@@ -119,7 +119,11 @@ class Media extends QUI\QDOM
      */
     public function getImageManager()
     {
-        return new ImageManager(array('driver' => 'imagick'));
+        if (class_exists('Imagick')) {
+            return new ImageManager(array('driver' => 'imagick'));
+        }
+
+        return new ImageManager(array('driver' => 'gd'));
     }
 
     /**

@@ -12,10 +12,12 @@ define('controls/projects/project/media/FolderPanel', [
     'qui/controls/desktop/Panel',
     'qui/controls/buttons/Button',
     'qui/controls/buttons/Seperator',
+    'qui/controls/buttons/Select',
     'qui/controls/windows/Confirm',
     'qui/controls/input/Range',
     'qui/utils/Form',
     'utils/Template',
+    'controls/projects/project/media/Input',
     'Projects',
     'Locale',
     'Ajax',
@@ -27,10 +29,12 @@ define('controls/projects/project/media/FolderPanel', [
     QUIPanel,
     QUIButton,
     QUIButtonSeperator,
+    QUISelect,
     QUIConfirm,
     QUIRange,
     QUIFormUtils,
     Template,
+    MediaInput,
     Projects,
     Locale,
     Ajax
@@ -67,6 +71,7 @@ define('controls/projects/project/media/FolderPanel', [
             this.$EffectBlur = null;
             this.$EffectBrightness = null;
             this.$EffectContrast = null;
+            this.$EffectWatermark = null;
 
             this.$loaded = false;
 
@@ -106,7 +111,7 @@ define('controls/projects/project/media/FolderPanel', [
                 self.$Folder = Folder;
                 self.$Media = Media;
 
-                var title  = Project.getName() +'://'+ Folder.getAttribute( 'file' );
+                var title = Project.getName() +'://'+ Folder.getAttribute( 'file' );
 
                 self.setAttributes({
                     icon  : 'fa fa-folder-open-o icon-folder-open-alt',
@@ -250,8 +255,16 @@ define('controls/projects/project/media/FolderPanel', [
                     '<form>' + result + '</form>'
                 );
 
-                var Effects = Folder.getEffects();
-                var Greyscale = Body.getElement('[name="effect-greyscale"]');
+                var WatermarkInput;
+
+                var Effects = Folder.getEffects(),
+                    Greyscale = Body.getElement('[name="effect-greyscale"]'),
+                    WatermarkPosition = Body.getElement('[name="effect-watermark_position"]'),
+                    Watermark = Body.getElement('.effect-watermark'),
+                    WatermarkCell = Body.getElement('.effect-watermark-cell'),
+                    WatermarkRow = Body.getElement('.effect-watermark-row');
+
+                self.$EffectWatermark = Body.getElement('[name="effect-watermark"]');
 
                 if ( !("blur" in Effects) ) {
                     Effects.blur = 0;
@@ -263,6 +276,14 @@ define('controls/projects/project/media/FolderPanel', [
 
                 if ( !("contrast" in Effects) ) {
                     Effects.contrast = 0;
+                }
+
+                if ( !("watermark" in Effects) ) {
+                    Effects.watermark = false;
+                }
+
+                if ( !("watermark_position" in Effects) ) {
+                    Effects.watermark_position = false;
                 }
 
                 self.$EffectBlur = new QUIRange({
@@ -295,11 +316,16 @@ define('controls/projects/project/media/FolderPanel', [
                     }
                 }).inject( Body.getElement('.effect-contrast') );
 
+                // extra values
                 Greyscale.checked = Effects.greyscale || false;
                 Greyscale.addEvent('change', self.$refreshImageEffectFrame);
 
+                WatermarkPosition.value = Effects.watermark_position || '';
+                WatermarkPosition.addEvent( 'change', self.$refreshImageEffectFrame );
+
+
                 new QUIButton({
-                    text : 'Effekte rekursiv anwenden',
+                    text : Locale.get(lg, 'projects.project.site.media.folderPanel.btn.effectsRecursive'),
                     styles : {
                         'float' : 'right',
                         marginBottom : 20
@@ -308,10 +334,87 @@ define('controls/projects/project/media/FolderPanel', [
                         onClick : self.executeEffectsRecursive
                     }
                 }).inject(
-                    Body.getElement('.data-table'), 'after'
+                    Body.getElement('.data-table'), 'before'
                 );
 
+                // watermark
+                var Select = new QUISelect({
+                    menuWidth : 300,
+                    styles : {
+                        width : 260
+                    },
+                    events :
+                    {
+                        onChange : function(value)
+                        {
+                            if ( value == 'default' || value === '' )
+                            {
+                                WatermarkRow.setStyle('display', 'none');
 
+                                if (WatermarkInput) {
+                                    WatermarkInput.clear();
+                                }
+
+                                self.$EffectWatermark.value = value;
+                                self.$refreshImageEffectFrame();
+                                return;
+                            }
+
+                            WatermarkRow.setStyle('display', null);
+                            self.$refreshImageEffectFrame();
+                        }
+                    }
+                }).inject( Watermark );
+
+                Select.appendChild(
+                    Locale.get(lg, 'projects.project.site.media.folderPanel.no.watermark'),
+                    '',
+                    'fa fa-remove icon-remove'
+                );
+
+                Select.appendChild(
+                    Locale.get(lg, 'projects.project.site.media.folderPanel.project.watermark'),
+                    'default',
+                    'fa fa-home icon-home'
+                );
+
+                Select.appendChild(
+                    Locale.get(lg, 'projects.project.site.media.folderPanel.own.watermark'),
+                    'own',
+                    'fa fa-picture-o icon-picture'
+                );
+
+                WatermarkInput = new MediaInput({
+                    styles : {
+                        clear : 'both',
+                        'float' : 'left',
+                        marginTop : 10
+                    },
+                    events :
+                    {
+                        onChange : function(Input, value) {
+                            self.$EffectWatermark.value = value;
+                            self.$refreshImageEffectFrame();
+                        }
+                    }
+                }).inject( WatermarkCell );
+
+                WatermarkInput.setProject( Folder.getMedia().getProject() );
+
+                if ( Effects.watermark === '' )
+                {
+                    Select.setValue('');
+
+                } else if ( Effects.watermark.toString().match('image.php') )
+                {
+                    Select.setValue( 'own' );
+                    WatermarkInput.setValue( Effects.watermark );
+                } else
+                {
+                    Select.setValue('default');
+                }
+
+                // get one image frome the folder
                 Folder.getChildren(function(children)
                 {
                     var i, len;
@@ -343,12 +446,11 @@ define('controls/projects/project/media/FolderPanel', [
             var self = this;
 
             new QUIConfirm({
-                title : 'Effekte rekursiv anwenden',
+                title : Locale.get(lg, 'media.folderPanel.window.effect.recursive.title'),
                 maxWidth : 533,
                 maxHeight : 300,
-                text : 'Möchten Sie die Ordnereffekte rekursiv anwenden?',
-                information : 'Alle Änderungen des Ordneres werden gespeichert. ' +
-                            'Die Effekte des Ordners werden rekusriv auf alle <u>Bilder</u> und <u>Ordner</u> angewendet.',
+                text : Locale.get(lg, 'media.folderPanel.window.effect.recursive.text'),
+                information : Locale.get(lg, 'media.folderPanel.window.effect.recursive.information'),
                 autoclose: false,
                 events :
                 {
@@ -477,7 +579,8 @@ define('controls/projects/project/media/FolderPanel', [
 
             var fileId  = this.$previewImageData.id,
                 project = this.$Media.getProject().getName(),
-                Content = this.getContent();
+                Content = this.getContent(),
+                WatermarkPosition = Content.getElement('[name="effect-watermark_position"]');
 
             var Greyscale = Content.getElement('[name="effect-greyscale"]');
             var url = URL_LIB_DIR +'QUI/Projects/Media/bin/effectPreview.php?';
@@ -489,6 +592,8 @@ define('controls/projects/project/media/FolderPanel', [
                 brightness : this.$EffectBrightness.getValue(),
                 contrast   : this.$EffectContrast.getValue(),
                 greyscale  : Greyscale.checked ? 1 : 0,
+                watermark  : this.$EffectWatermark.value,
+                watermark_position : WatermarkPosition.value,
                 __nocache  : String.uniqueID()
             });
 

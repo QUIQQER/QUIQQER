@@ -350,7 +350,14 @@
             <de><![CDATA[Graustufe]]></de>
             <en><![CDATA[Greyscale]]></en>
         </locale>
-
+        <locale name="media.watermark">
+            <de><![CDATA[Wasserzeichen]]></de>
+            <en><![CDATA[Watermark]]></en>
+        </locale>
+        <locale name="media.watermark.position">
+            <de><![CDATA[Position des Wasserzeichen ]]></de>
+            <en><![CDATA[Positionof the watermark]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js">
         <locale name="welcome.message">
@@ -795,6 +802,43 @@
             <de><![CDATA[Eingabe leeren]]></de>
             <en><![CDATA[Clear]]></en>
         </locale>
+
+        <locale name="projects.project.site.media.folderPanel.btn.effectsRecursive">
+            <de><![CDATA[Effekte rekursiv anwenden]]></de>
+            <en><![CDATA[Apply effects recursively]]></en>
+        </locale>
+        <locale name="projects.project.site.media.folderPanel.no.watermark">
+            <de><![CDATA[Kein Wasserzeichen]]></de>
+            <en><![CDATA[No Watermark]]></en>
+        </locale>
+        <locale name="projects.project.site.media.folderPanel.no.watermark">
+            <de><![CDATA[Projekt-Wasserzeichen verwenden]]></de>
+            <en><![CDATA[Apply Project-Watermark]]></en>
+        </locale>
+        <locale name="projects.project.site.media.folderPanel.own.watermark">
+            <de><![CDATA[Eigenes Wasserzeichen verwenden]]></de>
+            <en><![CDATA[Apply own watermark]]></en>
+        </locale>
+
+        <locale name="media.folderPanel.window.effect.recursive.title">
+            <de><![CDATA[Effekte rekursiv anwenden]]></de>
+            <en><![CDATA[Apply effects recursively]]></en>
+        </locale>
+        <locale name="media.folderPanel.window.effect.recursive.text">
+            <de><![CDATA[Möchten Sie die Ordnereffekte rekursiv anwenden?]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+        <locale name="media.folderPanel.window.effect.recursive.information" html="true">
+            <de><![CDATA[
+                Alle Änderungen des Ordneres werden gespeichert.
+                Die Effekte des Ordners werden rekusriv auf alle <u>Bilder</u> und <u>Ordner</u> angewendet.
+            ]]></de>
+            <en><![]]></en>
+        </locale>
+
+
+
+
         <locale name="projects.project.site.media.folderPanel.message.save.success">
             <de><![CDATA[Der Ordner wurde erfolgreich gespeichert]]></de>
             <en><![CDATA[The Folder has been saved successfully]]></en>
@@ -3855,6 +3899,11 @@
             <de><![CDATA[Dimension]]></de>
             <en><![CDATA[Dimension]]></en>
         </locale>
+        <locale name="template.project.media.watermark.header">
+            <de><![CDATA[Wasserzeichen Einstellung]]></de>
+            <en><![CDATA[Watermark settings]]></en>
+        </locale>
+
         <locale name="template.project.site.search.title">
             <de><![CDATA[Suche]]></de>
             <en><![CDATA[Search]]></en>

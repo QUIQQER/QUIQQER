@@ -32,6 +32,70 @@
 <table class="data-table">
     <thead>
     <tr>
+        <th colspan="2">
+            {t}quiqqer/system template.project.media.watermark.header{/t}
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+        <tr class="{cycle values="odd,even"}">
+            <td>
+                {t}quiqqer/system media.watermark{/t}
+            </td>
+            <td class="effect-watermark">
+                <input type="hidden" name="effect-watermark" value="" />
+            </td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>
+                {t}quiqqer/system media.watermark.position{/t}
+            </td>
+            <td class="effect-watermark-position">
+                <select name="effect-watermark_position">
+                    <option value=""></option>
+                    <option value="top-left">
+                        {t}quiqqer/system watermark.position.top.left{/t}
+                    </option>
+                    <option value="top">
+                        {t}quiqqer/system watermark.position.top{/t}
+                    </option>
+                    <option value="top-right">
+                        {t}quiqqer/system watermark.position.top.right{/t}
+                    </option>
+                    <option value="left">
+                        {t}quiqqer/system watermark.position.left{/t}
+                    </option>
+                    <option value="center">
+                        {t}quiqqer/system watermark.position.center{/t}
+                    </option>
+                    <option value="right">
+                        {t}quiqqer/system watermark.position.right{/t}
+                    </option>
+                    <option value="bottom-left">
+                        {t}quiqqer/system watermark.position.bottom.left{/t}
+                    </option>
+                    <option value="bottom">
+                        {t}quiqqer/system watermark.position.bottom{/t}
+                    </option>
+                    <option value="bottom-right">
+                        {t}quiqqer/system watermark.position.bottom.right{/t}
+                    </option>
+                </select>
+            </td>
+        </tr>
+        <tr class="{cycle values="odd,even"} effect-watermark-row" style="display: none">
+            <td>
+                {t}quiqqer/system media.watermark{/t}
+            </td>
+            <td class="effect-watermark-cell"></td>
+        </tr>
+    </tbody>
+</table>
+
+
+<table class="data-table">
+    <thead>
+    <tr>
         <th>
             {t}quiqqer/system template.project.media.effect.preview.header{/t}
         </th>

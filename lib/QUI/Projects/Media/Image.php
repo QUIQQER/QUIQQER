@@ -337,8 +337,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         if (isset($effects['greyscale'])
-            && $effects['greyscale'] == 1)
-        {
+            && $effects['greyscale'] == 1
+        ) {
             $Image->greyscale();
         }
 
@@ -463,31 +463,37 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     public function getWatermark()
     {
         // own watermark?
-        $imageEffects = $this->getAttribute('image_effects');
+        $imageEffects = $this->getEffects();
 
-        if ($imageEffects && isset($imageEffects['wartermark'])) {
+        if (!$imageEffects
+            || !isset($imageEffects['watermark'])
+            || $imageEffects['watermark'] === ''
+        ) {
+            return false;
+        }
+
+        if ($imageEffects['watermark'] == 'default') {
 
             try {
-                return Utils::getImageByUrl($imageEffects['wartermark']);
+
+                $Project = $this->getProject();
+                return Utils::getImageByUrl($Project->getConfig('media_watermark'));
 
             } catch (QUI\Exception $Exception) {
 
             }
+
+            return false;
         }
 
-        // @todo folder watermark
 
-
-        // global watermark?
         try {
-
-            $Project = $this->getProject();
-
-            return Utils::getImageByUrl($Project->getConfig('media_watermark'));
+            return Utils::getImageByUrl($imageEffects['watermark']);
 
         } catch (QUI\Exception $Exception) {
 
         }
+
 
         return false;
     }
@@ -500,15 +506,11 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function getWatermarkPosition()
     {
-        // own watermark position?
-        $imageEffects = $this->getAttribute('image_effects');
+        $imageEffects = $this->getEffects();
 
-        if ($imageEffects && isset($imageEffects['wartermark_position'])) {
-            return $imageEffects['wartermark_position'];
+        if ($imageEffects && isset($imageEffects['watermark_position'])) {
+            return $imageEffects['watermark_position'];
         }
-
-        // @todo folder watermark position
-
 
         // global watermark position?
         $Project = $this->getProject();

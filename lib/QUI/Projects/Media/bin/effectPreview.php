@@ -33,12 +33,51 @@ if (isset($_REQUEST['blur']) && is_numeric($_REQUEST['blur'])) {
 }
 
 if (isset($_REQUEST['contrast']) && is_numeric($_REQUEST['contrast'])) {
+
     $contrast = intval($_REQUEST['contrast']);
 
     if ($contrast !== 0) {
         $Image->contrast($contrast);
     }
 }
+
+if (isset($_REQUEST['watermark'])) {
+
+    $watermark = $_REQUEST['watermark'];
+
+    try {
+        $MediaImage = \QUI\Projects\Media\Utils::getImageByUrl($watermark);
+        $pos = '';
+
+        if (isset($_REQUEST['watermark_position'])) {
+            $pos = $_REQUEST['watermark_position'];
+        }
+
+        switch ($pos) {
+            case "top-left":
+            case "top":
+            case "top-right":
+            case "left":
+            case "center":
+            case "right":
+            case "bottom-left":
+            case "bottom":
+            case "bottom-right":
+                $watermarkPosition = $pos;
+                break;
+
+            default:
+                $watermarkPosition = 'bottom-right';
+                break;
+        }
+
+        $Image->insert($MediaImage->getFullPath(), $watermarkPosition);
+
+    } catch (QUI\Exception $Exception) {
+
+    }
+}
+
 
 $Image->resize(400, 400, function ($Constraint) {
     $Constraint->aspectRatio();

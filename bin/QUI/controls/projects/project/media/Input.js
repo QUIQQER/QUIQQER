@@ -12,6 +12,8 @@
  * @require Ajax
  * @require Locale
  * @require css!controls/projects/project/media/Input.css
+ *
+ * @event onChange [ {self}, {String} ]
  */
 
 define('controls/projects/project/media/Input', [
@@ -167,6 +169,7 @@ define('controls/projects/project/media/Input', [
                                 onSubmit : function(Popup, params)
                                 {
                                     self.$Input.value = params.url;
+                                    self.fireEvent( 'change', [ self, self.getValue() ] );
                                     self.$refreshPreview();
                                 }
                             }
@@ -181,10 +184,8 @@ define('controls/projects/project/media/Input', [
                 title  : Locale.get('quiqqer/system', 'projects.project.site.media.input.clear.alt'),
                 events :
                 {
-                    onClick : function()
-                    {
-                        self.$Input.value = '';
-                        self.$refreshPreview();
+                    onClick : function() {
+                        self.clear();
                     }
                 }
             }).inject( this.$Elm );
@@ -199,6 +200,43 @@ define('controls/projects/project/media/Input', [
             this.$refreshPreview();
 
             return this.$Elm;
+        },
+
+        /**
+         * Return the value (URL of the selected file)
+         * eq: image.php?****
+         *
+         * @return {String}
+         */
+        getValue : function()
+        {
+            return this.$Input ? this.$Input.value : '';
+        },
+
+        /**
+         * Set the url of an item
+         * eq: image.php?****
+         *
+         * @param {String} str - image.php string
+         */
+        setValue : function(str)
+        {
+            if ( str.toString().match('image.php') ) {
+                this.$Input.value = str.toString();
+            }
+
+            this.fireEvent( 'change', [ this, this.getValue() ] );
+            this.$refreshPreview();
+        },
+
+        /**
+         * Clear the value
+         */
+        clear : function()
+        {
+            this.$Input.value = '';
+            this.fireEvent( 'change', [ this, this.getValue() ] );
+            this.$refreshPreview();
         },
 
         /**
