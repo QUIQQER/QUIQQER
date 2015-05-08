@@ -320,7 +320,13 @@ define('controls/projects/project/media/FilePanel', [
                     file : this.$File.getAttribute('file')
                 }),
 
-                information : Locale.get( 'quiqqer/system', 'projects.project.site.media.filePanel.window.delete.text' ),
+                information : Locale.get('quiqqer/system', 'projects.project.site.media.filePanel.window.delete.information', {
+                    file : this.$File.getAttribute('file')
+                }),
+
+                maxWidth : 533,
+                maxHeight : 300,
+
                 autoclose   : false,
                 events :
                 {

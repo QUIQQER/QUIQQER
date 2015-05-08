@@ -177,7 +177,7 @@ define('controls/projects/project/media/FolderPanel', [
                     folder : this.$Folder.getAttribute('file')
                 }),
 
-                information : Locale.get( 'quiqqer/system', 'projects.project.site.media.folderPanel.window.delete.text', {
+                information : Locale.get( 'quiqqer/system', 'projects.project.site.media.folderPanel.window.delete.information', {
                     folder : this.$Folder.getAttribute('file')
                 } ),
                 autoclose : false,

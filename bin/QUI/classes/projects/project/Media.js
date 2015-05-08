@@ -337,6 +337,10 @@ define('classes/projects/project/Media', [
                 return list;
             }
 
+            if ( result.id in this.$items ) {
+                return this.$items[ result.id ];
+            }
+
             switch ( result.type )
             {
                 case "image":
