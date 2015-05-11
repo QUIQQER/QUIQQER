@@ -41,8 +41,8 @@ class Output extends \Symfony\Component\Console\Output\Output
     /**
      * Konstruktor
      *
-     * @param unknown $verbosity
-     * @param string $decorated
+     * @param Integer $verbosity
+     * @param string|bool $decorated
      * @param OutputFormatterInterface $formatter
      */
     public function __construct($verbosity=self::VERBOSITY_NORMAL, $decorated=false, OutputFormatterInterface $formatter=null)
