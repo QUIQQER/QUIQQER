@@ -181,6 +181,16 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * @return String
      */
     public function getName() {
+        return $this->getUsername();
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see \QUI\Interfaces\Users\User::getUsername()
+     *
+     * @return String
+     */
+    public function getUsername() {
         return $this->getAttribute('username');
     }
 

@@ -72,10 +72,19 @@ interface User
     public function getId();
 
     /**
-     * Returns the username, the attribute username
+     * Returns the name of the user
+     * If the user has an first and Lastname, it returns the "Firstname Lastname".
+     * otherwise it returns getUsername()
+     *
      * @return String
      */
     public function getName();
+
+    /**
+     * Returns the username
+     * @return String
+     */
+    public function getUsername();
 
     /**
      * Return the user language
