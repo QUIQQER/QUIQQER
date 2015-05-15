@@ -37,6 +37,7 @@ class Utils
                 'id'        => $Item->getId(),
                 'name'      => $Item->getAttribute('name'),
                 'title'     => $Item->getAttribute('title'),
+                'short'     => $Item->getAttribute('short'),
                 'type'      => 'folder',
                 'hasChildren'   => $Item->hasChildren(),
                 'hasSubfolders' => $Item->hasSubFolders(),
@@ -53,6 +54,7 @@ class Utils
                 'id'            => $Item->getId(),
                 'name'          => $Item->getAttribute('name'),
                 'title'         => $Item->getAttribute('title'),
+                'short'         => $Item->getAttribute('short'),
                 'type'          => 'folder',
                 'hasChildren'   => $Item->hasChildren(),
                 'hasSubfolders' => $Item->hasSubfolders(),
@@ -70,6 +72,7 @@ class Utils
             'id'        => $Item->getId(),
             'name'      => $Item->getAttribute('name'),
             'title'     => $Item->getAttribute('title'),
+            'short'     => $Item->getAttribute('short'),
             'type'      => $Item->getType() === 'QUI\\Projects\\Media\\Image'
                 ? 'image' : 'file',
             'url'       => $Item->getUrl(),

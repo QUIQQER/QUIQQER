@@ -65,6 +65,11 @@ try {
             $_REQUEST['maxheight'] = 500;
         }
 
+        if (isset($_REQUEST['noresize'])) {
+            echo $Image->response();
+            exit;
+        }
+
         echo $Image->resize($_REQUEST['maxwidth'], $_REQUEST['maxheight'],
             function ($Constraint) {
                 $Constraint->aspectRatio();

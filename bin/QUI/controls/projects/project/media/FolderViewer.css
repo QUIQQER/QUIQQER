@@ -2,6 +2,7 @@
 .qui-project-media-folderViewer {
     float: left;
     height: 100%;
+    position: relative;
     width: 100%;
 }
 
@@ -73,6 +74,7 @@
     background-position: center 10px;
     background-repeat: no-repeat;
     border: 1px solid #dedede;
+    cursor: zoom-in;
     float: left;
     height: 120px;
     margin: 20px 0 0 20px;
@@ -81,10 +83,10 @@
     width: 120px;
 }
 
-/*.qui-project-media-folderViewer-item.selected,*/
-/*.qui-project-media-folderViewer-item:hover {*/
-    /*background-color: #2F8FC6;*/
-/*}*/
+.qui-project-media-folderViewer-item.selected,
+.qui-project-media-folderViewer-item:hover {
+    background-color: #2F8FC6;
+}
 
 .qui-project-media-folderViewer-item-title {
     background: #000;
@@ -100,4 +102,24 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 100%;
+}
+
+.qui-project-media-folderViewer-upload-message {
+    background: #fff;
+    height: 150px;
+    max-width: 90%;
+    padding: 20px;
+    position: absolute;
+    text-align: center;
+    width: 300px;
+    z-index: 10;
+}
+
+.qui-project-media-folderViewer-upload-background {
+    background: #000;
+    height: 100%;
+    opacity: 0.6;
+    position: absolute;
+    width: 100%;
+    z-index: 9;
 }

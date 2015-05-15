@@ -2775,6 +2775,30 @@
             <de><![CDATA[Inaktive Dateien können nicht eingefügt werden. Möchten Sie diese Datei daher aktivieren?]]></de>
             <en><![CDATA[Inactive files can not be inserted. Would you activate this file?]]></en>
         </locale>
+
+        <locale name="projects.project.media.folderviewer.btn.diashow">
+            <de><![CDATA[Diashow starten]]></de>
+            <en><![CDATA[Start diashow]]></en>
+        </locale>
+        <locale name="projects.project.media.folderviewer.no.folder">
+            <de><![CDATA[Leider wurde kein Ordner ausgewählt.]]></de>
+            <en><![CDATA[Unfortunately, no folder was selected.]]></en>
+        </locale>
+        <locale name="projects.project.media.folderviewer.upload.message" html="true">
+            <de><![CDATA[<p>Möchten Sie die Dateien wirklich hochladen?</p>]]></de>
+            <en><![CDATA[<p>Do you really want to upload the files?</p>]]></en>
+        </locale>
+        <locale name="projects.project.media.folderviewer.upload.btn.start">
+            <de><![CDATA[Fortführen]]></de>
+            <en><![CDATA[Continue]]></en>
+        </locale>
+        <locale name="projects.project.media.folderviewer.upload.btn.cancel">
+            <de><![CDATA[Abbrechen]]></de>
+            <en><![CDATA[Cancel]]></en>
+        </locale>
+
+
+
         <locale name="users.user.btn.password.generate">
             <de><![CDATA[Passwort generieren]]></de>
             <en><![CDATA[generate password]]></en>
