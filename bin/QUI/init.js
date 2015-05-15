@@ -381,7 +381,7 @@ require( requireList, function()
 
         return "Bitte melden Sie sich vor dem schließen der Administration ab." +
                "Ansonsten können bestehende Daten verloren gehen." +
-               "Möchten Sie trotzdem weiter fortfahren?";
+               "Möchten Sie trotzdem weiter fortfahren?"; // #locale
     };
 
     // logout function
@@ -400,27 +400,5 @@ require( requireList, function()
             });
         });
     };
-
-    require([
-        'qui/controls/windows/Popup',
-        'controls/projects/project/media/FolderViewer'
-    ], function(Win, Viewer)
-    {
-        new Win({
-            maxWidth : 800,
-            maxHeight : 600,
-            events :
-            {
-                onOpen : function(Win)
-                {
-                    new Viewer({
-                        project : 'mytest',
-                        folderId : 23
-                    }).inject( Win.getContent() );
-                }
-            }
-        }).open();
-    });
-
 
 });
