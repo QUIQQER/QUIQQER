@@ -1,0 +1,103 @@
+
+.qui-project-media-folderViewer {
+    float: left;
+    height: 100%;
+    width: 100%;
+}
+
+/** buttons
+ * ====================================================== */
+
+.qui-project-media-folderViewer-buttons {
+    background: none repeat scroll 0 0 #e1e4e9;
+    float: left;
+    height: 50px;
+    width: 100%;
+}
+
+.qui-project-media-folderViewer-buttons button {
+    background: none repeat scroll 0 0 transparent;
+    border-color: #e1e4e9;
+    border-radius: 0;
+    border-style: solid;
+    border-width: 0 1px 0 0;
+    box-shadow: none;
+    color: #8f9399;
+    font-size: 14px;
+    font-weight: bold;
+    height: 50px;
+    line-height: 50px;
+    margin: 0;
+    padding: 0 10px;
+}
+
+.qui-project-media-folderViewer-buttons button.qui-button-active {
+    background: none repeat scroll 0 0 #c3c3c3 !important;
+    color: #222;
+}
+
+.qui-project-media-folderViewer-buttons button:hover {
+    background: none repeat scroll 0 0 #d1d4da;
+}
+
+.qui-project-media-folderViewer-buttons .qui-button-text-image {
+    line-height: 50px;
+}
+
+.qui-project-media-folderViewer-buttons .qui-button-text {
+    white-space: nowrap;
+}
+
+.qui-project-media-folderViewer-buttons .qui-select {
+    margin: 10px;
+}
+
+.qui-project-media-folderViewer-buttons .qui-buttons-seperator {
+    border-left: 2px solid #cccfd5;
+    float: left;
+    height: 40px;
+    margin: 5px 4px 2px 7px;
+}
+
+/** items / container
+ * ====================================================== */
+
+.qui-project-media-folderViewer-container {
+    float: left;
+    height: calc( 100% - 50px );
+    overflow: auto;
+    width: 100%;
+}
+
+.qui-project-media-folderViewer-item {
+    background-position: center 10px;
+    background-repeat: no-repeat;
+    border: 1px solid #dedede;
+    float: left;
+    height: 120px;
+    margin: 20px 0 0 20px;
+    overflow: hidden;
+    position: relative;
+    width: 120px;
+}
+
+/*.qui-project-media-folderViewer-item.selected,*/
+/*.qui-project-media-folderViewer-item:hover {*/
+    /*background-color: #2F8FC6;*/
+/*}*/
+
+.qui-project-media-folderViewer-item-title {
+    background: #000;
+    background: rgba(0,0,0, 0.5);
+    bottom: 0;
+    color: #fff;
+    height: 30px;
+    left: 0;
+    overflow: hidden;
+    padding: 5px;
+    position: absolute;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+}
