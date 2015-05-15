@@ -45,7 +45,10 @@ try {
     }
 
     // admin output
-    if ($isAdmin && Media\Utils::isImage($File)) {
+    if ($isAdmin
+        && Media\Utils::isImage($File)
+        && QUI::getUsers()->getUserBySession()->isAdmin()
+    ) {
 
         $Image = $Media->getImageManager()->make($File->getFullPath());
 
