@@ -305,7 +305,12 @@ class DBCheck extends QUI\System\Test
             $dbKeys[$k] = $columnInfo['Column_name'];
         }
 
-        $dbFields = $this->_Tables->getFieldsInfos($table);
+        $_dbFields = $this->_Tables->getFieldsInfos($table);
+        $dbFields = array();
+
+        foreach ($_dbFields as $_entry) {
+            $dbFields[] = $_entry['Field'];
+        }
 
         // compare primary keys
         $keyCompare = array_intersect($primaryKeys, $dbKeys);
@@ -325,6 +330,7 @@ class DBCheck extends QUI\System\Test
                 " | Database table primary keys: ".$_dbKeys
             );
         }
+
 
         // check if xml file declares fields that are not present in the database table
         $xmlFieldsDiff = array_diff(
