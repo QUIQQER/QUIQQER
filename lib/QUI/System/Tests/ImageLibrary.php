@@ -43,14 +43,6 @@ class ImageLibrary extends QUI\System\Test
             $libraries[] = 'PHP Image Magick';
         }
 
-        // ImageMagick System
-        exec( escapeshellcmd('convert'), $im_console );
-
-        // ImageMagick Konsole
-        if ( isset( $im_console ) && is_array( $im_console ) && count( $im_console ) ) {
-            $libraries[] = 'System Image Magick';
-        }
-
         // GD Lib
         if ( function_exists( 'imagecopyresampled' ) ) {
             $libraries[] = 'GD Lib';
