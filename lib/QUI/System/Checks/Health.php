@@ -17,12 +17,11 @@ use QUI;
  *
  * @author www.pcsg.de (Henning Leutz)
  */
-
 class Health
 {
     const STATUS_NOT_FOUND = 0;
-    const STATUS_OK        = 1;
-    const STATUS_ERROR     = -1;
+    const STATUS_OK = 1;
+    const STATUS_ERROR = -1;
 
     /**
      * System Healthcheck
@@ -33,32 +32,32 @@ class Health
     static function systemCheck()
     {
         $File = new QUI\Utils\System\File();
-        $md5  = CMS_DIR .'checklist.md5';
+        $md5 = CMS_DIR.'checklist.md5';
 
-        $bin_dir = str_replace( CMS_DIR, '', BIN_DIR );
-        $lib_dir = str_replace( CMS_DIR, '', LIB_DIR );
-        $sys_dir = str_replace( CMS_DIR, '', SYS_DIR );
+        $bin_dir = str_replace(CMS_DIR, '', BIN_DIR);
+        $lib_dir = str_replace(CMS_DIR, '', LIB_DIR);
+        $sys_dir = str_replace(CMS_DIR, '', SYS_DIR);
 
-        $binList = $File->readDirRecursiv( BIN_DIR, true );
-        $libList = $File->readDirRecursiv( LIB_DIR, true );
-        $sysList = $File->readDirRecursiv( SYS_DIR, true );
+        $binList = $File->readDirRecursiv(BIN_DIR, true);
+        $libList = $File->readDirRecursiv(LIB_DIR, true);
+        $sysList = $File->readDirRecursiv(SYS_DIR, true);
 
-        foreach ( $binList as $key => $val ) {
-            $binList[ $key ] = $bin_dir . $val;
+        foreach ($binList as $key => $val) {
+            $binList[$key] = $bin_dir.$val;
         }
 
-        foreach ( $libList as $key => $val ) {
-            $libList[ $key ] = $lib_dir . $val;
+        foreach ($libList as $key => $val) {
+            $libList[$key] = $lib_dir.$val;
         }
 
-        foreach ( $sysList as $key => $val ) {
-            $sysList[ $key ] = $sys_dir . $val;
+        foreach ($sysList as $key => $val) {
+            $sysList[$key] = $sys_dir.$val;
         }
 
 
-        $list = array_merge( $binList, $libList, $sysList );
+        $list = array_merge($binList, $libList, $sysList);
 
-        return self::checkArray( $md5, $list, CMS_DIR );
+        return self::checkArray($md5, $list, CMS_DIR);
     }
 
     /**
@@ -66,100 +65,96 @@ class Health
      * Return the result of the package healthcheck
      *
      * @param string $plugin
+     *
      * @return Array
      */
     static function packageCheck($plugin)
     {
-        $dir = OPT_DIR . $plugin;
-        $md5 = $dir .'/checklist.md5';
+        $dir = OPT_DIR.$plugin;
+        $md5 = $dir.'/checklist.md5';
 
-        return self::check( $md5, $dir );
+        return self::check($md5, $dir);
     }
 
     /**
      * compare the folder with the checkfile
      *
      * @param String $md5Checkfile - path to the md5 checkfile
-     * @param String $dir - dir name, path to the dir
+     * @param String $dir          - dir name, path to the dir
+     *
      * @return array
      * @throws \QUI\Exception
      */
     static function check($md5Checkfile, $dir)
     {
-        if ( !file_exists( $md5Checkfile ) )
-        {
+        if (!file_exists($md5Checkfile)) {
             throw new QUI\Exception(
                 'Checkfile not exist. Could not check the directory'
             );
         }
 
-        if ( !is_dir( $dir ) )
-        {
+        if (!is_dir($dir)) {
             throw new QUI\Exception(
                 'Could not read directory.'
             );
         }
 
-        $File    = new QUI\Utils\System\File();
-        $dirList = $File->readDirRecursiv( $dir );
+        $File = new QUI\Utils\System\File();
+        $dirList = $File->readDirRecursiv($dir);
 
-        return self::checkArray( $md5Checkfile, $dirList, $dir );
+        return self::checkArray($md5Checkfile, $dirList, $dir);
     }
 
     /**
      * compare the folder with an file list array
      *
-     * @param string $md5Checkfile  - path to the md5 checkfile
-     * @param array $fileList       - file list array
-     * @param string $dir           - directory
+     * @param string $md5Checkfile - path to the md5 checkfile
+     * @param array  $fileList     - file list array
+     * @param string $dir          - directory
+     *
      * @return array
      */
     static function checkArray($md5Checkfile, $fileList, $dir)
     {
-        $md5Entries = file( $md5Checkfile );
-        $md5List    = array();
+        $md5Entries = file($md5Checkfile);
+        $md5List = array();
 
         $result = array();
 
         // explode the md5 list
-        foreach ( $md5Entries as $line )
-        {
-            $parts = explode( '  ', $line );
+        foreach ($md5Entries as $line) {
+            $parts = explode('  ', $line);
 
-            $md5List[ trim($parts[ 1 ]) ] = trim($parts[ 0 ]);
+            $md5List[trim($parts[1])] = trim($parts[0]);
         }
 
 
         // check files in the system
-        foreach ( $fileList as $file )
-        {
-            if ( !isset( $md5List[ $file ] ) )
-            {
-                $result[ $file ] = self::STATUS_NOT_FOUND;
+        foreach ($fileList as $file) {
+            if (!isset($md5List[$file])) {
+                $result[$file] = self::STATUS_NOT_FOUND;
                 continue;
             }
 
-            $md5 = $md5List[ $file ];
+            $md5 = $md5List[$file];
 
-            if ( md5_file( $dir . $file ) != $md5 )
-            {
-                $result[ $file ] = self::STATUS_ERROR;
+            if (md5_file($dir.$file) != $md5) {
+                $result[$file] = self::STATUS_ERROR;
                 continue;
             }
 
-            $result[ $file ] = self::STATUS_OK;
+            $result[$file] = self::STATUS_OK;
         }
 
 
         // check if all files from the md5 exist
-        foreach ( $md5List as $file => $md5 )
-        {
-            if ( !isset( $result[ $file ] ) ) {
-                $result[ $file ] = self::STATUS_NOT_FOUND;
+        foreach ($md5List as $file => $md5) {
+            if (!isset($result[$file])) {
+                $result[$file] = self::STATUS_NOT_FOUND;
             }
         }
 
-        asort( $result );
+        asort($result);
 
         return $result;
     }
@@ -172,21 +167,29 @@ class Health
     static function checkWritable()
     {
         // check files
-        $md5hashFile = CMS_DIR .'checklist.md5';
-        $lines       = file( $md5hashFile );
+        $md5hashFile = CMS_DIR.'checklist.md5';
+
+        if (!file_exists($md5hashFile)) {
+            throw new QUI\Exception(
+                \QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.system.health.checklist.md5.not.found'
+                )
+            );
+        }
+
+        $lines = file($md5hashFile);
         $notWritable = array();
 
-        foreach ( $lines as $line )
-        {
-            $line = explode( ' ', $line );
+        foreach ($lines as $line) {
+            $line = explode(' ', $line);
 
-            if ( !is_writable( CMS_DIR . $line[ 1 ] ) ) {
-                $notWritable[] = CMS_DIR . $line[ 1 ];
+            if (!is_writable(CMS_DIR.$line[1])) {
+                $notWritable[] = CMS_DIR.$line[1];
             }
         }
 
-        if ( !empty( $notWritable ) )
-        {
+        if (!empty($notWritable)) {
             throw new QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
@@ -196,18 +199,16 @@ class Health
         }
 
         // check folders
-        $result = shell_exec( 'find '. CMS_DIR .' -not -path \'*/\.*\' -type d' );
-        $lines  = explode( "\n", trim( $result ) );
+        $result = shell_exec('find '.CMS_DIR.' -not -path \'*/\.*\' -type d');
+        $lines = explode("\n", trim($result));
 
-        foreach ( $lines as $line )
-        {
-            if ( !is_writable( $line ) ) {
+        foreach ($lines as $line) {
+            if (!is_writable($line)) {
                 $notWritable[] = $line;
             }
         }
 
-        if ( !empty( $notWritable ) )
-        {
+        if (!empty($notWritable)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',

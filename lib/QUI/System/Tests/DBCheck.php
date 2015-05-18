@@ -16,12 +16,23 @@ use QUI\Utils\String as String;
  * and detects discrepancies
  *
  * @package quiqqer/quiqqer
- * @author www.pcsg.de (Patrick Müller)
+ * @author  www.pcsg.de (Patrick Müller)
  */
 class DBCheck extends QUI\System\Test
 {
+    /**
+     * @var \QUI\Database\Tables
+     */
     protected $_Tables = null;
-    protected $_error  = false;
+
+    /**
+     * @var bool
+     */
+    protected $_error = false;
+
+    /**
+     * @var array
+     */
     protected $_errors = array();
 
     /**
@@ -31,8 +42,8 @@ class DBCheck extends QUI\System\Test
     {
         $this->setAttributes(array(
             'title'       => 'QUIQQER - Database Check (on failure check error log!)',
-            'description' => 'Compares existing QUIQQER database tables ' .
-                             'with database.xml files and detects discrepancies.'
+            'description' => 'Compares existing QUIQQER database tables '.
+                'with database.xml files and detects discrepancies.'
         ));
 
         $this->_isRequired = self::TEST_IS_REQUIRED;
@@ -45,54 +56,48 @@ class DBCheck extends QUI\System\Test
      */
     public function execute()
     {
-        if ( defined( 'OPT_DIR' ) )
-        {
+        if (defined('OPT_DIR')) {
             $packages_dir = OPT_DIR;
-        } else
-        {
+        } else {
             return self::STATUS_ERROR;
         }
 
-        $packages = SystemFile::readDir( $packages_dir );
+        $packages = SystemFile::readDir($packages_dir);
 
         $this->_Tables = QUI::getDataBase()->Table();
 
         // first we need all databases
-        foreach ( $packages as $package )
-        {
-            if ( $package == 'composer' ) {
+        foreach ($packages as $package) {
+            if ($package == 'composer') {
                 continue;
             }
 
-            $package_dir = $packages_dir . $package;
-            $list        = SystemFile::readDir( $package_dir );
+            $package_dir = $packages_dir.$package;
+            $list = SystemFile::readDir($package_dir);
 
-            foreach ( $list as $sub )
-            {
-                if ( !is_dir( $package_dir .'/'. $sub ) ) {
+            foreach ($list as $sub) {
+                if (!is_dir($package_dir.'/'.$sub)) {
                     continue;
                 }
 
-                $databaseXml = $package_dir .'/'. $sub .'/database.xml';
+                $databaseXml = $package_dir.'/'.$sub.'/database.xml';
 
-                if ( !file_exists( $databaseXml ) ) {
+                if (!file_exists($databaseXml)) {
                     continue;
                 }
 
-                try
-                {
-                    $this->_checkIntegrity( $databaseXml );
-                    $this->_outputError( $databaseXml );
-                } catch ( \Exception $Exception )
-                {
-                    QUI\System\Log::addWarning( $databaseXml );
-                    QUI\System\Log::addWarning( $Exception->getMessage() );
-                    QUI\System\Log::addWarning( $Exception->getTraceAsString() );
+                try {
+                    $this->_checkIntegrity($databaseXml);
+                    $this->_outputError($databaseXml);
+                } catch (\Exception $Exception) {
+                    QUI\System\Log::addWarning($databaseXml);
+                    QUI\System\Log::addWarning($Exception->getMessage());
+                    QUI\System\Log::addWarning($Exception->getTraceAsString());
                 }
             }
         }
 
-        if ( $this->_error ) {
+        if ($this->_error) {
             return self::STATUS_ERROR;
         }
 
@@ -106,38 +111,31 @@ class DBCheck extends QUI\System\Test
      */
     protected function _checkIntegrity($xmlFile)
     {
-        $content = XML::getDataBaseFromXml( $xmlFile );
+        $content = XML::getDataBaseFromXml($xmlFile);
 
         // Project tables
-        if ( isset( $content[ 'projects' ] ) )
-        {
-            $projects = QUI::getProjectManager()->getProjects( true );
+        if (isset($content['projects'])) {
+            $projects = QUI::getProjectManager()->getProjects(true);
 
-            $langTables   = array(); // language dependant tables
+            $langTables = array(); // language dependant tables
             $noLangTables = array(); // language independant tables
 
-            foreach ( $content[ 'projects' ] as $info )
-            {
-                $checkData = $this->_extractTableData( $info );
+            foreach ($content['projects'] as $info) {
+                $checkData = $this->_extractTableData($info);
 
-                if ( !empty( $info[ 'no-project-lang' ] ) )
-                {
+                if (!empty($info['no-project-lang'])) {
                     $noLangTables[] = $checkData;
-                } else
-                {
+                } else {
                     $langTables[] = $checkData;
                 }
             }
 
             // first check language independant project tables
-            if ( !empty( $noLangTables ) )
-            {
-                foreach ( $projects as $Project )
-                {
-                    foreach ( $langTables as $tblData )
-                    {
+            if (!empty($noLangTables)) {
+                foreach ($projects as $Project) {
+                    foreach ($langTables as $tblData) {
                         $projectTable = QUI::getDBProjectTableName(
-                            $tblData[ 'table' ], $Project, false
+                            $tblData['table'], $Project, false
                         );
 
                         $this->_checkTableIntegrity(
@@ -149,18 +147,15 @@ class DBCheck extends QUI\System\Test
             }
 
             // check language dependant project tables
-            if ( !empty( $langTables ) )
-            {
-                foreach ( $projects as $Project )
-                {
-                    $langs = $Project->getAttribute( 'langs' );
+            if (!empty($langTables)) {
+                foreach ($projects as $Project) {
+                    /* @var $Project \QUI\Projects\Project */
+                    $langs = $Project->getAttribute('langs');
 
-                    foreach ( $langs as $lang )
-                    {
-                        foreach ( $langTables as $tblData )
-                        {
+                    foreach ($langs as $lang) {
+                        foreach ($langTables as $tblData) {
                             $projectTable = QUI::getDBProjectTableName(
-                                $tblData[ 'table' ], $Project, $lang
+                                $tblData['table'], $Project, $lang
                             );
 
                             $this->_checkTableIntegrity(
@@ -173,18 +168,16 @@ class DBCheck extends QUI\System\Test
             }
         }
 
-        if ( isset( $content[ 'globals' ] ) )
-        {
+        if (isset($content['globals'])) {
             $globalTables = array();
 
-            foreach ( $content[ 'globals' ] as $info ) {
-                $globalTables[] = $this->_extractTableData( $info, true );
+            foreach ($content['globals'] as $info) {
+                $globalTables[] = $this->_extractTableData($info, true);
             }
 
-            foreach ( $globalTables as $tblData )
-            {
-                $table = QUI::getDBTableName( $tblData[ 'table' ] );
-                $this->_checkTableIntegrity( $table, $tblData );
+            foreach ($globalTables as $tblData) {
+                $table = QUI::getDBTableName($tblData['table']);
+                $this->_checkTableIntegrity($table, $tblData);
             }
         }
     }
@@ -192,88 +185,81 @@ class DBCheck extends QUI\System\Test
     /**
      * Extracts check relevant data from xml table information
      *
-     * @param $info
+     * @param      $info
      * @param bool $isGlobal (optional) - is a global table
+     *
      * @return array
      */
-    protected function _extractTableData($info, $isGlobal=false)
+    protected function _extractTableData($info, $isGlobal = false)
     {
         $primaryKeys = array();
-        $checkData   = array(
-            'table'    => $info[ 'suffix' ],
-            'fields'   => $info[ 'fields' ],
+        $checkData = array(
+            'table'    => $info['suffix'],
+            'fields'   => $info['fields'],
             'indices'  => false,
             'auto_inc' => false
         );
 
         // if primary keys are not explicitly declared by attribute
         // try to extract them out of the column structure declaration
-        if ( isset( $info[ 'primary' ] ) )
-        {
-            $primaryKeys = $info[ 'primary' ];
-        } else
-        {
-            foreach ( $info[ 'fields' ] as $column => $structure )
-            {
-                $structure = String::toLower( $structure );
+        if (isset($info['primary'])) {
+            $primaryKeys = $info['primary'];
+        } else {
+            foreach ($info['fields'] as $column => $structure) {
+                $structure = String::toLower($structure);
 
-                if ( mb_strpos( $structure, 'primary key' ) !== false ) {
+                if (mb_strpos($structure, 'primary key') !== false) {
                     $primaryKeys[] = $column;
                 }
             }
         }
 
-        $checkData[ 'primaryKeys' ] = $primaryKeys;
+        $checkData['primaryKeys'] = $primaryKeys;
 
-        if ( isset( $info[ 'index' ] ) ) {
-            $checkData[ 'indices' ] = $info[ 'index' ];
+        if (isset($info['index'])) {
+            $checkData['indices'] = $info['index'];
         }
 
-        if ( isset( $info[ 'auto_increment' ] ) )
-        {
-            $checkData[ 'auto_inc' ] = $info[ 'auto_increment' ];
-        } else
-        {
-            foreach ( $info[ 'fields' ] as $column => $structure )
-            {
-                $structure = String::toLower( $structure );
+        if (isset($info['auto_increment'])) {
+            $checkData['auto_inc'] = $info['auto_increment'];
+        } else {
+            foreach ($info['fields'] as $column => $structure) {
+                $structure = String::toLower($structure);
 
-                if ( mb_strpos( $structure, 'auto_increment' ) !== false )
-                {
-                    $checkData[ 'auto_inc' ] = $column;
+                if (mb_strpos($structure, 'auto_increment') !== false) {
+                    $checkData['auto_inc'] = $column;
                     break; // @todo sobald auto_inc auch für mehrere felder definiert werden kann, anpassen
                 }
             }
         }
 
         // check if user can set individual primary keys
-        if ( empty( $info[ 'no-site-reference' ] ) )
-        {
-            if ( empty( $info[ 'no-project-lang' ] ) &&
-                !empty( $primaryKeys ) )
-            {
-                if ( !(count( $primaryKeys ) === 1 && in_array( 'id', $primaryKeys )) )
-                {
+        if (empty($info['no-site-reference'])) {
+            if (empty($info['no-project-lang']) && !empty($primaryKeys)) {
+                if (!(count($primaryKeys) === 1
+                    && in_array('id', $primaryKeys))
+                ) {
                     $this->_addError(
-                        $checkData[ 'table' ],
+                        $checkData['table'],
                         "---",
-                        "Primary Key error -> " .
-                        "XML file declares a primary key for table " . $checkData[ 'table' ] .
-                        " You can only declare a primary key if the table has the " .
-                        "-> no-site-reference=\"1\" <- attribute OR the " .
+                        "Primary Key error -> ".
+                        "XML file declares a primary key for table "
+                        .$checkData['table'].
+                        " You can only declare a primary key if the table has the "
+                        .
+                        "-> no-site-reference=\"1\" <- attribute OR the ".
                         "-> no-project-lang=\"1\" <- attribute!"
                     );
 
-                    
+
                 }
             }
 
             // assume the xml file declares an id key
             // although technically it is created by the system in this special case
-            if ( !$isGlobal && !in_array( 'id', $primaryKeys ) )
-            {
-                $checkData[ 'primaryKeys' ][] = 'id';
-                $checkData[ 'fields' ][ 'id' ] = 'BIGINT(20) NOT NULL PRIMARY KEY';
+            if (!$isGlobal && !in_array('id', $primaryKeys)) {
+                $checkData['primaryKeys'][] = 'id';
+                $checkData['fields']['id'] = 'BIGINT(20) NOT NULL PRIMARY KEY';
             }
         }
 
@@ -283,25 +269,23 @@ class DBCheck extends QUI\System\Test
     /**
      * Compares xml data with database table data
      *
-     * @param string $table - name of the table in the database
-     * @param array $tblData - the data extracted form the database.xml
+     * @param string $table   - name of the table in the database
+     * @param array  $tblData - the data extracted form the database.xml
      */
     protected function _checkTableIntegrity($table, $tblData)
     {
         // xml data
-        $tbl         = $tblData[ 'table' ];
-        $indices     = $tblData[ 'indices' ];
-        $primaryKeys = $tblData[ 'primaryKeys' ];
-        $autoInc     = $tblData[ 'auto_inc' ];
-        $fields      = $tblData[ 'fields' ];
+        $tbl = $tblData['table'];
+        $primaryKeys = $tblData['primaryKeys'];
+        $autoInc = $tblData['auto_inc'];
+        $fields = $tblData['fields'];
 
-        if ( !$this->_Tables->exist( $table ) )
-        {
+        if (!$this->_Tables->exist($table)) {
             $this->_addError(
                 $tbl,
                 $table,
-                "Missing table -> " .
-                "Table \"$table\" is not found in the database." .
+                "Missing table -> ".
+                "Table \"$table\" is not found in the database.".
                 " Please execute the QUIQQER Setup."
             );
 
@@ -309,96 +293,92 @@ class DBCheck extends QUI\System\Test
         }
 
         // get table info from database
-        $dbKeys = $this->_Tables->getKeys( $table );
+        $dbKeys = $this->_Tables->getKeys($table);
 
         // get all primary keys
-        foreach ( $dbKeys as $k => $columnInfo )
-        {
-            if ( $columnInfo[ 'Key_name' ] !== 'PRIMARY' )
-            {
-                unset( $dbKeys[ $k ] );
+        foreach ($dbKeys as $k => $columnInfo) {
+            if ($columnInfo['Key_name'] !== 'PRIMARY') {
+                unset($dbKeys[$k]);
                 continue;
             }
 
-            $dbKeys[ $k ] = $columnInfo[ 'Column_name' ];
+            $dbKeys[$k] = $columnInfo['Column_name'];
         }
 
-        $dbFields = $this->_Tables->getFieldsInfos( $table );
+        $dbFields = $this->_Tables->getFieldsInfos($table);
 
         // compare primary keys
-        $keyCompare = array_intersect( $primaryKeys, $dbKeys );
+        $keyCompare = array_intersect($primaryKeys, $dbKeys);
 
-        if ( count( $primaryKeys ) !== count( $dbKeys ) ||
-             count( $keyCompare ) !== count( $primaryKeys ) )
-        {
-            $_dbKeys = empty( $dbKeys ) ? '(none)' : implode( ',', $dbKeys );
-            $_prKeys = empty( $primaryKeys ) ? '(none)' : implode( ',', $primaryKeys );
+        if (count($primaryKeys) !== count($dbKeys)
+            || count($keyCompare) !== count($primaryKeys)
+        ) {
+            $_dbKeys = empty($dbKeys) ? '(none)' : implode(',', $dbKeys);
+            $_prKeys = empty($primaryKeys) ? '(none)'
+                : implode(',', $primaryKeys);
 
             $this->_addError(
                 $tbl,
                 $table,
-                "Primary Key mismatch -> " .
-                "XML primary keys: " . $_prKeys .
-                " | Database table primary keys: " . $_dbKeys
+                "Primary Key mismatch -> ".
+                "XML primary keys: ".$_prKeys.
+                " | Database table primary keys: ".$_dbKeys
             );
         }
 
         // check if xml file declares fields that are not present in the database table
         $xmlFieldsDiff = array_diff(
-            array_keys( $fields ),
+            array_keys($fields),
             $dbFields
         );
 
-        if ( !empty( $xmlFieldsDiff ) )
-        {
+        if (!empty($xmlFieldsDiff)) {
             $this->_addError(
                 $tbl,
                 $table,
-                "Missing table fields -> " .
-                "The XML file declares table fields that are " .
-                "missing in the database table: " .
-                implode( ',', $xmlFieldsDiff )
+                "Missing table fields -> ".
+                "The XML file declares table fields that are ".
+                "missing in the database table: ".
+                implode(',', $xmlFieldsDiff)
             );
         }
 
         // collect detailled column information from database
-        $dbFieldsData = $this->_Tables->getFieldsInfos( $table );
+        $dbFieldsData = $this->_Tables->getFieldsInfos($table);
 
-        foreach ( $dbFieldsData as $field )
-        {
-            $fieldName = $field[ 'Field' ];
+        foreach ($dbFieldsData as $field) {
+            $fieldName = $field['Field'];
 
-            if ( !isset( $fields[ $fieldName ] ) ) {
+            if (!isset($fields[$fieldName])) {
                 continue;
             }
 
             // column declaration from the xml file
-            $fieldData = String::toLower( $fields[ $fieldName ] );
+            $fieldData = String::toLower($fields[$fieldName]);
 
             /*** NULL/NOT NULL check ***/
             $nullable = true;
 
-            if ( mb_strpos( $fieldData, 'not null' ) !== false ) {
+            if (mb_strpos($fieldData, 'not null') !== false) {
                 $nullable = false;
             }
 
             // check if column in datase is nullable
             $isNullable = true;
 
-            if ( $field[ 'Null' ] === 'NO' ) {
+            if ($field['Null'] === 'NO') {
                 $isNullable = false;
             }
 
-            if ( $nullable !== $isNullable )
-            {
+            if ($nullable !== $isNullable) {
                 $should = $nullable ? "NULL" : "NOT NULL";
-                $is     = $isNullable ? "NULL" : "NOT NULL";
+                $is = $isNullable ? "NULL" : "NOT NULL";
 
                 $this->_addError(
                     $tbl,
                     $table,
-                    "Field structure mismatch -> " .
-                    "The XML file says that field \"$fieldName\" " .
+                    "Field structure mismatch -> ".
+                    "The XML file says that field \"$fieldName\" ".
                     "should be $should but the database says it is $is."
                 );
             }
@@ -406,32 +386,33 @@ class DBCheck extends QUI\System\Test
             /*** AUTO_INCREMENT check ***/
             $autoIncrement = false;
 
-            if ( $autoInc === $fieldName ) {
+            if ($autoInc === $fieldName) {
                 $autoIncrement = true;
             }
 
             $isAutoIncrement = false;
 
-            if ( $field[ 'Extra' ] === 'auto_increment' ) {
+            if ($field['Extra'] === 'auto_increment') {
                 $isAutoIncrement = true;
             }
 
-            if ( $autoIncrement !== $isAutoIncrement )
-            {
-                $should = $autoIncrement ? "AUTO_INCREMENT" : "not AUTO_INCREMENT";
-                $is     = $isAutoIncrement ? "AUTO_INCREMENT" : "not AUTO_INCREMENT";
+            if ($autoIncrement !== $isAutoIncrement) {
+                $should = $autoIncrement ? "AUTO_INCREMENT"
+                    : "not AUTO_INCREMENT";
+                $is = $isAutoIncrement ? "AUTO_INCREMENT"
+                    : "not AUTO_INCREMENT";
 
                 $this->_addError(
                     $tbl,
                     $table,
-                    "Field structure mismatch -> " .
-                    "The XML file says that field \"$fieldName\" " .
+                    "Field structure mismatch -> ".
+                    "The XML file says that field \"$fieldName\" ".
                     "should be $should but the database says it is $is."
                 );
             }
 
             /*** DATATYPE check ***/
-            $isDatatype = $field[ 'Type' ];
+            $isDatatype = $field['Type'];
 
             // clear xml field data of already checked content
             $fieldData = str_replace(
@@ -445,25 +426,29 @@ class DBCheck extends QUI\System\Test
                 $fieldData
             );
 
-            $fieldData = trim( $fieldData );
+            $fieldData = trim($fieldData);
 
             // correct things like "varchar( 20 )" to "varchar(20)" to match the column information
-            $fieldData = preg_replace( '#\(\D*(\d+)\D*\)#i', '($1)', $fieldData );
+            $fieldData = preg_replace('#\(\D*(\d+)\D*\)#i', '($1)', $fieldData);
 
-            if ( mb_strpos( $fieldData, $isDatatype ) === false )
-            {
+            if (mb_strpos($fieldData, $isDatatype) === false) {
                 $this->_addError(
                     $tbl,
                     $table,
-                    "Field structure mismatch -> " .
-                    "The XML file says that field \"$fieldName\" " .
-                    "should be \"$fieldData\"" .
+                    "Field structure mismatch -> ".
+                    "The XML file says that field \"$fieldName\" ".
+                    "should be \"$fieldData\"".
                     " but the database says it is \"$isDatatype\"."
                 );
             }
         }
     }
 
+    /**
+     * @param String $table
+     * @param String $dbTable
+     * @param String $error
+     */
     protected function _addError($table, $dbTable, $error)
     {
         $this->_errors[] = array(
@@ -475,26 +460,27 @@ class DBCheck extends QUI\System\Test
         $this->_error = true;
     }
 
+    /**
+     * @param String $xmlFile
+     */
     protected function _outputError($xmlFile)
     {
-        if ( empty( $this->_errors ) ) {
+        if (empty($this->_errors)) {
             return;
         }
 
-        $msg  = "\n-> Database Check Errors in: $xmlFile <-";
-//        $msg .= "\n Date: " . date('d.m.Y H:i:s');
+        $msg = "\n-> Database Check Errors in: $xmlFile <-";
 
-        foreach ( $this->_errors as $k => $err )
-        {
+        foreach ($this->_errors as $k => $err) {
             $msg .= "\n";
-            $msg .= "\n Error #" . ($k+1) . ":";
+            $msg .= "\n Error #".($k + 1).":";
             $msg .= "\n -------------------------";
-            $msg .= "\n Definition for table: \t\"" . $err[ 'table' ] . "\"";
-            $msg .= "\n Database table: \t\"" . $err[ 'dbTable' ] . "\"";
-            $msg .= "\n Error: " . $err[ 'error' ];
+            $msg .= "\n Definition for table: \t\"".$err['table']."\"";
+            $msg .= "\n Database table: \t\"".$err['dbTable']."\"";
+            $msg .= "\n Error: ".$err['error'];
         }
 
-        QUI\System\Log::addWarning( $msg );
+        QUI\System\Log::addWarning($msg);
         $this->_errors = array();
     }
 }
