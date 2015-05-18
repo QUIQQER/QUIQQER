@@ -12,10 +12,9 @@ use QUI\Utils\System\File as SystemFile;
 /**
  * QUIQQER Setup
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui
  */
-
 class Setup
 {
     /**
@@ -24,9 +23,10 @@ class Setup
     static function all()
     {
         // not at phpunit
-        if ( !isset($_SERVER['argv']) ||
-             ( isset( $_SERVER['argv'][0] ) && strpos($_SERVER['argv'][0], 'phpunit') === false) )
-        {
+        if (!isset($_SERVER['argv'])
+            || (isset($_SERVER['argv'][0])
+                && strpos($_SERVER['argv'][0], 'phpunit') === false)
+        ) {
             // nur Super User darf dies
             Rights\Permission::checkSU();
         }
@@ -34,11 +34,11 @@ class Setup
         QUI::getSession()->setup();
 
         // create dirs
-        SystemFile::mkdir( BIN_DIR );
-        SystemFile::mkdir( LIB_DIR );
-        SystemFile::mkdir( USR_DIR );
-        SystemFile::mkdir( OPT_DIR );
-        SystemFile::mkdir( VAR_DIR );
+        SystemFile::mkdir(BIN_DIR);
+        SystemFile::mkdir(LIB_DIR);
+        SystemFile::mkdir(USR_DIR);
+        SystemFile::mkdir(OPT_DIR);
+        SystemFile::mkdir(VAR_DIR);
 
         // mail queue setup
         Mail\Queue::setup();
@@ -68,31 +68,30 @@ class Setup
         /**
          * header dateien
          */
-        $str = "<?php require_once '". CMS_DIR ."bootstrap.php'; ?>";
+        $str = "<?php require_once '".CMS_DIR."bootstrap.php'; ?>";
 
-        if ( file_exists( USR_DIR .'header.php' ) ) {
-            unlink( USR_DIR .'header.php' );
+        if (file_exists(USR_DIR.'header.php')) {
+            unlink(USR_DIR.'header.php');
         }
 
-        if ( file_exists( OPT_DIR .'header.php' ) ) {
-            unlink( OPT_DIR .'header.php' );
+        if (file_exists(OPT_DIR.'header.php')) {
+            unlink(OPT_DIR.'header.php');
         }
 
-        file_put_contents( USR_DIR .'header.php', $str );
-        file_put_contents( OPT_DIR .'header.php', $str );
+        file_put_contents(USR_DIR.'header.php', $str);
+        file_put_contents(OPT_DIR.'header.php', $str);
 
         /**
          * Project Setup
          */
-        $projects = Projects\Manager::getProjects( true );
+        $projects = Projects\Manager::getProjects(true);
 
-        foreach ( $projects as $Project )
-        {
+        foreach ($projects as $Project) {
             /* @var $Project \QUI\Projects\Project */
             $Project->setup();
 
             // Plugin Setup
-            QUI::getPlugins()->setup( $Project );
+            QUI::getPlugins()->setup($Project);
 
             // Media Setup
             // $Project->getMedia()->setup();
@@ -102,28 +101,28 @@ class Setup
          * composer setup
          */
         $PackageManager = QUI::getPackageManager();
-        $packages       = SystemFile::readDir( OPT_DIR );
+        $packages = SystemFile::readDir(OPT_DIR);
 
         // first we need all databases
-        foreach ( $packages as $package )
-        {
-            if ( $package == 'composer' ) {
+        foreach ($packages as $package) {
+
+            if ($package == 'composer') {
                 continue;
             }
 
-            if ( $package == 'bin' ) {
+            if ($package == 'bin') {
                 continue;
             }
 
-            if ( !is_dir( OPT_DIR .'/'. $package ) ) {
+            if (!is_dir(OPT_DIR.'/'.$package)) {
                 continue;
             }
 
-            $package_dir = OPT_DIR .'/'. $package;
-            $list        = SystemFile::readDir( $package_dir );
+            $package_dir = OPT_DIR.'/'.$package;
+            $list = SystemFile::readDir($package_dir);
 
-            foreach ( $list as $sub ) {
-                $PackageManager->setup( $package .'/'. $sub );
+            foreach ($list as $sub) {
+                $PackageManager->setup($package.'/'.$sub);
             }
         }
 
