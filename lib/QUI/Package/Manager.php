@@ -62,14 +62,14 @@ class Manager extends QUI\QDOM
     protected $_vardir;
 
     /**
-     * Packaglist - installed packages
+     * Path to the composer.json file
      *
      * @var String
      */
     protected $_composer_json;
 
     /**
-     * Packaglist - composer.lock
+     * Path to the composer.lock file
      *
      * @var String
      */
@@ -994,6 +994,21 @@ class Manager extends QUI\QDOM
 
         $packages = array();
 
+        try {
+
+            $LockClient = $this->_getLockClient();
+
+            return $LockClient->checkUpdates(
+                file_get_contents($this->_composer_json)
+            );
+
+        } catch (QUI\Exception $Exception)
+        {
+
+        }
+
+
+        // error at lock server
         $result = $this->_execComposer('update', array(
             '--dry-run' => true
         ));
@@ -1002,6 +1017,7 @@ class Manager extends QUI\QDOM
         QUI\System\Log::addDebug(print_r($result, true));
 
         foreach ($result as $line) {
+
             if (strpos($line, '-') === false || strpos($line, '/') === false
                 || strpos($line, '(') === false
             ) {
@@ -1025,6 +1041,7 @@ class Manager extends QUI\QDOM
             $to = '';
 
             if (isset($versions[1])) {
+
                 if (isset($versions[1][0])) {
                     $from = $versions[1][0];
                     $to = $versions[1][0]; // if "to" isn't set
@@ -1069,14 +1086,13 @@ class Manager extends QUI\QDOM
         }
 
         // update lock file via lock server
-        $LockClient = new LOCKClient(array(
-            'composerJsonFile' => $this->_composer_json
-        ));
-
+        $LockClient = $this->_getLockClient();
 
         try {
 
-            $lockData = $LockClient->getComposerLock($package);
+            $lockData = $LockClient->getComposerLock(
+                file_get_contents($this->_composer_json)
+            );
 
             // update composer.lock
             file_put_contents($this->_composer_lock, $lockData);
@@ -1160,6 +1176,16 @@ class Manager extends QUI\QDOM
         }
 
         return new QUI\Config(CMS_DIR.'etc/last_update.ini.php');
+    }
+
+    /**
+     * Return the lock client with the settings
+     *
+     * @return LOCKClient
+     */
+    protected function _getLockClient()
+    {
+        return new LOCKClient();
     }
 
     /**

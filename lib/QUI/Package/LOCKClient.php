@@ -21,8 +21,7 @@ class LOCKClient extends QUI\QDOM
     public function __construct($params = array())
     {
         $this->setAttributes(array(
-            'composerJsonFile' => '',
-            'lockServer'       => 'https://lock.quiqqer.com'
+            'lockServer' => 'https://lock.quiqqer.com'
         ));
 
         $this->setAttributes($params);
@@ -31,17 +30,99 @@ class LOCKClient extends QUI\QDOM
     /**
      * Update the composer.lock file via a composerLOCK server
      *
-     * @param String|Bool $package - optional, name of the package
+     * @param string $composerJson - composer.json data
      *
-     * @return String
+     * @return string
      * @throws QUI\Exception
      */
-    public function getComposerLock($package = false)
+    public function getComposerLock($composerJson)
+    {
+        $this->_checkComposerData($composerJson);
+
+        return $this->_send('/v1/update', array(
+            CURLOPT_POST       => 1,
+            CURLOPT_POSTFIELDS => array(
+                'composerJson' => $composerJson
+            )
+        ));
+    }
+
+    /**
+     * Ask the lockserver whether updates exist
+     *
+     * @param String $composerJson - composer.json data
+     * @param String|Bool $package - optional, Name of the package
+     *
+     * @return array
+     *
+     * @throws QUI\Exception
+     */
+    public function checkUpdates($composerJson, $package = false)
+    {
+        $this->_checkComposerData($composerJson);
+
+        if ($package) {
+
+            $result = $this->_send('/v1/check', array(
+                CURLOPT_POST       => 1,
+                CURLOPT_POSTFIELDS => array(
+                    'composerJson' => $composerJson,
+                    'package'      => $package
+                )
+            ));
+
+        } else {
+
+            $result = $this->_send('/v1/check', array(
+                CURLOPT_POST       => 1,
+                CURLOPT_POSTFIELDS => array(
+                    'composerJson' => $composerJson
+                )
+            ));
+        }
+
+        return json_decode($result, true);
+    }
+
+    /**
+     * Check the composer data
+     *
+     * @param $composerJson
+     *
+     * @throws QUI\Exception
+     */
+    protected function _checkComposerData($composerJson)
+    {
+        $composerData = json_decode($composerJson);
+
+        if (!$composerData) {
+
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'exception.lock.client.composerJson.invalid'
+                ),
+                400
+            );
+        }
+    }
+
+    /**
+     * Send a requrest to the lockserver
+     *
+     * @param string $url
+     * @param array  $postFields
+     *
+     * @return string
+     *
+     * @throws QUI\Exception
+     */
+    protected function _send($url, array $postFields)
     {
         $lockServer = $this->getAttribute('lockServer');
-        $file = $this->getAttribute('composerJsonFile');
 
         if (empty($lockServer)) {
+
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
@@ -51,27 +132,8 @@ class LOCKClient extends QUI\QDOM
             );
         }
 
-        if (!file_exists($file)) {
-            throw new QUI\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
-                    'exception.lock.client.composer.file.not.found'
-                ),
-                400
-            );
-        }
 
-
-        $postFields = array(
-            'composerJson' => file_get_contents($file)
-        );
-
-        if ($package) {
-            $postFields['package'] = $package;
-        }
-
-
-        $Curl = QUI\Utils\Request\Url::Curl($lockServer.'/v1/update', array(
+        $Curl = QUI\Utils\Request\Url::Curl($lockServer.$url, array(
             CURLOPT_POST       => 1,
             CURLOPT_POSTFIELDS => $postFields
         ));
