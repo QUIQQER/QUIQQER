@@ -377,7 +377,7 @@ define('controls/projects/project/Panel', [
 
             var height = Body.getComputedSize().height;
 
-            if ( !height ) {
+            if ( !height || !Container ) {
                 return;
             }
 
