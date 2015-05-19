@@ -274,6 +274,7 @@ class Manager extends QUI\QDOM
         $repositories = array();
 
         foreach ($servers as $server => $params) {
+
             if ($server == 'packagist') {
                 continue;
             }
@@ -366,6 +367,15 @@ class Manager extends QUI\QDOM
             $this->_composer_lock,
             $backupDir.'composer_'.date('Y-m-d__H-i-s').'.lock'
         );
+    }
+
+    /**
+     * Clear the complete composer cache
+     */
+    public function clearComposerCache()
+    {
+        QUI::getTemp()->moveToTemp($this->_vardir .'repo/');
+        QUI::getTemp()->moveToTemp($this->_vardir .'files/');
     }
 
     /**
@@ -750,6 +760,7 @@ class Manager extends QUI\QDOM
         ), true);
 
         foreach ($show as $k => $line) {
+
             if (strpos($line, '<info>') === false) {
                 continue;
             }
@@ -1104,7 +1115,7 @@ class Manager extends QUI\QDOM
             $lockData = '';
         }
 
-        
+
         if (!empty($lockData)) {
 
             QUI\System\Log::addDebug('LOCK Server used');
@@ -1316,6 +1327,7 @@ class Manager extends QUI\QDOM
         $result = array();
 
         foreach ($messages as $entry) {
+
             if (empty($entry)) {
                 continue;
             }
@@ -1330,7 +1342,6 @@ class Manager extends QUI\QDOM
             if ($showInfo === false && strpos($entry, '<info>') !== false) {
                 continue;
             }
-
 
             $result[] = $entry;
         }

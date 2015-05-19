@@ -35,6 +35,10 @@ class Update extends \QUI\System\Console\Tool
             $self->writeLn( $message );
         });
 
+        if ($this->getArgument('--clearCache')) {
+            $PM->clearComposerCache();
+        }
+
         try
         {
             $PM->refreshServerList();
