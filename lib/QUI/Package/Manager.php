@@ -1001,8 +1001,7 @@ class Manager extends QUI\QDOM
                 file_get_contents($this->_composer_json)
             );
 
-        } catch (QUI\Exception $Exception)
-        {
+        } catch (QUI\Exception $Exception) {
 
         }
 
@@ -1098,12 +1097,20 @@ class Manager extends QUI\QDOM
             file_put_contents($this->_composer_lock, $lockData);
 
         } catch (QUI\Exception $Exception) {
+
+            QUI\System\Log::addDebug('LOCK Server Error');
+            QUI\System\Log::addDebug($Exception->getMessage());
+
             $lockData = '';
         }
 
+        
         if (!empty($lockData)) {
 
+            QUI\System\Log::addDebug('LOCK Server used');
+
             if ($package) {
+
                 $output = $this->_execComposer('install', array(
                     'packages' => array($package)
                 ));
@@ -1112,8 +1119,10 @@ class Manager extends QUI\QDOM
                 $output = $this->_execComposer('install');
             }
 
-        } else
-        {
+        } else {
+
+            QUI\System\Log::addDebug('No LOCK Server used');
+
             if ($package) {
                 $output = $this->_execComposer('update', array(
                     'packages' => array($package)
@@ -1148,7 +1157,7 @@ class Manager extends QUI\QDOM
             }
         }
 
-        QUI\System\Log::addInfo(implode("\n", $output));
+        QUI\System\Log::addDebug(implode("\n", $output));
 
         // composer optimize
         $optimize = $this->_execComposer('dump-autoload', array(
@@ -1160,7 +1169,7 @@ class Manager extends QUI\QDOM
         $Last->set('quiqqer', 'lastUpdate', time());
         $Last->save();
 
-        QUI\System\Log::addInfo(implode("\n", $optimize));
+        QUI\System\Log::addDebug(implode("\n", $optimize));
     }
 
     /**
@@ -1275,8 +1284,7 @@ class Manager extends QUI\QDOM
             $params['--working-dir'] = $this->_vardir;
         }
 
-        if ($command == 'update' || $command == 'install')
-        {
+        if ($command == 'update' || $command == 'install') {
             if ($this->getAttribute('--prefer-dist')) {
                 $params['--prefer-dist'] = true;
             }
