@@ -39,7 +39,7 @@ define('classes/packages/Manager', [
         {
             Ajax.post('ajax_system_setup', function()
             {
-                if ( typeof callback !== 'undefined' ) {
+                if ( typeOf(callback) === 'function' ) {
                     callback();
                 }
 
@@ -58,7 +58,7 @@ define('classes/packages/Manager', [
         {
             Ajax.post('ajax_system_update', function(result)
             {
-                if ( typeof callback !== 'undefined' ) {
+                if ( typeOf(callback) === 'function' ) {
                     callback( result );
                 }
             }, {
@@ -75,7 +75,7 @@ define('classes/packages/Manager', [
         {
             Ajax.post('ajax_system_updateWithLocalServer', function(result)
             {
-                if ( typeof callback !== 'undefined' ) {
+                if ( typeOf(callback) === 'function' ) {
                     callback( result );
                 }
             });
@@ -111,7 +111,7 @@ define('classes/packages/Manager', [
             {
                 self.$packages[ pkg ] = result;
 
-                if ( typeof callback !== 'undefined' ) {
+                if ( typeOf(callback) === 'function' ) {
                     callback( result );
                 }
             }, {
@@ -134,7 +134,7 @@ define('classes/packages/Manager', [
             {
                 self.update(pkg, function()
                 {
-                    if ( typeof callback !== 'undefined' ) {
+                    if ( typeOf(callback) === 'function' ) {
                         callback( result );
                     }
                 });

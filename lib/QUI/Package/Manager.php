@@ -796,7 +796,6 @@ class Manager extends QUI\QDOM
     {
         $result = array();
         $str = QUI\Utils\Security\Orthos::clearShell($str);
-        // $list   = $this->_getList();
 
         $list = $this->_execComposer('search', array(
             'tokens' => array($str)
@@ -1018,7 +1017,8 @@ class Manager extends QUI\QDOM
 
         foreach ($result as $line) {
 
-            if (strpos($line, '-') === false || strpos($line, '/') === false
+            if (strpos($line, '-') === false
+                || strpos($line, '/') === false
                 || strpos($line, '(') === false
             ) {
                 continue;
@@ -1275,8 +1275,11 @@ class Manager extends QUI\QDOM
             $params['--working-dir'] = $this->_vardir;
         }
 
-        if ($this->getAttribute('--prefer-dist')) {
-            $params['--prefer-dist'] = true;
+        if ($command == 'update' || $command == 'install')
+        {
+            if ($this->getAttribute('--prefer-dist')) {
+                $params['--prefer-dist'] = true;
+            }
         }
 
 
