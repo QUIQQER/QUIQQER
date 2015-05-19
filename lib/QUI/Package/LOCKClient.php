@@ -135,7 +135,7 @@ class LOCKClient extends QUI\QDOM
 
         $Curl = QUI\Utils\Request\Url::Curl($lockServer.$url, array(
             CURLOPT_POST       => 1,
-            CURLOPT_POSTFIELDS => $postFields
+            CURLOPT_POSTFIELDS => http_build_query($postFields)
         ));
 
         $result = QUI\Utils\Request\Url::exec($Curl);
