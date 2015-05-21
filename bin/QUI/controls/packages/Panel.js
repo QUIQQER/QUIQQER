@@ -386,6 +386,7 @@ define('controls/packages/Panel', [
          *
          * @param {String} [pkg] - (optional), Package name, if no package name given, complete setup are executed
          * @param {Object} [Btn] - (optional), qui/controls/buttons/Button
+         * @return Promise
          */
         setup : function(pkg, Btn)
         {
@@ -402,28 +403,27 @@ define('controls/packages/Panel', [
                 }
             }
 
-
-            QUI.getMessageHandler(function(MH)
+            return QUI.getMessageHandler().then(function(MH)
             {
-                // #Locale message
-                MH.addLoading('Setup wird durchgeführt', function(Loading)
+                return MH.addLoading('Setup wird durchgeführt');
+
+            }).then(function(Loading)
+            {
+                return self.$Manager.setup(pkg).then(function()
                 {
-                    self.$Manager.setup( pkg, function()
-                    {
-                        if ( typeof Btn === 'undefined' ) {
-                            return;
-                        }
+                    Loading.finish( Locale.get( lg, 'message.setup.successfull' ) );
 
-                        if ( Btn.getAttribute( 'textimage' ) ) {
-                            Btn.setAttribute( 'textimage', 'fa fa-hdd-o icon-hdd' );
-                        }
+                    if ( typeof Btn === 'undefined' ) {
+                        return;
+                    }
 
-                        if ( Btn.getAttribute( 'icon' ) ) {
-                            Btn.setAttribute( 'icon', 'fa fa-hdd-o icon-hdd' );
-                        }
+                    if ( Btn.getAttribute( 'textimage' ) ) {
+                        Btn.setAttribute( 'textimage', 'fa fa-hdd-o icon-hdd' );
+                    }
 
-                        Loading.finish( Locale.get( lg, 'message.setup.successfull' ) );
-                    });
+                    if ( Btn.getAttribute( 'icon' ) ) {
+                        Btn.setAttribute( 'icon', 'fa fa-hdd-o icon-hdd' );
+                    }
                 });
             });
         },
@@ -468,48 +468,55 @@ define('controls/packages/Panel', [
 
             var self = this;
 
-            this.$Manager.checkUpdate().done(function(result)
+            QUI.getMessageHandler().then(function(MH)
             {
-                Btn.setAttribute( 'textimage', 'icon-refresh' );
+                return MH.addLoading('Updates werden gesucht...');
 
-                if ( !result || !result.length )
+            }).then(function(Loading)
+            {
+                return self.$Manager.checkUpdate().then(function(result)
                 {
-                    QUI.getMessageHandler(function(MH) {
-                        MH.addInformation(
+                    Btn.setAttribute( 'textimage', 'icon-refresh' );
+
+                    if ( !result || !result.length )
+                    {
+                        Loading.finish(
                             Locale.get( lg, 'message.packages.update.system.uptodate' )
                         );
+
+                        self.Loader.hide();
+                        return;
+                    }
+
+                    var entry,
+                        data = [];
+
+                    for ( var i = 0, len = result.length; i < len; i++ )
+                    {
+                        entry = result[i];
+
+                        data.push({
+                            'package' : entry['package'],
+                            'from'    : entry.from,
+                            'to'      : entry.to,
+                            'update'  : {
+                                'package' : entry['package'],
+                                image     : 'icon-retweet',
+                                events    : {
+                                    onClick : self.$clickUpdateBtn
+                                }
+                            }
+                        });
+                    }
+
+                    self.$UpdateGrid.setData({
+                        data : data
                     });
+
+                    Loading.finish('Es wurden '+ data.length +' Updates gefunden');
 
                     self.Loader.hide();
-                    return;
-                }
-
-                var entry,
-                    data = [];
-
-                for ( var i = 0, len = result.length; i < len; i++ )
-                {
-                    entry = result[i];
-
-                    data.push({
-                        'package' : entry['package'],
-                        'from'    : entry.from,
-                        'to'      : entry.to,
-                        'update'  : {
-                            'package' : entry['package'],
-                            image     : 'icon-retweet',
-                            events    : {
-                                onClick : self.$clickUpdateBtn
-                            }
-                        }
-                    });
-                }
-
-                self.$UpdateGrid.setData({
-                    data : data
                 });
-
-                self.Loader.hide();
 
             }, function(Exception)
             {
@@ -600,12 +607,34 @@ define('controls/packages/Panel', [
         /**
          * Update a package or the entire quiqqer system
          *
-         * @param {Function} callback - Callback function
          * @param {String|Boolean} [pkg] - (optional), package name
+         * @param {Function} [callback]  - (optional), Callback function
+         * @return Promise
          */
-        update : function(callback, pkg)
+        update : function(pkg, callback)
         {
-            this.$Manager.update( pkg, callback );
+            var self = this;
+
+            var Prom = QUI.getMessageHandler().then(function(MH) {
+                return MH.addLoading('Updates werden installiert...');
+            });
+
+            Prom.then(function(Loading)
+            {
+                return self.$Manager.update(pkg).then(function()
+                {
+                    Loading.finish( Locale.get( lg, 'message.update.successfull' ) );
+
+                    if (typeOf(callback) === 'function') {
+                        callback();
+                    }
+
+                }, function() {
+                    Loading.finish( Locale.get( lg, 'message.update.error' ) );
+                });
+            });
+
+            return Prom;
         },
 
         /**
@@ -615,13 +644,13 @@ define('controls/packages/Panel', [
         {
             var self = this;
 
-            QUI.getMessageHandler(function(MH)
+            QUI.getMessageHandler().then(function(MH)
             {
-                MH.addLoading('Setup wird durchgeführt...', function(Loading)
-                {
-                    self.$Manager.updateWithLocalServer(function() {
-                        Loading.finish( Locale.get( lg, 'message.setup.successfull' ) );
-                    });
+                return MH.addLoading('Setup wird durchgeführt...');
+
+            }).then(function(Loading) {
+                self.$Manager.updateWithLocalServer(function() {
+                    Loading.finish( Locale.get( lg, 'message.setup.successfull' ) );
                 });
             });
         },
@@ -635,11 +664,9 @@ define('controls/packages/Panel', [
         {
             Btn.setAttribute( 'image', 'icon-refresh icon-spin' );
 
-            this.$Manager.update(function()
-            {
+            this.update( Btn.getAttribute( 'package' ) ).then(function() {
                 Btn.setAttribute( 'image', 'fa fa-check icon-ok' );
-
-            }, Btn.getAttribute( 'package' ) );
+            });
         },
 
     /**
