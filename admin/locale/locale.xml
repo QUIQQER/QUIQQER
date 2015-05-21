@@ -1481,6 +1481,16 @@
             <de><![CDATA[Das System Update wirklich ausführen?]]></de>
             <en><![CDATA[Really starting the system update?]]></en>
         </locale>
+        <locale name="message.packages.update.system.uptodate" html="true">
+            <de><![CDATA[
+                Es wurden keine Aktualisierungen gefunden.<br />
+                Das System befindet sich auf dem neusten Stand.
+            ]]></de>
+            <en><![CDATA[
+                No updates were found. <br />
+                The system is up to date.
+            ]]></en>
+        </locale>
         <locale name="desktop.panels.xml.btn.cancel">
             <de><![CDATA[Änderungen verwerfen]]></de>
             <en><![CDATA[Cancel changes]]></en>

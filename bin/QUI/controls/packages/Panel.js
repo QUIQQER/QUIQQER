@@ -474,6 +474,12 @@ define('controls/packages/Panel', [
 
                 if ( !result || !result.length )
                 {
+                    QUI.getMessageHandler(function(MH) {
+                        MH.addInformation(
+                            Locale.get( lg, 'message.packages.update.system.uptodate' )
+                        );
+                    });
+
                     self.Loader.hide();
                     return;
                 }
