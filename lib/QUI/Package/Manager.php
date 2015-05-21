@@ -1358,12 +1358,6 @@ class Manager extends QUI\QDOM
         QUI\System\Log::addDebug(print_r($result, true));
 
         return $result;
-
-
-//         $exec_var = str_replace( CMS_DIR, '', $this->_vardir );
-
-//         $this->_composer_exec  = 'cd '. CMS_DIR .';';
-//         $this->_composer_exec .= ' php '. $exec_var .'composer.phar';
     }
 
 

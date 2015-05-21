@@ -33,7 +33,18 @@ class Update extends QUI\System\Console\Tool
         $self = $this;
         $PM   = QUI::getPackageManager();
 
-        $PM->Events->addEvent('onOutput', function($message) use ($self) {
+        $PM->Events->addEvent('onOutput', function($message) use ($self)
+        {
+            if (strpos($message, '<info>') !== false) {
+                $self->writeLn( $message, 'purple' );
+                return;
+            }
+
+            if (strpos($message, '<error>') !== false) {
+                $self->writeLn( $message, 'purple' );
+                return;
+            }
+
             $self->writeLn( $message );
         });
 
