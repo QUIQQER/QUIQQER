@@ -36,14 +36,20 @@ class Update extends QUI\System\Console\Tool
         $PM->Events->addEvent('onOutput', function($message) use ($self)
         {
             if (strpos($message, '<info>') !== false) {
+
                 $message = str_replace(array('<info>', '</info>'), '', $message);
                 $self->writeLn( $message, 'purple' );
+                $self->resetColor();
+
                 return;
             }
 
             if (strpos($message, '<error>') !== false) {
+
                 $message = str_replace(array('<error>', '</error>'), '', $message);
                 $self->writeLn( $message, 'purple' );
+                $self->resetColor();
+
                 return;
             }
 
