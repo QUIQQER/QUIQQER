@@ -5,12 +5,14 @@
  */
 namespace QUI\System\Console\Tools;
 
+use QUI;
+
 /**
  * Create a new Project in the quiqqer console
  *
  * @author www.namerobot.com (Henning Leutz)
  */
-class CreateProject extends \QUI\System\Console\Tool
+class CreateProject extends QUI\System\Console\Tool
 {
     /**
      * Konstruktor
@@ -67,18 +69,18 @@ class CreateProject extends \QUI\System\Console\Tool
 
         try
         {
-            \QUI::getProjectManager()->createProject(
+            QUI::getProjectManager()->createProject(
                 $projectname,
                 $projectlang
             );
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
             $this->writeLn( 'Could not create project: ' . $Exception->getMessage() );
             return;
         }
 
-        \QUI::getProjectManager()->setConfigForProject($projectname, array(
+        QUI::getProjectManager()->setConfigForProject($projectname, array(
             'template' => $template,
             'langs'    => implode( ',', $projectlangs )
         ));

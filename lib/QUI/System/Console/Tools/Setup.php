@@ -5,11 +5,13 @@
  */
 namespace QUI\System\Console\Tools;
 
+use QUI;
+
 /**
  * Execute the system setup
  * @author www.pcsg.de (Henning Leutz)
  */
-class Setup extends \QUI\System\Console\Tool
+class Setup extends QUI\System\Console\Tool
 {
     /**
      * Konstruktor
@@ -28,7 +30,7 @@ class Setup extends \QUI\System\Console\Tool
     {
         $this->writeLn( 'Setup executed ...' );
 
-        \QUI\Setup::all();
+        QUI\Setup::all();
 
         $this->write( ' [ok]' );
         $this->writeLn( '' );

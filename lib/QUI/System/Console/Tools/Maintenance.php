@@ -6,12 +6,14 @@
 
 namespace QUI\System\Console\Tools;
 
+use QUI;
+
 /**
  * Checks the system health
  *
  * @author www.pcsg.de (Henning Leutz)
  */
-class Maintenance extends \QUI\System\Console\Tool
+class Maintenance extends QUI\System\Console\Tool
 {
     /**
      * Konstruktor
@@ -30,7 +32,7 @@ class Maintenance extends \QUI\System\Console\Tool
     {
         $this->writeLn( 'Set maintenance: ' );
 
-        $Config = \QUI::getConfig( 'etc/conf.ini.php' );
+        $Config = QUI::getConfig( 'etc/conf.ini.php' );
 
         if ( $this->getArgument('--status') == 'on' )
         {

@@ -5,11 +5,13 @@
  */
 namespace QUI\System\Console\Tools;
 
+use QUI;
+
 /**
  * Update command for the console
  * @author www.pcsg.de (Henning Leutz)
  */
-class Update extends \QUI\System\Console\Tool
+class Update extends QUI\System\Console\Tool
 {
     /**
      * Konstruktor
@@ -29,7 +31,7 @@ class Update extends \QUI\System\Console\Tool
         $this->writeLn( 'Start Update ...' );
 
         $self = $this;
-        $PM   = \QUI::getPackageManager();
+        $PM   = QUI::getPackageManager();
 
         $PM->Events->addEvent('onOutput', function($message) use ($self) {
             $self->writeLn( $message );
@@ -37,6 +39,27 @@ class Update extends \QUI\System\Console\Tool
 
         if ($this->getArgument('--clearCache')) {
             $PM->clearComposerCache();
+        }
+
+        if ($this->getArgument('--setDevelopment'))
+        {
+            $packageList = array();
+            $libraries = QUI::getPackageManager()->getInstalled(array(
+                'type' => 'quiqqer-library'
+            ));
+
+            foreach ($libraries as $library) {
+                $packageList[ $library['name'] ] = 'dev-dev';
+            }
+
+            $packageList['quiqqer/qui'] = 'dev-dev';
+            $packageList['quiqqer/quiqqer'] = 'dev-dev';
+            $packageList['quiqqer/qui-php'] = 'dev-dev';
+            $packageList['quiqqer/utils'] = 'dev-dev';
+
+            foreach ($packageList as $package => $version) {
+                QUI::getPackageManager()->setPackage($package, $version);
+            }
         }
 
         try

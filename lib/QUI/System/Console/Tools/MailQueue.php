@@ -7,11 +7,13 @@
  */
 namespace QUI\System\Console\Tools;
 
+use QUI;
+
 /**
- *
- * @author hen
+ * MailQueue Console Manager
+ * @author www.pcsg.de (Henning Leutz)
  */
-class MailQueue extends \QUI\System\Console\Tool
+class MailQueue extends QUI\System\Console\Tool
 {
     /**
      * Konstruktor
@@ -36,7 +38,7 @@ class MailQueue extends \QUI\System\Console\Tool
         $this->writeLn( 'Command: ' );
         $comand = $this->readInput();
 
-        $MailQueue = new \QUI\Mail\Queue();
+        $MailQueue = new QUI\Mail\Queue();
 
         switch ( $comand )
         {

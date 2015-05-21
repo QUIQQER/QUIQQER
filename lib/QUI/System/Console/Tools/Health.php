@@ -6,12 +6,14 @@
 
 namespace QUI\System\Console\Tools;
 
+use QUI;
+
 /**
  * Checks the system health
  *
  * @author www.pcsg.de (Henning Leutz)
  */
-class Health extends \QUI\System\Console\Tool
+class Health extends QUI\System\Console\Tool
 {
     /**
      * Konstruktor
@@ -32,11 +34,11 @@ class Health extends \QUI\System\Console\Tool
 
         try
         {
-            \QUI\System\Checks\Health::checkWritable();
+            QUI\System\Checks\Health::checkWritable();
 
             $this->writeLn( 'System Health : OK', 'green' );
 
-        } catch ( \QUI\Exception $Exception )
+        } catch ( QUI\Exception $Exception )
         {
             $this->writeLn( 'System Health : ERROR', 'red' );
             $this->writeLn( $Exception->getMessage(), 'red' );
