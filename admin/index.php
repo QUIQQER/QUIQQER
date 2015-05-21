@@ -192,8 +192,6 @@
         </div>
     </noscript>
 
-    <script src="<?php echo URL_BIN_DIR; ?>QUI/polyfills/Promise.js"></script>
-
     <script src="<?php echo URL_OPT_DIR; ?>bin/require.js"></script>
     <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-core.js"></script>
     <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-more.js"></script>

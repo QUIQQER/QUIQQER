@@ -464,11 +464,11 @@ define('controls/packages/Panel', [
          */
         checkUpdates : function(Btn)
         {
-            var self = this;
-
             Btn.setAttribute( 'textimage', 'icon-refresh icon-spin' );
 
-            this.$Manager.checkUpdate(function(result)
+            var self = this;
+
+            this.$Manager.checkUpdate().done(function(result)
             {
                 Btn.setAttribute( 'textimage', 'icon-refresh' );
 
@@ -507,6 +507,16 @@ define('controls/packages/Panel', [
 
                 self.$UpdateGrid.setData({
                     data : data
+                });
+
+                self.Loader.hide();
+
+            }, function(Exception)
+            {
+                Btn.setAttribute( 'textimage', 'icon-refresh' );
+
+                QUI.getMessageHandler(function(MH) {
+                    MH.addError( Exception.getMessage() );
                 });
 
                 self.Loader.hide();
