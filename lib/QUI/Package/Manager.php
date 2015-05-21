@@ -374,8 +374,8 @@ class Manager extends QUI\QDOM
      */
     public function clearComposerCache()
     {
-        QUI::getTemp()->moveToTemp($this->_vardir .'repo/');
-        QUI::getTemp()->moveToTemp($this->_vardir .'files/');
+        QUI::getTemp()->moveToTemp($this->_vardir.'repo/');
+        QUI::getTemp()->moveToTemp($this->_vardir.'files/');
     }
 
     /**
@@ -1121,13 +1121,17 @@ class Manager extends QUI\QDOM
             QUI\System\Log::addDebug('LOCK Server used');
 
             if ($package) {
-
                 $output = $this->_execComposer('install', array(
-                    'packages' => array($package)
+                    'packages'      => array($package),
+                    '--no-progress' => true,
+                    '--no-ansi'     => true
                 ));
 
             } else {
-                $output = $this->_execComposer('install');
+                $output = $this->_execComposer('install', array(
+                    '--no-progress' => true,
+                    '--no-ansi'     => true
+                ));
             }
 
         } else {
@@ -1136,11 +1140,16 @@ class Manager extends QUI\QDOM
 
             if ($package) {
                 $output = $this->_execComposer('update', array(
-                    'packages' => array($package)
+                    'packages'      => array($package),
+                    '--no-progress' => true,
+                    '--no-ansi'     => true
                 ));
 
             } else {
-                $output = $this->_execComposer('update');
+                $output = $this->_execComposer('update', array(
+                    '--no-progress' => true,
+                    '--no-ansi'     => true
+                ));
             }
         }
 
