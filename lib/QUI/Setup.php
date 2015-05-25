@@ -187,24 +187,6 @@ class Setup
         $quiqqer = CMS_DIR.'quiqqer.php';
         $bootstrap = CMS_DIR.'bootstrap.php';
 
-        file_put_contents(
-            $image,
-
-            $fileHeader."require '{$OPT_DIR}quiqqer/quiqqer/image.php';"
-        );
-
-        file_put_contents(
-            $index,
-
-            $fileHeader."require '{$OPT_DIR}quiqqer/quiqqer/index.php';"
-        );
-
-        file_put_contents(
-            $quiqqer,
-
-            $fileHeader."require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php';"
-        );
-
         // bootstrap
         $bootstrapContent = $fileHeader."
 \$etc_dir = dirname(__FILE__).'/etc/';
@@ -224,7 +206,32 @@ if (file_exists(\$boot)) {
     require \$boot;
 }
 ";
-
         file_put_contents( $bootstrap, $bootstrapContent );
+
+
+        // rest
+        file_put_contents(
+            $image,
+
+            $fileHeader.
+            "require 'require 'bootstrap.php';".
+            "require '{$OPT_DIR}quiqqer/quiqqer/image.php';"
+        );
+
+        file_put_contents(
+            $index,
+
+            $fileHeader.
+            "require 'require 'bootstrap.php';".
+            "require '{$OPT_DIR}quiqqer/quiqqer/index.php';"
+        );
+
+        file_put_contents(
+            $quiqqer,
+
+            $fileHeader.
+            "require 'require 'bootstrap.php';".
+            "require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php';"
+        );
     }
 }
