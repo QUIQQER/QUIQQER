@@ -365,8 +365,8 @@ define('controls/grid/Grid', [
             }
 
             var sumWidth = buttons.map(function(Button) {
-                return Button.getComputedSize().totalWidth;
-            }).sum() - menuWidth + ( buttons.length * 10 );
+                    return Button.getComputedSize().totalWidth;
+                }).sum() - menuWidth + ( buttons.length * 10 );
 
             if ( sumWidth > width )
             {
@@ -505,10 +505,10 @@ define('controls/grid/Grid', [
             }
 
             if ( evt &&
-                 evt.type == "keyup" &&
-                 evt.key != 'enter' &&
-                 evt.key != 'esc' &&
-                 evt.type != 'dblclick' )
+                evt.type == "keyup" &&
+                evt.key != 'enter' &&
+                evt.key != 'esc' &&
+                evt.type != 'dblclick' )
             {
                 return;
             }
@@ -520,9 +520,9 @@ define('controls/grid/Grid', [
                 editType = colmod.editType ? colmod.editType : this.getAttribute('editType');
 
             if ( editType == 'textarea' &&
-                 evt &&
-                 evt.key != 'esc' &&
-                 evt.type != 'dblclick' )
+                evt &&
+                evt.key != 'esc' &&
+                evt.type != 'dblclick' )
             {
                 return;
             }
@@ -564,7 +564,7 @@ define('controls/grid/Grid', [
 
             // Key Events
             if ( evt && evt.type == 'keyup' &&
-                 evt.key == 'enter' && t.inlineEditSafe.oldvalue != td.innerHTML )
+                evt.key == 'enter' && t.inlineEditSafe.oldvalue != td.innerHTML )
             {
                 t.inlineEditSafe.target = t;
                 t.fireEvent("editComplete", t.inlineEditSafe);
@@ -572,7 +572,7 @@ define('controls/grid/Grid', [
 
             // bei dbl click auch speichern ausführen
             if ( evt && evt.type == 'dblclick' &&
-                 t.inlineEditSafe.oldvalue != td.innerHTML )
+                t.inlineEditSafe.oldvalue != td.innerHTML )
             {
                 t.inlineEditSafe.target = t;
                 t.fireEvent("editComplete", t.inlineEditSafe);
@@ -769,7 +769,7 @@ define('controls/grid/Grid', [
                     dontselect   = false;
 
                 if ( (!evt.control && !evt.shift && !evt.meta) ||
-                     !t.getAttribute('multipleSelection') )
+                    !t.getAttribute('multipleSelection') )
                 {
                     for ( i = 0, len = t.elements.length; i < len; i++ ) {
                         t.elements[i].removeClass('selected');
@@ -822,8 +822,8 @@ define('controls/grid/Grid', [
             }
 
             if ( t.getAttribute('accordion') &&
-                 t.getAttribute('openAccordionOnClick') &&
-                 !t.getAttribute('openAccordionOnDblClick') )
+                t.getAttribute('openAccordionOnClick') &&
+                !t.getAttribute('openAccordionOnDblClick') )
             {
                 t.accordianOpen( li );
             }
@@ -842,13 +842,13 @@ define('controls/grid/Grid', [
             }
 
             t.fireEvent("click", [{
-                indices : t.selected,
-                target  : t,
-                row     : row,
-                element : li,
-                cell    : t.getTdParent(evt.target),
-                evt     : evt
-            }, this]);
+                                      indices : t.selected,
+                                      target  : t,
+                                      row     : row,
+                                      element : li,
+                                      cell    : t.getTdParent(evt.target),
+                                      evt     : evt
+                                  }, this]);
         },
 
         onRowDblClick : function(evt)
@@ -868,7 +868,7 @@ define('controls/grid/Grid', [
             }
 
             if ( this.getAttribute('editable') &&
-                 this.getAttribute('editondblclick') && target.hasClass('td') )
+                this.getAttribute('editondblclick') && target.hasClass('td') )
             {
                 var i, len;
                 var childs = li.getChildren();
@@ -894,7 +894,7 @@ define('controls/grid/Grid', [
             }
 
             if ( this.getAttribute('accordion') &&
-                 this.getAttribute('openAccordionOnDblClick') )
+                this.getAttribute('openAccordionOnDblClick') )
             {
                 this.accordianOpen( li );
             }
@@ -960,7 +960,7 @@ define('controls/grid/Grid', [
                 section = this.getSection( row );
 
             if ( this.getAttribute('accordion') &&
-                 (typeof section === 'undefined' || !section) )
+                (typeof section === 'undefined' || !section) )
             {
                 var li2 = new Element('li.section', {
                     styles : {
@@ -1003,7 +1003,7 @@ define('controls/grid/Grid', [
                 }
 
                 if ( !this.getAttribute('accordionRenderer') &&
-                     !this.getAttribute('accordionLiveRenderer') )
+                    !this.getAttribute('accordionLiveRenderer') )
                 {
                     section.setStyle('display', 'block');
                 }
@@ -1011,7 +1011,7 @@ define('controls/grid/Grid', [
 
 
             if ( this.getAttribute('accordionRenderer') ||
-                 this.getAttribute('accordionLiveRenderer') )
+                this.getAttribute('accordionLiveRenderer') )
             {
                 this.toggle( section );
             }
@@ -1033,10 +1033,10 @@ define('controls/grid/Grid', [
             if ( this.getAttribute('showtoggleicon') && li.getElement('.toggleicon') )
             {
                 li.getElement('.toggleicon')
-                  .setStyle(
-                      'background-position',
-                      section.getStyle('display') == 'block' ? '-16px 0' : '0 0'
-                  );
+                    .setStyle(
+                    'background-position',
+                    section.getStyle('display') == 'block' ? '-16px 0' : '0 0'
+                );
             }
 
             this.lastsection = section;
@@ -1242,10 +1242,10 @@ define('controls/grid/Grid', [
                     page = ((data.page-1)*options.perPage+1);
 
                 var stats = '<span>'+ page +'</span>' +
-                            '<span>..</span>' +
-                            '<span>'+ to +'</span>' +
-                            '<span> / </span>' +
-                            '<span>'+ data.total +'</span>';
+                    '<span>..</span>' +
+                    '<span>'+ to +'</span>' +
+                    '<span> / </span>' +
+                    '<span>'+ data.total +'</span>';
 
                 container.getElements('div.pDiv .pPageStat').set('html', stats);
 
@@ -1307,9 +1307,7 @@ define('controls/grid/Grid', [
 
             this.$data[row] = data;
 
-            var lis = this.container.getElement('div.bDiv ul').getChildren();
-            var Row = lis[row];
-
+            var Row = this.container.getElement('[data-row="'+ row +'"]');
             var newRow = this.renderRow( row, this.$data[row] );
 
             newRow.inject( Row, 'after' );
@@ -1479,8 +1477,8 @@ define('controls/grid/Grid', [
         selectRow : function(Row, event)
         {
             if ( typeof event !== 'undefined' &&
-                 (event.shift || event.control || event.meta) &&
-                 this.options.multipleSelection )
+                (event.shift || event.control || event.meta) &&
+                this.options.multipleSelection )
             {
                 // nothing
             } else
@@ -1629,7 +1627,7 @@ define('controls/grid/Grid', [
                 }
             }
         },
-         // Automatsko odredivanje column modela ako nije zadan
+        // Automatsko odredivanje column modela ako nije zadan
         setAutoColumnModel: function()
         {
             var rowCount = this.$data.length;
@@ -1986,8 +1984,8 @@ define('controls/grid/Grid', [
                     !this.getAttribute('accordionLiveRenderer'))
                 {
                     var li2 = new Element('li.section');
-                        li2.addClass('section-'+r);
-                        li2.setStyle('width', this.sumWidth + 2*this.visibleColumns);
+                    li2.addClass('section-'+r);
+                    li2.setStyle('width', this.sumWidth + 2*this.visibleColumns);
 
                     this.ulBody.appendChild(li2);
 
@@ -2031,6 +2029,7 @@ define('controls/grid/Grid', [
             });
 
             li.store('row', r);
+            li.set('data-row', r);
 
             if ( this.$data[r].cssClass ) {
                 li.addClass( this.$data[r].cssClass );
@@ -2195,10 +2194,10 @@ define('controls/grid/Grid', [
                 var str = rowdata[ columnDataIndex ] || "";
 
                 if ( str === null ||
-                     str == 'null' ||
-                     str === 'undefined' ||
-                     str === '' ||
-                     str == '&nbsp;' )
+                    str == 'null' ||
+                    str === 'undefined' ||
+                    str === '' ||
+                    str == '&nbsp;' )
                 {
                     str = '';
                 }
@@ -2557,7 +2556,7 @@ define('controls/grid/Grid', [
             bDiv.appendChild( t.ulBody );
 
             if ( ( this.getAttribute('pagination') || this.getAttribute('filterInput') ) &&
-                 !container.getElement('div.pDiv'))
+                !container.getElement('div.pDiv'))
             {
                 var pDiv = new Element('div.pDiv', {
                     styles : {
@@ -2569,7 +2568,7 @@ define('controls/grid/Grid', [
                 container.appendChild( pDiv );
 
                 var pDiv2 = new Element('div.pDiv2');
-                    pDiv.appendChild(pDiv2);
+                pDiv.appendChild(pDiv2);
 
                 var h = '';
 
@@ -2597,12 +2596,12 @@ define('controls/grid/Grid', [
 
                     h = h +'<div class="btnseparator"></div><div class="pGroup"><div class="pFirst pButton"></div><div class="pPrev pButton"></div></div>';
                     h = h +'<div class="btnseparator"></div><div class="pGroup">' +
-                                '<span class="pcontrol">' +
-                                    '<input class="cpage" type="text" value="1" size="4" style="text-align:center" /> ' +
-                                    '<span>/</span> ' +
-                                    '<span class="cpageMax"></span>' +
-                                '</span>' +
-                            '</div>';
+                    '<span class="pcontrol">' +
+                    '<input class="cpage" type="text" value="1" size="4" style="text-align:center" /> ' +
+                    '<span>/</span> ' +
+                    '<span class="cpageMax"></span>' +
+                    '</span>' +
+                    '</div>';
                     h = h +'<div class="btnseparator"></div><div class="pGroup"><div class="pNext pButton"></div><div class="pLast pButton"></div></div>';
                     h = h +'<div class="btnseparator"></div><div class="pGroup"><div class="pReload pButton"></div></div>';
                     h = h +'<div class="btnseparator"></div><div class="pGroup"><span class="pPageStat"></span></div>';
@@ -2611,25 +2610,25 @@ define('controls/grid/Grid', [
                 if ( options.multipleSelection )
                 {
                     h = h +'<div class="btnseparator"></div>' +
-                            '<div class="pGroup">' +
-                                '<div class="pSelectAll" title="Alle auswählen"></div>' +
-                                '<div class="pUnselectAll" title="Auswahl aufheben"></div>' +
-                            '</div>';
+                    '<div class="pGroup">' +
+                    '<div class="pSelectAll" title="Alle auswählen"></div>' +
+                    '<div class="pUnselectAll" title="Auswahl aufheben"></div>' +
+                    '</div>';
                 }
 
                 if ( options.filterInput )
                 {
                     h = h +'<div class="btnseparator"></div>';
                     h = h +'<div class="pGroup">';
-                        h = h +'<span class="pcontrol">';
-                            h = h +'<input class="cfilter" ';
-                                h = h +'title="Anzeige filtern" ';
-                                h = h +'type="text" ';
-                                h = h +'value="" ';
-                                h = h +'style="" ';
-                                h = h +'placeholder="Filter..." ';
-                            h = h +'/>';
-                        h = h +'<span>';
+                    h = h +'<span class="pcontrol">';
+                    h = h +'<input class="cfilter" ';
+                    h = h +'title="Anzeige filtern" ';
+                    h = h +'type="text" ';
+                    h = h +'value="" ';
+                    h = h +'style="" ';
+                    h = h +'placeholder="Filter..." ';
+                    h = h +'/>';
+                    h = h +'<span>';
                     h = h +'</div>';
                 }
 
@@ -3002,9 +3001,9 @@ define('controls/grid/Grid', [
                     }
 
                     if ( typeof dat[ cml.dataIndex ] !== 'undefined' &&
-                         typeOf( dat[ cml.dataIndex ] ) !== 'function' &&
-                         dat[ cml.dataIndex ] !== null &&
-                         dat[ cml.dataIndex ].toString().toLowerCase().indexOf( key ) > -1 )
+                        typeOf( dat[ cml.dataIndex ] ) !== 'function' &&
+                        dat[ cml.dataIndex ] !== null &&
+                        dat[ cml.dataIndex ].toString().toLowerCase().indexOf( key ) > -1 )
                     {
                         el.removeClass( filterHideCls );
                         break;
@@ -3063,8 +3062,8 @@ define('controls/grid/Grid', [
                 dataIndex   = columnModel.dataIndex;
 
                 if ( columnModel.hidden ||
-                     columnModel.dataType == 'button'  ||
-                     columnModel.dataType == 'checkbox' )
+                    columnModel.dataType == 'button'  ||
+                    columnModel.dataType == 'checkbox' )
                 {
                     continue;
                 }
@@ -3141,8 +3140,8 @@ define('controls/grid/Grid', [
                 dataIndex   = columnModel.dataIndex;
 
                 if ( columnModel.hidden ||
-                     columnModel.dataType == 'button' ||
-                     columnModel.dataType == 'checkbox' )
+                    columnModel.dataType == 'button' ||
+                    columnModel.dataType == 'checkbox' )
                 {
                     continue;
                 }
@@ -3259,7 +3258,7 @@ define('controls/grid/Grid', [
                 html = '';
 
             if ( this.getAttribute('dragDropDataIndex') &&
-                 data[ this.getAttribute('dragDropDataIndex') ] )
+                data[ this.getAttribute('dragDropDataIndex') ] )
             {
                 html = '<span>'+ data[ this.getAttribute('dragDropDataIndex') ] +'</span>';
             }
@@ -3332,11 +3331,11 @@ define('controls/grid/Grid', [
                 }.bind( this )
 
             }).start({
-                page: {
-                    x : mx,
-                    y : my
-                }
-            });
+                    page: {
+                        x : mx,
+                        y : my
+                    }
+                });
 
             return false;
         },
