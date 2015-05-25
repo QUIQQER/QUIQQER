@@ -52,7 +52,7 @@ class Htaccess extends QUI\System\Console\Tool
             );
 
         } else {
-            $this->writeLn('No .htaccess File found', 'red');
+            $this->writeLn('No .htaccess File found. Could not create a backup.', 'red');
         }
 
         $this->resetColor();

@@ -34,11 +34,11 @@ class Setup
         QUI::getSession()->setup();
 
         // create dirs
-        SystemFile::mkdir(BIN_DIR);
-        SystemFile::mkdir(LIB_DIR);
         SystemFile::mkdir(USR_DIR);
         SystemFile::mkdir(OPT_DIR);
         SystemFile::mkdir(VAR_DIR);
+
+        self::generateFileLinks();
 
         // mail queue setup
         Mail\Queue::setup();
@@ -144,5 +144,88 @@ class Setup
 
         // clear cache
         Cache\Manager::clearAll();
+    }
+
+    /**
+     * Generate the main files,
+     * the main link only to the internal quiqqer/quiqqer files
+     */
+    static function generateFileLinks()
+    {
+        $fileHeader
+            = '
+<?php
+
+ /**
+  * This file is part of QUIQQER.
+  *
+  * (c) Henning Leutz <leutz@pcsg.de>
+  * Moritz Scholz <scholz@pcsg.de>
+  *
+  * For the full copyright and license information, please view the LICENSE
+  * file that was distributed with this source code.
+  *
+  *  _______          _________ _______  _______  _______  _______
+  * (  ___  )|\     /|\__   __/(  ___  )(  ___  )(  ____ \(  ____ )
+  * | (   ) || )   ( |   ) (   | (   ) || (   ) || (    \/| (    )|
+  * | |   | || |   | |   | |   | |   | || |   | || (__    | (____)|
+  * | |   | || |   | |   | |   | |   | || |   | ||  __)   |     __)
+  * | | /\| || |   | |   | |   | | /\| || | /\| || (      | (\ (
+  * | (_\ \ || (___) |___) (___| (_\ \ || (_\ \ || (____/\| ) \ \__
+  * (____\/_)(_______)\_______/(____\/_)(____\/_)(_______/|/   \__/
+  *
+  * Generated File via QUIQQER
+  * Date: '.data('Y-m-d H:i:s').'
+  *
+  */
+
+';
+
+        $OPT_DIR = OPT_DIR;
+
+        $image = CMS_DIR.'image.php';
+        $index = CMS_DIR.'index.php';
+        $quiqqer = CMS_DIR.'quiqqer.php';
+        $bootstrap = CMS_DIR.'bootstrap.php';
+
+        file_put_contents(
+            $image,
+
+            $fileHeader."require '{$OPT_DIR}quiqqer/quiqqer/image.php'"
+        );
+
+        file_put_contents(
+            $index,
+
+            $fileHeader."require '{$OPT_DIR}quiqqer/quiqqer/index.php'"
+        );
+
+        file_put_contents(
+            $quiqqer,
+
+            $fileHeader."require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php'"
+        );
+
+        // bootstrap
+        $bootstrapContent = $fileHeader."
+\$etc_dir = dirname(__FILE__).'/etc/';
+
+if (!file_exists(\$etc_dir.'conf.ini.php')) {
+    require_once 'quiqqer.php';
+    exit;
+}
+
+if (!defined('ETC_DIR')) {
+    define('ETC_DIR', \$etc_dir);
+}
+
+\$boot = '{$OPT_DIR}quiqqer/quiqqer/bootstrap.php';
+
+if (file_exists(\$boot)) {
+    require \$boot;
+}
+";
+
+        file_put_contents( $bootstrap, $bootstrapContent );
     }
 }
