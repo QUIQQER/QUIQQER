@@ -153,8 +153,7 @@ class Setup
     static function generateFileLinks()
     {
         $fileHeader
-            = '
-<?php
+            = '<?php
 
  /**
   * This file is part of QUIQQER.
@@ -175,7 +174,7 @@ class Setup
   * (____\/_)(_______)\_______/(____\/_)(____\/_)(_______/|/   \__/
   *
   * Generated File via QUIQQER
-  * Date: '.data('Y-m-d H:i:s').'
+  * Date: '.date('Y-m-d H:i:s').'
   *
   */
 
@@ -191,19 +190,19 @@ class Setup
         file_put_contents(
             $image,
 
-            $fileHeader."require '{$OPT_DIR}quiqqer/quiqqer/image.php'"
+            $fileHeader."require '{$OPT_DIR}quiqqer/quiqqer/image.php';"
         );
 
         file_put_contents(
             $index,
 
-            $fileHeader."require '{$OPT_DIR}quiqqer/quiqqer/index.php'"
+            $fileHeader."require '{$OPT_DIR}quiqqer/quiqqer/index.php';"
         );
 
         file_put_contents(
             $quiqqer,
 
-            $fileHeader."require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php'"
+            $fileHeader."require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php';"
         );
 
         // bootstrap

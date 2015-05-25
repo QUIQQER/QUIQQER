@@ -306,7 +306,7 @@ class Console
 
             try {
 
-                if ($this->_argv['--help'])
+                if (isset($this->_argv['--help']))
                 {
                     $Tool->outputHelp();
                     return;
