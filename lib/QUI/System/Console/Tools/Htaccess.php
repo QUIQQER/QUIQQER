@@ -46,10 +46,8 @@ class Htaccess extends QUI\System\Console\Tool
                 file_get_contents($htaccessFile)
             );
 
-            $this->writeLn(
-                'You can find a .htaccess Backup File under '
-                .$htaccessBackupFile
-            );
+            $this->writeLn('You can find a .htaccess Backup File at:');
+            $this->writeLn($htaccessBackupFile);
 
         } else {
             $this->writeLn('No .htaccess File found. Could not create a backup.', 'red');
@@ -94,8 +92,8 @@ class Htaccess extends QUI\System\Console\Tool
         $URL_LIB_DIR = ltrim(URL_LIB_DIR, '/');
         $URL_BIN_DIR = ltrim(URL_BIN_DIR, '/');
         $URL_SYS_DIR = ltrim(URL_SYS_DIR, '/');
-        $URL_VAR_DIR = URL_VAR_DIR;
-        $URL_OPT_DIR = URL_OPT_DIR;
+        $URL_VAR_DIR = ltrim(URL_VAR_DIR, '/');
+        $URL_OPT_DIR = ltrim(URL_OPT_DIR, '/');
 
         $quiqqerLib = URL_OPT_DIR.'quiqqer/quiqqer/lib';
         $quiqqerBin = URL_OPT_DIR.'quiqqer/quiqqer/bin';
@@ -115,7 +113,7 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteRule ^{$URL_SYS_DIR}(.*)$ {$quiqqerSys}/$1 [L]
 
     RewriteCond %{REQUEST_FILENAME} !^.*bin/
-    RewriteRule ^.*{$URL_LIB_DIR}|^.*{$URL_SYS_DIR}|^.*{$URL_VAR_DIR}|^.*{$URL_OPT_DIR}|^.*media/sites/ / [L]
+    RewriteRule ^.*{$URL_VAR_DIR}|^.*{$URL_OPT_DIR}|^.*media/sites/ / [L]
     RewriteRule ^/(.*)     /$
 
     RewriteCond %{REQUEST_FILENAME} !-f
