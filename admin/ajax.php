@@ -64,13 +64,13 @@ if ( isset( $_REQUEST['package'] ) )
 // admin ajax
 foreach ( $_rf_files as $key => $file )
 {
-    $_rf_file = CMS_DIR .'admin/'. str_replace( '_', '/', $file ) .'.php';
+    $_rf_file = OPT_DIR .'quiqqer/quiqqer/admin/'. str_replace( '_', '/', $file ) .'.php';
     $_rf_file = Orthos::clearPath( $_rf_file );
     $_rf_file = realpath( $_rf_file );
 
-    $dir = CMS_DIR .'admin/';
+    $dir = OPT_DIR .'quiqqer/quiqqer/admin/';
 
-    if ( strpos( $_rf_file, CMS_DIR.'admin/' ) !== false && file_exists( $_rf_file ) ) {
+    if ( strpos( $_rf_file, $dir ) !== false && file_exists( $_rf_file ) ) {
         require_once $_rf_file;
     }
 }

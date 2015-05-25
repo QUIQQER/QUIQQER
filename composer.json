@@ -47,7 +47,6 @@
         "quiqqer/colorpicker" : "*@dev",
         "quiqqer/translator" : "*@dev",
         "quiqqer/utils" : "*@dev",
-        "quiqqer/installer" : "*@dev",
         "quiqqer/cron" : "*@dev",
         "quiqqer/log" : "*@dev",
         "quiqqer/diashow" : "*@dev"

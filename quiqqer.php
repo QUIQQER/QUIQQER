@@ -7,13 +7,13 @@
 require 'bootstrap.php';
 
 // no console
-if ( php_sapi_name() != 'cli' ) {
+if (php_sapi_name() != 'cli') {
     exit;
 }
 
-$conf = __DIR__ .'/etc/conf.ini.php';
+$conf = ETC_DIR.'conf.ini.php';
 
-if ( !file_exists( $conf ) ) {
+if (!file_exists($conf)) {
     exit(1);
 }
 

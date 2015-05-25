@@ -49,7 +49,6 @@ function __quiqqer_autoload($classname)
     return \QUI\Autoloader::load($classname);
 }
 
-
 /**
  * Error Handler
  *

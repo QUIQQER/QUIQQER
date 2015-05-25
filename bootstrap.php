@@ -15,20 +15,10 @@
  * it includes the header file
  */
 
-$etc_dir = __DIR__ .'/etc/';
-
-if ( !file_exists( $etc_dir .'conf.ini.php' ))
-{
+if (!defined('ETC_DIR')) {
     require_once 'quiqqer.php';
     exit;
 }
 
-$config = parse_ini_file( $etc_dir .'conf.ini.php', true );
-
-if ( file_exists( $config['globals']['lib_dir'] .'autoload.php' ) ) {
-    require_once $config['globals']['lib_dir'] .'autoload.php';
-}
-
-if ( file_exists( $config['globals']['lib_dir'] .'header.php' ) ) {
-    require_once $config['globals']['lib_dir'] .'header.php';
-}
+require_once dirname(__FILE__).'/lib/autoload.php';
+require_once dirname(__FILE__).'/lib/header.php';

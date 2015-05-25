@@ -1,12 +1,10 @@
 <?php
 
-//use QUI;
-use QUI\Utils\System\Debug;
-use QUI\Utils\Security\Orthos;
-use QUI\System\Log;
-
 //$start_test = microtime();
 // xdebug_start_trace();
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 /**
  * @author www.pcsg.com (Henning Leutz)
@@ -32,6 +30,11 @@ if ( function_exists( 'gzcompress' ) ) {
 
 require_once 'bootstrap.php';
 
+
+use QUI\Utils\System\Debug;
+use QUI\Utils\Security\Orthos;
+use QUI\System\Log;
+
 $Engine = QUI::getTemplateManager()->getEngine();
 
 // UTF 8 Prüfung für umlaute in url
@@ -49,8 +52,8 @@ if ( !QUI::getProjectManager()->count() )
 
     // no project exist
     echo '<div style="text-align: center; margin-top: 100px;">'.
-                '<img src="'. URL_BIN_DIR .'quiqqer_logo.png" style="max-width: 100%;" />'.
-          '</div>';
+        '<img src="'. URL_BIN_DIR .'quiqqer_logo.png" style="max-width: 100%;" />'.
+        '</div>';
     exit;
 }
 

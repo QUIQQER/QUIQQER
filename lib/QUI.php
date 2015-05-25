@@ -186,9 +186,7 @@ class QUI
     static function load()
     {
         // load the main configuration
-        $path = pathinfo(__FILE__);
-        $cms_dir = str_replace(DIRECTORY_SEPARATOR.'lib', '', $path['dirname']);
-        $config = parse_ini_file($cms_dir.'/etc/conf.ini.php', true);
+        $config = parse_ini_file(ETC_DIR.'conf.ini.php', true);
 
         /**
          * load the constants
@@ -233,7 +231,7 @@ class QUI
             self::$last_up_date = time();
         }
 
-        $lib_dir = $config['globals']['lib_dir'];
+        $lib_dir = dirname(__FILE__) .'/';
         $var_dir = $config['globals']['var_dir'];
 
         // Define quiqqer path constants
@@ -266,7 +264,7 @@ class QUI
              * @var String
              * @package com.pcsg.qui
              */
-            define('BIN_DIR', $config['globals']['bin_dir']);
+            define('BIN_DIR', dirname(LIB_DIR).'/bin/');
         }
 
         if (!defined('USR_DIR')) {
@@ -286,7 +284,7 @@ class QUI
              * @var String
              * @package com.pcsg.qui
              */
-            define('SYS_DIR', $config['globals']['sys_dir']);
+            define('SYS_DIR', dirname(LIB_DIR).'/admin/');
         }
 
         if (!defined('OPT_DIR')) {
@@ -310,7 +308,7 @@ class QUI
         }
 
 
-        $Config = new \QUI\Config($cms_dir.'/etc/conf.ini.php');
+        $Config = new \QUI\Config(ETC_DIR.'conf.ini.php');
         self::$Conf = $Config;
 
         if (!defined('ERROR_BACKTRACE')) {
