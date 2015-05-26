@@ -71,7 +71,7 @@ class Update
         $Composer = $Event->getComposer();
 
         if (!defined('ETC_DIR')) {
-            define('ETC_DIR', $Composer->getConfig()->get('quiqqer-dir'));
+            define('ETC_DIR', $Composer->getConfig()->get('quiqqer-dir') .'etc/');
         }
 
         // load quiqqer
