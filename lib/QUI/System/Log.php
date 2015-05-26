@@ -60,10 +60,13 @@ class Log
      */
     static function write($message, $loglevel=self::LEVEL_INFO, $filename='error')
     {
-        \QUI::getEvents()->fireEvent('logWrite', array(
-            'message'  => $message,
-            'loglevel' => $loglevel
-        ));
+        // trigger only events if the session already exist, because we can get in loops otherwise
+        if (\QUI::$Session) {
+            \QUI::getEvents()->fireEvent('logWrite', array(
+                'message'  => $message,
+                'loglevel' => $loglevel
+            ));
+        }
 
         if ( isset( $_SERVER['REQUEST_URI'] ) && !empty( $_SERVER['REQUEST_URI'] ) ) {
             $message = HOST . $_SERVER['REQUEST_URI'] .' : '. $message;

@@ -4,6 +4,10 @@
  * This file contains QUI
  */
 
+use \Symfony\Component\HttpFoundation\Cookie;
+use \Symfony\Component\HttpFoundation\Request;
+use \Symfony\Component\HttpFoundation\Response;
+
 /**
  * The Main Object of the QUIQQER Management System
  *
@@ -116,6 +120,13 @@ class QUI
      * @var \QUI\Projects\Manager
      */
     static $ProjectManager = null;
+
+    /**
+     * QUI Projectmanager, use \QUI::getProjectManager();
+     *
+     * @var Request
+     */
+    static $Request = null;
 
     /**
      * QUI Rewrite Object, use \QUI::getRewrite();
@@ -231,7 +242,7 @@ class QUI
             self::$last_up_date = time();
         }
 
-        $lib_dir = dirname(__FILE__) .'/';
+        $lib_dir = dirname(__FILE__).'/';
         $var_dir = $config['globals']['var_dir'];
 
         // Define quiqqer path constants
@@ -849,6 +860,20 @@ class QUI
     }
 
     /**
+     * Return the global request object
+     *
+     * @return Request
+     */
+    static function getRequest()
+    {
+        if (is_null(self::$Request)) {
+            self::$Request = Request::createFromGlobals();
+        }
+
+        return self::$Request;
+    }
+
+    /**
      * Return the global QUI Session
      *
      * @return \QUI\Session
@@ -857,6 +882,7 @@ class QUI
     {
         if (is_null(self::$Session)) {
             self::$Session = new \QUI\Session();
+            self::getRequest()->setSession(self::$Session->getSymfonySession());
         }
 
         return self::$Session;

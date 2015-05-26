@@ -106,4 +106,5 @@ if (isset($_REQUEST['project'])) {
  * Ajax Ausgabe
  */
 echo QUI::$Ajax->call();
+
 exit;

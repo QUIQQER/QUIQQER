@@ -16,8 +16,9 @@ error_reporting(E_ALL);
 ini_set('display_errors', false);
 ini_set("log_errors", "on");
 
-\QUI::load();
-\QUI\Utils\System\Debug::marker('header start');
+
+QUI::load();
+QUI\Utils\System\Debug::marker('header start');
 
 ini_set("error_log", VAR_DIR.'log/error'.date('-Y-m-d').'.log');
 
@@ -40,29 +41,29 @@ define('URL_USR_DIR', URL_DIR.str_replace(CMS_DIR, '', USR_DIR));
 define('URL_OPT_DIR', URL_DIR.str_replace(CMS_DIR, '', OPT_DIR));
 define('URL_VAR_DIR', URL_DIR.str_replace(CMS_DIR, '', VAR_DIR));
 
-define('HOST', \QUI::conf('globals', 'host'));
-define('CACHE', \QUI::conf('globals', 'cache'));
-define('SALT_LENGTH', \QUI::conf('globals', 'saltlength'));
-define('MAIL_PROTECT', \QUI::conf('globals', 'mailprotection'));
+define('HOST', QUI::conf('globals', 'host'));
+define('CACHE', QUI::conf('globals', 'cache'));
+define('SALT_LENGTH', QUI::conf('globals', 'saltlength'));
+define('MAIL_PROTECT', QUI::conf('globals', 'mailprotection'));
 define('ADMIN_CACHE', false);
 define('DEBUG_MEMORY', false);
 
 // Cacheflag setzen
-\QUI\Cache\Manager::set('qui_cache_test', 1);
+QUI\Cache\Manager::set('qui_cache_test', 1);
 
-if (\QUI::conf('globals', 'timezone')) {
-    date_default_timezone_set(\QUI::conf('globals', 'timezone'));
+if (QUI::conf('globals', 'timezone')) {
+    date_default_timezone_set(QUI::conf('globals', 'timezone'));
 }
 
 
 try {
-    define('CHECK_CACHE', \QUI\Cache\Manager::get('qui_cache_test'));
+    define('CHECK_CACHE', QUI\Cache\Manager::get('qui_cache_test'));
 
-} catch (\QUI\Cache\Exception $e) {
+} catch (QUI\Cache\Exception $e) {
     define('CHECK_CACHE', false);
 }
 
-$error_mail = \QUI::conf('error', 'mail');
+$error_mail = QUI::conf('error', 'mail');
 
 if (!empty($error_mail)) {
     define('ERROR_SEND', $error_mail);
@@ -72,37 +73,41 @@ if (!empty($error_mail)) {
 
 // Datenbankverbindung aufbauen
 try {
-    \QUI::getDataBase();
+    QUI::getDataBase();
 
 } catch (\Exception $Exception) {
+
     header('HTTP/1.1 503 Service Temporarily Unavailable');
     header('Status: 503 Service Temporarily Unavailable');
 
-    $Template = \QUI::getTemplateManager()->getEngine();
+    $Template = QUI::getTemplateManager()->getEngine();
     $file = LIB_DIR.'templates/db_error.html';
 
-    if (\QUI::conf('db', 'error_html')
-        && file_exists(\QUI::conf('db', 'error_html'))
+    if (QUI::conf('db', 'error_html')
+        && file_exists(QUI::conf('db', 'error_html'))
     ) {
-        $file = \QUI::conf('db', 'error_html');
+        $file = QUI::conf('db', 'error_html');
     }
 
     try {
         echo $Template->fetch($file);
 
-    } catch (\QUI\Exception $Exception) {
+    } catch (QUI\Exception $Exception) {
         echo $Template->fetch(LIB_DIR.'templates/db_error.html');
     }
 
-    \QUI\System\Log::writeException($Exception);
+    QUI\System\Log::writeException($Exception);
     exit;
 }
 
-
 // User ist Standard Nobody
-$User = \QUI::getUsers()->getNobody();
+$User = QUI::getUsers()->getNobody();
 
-\QUI::getSession()->start();
+QUI::getSession()->start();
+
+if ((int)QUI::conf('session', 'regenerate')) {
+    QUI::getSession()->refresh();
+}
 
 if (isset($_POST['username'])
     && isset($_POST['password'])
@@ -110,28 +115,30 @@ if (isset($_POST['username'])
 ) {
     // Falls ein Login versucht wurde
     try {
-        $User = \QUI::getUsers()->login(
+        $User = QUI::getUsers()->login(
             $_POST['username'],
             $_POST['password']
         );
 
-    } catch (\QUI\Exception $Exception) {
+    } catch (QUI\Exception $Exception) {
         define('LOGIN_FAILED', $Exception->getMessage());
     }
 
-} elseif (\QUI::getSession()->get('uid')) {
-    try {
-        $User = \QUI::getUserBySession();
+} elseif (QUI::getSession()->get('uid')) {
 
-    } catch (\QUI\Exception $Exception) {
+    try {
+        $User = QUI::getUserBySession();
+
+    } catch (QUI\Exception $Exception) {
         define('LOGIN_FAILED', $Exception->getMessage());
     }
 }
 
 // Logout
 if (isset($_GET['logout'])) {
+
     $User->logout();
-    $User = \QUI::getUsers()->getNobody();
+    $User = QUI::getUsers()->getNobody();
 
     if (isset($_SERVER['REQUEST_URI'])
         && strpos($_SERVER['REQUEST_URI'], 'logout=1') !== false
@@ -142,6 +149,6 @@ if (isset($_GET['logout'])) {
     }
 }
 
-\QUI::getEvents()->fireEvent('headerLoaded');
+QUI::getEvents()->fireEvent('headerLoaded');
 
-\QUI\Utils\System\Debug::marker('header end');
+QUI\Utils\System\Debug::marker('header end');

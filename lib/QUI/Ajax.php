@@ -144,6 +144,8 @@ class Ajax extends QUI\QDOM
             $result[ $_rf ] = $this->_call_rf( $_rf );
         }
 
+        QUI::getSession()->getSymfonySession()->save();
+
         if ( QUI::getMessagesHandler() )
         {
             $result['message_handler'] = \QUI::getMessagesHandler()->getMessagesAsArray(
