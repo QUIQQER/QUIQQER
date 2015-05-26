@@ -70,6 +70,10 @@ class Update
         $IO = $Event->getIO();
         $Composer = $Event->getComposer();
 
+        if (!defined('ETC_DIR')) {
+            define('ETC_DIR', $Composer->getConfig()->get('quiqqer-dir'));
+        }
+
         // load quiqqer
         QUI::load();
         QUI::getLocale()->setCurrent('en');
@@ -88,7 +92,6 @@ class Update
         QUI\Events\Manager::clear();
 
         QUI\Messages\Handler::setup();
-
 
         $packages_dir = $Composer->getConfig()->get('vendor-dir');
 
