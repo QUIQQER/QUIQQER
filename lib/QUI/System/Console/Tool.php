@@ -241,17 +241,33 @@ abstract class Tool extends QUI\QDOM
             }
         }
 
+        $paramData = array();
+
+        if (isset($this->_paramsList[$name])) {
+            $paramData = $this->_paramsList[$name];
+        }
 
         // if cli, read user input
-        if (php_sapi_name() == 'cli') {
-            $this->writeLn('Missing Argument ('.$name.')');
+        if (php_sapi_name() == 'cli'
+            && (isset($paramData['optional']) && !$paramData['optional'])
+        ) {
+
+            $this->writeLn('');
+            $this->writeLn('Missing Argument', 'brown');
+
+            $this->writeLn('');
+            $this->write('--'.$name.': ', 'green');
+
+            $this->resetColor();
 
             if (isset($this->_paramsList[$name])) {
                 $paramData = $this->_paramsList[$name];
 
-                $this->writeLn($paramData['description']);
+                $this->write($paramData['description']);
+                $this->writeLn();
             }
 
+            $this->writeLn();
             $this->write('Please enter the value:');
 
             return $this->readInput();
