@@ -306,6 +306,10 @@ class Console
 
             try {
 
+                if (is_array($Tool) || !$Tool) {
+                    throw new QUI\Exception('Tool not found', 404);
+                }
+
                 if (isset($this->_argv['--help'])) {
                     $Tool->outputHelp();
 
@@ -382,6 +386,11 @@ class Console
 
         // init tools
         foreach ($tools as $cls) {
+
+            if (!class_exists($cls)) {
+                continue;
+            }
+
             /* @var $Tool Console\Tool */
             $Tool = new $cls();
             $Tool->setAttribute('parent', $this);

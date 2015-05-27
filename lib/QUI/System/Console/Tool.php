@@ -232,6 +232,10 @@ abstract class Tool extends QUI\QDOM
             return $this->_params[$name];
         }
 
+        if (isset($this->_params['--'.$name])) {
+            return $this->_params['--'.$name];
+        }
+
         // short argument?
         foreach ($this->_paramsList as $entry) {
             if ($entry['short'] == $name
