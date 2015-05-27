@@ -34,7 +34,7 @@
         "robloach/component-installer" : "0.0.12",
         "phpmailer/phpmailer" : "v5.2.9",
         "symfony/http-foundation" : "2.6.4",
-        "symfony/console":  "2.4.10",
+        "symfony/console":  "2.5",
         "html2text/html2text" : "1.0.1",
         "intervention/image" : "2.2.*",
         "quiqqer/qui" : "*@dev",
