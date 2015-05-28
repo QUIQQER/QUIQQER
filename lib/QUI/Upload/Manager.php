@@ -281,7 +281,7 @@ class Manager
         if ( strpos( $function, 'ajax_' ) === 0 )
         {
             // if the function is a ajax_function
-            $_rf_file = CMS_DIR .'admin/'. str_replace( '_', '/', $function ) .'.php';
+            $_rf_file = OPT_DIR .'quiqqer/quiqqer/admin/'. str_replace( '_', '/', $function ) .'.php';
             $_rf_file = Orthos::clearPath( realpath( $_rf_file ) );
 
             if ( file_exists( $_rf_file ) ) {
@@ -305,7 +305,7 @@ class Manager
 
         if ( strpos( $function, 'package_' ) === 0 )
         {
-            $dir  = CMS_DIR .'packages/';
+            $dir  = OPT_DIR;
             $file = substr( str_replace('_', '/', $function), 8 ) .'.php';
 
             $_rf_file = $dir . $file;

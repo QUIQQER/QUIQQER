@@ -110,8 +110,14 @@ define('controls/projects/project/media/FilePanel', [
                 onDestroy : function()
                 {
                     self.$ButtonDetails.destroy();
-                    self.$ButtonEffects.destroy();
-                    self.$ButtonPreview.destroy();
+
+                    if (self.$ButtonEffects) {
+                        self.$ButtonEffects.destroy();
+                    }
+
+                    if (self.$ButtonPreview) {
+                        self.$ButtonPreview.destroy();
+                    }
 
                     self.$ButtonActiv = null;
                 }

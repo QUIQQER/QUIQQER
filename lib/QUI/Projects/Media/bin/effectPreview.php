@@ -1,12 +1,12 @@
 <?php
 
-$cmsDir = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))));
-
 if (!isset($_REQUEST['id']) || !isset($_REQUEST['project'])) {
     exit;
 }
 
-require $cmsDir.'/bootstrap.php';
+$dir = str_replace('quiqqer/quiqqer/lib/QUI/Projects/Media/bin', '', dirname(__FILE__));
+
+require_once $dir.'header.php';
 
 $Project = QUI::getProject($_REQUEST['project']);
 $Media = $Project->getMedia();
