@@ -41,7 +41,7 @@
     <!-- HTML5
         ================================================== -->
 
-    <title>QUIQQER - Open Source Management System - <?php echo HOST ?></title>
+    <title>QUIQQER - <?php echo HOST ?></title>
 
     <link href="<?php echo URL_DIR; ?>favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
 
