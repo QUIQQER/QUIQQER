@@ -10,6 +10,7 @@ use QUI;
 use QUI\Utils\System\File as QUIFile;
 use QUI\Utils\String as QUIString;
 use QUI\Utils\Image as QUIImage;
+use QUI\Utils\System\File;
 
 /**
  * A media image
@@ -369,6 +370,9 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
             $Image->insert($Watermark->getFullPath(), $watermarkPosition);
         }
+
+        // create folders
+        File::mkdir(dirname($cachefile));
 
         // save cache image
         $Image->save($cachefile);
