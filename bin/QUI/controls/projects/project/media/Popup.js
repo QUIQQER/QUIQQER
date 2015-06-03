@@ -33,7 +33,8 @@ define('controls/projects/project/media/Popup', [
         Type    : 'controls/projects/project/media/Popup',
 
         Binds : [
-            '$onCreate'
+            '$onCreate',
+            '$onOpen'
         ],
 
         options : {
@@ -53,11 +54,13 @@ define('controls/projects/project/media/Popup', [
             this.$Panel      = null;
             this.$folderData = false;
 
-            this.addEvent('onCreate', this.$onCreate);
-            this.addEvent('onClose', function()
-            {
-                this.$Panel.destroy();
-            }.bind(this));
+            this.addEvents({
+                onCreate : this.$onCreate,
+                onOpen   : this.$onOpen,
+                onClose  : function() {
+                    this.$Panel.destroy();
+                }.bind(this)
+            });
         },
 
         /**
@@ -129,6 +132,16 @@ define('controls/projects/project/media/Popup', [
                 fileid  : this.getAttribute( 'fileid' ),
                 project : Project.getName()
             });
+        },
+
+        /**
+         * event : on open
+         */
+        $onOpen : function()
+        {
+            if (this.$Panel) {
+                this.$Panel.resize();
+            }
         },
 
         /**
