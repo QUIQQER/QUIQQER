@@ -49,7 +49,8 @@
         "quiqqer/utils" : "dev-dev",
         "quiqqer/cron" : "dev-dev",
         "quiqqer/log" : "dev-dev",
-        "quiqqer/diashow" : "dev-dev"
+        "quiqqer/diashow" : "dev-dev",
+        "quiqqer/lockclient" : "dev-dev"
     },
 
     "scripts": {
