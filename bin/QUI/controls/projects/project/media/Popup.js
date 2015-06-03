@@ -52,7 +52,9 @@ define('controls/projects/project/media/Popup', [
             this.parent( options );
 
             this.$Panel      = null;
-            this.$folderData = false;
+            this.$folderData = {
+                id : this.getAttribute('fileid') || 1
+            };
 
             this.addEvents({
                 onCreate : this.$onCreate,
@@ -264,13 +266,15 @@ define('controls/projects/project/media/Popup', [
         },
 
         /**
+         * Get details of a media item
          *
-         * @param imageData
+         * @param {Object} imageData - media data
+         * @param {Function} callback
          */
         $getDetails : function(imageData, callback)
         {
             Ajax.get('ajax_media_details', callback, {
-                project : imageData.project,
+                project : this.getAttribute( 'project' ),
                 fileid  : imageData.id
             });
         }
