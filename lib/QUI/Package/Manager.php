@@ -39,6 +39,9 @@ use QUI\Utils\System\File as QUIFile;
 /**
  * Package Manager for the QUIQQER System
  *
+ * Sorry, the package manager is little bit complicated
+ * when the time is right, i think i must make it clearer
+ *
  * @author www.pcsg.de (Henning Leutz)
  * @event  onOutput [ String $message ]
  */
@@ -299,9 +302,13 @@ class Manager extends QUI\QDOM
 
 
         $template = str_replace('{$PACKAGE_DIR}', OPT_DIR, $template);
-        $template = str_replace('{$VAR_COMPOSER_DIR}', $this->_vardir,
-            $template);
         $template = str_replace('{$LIB_DIR}', LIB_DIR, $template);
+
+        $template = str_replace(
+            '{$VAR_COMPOSER_DIR}',
+            $this->_vardir,
+            $template
+        );
 
         $template = str_replace(
             '{$repositories}',
@@ -333,8 +340,10 @@ class Manager extends QUI\QDOM
             $template
         );
 
-        $template = json_encode(json_decode($template, true),
-            \JSON_PRETTY_PRINT);
+        $template = json_encode(
+            json_decode($template, true),
+            \JSON_PRETTY_PRINT
+        );
 
         if (file_exists($this->_composer_json)) {
             unlink($this->_composer_json);
@@ -592,13 +601,32 @@ class Manager extends QUI\QDOM
             $version = 'dev-master';
         }
 
-        $result = $this->_execComposer('require', array(
-            'packages' => array(
-                $package.':'.$version
-            )
-        ));
+        try {
 
-        QUI\System\Log::writeRecursive($result);
+            // update lock file via lock server
+            $lockData = $this->_getLockClient()->requires($package, $version);
+
+            // update composer.lock
+            file_put_contents($this->_composer_lock, $lockData);
+
+            QUI\System\Log::addDebug('Execute install command');
+
+            $this->_execComposer('install', array(
+                '--no-progress' => true,
+                '--no-ansi'     => true
+            ));
+
+        } catch (QUI\Exception $Exception) {
+
+            QUI\System\Log::addDebug('LOCK Server Error');
+            QUI\System\Log::addDebug($Exception->getMessage());
+
+            $this->_execComposer('require', array(
+                'packages' => array(
+                    $package.':'.$version
+                )
+            ));
+        }
 
         $this->getInstalledPackage($package)->install();
 
@@ -1008,9 +1036,7 @@ class Manager extends QUI\QDOM
 
             $LockClient = $this->_getLockClient();
 
-            return $LockClient->checkUpdates(
-                file_get_contents($this->_composer_json)
-            );
+            return $LockClient->dryUpdate();
 
         } catch (QUI\Exception $Exception) {
 
@@ -1095,48 +1121,27 @@ class Manager extends QUI\QDOM
             $package = false;
         }
 
-        // update lock file via lock server
-        $LockClient = $this->_getLockClient();
 
         try {
 
-            $lockData = $LockClient->getComposerLock(
-                file_get_contents($this->_composer_json)
-            );
+            QUI\System\Log::addDebug('LOCK Server used');
+
+            $lockData = $this->_getLockClient()->update($package);
 
             // update composer.lock
             file_put_contents($this->_composer_lock, $lockData);
+
+            QUI\System\Log::addDebug('LOCK Server done');
+
+            $output = $this->_execComposer('install', array(
+                '--no-progress' => true,
+                '--no-ansi'     => true
+            ));
 
         } catch (QUI\Exception $Exception) {
 
             QUI\System\Log::addDebug('LOCK Server Error');
             QUI\System\Log::addDebug($Exception->getMessage());
-
-            $lockData = '';
-        }
-
-
-        if (!empty($lockData)) {
-
-            QUI\System\Log::addDebug('LOCK Server used');
-
-            if ($package) {
-                $output = $this->_execComposer('install', array(
-                    'packages'      => array($package),
-                    '--no-progress' => true,
-                    '--no-ansi'     => true
-                ));
-
-            } else {
-                $output = $this->_execComposer('install', array(
-                    '--no-progress' => true,
-                    '--no-ansi'     => true
-                ));
-            }
-
-        } else {
-
-            QUI\System\Log::addDebug('No LOCK Server used');
 
             if ($package) {
                 $output = $this->_execComposer('update', array(
@@ -1210,11 +1215,14 @@ class Manager extends QUI\QDOM
     /**
      * Return the lock client with the settings
      *
-     * @return LOCKClient
+     * @return QUI\Lockserver\Client
      */
     protected function _getLockClient()
     {
-        return new LOCKClient();
+        return new QUI\Lockserver\Client(array(
+            'composerJsonFile' => $this->_composer_json,
+            'composerLockFile' => $this->_composer_lock
+        ));
     }
 
     /**
