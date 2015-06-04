@@ -323,10 +323,6 @@ class Manager extends QUI\QDOM
         $require = array();
         $require["php"] = ">=5.3.2";
         $require["quiqqer/quiqqer"] = "dev-master";
-        $require["tedivm/stash"] = "0.11.*";
-        $require["symfony/http-foundation"] = "*";
-        $require["composer/composer"] = "1.0.*@dev";
-        $require["robloach/component-installer"] = "*";
 
         foreach ($list as $package) {
             $require[$package['name']] = $package['version'];
