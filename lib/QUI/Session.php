@@ -28,7 +28,7 @@ class Session
      *
      * @var int
      */
-    protected $_livetime = 1400;
+    protected $_lifetime = 1400;
 
     /**
      * Session handler
