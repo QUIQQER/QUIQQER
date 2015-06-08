@@ -102,6 +102,7 @@ define('controls/projects/project/Panel', [
             this.$ProjectList = null;
             this.$ProjectContainer = null;
             this.$ProjectSearch = null;
+            this.$ProjectContent = null;
 
             this.$__fx_run = false;
 
@@ -176,6 +177,7 @@ define('controls/projects/project/Panel', [
             this.$ProjectContainer = Content.getElement( '.project-container' );
             this.$ProjectList = Content.getElement( '.project-list' );
             this.$ProjectSearch = Content.getElement( '.project-search' );
+            this.$ProjectContent = Content.getElement( '.project-content' );
 
             this.$ProjectContainer.setStyles({
                 height : '100%'
@@ -317,6 +319,7 @@ define('controls/projects/project/Panel', [
                 {
                     if ( Object.getLength( result ) > 1 )
                     {
+                        self.Loader.hide();
                         self.$Button.click();
                         return;
                     }
@@ -411,8 +414,6 @@ define('controls/projects/project/Panel', [
             }
 
             this.$__fx_run = true;
-            this.Loader.show();
-
             this.$ProjectContainer.setStyle('overflow', 'hidden');
 
             var self = this;
@@ -426,9 +427,7 @@ define('controls/projects/project/Panel', [
                 if ( !Object.getLength( result ) )
                 {
                     self.$ProjectContainer.setStyle('overflow', null);
-
                     self.$__fx_run = false;
-                    self.Loader.hide();
                     return;
                 }
 
@@ -552,12 +551,9 @@ define('controls/projects/project/Panel', [
                 }
 
                 List.setStyles({
-                    boxShadow  : '0 6px 20px 0 rgba(0, 0, 0, 0.19)'
-                });
-
-                List.setStyles({
+                    boxShadow  : '0 6px 20px 0 rgba(0, 0, 0, 0.19)',
                     display : null,
-                    opacity : 1
+                    opacity : 0
                 });
 
 
@@ -573,7 +569,6 @@ define('controls/projects/project/Panel', [
 
                         self.$ProjectContainer.setStyle('overflow', null);
                         self.$Button.setActive();
-                        self.Loader.hide();
                     }
                 });
             });
@@ -594,7 +589,7 @@ define('controls/projects/project/Panel', [
 
             var self      = this,
                 List      = this.$ProjectList,
-                Container = this.$ProjectContainer,
+                Container = this.$ProjectContent,
                 lang      = this.getAttribute( 'lang' ),
 
                 Project = Projects.get(
