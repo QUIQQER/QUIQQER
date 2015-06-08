@@ -268,9 +268,24 @@ class Manager extends QUI\QDOM
      */
     protected function _createComposerJSON()
     {
-        $template = file_get_contents(
-            dirname(__FILE__).'/composer.tpl'
+        if (file_exists($this->_composer_json)) {
+            $composerJson = json_decode($this->_composer_json);
+        } else {
+            $template = file_get_contents(
+                dirname(__FILE__).'/composer.tpl'
+            );
+
+            $composerJson = json_decode($template);
+        }
+
+        // config
+        $composerJson->config = array(
+            "vendor-dir"    => OPT_DIR,
+            "cache-dir"     => $this->_vardir,
+            "component-dir" => OPT_DIR .'bin',
+            "quiqqer-dir"   => CMS_DIR
         );
+
 
         // make the repository list
         $servers = $this->getServerList();
@@ -300,52 +315,33 @@ class Manager extends QUI\QDOM
             );
         }
 
+        $composerJson->repositories = $repositories;
 
-        $template = str_replace('{$PACKAGE_DIR}', OPT_DIR, $template);
-        $template = str_replace('{$LIB_DIR}', LIB_DIR, $template);
-
-        $template = str_replace(
-            '{$VAR_COMPOSER_DIR}',
-            $this->_vardir,
-            $template
-        );
-
-        $template = str_replace(
-            '{$repositories}',
-            json_encode($repositories, \JSON_PRETTY_PRINT),
-            $template
-        );
 
         // standard require
-        $list = $this->_getList();
+        if (empty($composerJson->require)) {
+            $list = $this->_getList();
 
-        // must have
-        $require = array();
-        $require["php"] = ">=5.3.2";
-        $require["quiqqer/quiqqer"] = "dev-master";
+            // must have
+            $require = array();
+            $require["php"] = ">=5.3.2";
+            $require["quiqqer/quiqqer"] = "dev-master";
 
-        foreach ($list as $package) {
-            $require[$package['name']] = $package['version'];
+            foreach ($list as $package) {
+                $require[$package['name']] = $package['version'];
+            }
+
+            ksort($require);
+
+            $composerJson->require = $require;
         }
 
-        ksort($require);
 
-        $template = str_replace(
-            '{$REQUIRE}',
-            json_encode($require, \JSON_PRETTY_PRINT),
-            $template
-        );
-
-        $template = json_encode(
-            json_decode($template, true),
+        // save
+        file_put_contents($this->_composer_json, json_encode(
+            $composerJson,
             \JSON_PRETTY_PRINT
-        );
-
-        if (file_exists($this->_composer_json)) {
-            unlink($this->_composer_json);
-        }
-
-        file_put_contents($this->_composer_json, $template);
+        ));
     }
 
     /**
@@ -363,15 +359,36 @@ class Manager extends QUI\QDOM
 
         QUIFile::mkdir($backupDir);
 
-        QUIFile::copy(
-            $this->_composer_json,
-            $backupDir.'composer_'.date('Y-m-d__H-i-s').'.json'
-        );
+        $date = date('Y-m-d__H-i-s');
 
-        QUIFile::copy(
-            $this->_composer_lock,
-            $backupDir.'composer_'.date('Y-m-d__H-i-s').'.lock'
-        );
+        $composerJson = $backupDir.'composer_'.$date.'.json';
+        $composerLock = $backupDir.'composer_'.$date.'.lock';
+
+        if (file_exists($composerJson) || file_exists($composerLock)) {
+
+            $count = 1;
+
+            while (true) {
+
+                $composerJson = "{$backupDir}composer_{$date}_({$count}).json";
+                $composerLock = "{$backupDir}composer_{$date}_({$count}).lock";
+
+                if (file_exists($composerJson)) {
+                    $count++;
+                    continue;
+                }
+
+                if (file_exists($composerJson)) {
+                    $count++;
+                    continue;
+                }
+
+                break;
+            }
+        }
+
+        QUIFile::copy($this->_composer_json, $composerJson);
+        QUIFile::copy($this->_composer_lock, $composerLock);
     }
 
     /**

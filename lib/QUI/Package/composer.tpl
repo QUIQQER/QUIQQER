@@ -24,15 +24,9 @@
         "url": "http://www.quiqqer.com"
     },
 
-    "repositories": {$repositories},
-
-    "require": {$REQUIRE},
-
-    "config": {
-        "vendor-dir": "{$PACKAGE_DIR}",
-        "cache-dir" : "{$VAR_COMPOSER_DIR}",
-        "component-dir" : "{$PACKAGE_DIR}bin"
-    },
+    "repositories": [],
+    "require": {},
+    "config": {},
 
     "scripts": {
         "post-install-cmd" : [
