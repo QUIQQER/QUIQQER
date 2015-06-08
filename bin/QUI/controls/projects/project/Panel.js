@@ -372,7 +372,7 @@ define('controls/projects/project/Panel', [
         $onResize : function()
         {
             var Body      = this.getBody(),
-                Container = Body.getElement( '.project-container' ),
+                Container = this.$ProjectContainer,
                 Search    = Body.getElement( '.project-search' );
 
             var height = Body.getComputedSize().height;
@@ -434,8 +434,7 @@ define('controls/projects/project/Panel', [
                 var i, l, langs, len, Map, Project,
                     func_project_click, func_media_click, func_trash_click;
 
-                var List      = self.$ProjectList,
-                    Container = new Element( 'div' );
+                var List = self.$ProjectList;
 
                 List.set( 'html', '' );
 
@@ -550,8 +549,6 @@ define('controls/projects/project/Panel', [
                     Map.openAll();
                 }
 
-                Container.inject( List );
-
                 List.setStyles({
                     boxShadow  : '0 6px 20px 0 rgba(0, 0, 0, 0.19)'
                 });
@@ -594,9 +591,8 @@ define('controls/projects/project/Panel', [
             this.$__fx_run = true;
 
             var self      = this,
-                Content   = this.getBody(),
-                List      = Content.getElement( '.project-list' ),
-                Container = Content.getElement( '.project-content' ),
+                List      = this.$ProjectList,
+                Container = this.$ProjectContainer,
                 lang      = this.getAttribute( 'lang' ),
 
                 Project = Projects.get(
