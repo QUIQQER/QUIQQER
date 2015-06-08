@@ -434,8 +434,7 @@ define('controls/projects/project/Panel', [
                 var i, l, langs, len, Map, Project,
                     func_project_click, func_media_click, func_trash_click;
 
-                var Content   = self.getContent(),
-                    List      = Content.getElement( '.project-list' ),
+                var List      = self.$ProjectList,
                     Container = new Element( 'div' );
 
                 List.set( 'html', '' );
