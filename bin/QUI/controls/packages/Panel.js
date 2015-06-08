@@ -1145,6 +1145,7 @@ define('controls/packages/Panel', [
                 self = this;
 
             new QUIConfirm({
+                maxTimeout : 120000, // wait max. 2 minutes
                 title : Locale.get( lg, 'packages.server.win.install.package.title' ),
                 icon : 'icon-download',
                 text : Locale.get( lg, 'packages.server.win.install.package.text', {
@@ -1195,7 +1196,7 @@ define('controls/packages/Panel', [
                     {
                         Win.Loader.show();
 
-                        Ajax.get('ajax_system_packages_install', function()
+                        Ajax.post('ajax_system_packages_install', function()
                         {
                             Win.close();
                             self.startSearch();
