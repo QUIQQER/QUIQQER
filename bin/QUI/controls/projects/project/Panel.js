@@ -101,6 +101,7 @@ define('controls/projects/project/Panel', [
 
             this.$ProjectList = null;
             this.$ProjectContainer = null;
+            this.$ProjectSearch = null;
 
             this.$__fx_run = false;
 
@@ -174,6 +175,7 @@ define('controls/projects/project/Panel', [
 
             this.$ProjectContainer = Content.getElement( '.project-container' );
             this.$ProjectList = Content.getElement( '.project-list' );
+            this.$ProjectSearch = Content.getElement( '.project-search' );
 
             this.$ProjectContainer.setStyles({
                 height : '100%'
@@ -205,7 +207,7 @@ define('controls/projects/project/Panel', [
 
                     }.bind( this.$ProjectContainer )
                 }
-            }).inject( Content.getElement( '.project-search' ) );
+            }).inject( this.$ProjectSearch );
 
             // site search
             new QUIButton({
@@ -373,11 +375,11 @@ define('controls/projects/project/Panel', [
         {
             var Body      = this.getBody(),
                 Container = this.$ProjectContainer,
-                Search    = Body.getElement( '.project-search' );
+                Search    = this.$ProjectSearch;
 
             var height = Body.getComputedSize().height;
 
-            if ( !height || !Container ) {
+            if ( !height || !Container || !this.$ProjectSearch ) {
                 return;
             }
 
@@ -689,10 +691,9 @@ define('controls/projects/project/Panel', [
                 return this;
             }
 
-            var i, len;
             var children = this.getSitemapItemsById( id );
 
-            for ( i = 0, len = children.length; i < len; i++ ) {
+            for ( var i = 0, len = children.length; i < len; i++ ) {
                 children[ i ].select();
             }
 
