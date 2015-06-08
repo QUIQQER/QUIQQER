@@ -1160,7 +1160,7 @@ define('controls/packages/Panel', [
                     text : Locale.get( lg, 'packages.server.win.install.submit.btn' )
                 },
 
-                events  :
+                events :
                 {
                     onDrawEnd : function(Win)
                     {
