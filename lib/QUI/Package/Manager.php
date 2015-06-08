@@ -607,11 +607,12 @@ class Manager extends QUI\QDOM
 
             // add package to composer.json
             $composer = json_decode(
-                file_get_contents($this->_composer_json)
+                file_get_contents($this->_composer_json),
+                true
             );
 
-            if (!isset($composer->require->$package)) {
-                $composer->require->$package = $version;
+            if (!isset($composer['require'][$package])) {
+                $composer['require'][$package] = $version;
 
                 file_put_contents(
                     $this->_composer_json,
