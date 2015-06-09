@@ -15,38 +15,43 @@ use QUI\Utils\XML;
  *
  * @author www.pcsg.de (Henning Leutz)
  *
- * @event onPackageSetup [ this ]
- * @event onPackageInstall [ this ]
- * @event onPackageUninstall [ String PackageName ]
+ * @event  onPackageSetup [ this ]
+ * @event  onPackageInstall [ this ]
+ * @event  onPackageUninstall [ String PackageName ]
  */
 class Package extends QUI\QDOM
 {
     /**
      * Name of the package
+     *
      * @var string
      */
     protected $_name = '';
 
     /**
      * Directory of the package
+     *
      * @var string
      */
     protected $_packageDir = '';
 
     /**
      * Package composer data from the composer file
+     *
      * @var bool|array
      */
     protected $_composerData = false;
 
     /**
      * Path to the Config
+     *
      * @var string
      */
     protected $_configPath = '';
 
     /**
      * Package Config
+     *
      * @var QUI\Config
      */
     protected $_Config = null;
@@ -55,40 +60,41 @@ class Package extends QUI\QDOM
      * constructor
      *
      * @param String $package - Name of the Package
+     *
      * @throws QUI\Exception
      */
     public function __construct($package)
     {
-        $packageDir = OPT_DIR . $package .'/';
+        $packageDir = OPT_DIR.$package.'/';
 
-        if ( !is_dir( $packageDir ) ) {
-            throw new QUI\Exception( 'Package not exists', 404 );
+        if (!is_dir($packageDir)) {
+            throw new QUI\Exception('Package not exists', 404);
         }
 
         $this->_packageDir = $packageDir;
-        $this->_name       = $package;
+        $this->_name = $package;
 
         // no composer.json, no real package
-        if ( !file_exists( $packageDir .'composer.json' ) ) {
+        if (!file_exists($packageDir.'composer.json')) {
             return;
         }
 
         $this->_composerData = json_decode(
-            file_get_contents( $packageDir .'composer.json' ),
+            file_get_contents($packageDir.'composer.json'),
             true
         );
 
-        if ( !isset( $this->_composerData['type'] ) ) {
+        if (!isset($this->_composerData['type'])) {
             return;
         }
 
-        if ( strpos( $this->_composerData['type'], 'quiqqer-') === false ) {
+        if (strpos($this->_composerData['type'], 'quiqqer-') === false) {
             return;
         }
 
-        $this->_configPath = CMS_DIR .'etc/plugins/'. $this->getName() .'.ini.php';
+        $this->_configPath = CMS_DIR.'etc/plugins/'.$this->getName().'.ini.php';
 
-        QUI\Utils\System\File::mkfile( $this->_configPath );
+        QUI\Utils\System\File::mkfile($this->_configPath);
     }
 
     /**
@@ -99,6 +105,20 @@ class Package extends QUI\QDOM
     public function getDir()
     {
         return $this->_packageDir;
+    }
+
+    /**
+     * Return the dir for the package
+     *
+     * @return string
+     */
+    public function getVarDir()
+    {
+        $varDir = VAR_DIR.'package/'.$this->getName().'/';
+
+        QUI\Utils\System\File::mkfile($varDir);
+
+        return $varDir;
     }
 
     /**
@@ -118,12 +138,12 @@ class Package extends QUI\QDOM
      */
     public function getConfig()
     {
-        if ( empty( $this->_configPath ) ) {
+        if (empty($this->_configPath)) {
             return false;
         }
 
-        if ( !$this->_Config ) {
-            $this->_Config = new QUI\Config( $this->_configPath );
+        if (!$this->_Config) {
+            $this->_Config = new QUI\Config($this->_configPath);
         }
 
         return $this->_Config;
@@ -137,14 +157,14 @@ class Package extends QUI\QDOM
      */
     public function getComposerData()
     {
-        if ( $this->_composerData ) {
+        if ($this->_composerData) {
             return $this->_composerData;
         }
 
-        $composer = QUI::getPackageManager()->show( $this->getName() );
+        $composer = QUI::getPackageManager()->show($this->getName());
 
-        if ( !isset( $composer[ 'name' ] ) ) {
-            $composer[ 'name' ] = $this->getName();
+        if (!isset($composer['name'])) {
+            $composer['name'] = $this->getName();
         }
 
         $this->_composerData = $composer;
@@ -154,14 +174,15 @@ class Package extends QUI\QDOM
 
     /**
      * Return the requirements / dependencies of the package
+     *
      * @return array
      */
     public function getDependencies()
     {
         $composer = $this->getComposerData();
 
-        if ( isset( $composer[ 'require' ] ) ) {
-            return $composer[ 'require' ];
+        if (isset($composer['require'])) {
+            return $composer['require'];
         }
 
         return array();
@@ -174,34 +195,34 @@ class Package extends QUI\QDOM
     {
         $dir = $this->getDir();
 
-        Update::importDatabase( $dir .'database.xml' );
-        Update::importTemplateEngines( $dir .'engines.xml' );
-        Update::importEditors( $dir .'wysiwyg.xml' );
-        Update::importMenu( $dir .'menu.xml' );
-        Update::importPermissions( $dir .'permissions.xml', $this->getName() );
-        Update::importMenu( $dir .'menu.xml' );
+        Update::importDatabase($dir.'database.xml');
+        Update::importTemplateEngines($dir.'engines.xml');
+        Update::importEditors($dir.'wysiwyg.xml');
+        Update::importMenu($dir.'menu.xml');
+        Update::importPermissions($dir.'permissions.xml', $this->getName());
+        Update::importMenu($dir.'menu.xml');
 
         // events
-        Update::importEvents( $dir .'events.xml' );
-        Update::importSiteEvents( $dir .'site.xml' );
+        Update::importEvents($dir.'events.xml');
+        Update::importSiteEvents($dir.'site.xml');
 
-        Update::importLocale( $dir .'locale.xml' );
+        Update::importLocale($dir.'locale.xml');
 
         // settings
-        if ( !file_exists( $dir .'settings.xml' ) )
-        {
-            QUI::getEvents()->fireEvent( 'packageSetup', array( $this ) );
+        if (!file_exists($dir.'settings.xml')) {
+            QUI::getEvents()->fireEvent('packageSetup', array($this));
+
             return;
         }
 
         // $defaults = XML::getConfigParamsFromXml( $dir .'settings.xml' );
-        $Config = XML::getConfigFromXml( $dir .'settings.xml' );
+        $Config = XML::getConfigFromXml($dir.'settings.xml');
 
-        if ( $Config ) {
+        if ($Config) {
             $Config->save();
         }
 
-        QUI::getEvents()->fireEvent( 'packageSetup', array( $this ) );
+        QUI::getEvents()->fireEvent('packageSetup', array($this));
     }
 
     /**
@@ -211,7 +232,7 @@ class Package extends QUI\QDOM
     {
         $this->setup();
 
-        QUI::getEvents()->fireEvent( 'packageInstall', array( $this ) );
+        QUI::getEvents()->fireEvent('packageInstall', array($this));
     }
 
     /**
@@ -222,7 +243,8 @@ class Package extends QUI\QDOM
     {
 
 
-        QUI::getEvents()->fireEvent( 'packageUninstall', array( $this->getName() ) );
+        QUI::getEvents()
+           ->fireEvent('packageUninstall', array($this->getName()));
     }
 
     /**
@@ -232,6 +254,7 @@ class Package extends QUI\QDOM
     public function destroy()
     {
 
-        QUI::getEvents()->fireEvent( 'packageUninstall', array( $this->getName() ) );
+        QUI::getEvents()
+           ->fireEvent('packageUninstall', array($this->getName()));
     }
 }
