@@ -647,7 +647,9 @@ define('controls/projects/project/media/Panel', [
         $upload : function(extract)
         {
             var self  = this,
-                Sheet = this.createSheet();
+                Sheet = this.createSheet({
+                    buttons : false
+                });
 
             extract = extract || false;
 
@@ -657,7 +659,12 @@ define('controls/projects/project/media/Panel', [
                     var Parent;
                     var Content = Sheet.getBody();
 
-                    Content.set( 'html', '' );
+                    Content.set({
+                        html   : '',
+                        styles : {
+                            padding: 20
+                        }
+                    });
 
 
                     if ( extract )
@@ -673,18 +680,21 @@ define('controls/projects/project/media/Panel', [
                         }).inject( Content );
                     }
 
+                    var height = Content.getSize().y -
+                                 Parent.getSize().y -
+                                 80; // 80 = content padding + form margin
+
                     // upload form
                     var Form = new UploadForm({
-                        multible   : true,
                         sendbutton : true,
+                        cancelbutton : true,
                         maxuploads : 5,
-                        uploads    : 1,
                         styles     : {
-                            margin : '20px 0 0',
                             float  : 'left',
-                            clear  : 'both'
+                            clear  : 'both',
+                            height : height,
+                            margin : '20px 0 0'
                         },
-                        Drops  : [ Sheet.getBody() ],
                         fileid : self.getAttribute('fileid'),
                         events :
                         {
@@ -720,6 +730,10 @@ define('controls/projects/project/media/Panel', [
                                 Sheet.hide();
                             },
 
+                            onCancel : function() {
+                                Sheet.hide();
+                            },
+
                             onComplete : function()
                             {
                                 var panels = QUI.Controls.get( 'projects-media-panel' );
@@ -743,7 +757,7 @@ define('controls/projects/project/media/Panel', [
                         Form.setParam( 'extract', 0 );
                     }
 
-                    Form.inject( Parent );
+                    Form.inject( Content );
 
                     Sheet.focus();
                 }

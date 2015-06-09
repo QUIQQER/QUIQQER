@@ -5,10 +5,10 @@
  */
 function ajax_system_updateWithLocalServer()
 {
-    \QUI::getPackageManager()->updateWithLocalRepository();
+    QUI::getPackageManager()->updateWithLocalRepository();
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_system_updateWithLocalServer',
     false,
     array(

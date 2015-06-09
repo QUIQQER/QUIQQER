@@ -91,7 +91,7 @@ define('classes/packages/Manager', [
         /**
          * Execute a system or plugin update with an internal local server
          *
-         * @param {Function} [callback] -optional
+         * @param {Function} [callback] - optional
          * @return Promise
          */
         updateWithLocalServer : function(callback)
@@ -99,6 +99,31 @@ define('classes/packages/Manager', [
             return new Promise(function(resolve, reject)
             {
                 Ajax.post('ajax_system_updateWithLocalServer', function(result)
+                {
+                    if ( typeOf(callback) === 'function' ) {
+                        callback( result );
+                    }
+
+                    resolve( result );
+                }, {
+                    onError : function(Exception) {
+                        reject( Exception );
+                    }
+                });
+            });
+        },
+
+        /**
+         * Read the locale repository and search installable packages
+         *
+         * @param {Function} [callback] - optional
+         * @return Promise
+         */
+        readLocalRepository : function(callback)
+        {
+            return new Promise(function(resolve, reject)
+            {
+                Ajax.post('ajax_system_readLocalRepository', function(result)
                 {
                     if ( typeOf(callback) === 'function' ) {
                         callback( result );

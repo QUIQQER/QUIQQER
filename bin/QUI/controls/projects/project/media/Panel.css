@@ -93,14 +93,19 @@
  ================================================ */
 
 .qui-media-upload {
-    margin: 20px;
     float: left;
+    width: 100%;
 }
 
 .qui-media-upload h2 {
-    /*background: url('../../../../22x22/up.png') no-repeat left center;*/
     line-height: 22px;
+    margin: 0 0 20px;
     padding-bottom: 0;
+}
+
+.qui-media-upload h2 .icon-upload,
+.qui-media-upload h2 .fa {
+    margin-right: 10px;
 }
 
 .qui-media-upload p {

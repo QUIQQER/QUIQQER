@@ -1553,12 +1553,25 @@
             <de><![CDATA[[file] entpacken]]></de>
             <en><![CDATA[[file] extracing]]></en>
         </locale>
+        <locale name="upload.form.background.text">
+            <de><![CDATA[
+                <p>
+                    Um eine Datei hinzuzufügen, klicken Sie bitte auf <u>Datei auswählen</u> oder<br />
+                    ziehen Sie eine Datei in dieses Feld.
+                </p>
+            ]]></de>
+            <en><![CDATA[Select a file]]></en>
+        </locale>
+        <locale name="upload.form.info.max.text">
+            <de><![CDATA[[count] von [max] Uploads genutzt.]]></de>
+            <en><![CDATA[[count] off [max] uploads used.]]></en>
+        </locale>
         <locale name="upload.form.btn.add.text">
-            <de><![CDATA[Upload hinzufügen]]></de>
-            <en><![CDATA[Add upload]]></en>
+            <de><![CDATA[Datei auswählen]]></de>
+            <en><![CDATA[Select a file]]></en>
         </locale>
         <locale name="upload.form.btn.send.text">
-            <de><![CDATA[Hochladen beginnen]]></de>
+            <de><![CDATA[Hochladen starten]]></de>
             <en><![CDATA[Start upload]]></en>
         </locale>
         <locale name="upload.form.btn.send.title">
@@ -1569,9 +1582,17 @@
             <de><![CDATA[Upload starten]]></de>
             <en><![CDATA[Start upload]]></en>
         </locale>
-        <locale name="upload.form.btn.change.alt">
-            <de><![CDATA[Upload starten]]></de>
-            <en><![CDATA[Start upload]]></en>
+        <locale name="upload.form.btn.cancel.text">
+            <de><![CDATA[Hochladen abbrechen]]></de>
+            <en><![CDATA[Cancel upload]]></en>
+        </locale>
+        <locale name="upload.form.btn.cancel.title">
+            <de><![CDATA[Upload abbrechen]]></de>
+            <en><![CDATA[Cancel upload]]></en>
+        </locale>
+        <locale name="upload.form.btn.cancel.alt">
+            <de><![CDATA[Upload abbrechen]]></de>
+            <en><![CDATA[Cancel upload]]></en>
         </locale>
         <locale name="upload.form.btn.change.title">
             <de><![CDATA[Per Klick können Sie eine andere Datei auswählen ...]]></de>

@@ -26,6 +26,7 @@ if (!defined('JSON_UNESCAPED_UNICODE')) {
 
 use Composer\Console\Application;
 use Composer\Package\Package;
+use QUI\Utils\System\File;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\Console\ConsoleEvents;
@@ -269,7 +270,8 @@ class Manager extends QUI\QDOM
     protected function _createComposerJSON()
     {
         if (file_exists($this->_composer_json)) {
-            $composerJson = json_decode($this->_composer_json);
+            $composerJson
+                = json_decode(file_get_contents($this->_composer_json));
         } else {
             $template = file_get_contents(
                 dirname(__FILE__).'/composer.tpl'
@@ -282,7 +284,7 @@ class Manager extends QUI\QDOM
         $composerJson->config = array(
             "vendor-dir"    => OPT_DIR,
             "cache-dir"     => $this->_vardir,
-            "component-dir" => OPT_DIR .'bin',
+            "component-dir" => OPT_DIR.'bin',
             "quiqqer-dir"   => CMS_DIR
         );
 
@@ -906,47 +908,7 @@ class Manager extends QUI\QDOM
      */
     public function refreshServerList()
     {
-        $this->_checkComposer();
-
-        $json = $this->_getComposerJSON();
-
-
-        // make the repository list
-        $servers = $this->getServerList();
-        $repositories = array();
-
-        foreach ($servers as $server => $params) {
-            if ($server == 'packagist') {
-                continue;
-            }
-
-            if (!isset($params['active']) || $params['active'] != 1) {
-                continue;
-            }
-
-            $repositories[] = array(
-                'type' => $params['type'],
-                'url'  => $server
-            );
-        }
-
-        if (isset($servers['packagist'])
-            && $servers['packagist']['active'] == 0
-        ) {
-            $repositories[] = array(
-                'packagist' => false
-            );
-        }
-
-
-        $json['repositories'] = $repositories;
-        $json = json_encode($json, \JSON_PRETTY_PRINT);
-
-        if (file_exists($this->_composer_json)) {
-            unlink($this->_composer_json);
-        }
-
-        file_put_contents($this->_composer_json, $json);
+        $this->_createComposerJSON();
     }
 
     /**
@@ -1301,6 +1263,8 @@ class Manager extends QUI\QDOM
             ));
 
             $this->setServerStatus($serverDir, 1);
+        } else {
+            $this->_createComposerJSON();
         }
 
 
@@ -1477,7 +1441,7 @@ class Manager extends QUI\QDOM
         $updatePath = QUI::conf('update', 'updatePath');
 
         if (!empty($updatePath) && is_dir($updatePath)) {
-            return $updatePath;
+            return rtrim($updatePath, '/').'/';
         }
 
         return QUI::getTemp()->createFolder('quiqqerUpdate');
@@ -1515,5 +1479,68 @@ class Manager extends QUI\QDOM
         }
 
         QUIFile::move($file, $tempFile);
+    }
+
+    /**
+     * Read the locale repository and search installable packages
+     *
+     * @return array
+     */
+    public function readLocalRepository()
+    {
+        $dir = $this->_getUploadPackageDir();
+
+        if (!is_dir($dir)) {
+            return array();
+        }
+
+        $files = File::readDir($dir);
+        $result = array();
+
+        chdir($dir);
+
+        foreach ($files as $package) {
+
+            try
+            {
+                $composerJson = file_get_contents(
+                    "zip://{$package}#composer.json"
+                );
+
+            } catch (\Exception $Exception) {
+
+                // maybe gitlab package?
+                try
+                {
+                    $packageName = pathinfo($package);
+                    $composerJson = file_get_contents(
+                        "zip://{$package}#{$packageName['filename']}/composer.json"
+                    );
+
+                } catch (\Exception $Exception) {
+
+                    QUI\System\Log::addDebug($Exception->getMessage());
+                    continue;
+                }
+            }
+QUI\System\Log::writeRecursive($composerJson);
+            if (empty($composerJson)) {
+                continue;
+            }
+
+            $composerJson = json_decode($composerJson, true);
+
+            if (!isset($composerJson['name'])) {
+                continue;
+            }
+
+            if (is_dir(OPT_DIR.$composerJson['name'])) {
+                continue;
+            }
+
+            $result[] = $composerJson;
+        }
+
+        return $result;
     }
 }

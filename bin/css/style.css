@@ -52,6 +52,11 @@ address .icon {
     font-style: italic;
 }
 
+.highlight {
+    background-color: #CFF09E;
+    border-color: #666;
+}
+
 /** logo, title
  * ====================================================== */
 

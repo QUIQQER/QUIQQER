@@ -439,8 +439,8 @@ define('controls/packages/Panel', [
 
             new QUIConfirm({
                 title     : Locale.get( lg, 'packages.update.window.title' ),
-                maxHeight : 200,
-                maxWidth  : 550,
+                maxWidth  : 640,
+                maxheight : 360,
                 texticon  : 'fa fa-angle-double-down icon-double-angle-down',
                 text      : Locale.get( lg, 'packages.update.window.text'),
                 events :
@@ -538,10 +538,19 @@ define('controls/packages/Panel', [
             var self = this;
 
             new QUIConfirm({
+                icon      : 'icon-upload-alt fa fa-upload',
                 title     : Locale.get( lg, 'packages.grid.update.btn.upload' ),
-                maxHeight : 500,
-                maxWidth  : 600,
+                maxWidth  : 640,
+                maxheight : 360,
                 autoclose : false,
+                cancel_button : {
+                    text      : Locale.get( lg, 'upload.form.btn.cancel.text' ),
+                    textimage : 'icon-remove fa fa-remove'
+                },
+                ok_button : {
+                    text      : Locale.get( lg, 'upload.form.btn.send.text' ),
+                    textimage : 'icon-upload-alt fa fa-upload'
+                },
                 events :
                 {
                     onOpen : function(Win)
@@ -551,24 +560,11 @@ define('controls/packages/Panel', [
                         require(['controls/upload/Form'], function(UploadForm)
                         {
                             var Form = new UploadForm({
-                                maxuploads : 1000,
+                                maxuploads : 100,
                                 multible   : true,
                                 sendbutton : false,
-                                styles     : {
-                                    clear  : 'both',
-                                    float  : 'left',
-                                    margin : 0,
-                                    width  : '100%'
-                                },
-                                Drops  : [],
                                 events :
                                 {
-                                    onDragenter: function(event, Elm)
-                                    {
-                                        Elm.addClass( 'highlight' );
-                                        event.stop();
-                                    },
-
                                     onComplete : function()
                                     {
                                         Win.close();
@@ -642,18 +638,103 @@ define('controls/packages/Panel', [
          */
         updateWithLocalServer : function()
         {
-            var self = this;
+            this.installLocalPackages().then(function()
+            {
+                return QUI.getMessageHandler();
 
-            QUI.getMessageHandler().then(function(MH)
+            }).then(function(MH)
             {
                 return MH.addLoading('Setup wird durchgeführt...');
 
-            }).then(function(Loading) {
-                self.$Manager.updateWithLocalServer(function() {
+            }).then(function(Loading)
+            {
+
+                return;
+                this.$Manager.updateWithLocalServer(function() {
                     Loading.finish( Locale.get( lg, 'message.setup.successfull' ) );
                 });
-            });
+            }.bind(this));
         },
+
+        /**
+         * install new local packages
+         *
+         * @returns {Promise}
+         */
+        installLocalPackages : function()
+        {
+            return new Promise(function(resolve, reject)
+            {
+                this.$Manager.readLocalRepository(function(result)
+                {
+                    if (!result || !result.length) {
+                        resolve();
+                        return;
+                    }
+
+                    new QUIConfirm({
+                        title : 'Es wurden neue Pakete gefunden',
+                        autoclose : false,
+                        maxWidth: 640,
+                        maxheight: 360,
+                        events :
+                        {
+                            onOpen : function(Win)
+                            {
+                                var i, len, pkg;
+                                var Content = Win.getContent();
+
+                                Content.set('html', '');
+                                Content.addClass('package-setup');
+
+                                for (i = 0, len = result.length; i < len; i++)
+                                {
+                                    pkg = result[ i ];
+
+                                    new Element('div', {
+                                        'class' : 'package-setup-entry',
+                                        html : '<p class="package-setup-entry-title">'+
+                                                   '<input type="checkbox" name="'+ pkg.name +'" value="'+ pkg.version +'" />' +
+                                                   pkg.name +
+                                               '</p>'+
+                                               '<p class="package-setup-entry-description">'+
+                                                   pkg.description +
+                                               '</p>'
+                                    }).inject(Content);
+                                }
+                            },
+
+                            onSubmit : function(Win)
+                            {
+                                Win.Loader.show();
+
+                                var packages = {};
+                                var list = Win.getContent().getElements('input:checked');
+
+                                for (var i = 0, len = list.length; i < len; i++) {
+                                    packages[ list[i].get('name') ] = list[i].get('value');
+                                }
+
+                                Ajax.get('ajax_system_packages_install', function()
+                                {
+                                    Win.close();
+
+                                    resolve();
+                                }, {
+                                    packages : packages
+                                });
+                            },
+
+                            onCancel : function() {
+                                reject();
+                            }
+                        }
+                    }).open();
+                });
+
+            }.bind(this));
+        },
+
 
         /**
          * Update button click
@@ -1145,21 +1226,20 @@ define('controls/packages/Panel', [
                 self = this;
 
             new QUIConfirm({
-                maxTimeout : 120000, // wait max. 2 minutes
                 title : Locale.get( lg, 'packages.server.win.install.package.title' ),
                 icon : 'icon-download',
                 text : Locale.get( lg, 'packages.server.win.install.package.text', {
                     'package' : pkg
                 }),
                 texticon  : 'icon-download',
-                Control   : this,
+                maxTimeout : 120000, // wait max. 2 minutes
                 autoclose : false,
-
+                maxWidth  : 640,
+                maxheight : 360,
                 ok_button : {
                     textimage : 'icon-download',
                     text : Locale.get( lg, 'packages.server.win.install.submit.btn' )
                 },
-
                 events :
                 {
                     onDrawEnd : function(Win)
@@ -1392,6 +1472,8 @@ define('controls/packages/Panel', [
                               '</form>',
 
                 autoclose : false,
+                maxWidth  : 640,
+                maxheight : 360,
                 events    :
                 {
                     onDrawEnd : function(Win)
@@ -1443,8 +1525,8 @@ define('controls/packages/Panel', [
 
             new QUIConfirm({
                 title : Locale.get( lg, 'packages.server.win.remove.title' ),
-                icon : 'fa fa-trash-o icon-trash',
-                text : Locale.get( lg, 'packages.server.win.remove.text' ),
+                icon  : 'fa fa-trash-o icon-trash',
+                text  : Locale.get( lg, 'packages.server.win.remove.text' ),
                 texticon    : 'fa fa-trash-o icon-trash',
                 information : list.join( '<br />' ) +
                               '<p>&nbsp;</p>'+
@@ -1452,7 +1534,9 @@ define('controls/packages/Panel', [
                                   Locale.get( lg, 'packages.server.win.remove.information' ) +
                               '</p>',
                 autoclose : false,
-                list : list,
+                list      : list,
+                maxWidth  : 640,
+                maxheight : 360,
                 events :
                 {
                     onSubmit : function(Win)
@@ -1812,7 +1896,7 @@ define('controls/packages/Panel', [
 
                         Content.set( 'html', html );
 
-
+                        // #locale
                         Content.getElement( '.sum-ok' ).set( 'html', sumOk +' Dateien ok.' );
                         Content.getElement( '.sum-error' ).set( 'html', sumError +' Dateien fehlerhaft.' );
                         Content.getElement( '.sum-notFound' ).set( 'html', sumNotFo +' Dateien konnten nicht geprüft werden.' );
@@ -1844,6 +1928,5 @@ define('controls/packages/Panel', [
                 self.Loader.hide();
             });
         }
-
     });
 });
