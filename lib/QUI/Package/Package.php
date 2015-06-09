@@ -108,7 +108,8 @@ class Package extends QUI\QDOM
     }
 
     /**
-     * Return the dir for the package
+     * Return the var dir for the package
+     * you can use the var dir for not accessible files
      *
      * @return string
      */
