@@ -71,8 +71,12 @@ class Htaccess extends QUI\System\Console\Tool
 # (____\/_)(_______)\_______/(____\/_)(____\/_)(_______/|/   \__/
 #
 # Generated HTACCESS File via QUIQQER
-# Date: '.date('Y-m-d H:i:s');
-
+# Date: '.date('Y-m-d H:i:s') .'
+#
+# Command to create new htaccess:
+# php quiqqer.php --username="" --password="" --tool=quiqqer:htaccess
+#';
+        
         $htaccessContent .= $this->_template();
 
         file_put_contents($htaccessFile, $htaccessContent);
@@ -93,7 +97,6 @@ class Htaccess extends QUI\System\Console\Tool
         $URL_BIN_DIR = ltrim(URL_BIN_DIR, '/');
         $URL_SYS_DIR = ltrim(URL_SYS_DIR, '/');
         $URL_VAR_DIR = ltrim(URL_VAR_DIR, '/');
-        $URL_OPT_DIR = ltrim(URL_OPT_DIR, '/');
 
         $quiqqerLib = URL_OPT_DIR.'quiqqer/quiqqer/lib';
         $quiqqerBin = URL_OPT_DIR.'quiqqer/quiqqer/bin';
@@ -113,7 +116,7 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteRule ^{$URL_SYS_DIR}(.*)$ {$quiqqerSys}/$1 [L]
 
     RewriteCond %{REQUEST_FILENAME} !^.*bin/
-    RewriteRule ^.*{$URL_VAR_DIR}|^.*{$URL_OPT_DIR}|^.*media/sites/ / [L]
+    RewriteRule ^.*{$URL_VAR_DIR}|^.*media/sites/ / [L]
     RewriteRule ^/(.*)     /$
 
     RewriteCond %{REQUEST_FILENAME} !-f
