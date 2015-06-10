@@ -41,6 +41,15 @@
     border: 1px solid #dedede;
 }
 
+/** package upload window
+ =============================================== */
+
+.package-setup-entry {
+    float: left;
+    width: 100%;
+}
+
+
 /** search
  =============================================== */
 

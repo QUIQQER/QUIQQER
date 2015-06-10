@@ -91,7 +91,7 @@ define('classes/packages/Manager', [
         /**
          * Execute a system or plugin update with an internal local server
          *
-         * @param {Function} [callback] -optional
+         * @param {Function} [callback] - optional
          * @return Promise
          */
         updateWithLocalServer : function(callback)
@@ -99,6 +99,84 @@ define('classes/packages/Manager', [
             return new Promise(function(resolve, reject)
             {
                 Ajax.post('ajax_system_updateWithLocalServer', function(result)
+                {
+                    if ( typeOf(callback) === 'function' ) {
+                        callback( result );
+                    }
+
+                    resolve( result );
+                }, {
+                    onError : function(Exception) {
+                        reject( Exception );
+                    }
+                });
+            });
+        },
+
+        /**
+         * Activate the local repository
+         *
+         * @param {Function} [callback] - optional
+         * @returns {Promise}
+         */
+        activateLocalServer : function(callback)
+        {
+            return new Promise(function(resolve, reject)
+            {
+                Ajax.post('ajax_system_activateLocalServer', function()
+                {
+                    if ( typeOf(callback) === 'function' ) {
+                        callback();
+                    }
+
+                    resolve();
+                }, {
+                    onError : function(Exception) {
+                        reject( Exception );
+                    }
+                });
+            });
+        },
+
+        /**
+         * install a local package
+         *
+         * @param {String|Array} packages - name of the package
+         * @param {Function} [callback] - optional
+         * @returns {Promise}
+         */
+        installLocalPackages : function(packages, callback)
+        {
+            return new Promise(function(resolve, reject)
+            {
+                Ajax.post('ajax_system_packages_installLocalePackage', function ()
+                {
+                    if ( typeOf(callback) === 'function' ) {
+                        callback();
+                    }
+
+                    resolve();
+                }, {
+                    packages: JSON.encode(packages),
+                    onError: function ()
+                    {
+                        reject();
+                    }
+                });
+            });
+        },
+
+        /**
+         * Read the locale repository and search installable packages
+         *
+         * @param {Function} [callback] - optional
+         * @return Promise
+         */
+        readLocalRepository : function(callback)
+        {
+            return new Promise(function(resolve, reject)
+            {
+                Ajax.post('ajax_system_readLocalRepository', function(result)
                 {
                     if ( typeOf(callback) === 'function' ) {
                         callback( result );

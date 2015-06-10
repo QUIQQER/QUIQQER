@@ -28,11 +28,23 @@ define('controls/packages/Panel', [
     'qui/controls/windows/Confirm',
     'qui/controls/windows/Popup',
     'qui/controls/buttons/Button',
+    'qui/controls/elements/List',
 
     'css!controls/packages/Panel.css'
 
-],function(QUI, Locale, Ajax, PackageManager, Grid, DetailWindow, QUIPanel, QUIConfirm, QUIWindow, QUIButton)
-{
+],function(
+    QUI,
+    Locale,
+    Ajax,
+    PackageManager,
+    Grid,
+    DetailWindow,
+    QUIPanel,
+    QUIConfirm,
+    QUIWindow,
+    QUIButton,
+    QUIList
+) {
     "use strict";
 
     var lg = 'quiqqer/system';
@@ -439,8 +451,8 @@ define('controls/packages/Panel', [
 
             new QUIConfirm({
                 title     : Locale.get( lg, 'packages.update.window.title' ),
-                maxHeight : 200,
-                maxWidth  : 550,
+                maxWidth  : 640,
+                maxheight : 360,
                 texticon  : 'fa fa-angle-double-down icon-double-angle-down',
                 text      : Locale.get( lg, 'packages.update.window.text'),
                 events :
@@ -538,10 +550,19 @@ define('controls/packages/Panel', [
             var self = this;
 
             new QUIConfirm({
+                icon      : 'icon-upload-alt fa fa-upload',
                 title     : Locale.get( lg, 'packages.grid.update.btn.upload' ),
-                maxHeight : 500,
-                maxWidth  : 600,
+                maxWidth  : 640,
+                maxheight : 360,
                 autoclose : false,
+                cancel_button : {
+                    text      : Locale.get( lg, 'upload.form.btn.cancel.text' ),
+                    textimage : 'icon-remove fa fa-remove'
+                },
+                ok_button : {
+                    text      : Locale.get( lg, 'upload.form.btn.send.text' ),
+                    textimage : 'icon-upload-alt fa fa-upload'
+                },
                 events :
                 {
                     onOpen : function(Win)
@@ -551,28 +572,15 @@ define('controls/packages/Panel', [
                         require(['controls/upload/Form'], function(UploadForm)
                         {
                             var Form = new UploadForm({
-                                maxuploads : 1000,
+                                maxuploads : 100,
                                 multible   : true,
                                 sendbutton : false,
-                                styles     : {
-                                    clear  : 'both',
-                                    float  : 'left',
-                                    margin : 0,
-                                    width  : '100%'
-                                },
-                                Drops  : [],
                                 events :
                                 {
-                                    onDragenter: function(event, Elm)
-                                    {
-                                        Elm.addClass( 'highlight' );
-                                        event.stop();
-                                    },
-
                                     onComplete : function()
                                     {
                                         Win.close();
-                                        self.updateWithLocalServer();
+                                        self.installLocalPackages();
                                     }
                                 }
                             });
@@ -638,22 +646,162 @@ define('controls/packages/Panel', [
         },
 
         /**
-         * Execute an update wiith the local update server
+         * Updatethe entire quiqqer system with local packages
+         *
+         * @param {Function} [callback]  - (optional), Callback function
+         * @returns {Promise}
          */
-        updateWithLocalServer : function()
+        updateWithLocalPackages : function(callback)
+        {
+            var Prom = QUI.getMessageHandler().then(function(MH) {
+                return MH.addLoading('Updates werden installiert...');
+            });
+
+            Prom.then(function(Loading)
+            {
+                return this.$Manager.updateWithLocalServer().then(function()
+                {
+                    Loading.finish( Locale.get( lg, 'message.update.successfull' ) );
+
+                    if (typeOf(callback) === 'function') {
+                        callback();
+                    }
+
+                }, function() {
+                    Loading.finish( Locale.get( lg, 'message.update.error' ) );
+                });
+
+            }.bind(this));
+
+            return Prom;
+        },
+
+        /**
+         * install new local packages
+         *
+         * @returns {Promise}
+         */
+        installLocalPackages : function()
         {
             var self = this;
 
-            QUI.getMessageHandler().then(function(MH)
+            return new Promise(function(resolve, reject)
             {
-                return MH.addLoading('Setup wird durchgeführt...');
+                self.$Manager.readLocalRepository(function(result)
+                {
+                    if (!result || !result.length) {
+                        self.updateWithLocalPackages().then(resolve);
+                        return;
+                    }
 
-            }).then(function(Loading) {
-                self.$Manager.updateWithLocalServer(function() {
-                    Loading.finish( Locale.get( lg, 'message.setup.successfull' ) );
+                    // #locale
+                    new QUIConfirm({
+                        icon: 'fa fa-hdd-o icon-hdd',
+                        title : 'Es wurden neue Pakete gefunden',
+                        autoclose : false,
+                        maxWidth: 640,
+                        maxheight: 360,
+                        cancel_button : {
+                            text      : 'Installation abbrechen',
+                            textimage : 'icon-remove fa fa-remove'
+                        },
+                        ok_button : {
+                            text      : 'Installation starten',
+                            textimage : 'fa fa-hdd-o icon-hdd'
+                        },
+                        events :
+                        {
+                            onOpen : function(Win)
+                            {
+                                var i, len, pkg;
+
+                                var Content = Win.getContent(),
+                                    Submit  = Win.getButton('submit');
+
+                                Content.set(
+                                    'html',
+                                    '<p>Wählen Se bitte die zu installierenden Pakete aus</p><br />'
+                                );
+
+                                Content.addClass('package-setup');
+                                Submit.disable();
+
+                                Win.$__List = new QUIList({
+                                    checkboxes : true,
+                                    events : {
+                                        onClick : function(List)
+                                        {
+                                            if (List.getSelectedData().length) {
+                                                Submit.enable();
+                                            } else {
+                                                Submit.disable();
+                                            }
+                                        }
+                                    }
+                                });
+
+                                for (i = 0, len = result.length; i < len; i++)
+                                {
+                                    pkg = result[ i ];
+
+                                    Win.$__List.addItem({
+                                        icon  : '',
+                                        title : pkg.name,
+                                        text  : pkg.description,
+                                        version : pkg.version
+                                    });
+                                }
+
+                                Win.$__List.inject(Content);
+                            },
+
+                            onSubmit : function(Win)
+                            {
+                                Win.Loader.show();
+
+                                var packages = {};
+                                var items = Win.$__List.getSelectedData();
+
+                                for (var i = 0, len = items.length; i < len; i++) {
+                                    packages[items[i].title] = items[i].version || '*';
+                                }
+
+                                var LoadMessage;
+
+                                QUI.getMessageHandler().then(function(MH)
+                                {
+                                    Win.close();
+
+                                    return MH.addLoading('Setup wird durchgeführt...');
+
+                                }).then(function(Loading) {
+
+                                    LoadMessage = Loading;
+
+                                    return self.$Manager.activateLocalServer();
+
+                                }).then(function() {
+                                    return self.$Manager.installLocalPackages(packages);
+
+                                }).then(function()
+                                {
+                                    LoadMessage.finish(
+                                        Locale.get( lg, 'message.setup.successfull' )
+                                    );
+
+                                    resolve();
+                                });
+                            },
+
+                            onCancel : function() {
+                                reject();
+                            }
+                        }
+                    }).open();
                 });
             });
         },
+
 
         /**
          * Update button click
@@ -1069,7 +1217,7 @@ define('controls/packages/Panel', [
                 {
                     for ( var i = 0, len = result.data.length; i < len; i++ )
                     {
-                        if ( result.data[ i ].isInstalled ) {
+                        if ( "isInstalled" in result.data[ i ] ) {
                             continue;
                         }
 
@@ -1145,21 +1293,20 @@ define('controls/packages/Panel', [
                 self = this;
 
             new QUIConfirm({
-                maxTimeout : 120000, // wait max. 2 minutes
                 title : Locale.get( lg, 'packages.server.win.install.package.title' ),
                 icon : 'icon-download',
                 text : Locale.get( lg, 'packages.server.win.install.package.text', {
                     'package' : pkg
                 }),
                 texticon  : 'icon-download',
-                Control   : this,
+                maxTimeout : 120000, // wait max. 2 minutes
                 autoclose : false,
-
+                maxWidth  : 640,
+                maxheight : 360,
                 ok_button : {
                     textimage : 'icon-download',
                     text : Locale.get( lg, 'packages.server.win.install.submit.btn' )
                 },
-
                 events :
                 {
                     onDrawEnd : function(Win)
@@ -1201,7 +1348,7 @@ define('controls/packages/Panel', [
                             Win.close();
                             self.startSearch();
                         }, {
-                            'package' : pkg
+                            packages : pkg
                         });
                     }
                 }
@@ -1392,6 +1539,8 @@ define('controls/packages/Panel', [
                               '</form>',
 
                 autoclose : false,
+                maxWidth  : 640,
+                maxheight : 360,
                 events    :
                 {
                     onDrawEnd : function(Win)
@@ -1443,8 +1592,8 @@ define('controls/packages/Panel', [
 
             new QUIConfirm({
                 title : Locale.get( lg, 'packages.server.win.remove.title' ),
-                icon : 'fa fa-trash-o icon-trash',
-                text : Locale.get( lg, 'packages.server.win.remove.text' ),
+                icon  : 'fa fa-trash-o icon-trash',
+                text  : Locale.get( lg, 'packages.server.win.remove.text' ),
                 texticon    : 'fa fa-trash-o icon-trash',
                 information : list.join( '<br />' ) +
                               '<p>&nbsp;</p>'+
@@ -1452,7 +1601,9 @@ define('controls/packages/Panel', [
                                   Locale.get( lg, 'packages.server.win.remove.information' ) +
                               '</p>',
                 autoclose : false,
-                list : list,
+                list      : list,
+                maxWidth  : 640,
+                maxheight : 360,
                 events :
                 {
                     onSubmit : function(Win)
@@ -1812,7 +1963,7 @@ define('controls/packages/Panel', [
 
                         Content.set( 'html', html );
 
-
+                        // #locale
                         Content.getElement( '.sum-ok' ).set( 'html', sumOk +' Dateien ok.' );
                         Content.getElement( '.sum-error' ).set( 'html', sumError +' Dateien fehlerhaft.' );
                         Content.getElement( '.sum-notFound' ).set( 'html', sumNotFo +' Dateien konnten nicht geprüft werden.' );
@@ -1844,6 +1995,5 @@ define('controls/packages/Panel', [
                 self.Loader.hide();
             });
         }
-
     });
 });

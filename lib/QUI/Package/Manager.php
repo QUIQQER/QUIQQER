@@ -26,6 +26,7 @@ if (!defined('JSON_UNESCAPED_UNICODE')) {
 
 use Composer\Console\Application;
 use Composer\Package\Package;
+use QUI\Utils\System\File;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\Console\ConsoleEvents;
@@ -269,7 +270,8 @@ class Manager extends QUI\QDOM
     protected function _createComposerJSON()
     {
         if (file_exists($this->_composer_json)) {
-            $composerJson = json_decode($this->_composer_json);
+            $composerJson
+                = json_decode(file_get_contents($this->_composer_json));
         } else {
             $template = file_get_contents(
                 dirname(__FILE__).'/composer.tpl'
@@ -282,7 +284,7 @@ class Manager extends QUI\QDOM
         $composerJson->config = array(
             "vendor-dir"    => OPT_DIR,
             "cache-dir"     => $this->_vardir,
-            "component-dir" => OPT_DIR .'bin',
+            "component-dir" => OPT_DIR.'bin',
             "quiqqer-dir"   => CMS_DIR
         );
 
@@ -607,12 +609,12 @@ class Manager extends QUI\QDOM
      */
     public function install($package, $version = false)
     {
+        QUI\System\Log::addDebug(
+            'Install package '.$package.' with Lock Client'
+        );
+
         $this->createComposerBackup();
         $this->_checkComposer();
-
-        if (!$version) {
-            $version = 'dev-master';
-        }
 
         try {
 
@@ -629,7 +631,7 @@ class Manager extends QUI\QDOM
             );
 
             if (!isset($composer['require'][$package])) {
-                $composer['require'][$package] = $version;
+                $composer['require'][$package] = $version ? $version : '*';
 
                 file_put_contents(
                     $this->_composer_json,
@@ -649,10 +651,41 @@ class Manager extends QUI\QDOM
             QUI\System\Log::addDebug('LOCK Server Error');
             QUI\System\Log::addDebug($Exception->getMessage());
 
+            $this->installWithoutLockClient($package, $version);
+
+            return;
+        }
+
+        $this->getInstalledPackage($package)->install();
+
+        // execute setup of all packages
+        $this->setup($package);
+    }
+
+    /**
+     * Install Package
+     *
+     * @param String      $package - name of the package
+     * @param String|bool $version - (optional) version of the package default = dev-master
+     */
+    public function installWithoutLockClient($package, $version = false)
+    {
+        QUI\System\Log::addDebug(
+            'Install package '.$package.' without Lock Client'
+        );
+
+        if ($version) {
+
             $this->_execComposer('require', array(
                 'packages' => array(
                     $package.':'.$version
                 )
+            ));
+
+        } else {
+
+            $this->_execComposer('require', array(
+                'packages' => $package
             ));
         }
 
@@ -906,47 +939,7 @@ class Manager extends QUI\QDOM
      */
     public function refreshServerList()
     {
-        $this->_checkComposer();
-
-        $json = $this->_getComposerJSON();
-
-
-        // make the repository list
-        $servers = $this->getServerList();
-        $repositories = array();
-
-        foreach ($servers as $server => $params) {
-            if ($server == 'packagist') {
-                continue;
-            }
-
-            if (!isset($params['active']) || $params['active'] != 1) {
-                continue;
-            }
-
-            $repositories[] = array(
-                'type' => $params['type'],
-                'url'  => $server
-            );
-        }
-
-        if (isset($servers['packagist'])
-            && $servers['packagist']['active'] == 0
-        ) {
-            $repositories[] = array(
-                'packagist' => false
-            );
-        }
-
-
-        $json['repositories'] = $repositories;
-        $json = json_encode($json, \JSON_PRETTY_PRINT);
-
-        if (file_exists($this->_composer_json)) {
-            unlink($this->_composer_json);
-        }
-
-        file_put_contents($this->_composer_json, $json);
+        $this->_createComposerJSON();
     }
 
     /**
@@ -1254,6 +1247,21 @@ class Manager extends QUI\QDOM
     }
 
     /**
+     * activate the locale repository,
+     * if the repository is not in the server list, the repository would be added
+     */
+    public function activateLocalServer()
+    {
+        $serverDir = $this->_getUploadPackageDir();
+
+        $this->addServer($serverDir, array(
+            "type" => "artifact"
+        ));
+
+        $this->setServerStatus($serverDir, 1);
+    }
+
+    /**
      * Update a package or the entire system from a package archive
      *
      * @param String|Boolean $package - Name of the package
@@ -1262,56 +1270,14 @@ class Manager extends QUI\QDOM
      */
     public function updateWithLocalRepository($package = false)
     {
-        $serverDir = $this->_getUploadPackageDir();
-
-        if (!is_dir($serverDir)) {
-            throw new QUI\Exception('Locale Repository not found');
-        }
-
         // backup
         $this->createComposerBackup();
 
-        // add local repository if it not in the server list
-        $serverList = $this->getServerList();
-
-        if (!is_string($package)) {
-            $package = false;
-        }
-
-        $localArchivContains = false;
-
-        foreach ($serverList as $server => $entry) {
-            if (!$entry['active']) {
-                continue;
-            }
-
-            if (!isset($entry['type'])) {
-                continue;
-            }
-
-            if ($server == $serverDir && $entry['type'] == 'artifact') {
-                $localArchivContains = true;
-                break;
-            }
-        }
-
-        if ($localArchivContains === false) {
-            $this->addServer($serverDir, array(
-                "type" => "artifact"
-            ));
-
-            $this->setServerStatus($serverDir, 1);
-        }
-
+        // activate local repos
+        $this->activateLocalServer();
 
         // execute update
         $this->update($package);
-
-
-        // remove the local server
-        if ($localArchivContains === false) {
-            $this->removeServer($serverDir);
-        }
     }
 
     /**
@@ -1477,7 +1443,7 @@ class Manager extends QUI\QDOM
         $updatePath = QUI::conf('update', 'updatePath');
 
         if (!empty($updatePath) && is_dir($updatePath)) {
-            return $updatePath;
+            return rtrim($updatePath, '/').'/';
         }
 
         return QUI::getTemp()->createFolder('quiqqerUpdate');
@@ -1515,5 +1481,66 @@ class Manager extends QUI\QDOM
         }
 
         QUIFile::move($file, $tempFile);
+    }
+
+    /**
+     * Read the locale repository and search installable packages
+     *
+     * @return array
+     */
+    public function readLocalRepository()
+    {
+        $dir = $this->_getUploadPackageDir();
+
+        if (!is_dir($dir)) {
+            return array();
+        }
+
+        $files = File::readDir($dir);
+        $result = array();
+
+        chdir($dir);
+
+        foreach ($files as $package) {
+
+            try {
+                $composerJson = file_get_contents(
+                    "zip://{$package}#composer.json"
+                );
+
+            } catch (\Exception $Exception) {
+
+                // maybe gitlab package?
+                try {
+                    $packageName = pathinfo($package);
+                    $composerJson = file_get_contents(
+                        "zip://{$package}#{$packageName['filename']}/composer.json"
+                    );
+
+                } catch (\Exception $Exception) {
+
+                    QUI\System\Log::addDebug($Exception->getMessage());
+                    continue;
+                }
+            }
+
+            if (empty($composerJson)) {
+                continue;
+            }
+
+            $composerJson = json_decode($composerJson, true);
+
+            if (!isset($composerJson['name'])) {
+                continue;
+            }
+
+            if (is_dir(OPT_DIR.$composerJson['name'])) {
+                continue;
+            }
+
+            $result[] = $composerJson;
+        }
+
+        return $result;
     }
 }
