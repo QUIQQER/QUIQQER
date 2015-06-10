@@ -612,8 +612,8 @@ class Manager extends QUI\QDOM
         $this->createComposerBackup();
         $this->_checkComposer();
 
-        if (!$version) {
-            $version = 'dev-master';
+        if (!$version || empty($version)) {
+            $version = '*';
         }
 
         try {
@@ -1216,6 +1216,21 @@ class Manager extends QUI\QDOM
     }
 
     /**
+     * activate the locale repository,
+     * if the repository is not in the server list, the repository would be added
+     */
+    public function activateLocalServer()
+    {
+        $serverDir = $this->_getUploadPackageDir();
+
+        $this->addServer($serverDir, array(
+            "type" => "artifact"
+        ));
+
+        $this->setServerStatus($serverDir, 1);
+    }
+
+    /**
      * Update a package or the entire system from a package archive
      *
      * @param String|Boolean $package - Name of the package
@@ -1224,58 +1239,14 @@ class Manager extends QUI\QDOM
      */
     public function updateWithLocalRepository($package = false)
     {
-        $serverDir = $this->_getUploadPackageDir();
-
-        if (!is_dir($serverDir)) {
-            throw new QUI\Exception('Locale Repository not found');
-        }
-
         // backup
         $this->createComposerBackup();
 
-        // add local repository if it not in the server list
-        $serverList = $this->getServerList();
-
-        if (!is_string($package)) {
-            $package = false;
-        }
-
-        $localArchivContains = false;
-
-        foreach ($serverList as $server => $entry) {
-            if (!$entry['active']) {
-                continue;
-            }
-
-            if (!isset($entry['type'])) {
-                continue;
-            }
-
-            if ($server == $serverDir && $entry['type'] == 'artifact') {
-                $localArchivContains = true;
-                break;
-            }
-        }
-
-        if ($localArchivContains === false) {
-            $this->addServer($serverDir, array(
-                "type" => "artifact"
-            ));
-
-            $this->setServerStatus($serverDir, 1);
-        } else {
-            $this->_createComposerJSON();
-        }
-
+        // activate local repos
+        $this->activateLocalServer();
 
         // execute update
         $this->update($package);
-
-
-        // remove the local server
-        if ($localArchivContains === false) {
-            $this->removeServer($serverDir);
-        }
     }
 
     /**
@@ -1523,7 +1494,7 @@ class Manager extends QUI\QDOM
                     continue;
                 }
             }
-QUI\System\Log::writeRecursive($composerJson);
+
             if (empty($composerJson)) {
                 continue;
             }

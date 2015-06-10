@@ -28,11 +28,23 @@ define('controls/packages/Panel', [
     'qui/controls/windows/Confirm',
     'qui/controls/windows/Popup',
     'qui/controls/buttons/Button',
+    'qui/controls/elements/List',
 
     'css!controls/packages/Panel.css'
 
-],function(QUI, Locale, Ajax, PackageManager, Grid, DetailWindow, QUIPanel, QUIConfirm, QUIWindow, QUIButton)
-{
+],function(
+    QUI,
+    Locale,
+    Ajax,
+    PackageManager,
+    Grid,
+    DetailWindow,
+    QUIPanel,
+    QUIConfirm,
+    QUIWindow,
+    QUIButton,
+    QUIList
+) {
     "use strict";
 
     var lg = 'quiqqer/system';
@@ -648,8 +660,6 @@ define('controls/packages/Panel', [
 
             }).then(function(Loading)
             {
-
-                return;
                 this.$Manager.updateWithLocalServer(function() {
                     Loading.finish( Locale.get( lg, 'message.setup.successfull' ) );
                 });
@@ -673,35 +683,63 @@ define('controls/packages/Panel', [
                     }
 
                     new QUIConfirm({
+                        icon: 'fa fa-hdd-o icon-hdd',
                         title : 'Es wurden neue Pakete gefunden',
                         autoclose : false,
                         maxWidth: 640,
                         maxheight: 360,
+                        cancel_button : {
+                            text      : 'Installation abbrechen',
+                            textimage : 'icon-remove fa fa-remove'
+                        },
+                        ok_button : {
+                            text      : 'Installation starten',
+                            textimage : 'fa fa-hdd-o icon-hdd'
+                        },
                         events :
                         {
                             onOpen : function(Win)
                             {
                                 var i, len, pkg;
-                                var Content = Win.getContent();
 
-                                Content.set('html', '');
+                                var Content = Win.getContent(),
+                                    Submit  = Win.getButton('submit');
+
+                                Content.set(
+                                    'html',
+                                    '<p>Wählen Se bitte die zu installierenden Pakete aus</p><br />'
+                                );
+
                                 Content.addClass('package-setup');
+                                Submit.disable();
+
+                                Win.$__List = new QUIList({
+                                    checkboxes : true,
+                                    events : {
+                                        onClick : function(List)
+                                        {
+                                            if (List.getSelectedData().length) {
+                                                Submit.enable();
+                                            } else {
+                                                Submit.disable();
+                                            }
+                                        }
+                                    }
+                                });
 
                                 for (i = 0, len = result.length; i < len; i++)
                                 {
                                     pkg = result[ i ];
 
-                                    new Element('div', {
-                                        'class' : 'package-setup-entry',
-                                        html : '<p class="package-setup-entry-title">'+
-                                                   '<input type="checkbox" name="'+ pkg.name +'" value="'+ pkg.version +'" />' +
-                                                   pkg.name +
-                                               '</p>'+
-                                               '<p class="package-setup-entry-description">'+
-                                                   pkg.description +
-                                               '</p>'
-                                    }).inject(Content);
+                                    Win.$__List.addItem({
+                                        icon  : '',
+                                        title : pkg.name,
+                                        text  : pkg.description,
+                                        version : pkg.version
+                                    });
                                 }
+
+                                Win.$__List.inject(Content);
                             },
 
                             onSubmit : function(Win)
@@ -709,19 +747,22 @@ define('controls/packages/Panel', [
                                 Win.Loader.show();
 
                                 var packages = {};
-                                var list = Win.getContent().getElements('input:checked');
+                                var items = Win.$__List.getSelectedData();
 
-                                for (var i = 0, len = list.length; i < len; i++) {
-                                    packages[ list[i].get('name') ] = list[i].get('value');
+                                for (var i = 0, len = items.length; i < len; i++) {
+                                    packages[items[i].title] = items[i].version || '*';
                                 }
 
-                                Ajax.get('ajax_system_packages_install', function()
+                                Ajax.post('ajax_system_activateLocalServer', function()
                                 {
-                                    Win.close();
+                                    Ajax.post('ajax_system_packages_install', function()
+                                    {
+                                        Win.close();
 
-                                    resolve();
-                                }, {
-                                    packages : packages
+                                        resolve();
+                                    }, {
+                                        packages : packages
+                                    });
                                 });
                             },
 
@@ -1150,7 +1191,7 @@ define('controls/packages/Panel', [
                 {
                     for ( var i = 0, len = result.data.length; i < len; i++ )
                     {
-                        if ( result.data[ i ].isInstalled ) {
+                        if ( "isInstalled" in result.data[ i ] ) {
                             continue;
                         }
 
