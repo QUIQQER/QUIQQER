@@ -76,7 +76,7 @@ class Htaccess extends QUI\System\Console\Tool
 # Command to create new htaccess:
 # php quiqqer.php --username="" --password="" --tool=quiqqer:htaccess
 #';
-        
+
         $htaccessContent .= $this->_template();
 
         file_put_contents($htaccessFile, $htaccessContent);

@@ -964,8 +964,9 @@ class Manager extends QUI\QDOM
      *
      * @param String $server - Server, IP, Host
      * @param Bool   $status - 1 = active, 0 = disabled
+     * @param Bool   $backup - Optional (default=true, create a backup, false = create no backup
      */
-    public function setServerStatus($server, $status)
+    public function setServerStatus($server, $status, $backup=true)
     {
         $Config = QUI::getConfig('etc/source.list.ini.php');
         $status = (bool)$status ? 1 : 0;
@@ -973,7 +974,10 @@ class Manager extends QUI\QDOM
         $Config->setValue($server, 'active', $status);
         $Config->save();
 
-        $this->createComposerBackup();
+        if ($backup) {
+            $this->createComposerBackup();
+        }
+
         $this->_createComposerJSON();
     }
 
@@ -1273,11 +1277,33 @@ class Manager extends QUI\QDOM
         // backup
         $this->createComposerBackup();
 
+        // deactivate active servers
+        $activeServers = array();
+        $serverList = $this->getServerList();
+
+        foreach ($serverList as $server => $data) {
+            if ($data['active'] == 1) {
+                $activeServers[] = $server;
+            }
+        }
+
+        foreach ($activeServers as $server) {
+            $this->setServerStatus($server, 0, false);
+        }
+
         // activate local repos
         $this->activateLocalServer();
 
         // execute update
         $this->update($package);
+
+
+        // activate active servers
+        foreach ($activeServers as $server) {
+            $this->setServerStatus($server, 1, false);
+        }
+
+        $this->_createComposerJSON();
     }
 
     /**
