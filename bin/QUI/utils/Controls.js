@@ -296,7 +296,11 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function()
                     for ( i = 0, len = elements.length; i < len; i++ )
                     {
                         Child    = elements[i];
-                        Parent   = new Element('div').wraps(Child);
+                        Parent   = new Element('div', {
+                            styles : {
+                                'float' : 'left'
+                            }
+                        }).wraps(Child);
                         datetime = Parent.getElement('input[type="datetime"]') ? true : false;
 
                         if ( datetime )
@@ -362,8 +366,8 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function()
 
                         new QUIButton({
                             image: 'icon-remove',
-                            alt: 'Datum leeren',
-                            title: 'Datum leeren',
+                            alt: 'Datum leeren', // #locale
+                            title: 'Datum leeren', // #locale
                             Input: Child,
                             events: {
                                 onClick: function (Btn) {
@@ -384,6 +388,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function()
                     {
                         QUI.getMessageHandler(function (MH)
                         {
+                            // #locale
                             MH.addAttention(
                                 'Das Kalender Packet konnte nicht gefunden werden.' +
                                 'Bitte installieren Sie quiqqer/calendar'
