@@ -14,6 +14,7 @@ use Html2Text\Html2Text;
  *
  * @author   www.pcsg.de (Moritz Scholz)
  * @author   www.pcsg.de (Henning Leutz)
+ * @licence  For copyright and license information, please view the /README.md
  *
  * @requires phpmailer/phpmailer
  *

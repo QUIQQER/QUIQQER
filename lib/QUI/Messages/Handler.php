@@ -12,9 +12,10 @@ use QUI\Utils\Security\Orthos;
 
 /**
  * Message Handler for QUIQQER
- * @author www.pcsg.de (Henning Leutz)
+ *
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  */
-
 class Handler
 {
     protected $_messages = array();
@@ -24,7 +25,7 @@ class Handler
      */
     static function Table()
     {
-        return QUI_DB_PRFX .'messages';
+        return QUI_DB_PRFX.'messages';
     }
 
     /**
@@ -53,14 +54,15 @@ class Handler
      * Return all new messages for an user and delete it in the queue
      *
      * @param \QUI\Users\User|\QUI\Users\Nobody $User
+     *
      * @return array
      */
     public function getNewMessages($User)
     {
         $result = $this->_messages;
 
-        if ( !$User->getId() ) {
-             return $result;
+        if (!$User->getId()) {
+            return $result;
         }
 
         $list = QUI::getDataBase()->fetch(array(
@@ -74,35 +76,33 @@ class Handler
             'uid' => $User->getId()
         ));
 
-        foreach ( $list as $entry )
-        {
+        foreach ($list as $entry) {
             $str = $entry['message'];
 
-            switch ( $entry['mtype'] )
-            {
+            switch ($entry['mtype']) {
                 case 'QUI\\Messages\\Attention':
                     $Message = new Attention(array(
                         'message' => $str
                     ));
-                break;
+                    break;
 
                 case 'QUI\\Messages\\Error':
                     $Message = new Error(array(
                         'message' => $str
                     ));
-                break;
+                    break;
 
                 case 'QUI\\Messages\\Information':
                     $Message = new Information(array(
                         'message' => $str
                     ));
-                break;
+                    break;
 
                 case 'QUI\\Messages\\Success':
                     $Message = new Success(array(
                         'message' => $str
                     ));
-                break;
+                    break;
 
                 default:
                     $Message = new Message(array(
@@ -122,15 +122,16 @@ class Handler
      * Return the messages list as pure array
      *
      * @param \QUI\Users\User|\QUI\Users\Nobody $User
+     *
      * @return array
      */
     public function getMessagesAsArray($User)
     {
-        $result   = array();
-        $messages = $this->getNewMessages( $User );
+        $result = array();
+        $messages = $this->getNewMessages($User);
 
         /* @var $Message Message */
-        foreach ( $messages as $Message ) {
+        foreach ($messages as $Message) {
             $result[] = $Message->getAttributes();
         }
 
@@ -144,7 +145,7 @@ class Handler
      */
     public function addMessage($Message)
     {
-        $this->_messages[ $Message->getHash() ] = $Message;
+        $this->_messages[$Message->getHash()] = $Message;
     }
 
     /**
@@ -206,13 +207,13 @@ class Handler
     /**
      * Send a message to an user and save it to the database
      *
-     * @param User $User
+     * @param User                  $User
      * @param \QUI\Messages\Message $Message
      */
     public function sendMessage(User $User, Message $Message)
     {
         $message = $Message->getMessage();
-        $message = Orthos::clearMySQL( $message );
+        $message = Orthos::clearMySQL($message);
 
         QUI::getDataBase()->insert(self::Table(), array(
             'uid'     => $User->getId(),
@@ -226,7 +227,7 @@ class Handler
     /**
      * Send an information to an user and save it to the database
      *
-     * @param User $User
+     * @param User   $User
      * @param String $str
      */
     public function sendAttention(User $User, $str)
@@ -242,7 +243,7 @@ class Handler
     /**
      * Send an error to an user and save it to the database
      *
-     * @param User $User
+     * @param User   $User
      * @param String $str
      */
     public function sendError(User $User, $str)
@@ -258,7 +259,7 @@ class Handler
     /**
      * Send a information to an user and save it to the database
      *
-     * @param User $User
+     * @param User   $User
      * @param String $str
      */
     public function sendInformation(User $User, $str)
@@ -274,7 +275,7 @@ class Handler
     /**
      * Send a success message to an user and save it to the database
      *
-     * @param User $User
+     * @param User   $User
      * @param String $str
      */
     public function sendSuccess(User $User, $str)

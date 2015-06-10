@@ -17,6 +17,7 @@ use QUI\Utils\String as String;
  *
  * @package quiqqer/quiqqer
  * @author  www.pcsg.de (Patrick Müller)
+ * @licence For copyright and license information, please view the /README.md
  */
 class DBCheck extends QUI\System\Test
 {

@@ -15,12 +15,14 @@ use QUI;
  * If you register event and the callback function is a string,
  * the callback function would be set to the database
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  */
 class Manager implements QUI\Interfaces\Events
 {
     /**
      * Site Events
+     *
      * @var Array
      */
     protected $_siteEvents = array();
@@ -32,9 +34,8 @@ class Manager implements QUI\Interfaces\Events
     {
         $this->_Events = new Event();
 
-        try
-        {
-            if ( !QUI::getDataBase()->Table()->exist( self::Table() ) ) {
+        try {
+            if (!QUI::getDataBase()->Table()->exist(self::Table())) {
                 return;
             }
 
@@ -45,8 +46,7 @@ class Manager implements QUI\Interfaces\Events
                 )
             ));
 
-            foreach ( $list as $params )
-            {
+            foreach ($list as $params) {
                 $this->_Events->addEvent(
                     $params['event'],
                     $params['callback']
@@ -65,8 +65,7 @@ class Manager implements QUI\Interfaces\Events
 
             $this->_siteEvents = $list;
 
-        } catch ( QUI\Database\Exception $Exception )
-        {
+        } catch (QUI\Database\Exception $Exception) {
 
         }
     }
@@ -78,7 +77,7 @@ class Manager implements QUI\Interfaces\Events
      */
     static function Table()
     {
-        return QUI_DB_PRFX .'events';
+        return QUI_DB_PRFX.'events';
     }
 
     /**
@@ -121,15 +120,15 @@ class Manager implements QUI\Interfaces\Events
      * Return a complete list of registered events for a specific site type
      *
      * @param String $type
+     *
      * @return Array
      */
     public function getSiteListByType($type)
     {
         $result = array();
 
-        foreach ( $this->_siteEvents as $event )
-        {
-            if ( $event['sitetype'] == $type ) {
+        foreach ($this->_siteEvents as $event) {
+            if ($event['sitetype'] == $type) {
                 $result[] = $type;
             }
         }
@@ -144,21 +143,20 @@ class Manager implements QUI\Interfaces\Events
      *
      * @example $EventManager->addEvent('myEvent', function() { });
      *
-     * @param String $event - The type of event (e.g. 'complete').
-     * @param callback $fn - The function to execute.
+     * @param String   $event - The type of event (e.g. 'complete').
+     * @param callback $fn    - The function to execute.
      */
     public function addEvent($event, $fn)
     {
         // add the event to the db
-        if ( is_string( $fn ) )
-        {
+        if (is_string($fn)) {
             QUI::getDataBase()->insert(self::Table(), array(
                 'event'    => $event,
                 'callback' => $fn
             ));
         }
 
-        $this->_Events->addEvent( $event, $fn );
+        $this->_Events->addEvent($event, $fn);
     }
 
     /**
@@ -166,13 +164,13 @@ class Manager implements QUI\Interfaces\Events
      *
      * @example $EventManager->addEvent('onSave', '\Namespace\Class::exec', 'quiqqer/blog:blog/entry' });
      *
-     * @param String $event - The type of event (e.g. 'complete').
-     * @param callback $fn - The function to execute.
-     * @param String $sitetype - type of the site
+     * @param String   $event    - The type of event (e.g. 'complete').
+     * @param callback $fn       - The function to execute.
+     * @param String   $sitetype - type of the site
      */
     public function addSiteEvent($event, $fn, $sitetype)
     {
-        if ( !is_string( $fn ) ) {
+        if (!is_string($fn)) {
             return;
         }
 
@@ -190,29 +188,27 @@ class Manager implements QUI\Interfaces\Events
      */
     public function addEvents(array $events)
     {
-        $this->_Events->addEvents( $events );
+        $this->_Events->addEvents($events);
     }
 
     /**
      * Removes an event from the stack of events
      * It remove the events from the database, too.
      *
-     * @param String $event - The type of event (e.g. 'complete').
-     * @param callback|bool $fn - (optional) The function to remove.
+     * @param String        $event - The type of event (e.g. 'complete').
+     * @param callback|bool $fn    - (optional) The function to remove.
      */
-    public function removeEvent($event, $fn=false)
+    public function removeEvent($event, $fn = false)
     {
-        $this->_Events->removeEvent( $event, $fn );
+        $this->_Events->removeEvent($event, $fn);
 
-        if ( $fn === false )
-        {
+        if ($fn === false) {
             QUI::getDataBase()->delete(self::Table(), array(
                 'event' => $event
             ));
         }
 
-        if ( is_string( $fn ) )
-        {
+        if (is_string($fn)) {
             QUI::getDataBase()->delete(self::Table(), array(
                 'event'    => $event,
                 'callback' => $fn
@@ -229,30 +225,31 @@ class Manager implements QUI\Interfaces\Events
      */
     public function removeEvents(array $events)
     {
-        $this->_Events->removeEvents( $events );
+        $this->_Events->removeEvents($events);
     }
 
     /**
      * (non-PHPdoc)
+     *
      * @see \QUI\Interfaces\Events::fireEvent()
      *
-     * @param string $event - The type of event (e.g. 'onComplete').
-     * @param array|bool $args   - (optional) the argument(s) to pass to the function.
-     *                        The arguments must be in an array.
+     * @param string     $event - The type of event (e.g. 'onComplete').
+     * @param array|bool $args  - (optional) the argument(s) to pass to the function.
+     *                          The arguments must be in an array.
      */
-    public function fireEvent($event, $args=false)
+    public function fireEvent($event, $args = false)
     {
-        $this->_Events->fireEvent( $event, $args );
+        $this->_Events->fireEvent($event, $args);
 
         // event onFireEvent
-        if ( !is_array( $args ) ) {
+        if (!is_array($args)) {
             $args = array();
         }
 
-        array_unshift( $args, array(
+        array_unshift($args, array(
             'event' => $event
-        ) );
+        ));
 
-        $this->_Events->fireEvent( 'onFireEvent', $args );
+        $this->_Events->fireEvent('onFireEvent', $args);
     }
 }

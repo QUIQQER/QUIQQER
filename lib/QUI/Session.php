@@ -19,7 +19,8 @@ use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHa
  * based at symfony session handler
  * http://symfony.com/doc/current/components/http_foundation/sessions.html
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  */
 class Session
 {
@@ -119,7 +120,8 @@ class Session
             }
 
         } else {
-            $this->_Session = new \Symfony\Component\HttpFoundation\Session\Session($this->_Storage);
+            $this->_Session
+                = new \Symfony\Component\HttpFoundation\Session\Session($this->_Storage);
         }
     }
 

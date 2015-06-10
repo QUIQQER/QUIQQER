@@ -17,6 +17,7 @@ use QUI\Utils\System\File;
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui.projects.media
+ * @licence For copyright and license information, please view the /README.md
  */
 class Image extends Item implements QUI\Interfaces\Projects\Media\File
 {
@@ -481,6 +482,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             try {
 
                 $Project = $this->getProject();
+
                 return Utils::getImageByUrl($Project->getConfig('media_watermark'));
 
             } catch (QUI\Exception $Exception) {

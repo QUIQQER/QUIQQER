@@ -12,7 +12,8 @@ use QUI;
  * CHMOD Test
  *
  * @package quiqqer/quiqqer
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  */
 class PHPVersion extends QUI\System\Test
 {
@@ -36,7 +37,7 @@ class PHPVersion extends QUI\System\Test
      */
     public function execute()
     {
-        if ( version_compare(phpversion(), '5.3', '<') ) {
+        if (version_compare(phpversion(), '5.3', '<')) {
             return self::STATUS_ERROR;
         }
 

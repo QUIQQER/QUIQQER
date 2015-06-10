@@ -12,7 +12,8 @@ use QUI;
  * ZLIB Test
  *
  * @package quiqqer/quiqqer
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  */
 class ZLIB extends QUI\System\Test
 {
@@ -36,7 +37,7 @@ class ZLIB extends QUI\System\Test
      */
     public function execute()
     {
-        if ( function_exists( 'gzcompress' ) ) {
+        if (function_exists('gzcompress')) {
             return self::STATUS_OK;
         }
 

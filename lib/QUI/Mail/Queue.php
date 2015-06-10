@@ -11,18 +11,20 @@ use QUI\Utils\System\File;
 
 /**
  * Mail queue
- * @author www.pcsg.de (Henning Leutz)
+ *
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  */
-
 class Queue
 {
     /**
      * Return the table string
+     *
      * @return string
      */
     static function Table()
     {
-        return QUI_DB_PRFX .'mailqueue';
+        return QUI_DB_PRFX.'mailqueue';
     }
 
     /**
@@ -33,81 +35,78 @@ class Queue
         $Table = QUI::getDataBase()->Table();
 
         $Table->appendFields(self::Table(), array(
-            'id'       => 'int(11) NOT NULL',
-            'subject'  => 'varchar(1000)',
-            'body'     => 'text',
-            'text'     => 'text',
-            'from'     => 'text',
-            'fromName' => 'text',
-            'ishtml'   => 'int(1)',
-
-            'mailto'  => 'text',
-            'replyto' => 'text',
-            'cc'      => 'text',
-            'bcc'     => 'text',
-
+            'id'           => 'int(11) NOT NULL',
+            'subject'      => 'varchar(1000)',
+            'body'         => 'text',
+            'text'         => 'text',
+            'from'         => 'text',
+            'fromName'     => 'text',
+            'ishtml'       => 'int(1)',
+            'mailto'       => 'text',
+            'replyto'      => 'text',
+            'cc'           => 'text',
+            'bcc'          => 'text',
             'attachements' => 'text'
         ));
 
-        $Table->setPrimaryKey( self::Table(), 'id' );
-        $Table->setAutoIncrement( self::Table(), 'id' );
+        $Table->setPrimaryKey(self::Table(), 'id');
+        $Table->setAutoIncrement(self::Table(), 'id');
     }
 
     /**
      * Return the path of the attachment directory
      *
      * @param String|Integer $mailId - ID of the Mail Queue Entry
+     *
      * @return string
      */
     static function getAttachmentDir($mailId)
     {
-        return VAR_DIR .'mailQueue/'. (int)$mailId .'/';
+        return VAR_DIR.'mailQueue/'.(int)$mailId.'/';
     }
 
     /**
      * Add a mail to the mail queue
      *
      * @param Mailer|QUI\Mail $Mail
+     *
      * @return Integer - Mailqueue-ID
      */
     static function addToQueue($Mail)
     {
         $params = $Mail->toArray();
 
-        $params['mailto']       = json_encode( $params['mailto'] );
-        $params['replyto']      = json_encode( $params['replyto'] );
-        $params['cc']           = json_encode( $params['cc'] );
-        $params['bcc']          = json_encode( $params['bcc'] );
+        $params['mailto'] = json_encode($params['mailto']);
+        $params['replyto'] = json_encode($params['replyto']);
+        $params['cc'] = json_encode($params['cc']);
+        $params['bcc'] = json_encode($params['bcc']);
 
         $attachements = array();
 
-        if ( isset( $params['attachements'] ) )
-        {
+        if (isset($params['attachements'])) {
             $attachements = $params['attachements'];
-            unset( $params['attachements'] );
+            unset($params['attachements']);
         }
 
 
-        QUI::getDataBase()->insert( self::Table(), $params );
+        QUI::getDataBase()->insert(self::Table(), $params);
 
         $newMailId = QUI::getDataBase()->getPDO()->lastInsertId('id');
 
         // attachements
-        if ( is_array( $attachements ) )
-        {
-            $mailQueueDir = self::getAttachmentDir( $newMailId );
+        if (is_array($attachements)) {
+            $mailQueueDir = self::getAttachmentDir($newMailId);
 
-            File::mkdir( $mailQueueDir );
+            File::mkdir($mailQueueDir);
 
-            foreach ( $attachements as $attachement )
-            {
-                if ( !file_exists( $attachement ) ) {
+            foreach ($attachements as $attachement) {
+                if (!file_exists($attachement)) {
                     continue;
                 }
 
-                $infos = File::getInfo( $attachement );
+                $infos = File::getInfo($attachement);
 
-                File::copy( $attachement, $mailQueueDir . $infos['basename'] );
+                File::copy($attachement, $mailQueueDir.$infos['basename']);
             }
         }
 
@@ -122,31 +121,28 @@ class Queue
     public function send()
     {
         $params = QUI::getDataBase()->fetch(array(
-            'from'   => self::Table(),
-            'limit'  => 1
+            'from'  => self::Table(),
+            'limit' => 1
         ));
 
-        if ( !isset( $params[ 0 ] ) ) {
+        if (!isset($params[0])) {
             return true;
         }
 
-        try
-        {
-            $send = $this->_sendMail( $params[ 0 ] );
+        try {
+            $send = $this->_sendMail($params[0]);
 
             // successful send
-            if ( $send )
-            {
-                QUI::getDataBase()->delete( self::Table(), array(
-                    'id' => $params[ 0 ]['id']
+            if ($send) {
+                QUI::getDataBase()->delete(self::Table(), array(
+                    'id' => $params[0]['id']
                 ));
 
                 return true;
             }
 
-        } catch ( QUI\Exception $Exception )
-        {
-            QUI\System\Log::addError( $Exception->getMessage(), 'mail_queue' );
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage(), 'mail_queue');
         }
 
         return false;
@@ -156,6 +152,7 @@ class Queue
      * Send an mail by its mailqueue id
      *
      * @param Integer $id
+     *
      * @return Bool
      * @throws QUI\Exception
      */
@@ -169,8 +166,7 @@ class Queue
             'limit' => 1
         ));
 
-        if ( !isset( $params[ 0 ] ) )
-        {
+        if (!isset($params[0])) {
             throw new QUI\Exception(
                 QUI::getLocale(
                     'system',
@@ -181,23 +177,20 @@ class Queue
         }
 
 
-        try
-        {
-            $send = $this->_sendMail( $params[ 0 ] );
+        try {
+            $send = $this->_sendMail($params[0]);
 
             // successful send
-            if ( $send )
-            {
-                QUI::getDataBase()->delete( self::Table(), array(
-                    'id' => $params[ 0 ]['id']
+            if ($send) {
+                QUI::getDataBase()->delete(self::Table(), array(
+                    'id' => $params[0]['id']
                 ));
 
                 return true;
             }
 
-        } catch ( QUI\Exception $Exception )
-        {
-            QUI\System\Log::addError( $Exception->getMessage(), 'mail_queue' );
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage(), 'mail_queue');
         }
 
         return false;
@@ -207,7 +200,9 @@ class Queue
      * Send the mail
      *
      * @throws \QUI\Exception
+     *
      * @param Array $params - mail data
+     *
      * @return Boolean
      * @todo attachments
      */
@@ -215,81 +210,78 @@ class Queue
     {
         $PhpMailer = QUI::getMailManager()->getPHPMailer();
 
-        $mailto  = json_decode( $params['mailto'], true );
-        $replyto = json_decode( $params['replyto'], true );
-        $cc      = json_decode( $params['cc'], true );
-        $bcc     = json_decode( $params['bcc'], true );
+        $mailto = json_decode($params['mailto'], true);
+        $replyto = json_decode($params['replyto'], true);
+        $cc = json_decode($params['cc'], true);
+        $bcc = json_decode($params['bcc'], true);
 
         // mailto
-        foreach ( $mailto as $address ) {
-            $PhpMailer->addAddress( $address );
+        foreach ($mailto as $address) {
+            $PhpMailer->addAddress($address);
         }
 
         // reply
-        foreach ( $replyto as $entry ) {
-            $PhpMailer->addReplyTo( $entry );
+        foreach ($replyto as $entry) {
+            $PhpMailer->addReplyTo($entry);
         }
 
         // cc
-        foreach ( $cc as $entry ) {
-            $PhpMailer->addCC( $entry );
+        foreach ($cc as $entry) {
+            $PhpMailer->addCC($entry);
         }
 
         // bcc
-        foreach ( $bcc as $entry ) {
-            $PhpMailer->addBCC( $entry );
+        foreach ($bcc as $entry) {
+            $PhpMailer->addBCC($entry);
         }
 
         // exist attachements?
-        $mailQueueDir = self::getAttachmentDir( $params['id'] );
+        $mailQueueDir = self::getAttachmentDir($params['id']);
 
-        if ( is_dir( $mailQueueDir ) )
-        {
-            $files = File::readDir( $mailQueueDir );
+        if (is_dir($mailQueueDir)) {
+            $files = File::readDir($mailQueueDir);
 
-            foreach ( $files as $file )
-            {
-                $file = $mailQueueDir . $file;
+            foreach ($files as $file) {
+                $file = $mailQueueDir.$file;
 
-                if ( !file_exists( $file ) ) {
+                if (!file_exists($file)) {
                     continue;
                 }
 
-                $infos = File::getInfo( $file );
+                $infos = File::getInfo($file);
 
-                if ( !isset( $infos['mime_type'] ) ) {
+                if (!isset($infos['mime_type'])) {
                     $infos['mime_type'] = 'application/octet-stream';
                 }
 
-                $PhpMailer->addAttachment( $file, $infos['basename'], 'base64', $infos['mime_type'] );
+                $PhpMailer->addAttachment($file, $infos['basename'], 'base64',
+                    $infos['mime_type']);
             }
         }
 
 
         // html mail ?
-        if ( $params['ishtml'] )
-        {
-            $PhpMailer->IsHTML( true );
+        if ($params['ishtml']) {
+            $PhpMailer->IsHTML(true);
             $PhpMailer->AltBody = $params['text'];
         }
 
-        $PhpMailer->From     = $params['from'];
+        $PhpMailer->From = $params['from'];
         $PhpMailer->FromName = $params['fromName'];
-        $PhpMailer->Subject  = $params['subject'];
-        $PhpMailer->Body     = $params['body'];
+        $PhpMailer->Subject = $params['subject'];
+        $PhpMailer->Body = $params['body'];
 
 
-        if ( $PhpMailer->send() )
-        {
-            if ( is_dir( $mailQueueDir ) ) {
-                File::deleteDir( $mailQueueDir );
+        if ($PhpMailer->send()) {
+            if (is_dir($mailQueueDir)) {
+                File::deleteDir($mailQueueDir);
             }
 
             return true;
         }
 
         throw new QUI\Exception(
-            'Mail Error: '. $PhpMailer->ErrorInfo,
+            'Mail Error: '.$PhpMailer->ErrorInfo,
             500
         );
     }
@@ -302,14 +294,14 @@ class Queue
     public function count()
     {
         $result = QUI::getDataBase()->fetch(array(
-            'from'   => self::Table(),
-            'count'  => array(
+            'from'  => self::Table(),
+            'count' => array(
                 'select' => 'id',
                 'as'     => 'count'
             )
         ));
 
-        return $result[ 0 ][ 'count' ];
+        return $result[0]['count'];
     }
 
     /**

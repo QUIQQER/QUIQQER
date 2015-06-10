@@ -16,7 +16,8 @@ use QUI\Utils\System\File as QUIFile;
  * manages all wysiwyg editors and the settings for them
  *
  * @author  www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui
+ * @package quiqqer/quiqqer
+ * @licence For copyright and license information, please view the /README.md
  *
  * @todo    docu translation
  */

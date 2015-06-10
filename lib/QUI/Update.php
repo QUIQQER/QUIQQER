@@ -35,9 +35,10 @@ if (!function_exists('glob_recursive')) {
 /**
  * Update from QUIQQER
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  *
- * @todo   Backup vor dem Einspielen machen
+ * @todo    Backup vor dem Einspielen machen
  */
 class Update
 {
@@ -71,7 +72,8 @@ class Update
         $Composer = $Event->getComposer();
 
         if (!defined('ETC_DIR')) {
-            define('ETC_DIR', $Composer->getConfig()->get('quiqqer-dir') .'etc/');
+            define('ETC_DIR', $Composer->getConfig()->get('quiqqer-dir')
+                .'etc/');
         }
 
         // load quiqqer

@@ -11,14 +11,15 @@ use QUI;
 /**
  * Trash from a Project
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui.projects
+ * @licence For copyright and license information, please view the /README.md
  */
-
 class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
 {
     /**
      * The Project of the trash
+     *
      * @var \QUI\Projects\Project
      */
     protected $_Project = null;
@@ -37,15 +38,15 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
      * Get Sites from Trash
      *
      * @param Array $params - optional
-     * - order
-     * - sort
+     *                      - order
+     *                      - sort
      *
      * - max
      * - page
      *
      * @return Array
      */
-    public function getList($params=array())
+    public function getList($params = array())
     {
         // create grid
         $Grid = new QUI\Utils\Grid();
@@ -61,33 +62,29 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
         /**
          * Order and Sort
          */
-        if ( isset( $params['order'] ) )
-        {
-            switch ( $params['order'] )
-            {
+        if (isset($params['order'])) {
+            switch ($params['order']) {
                 case 'name':
                 case 'title':
                 case 'type':
                     $_params['order'] = $params['order'];
-                break;
+                    break;
 
                 default:
                     $_params['order'] = 'id';
-                break;
+                    break;
             }
         }
 
-        if ( isset( $params['sort'] ) )
-        {
-            switch ( $params['sort'] )
-            {
+        if (isset($params['sort'])) {
+            switch ($params['sort']) {
                 case 'ASC':
-                    $_params['order'] = $_params['order'] .' ASC';
-                break;
+                    $_params['order'] = $_params['order'].' ASC';
+                    break;
 
                 default:
-                    $_params['order'] = $_params['order'] .' DESC';
-                break;
+                    $_params['order'] = $_params['order'].' DESC';
+                    break;
             }
         }
 
@@ -95,13 +92,12 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
          * Creating result
          */
         $result = array();
-        $sites  = $this->_Project->getSites( $_params );
+        $sites = $this->_Project->getSites($_params);
 
-        foreach ( $sites as $Site )
-        {
+        foreach ($sites as $Site) {
             /* @var $Site Site */
             $result[] = array(
-                'icon'  => URL_BIN_DIR .'16x16/page.png',
+                'icon'  => URL_BIN_DIR.'16x16/page.png',
                 'name'  => $Site->getAttribute('name'),
                 'title' => $Site->getAttribute('title'),
                 'type'  => $Site->getAttribute('type'),
@@ -119,24 +115,23 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
             'count' => true
         ));
 
-        return $Grid->parseResult( $result, (int)$total );
+        return $Grid->parseResult($result, (int)$total);
     }
 
     /**
      * Zerstört die gewünschten Seiten im Trash
      *
      * @param \QUI\Projects\Project $Project
-     * @param Array $ids
+     * @param Array                 $ids
      */
-    public function destroy(Project $Project, $ids=array())
+    public function destroy(Project $Project, $ids = array())
     {
-        if ( !is_array( $ids ) ) {
+        if (!is_array($ids)) {
             return;
         }
 
-        foreach ( $ids as $id )
-        {
-            $Site = new Site\Edit( $Project, (int)$id );
+        foreach ($ids as $id) {
+            $Site = new Site\Edit($Project, (int)$id);
             $Site->destroy();
         }
     }
@@ -145,19 +140,18 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
      * Stellt die gewünschten Seiten wieder her
      *
      * @param \QUI\Projects\Project $Project
-     * @param Array $ids
-     * @param Integer $parentid
+     * @param Array                 $ids
+     * @param Integer               $parentid
      */
     public function restore(Project $Project, $ids, $parentid)
     {
-        $Parent = new Site\Edit( $Project, (int)$parentid );
+        $Parent = new Site\Edit($Project, (int)$parentid);
 
-        foreach ( $ids as $id )
-        {
-            $Site = new Site\Edit( $Project, $id );
+        foreach ($ids as $id) {
+            $Site = new Site\Edit($Project, $id);
 
             $Site->restore();
-            $Site->move( $Parent->getId() );
+            $Site->move($Parent->getId());
             $Site->deactivate();
         }
     }

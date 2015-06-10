@@ -13,6 +13,7 @@ use QUI\Projects\Media\Utils as MediaUtils;
  * Rewrite - URL Verwaltung (sprechende URLS)
  *
  * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  * @package com.pcsg.qui
  *
  * @todo    must be rewrited, spaghetti code :(
@@ -324,7 +325,7 @@ class Rewrite
 
                     $part_size = explode('x', $size);
 
-                    if (count($part_size)>2) {
+                    if (count($part_size) > 2) {
                         $imageNotError = true;
                     }
 

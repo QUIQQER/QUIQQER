@@ -14,6 +14,7 @@ use Symfony\Component\Console\Formatter\OutputFormatterInterface;
  * so he can use composer as symfony application
  *
  * @author www.namerobot.com (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  *
  * @event onOutput [ String $message ]
  */

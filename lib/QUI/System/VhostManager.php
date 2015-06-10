@@ -13,9 +13,10 @@ use QUI\Utils\Security\Orthos;
 /**
  * Virtual Host Manager
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  *
- * @todo   vhosts permissions
+ * @todo    vhosts permissions
  */
 class VhostManager
 {

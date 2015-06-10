@@ -11,7 +11,8 @@ use QUI;
 /**
  * Execute the system setup
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  */
 class Htaccess extends QUI\System\Console\Tool
 {
@@ -50,7 +51,8 @@ class Htaccess extends QUI\System\Console\Tool
             $this->writeLn($htaccessBackupFile);
 
         } else {
-            $this->writeLn('No .htaccess File found. Could not create a backup.', 'red');
+            $this->writeLn('No .htaccess File found. Could not create a backup.',
+                'red');
         }
 
         $this->resetColor();
@@ -71,7 +73,7 @@ class Htaccess extends QUI\System\Console\Tool
 # (____\/_)(_______)\_______/(____\/_)(____\/_)(_______/|/   \__/
 #
 # Generated HTACCESS File via QUIQQER
-# Date: '.date('Y-m-d H:i:s') .'
+# Date: '.date('Y-m-d H:i:s').'
 #
 # Command to create new htaccess:
 # php quiqqer.php --username="" --password="" --tool=quiqqer:htaccess

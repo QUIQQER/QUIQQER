@@ -14,6 +14,7 @@ use Intervention\Image\ImageManager;
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui.projects.media
+ * @licence For copyright and license information, please view the /README.md
  */
 class Media extends QUI\QDOM
 {

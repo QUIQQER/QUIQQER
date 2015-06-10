@@ -12,9 +12,10 @@ use QUI\Utils\Security\Orthos;
 /**
  * QUIQQER user manager
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  *
- * @event  onUserLogin [ \QUI\Users\User ]
+ * @event   onUserLogin [ \QUI\Users\User ]
  */
 class Manager
 {

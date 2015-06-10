@@ -5,18 +5,20 @@
  */
 
 namespace QUI\Mail;
+
 use QUI\System\Log;
 
 /**
  * Mail Manager
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  */
-
 class Manager
 {
     /**
      * mail queue manager
+     *
      * @var \QUI\Mail\Queue
      */
     protected $_Queue = null;
@@ -32,15 +34,15 @@ class Manager
     {
         $Mailer = new Mailer();
 
-        $to = trim( $to );
+        $to = trim($to);
         $to = explode(',', $to);
 
-        foreach ( $to as $mail ) {
-            $Mailer->addRecipient( $mail );
+        foreach ($to as $mail) {
+            $Mailer->addRecipient($mail);
         }
 
-        $Mailer->setSubject( $subject );
-        $Mailer->setBody( $body );
+        $Mailer->setSubject($subject);
+        $Mailer->setBody($body);
         $Mailer->send();
     }
 
@@ -51,7 +53,7 @@ class Manager
      */
     public function getQueue()
     {
-        if ( is_null( $this->_Queue ) ) {
+        if (is_null($this->_Queue)) {
             $this->_Queue = new Queue();
         }
 
@@ -65,22 +67,21 @@ class Manager
      */
     public function getPHPMailer()
     {
-        $config = \QUI::conf( 'mail' );
-        $Mail   = new \PHPMailer();
+        $config = \QUI::conf('mail');
+        $Mail = new \PHPMailer();
 
-        if ( $config['SMTP'] == true )
-        {
+        if ($config['SMTP'] == true) {
             //$this->_mail->IsSMTP();
-            $Mail->Mailer   = 'smtp';
-            $Mail->Host     = $config['SMTPServer'];
+            $Mail->Mailer = 'smtp';
+            $Mail->Host = $config['SMTPServer'];
             $Mail->SMTPAuth = $config['SMTPAuth'];
             $Mail->Username = $config['SMTPUser'];
             $Mail->Password = $config['SMTPPass'];
         }
 
-        $Mail->From     = $config['MAILFrom'];
+        $Mail->From = $config['MAILFrom'];
         $Mail->FromName = $config['MAILFromText'];
-        $Mail->CharSet  = 'UTF-8';
+        $Mail->CharSet = 'UTF-8';
 
         return $Mail;
     }

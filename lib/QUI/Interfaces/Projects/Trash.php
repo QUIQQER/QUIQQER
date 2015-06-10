@@ -12,8 +12,9 @@ namespace QUI\Interfaces\Projects;
  * it shows the main methods of a trash
  * a trash are used eq. by projects and the media center
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui.interface.projects
+ * @licence For copyright and license information, please view the /README.md
  */
 
 interface Trash
@@ -22,7 +23,8 @@ interface Trash
      * Return the trash list
      *
      * @param Array $params - \QUI\Utils\Grid params
+     *
      * @return Array
      */
-    public function getList($params=array());
+    public function getList($params = array());
 }

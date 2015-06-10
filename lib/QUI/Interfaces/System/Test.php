@@ -7,7 +7,9 @@ namespace QUI\Interfaces\System;
 
 /**
  * Interface Test
+ *
  * @package quiqqer/quiqqer
+ * @licence For copyright and license information, please view the /README.md
  */
 interface Test
 {
@@ -28,12 +30,14 @@ interface Test
 
     /**
      * Return the name of the Test
+     *
      * @return mixed
      */
     public function getTitle();
 
     /**
      * Return the description of the Test
+     *
      * @return string
      */
     public function getDescription();

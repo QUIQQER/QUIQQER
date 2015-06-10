@@ -16,6 +16,7 @@ use QUI\Utils\Security\Orthos;
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @author  www.pcsg.de (Moritz Scholz)
+ * @licence For copyright and license information, please view the /README.md
  *
  * @package com.pcsg.qui.system.console
  */

@@ -14,6 +14,7 @@ use QUI\Utils\XML;
  * An installed package
  *
  * @author www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  *
  * @event  onPackageSetup [ this ]
  * @event  onPackageInstall [ this ]

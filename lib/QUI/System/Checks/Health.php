@@ -16,6 +16,7 @@ use QUI;
  * the check uses the checklist.md5, the checklist.md5 contains all md5 hashes of all files
  *
  * @author www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  */
 class Health
 {

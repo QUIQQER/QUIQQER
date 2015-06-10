@@ -16,6 +16,7 @@ use QUI\Utils\String as StringUtils;
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui.projects.media
+ * @licence For copyright and license information, please view the /README.md
  */
 class Utils
 {
@@ -32,13 +33,13 @@ class Utils
         if ($Item->getId() === 1) {
             /* @var $Item \QUI\Projects\Media\Folder */
             return array(
-                'icon'      => 'fa fa-home icon-home',
-                'icon80x80' => URL_BIN_DIR .'80x80/media.png',
-                'id'        => $Item->getId(),
-                'name'      => $Item->getAttribute('name'),
-                'title'     => $Item->getAttribute('title'),
-                'short'     => $Item->getAttribute('short'),
-                'type'      => 'folder',
+                'icon'          => 'fa fa-home icon-home',
+                'icon80x80'     => URL_BIN_DIR.'80x80/media.png',
+                'id'            => $Item->getId(),
+                'name'          => $Item->getAttribute('name'),
+                'title'         => $Item->getAttribute('title'),
+                'short'         => $Item->getAttribute('short'),
+                'type'          => 'folder',
                 'hasChildren'   => $Item->hasChildren(),
                 'hasSubfolders' => $Item->hasSubFolders(),
                 'active'        => true,
@@ -50,7 +51,7 @@ class Utils
             /* @var $Item \QUI\Projects\Media\Folder */
             return array(
                 'icon'          => 'fa fa-folder-o icon-folder-close-alt',
-                'icon80x80'     => URL_BIN_DIR .'80x80/extensions/folder.png',
+                'icon80x80'     => URL_BIN_DIR.'80x80/extensions/folder.png',
                 'id'            => $Item->getId(),
                 'name'          => $Item->getAttribute('name'),
                 'title'         => $Item->getAttribute('title'),

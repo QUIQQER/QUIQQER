@@ -9,7 +9,8 @@ namespace QUI\Utils;
 /**
  * Bridge für die alte MyDB Klasse zu neuer \PDO
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  * @package com.pcsg.qui.utils
  *
  * @deprecated
@@ -18,6 +19,7 @@ class MyDB
 {
     /**
      * internal db object
+     *
      * @var \QUI\Database\DB
      */
     protected $_DB = null;
@@ -32,6 +34,7 @@ class MyDB
 
     /**
      * PDO Objekt
+     *
      * @return \PDO
      */
     public function getPDO()
@@ -60,12 +63,15 @@ class MyDB
     /**
      * Schließe die MySQL Verbindung
      */
-    public function close() {}
+    public function close()
+    {
+    }
 
     /**
      * Maskiert die MySQL Query
      *
      * @param unknown_type $data
+     *
      * @return String
      */
     public function escape($data)
@@ -81,6 +87,7 @@ class MyDB
      * MASKIERTE QUERY
      *
      * @param String $query
+     *
      * @return Resource
      *
      * @deprecated use PDO and prepared statemens
@@ -96,26 +103,26 @@ class MyDB
 
         $query .= ';';
 
-        return $this->getPDO()->query( $query )->fetchAll();
+        return $this->getPDO()->query($query)->fetchAll();
     }
 
     /**
      * MySQL Select
      *
-     * @param array $params
-     * 	from => String table
-     * 	select => String table
-     *  count => count | true oder AS Angabe
-     *  where => String where
-     * 		  => Array
-     *  order => String order
-     *  group => String group
-     * @param String $type - BOTH, NUM, ASSOC, OBJ
+     * @param array  $params
+     *                      from => String table
+     *                      select => String table
+     *                      count => count | true oder AS Angabe
+     *                      where => String where
+     *                      => Array
+     *                      order => String order
+     *                      group => String group
+     * @param String $type  - BOTH, NUM, ASSOC, OBJ
      * @param String $type2 - ARRAY, ROW
      *
      * @return Resource
      */
-    public function select(array $params, $type="ARRAY", $type2='ARRAY')
+    public function select(array $params, $type = "ARRAY", $type2 = 'ARRAY')
     {
         return $this->getData($params, $type, $type2);
     }
@@ -124,6 +131,7 @@ class MyDB
      * Unmaskierte Query
      *
      * @param Array $params
+     *
      * @return Resource
      */
     public function queryNoEscape($params)
@@ -135,6 +143,7 @@ class MyDB
      * Insert Query mit Rückgabe (lastInsertId)
      *
      * @param Array $params
+     *
      * @return int
      */
     public function insert($params)
@@ -147,41 +156,41 @@ class MyDB
     /**
      * Liefert Daten aus der Datenbank im Typ ARRAY oder ROW oder OBJEKT
      *
-     * @param array $params
-     * @param String $type = BOTH, NUM, ASSOC, OBJ
+     * @param array  $params
+     * @param String $type  = BOTH, NUM, ASSOC, OBJ
      * @param String $qtype = BOTH, NUM, ASSOC
      *
      * @return Object|array
      */
-    public function getData($params, $type='ARRAY', $qtype = "NUM")
+    public function getData($params, $type = 'ARRAY', $qtype = "NUM")
     {
-        switch ( $type )
-        {
+        switch ($type) {
             case 'OBJ':
-                return $this->_DB->fetch( $params, \PDO::FETCH_OBJ );
-            break;
+                return $this->_DB->fetch($params, \PDO::FETCH_OBJ);
+                break;
 
             case 'NUM':
-                return $this->_DB->fetch( $params, \PDO::FETCH_NUM );
-            break;
+                return $this->_DB->fetch($params, \PDO::FETCH_NUM);
+                break;
 
             case 'BOTH':
-                return $this->_DB->fetch( $params, \PDO::FETCH_BOTH );
-            break;
+                return $this->_DB->fetch($params, \PDO::FETCH_BOTH);
+                break;
 
             default:
             case 'ASSOC':
-                return $this->_DB->fetch($params, \PDO::FETCH_ASSOC );
-            break;
+                return $this->_DB->fetch($params, \PDO::FETCH_ASSOC);
+                break;
         }
     }
 
-     /**
-      * gibt alle felder zurück
-      *
-      * @param String $table
-      * @return Array
-      */
+    /**
+     * gibt alle felder zurück
+     *
+     * @param String $table
+     *
+     * @return Array
+     */
     public function getFields($table)
     {
         return $this->_DB->Table()->getFields($table);
@@ -197,16 +206,17 @@ class MyDB
         return $this->_DB->Table()->getTables();
     }
 
-     /**
-      * tabelle, name, 'email'=>'horst@desgibbetnet.net'),array('id'=>12)
+    /**
+     * tabelle, name, 'email'=>'horst@desgibbetnet.net'),array('id'=>12)
      * oder
      * tabelle, name, 'email'=>'horst@desgibbetnet.net'),"id=12 AND nachname = 'Meier'"
      *
-      * @param String $table
-      * @param String $field
-      * @param String, Array $fieldAndId
-      * @return Array
-      */
+     * @param String $table
+     * @param String $field
+     * @param        String , Array $fieldAndId
+     *
+     * @return Array
+     */
     public function getOneData($table, $field, $fieldAndId)
     {
         return $this->getData(array(
@@ -220,7 +230,8 @@ class MyDB
      * add a data row
      *
      * @param String $table
-     * @param array $FieldValue - [array('field1'=>'value1', 'field2'=>'value2', 'field3'=>'value3')]
+     * @param array  $FieldValue - [array('field1'=>'value1', 'field2'=>'value2', 'field3'=>'value3')]
+     *
      * @return integer
      */
     public function addData($table, $FieldValue)
@@ -236,9 +247,10 @@ class MyDB
      * oder
      * tabelle, array('name'=>'Horst', 'email'=>'horst@desgibbetnet.net'),"id=12 AND nachname = 'Meier'"
      *
-     * @param String $table
-     * @param array $fieldValue
-     * @param Sring|array  $fieldAndId
+     * @param String      $table
+     * @param array       $fieldValue
+     * @param Sring|array $fieldAndId
+     *
      * @return Resource
      */
     public function updateData($table, $fieldValue, $fieldAndId)
@@ -266,7 +278,8 @@ class MyDB
      * tabelle , array('id'=>1) oder string "id=1 AND name = 'Horst'"
      *
      * @param String $table
-     * @param Sring, Array $fieldAndId
+     * @param        Sring , Array $fieldAndId
+     *
      * @return Resource
      */
     public function deleteData($table, $fieldAndId)
@@ -304,7 +317,7 @@ class MyDB
      * Wenn die Tabelle nicht existiert wird diese erstellt
      *
      * @param String $table
-     * @param Array $fields
+     * @param Array  $fields
      */
     public function createTableFields($table, $fields)
     {
@@ -314,8 +327,8 @@ class MyDB
     /**
      * Löscht die Felder einer Tabelle, wenn die Tabelle keine Felder mehr hätte wird diese gelöscht
      *
-     * @param String $table - Tabelle
-     * @param Array $fields - Felder welche gelöscht werden sollen
+     * @param String $table  - Tabelle
+     * @param Array  $fields - Felder welche gelöscht werden sollen
      */
     public function deleteTableFields($table, $fields)
     {
@@ -326,6 +339,7 @@ class MyDB
      * Prüft ob eine tabelle existiert
      *
      * @param String $table - Tabellenname welcher gesucht wird
+     *
      * @return Bool
      */
     public function existTable($table)
@@ -337,6 +351,7 @@ class MyDB
      * Löscht eine Tabelle
      *
      * @param String $table
+     *
      * @return Bool
      */
     public function deleteTable($table)
@@ -361,6 +376,7 @@ class MyDB
      * Alle Spalten der Tabelle bekommen
      *
      * @param unknown_type $table
+     *
      * @return Array
      */
     public function getRowsFromTable($table)
@@ -373,6 +389,7 @@ class MyDB
      *
      * @param String $table
      * @param String $row
+     *
      * @return Bool
      */
     public function deleteRow($table, $row)
@@ -384,6 +401,7 @@ class MyDB
      * Liefert die Primary Keys einer Tabelle
      *
      * @param unknown_type $table
+     *
      * @return unknown
      */
     public function getKeys($table)
@@ -407,7 +425,7 @@ class MyDB
     /**
      * Setzt ein PrimaryKey einer Tabelle
      *
-     * @param String $table
+     * @param String         $table
      * @param String | Array $key
      *
      * @return Bool
@@ -420,7 +438,7 @@ class MyDB
     /**
      * Prüft ob ein Index gesetzt ist
      *
-     * @param unknown_type $table
+     * @param unknown_type     $table
      * @param String | Integer $key
      *
      * @return Bool
@@ -434,6 +452,7 @@ class MyDB
      * Liefert die Indexes einer Tabelle
      *
      * @param String $table
+     *
      * @return unknown
      */
     public function getIndex($table)
@@ -470,7 +489,7 @@ class MyDB
     /**
      * Prüft ob ein Fulltext auf das Feld gesetzt ist
      *
-     * @param String $table
+     * @param String           $table
      * @param String | Integer $key
      *
      * @return Bool
@@ -486,6 +505,7 @@ class MyDB
      *
      * @param String $table
      * @param String $file
+     *
      * @deprecated
      */
     public function backup($table, $file)
@@ -498,6 +518,7 @@ class MyDB
      *
      * @param String $file
      * @param String $table
+     *
      * @deprecated
      */
     public function restore($file, $table)

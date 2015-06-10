@@ -17,6 +17,7 @@ use QUI\Utils\DOM;
  * The main object to get a project
  *
  * @author     www.pcsg.de (Henning Leutz)
+ * @licence    For copyright and license information, please view the /README.md
  *
  * @event      onProjectConfigSave [ String project, Array config ]
  * @event      onCreateProject [ String \QUI\Projects\Project ]
@@ -128,8 +129,8 @@ class Manager
          * clear media cache
          * eq: if watermark settings changed
          *
-         * @param Array $config
-         * @param Array $old_config
+         * @param Array   $config
+         * @param Array   $old_config
          * @param Project $Project
          */
         function clearMediaCache($config, $old_config, Project $Project)
@@ -147,24 +148,29 @@ class Manager
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
+
                 return;
             }
 
             if (isset($config["media_watermark_position"])
                 && isset($old_config['media_watermark_position'])
-                && $config["media_watermark_position"] != $old_config['media_watermark_position']
+                && $config["media_watermark_position"]
+                != $old_config['media_watermark_position']
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
+
                 return;
             }
 
             if (isset($config["media_image_library"])
                 && isset($old_config['media_image_library'])
-                && $config["media_image_library"] != $old_config['media_image_library']
+                && $config["media_image_library"]
+                != $old_config['media_image_library']
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
+
                 return;
             }
         }

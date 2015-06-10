@@ -13,16 +13,17 @@ use QUI\Utils\Security\Orthos;
  * Mini contact control
  * {control control="\QUI\Controls\Contact" labels=false}
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  */
-
 class Contact extends QUI\Control
 {
     /**
      * constructor
+     *
      * @param Array $attributes
      */
-    public function __construct($attributes=array())
+    public function __construct($attributes = array())
     {
         $this->setAttributes(array(
             'data-ajax'    => 1,
@@ -31,19 +32,20 @@ class Contact extends QUI\Control
             'POST_MESSAGE' => ''
         ));
 
-        parent::setAttributes( $attributes );
+        parent::setAttributes($attributes);
 
         $this->addCSSFile(
-            dirname( __FILE__ ) .'/Contact.css'
+            dirname(__FILE__).'/Contact.css'
         );
 
-        $this->setAttribute( 'class', 'quiqqer-contact grid-100 grid-parent' );
-        $this->setAttribute( 'qui-class', "Controls/Contact" );
-        $this->setAttribute( 'labels', true );
+        $this->setAttribute('class', 'quiqqer-contact grid-100 grid-parent');
+        $this->setAttribute('qui-class', "Controls/Contact");
+        $this->setAttribute('labels', true);
     }
 
     /**
      * (non-PHPdoc)
+     *
      * @see \QUI\Control::create()
      */
     public function getBody()
@@ -52,15 +54,15 @@ class Contact extends QUI\Control
 
         // filter POST vars if exist
         $this->setAttributes(array(
-            'POST_NAME'    => Orthos::clearFormRequest( $this->getAttribute('POST_NAME') ),
-            'POST_EMAIL'   => Orthos::clearFormRequest( $this->getAttribute('POST_EMAIL') ),
-            'POST_MESSAGE' => Orthos::clearFormRequest( $this->getAttribute('POST_MESSAGE') ),
+            'POST_NAME'    => Orthos::clearFormRequest($this->getAttribute('POST_NAME')),
+            'POST_EMAIL'   => Orthos::clearFormRequest($this->getAttribute('POST_EMAIL')),
+            'POST_MESSAGE' => Orthos::clearFormRequest($this->getAttribute('POST_MESSAGE')),
         ));
 
         $Engine->assign(array(
             'this' => $this
         ));
 
-        return $Engine->fetch( dirname( __FILE__ ) .'/Contact.html' );
+        return $Engine->fetch(dirname(__FILE__).'/Contact.html');
     }
 }

@@ -14,6 +14,7 @@ use QUI\Utils\System\File as QUIFile;
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui.projects.media
+ * @licence For copyright and license information, please view the /README.md
  */
 class File extends Item implements QUI\Interfaces\Projects\Media\File
 {

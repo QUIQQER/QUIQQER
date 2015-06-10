@@ -12,7 +12,8 @@ use QUI;
  * ModRewrite Test
  *
  * @package quiqqer/quiqqer
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  */
 class ModRewrite extends QUI\System\Test
 {
@@ -37,18 +38,18 @@ class ModRewrite extends QUI\System\Test
     public function execute()
     {
         // quiqqer check
-        if ( array_key_exists( 'HTTP_MOD_REWRITE', $_SERVER ) ) {
+        if (array_key_exists('HTTP_MOD_REWRITE', $_SERVER)) {
             return self::STATUS_OK;
         }
 
-        if ( getenv( 'HTTP_MOD_REWRITE' ) == 'On' ) {
+        if (getenv('HTTP_MOD_REWRITE') == 'On') {
             return self::STATUS_OK;
         }
 
         // test with apache modules
-        if ( function_exists( 'apache_get_modules' ) &&
-             in_array( 'mod_rewrite', apache_get_modules() ) )
-        {
+        if (function_exists('apache_get_modules')
+            && in_array('mod_rewrite', apache_get_modules())
+        ) {
             return self::STATUS_OK;
         }
 
@@ -58,7 +59,7 @@ class ModRewrite extends QUI\System\Test
         $phpinfo = ob_get_contents();
         ob_end_clean();
 
-        if ( strpos( 'mod_rewrite', $phpinfo ) !== false ) {
+        if (strpos('mod_rewrite', $phpinfo) !== false) {
             return self::STATUS_OK;
         }
 
@@ -72,43 +73,40 @@ class ModRewrite extends QUI\System\Test
      */
     protected function _checkViaHTTP()
     {
-        try
-        {
+        try {
             $Project = QUI::getProjectManager()->getStandard();
             $host = $Project->getHost();
 
-        } catch ( QUI\Exception $Exception )
-        {
+        } catch (QUI\Exception $Exception) {
             return self::STATUS_ERROR;
         }
 
-        try
-        {
+        try {
             $result = QUI\Utils\Request\Url::get(
-                'http://' . $host . '/' . URL_SYS_DIR . '/ajax.php?_rf=["ajax_system_modRewrite"]'
+                'http://'.$host.'/'.URL_SYS_DIR
+                .'/ajax.php?_rf=["ajax_system_modRewrite"]'
             );
 
-        } catch ( QUI\Exception $Exception )
-        {
+        } catch (QUI\Exception $Exception) {
             return self::STATUS_ERROR;
         }
 
 
-        if ( strpos( $result, '<quiqqer>' ) === false ) {
+        if (strpos($result, '<quiqqer>') === false) {
             return self::STATUS_ERROR;
         }
 
         $start = 9;
-        $end   = strpos( $result, '</quiqqer>' );
+        $end = strpos($result, '</quiqqer>');
 
-        $quiqqer = substr( $result, $start, $end-$start );
-        $quiqqer = json_decode( $quiqqer, true );
+        $quiqqer = substr($result, $start, $end - $start);
+        $quiqqer = json_decode($quiqqer, true);
 
-        if ( !isset( $quiqqer['ajax_system_modRewrite'] ) ) {
+        if (!isset($quiqqer['ajax_system_modRewrite'])) {
             return self::STATUS_ERROR;
         }
 
-        if ( $quiqqer['ajax_system_modRewrite'] ) {
+        if ($quiqqer['ajax_system_modRewrite']) {
             return self::STATUS_OK;
         }
 

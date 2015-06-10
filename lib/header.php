@@ -2,6 +2,9 @@
 
 /**
  * This file contains the main header file
+ *
+ * @author www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  */
 
 header("Content-Type: text/html; charset=utf-8");

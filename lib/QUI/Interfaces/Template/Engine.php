@@ -9,8 +9,9 @@ namespace QUI\Interfaces\Template;
 /**
  * Interface of a template engine
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui.interface.template
+ * @licence For copyright and license information, please view the /README.md
  */
 
 interface Engine
@@ -19,6 +20,7 @@ interface Engine
      * Return the complete template
      *
      * @param string $template - path to the template
+     *
      * @return string
      */
     public function fetch($template);
@@ -27,15 +29,15 @@ interface Engine
      * Assign a Variable to the engine
      *
      * @param array|string $var
-     * @param mixed $value - optional
+     * @param mixed        $value - optional
      */
-    public function assign($var, $value=false);
+    public function assign($var, $value = false);
 
     /**
      * Extend the html header
      *
-     * @param String $str
+     * @param String  $str
      * @param Integer $prio
      */
-    public function extendHeader($str, $prio=3);
+    public function extendHeader($str, $prio = 3);
 }

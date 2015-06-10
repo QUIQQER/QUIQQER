@@ -13,6 +13,7 @@ use QUI\Utils\String as StringUtils;
  * Site Objekt - eine einzelne Seite
  *
  * @author     www.pcsg.de (Henning Leutz)
+ * @licence    For copyright and license information, please view the /README.md
  *
  * @errorcodes 7XX = Site Errors -> look at Site/Edit
  */

@@ -11,7 +11,8 @@ use QUI;
 /**
  * Checks the system health
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  */
 class Health extends QUI\System\Console\Tool
 {
@@ -26,25 +27,24 @@ class Health extends QUI\System\Console\Tool
 
     /**
      * (non-PHPdoc)
+     *
      * @see \QUI\System\Console\Tool::execute()
      */
     public function execute()
     {
-        $this->write( 'Checking system health' );
+        $this->write('Checking system health');
 
-        try
-        {
+        try {
             QUI\System\Checks\Health::checkWritable();
 
-            $this->writeLn( 'System Health : OK', 'green' );
+            $this->writeLn('System Health : OK', 'green');
 
-        } catch ( QUI\Exception $Exception )
-        {
-            $this->writeLn( 'System Health : ERROR', 'red' );
-            $this->writeLn( $Exception->getMessage(), 'red' );
+        } catch (QUI\Exception $Exception) {
+            $this->writeLn('System Health : ERROR', 'red');
+            $this->writeLn($Exception->getMessage(), 'red');
         }
 
-        $this->writeLn( '' );
+        $this->writeLn('');
         $this->resetColor();
     }
 }

@@ -16,6 +16,7 @@ use QUI\Utils\String as StringUtils;
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui.projects.media
+ * @licence For copyright and license information, please view the /README.md
  */
 class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 {
@@ -888,17 +889,17 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         // In die DB legen
         QUI::getDataBase()->insert($table, array(
-            'name'         => $new_name,
-            'title'        => $new_name,
-            'short'        => $new_name,
-            'type'         => 'folder',
-            'file'         => $this->getAttribute('file').$new_name.'/',
-            'alt'          => $new_name,
-            'c_date'       => date('Y-m-d h:i:s'),
-            'e_date'       => date('Y-m-d h:i:s'),
-            'c_user'       => $User->getId(),
-            'e_user'       => $User->getId(),
-            'mime_type'    => 'folder'
+            'name'      => $new_name,
+            'title'     => $new_name,
+            'short'     => $new_name,
+            'type'      => 'folder',
+            'file'      => $this->getAttribute('file').$new_name.'/',
+            'alt'       => $new_name,
+            'c_date'    => date('Y-m-d h:i:s'),
+            'e_date'    => date('Y-m-d h:i:s'),
+            'c_user'    => $User->getId(),
+            'e_user'    => $User->getId(),
+            'mime_type' => 'folder'
         ));
 
         $id = QUI::getDataBase()->getPDO()->lastInsertId();

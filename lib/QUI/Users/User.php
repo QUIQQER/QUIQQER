@@ -12,15 +12,16 @@ use QUI\Utils\Security\Orthos as Orthos;
 /**
  * A user
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  *
- * @event  onUserSave [ \QUI\Users\User ]
- * @event  onUserDelete [ \QUI\Users\User ]
- * @event  onUserLoad [ \QUI\Users\User ]
- * @event  onUserSetPassword [ \QUI\Users\User ]
- * @event  onUserDisable [ \QUI\Users\User ]
- * @event  onUserActivate [ \QUI\Users\User ]
- * @event  onUserDeactivate [ \QUI\Users\User ]
+ * @event   onUserSave [ \QUI\Users\User ]
+ * @event   onUserDelete [ \QUI\Users\User ]
+ * @event   onUserLoad [ \QUI\Users\User ]
+ * @event   onUserSetPassword [ \QUI\Users\User ]
+ * @event   onUserDisable [ \QUI\Users\User ]
+ * @event   onUserActivate [ \QUI\Users\User ]
+ * @event   onUserDeactivate [ \QUI\Users\User ]
  */
 class User implements QUI\Interfaces\Users\User
 {

@@ -16,6 +16,7 @@ use QUI\Utils\System\File as QUIFile;
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui.projects.media
+ * @licence For copyright and license information, please view the /README.md
  */
 abstract class Item extends QUI\QDOM
 {
@@ -655,7 +656,7 @@ abstract class Item extends QUI\QDOM
      *
      * @param array $effects
      */
-    public function setEffects($effects=array())
+    public function setEffects($effects = array())
     {
         $this->_effects = $effects;
     }

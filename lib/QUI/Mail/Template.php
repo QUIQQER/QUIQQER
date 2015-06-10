@@ -12,9 +12,9 @@ use Html2Text\Html2Text;
 /**
  * Mail Template
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  */
-
 class Template extends QUI\QDOM
 {
     /**
@@ -22,7 +22,7 @@ class Template extends QUI\QDOM
      *
      * @param Array $params
      */
-    public function __construct($params=array())
+    public function __construct($params = array())
     {
         $this->setAttributes(array(
             'body'      => '',
@@ -31,7 +31,7 @@ class Template extends QUI\QDOM
             'TplFooter' => 'mails/footer.html'
         ));
 
-        $this->setAttributes( $params );
+        $this->setAttributes($params);
     }
 
     /**
@@ -42,13 +42,13 @@ class Template extends QUI\QDOM
     public function getHTML()
     {
         $Engine = QUI::getTemplateManager()->getEngine();
-        $Engine->assign( $this->getAttributes() );
+        $Engine->assign($this->getAttributes());
 
-        $header = $Engine->fetch( $this->getHeaderTemplate() );
-        $footer = $Engine->fetch( $this->getFooterTemplate() );
-        $body   = $this->getAttribute( 'body' );
+        $header = $Engine->fetch($this->getHeaderTemplate());
+        $footer = $Engine->fetch($this->getFooterTemplate());
+        $body = $this->getAttribute('body');
 
-        return $header . $body . $footer;
+        return $header.$body.$footer;
     }
 
     /**
@@ -58,7 +58,7 @@ class Template extends QUI\QDOM
      */
     public function getText()
     {
-        $Html2Text = new Html2Text( $this->getHTML() );
+        $Html2Text = new Html2Text($this->getHTML());
 
         return $Html2Text->get_text();
     }
@@ -70,7 +70,7 @@ class Template extends QUI\QDOM
      */
     public function setProject(QUI\Projects\Project $Project)
     {
-        $this->setAttribute( 'Project', $Project );
+        $this->setAttribute('Project', $Project);
     }
 
     /**
@@ -80,7 +80,7 @@ class Template extends QUI\QDOM
      */
     public function setBody($html)
     {
-        $this->setAttribute( 'body', $html );
+        $this->setAttribute('body', $html);
     }
 
     /**
@@ -90,7 +90,7 @@ class Template extends QUI\QDOM
      */
     public function setHeaderTemplate($template)
     {
-        $this->setAttribute( 'TplHeader', $template );
+        $this->setAttribute('TplHeader', $template);
     }
 
     /**
@@ -100,7 +100,7 @@ class Template extends QUI\QDOM
      */
     public function setFooterTemplate($template)
     {
-        $this->setAttribute( 'TplFooter', $template );
+        $this->setAttribute('TplFooter', $template);
     }
 
     /**
@@ -110,8 +110,8 @@ class Template extends QUI\QDOM
      */
     public function getProject()
     {
-        if ( $this->getAttribute( 'Project' ) ) {
-            return $this->getAttribute( 'Project' );
+        if ($this->getAttribute('Project')) {
+            return $this->getAttribute('Project');
         }
 
         return \QUI::getProjectManager()->get();
@@ -124,24 +124,24 @@ class Template extends QUI\QDOM
      */
     public function getHeaderTemplate()
     {
-        $Project     = $this->getProject();
-        $standardTpl = LIB_DIR .'templates/mail/header.html';
+        $Project = $this->getProject();
+        $standardTpl = LIB_DIR.'templates/mail/header.html';
 
-        if ( !$Project ) {
+        if (!$Project) {
             return $standardTpl;
         }
 
         // exit project template?
-        $template   = $this->getAttribute( 'TplHeader' );
-        $projectDir = USR_DIR . $Project->getName() .'/lib/';
+        $template = $this->getAttribute('TplHeader');
+        $projectDir = USR_DIR.$Project->getName().'/lib/';
 
-        if ( file_exists( $projectDir . $template ) ) {
-            return $projectDir . $template;
+        if (file_exists($projectDir.$template)) {
+            return $projectDir.$template;
         }
 
         // exist template in opt?
-        if ( file_exists( OPT_DIR . $template ) ) {
-            return OPT_DIR . $template;
+        if (file_exists(OPT_DIR.$template)) {
+            return OPT_DIR.$template;
         }
 
         return $standardTpl;
@@ -154,24 +154,24 @@ class Template extends QUI\QDOM
      */
     public function getFooterTemplate()
     {
-        $Project     = $this->getProject();
-        $standardTpl = LIB_DIR .'templates/mail/footer.html';
+        $Project = $this->getProject();
+        $standardTpl = LIB_DIR.'templates/mail/footer.html';
 
-        if ( !$Project ) {
+        if (!$Project) {
             return $standardTpl;
         }
 
         // exit project template?
-        $template   = $this->getAttribute( 'TplFooter' );
-        $projectDir = USR_DIR . $Project->getName() .'/lib/';
+        $template = $this->getAttribute('TplFooter');
+        $projectDir = USR_DIR.$Project->getName().'/lib/';
 
-        if ( file_exists( $projectDir . $template ) ) {
-            return $projectDir . $template;
+        if (file_exists($projectDir.$template)) {
+            return $projectDir.$template;
         }
 
         // exist template in opt?
-        if ( file_exists( OPT_DIR . $template ) ) {
-            return OPT_DIR . $template;
+        if (file_exists(OPT_DIR.$template)) {
+            return OPT_DIR.$template;
         }
 
         return $standardTpl;

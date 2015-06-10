@@ -43,8 +43,9 @@ use QUI\Utils\System\File as QUIFile;
  * Sorry, the package manager is little bit complicated
  * when the time is right, i think i must make it clearer
  *
- * @author www.pcsg.de (Henning Leutz)
- * @event  onOutput [ String $message ]
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
+ * @event   onOutput [ String $message ]
  */
 class Manager extends QUI\QDOM
 {

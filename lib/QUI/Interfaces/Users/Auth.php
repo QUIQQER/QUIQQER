@@ -9,8 +9,9 @@ namespace QUI\Interfaces\Users;
 /**
  * Interface für Authentifizierung
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui.interface.users
+ * @licence For copyright and license information, please view the /README.md
  */
 
 interface Auth
@@ -20,6 +21,7 @@ interface Auth
      *
      * @param string $username
      * @param string $password
+     *
      * @return Bool
      */
     public function auth($username, $password);
@@ -27,10 +29,10 @@ interface Auth
     /**
      * Gibt die Daten eines Benutzers zurück
      *
-     * @param string $username
+     * @param string      $username
      * @param string|bool $fields
      */
-    public function getUser($username, $fields=false);
+    public function getUser($username, $fields = false);
 
     /**
      * Gibt alle Benutzer zurück

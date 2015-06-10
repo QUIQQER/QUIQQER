@@ -11,95 +11,96 @@ use QUI;
 /**
  * Sheetlist
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  */
-
 class Sheets extends QUI\Control
 {
     /**
      * constructor
+     *
      * @param Array $attributes
      */
-    public function __construct($attributes=array())
+    public function __construct($attributes = array())
     {
-        parent::setAttributes( $attributes );
+        parent::setAttributes($attributes);
 
         $this->addCSSFile(
-            dirname( __FILE__ ) .'/Sheets.css'
+            dirname(__FILE__).'/Sheets.css'
         );
 
-        $this->setAttribute( 'class', 'quiqqer-sheets grid-100 grid-parent' );
+        $this->setAttribute('class', 'quiqqer-sheets grid-100 grid-parent');
     }
 
     /**
      * (non-PHPdoc)
+     *
      * @see \QUI\Control::create()
      */
     public function getBody()
     {
-        $Engine  = QUI::getTemplateManager()->getEngine();
-        $Site    = $this->getAttribute('Site');
+        $Engine = QUI::getTemplateManager()->getEngine();
+        $Site = $this->getAttribute('Site');
         $Project = $Site->getProject();
 
-        $count   = $this->getAttribute( 'sheets' );
-        $showmax = $this->getAttribute( 'showmax' );
+        $count = $this->getAttribute('sheets');
+        $showmax = $this->getAttribute('showmax');
 
         $active = 1;
         $anchor = '';
 
-        if ( $this->getAttribute( 'anchor' ) ) {
-            $anchor = $this->getAttribute( 'anchor' );
+        if ($this->getAttribute('anchor')) {
+            $anchor = $this->getAttribute('anchor');
         }
 
-        if ( $showmax >= $count ) {
+        if ($showmax >= $count) {
             $showmax = false;
         }
 
-        if ( !$showmax ) {
+        if (!$showmax) {
             $showmax = $count * 2;
         }
 
-        if ( isset( $_REQUEST['sheet'] ) && (int)$_REQUEST['sheet'] ) {
+        if (isset($_REQUEST['sheet']) && (int)$_REQUEST['sheet']) {
             $active = (int)$_REQUEST['sheet'];
         }
 
-        $gap = floor( $showmax / 2 );
+        $gap = floor($showmax / 2);
 
         $start = $active - $gap;
-        $end   = $active + $gap;
+        $end = $active + $gap;
 
-        if ( $start <= 0 ) {
+        if ($start <= 0) {
             $start = 1;
         }
 
-        if ( $end >= $count ) {
+        if ($end >= $count) {
             $end = $count;
         }
 
         $attributes = $this->getAttributes();
-        $params     = array();
+        $params = array();
 
-        foreach ( $attributes as $key => $value )
-        {
-            if ( $key == 'class' ) {
+        foreach ($attributes as $key => $value) {
+            if ($key == 'class') {
                 continue;
             }
 
-            if ( $key == 'sheets' ) {
+            if ($key == 'sheets') {
                 continue;
             }
 
-            if ( $key == 'showmax' ) {
+            if ($key == 'showmax') {
                 continue;
             }
 
-            if ( $key == 'anchor' ) {
+            if ($key == 'anchor') {
                 continue;
             }
 
 
-            if ( is_string( $value ) || is_int( $value ) ) {
-                $params[ $key ] = $value;
+            if (is_string($value) || is_int($value)) {
+                $params[$key] = $value;
             }
         }
 
@@ -110,11 +111,10 @@ class Sheets extends QUI\Control
             'active'    => $active,
             'urlParams' => $params,
             'anchor'    => $anchor,
-
-            'Site'    => $Site,
-            'Project' => $Project
+            'Site'      => $Site,
+            'Project'   => $Project
         ));
 
-        return $Engine->fetch( dirname( __FILE__ ) .'/Sheets.html' );
+        return $Engine->fetch(dirname(__FILE__).'/Sheets.html');
     }
 }
