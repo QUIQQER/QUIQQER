@@ -143,6 +143,13 @@ class Manager extends QUI\QDOM
     protected $_localRepository;
 
     /**
+     * active servers - use as temp for local repo using
+     *
+     * @var array
+     */
+    protected $_activeServers = array();
+
+    /**
      * constructor
      *
      * @param array $attributes
@@ -666,7 +673,7 @@ class Manager extends QUI\QDOM
      * Install Package
      *
      * @param String      $package - name of the package
-     * @param String|bool $version - (optional) version of the package default = dev-master
+     * @param String|bool $version - (optional) version of the package
      */
     public function installWithoutLockClient($package, $version = false)
     {
@@ -696,10 +703,29 @@ class Manager extends QUI\QDOM
     }
 
     /**
+     * Install only a local package
+     *
+     * @param  string $package - name of the package
+     * @param bool    $version - (optional) version of the package
+     */
+    public function installLocalPackage($package, $version = false)
+    {
+        QUI\System\Log::addDebug(
+            'Install package '.$package.' without Lock Client'
+        );
+
+        $this->_useOnlyLocalRepository();
+
+        $this->installWithoutLockClient($package, $version);
+
+        $this->_resetRepositories();
+    }
+
+    /**
      * Add a Package to the composer json
      *
      * @param String|Array $package - name of the package
-     * @param String|bool  $version - (optional) version of the package default = dev-master
+     * @param String|bool  $version - (optional) version of the package
      */
     public function setPackage($package, $version = false)
     {
@@ -966,7 +992,7 @@ class Manager extends QUI\QDOM
      * @param Bool   $status - 1 = active, 0 = disabled
      * @param Bool   $backup - Optional (default=true, create a backup, false = create no backup
      */
-    public function setServerStatus($server, $status, $backup=true)
+    public function setServerStatus($server, $status, $backup = true)
     {
         $Config = QUI::getConfig('etc/source.list.ini.php');
         $status = (bool)$status ? 1 : 0;
@@ -1276,7 +1302,21 @@ class Manager extends QUI\QDOM
     {
         // backup
         $this->createComposerBackup();
+        $this->_useOnlyLocalRepository();
 
+        // execute update
+        $this->update($package);
+
+        $this->_resetRepositories();
+    }
+
+    /**
+     * use only the local repository
+     *
+     * @return array
+     */
+    protected function _useOnlyLocalRepository()
+    {
         // deactivate active servers
         $activeServers = array();
         $serverList = $this->getServerList();
@@ -1293,13 +1333,18 @@ class Manager extends QUI\QDOM
 
         // activate local repos
         $this->activateLocalServer();
+        $this->_createComposerJSON();
 
-        // execute update
-        $this->update($package);
+        $this->_activeServers = $activeServers;
+    }
 
-
+    /**
+     * reset the repositories after only local repo using
+     */
+    protected function _resetRepositories()
+    {
         // activate active servers
-        foreach ($activeServers as $server) {
+        foreach ($this->_activeServers as $server) {
             $this->setServerStatus($server, 1, false);
         }
 

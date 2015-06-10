@@ -11,13 +11,13 @@ function ajax_system_packages_installLocalePackage($packages)
 
     if ($json && is_array($json)) {
         foreach ($json as $pkg => $version) {
-            QUI::getPackageManager()->installWithoutLockClient($pkg, $version);
+            QUI::getPackageManager()->installLocalPackage($pkg, $version);
         }
 
         return;
     }
 
-    QUI::getPackageManager()->installWithoutLockClient($packages);
+    QUI::getPackageManager()->installLocalPackage($packages);
 }
 
 QUI::$Ajax->register(
