@@ -580,7 +580,7 @@ define('controls/packages/Panel', [
                                     onComplete : function()
                                     {
                                         Win.close();
-                                        self.updateWithLocalServer();
+                                        self.installLocalPackages();
                                     }
                                 }
                             });
@@ -646,24 +646,34 @@ define('controls/packages/Panel', [
         },
 
         /**
-         * Execute an update wiith the local update server
+         * Updatethe entire quiqqer system with local packages
+         *
+         * @param {Function} [callback]  - (optional), Callback function
+         * @returns {Promise}
          */
-        updateWithLocalServer : function()
+        updateWithLocalPackages : function(callback)
         {
-            this.installLocalPackages().then(function()
-            {
-                return QUI.getMessageHandler();
+            var Prom = QUI.getMessageHandler().then(function(MH) {
+                return MH.addLoading('Updates werden installiert...');
+            });
 
-            }).then(function(MH)
+            Prom.then(function(Loading)
             {
-                return MH.addLoading('Setup wird durchgeführt...');
+                return this.$Manager.updateWithLocalServer().then(function()
+                {
+                    Loading.finish( Locale.get( lg, 'message.update.successfull' ) );
 
-            }).then(function(Loading)
-            {
-                this.$Manager.updateWithLocalServer(function() {
-                    Loading.finish( Locale.get( lg, 'message.setup.successfull' ) );
+                    if (typeOf(callback) === 'function') {
+                        callback();
+                    }
+
+                }, function() {
+                    Loading.finish( Locale.get( lg, 'message.update.error' ) );
                 });
+
             }.bind(this));
+
+            return Prom;
         },
 
         /**
@@ -673,15 +683,18 @@ define('controls/packages/Panel', [
          */
         installLocalPackages : function()
         {
+            var self = this;
+
             return new Promise(function(resolve, reject)
             {
-                this.$Manager.readLocalRepository(function(result)
+                self.$Manager.readLocalRepository(function(result)
                 {
                     if (!result || !result.length) {
-                        resolve();
+                        self.updateWithLocalPackages().then(resolve);
                         return;
                     }
 
+                    // #locale
                     new QUIConfirm({
                         icon: 'fa fa-hdd-o icon-hdd',
                         title : 'Es wurden neue Pakete gefunden',
@@ -753,16 +766,30 @@ define('controls/packages/Panel', [
                                     packages[items[i].title] = items[i].version || '*';
                                 }
 
-                                Ajax.post('ajax_system_activateLocalServer', function()
-                                {
-                                    Ajax.post('ajax_system_packages_install', function()
-                                    {
-                                        Win.close();
+                                var LoadMessage;
 
-                                        resolve();
-                                    }, {
-                                        packages : packages
-                                    });
+                                QUI.getMessageHandler().then(function(MH)
+                                {
+                                    Win.close();
+
+                                    return MH.addLoading('Setup wird durchgeführt...');
+
+                                }).then(function(Loading) {
+
+                                    LoadMessage = Loading;
+
+                                    return self.$Manager.activateLocalServer();
+
+                                }).then(function() {
+                                    return self.$Manager.installLocalPackages(packages);
+
+                                }).then(function()
+                                {
+                                    LoadMessage.finish(
+                                        Locale.get( lg, 'message.setup.successfull' )
+                                    );
+
+                                    resolve();
                                 });
                             },
 
@@ -772,8 +799,7 @@ define('controls/packages/Panel', [
                         }
                     }).open();
                 });
-
-            }.bind(this));
+            });
         },
 
 
@@ -1322,7 +1348,7 @@ define('controls/packages/Panel', [
                             Win.close();
                             self.startSearch();
                         }, {
-                            'package' : pkg
+                            packages : pkg
                         });
                     }
                 }

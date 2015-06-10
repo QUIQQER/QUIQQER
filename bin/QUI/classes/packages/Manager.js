@@ -114,6 +114,59 @@ define('classes/packages/Manager', [
         },
 
         /**
+         * Activate the local repository
+         *
+         * @param {Function} [callback] - optional
+         * @returns {Promise}
+         */
+        activateLocalServer : function(callback)
+        {
+            return new Promise(function(resolve, reject)
+            {
+                Ajax.post('ajax_system_activateLocalServer', function()
+                {
+                    if ( typeOf(callback) === 'function' ) {
+                        callback();
+                    }
+
+                    resolve();
+                }, {
+                    onError : function(Exception) {
+                        reject( Exception );
+                    }
+                });
+            });
+        },
+
+        /**
+         * install a local package
+         *
+         * @param {String|Array} packages - name of the package
+         * @param {Function} [callback] - optional
+         * @returns {Promise}
+         */
+        installLocalPackages : function(packages, callback)
+        {
+            return new Promise(function(resolve, reject)
+            {
+                Ajax.post('ajax_system_packages_installLocalePackage', function ()
+                {
+                    if ( typeOf(callback) === 'function' ) {
+                        callback();
+                    }
+
+                    resolve();
+                }, {
+                    packages: JSON.encode(packages),
+                    onError: function ()
+                    {
+                        reject();
+                    }
+                });
+            });
+        },
+
+        /**
          * Read the locale repository and search installable packages
          *
          * @param {Function} [callback] - optional

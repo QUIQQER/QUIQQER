@@ -609,12 +609,12 @@ class Manager extends QUI\QDOM
      */
     public function install($package, $version = false)
     {
+        QUI\System\Log::addDebug(
+            'Install package '.$package.' with Lock Client'
+        );
+
         $this->createComposerBackup();
         $this->_checkComposer();
-
-        if (!$version || empty($version)) {
-            $version = '*';
-        }
 
         try {
 
@@ -631,7 +631,7 @@ class Manager extends QUI\QDOM
             );
 
             if (!isset($composer['require'][$package])) {
-                $composer['require'][$package] = $version;
+                $composer['require'][$package] = $version ? $version : '*';
 
                 file_put_contents(
                     $this->_composer_json,
@@ -651,10 +651,41 @@ class Manager extends QUI\QDOM
             QUI\System\Log::addDebug('LOCK Server Error');
             QUI\System\Log::addDebug($Exception->getMessage());
 
+            $this->installWithoutLockClient($package, $version);
+
+            return;
+        }
+
+        $this->getInstalledPackage($package)->install();
+
+        // execute setup of all packages
+        $this->setup($package);
+    }
+
+    /**
+     * Install Package
+     *
+     * @param String      $package - name of the package
+     * @param String|bool $version - (optional) version of the package default = dev-master
+     */
+    public function installWithoutLockClient($package, $version = false)
+    {
+        QUI\System\Log::addDebug(
+            'Install package '.$package.' without Lock Client'
+        );
+
+        if ($version) {
+
             $this->_execComposer('require', array(
                 'packages' => array(
                     $package.':'.$version
                 )
+            ));
+
+        } else {
+
+            $this->_execComposer('require', array(
+                'packages' => $package
             ));
         }
 
@@ -1472,8 +1503,7 @@ class Manager extends QUI\QDOM
 
         foreach ($files as $package) {
 
-            try
-            {
+            try {
                 $composerJson = file_get_contents(
                     "zip://{$package}#composer.json"
                 );
@@ -1481,8 +1511,7 @@ class Manager extends QUI\QDOM
             } catch (\Exception $Exception) {
 
                 // maybe gitlab package?
-                try
-                {
+                try {
                     $packageName = pathinfo($package);
                     $composerJson = file_get_contents(
                         "zip://{$package}#{$packageName['filename']}/composer.json"
