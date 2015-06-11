@@ -234,6 +234,7 @@ class Package extends QUI\QDOM
     {
         $this->setup();
 
+        QUI\Cache\Manager::clearAll();
         QUI::getEvents()->fireEvent('packageInstall', array($this));
     }
 
