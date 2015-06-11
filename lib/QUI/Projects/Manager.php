@@ -693,6 +693,10 @@ class Manager
             'standard'     => '0'
         ));
 
+        if (count($Config->toArray()) == 1) {
+            $Config->setSection($name, 'standard', 1);
+        }
+
         $Config->save();
 
         // Projekt setup
