@@ -34,7 +34,7 @@ define('controls/upload/File', [
     'qui/controls/contextmenu/Item',
     'qui/controls/buttons/Button',
     'qui/controls/utils/Progressbar',
-    'qui/controls/windows/Prompt',
+    'qui/controls/windows/Confirm',
     'qui/controls/messages/Error',
     'qui/utils/Math',
     'qui/utils/Object',
@@ -53,7 +53,7 @@ define('controls/upload/File', [
         QUIContextmenuItem = arguments[ 3 ],
         QUIButton          = arguments[ 4 ],
         QUIProgressbar     = arguments[ 5 ],
-        QUIPrompt          = arguments[ 6 ],
+        QUIConfirm          = arguments[ 6 ],
         MessageError       = arguments[ 7 ],
         MathUtils          = arguments[ 8 ],
         ObjectUtils        = arguments[ 9 ],
@@ -258,14 +258,15 @@ define('controls/upload/File', [
                     {
                         self.pause();
 
-                        new QUIPrompt({
+                        new QUIConfirm({
                             name  : 'cancel-upload-window',
                             title : Locale.get( lg, 'file.upload.cancel.title' ),
                             text  : Locale.get( lg, 'file.upload.cancel.title' ),
                             information : Locale.get( lg, 'file.upload.cancel.information', {
                                 file : self.getFilename()
                             }),
-                            height : 150,
+                            maxWidth  : 640,
+                            maxheight : 360,
                             events :
                             {
                                 onSubmit : function() {
