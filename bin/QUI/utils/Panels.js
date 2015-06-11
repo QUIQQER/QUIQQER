@@ -205,12 +205,16 @@ define('utils/Panels', function()
                 // if panel not exists
                 var tasks = QUI.Controls.getByType( 'qui/controls/desktop/Tasks' );
 
-                if ( !tasks.length ) {
+                if (!tasks.length) {
                     return;
                 }
 
-                tasks[ 0 ].appendChild( Panel );
-
+                for (i = 0, len = tasks.length; i < len; i++) {
+                    if (tasks[i].getElm().getParent('body')) {
+                        tasks[i].appendChild(Panel);
+                        break;
+                    }
+                }
 
                 (function() {
                     Panel.focus();
