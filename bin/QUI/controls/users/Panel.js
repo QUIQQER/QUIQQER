@@ -290,11 +290,13 @@ define('controls/users/Panel', [
 
         /**
          * Load the users with the settings
+         *
+         * @param {Function} [callback]
          */
-        load : function()
+        load : function(callback)
         {
             this.Loader.show();
-            this.$loadUsers();
+            this.$loadUsers(callback);
         },
 
         /**
@@ -635,8 +637,10 @@ define('controls/users/Panel', [
 
         /**
          * Load the users to the grid
+         *
+         * @param {Function} [callback]
          */
-        $loadUsers : function()
+        $loadUsers : function(callback)
         {
             var self = this;
 
@@ -699,6 +703,10 @@ define('controls/users/Panel', [
                 self.setAttribute( 'title', Locale.get( lg, 'users.panel.title' ) );
                 self.setAttribute( 'icon', 'icon-user' );
                 self.refresh();
+
+                if (typeof callback === 'function') {
+                    callback();
+                }
 
                 self.Loader.hide();
             });

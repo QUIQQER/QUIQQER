@@ -247,7 +247,22 @@ define('controls/menu/Search', [
         {
             return new Promise(function(resolve, reject)
             {
+                require([
+                    'controls/users/Panel',
+                    'utils/Panels'
+                ], function(SearchPanel, PanelUtils) {
 
+                    PanelUtils.openPanelInTasks(
+                        new SearchPanel({
+                            search : true,
+                            searchSettings : {
+                                userSearchString : value
+                            }
+                        })
+                    );
+
+                    resolve();
+                }, reject);
             });
         },
 
@@ -261,7 +276,19 @@ define('controls/menu/Search', [
         {
             return new Promise(function(resolve, reject)
             {
+                require([
+                    'controls/groups/Panel',
+                    'utils/Panels'
+                ], function(SearchPanel, PanelUtils) {
 
+                    PanelUtils.openPanelInTasks(
+                        new SearchPanel({
+                            search : value
+                        })
+                    );
+
+                    resolve();
+                }, reject);
             });
         }
 
