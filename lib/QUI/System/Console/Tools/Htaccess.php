@@ -95,10 +95,23 @@ class Htaccess extends QUI\System\Console\Tool
     protected function _template()
     {
         $URL_DIR = URL_DIR;
-        $URL_LIB_DIR = ltrim(URL_LIB_DIR, '/');
-        $URL_BIN_DIR = ltrim(URL_BIN_DIR, '/');
-        $URL_SYS_DIR = ltrim(URL_SYS_DIR, '/');
-        $URL_VAR_DIR = ltrim(URL_VAR_DIR, '/');
+        $URL_LIB_DIR = URL_LIB_DIR;
+        $URL_BIN_DIR = URL_BIN_DIR;
+        $URL_SYS_DIR = URL_SYS_DIR;
+        $URL_VAR_DIR = URL_VAR_DIR;
+        
+        if ($URL_DIR != '/')
+        {
+            $URL_LIB_DIR = str_replace($URL_DIR, '', URL_LIB_DIR);
+            $URL_BIN_DIR = str_replace($URL_DIR, '', URL_BIN_DIR);
+            $URL_SYS_DIR = str_replace($URL_DIR, '', URL_SYS_DIR);
+            $URL_VAR_DIR = str_replace($URL_DIR, '', URL_VAR_DIR);
+        }
+
+        $URL_LIB_DIR = ltrim($URL_LIB_DIR, '/');
+        $URL_BIN_DIR = ltrim($URL_BIN_DIR, '/');
+        $URL_SYS_DIR = ltrim($URL_SYS_DIR, '/');
+        $URL_VAR_DIR = ltrim($URL_VAR_DIR, '/');
 
         $quiqqerLib = URL_OPT_DIR.'quiqqer/quiqqer/lib';
         $quiqqerBin = URL_OPT_DIR.'quiqqer/quiqqer/bin';
@@ -118,7 +131,7 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteRule ^{$URL_SYS_DIR}(.*)$ {$quiqqerSys}/$1 [L]
 
     RewriteCond %{REQUEST_FILENAME} !^.*bin/
-    RewriteRule ^.*{$URL_VAR_DIR}|^.*media/sites/ / [L]
+    RewriteRule ^.*{$URL_VAR_DIR}|^.*media/sites/ {$URL_DIR} [L]
     RewriteRule ^/(.*)     /$
 
     RewriteCond %{REQUEST_FILENAME} !-f
