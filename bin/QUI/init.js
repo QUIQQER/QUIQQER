@@ -113,6 +113,7 @@ var requireList = [
    'Ajax',
    'Projects',
    'controls/workspace/Manager',
+   'controls/menu/Search',
    'qui/controls/buttons/Button',
    'qui/controls/contextmenu/Item',
    'qui/controls/contextmenu/Seperator'
@@ -122,15 +123,16 @@ require( requireList, function()
 {
     "use strict";
 
-    var QUI       = arguments[ 0 ],
-        Locale    = arguments[ 1 ],
-        Ajax      = arguments[ 2 ],
-        Projects  = arguments[ 3 ],
-        WSManager = arguments[ 4 ],
-        QUIButton = arguments[ 5 ],
+    var QUI        = arguments[ 0 ],
+        Locale     = arguments[ 1 ],
+        Ajax       = arguments[ 2 ],
+        Projects   = arguments[ 3 ],
+        WSManager  = arguments[ 4 ],
+        MenuSearch = arguments[ 5 ],
+        QUIButton  = arguments[ 6 ],
 
-        QUIContextmenuItem      = arguments[ 6 ],
-        QUIContextmenuSeperator = arguments[ 7 ];
+        QUIContextmenuItem      = arguments[ 7 ],
+        QUIContextmenuSeperator = arguments[ 8 ];
 
     Locale.setCurrent( USER.lang );
 
@@ -201,6 +203,11 @@ require( requireList, function()
                     }
 
                     WS.Loader.hide();
+
+                    // search
+                    new MenuSearch().inject(
+                        document.getElement('.qui-contextmenu-bar'), 'after'
+                    );
 
                     if ( !Bar.getChildren( 'profile' ) ) {
                         return;

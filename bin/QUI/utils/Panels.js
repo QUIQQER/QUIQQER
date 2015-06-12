@@ -212,13 +212,13 @@ define('utils/Panels', function()
                 for (i = 0, len = tasks.length; i < len; i++) {
                     if (tasks[i].getElm().getParent('body')) {
                         tasks[i].appendChild(Panel);
+
+                        (function() {
+                            Panel.focus();
+                        }).delay( 100 );
                         break;
                     }
                 }
-
-                (function() {
-                    Panel.focus();
-                }).delay( 100 );
             });
         },
 

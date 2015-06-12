@@ -123,10 +123,6 @@ define('controls/projects/project/site/Search', [
                 }
             });
 
-            if ( this.getAttribute( 'value' ) ) {
-                this.$SearchInput.value = this.getAttribute( 'value' );
-            }
-
             // Grid
             var Container = new Element('div', {
                 'class' : 'control-site-search-grid box'
@@ -185,6 +181,11 @@ define('controls/projects/project/site/Search', [
 
                 new SitePanel( Site ).inject( self.getParent() );
             });
+
+            if (this.getAttribute('value')) {
+                this.$SearchInput.value = this.getAttribute( 'value' );
+                this.search();
+            }
         },
 
         /**
