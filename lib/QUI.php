@@ -785,6 +785,17 @@ class QUI
     }
 
     /**
+     * Returns the wanted package
+     *
+     * @param string $package - name of the package eq: quiqqer/blog or quiqqer/quiqqer
+     * @return \QUI\Package\Package
+     */
+    static function getPackage($package)
+    {
+        return self::getPackageManager()->getInstalledPackage($package);
+    }
+
+    /**
      * Returns the project manager
      *
      * @return \QUI\Projects\Manager
