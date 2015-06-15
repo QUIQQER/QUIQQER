@@ -483,17 +483,10 @@ define('controls/upload/Form', [
 
                 if ( !list.length )
                 {
-                    list = this.$Form.getElements( 'input[type="file"]' );
-
-                    if ( this.getAttribute( 'multible' ) &&
-                         this.getAttribute( 'maxuploads' ) > list.length )
-                    {
-                        this.addInput();
-                        list = this.$Form.getElements( 'input:display(inline)' );
-                    }
+                    Input = this.addInput();
+                } else {
+                    Input = list[0];
                 }
-
-                Input = list[0];
             }
 
             this.$files[ Slick.uidOf(Input) ] = File;
@@ -766,7 +759,7 @@ define('controls/upload/Form', [
                     if ( self.getAttribute( 'maxuploads' ) !== false &&
                          files.length > self.getAttribute( 'maxuploads' ) )
                     {
-                        QUI.getMessageHandler(function(MH)
+                        QUI.getMessageHandler().then(function(MH)
                         {
                             MH.addError(
                                 Locale.get( lg, 'upload.form.message.limit', {
