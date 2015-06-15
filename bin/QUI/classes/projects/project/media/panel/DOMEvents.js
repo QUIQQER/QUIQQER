@@ -267,6 +267,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
         {
             var self = this;
 
+            // #locale
             new QUIConfirm({
                 title   : 'Datei ersetzen ...',
                 icon    : 'icon-retweet',

@@ -31,6 +31,7 @@ define('controls/projects/project/media/FilePanel', [
     'utils/Template',
     'qui/utils/Form',
     'utils/Controls',
+    'utils/Media',
     'controls/projects/project/media/Input',
     'Locale',
     'Projects',
@@ -54,9 +55,10 @@ define('controls/projects/project/media/FilePanel', [
         Template           = arguments[ 8 ],
         FormUtils          = arguments[ 9 ],
         ControlUtils       = arguments[ 10 ],
-        MediaInput         = arguments[ 11 ],
-        Locale             = arguments[ 12 ],
-        Projects           = arguments[ 13 ];
+        MediaUtils         = arguments[ 11 ],
+        MediaInput         = arguments[ 12 ],
+        Locale             = arguments[ 13 ],
+        Projects           = arguments[ 14 ];
 
     /**
      * A Media-Panel, opens the Media in an Desktop Panel
@@ -659,6 +661,10 @@ define('controls/projects/project/media/FilePanel', [
                             file_size      : File.getAttribute( 'filesize' )
                         },
                         Body.getElement( 'form' )
+                    );
+
+                    MediaUtils.bindCheckMediaName(
+                        Body.getElement('[name="file_name"]')
                     );
 
                     new QUIButton({
