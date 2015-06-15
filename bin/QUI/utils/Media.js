@@ -88,26 +88,8 @@ define('utils/Media', [
                 var Elm = event.target,
                     val = this.value;
 
-                // dots
-                var substr_count = val.split('.').length - 1;
-
-                if (substr_count > 1) {
-                    QUI.getMessageHandler().then(function(MH) {
-                        MH.addAttention(
-                            QUILocale.get(
-                                'quiqqer/system',
-                                'exception.media.check.name.dots'
-                            ),
-                            Elm
-                        );
-                    });
-
-                    return;
-                }
-
                 // special character
                 if (val.match(/[^0-9_a-zA-Z \-.]/g)) {
-                    console.log('1');
 
                     QUI.getMessageHandler().then(function(MH) {
                         MH.addAttention(
@@ -120,7 +102,6 @@ define('utils/Media', [
                         );
                     });
                 }
-
             });
         }
     };
