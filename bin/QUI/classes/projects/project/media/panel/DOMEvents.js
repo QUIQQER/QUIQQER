@@ -196,6 +196,8 @@ define('classes/projects/project/media/panel/DOMEvents', [
                 name  : 'rename_item',
                 title : 'Ordner umbenennen',
                 icon  : URL_BIN_DIR +'16x16/folder.png',
+                maxHeight : 300,
+                maxWidth  : 450,
                 check : function(Win)
                 {
                     Win.fireEvent( 'submit', [ Win.getValue(), Win ] );
