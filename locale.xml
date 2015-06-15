@@ -358,6 +358,37 @@
             <de><![CDATA[Position des Wasserzeichen ]]></de>
             <en><![CDATA[Positionof the watermark]]></en>
         </locale>
+
+        <locale name="exception.media.check.foldername.allowed.signs" html="true">
+            <de><![CDATA[
+                Nicht erlaubte Zeichen wurden im Namen "[foldername]" gefunden.<br />
+                Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -
+            ]]></de>
+            <en><![CDATA[
+
+            ]]></en>
+        </locale>
+        <locale name="exception.media.check.name.allowed.signs" html="true">
+            <de><![CDATA[
+                Nicht erlaubte Zeichen wurden im Namen "[filename]" gefunden.<br />
+                Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -
+            ]]></de>
+            <en><![CDATA[
+
+            ]]></en>
+        </locale>
+        <locale name="exception.media.check.name.dots" html="true">
+            <de><![CDATA[Punkte dürfe nicht im Namen enthalten sein]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+        <locale name="exception.media.check.name.underline" html="true">
+            <de><![CDATA[
+                Nicht erlaubte Zeichen wurden im Namen gefunden.<br />
+                Doppelte __ dürfen nicht verwendet werden.
+            ]]></de>
+            <en><![CDATA[Positionof the watermark]]></en>
+        </locale>
+
     </groups>
     <groups name="quiqqer/system" datatype="js">
         <locale name="welcome.message">
@@ -3364,6 +3395,10 @@
         <locale name="exception.lib.user.register.specify.password">
             <de><![CDATA[Dieser Benutzername existiert bereits, bitte verwenden Sie einen anderen Benutzernamen]]></de>
             <en><![CDATA[]]></en>
+        </locale>
+        <locale name="exception.media.file.already.exists">
+            <de><![CDATA[Eine Datei mit dem Namen [filename] existiert bereits.]]></de>
+            <en><![CDATA[A file with the name [filename] already exist.]]></en>
         </locale>
         <locale name="exception.user.register.email.exists">
             <de><![CDATA[Diese E-Mail-Adresse existiert bereits, bitte verwenden Sie eine andere E-Mail-Adresse]]></de>

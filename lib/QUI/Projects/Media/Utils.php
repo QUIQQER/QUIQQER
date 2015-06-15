@@ -453,16 +453,21 @@ class Utils
         // Prüfung des Namens - Sonderzeichen
         if (preg_match('/[^0-9_a-zA-Z \-]/', $str)) {
             throw new QUI\Exception(
-                'Nicht erlaubte Zeichen wurden im Namen "'.$str.'" gefunden.
-                Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -',
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.media.check.foldername.allowed.signs',
+                    array('foldername' => $str)
+                ),
                 702
             );
         }
 
         if (strpos($str, '__') !== false) {
             throw new QUI\Exception(
-                'Nicht erlaubte Zeichen wurden im Namen gefunden.
-                Doppelte __ dürfen nicht verwendet werden.',
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.media.check.name.allowed.underline'
+                ),
                 702
             );
         }
@@ -506,8 +511,11 @@ class Utils
         // Prüfung des Namens - Sonderzeichen
         if (preg_match('/[^0-9_a-zA-Z \-.]/', $filename)) {
             throw new QUI\Exception(
-                'Nicht erlaubte Zeichen wurden im Namen "'.$filename.'" gefunden.
-                Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -',
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.media.check.name.allowed.signs',
+                    array('filename' => $filename)
+                ),
                 702
             );
         }
@@ -515,15 +523,20 @@ class Utils
         // mehr als zwei punkte
         if (substr_count($filename, '.') > 1) {
             throw new QUI\Exception(
-                'Punkte dürfe nicht im Namen enthalten sein',
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.media.check.name.dots'
+                ),
                 702
             );
         }
 
         if (strpos($filename, '__') !== false) {
             throw new QUI\Exception(
-                'Nicht erlaubte Zeichen wurden im Namen gefunden.
-                Doppelte __ dürfen nicht verwendet werden.',
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.media.check.name.underline'
+                ),
                 702
             );
         }
@@ -691,7 +704,14 @@ class Utils
         ));
 
         if (!isset($result[0])) {
-            throw new QUI\Exception('File entry not found', 404);
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'exception.file.not.found',
+                    array('file' => $fileid)
+                ),
+                404
+            );
         }
 
         $data = $result[0];
@@ -712,7 +732,11 @@ class Utils
 
         if ($Parent->fileWithNameExists($uploadparams['name'])) {
             throw new QUI\Exception(
-                'A file with the name '.$uploadparams['name'].' already exist.',
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'exception.media.file.already.exists',
+                    array('filename' => $uploadparams['name'])
+                ),
                 403
             );
         }
