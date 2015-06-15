@@ -118,7 +118,7 @@ class Package extends QUI\QDOM
     {
         $varDir = VAR_DIR.'package/'.$this->getName().'/';
 
-        QUI\Utils\System\File::mkfile($varDir);
+        QUI\Utils\System\File::mkdir($varDir);
 
         return $varDir;
     }
