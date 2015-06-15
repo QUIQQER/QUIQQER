@@ -104,6 +104,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
                 items   = [],
                 list    = [];
 
+            // #locale
             new QUIConfirm({
                 name     : 'delete_item',
                 title    : 'Ordner / Datei(en) löschen',
@@ -268,8 +269,8 @@ define('classes/projects/project/media/panel/DOMEvents', [
                 title   : 'Datei ersetzen ...',
                 icon    : 'icon-retweet',
                 name    : 'replace-media-id-'+ DOMNode.get('data-id'),
-                width   : 500,
-                height  : 200,
+                maxHeight : 400,
+                maxWidth  : 600,
 
                 text     : 'Datei ersetzen',
                 texticon : 'icon-retweet',
@@ -288,9 +289,9 @@ define('classes/projects/project/media/panel/DOMEvents', [
                             var Form = new UploadForm({
                                 Drops  : [ Content ],
                                 styles : {
-                                    margin : '20px 0 0 70px',
+                                    clear  : 'both',
                                     float  : 'left',
-                                    clear  : 'both'
+                                    margin : '20px 0 0 0'
                                 },
                                 events :
                                 {
