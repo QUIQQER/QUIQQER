@@ -458,6 +458,7 @@ define('controls/upload/Form', [
             Container.inject( this.$Form );
 
             if ( this.$Add &&
+                 this.getAttribute( 'maxuploads' ) &&
                  this.getAttribute( 'maxuploads' ).toInt() <= elms.length + 1 )
             {
                 this.$Add.disable();
