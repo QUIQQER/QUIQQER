@@ -119,6 +119,8 @@ abstract class Item extends QUI\QDOM
         if (method_exists($this, 'createCache')) {
             $this->createCache();
         }
+
+        QUI::getEvents()->fireEvent('mediaActivate', array($this));
     }
 
     /**
@@ -138,6 +140,8 @@ abstract class Item extends QUI\QDOM
         if (method_exists($this, 'deleteCache')) {
             $this->deleteCache();
         }
+
+        QUI::getEvents()->fireEvent('mediaDeactivate', array($this));
     }
 
     /**
@@ -146,6 +150,8 @@ abstract class Item extends QUI\QDOM
      */
     public function save()
     {
+        QUI::getEvents()->fireEvent('mediaSaveBegin', array($this));
+
         // Rename the file, if necessary
         $this->rename($this->getAttribute('name'));
 
@@ -175,6 +181,8 @@ abstract class Item extends QUI\QDOM
         if (method_exists($this, 'createCache')) {
             $this->createCache();
         }
+
+        QUI::getEvents()->fireEvent('mediaSave', array($this));
     }
 
     /**
@@ -246,6 +254,8 @@ abstract class Item extends QUI\QDOM
             $this->_Media->getTable('relations'),
             array('child' => $this->getId())
         );
+
+        QUI::getEvents()->fireEvent('mediaDelete', array($this));
     }
 
     /**
@@ -276,6 +286,8 @@ abstract class Item extends QUI\QDOM
         QUI::getDataBase()->delete($this->_Media->getTable(), array(
             'id' => $this->getId()
         ));
+
+        QUI::getEvents()->fireEvent('mediaDestroy', array($this));
     }
 
     /**
@@ -368,6 +380,8 @@ abstract class Item extends QUI\QDOM
         if (method_exists($this, 'createCache')) {
             $this->createCache();
         }
+
+        QUI::getEvents()->fireEvent('mediaRename', array($this));
     }
 
     /**

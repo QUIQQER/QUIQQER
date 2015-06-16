@@ -59,6 +59,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         // Cacheordner erstellen
         $this->createCache();
+
+        QUI::getEvents()->fireEvent('mediaActivate', array($this));
     }
 
     /**
@@ -96,6 +98,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         $this->deleteCache();
+
+        QUI::getEvents()->fireEvent('mediaDeactivate', array($this));
     }
 
     /**
@@ -175,6 +179,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         // delete cache
         $this->deleteCache();
+
+        QUI::getEvents()->fireEvent('mediaDelete', array($this));
     }
 
     /**
@@ -186,6 +192,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     {
         // nothing
         // folders are not in the trash
+
+        QUI::getEvents()->fireEvent('mediaDestroy', array($this));
     }
 
     /**
@@ -295,6 +303,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         $this->setAttribute('name', $newname);
         $this->setAttribute('file', $new_path);
+
+        QUI::getEvents()->fireEvent('mediaRename', array($this));
     }
 
     /**
