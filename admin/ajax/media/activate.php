@@ -3,31 +3,45 @@
 /**
  * Activate the file / files
  *
- * @param String $project - Name of the project
- * @param String|Integer $fileid - File-ID
- * @return Bool
+ * @param String         $project - Name of the project
+ * @param String|Integer $fileid  - File-ID
+ *
+ * @return array|boolean
  * @throws \QUI\Exception
  */
 function ajax_media_activate($project, $fileid)
 {
-    $fileid = json_decode( $fileid, true );
+    $fileid = json_decode($fileid, true);
 
-    if ( !is_array( $fileid ) ) {
-        $fileid = array( $fileid );
+    $Project = QUI\Projects\Manager::getProject($project);
+    $Media = $Project->getMedia();
+
+    if (is_array($fileid)) {
+        $result = array();
+
+        foreach ($fileid as $id) {
+            try {
+                $File = $Media->get($id);
+                $File->activate();
+
+                $result[$File->getId()] = $File->isActive();
+
+            } catch (QUI\Exception $Exception) {
+                QUI::getMessagesHandler()->addError($Exception->getMessage());
+            }
+        }
+
+        return $result;
     }
 
-    $Project = \QUI\Projects\Manager::getProject( $project );
-    $Media   = $Project->getMedia();
+    $File = $Media->get($fileid);
+    $File->activate();
 
-    foreach ( $fileid as $id ) {
-        $Media->get( $id )->activate();
-    }
-
-    return true;
+    return $File->isActive();
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_media_activate',
-    array( 'project', 'fileid' ),
+    array('project', 'fileid'),
     'Permission::checkAdminUser'
 );

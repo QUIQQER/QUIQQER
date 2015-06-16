@@ -190,11 +190,16 @@ define('classes/projects/project/media/Item', [
          *
          * @param {Function} [oncomplete] - (optional) callback Function
          * @param {Object} [params]      - (optional), parameters that are linked to the request object
+         * @return Promise
          */
         activate : function(oncomplete, params)
         {
-            this.fireEvent( 'activate', [ this ] );
-            this.getMedia().activate( this.getId(), oncomplete, params );
+            var Media  = this.getMedia(),
+                Result = Media.activate(this.getId(), oncomplete, params);
+
+            return Result.then(function() {
+                this.fireEvent('activate', [this]);
+            }.bind(this));
         },
 
         /**
@@ -206,11 +211,16 @@ define('classes/projects/project/media/Item', [
          *
          * @param {Function} [oncomplete] - (optional) callback Function
          * @param {Object} [params]      - (optional), parameters that are linked to the request object
+         * @return Promise
          */
         deactivate : function(oncomplete, params)
         {
-            this.fireEvent( 'deactivate', [ this ] );
-            this.getMedia().deactivate( this.getId(), oncomplete, params );
+            var Media  = this.getMedia(),
+                Result = Media.deactivate(this.getId(), oncomplete, params);
+
+            return Result.then(function() {
+                this.fireEvent('deactivate', [this]);
+            }.bind(this));
         },
 
         /**
@@ -268,7 +278,13 @@ define('classes/projects/project/media/Item', [
          */
         isActive : function()
         {
-            return this.getAttribute('active').toInt() ? true : false;
+            var active = this.getAttribute('active');
+
+            if (typeOf(active) === 'boolean') {
+                return active;
+            }
+
+            return (active).toInt() ? true : false;
         },
 
         /**

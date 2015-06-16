@@ -199,7 +199,7 @@ define('classes/projects/project/Media', [
          */
         firstChild : function(callback)
         {
-            return this.get( 1, callback );
+            return this.get(1, callback);
         },
 
         /**
@@ -211,23 +211,31 @@ define('classes/projects/project/Media', [
          * @param {File} File         - Browser File Object
          * @param {Function} onfinish - callback function after the upload is finish
          *                              onfinish( {controls/upload/File} )
+         *
+         * @return Promise
          */
         replace : function(childid, File, onfinish)
         {
-            var self = this;
-
-            // upload file
-            require(['UploadManager'], function(UploadManager)
+            return new Promise(function(resolve, reject)
             {
-                UploadManager.uploadFiles( [ File ], 'ajax_media_replace', {
-                    project    : self.getProject().getName(),
-                    fileid     : childid,
-                    phponstart : 'ajax_media_checkreplace',
-                    events  : {
-                        onComplete : onfinish
-                    }
-                });
-            });
+                // upload file
+                require(['UploadManager'], function(UploadManager)
+                {
+                    UploadManager.uploadFiles([File], 'ajax_media_replace', {
+                        project    : this.getProject().getName(),
+                        fileid     : childid,
+                        phponstart : 'ajax_media_checkreplace',
+                        events     : {
+                            onComplete : function() {
+                                if (typeof onfinish === 'function') {
+                                    onfinish();
+                                }
+                                resolve();
+                            }
+                        }
+                    });
+                }.bind(this), reject);
+            }.bind(this));
         },
 
         /**
@@ -238,20 +246,41 @@ define('classes/projects/project/Media', [
          * @param {Number|Array} id       - Item list or an Item id
          * @param {Function} [oncomplete] - (optional), callback Function
          * @param {Object} [params]       - (optional), parameters that are linked to the request object
+         *
+         * @return Promise
          */
         activate : function(id, oncomplete, params)
         {
-            params = ObjectUtils.combine(params, {
-                project : this.getProject().getName(),
-                fileid  : JSON.encode( id )
-            });
-
-            Ajax.post('ajax_media_activate', function(result, Request)
+            return new Promise(function(resolve, reject)
             {
-                if ( oncomplete ) {
-                    oncomplete( result, Request );
-                }
-            }, params);
+                params = ObjectUtils.combine(params, {
+                    project : this.getProject().getName(),
+                    fileid  : JSON.encode( id ),
+                    onError : reject
+                });
+
+                Ajax.post('ajax_media_activate', function(result)
+                {
+                    if (typeOf(id) !== 'array') {
+                        if (typeof this.$items[id] !== 'undefined') {
+                            this.$items[id].setAttribute('active', result);
+                        }
+                    } else
+                    {
+                        id.each(function(id) {
+                            if (id in this.$items) {
+                                this.$items[id].setAttribute('active', result[id]);
+                            }
+                        }.bind(this));
+                    }
+
+                    if (typeof oncomplete === 'function') {
+                        oncomplete(result);
+                    }
+
+                    resolve(result);
+                }.bind(this), params);
+            }.bind(this));
         },
 
         /**
@@ -262,20 +291,43 @@ define('classes/projects/project/Media', [
          * @param {Number|Array} id       - Item list or an Item id
          * @param {Function} [oncomplete] - (optional), callback Function
          * @param {Object} [params]       - (optional), parameters that are linked to the request object
+         *
+         * @return Promise
          */
         deactivate : function(id, oncomplete, params)
         {
-            params = ObjectUtils.combine(params, {
-                project : this.getProject().getName(),
-                fileid  : JSON.encode( id )
-            });
-
-            Ajax.post('ajax_media_deactivate', function(result, Request)
+            return new Promise(function(resolve, reject)
             {
-                if ( oncomplete ) {
-                    oncomplete( result, Request );
-                }
-            }, params);
+                params = ObjectUtils.combine(params, {
+                    project : this.getProject().getName(),
+                    fileid  : JSON.encode(id),
+                    onError : reject
+                });
+
+                Ajax.post('ajax_media_deactivate', function (result)
+                {
+                    if (typeOf(id) !== 'array') {
+                        if (typeof this.$items[id] !== 'undefined') {
+                            this.$items[id].setAttribute('active', result);
+                        }
+                    } else
+                    {
+                        id.each(function(id) {
+                            if (id in this.$items) {
+                                this.$items[id].setAttribute('active', result[id]);
+                            }
+                        }.bind(this));
+                    }
+
+                    if (typeof oncomplete === 'function') {
+                        oncomplete(result);
+                    }
+
+                    resolve(result);
+
+                }.bind(this), params);
+
+            }.bind(this));
         },
 
         /**
@@ -286,30 +338,37 @@ define('classes/projects/project/Media', [
          * @param {Number|Array} id       - Item list or an Item id
          * @param {Function} [oncomplete] - (optional), callback Function
          * @param {Object} [params]       - (optional), parameters that are linked to the request object
+         *
+         * @return Promise
          */
         del : function(id, oncomplete, params)
         {
-            if ( !id.length )
+            return new Promise(function(resolve, reject)
             {
-                if ( typeof oncomplete !== 'undefined' ) {
-                    oncomplete( false );
+                if (!id.length) {
+                    if (typeof oncomplete === 'function') {
+                        oncomplete(false);
+                    }
+
+                    resolve(false);
+                    return;
                 }
 
-                return;
-            }
+                params = ObjectUtils.combine(params, {
+                    project: this.getProject().getName(),
+                    fileid: JSON.encode(id),
+                    onError: reject
+                });
 
+                Ajax.post('ajax_media_delete', function (result)
+                {
+                    if (typeof oncomplete === 'function') {
+                        oncomplete(result);
+                    }
 
-            params = ObjectUtils.combine(params, {
-                project : this.getProject().getName(),
-                fileid  : JSON.encode( id )
+                    resolve(false);
+                }, params);
             });
-
-            Ajax.post('ajax_media_delete', function(result)
-            {
-                if ( typeof oncomplete !== 'undefined' ) {
-                    oncomplete( result );
-                }
-            }, params);
         },
 
         /**

@@ -76,12 +76,15 @@ define('controls/projects/project/media/FilePanel', [
         Type    : 'controls/projects/project/media/FilePanel',
 
         Binds : [
+            'toggleStatus',
             'openDetails',
             'openImageEffects',
             'openPreview',
             '$onInject',
             '$unloadCategory',
-            '$refreshImageEffectFrame'
+            '$refreshImageEffectFrame',
+            '$onFileActivate',
+            '$onFileDeactivate'
         ],
 
         options : {
@@ -209,7 +212,9 @@ define('controls/projects/project/media/FilePanel', [
                 self.$File.addEvents({
                     onSave : function() {
                         self.refresh();
-                    }
+                    },
+                    onActivate   : self.$onFileActivate,
+                    onDeactivate : self.$onFileDeactivate
                 });
 
                 self.openDetails();
@@ -235,7 +240,6 @@ define('controls/projects/project/media/FilePanel', [
                 this.$Media.get( this.getAttribute('fileId') ).done(function(File)
                 {
                     self.$File = File;
-
                     self.load( callback );
                 });
 
@@ -253,8 +257,6 @@ define('controls/projects/project/media/FilePanel', [
                 icon  : icon,
                 title : File.getAttribute( 'file' )
             });
-
-            this.$refresh();
 
             if (typeof callback === 'function') {
                 callback();
@@ -275,16 +277,16 @@ define('controls/projects/project/media/FilePanel', [
          * Refresh the panel
          *
          * @method controls/projects/project/media/FilePanel#refresh
+         *
+         * @return Promise
          */
         refresh : function()
         {
-            var self = this;
-
             this.Loader.show();
 
-            this.$File.refresh().then(function() {
-                self.load();
-            });
+            return this.$File.refresh().then(function() {
+                this.load();
+            }.bind(this));
         },
 
         /**
@@ -351,7 +353,7 @@ define('controls/projects/project/media/FilePanel', [
                 maxWidth : 533,
                 maxHeight : 300,
 
-                autoclose   : false,
+                autoclose : false,
                 events :
                 {
                     onSubmit : function(Win)
@@ -369,6 +371,23 @@ define('controls/projects/project/media/FilePanel', [
         },
 
         /**
+         * Toggle the file status to active or deactive
+         *
+         * @method controls/projects/project/media/FilePanel#activate
+         */
+        toggleStatus : function()
+        {
+            if (this.$File.isActive())
+            {
+                this.deactivate();
+
+            } else
+            {
+                this.activate();
+            }
+        },
+
+        /**
          * Activate the file
          *
          * @method controls/projects/project/media/FilePanel#activate
@@ -379,7 +398,7 @@ define('controls/projects/project/media/FilePanel', [
                 .getElement( 'status' )
                 .setAttribute( 'textimage', 'icon-spinner icon-spin' );
 
-            this.$File.activate( this.refresh.bind( this ) );
+            this.$File.activate();
         },
 
         /**
@@ -393,7 +412,7 @@ define('controls/projects/project/media/FilePanel', [
                 .getElement( 'status' )
                 .setAttribute( 'textimage', 'icon-spinner icon-spin' );
 
-            this.$File.deactivate( this.refresh.bind( this ) );
+            this.$File.deactivate();
         },
 
         /**
@@ -452,12 +471,8 @@ define('controls/projects/project/media/FilePanel', [
                         name      : 'status',
                         text      : Locale.get( lg, 'projects.project.site.media.filePanel.btn.deactivate.text' ),
                         textimage : 'icon-remove',
-                        Control   : this,
-                        events    :
-                        {
-                            onClick : function() {
-                                self.deactivate();
-                            }
+                        events    : {
+                            onClick : this.toggleStatus
                         }
                     })
                 );
@@ -468,13 +483,9 @@ define('controls/projects/project/media/FilePanel', [
                     new QUIButton({
                         name      : 'status',
                         text      : Locale.get( lg, 'projects.project.site.media.filePanel.btn.activate.text' ),
-                        textimage : 'icon-remove',
-                        Control   : this,
-                        events    :
-                        {
-                            onClick : function() {
-                                self.activate();
-                            }
+                        textimage : 'icon-ok',
+                        events    : {
+                            onClick : this.toggleStatus
                         }
                     })
                 );
@@ -944,6 +955,34 @@ define('controls/projects/project/media/FilePanel', [
             });
 
             this.$EffectPreview.set( 'src', url );
+        },
+
+        /**
+         * event on file activate
+         */
+        $onFileActivate : function()
+        {
+            var Button = this.getButtonBar().getElement( 'status' );
+
+            Button.setAttribute( 'textimage', 'icon-remove' );
+            Button.setAttribute(
+                'text',
+                Locale.get( lg, 'projects.project.site.media.filePanel.btn.deactivate.text' )
+            );
+        },
+
+        /**
+         * event on file deactivate
+         */
+        $onFileDeactivate : function()
+        {
+            var Button = this.getButtonBar().getElement( 'status' );
+
+            Button.setAttribute( 'textimage', 'icon-ok' );
+            Button.setAttribute(
+                'text',
+                Locale.get( lg, 'projects.project.site.media.filePanel.btn.activate.text' )
+            );
         }
     });
 });
