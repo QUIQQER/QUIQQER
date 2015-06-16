@@ -340,8 +340,9 @@ class User implements QUI\Interfaces\Users\User
     {
         return false;
 
-        if (!file_exists(USR_DIR.'lib/'.$Project->getAttribute('name')
-            .'/User.php')
+        if (!file_exists(
+            USR_DIR.'lib/'.$Project->getAttribute('name').'/User.php'
+        )
         ) {
             return false;
         }
@@ -818,7 +819,7 @@ class User implements QUI\Interfaces\Users\User
         $params['su'] = $this->isSU();
 
         $params['usergroup'] = $this->getGroups(false);
-        $params['username'] = $this->getName();
+        $params['username'] = $this->getUsername();
         $params['extras'] = $this->_extra;
 
         return $params;

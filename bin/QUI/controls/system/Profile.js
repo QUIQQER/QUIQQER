@@ -4,9 +4,17 @@
  *
  * @module controls/system/Profile
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/QUI
+ * @require qui/controls/windows/Confirm
+ * @require qui/utils/Form
+ * @require utils/Controls
+ * @require Ajax
+ * @require Locale
+ * @require css!controls/system/Profile.css
  */
 
-define([
+define('controls/system/Profile', [
 
     'qui/QUI',
     'qui/controls/windows/Confirm',
@@ -33,10 +41,10 @@ define([
         ],
 
         options : {
-            title  : 'Profil',
-            icon   : 'icon-user',
+            title     : 'Profil', // #locale
+            icon      : 'icon-user',
             maxHeight : 500,
-            maxWidth  : 700,
+            maxWidth  : 750,
             autoclose : false,
             ok_button : {
                 text : 'Speichern'
@@ -71,7 +79,7 @@ define([
                 'ajax_user_profileTemplate'
             ], function(data, profileTemplate)
             {
-                if ( !Content ) {
+                if (!Content) {
                     return;
                 }
 
@@ -80,9 +88,12 @@ define([
                     '<form class="qui-control-profil">'+ profileTemplate +'</form>'
                 );
 
-                FormUtils.setDataToForm( data, Content.getElement( 'form' ) );
-                ControlUtils.parse( Content );
+                FormUtils.setDataToForm(
+                    data,
+                    Content.getElement( 'form' )
+                );
 
+                ControlUtils.parse( Content );
 
                 self.Loader.hide();
             }, {
@@ -118,6 +129,5 @@ define([
                 attributes : JSON.encode( data )
             });
         }
-
     });
 });
