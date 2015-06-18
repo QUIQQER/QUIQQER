@@ -325,7 +325,6 @@
             <de><![CDATA[Stunde]]></de>
             <en><![CDATA[Hour]]></en>
         </locale>
-
         <locale name="template.project.media.effect.header">
             <de><![CDATA[Bildeffekte]]></de>
             <en><![CDATA[Image effects]]></en>
@@ -355,40 +354,34 @@
             <en><![CDATA[Watermark]]></en>
         </locale>
         <locale name="media.watermark.position">
-            <de><![CDATA[Position des Wasserzeichen ]]></de>
+            <de><![CDATA[Position des Wasserzeichen]]></de>
             <en><![CDATA[Positionof the watermark]]></en>
         </locale>
-
-        <locale name="exception.media.check.foldername.allowed.signs" html="true">
-            <de><![CDATA[
-                Nicht erlaubte Zeichen wurden im Namen "[foldername]" gefunden.<br />
-                Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -
-            ]]></de>
-            <en><![CDATA[
-
-            ]]></en>
-        </locale>
-        <locale name="exception.media.check.name.allowed.signs" html="true">
-            <de><![CDATA[
-                Nicht erlaubte Zeichen wurden im Namen "[filename]" gefunden.<br />
-                Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -
-            ]]></de>
-            <en><![CDATA[
-
-            ]]></en>
+        <locale name="lang.ax">
+            <de><![CDATA[Åland]]></de>
+            <en><![CDATA[Åland]]></en>
         </locale>
         <locale name="exception.media.check.name.dots" html="true">
-            <de><![CDATA[Punkte dürfe nicht im Namen enthalten sein]]></de>
+            <de><![CDATA[<p>Es wurden unerlaubte Zeichen im Namen gefunden.<br />
+Punkte d&uuml;rfen nicht verwendet werden.<br />
+&nbsp;</p>]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="exception.media.check.name.underline" html="true">
-            <de><![CDATA[
-                Nicht erlaubte Zeichen wurden im Namen gefunden.<br />
-                Doppelte __ dürfen nicht verwendet werden.
-            ]]></de>
+            <de><![CDATA[<p>Es wurden unerlaubte Zeichen im Namen gefunden.<br />
+Doppelte Unterstriche d&uuml;rfen nicht verwendet werden.</p>]]></de>
             <en><![CDATA[Positionof the watermark]]></en>
         </locale>
-
+        <locale name="exception.media.check.name.allowed.signs" html="true">
+            <de><![CDATA[<p>Es wurden unerlaubte Zeichen im Namen &quot;[filename]&quot; gefunden.<br />
+Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+        <locale name="exception.media.check.foldername.allowed.signs" html="true">
+            <de><![CDATA[<p>Es wurden unerlaubte Zeichen im Namen &quot;[foldername]&quot; gefunden.<br />
+Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js">
         <locale name="welcome.message">
@@ -833,58 +826,6 @@
             <de><![CDATA[Eingabe leeren]]></de>
             <en><![CDATA[Clear]]></en>
         </locale>
-
-        <locale name="projects.project.site.media.folderPanel.btn.effectsRecursive">
-            <de><![CDATA[Effekte rekursiv anwenden]]></de>
-            <en><![CDATA[Apply effects recursively]]></en>
-        </locale>
-        <locale name="projects.project.site.media.folderPanel.no.watermark">
-            <de><![CDATA[Kein Wasserzeichen]]></de>
-            <en><![CDATA[No Watermark]]></en>
-        </locale>
-        <locale name="projects.project.site.media.folderPanel.project.watermark">
-            <de><![CDATA[Projekt-Wasserzeichen verwenden]]></de>
-            <en><![CDATA[Apply Project-Watermark]]></en>
-        </locale>
-        <locale name="projects.project.site.media.folderPanel.own.watermark">
-            <de><![CDATA[Eigenes Wasserzeichen verwenden]]></de>
-            <en><![CDATA[Apply own watermark]]></en>
-        </locale>
-
-        <locale name="media.folderPanel.window.effect.recursive.title">
-            <de><![CDATA[Effekte rekursiv anwenden]]></de>
-            <en><![CDATA[Apply effects recursively]]></en>
-        </locale>
-        <locale name="media.folderPanel.window.effect.recursive.text">
-            <de><![CDATA[Möchten Sie die Ordnereffekte rekursiv anwenden?]]></de>
-            <en><![CDATA[]]></en>
-        </locale>
-        <locale name="media.folderPanel.window.effect.recursive.information" html="true">
-            <de><![CDATA[
-                Alle Änderungen des Ordneres werden gespeichert.
-                Die Effekte des Ordners werden rekusriv auf alle <u>Bilder</u> und <u>Ordner</u> angewendet.
-            ]]></de>
-            <en><![CDATA[
-
-            ]]></en>
-        </locale>
-        <locale name="projects.project.site.media.folderPanel.message.save.success">
-            <de><![CDATA[Der Ordner wurde erfolgreich gespeichert]]></de>
-            <en><![CDATA[The Folder has been saved successfully]]></en>
-        </locale>
-        <locale name="projects.project.site.media.folderPanel.window.delete.title">
-            <de><![CDATA[Möchten Sie den Ordner [folder] wirklich löschen?]]></de>
-            <en><![CDATA[Are you sure you want to delete the folder [folder]?]]></en>
-        </locale>
-        <locale name="projects.project.site.media.folderPanel.window.delete.text">
-            <de><![CDATA[Möchten Sie den Ordner [folder] wirklich löschen?]]></de>
-            <en><![CDATA[Are you sure you want to delete the folder [folder]?]]></en>
-        </locale>
-        <locale name="projects.project.site.media.folderPanel.window.delete.information">
-            <de><![CDATA[Alle Bilder und Unterordner werden in den Papierkorb gelegt.]]></de>
-            <en><![CDATA[]]></en>
-        </locale>
-
         <locale name="projects.project.site.media.filePanel.message.save.success">
             <de><![CDATA[Die Datei wurde erfolgreich gespeichert]]></de>
             <en><![CDATA[The File has been saved successfully]]></en>
@@ -916,10 +857,6 @@
         <locale name="projects.project.site.media.filePanel.preview.text">
             <de><![CDATA[Vorschau]]></de>
             <en><![CDATA[Preview]]></en>
-        </locale>
-        <locale name="projects.project.site.media.filePanel.image.effects.text">
-            <de><![CDATA[Bildeffekte]]></de>
-            <en><![CDATA[Picture effects]]></en>
         </locale>
         <locale name="projects.project.site.media.filePanel.btn.openFile.title">
             <de><![CDATA[Datei öffnen]]></de>
@@ -961,18 +898,25 @@
             <de><![CDATA[Allgemein]]></de>
             <en><![CDATA[Generally]]></en>
         </locale>
-
-        <locale name="projects.project.site.media.manager.calcmd5.start.text">
-            <de><![CDATA[MD5 Berechnung starten]]></de>
-            <en><![CDATA[Start MD5 calculation]]></en>
+        <locale name="projects.project.site.media.manager.calcmd5.select">
+            <de><![CDATA[Projekt für MD5 Berechnung auswählen...]]></de>
+            <en><![CDATA[Choose project for MD5 calculation ...]]></en>
+        </locale>
+        <locale name="projects.project.site.media.manager.calcmd5.start.title">
+            <de><![CDATA[Berechnung starten]]></de>
+            <en><![CDATA[Start calculation]]></en>
         </locale>
         <locale name="projects.project.site.media.manager.calcmd5.start.alt">
             <de><![CDATA[MD5 Berechnung starten]]></de>
             <en><![CDATA[Start MD5 calculation]]></en>
         </locale>
-        <locale name="projects.project.site.media.manager.calcsha1.start.text">
-            <de><![CDATA[SHA1 Berechnung starten]]></de>
-            <en><![CDATA[Start SHA1 calculation]]></en>
+        <locale name="projects.project.site.media.manager.calcsha1.select">
+            <de><![CDATA[Projekt für SHA1 Berechnung auswählen...]]></de>
+            <en><![CDATA[Choose project for SHA1 calculation ...]]></en>
+        </locale>
+        <locale name="projects.project.site.media.manager.calcsha1.start.title">
+            <de><![CDATA[Berechnung starten]]></de>
+            <en><![CDATA[Start calculation]]></en>
         </locale>
         <locale name="projects.project.site.media.manager.calcsha1.start.alt">
             <de><![CDATA[SHA1 Berechnung starten]]></de>
@@ -1035,10 +979,6 @@
         <locale name="projects.project.site.folder.create.information">
             <de><![CDATA[Bitte geben Sie den neuen Ordnernamen ein]]></de>
             <en><![CDATA[Please enter the new folder name.]]></en>
-        </locale>
-        <locale name="projects.project.site.folder.has.no.images">
-            <de><![CDATA[Es konnten keine Bilder in dem Ordner gefunden.]]></de>
-            <en><![CDATA[No images could be found in the folder.]]></en>
         </locale>
         <locale name="projects.project.site.childrensort.order_field">
             <de><![CDATA[Sortierungsfeld]]></de>
@@ -1512,16 +1452,6 @@
             <de><![CDATA[Das System Update wirklich ausführen?]]></de>
             <en><![CDATA[Really starting the system update?]]></en>
         </locale>
-        <locale name="message.packages.update.system.uptodate" html="true">
-            <de><![CDATA[
-                Es wurden keine Aktualisierungen gefunden.<br />
-                Das System befindet sich auf dem neusten Stand.
-            ]]></de>
-            <en><![CDATA[
-                No updates were found. <br />
-                The system is up to date.
-            ]]></en>
-        </locale>
         <locale name="desktop.panels.xml.btn.cancel">
             <de><![CDATA[Änderungen verwerfen]]></de>
             <en><![CDATA[Cancel changes]]></en>
@@ -1584,19 +1514,6 @@
             <de><![CDATA[[file] entpacken]]></de>
             <en><![CDATA[[file] extracing]]></en>
         </locale>
-        <locale name="upload.form.background.text">
-            <de><![CDATA[
-                <p>
-                    Um eine Datei hinzuzufügen, klicken Sie bitte auf <u>Datei auswählen</u> oder<br />
-                    ziehen Sie eine Datei in dieses Feld.
-                </p>
-            ]]></de>
-            <en><![CDATA[Select a file]]></en>
-        </locale>
-        <locale name="upload.form.info.max.text">
-            <de><![CDATA[[count] von [max] Uploads genutzt.]]></de>
-            <en><![CDATA[[count] off [max] uploads used.]]></en>
-        </locale>
         <locale name="upload.form.btn.add.text">
             <de><![CDATA[Datei auswählen]]></de>
             <en><![CDATA[Select a file]]></en>
@@ -1613,17 +1530,9 @@
             <de><![CDATA[Upload starten]]></de>
             <en><![CDATA[Start upload]]></en>
         </locale>
-        <locale name="upload.form.btn.cancel.text">
-            <de><![CDATA[Hochladen abbrechen]]></de>
-            <en><![CDATA[Cancel upload]]></en>
-        </locale>
-        <locale name="upload.form.btn.cancel.title">
-            <de><![CDATA[Upload abbrechen]]></de>
-            <en><![CDATA[Cancel upload]]></en>
-        </locale>
-        <locale name="upload.form.btn.cancel.alt">
-            <de><![CDATA[Upload abbrechen]]></de>
-            <en><![CDATA[Cancel upload]]></en>
+        <locale name="upload.form.btn.change.alt">
+            <de><![CDATA[Upload starten]]></de>
+            <en><![CDATA[Start upload]]></en>
         </locale>
         <locale name="upload.form.btn.change.title">
             <de><![CDATA[Per Klick können Sie eine andere Datei auswählen ...]]></de>
@@ -2837,30 +2746,6 @@
             <de><![CDATA[Inaktive Dateien können nicht eingefügt werden. Möchten Sie diese Datei daher aktivieren?]]></de>
             <en><![CDATA[Inactive files can not be inserted. Would you activate this file?]]></en>
         </locale>
-
-        <locale name="projects.project.media.folderviewer.btn.diashow">
-            <de><![CDATA[Diashow starten]]></de>
-            <en><![CDATA[Start diashow]]></en>
-        </locale>
-        <locale name="projects.project.media.folderviewer.no.folder">
-            <de><![CDATA[Leider wurde kein Ordner ausgewählt.]]></de>
-            <en><![CDATA[Unfortunately, no folder was selected.]]></en>
-        </locale>
-        <locale name="projects.project.media.folderviewer.upload.message" html="true">
-            <de><![CDATA[<p>Möchten Sie die Dateien wirklich hochladen?</p>]]></de>
-            <en><![CDATA[<p>Do you really want to upload the files?</p>]]></en>
-        </locale>
-        <locale name="projects.project.media.folderviewer.upload.btn.start">
-            <de><![CDATA[Fortführen]]></de>
-            <en><![CDATA[Continue]]></en>
-        </locale>
-        <locale name="projects.project.media.folderviewer.upload.btn.cancel">
-            <de><![CDATA[Abbrechen]]></de>
-            <en><![CDATA[Cancel]]></en>
-        </locale>
-
-
-
         <locale name="users.user.btn.password.generate">
             <de><![CDATA[Passwort generieren]]></de>
             <en><![CDATA[generate password]]></en>
@@ -2891,6 +2776,85 @@
             <de><![CDATA[England]]></de>
             <en><![CDATA[England]]></en>
         </locale>
+        <locale name="projects.project.media.folderviewer.upload.btn.cancel">
+            <de><![CDATA[Abbrechen]]></de>
+            <en><![CDATA[Cancel]]></en>
+        </locale>
+        <locale name="projects.project.media.folderviewer.upload.btn.start">
+            <de><![CDATA[Fortführen]]></de>
+            <en><![CDATA[Continue]]></en>
+        </locale>
+        <locale name="projects.project.media.folderviewer.upload.message" html="true">
+            <de><![CDATA[<p>Möchten Sie die Dateien wirklich hochladen?</p>]]></de>
+            <en><![CDATA[<p>Do you really want to upload the files?</p>]]></en>
+        </locale>
+        <locale name="projects.project.site.media.manager.calcmd5.start.text">
+            <de><![CDATA[MD5 Berechnung starten]]></de>
+            <en><![CDATA[Start MD5 calculation]]></en>
+        </locale>
+        <locale name="projects.project.media.folderviewer.no.folder">
+            <de><![CDATA[Leider wurde kein Ordner ausgewählt.]]></de>
+            <en><![CDATA[Unfortunately, no folder was selected.]]></en>
+        </locale>
+        <locale name="projects.project.site.media.folderPanel.btn.effectsRecursive">
+            <de><![CDATA[Effekte rekursiv anwenden]]></de>
+            <en><![CDATA[Apply effects recursively]]></en>
+        </locale>
+        <locale name="projects.project.site.media.folderPanel.no.watermark">
+            <de><![CDATA[Kein Wasserzeichen]]></de>
+            <en><![CDATA[No Watermark]]></en>
+        </locale>
+        <locale name="projects.project.site.media.folderPanel.project.watermark">
+            <de><![CDATA[Projekt-Wasserzeichen verwenden]]></de>
+            <en><![CDATA[Apply Project-Watermark]]></en>
+        </locale>
+        <locale name="projects.project.site.media.folderPanel.own.watermark">
+            <de><![CDATA[Eigenes Wasserzeichen verwenden]]></de>
+            <en><![CDATA[Apply own watermark]]></en>
+        </locale>
+        <locale name="media.folderPanel.window.effect.recursive.title">
+            <de><![CDATA[Effekte rekursiv anwenden]]></de>
+            <en><![CDATA[Apply effects recursively]]></en>
+        </locale>
+        <locale name="media.folderPanel.window.effect.recursive.text">
+            <de><![CDATA[Möchten Sie die Ordnereffekte rekursiv anwenden?]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+        <locale name="media.folderPanel.window.effect.recursive.information" html="true">
+            <de><![CDATA[Alle Änderungen des Ordneres werden gespeichert.
+                Die Effekte des Ordners werden rekusriv auf alle <u>Bilder</u> und <u>Ordner</u> angewendet.]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+        <locale name="projects.project.site.media.folderPanel.message.save.success">
+            <de><![CDATA[Der Ordner wurde erfolgreich gespeichert]]></de>
+            <en><![CDATA[The Folder has been saved successfully]]></en>
+        </locale>
+        <locale name="projects.project.site.media.folderPanel.window.delete.title">
+            <de><![CDATA[Möchten Sie den Ordner [folder] wirklich löschen?]]></de>
+            <en><![CDATA[Are you sure you want to delete the folder [folder]?]]></en>
+        </locale>
+        <locale name="projects.project.site.media.folderPanel.window.delete.text">
+            <de><![CDATA[Möchten Sie den Ordner [folder] wirklich löschen?]]></de>
+            <en><![CDATA[Are you sure you want to delete the folder [folder]?]]></en>
+        </locale>
+        <locale name="projects.project.site.media.folderPanel.window.delete.information">
+            <de><![CDATA[Alle Bilder und Unterordner werden in den Papierkorb gelegt.]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+        <locale name="projects.project.site.media.filePanel.image.effects.text">
+            <de><![CDATA[Bildeffekte]]></de>
+            <en><![CDATA[Picture effects]]></en>
+        </locale>
+        <locale name="projects.project.media.folderviewer.btn.diashow">
+            <de><![CDATA[Diashow starten]]></de>
+            <en><![CDATA[Start diashow]]></en>
+        </locale>
+        <locale name="message.packages.update.system.uptodate" html="true">
+            <de><![CDATA[Es wurden keine Aktualisierungen gefunden.<br />
+                Das System befindet sich auf dem neusten Stand.]]></de>
+            <en><![CDATA[No updates were found. <br />
+                The system is up to date.]]></en>
+        </locale>
         <locale name="projects.project.panel.settings.btn.customCSS">
             <de><![CDATA[Custom-CSS]]></de>
             <en><![CDATA[Custom-CSS]]></en>
@@ -2902,6 +2866,37 @@
         <locale name="groups.panel.group.is.active">
             <de><![CDATA[Gruppe ist aktiviert. Per Klick auf den Button deaktivieren Sie die Gruppe.]]></de>
             <en><![CDATA[Group is active. Click on the button to disable the group.]]></en>
+        </locale>
+        <locale name="projects.project.site.media.manager.calcsha1.start.text">
+            <de><![CDATA[SHA1 Berechnung starten]]></de>
+            <en><![CDATA[Start SHA1 calculation]]></en>
+        </locale>
+        <locale name="projects.project.site.folder.has.no.images">
+            <de><![CDATA[Es konnten keine Bilder in dem Ordner gefunden.]]></de>
+            <en><![CDATA[No images could be found in the folder.]]></en>
+        </locale>
+        <locale name="upload.form.btn.cancel.alt">
+            <de><![CDATA[Upload abbrechen]]></de>
+            <en><![CDATA[Cancel upload]]></en>
+        </locale>
+        <locale name="upload.form.btn.cancel.title">
+            <de><![CDATA[Upload abbrechen]]></de>
+            <en><![CDATA[Cancel upload]]></en>
+        </locale>
+        <locale name="upload.form.btn.cancel.text">
+            <de><![CDATA[Hochladen abbrechen]]></de>
+            <en><![CDATA[Cancel upload]]></en>
+        </locale>
+        <locale name="upload.form.info.max.text">
+            <de><![CDATA[[count] von [max] Uploads genutzt.]]></de>
+            <en><![CDATA[[count] off [max] uploads used.]]></en>
+        </locale>
+        <locale name="upload.form.background.text">
+            <de><![CDATA[<p>
+                    Um eine Datei hinzuzufügen, klicken Sie bitte auf <u>Datei auswählen</u> oder<br />
+                    ziehen Sie eine Datei in dieses Feld.
+                </p>]]></de>
+            <en><![CDATA[Select a file]]></en>
         </locale>
         <locale name="packages.category.modules">
             <de><![CDATA[Module]]></de>
@@ -2936,6 +2931,10 @@
         <locale name="menu.settings.quiqqer.text">
             <de><![CDATA[QUIQQER]]></de>
             <en><![CDATA[QUIQQER]]></en>
+        </locale>
+        <locale name="menu.settings.media.text">
+            <de><![CDATA[Media-Einstellungen]]></de>
+            <en><![CDATA[Media settings]]></en>
         </locale>
         <locale name="menu.settings.editor.text">
             <de><![CDATA[WYSIWYG-Editor Einstellungen]]></de>
@@ -3349,10 +3348,6 @@
             <de><![CDATA[Ihre Nachricht an uns...]]></de>
             <en><![CDATA[Your message to us]]></en>
         </locale>
-        <locale name="exception.file.not.found">
-            <de><![CDATA[Datei [file] wurde nicht gefunden.]]></de>
-            <en><![CDATA[File [file] not found.]]></en>
-        </locale>
         <locale name="exception.template.not.found">
             <de><![CDATA[Template wurde nicht gefunden.]]></de>
             <en><![CDATA[Template not found.]]></en>
@@ -3395,10 +3390,6 @@
         <locale name="exception.lib.user.register.specify.password">
             <de><![CDATA[Dieser Benutzername existiert bereits, bitte verwenden Sie einen anderen Benutzernamen]]></de>
             <en><![CDATA[]]></en>
-        </locale>
-        <locale name="exception.media.file.already.exists">
-            <de><![CDATA[Eine Datei mit dem Namen [filename] existiert bereits.]]></de>
-            <en><![CDATA[A file with the name [filename] already exist.]]></en>
         </locale>
         <locale name="exception.user.register.email.exists">
             <de><![CDATA[Diese E-Mail-Adresse existiert bereits, bitte verwenden Sie eine andere E-Mail-Adresse]]></de>
@@ -3987,11 +3978,6 @@
             <de><![CDATA[Dimension]]></de>
             <en><![CDATA[Dimension]]></en>
         </locale>
-        <locale name="template.project.media.watermark.header">
-            <de><![CDATA[Wasserzeichen Einstellung]]></de>
-            <en><![CDATA[Watermark settings]]></en>
-        </locale>
-
         <locale name="template.project.site.search.title">
             <de><![CDATA[Suche]]></de>
             <en><![CDATA[Search]]></en>
@@ -4086,9 +4072,21 @@
             <de><![CDATA[Apps]]></de>
             <en><![CDATA[Apps]]></en>
         </locale>
+        <locale name="exception.file.not.found">
+            <de><![CDATA[Datei [file] wurde nicht gefunden.]]></de>
+            <en><![CDATA[File [file] not found.]]></en>
+        </locale>
+        <locale name="template.project.media.watermark.header">
+            <de><![CDATA[Wasserzeichen Einstellung]]></de>
+            <en><![CDATA[Watermark settings]]></en>
+        </locale>
         <locale name="projects.project.site.panel.information.layout">
             <de><![CDATA[Layout]]></de>
             <en><![CDATA[Layout]]></en>
+        </locale>
+        <locale name="exception.media.file.already.exists">
+            <de><![CDATA[Eine Datei mit dem Namen [filename] existiert bereits.]]></de>
+            <en><![CDATA[A file with the name [filename] already exist.]]></en>
         </locale>
         <locale name="projects.project.settings.panel.settings.template.title">
             <de><![CDATA[Template-Einstellungen]]></de>
@@ -4166,6 +4164,26 @@
             <de><![CDATA[Maximale Anzahl Seiten in der Projekt Sitemap]]></de>
             <en><![CDATA[Maximum number of page in the project Sitemap]]></en>
         </locale>
+        <locale name="watermark.position.top.right">
+            <de><![CDATA[oben rechts]]></de>
+            <en><![CDATA[top right]]></en>
+        </locale>
+        <locale name="watermark.position.top">
+            <de><![CDATA[oben zentriert]]></de>
+            <en><![CDATA[centered above]]></en>
+        </locale>
+        <locale name="watermark.position.top.left">
+            <de><![CDATA[oben links]]></de>
+            <en><![CDATA[top left]]></en>
+        </locale>
+        <locale name="projects.project.panel.settings.btn.media">
+            <de><![CDATA[Media-Einstellungen]]></de>
+            <en><![CDATA[Media settings]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.watermark.description">
+            <de><![CDATA[Hinweis: Änderungen am Wasserzeichen löschen den kompletten Mediacache.]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
         <locale name="projects.project.settings.panel.mediaSettings.title">
             <de><![CDATA[Media-Einstellungen]]></de>
             <en><![CDATA[Media settings]]></en>
@@ -4178,29 +4196,13 @@
             <de><![CDATA[Position des Wasserzeichen]]></de>
             <en><![CDATA[Position of the watermark]]></en>
         </locale>
-        <locale name="projects.project.settings.panel.mediaSettings.watermark.description">
-            <de><![CDATA[
-                Hinweis: Änderungen am Wasserzeichen löschen den kompletten Mediacache.
-            ]]></de>
-            <en><![CDATA[]]></en>
+        <locale name="watermark.position.bottom.right">
+            <de><![CDATA[unten rechts]]></de>
+            <en><![CDATA[bottom right]]></en>
         </locale>
-
-        <locale name="projects.project.panel.settings.btn.media">
-            <de><![CDATA[Media-Einstellungen]]></de>
-            <en><![CDATA[Media settings]]></en>
-        </locale>
-
-        <locale name="watermark.position.top.left">
-            <de><![CDATA[oben links]]></de>
-            <en><![CDATA[top left]]></en>
-        </locale>
-        <locale name="watermark.position.top">
-            <de><![CDATA[oben zentriert]]></de>
-            <en><![CDATA[centered above]]></en>
-        </locale>
-        <locale name="watermark.position.top.right">
-            <de><![CDATA[oben rechts]]></de>
-            <en><![CDATA[top right]]></en>
+        <locale name="watermark.position.bottom">
+            <de><![CDATA[unten zentriert]]></de>
+            <en><![CDATA[centered bottom]]></en>
         </locale>
         <locale name="watermark.position.left">
             <de><![CDATA[links zentriert]]></de>
@@ -4218,15 +4220,6 @@
             <de><![CDATA[unten links]]></de>
             <en><![CDATA[bottom left]]></en>
         </locale>
-        <locale name="watermark.position.bottom">
-            <de><![CDATA[unten zentriert]]></de>
-            <en><![CDATA[centered bottom]]></en>
-        </locale>
-        <locale name="watermark.position.bottom.right">
-            <de><![CDATA[unten rechts]]></de>
-            <en><![CDATA[bottom right]]></en>
-        </locale>
-
     </groups>
     <groups name="quiqqer/system" datatype="js.php">
         <locale name="projects.project.site.select.btn.addSite">
