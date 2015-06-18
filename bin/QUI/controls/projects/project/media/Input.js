@@ -117,6 +117,16 @@ define('controls/projects/project/media/Input', [
                 display : 'none'
             });
 
+            if (this.$Input.value !== '') {
+
+                var urlParams = QUIStringUtils.getUrlParams( this.$Input.value );
+
+                if ( "project" in urlParams ) {
+                    this.setProject(urlParams.project);
+                }
+            }
+
+
             // preview
             this.$Preview = new Element('div', {
                 'class' : 'qui-controls-project-media-input-preview'

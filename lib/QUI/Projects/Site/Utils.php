@@ -584,8 +584,10 @@ class Utils
     {
         if (!self::isSiteLink($link)) {
             throw new QUI\Exception(
-                QUI::getLocale()
-                   ->get('quiqqer/system', 'exception.site.not.found'),
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.site.not.found'
+                ),
                 705
             );
         }
@@ -594,8 +596,10 @@ class Utils
 
         if (!isset($parseUrl['query']) || empty($parseUrl['query'])) {
             throw new QUI\Exception(
-                QUI::getLocale()
-                   ->get('quiqqer/system', 'exception.site.not.found'),
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.site.not.found'
+                ),
                 705
             );
         }
@@ -724,5 +728,44 @@ class Utils
             'limit'    => $limit,
             'order'    => $order
         ));
+    }
+
+    /**
+     * Return the rewrited link
+     * eq: rewriteSiteLink( index.php?project=test&lang=de&id=1 )
+     *
+     * @param string $link - Project of the sites
+     *
+     * @return string
+     *
+     * @throws \QUI\Exception
+     */
+    static function rewriteSiteLink($link)
+    {
+        if (!self::isSiteLink($link)) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.site.not.found'
+                ),
+                705
+            );
+        }
+
+        $parseUrl = parse_url($link);
+
+        if (!isset($parseUrl['query']) || empty($parseUrl['query'])) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.site.not.found'
+                ),
+                705
+            );
+        }
+
+        parse_str($parseUrl['query'], $urlQueryParams);
+
+        return QUI::getRewrite()->getUrlFromSite($urlQueryParams);
     }
 }

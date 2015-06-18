@@ -310,7 +310,6 @@ define('classes/projects/project/media/Item', [
             }, params);
         },
 
-
         /**
          * Return the own image effects for the immage
          * @returns {Object}
