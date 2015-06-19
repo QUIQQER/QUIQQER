@@ -223,7 +223,8 @@ class Manager
             "adminSitemapMax"          => 20,
             "media_watermark"          => "",
             "media_watermark_position" => "",
-            "media_image_library"      => ""
+            "media_image_library"      => "",
+            "media_maxUploadSize"      => ""
         );
 
         // settings.xml

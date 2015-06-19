@@ -578,6 +578,9 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
     /**
      * Return the images
+     *
+     * @param array $params - filter paramater
+     * @return array
      */
     public function getImages($params = array())
     {
@@ -1033,32 +1036,25 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $File->generateMD5();
         $File->generateSHA1();
 
+        $maxSize = $this->getProject()->getConfig('media_maxUploadSize');
+
         // if it is an image, than resize -> if needed
-        if (Utils::isImage($File)) {
+        if (Utils::isImage($File) && $maxSize) {
+
             /* @var $File Image */
-            $resizeData = $File->getResizeSize(1200, 1200);
+            $resizeData = $File->getResizeSize($maxSize, $maxSize);
 
-            if ($new_file_info['width'] > 1200
-                || $new_file_info['height'] > 1200
+            if ($new_file_info['width'] > $maxSize
+                || $new_file_info['height'] > $maxSize
             ) {
-                try {
-                    QUI\Utils\Image::resize(
-                        $new_file,
-                        $new_file,
-                        $resizeData['width'],
-                        $resizeData['height']
-                    );
+                $File->resize($resizeData['width'], $resizeData['height']);
 
-                    QUI::getDataBase()->update($table, array(
-                        'image_width'  => $resizeData['width'],
-                        'image_height' => $resizeData['height'],
-                    ), array(
-                        'id' => $id
-                    ));
-
-                } catch (QUI\Exception $Exception) {
-                    QUI\System\Log::writeException($Exception);
-                }
+                QUI::getDataBase()->update($table, array(
+                    'image_width'  => $resizeData['width'],
+                    'image_height' => $resizeData['height'],
+                ), array(
+                    'id' => $id
+                ));
             }
 
             $File->setEffects($this->getEffects());

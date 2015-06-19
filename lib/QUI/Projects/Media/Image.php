@@ -217,6 +217,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             $height = $info['height'];
         }
 
+        $maxConfigSize = $this->getProject()->getConfig('media_maxUploadSize');
+
         $newwidth = $width;
         $newheight = $height;
 
@@ -229,12 +231,12 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         // max höhe breite auf 1200
-        if ($maxwidth > 1200) {
-            $maxwidth = 1200;
+        if ($maxwidth > $maxConfigSize) {
+            $maxwidth = $maxConfigSize;
         }
 
-        if ($maxheight > 1200) {
-            $maxheight = 1200;
+        if ($maxheight > $maxConfigSize) {
+            $maxheight = $maxConfigSize;
         }
 
         // Breite
@@ -431,29 +433,42 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
-     * Resize the image
+     * Resize the image and aspect the ratio
      *
-     * @param String  $new_image - Path to the new image
-     * @param Integer $new_width
-     * @param Integer $new_height
+     * @param Integer $newWidth
+     * @param Integer $newHeight
      *
      * @return String - Path to the new Image
+     *
+     * @throws QUI\Exception
      */
-    public function resize($new_image, $new_width = 0, $new_height = 0)
+    public function resize($newWidth = 0, $newHeight = 0)
     {
         $dir = CMS_DIR.$this->_Media->getPath();
         $original = $dir.$this->getAttribute('file');
 
         try {
-            return QUIImage::resize(
-                $original,
-                $new_image,
-                $new_width,
-                $new_height
+            // create image
+            $Image = $this->getMedia()
+                          ->getImageManager()
+                          ->make($original);
+
+            $Image->resize(
+                $newWidth,
+                $newHeight,
+                function ($Constraint) {
+                    $Constraint->aspectRatio();
+                    $Constraint->upsize();
+                }
             );
 
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
+            $Image->save($original);
+
+        } catch (\Exception $Exception) {
+            throw new QUI\Exception(
+                $Exception->getMessage(),
+                $Exception->getCode()
+            );
         }
 
         return $original;

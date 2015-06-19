@@ -4180,6 +4180,18 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Media-Einstellungen]]></de>
             <en><![CDATA[Media settings]]></en>
         </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.maxUploadSize">
+            <de><![CDATA[Maximale Größe eines Bildes]]></de>
+            <en><![CDATA[Maximum size of an image]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.maxUploadSize.description" html="true">
+            <de><![CDATA[
+                Bilder, welche größer als der angegebene Wert sind, werden automatisch angepasst.
+            ]]></de>
+            <en><![CDATA[
+                Images that are larger than the specified value are automatically adjusted.
+            ]]></en>
+        </locale>
         <locale name="projects.project.settings.panel.mediaSettings.watermark.description">
             <de><![CDATA[Hinweis: Änderungen am Wasserzeichen löschen den kompletten Mediacache.]]></de>
             <en><![CDATA[]]></en>
