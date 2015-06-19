@@ -368,7 +368,7 @@ define('classes/projects/project/Media', [
 
                     resolve(false);
                 }, params);
-            });
+            }.bind(this));
         },
 
         /**
