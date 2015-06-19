@@ -96,7 +96,8 @@ require.config({
 
     map : {
         '*': {
-            'css': URL_OPT_DIR +'bin/qui/qui/lib/css.js'
+            'css': URL_OPT_DIR +'bin/qui/qui/lib/css.js',
+            'text': URL_OPT_DIR +'bin/qui/qui/lib/text.js'
         }
     }
 });
