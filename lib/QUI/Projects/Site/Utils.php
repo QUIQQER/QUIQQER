@@ -764,7 +764,8 @@ class Utils
             );
         }
 
-        parse_str($parseUrl['query'], $urlQueryParams);
+        // html_entity_decode because -> &nbsp; in index.php links
+        parse_str(html_entity_decode($parseUrl['query']), $urlQueryParams);
 
         return QUI::getRewrite()->getUrlFromSite($urlQueryParams);
     }
