@@ -6,7 +6,8 @@
 
 namespace QUI;
 
-use QUI;
+use \QUI;
+use \Blowfish\Blowfish;
 
 /**
  * Main Security class
@@ -30,8 +31,7 @@ class Security
             return '';
         }
 
-        $Cipher = new \Crypt_Blowfish();
-        $Cipher->setKey(QUI::conf('globals', 'salt'));
+        $Cipher = new Blowfish(QUI::conf('globals', 'salt'));
 
         return $Cipher->encrypt($str);
     }
@@ -49,8 +49,7 @@ class Security
             return '';
         }
 
-        $Cipher = new \Crypt_Blowfish();
-        $Cipher->setKey(QUI::conf('globals', 'salt'));
+        $Cipher = new Blowfish(QUI::conf('globals', 'salt'));
 
         return $Cipher->decrypt($str);
     }
