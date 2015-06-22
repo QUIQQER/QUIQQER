@@ -126,6 +126,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
     {
         $file = $this->getPath().$id;
 
+        // #locale
         if (!file_exists($file)) {
             throw new QUI\Exception(
                 'Could not find the file '.$id.' in the Trash'

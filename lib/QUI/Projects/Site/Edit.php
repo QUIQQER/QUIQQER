@@ -315,9 +315,17 @@ class Edit extends Site
 
 
         // on destroy event
-        $this->Events->fireEvent('destroy', array($this));
+        try {
+            $this->Events->fireEvent('destroy', array($this));
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
 
-        QUI::getEvents()->fireEvent('siteDestroy', array($this));
+        try {
+            QUI::getEvents()->fireEvent('siteDestroy', array($this));
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
 
 
         /**

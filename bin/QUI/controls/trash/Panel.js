@@ -17,7 +17,7 @@
  * @require Locale
  */
 
-define([
+define('controls/trash/Panel', [
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
@@ -317,7 +317,7 @@ define([
                 ids    = [],
                 params = this.$Select.getValue().split(',');
 
-            if ( this.$Select.getValue().match( 'media' ) ) {
+            if (this.$Select.getValue().match('media')) {
                 type = 'media';
             }
 
@@ -372,9 +372,9 @@ define([
                 {
                     onSubmit : function(Popup, data)
                     {
-                        var project  = data.project,
+                        var project  = params[0],
                             parentId = data.id;
-
+console.log(params);
                         self.restoreProjectMediaItems( project, parentId, ids, function()
                         {
                             self.$MediaGrid.refresh();
@@ -666,7 +666,7 @@ define([
         {
             Ajax.post('ajax_trash_media_restore', function()
             {
-                if ( typeof callback !== 'undefined' ) {
+                if (typeof callback === 'function') {
                     callback();
                 }
             }, {

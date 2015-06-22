@@ -124,8 +124,9 @@ class Log
         $loglevel = self::LEVEL_ERROR,
         $filename = 'error'
     ) {
-        $message = $Exception->getCode()." :: \n\n";
+        $message  = $Exception->getCode()." :: \n\n";
         $message .= $Exception->getMessage();
+        $message .= $Exception->getTraceAsString();
 
         self::write($message, $loglevel, $filename);
     }
