@@ -374,7 +374,7 @@ define('controls/trash/Panel', [
                     {
                         var project  = params[0],
                             parentId = data.id;
-console.log(params);
+
                         self.restoreProjectMediaItems( project, parentId, ids, function()
                         {
                             self.$MediaGrid.refresh();
