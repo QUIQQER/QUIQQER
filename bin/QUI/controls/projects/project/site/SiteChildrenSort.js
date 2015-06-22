@@ -1,5 +1,17 @@
+
 /**
+ * Children sort control
  *
+ * @module controls/projects/project/site/SiteChildrenSort
+ * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/QUI
+ * @require qui/controls/Control
+ * @require qui/controls/loader/Loader
+ * @require controls/grid/Grid
+ * @require Ajax
+ * @require Locale
+ * @require css!controls/projects/project/site/SiteChildrenSort.css
  */
 
 define('controls/projects/project/site/SiteChildrenSort', [
@@ -28,10 +40,6 @@ define('controls/projects/project/site/SiteChildrenSort', [
             '$onInject',
             '$onResize'
         ],
-
-        options : {
-
-        },
 
         initialize : function(Site, options)
         {
@@ -326,8 +334,6 @@ define('controls/projects/project/site/SiteChildrenSort', [
                 return;
             }
 
-            var i, len;
-
             var Project = this.$Site.getProject(),
                 ids     = [],
                 perPage = this.$GridTable.options.perPage,
@@ -335,22 +341,27 @@ define('controls/projects/project/site/SiteChildrenSort', [
                 data    = this.$GridTable.getData();
 
 
-            for ( i = 0, len = data.length; i < len; i++ ) {
+            for (var i = 0, len = data.length; i < len; i++ ) {
                 ids.push( data[ i ].id );
             }
 
-            Ajax.post('ajax_site_children_sort', function()
+            this.$Site.setAttribute('order', 'manuell');
+
+            this.$Site.save(function()
             {
-                if ( typeof callback !== 'undefined' ) {
-                    callback();
-                }
+                Ajax.post('ajax_site_children_sort', function()
+                {
+                    if ( typeof callback !== 'undefined' ) {
+                        callback();
+                    }
 
-                self.$Site.fireEvent( 'sortSave', [ self.$Site ] );
+                    self.$Site.fireEvent( 'sortSave', [ self.$Site ] );
 
-            }, {
-                project : Project.encode(),
-                ids     : JSON.encode( ids ),
-                start   : (page - 1) * perPage
+                }, {
+                    project : Project.encode(),
+                    ids     : JSON.encode( ids ),
+                    start   : (page - 1) * perPage
+                });
             });
         },
 
