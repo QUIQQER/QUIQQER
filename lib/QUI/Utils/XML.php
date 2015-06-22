@@ -47,18 +47,16 @@ class XML
                 'require' => $Item->getAttribute('require'),
                 'exec'    => $Item->getAttribute('exec'),
                 'onClick' => 'QUI.Menu.menuClick'
-                //'click'   => $Item->getAttribute( 'onclick' )
             );
 
             $Parent = $Menu;
 
-            if ($Item->getAttribute('parent') == '/') {
-                $MenuItem = new QUI\Controls\Contextmenu\Baritem($params);
+            if ($Item->getAttribute('parent') != '/') {
 
-            } else {
-                $MenuItem = new QUI\Controls\Contextmenu\Menuitem($params);
-                $parent_path = explode('/',
-                    trim($Item->getAttribute('parent'), '/'));
+                $parent_path = explode(
+                    '/',
+                    trim($Item->getAttribute('parent'), '/')
+                );
 
                 foreach ($parent_path as $parent) {
                     if ($Parent) {
@@ -67,8 +65,17 @@ class XML
                 }
             }
 
-            if ($Item->getAttribute('type') == 'seperator') {
+            // check, if item already exist
+            if ($Parent->getElementByName($Item->getAttribute('name'))) {
+                continue;
+            }
+
+            if ($Item->getAttribute('parent') == '/') {
+                $MenuItem = new QUI\Controls\Contextmenu\Baritem($params);
+            } elseif ($Item->getAttribute('type') == 'seperator') {
                 $MenuItem = new QUI\Controls\Contextmenu\Seperator($params);
+            } else {
+                $MenuItem = new QUI\Controls\Contextmenu\Menuitem($params);
             }
 
             if ($Item->getAttribute('disabled') == 1) {
