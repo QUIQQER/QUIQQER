@@ -36,44 +36,55 @@ define('utils/Template', [
          * @param {String} template
          * @param {Function} oncomplete - callback function
          * @param {Object} [params]     - optional
+         *
+         * @return Promise
          */
         get : function(template, oncomplete, params)
         {
-            params = ObjectUtils.combine(params, {
-                template   : template,
-                oncomplete : oncomplete
-            });
-
-            var hash = this.$hash( template, params ),
-                self = this;
-
-            if ( $( hash ) )
+            return new Promise(function(resolve, reject)
             {
-                var result  = this.$getCache( hash ),
-                    Request = new DOM();
+                params = ObjectUtils.combine(params, {
+                    template : template
+                });
 
-                Request.setAttributes( params );
+                var hash = this.$hash(template, params);
 
-                if ( result && result !== '' )
+                if (document.id(hash))
                 {
-                    oncomplete( result, Request );
+                    var result = this.$getCache(hash);
+
+                    if (result && result !== '')
+                    {
+                        if (typeof oncomplete === 'function') {
+                            oncomplete(result);
+                        }
+
+                        resolve(result);
+                        return;
+                    }
+
+                    reject();
                     return;
                 }
-            }
 
-            params.HCF_hash = hash;
 
-            Ajax.get('ajax_template_get', function(result, Request)
-            {
-                self.$setCache(
-                    Request.getAttribute('HCF_hash'),
-                    result
-                );
+                params = ObjectUtils.combine(params, {
+                    onError : reject
+                });
 
-                if ( Request.getAttribute('oncomplete') ) {
-                    Request.getAttribute('oncomplete')( result, Request );
-                }
-            }, params);
+                Ajax.get('ajax_template_get', function(result)
+                {
+                    this.$setCache(hash, result);
+
+                    if (typeof oncomplete === 'function') {
+                        oncomplete(result);
+                    }
+
+                    resolve(result);
+
+                }.bind(this), params);
+
+            }.bind(this));
         },
 
         /**
