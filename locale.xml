@@ -29,6 +29,18 @@
             <de><![CDATA[Inhalt]]></de>
             <en><![CDATA[Content]]></en>
         </locale>
+        <locale name="information">
+            <de><![CDATA[Information]]></de>
+            <en><![CDATA[Information]]></en>
+        </locale>
+        <locale name="settings">
+            <de><![CDATA[Einstellungen]]></de>
+            <en><![CDATA[Settings]]></en>
+        </locale>
+        <locale name="properties">
+            <de><![CDATA[Eigenschaften]]></de>
+            <en><![CDATA[Properties]]></en>
+        </locale>
         <locale name="size">
             <de><![CDATA[Größe]]></de>
             <en><![CDATA[Size]]></en>
