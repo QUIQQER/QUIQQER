@@ -188,11 +188,17 @@ define('utils/Panels', function()
                     {
                         Child = panels[ i ];
 
-                        if ( !Child.getParent() ) {
+                        if (!Child.getParent()) {
                             continue;
                         }
 
-                        if ( Panel.getAttribute('title') != Child.getAttribute('title') ) {
+                        if (Panel.getAttribute('title') != Child.getAttribute('title')) {
+                            continue;
+                        }
+
+                        if (Panel.getAttribute('#id') &&
+                            Child.getAttribute('#id') &&
+                            Panel.getAttribute('#id') != Child.getAttribute('#id')) {
                             continue;
                         }
 
