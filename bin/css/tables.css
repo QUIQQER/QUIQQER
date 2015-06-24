@@ -32,6 +32,10 @@
     text-align: left;
 }
 
+.data-table th .description {
+    font-size: 12px;
+}
+
 .data-table tr,
 .data-table tbody,
 .data-table thead,
