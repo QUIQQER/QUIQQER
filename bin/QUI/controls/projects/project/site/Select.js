@@ -20,6 +20,7 @@ define('controls/projects/project/site/Select', [
     'qui/controls/Control',
     'qui/controls/buttons/Button',
     'qui/controls/windows/Popup',
+    'qui/controls/elements/Help',
     'controls/projects/TypeWindow',
     'controls/projects/Popup',
     'Projects',
@@ -27,7 +28,16 @@ define('controls/projects/project/site/Select', [
 
     'css!controls/projects/project/site/Select.css'
 
-],function(QUI, QUIControl, QUIButton, QUIPopup, TypeWindow, ProjectWindow, Projects, QUILocale)
+],function(
+    QUI,
+    QUIControl,
+    QUIButton,
+    QUIPopup,
+    QUIHelp,
+    TypeWindow,
+    ProjectWindow,
+    Projects,
+    QUILocale)
 {
     "use strict";
 
@@ -112,10 +122,9 @@ define('controls/projects/project/site/Select', [
                 '</p>'
             );
 
-            this.$Description.set(
-                'html',
-                QUILocale.get( lg, 'projects.project.site.select.description' )
-            );
+            new QUIHelp({
+                text : QUILocale.get( lg, 'projects.project.site.select.description' )
+            }).inject(this.$Description);
 
             var buttons = 0;
             var width   = '100%';
@@ -151,7 +160,8 @@ define('controls/projects/project/site/Select', [
             {
                 this.$ButtonTypes = new QUIButton({
                     name: 'add-types',
-                    text: QUILocale.get( lg, 'projects.project.site.select.btn.addTypes' ), // 'Seiten Typ hinzufügen',
+                    text: QUILocale.get( lg, 'projects.project.site.select.btn.addTypes' ),
+                    title: QUILocale.get( lg, 'projects.project.site.select.btn.addTypes' ),
                     styles: {
                         width: width
                     },
@@ -162,11 +172,28 @@ define('controls/projects/project/site/Select', [
                 }).inject( this.$Buttons );
             }
 
+            if ( this.getAttribute( 'selectparent' ) )
+            {
+                this.$ButtonParents = new QUIButton({
+                    name: 'add-parent',
+                    text: QUILocale.get( lg, 'projects.project.site.select.btn.addParent' ),
+                    title: QUILocale.get( lg, 'projects.project.site.select.btn.addParent' ),
+                    styles: {
+                        width: width
+                    },
+                    events: {
+                        onClick: this.openParentSitemap
+                    },
+                    disabled: true
+                }).inject( this.$Buttons );
+            }
+
             if ( this.getAttribute( 'selectids' ) )
             {
                 this.$ButtonSite = new QUIButton({
                     name: 'add-site',
-                    text: QUILocale.get( lg, 'projects.project.site.select.btn.addSite' ), //'Seiten ID hinzufügen', // #locale
+                    text: QUILocale.get( lg, 'projects.project.site.select.btn.addSite' ),
+                    title: QUILocale.get( lg, 'projects.project.site.select.btn.addSite' ),
                     styles: {
                         width: width
                     },
@@ -177,20 +204,6 @@ define('controls/projects/project/site/Select', [
                 }).inject( this.$Buttons );
             }
 
-            if ( this.getAttribute( 'selectparent' ) )
-            {
-                this.$ButtonParents = new QUIButton({
-                    name: 'add-parent',
-                    text: QUILocale.get( lg, 'projects.project.site.select.btn.addParent' ), // 'Parent ID hinzufügen', // #locale
-                    styles: {
-                        width: width
-                    },
-                    events: {
-                        onClick: this.openParentSitemap
-                    },
-                    disabled: true
-                }).inject( this.$Buttons );
-            }
 
 
             return this.$Elm;

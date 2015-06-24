@@ -23,8 +23,12 @@
     width: 100%;
 }
 
-.control-site-select-description {
-    padding: 10px;
+.control-site-select-buttons button {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: break-all;
+    word-wrap: break-word;
 }
 
 .control-site-select-entry {
