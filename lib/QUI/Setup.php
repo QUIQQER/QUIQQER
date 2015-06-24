@@ -215,7 +215,7 @@ if (file_exists(\$boot)) {
             $image,
 
             $fileHeader.
-            "require 'bootstrap.php';".
+            "require 'bootstrap.php';\n".
             "require '{$OPT_DIR}quiqqer/quiqqer/image.php';"
         );
 
@@ -223,7 +223,7 @@ if (file_exists(\$boot)) {
             $index,
 
             $fileHeader.
-            "require 'bootstrap.php';".
+            "require 'bootstrap.php';\n".
             "require '{$OPT_DIR}quiqqer/quiqqer/index.php';"
         );
 
@@ -231,7 +231,7 @@ if (file_exists(\$boot)) {
             $quiqqer,
 
             $fileHeader.
-            "require 'bootstrap.php';".
+            "require 'bootstrap.php';\n".
             "require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php';"
         );
     }

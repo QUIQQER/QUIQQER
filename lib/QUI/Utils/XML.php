@@ -1089,7 +1089,7 @@ class XML
             foreach ($dbfields['globals'] as $table) {
                 $tbl = QUI::getDBTableName($table['suffix']);
 
-                $Table->appendFields($tbl, $table['fields']);
+                $Table->appendFields($tbl, $table['fields'], $table['engine']);
 
                 if (isset($table['primary'])) {
                     $Table->setPrimaryKey($tbl, $table['primary']);
@@ -1124,6 +1124,7 @@ class XML
 
                 $suffix = $table['suffix'];
                 $fields = $table['fields'];
+                $engine = $table['engine'];
                 $noLang = false;
 
                 if ($table['no-project-lang']) {
@@ -1147,7 +1148,7 @@ class XML
                             $tbl = QUI::getDBTableName($name.'_'.$suffix);
                         }
 
-                        $Table->appendFields($tbl, $fields);
+                        $Table->appendFields($tbl, $fields, $engine);
 
                         if (isset($table['primary'])) {
                             $Table->setPrimaryKey($tbl, $table['primary']);

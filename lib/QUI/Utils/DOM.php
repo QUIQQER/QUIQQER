@@ -167,6 +167,7 @@ class DOM
     {
         $result = array(
             'suffix'            => $Table->getAttribute('name'),
+            'engine'            => $Table->getAttribute('engine'),
             'no-site-reference' => false,
             'no-project-lang'   => false,
             'no-auto-update'    => false,
