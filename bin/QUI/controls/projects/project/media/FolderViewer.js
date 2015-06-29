@@ -342,6 +342,7 @@ define('controls/projects/project/media/FolderViewer', [
          * create a domnode for the image data
          *
          * @param {Object} imageData - data of the image
+         * @return {HTMLDivElement}
          */
         $createImageItem : function(imageData)
         {
@@ -364,6 +365,10 @@ define('controls/projects/project/media/FolderViewer', [
                 {
                     click : function() {
                         self.diashow( this.get('data-src') );
+                    },
+
+                    contextmenu : function(event) {
+                        event.stop();
                     }
                 }
             });

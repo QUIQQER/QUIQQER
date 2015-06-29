@@ -2808,6 +2808,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Leider wurde kein Ordner ausgewählt.]]></de>
             <en><![CDATA[Unfortunately, no folder was selected.]]></en>
         </locale>
+        <locale name="projects.project.media.folderviewer.empty">
+            <de><![CDATA[Es befinden sich keine Bilder in diesem Ordner.]]></de>
+            <en><![CDATA[There are no images in this folder.]]></en>
+        </locale>
         <locale name="projects.project.site.media.folderPanel.btn.effectsRecursive">
             <de><![CDATA[Effekte rekursiv anwenden]]></de>
             <en><![CDATA[Apply effects recursively]]></en>

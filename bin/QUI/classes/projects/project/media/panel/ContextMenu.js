@@ -22,7 +22,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
 
     /**
      * @class classes/projects/project/media/panel/ContextMenu
-     * @param {controls/projects/project/media/Panel} MediaPanel
+     * @param {Object} MediaPanel - controls/projects/project/media/Panel
      *
      * @memberof! <global>
      */
@@ -33,7 +33,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
         /**
          * @constructor
          *
-         * @param {controls/projects/project/media/Panel} MediaPanel
+         * @param {Object} MediaPanel - controls/projects/project/media/Panel
          */
         initialize : function(MediaPanel)
         {
@@ -43,7 +43,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
         /**
          * Return the parent media panel
          *
-         * @return {controls/projects/project/media/Panel}
+         * @return {Object} controls/projects/project/media/Panel
          */
         getPanel : function()
         {
