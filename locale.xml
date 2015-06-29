@@ -4113,9 +4113,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Default layout]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.standard">
-            <de><![CDATA[Standard]]></de>
-            <en><![CDATA[]]></en>
+            <de><![CDATA[Authentifizierung über QUIQQER (Standard)]]></de>
+            <en><![CDATA[Authentifizierung over QUIQQER (standard)]]></en>
         </locale>
+
         <locale name="quiqqer.settings.email.smtp.auth.MAILFromText.description">
             <de><![CDATA[Beim Empfänger angezeigter Name des Absenders.]]></de>
             <en><![CDATA[]]></en>

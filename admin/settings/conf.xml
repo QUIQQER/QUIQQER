@@ -438,6 +438,7 @@
                             <text>
                                 <locale group="quiqqer/system" var="quiqqer.settings.auth.type" />
                             </text>
+
                             <option value="standard">
                                 <locale group="quiqqer/system" var="quiqqer.settings.auth.standard" />
                             </option>
@@ -456,6 +457,7 @@
                         </input>
                     </settings>
 
+                    <!--
                     <settings title="auth-memcached" name="auth-memcached">
                         <title>
                             <locale group="quiqqer/system" var="quiqqer.settings.auth.memcached" />
@@ -495,6 +497,7 @@
                             </text>
                         </input>
                     </settings>
+                    -->
                 </category>
 
                 <category name="date_formats">

@@ -537,142 +537,126 @@ class Manager
         }
 
         // Authentifizierung
-        $auth_type = QUI::conf('auth', 'type');
-        $loginuser = false;
+        $authType = QUI::conf('auth', 'type');
+        $authClass = $authType;
 
-//         switch ( $auth_type )
-//         {
-//             /**
-//              * Active Directory Authentifizierung
-//              */
-//             case 'AD':
-//                 try
-//                 {
-//                     $server = QUI::conf('auth', 'server');
-//                     $server = explode(';', $server);
-
-//                     $Auth = new QUI\Auth\ActiveDirectory();
-//                     $Auth->setAttribute('dc', $server);
-//                     $Auth->setAttribute('base_dn', QUI::conf('auth', 'base_dn') );
-//                     $Auth->setAttribute('domain', QUI::conf('auth', 'domain') );
-
-//                     if ($Auth->auth($username, $pass))
-//                     {
-//                         $loginuser = QUI::getDataBase()->fetch(array(
-//                             'from'  => self::Table(),
-//                             'where' => array(
-//                                 'username' => $username
-//                             ),
-//                             'limit' => '0,1'
-//                         ));
-//                     }
-//                 } catch ( QUI\Exception $e )
-//                 {
-//                     QUI\Exception::setErrorLog($e->getMessage(), false);
-//                 }
-
-//             break;
-//         }
-
-        if ($loginuser == false) {
-            /**
-             * Standard Authentifizierung
-             */
-            if (QUI::conf('globals', 'emaillogin')
-                && strpos($username, '@') !== false
-            ) {
-                // Wenn Login per E-Mail erlaubt ist
-                $loginuser = QUI::getDataBase()->fetch(array(
-                    'from'  => self::Table(),
-                    'where' => array(
-                        'email'    => $username,
-                        'password' => $this->genHash($pass)
-                    ),
-                    'limit' => 1
-                ));
-            }
-
-            if ($loginuser == false) {
-                $loginuser = QUI::getDataBase()->fetch(array(
-                    'from'  => self::Table(),
-                    'where' => array(
-                        'username' => $username,
-                        'password' => $this->genHash($pass)
-                    ),
-                    'limit' => 1
-                ));
-            }
+        if ($authType == 'standard') {
+            $authClass = '\QUI\Users\Auth';
         }
 
-        if (isset($loginuser[0])
-            && isset($loginuser[0]['id'])
-            && isset($loginuser[0]['active'])
-            && $loginuser[0]['active'] == 1
+        if (!class_exists($authClass)) {
+
+            QUI\System\Log::addError(
+                'Authentication Type not found. Please check your config settings'
+            );
+
+            throw new QUI\Exception(
+                QUI::getLocale()->get('quiqqer/system', 'exception.login.fail'),
+                401
+            );
+        }
+
+        $Auth = new $authClass($username);
+        $implements = class_implements($Auth);
+
+        if (!isset($implements['QUI\Interfaces\Users\Auth'])) {
+
+            QUI\System\Log::addError(
+                'Authentication Type is not from Interface QUI\Interfaces\Users\Auth'
+            );
+
+            throw new QUI\Exception(
+                QUI::getLocale()->get('quiqqer/system', 'exception.login.fail'),
+                401
+            );
+        }
+
+        if ($Auth->auth($pass) === false) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get('quiqqer/system', 'exception.login.fail'),
+                401
+            );
+        }
+
+
+        $userId = $Auth->getUserId();
+
+        // check user data
+        $userData = QUI::getDataBase()->fetch(array(
+            'select' => array('id', 'expire'),
+            'from'   => self::Table(),
+            'where'  => array(
+                'id' => $userId
+            ),
+            'limit'  => 1
+        ));
+
+        if (!isset($userData[0])) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.lib.user.user.not.found'
+                ),
+                404
+            );
+        }
+
+        if ($userData[0]['expire']
+            && $userData[0]['expire'] != '0000-00-00 00:00:00'
+            && strtotime($userData[0]['expire']) < time()
         ) {
-            $uparams = $loginuser[0];
-
-            // Ablaufdatum eines Benutzers
-            if ($uparams['expire']
-                && $uparams['expire'] != '0000-00-00 00:00:00'
-                && strtotime($uparams['expire']) < time()
-            ) {
-                throw new QUI\Exception(
-                    QUI::getLocale()
-                       ->get('quiqqer/system', 'exception.login.expire', array(
-                           'expire' => $uparams['expire']
-                       ))
-                );
-            }
-
-            $User = $this->get($uparams['id']);
-
-            // Prüfen ob die Gruppen active sind
-            $Groups = $User->Group;
-            $group_check = false;
-
-            foreach ($Groups as $Group) {
-                /* @var $Group QUI\Groups\Group */
-                if ($Group->getAttribute('active') == 1) {
-                    $group_check = true;
-                }
-            }
-
-            if ($group_check == true) {
-                QUI::getSession()->set('auth', 1);
-                QUI::getSession()->set('uid', $uparams['id']);
-
-                $useragent = '';
-
-                if (isset($_SERVER['HTTP_USER_AGENT'])) {
-                    $useragent = $_SERVER['HTTP_USER_AGENT'];
-                }
-
-                QUI::getDataBase()->update(
-                    self::Table(),
-                    array(
-                        'lastvisit'  => time(),
-                        'user_agent' => $useragent
-                    ),
-                    array('id' => $loginuser[0]['id'])
-                );
-
-                $User = $this->get($uparams['id']);
-                $User->refresh();
-
-                $this->_users[$uparams['id']] = $User;
+            throw new QUI\Exception(
+                QUI::getLocale()
+                   ->get('quiqqer/system', 'exception.login.expire', array(
+                       'expire' => $userData[0]['expire']
+                   ))
+            );
+        }
 
 
-                // on login event
-                QUI::getEvents()->fireEvent('userLogin', array($User));
+        $User   = $this->get($userId);
+        $Groups = $User->Group;
+        $groupActive = false;
 
-                return $User;
+        foreach ($Groups as $Group) {
+            /* @var $Group QUI\Groups\Group */
+            if ($Group->getAttribute('active') == 1) {
+                $groupActive = true;
             }
         }
 
-        throw new QUI\Exception(
-            QUI::getLocale()->get('quiqqer/system', 'exception.login.fail'),
-            401
+        if ($groupActive === false) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get('quiqqer/system', 'exception.login.fail'),
+                401
+            );
+        }
+
+        // session
+        QUI::getSession()->set('auth', 1);
+        QUI::getSession()->set('uid', $userId);
+
+        $useragent = '';
+
+        if (isset($_SERVER['HTTP_USER_AGENT'])) {
+            $useragent = $_SERVER['HTTP_USER_AGENT'];
+        }
+
+        QUI::getDataBase()->update(
+            self::Table(),
+            array(
+                'lastvisit'  => time(),
+                'user_agent' => $useragent
+            ),
+            array('id' => $userId)
         );
+
+        $User->refresh();
+        $this->_users[$userId] = $User;
+
+        QUI::getEvents()->fireEvent('userLogin', array($User));
+
+        return $User;
     }
 
     /**

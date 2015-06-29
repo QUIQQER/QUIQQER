@@ -101,7 +101,7 @@ define('controls/system/settings/Config', [
                             'html',
 
                             '<p>Sie möchten QUIQQER in den Entwicklungsmodus stellen.</p>'+
-                            '<p>Wir empfehlen folgende Packet auch in den Entwicklungsmodus zu stellen.</p>'+
+                            '<p>Wir empfehlen folgende Pakete auch in den Entwicklungsmodus zu stellen.</p>'+
                             '<p>Bitte wählen Sie aus welche Pakete in Entwickler Versionen verwendet werden sollen.</p>'+
                             '<br />'
                         );

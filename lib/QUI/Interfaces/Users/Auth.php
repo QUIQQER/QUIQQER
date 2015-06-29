@@ -7,47 +7,35 @@
 namespace QUI\Interfaces\Users;
 
 /**
- * Interface für Authentifizierung
+ * Interface for external authentification
  *
  * @author  www.pcsg.de (Henning Leutz)
- * @package com.pcsg.qui.interface.users
+ * @package \QUI\Interfaces\Users
  * @licence For copyright and license information, please view the /README.md
  */
 
 interface Auth
 {
     /**
-     * Authentifiziert einen Benutzer
+     * @param string $username - name of the user
+     */
+    public function __construct($username = '');
+
+    /**
+     * Authenticate the user
      *
-     * @param string $username
      * @param string $password
      *
      * @return Bool
-     */
-    public function auth($username, $password);
-
-    /**
-     * Gibt die Daten eines Benutzers zurück
      *
-     * @param string      $username
-     * @param string|bool $fields
+     * @throws \QUI\Exception
      */
-    public function getUser($username, $fields = false);
+    public function auth($password);
 
     /**
-     * Gibt alle Benutzer zurück
-     */
-    public function getUsers();
-
-    /**
-     * Gibt die Daten einer Gruppe zurück
+     * Return the quiqqer user id
      *
-     * @param string $groupname
+     * @return integer|boolean
      */
-    public function getGroup($groupname);
-
-    /**
-     * Gibt alle Gruppen zurück
-     */
-    public function getGroups();
+    public function getUserId();
 }
