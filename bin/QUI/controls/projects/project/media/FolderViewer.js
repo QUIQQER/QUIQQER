@@ -25,6 +25,7 @@ define('controls/projects/project/media/FolderViewer', [
     'qui/controls/buttons/Button',
     'qui/controls/buttons/Seperator',
     'classes/request/Upload',
+    'controls/upload/Form',
     'Projects',
     'Locale',
 
@@ -38,6 +39,7 @@ define('controls/projects/project/media/FolderViewer', [
     QUIButton,
     QUISeperator,
     RequestUpload,
+    UploadForm,
     Projects,
     Locale
 
@@ -54,6 +56,7 @@ define('controls/projects/project/media/FolderViewer', [
         Binds: [
             'preview',
             'diashow',
+            'openUpload',
             '$onCreate',
             '$onInject',
             '$onDrop'
@@ -72,6 +75,10 @@ define('controls/projects/project/media/FolderViewer', [
             this.$Buttons = null;
             this.$Container = null;
             this.$Diashow = null;
+
+            this.$ButtonsDiashow = null;
+            this.$ButtonsSeperator = null;
+            this.$ButtonsUpload = null;
 
             this.$Folder = null;
 
@@ -100,19 +107,31 @@ define('controls/projects/project/media/FolderViewer', [
             this.$Buttons = this.$Elm.getElement('.qui-project-media-folderViewer-buttons');
             this.$Container = this.$Elm.getElement('.qui-project-media-folderViewer-container');
 
-            new QUIButton({
-                text : Locale.get( lg, 'projects.project.media.folderviewer.btn.diashow' ),
-                events : {
+            this.$ButtonsDiashow = new QUIButton({
+                text      : Locale.get( lg, 'projects.project.media.folderviewer.btn.diashow' ),
+                title     : Locale.get( lg, 'projects.project.media.folderviewer.btn.diashow' ),
+                textimage : 'icon-play',
+                events    : {
                     onClick : this.diashow
-                }
+                },
+                disabled : true
             }).inject(this.$Buttons);
 
-//            new QUISeperator().inject(this.$Buttons);
-//
-//            new QUIButton({
-//                text : 'Dateien hochladen'
-//            }).inject(this.$Buttons);
+            this.$ButtonsSeperator = new QUISeperator().inject(this.$Buttons);
 
+            this.$ButtonsUpload = new QUIButton({
+                text      : 'Dateien hochladen',
+                title     : 'Dateien hochladen',
+                textimage : 'icon-upload',
+                events    : {
+                    click : this.openUpload
+                },
+                disabled : true
+            }).inject(this.$Buttons);
+
+
+            this.$ButtonsDiashow.hide();
+            this.$ButtonsSeperator.hide();
 
             // Upload events
             new RequestUpload([this.$Container], {
@@ -168,12 +187,12 @@ define('controls/projects/project/media/FolderViewer', [
             this.Loader.show();
 
             var self = this,
-                Project = Projects.get( this.getAttribute('project')),
+                Project = Projects.get(this.getAttribute('project')),
                 Media = Project.getMedia();
 
-            Media.get( this.getAttribute('folderId') ).done(function(Item)
+            Media.get(this.getAttribute('folderId')).done(function(Item)
             {
-                if ( typeOf(Item) != 'classes/projects/project/media/Folder' )
+                if (typeOf(Item) != 'classes/projects/project/media/Folder')
                 {
                     self.$Container.set(
                         'html',
@@ -185,18 +204,32 @@ define('controls/projects/project/media/FolderViewer', [
                 }
 
                 self.$Folder = Item;
+                self.$ButtonsUpload.enable();
 
                 Item.getChildren(function(items)
                 {
-                    self.$Container.set( 'html', '' );
+                    self.$Container.set('html', '');
 
-                    for ( var i = 0, len = items.length; i < len; i++ )
+                    var images = 0;
+
+                    for (var i = 0, len = items.length; i < len; i++)
                     {
-                        if ( items[i].type != 'image' ) {
+                        if (items[i].type != 'image') {
                             continue;
                         }
 
-                        self.$createImageItem( items[i] ).inject( self.$Container );
+                        self.$createImageItem(items[i]).inject(self.$Container);
+                        images++;
+                    }
+
+                    if (images >= 2) {
+                        self.$ButtonsDiashow.show();
+                        self.$ButtonsSeperator.show();
+
+                        self.$ButtonsDiashow.enable();
+                    } else {
+                        self.$ButtonsDiashow.hide();
+                        self.$ButtonsSeperator.hide();
                     }
 
                     self.Loader.hide();
@@ -211,9 +244,9 @@ define('controls/projects/project/media/FolderViewer', [
          */
         diashow : function(image)
         {
-            if ( this.$Diashow )
+            if (this.$Diashow)
             {
-                if ( typeOf( image ) === 'string' )
+                if (typeOf(image) === 'string')
                 {
                     this.$Diashow.showImage(image);
                     return;
@@ -236,25 +269,62 @@ define('controls/projects/project/media/FolderViewer', [
                 ).map(function(Elm)
                 {
                     return {
-                        src   : Elm.get( 'data-src' ),
+                        src   : Elm.get('data-src'),
                         title : Elm.title,
-                        short : Elm.get( 'data-short' )
+                        short : Elm.get('data-short')
                     };
                 });
 
                 self.$Diashow = new Diashow({
                     images : imageData,
-                    zIndex : ElementUtils.getComputedZIndex( self.$Elm )
+                    zIndex : ElementUtils.getComputedZIndex(self.$Elm)
                 });
 
 
-                if ( typeOf( image ) === 'string' )
+                if (typeOf(image) === 'string')
                 {
                     self.$Diashow.showImage(image);
                     return;
                 }
 
                 self.$Diashow.showFirstImage();
+            });
+        },
+
+        /**
+         * Open upload
+         */
+        openUpload : function()
+        {
+            this.openSheet(function(Content, Sheet) {
+
+                var Upload = new UploadForm({
+                    multible     : true,
+                    sendbutton   : true,
+                    cancelbutton : true,
+                    styles : {
+                        height: '95%'
+                    },
+                    events : {
+                        onCancel : function() {
+                            Sheet.hide();
+                        },
+                        onComplete : function() {
+                            Sheet.hide();
+                            this.refresh();
+                        }.bind(this)
+                    }
+                });
+
+                Upload.setParam('onfinish', 'ajax_media_upload');
+                Upload.setParam('project', this.getAttribute('project'));
+                Upload.setParam('parentid', this.getAttribute('folderId'));
+                Upload.setParam('extract', 0);
+
+                Upload.inject(Content);
+
+            }.bind(this), {
+                buttons : false
             });
         },
 
@@ -297,7 +367,7 @@ define('controls/projects/project/media/FolderViewer', [
          */
         $onDrop : function(event, Files)
         {
-            if ( !Files.length ) {
+            if (!Files.length) {
                 return;
             }
 
