@@ -212,6 +212,16 @@ define('controls/projects/project/media/FolderViewer', [
 
                     var images = 0;
 
+                    if (items.length === 0) {
+
+                        new Element('div', {
+                            html : Locale.get(lg, 'projects.project.media.folderviewer.empty'),
+                            styles : {
+                                padding: 10
+                            }
+                        }).inject(self.$Container);
+                    }
+
                     for (var i = 0, len = items.length; i < len; i++)
                     {
                         if (items[i].type != 'image') {
