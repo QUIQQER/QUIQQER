@@ -2958,7 +2958,6 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Server testen]]></de>
             <en><![CDATA[Test Server]]></en>
         </locale>
-
     </groups>
     <groups name="quiqqer/system" datatype="php">
         <locale name="menu.quiqqer.text" html="true">

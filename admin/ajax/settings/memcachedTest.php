@@ -12,7 +12,7 @@ function ajax_settings_memcachedTest($data)
     if (!class_exists('Memcached')) {
         QUI::getMessagesHandler()->addError(
             QUI::getLocale(
-                'quiqqer/quiqqer',
+                'quiqqer/system',
                 'message.session.auth.memcached.notinstalled'
             )
         );
@@ -23,7 +23,7 @@ function ajax_settings_memcachedTest($data)
     if (!count($data)) {
         QUI::getMessagesHandler()->addError(
             QUI::getLocale()->get(
-                'quiqqer/quiqqer',
+                'quiqqer/system',
                 'message.session.auth.memcached.missing.servers'
             )
         );
@@ -38,7 +38,7 @@ function ajax_settings_memcachedTest($data)
         if (!isset($entry['server'])) {
             QUI::getMessagesHandler()->addAttention(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/system',
                     'message.session.auth.memcached.empty.server'
                 )
             );
@@ -50,7 +50,7 @@ function ajax_settings_memcachedTest($data)
         if (!isset($entry['port'])) {
             QUI::getMessagesHandler()->addAttention(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/system',
                     'message.session.auth.memcached.empty.port'
                 )
             );
@@ -74,7 +74,7 @@ function ajax_settings_memcachedTest($data)
 
             QUI::getMessagesHandler()->addAttention(
                 QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
+                    'quiqqer/system',
                     'message.session.auth.memcached.error',
                     array(
                         'server' => $server,
@@ -88,7 +88,7 @@ function ajax_settings_memcachedTest($data)
     if (!$errors) {
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get(
-                'quiqqer/quiqqer',
+                'quiqqer/system',
                 'message.session.auth.memcached.success'
             )
         );

@@ -140,7 +140,7 @@ define('controls/system/settings/Auth', [
                 }
 
                 new QUIButton({
-                    text : QUILocale.get('quiqqer/quiqqer', 'quiqqer.settings.auth.memcached.addServer'),
+                    text : QUILocale.get('quiqqer/system', 'quiqqer.settings.auth.memcached.addServer'),
                     textimage : 'icon-plus',
                     events : {
                         onClick : function() {
@@ -155,7 +155,7 @@ define('controls/system/settings/Auth', [
                 }).inject(self.$MemcachedTable.getElement('tfoot td'));
 
                 self.$MemcachedTest = new QUIButton({
-                    text : QUILocale.get('quiqqer/quiqqer', 'quiqqer.settings.auth.memcached.testServer'),
+                    text : QUILocale.get('quiqqer/system', 'quiqqer.settings.auth.memcached.testServer'),
                     textimage : 'icon-bolt',
                     events : {
                         onClick : function() {
