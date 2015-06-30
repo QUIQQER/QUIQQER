@@ -571,6 +571,7 @@ class Manager
             );
         }
 
+        /* @var $Auth QUI\Interfaces\Users\Auth */
         if ($Auth->auth($pass) === false) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/system', 'exception.login.fail'),

@@ -325,6 +325,38 @@
             <de><![CDATA[Das Setup wurde erfolgreich ausgeführt.]]></de>
             <en><![CDATA[The setup was successfully completed.]]></en>
         </locale>
+
+        <locale name="message.session.auth.memcached.notinstalled">
+            <de><![CDATA[Die Memcached Erweiterung ist nicht vorhanden auf diesem Server.]]></de>
+            <en><![CDATA[The Memcached extension does not exist on this server.]]></en>
+        </locale>
+        <locale name="message.session.auth.memcached.missing.servers">
+            <de><![CDATA[Es wurden keine Memcached Server angegeben. Der Test konnte nicht durchgeführt werden.]]></de>
+            <en><![CDATA[There were no memcached server specified. The test could not be performed.]]></en>
+        </locale>
+        <locale name="message.session.auth.memcached.empty.server">
+            <de><![CDATA[Eine Server Adresse ist leer oder nicht angegeben.]]></de>
+            <en><![CDATA[A server address is empty or not specified.]]></en>
+        </locale>
+        <locale name="message.session.auth.memcached.empty.port">
+            <de><![CDATA[Eine Server Port Angabe ist leer oder nicht angegeben.]]></de>
+            <en><![CDATA[A server port specification is indicated empty or not.]]></en>
+        </locale>
+        <locale name="message.session.auth.memcached.error" html="true">
+            <de><![CDATA[Zu dem Server [server]:[port] konnte nicht verbunden werden]]></de>
+            <en><![CDATA[To the server [server]:[port] could not be connected]]></en>
+        </locale>
+
+        <locale name="message.session.auth.memcached.success" html="true">
+            <de><![CDATA[
+                Es wurden keine Memcached Fehler gefunden.<br />
+                Mit allen Memcached Servern konnte erfolgreich verbunden werden.
+            ]]></de>
+            <en><![CDATA[
+                No Memcached errors found.<br />
+                With all the memcached servers could be successfully connected.
+            ]]></en>
+        </locale>
         <locale name="login">
             <de><![CDATA[Anmelden]]></de>
             <en><![CDATA[Login]]></en>
@@ -2918,6 +2950,15 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Module]]></de>
             <en><![CDATA[Modules]]></en>
         </locale>
+        <locale name="quiqqer.settings.auth.memcached.addServer">
+            <de><![CDATA[Server hinzufügen]]></de>
+            <en><![CDATA[Add Server]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.memcached.testServer">
+            <de><![CDATA[Server testen]]></de>
+            <en><![CDATA[Test Server]]></en>
+        </locale>
+
     </groups>
     <groups name="quiqqer/system" datatype="php">
         <locale name="menu.quiqqer.text" html="true">
@@ -4112,9 +4153,40 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Standard Layout]]></de>
             <en><![CDATA[Default layout]]></en>
         </locale>
+
+        <locale name="quiqqer.settings.auth.session.type">
+            <de><![CDATA[Speicherung Sitzungsdaten]]></de>
+            <en><![CDATA[Session data storage]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.sessionType.filesystem">
+            <de><![CDATA[Auf dem Dateisystem]]></de>
+            <en><![CDATA[At the filesystem]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.sessionType.database">
+            <de><![CDATA[Via QUIQQER Datenbank]]></de>
+            <en><![CDATA[Via QUIQQER Datenbank]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.sessionType.memcached">
+            <de><![CDATA[Via Memcached Server]]></de>
+            <en><![CDATA[Via Memcached Server]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.sessionType.mongodb">
+            <de><![CDATA[Via MongoDB]]></de>
+            <en><![CDATA[Via MongoDB]]></en>
+        </locale>
+
         <locale name="quiqqer.settings.auth.standard">
             <de><![CDATA[Authentifizierung über QUIQQER (Standard)]]></de>
             <en><![CDATA[Authentifizierung over QUIQQER (standard)]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.auth.memcached.header">
+            <de><![CDATA[Memcached Server]]></de>
+            <en><![CDATA[Memcached Server]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.memcached.header.port">
+            <de><![CDATA[Port]]></de>
+            <en><![CDATA[Port]]></en>
         </locale>
 
         <locale name="quiqqer.settings.email.smtp.auth.MAILFromText.description">

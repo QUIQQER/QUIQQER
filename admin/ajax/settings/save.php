@@ -8,8 +8,7 @@
  */
 function ajax_settings_save($file, $params)
 {
-    if ( !file_exists( $file ) )
-    {
+    if (!file_exists($file)) {
         // # locale
         throw new QUI\Exception(
             'Could not save the data. the config file was not found'
@@ -18,7 +17,7 @@ function ajax_settings_save($file, $params)
 
     QUI\Utils\XML::setConfigFromXml(
         $file,
-        json_decode( $params, true )
+        json_decode($params, true)
     );
 
     // # locale
@@ -29,6 +28,6 @@ function ajax_settings_save($file, $params)
 
 QUI::$Ajax->register(
     'ajax_settings_save',
-    array( 'file', 'params' ),
+    array('file', 'params'),
     'Permission::checkAdminUser'
 );

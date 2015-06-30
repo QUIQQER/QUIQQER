@@ -112,6 +112,7 @@ if ((int)QUI::conf('session', 'regenerate')) {
     QUI::getSession()->refresh();
 }
 
+
 if (isset($_POST['username'])
     && isset($_POST['password'])
     && isset($_POST['login'])

@@ -141,21 +141,19 @@
             </section>
 
             <section name="session">
+                <conf name="type">
+                    <type><![CDATA[string]]></type>
+                    <defaultvalue>filesystem</defaultvalue>
+                </conf>
                 <conf name="max_life_time">
                     <type><![CDATA[integer]]></type>
                     <defaultvalue>14000</defaultvalue>
                 </conf>
-                <conf name="memcached_host">
+                <conf name="memcached_data">
                     <type><![CDATA[string]]></type>
                 </conf>
-                <conf name="memcached_port">
-                    <type><![CDATA[integer]]></type>
-                </conf>
-                <conf name="memcache_host">
+                <conf name="memcache_data">
                     <type><![CDATA[string]]></type>
-                </conf>
-                <conf name="memcache_port">
-                    <type><![CDATA[integer]]></type>
                 </conf>
             </section>
 
@@ -418,7 +416,7 @@
                     </settings>
                 </category>
 
-                <category name="auth">
+                <category name="auth" require="controls/system/settings/Auth">
                     <text>
                         <locale group="quiqqer/system" var="quiqqer.settings.auth" />
                     </text>
@@ -455,49 +453,29 @@
                                 <locale group="quiqqer/system" var="quiqqer.settings.auth.session.maxlife" />
                             </text>
                         </input>
+
+                        <select conf="session.type" type="text">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.session.type" />
+                            </text>
+
+                            <option value="filesystem">
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.sessionType.filesystem" />
+                            </option>
+                            <option value="database">
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.sessionType.database" />
+                            </option>
+                            <option value="memcached">
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.sessionType.memcached" />
+                            </option>
+                            <!--<option value="mongodb">
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.sessionType.mongodb" />
+                            </option>-->
+                        </select>
+
+                        <input conf="session.memcached_data" type="hidden" />
                     </settings>
 
-                    <!--
-                    <settings title="auth-memcached" name="auth-memcached">
-                        <title>
-                            <locale group="quiqqer/system" var="quiqqer.settings.auth.memcached" />
-                        </title>
-                        <text>
-                            <locale group="quiqqer/system" var="quiqqer.settings.auth.memcached.text" />
-                        </text>
-                        <input conf="session.memcached_host">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.auth.memcached.host" />
-                            </text>
-                        </input>
-
-                        <input conf="session.memcached_port">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.auth.memcached.port" />
-                            </text>
-                        </input>
-                    </settings>
-
-                    <settings title="auth-memcache" name="auth-memcache">
-                        <title>
-                            <locale group="quiqqer/system" var="quiqqer.settings.auth.memcache" />
-                        </title>
-                        <text>
-                            <locale group="quiqqer/system" var="quiqqer.settings.auth.memcache.text" />
-                        </text>
-                        <input conf="session.memcache_host">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.auth.memcache.host" />
-                            </text>
-                        </input>
-
-                        <input conf="session.memcache_port">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.auth.memcache.port" />
-                            </text>
-                        </input>
-                    </settings>
-                    -->
                 </category>
 
                 <category name="date_formats">

@@ -11,6 +11,7 @@ use QUI\System\Log;
 use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcacheSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHandler;
 
 /**
@@ -78,7 +79,7 @@ class Session
         }
 
         $storageOptions = array(
-            'cookie_lifetime' => $this->_lifetime
+            'cookie_lifetime'  => $this->_lifetime
         );
 
         if (!class_exists('NativeSessionStorage')) {
@@ -112,7 +113,8 @@ class Session
                 require_once $fileSession;
 
             } else {
-                throw new \Exception('Session File not found '.$fileSession);
+                throw new \Exception('Session File not found '
+                    .$fileSession);
             }
 
             if (class_exists($classSession)) {
@@ -137,6 +139,7 @@ class Session
         switch ($sessionType) {
             case 'database':
             case 'memcached':
+            case 'memcache':
                 break;
 
             default:
@@ -144,21 +147,63 @@ class Session
         }
 
 
-        if ($sessionType == 'memcached') {
-            $memcached_host = QUI::conf('session', 'memcached_host');
-            $memcached_port = QUI::conf('session', 'memcached_host');
+        // memcached
+        if ($sessionType == 'memcached' && class_exists('Memcached')) {
 
-            if (!empty($memcached_host) && !empty($memcached_port)
-                && class_exists('Memcached')
-            ) {
-                $Memcached = new \Memcached();
-                $Memcached->addServer($memcached_host, $memcached_port);
+            $memcached_data = QUI::conf('session', 'memcached_data');
+            $memcached_data = explode(';', $memcached_data);
 
-                return new MemcachedSessionHandler($Memcached);
+            $Memcached = new \Memcached('quiqqer');
+
+            foreach ($memcached_data as $serverData) {
+                $serverData = explode(':', $serverData);
+
+                $server = $serverData[0];
+                $port = 11211;
+
+                if (isset($serverData[1])) {
+                    $port = $serverData[1];
+                }
+
+                $Memcached->addServer($server, $port, 1000);
             }
+
+            return new MemcachedSessionHandler($Memcached);
+
+        } elseif ($sessionType == 'memcached' && !class_exists('Memcached')) {
+            Log::addWarning('Memcached not installed');
         }
 
 
+        // memcache
+        if ($sessionType == 'memcache' && class_exists('Memcache')) {
+
+            $memcache_data = QUI::conf('session', 'memcache_data');
+            $memcache_data = explode(';', $memcache_data);
+
+            $Memcache = new \Memcache();
+
+            foreach ($memcache_data as $serverData) {
+                $serverData = explode(':', $serverData);
+
+                $server = $serverData[0];
+                $port = 11211;
+
+                if (isset($serverData[1])) {
+                    $port = $serverData[1];
+                }
+
+                $Memcache->addServer($server, $port);
+            }
+
+            return new MemcacheSessionHandler($Memcache);
+
+        } elseif ($sessionType == 'memcache' && !class_exists('Memcache')) {
+            Log::addWarning('Memcache not installed');
+        }
+
+
+        // session via database
         if ($sessionType == 'database') {
 
             $PDO = QUI::getDataBase()->getNewPDO();
