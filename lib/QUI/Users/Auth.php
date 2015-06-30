@@ -43,8 +43,17 @@ class Auth implements QUI\Interfaces\Users\Auth
      */
     public function auth($password = '')
     {
+        $userData = QUI::getDataBase()->fetch(array(
+            'select' => array('id', 'password'),
+            'from'   => QUI::getUsers()->Table(),
+            'where'  => array(
+                'id'       => $this->getUserId(),
+                'password' => QUI::getUsers()->genHash($password)
+            ),
+            'limit'  => 1
+        ));
 
-        return true;
+        return isset($userData[0]);
     }
 
     /**

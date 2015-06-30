@@ -24,6 +24,7 @@
             <field type="TEXT DEFAULT NULL">extra</field>
             <field type="VARCHAR(2) DEFAULT NULL">lang</field>
             <field type="INT(11) DEFAULT NULL">address</field>
+            <field type="TEXT(32) DEFAULT NULL">secHash</field>
 
             <primary>id</primary>
             <index>username,password</index>

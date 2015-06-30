@@ -3232,6 +3232,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Maximale inaktive Zeit eines Benutzers (max session life time)]]></de>
             <en><![CDATA[Maximum user idle time (max session lifetime)]]></en>
         </locale>
+        <locale name="quiqqer.settings.auth.session.multible">
+            <de><![CDATA[Mehrfachanmeldung mit dem gleichen Benutzer erlauben]]></de>
+            <en><![CDATA[Allow multiple login with the same user]]></en>
+        </locale>
         <locale name="quiqqer.settings.auth.memcached">
             <de><![CDATA[Memcached-Server]]></de>
             <en><![CDATA[Memcached server]]></en>

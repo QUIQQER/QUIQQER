@@ -584,7 +584,7 @@ class Manager
 
         // check user data
         $userData = QUI::getDataBase()->fetch(array(
-            'select' => array('id', 'expire'),
+            'select' => array('id', 'expire', 'secHash'),
             'from'   => self::Table(),
             'where'  => array(
                 'id' => $userId
@@ -615,7 +615,7 @@ class Manager
         }
 
 
-        $User   = $this->get($userId);
+        $User = $this->get($userId);
         $Groups = $User->Group;
         $groupActive = false;
 
@@ -636,6 +636,7 @@ class Manager
         // session
         QUI::getSession()->set('auth', 1);
         QUI::getSession()->set('uid', $userId);
+        QUI::getSession()->set('secHash', $this->getSecHash());
 
         $useragent = '';
 
@@ -647,7 +648,8 @@ class Manager
             self::Table(),
             array(
                 'lastvisit'  => time(),
-                'user_agent' => $useragent
+                'user_agent' => $useragent,
+                'secHash'    => $this->getSecHash()
             ),
             array('id' => $userId)
         );
@@ -661,12 +663,34 @@ class Manager
     }
 
     /**
+     * Generate a user-dependent security hash
+     * There are different data use such as IP, User-Agent and the System-Salt
+     *
+     * @return string
+     */
+    public function getSecHash()
+    {
+        $secHashData = array();
+        $useragent = '';
+
+        // chromeframe nicht mitaufnehmen -> bug
+        if (isset($_SERVER['HTTP_USER_AGENT'])
+            && strpos($_SERVER['HTTP_USER_AGENT'], 'chromeframe') === false
+        ) {
+            $useragent = $_SERVER['HTTP_USER_AGENT'];
+        }
+
+        $secHashData[] = $useragent;
+        $secHashData[] = QUI\Utils\System::getClientIP();
+        $secHashData[] = QUI::conf('globals', 'salt');
+
+        return md5(serialize($secHashData));
+    }
+
+    /**
      * Get the Session user
      *
-     * @todo id in Session, bedänklich??
      * @return QUI\Users\User
-     *
-     * @todo Sicherheitsabfragen neu schreiben
      */
     public function getUserBySession()
     {
@@ -687,24 +711,18 @@ class Manager
 
             $User = $this->get(QUI::getSession()->get('uid'));
 
-            /**
-             * Sicherheitsabfragen
-             */
-            // User Agent
-            if (isset($_SERVER['HTTP_USER_AGENT'])
-                &&
-                $User->getAttribute('user_agent') != $_SERVER['HTTP_USER_AGENT']
-                && strpos($_SERVER['HTTP_USER_AGENT'], 'chromeframe') === false
-            ) {
-                QUI::getSession()->destroy();
-
-                // @todo mehrfachanmeldung mit dem gleichen benutzer, muss hier hin
-                // @todo Issue #1
-
-                return $this->getNobody();
+            // Mehrfachanmeldungen? Dann keine Prüfung
+            if (QUI::conf('session', 'multible')) {
+                return $User;
             }
 
-            return $User;
+            $sessionSecHash = QUI::getSession()->get('secHash');
+            $secHash = $this->getSecHash();
+            $userSecHash = $User->getAttribute('secHash');
+
+            if ($sessionSecHash == $secHash && $userSecHash == $secHash) {
+                return $User;
+            }
 
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addDebug($Exception->getMessage());

@@ -145,6 +145,10 @@
                     <type><![CDATA[string]]></type>
                     <defaultvalue>filesystem</defaultvalue>
                 </conf>
+                <conf name="multible">
+                    <type><![CDATA[boolean]]></type>
+                    <defaultvalue>0</defaultvalue>
+                </conf>
                 <conf name="max_life_time">
                     <type><![CDATA[integer]]></type>
                     <defaultvalue>14000</defaultvalue>
@@ -448,6 +452,12 @@
                             <locale group="quiqqer/system" var="quiqqer.settings.auth.session" />
                         </title>
 
+                        <input conf="session.multible" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.session.multible" />
+                            </text>
+                        </input>
+
                         <input conf="session.max_life_time">
                             <text>
                                 <locale group="quiqqer/system" var="quiqqer.settings.auth.session.maxlife" />
@@ -472,6 +482,7 @@
                                 <locale group="quiqqer/system" var="quiqqer.settings.auth.sessionType.mongodb" />
                             </option>-->
                         </select>
+
 
                         <input conf="session.memcached_data" type="hidden" />
                     </settings>
