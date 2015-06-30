@@ -670,6 +670,26 @@ define('controls/projects/project/Sitemap', [
             ContextMenu.clearChildren()
                 .appendChild(
                     new QUIContextmenuItem({
+                        name   : 'create-new-site',
+                        text   : Locale.get('quiqqer/system', 'projects.project.site.btn.new.text'),
+                        icon   : 'icon-file-text fa fa-file-text',
+                        events :
+                        {
+                            onClick : function()
+                            {
+                                self.$createChild({
+                                    project : self.getAttribute( 'project' ),
+                                    lang    : self.getAttribute( 'lang' ),
+                                    id      : Itm.getAttribute( 'value' )
+                                });
+                            }
+                        }
+                    })
+                ).appendChild(
+                    new QUIContextmenuSeperator()
+                )
+                .appendChild(
+                    new QUIContextmenuItem({
                         name   : 'copy',
                         text   : Locale.get('quiqqer/system', 'copy'),
                         icon   : 'icon-copy',
@@ -762,23 +782,6 @@ define('controls/projects/project/Sitemap', [
                                         id      : Itm.getAttribute('value')
                                     });
                                 }
-                            }
-                        }
-                    })
-                ).appendChild(
-                    new QUIContextmenuItem({
-                        name   : 'create-new-site',
-                        text   : Locale.get('quiqqer/system', 'projects.project.site.btn.new.text'),
-                        icon   : 'icon-file-text fa fa-file-text',
-                        events :
-                        {
-                            onClick : function()
-                            {
-                                self.$createChild({
-                                    project : self.getAttribute( 'project' ),
-                                    lang    : self.getAttribute( 'lang' ),
-                                    id      : Itm.getAttribute( 'value' )
-                                });
                             }
                         }
                     })
