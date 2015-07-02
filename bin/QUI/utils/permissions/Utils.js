@@ -37,13 +37,15 @@ define('utils/permissions/Utils', [
                 return new Element('div');
             }
 
-            var name  = params.name,
-                Entry = new Element('div.qui-permission-entry');
+            var title      = params.title.split(' '),
+                permission = params.name;
+
+            var Entry = new Element('div.qui-permission-entry');
 
             var Input = new Element('input.right', {
                 type : 'text',
-                name : name,
-                id   : 'perm-'+ name,
+                name : permission,
+                id   : 'perm-'+ permission,
 
                 'data-area' : params.area
             });
@@ -56,17 +58,19 @@ define('utils/permissions/Utils', [
 
             var Label = new Element('label', {
                 'for' : 'perm-'+ name,
-                html  : QUILocale.get('locale/permissions', name +'._title')
+                html  : QUILocale.get(title[0], title[1])
             });
 
             Input.inject( Entry );
             Label.inject( Entry );
 
-            if ( params.desc )
+            if ("desc" in params)
             {
+                var desc = params.desc.split(' ');
+
                 Label.set(
                     'data-desc',
-                    QUILocale.get('locale/permissions', name +'._description')
+                    QUILocale.get(desc[0], desc[1])
                 );
             }
 
