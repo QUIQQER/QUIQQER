@@ -4,33 +4,31 @@
  * Benutzer aktivieren
  *
  * @param {JSON Integer|JSON Array} $uid
+ *
  * @return Array
  */
 function ajax_users_activate($uid)
 {
-    $uid = json_decode( $uid, true );
+    $uid = json_decode($uid, true);
 
-    if ( !is_array($uid) ) {
-        $uid = array( $uid );
+    if (!is_array($uid)) {
+        $uid = array($uid);
     }
 
-    $Users  = \QUI::getUsers();
+    $Users = QUI::getUsers();
     $result = array();
 
-    foreach ( $uid as $_uid )
-    {
-        try
-        {
-            $User = $Users->get( $_uid );
+    foreach ($uid as $_uid) {
+        try {
+            $User = $Users->get($_uid);
             $User->activate();
 
-            $result[ $_uid ] = $User->isActive() ? 1 : 0;
+            $result[$_uid] = $User->isActive() ? 1 : 0;
 
-        } catch ( \QUI\Exception $Exception )
-        {
-            $result[ $_uid ] = 0;
+        } catch (QUI\Exception $Exception) {
+            $result[$_uid] = 0;
 
-            \QUI::getMessagesHandler()->addError(
+            QUI::getMessagesHandler()->addError(
                 $Exception->getMessage()
             );
 
@@ -41,7 +39,7 @@ function ajax_users_activate($uid)
     return $result;
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_users_activate',
     array('uid'),
     'Permission::checkSU'

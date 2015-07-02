@@ -3,19 +3,20 @@
 /**
  * Return all addresses from an user
  *
+ * @param Integer|String $uid - id of the user
+ *
  * @return Array
  */
 function ajax_users_address_list($uid)
 {
-    $User = \QUI::getUsers()->get((int)$uid);
+    $User = QUI::getUsers()->get((int)$uid);
 
     $addresses = $User->getAddressList();
-    $result   = array();
+    $result = array();
 
-    foreach ( $addresses as $Address )
-    {
-        $entry        = $Address->getAllAttributes();
-        $entry['id']  = $Address->getId();
+    foreach ($addresses as $Address) {
+        $entry = $Address->getAllAttributes();
+        $entry['id'] = $Address->getId();
         $entry['uid'] = $User->getId();
 
         $result[] = $entry;
@@ -24,7 +25,7 @@ function ajax_users_address_list($uid)
     return $result;
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_users_address_list',
     array('uid'),
     'Permission::checkSU'

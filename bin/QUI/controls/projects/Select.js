@@ -14,7 +14,7 @@
  * @event onChange [ value ]
  */
 
-define([
+define('controls/projects/Select', [
 
     'qui/QUI',
     'qui/controls/Control',
@@ -54,20 +54,24 @@ define([
         {
             var self = this;
 
-            this.$Elm = new Element( 'div' );
+            this.$Elm = new Element('div');
 
             this.$Select = new QUISelect({
                 name : 'projects-select',
                 events :
                 {
                     onChange : function(value) {
-                        self.fireEvent( 'change', [ value ] );
+                        self.fireEvent('change', [value]);
                     }
                 }
             });
 
-            this.$Select.inject( this.$Elm );
-            this.Loader.inject( this.$Elm );
+            this.$Select.inject(this.$Elm);
+            this.Loader.inject(this.$Elm);
+
+            if (this.getAttribute('styles')) {
+                this.$Select.getElm().setStyles(this.getAttribute('styles'));
+            }
 
             this.Loader.show();
 
@@ -75,15 +79,15 @@ define([
             {
                 var i, len, langs, project;
 
-                for ( project in result )
+                for (project in result)
                 {
-                    if ( !result.hasOwnProperty( project ) ) {
+                    if (!result.hasOwnProperty(project)) {
                         continue;
                     }
 
-                    langs = result[ project ].langs.split(',');
+                    langs = result[project].langs.split(',');
 
-                    for ( i = 0, len = langs.length; i < len; i++ )
+                    for (i = 0, len = langs.length; i < len; i++)
                     {
                         self.$Select.appendChild(
                             project +' ( '+ langs[ i ] +' )',
@@ -94,13 +98,22 @@ define([
                 }
 
                 self.$Select.setValue(
-                    self.$Select.firstChild().getAttribute( 'value' )
+                    self.$Select.firstChild().getAttribute('value')
                 );
 
                 self.Loader.hide();
             });
 
             return this.$Elm;
+        },
+
+        /**
+         *
+         * @returns {*}
+         */
+        getValue : function()
+        {
+            return this.$Select.getValue();
         }
     });
 });

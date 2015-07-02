@@ -4,87 +4,82 @@
  * Search users
  *
  * @param String $params - JSON Array
+ *
  * @return Array
  */
 function ajax_users_search($params)
 {
-    $params = json_decode( $params, true );
+    $params = json_decode($params, true);
 
-    $Groups = \QUI::getGroups();
-    $Users  = \QUI::getUsers();
-    $page   = 1;
-    $limit  = 10;
+    $Groups = QUI::getGroups();
+    $Users = QUI::getUsers();
+    $page = 1;
+    $limit = 10;
 
     $params['start'] = 0;
 
-    if ( isset( $params['limit'] ) ) {
+    if (isset($params['limit'])) {
         $limit = $params['limit'];
     }
 
-    if ( isset( $params['field'] ) &&
-         $params['field'] == 'activebtn' )
-    {
+    if (isset($params['field'])
+        && $params['field'] == 'activebtn'
+    ) {
         $params['field'] = 'active';
     }
 
-    if ( isset( $params['page'] ) )
-    {
+    if (isset($params['page'])) {
         $page = (int)$params['page'];
 
-        $params['start'] = ($page-1)*$limit;
+        $params['start'] = ($page - 1) * $limit;
     }
 
-    $search = $Users->search( $params );
+    $search = $Users->search($params);
     $result = array();
 
-    foreach ( $search as $user )
-    {
+    foreach ($search as $user) {
 // 	    $image  = URL_BIN_DIR .'16x16/cancel.png';
 // 		$title  = 'Benutzer aktivieren';
 // 		$status = 0;
 
-        if ( !isset( $user['usergroup'] ) )
-        {
+        if (!isset($user['usergroup'])) {
             $result[] = $user;
             continue;
         }
 
-        $usergroups = explode( ',', trim($user['usergroup'], ',' ) );
+        $usergroups = explode(',', trim($user['usergroup'], ','));
         $groupnames = '';
 
-        foreach ( $usergroups as $gid )
-        {
-            if ( !$gid ) {
+        foreach ($usergroups as $gid) {
+            if (!$gid) {
                 continue;
             }
 
-            try
-            {
-                $groupnames .= $Groups->getGroupNameById( $gid ) .',';
+            try {
+                $groupnames .= $Groups->getGroupNameById($gid).',';
 
-            } catch ( \QUI\Exception $Exception )
-            {
-                $groupnames .= $gid .',';
+            } catch (QUI\Exception $Exception) {
+                $groupnames .= $gid.',';
             }
         }
 
-        $user['usergroup'] = trim( $groupnames, ',' );
+        $user['usergroup'] = trim($groupnames, ',');
 
-        if ( $user['regdate'] != 0 ) {
-            $user['regdate']  = date( 'd.m.Y H:i:s', $user['regdate'] );
+        if ($user['regdate'] != 0) {
+            $user['regdate'] = date('d.m.Y H:i:s', $user['regdate']);
         }
 
         $result[] = $user;
     }
 
     return array(
-        'total' => $Users->count( $params ),
+        'total' => $Users->count($params),
         'page'  => $page,
         'data'  => $result
     );
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_users_search',
     array('params'),
     'Permission::checkAdminUser'

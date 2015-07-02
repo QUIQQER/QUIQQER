@@ -19,6 +19,11 @@
 	background : #fff;
 }
 
+.group-input-dropdown .hover {
+    background-color: #2F8FC6;
+    color: #FFFFFF;
+}
+
 .group-input-dropdown .mark {
     font-weight: bold;
     color: red;

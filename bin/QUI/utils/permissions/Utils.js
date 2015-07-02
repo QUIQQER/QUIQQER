@@ -5,17 +5,25 @@
  * @module utils/permissions/Utils
  * @author www.pcsg.de (Henning Leutz)
  *
+ * @require Locale
  * @require css!utils/permissions/Utils.css
  */
 
 define('utils/permissions/Utils', [
+
     'Locale',
+    'classes/permissions/Permissions',
     'css!utils/permissions/Utils.css'
-], function(QUILocale)
+
+], function(QUILocale, Permissions)
 {
     "use strict";
 
+    var Perm = new Permissions();
+
     return {
+
+        Permissions : Perm,
 
         /**
          * Parse a permission param to a DOMNode
@@ -25,12 +33,12 @@ define('utils/permissions/Utils', [
          */
         parse : function(params)
         {
-            if ( !params.hasOwnProperty( 'name' ) ) {
+            if (!params.hasOwnProperty('name')) {
                 return new Element('div');
             }
 
             var name  = params.name,
-                Entry = new Element( 'div.qui-permission-entry' );
+                Entry = new Element('div.qui-permission-entry');
 
             var Input = new Element('input.right', {
                 type : 'text',
@@ -42,13 +50,13 @@ define('utils/permissions/Utils', [
 
             Input.addClass( params.type );
 
-            if ( params.type == 'bool' ) {
+            if (params.type == 'bool') {
                 Input.type = 'checkbox';
             }
 
             var Label = new Element('label', {
                 'for' : 'perm-'+ name,
-                html  : QUILocale.get( 'locale/permissions', name +'._title' )
+                html  : QUILocale.get('locale/permissions', name +'._title')
             });
 
             Input.inject( Entry );
@@ -58,7 +66,7 @@ define('utils/permissions/Utils', [
             {
                 Label.set(
                     'data-desc',
-                    QUILocale.get( 'locale/permissions', name +'._description' )
+                    QUILocale.get('locale/permissions', name +'._description')
                 );
             }
 

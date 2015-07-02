@@ -1,0 +1,58 @@
+
+.controls-permissions-permission {
+    float: left;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+
+.controls-permissions-permission-map {
+    border-right: 1px solid #dedede;
+    float: left;
+    height: 100%;
+    overflow: auto;
+    position: relative;
+    z-index: 2;
+}
+
+.controls-permissions-permission-content {
+    float: left;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    width: calc( 100% - 240px );
+    z-index: 1;
+}
+
+.controls-permissions-permission-content label {
+    line-height: 28px;
+    white-space: nowrap;
+}
+
+.controls-permissions-permission-content input[type="checkbox"],
+.controls-permissions-permission-content input[type="radio"] {
+    margin-top: 7px;
+}
+
+.controls-permissions-permission-content-sheet {
+    height: 100%;
+    left: -100%;
+    overflow: auto;
+    padding: 20px;
+    position: absolute;
+    width: 100%;
+}
+
+.controls-permissions-select {
+    height: 100%;
+    left: 0;
+    padding: 20px;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.controls-permissions-select h2 {
+    margin-top: 0;
+}

@@ -480,6 +480,14 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Sind Sie sicher, dass Sie das Projekt löschen möchten? Eine Wiederherstellung ist nicht möglich.]]></de>
             <en><![CDATA[Are you sure you want to delete this project?]]></en>
         </locale>
+        <locale name="projects.project.windowselect.text">
+            <de><![CDATA[Bitte wähen Sie ein Projekt aus.]]></de>
+            <en><![CDATA[Please select a project.]]></en>
+        </locale>
+        <locale name="projects.project.windowselect.title">
+            <de><![CDATA[Projekt Auswahl]]></de>
+            <en><![CDATA[Select a project]]></en>
+        </locale>
         <locale name="exception.user.wrong.passwords">
             <de><![CDATA[Die Passwörter stimmen nicht überein. Bitte geben Sie korrekte Passwörter ein.]]></de>
             <en><![CDATA[The passwords do not match. Please enter correct passwords.]]></en>

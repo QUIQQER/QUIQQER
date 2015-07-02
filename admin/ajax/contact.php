@@ -6,26 +6,25 @@
  * @param string $email
  * @param string $name
  * @param string $message
+ *
  * @return bool
  * @throws \QUI\Exception
  */
 
 function ajax_contact($email, $name, $message)
 {
-    if ( empty( $email ) || empty( $name ) || empty( $message ) )
-    {
-        throw new \QUI\Exception(
-            \QUI::getLocale()->get(
+    if (empty($email) || empty($name) || empty($message)) {
+        throw new QUI\Exception(
+            QUI::getLocale()->get(
                 'quiqqer/system',
                 'exception.contact.params.empty'
             )
         );
     }
 
-    if ( !\QUI\Utils\Security\Orthos::checkMailSyntax( $email ) )
-    {
-        throw new \QUI\Exception(
-            \QUI::getLocale()->get(
+    if (!QUI\Utils\Security\Orthos::checkMailSyntax($email)) {
+        throw new QUI\Exception(
+            QUI::getLocale()->get(
                 'quiqqer/system',
                 'exception.contact.wrong.email'
             )
@@ -33,7 +32,8 @@ function ajax_contact($email, $name, $message)
     }
 
 
-    $body = "
+    $body
+        = "
 
 From: {$name}
 E-Mail: {$email}
@@ -42,18 +42,16 @@ Message: {$message}
 
 ";
 
-    try
-    {
-        \QUI::getMailManager()->send(
-            \QUI::conf( 'mail', 'admin_mail' ),
+    try {
+        QUI::getMailManager()->send(
+            QUI::conf('mail', 'admin_mail'),
             'Contact',
             $body
         );
 
-    } catch ( \QUI\Exception $Exception )
-    {
-        throw new \QUI\Exception(
-            \QUI::getLocale()->get(
+    } catch (QUI\Exception $Exception) {
+        throw new QUI\Exception(
+            QUI::getLocale()->get(
                 'quiqqer/system',
                 'exception.contact.send.mail'
             )
@@ -63,7 +61,7 @@ Message: {$message}
     return true;
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_contact',
-    array( 'email', 'name', 'message' )
+    array('email', 'name', 'message')
 );

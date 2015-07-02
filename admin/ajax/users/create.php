@@ -4,17 +4,18 @@
  * Benutzer mit Benutzernamen anlegen
  *
  * @param String $username - name of the user
+ *
  * @return Integer User-ID
  */
 function ajax_users_create($username)
 {
-    $Users = \QUI::getUsers();
-	$User  = $Users->createChild( $username );
+    $Users = QUI::getUsers();
+    $User = $Users->createChild($username);
 
-	return $User->getId();
+    return $User->getId();
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_users_create',
     array('username'),
     'Permission::checkUser'

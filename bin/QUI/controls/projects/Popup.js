@@ -14,6 +14,8 @@
  * @require Locale
  * @require controls/projects/project/Sitemap
  * @require css!controls/projects/Popup.css
+ *
+ * @event onSubmit [ {this}, {Object} result ];
  */
 
 define('controls/projects/Popup', [
