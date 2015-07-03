@@ -171,6 +171,16 @@ define('classes/projects/project/Site', [
         },
 
         /**
+         * the site has been loaded once?
+         *
+         * @return {Boolean}
+         */
+        isLoaded : function()
+        {
+            return this.$loaded;
+        },
+
+        /**
          * Get the site ID
          *
          * @method classes/projects/project/Site#getId

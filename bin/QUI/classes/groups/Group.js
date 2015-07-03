@@ -41,6 +41,7 @@ define([
         initialize : function(gid)
         {
             this.$gid = gid;
+            this.$loaded = false;
         },
 
         /**
@@ -55,28 +56,56 @@ define([
         },
 
         /**
+         * Return the group name
+         *
+         * @method classes/groups/Group#getName
+         * @return {String} Groupname
+         */
+        getName : function()
+        {
+            return this.getAttribute('name');
+        },
+
+        /**
          * Load the group attributes from the db
          *
          * @method classes/groups/Group#load
          * @param {Function} [onfinish] - (optional), callback
+         * @return Promise
          */
         load: function(onfinish)
         {
             var self = this;
 
-            Ajax.get('ajax_groups_get', function(result, Request)
-            {
-                self.setAttributes( result );
+            return new Promise(function(resolve, reject) {
 
-                if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( self, Request );
-                }
+                Ajax.get('ajax_groups_get', function(result)
+                {
+                    self.setAttributes(result);
+                    self.$loaded = true;
 
-                self.fireEvent( 'refresh', [ self ] );
+                    if (typeof onfinish === 'function') {
+                        onfinish(self);
+                    }
 
-            }, {
-                gid : this.getId()
+                    resolve(self);
+
+                    self.fireEvent('refresh', [self]);
+                }, {
+                    gid : self.getId(),
+                    onError : reject
+                });
             });
+        },
+
+        /**
+         * the group has been loaded once?
+         *
+         * @return {Boolean}
+         */
+        isLoaded : function()
+        {
+            return this.$loaded;
         },
 
         /**

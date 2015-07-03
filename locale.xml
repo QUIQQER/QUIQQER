@@ -127,8 +127,8 @@
             <de><![CDATA[Darf Editor Toolbars löschen]]></de>
             <en><![CDATA[]]></en>
         </locale>
-    </groups>
 
+    </groups>
 
     <groups name="quiqqer/system" datatype="js,php">
         <locale name="yes">
@@ -732,6 +732,35 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Zugriffsrechtemanager]]></de>
             <en><![CDATA[Permissions-Manager]]></en>
         </locale>
+        <locale name="permission.control.edit.title">
+            <de><![CDATA[Zugriffsrechte bearbeiten von: [name]]]></de>
+            <en><![CDATA[Edit permissions of: [name]]]></en>
+        </locale>
+        <locale name="permission.control.editcreate.title">
+            <de><![CDATA[Zugriffsrechte bearbeiten]]></de>
+            <en><![CDATA[Edit permissions]]></en>
+        </locale>
+        <locale name="permission.control.btn.add.permission">
+            <de><![CDATA[Zugriffsrecht hinzufügen]]></de>
+            <en><![CDATA[Add permission]]></en>
+        </locale>
+        <locale name="permission.control.btn.group.save">
+            <de><![CDATA[Gruppenrechte speichern]]></de>
+            <en><![CDATA[Save group permissions]]></en>
+        </locale>
+        <locale name="permission.control.btn.user.save">
+            <de><![CDATA[Benutzerrechte speichern]]></de>
+            <en><![CDATA[Save user permissions]]></en>
+        </locale>
+        <locale name="permission.control.btn.project.save">
+            <de><![CDATA[Projektrechte speichern]]></de>
+            <en><![CDATA[Save project permissions]]></en>
+        </locale>
+        <locale name="permission.control.btn.site.save">
+            <de><![CDATA[Seitenrechte speichern]]></de>
+            <en><![CDATA[Save page permissions]]></en>
+        </locale>
+
         <locale name="permissions.panel.btn.sitemap.alt">
             <de><![CDATA[Zugriffsrechte anzeigen]]></de>
             <en><![CDATA[Show permissions]]></en>

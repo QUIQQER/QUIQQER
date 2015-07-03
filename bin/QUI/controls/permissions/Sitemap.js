@@ -4,8 +4,17 @@
  *
  * @module controls/permissions/Panel
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/QUI
+ * @require qui/controls/Control
+ * @require qui/controls/sitemap/Map
+ * @require qui/controls/sitemap/Item
+ * @require qui/utils/Object
+ * @require utils/permissions/Utils
+ * @require Locale
+ *
+ * @event itemClick [Item, value]
  */
-
 define('controls/permissions/Sitemap', [
 
     'qui/QUI',
@@ -24,7 +33,7 @@ define('controls/permissions/Sitemap', [
     return new Class({
 
         Extends: QUIControl,
-        Types: 'controls/permissions/Sitemap',
+        Type: 'controls/permissions/Sitemap',
 
         Binds: [
             '$onInject',
@@ -99,6 +108,10 @@ define('controls/permissions/Sitemap', [
 
                 case 'classes/projects/project/Site':
                     Permissions.getSitePermissionList(this.$Bind).then(this.$createMap);
+                    break;
+
+                case 'qui/classes/DOM':
+                    Permissions.getList().then(this.$createMap);
                     break;
             }
         },

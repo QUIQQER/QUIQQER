@@ -1,8 +1,8 @@
 
 /**
- * Permissions Panel
+ * Permission for an user
  *
- * @module controls/permissions/Panel
+ * @module controls/permissions/User
  * @author www.pcsg.de (Henning Leutz)
  *
  * @require controls/permissions/Permission
@@ -11,9 +11,10 @@
 define('controls/permissions/User', [
 
     'controls/permissions/Permission',
+    'qui/controls/buttons/Button',
     'Locale'
 
-], function(Permission, QUILocale)
+], function(Permission, QUIButton, QUILocale)
 {
     "use strict";
 
@@ -23,7 +24,11 @@ define('controls/permissions/User', [
     return new Class({
 
         Extends: Permission,
-        Types: 'controls/permissions/User',
+        Type: 'controls/permissions/User',
+
+        Binds : [
+            '$onOpen'
+        ],
 
         initialize : function(User, options)
         {
@@ -32,6 +37,10 @@ define('controls/permissions/User', [
             if (typeOf(User) === 'classes/users/User') {
                 this.$Bind = User;
             }
+
+            this.addEvents({
+                onOpen : this.$onOpen
+            });
         },
 
         /**
@@ -84,6 +93,27 @@ define('controls/permissions/User', [
                                         {
                                             self.$Bind = Users.get(userid);
 
+                                            // set status title
+                                            if (self.$Bind.isLoaded()) {
+                                                self.$Status.set(
+                                                    'html',
+                                                    QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
+                                                        name : '<span class="fa icon-user"></span>'+
+                                                               self.$Bind.getName()
+                                                    })
+                                                );
+                                            } else {
+                                                self.$Bind.load().then(function() {
+                                                    self.$Status.set(
+                                                        'html',
+                                                        QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
+                                                            name : '<span class="fa icon-user"></span>'+
+                                                                   self.$Bind.getName()
+                                                        })
+                                                    );
+                                                });
+                                            }
+
                                             moofx(Container).animate({
                                                 left : '-100%',
                                                 opacity : 0
@@ -103,6 +133,35 @@ define('controls/permissions/User', [
                     }
                 });
             });
+        },
+
+        /**
+         * event on open
+         */
+        $onOpen : function()
+        {
+            new QUIButton({
+                text : QUILocale.get('quiqqer/system', 'permission.control.btn.user.save'),
+                title : QUILocale.get('quiqqer/system', 'permission.control.btn.user.save'),
+                textimage : 'icon-save',
+                styles : {
+                    'float' : 'right'
+                },
+                events : {
+                    onClick : function(Btn) {
+
+                        Btn.setAttribute(
+                            'textimage',
+                            'icon-spinner icon-spin fa fa-spinner fa-spin'
+                        );
+
+                        this.save().then(function() {
+                            Btn.setAttribute('textimage', 'icon-save');
+                        });
+
+                    }.bind(this)
+                }
+            }).inject(this.$Buttons);
         }
     });
 });

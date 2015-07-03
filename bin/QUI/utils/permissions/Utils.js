@@ -56,9 +56,16 @@ define('utils/permissions/Utils', [
                 Input.type = 'checkbox';
             }
 
+            var text = title[0];
+
+            if (title.length == 2) {
+                text = QUILocale.get(title[0], title[1]);
+            }
+
+
             var Label = new Element('label', {
                 'for' : 'perm-'+ name,
-                html  : QUILocale.get(title[0], title[1])
+                html  : text
             });
 
             Input.inject( Entry );
@@ -68,10 +75,12 @@ define('utils/permissions/Utils', [
             {
                 var desc = params.desc.split(' ');
 
-                Label.set(
-                    'data-desc',
-                    QUILocale.get(desc[0], desc[1])
-                );
+                if (QUILocale.exists(desc[0], desc[1])) {
+                    Label.set(
+                        'data-desc',
+                        QUILocale.get(desc[0], desc[1])
+                    );
+                }
             }
 
             return Entry;

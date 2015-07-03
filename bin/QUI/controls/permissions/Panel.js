@@ -22,7 +22,7 @@ define('controls/permissions/Panel', [
     return new Class({
 
         Extends: QUIPanel,
-        Types : 'controls/permissions/Panel',
+        Type : 'controls/permissions/Panel',
 
         Binds : [
             '$onCreate',
@@ -107,8 +107,15 @@ define('controls/permissions/Panel', [
             this.getContent().setStyles({
                 padding : 0
             });
+
+            this.openWelcomeMessage();
         },
 
+        /**
+         * Shows the welcom message and close all permissions contrls
+         *
+         * @returns {Promise}
+         */
         openWelcomeMessage : function()
         {
             var self = this;
@@ -195,10 +202,7 @@ define('controls/permissions/Panel', [
          */
         openEditPermissions : function()
         {
-            this.$closeLastPermissionControl().then(function()
-            {
-
-            });
+            this.$openPermissionControl(null, 'edit');
         },
 
         /**
@@ -237,6 +241,10 @@ define('controls/permissions/Panel', [
 
                         case 'site':
                             needle = 'controls/permissions/Site';
+                            break;
+
+                        case 'edit':
+                            needle = 'controls/permissions/Edit';
                             break;
                     }
 
