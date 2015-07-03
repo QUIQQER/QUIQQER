@@ -21,18 +21,18 @@
     height: 100%;
     overflow: hidden;
     position: relative;
-    width: calc( 100% - 240px );
+    width: calc(100% - 240px);
     z-index: 1;
 }
 
 .controls-permissions-permission-content label {
-    line-height: 28px;
-    white-space: nowrap;
+    padding: 0 0 0 5px;
+    width: calc(100% - 100px) !important;
 }
 
 .controls-permissions-permission-content input[type="checkbox"],
 .controls-permissions-permission-content input[type="radio"] {
-    margin-top: 7px;
+    margin-top: 1px;
 }
 
 .controls-permissions-permission-content-sheet {

@@ -621,6 +621,14 @@ class XML
             return array();
         }
 
+        $package = str_replace(
+            array(OPT_DIR, '/permissions.xml'),
+            '',
+            $file
+        );
+
+        $package = trim($package, '/');
+
         /* @var $Permissions \DOMElement */
         $Permissions = $permissions->item(0);
         $permission = $Permissions->getElementsByTagName('permission');
@@ -632,9 +640,15 @@ class XML
         $result = array();
 
         for ($i = 0; $i < $permission->length; $i++) {
-            $result[] = DOM::parsePermissionToArray(
+
+            $data = DOM::parsePermissionToArray(
                 $permission->item($i)
             );
+
+            $data['title'] = $package.' permission.'.$data['name'];
+            $data['desc'] = $package.' permission.'.$data['name'].'._desc';
+
+            $result[] = $data;
         }
 
         return $result;

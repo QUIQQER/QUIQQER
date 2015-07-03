@@ -137,7 +137,6 @@ define('controls/permissions/Sitemap', [
             this.$Map.firstChild().click();
         },
 
-
         /**
          * Recursive append item helper for sitemap
          *
@@ -147,7 +146,8 @@ define('controls/permissions/Sitemap', [
          */
         $appendSitemapItemTo : function(Parent, name, params)
         {
-            var right, Item, _name;
+            var i, len, text, right, Item, permission;
+            var groups = QUILocale.getGroups();
 
             for (right in params)
             {
@@ -157,19 +157,32 @@ define('controls/permissions/Sitemap', [
 
                 if (name.length)
                 {
-                    _name = name +'.'+ right;
+                    permission = name +'.'+ right;
                 } else
                 {
-                    _name = right;
+                    permission = right;
                 }
+
+                text = 'permission.'+permission+'._header';
+
+                if (QUILocale.exists('quiqqer/quiqqer', text)) {
+                    text = QUILocale.get('quiqqer/quiqqer', text);
+
+                } else {
+
+                    for (i = 0, len = groups.length; i < len; i++) {
+                        if (QUILocale.exists(groups[i], text)) {
+                            text = QUILocale.get(groups[i], text);
+                            break;
+                        }
+                    }
+                }
+
 
                 Item = new QUISitemapItem({
                     icon  : 'icon-gears',
-                    value : _name,
-                    text  : QUILocale.get(
-                        'locale/permissions',
-                        _name +'._title'
-                    ),
+                    value : permission,
+                    text  : text,
                     events : {
                         onClick : this.$onItemClick
                     }
@@ -177,7 +190,7 @@ define('controls/permissions/Sitemap', [
 
                 Parent.appendChild(Item);
 
-                this.$appendSitemapItemTo(Item, _name, params[right]);
+                this.$appendSitemapItemTo(Item, permission, params[right]);
             }
         },
 

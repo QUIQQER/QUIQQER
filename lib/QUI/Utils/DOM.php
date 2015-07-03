@@ -848,17 +848,12 @@ class DOM
             $default = $Default->item(0)->nodeValue;
         }
 
-        $title = 'locale/permissions '.$perm.'._title';
-        $desc = 'locale/permissions '.$perm.'._description';
-
         $type = QUI\Rights\Manager::parseType($Node->getAttribute('type'));
         $area = QUI\Rights\Manager::parseArea($Node->getAttribute('area'));
 
         return array(
             'name'    => $perm,
-            'desc'    => $desc,
             'area'    => $area,
-            'title'   => $title,
             'type'    => $type,
             'default' => $default
         );

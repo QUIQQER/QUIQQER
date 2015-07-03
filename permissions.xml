@@ -12,73 +12,73 @@
 
 <!-- standard quiqqer permissions -->
     <!-- Darf in den Adminbereich -->
-    <permission name="quiqqer.quiqqer.admin" type="bool" />
+    <permission name="quiqqer.admin" type="bool" />
 
     <!-- Ist Super-User -->
-    <permission name="quiqqer.quiqqer.su" type="bool" />
+    <permission name="quiqqer.su" type="bool" />
 
     <!-- Darf Updates durchführen -->
-    <permission name="quiqqer.quiqqer.system.update" type="bool" />
+    <permission name="quiqqer.system.update" type="bool" />
 
     <!-- Darf Zugrifssrechte verwalten -->
-    <permission name="quiqqer.quiqqer.system.permissions" type="bool" />
+    <permission name="quiqqer.system.permissions" type="bool" />
 
     <!-- Darf Cache löschen -->
-    <permission name="quiqqer.quiqqer.system.cache" type="bool" />
+    <permission name="quiqqer.system.cache" type="bool" />
 
     <!-- Darf sich über die Konsole einloggen -->
-    <permission name="quiqqer.quiqqer.system.console" type="bool" />
+    <permission name="quiqqer.system.console" type="bool" />
 
     <!-- Darf die Gruppenverwaltung sehen -->
-    <permission name="quiqqer.quiqqer.admin.groups.view" type="bool" />
+    <permission name="quiqqer.admin.groups.view" type="bool" />
 
     <!-- Darf Gruppen editieren -->
-    <permission name="quiqqer.quiqqer.admin.groups.edit" type="bool" />
+    <permission name="quiqqer.admin.groups.edit" type="bool" />
 
     <!-- Darf die Benutzerverwaltung sehen -->
-    <permission name="quiqqer.quiqqer.admin.users.view" type="bool" />
+    <permission name="quiqqer.admin.users.view" type="bool" />
 
     <!-- Darf Benutzer editieren -->
-    <permission name="quiqqer.quiqqer.admin.users.edit" type="bool" />
+    <permission name="quiqqer.admin.users.edit" type="bool" />
 
 <!-- Project permissions  -->
 
     <!-- Darf Projekte anlegen -->
-    <permission name="quiqqer.quiqqer.projects.create" type="bool" />
+    <permission name="quiqqer.projects.create" type="bool" />
 
     <!-- Darf Projektdaten verändern -->
-    <permission name="quiqqer.quiqqer.projects.edit" type="users_and_groups" area="project" />
+    <permission name="quiqqer.projects.edit" type="users_and_groups" area="project" />
 
     <!-- Darf Projekte löschen -->
-    <permission name="quiqqer.quiqqer.projects.destroy" type="users_and_groups" area="project" />
+    <permission name="quiqqer.projects.destroy" type="users_and_groups" area="project" />
 
     <!--  Darf Projekt Einstellungen machen -->
-    <permission name="quiqqer.quiqqer.projects.setconfig" type="users_and_groups" area="project" />
+    <permission name="quiqqer.projects.setconfig" type="users_and_groups" area="project" />
 
     <!-- Darf Projekte CSS ändern -->
-    <permission name="quiqqer.quiqqer.projects.editCustomCSS" type="users_and_groups" area="project"  />
+    <permission name="quiqqer.projects.editCustomCSS" type="users_and_groups" area="project"  />
 
 
 <!-- Site permissions  -->
 
     <!-- Seite besuchen -->
-    <permission name="quiqqer.quiqqer.projects.site.view" type="users_and_groups" area="site" />
+    <permission name="quiqqer.projects.site.view" type="users_and_groups" area="site" />
 
     <!-- Seite editieren -->
-    <permission name="quiqqer.quiqqer.projects.site.edit" type="users_and_groups" area="site" />
+    <permission name="quiqqer.projects.site.edit" type="users_and_groups" area="site" />
 
     <!-- Seite löschen -->
-    <permission name="quiqqer.quiqqer.projects.site.del" type="users_and_groups" area="site" />
+    <permission name="quiqqer.projects.site.del" type="users_and_groups" area="site" />
 
     <!-- Kind anlegen -->
-    <permission name="quiqqer.quiqqer.projects.site.new" type="users_and_groups" area="site" />
+    <permission name="quiqqer.projects.site.new" type="users_and_groups" area="site" />
 
     <!-- Darf Seitenzugriffsrechte setzen -->
-    <permission name="quiqqer.quiqqer.projects.site.set_permissions" type="bool" />
+    <permission name="quiqqer.projects.site.set_permissions" type="bool" />
 
 
 <!-- Editor permissions -->
-    <permission name="quiqqer.quiqqer.editors.toolbar.delete" type="bool" />
+    <permission name="quiqqer.editors.toolbar.delete" type="bool" />
 
 
 </permissions>

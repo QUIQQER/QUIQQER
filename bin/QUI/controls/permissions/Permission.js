@@ -430,12 +430,12 @@ define('controls/permissions/Permission', [
                         events : {
                             onClick : this.delPermission
                         }
-                    }).inject( Node, 'top' );
+                    }).inject(Node, 'top');
                 }
             }
 
-            Node.inject( Row.getElement( 'td' ) );
-            Row.inject( Table );
+            Node.inject(Row.getElement('td'));
+            Row.inject(Table);
         },
 
         /**
