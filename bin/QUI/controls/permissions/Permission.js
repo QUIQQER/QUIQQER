@@ -27,6 +27,7 @@ define('controls/permissions/Permission', [
     'qui/controls/Control',
     'qui/controls/buttons/Button',
     'qui/controls/windows/Confirm',
+    'qui/utils/Object',
     'controls/permissions/Sitemap',
     'utils/Controls',
     'utils/permissions/Utils',
@@ -34,7 +35,7 @@ define('controls/permissions/Permission', [
 
     'css!controls/permissions/Permission.css'
 
-], function(QUI, QUIControl, QUIButton, QUIConfirm, PermissionMap, ControlUtils, PermissionUtils, QUILocale)
+], function(QUI, QUIControl, QUIButton, QUIConfirm, QUIObjectUtils, PermissionMap, ControlUtils, PermissionUtils, QUILocale)
 {
     "use strict";
 
@@ -63,6 +64,7 @@ define('controls/permissions/Permission', [
             this.$Map = null;
             this.$MapContainer = null;
             this.$ContentContainer = null;
+            this.$tableCache = {};
 
             this.addEvents({
                 onInject : this.$onInject
@@ -294,6 +296,10 @@ define('controls/permissions/Permission', [
                 equation : 'cubic-bezier(.42,.4,.46,1.29)',
                 callback : function() {
 
+                    if (Item.getAttribute('value') === '') {
+                        return;
+                    }
+
                     var Permissions = PermissionUtils.Permissions;
 
                     Promise.all([
@@ -304,20 +310,79 @@ define('controls/permissions/Permission', [
                         var permissions    = result[0];
                         var permissionData = result[1];
 
-                        var list, right, Elm, len;
+                        var i, len, perm, list, header, right, title, Elm;
 
-                        var i   = 0,
-                            val = Item.getAttribute('value')+'.';
+                        var val = Item.getAttribute('value')+'.';
 
+                        this.$tableCache = [];
                         this.$ContentSheet.set('html', '');
 
-                        var Table = new Element('table', {
-                            'class' : 'data-table',
-                            html    : '<tr><th>'+ Item.getAttribute('text') +'</th></tr>'
+                        // sort permissions
+                        var  permHeaders = [];
+                        var _permHeaders = {};
+
+                        for (var permission in permissions) {
+
+                            if (!permissions.hasOwnProperty(permission)) {
+                                continue;
+                            }
+
+                            if (!(permission in permissionData)) {
+                                continue;
+                            }
+
+                            if (!permission.match(val)) {
+                                continue;
+                            }
+
+                            header = permission.split('.');
+
+                            header.pop(); // drop the last element
+                            header = header.join('.');
+
+                            if (header in _permHeaders) {
+                                continue;
+                            }
+
+                            title = permissionData[permission].title.split(' ');
+                            _permHeaders[header] = true;
+
+                            permHeaders.push({
+                                permission  : header,
+                                translation : QUILocale.get(title[0], 'permission.'+header+'._header')
+                            });
+                        }
+
+                        var itemValue = Item.getAttribute('value');
+
+                        permHeaders.sort(function(a, b) {
+
+                            if (a.permission == itemValue) {
+                                return -1;
+                            }
+
+                            if (b.permission == itemValue) {
+                                return 1;
+                            }
+
+                            return a.translation > b.translation;
                         });
 
 
-                        // maybe to php?
+                        // create permission tables
+                        for (i = 0, len = permHeaders.length; i < len; i++) {
+
+                            perm = permHeaders[i];
+
+                            this.$tableCache[perm.permission] = new Element('table', {
+                                'class' : 'data-table',
+                                html    : '<tr><th>'+ perm.translation +'</th></tr>'
+                            }).inject(this.$ContentSheet);
+
+                        }
+
+
+                        // create permissions
                         for (right in permissions)
                         {
                             if (!permissions.hasOwnProperty(right)) {
@@ -334,37 +399,18 @@ define('controls/permissions/Permission', [
 
                             if (val == '.' && !right.match(/\./)) {
                                 this.$createPermissionRow(
-                                    permissionData[right],
-                                    i,
-                                    Table
+                                    permissionData[right]
                                 );
-
-                                i++;
                             }
 
-                            if (!right.match(val) || right.replace(val, '').match(/\./)) {
+                            if (!right.match(val)) {
                                 continue;
                             }
 
                             this.$createPermissionRow(
-                                permissionData[right],
-                                i,
-                                Table
+                                permissionData[right]
                             );
-
-                            i++;
                         }
-
-                        // no rights
-                        if (i === 0)
-                        {
-                            new Element('tr', {
-                                'class' : 'odd',
-                                html    : '<td>'+ QUILocale.get(lg, 'permissions.panel.message.no.rights') + '</td>'
-                            }).inject( Table );
-                        }
-
-                        Table.inject(this.$ContentSheet);
 
                         this.$ContentSheet.getElements('input').addEvent(
                             'change',
@@ -402,19 +448,6 @@ define('controls/permissions/Permission', [
                             }
                         }
 
-                        // parse controls
-                        if (this.$Bind && typeOf(this.$Bind) !== 'qui/classes/DOM')
-                        {
-                            ControlUtils.parse(Table);
-
-                        } else
-                        {
-                            // if no bind exist, we would only edit the permissions
-                            Table.getElements('input,textarea').setStyles({
-                                display : 'none'
-                            });
-                        }
-
                         moofx(this.$ContentSheet).animate({
                             left : 0
                         }, {
@@ -434,15 +467,48 @@ define('controls/permissions/Permission', [
          * Create the controls in the rows of the permission tables
          *
          * @param {String} right - right name
-         * @param {Number} i - row counter
-         * @param {HTMLTableElement} Table - <table> Node Element
          */
-        $createPermissionRow : function(right, i, Table)
+        $createPermissionRow : function(right)
         {
+            // table
+            var tableRightId = right.name.split('.');
+
+            tableRightId.pop(); // drop the last element
+            tableRightId = tableRightId.join('.');
+
+            if (!(tableRightId in this.$tableCache)) {
+
+                var title = right.title.split(' '),
+                    header = QUILocale.get(title[0], 'permission.'+tableRightId+'._header');
+
+                this.$tableCache[tableRightId] = new Element('table', {
+                    'class' : 'data-table',
+                    html    : '<tr><th>'+ header +'</th></tr>'
+                }).inject(this.$ContentSheet);
+
+
+                // parse controls
+                if (this.$Bind && typeOf(this.$Bind) !== 'qui/classes/DOM')
+                {
+                    ControlUtils.parse(this.$tableCache[tableRightId]);
+
+                } else
+                {
+                    // if no bind exist, we would only edit the permissions
+                    this.$tableCache[tableRightId].getElements('input,textarea').setStyles({
+                        display : 'none'
+                    });
+                }
+
+            }
+
+
+            var Table = this.$tableCache[tableRightId];
+
             var Node, Row;
 
             Row = new Element('tr', {
-                'class' : i % 2 ? 'even' : 'odd',
+                'class' : Table.rows.length % 2 ? 'odd' : 'even',
                 html    : '<td></td>'
             });
 
@@ -506,7 +572,7 @@ define('controls/permissions/Permission', [
             var permission = Button.getAttribute('value');
 
             new QUIConfirm({
-                maxWidth : 450,
+                maxWidth  : 450,
                 maxHeight : 300,
                 title : QUILocale.get('quiqqer/system', 'permissions.panel.window.delete.title' ),
                 text  : QUILocale.get('quiqqer/system', 'permissions.panel.window.delete.text', {

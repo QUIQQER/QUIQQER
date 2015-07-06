@@ -227,9 +227,10 @@ define('controls/permissions/Panel', [
         },
 
         /**
+         * Opens the permissions
          *
-         * @param Bind
-         * @param type
+         * @param {Object} Bind - Bind object eq: classes/projects/Project, classes/projects/project/Site ...
+         * @param {String} type
          */
         $openPermissionControl : function(Bind, type)
         {

@@ -146,8 +146,9 @@ define('controls/permissions/Sitemap', [
                 permissionList
             );
 
-            this.$Map.openAll();
+            //this.$Map.openAll();
             this.$Map.firstChild().click();
+            this.$Map.firstChild().open();
         },
 
         /**
