@@ -68,27 +68,7 @@ define('controls/permissions/Site', [
                                 }
 
                                 self.$Bind = Project.get(data.ids[0]);
-
-                                // set status title
-                                if (self.$Bind.isLoaded()) {
-                                    self.$Status.set(
-                                        'html',
-                                        QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
-                                            name : '<span class="fa fa-file-o icon-file-alt"></span>'+
-                                                   self.$Bind.getAttribute('name') +'.html'
-                                        })
-                                    );
-                                } else {
-                                    self.$Bind.load(function() {
-                                        self.$Status.set(
-                                            'html',
-                                            QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
-                                                name : '<span class="fa fa-file-o icon-file-alt"></span>'+
-                                                       self.$Bind.getAttribute('name') +'.html'
-                                            })
-                                        );
-                                    });
-                                }
+                                self.$loadStatus();
 
                                 resolve();
                             },
@@ -130,6 +110,37 @@ define('controls/permissions/Site', [
                     }.bind(this)
                 }
             }).inject(this.$Buttons);
+
+            this.$loadStatus();
+        },
+
+        /**
+         * Load the title status
+         */
+        $loadStatus : function()
+        {
+            // set status title
+            if (this.$Bind.isLoaded()) {
+                this.$Status.set(
+                    'html',
+                    QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
+                        name : '<span class="fa fa-file-o icon-file-alt"></span>'+
+                        this.$Bind.getAttribute('name') +'.html'
+                    })
+                );
+
+            } else {
+
+                this.$Bind.load(function() {
+                    this.$Status.set(
+                        'html',
+                        QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
+                            name : '<span class="fa fa-file-o icon-file-alt"></span>'+
+                            this.$Bind.getAttribute('name') +'.html'
+                        })
+                    );
+                });
+            }
         }
     });
 });

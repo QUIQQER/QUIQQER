@@ -283,12 +283,13 @@ define('controls/projects/project/site/Panel', [
 
             // permissions
             new QUIButton({
-                image  : 'icon-gears',
+                image  : 'icon-shield fa fa-shield',
                 alt    : Locale.get( lg, 'projects.project.site.panel.btn.permissions' ),
                 title  : Locale.get( lg, 'projects.project.site.panel.btn.permissions' ),
                 styles : {
                     'border-left-width' : 1,
-                    'float' : 'right'
+                    'float' : 'right',
+                    width : 40
                 },
                 events : {
                     onClick : this.openPermissions
@@ -301,7 +302,8 @@ define('controls/projects/project/site/Panel', [
                 title  : Locale.get( lg, 'projects.project.site.panel.btn.media' ),
                 styles : {
                     'border-left-width' : 1,
-                    'float' : 'right'
+                    'float' : 'right',
+                    width : 40
                 },
                 events : {
                     onClick : this.openMedia
@@ -314,7 +316,8 @@ define('controls/projects/project/site/Panel', [
                 title  : Locale.get( lg, 'projects.project.site.panel.btn.sort' ),
                 styles : {
                     'border-left-width' : 1,
-                    'float' : 'right'
+                    'float' : 'right',
+                    width : 40
                 },
                 events : {
                     onClick : this.openSort
@@ -352,7 +355,8 @@ define('controls/projects/project/site/Panel', [
                     if ( data.name === '_Del' || data.name === '_New' )
                     {
                         data.styles = {
-                            'float' : 'right'
+                            'float' : 'right',
+                            width : 40
                         };
                     }
 
@@ -545,10 +549,12 @@ define('controls/projects/project/site/Panel', [
             var Parent = this.getParent(),
                 Site   = this.getSite();
 
-            require([ 'controls/permissions/Panel' ], function(PermPanel)
+            require(['controls/permissions/Panel'], function(PermPanel)
             {
                 Parent.appendChild(
-                    new PermPanel( null, Site )
+                    new PermPanel({
+                        Object: Site
+                    })
                 );
             });
         },

@@ -73,7 +73,7 @@
             <!-- Zugriffsrechte bearbeiten -->
             <item parent="/extras/rights/"
                   name="permissions"
-                  icon="icon-gears"
+                  icon="icon-shield fa fa-shield"
                   require="controls/permissions/Panel"
             >
                 <locale group="quiqqer/system" var="menu.extras.permissions.text" />

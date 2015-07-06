@@ -44,7 +44,7 @@ define('controls/permissions/Panel', [
                 QUILocale.get(lg, 'permissions.panel.title')
             );
 
-            this.setAttribute('icon', 'icon-gears');
+            this.setAttribute('icon', 'icon-shield fa fa-shield');
             this.parent(options);
 
             this.$PermissionControl = null;
@@ -60,6 +60,7 @@ define('controls/permissions/Panel', [
         $onCreate : function()
         {
             this.addCategory({
+                name   : 'user',
                 text   : QUILocale.get(lg, 'permissions.panel.btn.select.user'),
                 title  : QUILocale.get(lg, 'permissions.panel.btn.select.user'),
                 icon   : 'icon-user',
@@ -69,6 +70,7 @@ define('controls/permissions/Panel', [
             });
 
             this.addCategory({
+                name   : 'group',
                 text   : QUILocale.get(lg, 'permissions.panel.btn.select.group'),
                 title  : QUILocale.get(lg, 'permissions.panel.btn.select.group'),
                 icon   : 'icon-group',
@@ -78,6 +80,7 @@ define('controls/permissions/Panel', [
             });
 
             this.addCategory({
+                name   : 'site',
                 text   : QUILocale.get(lg, 'permissions.panel.btn.select.site'),
                 title  : QUILocale.get(lg, 'permissions.panel.btn.select.site'),
                 icon   : 'fa fa-file-o icon-file-alt',
@@ -87,6 +90,7 @@ define('controls/permissions/Panel', [
             });
 
             this.addCategory({
+                name   : 'project',
                 text   : QUILocale.get(lg, 'permissions.panel.btn.select.project'),
                 title  : QUILocale.get(lg, 'permissions.panel.btn.select.project'),
                 icon   : 'icon-home',
@@ -96,6 +100,7 @@ define('controls/permissions/Panel', [
             });
 
             this.addCategory({
+                name   : 'edit',
                 text   : QUILocale.get(lg, 'permissions.panel.btn.select.manage'),
                 title  : QUILocale.get(lg, 'permissions.panel.btn.select.manage'),
                 icon   : 'icon-gears',
@@ -107,6 +112,22 @@ define('controls/permissions/Panel', [
             this.getContent().setStyles({
                 padding : 0
             });
+
+            if (this.getAttribute('Object')) {
+                switch (typeOf(this.getAttribute('Object'))) {
+                    case 'classes/users/User':
+                        return this.openUserPermissions(this.getAttribute('Object'));
+
+                    case 'classes/groups/Group':
+                        return this.openGroupPermissions(this.getAttribute('Object'));
+
+                    case 'classes/projects/Project':
+                        return this.openProjectPermissions(this.getAttribute('Object'));
+
+                    case 'classes/projects/project/Site':
+                        return this.openSitePermissions(this.getAttribute('Object'));
+                }
+            }
 
             this.openWelcomeMessage();
         },
@@ -216,7 +237,8 @@ define('controls/permissions/Panel', [
                 Bind = this.getAttribute('Bind');
             }
 
-            var self = this;
+            var self = this,
+                Bar  = this.getCategoryBar();
 
             self.$closeLastPermissionControl().then(function()
             {
@@ -228,22 +250,27 @@ define('controls/permissions/Panel', [
 
                     switch (type) {
                         case 'user':
+                            Bar.getChildren('user').setActive();
                             needle = 'controls/permissions/User';
                             break;
 
                         case 'group':
+                            Bar.getChildren('group').setActive();
                             needle = 'controls/permissions/Group';
                             break;
 
                         case 'project':
+                            Bar.getChildren('project').setActive();
                             needle = 'controls/permissions/Project';
                             break;
 
                         case 'site':
+                            Bar.getChildren('site').setActive();
                             needle = 'controls/permissions/Site';
                             break;
 
                         case 'edit':
+                            Bar.getChildren('edit').setActive();
                             needle = 'controls/permissions/Edit';
                             break;
                     }
