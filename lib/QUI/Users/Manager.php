@@ -665,7 +665,7 @@ class Manager
     /**
      * Generate a user-dependent security hash
      * There are different data use such as IP, User-Agent and the System-Salt
-     *
+     * @todo noch eine eindeutige möglichkeit der Identifizierung des Browser  finden
      * @return string
      */
     public function getSecHash()
