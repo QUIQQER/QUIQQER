@@ -161,7 +161,10 @@ define('controls/permissions/Sitemap', [
         $appendSitemapItemTo : function(Parent, name, params)
         {
             var i, len, text, right, Item, permission;
-            var groups = QUILocale.getGroups();
+
+            var groups = QUILocale.getGroups(),
+                list   = [];
+
 
             for (right in params)
             {
@@ -192,11 +195,25 @@ define('controls/permissions/Sitemap', [
                     }
                 }
 
+                list.push({
+                    translation : text,
+                    permission  : permission,
+                    right       : right
+                });
+            }
 
+
+            // sort list
+            list.sort(function(a, b) {
+                return a.translation > b.translation;
+            });
+
+            for (i = 0, len = list.length; i < len; i++)
+            {
                 Item = new QUISitemapItem({
                     icon  : 'icon-gears',
-                    value : permission,
-                    text  : text,
+                    value : list[i].permission,
+                    text  : list[i].translation,
                     events : {
                         onClick : this.$onItemClick
                     }
@@ -204,8 +221,13 @@ define('controls/permissions/Sitemap', [
 
                 Parent.appendChild(Item);
 
-                this.$appendSitemapItemTo(Item, permission, params[right]);
+                this.$appendSitemapItemTo(
+                    Item,
+                    list[i].permission,
+                    params[list[i].right]
+                );
             }
+
         },
 
         /**
