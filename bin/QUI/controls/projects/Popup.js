@@ -38,7 +38,8 @@ define('controls/projects/Popup', [
         Type    : 'controls/projects/Popup',
 
         Binds : [
-            '$onCreate'
+            '$onCreate',
+            '$onOpen'
         ],
 
         options : {
@@ -63,6 +64,10 @@ define('controls/projects/Popup', [
             this.$Body   = null;
             this.$Map    = null;
             this.$Information = null;
+
+            this.addEvents({
+                onOpen : this.$onOpen
+            });
         },
 
         /**
@@ -70,10 +75,8 @@ define('controls/projects/Popup', [
          *
          * @return {Object} this (controls/projects/Popup)
          */
-        open : function()
+        $onOpen : function()
         {
-            this.parent();
-
             var self    = this,
                 Content = this.getContent();
 
@@ -178,8 +181,6 @@ define('controls/projects/Popup', [
 
                 self.Loader.hide();
             });
-
-            return this;
         },
 
         /**

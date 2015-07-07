@@ -247,37 +247,42 @@ define('controls/permissions/Panel', [
 
                     self.Loader.show();
 
-                    var needle = false;
+                    var Button = false,
+                        needle = false;
 
                     switch (type) {
                         case 'user':
-                            Bar.getChildren('user').setActive();
+                            Button = Bar.getChildren('user');
                             needle = 'controls/permissions/User';
                             break;
 
                         case 'group':
-                            Bar.getChildren('group').setActive();
+                            Button = Bar.getChildren('group');
                             needle = 'controls/permissions/Group';
                             break;
 
                         case 'project':
-                            Bar.getChildren('project').setActive();
+                            Button = Bar.getChildren('project');
                             needle = 'controls/permissions/Project';
                             break;
 
                         case 'site':
-                            Bar.getChildren('site').setActive();
+                            Button = Bar.getChildren('site');
                             needle = 'controls/permissions/Site';
                             break;
 
                         case 'edit':
-                            Bar.getChildren('edit').setActive();
+                            Button = Bar.getChildren('edit');
                             needle = 'controls/permissions/Edit';
                             break;
                     }
 
                     if (!needle) {
                         return reject();
+                    }
+
+                    if (!Button.isActive()) {
+                        Button.setActive();
                     }
 
                     require([needle], function(Permission) {

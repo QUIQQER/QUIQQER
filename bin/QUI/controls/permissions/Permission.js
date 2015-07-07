@@ -182,7 +182,6 @@ define('controls/permissions/Permission', [
                                         });
                                     }
                                 });
-
                             }
                         });
 

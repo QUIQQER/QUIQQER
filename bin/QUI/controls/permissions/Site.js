@@ -78,6 +78,10 @@ define('controls/permissions/Site', [
                             }
                         }
                     }).open();
+
+                }, function(err) {
+                    console.error(err);
+                    reject(err);
                 });
 
             });
@@ -119,6 +123,12 @@ define('controls/permissions/Site', [
          */
         $loadStatus : function()
         {
+            console.log(this.$Bind);
+
+            if (!this.$Bind) {
+                return;
+            }
+
             // set status title
             if (this.$Bind.isLoaded()) {
                 this.$Status.set(
