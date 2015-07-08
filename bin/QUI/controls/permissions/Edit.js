@@ -82,7 +82,9 @@ define('controls/permissions/Edit', [
             }).inject(this.$Buttons);
         },
 
-
+        /**
+         * opens the add permission dialog
+         */
         $addPermission : function()
         {
             var self = this;
@@ -147,44 +149,31 @@ define('controls/permissions/Edit', [
                         }).inject(Area, 'after');
 
                         Body.getElement('.qui-windows-prompt-information').setStyle('clear', 'both');
-
-                        if ( !self.$Map ) {
-                            return;
-                        }
-
-                        var sels = self.$Map.getSelectedChildren();
-
-                        if (sels[ 0 ])
-                        {
-                            Win.getInput().focus();
-                            Win.setValue(sels[ 0 ].getAttribute( 'value' ) +'.');
-                        }
                     },
 
                     onSubmit : function(value, Win)
                     {
-//                        Win.Loader.show();
-//
-//                        Ajax.post('ajax_permissions_add', function(result)
-//                        {
-//                            if ( result )
-//                            {
-//                                Win.close();
-//                                self.$createSitemap();
-//                            }
-//                        }, {
-//                            permission     : value,
-//                            area           : Win.getContent().getElement( '[name="area"]' ).value,
-//                            permissiontype : Win.getContent().getElement( '[name="type"]' ).value,
-//                            onError : function(Exception)
-//                            {
-//                                QUI.getMessageHandler(function(MessageHandler) {
-//                                    MessageHandler.addException( Exception );
-//                                });
-//
-//                                Win.Loader.hide();
-//                            }
-//                        });
+                        Win.Loader.show();
+
+                        var Content = Win.getContent();
+
+                        require([
+                            'utils/permissions/Utils'
+                        ], function(PermissionUtils) {
+
+                            PermissionUtils.Permissions.addPermission(
+                                value,
+                                Content.getElement('[name="area"]').value,
+                                Content.getElement('[name="type"]').value
+                            ).then(function() {
+                                Win.close();
+
+                                self.close().then(function() {
+                                    self.open();
+                                });
+                            });
+
+                        });
                     }
                 }
 

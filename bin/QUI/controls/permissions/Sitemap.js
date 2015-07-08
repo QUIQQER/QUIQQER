@@ -70,6 +70,18 @@ define('controls/permissions/Sitemap', [
                 }
             });
 
+            this.$Map.inject(this.$Elm);
+
+            return this.$Elm;
+        },
+
+        /**
+         * refresh the map
+         */
+        refresh : function()
+        {
+            this.$Map.clearChildren();
+
             this.$Map.appendChild(
                 new QUISitemapItem({
                     text   : 'Rechte',
@@ -81,16 +93,6 @@ define('controls/permissions/Sitemap', [
                 })
             );
 
-            this.$Map.inject(this.$Elm);
-
-            return this.$Elm;
-        },
-
-        /**
-         * event : on inject
-         */
-        $onInject : function()
-        {
             var Permissions = PermissionUtils.Permissions;
 
             switch (typeOf(this.$Bind)) {
@@ -114,6 +116,14 @@ define('controls/permissions/Sitemap', [
                     Permissions.getList().then(this.$createMap);
                     break;
             }
+        },
+
+        /**
+         * event : on inject
+         */
+        $onInject : function()
+        {
+            this.refresh();
         },
 
         /**

@@ -430,6 +430,49 @@ define('classes/permissions/Permissions', [
         },
 
         /**
+         * Add a user generated permission
+         *
+         * @param {String} permission
+         * @param {String} area
+         * @param {String} type
+         * @returns {Promise}
+         */
+        addPermission : function(permission, area, type)
+        {
+            return new Promise(function(resolve, reject) {
+
+                QUIAjax.post('ajax_permissions_add', function(result)
+                {
+                    this.$list = null;
+
+                    switch (area) {
+
+                        case 'site':
+                            this.$cache.sites = {};
+                            break;
+
+                        case 'project':
+                            this.$cache.projects = {};
+                            break;
+
+                        default:
+                            this.$cache.users = {};
+                            this.$cache.groups = {};
+                    }
+
+                    resolve(result);
+
+                }.bind(this), {
+                    permission     : permission,
+                    area           : area,
+                    permissiontype : type,
+                    onError        : reject
+                });
+
+            }.bind(this));
+        },
+
+        /**
          * Save a permission
          *
          * @param {Object} Bind - Bind object => classes/users/User,

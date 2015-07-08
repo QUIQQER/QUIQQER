@@ -145,12 +145,12 @@ define('controls/permissions/Permission', [
                     duration : duration,
                     callback : function()
                     {
+                        self.$Buttons.set('html', '');
 
                         moofx(self.$ContentContainer).style({
                             overflow : 'hidden'
                         }).animate({
-                            opacity : 0,
-                            width   : 0
+                            opacity : 0
                         }, {
                             duration : duration,
                             equation : 'cubic-bezier(.42,.4,.46,1.29)',
@@ -214,11 +214,18 @@ define('controls/permissions/Permission', [
                     return;
                 }
 
-                self.$Map = new PermissionMap(self.$Bind, {
-                    events : {
-                        onItemClick : self.$onSitemapItemClick
-                    }
-                }).inject(self.$MapContainer);
+                if (!self.$Map) {
+
+                    self.$Map = new PermissionMap(self.$Bind, {
+                        events: {
+                            onItemClick: self.$onSitemapItemClick
+                        }
+                    }).inject(self.$MapContainer);
+
+                } else {
+
+                    self.$Map.refresh();
+                }
 
                 self.$MapContainer.setStyles({
                     opacity : 0,
@@ -226,6 +233,7 @@ define('controls/permissions/Permission', [
                 });
 
                 moofx(self.$MapContainer).animate({
+                    left    : 0,
                     opacity : 1,
                     width   : 240
                 }, {
@@ -234,6 +242,7 @@ define('controls/permissions/Permission', [
                     callback : function()
                     {
                         moofx(self.$ContentContainer).animate({
+                            left    : 0,
                             opacity : 1
                         }, {
                             duration : 250,
@@ -568,7 +577,8 @@ define('controls/permissions/Permission', [
          */
         $clickPermissionDeletion : function(Button)
         {
-            var permission = Button.getAttribute('value');
+            var self = this,
+                permission = Button.getAttribute('value');
 
             new QUIConfirm({
                 maxWidth  : 450,
@@ -590,12 +600,14 @@ define('controls/permissions/Permission', [
                            .deletePermission(permission)
                            .then(function() {
 
-                                Win.Loader.hide();
-                                this.open();
+                                Win.close();
 
-                        }.bind(this));
+                                self.close().then(function() {
+                                    self.open();
+                                });
 
-                    }.bind(this)
+                            });
+                    }
                 }
             }).open();
         },
