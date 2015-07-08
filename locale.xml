@@ -1295,6 +1295,31 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Sie legen eine neue Seite unter [name].html an]]></de>
             <en><![CDATA[You create a new page under [name].html.]]></en>
         </locale>
+        <locale name="projects.project.site.panel.window.create.clear.title">
+            <de><![CDATA[Unerlaubte Zeichen im Namen]]></de>
+            <en><![CDATA[Unauthorized characters in names]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.window.create.clear.text">
+            <de><![CDATA[Unerlaubte Zeichen im Namen]]></de>
+            <en><![CDATA[Unauthorized characters in names]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.window.create.clear.information">
+            <de><![CDATA[
+                Der Name der Seite beinhaltet Zeichen die nicht erlaubt sind. <br />
+                Sollen aus dem Namen die Sonderzeichen herausgefiltert werden und der ursprüngliche Name als Titel verwendet werden?
+                <br /><br />
+                <p>Neuer Name der Seite: <b>[newName]</b></p>
+                <p>Neuer Title der Seite: <b>[value]</b></p>
+            ]]></de>
+            <en><![CDATA[
+                The name of the page contains characters that are not allowed.<br />
+                Should the special characters are filtered out and the original name are used as the title?
+                <br /><br />
+                <p>New name of the page: <b>[newName]</b></p>
+                <p>New Title of page: <b>[value]</b></p>
+            ]]></en>
+        </locale>
+
         <locale name="projects.project.site.panel.sort.title">
             <de><![CDATA[Sortierung der Seiten unter #[id] [title]]]></de>
             <en><![CDATA[Sorting of the pages below #[id] [title]]]></en>

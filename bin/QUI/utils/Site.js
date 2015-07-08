@@ -154,18 +154,16 @@ define('utils/Site', [
                                         {
                                             // #locale
                                             new QUIConfirm({
-                                                title : 'Unerlaubte Zeichen im Namen', // #locale
-                                                text  : 'Unerlaubte Zeichen im Namen.', // #locale
-                                                icon  : 'fa fa-warning icon-warning-sign', // #locale
+                                                title : Locale.get(lg, 'projects.project.site.panel.window.create.clear.title'),
+                                                text  : Locale.get(lg, 'projects.project.site.panel.window.create.clear.text'),
+                                                icon  : 'fa fa-warning icon-warning-sign',
                                                 maxWidth    : 600,
                                                 maxHeight   : 400,
                                                 autoclose   : false,
-                                                information : 'Der Name der Seite beinhaltet Zeichen die nicht erlaubt sind. <br />' +
-                                                              ' Sollen aus dem Namen die Sonderzeichen herausgefiltert werden und ' +
-                                                              'der ursprüngliche Name als Titel verwendet werden?' +
-                                                              '<br /><br />'+
-                                                              '<p>Neuer Name der Seite: <b>'+ newName +'</b></p>' +
-                                                              '<p>Neuer Title der Seite: <b>'+ value +'</b></p>',  // #locale
+                                                information : Locale.get(lg, 'projects.project.site.panel.window.create.clear.information', {
+                                                    newName : newName,
+                                                    value   : value
+                                                }),
                                                 events :
                                                 {
                                                     onSubmit : function(Win)
@@ -200,7 +198,6 @@ define('utils/Site', [
                                                 }
                                             }).open();
                                         });
-
 
                                     }, {
                                         project : Project.encode(),
