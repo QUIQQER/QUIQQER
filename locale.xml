@@ -826,8 +826,24 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Add a permission. For example: my.custom.right]]></en>
         </locale>
         <locale name="permissions.panel.window.add.information">
-            <de><![CDATA[Fügen Sie ein Zugriffsrecht für Gruppen, Benutzer, Medien-Dateien oder Seiten hinzu]]></de>
-            <en><![CDATA[Add a permission for groups, users, media-files or sites]]></en>
+            <de><![CDATA[Fügen Sie ein Zugriffsrecht für Gruppen, Benutzer, Projekte, Medien-Dateien oder Seiten hinzu]]></de>
+            <en><![CDATA[Add a permission for groups, users, projects, media-files or sites]]></en>
+        </locale>
+        <locale name="permissions.panel.window.add.select.user">
+            <de><![CDATA[Recht für Benutzer und Gruppen]]></de>
+            <en><![CDATA[Permission for an user and group]]></en>
+        </locale>
+        <locale name="permissions.panel.window.add.select.site">
+            <de><![CDATA[Recht für eine Seite]]></de>
+            <en><![CDATA[Permission for a page]]></en>
+        </locale>
+        <locale name="permissions.panel.window.add.select.media">
+            <de><![CDATA[Recht für den Mediabereich]]></de>
+            <en><![CDATA[Permission for the media]]></en>
+        </locale>
+        <locale name="permissions.panel.window.add.select.project">
+            <de><![CDATA[Recht für ein Projekt]]></de>
+            <en><![CDATA[Permission for a project]]></en>
         </locale>
         <locale name="permissions.panel.btn.select.user">
             <de><![CDATA[Für einen Benutzer]]></de>
@@ -4376,13 +4392,11 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[]]></en>
         </locale>
     </groups>
-    <groups name="quiqqer/system" datatype="php, js">
+    <groups name="quiqqer/system" datatype="php,js">
         <locale name="menu.extras.packages.text">
             <de><![CDATA[System, Plugins und Paket-Manager]]></de>
             <en><![CDATA[System, Plugins and Package Manager]]></en>
         </locale>
-    </groups>
-    <groups name="quiqqer/system" datatype="php,js">
         <locale name="projects.project.site.btn.new.text">
             <de><![CDATA[Neue Unterseite]]></de>
             <en><![CDATA[New childsite]]></en>
@@ -4491,8 +4505,6 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[unten links]]></de>
             <en><![CDATA[bottom left]]></en>
         </locale>
-    </groups>
-    <groups name="quiqqer/system" datatype="js.php">
         <locale name="projects.project.site.select.btn.addSite">
             <de><![CDATA[Eine Seite hinzufügen]]></de>
             <en><![CDATA[]]></en>

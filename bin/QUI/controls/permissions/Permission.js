@@ -447,6 +447,21 @@ define('controls/permissions/Permission', [
                             }
                         }
 
+
+                        // parse controls
+                        if (this.$Bind && typeOf(this.$Bind) !== 'qui/classes/DOM')
+                        {
+                            ControlUtils.parse(this.$ContentSheet);
+
+                        } else
+                        {
+                            // if no bind exist, we would only edit the permissions
+                            this.$ContentSheet.getElements('input,textarea').setStyles({
+                                display : 'none'
+                            });
+                        }
+
+
                         moofx(this.$ContentSheet).animate({
                             left : 0
                         }, {
@@ -484,21 +499,6 @@ define('controls/permissions/Permission', [
                     'class' : 'data-table',
                     html    : '<tr><th>'+ header +'</th></tr>'
                 }).inject(this.$ContentSheet);
-
-
-                // parse controls
-                if (this.$Bind && typeOf(this.$Bind) !== 'qui/classes/DOM')
-                {
-                    ControlUtils.parse(this.$tableCache[tableRightId]);
-
-                } else
-                {
-                    // if no bind exist, we would only edit the permissions
-                    this.$tableCache[tableRightId].getElements('input,textarea').setStyles({
-                        display : 'none'
-                    });
-                }
-
             }
 
 
