@@ -817,6 +817,16 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Das Zugriffsrecht wird unwiderruflich gelöscht]]></de>
             <en><![CDATA[The permission will be permanently deleted.]]></en>
         </locale>
+        <locale name="permissions.panel.welcome.message" html="true">
+            <de><![CDATA[
+                <h1>Zugriffsrechte verwalten</h1>
+                Verwenden Sie die nebenstehende Liste, um Benutzern und Gruppen den Zugriff auf bestimmte Seiten,
+                Projekte oder Funktionen zu gestatten bzw. zu verweigern.
+            ]]></de>
+            <en><![CDATA[
+
+            ]]></en>
+        </locale>
         <locale name="permissions.panel.window.add.title">
             <de><![CDATA[Zugriffsrecht hinzufügen]]></de>
             <en><![CDATA[Add permission]]></en>

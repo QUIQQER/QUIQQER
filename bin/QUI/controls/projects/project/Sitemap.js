@@ -15,6 +15,7 @@
  * @require Locale
  * @require Clipboard
  * @require utils/Site
+ * @require css!controls/projects/project/Sitemap.css
  */
 
 define('controls/projects/project/Sitemap', [
