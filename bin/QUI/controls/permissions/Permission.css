@@ -107,6 +107,16 @@
     padding: 0 10px;
 }
 
+.controls-permissions-permission-buttons button.qui-button-active {
+    background: #C3C3C3 !important;
+    color: #222;
+}
+
+.controls-permissions-permission-buttons button:hover {
+    background: #d1d4da;
+}
+
+
 .controls-permissions-permission-buttons .qui-button-text-image {
     float: left;
     line-height: 50px;
