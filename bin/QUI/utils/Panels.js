@@ -20,50 +20,60 @@ define('utils/Panels', function()
          * @param {String} lang - languag of the Project
          * @param {Number} id - ID of the Site
          * @param {Function} [callback] - callback function, only triggered if the panel is not exist
+         *
+         * @return Promise
          */
         openSitePanel : function(project, lang, id, callback)
         {
             var self = this;
 
-            require([
-                'qui/QUI',
-                'qui/controls/desktop/Panel',
-                'controls/projects/project/site/Panel',
-                'Projects'
-            ], function(QUI, QUIPanel, SitePanel, Projects)
-            {
-                var n      = 'panel-'+ project +'-'+ lang +'-'+ id,
-                    panels = QUI.Controls.get( n );
+            return new Promise(function(resolve, reject) {
 
-                if ( panels.length )
+                require([
+                    'qui/QUI',
+                    'qui/controls/desktop/Panel',
+                    'controls/projects/project/site/Panel',
+                    'Projects'
+                ], function(QUI, QUIPanel, SitePanel, Projects)
                 {
-                    for ( var i = 0, len = panels.length; i < len; i++ )
-                    {
-                        if ( !instanceOf( panels[ i ], QUIPanel ) ) {
-                            continue;
-                        }
+                    var n      = 'panel-'+ project +'-'+ lang +'-'+ id,
+                        panels = QUI.Controls.get( n );
 
-                        // if a task exist, click it and open the instance
-                        self.execPanelOpen( panels[ i ] );
+                    if (panels.length)
+                    {
+                        for (var i = 0, len = panels.length; i < len; i++)
+                        {
+                            if (!instanceOf(panels[i], QUIPanel)) {
+                                continue;
+                            }
+
+                            // if a task exist, click it and open the instance
+                            self.execPanelOpen(panels[i]);
+                            resolve(panels[i]);
+                            return;
+                        }
+                    }
+
+                    panels = QUI.Controls.getByType('qui/controls/desktop/Tasks');
+
+                    if (!panels.length) {
+                        reject('panel not found');
                         return;
                     }
-                }
 
-                panels = QUI.Controls.getByType( 'qui/controls/desktop/Tasks' );
+                    var Panel = new SitePanel(
+                        Projects.get(project, lang).get(id)
+                    );
 
-                if ( !panels.length ) {
-                    return;
-                }
+                    panels[0].appendChild(Panel);
 
-                var Panel = new SitePanel(
-                    Projects.get( project, lang ).get( id )
-                );
+                    if (typeof callback === 'function') {
+                        callback(Panel);
+                    }
 
-                panels[ 0 ].appendChild( Panel );
+                    resolve(Panel);
 
-                if ( typeof callback !== 'undefined' ) {
-                    callback( Panel );
-                }
+                }, reject);
             });
         },
 
@@ -73,49 +83,151 @@ define('utils/Panels', function()
          *
          * @param {String} project - Name of the project
          * @param {Function} [callback] - callback function, only triggered if the panel is not exist
+         *
+         * @return Promise
          */
         openMediaPanel : function(project, callback)
         {
             var self = this;
 
-            require([
-                'qui/QUI',
-                'qui/controls/desktop/Panel',
-                'controls/projects/project/media/Panel',
-                'Projects'
-            ], function(QUI, QUIPanel, MediaPanel, Projects)
-            {
-                var i, len, Panel;
-                var panels = QUI.Controls.get( 'projects-media-panel' );
+            return new Promise(function(resolve, reject) {
 
-                if ( panels.length )
+                require([
+                    'qui/QUI',
+                    'qui/controls/desktop/Panel',
+                    'controls/projects/project/media/Panel',
+                    'Projects'
+                ], function(QUI, QUIPanel, MediaPanel, Projects)
                 {
-                    for ( i = 0, len = panels.length; i < len; i++ )
+                    var i, len, Panel;
+                    var panels = QUI.Controls.get('projects-media-panel');
+
+                    if (panels.length)
                     {
-                        Panel = panels[ i ];
+                        for (i = 0, len = panels.length; i < len; i++)
+                        {
+                            Panel = panels[i];
 
-                        if ( Panel.getProject().getName() != project ) {
-                            continue;
+                            if (Panel.getProject().getName() != project) {
+                                continue;
+                            }
+
+                            self.execPanelOpen(Panel);
+                            resolve(Panel);
+
+                            return;
                         }
+                    }
 
-                        self.execPanelOpen( Panel );
+                    panels = QUI.Controls.getByType('qui/controls/desktop/Tasks');
+
+                    if (!panels.length) {
+                        reject('tasks not found, panel could not be inserted');
                         return;
                     }
-                }
 
-                panels = QUI.Controls.getByType( 'qui/controls/desktop/Tasks' );
+                    Panel = new MediaPanel(
+                        Projects.get(project).getMedia()
+                    );
 
-                if ( !panels.length ) {
-                    return;
-                }
+                    panels[0].appendChild(Panel);
 
-                Panel = new MediaPanel( Projects.get( project ).getMedia() );
+                    if (typeof callback === 'function') {
+                        callback(Panel);
+                    }
 
-                panels[ 0 ].appendChild( Panel );
+                    resolve(Panel);
 
-                if ( typeof callback !== 'undefined' ) {
-                    callback( Panel );
-                }
+                }, reject);
+            });
+        },
+
+        /**
+         * opens a media item panel
+         *
+         * @param {String} project
+         * @param {String} id
+         * @param {Function} callback
+         */
+        openMediaItemPanel : function(project, id, callback)
+        {
+            var self = this;
+
+            return new Promise(function(resolve, reject) {
+
+                require([
+                    'qui/QUI',
+                    'qui/controls/desktop/Panel',
+                    'controls/projects/project/media/Panel',
+                    'controls/projects/project/media/FilePanel',
+                    'controls/projects/project/media/FolderPanel',
+                    'Projects'
+                ], function(QUI, QUIPanel, MediaPanel, FilePanel, FolderPanel, Projects)
+                {
+                    var Media = Projects.get(project).getMedia();
+
+                    Media.get(id).then(function(Item) {
+
+                        var i, len, Panel = false;
+
+                        var panels = QUI.Controls.get(
+                            'projects-media-file-panel-'+ Item.getId()
+                        );
+
+                        if (panels.length) {
+
+                            for (i = 0, len = panels.length; i < len; i++) {
+
+                                Panel = panels[i];
+
+                                if (Panel.getProject().getName() != project) {
+                                    continue;
+                                }
+
+                                self.execPanelOpen(Panel);
+                                resolve(Panel);
+
+                                return;
+                            }
+                        }
+
+                        panels = QUI.Controls.getByType('qui/controls/desktop/Tasks');
+
+                        if (!panels.length) {
+                            reject('tasks not found, panel could not be inserted');
+                            return;
+                        }
+
+
+                        // if the MediaFile is no Folder
+                        if (Item.getType() !== 'classes/projects/project/media/Folder') {
+                            Panel = new FilePanel(Item);
+
+                        } else if (Item.getType() === 'classes/projects/project/media/Folder') {
+
+                            Panel = new FilePanel({
+                                folderId : Item.getId(),
+                                project  : project
+                            });
+
+                        }
+
+                        if (!Panel) {
+                            return reject('panel type could not be found');
+                        }
+
+                        panels[0].appendChild(Panel);
+
+                        if (typeof callback === 'function') {
+                            callback(Panel);
+                        }
+
+                        resolve(Panel);
+
+                    }).catch(reject);
+
+                }, reject);
+
             });
         },
 
@@ -162,7 +274,7 @@ define('utils/Panels', function()
                 self.openPanelInTasks( Panel );
 
                 if ( typeof callback !== 'undefined' ) {
-                    callback( Panel );
+                    callback(Panel);
                 }
             });
         },
@@ -235,11 +347,11 @@ define('utils/Panels', function()
         execPanelOpen : function(Panel)
         {
             // if a task exist, click it and open the instance
-            var Task = Panel.getAttribute( 'Task' );
+            var Task = Panel.getAttribute('Task');
 
-            if  ( Task && Task.getType() == 'qui/controls/taskbar/Task')
+            if  (Task && Task.getType() == 'qui/controls/taskbar/Task')
             {
-                Panel.getAttribute( 'Task' ).click();
+                Panel.getAttribute('Task').click();
                 return;
             }
 
