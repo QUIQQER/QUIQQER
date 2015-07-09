@@ -135,7 +135,15 @@ define('controls/projects/project/media/Panel', [
             this.$PanelContextMenu = new PanelContextMenu( this );
 
             this.addEvents({
-                onCreate : this.$onCreate
+                onCreate  : this.$onCreate,
+                onDestroy : function() {
+                    this.$Media.remmoveEvent('onItemRename', this.$itemEvent);
+                    this.$Media.remmoveEvent('onItemActivate', this.$itemEvent);
+                    this.$Media.remmoveEvent('onItemDeactivate', this.$itemEvent);
+                    this.$Media.remmoveEvent('onItemRefresh', this.$itemEvent);
+                    this.$Media.remmoveEvent('onItemSave', this.$itemEvent);
+                    this.$Media.remmoveEvent('onItemDelete', this.$itemEvent);
+                }.bind(this)
             });
 
             // media events
