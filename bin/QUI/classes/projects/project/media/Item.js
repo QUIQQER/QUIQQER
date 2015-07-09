@@ -43,12 +43,14 @@ define('classes/projects/project/media/Item', [
         Type    : 'classes/projects/project/media/Item',
 
         options : {
-            id      : 0,
-            name    : '',
-            title   : '',
-            alt     : '',
-            'short' : '',
-            active  : '',
+            id        : 0,
+            name      : '',
+            title     : '',
+            alt       : '',
+            'short'   : '',
+            active    : '',
+            order     : '',
+            priority  : '',
 
             c_user : '',
             e_user : '',
@@ -136,33 +138,45 @@ define('classes/projects/project/media/Item', [
          * Save the File attributes to the database
          *
          * @method classes/projects/project/media/Item#save
+         *
          * @fires onSave [this]
+         *
          * @param {Function} [oncomplete] - (optional) callback Function
-         * @param {Object} [params]      - (optional), parameters that are linked to the request object
+         * @param {Object} [params]       - (optional), parameters that are linked to the request object
+         *
+         * @return Promise
          */
         save : function(oncomplete, params)
         {
             var self = this;
-            var attributes = this.getAttributes();
 
-            attributes.image_effects = this.getEffects();
+            return new Promise(function(resolve, reject) {
 
-            params = Utils.combine(params, {
-                project    : this.getMedia().getProject().getName(),
-                fileid     : this.getId(),
-                attributes : JSON.encode( this.getAttributes() )
+                var attributes = self.getAttributes();
+
+                attributes.image_effects = self.getEffects();
+
+                params = Utils.combine(params, {
+                    project    : self.getMedia().getProject().getName(),
+                    fileid     : self.getId(),
+                    attributes : JSON.encode( self.getAttributes() ),
+                    onError    : reject
+                });
+
+
+                Ajax.post('ajax_media_file_save', function(result)
+                {
+                    self.setAttributes(result);
+                    self.fireEvent('save', [self]);
+
+                    if (typeOf(oncomplete) === 'function') {
+                        oncomplete(result);
+                    }
+
+                    resolve(result);
+
+                }, params);
             });
-
-
-            Ajax.post('ajax_media_file_save', function(result, Request)
-            {
-                self.setAttributes( result );
-                self.fireEvent( 'save', [ self ] );
-
-                if ( typeOf( oncomplete ) === 'function' ) {
-                    oncomplete( result, Request );
-                }
-            }, params);
         },
 
         /**
@@ -177,8 +191,8 @@ define('classes/projects/project/media/Item', [
          */
         del : function(oncomplete, params)
         {
-            this.fireEvent( 'delete', [ this ]) ;
-            this.getMedia().del( this.getId(), oncomplete, params );
+            this.fireEvent('delete', [this]) ;
+            this.getMedia().del(this.getId(), oncomplete, params);
         },
 
         /**
@@ -190,6 +204,7 @@ define('classes/projects/project/media/Item', [
          *
          * @param {Function} [oncomplete] - (optional) callback Function
          * @param {Object} [params]      - (optional), parameters that are linked to the request object
+         *
          * @return Promise
          */
         activate : function(oncomplete, params)
@@ -211,6 +226,7 @@ define('classes/projects/project/media/Item', [
          *
          * @param {Function} [oncomplete] - (optional) callback Function
          * @param {Object} [params]      - (optional), parameters that are linked to the request object
+         *
          * @return Promise
          */
         deactivate : function(oncomplete, params)

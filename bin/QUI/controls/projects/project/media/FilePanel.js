@@ -562,49 +562,53 @@ define('controls/projects/project/media/FilePanel', [
          */
         $unloadCategory : function()
         {
-            if ( !this.$ButtonActiv || this.$__injected === false ) {
+            if (!this.$ButtonActiv || this.$__injected === false) {
                 return;
             }
 
             var Body = this.getContent();
             var Form = Body.getElement('form');
 
-            if ( typeOf(Form) !== 'element' ) {
+            if (typeOf(Form) !== 'element') {
                 return;
             }
 
             var data = FormUtils.getFormData(Form),
                 File = this.getFile();
 
-            for ( var i in data )
+            for (var i in data)
             {
-                if ( !data.hasOwnProperty( i ) ) {
+                if (!data.hasOwnProperty(i)) {
                     return;
                 }
 
 
                 // effects
-                if ( i.match('effect-') )
+                if (i.match('effect-'))
                 {
-                    File.setEffect( i.replace('effect-', ''), data[ i ] );
+                    File.setEffect(i.replace('effect-', ''), data[i]);
                     continue;
                 }
 
 
-                if ( "file_name" == i ) {
-                    File.setAttribute( 'name', data[ i ] );
+                if ("file_name" == i) {
+                    File.setAttribute('name', data[i]);
                 }
 
-                if ( "file_title" == i ) {
-                    File.setAttribute( 'title', data[ i ] );
+                if ("file_title" == i) {
+                    File.setAttribute('title', data[i]);
                 }
 
-                if ( "file_alt" == i ) {
-                    File.setAttribute( 'alt', data[ i ] );
+                if ("file_alt" == i) {
+                    File.setAttribute('alt', data[i]);
                 }
 
-                if ( "file_short" == i ) {
-                    File.setAttribute( 'short', data[ i ] );
+                if ("file_short" == i) {
+                    File.setAttribute( 'short', data[i]);
+                }
+
+                if ("file_priority" == i) {
+                    File.setAttribute('priority', data[i]);
                 }
             }
         },
@@ -669,7 +673,8 @@ define('controls/projects/project/media/FilePanel', [
                             file_dimension : dimension,
                             file_md5       : File.getAttribute( 'md5hash' ),
                             file_sha1      : File.getAttribute( 'sha1hash' ),
-                            file_size      : File.getAttribute( 'filesize' )
+                            file_size      : File.getAttribute( 'filesize' ),
+                            file_priority  : File.getAttribute( 'priority' )
                         },
                         Body.getElement( 'form' )
                     );

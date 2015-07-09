@@ -4,8 +4,22 @@
  *
  * @module controls/projects/project/media/FolderPanel
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/QUI
+ * @require qui/controls/desktop/Panel
+ * @require qui/controls/buttons/Button
+ * @require qui/controls/buttons/Seperator
+ * @require qui/controls/buttons/Select
+ * @require qui/controls/windows/Confirm
+ * @require qui/controls/input/Range
+ * @require qui/utils/Form
+ * @require utils/Template
+ * @require controls/projects/project/media/Input
+ * @require Projects
+ * @require Locale
+ * @require Ajax
+ * @require css!controls/projects/project/media/FolderPanel.css
  */
-
 define('controls/projects/project/media/FolderPanel', [
 
     'qui/QUI',
@@ -52,6 +66,7 @@ define('controls/projects/project/media/FolderPanel', [
             '$onInject',
             'openDetails',
             'openEffects',
+            'openPriorityOrder',
             'executeEffectsRecursive',
             '$refreshImageEffectFrame'
         ],
@@ -115,7 +130,9 @@ define('controls/projects/project/media/FolderPanel', [
 
                 self.setAttributes({
                     icon  : 'fa fa-folder-open-o icon-folder-open-alt',
-                    title : title
+                    title : title,
+                    name  : 'projects-media-file-panel-' + Folder.getId(),
+                    id    : 'projects-media-file-panel-' + Folder.getId()
                 });
 
                 self.refresh();
@@ -138,13 +155,10 @@ define('controls/projects/project/media/FolderPanel', [
                 return;
             }
 
-            var self = this;
-
             this.Loader.show();
-
             this.$unloadCategory();
 
-            this.$Folder.save(function()
+            this.$Folder.save().then(function()
             {
                 QUI.getMessageHandler(function(MH) {
                     MH.addSuccess(
@@ -156,8 +170,9 @@ define('controls/projects/project/media/FolderPanel', [
                     callback();
                 }
 
-                self.Loader.hide();
-            });
+                this.Loader.hide();
+
+            }.bind(this));
         },
 
         /**
@@ -217,17 +232,34 @@ define('controls/projects/project/media/FolderPanel', [
 
             this.Loader.show();
 
-            Template.get('project_media_folder', function(result)
+            Template.get('project/media/folder', function(result)
             {
                 Body.set(
                     'html',
                     '<form>'+ result +'</form>'
                 );
 
-                QUIFormUtils.setDataToForm(
-                    Folder.getAttributes(),
-                    Body.getElement('form')
-                );
+                var Form = Body.getElement('form'),
+                    Order = Form.getElement('[name="order"]');
+
+                QUIFormUtils.setDataToForm(Folder.getAttributes(), Form);
+
+                Order.setStyles({
+                    'float' : 'left'
+                });
+
+                new QUIButton({
+                    alt    : Locale.get(lg, 'projects.project.site.panel.btn.priority'),
+                    title  : Locale.get(lg, 'projects.project.site.panel.btn.priority'),
+                    icon   : 'icon-sort-by-attributes-alt',
+                    events : {
+                        onClick : self.openPriorityOrder
+                    },
+                    styles : {
+                        marginTop : 3,
+                        marginLeft : 10
+                    }
+                }).inject(Order, 'after');
 
                 self.Loader.hide();
             });
@@ -248,7 +280,7 @@ define('controls/projects/project/media/FolderPanel', [
 
             Body.set( 'html', '' );
 
-            Template.get('project_media_effects', function(result)
+            Template.get('project/media/effects', function(result)
             {
                 Body.set(
                     'html',
@@ -435,6 +467,42 @@ define('controls/projects/project/media/FolderPanel', [
         },
 
         /**
+         * Opens the children order
+         */
+        openPriorityOrder : function()
+        {
+            var self = this;
+
+            this.createSheet({
+                icon : 'icon-sort-by-attributes-alt',
+                title : '<span class="icon-sort-by-attributes-alt"></span> '+
+                        Locale.get('quiqqer/system', 'projects.project.site.media.priority.sheet.title'),
+                closeButton : {
+                    textimage : 'icon-remove fa fa-remove',
+                    text      : Locale.get('quiqqer/system', 'cancel')
+                },
+                events : {
+                    onOpen : function(Sheet) {
+                        var Content = Sheet.getContent();
+
+                        Content.setStyles({
+                            padding: 20
+                        });
+
+                        require([
+                            'controls/projects/project/media/Priority'
+                        ], function(Priority) {
+                            new Priority({
+                                project  : self.getAttribute('project'),
+                                folderId : self.getAttribute('folderId')
+                            }).inject(Content);
+                        });
+                    }
+                }
+            }).show();
+        },
+
+        /**
          * Opens the confirm window for the resursive effect execution
          */
         executeEffectsRecursive : function()
@@ -495,9 +563,9 @@ define('controls/projects/project/media/FolderPanel', [
                 })
             ).addButton(
                 new QUIButton({
-                    alt : Locale.get( lg, 'projects.project.site.media.filePanel.btn.delete.text' ),
-                    title : Locale.get( lg, 'projects.project.site.media.filePanel.btn.delete.text' ),
-                    icon : 'fa fa-trash-o icon-trash',
+                    alt    : Locale.get( lg, 'projects.project.site.media.filePanel.btn.delete.text' ),
+                    title  : Locale.get( lg, 'projects.project.site.media.filePanel.btn.delete.text' ),
+                    icon   : 'fa fa-trash-o icon-trash',
                     events :
                     {
                         onClick : function() {
@@ -519,19 +587,19 @@ define('controls/projects/project/media/FolderPanel', [
             this.getCategoryBar().clear();
 
             this.addCategory({
-                text: Locale.get(lg, 'projects.project.site.media.filePanel.details.text'),
-                name: 'details',
-                icon: 'fa fa-folder-open-o icon-folder-open-alt',
-                events: {
+                text   : Locale.get(lg, 'projects.project.site.media.filePanel.details.text'),
+                name   : 'details',
+                icon   : 'fa fa-folder-open-o icon-folder-open-alt',
+                events : {
                     onActive: this.openDetails
                 }
             });
 
             this.addCategory({
-                text: Locale.get(lg, 'projects.project.site.media.filePanel.image.effects.text'),
-                name: 'effects',
-                icon: 'fa fa-magic icon-magic',
-                events: {
+                text   : Locale.get(lg, 'projects.project.site.media.filePanel.image.effects.text'),
+                name   : 'effects',
+                icon   : 'fa fa-magic icon-magic',
+                events : {
                     onActive: this.openEffects
                 }
             });
@@ -608,30 +676,30 @@ define('controls/projects/project/media/FolderPanel', [
             var Body = this.getContent();
             var Form = Body.getElement('form');
 
-            if ( !Form || !Form.getParent() ) {
+            if (!Form || !Form.getParent()) {
                 return;
             }
 
-            if ( !this.$Folder ) {
+            if (!this.$Folder) {
                 return;
             }
 
             var data = QUIFormUtils.getFormData(Form);
 
-            for ( var i in data )
+            for (var i in data)
             {
-                if ( !data.hasOwnProperty(i) ) {
+                if (!data.hasOwnProperty(i)) {
                     return;
                 }
 
                 // effects
-                if ( i.match('effect-') )
+                if (i.match('effect-'))
                 {
-                    this.$Folder.setEffect( i.replace('effect-', ''), data[i] );
+                    this.$Folder.setEffect(i.replace('effect-', ''), data[i]);
                     continue;
                 }
 
-                this.$Folder.setAttribute( i, data[i] );
+                this.$Folder.setAttribute(i, data[i]);
             }
         }
     });

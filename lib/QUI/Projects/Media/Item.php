@@ -161,12 +161,41 @@ abstract class Item extends QUI\QDOM
             $image_effects = array();
         }
 
+        switch ($this->getAttribute('order')) {
+            case 'priority':
+            case 'priority ASC':
+            case 'priority DESC':
+
+            case 'c_date':
+            case 'c_date ASC':
+            case 'c_date DESC':
+
+            case 'name':
+            case 'name ASC':
+            case 'name DESC':
+
+            case 'title':
+            case 'title ASC':
+            case 'title DESC':
+
+            case 'id':
+            case 'id ASC':
+            case 'id DESC':
+                $order = $this->getAttribute('order');
+                break;
+
+            default:
+                $order = '';
+        }
+
         QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array(
                 'title'         => $this->getAttribute('title'),
                 'alt'           => $this->getAttribute('alt'),
                 'short'         => $this->getAttribute('short'),
+                'order'         => $order,
+                'priority'      => (int)$this->getAttribute('priority'),
                 'image_effects' => json_encode($image_effects)
             ),
             array(

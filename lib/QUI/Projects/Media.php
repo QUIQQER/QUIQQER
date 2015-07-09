@@ -137,7 +137,7 @@ class Media extends QUI\QDOM
          */
         $table = $this->getTable();
 
-        $DataBase = \QUI::getDataBase();
+        $DataBase = QUI::getDataBase();
         $DataBase->Table()->appendFields($table, array(
             'id'            => 'bigint(20) NOT NULL',
             'name'          => 'varchar(200) NOT NULL',
@@ -159,7 +159,9 @@ class Media extends QUI\QDOM
             'rate_users'    => 'text',
             'rate_count'    => 'float default NULL',
             'md5hash'       => 'varchar(32)',
-            'sha1hash'      => 'varchar(40)'
+            'sha1hash'      => 'varchar(40)',
+            'priority'      => 'int(6) default NULL',
+            'order'         => 'varchar(32) default NULL',
         ));
 
         $DataBase->Table()->setIndex($table, 'id');
@@ -180,7 +182,7 @@ class Media extends QUI\QDOM
                 'name'   => 'Media',
                 'title'  => 'Media',
                 'c_date' => date('Y-m-d H:i:s'),
-                'c_user' => \QUI::getUserBySession()->getId(),
+                'c_user' => QUI::getUserBySession()->getId(),
                 'type'   => 'folder'
             ));
 
@@ -306,7 +308,7 @@ class Media extends QUI\QDOM
         $table = $this->getTable();
         $table_rel = $this->getTable('relations');
 
-        $result = \QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch(array(
             'select' => array(
                 $table.'.id'
             ),
@@ -345,7 +347,7 @@ class Media extends QUI\QDOM
 
         // use direct db not the objects, because
         // if file is not ok you can replace the file though
-        $result = \QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch(array(
             'from'  => $this->getTable(),
             'where' => array(
                 'id' => $id
@@ -448,7 +450,7 @@ class Media extends QUI\QDOM
             return false;
         }
 
-        $result = \QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch(array(
             'select' => 'parent',
             'from'   => $this->getTable('relations'),
             'where'  => array(

@@ -327,6 +327,14 @@
             <de><![CDATA[manuell]]></de>
             <en><![CDATA[manually]]></en>
         </locale>
+        <locale name="id_asc">
+            <de><![CDATA[ID aufsteigend]]></de>
+            <en><![CDATA[ID ascending]]></en>
+        </locale>
+        <locale name="id_desc">
+            <de><![CDATA[ID absteigend]]></de>
+            <en><![CDATA[ID descending]]></en>
+        </locale>
         <locale name="name_asc">
             <de><![CDATA[Name aufsteigend]]></de>
             <en><![CDATA[Name ascending]]></en>
@@ -366,6 +374,18 @@
         <locale name="release_from_desc">
             <de><![CDATA[Veröffentlichungsdatum absteigend]]></de>
             <en><![CDATA[Release date descending]]></en>
+        </locale>
+        <locale name="priority_asc">
+            <de><![CDATA[Priorität aufsteigend]]></de>
+            <en><![CDATA[Priority ascending]]></en>
+        </locale>
+        <locale name="priority_desc">
+            <de><![CDATA[Priorität absteigend]]></de>
+            <en><![CDATA[Priority descending]]></en>
+        </locale>
+        <locale name="priority">
+            <de><![CDATA[Priorität]]></de>
+            <en><![CDATA[Priority]]></en>
         </locale>
         <locale name="pause">
             <de><![CDATA[Pause]]></de>
@@ -506,6 +526,10 @@
         <locale name="template.project.media.effect.preview.header">
             <de><![CDATA[Bild-Vorschau]]></de>
             <en><![CDATA[Image preview]]></en>
+        </locale>
+        <locale name="template.project.media.folder.order">
+            <de><![CDATA[Sortierung]]></de>
+            <en><![CDATA[Sorting]]></en>
         </locale>
         <locale name="media.blur">
             <de><![CDATA[Verwischen]]></de>
@@ -1209,6 +1233,16 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[<h2><span class="icon-upload"></span>Upload file</h2>
                 <p>Upload files to the media folder.</p>]]></en>
         </locale>
+
+        <locale name="projects.project.site.media.priority.btn.save">
+            <de><![CDATA[Prioritäten speichern]]></de>
+            <en><![CDATA[Save priorities]]></en>
+        </locale>
+        <locale name="projects.project.site.media.priority.sheet.title">
+            <de><![CDATA[Prioritäten ändern]]></de>
+            <en><![CDATA[Edit priorities]]></en>
+        </locale>
+
         <locale name="projects.project.site.folder.create.title">
             <de><![CDATA[Neuer Ordner anlegen]]></de>
             <en><![CDATA[Creating a new folder]]></en>
@@ -3626,6 +3660,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Ihre Nachricht an uns...]]></de>
             <en><![CDATA[Your message to us]]></en>
         </locale>
+        <locale name="exception.media.not.a.folder">
+            <de><![CDATA[Dies ist kein Ordner.]]></de>
+            <en><![CDATA[This is not a folder.]]></en>
+        </locale>
         <locale name="exception.template.not.found">
             <de><![CDATA[Template wurde nicht gefunden.]]></de>
             <en><![CDATA[Template not found.]]></en>
@@ -4243,6 +4281,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="template.project.media.file.alttext">
             <de><![CDATA[Alternativ Text]]></de>
             <en><![CDATA[Alternative text]]></en>
+        </locale>
+        <locale name="template.project.media.folder.path">
+            <de><![CDATA[Ordnerpfad]]></de>
+            <en><![CDATA[Folder path]]></en>
         </locale>
         <locale name="template.project.media.file.path">
             <de><![CDATA[Dateipfad]]></de>

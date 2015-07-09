@@ -43,7 +43,8 @@ class Utils
                 'hasChildren'   => $Item->hasChildren(),
                 'hasSubfolders' => $Item->hasSubFolders(),
                 'active'        => true,
-                'e_date'        => $Item->getAttribute('e_date')
+                'e_date'        => $Item->getAttribute('e_date'),
+                'priority'      => $Item->getAttribute('priority')
             );
         }
 
@@ -60,7 +61,8 @@ class Utils
                 'hasChildren'   => $Item->hasChildren(),
                 'hasSubfolders' => $Item->hasSubfolders(),
                 'active'        => $Item->isActive(),
-                'e_date'        => $Item->getAttribute('e_date')
+                'e_date'        => $Item->getAttribute('e_date'),
+                'priority'      => $Item->getAttribute('priority')
             );
         }
 
@@ -79,7 +81,8 @@ class Utils
             'url'       => $Item->getUrl(),
             'active'    => $Item->isActive(),
             'e_date'    => $Item->getAttribute('e_date'),
-            'mimetype'  => $Item->getAttribute('mime_type')
+            'mimetype'  => $Item->getAttribute('mime_type'),
+            'priority'  => $Item->getAttribute('priority')
         );
 
         return $result;

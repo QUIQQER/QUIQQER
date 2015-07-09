@@ -9,7 +9,7 @@
  */
 function ajax_media_breadcrumb($project, $fileid)
 {
-    $Project = \QUI\Projects\Manager::getProject( $project );
+    $Project = QUI\Projects\Manager::getProject( $project );
     $Media   = $Project->getMedia();
     $File    = $Media->get( $fileid );
 
@@ -18,15 +18,15 @@ function ajax_media_breadcrumb($project, $fileid)
 
     // create breadcrumb data
     foreach ($parents as $Parent) {
-        $breadcrumb[] = \QUI\Projects\Media\Utils::parseForMediaCenter( $Parent );
+        $breadcrumb[] = QUI\Projects\Media\Utils::parseForMediaCenter( $Parent );
     }
 
-    $breadcrumb[] = \QUI\Projects\Media\Utils::parseForMediaCenter( $File );
+    $breadcrumb[] = QUI\Projects\Media\Utils::parseForMediaCenter( $File );
 
     return $breadcrumb;
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_media_breadcrumb',
     array('project', 'fileid'),
     'Permission::checkAdminUser'

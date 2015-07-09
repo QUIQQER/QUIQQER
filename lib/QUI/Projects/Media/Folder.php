@@ -327,7 +327,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         if ($Folder->childWithNameExists($this->getAttribute('name'))) {
             throw new QUI\Exception(
-                'Ein Ordner mit dem gleichen Namen existiert bereits.', 403
+                'Ein Ordner mit dem gleichen Namen existiert bereits.', 403 // #locale
             );
         }
 
@@ -398,7 +398,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     {
         if ($Folder->childWithNameExists($this->getAttribute('name'))) {
             throw new QUI\Exception(
-                'Ein Ordner mit dem gleichen Namen existiert bereits.', 403
+                'Ein Ordner mit dem gleichen Namen existiert bereits.', 403 // #locale
             );
         }
 
@@ -428,14 +428,23 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Returns all children in the folder
      *
-     * @todo implement order
+     * @param array $params - [optional] db query fields
+     *
      * @return array
      */
-    public function getChildren()
+    public function getChildren($params = array())
     {
         $this->_children = array();
 
-        $ids = $this->getChildrenIds();
+        if (!isset($params['order'])) {
+            $params['order'] = $this->getAttribute('priority');
+        }
+
+        if (empty($params['order'])) {
+            $params['order'] = 'priority';
+        }
+
+        $ids = $this->getChildrenIds($params);
 
         foreach ($ids as $id) {
             try {
@@ -453,23 +462,48 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * Return the children ids ( not resursive )
      * folders first, files seconds
      *
-     * @param string $order - [optional] order field
+     * @param array $params - [optional] db query fields
      *
      * @return array
      */
-    public function getChildrenIds($order = 'name')
+    public function getChildrenIds($params = array())
     {
         $table = $this->_Media->getTable();
         $table_rel = $this->_Media->getTable('relations');
+        $order = 'name';
+
+        if ($this->getAttribute('order')) {
+            $order = $this->getAttribute('order');
+        }
+
+        if (isset($params['order'])) {
+            $order = $params['order'];
+        }
+
+        // abwärtskompatibilität
+        if (is_string($params)) {
+            $order = $params;
+            $params = array();
+        }
 
         // Sortierung
         switch ($order) {
+            case 'priority':
+            case 'priority ASC':
+            case 'priority DESC':
+
             case 'c_date':
             case 'c_date ASC':
             case 'c_date DESC':
-            case 'name ASC':
+
             case 'name':
+            case 'name ASC':
             case 'name DESC':
+
+            case 'title':
+            case 'title ASC':
+            case 'title DESC':
+
             case 'id':
             case 'id ASC':
             case 'id DESC':
@@ -479,6 +513,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 $order = 'name';
         }
 
+
+        QUI\System\Log::writeRecursive($order);
 
         switch ($order) {
             case 'id':
@@ -520,10 +556,18 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                     = 'find_in_set('.$table.'.type, \'folder\') DESC, '.$table
                     .'.name';
                 break;
+
+            case 'priority':
+            case 'priority ASC':
+            case 'priority DESC':
+                $order_by = $order;
         }
 
+        if (isset($params['limit'])) {
+            $query['limit'] = $params['limit'];
+        }
 
-        $fetch = QUI::getDataBase()->fetch(array(
+        $query = array(
             'select' => 'id',
             'from'   => array(
                 $table,
@@ -535,8 +579,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 $table.'.deleted'    => 0
             ),
             'order'  => $order_by
-        ));
+        );
 
+
+        $fetch = QUI::getDataBase()->fetch($query);
         $result = array();
 
         foreach ($fetch as $entry) {
@@ -580,6 +626,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * Return the images
      *
      * @param array $params - filter paramater
+     *
      * @return array
      */
     public function getImages($params = array())

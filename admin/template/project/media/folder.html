@@ -51,12 +51,50 @@
             <td><input type="text" name="id" disabled="disabled" value="" /></td>
         </tr>
         <tr class="{cycle values="odd,even"}">
-            <td>{t}quiqqer/system path{/t}</td>
+            <td>{t}quiqqer/system template.project.media.folder.path{/t}</td>
             <td><input type="text" name="path" disabled="disabled" value="" /></td>
         </tr>
         <tr class="{cycle values="odd,even"}">
             <td>{t}quiqqer/system template.project.media.file.lastedit{/t}</td>
             <td><input type="text" name="edate" disabled="disabled" value="" /></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>{t}quiqqer/system template.project.media.folder.order{/t}</td>
+            <td>
+                <select name="order">
+                    <option value=""></option>
+                    <option value="priority ASC">
+                        {locale group="quiqqer/system" var="priority_asc"}
+                    </option>
+                    <option value="priority DESC">
+                        {locale group="quiqqer/system" var="priority_desc"}
+                    </option>
+                    <option value="c_date ASC">
+                        {locale group="quiqqer/system" var="c_date_asc"}
+                    </option>
+                    <option value="c_date DESC">
+                        {locale group="quiqqer/system" var="c_date_desc"}
+                    </option>
+                    <option value="name ASC">
+                        {locale group="quiqqer/system" var="name_asc"}
+                    </option>
+                    <option value="name DESC">
+                        {locale group="quiqqer/system" var="name_desc"}
+                    </option>
+                    <option value="title ASC">
+                        {locale group="quiqqer/system" var="name_asc"}
+                    </option>
+                    <option value="title DESC">
+                        {locale group="quiqqer/system" var="name_desc"}
+                    </option>
+                    <option value="id ASC">
+                        {locale group="quiqqer/system" var="id_asc"}
+                    </option>
+                    <option value="id DESC">
+                        {locale group="quiqqer/system" var="id_desc"}
+                    </option>
+                </select>
+            </td>
         </tr>
     </tbody>
     </table>
