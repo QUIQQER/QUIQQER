@@ -82,7 +82,8 @@ define('controls/projects/project/media/Panel', [
 
         Binds : [
             '$onCreate',
-            '$viewOnDrop'
+            '$viewOnDrop',
+            '$itemEvent'
         ],
 
         options : {
@@ -136,6 +137,18 @@ define('controls/projects/project/media/Panel', [
             this.addEvents({
                 onCreate : this.$onCreate
             });
+
+            // media events
+            if (typeOf(this.$Media) === 'classes/projects/project/Media') {
+                this.$Media.addEvents({
+                    onItemRename: this.$itemEvent,
+                    onItemActivate: this.$itemEvent,
+                    onItemDeactivate: this.$itemEvent,
+                    onItemRefresh: this.$itemEvent,
+                    onItemSave: this.$itemEvent,
+                    onItemDelete: this.$itemEvent
+                });
+            }
         },
 
         /**
@@ -166,6 +179,16 @@ define('controls/projects/project/media/Panel', [
 
             this.setAttributes( data.attributes );
             this.$Media = Project.getMedia();
+
+            // media events
+            this.$Media.addEvents({
+                onItemRename: this.$itemEvent,
+                onItemActivate: this.$itemEvent,
+                onItemDeactivate: this.$itemEvent,
+                onItemRefresh: this.$itemEvent,
+                onItemSave: this.$itemEvent,
+                onItemDelete: this.$itemEvent
+            });
 
             return this;
         },
@@ -1470,7 +1493,7 @@ define('controls/projects/project/media/Panel', [
          */
         activateItem : function(DOMNode)
         {
-            this.$DOMEvents.activate( [DOMNode] );
+            this.$DOMEvents.activate([DOMNode]);
         },
 
         /**
@@ -1483,7 +1506,7 @@ define('controls/projects/project/media/Panel', [
          */
         activateItems : function(DOMNode)
         {
-            this.$DOMEvents.activate( DOMNode );
+            this.$DOMEvents.activate(DOMNode);
         },
 
         /**
@@ -1496,7 +1519,7 @@ define('controls/projects/project/media/Panel', [
          */
         deactivateItem : function(DOMNode)
         {
-            this.$DOMEvents.deactivate( [DOMNode] );
+            this.$DOMEvents.deactivate([DOMNode]);
         },
 
         /**
@@ -1509,7 +1532,7 @@ define('controls/projects/project/media/Panel', [
          */
         deactivateItems : function(DOMNode)
         {
-            this.$DOMEvents.deactivate( DOMNode );
+            this.$DOMEvents.deactivate(DOMNode);
         },
 
         /**
@@ -1520,7 +1543,7 @@ define('controls/projects/project/media/Panel', [
          */
         deleteItem : function(DOMNode)
         {
-            this.$DOMEvents.del( [ DOMNode ] );
+            this.$DOMEvents.del([DOMNode]);
         },
 
         /**
@@ -1531,7 +1554,7 @@ define('controls/projects/project/media/Panel', [
          */
         deleteItems : function(items)
         {
-            this.$DOMEvents.del( items );
+            this.$DOMEvents.del(items);
         },
 
         /**
@@ -1542,7 +1565,7 @@ define('controls/projects/project/media/Panel', [
          */
         renameItem : function(DOMNode)
         {
-            this.$DOMEvents.rename( DOMNode );
+            this.$DOMEvents.rename(DOMNode);
         },
 
         /**
@@ -1553,7 +1576,7 @@ define('controls/projects/project/media/Panel', [
          */
         replaceItem : function(DOMNode)
         {
-            this.$DOMEvents.replace( DOMNode );
+            this.$DOMEvents.replace(DOMNode);
         },
 
         /**
@@ -1576,7 +1599,6 @@ define('controls/projects/project/media/Panel', [
 
             this.$selected = [];
         },
-
 
         /**
          * Return the selected Items
@@ -1978,54 +2000,111 @@ define('controls/projects/project/media/Panel', [
          */
         $dragLeave : function(event, Elm)
         {
-            if ( !Elm ) {
+            if (!Elm) {
                 return;
             }
 
-            if ( Elm.hasClass( 'media-drop' ) )
+            if (Elm.hasClass('media-drop'))
             {
                 var Control = QUI.Controls.getById(
-                    Elm.get( 'data-quiid' )
+                    Elm.get('data-quiid')
                 );
 
-                if ( !Control ) {
+                if (!Control) {
                     return;
                 }
 
-                if ( typeof Control.normalize !== 'undefined' ) {
+                if (typeof Control.normalize !== 'undefined') {
                     Control.normalize();
                 }
 
-                Control.fireEvent( 'dragLeave' );
+                Control.fireEvent('dragLeave');
 
                 return;
             }
 
             var Parent = Elm.getParent();
 
-            if ( Parent &&
-                 Parent.hasClass('qui-media-item-ondragdrop') &&
-                 !Parent.hasClass('qui-media-content') )
+            if (Parent &&
+                Parent.hasClass('qui-media-item-ondragdrop') &&
+                !Parent.hasClass('qui-media-content'))
             {
                 return;
             }
 
-            if ( Elm.hasClass('qui-media-content') )
+            if (Elm.hasClass('qui-media-content'))
             {
                 Elm.removeClass('qui-media-content-ondragdrop');
                 return;
             }
 
-            if ( !Elm.hasClass('qui-media-item') ) {
+            if (!Elm.hasClass('qui-media-item')) {
                 Elm = Elm.getParent('.qui-media-item');
             }
 
-            if ( !Elm ) {
+            if (!Elm) {
                 return;
             }
 
             Elm.removeClass('qui-media-item-ondragdrop');
             Elm.removeClass('qui-media-content-ondragdrop');
+        },
+
+        /**
+         * Item events
+         */
+
+        /**
+         * Item event
+         *
+         * @param {Object} Media - qui/classes/projects/Media
+         * @param {Object} Item - qui/classes/projects/media/Item
+         */
+        $itemEvent : function(Media, Item)
+        {
+            var Content = this.getContent();
+            var Node = Content.getElement('[data-id="'+ Item.getId() +'"]');
+
+            if (!Node) {
+                return;
+            }
+
+            if (Node.get('data-project') != Media.getProject().getName()) {
+                return;
+            }
+
+            Node.removeClass('qmi-active');
+            Node.removeClass('qmi-deactive');
+
+            Node.set({
+                alt   : Item.getAttribute('name'),
+                title : Item.getAttribute('title'),
+                'data-active' : Item.isActive() ? 1 : 0
+            });
+
+            if (Item.isActive()) {
+                Node.addClass('qmi-active');
+            } else {
+                Node.addClass('qmi-deactive');
+            }
+
+            Node.getElement('span').set('html', Item.getAttribute('name'));
+
+            var itemId = Item.getId()
+
+            for (var i = 0, len = this.$children.length; i < len; i++) {
+                if (this.$children[i].id != itemId) {
+                    continue;
+                }
+
+                this.$children[i].active = Item.isActive();
+                this.$children[i].e_date = Item.getAttribute('e_date');
+                this.$children[i].name = Item.getAttribute('name');
+                this.$children[i].priority = Item.getAttribute('priority');
+                this.$children[i].short = Item.getAttribute('short');
+                this.$children[i].title = Item.getAttribute('title');
+                break;
+            }
         }
     });
 });

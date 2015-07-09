@@ -12,6 +12,14 @@
  * @require classes/projects/project/media/File
  * @require classes/projects/project/media/Folder
  * @require classes/projects/project/media/Trash
+ *
+ * @event onItemRename [ self, Item ]
+ * @event onItemRefresh [ self, Item ]
+ * @event onItemSave [ self, Item ]
+ * @event onItemDelete [ self, Item ]
+ * @event onItemActivate [ self, Item ]
+ * @event onItemDeactivate [ self, Item ]
+ * @event onItemRename [ self, Item ]
  */
 
 define('classes/projects/project/Media', [
@@ -112,17 +120,17 @@ define('classes/projects/project/Media', [
                 }
 
                 // one id
-                if ( self.$items[ id ] )
+                if (id in self.$items)
                 {
-                    if ( typeOf( params ) === 'function' ) {
-                        return params( self.$items[ id ] );
+                    if (typeOf(params) === 'function') {
+                        params(self.$items[id]);
                     }
 
-                    return resolve( self.$items[ id ] );
+                    return resolve(self.$items[id]);
                 }
 
-                if ( typeOf( params ) === 'object' ) {
-                    return resolve( self.$parseResultToItem( params ) );
+                if (typeOf(params) === 'object') {
+                    return resolve(self.$parseResultToItem(params));
                 }
 
                 Ajax.get('ajax_media_details', function(result)
@@ -235,6 +243,7 @@ define('classes/projects/project/Media', [
                         }
                     });
                 }.bind(this), reject);
+
             }.bind(this));
         },
 
@@ -279,6 +288,7 @@ define('classes/projects/project/Media', [
                     }
 
                     resolve(result);
+
                 }.bind(this), params);
             }.bind(this));
         },
@@ -368,6 +378,7 @@ define('classes/projects/project/Media', [
 
                     resolve(false);
                 }, params);
+
             }.bind(this));
         },
 
@@ -378,39 +389,68 @@ define('classes/projects/project/Media', [
          */
         $parseResultToItem : function(result)
         {
-            if ( !result ) {
+            if (!result) {
                 return [];
             }
 
-            if ( typeOf( result ) == 'array' && result.length )
+            if (typeOf(result) == 'array' && result.length)
             {
                 var list = [];
 
-                for ( var i = 0, len = result.length; i < len; i++ )
+                for (var i = 0, len = result.length; i < len; i++)
                 {
                     list.push(
-                        this.$parseResultToItem( result[i] )
+                        this.$parseResultToItem(result[i])
                     );
                 }
 
                 return list;
             }
 
-            if ( result.id in this.$items ) {
-                return this.$items[ result.id ];
+            if (result.id in this.$items) {
+                return this.$items[result.id];
             }
 
-            switch ( result.type )
+            var Item;
+            var self = this;
+
+            switch (result.type)
             {
                 case "image":
-                    return new MediaImage( result, this );
+                    Item = new MediaImage(result, this);
+                break;
 
                 case "folder":
-                    return new MediaFolder( result, this );
+                    Item = new MediaFolder(result, this);
+                break;
 
                 default:
-                    return new MediaFile( result, this );
+                    Item = new MediaFile(result, this);
+                break;
             }
+
+            Item.addEvents({
+                onRename : function(Item) {
+                    self.fireEvent('itemRename', [self, Item]);
+                },
+                onActivate : function(Item) {
+                    self.fireEvent('itemActivate', [self, Item]);
+                },
+                onDeactivate : function(Item) {
+                    self.fireEvent('itemDeactivate', [self, Item]);
+                },
+                onRefresh : function(Item) {
+                    self.fireEvent('itemRefresh', [self, Item]);
+                },
+                onSave : function(Item) {
+                    self.fireEvent('itemSave', [self, Item]);
+                },
+                onDelete : function(Item) {
+                    self.fireEvent('itemDelete', [self, Item]);
+                }
+            });
+
+            return Item;
         }
     });
 });

@@ -194,7 +194,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
 
             new QUIPrompt({
                 name  : 'rename_item',
-                title : 'Ordner umbenennen',
+                title : 'Ordner umbenennen', // #locale
                 icon  : URL_BIN_DIR +'16x16/folder.png',
                 maxHeight : 300,
                 maxWidth  : 450,
