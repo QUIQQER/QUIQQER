@@ -155,11 +155,11 @@ require( requireList, function()
 
     QUI.getMessageHandler(function(MH) {
 
-        if (!("gui" in QUIQQER_CONFIG)) {
+        if (!("gui" in QUIQQER_CONFIG) || !QUIQQER_CONFIG.gui) {
             return;
         }
 
-        if (!("displayTimeMessages" in QUIQQER_CONFIG.gui)) {
+        if (!("displayTimeMessages" in QUIQQER_CONFIG.gui) || !QUIQQER_CONFIG.gui.displayTimeMessages) {
             return;
         }
 
