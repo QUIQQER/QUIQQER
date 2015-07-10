@@ -152,7 +152,7 @@ define('Ajax', [
 
             this.$onprogress[ id ].send( params );
 
-            return this.$onprogress[ id ].getResult();
+            return this.$onprogress[ id ];
         },
 
         /**
@@ -160,6 +160,7 @@ define('Ajax', [
          */
         showMaintennceMessage : function()
         {
+            // #locale
             QUI.getMessageHandler(function(MH) {
                 MH.addInformation(
                     'Derzeit werden Wartungsarbeiten getätigt.<br />' +
