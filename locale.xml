@@ -3612,6 +3612,33 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Falls kein Pfad angegeben wurde, wird im standard VAR Ordner ein cache/stack/ Verzeichnis angelegt]]></de>
             <en><![CDATA[If no path is specified, a cache/stack/ directory will be created in the standard VAR folder]]></en>
         </locale>
+
+        <locale name="quiqqer.settings.gui">
+            <de><![CDATA[Oberfläche (GUI)]]></de>
+            <en><![CDATA[Interface (GUI)]]></en>
+        </locale>
+        <locale name="quiqqer.settings.gui.title">
+            <de><![CDATA[Oberflächen Einstellungen (GUI)]]></de>
+            <en><![CDATA[Interface Settings (GUI)]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.gui.displayTimeMessages.text">
+            <de><![CDATA[Anzeigedauer der Nachrichten]]></de>
+            <en><![CDATA[Displaytime of the Messages]]></en>
+        </locale>
+        <locale name="quiqqer.settings.gui.displayTimeMessages.description" html="true">
+            <de><![CDATA[
+                Bestimmen Sie wie lange die Anzeigedauer der Nachrichten ist.<br />
+                Nachrichten sind Erfolgs-, Informations-, Hinweis- oder Fehlermeldungen.<br />
+                Die Angaben werden in Millisekunden angegeben.
+            ]]></de>
+            <en><![CDATA[
+                Determine how long is the display time of the message.<br />
+                Messages are success, information, warnings or error messages.<br >
+                The value are specified in milliseconds.
+            ]]></en>
+        </locale>
+
         <locale name="panels.project.title">
             <de><![CDATA[Projekte / Projekt Panel]]></de>
             <en><![CDATA[Projects / Project Panel]]></en>

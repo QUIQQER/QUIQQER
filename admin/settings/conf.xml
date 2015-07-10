@@ -209,6 +209,14 @@
                     <type><![CDATA[string]]></type>
                 </conf>
             </section>
+
+            <section name="gui">
+                <conf name="displayTimeMessages">
+                    <type><![CDATA[integer]]></type>
+                    <defaultvalue>2500</defaultvalue>
+                </conf>
+            </section>
+
         </config>
 
         <window menu-parent="/settings/quiqqer/">
@@ -523,6 +531,29 @@
                             </description>
                         </input>
                     </settings>
+                </category>
+
+                <category name="gui">
+                    <text>
+                        <locale group="quiqqer/system" var="quiqqer.settings.gui" />
+                    </text>
+                    <icon>icon-user</icon>
+
+                    <settings title="gui" name="gui">
+                        <title>
+                            <locale group="quiqqer/system" var="quiqqer.settings.gui.title" />
+                        </title>
+
+                        <input conf="gui.displayTimeMessages" type="number">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.gui.displayTimeMessages.text" />
+                            </text>
+                            <description>
+                                <locale group="quiqqer/system" var="quiqqer.settings.gui.displayTimeMessages.description" />
+                            </description>
+                        </input>
+                    </settings>
+
                 </category>
 
             </categories>

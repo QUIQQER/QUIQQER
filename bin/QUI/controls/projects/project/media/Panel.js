@@ -137,12 +137,12 @@ define('controls/projects/project/media/Panel', [
             this.addEvents({
                 onCreate  : this.$onCreate,
                 onDestroy : function() {
-                    this.$Media.remmoveEvent('onItemRename', this.$itemEvent);
-                    this.$Media.remmoveEvent('onItemActivate', this.$itemEvent);
-                    this.$Media.remmoveEvent('onItemDeactivate', this.$itemEvent);
-                    this.$Media.remmoveEvent('onItemRefresh', this.$itemEvent);
-                    this.$Media.remmoveEvent('onItemSave', this.$itemEvent);
-                    this.$Media.remmoveEvent('onItemDelete', this.$itemEvent);
+                    this.$Media.removeEvent('onItemRename', this.$itemEvent);
+                    this.$Media.removeEvent('onItemActivate', this.$itemEvent);
+                    this.$Media.removeEvent('onItemDeactivate', this.$itemEvent);
+                    this.$Media.removeEvent('onItemRefresh', this.$itemEvent);
+                    this.$Media.removeEvent('onItemSave', this.$itemEvent);
+                    this.$Media.removeEvent('onItemDelete', this.$itemEvent);
                 }.bind(this)
             });
 

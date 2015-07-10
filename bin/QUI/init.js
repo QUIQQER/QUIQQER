@@ -153,6 +153,22 @@ require( requireList, function()
         }
     });
 
+    QUI.getMessageHandler(function(MH) {
+
+        if (!("gui" in QUIQQER_CONFIG)) {
+            return;
+        }
+
+        if (!("displayTimeMessages" in QUIQQER_CONFIG.gui)) {
+            return;
+        }
+
+        MH.setAttribute(
+            'displayTimeMessages',
+            QUIQQER_CONFIG.gui.displayTimeMessages
+        );
+    });
+
     // load the default workspace
     var doc_size  = document.body.getSize(),
         Container = document.getElement( '.qui-workspace-container' ),
