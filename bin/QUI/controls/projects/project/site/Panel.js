@@ -288,6 +288,7 @@ define('controls/projects/project/site/Panel', [
                 title  : Locale.get( lg, 'projects.project.site.panel.btn.permissions' ),
                 styles : {
                     'border-left-width' : 1,
+                    'border-right-width' : 1,
                     'float' : 'right',
                     width : 40
                 },
