@@ -104,6 +104,10 @@ class Sheets extends QUI\Control
             }
         }
 
+        if (!$count || $count == 1) {
+            return '';
+        }
+
         $Engine->assign(array(
             'count'     => $count,
             'start'     => $start,
