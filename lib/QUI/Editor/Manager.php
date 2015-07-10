@@ -81,7 +81,7 @@ class Manager
     static function getConf()
     {
         if (!self::$Config) {
-            self::$Config = \QUI::getConfig('etc/wysiwyg/conf.ini.php');
+            self::$Config = QUI::getConfig('etc/wysiwyg/conf.ini.php');
         }
 
         return self::$Config;
@@ -97,8 +97,8 @@ class Manager
         $config = self::getConf()->toArray();
         $config['toolbars'] = self::getToolbars();
 
-        $config['editors'] = \QUI::getConfig('etc/wysiwyg/editors.ini.php')
-                                 ->toArray();
+        $config['editors'] = QUI::getConfig('etc/wysiwyg/editors.ini.php')
+                                ->toArray();
 
         return $config;
     }
@@ -111,7 +111,7 @@ class Manager
      */
     static function registerEditor($name, $package)
     {
-        $Conf = \QUI::getConfig('etc/wysiwyg/editors.ini.php');
+        $Conf = QUI::getConfig('etc/wysiwyg/editors.ini.php');
         $Conf->setValue($name, null, $package);
         $Conf->save();
     }
@@ -375,7 +375,7 @@ class Manager
 
         if (!file_exists($file)) {
             throw new QUI\Exception(
-                \QUI::getLocale()->get(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.qui.editor.manager.toolbar.exist'
                 )
@@ -392,7 +392,7 @@ class Manager
 
         if (!empty($errors)) {
             throw new QUI\Exception(
-                \QUI::getLocale()->get(
+                QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.qui.editor.manager.toolbar.xml.error',
                     array('error' => $errors[0]->message)
@@ -411,8 +411,12 @@ class Manager
     static function getToolbarButtonsFromUser()
     {
         // Erste Benutzer spezifische Toolbar
-        $Users = \QUI::getUsers();
+        $Users = QUI::getUsers();
         $User = $Users->getUserBySession();
+
+        if (!$Users->isAuth($User)) {
+            return array();
+        }
 
         $toolbar = $User->getAttribute('wysiwyg-toolbar');
         $toolbarPath = self::getToolbarsPath();
