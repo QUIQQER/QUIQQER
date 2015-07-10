@@ -51,7 +51,8 @@
         "quiqqer/cron" : "dev-dev",
         "quiqqer/log" : "dev-dev",
         "quiqqer/diashow" : "dev-dev",
-        "quiqqer/lockclient" : "dev-dev"
+        "quiqqer/lockclient" : "dev-dev",
+        "quiqqer/template-qui" : "dev-dev"
     },
 
     "scripts": {
