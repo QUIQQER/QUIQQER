@@ -268,6 +268,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @param integer|bool $height - (optional)
      *
      * @return string - URL to the cachefile
+     *
+     * @throws QUI\Exception
      */
     public function createSizeCache($width = false, $height = false)
     {
@@ -285,6 +287,11 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
         // Cachefolder erstellen
         $this->getParent()->createCache();
+
+        if ($width === false && $height === false) {
+            File::copy($original, $cachefile);
+            return $cachefile;
+        }
 
         // create image
         $Image = $Media->getImageManager()->make($original);
