@@ -141,7 +141,9 @@ define('utils/Panels', function()
                     }
 
                     Panel = new MediaPanel(
-                        Projects.get(project).getMedia()
+                        Projects.get(project).getMedia(), {
+                            startid : folderId || 1
+                        }
                     );
 
                     panels[0].appendChild(Panel);
@@ -166,6 +168,8 @@ define('utils/Panels', function()
          * @param {String} project -Name of the project
          * @param {String} id - ID of the file
          * @param {Function} [callback] - callback function, only triggered if the panel is not exist
+         *
+         * @return Promise
          */
         openMediaItemPanel : function(project, id, callback)
         {
