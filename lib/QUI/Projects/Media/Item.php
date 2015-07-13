@@ -225,6 +225,8 @@ abstract class Item extends QUI\QDOM
             throw new QUI\Exception('File is already deleted', 400);
         }
 
+        QUI::getEvents()->fireEvent('mediaDeleteBegin', array($this));
+
         $Media = $this->_Media;
         $First = $Media->firstChild();
 
@@ -283,6 +285,8 @@ abstract class Item extends QUI\QDOM
             $this->_Media->getTable('relations'),
             array('child' => $this->getId())
         );
+
+        $this->_parent_id = false;
 
         QUI::getEvents()->fireEvent('mediaDelete', array($this));
     }
