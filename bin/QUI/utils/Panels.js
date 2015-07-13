@@ -82,13 +82,23 @@ define('utils/Panels', function()
          * if the panel exists, there will be used
          *
          * @param {String} project - Name of the project
+         * @param {Object} [params] - Media Panel Parameter
          * @param {Function} [callback] - callback function, only triggered if the panel is not exist
          *
          * @return Promise
          */
-        openMediaPanel : function(project, callback)
+        openMediaPanel : function(project, params, callback)
         {
-            var self = this;
+            var self = this,
+                folderId = false;
+
+            if (typeof params === 'undefined') {
+                params = {};
+            }
+
+            if ("fileid" in params) {
+                folderId = params.fileid;
+            }
 
             return new Promise(function(resolve, reject) {
 
@@ -112,6 +122,10 @@ define('utils/Panels', function()
                                 continue;
                             }
 
+                            if (folderId) {
+                                Panel.openID(parseInt(folderId));
+                            }
+
                             self.execPanelOpen(Panel);
                             resolve(Panel);
 
@@ -132,6 +146,10 @@ define('utils/Panels', function()
 
                     panels[0].appendChild(Panel);
 
+                    if (folderId) {
+                        Panel.openID(parseInt(folderId));
+                    }
+
                     if (typeof callback === 'function') {
                         callback(Panel);
                     }
@@ -145,9 +163,9 @@ define('utils/Panels', function()
         /**
          * opens a media item panel
          *
-         * @param {String} project
-         * @param {String} id
-         * @param {Function} callback
+         * @param {String} project -Name of the project
+         * @param {String} id - ID of the file
+         * @param {Function} [callback] - callback function, only triggered if the panel is not exist
          */
         openMediaItemPanel : function(project, id, callback)
         {
@@ -198,14 +216,13 @@ define('utils/Panels', function()
                             return;
                         }
 
-
                         // if the MediaFile is no Folder
                         if (Item.getType() !== 'classes/projects/project/media/Folder') {
                             Panel = new FilePanel(Item);
 
                         } else if (Item.getType() === 'classes/projects/project/media/Folder') {
 
-                            Panel = new FilePanel({
+                            Panel = new FolderPanel({
                                 folderId : Item.getId(),
                                 project  : project
                             });

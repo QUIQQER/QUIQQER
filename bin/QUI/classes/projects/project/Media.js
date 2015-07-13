@@ -95,27 +95,28 @@ define('classes/projects/project/Media', [
             return new Promise(function(resolve, reject)
             {
                 // id list
-                if ( typeOf( id ) == 'array' )
+                if (typeOf(id) == 'array')
                 {
                     var i, len, itemId;
                     var result = [];
 
-                    for ( i = 0, len = id.length; i < len; i++ )
+                    for (i = 0, len = id.length; i < len; i++)
                     {
-                        itemId = id[ i ];
+                        itemId = id[i];
 
-                        if ( self.$items[ itemId ] ) {
-                            result.push( self.$items[ itemId ] );
+                        if (self.$items[itemId]) {
+                            result.push(self.$items[itemId]);
                         }
                     }
 
-                    if ( result.length === len )
+                    if (result.length === len)
                     {
-                        if ( typeOf( params ) === 'function' ) {
-                            return params( result );
+                        if (typeOf(params) === 'function') {
+                            params(result);
                         }
 
-                        resolve( result );
+                        resolve(result);
+                        return;
                     }
                 }
 
@@ -126,36 +127,38 @@ define('classes/projects/project/Media', [
                         params(self.$items[id]);
                     }
 
-                    return resolve(self.$items[id]);
+                    resolve(self.$items[id]);
+                    return;
                 }
 
                 if (typeOf(params) === 'object') {
-                    return resolve(self.$parseResultToItem(params));
+                    resolve(self.$parseResultToItem(params));
+                    return;
                 }
 
                 Ajax.get('ajax_media_details', function(result)
                 {
-                    var children = self.$parseResultToItem( result );
+                    var children = self.$parseResultToItem(result);
 
-                    if ( typeOf( children ) == 'array' )
+                    if (typeOf(children) == 'array')
                     {
-                        for ( var i = 0, len = children.length; i < len; i++ ) {
-                            self.$items[ children[ i ].getId() ] = children[ i ];
+                        for (var i = 0, len = children.length; i < len; i++) {
+                            self.$items[children[i].getId()] = children[i];
                         }
 
                     } else
                     {
-                        self.$items[ children.getId() ] = children;
+                        self.$items[children.getId()] = children;
                     }
 
-                    if ( typeOf( params ) === 'function' ) {
-                        return params( children );
+                    if (typeOf(params) === 'function') {
+                        params(children);
                     }
 
-                    resolve( children );
+                    resolve(children);
 
                 }, {
-                    fileid  : JSON.encode( id ),
+                    fileid  : JSON.encode(id),
                     project : self.getProject().getName(),
                     onError : function(Exception)
                     {
@@ -183,13 +186,13 @@ define('classes/projects/project/Media', [
             {
                 Ajax.get('ajax_media_details', function(result)
                 {
-                    if ( typeOf( onfinish ) == 'function' ) {
-                        onfinish( result );
+                    if (typeOf(onfinish) === 'function') {
+                        onfinish(result);
                     }
 
-                    resolve( result );
+                    resolve(result);
                 }, {
-                    fileid  : JSON.encode( id ),
+                    fileid  : JSON.encode(id),
                     project : self.getProject().getName(),
                     onError : function(Exception)
                     {
