@@ -54,8 +54,8 @@ define('classes/projects/project/media/Folder', [
 
                     resolve(items);
                 }, {
-                    project   : this.getMedia().getProject().getName(),
-                    parentid  : this.getId(),
+                    project   : self.getMedia().getProject().getName(),
+                    parentid  : self.getId(),
                     newfolder : newfolder,
                     onError   : reject
                 });
@@ -125,7 +125,8 @@ define('classes/projects/project/media/Folder', [
                         }
                     }
                 });
-            })
+                
+            }.bind(this));
         },
 
         /**
