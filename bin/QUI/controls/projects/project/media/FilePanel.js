@@ -114,7 +114,9 @@ define('controls/projects/project/media/FilePanel', [
                 onInject : this.$onInject,
                 onDestroy : function()
                 {
-                    self.$ButtonDetails.destroy();
+                    if (self.$ButtonDetails) {
+                        self.$ButtonDetails.destroy();
+                    }
 
                     if (self.$ButtonEffects) {
                         self.$ButtonEffects.destroy();
