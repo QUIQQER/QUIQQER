@@ -86,8 +86,9 @@
     width: 150px;
 }
 
+.data-table .qui-users-and-groups label,
 .data-table td label.hasCheckbox {
-    width: 100%;
+    width: 100% !important;
 }
 
 .data-table td p {

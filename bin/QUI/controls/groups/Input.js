@@ -179,7 +179,7 @@ define('controls/groups/Input', [
                 styles : {
                     'float' : 'left',
                     margin  : '0 0 0 10px',
-                    width   : 400
+                    width   : '100%'
                 }
             }).inject( this.$Input, 'after' );
 

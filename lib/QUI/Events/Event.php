@@ -140,11 +140,6 @@ class Event implements QUI\Interfaces\Events
             return $results;
         }
 
-        if ($event == 'onSave' || $event == 'save') {
-            QUI\System\Log::writeRecursive($this->_currentRunning);
-        }
-
-
         $this->_currentRunning[$event] = true;
 
         // execute events

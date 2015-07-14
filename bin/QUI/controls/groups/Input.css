@@ -1,7 +1,7 @@
 
 .group-input {
-    position: relative;
-    display: block;
+    float: left;
+	position: relative;
 }
 
 .group-input-entry {

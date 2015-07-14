@@ -353,6 +353,11 @@ define('controls/desktop/panels/XML', [
                     Elm = Form.elements[i];
                     name = Elm.name;
 
+                    if (name === '') {
+                        continue;
+                    }
+
+
                     if ( Elm.type == 'radio' || Elm.type == 'checkbox' )
                     {
                         if ( Elm.checked )
@@ -369,7 +374,6 @@ define('controls/desktop/panels/XML', [
                     values[name] = Elm.value;
                 }
             }
-
 
             // set the values to the $config
             for ( namespace in values )
