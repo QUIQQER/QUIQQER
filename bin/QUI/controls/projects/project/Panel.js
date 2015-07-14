@@ -492,7 +492,7 @@ define('controls/projects/project/Panel', [
                     }
 
                     Project = new QUISitemapItem({
-                        text    : i,
+                        text    : Projects.get(i).getTitle(),
                         icon    : 'icon-home',
                         project : i,
                         lang    : result[i].default_lang,
@@ -601,7 +601,7 @@ define('controls/projects/project/Panel', [
 
             Container.set(
                 'html',
-                '<h2>'+ this.getAttribute('project') + '</h2>'
+                '<h2>'+ Projects.get(this.getAttribute('project')).getTitle() + '</h2>'
             );
 
             Container.getElement( 'h2' ).setStyles({

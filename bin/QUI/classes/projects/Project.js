@@ -21,10 +21,11 @@ define('classes/projects/Project', [
 
     'qui/classes/DOM',
     'Ajax',
+    'Locale',
     'classes/projects/project/Site',
     'classes/projects/project/Media'
 
-], function(QDOM, Ajax, ProjectSite, Media)
+], function(QDOM, Ajax, QUILocale, ProjectSite, Media)
 {
     "use strict";
 
@@ -242,6 +243,22 @@ define('classes/projects/Project', [
         getLang : function()
         {
             return this.getAttribute( 'lang' );
+        },
+
+        /**
+         * Return the project title
+         *
+         * @returns {String}
+         */
+        getTitle : function()
+        {
+            var group = 'project/'+ this.getName();
+
+            if (QUILocale.exists(group, 'title')) {
+                return QUILocale.get(group, 'title');
+            }
+
+            return this.getName();
         },
 
         /**
