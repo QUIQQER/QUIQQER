@@ -331,6 +331,23 @@ class Project
     }
 
     /**
+     * Return the project title
+     * Locale->get('project/NAME', 'title') or getName()
+     *
+     * @return String
+     */
+    public function getTitle()
+    {
+        $group = 'project/'. $this->getName();
+
+        if (QUI::getLocale()->exists($group, 'title')) {
+            return QUI::getLocale()->get($group, 'title');
+        }
+
+        return $this->getName();
+    }
+
+    /**
      * Durchsucht das Projekt nach Seiten
      *
      * @param string     $search - Suchwort
