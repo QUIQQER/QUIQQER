@@ -1109,8 +1109,9 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             }
 
             $File->setEffects($this->getEffects());
-            $File->save();
         }
+
+        $File->save();
 
         return $File;
     }
