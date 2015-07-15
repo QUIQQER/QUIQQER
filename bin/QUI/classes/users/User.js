@@ -58,14 +58,34 @@ define('classes/users/User', [
         },
 
         /**
-         * Return the user name
+         * Return the username
+         *
+         * return firstname and lastname if exists
+         * return getUsername()
          *
          * @method classes/users/User#getName
          * @return {String} Username
          */
         getName : function()
         {
-            return this.getAttribute( 'username' );
+            var firstname = this.getAttribute('firstname');
+            var lastname = this.getAttribute('lastname');
+
+            if (firstname && lastname) {
+                return firstname+' '+lastname;
+            }
+
+            return this.getUsername();
+        },
+
+        /**
+         * Return username
+         *
+         * @return bool|String
+         */
+        getUsername : function()
+        {
+            return this.getAttribute('username');
         },
 
         /**
