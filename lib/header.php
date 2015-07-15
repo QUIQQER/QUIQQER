@@ -54,11 +54,6 @@ define('DEBUG_MEMORY', false);
 // Cacheflag setzen
 QUI\Cache\Manager::set('qui_cache_test', 1);
 
-if (QUI::conf('globals', 'timezone')) {
-    date_default_timezone_set(QUI::conf('globals', 'timezone'));
-}
-
-
 try {
     define('CHECK_CACHE', QUI\Cache\Manager::get('qui_cache_test'));
 

@@ -183,6 +183,10 @@
             <de><![CDATA[Erstellungsdatum]]></de>
             <en><![CDATA[Creation date]]></en>
         </locale>
+        <locale name="date">
+            <de><![CDATA[Datum]]></de>
+            <en><![CDATA[Date]]></en>
+        </locale>
         <locale name="from">
             <de><![CDATA[von]]></de>
             <en><![CDATA[from]]></en>

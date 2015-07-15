@@ -323,6 +323,11 @@ class QUI
         $Config = new \QUI\Config(ETC_DIR.'conf.ini.php');
         self::$Conf = $Config;
 
+        if ($Config->getValue('globals', 'timezone')) {
+            date_default_timezone_set($Config->getValue('globals', 'timezone'));
+        }
+
+
         if (!defined('ERROR_BACKTRACE')) {
             /**
              * ERROR_BACKTRACE - configuration,
