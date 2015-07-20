@@ -2,15 +2,16 @@
 .control-menu-search {
     border-left: 1px solid #d1d4da;
     float: left;
-    height: 38px;
+    height: 40px;
     padding: 0 10px;
     z-index: 10;
 }
 
-
 .control-menu-search button {
     background: transparent;
+    border-radius: 0;
     box-shadow: none;
+    height: 40px;
 }
 
 .control-menu-search button:hover {
@@ -21,10 +22,6 @@
 
 .control-menu-search .qui-button-drop {
     display: none;
-}
-
-.control-menu-search:hover .qui-button-drop {
-    display: inline;
 }
 
 

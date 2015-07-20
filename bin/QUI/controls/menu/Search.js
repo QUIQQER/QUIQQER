@@ -2,9 +2,14 @@
 /**
  * Search for QUIQQER Administration
  *
+ * @module controls/menu/Search
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/QUI
+ * @require qui/controls/Control
+ * @require qui/controls/buttons/Button
+ * @require css!controls/menu/Search.css
  */
-
 define('controls/menu/Search', [
 
     'qui/QUI',
@@ -70,7 +75,7 @@ define('controls/menu/Search', [
 
             this.$SearchType = new QUIButton({
                 textimage : 'icon-search',
-                text : 'Suche',
+                text : 'Suche', // #locale
                 styles : {
                     lineHeight : 38
                 }
@@ -78,7 +83,7 @@ define('controls/menu/Search', [
 
             this.$SearchType.appendChild({
                 icon : 'fa fa-file-o icon-file-alt',
-                text : 'Seite suchen',
+                text : 'Seite suchen',  // #locale
                 search : 'site',
                 events : {
                     onClick : this.$onChange
@@ -87,7 +92,7 @@ define('controls/menu/Search', [
 
             this.$SearchType.appendChild({
                 icon : 'icon-user',
-                text : 'Benutzer suchen',
+                text : 'Benutzer suchen',  // #locale
                 search : 'user',
                 events : {
                     onClick : this.$onChange
@@ -96,7 +101,7 @@ define('controls/menu/Search', [
 
             this.$SearchType.appendChild({
                 icon : 'icon-group',
-                text : 'Gruppe suchen',
+                text : 'Gruppe suchen',  // #locale
                 search : 'group',
                 events : {
                     onClick : this.$onChange
@@ -120,8 +125,12 @@ define('controls/menu/Search', [
             );
 
             this.$type = Item.getAttribute('search');
-
             this.$SearchType.setAttribute('text', false);
+
+            this.$SearchType
+                .getElm()
+                .getElements('.qui-button-text')
+                .setStyle('display', 'none');
 
             this.$Input.setStyles({
                 display : null,
@@ -155,8 +164,15 @@ define('controls/menu/Search', [
                 callback : function() {
                     this.$type = false;
                     this.$Input.setStyle('display', 'none');
+
                     this.$SearchType.setAttribute('text', 'Suche');
                     this.$SearchType.setAttribute('textimage', 'icon-search');
+
+                    this.$SearchType
+                        .getElm()
+                        .getElements('.qui-button-text')
+                        .setStyle('display', null);
+
                 }.bind(this)
             });
         },
