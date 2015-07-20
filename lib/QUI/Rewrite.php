@@ -975,7 +975,13 @@ class Rewrite
             }
         }
 
-        throw new QUI\Exception('Error Site not exist', 404);
+        $Standard = QUI::getProjectManager()->getStandard();
+
+        if (!$Standard) {
+            throw new QUI\Exception('Error Site not exist', 404);
+        }
+
+        return $Standard->firstChild();
     }
 
     /**
