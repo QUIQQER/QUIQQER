@@ -8,6 +8,7 @@ namespace QUI;
 
 use QUI;
 use QUI\Projects\Media\Utils as MediaUtils;
+use \Symfony\Component\HttpFoundation\Response;
 
 /**
  * Rewrite - URL Verwaltung (sprechende URLS)
@@ -143,7 +144,7 @@ class Rewrite
     private $_headerCode = 200;
 
     /**
-     *
+     * constructor
      */
     public function __construct()
     {
@@ -848,6 +849,8 @@ class Rewrite
             return false;
         }
 
+        $Response = QUI::getGlobalResponse();
+
         $this->_headerCode = $code;
 
         switch ($code) {
@@ -882,15 +885,17 @@ class Rewrite
             default:
 
                 $this->_headerCode = 404;
+                $Response->setStatusCode(Response::HTTP_NOT_FOUND);
 
-                header("HTTP/1.0 404 Not Found");
+                //header("HTTP/1.0 404 Not Found");
 
                 if (!defined('ERROR_HEADER')) {
                     define('ERROR_HEADER', 404);
                 }
 
                 if (!empty($url)) {
-                    header("Location: ".$url);
+                    //header("Location: ".$url);
+                    $Response->headers->set('Location', $url);
                 }
 
                 try {

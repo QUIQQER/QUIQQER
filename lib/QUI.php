@@ -130,6 +130,13 @@ class QUI
     static $Request = null;
 
     /**
+     * Global Response Object
+     *
+     * @var Response
+     */
+    static $Response = null;
+
+    /**
      * QUI Rewrite Object, use \QUI::getRewrite();
      *
      * @var \QUI\Rewrite
@@ -394,8 +401,8 @@ class QUI
             // ram peak, if the ram usage is to high, than write and send a message
             $peak = memory_get_peak_usage();
             $mem_limit
-                =
-                \QUI\Utils\System\File::getBytes(ini_get('memory_limit')) * 0.8;
+                = \QUI\Utils\System\File::getBytes(ini_get('memory_limit'))
+                * 0.8;
 
             if ($peak > $mem_limit && $mem_limit > 0) {
                 $limit
@@ -793,6 +800,7 @@ class QUI
      * Returns the wanted package
      *
      * @param string $package - name of the package eq: quiqqer/blog or quiqqer/quiqqer
+     *
      * @return \QUI\Package\Package
      */
     static function getPackage($package)
@@ -888,6 +896,20 @@ class QUI
         }
 
         return self::$Request;
+    }
+
+    /**
+     * @return Response
+     */
+    static function getGlobalResponse()
+    {
+        if (is_null(self::$Response)) {
+            self::$Response = new Response();
+            self::$Response->setCharset('UTF-8');
+            self::$Response->headers->set('Content-Type', 'text/html');
+        }
+
+        return self::$Response;
     }
 
     /**

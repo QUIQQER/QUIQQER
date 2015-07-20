@@ -23,11 +23,6 @@ if (isset($_REQUEST['_url'])
     }
 }
 
-// ZLIB
-if (function_exists('gzcompress')) {
-    ob_start('ob_gzhandler');
-}
-
 require_once 'bootstrap.php';
 
 use \Symfony\Component\HttpFoundation\Response;
@@ -36,10 +31,7 @@ use QUI\Utils\System\Debug;
 use QUI\Utils\Security\Orthos;
 use QUI\System\Log;
 
-$Response = new Response();
-$Response->setCharset('UTF-8');
-$Response->headers->set('Content-Type', 'text/html');
-
+$Response = QUI::getGlobalResponse();
 $Engine = QUI::getTemplateManager()->getEngine();
 
 // UTF 8 Prüfung für umlaute in url
@@ -52,6 +44,7 @@ Debug::marker('index start');
 
 // check if one projects exists
 if (!QUI::getProjectManager()->count()) {
+
     $Response->setStatusCode(Response::HTTP_NOT_FOUND);
 
     $Response->setContent(
