@@ -67,6 +67,14 @@ define('controls/groups/Input', [
             this.$DropDown  = null;
 
             this.$Parent = Input || null;
+
+            this.addEvents({
+                onDestroy : function() {
+                    if (this.$DropDown) {
+                        this.$DropDown.destroy();
+                    }
+                }.bind(this)
+            });
         },
 
         /**

@@ -38,7 +38,12 @@ define('controls/permissions/Group', [
             }
 
             this.addEvents({
-                onOpen : this.$onOpen
+                onOpen : this.$onOpen,
+                onDestroy : function() {
+                    if (this.$Input) {
+                        this.$Input.destroy();
+                    }
+                }.bind(this)
             });
         },
 
@@ -76,7 +81,7 @@ define('controls/permissions/Group', [
                                 '<h2>'+ QUILocale.get(lg, 'permissions.panel.select.group.title') +'</h2>'
                             );
 
-                            new Input({
+                            self.$Input = new Input({
                                 max      : 1,
                                 multible : false,
                                 styles   : {

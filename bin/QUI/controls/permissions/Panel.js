@@ -50,7 +50,12 @@ define('controls/permissions/Panel', [
             this.$PermissionControl = null;
 
             this.addEvents({
-                onCreate : this.$onCreate
+                onCreate : this.$onCreate,
+                onDestroy : function() {
+                    if (this.$PermissionControl) {
+                        this.$PermissionControl.destroy();
+                    }
+                }.bind(this)
             });
         },
 

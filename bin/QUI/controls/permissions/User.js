@@ -6,6 +6,7 @@
  * @author www.pcsg.de (Henning Leutz)
  *
  * @require controls/permissions/Permission
+ * @require qui/controls/buttons/Button
  * @require Locale
  */
 define('controls/permissions/User', [
@@ -34,12 +35,19 @@ define('controls/permissions/User', [
         {
             this.parent(User, options);
 
+            this.$Select = null;
+
             if (typeOf(User) === 'classes/users/User') {
                 this.$Bind = User;
             }
 
             this.addEvents({
-                onOpen : this.$onOpen
+                onOpen : this.$onOpen,
+                onDestroy : function() {
+                    if (this.$Input) {
+                        this.$Input.destroy();
+                    }
+                }.bind(this)
             });
         },
 
@@ -77,7 +85,7 @@ define('controls/permissions/User', [
                                 '<h2>'+ QUILocale.get(lg, 'permissions.panel.select.user.title') +'</h2>'
                             );
 
-                            new Input({
+                            self.$Input = new Input({
                                 max      : 1,
                                 multible : false,
                                 styles   : {

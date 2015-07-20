@@ -70,6 +70,14 @@ define('controls/users/Input', [
             this.$disabled  = false;
 
             this.$Parent = Input || null;
+
+            this.addEvents({
+                onDestroy : function() {
+                    if (this.$DropDown) {
+                        this.$DropDown.destroy();
+                    }
+                }.bind(this)
+            });
         },
 
         /**
