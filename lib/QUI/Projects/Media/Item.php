@@ -188,6 +188,14 @@ abstract class Item extends QUI\QDOM
                 $order = '';
         }
 
+        if (method_exists($this, 'deleteCache')) {
+            $this->deleteCache();
+        }
+
+        if (method_exists($this, 'deleteAdminCache')) {
+            $this->deleteAdminCache();
+        }
+
         QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array(
@@ -202,10 +210,6 @@ abstract class Item extends QUI\QDOM
                 'id' => $this->getId()
             )
         );
-
-        if (method_exists($this, 'deleteCache')) {
-            $this->deleteCache();
-        }
 
         if (method_exists($this, 'createCache')) {
             $this->createCache();
@@ -247,6 +251,11 @@ abstract class Item extends QUI\QDOM
         if (method_exists($this, 'deleteCache')) {
             $this->deleteCache();
         }
+
+        if (method_exists($this, 'deleteAdminCache')) {
+            $this->deleteAdminCache();
+        }
+
 
         // second, move the file to the trash
         try {
@@ -312,6 +321,7 @@ abstract class Item extends QUI\QDOM
         // get the trash file and destroy it
         $var_folder
             = VAR_DIR.'media/'.$Media->getProject()->getAttribute('name').'/';
+
         $var_file = $var_folder.$this->getId();
 
         QUIFile::unlink($var_file);
@@ -379,20 +389,25 @@ abstract class Item extends QUI\QDOM
             throw new QUI\Exception(
                 'Eine Datei mit dem Namen '.$newname.'existiert bereits.
                 Bitte wählen Sie einen anderen Namen.'
-            );
+            ); // #locale
         }
 
         if ($Parent->fileWithNameExists($newname.'.'.$extension)) {
             throw new QUI\Exception(
                 'Eine Datei mit dem Namen '.$newname.'existiert bereits.
                 Bitte wählen Sie einen anderen Namen.'
-            );
+            ); // #locale
         }
 
 
         if (method_exists($this, 'deleteCache')) {
             $this->deleteCache();
         }
+
+        if (method_exists($this, 'deleteAdminCache')) {
+            $this->deleteAdminCache();
+        }
+
 
         \QUI::getDataBase()->update(
             $this->_Media->getTable(),
@@ -578,6 +593,17 @@ abstract class Item extends QUI\QDOM
 
         $new_path = $this->_Media->getFullPath().$new_file;
 
+        // delete the file cache
+        // @todo move the cache too
+        if (method_exists($this, 'deleteCache')) {
+            $this->deleteCache();
+        }
+
+        if (method_exists($this, 'deleteAdminCache')) {
+            $this->deleteAdminCache();
+        }
+
+
         // update file path
         QUI::getDataBase()->update(
             $this->_Media->getTable(),
@@ -607,11 +633,6 @@ abstract class Item extends QUI\QDOM
         // update internal references
         $this->setAttribute('file', $new_file);
 
-        // delete the file cache
-        // @todo move the cache too
-        if (method_exists($this, 'deleteCache')) {
-            $this->deleteCache();
-        }
 
         $this->_parent_id = $Folder->getId();
     }

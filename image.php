@@ -50,8 +50,6 @@ try {
         && QUI::getUsers()->getUserBySession()->isAdmin()
     ) {
 
-        $Image = $Media->getImageManager()->make($File->getFullPath());
-
         if (!isset($_REQUEST['maxwidth'])) {
             $_REQUEST['maxwidth'] = null;
         }
@@ -65,7 +63,31 @@ try {
             $_REQUEST['maxheight'] = 500;
         }
 
+        // cache
+        $cacheDir = VAR_DIR.'cache/admin/media/'.$Project->getName().'/'
+            .$Project->getLang().'/';
+
+        QUI\Utils\System\File::mkdir($cacheDir);
+
+        // filecache
+        $ext = pathinfo($File->getFullPath(), \PATHINFO_EXTENSION);
+
+        $cacheFile = $cacheDir . $File->getId().'__'.$_REQUEST['maxheight'].'x'
+            .$_REQUEST['maxwidth'] .'.'. $ext;
+
+
+        if (file_exists($cacheFile)) {
+            $Image = $Media->getImageManager()->make($cacheFile);
+            echo $Image->response();
+            exit;
+        }
+
+
+        $Image = $Media->getImageManager()->make($File->getFullPath());
+
         if (isset($_REQUEST['noresize'])) {
+            $Image->save($cacheFile);
+
             echo $Image->response();
             exit;
         }
@@ -76,6 +98,9 @@ try {
                 $Constraint->upsize();
             })
                    ->response();
+
+        $Image->save($cacheFile);
+
         exit;
     }
 

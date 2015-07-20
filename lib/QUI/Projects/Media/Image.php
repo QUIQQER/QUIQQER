@@ -290,6 +290,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
         if ($width === false && $height === false) {
             File::copy($original, $cachefile);
+
             return $cachefile;
         }
 
@@ -435,6 +436,28 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         foreach ($list as $file) {
             if (strpos($file, $cache) !== false) {
                 QUIFile::unlink($cache_folder.$file);
+            }
+        }
+    }
+
+    /**
+     * Delete the admin cache
+     */
+    public function deleteAdminCache()
+    {
+        $Media = $this->_Media;
+        $Project = $Media->getProject();
+
+        $cacheDir = VAR_DIR.'cache/admin/media/'.$Project->getName().'/'
+            .$Project->getLang().'/';
+
+        $cacheName = $this->getId().'__';
+
+        $files = File::readDir($cacheDir);
+
+        foreach ($files as $file) {
+            if (strpos($file, $cacheName) === 0) {
+                unlink($cacheDir.$file);
             }
         }
     }
