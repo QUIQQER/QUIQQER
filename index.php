@@ -1,8 +1,5 @@
 <?php
 
-//$start_test = microtime();
-// xdebug_start_trace();
-
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 

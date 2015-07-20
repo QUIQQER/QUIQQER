@@ -8,6 +8,8 @@ namespace QUI;
 
 use QUI;
 use QUI\Projects\Media\Utils as MediaUtils;
+
+use \Symfony\Component\HttpFoundation\RedirectResponse;
 use \Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -856,28 +858,33 @@ class Rewrite
         switch ($code) {
             // Client Request Redirected
             case 301:
-                header("HTTP/1.1 301 Moved Permanently");
-                header("Location: ".$url);
+                $Redirect = new RedirectResponse($url);
+                $Redirect->setStatusCode(Response::HTTP_MOVED_PERMANENTLY);
+                $Redirect->send();
                 break;
 
             case 302:
-                header("HTTP/1.1 302 Moved Temporarily");
-                header("Location: ".$url);
+                $Redirect = new RedirectResponse($url);
+                $Redirect->setStatusCode(Response::HTTP_FOUND);
+                $Redirect->send();
                 break;
 
             case 303:
-                header("HTTP/1.1 303 See Other");
-                header("Location: ".$url);
+                $Redirect = new RedirectResponse($url);
+                $Redirect->setStatusCode(Response::HTTP_SEE_OTHER);
+                $Redirect->send();
                 break;
 
             case 304:
-                header("HTTP/1.1 304 Not Modified");
-                header("Location: ".$url);
+                $Redirect = new RedirectResponse($url);
+                $Redirect->setStatusCode(Response::HTTP_NOT_MODIFIED);
+                $Redirect->send();
                 break;
 
             case 305:
-                header("HTTP/1.1 305 Use Proxy");
-                header("Location: ".$url);
+                $Redirect = new RedirectResponse($url);
+                $Redirect->setStatusCode(Response::HTTP_USE_PROXY);
+                $Redirect->send();
                 break;
 
             // Client Request Errors
@@ -887,14 +894,11 @@ class Rewrite
                 $this->_headerCode = 404;
                 $Response->setStatusCode(Response::HTTP_NOT_FOUND);
 
-                //header("HTTP/1.0 404 Not Found");
-
                 if (!defined('ERROR_HEADER')) {
                     define('ERROR_HEADER', 404);
                 }
 
                 if (!empty($url)) {
-                    //header("Location: ".$url);
                     $Response->headers->set('Location', $url);
                 }
 
@@ -913,10 +917,9 @@ class Rewrite
                 break;
 
             case 503:
-                header('HTTP/1.1 503 Service Temporarily Unavailable');
-                header('Status: 503 Service Temporarily Unavailable');
-                header('Retry-After: 3600');
-                header('X-Powered-By:');
+                $Response->setStatusCode(Response::HTTP_SERVICE_UNAVAILABLE);
+                $Response->headers->set('X-Powered-By', '');
+                $Response->headers->set('Retry-After', 3600);
                 break;
         }
 
