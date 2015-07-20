@@ -117,6 +117,8 @@ class Htaccess extends QUI\System\Console\Tool
         $quiqqerBin = URL_OPT_DIR.'quiqqer/quiqqer/bin';
         $quiqqerSys = URL_OPT_DIR.'quiqqer/quiqqer/admin';
 
+        $URL_SYS_ADMIN_DIR = trim($URL_SYS_DIR, '/');
+
         return "
 
 <IfModule mod_rewrite.c>
@@ -125,6 +127,8 @@ class Htaccess extends QUI\System\Console\Tool
 
     RewriteEngine On
     RewriteBase {$URL_DIR}
+
+    RewriteRule ^{$URL_SYS_ADMIN_DIR}$ /{$URL_SYS_DIR} [R=301,L]
 
     RewriteRule ^{$URL_BIN_DIR}(.*)$ {$quiqqerBin}/$1 [L]
     RewriteRule ^{$URL_LIB_DIR}(.*)$ {$quiqqerLib}/$1 [L]
