@@ -5,7 +5,7 @@
  * @module utils/Controls
  * @author www.pcsg.de (Henning Leutz)
  *
- * @return polyfills/Promise
+ * @require polyfills/Promise
  */
 
 define('utils/Controls', ['qui/lib/polyfills/Promise'], function()
