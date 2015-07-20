@@ -110,11 +110,11 @@ define('controls/groups/Sitemap', [
          */
         $onDrawEnd : function()
         {
-            // load first child
-            Ajax.get('ajax_groups_root', function(result, Ajax)
-            {
-                var First = Ajax.getAttribute('First');
+            var First = this.$Map.firstChild();
 
+            // load first child
+            Ajax.get('ajax_groups_root', function(result)
+            {
                 First.setAttributes({
                     name    : result.name,
                     index   : result.id,
@@ -126,8 +126,6 @@ define('controls/groups/Sitemap', [
                 });
 
                 First.open();
-            }, {
-                First : this.$Map.firstChild()
             });
         },
 
