@@ -93,8 +93,8 @@ class Ajax extends QUI\QDOM
         $function = self::$_permissions[$reg_function];
 
         if (is_object($function) && get_class($function) === 'Closure') {
-            $function();
 
+            $function();
             return;
         }
 
@@ -161,7 +161,6 @@ class Ajax extends QUI\QDOM
 
         // maintenance flag
         $result['maintenance'] = QUI::conf('globals', 'maintenance') ? 1 : 0;
-
 
         return '<quiqqer>'.json_encode($result).'</quiqqer>';
     }
@@ -237,6 +236,13 @@ class Ajax extends QUI\QDOM
         }
 
 
+        QUI::getEvents()->fireEvent('ajaxCall', array(
+            'function' => $_rf,
+            'result'   => $return,
+            'params'   => $params
+        ));
+
+
         // json errors bekommen
         if (function_exists('json_last_error')) {
             switch (json_last_error()) {
@@ -250,7 +256,7 @@ class Ajax extends QUI\QDOM
                 case JSON_ERROR_SYNTAX:
                 case JSON_ERROR_UTF8:
                 default:
-                    System\Log::write(
+                    QUI\System\Log::write(
                         'JSON Error: '.json_last_error().' :: '.print_r($return,
                             true),
                         'error'
