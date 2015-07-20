@@ -1946,7 +1946,12 @@ define('controls/grid/Grid', [
             this.setAttribute('height', height);
 
             this.container.setStyle('height', height);
-            this.container.getElement('.bDiv').setStyle('height', this.getBodyHeight());
+
+            if (this.container.getElement('.bDiv')) {
+                this.container
+                    .getElement('.bDiv')
+                    .setStyle('height', this.getBodyHeight());
+            }
         },
 
         setWidth: function(width)
@@ -1954,7 +1959,12 @@ define('controls/grid/Grid', [
             this.setAttribute('width', width);
 
             this.container.setStyle('width', width);
-            this.container.getElement('.bDiv').setStyle('width', width);
+
+            if (this.container.getElement('.bDiv')) {
+                this.container
+                    .getElement('.bDiv')
+                    .setStyle('width', width);
+            }
         },
 
         renderData : function()

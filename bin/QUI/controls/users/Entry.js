@@ -117,6 +117,10 @@ define('controls/users/Entry', [
         {
             var UserIcon = this.$Elm.getElement( '.users-entry-icon' );
 
+            if (!UserIcon) {
+                return this;
+            }
+
             UserIcon.removeClass( 'icon-user' );
             UserIcon.addClass( 'icon-refresh' );
             UserIcon.addClass( 'icon-spin' );
@@ -145,6 +149,10 @@ define('controls/users/Entry', [
             }
 
             var UserIcon = this.$Elm.getElement( '.users-entry-icon' );
+
+            if (!UserIcon) {
+                return this;
+            }
 
             UserIcon.addClass( 'icon-user' );
             UserIcon.removeClass( 'icon-refresh' );
