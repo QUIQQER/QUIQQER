@@ -19,10 +19,11 @@ function ajax_media_move($project, $to, $ids)
 
     if (!QUI\Projects\Media\Utils::isFolder($Folder)) {
         throw new \QUI\Exception(
-            'Bitte wählen Sie ein Ordner aus um die Dateie zu verschieben.'
+            'Bitte wählen Sie ein Ordner aus um die Dateie zu verschieben.' // #locale
         );
     }
 
+    /* @var $Folder \QUI\Projects\Media\Folder */
     foreach ($ids as $id) {
         try {
             $Item = $Media->get((int)$id);

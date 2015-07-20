@@ -604,15 +604,14 @@ abstract class Item extends QUI\QDOM
         // move file on the real directory
         QUIFile::move($old_path, $new_path);
 
+        // update internal references
+        $this->setAttribute('file', $new_file);
 
         // delete the file cache
         // @todo move the cache too
         if (method_exists($this, 'deleteCache')) {
             $this->deleteCache();
         }
-
-        // update internal references
-        $this->setAttribute('file', $new_file);
 
         $this->_parent_id = $Folder->getId();
     }
