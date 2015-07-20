@@ -325,13 +325,12 @@ define('utils/Panels', function()
                             continue;
                         }
 
-                        if (Panel.getAttribute('title') != Child.getAttribute('title')) {
-                            continue;
-                        }
+                        if ((Panel.getAttribute('title') != Child.getAttribute('title')) &&
 
-                        if (Panel.getAttribute('#id') &&
+                            (Panel.getAttribute('#id') &&
                             Child.getAttribute('#id') &&
-                            Panel.getAttribute('#id') != Child.getAttribute('#id')) {
+                            Panel.getAttribute('#id') != Child.getAttribute('#id'))) {
+
                             continue;
                         }
 
