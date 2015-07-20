@@ -467,6 +467,10 @@
             <de><![CDATA[Der Cache wurde erfolgreich gesäubert.]]></de>
             <en><![CDATA[Cache successful purged.]]></en>
         </locale>
+        <locale name="message.unknown.root.group">
+            <de><![CDATA[Unbekannte ROOT Gruppe. Bitte wenden Sie sich an einen Administrator.]]></de>
+            <en><![CDATA[Unknown ROOT group. Please contact an administrator.]]></en>
+        </locale>
         <locale name="logout">
             <de><![CDATA[Abmelden]]></de>
             <en><![CDATA[Logout]]></en>
