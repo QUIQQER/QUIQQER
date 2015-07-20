@@ -8,8 +8,14 @@
  * @require controls/desktop/Panel
  * @require controls/grid/Grid
  * @require Groups
+ * @require Ajax
+ * @require Editors
+ * @require Locale
+ * @require qui/controls/buttons/Button
+ * @require qui/utils/Form
+ * @require utils/Controls
+ * @require css!controls/groups/Group.css
  */
-
 define('controls/groups/Group', [
 
     'qui/controls/desktop/Panel',
@@ -68,8 +74,12 @@ define('controls/groups/Group', [
 
         initialize : function(gid)
         {
-            this.$Group    = Groups.get( gid );
+            this.$Group = null;
             this.$UserGrid = null;
+
+            if (typeOf(gid) === 'string' || typeOf(gid) === 'number') {
+                this.$Group = Groups.get( gid );
+            }
 
             this.addEvents({
                 onCreate  : this.$onCreate,
@@ -78,6 +88,37 @@ define('controls/groups/Group', [
             });
 
             this.parent();
+        },
+
+        /**
+         * Save the group panel to the workspace
+         *
+         * @method controls/groups/Group#serialize
+         * @return {Object} data
+         */
+        serialize : function()
+        {
+            return {
+                attributes : this.getAttributes(),
+                groupid    : this.getGroup().getId(),
+                type       : this.getType()
+            };
+        },
+
+        /**
+         * import the saved data form the workspace
+         *
+         * @method controls/groups/Group#unserialize
+         * @param {Object} data
+         * @return {Object} this (controls/groups/Group)
+         */
+        unserialize : function(data)
+        {
+            this.setAttributes(data.attributes);
+
+            this.$Group = Groups.get(data.groupid);
+
+            return this;
         },
 
         /**
@@ -107,9 +148,9 @@ define('controls/groups/Group', [
         {
             var self = this;
 
-            require(['qui/controls/windows/Confirm'], function(Submit)
+            require(['qui/controls/windows/Confirm'], function(Confirm)
             {
-                new Submit({
+                new Confirm({
                     name     : 'DeleteUser'+ self.getGroup().getId(),
                     title    : Locale.get( lg, 'groups.group.delete.title' ),
                     icon     : 'fa fa-trash-o icon-trash',
@@ -118,8 +159,8 @@ define('controls/groups/Group', [
                         group : self.getGroup().getAttribute('name')
                     }),
                     information : Locale.get( lg, 'groups.group.delete.information' ),
-                    width  : 500,
-                    height : 150,
+                    maxWidth  : 450,
+                    maxHeight : 300,
                     events :
                     {
                         onSubmit : function()
@@ -250,7 +291,7 @@ define('controls/groups/Group', [
          * event: groups on delete
          * if one group deleted, check if the group is this group
          *
-         * @param {classes/groups/Manager} Groups
+         * @param {Object} Groups - classes/groups/Manager
          * @param {Array} ids - Array of group ids which have been deleted
          */
         $onGroupDelete : function(Groups, ids)
@@ -269,7 +310,7 @@ define('controls/groups/Group', [
          * event: groups on status change
          * if one groups status change, check if the group is this group
          *
-         * @param {classes/groups/Manager} Groups
+         * @param {Object} Groups - classes/groups/Manager
          * @param {Object} groups - groups that change the status
          */
         $onGroupStatusChange : function(Groups, groups)
@@ -326,9 +367,7 @@ define('controls/groups/Group', [
                 events : {
                     onClick : this.openPermissions
                 }
-            }).inject(
-                this.getHeader()
-            );
+            }).inject(this.getHeader());
         },
 
         /**
@@ -341,27 +380,30 @@ define('controls/groups/Group', [
          */
         $drawCategories : function(onfinish)
         {
+            var self = this;
+
+            console.log(this.getGroup().getId());
+
             this.Loader.show();
 
-            Ajax.get('ajax_groups_panel_categories', function(result, Request)
+            Ajax.get('ajax_groups_panel_categories', function(result)
             {
-                var Panel = Request.getAttribute('Panel');
-
-                for ( var i = 0, len = result.length; i < len; i++ )
+                for (var i = 0, len = result.length; i < len; i++)
                 {
                     result[i].events = {
-                        onActive : Panel.$onCategoryLoad,
-                        onNormal : Panel.$onCategoryUnload
+                        onActive : self.$onCategoryLoad,
+                        onNormal : self.$onCategoryUnload
                     };
 
-                    Panel.addCategory( result[i] );
+                    self.addCategory( result[i] );
                 }
 
-                Request.getAttribute( 'onfinish' )( result, Request );
+                if (typeof onfinish === 'function') {
+                    onfinish(result);
+                }
+
             }, {
-                gid      : this.getGroup().getId(),
-                Panel    : this,
-                onfinish : onfinish
+                gid : this.getGroup().getId()
             });
         },
 

@@ -909,8 +909,8 @@ define('controls/groups/Panel', [
                 text        : Locale.get( lg, 'groups.panel.delete.window.text' ) +'<br /><br />'+ gids.join(', '),
                 information : Locale.get( lg, 'groups.panel.delete.window.information' ),
 
-                width  : 500,
-                height : 150,
+                maxWidth  : 450,
+                maxHeight : 300,
                 gids   : gids,
                 events :
                 {

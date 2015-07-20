@@ -67,11 +67,14 @@ define('controls/users/User', [
 
         initialize : function(uid, options)
         {
-            this.$User        = Users.get( uid );
+            if (typeOf(uid) === 'string' || typeOf(uid) === 'number') {
+                this.$User = Users.get(uid);
+                this.setAttribute( 'name', 'user-panel-'+ uid );
+            }
+
             this.$AddressGrid = null;
 
             // defaults
-            this.setAttribute( 'name', 'user-panel-'+ uid );
             this.parent( options );
 
             this.addEvents({
@@ -79,7 +82,36 @@ define('controls/users/User', [
                 onDestroy : this.$onDestroy
             });
 
-            Users.addEvent( 'onDelete', this.$onUserDelete );
+            Users.addEvent('onDelete', this.$onUserDelete);
+        },
+
+        /**
+         * Save the group panel to the workspace
+         *
+         * @return {Object} data
+         */
+        serialize : function()
+        {
+            return {
+                attributes : this.getAttributes(),
+                userid     : this.getUser().getId(),
+                type       : this.getType()
+            };
+        },
+
+        /**
+         * import the saved data form the workspace
+         *
+         * @param {Object} data
+         * @return {Object} this (controls/users/User)
+         */
+        unserialize : function(data)
+        {
+            this.setAttributes(data.attributes);
+
+            this.$User = Users.get(data.userid);
+
+            return this;
         },
 
         /**
