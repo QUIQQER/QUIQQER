@@ -45,7 +45,8 @@ define('controls/help/Dashboard', [
 
         options : {
             icon  : URL_BIN_DIR +'16x16/quiqqer.png',
-            title : 'QUIQQER Dashboard'
+            title : 'QUIQQER Dashboard',
+            displayNoTaskText : true
         },
 
         initialize : function(options)
