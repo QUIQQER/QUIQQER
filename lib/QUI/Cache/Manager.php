@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file contains \QUI\Cache\Manager;
+ * This file contains \QUI\Cache\Manager
  */
 
 namespace QUI\Cache;
@@ -318,10 +318,26 @@ class Manager
             );
         }
 
-        $Item = self::getStash($name);
-        $data = $Item->get();
 
-        if ($Item->isMiss()) {
+        try {
+
+            $Item = self::getStash($name);
+            $data = $Item->get();
+
+            $isMiss = $Item->isMiss();
+
+        } catch (\Exception $Exception) {
+
+            throw new QUI\Cache\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.lib.cache.manager.not.exist'
+                ),
+                404
+            );
+        }
+
+        if ($isMiss) {
             throw new QUI\Cache\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
