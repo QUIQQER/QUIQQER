@@ -402,7 +402,7 @@ class Manager
 
         file_put_contents($file, $xml);
 
-        
+
         QUI\Cache\Manager::clear('editor/xml/file');
     }
 

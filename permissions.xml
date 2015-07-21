@@ -80,5 +80,4 @@
 <!-- Editor permissions -->
     <permission name="quiqqer.editors.toolbar.delete" type="bool" />
 
-
 </permissions>

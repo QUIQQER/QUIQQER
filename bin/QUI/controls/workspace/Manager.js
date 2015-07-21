@@ -15,7 +15,7 @@
  * @require qui/controls/windows/Popup
  * @require qui/controls/windows/Submit
  * @require qui/controls/messages/Panel
- * @require controls/welcome/Panel
+ * @require controls/help/Welcome
  * @require controls/desktop/panels/Help
  * @require controls/desktop/panels/Bookmarks
  * @require controls/projects/project/Panel
@@ -43,7 +43,7 @@ define('controls/workspace/Manager', [
     'qui/controls/contextmenu/Seperator',
     'qui/utils/Controls',
 
-    'controls/welcome/Panel',
+    'controls/help/Dashboard',
     'controls/desktop/panels/Help',
     'controls/desktop/panels/Bookmarks',
     'controls/projects/project/Panel',
@@ -451,7 +451,10 @@ define('controls/workspace/Manager', [
 
             } catch ( e )
             {
-                alert( 'Die Daten Ihres Arbeitsbereiches sind fehlerhaft.' );
+                // #locale
+                QUI.getMessageHandler().then(function(MH) {
+                    MH.addError('Die Daten Ihres Arbeitsbereiches sind fehlerhaft.');
+                });
 
                 this.Workspace.clear();
                 this.Loader.hide();
@@ -1472,6 +1475,7 @@ define('controls/workspace/Manager', [
                             width   = size.x,
                             height  = size.y;
 
+                        // #locale
                         Content.set(
                             'html',
 
@@ -1513,6 +1517,7 @@ define('controls/workspace/Manager', [
                             return;
                         }
 
+                        // #locale
                         // no workspaces available
                         Content.set(
                             'html',

@@ -34,6 +34,7 @@ define('controls/help/About', [
 
         $onOpen : function()
         {
+            // #locale
             this.getContent().set(
                 'html',
 
