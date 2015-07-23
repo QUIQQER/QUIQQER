@@ -189,6 +189,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     {
         $params = $this->getResizeSize($maxwidth, $maxheight);
 
+        \QUI\System\Log::writeRecursive( $params );
+
         return $this->createSizeCache(
             $params['width'],
             $params['height']
@@ -231,11 +233,11 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         // max höhe breite auf 1200
-        if ($maxwidth > $maxConfigSize) {
+        if ($maxwidth > $maxConfigSize && $maxConfigSize) {
             $maxwidth = $maxConfigSize;
         }
 
-        if ($maxheight > $maxConfigSize) {
+        if ($maxheight > $maxConfigSize && $maxConfigSize) {
             $maxheight = $maxConfigSize;
         }
 
