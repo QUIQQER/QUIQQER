@@ -1461,10 +1461,6 @@ define('controls/projects/project/site/Panel', [
                     Editor.setContent( content );
 
                     self.$startEditorPeriodicalSave();
-
-//                    if ( Editor.isLoaded() ) {
-//                        self.$onEditorLoad();
-//                    }
                 });
             });
         },

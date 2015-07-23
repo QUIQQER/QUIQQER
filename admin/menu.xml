@@ -27,7 +27,7 @@
         </item>
 
         <item parent="/quiqqer/"
-              name="changelog"
+              name="dashboard"
               icon="URL_BIN_DIR/16x16/quiqqer.png"
               require="controls/help/Changelog"
               group="quiqqer/system"
@@ -35,6 +35,17 @@
                 >
             <locale group="quiqqer/system" var="menu.help.changelog.text" />
         </item>
+
+        <item parent="/quiqqer/"
+              name="changelog"
+              icon="URL_BIN_DIR/16x16/quiqqer.png"
+              require="controls/help/Dashboard"
+              group="quiqqer/system"
+              var="menu.help.changelog.text"
+                >
+            <locale group="quiqqer/system" var="menu.help.dashboard.text" />
+        </item>
+
         <!-- Plugins und Packages -->
         <item parent="/quiqqer/"
               name="packages"

@@ -1,17 +1,21 @@
+
 /**
  * Help panel
  *
  * @module controls/desktop/panels/Help
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/QUI
+ * @require qui/controls/desktop/Panel
+ * @require qui/controls/buttons/Button
  */
-
-define([
+define('controls/desktop/panels/Help', [
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
     'qui/controls/buttons/Button'
 
-],function(QUI, QUIPanel, QUIButton, QUILoader)
+], function(QUI, QUIPanel, QUIButton)
 {
     "use strict";
 

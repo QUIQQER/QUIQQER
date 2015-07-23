@@ -34,7 +34,8 @@ define('controls/projects/project/media/Popup', [
 
         Binds : [
             '$onCreate',
-            '$onOpen'
+            '$onOpen',
+            '$getDetails'
         ],
 
         options : {
@@ -274,7 +275,7 @@ define('controls/projects/project/media/Popup', [
         $getDetails : function(imageData, callback)
         {
             Ajax.get('ajax_media_details', callback, {
-                project : this.getAttribute( 'project' ),
+                project : this.getAttribute('project'),
                 fileid  : imageData.id
             });
         }
