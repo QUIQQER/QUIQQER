@@ -313,7 +313,9 @@ define('utils/Panels', function()
             require(['qui/QUI'], function(QUI)
             {
                 var i, len, Child;
-                var panels = QUI.Controls.getByType( Panel.getType() );
+
+                var pType = Panel.getType(),
+                    panels = QUI.Controls.getByType(pType);
 
                 if ( panels.length )
                 {
@@ -332,6 +334,14 @@ define('utils/Panels', function()
                             Panel.getAttribute('#id') != Child.getAttribute('#id'))) {
 
                             continue;
+                        }
+
+                        if (pType == 'controls/desktop/panels/XML' &&
+                            Child.getType() == 'controls/desktop/panels/XML'
+                        ) {
+                            if (Panel.getFile() != Child.getFile()) {
+                                continue;;
+                            }
                         }
 
                         // if a task exist, click it and open the instance
