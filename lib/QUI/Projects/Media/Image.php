@@ -189,8 +189,6 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     {
         $params = $this->getResizeSize($maxwidth, $maxheight);
 
-        \QUI\System\Log::writeRecursive( $params );
-
         return $this->createSizeCache(
             $params['width'],
             $params['height']

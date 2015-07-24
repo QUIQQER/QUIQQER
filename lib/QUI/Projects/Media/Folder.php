@@ -513,9 +513,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 $order = 'name';
         }
 
-
-        QUI\System\Log::writeRecursive($order);
-
         switch ($order) {
             case 'id':
             case 'id ASC':
