@@ -15,7 +15,6 @@
  *
  * @event onChange [ {self}, {String} ]
  */
-
 define('controls/projects/project/media/Input', [
 
     'qui/controls/Control',
@@ -59,7 +58,7 @@ define('controls/projects/project/media/Input', [
 
         initialize : function(options, Input)
         {
-            this.parent( options );
+            this.parent(options);
 
             this.$Input   = Input || null;
             this.$Preview = null;
@@ -73,14 +72,14 @@ define('controls/projects/project/media/Input', [
          */
         setProject : function(Project)
         {
-            if ( typeOf( Project ) == 'string' ) {
-                Project = Projects.get( Project );
+            if (typeOf(Project) == 'string') {
+                Project = Projects.get(Project);
             }
 
             this.$Project = Project;
 
-            if ( this.$Input ) {
-                this.$Input.set( 'data-project', Project.getName() );
+            if (this.$Input) {
+                this.$Input.set('data-project', Project.getName());
             }
         },
 
@@ -98,19 +97,19 @@ define('controls/projects/project/media/Input', [
                 'data-quiid' : this.getId()
             });
 
-            if ( !this.$Input )
+            if (!this.$Input)
             {
                 this.$Input = new Element('input', {
                     name : this.getAttribute('name')
-                }).inject( this.$Elm );
+                }).inject(this.$Elm);
 
             } else
             {
-                this.$Elm.wraps( this.$Input );
+                this.$Elm.wraps(this.$Input);
             }
 
-            if ( this.getAttribute( 'styles' ) ) {
-                this.$Elm.setStyles( this.getAttribute( 'styles' ) );
+            if (this.getAttribute('styles')) {
+                this.$Elm.setStyles(this.getAttribute('styles'));
             }
 
             this.$Input.setStyles({
@@ -119,7 +118,7 @@ define('controls/projects/project/media/Input', [
 
             if (this.$Input.value !== '') {
 
-                var urlParams = QUIStringUtils.getUrlParams( this.$Input.value );
+                var urlParams = QUIStringUtils.getUrlParams(this.$Input.value);
 
                 if ( "project" in urlParams ) {
                     this.setProject(urlParams.project);
@@ -144,27 +143,27 @@ define('controls/projects/project/media/Input', [
                             project = '',
                             fileid  = false;
 
-                        if ( self.$Input.get( 'data-project' ) ) {
-                            project = self.$Input.get( 'data-project' );
+                        if (self.$Input.get('data-project')) {
+                            project = self.$Input.get('data-project');
                         }
 
-                        if ( typeOf( self.$Project ) === 'string' ) {
+                        if (typeOf(self.$Project) === 'string') {
                             self.$Project = Projects.get( self.$Project );
                         }
 
-                        if ( self.$Project && "getName" in self.$Project ) {
+                        if (self.$Project && "getName" in self.$Project) {
                             project = self.$Project.getName();
                         }
 
-                        if ( value !== '' )
+                        if (value !== '')
                         {
-                            var urlParams = QUIStringUtils.getUrlParams( value );
+                            var urlParams = QUIStringUtils.getUrlParams(value);
 
-                            if ( "id" in urlParams ) {
+                            if ("id" in urlParams) {
                                 fileid  = urlParams.id;
                             }
 
-                            if ( "project" in urlParams ) {
+                            if ("project" in urlParams) {
                                 project = urlParams.project;
                             }
                         }
@@ -179,7 +178,7 @@ define('controls/projects/project/media/Input', [
                                 onSubmit : function(Popup, params)
                                 {
                                     self.$Input.value = params.url;
-                                    self.fireEvent( 'change', [ self, self.getValue() ] );
+                                    self.fireEvent('change', [self, self.getValue()]);
                                     self.$refreshPreview();
                                 }
                             }
@@ -231,11 +230,11 @@ define('controls/projects/project/media/Input', [
          */
         setValue : function(str)
         {
-            if ( str.toString().match('image.php') ) {
+            if (str.toString().match('image.php')) {
                 this.$Input.value = str.toString();
             }
 
-            this.fireEvent( 'change', [ this, this.getValue() ] );
+            this.fireEvent('change', [this, this.getValue()]);
             this.$refreshPreview();
         },
 
@@ -245,7 +244,7 @@ define('controls/projects/project/media/Input', [
         clear : function()
         {
             this.$Input.value = '';
-            this.fireEvent( 'change', [ this, this.getValue() ] );
+            this.fireEvent('change', [this, this.getValue()]);
             this.$refreshPreview();
         },
 
@@ -256,14 +255,14 @@ define('controls/projects/project/media/Input', [
         {
             var value = this.$Input.value;
 
-            if ( value === '' || value == '0' )
+            if (value === '' || value == '0')
             {
                 this.$Preview.setStyle( 'background', null );
                 return;
             }
 
-            this.$Preview.getElements( '.icon-refresh' ).destroy();
-            this.$Preview.getElements( '.icon-warning-sign' ).destroy();
+            this.$Preview.getElements('.icon-refresh').destroy();
+            this.$Preview.getElements('.icon-warning-sign').destroy();
 
             // loader image
             var MiniLoader = new Element('div', {
@@ -276,19 +275,18 @@ define('controls/projects/project/media/Input', [
                     textAlign : 'center',
                     top       : 4,
                     width     : 20
-
                 }
-            }).inject( this.$Preview );
+            }).inject(this.$Preview);
 
             var self = this,
                 previewUrl = value;
 
-            if ( value.substr( 0, 10 ) == 'image.php?' ) {
+            if (value.substr(0, 10) == 'image.php?') {
                 previewUrl = URL_DIR + value +'&maxwidth=30&maxheight=30&quiadmin=1';
             }
-
+            console.log(previewUrl);
             // load the image
-            Asset.image( previewUrl, {
+            Asset.image(previewUrl, {
                 onLoad : function()
                 {
                     MiniLoader.destroy();
