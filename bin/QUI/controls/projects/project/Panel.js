@@ -180,7 +180,7 @@ define('controls/projects/project/Panel', [
             this.$ProjectContent = Content.getElement( '.project-content' );
 
             this.$ProjectContainer.setStyles({
-                height : '100%'
+                height : 'calc( 100% - 45px )'
             });
 
             this.$ProjectList.setStyles({
@@ -376,20 +376,20 @@ define('controls/projects/project/Panel', [
          */
         $onResize : function()
         {
-            var Body      = this.getBody(),
-                Container = this.$ProjectContainer,
-                Search    = this.$ProjectSearch;
-
-            var height = Body.getComputedSize().height;
-
-            if ( !height || !Container || !this.$ProjectSearch ) {
-                return;
-            }
-
-            Container.setStyle(
-                'height',
-                height - Search.getComputedSize().totalHeight
-            );
+//            var Body      = this.getBody(),
+//                Container = this.$ProjectContainer,
+//                Search    = this.$ProjectSearch;
+//
+//            var height = Body.getComputedSize().height;
+//
+//            if ( !height || !Container || !this.$ProjectSearch ) {
+//                return;
+//            }
+//
+//            Container.setStyle(
+//                'height',
+//                height - Search.getComputedSize().totalHeight
+//            );
         },
 
         /**

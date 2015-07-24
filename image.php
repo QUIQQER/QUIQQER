@@ -18,6 +18,13 @@ try {
     $Media = $Project->getMedia();
     $File = $Media->get((int)$_REQUEST['id']);
 
+    if (Media\Utils::isFolder($File)) {
+        QUI\Utils\System\File::send(
+            BIN_DIR .'16x16/folder.png'
+        );
+        exit;
+    }
+
     // Bilder direkt im Browser ausgeben
     $file = $File->getAttribute('file');
     $image = false;

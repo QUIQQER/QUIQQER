@@ -98,6 +98,7 @@ define('controls/menu/Manager', [
         menuClick : function(Item)
         {
             var i, len, list;
+
             var self        = this,
                 menuRequire = Item.getAttribute( 'require' ),
                 exec        = Item.getAttribute( 'exec' ),

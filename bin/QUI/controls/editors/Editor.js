@@ -33,7 +33,7 @@ define('controls/editors/Editor', [
      *
      * @class controls/editors/Editor
      *
-     * @param {classes/editor/Manager} Manager
+     * @param {Object} Manager - classes/editor/Manager
      * @param {Object} options
      *
      * @fires onInit [this]
