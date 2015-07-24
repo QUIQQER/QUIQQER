@@ -284,7 +284,7 @@ define('controls/projects/project/media/Input', [
             if (value.substr(0, 10) == 'image.php?') {
                 previewUrl = URL_DIR + value +'&maxwidth=30&maxheight=30&quiadmin=1';
             }
-            console.log(previewUrl);
+
             // load the image
             Asset.image(previewUrl, {
                 onLoad : function()
