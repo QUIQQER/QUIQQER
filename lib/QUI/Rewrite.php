@@ -1489,6 +1489,7 @@ class Rewrite
             unset($params['site']);
 
         } else {
+            
             if (isset($params['id'])) {
                 $id = $params['id'];
             }
@@ -1543,8 +1544,6 @@ class Rewrite
             if (isset($params['suffix'])) {
                 $_params['suffix'] = $params['suffix'];
             }
-
-            QUI\System\Log::writeRecursive($_params);
 
             // Link Cache
             file_put_contents(
