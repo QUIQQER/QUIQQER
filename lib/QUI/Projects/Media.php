@@ -102,7 +102,7 @@ class Media extends QUI\QDOM
      *
      * @param String|Bool $type - (optional) standard=false; other options: relations
      *
-     * @return String
+     * @return string
      */
     public function getTable($type = false)
     {
@@ -111,6 +111,16 @@ class Media extends QUI\QDOM
         }
 
         return $this->_Project->getAttribute('name').'_media';
+    }
+
+    /**
+     * Return the Placeholder of the media
+     *
+     * @return string
+     */
+    public function getPlaceholder()
+    {
+        return URL_BIN_DIR .'images/Q.png';
     }
 
     /**

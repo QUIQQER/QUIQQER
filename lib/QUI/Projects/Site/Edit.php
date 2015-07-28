@@ -300,6 +300,8 @@ class Edit extends Site
             return;
         }
 
+        QUI::getRewrite()->unregisterPath($this);
+
         /**
          * package destroy
          */
@@ -1206,6 +1208,7 @@ class Edit extends Site
 
         $link_cache_dir
             = VAR_DIR.'cache/links/'.$Project->getAttribute('name').'/';
+
         $link_cache_file
             = $link_cache_dir.$this->getId().'_'.$Project->getAttribute('name')
             .'_'.$Project->getAttribute('lang');

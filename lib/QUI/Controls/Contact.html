@@ -1,11 +1,11 @@
 
 <form method="POST" action="">
 
+    {if $this->getAttribute('content')}
     <div class="content-template">
-        {if $this->getAttribute('content')}
-            {$this->getAttribute('content')}
-        {/if}
+        {$this->getAttribute('content')}
     </div>
+    {/if}
 
     {if $this->getAttribute('labels')}
     <label for="qui-contact-name">

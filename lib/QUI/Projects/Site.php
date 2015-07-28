@@ -17,7 +17,7 @@ use QUI\Utils\String as StringUtils;
  *
  * @errorcodes 7XX = Site Errors -> look at Site/Edit
  */
-class Site extends QUI\QDOM
+class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 {
     /**
      * Edit site
@@ -1201,6 +1201,8 @@ class Site extends QUI\QDOM
      */
     public function delete()
     {
+        QUI::getRewrite()->unregisterPath($this);
+
         if ($this->getAttribute('id') == 1) {
             return false;
         }
@@ -1308,6 +1310,13 @@ class Site extends QUI\QDOM
      */
     public function getUrlRewrited($params = array())
     {
+        $seperator = QUI\Rewrite::URL_PARAM_SEPERATOR;
+
+        if (isset($param['paramAsSites']) && $param['paramAsSites']) {
+            $seperator = '/';
+            unset($param['paramAsSites']);
+        }
+
         if ($this->getId() == 1) {
             if (empty($params)) {
                 return '';
@@ -1319,7 +1328,7 @@ class Site extends QUI\QDOM
             // somit kann ein url cache aufgebaut werden
             foreach ($params as $param => $value) {
                 if (is_integer($param)) {
-                    $url .= QUI\Rewrite::URL_PARAM_SEPERATOR.$value;
+                    $url .= $seperator.$value;
                     continue;
                 }
 
@@ -1328,12 +1337,11 @@ class Site extends QUI\QDOM
                 }
 
                 if (is_int($param)) {
-                    $url .= QUI\Rewrite::URL_PARAM_SEPERATOR.$value;
+                    $url .= $seperator.$value;
                     continue;
                 }
 
-                $url .= QUI\Rewrite::URL_PARAM_SEPERATOR.$param
-                    .QUI\Rewrite::URL_PARAM_SEPERATOR.$value;
+                $url .= $seperator.$param.$seperator.$value;
             }
 
             if (isset($params['suffix'])) {
@@ -1388,7 +1396,7 @@ class Site extends QUI\QDOM
 
         foreach ($params as $param => $value) {
             if (is_integer($param)) {
-                $url .= QUI\Rewrite::URL_PARAM_SEPERATOR.$value;
+                $url .= $seperator.$value;
                 continue;
             }
 
@@ -1397,12 +1405,11 @@ class Site extends QUI\QDOM
             }
 
             if (is_int($param)) {
-                $url .= QUI\Rewrite::URL_PARAM_SEPERATOR.$value;
+                $url .= $seperator.$value;
                 continue;
             }
 
-            $url .= QUI\Rewrite::URL_PARAM_SEPERATOR.$param
-                .QUI\Rewrite::URL_PARAM_SEPERATOR.$value;
+            $url .= $seperator.$param.$seperator.$value;
         }
 
         if (isset($params['suffix'])) {

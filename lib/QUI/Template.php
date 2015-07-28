@@ -289,6 +289,7 @@ class Template extends QUI\QDOM
         }
 
 
+
         // @todo suffix template prüfen
         /*
         $suffix = $Rewrite->getSuffix();
@@ -307,6 +308,52 @@ class Template extends QUI\QDOM
                 require $template_index;
             }
         }
+
+
+        // load template scripts
+        $siteScript = false;
+        $projectScript = false;
+
+        $siteType = $Site->getAttribute('type');
+        $siteType = explode(':', $siteType);
+
+        if (isset($siteType[0]) && isset($siteType[1])) {
+            $package = $siteType[0];
+            $type = $siteType[1];
+
+            // site template
+            $siteScript = OPT_DIR.$package.'/'.$type.'.php';
+
+            // project template
+            $projectScript
+                = USR_DIR.'lib/'.$Project->getAttribute('template').'/'.$type
+                .'.php';
+        }
+
+        if ($siteType[0] == 'standard') {
+            // site template
+            $siteScript
+                = OPT_DIR.$Project->getAttribute('template').'/standard.php';
+        }
+
+        // includes
+        if ($siteScript) {
+            $siteScript = Orthos::clearPath(realpath($siteScript));
+
+            if ($siteScript) {
+                require $siteScript;
+            }
+        }
+
+        if ($projectScript) {
+            $projectScript = Orthos::clearPath(realpath($projectScript));
+
+            if ($projectScript) {
+                require $projectScript;
+            }
+        }
+
+
 
         return $Engine->fetch($tpl);
     }
@@ -331,7 +378,6 @@ class Template extends QUI\QDOM
             $package = $siteType[0];
             $type = $siteType[1];
 
-            // @todo needed?
             // type css
             $siteStyle = OPT_DIR.$package.'/bin/'.$type.'.css';
             $siteScript = OPT_DIR.$package.'/bin/'.$type.'.js';
@@ -502,9 +548,6 @@ class Template extends QUI\QDOM
 
         $template = LIB_DIR.'templates/standard.html';
 
-        $siteScript = false;
-        $projectScript = false;
-
         $siteType = $Site->getAttribute('type');
         $siteType = explode(':', $siteType);
 
@@ -514,7 +557,6 @@ class Template extends QUI\QDOM
 
             // site template
             $siteTemplate = OPT_DIR.$package.'/'.$type.'.html';
-            $siteScript = OPT_DIR.$package.'/'.$type.'.php';
             $siteStyle = OPT_DIR.$package.'/bin/'.$type.'.css';
 
             if (file_exists($siteStyle)) {
@@ -532,9 +574,6 @@ class Template extends QUI\QDOM
             $projectTemplate
                 = USR_DIR.'lib/'.$Project->getAttribute('template').'/'.$type
                 .'.html';
-            $projectScript
-                = USR_DIR.'lib/'.$Project->getAttribute('template').'/'.$type
-                .'.php';
 
             if (file_exists($projectTemplate)) {
                 $template = $projectTemplate;
@@ -545,8 +584,7 @@ class Template extends QUI\QDOM
             // site template
             $siteTemplate
                 = OPT_DIR.$Project->getAttribute('template').'/standard.html';
-            $siteScript
-                = OPT_DIR.$Project->getAttribute('template').'/standard.php';
+
             $siteStyle
                 =
                 OPT_DIR.$Project->getAttribute('template').'/bin/standard.css';
@@ -561,23 +599,6 @@ class Template extends QUI\QDOM
 
             if (file_exists($siteTemplate)) {
                 $template = $siteTemplate;
-            }
-        }
-
-        // includes
-        if ($siteScript) {
-            $siteScript = Orthos::clearPath(realpath($siteScript));
-
-            if ($siteScript) {
-                require $siteScript;
-            }
-        }
-
-        if ($projectScript) {
-            $projectScript = Orthos::clearPath(realpath($projectScript));
-
-            if ($projectScript) {
-                require $projectScript;
             }
         }
 

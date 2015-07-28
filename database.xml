@@ -56,7 +56,12 @@
 
             <primary>session_id</primary>
         </table>
-
     </global>
+
+    <projects>
+        <table name="paths" no-auto-update="1">
+            <field type="TEXT NOT NULL">path</field>
+        </table>
+    </projects>
 
 </database>

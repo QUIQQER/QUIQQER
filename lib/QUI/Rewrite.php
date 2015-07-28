@@ -240,6 +240,7 @@ class Rewrite
                 if ($this->_template_str) {
                     $this->_project_prefix
                         = self::URL_PROJECT_CHARACTER.$this->_project_str;
+
                     $this->_project_prefix
                         .= self::URL_PROJECT_CHARACTER.$this->_template_str.'/';
                 }
@@ -276,13 +277,13 @@ class Rewrite
                 $_url = $_new_url;
 
                 // Wenns ein Hosteintrag mit der Sprache gibt, dahin leiten
+                // und es nicht der https host ist
                 // @todo https host nicht über den port prüfen, zu ungenau
                 if (
                     isset($_SERVER['HTTP_HOST'])
                     && isset($vhosts[$_SERVER['HTTP_HOST']])
                     && isset($vhosts[$_SERVER['HTTP_HOST']][$this->_lang])
-                    && // und es nicht der https host ist
-                    (int)$_SERVER['SERVER_PORT'] !== 443
+                    && (int)$_SERVER['SERVER_PORT'] !== 443
                     && QUI::conf('globals', 'httpshost') !=
                     'https://'.$_SERVER['HTTP_HOST']
                 ) {
@@ -423,6 +424,17 @@ class Rewrite
                 $this->_site = $this->getSiteByUrl($_REQUEST['_url'], true);
 
             } catch (QUI\Exception $Exception) {
+
+                $Site = $this->existRegisterPath($_REQUEST['_url'], $this->getProject());
+
+                if ($Site) {
+                    $Site->setAttribute('canonical', $_REQUEST['_url']);
+
+                    $this->_site = $Site;
+                    return;
+
+                }
+
                 if ($this->showErrorHeader(404)) {
                     return;
                 }
@@ -431,14 +443,13 @@ class Rewrite
             }
 
             // Sprachen Host finden
-            if (
-                isset($_SERVER['HTTP_HOST'])
+            // und es nicht der https host ist
+            if (isset($_SERVER['HTTP_HOST'])
                 && isset($vhosts[$_SERVER['HTTP_HOST']])
                 && isset($vhosts[$_SERVER['HTTP_HOST']][$this->_lang])
                 && $_SERVER['HTTP_HOST']
                 != $vhosts[$_SERVER['HTTP_HOST']][$this->_lang]
-                && // und es nicht der https host ist
-                (int)$_SERVER['SERVER_PORT'] !== 443
+                && (int)$_SERVER['SERVER_PORT'] !== 443
                 && QUI::conf('globals', 'httpshost') !=
                 'https://'.$_SERVER['HTTP_HOST']
             ) {
@@ -455,6 +466,7 @@ class Rewrite
             $site_params = $this->site_params;
 
             if (is_array($site_params) && isset($site_params[1])) {
+
                 for ($i = 1; $i < count($site_params); $i++) {
                     if ($i % 2 != 0) {
                         $value = false;
@@ -490,8 +502,7 @@ class Rewrite
                 ) {
                     $message = "\n\n===================================\n\n";
                     $message
-                        .=
-                        'Rewrite 301 bei der wir nicht wissen wann es kommt. Rewrite.php Zeile 391 '
+                        .= 'Rewrite 301 bei der wir nicht wissen wann es kommt. Rewrite.php Zeile 391 '
                         ."\n";
                     $message .= print_r($_SERVER, true);
 
@@ -512,6 +523,7 @@ class Rewrite
 
         $request_url = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI']
             : '';
+
         $pos = strpos($request_url, self::URL_PARAM_SEPERATOR);
         $end = strpos($request_url, '.');
 
@@ -613,8 +625,11 @@ class Rewrite
         if (count($_url) <= 1) {
             // Erste Ebene
             $site_url = explode('.', $_url[0]);
-            $this->site_params = explode(self::URL_PARAM_SEPERATOR,
-                $site_url[0]);
+
+            $this->site_params = explode(
+                self::URL_PARAM_SEPERATOR,
+                $site_url[0]
+            );
 
             // für was? :
             // $this->_first_child->getAttribute('name') == str_replace('-', ' ', $this->site_params[0])
@@ -638,6 +653,7 @@ class Rewrite
         $Child = false;
 
         foreach ($_url as $key => $val) {
+
             if ($Child == false) {
                 $Child = $this->_first_child;
             }
@@ -1077,6 +1093,15 @@ class Rewrite
     }
 
     /**
+     * @param $Site
+     */
+    public function addSiteToPath($Site)
+    {
+        $this->_path[] = $Site;
+        array_push($this->_ids_in_path, $Site->getId());
+    }
+
+    /**
      * Setzt eine Seite in den Path
      *
      * @param \QUI\Projects\Site $Site - seite die hinzugefügt wird
@@ -1163,7 +1188,6 @@ class Rewrite
         return $this->_output_content;
     }
 
-
     /**
      * Mail Protection gegen SPAM
      * Wandelt die Mail Addressen so um das ein BOT nichts mit anfangen kann
@@ -1240,6 +1264,7 @@ class Rewrite
 
                 $att['alt'] = $Image->getAttribute('alt')
                     ? $Image->getAttribute('alt') : '';
+
                 $att['title'] = $Image->getAttribute('title')
                     ? $Image->getAttribute('title') : '';
 
@@ -1361,6 +1386,83 @@ class Rewrite
     }
 
     /**
+     * Register a rewrite path
+     *
+     * @param string|array       $paths
+     * @param \QUI\Projects\Site $Site
+     */
+    public function registerPath($paths, $Site)
+    {
+        $Project = $Site->getProject();
+        $table = QUI::getDBProjectTableName('paths', $Project);
+
+        $this->unregisterPath($Site);
+
+        if (!is_array($paths)) {
+            $paths = array($paths);
+        }
+
+        foreach ($paths as $path) {
+            QUI::getDataBase()->insert($table, array(
+                'id'   => $Site->getId(),
+                'path' => $path
+            ));
+        }
+    }
+
+    /**
+     * Unregister a rewrite path
+     *
+     * @param \QUI\Projects\Site $Site
+     */
+    public function unregisterPath($Site)
+    {
+        $Project = $Site->getProject();
+        $table = QUI::getDBProjectTableName('paths', $Project);
+
+        QUI::getDataBase()->delete($table, array(
+            'id' => $Site->getId()
+        ));
+    }
+
+    /**
+     * Return the Site or false if a path exists
+     *
+     * @param string $path
+     * @param \QUI\Projects\Project $Project
+     *
+     * @return \QUI\Projects\Site
+     */
+    public function existRegisterPath($path, $Project)
+    {
+        $table = QUI::getDBProjectTableName('paths', $Project);
+        $list = QUI::getDataBase()->fetch(array(
+            'from' => $table
+        ));
+
+        foreach ($list as $entry) {
+
+            if (!QUI\Utils\String::match($entry['path'], $path)) {
+                continue;
+            }
+
+            try {
+
+                $Site = $Project->get((int)$entry['id']);
+
+                if ($Site->getAttribute('active')) {
+                    return $Site;
+                }
+
+            } catch (QUI\Exception $Exception) {
+
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Gibt die sprechende URL einer Seite zurück
      *
      * @param array $params
@@ -1442,6 +1544,8 @@ class Rewrite
                 $_params['suffix'] = $params['suffix'];
             }
 
+            QUI\System\Log::writeRecursive($_params);
+
             // Link Cache
             file_put_contents(
                 $link_cache_file,
@@ -1521,12 +1625,20 @@ class Rewrite
             return $url;
         }
 
+        $seperator = self::URL_PARAM_SEPERATOR;
+
+        if (isset($params['paramAsSites']) && $params['paramAsSites']) {
+            $seperator = '/';
+            unset($params['paramAsSites']);
+        }
+
+
         $exp = explode('.', $url);
         $url = $exp[0];
 
         foreach ($params as $param => $value) {
             if (is_integer($param)) {
-                $url .= self::URL_PARAM_SEPERATOR.$value;
+                $url .= $seperator.$value;
                 continue;
             }
 
@@ -1535,12 +1647,11 @@ class Rewrite
             }
 
             if ($param === "0") {
-                $url .= self::URL_PARAM_SEPERATOR.$value;
+                $url .= $seperator.$value;
                 continue;
             }
 
-            $url .= self::URL_PARAM_SEPERATOR.$param.self::URL_PARAM_SEPERATOR
-                .$value;
+            $url .= $seperator.$param.$seperator.$value;
         }
 
         if (isset($params['suffix'])) {
