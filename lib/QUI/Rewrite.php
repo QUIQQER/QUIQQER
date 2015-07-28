@@ -1019,10 +1019,6 @@ class Rewrite
             return $this->_site;
         }
 
-        if ($this->showErrorHeader()) {
-            return $this->_site;
-        }
-
         $Project = $this->getProject();
 
         return $Project->firstChild();
@@ -1489,7 +1485,7 @@ class Rewrite
             unset($params['site']);
 
         } else {
-            
+
             if (isset($params['id'])) {
                 $id = $params['id'];
             }

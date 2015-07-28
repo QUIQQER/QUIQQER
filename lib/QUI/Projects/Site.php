@@ -1294,6 +1294,14 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 continue;
             }
 
+            if (!is_string($value) && !is_numeric($value)) {
+                continue;
+            }
+
+            if (!is_string($param) && !is_numeric($param)) {
+                continue;
+            }
+
             $str .= '&'.$param.'='.$value;
         }
 
