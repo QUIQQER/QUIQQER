@@ -92,7 +92,7 @@ require.config({
     waitSeconds : 0,
     locale      : USER.lang +"-"+ USER.lang,
     catchError  : true,
-    urlArgs     : "d="+ QUIQQER_VERSION.replace(/\./g, '_'),
+    urlArgs     : "d="+ QUIQQER_VERSION.replace(/\./g, '_')+'_'+ QUIQQER.lu,
 
     map : {
         '*': {
