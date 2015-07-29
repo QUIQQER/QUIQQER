@@ -1294,11 +1294,11 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 continue;
             }
 
-            if (!is_string($value) && !is_numeric($value)) {
+            if (!is_string($value) && !is_numeric($value) && !is_bool($value)) {
                 continue;
             }
 
-            if (!is_string($param) && !is_numeric($param)) {
+            if (!is_string($param) && !is_numeric($param) && !is_bool($param)) {
                 continue;
             }
 
