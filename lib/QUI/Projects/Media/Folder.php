@@ -327,7 +327,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         if ($Folder->childWithNameExists($this->getAttribute('name'))) {
             throw new QUI\Exception(
-                'Ein Ordner mit dem gleichen Namen existiert bereits.', 403 // #locale
+                'Ein Ordner mit dem gleichen Namen existiert bereits.',
+                403 // #locale
             );
         }
 
@@ -398,7 +399,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     {
         if ($Folder->childWithNameExists($this->getAttribute('name'))) {
             throw new QUI\Exception(
-                'Ein Ordner mit dem gleichen Namen existiert bereits.', 403 // #locale
+                'Ein Ordner mit dem gleichen Namen existiert bereits.',
+                403 // #locale
             );
         }
 
@@ -423,6 +425,29 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         return $Copy;
+    }
+
+    /**
+     * Return the first child
+     *
+     * @return QUI\Projects\Media\File
+     *
+     * @throws QUI\Exception
+     */
+    public function firstChild()
+    {
+        $result = $this->getChildren(array(
+            'limit' => 1
+        ));
+
+        if (isset($result[0])) {
+            return $result[0];
+        }
+
+        throw new QUI\Exception(
+            'Kein Kind gefunden',
+            404 // #locale
+        );
     }
 
     /**
@@ -617,6 +642,29 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         return 0;
+    }
+
+    /**
+     * Return the first image
+     *
+     * @return QUI\Projects\Media\Image
+     *
+     * @throws QUI\Exception
+     */
+    public function firstImage()
+    {
+        $result = $this->getImages(array(
+            'limit' => 1
+        ));
+
+        if (isset($result[0])) {
+            return $result[0];
+        }
+
+        throw new QUI\Exception(
+            'Kein Bild gefunden',
+            404 // #locale
+        );
     }
 
     /**
