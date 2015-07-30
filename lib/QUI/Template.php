@@ -180,6 +180,19 @@ class Template extends QUI\QDOM
     }
 
     /**
+     *
+     * @param string $cssPath
+     * @param int    $prio
+     */
+    public function extendHeaderWithCSSFile($cssPath, $prio = 3)
+    {
+        $this->extendHeader(
+            '<link href="'. $cssPath .'" rel="stylesheet" type="text/css" />',
+            $prio
+        );
+    }
+
+    /**
      * Add a javascript module, that laoded at the onload event
      *
      * @param String $module
@@ -289,7 +302,6 @@ class Template extends QUI\QDOM
         }
 
 
-
         // @todo suffix template prüfen
         /*
         $suffix = $Rewrite->getSuffix();
@@ -352,7 +364,6 @@ class Template extends QUI\QDOM
                 require $projectScript;
             }
         }
-
 
 
         return $Engine->fetch($tpl);
@@ -586,8 +597,8 @@ class Template extends QUI\QDOM
                 = OPT_DIR.$Project->getAttribute('template').'/standard.html';
 
             $siteStyle
-                =
-                OPT_DIR.$Project->getAttribute('template').'/bin/standard.css';
+                = OPT_DIR.$Project->getAttribute('template')
+                .'/bin/standard.css';
 
             if (file_exists($siteStyle)) {
                 $Engine->assign(
