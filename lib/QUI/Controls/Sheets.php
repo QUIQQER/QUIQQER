@@ -23,7 +23,15 @@ class Sheets extends QUI\Control
      */
     public function __construct($attributes = array())
     {
-        parent::setAttributes($attributes);
+        $this->setAttributes(array(
+            'showLimit' => false,
+            'limits'    => '[10,20,50]',
+            'limit'     => 10,
+            'order'     => false,
+            'sheet'     => 1
+        ));
+
+        parent::__construct($attributes);
 
         $this->addCSSFile(
             dirname(__FILE__).'/Sheets.css'
@@ -45,8 +53,22 @@ class Sheets extends QUI\Control
 
         $count = $this->getAttribute('sheets');
         $showmax = $this->getAttribute('showmax');
+        $limit = $this->getAttribute('limit');
+        $limits = $this->getAttribute('limits');
 
-        $active = 1;
+        if ($this->getAttribute('showLimit') === false) {
+            $limit = false;
+        }
+
+        if ($limits && is_string($limits)) {
+            $limits = json_decode($limits, true);
+
+            if (!is_array($limits)) {
+                $limits = false;
+            }
+        }
+
+        $active = $this->getAttribute('sheet');
         $anchor = '';
 
         if ($this->getAttribute('anchor')) {
@@ -59,10 +81,6 @@ class Sheets extends QUI\Control
 
         if (!$showmax) {
             $showmax = $count * 2;
-        }
-
-        if (isset($_REQUEST['sheet']) && (int)$_REQUEST['sheet']) {
-            $active = (int)$_REQUEST['sheet'];
         }
 
         $gap = floor($showmax / 2);
@@ -82,6 +100,7 @@ class Sheets extends QUI\Control
         $params = array();
 
         foreach ($attributes as $key => $value) {
+
             if ($key == 'class') {
                 continue;
             }
@@ -94,6 +113,14 @@ class Sheets extends QUI\Control
                 continue;
             }
 
+            if ($key == 'limit') {
+                continue;
+            }
+
+            if ($key == 'limits') {
+                continue;
+            }
+
             if ($key == 'anchor') {
                 continue;
             }
@@ -102,6 +129,13 @@ class Sheets extends QUI\Control
             if (is_string($value) || is_int($value)) {
                 $params[$key] = $value;
             }
+
+            if (is_array($value) && isset($value[0]) && !is_array($value[0])) {
+                $params[$key] = implode(
+                    QUI\Rewrite::URL_SPACE_CHARACTER,
+                    $value
+                );
+            }
         }
 
         if (!$count || $count == 1) {
@@ -109,16 +143,82 @@ class Sheets extends QUI\Control
         }
 
         $Engine->assign(array(
+            'this'      => $this,
             'count'     => $count,
             'start'     => $start,
             'end'       => $end,
             'active'    => $active,
             'urlParams' => $params,
             'anchor'    => $anchor,
+            'limit'     => $limit,
+            'limits'    => $limits,
             'Site'      => $Site,
             'Project'   => $Project
         ));
 
         return $Engine->fetch(dirname(__FILE__).'/Sheets.html');
+    }
+
+    /**
+     * Load the GET request variables into the sheet
+     */
+    public function loadFromRequest()
+    {
+        $limit = $this->getAttribute('limit');
+        $order = $this->getAttribute('order');
+        $sheet = $this->getAttribute('sheet');
+
+        if (isset($_REQUEST['limit']) && is_numeric($_REQUEST['limit'])) {
+            $limit = (int)$_REQUEST['limit'];
+        }
+
+        if (isset($_REQUEST['order'])) {
+            $order = $_REQUEST['order'];
+        }
+
+        if (isset($_REQUEST['sheet'])) {
+            $sheet = $_REQUEST['sheet'];
+        }
+
+        $this->setAttribute('limit', $limit);
+        $this->setAttribute('order', $order);
+        $this->setAttribute('sheet', $sheet);
+    }
+
+    /**
+     * Return SQL params
+     *
+     * @example $this->getSQLParams() : array(
+     *     'limit' => '0,20',
+     *     'order' => 'field'
+     * )
+     *
+     * @return array
+     */
+    public function getSQLParams()
+    {
+        $limit = false;
+
+        if ($this->getAttribute('limit')) {
+            $limit = $this->getStart().','.$this->getAttribute('limit');
+        }
+
+        return array(
+            'limit' => $limit,
+            'order' => $this->getAttribute('order')
+        );
+    }
+
+    /**
+     * Return the start
+     *
+     * @return integer
+     */
+    public function getStart()
+    {
+        $limit = $this->getAttribute('limit');
+        $sheet = $this->getAttribute('sheet');
+
+        return ($sheet - 1) * $limit;
     }
 }

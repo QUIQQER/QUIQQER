@@ -393,7 +393,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             return;
         }
 
-
         $DataBaseXML = QUI\Utils\XML::getDomFromXml($databaseXml);
         $projects = $DataBaseXML->getElementsByTagName('projects');
 
