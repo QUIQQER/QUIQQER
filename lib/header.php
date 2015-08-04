@@ -3,7 +3,7 @@
 /**
  * This file contains the main header file
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
  */
 
@@ -18,7 +18,6 @@ error_reporting(E_ALL);
 
 ini_set('display_errors', false);
 ini_set("log_errors", "on");
-
 
 QUI::load();
 QUI\Utils\System\Debug::marker('header start');
@@ -68,6 +67,12 @@ if (!empty($error_mail)) {
 } else {
     define('ERROR_SEND', 0);
 }
+
+// GET clearing
+foreach ($_GET as $key => $value) {
+    $_GET[$key] = \QUI\Utils\Security\Orthos::clearFormRequest($value);
+}
+
 
 // Datenbankverbindung aufbauen
 try {
