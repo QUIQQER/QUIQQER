@@ -1208,7 +1208,10 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         }
 
         // Rekursiv alle Kinder bekommen
-        $children = $this->getChildrenIdsRecursive();
+        $children = $this->getChildrenIdsRecursive(array(
+            'active' => '0&1'
+        ));
+
         $Project = $this->getProject();
 
         QUI::getDataBase()->update(
@@ -1216,6 +1219,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             array('deleted' => 1),
             array('id' => $this->getId())
         );
+
 
         foreach ($children as $child) {
             QUI::getDataBase()->update(
