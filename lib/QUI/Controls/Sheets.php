@@ -17,6 +17,20 @@ use QUI;
 class Sheets extends QUI\Control
 {
     /**
+     * GET Params
+     *
+     * @var array
+     */
+    protected $_getParams = array();
+
+    /**
+     * URL Params
+     *
+     * @var array
+     */
+    protected $_urlParams = array();
+
+    /**
      * constructor
      *
      * @param Array $attributes
@@ -96,64 +110,75 @@ class Sheets extends QUI\Control
             $end = $count;
         }
 
-        $attributes = $this->getAttributes();
-        $params = array();
+        // get params
+        $limit = $this->getAttribute('limit');
+        $order = $this->getAttribute('order');
+        $sheet = $this->getAttribute('sheet');
 
-        foreach ($attributes as $key => $value) {
-
-            if ($key == 'class') {
-                continue;
-            }
-
-            if ($key == 'sheets') {
-                continue;
-            }
-
-            if ($key == 'showmax') {
-                continue;
-            }
-
-            if ($key == 'limit') {
-                continue;
-            }
-
-            if ($key == 'limits') {
-                continue;
-            }
-
-            if ($key == 'anchor') {
-                continue;
-            }
+        $this->_getParams['sheet'] = $sheet;
+        $this->_getParams['order'] = $order;
+        $this->_getParams['limit'] = $limit;
 
 
-            if (is_string($value) || is_int($value)) {
-                $params[$key] = $value;
-            }
-
-            if (is_array($value) && isset($value[0]) && !is_array($value[0])) {
-                $params[$key] = implode(
-                    QUI\Rewrite::URL_SPACE_CHARACTER,
-                    $value
-                );
-            }
-        }
+//        $attributes = $this->getAttributes();
+//        $params = array();
+//
+//        foreach ($attributes as $key => $value) {
+//
+//            if ($key == 'class') {
+//                continue;
+//            }
+//
+//            if ($key == 'sheets') {
+//                continue;
+//            }
+//
+//            if ($key == 'showmax') {
+//                continue;
+//            }
+//
+//            if ($key == 'limit') {
+//                continue;
+//            }
+//
+//            if ($key == 'limits') {
+//                continue;
+//            }
+//
+//            if ($key == 'anchor') {
+//                continue;
+//            }
+//
+//
+//            if (is_string($value) || is_int($value)) {
+//                $params[$key] = $value;
+//            }
+//
+//            if (is_array($value) && isset($value[0]) && !is_array($value[0])) {
+//                $params[$key] = implode(
+//                    QUI\Rewrite::URL_SPACE_CHARACTER,
+//                    $value
+//                );
+//            }
+//        }
 
         if (!$count || $count == 1) {
             return '';
         }
 
         $Engine->assign(array(
-            'this'      => $this,
-            'count'     => $count,
-            'start'     => $start,
-            'end'       => $end,
-            'active'    => $active,
-            'urlParams' => $params,
-            'anchor'    => $anchor,
-            'limit'     => $limit,
-            'limits'    => $limits,
-            'Site'      => $Site,
-            'Project'   => $Project
+            'this'       => $this,
+            'count'      => $count,
+            'start'      => $start,
+            'end'        => $end,
+            'active'     => $active,
+            'pathParams' => $this->_urlParams,
+            'getParams'  => $this->_getParams,
+            'anchor'     => $anchor,
+            'limit'      => $limit,
+            'limits'     => $limits,
+            'Site'       => $Site,
+            'Project'    => $Project
         ));
 
         return $Engine->fetch(dirname(__FILE__).'/Sheets.html');
@@ -168,16 +193,16 @@ class Sheets extends QUI\Control
         $order = $this->getAttribute('order');
         $sheet = $this->getAttribute('sheet');
 
-        if (isset($_REQUEST['limit']) && is_numeric($_REQUEST['limit'])) {
-            $limit = (int)$_REQUEST['limit'];
+        if (isset($_GET['limit']) && is_numeric($_GET['limit'])) {
+            $limit = (int)$_GET['limit'];
         }
 
-        if (isset($_REQUEST['order'])) {
-            $order = $_REQUEST['order'];
+        if (isset($_GET['order'])) {
+            $order = $_GET['order'];
         }
 
-        if (isset($_REQUEST['sheet'])) {
-            $sheet = $_REQUEST['sheet'];
+        if (isset($_GET['sheet'])) {
+            $sheet = $_GET['sheet'];
         }
 
         $this->setAttribute('limit', $limit);
@@ -220,5 +245,49 @@ class Sheets extends QUI\Control
         $sheet = $this->getAttribute('sheet');
 
         return ($sheet - 1) * $limit;
+    }
+
+    /**
+     *
+     * @param $name
+     * @param $value
+     */
+    public function setGetParams($name, $value)
+    {
+        $name = QUI\Utils\Security\Orthos::clear($name);
+        $value = QUI\Utils\Security\Orthos::clear($value);
+
+        if (empty($value)) {
+
+            if ($this->_getParams[$name]) {
+                unset($this->_getParams[$name]);
+            }
+
+            return;
+        }
+
+        $this->_getParams[$name] = $value;
+    }
+
+    /**
+     *
+     * @param $name
+     * @param $value
+     */
+    public function setUrlParams($name, $value)
+    {
+        $name = QUI\Utils\Security\Orthos::clear($name);
+        $value = QUI\Utils\Security\Orthos::clear($value);
+
+        if (empty($value)) {
+
+            if ($this->_urlParams[$name]) {
+                unset($this->_urlParams[$name]);
+            }
+
+            return;
+        }
+
+        $this->_urlParams[$name] = $value;
     }
 }
