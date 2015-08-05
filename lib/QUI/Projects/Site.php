@@ -1308,6 +1308,13 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         }
 
         if (!empty($getParams)) {
+
+            foreach ($getParams as $key => $value) {
+                if (!is_string($value) && !is_numeric($value)) {
+                    unset($getParams[$key]);
+                }
+            }
+
             $str .= '&_getParams='.urlencode(http_build_query($getParams));
         }
 
