@@ -393,7 +393,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             return;
         }
 
-
         $DataBaseXML = QUI\Utils\XML::getDomFromXml($databaseXml);
         $projects = $DataBaseXML->getElementsByTagName('projects');
 
@@ -1270,30 +1269,33 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Gibt die URL der Seite zurück
      *
-     * @param $params
-     * @param $rewrited
+     * @param array $pathParams
+     * @param array $getParams
      *
      * @return String
      */
-    public function getUrl($params = array(), $rewrited = false)
+    public function getUrl($pathParams = array(), $getParams = array())
     {
-        $Rewrite = QUI::getRewrite();
+        $params = $pathParams;
+
+//        $Rewrite = QUI::getRewrite();
 
         if (!is_array($params)) {
             $params = array();
         }
 
-        if ($rewrited) {
-            $params['site'] = $this;
-
-            return $Rewrite->getUrlFromSite($params);
-        }
+//        if ($rewrited) {
+//            $params['site'] = $this;
+//
+//            return $Rewrite->getUrlFromSite($params);
+//        }
 
         $str = 'index.php?id='.$this->getId().
-            '&project='.$this->getProject()->getAttribute('name').
-            '&lang='.$this->getProject()->getAttribute('lang');
+            '&project='.$this->getProject()->getName().
+            '&lang='.$this->getProject()->getLang();
 
         foreach ($params as $param => $value) {
+
             if (empty($value)) {
                 continue;
             }
@@ -1309,6 +1311,10 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             $str .= '&'.$param.'='.$value;
         }
 
+        if (!empty($getParams)) {
+            $str .= '&_getParams='.urlencode(http_build_query($getParams));
+        }
+
         return $str;
     }
 
@@ -1316,13 +1322,15 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Gibt eine sprechenden URL zurück
      * DB Abfragen werden gemacht - Hier auf Performance achten
      *
-     * @param Array $params - Parameter welche an die URL angehängt werden
+     * @param Array $pathParams - Parameter welche in den namen der seite eingefügt werden
+     * @param Array $getParams  - Parameter welche an die URL angehängt werden
      *
      * @return String
      */
-    public function getUrlRewrited($params = array())
+    public function getUrlRewrited($pathParams = array(), $getParams = array())
     {
         $seperator = QUI\Rewrite::URL_PARAM_SEPERATOR;
+        $params = $pathParams;
 
         if (isset($param['paramAsSites']) && $param['paramAsSites']) {
             $seperator = '/';
@@ -1428,7 +1436,13 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             return $url.'.'.$params['suffix'];
         }
 
-        return $url.QUI\Rewrite::URL_DEFAULT_SUFFIX;
+        $result = $url.QUI\Rewrite::URL_DEFAULT_SUFFIX;
+
+        if (empty($getParams)) {
+            return $result;
+        }
+
+        return $result.'?'.http_build_query($getParams);
     }
 
     /**

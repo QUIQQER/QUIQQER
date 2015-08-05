@@ -1616,11 +1616,17 @@ class Rewrite
      */
     private function _extendUrlWidthPrams($url, $params)
     {
-        if (count($params) <= 0) {
+        if (!count($params)) {
             return $url;
         }
 
         $seperator = self::URL_PARAM_SEPERATOR;
+        $getParams = array();
+
+        if (isset($params['_getParams'])) {
+            parse_str($params['_getParams'], $getParams);
+            unset($params['_getParams']);
+        }
 
         if (isset($params['paramAsSites']) && $params['paramAsSites']) {
             $seperator = '/';
@@ -1628,10 +1634,12 @@ class Rewrite
         }
 
 
+        $suffix = '';
         $exp = explode('.', $url);
         $url = $exp[0];
 
         foreach ($params as $param => $value) {
+
             if (is_integer($param)) {
                 $url .= $seperator.$value;
                 continue;
@@ -1650,9 +1658,21 @@ class Rewrite
         }
 
         if (isset($params['suffix'])) {
-            return $url.'.'.$params['suffix'];
+            $suffix = '.'.$params['suffix'];
         }
 
-        return $url.'.'.(isset($exp[1]) ? $exp[1] : 'html');
+        if (empty($suffix) && isset($exp[1])) {
+            $suffix = '.'.$exp[1];
+        }
+
+        if (empty($suffix)) {
+            $suffix = self::URL_DEFAULT_SUFFIX;
+        }
+
+        if (empty($getParams)) {
+            return $url.$suffix;
+        }
+
+        return $url.$suffix.'?'.http_build_query($getParams);
     }
 }

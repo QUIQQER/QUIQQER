@@ -10,17 +10,17 @@
  */
 function ajax_site_get($project, $id)
 {
-    $Project = \QUI::getProjectManager()->decode($project);
-    $Site = new \QUI\Projects\Site\Edit($Project, (int)$id);
+    $Project = QUI::getProjectManager()->decode($project);
+    $Site = new QUI\Projects\Site\Edit($Project, (int)$id);
 
     $attributes = $Site->getAttributes();
 
-    $attributes['icon'] = \QUI::getPluginManager()->getIconByType(
+    $attributes['icon'] = QUI::getPluginManager()->getIconByType(
         $Site->getAttribute('type')
     );
 
     return array(
-        'modules'      => \QUI\Projects\Site\Utils::getAdminSiteModulesFromSite($Site),
+        'modules'      => QUI\Projects\Site\Utils::getAdminSiteModulesFromSite($Site),
         'attributes'   => $attributes,
         'has_children' => $Site->hasChildren(true),
         'parentid'     => $Site->getParentId(),
@@ -28,7 +28,7 @@ function ajax_site_get($project, $id)
     );
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_site_get',
     array('project', 'id'),
     'Permission::checkAdminUser'

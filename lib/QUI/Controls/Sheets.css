@@ -5,9 +5,10 @@
 }
 
 .quiqqer-sheets-desktop {
+    clear: both;
     float: left;
     margin: 0;
-    width: 100%;
+    width: calc( 100% - 120px );
 }
 
 .quiqqer-sheets-desktop:last-child {
@@ -41,5 +42,12 @@
 
 .quiqqer-sheets-desktop a:hover {
     color: #FFFFFF;
-    text-decoration: none !important;
+    text-decoration: none;
+}
+
+.quiqqer-sheets-desktop-limits {
+    float: right;
+    line-height: 40px;
+    text-align: center;
+    width: 120px;
 }

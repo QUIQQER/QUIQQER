@@ -331,6 +331,7 @@ class Utils
         $name = $Project->getName();
         $lang = $Project->getLang();
         $siteType = $Site->getAttribute('type');
+
         $cache
             = "site/site-attribute-list/project/{$name}-{$lang}/type/{$siteType}";
 

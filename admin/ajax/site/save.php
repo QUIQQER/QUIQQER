@@ -3,29 +3,30 @@
 /**
  * Saves a site
  *
- * @param String $project - project data
- * @param Integer $id - Site ID
- * @param String $attributes - JSON Array
+ * @param String  $project    - project data
+ * @param Integer $id         - Site ID
+ * @param String  $attributes - JSON Array
+ *
  * @return Array
  */
 function ajax_site_save($project, $id, $attributes)
 {
-    $Project = \QUI::getProjectManager()->decode( $project );
-    $Site    = new \QUI\Projects\Site\Edit( $Project, (int)$id );
+    $Project = QUI::getProjectManager()->decode($project);
+    $Site = new QUI\Projects\Site\Edit($Project, (int)$id);
 
-    $attributes = json_decode( $attributes, true );
+    $attributes = json_decode($attributes, true);
 
-    $Site->setAttributes( $attributes );
+    $Site->setAttributes($attributes);
     $Site->save();
     $Site->refresh();
 
     require_once 'get.php';
 
-    return ajax_site_get( $Project->toArray(), $id );
+    return ajax_site_get($Project->toArray(), $id);
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_site_save',
-    array( 'project', 'id', 'attributes' ),
+    array('project', 'id', 'attributes'),
     'Permission::checkAdminUser'
 );
