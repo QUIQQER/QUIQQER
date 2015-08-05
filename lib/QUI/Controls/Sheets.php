@@ -120,48 +120,6 @@ class Sheets extends QUI\Control
         $this->_getParams['limit'] = $limit;
 
 
-//        $attributes = $this->getAttributes();
-//        $params = array();
-//
-//        foreach ($attributes as $key => $value) {
-//
-//            if ($key == 'class') {
-//                continue;
-//            }
-//
-//            if ($key == 'sheets') {
-//                continue;
-//            }
-//
-//            if ($key == 'showmax') {
-//                continue;
-//            }
-//
-//            if ($key == 'limit') {
-//                continue;
-//            }
-//
-//            if ($key == 'limits') {
-//                continue;
-//            }
-//
-//            if ($key == 'anchor') {
-//                continue;
-//            }
-//
-//
-//            if (is_string($value) || is_int($value)) {
-//                $params[$key] = $value;
-//            }
-//
-//            if (is_array($value) && isset($value[0]) && !is_array($value[0])) {
-//                $params[$key] = implode(
-//                    QUI\Rewrite::URL_SPACE_CHARACTER,
-//                    $value
-//                );
-//            }
-//        }
-
         if (!$count || $count == 1) {
             return '';
         }
@@ -248,6 +206,7 @@ class Sheets extends QUI\Control
     }
 
     /**
+     * Set GET parameter to the links
      *
      * @param $name
      * @param $value
@@ -270,6 +229,7 @@ class Sheets extends QUI\Control
     }
 
     /**
+     * Set URL parameter to the links
      *
      * @param $name
      * @param $value
