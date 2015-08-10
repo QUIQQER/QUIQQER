@@ -165,6 +165,14 @@ class Manager
     static function getSettings(QUI\Projects\Project $Project)
     {
         $project = $Project->getName();
+        $cacheName = $Project->getName().'/'.$Project->getLang().'/wysiwyg/settings';
+
+        try {
+            return QUI\Cache\Manager::get($cacheName);
+
+        } catch (QUI\Exception $Exception) {
+
+        }
 
         // css files
         $css = array();
@@ -274,12 +282,58 @@ class Manager
             }
         }
 
+        // read wysiwyg styles && css files from packages files
+        $packages = QUI::getPackageManager()->getInstalled();
+
+        foreach ($packages as $package) {
+
+            if ($package['type'] != 'quiqqer-plugin'
+                && $package['type'] != 'quiqqer-module'
+            ) {
+                continue;
+            }
+
+            $settings = OPT_DIR.$package['name'].'/settings.xml';
+
+            if (!file_exists($settings)) {
+                continue;
+            }
+
+            $Dom = QUI\Utils\XML::getDomFromXml($settings);
+
+            // styles
+            $styles = array_merge(
+                QUI\Utils\DOM::getWysiwygStyles($Dom),
+                $styles
+            );
+
+            // css files
+            $cssFiles = QUI\Utils\XML::getWysiwygCSSFromXml($settings);
+
+            foreach ($cssFiles as $cssFile) {
+                // external file
+                if (strpos($cssFile, '//') === 0
+                    || strpos($cssFile, 'https://') === 0
+                    || strpos($cssFile, 'http://') === 0
+                ) {
+                    $css[] = $cssFile;
+                    continue;
+                }
+
+                $css[] = QUI\Utils\DOM::parseVar($cssFile);
+            }
+        }
+
+
         $result = array(
             'cssFiles'  => $css,
             'bodyId'    => $bodyId,
             'bodyClass' => $bodyClass,
             'styles'    => $styles
         );
+
+
+        QUI\Cache\Manager::set($cacheName, $result);
 
         return $result;
     }
