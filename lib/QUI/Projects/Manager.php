@@ -224,7 +224,8 @@ class Manager
             "media_watermark"          => "",
             "media_watermark_position" => "",
             "media_image_library"      => "",
-            "media_maxUploadSize"      => ""
+            "media_maxUploadSize"      => "",
+            "placeholder"              => ""
         );
 
         // settings.xml

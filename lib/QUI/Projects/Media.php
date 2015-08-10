@@ -120,7 +120,23 @@ class Media extends QUI\QDOM
      */
     public function getPlaceholder()
     {
-        return URL_BIN_DIR .'images/Q.png';
+        $Project = $this->getProject();
+
+        if ($Project->getConfig('placeholder')) {
+
+            try {
+                $Image = QUI\Projects\Media\Utils::getImageByUrl(
+                    $Project->getConfig('placeholder')
+                );
+
+                return $Image->getUrl(true);
+
+            } catch (QUI\Exception $Exception) {
+
+            }
+        }
+
+        return URL_BIN_DIR.'images/Q.png';
     }
 
     /**

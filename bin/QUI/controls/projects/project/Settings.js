@@ -371,9 +371,19 @@ define('controls/projects/project/Settings', [
                 Standard.value = self.$config.default_lang;
                 Template.value = self.$config.template;
 
-                QUIFormUtils.setDataToForm( self.$config, Form );
+                QUIFormUtils.setDataToForm(self.$config, Form);
 
-                self.Loader.hide();
+                ControlUtils.parse(Body).then(function() {
+
+                    QUI.Controls.getControlsInElement(Body).each(function(Control) {
+                        if ("setProject" in Control) {
+                            Control.setProject(self.$Project);
+                        }
+                    });
+
+                    self.Loader.hide();
+                });
+
             }, {
                 project : this.getProject().encode()
             });

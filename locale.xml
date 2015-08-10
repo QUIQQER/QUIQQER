@@ -127,7 +127,10 @@
             <de><![CDATA[Darf Editor Toolbars löschen]]></de>
             <en><![CDATA[]]></en>
         </locale>
-
+        <locale name="projects.project.settings.panel.placeholder">
+            <de><![CDATA[Platzhalterbild]]></de>
+            <en><![CDATA[Placeholder image]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/system" datatype="js,php">
