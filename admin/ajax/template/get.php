@@ -47,6 +47,5 @@ function ajax_template_get($template, $package, $params = '')
 
 QUI::$Ajax->register(
     'ajax_template_get',
-    array('template', 'package', 'params'),
-    'Permission::checkAdminUser'
+    array('template', 'package', 'params')
 );
