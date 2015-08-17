@@ -425,12 +425,14 @@ class Rewrite
 
             } catch (QUI\Exception $Exception) {
 
-                $Site = $this->existRegisterPath($_REQUEST['_url'], $this->getProject());
+                $Site = $this->existRegisterPath($_REQUEST['_url'],
+                    $this->getProject());
 
                 if ($Site) {
                     $Site->setAttribute('canonical', $_REQUEST['_url']);
 
                     $this->_site = $Site;
+
                     return;
 
                 }
@@ -660,8 +662,10 @@ class Rewrite
 
             if (strpos($val, '.') !== false) {
                 $site_url = explode('.', $val);
-                $this->site_params = explode(self::URL_PARAM_SEPERATOR,
-                    $site_url[0]);
+                $this->site_params = explode(
+                    self::URL_PARAM_SEPERATOR,
+                    $site_url[0]
+                );
 
                 $val = $this->site_params[0];
             }
@@ -1424,7 +1428,7 @@ class Rewrite
     /**
      * Return the Site or false if a path exists
      *
-     * @param string $path
+     * @param string                $path
      * @param \QUI\Projects\Project $Project
      *
      * @return \QUI\Projects\Site
