@@ -1339,9 +1339,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         $seperator = QUI\Rewrite::URL_PARAM_SEPERATOR;
         $params = $pathParams;
 
-        if (isset($param['paramAsSites']) && $param['paramAsSites']) {
+        if (isset($params['paramAsSites']) && $params['paramAsSites']) {
             $seperator = '/';
-            unset($param['paramAsSites']);
+            unset($params['paramAsSites']);
         }
 
         if ($this->getId() == 1) {
