@@ -617,6 +617,9 @@ class Edit extends Site
         $this->refresh();
         $this->createCache();
 
+        // clear paths
+        QUI::getRewrite()->unregisterPath($this);
+
         // Letztes Speichern
         $Project->setEditDate(time());
 
