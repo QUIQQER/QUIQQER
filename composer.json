@@ -38,6 +38,7 @@
         "html2text/html2text" : "1.0.1",
         "intervention/image" : "2.2.*",
         "t7systems/blowfish" : "1.0.0",
+        "fxp/composer-asset-plugin": "~1.0",
         "quiqqer/qui" : "dev-dev",
         "quiqqer/qui-php" : "dev-dev",
         "quiqqer/smarty": "3.*",
