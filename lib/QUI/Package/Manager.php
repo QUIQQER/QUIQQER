@@ -162,11 +162,11 @@ class Manager extends QUI\QDOM
             '--prefer-dist' => true
         ));
 
-        $this->_dir = OPT_DIR; // CMS_DIR .'packages/';
-        $this->_vardir = VAR_DIR.'composer/';
+        $this->_dir    = OPT_DIR; // CMS_DIR .'packages/';
+        $this->_vardir = VAR_DIR . 'composer/';
 
-        $this->_composer_json = $this->_vardir.'composer.json';
-        $this->_composer_lock = $this->_vardir.'composer.lock';
+        $this->_composer_json = $this->_vardir . 'composer.json';
+        $this->_composer_lock = $this->_vardir . 'composer.lock';
 
         $this->Events = new QUI\Events\Manager();
         $this->setAttributes($attributes);
@@ -226,7 +226,7 @@ class Manager extends QUI\QDOM
 
         QUI\Utils\System\File::mkdir($this->_vardir);
 
-        putenv("COMPOSER_HOME=".$this->_vardir);
+        putenv("COMPOSER_HOME=" . $this->_vardir);
 
         return $this->_Application;
     }
@@ -282,7 +282,7 @@ class Manager extends QUI\QDOM
                 = json_decode(file_get_contents($this->_composer_json));
         } else {
             $template = file_get_contents(
-                dirname(__FILE__).'/composer.tpl'
+                dirname(__FILE__) . '/composer.tpl'
             );
 
             $composerJson = json_decode($template);
@@ -292,13 +292,20 @@ class Manager extends QUI\QDOM
         $composerJson->config = array(
             "vendor-dir"    => OPT_DIR,
             "cache-dir"     => $this->_vardir,
-            "component-dir" => OPT_DIR.'bin',
+            "component-dir" => OPT_DIR . 'bin',
             "quiqqer-dir"   => CMS_DIR
+        );
+
+        $composerJson->extra = array(
+            "asset-installer-paths" => array(
+                "npm-asset-library"   => OPT_DIR . 'bin',
+                "bower-asset-library" => OPT_DIR . 'bin'
+            )
         );
 
 
         // make the repository list
-        $servers = $this->getServerList();
+        $servers      = $this->getServerList();
         $repositories = array();
 
         foreach ($servers as $server => $params) {
@@ -333,8 +340,8 @@ class Manager extends QUI\QDOM
             $list = $this->_getList();
 
             // must have
-            $require = array();
-            $require["php"] = ">=5.3.2";
+            $require                    = array();
+            $require["php"]             = ">=5.3.2";
             $require["quiqqer/quiqqer"] = "dev-master";
 
             foreach ($list as $package) {
@@ -365,14 +372,14 @@ class Manager extends QUI\QDOM
             );
         }
 
-        $backupDir = VAR_DIR.'backup/composer/';
+        $backupDir = VAR_DIR . 'backup/composer/';
 
         QUIFile::mkdir($backupDir);
 
         $date = date('Y-m-d__H-i-s');
 
-        $composerJson = $backupDir.'composer_'.$date.'.json';
-        $composerLock = $backupDir.'composer_'.$date.'.lock';
+        $composerJson = $backupDir . 'composer_' . $date . '.json';
+        $composerLock = $backupDir . 'composer_' . $date . '.lock';
 
         if (file_exists($composerJson) || file_exists($composerLock)) {
 
@@ -406,8 +413,8 @@ class Manager extends QUI\QDOM
      */
     public function clearComposerCache()
     {
-        QUI::getTemp()->moveToTemp($this->_vardir.'repo/');
-        QUI::getTemp()->moveToTemp($this->_vardir.'files/');
+        QUI::getTemp()->moveToTemp($this->_vardir . 'repo/');
+        QUI::getTemp()->moveToTemp($this->_vardir . 'files/');
     }
 
     /**
@@ -423,7 +430,7 @@ class Manager extends QUI\QDOM
     {
         $this->_checkComposer();
 
-        $json = file_get_contents($this->_composer_json);
+        $json   = file_get_contents($this->_composer_json);
         $result = json_decode($json, true);
 
         return $result;
@@ -450,7 +457,7 @@ class Manager extends QUI\QDOM
 
         }
 
-        $installed_file = $this->_dir.'composer/installed.json';
+        $installed_file = $this->_dir . 'composer/installed.json';
 
         if (!file_exists($installed_file)) {
             return array();
@@ -473,17 +480,17 @@ class Manager extends QUI\QDOM
                     continue;
                 }
 
-                $path = OPT_DIR.$entry['name'].'/';
+                $path = OPT_DIR . $entry['name'] . '/';
 
-                if (file_exists($path.'settings.xml')) {
+                if (file_exists($path . 'settings.xml')) {
                     $entry['_settings'] = 1;
                 }
 
-                if (file_exists($path.'permissions.xml')) {
+                if (file_exists($path . 'permissions.xml')) {
                     $entry['_permissions'] = 1;
                 }
 
-                if (file_exists($path.'database.xml')) {
+                if (file_exists($path . 'database.xml')) {
                     $entry['_database'] = 1;
                 }
 
@@ -506,7 +513,7 @@ class Manager extends QUI\QDOM
      */
     protected function _refreshInstalledList()
     {
-        $installed_file = $this->_dir.'composer/installed.json';
+        $installed_file = $this->_dir . 'composer/installed.json';
 
         if (!file_exists($installed_file)) {
             return;
@@ -517,7 +524,7 @@ class Manager extends QUI\QDOM
         $list = json_decode($data, true);
 
         foreach ($list as $key => $entry) {
-            $cf = $this->_dir.$entry['name'].'/composer.json';
+            $cf = $this->_dir . $entry['name'] . '/composer.json';
 
             if (!file_exists($cf)) {
                 continue;
@@ -561,7 +568,7 @@ class Manager extends QUI\QDOM
      */
     public function getInstalled($params = array())
     {
-        $list = $this->_getList();
+        $list   = $this->_getList();
         $result = $list;
 
         if (isset($params['type'])) {
@@ -584,7 +591,7 @@ class Manager extends QUI\QDOM
 
         if (isset($params['limit']) && isset($params['page'])) {
             $limit = (int)$params['limit'];
-            $page = (int)$params['page'];
+            $page  = (int)$params['page'];
 
             return QUI\Utils\Grid::getResult($result, $page, $limit);
         }
@@ -612,13 +619,13 @@ class Manager extends QUI\QDOM
     /**
      * Install Package
      *
-     * @param String      $package - name of the package
+     * @param String $package - name of the package
      * @param String|bool $version - (optional) version of the package default = dev-master
      */
     public function install($package, $version = false)
     {
         QUI\System\Log::addDebug(
-            'Install package '.$package.' with Lock Client'
+            'Install package ' . $package . ' with Lock Client'
         );
 
         $this->createComposerBackup();
@@ -673,20 +680,20 @@ class Manager extends QUI\QDOM
     /**
      * Install Package
      *
-     * @param String      $package - name of the package
+     * @param String $package - name of the package
      * @param String|bool $version - (optional) version of the package
      */
     public function installWithoutLockClient($package, $version = false)
     {
         QUI\System\Log::addDebug(
-            'Install package '.$package.' without Lock Client'
+            'Install package ' . $package . ' without Lock Client'
         );
 
         if ($version) {
 
             $this->_execComposer('require', array(
                 'packages' => array(
-                    $package.':'.$version
+                    $package . ':' . $version
                 )
             ));
 
@@ -707,12 +714,12 @@ class Manager extends QUI\QDOM
      * Install only a local package
      *
      * @param  string $package - name of the package
-     * @param bool    $version - (optional) version of the package
+     * @param bool $version - (optional) version of the package
      */
     public function installLocalPackage($package, $version = false)
     {
         QUI\System\Log::addDebug(
-            'Install package '.$package.' without Lock Client'
+            'Install package ' . $package . ' without Lock Client'
         );
 
         $this->_useOnlyLocalRepository();
@@ -726,7 +733,7 @@ class Manager extends QUI\QDOM
      * Add a Package to the composer json
      *
      * @param String|Array $package - name of the package
-     * @param String|bool  $version - (optional) version of the package
+     * @param String|bool $version - (optional) version of the package
      */
     public function setPackage($package, $version = false)
     {
@@ -734,7 +741,7 @@ class Manager extends QUI\QDOM
             $version = 'dev-master';
         }
 
-        $json = $this->_getComposerJSON();
+        $json    = $this->_getComposerJSON();
         $quiqqer = false;
 
         if (is_array($package)) {
@@ -785,7 +792,7 @@ class Manager extends QUI\QDOM
      */
     public function getPackage($package)
     {
-        $cache = 'packages/cache/info/'.$package;
+        $cache = 'packages/cache/info/' . $package;
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -794,7 +801,7 @@ class Manager extends QUI\QDOM
             QUI\System\Log::addDebug($Exception->getMessage());
         }
 
-        $list = $this->_getList();
+        $list   = $this->_getList();
         $result = array();
 
         foreach ($list as $pkg) {
@@ -804,7 +811,7 @@ class Manager extends QUI\QDOM
 
             if ($pkg['name'] == $package) {
                 $pkg['dependencies'] = $this->getDependencies($package);
-                $result = $pkg;
+                $result              = $pkg;
                 break;
             }
         }
@@ -833,7 +840,7 @@ class Manager extends QUI\QDOM
      */
     public function getDependencies($package)
     {
-        $list = $this->_getList();
+        $list   = $this->_getList();
         $result = array();
 
         foreach ($list as $pkg) {
@@ -858,7 +865,7 @@ class Manager extends QUI\QDOM
      */
     public function show($package)
     {
-        $cache = 'packages/cache/show/'.$package;
+        $cache = 'packages/cache/show/' . $package;
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -885,8 +892,8 @@ class Manager extends QUI\QDOM
                 continue;
             }
 
-            $line = explode(':', $line);
-            $key = trim(strip_tags($line[0]));
+            $line  = explode(':', $line);
+            $key   = trim(strip_tags($line[0]));
             $value = trim(strip_tags($line[1]));
 
             if ($key == 'versions') {
@@ -898,7 +905,7 @@ class Manager extends QUI\QDOM
             }
 
             if ($line == 'requires') {
-                $_temp = $show;
+                $_temp             = $show;
                 $result['require'] = array_slice($_temp, $k + 1);
 
                 continue;
@@ -922,7 +929,7 @@ class Manager extends QUI\QDOM
     public function searchPackage($str)
     {
         $result = array();
-        $str = QUI\Utils\Security\Orthos::clearShell($str);
+        $str    = QUI\Utils\Security\Orthos::clearShell($str);
 
         $list = $this->_execComposer('search', array(
             'tokens' => array($str)
@@ -946,7 +953,7 @@ class Manager extends QUI\QDOM
      */
     public function setup($package)
     {
-        QUIFile::mkdir(CMS_DIR.'etc/plugins/');
+        QUIFile::mkdir(CMS_DIR . 'etc/plugins/');
 
         try {
             $Package = $this->getInstalledPackage($package);
@@ -990,8 +997,8 @@ class Manager extends QUI\QDOM
      * Activate or Deactivate a server
      *
      * @param String $server - Server, IP, Host
-     * @param Bool   $status - 1 = active, 0 = disabled
-     * @param Bool   $backup - Optional (default=true, create a backup, false = create no backup
+     * @param Bool $status - 1 = active, 0 = disabled
+     * @param Bool $backup - Optional (default=true, create a backup, false = create no backup
      */
     public function setServerStatus($server, $status, $backup = true)
     {
@@ -1012,7 +1019,7 @@ class Manager extends QUI\QDOM
      * Add a server to the update-server list
      *
      * @param String $server - Server, IP, Host
-     * @param Array  $params - Server Parameter
+     * @param Array $params - Server Parameter
      */
     public function addServer($server, $params = array())
     {
@@ -1126,13 +1133,13 @@ class Manager extends QUI\QDOM
             }
 
             $from = '';
-            $to = '';
+            $to   = '';
 
             if (isset($versions[1])) {
 
                 if (isset($versions[1][0])) {
                     $from = $versions[1][0];
-                    $to = $versions[1][0]; // if "to" isn't set
+                    $to   = $versions[1][0]; // if "to" isn't set
                 }
 
                 if (isset($versions[1][1])) {
@@ -1257,11 +1264,11 @@ class Manager extends QUI\QDOM
     protected function _getUpdateConf()
     {
         // set last update
-        if (!file_exists(CMS_DIR.'etc/last_update.ini.php')) {
-            file_put_contents(CMS_DIR.'etc/last_update.ini.php', '');
+        if (!file_exists(CMS_DIR . 'etc/last_update.ini.php')) {
+            file_put_contents(CMS_DIR . 'etc/last_update.ini.php', '');
         }
 
-        return new QUI\Config(CMS_DIR.'etc/last_update.ini.php');
+        return new QUI\Config(CMS_DIR . 'etc/last_update.ini.php');
     }
 
     /**
@@ -1320,7 +1327,7 @@ class Manager extends QUI\QDOM
     {
         // deactivate active servers
         $activeServers = array();
-        $serverList = $this->getServerList();
+        $serverList    = $this->getServerList();
 
         foreach ($serverList as $server => $data) {
             if ($data['active'] == 1) {
@@ -1355,9 +1362,9 @@ class Manager extends QUI\QDOM
     /**
      * Execute a composer command
      *
-     * @param string $command  - composer command
-     * @param array  $params   - composer argument params
-     * @param bool   $showInfo - standard = false; shows messages with <info> or not
+     * @param string $command - composer command
+     * @param array $params - composer argument params
+     * @param bool $showInfo - standard = false; shows messages with <info> or not
      *
      * @return array - result list
      */
@@ -1368,7 +1375,7 @@ class Manager extends QUI\QDOM
     ) {
         // composer output, some warnings that composer/cache is not empty
         try {
-            QUI::getTemp()->moveToTemp($this->_vardir.'cache');
+            QUI::getTemp()->moveToTemp($this->_vardir . 'cache');
 
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addInfo($Exception->getMessage());
@@ -1389,7 +1396,7 @@ class Manager extends QUI\QDOM
             'command' => $command
         ), $params);
 
-        $Input = new ArrayInput($params);
+        $Input  = new ArrayInput($params);
         $Output = new QUI\Package\Output();
 
         // output events
@@ -1407,7 +1414,7 @@ class Manager extends QUI\QDOM
         QUI\Cache\Manager::clear(self::CACHE_NAME_TYPES);
 
         $messages = $Output->getMessages();
-        $result = array();
+        $result   = array();
 
         foreach ($messages as $entry) {
 
@@ -1454,14 +1461,14 @@ class Manager extends QUI\QDOM
         }
 
         $packages = $this->getInstalled();
-        $result = array();
+        $result   = array();
 
         foreach ($packages as $package) {
-            if (!is_dir(OPT_DIR.$package['name'])) {
+            if (!is_dir(OPT_DIR . $package['name'])) {
                 continue;
             }
 
-            $file = OPT_DIR.$package['name'].'/site.xml';
+            $file = OPT_DIR . $package['name'] . '/site.xml';
 
             if (!file_exists($file)) {
                 continue;
@@ -1490,10 +1497,10 @@ class Manager extends QUI\QDOM
         }
 
         $packages = $this->getInstalled();
-        $result = array();
+        $result   = array();
 
         foreach ($packages as $package) {
-            $file = OPT_DIR.$package['name'].'/database.xml';
+            $file = OPT_DIR . $package['name'] . '/database.xml';
 
             if (!file_exists($file)) {
                 continue;
@@ -1515,7 +1522,7 @@ class Manager extends QUI\QDOM
         $updatePath = QUI::conf('update', 'updatePath');
 
         if (!empty($updatePath) && is_dir($updatePath)) {
-            return rtrim($updatePath, '/').'/';
+            return rtrim($updatePath, '/') . '/';
         }
 
         return QUI::getTemp()->createFolder('quiqqerUpdate');
@@ -1546,7 +1553,7 @@ class Manager extends QUI\QDOM
             'pathinfo'  => true
         ));
 
-        $tempFile = $dir.'/'.$fileInfos['basename'];
+        $tempFile = $dir . '/' . $fileInfos['basename'];
 
         if (file_exists($tempFile)) {
             unlink($tempFile);
@@ -1568,7 +1575,7 @@ class Manager extends QUI\QDOM
             return array();
         }
 
-        $files = File::readDir($dir);
+        $files  = File::readDir($dir);
         $result = array();
 
         chdir($dir);
@@ -1584,7 +1591,7 @@ class Manager extends QUI\QDOM
 
                 // maybe gitlab package?
                 try {
-                    $packageName = pathinfo($package);
+                    $packageName  = pathinfo($package);
                     $composerJson = file_get_contents(
                         "zip://{$package}#{$packageName['filename']}/composer.json"
                     );
@@ -1606,7 +1613,7 @@ class Manager extends QUI\QDOM
                 continue;
             }
 
-            if (is_dir(OPT_DIR.$composerJson['name'])) {
+            if (is_dir(OPT_DIR . $composerJson['name'])) {
                 continue;
             }
 
