@@ -1,5 +1,7 @@
 
-# QUIQQER Management System
+QUIQQER Management System
+========
+
 Copyright PCSG OhG
 
 www.pcsg.de
@@ -8,7 +10,8 @@ www.quiqqer.com
 ![QUIQQER dev-dev](https://img.shields.io/badge/QUIQQER-dev-dd1144.svg)
 
 
-## About QUIQQER
+About QUIQQER
+--------
 
 QUIQQER is a modular based management system,
 written in PHP / JavaScript from PCSG OhG.
@@ -18,7 +21,9 @@ The online Documentation about QUIQQER can you find at www.quiqqer.com.
 
 On www.quiqqer.com you can find installation instructions, usefull help and more informations about QUIQQER.
 
-## Thanks
+
+Thanks
+--------
 
 Parts of QUIQQER are free open-source software and not from us.
 We thank all for the nice work.
