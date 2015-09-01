@@ -283,6 +283,7 @@ class Rewrite
                     isset($_SERVER['HTTP_HOST'])
                     && isset($vhosts[$_SERVER['HTTP_HOST']])
                     && isset($vhosts[$_SERVER['HTTP_HOST']][$this->_lang])
+                    && !empty($vhosts[$_SERVER['HTTP_HOST']][$this->_lang])
                     && (int)$_SERVER['SERVER_PORT'] !== 443
                     && QUI::conf('globals', 'httpshost') !=
                        'https://' . $_SERVER['HTTP_HOST']
@@ -438,7 +439,6 @@ class Rewrite
                     $this->_site = $Site;
 
                     return;
-
                 }
 
                 if ($this->showErrorHeader(404)) {
@@ -964,7 +964,9 @@ class Rewrite
         if (isset($vhosts[$_SERVER['HTTP_HOST']])
             && isset($vhosts[$_SERVER['HTTP_HOST']]['error'])
         ) {
-            $error = $vhosts[$_SERVER['HTTP_HOST']]['error'];
+            $host = $_SERVER['HTTP_HOST'];
+
+            $error = $vhosts[$host]['error'];
             $error = explode(',', $error);
 
             try {
@@ -978,13 +980,20 @@ class Rewrite
                     $error[2] = 1;
                 }
 
-                $Project = QUI::getProject($error[0], $error[1]);
-                $Site    = $Project->get($error[2]);
+                $template = false;
+
+                if (isset($vhosts[$host]['template'])) {
+                    $template = $vhosts[$host]['template'];
+                }
+
+                $Project = QUI::getProject($error[0], $error[1], $template);
+                $Site    = $Project->get((int)$error[2]);
 
                 return $Site;
 
             } catch (QUI\Exception $Exception) {
                 // no error site found, dry it global
+                echo $Exception->getMessage();
             }
         }
 
@@ -1568,6 +1577,7 @@ class Rewrite
         /**
          * Sprache behandeln
          */
+
         if (isset($vhosts[$_SERVER['HTTP_HOST']])
             && isset($vhosts[$_SERVER['HTTP_HOST']][$lang])
             && !empty($vhosts[$_SERVER['HTTP_HOST']][$lang])

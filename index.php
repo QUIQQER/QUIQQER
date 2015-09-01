@@ -177,7 +177,6 @@ try {
         Log(Debug::output());
     }
 
-
 } catch (QUI\Exception $Exception) {
 
     if ($Exception->getCode() == 404) {
