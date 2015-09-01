@@ -140,13 +140,13 @@ class Manager
     static function setup()
     {
         $DBTable = QUI::getDataBase()->Table();
-        $table = QUI::getDBTableName(self::TABLE);
+        $table   = QUI::getDBTableName(self::TABLE);
 
-        $table2users = $table.'2users';
-        $table2groups = $table.'2groups';
-        $table2sites = $table.'2sites';
-        $table2projects = $table.'2projects';
-        $table2media = $table.'2media';
+        $table2users    = $table . '2users';
+        $table2groups   = $table . '2groups';
+        $table2sites    = $table . '2sites';
+        $table2projects = $table . '2projects';
+        $table2media    = $table . '2media';
 
         // Haupttabelle anlegen
         $DBTable->appendFields($table, array(
@@ -212,7 +212,7 @@ class Manager
 
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::addError(
-                    '\QUI\Rights\Manager::importPermissionsForGroups() -> '.
+                    '\QUI\Rights\Manager::importPermissionsForGroups() -> ' .
                     $Exception->getMessage()
                 );
             }
@@ -228,7 +228,7 @@ class Manager
      */
     static function importPermissionsForGroup(Group $Group)
     {
-        $Manager = QUI::getPermissionManager();
+        $Manager     = QUI::getPermissionManager();
         $permissions = $Manager->getPermissions($Group);
 
         $Manager->setPermissions($Group, $permissions);
@@ -237,7 +237,7 @@ class Manager
     /**
      * Add a permission
      *
-     * @param array $params       - Permission params
+     * @param array $params - Permission params
      *                            array(
      *                            name =>
      *                            desc =>
@@ -253,7 +253,7 @@ class Manager
     public function addPermission($params)
     {
         $DataBase = QUI::getDataBase();
-        $needles = array(
+        $needles  = array(
             'name',
             'title',
             'desc',
@@ -353,8 +353,8 @@ class Manager
     /**
      * Import a permissions.xml
      *
-     * @param String $xmlfile     - Path to the file
-     * @param String $src         - optional, the src from where the rights come from
+     * @param String $xmlfile - Path to the file
+     * @param String $src - optional, the src from where the rights come from
      *                            eq: system, plugin-name, user
      */
     public function importPermissionsFromXml($xmlfile, $src = '')
@@ -366,7 +366,7 @@ class Manager
         }
 
         foreach ($permissions as $permission) {
-            $permission['src'] = $src;
+            $permission['src']          = $src;
             $permission['defaultvalue'] = '';
 
             if (isset($permission['default'])) {
@@ -450,7 +450,7 @@ class Manager
 
         $permissions = array();
 
-        $data = $this->_getData($Obj);
+        $data  = $this->_getData($Obj);
         $_list = $this->getPermissionList($area);
 
         foreach ($_list as $permission => $params) {
@@ -466,8 +466,9 @@ class Manager
 
         foreach ($obj_permissions as $obj_permission => $value) {
             // parse var type
-
-            $permissions[$obj_permission] = $value;
+            if (isset($permissions[$obj_permission])) {
+                $permissions[$obj_permission] = $value;
+            }
         }
 
         return $permissions;
@@ -482,7 +483,7 @@ class Manager
      */
     public function getProjectPermissions(QUI\Projects\Project $Project)
     {
-        $data = $this->_getData($Project);
+        $data  = $this->_getData($Project);
         $_list = $this->getPermissionList('project');
 
         $permissions = array();
@@ -512,7 +513,7 @@ class Manager
         }
 
 
-        $data = $this->_getData($Site);
+        $data  = $this->_getData($Site);
         $_list = $this->getPermissionList('site');
 
         $permissions = array();
@@ -577,9 +578,9 @@ class Manager
                 break;
         }
 
-        $area = $this->classToArea($cls);
+        $area  = $this->classToArea($cls);
         $_data = $this->_getData($Obj); // old permissions
-        $list = $this->getPermissionList($area);
+        $list  = $this->getPermissionList($area);
 
         $data = array();
 
@@ -599,11 +600,11 @@ class Manager
         }
 
         $DataBase = QUI::getDataBase();
-        $table = QUI::getDBTableName(self::TABLE);
+        $table    = QUI::getDBTableName(self::TABLE);
 
-        $table2users = $table.'2users';
-        $table2groups = $table.'2groups';
-        $table2media = $table.'2media';
+        $table2users  = $table . '2users';
+        $table2groups = $table . '2groups';
+        $table2media  = $table . '2media';
 
         // areas
         switch ($area) {
@@ -684,7 +685,7 @@ class Manager
      * Set the permissions for a site object
      *
      * @param QUI\Projects\Site|QUI\Projects\Site\Edit|QUI\Projects\Site\OnlyDB $Site
-     * @param Array                                                             $permissions - Array of permissions
+     * @param Array $permissions - Array of permissions
      */
     public function setSitePermissions($Site, $permissions)
     {
@@ -727,16 +728,16 @@ class Manager
      * Updates the permission entry for the site
      *
      * @param QUI\Projects\Site $Site
-     * @param String            $permission
-     * @param String|Integer    $value
+     * @param String $permission
+     * @param String|Integer $value
      */
     protected function _setSitePermission($Site, $permission, $value)
     {
         $Project = $Site->getProject();
-        $table = QUI::getDBTableName(self::TABLE);
+        $table   = QUI::getDBTableName(self::TABLE);
 
         QUI::getDataBase()->update(
-            $table.'2sites',
+            $table . '2sites',
             array('value' => $value),
             array(
                 'project'    => $Project->getName(),
@@ -751,16 +752,16 @@ class Manager
      * Add a new permission entry for site
      *
      * @param QUI\Projects\Site $Site
-     * @param String            $permission
-     * @param String|Integer    $value
+     * @param String $permission
+     * @param String|Integer $value
      */
     protected function _addSitePermission($Site, $permission, $value)
     {
         $Project = $Site->getProject();
-        $table = QUI::getDBTableName(self::TABLE);
+        $table   = QUI::getDBTableName(self::TABLE);
 
         QUI::getDataBase()->insert(
-            $table.'2sites',
+            $table . '2sites',
             array(
                 'project'    => $Project->getName(),
                 'lang'       => $Project->getLang(),
@@ -782,10 +783,10 @@ class Manager
 
 
         $Project = $Site->getProject();
-        $table = QUI::getDBTableName(self::TABLE);
+        $table   = QUI::getDBTableName(self::TABLE);
 
         QUI::getDataBase()->delete(
-            $table.'2sites',
+            $table . '2sites',
             array(
                 'project' => $Project->getName(),
                 'lang'    => $Project->getLang(),
@@ -798,15 +799,15 @@ class Manager
      * Set the permissions for a project object
      *
      * @param QUI\Projects\Project $Project
-     * @param Array                $permissions
+     * @param Array $permissions
      */
     public function setProjectPermissions(
         QUI\Projects\Project $Project,
         $permissions
     ) {
-        $data = array();
+        $data  = array();
         $_data = $this->_getData($Project);
-        $list = $this->getPermissionList('project');
+        $list  = $this->getPermissionList('project');
 
         // look at permission list and cleanup the values
         foreach ($list as $permission => $params) {
@@ -836,8 +837,8 @@ class Manager
      * Updates the permission entry for the site
      *
      * @param QUI\Projects\Project $Project
-     * @param String               $permission
-     * @param String|Integer       $value
+     * @param String $permission
+     * @param String|Integer $value
      */
     protected function _setProjectPermission(
         QUI\Projects\Project $Project,
@@ -847,7 +848,7 @@ class Manager
         $table = QUI::getDBTableName(self::TABLE);
 
         QUI::getDataBase()->update(
-            $table.'2projects',
+            $table . '2projects',
             array('value' => $value),
             array(
                 'project'    => $Project->getName(),
@@ -861,8 +862,8 @@ class Manager
      * Add a new permission entry for site
      *
      * @param QUI\Projects\Project $Project
-     * @param String               $permission
-     * @param String|Integer       $value
+     * @param String $permission
+     * @param String|Integer $value
      */
     protected function _addProjectPermission(
         QUI\Projects\Project $Project,
@@ -872,7 +873,7 @@ class Manager
         $table = QUI::getDBTableName(self::TABLE);
 
         QUI::getDataBase()->insert(
-            $table.'2projects',
+            $table . '2projects',
             array(
                 'project'    => $Project->getName(),
                 'lang'       => $Project->getLang(),
@@ -894,13 +895,13 @@ class Manager
         $DataBase = QUI::getDataBase();
 
         $table = QUI::getDBTableName(self::TABLE);
-        $area = $this->classToArea(get_class($Obj));
+        $area  = $this->classToArea(get_class($Obj));
 
 
         if ($area === 'user') {
             /* @var $Obj User */
             return $DataBase->fetch(array(
-                'from'  => $table.'2users',
+                'from'  => $table . '2users',
                 'where' => array(
                     'user_id' => $Obj->getId()
                 ),
@@ -911,7 +912,7 @@ class Manager
         if ($area === 'groups') {
             /* @var $Obj Group */
             return $DataBase->fetch(array(
-                'from'  => $table.'2groups',
+                'from'  => $table . '2groups',
                 'where' => array(
                     'group_id' => $Obj->getId()
                 ),
@@ -922,7 +923,7 @@ class Manager
         if ($area === 'project') {
             /* @var $Obj QUI\Projects\Project */
             $data = $DataBase->fetch(array(
-                'from'  => $table.'2projects',
+                'from'  => $table . '2projects',
                 'where' => array(
                     'project' => $Obj->getName(),
                     'lang'    => $Obj->getLang()
@@ -944,7 +945,7 @@ class Manager
             $Project = $Obj->getProject();
 
             $data = $DataBase->fetch(array(
-                'from'  => $table.'2sites',
+                'from'  => $table . '2sites',
                 'where' => array(
                     'project' => $Project->getName(),
                     'lang'    => $Project->getLang(),
@@ -967,7 +968,7 @@ class Manager
             $Project = $Obj->getProject();
 
             return $DataBase->fetch(array(
-                'from'  => $table.'2media',
+                'from'  => $table . '2media',
                 'where' => array(
                     'project' => $Project->getName(),
                     'lang'    => $Project->getLang(),
@@ -982,7 +983,7 @@ class Manager
     /**
      * Cleanup the value for the type
      *
-     * @param String         $type
+     * @param String $type
      * @param String|Integer $val
      *
      * @return String|Integer
@@ -1036,8 +1037,8 @@ class Manager
      * Rechte vom Benutzer bekommen
      * Geht besser über User->getPermission('right')
      *
-     * @param User                 $User
-     * @param string               $permission
+     * @param User $User
+     * @param string $permission
      * @param callback|string|bool $ruleset
      *
      * @return mixed
