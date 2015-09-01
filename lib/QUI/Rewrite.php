@@ -395,6 +395,10 @@ class Rewrite
             exit;
         }
 
+        if (!isset($_REQUEST['_url'])) {
+            $_REQUEST['_url'] = '';
+        }
+
         \QUI::getEvents()
             ->fireEvent('request', array($this, $_REQUEST['_url']));
 
