@@ -384,7 +384,10 @@ define('controls/permissions/Permission', [
 
                             this.$tableCache[perm.permission] = new Element('table', {
                                 'class' : 'data-table',
-                                html    : '<tr><th>'+ perm.translation +'</th></tr>'
+                                html    : '<thead>' +
+                                          '<tr><th>'+ perm.translation +'</th></tr>' +
+                                          '</thead>' +
+                                          '<tbody></tbody>'
                             }).inject(this.$ContentSheet);
 
                         }
@@ -506,7 +509,8 @@ define('controls/permissions/Permission', [
 
                 this.$tableCache[tableRightId] = new Element('table', {
                     'class' : 'data-table',
-                    html    : '<tr><th>'+ header +'</th></tr>'
+                    html    : '<thead><tr><th>'+ header +'</th></tr></thead>' +
+                              '<tbody></tbody>'
                 }).inject(this.$ContentSheet);
             }
 
@@ -569,7 +573,7 @@ define('controls/permissions/Permission', [
             }
 
             Node.inject(Row.getElement('td'));
-            Row.inject(Table);
+            Row.inject(Table.getElement('tbody'));
         },
 
         /**
