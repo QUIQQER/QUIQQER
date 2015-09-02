@@ -107,6 +107,10 @@ class Temp
      */
     public function moveToTemp($folder)
     {
+        if (!file_exists($folder)) {
+            return;
+        }
+
         QUIFile::move(
             $folder,
             self::createFolder().md5($folder)
