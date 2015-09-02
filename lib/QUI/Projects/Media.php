@@ -139,6 +139,33 @@ class Media extends QUI\QDOM
         return URL_BIN_DIR.'images/Q.png';
     }
 
+
+    /**
+     * Return the Placeholder of the media
+     *
+     * @return QUI\Projects\Media\Image|string
+     */
+    public function getPlaceholderImage()
+    {
+        $Project = $this->getProject();
+
+        if ($Project->getConfig('placeholder')) {
+
+            try {
+                $Image = QUI\Projects\Media\Utils::getImageByUrl(
+                    $Project->getConfig('placeholder')
+                );
+
+                return $Image;
+
+            } catch (QUI\Exception $Exception) {
+
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Return the ImageManager of the Media
      *

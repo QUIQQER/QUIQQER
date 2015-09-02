@@ -3029,6 +3029,17 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Sie möchten eine inaktive Datei oder ein inaktiven Ordner einfügen.]]></de>
             <en><![CDATA[you want insert a inactive file or folder.]]></en>
         </locale>
+        <locale name="projects.project.site.media.popup.noProject.text" html="true">
+            <de><![CDATA[
+                Es wurde leider kein Projekt zu gewiesen.<br />
+                Bitte wählen Sie ein Projekt aus, aus welchem Sie Dateien auswählen möchten.
+            ]]></de>
+            <en><![CDATA[
+                Unfortunately, there was no project to selected and harvested.<br />
+                Please select a project from which you want to select files.
+            ]]></en>
+        </locale>
+
         <locale name="projects.project.site.media.popup.window.activate.information" html="true">
             <de><![CDATA[Inaktive Dateien können nicht eingefügt werden. Möchten Sie diese Datei daher aktivieren?]]></de>
             <en><![CDATA[Inactive files can not be inserted. Would you activate this file?]]></en>

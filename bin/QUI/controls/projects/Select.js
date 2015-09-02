@@ -1,4 +1,3 @@
-
 /**
  * Dropdown for project selection
  *
@@ -23,44 +22,41 @@ define('controls/projects/Select', [
 
     'Projects'
 
-], function(QUI, QUIControl, QUISelect, QUILoader, Projects)
-{
+], function (QUI, QUIControl, QUISelect, QUILoader, Projects) {
     "use strict";
 
     return new Class({
 
-        Extends : QUIControl,
-        Type    : 'controls/projects/Select',
+        Extends: QUIControl,
+        Type   : 'controls/projects/Select',
 
-        Binds : [],
-        options : {},
+        options: {
+            langSelect : true
+        },
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize: function (options) {
+            this.parent(options);
 
             this.Loader = new QUILoader();
 
             this.addEvents({
 //                onCreate : this.$onCreate
-                onIjnect : this.$onInject
+                onIjnect: this.$onInject
             });
         },
 
         /**
          *  create
          */
-        create : function()
-        {
+        create: function () {
             var self = this;
 
             this.$Elm = new Element('div');
 
             this.$Select = new QUISelect({
-                name : 'projects-select',
-                events :
-                {
-                    onChange : function(value) {
+                name  : 'projects-select',
+                events: {
+                    onChange: function (value) {
                         self.fireEvent('change', [value]);
                     }
                 }
@@ -75,23 +71,33 @@ define('controls/projects/Select', [
 
             this.Loader.show();
 
-            Projects.getList(function(result)
-            {
+            // empty value
+            self.$Select.appendChild('', '', 'icon-home');
+
+            Projects.getList(function (result) {
                 var i, len, langs, project;
 
-                for (project in result)
-                {
+                for (project in result) {
                     if (!result.hasOwnProperty(project)) {
+                        continue;
+                    }
+
+                    if (self.getAttribute('langSelect') === false) {
+                        self.$Select.appendChild(
+                            project,
+                            project,
+                            'icon-home'
+                        );
+
                         continue;
                     }
 
                     langs = result[project].langs.split(',');
 
-                    for (i = 0, len = langs.length; i < len; i++)
-                    {
+                    for (i = 0, len = langs.length; i < len; i++) {
                         self.$Select.appendChild(
-                            project +' ( '+ langs[ i ] +' )',
-                            project +','+ langs[ i ],
+                            project + ' ( ' + langs[i] + ' )',
+                            project + ',' + langs[i],
                             'icon-home'
                         );
                     }
@@ -111,8 +117,7 @@ define('controls/projects/Select', [
          *
          * @returns {*}
          */
-        getValue : function()
-        {
+        getValue: function () {
             return this.$Select.getValue();
         }
     });
