@@ -187,8 +187,6 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                     Toggle.set('html', '<span class="icon-plus"></span>');
                     Table.addClass('data-table-closed');
 
-                    console.log(Table);
-
                     moofx(TBody).animate({
                         opacity: 0
                     }, {
