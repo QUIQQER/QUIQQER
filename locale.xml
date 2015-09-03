@@ -1308,6 +1308,11 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[The page is placed in the trash and can be restored.<br />
                 Also all pages and links will be placed in the trash.]]></en>
         </locale>
+        <locale name="projects.project.site.panel.window.delete.button">
+            <de><![CDATA[Seite löschen]]></de>
+            <en><![CDATA[Delete page]]></en>
+        </locale>
+
         <locale name="projects.project.site.panel.window.create.title">
             <de><![CDATA[Wie soll die neue Seite heißen?]]></de>
             <en><![CDATA[How be called the new page?]]></en>

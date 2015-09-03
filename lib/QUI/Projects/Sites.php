@@ -151,7 +151,7 @@ class Sites
                 'help'    => QUI::getLocale()->get($gl,
                     'projects.project.site.btn.new.help'),
                 'alt'     => QUI::getLocale()
-                                ->get($gl, 'projects.project.site.btn.new.alt'),
+                    ->get($gl, 'projects.project.site.btn.new.alt'),
                 'title'   => QUI::getLocale()->get($gl,
                     'projects.project.site.btn.new.title')
             ))
@@ -202,8 +202,8 @@ class Sites
                         'projects.project.site.information'
                     ),
                     'template' => SYS_DIR
-                        .'template/site/information_norights.html',
-                    'icon'     => URL_BIN_DIR.'16x16/page.png'
+                                  . 'template/site/information_norights.html',
+                    'icon'     => URL_BIN_DIR . '16x16/page.png'
                 ))
             );
 
@@ -221,7 +221,7 @@ class Sites
                         'quiqqer/system',
                         'projects.project.site.information'
                     ),
-                    'template' => SYS_DIR.'template/site/information.html',
+                    'template' => SYS_DIR . 'template/site/information.html',
                     'icon'     => 'fa fa-file-o icon-file-alt'
                 ))
             );
@@ -235,7 +235,7 @@ class Sites
                         'quiqqer/system',
                         'projects.project.site.information'
                     ),
-                    'template' => SYS_DIR.'template/site/noview.html',
+                    'template' => SYS_DIR . 'template/site/noview.html',
                     'icon'     => 'fa fa-file-o icon-file-alt'
                 ))
             );
@@ -252,7 +252,7 @@ class Sites
                         'projects.project.site.information'
                     ),
                     'template' => SYS_DIR
-                        .'template/site/information_norights.html',
+                                  . 'template/site/information_norights.html',
                     'icon'     => 'fa fa-file-o icon-file-alt'
                 ))
             );
@@ -281,22 +281,22 @@ class Sites
                     'projects.project.site.settings'
                 ),
                 'icon'     => 'icon-cog',
-                'template' => SYS_DIR.'template/site/settings.html'
+                'template' => SYS_DIR . 'template/site/settings.html'
             ))
         );
 
         // site type tabs
-        $type = $Site->getAttribute('type');
+        $type  = $Site->getAttribute('type');
         $types = explode(':', $type);
 
-        $file = OPT_DIR.$types[0].'/site.xml';
+        $file = OPT_DIR . $types[0] . '/site.xml';
 
         if (file_exists($file)) {
-            $Dom = QUI\Utils\XML::getDomFromXml($file);
+            $Dom  = QUI\Utils\XML::getDomFromXml($file);
             $Path = new \DOMXPath($Dom);
 
             QUI\Utils\DOM::addTabsToToolbar(
-                $Path->query("//site/types/type[@type='".$types[1]."']/tab"),
+                $Path->query("//site/types/type[@type='" . $types[1] . "']/tab"),
                 $Tabbar
             );
         }
@@ -311,7 +311,7 @@ class Sites
                 continue;
             }
 
-            $file = OPT_DIR.$package['name'].'/site.xml';
+            $file = OPT_DIR . $package['name'] . '/site.xml';
 
             if (!file_exists($file)) {
                 continue;
@@ -324,7 +324,7 @@ class Sites
         }
 
         // project template tabs
-        $Project = $Site->getProject();
+        $Project   = $Site->getProject();
         $templates = Manager::getRelatedTemplates($Project);
 
         foreach ($templates as $template) {
@@ -336,7 +336,7 @@ class Sites
                 continue;
             }
 
-            $file = OPT_DIR.$template['name'].'/site.xml';
+            $file = OPT_DIR . $template['name'] . '/site.xml';
 
             if (!file_exists($file)) {
                 continue;
@@ -355,7 +355,7 @@ class Sites
     /**
      * Get the tab of a site
      *
-     * @param String    $tabname - Name of the Tab
+     * @param String $tabname - Name of the Tab
      * @param Site\Edit $Site
      *
      * @throws \QUI\Exception
@@ -364,7 +364,7 @@ class Sites
     static function getTab($tabname, $Site)
     {
         $Toolbar = self::getTabs($Site);
-        $Tab = $Toolbar->getElementByName($tabname);
+        $Tab     = $Toolbar->getElementByName($tabname);
 
         if ($Tab === false) {
             throw new QUI\Exception('The tab could not be found.');
@@ -389,7 +389,7 @@ class Sites
         $Project = $Site->getProject();
         $Plugins = QUI::getPluginManager();
 
-        $types = $Project->getTypes();
+        $types  = $Project->getTypes();
         $result = array();
 
         // Main Plugins
@@ -413,7 +413,7 @@ class Sites
      * Search sites
      *
      * @param String $search
-     * @param Array  $params
+     * @param Array $params
      *
      * $params['Project'] - \QUI\Projects\Project
      * $params['project'] - string - project name
@@ -429,11 +429,11 @@ class Sites
     {
         $DataBase = QUI::getDataBase();
 
-        $page = 1;
-        $limit = 50;
-        $Project = null;
+        $page     = 1;
+        $limit    = 50;
+        $Project  = null;
         $projects = array();
-        $fields = array('id', 'title', 'name');
+        $fields   = array('id', 'title', 'name');
 
         $selectList = array(
             'id',
@@ -474,7 +474,7 @@ class Sites
 
         // fields
         if (isset($params['fields']) && !empty($params['fields'])) {
-            $fields = array();
+            $fields  = array();
             $_fields = explode(',', $params['fields']);
 
             foreach ($_fields as $field) {
@@ -506,25 +506,25 @@ class Sites
         foreach ($projects as $Project) {
             /* @var $Project Project */
             $langs = $Project->getAttribute('langs');
-            $name = $Project->getName();
+            $name  = $Project->getName();
 
             foreach ($langs as $lang) {
                 $tables[] = array(
-                    'table'   => QUI_DB_PRFX.$name.'_'.$lang.'_sites',
+                    'table'   => QUI_DB_PRFX . $name . '_' . $lang . '_sites',
                     'lang'    => $lang,
                     'project' => $name
                 );
             }
         }
 
-        $search = '%'.$search.'%';
-        $query = '';
+        $search = '%' . $search . '%';
+        $query  = '';
 
         foreach ($tables as $table) {
             $where = '';
 
             foreach ($fields as $field) {
-                $where .= $field.' LIKE :search';
+                $where .= $field . ' LIKE :search';
 
                 if ($field !== end($fields)) {
                     $where .= ' OR ';
@@ -533,10 +533,10 @@ class Sites
 
             $query
                 .= '(SELECT
-                            "'.$table['project'].' ('.$table['lang'].')" as "project",
-                            '.implode(',', $selectList).'
-                        FROM `'.$table['table'].'`
-                        WHERE ('.$where.') AND deleted = 0) ';
+                            "' . $table['project'] . ' (' . $table['lang'] . ')" as "project",
+                            ' . implode(',', $selectList) . '
+                        FROM `' . $table['table'] . '`
+                        WHERE (' . $where . ') AND deleted = 0) ';
 
             if ($table !== end($tables)) {
                 $query .= ' UNION ';
@@ -552,11 +552,11 @@ class Sites
                 $page = 0;
             }
 
-            $query .= ' LIMIT '.($page * $limit).','.$limit;
+            $query .= ' LIMIT ' . ($page * $limit) . ',' . $limit;
         }
 
 
-        $PDO = $DataBase->getPDO();
+        $PDO  = $DataBase->getPDO();
         $Stmt = $PDO->prepare($query);
 
         $Stmt->execute(array(
