@@ -15,7 +15,7 @@ if (isset($_REQUEST['_url'])
     list($user, $host) = explode("[at]", $addr);
 
     if (isset($user) && isset($host)) {
-        header("Location: mailto:".$user."@".$host);
+        header("Location: mailto:" . $user . "@" . $host);
         exit;
     }
 }
@@ -29,7 +29,7 @@ use QUI\Utils\Security\Orthos;
 use QUI\System\Log;
 
 $Response = QUI::getGlobalResponse();
-$Engine = QUI::getTemplateManager()->getEngine();
+$Engine   = QUI::getTemplateManager()->getEngine();
 
 // UTF 8 Prüfung für umlaute in url
 if (isset($_REQUEST['_url'])) {
@@ -46,7 +46,7 @@ if (!QUI::getProjectManager()->count()) {
 
     $Response->setContent(
         '<div style="text-align: center; margin-top: 100px;">
-            <img src="'.URL_BIN_DIR.'quiqqer_logo.png" style="max-width: 100%;" />
+            <img src="' . URL_BIN_DIR . 'quiqqer_logo.png" style="max-width: 100%;" />
         </div>'
     );
 
@@ -70,7 +70,7 @@ if (isset($_REQUEST['lang']) && $_REQUEST['lang'] == 'false') {
 }
 
 $Project = $Rewrite->getProject();
-$Site = $Rewrite->getSite();
+$Site    = $Rewrite->getSite();
 
 $Site->load();
 
@@ -92,7 +92,7 @@ if (isset($_REQUEST['ref'])) {
  */
 if (QUI::conf('globals', 'maintenance')
     && !(QUI::getUserBySession()->getId()
-        && QUI::getUserBySession()->isSu())
+         && QUI::getUserBySession()->isSu())
 ) {
     $Response->setStatusCode(Response::HTTP_SERVICE_UNAVAILABLE);
     $Response->headers->set('X-Powered-By', '');
@@ -108,12 +108,12 @@ if (QUI::conf('globals', 'maintenance')
         'URL_VAR_DIR' => URL_VAR_DIR,
         'URL_OPT_DIR' => URL_OPT_DIR,
         'URL_USR_DIR' => URL_USR_DIR,
-        'URL_TPL_DIR' => URL_USR_DIR.$Project->getName().'/',
-        'TPL_DIR'     => OPT_DIR.$Project->getName().'/',
+        'URL_TPL_DIR' => URL_USR_DIR . $Project->getName() . '/',
+        'TPL_DIR'     => OPT_DIR . $Project->getName() . '/',
     ));
 
-    $file = SYS_DIR.'template/maintenance.html';
-    $pfile = USR_DIR.$Project->getName().'/lib/maintenance.html';
+    $file  = SYS_DIR . 'template/maintenance.html';
+    $pfile = USR_DIR . $Project->getName() . '/lib/maintenance.html';
 
     if (file_exists($pfile)) {
         $file = $pfile;
@@ -126,11 +126,11 @@ if (QUI::conf('globals', 'maintenance')
 
 
 // Prüfen ob es ein Cachefile gibt damit alles andere übersprungen werden kann
-$site_cache_dir = VAR_DIR.'cache/sites/';
-$project_cache_dir = $site_cache_dir.$Project->getAttribute('name').'/';
-$site_cache_file
-    = $project_cache_dir.$Site->getId().'_'.$Project->getAttribute('name').'_'
-    .$Project->getAttribute('lang');
+$site_cache_dir    = VAR_DIR . 'cache/sites/';
+$project_cache_dir = $site_cache_dir . $Project->getAttribute('name') . '/';
+$site_cache_file   = $project_cache_dir . $Site->getId() . '_'
+                     . $Project->getAttribute('name') . '_'
+                     . $Project->getAttribute('lang');
 
 // Event onstart
 QUI::getEvents()->fireEvent('start');
@@ -142,7 +142,7 @@ if (CACHE && file_exists($site_cache_file)
     && $Site->getAttribute('nocache') != true
 ) {
     $cache_content = file_get_contents($site_cache_file);
-    $_content = $Rewrite->outputFilter($cache_content);
+    $_content      = $Rewrite->outputFilter($cache_content);
 
     $Response->setContent($content);
     $Response->send();
@@ -154,14 +154,15 @@ if (CACHE && file_exists($site_cache_file)
  */
 try {
     $Template = new QUI\Template();
-    $content = $Template->fetchTemplate($Site);
+    $content  = $Template->fetchTemplate($Site);
 
     Debug::marker('fetch Template');
 
     // cachefile erstellen
     if ($Site->getAttribute('nocache') != true) {
-        QUI\Utils\System\File::mkdir($site_cache_dir
-            .$Project->getAttribute('name').'/');
+        QUI\Utils\System\File::mkdir(
+            $site_cache_dir . $Project->getAttribute('name') . '/'
+        );
 
         file_put_contents($site_cache_file, $content);
     }
@@ -169,6 +170,8 @@ try {
     $content = $Rewrite->outputFilter($content);
     $content = QUI\Control\Manager::setCSSToHead($content);
     Debug::marker('output done');
+
+    QUI::getEvents()->fireEvent('requestOutput', array($content));
 
     $Response->setContent($content);
     Debug::marker('content done');
