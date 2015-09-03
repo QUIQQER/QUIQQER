@@ -49,7 +49,7 @@ $languages = QUI::availableLanguages();
         }
 
         .entry {
-            width: 360px;
+            width: 440px;
             margin: 10px auto;
         }
 
@@ -65,7 +65,7 @@ $languages = QUI::availableLanguages();
         }
 
         label {
-            width: 100px;
+            width: 160px;
             cursor: pointer;
             float: left;
             line-height: 26px;
@@ -89,9 +89,10 @@ $languages = QUI::availableLanguages();
         }
 
         .logininput {
+            float: left;
             margin: 0 auto;
-            padding-left: 100px;
-            width: 360px;
+            padding-left: 240px;
+            width: 100%;
         }
 
         input[type="submit"] {
@@ -111,7 +112,7 @@ $languages = QUI::availableLanguages();
 
         #username,
         #password {
-            width: 200px;
+            width: calc(100% - 160px);
         }
 
         /* Animate.css - http://daneden.me/animate */
@@ -263,7 +264,7 @@ $languages = QUI::availableLanguages();
                 maxDropDownHeight : 300,
                 styles : {
                     marginLeft: 10,
-                    width: 50
+                    width: 130
                 },
                 events :
                 {

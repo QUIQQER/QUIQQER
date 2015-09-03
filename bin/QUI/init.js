@@ -1,4 +1,3 @@
-
 /**
  * The main loading script for the quiqqer administration
  *
@@ -14,90 +13,48 @@
 
 // extend mootools with desktop drag drop
 Object.append(Element.NativeEvents, {
-    dragenter : 2,
-    dragleave : 2,
-    dragover  : 2,
-    dragend   : 2,
-    drop      : 2
+    dragenter: 2,
+    dragleave: 2,
+    dragover : 2,
+    dragend  : 2,
+    drop     : 2
 });
 
 // custome select
 // eq: getElements( 'input:display(inline)' )
-Slick.definePseudo('display', function(value) {
+Slick.definePseudo('display', function (value) {
     "use strict";
     return Element.getStyle(this, 'display') == value;
 });
 
 // IE Flickering Bug
-try
-{
-    document.execCommand( "BackgroundImageCache", false, true );
+try {
+    document.execCommand("BackgroundImageCache", false, true);
 
-} catch ( err )
-{
+} catch (err) {
     // Nothing to do
 }
 
-//requestAnimationFrame polyfill
-(function()
-{
-    "use strict";
-
-    var lastTime = 0;
-    var vendors = ['webkit', 'moz'];
-
-    for ( var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x )
-    {
-        window.requestAnimationFrame = window[ vendors[ x ] +'RequestAnimationFrame' ];
-        window.cancelAnimationFrame  = window[ vendors[ x ] +'CancelAnimationFrame' ] ||
-                                       window[ vendors[ x ] +'CancelRequestAnimationFrame' ];
-    }
-
-    if ( !window.requestAnimationFrame )
-    {
-        window.requestAnimationFrame = function(callback)
-        {
-            var currTime   = new Date().getTime();
-            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-
-            var id = window.setTimeout(function() {
-                callback(currTime + timeToCall);
-            }, timeToCall);
-
-            lastTime = currTime + timeToCall;
-
-            return id;
-        };
-    }
-
-    if ( !window.cancelAnimationFrame )
-    {
-        window.cancelAnimationFrame = function(id) {
-            clearTimeout(id);
-        };
-    }
-}());
-
 // require config
 require.config({
-    baseUrl : URL_BIN_DIR +'QUI/',
-    paths : {
-        "package" : URL_OPT_DIR,
-        "qui"     : URL_OPT_DIR +'bin/qui/qui',
-        "locale"  : URL_VAR_DIR +'locale/bin',
-        "URL_OPT_DIR" : URL_OPT_DIR,
-        "URL_BIN_DIR" : URL_BIN_DIR
+    baseUrl: URL_BIN_DIR + 'QUI/',
+    paths  : {
+        "package"    : URL_OPT_DIR,
+        "qui"        : URL_OPT_DIR + 'bin/qui/qui',
+        "locale"     : URL_VAR_DIR + 'locale/bin',
+        "URL_OPT_DIR": URL_OPT_DIR,
+        "URL_BIN_DIR": URL_BIN_DIR
     },
 
-    waitSeconds : 0,
-    locale      : USER.lang +"-"+ USER.lang,
-    catchError  : true,
-    urlArgs     : "d="+ QUIQQER_VERSION.replace(/\./g, '_')+'_'+ QUIQQER.lu,
+    waitSeconds: 0,
+    locale     : USER.lang + "-" + USER.lang,
+    catchError : true,
+    urlArgs    : "d=" + QUIQQER_VERSION.replace(/\./g, '_') + '_' + QUIQQER.lu,
 
-    map : {
+    map: {
         '*': {
-            'css': URL_OPT_DIR +'bin/qui/qui/lib/css.js',
-            'text': URL_OPT_DIR +'bin/qui/qui/lib/text.js'
+            'css' : URL_OPT_DIR + 'bin/qui/qui/lib/css.js',
+            'text': URL_OPT_DIR + 'bin/qui/qui/lib/text.js'
         }
     }
 });
@@ -109,51 +66,48 @@ require.config({
 
 // main require list + locale translations
 var requireList = [
-   'qui/QUI',
-   'Locale',
-   'Ajax',
-   'Projects',
-   'controls/workspace/Manager',
-   'controls/menu/Search',
-   'qui/controls/buttons/Button',
-   'qui/controls/contextmenu/Item',
-   'qui/controls/contextmenu/Seperator'
-].append( QUIQQER_LOCALE || [] );
+    'qui/QUI',
+    'Locale',
+    'Ajax',
+    'Projects',
+    'controls/workspace/Manager',
+    'controls/menu/Search',
+    'qui/controls/buttons/Button',
+    'qui/controls/contextmenu/Item',
+    'qui/controls/contextmenu/Seperator'
+].append(QUIQQER_LOCALE || []);
 
-require( requireList, function()
-{
+require(requireList, function () {
     "use strict";
 
-    var QUI        = arguments[ 0 ],
-        Locale     = arguments[ 1 ],
-        Ajax       = arguments[ 2 ],
-        Projects   = arguments[ 3 ],
-        WSManager  = arguments[ 4 ],
-        MenuSearch = arguments[ 5 ],
-        QUIButton  = arguments[ 6 ],
+    var QUI                     = arguments[0],
+        Locale                  = arguments[1],
+        Ajax                    = arguments[2],
+        Projects                = arguments[3],
+        WSManager               = arguments[4],
+        MenuSearch              = arguments[5],
+        QUIButton               = arguments[6],
 
-        QUIContextmenuItem      = arguments[ 7 ],
-        QUIContextmenuSeperator = arguments[ 8 ];
+        QUIContextmenuItem      = arguments[7],
+        QUIContextmenuSeperator = arguments[8];
 
-    Locale.setCurrent( USER.lang );
+    Locale.setCurrent(USER.lang);
 
     QUI.setAttributes({
-        'control-loader-type'  : 'line-scale',
-        'control-loader-color' : '#2f8fc8'
+        'control-loader-type' : 'line-scale',
+        'control-loader-color': '#2f8fc8'
     });
 
-    QUI.addEvent('onError', function( err, url, line )
-    {
-        console.error( err +' - '+ url +' - '+ line );
+    QUI.addEvent('onError', function (err, url, line) {
+        console.error(err + ' - ' + url + ' - ' + line);
 
-        if ( parseInt( QUIQQER_CONFIG.globals.development ) &&
-             typeof Error !== 'undefined' )
-        {
-            console.warn( new Error().stack );
+        if (parseInt(QUIQQER_CONFIG.globals.development) &&
+            typeof Error !== 'undefined') {
+            console.warn(new Error().stack);
         }
     });
 
-    QUI.getMessageHandler(function(MH) {
+    QUI.getMessageHandler(function (MH) {
 
         if (!("gui" in QUIQQER_CONFIG) || !QUIQQER_CONFIG.gui) {
             return;
@@ -171,50 +125,49 @@ require( requireList, function()
 
     // load the default workspace
     var doc_size  = document.body.getSize(),
-        Container = document.getElement( '.qui-workspace-container' ),
-        Menu      = document.getElement( '.qui-menu-container' );
+        Container = document.getElement('.qui-workspace-container'),
+        Menu      = document.getElement('.qui-menu-container');
 
     var menuY = Menu.getComputedSize().height;
 
     Container.setStyles({
-        overflow : 'hidden',
-        height   : doc_size.y - menuY,
-        width    : '100%'
+        overflow: 'hidden',
+        height  : doc_size.y - menuY,
+        width   : '100%'
     });
 
-    document.id( 'wrapper' ).setStyle( 'height', '100%' );
+    document.id('wrapper').setStyles({
+        height  : '100%',
+        overflow: 'hidden',
+        width   : '100%'
+    });
 
     /**
      * Workspace
      */
     var Workspace = new WSManager({
-        autoResize : false,
-        events     :
-        {
-            onLoadWorkspace : function(WS) {
+        autoResize: false,
+        events    : {
+            onLoadWorkspace: function (WS) {
                 WS.load();
             },
 
-            onWorkspaceLoaded : function(WS)
-            {
-                var createMenu = function(Menu)
-                {
+            onWorkspaceLoaded: function (WS) {
+                var createMenu = function (Menu) {
                     var list = WS.getList(),
                         Bar  = Menu.getChildren();
 
                     // logo
-                    if ( Bar.getChildren( 'quiqqer' ) )
-                    {
-                        var Quiqqer = Bar.getChildren( 'quiqqer' );
+                    if (Bar.getChildren('quiqqer')) {
+                        var Quiqqer = Bar.getChildren('quiqqer');
 
-                        if ( Quiqqer )
-                        {
-                            var Img = Quiqqer.getElm().getElement( 'img' );
+                        if (Quiqqer) {
+                            var Img = Quiqqer.getElm().getElement('img');
 
                             Img.setStyles({
-                                height   : 22,
-                                position : 'relative',
-                                top      : 6
+                                height  : 22,
+                                position: 'relative',
+                                top     : 6
                             });
                         }
                     }
@@ -226,36 +179,34 @@ require( requireList, function()
                         document.getElement('.qui-contextmenu-bar'), 'after'
                     );
 
-                    if ( !Bar.getChildren( 'profile' ) ) {
+                    if (!Bar.getChildren('profile')) {
                         return;
                     }
 
-                    if ( !Bar.getChildren( 'profile' ).getChildren( 'workspaces' ) ) {
+                    if (!Bar.getChildren('profile').getChildren('workspaces')) {
                         return;
                     }
 
-                    var Workspaces = Bar.getChildren( 'profile' )
-                                        .getChildren( 'workspaces' );
+                    var Workspaces = Bar.getChildren('profile')
+                        .getChildren('workspaces');
 
                     Workspaces.clear();
 
-                    Object.each(list, function(Entry)
-                    {
+                    Object.each(list, function (Entry) {
                         var standard = false;
 
-                        if ( "standard" in Entry && Entry.standard && ( Entry.standard ).toInt() ) {
+                        if ("standard" in Entry && Entry.standard && ( Entry.standard ).toInt()) {
                             standard = true;
                         }
 
                         Workspaces.appendChild(
                             new QUIContextmenuItem({
-                                text   : Entry.title,
-                                wid    : Entry.id,
-                                icon   : standard ? 'icon-laptop' : false,
-                                events :
-                                {
-                                    onClick : function(Item) {
-                                        WS.loadWorkspace( Item.getAttribute( 'wid' ) );
+                                text  : Entry.title,
+                                wid   : Entry.id,
+                                icon  : standard ? 'icon-laptop' : false,
+                                events: {
+                                    onClick: function (Item) {
+                                        WS.loadWorkspace(Item.getAttribute('wid'));
                                     }
                                 }
                             })
@@ -269,11 +220,10 @@ require( requireList, function()
 
                     Workspaces.appendChild(
                         new QUIContextmenuItem({
-                            text   : 'Arbeitsbereiche bearbeiten',
-                            icon   : 'icon-edit',
-                            events :
-                            {
-                                onClick : function() {
+                            text  : 'Arbeitsbereiche bearbeiten',
+                            icon  : 'icon-edit',
+                            events: {
+                                onClick: function () {
                                     WS.openWorkspaceEdit();
                                 }
                             }
@@ -282,11 +232,10 @@ require( requireList, function()
 
                     Workspaces.appendChild(
                         new QUIContextmenuItem({
-                            text   : 'Arbeitsbereich erstellen',
-                            icon   : 'icon-plus',
-                            events :
-                            {
-                                onClick : function() {
+                            text  : 'Arbeitsbereich erstellen',
+                            icon  : 'icon-plus',
+                            events: {
+                                onClick: function () {
                                     WS.openCreateWindow();
                                 }
                             }
@@ -294,113 +243,104 @@ require( requireList, function()
                     );
                 };
 
-                require(['Menu'], function(Menu)
-                {
-                    if ( !Menu.isLoaded() )
-                    {
-                        Menu.addEvent('onMenuLoaded', function() {
-                            createMenu( Menu );
+                require(['Menu'], function (Menu) {
+                    if (!Menu.isLoaded()) {
+                        Menu.addEvent('onMenuLoaded', function () {
+                            createMenu(Menu);
                         });
 
                         return;
                     }
 
-                    createMenu( Menu );
+                    createMenu(Menu);
                 });
             }
         }
-    }).inject( Container );
+    }).inject(Container);
 
     // resizing
-    window.addEvent( 'resize', function()
-    {
-        window.requestAnimationFrame(function()
-        {
-            Container.setStyles({
-                height : document.body.getSize().y - menuY
-            });
+    QUI.addEvent('resize', function () {
 
-            Workspace.resize();
+        Container.setStyles({
+            height: QUI.getWindowSize().y - menuY,
+            width : QUI.getWindowSize().x
         });
+
+        Workspace.resize();
     });
 
     /**
      * Menu
      */
-    require(['Menu'], function()
-    {
+    require(['Menu'], function () {
         // workspace edit
         new Element('div', {
-            'class' : 'qui-contextmenu-baritem smooth ',
-            html    : '<span class="qui-contextmenu-baritem-text">'+
-                          '<span class="icon-stack">'+
-                              '<i class="icon-laptop icon-stack-base"></i>'+
-                              '<i class="icon-pencil" style="font-size: 0.8em; margin: -3px 0 0 1px;"></i>'+
-                          '</span>'+
-                      '</span>',
-            title   : 'Arbeitsbereich ist festgesetzt',
-            styles  : {
-                'borderLeft' : '1px solid #d1d4da',
-                'float'      : 'right',
-                'marginLeft' : 5
+            'class': 'qui-contextmenu-baritem smooth ',
+            html   : '<span class="qui-contextmenu-baritem-text">' +
+                     '<span class="icon-stack">' +
+                     '<i class="icon-laptop icon-stack-base"></i>' +
+                     '<i class="icon-pencil" style="font-size: 0.8em; margin: -3px 0 0 1px;"></i>' +
+                     '</span>' +
+                     '</span>',
+            title  : 'Arbeitsbereich ist festgesetzt',
+            styles : {
+                'borderLeft': '1px solid #d1d4da',
+                'float'     : 'right',
+                'marginLeft': 5
             },
-            events :
-            {
-                click : function()
-                {
-                    if ( this.hasClass( 'qui-contextmenu-baritem-active' ) )
-                    {
-                        this.removeClass( 'qui-contextmenu-baritem-active' );
+            events : {
+                click: function () {
+                    if (this.hasClass('qui-contextmenu-baritem-active')) {
+                        this.removeClass('qui-contextmenu-baritem-active');
 
                         Workspace.fix();
-                        this.set( 'title' , 'Arbeitsbereich ist festgesetzt' );
+                        this.set('title', 'Arbeitsbereich ist festgesetzt');
 
                         return;
                     }
 
-                    this.addClass( 'qui-contextmenu-baritem-active' );
+                    this.addClass('qui-contextmenu-baritem-active');
 
                     Workspace.unfix();
-                    this.set( 'title' , 'Arbeitsbereich ist flexibel' );
+                    this.set('title', 'Arbeitsbereich ist flexibel');
                 }
             }
-        }).inject( Menu );
+        }).inject(Menu);
 
         // logout
         new Element('div', {
-            'class' : 'qui-contextmenu-baritem smooth ',
-            html    : '<span class="qui-contextmenu-baritem-text">Abmelden</span>',
-            title   : 'Angemeldet als: '+ USER.name,
-            styles  : {
-                'float' : 'right'
+            'class': 'qui-contextmenu-baritem smooth ',
+            html   : '<span class="qui-contextmenu-baritem-text">Abmelden</span>',
+            title  : 'Angemeldet als: ' + USER.name,
+            styles : {
+                'float': 'right'
             },
-            events  : {
-                click : window.logout
+            events : {
+                click: window.logout
             }
-        }).inject( Menu );
+        }).inject(Menu);
     });
 
     /**
      * If files were droped to quiqqer
      * dont show it
      */
-    document.id( document.body ).addEvents({
-        drop : function(event) {
+    document.id(document.body).addEvents({
+        drop: function (event) {
             event.preventDefault();
         },
 
-        dragend : function(event) {
+        dragend: function (event) {
             event.preventDefault();
         },
 
-        dragover: function(event) {
+        dragover: function (event) {
             event.preventDefault();
         }
     });
 
 
-    window.onbeforeunload = function()
-    {
+    window.onbeforeunload = function () {
         Workspace.save();
 
         return "Bitte melden Sie sich vor dem schließen der Administration ab." +
@@ -409,18 +349,15 @@ require( requireList, function()
     };
 
     // logout function
-    window.logout = function()
-    {
+    window.logout = function () {
         Workspace.Loader.show();
 
         // save workspace
-        Workspace.save(true, function()
-        {
+        Workspace.save(true, function () {
             // logout
-            Ajax.post('ajax_user_logout', function()
-            {
+            Ajax.post('ajax_user_logout', function () {
                 window.onbeforeunload = null;
-                window.location = URL_DIR +'admin/';
+                window.location       = URL_DIR + 'admin/';
             });
         });
     };
