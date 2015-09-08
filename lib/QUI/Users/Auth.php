@@ -44,16 +44,28 @@ class Auth implements QUI\Interfaces\Users\Auth
     public function auth($password = '')
     {
         $userData = QUI::getDataBase()->fetch(array(
-            'select' => array('id', 'password'),
+            'select' => array('password'),
             'from'   => QUI::getUsers()->Table(),
             'where'  => array(
-                'id'       => $this->getUserId(),
-                'password' => QUI::getUsers()->genHash($password)
+                'id'       => $this->getUserId()
             ),
             'limit'  => 1
         ));
 
-        return isset($userData[0]);
+        if (empty($userData)
+            || !isset($userData[0]['password'])
+            || empty($userData[0]['password'])) {
+            return false;
+        }
+
+        // retrieve salt from saved password
+        $savedPassword = $userData[0]['password'];
+        $salt = mb_substr($savedPassword, 0, SALT_LENGTH);
+
+        // generate password with given password and salt
+        $password = Manager::genHash($password, $salt);
+
+        return $savedPassword === $password;
     }
 
     /**
