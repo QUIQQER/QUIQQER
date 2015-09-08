@@ -388,6 +388,9 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         // save cache image
         $Image->save($cachefile);
 
+        QUI::getEvents()->fireEvent('mediaCreateSizeCache', array($this, $Image));
+
+
         return $cachefile;
     }
 
