@@ -927,17 +927,15 @@ class Manager
      * Generates a hash of a password
      *
      * @param String $pass
+     * @param String $salt (optional) - use specific salt for password generation [default: randomly generated]
      *
      * @return String
      */
-    static function genHash($pass)
+    static function genHash($pass, $salt = null)
     {
-        $salt = QUI::conf('globals', 'salt');
-
-        if ($salt === null) {
-            $salt = substr(md5(uniqid(rand(), true)), 0, SALT_LENGTH);
-        } else {
-            $salt = substr($salt, 0, SALT_LENGTH);
+        if (is_null($salt)) {
+            $randomBytes = openssl_random_pseudo_bytes(SALT_LENGTH);
+            $salt = mb_substr(bin2hex($randomBytes), 0, SALT_LENGTH);
         }
 
         return $salt.md5($salt.$pass);
