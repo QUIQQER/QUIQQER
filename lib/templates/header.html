@@ -36,7 +36,7 @@
         var URL_DIR          = '{$URL_DIR}';
             URL_OPT_DIR      = '{$URL_OPT_DIR}',
             URL_BIN_DIR      = '{$URL_BIN_DIR}',
-            URL_LIB_DIR      = '{$URL_LIB_DIR}';
+            URL_LIB_DIR      = '{$URL_LIB_DIR}',
             URL_VAR_DIR      = '{$URL_VAR_DIR}',
             URL_PROJECT_DIR  = '{$URL_USR_DIR}{$Project->getName()}/',
             URL_TEMPLATE_DIR = '{$URL_OPT_DIR}{$Project->getAttribute('template')}/';
@@ -71,12 +71,13 @@
         {/if}
 
     </script>
+    <!-- quiqqer-js-defined -->
 
     {if $Template->getAttribute('mootools')}
         <!-- mootools -->
-        <script src="{$URL_OPT_DIR}bin/qui/build/qui/lib/mootools-core.js?lu={$lastUpdate}"></script>
-        <script src="{$URL_OPT_DIR}bin/qui/build/qui/lib/mootools-more.js?lu={$lastUpdate}"></script>
-        <script src="{$URL_OPT_DIR}bin/qui/build/qui/lib/moofx.js?lu={$lastUpdate}"></script>
+        <script src="{$URL_OPT_DIR}bin/qui/qui/lib/mootools-core.js?lu={$lastUpdate}"></script>
+        <script src="{$URL_OPT_DIR}bin/qui/qui/lib/mootools-more.js?lu={$lastUpdate}"></script>
+        <script src="{$URL_OPT_DIR}bin/qui/qui/lib/moofx.js?lu={$lastUpdate}"></script>
     {/if}
 
     {if $Template->getAttribute('requirejs')}
@@ -108,22 +109,19 @@
 
                 map : {
                     '*': {
-                        'css'    : URL_OPT_DIR +'bin/qui/build/qui/lib/css.js',
-                        'image'  : URL_OPT_DIR +'bin/qui/build/qui/lib/image.js',
-                        'text'   : URL_OPT_DIR +'bin/qui/build/qui/lib/text.js'
+                        'css'    : URL_OPT_DIR +'bin/qui/qui/lib/css.js',
+                        'image'  : URL_OPT_DIR +'bin/qui/qui/lib/image.js',
+                        'text'   : URL_OPT_DIR +'bin/qui/qui/lib/text.js'
                     }
                 }
             });
         </script>
     {/if}
 
-    <!-- picture fill polyfill -->
-    <script>
-        require(['polyfills/picturefill.min']);
-    </script>
-
     <!-- canonical -->
     {$Canonical->output()}
+
+    <!-- quiqqer css -->
 
 
     {if $Template->getAttribute('rel_next')}

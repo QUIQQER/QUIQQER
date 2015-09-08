@@ -193,6 +193,18 @@ class Template extends QUI\QDOM
     }
 
     /**
+     * @param $jsPath
+     * @param int $prio
+     */
+    public function extendHeaderWithJavaScriptFile($jsPath, $prio = 3)
+    {
+        $this->extendHeader(
+            '<script src="'. $jsPath .'"></script>',
+            $prio
+        );
+    }
+
+    /**
      * Add a javascript module, that laoded at the onload event
      *
      * @param String $module
