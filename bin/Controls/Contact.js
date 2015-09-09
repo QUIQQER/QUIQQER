@@ -50,8 +50,8 @@ define('Controls/Contact', [
 
             this.Loader.inject( this.$Elm );
             this.Loader.show();
-
-            new QUIButton({
+/*
+            var Send = new QUIButton({
                 text   : 'senden',
                 textimage : 'fa fa-envelope-o icon-envelope-alt',
                 events :
@@ -61,6 +61,15 @@ define('Controls/Contact', [
                     }
                 }
             }).inject( this.$Elm );
+*/
+            new Element('button', {
+                html : 'senden',
+                events : {
+                    click : function() {
+                        self.$Elm.getElement('form').fireEvent('submit');
+                    }
+                }
+            }).inject(this.$Elm);
 
 
             this.$Elm.getElement('form').addEvent('submit', function(event)
