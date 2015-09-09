@@ -199,7 +199,7 @@ class Template extends QUI\QDOM
     public function extendHeaderWithJavaScriptFile($jsPath, $prio = 3)
     {
         $this->extendHeader(
-            '<script src="'. $jsPath .'"></script>',
+            '<script src="' . $jsPath . '"></script>',
             $prio
         );
     }
@@ -235,11 +235,12 @@ class Template extends QUI\QDOM
         /* @var $Site QUI\Projects\Site */
         $Project = $Site->getProject();
 
-        $Engine   = $this->getEngine();
-        $Users    = QUI::getUsers();
-        $Rewrite  = QUI::getRewrite();
-        $Locale   = QUI::getLocale();
-        $Template = $this;
+        $Engine          = $this->getEngine();
+        $Users           = QUI::getUsers();
+        $Rewrite         = QUI::getRewrite();
+        $Locale          = QUI::getLocale();
+        $Template        = $this;
+        $projectTemplate = $Project->getAttribute('template');
 
         $User = $Users->getUserBySession();
 
@@ -287,20 +288,39 @@ class Template extends QUI\QDOM
 
         $tpl = $default_tpl;
 
-        if ($Project->getAttribute('template')) {
-            $template_tpl
-                = OPT_DIR . $Project->getAttribute('template') . '/index.html';
-            $template_index
-                = OPT_DIR . $Project->getAttribute('template') . '/index.php';
+        // standard template
+        if (!$projectTemplate) {
+            QUI\System\Log::addWarning(
+                'Project has no standard template. Please set a standard template to the project'
+            );
+
+            $vhosts      = QUI::getRewrite()->getVHosts();
+            $projectName = $Project->getName();
+
+            foreach ($vhosts as $vhost) {
+
+                if (isset($vhost['project'])
+                    && $vhost['project'] == $projectName
+                    && !empty($vhost['template'])
+                ) {
+
+                    $projectTemplate = $vhost['template'];
+                    break;
+                }
+            }
         }
+
+        $template_tpl   = OPT_DIR . $projectTemplate . '/index.html';
+        $template_index = OPT_DIR . $projectTemplate . '/index.php';
+
 
         if ($template_tpl && file_exists($template_tpl)) {
             $tpl = $template_tpl;
 
             $Engine->assign(array(
-                'URL_TPL_DIR' => URL_OPT_DIR . $Project->getAttribute('template')
+                'URL_TPL_DIR' => URL_OPT_DIR . $projectTemplate
                                  . '/',
-                'TPL_DIR'     => OPT_DIR . $Project->getAttribute('template') . '/',
+                'TPL_DIR'     => OPT_DIR . $projectTemplate . '/',
             ));
         }
 
@@ -350,14 +370,14 @@ class Template extends QUI\QDOM
 
             // project template
             $projectScript
-                = USR_DIR . 'lib/' . $Project->getAttribute('template') . '/' . $type
+                = USR_DIR . 'lib/' . $projectTemplate . '/' . $type
                   . '.php';
         }
 
         if ($siteType[0] == 'standard') {
             // site template
             $siteScript
-                = OPT_DIR . $Project->getAttribute('template') . '/standard.php';
+                = OPT_DIR . $projectTemplate . '/standard.php';
         }
 
         // includes
