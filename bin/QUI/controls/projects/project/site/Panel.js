@@ -1551,14 +1551,39 @@ define('controls/projects/project/site/Panel', [
                 }).inject(Form);
 
 
+                var val, to;
+
                 for (var key in attributes) {
-                    if (attributes.hasOwnProperty(key)) {
+
+                    if (!attributes.hasOwnProperty(key)) {
+                        continue;
+                    }
+
+                    if (!attributes[key]) {
+                        continue;
+                    }
+
+                    to  = typeOf(attributes[key]);
+                    val = attributes[key];
+
+                    if (to !== 'string' && to !== 'number') {
+                        val = JSON.encode(val);
+
                         new Element('input', {
                             type : 'hidden',
-                            value: attributes[key],
-                            name : 'siteData[' + key + ']'
+                            value: val,
+                            name : 'siteDataJSON[' + key + ']'
                         }).inject(Form);
+
+                        continue;
                     }
+
+                    new Element('input', {
+                        type : 'hidden',
+                        value: val,
+                        name : 'siteData[' + key + ']'
+                    }).inject(Form);
+
                 }
 
                 Form.inject(document.body);
