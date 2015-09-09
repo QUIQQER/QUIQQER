@@ -3782,6 +3782,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Ihr Aktivierungscode ist nicht korrekt]]></de>
             <en><![CDATA[The code for the activation is not correct.]]></en>
         </locale>
+        <locale name="exception.lib.user.activasion.no.groups">
+            <de><![CDATA[Der Benutzer ist noch keiner Gruppe zugeordnet. Ein Benutzer muss mindestens einer Gruppe zugeordnet sein.]]></de>
+            <en><![CDATA[The is no group assigned to the user. A user must have at least one group assigned to him.]]></en>
+        </locale>
         <locale name="exception.lib.user.activasion.no.password">
             <de><![CDATA[Dem Benutzer wurde noch kein Passwort gesetzt.
                 Nur mit einem Passwort kann ein Benutzer aktiviert werden]]></de>
