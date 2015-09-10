@@ -525,7 +525,7 @@ class XML
                         continue;
                     }
 
-                    $params[$Translation->nodeName] = $Translation->nodeValue;
+                    $params[$Translation->nodeName] = DOM::parseVar($Translation->nodeValue);
                 }
 
                 $locales['locales'][] = $params;
