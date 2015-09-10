@@ -318,8 +318,7 @@ class Template extends QUI\QDOM
             $tpl = $template_tpl;
 
             $Engine->assign(array(
-                'URL_TPL_DIR' => URL_OPT_DIR . $projectTemplate
-                                 . '/',
+                'URL_TPL_DIR' => URL_OPT_DIR . $projectTemplate . '/',
                 'TPL_DIR'     => OPT_DIR . $projectTemplate . '/',
             ));
         }
