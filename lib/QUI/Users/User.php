@@ -967,6 +967,17 @@ class User implements QUI\Interfaces\Users\User
             );
         }
 
+        $groups = $this->getGroups(false);
+
+        if (empty($groups)) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.lib.user.activasion.no.groups'
+                )
+            );
+        }
+
         if ($this->_password == '') {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
