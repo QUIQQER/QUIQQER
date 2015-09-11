@@ -78,6 +78,20 @@ class Update
 
         // load quiqqer
         QUI::load();
+
+        if (!defined(URL_LIB_DIR)) {
+            define('URL_LIB_DIR', QUI::conf('globals', 'url_lib_dir'));
+        }
+
+        if (!defined(URL_BIN_DIR)) {
+            define('URL_BIN_DIR', QUI::conf('globals', 'url_bin_dir'));
+        }
+
+        if (!defined(URL_SYS_DIR)) {
+            define('URL_SYS_DIR', QUI::conf('globals', 'url_sys_dir'));
+        }
+
+
         QUI::getLocale()->setCurrent('en');
 
         // session table
