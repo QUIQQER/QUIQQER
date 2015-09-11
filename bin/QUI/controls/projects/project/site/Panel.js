@@ -639,7 +639,7 @@ define('controls/projects/project/site/Panel', [
                         name : Site.getAttribute('name'),
                         title: Site.getAttribute('title')
                     }),
-                    texticon  : 'fa fa-trash-o icon-trash',
+                    texticon   : 'fa fa-trash-o icon-trash',
                     information: Locale.get(lg, 'projects.project.site.panel.window.delete.information', {
                         id   : Site.getId(),
                         url  : Site.getAttribute('name') + '.html',
@@ -649,16 +649,16 @@ define('controls/projects/project/site/Panel', [
                     maxHeight  : 400,
                     maxWidth   : 600,
 
-                    cancel_button : {
-                        text      : Locale.get(lg, 'cancel'),
-                        textimage : 'icon-remove fa fa-remove'
+                    cancel_button: {
+                        text     : Locale.get(lg, 'cancel'),
+                        textimage: 'icon-remove fa fa-remove'
                     },
-                    ok_button : {
-                        text      : Locale.get(lg, 'projects.project.site.panel.window.delete.button'),
-                        textimage : 'fa fa-trash-o icon-trash'
+                    ok_button    : {
+                        text     : Locale.get(lg, 'projects.project.site.panel.window.delete.button'),
+                        textimage: 'fa fa-trash-o icon-trash'
                     },
 
-                    events     : {
+                    events: {
                         onSubmit: function () {
                             Site.del();
                         }
@@ -924,7 +924,8 @@ define('controls/projects/project/site/Panel', [
 
                     if (type === 'class') {
                         self.$CategoryControl = new Plugin({
-                            Site: self.getSite()
+                            Site : self.getSite(),
+                            Panel: self
                         });
 
                         if (QUI.Controls.isControl(self.$CategoryControl)) {
