@@ -22,10 +22,10 @@ if (!function_exists('glob_recursive')) {
         $files = glob($pattern, $flags);
 
         foreach (
-            glob(dirname($pattern).'/*', GLOB_ONLYDIR | GLOB_NOSORT) as $dir
+            glob(dirname($pattern) . '/*', GLOB_ONLYDIR | GLOB_NOSORT) as $dir
         ) {
             $files = array_merge($files,
-                glob_recursive($dir.'/'.basename($pattern), $flags));
+                glob_recursive($dir . '/' . basename($pattern), $flags));
         }
 
         return $files;
@@ -68,12 +68,12 @@ class Update
      */
     static function onUpdate(Event $Event)
     {
-        $IO = $Event->getIO();
+        $IO       = $Event->getIO();
         $Composer = $Event->getComposer();
 
         if (!defined('ETC_DIR')) {
             define('ETC_DIR', $Composer->getConfig()->get('quiqqer-dir')
-                .'etc/');
+                              . 'etc/');
         }
 
         // load quiqqer
@@ -92,15 +92,15 @@ class Update
         }
 
         if (!defined('URL_OPT_DIR')) {
-            define('URL_OPT_DIR', URL_DIR.str_replace(CMS_DIR, '', OPT_DIR));
+            define('URL_OPT_DIR', URL_DIR . str_replace(CMS_DIR, '', OPT_DIR));
         }
 
         if (!defined('URL_USR_DIR')) {
-            define('URL_USR_DIR', URL_DIR.str_replace(CMS_DIR, '', USR_DIR));
+            define('URL_USR_DIR', URL_DIR . str_replace(CMS_DIR, '', USR_DIR));
         }
 
         if (!defined('URL_VAR_DIR')) {
-            define('URL_VAR_DIR', URL_DIR.str_replace(CMS_DIR, '', VAR_DIR));
+            define('URL_VAR_DIR', URL_DIR . str_replace(CMS_DIR, '', VAR_DIR));
         }
 
 
@@ -138,18 +138,18 @@ class Update
                 continue;
             }
 
-            $package_dir = $packages_dir.'/'.$package;
-            $list = QUIFile::readDir($package_dir);
+            $package_dir = $packages_dir . '/' . $package;
+            $list        = QUIFile::readDir($package_dir);
 
             foreach ($list as $sub) {
 
-                if (!is_dir($package_dir.'/'.$sub)) {
+                if (!is_dir($package_dir . '/' . $sub)) {
                     continue;
                 }
 
                 // database setup
                 self::importDatabase(
-                    $package_dir.'/'.$sub.'/database.xml',
+                    $package_dir . '/' . $sub . '/database.xml',
                     $IO
                 );
             }
@@ -173,43 +173,43 @@ class Update
                 continue;
             }
 
-            $package_dir = $packages_dir.'/'.$package;
-            $list = QUIFile::readDir($package_dir);
+            $package_dir = $packages_dir . '/' . $package;
+            $list        = QUIFile::readDir($package_dir);
 
             foreach ($list as $sub) {
 
-                if (!is_dir($package_dir.'/'.$sub)) {
+                if (!is_dir($package_dir . '/' . $sub)) {
                     continue;
                 }
 
                 // register template engines, if exist in a package
                 self::importTemplateEngines(
-                    $package_dir.'/'.$sub.'/engines.xml',
+                    $package_dir . '/' . $sub . '/engines.xml',
                     $IO
                 );
 
                 // register wysiwyg editors
                 self::importEditors(
-                    $package_dir.'/'.$sub.'/wysiwyg.xml',
+                    $package_dir . '/' . $sub . '/wysiwyg.xml',
                     $IO
                 );
 
                 // register menu entries
                 self::importMenu(
-                    $package_dir.'/'.$sub.'/menu.xml',
+                    $package_dir . '/' . $sub . '/menu.xml',
                     $IO
                 );
 
                 // permissions
                 self::importPermissions(
-                    $package_dir.'/'.$sub.'/permissions.xml',
+                    $package_dir . '/' . $sub . '/permissions.xml',
                     $sub,
                     $IO
                 );
 
                 // events
                 self::importEvents(
-                    $package_dir.'/'.$sub.'/events.xml',
+                    $package_dir . '/' . $sub . '/events.xml',
                     $IO
                 );
             }
@@ -217,7 +217,7 @@ class Update
 
         // permissions
         self::importPermissions(
-            CMS_DIR.'/admin/permissions.xml',
+            CMS_DIR . '/admin/permissions.xml',
             'system',
             $IO
         );
@@ -243,7 +243,7 @@ class Update
      * Import / register the template engines in an xml file and register it
      *
      * @param String $xml_file - path to an engine.xml
-     * @param        $IO       - Composer InputOutput
+     * @param        $IO - Composer InputOutput
      */
     static function importTemplateEngines($xml_file, $IO = null)
     {
@@ -251,7 +251,7 @@ class Update
             return;
         }
 
-        Log::write('Read: '.$xml_file);
+        Log::write('Read: ' . $xml_file);
 
         $engines = XML::getTemplateEnginesFromXml($xml_file);
 
@@ -274,7 +274,7 @@ class Update
      * Import / register the wysiwyg editors
      *
      * @param String $xml_file - path to an engine.xml
-     * @param        $IO       - Composer InputOutput
+     * @param        $IO - Composer InputOutput
      */
     static function importEditors($xml_file, $IO = null)
     {
@@ -282,7 +282,7 @@ class Update
             return;
         }
 
-        Log::write('Read: '.$xml_file);
+        Log::write('Read: ' . $xml_file);
 
         $editors = XML::getWysiwygEditorsFromXml($xml_file);
 
@@ -305,7 +305,7 @@ class Update
      * Import / register quiqqer events
      *
      * @param String $xml_file - path to an engine.xml
-     * @param        $IO       - (optional) Composer InputOutput
+     * @param        $IO - (optional) Composer InputOutput
      */
     static function importEvents($xml_file, $IO = null)
     {
@@ -313,7 +313,7 @@ class Update
             return;
         }
 
-        Log::write('Read: '.$xml_file);
+        Log::write('Read: ' . $xml_file);
 
         $events = XML::getEventsFromXml($xml_file);
         $Events = QUI::getEvents();
@@ -333,7 +333,7 @@ class Update
      * Import / register quiqqer site events
      *
      * @param String $xml_file - path to an engine.xml
-     * @param        $IO       - (optional)  Composer InputOutput
+     * @param        $IO - (optional)  Composer InputOutput
      */
     static function importSiteEvents($xml_file, $IO = null)
     {
@@ -341,7 +341,7 @@ class Update
             return;
         }
 
-        Log::write('Read: '.$xml_file);
+        Log::write('Read: ' . $xml_file);
 
         $events = XML::getSiteEventsFromXml($xml_file);
         $Events = QUI::getEvents();
@@ -356,7 +356,7 @@ class Update
      * it create a cache file for the package
      *
      * @param String $xml_file - path to an engine.xml
-     * @param        $IO       - Composer InputOutput
+     * @param        $IO - Composer InputOutput
      */
     static function importMenu($xml_file, $IO = null)
     {
@@ -364,7 +364,7 @@ class Update
             return;
         }
 
-        Log::write('Read: '.$xml_file);
+        Log::write('Read: ' . $xml_file);
 
         $items = XML::getMenuItemsXml($xml_file);
 
@@ -378,8 +378,8 @@ class Update
             $xml_file
         );
 
-        $dir = VAR_DIR.'cache/menu/';
-        $cachfile = $dir.$file;
+        $dir      = VAR_DIR . 'cache/menu/';
+        $cachfile = $dir . $file;
 
         QUIFile::mkdir($dir);
 
@@ -395,7 +395,7 @@ class Update
      * Reads the database.xml and create the definit tables
      *
      * @param String $xml_file - path to an database.xml
-     * @param        $IO       - Composer InputOutput
+     * @param        $IO - Composer InputOutput
      */
     static function importDatabase($xml_file, $IO = null)
     {
@@ -403,7 +403,7 @@ class Update
             return;
         }
 
-        Log::write('Read: '.$xml_file);
+        Log::write('Read: ' . $xml_file);
 
         XML::importDataBaseFromXml($xml_file);
     }
@@ -413,7 +413,7 @@ class Update
      * Reads the locale.xml and import it
      *
      * @param String $xml_file - path to an locale.xml
-     * @param        $IO       - Composer InputOutput
+     * @param        $IO - Composer InputOutput
      */
     static function importLocale($xml_file, $IO = null)
     {
@@ -421,7 +421,7 @@ class Update
             return;
         }
 
-        Log::write('Read: '.$xml_file);
+        Log::write('Read: ' . $xml_file);
 
         QUI\Translator::import($xml_file, true, true);
     }
@@ -431,8 +431,8 @@ class Update
      * Reads the permissions.xml and import it
      *
      * @param String $xml_file - path to an locale.xml
-     * @param String $src      - Source for the permissions
-     * @param        $IO       - Composer InputOutput
+     * @param String $src - Source for the permissions
+     * @param        $IO - Composer InputOutput
      */
     static function importPermissions($xml_file, $src = '', $IO = null)
     {
@@ -440,7 +440,7 @@ class Update
             return;
         }
 
-        Log::write('Read: '.$xml_file);
+        Log::write('Read: ' . $xml_file);
 
         XML::importPermissionsFromXml($xml_file, $src);
     }
@@ -479,17 +479,17 @@ class Update
                 continue;
             }
 
-            $package_dir = OPT_DIR.'/'.$package;
-            $list = QUIFile::readDir($package_dir);
+            $package_dir = OPT_DIR . '/' . $package;
+            $list        = QUIFile::readDir($package_dir);
 
             foreach ($list as $sub) {
-                if (!is_dir($package_dir.'/'.$sub)) {
+                if (!is_dir($package_dir . '/' . $sub)) {
                     continue;
                 }
 
                 // register menu entries
                 self::importMenu(
-                    $package_dir.'/'.$sub.'/menu.xml'
+                    $package_dir . '/' . $sub . '/menu.xml'
                 );
             }
         }
@@ -518,7 +518,7 @@ class Update
 
 
         self::importPermissions(
-            CMS_DIR.'/admin/permissions.xml',
+            CMS_DIR . '/admin/permissions.xml',
             'system'
         );
 
@@ -527,17 +527,17 @@ class Update
                 continue;
             }
 
-            $package_dir = OPT_DIR.'/'.$package;
-            $list = QUIFile::readDir($package_dir);
+            $package_dir = OPT_DIR . '/' . $package;
+            $list        = QUIFile::readDir($package_dir);
 
             foreach ($list as $sub) {
-                if (!is_dir($package_dir.'/'.$sub)) {
+                if (!is_dir($package_dir . '/' . $sub)) {
                     continue;
                 }
 
                 // register permissions entries
                 self::importPermissions(
-                    $package_dir.'/'.$sub.'/permissions.xml',
+                    $package_dir . '/' . $sub . '/permissions.xml',
                     $sub
                 );
             }
@@ -576,17 +576,17 @@ class Update
                 continue;
             }
 
-            $package_dir = $packages_dir.'/'.$package;
-            $list = QUIFile::readDir($package_dir);
+            $package_dir = $packages_dir . '/' . $package;
+            $list        = QUIFile::readDir($package_dir);
 
             foreach ($list as $sub) {
-                if (!is_dir($package_dir.'/'.$sub)) {
+                if (!is_dir($package_dir . '/' . $sub)) {
                     continue;
                 }
 
                 // locale setup
                 self::importLocale(
-                    $package_dir.'/'.$sub.'/locale.xml'
+                    $package_dir . '/' . $sub . '/locale.xml'
                 );
             }
         }
@@ -597,36 +597,36 @@ class Update
         foreach ($projects as $project) {
             // locale setup
             self::importLocale(
-                USR_DIR.$project.'/locale.xml'
+                USR_DIR . $project . '/locale.xml'
             );
         }
 
         // system xmls
-        $File = new QUIFile();
-        $locale_dir = CMS_DIR.'admin/locale/';
-        $locales = $File->readDirRecursiv($locale_dir, true);
+        $File       = new QUIFile();
+        $locale_dir = CMS_DIR . 'admin/locale/';
+        $locales    = $File->readDirRecursiv($locale_dir, true);
 
         foreach ($locales as $locale) {
-            self::importLocale($locale_dir.$locale);
+            self::importLocale($locale_dir . $locale);
         }
 
 
         // javascript
-        $list = QUI\Utils\System\File::find(BIN_DIR.'QUI/', '*.xml');
+        $list = QUI\Utils\System\File::find(BIN_DIR . 'QUI/', '*.xml');
 
         foreach ($list as $file) {
             self::importLocale(trim($file));
         }
 
         // lib
-        $list = QUI\Utils\System\File::find(LIB_DIR.'xml/locale/', '*.xml');
+        $list = QUI\Utils\System\File::find(LIB_DIR . 'xml/locale/', '*.xml');
 
         foreach ($list as $file) {
             self::importLocale(trim($file));
         }
 
         // admin templates
-        $list = QUI\Utils\System\File::find(SYS_DIR.'template/', '*.xml');
+        $list = QUI\Utils\System\File::find(SYS_DIR . 'template/', '*.xml');
 
         foreach ($list as $file) {
             self::importLocale(trim($file));
