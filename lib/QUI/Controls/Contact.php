@@ -38,7 +38,7 @@ class Contact extends QUI\Control
             dirname(__FILE__).'/Contact.css'
         );
 
-        $this->setAttribute('class', 'quiqqer-contact grid-100 grid-parent');
+        $this->setAttribute('class', 'quiqqer-contact');
         $this->setAttribute('qui-class', "Controls/Contact");
         $this->setAttribute('labels', true);
     }
