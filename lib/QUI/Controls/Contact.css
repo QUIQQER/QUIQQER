@@ -1,9 +1,7 @@
 @CHARSET "UTF-8";
 
 .quiqqer-contact {
-    float: left;
     position: relative;
-    width: 100%;
 }
 
 .quiqqer-contact label,
