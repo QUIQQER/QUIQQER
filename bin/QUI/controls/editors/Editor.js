@@ -419,8 +419,11 @@ define('controls/editors/Editor', [
                         toolbar : toolbarData
                     };
 
-                    if (buttons) {
-                        data.buttons = buttons;
+                    if (buttons && "lines" in buttons) {
+                        data.toolbar.lines = buttons.lines;
+                    } else if(buttons)
+                    {
+                        data.toolbar.lines = buttons;
                     }
 
                     if ( typeof callback === 'function' ) {
@@ -439,8 +442,11 @@ define('controls/editors/Editor', [
             {
                 projectData.toolbar = toolbarData;
 
-                if (buttons) {
-                    projectData.buttons = buttons;
+                if (buttons && "lines" in buttons) {
+                    data.toolbar.lines = buttons.lines;
+                } else if (buttons)
+                {
+                    data.toolbar.lines = buttons;
                 }
 
                 if ( typeof callback === 'function' ) {
