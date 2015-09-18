@@ -614,7 +614,7 @@ class Template extends QUI\QDOM
 
             // project template
             $projectTemplate
-                = USR_DIR . 'lib/' . $Project->getAttribute('template') . '/' . $type
+                = USR_DIR . '/' . $Project->getAttribute('template') . '/lib/' . $type
                   . '.html';
 
             if (file_exists($projectTemplate)) {
