@@ -146,6 +146,7 @@ class XML
         $params = self::getConfigParamsFromXml($file);
 
         foreach ($params as $section => $key) {
+
             if (isset($key['default'])) {
                 if ($Config->existValue($section) === false) {
                     $Config->setValue($section, $key['default']);
@@ -1013,6 +1014,7 @@ class XML
         $Config   = self::getConfigFromXml($file);
 
         $checkFnMatch = function ($key, $keyList) {
+
             if (!is_array($keyList)) {
                 return false;
             }
@@ -1027,6 +1029,7 @@ class XML
         };
 
         foreach ($params as $section => $param) {
+
             if (!is_array($param)) {
                 continue;
             }
@@ -1093,8 +1096,7 @@ class XML
             $_file = str_replace(OPT_DIR, '', $file);
             $_file = explode('/', $_file);
 
-            try
-            {
+            try {
                 $Package = QUI::getPackage($_file[0] . '/' . $_file[1]);
 
                 QUI::getEvents()->fireEvent('packageConfigSave', array($Package));

@@ -6,24 +6,29 @@
  * @param String $file
  * @return Array
  */
-
 function ajax_settings_get($file)
 {
-    if ( !file_exists( $file ) ) {
-        return array();
+    $files  = json_decode($file, true);
+    $config = array();
+
+    foreach ($files as $file) {
+
+        if (!file_exists($file)) {
+            continue;
+        }
+
+        $Config = QUI\Utils\XML::getConfigFromXml($file);
+
+        if ($Config) {
+            $config = array_merge($config, $Config->toArray());
+        }
     }
 
-    $Config = \QUI\Utils\XML::getConfigFromXml( $file );
-
-    if ( !$Config ) {
-        return array();
-    }
-
-    return $Config->toArray();
+    return $config;
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_settings_get',
-    array( 'file' ),
+    array('file'),
     'Permission::checkAdminUser'
 );
