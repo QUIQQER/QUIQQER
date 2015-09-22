@@ -1,4 +1,3 @@
-
 /**
  * Search for QUIQQER Administration
  *
@@ -18,31 +17,27 @@ define('controls/menu/Search', [
 
     'css!controls/menu/Search.css'
 
-], function(QUI, QUIControl, QUIButton)
-{
+], function (QUI, QUIControl, QUIButton) {
     "use strict";
 
     return new Class({
 
-        Extends : QUIControl,
-        Type : 'controls/menu/Search',
+        Extends: QUIControl,
+        Type   : 'controls/menu/Search',
 
-        Binds : [
+        Binds: [
             '$onChange',
             '$onBlur',
             '$onKeyUp'
         ],
 
-        options : {
+        options: {},
 
-        },
-
-        initialize : function(options)
-        {
+        initialize: function (options) {
             this.parent(options);
 
             this.$SearchType = null;
-            this.$Input = null;
+            this.$Input      = null;
         },
 
         /**
@@ -50,18 +45,17 @@ define('controls/menu/Search', [
          *
          * @return {HTMLDivElement}
          */
-        create : function()
-        {
+        create: function () {
             this.parent();
 
             this.$Elm.addClass('control-menu-search');
 
             this.$Elm.set({
-                html : '<input type="text" class="control-menu-search-input" />'
+                html: '<input type="text" class="control-menu-search-input" />'
             });
 
             this.$Input = this.$Elm.getElement('.control-menu-search-input');
-            this.$type = false;
+            this.$type  = false;
 
             this.$Input.setStyles({
                 display: 'none'
@@ -69,42 +63,42 @@ define('controls/menu/Search', [
 
             this.$Input.addEvents({
                 blur : this.$onBlur,
-                keyup : this.$onKeyUp
+                keyup: this.$onKeyUp
             });
 
 
             this.$SearchType = new QUIButton({
-                textimage : 'icon-search',
-                text : 'Suche', // #locale
-                styles : {
-                    lineHeight : 38
+                textimage: 'icon-search',
+                text     : 'Suche', // #locale
+                styles   : {
+                    lineHeight: 38
                 }
             }).inject(this.$Elm, 'top');
 
             this.$SearchType.appendChild({
-                icon : 'fa fa-file-o icon-file-alt',
-                text : 'Seite suchen',  // #locale
-                search : 'site',
-                events : {
-                    onClick : this.$onChange
+                icon  : 'fa fa-file-o icon-file-alt',
+                text  : 'Seite suchen',  // #locale
+                search: 'site',
+                events: {
+                    onClick: this.$onChange
                 }
             });
 
             this.$SearchType.appendChild({
-                icon : 'icon-user',
-                text : 'Benutzer suchen',  // #locale
-                search : 'user',
-                events : {
-                    onClick : this.$onChange
+                icon  : 'icon-user',
+                text  : 'Benutzer suchen',  // #locale
+                search: 'user',
+                events: {
+                    onClick: this.$onChange
                 }
             });
 
             this.$SearchType.appendChild({
-                icon : 'icon-group',
-                text : 'Gruppe suchen',  // #locale
-                search : 'group',
-                events : {
-                    onClick : this.$onChange
+                icon  : 'icon-group',
+                text  : 'Gruppe suchen',  // #locale
+                search: 'group',
+                events: {
+                    onClick: this.$onChange
                 }
             });
 
@@ -117,8 +111,7 @@ define('controls/menu/Search', [
          *
          * @param Item
          */
-        $onChange : function(Item)
-        {
+        $onChange: function (Item) {
             this.$SearchType.setAttribute(
                 'textimage',
                 Item.getAttribute('icon')
@@ -133,16 +126,16 @@ define('controls/menu/Search', [
                 .setStyle('display', 'none');
 
             this.$Input.setStyles({
-                display : null,
-                opacity : 0,
-                width   : 0
+                display: null,
+                opacity: 0,
+                width  : 0
             });
 
             moofx(this.$Input).animate({
-                opacity : 1,
-                width   : 160
+                opacity: 1,
+                width  : 160
             }, {
-                callback : function() {
+                callback: function () {
                     this.$Input.focus();
                 }.bind(this)
             });
@@ -151,17 +144,16 @@ define('controls/menu/Search', [
         /**
          * event on blur
          */
-        $onBlur : function()
-        {
+        $onBlur: function () {
             if (this.$Input.value !== '') {
                 return;
             }
 
             moofx(this.$Input).animate({
-                opacity : 0,
-                width   : 0
+                opacity: 0,
+                width  : 0
             }, {
-                callback : function() {
+                callback: function () {
                     this.$type = false;
                     this.$Input.setStyle('display', 'none');
 
@@ -181,8 +173,7 @@ define('controls/menu/Search', [
          * event on key up
          * @param event
          */
-        $onKeyUp : function(event)
-        {
+        $onKeyUp: function (event) {
             if (event.key != 'enter') {
                 return;
             }
@@ -198,7 +189,7 @@ define('controls/menu/Search', [
                 'icon-refresh icon-spin'
             );
 
-            var Prom = false,
+            var Prom  = false,
                 value = this.$Input.value;
 
             // trigger the search
@@ -221,7 +212,7 @@ define('controls/menu/Search', [
                 return;
             }
 
-            Prom.then(function() {
+            Prom.then(function () {
                 this.$SearchType.setAttribute('textimage', image);
             }.bind(this));
         },
@@ -233,22 +224,31 @@ define('controls/menu/Search', [
          * @param {String} value
          * @return Promise
          */
-        searchSite : function(value)
-        {
-            return new Promise(function(resolve, reject)
-            {
+        searchSite: function (value) {
+
+            return new Promise(function (resolve, reject) {
+
                 require([
                     'controls/projects/project/site/Search',
                     'utils/Panels'
-                ], function(SearchPanel, PanelUtils) {
+                ], function (SearchPanel, PanelUtils) {
 
                     PanelUtils.openPanelInTasks(
                         new SearchPanel({
-                            value : value
+                            value: value
                         })
-                    );
+                    ).then(function (Panel) {
 
-                    resolve();
+                               Panel.setAttributes({
+                                   value: value
+                               });
+
+                               Panel.search();
+
+                               resolve();
+
+                           }).catch(reject);
+
                 }, reject);
             });
         },
@@ -259,26 +259,28 @@ define('controls/menu/Search', [
          *
          * @param {String} value
          */
-        searchUser : function(value)
-        {
-            return new Promise(function(resolve, reject)
-            {
+        searchUser: function (value) {
+
+            return new Promise(function (resolve, reject) {
+
                 require([
                     'controls/users/Panel',
                     'utils/Panels'
-                ], function(SearchPanel, PanelUtils) {
+                ], function (SearchPanel, PanelUtils) {
 
                     PanelUtils.openPanelInTasks(
                         new SearchPanel({
-                            search : true,
-                            searchSettings : {
-                                userSearchString : value
+                            search        : true,
+                            searchSettings: {
+                                userSearchString: value
                             }
                         })
                     );
 
                     resolve();
+
                 }, reject);
+
             });
         },
 
@@ -288,18 +290,16 @@ define('controls/menu/Search', [
          *
          * @param {String} value
          */
-        searchGroup : function(value)
-        {
-            return new Promise(function(resolve, reject)
-            {
+        searchGroup: function (value) {
+            return new Promise(function (resolve, reject) {
                 require([
                     'controls/groups/Panel',
                     'utils/Panels'
-                ], function(SearchPanel, PanelUtils) {
+                ], function (SearchPanel, PanelUtils) {
 
                     PanelUtils.openPanelInTasks(
                         new SearchPanel({
-                            search : value
+                            search: value
                         })
                     );
 
