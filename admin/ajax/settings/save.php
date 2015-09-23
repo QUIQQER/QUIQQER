@@ -8,17 +8,23 @@
  */
 function ajax_settings_save($file, $params)
 {
-    if (!file_exists($file)) {
-        // # locale
-        throw new QUI\Exception(
-            'Could not save the data. the config file was not found'
+    $files = json_decode($file, true);
+
+    foreach ($files as $file) {
+
+        if (!file_exists($file)) {
+            QUI\Log\Logger::getLogger()->addError(
+                "Could not save the data. the config file {$file} was not found"
+            );
+
+            continue;
+        }
+
+        QUI\Utils\XML::setConfigFromXml(
+            $file,
+            json_decode($params, true)
         );
     }
-
-    QUI\Utils\XML::setConfigFromXml(
-        $file,
-        json_decode($params, true)
-    );
 
     // # locale
     QUI::getMessagesHandler()->addSuccess(
