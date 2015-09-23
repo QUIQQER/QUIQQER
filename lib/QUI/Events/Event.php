@@ -118,6 +118,8 @@ class Event implements QUI\Interfaces\Events
      * @param Bool       $force   - (optional) no recursion check, optional, default = false
      *
      * @return Array - Event results, assoziative array
+     *
+     * @throws QUI\ExceptionStack
      */
     public function fireEvent($event, $args = false, $force = false)
     {
@@ -142,26 +144,51 @@ class Event implements QUI\Interfaces\Events
 
         $this->_currentRunning[$event] = true;
 
+        $Stack = new QUI\ExceptionStack();
+
         // execute events
         foreach ($this->_events[$event] as $fn) {
-            if (!is_string($fn)) {
-                if ($args === false) {
-                    $fn();
+
+            try {
+                if (!is_string($fn)) {
+                    if ($args === false) {
+                        $fn();
+                        continue;
+                    }
+
+                    call_user_func_array($fn, $args);
                     continue;
                 }
 
-                call_user_func_array($fn, $args);
-                continue;
+                $fn = preg_replace('/[\\\\]{2,}/', '\\', $fn);
+
+                if ($args === false) {
+                    $results[$fn] = call_user_func($fn);
+                    continue;
+                }
+
+                $results[$fn] = call_user_func_array($fn, $args);
+
+            } catch (QUI\Exception $Exception) {
+
+                $message = $Exception->getMessage();
+
+                if (is_string($fn)) {
+                    $message .= ' :: '. $fn;
+                }
+
+                $Clone = new QUI\Exception(
+                    $message,
+                    $Exception->getCode(),
+                    $Exception->getType()
+                );
+
+                $Stack->addException($Clone);
             }
+        }
 
-            $fn = preg_replace('/[\\\\]{2,}/', '\\', $fn);
-
-            if ($args === false) {
-                $results[$fn] = call_user_func($fn);
-                continue;
-            }
-
-            $results[$fn] = call_user_func_array($fn, $args);
+        if (!$Stack->isEmpty()) {
+            throw $Stack;
         }
 
         $this->_currentRunning[$event] = false;
