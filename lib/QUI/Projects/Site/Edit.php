@@ -516,11 +516,21 @@ class Edit extends Site
 
         // on save before event
         try {
+
             $this->Events->fireEvent('saveBefore', array($this));
             QUI::getEvents()->fireEvent('siteSaveBefore', array($this));
 
-        } catch (QUI\Exception $Exception) {
+        } catch (QUI\ExceptionStack $Exception) {
 
+            $list = $Exception->getExceptionList();
+
+            foreach ($list as $Exc) {
+                /* @var $Exc \Exception */
+                QUI\System\Log::write($Exc->getMessage());
+            }
+
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::write($Exception->getMessage());
         }
 
         // save extra package attributes (site.xml)
@@ -632,13 +642,21 @@ class Edit extends Site
 
         // on save event
         try {
+
             $this->Events->fireEvent('save', array($this));
             QUI::getEvents()->fireEvent('siteSave', array($this));
 
-        } catch (QUI\Exception $Exception) {
-            QUI::getMessagesHandler()->addError(
-                'site on save -> event error:: ' . $Exception->getMessage()
-            );
+        } catch (QUI\ExceptionStack $Exception) {
+
+            $list = $Exception->getExceptionList();
+
+            foreach ($list as $Exc) {
+                /* @var $Exc \Exception */
+                QUI\System\Log::write($Exc->getMessage());
+            }
+
+        } catch (\Exception $Exception) {
+            QUI\System\Log::write($Exception->getMessage());
         }
 
 
