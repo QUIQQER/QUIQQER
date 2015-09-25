@@ -9,9 +9,13 @@
  */
 function ajax_settings_category($file, $category)
 {
-    $files  = json_decode($file, true);
-    $result = '';
+    if (file_exists($file)) {
+        $files = array($file);
+    } else {
+        $files = json_decode($file, true);
+    }
 
+    $result    = '';
     $cacheName = 'qui/admin/menu/categories/' . md5($file);
 
     try {
@@ -19,6 +23,10 @@ function ajax_settings_category($file, $category)
 
     } catch (QUI\Exception $Exception) {
 
+    }
+
+    if (!is_array($files)) {
+        $files = array($files);
     }
 
     foreach ($files as $file) {
