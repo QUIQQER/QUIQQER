@@ -148,7 +148,15 @@ class Manager
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
+                return;
+            }
 
+            if (isset($config["media_watermark_ratio"])
+                && isset($old_config['media_watermark_ratio'])
+                && $config["media_watermark_ratio"] != $old_config['media_watermark_ratio']
+            ) {
+                // clear cache
+                $Project->getMedia()->clearCache();
                 return;
             }
 
@@ -159,7 +167,6 @@ class Manager
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
-
                 return;
             }
 
@@ -170,7 +177,6 @@ class Manager
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
-
                 return;
             }
         }
@@ -223,6 +229,7 @@ class Manager
             "adminSitemapMax"          => 20,
             "media_watermark"          => "",
             "media_watermark_position" => "",
+            "media_watermark_ratio"    => "",
             "media_image_library"      => "",
             "media_maxUploadSize"      => "",
             "placeholder"              => ""
