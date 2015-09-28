@@ -1453,8 +1453,13 @@ class Rewrite
             'from' => $table
         ));
 
-        foreach ($list as $entry) {
+        // nach / (slash) sortieren, damit urls mit mehr kindseiten als erstes kommen
+        // ansonsten kann es vorkommen das die falsche seite für den Pfad zuständig ist
+        usort($list, function($a, $b) {
+            return substr_count($a['path'],'/') < substr_count($b['path'],'/');
+        });
 
+        foreach ($list as $entry) {
             if (!QUI\Utils\String::match($entry['path'], $path)) {
                 continue;
             }
@@ -1468,7 +1473,7 @@ class Rewrite
                 }
 
             } catch (QUI\Exception $Exception) {
-
+                QUI\System\Log::addDebug($Exception->getMessage());
             }
         }
 
