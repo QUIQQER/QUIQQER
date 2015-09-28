@@ -39,7 +39,7 @@
         </tr>
         </thead>
 
-        <tbody>
+        <tr>
         <tr class="{cycle values="odd,even"}">
             <td class="first">
                 {t}quiqqer/system projects.project.settings.panel.mediaSettings.watermark{/t}
@@ -86,6 +86,15 @@
             </td>
         </tr>
         <tr class="{cycle values="odd,even"}">
+            <td class="first">
+                {t}quiqqer/system projects.project.settings.panel.mediaSettings.watermark.ratio{/t}
+            </td>
+            <td>
+                <input type="number" name="media_watermark_ratio" />
+                <span style="line-height: 30px; padding-left: 10px;">%</span>
+            </td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
             <td colspan="2" class="first-100">
                 <div class="description-no-padding">
                     {t}quiqqer/system projects.project.settings.panel.mediaSettings.watermark.description{/t}
@@ -94,7 +103,6 @@
         </tr>
     </tbody>
     </table>
-
 
     <table class="data-table qui-media-manager-hash">
     <thead>
