@@ -187,11 +187,11 @@ class Event implements QUI\Interfaces\Events
             }
         }
 
+        $this->_currentRunning[$event] = false;
+
         if (!$Stack->isEmpty()) {
             throw $Stack;
         }
-
-        $this->_currentRunning[$event] = false;
 
         return $results;
     }
