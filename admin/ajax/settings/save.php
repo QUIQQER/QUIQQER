@@ -8,7 +8,12 @@
  */
 function ajax_settings_save($file, $params)
 {
-    $files = json_decode($file, true);
+    if (file_exists($file)) {
+        $files = array($file);
+    } else {
+        $files = json_decode($file, true);
+    }
+
 
     foreach ($files as $file) {
 
