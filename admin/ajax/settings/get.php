@@ -11,6 +11,10 @@ function ajax_settings_get($file)
     $files  = json_decode($file, true);
     $config = array();
 
+    if (is_string($files)) {
+        $files = array($files);
+    }
+
     foreach ($files as $file) {
 
         if (!file_exists($file)) {

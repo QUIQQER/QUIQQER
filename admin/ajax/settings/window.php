@@ -22,7 +22,12 @@ function ajax_settings_window($file)
     $jsonFiles = json_decode($file, true);
 
     if ($jsonFiles) {
-        $files = $jsonFiles;
+
+        if (is_string($jsonFiles)) {
+            $files = array($jsonFiles);
+        } else {
+            $files = $jsonFiles;
+        }
     }
 
     if (empty($files) || !$jsonFiles) {
