@@ -239,13 +239,13 @@ class Manager implements QUI\Interfaces\Events
      */
     public function fireEvent($event, $args = false)
     {
-        $this->_Events->fireEvent($event, $args);
-
         // event onFireEvent
-        if (!is_array($args)) {
-            $args = array();
+        $fireArgs = $args;
+        if (!is_array($fireArgs)) {
+            $fireArgs = array();
         }
 
-        $this->_Events->fireEvent('onFireEvent', array($event, $args));
+        $this->_Events->fireEvent('onFireEvent', array($event, $fireArgs));
+        $this->_Events->fireEvent($event, $args);
     }
 }
