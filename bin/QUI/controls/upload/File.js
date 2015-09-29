@@ -600,7 +600,10 @@ define('controls/upload/File', [
                 url = url + Object.toQueryString( params );
 
             this.$Request.open( 'PUT', url, true );
-            this.$Request.overrideMimeType( 'application/octet-stream' );
+
+            if (!!this.$Request.overrideMimeType) {
+                this.$Request.overrideMimeType('application/octet-stream');
+            }
 
             if ( this.$range_start !== 0 )
             {
