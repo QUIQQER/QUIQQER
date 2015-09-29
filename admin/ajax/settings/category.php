@@ -16,7 +16,7 @@ function ajax_settings_category($file, $category)
     }
 
     $result    = '';
-    $cacheName = 'qui/admin/menu/categories/' . md5($file);
+    $cacheName = 'qui/admin/menu/categories/' . md5($file) . '/' . $category;
 
     try {
         return QUI\Cache\Manager::get($cacheName);
