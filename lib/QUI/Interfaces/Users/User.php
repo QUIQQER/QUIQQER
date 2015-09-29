@@ -24,11 +24,11 @@ interface User
     public function isSU();
 
     /**
-     * Is the user admin?
+     * the user can use the backend?
      *
      * @return Bool
      */
-    public function isAdmin();
+    public function canUseBackend();
 
     /**
      * Loged the user out

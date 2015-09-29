@@ -21,9 +21,8 @@ if ((int)$_SERVER['SERVER_PORT'] !== 443
 $Users = \QUI::getUsers();
 $User = $Users->getUserBySession();
 
-
 if (strpos($_SERVER['SCRIPT_NAME'], 'index.php') !== false) {
-    if (!$User->isAdmin() || !$Users->isAuth($User)) {
+    if (!$User->canUseBackend() || !$Users->isAuth($User)) {
         require_once 'login.php';
         exit;
     }
@@ -31,3 +30,4 @@ if (strpos($_SERVER['SCRIPT_NAME'], 'index.php') !== false) {
 
 //Adminbereich markieren
 define('ADMIN', true);
+define('QUIQQER_ADMIN', true);

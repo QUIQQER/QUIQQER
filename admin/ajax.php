@@ -18,6 +18,10 @@ header('Expires: '.gmdate('D, d M Y H:i:s', time() - 60).' GMT');
 
 $User = QUI::getUserBySession();
 
+if (!isset($_REQUEST['_FRONTEND']) || $_REQUEST['_FRONTEND'] == 0) {
+    define('QUIQQER_ADMIN', 1);
+}
+
 // Falls Benutzer eingeloggt ist, dann seine Sprache nehmen
 if ($User->getId() && $User->getLang()) {
     QUI::getLocale()->setCurrent($User->getLang());

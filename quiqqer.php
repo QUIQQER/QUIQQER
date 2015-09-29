@@ -18,5 +18,7 @@ if (!file_exists($conf)) {
 }
 
 // Console aufbauen
+define('QUIQQER_CONSOLE', true);
+
 $Console = new \QUI\System\Console();
 $Console->start();

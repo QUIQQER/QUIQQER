@@ -1157,11 +1157,17 @@ class User implements QUI\Interfaces\Users\User
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @see QUI\Interfaces\Users\User::isAdmin()
+     * @deprecated
      */
     public function isAdmin()
+    {
+        return $this->canUseBackend();
+    }
+
+    /**
+     * @return Bool
+     */
+    public function canUseBackend()
     {
         if (!is_null($this->_admin)) {
             return $this->_admin;

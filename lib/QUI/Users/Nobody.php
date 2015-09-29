@@ -37,11 +37,17 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @see \QUI\Interfaces\Users\User::isAdmin()
+     * @deprecated
      */
     public function isAdmin()
+    {
+        return $this->canUseBackend();
+    }
+
+    /**
+     * @return bool
+     */
+    public function canUseBackend()
     {
         return false;
     }

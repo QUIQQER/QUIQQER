@@ -25,6 +25,21 @@ use \Symfony\Component\HttpFoundation\Response;
 class QUI
 {
     /**
+     * FRONTEND FLAG
+     */
+    const FRONTEND = 1;
+
+    /**
+     * BACKEND FLAG
+     */
+    const BACKEND = 2;
+
+    /**
+     * SYSTEM (Console) FLAG
+     */
+    const SYSTEM = 3;
+
+    /**
      * QUI Config, use \QUI::getConfig()
      *
      * @var \QUI\Config
@@ -205,7 +220,7 @@ class QUI
     static function load()
     {
         // load the main configuration
-        $config = parse_ini_file(ETC_DIR.'conf.ini.php', true);
+        $config = parse_ini_file(ETC_DIR . 'conf.ini.php', true);
 
         /**
          * load the constants
@@ -243,14 +258,14 @@ class QUI
 
         $var_dir = $config['globals']['var_dir'];
 
-        if (file_exists($var_dir.'last_update')) {
-            self::$last_up_date = file_get_contents($var_dir.'last_update');
+        if (file_exists($var_dir . 'last_update')) {
+            self::$last_up_date = file_get_contents($var_dir . 'last_update');
 
         } else {
             self::$last_up_date = time();
         }
 
-        $lib_dir = dirname(__FILE__).'/';
+        $lib_dir = dirname(__FILE__) . '/';
         $var_dir = $config['globals']['var_dir'];
 
         // Define quiqqer path constants
@@ -283,7 +298,7 @@ class QUI
              * @var String
              * @package com.pcsg.qui
              */
-            define('BIN_DIR', dirname(LIB_DIR).'/bin/');
+            define('BIN_DIR', dirname(LIB_DIR) . '/bin/');
         }
 
         if (!defined('USR_DIR')) {
@@ -303,7 +318,7 @@ class QUI
              * @var String
              * @package com.pcsg.qui
              */
-            define('SYS_DIR', dirname(LIB_DIR).'/admin/');
+            define('SYS_DIR', dirname(LIB_DIR) . '/admin/');
         }
 
         if (!defined('OPT_DIR')) {
@@ -327,7 +342,7 @@ class QUI
         }
 
 
-        $Config = new \QUI\Config(ETC_DIR.'conf.ini.php');
+        $Config     = new \QUI\Config(ETC_DIR . 'conf.ini.php');
         self::$Conf = $Config;
 
         if ($Config->getValue('globals', 'timezone')) {
@@ -367,19 +382,19 @@ class QUI
         // create the temp folder
         // @todo better do at the setup
         $folders = array(
-            CMS_DIR.'media/users/',
+            CMS_DIR . 'media/users/',
             // VAR
-            VAR_DIR.'log/',
-            VAR_DIR.'sessions/',
-            VAR_DIR.'uid_sess/',
-            VAR_DIR.'backup/',
-            VAR_DIR.'lock/',
+            VAR_DIR . 'log/',
+            VAR_DIR . 'sessions/',
+            VAR_DIR . 'uid_sess/',
+            VAR_DIR . 'backup/',
+            VAR_DIR . 'lock/',
             // Cache - noch nötig?
-            VAR_DIR.'cache/url/',
-            VAR_DIR.'cache/siteobjects/',
-            VAR_DIR.'cache/projects',
-            VAR_DIR.'locale/',
-            VAR_DIR.'tmp/'
+            VAR_DIR . 'cache/url/',
+            VAR_DIR . 'cache/siteobjects/',
+            VAR_DIR . 'cache/projects',
+            VAR_DIR . 'locale/',
+            VAR_DIR . 'tmp/'
         );
 
         foreach ($folders as $folder) {
@@ -401,8 +416,8 @@ class QUI
             // ram peak, if the ram usage is to high, than write and send a message
             $peak = memory_get_peak_usage();
             $mem_limit
-                = \QUI\Utils\System\File::getBytes(ini_get('memory_limit'))
-                * 0.8;
+                  = \QUI\Utils\System\File::getBytes(ini_get('memory_limit'))
+                    * 0.8;
 
             if ($peak > $mem_limit && $mem_limit > 0) {
                 $limit
@@ -420,15 +435,15 @@ class QUI
                     $_SERVER["HTTP_REFERER"] = '';
                 }
 
-                $message = "Peak usage: ".$limit."\n".
-                    "memory_limit: ".ini_get('memory_limit')."\n".
-                    "URI: ".$_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"]."\n".
-                    "HTTP_REFERER: ".$_SERVER["HTTP_REFERER"];
+                $message = "Peak usage: " . $limit . "\n" .
+                           "memory_limit: " . ini_get('memory_limit') . "\n" .
+                           "URI: " . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"] . "\n" .
+                           "HTTP_REFERER: " . $_SERVER["HTTP_REFERER"];
 
                 if (\QUI::conf('mail', 'admin_mail')) {
                     \QUI::getMailManager()->send(
                         \QUI::conf('mail', 'admin_mail'),
-                        'Memory limit reached at http://'.$_SERVER["HTTP_HOST"],
+                        'Memory limit reached at http://' . $_SERVER["HTTP_HOST"],
                         $message
                     );
                 }
@@ -459,7 +474,7 @@ class QUI
     /**
      * Get a QUIQQER main configuration entry
      *
-     * @param String      $section
+     * @param String $section
      * @param String|null $key (optional)
      *
      * @return mixed
@@ -511,7 +526,7 @@ class QUI
         }
 
         try {
-            $vhosts = self::getConfig('etc/vhosts.ini.php');
+            $vhosts       = self::getConfig('etc/vhosts.ini.php');
             self::$vhosts = $vhosts->toArray();
 
         } catch (\QUI\Exception $Exception) {
@@ -530,7 +545,7 @@ class QUI
      */
     static function getDBTableName($table)
     {
-        return QUI_DB_PRFX.$table;
+        return QUI_DB_PRFX . $table;
     }
 
     /**
@@ -538,7 +553,7 @@ class QUI
      *
      * @param String $table
      * @param \QUI\Projects\Project
-     * @param Bool   $lang - language in the table name? default = true
+     * @param Bool $lang - language in the table name? default = true
      *
      * @return String
      */
@@ -548,11 +563,11 @@ class QUI
         $lang = true
     ) {
         if ($lang === false) {
-            return QUI_DB_PRFX.$Project->getName().'_'.$table;
+            return QUI_DB_PRFX . $Project->getName() . '_' . $table;
         }
 
-        return QUI_DB_PRFX.$Project->getName().'_'.$Project->getLang().'_'
-        .$table;
+        return QUI_DB_PRFX . $Project->getName() . '_' . $Project->getLang() . '_'
+               . $table;
     }
 
     /**
@@ -571,7 +586,7 @@ class QUI
             return self::$Configs[$file];
         }
 
-        $_file = CMS_DIR.$file;
+        $_file = CMS_DIR . $file;
 
         if (substr($file, -4) !== '.php') {
             $_file .= '.php';
@@ -580,7 +595,7 @@ class QUI
         if (!isset(self::$Configs[$file])) {
             if (!file_exists($_file) || is_dir($_file)) {
                 throw new \QUI\Exception(
-                    'Error: Ini Datei: '.$_file.' existiert nicht.',
+                    'Error: Ini Datei: ' . $_file . ' existiert nicht.',
                     404
                 );
             }
@@ -671,9 +686,9 @@ class QUI
      *
      * You can also use \QUI\Projects\Manager::getProject()
      *
-     * @param String|Array $project  - Project name | array('name' => , 'lang' => , 'template' => )
-     * @param String|Bool  $lang     - Project lang (optional)
-     * @param String|Bool  $template - Project template (optional)
+     * @param String|Array $project - Project name | array('name' => , 'lang' => , 'template' => )
+     * @param String|Bool $lang - Project lang (optional)
+     * @param String|Bool $template - Project template (optional)
      *
      * @return \QUI\Projects\Project
      * @uses \QUI\Projects\Manager
@@ -681,7 +696,7 @@ class QUI
     static function getProject($project, $lang = false, $template = false)
     {
         if (is_array($project)) {
-            $lang = false;
+            $lang     = false;
             $template = false;
 
             if (isset($project['lang'])) {
@@ -708,13 +723,13 @@ class QUI
     static function getErrorHandler()
     {
         if (is_null(self::$ErrorHandler)) {
-            require_once dirname(__FILE__).'/QUI/Exceptions/Handler.php';
+            require_once dirname(__FILE__) . '/QUI/Exceptions/Handler.php';
 
             self::$ErrorHandler = new \QUI\Exceptions\Handler();
 
             self::$ErrorHandler->setAttribute(
                 'logdir',
-                self::conf('globals', 'var_dir').'log/'
+                self::conf('globals', 'var_dir') . 'log/'
             );
 
             self::$ErrorHandler->setAttribute(
@@ -935,7 +950,7 @@ class QUI
     static function getTemp()
     {
         if (is_null(self::$Temp)) {
-            self::$Temp = new \QUI\Temp(VAR_DIR.'tmp');
+            self::$Temp = new \QUI\Temp(VAR_DIR . 'tmp');
         }
 
         return self::$Temp;
@@ -978,5 +993,49 @@ class QUI
     static function getUserBySession()
     {
         return self::getUsers()->getUserBySession();
+    }
+
+    /**
+     * Runs QUIQQER in the backend?
+     *
+     * @return bool
+     */
+    static function isBackend()
+    {
+        if (defined('QUIQQER_ADMIN') && QUIQQER_ADMIN) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Runs QUIQQER in the frontend?
+     *
+     * @return bool
+     */
+    static function isFrontend()
+    {
+        if (defined('QUIQQER_ADMIN') && QUIQQER_ADMIN) {
+            return false;
+        }
+
+        if (defined('QUIQQER_CONSOLE') && QUIQQER_CONSOLE) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Runs QUIQQER in the system (console)?
+     */
+    static function isSystem()
+    {
+        if (defined('QUIQQER_CONSOLE') && QUIQQER_CONSOLE) {
+            return true;
+        }
+
+        return false;
     }
 }
