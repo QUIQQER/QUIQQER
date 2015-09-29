@@ -4598,7 +4598,11 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
         <locale name="projects.project.settings.panel.mediaSettings.watermark.position">
             <de><![CDATA[Position des Wasserzeichen]]></de>
-            <en><![CDATA[Position of the watermark]]></en>
+            <en><![CDATA[Watermark position]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.watermark.ratio">
+            <de><![CDATA[Größe des Wasserzeichens]]></de>
+            <en><![CDATA[Watermark size]]></en>
         </locale>
         <locale name="watermark.position.bottom.right">
             <de><![CDATA[unten rechts]]></de>
