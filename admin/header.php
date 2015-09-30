@@ -30,4 +30,3 @@ if (strpos($_SERVER['SCRIPT_NAME'], 'index.php') !== false) {
 
 //Adminbereich markieren
 define('ADMIN', true);
-define('QUIQQER_ADMIN', true);

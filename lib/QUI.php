@@ -1002,7 +1002,7 @@ class QUI
      */
     static function isBackend()
     {
-        if (defined('QUIQQER_ADMIN') && QUIQQER_ADMIN) {
+        if (defined('QUIQQER_BACKEND') && QUIQQER_BACKEND) {
             return true;
         }
 
@@ -1016,7 +1016,7 @@ class QUI
      */
     static function isFrontend()
     {
-        if (defined('QUIQQER_ADMIN') && QUIQQER_ADMIN) {
+        if (defined('QUIQQER_BACKEND') && QUIQQER_BACKEND) {
             return false;
         }
 
