@@ -784,7 +784,8 @@ define('controls/projects/project/site/Panel', [
                                 top     : 5
                             },
                             events: {
-                                onClick: function () {
+                                onClick: function (Btn, event) {
+                                    event.stop();
                                     self.addLanguagLink();
                                 }
                             }
@@ -1443,14 +1444,19 @@ define('controls/projects/project/site/Panel', [
                     var langs = config.langs,
                         lang  = Project.getLang();
 
-                    langs = langs.replace(lang, '')
-                        .replace(',,', '')
-                        .replace(/^,|,$/g, '');
+                    langs = langs.split(',');
 
+                    var needles = [];
+
+                    for (var i = 0, len = langs.length; i < len; i++) {
+                        if (langs[i] != lang) {
+                            needles.push(langs[i]);
+                        }
+                    }
 
                     new ProjectPopup({
                         project: Project.getName(),
-                        langs  : langs.split(','),
+                        langs  : needles,
                         events : {
                             onSubmit: function (Popup, result) {
                                 Popup.Loader.show();

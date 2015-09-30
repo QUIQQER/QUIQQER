@@ -5,22 +5,35 @@
  *
  * @param String $project
  * @param Integer $id
- * @param Integer $newParentId
+ * @param String $newParent - JSON Data
  *
  * @return Integer - new site id
  */
-function ajax_site_copy($project, $id, $newParentId)
+function ajax_site_copy($project, $id, $newParent)
 {
-    $Project = \QUI::getProjectManager()->decode( $project );
-    $Site    = new \QUI\Projects\Site\Edit( $Project, (int)$id );
+    $Project   = QUI::getProjectManager()->decode($project);
+    $Site      = new QUI\Projects\Site\Edit($Project, (int)$id);
+    $newParent = json_decode($newParent, true);
 
-    $NewSite = $Site->copy( (int)$newParentId );
+    if (is_numeric($newParent)) {
+        $ParentProject = $Project;
+        $newParentId   = $newParent;
+
+    } else {
+        $ParentProject = QUI::getProjectManager()->decode(
+            $newParent['project']
+        );
+
+        $newParentId = $newParent['parentId'];
+    }
+
+    $NewSite = $Site->copy((int)$newParentId, $ParentProject);
 
     return $NewSite->getId();
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_site_copy',
-    array( 'project', 'id', 'newParentId' ),
+    array('project', 'id', 'newParent'),
     'Permission::checkAdminUser'
 );

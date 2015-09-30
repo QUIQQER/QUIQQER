@@ -1056,18 +1056,28 @@ class Edit extends Site
      * Kopiert die Seite
      *
      * @param Integer $pid - ID des Parents unter welches die Kopie eingehängt werden soll
+     * @param \QUI\Projects\Project|Boolean $Project - (optional) Parent Project
      *
      * @return QUI\Projects\Site\Edit
      * @throws QUI\Exception
      *
      * @todo Rekursiv kopieren
      */
-    public function copy($pid)
+    public function copy($pid, $Project=false)
     {
         // Edit Rechte prüfen
         $this->checkPermission('quiqqer.projects.site.edit');
 
-        $Project   = $this->getProject();
+        if (!$Project) {
+            $Project = $this->getProject();
+        }
+
+        if (get_class($Project) != 'QUI\Projects\Project') {
+            throw new QUI\Exception(
+                'Site copy: Project not found', 404
+            );
+        }
+
         $Parent    = new QUI\Projects\Site\Edit($Project, (int)$pid);
         $attribues = $this->getAttributes();
 
@@ -1092,7 +1102,8 @@ class Edit extends Site
                 $path .= '/' . $Prt->getAttribute('name');
             }
 
-            // Es wurde ein Kind gefunde
+            // #locale
+            // Es wurde ein Kind gefunden
             throw new QUI\Exception(
                 'Eine Seite mit dem Namen ' . $this->getAttribute('name')
                 . ' befindet sich schon unter ' . $path
