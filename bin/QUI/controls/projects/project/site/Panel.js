@@ -1550,9 +1550,9 @@ define('controls/projects/project/site/Panel', [
                 Project = this.$Site.getProject();
 
             new QUIConfirm({
-                title        : 'Seiten Inhalte in eine andere Sprache kopieren?',
-                text         : 'Seiten Inhalte in eine andere Sprache kopieren',
-                information  : 'Es wird eine neue Seite in der Sprache <b>' + lang + '</b> mit allen Inhalte dieser Seite erstellt.',
+                title        : Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.title'),
+                text         : Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.text'),
+                information  : Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.information'),
                 icon         : 'fa fa-copy icon-copy',
                 texticon     : 'fa fa-copy icon-copy',
                 autoclose    : false,

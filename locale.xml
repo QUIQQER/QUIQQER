@@ -1370,6 +1370,26 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Möchten Sie die Sprach-Verknüpfung wirklich löschen?]]></de>
             <en><![CDATA[Do you really want delete the language linking?]]></en>
         </locale>
+
+        <locale name="projects.project.site.panel.copySiteToLink.window.title">
+            <de><![CDATA[Seiten Inhalte in eine andere Sprache kopieren?]]></de>
+            <en><![CDATA[Copy site content to another language]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.copySiteToLink.window.text">
+            <de><![CDATA[Seiten Inhalte in eine andere Sprache und Verknüpfung erstellen.]]></de>
+            <en><![CDATA[Copy site content to another language and create a language link.]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.copySiteToLink.window.information" html="true">
+            <de><![CDATA[
+            Es wird eine neue Seite in der Sprache <b>[lang]</b> mit allen Inhalte dieser Seite erstellt.<br />
+            Die Sprachverknüpfung zu dieser Seite wird automatisch gesetzt.
+            ]]></de>
+            <en><![CDATA[
+            A new page would be created in the language [lang].
+            The language link to this page will be set automatically.
+            ]]></en>
+        </locale>
+
         <locale name="projects.project.panel.entry.delete.project">
             <de><![CDATA[Projekt entfernen]]></de>
             <en><![CDATA[Remove project]]></en>
