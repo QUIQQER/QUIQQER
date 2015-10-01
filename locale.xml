@@ -1389,6 +1389,11 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             The language link to this page will be set automatically.
             ]]></en>
         </locale>
+        <locale name="projects.project.site.panel.copySiteToLink.window.submit">
+            <de><![CDATA[Elternseite auswählen]]></de>
+            <en><![CDATA[Select parent page]]></en>
+
+        </locale>
 
         <locale name="projects.project.panel.entry.delete.project">
             <de><![CDATA[Projekt entfernen]]></de>

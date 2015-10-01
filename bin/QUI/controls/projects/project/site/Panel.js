@@ -1605,11 +1605,11 @@ define('controls/projects/project/site/Panel', [
                     }
                 },
                 cancel_button: {
-                    text     : 'Abbrechen',
+                    text     : Locale.get(lg, 'cancel'),
                     textimage: 'icon-remove fa fa-remove'
                 },
                 ok_button    : {
-                    text     : 'Elternseite auswählen',
+                    text     : Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.submit'),
                     textimage: 'icon-ok  fa fa-check'
                 }
             }).open();
