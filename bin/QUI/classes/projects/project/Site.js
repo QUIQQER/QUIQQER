@@ -401,21 +401,31 @@ define('classes/projects/project/Site', [
          *
          * @param {Number} newParentId - ID of the new parent
          * @param {Function} [callback] - (optional), callback function
+         * @return Promise
          */
         move: function (newParentId, callback) {
-            var Site   = this,
-                params = this.ajaxParams();
 
-            params.newParentId = newParentId;
+            return new Promise(function (resolve, reject) {
 
-            Ajax.post('ajax_site_move', function (result) {
-                if (typeof callback === 'function') {
-                    callback(result);
-                }
+                var Site   = this,
+                    params = this.ajaxParams();
 
-                Site.fireEvent('move', [Site, newParentId]);
+                params.newParentId = newParentId;
+                params.onError     = reject;
 
-            }, params);
+                Ajax.post('ajax_site_move', function (result) {
+
+                    if (typeof callback === 'function') {
+                        callback(result);
+                    }
+
+                    Site.fireEvent('move', [Site, newParentId]);
+
+                    resolve(result);
+
+                }, params);
+
+            }.bind(this));
         },
 
 
@@ -424,21 +434,31 @@ define('classes/projects/project/Site', [
          *
          * @param {Number|Object} newParent - ID of the new parent, or parent data
          * @param {Function} [callback] - (optional) callback function
+         * @return Promise
          */
         copy: function (newParent, callback) {
-            var Site   = this,
-                params = this.ajaxParams();
 
-            params.newParent = JSON.encode(newParent);
+            return new Promise(function (resolve, reject) {
 
-            Ajax.post('ajax_site_copy', function (result) {
-                if (typeof callback === 'function') {
-                    callback(result);
-                }
+                var Site   = this,
+                    params = this.ajaxParams();
 
-                Site.fireEvent('copy', [Site, newParent]);
+                params.newParent = JSON.encode(newParent);
+                params.onError   = reject;
 
-            }, params);
+                Ajax.post('ajax_site_copy', function (result) {
+
+                    if (typeof callback === 'function') {
+                        callback(result);
+                    }
+
+                    Site.fireEvent('copy', [Site, newParent]);
+
+                    resolve(result);
+
+                }, params);
+
+            }.bind(this));
         },
 
         /**

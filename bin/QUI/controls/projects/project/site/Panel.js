@@ -793,14 +793,31 @@ define('controls/projects/project/site/Panel', [
 
 
                         for (i = 0, len = rowList.length; i < len; i++) {
-                            Row = rowList[i];
-
-                            if (!Row.get('data-id').toInt()) {
-                                continue;
-                            }
-
+                            Row      = rowList[i];
                             LastCell = rowList[i].getLast();
 
+                            if (!Row.get('data-id').toInt()) {
+
+                                // seite in sprache kopieren und sprach verknüpfung anlegen
+                                new QUIButton({
+                                    icon  : 'fa fa-copy icon-copy',
+                                    alt   : Locale.get(lg, 'copy.site.in.lang'),
+                                    title : Locale.get(lg, 'copy.site.in.lang'),
+                                    lang  : Row.get('data-lang'),
+                                    events: {
+                                        onClick: function (Btn) {
+                                            self.copySiteToLang(
+                                                Btn.getAttribute('lang')
+                                            );
+                                        }
+                                    },
+                                    styles: {
+                                        'float': 'right'
+                                    }
+                                }).inject(LastCell);
+
+                                continue;
+                            }
 
                             new QUIButton({
                                 icon  : 'fa fa-file-o icon-file-alt',
@@ -1489,34 +1506,115 @@ define('controls/projects/project/site/Panel', [
         removeLanguagLink: function (lang, id) {
             var self = this;
 
-            require(['qui/controls/windows/Confirm'], function (QUIConfirm) {
-                var Site    = self.getSite(),
-                    Project = Site.getProject();
+            var Site    = self.getSite(),
+                Project = Site.getProject();
 
-                new QUIConfirm({
-                    title : Locale.get(lg, 'projects.project.site.panel.linked.window.delete.title'),
-                    icon  : 'icon-remove',
-                    text  : Locale.get(lg, 'projects.project.site.panel.linked.window.delete.text'),
-                    events: {
-                        onSubmit: function (Confirm) {
-                            Confirm.Loader.show();
+            new QUIConfirm({
+                title : Locale.get(lg, 'projects.project.site.panel.linked.window.delete.title'),
+                icon  : 'icon-remove',
+                text  : Locale.get(lg, 'projects.project.site.panel.linked.window.delete.text'),
+                events: {
+                    onSubmit: function (Confirm) {
+                        Confirm.Loader.show();
 
-                            Ajax.post('ajax_site_language_remove', function () {
-                                Confirm.close();
+                        Ajax.post('ajax_site_language_remove', function () {
+                            Confirm.close();
 
-                                self.load();
-                            }, {
-                                project     : Project.encode(),
-                                id          : Site.getId(),
-                                linkedParams: JSON.encode({
-                                    lang: lang,
-                                    id  : id
-                                })
-                            });
-                        }
+                            self.load();
+                        }, {
+                            project     : Project.encode(),
+                            id          : Site.getId(),
+                            linkedParams: JSON.encode({
+                                lang: lang,
+                                id  : id
+                            })
+                        });
                     }
-                }).open();
-            });
+                }
+            }).open();
+
+        },
+
+        /**
+         * Copy site to another language and set the language link
+         *
+         * @param {String} lang
+         */
+        copySiteToLang: function (lang) {
+
+            if (!this.$Site) {
+                return;
+            }
+
+            var self    = this,
+                Project = this.$Site.getProject();
+
+            new QUIConfirm({
+                title        : 'Seiten Inhalte in eine andere Sprache kopieren?',
+                text         : 'Seiten Inhalte in eine andere Sprache kopieren',
+                information  : 'Es wird eine neue Seite in der Sprache <b>' + lang + '</b> mit allen Inhalte dieser Seite erstellt.',
+                icon         : 'fa fa-copy icon-copy',
+                texticon     : 'fa fa-copy icon-copy',
+                autoclose    : false,
+                maxHeight    : 300,
+                maxWidth     : 450,
+                events       : {
+                    onSubmit: function (Win) {
+
+                        Win.Loader.show();
+
+                        require(['controls/projects/Popup'], function (ProjectPopup) {
+
+                            Win.close();
+
+                            new ProjectPopup({
+                                project             : Project.getName(),
+                                lang                : lang,
+                                disableProjectSelect: true,
+                                events              : {
+                                    onSubmit: function (Popup, result) {
+
+                                        Popup.Loader.show();
+
+                                        self.$Site.copy({
+                                            parentId: result.ids[0],
+                                            project : {
+                                                name: Project.getName(),
+                                                lang: lang
+                                            }
+                                        }).then(function (newChildId) {
+
+                                            Ajax.post('ajax_site_language_add', function () {
+                                                Popup.close();
+
+                                                self.load();
+                                            }, {
+                                                project     : Project.encode(),
+                                                id          : self.$Site.getId(),
+                                                linkedParams: JSON.encode({
+                                                    lang: lang,
+                                                    id  : newChildId
+                                                })
+                                            });
+
+                                        });
+                                    }
+                                }
+                            }).open();
+                        });
+                    }
+                },
+                cancel_button: {
+                    text     : 'Abbrechen',
+                    textimage: 'icon-remove fa fa-remove'
+                },
+                ok_button    : {
+                    text     : 'Elternseite auswählen',
+                    textimage: 'icon-ok  fa fa-check'
+                }
+            }).open();
+
+            //this.$Site;
         },
 
         /**

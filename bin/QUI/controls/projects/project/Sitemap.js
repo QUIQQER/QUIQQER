@@ -963,11 +963,13 @@ define('controls/projects/project/Sitemap', [
                 Site    = Project.get(data.id);
 
             Site.linked(NewParentItem.getAttribute('value'), function () {
+
                 if (!NewParentItem.isOpen()) {
                     NewParentItem.open();
                 } else {
                     self.$open(NewParentItem);
                 }
+
             });
         },
 

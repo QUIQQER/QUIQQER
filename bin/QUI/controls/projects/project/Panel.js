@@ -16,9 +16,7 @@
  * @require Locale
  * @require controls/projects/Manager
  * @require css!controls/projects/project/Panel.css'
- *
  */
-
 define('controls/projects/project/Panel', [
 
     'qui/controls/desktop/Panel',
