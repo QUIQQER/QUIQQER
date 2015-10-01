@@ -1550,14 +1550,20 @@ define('controls/projects/project/site/Panel', [
                 Project = this.$Site.getProject();
 
             new QUIConfirm({
-                title        : Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.title'),
-                text         : Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.text'),
-                information  : Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.information'),
+                title        : Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.title', {
+                    lang: lang
+                }),
+                text         : Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.text', {
+                    lang: lang
+                }),
+                information  : Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.information', {
+                    lang: lang
+                }),
                 icon         : 'fa fa-copy icon-copy',
                 texticon     : 'fa fa-copy icon-copy',
                 autoclose    : false,
-                maxHeight    : 300,
-                maxWidth     : 450,
+                maxHeight    : 400,
+                maxWidth     : 600,
                 events       : {
                     onSubmit: function (Win) {
 
