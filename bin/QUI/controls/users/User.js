@@ -18,7 +18,6 @@
  * @require Locale
  * @require css!controls/users/User.css
  */
-
 define('controls/users/User', [
 
     'qui/QUI',
