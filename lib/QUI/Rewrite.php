@@ -1455,8 +1455,8 @@ class Rewrite
 
         // nach / (slash) sortieren, damit urls mit mehr kindseiten als erstes kommen
         // ansonsten kann es vorkommen das die falsche seite für den Pfad zuständig ist
-        usort($list, function($a, $b) {
-            return substr_count($a['path'],'/') < substr_count($b['path'],'/');
+        usort($list, function ($a, $b) {
+            return substr_count($a['path'], '/') < substr_count($b['path'], '/');
         });
 
         foreach ($list as $entry) {
@@ -1494,15 +1494,19 @@ class Rewrite
      * @return String
      * @throws QUI\Exception
      */
-    public function getUrlFromSite($params = array())
+    public function getUrlFromSite($params = array(), $getParams=array())
     {
         // Falls ein Objekt übergeben wird
         if (isset($params['site']) && is_object($params['site'])) {
-            $Project = $params['site']->getProject();
-            $id      = $params['site']->getId();
 
-            $lang    = $Project->getAttribute('lang');
-            $project = $Project->getAttribute('name');
+            /* @var $Project QUI\Projects\Project */
+            /* @var $Site QUI\Projects\Site */
+            $Site    = $params['site'];
+            $Project = $Site->getProject();
+            $id      = $Site->getId();
+
+            $lang    = $Project->getLang();
+            $project = $Project->getName();
 
             unset($params['site']);
 
@@ -1539,6 +1543,11 @@ class Rewrite
 
         $link_cache_file = $link_cache_dir . $id . '_' . $project . '_' . $lang;
 
+        // get params
+        if (!empty($getParams)) {
+            $params['_getParams'] = $getParams;
+        }
+
         // Falls es das Cachefile schon gibt
         if (file_exists($link_cache_file)) {
             $url = file_get_contents($link_cache_file);
@@ -1566,10 +1575,10 @@ class Rewrite
             // Link Cache
             file_put_contents(
                 $link_cache_file,
-                str_replace('.print', '.html', $Site->getUrlRewrited($_params))
+                str_replace('.print', '.html', $Site->getLocation($_params))
             );
 
-            $url = $Site->getUrlRewrited($_params);
+            $url = $Site->getLocation($_params);
             $url = $this->_extendUrlWidthPrams($url, $params);
         }
 
