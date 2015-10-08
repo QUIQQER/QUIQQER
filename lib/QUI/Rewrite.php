@@ -730,7 +730,7 @@ class Rewrite
             $host = str_replace(array('http://', 'https://'), '', HOST);
         }
 
-        if ($host != $_SERVER['HTTP_HOST'] && $this->_project) {
+        if (isset($_SERVER['HTTP_HOST']) && $host != $_SERVER['HTTP_HOST'] && $this->_project) {
             $this->showErrorHeader(404);
 
             return $this->_project;
