@@ -235,6 +235,9 @@ class Update
             $IO->write('QUIQQER Setup finish');
 
         } else {
+
+            QUI\Cache\Manager::clearAll();
+
             $IO->write('Maybe some Databases or Plugins need a setup. Please log in and execute the setup.');
         }
     }
