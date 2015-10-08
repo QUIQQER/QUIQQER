@@ -4,6 +4,8 @@
  * PHP Ajax Schnittstelle
  */
 
+define('QUIQQER_AJAX', true);
+
 require_once 'header.php';
 
 // use QUI;

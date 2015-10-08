@@ -1279,7 +1279,7 @@ class Edit extends Site
 
         QUI\Utils\System\File::mkdir($link_cache_dir);
 
-        file_put_contents($link_cache_file, $this->getUrlRewrited());
+        file_put_contents($link_cache_file, $this->getLocation());
     }
 
     /**

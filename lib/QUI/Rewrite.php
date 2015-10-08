@@ -701,6 +701,13 @@ class Rewrite
             return QUI\Projects\Manager::get();
         }
 
+        // ajax?
+        if (defined('QUIQQER_AJAX') && QUIQQER_AJAX) {
+            if (isset($_REQUEST['lang'])) {
+                $this->_lang = $_REQUEST['lang'];
+            }
+        }
+
         // Vhosts
         $Project = $this->_getProjectByVhost();
 
@@ -1415,6 +1422,11 @@ class Rewrite
             $paths = array($paths);
         }
 
+        // cleanup paths - use only paths
+        foreach ($paths as $key => $path) {
+            $paths[$key] = parse_url($path, \PHP_URL_PATH);
+        }
+
         foreach ($paths as $path) {
             QUI::getDataBase()->insert($table, array(
                 'id'   => $Site->getId(),
@@ -1624,12 +1636,10 @@ class Rewrite
         $url = URL_DIR . $url;
 
 
-        // falls host anderst ist, dann muss dieser dran gehängt werden
+        // falls host anders ist, dann muss dieser dran gehängt werden
         // damit kein doppelter content entsteht
-        if ($_SERVER['HTTP_HOST'] != $Project->getHost()) {
-            $url = $Project->getHost() . QUI\Utils\String::replaceDblSlashes(
-                    URL_DIR . $url
-                );
+        if ($_SERVER['HTTP_HOST'] != $Project->getHost() && $Project->getHost() == '') {
+            $url = $Project->getHost() . $url;
 
             if (strpos($url, 'http://') === false) {
                 $url = 'http://' . $url;
