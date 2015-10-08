@@ -3846,7 +3846,7 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[The page [id] [title] are successfuly saved.]]]></en>
         </locale>
         <locale name="exception.site.not.found">
-            <de><![CDATA[Diese Seite konnte nicht gefunden]]></de>
+            <de><![CDATA[Diese Seite konnte nicht gefunden werden.]]></de>
             <en><![CDATA[This Site could not be found.]]]></en>
         </locale>
         <locale name="exception.permissions.edit">
