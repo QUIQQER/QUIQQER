@@ -13,6 +13,7 @@
  * @require css!controls/users/Input.css
  *
  * @event onAdd [ {this}, {String} userid ]
+ * @event onChange [ {this} ]
  */
 define('controls/users/Input', [
 
@@ -65,7 +66,7 @@ define('controls/users/Input', [
             this.$DropDown  = null;
             this.$disabled  = false;
 
-            this.$Parent = Input || null;
+            this.$Bind = Input || null;
 
             this.addEvents({
                 onDestroy: function () {
@@ -84,15 +85,15 @@ define('controls/users/Input', [
         create: function () {
             this.$Elm = new Element('div.users-input');
 
-            if (!this.$Parent) {
-                this.$Parent = new Element('input', {
+            if (!this.$Bind) {
+                this.$Bind = new Element('input', {
                     name: this.getAttribute('name')
                 }).inject(this.$Elm);
 
             } else {
-                this.$disabled = this.$Parent.disabled;
+                this.$disabled = this.$Bind.disabled;
 
-                this.$Elm.wraps(this.$Parent);
+                this.$Elm.wraps(this.$Bind);
             }
 
             if (this.getAttribute('styles')) {
@@ -100,12 +101,12 @@ define('controls/users/Input', [
             }
 
 
-            this.$Parent.set('type', 'hidden');
-            this.$Parent.set('data-quiid', this.getId());
+            this.$Bind.set('type', 'hidden');
+            this.$Bind.set('data-quiid', this.getId());
 
             this.$Input = new Element('input', {
                 type  : 'text',
-                name  : this.$Parent.get('name') + '-search',
+                name  : this.$Bind.get('name') + '-search',
                 styles: {
                     'float'      : 'left',
                     'margin'     : '3px 0',
@@ -138,7 +139,7 @@ define('controls/users/Input', [
                     blur : this.close,
                     focus: this.fireSearch
                 }
-            }).inject(this.$Parent, 'before');
+            }).inject(this.$Bind, 'before');
 
 
             this.$DropDown = new Element('div.users-input-dropdown', {
@@ -157,7 +158,7 @@ define('controls/users/Input', [
             }).inject(this.$Input, 'after');
 
             // loading
-            if (this.$Parent.value === '') {
+            if (this.$Bind.value === '') {
                 if (!this.isDisabled()) {
                     this.enable();
                 }
@@ -167,12 +168,12 @@ define('controls/users/Input', [
 
             var wasDisabled = this.isDisabled();
 
-            this.$Parent.disabled = false;
-            this.$disabled        = false;
+            this.$Bind.disabled = false;
+            this.$disabled      = false;
 
 
             var i, len;
-            var values = this.$Parent.value.toString().split(',');
+            var values = this.$Bind.value.toString().split(',');
 
             for (i = 0, len = values.length; i < len; i++) {
                 if (values[i] !== '') {
@@ -181,8 +182,8 @@ define('controls/users/Input', [
             }
 
             if (wasDisabled) {
-                this.$Parent.disabled = true;
-                this.$disabled        = true;
+                this.$Bind.disabled = true;
+                this.$disabled      = true;
 
                 // disable children
                 var list = this.$getUserEntries();
@@ -193,6 +194,15 @@ define('controls/users/Input', [
             }
 
             return this.$Elm;
+        },
+
+        /**
+         * Return the current value
+         *
+         * @return {String}
+         */
+        getValue: function () {
+            return this.$Bind.value;
         },
 
         /**
@@ -277,6 +287,9 @@ define('controls/users/Input', [
 
 
             if (!list.length) {
+                this.$Bind.set('value', '');
+
+                this.fireEvent('change', [this]);
                 this.enable();
                 return;
             }
@@ -287,14 +300,17 @@ define('controls/users/Input', [
 
 
             if (ids.length == 1) {
-                this.$Parent.set('value', ids[0]);
+                this.$Bind.set('value', ids[0]);
+                this.fireEvent('change', [this]);
                 return;
             }
 
-            this.$Parent.set(
+            this.$Bind.set(
                 'value',
                 ',' + ids.join(',') + ','
             );
+
+            this.fireEvent('change', [this]);
         },
 
         /**
@@ -347,6 +363,7 @@ define('controls/users/Input', [
          * @param {Number} uid - User-ID
          */
         addUser: function (uid) {
+
             if (this.isDisabled()) {
                 return this;
             }
@@ -582,8 +599,8 @@ define('controls/users/Input', [
 
             this.$disabled = true;
 
-            if (this.$Parent) {
-                this.$Parent.disabled = true;
+            if (this.$Bind) {
+                this.$Bind.disabled = true;
             }
 
             var self = this;
@@ -611,8 +628,8 @@ define('controls/users/Input', [
         enable: function () {
             this.$disabled = false;
 
-            if (this.$Parent) {
-                this.$Parent.disabled = false;
+            if (this.$Bind) {
+                this.$Bind.disabled = false;
             }
 
             this.$Input.setStyle('display', null);
@@ -631,8 +648,8 @@ define('controls/users/Input', [
          * if disabled, no changes are possible
          */
         isDisabled: function () {
-            if (this.$Parent) {
-                return this.$Parent.disabled;
+            if (this.$Bind) {
+                return this.$Bind.disabled;
             }
 
             return this.$disabled;
