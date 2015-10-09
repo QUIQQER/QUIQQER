@@ -530,6 +530,7 @@ class Group extends QUI\QDOM
 
         if (!isset($result[0])
             || !isset($result[0]['parent'])
+            || empty($result[0]['parent'])
         ) {
             return;
         }
