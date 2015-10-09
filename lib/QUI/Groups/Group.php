@@ -67,10 +67,10 @@ class Group extends QUI\QDOM
 
         try {
             // falls cache vorhanden ist
-            $cache = QUI\Cache\Manager::get('qui/groups/group/'.$this->getId());
+            $cache = QUI\Cache\Manager::get('qui/groups/group/' . $this->getId());
 
             $this->_parentids = $cache['parentids'];
-            $this->_rights = $cache['rights'];
+            $this->_rights    = $cache['rights'];
 
             if (is_array($cache['attributes'])) {
                 foreach ($cache['attributes'] as $key => $value) {
@@ -158,14 +158,14 @@ class Group extends QUI\QDOM
             )
         ));
 
-        QUI\Cache\Manager::clear('qui/groups/group/'.$this->getId());
+        QUI\Cache\Manager::clear('qui/groups/group/' . $this->getId());
     }
 
     /**
      * set a group attribute
      * ID cannot be set
      *
-     * @param String                    $key   - Attribute name
+     * @param String $key - Attribute name
      * @param String|Bool|Integer|array $value - value
      *
      * @return Bool
@@ -196,7 +196,7 @@ class Group extends QUI\QDOM
     public function save()
     {
         $this->_rights = QUI::getPermissionManager()
-                            ->getRightParamsFromGroup($this);
+            ->getRightParamsFromGroup($this);
 
         // Felder bekommen
         QUI::getDataBase()->update(
@@ -350,7 +350,7 @@ class Group extends QUI\QDOM
         $params['where'] = array(
             'usergroup' => array(
                 'type'  => '%LIKE%',
-                'value' => ','.$this->getId().','
+                'value' => ',' . $this->getId() . ','
             )
         );
 
@@ -371,8 +371,8 @@ class Group extends QUI\QDOM
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'id',
             'from'   => QUI\Users\Manager::Table(),
-            'where'  => 'username = \''.Orthos::clearMySQL($username)
-                .'\' AND usergroup LIKE \'%,'.$this->getId().',%\'',
+            'where'  => 'username = \'' . Orthos::clearMySQL($username)
+                        . '\' AND usergroup LIKE \'%,' . $this->getId() . ',%\'',
             'limit'  => '1'
         ));
 
@@ -407,7 +407,7 @@ class Group extends QUI\QDOM
             'where' => array(
                 'usergroup' => array(
                     'type'  => 'LIKE',
-                    'value' => ",'".$this->getId()."',"
+                    'value' => ",'" . $this->getId() . "',"
                 )
             )
         );
@@ -434,8 +434,8 @@ class Group extends QUI\QDOM
     /**
      * Checks if the ID is from a parent group
      *
-     * @param Integer $id       - ID from parent
-     * @param Bool    $recursiv - checks recursive or not
+     * @param Integer $id - ID from parent
+     * @param Bool $recursiv - checks recursive or not
      *
      * @return Bool
      */
@@ -503,7 +503,9 @@ class Group extends QUI\QDOM
 
         $this->_parentids[] = $result[0]['parent'];
 
-        $this->_getParentIds($result[0]['parent']);
+        if (!empty($result[0]['parent'])) {
+            $this->_getParentIds($result[0]['parent']);
+        }
 
         return $this->_parentids;
     }
@@ -556,9 +558,9 @@ class Group extends QUI\QDOM
      */
     public function getChildren($params = array())
     {
-        $ids = $this->getChildrenIds(false, $params);
+        $ids      = $this->getChildrenIds(false, $params);
         $children = array();
-        $Groups = QUI::getGroups();
+        $Groups   = QUI::getGroups();
 
         foreach ($ids as $id) {
             try {
@@ -581,7 +583,7 @@ class Group extends QUI\QDOM
      * return the subgroup ids
      *
      * @param Bool $recursiv - recursiv true / false
-     * @param      $params   - SQL Params (limit, order)
+     * @param      $params - SQL Params (limit, order)
      *
      * @return Array
      */
@@ -664,11 +666,11 @@ class Group extends QUI\QDOM
     public function createChild($name)
     {
         $create = true;
-        $newid = false;
+        $newid  = false;
 
         while ($create) {
             srand(microtime() * 1000000);
-            $newid = rand(1, 1000000000);
+            $newid = rand(10, 1000000000);
 
             $result = QUI::getDataBase()->fetch(array(
                 'select' => 'id',
@@ -714,8 +716,8 @@ class Group extends QUI\QDOM
     protected function _createCache()
     {
         // Cache aufbauen
-        QUI\Cache\Manager::set('qui/groups/group/'.$this->getId(), array(
-            'parentids'  => $this->getParentIds(true),
+        QUI\Cache\Manager::set('qui/groups/group/' . $this->getId(), array(
+            'parentids'  => $this->getParentIds(),
             'attributes' => $this->getAttributes(),
             'rights'     => $this->_rights
         ));

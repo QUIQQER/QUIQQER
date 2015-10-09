@@ -73,8 +73,22 @@
     <!-- Kind anlegen -->
     <permission name="quiqqer.projects.site.new" type="users_and_groups" area="site" />
 
+
     <!-- Darf Seitenzugriffsrechte setzen -->
-    <permission name="quiqqer.projects.site.set_permissions" type="bool" />
+    <permission name="quiqqer.projects.sites.set_permissions" type="bool" />
+
+    <!-- Seite besuchen -->
+    <permission name="quiqqer.projects.sites.view" type="bool" />
+
+    <!-- Seite editieren -->
+    <permission name="quiqqer.projects.sites.edit" type="bool" />
+
+    <!-- Seite löschen -->
+    <permission name="quiqqer.projects.sites.del" type="bool" />
+
+    <!-- Kind anlegen -->
+    <permission name="quiqqer.projects.sites.new" type="bool" />
+
 
 
 <!-- Editor permissions -->

@@ -923,7 +923,7 @@ class Edit extends Site
             $User = QUI::getUserBySession();
         }
 
-        $this->checkPermission('quiqqer.projects.site.new');
+        $this->checkPermission('quiqqer.projects.site.new', $User);
 
 
         //$newid    = $Project->getNewId();

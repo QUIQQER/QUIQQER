@@ -44,7 +44,7 @@ class Manager extends QUI\QDOM
      */
     static function Table()
     {
-        return QUI_DB_PRFX.'groups';
+        return QUI_DB_PRFX . 'groups';
     }
 
     /**
@@ -53,7 +53,7 @@ class Manager extends QUI\QDOM
     public function setup()
     {
         $DataBase = QUI::getDataBase();
-        $Table = $DataBase->Table();
+        $Table    = $DataBase->Table();
 
         $Table->appendFields(self::Table(), array(
             'id'      => 'int(11) NOT NULL',
@@ -92,6 +92,16 @@ class Manager extends QUI\QDOM
      */
     public function get($id)
     {
+        $id = (int)$id;
+
+        if ($id === 1) {
+            return new Everyone();
+        }
+
+        if ($id === 0) {
+            return new Guest();
+        }
+
         if (!$id) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
@@ -119,11 +129,7 @@ class Manager extends QUI\QDOM
      */
     public function getGroupNameById($id)
     {
-        if (!isset($this->_groups[$id])) {
-            $this->_groups[$id] = $this->get($id);
-        }
-
-        return $this->_groups[$id]->getAttribute('name');
+        return $this->get($id)->getAttribute('name');
     }
 
     /**
@@ -172,7 +178,7 @@ class Manager extends QUI\QDOM
     protected function _search($params)
     {
         $DataBase = QUI::getDataBase();
-        $params = Orthos::clearArray($params);
+        $params   = Orthos::clearArray($params);
 
         $allowOrderFields = array(
             'id',
@@ -190,7 +196,7 @@ class Manager extends QUI\QDOM
             'active' => true
         );
 
-        $max = 10;
+        $max   = 10;
         $start = 0;
 
         $_fields = array(
@@ -215,7 +221,7 @@ class Manager extends QUI\QDOM
                 $start = (int)$params['start'];
             }
 
-            $_fields['limit'] = $start.', '.$max;
+            $_fields['limit'] = $start . ', ' . $max;
         }
 
         if (isset($params['order'])
@@ -223,7 +229,7 @@ class Manager extends QUI\QDOM
             && $params['field']
             && in_array($params['field'], $allowOrderFields)
         ) {
-            $_fields['order'] = $params['field'].' '.$params['order'];
+            $_fields['order'] = $params['field'] . ' ' . $params['order'];
         }
 
         if (isset($params['where'])) {

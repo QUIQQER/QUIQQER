@@ -42,6 +42,10 @@
             <de><![CDATA[Benutzer]]></de>
             <en><![CDATA[Users]]></en>
         </locale>
+        <locale name="permission.quiqqer.projects.sites._header">
+            <de><![CDATA[Seiten]]></de>
+            <en><![CDATA[Sites]]></en>
+        </locale>
 
         <locale name="permission.quiqqer.admin">
             <de><![CDATA[Darf sich in das Backend (Administration) einloggen.]]></de>
@@ -119,10 +123,27 @@
             <de><![CDATA[Darf neue Unterseite anlegen.]]></de>
             <en><![CDATA[]]></en>
         </locale>
-        <locale name="permission.quiqqer.projects.site.set_permissions">
+        <locale name="permission.quiqqer.projects.sites.set_permissions">
             <de><![CDATA[Darf Zugriffsrechte auf Seiten setzen und bearbeiten.]]></de>
             <en><![CDATA[]]></en>
         </locale>
+        <locale name="permission.quiqqer.projects.sites.view">
+            <de><![CDATA[Darf Seiten besuchen.]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+        <locale name="permission.quiqqer.projects.sites.edit">
+            <de><![CDATA[Darf Seiten bearbeiten.]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+        <locale name="permission.quiqqer.projects.sites.del">
+            <de><![CDATA[Darf Seiten löschen.]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+        <locale name="permission.quiqqer.projects.sites.new">
+            <de><![CDATA[Darf neue Unterseiten anlegen.]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+
         <locale name="permission.quiqqer.editors.toolbar.delete">
             <de><![CDATA[Darf Editor Toolbars löschen]]></de>
             <en><![CDATA[]]></en>

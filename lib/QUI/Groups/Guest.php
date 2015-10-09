@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file contains QUI\Groups\Everyone
+ * This file contains QUI\Groups\Guest
  */
 
 namespace QUI\Groups;
@@ -9,19 +9,19 @@ namespace QUI\Groups;
 use QUI;
 
 /**
- * The Everyone Group
+ * The Guest Group
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
  */
-class Everyone extends QUI\Groups\Group
+class Guest extends QUI\Groups\Group
 {
     /**
      * constructor
      */
     public function __construct()
     {
-        parent::__construct(1);
+        parent::__construct(0);
     }
 
     /**
@@ -35,7 +35,7 @@ class Everyone extends QUI\Groups\Group
         throw new QUI\Exception(
             QUI::getLocale()->get(
                 'quiqqer/system',
-                'exception.everyone.group.cannot.be.deleted'
+                'exception.guest.group.cannot.be.deleted'
             )
         );
     }
@@ -44,7 +44,7 @@ class Everyone extends QUI\Groups\Group
      * set a group attribute
      * ID cannot be set
      *
-     * @param String                    $key   - Attribute name
+     * @param String $key - Attribute name
      * @param String|Bool|Integer|array $value - value
      *
      * @return Bool
@@ -65,7 +65,7 @@ class Everyone extends QUI\Groups\Group
      */
     public function getId()
     {
-        return 1;
+        return 0;
     }
 
     /**
@@ -75,13 +75,13 @@ class Everyone extends QUI\Groups\Group
     public function save()
     {
         $this->_rights = QUI::getPermissionManager()
-                            ->getRightParamsFromGroup($this);
+            ->getRightParamsFromGroup($this);
 
         // Felder bekommen
         QUI::getDataBase()->update(
             QUI\Groups\Manager::Table(),
             array(
-                'name'    => 'Everyone',
+                'name'    => 'Guest',
                 'toolbar' => $this->getAttribute('toolbar'),
                 'admin'   => 0,
                 'rights'  => json_encode($this->_rights),
@@ -109,7 +109,7 @@ class Everyone extends QUI\Groups\Group
         throw new QUI\Exception(
             QUI::getLocale()->get(
                 'quiqqer/system',
-                'exception.everyone.group.cannot.be.deactivated'
+                'exception.guest.group.cannot.be.deactivated'
             )
         );
     }
@@ -127,8 +127,8 @@ class Everyone extends QUI\Groups\Group
     /**
      * Checks if the ID is from a parent group
      *
-     * @param Integer $id       - ID from parent
-     * @param Bool    $recursiv - checks recursive or not
+     * @param Integer $id - ID from parent
+     * @param Bool $recursiv - checks recursive or not
      *
      * @return Bool
      */
@@ -186,7 +186,7 @@ class Everyone extends QUI\Groups\Group
      * return the subgroup ids
      *
      * @param Bool $recursiv - recursiv true / false
-     * @param      $params   - SQL Params (limit, order)
+     * @param      $params - SQL Params (limit, order)
      *
      * @return Array
      */

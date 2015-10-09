@@ -169,7 +169,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
     public function addAddress($params)
     {
         throw new QUI\Exception(
-            QUI::getLocale(
+            QUI::getLocale()->get(
                 'system',
                 'exception.lib.user.nobody.add.address'
             )
@@ -282,7 +282,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
     public function getAddress($id)
     {
         throw new QUI\Exception(
-            QUI::getLocale('system', 'exception.lib.user.nobody.get.address')
+            QUI::getLocale()->get('system', 'exception.lib.user.nobody.get.address')
         );
     }
 
@@ -383,7 +383,14 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      */
     public function getGroups($array = true)
     {
-        return false;
+        $Guest    = new QUI\Groups\Guest();
+        $Everyone = new QUI\Groups\Everyone();
+
+        if ($array == true) {
+            return array($Guest, $Everyone);
+        }
+
+        return array($Guest->getId(), $Everyone->getId());
     }
 
     /**
@@ -406,7 +413,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * @see \QUI\Interfaces\Users\User::getPermission()
      *
      * @param String $right
-     * @param array  $ruleset - optional, you can specific a ruleset, a rules = array with rights
+     * @param array $ruleset - optional, you can specific a ruleset, a rules = array with rights
      *
      * @return bool
      *
@@ -422,7 +429,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::setExtra()
      *
-     * @param String               $field
+     * @param String $field
      * @param String|Integer|array $value
      *
      * @return bool
@@ -451,7 +458,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::setPassword()
      *
-     * @param String               $new - new password
+     * @param String $new - new password
      * @param \QUI\Users\User|bool $ParentUser
      *
      * @return bool
@@ -466,8 +473,8 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::checkPassword()
      *
-     * @param String $pass      - Password
-     * @param Bool   $encrypted - is the given password already encrypted?
+     * @param String $pass - Password
+     * @param Bool $encrypted - is the given password already encrypted?
      *
      * @return false
      */

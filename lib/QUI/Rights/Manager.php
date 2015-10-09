@@ -85,6 +85,8 @@ class Manager
                 return 'user';
                 break;
 
+            case 'QUI\\Groups\\Guest':
+            case 'QUI\\Groups\\Everyone':
             case 'QUI\\Groups\\Group':
                 return 'groups';
                 break;
@@ -555,6 +557,8 @@ class Manager
         switch ($cls) {
             case 'QUI\\Users\\User':
             case 'QUI\\Groups\\Group':
+            case 'QUI\\Groups\\Everyone':
+            case 'QUI\\Groups\\Guest':
                 break;
 
             case 'QUI\\Projects\\Project':
@@ -693,8 +697,8 @@ class Manager
             return;
         }
 
+        $Site->checkPermission('quiqqer.projects.sites.set_permissions');
         $Site->checkPermission('quiqqer.project.sites.edit');
-
 
         $_data = $this->_getData($Site);
 
