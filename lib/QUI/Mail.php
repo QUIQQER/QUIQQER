@@ -79,12 +79,12 @@ class Mail
      */
     public function __construct($config = false)
     {
-        \QUI::getErrorHandler()->setAttribute('ERROR_8192', false);
+        QUI::getErrorHandler()->setAttribute('ERROR_8192', false);
 
         //require_once LIB_DIR .'extern/phpmail/class.phpmailer.php';
 
         // Standard Config setzen
-        $mailconf = \QUI::conf('mail');
+        $mailconf = QUI::conf('mail');
 
         $this->_config = array(
             'IsSMTP'       => $mailconf['SMTP'],
@@ -142,20 +142,20 @@ class Mail
 
         if ($this->_config['IsSMTP'] == true) {
             //$this->_mail->IsSMTP();
-            $this->_mail->Mailer = 'smtp';
-            $this->_mail->Host = $this->_config['SMTPServer'];
+            $this->_mail->Mailer   = 'smtp';
+            $this->_mail->Host     = $this->_config['SMTPServer'];
             $this->_mail->SMTPAuth = $this->_config['SMTPAuth'];
             $this->_mail->Username = $this->_config['SMTPUser'];
             $this->_mail->Password = $this->_config['SMTPPass'];
         }
 
-        $this->_mail->From = $this->_config['MAILFrom'];
+        $this->_mail->From     = $this->_config['MAILFrom'];
         $this->_mail->FromName = $this->_config['MAILFromText'];
-        $this->_mail->CharSet = $this->_config['CharSet'];
+        $this->_mail->CharSet  = $this->_config['CharSet'];
 
         //$this->_mail->SetLanguage( 'de', LIB_DIR .'extern/phpmail/language/' );
 
-        \QUI::getErrorHandler()->setAttribute('ERROR_8192', true);
+        QUI::getErrorHandler()->setAttribute('ERROR_8192', true);
     }
 
     /**
@@ -176,27 +176,35 @@ class Mail
     public function send($mailconf)
     {
         if (!is_array($mailconf)) {
-            throw new QUI\Exception('Mail Error: send() Fehlender Paramater',
-                400);
+            throw new QUI\Exception(
+                'Mail Error: send() Fehlender Paramater',
+                400
+            );
         }
 
         if (!isset($mailconf['MailTo'])) {
-            throw new QUI\Exception('Mail Error: send() Fehlender Paramater MailTo',
-                400);
+            throw new QUI\Exception(
+                'Mail Error: send() Fehlender Paramater MailTo',
+                400
+            );
         }
 
         if (!isset($mailconf['Subject'])) {
-            throw new QUI\Exception('Mail Error: send() Fehlender Paramater Subject',
-                400);
+            throw new QUI\Exception(
+                'Mail Error: send() Fehlender Paramater Subject',
+                400
+            );
         }
 
         if (!isset($mailconf['Body'])) {
-            throw new QUI\Exception('Mail Error: send() Fehlender Paramater Body',
-                400);
+            throw new QUI\Exception(
+                'Mail Error: send() Fehlender Paramater Body',
+                400
+            );
         }
 
-        $Body = $mailconf['Body'];
-        $MailTo = $mailconf['MailTo'];
+        $Body    = $mailconf['Body'];
+        $MailTo  = $mailconf['MailTo'];
         $Subject = $mailconf['Subject'];
 
         if (isset($mailconf['MAILReplyTo'])) {
@@ -204,7 +212,7 @@ class Mail
         }
 
         $IsHTML = false;
-        $files = false;
+        $files  = false;
 
         if (isset($mailconf['IsHTML'])) {
             $IsHTML = $mailconf['IsHTML'];
@@ -215,14 +223,14 @@ class Mail
         }
 
         if (DEBUG_MODE) {
-            $this->_mail->AddCC(\QUI::conf('mail', 'admin_mail'));
+            $this->_mail->AddCC(QUI::conf('mail', 'admin_mail'));
         }
 
-        if (\QUI::conf('mail', 'bccToAdmin')) {
-            $this->_mail->AddBCC(\QUI::conf('mail', 'admin_mail'));
+        if (QUI::conf('mail', 'bccToAdmin')) {
+            $this->_mail->AddBCC(QUI::conf('mail', 'admin_mail'));
         }
 
-        \QUI::getErrorHandler()->setAttribute('ERROR_8192', false);
+        QUI::getErrorHandler()->setAttribute('ERROR_8192', false);
 
         if ($IsHTML) {
             $this->_mail->IsHTML(true);
@@ -267,13 +275,17 @@ class Mail
                     $infos['mime_type'] = 'application/octet-stream';
                 }
 
-                $this->_mail->AddAttachment($file, '', 'base64',
-                    $infos['mime_type']);
+                $this->_mail->AddAttachment(
+                    $file,
+                    '',
+                    'base64',
+                    $infos['mime_type']
+                );
             }
         }
 
         $this->_mail->Subject = $Subject;
-        $this->_mail->Body = $Body;
+        $this->_mail->Body    = $Body;
 
         if ($IsHTML) {
             $Html2Text = new Html2Text($Body);
@@ -284,7 +296,7 @@ class Mail
         // with mail queue?
         if (QUI::conf('mail', 'queue')) {
             $Queue = new Mail\Queue();
-            $id = $Queue->addToQueue($this);
+            $id    = $Queue->addToQueue($this);
 
             $Queue->sendById($id);
 
@@ -301,7 +313,7 @@ class Mail
         QUI::getErrorHandler()->setAttribute('ERROR_8192', true);
 
         throw new QUI\Exception(
-            'Mail Error: '.$this->_mail->ErrorInfo,
+            'Mail Error: ' . $this->_mail->ErrorInfo,
             500
         );
     }
