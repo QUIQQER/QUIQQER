@@ -72,7 +72,7 @@ class Manager extends QUI\QDOM
     /**
      * Returns the first group
      *
-     * @return QUI\Groups\Manager
+     * @return QUI\Groups\Group
      */
     public function firstChild()
     {
