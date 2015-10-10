@@ -202,11 +202,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
 
         // view permission check
-        try {
-            $this->checkPermission('quiqqer.projects.site.view');
-        } catch (QUI\Exception $Exception) {
-            $this->checkPermission('quiqqer.projects.sites.view');
-        }
+        $this->checkPermission('quiqqer.projects.site.view');
 
 
         // site events

@@ -142,7 +142,7 @@ class Permission
             return true;
         }
 
-        self::checkUser($User);
+//        self::checkUser($User);
 
         $Manager     = QUI::getPermissionManager();
         $permissions = $Manager->getPermissions($User);
@@ -158,7 +158,6 @@ class Permission
         foreach ($groups as $Group) {
             $permissions = $Manager->getPermissions($Group);
 
-            // @todo we need a check
             if (isset($permissions[$perm]) && !empty($permissions[$perm])) {
                 return $permissions[$perm];
             }
