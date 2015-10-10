@@ -13,9 +13,8 @@ use QUI;
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
- * @package quiqqer/quiqqer
- *
- * @event   logWrite
+ * @package QUI\System
+ * @need quiqqr/log
  */
 class Log
 {
@@ -62,52 +61,95 @@ class Log
     /**
      * Writes a string to a log file
      *
-     * @param String  $message  - String to write
+     * @param String $message - String to write
      * @param Integer $loglevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
-     * @param String  $filename - [optional] name of the log eq: messages, database,
+     * @param String|Boolean $filename - [optional] name of the log eq: messages, database,
      *
      * @example \QUI\System\Log::write( 'My Error', \QUI\System\Log::LEVEL_ERROR );
      */
     static function write(
         $message,
         $loglevel = self::LEVEL_INFO,
-        $filename = 'error'
+        $filename = false
     ) {
-        // trigger only events if the session already exist, because we can get in loops otherwise
-        if (QUI::$Session) {
-            QUI::getEvents()->fireEvent('logWrite', array(
-                'message'  => $message,
-                'loglevel' => $loglevel
-            ));
+        $Logger = QUI\Log\Logger::getLogger();
+
+        if (isset($_SERVER['REQUEST_URI'])
+            && !empty($_SERVER['REQUEST_URI'])
+        ) {
+            $message = HOST . $_SERVER['REQUEST_URI'] . ' : ' . $message;
         }
 
-        if (isset($_SERVER['REQUEST_URI']) && !empty($_SERVER['REQUEST_URI'])) {
-            $message = HOST.$_SERVER['REQUEST_URI'].' : '.$message;
+        $context = array(
+            'filename' => $filename
+        );
+
+        switch (self::levelToLogName($loglevel)) {
+            case 'debug':
+                $Logger->addDebug($message, $context);
+                break;
+
+            case 'info':
+                $Logger->addInfo($message, $context);
+                break;
+
+            case 'notice':
+                $Logger->addNotice($message, $context);
+                break;
+
+            case 'warning':
+                $Logger->addWarning($message, $context);
+                break;
+
+            case 'critical':
+                $Logger->addCritical($message, $context);
+                break;
+
+            case 'alert':
+                $Logger->addAlert($message, $context);
+                break;
+
+            case 'emergency':
+                $Logger->addEmergency($message, $context);
+                break;
+
+            case 'error':
+            default:
+                $Logger->addError($message, $context);
         }
 
-        $message = '['.date(\DATE_ATOM).'] '.$message."\n";
-
-
-        $dir = VAR_DIR.'log/';
-        $file = $dir.$filename.date('-Y-m-d').'.log';
-
-        // Log Verzeichnis erstellen
-        QUI\Utils\System\File::mkdir($dir);
-
-        error_log($message."\n", 3, $file);
+//
+//        // trigger only events if the session already exist, because we can get in loops otherwise
+//        if (QUI::$Session) {
+//            QUI::getEvents()->fireEvent('logWrite', array(
+//                'message'  => $message,
+//                'loglevel' => $loglevel
+//            ));
+//        }
+//
+//        $message = '[' . date(\DATE_ATOM) . '] ' . $message . "\n";
+//
+//
+//        $dir  = VAR_DIR . 'log/';
+//        $file = $dir . $filename . date('-Y-m-d') . '.log';
+//
+//        // Log Verzeichnis erstellen
+//        QUI\Utils\System\File::mkdir($dir);
+//
+//        error_log($message . "\n", 3, $file);
     }
 
     /**
      * Writes with print_r the object into a log file
      *
      * @param Object|String|Integer|Array $object
-     * @param Integer                     $loglevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
-     * @param String                      $filename - [optional] name of the log eq: messages, database,
+     * @param Integer $loglevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
+     * @param String|Boolean $filename - [optional] name of the log eq: messages, database,
      */
     static function writeRecursive(
         $object,
         $loglevel = self::LEVEL_NOTICE,
-        $filename = 'error'
+        $filename = false
     ) {
         self::write(print_r($object, true), $loglevel, $filename);
     }
@@ -116,15 +158,15 @@ class Log
      * Writes an Exception to a log file
      *
      * @param \Exception $Exception
-     * @param Integer    $loglevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
-     * @param String     $filename - [optional] name of the log eq: messages, database,
+     * @param Integer $loglevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
+     * @param String|Boolean $filename - [optional] name of the log eq: messages, database,
      */
     static function writeException(
         $Exception,
         $loglevel = self::LEVEL_ERROR,
-        $filename = 'error'
+        $filename = false
     ) {
-        $message  = $Exception->getCode()." :: \n\n";
+        $message = $Exception->getCode() . " :: \n\n";
         $message .= $Exception->getMessage();
         $message .= $Exception->getTraceAsString();
 
@@ -134,10 +176,10 @@ class Log
     /**
      * Adds a log record at the DEBUG level.
      *
-     * @param String $message  The log message
-     * @param String $filename - [optional] name of the log eq: messages, database (default = error)
+     * @param String $message The log message
+     * @param String|Boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    static function addDebug($message, $filename = 'error')
+    static function addDebug($message, $filename = false)
     {
         self::write($message, self::LEVEL_DEBUG, $filename);
     }
@@ -145,10 +187,10 @@ class Log
     /**
      * Adds a log record at the INFO level.
      *
-     * @param string $message  The log message
-     * @param String $filename - [optional] name of the log eq: messages, database (default = error)
+     * @param string $message The log message
+     * @param String|Boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    static function addInfo($message, $filename = 'error')
+    static function addInfo($message, $filename = false)
     {
         self::write($message, self::LEVEL_INFO, $filename);
     }
@@ -156,10 +198,10 @@ class Log
     /**
      * Adds a log record at the NOTICE level.
      *
-     * @param string $message  The log message
-     * @param String $filename - [optional] name of the log eq: messages, database (default = error)
+     * @param string $message The log message
+     * @param String|Boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    static function addNotice($message, $filename = 'error')
+    static function addNotice($message, $filename = false)
     {
         self::write($message, self::LEVEL_NOTICE, $filename);
     }
@@ -167,10 +209,10 @@ class Log
     /**
      * Adds a log record at the WARNING level.
      *
-     * @param string $message  The log message
-     * @param String $filename - [optional] name of the log eq: messages, database (default = error)
+     * @param string $message The log message
+     * @param String|Boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    static function addWarning($message, $filename = 'error')
+    static function addWarning($message, $filename = false)
     {
         self::write($message, self::LEVEL_WARNING, $filename);
     }
@@ -178,10 +220,10 @@ class Log
     /**
      * Adds a log record at the ERROR level.
      *
-     * @param string $message  The log message
-     * @param String $filename - [optional] name of the log eq: messages, database (default = error)
+     * @param string $message The log message
+     * @param String|Boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    static function addError($message, $filename = 'error')
+    static function addError($message, $filename = false)
     {
         self::write($message, self::LEVEL_ERROR, $filename);
     }
@@ -189,10 +231,10 @@ class Log
     /**
      * Adds a log record at the CRITICAL level.
      *
-     * @param string $message  The log message
-     * @param String $filename - [optional] name of the log eq: messages, database (default = error)
+     * @param string $message The log message
+     * @param String|Boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    static function addCritical($message, $filename = 'error')
+    static function addCritical($message, $filename = false)
     {
         self::write($message, self::LEVEL_CRITICAL, $filename);
     }
@@ -200,10 +242,10 @@ class Log
     /**
      * Adds a log record at the ALERT level.
      *
-     * @param string $message  The log message
-     * @param String $filename - [optional] name of the log eq: messages, database (default = error)
+     * @param string $message The log message
+     * @param String|Boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    static function addAlert($message, $filename = 'error')
+    static function addAlert($message, $filename = false)
     {
         self::write($message, self::LEVEL_ALERT, $filename);
     }
@@ -211,10 +253,10 @@ class Log
     /**
      * Adds a log record at the EMERGENCY level.
      *
-     * @param string $message  The log message
-     * @param String $filename - [optional] name of the log eq: messages, database (default = error)
+     * @param string $message The log message
+     * @param String|Boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    static function addEmergency($message, $filename = 'error')
+    static function addEmergency($message, $filename = false)
     {
         self::write($message, self::LEVEL_EMERGENCY, $filename);
     }
