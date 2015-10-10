@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit backupGlobals="false"
+         backupStaticAttributes="false"
+         bootstrap="./tests/bootstrap.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+
+         stopOnError="false"
+         stopOnFailure="false"
+         stopOnIncomplete="false"
+
+         syntaxCheck="false"
+        >
+    <testsuites>
+        <testsuite name="QUIQQER Test Suite">
+            <directory suffix=".php">./tests/</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
