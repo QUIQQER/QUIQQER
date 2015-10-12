@@ -1063,7 +1063,7 @@ class Edit extends Site
      *
      * @todo Rekursiv kopieren
      */
-    public function copy($pid, $Project=false)
+    public function copy($pid, $Project = false)
     {
         // Edit Rechte prüfen
         $this->checkPermission('quiqqer.projects.site.edit');
@@ -1406,10 +1406,11 @@ class Edit extends Site
      *
      * @param String $permission - name of the permission
      * @param User $User - User Object
+     * @param Boolean|\QUI\Users\User $EditUser
      */
-    public function addUserToPermission(User $User, $permission)
+    public function addUserToPermission(User $User, $permission, $EditUser = false)
     {
-        Permission::addUserToSitePermission($User, $this, $permission);
+        Permission::addUserToSitePermission($User, $this, $permission, $EditUser);
     }
 
     /**
@@ -1417,21 +1418,23 @@ class Edit extends Site
      *
      * @param Group $Group
      * @param String $permission
+     * @param Boolean|\QUI\Users\User $EditUser
      */
-    public function addgroupToPermission(Group $Group, $permission)
+    public function addgroupToPermission(Group $Group, $permission, $EditUser = false)
     {
-        Permission::addGroupToSitePermission($Group, $this, $permission);
+        Permission::addGroupToSitePermission($Group, $this, $permission, $EditUser);
     }
 
     /**
      * Remove an user from the permission
      *
      * @param String $permission - name of the permission
-     * @param User $User - User Object
+     * @param User $User - User Object#
+     * @param Boolean|\QUI\Users\User $EditUser
      */
-    public function removeUserFromSitePermission(User $User, $permission)
+    public function removeUserFromSitePermission(User $User, $permission, $EditUser = false)
     {
-        Permission::removeUserFromSitePermission($User, $this, $permission);
+        Permission::removeUserFromSitePermission($User, $this, $permission, $EditUser);
     }
 
     /**
@@ -1439,10 +1442,11 @@ class Edit extends Site
      *
      * @param Group $Group
      * @param String $permission - name of the permission
+     * @param Boolean|\QUI\Users\User $EditUser
      */
-    public function removeGroupFromSitePermission(Group $Group, $permission)
+    public function removeGroupFromSitePermission(Group $Group, $permission, $EditUser = false)
     {
-        Permission::removeGroupFromSitePermission($Group, $this, $permission);
+        Permission::removeGroupFromSitePermission($Group, $this, $permission, $EditUser);
     }
 
     /**

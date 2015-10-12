@@ -537,14 +537,14 @@ class Manager
      * @param QUI\Users\User|QUI\Groups\Group|
      *                           QUI\Projects\Project|QUI\Projects\Site|QUI\Projects\Site\Edit $Obj
      * @param Array $permissions - Array of permissions
-     * @param Boolean|QUI\Users\User $User - Edit user
+     * @param Boolean|QUI\Users\User $EditUser - Edit user
      *
      * @throws QUI\Exception
      *
      * @todo  permissions for media
      * @todo  permissions for project
      */
-    public function setPermissions($Obj, $permissions, $User = false)
+    public function setPermissions($Obj, $permissions, $EditUser = false)
     {
         if (empty($permissions)) {
             throw new QUI\Exception(
@@ -563,7 +563,7 @@ class Manager
                 break;
 
             case 'QUI\\Projects\\Project':
-                $this->setProjectPermissions($Obj, $permissions, $User);
+                $this->setProjectPermissions($Obj, $permissions, $EditUser);
 
                 return;
                 break;
@@ -571,7 +571,7 @@ class Manager
             case 'QUI\\Projects\\Site':
             case 'QUI\\Projects\\Site\\Edit':
             case 'QUI\\Projects\\Site\\OnlyDB':
-                $this->setSitePermissions($Obj, $permissions, $User);
+                $this->setSitePermissions($Obj, $permissions, $EditUser);
 
                 return;
                 break;
@@ -582,6 +582,11 @@ class Manager
                 );
                 break;
         }
+
+        QUI\Rights\Permission::checkPermission(
+            'quiqqer.system.permissions',
+            $EditUser
+        );
 
         $area  = $this->classToArea($cls);
         $_data = $this->_getData($Obj); // old permissions
@@ -691,16 +696,16 @@ class Manager
      *
      * @param QUI\Projects\Site|QUI\Projects\Site\Edit|QUI\Projects\Site\OnlyDB $Site
      * @param Array $permissions - Array of permissions
-     * @param Boolean|QUI\Users\User $User - Edit user
+     * @param Boolean|QUI\Users\User $EditUser - Edit user
      */
-    public function setSitePermissions($Site, $permissions, $User = false)
+    public function setSitePermissions($Site, $permissions, $EditUser = false)
     {
         if (QUI\Projects\Site\Utils::isSiteObject($Site) === false) {
             return;
         }
 
-        $Site->checkPermission('quiqqer.projects.sites.set_permissions', $User);
-        $Site->checkPermission('quiqqer.project.sites.edit', $User);
+        $Site->checkPermission('quiqqer.projects.sites.set_permissions', $EditUser);
+        $Site->checkPermission('quiqqer.project.sites.edit', $EditUser);
 
         $_data = $this->_getData($Site);
 
@@ -782,10 +787,11 @@ class Manager
      * Remove all permissions from the site
      *
      * @param QUI\Projects\Site|QUI\Projects\Site\Edit|QUI\Projects\Site\OnlyDB $Site
+     * @param Boolean|\QUI\Users\User $EditUser
      */
-    public function removeSitePermissions($Site)
+    public function removeSitePermissions($Site, $EditUser = false)
     {
-        $Site->checkPermission('quiqqer.projects.site.edit');
+        $Site->checkPermission('quiqqer.projects.site.edit', $EditUser);
 
 
         $Project = $Site->getProject();
@@ -806,16 +812,21 @@ class Manager
      *
      * @param QUI\Projects\Project $Project
      * @param Array $permissions
-     * @param Boolean|QUI\Users\User $User - Edit user
+     * @param Boolean|\QUI\Users\User $EditUser
      */
     public function setProjectPermissions(
         QUI\Projects\Project $Project,
         $permissions,
-        $User = false
+        $EditUser = false
     ) {
         $data  = array();
         $_data = $this->_getData($Project);
         $list  = $this->getPermissionList('project');
+
+        QUI\Rights\Permission::checkPermission(
+            'quiqqer.system.permissions',
+            $EditUser
+        );
 
         // look at permission list and cleanup the values
         foreach ($list as $permission => $params) {

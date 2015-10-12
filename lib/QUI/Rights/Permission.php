@@ -188,7 +188,7 @@ class Permission
         if (!isset($permissions[$perm])) {
 
             QUI\System\Log::addNotice(
-                'Permission missing: '. $perm
+                'Permission missing: ' . $perm
             );
 
             return true;
@@ -407,17 +407,18 @@ class Permission
      * @param \QUI\Users\User $User
      * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
      * @param String $permission - name of the permission
+     * @param Boolean|\QUI\Users\User $EditUser
      *
      * @return bool
      */
-    static function addUserToSitePermission(User $User, $Site, $permission)
+    static function addUserToSitePermission(User $User, $Site, $permission, $EditUser = false)
     {
         if (QUI\Projects\Site\Utils::isSiteObject($Site) === false) {
             return false;
         }
 
         /* @var $Site \QUI\Projects\Site */
-        $Site->checkPermission('quiqqer.projects.site.edit');
+        $Site->checkPermission('quiqqer.projects.site.edit', $EditUser);
 
         $Manager     = QUI::getPermissionManager();
         $permissions = $Manager->getSitePermissions($Site);
@@ -444,7 +445,8 @@ class Permission
 
         $Manager->setSitePermissions(
             $Site,
-            array($permission => implode(',', $permList))
+            array($permission => implode(',', $permList)),
+            $EditUser
         );
 
         return true;
@@ -456,17 +458,18 @@ class Permission
      * @param \QUI\Groups\Group $Group
      * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
      * @param String $permission - name of the permission
+     * @param Boolean|\QUI\Users\User $EditUser
      *
      * @return bool
      */
-    static function addGroupToSitePermission(Group $Group, $Site, $permission)
+    static function addGroupToSitePermission(Group $Group, $Site, $permission, $EditUser)
     {
         if (QUI\Projects\Site\Utils::isSiteObject($Site) === false) {
             return false;
         }
 
         /* @var $Site \QUI\Projects\Site */
-        $Site->checkPermission('quiqqer.projects.site.edit');
+        $Site->checkPermission('quiqqer.projects.site.edit', $EditUser);
 
         $Manager     = QUI::getPermissionManager();
         $permissions = $Manager->getSitePermissions($Site);
@@ -494,7 +497,8 @@ class Permission
 
         $Manager->setSitePermissions(
             $Site,
-            array($permission => implode(',', $permList))
+            array($permission => implode(',', $permList)),
+            $EditUser
         );
 
         return true;
@@ -657,20 +661,22 @@ class Permission
      * @param Group $Group
      * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
      * @param String $permission
+     * @param Boolean|\QUI\Users\User $EditUser
      *
      * @return bool
      */
     static function removeGroupFromSitePermission(
         Group $Group,
         $Site,
-        $permission
+        $permission,
+        $EditUser = false
     ) {
         if (QUI\Projects\Site\Utils::isSiteObject($Site) === false) {
             return false;
         }
 
         /* @var $Site \QUI\Projects\Site */
-        $Site->checkPermission('quiqqer.projects.site.edit');
+        $Site->checkPermission('quiqqer.projects.site.edit', $EditUser);
 
         $Manager     = QUI::getPermissionManager();
         $permissions = $Manager->getSitePermissions($Site);
@@ -698,7 +704,8 @@ class Permission
 
         $Manager->setSitePermissions(
             $Site,
-            array($permission => implode(',', $permList))
+            array($permission => implode(',', $permList)),
+            $EditUser
         );
 
         return true;
@@ -710,17 +717,18 @@ class Permission
      * @param \QUI\Users\User $User
      * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
      * @param String $permission
+     * @param Boolean|\QUI\Users\User $EditUser
      *
      * @return bool
      */
-    static function removeUserFromSitePermission(User $User, $Site, $permission)
+    static function removeUserFromSitePermission(User $User, $Site, $permission, $EditUser = false)
     {
         if (QUI\Projects\Site\Utils::isSiteObject($Site) === false) {
             return false;
         }
 
         /* @var $Site \QUI\Projects\Site */
-        $Site->checkPermission('quiqqer.projects.site.edit');
+        $Site->checkPermission('quiqqer.projects.site.edit', $EditUser);
 
         $Manager     = QUI::getPermissionManager();
         $permissions = $Manager->getSitePermissions($Site);
@@ -748,7 +756,8 @@ class Permission
 
         $Manager->setSitePermissions(
             $Site,
-            array($permission => implode(',', $permList))
+            array($permission => implode(',', $permList)),
+            $EditUser
         );
 
         return true;
@@ -765,15 +774,17 @@ class Permission
      * @param Group $Group
      * @param \QUI\Projects\Project $Project
      * @param String $permission
+     * @param Boolean|\QUI\Users\User $EditUser
      *
      * @return bool
      */
     static function addGroupToProjectPermission(
         Group $Group,
         Project $Project,
-        $permission
+        $permission,
+        $EditUser = false
     ) {
-        self::checkProjectPermission('quiqqer.projects.edit', $Project);
+        self::checkProjectPermission('quiqqer.projects.edit', $Project, $EditUser);
 
         $Manager     = QUI::getPermissionManager();
         $permissions = $Manager->getProjectPermissions($Project);
@@ -800,7 +811,8 @@ class Permission
 
         $Manager->setProjectPermissions(
             $Project,
-            array($permission => implode(',', $permList))
+            array($permission => implode(',', $permList)),
+            $EditUser
         );
 
         return true;
@@ -812,6 +824,7 @@ class Permission
      * @param \QUI\Users\User $User
      * @param \QUI\Projects\Project $Project
      * @param String $permission - name of the
+     * @param Boolean|\QUI\Users\User $EditUser
      *
      * @return bool
      * @throws QUI\Exception
@@ -819,9 +832,10 @@ class Permission
     static function addUserToProjectPermission(
         User $User,
         Project $Project,
-        $permission
+        $permission,
+        $EditUser = false
     ) {
-        self::checkProjectPermission('quiqqer.projects.edit', $Project);
+        self::checkProjectPermission('quiqqer.projects.edit', $Project, $EditUser);
 
         $Manager     = QUI::getPermissionManager();
         $permissions = $Manager->getProjectPermissions($Project);
@@ -848,7 +862,8 @@ class Permission
 
         $Manager->setProjectPermissions(
             $Project,
-            array($permission => implode(',', $permList))
+            array($permission => implode(',', $permList)),
+            $EditUser
         );
 
         return true;
