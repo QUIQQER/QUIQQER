@@ -1508,7 +1508,7 @@ define('controls/projects/project/media/Panel', [
                 this.$selected[i].removeClass('selected');
             }
 
-            this.$selected = [];
+            this.$selected.length = 0;
         },
 
         /**
