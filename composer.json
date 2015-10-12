@@ -49,7 +49,6 @@
         "quiqqer/colorpicker" : "*@dev",
         "quiqqer/translator" : "dev-master",
         "quiqqer/utils" : "*@dev",
-        "quiqqer/installer" : "dev-master",
         "quiqqer/cron" : "dev-master",
         "quiqqer/log" : "dev-master",
         "quiqqer/diashow" : "dev-master",
