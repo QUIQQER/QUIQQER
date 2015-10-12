@@ -764,7 +764,7 @@ define('controls/users/User', [
                 information: Locale.get(lg, 'users.user.address.window.delete.information'),
                 events     : {
                     onSubmit: function () {
-                        Ajax.post('ajax_users_address_delete', function (result) {
+                        Ajax.post('ajax_users_address_delete', function () {
                             self.$AddressGrid.refresh();
                         }, {
                             aid: addressId,
