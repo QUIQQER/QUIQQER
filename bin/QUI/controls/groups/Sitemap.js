@@ -17,13 +17,15 @@
 
 define('controls/groups/Sitemap', [
 
+    'qui/QUI',
     'qui/controls/Control',
     'qui/controls/sitemap/Map',
     'qui/controls/sitemap/Item',
+    'Locale',
     'Ajax',
     'Groups'
 
-], function(QUIControl, QUISitemap, QUISitemapItem, Ajax, Groups)
+], function(QUI, QUIControl, QUISitemap, QUISitemapItem, QUILocale, Ajax, Groups)
 {
     "use strict";
 
@@ -110,10 +112,22 @@ define('controls/groups/Sitemap', [
          */
         $onDrawEnd : function()
         {
+            var First = this.$Map.firstChild();
+
             // load first child
-            Ajax.get('ajax_groups_root', function(result, Ajax)
+            Ajax.get('ajax_groups_root', function(result)
             {
-                var First = Ajax.getAttribute('First');
+                if (!result) {
+
+                    QUI.getMessageHandler().then(function(MH) {
+                        MH.addAttention(
+                            QUILocale.get('quiqqer/system', 'message.unknown.root.group')
+                        );
+                    });
+
+                    return;
+                }
+
 
                 First.setAttributes({
                     name    : result.name,
@@ -126,8 +140,6 @@ define('controls/groups/Sitemap', [
                 });
 
                 First.open();
-            }, {
-                First : this.$Map.firstChild()
             });
         },
 

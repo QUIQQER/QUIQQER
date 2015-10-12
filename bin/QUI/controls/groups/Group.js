@@ -1,4 +1,3 @@
-
 /**
  * A group panel
  *
@@ -8,8 +7,14 @@
  * @require controls/desktop/Panel
  * @require controls/grid/Grid
  * @require Groups
+ * @require Ajax
+ * @require Editors
+ * @require Locale
+ * @require qui/controls/buttons/Button
+ * @require qui/utils/Form
+ * @require utils/Controls
+ * @require css!controls/groups/Group.css
  */
-
 define('controls/groups/Group', [
 
     'qui/controls/desktop/Panel',
@@ -24,8 +29,7 @@ define('controls/groups/Group', [
 
     'css!controls/groups/Group.css'
 
-], function(Panel, Grid, Groups, Ajax, Editors, Locale, QUIButton, FormUtils, ControlUtils)
-{
+], function (Panel, Grid, Groups, Ajax, Editors, Locale, QUIButton, FormUtils, ControlUtils) {
     "use strict";
 
     var lg = 'quiqqer/system';
@@ -39,10 +43,10 @@ define('controls/groups/Group', [
      */
     return new Class({
 
-        Extends : Panel,
-        Type    : 'controls/groups/Group',
+        Extends: Panel,
+        Type   : 'controls/groups/Group',
 
-        Binds : [
+        Binds: [
             'save',
             'del',
             'refreshUser',
@@ -59,25 +63,57 @@ define('controls/groups/Group', [
             '$onGroupGetUser'
         ],
 
-        options : {
-            'user-sort'  : 'DESC',
-            'user-field' : 'id',
-            'user-limit' : 20,
-            'user-page'  : 1
+        options: {
+            'user-sort' : 'DESC',
+            'user-field': 'id',
+            'user-limit': 20,
+            'user-page' : 1
         },
 
-        initialize : function(gid)
-        {
-            this.$Group    = Groups.get( gid );
+        initialize: function (gid) {
+            this.$Group    = null;
             this.$UserGrid = null;
 
+            if (typeOf(gid) === 'string' || typeOf(gid) === 'number') {
+                this.$Group = Groups.get(gid);
+            }
+
             this.addEvents({
-                'onCreate'  : this.$onCreate,
-                'onDestroy' : this.$onDestroy,
-                'onResize'  : this.$onResize
+                onCreate : this.$onCreate,
+                onDestroy: this.$onDestroy,
+                onResize : this.$onResize
             });
 
             this.parent();
+        },
+
+        /**
+         * Save the group panel to the workspace
+         *
+         * @method controls/groups/Group#serialize
+         * @return {Object} data
+         */
+        serialize: function () {
+            return {
+                attributes: this.getAttributes(),
+                groupid   : this.getGroup().getId(),
+                type      : this.getType()
+            };
+        },
+
+        /**
+         * import the saved data form the workspace
+         *
+         * @method controls/groups/Group#unserialize
+         * @param {Object} data
+         * @return {Object} this (controls/groups/Group)
+         */
+        unserialize: function (data) {
+            this.setAttributes(data.attributes);
+
+            this.$Group = Groups.get(data.groupid);
+
+            return this;
         },
 
         /**
@@ -85,16 +121,14 @@ define('controls/groups/Group', [
          *
          * @return {Object} classes/groups/Group
          */
-        getGroup : function()
-        {
+        getGroup: function () {
             return this.$Group;
         },
 
         /**
          * Save the group
          */
-        save : function()
-        {
+        save: function () {
             this.$onCategoryUnload();
             this.getGroup().save();
         },
@@ -103,27 +137,23 @@ define('controls/groups/Group', [
          * Delete the Group
          * Opens the delete dialog
          */
-        del : function()
-        {
+        del: function () {
             var self = this;
 
-            require(['qui/controls/windows/Confirm'], function(Submit)
-            {
-                new Submit({
-                    name     : 'DeleteUser'+ self.getGroup().getId(),
-                    title    : Locale.get( lg, 'groups.group.delete.title' ),
-                    icon     : 'icon-trash',
-                    texticon : 'icon-trash',
-                    text : Locale.get( lg, 'groups.group.delete.text', {
-                        group : self.getGroup().getAttribute('name')
+            require(['qui/controls/windows/Confirm'], function (Confirm) {
+                new Confirm({
+                    name       : 'DeleteUser' + self.getGroup().getId(),
+                    title      : Locale.get(lg, 'groups.group.delete.title'),
+                    icon       : 'fa fa-trash-o icon-trash',
+                    texticon   : 'fa fa-trash-o icon-trash',
+                    text       : Locale.get(lg, 'groups.group.delete.text', {
+                        group: self.getGroup().getAttribute('name')
                     }),
-                    information : Locale.get( lg, 'groups.group.delete.information' ),
-                    width  : 500,
-                    height : 150,
-                    events :
-                    {
-                        onSubmit : function()
-                        {
+                    information: Locale.get(lg, 'groups.group.delete.information'),
+                    maxWidth   : 450,
+                    maxHeight  : 300,
+                    events     : {
+                        onSubmit: function () {
                             Groups.deleteGroups([
                                 self.getGroup().getId()
                             ]);
@@ -136,15 +166,13 @@ define('controls/groups/Group', [
         /**
          * Opens the group permissions
          */
-        openPermissions : function()
-        {
+        openPermissions: function () {
             var Parent = this.getParent(),
                 Group  = this.getGroup();
 
-            require(['controls/permissions/Panel'], function(PermPanel)
-            {
+            require(['controls/permissions/Panel'], function (PermPanel) {
                 Parent.appendChild(
-                    new PermPanel( null, Group )
+                    new PermPanel(null, Group)
                 );
             });
         },
@@ -153,54 +181,49 @@ define('controls/groups/Group', [
          * event : on create
          * Group panel content creation
          */
-        $onCreate : function()
-        {
+        $onCreate: function () {
             var self = this;
 
             this.$drawButtons();
 
-            this.$drawCategories(function()
-            {
+            this.$drawCategories(function () {
                 var Group = self.getGroup();
 
                 Group.addEvents({
-                    'onRefresh' : self.$onGroupRefresh
+                    'onRefresh': self.$onGroupRefresh
                 });
 
                 Groups.addEvents({
-                    'onSwitchStatus' : self.$onGroupStatusChange,
-                    'onActivate'     : self.$onGroupStatusChange,
-                    'onDeactivate'   : self.$onGroupStatusChange,
-                    'onDelete'       : self.$onGroupDelete
+                    'onSwitchStatus': self.$onGroupStatusChange,
+                    'onActivate'    : self.$onGroupStatusChange,
+                    'onDeactivate'  : self.$onGroupStatusChange,
+                    'onDelete'      : self.$onGroupDelete
                 });
 
-                self.setAttribute( 'icon', 'icon-group' );
+                self.setAttribute('icon', 'icon-group');
 
-                if ( Group.getAttribute( 'title' ) === false )
-                {
+                if (Group.getAttribute('title') === false) {
                     Group.load();
                     return;
                 }
 
                 self.$onGroupRefresh();
-
             });
         },
 
         /**
          * event: on panel destroying
          */
-        $onDestroy : function()
-        {
+        $onDestroy: function () {
             this.getGroup().removeEvents({
-                'refresh' : this.$onGroupRefresh
+                'refresh': this.$onGroupRefresh
             });
 
             Groups.removeEvents({
-                'switchStatus' : this.$onGroupStatusChange,
-                'activate'     : this.$onGroupStatusChange,
-                'deactivate'   : this.$onGroupStatusChange,
-                'delete'       : this.$onGroupDelete
+                'switchStatus': this.$onGroupStatusChange,
+                'activate'    : this.$onGroupStatusChange,
+                'deactivate'  : this.$onGroupStatusChange,
+                'delete'      : this.$onGroupDelete
             });
         },
 
@@ -208,8 +231,7 @@ define('controls/groups/Group', [
          * event : onresize
          * Resize the panel
          */
-        $onResize : function()
-        {
+        $onResize: function () {
 
         },
 
@@ -217,13 +239,12 @@ define('controls/groups/Group', [
          * event : on group refresh
          * if the group will be refreshed
          */
-        $onGroupRefresh : function()
-        {
+        $onGroupRefresh: function () {
             this.setAttribute(
                 'title',
 
-                Locale.get( lg, 'groups.group.title', {
-                    group : this.getGroup().getAttribute( 'name' )
+                Locale.get(lg, 'groups.group.title', {
+                    group: this.getGroup().getAttribute('name')
                 })
             );
 
@@ -231,36 +252,32 @@ define('controls/groups/Group', [
 
             var Bar = this.getCategoryBar();
 
-            if ( Bar.getActive() )
-            {
-                this.$onCategoryLoad( Bar.getActive() );
+            if (Bar.getActive()) {
+                this.$onCategoryLoad(Bar.getActive());
                 return;
             }
 
             Bar.firstChild().click();
 
             // button bar refresh
-            (function()
-            {
-                this.getButtonBar().setAttribute( 'width', '98%' );
+            (function () {
+                this.getButtonBar().setAttribute('width', '98%');
                 this.getButtonBar().resize();
-            }).delay( 200, this );
+            }).delay(200, this);
         },
 
         /**
          * event: groups on delete
          * if one group deleted, check if the group is this group
          *
-         * @param {classes/groups/Manager} Groups
+         * @param {Object} Groups - classes/groups/Manager
          * @param {Array} ids - Array of group ids which have been deleted
          */
-        $onGroupDelete : function(Groups, ids)
-        {
+        $onGroupDelete: function (Groups, ids) {
             var id = this.getGroup().getId();
 
-            for ( var i = 0, len = ids.length; i < len; i++ )
-            {
-                if ( ids[ i ] == id ) {
+            for (var i = 0, len = ids.length; i < len; i++) {
+                if (ids[i] == id) {
                     this.destroy();
                 }
             }
@@ -270,22 +287,19 @@ define('controls/groups/Group', [
          * event: groups on status change
          * if one groups status change, check if the group is this group
          *
-         * @param {classes/groups/Manager} Groups
+         * @param {Object} Groups - classes/groups/Manager
          * @param {Object} groups - groups that change the status
          */
-        $onGroupStatusChange : function(Groups, groups)
-        {
+        $onGroupStatusChange: function (Groups, groups) {
             var id = this.getGroup().getId();
 
-            for ( var gid in groups )
-            {
-                if ( gid != id ) {
+            for (var gid in groups) {
+                if (gid != id) {
                     continue;
                 }
 
-                if ( this.getActiveCategory() )
-                {
-                    this.$onCategoryLoad( this.getActiveCategory() );
+                if (this.getActiveCategory()) {
+                    this.$onCategoryLoad(this.getActiveCategory());
                     return;
                 }
             }
@@ -296,40 +310,37 @@ define('controls/groups/Group', [
          *
          * @method controls/groups/Group#$drawButtons
          */
-        $drawButtons : function()
-        {
+        $drawButtons: function () {
             this.addButton({
-                name      : 'groupSave',
-                text      : Locale.get( lg, 'groups.group.btn.save' ),
-                textimage : 'icon-save',
-                events    : {
-                    onClick : this.save
+                name     : 'groupSave',
+                text     : Locale.get(lg, 'groups.group.btn.save'),
+                textimage: 'icon-save',
+                events   : {
+                    onClick: this.save
                 }
             });
 
             this.addButton({
-                name      : 'groupDelete',
-                text      : Locale.get( lg, 'groups.group.btn.delete' ),
-                textimage : 'icon-trash',
-                events    : {
-                    onClick : this.del
+                name     : 'groupDelete',
+                text     : Locale.get(lg, 'groups.group.btn.delete'),
+                textimage: 'fa fa-trash-o icon-trash',
+                events   : {
+                    onClick: this.del
                 }
             });
 
             // permissions
             new QUIButton({
-                image  : 'icon-gears',
-                alt    : Locale.get( lg, 'groups.group.btn.permissions.alt' ),
-                title  : Locale.get( lg, 'groups.group.btn.permissions.title' ),
-                styles : {
-                    'float' : 'right'
+                image : 'icon-gears',
+                alt   : Locale.get(lg, 'groups.group.btn.permissions.alt'),
+                title : Locale.get(lg, 'groups.group.btn.permissions.title'),
+                styles: {
+                    'float': 'right'
                 },
-                events : {
-                    onClick : this.openPermissions
+                events: {
+                    onClick: this.openPermissions
                 }
-            }).inject(
-                this.getHeader()
-            );
+            }).inject(this.getHeader());
         },
 
         /**
@@ -340,29 +351,27 @@ define('controls/groups/Group', [
          * @param {Function} onfinish - Callback function
          * @ignore
          */
-        $drawCategories : function(onfinish)
-        {
+        $drawCategories: function (onfinish) {
+            var self = this;
+
             this.Loader.show();
 
-            Ajax.get('ajax_groups_panel_categories', function(result, Request)
-            {
-                var Panel = Request.getAttribute('Panel');
-
-                for ( var i = 0, len = result.length; i < len; i++ )
-                {
+            Ajax.get('ajax_groups_panel_categories', function (result) {
+                for (var i = 0, len = result.length; i < len; i++) {
                     result[i].events = {
-                        onActive : Panel.$onCategoryLoad,
-                        onNormal : Panel.$onCategoryUnload
+                        onActive: self.$onCategoryLoad,
+                        onNormal: self.$onCategoryUnload
                     };
 
-                    Panel.addCategory( result[i] );
+                    self.addCategory(result[i]);
                 }
 
-                Request.getAttribute( 'onfinish' )( result, Request );
+                if (typeof onfinish === 'function') {
+                    onfinish(result);
+                }
+
             }, {
-                gid      : this.getGroup().getId(),
-                Panel    : this,
-                onfinish : onfinish
+                gid: this.getGroup().getId()
             });
         },
 
@@ -371,156 +380,148 @@ define('controls/groups/Group', [
          *
          * @param {Object} Category - qui/controls/buttons/Button
          */
-        $onCategoryLoad : function(Category)
-        {
+        $onCategoryLoad: function (Category) {
             var self = this;
 
             this.Loader.show();
 
-            Ajax.get('ajax_groups_panel_category', function(result, Request)
-            {
+            Ajax.get('ajax_groups_panel_category', function (result, Request) {
                 var Form;
 
-                var Category = Request.getAttribute( 'Category' ),
+                var Category = Request.getAttribute('Category'),
                     Group    = self.getGroup(),
                     Body     = self.getBody();
 
                 Body.set(
                     'html',
-                    '<form name="group-panel-'+ Group.getId() +'">'+ result +'</form>'
+                    '<form name="group-panel-' + Group.getId() + '">' + result + '</form>'
                 );
 
-                Form = Body.getElement( 'form' );
+                Form = Body.getElement('form');
 
-                ControlUtils.parse( Body );
-                FormUtils.setDataToForm( Group.getAttributes(), Form );
+                ControlUtils.parse(Body);
+                FormUtils.setDataToForm(Group.getAttributes(), Form);
 
-                switch ( Category.getAttribute( 'name' ) )
-                {
+                switch (Category.getAttribute('name')) {
                     case 'settings':
                         self.$onCategorySettingsLoad();
-                    break;
+                        break;
 
                     case 'users':
                         self.$onCategoryUsersLoad();
-                    break;
+                        break;
 
                     default:
-                        Category.fireEvent( 'onLoad', [ Category, self ] );
+                        Category.fireEvent('onLoad', [Category, self]);
                 }
 
                 self.Loader.hide();
 
             }, {
-                plugin   : Category.getAttribute('plugin'),
-                tab      : Category.getAttribute('name'),
-                gid      : this.getGroup().getId(),
-                Category : Category
+                plugin  : Category.getAttribute('plugin'),
+                tab     : Category.getAttribute('name'),
+                gid     : this.getGroup().getId(),
+                Category: Category
             });
         },
 
         /**
          * event: on set normal a category = unload a category
          */
-        $onCategoryUnload : function()
-        {
+        $onCategoryUnload: function () {
             var Content = this.getBody(),
-                Frm     = Content.getElement( 'form' ),
-                data    = FormUtils.getFormData( Frm );
+                Frm     = Content.getElement('form'),
+                data    = FormUtils.getFormData(Frm);
 
-            this.getGroup().setAttributes( data );
+            this.getGroup().setAttributes(data);
         },
 
         /**
          * event: on category click (settings)
          */
-        $onCategorySettingsLoad : function()
-        {
+        $onCategorySettingsLoad: function () {
             // load the wysiwyg toolbars
-            Editors.getToolbars(function(toolbars)
-            {
+            Editors.getToolbars(function (toolbars) {
                 var i, len, Sel;
 
                 var Content = this.getBody(),
-                    Toolbar = Content.getElement( '.toolbar-listing' );
+                    Toolbar = Content.getElement('.toolbar-listing');
 
-                if ( !Toolbar ) {
+                if (!Toolbar) {
                     return;
                 }
 
-                Toolbar.set( 'html', '' );
+                Toolbar.set('html', '');
 
                 Sel = new Element('select', {
-                    name : 'toolbar'
+                    name: 'toolbar'
                 });
 
-                for ( i = 0, len = toolbars.length; i < len; i++ )
-                {
+                for (i = 0, len = toolbars.length; i < len; i++) {
                     new Element('option', {
-                        value : toolbars[ i ],
-                        html  : toolbars[ i ].replace( '.xml', '' )
-                    }).inject( Sel );
+                        value: toolbars[i],
+                        html : toolbars[i].replace('.xml', '')
+                    }).inject(Sel);
                 }
 
-                Sel.inject( Toolbar );
+                Sel.inject(Toolbar);
                 Sel.value = this.getAttribute('toolbar');
 
-            }.bind( this ));
+            }.bind(this));
         },
 
         /**
          * event: on category click (user listing)
          */
-        $onCategoryUsersLoad : function()
-        {
+        $onCategoryUsersLoad: function () {
             var Content = this.getBody(),
                 GridCon = new Element('div');
 
-            Content.set( 'html', '' );
-            GridCon.inject( Content );
+            Content.set('html', '');
+            GridCon.inject(Content);
 
             this.$UserGrid = new Grid(GridCon, {
-                columnModel : [{
-                    header    : Locale.get( lg, 'status' ),
-                    dataIndex : 'status',
-                    dataType  : 'node',
-                    width     : 50
+                columnModel: [{
+                    header   : Locale.get(lg, 'status'),
+                    dataIndex: 'status',
+                    dataType : 'node',
+                    width    : 50
                 }, {
-                    header    : Locale.get( lg, 'user_id' ),
-                    dataIndex : 'id',
-                    dataType  : 'integer',
-                    width     : 150
+                    header   : Locale.get(lg, 'user_id'),
+                    dataIndex: 'id',
+                    dataType : 'integer',
+                    width    : 150
                 }, {
-                    header    : Locale.get( lg, 'username' ),
-                    dataIndex : 'username',
-                    dataType  : 'integer',
-                    width     : 150
+                    header   : Locale.get(lg, 'username'),
+                    dataIndex: 'username',
+                    dataType : 'integer',
+                    width    : 150
                 }, {
-                    header    : Locale.get( lg, 'email' ),
-                    dataIndex : 'email',
-                    dataType  : 'string',
-                    width     : 150
+                    header   : Locale.get(lg, 'email'),
+                    dataIndex: 'email',
+                    dataType : 'string',
+                    width    : 150
                 }, {
-                    header    : Locale.get( lg, 'firstname' ),
-                    dataIndex : 'firstname',
-                    dataType  : 'string',
-                    width     : 150
+                    header   : Locale.get(lg, 'firstname'),
+                    dataIndex: 'firstname',
+                    dataType : 'string',
+                    width    : 150
                 }, {
-                    header    : Locale.get( lg, 'lastname' ),
-                    dataIndex : 'lastname',
-                    dataType  : 'string',
-                    width     : 150
+                    header   : Locale.get(lg, 'lastname'),
+                    dataIndex: 'lastname',
+                    dataType : 'string',
+                    width    : 150
                 }, {
-                    header    : Locale.get( lg, 'c_date' ),
-                    dataIndex : 'regdate',
-                    dataType  : 'date',
-                    width     : 150
+                    header   : Locale.get(lg, 'c_date'),
+                    dataIndex: 'regdate',
+                    dataType : 'date',
+                    width    : 150
                 }],
                 pagination : true,
                 filterInput: true,
-                perPage    : this.getAttribute( 'user-limit' ),
-                page       : this.getAttribute( 'user-page' ),
-                sortOn     : this.getAttribute( 'user-sort' ),
+                perPage    : this.getAttribute('user-limit'),
+                page       : this.getAttribute('user-page'),
+                sortOn     : this.getAttribute('user-sort'),
                 serverSort : true,
                 showHeader : true,
                 sortHeader : true,
@@ -528,25 +529,23 @@ define('controls/groups/Group', [
                 height     : Content.getSize().y - 45,
                 onrefresh  : this.refreshUser,
 
-                alternaterows     : true,
-                resizeColumns     : true,
-                selectable        : true,
-                multipleSelection : true,
-                resizeHeaderOnly  : true
+                alternaterows    : true,
+                resizeColumns    : true,
+                selectable       : true,
+                multipleSelection: true,
+                resizeHeaderOnly : true
             });
 
             this.$UserGrid.addEvents({
-                onDblClick : function(data)
-                {
-                    require([ 'controls/users/User' ], function(QUI_User)
-                    {
+                onDblClick: function (data) {
+                    require(['controls/users/User'], function (QUI_User) {
                         this.getParent().appendChild(
                             new QUI_User(
-                                data.target.getDataByRow( data.row ).id
+                                data.target.getDataByRow(data.row).id
                             )
                         );
-                    }.bind( this ));
-                }.bind( this )
+                    }.bind(this));
+                }.bind(this)
             });
 
             GridCon.setStyles({
@@ -561,9 +560,8 @@ define('controls/groups/Group', [
          *
          * @return {Object} this (controls/groups/Group)
          */
-        refreshUser : function()
-        {
-            if ( typeof this.$UserGrid === 'undefined' ) {
+        refreshUser: function () {
+            if (typeof this.$UserGrid === 'undefined') {
                 return this;
             }
 
@@ -571,16 +569,16 @@ define('controls/groups/Group', [
 
             var Grid = this.$UserGrid;
 
-            this.setAttribute( 'user-field', Grid.getAttribute('sortOn') );
-            this.setAttribute( 'user-order', Grid.getAttribute('sortBy') );
-            this.setAttribute( 'user-limit', Grid.getAttribute( 'perPage' ) );
-            this.setAttribute( 'user-page', Grid.getAttribute( 'page' ) );
+            this.setAttribute('user-field', Grid.getAttribute('sortOn'));
+            this.setAttribute('user-order', Grid.getAttribute('sortBy'));
+            this.setAttribute('user-limit', Grid.getAttribute('perPage'));
+            this.setAttribute('user-page', Grid.getAttribute('page'));
 
             this.getGroup().getUsers(this.$onGroupGetUser, {
-                limit : this.getAttribute( 'user-limit' ),
-                page  : this.getAttribute( 'user-page' ),
-                field : this.getAttribute( 'user-field' ),
-                order : this.getAttribute( 'user-order' )
+                limit: this.getAttribute('user-limit'),
+                page : this.getAttribute('user-page'),
+                field: this.getAttribute('user-field'),
+                order: this.getAttribute('user-order')
             });
 
             return this;
@@ -591,39 +589,35 @@ define('controls/groups/Group', [
          *
          * @param {Array} result - user list
          */
-        $onGroupGetUser : function(result)
-        {
-            if ( typeof this.$UserGrid === 'undefined' ) {
+        $onGroupGetUser: function (result) {
+            if (typeof this.$UserGrid === 'undefined') {
                 return;
             }
 
-            if ( typeof result.data === 'undefined' ) {
+            if (typeof result.data === 'undefined') {
                 return;
             }
 
-            for ( var i = 0, len = result.data.length; i < len; i++ )
-            {
-                if ( result.data[ i ].active )
-                {
-                    result.data[ i ].status = new Element('div', {
-                        'class' : 'icon-ok',
+            for (var i = 0, len = result.data.length; i < len; i++) {
+                if (result.data[i].active) {
+                    result.data[i].status = new Element('div', {
+                        'class': 'fa fa-check icon-ok',
                         styles : {
-                            margin : '5px 0 5px 12px'
+                            margin: '5px 0 5px 12px'
                         }
                     });
 
-                } else
-                {
-                    result.data[ i ].status = new Element('div', {
-                        'class' : 'icon-remove',
+                } else {
+                    result.data[i].status = new Element('div', {
+                        'class': 'icon-remove',
                         styles : {
-                            margin : '5px 0 5px 12px'
+                            margin: '5px 0 5px 12px'
                         }
                     });
                 }
             }
 
-            this.$UserGrid.setData( result );
+            this.$UserGrid.setData(result);
             this.Loader.hide();
         }
     });

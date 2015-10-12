@@ -28,7 +28,7 @@
 
         <tab name="avatar">
             <text>Benutzerbild</text>
-            <image>icon-picture</image>
+            <image>fa fa-picture-o icon-picture</image>
 
             <template>SYS_DIR/template/users/avatar.html</template>
             <!--<onload>QUI.lib.Users.tabOnLoadUserAvatar</onload>

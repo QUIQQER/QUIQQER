@@ -12,7 +12,8 @@ use QUI;
  * Curl Test
  *
  * @package quiqqer/quiqqer
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  */
 class Curl extends QUI\System\Test
 {
@@ -36,7 +37,7 @@ class Curl extends QUI\System\Test
      */
     public function execute()
     {
-        if ( function_exists('curl_version') && function_exists('curl_init') ) {
+        if (function_exists('curl_version') && function_exists('curl_init')) {
             return self::STATUS_OK;
         }
 

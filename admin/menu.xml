@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <menu>
+
     <item parent="/" name="quiqqer">
         <locale group="quiqqer/system" var="menu.quiqqer.text" />
     </item>
-
+    <item parent="/" name="apps">
+        <locale group="quiqqer/system" var="menu.apps.text" />
+    </item>
     <item parent="/" name="extras">
         <locale group="quiqqer/system" var="menu.goto.text" />
     </item>
@@ -24,7 +27,7 @@
         </item>
 
         <item parent="/quiqqer/"
-              name="changelog"
+              name="dashboard"
               icon="URL_BIN_DIR/16x16/quiqqer.png"
               require="controls/help/Changelog"
               group="quiqqer/system"
@@ -32,6 +35,17 @@
                 >
             <locale group="quiqqer/system" var="menu.help.changelog.text" />
         </item>
+
+        <item parent="/quiqqer/"
+              name="changelog"
+              icon="URL_BIN_DIR/16x16/quiqqer.png"
+              require="controls/help/Dashboard"
+              group="quiqqer/system"
+              var="menu.help.changelog.text"
+                >
+            <locale group="quiqqer/system" var="menu.help.dashboard.text" />
+        </item>
+
         <!-- Plugins und Packages -->
         <item parent="/quiqqer/"
               name="packages"
@@ -42,78 +56,14 @@
         </item>
 
 
-    <!-- File Menu -->
-        <item parent="/extras/"
+    <!-- Apps -->
+        <item parent="/apps/"
               name="search"
               icon="icon-search"
               require="controls/projects/project/site/Search"
         >
             <locale  group="quiqqer/system" var="menu.file.search.text" />
         </item>
-
-    <!-- Edit -->
-    <!--
-    <item parent="/edit/"
-        name="edit_cut"
-        icon="URL_DIR/bin/16x16/cut.png"
-        disabled="1">
-        Ausschneiden
-    </item>
-    <item parent="/edit/"
-        name="edit_copy"
-        icon="URL_DIR/bin/16x16/copy.png"
-        disabled="1">
-        Kopieren
-    </item>
-    <item parent="/edit/"
-        name="edit_paste"
-        icon="URL_DIR/bin/16x16/paste.png"
-        disabled="1">
-        Einfügen
-    </item>
-    <item parent="/edit/"
-        name="linked"
-        icon="URL_DIR/bin/16x16/linked.png"
-        disabled="1">
-        Verknüpfung einfügen
-    </item>
-    <item parent="/edit/"
-        name="linked_in"
-        icon="URL_DIR/bin/16x16/linked.png"
-        disabled="1">
-        Verknüpfung einfügen in ...
-    </item>
-    <item parent="/edit/" type="seperator"></item>
-    <item parent="/edit/"
-        name="search"
-        icon="URL_DIR/bin/16x16/find.png">
-        Suchen
-    </item>
-    <item parent="/edit/" type="seperator"></item>
-    <item parent="/edit/"
-        name="multilingual"
-        icon="URL_DIR/bin/16x16/lang_link.png">
-        Sprachen
-    </item>
-        <item parent="/edit/multilingual/"
-            name="langmanager"
-            icon="URL_DIR/bin/16x16/lang_link.png"
-            disabled="1">
-            Verwaltung
-        </item>
-        <item parent="/edit/multilingual/" type="seperator"></item>
-        <item parent="/edit/multilingual/"
-            name="site_links"
-            icon="URL_DIR/bin/16x16/lang_link.png"
-            disabled="1">
-            Verknüpfungen
-        </item>
-        <item parent="/edit/multilingual/"
-            name="site_links_create_in"
-            disabled="1">
-            Erstellen in
-        </item>
-     -->
 
     <!-- goto -->
         <!-- Projekt Verwaltung -->
@@ -134,7 +84,7 @@
             <!-- Zugriffsrechte bearbeiten -->
             <item parent="/extras/rights/"
                   name="permissions"
-                  icon="icon-gears"
+                  icon="icon-shield fa fa-shield"
                   require="controls/permissions/Panel"
             >
                 <locale group="quiqqer/system" var="menu.extras.permissions.text" />
@@ -159,7 +109,7 @@
         <!-- Papierkorb -->
         <item parent="/extras/"
               name="trash"
-              icon="icon-trash"
+              icon="fa fa-trash-o icon-trash"
               require="controls/trash/Panel"
         >
             <locale group="quiqqer/system" var="menu.extras.trash.text" />
@@ -195,15 +145,7 @@
         >
             <locale group="quiqqer/system" var="menu.settings.projects.text" />
         </item>
-        <item parent="/settings/"
-              name="media"
-              icon="icon-picture"
-              require="controls/projects/project/media/Manager"
-        >
-            <locale group="quiqqer/system" var="menu.settings.media.text" />
-        </item>
-
-
+        
     <!-- Profil -->
         <item parent="/profile/"
               name="userProfile"
@@ -218,7 +160,6 @@
         <item parent="/profile/"
               name="workspaces"
               icon="icon-laptop"
-              require="controls/help/Changelog"
         >
             <locale group="quiqqer/system" var="menu.profile.workspace.text" />
         </item>

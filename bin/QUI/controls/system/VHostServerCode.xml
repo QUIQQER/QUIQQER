@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<locales>
-    <!-- the most locale vars are in the vhost.xml -->
-    <groups name="quiqqer/system" datatype="js">
-
-
-    </groups>
-
-</locales>

@@ -12,7 +12,8 @@ use QUI;
  * JSON Test
  *
  * @package quiqqer/quiqqer
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  */
 class Json extends QUI\System\Test
 {
@@ -36,7 +37,7 @@ class Json extends QUI\System\Test
      */
     public function execute()
     {
-        if ( function_exists('json_decode') && function_exists('json_encode') ) {
+        if (function_exists('json_decode') && function_exists('json_encode')) {
             return self::STATUS_OK;
         }
 

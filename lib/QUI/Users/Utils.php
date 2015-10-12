@@ -14,31 +14,32 @@ use QUI\Utils\XML;
 /**
  * Helper for users
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  * @package com.pcsg.qui.users
  */
-
 class Utils
 {
     /**
      * JavaScript Buttons / Tabs from a user
      *
      * @param \QUI\Users\User $User
+     *
      * @return \QUI\Controls\Toolbar\Bar
      */
     static function getUserToolbar($User)
     {
         $Tabbar = new QUI\Controls\Toolbar\Bar(array(
-            'name'  => 'UserToolbar'
+            'name' => 'UserToolbar'
         ));
 
         DOM::addTabsToToolbar(
-            XML::getTabsFromXml( LIB_DIR .'xml/user.xml' ),
+            XML::getTabsFromXml(LIB_DIR.'xml/user.xml'),
             $Tabbar,
             'pcsg'
         );
 
-        if ( !$User->getId() ) {
+        if (!$User->getId()) {
             return $Tabbar;
         }
 
@@ -47,18 +48,17 @@ class Utils
          */
         $list = QUI::getPackageManager()->getInstalled();
 
-        foreach ( $list as $entry )
-        {
-            $userXml = OPT_DIR . $entry['name'] .'/user.xml';
+        foreach ($list as $entry) {
+            $userXml = OPT_DIR.$entry['name'].'/user.xml';
 
-            if ( !file_exists( $userXml ) ) {
+            if (!file_exists($userXml)) {
                 continue;
             }
 
             DOM::addTabsToToolbar(
-                XML::getTabsFromXml( $userXml ),
+                XML::getTabsFromXml($userXml),
                 $Tabbar,
-                'plugin.'. $entry['name']
+                'plugin.'.$entry['name']
             );
         }
 
@@ -77,12 +77,11 @@ class Utils
          */
         $projects = QUI\Projects\Manager::getProjects();
 
-        foreach ( $projects as $project )
-        {
+        foreach ($projects as $project) {
             DOM::addTabsToToolbar(
-                XML::getTabsFromXml( USR_DIR .'lib/'. $project .'/user.xml' ),
+                XML::getTabsFromXml(USR_DIR.'lib/'.$project.'/user.xml'),
                 $Tabbar,
-                'project.'. $project
+                'project.'.$project
             );
         }
 
@@ -93,50 +92,48 @@ class Utils
      * Tab contents of a user Tabs / Buttons
      *
      * @param Integer $uid
-     * @param String $plugin
-     * @param String $tab
+     * @param String  $plugin
+     * @param String  $tab
      *
      * @return String
      */
     static function getTab($uid, $plugin, $tab)
     {
         $Users = QUI::getUsers();
-        $User  = $Users->get( (int)$uid );
+        $User = $Users->get((int)$uid);
 
         // assign user as global var
-        QUI::getTemplateManager()->assignGlobalParam( 'User', $User );
+        QUI::getTemplateManager()->assignGlobalParam('User', $User);
 
         // System
-        if ( $plugin === 'pcsg' )
-        {
+        if ($plugin === 'pcsg') {
             return DOM::getTabHTML(
                 $tab,
-                LIB_DIR .'xml/user.xml'
+                LIB_DIR.'xml/user.xml'
             );
         }
 
         // project extention
-        if ( strpos($plugin, 'project.') !== false )
-        {
-            $project = explode( 'project.', $plugin );
+        if (strpos($plugin, 'project.') !== false) {
+            $project = explode('project.', $plugin);
 
             return DOM::getTabHTML(
                 $tab,
-                QUI::getProject( $project[1] )
+                QUI::getProject($project[1])
             );
         }
 
         // Plugin extention
-        $plugin  = str_replace( 'plugin.', '', $plugin );
-        $package = QUI::getPackageManager()->getPackage( $plugin );
+        $plugin = str_replace('plugin.', '', $plugin);
+        $package = QUI::getPackageManager()->getPackage($plugin);
 
-        if ( !$package || !isset( $package['name'] ) ) {
+        if (!$package || !isset($package['name'])) {
             return '';
         }
 
         return DOM::getTabHTML(
             $tab,
-            OPT_DIR . $package['name'] .'/user.xml'
+            OPT_DIR.$package['name'].'/user.xml'
         );
     }
 }

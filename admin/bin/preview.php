@@ -37,6 +37,10 @@ foreach ( $_POST['siteData'] as $key => $value ) {
     $Site->setAttribute( $key, $value );
 }
 
+foreach ( $_POST['siteDataJSON'] as $key => $value ) {
+    $Site->setAttribute( $key, json_decode($value, true) );
+}
+
 $Template = \QUI::getTemplateManager();
 $content  = $Template->fetchTemplate( $Site );
 

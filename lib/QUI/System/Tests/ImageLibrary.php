@@ -12,7 +12,8 @@ use QUI;
  * JSON Test
  *
  * @package quiqqer/quiqqer
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  */
 class ImageLibrary extends QUI\System\Test
 {
@@ -39,30 +40,22 @@ class ImageLibrary extends QUI\System\Test
         $libraries = array();
 
         // ImageMagick PHP
-        if ( class_exists('Imagick') ) {
+        if (class_exists('Imagick')) {
             $libraries[] = 'PHP Image Magick';
         }
 
-        // ImageMagick System
-        exec( escapeshellcmd('convert'), $im_console );
-
-        // ImageMagick Konsole
-        if ( isset( $im_console ) && is_array( $im_console ) && count( $im_console ) ) {
-            $libraries[] = 'System Image Magick';
-        }
-
         // GD Lib
-        if ( function_exists( 'imagecopyresampled' ) ) {
+        if (function_exists('imagecopyresampled')) {
             $libraries[] = 'GD Lib';
         }
 
-        if ( empty( $libraries ) ) {
+        if (empty($libraries)) {
             return self::STATUS_ERROR;
         }
 
         $this->setAttribute(
             'title',
-            'Image Libraries ('. implode( ', ', $libraries ) .')'
+            'Image Libraries ('.implode(', ', $libraries).')'
         );
 
         return self::STATUS_OK;

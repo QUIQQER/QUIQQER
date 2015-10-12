@@ -10,11 +10,14 @@ use QUI;
 
 /**
  * System test
+ *
+ * @author  www.pcsg.de (Henning Leutz)
  * @package quiqqer/quiqqer
+ * @licence For copyright and license information, please view the /README.md
  */
 abstract class Test extends QUI\QDOM implements QUI\Interfaces\System\Test
 {
-    const STATUS_OK    = 1;
+    const STATUS_OK = 1;
     const STATUS_ERROR = -1;
 
     const TEST_IS_REQUIRED = 1;
@@ -58,19 +61,21 @@ abstract class Test extends QUI\QDOM implements QUI\Interfaces\System\Test
 
     /**
      * Return the test title
+     *
      * @return string
      */
     public function getTitle()
     {
-        return $this->getAttribute( 'title' );
+        return $this->getAttribute('title');
     }
 
     /**
      * Return the test description
+     *
      * @return string
      */
     public function getDescription()
     {
-        return $this->getAttribute( 'description' );
+        return $this->getAttribute('description');
     }
 }

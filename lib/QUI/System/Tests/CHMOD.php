@@ -12,7 +12,8 @@ use QUI;
  * CHMOD Test
  *
  * @package quiqqer/quiqqer
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  */
 class CHMOD extends QUI\System\Test
 {
@@ -37,7 +38,7 @@ class CHMOD extends QUI\System\Test
     public function execute()
     {
         // check if cms dir is writable
-        if ( is_writable( CMS_DIR ) ) {
+        if (is_writable(CMS_DIR)) {
             return self::STATUS_OK;
         }
 

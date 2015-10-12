@@ -22,7 +22,9 @@ define('classes/projects/project/media/Image', [
      * @memberof! <global>
      */
     return new Class({
+
         Extends : MediaItem,
         Type    : 'classes/projects/project/media/Image'
+
     });
 });

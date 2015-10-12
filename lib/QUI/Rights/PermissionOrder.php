@@ -11,11 +11,11 @@ use QUI\Groups\Group;
 /**
  * Allgemeine Permission Sotierungs Handling Methoden
  *
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
+ *
  * @example $User->getPermission($perm, 'max_integer');
  * @example $User->getPermission($perm, 'min_integer');
- *
- * @author www.pcsg.de (Henning Leutz)
- *
  */
 class PermissionOrder
 {
@@ -23,7 +23,8 @@ class PermissionOrder
      * Gibt den Maximalen Integer Rechte Wert zurück
      *
      * @param String $permission - permission name
-     * @param Array $groups - List of groups
+     * @param Array  $groups     - List of groups
+     *
      * @return Integer
      */
     static function max_integer($permission, $groups)
@@ -31,24 +32,28 @@ class PermissionOrder
         $result = null;
 
         /* @var $Group Group */
-        foreach ( $groups as $Group )
-        {
-            if ( $Group->hasPermission( $permission ) === false ) {
+        foreach ($groups as $Group) {
+
+            if ($Group->hasPermission($permission) === false) {
                 continue;
             }
 
-            if ( is_null( $result ) || (int)$Group->hasPermission( $permission ) > $result ) {
-                $result = (int)$Group->hasPermission( $permission );
+            if (is_null($result)
+                || (int)$Group->hasPermission($permission) > $result
+            ) {
+                $result = (int)$Group->hasPermission($permission);
             }
         }
 
         // default
-        if ( is_null( $result ) )
-        {
-            $Manager  = \QUI::getPermissionManager();
-            $permData = $Manager->getPermissionData( $permission );
+        if (is_null($result)) {
 
-            if ( isset( $permData['defaultvalue'] ) && !empty( $permData['defaultvalue'] ) ) {
+            $Manager = \QUI::getPermissionManager();
+            $permData = $Manager->getPermissionData($permission);
+
+            if (isset($permData['defaultvalue'])
+                && !empty($permData['defaultvalue'])
+            ) {
                 return $permData['defaultvalue'];
             }
         }
@@ -60,7 +65,8 @@ class PermissionOrder
      * Gibt den Minimalen Integer Rechte Wert zurück
      *
      * @param String $permission - permission name
-     * @param Array $groups - List of groups
+     * @param Array  $groups     - List of groups
+     *
      * @return Integer
      */
     static function min_integer($permission, $groups)
@@ -68,24 +74,28 @@ class PermissionOrder
         $result = null;
 
         /* @var $Group Group */
-        foreach ( $groups as $Group )
-        {
-            if ( $Group->hasPermission( $permission ) === false ) {
+        foreach ($groups as $Group) {
+
+            if ($Group->hasPermission($permission) === false) {
                 continue;
             }
 
-            if ( is_null( $result ) || (int)$Group->hasPermission( $permission ) < $result ) {
-                $result = (int)$Group->hasPermission( $permission );
+            if (is_null($result)
+                || (int)$Group->hasPermission($permission) < $result
+            ) {
+                $result = (int)$Group->hasPermission($permission);
             }
         }
 
         // default
-        if ( is_null( $result ) )
-        {
-            $Manager  = \QUI::getPermissionManager();
-            $permData = $Manager->getPermissionData( $permission );
+        if (is_null($result)) {
 
-            if ( isset( $permData['defaultvalue'] ) && !empty( $permData['defaultvalue'] ) ) {
+            $Manager = \QUI::getPermissionManager();
+            $permData = $Manager->getPermissionData($permission);
+
+            if (isset($permData['defaultvalue'])
+                && !empty($permData['defaultvalue'])
+            ) {
                 return $permData['defaultvalue'];
             }
         }
@@ -97,7 +107,8 @@ class PermissionOrder
      * Prüft die Rechte und gibt das Recht welches Geltung hat zurück
      *
      * @param String $permission - permission name
-     * @param Array $groups - List of groups
+     * @param Array  $groups     - List of groups
+     *
      * @return boolean
      */
     static function permission($permission, $groups)
@@ -105,23 +116,21 @@ class PermissionOrder
         $result = false;
 
         /* @var $Group Group */
-        foreach ( $groups as $Group )
-        {
-            $right = $Group->hasPermission( $permission );
+        foreach ($groups as $Group) {
+            $right = $Group->hasPermission($permission);
 
             // falls wert bool ist
-            if ( $right === true ) {
+            if ($right === true) {
                 return true;
             }
 
             // falls integer ist
-            if ( is_int( $right ) )
-            {
-                if ( is_bool( $result ) ) {
+            if (is_int($right)) {
+                if (is_bool($result)) {
                     $result = 0;
                 }
 
-                if ( $right > $result ) {
+                if ($right > $result) {
                     $result = $right;
                 }
 
@@ -129,7 +138,7 @@ class PermissionOrder
             }
 
             // falls wert string ist
-            if ( $right ) {
+            if ($right) {
                 return $right;
             }
         }

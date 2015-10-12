@@ -14,6 +14,7 @@ use Symfony\Component\Console\Formatter\OutputFormatterInterface;
  * so he can use composer as symfony application
  *
  * @author www.namerobot.com (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  *
  * @event onOutput [ String $message ]
  */
@@ -41,8 +42,8 @@ class Output extends \Symfony\Component\Console\Output\Output
     /**
      * Konstruktor
      *
-     * @param unknown $verbosity
-     * @param string $decorated
+     * @param Integer $verbosity
+     * @param string|bool $decorated
      * @param OutputFormatterInterface $formatter
      */
     public function __construct($verbosity=self::VERBOSITY_NORMAL, $decorated=false, OutputFormatterInterface $formatter=null)

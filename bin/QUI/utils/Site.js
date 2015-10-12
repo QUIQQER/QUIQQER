@@ -9,6 +9,10 @@
  * @require utils/Panels
  * @require Locale
  * @require Ajax
+ *
+ * @event onBeforeOpenCreateChild [ ParentSite ]
+ * @event onOpenCreateChild [ Win, ParentSite ]
+ * @event onOpenCreateChildSubmit [ value, Win, ParentSite ]
  */
 
 define('utils/Site', [
@@ -91,27 +95,43 @@ define('utils/Site', [
                 Site    = ParentSite,
                 Project = Site.getProject();
 
-            if ( typeof value === 'undefined' ) {
+            if (typeof value === 'undefined') {
                 value = '';
             }
+
+            ParentSite.fireEvent('beforeOpenCreateChild', [ParentSite]);
+
 
             require(['qui/controls/windows/Prompt'], function(Prompt)
             {
                 new Prompt({
-                    title : Locale.get( lg, 'projects.project.site.panel.window.create.title' ),
-                    text  : Locale.get( lg, 'projects.project.site.panel.window.create.text' ),
+                    title : Locale.get(lg, 'projects.project.site.panel.window.create.title'),
+                    text  : Locale.get(lg, 'projects.project.site.panel.window.create.text'),
                     texticon    : 'icon-file',
-                    information : Locale.get( lg, 'projects.project.site.panel.window.create.information', {
-                        name : Site.getAttribute( 'name' ),
+                    information : Locale.get(lg, 'projects.project.site.panel.window.create.information', {
+                        name : Site.getAttribute('name'),
                         id   : Site.getId()
                     }),
+                    maxWidth  : 450,
+                    maxHeight : 300,
                     value     : value,
                     autoclose : false,
                     events    :
                     {
+                        onOpen : function(Win)
+                        {
+                            ParentSite.fireEvent('openCreateChild', [Win, ParentSite]);
+                            Win.resize();
+                        },
+
                         onSubmit : function(value, Win)
                         {
-                            Site.createChild( value, function(result)
+                            ParentSite.fireEvent(
+                                'openCreateChildSubmit',
+                                [value, Win, ParentSite]
+                            );
+
+                            Site.createChild(value, function(result)
                             {
                                 Win.close();
 
@@ -124,28 +144,26 @@ define('utils/Site', [
                             }, function(Exception)
                             {
                                 // on error
-                                if ( Exception.getCode() == 702 )
+                                if (Exception.getCode() == 702)
                                 {
                                     Ajax.get('ajax_site_clear', function(newName)
                                     {
                                         Win.close();
 
-
                                         require(['qui/controls/windows/Confirm'], function(QUIConfirm)
                                         {
+                                            // #locale
                                             new QUIConfirm({
-                                                title : 'Unerlaubte Zeichen im Namen',
-                                                text  : 'Unerlaubte Zeichen im Namen.',
-                                                icon  : 'icon-warning-sign fa fa-warning',
+                                                title : Locale.get(lg, 'projects.project.site.panel.window.create.clear.title'),
+                                                text  : Locale.get(lg, 'projects.project.site.panel.window.create.clear.text'),
+                                                icon  : 'fa fa-warning icon-warning-sign',
                                                 maxWidth    : 600,
-                                                maxHeight   : 500,
+                                                maxHeight   : 400,
                                                 autoclose   : false,
-                                                information : 'Der Name der Seite beinhaltet Zeichen die nicht erlaubt sind. <br />' +
-                                                              ' Sollen aus dem Namen die Sonderzeichen herausgefiltert werden und ' +
-                                                              'der ursprüngliche Name als Titel verwendet werden?' +
-                                                              '<br /><br />'+
-                                                              '<p>Neuer Name der Seite: <b>'+ newName +'</b></p>' +
-                                                              '<p>Neuer Title der Seite: <b>'+ value +'</b></p>',
+                                                information : Locale.get(lg, 'projects.project.site.panel.window.create.clear.information', {
+                                                    newName : newName,
+                                                    value   : value
+                                                }),
                                                 events :
                                                 {
                                                     onSubmit : function(Win)
@@ -181,9 +199,8 @@ define('utils/Site', [
                                             }).open();
                                         });
 
-
                                     }, {
-                                        project : Project.decode(),
+                                        project : Project.encode(),
                                         name    : value
                                     });
 

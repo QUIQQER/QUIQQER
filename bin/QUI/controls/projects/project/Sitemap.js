@@ -1,4 +1,3 @@
-
 /**
  * Displays a Sitemap from a project
  *
@@ -15,6 +14,7 @@
  * @require Locale
  * @require Clipboard
  * @require utils/Site
+ * @require css!controls/projects/project/Sitemap.css
  */
 
 define('controls/projects/project/Sitemap', [
@@ -34,22 +34,21 @@ define('controls/projects/project/Sitemap', [
 
     'css!controls/projects/project/Sitemap.css'
 
-], function()
-{
+], function () {
     "use strict";
 
-    var QUIControl              = arguments[ 0 ],
-        QUISitemap              = arguments[ 1 ],
-        QUISitemapItem          = arguments[ 2 ],
-        QUIContextmenuItem      = arguments[ 3 ],
-        QUIContextmenuSeperator = arguments[ 4 ],
-        QUIConfirm              = arguments[ 5 ],
+    var QUIControl              = arguments[0],
+        QUISitemap              = arguments[1],
+        QUISitemapItem          = arguments[2],
+        QUIContextmenuItem      = arguments[3],
+        QUIContextmenuSeperator = arguments[4],
+        QUIConfirm              = arguments[5],
 
-        Projects  = arguments[ 6 ],
-        Ajax      = arguments[ 7 ],
-        Locale    = arguments[ 8 ],
-        Clipboard = arguments[ 9 ],
-        SiteUtils = arguments[ 10 ];
+        Projects                = arguments[6],
+        Ajax                    = arguments[7],
+        Locale                  = arguments[8],
+        Clipboard               = arguments[9],
+        SiteUtils               = arguments[10];
 
     /**
      * A project sitemap
@@ -64,10 +63,10 @@ define('controls/projects/project/Sitemap', [
      */
     return new Class({
 
-        Extends : QUIControl,
-        Type    : 'controls/projects/project/Sitemap',
+        Extends: QUIControl,
+        Type   : 'controls/projects/project/Sitemap',
 
-        Binds : [
+        Binds: [
             'onSiteChange',
             'onSiteCreate',
             'onSiteDelete',
@@ -76,60 +75,58 @@ define('controls/projects/project/Sitemap', [
             '$close'
         ],
 
-        options : {
-            name      : 'projects-site-panel',
-            container : false,
-            project   : false,
-            lang      : false,
-            id        : false,
-            media     : false, // show the media in the sitemap, too
-            multible  : false
+        options: {
+            name     : 'projects-site-panel',
+            container: false,
+            project  : false,
+            lang     : false,
+            id       : false,
+            media    : false, // show the media in the sitemap, too
+            multible : false
         },
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize: function (options) {
+            this.parent(options);
 
             this.$Elm = null;
             this.$Map = new QUISitemap({
-                multible : this.getAttribute( 'multible' )
+                multible: this.getAttribute('multible')
             });
 
-            this.$Map.setParent( this );
+            this.$Map.setParent(this);
 
             this.$Project = Projects.get(
-                this.getAttribute( 'project' ),
-                this.getAttribute( 'lang' )
+                this.getAttribute('project'),
+                this.getAttribute('lang')
             );
 
             var self = this;
 
-            this.addEvent('onDestroy', function()
-            {
-                if ( self.$Map ) {
+            this.addEvent('onDestroy', function () {
+                if (self.$Map) {
                     self.$Map.destroy();
                 }
 
                 self.$Project.removeEvents({
-                    onSiteCreate     : self.onSiteCreate,
-                    onSiteSave       : self.onSiteChange,
-                    onSiteActivate   : self.onSiteChange,
-                    onSiteDeactivate : self.onSiteChange,
-                    onSiteDelete     : self.onSiteDelete,
-                    onSiteSortSave   : self.onSiteChange,
-                    onSiteLoad       : self.onSiteChange
+                    onSiteCreate    : self.onSiteCreate,
+                    onSiteSave      : self.onSiteChange,
+                    onSiteActivate  : self.onSiteChange,
+                    onSiteDeactivate: self.onSiteChange,
+                    onSiteDelete    : self.onSiteDelete,
+                    onSiteSortSave  : self.onSiteChange,
+                    onSiteLoad      : self.onSiteChange
                 });
             });
 
             // projects events
             this.$Project.addEvents({
-                onSiteCreate     : this.onSiteCreate,
-                onSiteSave       : this.onSiteChange,
-                onSiteActivate   : this.onSiteChange,
-                onSiteDeactivate : this.onSiteChange,
-                onSiteDelete     : this.onSiteDelete,
-                onSiteSortSave   : this.onSiteChange,
-                onSiteLoad       : this.onSiteChange
+                onSiteCreate    : this.onSiteCreate,
+                onSiteSave      : this.onSiteChange,
+                onSiteActivate  : this.onSiteChange,
+                onSiteDeactivate: this.onSiteChange,
+                onSiteDelete    : this.onSiteDelete,
+                onSiteSortSave  : this.onSiteChange,
+                onSiteLoad      : this.onSiteChange
             });
 
             // copy and paste ids
@@ -143,8 +140,7 @@ define('controls/projects/project/Sitemap', [
          * @method controls/projects/project/Sitemap#getMap
          * @return {Object} Binded Map Object (qui/controls/sitemap/Map)
          */
-        getMap : function()
-        {
+        getMap: function () {
             return this.$Map;
         },
 
@@ -154,9 +150,8 @@ define('controls/projects/project/Sitemap', [
          * @method controls/projects/project/Sitemap#create
          * @return {HTMLElement} Main DOM-Node Element
          */
-        create : function()
-        {
-            if ( this.$Elm ) {
+        create: function () {
+            if (this.$Elm) {
                 return this.$Elm;
             }
 
@@ -170,9 +165,8 @@ define('controls/projects/project/Sitemap', [
          *
          * @method controls/projects/project/Sitemap#open
          */
-        open : function()
-        {
-            if ( !this.$Elm ) {
+        open: function () {
+            if (!this.$Elm) {
                 return;
             }
 
@@ -180,13 +174,11 @@ define('controls/projects/project/Sitemap', [
 
 
             // if an specific id must be open
-            if ( typeof this.$openids !== 'undefined' && this.$Map.firstChild() )
-            {
+            if (typeof this.$openids !== 'undefined' && this.$Map.firstChild()) {
                 var First = this.$Map.firstChild();
 
-                if ( First.isOpen() )
-                {
-                    this.fireEvent( 'openEnd', [ First, this ] );
+                if (First.isOpen()) {
+                    this.fireEvent('openEnd', [First, this]);
                     return;
                 }
 
@@ -197,39 +189,33 @@ define('controls/projects/project/Sitemap', [
 
             this.$Map.clearChildren();
 
-            if ( this.getAttribute( 'id' ) === false )
-            {
-                this.$getFirstChild(function(result)
-                {
+            if (this.getAttribute('id') === false) {
+                this.$getFirstChild(function (result) {
                     self.$Map.clearChildren();
 
                     self.$addSitemapItem(
                         self.$Map,
-                        self.$parseArrayToSitemapitem( result )
+                        self.$parseArrayToSitemapitem(result)
                     );
 
                     self.$Map.firstChild().open();
 
                     // media
-                    if ( self.getAttribute( 'media' ) )
-                    {
+                    if (self.getAttribute('media')) {
                         self.$Map.appendChild(
                             new QUISitemapItem({
-                                text : Locale.get(
+                                text    : Locale.get(
                                     'quiqqer/system',
                                     'projects.project.sitemap.media'
                                 ),
-                                value    : 'media',
-                                icon     : 'icon-picture',
-                                dragable : true,
-                                events   :
-                                {
-                                    onClick : function()
-                                    {
-                                        require(['controls/projects/project/Panel'], function(Panel)
-                                        {
+                                value   : 'media',
+                                icon    : 'fa fa-picture-o icon-picture',
+                                dragable: true,
+                                events  : {
+                                    onClick: function () {
+                                        require(['controls/projects/project/Panel'], function (Panel) {
                                             new Panel().openMediaPanel(
-                                                self.getAttribute( 'project' )
+                                                self.getAttribute('project')
                                             );
                                         });
                                     }
@@ -243,14 +229,13 @@ define('controls/projects/project/Sitemap', [
             }
 
             this.$getSite(
-                this.getAttribute( 'id' ),
-                function(result)
-                {
+                this.getAttribute('id'),
+                function (result) {
                     self.$Map.clearChildren();
 
                     self.$addSitemapItem(
                         self.$Map,
-                        self.$parseArrayToSitemapitem( result )
+                        self.$parseArrayToSitemapitem(result)
                     );
 
                     self.$Map.firstChild().open();
@@ -264,67 +249,59 @@ define('controls/projects/project/Sitemap', [
          * @method controls/projects/project/Sitemap#openSite
          * @param {Number} id - Site ID
          */
-        openSite : function(id)
-        {
-            if ( !this.$Map ) {
+        openSite: function (id) {
+            if (!this.$Map) {
                 return;
             }
 
-            var children = this.$Map.getChildrenByValue( id ),
+            var children = this.$Map.getChildrenByValue(id),
                 self     = this;
 
-            if ( children.length )
-            {
-                children[ 0 ].select();
+            if (children.length) {
+                children[0].select();
                 return;
             }
 
             // if not exist, search the path
-            Ajax.get('ajax_site_path', function(result, Request)
-            {
+            Ajax.get('ajax_site_path', function (result, Request) {
                 var items;
                 var Map = self.getMap();
 
-                result.push( Request.getAttribute( 'id' ) );
+                result.push(Request.getAttribute('id'));
 
-                items = Map.getChildrenByValue( result.getLast() );
+                items = Map.getChildrenByValue(result.getLast());
 
-                if ( items.length )
-                {
+                if (items.length) {
                     items[0].select();
                     return;
                 }
 
-                var open_event = function()
-                {
+                var open_event = function () {
                     var i, id, len, items;
 
-                    if ( typeof self.$openids === 'undefined' ) {
+                    if (typeof self.$openids === 'undefined') {
                         return;
                     }
 
                     var ids = self.$openids,
                         Map = self.getMap();
 
-                    for ( i = 0, len = ids.length; i < len; i++ )
-                    {
-                        id    = ( ids[ i ] ).toInt();
-                        items = Map.getChildrenByValue( id );
+                    for (i = 0, len = ids.length; i < len; i++) {
+                        id    = ( ids[i] ).toInt();
+                        items = Map.getChildrenByValue(id);
 
-                        if ( !items.length )
-                        {
+                        if (!items.length) {
                             // open parent
-                            items = Map.getChildrenByValue( ids[ i - 1 ] );
+                            items = Map.getChildrenByValue(ids[i - 1]);
 
-                            if ( items.length && items[0].isOpen() === false ) {
+                            if (items.length && items[0].isOpen() === false) {
                                 items[0].open();
                             }
 
                             return;
                         }
 
-                        if ( items[0].isOpen() === false )
-                        {
+                        if (items[0].isOpen() === false) {
                             items[0].open();
                             return;
                         }
@@ -334,17 +311,17 @@ define('controls/projects/project/Sitemap', [
 
                     delete self.$openids;
 
-                    self.removeEvent( 'onOpenEnd', open_event );
+                    self.removeEvent('onOpenEnd', open_event);
                 };
 
                 self.$openids = result;
-                self.addEvent( 'onOpenEnd', open_event );
+                self.addEvent('onOpenEnd', open_event);
 
                 self.open();
 
             }, {
-                project : this.$Project.encode(),
-                id      : id
+                project: this.$Project.encode(),
+                id     : id
             });
         },
 
@@ -354,8 +331,7 @@ define('controls/projects/project/Sitemap', [
          * @method controls/projects/project/Sitemap#getSelectedChildren
          * @return {Array}
          */
-        getSelectedChildren : function()
-        {
+        getSelectedChildren: function () {
             return this.getMap().getSelectedChildren();
         },
 
@@ -366,9 +342,8 @@ define('controls/projects/project/Sitemap', [
          * @param {String} selector
          * @return {Array} List of children
          */
-        getChildren : function(selector)
-        {
-            return this.getMap().getChildren( selector );
+        getChildren: function (selector) {
+            return this.getMap().getChildren(selector);
         },
 
         /**
@@ -378,9 +353,8 @@ define('controls/projects/project/Sitemap', [
          * @param {String} search
          * @return {Array} List of found elements
          */
-        search : function(search)
-        {
-            return this.getMap().search( search );
+        search: function (search) {
+            return this.getMap().search(search);
         },
 
         /**
@@ -391,15 +365,13 @@ define('controls/projects/project/Sitemap', [
          * @private
          * @ignore
          */
-        $getFirstChild : function(callback)
-        {
-            Ajax.get('ajax_project_firstchild', function(result)
-            {
-                if ( typeof callback !== 'undefined' ) {
-                    callback( result );
+        $getFirstChild: function (callback) {
+            Ajax.get('ajax_project_firstchild', function (result) {
+                if (typeof callback !== 'undefined') {
+                    callback(result);
                 }
             }, {
-                project : this.$Project.encode()
+                project: this.$Project.encode()
             });
         },
 
@@ -413,16 +385,14 @@ define('controls/projects/project/Sitemap', [
          * @private
          * @ignore
          */
-        $getSite : function(id, callback)
-        {
-            Ajax.get('ajax_site_get', function(result)
-            {
-                if ( typeof callback !== 'undefined' ) {
-                    callback( result );
+        $getSite: function (id, callback) {
+            Ajax.get('ajax_site_get', function (result) {
+                if (typeof callback !== 'undefined') {
+                    callback(result);
                 }
             }, {
-                project : this.$Project.encode(),
-                id      : id
+                project: this.$Project.encode(),
+                id     : id
             });
         },
 
@@ -435,68 +405,60 @@ define('controls/projects/project/Sitemap', [
          *
          * @ignore
          */
-        $loadChildren : function(Item, callback)
-        {
+        $loadChildren: function (Item, callback) {
             var self = this;
 
-            Item.setAttribute( 'oicon', Item.getAttribute( 'icon' ) );
-            Item.addIcon( 'icon-refresh icon-spin' );
-            Item.removeIcon( Item.getAttribute( 'icon' ) );
+            Item.setAttribute('oicon', Item.getAttribute('icon'));
+            Item.addIcon('icon-refresh icon-spin');
+            Item.removeIcon(Item.getAttribute('icon'));
 
             Item.clearChildren();
 
-            this.$Project.getConfig(function(config)
-            {
+            this.$Project.getConfig(function (config) {
                 // limits
                 var start        = 0,
-                    limitStart   = Item.getAttribute( 'limitStart' ),
+                    limitStart   = Item.getAttribute('limitStart'),
                     projectLimit = 10;
 
-                if ( "adminSitemapMax" in config ) {
-                    projectLimit = parseInt( config.adminSitemapMax );
+                if ("adminSitemapMax" in config) {
+                    projectLimit = parseInt(config.adminSitemapMax);
                 }
 
 
-                if ( limitStart === false ) {
+                if (limitStart === false) {
                     limitStart = -1;
                 }
 
                 start = ( limitStart + 1 ) * projectLimit;
 
                 // request
-                Ajax.get('ajax_site_getchildren', function(result)
-                {
+                Ajax.get('ajax_site_getchildren', function (result) {
                     var count    = ( result.count ).toInt(),
                         children = result.children,
                         end      = start + projectLimit,
                         sheets   = ( count / projectLimit ).ceil();
 
-                    Item.setAttribute( 'hasChildren', count );
+                    Item.setAttribute('hasChildren', count);
                     Item.clearChildren();
 
-                    if ( start > 0 )
-                    {
+                    if (start > 0) {
                         Item.appendChild(
                             new QUISitemapItem({
-                                icon : 'icon-level-up',
-                                text : '...',
-                                title  : 'Zurück - Rechtsklick für weitere Optionen',
-                                contextmenu : false,
-                                sheets : sheets,
-                                Item   : Item,
-                                events :
-                                {
-                                    onClick : function()
-                                    {
-                                        Item.setAttribute( 'limitStart', limitStart-1 );
-                                        self.$loadChildren( Item );
+                                icon       : 'icon-level-up',
+                                text       : '...',
+                                title      : 'Zurück - Rechtsklick für weitere Optionen',
+                                contextmenu: false,
+                                sheets     : sheets,
+                                Item       : Item,
+                                events     : {
+                                    onClick : function () {
+                                        Item.setAttribute('limitStart', limitStart - 1);
+                                        self.$loadChildren(Item);
                                     },
-                                    onInject : function(Me)
-                                    {
-                                        Me.getElm().addEvent('contextmenu', function(event)
-                                        {
+                                    onInject: function (Me) {
+                                        Me.getElm().addEvent('contextmenu', function (event) {
                                             event.stop();
-                                            self.$openSitemapItemSheetsWindow( Me );
+                                            self.$openSitemapItemSheetsWindow(Me);
                                         });
                                     }
                                 }
@@ -505,38 +467,32 @@ define('controls/projects/project/Sitemap', [
                     }
 
 
-                    for ( var i = 0, len = children.length; i < len; i++ )
-                    {
+                    for (var i = 0, len = children.length; i < len; i++) {
                         self.$addSitemapItem(
                             Item,
-                            self.$parseArrayToSitemapitem( children[ i ] )
+                            self.$parseArrayToSitemapitem(children[i])
                         );
                     }
 
 
-                    if ( end < count )
-                    {
+                    if (end < count) {
                         Item.appendChild(
                             new QUISitemapItem({
-                                icon   : 'icon-level-down',
-                                text   : '...',
-                                title  : 'Vor - Rechtsklick für weitere Optionen',
-                                contextmenu : false,
-                                sheets : sheets,
-                                Item   : Item,
-                                events :
-                                {
-                                    onClick : function()
-                                    {
-                                        Item.setAttribute( 'limitStart', limitStart+1 );
-                                        self.$loadChildren( Item );
+                                icon       : 'icon-level-down',
+                                text       : '...',
+                                title      : 'Vor - Rechtsklick für weitere Optionen',
+                                contextmenu: false,
+                                sheets     : sheets,
+                                Item       : Item,
+                                events     : {
+                                    onClick : function () {
+                                        Item.setAttribute('limitStart', limitStart + 1);
+                                        self.$loadChildren(Item);
                                     },
-                                    onInject : function(Me)
-                                    {
-                                        Me.getElm().addEvent('contextmenu', function(event)
-                                        {
+                                    onInject: function (Me) {
+                                        Me.getElm().addEvent('contextmenu', function (event) {
                                             event.stop();
-                                            self.$openSitemapItemSheetsWindow( Me );
+                                            self.$openSitemapItemSheetsWindow(Me);
                                         });
                                     }
                                 }
@@ -544,20 +500,20 @@ define('controls/projects/project/Sitemap', [
                         );
                     }
 
-                    Item.addIcon( Item.getAttribute( 'oicon' ) );
-                    Item.removeIcon( 'icon-refresh' );
+                    Item.addIcon(Item.getAttribute('oicon'));
+                    Item.removeIcon('icon-refresh');
 
 
-                    if ( typeof callback === 'function' ) {
-                        callback( Item );
+                    if (typeof callback === 'function') {
+                        callback(Item);
                     }
 
                 }, {
-                    project : self.$Project.encode(),
-                    id      : Item.getAttribute( 'value' ),
-                    params  : JSON.encode({
-                        attributes : 'id,name,title,has_children,nav_hide,linked,active,icon',
-                        limit      : start +','+ projectLimit
+                    project: self.$Project.encode(),
+                    id     : Item.getAttribute('value'),
+                    params : JSON.encode({
+                        attributes: 'id,name,title,has_children,nav_hide,linked,active,icon',
+                        limit     : start + ',' + projectLimit
                     })
                 });
             });
@@ -582,67 +538,57 @@ define('controls/projects/project/Sitemap', [
          *
          * @private
          */
-        $parseArrayToSitemapitem : function(result, Itm)
-        {
+        $parseArrayToSitemapitem: function (result, Itm) {
             var self = this;
 
-            if ( typeof Itm === 'undefined' ) {
+            if (typeof Itm === 'undefined') {
                 Itm = new QUISitemapItem();
             }
 
             var attributes = {
-                hasChildren : ( result.has_children ).toInt(),
-                dragable    : true
+                hasChildren: ( result.has_children ).toInt(),
+                dragable   : true
             };
 
-            if ( "name" in result )
-            {
+            if ("name" in result) {
                 attributes.name = result.name;
-                attributes.alt  = result.name +'.html';
+                attributes.alt  = result.name + '.html';
             }
 
-            if ( "id" in result )
-            {
+            if ("id" in result) {
                 attributes.index = result.id;
                 attributes.value = result.id;
             }
 
-            if ( "title" in result )
-            {
-                attributes.text = result.title;
+            if ("title" in result) {
+                attributes.text  = result.title;
                 attributes.title = result.title;
             }
 
-            attributes.icon = 'icon-file-alt';
+            attributes.icon = 'fa fa-file-o icon-file-alt';
 
-            if ( "icon" in result ) {
-                attributes.icon = result.icon || 'icon-file-alt';
+            if ("icon" in result) {
+                attributes.icon = result.icon || 'fa fa-file-o icon-file-alt';
             }
 
-            Itm.setAttributes( attributes );
+            Itm.setAttributes(attributes);
 
 
-            if ( "nav_hide" in result )
-            {
-                if ( result.nav_hide == '1' )
-                {
-                    Itm.addIcon( URL_BIN_DIR +'16x16/navigation_hidden.png' );
-                } else
-                {
-                    Itm.removeIcon( URL_BIN_DIR +'16x16/navigation_hidden.png' );
+            if ("nav_hide" in result) {
+                if (result.nav_hide == '1') {
+                    Itm.addIcon(URL_BIN_DIR + '16x16/navigation_hidden.png');
+                } else {
+                    Itm.removeIcon(URL_BIN_DIR + '16x16/navigation_hidden.png');
                 }
             }
 
-            if ( "linked" in result )
-            {
-                if ( result.linked == '1' )
-                {
-                    Itm.setAttribute( 'linked', true );
-                    Itm.addIcon( URL_BIN_DIR +'16x16/linked.png' );
-                } else
-                {
-                    Itm.setAttribute( 'linked', false );
-                    Itm.removeIcon( URL_BIN_DIR +'16x16/linked.png' );
+            if ("linked" in result) {
+                if (result.linked == '1') {
+                    Itm.setAttribute('linked', true);
+                    Itm.addIcon(URL_BIN_DIR + '16x16/linked.png');
+                } else {
+                    Itm.setAttribute('linked', false);
+                    Itm.removeIcon(URL_BIN_DIR + '16x16/linked.png');
                 }
             }
 
@@ -650,15 +596,12 @@ define('controls/projects/project/Sitemap', [
             // Activ / Inactive
             var active = true;
 
-            if ( "active" in result )
-            {
-                if ( result.active.toInt() === 0 )
-                {
+            if ("active" in result) {
+                if (result.active.toInt() === 0) {
                     Itm.deactivate();
 
                     active = false;
-                } else
-                {
+                } else {
                     Itm.activate();
                 }
             }
@@ -669,156 +612,144 @@ define('controls/projects/project/Sitemap', [
 
             ContextMenu.clearChildren()
                 .appendChild(
-                    new QUIContextmenuItem({
-                        name   : 'copy',
-                        text   : Locale.get('quiqqer/system', 'copy'),
-                        icon   : 'icon-copy',
-                        events :
-                        {
-                            onClick : function()
-                            {
-                                Clipboard.set({
-                                    project  : self.getAttribute( 'project' ),
-                                    lang     : self.getAttribute( 'lang' ),
-                                    id       : Itm.getAttribute( 'value' ),
-                                    Item     : Itm,
-                                    copyType : 'copy'
+                new QUIContextmenuItem({
+                    name  : 'create-new-site',
+                    text  : Locale.get('quiqqer/system', 'projects.project.site.btn.new.text'),
+                    icon  : 'icon-file-text fa fa-file-text',
+                    events: {
+                        onClick: function () {
+                            self.$createChild({
+                                project: self.getAttribute('project'),
+                                lang   : self.getAttribute('lang'),
+                                id     : Itm.getAttribute('value')
+                            });
+                        }
+                    }
+                })
+            ).appendChild(
+                new QUIContextmenuSeperator()
+            )
+                .appendChild(
+                new QUIContextmenuItem({
+                    name  : 'copy',
+                    text  : Locale.get('quiqqer/system', 'copy'),
+                    icon  : 'icon-copy',
+                    events: {
+                        onClick: function () {
+                            Clipboard.set({
+                                project : self.getAttribute('project'),
+                                lang    : self.getAttribute('lang'),
+                                id      : Itm.getAttribute('value'),
+                                Item    : Itm,
+                                copyType: 'copy'
+                            });
+                        }
+                    }
+                })
+            ).appendChild(
+                new QUIContextmenuItem({
+                    name  : 'cut',
+                    text  : Locale.get('quiqqer/system', 'cut'),
+                    icon  : 'icon-cut',
+                    events: {
+                        onClick: function () {
+                            Clipboard.set({
+                                project : self.getAttribute('project'),
+                                lang    : self.getAttribute('lang'),
+                                id      : Itm.getAttribute('value'),
+                                Item    : Itm,
+                                copyType: 'cut'
+                            });
+                        }
+                    }
+                })
+            ).appendChild(
+                new QUIContextmenuSeperator()
+            ).appendChild(
+                new QUIContextmenuItem({
+                    disabled: true,
+                    name    : 'paste',
+                    text    : Locale.get('quiqqer/system', 'paste'),
+                    icon    : 'icon-paste',
+                    events  : {
+                        onClick: function () {
+                            self.$pasteSite(Itm);
+                        }
+                    }
+                })
+            ).appendChild(
+                new QUIContextmenuItem({
+                    disabled: true,
+                    name    : 'linked-paste',
+                    text    : Locale.get('quiqqer/system', 'linked.paste'),
+                    icon    : 'icon-paste',
+                    events  : {
+                        onClick: function () {
+                            self.$linkSite(Itm);
+                        }
+                    }
+                })
+            ).appendChild(
+                new QUIContextmenuSeperator()
+            ).appendChild(
+                new QUIContextmenuItem({
+                    name  : 'de-activate-site',
+                    text  : active ?
+                        Locale.get('quiqqer/system', 'projects.project.site.btn.deactivate.text') :
+                        Locale.get('quiqqer/system', 'projects.project.site.btn.activate.text'),
+                    icon  : active ? 'icon-remove fa fa-remove' : 'icon-ok fa fa-ok',
+                    events: {
+                        onClick: function () {
+                            if (active) {
+                                self.$deactivateSite({
+                                    project: self.getAttribute('project'),
+                                    lang   : self.getAttribute('lang'),
+                                    id     : Itm.getAttribute('value')
+                                });
+                            } else {
+                                self.$activateSite({
+                                    project: self.getAttribute('project'),
+                                    lang   : self.getAttribute('lang'),
+                                    id     : Itm.getAttribute('value')
                                 });
                             }
                         }
-                    })
-                ).appendChild(
-                    new QUIContextmenuItem({
-                        name   : 'cut',
-                        text   : Locale.get('quiqqer/system', 'cut'),
-                        icon   : 'icon-cut',
-                        events :
-                        {
-                            onClick : function()
-                            {
-                                Clipboard.set({
-                                    project  : self.getAttribute( 'project' ),
-                                    lang     : self.getAttribute( 'lang' ),
-                                    id       : Itm.getAttribute( 'value' ),
-                                    Item     : Itm,
-                                    copyType : 'cut'
-                                });
-                            }
-                        }
-                    })
-                ).appendChild(
-                    new QUIContextmenuSeperator()
-                ).appendChild(
-                    new QUIContextmenuItem({
-                        disabled : true,
-                        name   : 'paste',
-                        text   : Locale.get('quiqqer/system', 'paste'),
-                        icon   : 'icon-paste',
-                        events :
-                        {
-                            onClick : function() {
-                                self.$pasteSite( Itm );
-                            }
-                        }
-                    })
-                ).appendChild(
-                    new QUIContextmenuItem({
-                        disabled : true,
-                        name   : 'linked-paste',
-                        text   : Locale.get('quiqqer/system', 'linked.paste'),
-                        icon   : 'icon-paste',
-                        events :
-                        {
-                            onClick : function() {
-                                self.$linkSite( Itm );
-                            }
-                        }
-                    })
-                ).appendChild(
-                    new QUIContextmenuSeperator()
-                ).appendChild(
-                    new QUIContextmenuItem({
-                        name   : 'de-activate-site',
-                        text   : active ?
-                                 Locale.get('quiqqer/system', 'projects.project.site.btn.deactivate.text') :
-                                 Locale.get('quiqqer/system', 'projects.project.site.btn.activate.text'),
-                        icon   : active ? 'icon-remove fa fa-remove' : 'icon-remove fa fa-ok',
-                        events :
-                        {
-                            onClick : function()
-                            {
-                                if ( active )
-                                {
-                                    self.$deactivateSite({
-                                        project : self.getAttribute('project'),
-                                        lang    : self.getAttribute('lang'),
-                                        id      : Itm.getAttribute('value')
-                                    });
-                                } else
-                                {
-                                    self.$activateSite({
-                                        project : self.getAttribute('project'),
-                                        lang    : self.getAttribute('lang'),
-                                        id      : Itm.getAttribute('value')
-                                    });
-                                }
-                            }
-                        }
-                    })
-                ).appendChild(
-                    new QUIContextmenuItem({
-                        name   : 'create-new-site',
-                        text   : Locale.get('quiqqer/system', 'projects.project.site.btn.new.text'),
-                        icon   : 'icon-file-text fa fa-file-text',
-                        events :
-                        {
-                            onClick : function()
-                            {
-                                self.$createChild({
-                                    project : self.getAttribute( 'project' ),
-                                    lang    : self.getAttribute( 'lang' ),
-                                    id      : Itm.getAttribute( 'value' )
-                                });
-                            }
-                        }
-                    })
-                );
+                    }
+                })
+            );
 
             ContextMenu.addEvents({
-                onShow : function(ContextMenu)
-                {
+                onShow: function (ContextMenu) {
                     Itm.highlight();
 
                     var data   = Clipboard.get(),
-                        Paste  = ContextMenu.getChildren( 'paste' ),
-                        Linked = ContextMenu.getChildren( 'linked-paste' ),
-                        Cut    = ContextMenu.getChildren( 'cut' );
+                        Paste  = ContextMenu.getChildren('paste'),
+                        Linked = ContextMenu.getChildren('linked-paste'),
+                        Cut    = ContextMenu.getChildren('cut');
 
                     Paste.disable();
                     Linked.disable();
 
-                    if ( Itm.getAttribute( 'value' ) == 1 )
-                    {
+                    if (Itm.getAttribute('value') == 1) {
                         Cut.disable();
-                    } else
-                    {
+                    } else {
                         Cut.enable();
                     }
 
-                    if ( !data ) {
+                    if (!data) {
                         return;
                     }
 
-                    if ( typeof data.copyType === 'undefined' ) {
+                    if (typeof data.copyType === 'undefined') {
                         return;
                     }
 
-                    if ( data.copyType !== 'cut' && data.copyType !== 'copy' ) {
+                    if (data.copyType !== 'cut' && data.copyType !== 'copy') {
                         return;
                     }
 
-                    var dataString = ' '+ data.project +' ('+ data.lang +') ' +
-                                     '#'+ data.id +'';
+                    var dataString = ' ' + data.project + ' (' + data.lang + ') ' +
+                                     '#' + data.id + '';
 
                     Paste.setAttribute(
                         'text', Locale.get('quiqqer/system', 'paste') + dataString
@@ -835,8 +766,7 @@ define('controls/projects/project/Sitemap', [
                     ContextMenu.focus();
                 },
 
-                onBlur : function()
-                {
+                onBlur: function () {
                     Itm.deHighlight();
                 }
             });
@@ -856,13 +786,12 @@ define('controls/projects/project/Sitemap', [
          * @private
          * @ignore
          */
-        $addSitemapItem : function(Parent, Child)
-        {
-            Child.setAttribute( 'Control', this );
-            Child.addEvent( 'onOpen', this.$open );
-            Child.addEvent( 'onClose', this.$close );
+        $addSitemapItem: function (Parent, Child) {
+            Child.setAttribute('Control', this);
+            Child.addEvent('onOpen', this.$open);
+            Child.addEvent('onClose', this.$close);
 
-            Parent.appendChild( Child );
+            Parent.appendChild(Child);
         },
 
         /**
@@ -871,55 +800,50 @@ define('controls/projects/project/Sitemap', [
          * @ignore
          * @param Item
          */
-        $openSitemapItemSheetsWindow : function(Item)
-        {
-            if ( !Item.getAttribute( 'sheets' ) ) {
+        $openSitemapItemSheetsWindow: function (Item) {
+            if (!Item.getAttribute('sheets')) {
                 return;
             }
 
             var self     = this,
-                sheets   = ( Item.getAttribute( 'sheets' ) ).toInt(),
-                Select   = new Element( 'select'),
-                SiteItem = Item.getAttribute( 'Item' );
+                sheets   = ( Item.getAttribute('sheets') ).toInt(),
+                Select   = new Element('select'),
+                SiteItem = Item.getAttribute('Item');
 
-            for ( var i = 0, len = sheets; i < len; i++ )
-            {
+            for (var i = 0, len = sheets; i < len; i++) {
                 new Element('option', {
-                    html  : 'Blatt '+ ( i + 1 ),
-                    value : i
-                }).inject( Select );
+                    html : 'Blatt ' + ( i + 1 ),
+                    value: i
+                }).inject(Select);
             }
 
-            if ( SiteItem.getAttribute( 'limitStart' ) !== false ) {
+            if (SiteItem.getAttribute('limitStart') !== false) {
                 Select.value = ( SiteItem.getAttribute('limitStart') ).toInt() + 1;
             }
 
 
             new QUIConfirm({
-                title     : 'Blätterfunktion',
-                maxHeight : 300,
-                maxWidth  : 500,
-                events    :
-                {
-                    onOpen : function(Win)
-                    {
+                title    : 'Blätterfunktion',
+                maxHeight: 300,
+                maxWidth : 500,
+                events   : {
+                    onOpen: function (Win) {
                         var Content = Win.getContent();
 
                         Content.set({
-                            html    : '<p>Welche Einträge der Seite sollen angezeigt werden?</p>',
-                            'class' : 'qui-projects-sitemap-sheetsWindow'
+                            html   : '<p>Welche Einträge der Seite sollen angezeigt werden?</p>',
+                            'class': 'qui-projects-sitemap-sheetsWindow'
                         });
 
-                        Select.inject( Content );
+                        Select.inject(Content);
                     },
 
-                    onSubmit : function(Win)
-                    {
-                        var Select = Win.getContent().getElement( 'select'),
+                    onSubmit: function (Win) {
+                        var Select = Win.getContent().getElement('select'),
                             sheet  = ( Select.value ).toInt();
 
-                        SiteItem.setAttribute( 'limitStart', sheet-1 );
-                        self.$loadChildren( SiteItem );
+                        SiteItem.setAttribute('limitStart', sheet - 1);
+                        self.$loadChildren(SiteItem);
                     }
                 }
             }).open();
@@ -934,14 +858,13 @@ define('controls/projects/project/Sitemap', [
          * @private
          * @ignore
          */
-        $open : function(Item)
-        {
+        $open: function (Item) {
             var self = this;
 
-            this.fireEvent( 'openBegin', [ Item, this ] );
+            this.fireEvent('openBegin', [Item, this]);
 
-            this.$loadChildren(Item, function(Item) {
-                self.fireEvent( 'openEnd', [ Item, self ] );
+            this.$loadChildren(Item, function (Item) {
+                self.fireEvent('openEnd', [Item, self]);
             });
         },
 
@@ -954,8 +877,7 @@ define('controls/projects/project/Sitemap', [
          * @private
          * @ignore
          */
-        $close : function(Item)
-        {
+        $close: function (Item) {
             Item.clearChildren();
         },
 
@@ -964,53 +886,56 @@ define('controls/projects/project/Sitemap', [
          *
          * @param {Object} NewParentItem - qui/controls/sitemap/Item
          */
-        $pasteSite : function(NewParentItem)
-        {
+        $pasteSite: function (NewParentItem) {
             var data = Clipboard.get();
 
-            if ( typeof data.Item === 'undefined' ) {
+            if (typeof data.Item === 'undefined') {
                 return;
             }
 
-            if ( typeof data.project === 'undefined' ||
-                 typeof data.lang === 'undefined' ||
-                 typeof data.id === 'undefined' )
-            {
+            if (typeof data.project === 'undefined' ||
+                typeof data.lang === 'undefined' ||
+                typeof data.id === 'undefined') {
                 return;
             }
 
             var self    = this,
-                Project = Projects.get( data.project, data.lang ),
-                Site    = Project.get( data.id ),
+                Project = Projects.get(data.project, data.lang),
+                Site    = Project.get(data.id),
                 Item    = data.Item;
 
             // move site
-            if ( data.copyType === 'cut' )
-            {
-                Site.move( NewParentItem.getAttribute('value'), function()
-                {
+            if (data.copyType === 'cut') {
+                if (this.getAttribute('project') != Site.getProject().getName()) {
+                    return;
+                }
+
+                Site.move(NewParentItem.getAttribute('value'), function () {
                     Item.destroy();
 
-                    if ( !NewParentItem.isOpen() )
-                    {
+                    if (!NewParentItem.isOpen()) {
                         NewParentItem.open();
-                    } else
-                    {
-                        self.$open( NewParentItem );
+                    } else {
+                        self.$open(NewParentItem);
                     }
                 });
 
                 return;
             }
 
-            Site.copy( NewParentItem.getAttribute('value'), function()
-            {
-                if ( !NewParentItem.isOpen() )
-                {
+            var parentItemData = {
+                parentId: NewParentItem.getAttribute('value'),
+                project : {
+                    name: this.getAttribute('project'),
+                    lang: this.getAttribute('lang')
+                }
+            };
+
+            Site.copy(parentItemData, function () {
+                if (!NewParentItem.isOpen()) {
                     NewParentItem.open();
-                } else
-                {
-                    self.$open( NewParentItem );
+                } else {
+                    self.$open(NewParentItem);
                 }
             });
         },
@@ -1020,34 +945,31 @@ define('controls/projects/project/Sitemap', [
          *
          * @param {Object} NewParentItem - qui/controls/sitemap/Item
          */
-        $linkSite : function(NewParentItem)
-        {
+        $linkSite: function (NewParentItem) {
             var data = Clipboard.get();
 
-            if ( typeof data.Item === 'undefined' ) {
+            if (typeof data.Item === 'undefined') {
                 return;
             }
 
-            if ( typeof data.project === 'undefined' ||
-                 typeof data.lang === 'undefined' ||
-                 typeof data.id === 'undefined' )
-            {
+            if (typeof data.project === 'undefined' ||
+                typeof data.lang === 'undefined' ||
+                typeof data.id === 'undefined') {
                 return;
             }
 
             var self    = this,
-                Project = Projects.get( data.project, data.lang ),
-                Site    = Project.get( data.id );
+                Project = Projects.get(data.project, data.lang),
+                Site    = Project.get(data.id);
 
-            Site.linked( NewParentItem.getAttribute('value'), function()
-            {
-                if ( !NewParentItem.isOpen() )
-                {
+            Site.linked(NewParentItem.getAttribute('value'), function () {
+
+                if (!NewParentItem.isOpen()) {
                     NewParentItem.open();
-                } else
-                {
-                    self.$open( NewParentItem );
+                } else {
+                    self.$open(NewParentItem);
                 }
+
             });
         },
 
@@ -1056,19 +978,17 @@ define('controls/projects/project/Sitemap', [
          *
          * @param {Object} data - data.project, data.lang, data.id
          */
-        $createChild : function(data)
-        {
-            var Project = Projects.get( data.project, data.lang ),
-                Site    = Project.get( data.id );
+        $createChild: function (data) {
+            var Project = Projects.get(data.project, data.lang),
+                Site    = Project.get(data.id);
 
-            if ( Site.getAttribute( 'name' ) )
-            {
-                SiteUtils.openCreateChild( Site );
+            if (Site.getAttribute('name')) {
+                SiteUtils.openCreateChild(Site);
                 return;
             }
 
-            Site.load(function() {
-                SiteUtils.openCreateChild( Site );
+            Site.load(function () {
+                SiteUtils.openCreateChild(Site);
             });
         },
 
@@ -1077,10 +997,9 @@ define('controls/projects/project/Sitemap', [
          *
          * @param {Object} data - data.project, data.lang, data.id
          */
-        $activateSite : function(data)
-        {
-            var Project = Projects.get( data.project, data.lang ),
-                Site    = Project.get( data.id );
+        $activateSite: function (data) {
+            var Project = Projects.get(data.project, data.lang),
+                Site    = Project.get(data.id);
 
             Site.activate();
         },
@@ -1090,10 +1009,9 @@ define('controls/projects/project/Sitemap', [
          *
          * @param {Object} data - data.project, data.lang, data.id
          */
-        $deactivateSite : function(data)
-        {
-            var Project = Projects.get( data.project, data.lang ),
-                Site    = Project.get( data.id );
+        $deactivateSite: function (data) {
+            var Project = Projects.get(data.project, data.lang),
+                Site    = Project.get(data.id);
 
             Site.deactivate();
         },
@@ -1108,32 +1026,30 @@ define('controls/projects/project/Sitemap', [
          * @param {Object} Project - (classes/projects/Project) Project of the Site that are changed
          * @param {Object} Site - (classes/projects/project/Site) Site that are changed
          */
-        onSiteChange : function(Project, Site)
-        {
-            if ( !this.$Map ) {
+        onSiteChange: function (Project, Site) {
+            if (!this.$Map) {
                 return;
             }
 
-            var children = this.$Map.getChildrenByValue( Site.getId() );
+            var children = this.$Map.getChildrenByValue(Site.getId());
 
-            if ( !children.length ) {
+            if (!children.length) {
                 return;
             }
 
             var i, len, Item, params;
 
-            for ( i = 0, len = children.length; i < len; i++ )
-            {
-                Item   = children[ i ];
+            for (i = 0, len = children.length; i < len; i++) {
+                Item   = children[i];
                 params = Site.getAttributes();
 
                 params.active       = Site.isActive();
                 params.has_children = Site.hasChildren() ? 1 : 0;
 
-                this.$parseArrayToSitemapitem( params, Item );
+                this.$parseArrayToSitemapitem(params, Item);
 
-                if ( Item.isOpen() ) {
-                    this.$open( Item );
+                if (Item.isOpen()) {
+                    this.$open(Item);
                 }
             }
         },
@@ -1144,42 +1060,37 @@ define('controls/projects/project/Sitemap', [
          * @param {Object} Project - (classes/projects/Project) Project of the Site that are changed
          * @param {Object} Site - (classes/projects/project/Site) Site that create the child
          */
-        onSiteCreate : function(Project, Site)
-        {
-            if ( !this.$Map ) {
+        onSiteCreate: function (Project, Site) {
+            if (!this.$Map) {
                 return;
             }
 
             // refresh the parent
-            var children = this.$Map.getChildrenByValue( Site.getId() );
+            var children = this.$Map.getChildrenByValue(Site.getId());
 
-            if ( !children.length ) {
+            if (!children.length) {
                 return;
             }
 
             var i, len, count;
 
-            for ( i = 0, len = children.length; i < len; i++ )
-            {
-                if ( children[ i ].isOpen() )
-                {
-                    this.$loadChildren( children[ i ] );
+            for (i = 0, len = children.length; i < len; i++) {
+                if (children[i].isOpen()) {
+                    this.$loadChildren(children[i]);
                     return;
                 }
 
-                count = children[ i].getAttribute( 'hasChildren' );
+                count = children[i].getAttribute('hasChildren');
 
-                if ( typeOf( count ) === 'number' )
-                {
+                if (typeOf(count) === 'number') {
                     count++;
 
-                } else
-                {
+                } else {
                     count = 1;
                 }
 
-                children[ i ].setAttribute( 'hasChildren', count );
-                children[ i ].open();
+                children[i].setAttribute('hasChildren', count);
+                children[i].open();
             }
         },
 
@@ -1189,32 +1100,29 @@ define('controls/projects/project/Sitemap', [
          * @param {Object} Project - (classes/projects/Project) Project of the Site that are changed
          * @param {integer} siteid - siteid that are deleted
          */
-        onSiteDelete : function(Project, siteid)
-        {
-            if ( !this.$Map ) {
+        onSiteDelete: function (Project, siteid) {
+            if (!this.$Map) {
                 return;
             }
 
-            var children = this.$Map.getChildrenByValue( siteid );
+            var children = this.$Map.getChildrenByValue(siteid);
 
-            if ( !children.length ) {
+            if (!children.length) {
                 return;
             }
 
             var i, len, Site, Parent;
 
-            for ( i = 0, len = children.length; i < len; i++ )
-            {
+            for (i = 0, len = children.length; i < len; i++) {
                 // refresh parent item
-                Parent = children[ i ].getParent();
+                Parent = children[i].getParent();
 
-                if ( Parent )
-                {
-                    Site = this.$Project.get( Parent.getAttribute( 'value' ) );
+                if (Parent) {
+                    Site = this.$Project.get(Parent.getAttribute('value'));
                     Site.load();
                 }
 
-                children[ i ].destroy();
+                children[i].destroy();
             }
         }
     });

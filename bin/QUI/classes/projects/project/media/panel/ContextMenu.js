@@ -10,7 +10,7 @@
  * @require qui/utils/Elements
  */
 
-define([
+define('classes/projects/project/media/panel/ContextMenu', [
 
     'qui/controls/contextmenu/Item',
     'qui/controls/contextmenu/Seperator',
@@ -22,7 +22,7 @@ define([
 
     /**
      * @class classes/projects/project/media/panel/ContextMenu
-     * @param {controls/projects/project/media/Panel} MediaPanel
+     * @param {Object} MediaPanel - controls/projects/project/media/Panel
      *
      * @memberof! <global>
      */
@@ -33,7 +33,7 @@ define([
         /**
          * @constructor
          *
-         * @param {controls/projects/project/media/Panel} MediaPanel
+         * @param {Object} MediaPanel - controls/projects/project/media/Panel
          */
         initialize : function(MediaPanel)
         {
@@ -43,7 +43,7 @@ define([
         /**
          * Return the parent media panel
          *
-         * @return {controls/projects/project/media/Panel}
+         * @return {Object} controls/projects/project/media/Panel
          */
         getPanel : function()
         {
@@ -147,7 +147,7 @@ define([
                 Trash = new QUIContextmenuItem({
                     name   : 'delete',
                     text   : 'In den Mülleimer werfen',
-                    icon   : 'icon-trash',
+                    icon   : 'fa fa-trash-o icon-trash',
                     events :
                     {
                         onMouseDown : function()
@@ -165,7 +165,7 @@ define([
                 Trash = new QUIContextmenuItem({
                     name : 'delete',
                     text : 'In den Mülleimer werfen',
-                    icon : 'icon-trash'
+                    icon : 'fa fa-trash-o icon-trash'
                 });
 
                 Trash.appendChild(
@@ -453,6 +453,7 @@ define([
                 );
             }
 
+            // #locale
             Menu.appendChild(
                 new QUIContextmenuSeperator()
             ).appendChild(
@@ -476,7 +477,7 @@ define([
                 new QUIContextmenuItem({
                     name   : 'delete',
                     text   : 'In den Mülleimer werfen',
-                    icon   : 'icon-trash',
+                    icon   : 'fa fa-trash-o icon-trash',
                     events :
                     {
                         onMouseDown : function()
@@ -486,6 +487,43 @@ define([
                             }
 
                             self.getPanel().deleteItem( DOMNode );
+                        }
+                    }
+                })
+            ).appendChild(
+                new QUIContextmenuSeperator()
+            ).appendChild(
+                new QUIContextmenuItem({
+                    name   : 'properties',
+                    text   : 'Eigenschaften',
+                    icon   : 'fa fa-folder-open-o icon-folder-open-alt',
+                    events :
+                    {
+                        onMouseDown : function()
+                        {
+                            if ( !DOMNode ) {
+                                return;
+                            }
+
+                            var Parent = self.getPanel().getParent();
+
+                            var type = DOMNode.get('data-type'),
+                                id = DOMNode.get('data-id'),
+                                project = DOMNode.get('data-project');
+
+                            if (type != 'folder') {
+                                return;
+                            }
+
+                            require([
+                                'controls/projects/project/media/FolderPanel'
+                            ], function(FolderPanel)
+                            {
+                                new FolderPanel({
+                                    folderId : id,
+                                    project : project
+                                }).inject( Parent );
+                            });
                         }
                     }
                 })
@@ -510,7 +548,7 @@ define([
                 return new QUIContextmenuItem({
                     name   : 'activate',
                     text   : 'Aktivieren',
-                    icon   : 'icon-ok',
+                    icon   : 'fa fa-check icon-ok',
                     events :
                     {
                         onMouseDown : function()
@@ -528,7 +566,7 @@ define([
             var Activate = new QUIContextmenuItem({
                 name    : 'activate',
                 text    : 'Aktivieren',
-                icon    : 'icon-ok'
+                icon    : 'fa fa-check icon-ok'
             });
 
             Activate.appendChild(

@@ -17,7 +17,7 @@
  * @require Locale
  */
 
-define([
+define('controls/trash/Panel', [
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
@@ -62,7 +62,7 @@ define([
         ],
 
         options : {
-            icon  : 'icon-trash',
+            icon  : 'fa fa-trash-o icon-trash',
             title : Locale.get( lg, 'trash.panel.title' )
         },
 
@@ -145,7 +145,7 @@ define([
                     self.$Select.appendChild(
                         project +' ( Media )',
                         project +',media',
-                        'icon-picture'
+                        'fa fa-picture-o icon-picture'
                     );
                 }
 
@@ -317,7 +317,7 @@ define([
                 ids    = [],
                 params = this.$Select.getValue().split(',');
 
-            if ( this.$Select.getValue().match( 'media' ) ) {
+            if (this.$Select.getValue().match('media')) {
                 type = 'media';
             }
 
@@ -372,7 +372,7 @@ define([
                 {
                     onSubmit : function(Popup, data)
                     {
-                        var project  = data.project,
+                        var project  = params[0],
                             parentId = data.id;
 
                         self.restoreProjectMediaItems( project, parentId, ids, function()
@@ -622,7 +622,9 @@ define([
                 self.$MediaGrid.setData( data );
                 self.Loader.hide();
             }, {
-                project : project,
+                project : JSON.encode({
+                    name : project
+                }),
                 params  : JSON.encode({
                     page    : options.page,
                     perPage : options.perPage
@@ -645,7 +647,9 @@ define([
                     callback();
                 }
             }, {
-                project : project,
+                project : JSON.encode({
+                    name : project
+                }),
                 ids     : JSON.encode( ids )
             });
         },
@@ -662,11 +666,13 @@ define([
         {
             Ajax.post('ajax_trash_media_restore', function()
             {
-                if ( typeof callback !== 'undefined' ) {
+                if (typeof callback === 'function') {
                     callback();
                 }
             }, {
-                project  : project,
+                project  : JSON.encode({
+                    name : project
+                }),
                 parentid : parentId,
                 ids      : JSON.encode( restoreIds )
             });

@@ -6,12 +6,15 @@
 
 namespace QUI\System\Console\Tools;
 
+use QUI;
+
 /**
  * Checks the system health
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  */
-class Maintenance extends \QUI\System\Console\Tool
+class Maintenance extends QUI\System\Console\Tool
 {
     /**
      * Konstruktor
@@ -24,28 +27,27 @@ class Maintenance extends \QUI\System\Console\Tool
 
     /**
      * (non-PHPdoc)
+     *
      * @see \QUI\System\Console\Tool::execute()
      */
     public function execute()
     {
-        $this->writeLn( 'Set maintenance: ' );
+        $this->writeLn('Set maintenance: ');
 
-        $Config = \QUI::getConfig( 'etc/conf.ini.php' );
+        $Config = QUI::getConfig('etc/conf.ini.php');
 
-        if ( $this->getArgument('--status') == 'on' )
-        {
+        if ($this->getArgument('--status') == 'on') {
             $this->write('on');
-            $Config->set( 'globals', 'maintenance', 1 );
+            $Config->set('globals', 'maintenance', 1);
         }
 
-        if ( $this->getArgument('--status') == 'off' )
-        {
+        if ($this->getArgument('--status') == 'off') {
             $this->write('off');
-            $Config->set( 'globals', 'maintenance', 0 );
+            $Config->set('globals', 'maintenance', 0);
         }
 
         $Config->save();
 
-        $this->writeLn( '' );
+        $this->writeLn('');
     }
 }

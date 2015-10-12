@@ -11,9 +11,9 @@ use QUI;
 /**
  * Helper for the javascript controls/grid/Grid
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  */
-
 class Grid extends QUI\QDOM
 {
     /**
@@ -21,7 +21,7 @@ class Grid extends QUI\QDOM
      *
      * @param Array $params - optional
      */
-    public function __construct($params=array())
+    public function __construct($params = array())
     {
         // defaults
         $this->setAttribute('max', 50);
@@ -34,26 +34,26 @@ class Grid extends QUI\QDOM
      * Prepares DB parameters with limits
      *
      * @param Array $params
+     *
      * @return Array
      */
-    public function parseDBParams($params=array())
+    public function parseDBParams($params = array())
     {
         $_params = array();
 
-        if ( isset( $params['perPage'] ) ) {
-            $this->setAttribute( 'max', $params['perPage'] );
+        if (isset($params['perPage'])) {
+            $this->setAttribute('max', $params['perPage']);
         }
 
-        if ( isset( $params['page'] ) ) {
-            $this->setAttribute( 'page', $params['page'] );
+        if (isset($params['page'])) {
+            $this->setAttribute('page', $params['page']);
         }
 
-        if ( $this->getAttribute('page') )
-        {
-            $page  = ( $this->getAttribute('page' ) - 1 );
+        if ($this->getAttribute('page')) {
+            $page = ($this->getAttribute('page') - 1);
             $start = $page * $this->getAttribute('max');
 
-            $_params['limit'] = $start .','. $this->getAttribute('max');
+            $_params['limit'] = $start.','.$this->getAttribute('max');
         }
 
         return $_params;
@@ -62,20 +62,20 @@ class Grid extends QUI\QDOM
     /**
      * Prepares the result for the Grid
      *
-     * @param array $data
+     * @param array        $data
      * @param integer|bool $count
      *
      * @return Array
      */
-    public function parseResult($data, $count=false)
+    public function parseResult($data, $count = false)
     {
-        if ( $count === false ) {
-            $count = count( $data );
+        if ($count === false) {
+            $count = count($data);
         }
 
         return array(
             'data'  => $data,
-            'page'  => $this->getAttribute( 'page' ),
+            'page'  => $this->getAttribute('page'),
             'total' => $count
         );
     }
@@ -83,19 +83,20 @@ class Grid extends QUI\QDOM
     /**
      * Parse a result array in a grid array
      *
-     * @param Array $data
+     * @param Array   $data
      * @param Integer $page
      * @param Integer $limit
+     *
      * @return array
      */
     static function getResult($data, $page, $limit)
     {
-        $count = count( $data );
-        $end   = $page * $limit;
+        $count = count($data);
+        $end = $page * $limit;
         $start = $end - $limit;
 
         return array(
-            'data'  => array_slice( $data, $start, $limit ),
+            'data'  => array_slice($data, $start, $limit),
             'page'  => $page,
             'total' => $count
         );

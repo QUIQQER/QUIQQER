@@ -11,14 +11,14 @@
  */
 function ajax_site_move($project, $id, $newParentId)
 {
-    $Project = \QUI::getProjectManager()->decode( $project );
-    $Site    = new \QUI\Projects\Site\Edit( $Project, (int)$id );
+    $Project = QUI::getProjectManager()->decode($project);
+    $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
 
-    $Site->move( (int)$newParentId );
+    $Site->move((int)$newParentId);
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_site_move',
-    array( 'project', 'id', 'newParentId' ),
+    array('project', 'id', 'newParentId'),
     'Permission::checkAdminUser'
 );

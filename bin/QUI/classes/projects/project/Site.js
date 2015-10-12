@@ -1,13 +1,12 @@
-
 /**
  * A project Site Object
  *
  * @module classes/projects/project/Site
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require controls/Control
- * @require controls/contextmenu/Menu
- * @require controls/contextmenu/Item
+ * @require qui/QUI
+ * @require qui/classes/DOM
+ * @require Ajax
  *
  * @event onLoad [ this ]
  * @event onGetChildren [ this, {Array} ]
@@ -24,8 +23,7 @@ define('classes/projects/project/Site', [
     'qui/classes/DOM',
     'Ajax'
 
-], function(QUI, DOM, Ajax)
-{
+], function (QUI, DOM, Ajax) {
     "use strict";
 
     /**
@@ -41,36 +39,37 @@ define('classes/projects/project/Site', [
      */
     return new Class({
 
-        Extends : DOM,
-        Type    : 'classes/projects/project/Site',
+        Extends: DOM,
+        Type   : 'classes/projects/project/Site',
 
-        Binds : [
+        Binds: [
             'setAttributes',
             'setAttribute',
             'getAttributes',
             'getAttribute'
         ],
 
-        options : {
-            Project    : '',
-            id         : 0,
-            attributes : {}
+        options: {
+            Project   : '',
+            id        : 0,
+            attributes: {}
         },
 
-        initialize : function(Project, id)
-        {
+        initialize: function (Project, id) {
             this.$Project      = Project;
             this.$has_children = false;
             this.$parentid     = false;
             this.$loaded       = false;
 
-            this.$workingId = 'site-'+
-                              Project.getName() +'-'+
-                              Project.getLang() +'-'+
+            this.$workingId = 'site-' +
+                              Project.getName() + '-' +
+                              Project.getLang() + '-' +
                               id;
 
+            this.$modulesLoaded = false;
+
             this.parent({
-                id : id
+                id: id
             });
         },
 
@@ -82,14 +81,12 @@ define('classes/projects/project/Site', [
          * @param {Function} [onfinish] - (optional) callback Function
          * @return {Object} this (classes/projects/project/Site)
          */
-        load : function(onfinish)
-        {
+        load: function (onfinish) {
             var params = this.ajaxParams(),
                 Site   = this;
 
-            Ajax.get('ajax_site_get', function(result)
-            {
-                Site.setAttributes( result.attributes );
+            Ajax.get('ajax_site_get', function (result) {
+                Site.setAttributes(result.attributes);
                 Site.clearWorkingStorage();
 
                 Site.$has_children = false;
@@ -97,26 +94,78 @@ define('classes/projects/project/Site', [
                 Site.$url          = '';
                 Site.$loaded       = true;
 
-                if ( "has_children" in result ) {
+                if ("has_children" in result) {
                     Site.$has_children = ( result.has_children ).toInt();
                 }
 
-                if ( "parentid" in result ) {
+                if ("parentid" in result) {
                     Site.$parentid = result.parentid;
                 }
 
-                if ( "url" in result ) {
+                if ("url" in result) {
                     Site.$url = result.url;
                 }
 
-                Site.fireEvent( 'load', [ Site ] );
+                if (Site.$modulesLoaded === false &&
+                    "modules" in result &&
+                    "js" in result.modules) {
+                    Site.$modulesLoaded = true;
 
-                if ( typeof onfinish === 'function' ) {
-                    onfinish( Site );
+                    var onSiteLoad = [],
+                        jsModules  = result.modules.js;
+
+                    for (var i in jsModules) {
+                        if (!jsModules.hasOwnProperty(i)) {
+                            continue;
+                        }
+
+                        if (i == 'onSiteLoad') {
+                            onSiteLoad.append(jsModules[i]);
+                        }
+                    }
+
+                    if (onSiteLoad.length) {
+                        require(onSiteLoad, function () {
+                            for (var i = 0, len = onSiteLoad.length; i < len; i++) {
+                                if (typeOf(arguments[i]) == 'class') {
+                                    new arguments[i](Site);
+                                    continue;
+                                }
+
+                                if (typeOf(arguments[i]) == 'function') {
+                                    arguments[i](Site);
+                                }
+                            }
+
+
+                            Site.fireEvent('load', [Site]);
+
+                            if (typeof onfinish === 'function') {
+                                onfinish(Site);
+                            }
+                        });
+                    }
+
+                    return;
+                }
+
+                Site.fireEvent('load', [Site]);
+
+                if (typeof onfinish === 'function') {
+                    onfinish(Site);
                 }
             }, params);
 
             return this;
+        },
+
+        /**
+         * the site has been loaded once?
+         *
+         * @return {Boolean}
+         */
+        isLoaded: function () {
+            return this.$loaded;
         },
 
         /**
@@ -125,9 +174,8 @@ define('classes/projects/project/Site', [
          * @method classes/projects/project/Site#getId
          * @return {Number}
          */
-        getId : function()
-        {
-            return this.getAttribute( 'id' );
+        getId: function () {
+            return this.getAttribute('id');
         },
 
         /**
@@ -136,8 +184,7 @@ define('classes/projects/project/Site', [
          * @method classes/projects/project/Site#getProject
          * @return {Object} classes/projects/Project
          */
-        getProject : function()
-        {
+        getProject: function () {
             return this.$Project;
         },
 
@@ -146,9 +193,8 @@ define('classes/projects/project/Site', [
          *
          * @return {String}
          */
-        getUrl : function()
-        {
-            if ( typeof this.$url !== 'undefined' ) {
+        getUrl: function () {
+            if (typeof this.$url !== 'undefined') {
                 return this.$url;
             }
 
@@ -160,8 +206,7 @@ define('classes/projects/project/Site', [
          *
          * @return {Boolean}
          */
-        hasChildren : function()
-        {
+        hasChildren: function () {
             return this.$has_children ? true : false;
         },
 
@@ -170,9 +215,8 @@ define('classes/projects/project/Site', [
          *
          * @return {Number}
          */
-        countChild : function()
-        {
-            if ( !this.$has_children ) {
+        countChild: function () {
+            if (!this.$has_children) {
                 return 0;
             }
 
@@ -187,22 +231,20 @@ define('classes/projects/project/Site', [
          * @param {Object} [params] - (optional)
          * @returns {Object} this (classes/projects/project/Site)
          */
-        getChildren : function(onfinish, params)
-        {
+        getChildren: function (onfinish, params) {
             var data = this.ajaxParams(),
                 Site = this;
 
-            data.params = JSON.encode( params || {} );
+            data.params = JSON.encode(params || {});
 
-            Ajax.get('ajax_site_getchildren', function(result)
-            {
+            Ajax.get('ajax_site_getchildren', function (result) {
                 var children = result.children;
 
-                if ( typeof onfinish === 'function' ) {
-                    onfinish( children );
+                if (typeof onfinish === 'function') {
+                    onfinish(children);
                 }
 
-                Site.fireEvent( 'getChildren', [ Site, children ] );
+                Site.fireEvent('getChildren', [Site, children]);
 
             }, data);
 
@@ -215,13 +257,12 @@ define('classes/projects/project/Site', [
          * @method classes/projects/project/Site#getParent
          * @return {Object|Boolean} classes/projects/project/Site | false
          */
-        getParent : function()
-        {
-            if ( !this.$parentid ) {
+        getParent: function () {
+            if (!this.$parentid) {
                 return false;
             }
 
-            return this.getProject().get( this.$parentid );
+            return this.getProject().get(this.$parentid);
         },
 
         /**
@@ -232,24 +273,22 @@ define('classes/projects/project/Site', [
          * @param {Function} [onfinish] - (optional), callback function
          * @return {Object} this (classes/projects/project/Site)
          */
-        activate : function(onfinish)
-        {
+        activate: function (onfinish) {
             var Site = this;
 
-            Ajax.post('ajax_site_activate', function(result)
-            {
-                if ( result ) {
-                    Site.setAttribute( 'active', 1 );
+            Ajax.post('ajax_site_activate', function (result) {
+                if (result) {
+                    Site.setAttribute('active', 1);
                 }
 
                 Site.clearWorkingStorage();
 
-                if ( typeof onfinish === 'function' ) {
-                    onfinish( result );
+                if (typeof onfinish === 'function') {
+                    onfinish(result);
                 }
 
-                if ( result ) {
-                    Site.fireEvent( 'activate', [ Site ] );
+                if (result) {
+                    Site.fireEvent('activate', [Site]);
                 }
 
             }, this.ajaxParams());
@@ -265,24 +304,22 @@ define('classes/projects/project/Site', [
          * @param {Function} [onfinish] - (optional), callback function
          * @return {Object} this (classes/projects/project/Site)
          */
-        deactivate : function(onfinish)
-        {
+        deactivate: function (onfinish) {
             var Site = this;
 
-            Ajax.post('ajax_site_deactivate', function(result)
-            {
-                if ( result === 0 ) {
-                    Site.setAttribute( 'active', 0 );
+            Ajax.post('ajax_site_deactivate', function (result) {
+                if (result === 0) {
+                    Site.setAttribute('active', 0);
                 }
 
                 Site.clearWorkingStorage();
 
-                if ( typeof onfinish === 'function' ) {
-                    onfinish( result );
+                if (typeof onfinish === 'function') {
+                    onfinish(result);
                 }
 
-                if ( result === 0 ) {
-                    Site.fireEvent( 'deactivate', [ Site ] );
+                if (result === 0) {
+                    Site.fireEvent('deactivate', [Site]);
                 }
 
             }, this.ajaxParams());
@@ -298,46 +335,40 @@ define('classes/projects/project/Site', [
          * @param {Function} [onfinish] - (optional), callback function
          * @return {Object} this (classes/projects/project/Site)
          */
-        save : function(onfinish)
-        {
+        save: function (onfinish) {
             var Site   = this,
                 params = this.ajaxParams(),
-                status = this.getAttribute( 'active' );
+                status = this.getAttribute('active');
 
-            params.attributes = JSON.encode( this.getAttributes() );
+            params.attributes = JSON.encode(this.getAttributes());
 
-            Ajax.post('ajax_site_save', function(result)
-            {
-                if ( result && result.attributes ) {
-                    Site.setAttributes( result.attributes );
+            Ajax.post('ajax_site_save', function (result) {
+                if (result && result.attributes) {
+                    Site.setAttributes(result.attributes);
                 }
 
-                if ( result )
-                {
+                if (result) {
                     Site.$has_children = ( result.has_children ).toInt() || false;
-                    Site.$parentid = ( result.parentid ).toInt() || false;
-                    Site.$url = result.url || '';
+                    Site.$parentid     = ( result.parentid ).toInt() || false;
+                    Site.$url          = result.url || '';
                 }
 
                 Site.clearWorkingStorage();
 
                 // if status change, trigger events
-                if ( Site.getAttribute( 'active' ) != status )
-                {
-                    if ( Site.getAttribute( 'active' ) == 1 )
-                    {
-                        Site.fireEvent( 'activate', [ Site ] );
-                    } else
-                    {
-                        Site.fireEvent( 'deactivate', [ Site ] );
+                if (Site.getAttribute('active') != status) {
+                    if (Site.getAttribute('active') == 1) {
+                        Site.fireEvent('activate', [Site]);
+                    } else {
+                        Site.fireEvent('deactivate', [Site]);
                     }
                 }
 
-                if ( typeof onfinish === 'function' ) {
-                    onfinish( result );
+                if (typeof onfinish === 'function') {
+                    onfinish(result);
                 }
 
-                Site.fireEvent( 'save', [ Site ] );
+                Site.fireEvent('save', [Site]);
 
             }, params);
 
@@ -351,18 +382,16 @@ define('classes/projects/project/Site', [
          * @method classes/projects/project/Site#del
          * @param {Function} [onfinish] - (optional), callback function
          */
-        del : function(onfinish)
-        {
+        del: function (onfinish) {
             var Site = this;
 
-            Ajax.post('ajax_site_delete', function(result)
-            {
-                if ( typeof onfinish === 'function' ) {
-                    onfinish( result );
+            Ajax.post('ajax_site_delete', function (result) {
+                if (typeof onfinish === 'function') {
+                    onfinish(result);
                 }
 
                 Site.clearWorkingStorage();
-                Site.fireEvent( 'delete', [ Site ] );
+                Site.fireEvent('delete', [Site]);
 
             }, this.ajaxParams());
         },
@@ -372,48 +401,64 @@ define('classes/projects/project/Site', [
          *
          * @param {Number} newParentId - ID of the new parent
          * @param {Function} [callback] - (optional), callback function
+         * @return Promise
          */
-        move : function(newParentId, callback)
-        {
-            var Site   = this,
-                params = this.ajaxParams();
+        move: function (newParentId, callback) {
 
-            params.newParentId = newParentId;
+            return new Promise(function (resolve, reject) {
 
-            Ajax.post('ajax_site_move', function(result)
-            {
-                if ( typeof callback === 'function' ) {
-                    callback( result );
-                }
+                var Site   = this,
+                    params = this.ajaxParams();
 
-                Site.fireEvent( 'move', [ Site, newParentId ] );
+                params.newParentId = newParentId;
+                params.onError     = reject;
 
-            }, params);
+                Ajax.post('ajax_site_move', function (result) {
+
+                    if (typeof callback === 'function') {
+                        callback(result);
+                    }
+
+                    Site.fireEvent('move', [Site, newParentId]);
+
+                    resolve(result);
+
+                }, params);
+
+            }.bind(this));
         },
 
 
         /**
          * Copy the site to another parent site
          *
-         * @param {Number} newParentId - ID of the new parent
+         * @param {Number|Object} newParent - ID of the new parent, or parent data
          * @param {Function} [callback] - (optional) callback function
+         * @return Promise
          */
-        copy : function(newParentId, callback)
-        {
-            var Site   = this,
-                params = this.ajaxParams();
+        copy: function (newParent, callback) {
 
-            params.newParentId = newParentId;
+            return new Promise(function (resolve, reject) {
 
-            Ajax.post('ajax_site_copy', function(result)
-            {
-                if ( typeof callback === 'function' ) {
-                    callback( result );
-                }
+                var Site   = this,
+                    params = this.ajaxParams();
 
-                Site.fireEvent( 'copy', [ Site, newParentId ] );
+                params.newParent = JSON.encode(newParent);
+                params.onError   = reject;
 
-            }, params);
+                Ajax.post('ajax_site_copy', function (result) {
+
+                    if (typeof callback === 'function') {
+                        callback(result);
+                    }
+
+                    Site.fireEvent('copy', [Site, newParent]);
+
+                    resolve(result);
+
+                }, params);
+
+            }.bind(this));
         },
 
         /**
@@ -422,20 +467,18 @@ define('classes/projects/project/Site', [
          * @param {Number} newParentId - ID of the parent
          * @param {Function} [callback] - (optional) callback function
          */
-        linked : function(newParentId, callback)
-        {
+        linked: function (newParentId, callback) {
             var Site   = this,
                 params = this.ajaxParams();
 
             params.newParentId = newParentId;
 
-            Ajax.post('ajax_site_linked', function(result)
-            {
-                if ( typeof callback === 'function' ) {
-                    callback( result );
+            Ajax.post('ajax_site_linked', function (result) {
+                if (typeof callback === 'function') {
+                    callback(result);
                 }
 
-                Site.fireEvent( 'linked', [ Site, newParentId ] );
+                Site.fireEvent('linked', [Site, newParentId]);
 
             }, params);
         },
@@ -445,11 +488,9 @@ define('classes/projects/project/Site', [
          *
          * @param {function} callback
          */
-        lock : function(callback)
-        {
-            Ajax.post('ajax_site_lock', function()
-            {
-                if ( typeof callback === 'function' ) {
+        lock: function (callback) {
+            Ajax.post('ajax_site_lock', function () {
+                if (typeof callback === 'function') {
                     callback();
                 }
             }, this.ajaxParams());
@@ -460,11 +501,9 @@ define('classes/projects/project/Site', [
          *
          * @param {function} callback
          */
-        unlock : function( callback )
-        {
-            Ajax.post('ajax_site_unlock', function()
-            {
-                if ( typeof callback === 'function' ) {
+        unlock: function (callback) {
+            Ajax.post('ajax_site_unlock', function () {
+                if (typeof callback === 'function') {
                     callback();
                 }
 
@@ -480,47 +519,42 @@ define('classes/projects/project/Site', [
          * @param {Function} [onfinish] - (optional) callback function
          * @param {Function} [onerror]   - (optional) function, that is triggered if an error occurred
          */
-        createChild : function(newname, onfinish, onerror)
-        {
-            if ( typeof newname === 'undefined' ) {
+        createChild: function (newname, onfinish, onerror) {
+            if (typeof newname === 'undefined') {
                 return;
             }
 
             var params = this.ajaxParams();
 
-            if ( typeOf( newname ) == 'object' )
-            {
-                params.attributes = JSON.encode( newname );
+            if (typeOf(newname) == 'object') {
+                params.attributes = JSON.encode(newname);
 
-            } else
-            {
+            } else {
                 params.attributes = JSON.encode({
-                    name : newname
+                    name: newname
                 });
             }
 
 
-            if ( typeof onerror !== 'undefined' )
-            {
+            if (typeof onerror !== 'undefined') {
                 params.showError = false;
                 params.onError   = onerror;
             }
 
             var Site = this;
 
-            Ajax.post('ajax_site_children_create', function(result)
-            {
-                if ( !result ) {
+            Ajax.post('ajax_site_children_create', function (result) {
+                if (!result) {
                     return;
                 }
 
                 Site.$has_children = Site.countChild() + 1;
 
-                if ( typeof onfinish === 'function' ) {
-                    onfinish( result );
+                if (typeof onfinish === 'function') {
+                    onfinish(result);
                 }
 
-                Site.fireEvent( 'createChild', [ Site, result.id ] );
+                Site.fireEvent('createChild', [Site, result.id]);
 
             }, params);
         },
@@ -531,9 +565,8 @@ define('classes/projects/project/Site', [
          * @method classes/projects/project/Site#getAttribute
          * @return {Boolean}
          */
-        isActive : function()
-        {
-            return this.getAttribute( 'active' );
+        isActive: function () {
+            return this.getAttribute('active');
         },
 
         /**
@@ -543,9 +576,8 @@ define('classes/projects/project/Site', [
         /**
          * clears the working storage for the site
          */
-        clearWorkingStorage : function()
-        {
-            QUI.Storage.remove( this.getWorkingStorageId() );
+        clearWorkingStorage: function () {
+            QUI.Storage.remove(this.getWorkingStorageId());
         },
 
         /**
@@ -553,8 +585,7 @@ define('classes/projects/project/Site', [
          *
          * @return {string}
          */
-        getWorkingStorageId : function()
-        {
+        getWorkingStorageId: function () {
             return this.$workingId;
         },
 
@@ -563,9 +594,8 @@ define('classes/projects/project/Site', [
          *
          * @return {boolean}
          */
-        hasWorkingStorage : function()
-        {
-            return QUI.Storage.get( this.getWorkingStorageId() ) ? true : false;
+        hasWorkingStorage: function () {
+            return QUI.Storage.get(this.getWorkingStorageId()) ? true : false;
         },
 
         /**
@@ -573,25 +603,23 @@ define('classes/projects/project/Site', [
          *
          * @returns {object|null|boolean}
          */
-        getWorkingStorage : function()
-        {
-            var storage = QUI.Storage.get( this.getWorkingStorageId() );
+        getWorkingStorage: function () {
+            var storage = QUI.Storage.get(this.getWorkingStorageId());
 
-            if ( !storage ) {
+            if (!storage) {
                 return false;
             }
 
-            return JSON.decode( storage );
+            return JSON.decode(storage);
         },
 
         /**
          * Set the working storage data to the site
          */
-        restoreWorkingStorage : function()
-        {
+        restoreWorkingStorage: function () {
             var data = this.getWorkingStorage();
 
-            if ( data ) {
+            if (data) {
                 this.options.attributes = data;
             }
         },
@@ -607,22 +635,21 @@ define('classes/projects/project/Site', [
          * @param {String} k - Attribute name
          * @return {Boolean|Function|Number|String|Object}
          */
-        getAttribute : function(k)
-        {
+        getAttribute: function (k) {
             var attributes = this.options.attributes;
 
-            if ( typeof attributes[ k ] !== 'undefined' ) {
-                return attributes[ k ];
+            if (typeof attributes[k] !== 'undefined') {
+                return attributes[k];
             }
 
-            var oid = Slick.uidOf( this );
+            var oid = Slick.uidOf(this);
 
-            if ( typeof window.$quistorage[ oid ] === 'undefined' ) {
+            if (typeof window.$quistorage[oid] === 'undefined') {
                 return false;
             }
 
-            if ( typeof window.$quistorage[ oid ][ k ] !== 'undefined' ) {
-                return window.$quistorage[ oid ][ k ];
+            if (typeof window.$quistorage[oid][k] !== 'undefined') {
+                return window.$quistorage[oid][k];
             }
 
             return false;
@@ -634,8 +661,7 @@ define('classes/projects/project/Site', [
          * @method classes/projects/project/Site#getAttributes
          * @return {Object} Site attributes
          */
-        getAttributes : function()
-        {
+        getAttributes: function () {
             return this.options.attributes;
         },
 
@@ -648,34 +674,32 @@ define('classes/projects/project/Site', [
          * @param {String} k        - Name of the Attribute
          * @param {Boolean|Number|Function|Object} v - Value of the Attribute
          */
-        setAttribute : function(k, v)
-        {
+        setAttribute: function (k, v) {
             // convert bool to 1 and 0
-            if ( typeOf( v ) === 'boolean' ) {
+            if (typeOf(v) === 'boolean') {
                 v = v ? 1 : 0;
             }
 
             // if the value not changed, do nothing
-            if ( k in this.options.attributes &&
-                 v == this.options.attributes[ k ] )
-            {
+            if (k in this.options.attributes &&
+                v == this.options.attributes[k]) {
                 return;
             }
 
-            this.options.attributes[ k ] = v;
+            this.options.attributes[k] = v;
 
-            if ( this.$loaded === false ) {
+            if (this.$loaded === false) {
                 return;
             }
 
-            if ( k == 'id' ) {
+            if (k == 'id') {
                 return;
             }
 
             // locale storage
             QUI.Storage.set(
                 this.getWorkingStorageId(),
-                JSON.encode( this.options.attributes )
+                JSON.encode(this.options.attributes)
             );
         },
 
@@ -693,14 +717,12 @@ define('classes/projects/project/Site', [
          *   attr2 : []
          * })
          */
-        setAttributes : function(attributes)
-        {
+        setAttributes: function (attributes) {
             attributes = attributes || {};
 
-            for ( var k in attributes )
-            {
-                if ( attributes.hasOwnProperty( k ) ) {
-                    this.setAttribute( k, attributes[ k ] );
+            for (var k in attributes) {
+                if (attributes.hasOwnProperty(k)) {
+                    this.setAttribute(k, attributes[k]);
                 }
             }
 
@@ -713,11 +735,10 @@ define('classes/projects/project/Site', [
          * @method classes/projects/project/Site#ajaxParams
          * @return {Object}
          */
-        ajaxParams : function()
-        {
+        ajaxParams: function () {
             return {
-                project : this.getProject().encode(),
-                id      : this.getId()
+                project: this.getProject().encode(),
+                id     : this.getId()
             };
         }
     });

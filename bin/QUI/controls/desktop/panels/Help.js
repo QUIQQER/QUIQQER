@@ -1,17 +1,21 @@
+
 /**
  * Help panel
  *
  * @module controls/desktop/panels/Help
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/QUI
+ * @require qui/controls/desktop/Panel
+ * @require qui/controls/buttons/Button
  */
-
-define([
+define('controls/desktop/panels/Help', [
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
     'qui/controls/buttons/Button'
 
-],function(QUI, QUIPanel, QUIButton, QUILoader)
+], function(QUI, QUIPanel, QUIButton)
 {
     "use strict";
 
@@ -31,8 +35,8 @@ define([
 
             this.$Frame = null;
 
-            this.setAttribute( 'title', 'QUIQQER-Hilfe' );
-            this.setAttribute( 'icon', 'icon-h-sign' );
+            this.setAttribute( 'title', 'QUIQQER-Hilfe' ); // #locale
+            this.setAttribute( 'icon', 'fa fa-h-square icon-h-sign' );
 
             this.addEvents({
                 onCreate : this.$onCreate,
@@ -53,7 +57,7 @@ define([
             });
 
             new QUIButton({
-                text : 'Hilfe laden',
+                text : 'Hilfe laden', // #locale
                 icon : 'icon-refresh',
                 styles : {
                     fontSize : 18,

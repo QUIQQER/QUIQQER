@@ -9,6 +9,7 @@
  * @event onDelete [ {self} ]
  * @event onActivate [ {self} ]
  * @event onDeactivate [ {self} ]
+ * @event onRename [ {self} ]
  *
  * @require qui/classes/DOM
  * @require Ajax
@@ -43,12 +44,14 @@ define('classes/projects/project/media/Item', [
         Type    : 'classes/projects/project/media/Item',
 
         options : {
-            id      : 0,
-            name    : '',
-            title   : '',
-            alt     : '',
-            'short' : '',
-            active  : '',
+            id        : 0,
+            name      : '',
+            title     : '',
+            alt       : '',
+            'short'   : '',
+            active    : '',
+            order     : '',
+            priority  : '',
 
             c_user : '',
             e_user : '',
@@ -66,8 +69,9 @@ define('classes/projects/project/media/Item', [
         {
             this.$Media = Media;
             this.$Panel = null;
+            this.$effects = null;
 
-            this.parent( params );
+            this.parent(params);
         },
 
         /**
@@ -80,14 +84,14 @@ define('classes/projects/project/media/Item', [
         {
             var self = this;
 
-            return this.getMedia().getData( this.getId() ).then(function(result)
+            return this.getMedia().getData(this.getId()).then(function(result)
             {
-                self.setAttributes( result );
+                self.setAttributes(result);
 
-                self.fireEvent( 'refresh', [ self ] );
+                self.fireEvent('refresh', [self]);
 
-                if ( typeOf( oncomplete ) === 'function' ) {
-                    oncomplete( self );
+                if (typeOf(oncomplete) === 'function') {
+                    oncomplete(self);
                 }
             });
         },
@@ -118,47 +122,73 @@ define('classes/projects/project/media/Item', [
          * Returns the breadcrumb entries (parent path)
          *
          * @method classes/projects/project/media/Item#getBreadcrumb
-         * @param {Function} oncomplete - callback Function
+         * @param {Function} [oncomplete] - callback Function
+         *
+         * @return Promise
          */
         getBreadcrumb : function(oncomplete)
         {
-            Ajax.get('ajax_media_breadcrumb', function(result)
-            {
-                oncomplete( result );
-            }, {
-                project : this.getMedia().getProject().getName(),
-                fileid  : this.getId()
-            });
+            return new Promise(function(resolve, reject) {
+
+                Ajax.get('ajax_media_breadcrumb', function(result)
+                {
+                    if (typeof oncomplete == 'function') {
+                        oncomplete(result);
+                    }
+
+                    resolve(result);
+                }, {
+                    project : this.getMedia().getProject().getName(),
+                    fileid  : this.getId(),
+                    onError : reject
+                });
+
+            }.bind(this));
         },
 
         /**
          * Save the File attributes to the database
          *
          * @method classes/projects/project/media/Item#save
+         *
          * @fires onSave [this]
+         *
          * @param {Function} [oncomplete] - (optional) callback Function
-         * @param {Object} [params]      - (optional), parameters that are linked to the request object
+         * @param {Object} [params]       - (optional), parameters that are linked to the request object
+         *
+         * @return Promise
          */
         save : function(oncomplete, params)
         {
             var self = this;
 
-            params = Utils.combine(params, {
-                project    : this.getMedia().getProject().getName(),
-                fileid     : this.getId(),
-                attributes : JSON.encode( this.getAttributes() )
+            return new Promise(function(resolve, reject) {
+
+                var attributes = self.getAttributes();
+
+                attributes.image_effects = self.getEffects();
+
+                params = Utils.combine(params, {
+                    project    : self.getMedia().getProject().getName(),
+                    fileid     : self.getId(),
+                    attributes : JSON.encode( self.getAttributes() ),
+                    onError    : reject
+                });
+
+
+                Ajax.post('ajax_media_file_save', function(result)
+                {
+                    self.setAttributes(result);
+                    self.fireEvent('save', [self]);
+
+                    if (typeOf(oncomplete) === 'function') {
+                        oncomplete(result);
+                    }
+
+                    resolve(result);
+
+                }, params);
             });
-
-
-            Ajax.post('ajax_media_file_save', function(result, Request)
-            {
-                self.setAttributes( result );
-                self.fireEvent( 'save', [ self ] );
-
-                if ( typeOf( oncomplete ) === 'function' ) {
-                    oncomplete( result, Request );
-                }
-            }, params);
         },
 
         /**
@@ -173,8 +203,8 @@ define('classes/projects/project/media/Item', [
          */
         del : function(oncomplete, params)
         {
-            this.fireEvent( 'delete', [ this ]) ;
-            this.getMedia().del( this.getId(), oncomplete, params );
+            this.fireEvent('delete', [this]) ;
+            this.getMedia().del(this.getId(), oncomplete, params);
         },
 
         /**
@@ -186,11 +216,18 @@ define('classes/projects/project/media/Item', [
          *
          * @param {Function} [oncomplete] - (optional) callback Function
          * @param {Object} [params]      - (optional), parameters that are linked to the request object
+         *
+         * @return Promise
          */
         activate : function(oncomplete, params)
         {
-            this.fireEvent( 'activate', [ this ] );
-            this.getMedia().activate( this.getId(), oncomplete, params );
+            var Media  = this.getMedia(),
+                Result = Media.activate(this.getId(), oncomplete, params);
+
+            return Result.then(function(result) {
+                this.setAttribute('active', result);
+                this.fireEvent('activate', [this]);
+            }.bind(this));
         },
 
         /**
@@ -202,11 +239,18 @@ define('classes/projects/project/media/Item', [
          *
          * @param {Function} [oncomplete] - (optional) callback Function
          * @param {Object} [params]      - (optional), parameters that are linked to the request object
+         *
+         * @return Promise
          */
         deactivate : function(oncomplete, params)
         {
-            this.fireEvent( 'deactivate', [ this ] );
-            this.getMedia().deactivate( this.getId(), oncomplete, params );
+            var Media  = this.getMedia(),
+                Result = Media.deactivate(this.getId(), oncomplete, params);
+
+            return Result.then(function(result) {
+                this.setAttribute('active', result);
+                this.fireEvent('deactivate', [this]);
+            }.bind(this));
         },
 
         /**
@@ -250,10 +294,12 @@ define('classes/projects/project/media/Item', [
          * @param {File} File
          * @param {Function} onfinish - callback function after the upload is finish
          *                              onfinish( {classes/projects/project/media/Item} )
+         *
+         * @return Promise
          */
         replace : function(File, onfinish)
         {
-            this.$Media.replace( this.getId(), onfinish );
+            return this.$Media.replace(this.getId(), onfinish);
         },
 
         /**
@@ -264,7 +310,13 @@ define('classes/projects/project/media/Item', [
          */
         isActive : function()
         {
-            return this.getAttribute('active').toInt() ? true : false;
+            var active = this.getAttribute('active');
+
+            if (typeOf(active) === 'boolean') {
+                return active;
+            }
+
+            return (active).toInt() ? true : false;
         },
 
         /**
@@ -272,22 +324,97 @@ define('classes/projects/project/media/Item', [
          *
          * @method classes/projects/project/media/Folder#rename
          *
-         * @param {String} newname      - New folder name
-         * @param {Function} oncomplete - callback() function
-         * @param {Object} [params]     - (optional), parameters that are linked to the request object
+         * @param {String} newname        - New folder name
+         * @param {Function} [oncomplete] - callback() function
+         * @param {Object} [params]       - (optional), parameters that are linked to the request object
+         *
+         * @return Promise
          */
         rename : function(newname, oncomplete, params)
         {
-            params = Utils.combine(params, {
-                project : this.getMedia().getProject().getName(),
-                id      : this.getId(),
-                newname : newname
-            });
+            return new Promise(function(resolve, reject) {
 
-            Ajax.post('ajax_media_rename', function(result, Request)
+                params = Utils.combine(params, {
+                    project : this.getMedia().getProject().getName(),
+                    id      : this.getId(),
+                    newname : newname,
+                    onError : reject
+                });
+
+                Ajax.post('ajax_media_rename', function(result)
+                {
+                    this.setAttribute('name', result);
+
+                    if (typeof oncomplete === 'function') {
+                        oncomplete(result);
+                    }
+
+                    resolve(result);
+
+                    this.fireEvent('rename', [this]);
+
+                }.bind(this), params);
+
+            }.bind(this));
+        },
+
+        /**
+         * Return the own image effects for the immage
+         * @returns {Object}
+         */
+        getEffects : function()
+        {
+            if ( this.$effects ) {
+                return this.$effects;
+            }
+
+            if ( !this.getAttribute('image_effects') )
             {
-                oncomplete( result, Request );
-            }, params);
+                this.$effects = {};
+                return this.$effects;
+            }
+
+            this.$effects = JSON.decode( this.getAttribute('image_effects') );
+
+            if ( !this.$effects ) {
+                this.$effects = {};
+            }
+
+            return this.$effects;
+        },
+
+        /**
+         * Get a effect value
+         *
+         * @param {String} effect
+         */
+        getEffect : function(effect)
+        {
+            var effects = this.getEffects();
+
+            return effect in effects ? effects[ effect ] : false;
+        },
+
+        /**
+         * Set a effect
+         *
+         * @param {String} effect
+         * @param {String|Number|null} value - if value is null, effect would be deleted
+         */
+        setEffect: function(effect, value)
+        {
+            this.getEffects();
+
+            if ( value === null ) {
+                delete this.$effects[ effect ];
+                return;
+            }
+
+            if (typeOf(this.$effects) !== 'object') {
+                this.$effects = {};
+            }
+
+            this.$effects[ effect ] = value;
         }
     });
 });

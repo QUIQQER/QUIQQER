@@ -5,11 +5,15 @@
  */
 namespace QUI\System\Console\Tools;
 
+use QUI;
+
 /**
  * Execute the system setup
- * @author www.pcsg.de (Henning Leutz)
+ *
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  */
-class Setup extends \QUI\System\Console\Tool
+class Setup extends QUI\System\Console\Tool
 {
     /**
      * Konstruktor
@@ -22,15 +26,16 @@ class Setup extends \QUI\System\Console\Tool
 
     /**
      * (non-PHPdoc)
+     *
      * @see \QUI\System\Console\Tool::execute()
      */
     public function execute()
     {
-        $this->writeLn( 'Setup executed ...' );
+        $this->writeLn('Setup executed ...');
 
-        \QUI\Setup::all();
+        QUI\Setup::all();
 
-        $this->write( ' [ok]' );
-        $this->writeLn( '' );
+        $this->write(' [ok]');
+        $this->writeLn('');
     }
 }

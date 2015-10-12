@@ -104,11 +104,12 @@ define('classes/projects/project/media/panel/DOMEvents', [
                 items   = [],
                 list    = [];
 
+            // #locale
             new QUIConfirm({
                 name     : 'delete_item',
                 title    : 'Ordner / Datei(en) löschen',
-                icon     : 'icon-trashcan',
-                texticon : 'icon-trashcan',
+                icon     : 'fa fa-trash-o icon-trash',
+                texticon : 'fa fa-trash-o icon-trash',
                 text     : 'Möchten Sie folgende(n) Ordner / Datei(en) wirklich löschen?',
                 information : '<div class="qui-media-file-delete"></div>',
                 events :
@@ -193,8 +194,10 @@ define('classes/projects/project/media/panel/DOMEvents', [
 
             new QUIPrompt({
                 name  : 'rename_item',
-                title : 'Ordner umbenennen',
+                title : 'Ordner umbenennen', // #locale
                 icon  : URL_BIN_DIR +'16x16/folder.png',
+                maxHeight : 300,
+                maxWidth  : 450,
                 check : function(Win)
                 {
                     Win.fireEvent( 'submit', [ Win.getValue(), Win ] );
@@ -264,12 +267,13 @@ define('classes/projects/project/media/panel/DOMEvents', [
         {
             var self = this;
 
+            // #locale
             new QUIConfirm({
                 title   : 'Datei ersetzen ...',
                 icon    : 'icon-retweet',
                 name    : 'replace-media-id-'+ DOMNode.get('data-id'),
-                width   : 500,
-                height  : 200,
+                maxHeight : 400,
+                maxWidth  : 600,
 
                 text     : 'Datei ersetzen',
                 texticon : 'icon-retweet',
@@ -288,9 +292,9 @@ define('classes/projects/project/media/panel/DOMEvents', [
                             var Form = new UploadForm({
                                 Drops  : [ Content ],
                                 styles : {
-                                    margin : '20px 0 0 70px',
+                                    clear  : 'both',
                                     float  : 'left',
-                                    clear  : 'both'
+                                    margin : '20px 0 0 0'
                                 },
                                 events :
                                 {

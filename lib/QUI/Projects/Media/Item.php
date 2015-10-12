@@ -14,26 +14,36 @@ use QUI\Utils\System\File as QUIFile;
  * A media item
  * the parent class of each media entry
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui.projects.media
+ * @licence For copyright and license information, please view the /README.md
  */
-
 abstract class Item extends QUI\QDOM
 {
     /**
+     * internal image effect parameter
+     *
+     * @var bool|array
+     */
+    protected $_effects = false;
+
+    /**
      * internal media object
+     *
      * @var QUI\Projects\Media
      */
     protected $_Media = null;
 
     /**
      * internal parent id (use ->getParentId())
+     *
      * @var Integer
      */
     protected $_parent_id = false;
 
     /**
      * Path to the real file
+     *
      * @var String
      */
     protected $_file;
@@ -41,32 +51,33 @@ abstract class Item extends QUI\QDOM
     /**
      * constructor
      *
-     * @param array $params 		- item attributes
-     * @param \QUI\Projects\Media $Media - Media of the file
+     * @param array               $params - item attributes
+     * @param \QUI\Projects\Media $Media  - Media of the file
      */
     public function __construct($params, Media $Media)
     {
         $this->_Media = $Media;
-        $this->setAttributes( $params );
+        $this->setAttributes($params);
 
-        $this->_file = CMS_DIR . $this->_Media->getPath() . $this->getPath();
+        $this->_file = CMS_DIR.$this->_Media->getPath().$this->getPath();
 
-        if ( !file_exists( $this->_file ) )
-        {
+        if (!file_exists($this->_file)) {
             QUI::getMessagesHandler()->addAttention(
-                'File '. $this->_file .' ('. $this->getId() .') doesn\'t exist'
+                'File '.$this->_file.' ('.$this->getId().') doesn\'t exist'
             );
 
             return;
         }
 
-        $this->setAttribute( 'filesize', QUIFile::getFileSize( $this->_file ) );
-        $this->setAttribute( 'cache_url', URL_DIR . $this->_Media->getCacheDir() . $this->getPath() );
-        $this->setAttribute( 'url', $this->getUrl() );
+        $this->setAttribute('filesize', QUIFile::getFileSize($this->_file));
+        $this->setAttribute('cache_url',
+            URL_DIR.$this->_Media->getCacheDir().$this->getPath());
+        $this->setAttribute('url', $this->getUrl());
     }
 
     /**
      * Returns the id of the item
+     *
      * @return Integer
      */
     public function getId()
@@ -84,13 +95,11 @@ abstract class Item extends QUI\QDOM
      */
     public function activate()
     {
-        try
-        {
+        try {
             // activate the parents, otherwise the file is not accessible
             $this->getParent()->activate();
 
-        } catch ( QUI\Exception $Exception )
-        {
+        } catch (QUI\Exception $Exception) {
             // has no parent
         }
 
@@ -103,13 +112,15 @@ abstract class Item extends QUI\QDOM
         $this->setAttribute('active', 1);
 
 
-        if ( method_exists( $this, 'deleteCache' ) ) {
+        if (method_exists($this, 'deleteCache')) {
             $this->deleteCache();
         }
 
-        if ( method_exists( $this, 'createCache' ) ) {
+        if (method_exists($this, 'createCache')) {
             $this->createCache();
         }
+
+        QUI::getEvents()->fireEvent('mediaActivate', array($this));
     }
 
     /**
@@ -126,9 +137,11 @@ abstract class Item extends QUI\QDOM
 
         $this->setAttribute('active', 0);
 
-        if ( method_exists( $this, 'deleteCache' ) ) {
+        if (method_exists($this, 'deleteCache')) {
             $this->deleteCache();
         }
+
+        QUI::getEvents()->fireEvent('mediaDeactivate', array($this));
     }
 
     /**
@@ -137,44 +150,72 @@ abstract class Item extends QUI\QDOM
      */
     public function save()
     {
+        QUI::getEvents()->fireEvent('mediaSaveBegin', array($this));
+
         // Rename the file, if necessary
-        $this->rename( $this->getAttribute('name') );
+        $this->rename($this->getAttribute('name'));
 
+        $image_effects = $this->getEffects();
 
-        $watermark = $this->getAttribute('watermark');
-
-        if ( is_array( $watermark ) ) {
-            $watermark = json_encode( $watermark );
+        if (is_string($image_effects) || is_bool($image_effects)) {
+            $image_effects = array();
         }
 
-        $roundcorners = $this->getAttribute('roundcorners');
+        switch ($this->getAttribute('order')) {
+            case 'priority':
+            case 'priority ASC':
+            case 'priority DESC':
 
-        if ( is_array( $roundcorners ) ) {
-            $roundcorners = json_encode( $roundcorners );
+            case 'c_date':
+            case 'c_date ASC':
+            case 'c_date DESC':
+
+            case 'name':
+            case 'name ASC':
+            case 'name DESC':
+
+            case 'title':
+            case 'title ASC':
+            case 'title DESC':
+
+            case 'id':
+            case 'id ASC':
+            case 'id DESC':
+                $order = $this->getAttribute('order');
+                break;
+
+            default:
+                $order = '';
+        }
+
+        if (method_exists($this, 'deleteCache')) {
+            $this->deleteCache();
+        }
+
+        if (method_exists($this, 'deleteAdminCache')) {
+            $this->deleteAdminCache();
         }
 
         QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array(
-                'title' => $this->getAttribute('title'),
-                'alt' 	=> $this->getAttribute('alt'),
-                'short' => $this->getAttribute('short'),
-
-                'watermark'    => $watermark,
-                'roundcorners' => $roundcorners
+                'title'         => $this->getAttribute('title'),
+                'alt'           => $this->getAttribute('alt'),
+                'short'         => $this->getAttribute('short'),
+                'order'         => $order,
+                'priority'      => (int)$this->getAttribute('priority'),
+                'image_effects' => json_encode($image_effects)
             ),
             array(
                 'id' => $this->getId()
             )
         );
 
-        if ( method_exists( $this, 'deleteCache' ) ) {
-            $this->deleteCache();
-        }
-
-        if ( method_exists( $this, 'createCache' ) ) {
+        if (method_exists($this, 'createCache')) {
             $this->createCache();
         }
+
+        QUI::getEvents()->fireEvent('mediaSave', array($this));
     }
 
     /**
@@ -184,49 +225,53 @@ abstract class Item extends QUI\QDOM
      */
     public function delete()
     {
-        if ( $this->isDeleted() ) {
-            throw new QUI\Exception( 'File is already deleted', 400 );
+        if ($this->isDeleted()) {
+            throw new QUI\Exception('File is already deleted', 400);
         }
+
+        QUI::getEvents()->fireEvent('mediaDeleteBegin', array($this));
 
         $Media = $this->_Media;
         $First = $Media->firstChild();
 
         // Move file to the temp folder
-        $original   = $this->getFullPath();
-        $var_folder = VAR_DIR .'media/'. $Media->getProject()->getAttribute('name') .'/';
+        $original = $this->getFullPath();
+        $var_folder
+            = VAR_DIR.'media/'.$Media->getProject()->getAttribute('name').'/';
 
-        if ( !is_file( $original ) ) {
-            throw new QUI\Exception( 'Original File is not a File', 400 );
+        if (!is_file($original)) {
+            throw new QUI\Exception('Original File is not a File', 400);
         }
 
-        if ( $First->getFullPath() == $original ) {
-            throw new QUI\Exception( 'You cannot delete the root file', 400 );
+        if ($First->getFullPath() == $original) {
+            throw new QUI\Exception('You cannot delete the root file', 400);
         }
 
         // first, delete the cache
-        if ( method_exists( $this, 'deleteCache' ) ) {
+        if (method_exists($this, 'deleteCache')) {
             $this->deleteCache();
         }
 
-        // second, move the file to the trash
-        try
-        {
-            QUIFile::unlink( $var_folder . $this->getId() );
+        if (method_exists($this, 'deleteAdminCache')) {
+            $this->deleteAdminCache();
+        }
 
-        } catch ( QUI\Exception $Exception )
-        {
+
+        // second, move the file to the trash
+        try {
+            QUIFile::unlink($var_folder.$this->getId());
+
+        } catch (QUI\Exception $Exception) {
             \QUI::getMessagesHandler()->addAttention(
                 $Exception->getMessage()
             );
         }
 
-        try
-        {
-            QUIFile::mkdir( $var_folder );
-            QUIFile::move( $original, $var_folder . $this->getId() );
+        try {
+            QUIFile::mkdir($var_folder);
+            QUIFile::move($original, $var_folder.$this->getId());
 
-        } catch ( QUI\Exception $Exception )
-        {
+        } catch (QUI\Exception $Exception) {
             \QUI::getMessagesHandler()->addAttention(
                 $Exception->getMessage()
             );
@@ -249,6 +294,10 @@ abstract class Item extends QUI\QDOM
             $this->_Media->getTable('relations'),
             array('child' => $this->getId())
         );
+
+        $this->_parent_id = false;
+
+        QUI::getEvents()->fireEvent('mediaDelete', array($this));
     }
 
     /**
@@ -259,25 +308,29 @@ abstract class Item extends QUI\QDOM
      */
     public function destroy()
     {
-        if ( $this->isActive() ) {
-            throw new QUI\Exception( 'Only inactive files can be destroyed' );
+        if ($this->isActive()) {
+            throw new QUI\Exception('Only inactive files can be destroyed');
         }
 
-        if ( $this->isDeleted() ) {
-            throw new QUI\Exception( 'Only deleted files can be destroyed' );
+        if ($this->isDeleted()) {
+            throw new QUI\Exception('Only deleted files can be destroyed');
         }
 
         $Media = $this->_Media;
 
         // get the trash file and destroy it
-        $var_folder = VAR_DIR .'media/'. $Media->getProject()->getAttribute('name') .'/';
-        $var_file   = $var_folder . $this->getId();
+        $var_folder
+            = VAR_DIR.'media/'.$Media->getProject()->getAttribute('name').'/';
 
-        QUIFile::unlink( $var_file );
+        $var_file = $var_folder.$this->getId();
+
+        QUIFile::unlink($var_file);
 
         QUI::getDataBase()->delete($this->_Media->getTable(), array(
             'id' => $this->getId()
         ));
+
+        QUI::getEvents()->fireEvent('mediaDestroy', array($this));
     }
 
     /**
@@ -304,50 +357,57 @@ abstract class Item extends QUI\QDOM
      * Rename the File
      *
      * @param String $newname - The new name what the file get
+     *
      * @throws \QUI\Exception
      */
     public function rename($newname)
     {
-        $original  = $this->getFullPath();
-        $extension = QUI\Utils\String::pathinfo( $original, PATHINFO_EXTENSION );
-        $Parent    = $this->getParent();
+        $original = $this->getFullPath();
+        $extension = QUI\Utils\String::pathinfo($original, PATHINFO_EXTENSION);
+        $Parent = $this->getParent();
 
-        $new_full_file = $Parent->getFullPath() . $newname .'.'. $extension;
-        $new_file      = $Parent->getPath() . $newname .'.'. $extension;
+        $new_full_file = $Parent->getFullPath().$newname.'.'.$extension;
+        $new_file = $Parent->getPath().$newname.'.'.$extension;
 
-        if ( $new_full_file == $original ) {
+        if ($new_full_file == $original) {
+            return;
+        }
+
+        if (empty($newname)) {
             return;
         }
 
         // throws the \QUI\Exception
-        $fileParts = explode( '/', $new_file );
+        $fileParts = explode('/', $new_file);
 
-        foreach ( $fileParts as $filePart ) {
-            Utils::checkMediaName( $filePart );
+        foreach ($fileParts as $filePart) {
+            Utils::checkMediaName($filePart);
         }
 
 
-        if ( $Parent->childWithNameExists( $newname ) )
-        {
+        if ($Parent->childWithNameExists($newname)) {
             throw new QUI\Exception(
-                'Eine Datei mit dem Namen '. $newname .'existiert bereits.
+                'Eine Datei mit dem Namen '.$newname.'existiert bereits.
                 Bitte wählen Sie einen anderen Namen.'
-            );
+            ); // #locale
         }
 
-        if ( $Parent->fileWithNameExists( $newname .'.'. $extension ) )
-        {
+        if ($Parent->fileWithNameExists($newname.'.'.$extension)) {
             throw new QUI\Exception(
-                'Eine Datei mit dem Namen '. $newname .'existiert bereits.
+                'Eine Datei mit dem Namen '.$newname.'existiert bereits.
                 Bitte wählen Sie einen anderen Namen.'
-            );
+            ); // #locale
         }
 
 
-
-        if ( method_exists( $this, 'deleteCache' ) ) {
+        if (method_exists($this, 'deleteCache')) {
             $this->deleteCache();
         }
+
+        if (method_exists($this, 'deleteAdminCache')) {
+            $this->deleteAdminCache();
+        }
+
 
         \QUI::getDataBase()->update(
             $this->_Media->getTable(),
@@ -360,14 +420,16 @@ abstract class Item extends QUI\QDOM
             )
         );
 
-        $this->setAttribute( 'name', $newname );
-        $this->setAttribute( 'file', $new_file );
+        $this->setAttribute('name', $newname);
+        $this->setAttribute('file', $new_file);
 
-        QUIFile::move( $original, $new_full_file );
+        QUIFile::move($original, $new_full_file);
 
-        if ( method_exists($this, 'createCache') ) {
+        if (method_exists($this, 'createCache')) {
             $this->createCache();
         }
+
+        QUI::getEvents()->fireEvent('mediaRename', array($this));
     }
 
     /**
@@ -381,17 +443,17 @@ abstract class Item extends QUI\QDOM
      */
     public function getParentId()
     {
-        if ( $this->_parent_id ) {
+        if ($this->_parent_id) {
             return $this->_parent_id;
         }
 
         $id = $this->getId();
 
-        if ( $id === 1 ) {
+        if ($id === 1) {
             return false;
         }
 
-        $this->_parent_id = $this->_Media->getParentIdFrom( $id );
+        $this->_parent_id = $this->_Media->getParentIdFrom($id);
 
         return $this->_parent_id;
     }
@@ -403,18 +465,18 @@ abstract class Item extends QUI\QDOM
      */
     public function getParentIds()
     {
-        if ( $this->getId() === 1 ) {
+        if ($this->getId() === 1) {
             return array();
         }
 
         $parents = array();
-        $id      = $this->getId();
+        $id = $this->getId();
 
-        while ( $id = $this->_Media->getParentIdFrom($id) ) {
+        while ($id = $this->_Media->getParentIdFrom($id)) {
             $parents[] = $id;
         }
 
-        return array_reverse( $parents );
+        return array_reverse($parents);
     }
 
     /**
@@ -425,7 +487,7 @@ abstract class Item extends QUI\QDOM
      */
     public function getParent()
     {
-        return $this->_Media->get( $this->getParentId() );
+        return $this->_Media->get($this->getParentId());
     }
 
     /**
@@ -435,11 +497,11 @@ abstract class Item extends QUI\QDOM
      */
     public function getParents()
     {
-        $ids     = $this->getParentIds();
+        $ids = $this->getParentIds();
         $parents = array();
 
-        foreach ( $ids as $id ) {
-            $parents[] = $this->_Media->get( $id );
+        foreach ($ids as $id) {
+            $parents[] = $this->_Media->get($id);
         }
 
         return $parents;
@@ -466,36 +528,38 @@ abstract class Item extends QUI\QDOM
      */
     public function getFullPath()
     {
-        return $this->_Media->getFullPath() . $this->getAttribute('file');
+        return $this->_Media->getFullPath().$this->getAttribute('file');
     }
 
     /**
      * Returns the url from the file
      *
      * @param Bool $rewrite - false = image.php, true = rewrited URL
+     *
      * @return String
      */
-    public function getUrl($rewrite=false)
+    public function getUrl($rewrite = false)
     {
-        if ( $rewrite == false )
-        {
+        if ($rewrite == false) {
             $Project = $this->_Media->getProject();
 
-            $str = 'image.php?id='. $this->getId() .'&project='. $Project->getAttribute('name') .'&qui=1';
+            $str = 'image.php?id='.$this->getId().'&project='
+                .$Project->getAttribute('name');
 
-            if ( $this->getAttribute('maxheight') ) {
-                $str .= '&maxheight='. $this->getAttribute('maxheight');
+            if ($this->getAttribute('maxheight')) {
+                $str .= '&maxheight='.$this->getAttribute('maxheight');
             }
 
-            if ( $this->getAttribute('maxwidth') ) {
-                $str .= '&maxwidth='. $this->getAttribute('maxwidth');
+            if ($this->getAttribute('maxwidth')) {
+                $str .= '&maxwidth='.$this->getAttribute('maxwidth');
             }
 
             return $str;
         }
 
-        if ( $this->getAttribute('active') == 1 ) {
-            return  URL_DIR . $this->_Media->getCacheDir() . $this->getAttribute('file');
+        if ($this->getAttribute('active') == 1) {
+            return URL_DIR.$this->_Media->getCacheDir()
+            .$this->getAttribute('file');
         }
 
         return '';
@@ -503,20 +567,22 @@ abstract class Item extends QUI\QDOM
 
     /**
      * move the item to another folder
+     *
      * @param \QUI\Projects\Media\Folder $Folder - the new folder of the file
+     *
      * @throws QUI\Exception
      */
     public function moveTo(Folder $Folder)
     {
         // check if a child with the same name exist
-        if ( $Folder->fileWithNameExists( $this->getAttribute('name') ) )
-        {
+        if ($Folder->fileWithNameExists($this->getAttribute('name'))) {
             throw new QUI\Exception(
-                'File with a same Name exist in folder '. $Folder->getAttribute('name')
+                'File with a same Name exist in folder '
+                .$Folder->getAttribute('name')
             );
         }
 
-        $Parent   = $this->getParent();
+        $Parent = $this->getParent();
         $old_path = $this->getFullPath();
 
         $new_file = str_replace(
@@ -525,7 +591,18 @@ abstract class Item extends QUI\QDOM
             $this->getAttribute('file')
         );
 
-        $new_path = $this->_Media->getFullPath() . $new_file;
+        $new_path = $this->_Media->getFullPath().$new_file;
+
+        // delete the file cache
+        // @todo move the cache too
+        if (method_exists($this, 'deleteCache')) {
+            $this->deleteCache();
+        }
+
+        if (method_exists($this, 'deleteAdminCache')) {
+            $this->deleteAdminCache();
+        }
+
 
         // update file path
         QUI::getDataBase()->update(
@@ -551,36 +628,29 @@ abstract class Item extends QUI\QDOM
         );
 
         // move file on the real directory
-        QUIFile::move( $old_path, $new_path );
-
-
-        // delete the file cache
-        // @todo move the cache too
-        if ( method_exists( $this, 'deleteCache' ) ) {
-            $this->deleteCache();
-        }
+        QUIFile::move($old_path, $new_path);
 
         // update internal references
-        $this->setAttribute( 'file', $new_file );
+        $this->setAttribute('file', $new_file);
+
 
         $this->_parent_id = $Folder->getId();
     }
 
     /**
      * copy the item to another folder
+     *
      * @param \QUI\Projects\Media\Folder $Folder
+     *
      * @return \QUI\Projects\Media\Item - The new file
      */
     public function copyTo(Folder $Folder)
     {
-        $File = $Folder->uploadFile( $this->getFullPath() );
+        $File = $Folder->uploadFile($this->getFullPath());
 
-        $File->setAttribute( 'title', $this->getAttribute('title') );
-        $File->setAttribute( 'alt', $this->getAttribute('alt') );
-        $File->setAttribute( 'short', $this->getAttribute('short') );
-
-        $File->setAttribute( 'watermark', $this->getAttribute('watermark') );
-        $File->setAttribute( 'roundcorners', $this->getAttribute('roundcorners') );
+        $File->setAttribute('title', $this->getAttribute('title'));
+        $File->setAttribute('alt', $this->getAttribute('alt'));
+        $File->setAttribute('short', $this->getAttribute('short'));
         $File->save();
 
         return $File;
@@ -602,5 +672,59 @@ abstract class Item extends QUI\QDOM
     public function getProject()
     {
         return $this->getMedia()->getProject();
+    }
+
+
+    /**
+     * Effect methods
+     */
+
+    /**
+     * Return the effects of the item
+     *
+     * @return Array
+     */
+    public function getEffects()
+    {
+        if (is_array($this->_effects)) {
+            return $this->_effects;
+        }
+
+        $effects = $this->getAttribute('image_effects');
+
+        if (is_string($effects)) {
+            $effects = json_decode($effects, true);
+        }
+
+        if (is_array($effects)) {
+            $this->_effects = $effects;
+        } else {
+            $this->_effects = array();
+        }
+
+        return $this->_effects;
+    }
+
+    /**
+     * Set an item effect
+     *
+     * @param String               $effect - Name of the effect
+     * @param String|Integer|Float $value  - Value of the effect
+     */
+    public function setEffect($effect, $value)
+    {
+        $this->getEffects();
+
+        $this->_effects[$effect] = $value;
+    }
+
+    /**
+     * Set complete effects
+     *
+     * @param array $effects
+     */
+    public function setEffects($effects = array())
+    {
+        $this->_effects = $effects;
     }
 }

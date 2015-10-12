@@ -12,7 +12,8 @@ use QUI;
  * update.quiqqer.com and composer.quiqqer.com Test
  *
  * @package quiqqer/quiqqer
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  */
 class UpdateServer extends QUI\System\Test
 {
@@ -38,22 +39,21 @@ class UpdateServer extends QUI\System\Test
     {
         $servers = QUI::getPackageManager()->getServerList();
 
-        $updateServer   = false;
+        $updateServer = false;
         $composerServer = false;
 
-        foreach ( $servers as $server => $serverData )
-        {
-            if ( $server == 'http://update.quiqqer.com/' ) {
+        foreach ($servers as $server => $serverData) {
+            if ($server == 'http://update.quiqqer.com/') {
                 $updateServer = true;
             }
 
-            if ( $server == 'http://composer.quiqqer.com/' ) {
+            if ($server == 'http://composer.quiqqer.com/') {
                 $composerServer = true;
             }
         }
 
 
-        if ( $composerServer && $updateServer ) {
+        if ($composerServer && $updateServer) {
             return self::STATUS_OK;
         }
 

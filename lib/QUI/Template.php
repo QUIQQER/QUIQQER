@@ -12,39 +12,44 @@ use QUI\Utils\Security\Orthos;
 /**
  * Template Engine Manager
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  *
- * @event onTemplateGetHeader [ $this ]
+ * @event   onTemplateGetHeader [ $this ]
  */
-
 class Template extends QUI\QDOM
 {
     /**
      * Registered template engines
+     *
      * @var array
      */
     protected $_engines = array();
 
     /**
      * Header extentions
+     *
      * @var array
      */
     protected $_header = array();
 
     /**
      * assigned vars
+     *
      * @var array
      */
     protected $_assigned = array();
 
     /**
      * modules that loaded after the onload event
+     *
      * @var Array
      */
     protected $_onLoadModules = array();
 
     /**
      * site type tpl
+     *
      * @var String
      */
     protected $_typetpl = '';
@@ -54,16 +59,15 @@ class Template extends QUI\QDOM
      */
     public function __construct()
     {
-        $this->setAttribute( 'mootools' , true );
-        $this->setAttribute( 'requirejs' , true );
-        $this->setAttribute( 'html5' , true );
+        $this->setAttribute('mootools', true);
+        $this->setAttribute('requirejs', true);
+        $this->setAttribute('html5', true);
 
         // defaults
         $this->setAttributes(array(
-            'mootools'  => true,
-            'requirejs' => true,
-            'html5'     => true,
-
+            'mootools'       => true,
+            'requirejs'      => true,
+            'html5'          => true,
             'content-header' => true,
             'content-body'   => true
         ));
@@ -86,20 +90,21 @@ class Template extends QUI\QDOM
      */
     public function assignGlobalParam($param, $value)
     {
-        $this->_assigned[ $param ] = $value;
+        $this->_assigned[$param] = $value;
     }
 
     /**
      * Return the Template Config object
+     *
      * @return QUI\Config
      */
     static function getConfig()
     {
-        if ( !file_exists( CMS_DIR .'etc/templates.ini.php' ) ) {
-            file_put_contents( CMS_DIR .'etc/templates.ini.php', '' );
+        if (!file_exists(CMS_DIR . 'etc/templates.ini.php')) {
+            file_put_contents(CMS_DIR . 'etc/templates.ini.php', '');
         }
 
-        return QUI::getConfig( 'etc/templates.ini.php' );
+        return QUI::getConfig('etc/templates.ini.php');
     }
 
     /**
@@ -108,34 +113,34 @@ class Template extends QUI\QDOM
      * if $admin=true, admin template plugins were loaded
      *
      * @param Bool $admin - (optionsl) is the template for the admin or frontend? <- param depricated
+     *
      * @return QUI\Interfaces\Template\Engine
      * @throws QUI\Exception
      */
-    public function getEngine($admin=false)
+    public function getEngine($admin = false)
     {
-        if ( empty( $this->_engines ) ) {
+        if (empty($this->_engines)) {
             $this->load();
         }
 
-        $engine = QUI::conf( 'template', 'engine' );
+        $engine = QUI::conf('template', 'engine');
 
-        if ( !isset( $this->_engines[ $engine ] ) ) {
-            throw new QUI\Exception( 'Template Engine not found!' );
+        if (!isset($this->_engines[$engine])) {
+            throw new QUI\Exception('Template Engine not found!');
         }
 
         /* @var $Engine QUI\Interfaces\Template\Engine */
-        $Engine     = new $this->_engines[ $engine ]( $admin );
-        $implements = class_implements( $Engine );
+        $Engine     = new $this->_engines[$engine]($admin);
+        $implements = class_implements($Engine);
 
-        if ( !isset( $implements['QUI\\Interfaces\\Template\\Engine'] ) )
-        {
+        if (!isset($implements['QUI\\Interfaces\\Template\\Engine'])) {
             throw new QUI\Exception(
                 'The Template Engine implements not from QUI\Interfaces\Template\Engine'
             );
         }
 
-        if ( !empty( $this->_assigned ) ) {
-            $Engine->assign( $this->_assigned );
+        if (!empty($this->_assigned)) {
+            $Engine->assign($this->_assigned);
         }
 
         return $Engine;
@@ -150,7 +155,7 @@ class Template extends QUI\QDOM
     static function registerEngine($name, $class)
     {
         $Conf = self::getConfig();
-        $Conf->setValue( $name, null, $class );
+        $Conf->setValue($name, null, $class);
         $Conf->save();
     }
 
@@ -160,22 +165,48 @@ class Template extends QUI\QDOM
      * @param String $str
      * @param Integer $prio
      */
-    public function extendHeader($str, $prio=3)
+    public function extendHeader($str, $prio = 3)
     {
         $prio = (int)$prio;
 
-        if ( !isset( $this->_header[ $prio ] ) ) {
-            $this->_header[ $prio ] = '';
+        if (!isset($this->_header[$prio])) {
+            $this->_header[$prio] = '';
         }
 
-        $_str  = $this->_header[ $prio ];
+        $_str = $this->_header[$prio];
         $_str .= $str;
 
-        $this->_header[ $prio ] = $_str;
+        $this->_header[$prio] = $_str;
+    }
+
+    /**
+     *
+     * @param string $cssPath
+     * @param int $prio
+     */
+    public function extendHeaderWithCSSFile($cssPath, $prio = 3)
+    {
+        $this->extendHeader(
+            '<link href="' . $cssPath . '" rel="stylesheet" type="text/css" />',
+            $prio
+        );
+    }
+
+    /**
+     * @param $jsPath
+     * @param int $prio
+     */
+    public function extendHeaderWithJavaScriptFile($jsPath, $prio = 3)
+    {
+        $this->extendHeader(
+            '<script src="' . $jsPath . '"></script>',
+            $prio
+        );
     }
 
     /**
      * Add a javascript module, that laoded at the onload event
+     *
      * @param String $module
      */
     public function addOnloadJavaScriptModule($module)
@@ -196,6 +227,7 @@ class Template extends QUI\QDOM
      * Prepares the contents of a template
      *
      * @param QUI\Projects\Site|QUI\Projects\Site\Edit $Site
+     *
      * @return String
      */
     public function fetchTemplate($Site)
@@ -203,24 +235,25 @@ class Template extends QUI\QDOM
         /* @var $Site QUI\Projects\Site */
         $Project = $Site->getProject();
 
-        $Engine   = $this->getEngine();
-        $Users    = QUI::getUsers();
-        $Rewrite  = QUI::getRewrite();
-        $Locale   = QUI::getLocale();
-        $Template = $this;
+        $Engine          = $this->getEngine();
+        $Users           = QUI::getUsers();
+        $Rewrite         = QUI::getRewrite();
+        $Locale          = QUI::getLocale();
+        $Template        = $this;
+        $projectTemplate = $Project->getAttribute('template');
 
         $User = $Users->getUserBySession();
 
         // header
         $_header = $this->_header;
 
-        foreach ( $_header as $key => $str ) {
-            $Engine->extendHeader( $str, $key );
+        foreach ($_header as $key => $str) {
+            $Engine->extendHeader($str, $key);
         }
 
-        $this->setAttribute( 'Project', $Project );
-        $this->setAttribute( 'Site', $Site );
-        $this->setAttribute( 'Engine', $Engine );
+        $this->setAttribute('Project', $Project);
+        $this->setAttribute('Site', $Site);
+        $this->setAttribute('Engine', $Engine);
 
         // Zuweisungen
         $Engine->assign(array(
@@ -230,54 +263,72 @@ class Template extends QUI\QDOM
             'URL_VAR_DIR' => URL_VAR_DIR,
             'URL_OPT_DIR' => URL_OPT_DIR,
             'URL_USR_DIR' => URL_USR_DIR,
-
-            'User'       => $User,
-            'Locale'     => $Locale,
-            'L'          => $Locale,
-            'Template'   => $Template,
-            'Site'       => $Site,
-            'Project'    => $Project,
-            'Rewrite'    => $Rewrite,
-            'lastUpdate' => QUI::getPackageManager()->getLastUpdateDate()
+            'User'        => $User,
+            'Locale'      => $Locale,
+            'L'           => $Locale,
+            'Template'    => $Template,
+            'Site'        => $Site,
+            'Project'     => $Project,
+            'Rewrite'     => $Rewrite,
+            'lastUpdate'  => QUI::getPackageManager()->getLastUpdateDate()
         ));
 
         /**
          * find the index.html
          */
 
-        $default_tpl  = LIB_DIR .'templates/index.html';
+        $default_tpl = LIB_DIR . 'templates/index.html';
 
-        $project_tpl   = USR_DIR . $Project->getAttribute('name') .'/lib/index.html';
-        $project_index = USR_DIR . $Project->getAttribute('name') .'/lib/index.php';
+        $project_tpl = USR_DIR . $Project->getAttribute('name') . '/lib/index.html';
+        $project_index
+                     = USR_DIR . $Project->getAttribute('name') . '/lib/index.php';
 
         $template_tpl   = false;
         $template_index = false;
 
         $tpl = $default_tpl;
 
-        if ( $Project->getAttribute('template') )
-        {
-            $template_tpl   = OPT_DIR . $Project->getAttribute('template') .'/index.html';
-            $template_index = OPT_DIR . $Project->getAttribute('template') .'/index.php';
+        // standard template
+        if (!$projectTemplate) {
+            QUI\System\Log::addWarning(
+                'Project has no standard template. Please set a standard template to the project'
+            );
+
+            $vhosts      = QUI::getRewrite()->getVHosts();
+            $projectName = $Project->getName();
+
+            foreach ($vhosts as $vhost) {
+
+                if (isset($vhost['project'])
+                    && $vhost['project'] == $projectName
+                    && !empty($vhost['template'])
+                ) {
+
+                    $projectTemplate = $vhost['template'];
+                    break;
+                }
+            }
         }
 
-        if ( $template_tpl && file_exists( $template_tpl ) )
-        {
+        $template_tpl   = OPT_DIR . $projectTemplate . '/index.html';
+        $template_index = OPT_DIR . $projectTemplate . '/index.php';
+
+
+        if ($template_tpl && file_exists($template_tpl)) {
             $tpl = $template_tpl;
 
             $Engine->assign(array(
-                'URL_TPL_DIR' => URL_OPT_DIR . $Project->getAttribute('template') .'/',
-                'TPL_DIR'     => OPT_DIR . $Project->getAttribute('template') .'/',
+                'URL_TPL_DIR' => URL_OPT_DIR . $projectTemplate . '/',
+                'TPL_DIR'     => OPT_DIR . $projectTemplate . '/',
             ));
         }
 
-        if ( file_exists( $project_tpl ) )
-        {
+        if (file_exists($project_tpl)) {
             $tpl = $project_tpl;
 
             $Engine->assign(array(
-                'URL_TPL_DIR' => URL_USR_DIR . $Project->getAttribute('name') .'/',
-                'TPL_DIR'     => USR_DIR . $Project->getAttribute('name') .'/',
+                'URL_TPL_DIR' => URL_USR_DIR . $Project->getAttribute('name') . '/',
+                'TPL_DIR'     => USR_DIR . $Project->getAttribute('name') . '/',
             ));
         }
 
@@ -292,16 +343,61 @@ class Template extends QUI\QDOM
         */
 
         // scripts file (index.php)
-        if ( file_exists( $project_index ) )
-        {
+        if (file_exists($project_index)) {
             require $project_index;
 
-        } else if ( $template_index && file_exists( $template_index ) )
-        {
-            require $template_index;
+        } else {
+            if ($template_index && file_exists($template_index)) {
+                require $template_index;
+            }
         }
 
-        return $Engine->fetch( $tpl );
+
+        // load template scripts
+        $siteScript    = false;
+        $projectScript = false;
+
+        $siteType = $Site->getAttribute('type');
+        $siteType = explode(':', $siteType);
+
+        if (isset($siteType[0]) && isset($siteType[1])) {
+            $package = $siteType[0];
+            $type    = $siteType[1];
+
+            // site template
+            $siteScript = OPT_DIR . $package . '/' . $type . '.php';
+
+            // project template
+            $projectScript
+                = USR_DIR . 'lib/' . $projectTemplate . '/' . $type
+                  . '.php';
+        }
+
+        if ($siteType[0] == 'standard') {
+            // site template
+            $siteScript
+                = OPT_DIR . $projectTemplate . '/standard.php';
+        }
+
+        // includes
+        if ($siteScript) {
+            $siteScript = Orthos::clearPath(realpath($siteScript));
+
+            if ($siteScript) {
+                require $siteScript;
+            }
+        }
+
+        if ($projectScript) {
+            $projectScript = Orthos::clearPath(realpath($projectScript));
+
+            if ($projectScript) {
+                require $projectScript;
+            }
+        }
+
+
+        return $Engine->fetch($tpl);
     }
 
     /**
@@ -312,80 +408,87 @@ class Template extends QUI\QDOM
      */
     public function getHeader()
     {
-        $Project = $this->getAttribute( 'Project' );
-        $Site    = $this->getAttribute( 'Site' );
-        $Engine  = $this->getAttribute( 'Engine' );
+        $Project = $this->getAttribute('Project');
+        $Site    = $this->getAttribute('Site');
+        $Engine  = $this->getAttribute('Engine');
 
-        $siteType = $Site->getAttribute( 'type' );
-        $siteType = explode( ':', $siteType );
+        $siteType = $Site->getAttribute('type');
+        $siteType = explode(':', $siteType);
         $files    = array();
 
-        if ( isset( $siteType[ 0 ] ) && isset( $siteType[ 1 ] ) )
-        {
-            $package = $siteType[ 0 ];
-            $type    = $siteType[ 1 ];
+        if (isset($siteType[0]) && isset($siteType[1])) {
+            $package = $siteType[0];
+            $type    = $siteType[1];
 
-            // @todo needed?
             // type css
-            $siteStyle  = OPT_DIR . $package .'/bin/'. $type .'.css';
-            $siteScript = OPT_DIR . $package .'/bin/'. $type .'.js';
+            $siteStyle  = OPT_DIR . $package . '/bin/' . $type . '.css';
+            $siteScript = OPT_DIR . $package . '/bin/' . $type . '.js';
 
-            if ( file_exists( $siteStyle ) )
-            {
+            if (file_exists($siteStyle)) {
                 $Engine->assign(
                     'siteStyle',
-                    URL_OPT_DIR . $package .'/bin/'. $type .'.css'
+                    URL_OPT_DIR . $package . '/bin/' . $type . '.css'
                 );
             }
 
-            if ( file_exists( $siteScript ) )
-            {
+            if (file_exists($siteScript)) {
                 $Engine->assign(
                     'siteScript',
-                    URL_OPT_DIR . $package .'/bin/'. $type .'.js'
+                    URL_OPT_DIR . $package . '/bin/' . $type . '.js'
                 );
             }
 
-            $realSitePath = OPT_DIR . $package .'/'. $type .'.css';
+            $realSitePath = OPT_DIR . $package . '/' . $type . '.css';
 
-            if ( file_exists( $realSitePath ) )
-            {
+            if (file_exists($realSitePath)) {
                 //$css = file_get_contents( $realSitePath );
 
                 $this->extendHeader(
-                    '<style>'. file_get_contents( $realSitePath ) .'</style>'
+                    '<style>' . file_get_contents($realSitePath) . '</style>'
                 );
             }
         }
 
-        QUI::getEvents()->fireEvent( 'templateGetHeader', array( $this ) );
+        QUI::getEvents()->fireEvent('templateGetHeader', array($this));
 
         // locale files
-        try
-        {
+        try {
             $files = QUI\Translator::getJSTranslationFiles(
                 $Project->getLang()
             );
 
-        } catch ( QUI\Exception $Exception )
-        {
+        } catch (QUI\Exception $Exception) {
 
         }
 
         $locales = array();
 
-        foreach ( $files as $package => $file ) {
-            $locales[] = $package .'/'. $Project->getLang();
+        foreach ($files as $package => $file) {
+            $locales[] = $package . '/' . $Project->getLang();
         }
 
 
         $headers      = $this->_header;
         $headerExtend = '';
 
-        foreach ( $headers as $_str ) {
+        foreach ($headers as $_str) {
             $headerExtend .= $_str;
         }
 
+        // custom css
+        $customCSS = $Project->getName() . '/bin/custom.css';
+        $customJS  = $Project->getName() . '/bin/custom.js';
+
+        if (file_exists(USR_DIR . $customCSS)) {
+            $headerExtend
+                .= '<link rel="stylesheet" href="' . URL_USR_DIR . $customCSS
+                   . '" />';
+        }
+
+        if (file_exists(USR_DIR . $customJS)) {
+            $headerExtend .= '<script src="' . URL_USR_DIR . $customJS
+                             . '"></script>';
+        }
 
         // assign
         $Engine->assign(array(
@@ -396,11 +499,11 @@ class Template extends QUI\QDOM
             'loadModuleFiles' => $this->_onLoadModules,
             'headerExtend'    => $headerExtend,
             'ControlManager'  => new QUI\Control\Manager(),
-            'Canonical'       => new QUI\Projects\Site\Canonical( $Site ),
+            'Canonical'       => new QUI\Projects\Site\Canonical($Site),
             'lastUpdate'      => QUI::getPackageManager()->getLastUpdateDate()
         ));
 
-        return $Engine->fetch( LIB_DIR .'templates/header.html' );
+        return $Engine->fetch(LIB_DIR . 'templates/header.html');
     }
 
     /**
@@ -408,26 +511,27 @@ class Template extends QUI\QDOM
      * If a template is set to the project
      *
      * @param array $params - body params
+     *
      * @return String
      */
-    public function getLayout($params=array())
+    public function getLayout($params = array())
     {
-        if ( is_array( $params ) ) {
-            $this->setAttributes( $params );
+        if (is_array($params)) {
+            $this->setAttributes($params);
         }
 
-        $Project  = $this->getAttribute( 'Project' );
+        $Project  = $this->getAttribute('Project');
         $layout   = $this->getLayoutType();
-        $template = OPT_DIR . $Project->getAttribute( 'template' );
+        $template = OPT_DIR . $Project->getAttribute('template');
 
-        if ( !$layout ) {
-            return $this->getBody( $params );
+        if (!$layout) {
+            return $this->getBody($params);
         }
 
-        $layoutFile = $template .'/'. $layout .'.html';
-        $Engine     = $this->getAttribute( 'Engine' );
+        $layoutFile = $template . '/' . $layout . '.html';
+        $Engine     = $this->getAttribute('Engine');
 
-        return $Engine->fetch( $layoutFile );
+        return $Engine->fetch($layoutFile);
     }
 
     /**
@@ -437,25 +541,25 @@ class Template extends QUI\QDOM
      */
     public function getLayoutType()
     {
-        $Project = $this->getAttribute( 'Project' );
-        $Site    = $this->getAttribute( 'Site' );
-        $layout  = $Site->getAttribute( 'layout' );
+        $Project = $this->getAttribute('Project');
+        $Site    = $this->getAttribute('Site');
+        $layout  = $Site->getAttribute('layout');
 
-        if ( !$layout ) {
-            $layout = $Project->getAttribute( 'layout' );
+        if (!$layout) {
+            $layout = $Project->getAttribute('layout');
         }
 
-        $template = OPT_DIR . $Project->getAttribute( 'template' );
-        $siteXML  = $template .'/site.xml';
+        $template = OPT_DIR . $Project->getAttribute('template');
+        $siteXML  = $template . '/site.xml';
 
-        if ( !$layout || !is_dir( $template ) && !file_exists( $siteXML ) ) {
+        if (!$layout || !is_dir($template) && !file_exists($siteXML)) {
             return false;
         }
 
-        $Layout     = QUI\Utils\XML::getLayoutFromXml( $siteXML, $layout );
-        $layoutFile = $template .'/'. $layout .'.html';
+        $Layout     = QUI\Utils\XML::getLayoutFromXml($siteXML, $layout);
+        $layoutFile = $template . '/' . $layout . '.html';
 
-        if ( !$Layout || !file_exists( $layoutFile ) ) {
+        if (!$Layout || !file_exists($layoutFile)) {
             return false;
         }
 
@@ -467,106 +571,85 @@ class Template extends QUI\QDOM
      * -> body.html
      *
      * @param array $params - body params
+     *
      * @return String
      */
-    public function getBody($params=array())
+    public function getBody($params = array())
     {
         /* @var $Project QUI\Projects\Project */
         /* @var $Site QUI\Projects\Site */
         /* @var $Engine QUI\Interfaces\Template\Engine */
 
-        if ( is_array( $params ) ) {
-            $this->setAttributes( $params );
+        if (is_array($params)) {
+            $this->setAttributes($params);
         }
 
-        $Project = $this->getAttribute( 'Project' );
-        $Site    = $this->getAttribute( 'Site' );
-        $Engine  = $this->getAttribute( 'Engine' );
+        $Project = $this->getAttribute('Project');
+        $Site    = $this->getAttribute('Site');
+        $Engine  = $this->getAttribute('Engine');
 
-        $template = LIB_DIR .'templates/standard.html';
+        $template = LIB_DIR . 'templates/standard.html';
 
-        $siteScript    = false;
-        $projectScript = false;
+        $siteType = $Site->getAttribute('type');
+        $siteType = explode(':', $siteType);
 
-        $siteType = $Site->getAttribute( 'type' );
-        $siteType = explode( ':', $siteType );
-
-        if ( isset( $siteType[ 0 ] ) && isset( $siteType[ 1 ] ) )
-        {
-            $package = $siteType[ 0 ];
-            $type    = $siteType[ 1 ];
+        if (isset($siteType[0]) && isset($siteType[1])) {
+            $package = $siteType[0];
+            $type    = $siteType[1];
 
             // site template
-            $siteTemplate = OPT_DIR . $package .'/'. $type .'.html';
-            $siteScript   = OPT_DIR . $package .'/'. $type .'.php';
-            $siteStyle    = OPT_DIR . $package .'/bin/'. $type .'.css';
+            $siteTemplate = OPT_DIR . $package . '/' . $type . '.html';
+            $siteStyle    = OPT_DIR . $package . '/bin/' . $type . '.css';
 
-            if ( file_exists( $siteStyle ) )
-            {
+            if (file_exists($siteStyle)) {
                 $Engine->assign(
                     'siteStyle',
-                    URL_OPT_DIR . $package .'/bin/'. $type .'.css'
+                    URL_OPT_DIR . $package . '/bin/' . $type . '.css'
                 );
             }
 
-            if ( file_exists( $siteTemplate ) ) {
+            if (file_exists($siteTemplate)) {
                 $template = $siteTemplate;
             }
 
             // project template
-            $projectTemplate = USR_DIR .'lib/'. $Project->getAttribute('template') .'/'. $type .'.html';
-            $projectScript   = USR_DIR .'lib/'. $Project->getAttribute('template') .'/'. $type .'.php';
+            $projectTemplate
+                = USR_DIR . $Project->getName() . '/lib/' . $type
+                  . '.html';
 
-            if ( file_exists( $projectTemplate ) ) {
+            if (file_exists($projectTemplate)) {
                 $template = $projectTemplate;
             }
         }
 
-        if ( $siteType[ 0 ] == 'standard' )
-        {
+        if ($siteType[0] == 'standard') {
             // site template
-            $siteTemplate = OPT_DIR . $Project->getAttribute('template') .'/standard.html';
-            $siteScript   = OPT_DIR . $Project->getAttribute('template') .'/standard.php';
-            $siteStyle    = OPT_DIR . $Project->getAttribute('template') .'/bin/standard.css';
+            $siteTemplate
+                = OPT_DIR . $Project->getAttribute('template') . '/standard.html';
 
-            if ( file_exists( $siteStyle ) )
-            {
+            $siteStyle
+                = OPT_DIR . $Project->getAttribute('template')
+                  . '/bin/standard.css';
+
+            if (file_exists($siteStyle)) {
                 $Engine->assign(
                     'siteStyle',
-                    URL_OPT_DIR . $Project->getAttribute('template') .'/standard.css'
+                    URL_OPT_DIR . $Project->getAttribute('template')
+                    . '/standard.css'
                 );
             }
 
-            if ( file_exists( $siteTemplate ) ) {
+            if (file_exists($siteTemplate)) {
                 $template = $siteTemplate;
             }
         }
 
-        // includes
-        if ( $siteScript )
-        {
-            $siteScript = Orthos::clearPath( realpath( $siteScript ) );
 
-            if ( $siteScript ) {
-                require $siteScript;
-            }
+        if (!file_exists($template)) {
+            $template = LIB_DIR . 'templates/standard.html';
         }
 
-        if ( $projectScript )
-        {
-            $projectScript = Orthos::clearPath( realpath( $projectScript ) );
-
-            if ( $projectScript ) {
-                require $projectScript;
-            }
-        }
-
-
-        if ( !file_exists( $template ) ) {
-            $template = LIB_DIR .'templates/standard.html';
-        }
-
-        return $Engine->fetch( $template );
+        return $Engine->fetch($template);
     }
 
     /**
@@ -580,28 +663,27 @@ class Template extends QUI\QDOM
      */
     protected function _getTypeTemplate($types, $type, $template)
     {
-        if ( isset($types['template'] ) )
-        {
+        if (isset($types['template'])) {
             // Falls im Projekt ein Template existiert
-            $tpl = USR_DIR .'lib/'. $template .'/'. $type .'/'. $types['template'];
+            $tpl = USR_DIR . 'lib/' . $template . '/' . $type . '/' . $types['template'];
 
-            if ( file_exists( $tpl ) ) {
+            if (file_exists($tpl)) {
                 return $tpl;
             }
 
             // Falls im Plugin ein Template existiert
-            $tpl = OPT_DIR . $type .'/'. $types['template'];
+            $tpl = OPT_DIR . $type . '/' . $types['template'];
 
-            if ( file_exists( $tpl ) ) {
+            if (file_exists($tpl)) {
                 return $tpl;
             }
         }
 
-        if ( file_exists( USR_DIR .'lib/'. $template .'/standard/body.html' ) ) {
-            return USR_DIR .'lib/'. $template .'/standard/body.html';
+        if (file_exists(USR_DIR . 'lib/' . $template . '/standard/body.html')) {
+            return USR_DIR . 'lib/' . $template . '/standard/body.html';
         }
 
-        return LIB_DIR .'templates/standard.html';
+        return LIB_DIR . 'templates/standard.html';
     }
 
 //    /**

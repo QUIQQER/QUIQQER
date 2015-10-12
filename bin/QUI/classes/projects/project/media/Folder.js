@@ -42,15 +42,24 @@ define('classes/projects/project/media/Folder', [
         {
             var self = this;
 
-            Ajax.post('ajax_media_folder_create', function(result)
-            {
-                oncomplete(
-                    self.getMedia().$parseResultToItem( result )
-                );
-            }, {
-                project   : this.getMedia().getProject().getName(),
-                parentid  : this.getId(),
-                newfolder : newfolder
+            return new Promise(function(resolve, reject) {
+
+                Ajax.post('ajax_media_folder_create', function(result)
+                {
+                    var items = self.getMedia().$parseResultToItem( result );
+
+                    if (typeof oncomplete === 'function') {
+                        oncomplete(items);
+                    }
+
+                    resolve(items);
+                }, {
+                    project   : self.getMedia().getProject().getName(),
+                    parentid  : self.getId(),
+                    newfolder : newfolder,
+                    onError   : reject
+                });
+
             });
         },
 
@@ -59,21 +68,33 @@ define('classes/projects/project/media/Folder', [
          *
          * @method classes/projects/project/media/Folder#createFolder
          *
-         * @param {Function} oncomplete - callback( children ) function
+         * @param {Function} [oncomplete] - callback( children ) function
          * @param {Object} [params] - order params
+         *
+         * @return Promise
          */
         getChildren : function(oncomplete, params)
         {
-            params = params || {};
+            return new Promise(function(resolve, reject) {
 
-            Ajax.get('ajax_media_folder_children', function(result)
-            {
-                oncomplete( result );
-            }, {
-                project  : this.getMedia().getProject().getName(),
-                folderid : this.getId(),
-                params   : JSON.encode( params )
-            });
+                params = params || {};
+
+                Ajax.get('ajax_media_folder_children', function(result)
+                {
+                    if (typeof oncomplete === 'function') {
+                        oncomplete(result);
+                    }
+
+                    resolve(result);
+
+                }, {
+                    project  : this.getMedia().getProject().getName(),
+                    folderid : this.getId(),
+                    params   : JSON.encode(params),
+                    onError  : reject
+                });
+
+            }.bind(this));
         },
 
         /**
@@ -83,22 +104,29 @@ define('classes/projects/project/media/Folder', [
          *
          * @param {Array|Object} files - Array | Filelist
          * @param {Function} [onfinish] - callback function
+         *
+         * @return Promise
          */
         uploadFiles : function(files, onfinish)
         {
-            onfinish = onfinish || function() {};
-
-            UploadManager.uploadFiles(
-                files,
-                'ajax_media_upload',
-                {
+            return new Promise(function(resolve)
+            {
+                UploadManager.uploadFiles(files,'ajax_media_upload', {
                     project  : this.getMedia().getProject().getName(),
                     parentid : this.getId(),
                     events   : {
-                        onComplete : onfinish
+                        onComplete: function() {
+
+                            if (typeof onfinish === 'function') {
+                                onfinish();
+                            }
+
+                            resolve();
+                        }
                     }
-                }
-            );
+                });
+                
+            }.bind(this));
         },
 
         /**

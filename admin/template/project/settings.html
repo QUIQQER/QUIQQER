@@ -18,7 +18,7 @@
                     </label>
                 </td>
                 <td>
-                    <select name="default_lang"></select>
+                    <select name="default_lang" id="default_lang"></select>
                 </td>
             </tr>
             <tr class="{cycle values="odd,even"}">
@@ -28,7 +28,7 @@
                     </label>
                 </td>
                 <td>
-                    <select name="langs" size="3"></select>
+                    <select name="langs" size="3" id="langs"></select>
                 </td>
             </tr>
             <tr class="{cycle values="odd,even"}">
@@ -74,7 +74,7 @@
                 </label>
             </td>
             <td>
-                <select name="template">
+                <select name="template" id="template">
                     <option value="">
                         {t}quiqqer/system projects.project.settings.panel.templates.no.template{/t}
                     </option>
@@ -97,7 +97,7 @@
                 </label>
             </td>
             <td>
-                <select name="templates" multiple="multiple" size="5">
+                <select name="templates" multiple="multiple" size="5" id="templates">
                     {assign var=PM value=$QUI->getPackageManager()}
 
                     {array var=params type="quiqqer-template"}
@@ -118,7 +118,7 @@
             </td>
             <td>
                 {assign var=layouts value=$Project->getLayouts()}
-                <select name="layout">
+                <select name="layout" id="layout">
                     <option value=""></option>
                     {foreach from=$layouts item=layout}
                     <option value="{$layout.type}">
@@ -126,6 +126,17 @@
                     </option>
                     {/foreach}
                 </select>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="first">
+                <label for="placeholder">
+                    {t}quiqqer/quiqqer projects.project.settings.panel.placeholder{/t}
+                </label>
+            </td>
+            <td>
+                <input name="placeholder" id="placeholder" class="media-image" />
             </td>
         </tr>
 

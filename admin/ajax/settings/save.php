@@ -1,26 +1,49 @@
 <?php
 
+/**
+ * @param String $file
+ * @param String $params - JSON Params
+ *
+ * @throws \QUI\Exception
+ */
 function ajax_settings_save($file, $params)
 {
-    if ( !file_exists( $file ) )
-    {
-        throw new \QUI\Exception(
-            'Could not save the data. the config file was not found'
+    $jsonFiles = json_decode($file, true);
+    $files     = array();
+    
+    if ($jsonFiles) {
+
+        if (is_string($jsonFiles)) {
+            $files = array($jsonFiles);
+        } else {
+            $files = $jsonFiles;
+        }
+    }
+
+    foreach ($files as $file) {
+
+        if (!file_exists($file)) {
+            QUI\Log\Logger::getLogger()->addError(
+                "Could not save the data. the config file {$file} was not found"
+            );
+
+            continue;
+        }
+
+        QUI\Utils\XML::setConfigFromXml(
+            $file,
+            json_decode($params, true)
         );
     }
 
-    \QUI\Utils\XML::setConfigFromXml(
-        $file,
-        json_decode( $params, true )
-    );
-
-    \QUI::getMessagesHandler()->addSuccess(
+    // # locale
+    QUI::getMessagesHandler()->addSuccess(
         'Konfiguration erfolgreich gespeichert'
     );
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_settings_save',
-    array( 'file', 'params' ),
+    array('file', 'params'),
     'Permission::checkAdminUser'
 );

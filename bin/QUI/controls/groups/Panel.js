@@ -33,6 +33,7 @@ define('controls/groups/Panel', [
     'qui/controls/windows/Prompt',
     'qui/controls/windows/Confirm',
     'qui/controls/buttons/Button',
+    'qui/controls/buttons/Switch',
 
     'css!controls/groups/Panel.css'
 
@@ -53,7 +54,8 @@ define('controls/groups/Panel', [
         Attention          = arguments[ 8 ],
         QUIPrompt          = arguments[ 9 ],
         QUIConfirm         = arguments[ 10 ],
-        QUIButton          = arguments[ 11 ];
+        QUIButton          = arguments[ 11 ],
+        QUISwitch          = arguments[ 12 ];
 
     /**
      * @class qui/controls/groups/Panel
@@ -84,11 +86,8 @@ define('controls/groups/Panel', [
         ],
 
         options : {
-            active_image : 'icon-ok',     		// (optional)
-            active_text  : Locale.get( lg, 'groups.panel.btn.activate' ), // (optional)
-
-            deactive_image : 'icon-remove',         // (optional)
-            deactive_text  : Locale.get( lg, 'groups.panel.btn.deactivate' ), // (optional)
+            active_text   : '', // (optional)
+            deactive_text : '', // (optional)
 
             field : 'name',
             order : 'ASC',
@@ -118,6 +117,10 @@ define('controls/groups/Panel', [
                 onRefresh      : this.$onRefreshGroup
             });
 
+            this.setAttributes({
+                active_text   : Locale.get( lg, 'groups.panel.group.is.active' ),
+                deactive_text : Locale.get( lg, 'groups.panel.group.is.deactive' )
+            });
 
             var self = this;
 
@@ -185,7 +188,7 @@ define('controls/groups/Panel', [
                 },
                 text      : Locale.get( lg, 'groups.panel.btn.delete' ),
                 disabled  : true,
-                textimage : 'icon-trash'
+                textimage : 'fa fa-trash-o icon-trash'
             });
 
 
@@ -200,7 +203,7 @@ define('controls/groups/Panel', [
                 columnModel : [{
                     header    : Locale.get( lg, 'status' ),
                     dataIndex : 'status',
-                    dataType  : 'button',
+                    dataType  : 'QUI',
                     width     : 60
                 }, {
                     header    : Locale.get( lg, 'group_id' ),
@@ -486,22 +489,32 @@ define('controls/groups/Panel', [
                 data.admin = Locale.get( lg, 'yes' );
             }
 
-            data.status = {
+            //data.status = {
+            //    status : Group.isActive(),
+            //    value  : Group.getId(),
+            //    gid    : Group.getId(),
+            //    image  : Group.isActive() ?
+            //                this.getAttribute( 'active_image' ) :
+            //                this.getAttribute( 'deactive_image' ),
+            //
+            //    alt : Group.isActive() ?
+            //                this.getAttribute( 'deactive_text' ) :
+            //                this.getAttribute( 'active_text' ),
+            //
+            //    events : {
+            //        onClick : this.$btnSwitchStatus
+            //    }
+            //};
+
+            data.status = new QUISwitch({
                 status : Group.isActive(),
                 value  : Group.getId(),
                 gid    : Group.getId(),
-                image  : Group.isActive() ?
-                            this.getAttribute( 'active_image' ) :
-                            this.getAttribute( 'deactive_image' ),
-
-                alt : Group.isActive() ?
-                            this.getAttribute( 'deactive_text' ) :
-                            this.getAttribute( 'active_text' ),
-
+                title  : Group.isActive() ? this.getAttribute( 'active_text' ) : this.getAttribute( 'deactive_text' ),
                 events : {
-                    onClick : this.$btnSwitchStatus
+                    onChange : this.$btnSwitchStatus
                 }
-            };
+            });
 
             return data;
         },
@@ -587,6 +600,19 @@ define('controls/groups/Panel', [
             }
 
             this.getGrid().setWidth( Body.getSize().x - 40 );
+
+            // resize switches
+            var i, len, Control;
+            var switches = Body.getElements('.qui-switch');
+
+            for ( i = 0, len = switches.length; i < len; i++ )
+            {
+                Control = QUI.Controls.getById( switches[ i ].get('data-quiid') );
+
+                if ( Control ) {
+                    Control.resize();
+                }
+            }
         },
 
         /**
@@ -640,12 +666,11 @@ define('controls/groups/Panel', [
             {
                 var i, len, data, admin;
 
-                var Panel = self,
-                    Grid  = Panel.getGrid();
+                var Grid = self.getGrid();
 
                 if ( !Grid )
                 {
-                    Panel.Loader.hide();
+                    self.Loader.hide();
                     return;
                 }
 
@@ -653,57 +678,63 @@ define('controls/groups/Panel', [
 
                 for ( i = 0, len = data.length; i < len; i++ )
                 {
-                    admin = ( data[i].admin ).toInt();
+                    admin = ( data[ i ].admin ).toInt();
 
-                    data[i].active = ( data[i].active ).toInt();
-                    data[i].admin  = Locale.get( lg, 'no' );
+                    data[ i ].active = ( data[i].active ).toInt();
+                    data[ i ].admin  = Locale.get( lg, 'no' );
 
                     if ( admin ) {
-                        data[i].admin = Locale.get( lg, 'yes' );
+                        data[ i ].admin = Locale.get( lg, 'yes' );
                     }
 
-                    data[i].status = {
-                        status : data[i].active,
-                        value  : data[i].id,
-                        gid    : data[i].id,
-                        image  : data[i].active ?
-                                    Panel.getAttribute( 'active_image' ) :
-                                    Panel.getAttribute( 'deactive_image' ),
+                    //data[i].status = {
+                    //    status : data[i].active,
+                    //    value  : data[i].id,
+                    //    gid    : data[i].id,
+                    //    image  : data[i].active ?
+                    //                Panel.getAttribute( 'active_image' ) :
+                    //                Panel.getAttribute( 'deactive_image' ),
+                    //
+                    //    alt : data[i].active ?
+                    //                Panel.getAttribute( 'deactive_text' ) :
+                    //                Panel.getAttribute( 'active_text' ),
+                    //
+                    //    events : {
+                    //        onClick : Panel.$btnSwitchStatus
+                    //    }
+                    //};
 
-                        alt : data[i].active ?
-                                    Panel.getAttribute( 'deactive_text' ) :
-                                    Panel.getAttribute( 'active_text' ),
-
+                    data[ i ].status = new QUISwitch({
+                        status : data[ i ].active,
+                        value  : data[ i ].id,
+                        gid    : data[ i ].id,
+                        title  : data[ i ].active ?
+                            self.getAttribute( 'active_text' ) :
+                            self.getAttribute( 'deactive_text' ),
                         events : {
-                            onClick : Panel.$btnSwitchStatus
+                            onChange : self.$btnSwitchStatus
                         }
-                    };
+                    });
                 }
 
                 Grid.setData( result );
 
-                Panel.setAttribute( 'title', Locale.get( lg, 'groups.panel.title') );
-                Panel.setAttribute( 'icon', 'icon-group' );
-                Panel.refresh();
+                self.setAttribute( 'title', Locale.get( lg, 'groups.panel.title') );
+                self.setAttribute( 'icon', 'icon-group' );
+                self.refresh();
 
-                Panel.Loader.hide();
-            }, {
-                Panel : this
+                self.Loader.hide();
             });
         },
 
         /**
          * execute a group status switch
          *
-         * @param {Object} Btn - qui/controls/buttons/Button
+         * @param {Object} Switch - qui/controls/buttons/Switch
          */
-        $btnSwitchStatus : function(Btn)
+        $btnSwitchStatus : function(Switch)
         {
-            Btn.setAttribute( 'icon', URL_BIN_DIR +'images/loader.gif' );
-
-            Groups.switchStatus(
-                Btn.getAttribute( 'gid' )
-            );
+            Groups.switchStatus( Switch.getAttribute( 'gid' ) );
         },
 
         /**
@@ -715,7 +746,7 @@ define('controls/groups/Panel', [
          */
         $onSwitchStatus : function(Groups, ids)
         {
-            var i, len, Btn, entry, status;
+            var i, len, Status, entry, status;
 
             var Grid = this.getGrid(),
                 data = Grid.getData();
@@ -729,19 +760,17 @@ define('controls/groups/Panel', [
                 entry = data[ i ];
 
                 status = ( ids[ data[ i ].id ] ).toInt();
-                Btn    = QUI.Controls.getById( entry.status.data.quiid );
+                Status = entry.status;
 
                 // group is active
                 if ( status == 1 )
                 {
-                    Btn.setAttribute( 'alt', this.getAttribute( 'deactive_text' ) );
-                    Btn.setAttribute( 'icon', this.getAttribute( 'active_image' ) );
+                    Status.setAttribute( 'title', this.getAttribute( 'active_text' ) );
                     continue;
                 }
 
                 // group is deactive
-                Btn.setAttribute( 'alt', this.getAttribute( 'active_text' ) );
-                Btn.setAttribute( 'icon', this.getAttribute( 'deactive_image' ) );
+                Status.setAttribute( 'title', this.getAttribute( 'deactive_text' ) );
             }
         },
 
@@ -766,7 +795,7 @@ define('controls/groups/Panel', [
                     continue;
                 }
 
-                Grid.setDataByRow( i,  this.groupToData( Group ) );
+                Grid.setDataByRow( i, this.groupToData( Group ) );
             }
         },
 
@@ -786,7 +815,7 @@ define('controls/groups/Panel', [
                 _tmp = {};
 
             for ( i = 0, len = ids.length; i < len; i++ ) {
-                _tmp[ ids[i] ] = true;
+                _tmp[ ids[ i ] ] = true;
             }
 
             for ( i = 0, len = data.length; i < len; i++ )
@@ -880,8 +909,8 @@ define('controls/groups/Panel', [
                 text        : Locale.get( lg, 'groups.panel.delete.window.text' ) +'<br /><br />'+ gids.join(', '),
                 information : Locale.get( lg, 'groups.panel.delete.window.information' ),
 
-                width  : 500,
-                height : 150,
+                maxWidth  : 450,
+                maxHeight : 300,
                 gids   : gids,
                 events :
                 {

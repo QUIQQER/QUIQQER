@@ -21,7 +21,7 @@ define('classes/projects/media/Trash', [
     /**
      * @class classes/projects/media/Trash
      *
-     * @param {classes/projects/Media} Panel - APPPanel
+     * @param {Object} Panel - (classes/projects/Media) APPPanel
      * @param {Object} options
      *
      * @fires onDrawBegin - this
@@ -62,7 +62,7 @@ define('classes/projects/media/Trash', [
                 }
 
             }, {
-                project  : this.$Media.getProject().getName(),
+                project  : this.$Media.getProject().encode(),
                 params   : JSON.encode({
                     order : this.getAttribute('order'),
                     sort  : this.getAttribute('sort'),
@@ -89,7 +89,7 @@ define('classes/projects/media/Trash', [
                     callback( result, Request );
                 }
             }, {
-                project  : this.$Media.getProject().getName(),
+                project  : this.$Media.getProject().encode(),
                 ids      : JSON.encode( ids ),
                 parentid : parentid,
                 Trash    : this
@@ -112,7 +112,7 @@ define('classes/projects/media/Trash', [
                     callback( result, Request );
                 }
             }, {
-                project : this.$Media.getProject().getName(),
+                project : this.$Media.getProject().encode(),
                 ids     : JSON.encode( ids ),
                 Trash   : this
             });

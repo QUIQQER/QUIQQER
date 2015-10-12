@@ -3,23 +3,22 @@
 /**
  * Sort the children
  *
- * @param String $project - Project name
- * @param Integer $ids 	  - children ids
- * @param Integer $from   - Sheet number
+ * @param String  $project - Project name
+ * @param Integer $ids     - children ids
+ * @param Integer $from    - Sheet number
  */
 function ajax_site_children_sort($project, $ids, $from)
 {
-    $Project = \QUI::getProjectManager()->decode( $project );
-    $ids     = json_decode( $ids, true );
+    $Project = \QUI::getProjectManager()->decode($project);
+    $ids = json_decode($ids, true);
 
     $from = (int)$from;
 
-    foreach ( $ids as $id )
-    {
-        $from  = $from + 1;
-        $Child = $Project->get( $id );
+    foreach ($ids as $id) {
+        $from = $from + 1;
+        $Child = $Project->get($id);
 
-        $Child->setAttribute( 'order_field', $from );
+        $Child->setAttribute('order_field', $from);
         $Child->save();
     }
 
@@ -29,12 +28,12 @@ function ajax_site_children_sort($project, $ids, $from)
         QUI::getLocale()->get(
             'quiqqer/system',
             'message.site.save.sort.success',
-            array( 'ids' => implode( ',', $ids) )
+            array('ids' => implode(',', $ids))
         )
     );
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_site_children_sort',
     array('project', 'ids', 'from')
 );

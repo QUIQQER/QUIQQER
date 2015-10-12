@@ -5,52 +5,82 @@
  * @module utils/permissions/Utils
  * @author www.pcsg.de (Henning Leutz)
  *
+ * @require Locale
  * @require css!utils/permissions/Utils.css
  */
 
-define(['css!utils/permissions/Utils.css'], function()
+define('utils/permissions/Utils', [
+
+    'Locale',
+    'classes/permissions/Permissions',
+    'css!utils/permissions/Utils.css'
+
+], function(QUILocale, Permissions)
 {
     "use strict";
 
+    var Perm = new Permissions();
+
     return {
+
+        Permissions : Perm,
 
         /**
          * Parse a permission param to a DOMNode
          *
          * @param {Object} params
-         * @return {DOMNode}
+         * @return {HTMLElement}
          */
         parse : function(params)
         {
-            var n = params.name;
+            if (!params.hasOwnProperty('name')) {
+                return new Element('div');
+            }
 
-            var Entry = new Element( 'div.qui-permission-entry' );
+            var title      = params.title.split(' '),
+                permission = params.name;
+
+            var Entry = new Element('div.qui-permission-entry');
 
             var Input = new Element('input.right', {
                 type : 'text',
-                name : n,
-                id   : 'perm-'+ n,
+                name : permission,
+                id   : 'perm-'+ permission,
 
                 'data-area' : params.area
             });
 
             Input.addClass( params.type );
 
-            if ( params.type == 'bool' ) {
+            if (params.type == 'bool') {
                 Input.type = 'checkbox';
             }
 
+            var text = title[0];
+
+            if (title.length == 2) {
+                text = QUILocale.get(title[0], title[1]);
+            }
+
+
             var Label = new Element('label', {
-                'for' : 'perm-'+ n,
-                html  : params.title || params.name
+                'for' : 'perm-'+ name,
+                html  : text
             });
 
             Input.inject( Entry );
             Label.inject( Entry );
 
+            if ("desc" in params)
+            {
+                var desc = params.desc.split(' ');
 
-            if ( params.desc ) {
-                Label.set( 'data-desc', params.desc);
+                if (QUILocale.exists(desc[0], desc[1])) {
+                    Label.set(
+                        'data-desc',
+                        QUILocale.get(desc[0], desc[1])
+                    );
+                }
             }
 
             return Entry;

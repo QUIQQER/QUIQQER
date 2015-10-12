@@ -58,14 +58,34 @@ define('classes/users/User', [
         },
 
         /**
-         * Return the user name
+         * Return the username
+         *
+         * return firstname and lastname if exists
+         * return getUsername()
          *
          * @method classes/users/User#getName
          * @return {String} Username
          */
         getName : function()
         {
-            return this.getAttribute( 'username' );
+            var firstname = this.getAttribute('firstname');
+            var lastname = this.getAttribute('lastname');
+
+            if (firstname && lastname) {
+                return firstname+' '+lastname;
+            }
+
+            return this.getUsername();
+        },
+
+        /**
+         * Return username
+         *
+         * @return bool|String
+         */
+        getUsername : function()
+        {
+            return this.getAttribute('username');
         },
 
         /**
@@ -78,59 +98,66 @@ define('classes/users/User', [
         {
             var self = this;
 
-            Ajax.get('ajax_users_get', function(result)
-            {
-                self.$loaded = true;
+            return new Promise(function(resolve, reject) {
 
-                var uid = 0;
-
-                if ( "id" in result && result.id > 10 ) {
-                    uid = result.id;
-                }
-
-                // user not found
-                if ( !uid )
+                Ajax.get('ajax_users_get', function(result)
                 {
-                    self.$uid = 0;
+                    self.$loaded = true;
 
-                    self.setAttributes({
-                        username : 'not found'
-                    });
+                    var uid = 0;
 
-                    if ( typeof onfinish !== 'undefined' ) {
-                        onfinish( self );
+                    if ("id" in result && result.id > 10) {
+                        uid = result.id;
                     }
 
-                    self.fireEvent( 'refresh', [ self ] );
+                    // user not found
+                    if (!uid)
+                    {
+                        self.$uid = 0;
+
+                        self.setAttributes({
+                            username : 'not found'
+                        });
+
+                        if (typeof onfinish === 'function') {
+                            onfinish(self);
+                        }
+
+                        self.fireEvent('refresh', [self]);
+
+                        require(['Users'], function(Users) {
+                            Users.onRefreshUser(self);
+                            resolve(self);
+                        });
+
+                        return;
+                    }
+
+
+                    if (result.extras)
+                    {
+                        self.$extras = result.extras;
+                        delete result.extras;
+                    }
+
+                    self.setAttributes(result);
+
+                    if ( typeof onfinish === 'function' ) {
+                        onfinish(self);
+                    }
+
+                    self.fireEvent('refresh', [self]);
 
                     require(['Users'], function(Users) {
-                        Users.onRefreshUser( self );
+                        Users.onRefreshUser(self);
+                        resolve(self);
                     });
 
-                    return;
-                }
-
-
-                if ( result.extras )
-                {
-                    self.$extras = result.extras;
-                    delete result.extras;
-                }
-
-                self.setAttributes( result );
-
-                if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( self );
-                }
-
-                self.fireEvent( 'refresh', [ self ] );
-
-                require(['Users'], function(Users) {
-                    Users.onRefreshUser( self );
+                }, {
+                    uid : self.getId(),
+                    onError : reject
                 });
 
-            }, {
-                uid : this.getId()
             });
         },
 

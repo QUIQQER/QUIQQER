@@ -1,215 +1,230 @@
 
-    <table class="data-table site-data">
-    <thead>
-        <tr>
-            <th colspan="3">
-                {t id=$Site->getId()}quiqqer/system projects.project.site.panel.information.header{/t}
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr class="odd">
-            <td>
-                <label>
-                    {t}quiqqer/system projects.project.site.panel.information.nameUrl{/t}
-                </label>
+<table class="data-table site-data">
+<thead>
+    <tr>
+        <th colspan="3">
+            {t id=$Site->getId()}quiqqer/system projects.project.site.panel.information.header{/t}
+        </th>
+    </tr>
+</thead>
+<tbody>
+    <tr class="odd">
+        <td>
+            <label>
+                {t}quiqqer/system projects.project.site.panel.information.nameUrl{/t}
+            </label>
 
-                <input type="text" name="site-name" value="" /> .html
-                <div class="site-url-display"></div>
-            </td>
-        </tr>
-        <tr class="even">
-            <td>
-                <label>
-                    {t}quiqqer/system projects.project.site.panel.information.title{/t}
-                </label>
-                <input type="text" name="title" value="" />
-            </td>
-        </tr>
-        <tr class="odd">
-            <td>
-                <label>
-                    {t}quiqqer/system projects.project.site.panel.information.short{/t}
-                </label>
-                <textarea class="site-short" name="short"></textarea>
-            </td>
-        </tr>
-        <tr class="even">
-            <td>
-                <label>
-                    {t}quiqqer/system projects.project.site.panel.information.type{/t}
-                </label>
-                <div class="site-data-project-types-container">
-                    <input type="text" name="type" value="" class="project-types" />
-                </div>
-            </td>
-        </tr>
-        <tr class="odd">
-            <td>
-                <label>
-                    {t}quiqqer/system projects.project.site.panel.information.layout{/t}
-                </label>
-                <div>
-                    {assign var=layouts value=$Project->getLayouts()}
-                    <select name="layout">
-                        <option value=""></option>
-                        {foreach from=$layouts item=layout}
-                            <option value="{$layout.type}">
-                                {$layout.title}
-                            </option>
-                        {/foreach}
-                    </select>
-                </div>
-            </td>
-        </tr>
-    </tbody>
-    </table>
+            <input type="text" name="site-name" value="" /> .html
+            <div class="site-url-display"></div>
+        </td>
+    </tr>
+    <tr class="even">
+        <td>
+            <label>
+                {t}quiqqer/system projects.project.site.panel.information.title{/t}
+            </label>
+            <input type="text" name="title" value="" />
+        </td>
+    </tr>
+    <tr class="odd">
+        <td>
+            <label>
+                {t}quiqqer/system projects.project.site.panel.information.short{/t}
+            </label>
+            <textarea class="site-short" name="short"></textarea>
+        </td>
+    </tr>
+    <tr class="even">
+        <td>
+            <label>
+                {t}quiqqer/system projects.project.site.panel.information.type{/t}
+            </label>
+            <div class="site-data-project-types-container">
+                <input type="text" name="type" value="" class="project-types" />
+            </div>
+        </td>
+    </tr>
 
-    <table class="data-table">
-    <thead>
-        <tr>
-            <th colspan="3">
-                {t}quiqqer/system projects.project.site.panel.extras.title{/t}
-            </th>
-        </tr>
-    </thead>
-
-    <tbody>
-        <tr class="odd">
-            <td style="width: 20px">
-                <input type="checkbox" name="nav_hide" class="noborder" />
-            </td>
-            <td>
-                <img src="{$smarty.const.URL_BIN_DIR}16x16/navigation_hidden.png" />
-                <span>
-                    {t}quiqqer/system projects.project.site.panel.extras.nav_hide{/t}
-                </span>
-            </td>
-        </tr>
-
-        {if isset($extrahtml)}
-            {$extrahtml}
+    {assign var=layouts value=$Project->getLayouts()}
+    {if count($layouts)}
+    <tr class="odd">
+        <td>
+            <label>
+                {t}quiqqer/system projects.project.site.panel.information.layout{/t}
+            </label>
+            <div>
+                <select name="layout">
+                    <option value=""></option>
+                    {foreach from=$layouts item=layout}
+                        <option value="{$layout.type}">
+                            {$layout.title}
+                        </option>
+                    {/foreach}
+                </select>
+            </div>
+        </td>
         {/if}
+    </tr>
+</tbody>
+</table>
 
-    </tbody>
-    </table>
+<table class="data-table">
+<thead>
+    <tr>
+        <th colspan="3">
+            {t}quiqqer/system projects.project.site.panel.extras.title{/t}
+        </th>
+    </tr>
+</thead>
 
+<tbody>
+    <tr class="odd">
+        <td style="width: 20px">
+            <input type="checkbox" name="nav_hide" class="noborder" />
+        </td>
+        <td>
+            <img src="{$smarty.const.URL_BIN_DIR}16x16/navigation_hidden.png" />
+            <span>
+                {t}quiqqer/system projects.project.site.panel.extras.nav_hide{/t}
+            </span>
+        </td>
+    </tr>
 
-    {assign var=langIds value=$Site->getLangIds()}
-    {assign var=Project value=$Site->getProject()}
-
-    {if count( $langIds ) > 1}
-    <table class="data-table site-langs">
-    <thead>
-        <tr>
-            <th colspan="3">
-                {t}quiqqer/system projects.project.site.panel.langlinking{/t}
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        {cycle values="even,odd" reset=true assign=_cycle}
-
-        {foreach from=$langIds item=entry key=lang}
-        {if $lang != $Project->getLang()}
-        <tr class="{cycle values="even,odd"}" data-lang="{$lang}" data-id="{$entry}">
-            <td style="width: 30px;">
-                <img src="{$smarty.const.URL_BIN_DIR}16x16/flags/{$lang}.png" />
-            </td>
-            <td>
-                {if $entry}
-                    {site id=$entry project=$Project->getName() lang=$lang attribute=name} ( {$entry} )
-                {else}
-                    {t lang=$lang}quiqqer/system projects.project.site.panel.langlinking.notexist{/t}
-                {/if}
-            </td>
-            <td></td>
-        </tr>
-        {/if}
-        {/foreach}
-    </tbody>
-    </table>
+    {if isset($extrahtml)}
+        {$extrahtml}
     {/if}
 
-    <table class="data-table site-linking">
-    <thead>
-        <tr>
-            <th>
-                {t}quiqqer/system projects.project.site.panel.linking{/t}
-            </th>
-        </tr>
-    </thead>
+</tbody>
+</table>
 
-    <tbody>
-        {cycle values="even,odd" reset=true assign=_cycle}
 
-        {assign var=pids value=$Site->getParentIds()}
-        {if count($pids) > 1}
-            {assign var=mypid value=$Site->getParentId()}
+{assign var=langIds value=$Site->getLangIds()}
+{assign var=Project value=$Site->getProject()}
 
-            {foreach from=$pids item=pid}
-            <tr class="{cycle values="even,odd"}">
-                {assign var=Parent value=$Project->get($pid)}
-                {assign var=parents value=$Parent->getParents()}
-                <td>
-                    <span class="icon-home"></span>
-                    / {foreach from=$parents item=PS} {$PS->getAttribute('name')}
-                    / {/foreach} {$Parent->getAttribute('name')}
-                    / {$Site->getAttribute('name')}
-                </td>
-            </tr>
-            {/foreach}
+{if count( $langIds ) > 1}
+<table class="data-table site-langs">
+<thead>
+    <tr>
+        <th colspan="3">
+            {t}quiqqer/system projects.project.site.panel.langlinking{/t}
+        </th>
+    </tr>
+</thead>
+<tbody>
+    {cycle values="even,odd" reset=true assign=_cycle}
 
-        {else}
-        <tr class="{cycle values="odd,even"}">
+    {foreach from=$langIds item=entry key=lang}
+    {if $lang != $Project->getLang()}
+    <tr class="{cycle values="even,odd"}" data-lang="{$lang}" data-id="{$entry}">
+        <td style="width: 30px;">
+            <img src="{$smarty.const.URL_BIN_DIR}16x16/flags/{$lang}.png" />
+        </td>
+        <td>
+            {if $entry}
+                {site id=$entry project=$Project->getName() lang=$lang attribute=name} ( {$entry} )
+            {else}
+                {t lang=$lang}quiqqer/system projects.project.site.panel.langlinking.notexist{/t}
+            {/if}
+        </td>
+        <td></td>
+    </tr>
+    {/if}
+    {/foreach}
+</tbody>
+</table>
+{/if}
+
+<table class="data-table site-linking">
+<thead>
+    <tr>
+        <th>
+            {t}quiqqer/system projects.project.site.panel.linking{/t}
+        </th>
+    </tr>
+</thead>
+
+<tbody>
+    {cycle values="even,odd" reset=true assign=_cycle}
+
+    {assign var=pids value=$Site->getParentIds()}
+    {if count($pids) > 1}
+        {assign var=mypid value=$Site->getParentId()}
+
+        {foreach from=$pids item=pid}
+        <tr class="{cycle values="even,odd"}">
+            {assign var=Parent value=$Project->get($pid)}
+            {assign var=parents value=$Parent->getParents()}
             <td>
-                {t}quiqqer/system projects.project.site.panel.linking.notexist{/t}
+                <span class="icon-home"></span>
+                / {foreach from=$parents item=PS} {$PS->getAttribute('name')}
+                / {/foreach} {$Parent->getAttribute('name')}
+                / {$Site->getAttribute('name')}
             </td>
         </tr>
-        {/if}
-    </tbody>
-    </table>
+        {/foreach}
+
+    {else}
+    <tr class="{cycle values="odd,even"}">
+        <td>
+            {t}quiqqer/system projects.project.site.panel.linking.notexist{/t}
+        </td>
+    </tr>
+    {/if}
+</tbody>
+</table>
 
 
-    <table class="data-table site-date">
-    <thead>
-        <tr>
-            <th colspan="5">
-                {t}quiqqer/system projects.project.site.panel.information.date{/t}
-            </th>
-        </tr>
-    </thead>
+<table class="data-table site-date">
+<thead>
+    <tr>
+        <th colspan="5">
+            {t}quiqqer/system projects.project.site.panel.information.date{/t}
+        </th>
+    </tr>
+</thead>
 
-    <tbody>
-        <tr class="odd">
-            <td style="width: 150px; line-height: 30px">
-                {t}quiqqer/system projects.project.site.panel.information.created{/t}
-            </td>
-            <td>
-                <input type="text" name="c_date" disabled="disabled" />
-            </td>
-            <td style="width: 20px; line-height: 30px">
-                {t}quiqqer/system from{/t}
-            </td>
-            <td style="width: 300px">
-                <input type="text" name="c_user" disabled="disabled" class="user" value="" />
-                <input type="text" name="c_user_ip" disabled="disabled" value="" placeholder="{t}quiqqer/system user_ip_adress{/t}" />
-            </td>
-            <td></td>
-        </tr>
-        <tr class="even">
-            <td style="line-height: 30px">
-                {t}quiqqer/system projects.project.site.panel.information.edited{/t}
-            </td>
-            <td><input type="text" name="e_date" disabled="disabled" /></td>
-            <td style="line-height: 30px">
-                {t}quiqqer/system from{/t}
-            </td>
-            <td>
-                <input type="text" name="e_user" disabled="disabled" class="user" value="" />
-                <input type="text" name="e_user_ip" disabled="disabled" value="" placeholder="{t}quiqqer/system user_ip_adress{/t}" />
-            </td>
-            <td></td>
-        </tr>
-    </tbody>
-    </table>
+<tbody>
+    <tr class="odd">
+        <td style="width: 150px; line-height: 30px">
+            {t}quiqqer/system projects.project.site.panel.information.created{/t}
+            <br />
+            {t}quiqqer/system from{/t}
+        </td>
+        <td>
+            <input type="text" name="c_date" disabled="disabled" />
+            <br />
+            <input type="text" name="c_user" disabled="disabled"
+                   class="user" value=""
+                    />
+            <input type="text" name="c_user_ip" disabled="disabled" value=""
+                    placeholder="{t}quiqqer/system user_ip_adress{/t}"
+                    />
+        </td>
+        <td></td>
+    </tr>
+    <tr class="even">
+        <td style="line-height: 30px">
+            {t}quiqqer/system projects.project.site.panel.information.edited{/t}<br />
+            {t}quiqqer/system from{/t}
+        </td>
+        <td>
+            <input type="text" name="e_date" disabled="disabled" />
+            <br />
+            <input type="text" name="e_user" disabled="disabled" class="user" value="" />
+
+            <input type="text" name="e_user_ip" disabled="disabled" value=""
+                   placeholder="{t}quiqqer/system user_ip_adress{/t}"
+                    />
+        </td>
+    </tr>
+    <tr>
+        <td style="line-height: 30px">
+
+        </td>
+        <td>
+
+        </td>
+        <td></td>
+    </tr>
+</tbody>
+</table>

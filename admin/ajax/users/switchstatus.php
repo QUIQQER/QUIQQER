@@ -3,54 +3,50 @@
 /**
  * Switch the user status of the users
  *
- * @param {JSON Integer|JSON Array} $uid
+ * @param String $uid - JSON Array | JSON Integer
+ *
  * @return Array
  */
 function ajax_users_switchstatus($uid)
 {
-    $uid = json_decode( $uid, true );
+    $uid = json_decode($uid, true);
 
-    if ( !is_array($uid) ) {
-        $uid = array( $uid );
+    if (!is_array($uid)) {
+        $uid = array($uid);
     }
 
-    $Users  = \QUI::getUsers();
+    $Users = QUI::getUsers();
     $result = array();
 
-    foreach ( $uid as $_uid )
-    {
-        try
-        {
-            $User = $Users->get( $_uid );
+    foreach ($uid as $_uid) {
+        try {
+            $User = $Users->get($_uid);
 
-            if ( $User->isActive() )
-            {
+            if ($User->isActive()) {
                 $User->deactivate();
 
-                \QUI::getMessagesHandler()->addSuccess(
-                    \QUI::getLocale()->get(
+                QUI::getMessagesHandler()->addSuccess(
+                    QUI::getLocale()->get(
                         'quiqqer/system',
                         'message.user.deactivate'
                     )
                 );
 
-            } else
-            {
+            } else {
                 $User->activate();
 
-                \QUI::getMessagesHandler()->addSuccess(
-                    \QUI::getLocale()->get(
+                QUI::getMessagesHandler()->addSuccess(
+                    QUI::getLocale()->get(
                         'quiqqer/system',
                         'message.user.activate'
                     )
                 );
             }
 
-            $result[ $_uid ] = $User->isActive() ? 1 : 0;
+            $result[$_uid] = $User->isActive() ? 1 : 0;
 
-        } catch ( \QUI\Exception $Exception )
-        {
-            \QUI::getMessagesHandler()->addAttention(
+        } catch (QUI\Exception $Exception) {
+            QUI::getMessagesHandler()->addAttention(
                 $Exception->getMessage()
             );
 
@@ -61,7 +57,7 @@ function ajax_users_switchstatus($uid)
     return $result;
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_users_switchstatus',
     array('uid'),
     'Permission::checkSU'

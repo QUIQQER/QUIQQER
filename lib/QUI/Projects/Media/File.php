@@ -12,63 +12,83 @@ use QUI\Utils\System\File as QUIFile;
 /**
  * A media file
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
  * @package com.pcsg.qui.projects.media
+ * @licence For copyright and license information, please view the /README.md
  */
-
 class File extends Item implements QUI\Interfaces\Projects\Media\File
 {
     /**
      * (non-PHPdoc)
+     *
      * @see \QUI\Interfaces\Projects\Media\File::createCache()
      */
     public function createCache()
     {
-        if ( !$this->getAttribute('active') ) {
+        if (!$this->getAttribute('active')) {
             return false;
         }
 
         $WHITE_LIST_EXTENSION = array(
-            'pdf', 'txt', 'xml', 'doc', 'pdt', 'xls', 'csv', 'txt',
-            'swf', 'flv',
-            'mp3', 'ogg', 'wav',
-            'mpeg', 'avi', 'mpg', 'divx', 'mov', 'wmv',
-            'zip', 'rar', '7z', 'gzip', 'tar', 'tgz', 'ace',
+            'pdf',
+            'txt',
+            'xml',
+            'doc',
+            'pdt',
+            'xls',
+            'csv',
+            'txt',
+            'swf',
+            'flv',
+            'mp3',
+            'ogg',
+            'wav',
+            'mpeg',
+            'avi',
+            'mpg',
+            'divx',
+            'mov',
+            'wmv',
+            'zip',
+            'rar',
+            '7z',
+            'gzip',
+            'tar',
+            'tgz',
+            'ace',
             'psd'
         );
 
-        $Media = $this->_Media; /* @var $Media \QUI\Projects\Media */
+        $Media = $this->_Media;
+        /* @var $Media \QUI\Projects\Media */
 
-        $mdir = CMS_DIR . $Media->getPath();
-        $cdir = CMS_DIR . $Media->getCacheDir();
+        $mdir = CMS_DIR.$Media->getPath();
+        $cdir = CMS_DIR.$Media->getCacheDir();
         $file = $this->getAttribute('file');
 
-        $original  = $mdir . $file;
-        $cachefile = $cdir . $file;
+        $original = $mdir.$file;
+        $cachefile = $cdir.$file;
 
         $extension = QUI\Utils\String::pathinfo($original, PATHINFO_EXTENSION);
 
-        if ( !in_array( $extension, $WHITE_LIST_EXTENSION ) )
-        {
-            QUIFile::unlink( $cachefile );
+        if (!in_array($extension, $WHITE_LIST_EXTENSION)) {
+            QUIFile::unlink($cachefile);
 
             return $original;
         }
 
-           // Nur wenn Extension in Whitelist ist dann Cache machen
-        if ( file_exists( $cachefile ) ) {
+        // Nur wenn Extension in Whitelist ist dann Cache machen
+        if (file_exists($cachefile)) {
             return $cachefile;
         }
 
         // Cachefolder erstellen
         $this->getParent()->createCache();
 
-        try
-        {
-            QUIFile::copy( $original, $cachefile );
+        try {
+            QUIFile::copy($original, $cachefile);
 
-        } catch ( QUI\Exception $Exception )
-        {
+        } catch (QUI\Exception $Exception) {
             // nothing
         }
 
@@ -77,16 +97,17 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
 
     /**
      * (non-PHPdoc)
+     *
      * @see \QUI\Interfaces\Projects\Media\File::deleteCache()
      */
     public function deleteCache()
     {
         $Media = $this->_Media;
 
-        $cdir = CMS_DIR . $Media->getCacheDir();
-        $file = $this->getAttribute( 'file' );
+        $cdir = CMS_DIR.$Media->getCacheDir();
+        $file = $this->getAttribute('file');
 
-        QUIFile::unlink( $cdir . $file );
+        QUIFile::unlink($cdir.$file);
     }
 
     /**
@@ -94,7 +115,17 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function generateMD5()
     {
-        $md5 = md5_file( $this->getFullPath() );
+        if (!file_exists($this->getFullPath())) {
+            throw new QUI\Exception(
+                QUI::getLocale()
+                   ->get('quiqqer/system', 'exception.file.not.found', array(
+                       'file' => $this->getAttribute('file')
+                   )),
+                404
+            );
+        }
+
+        $md5 = md5_file($this->getFullPath());
 
         $this->setAttribute('md5hash', $md5);
 
@@ -110,7 +141,17 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function generateSHA1()
     {
-        $sha1 = sha1_file( $this->getFullPath() );
+        if (!file_exists($this->getFullPath())) {
+            throw new QUI\Exception(
+                QUI::getLocale()
+                   ->get('quiqqer/system', 'exception.file.not.found', array(
+                       'file' => $this->getAttribute('file')
+                   )),
+                404
+            );
+        }
+
+        $sha1 = sha1_file($this->getFullPath());
 
         $this->setAttribute('sha1hash', $sha1);
 

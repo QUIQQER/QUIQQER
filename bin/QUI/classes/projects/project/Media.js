@@ -12,6 +12,14 @@
  * @require classes/projects/project/media/File
  * @require classes/projects/project/media/Folder
  * @require classes/projects/project/media/Trash
+ *
+ * @event onItemRename [ self, Item ]
+ * @event onItemRefresh [ self, Item ]
+ * @event onItemSave [ self, Item ]
+ * @event onItemDelete [ self, Item ]
+ * @event onItemActivate [ self, Item ]
+ * @event onItemDeactivate [ self, Item ]
+ * @event onItemRename [ self, Item ]
  */
 
 define('classes/projects/project/Media', [
@@ -87,67 +95,70 @@ define('classes/projects/project/Media', [
             return new Promise(function(resolve, reject)
             {
                 // id list
-                if ( typeOf( id ) == 'array' )
+                if (typeOf(id) == 'array')
                 {
                     var i, len, itemId;
                     var result = [];
 
-                    for ( i = 0, len = id.length; i < len; i++ )
+                    for (i = 0, len = id.length; i < len; i++)
                     {
-                        itemId = id[ i ];
+                        itemId = id[i];
 
-                        if ( self.$items[ itemId ] ) {
-                            result.push( self.$items[ itemId ] );
+                        if (self.$items[itemId]) {
+                            result.push(self.$items[itemId]);
                         }
                     }
 
-                    if ( result.length === len )
+                    if (result.length === len)
                     {
-                        if ( typeOf( params ) === 'function' ) {
-                            return params( result );
+                        if (typeOf(params) === 'function') {
+                            params(result);
                         }
 
-                        resolve( result );
+                        resolve(result);
+                        return;
                     }
                 }
 
                 // one id
-                if ( self.$items[ id ] )
+                if (id in self.$items)
                 {
-                    if ( typeOf( params ) === 'function' ) {
-                        return params( self.$items[ id ] );
+                    if (typeOf(params) === 'function') {
+                        params(self.$items[id]);
                     }
 
-                    resolve( self.$items[ id ] );
+                    resolve(self.$items[id]);
+                    return;
                 }
 
-                if ( typeOf( params ) === 'object' ) {
-                    return resolve( self.$parseResultToItem( params ) );
+                if (typeOf(params) === 'object') {
+                    resolve(self.$parseResultToItem(params));
+                    return;
                 }
 
                 Ajax.get('ajax_media_details', function(result)
                 {
-                    var children = self.$parseResultToItem( result );
+                    var children = self.$parseResultToItem(result);
 
-                    if ( typeOf( children ) == 'array' )
+                    if (typeOf(children) == 'array')
                     {
-                        for ( var i = 0, len = children.length; i < len; i++ ) {
-                            self.$items[ children[ i ].getId() ] = children[ i ];
+                        for (var i = 0, len = children.length; i < len; i++) {
+                            self.$items[children[i].getId()] = children[i];
                         }
 
                     } else
                     {
-                        self.$items[ children.getId() ] = children;
+                        self.$items[children.getId()] = children;
                     }
 
-                    if ( typeOf( params ) === 'function' ) {
-                        return params( children );
+                    if (typeOf(params) === 'function') {
+                        params(children);
                     }
 
-                    resolve( children );
+                    resolve(children);
 
                 }, {
-                    fileid  : JSON.encode( id ),
+                    fileid  : JSON.encode(id),
                     project : self.getProject().getName(),
                     onError : function(Exception)
                     {
@@ -175,13 +186,13 @@ define('classes/projects/project/Media', [
             {
                 Ajax.get('ajax_media_details', function(result)
                 {
-                    if ( typeOf( onfinish ) == 'function' ) {
-                        onfinish( result );
+                    if (typeOf(onfinish) === 'function') {
+                        onfinish(result);
                     }
 
-                    resolve( result );
+                    resolve(result);
                 }, {
-                    fileid  : JSON.encode( id ),
+                    fileid  : JSON.encode(id),
                     project : self.getProject().getName(),
                     onError : function(Exception)
                     {
@@ -199,7 +210,7 @@ define('classes/projects/project/Media', [
          */
         firstChild : function(callback)
         {
-            return this.get( 1, callback );
+            return this.get(1, callback);
         },
 
         /**
@@ -211,23 +222,32 @@ define('classes/projects/project/Media', [
          * @param {File} File         - Browser File Object
          * @param {Function} onfinish - callback function after the upload is finish
          *                              onfinish( {controls/upload/File} )
+         *
+         * @return Promise
          */
         replace : function(childid, File, onfinish)
         {
-            var self = this;
-
-            // upload file
-            require(['UploadManager'], function(UploadManager)
+            return new Promise(function(resolve, reject)
             {
-                UploadManager.uploadFiles( [ File ], 'ajax_media_replace', {
-                    project    : self.getProject().getName(),
-                    fileid     : childid,
-                    phponstart : 'ajax_media_checkreplace',
-                    events  : {
-                        onComplete : onfinish
-                    }
-                });
-            });
+                // upload file
+                require(['UploadManager'], function(UploadManager)
+                {
+                    UploadManager.uploadFiles([File], 'ajax_media_replace', {
+                        project    : this.getProject().getName(),
+                        fileid     : childid,
+                        phponstart : 'ajax_media_checkreplace',
+                        events     : {
+                            onComplete : function() {
+                                if (typeof onfinish === 'function') {
+                                    onfinish();
+                                }
+                                resolve();
+                            }
+                        }
+                    });
+                }.bind(this), reject);
+
+            }.bind(this));
         },
 
         /**
@@ -238,20 +258,42 @@ define('classes/projects/project/Media', [
          * @param {Number|Array} id       - Item list or an Item id
          * @param {Function} [oncomplete] - (optional), callback Function
          * @param {Object} [params]       - (optional), parameters that are linked to the request object
+         *
+         * @return Promise
          */
         activate : function(id, oncomplete, params)
         {
-            params = ObjectUtils.combine(params, {
-                project : this.getProject().getName(),
-                fileid  : JSON.encode( id )
-            });
-
-            Ajax.post('ajax_media_activate', function(result, Request)
+            return new Promise(function(resolve, reject)
             {
-                if ( oncomplete ) {
-                    oncomplete( result, Request );
-                }
-            }, params);
+                params = ObjectUtils.combine(params, {
+                    project : this.getProject().getName(),
+                    fileid  : JSON.encode( id ),
+                    onError : reject
+                });
+
+                Ajax.post('ajax_media_activate', function(result)
+                {
+                    if (typeOf(id) !== 'array') {
+                        if (typeof this.$items[id] !== 'undefined') {
+                            this.$items[id].setAttribute('active', result);
+                        }
+                    } else
+                    {
+                        id.each(function(id) {
+                            if (id in this.$items) {
+                                this.$items[id].setAttribute('active', result[id]);
+                            }
+                        }.bind(this));
+                    }
+
+                    if (typeof oncomplete === 'function') {
+                        oncomplete(result);
+                    }
+
+                    resolve(result);
+
+                }.bind(this), params);
+            }.bind(this));
         },
 
         /**
@@ -262,20 +304,43 @@ define('classes/projects/project/Media', [
          * @param {Number|Array} id       - Item list or an Item id
          * @param {Function} [oncomplete] - (optional), callback Function
          * @param {Object} [params]       - (optional), parameters that are linked to the request object
+         *
+         * @return Promise
          */
         deactivate : function(id, oncomplete, params)
         {
-            params = ObjectUtils.combine(params, {
-                project : this.getProject().getName(),
-                fileid  : JSON.encode( id )
-            });
-
-            Ajax.post('ajax_media_deactivate', function(result, Request)
+            return new Promise(function(resolve, reject)
             {
-                if ( oncomplete ) {
-                    oncomplete( result, Request );
-                }
-            }, params);
+                params = ObjectUtils.combine(params, {
+                    project : this.getProject().getName(),
+                    fileid  : JSON.encode(id),
+                    onError : reject
+                });
+
+                Ajax.post('ajax_media_deactivate', function (result)
+                {
+                    if (typeOf(id) !== 'array') {
+                        if (typeof this.$items[id] !== 'undefined') {
+                            this.$items[id].setAttribute('active', result);
+                        }
+                    } else
+                    {
+                        id.each(function(id) {
+                            if (id in this.$items) {
+                                this.$items[id].setAttribute('active', result[id]);
+                            }
+                        }.bind(this));
+                    }
+
+                    if (typeof oncomplete === 'function') {
+                        oncomplete(result);
+                    }
+
+                    resolve(result);
+
+                }.bind(this), params);
+
+            }.bind(this));
         },
 
         /**
@@ -286,30 +351,38 @@ define('classes/projects/project/Media', [
          * @param {Number|Array} id       - Item list or an Item id
          * @param {Function} [oncomplete] - (optional), callback Function
          * @param {Object} [params]       - (optional), parameters that are linked to the request object
+         *
+         * @return Promise
          */
         del : function(id, oncomplete, params)
         {
-            if ( !id.length )
+            return new Promise(function(resolve, reject)
             {
-                if ( typeof oncomplete !== 'undefined' ) {
-                    oncomplete( false );
+                if (!id.length) {
+                    if (typeof oncomplete === 'function') {
+                        oncomplete(false);
+                    }
+
+                    resolve(false);
+                    return;
                 }
 
-                return;
-            }
+                params = ObjectUtils.combine(params, {
+                    project: this.getProject().getName(),
+                    fileid: JSON.encode(id),
+                    onError: reject
+                });
 
+                Ajax.post('ajax_media_delete', function (result)
+                {
+                    if (typeof oncomplete === 'function') {
+                        oncomplete(result);
+                    }
 
-            params = ObjectUtils.combine(params, {
-                project : this.getProject().getName(),
-                fileid  : JSON.encode( id )
-            });
+                    resolve(false);
+                }, params);
 
-            Ajax.post('ajax_media_delete', function(result)
-            {
-                if ( typeof oncomplete !== 'undefined' ) {
-                    oncomplete( result );
-                }
-            }, params);
+            }.bind(this));
         },
 
         /**
@@ -319,35 +392,68 @@ define('classes/projects/project/Media', [
          */
         $parseResultToItem : function(result)
         {
-            if ( !result ) {
+            if (!result) {
                 return [];
             }
 
-            if ( typeOf( result ) == 'array' && result.length )
+            if (typeOf(result) == 'array' && result.length)
             {
                 var list = [];
 
-                for ( var i = 0, len = result.length; i < len; i++ )
+                for (var i = 0, len = result.length; i < len; i++)
                 {
                     list.push(
-                        this.$parseResultToItem( result[i] )
+                        this.$parseResultToItem(result[i])
                     );
                 }
 
                 return list;
             }
 
-            switch ( result.type )
+            if (result.id in this.$items) {
+                return this.$items[result.id];
+            }
+
+            var Item;
+            var self = this;
+
+            switch (result.type)
             {
                 case "image":
-                    return new MediaImage( result, this );
+                    Item = new MediaImage(result, this);
+                break;
 
                 case "folder":
-                    return new MediaFolder( result, this );
+                    Item = new MediaFolder(result, this);
+                break;
 
                 default:
-                    return new MediaFile( result, this );
+                    Item = new MediaFile(result, this);
+                break;
             }
+
+            Item.addEvents({
+                onRename : function(Item) {
+                    self.fireEvent('itemRename', [self, Item]);
+                },
+                onActivate : function(Item) {
+                    self.fireEvent('itemActivate', [self, Item]);
+                },
+                onDeactivate : function(Item) {
+                    self.fireEvent('itemDeactivate', [self, Item]);
+                },
+                onRefresh : function(Item) {
+                    self.fireEvent('itemRefresh', [self, Item]);
+                },
+                onSave : function(Item) {
+                    self.fireEvent('itemSave', [self, Item]);
+                },
+                onDelete : function(Item) {
+                    self.fireEvent('itemDelete', [self, Item]);
+                }
+            });
+
+            return Item;
         }
     });
 });

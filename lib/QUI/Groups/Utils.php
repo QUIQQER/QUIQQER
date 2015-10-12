@@ -13,26 +13,27 @@ use QUI\Utils\XML;
 /**
  * Helper for groups
  *
- * @author Henning Leutz (PCSG)
+ * @author  Henning Leutz (PCSG)
  * @package com.pcsg.qui.groups
+ * @licence For copyright and license information, please view the /README.md
  */
-
 class Utils
 {
     /**
      * JavaScript Buttons / Tabs for a group
      *
      * @param \QUI\Groups\Group $Group
+     *
      * @return \QUI\Controls\Toolbar\Bar
      */
     static function getGroupToolbar($Group)
     {
         $Tabbar = new QUI\Controls\Toolbar\Bar(array(
-            'name'  => 'UserToolbar'
+            'name' => 'UserToolbar'
         ));
 
         DOM::addTabsToToolbar(
-            XML::getTabsFromXml( SYS_DIR .'groups.xml' ),
+            XML::getTabsFromXml(SYS_DIR.'groups.xml'),
             $Tabbar,
             'pcsg'
         );
@@ -61,33 +62,33 @@ class Utils
             );
         }
         */
+
         return $Tabbar;
     }
 
     /**
      * Tab contents of a group Tab / Button
      *
-     * @param Integer $gid - Group ID
-     * @param String $plugin - Plugin
-     * @param String $tab - Tabname
+     * @param Integer $gid    - Group ID
+     * @param String  $plugin - Plugin
+     * @param String  $tab    - Tabname
      *
      * @return String
      */
     static function getTab($gid, $plugin, $tab)
     {
         $Groups = QUI::getGroups();
-        $Group  = $Groups->get( $gid );
-        $Engine = QUI::getTemplateManager()->getEngine( true );
+        $Group = $Groups->get($gid);
+        $Engine = QUI::getTemplateManager()->getEngine(true);
 
         $Engine->assign(array(
             'Group' => $Group
         ));
 
         // System
-        if ( $plugin === 'pcsg' )
-        {
+        if ($plugin === 'pcsg') {
             return DOM::getTabHTML(
-                $tab, SYS_DIR .'groups.xml'
+                $tab, SYS_DIR.'groups.xml'
             );
         }
 

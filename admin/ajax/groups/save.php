@@ -5,38 +5,36 @@
  *
  * @param integer $gid - Group-ID
  * @param string $attributes - Attributes, json array
- * @param string $rights     - Rights, json array
+ * @param string $rights - Rights, json array
  */
 function ajax_groups_save($gid, $attributes, $rights)
 {
-    $Groups = \QUI::getGroups();
-    $Group  = $Groups->get( (int)$gid );
+    $Groups = QUI::getGroups();
+    $Group  = $Groups->get((int)$gid);
 
-    $attributes = json_decode( $attributes, true);
-    $rights     = json_decode( $rights, true );
+    $attributes = json_decode($attributes, true);
+    $rights     = json_decode($rights, true);
 
-    $Group->setRights( $rights );
-    $Group->setAttributes( $attributes );
+    $Group->setRights($rights);
+    $Group->setAttributes($attributes);
     $Group->save();
 
-    if ( isset( $attributes['active'] ) )
-    {
-        if ( $attributes['active'] == 1 )
-        {
+    if (isset($attributes['active'])) {
+        if ($attributes['active'] == 1) {
             $Group->activate();
-        } else
-        {
+        } else {
             $Group->deactivate();
         }
     }
 
-    \QUI::getMessagesHandler()->addSuccess(
-        'Die Gruppe '. $Group->getAttribute('name') .' wurde erfolgreich gespeichert'
+    // #locale
+    QUI::getMessagesHandler()->addSuccess(
+        'Die Gruppe ' . $Group->getAttribute('name') . ' wurde erfolgreich gespeichert'
     );
 }
 
-\QUI::$Ajax->register(
-	'ajax_groups_save',
-    array( 'gid', 'attributes', 'rights' ),
+QUI::$Ajax->register(
+    'ajax_groups_save',
+    array('gid', 'attributes', 'rights'),
     'Permission::checkSU'
 );

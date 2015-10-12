@@ -12,7 +12,8 @@ use QUI;
  * Tidy Test
  *
  * @package quiqqer/quiqqer
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  */
 class Tidy extends QUI\System\Test
 {
@@ -36,7 +37,7 @@ class Tidy extends QUI\System\Test
      */
     public function execute()
     {
-        if ( class_exists( 'tidy' ) ) {
+        if (class_exists('tidy')) {
             return self::STATUS_OK;
         }
 

@@ -15,7 +15,7 @@
  * @require qui/controls/windows/Popup
  * @require qui/controls/windows/Submit
  * @require qui/controls/messages/Panel
- * @require controls/welcome/Panel
+ * @require controls/help/Welcome
  * @require controls/desktop/panels/Help
  * @require controls/desktop/panels/Bookmarks
  * @require controls/projects/project/Panel
@@ -27,7 +27,7 @@
  * @event onLoadWorkspace [ {self} ]
  */
 
-define([
+define('controls/workspace/Manager', [
 
     'qui/QUI',
     'qui/controls/Control',
@@ -43,7 +43,7 @@ define([
     'qui/controls/contextmenu/Seperator',
     'qui/utils/Controls',
 
-    'controls/welcome/Panel',
+    'controls/help/Dashboard',
     'controls/desktop/panels/Help',
     'controls/desktop/panels/Bookmarks',
     'controls/projects/project/Panel',
@@ -434,6 +434,7 @@ define([
                     MH.addError( 'Workspace not found' );
                 });
 
+                this.Loader.hide();
                 return;
             }
 
@@ -450,7 +451,10 @@ define([
 
             } catch ( e )
             {
-                alert( 'Die Daten Ihres Arbeitsbereiches sind fehlerhaft.' );
+                // #locale
+                QUI.getMessageHandler().then(function(MH) {
+                    MH.addError('Die Daten Ihres Arbeitsbereiches sind fehlerhaft.');
+                });
 
                 this.Workspace.clear();
                 this.Loader.hide();
@@ -546,7 +550,7 @@ define([
          */
         $useBestWorkspace : function()
         {
-
+            this.Loader.hide();
         },
 
         /**
@@ -913,7 +917,7 @@ define([
                 var RemovePanels = new QUIContextmenuItem({
                     text : 'Panel löschen',
                     name : 'removePanelOfColumn',
-                    icon : 'icon-trash'
+                    icon : 'fa fa-trash-o icon-trash'
                 });
 
                 Menu.appendChild( RemovePanels );
@@ -994,7 +998,7 @@ define([
             Menu.appendChild(
                 new QUIContextmenuItem({
                     text   : 'Spalte löschen',
-                    icon   : 'icon-trash',
+                    icon   : 'fa fa-trash-o icon-trash',
                     name   : 'removeColumn',
                     events :
                     {
@@ -1075,7 +1079,7 @@ define([
                 autoclose : false,
                 ok_button : {
                     text      : 'Erstellen',
-                    textimage : 'icon-ok'
+                    textimage : 'fa fa-check icon-ok'
                 },
                 cancel_button : {
                     text      : 'Abbrechen',
@@ -1327,7 +1331,7 @@ define([
                             }],
                             buttons : [{
                                 text      : 'Markierte Arbeitsbereiche löschen',
-                                textimage : 'icon-trash',
+                                textimage : 'fa fa-trash-o icon-trash',
                                 disabled  : true,
                                 events    :
                                 {
@@ -1345,7 +1349,7 @@ define([
                                         Win.close();
 
                                         new QUIConfirm({
-                                            icon   : 'icon-trash',
+                                            icon   : 'fa fa-trash-o icon-trash',
                                             title  : 'Arbeitsbereiche löschen?',
                                             text   : 'Möchten Sie folgende Arbeitsbereiche wirklich löschen?',
                                             information : ids.join( ',' ),
@@ -1471,6 +1475,7 @@ define([
                             width   = size.x,
                             height  = size.y;
 
+                        // #locale
                         Content.set(
                             'html',
 
@@ -1512,6 +1517,7 @@ define([
                             return;
                         }
 
+                        // #locale
                         // no workspaces available
                         Content.set(
                             'html',

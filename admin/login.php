@@ -1,3 +1,8 @@
+<?php
+
+$languages = QUI::availableLanguages();
+
+?>
 <!doctype html>
 <!--[if lt IE 7 ]><html class="ie ie6" lang="de"> <![endif]-->
 <!--[if IE 7 ]><html class="ie ie7" lang="de"> <![endif]-->
@@ -44,7 +49,7 @@
         }
 
         .entry {
-            width: 360px;
+            width: 440px;
             margin: 10px auto;
         }
 
@@ -60,7 +65,7 @@
         }
 
         label {
-            width: 100px;
+            width: 160px;
             cursor: pointer;
             float: left;
             line-height: 26px;
@@ -84,9 +89,10 @@
         }
 
         .logininput {
+            float: left;
             margin: 0 auto;
-            padding-left: 100px;
-            width: 360px;
+            padding-left: 240px;
+            width: 100%;
         }
 
         input[type="submit"] {
@@ -106,7 +112,7 @@
 
         #username,
         #password {
-            width: 200px;
+            width: calc(100% - 160px);
         }
 
         /* Animate.css - http://daneden.me/animate */
@@ -242,7 +248,9 @@
 
     document.id( window ).addEvent('load', function()
     {
-        require(['qui/controls/buttons/Select'], function(QUISelect)
+        require([
+            'qui/controls/buttons/Select'
+        ], function(QUISelect)
         {
             var Logo = document.getElement( '.logo'),
                 Linp = document.getElement( '.logininput' );
@@ -253,9 +261,10 @@
             document.id( 'username' ).focus();
 
             window.LangSelect = new QUISelect({
+                maxDropDownHeight : 300,
                 styles : {
                     marginLeft: 10,
-                    width: 50
+                    width: 130
                 },
                 events :
                 {
@@ -265,18 +274,35 @@
                 }
             }).inject( Linp );
 
-            window.LangSelect.appendChild(
-                'Deutsch',
-                'de',
-                '<?php echo URL_BIN_DIR; ?>16x16/flags/de.png'
-            );
+            <?php
 
-            window.LangSelect.appendChild(
-                'English',
-                'en',
-                '<?php echo URL_BIN_DIR; ?>16x16/flags/en.png'
-            );
+                $url_bin_dir = URL_BIN_DIR;
 
+                foreach ( $languages as $lang )
+                {
+                    $langText = '';
+
+                    switch ( $lang )
+                    {
+                        case 'de': $langText = 'Deutsch'; break;
+                        case 'en': $langText = 'English'; break;
+
+                        default:
+                            continue 2;
+                    }
+
+                    echo "
+
+                        window.LangSelect.appendChild(
+                            '{$langText}',
+                            '{$lang}',
+                            '{$url_bin_dir}16x16/flags/{$lang}.png'
+                        );
+
+                    ";
+                }
+
+            ?>
 
             // browser language
             var lang = 'en';
@@ -312,6 +338,9 @@
             }
 
             window.setLanguage( lang );
+
+
+            document.id('username').focus();
         });
     });
 
@@ -364,7 +393,9 @@
 <body>
 <?php
 
-    QUI::getLocale()->setCurrent( 'de' );
+    if ( isset( $languages[ 0 ] ) ) {
+        QUI::getLocale()->setCurrent( $languages[ 0 ] );
+    }
 
 ?>
 <div class="container">

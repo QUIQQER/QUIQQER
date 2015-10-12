@@ -5,19 +5,18 @@
  * if the browser supports no html5 upload
  */
 
-$dir = str_replace('lib/QUI/Upload/bin', '', dirname( __FILE__ ));
+$dir = str_replace('quiqqer/quiqqer/lib/QUI/Upload/bin', '', dirname(__FILE__));
 
-require_once $dir .'bootstrap.php';
+require_once $dir.'header.php';
 
 $QUM = new \QUI\Upload\Manager();
 
-try
-{
+try {
     $QUM->init();
 
-} catch ( \QUI\Exception $Exception )
-{
-    \QUI\System\Log::writeException( $Exception );
+} catch (\QUI\Exception $Exception) {
 
-    $QUM->flushMessage( $Exception->toArray() );
+    \QUI\System\Log::writeException($Exception);
+
+    $QUM->flushMessage($Exception->toArray());
 }

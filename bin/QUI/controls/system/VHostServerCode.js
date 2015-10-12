@@ -185,7 +185,7 @@ define('controls/system/VHostServerCode', [
 
                 // site button
                 var SiteButton = new QUIButton({
-                    textimage : 'icon-file-alt',
+                    textimage : 'fa fa-file-o icon-file-alt',
                     text : 'Seite auswählen',
                     events :
                     {

@@ -11,7 +11,8 @@ namespace QUI\Utils;
  *
  * Provides methods for \QUI\Projects\Site manipulation
  *
- * @author www.pcsg.de (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  */
 
 class Site
@@ -20,29 +21,27 @@ class Site
      * Set a attribute recursive from its parents if the attribute is not set
      *
      * @param \QUI\Projects\Site $Site
-     * @param String $attribute
+     * @param String             $attribute
      */
     static function setRecursivAttribute(\QUI\Projects\Site $Site, $attribute)
     {
-        $value = $Site->getAttribute( $attribute );
+        $value = $Site->getAttribute($attribute);
 
-        if ( !empty( $value ) ) {
+        if (!empty($value)) {
             return;
         }
 
         $Parent = $Site->getParent();
 
-        while ( $Parent )
-        {
-            $value = $Parent->getAttribute( $attribute );
+        while ($Parent) {
+            $value = $Parent->getAttribute($attribute);
 
-            if ( !empty( $value ) )
-            {
-                $Site->setAttribute( $attribute, $value );
+            if (!empty($value)) {
+                $Site->setAttribute($attribute, $value);
                 break;
             }
 
-            if ( !$Parent->getParentId() ) {
+            if (!$Parent->getParentId()) {
                 break;
             }
 

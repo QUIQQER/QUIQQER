@@ -8,8 +8,8 @@
  */
 function ajax_downloadTest()
 {
-    sleep( 2 );
-    QUI\Utils\System\File::downloadHeader( CMS_DIR .'README.md' );
+    sleep(2);
+    QUI\Utils\System\File::downloadHeader(OPT_DIR.'quiqqer/quiqqer/README.md');
 }
 
 QUI::$Ajax->register(

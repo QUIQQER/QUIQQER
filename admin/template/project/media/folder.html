@@ -1,0 +1,102 @@
+<div class="qui-media-folder-details">
+    <table class="data-table">
+    <thead>
+        <tr>
+            <th colspan="2">
+                {t}quiqqer/system template.project.media.file.header{/t}
+            </th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr class="{cycle values="odd,even" reset="true"}">
+            <td>{t}quiqqer/system name{/t}</td>
+            <td><input type="text" name="name" value="" /></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>{t}quiqqer/system title{/t}</td>
+            <td><input type="text" name="title" value="" /></td>
+        </tr>
+    </tbody>
+    </table>
+
+    <table class="data-table">
+    <thead>
+        <tr>
+            <th>{t}quiqqer/system description{/t}</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr class="{cycle values="odd,even" reset=true}">
+            <td>
+                <textarea name="short"></textarea>
+            </td>
+        </tr>
+    </tbody>
+    </table>
+
+
+    <table class="data-table">
+    <thead>
+        <tr>
+            <th colspan="2">
+                {t}quiqqer/system template.project.media.file.header{/t}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="{cycle values="odd,even" reset="true"}">
+            <td>{t}quiqqer/system id{/t}</td>
+            <td><input type="text" name="id" disabled="disabled" value="" /></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>{t}quiqqer/system template.project.media.folder.path{/t}</td>
+            <td><input type="text" name="path" disabled="disabled" value="" /></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>{t}quiqqer/system template.project.media.file.lastedit{/t}</td>
+            <td><input type="text" name="edate" disabled="disabled" value="" /></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td>{t}quiqqer/system template.project.media.folder.order{/t}</td>
+            <td>
+                <select name="order">
+                    <option value=""></option>
+                    <option value="priority ASC">
+                        {locale group="quiqqer/system" var="priority_asc"}
+                    </option>
+                    <option value="priority DESC">
+                        {locale group="quiqqer/system" var="priority_desc"}
+                    </option>
+                    <option value="c_date ASC">
+                        {locale group="quiqqer/system" var="c_date_asc"}
+                    </option>
+                    <option value="c_date DESC">
+                        {locale group="quiqqer/system" var="c_date_desc"}
+                    </option>
+                    <option value="name ASC">
+                        {locale group="quiqqer/system" var="name_asc"}
+                    </option>
+                    <option value="name DESC">
+                        {locale group="quiqqer/system" var="name_desc"}
+                    </option>
+                    <option value="title ASC">
+                        {locale group="quiqqer/system" var="name_asc"}
+                    </option>
+                    <option value="title DESC">
+                        {locale group="quiqqer/system" var="name_desc"}
+                    </option>
+                    <option value="id ASC">
+                        {locale group="quiqqer/system" var="id_asc"}
+                    </option>
+                    <option value="id DESC">
+                        {locale group="quiqqer/system" var="id_desc"}
+                    </option>
+                </select>
+            </td>
+        </tr>
+    </tbody>
+    </table>
+
+</div>

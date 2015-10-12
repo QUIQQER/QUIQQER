@@ -4,6 +4,10 @@
  *
  * @module classes/packages/Manager
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/QUI
+ * @require qui/classes/DOM
+ * @require Ajax
  */
 
 define('classes/packages/Manager', [
@@ -34,17 +38,26 @@ define('classes/packages/Manager', [
          *
          * @param {String} [pkg] - (optional), Package name, if no package name given, complete setup are executed
          * @param {Function} [callback] - (optional), callback function
+         * @return Promise
          */
         setup : function(pkg, callback)
         {
-            Ajax.post('ajax_system_setup', function()
+            return new Promise(function(resolve, reject)
             {
-                if ( typeof callback !== 'undefined' ) {
-                    callback();
-                }
+                Ajax.post('ajax_system_setup', function ()
+                {
+                    if (typeOf(callback) === 'function') {
+                        callback();
+                    }
 
-            }, {
-                'package' : pkg || false
+                    resolve();
+
+                }, {
+                    'package': pkg || false,
+                    onError : function(Exception) {
+                        reject( Exception );
+                    }
+                });
             });
         },
 
@@ -53,95 +66,230 @@ define('classes/packages/Manager', [
          *
          * @param {String} [pkg] - (optional), Package name, if no package name given, complete update are executed
          * @param {Function} [callback] - (optional), callback function
+         * @return Promise
          */
         update : function(pkg, callback)
         {
-            Ajax.post('ajax_system_update', function(result)
+            return new Promise(function(resolve, reject)
             {
-                if ( typeof callback !== 'undefined' ) {
-                    callback( result );
-                }
-            }, {
-                'package' : pkg || false
+                Ajax.post('ajax_system_update', function(result)
+                {
+                    if ( typeOf(callback) === 'function' ) {
+                        callback( result );
+                    }
+
+                    resolve( result );
+                }, {
+                    'package' : pkg || false,
+                    onError : function(Exception) {
+                        reject( Exception );
+                    }
+                });
             });
         },
 
         /**
          * Execute a system or plugin update with an internal local server
          *
-         * @param {Function} [callback]
+         * @param {Function} [callback] - optional
+         * @return Promise
          */
         updateWithLocalServer : function(callback)
         {
-            Ajax.post('ajax_system_updateWithLocalServer', function(result)
+            return new Promise(function(resolve, reject)
             {
-                if ( typeof callback !== 'undefined' ) {
-                    callback( result );
-                }
+                Ajax.post('ajax_system_updateWithLocalServer', function(result)
+                {
+                    if ( typeOf(callback) === 'function' ) {
+                        callback( result );
+                    }
+
+                    resolve( result );
+                }, {
+                    onError : function(Exception) {
+                        reject( Exception );
+                    }
+                });
+            });
+        },
+
+        /**
+         * Activate the local repository
+         *
+         * @param {Function} [callback] - optional
+         * @returns {Promise}
+         */
+        activateLocalServer : function(callback)
+        {
+            return new Promise(function(resolve, reject)
+            {
+                Ajax.post('ajax_system_activateLocalServer', function()
+                {
+                    if ( typeOf(callback) === 'function' ) {
+                        callback();
+                    }
+
+                    resolve();
+                }, {
+                    onError : function(Exception) {
+                        reject( Exception );
+                    }
+                });
+            });
+        },
+
+        /**
+         * install a local package
+         *
+         * @param {String|Array} packages - name of the package
+         * @param {Function} [callback] - optional
+         * @returns {Promise}
+         */
+        installLocalPackages : function(packages, callback)
+        {
+            return new Promise(function(resolve, reject)
+            {
+                Ajax.post('ajax_system_packages_installLocalePackage', function ()
+                {
+                    if ( typeOf(callback) === 'function' ) {
+                        callback();
+                    }
+
+                    resolve();
+                }, {
+                    packages: JSON.encode(packages),
+                    onError: function ()
+                    {
+                        reject();
+                    }
+                });
+            });
+        },
+
+        /**
+         * Read the locale repository and search installable packages
+         *
+         * @param {Function} [callback] - optional
+         * @return Promise
+         */
+        readLocalRepository : function(callback)
+        {
+            return new Promise(function(resolve, reject)
+            {
+                Ajax.post('ajax_system_readLocalRepository', function(result)
+                {
+                    if ( typeOf(callback) === 'function' ) {
+                        callback( result );
+                    }
+
+                    resolve( result );
+                }, {
+                    onError : function(Exception) {
+                        reject( Exception );
+                    }
+                });
             });
         },
 
         /**
          * Check, if updates are available
          *
-         * @param {Function} callback - callback function
+         * @param {Function} [callback] - callback function
+         * @return Promise
          */
         checkUpdate : function(callback)
         {
-            Ajax.get( 'ajax_system_update_check', callback );
+            return new Promise(function(resolve, reject)
+            {
+                Ajax.get( 'ajax_system_update_check', function(result)
+                {
+                    if ( typeOf(callback) === 'function' ) {
+                        callback( result );
+                    }
+
+                    resolve( result );
+                }, {
+                    onError : function(Exception) {
+                        reject( Exception );
+                    }
+                });
+            });
         },
 
         /**
          * Return the data of one package
          *
-         * @param {String} pkg        - Package name
-         * @param {Function} callback - callback function
+         * @param {String} pkg          - Package name
+         * @param {Function} [callback] - optional, callback function
+         * @return Promise
          */
         getPackage : function(pkg, callback)
         {
-            if ( this.$packages[ pkg ] )
-            {
-                callback( this.$packages[ pkg ] );
-                return;
-            }
-
             var self = this;
 
-            Ajax.get('ajax_system_packages_get', function(result)
+            return new Promise(function(resolve, reject)
             {
-                self.$packages[ pkg ] = result;
+                if ( self.$packages[ pkg ] )
+                {
+                    if ( typeOf(callback) === 'function' ) {
+                        callback( self.$packages[ pkg ] );
+                    }
 
-                if ( typeof callback !== 'undefined' ) {
-                    callback( result );
+                    resolve( self.$packages[ pkg ] );
+                    return;
                 }
-            }, {
-                'package' : pkg
+
+                Ajax.get('ajax_system_packages_get', function(result)
+                {
+                    self.$packages[ pkg ] = result;
+
+                    if ( typeOf(callback) === 'function' ) {
+                        callback( result );
+                    }
+
+                    resolve( result );
+
+                }, {
+                    'package' : pkg,
+                    onError : function(Exception) {
+                        reject( Exception );
+                    }
+                });
             });
         },
 
         /**
          * Change / Set the Version for a package
          *
-         * @param {String} pkg - Name of the package
-         * @param {String} version - Version of the package
-         * @param {Function} callback - callback function
+         * @param {String} pkg          - Name of the package
+         * @param {String} version      - Version of the package
+         * @param {Function} [callback] - callback function
+         * @return Promise
          */
         setVersion : function(pkg, version, callback)
         {
             var self = this;
 
-            Ajax.post('ajax_system_packages_setVersion', function(result)
+            return new Promise(function(resolve, reject)
             {
-                self.update(pkg, function()
+                Ajax.post('ajax_system_packages_setVersion', function (result)
                 {
-                    if ( typeof callback !== 'undefined' ) {
-                        callback( result );
+                    self.update(pkg).done(function()
+                    {
+                        if ( typeOf(callback) === 'function' ) {
+                            callback( result );
+                        }
+
+                        resolve( result );
+
+                    }, reject);
+                }, {
+                    packages: JSON.encode(pkg),
+                    version: version,
+                    onError : function(Exception) {
+                        reject( Exception );
                     }
                 });
-
-            }, {
-                packages : JSON.encode( pkg ),
-                version  : version
             });
         }
     });

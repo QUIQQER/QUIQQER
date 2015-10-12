@@ -8,7 +8,6 @@
  * @require qui/controls/Control
  * @require qui/controls/buttons/Button
  * @require controls/projects/Popup
- * @require Ajax
  * @require css!controls/projects/project/site/Input.css
  */
 
@@ -17,11 +16,10 @@ define('controls/projects/project/site/Input', [
     'qui/controls/Control',
     'qui/controls/buttons/Button',
     'controls/projects/Popup',
-    'Ajax',
 
     'css!controls/projects/project/site/Input.css'
 
-], function(QUIControl, QUIButton, ProjectPopup, Ajax)
+], function(QUIControl, QUIButton, ProjectPopup)
 {
     "use strict";
 
@@ -39,12 +37,14 @@ define('controls/projects/project/site/Input', [
         Type    : 'controls/projects/project/site/Input',
 
         Binds : [
-            '$onCreate'
+            '$onCreate',
+            '$onImport'
         ],
 
         options : {
-            name   : '',
-            styles : false
+            name     : '',
+            styles   : false,
+            external : false // external sites allowed?
         },
 
         initialize : function(options, Input)
@@ -53,6 +53,10 @@ define('controls/projects/project/site/Input', [
 
             this.$Input      = Input || null;
             this.$SiteButton = null;
+
+            this.addEvents({
+                onImport : this.$onImport
+            });
         },
 
         /**
@@ -63,7 +67,8 @@ define('controls/projects/project/site/Input', [
         create : function()
         {
             this.$Elm = new Element('div', {
-                'class' : 'qui-controls-project-site-input box'
+                'class'      : 'qui-controls-project-site-input box',
+                'data-quiid' : this.getId()
             });
 
             if ( !this.$Input )
@@ -75,6 +80,10 @@ define('controls/projects/project/site/Input', [
             } else
             {
                 this.$Elm.wraps( this.$Input );
+
+                if ( this.$Input.get( 'data-external' ) ) {
+                    this.setAttribute( 'external', true );
+                }
             }
 
             if ( this.getAttribute( 'styles' ) ) {
@@ -85,10 +94,14 @@ define('controls/projects/project/site/Input', [
                 'float' : 'left'
             });
 
+            if ( !this.getAttribute( 'external' ) ) {
+                this.$Input.setStyle( 'cursor', 'pointer' );
+            }
+
             var self = this;
 
             this.$SiteButton = new QUIButton({
-                icon   : 'icon-file-alt',
+                icon   : 'fa fa-file-o icon-file-alt',
                 events :
                 {
                     onClick : function()
@@ -118,13 +131,25 @@ define('controls/projects/project/site/Input', [
             }).inject( this.$Elm );
 
 
-            this.$Input.addEvents({
-                focus : function() {
-                    self.$SiteButton.click();
-                }
-            });
+            if ( !self.getAttribute( 'external' ) )
+            {
+                this.$Input.addEvents({
+                    focus: function () {
+                        self.$SiteButton.click();
+                    }
+                });
+            }
 
             return this.$Elm;
+        },
+
+        /**
+         * event : on import
+         */
+        $onImport : function()
+        {
+            this.$Input = this.$Elm;
+            this.create();
         }
     });
 });

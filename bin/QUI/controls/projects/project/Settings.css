@@ -13,6 +13,12 @@
     width: 33%;
 }
 
+.qui-project-settings td.first-100 {
+    max-width: 100%;
+    padding: 10px;
+    width: 100%;
+}
+
 .qui-project-settings td {
     padding: 5px 0;
     vertical-align: top;
@@ -51,4 +57,9 @@
 .qui-project-settings .description {
     font-style: italic;
     padding: 10px 0 0;
+}
+
+.qui-project-settings .description-no-padding {
+    font-style: italic;
+    padding: 0;
 }

@@ -135,6 +135,7 @@ define('controls/projects/TypeSitemap', [
                         Locale.get( 'quiqqer/system', 'projects.typesitemap.message.no.types' )
                     );
 
+                    self.fireEvent( 'load', [ self ] );
                     return;
                 }
 
@@ -210,10 +211,9 @@ define('controls/projects/TypeSitemap', [
                             icon  : icon
                         }).inject( Plugin );
                     }
-
-                    self.fireEvent( 'load', [ self ] );
                 }
 
+                self.fireEvent( 'load', [ self ] );
                 First.open();
 
             }, {

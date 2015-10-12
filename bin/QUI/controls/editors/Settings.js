@@ -95,7 +95,7 @@ define('controls/editors/Settings', [
                     'quiqqer/system',
                     'editors.settings.btn.delete.toolbar'
                 ),
-                textimage : 'icon-trash',
+                textimage : 'fa fa-trash-o icon-trash',
                 disabled : true,
                 events :
                 {
@@ -313,7 +313,7 @@ define('controls/editors/Settings', [
                     'quiqqer/system',
                     'editors.settings.delete.window.title'
                 ),
-                icon : 'icon-trash',
+                icon : 'fa fa-trash-o icon-trash',
                 text : Locale.get(
                     'quiqqer/system',
                     'editors.settings.delete.window.text',

@@ -32,6 +32,10 @@
     text-align: left;
 }
 
+.data-table th .description {
+    font-size: 12px;
+}
+
 .data-table tr,
 .data-table tbody,
 .data-table thead,
@@ -82,8 +86,9 @@
     width: 150px;
 }
 
+.data-table .qui-users-and-groups label,
 .data-table td label.hasCheckbox {
-    width: 100%;
+    width: 100% !important;
 }
 
 .data-table td p {

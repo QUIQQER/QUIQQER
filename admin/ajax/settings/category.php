@@ -1,25 +1,60 @@
 <?php
 
 /**
+ * Return a xml category
  *
+ * @param array $file - list of xml files
+ * @param $category
+ * @return String
  */
 function ajax_settings_category($file, $category)
 {
-    if ( !file_exists( $file ) ) {
-        return '';
+    if (file_exists($file)) {
+        $files = array($file);
+    } else {
+        $files = json_decode($file, true);
     }
 
-    $Category = \QUI\Utils\XML::getSettingCategoriesFromXml( $file, $category );
+    $result    = '';
+    $cacheName = 'qui/admin/menu/categories/' . md5($file) . '/' . $category;
 
-    if ( !$Category ) {
-        return '';
+    try {
+        return QUI\Cache\Manager::get($cacheName);
+
+    } catch (QUI\Exception $Exception) {
+
     }
 
-    return \QUI\Utils\DOM::parseCategorieToHTML( $Category );
+    if (!is_array($files)) {
+        $files = array($files);
+    }
+
+    foreach ($files as $file) {
+
+        if (!file_exists($file)) {
+            continue;
+        }
+
+        $Category = QUI\Utils\XML::getSettingCategoriesFromXml(
+            $file,
+            $category
+        );
+
+        if (!$Category) {
+            continue;
+        }
+
+        $result .= QUI\Utils\DOM::parseCategorieToHTML($Category);
+    }
+
+
+    QUI\Cache\Manager::set($cacheName, $result);
+
+    return $result;
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_settings_category',
-    array( 'file', 'category' ),
+    array('file', 'category'),
     'Permission::checkAdminUser'
 );

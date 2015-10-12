@@ -18,7 +18,6 @@
  * @require Locale
  * @require css!controls/users/User.css
  */
-
 define('controls/users/User', [
 
     'qui/QUI',
@@ -67,11 +66,14 @@ define('controls/users/User', [
 
         initialize : function(uid, options)
         {
-            this.$User        = Users.get( uid );
+            if (typeOf(uid) === 'string' || typeOf(uid) === 'number') {
+                this.$User = Users.get(uid);
+                this.setAttribute( 'name', 'user-panel-'+ uid );
+            }
+
             this.$AddressGrid = null;
 
             // defaults
-            this.setAttribute( 'name', 'user-panel-'+ uid );
             this.parent( options );
 
             this.addEvents({
@@ -79,7 +81,36 @@ define('controls/users/User', [
                 onDestroy : this.$onDestroy
             });
 
-            Users.addEvent( 'onDelete', this.$onUserDelete );
+            Users.addEvent('onDelete', this.$onUserDelete);
+        },
+
+        /**
+         * Save the group panel to the workspace
+         *
+         * @return {Object} data
+         */
+        serialize : function()
+        {
+            return {
+                attributes : this.getAttributes(),
+                userid     : this.getUser().getId(),
+                type       : this.getType()
+            };
+        },
+
+        /**
+         * import the saved data form the workspace
+         *
+         * @param {Object} data
+         * @return {Object} this (controls/users/User)
+         */
+        unserialize : function(data)
+        {
+            this.setAttributes(data.attributes);
+
+            this.$User = Users.get(data.userid);
+
+            return this;
         },
 
         /**
@@ -132,7 +163,7 @@ define('controls/users/User', [
                     onClick : this.$onClickDel
                 },
                 text      : Locale.get( lg, 'users.user.btn.delete' ),
-                textimage : 'icon-trash'
+                textimage : 'fa fa-trash-o icon-trash'
             });
 
             // permissions
@@ -450,12 +481,12 @@ define('controls/users/User', [
             new QUIConfirm({
                 name  : 'DeleteUser',
                 title : Locale.get( lg, 'users.user.window.delete.title' ),
-                icon  : 'icon-trash',
+                icon  : 'fa fa-trash-o icon-trash',
                 text  : Locale.get( lg, 'users.user.window.delete.text', {
                     userid   : this.getUser().getId(),
                     username : this.getUser().getName()
                 }),
-                texticon    : 'icon-trash',
+                texticon    : 'fa fa-trash-o icon-trash',
                 information : Locale.get( lg, 'users.user.window.delete.information' ),
 
                 width  : 500,

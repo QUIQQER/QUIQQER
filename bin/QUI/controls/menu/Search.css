@@ -1,0 +1,38 @@
+
+.control-menu-search {
+    border-left: 1px solid #d1d4da;
+    float: left;
+    height: 40px;
+    padding: 0 10px;
+    z-index: 10;
+}
+
+.control-menu-search button {
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    height: 40px;
+}
+
+.control-menu-search button:hover {
+    background: #d1d4da;
+    color: #606060;
+}
+
+
+.control-menu-search .qui-button-drop {
+    display: none;
+}
+
+
+.control-menu-search-input {
+    border: 1px solid #dedede;
+    float: left;
+    margin: 5px 0 0 5px;
+    padding: 5px;
+}
+
+.control-menu-search-input:focus,
+.control-menu-search-input:hover {
+    border: 1px solid #999;
+}

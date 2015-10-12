@@ -21,10 +21,11 @@ define('classes/projects/Project', [
 
     'qui/classes/DOM',
     'Ajax',
+    'Locale',
     'classes/projects/project/Site',
     'classes/projects/project/Media'
 
-], function(QDOM, Ajax, ProjectSite, Media)
+], function(QDOM, Ajax, QUILocale, ProjectSite, Media)
 {
     "use strict";
 
@@ -157,6 +158,10 @@ define('classes/projects/Project', [
 
                 callback( self.$config );
 
+                require(['Projects'], function(Projects) {
+                    Projects.fireEvent( 'projectSave', [ self ] );
+                });
+
             }, {
                 project : this.getName()
             });
@@ -173,13 +178,15 @@ define('classes/projects/Project', [
         {
             var self = this;
 
-            Ajax.get('ajax_project_set_config', function(result)
+            Ajax.post('ajax_project_set_config', function(result)
             {
                 self.$config = false;
 
                 if ( typeof callback === 'function' ) {
                     callback( result );
                 }
+
+                self.fireEvent( 'save' );
             }, {
                 project : this.getName(),
                 params  : JSON.encode( params || false )
@@ -236,6 +243,22 @@ define('classes/projects/Project', [
         getLang : function()
         {
             return this.getAttribute( 'lang' );
+        },
+
+        /**
+         * Return the project title
+         *
+         * @returns {String}
+         */
+        getTitle : function()
+        {
+            var group = 'project/'+ this.getName();
+
+            if (QUILocale.exists(group, 'title')) {
+                return QUILocale.get(group, 'title');
+            }
+
+            return this.getName();
         },
 
         /**

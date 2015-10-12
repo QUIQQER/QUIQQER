@@ -16,6 +16,15 @@
             <field type="TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00'">expire</field>
             <field type="TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00'">lastedit</field>
             <field type="TEXT NOT NULL">user_agent</field>
+            <field type="VARCHAR(40) DEFAULT NULL">firstname</field>
+            <field type="VARCHAR(40) DEFAULT NULL">lastname</field>
+            <field type="VARCHAR(40) DEFAULT NULL">usertitle</field>
+            <field type="VARCHAR(12) DEFAULT NULL">birthday</field>
+            <field type="TEXT DEFAULT NULL">avatar</field>
+            <field type="TEXT DEFAULT NULL">extra</field>
+            <field type="VARCHAR(2) DEFAULT NULL">lang</field>
+            <field type="INT(11) DEFAULT NULL">address</field>
+            <field type="TEXT(32) DEFAULT NULL">secHash</field>
 
             <primary>id</primary>
             <index>username,password</index>
@@ -47,7 +56,12 @@
 
             <primary>session_id</primary>
         </table>
-
     </global>
+
+    <projects>
+        <table name="paths" no-auto-update="1">
+            <field type="TEXT NOT NULL">path</field>
+        </table>
+    </projects>
 
 </database>

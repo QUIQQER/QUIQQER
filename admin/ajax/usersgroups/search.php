@@ -1,29 +1,32 @@
 <?php
 
 /**
- * Benutzer und Gruppen suchen
+ * Search groups
  *
  * @param String $params
+ * @return Array
  */
 function ajax_usersgroups_search($params)
 {
-    require_once CMS_DIR .'admin/ajax/users/search.php';
-    require_once CMS_DIR .'admin/ajax/groups/search.php';
+    $dir = dirname(dirname(__FILE__));
+
+    require_once $dir.'/users/search.php';
+    require_once $dir.'/groups/search.php';
 
     // users
-    $users = ajax_users_search( $params );
+    $users = ajax_users_search($params);
 
     // groups
-    $params = json_decode( $params, true );
+    $params = json_decode($params, true);
 
-    if ( isset( $params['searchSettings'] ) &&
-         isset( $params['searchSettings']['userSearchString'] ) )
-    {
+    if (isset($params['searchSettings'])
+        && isset($params['searchSettings']['userSearchString'])
+    ) {
         $params['search'] = $params['searchSettings']['userSearchString'];
     }
 
     $groups = ajax_groups_search(
-        json_encode( $params )
+        json_encode($params)
     );
 
     // combine results
@@ -39,10 +42,8 @@ function ajax_usersgroups_search($params)
     return $result;
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_usersgroups_search',
-    array( 'params' ),
+    array('params'),
     'Permission::checkAdminUser'
 );
-
-?>

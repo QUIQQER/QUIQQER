@@ -154,7 +154,7 @@ define('controls/desktop/panels/Bookmarks', [
             {
                 new Element('div', {
                     'class' : 'qui-bookmark-placeholder',
-                    html    : '<span class="icon-move"></span>'+
+                    html    : '<span class="fa fa-arrows icon-move"></span>'+
                     Child.getElement( '.qui-bookmark-text' ).get( 'text' )
                 }).inject( Child );
             });

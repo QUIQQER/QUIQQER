@@ -18,7 +18,7 @@
  * @event onDragend [{DOMEvent}, {DOMNode Target}, {self}]
  */
 
-define([
+define('classes/request/Upload', [
 
     'qui/QUI',
     'qui/classes/DOM'

@@ -12,25 +12,24 @@ use QUI\Projects\Media\Utils;
  */
 function ajax_media_details($project, $fileid)
 {
-    $fileid  = json_decode( $fileid, true );
-    $Project = \QUI\Projects\Manager::getProject( $project );
-    $Media   = $Project->getMedia();
+    $fileid = json_decode($fileid, true);
+    $Project = QUI\Projects\Manager::getProject($project);
+    $Media = $Project->getMedia();
 
-    if ( !is_array( $fileid ) )
-    {
-        $File = $Media->get( $fileid );
+    if (!is_array($fileid)) {
+        $File = $Media->get($fileid);
         $attr = $File->getAttributes();
 
-        if ( !Utils::isImage( $File ) ) {
+        if (!Utils::isImage($File)) {
             return $attr;
         }
 
 
-        if ( !$attr['image_width'] ) {
+        if (!$attr['image_width']) {
             $attr['image_width'] = $File->getWidth();
         }
 
-        if ( !$attr['image_height'] ) {
+        if (!$attr['image_height']) {
             $attr['image_height'] = $File->getHeight();
         }
 
@@ -40,12 +39,10 @@ function ajax_media_details($project, $fileid)
 
     $list = array();
 
-    foreach ( $fileid as $id )
-    {
-        $File = $Media->get( $id );
+    foreach ($fileid as $id) {
+        $File = $Media->get($id);
 
-        if ( !Utils::isImage( $File ) )
-        {
+        if (!Utils::isImage($File)) {
             $list[] = $File->getAttributes();
             continue;
         }
@@ -53,11 +50,11 @@ function ajax_media_details($project, $fileid)
 
         $attributes = $File->getAttributes();
 
-        if ( !$attributes['image_width'] ) {
+        if (!$attributes['image_width']) {
             $attributes['image_width'] = $File->getWidth();
         }
 
-        if ( !$attributes['image_height'] ) {
+        if (!$attributes['image_height']) {
             $attributes['image_height'] = $File->getHeight();
         }
 
@@ -67,7 +64,7 @@ function ajax_media_details($project, $fileid)
     return $list;
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_media_details',
     array('project', 'fileid'),
     'Permission::checkAdminUser'

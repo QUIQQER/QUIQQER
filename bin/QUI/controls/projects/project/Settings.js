@@ -14,6 +14,7 @@
  * @require Projects
  * @require Ajax
  * @require Locale
+ * @require utils/Controls
  * @require css!controls/projects/project/Settings.css
  */
 
@@ -33,7 +34,19 @@ define('controls/projects/project/Settings', [
 
     'css!controls/projects/project/Settings.css'
 
-], function(QUI, QUIPanel, QUIButton, QUIConfirm, QUIFormUtils, UtilsTemplate, LangPopup, Projects, Ajax, Locale, ControlUtils)
+], function(
+    QUI,
+    QUIPanel,
+    QUIButton,
+    QUIConfirm,
+    QUIFormUtils,
+    UtilsTemplate,
+    LangPopup,
+    Projects,
+    Ajax,
+    Locale,
+    ControlUtils
+)
 {
     "use strict";
 
@@ -63,9 +76,10 @@ define('controls/projects/project/Settings', [
             'save',
             'del',
             'openSettings',
+            'openCustomCSS',
             'openAdminSettings',
             'openBackup',
-            'openWatersign'
+            'openMediaSettings'
         ],
 
         options : {
@@ -139,7 +153,7 @@ define('controls/projects/project/Settings', [
                 text : Locale.get( lg, 'projects.project.panel.settings.btn.settings' ),
                 icon : 'icon-gear',
                 events : {
-                    onActive : this.openSettings
+                    onClick : this.openSettings
                 }
             });
 
@@ -148,9 +162,28 @@ define('controls/projects/project/Settings', [
                 text : Locale.get( lg, 'projects.project.panel.settings.btn.adminSettings' ),
                 icon : 'icon-gear',
                 events : {
-                    onActive : this.openAdminSettings
+                    onClick : this.openAdminSettings
                 }
             });
+
+            this.addCategory({
+                name : 'mediaSettings',
+                text : Locale.get( lg, 'projects.project.panel.settings.btn.media' ),
+                icon : 'icon-picture',
+                events : {
+                    onClick : this.openMediaSettings
+                }
+            });
+
+            this.addCategory({
+                name : 'customCSS',
+                text : Locale.get( lg, 'projects.project.panel.settings.btn.customCSS' ),
+                icon : 'icon-css3',
+                events : {
+                    onClick : this.openCustomCSS
+                }
+            });
+
 
             Ajax.get('ajax_project_panel_categories_get', function(list)
             {
@@ -158,18 +191,7 @@ define('controls/projects/project/Settings', [
                     self.addCategory( list[ i ] );
                 }
 
-                self.getProject().getConfig(function(result)
-                {
-                    self.setAttributes({
-                        name  : 'projects-panel',
-                        icon  : 'icon-home',
-                        title : self.getProject().getName()
-                    });
-
-                    self.$config = result;
-                    self.getCategoryBar().firstChild().click();
-                    self.refresh();
-                });
+                self.refresh();
 
             }, {
                 project : this.getProject().encode()
@@ -179,12 +201,38 @@ define('controls/projects/project/Settings', [
 //            this.addCategory({
 //                name   : 'watersign',
 //                text   : 'Wasserzeichen',
-//                icon   : 'icon-picture',
+//                icon   : 'fa fa-picture-o',
 //                events : {
 //                    onClick : this.openWatersign
 //                }
 //            });
 
+        },
+
+        /**
+         * Refresh the project data
+         */
+        refresh : function()
+        {
+            this.parent();
+            this.Loader.show();
+
+            var self = this;
+
+            this.getProject().getConfig(function(result)
+            {
+                self.setAttributes({
+                    name  : 'projects-panel',
+                    icon  : 'icon-home',
+                    title : self.getProject().getName()
+                });
+
+                self.$Title.set( 'html', self.getAttribute('title') );
+                self.$config = result;
+
+                self.getCategoryBar().firstChild().click();
+                self.Loader.hide();
+            });
         },
 
         /**
@@ -200,7 +248,6 @@ define('controls/projects/project/Settings', [
             // clear config for projects
             var name = this.getProject().getName();
 
-
             for ( var project in Projects.$projects )
             {
                 if ( !Projects.$projects.hasOwnProperty( project ) ) {
@@ -210,13 +257,12 @@ define('controls/projects/project/Settings', [
                 if ( project.match( name +'-' ) )
                 {
                     if ( "$config" in Projects.$projects[ project ] ) {
-                        Projects.$projects[ project].$config = false;
+                        Projects.$projects[ project ].$config = false;
                     }
                 }
             }
 
-            this.getProject().setConfig(function()
-            {
+            this.getProject().setConfig(function() {
                 self.Loader.hide();
             }, this.$config);
         },
@@ -229,29 +275,30 @@ define('controls/projects/project/Settings', [
             var self = this;
 
             new QUIConfirm({
-                icon  : 'icon-exclamation-sign',
+                icon  : 'fa fa-exclamation-circle icon-exclamation-sign',
                 title : Locale.get( lg, 'projects.project.project.delete.window.title' ),
                 text  : Locale.get( lg, 'projects.project.project.delete.window.text' ),
-                texticon : 'icon-exclamation-sign',
+                texticon : 'fa fa-exclamation-circle icon-exclamation-sign',
                 information : Locale.get( lg, 'projects.project.project.delete.window.information' ),
+                maxWidth: 450,
+                maxHeight: 300,
                 events :
                 {
                     onSubmit : function()
                     {
                         new QUIConfirm({
-                            icon  : 'icon-exclamation-sign',
+                            icon  : 'fa fa-exclamation-circle icon-exclamation-sign',
                             title : Locale.get( lg, 'projects.project.project.delete.window.title' ),
                             text  : Locale.get( lg, 'projects.project.project.delete.window.text.2' ),
-                            texticon : 'icon-exclamation-sign',
+                            texticon : 'fa fa-exclamation-circle icon-exclamation-sign',
+                            maxWidth: 450,
+                            maxHeight: 300,
                             events :
                             {
                                 onSubmit : function()
                                 {
-                                    Ajax.post('ajax_project_delete', function()
-                                    {
-
-                                    }, {
-                                        project : self.$Project.getName()
+                                    Projects.deleteProject(self.$Project.getName(), function() {
+                                        self.destroy();
                                     });
                                 }
                             }
@@ -260,7 +307,6 @@ define('controls/projects/project/Settings', [
                 }
             }).open();
         },
-
 
         /**
          * Opens the Settings
@@ -325,9 +371,19 @@ define('controls/projects/project/Settings', [
                 Standard.value = self.$config.default_lang;
                 Template.value = self.$config.template;
 
-                QUIFormUtils.setDataToForm( self.$config, Form );
+                QUIFormUtils.setDataToForm(self.$config, Form);
 
-                self.Loader.hide();
+                ControlUtils.parse(Body).then(function() {
+
+                    QUI.Controls.getControlsInElement(Body).each(function(Control) {
+                        if ("setProject" in Control) {
+                            Control.setProject(self.$Project);
+                        }
+                    });
+
+                    self.Loader.hide();
+                });
+
             }, {
                 project : this.getProject().encode()
             });
@@ -356,22 +412,74 @@ define('controls/projects/project/Settings', [
         },
 
         /**
-         * Opens the Watermark
-         *
-         * @method controls/projects/project/Settings#openWatersign
+         * Open Custom CSS
          */
-        openWatersign : function()
+        openCustomCSS : function()
         {
             this.Loader.show();
-            this.$unloadCategory();
 
-            var Control = this,
-                Body    = Control.getBody();
+            var self = this;
 
-            console.warn( 'not implemented' );
+            this.getBody().set( 'html', '<form></form>' );
+
+            require([
+                'controls/projects/project/settings/CustomCSS'
+            ], function(CustomCSS)
+            {
+                var css  = false,
+                    Form = self.getBody().getElement( 'form' );
+
+                if ( "project-custom-css" in self.$config ) {
+                    css = self.$config[ "project-custom-css" ];
+                }
+
+                new CustomCSS({
+                    Project : self.getProject(),
+                    css     : css,
+                    events  :
+                    {
+                        onLoad : function() {
+                            self.Loader.hide();
+                        }
+                    }
+                }).inject( Form );
+
+                Form.setStyles({
+                    'float' : 'left',
+                    height  : '100%',
+                    width   : '100%'
+                });
+            });
+        },
+
+        /**
+         * Opens the Media Settings
+         *
+         * @method controls/projects/project/Settings#openMediaSettings
+         */
+        openMediaSettings : function()
+        {
+            this.Loader.show();
+
+            var self = this,
+                Body = this.getBody();
 
             Body.set( 'html', '' );
-            Control.Loader.hide();
+
+            require([
+                'controls/projects/project/settings/Media'
+            ], function(MediaSettings)
+            {
+                new MediaSettings({
+                    config : self.$config,
+                    Project : self.$Project,
+                    events : {
+                        onLoad : function() {
+                            self.Loader.hide();
+                        }
+                    }
+                }).inject( Body );
+            });
         },
 
         /**
@@ -435,7 +543,8 @@ define('controls/projects/project/Settings', [
 
                 self.$Project.setConfig(function()
                 {
-                    self.Loader.hide();
+                    // self.Loader.hide();
+                    self.refresh();
                 }, {
                     langs : langs.join( ',' )
                 });
@@ -453,8 +562,13 @@ define('controls/projects/project/Settings', [
             var self = this,
                 name = Category.getAttribute( 'name' );
 
-            if ( name == 'settings' || name == "adminSettings" ) {
-                return;
+            switch ( name )
+            {
+                case "settings":
+                case "adminSettings":
+                case "customCSS":
+                case "mediaSettings":
+                    return;
             }
 
             this.Loader.show();

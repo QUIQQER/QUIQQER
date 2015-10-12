@@ -49,7 +49,7 @@ define([
 
             new QUIButton({
                 text      : 'Cache leeren',
-                textimage : 'icon-trash',
+                textimage : 'fa fa-trash-o icon-trash',
                 events    :
                 {
                     onClick : function(Btn)
@@ -57,7 +57,7 @@ define([
                         Btn.setAttribute( 'textimage', 'icon-refresh icon-spin' );
 
                         self.clear(function() {
-                            Btn.setAttribute( 'textimage', 'icon-trash' );
+                            Btn.setAttribute( 'textimage', 'fa fa-trash-o icon-trash' );
                         });
                     }
                 }
@@ -70,7 +70,7 @@ define([
                 {
                     onClick : function(Btn)
                     {
-                        Btn.setAttribute( 'textimage', 'icon-icon-trash icon-spin' );
+                        Btn.setAttribute( 'textimage', 'icon-refresh icon-spin' );
 
                         self.purge(function() {
                             Btn.setAttribute( 'textimage', 'fa fa-paint-brush' );

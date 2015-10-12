@@ -42,9 +42,10 @@ define('controls/groups/sitemap/Window', [
             message  : false,
             title    : Locale.get( 'quiqqer/system', 'groups.sitemap.window.title' ),
             text     : Locale.get( 'quiqqer/system', 'groups.sitemap.window.text' ),
+            texticon : false,
             icon     : 'icon-group',
-            maxHeight   : 600,
-            maxWidth    : 470
+            maxHeight   : 300,
+            maxWidth    : 450
         },
 
         initialize : function(options)
@@ -68,6 +69,7 @@ define('controls/groups/sitemap/Window', [
                 'class' : 'group-sitemap'
             }).inject( Content );
 
+            Content.getElements('.information').destroy();
 
             if ( this.getAttribute( 'message' ) )
             {

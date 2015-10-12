@@ -1,7 +1,7 @@
 
 .group-input {
-    position: relative;
-    display: block;
+    float: left;
+	position: relative;
 }
 
 .group-input-entry {
@@ -17,6 +17,11 @@
 	padding  : 5px;
 	border   : 1px solid #dedede;
 	background : #fff;
+}
+
+.group-input-dropdown .hover {
+    background-color: #2F8FC6;
+    color: #FFFFFF;
 }
 
 .group-input-dropdown .mark {

@@ -1,9 +1,10 @@
 @CHARSET "UTF-8";
 
 .qui-permission-entry {
-    padding: 5px;
-    float: left;
     clear: both;
+    float: left;
+    padding: 5px;
+    width: 100%;
 }
 
 .qui-permission-entry label {

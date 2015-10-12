@@ -28,11 +28,23 @@ define('controls/packages/Panel', [
     'qui/controls/windows/Confirm',
     'qui/controls/windows/Popup',
     'qui/controls/buttons/Button',
+    'qui/controls/elements/List',
 
     'css!controls/packages/Panel.css'
 
-],function(QUI, Locale, Ajax, PackageManager, Grid, DetailWindow, QUIPanel, QUIConfirm, QUIWindow, QUIButton)
-{
+],function(
+    QUI,
+    Locale,
+    Ajax,
+    PackageManager,
+    Grid,
+    DetailWindow,
+    QUIPanel,
+    QUIConfirm,
+    QUIWindow,
+    QUIButton,
+    QUIList
+) {
     "use strict";
 
     var lg = 'quiqqer/system';
@@ -204,7 +216,7 @@ define('controls/packages/Panel', [
             this.addCategory({
                 name   : 'phpInfo',
                 text   : Locale.get( lg, 'packages.category.system.phpInfo' ),
-                image  : 'icon-info-sign',
+                image  : 'fa fa-info-circle icon-info-sign',
                 events : {
                     onActive : this.loadPHPInfo
                 }
@@ -333,7 +345,7 @@ define('controls/packages/Panel', [
 
                 buttons : [{
                     text      : Locale.get( lg, 'packages.grid.update.btn.execute' ),
-                    textimage : 'icon-double-angle-down',
+                    textimage : 'fa fa-angle-double-down icon-double-angle-down',
                     events : {
                         onClick : this.executeCompleteUpdate
                     }
@@ -353,7 +365,7 @@ define('controls/packages/Panel', [
                     }
                 }, {
                     text      : Locale.get( lg, 'packages.grid.update.btn.setup' ),
-                    textimage : 'icon-hdd',
+                    textimage : 'fa fa-hdd-o icon-hdd',
                     events :
                     {
                         onClick : function(Btn) {
@@ -386,6 +398,7 @@ define('controls/packages/Panel', [
          *
          * @param {String} [pkg] - (optional), Package name, if no package name given, complete setup are executed
          * @param {Object} [Btn] - (optional), qui/controls/buttons/Button
+         * @return Promise
          */
         setup : function(pkg, Btn)
         {
@@ -402,28 +415,27 @@ define('controls/packages/Panel', [
                 }
             }
 
-
-            QUI.getMessageHandler(function(MH)
+            return QUI.getMessageHandler().then(function(MH)
             {
-                // #Locale message
-                MH.addLoading('Setup wird durchgeführt', function(Loading)
+                return MH.addLoading('Setup wird durchgeführt');
+
+            }).then(function(Loading)
+            {
+                return self.$Manager.setup(pkg).then(function()
                 {
-                    self.$Manager.setup( pkg, function()
-                    {
-                        if ( typeof Btn === 'undefined' ) {
-                            return;
-                        }
+                    Loading.finish( Locale.get( lg, 'message.setup.successfull' ) );
 
-                        if ( Btn.getAttribute( 'textimage' ) ) {
-                            Btn.setAttribute( 'textimage', 'icon-hdd' );
-                        }
+                    if ( typeof Btn === 'undefined' ) {
+                        return;
+                    }
 
-                        if ( Btn.getAttribute( 'icon' ) ) {
-                            Btn.setAttribute( 'icon', 'icon-hdd' );
-                        }
+                    if ( Btn.getAttribute( 'textimage' ) ) {
+                        Btn.setAttribute( 'textimage', 'fa fa-hdd-o icon-hdd' );
+                    }
 
-                        Loading.finish( Locale.get( lg, 'message.setup.successfull' ) );
-                    });
+                    if ( Btn.getAttribute( 'icon' ) ) {
+                        Btn.setAttribute( 'icon', 'fa fa-hdd-o icon-hdd' );
+                    }
                 });
             });
         },
@@ -439,9 +451,9 @@ define('controls/packages/Panel', [
 
             new QUIConfirm({
                 title     : Locale.get( lg, 'packages.update.window.title' ),
-                maxHeight : 200,
-                maxWidth  : 550,
-                texticon  : 'icon-double-angle-down fa fa-angle-double-down',
+                maxWidth  : 640,
+                maxheight : 360,
+                texticon  : 'fa fa-angle-double-down icon-double-angle-down',
                 text      : Locale.get( lg, 'packages.update.window.text'),
                 events :
                 {
@@ -450,7 +462,7 @@ define('controls/packages/Panel', [
                         Btn.setAttribute( 'textimage', 'icon-refresh icon-spin' );
 
                         self.$Manager.update(function() {
-                            Btn.setAttribute( 'textimage', 'icon-double-angle-down' );
+                            Btn.setAttribute( 'textimage', 'fa fa-angle-double-down icon-double-angle-down' );
                         });
                     }
                 }
@@ -464,43 +476,66 @@ define('controls/packages/Panel', [
          */
         checkUpdates : function(Btn)
         {
-            var self = this;
-
             Btn.setAttribute( 'textimage', 'icon-refresh icon-spin' );
 
-            this.$Manager.checkUpdate(function(result)
+            var self = this;
+
+            QUI.getMessageHandler().then(function(MH)
+            {
+                return MH.addLoading('Updates werden gesucht...');
+
+            }).then(function(Loading)
+            {
+                return self.$Manager.checkUpdate().then(function(result)
+                {
+                    Btn.setAttribute( 'textimage', 'icon-refresh' );
+
+                    if ( !result || !result.length )
+                    {
+                        Loading.finish(
+                            Locale.get( lg, 'message.packages.update.system.uptodate' )
+                        );
+
+                        self.Loader.hide();
+                        return;
+                    }
+
+                    var entry,
+                        data = [];
+
+                    for ( var i = 0, len = result.length; i < len; i++ )
+                    {
+                        entry = result[i];
+
+                        data.push({
+                            'package' : entry['package'],
+                            'from'    : entry.from,
+                            'to'      : entry.to,
+                            'update'  : {
+                                'package' : entry['package'],
+                                image     : 'icon-retweet',
+                                events    : {
+                                    onClick : self.$clickUpdateBtn
+                                }
+                            }
+                        });
+                    }
+
+                    self.$UpdateGrid.setData({
+                        data : data
+                    });
+
+                    Loading.finish('Es wurden '+ data.length +' Updates gefunden');
+
+                    self.Loader.hide();
+                });
+
+            }, function(Exception)
             {
                 Btn.setAttribute( 'textimage', 'icon-refresh' );
 
-                if ( !result || !result.length )
-                {
-                    self.Loader.hide();
-                    return;
-                }
-
-                var entry,
-                    data = [];
-
-                for ( var i = 0, len = result.length; i < len; i++ )
-                {
-                    entry = result[i];
-
-                    data.push({
-                        'package' : entry['package'],
-                        'from'    : entry.from,
-                        'to'      : entry.to,
-                        'update'  : {
-                            'package' : entry['package'],
-                            image     : 'icon-retweet',
-                            events    : {
-                                onClick : self.$clickUpdateBtn
-                            }
-                        }
-                    });
-                }
-
-                self.$UpdateGrid.setData({
-                    data : data
+                QUI.getMessageHandler(function(MH) {
+                    MH.addError( Exception.getMessage() );
                 });
 
                 self.Loader.hide();
@@ -515,10 +550,19 @@ define('controls/packages/Panel', [
             var self = this;
 
             new QUIConfirm({
+                icon      : 'icon-upload-alt fa fa-upload',
                 title     : Locale.get( lg, 'packages.grid.update.btn.upload' ),
-                maxHeight : 500,
-                maxWidth  : 600,
+                maxWidth  : 640,
+                maxheight : 360,
                 autoclose : false,
+                cancel_button : {
+                    text      : Locale.get( lg, 'upload.form.btn.cancel.text' ),
+                    textimage : 'icon-remove fa fa-remove'
+                },
+                ok_button : {
+                    text      : Locale.get( lg, 'upload.form.btn.send.text' ),
+                    textimage : 'icon-upload-alt fa fa-upload'
+                },
                 events :
                 {
                     onOpen : function(Win)
@@ -528,28 +572,15 @@ define('controls/packages/Panel', [
                         require(['controls/upload/Form'], function(UploadForm)
                         {
                             var Form = new UploadForm({
-                                maxuploads : 1000,
+                                maxuploads : 100,
                                 multible   : true,
                                 sendbutton : false,
-                                styles     : {
-                                    clear  : 'both',
-                                    float  : 'left',
-                                    margin : 0,
-                                    width  : '100%'
-                                },
-                                Drops  : [],
                                 events :
                                 {
-                                    onDragenter: function(event, Elm)
-                                    {
-                                        Elm.addClass( 'highlight' );
-                                        event.stop();
-                                    },
-
                                     onComplete : function()
                                     {
                                         Win.close();
-                                        self.updateWithLocalServer();
+                                        self.installLocalPackages();
                                     }
                                 }
                             });
@@ -584,31 +615,193 @@ define('controls/packages/Panel', [
         /**
          * Update a package or the entire quiqqer system
          *
-         * @param {Function} callback - Callback function
          * @param {String|Boolean} [pkg] - (optional), package name
+         * @param {Function} [callback]  - (optional), Callback function
+         * @return Promise
          */
-        update : function(callback, pkg)
-        {
-            this.$Manager.update( pkg, callback );
-        },
-
-        /**
-         * Execute an update wiith the local update server
-         */
-        updateWithLocalServer : function()
+        update : function(pkg, callback)
         {
             var self = this;
 
-            QUI.getMessageHandler(function(MH)
+            var Prom = QUI.getMessageHandler().then(function(MH) {
+                return MH.addLoading('Updates werden installiert...');
+            });
+
+            Prom.then(function(Loading)
             {
-                MH.addLoading('Setup wird durchgeführt...', function(Loading)
+                return self.$Manager.update(pkg).then(function()
                 {
-                    self.$Manager.updateWithLocalServer(function() {
-                        Loading.finish( Locale.get( lg, 'message.setup.successfull' ) );
-                    });
+                    Loading.finish( Locale.get( lg, 'message.update.successfull' ) );
+
+                    if (typeOf(callback) === 'function') {
+                        callback();
+                    }
+
+                }, function() {
+                    Loading.finish( Locale.get( lg, 'message.update.error' ) );
+                });
+            });
+
+            return Prom;
+        },
+
+        /**
+         * Updatethe entire quiqqer system with local packages
+         *
+         * @param {Function} [callback]  - (optional), Callback function
+         * @returns {Promise}
+         */
+        updateWithLocalPackages : function(callback)
+        {
+            var Prom = QUI.getMessageHandler().then(function(MH) {
+                return MH.addLoading('Updates werden installiert...');
+            });
+
+            Prom.then(function(Loading)
+            {
+                return this.$Manager.updateWithLocalServer().then(function()
+                {
+                    Loading.finish( Locale.get( lg, 'message.update.successfull' ) );
+
+                    if (typeOf(callback) === 'function') {
+                        callback();
+                    }
+
+                }, function() {
+                    Loading.finish( Locale.get( lg, 'message.update.error' ) );
+                });
+
+            }.bind(this));
+
+            return Prom;
+        },
+
+        /**
+         * install new local packages
+         *
+         * @returns {Promise}
+         */
+        installLocalPackages : function()
+        {
+            var self = this;
+
+            return new Promise(function(resolve, reject)
+            {
+                self.$Manager.readLocalRepository(function(result)
+                {
+                    if (!result || !result.length) {
+                        self.updateWithLocalPackages().then(resolve);
+                        return;
+                    }
+
+                    // #locale
+                    new QUIConfirm({
+                        icon: 'fa fa-hdd-o icon-hdd',
+                        title : 'Es wurden neue Pakete gefunden',
+                        autoclose : false,
+                        maxWidth: 640,
+                        maxheight: 360,
+                        cancel_button : {
+                            text      : 'Installation abbrechen',
+                            textimage : 'icon-remove fa fa-remove'
+                        },
+                        ok_button : {
+                            text      : 'Installation starten',
+                            textimage : 'fa fa-hdd-o icon-hdd'
+                        },
+                        events :
+                        {
+                            onOpen : function(Win)
+                            {
+                                var i, len, pkg;
+
+                                var Content = Win.getContent(),
+                                    Submit  = Win.getButton('submit');
+
+                                Content.set(
+                                    'html',
+                                    '<p>Wählen Se bitte die zu installierenden Pakete aus</p><br />'
+                                );
+
+                                Content.addClass('package-setup');
+                                Submit.disable();
+
+                                Win.$__List = new QUIList({
+                                    checkboxes : true,
+                                    events : {
+                                        onClick : function(List)
+                                        {
+                                            if (List.getSelectedData().length) {
+                                                Submit.enable();
+                                            } else {
+                                                Submit.disable();
+                                            }
+                                        }
+                                    }
+                                });
+
+                                for (i = 0, len = result.length; i < len; i++)
+                                {
+                                    pkg = result[ i ];
+
+                                    Win.$__List.addItem({
+                                        icon  : '',
+                                        title : pkg.name,
+                                        text  : pkg.description,
+                                        version : pkg.version
+                                    });
+                                }
+
+                                Win.$__List.inject(Content);
+                            },
+
+                            onSubmit : function(Win)
+                            {
+                                Win.Loader.show();
+
+                                var packages = {};
+                                var items = Win.$__List.getSelectedData();
+
+                                for (var i = 0, len = items.length; i < len; i++) {
+                                    packages[items[i].title] = items[i].version || '*';
+                                }
+
+                                var LoadMessage;
+
+                                QUI.getMessageHandler().then(function(MH)
+                                {
+                                    Win.close();
+
+                                    return MH.addLoading('Setup wird durchgeführt...');
+
+                                }).then(function(Loading) {
+
+                                    LoadMessage = Loading;
+
+                                    return self.$Manager.activateLocalServer();
+
+                                }).then(function() {
+                                    return self.$Manager.installLocalPackages(packages);
+
+                                }).then(function()
+                                {
+                                    LoadMessage.finish(
+                                        Locale.get( lg, 'message.setup.successfull' )
+                                    );
+
+                                    resolve();
+                                });
+                            },
+
+                            onCancel : function() {
+                                reject();
+                            }
+                        }
+                    }).open();
                 });
             });
         },
+
 
         /**
          * Update button click
@@ -619,11 +812,9 @@ define('controls/packages/Panel', [
         {
             Btn.setAttribute( 'image', 'icon-refresh icon-spin' );
 
-            this.$Manager.update(function()
-            {
-                Btn.setAttribute( 'image', 'icon-ok' );
-
-            }, Btn.getAttribute( 'package' ) );
+            this.update( Btn.getAttribute( 'package' ) ).then(function() {
+                Btn.setAttribute( 'image', 'fa fa-check icon-ok' );
+            });
         },
 
     /**
@@ -859,7 +1050,7 @@ define('controls/packages/Panel', [
                     });
 
                     result.data[ i ].setup = {
-                        icon   : 'icon-hdd',
+                        icon   : 'fa fa-hdd-o icon-hdd',
                         pkg    : pkg,
                         alt    : alt,
                         title  : alt,
@@ -1026,7 +1217,7 @@ define('controls/packages/Panel', [
                 {
                     for ( var i = 0, len = result.data.length; i < len; i++ )
                     {
-                        if ( result.data[ i ].isInstalled ) {
+                        if ( "isInstalled" in result.data[ i ] ) {
                             continue;
                         }
 
@@ -1108,15 +1299,15 @@ define('controls/packages/Panel', [
                     'package' : pkg
                 }),
                 texticon  : 'icon-download',
-                Control   : this,
+                maxTimeout : 120000, // wait max. 2 minutes
                 autoclose : false,
-
+                maxWidth  : 640,
+                maxheight : 360,
                 ok_button : {
                     textimage : 'icon-download',
                     text : Locale.get( lg, 'packages.server.win.install.submit.btn' )
                 },
-
-                events  :
+                events :
                 {
                     onDrawEnd : function(Win)
                     {
@@ -1152,12 +1343,12 @@ define('controls/packages/Panel', [
                     {
                         Win.Loader.show();
 
-                        Ajax.get('ajax_system_packages_install', function()
+                        Ajax.post('ajax_system_packages_install', function()
                         {
                             Win.close();
                             self.startSearch();
                         }, {
-                            'package' : pkg
+                            packages : pkg
                         });
                     }
                 }
@@ -1215,7 +1406,7 @@ define('controls/packages/Panel', [
                 }, {
                     text      : Locale.get( lg, 'packages.btn.del.server' ),
                     name      : 'delServers',
-                    textimage : 'icon-trash',
+                    textimage : 'fa fa-trash-o icon-trash',
                     disabled  : true,
                     events :
                     {
@@ -1270,7 +1461,7 @@ define('controls/packages/Panel', [
                             alt   = Locale.get( lg, 'packages.server.grid.btn.activate.title' );
                             title = Locale.get( lg, 'packages.server.grid.btn.activate.title' );
 
-                            icon = 'icon-ok';
+                            icon = 'fa fa-check icon-ok';
 
                             if ( result[ i ].active === 0 )
                             {
@@ -1348,6 +1539,8 @@ define('controls/packages/Panel', [
                               '</form>',
 
                 autoclose : false,
+                maxWidth  : 640,
+                maxheight : 360,
                 events    :
                 {
                     onDrawEnd : function(Win)
@@ -1399,16 +1592,18 @@ define('controls/packages/Panel', [
 
             new QUIConfirm({
                 title : Locale.get( lg, 'packages.server.win.remove.title' ),
-                icon : 'icon-trash',
-                text : Locale.get( lg, 'packages.server.win.remove.text' ),
-                texticon    : 'icon-trash',
+                icon  : 'fa fa-trash-o icon-trash',
+                text  : Locale.get( lg, 'packages.server.win.remove.text' ),
+                texticon    : 'fa fa-trash-o icon-trash',
                 information : list.join( '<br />' ) +
                               '<p>&nbsp;</p>'+
                               '<p>'+
                                   Locale.get( lg, 'packages.server.win.remove.information' ) +
                               '</p>',
                 autoclose : false,
-                list : list,
+                list      : list,
+                maxWidth  : 640,
+                maxheight : 360,
                 events :
                 {
                     onSubmit : function(Win)
@@ -1680,7 +1875,7 @@ define('controls/packages/Panel', [
         {
             this.createSheet({
                 title  : 'Healthcheck Ergebnis',
-                icon   : 'icon-health',
+                icon   : 'icon-medkit',
                 events :
                 {
                     onOpen : function(Sheet)
@@ -1693,7 +1888,7 @@ define('controls/packages/Panel', [
                             sumNotFo = 0,
                             Content  = Sheet.getContent();
 
-                        var iconOK       = '<span class="icon-ok"></span>',
+                        var iconOK       = '<span class="fa fa-check icon-ok"></span>',
                             iconError    = '<span class="icon-exclamation"></span>',
                             iconNotFound = '<span class="icon-question"></span>';
 
@@ -1768,7 +1963,7 @@ define('controls/packages/Panel', [
 
                         Content.set( 'html', html );
 
-
+                        // #locale
                         Content.getElement( '.sum-ok' ).set( 'html', sumOk +' Dateien ok.' );
                         Content.getElement( '.sum-error' ).set( 'html', sumError +' Dateien fehlerhaft.' );
                         Content.getElement( '.sum-notFound' ).set( 'html', sumNotFo +' Dateien konnten nicht geprüft werden.' );
@@ -1800,6 +1995,5 @@ define('controls/packages/Panel', [
                 self.Loader.hide();
             });
         }
-
     });
 });

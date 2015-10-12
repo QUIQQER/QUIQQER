@@ -36,7 +36,7 @@
         var URL_DIR          = '{$URL_DIR}';
             URL_OPT_DIR      = '{$URL_OPT_DIR}',
             URL_BIN_DIR      = '{$URL_BIN_DIR}',
-            URL_LIB_DIR      = '{$URL_LIB_DIR}';
+            URL_LIB_DIR      = '{$URL_LIB_DIR}',
             URL_VAR_DIR      = '{$URL_VAR_DIR}',
             URL_PROJECT_DIR  = '{$URL_USR_DIR}{$Project->getName()}/',
             URL_TEMPLATE_DIR = '{$URL_OPT_DIR}{$Project->getAttribute('template')}/';
@@ -45,9 +45,11 @@
             lu : "{$lastUpdate}"
         };
 
+        {assign var=httpshost value=$Project->getVHost( true, true )}
         var QUIQQER_PROJECT = {
             name : '{$Project->getName()}',
-            lang : '{$Project->getLang()}'
+            lang : '{$Project->getLang()}',
+            httpshost : {if strpos( $httpshost, 'https' ) !== false}'{$httpshost}'{else}false{/if}
         };
 
         var QUIQQER_USER = {
@@ -62,6 +64,7 @@
         };
 
         var QUIQQER_ONLOAD_MODULES = {$loadModuleFiles|json_encode:true},
+            QUIQQER_FRONTEND       = 1,
             QUIQQER_LOCALE         = {$localeFiles|json_encode:true};
 
         {if "LOGIN_FAILED"|defined}
@@ -69,12 +72,13 @@
         {/if}
 
     </script>
+    <!-- quiqqer-js-defined -->
 
     {if $Template->getAttribute('mootools')}
         <!-- mootools -->
-        <script src="{$URL_OPT_DIR}bin/qui/build/qui/lib/mootools-core.js?lu={$lastUpdate}"></script>
-        <script src="{$URL_OPT_DIR}bin/qui/build/qui/lib/mootools-more.js?lu={$lastUpdate}"></script>
-        <script src="{$URL_OPT_DIR}bin/qui/build/qui/lib/moofx.js?lu={$lastUpdate}"></script>
+        <script src="{$URL_OPT_DIR}bin/qui/qui/lib/mootools-core.js?lu={$lastUpdate}"></script>
+        <script src="{$URL_OPT_DIR}bin/qui/qui/lib/mootools-more.js?lu={$lastUpdate}"></script>
+        <script src="{$URL_OPT_DIR}bin/qui/qui/lib/moofx.js?lu={$lastUpdate}"></script>
     {/if}
 
     {if $Template->getAttribute('requirejs')}
@@ -84,6 +88,7 @@
             require.config({
                 baseUrl : URL_DIR,
                 paths   : {
+                    "assets"    : URL_OPT_DIR +'bin',
                     "package"   : URL_OPT_DIR,
                     "locale"    : URL_VAR_DIR +'locale/bin',
                     "qui"       : URL_OPT_DIR +'bin/qui/qui',
@@ -105,20 +110,19 @@
 
                 map : {
                     '*': {
-                        'css'    : URL_OPT_DIR +'bin/qui/build/qui/lib/css.js'
+                        'css'    : URL_OPT_DIR +'bin/qui/qui/lib/css.js',
+                        'image'  : URL_OPT_DIR +'bin/qui/qui/lib/image.js',
+                        'text'   : URL_OPT_DIR +'bin/qui/qui/lib/text.js'
                     }
                 }
             });
         </script>
     {/if}
 
-    <!-- picture fill polyfill -->
-    <script>
-        require(['polyfills/picturefill.min']);
-    </script>
-
     <!-- canonical -->
     {$Canonical->output()}
+
+    <!-- quiqqer css -->
 
 
     {if $Template->getAttribute('rel_next')}
@@ -137,7 +141,7 @@
     {/if}
     {/foreach}
 
-    {* type Files *}
+
     {if isset( $siteStyle )}
         <link href="{$siteStyle}" rel="stylesheet" />
     {/if}

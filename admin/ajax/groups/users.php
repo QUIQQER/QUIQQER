@@ -9,90 +9,89 @@
  */
 function ajax_groups_users($gid, $params)
 {
-    $params = json_decode( $params, true );
+    $params = json_decode($params, true);
 
-    $start  = 0;
-    $page   = 1;
-	$limit  = 20;
+    $start = 0;
+    $page  = 1;
+    $limit = 20;
 
-	$params['start'] = 0;
+    $params['start'] = 0;
 
-	if ( isset( $params['limit'] ) ) {
-		$limit = $params['limit'];
-	}
+    if (isset($params['limit'])) {
+        $limit = $params['limit'];
+    }
 
-	if ( isset($params['page'] ) )
-	{
-		$page = (int)$params['page'];
-		$params['start'] = ($page-1)*$limit;
-	}
+    if (isset($params['page'])) {
+        $page            = (int)$params['page'];
+        $params['start'] = ($page - 1) * $limit;
+    }
 
-	if ( isset( $params['limit'] ) || isset( $params['start'] ) )
-	{
-	    if ( isset( $params['limit'] ) ) {
-			$limit = (int)$params['limit'];
-		}
+    if (isset($params['limit']) || isset($params['start'])) {
+        if (isset($params['limit'])) {
+            $limit = (int)$params['limit'];
+        }
 
-		if ( isset( $params['start'] ) ) {
-			$start = (int)$params['start'];
-		}
+        if (isset($params['start'])) {
+            $start = (int)$params['start'];
+        }
 
-		$params['limit'] = $start .', '. $limit;
-	}
+        $params['limit'] = $start . ', ' . $limit;
+    }
 
-	// order
-	if ( isset( $params['field'] ) )
-	{
-	    switch ( $params['field'] )
-	    {
-	        case 'id':
-	        case 'username':
+    // order
+    if (isset($params['field'])) {
+        switch ($params['field']) {
+            case 'id':
+            case 'username':
             case 'firstname':
             case 'lasttname':
             case 'email':
             case 'regdate':
-                $params['order'] = $params['field'] .' '. $params['order'];
-            break;
+                $params['order'] = $params['field'] . ' ' . $params['order'];
+                break;
 
-	        default:
-	            $params['order'] = 'username '. $params['order'];
-            break;
-	    }
-	}
+            default:
+                $params['order'] = 'username ' . $params['order'];
+                break;
+        }
+    }
 
-	if ( !isset( $params['field'] ) ) {
+    if (!isset($params['field'])) {
         $params['order'] = '';
-	}
+    }
 
-	// search users
-	$users  = \QUI::getGroups()->get( $gid )->getUsers( $params );
-	$result = array();
+    // search users
+    $users  = \QUI::getGroups()->get($gid)->getUsers($params);
+    $result = array();
 
-	foreach ( $users as $user )
-	{
+    foreach ($users as $user) {
         $result[] = array(
             'id'        => $user['id'],
-        	'active'    => $user['active'],
+            'active'    => $user['active'],
             'username'  => $user['username'],
-    		'email'     => $user['email'],
-    		'firstname' => $user['firstname'],
-    		'lastname'  => $user['lastname'],
-    		'regdate'   => $user['regdate']
+            'email'     => $user['email'],
+            'firstname' => $user['firstname'],
+            'lastname'  => $user['lastname'],
+            'regdate'   => $user['regdate']
         );
-	}
+    }
 
-	// count users
-	$params['count'] = 'cu';
-	$params['limit'] = false;
+    // count users
+    $params['count'] = 'cu';
+    $params['limit'] = false;
 
-	$count = \QUI::getGroups()->get( $gid )->getUsers( $params );
+    $count = \QUI::getGroups()->get($gid)->getUsers($params);
 
-	return array(
-	    'total' => isset( $count[0]['cu'] ) ? $count[0]['cu'] : 0,
-		'page'  => $page,
-		'data'  => $result
-	);
+    return array(
+        'total' => isset($count[0]['cu']) ? $count[0]['cu'] : 0,
+        'page'  => $page,
+        'data'  => $result
+    );
 
 }
 
-\QUI::$Ajax->register('ajax_groups_users', array('gid', 'params'), 'Permission::checkSU');
+QUI::$Ajax->register(
+    'ajax_groups_users',
+    array('gid', 'params'),
+    'Permission::checkSU'
+);

@@ -10,7 +10,12 @@
  * @depricated
  */
 
-define('utils/Media', function()
+define('utils/Media', [
+
+    'qui/QUI',
+    'Locale'
+
+], function(QUI, QUILocale)
 {
     "use strict";
 
@@ -60,6 +65,44 @@ define('utils/Media', function()
         getUrlByImageParams : function(id, project)
         {
             return 'image.php?id='+ id +'&project='+ project;
+        },
+
+        /**
+         *
+         * @param {HTMLElement} Input
+         */
+        bindCheckMediaName : function(Input)
+        {
+            Input.addEvent('keyup', function(event) {
+
+                // shift code
+                if (event.code == 16) {
+                    return;
+                }
+
+                // alt+gr code
+                if (event.code == 225) {
+                    return;
+                }
+
+                var Elm = event.target,
+                    val = this.value;
+
+                // special character
+                if (val.match(/[^0-9_a-zA-Z \-.]/g)) {
+
+                    QUI.getMessageHandler().then(function(MH) {
+                        MH.addAttention(
+                            QUILocale.get(
+                                'quiqqer/system',
+                                'exception.media.check.name.allowed.signs',
+                                {filename : val}
+                            ),
+                            Elm
+                        );
+                    });
+                }
+            });
         }
     };
 });
