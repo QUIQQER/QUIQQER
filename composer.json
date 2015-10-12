@@ -53,8 +53,7 @@
         "quiqqer/cron" : "dev-master",
         "quiqqer/log" : "dev-master",
         "quiqqer/diashow" : "dev-master",
-        "quiqqer/lockclient" : "dev-master",
-        "quiqqer/template-qui" : "dev-master"
+        "quiqqer/lockclient" : "dev-master"
     },
 
     "require-dev" : {
