@@ -56,6 +56,10 @@
         "quiqqer/template-qui" : "dev-dev"
     },
 
+    "require-dev" : {
+        "mikey179/vfsStream" : "1.*"
+    },
+
     "scripts": {
         "post-install-cmd" : [
             "QUI\\Update::onInstall"
