@@ -2,7 +2,7 @@
     "name" : "quiqqer/quiqqer",
     "type" : "quiqqer-system",
     "description" : "A modular based management system written in JavaScript and PHP",
-    "version" : "dev-dev",
+    "version" : "dev-master",
     "license" : "GPL-3.0+",
 
     "authors" : [{
@@ -42,18 +42,17 @@
         "quiqqer/qui" : "dev-dev",
         "quiqqer/qui-php" : "dev-dev",
         "quiqqer/smarty": "3.*",
-        "quiqqer/smarty3" : "dev-dev",
-        "quiqqer/ckeditor4" : "dev-dev",
-        "quiqqer/calendar" : "dev-dev",
-        "quiqqer/countries" : "dev-dev",
-        "quiqqer/colorpicker" : "dev-dev",
-        "quiqqer/translator" : "dev-dev",
-        "quiqqer/utils" : "dev-dev",
-        "quiqqer/cron" : "dev-dev",
-        "quiqqer/log" : "dev-dev",
-        "quiqqer/diashow" : "dev-dev",
-        "quiqqer/lockclient" : "dev-dev",
-        "quiqqer/template-qui" : "dev-dev"
+        "quiqqer/smarty3" : "*@dev",
+        "quiqqer/ckeditor4" : "*@dev",
+        "quiqqer/calendar" : "*@dev",
+        "quiqqer/countries" : "*@dev",
+        "quiqqer/colorpicker" : "*@dev",
+        "quiqqer/translator" : "dev-master",
+        "quiqqer/utils" : "*@dev",
+        "quiqqer/cron" : "dev-master",
+        "quiqqer/log" : "dev-master",
+        "quiqqer/diashow" : "dev-master",
+        "quiqqer/lockclient" : "dev-master"
     },
 
     "require-dev" : {
