@@ -1,4 +1,3 @@
-
 /**
  * Permission Controler
  *
@@ -13,27 +12,25 @@ define('classes/permissions/Permissions', [
     'qui/classes/DOM',
     'Ajax'
 
-], function(QUIDOM, QUIAjax)
-{
+], function (QUIDOM, QUIAjax) {
     "use strict";
 
 
     return new Class({
 
-        Extends : QUIDOM,
-        Type : 'classes/permissions/Permissions',
+        Extends: QUIDOM,
+        Type   : 'classes/permissions/Permissions',
 
-        initialize : function(options)
-        {
+        initialize: function (options) {
             this.parent(options);
 
             this.$list = null;
 
             this.$cache = {
-                users    : {},
-                groups   : {},
-                sites    : {},
-                projects : {}
+                users   : {},
+                groups  : {},
+                sites   : {},
+                projects: {}
             };
         },
 
@@ -42,23 +39,22 @@ define('classes/permissions/Permissions', [
          *
          * @returns {Promise}
          */
-        getList : function()
-        {
-            return new Promise(function(resolve, reject) {
+        getList: function () {
+            return new Promise(function (resolve, reject) {
 
                 if (this.$list) {
                     resolve(this.$list);
                     return;
                 }
 
-                QUIAjax.get('ajax_permissions_list', function(result) {
+                QUIAjax.get('ajax_permissions_list', function (result) {
 
                     this.$list = result;
 
                     resolve(result);
 
                 }.bind(this), {
-                    onError : reject
+                    onError: reject
                 });
 
             }.bind(this));
@@ -70,8 +66,7 @@ define('classes/permissions/Permissions', [
          * @param {Object} [Bind] - Bind object -> User, Group, Site, Project
          * @returns {Promise}
          */
-        getPermissionsByObject : function(Bind)
-        {
+        getPermissionsByObject: function (Bind) {
             switch (typeOf(Bind)) {
                 case 'classes/users/User':
                     return this.getUserPermissionList(Bind);
@@ -89,8 +84,8 @@ define('classes/permissions/Permissions', [
                     return this.getList();
             }
 
-            return new Promise(function(resolve, reject) {
-                reject('Bind Type not found: '+ typeOf(Bind));
+            return new Promise(function (resolve, reject) {
+                reject('Bind Type not found: ' + typeOf(Bind));
             });
         },
 
@@ -100,11 +95,10 @@ define('classes/permissions/Permissions', [
          * @param {Object} User - classes/groups/Group
          * @returns {Promise}
          */
-        getUserPermissionList : function(User)
-        {
+        getUserPermissionList: function (User) {
             var self = this;
 
-            return new Promise(function(resolve, reject) {
+            return new Promise(function (resolve, reject) {
 
                 if (typeof User === 'undefined') {
                     reject();
@@ -116,17 +110,16 @@ define('classes/permissions/Permissions', [
                     return;
                 }
 
-                QUIAjax.get('ajax_permissions_get', function(permissions)
-                {
+                QUIAjax.get('ajax_permissions_get', function (permissions) {
                     self.$cache.users[User.getId()] = permissions;
 
                     resolve(permissions);
                 }, {
                     params : JSON.encode({
-                        id : User.getId()
+                        id: User.getId()
                     }),
-                    btype   : User.getType(),
-                    onError : reject
+                    btype  : User.getType(),
+                    onError: reject
                 });
             });
         },
@@ -137,11 +130,10 @@ define('classes/permissions/Permissions', [
          * @param {Object} Group - classes/groups/Group
          * @returns {Promise}
          */
-        getGroupPermissionList : function(Group)
-        {
+        getGroupPermissionList: function (Group) {
             var self = this;
 
-            return new Promise(function(resolve, reject) {
+            return new Promise(function (resolve, reject) {
 
                 if (typeof Group === 'undefined') {
                     reject();
@@ -153,17 +145,16 @@ define('classes/permissions/Permissions', [
                     return;
                 }
 
-                QUIAjax.get('ajax_permissions_get', function(permissions)
-                {
+                QUIAjax.get('ajax_permissions_get', function (permissions) {
                     self.$cache.groups[Group.getId()] = permissions;
 
                     resolve(permissions);
                 }, {
                     params : JSON.encode({
-                        id : Group.getId()
+                        id: Group.getId()
                     }),
-                    btype   : Group.getType(),
-                    onError : reject
+                    btype  : Group.getType(),
+                    onError: reject
                 });
             });
         },
@@ -174,35 +165,33 @@ define('classes/permissions/Permissions', [
          * @param {Object} Project - classes/projects/Project
          * @returns {Promise}
          */
-        getProjectPermissionList : function(Project)
-        {
+        getProjectPermissionList: function (Project) {
             var self = this;
 
-            return new Promise(function(resolve, reject) {
+            return new Promise(function (resolve, reject) {
 
                 if (typeof Project === 'undefined') {
                     reject();
                     return;
                 }
 
-                var cacheName = Project.getName()+'-'+Project.getLang();
+                var cacheName = Project.getName() + '-' + Project.getLang();
 
                 if (cacheName in self.$cache.projects) {
                     resolve(self.$cache.projects[cacheName]);
                     return;
                 }
 
-                QUIAjax.get('ajax_permissions_get', function(permissions)
-                {
+                QUIAjax.get('ajax_permissions_get', function (permissions) {
                     self.$cache.projects[cacheName] = permissions;
 
                     resolve(permissions);
                 }, {
                     params : JSON.encode({
-                        project : Project.getName()
+                        project: Project.getName()
                     }),
-                    btype   : Project.getType(),
-                    onError : reject
+                    btype  : Project.getType(),
+                    onError: reject
                 });
             });
         },
@@ -213,38 +202,36 @@ define('classes/permissions/Permissions', [
          * @param {Object} Site - classes/projects/project/Site
          * @returns {Promise}
          */
-        getSitePermissionList : function(Site)
-        {
+        getSitePermissionList: function (Site) {
             var self = this;
 
-            return new Promise(function(resolve, reject) {
+            return new Promise(function (resolve, reject) {
 
                 if (typeof Site === 'undefined') {
                     reject();
                     return;
                 }
 
-                var Project = Site.getProject();
-                var cacheName = Project.getName()+'-'+Project.getLang()+'-'+Site.getId();
+                var Project   = Site.getProject();
+                var cacheName = Project.getName() + '-' + Project.getLang() + '-' + Site.getId();
 
                 if (cacheName in self.$cache.sites) {
                     resolve(self.$cache.sites[cacheName]);
                     return;
                 }
 
-                QUIAjax.get('ajax_permissions_get', function(permissions)
-                {
+                QUIAjax.get('ajax_permissions_get', function (permissions) {
                     self.$cache.sites[cacheName] = permissions;
 
                     resolve(permissions);
                 }, {
                     params : JSON.encode({
-                        id      : Site.getId(),
-                        project : Project.getName(),
-                        lang    : Project.getLang()
+                        id     : Site.getId(),
+                        project: Project.getName(),
+                        lang   : Project.getLang()
                     }),
-                    btype   : Site.getType(),
-                    onError : reject
+                    btype  : Site.getType(),
+                    onError: reject
                 });
             });
         },
@@ -258,10 +245,8 @@ define('classes/permissions/Permissions', [
          *
          * @returns {Promise}
          */
-        setPermission : function(Bind, name, value)
-        {
-            return new Promise(function(resolve, reject)
-            {
+        setPermission: function (Bind, name, value) {
+            return new Promise(function (resolve, reject) {
                 switch (typeOf(Bind)) {
                     case 'classes/users/User':
                         return this.setUserPermission(Bind, name, value);
@@ -276,7 +261,7 @@ define('classes/permissions/Permissions', [
                         return this.setSitePermission(Bind, name, value);
 
                     default:
-                        reject('Bind Type not found: '+ typeOf(Bind));
+                        reject('Bind Type not found: ' + typeOf(Bind));
                 }
 
             }.bind(this));
@@ -291,21 +276,20 @@ define('classes/permissions/Permissions', [
          *
          * @return Promise
          */
-        setSitePermission : function(Site, permission, value)
-        {
-            var self = this,
-                Project = Site.getProject(),
-                cacheName = Project.getName()+'-'+Project.getLang()+'-'+Site.getId();
+        setSitePermission: function (Site, permission, value) {
+            var self      = this,
+                Project   = Site.getProject(),
+                cacheName = Project.getName() + '-' + Project.getLang() + '-' + Site.getId();
 
             if (cacheName in this.$cache.sites) {
 
-                return new Promise(function(resolve) {
+                return new Promise(function (resolve) {
                     self.$cache.sites[cacheName][permission] = value;
                     resolve();
                 });
             }
 
-            return this.getSitePermissionList(Site).then(function() {
+            return this.getSitePermissionList(Site).then(function () {
                 self.$cache.sites[cacheName][permission] = value;
             });
         },
@@ -319,20 +303,19 @@ define('classes/permissions/Permissions', [
          *
          * @return Promise
          */
-        setProjectPermission : function(Project, permission, value)
-        {
-            var self = this,
-                cacheName = Project.getName()+'-'+Project.getLang();
+        setProjectPermission: function (Project, permission, value) {
+            var self      = this,
+                cacheName = Project.getName() + '-' + Project.getLang();
 
             if (cacheName in this.$cache.projects) {
 
-                return new Promise(function(resolve) {
+                return new Promise(function (resolve) {
                     self.$cache.projects[cacheName][permission] = value;
                     resolve();
                 });
             }
 
-            return this.getProjectPermissionList(Project).then(function() {
+            return this.getProjectPermissionList(Project).then(function () {
                 self.$cache.projects[cacheName][permission] = value;
             });
         },
@@ -346,20 +329,19 @@ define('classes/permissions/Permissions', [
          *
          * @return Promise
          */
-        setGroupPermission : function(Group, permission, value)
-        {
-            var self = this,
+        setGroupPermission: function (Group, permission, value) {
+            var self      = this,
                 cacheName = Group.getId();
 
             if (cacheName in this.$cache.groups) {
 
-                return new Promise(function(resolve) {
+                return new Promise(function (resolve) {
                     self.$cache.groups[cacheName][permission] = value;
                     resolve();
                 });
             }
 
-            return this.getGroupPermissionList(Group).then(function() {
+            return this.getGroupPermissionList(Group).then(function () {
                 self.$cache.groups[cacheName][permission] = value;
             });
         },
@@ -373,20 +355,19 @@ define('classes/permissions/Permissions', [
          *
          * @return Promise
          */
-        setUserPermission : function(User, permission, value)
-        {
-            var self = this,
+        setUserPermission: function (User, permission, value) {
+            var self      = this,
                 cacheName = User.getId();
 
             if (cacheName in this.$cache.users) {
 
-                return new Promise(function(resolve) {
+                return new Promise(function (resolve) {
                     self.$cache.users[cacheName][permission] = value;
                     resolve();
                 });
             }
 
-            return this.getUserPermissionList(User).then(function() {
+            return this.getUserPermissionList(User).then(function () {
                 self.$cache.users[cacheName][permission] = value;
             });
         },
@@ -400,19 +381,17 @@ define('classes/permissions/Permissions', [
          *
          * @returns {Promise}
          */
-        deletePermission : function(permission, callback)
-        {
-            return new Promise(function(resolve, reject) {
+        deletePermission: function (permission, callback) {
+            return new Promise(function (resolve, reject) {
 
-                QUIAjax.post('ajax_permissions_delete', function()
-                {
+                QUIAjax.post('ajax_permissions_delete', function () {
                     this.$list = null;
 
                     this.$cache = {
-                        users    : {},
-                        groups   : {},
-                        sites    : {},
-                        projects : {}
+                        users   : {},
+                        groups  : {},
+                        sites   : {},
+                        projects: {}
                     };
 
                     resolve();
@@ -422,8 +401,8 @@ define('classes/permissions/Permissions', [
                     }
 
                 }.bind(this), {
-                    permission : permission,
-                    onError    : reject
+                    permission: permission,
+                    onError   : reject
                 });
 
             }.bind(this));
@@ -437,12 +416,10 @@ define('classes/permissions/Permissions', [
          * @param {String} type
          * @returns {Promise}
          */
-        addPermission : function(permission, area, type)
-        {
-            return new Promise(function(resolve, reject) {
+        addPermission: function (permission, area, type) {
+            return new Promise(function (resolve, reject) {
 
-                QUIAjax.post('ajax_permissions_add', function(result)
-                {
+                QUIAjax.post('ajax_permissions_add', function (result) {
                     this.$list = null;
 
                     switch (area) {
@@ -456,17 +433,17 @@ define('classes/permissions/Permissions', [
                             break;
 
                         default:
-                            this.$cache.users = {};
+                            this.$cache.users  = {};
                             this.$cache.groups = {};
                     }
 
                     resolve(result);
 
                 }.bind(this), {
-                    permission     : permission,
-                    area           : area,
-                    permissiontype : type,
-                    onError        : reject
+                    permission    : permission,
+                    area          : area,
+                    permissiontype: type,
+                    onError       : reject
                 });
 
             }.bind(this));
@@ -481,10 +458,8 @@ define('classes/permissions/Permissions', [
          *                                       classes/projects/project/Site
          * @returns {Promise}
          */
-        savePermission : function(Bind)
-        {
-            return new Promise(function(resolve, reject)
-            {
+        savePermission: function (Bind) {
+            return new Promise(function (resolve, reject) {
                 switch (typeOf(Bind)) {
                     case 'classes/users/User':
                         return this.saveUserPermission(Bind).then(resolve);
@@ -500,7 +475,7 @@ define('classes/permissions/Permissions', [
 
                     default:
                         console.error('savePermission: Bind Type not found');
-                        reject('Bind Type not found: '+ typeOf(Bind));
+                        reject('Bind Type not found: ' + typeOf(Bind));
                 }
             }.bind(this));
         },
@@ -511,28 +486,26 @@ define('classes/permissions/Permissions', [
          * @param {Object} User - classes/users/User
          * @returns {Promise}
          */
-        saveUserPermission : function(User)
-        {
-            var self = this,
+        saveUserPermission: function (User) {
+            var self      = this,
                 cacheName = User.getId();
 
-            return new Promise(function(resolve, reject) {
+            return new Promise(function (resolve, reject) {
 
                 if (!(cacheName in self.$cache.users)) {
                     resolve();
                     return;
                 }
 
-                QUIAjax.post('ajax_permissions_save', function()
-                {
+                QUIAjax.post('ajax_permissions_save', function () {
                     resolve();
                 }, {
-                    params : JSON.encode({
-                        id : User.getId()
+                    params     : JSON.encode({
+                        id: User.getId()
                     }),
-                    btype       : User.getType(),
-                    permissions : JSON.encode(self.$cache.users[cacheName]),
-                    onError     : reject
+                    btype      : User.getType(),
+                    permissions: JSON.encode(self.$cache.users[cacheName]),
+                    onError    : reject
                 });
 
             });
@@ -544,28 +517,26 @@ define('classes/permissions/Permissions', [
          * @param {Object} Group - classes/groups/Group
          * @returns {Promise}
          */
-        saveGroupPermission : function(Group)
-        {
-            var self = this,
+        saveGroupPermission: function (Group) {
+            var self      = this,
                 cacheName = Group.getId();
 
-            return new Promise(function(resolve, reject) {
+            return new Promise(function (resolve, reject) {
 
                 if (!(cacheName in self.$cache.groups)) {
                     resolve();
                     return;
                 }
 
-                QUIAjax.post('ajax_permissions_save', function()
-                {
+                QUIAjax.post('ajax_permissions_save', function () {
                     resolve();
                 }, {
-                    params : JSON.encode({
-                        id : Group.getId()
+                    params     : JSON.encode({
+                        id: Group.getId()
                     }),
-                    btype       : Group.getType(),
-                    permissions : JSON.encode(self.$cache.groups[cacheName]),
-                    onError     : reject
+                    btype      : Group.getType(),
+                    permissions: JSON.encode(self.$cache.groups[cacheName]),
+                    onError    : reject
                 });
 
             });
@@ -577,28 +548,26 @@ define('classes/permissions/Permissions', [
          * @param {Object} Project - classes/projects/Project
          * @returns {Promise}
          */
-        saveProjectPermission : function(Project)
-        {
-            var self = this,
-                cacheName = Project.getName()+'-'+Project.getLang();
+        saveProjectPermission: function (Project) {
+            var self      = this,
+                cacheName = Project.getName() + '-' + Project.getLang();
 
-            return new Promise(function(resolve, reject) {
+            return new Promise(function (resolve, reject) {
 
                 if (!(cacheName in self.$cache.projects)) {
                     resolve();
                     return;
                 }
 
-                QUIAjax.post('ajax_permissions_save', function()
-                {
+                QUIAjax.post('ajax_permissions_save', function () {
                     resolve();
                 }, {
-                    params : JSON.encode({
-                        project : Project.getName()
+                    params     : JSON.encode({
+                        project: Project.getName()
                     }),
-                    btype       : Project.getType(),
-                    permissions : JSON.encode(self.$cache.projects[cacheName]),
-                    onError     : reject
+                    btype      : Project.getType(),
+                    permissions: JSON.encode(self.$cache.projects[cacheName]),
+                    onError    : reject
                 });
 
             });
@@ -610,30 +579,29 @@ define('classes/permissions/Permissions', [
          * @param {Object} Site - classes/projects/prject/Site
          * @returns {Promise}
          */
-        saveSitePermission : function(Site)
-        {
-            var self = this,
-                Project = Site.getProject(),
-                cacheName = Project.getName()+'-'+Project.getLang()+'-'+Site.getId();
+        saveSitePermission: function (Site) {
+            var self      = this,
+                Project   = Site.getProject(),
+                cacheName = Project.getName() + '-' + Project.getLang() + '-' + Site.getId();
 
-            return new Promise(function(resolve, reject) {
+            return new Promise(function (resolve, reject) {
 
                 if (!(cacheName in self.$cache.sites)) {
                     resolve();
                     return;
                 }
 
-                QUIAjax.post('ajax_permissions_save', function()
-                {
+                QUIAjax.post('ajax_permissions_save', function () {
                     resolve();
                 }, {
-                    params : JSON.encode({
-                        project : Project.getName(),
-                        lang    : Project.getLang()
+                    params     : JSON.encode({
+                        project: Project.getName(),
+                        lang   : Project.getLang(),
+                        id     : Site.getId()
                     }),
-                    btype       : Site.getType(),
-                    permissions : JSON.encode(self.$cache.sites[cacheName]),
-                    onError     : reject
+                    btype      : Site.getType(),
+                    permissions: JSON.encode(self.$cache.sites[cacheName]),
+                    onError    : reject
                 });
             });
         }

@@ -1,4 +1,3 @@
-
 /**
  * Permissions Panel -> Site
  *
@@ -6,6 +5,7 @@
  * @author www.pcsg.de (Henning Leutz)
  *
  * @require controls/permissions/Permission
+ * @require qui/controls/buttons/Button
  * @require Locale
  */
 define('controls/permissions/Site', [
@@ -14,21 +14,19 @@ define('controls/permissions/Site', [
     'qui/controls/buttons/Button',
     'Locale'
 
-], function(Permission, QUIButton, QUILocale)
-{
+], function (Permission, QUIButton, QUILocale) {
     "use strict";
 
     return new Class({
 
         Extends: Permission,
-        Type: 'controls/permissions/Site',
+        Type   : 'controls/permissions/Site',
 
-        Binds : [
+        Binds: [
             '$onOpen'
         ],
 
-        initialize : function(Site, options)
-        {
+        initialize: function (Site, options) {
             this.parent(Site, options);
 
             if (typeOf(Site) === 'classes/projects/project/Site') {
@@ -36,7 +34,7 @@ define('controls/permissions/Site', [
             }
 
             this.addEvents({
-                onOpen : this.$onOpen
+                onOpen: this.$onOpen
             });
         },
 
@@ -45,20 +43,19 @@ define('controls/permissions/Site', [
          *
          * @returns {Promise}
          */
-        $openBindSelect : function()
-        {
+        $openBindSelect: function () {
             var self = this;
 
-            return new Promise(function(resolve, reject) {
+            return new Promise(function (resolve, reject) {
 
                 require([
                     'controls/projects/Popup',
                     'Projects'
-                ], function(Popup, Projects) {
+                ], function (Popup, Projects) {
 
                     new Popup({
-                        events : {
-                            onSubmit : function(Popup, data) {
+                        events: {
+                            onSubmit: function (Popup, data) {
 
                                 var Project = Projects.get(data.project, data.lang);
 
@@ -73,13 +70,13 @@ define('controls/permissions/Site', [
                                 resolve();
                             },
 
-                            onCancel : function() {
+                            onCancel: function () {
                                 reject();
                             }
                         }
                     }).open();
 
-                }, function(err) {
+                }, function (err) {
                     console.error(err);
                     reject(err);
                 });
@@ -90,24 +87,23 @@ define('controls/permissions/Site', [
         /**
          * event on open
          */
-        $onOpen : function()
-        {
+        $onOpen: function () {
             new QUIButton({
-                text : QUILocale.get('quiqqer/system', 'permission.control.btn.site.save'),
-                title : QUILocale.get('quiqqer/system', 'permission.control.btn.site.save'),
-                textimage : 'icon-save',
-                styles : {
-                    'float' : 'right'
+                text     : QUILocale.get('quiqqer/system', 'permission.control.btn.site.save'),
+                title    : QUILocale.get('quiqqer/system', 'permission.control.btn.site.save'),
+                textimage: 'icon-save',
+                styles   : {
+                    'float': 'right'
                 },
-                events : {
-                    onClick : function(Btn) {
+                events   : {
+                    onClick: function (Btn) {
 
                         Btn.setAttribute(
                             'textimage',
                             'icon-spinner icon-spin fa fa-spinner fa-spin'
                         );
 
-                        this.save().then(function() {
+                        this.save().then(function () {
                             Btn.setAttribute('textimage', 'icon-save');
                         });
 
@@ -121,32 +117,31 @@ define('controls/permissions/Site', [
         /**
          * Load the title status
          */
-        $loadStatus : function()
-        {
-            console.log(this.$Bind);
-
+        $loadStatus: function () {
             if (!this.$Bind) {
                 return;
             }
 
+            var self = this;
+
             // set status title
-            if (this.$Bind.isLoaded()) {
-                this.$Status.set(
+            if (self.$Bind.isLoaded()) {
+                self.$Status.set(
                     'html',
                     QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
-                        name : '<span class="fa fa-file-o icon-file-alt"></span>'+
-                        this.$Bind.getAttribute('name') +'.html'
+                        name: '<span class="fa fa-file-o icon-file-alt"></span>' +
+                              self.$Bind.getAttribute('name') + '.html'
                     })
                 );
 
             } else {
 
-                this.$Bind.load(function() {
-                    this.$Status.set(
+                self.$Bind.load(function () {
+                    self.$Status.set(
                         'html',
                         QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
-                            name : '<span class="fa fa-file-o icon-file-alt"></span>'+
-                            this.$Bind.getAttribute('name') +'.html'
+                            name: '<span class="fa fa-file-o icon-file-alt"></span>' +
+                                  self.$Bind.getAttribute('name') + '.html'
                         })
                     );
                 });
