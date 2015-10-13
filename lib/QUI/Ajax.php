@@ -320,7 +320,7 @@ class Ajax extends QUI\QDOM
                 }
                 break;
 
-            case '\QUI\Exception':
+            case 'QUI\\Exception':
                 $return['Exception']['message'] = $Exception->getMessage();
                 $return['Exception']['code']    = $Exception->getCode();
                 $return['Exception']['type']    = $Exception->getType();
@@ -328,7 +328,7 @@ class Ajax extends QUI\QDOM
                 if (DEVELOPMENT || DEBUG_MODE) {
                     $return['Exception']['context'] = $Exception->getContext();
                 }
-                
+
                 break;
 
             default:
