@@ -49,9 +49,9 @@ class Ajax extends QUI\QDOM
     /**
      * Registered functions which are available via Ajax
      *
-     * @param string      $reg_function - Function which exists in Ajax
-     * @param array|bool  $reg_vars     - Variables which has the function of
-     * @param bool|string $user_perm    - rights, optional
+     * @param string $reg_function - Function which exists in Ajax
+     * @param array|bool $reg_vars - Variables which has the function of
+     * @param bool|string $user_perm - rights, optional
      *
      * @return bool
      */
@@ -112,7 +112,7 @@ class Ajax extends QUI\QDOM
             }
 
             if (strpos($func, 'Permission') === 0) {
-                $func = '\\QUI\\Rights\\'.$func;
+                $func = '\\QUI\\Rights\\' . $func;
             }
 
             if (!is_callable($func)) {
@@ -139,7 +139,7 @@ class Ajax extends QUI\QDOM
             );
         }
 
-        $_rfs = json_decode($_REQUEST['_rf'], true);
+        $_rfs   = json_decode($_REQUEST['_rf'], true);
         $result = array();
 
         if (!is_array($_rfs)) {
@@ -154,15 +154,15 @@ class Ajax extends QUI\QDOM
 
         if (QUI::getMessagesHandler()) {
             $result['message_handler'] = \QUI::getMessagesHandler()
-                                             ->getMessagesAsArray(
-                                                 QUI::getUserBySession()
-                                             );
+                ->getMessagesAsArray(
+                    QUI::getUserBySession()
+                );
         }
 
         // maintenance flag
         $result['maintenance'] = QUI::conf('globals', 'maintenance') ? 1 : 0;
 
-        return '<quiqqer>'.json_encode($result).'</quiqqer>';
+        return '<quiqqer>' . json_encode($result) . '</quiqqer>';
     }
 
     /**
@@ -176,7 +176,7 @@ class Ajax extends QUI\QDOM
     {
         if (!isset(self::$_functions[$_rf])) {
             if (defined('DEVELOPMENT') && DEVELOPMENT) {
-                System\Log::write('Funktion '.$_rf.' nicht gefunden');
+                System\Log::write('Funktion ' . $_rf . ' nicht gefunden');
             }
 
             return $this->writeException(
@@ -257,7 +257,7 @@ class Ajax extends QUI\QDOM
                 case JSON_ERROR_UTF8:
                 default:
                     QUI\System\Log::write(
-                        'JSON Error: '.json_last_error().' :: '.print_r($return,
+                        'JSON Error: ' . json_last_error() . ' :: ' . print_r($return,
                             true),
                         'error'
                     );
@@ -280,26 +280,61 @@ class Ajax extends QUI\QDOM
         $return = array();
 
         switch (get_class($Exception)) {
-            default:
-                $return['Exception']['message'] = $Exception->getMessage();
-                $return['Exception']['code'] = $Exception->getCode();
-                $return['Exception']['type'] = $Exception->getType();
-                break;
-
             case 'PDOException':
             case 'QUI\\Database\\Exception':
                 // DB Fehler immer loggen
                 System\Log::writeException($Exception);
 
                 if ($this->getAttribute('db_errors')) {
-                    $return['ExceptionDBError']['message']
-                        = $Exception->getMessage();
-                    $return['ExceptionDBError']['code'] = $Exception->getCode();
+                    $return['ExceptionDBError']['message'] = $Exception->getMessage();
+                    $return['ExceptionDBError']['code']    = $Exception->getCode();
                 } else {
                     // Standardfehler rausbringen
                     $return['Exception']['message'] = 'Internal Server Error';
-                    $return['Exception']['code'] = 500;
+                    $return['Exception']['code']    = 500;
                 }
+
+                if (DEVELOPMENT || DEBUG_MODE) {
+                    $return['Exception']['context'] = $Exception->getContext();
+                }
+
+                break;
+
+            case 'QUI\\ExceptionStack':
+                /* @var $Exception \QUI\ExceptionStack */
+                $list = $Exception->getExceptionList();
+
+                if (isset($list[0])) {
+                    // method nicht mit ausgeben
+                    $message = $list[0]->getMessage();
+                    $message = mb_substr($message, 0, mb_strripos($message, ' :: '));
+
+                    $return['Exception']['message'] = $message;
+                    $return['Exception']['code']    = $list[0]->getCode();
+                    $return['Exception']['type']    = $list[0]->getType();
+
+                    if (DEVELOPMENT || DEBUG_MODE) {
+                        $return['Exception']['context'] = $Exception->getContext();
+                    }
+
+                }
+                break;
+
+            case 'QUI\\Exception':
+                $return['Exception']['message'] = $Exception->getMessage();
+                $return['Exception']['code']    = $Exception->getCode();
+                $return['Exception']['type']    = $Exception->getType();
+
+                if (DEVELOPMENT || DEBUG_MODE) {
+                    $return['Exception']['context'] = $Exception->getContext();
+                }
+
+                break;
+
+            default:
+                $return['Exception']['message'] = $Exception->getMessage();
+                $return['Exception']['code']    = $Exception->getCode();
+                $return['Exception']['type']    = $Exception->getType();
                 break;
         }
 
@@ -321,7 +356,7 @@ class Ajax extends QUI\QDOM
                     )
                 );
 
-                echo '<quiqqer>'.json_encode($return).'</quiqqer>';
+                echo '<quiqqer>' . json_encode($return) . '</quiqqer>';
                 break;
         }
     }

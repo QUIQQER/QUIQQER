@@ -912,13 +912,17 @@ class Edit extends Site
      * Erstellt ein neues Kind
      *
      * @param array $params
-     * @param Bool|QUI\Users\User|QUI\Users\SystemUser $User - the user which create the site, optional
+     * @param array $childPermissions - [optional] permissions for the child
+     * @param Bool|QUI\Users\User|QUI\Users\SystemUser $User - [optional] the user which create the site, optional
      *
      * @return Int
      * @throws QUI\Exception
      */
-    public function createChild($params = array(), $User = false)
-    {
+    public function createChild(
+        $params = array(),
+        $childPermissions = array(),
+        $User = false
+    ) {
         if ($User == false) {
             $User = QUI::getUserBySession();
         }
@@ -985,16 +989,22 @@ class Edit extends Site
             'child'  => $newId
         ));
 
-        // Aufruf der createChild Methode im TempSite - für den Adminbereich
-        $this->Events->fireEvent('createChild', array($newId, $this));
-        QUI::getEvents()->fireEvent('siteCreateChild', array($newId, $this));
-
         // copy permissions to the child
         $PermManager    = QUI::getPermissionManager();
         $permissions    = $PermManager->getSitePermissions($this);
         $newPermissions = array();
 
+        // parent permissions
         foreach ($permissions as $permission => $value) {
+            if (empty($value)) {
+                continue;
+            }
+
+            $newPermissions[$permission] = $value;
+        }
+
+        // optional new permission
+        foreach ($childPermissions as $permission => $value) {
             if (empty($value)) {
                 continue;
             }
@@ -1005,8 +1015,16 @@ class Edit extends Site
         if (!empty($newPermissions)) {
             $Child = $this->getChild($newId);
 
-            $PermManager->setSitePermissions($Child, $newPermissions);
+            $PermManager->setSitePermissions(
+                $Child,
+                $newPermissions,
+                QUI::getUsers()->getSystemUser()
+            );
         }
+
+        // Aufruf der createChild Methode im TempSite - für den Adminbereich
+        $this->Events->fireEvent('createChild', array($newId, $this));
+        QUI::getEvents()->fireEvent('siteCreateChild', array($newId, $this));
 
 
         return $newId;

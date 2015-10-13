@@ -4,7 +4,7 @@
  * @module utils/Controls
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require polyfills/Promise
+ * @require qui/lib/polyfills/Promise
  */
 
 define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
@@ -145,7 +145,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
          */
         parseDataTables: function (Elm) {
             return new Promise(function (resolve) {
-                var i, len, Header;
+                var i, len, Header, TableText;
                 var theaders = Elm.getElements('.data-table tr ^ th');
 
                 var dataTableOpen = function () {
@@ -228,11 +228,20 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                     Header.addEvent('click', dataTableClick);
                     Header.setStyle('cursor', 'pointer');
 
+                    TableText = new Element('div', {
+                        'class': 'data-table-text',
+                        html   : Header.get('html')
+                    });
+
+                    Header.set('html', '');
+
                     new Element('div', {
                         'class': 'data-table-toggle',
                         html   : '<span class="icon-minus"></span>',
                         styles : {}
                     }).inject(Header, 'top');
+
+                    TableText.inject(Header);
 
                     if (Header.getParent('table').hasClass('data-table-closed')) {
                         dataTableClick.call(Header);

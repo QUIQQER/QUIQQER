@@ -145,6 +145,26 @@ class Manager extends QUI\QDOM
     }
 
     /**
+     * Is the Object a Group?
+     *
+     * @param mixed $Group
+     *
+     * @return Bool
+     */
+    public function isGroup($Group)
+    {
+        if (!is_object($Group)) {
+            return false;
+        }
+
+        if (get_class($Group) === 'QUI\\Groups\\Group') {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Count the groups
      *
      * @param array $params - QUI\Database\DB params

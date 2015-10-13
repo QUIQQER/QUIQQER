@@ -542,7 +542,12 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                     'quiqqer/system',
                     'exception.site.not.found'
                 ),
-                705
+                705,
+                array(
+                    'siteId'  => $this->getId(),
+                    'project' => $this->getProject()->getName(),
+                    'lang'    => $this->getProject()->getLang()
+                )
             );
         }
 
@@ -554,7 +559,12 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                     'quiqqer/system',
                     'exception.site.not.found'
                 ),
-                705
+                705,
+                array(
+                    'siteId'  => $this->getId(),
+                    'project' => $this->getProject()->getName(),
+                    'lang'    => $this->getProject()->getLang()
+                )
             );
         }
 
@@ -564,7 +574,12 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                     'quiqqer/system',
                     'exception.site.not.found'
                 ),
-                705
+                705,
+                array(
+                    'siteId'  => $this->getId(),
+                    'project' => $this->getProject()->getName(),
+                    'lang'    => $this->getProject()->getLang()
+                )
             );
         }
 
@@ -1375,7 +1390,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 return $url . '.' . $params['suffix'];
             }
 
-            return $url . QUI\Rewrite::URL_DEFAULT_SUFFIX;
+            return $url . QUI\Rewrite::getDefaultSuffix();
         }
 
         $url = '';
@@ -1423,7 +1438,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             return $url . '.' . $params['suffix'];
         }
 
-        $result = $url . QUI\Rewrite::URL_DEFAULT_SUFFIX;
+        $result = $url . QUI\Rewrite::getDefaultSuffix();
 
         if (empty($getParams)) {
             return $result;
