@@ -48,7 +48,16 @@
 
 .data-table-toggle {
     float: left;
-    margin-right: 10px;
+    text-align: center;
+    width: 34px;
+}
+
+.data-table-text {
+    float: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: calc(100% - 34px);
 }
 
 .data-table th h1,
