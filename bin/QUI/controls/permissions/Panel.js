@@ -4,8 +4,11 @@
  *
  * @module controls/permissions/Panel
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/QUI
+ * @require qui/controls/desktop/Panel
+ * @require Locale
  */
-
 define('controls/permissions/Panel', [
 
     'qui/QUI',

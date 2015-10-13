@@ -2,9 +2,10 @@
 
 .qui-users-and-groups {
     float: left;
+    max-width: 400px;
     padding: 2px;
     position: relative;
-    width: 400px;
+    width: 100%;
 }
 
 .qui-users-and-groups-list {
