@@ -542,7 +542,12 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                     'quiqqer/system',
                     'exception.site.not.found'
                 ),
-                705
+                705,
+                array(
+                    'siteId'  => $this->getId(),
+                    'project' => $this->getProject()->getName(),
+                    'lang'    => $this->getProject()->getLang()
+                )
             );
         }
 
@@ -554,7 +559,12 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                     'quiqqer/system',
                     'exception.site.not.found'
                 ),
-                705
+                705,
+                array(
+                    'siteId'  => $this->getId(),
+                    'project' => $this->getProject()->getName(),
+                    'lang'    => $this->getProject()->getLang()
+                )
             );
         }
 
@@ -564,7 +574,12 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                     'quiqqer/system',
                     'exception.site.not.found'
                 ),
-                705
+                705,
+                array(
+                    'siteId'  => $this->getId(),
+                    'project' => $this->getProject()->getName(),
+                    'lang'    => $this->getProject()->getLang()
+                )
             );
         }
 
