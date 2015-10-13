@@ -120,7 +120,7 @@ class Locale
             $oldlocale = setlocale(LC_TIME, "0");
             setlocale(LC_TIME, $this->_getLocalesByLang($current));
 
-            $result = strftime($format, $timestamp);
+            $result = utf8_encode(strftime($format, $timestamp));
 
             setlocale(LC_TIME, $oldlocale);
 
@@ -133,14 +133,14 @@ class Locale
             $oldlocale = setlocale(LC_TIME, "0");
             setlocale(LC_TIME, $this->_getLocalesByLang($current));
 
-            $result = strftime($formats[$current], $timestamp);
+            $result = utf8_encode(strftime($formats[$current], $timestamp));
 
             setlocale(LC_TIME, $oldlocale);
 
             return $result;
         }
 
-        return strftime('%D', $timestamp);
+        return utf8_encode(strftime('%D', $timestamp));
     }
 
     /**
@@ -179,13 +179,13 @@ class Locale
         // no shell
         if (!QUI\Utils\System::isShellFunctionEnabled('locale')) {
             // if we cannot read locale list, so we must guess
-            $langCode = strtolower($lang).'_'.strtoupper($lang);
+            $langCode = strtolower($lang) . '_' . strtoupper($lang);
 
             $this->_localeList[$lang] = array(
                 $langCode,
-                $langCode.'.utf8',
-                $langCode.'.UTF-8',
-                $langCode.'@euro'
+                $langCode . '.utf8',
+                $langCode . '.UTF-8',
+                $langCode . '@euro'
             );
 
             return $this->_localeList[$lang];
@@ -206,7 +206,7 @@ class Locale
             $langList[] = $locale;
         }
 
-        $langCode = strtolower($lang).'_'.strtoupper($lang);
+        $langCode = strtolower($lang) . '_' . strtoupper($lang);
 
         // not the best solution
         if ($lang == 'en') {
@@ -238,10 +238,10 @@ class Locale
     /**
      * Set translation
      *
-     * @param String       $lang  - Language
-     * @param String       $group - Language group
+     * @param String $lang - Language
+     * @param String $group - Language group
      * @param String|array $key
-     * @param String|bool  $value
+     * @param String|bool $value
      */
     public function set($lang, $group, $key, $value = false)
     {
@@ -268,7 +268,7 @@ class Locale
     /**
      * Exist the variable in the translation?
      *
-     * @param String      $group - language group
+     * @param String $group - language group
      * @param String|bool $value - language group variable, optional
      *
      * @return Bool
@@ -285,7 +285,7 @@ class Locale
             return true;
         }
 
-        $_str = '['.$group.'] '.$value;
+        $_str = '[' . $group . '] ' . $value;
 
         if ($_str === $str) {
             return false;
@@ -297,9 +297,9 @@ class Locale
     /**
      * Get the translation
      *
-     * @param String      $group   - Gruppe
-     * @param String|bool $value   - (optional) Variable, optional
-     * @param Array|bool  $replace - (optional)
+     * @param String $group - Gruppe
+     * @param String|bool $value - (optional) Variable, optional
+     * @param Array|bool $replace - (optional)
      *
      * @return String|array
      */
@@ -312,7 +312,7 @@ class Locale
         $str = $this->_get($group, $value);
 
         foreach ($replace as $key => $value) {
-            $str = str_replace('['.$key.']', $value, $str);
+            $str = str_replace('[' . $key . ']', $value, $str);
         };
 
         return $str;
@@ -321,7 +321,7 @@ class Locale
     /**
      * Translation helper method
      *
-     * @param String      $group
+     * @param String $group
      * @param String|bool $value - (optional)
      *
      * @return String|Array
@@ -331,7 +331,7 @@ class Locale
     protected function _get($group, $value = false)
     {
         if ($this->no_translation) {
-            return '['.$group.'] '.$value;
+            return '[' . $group . '] ' . $value;
         }
 
         $current = $this->_current;
@@ -365,7 +365,7 @@ class Locale
             return $this->_langs[$current][$group][$value];
         }
 
-        return '['.$group.'] '.$value;
+        return '[' . $group . '] ' . $value;
     }
 
     /**
@@ -401,12 +401,12 @@ class Locale
             return $Gettext;
         }
 
-        $dir = $Gettext->getAttribute('dir');
+        $dir    = $Gettext->getAttribute('dir');
         $domain = $Gettext->getAttribute('domain');
 
         System\Log::write(
-            'Übersetzungsdatei für '.$group.' '.$dir.'de_DE/LC_MESSAGES/'
-            .$domain.'.mo nicht gefunden.',
+            'Übersetzungsdatei für ' . $group . ' ' . $dir . 'de_DE/LC_MESSAGES/'
+            . $domain . '.mo nicht gefunden.',
             'error'
         );
 
@@ -451,11 +451,11 @@ class Locale
      */
     public function getTranslationFile($lang, $group)
     {
-        $locale = QUI\Utils\String::toLower($lang).'_'
-            .QUI\Utils\String::toUpper($lang);
-        $group = str_replace('/', '_', $group);
+        $locale = QUI\Utils\String::toLower($lang) . '_'
+                  . QUI\Utils\String::toUpper($lang);
+        $group  = str_replace('/', '_', $group);
 
-        return $this->dir().'/'.$locale.'/LC_MESSAGES/'.$group.'.ini.php';
+        return $this->dir() . '/' . $locale . '/LC_MESSAGES/' . $group . '.ini.php';
     }
 
     /**
@@ -465,6 +465,6 @@ class Locale
      */
     public function dir()
     {
-        return VAR_DIR.'locale/';
+        return VAR_DIR . 'locale/';
     }
 }
