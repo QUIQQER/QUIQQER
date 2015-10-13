@@ -3365,6 +3365,16 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Alle E-Mail-Adressen werden für SpyBots unkenntlich gemacht]]></de>
             <en><![CDATA[All email addresses are defaced for spybots]]></en>
         </locale>
+
+        <locale name="quiqqer.settings.general.globals.htmlSuffix">
+            <de><![CDATA[HTML Endung an Seitenadressen]]></de>
+            <en><![CDATA[HTML ending at page addresses]]></en>
+        </locale>
+        <locale name="quiqqer.settings.general.globals.htmlSuffix.description">
+            <de><![CDATA[Die .html Endung wird an Seitenadressen angehängt. Ihre Projekteseiten besitzen .html]]></de>
+            <en><![CDATA[The .html extension is appended to page addresses. Your projects have .html pages]]></en>
+        </locale>
+
         <locale name="quiqqer.settings.cache.management.title">
             <de><![CDATA[Cache Verwaltung]]></de>
             <en><![CDATA[Cache management]]></en>
