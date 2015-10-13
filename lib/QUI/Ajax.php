@@ -280,12 +280,6 @@ class Ajax extends QUI\QDOM
         $return = array();
 
         switch (get_class($Exception)) {
-            default:
-                $return['Exception']['message'] = $Exception->getMessage();
-                $return['Exception']['code'] = $Exception->getCode();
-                $return['Exception']['type'] = $Exception->getType();
-                break;
-
             case 'PDOException':
             case 'QUI\\Database\\Exception':
                 // DB Fehler immer loggen
@@ -300,6 +294,27 @@ class Ajax extends QUI\QDOM
                     $return['Exception']['message'] = 'Internal Server Error';
                     $return['Exception']['code'] = 500;
                 }
+                break;
+
+            case 'QUI\\ExceptionStack':
+                /* @var $Exception \QUI\ExceptionStack */
+                $list = $Exception->getExceptionList();
+
+                if (isset($list[0])) {
+                    // method nicht mit ausgeben
+                    $message = $list[0]->getMessage();
+                    $message = mb_substr($message, 0, mb_strripos($message, ' :: '));
+
+                    $return['Exception']['message'] = $message;
+                    $return['Exception']['code'] = $list[0]->getCode();
+                    $return['Exception']['type'] = $list[0]->getType();
+                }
+                break;
+
+            default:
+                $return['Exception']['message'] = $Exception->getMessage();
+                $return['Exception']['code'] = $Exception->getCode();
+                $return['Exception']['type'] = $Exception->getType();
                 break;
         }
 
