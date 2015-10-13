@@ -33,6 +33,8 @@ class Rewrite
     const URL_PROJECT_CHARACTER = '^';
     const URL_DEFAULT_SUFFIX = '.html';
 
+    static public $SUFFIX = false;
+
     /**
      * site request parameter
      *
@@ -154,6 +156,28 @@ class Rewrite
     }
 
     /**
+     * Return the default suffix eq: .html or ''
+     *
+     * @return string
+     */
+    static function getDefaultSuffix()
+    {
+        if (self::$SUFFIX !== false) {
+            return self::$SUFFIX;
+        }
+
+        $conf = (int)QUI::conf('globals', 'htmlSuffix');
+
+        if ($conf === 0) {
+            self::$SUFFIX = '';
+        } else {
+            self::$SUFFIX = '.html';
+        }
+
+        return self::$SUFFIX;
+    }
+
+    /**
      * Request verarbeiten
      */
     public function exec()
@@ -170,7 +194,8 @@ class Rewrite
             return;
         }
 
-        $vhosts = $this->getVHosts();
+        $vhosts        = $this->getVHosts();
+        $defaultSuffix = self::getDefaultSuffix();
 
         if (!isset($_SERVER['HTTP_HOST'])) {
             $_SERVER['HTTP_HOST'] = '';
@@ -195,7 +220,7 @@ class Rewrite
         if (!empty($_REQUEST['_url']) && substr($_REQUEST['_url'], -1) == '/'
             && strpos($_REQUEST['_url'], 'media/cache') === false
         ) {
-            $_REQUEST['_url'] = substr($_REQUEST['_url'], 0, -1) . '.html';
+            $_REQUEST['_url'] = substr($_REQUEST['_url'], 0, -1) . $defaultSuffix;
 
             \QUI::getEvents()
                 ->fireEvent('request', array($this, $_REQUEST['_url']));
@@ -220,8 +245,11 @@ class Rewrite
             if (isset($_url[0])
                 && substr($_url[0], 0, 1) == self::URL_PROJECT_CHARACTER
             ) {
-                $this->_project_str = str_replace('.html', '',
-                    substr($_url[0], 1));
+                $this->_project_str = str_replace(
+                    $defaultSuffix,
+                    '',
+                    substr($_url[0], 1)
+                );
 
                 // if a second project_character, its the template
                 if (strpos($this->_project_str, self::URL_PROJECT_CHARACTER)) {
@@ -260,10 +288,14 @@ class Rewrite
             // Sprache
             if (isset($_url[0])
                 && (strlen($_url[0]) == 2
-                    || strlen(str_replace('.html', '', $_url[0])) == 2)
+                    || strlen(str_replace($defaultSuffix, '', $_url[0])) == 2)
             ) {
-                $this->_lang = str_replace(self::URL_DEFAULT_SUFFIX, '',
-                    $_url[0]);
+                $this->_lang = str_replace(
+                    $defaultSuffix,
+                    '',
+                    $_url[0]
+                );
+
                 QUI::getLocale()->setCurrent($this->_lang);
 
                 unset($_url[0]);
@@ -407,12 +439,24 @@ class Rewrite
         if (!empty($_REQUEST['_url']) && substr($_REQUEST['_url'], -1) != '/') {
             $pathinfo = pathinfo($_REQUEST['_url']);
 
-            if (!isset($pathinfo['extension'])) {
-                $url = URL_DIR . $_REQUEST['_url'] . '.html';
+            if (!isset($pathinfo['extension']) && $defaultSuffix !== '') {
+                $url = URL_DIR . $_REQUEST['_url'] . $defaultSuffix;
                 $url = QUI\Utils\String::replaceDblSlashes($url);
 
                 // Falls keine Extension (.html) dann auf .html
+                // nur wenn $defaultSuffix == ''
                 $this->showErrorHeader(301, $url);
+
+            } elseif ($defaultSuffix === ''
+                      && isset($pathinfo['extension'])
+                      && $pathinfo['extension'] == 'html'
+            ) {
+                // Falls Extension .html und suffix leer ist
+                // dann auf kein suffix leiten
+                $this->showErrorHeader(
+                    301,
+                    str_replace('.html', '', URL_DIR . $_REQUEST['_url'])
+                );
             }
         }
 
@@ -499,9 +543,9 @@ class Rewrite
                 && isset($vhosts[$_SERVER['HTTP_HOST']])
                 && isset($vhosts[$_SERVER['HTTP_HOST']][$this->_lang])
             ) {
-                $url = $vhosts[$_SERVER['HTTP_HOST']][$this->_lang] . URL_DIR;
-                $url = QUI\Utils\String::replaceDblSlashes($url);
-                $url = 'http://' . $this->_project_prefix . $url;
+//                $url = $vhosts[$_SERVER['HTTP_HOST']][$this->_lang] . URL_DIR;
+//                $url = QUI\Utils\String::replaceDblSlashes($url);
+//                $url = 'http://' . $this->_project_prefix . $url;
 
                 if (isset($_SERVER['REQUEST_URI'])
                     && $_SERVER['REQUEST_URI'] != URL_DIR
@@ -1113,7 +1157,7 @@ class Rewrite
     }
 
     /**
-     * @param $Site
+     * @param QUI\Projects\Site $Site
      */
     public function addSiteToPath($Site)
     {
@@ -1379,7 +1423,7 @@ class Rewrite
         $url = str_replace($search, '-', $url);
 
         if (substr($url, -5) == '_html') {
-            $url = substr($url, 0, -5) . '.html';
+            $url = substr($url, 0, -5) . self::getDefaultSuffix();
         }
 
         return $url;
@@ -1506,7 +1550,7 @@ class Rewrite
      * @return String
      * @throws QUI\Exception
      */
-    public function getUrlFromSite($params = array(), $getParams=array())
+    public function getUrlFromSite($params = array(), $getParams = array())
     {
         // Falls ein Objekt übergeben wird
         if (isset($params['site']) && is_object($params['site'])) {
@@ -1548,6 +1592,10 @@ class Rewrite
             );
         }
 
+        if (!isset($lang)) {
+            $lang = '';
+        }
+
         QUI\Utils\System\File::mkdir(VAR_DIR . 'cache/links');
 
         $link_cache_dir = VAR_DIR . 'cache/links/' . $project . '/';
@@ -1587,7 +1635,11 @@ class Rewrite
             // Link Cache
             file_put_contents(
                 $link_cache_file,
-                str_replace('.print', '.html', $Site->getLocation($_params))
+                str_replace(
+                    '.print',
+                    self::getDefaultSuffix(),
+                    $Site->getLocation($_params)
+                )
             );
 
             $url = $Site->getLocation($_params);
@@ -1709,7 +1761,7 @@ class Rewrite
         }
 
         if (empty($suffix)) {
-            $suffix = self::URL_DEFAULT_SUFFIX;
+            $suffix = self::getDefaultSuffix();
         }
 
         if (empty($getParams)) {
