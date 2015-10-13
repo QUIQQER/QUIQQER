@@ -183,8 +183,6 @@ class Permission
      */
     static function checkPermissionList($permissions, $perm, $User = false)
     {
-        QUI\System\Log::writeRecursive($permissions);
-
         if (!isset($permissions[$perm])) {
 
             QUI\System\Log::addNotice(
