@@ -989,10 +989,6 @@ class Edit extends Site
             'child'  => $newId
         ));
 
-        // Aufruf der createChild Methode im TempSite - für den Adminbereich
-        $this->Events->fireEvent('createChild', array($newId, $this));
-        QUI::getEvents()->fireEvent('siteCreateChild', array($newId, $this));
-
         // copy permissions to the child
         $PermManager    = QUI::getPermissionManager();
         $permissions    = $PermManager->getSitePermissions($this);
@@ -1025,6 +1021,10 @@ class Edit extends Site
                 QUI::getUsers()->getSystemUser()
             );
         }
+
+        // Aufruf der createChild Methode im TempSite - für den Adminbereich
+        $this->Events->fireEvent('createChild', array($newId, $this));
+        QUI::getEvents()->fireEvent('siteCreateChild', array($newId, $this));
 
 
         return $newId;
