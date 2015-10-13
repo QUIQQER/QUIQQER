@@ -702,17 +702,31 @@ class Rewrite
 
         $Child = false;
 
-        foreach ($_url as $key => $val) {
+        for ($i = 0, $len = count($_url); $i < $len; $i++) {
 
             if ($Child == false) {
                 $Child = $this->_first_child;
             }
 
-            if (strpos($val, '.') !== false) {
-                $site_url          = explode('.', $val);
+            $val = $_url[$i];
+
+            // letzte seite = url params raushohlen
+            if ($len === $i+1) {
+
+                $defaultSuffix = QUI\Rewrite::getDefaultSuffix();
+                $suffixLen = mb_strlen($defaultSuffix);
+
+                if ($defaultSuffix != ''
+                    && mb_substr($val, $suffixLen * -1) == $defaultSuffix)
+                {
+                    $site_url = mb_substr($val, 0, $suffixLen * -1);
+                } else {
+                    $site_url = $val;
+                }
+
                 $this->site_params = explode(
                     self::URL_PARAM_SEPERATOR,
-                    $site_url[0]
+                    $site_url
                 );
 
                 $val = $this->site_params[0];
@@ -725,6 +739,31 @@ class Rewrite
                 $this->_set_path($Child);
             }
         }
+//
+//        foreach ($_url as $key => $val) {
+//
+//            if ($Child == false) {
+//                $Child = $this->_first_child;
+//            }
+//
+//            // last? split url params
+//            if (end($_url) === $val) {
+//                $site_url          = explode('.', $val);
+//                $this->site_params = explode(
+//                    self::URL_PARAM_SEPERATOR,
+//                    $site_url[0]
+//                );
+//
+//                $val = $this->site_params[0];
+//            }
+//
+//            $id    = $Child->getChildIdByName($val);
+//            $Child = $this->getProject()->get($id);
+//
+//            if ($setpath) {
+//                $this->_set_path($Child);
+//            }
+//        }
 
         return $Child;
     }
