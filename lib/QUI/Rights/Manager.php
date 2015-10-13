@@ -718,13 +718,15 @@ class Manager
                 continue;
             }
 
-            if (is_string($permissions[$permission])) {
-                $permissionValue = $permissions[$permission];
+            $Perm = $permissions[$permission];
 
-            } elseif (is_array($permissions[$permission])) {
+            if (is_string($Perm)) {
+                $permissionValue = $Perm;
+
+            } elseif (is_array($Perm)) {
                 $permissionValues = array();
 
-                foreach ($permissions[$permission] as $PermValue) {
+                foreach ($Perm as $PermValue) {
                     if (QUI::getUsers()->isUser($PermValue)) {
                         $permissionValues[] = 'u' . $PermValue->getId();
                         continue;
@@ -736,6 +738,12 @@ class Manager
                 }
 
                 $permissionValue = implode(',', $permissionValues);
+
+            } elseif(QUI::getUsers()->isUser($Perm)) {
+                $permissionValue = 'u'. $Perm->getId();
+
+            } elseif(QUI::getGroups()->isGroup($Perm)) {
+                $permissionValue = 'g'. $Perm->getId();
 
             } else {
                 continue;
