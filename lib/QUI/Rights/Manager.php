@@ -718,9 +718,33 @@ class Manager
                 continue;
             }
 
+            if (is_string($permissions[$permission])) {
+                $permissionValue = $permissions[$permission];
+
+            } elseif (is_array($permissions[$permission])) {
+                $permissionValues = array();
+
+                foreach ($permissions[$permission] as $PermValue) {
+                    if (QUI::getUsers()->isUser($PermValue)) {
+                        $permissionValues[] = 'u' . $PermValue->getId();
+                        continue;
+                    }
+
+                    if (QUI::getGroups()->isGroup($PermValue)) {
+                        $permissionValues[] = 'g' . $PermValue->getId();
+                    }
+                }
+
+                $permissionValue = implode(',', $permissionValues);
+
+            } else {
+                continue;
+            }
+
+
             $data[$permission] = $this->_cleanValue(
                 $params['type'],
-                $permissions[$permission]
+                $permissionValue
             );
         }
 
