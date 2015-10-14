@@ -12,7 +12,6 @@
  * @event onDelete
  * @event onProjectSave -> triggerd via project
  */
-
 define('classes/projects/Manager', [
 
     'qui/classes/DOM',

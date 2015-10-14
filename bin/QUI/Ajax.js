@@ -5,6 +5,11 @@
  * @author www.pcsg.de (Henning Leutz)
  * @module Ajax
  *
+ * @require qui/QUI
+ * @require qui/classes/request/Ajax
+ * @require qui/utils/Object
+ * @require Locale
+ *
  * @example
 
  require(['Ajax'], function(Ajax)
@@ -16,7 +21,6 @@
  });
 
  */
-
 define('Ajax', [
 
     'qui/QUI',

@@ -264,6 +264,11 @@ define('controls/projects/project/Sitemap', [
 
             // if not exist, search the path
             Ajax.get('ajax_site_path', function (result, Request) {
+
+                if (!result) {
+                    return;
+                }
+
                 var items;
                 var Map = self.getMap();
 

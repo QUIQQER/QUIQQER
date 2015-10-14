@@ -12,7 +12,6 @@
  *
  * @event onChange [ value ]
  */
-
 define('controls/projects/Select', [
 
     'qui/QUI',
@@ -31,18 +30,13 @@ define('controls/projects/Select', [
         Type   : 'controls/projects/Select',
 
         options: {
-            langSelect : true
+            langSelect: true
         },
 
         initialize: function (options) {
             this.parent(options);
 
             this.Loader = new QUILoader();
-
-            this.addEvents({
-//                onCreate : this.$onCreate
-                onIjnect: this.$onInject
-            });
         },
 
         /**

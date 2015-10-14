@@ -11,7 +11,7 @@
 function ajax_site_get($project, $id)
 {
     $Project = QUI::getProjectManager()->decode($project);
-    $Site = new QUI\Projects\Site\Edit($Project, (int)$id);
+    $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
 
     $attributes = $Site->getAttributes();
 
@@ -24,7 +24,7 @@ function ajax_site_get($project, $id)
         'attributes'   => $attributes,
         'has_children' => $Site->hasChildren(true),
         'parentid'     => $Site->getParentId(),
-        'url'          => URL_DIR.$Site->getUrlRewrited()
+        'url'          => $Site->getUrlRewrited()
     );
 }
 

@@ -1,4 +1,3 @@
-
 /**
  * Projects Select Popup
  *
@@ -19,32 +18,31 @@ define('controls/projects/SelectWindow', [
     'controls/projects/Select',
     'Locale'
 
-], function(QUIConfirm, ProjectSelect, QUILocale)
-{
+], function (QUIConfirm, ProjectSelect, QUILocale) {
     "use strict";
 
     return new Class({
 
-        Extends : QUIConfirm,
-        Type : 'controls/projects/SelectWindow',
+        Extends: QUIConfirm,
+        Type   : 'controls/projects/SelectWindow',
 
-        options : {
+        options: {
             maxWidth  : 450,
-            maxHeight : 300
+            maxHeight : 300,
+            langSelect: true
         },
 
-        Binds : [
+        Binds: [
             '$onOpen'
         ],
 
-        initialize : function(options)
-        {
+        initialize: function (options) {
             this.parent(options);
 
             this.$Select = null;
 
             this.addEvents({
-                onOpen : this.$onOpen
+                onOpen: this.$onOpen
             });
         },
 
@@ -52,11 +50,10 @@ define('controls/projects/SelectWindow', [
          * event : on open
          * create the content
          */
-        $onOpen : function()
-        {
+        $onOpen: function () {
             this.setAttributes({
                 title: QUILocale.get('quiqqer/system', 'projects.project.windowselect.title'),
-                icon: 'icon-home'
+                icon : 'icon-home'
             });
 
             this.refresh();
@@ -66,13 +63,14 @@ define('controls/projects/SelectWindow', [
             Content.set('html', '');
 
             new Element('div', {
-                html : QUILocale.get('quiqqer/system', 'projects.project.windowselect.text')
+                html: QUILocale.get('quiqqer/system', 'projects.project.windowselect.text')
             }).inject(Content);
 
             this.$Select = new ProjectSelect({
-                styles : {
-                    'float' : 'none',
-                    margin  : '20px auto 0'
+                langSelect: this.getAttribute('langSelect'),
+                styles    : {
+                    'float': 'none',
+                    margin : '20px auto 0'
                 }
             }).inject(Content);
         },
@@ -80,10 +78,8 @@ define('controls/projects/SelectWindow', [
         /**
          * Submit the window
          */
-        submit : function()
-        {
-            if (!this.$Select)
-            {
+        submit: function () {
+            if (!this.$Select) {
                 if (this.getAttribute('autoclose')) {
                     this.close();
                 }
@@ -94,8 +90,8 @@ define('controls/projects/SelectWindow', [
             var value = this.$Select.getValue().split(',');
 
             var result = {
-                project : value[0],
-                lang    : value[1]
+                project: value[0],
+                lang   : value[1]
             };
 
             this.fireEvent('submit', [this, result]);

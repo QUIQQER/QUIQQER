@@ -280,17 +280,22 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                     var i, len, elements, datetime,
                         Child, Parent, Picker;
 
-                    elements = Elm.getElements('input[type="date"],input[type="datetime"]');
+                    elements = Elm.getElements(
+                        'input[type="date"],input[type="datetime"]'
+                    );
 
                     // Date Buttons
                     for (i = 0, len = elements.length; i < len; i++) {
-                        Child    = elements[i];
-                        Parent   = new Element('div', {
+                        Child  = elements[i];
+                        Parent = new Element('div', {
                             styles: {
                                 'float': 'left'
                             }
                         }).wraps(Child);
-                        datetime = Parent.getElement('input[type="datetime"]') ? true : false;
+
+                        datetime = Parent.getElement(
+                            'input[type="datetime"]'
+                        ) ? true : false;
 
                         if (datetime) {
                             Child.placeholder = 'YYYY-MM-DD HH:MM:SS';
@@ -305,8 +310,9 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                         Child.autocomplete = 'off';
 
                         Child.setStyles({
-                            'float' : 'left',
-                            'cursor': 'pointer'
+                            float : 'left',
+                            cursor: 'pointer',
+                            width : datetime ? 155 : 95
                         });
 
                         Picker = new DatePicker(Child, {

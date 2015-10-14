@@ -210,8 +210,8 @@ define('controls/projects/project/Panel', [
                 icon  : 'icon-search',
                 title : Locale.get('quiqqer/system', 'projects.project.panel.open.search'),
                 alt   : Locale.get('quiqqer/system', 'projects.project.panel.open.search'),
-                styles : {
-                  paddingTop : 2
+                styles: {
+                    paddingTop: 2
                 },
                 events: {
                     onClick: function () {
@@ -707,6 +707,19 @@ define('controls/projects/project/Panel', [
                         if (Panel.getType() != 'controls/projects/project/site/Panel') {
                             return;
                         }
+
+                        var PanelSite = Panel.getSite(),
+                            project   = self.getAttribute('project'),
+                            lang      = self.getAttribute('lang');
+
+                        if (project != PanelSite.getProject().getName()) {
+                            return;
+                        }
+
+                        if (lang != PanelSite.getProject().getLang()) {
+                            return;
+                        }
+
                         // if it is a sitepanel
                         // set the item in the map active
                         self.openSite(Panel.getSite().getId());

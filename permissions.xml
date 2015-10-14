@@ -1,97 +1,111 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-    <!-- Um locale nun anzulegen wäre dies: -->
-    <!-- locale/permissions quiqqer -->
-    <!-- locale/permissions quiqqer.site -->
-    <!-- locale/permissions quiqqer.site.new._title -->
-    <!-- locale/permissions quiqqer.site.new._descrition -->
-    <!-- locale/permissions quiqqer.site.edit._title -->
-    <!-- locale/permissions quiqqer.site.edit._descrition -->
+<!-- Um locale nun anzulegen wäre dies: -->
+<!-- locale/permissions quiqqer -->
+<!-- locale/permissions quiqqer.site -->
+<!-- locale/permissions quiqqer.site.new._title -->
+<!-- locale/permissions quiqqer.site.new._descrition -->
+<!-- locale/permissions quiqqer.site.edit._title -->
+<!-- locale/permissions quiqqer.site.edit._descrition -->
 
 <permissions>
 
-<!-- standard quiqqer permissions -->
+    <!-- standard quiqqer permissions -->
     <!-- Darf in den Adminbereich -->
-    <permission name="quiqqer.admin" type="bool" />
+    <permission name="quiqqer.admin" type="bool"/>
 
     <!-- Ist Super-User -->
-    <permission name="quiqqer.su" type="bool" />
+    <permission name="quiqqer.su" type="bool"/>
 
     <!-- Darf Updates durchführen -->
-    <permission name="quiqqer.system.update" type="bool" />
+    <permission name="quiqqer.system.update" type="bool"/>
 
     <!-- Darf Zugrifssrechte verwalten -->
-    <permission name="quiqqer.system.permissions" type="bool" />
+    <permission name="quiqqer.system.permissions" type="bool"/>
 
     <!-- Darf Cache löschen -->
-    <permission name="quiqqer.system.cache" type="bool" />
+    <permission name="quiqqer.system.cache" type="bool"/>
 
     <!-- Darf sich über die Konsole einloggen -->
-    <permission name="quiqqer.system.console" type="bool" />
+    <permission name="quiqqer.system.console" type="bool"/>
 
     <!-- Darf die Gruppenverwaltung sehen -->
-    <permission name="quiqqer.admin.groups.view" type="bool" />
+    <permission name="quiqqer.admin.groups.view" type="bool"/>
 
     <!-- Darf Gruppen editieren -->
-    <permission name="quiqqer.admin.groups.edit" type="bool" />
+    <permission name="quiqqer.admin.groups.edit" type="bool"/>
 
     <!-- Darf die Benutzerverwaltung sehen -->
-    <permission name="quiqqer.admin.users.view" type="bool" />
+    <permission name="quiqqer.admin.users.view" type="bool"/>
 
     <!-- Darf Benutzer editieren -->
-    <permission name="quiqqer.admin.users.edit" type="bool" />
+    <permission name="quiqqer.admin.users.edit" type="bool"/>
 
-<!-- Project permissions  -->
+    <!-- Project User / group permissions  -->
 
     <!-- Darf Projekte anlegen -->
-    <permission name="quiqqer.projects.create" type="bool" />
+    <permission name="quiqqer.projects.create" type="bool"/>
 
     <!-- Darf Projektdaten verändern -->
-    <permission name="quiqqer.projects.edit" type="users_and_groups" area="project" />
+    <permission name="quiqqer.projects.edit" type="bool"/>
 
     <!-- Darf Projekte löschen -->
-    <permission name="quiqqer.projects.destroy" type="users_and_groups" area="project" />
+    <permission name="quiqqer.projects.destroy" type="bool"/>
 
-    <!--  Darf Projekt Einstellungen machen -->
-    <permission name="quiqqer.projects.setconfig" type="users_and_groups" area="project" />
+    <!--  Darf Projekte Einstellungen machen -->
+    <permission name="quiqqer.projects.setconfig" type="bool"/>
 
     <!-- Darf Projekte CSS ändern -->
-    <permission name="quiqqer.projects.editCustomCSS" type="users_and_groups" area="project"  />
+    <permission name="quiqqer.projects.editCustomCSS" type="bool"/>
 
 
-<!-- Site permissions  -->
+    <!-- Project permissions  -->
+
+    <!-- Darf Projektdaten verändern -->
+    <permission name="quiqqer.project.edit" type="users_and_groups" area="project"/>
+
+    <!-- Darf Projekt löschen -->
+    <permission name="quiqqer.project.destroy" type="users_and_groups" area="project"/>
+
+    <!--  Darf Projekt Einstellungen machen -->
+    <permission name="quiqqer.project.setconfig" type="users_and_groups" area="project"/>
+
+    <!-- Darf Projekt CSS ändern -->
+    <permission name="quiqqer.project.editCustomCSS" type="users_and_groups" area="project"/>
+
+
+    <!-- Site permissions  -->
 
     <!-- Seite besuchen -->
-    <permission name="quiqqer.projects.site.view" type="users_and_groups" area="site" />
+    <permission name="quiqqer.projects.site.view" type="users_and_groups" area="site"/>
 
     <!-- Seite editieren -->
-    <permission name="quiqqer.projects.site.edit" type="users_and_groups" area="site" />
+    <permission name="quiqqer.projects.site.edit" type="users_and_groups" area="site"/>
 
     <!-- Seite löschen -->
-    <permission name="quiqqer.projects.site.del" type="users_and_groups" area="site" />
+    <permission name="quiqqer.projects.site.del" type="users_and_groups" area="site"/>
 
     <!-- Kind anlegen -->
-    <permission name="quiqqer.projects.site.new" type="users_and_groups" area="site" />
+    <permission name="quiqqer.projects.site.new" type="users_and_groups" area="site"/>
 
 
     <!-- Darf Seitenzugriffsrechte setzen -->
-    <permission name="quiqqer.projects.sites.set_permissions" type="bool" />
+    <permission name="quiqqer.projects.sites.set_permissions" type="bool"/>
 
     <!-- Seite besuchen -->
-    <permission name="quiqqer.projects.sites.view" type="bool" />
+    <permission name="quiqqer.projects.sites.view" type="bool"/>
 
     <!-- Seite editieren -->
-    <permission name="quiqqer.projects.sites.edit" type="bool" />
+    <permission name="quiqqer.projects.sites.edit" type="bool"/>
 
     <!-- Seite löschen -->
-    <permission name="quiqqer.projects.sites.del" type="bool" />
+    <permission name="quiqqer.projects.sites.del" type="bool"/>
 
     <!-- Kind anlegen -->
-    <permission name="quiqqer.projects.sites.new" type="bool" />
+    <permission name="quiqqer.projects.sites.new" type="bool"/>
 
 
-
-<!-- Editor permissions -->
-    <permission name="quiqqer.editors.toolbar.delete" type="bool" />
+    <!-- Editor permissions -->
+    <permission name="quiqqer.editors.toolbar.delete" type="bool"/>
 
 </permissions>

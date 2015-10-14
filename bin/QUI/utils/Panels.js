@@ -291,6 +291,7 @@ define('utils/Panels', function () {
          * it search the first taskpanel
          *
          * @param {Object} Panel - qui/controls/desktop/Panel
+         * @return Promise
          */
         openPanelInTasks: function (Panel) {
 
@@ -332,9 +333,9 @@ define('utils/Panels', function () {
 
                             // if a task exist, click it and open the instance
                             self.execPanelOpen(Child);
+                            Panel.destroy();
 
                             resolve(Child);
-
                             return;
                         }
                     }

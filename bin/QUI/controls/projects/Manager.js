@@ -4,16 +4,15 @@
  * @module controls/projects/Manager
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires qui/controls/Control
- * @requires qui/controls/buttons/Button
- * @requires controls/projects/Settings
- * @requires Projects
- * @requires controls/grid/Grid
+ * @require qui/controls/Control
+ * @require qui/controls/buttons/Button
+ * @require controls/projects/Settings
+ * @require Projects
+ * @require controls/grid/Grid
  * @require utils/Template
  * @require Locale
  * @require css!controls/projects/Manager.css
  */
-
 define('controls/projects/Manager', [
 
     'qui/controls/desktop/Panel',
@@ -26,8 +25,7 @@ define('controls/projects/Manager', [
 
     'css!controls/projects/Manager.css'
 
-], function(QUIPanel, QUIButton, ProjectSettings, Projects, Grid, UtilsTemplate, Locale)
-{
+], function (QUIPanel, QUIButton, ProjectSettings, Projects, Grid, UtilsTemplate, Locale) {
     "use strict";
 
     var lg = 'quiqqer/system';
@@ -40,10 +38,10 @@ define('controls/projects/Manager', [
      */
     return new Class({
 
-        Extends : QUIPanel,
-        Type    : 'controls/projects/Manager',
+        Extends: QUIPanel,
+        Type   : 'controls/projects/Manager',
 
-        Binds : [
+        Binds: [
             'openAddProject',
             'openList',
             '$onCreate',
@@ -52,26 +50,25 @@ define('controls/projects/Manager', [
             '$clickBtnProjectSettings'
         ],
 
-        initialize : function(options)
-        {
+        initialize: function (options) {
             this.Grid = null;
 
             this.setAttributes({
-                name  : 'projects-manager',
-                title : Locale.get( lg, 'projects.project.manager.title' ),
-                icon  : 'icon-home'
+                name : 'projects-manager',
+                title: Locale.get(lg, 'projects.project.manager.title'),
+                icon : 'icon-home'
             });
 
             this.addEvents({
-                onCreate : this.$onCreate,
-                onResize : this.$onResize
+                onCreate: this.$onCreate,
+                onResize: this.$onResize
             });
 
             Projects.addEvents({
-                onDelete : this.openList
+                onDelete: this.openList
             });
 
-            this.parent( options );
+            this.parent(options);
         },
 
         /**
@@ -79,23 +76,22 @@ define('controls/projects/Manager', [
          *
          * @method controls/projects/Manager#$onCreate
          */
-        $onCreate : function()
-        {
+        $onCreate: function () {
             this.addCategory({
-                name   : 'edit_projects',
-                text   : Locale.get( lg, 'projects.project.manager.projects.edit' ),
-                icon   : 'icon-list',
-                events : {
-                    onClick : this.openList
+                name  : 'edit_projects',
+                text  : Locale.get(lg, 'projects.project.manager.projects.edit'),
+                icon  : 'icon-list',
+                events: {
+                    onClick: this.openList
                 }
             });
 
             this.addCategory({
-                name   : 'add_project',
-                text   : Locale.get( lg, 'projects.project.manager.project.create' ),
-                icon   : 'icon-plus',
-                events : {
-                    onClick : this.openAddProject
+                name  : 'add_project',
+                text  : Locale.get(lg, 'projects.project.manager.project.create'),
+                icon  : 'icon-plus',
+                events: {
+                    onClick: this.openAddProject
                 }
             });
 
@@ -105,8 +101,7 @@ define('controls/projects/Manager', [
         /**
          * event : on destroy
          */
-        $onDestroy : function()
-        {
+        $onDestroy: function () {
             Projects.removeEvent('onDelete', this.openList);
         },
 
@@ -115,14 +110,12 @@ define('controls/projects/Manager', [
          *
          * @method controls/projects/Manager#$onResize
          */
-        $onResize : function()
-        {
-            if ( this.Grid )
-            {
+        $onResize: function () {
+            if (this.Grid) {
                 var size = this.getBody().getSize();
 
-                this.Grid.setHeight( size.y - 40 );
-                this.Grid.setWidth( size.x - 40 );
+                this.Grid.setHeight(size.y - 40);
+                this.Grid.setWidth(size.x - 40);
             }
         },
 
@@ -131,81 +124,77 @@ define('controls/projects/Manager', [
          *
          * @method controls/projects/Manager#openList
          */
-        openList : function()
-        {
+        openList: function () {
             this.Loader.show();
 
 
             var Control = this,
                 Body    = this.getBody();
 
-            Body.set( 'html', '' );
+            Body.set('html', '');
 
-            var Container = new Element( 'div' ).inject( Body ),
+            var Container = new Element('div').inject(Body),
                 size      = Body.getSize();
 
             this.Grid = new Grid(Container, {
-                columnModel : [{
-                    header    : '',
-                    dataIndex : 'settingsbtn',
-                    dataType  : 'button',
-                    width     : 60
+                columnModel: [{
+                    header   : '',
+                    dataIndex: 'settingsbtn',
+                    dataType : 'button',
+                    width    : 60
                 }, {
-                    header    : Locale.get( lg, 'project' ),
-                    dataIndex : 'project',
-                    dataType  : 'string',
-                    width     : 150
+                    header   : Locale.get(lg, 'project'),
+                    dataIndex: 'project',
+                    dataType : 'string',
+                    width    : 150
                 }, {
-                    header    : Locale.get( lg, 'language' ),
-                    dataIndex : 'lang',
-                    dataType  : 'string',
-                    width     : 150
+                    header   : Locale.get(lg, 'language'),
+                    dataIndex: 'lang',
+                    dataType : 'string',
+                    width    : 150
                 }, {
-                    header    : Locale.get( lg, 'languages' ),
-                    dataIndex : 'langs',
-                    dataType  : 'string',
-                    width     : 150
+                    header   : Locale.get(lg, 'languages'),
+                    dataIndex: 'langs',
+                    dataType : 'string',
+                    width    : 150
                 }],
 
-                width  : size.x - 40,
-                height : size.y - 40
+                width : size.x - 40,
+                height: size.y - 40
             });
 
-            Projects.getList(function(result)
-            {
-                if ( !Object.getLength( result ) )
-                {
+            Projects.getList(function (result) {
+                if (!Object.getLength(result)) {
                     Control.Loader.hide();
                     return;
                 }
 
                 var data = [];
 
-                for ( var project in result )
-                {
-                    if ( !result.hasOwnProperty( project ) ) {
+                for (var project in result) {
+                    if (!result.hasOwnProperty(project)) {
                         continue;
                     }
 
                     data.push({
-                        project : project,
-                        lang    : result[ project ].default_lang,
-                        langs   : result[ project ].langs,
+                        project: project,
+                        lang   : result[project].default_lang,
+                        langs  : result[project].langs,
 
-                        settingsbtn : {
-                            icon    : 'icon-gear',
-                            title   : Locale.get( lg, 'projects.project.manager.open.settings' ),
-                            alt     : Locale.get( lg, 'projects.project.manager.open.settings' ),
-                            project : project,
-                            events  : {
-                                onClick : Control.$clickBtnProjectSettings
+                        settingsbtn: {
+                            icon   : 'icon-gear',
+                            title  : Locale.get(lg, 'projects.project.manager.open.settings'),
+                            alt    : Locale.get(lg, 'projects.project.manager.open.settings'),
+                            project: project,
+                            events : {
+                                onClick: Control.$clickBtnProjectSettings
                             }
                         }
                     });
                 }
 
                 Control.Grid.setData({
-                    data : data
+                    data: data
                 });
 
                 Control.Loader.hide();
@@ -218,11 +207,10 @@ define('controls/projects/Manager', [
          * @method controls/projects/Manager#openProjectSettings
          * @param {String} project
          */
-        openProjectSettings : function(project)
-        {
+        openProjectSettings: function (project) {
             this.getParent().appendChild(
                 new ProjectSettings({
-                    project : project
+                    project: project
                 })
             );
         },
@@ -232,39 +220,37 @@ define('controls/projects/Manager', [
          *
          * @method controls/projects/Manager#openAddProject
          */
-        openAddProject : function()
-        {
+        openAddProject: function () {
             var self = this;
 
             this.Loader.show();
 
-            UtilsTemplate.get('project/create', function(result)
-            {
+            UtilsTemplate.get('project/create', function (result) {
                 var Form;
                 var Body = self.getBody();
 
-                Body.set( 'html', result );
+                Body.set('html', result);
 
-                Form = Body.getElement( 'form' );
+                Form = Body.getElement('form');
 
                 Form.addEvents({
-                    submit : function(event) {
+                    submit: function (event) {
                         event.stop();
                     }
                 });
 
                 new QUIButton({
-                    text   : Locale.get( lg, 'projects.project.manager.btn.create.project' ),
-                    events : {
-                        onClick : self.$submitCreateProject
+                    text  : Locale.get(lg, 'projects.project.manager.btn.create.project'),
+                    events: {
+                        onClick: self.$submitCreateProject
                     }
                 }).inject(
-                    new Element('p').inject( Form )
+                    new Element('p').inject(Form)
                 );
 
                 Form.getElement('[name="project"]').focus();
 
-                self.getCategoryBar().getElement( 'add_project' ).setActive();
+                self.getCategoryBar().getElement('add_project').setActive();
                 self.Loader.hide();
             });
         },
@@ -274,10 +260,9 @@ define('controls/projects/Manager', [
          *
          * @method controls/projects/Manager#$submitCreateProject
          */
-        $submitCreateProject : function()
-        {
+        $submitCreateProject: function () {
             var self = this,
-                Form = this.getBody().getElement( 'form' );
+                Form = this.getBody().getElement('form');
 
             self.Loader.show();
 
@@ -285,16 +270,15 @@ define('controls/projects/Manager', [
                 Form.elements.project.value,
                 Form.elements.lang.value,
                 Form.elements.template.value,
-                function(result)
-                {
+                function (result) {
                     self.Loader.hide();
 
-                    if ( !result ) {
+                    if (!result) {
                         return;
                     }
 
                     self.openList();
-                    self.openProjectSettings( result );
+                    self.openProjectSettings(result);
                 }
             );
         },
@@ -305,11 +289,10 @@ define('controls/projects/Manager', [
          * @method controls/projects/Manager#$clickBtnProjectSettings
          * @param {Object} Btn - qui/controls/buttons/Button
          */
-        $clickBtnProjectSettings : function(Btn)
-        {
-             this.openProjectSettings(
-                 Btn.getAttribute( 'project' )
-             );
+        $clickBtnProjectSettings: function (Btn) {
+            this.openProjectSettings(
+                Btn.getAttribute('project')
+            );
         }
     });
 });

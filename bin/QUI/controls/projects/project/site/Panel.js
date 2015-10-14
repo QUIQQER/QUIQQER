@@ -16,7 +16,6 @@
  * @require Locale
  * @require css!controls/projects/project/site/Panel.css
  */
-
 define('controls/projects/project/site/Panel', [
 
     'qui/QUI',
@@ -1185,7 +1184,7 @@ define('controls/projects/project/site/Panel', [
                         }
 
                         if (Site.getId() != 1) {
-                            UrlDisplay.set('html', sitePath + this.value + '.html');
+                            UrlDisplay.set('html', sitePath + this.value + QUIQQER.Rewrite.SUFFIX);
                         }
                     },
 

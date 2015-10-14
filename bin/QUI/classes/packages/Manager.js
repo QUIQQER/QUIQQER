@@ -1,4 +1,3 @@
-
 /**
  * Package manager
  *
@@ -9,26 +8,22 @@
  * @require qui/classes/DOM
  * @require Ajax
  */
-
 define('classes/packages/Manager', [
 
     'qui/QUI',
     'qui/classes/DOM',
     'Ajax'
 
-], function(QUI, QDOM, Ajax)
-{
+], function (QUI, QDOM, Ajax) {
     "use strict";
-
 
     return new Class({
 
-        Extends : QDOM,
-        Type    : 'classes/packages/Manager',
+        Extends: QDOM,
+        Type   : 'classes/packages/Manager',
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize: function (options) {
+            this.parent(options);
 
             this.$packages = {};
         },
@@ -40,12 +35,9 @@ define('classes/packages/Manager', [
          * @param {Function} [callback] - (optional), callback function
          * @return Promise
          */
-        setup : function(pkg, callback)
-        {
-            return new Promise(function(resolve, reject)
-            {
-                Ajax.post('ajax_system_setup', function ()
-                {
+        setup: function (pkg, callback) {
+            return new Promise(function (resolve, reject) {
+                Ajax.post('ajax_system_setup', function () {
                     if (typeOf(callback) === 'function') {
                         callback();
                     }
@@ -54,8 +46,9 @@ define('classes/packages/Manager', [
 
                 }, {
                     'package': pkg || false,
-                    onError : function(Exception) {
-                        reject( Exception );
+                    showError: false,
+                    onError  : function (Exception) {
+                        reject(Exception);
                     }
                 });
             });
@@ -68,21 +61,19 @@ define('classes/packages/Manager', [
          * @param {Function} [callback] - (optional), callback function
          * @return Promise
          */
-        update : function(pkg, callback)
-        {
-            return new Promise(function(resolve, reject)
-            {
-                Ajax.post('ajax_system_update', function(result)
-                {
-                    if ( typeOf(callback) === 'function' ) {
-                        callback( result );
+        update: function (pkg, callback) {
+            return new Promise(function (resolve, reject) {
+                Ajax.post('ajax_system_update', function (result) {
+                    if (typeOf(callback) === 'function') {
+                        callback(result);
                     }
 
-                    resolve( result );
+                    resolve(result);
                 }, {
-                    'package' : pkg || false,
-                    onError : function(Exception) {
-                        reject( Exception );
+                    'package': pkg || false,
+                    showError: false,
+                    onError  : function (Exception) {
+                        reject(Exception);
                     }
                 });
             });
@@ -94,20 +85,18 @@ define('classes/packages/Manager', [
          * @param {Function} [callback] - optional
          * @return Promise
          */
-        updateWithLocalServer : function(callback)
-        {
-            return new Promise(function(resolve, reject)
-            {
-                Ajax.post('ajax_system_updateWithLocalServer', function(result)
-                {
-                    if ( typeOf(callback) === 'function' ) {
-                        callback( result );
+        updateWithLocalServer: function (callback) {
+            return new Promise(function (resolve, reject) {
+                Ajax.post('ajax_system_updateWithLocalServer', function (result) {
+                    if (typeOf(callback) === 'function') {
+                        callback(result);
                     }
 
-                    resolve( result );
+                    resolve(result);
                 }, {
-                    onError : function(Exception) {
-                        reject( Exception );
+                    showError: false,
+                    onError  : function (Exception) {
+                        reject(Exception);
                     }
                 });
             });
@@ -119,20 +108,18 @@ define('classes/packages/Manager', [
          * @param {Function} [callback] - optional
          * @returns {Promise}
          */
-        activateLocalServer : function(callback)
-        {
-            return new Promise(function(resolve, reject)
-            {
-                Ajax.post('ajax_system_activateLocalServer', function()
-                {
-                    if ( typeOf(callback) === 'function' ) {
+        activateLocalServer: function (callback) {
+            return new Promise(function (resolve, reject) {
+                Ajax.post('ajax_system_activateLocalServer', function () {
+                    if (typeOf(callback) === 'function') {
                         callback();
                     }
 
                     resolve();
                 }, {
-                    onError : function(Exception) {
-                        reject( Exception );
+                    showError: false,
+                    onError  : function (Exception) {
+                        reject(Exception);
                     }
                 });
             });
@@ -145,21 +132,18 @@ define('classes/packages/Manager', [
          * @param {Function} [callback] - optional
          * @returns {Promise}
          */
-        installLocalPackages : function(packages, callback)
-        {
-            return new Promise(function(resolve, reject)
-            {
-                Ajax.post('ajax_system_packages_installLocalePackage', function ()
-                {
-                    if ( typeOf(callback) === 'function' ) {
+        installLocalPackages: function (packages, callback) {
+            return new Promise(function (resolve, reject) {
+                Ajax.post('ajax_system_packages_installLocalePackage', function () {
+                    if (typeOf(callback) === 'function') {
                         callback();
                     }
 
                     resolve();
                 }, {
-                    packages: JSON.encode(packages),
-                    onError: function ()
-                    {
+                    packages : JSON.encode(packages),
+                    showError: false,
+                    onError  : function () {
                         reject();
                     }
                 });
@@ -172,20 +156,18 @@ define('classes/packages/Manager', [
          * @param {Function} [callback] - optional
          * @return Promise
          */
-        readLocalRepository : function(callback)
-        {
-            return new Promise(function(resolve, reject)
-            {
-                Ajax.post('ajax_system_readLocalRepository', function(result)
-                {
-                    if ( typeOf(callback) === 'function' ) {
-                        callback( result );
+        readLocalRepository: function (callback) {
+            return new Promise(function (resolve, reject) {
+                Ajax.post('ajax_system_readLocalRepository', function (result) {
+                    if (typeOf(callback) === 'function') {
+                        callback(result);
                     }
 
-                    resolve( result );
+                    resolve(result);
                 }, {
-                    onError : function(Exception) {
-                        reject( Exception );
+                    showError: false,
+                    onError  : function (Exception) {
+                        reject(Exception);
                     }
                 });
             });
@@ -197,20 +179,18 @@ define('classes/packages/Manager', [
          * @param {Function} [callback] - callback function
          * @return Promise
          */
-        checkUpdate : function(callback)
-        {
-            return new Promise(function(resolve, reject)
-            {
-                Ajax.get( 'ajax_system_update_check', function(result)
-                {
-                    if ( typeOf(callback) === 'function' ) {
-                        callback( result );
+        checkUpdate: function (callback) {
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_system_update_check', function (result) {
+                    if (typeOf(callback) === 'function') {
+                        callback(result);
                     }
 
-                    resolve( result );
+                    resolve(result);
                 }, {
-                    onError : function(Exception) {
-                        reject( Exception );
+                    showError: false,
+                    onError  : function (Exception) {
+                        reject(Exception);
                     }
                 });
             });
@@ -223,36 +203,33 @@ define('classes/packages/Manager', [
          * @param {Function} [callback] - optional, callback function
          * @return Promise
          */
-        getPackage : function(pkg, callback)
-        {
+        getPackage: function (pkg, callback) {
             var self = this;
 
-            return new Promise(function(resolve, reject)
-            {
-                if ( self.$packages[ pkg ] )
-                {
-                    if ( typeOf(callback) === 'function' ) {
-                        callback( self.$packages[ pkg ] );
+            return new Promise(function (resolve, reject) {
+                if (self.$packages[pkg]) {
+                    if (typeOf(callback) === 'function') {
+                        callback(self.$packages[pkg]);
                     }
 
-                    resolve( self.$packages[ pkg ] );
+                    resolve(self.$packages[pkg]);
                     return;
                 }
 
-                Ajax.get('ajax_system_packages_get', function(result)
-                {
-                    self.$packages[ pkg ] = result;
+                Ajax.get('ajax_system_packages_get', function (result) {
+                    self.$packages[pkg] = result;
 
-                    if ( typeOf(callback) === 'function' ) {
-                        callback( result );
+                    if (typeOf(callback) === 'function') {
+                        callback(result);
                     }
 
-                    resolve( result );
+                    resolve(result);
 
                 }, {
-                    'package' : pkg,
-                    onError : function(Exception) {
-                        reject( Exception );
+                    'package': pkg,
+                    showError: false,
+                    onError  : function (Exception) {
+                        reject(Exception);
                     }
                 });
             });
@@ -266,32 +243,28 @@ define('classes/packages/Manager', [
          * @param {Function} [callback] - callback function
          * @return Promise
          */
-        setVersion : function(pkg, version, callback)
-        {
+        setVersion: function (pkg, version, callback) {
             var self = this;
 
-            return new Promise(function(resolve, reject)
-            {
-                Ajax.post('ajax_system_packages_setVersion', function (result)
-                {
-                    self.update(pkg).done(function()
-                    {
-                        if ( typeOf(callback) === 'function' ) {
-                            callback( result );
+            return new Promise(function (resolve, reject) {
+                Ajax.post('ajax_system_packages_setVersion', function (result) {
+                    self.update(pkg).done(function () {
+                        if (typeOf(callback) === 'function') {
+                            callback(result);
                         }
 
-                        resolve( result );
+                        resolve(result);
 
                     }, reject);
                 }, {
-                    packages: JSON.encode(pkg),
-                    version: version,
-                    onError : function(Exception) {
-                        reject( Exception );
+                    packages : JSON.encode(pkg),
+                    version  : version,
+                    showError: false,
+                    onError  : function (Exception) {
+                        reject(Exception);
                     }
                 });
             });
         }
     });
-
 });
