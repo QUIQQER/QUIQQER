@@ -887,8 +887,79 @@ class Permission
             $User = QUI::getUserBySession();
         }
 
+        if ($User->isSU()) {
+            return true;
+        }
+
+        if (QUI::getUsers()->isSystemUser($User)) {
+            return true;
+        }
+
         $Manager     = QUI::getPermissionManager();
         $permissions = $Manager->getProjectPermissions($Project);
+
+
+        // default project rights, edit, destroy, setconfig, editCustomCSS: has their own special checks
+        // with project and site checks
+        switch ($perm) {
+            case 'quiqqer.projects.edit':
+            case 'quiqqer.project.edit':
+                try {
+                    return self::checkPermissionList(
+                        $permissions,
+                        'quiqqer.project.edit',
+                        $User
+                    );
+                } catch (QUI\Exception $Exception) {
+                    return self::checkPermission(
+                        'quiqqer.projects.edit',
+                        $User
+                    );
+                }
+
+            case 'quiqqer.projects.destroy':
+            case 'quiqqer.project.destroy':
+                try {
+                    return self::checkPermissionList(
+                        $permissions,
+                        'quiqqer.project.destroy',
+                        $User
+                    );
+                } catch (QUI\Exception $Exception) {
+                    return self::checkPermission(
+                        'quiqqer.projects.destroy',
+                        $User
+                    );
+                }
+            case 'quiqqer.projects.setconfig':
+            case 'quiqqer.project.setconfig':
+                try {
+                    return self::checkPermissionList(
+                        $permissions,
+                        'quiqqer.project.setconfig',
+                        $User
+                    );
+                } catch (QUI\Exception $Exception) {
+                    return self::checkPermission(
+                        'quiqqer.projects.setconfig',
+                        $User
+                    );
+                }
+            case 'quiqqer.projects.editCustomCSS':
+            case 'quiqqer.project.editCustomCSS':
+                try {
+                    return self::checkPermissionList(
+                        $permissions,
+                        'quiqqer.project.editCustomCSS',
+                        $User
+                    );
+                } catch (QUI\Exception $Exception) {
+                    return self::checkPermission(
+                        'quiqqer.projects.editCustomCSS',
+                        $User
+                    );
+                }
+        }
 
         return self::checkPermissionList($permissions, $perm, $User);
     }

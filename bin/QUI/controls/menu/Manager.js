@@ -194,7 +194,7 @@ define('controls/menu/Manager', [
 
             require([controlName], function (Control) {
                 var Ctrl = new Control(attributes);
-console.log(attributes);
+
                 if (instanceOf(Ctrl, Panel)) {
                     self.openPanelInTasks(Ctrl);
                     return;

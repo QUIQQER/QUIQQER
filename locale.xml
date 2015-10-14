@@ -10,9 +10,9 @@
             <de><![CDATA[Projekte]]></de>
             <en><![CDATA[Projects]]></en>
         </locale>
-        <locale name="permission.quiqqer.projects._header">
-            <de><![CDATA[Projekte]]></de>
-            <en><![CDATA[Projects]]></en>
+        <locale name="permission.quiqqer.project._header">
+            <de><![CDATA[Projekt]]></de>
+            <en><![CDATA[Project]]></en>
         </locale>
         <locale name="permission.quiqqer.projects.site._header">
             <de><![CDATA[Eine Seite]]></de>
@@ -105,6 +105,22 @@
         </locale>
         <locale name="permission.quiqqer.projects.editCustomCSS">
             <de><![CDATA[Darf Custom-CSS von Projekte ändern.]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+        <locale name="permission.quiqqer.project.edit">
+            <de><![CDATA[Darf Projekt editieren.]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+        <locale name="permission.quiqqer.project.destroy">
+            <de><![CDATA[Darf Projekt löschen.]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+        <locale name="permission.quiqqer.project.setconfig">
+            <de><![CDATA[Darf Projekt-Einstellungen ändern.]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+        <locale name="permission.quiqqer.project.editCustomCSS">
+            <de><![CDATA[Darf Custom-CSS ändern.]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="permission.quiqqer.projects.site.view">

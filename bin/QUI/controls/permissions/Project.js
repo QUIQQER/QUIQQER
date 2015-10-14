@@ -1,4 +1,3 @@
-
 /**
  * Permissions Panel -> Project
  *
@@ -15,21 +14,19 @@ define('controls/permissions/Project', [
     'qui/controls/buttons/Button',
     'Locale'
 
-], function(Permission, QUIButton, QUILocale)
-{
+], function (Permission, QUIButton, QUILocale) {
     "use strict";
 
     return new Class({
 
         Extends: Permission,
-        Type: 'controls/permissions/Project',
+        Type   : 'controls/permissions/Project',
 
-        Binds : [
+        Binds: [
             '$onOpen'
         ],
 
-        initialize : function(Project, options)
-        {
+        initialize: function (Project, options) {
             this.parent(Project, options);
 
             if (typeOf(Project) === 'classes/projects/Project') {
@@ -37,7 +34,7 @@ define('controls/permissions/Project', [
             }
 
             this.addEvents({
-                onOpen : this.$onOpen
+                onOpen: this.$onOpen
             });
         },
 
@@ -46,35 +43,38 @@ define('controls/permissions/Project', [
          *
          * @returns {Promise}
          */
-        $openBindSelect : function()
-        {
+        $openBindSelect: function () {
             var self = this;
 
-            return new Promise(function(resolve, reject) {
+            return new Promise(function (resolve, reject) {
 
                 require([
                     'controls/projects/SelectWindow',
                     'Projects'
-                ], function(Popup, Projects) {
+                ], function (Popup, Projects) {
 
                     new Popup({
-                        events : {
-                            onSubmit : function(Popup, data) {
+                        langSelect: false,
+                        events    : {
+                            onSubmit: function (Popup, data) {
 
                                 self.$Bind = Projects.get(data.project, data.lang);
 
-                                self.$Status.set(
-                                    'html',
-                                    QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
-                                        name : '<span class="fa icon-home"></span>'+
-                                               self.$Bind.getName() +' ('+ self.$Bind.getLang() +')'
-                                    })
-                                );
+                                var text = QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
+                                    name: '<span class="fa icon-home"></span>' + self.$Bind.getName()
+                                });
+
+                                self.$Status.set({
+                                    title: QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
+                                        name: self.$Bind.getName()
+                                    }),
+                                    html : text
+                                });
 
                                 resolve();
                             },
 
-                            onCancel : function() {
+                            onCancel: function () {
                                 reject();
                             }
                         }
@@ -87,24 +87,23 @@ define('controls/permissions/Project', [
         /**
          * event on open
          */
-        $onOpen : function()
-        {
+        $onOpen: function () {
             new QUIButton({
-                text : QUILocale.get('quiqqer/system', 'permission.control.btn.project.save'),
-                title : QUILocale.get('quiqqer/system', 'permission.control.btn.project.save'),
-                textimage : 'icon-save',
-                styles : {
-                    'float' : 'right'
+                text     : QUILocale.get('quiqqer/system', 'permission.control.btn.project.save'),
+                title    : QUILocale.get('quiqqer/system', 'permission.control.btn.project.save'),
+                textimage: 'icon-save',
+                styles   : {
+                    'float': 'right'
                 },
-                events : {
-                    onClick : function(Btn) {
+                events   : {
+                    onClick: function (Btn) {
 
                         Btn.setAttribute(
                             'textimage',
                             'icon-spinner icon-spin fa fa-spinner fa-spin'
                         );
 
-                        this.save().then(function() {
+                        this.save().then(function () {
                             Btn.setAttribute('textimage', 'icon-save');
                         });
 
