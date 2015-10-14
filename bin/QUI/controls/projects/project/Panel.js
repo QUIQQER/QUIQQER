@@ -719,7 +719,7 @@ define('controls/projects/project/Panel', [
                         if (lang != PanelSite.getProject().getLang()) {
                             return;
                         }
-                        
+
                         // if it is a sitepanel
                         // set the item in the map active
                         self.openSite(Panel.getSite().getId());

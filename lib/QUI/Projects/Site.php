@@ -1456,11 +1456,24 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @return String
      */
-    public function getUrlRewrited($pathParams = array(), $getParams = array())
+    public function getUrlRewritten($pathParams = array(), $getParams = array())
     {
         $pathParams['site'] = $this;
 
         return QUI::getRewrite()->getUrlFromSite($pathParams, $getParams);
+    }
+
+    /**
+     * @deprecated use getUrlRewritten
+     *
+     * @param Array $pathParams - Parameter welche in den namen der seite eingefügt werden
+     * @param Array $getParams - Parameter welche an die URL angehängt werden
+     *
+     * @return String
+     */
+    public function getUrlRewrited($pathParams = array(), $getParams = array())
+    {
+        return $this->getUrlRewritten($pathParams, $getParams);
     }
 
     /**

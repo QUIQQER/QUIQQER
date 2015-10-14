@@ -1184,7 +1184,7 @@ define('controls/projects/project/site/Panel', [
                         }
 
                         if (Site.getId() != 1) {
-                            UrlDisplay.set('html', sitePath + this.value + '.html');
+                            UrlDisplay.set('html', sitePath + this.value + QUIQQER.Rewrite.SUFFIX);
                         }
                     },
 

@@ -1106,7 +1106,8 @@ class XML
             }
         }
 
-
+        // clear cache
+        QUI\Cache\Manager::clearAll();
     }
 
     /**
