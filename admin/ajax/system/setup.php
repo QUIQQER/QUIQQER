@@ -3,6 +3,7 @@
 /**
  * System Setup ausführen
  *
+ * @param String $package - optional, Name of a package; no name = full setup
  * @return String
  */
 function ajax_system_setup($package)

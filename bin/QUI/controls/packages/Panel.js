@@ -1,4 +1,3 @@
-
 /**
  * Package Manager / System Update
  *
@@ -32,19 +31,17 @@ define('controls/packages/Panel', [
 
     'css!controls/packages/Panel.css'
 
-],function(
-    QUI,
-    Locale,
-    Ajax,
-    PackageManager,
-    Grid,
-    DetailWindow,
-    QUIPanel,
-    QUIConfirm,
-    QUIWindow,
-    QUIButton,
-    QUIList
-) {
+], function (QUI,
+             Locale,
+             Ajax,
+             PackageManager,
+             Grid,
+             DetailWindow,
+             QUIPanel,
+             QUIConfirm,
+             QUIWindow,
+             QUIButton,
+             QUIList) {
     "use strict";
 
     var lg = 'quiqqer/system';
@@ -58,10 +55,10 @@ define('controls/packages/Panel', [
      */
     return new Class({
 
-        Extends : QUIPanel,
-        Type    : 'controls/packages/Panel',
+        Extends: QUIPanel,
+        Type   : 'controls/packages/Panel',
 
-        Binds : [
+        Binds: [
             '$onCreate',
             '$onResize',
             '$serverGridClick',
@@ -94,25 +91,24 @@ define('controls/packages/Panel', [
             'loadPHPInfo'
         ],
 
-        options : {
-            name  : 'packages-panel',
-            field : 'name',
-            order : 'DESC',
-            limit : 20,
-            page  : 1,
-            type  : ''
+        options: {
+            name : 'packages-panel',
+            field: 'name',
+            order: 'DESC',
+            limit: 20,
+            page : 1,
+            type : ''
         },
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize: function (options) {
+            this.parent(options);
 
             // defaults
-            this.setAttribute( 'title',
-                Locale.get( lg, 'packages.panel.title' )
+            this.setAttribute('title',
+                              Locale.get(lg, 'packages.panel.title')
             );
 
-            this.setAttribute( 'icon', URL_BIN_DIR +'16x16/quiqqer.png' );
+            this.setAttribute('icon', URL_BIN_DIR + '16x16/quiqqer.png');
 
             // init
             this.$Grid       = null;
@@ -126,102 +122,96 @@ define('controls/packages/Panel', [
             this.$packages = {};
 
             this.addEvents({
-                onCreate  : this.$onCreate,
-                onResize  : this.$onResize
+                onCreate: this.$onCreate,
+                onResize: this.$onResize
             });
         },
 
         /**
          * event: on panel create
          */
-        $onCreate : function()
-        {
+        $onCreate: function () {
             this.addCategory({
-                name   : 'updates',
-                text   : Locale.get( lg, 'packages.category.updates' ),
-                image  : 'icon-refresh',
-                events : {
-                    onActive : this.loadUpdates,
-                    onNormal : this.unloadUpdates
+                name  : 'updates',
+                text  : Locale.get(lg, 'packages.category.updates'),
+                image : 'icon-refresh',
+                events: {
+                    onActive: this.loadUpdates,
+                    onNormal: this.unloadUpdates
                 }
             });
 
             this.addCategory({
-                name   : 'modules',
-                text   : Locale.get( lg, 'packages.category.modules' ),
-                image  : 'icon-puzzle-piece',
-                events :
-                {
-                    onActive : function()
-                    {
-                        this.setAttribute( 'page', 1 );
-                        this.setAttribute( 'type', 'quiqqer-module' );
+                name  : 'modules',
+                text  : Locale.get(lg, 'packages.category.modules'),
+                image : 'icon-puzzle-piece',
+                events: {
+                    onActive: function () {
+                        this.setAttribute('page', 1);
+                        this.setAttribute('type', 'quiqqer-module');
 
                         this.loadPackages();
 
-                    }.bind( this ),
+                    }.bind(this),
 
-                    onNormal : this.unloadPackages
+                    onNormal: this.unloadPackages
                 }
             });
 
             this.addCategory({
-                name   : 'packages',
-                text   : Locale.get( lg, 'packages.category.packages' ),
-                image  : 'icon-puzzle-piece',
-                events :
-                {
-                    onActive : function()
-                    {
-                        this.setAttribute( 'page', 1 );
-                        this.setAttribute( 'type', '' );
+                name  : 'packages',
+                text  : Locale.get(lg, 'packages.category.packages'),
+                image : 'icon-puzzle-piece',
+                events: {
+                    onActive: function () {
+                        this.setAttribute('page', 1);
+                        this.setAttribute('type', '');
 
                         this.loadPackages();
-                    }.bind( this ),
+                    }.bind(this),
 
-                    onNormal : this.unloadPackages
+                    onNormal: this.unloadPackages
                 }
             });
 
             this.addCategory({
-                name   : 'server',
-                text   : Locale.get( lg, 'packages.category.server' ),
-                image  : 'icon-building',
-                events : {
-                    onActive : this.loadServers,
-                    onNormal : this.unloadServer
+                name  : 'server',
+                text  : Locale.get(lg, 'packages.category.server'),
+                image : 'icon-building',
+                events: {
+                    onActive: this.loadServers,
+                    onNormal: this.unloadServer
                 }
             });
 
             this.addCategory({
-                name   : 'search',
-                text   : Locale.get( lg, 'packages.category.search' ),
-                image  : 'icon-search',
-                events : {
-                    onActive : this.loadSearch,
-                    onNormal : this.unloadSearch
+                name  : 'search',
+                text  : Locale.get(lg, 'packages.category.search'),
+                image : 'icon-search',
+                events: {
+                    onActive: this.loadSearch,
+                    onNormal: this.unloadSearch
                 }
             });
 
             this.addCategory({
-                name   : 'health',
-                text   : Locale.get( lg, 'packages.category.system.health' ),
-                image  : 'icon-medkit',
-                events : {
-                    onActive : this.loadHealth,
-                    onNormal : this.unloadHealth
+                name  : 'health',
+                text  : Locale.get(lg, 'packages.category.system.health'),
+                image : 'icon-medkit',
+                events: {
+                    onActive: this.loadHealth,
+                    onNormal: this.unloadHealth
                 }
             });
 
             this.addCategory({
-                name   : 'phpInfo',
-                text   : Locale.get( lg, 'packages.category.system.phpInfo' ),
-                image  : 'fa fa-info-circle icon-info-sign',
-                events : {
-                    onActive : this.loadPHPInfo
+                name  : 'phpInfo',
+                text  : Locale.get(lg, 'packages.category.system.phpInfo'),
+                image : 'fa fa-info-circle icon-info-sign',
+                events: {
+                    onActive: this.loadPHPInfo
                 }
             });
-
 
 
             this.getCategoryBar().firstChild().click();
@@ -230,49 +220,44 @@ define('controls/packages/Panel', [
         /**
          * event: on panel resize
          */
-        $onResize : function()
-        {
+        $onResize: function () {
             var Form, Title, Information, height;
 
             var Body = this.getContent(),
                 size = Body.getSize();
 
-            if ( this.$Grid )
-            {
-                this.$Grid.setHeight( size.y  -50 );
-                this.$Grid.setWidth( size.x - 50 );
+            if (this.$Grid) {
+                this.$Grid.setHeight(size.y - 50);
+                this.$Grid.setWidth(size.x - 50);
             }
 
-            if ( this.$ModuleGrid )
-            {
-                this.$ModuleGrid.setHeight( size.y - 0 );
-                this.$ModuleGrid.setWidth( size.x - 0 );
+            if (this.$ModuleGrid) {
+                this.$ModuleGrid.setHeight(size.y - 0);
+                this.$ModuleGrid.setWidth(size.x - 0);
             }
 
-            if ( this.$UpdateGrid )
-            {
-                Title       = Body.getElement( 'h1' );
-                Information = Body.getElement( '.description' );
+            if (this.$UpdateGrid) {
+                Title       = Body.getElement('h1');
+                Information = Body.getElement('.description');
 
-                if ( !Title || !Information ) {
+                if (!Title || !Information) {
                     return;
                 }
 
                 height = ( Title.getSize().y + Information.getSize().y );
                 height = Body.getSize().y - height - 110;
 
-                this.$UpdateGrid.setHeight( height );
-                this.$UpdateGrid.setWidth( size.x - 50 );
+                this.$UpdateGrid.setHeight(height);
+                this.$UpdateGrid.setWidth(size.x - 50);
                 this.$UpdateGrid.resize();
             }
 
-            if ( this.$SearchGrid )
-            {
-                Title       = Body.getElement( 'h1' );
-                Information = Body.getElement( '.description' );
-                Form        = Body.getElement( 'form' );
+            if (this.$SearchGrid) {
+                Title       = Body.getElement('h1');
+                Information = Body.getElement('.description');
+                Form        = Body.getElement('form');
 
-                if ( !Form || !Title || !Information) {
+                if (!Form || !Title || !Information) {
                     return;
                 }
 
@@ -282,99 +267,97 @@ define('controls/packages/Panel', [
 
                 height = Body.getSize().y - height - 100;
 
-                this.$SearchGrid.setHeight( height );
-                this.$SearchGrid.setWidth( size.x - 40 );
+                this.$SearchGrid.setHeight(height);
+                this.$SearchGrid.setWidth(size.x - 40);
                 this.$SearchGrid.resize();
             }
         },
 
-    /**
-     * Update methods
-     */
+        /**
+         * Update methods
+         */
 
         /**
          * load the update category
          */
-        loadUpdates : function()
-        {
+        loadUpdates: function () {
             this.Loader.show();
 
-            var self = this,
-                Body = this.getBody().set( 'html', '' ),
+            var self      = this,
+                Body      = this.getBody().set('html', ''),
 
                 Container = new Element('div', {
-                    'class' : 'qui-packages-panel-update',
+                    'class': 'qui-packages-panel-update',
                     styles : {
-                        width : '100%'
+                        width: '100%'
                     }
-                }).inject( Body );
+                }).inject(Body);
 
 
             var Title = new Element('h1', {
-                html : Locale.get( lg, 'packages.grid.update.title' )
-            }).inject( Body, 'top' );
+                html: Locale.get(lg, 'packages.grid.update.title')
+            }).inject(Body, 'top');
 
             new Element('div.description', {
-                html : Locale.get( lg, 'packages.grid.update.information' )
-            }).inject( Title, 'after' );
+                html: Locale.get(lg, 'packages.grid.update.information')
+            }).inject(Title, 'after');
 
-        // Grid
+            // Grid
             this.$UpdateGrid = new Grid(Container, {
 
-                columnModel : [{
-                    header    : Locale.get( lg, 'packages.grid.update.title.updatebtn' ),
-                    dataIndex : 'update',
-                    dataType  : 'button',
-                    width     : 60
+                columnModel: [{
+                    header   : Locale.get(lg, 'packages.grid.update.title.updatebtn'),
+                    dataIndex: 'update',
+                    dataType : 'button',
+                    width    : 60
                 }, {
-                    header    : Locale.get( lg, 'packages.grid.update.title.package' ),
-                    dataIndex : 'package',
-                    dataType  : 'string',
-                    width     : 150
+                    header   : Locale.get(lg, 'packages.grid.update.title.package'),
+                    dataIndex: 'package',
+                    dataType : 'string',
+                    width    : 150
                 }, {
-                    header    : Locale.get( lg, 'packages.grid.update.title.version.from' ),
-                    dataIndex : 'from',
-                    dataType  : 'string',
-                    width     : 200
+                    header   : Locale.get(lg, 'packages.grid.update.title.version.from'),
+                    dataIndex: 'from',
+                    dataType : 'string',
+                    width    : 200
                 }, {
-                    header    : Locale.get( lg, 'packages.grid.update.title.version.to' ),
-                    dataIndex : 'to',
-                    dataType  : 'string',
-                    width     : 200
+                    header   : Locale.get(lg, 'packages.grid.update.title.version.to'),
+                    dataIndex: 'to',
+                    dataType : 'string',
+                    width    : 200
                 }],
 
-                buttons : [{
-                    text      : Locale.get( lg, 'packages.grid.update.btn.execute' ),
-                    textimage : 'fa fa-angle-double-down icon-double-angle-down',
-                    events : {
-                        onClick : this.executeCompleteUpdate
+                buttons: [{
+                    text     : Locale.get(lg, 'packages.grid.update.btn.execute'),
+                    textimage: 'fa fa-angle-double-down icon-double-angle-down',
+                    events   : {
+                        onClick: this.executeCompleteUpdate
                     }
                 }, {
-                    text      : Locale.get( lg, 'packages.grid.update.btn.start' ),
-                    textimage : 'icon-refresh',
-                    events : {
-                        onClick : this.checkUpdates
+                    text     : Locale.get(lg, 'packages.grid.update.btn.start'),
+                    textimage: 'icon-refresh',
+                    events   : {
+                        onClick: this.checkUpdates
                     }
                 }, {
-                    type : 'seperator'
+                    type: 'seperator'
                 }, {
-                    text      : Locale.get( lg, 'packages.grid.update.btn.upload' ),
-                    textimage : 'icon-upload',
-                    events : {
-                        onClick : this.uploadUpdates
+                    text     : Locale.get(lg, 'packages.grid.update.btn.upload'),
+                    textimage: 'icon-upload',
+                    events   : {
+                        onClick: this.uploadUpdates
                     }
                 }, {
-                    text      : Locale.get( lg, 'packages.grid.update.btn.setup' ),
-                    textimage : 'fa fa-hdd-o icon-hdd',
-                    events :
-                    {
-                        onClick : function(Btn) {
-                            self.setup( false, Btn );
+                    text     : Locale.get(lg, 'packages.grid.update.btn.setup'),
+                    textimage: 'fa fa-hdd-o icon-hdd',
+                    events   : {
+                        onClick: function (Btn) {
+                            self.setup(false, Btn);
                         }
                     }
                 }],
 
-                height : 200
+                height: 200
             });
 
             this.resize();
@@ -384,10 +367,8 @@ define('controls/packages/Panel', [
         /**
          * unload the update, destroy the update grid
          */
-        unloadUpdates : function()
-        {
-            if ( this.$UpdateGrid )
-            {
+        unloadUpdates: function () {
+            if (this.$UpdateGrid) {
                 this.$UpdateGrid.destroy();
                 this.$UpdateGrid = null;
             }
@@ -400,41 +381,53 @@ define('controls/packages/Panel', [
          * @param {Object} [Btn] - (optional), qui/controls/buttons/Button
          * @return Promise
          */
-        setup : function(pkg, Btn)
-        {
+        setup: function (pkg, Btn) {
             var self = this;
 
-            if ( typeof Btn !== 'undefined' )
-            {
-                if ( Btn.getAttribute( 'textimage' ) ) {
-                    Btn.setAttribute( 'textimage', 'icon-refresh icon-spin' );
+            if (typeof Btn !== 'undefined') {
+                if (Btn.getAttribute('textimage')) {
+                    Btn.setAttribute('textimage', 'icon-refresh icon-spin');
                 }
 
-                if ( Btn.getAttribute( 'icon' ) ) {
-                    Btn.setAttribute( 'icon', 'icon-refresh icon-spin' );
+                if (Btn.getAttribute('icon')) {
+                    Btn.setAttribute('icon', 'icon-refresh icon-spin');
                 }
             }
 
-            return QUI.getMessageHandler().then(function(MH)
-            {
-                return MH.addLoading('Setup wird durchgeführt');
+            return QUI.getMessageHandler().then(function (MH) {
+                return MH.addLoading('Setup wird durchgeführt'); // #locale
 
-            }).then(function(Loading)
-            {
-                return self.$Manager.setup(pkg).then(function()
-                {
-                    Loading.finish( Locale.get( lg, 'message.setup.successfull' ) );
+            }).then(function (Loading) {
+                return self.$Manager.setup(pkg).then(function () {
+                    // success
+                    Loading.finish(Locale.get(lg, 'message.setup.successfull'));
 
-                    if ( typeof Btn === 'undefined' ) {
+                    if (typeof Btn === 'undefined') {
                         return;
                     }
 
-                    if ( Btn.getAttribute( 'textimage' ) ) {
-                        Btn.setAttribute( 'textimage', 'fa fa-hdd-o icon-hdd' );
+                    if (Btn.getAttribute('textimage')) {
+                        Btn.setAttribute('textimage', 'fa fa-hdd-o icon-hdd');
                     }
 
-                    if ( Btn.getAttribute( 'icon' ) ) {
-                        Btn.setAttribute( 'icon', 'fa fa-hdd-o icon-hdd' );
+                    if (Btn.getAttribute('icon')) {
+                        Btn.setAttribute('icon', 'fa fa-hdd-o icon-hdd');
+                    }
+
+                }, function(Error) {
+                    // error
+                    Loading.finish(Error.getMessage(), 'error');
+
+                    if (typeof Btn === 'undefined') {
+                        return;
+                    }
+
+                    if (Btn.getAttribute('textimage')) {
+                        Btn.setAttribute('textimage', 'fa fa-hdd-o icon-hdd');
+                    }
+
+                    if (Btn.getAttribute('icon')) {
+                        Btn.setAttribute('icon', 'fa fa-hdd-o icon-hdd');
                     }
                 });
             });
@@ -445,24 +438,21 @@ define('controls/packages/Panel', [
          *
          * @param {Object} Btn - qui/controls/buttons/Button
          */
-        executeCompleteUpdate : function(Btn)
-        {
+        executeCompleteUpdate: function (Btn) {
             var self = this;
 
             new QUIConfirm({
-                title     : Locale.get( lg, 'packages.update.window.title' ),
-                maxWidth  : 640,
-                maxheight : 360,
-                texticon  : 'fa fa-angle-double-down icon-double-angle-down',
-                text      : Locale.get( lg, 'packages.update.window.text'),
-                events :
-                {
-                    onSubmit : function()
-                    {
-                        Btn.setAttribute( 'textimage', 'icon-refresh icon-spin' );
+                title    : Locale.get(lg, 'packages.update.window.title'),
+                maxWidth : 640,
+                maxheight: 360,
+                texticon : 'fa fa-angle-double-down icon-double-angle-down',
+                text     : Locale.get(lg, 'packages.update.window.text'),
+                events   : {
+                    onSubmit: function () {
+                        Btn.setAttribute('textimage', 'icon-refresh icon-spin');
 
-                        self.$Manager.update(function() {
-                            Btn.setAttribute( 'textimage', 'fa fa-angle-double-down icon-double-angle-down' );
+                        self.$Manager.update(function () {
+                            Btn.setAttribute('textimage', 'fa fa-angle-double-down icon-double-angle-down');
                         });
                     }
                 }
@@ -474,26 +464,21 @@ define('controls/packages/Panel', [
          *
          * @param {Object} Btn - qui/controls/buttons/Button
          */
-        checkUpdates : function(Btn)
-        {
-            Btn.setAttribute( 'textimage', 'icon-refresh icon-spin' );
+        checkUpdates: function (Btn) {
+            Btn.setAttribute('textimage', 'icon-refresh icon-spin');
 
             var self = this;
 
-            QUI.getMessageHandler().then(function(MH)
-            {
+            QUI.getMessageHandler().then(function (MH) {
                 return MH.addLoading('Updates werden gesucht...');
 
-            }).then(function(Loading)
-            {
-                return self.$Manager.checkUpdate().then(function(result)
-                {
-                    Btn.setAttribute( 'textimage', 'icon-refresh' );
+            }).then(function (Loading) {
+                return self.$Manager.checkUpdate().then(function (result) {
+                    Btn.setAttribute('textimage', 'icon-refresh');
 
-                    if ( !result || !result.length )
-                    {
+                    if (!result || !result.length) {
                         Loading.finish(
-                            Locale.get( lg, 'message.packages.update.system.uptodate' )
+                            Locale.get(lg, 'message.packages.update.system.uptodate')
                         );
 
                         self.Loader.hide();
@@ -503,39 +488,37 @@ define('controls/packages/Panel', [
                     var entry,
                         data = [];
 
-                    for ( var i = 0, len = result.length; i < len; i++ )
-                    {
+                    for (var i = 0, len = result.length; i < len; i++) {
                         entry = result[i];
 
                         data.push({
-                            'package' : entry['package'],
-                            'from'    : entry.from,
-                            'to'      : entry.to,
-                            'update'  : {
-                                'package' : entry['package'],
-                                image     : 'icon-retweet',
-                                events    : {
-                                    onClick : self.$clickUpdateBtn
+                            'package': entry['package'],
+                            'from'   : entry.from,
+                            'to'     : entry.to,
+                            'update' : {
+                                'package': entry['package'],
+                                image    : 'icon-retweet',
+                                events   : {
+                                    onClick: self.$clickUpdateBtn
                                 }
                             }
                         });
                     }
 
                     self.$UpdateGrid.setData({
-                        data : data
+                        data: data
                     });
 
-                    Loading.finish('Es wurden '+ data.length +' Updates gefunden');
+                    Loading.finish('Es wurden ' + data.length + ' Updates gefunden');
 
                     self.Loader.hide();
                 });
 
-            }, function(Exception)
-            {
-                Btn.setAttribute( 'textimage', 'icon-refresh' );
+            }, function (Exception) {
+                Btn.setAttribute('textimage', 'icon-refresh');
 
-                QUI.getMessageHandler(function(MH) {
-                    MH.addError( Exception.getMessage() );
+                QUI.getMessageHandler(function (MH) {
+                    MH.addError(Exception.getMessage());
                 });
 
                 self.Loader.hide();
@@ -545,62 +528,54 @@ define('controls/packages/Panel', [
         /**
          * Opens the upload field for update uploading
          */
-        uploadUpdates : function()
-        {
+        uploadUpdates: function () {
             var self = this;
 
             new QUIConfirm({
-                icon      : 'icon-upload-alt fa fa-upload',
-                title     : Locale.get( lg, 'packages.grid.update.btn.upload' ),
-                maxWidth  : 640,
-                maxheight : 360,
-                autoclose : false,
-                cancel_button : {
-                    text      : Locale.get( lg, 'upload.form.btn.cancel.text' ),
-                    textimage : 'icon-remove fa fa-remove'
+                icon         : 'icon-upload-alt fa fa-upload',
+                title        : Locale.get(lg, 'packages.grid.update.btn.upload'),
+                maxWidth     : 640,
+                maxheight    : 360,
+                autoclose    : false,
+                cancel_button: {
+                    text     : Locale.get(lg, 'upload.form.btn.cancel.text'),
+                    textimage: 'icon-remove fa fa-remove'
                 },
-                ok_button : {
-                    text      : Locale.get( lg, 'upload.form.btn.send.text' ),
-                    textimage : 'icon-upload-alt fa fa-upload'
+                ok_button    : {
+                    text     : Locale.get(lg, 'upload.form.btn.send.text'),
+                    textimage: 'icon-upload-alt fa fa-upload'
                 },
-                events :
-                {
-                    onOpen : function(Win)
-                    {
+                events       : {
+                    onOpen: function (Win) {
                         Win.Loader.show();
 
-                        require(['controls/upload/Form'], function(UploadForm)
-                        {
+                        require(['controls/upload/Form'], function (UploadForm) {
                             var Form = new UploadForm({
-                                maxuploads : 100,
-                                multible   : true,
-                                sendbutton : false,
-                                events :
-                                {
-                                    onComplete : function()
-                                    {
+                                maxuploads: 100,
+                                multible  : true,
+                                sendbutton: false,
+                                events    : {
+                                    onComplete: function () {
                                         Win.close();
                                         self.installLocalPackages();
                                     }
                                 }
                             });
 
-                            Form.setParam( 'onfinish', 'ajax_system_packages_upload_package' );
-                            Form.setParam( 'extract', false );
+                            Form.setParam('onfinish', 'ajax_system_packages_upload_package');
+                            Form.setParam('extract', false);
 
-                            Form.inject( Win.getContent() );
+                            Form.inject(Win.getContent());
 
-                            Win.setAttribute( 'Form', Form );
+                            Win.setAttribute('Form', Form);
                             Win.Loader.hide();
                         });
                     },
 
-                    onSubmit : function(Win)
-                    {
-                        var Form = Win.getAttribute( 'Form' );
+                    onSubmit: function (Win) {
+                        var Form = Win.getAttribute('Form');
 
-                        if ( !Form )
-                        {
+                        if (!Form) {
                             Win.close();
                             return;
                         }
@@ -619,26 +594,23 @@ define('controls/packages/Panel', [
          * @param {Function} [callback]  - (optional), Callback function
          * @return Promise
          */
-        update : function(pkg, callback)
-        {
+        update: function (pkg, callback) {
             var self = this;
 
-            var Prom = QUI.getMessageHandler().then(function(MH) {
+            var Prom = QUI.getMessageHandler().then(function (MH) {
                 return MH.addLoading('Updates werden installiert...');
             });
 
-            Prom.then(function(Loading)
-            {
-                return self.$Manager.update(pkg).then(function()
-                {
-                    Loading.finish( Locale.get( lg, 'message.update.successfull' ) );
+            Prom.then(function (Loading) {
+                return self.$Manager.update(pkg).then(function () {
+                    Loading.finish(Locale.get(lg, 'message.update.successfull'));
 
                     if (typeOf(callback) === 'function') {
                         callback();
                     }
 
-                }, function() {
-                    Loading.finish( Locale.get( lg, 'message.update.error' ) );
+                }, function () {
+                    Loading.finish(Locale.get(lg, 'message.update.error'));
                 });
             });
 
@@ -651,24 +623,21 @@ define('controls/packages/Panel', [
          * @param {Function} [callback]  - (optional), Callback function
          * @returns {Promise}
          */
-        updateWithLocalPackages : function(callback)
-        {
-            var Prom = QUI.getMessageHandler().then(function(MH) {
+        updateWithLocalPackages: function (callback) {
+            var Prom = QUI.getMessageHandler().then(function (MH) {
                 return MH.addLoading('Updates werden installiert...');
             });
 
-            Prom.then(function(Loading)
-            {
-                return this.$Manager.updateWithLocalServer().then(function()
-                {
-                    Loading.finish( Locale.get( lg, 'message.update.successfull' ) );
+            Prom.then(function (Loading) {
+                return this.$Manager.updateWithLocalServer().then(function () {
+                    Loading.finish(Locale.get(lg, 'message.update.successfull'));
 
                     if (typeOf(callback) === 'function') {
                         callback();
                     }
 
-                }, function() {
-                    Loading.finish( Locale.get( lg, 'message.update.error' ) );
+                }, function () {
+                    Loading.finish(Locale.get(lg, 'message.update.error'));
                 });
 
             }.bind(this));
@@ -681,14 +650,11 @@ define('controls/packages/Panel', [
          *
          * @returns {Promise}
          */
-        installLocalPackages : function()
-        {
+        installLocalPackages: function () {
             var self = this;
 
-            return new Promise(function(resolve, reject)
-            {
-                self.$Manager.readLocalRepository(function(result)
-                {
+            return new Promise(function (resolve, reject) {
+                self.$Manager.readLocalRepository(function (result) {
                     if (!result || !result.length) {
                         self.updateWithLocalPackages().then(resolve);
                         return;
@@ -696,23 +662,21 @@ define('controls/packages/Panel', [
 
                     // #locale
                     new QUIConfirm({
-                        icon: 'fa fa-hdd-o icon-hdd',
-                        title : 'Es wurden neue Pakete gefunden',
-                        autoclose : false,
-                        maxWidth: 640,
-                        maxheight: 360,
-                        cancel_button : {
-                            text      : 'Installation abbrechen',
-                            textimage : 'icon-remove fa fa-remove'
+                        icon         : 'fa fa-hdd-o icon-hdd',
+                        title        : 'Es wurden neue Pakete gefunden',
+                        autoclose    : false,
+                        maxWidth     : 640,
+                        maxheight    : 360,
+                        cancel_button: {
+                            text     : 'Installation abbrechen',
+                            textimage: 'icon-remove fa fa-remove'
                         },
-                        ok_button : {
-                            text      : 'Installation starten',
-                            textimage : 'fa fa-hdd-o icon-hdd'
+                        ok_button    : {
+                            text     : 'Installation starten',
+                            textimage: 'fa fa-hdd-o icon-hdd'
                         },
-                        events :
-                        {
-                            onOpen : function(Win)
-                            {
+                        events       : {
+                            onOpen: function (Win) {
                                 var i, len, pkg;
 
                                 var Content = Win.getContent(),
@@ -727,10 +691,9 @@ define('controls/packages/Panel', [
                                 Submit.disable();
 
                                 Win.$__List = new QUIList({
-                                    checkboxes : true,
-                                    events : {
-                                        onClick : function(List)
-                                        {
+                                    checkboxes: true,
+                                    events    : {
+                                        onClick: function (List) {
                                             if (List.getSelectedData().length) {
                                                 Submit.enable();
                                             } else {
@@ -740,27 +703,25 @@ define('controls/packages/Panel', [
                                     }
                                 });
 
-                                for (i = 0, len = result.length; i < len; i++)
-                                {
-                                    pkg = result[ i ];
+                                for (i = 0, len = result.length; i < len; i++) {
+                                    pkg = result[i];
 
                                     Win.$__List.addItem({
-                                        icon  : '',
-                                        title : pkg.name,
-                                        text  : pkg.description,
-                                        version : pkg.version
+                                        icon   : '',
+                                        title  : pkg.name,
+                                        text   : pkg.description,
+                                        version: pkg.version
                                     });
                                 }
 
                                 Win.$__List.inject(Content);
                             },
 
-                            onSubmit : function(Win)
-                            {
+                            onSubmit: function (Win) {
                                 Win.Loader.show();
 
                                 var packages = {};
-                                var items = Win.$__List.getSelectedData();
+                                var items    = Win.$__List.getSelectedData();
 
                                 for (var i = 0, len = items.length; i < len; i++) {
                                     packages[items[i].title] = items[i].version || '*';
@@ -768,32 +729,30 @@ define('controls/packages/Panel', [
 
                                 var LoadMessage;
 
-                                QUI.getMessageHandler().then(function(MH)
-                                {
+                                QUI.getMessageHandler().then(function (MH) {
                                     Win.close();
 
                                     return MH.addLoading('Setup wird durchgeführt...');
 
-                                }).then(function(Loading) {
+                                }).then(function (Loading) {
 
                                     LoadMessage = Loading;
 
                                     return self.$Manager.activateLocalServer();
 
-                                }).then(function() {
+                                }).then(function () {
                                     return self.$Manager.installLocalPackages(packages);
 
-                                }).then(function()
-                                {
+                                }).then(function () {
                                     LoadMessage.finish(
-                                        Locale.get( lg, 'message.setup.successfull' )
+                                        Locale.get(lg, 'message.setup.successfull')
                                     );
 
                                     resolve();
                                 });
                             },
 
-                            onCancel : function() {
+                            onCancel: function () {
                                 reject();
                             }
                         }
@@ -808,181 +767,171 @@ define('controls/packages/Panel', [
          *
          * @param {Object} Btn - qui/controls/buttons/Button
          */
-        $clickUpdateBtn : function(Btn)
-        {
-            Btn.setAttribute( 'image', 'icon-refresh icon-spin' );
+        $clickUpdateBtn: function (Btn) {
+            Btn.setAttribute('image', 'icon-refresh icon-spin');
 
-            this.update( Btn.getAttribute( 'package' ) ).then(function() {
-                Btn.setAttribute( 'image', 'fa fa-check icon-ok' );
+            this.update(Btn.getAttribute('package')).then(function () {
+                Btn.setAttribute('image', 'fa fa-check icon-ok');
             });
         },
 
-    /**
-     * Package list methods
-     */
+        /**
+         * Package list methods
+         */
 
         /**
          * Package Category
          */
-        loadPackages : function()
-        {
+        loadPackages: function () {
             this.Loader.show();
-            this.getBody().set( 'html', '' );
+            this.getBody().set('html', '');
 
-            var self = this,
-                Body = this.getBody(),
-                size = Body.getSize(),
+            var self      = this,
+                Body      = this.getBody(),
+                size      = Body.getSize(),
 
                 Container = new Element('div', {
-                    styles : {
-                        width  : size.x - 40,
-                        height : size.y - 40
+                    styles: {
+                        width : size.x - 40,
+                        height: size.y - 40
                     }
-                }).inject( Body );
+                }).inject(Body);
 
 
             var GridObj = new Grid(Container, {
-                columnModel : [{
-                    header    : ' ',
-                    dataIndex : '_',
-                    dataType  : 'string',
-                    width     : 30
+                columnModel: [{
+                    header   : ' ',
+                    dataIndex: '_',
+                    dataType : 'string',
+                    width    : 30
                 }, {
-                    header    : ' ',
-                    dataIndex : 'setup',
-                    dataType  : 'button',
-                    width     : 60
+                    header   : ' ',
+                    dataIndex: 'setup',
+                    dataType : 'button',
+                    width    : 60
                 }, {
-                    header    : Locale.get( lg, 'packages.grid.title.name' ),
-                    dataIndex : 'name',
-                    dataType  : 'string',
-                    width     : 150
+                    header   : Locale.get(lg, 'packages.grid.title.name'),
+                    dataIndex: 'name',
+                    dataType : 'string',
+                    width    : 150
                 }, {
-                    header    : Locale.get( lg, 'packages.grid.title.version' ),
-                    dataIndex : 'version',
-                    dataType  : 'string',
-                    width     : 100
+                    header   : Locale.get(lg, 'packages.grid.title.version'),
+                    dataIndex: 'version',
+                    dataType : 'string',
+                    width    : 100
                 }, {
-                    header    : Locale.get( lg, 'packages.grid.title.desc' ),
-                    dataIndex : 'description',
-                    dataType  : 'String',
-                    width     : 200
+                    header   : Locale.get(lg, 'packages.grid.title.desc'),
+                    dataIndex: 'description',
+                    dataType : 'String',
+                    width    : 200
                 }, {
-                    header    : Locale.get( lg, 'packages.grid.title.homepage' ),
-                    dataIndex : 'homepage',
-                    dataType  : 'string',
-                    width     : 100
+                    header   : Locale.get(lg, 'packages.grid.title.homepage'),
+                    dataIndex: 'homepage',
+                    dataType : 'string',
+                    width    : 100
                 }, {
-                    header    : Locale.get( lg, 'packages.grid.title.type' ),
-                    dataIndex : 'type',
-                    dataType  : 'string',
-                    width     : 100
+                    header   : Locale.get(lg, 'packages.grid.title.type'),
+                    dataIndex: 'type',
+                    dataType : 'string',
+                    width    : 100
                 }, {
-                    header    : Locale.get( lg, 'packages.grid.title.lastupdate' ),
-                    dataIndex : 'time',
-                    dataType  : 'string',
-                    width     : 150
+                    header   : Locale.get(lg, 'packages.grid.title.lastupdate'),
+                    dataIndex: 'time',
+                    dataType : 'string',
+                    width    : 150
                 }],
                 pagination : true,
                 filterInput: true,
-                perPage    : this.getAttribute( 'limit' ),
-                page       : this.getAttribute( 'page' ),
-                sortOn     : this.getAttribute( 'field' ),
+                perPage    : this.getAttribute('limit'),
+                page       : this.getAttribute('page'),
+                sortOn     : this.getAttribute('field'),
                 serverSort : true,
                 showHeader : true,
                 sortHeader : true,
                 width      : size.x - 40,
                 height     : size.y - 40,
-                onrefresh  : function(me)
-                {
+                onrefresh  : function (me) {
                     var options = me.options;
 
-                    self.setAttribute( 'field', options.sortOn );
-                    self.setAttribute( 'order', options.sortBy );
-                    self.setAttribute( 'limit', options.perPage );
-                    self.setAttribute( 'page', options.page );
+                    self.setAttribute('field', options.sortOn);
+                    self.setAttribute('order', options.sortBy);
+                    self.setAttribute('limit', options.perPage);
+                    self.setAttribute('page', options.page);
 
                     self.refreshPackageList();
                 },
 
-                alternaterows     : true,
-                resizeColumns     : true,
-                selectable        : true,
-                multipleSelection : true,
-                resizeHeaderOnly  : true,
+                alternaterows    : true,
+                resizeColumns    : true,
+                selectable       : true,
+                multipleSelection: true,
+                resizeHeaderOnly : true,
 
-                accordion             : true,
-                openAccordionOnClick  : false,
-                accordionLiveRenderer : function(data)
-                {
+                accordion            : true,
+                openAccordionOnClick : false,
+                accordionLiveRenderer: function (data) {
                     var GridObj = data.grid,
                         Parent  = data.parent,
                         row     = data.row,
-                        rowdata = GridObj.getDataByRow( row );
+                        rowdata = GridObj.getDataByRow(row);
 
                     Parent.set(
                         'html',
-                        '<img src="'+ URL_BIN_DIR +'images/loader.gif" style="margin: 10px;" />'
+                        '<img src="' + URL_BIN_DIR + 'images/loader.gif" style="margin: 10px;" />'
                     );
 
-                    self.getPackage( rowdata.name, function(result)
-                    {
+                    self.getPackage(rowdata.name, function (result) {
                         var pkg;
                         var str = '<div class="qui-packages-panel-package-info">' +
-                                  '<h1>'+ result.name +'</h1>' +
-                                  '<div class="package-description">'+ result.description +'</div>';
+                                  '<h1>' + result.name + '</h1>' +
+                                  '<div class="package-description">' + result.description + '</div>';
 
-                        if ( result.require )
-                        {
-                            str = str +'<div class="package-require">';
-                            str = str +'<h2>'+
-                                Locale.get( lg, 'packages.grid.dependencies' ) +
-                            '</h2>';
+                        if (result.require) {
+                            str = str + '<div class="package-require">';
+                            str = str + '<h2>' +
+                                  Locale.get(lg, 'packages.grid.dependencies') +
+                                  '</h2>';
 
-                            for ( pkg in result.require )
-                            {
-                                if ( result.require.hasOwnProperty( pkg ) ) {
+                            for (pkg in result.require) {
+                                if (result.require.hasOwnProperty(pkg)) {
                                     str = str + pkg + ': ' + result.require[pkg] + '<br />';
                                 }
                             }
 
-                            str = str +'</div>';
+                            str = str + '</div>';
                         }
 
-                        if ( result.dependencies && result.dependencies.length )
-                        {
-                            str = str +'<div class="package-require">';
-                            str = str +'<h2>'+
-                                Locale.get( lg, 'packages.grid.other.package.dependencies', {
-                                    pkg : result.name
-                                }) +
-                            '</h2>';
+                        if (result.dependencies && result.dependencies.length) {
+                            str = str + '<div class="package-require">';
+                            str = str + '<h2>' +
+                                  Locale.get(lg, 'packages.grid.other.package.dependencies', {
+                                      pkg: result.name
+                                  }) +
+                                  '</h2>';
 
-                            str = str + result.dependencies.join( ',' ) +'<br />';
-                            str = str +'</div>';
+                            str = str + result.dependencies.join(',') + '<br />';
+                            str = str + '</div>';
                         }
 
-                        str = str +'</div>';
+                        str = str + '</div>';
 
 
-                        Parent.set( 'html', str );
+                        Parent.set('html', str);
                     });
                 }
             });
 
-            if ( this.getAttribute( 'type' ) == 'quiqqer-library' )
-            {
+            if (this.getAttribute('type') == 'quiqqer-library') {
                 this.$ModuleGrid = GridObj;
 
-            } else
-            {
+            } else {
                 this.$Grid = GridObj;
             }
 
             GridObj.refresh();
 
-            GridObj.addEvent('onDblClick', function(event) {
-                self.openPackageDetails( GridObj.getDataByRow( event.row ).name );
+            GridObj.addEvent('onDblClick', function (event) {
+                self.openPackageDetails(GridObj.getDataByRow(event.row).name);
             });
         },
 
@@ -991,18 +940,15 @@ define('controls/packages/Panel', [
          *
          * @param {Object} Btn - qui/controls/buttons/Button
          */
-        unloadPackages : function(Btn)
-        {
-            this.setAttribute( 'page', 1 );
+        unloadPackages: function (Btn) {
+            this.setAttribute('page', 1);
 
-            if ( this.$Grid && Btn.getAttribute( 'name' ) == 'packages' )
-            {
+            if (this.$Grid && Btn.getAttribute('name') == 'packages') {
                 this.$Grid.destroy();
                 this.$Grid = null;
             }
 
-            if ( this.$ModuleGrid && Btn.getAttribute( 'name' ) == 'modules' )
-            {
+            if (this.$ModuleGrid && Btn.getAttribute('name') == 'modules') {
                 this.$ModuleGrid.destroy();
                 this.$ModuleGrid = null;
             }
@@ -1011,65 +957,59 @@ define('controls/packages/Panel', [
         /**
          * Refresh the packagelist
          */
-        refreshPackageList : function()
-        {
+        refreshPackageList: function () {
             this.Loader.show();
 
             var self = this;
 
-            Ajax.get('ajax_system_packages_list', function(result)
-            {
+            Ajax.get('ajax_system_packages_list', function (result) {
                 var i, alt, len, pkg, entry;
                 var GridObj = null;
 
-                if ( self.getAttribute( 'type' ) == 'quiqqer-module' )
-                {
+                if (self.getAttribute('type') == 'quiqqer-module') {
                     GridObj = self.$ModuleGrid;
 
-                } else
-                {
+                } else {
                     GridObj = self.$Grid;
                 }
 
-                var onSlickSetup = function(Btn)
-                {
+                var onSlickSetup = function (Btn) {
                     self.setup(
-                        Btn.getAttribute( 'pkg' ),
+                        Btn.getAttribute('pkg'),
                         Btn
                     );
                 };
 
-                for ( i = 0, len = result.data.length; i < len; i++ )
-                {
-                    entry = result.data[ i ];
+                for (i = 0, len = result.data.length; i < len; i++) {
+                    entry = result.data[i];
 
-                    pkg = result.data[ i ].name;
+                    pkg = result.data[i].name;
 
-                    alt = Locale.get( lg, 'packages.btn.execute.setup.alt', {
-                        pkg : pkg
+                    alt = Locale.get(lg, 'packages.btn.execute.setup.alt', {
+                        pkg: pkg
                     });
 
-                    result.data[ i ].setup = {
-                        icon   : 'fa fa-hdd-o icon-hdd',
-                        pkg    : pkg,
-                        alt    : alt,
-                        title  : alt,
-                        events : {
-                            onClick : onSlickSetup
+                    result.data[i].setup = {
+                        icon  : 'fa fa-hdd-o icon-hdd',
+                        pkg   : pkg,
+                        alt   : alt,
+                        title : alt,
+                        events: {
+                            onClick: onSlickSetup
                         }
                     };
                 }
 
-                if ( GridObj ) {
-                    GridObj.setData( result );
+                if (GridObj) {
+                    GridObj.setData(result);
                 }
 
                 self.Loader.hide();
             }, {
-                params : JSON.encode({
-                    limit : this.getAttribute( 'limit' ),
-                    page  : this.getAttribute( 'page' ),
-                    type  : this.getAttribute( 'type' )
+                params: JSON.encode({
+                    limit: this.getAttribute('limit'),
+                    page : this.getAttribute('page'),
+                    type : this.getAttribute('type')
                 })
             });
         },
@@ -1080,86 +1020,81 @@ define('controls/packages/Panel', [
          * @param {String} pkg        - Package name
          * @param {Function} onfinish - callback function
          */
-        getPackage : function(pkg, onfinish)
-        {
-            this.$Manager.getPackage( pkg, onfinish );
+        getPackage: function (pkg, onfinish) {
+            this.$Manager.getPackage(pkg, onfinish);
         },
 
         /**
          * Open package detail window
          */
-        openPackageDetails : function(pkg)
-        {
+        openPackageDetails: function (pkg) {
             new DetailWindow({
-                'package' : pkg
+                'package': pkg
             }).open();
         },
 
-    /**
-     * Search methods
-     */
+        /**
+         * Search methods
+         */
 
         /**
          * Opens the package search
          */
-        loadSearch : function()
-        {
+        loadSearch: function () {
             this.Loader.show();
-            this.getBody().set( 'html', '' );
+            this.getBody().set('html', '');
 
-            var self = this,
-                Body = this.getBody(),
-                size = Body.getSize(),
+            var self      = this,
+                Body      = this.getBody(),
+                size      = Body.getSize(),
 
                 Container = new Element('div', {
-                    'class' : 'qui-packages-panel-grid-container',
+                    'class': 'qui-packages-panel-grid-container',
                     styles : {
-                        width  : size.x - 40,
-                        height : size.y - 100
+                        width : size.x - 40,
+                        height: size.y - 100
                     }
-                }).inject( Body ),
+                }).inject(Body),
 
-                Form = new Element('form', {
-                    name    : 'qui-package-search',
-                    'class' : 'qui-packages-panel-search',
-                    'html'  : '<input type="text" name="search" placeholder="search..." />',  // #Locale -> placeholder
-                    events  :
-                    {
-                        submit : function(event)
-                        {
+                Form      = new Element('form', {
+                    name   : 'qui-package-search',
+                    'class': 'qui-packages-panel-search',
+                    'html' : '<input type="text" name="search" placeholder="search..." />',  // #Locale -> placeholder
+                    events : {
+                        submit: function (event) {
                             self.startSearch();
                             event.stop();
                         }
                     }
-                }).inject( Body, 'top' ),
+                }).inject(Body, 'top'),
 
-                Title = new Element('h1', {
-                    html : Locale.get( lg, 'packages.search.title' )
-                }).inject( Body, 'top' );
+                Title     = new Element('h1', {
+                    html: Locale.get(lg, 'packages.search.title')
+                }).inject(Body, 'top');
 
 
             new Element('div.description', {
-                html : Locale.get( lg, 'packages.search.description' )
-            }).inject( Title, 'after' );
+                html: Locale.get(lg, 'packages.search.description')
+            }).inject(Title, 'after');
 
 
             // search grid
             this.$SearchGrid = new Grid(Container, {
-                columnModel : [{
-                    header    : Locale.get( lg, 'packages.search.grid.title.btn' ),
-                    dataIndex : 'install',
-                    dataType  : 'button',
-                    width     : 60
+                columnModel: [{
+                    header   : Locale.get(lg, 'packages.search.grid.title.btn'),
+                    dataIndex: 'install',
+                    dataType : 'button',
+                    width    : 60
                 }, {
-                    header    : Locale.get( lg, 'packages.search.grid.title.package' ),
-                    dataIndex : 'package',
-                    dataType  : 'string',
-                    width     : 200
+                    header   : Locale.get(lg, 'packages.search.grid.title.package'),
+                    dataIndex: 'package',
+                    dataType : 'string',
+                    width    : 200
                 }, {
-                    header    : Locale.get( lg, 'packages.search.grid.title.description' ),
-                    dataIndex : 'description',
-                    dataType  : 'string',
-                    width     : 400
+                    header   : Locale.get(lg, 'packages.search.grid.title.description'),
+                    dataIndex: 'description',
+                    dataType : 'string',
+                    width    : 400
                 }],
                 pagination : true,
                 filterInput: true,
@@ -1167,21 +1102,21 @@ define('controls/packages/Panel', [
                 sortHeader : true,
                 width      : Container.getSize().x,
                 height     : 200,
-                onrefresh  : function() {
+                onrefresh  : function () {
                     self.startSearch();
                 }
             });
 
             // search button
             new QUIButton({
-                text   : 'suchen',
-                events : {
-                    onClick : this.startSearch
+                text  : 'suchen',
+                events: {
+                    onClick: this.startSearch
                 }
-            }).inject( Form );
+            }).inject(Form);
 
 
-            Form.getElement( 'input' ).focus();
+            Form.getElement('input').focus();
 
             this.resize();
             this.Loader.hide();
@@ -1190,10 +1125,8 @@ define('controls/packages/Panel', [
         /**
          * unload the search, destroy the search grid
          */
-        unloadSearch : function()
-        {
-            if ( this.$SearchGrid )
-            {
+        unloadSearch: function () {
+            if (this.$SearchGrid) {
                 this.$SearchGrid.destroy();
                 this.$SearchGrid = null;
             }
@@ -1202,43 +1135,40 @@ define('controls/packages/Panel', [
         /**
          * Start the package search, read the input field and display the results
          */
-        startSearch : function()
-        {
-            var Search = this.getBody().getElement( 'input[name="search"]' );
+        startSearch: function () {
+            var Search = this.getBody().getElement('input[name="search"]');
 
-            if ( !Search ) {
+            if (!Search) {
                 return;
             }
 
             this.Loader.show();
 
             var self     = this,
-                onResult = function(result)
-                {
-                    for ( var i = 0, len = result.data.length; i < len; i++ )
-                    {
-                        if ( "isInstalled" in result.data[ i ] ) {
+                onResult = function (result) {
+                    for (var i = 0, len = result.data.length; i < len; i++) {
+                        if ("isInstalled" in result.data[i]) {
                             continue;
                         }
 
-                        result.data[ i ].install = {
-                            'package' : result.data[ i ]['package'],
-                            image : 'icon-download',
-                            title : Locale.get( lg, 'packages.search.grid.setup.btn.title', {
-                                'package' : result.data[ i ]['package']
+                        result.data[i].install = {
+                            'package': result.data[i]['package'],
+                            image    : 'icon-download',
+                            title    : Locale.get(lg, 'packages.search.grid.setup.btn.title', {
+                                'package': result.data[i]['package']
                             }),
-                            alt : Locale.get( lg, 'packages.search.grid.setup.btn.alt', {
-                                'package' : result.data[ i ]['package']
+                            alt      : Locale.get(lg, 'packages.search.grid.setup.btn.alt', {
+                                'package': result.data[i]['package']
                             }),
-                            events : {
-                                onClick : self.dialogInstall
+                            events   : {
+                                onClick: self.dialogInstall
                             }
                         };
                     }
 
 
-                    if ( self.$SearchGrid ) {
-                        self.$SearchGrid.setData( result );
+                    if (self.$SearchGrid) {
+                        self.$SearchGrid.setData(result);
                     }
 
                     self.Loader.hide();
@@ -1260,25 +1190,23 @@ define('controls/packages/Panel', [
          * @param {Number} [start] - (optional)
          * @param {Number} [max] - (optional)
          */
-        search : function(str, callback, start, max)
-        {
-            if ( typeof start === 'undefined' ) {
+        search: function (str, callback, start, max) {
+            if (typeof start === 'undefined') {
                 start = 1;
             }
 
-            if ( typeof max === 'undefined' ) {
+            if (typeof max === 'undefined') {
                 max = 1;
             }
 
-            Ajax.get('ajax_system_packages_search', function(result, Request)
-            {
-                if ( typeof callback !== 'undefined' ) {
-                    callback( result, Request );
+            Ajax.get('ajax_system_packages_search', function (result, Request) {
+                if (typeof callback !== 'undefined') {
+                    callback(result, Request);
                 }
             }, {
-                str  : str,
-                from : start,
-                max  : max
+                str : str,
+                from: start,
+                max : max
             });
         },
 
@@ -1287,218 +1215,201 @@ define('controls/packages/Panel', [
          *
          * @param {Object} Btn - qui/controls/buttons/Button
          */
-        dialogInstall : function(Btn)
-        {
-            var pkg  = Btn.getAttribute( 'package' ),
+        dialogInstall: function (Btn) {
+            var pkg  = Btn.getAttribute('package'),
                 self = this;
 
             new QUIConfirm({
-                title : Locale.get( lg, 'packages.server.win.install.package.title' ),
-                icon : 'icon-download',
-                text : Locale.get( lg, 'packages.server.win.install.package.text', {
-                    'package' : pkg
+                title     : Locale.get(lg, 'packages.server.win.install.package.title'),
+                icon      : 'icon-download',
+                text      : Locale.get(lg, 'packages.server.win.install.package.text', {
+                    'package': pkg
                 }),
                 texticon  : 'icon-download',
-                maxTimeout : 120000, // wait max. 2 minutes
+                maxTimeout: 120000, // wait max. 2 minutes
                 autoclose : false,
                 maxWidth  : 640,
                 maxheight : 360,
                 ok_button : {
-                    textimage : 'icon-download',
-                    text : Locale.get( lg, 'packages.server.win.install.submit.btn' )
+                    textimage: 'icon-download',
+                    text     : Locale.get(lg, 'packages.server.win.install.submit.btn')
                 },
-                events :
-                {
-                    onDrawEnd : function(Win)
-                    {
+                events    : {
+                    onDrawEnd: function (Win) {
                         Win.Loader.show();
 
-                        Ajax.get('ajax_system_packages_get', function(result)
-                        {
-                            if ( typeof result.require === 'undefined' &&
-                                 typeof result.description === 'undefined' )
-                            {
-                                Win.setAttribute( 'information', '' );
+                        Ajax.get('ajax_system_packages_get', function (result) {
+                            if (typeof result.require === 'undefined' &&
+                                typeof result.description === 'undefined') {
+                                Win.setAttribute('information', '');
                                 Win.Loader.hide();
 
                                 return;
                             }
 
-                            var req = result.require.join( ', ' );
+                            var req = result.require.join(', ');
 
-                            var html = '<p>'+ result.description +'</p>' +
-                                       '<p>&nbsp;</p>'+
-                                       '<p>Version: '+ result.versions +'</p>' +
-                                       '<p>Require: '+ ( req || '---' ) +'</p>';
+                            var html = '<p>' + result.description + '</p>' +
+                                       '<p>&nbsp;</p>' +
+                                       '<p>Version: ' + result.versions + '</p>' +
+                                       '<p>Require: ' + ( req || '---' ) + '</p>';
 
-                            Win.setAttribute( 'information', html );
+                            Win.setAttribute('information', html);
                             Win.Loader.hide();
 
                         }, {
-                            'package' : pkg
+                            'package': pkg
                         });
                     },
 
-                    onSubmit : function(Win)
-                    {
+                    onSubmit: function (Win) {
                         Win.Loader.show();
 
-                        Ajax.post('ajax_system_packages_install', function()
-                        {
+                        Ajax.post('ajax_system_packages_install', function () {
                             Win.close();
                             self.startSearch();
                         }, {
-                            packages : pkg
+                            packages: pkg
                         });
                     }
                 }
             }).open();
         },
 
-    /**
-     * Server Methods
-     */
+        /**
+         * Server Methods
+         */
 
         /**
          * Load the Server-Management
          */
-        loadServers : function()
-        {
+        loadServers: function () {
             var self = this;
 
             this.Loader.show();
-            this.getBody().set( 'html', '' );
+            this.getBody().set('html', '');
 
-            var Body = this.getBody(),
-                size = Body.getSize(),
+            var Body      = this.getBody(),
+                size      = Body.getSize(),
 
                 Container = new Element('div', {
-                    styles : {
-                        width  : size.x - 40,
-                        height : size.y - 40
+                    styles: {
+                        width : size.x - 40,
+                        height: size.y - 40
                     }
-                }).inject( Body );
+                }).inject(Body);
 
 
             this.$ServerGrid = new Grid(Container, {
-                columnModel : [{
-                    header    : Locale.get( lg, 'packages.server.grid.title.status' ),
-                    dataIndex : 'status',
-                    dataType  : 'button',
-                    width     : 60
+                columnModel     : [{
+                    header   : Locale.get(lg, 'packages.server.grid.title.status'),
+                    dataIndex: 'status',
+                    dataType : 'button',
+                    width    : 60
                 }, {
-                    header    : Locale.get( lg, 'packages.server.grid.title.server' ),
-                    dataIndex : 'server',
-                    dataType  : 'string',
-                    width     : 400
+                    header   : Locale.get(lg, 'packages.server.grid.title.server'),
+                    dataIndex: 'server',
+                    dataType : 'string',
+                    width    : 400
                 }, {
-                    header    : Locale.get( lg, 'packages.server.grid.title.type' ),
-                    dataIndex : 'type',
-                    dataType  : 'string',
-                    width     : 100
+                    header   : Locale.get(lg, 'packages.server.grid.title.type'),
+                    dataIndex: 'type',
+                    dataType : 'string',
+                    width    : 100
                 }],
-                buttons : [{
-                    text      : Locale.get( lg, 'packages.btn.add.server' ),
-                    textimage : 'icon-plus',
-                    events : {
-                        onClick : this.dialogAddServer
+                buttons         : [{
+                    text     : Locale.get(lg, 'packages.btn.add.server'),
+                    textimage: 'icon-plus',
+                    events   : {
+                        onClick: this.dialogAddServer
                     }
                 }, {
-                    text      : Locale.get( lg, 'packages.btn.del.server' ),
-                    name      : 'delServers',
-                    textimage : 'fa fa-trash-o icon-trash',
-                    disabled  : true,
-                    events :
-                    {
-                        onClick : function()
-                        {
+                    text     : Locale.get(lg, 'packages.btn.del.server'),
+                    name     : 'delServers',
+                    textimage: 'fa fa-trash-o icon-trash',
+                    disabled : true,
+                    events   : {
+                        onClick: function () {
                             var server = [],
                                 data   = this.$ServerGrid.getSelectedData();
 
-                            for ( var i = 0, len = data.length; i < len; i++ ) {
-                                server.push( data[ i ].server );
+                            for (var i = 0, len = data.length; i < len; i++) {
+                                server.push(data[i].server);
                             }
 
-                            this.dialogRemoveServer( server );
+                            this.dialogRemoveServer(server);
 
-                        }.bind( this )
+                        }.bind(this)
                     }
                 }],
-                pagination : false,
-                filterInput: true,
-                showHeader : true,
-                sortHeader : true,
-                width      : size.x - 40,
-                height     : size.y - 40,
-                onrefresh  : function()
-                {
-                    Ajax.get('ajax_system_packages_server_list', function(result)
-                    {
+                pagination      : false,
+                filterInput     : true,
+                showHeader      : true,
+                sortHeader      : true,
+                width           : size.x - 40,
+                height          : size.y - 40,
+                onrefresh       : function () {
+                    Ajax.get('ajax_system_packages_server_list', function (result) {
                         var i, len, alt, title, icon;
 
-                        var server_click = function(Btn)
-                        {
-                            var server = Btn.getAttribute( 'server' );
+                        var server_click = function (Btn) {
+                            var server = Btn.getAttribute('server');
 
-                            if ( !server ) {
+                            if (!server) {
                                 return;
                             }
 
-                            Btn.setAttribute( 'icon', 'icon-refresh icon-spin' );
+                            Btn.setAttribute('icon', 'icon-refresh icon-spin');
 
-                            if ( Btn.getAttribute( 'status' ) )
-                            {
-                                self.deactivateServer( server );
-                            } else
-                            {
-                                self.activateServer( server );
+                            if (Btn.getAttribute('status')) {
+                                self.deactivateServer(server);
+                            } else {
+                                self.activateServer(server);
                             }
                         };
 
 
-                        for ( i = 0, len = result.length; i < len; i++ )
-                        {
-                            alt   = Locale.get( lg, 'packages.server.grid.btn.activate.title' );
-                            title = Locale.get( lg, 'packages.server.grid.btn.activate.title' );
+                        for (i = 0, len = result.length; i < len; i++) {
+                            alt   = Locale.get(lg, 'packages.server.grid.btn.activate.title');
+                            title = Locale.get(lg, 'packages.server.grid.btn.activate.title');
 
                             icon = 'fa fa-check icon-ok';
 
-                            if ( result[ i ].active === 0 )
-                            {
+                            if (result[i].active === 0) {
                                 icon = 'icon-remove';
 
-                                alt   = Locale.get( lg, 'packages.server.grid.btn.deactivate.title' );
-                                title = Locale.get( lg, 'packages.server.grid.btn.deactivate.title' );
+                                alt   = Locale.get(lg, 'packages.server.grid.btn.deactivate.title');
+                                title = Locale.get(lg, 'packages.server.grid.btn.deactivate.title');
                             }
 
-                            result[ i ].status = {
-                                name    : 'server-active-status',
-                                title   : title,
-                                alt     : alt,
-                                icon    : icon,
-                                server  : result[ i ].server,
-                                status  : result[ i ].active,
-                                events  : {
-                                    onClick : server_click
+                            result[i].status = {
+                                name  : 'server-active-status',
+                                title : title,
+                                alt   : alt,
+                                icon  : icon,
+                                server: result[i].server,
+                                status: result[i].active,
+                                events: {
+                                    onClick: server_click
                                 }
                             };
                         }
 
 
                         self.$ServerGrid.setData({
-                            data : result
+                            data: result
                         });
 
                         self.Loader.hide();
                     });
                 },
-                alternaterows    : true,
-                resizeColumns    : true,
-                resizeHeaderOnly : true
+                alternaterows   : true,
+                resizeColumns   : true,
+                resizeHeaderOnly: true
             });
 
             this.$ServerGrid.addEvents({
-                onClick : this.$serverGridClick
+                onClick: this.$serverGridClick
             });
 
             this.$ServerGrid.refresh();
@@ -1507,10 +1418,8 @@ define('controls/packages/Panel', [
         /**
          * unload the search, destroy the search grid
          */
-        unloadServer : function()
-        {
-            if ( this.$ServerGrid )
-            {
+        unloadServer: function () {
+            if (this.$ServerGrid) {
                 this.$ServerGrid.destroy();
                 this.$ServerGrid = null;
             }
@@ -1519,60 +1428,55 @@ define('controls/packages/Panel', [
         /**
          * Opens the Dialog for Server Adding
          */
-        dialogAddServer : function()
-        {
+        dialogAddServer: function () {
             var self = this;
 
             new QUIConfirm({
-                title : Locale.get( lg, 'packages.server.win.add.title' ),
-                icon  : 'icon-building',
-                text  : Locale.get( lg, 'packages.server.win.add.text' ),
-                information : '<form class="qui-packages-panel-addserver">' +
-                                  '<input type="text" name="server" value="" placeholder="Server" />' +
-                                  '<select name="types">' +
-                                      '<option value="composer">composer</option>' +
-                                      '<option value="vcs">vcs</option>' +
-                                      '<option value="pear">pear</option>' +
-                                      '<option value="package">package</option>' +
-                                      '<option value="artifact">artifact</option>' +
-                                  '</select>' +
-                              '</form>',
+                title      : Locale.get(lg, 'packages.server.win.add.title'),
+                icon       : 'icon-building',
+                text       : Locale.get(lg, 'packages.server.win.add.text'),
+                information: '<form class="qui-packages-panel-addserver">' +
+                             '<input type="text" name="server" value="" placeholder="Server" />' +
+                             '<select name="types">' +
+                             '<option value="composer">composer</option>' +
+                             '<option value="vcs">vcs</option>' +
+                             '<option value="pear">pear</option>' +
+                             '<option value="package">package</option>' +
+                             '<option value="artifact">artifact</option>' +
+                             '</select>' +
+                             '</form>',
 
-                autoclose : false,
-                maxWidth  : 640,
-                maxheight : 360,
-                events    :
-                {
-                    onDrawEnd : function(Win)
-                    {
-                        var Form = Win.getContent().getElement( 'form' );
+                autoclose: false,
+                maxWidth : 640,
+                maxheight: 360,
+                events   : {
+                    onDrawEnd: function (Win) {
+                        var Form = Win.getContent().getElement('form');
 
-                        if ( !Form ) {
+                        if (!Form) {
                             return;
                         }
 
-                        Form.addEvent('submit', function(event)
-                        {
+                        Form.addEvent('submit', function (event) {
                             event.stop();
                             Win.submit();
                         });
 
-                        Form.getElement( 'input' ).focus();
+                        Form.getElement('input').focus();
                     },
 
-                    onSubmit : function(Win)
-                    {
-                        var Form = Win.getContent().getElement( 'form' );
+                    onSubmit: function (Win) {
+                        var Form = Win.getContent().getElement('form');
 
-                        if ( !Form ) {
+                        if (!Form) {
                             return;
                         }
 
-                        var Input  = Form.getElement( 'input' ),
-                            Select = Form.getElement( 'select' );
+                        var Input  = Form.getElement('input'),
+                            Select = Form.getElement('select');
 
-                        self.addServer( Input.value, {
-                            type : Select.value
+                        self.addServer(Input.value, {
+                            type: Select.value
                         });
 
                         Win.close();
@@ -1586,40 +1490,36 @@ define('controls/packages/Panel', [
          *
          * @param {Array} list - server list
          */
-        dialogRemoveServer : function(list)
-        {
+        dialogRemoveServer: function (list) {
             var self = this;
 
             new QUIConfirm({
-                title : Locale.get( lg, 'packages.server.win.remove.title' ),
-                icon  : 'fa fa-trash-o icon-trash',
-                text  : Locale.get( lg, 'packages.server.win.remove.text' ),
-                texticon    : 'fa fa-trash-o icon-trash',
-                information : list.join( '<br />' ) +
-                              '<p>&nbsp;</p>'+
-                              '<p>'+
-                                  Locale.get( lg, 'packages.server.win.remove.information' ) +
-                              '</p>',
-                autoclose : false,
-                list      : list,
-                maxWidth  : 640,
-                maxheight : 360,
-                events :
-                {
-                    onSubmit : function(Win)
-                    {
+                title      : Locale.get(lg, 'packages.server.win.remove.title'),
+                icon       : 'fa fa-trash-o icon-trash',
+                text       : Locale.get(lg, 'packages.server.win.remove.text'),
+                texticon   : 'fa fa-trash-o icon-trash',
+                information: list.join('<br />') +
+                             '<p>&nbsp;</p>' +
+                             '<p>' +
+                             Locale.get(lg, 'packages.server.win.remove.information') +
+                             '</p>',
+                autoclose  : false,
+                list       : list,
+                maxWidth   : 640,
+                maxheight  : 360,
+                events     : {
+                    onSubmit: function (Win) {
                         Win.Loader.show();
 
-                        Ajax.post( 'ajax_system_packages_server_remove', function()
-                        {
+                        Ajax.post('ajax_system_packages_server_remove', function () {
                             Win.close();
 
-                            if ( self.$ServerGrid ) {
+                            if (self.$ServerGrid) {
                                 self.$ServerGrid.refresh();
                             }
 
                         }, {
-                            server : JSON.encode( Win.getAttribute( 'list' ) )
+                            server: JSON.encode(Win.getAttribute('list'))
                         });
                     }
                 }
@@ -1631,13 +1531,11 @@ define('controls/packages/Panel', [
          *
          * @param {Object} data - grid event data
          */
-        $serverGridClick : function(data)
-        {
+        $serverGridClick: function (data) {
             var len = data.target.selected.length,
-                Del = this.$ServerGrid.getAttribute( 'buttons' ).delServers;
+                Del = this.$ServerGrid.getAttribute('buttons').delServers;
 
-            if ( len === 0 )
-            {
+            if (len === 0) {
                 Del.disable();
                 return;
             }
@@ -1652,19 +1550,17 @@ define('controls/packages/Panel', [
          *
          * @param {String} server - server name
          */
-        activateServer : function(server)
-        {
+        activateServer: function (server) {
             var self = this;
 
-            Ajax.post('ajax_system_packages_server_status', function()
-            {
-                if ( self.$ServerGrid ) {
+            Ajax.post('ajax_system_packages_server_status', function () {
+                if (self.$ServerGrid) {
                     self.$ServerGrid.refresh();
                 }
 
             }, {
-                server : server,
-                status : 1
+                server: server,
+                status: 1
             });
         },
 
@@ -1673,19 +1569,17 @@ define('controls/packages/Panel', [
          *
          * @param {String} server - server name
          */
-        deactivateServer : function(server)
-        {
+        deactivateServer: function (server) {
             var self = this;
 
-            Ajax.post('ajax_system_packages_server_status', function()
-            {
-                if ( self.$ServerGrid ) {
+            Ajax.post('ajax_system_packages_server_status', function () {
+                if (self.$ServerGrid) {
                     self.$ServerGrid.refresh();
                 }
 
             }, {
-                server : server,
-                status : 0
+                server: server,
+                status: 0
             });
         },
 
@@ -1695,31 +1589,28 @@ define('controls/packages/Panel', [
          * @param {String} server - server name
          * @param {Object} params - server params
          */
-        addServer : function(server, params)
-        {
+        addServer: function (server, params) {
             var self = this;
 
-            Ajax.post('ajax_system_packages_server_add', function()
-            {
-                if ( self.$ServerGrid ) {
+            Ajax.post('ajax_system_packages_server_add', function () {
+                if (self.$ServerGrid) {
                     self.$ServerGrid.refresh();
                 }
 
             }, {
-                server : server,
-                params : JSON.encode( params )
+                server: server,
+                params: JSON.encode(params)
             });
         },
 
-    /**
-     * Health methods
-     */
+        /**
+         * Health methods
+         */
 
         /**
          * load the system health category
          */
-        loadHealth : function()
-        {
+        loadHealth: function () {
             var self = this;
 
             this.Loader.show();
@@ -1727,90 +1618,86 @@ define('controls/packages/Panel', [
             this.getBody().set(
                 'html',
 
-                Locale.get( lg, 'packages.systemhealth.text' )
+                Locale.get(lg, 'packages.systemhealth.text')
             );
 
-            var Body = this.getBody(),
-                size = Body.getSize(),
+            var Body      = this.getBody(),
+                size      = Body.getSize(),
 
                 Container = new Element('div', {
-                    styles : {
-                        width     : size.x - 40,
-                        height    : size.y - 200,
-                        marginTop : 20
+                    styles: {
+                        width    : size.x - 40,
+                        height   : size.y - 200,
+                        marginTop: 20
                     }
-                }).inject( Body );
+                }).inject(Body);
 
             this.$HealthGrid = new Grid(Container, {
 
-                columnModel : [{
-                    header    : '&nbsp;',
-                    dataIndex : 'health',
-                    dataType  : 'button',
-                    width     : 60
+                columnModel: [{
+                    header   : '&nbsp;',
+                    dataIndex: 'health',
+                    dataType : 'button',
+                    width    : 60
                 }, {
-                    header    : Locale.get( lg, 'packages.grid.update.title.package' ),
-                    dataIndex : 'name',
-                    dataType  : 'string',
-                    width     : 250
+                    header   : Locale.get(lg, 'packages.grid.update.title.package'),
+                    dataIndex: 'name',
+                    dataType : 'string',
+                    width    : 250
                 }],
 
-                buttons : [{
-                    text      : Locale.get( lg, 'packages.grid.healthcheck.systemcheck' ),
-                    textimage : 'icon-play',
-                    events    :
-                    {
-                        click : function() {
+                buttons: [{
+                    text     : Locale.get(lg, 'packages.grid.healthcheck.systemcheck'),
+                    textimage: 'icon-play',
+                    events   : {
+                        click: function () {
                             self.systemHealthCheck();
                         }
                     }
                 }],
 
-                height : size.y - 200
+                height: size.y - 200
             });
 
-            Ajax.get('ajax_system_packages_list', function(result)
-            {
+            Ajax.get('ajax_system_packages_list', function (result) {
                 var i, alt, len, pkg, entry;
 
-                var startHealthCheck = function(Btn)
-                {
+                var startHealthCheck = function (Btn) {
                     self.packageHealthCheck(
-                        Btn.getAttribute( 'pkg' )
+                        Btn.getAttribute('pkg')
                     );
                 };
 
-                for ( i = 0, len = result.data.length; i < len; i++ )
-                {
-                    entry = result.data[ i ];
+                for (i = 0, len = result.data.length; i < len; i++) {
+                    entry = result.data[i];
                     pkg   = entry.name;
 
-                    alt = Locale.get( lg, 'packages.btn.execute.health.alt', {
-                        pkg : pkg
+                    alt = Locale.get(lg, 'packages.btn.execute.health.alt', {
+                        pkg: pkg
                     });
 
-                    result.data[ i ].health = {
-                        icon   : 'icon-play',
-                        pkg    : pkg,
-                        alt    : alt,
-                        title  : alt,
-                        events : {
-                            onClick : startHealthCheck
+                    result.data[i].health = {
+                        icon  : 'icon-play',
+                        pkg   : pkg,
+                        alt   : alt,
+                        title : alt,
+                        events: {
+                            onClick: startHealthCheck
                         }
                     };
                 }
 
-                if ( self.$HealthGrid ) {
-                    self.$HealthGrid.setData( result );
+                if (self.$HealthGrid) {
+                    self.$HealthGrid.setData(result);
                 }
 
                 self.Loader.hide();
 
             }, {
-                params : JSON.encode({
-                    limit : this.getAttribute( 'limit' ),
-                    page  : this.getAttribute( 'page' ),
-                    type  : ''
+                params: JSON.encode({
+                    limit: this.getAttribute('limit'),
+                    page : this.getAttribute('page'),
+                    type : ''
                 })
             });
         },
@@ -1818,10 +1705,8 @@ define('controls/packages/Panel', [
         /**
          * unload the system health category
          */
-        unloadHealth : function()
-        {
-            if ( this.$HealthGrid )
-            {
+        unloadHealth: function () {
+            if (this.$HealthGrid) {
                 this.$HealthGrid.destroy();
                 this.$HealthGrid = null;
             }
@@ -1830,15 +1715,13 @@ define('controls/packages/Panel', [
         /**
          * start the system health check
          */
-        systemHealthCheck : function()
-        {
+        systemHealthCheck: function () {
             var self = this;
 
             this.Loader.show();
 
-            Ajax.get('ajax_system_health_system', function(result)
-            {
-                self.$openHealthCheckSheet( result );
+            Ajax.get('ajax_system_health_system', function (result) {
+                self.$openHealthCheckSheet(result);
                 self.Loader.hide();
             });
         },
@@ -1848,21 +1731,19 @@ define('controls/packages/Panel', [
          *
          * @param {String} pkg - name of the package
          */
-        packageHealthCheck : function(pkg)
-        {
+        packageHealthCheck: function (pkg) {
             var self = this;
 
             this.Loader.show();
 
-            Ajax.get('ajax_system_health_package', function(result)
-            {
-                if ( result ) {
-                    self.$openHealthCheckSheet( result );
+            Ajax.get('ajax_system_health_package', function (result) {
+                if (result) {
+                    self.$openHealthCheckSheet(result);
                 }
 
                 self.Loader.hide();
             }, {
-                pkg : pkg
+                pkg: pkg
             });
         },
 
@@ -1871,15 +1752,12 @@ define('controls/packages/Panel', [
          *
          * @param {Object} result - health check result
          */
-        $openHealthCheckSheet : function(result)
-        {
+        $openHealthCheckSheet: function (result) {
             this.createSheet({
-                title  : 'Healthcheck Ergebnis',
-                icon   : 'icon-medkit',
-                events :
-                {
-                    onOpen : function(Sheet)
-                    {
+                title : 'Healthcheck Ergebnis',
+                icon  : 'icon-medkit',
+                events: {
+                    onOpen: function (Sheet) {
                         var i, icon, html;
 
                         var c        = 0,
@@ -1893,67 +1771,63 @@ define('controls/packages/Panel', [
                             iconNotFound = '<span class="icon-question"></span>';
 
                         Content.setStyles({
-                            overflow : 'auto',
-                            padding  : 20
+                            overflow: 'auto',
+                            padding : 20
                         });
 
-                        Content.addClass( 'packages-health-sumSheet' );
+                        Content.addClass('packages-health-sumSheet');
 
                         html = '<table class="data-table"><thead>' +
-                                    '<tr>' +
-                                    '<th colspan="2">Zusammenfassung</th>' + // #Locale
-                                '</tr>' +
-                                '</thead>' +
-                                '<tbody>' +
-                                    '<tr class="odd">' +
-                                        '<td>'+ iconOK +'</td>' +
-                                        '<td class="sum-ok"></td>' +
-                                    '</tr>'+
-                                    '<tr class="even">' +
-                                        '<td>'+ iconError +'</td>' +
-                                        '<td class="sum-error"></td>' +
-                                    '</tr>'+
-                                    '<tr class="odd">' +
-                                        '<td>'+ iconNotFound +'</td>' +
-                                        '<td class="sum-notFound"></td>' +
-                                    '</tr>'+
-                                '</tbody></table>'+
-                                '<table class="data-table"><thead>' +
-                                '<tr>' +
-                                    '<th colspan="2">Ergebnis</th>' +
-                                '</tr>' +
-                                '</thead>' +
-                                '<tbody>';
+                               '<tr>' +
+                               '<th colspan="2">Zusammenfassung</th>' + // #Locale
+                               '</tr>' +
+                               '</thead>' +
+                               '<tbody>' +
+                               '<tr class="odd">' +
+                               '<td>' + iconOK + '</td>' +
+                               '<td class="sum-ok"></td>' +
+                               '</tr>' +
+                               '<tr class="even">' +
+                               '<td>' + iconError + '</td>' +
+                               '<td class="sum-error"></td>' +
+                               '</tr>' +
+                               '<tr class="odd">' +
+                               '<td>' + iconNotFound + '</td>' +
+                               '<td class="sum-notFound"></td>' +
+                               '</tr>' +
+                               '</tbody></table>' +
+                               '<table class="data-table"><thead>' +
+                               '<tr>' +
+                               '<th colspan="2">Ergebnis</th>' +
+                               '</tr>' +
+                               '</thead>' +
+                               '<tbody>';
 
 
-                        for ( i in result )
-                        {
-                            if ( !result.hasOwnProperty( i ) ) {
+                        for (i in result) {
+                            if (!result.hasOwnProperty(i)) {
                                 continue;
                             }
 
                             icon = '';
 
-                            if ( result[ i ] === -1 )
-                            {
+                            if (result[i] === -1) {
                                 icon = iconError;
                                 sumError++;
 
-                            } else if ( result[ i ] === 1 )
-                            {
+                            } else if (result[i] === 1) {
                                 icon = iconOK;
                                 sumOk++;
 
-                            } else if ( result[ i ] === 0 )
-                            {
+                            } else if (result[i] === 0) {
                                 icon = iconNotFound;
                                 sumNotFo++;
                             }
 
                             html = html +
-                                   '<tr class="'+ (c % 2 ? 'even' : 'odd') +'">' +
-                                       '<td>'+ icon +'</td>' +
-                                       '<td>'+ i +'</td>' +
+                                   '<tr class="' + (c % 2 ? 'even' : 'odd') + '">' +
+                                   '<td>' + icon + '</td>' +
+                                   '<td>' + i + '</td>' +
                                    '</tr>';
 
                             c++;
@@ -1961,37 +1835,35 @@ define('controls/packages/Panel', [
 
                         html = html + '</tbody></table>';
 
-                        Content.set( 'html', html );
+                        Content.set('html', html);
 
                         // #locale
-                        Content.getElement( '.sum-ok' ).set( 'html', sumOk +' Dateien ok.' );
-                        Content.getElement( '.sum-error' ).set( 'html', sumError +' Dateien fehlerhaft.' );
-                        Content.getElement( '.sum-notFound' ).set( 'html', sumNotFo +' Dateien konnten nicht geprüft werden.' );
+                        Content.getElement('.sum-ok').set('html', sumOk + ' Dateien ok.');
+                        Content.getElement('.sum-error').set('html', sumError + ' Dateien fehlerhaft.');
+                        Content.getElement('.sum-notFound').set('html', sumNotFo + ' Dateien konnten nicht geprüft werden.');
                     }
                 }
             }).show();
         },
 
 
-    /**
-     * PHP Info
-     */
+        /**
+         * PHP Info
+         */
 
         /**
          * Shows the php info
          */
-        loadPHPInfo : function()
-        {
+        loadPHPInfo: function () {
             var self = this,
                 Body = this.getContent();
 
             this.Loader.show();
 
-            Body.set( 'html', '' );
+            Body.set('html', '');
 
-            Ajax.get('ajax_system_phpinfo', function(result)
-            {
-                Body.set( 'html', result );
+            Ajax.get('ajax_system_phpinfo', function (result) {
+                Body.set('html', result);
                 self.Loader.hide();
             });
         }
