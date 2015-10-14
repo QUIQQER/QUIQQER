@@ -1,4 +1,3 @@
-
 /**
  * Global Download Manager
  *
@@ -8,8 +7,7 @@
  * @require classes/request/Downloads
  */
 
-define(['classes/request/Downloads'], function(DownloadManager)
-{
+define(['classes/request/Downloads'], function (DownloadManager) {
     "use strict";
 
     return new DownloadManager();

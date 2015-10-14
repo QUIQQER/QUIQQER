@@ -1,4 +1,3 @@
-
 /**
  * QUIQQER Main Menu
  *
@@ -14,7 +13,6 @@
  * @require Ajax
  * @require utils/Panels
  */
-
 define('controls/menu/Manager', [
 
     'qui/QUI',
@@ -26,19 +24,17 @@ define('controls/menu/Manager', [
     'Ajax',
     'utils/Panels'
 
-], function(QUI, Control, ContextmenuBar, ContextmenuBarItem, ContextmenuItem, Panel, Ajax, PanelUtils)
-{
+], function (QUI, Control, ContextmenuBar, ContextmenuBarItem, ContextmenuItem, Panel, Ajax, PanelUtils) {
     "use strict";
 
     return new Class({
 
-        Extends : Control,
-        Type    : 'controls/menu/Manager',
+        Extends: Control,
+        Type   : 'controls/menu/Manager',
 
-        initialize : function(options)
-        {
+        initialize: function (options) {
             this.$Bar = null;
-            this.parent( options );
+            this.parent(options);
 
             this.$isLoaded = false;
         },
@@ -48,23 +44,21 @@ define('controls/menu/Manager', [
          *
          * @return {HTMLElement}
          */
-        create : function()
-        {
+        create: function () {
             var self = this;
 
             this.$Bar = new ContextmenuBar({
-                dragable : true,
-                name     : 'quiqqer-menu-bar'
+                dragable: true,
+                name    : 'quiqqer-menu-bar'
             });
 
-            this.$Bar.setParent( this );
+            this.$Bar.setParent(this);
 
-            Ajax.get('ajax_menu', function(result)
-            {
-                self.$Bar.insert( result );
+            Ajax.get('ajax_menu', function (result) {
+                self.$Bar.insert(result);
 
                 self.$isLoaded = true;
-                self.fireEvent( 'menuLoaded' );
+                self.fireEvent('menuLoaded');
             });
 
             return this.$Bar.create();
@@ -75,8 +69,7 @@ define('controls/menu/Manager', [
          *
          * @return {Boolean}
          */
-        isLoaded : function()
-        {
+        isLoaded: function () {
             return this.$isLoaded;
         },
 
@@ -85,8 +78,7 @@ define('controls/menu/Manager', [
          *
          * @return {Object} qui/controls/contextmenu/Bar
          */
-        getChildren : function()
-        {
+        getChildren: function () {
             return this.$Bar;
         },
 
@@ -95,48 +87,42 @@ define('controls/menu/Manager', [
          *
          * @param {Object} Item - (qui/controls/contextmenu/Item) Menu Item
          */
-        menuClick : function(Item)
-        {
+        menuClick: function (Item) {
             var i, len, list;
 
             var self        = this,
-                menuRequire = Item.getAttribute( 'require' ),
-                exec        = Item.getAttribute( 'exec' ),
-                xmlFile     = Item.getAttribute( 'qui-xml-file' );
+                menuRequire = Item.getAttribute('require'),
+                exec        = Item.getAttribute('exec'),
+                xmlFile     = Item.getAttribute('qui-xml-file');
 
             // js require
-            if ( menuRequire ) {
-                this.$menuRequire( Item );
+            if (menuRequire) {
+                this.$menuRequire(Item);
             }
 
             // xml setting file
-            if ( xmlFile )
-            {
+            if (xmlFile) {
                 // panel still exists?
-                list = QUI.Controls.getByType( 'controls/desktop/panels/XML' );
+                list = QUI.Controls.getByType('controls/desktop/panels/XML');
 
-                for ( i = 0, len = list.length; i < len; i++ )
-                {
-                    if ( list[ i ].getFile() == xmlFile )
-                    {
+                for (i = 0, len = list.length; i < len; i++) {
+                    if (list[i].getFile() == xmlFile) {
                         // if a task exist, click it and open the instance
-                        var Task = list[ i ].getAttribute( 'Task' );
+                        var Task = list[i].getAttribute('Task');
 
-                        if ( Task && Task.getType() == 'qui/controls/taskbar/Task' )
-                        {
-                            list[ i ].getAttribute( 'Task' ).click();
+                        if (Task && Task.getType() == 'qui/controls/taskbar/Task') {
+                            list[i].getAttribute('Task').click();
                             return;
                         }
 
-                        list[ i ].open();
+                        list[i].open();
                         return;
                     }
                 }
 
-                require(['controls/desktop/panels/XML'], function(XMLPanel)
-                {
+                require(['controls/desktop/panels/XML'], function (XMLPanel) {
                     self.openPanelInTasks(
-                        new XMLPanel( xmlFile )
+                        new XMLPanel(xmlFile)
                     );
                 });
 
@@ -144,14 +130,12 @@ define('controls/menu/Manager', [
             }
 
             // js function
-            try
-            {
-                eval( exec );
+            try {
+                eval(exec);
 
-            } catch ( e )
-            {
-                QUI.getMessageHandler(function(MessageHandler) {
-                    MessageHandler.addError( e );
+            } catch (e) {
+                QUI.getMessageHandler(function (MessageHandler) {
+                    MessageHandler.addError(e);
                 });
             }
         },
@@ -161,49 +145,42 @@ define('controls/menu/Manager', [
          *
          * @param {Object} Item - (qui/controls/contextmenu/Item)
          */
-        $menuRequire : function(Item)
-        {
+        $menuRequire: function (Item) {
             var i, len, list;
 
-            var menuRequire = Item.getAttribute( 'require' );
+            var menuRequire = Item.getAttribute('require');
 
-            list = QUI.Controls.getByType( menuRequire );
+            list = QUI.Controls.getByType(menuRequire);
 
             var attributes = Object.merge(
                 Item.getStorageAttributes(),
                 Item.getAttributes()
             );
 
-            if ( list.length )
-            {
-                if ( menuRequire == 'controls/projects/project/Settings' )
-                {
-                    for ( i = 0, len = list.length; i < len; i++ )
-                    {
-                        if ( list[ i ].getAttribute( 'project' ) == attributes.project )
-                        {
-                            PanelUtils.execPanelOpen( list[0] );
+            if (list.length) {
+                if (menuRequire == 'controls/projects/project/Settings') {
+                    for (i = 0, len = list.length; i < len; i++) {
+                        if (list[i].getAttribute('project') == attributes.project) {
+                            PanelUtils.execPanelOpen(list[0]);
                             return;
                         }
                     }
 
-                    this.$createControl( menuRequire, attributes );
+                    this.$createControl(menuRequire, attributes);
                     return;
                 }
 
-                if ( instanceOf( list[0], Panel ) )
-                {
-                    PanelUtils.execPanelOpen( list[0] );
+                if (instanceOf(list[0], Panel)) {
+                    PanelUtils.execPanelOpen(list[0]);
 
-                } else
-                {
+                } else {
                     list[0].open();
                 }
 
                 return;
             }
 
-            this.$createControl( menuRequire, attributes );
+            this.$createControl(menuRequire, attributes);
         },
 
         /**
@@ -212,17 +189,14 @@ define('controls/menu/Manager', [
          * @param {String} controlName - require of the control -> eq: controls/projects/project/Settings
          * @param {Object} attributes - attributes of the control
          */
-        $createControl : function(controlName, attributes)
-        {
+        $createControl: function (controlName, attributes) {
             var self = this;
 
-            require([ controlName ], function(Control)
-            {
-                var Ctrl = new Control( attributes );
-
-                if ( instanceOf( Ctrl, Panel ) )
-                {
-                    self.openPanelInTasks( Ctrl );
+            require([controlName], function (Control) {
+                var Ctrl = new Control(attributes);
+console.log(attributes);
+                if (instanceOf(Ctrl, Panel)) {
+                    self.openPanelInTasks(Ctrl);
                     return;
                 }
 
@@ -233,9 +207,8 @@ define('controls/menu/Manager', [
         /**
          * Open a Panel in a taskpanel
          */
-        openPanelInTasks : function(Panel)
-        {
-            PanelUtils.openPanelInTasks( Panel );
+        openPanelInTasks: function (Panel) {
+            PanelUtils.openPanelInTasks(Panel);
         }
     });
 });

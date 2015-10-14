@@ -1,4 +1,3 @@
-
 /**
  * A QUIQQER project
  *
@@ -25,8 +24,7 @@ define('classes/projects/Project', [
     'classes/projects/project/Site',
     'classes/projects/project/Media'
 
-], function(QDOM, Ajax, QUILocale, ProjectSite, Media)
-{
+], function (QDOM, Ajax, QUILocale, ProjectSite, Media) {
     "use strict";
 
     /**
@@ -40,10 +38,10 @@ define('classes/projects/Project', [
      */
     return new Class({
 
-        Extends : QDOM,
-        Type    : 'classes/projects/Project',
+        Extends: QDOM,
+        Type   : 'classes/projects/Project',
 
-        Binds : [
+        Binds: [
             '$onChildDelete',
             '$onSiteLoad',
             '$onSiteSave',
@@ -53,19 +51,18 @@ define('classes/projects/Project', [
             '$onSiteDelete'
         ],
 
-        options : {
-            name : '',
-            lang : 'de',
-            host : false
+        options: {
+            name: '',
+            lang: 'de',
+            host: false
         },
 
-        $ids   : {},
-        $Media : false,
-        $Trash : false,
+        $ids  : {},
+        $Media: false,
+        $Trash: false,
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize: function (options) {
+            this.parent(options);
 
             this.$config = false;
         },
@@ -76,18 +73,17 @@ define('classes/projects/Project', [
          *
          * @return {Object}
          */
-        encode : function()
-        {
+        encode: function () {
             var template = false;
 
-            if ( this.$config && "template" in this.$config ) {
+            if (this.$config && "template" in this.$config) {
                 template = this.$config.template;
             }
 
             return JSON.encode({
-                name     : this.getName(),
-                lang     : this.getLang(),
-                template : template
+                name    : this.getName(),
+                lang    : this.getLang(),
+                template: template
             });
         },
 
@@ -98,27 +94,26 @@ define('classes/projects/Project', [
          * @param {Number} id - ID of the site
          * @return {Object} classes/projects/project/Site
          */
-        get : function(id)
-        {
-            if ( typeof this.$ids[ id ] !== 'undefined' ) {
-                return this.$ids[ id ];
+        get: function (id) {
+            if (typeof this.$ids[id] !== 'undefined') {
+                return this.$ids[id];
             }
 
-            var Site = new ProjectSite( this, id );
+            var Site = new ProjectSite(this, id);
 
             Site.addEvents({
-                onDelete      : this.$onSiteDelete,
-                onSave        : this.$onSiteSave,
-                onActivate    : this.$onSiteActivate,
-                onDeactivate  : this.$onSiteDeactivate,
-                onCreateChild : this.$onSiteCreate,
-                onSortSave    : this.$onSiteSortSave,
-                onLoad        : this.$onSiteLoad
+                onDelete     : this.$onSiteDelete,
+                onSave       : this.$onSiteSave,
+                onActivate   : this.$onSiteActivate,
+                onDeactivate : this.$onSiteDeactivate,
+                onCreateChild: this.$onSiteCreate,
+                onSortSave   : this.$onSiteSortSave,
+                onLoad       : this.$onSiteLoad
             });
 
-            this.$ids[ id ] = Site;
+            this.$ids[id] = Site;
 
-            return this.$ids[ id ];
+            return this.$ids[id];
         },
 
         /**
@@ -127,43 +122,38 @@ define('classes/projects/Project', [
          * @param {Function} callback - callback function
          * @param {String} [param] - param name
          */
-        getConfig : function(callback, param)
-        {
+        getConfig: function (callback, param) {
             param = param || false;
 
-            if ( this.$config )
-            {
-                if ( param )
-                {
-                    callback( this.$config[ param ] );
+            if (this.$config) {
+                if (param) {
+                    callback(this.$config[param]);
                     return;
                 }
 
-                callback( this.$config );
+                callback(this.$config);
                 return;
             }
 
 
             var self = this;
 
-            Ajax.get('ajax_project_get_config', function(result)
-            {
+            Ajax.get('ajax_project_get_config', function (result) {
                 self.$config = result;
 
-                if ( param )
-                {
-                    callback( self.$config[ param ] );
+                if (param) {
+                    callback(self.$config[param]);
                     return;
                 }
 
-                callback( self.$config );
+                callback(self.$config);
 
-                require(['Projects'], function(Projects) {
-                    Projects.fireEvent( 'projectSave', [ self ] );
+                require(['Projects'], function (Projects) {
+                    Projects.fireEvent('projectSave', [self]);
                 });
 
             }, {
-                project : this.getName()
+                project: this.getName()
             });
         },
 
@@ -173,23 +163,29 @@ define('classes/projects/Project', [
          *
          * @param {Function} [callback]
          * @param {Object} [params] - one ore more params
+         * @return Promise
          */
-        setConfig : function(callback, params)
-        {
+        setConfig: function (params, callback) {
             var self = this;
 
-            Ajax.post('ajax_project_set_config', function(result)
-            {
-                self.$config = false;
+            return new Promise(function (resolve, reject) {
 
-                if ( typeof callback === 'function' ) {
-                    callback( result );
-                }
+                Ajax.post('ajax_project_set_config', function (result) {
+                    self.$config = false;
 
-                self.fireEvent( 'save' );
-            }, {
-                project : this.getName(),
-                params  : JSON.encode( params || false )
+                    if (typeof callback === 'function') {
+                        callback(result);
+                    }
+
+                    resolve(result);
+
+                    self.fireEvent('save');
+                }, {
+                    project: self.getName(),
+                    params : JSON.encode(params || false),
+                    onError: reject
+                });
+
             });
         },
 
@@ -199,10 +195,9 @@ define('classes/projects/Project', [
          * @method classes/projects/Project#getMedia
          * @return {Object} classes/projects/project/Media
          */
-        getMedia : function()
-        {
-            if ( !this.$Media ) {
-                this.$Media = new Media( this );
+        getMedia: function () {
+            if (!this.$Media) {
+                this.$Media = new Media(this);
             }
 
             return this.$Media;
@@ -210,14 +205,14 @@ define('classes/projects/Project', [
 
         /*
 
-        getTrash : function()
-        {
-            if ( !this.$Trash ) {
-                this.$Trash = new Trash( this );
-            }
+         getTrash : function()
+         {
+         if ( !this.$Trash ) {
+         this.$Trash = new Trash( this );
+         }
 
-            return this.$Trash;
-        },*/
+         return this.$Trash;
+         },*/
 
         /**
          * Return the Project name
@@ -225,13 +220,12 @@ define('classes/projects/Project', [
          * @method classes/projects/Project#getName
          * @return {String}
          */
-        getName : function()
-        {
-            if ( this.getAttribute( 'project' ) ) {
-                return this.getAttribute( 'project' );
+        getName: function () {
+            if (this.getAttribute('project')) {
+                return this.getAttribute('project');
             }
 
-            return this.getAttribute( 'name' );
+            return this.getAttribute('name');
         },
 
         /**
@@ -240,9 +234,8 @@ define('classes/projects/Project', [
          * @method classes/projects/Project#getName
          * @return {String}
          */
-        getLang : function()
-        {
-            return this.getAttribute( 'lang' );
+        getLang: function () {
+            return this.getAttribute('lang');
         },
 
         /**
@@ -250,9 +243,8 @@ define('classes/projects/Project', [
          *
          * @returns {String}
          */
-        getTitle : function()
-        {
-            var group = 'project/'+ this.getName();
+        getTitle: function () {
+            var group = 'project/' + this.getName();
 
             if (QUILocale.exists(group, 'title')) {
                 return QUILocale.get(group, 'title');
@@ -267,11 +259,9 @@ define('classes/projects/Project', [
          * @method classes/projects/Project#getHost
          * @param {Function} callback - callback function
          */
-        getHost : function(callback)
-        {
-            if ( this.getAttribute( 'host' ) )
-            {
-                callback( this.getAttribute( 'host' ) );
+        getHost: function (callback) {
+            if (this.getAttribute('host')) {
+                callback(this.getAttribute('host'));
                 return;
             }
 
@@ -280,33 +270,30 @@ define('classes/projects/Project', [
             Ajax.get([
                 'ajax_project_get_config',
                 'ajax_vhosts_getList'
-            ], function(config, vhosts)
-            {
+            ], function (config, vhosts) {
                 var vhost       = config.vhost,
                     projectName = self.getName(),
                     projectLang = self.getLang();
 
-                for ( var h in vhosts )
-                {
-                    if ( !vhosts.hasOwnProperty( h ) ) {
+                for (var h in vhosts) {
+                    if (!vhosts.hasOwnProperty(h)) {
                         continue;
                     }
 
-                    if ( h == 404 || h == 301 ) {
+                    if (h == 404 || h == 301) {
                         continue;
                     }
 
-                    if ( vhosts[ h ].project != projectName ) {
+                    if (vhosts[h].project != projectName) {
                         continue;
                     }
 
-                    if ( vhosts[ h ].lang != projectLang ) {
+                    if (vhosts[h].lang != projectLang) {
                         continue;
                     }
 
-                    if ( 'httpshost' in vhosts[ h ] && vhosts[ h ].httpshost !== '' )
-                    {
-                        vhost = 'https://'+ vhosts[ h ];
+                    if ('httpshost' in vhosts[h] && vhosts[h].httpshost !== '') {
+                        vhost = 'https://' + vhosts[h];
                         break;
                     }
 
@@ -314,17 +301,17 @@ define('classes/projects/Project', [
                     break;
                 }
 
-                if ( !vhost.match( 'http://' ) && !vhost.match( 'https://' ) ) {
-                    vhost = 'http://'+ vhost;
+                if (!vhost.match('http://') && !vhost.match('https://')) {
+                    vhost = 'http://' + vhost;
                 }
 
-                self.setAttribute( 'host', vhost );
+                self.setAttribute('host', vhost);
 
-                callback( self.getAttribute( 'host' ) );
+                callback(self.getAttribute('host'));
 
             }, {
-                project : this.getName(),
-                params  : false
+                project: this.getName(),
+                params : false
             });
         },
 
@@ -336,15 +323,14 @@ define('classes/projects/Project', [
          * @return {Object} this (classes/projects/Project)
          * @fires siteDelete
          */
-        $onSiteDelete : function(Site)
-        {
+        $onSiteDelete: function (Site) {
             var id = Site.getId();
 
-            if ( this.$ids[ id ] ) {
-                delete this.$ids[ id ];
+            if (this.$ids[id]) {
+                delete this.$ids[id];
             }
 
-            this.fireEvent( 'siteDelete', [ this, id ] );
+            this.fireEvent('siteDelete', [this, id]);
 
             return this;
         },
@@ -357,9 +343,8 @@ define('classes/projects/Project', [
          * @return {Object} this (classes/projects/Project)
          * @fires siteLoad
          */
-        $onSiteLoad : function(Site)
-        {
-            this.fireEvent( 'siteLoad', [ this, Site ] );
+        $onSiteLoad: function (Site) {
+            this.fireEvent('siteLoad', [this, Site]);
         },
 
         /**
@@ -368,9 +353,8 @@ define('classes/projects/Project', [
          * @param {Object} Site - classes/projects/project/Site
          * @fires siteSave
          */
-        $onSiteSave : function(Site)
-        {
-            this.fireEvent( 'siteSave', [ this, Site ] );
+        $onSiteSave: function (Site) {
+            this.fireEvent('siteSave', [this, Site]);
         },
 
         /**
@@ -380,9 +364,8 @@ define('classes/projects/Project', [
          * @param {Number} newchildid - id of the new child
          * @fires siteCreate
          */
-        $onSiteCreate : function(Site, newchildid)
-        {
-            this.fireEvent( 'siteCreate', [ this, Site, newchildid ] );
+        $onSiteCreate: function (Site, newchildid) {
+            this.fireEvent('siteCreate', [this, Site, newchildid]);
         },
 
         /**
@@ -391,9 +374,8 @@ define('classes/projects/Project', [
          * @param {Object} Site - classes/projects/project/Site
          * @fires Activate
          */
-        $onSiteActivate : function(Site)
-        {
-            this.fireEvent( 'siteActivate', [ this, Site ] );
+        $onSiteActivate: function (Site) {
+            this.fireEvent('siteActivate', [this, Site]);
         },
 
         /**
@@ -402,9 +384,8 @@ define('classes/projects/Project', [
          * @param {Object} Site - classes/projects/project/Site
          * @fires Activate
          */
-        $onSiteDeactivate : function(Site)
-        {
-            this.fireEvent( 'siteDeactivate', [ this, Site ] );
+        $onSiteDeactivate: function (Site) {
+            this.fireEvent('siteDeactivate', [this, Site]);
         },
 
         /**
@@ -413,9 +394,8 @@ define('classes/projects/Project', [
          * @param {Object} Site - classes/projects/project/Site
          * @fires sortSave
          */
-        $onSiteSortSave : function(Site)
-        {
-            this.fireEvent( 'siteSortSave', [ this, Site ] );
+        $onSiteSortSave: function (Site) {
+            this.fireEvent('siteSortSave', [this, Site]);
         }
     });
 });

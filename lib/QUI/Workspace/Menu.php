@@ -77,7 +77,8 @@ class Menu
                     'require' => 'controls/projects/project/Settings',
                     'onClick' => 'QUI.Menu.menuClick',
                     'project' => $project,
-                    'name'    => $project
+                    'name'    => $project,
+                    '#id'     => 'settings-' . $project
                 ))
             );
         }
