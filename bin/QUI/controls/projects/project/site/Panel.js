@@ -16,7 +16,6 @@
  * @require Locale
  * @require css!controls/projects/project/site/Panel.css
  */
-
 define('controls/projects/project/site/Panel', [
 
     'qui/QUI',
