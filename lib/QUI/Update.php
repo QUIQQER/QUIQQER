@@ -254,7 +254,7 @@ class Update
             return;
         }
 
-        Log::write('Read: ' . $xml_file);
+        Log::addDebug('Read: ' . $xml_file);
 
         $engines = XML::getTemplateEnginesFromXml($xml_file);
 
@@ -285,7 +285,7 @@ class Update
             return;
         }
 
-        Log::write('Read: ' . $xml_file);
+        Log::addDebug('Read: ' . $xml_file);
 
         $editors = XML::getWysiwygEditorsFromXml($xml_file);
 
@@ -316,7 +316,7 @@ class Update
             return;
         }
 
-        Log::write('Read: ' . $xml_file);
+        Log::addDebug('Read: ' . $xml_file);
 
         $events = XML::getEventsFromXml($xml_file);
         $Events = QUI::getEvents();
@@ -344,7 +344,7 @@ class Update
             return;
         }
 
-        Log::write('Read: ' . $xml_file);
+        Log::addDebug('Read: ' . $xml_file);
 
         $events = XML::getSiteEventsFromXml($xml_file);
         $Events = QUI::getEvents();
@@ -367,7 +367,7 @@ class Update
             return;
         }
 
-        Log::write('Read: ' . $xml_file);
+        Log::addDebug('Read: ' . $xml_file);
 
         $items = XML::getMenuItemsXml($xml_file);
 
@@ -406,7 +406,7 @@ class Update
             return;
         }
 
-        Log::write('Read: ' . $xml_file);
+        Log::addDebug('Read: ' . $xml_file);
 
         XML::importDataBaseFromXml($xml_file);
     }
@@ -424,7 +424,7 @@ class Update
             return;
         }
 
-        Log::write('Read: ' . $xml_file);
+        Log::addDebug('Read: ' . $xml_file);
 
         QUI\Translator::import($xml_file, true, true);
     }
@@ -443,7 +443,7 @@ class Update
             return;
         }
 
-        Log::write('Read: ' . $xml_file);
+        Log::addDebug('Read: ' . $xml_file);
 
         XML::importPermissionsFromXml($xml_file, $src);
     }

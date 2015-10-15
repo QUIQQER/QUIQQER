@@ -526,11 +526,11 @@ class Edit extends Site
 
             foreach ($list as $Exc) {
                 /* @var $Exc \Exception */
-                QUI\System\Log::write($Exc->getMessage());
+                QUI\System\Log::addDebug($Exc->getMessage());
             }
 
         } catch (QUI\Exception $Exception) {
-            QUI\System\Log::write($Exception->getMessage());
+            QUI\System\Log::addDebug($Exception->getMessage());
         }
 
         // save extra package attributes (site.xml)
@@ -652,11 +652,11 @@ class Edit extends Site
 
             foreach ($list as $Exc) {
                 /* @var $Exc \Exception */
-                QUI\System\Log::write($Exc->getMessage());
+                QUI\System\Log::addDebug($Exc->getMessage());
             }
 
         } catch (\Exception $Exception) {
-            QUI\System\Log::write($Exception->getMessage());
+            QUI\System\Log::addDebug($Exception->getMessage());
         }
 
 
@@ -708,8 +708,7 @@ class Edit extends Site
 
         } elseif (isset($params['where']) && is_string($params['where'])) {
             // @todo where als param String
-            QUI\System\Log::write('WIRD NICHT verwendet' . $params['where'],
-                'error');
+            QUI\System\Log::addDebug('WIRD NICHT verwendet' . $params['where']);
             $where = $where_1;
         } else {
             $where = $where_1;

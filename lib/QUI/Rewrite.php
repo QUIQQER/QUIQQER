@@ -403,7 +403,7 @@ class Rewrite
             }
 
             if (!file_exists($file)) {
-                QUI\System\Log::write('File not exist: ' . $file, 'error');
+                QUI\System\Log::addError('File not exist: ' . $file);
                 exit;
             }
 

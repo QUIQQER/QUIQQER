@@ -1513,10 +1513,12 @@ define('controls/projects/project/site/Panel', [
                 Project = Site.getProject();
 
             new QUIConfirm({
-                title : Locale.get(lg, 'projects.project.site.panel.linked.window.delete.title'),
-                icon  : 'icon-remove',
-                text  : Locale.get(lg, 'projects.project.site.panel.linked.window.delete.text'),
-                events: {
+                title    : Locale.get(lg, 'projects.project.site.panel.linked.window.delete.title'),
+                icon     : 'icon-remove',
+                text     : Locale.get(lg, 'projects.project.site.panel.linked.window.delete.text'),
+                maxHeight: 300,
+                maxWidth : 450,
+                events   : {
                     onSubmit: function (Confirm) {
                         Confirm.Loader.show();
 
