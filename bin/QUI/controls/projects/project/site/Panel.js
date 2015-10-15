@@ -761,133 +761,138 @@ define('controls/projects/project/site/Panel', [
                 // set data
                 QUIFormUtils.setDataToForm(Site.getAttributes(), Form);
 
-                // information tab
-                if (Category.getAttribute('name') === 'information') {
-                    self.$bindNameInputUrlFilter();
+                ControlUtils.parse(Form).then(function () {
 
+                    // information tab
+                    if (Category.getAttribute('name') === 'information') {
+                        self.$bindNameInputUrlFilter();
 
-                    // site linking
-                    var i, len, Row, LastCell;
+                        // site linking
+                        var i, len, Row, LastCell;
 
-                    var LinkinLangTable = Body.getElement('.site-langs'),
-                        Locked          = Body.getElement('[data-locked]');
+                        var LinkinLangTable = Body.getElement('.site-langs'),
+                            Locked          = Body.getElement('[data-locked]');
 
-                    if (LinkinLangTable) {
-                        var rowList = LinkinLangTable.getElements('tbody tr');
+                        if (LinkinLangTable) {
+                            var rowList = LinkinLangTable.getElements('tbody tr');
 
-                        new QUIButton({
-                            text  : Locale.get(lg, 'projects.project.site.panel.linked.btn.add'),
-                            styles: {
-                                position: 'absolute',
-                                right   : 5,
-                                top     : 5
-                            },
-                            events: {
-                                onClick: function (Btn, event) {
-                                    event.stop();
-                                    self.addLanguagLink();
+                            new QUIButton({
+                                text  : Locale.get(lg, 'projects.project.site.panel.linked.btn.add'),
+                                styles: {
+                                    position: 'absolute',
+                                    right   : 5,
+                                    top     : 5,
+                                    zIndex  : 1
+                                },
+                                events: {
+                                    onClick: function (Btn, event) {
+                                        event.stop();
+                                        self.addLanguagLink();
+                                    }
                                 }
-                            }
-                        }).inject(LinkinLangTable.getElement('th'));
+                            }).inject(LinkinLangTable.getElement('th'));
 
 
-                        for (i = 0, len = rowList.length; i < len; i++) {
-                            Row      = rowList[i];
-                            LastCell = rowList[i].getLast();
+                            for (i = 0, len = rowList.length; i < len; i++) {
+                                Row      = rowList[i];
+                                LastCell = rowList[i].getLast();
 
-                            if (!Row.get('data-id').toInt()) {
+                                if (!Row.get('data-id').toInt()) {
 
-                                // seite in sprache kopieren und sprach verknüpfung anlegen
-                                new QUIButton({
-                                    icon  : 'fa fa-copy icon-copy',
-                                    alt   : Locale.get(lg, 'copy.site.in.lang'),
-                                    title : Locale.get(lg, 'copy.site.in.lang'),
-                                    lang  : Row.get('data-lang'),
-                                    events: {
-                                        onClick: function (Btn) {
-                                            self.copySiteToLang(
-                                                Btn.getAttribute('lang')
-                                            );
+                                    // seite in sprache kopieren und sprach verknüpfung anlegen
+                                    new QUIButton({
+                                        icon  : 'fa fa-copy icon-copy',
+                                        alt   : Locale.get(lg, 'copy.site.in.lang'),
+                                        title : Locale.get(lg, 'copy.site.in.lang'),
+                                        lang  : Row.get('data-lang'),
+                                        events: {
+                                            onClick: function (Btn) {
+                                                self.copySiteToLang(
+                                                    Btn.getAttribute('lang')
+                                                );
+                                            }
+                                        },
+                                        styles: {
+                                            'float': 'right'
                                         }
-                                    },
+                                    }).inject(LastCell);
+
+                                    continue;
+                                }
+
+                                new QUIButton({
+                                    icon  : 'fa fa-file-o icon-file-alt',
+                                    alt   : Locale.get(lg, 'open.site'),
+                                    title : Locale.get(lg, 'open.site'),
+                                    lang  : Row.get('data-lang'),
+                                    siteId: Row.get('data-id'),
                                     styles: {
                                         'float': 'right'
+                                    },
+                                    events: {
+                                        onClick: function (Btn) {
+                                            PanelUtils.openSitePanel(
+                                                Project.getName(),
+                                                Btn.getAttribute('lang'),
+                                                Btn.getAttribute('siteId')
+                                            );
+                                        }
                                     }
                                 }).inject(LastCell);
 
-                                continue;
+                                new QUIButton({
+                                    icon  : 'icon-remove',
+                                    alt   : Locale.get(lg, 'projects.project.site.panel.linked.btn.delete'),
+                                    title : Locale.get(lg, 'projects.project.site.panel.linked.btn.delete'),
+                                    lang  : Row.get('data-lang'),
+                                    siteId: Row.get('data-id'),
+                                    styles: {
+                                        'float': 'right'
+                                    },
+                                    events: {
+                                        onClick: function (Btn) {
+                                            self.removeLanguagLink(
+                                                Btn.getAttribute('lang'),
+                                                Btn.getAttribute('siteId')
+                                            );
+                                        }
+                                    }
+                                }).inject(LastCell);
                             }
+                        }
 
+
+                        // locked
+                        if (Locked && USER.isSU) {
                             new QUIButton({
-                                icon  : 'fa fa-file-o icon-file-alt',
-                                alt   : Locale.get(lg, 'open.site'),
-                                title : Locale.get(lg, 'open.site'),
-                                lang  : Row.get('data-lang'),
-                                siteId: Row.get('data-id'),
+                                text  : 'Trotzdem freischalten', // #locale
                                 styles: {
-                                    'float': 'right'
+                                    clear  : 'both',
+                                    display: 'block',
+                                    'float': 'none',
+                                    margin : '10px auto',
+                                    width  : 200
                                 },
                                 events: {
-                                    onClick: function (Btn) {
-                                        PanelUtils.openSitePanel(
-                                            Project.getName(),
-                                            Btn.getAttribute('lang'),
-                                            Btn.getAttribute('siteId')
-                                        );
+                                    onClick: function () {
+                                        self.unlockSite();
                                     }
                                 }
-                            }).inject(LastCell);
-
-                            new QUIButton({
-                                icon  : 'icon-remove',
-                                alt   : Locale.get(lg, 'projects.project.site.panel.linked.btn.delete'),
-                                title : Locale.get(lg, 'projects.project.site.panel.linked.btn.delete'),
-                                lang  : Row.get('data-lang'),
-                                siteId: Row.get('data-id'),
-                                styles: {
-                                    'float': 'right'
-                                },
-                                events: {
-                                    onClick: function (Btn) {
-                                        self.removeLanguagLink(
-                                            Btn.getAttribute('lang'),
-                                            Btn.getAttribute('siteId')
-                                        );
-                                    }
-                                }
-                            }).inject(LastCell);
+                            }).inject(Locked);
                         }
                     }
 
 
-                    // locked
-                    if (Locked && USER.isSU) {
-                        new QUIButton({
-                            text  : 'Trotzdem freischalten', // #locale
-                            styles: {
-                                clear  : 'both',
-                                display: 'block',
-                                'float': 'none',
-                                margin : '10px auto',
-                                width  : 200
-                            },
-                            events: {
-                                onClick: function () {
-                                    self.unlockSite();
-                                }
-                            }
-                        }).inject(Locked);
-                    }
-                }
-
-                ControlUtils.parse(Form, function () {
                     QUI.parse(Form, function () {
                         // set the project to the controls
                         var i, len, Control;
                         var quiids = Form.getElements('[data-quiid]');
 
                         for (i = 0, len = quiids.length; i < len; i++) {
-                            Control = QUI.Controls.getById(quiids[i].get('data-quiid'));
+
+                            Control = QUI.Controls.getById(
+                                quiids[i].get('data-quiid')
+                            );
 
                             if (!Control) {
                                 continue;
@@ -899,7 +904,6 @@ define('controls/projects/project/site/Panel', [
 
                             Control.setAttribute('Site', self.getSite());
                         }
-
                     });
                 });
 
@@ -1509,10 +1513,12 @@ define('controls/projects/project/site/Panel', [
                 Project = Site.getProject();
 
             new QUIConfirm({
-                title : Locale.get(lg, 'projects.project.site.panel.linked.window.delete.title'),
-                icon  : 'icon-remove',
-                text  : Locale.get(lg, 'projects.project.site.panel.linked.window.delete.text'),
-                events: {
+                title    : Locale.get(lg, 'projects.project.site.panel.linked.window.delete.title'),
+                icon     : 'icon-remove',
+                text     : Locale.get(lg, 'projects.project.site.panel.linked.window.delete.text'),
+                maxHeight: 300,
+                maxWidth : 450,
+                events   : {
                     onSubmit: function (Confirm) {
                         Confirm.Loader.show();
 

@@ -176,7 +176,7 @@ class Ajax extends QUI\QDOM
     {
         if (!isset(self::$_functions[$_rf])) {
             if (defined('DEVELOPMENT') && DEVELOPMENT) {
-                System\Log::write('Funktion ' . $_rf . ' nicht gefunden');
+                System\Log::addDebug('Funktion ' . $_rf . ' nicht gefunden');
             }
 
             return $this->writeException(
@@ -256,10 +256,10 @@ class Ajax extends QUI\QDOM
                 case JSON_ERROR_SYNTAX:
                 case JSON_ERROR_UTF8:
                 default:
-                    QUI\System\Log::write(
-                        'JSON Error: ' . json_last_error() . ' :: ' . print_r($return,
-                            true),
-                        'error'
+                    QUI\System\Log::addError(
+                        'JSON Error: ' .
+                        json_last_error() . ' :: ' .
+                        print_r($return, true)
                     );
                     break;
             }

@@ -14,20 +14,20 @@ use QUI\Projects\Media;
 
 try {
     /* @var $project \QUI\Projects\Project */
-    $Project = \QUI\Projects\Manager::getProject($_REQUEST['project']);
-    $Media = $Project->getMedia();
-    $File = $Media->get((int)$_REQUEST['id']);
+    $Project = QUI\Projects\Manager::getProject($_REQUEST['project']);
+    $Media   = $Project->getMedia();
+    $File    = $Media->get((int)$_REQUEST['id']);
 
     if (Media\Utils::isFolder($File)) {
         QUI\Utils\System\File::send(
-            BIN_DIR .'16x16/folder.png'
+            BIN_DIR . '16x16/folder.png'
         );
         exit;
     }
 
     // Bilder direkt im Browser ausgeben
-    $file = $File->getAttribute('file');
-    $image = false;
+    $file    = $File->getAttribute('file');
+    $image   = false;
     $isAdmin = false;
 
     if (isset($_SERVER['HTTP_REFERER'])
@@ -47,14 +47,14 @@ try {
         && !isset($_REQUEST['maxheight'])
         && $isAdmin
     ) {
-        $_REQUEST['maxwidth'] = 500;
+        $_REQUEST['maxwidth']  = 500;
         $_REQUEST['maxheight'] = 500;
     }
 
     // admin output
     if ($isAdmin
         && Media\Utils::isImage($File)
-        && QUI::getUsers()->getUserBySession()->isAdmin()
+        && QUI::getUsers()->getUserBySession()->canUseBackend()
     ) {
 
         if (!isset($_REQUEST['maxwidth'])) {
@@ -66,21 +66,23 @@ try {
         }
 
         if (!$_REQUEST['maxwidth'] && !$_REQUEST['maxheight']) {
-            $_REQUEST['maxwidth'] = 500;
+            $_REQUEST['maxwidth']  = 500;
             $_REQUEST['maxheight'] = 500;
         }
 
         // cache
-        $cacheDir = VAR_DIR.'cache/admin/media/'.$Project->getName().'/'
-            .$Project->getLang().'/';
+        $cacheDir = VAR_DIR . 'cache/admin/media/'
+                    . $Project->getName() . '/'
+                    . $Project->getLang() . '/';
 
         QUI\Utils\System\File::mkdir($cacheDir);
 
         // filecache
         $ext = pathinfo($File->getFullPath(), \PATHINFO_EXTENSION);
 
-        $cacheFile = $cacheDir . $File->getId().'__'.$_REQUEST['maxheight'].'x'
-            .$_REQUEST['maxwidth'] .'.'. $ext;
+        $cacheFile = $cacheDir . $File->getId()
+                     . '__' . $_REQUEST['maxheight'] . 'x'
+                     . $_REQUEST['maxwidth'] . '.' . $ext;
 
 
         if (file_exists($cacheFile)) {
@@ -104,7 +106,7 @@ try {
                 $Constraint->aspectRatio();
                 $Constraint->upsize();
             })
-                   ->response();
+            ->response();
 
         $Image->save($cacheFile);
 
@@ -116,7 +118,7 @@ try {
         && Media\Utils::isImage($File)
         && (isset($_REQUEST['maxwidth']) || isset($_REQUEST['maxheight']))
     ) {
-        $maxwidth = false;
+        $maxwidth  = false;
         $maxheight = false;
 
         if (isset($_REQUEST['maxwidth'])) {
@@ -131,28 +133,28 @@ try {
     }
 
     if (!$image) {
-        $image = CMS_DIR.'media/sites/'.$Project->getName().'/'.$file;
+        $image = CMS_DIR . 'media/sites/' . $Project->getName() . '/' . $file;
     }
 
     if (!file_exists($image)) {
-
         header("HTTP/1.0 404 Not Found");
-        \QUI\System\Log::write('File not exist '.$image, 'error');
-
+        QUI\System\Log::addInfo('File not exist ' . $image);
         exit;
     }
 
-    header("Content-Type: ".$File->getAttribute('mime_type'));
-    header("Expires: ".gmdate("D, d M Y H:i:s")." GMT");
+    header("Content-Type: " . $File->getAttribute('mime_type'));
+    header("Expires: " . gmdate("D, d M Y H:i:s") . " GMT");
     header("Pragma: public");
     header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
     header("Accept-Ranges: bytes");
-    header("Content-Size: ".filesize($image));
-    header("Content-Length: ".filesize($image));
-    header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
+    header("Content-Size: " . filesize($image));
+    header("Content-Length: " . filesize($image));
+    header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
     header("Connection: Keep-Alive");
-    header("Content-Disposition: inline; filename=\"".pathinfo($file,
-            PATHINFO_BASENAME)."\"");
+    header(
+        "Content-Disposition: inline; filename=\"" . pathinfo($file,
+        PATHINFO_BASENAME) . "\""
+    );
 
     $fo_image = fopen($image, "r");
     $fr_image = fread($fo_image, filesize($image));
@@ -161,7 +163,7 @@ try {
     echo $fr_image;
     exit;
 
-} catch (\QUI\Exception $Exception) {
+} catch (QUI\Exception $Exception) {
 
 }
 

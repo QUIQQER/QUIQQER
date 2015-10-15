@@ -1221,7 +1221,7 @@ class XML
                 $exec = str_replace('\\\\', '\\', $exec);
 
                 if (!is_callable($exec)) {
-                    QUI\System\Log::write($exec . ' not callable', 'error');
+                    QUI\System\Log::addInfo($exec . ' not callable');
                     continue;
                 }
 

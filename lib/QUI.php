@@ -342,7 +342,7 @@ class QUI
         }
 
 
-        $Config     = new \QUI\Config(ETC_DIR . 'conf.ini.php');
+        $Config     = new QUI\Config(ETC_DIR . 'conf.ini.php');
         self::$Conf = $Config;
 
         if ($Config->getValue('globals', 'timezone')) {
@@ -398,30 +398,31 @@ class QUI
         );
 
         foreach ($folders as $folder) {
-            \QUI\Utils\System\File::mkdir($folder);
+            QUI\Utils\System\File::mkdir($folder);
         }
 
         // Load Packages
         self::getPackageManager();
 
         // register ajax
-        self::$Ajax = new \QUI\Ajax(array(
+        self::$Ajax = new QUI\Ajax(array(
             'db_errors' => self::conf('error', 'mysql_ajax_errors_backend')
         ));
 
         // mem peak - info mail at 80% usage
         self::getErrorHandler()->registerShutdown(function () {
-            \QUI\Utils\System\Debug::marker('END');
+            QUI\Utils\System\Debug::marker('END');
 
             // ram peak, if the ram usage is to high, than write and send a message
             $peak = memory_get_peak_usage();
             $mem_limit
-                  = \QUI\Utils\System\File::getBytes(ini_get('memory_limit'))
+                  = QUI\Utils\System\File::getBytes(ini_get('memory_limit'))
                     * 0.8;
 
             if ($peak > $mem_limit && $mem_limit > 0) {
-                $limit
-                    = \QUI\Utils\System\File::formatSize(memory_get_peak_usage());
+                $limit = QUI\Utils\System\File::formatSize(
+                    memory_get_peak_usage()
+                );
 
                 if (!isset($_SERVER["HTTP_HOST"])) {
                     $_SERVER["HTTP_HOST"] = '';
@@ -440,15 +441,15 @@ class QUI
                            "URI: " . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"] . "\n" .
                            "HTTP_REFERER: " . $_SERVER["HTTP_REFERER"];
 
-                if (\QUI::conf('mail', 'admin_mail')) {
-                    \QUI::getMailManager()->send(
+                if (QUI::conf('mail', 'admin_mail')) {
+                    QUI::getMailManager()->send(
                         \QUI::conf('mail', 'admin_mail'),
                         'Memory limit reached at http://' . $_SERVER["HTTP_HOST"],
                         $message
                     );
                 }
 
-                \QUI\System\Log::write($message, 'error');
+                QUI\System\Log::addAlert($message);
             }
         });
 
@@ -456,7 +457,7 @@ class QUI
         // there are system changes?
         // then make a setup
         if ($Config->get('globals', 'system_changed')) {
-            \QUI\Setup::all();
+            QUI\Setup::all();
 
             $Config->set('globals', 'system_changed', 0);
             $Config->save();
@@ -468,7 +469,7 @@ class QUI
      */
     static function setup()
     {
-        \QUI\Setup::all();
+        QUI\Setup::all();
     }
 
     /**
