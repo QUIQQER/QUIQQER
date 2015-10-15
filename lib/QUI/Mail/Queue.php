@@ -24,7 +24,7 @@ class Queue
      */
     static function Table()
     {
-        return QUI_DB_PRFX.'mailqueue';
+        return QUI_DB_PRFX . 'mailqueue';
     }
 
     /**
@@ -62,7 +62,7 @@ class Queue
      */
     static function getAttachmentDir($mailId)
     {
-        return VAR_DIR.'mailQueue/'.(int)$mailId.'/';
+        return VAR_DIR . 'mailQueue/' . (int)$mailId . '/';
     }
 
     /**
@@ -76,10 +76,10 @@ class Queue
     {
         $params = $Mail->toArray();
 
-        $params['mailto'] = json_encode($params['mailto']);
+        $params['mailto']  = json_encode($params['mailto']);
         $params['replyto'] = json_encode($params['replyto']);
-        $params['cc'] = json_encode($params['cc']);
-        $params['bcc'] = json_encode($params['bcc']);
+        $params['cc']      = json_encode($params['cc']);
+        $params['bcc']     = json_encode($params['bcc']);
 
         $attachements = array();
 
@@ -106,7 +106,7 @@ class Queue
 
                 $infos = File::getInfo($attachement);
 
-                File::copy($attachement, $mailQueueDir.$infos['basename']);
+                File::copy($attachement, $mailQueueDir . $infos['basename']);
             }
         }
 
@@ -142,7 +142,11 @@ class Queue
             }
 
         } catch (QUI\Exception $Exception) {
-            QUI\System\Log::addError($Exception->getMessage(), 'mail_queue');
+            QUI\System\Log::addError(
+                $Exception->getMessage(),
+                array('trace' => $Exception->getTraceAsString()),
+                'mail_queue'
+            );
         }
 
         return false;
@@ -168,7 +172,7 @@ class Queue
 
         if (!isset($params[0])) {
             throw new QUI\Exception(
-                QUI::getLocale(
+                QUI::getLocale()->get(
                     'system',
                     'exception.mailqueue.mail.not.found'
                 ),
@@ -190,7 +194,11 @@ class Queue
             }
 
         } catch (QUI\Exception $Exception) {
-            QUI\System\Log::addError($Exception->getMessage(), 'mail_queue');
+            QUI\System\Log::addError(
+                $Exception->getMessage(),
+                array('trace' => $Exception->getTraceAsString()),
+                'mail_queue'
+            );
         }
 
         return false;
@@ -210,10 +218,10 @@ class Queue
     {
         $PhpMailer = QUI::getMailManager()->getPHPMailer();
 
-        $mailto = json_decode($params['mailto'], true);
+        $mailto  = json_decode($params['mailto'], true);
         $replyto = json_decode($params['replyto'], true);
-        $cc = json_decode($params['cc'], true);
-        $bcc = json_decode($params['bcc'], true);
+        $cc      = json_decode($params['cc'], true);
+        $bcc     = json_decode($params['bcc'], true);
 
         // mailto
         foreach ($mailto as $address) {
@@ -242,7 +250,7 @@ class Queue
             $files = File::readDir($mailQueueDir);
 
             foreach ($files as $file) {
-                $file = $mailQueueDir.$file;
+                $file = $mailQueueDir . $file;
 
                 if (!file_exists($file)) {
                     continue;
@@ -266,10 +274,10 @@ class Queue
             $PhpMailer->AltBody = $params['text'];
         }
 
-        $PhpMailer->From = $params['from'];
+        $PhpMailer->From     = $params['from'];
         $PhpMailer->FromName = $params['fromName'];
-        $PhpMailer->Subject = $params['subject'];
-        $PhpMailer->Body = $params['body'];
+        $PhpMailer->Subject  = $params['subject'];
+        $PhpMailer->Body     = $params['body'];
 
 
         if ($PhpMailer->send()) {
@@ -281,7 +289,7 @@ class Queue
         }
 
         throw new QUI\Exception(
-            'Mail Error: '.$PhpMailer->ErrorInfo,
+            'Mail Error: ' . $PhpMailer->ErrorInfo,
             500
         );
     }
