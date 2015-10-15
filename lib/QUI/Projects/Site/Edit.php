@@ -959,7 +959,7 @@ class Edit extends Site
         $_params = array(
             'name'        => $new_name,
             'title'       => $new_name,
-            'c_date'      => date('Y-m-d G:i:s'),
+            'c_date'      => date('Y-m-d H:i:s'),
             'e_user'      => $User->getId(),
             'c_user'      => $User->getId(),
             'c_user_ip'   => QUI\Utils\System::getClientIP(),
