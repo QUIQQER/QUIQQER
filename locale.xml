@@ -1395,6 +1395,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Sprachverknüpfung hinzufügen]]></de>
             <en><![CDATA[Add language linking]]></en>
         </locale>
+        <locale name="copy.site.in.lang">
+            <de><![CDATA[Inhalt kopieren und verknpüfung]]></de>
+            <en><![CDATA[Copy and linking site content]]></en>
+        </locale>
         <locale name="projects.project.site.panel.linked.btn.delete">
             <de><![CDATA[Sprachverknüpfung löschen]]></de>
             <en><![CDATA[Delete language linking]]></en>
