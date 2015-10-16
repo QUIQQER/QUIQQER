@@ -45,11 +45,6 @@ class Autoloader
             require_once __DIR__.'/QUI.php';
         }
 
-        // if quiqqer not loaded, load it
-        if (!defined('CMS_DIR')) {
-            \QUI::load();
-        }
-
         if ($classname == 'QUI') {
             return true;
         }

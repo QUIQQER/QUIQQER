@@ -293,7 +293,7 @@ define('classes/projects/Project', [
                     }
 
                     if ('httpshost' in vhosts[h] && vhosts[h].httpshost !== '') {
-                        vhost = 'https://' + vhosts[h];
+                        vhost = 'https://' + vhosts[h].httpshost;
                         break;
                     }
 
