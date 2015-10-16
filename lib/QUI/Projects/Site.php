@@ -1714,7 +1714,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             return $this->getAttribute('canonical');
         }
 
-        $this->setAttribute('canonical', URL_DIR . $this->getUrlRewrited());
+        $this->setAttribute('canonical', $this->getUrlRewritten());
 
         return $this->getAttribute('canonical');
     }
