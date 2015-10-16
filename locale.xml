@@ -1433,7 +1433,6 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="projects.project.site.panel.copySiteToLink.window.submit">
             <de><![CDATA[Elternseite auswählen]]></de>
             <en><![CDATA[Select parent page]]></en>
-
         </locale>
 
         <locale name="projects.project.panel.entry.delete.project">
@@ -3283,6 +3282,37 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Server testen]]></de>
             <en><![CDATA[Test Server]]></en>
         </locale>
+
+        <locale name="workspace.toolarge.window.title">
+            <de><![CDATA[Der Arbeitsbereich ist zu gross]]></de>
+            <en><![CDATA[The workspace is too large]]></en>
+        </locale>
+        <locale name="workspace.toolarge.window.text" html="true">
+            <de><![CDATA[
+            <h1>Der Arbeitsbereich ist zu gross</h1>
+            <p>Der Arbeitsbereich ist leider zu gross für Ihr Browserfenster.
+            Bitte wählen Sie einen passenden Arbeitsbereich.</p>
+            <h2>Verfügbare passende Arbeitsbereiche:</h2>
+            ]]></de>
+            <en><![CDATA[
+            <h1>The workspace is too large</h1>
+            <p>The workspace is unfortunately too big for your browser window. Please choose an appropriate workspace.</p>
+            <h2>Available matching workspaces:</h2>
+            ]]></en>
+        </locale>
+        <locale name="workspace.toolarge.window.noWorkspaces.text" html="true">
+            <de><![CDATA[
+            <h1>Der Arbeitsbereich ist zu gross</h1>
+            <p>Der Arbeitsbereich ist leider zu gross und kein passender Arbeitsbereich existiert.</p>
+            <p>Möchten Sie einen neuen Arbeitsbereich anlegen?</p>
+            ]]></de>
+            <en><![CDATA[
+            <h1>The workspace is too large</h1>
+            <p>The workspace is unfortunately too big and no suitable workspace exists.</p>
+            <p>Would you like to create a new workspace?</p>
+            ]]></en>
+        </locale>
+
     </groups>
     <groups name="quiqqer/system" datatype="php">
         <locale name="menu.quiqqer.text" html="true">
