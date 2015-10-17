@@ -132,6 +132,8 @@ $site_cache_file   = $project_cache_dir . $Site->getId() . '_'
                      . $Project->getAttribute('name') . '_'
                      . $Project->getAttribute('lang');
 
+$site_cache_file .= '_' . md5(QUI::getRequest()->getRequestUri());
+
 // Event onstart
 QUI::getEvents()->fireEvent('start');
 
@@ -175,7 +177,7 @@ try {
 
         file_put_contents($site_cache_file, $content);
     }
-    
+
     if (Debug::$run) {
         Log(Debug::output());
     }
