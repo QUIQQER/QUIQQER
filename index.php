@@ -138,7 +138,7 @@ QUI::getEvents()->fireEvent('start');
 Debug::marker('objekte initialisiert');
 
 // Wenn es ein Cache gibt und die Seite auch gecached werden soll
-if (false && CACHE && file_exists($site_cache_file)
+if (CACHE && file_exists($site_cache_file)
     && $Site->getAttribute('nocache') != true
 ) {
     $cache_content = file_get_contents($site_cache_file);
@@ -158,15 +158,6 @@ try {
 
     Debug::marker('fetch Template');
 
-    // cachefile erstellen
-    if ($Site->getAttribute('nocache') != true) {
-        QUI\Utils\System\File::mkdir(
-            $site_cache_dir . $Project->getAttribute('name') . '/'
-        );
-
-        file_put_contents($site_cache_file, $content);
-    }
-
     $content = $Rewrite->outputFilter($content);
     $content = QUI\Control\Manager::setCSSToHead($content);
     Debug::marker('output done');
@@ -176,6 +167,15 @@ try {
     $Response->setContent($content);
     Debug::marker('content done');
 
+    // cachefile erstellen
+    if ($Site->getAttribute('nocache') != true) {
+        QUI\Utils\System\File::mkdir(
+            $site_cache_dir . $Project->getAttribute('name') . '/'
+        );
+
+        file_put_contents($site_cache_file, $content);
+    }
+    
     if (Debug::$run) {
         Log(Debug::output());
     }
