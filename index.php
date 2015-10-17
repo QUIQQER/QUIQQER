@@ -138,13 +138,13 @@ QUI::getEvents()->fireEvent('start');
 Debug::marker('objekte initialisiert');
 
 // Wenn es ein Cache gibt und die Seite auch gecached werden soll
-if (CACHE && file_exists($site_cache_file)
+if (false && CACHE && file_exists($site_cache_file)
     && $Site->getAttribute('nocache') != true
 ) {
     $cache_content = file_get_contents($site_cache_file);
     $_content      = $Rewrite->outputFilter($cache_content);
 
-    $Response->setContent($content);
+    $Response->setContent($_content);
     $Response->send();
     exit;
 }
