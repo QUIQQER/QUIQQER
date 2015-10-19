@@ -290,7 +290,7 @@ class Template extends QUI\QDOM
 
         // standard template
         if (!$projectTemplate) {
-            QUI\System\Log::addWarning(
+            QUI\System\Log::addInfo(
                 'Project has no standard template. Please set a standard template to the project'
             );
 
