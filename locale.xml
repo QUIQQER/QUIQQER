@@ -319,6 +319,10 @@
             <de><![CDATA[Abbrechen]]></de>
             <en><![CDATA[Cancel]]></en>
         </locale>
+        <locale name="close">
+            <de><![CDATA[Schließen]]></de>
+            <en><![CDATA[Close]]></en>
+        </locale>
         <locale name="ok">
             <de><![CDATA[Ok]]></de>
             <en><![CDATA[Ok]]></en>
