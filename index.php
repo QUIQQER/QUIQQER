@@ -132,6 +132,8 @@ $site_cache_file   = $project_cache_dir . $Site->getId() . '_'
                      . $Project->getAttribute('name') . '_'
                      . $Project->getAttribute('lang');
 
+$site_cache_file .= '_' . md5(QUI::getRequest()->getRequestUri());
+
 // Event onstart
 QUI::getEvents()->fireEvent('start');
 
@@ -144,7 +146,7 @@ if (CACHE && file_exists($site_cache_file)
     $cache_content = file_get_contents($site_cache_file);
     $_content      = $Rewrite->outputFilter($cache_content);
 
-    $Response->setContent($content);
+    $Response->setContent($_content);
     $Response->send();
     exit;
 }
@@ -158,15 +160,6 @@ try {
 
     Debug::marker('fetch Template');
 
-    // cachefile erstellen
-    if ($Site->getAttribute('nocache') != true) {
-        QUI\Utils\System\File::mkdir(
-            $site_cache_dir . $Project->getAttribute('name') . '/'
-        );
-
-        file_put_contents($site_cache_file, $content);
-    }
-
     $content = $Rewrite->outputFilter($content);
     $content = QUI\Control\Manager::setCSSToHead($content);
     Debug::marker('output done');
@@ -175,6 +168,15 @@ try {
 
     $Response->setContent($content);
     Debug::marker('content done');
+
+    // cachefile erstellen
+    if ($Site->getAttribute('nocache') != true) {
+        QUI\Utils\System\File::mkdir(
+            $site_cache_dir . $Project->getAttribute('name') . '/'
+        );
+
+        file_put_contents($site_cache_file, $content);
+    }
 
     if (Debug::$run) {
         Log(Debug::output());

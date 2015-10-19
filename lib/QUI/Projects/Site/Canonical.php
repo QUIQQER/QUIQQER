@@ -40,11 +40,23 @@ class Canonical
      */
     public function output()
     {
-        $Site = $this->_Site;
+        $Site    = $this->_Site;
         $Project = $Site->getProject();
 
+        // host check
+        if (isset($_SERVER['HTTP_HOST'])) {
+            $requestHost          = $_SERVER['HTTP_HOST'];
+            $hostWithoutProtocoll = $Project->getVHost(false, true);
+            $httpsHost            = $Project->getVHost(true, true);
+
+            if ($requestHost != $hostWithoutProtocoll) {
+                return $this->_getLinkRel($httpsHost . $this->_Site->getCanonical());
+            }
+        }
+
+
         if ($this->_Site->getId() === 1) {
-            $httpsHost = $Project->getVHost(true, true);
+            $httpsHost       = $Project->getVHost(true, true);
             $httpsHostExists = false;
 
             if (strpos($httpsHost, 'https:') !== false) {
@@ -54,7 +66,7 @@ class Canonical
             if ($httpsHostExists
                 && QUI\Utils\System::isProtocolSecure() === false
             ) {
-                return $this->_getLinkRel($httpsHost.URL_DIR);
+                return $this->_getLinkRel($httpsHost . $this->_Site->getCanonical());
             }
 
             return '';
@@ -85,18 +97,18 @@ class Canonical
             if ($httpsHostExists
                 && QUI\Utils\System::isProtocolSecure() === false
             ) {
-                return $this->_getLinkRel($httpsHost.URL_DIR.$requestUrl);
+                return $this->_getLinkRel($httpsHost . URL_DIR . $requestUrl);
             }
 
             return '';
         }
 
         // canonical and request the same? than no output
-        if ($httpsHost.URL_DIR.$requestUrl == $canonical) {
+        if ($httpsHost . URL_DIR . $requestUrl == $canonical) {
             return '';
         }
 
-        return $this->_getLinkRel($httpsHost.URL_DIR.$canonical);
+        return $this->_getLinkRel($httpsHost . URL_DIR . $canonical);
     }
 
     /**
@@ -108,7 +120,6 @@ class Canonical
      */
     protected function _getLinkRel($url)
     {
-        return '<link rel="canonical" href="'.$url.'" />';
+        return '<link rel="canonical" href="' . $url . '" />';
     }
-
 }

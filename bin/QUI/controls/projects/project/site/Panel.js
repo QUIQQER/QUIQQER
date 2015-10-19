@@ -634,14 +634,14 @@ define('controls/projects/project/site/Panel', [
                     icon       : 'fa fa-trash-o icon-trash',
                     text       : Locale.get(lg, 'projects.project.site.panel.window.delete.text', {
                         id   : Site.getId(),
-                        url  : Site.getAttribute('name') + '.html',
+                        url  : Site.getAttribute('name') + QUIQQER.Rewrite.SUFFIX,
                         name : Site.getAttribute('name'),
                         title: Site.getAttribute('title')
                     }),
                     texticon   : 'fa fa-trash-o icon-trash',
                     information: Locale.get(lg, 'projects.project.site.panel.window.delete.information', {
                         id   : Site.getId(),
-                        url  : Site.getAttribute('name') + '.html',
+                        url  : Site.getAttribute('name') + QUIQQER.Rewrite.SUFFIX,
                         name : Site.getAttribute('name'),
                         title: Site.getAttribute('title')
                     }),
