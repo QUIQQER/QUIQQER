@@ -345,14 +345,10 @@ class Group extends QUI\QDOM
      */
     public function getUsers($params = array())
     {
-        $params['from'] = QUI\Users\Manager::Table();
+        $id = $this->getId();
 
-        $params['where'] = array(
-            'usergroup' => array(
-                'type'  => '%LIKE%',
-                'value' => ',' . $this->getId() . ','
-            )
-        );
+        $params['from']  = QUI\Users\Manager::Table();
+        $params['where'] = "usergroup LIKE '%,{$id},%' OR usergroup = {$id}";
 
         return QUI::getDataBase()->fetch($params);
     }
