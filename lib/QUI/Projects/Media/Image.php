@@ -398,7 +398,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                     $Constraint->upsize();
                 });
             }
-            QUI\System\Log::writeRecursive($watermarkPosition);
+            
             $Image->insert($WatermarkImage, $watermarkPosition);
         }
 
@@ -538,10 +538,12 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         // own watermark?
         $imageEffects = $this->getEffects();
 
-        if (!$imageEffects
-            || !isset($imageEffects['watermark'])
-            || $imageEffects['watermark'] === ''
-        ) {
+        if (is_array($imageEffects) && !isset($imageEffects['watermark'])) {
+            $imageEffects['watermark'] = 'default';
+        }
+
+
+        if (!$imageEffects || $imageEffects['watermark'] === '') {
             return false;
         }
 
