@@ -404,10 +404,6 @@ class QUI
         // Load Packages
         self::getPackageManager();
 
-        // register ajax
-        self::$Ajax = new QUI\Ajax(array(
-            'db_errors' => self::conf('error', 'mysql_ajax_errors_backend')
-        ));
 
         // mem peak - info mail at 80% usage
         self::getErrorHandler()->registerShutdown(function () {
@@ -535,6 +531,22 @@ class QUI
         }
 
         return self::$vhosts;
+    }
+
+    /**
+     * Return the global ajax object
+     *
+     * @return \QUI\Ajax
+     */
+    static function getAjax()
+    {
+        if (!is_null(self::$Ajax)) {
+            self::$Ajax = new QUI\Ajax(array(
+                'db_errors' => self::conf('error', 'mysql_ajax_errors_backend')
+            ));
+        }
+
+        return self::$Ajax;
     }
 
     /**
