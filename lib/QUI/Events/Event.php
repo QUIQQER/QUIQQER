@@ -180,7 +180,23 @@ class Event implements QUI\Interfaces\Events
                 $Clone = new QUI\Exception(
                     $message,
                     $Exception->getCode(),
-                    $Exception->getType()
+                    array('trace' => $Exception->getTraceAsString())
+                );
+
+                $Stack->addException($Clone);
+
+            } catch (\Exception $Exception) {
+
+                $message = $Exception->getMessage();
+
+                if (is_string($fn)) {
+                    $message .= ' :: '. $fn;
+                }
+
+                $Clone = new QUI\Exception(
+                    $message,
+                    $Exception->getCode(),
+                    array('trace' => $Exception->getTraceAsString())
                 );
 
                 $Stack->addException($Clone);
