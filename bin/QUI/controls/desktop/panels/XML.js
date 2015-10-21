@@ -15,7 +15,6 @@
  * @require utils/Controls
  * @require css!controls/desktop/panels/XML.css
  */
-
 define('controls/desktop/panels/XML', [
 
     'qui/QUI',
