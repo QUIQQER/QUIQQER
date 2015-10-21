@@ -398,7 +398,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                     $Constraint->upsize();
                 });
             }
-            
+
             $Image->insert($WatermarkImage, $watermarkPosition);
         }
 

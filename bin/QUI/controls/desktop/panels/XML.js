@@ -232,6 +232,7 @@ define('controls/desktop/panels/XML', [
                     ControlUtils.parse(Body)
 
                 ]).then(function () {
+
                     var i, len, Node, Control, nodeName;
                     var quiElements = Body.getElements('[data-quiid]');
 
