@@ -540,7 +540,7 @@ class QUI
      */
     static function getAjax()
     {
-        if (!is_null(self::$Ajax)) {
+        if (is_null(self::$Ajax)) {
             self::$Ajax = new QUI\Ajax(array(
                 'db_errors' => self::conf('error', 'mysql_ajax_errors_backend')
             ));
