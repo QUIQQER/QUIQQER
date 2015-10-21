@@ -471,6 +471,10 @@
             <de><![CDATA[Handy / Mobil]]></de>
             <en><![CDATA[Mobile]]></en>
         </locale>
+        <locale name="profile">
+            <de><![CDATA[Profil]]></de>
+            <en><![CDATA[Profile]]></en>
+        </locale>
         <locale name="address.salutation.male">
             <de><![CDATA[Herr]]></de>
             <en><![CDATA[Mr]]></en>
