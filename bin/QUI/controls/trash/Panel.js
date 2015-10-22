@@ -100,6 +100,7 @@ define('controls/trash/Panel', [
             this.addButton({
                 name     : 'removeAll',
                 text     : Locale.get(lg, 'trash.panel.btn.delete.all'),
+                title    : Locale.get(lg, 'trash.panel.btn.delete.all.title'),
                 textimage: 'icon-remove',
                 events   : {
                     onClick: this.openClearWindow
@@ -109,6 +110,7 @@ define('controls/trash/Panel', [
             this.addButton({
                 name     : 'remove',
                 text     : Locale.get(lg, 'trash.panel.btn.delete'),
+                title    : Locale.get(lg, 'trash.panel.btn.delete.title'),
                 textimage: 'icon-remove',
                 disabled : true,
                 events   : {
@@ -119,6 +121,7 @@ define('controls/trash/Panel', [
             this.addButton({
                 name     : 'restore',
                 text     : Locale.get(lg, 'trash.panel.btn.restore'),
+                title    : Locale.get(lg, 'trash.panel.btn.restore.title'),
                 textimage: 'icon-reply-all',
                 disabled : true,
                 events   : {
@@ -253,26 +256,6 @@ define('controls/trash/Panel', [
                                 self.getButtons('restore').disable();
                             });
                         }
-
-                        //
-                        //if (type == 'project') {
-                        //    self.destroyProjectItems(params[0], params[1], ids, function () {
-                        //        Win.close();
-                        //
-                        //        self.$ProjectGrid.refresh();
-                        //        self.getButtons('remove').disable();
-                        //        self.getButtons('restore').disable();
-                        //    });
-                        //
-                        //} else {
-                        //    self.destroyMediaItems(params[0], ids, function () {
-                        //        Win.close();
-                        //
-                        //        self.$MediaGrid.refresh();
-                        //        self.getButtons('remove').disable();
-                        //        self.getButtons('restore').disable();
-                        //    });
-                        //}
                     }
                 }
             }).open();

@@ -687,10 +687,18 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Trash]]></en>
         </locale>
         <locale name="trash.panel.btn.delete">
+            <de><![CDATA[Einträge löschen]]></de>
+            <en><![CDATA[Delete entries]]></en>
+        </locale>
+        <locale name="trash.panel.btn.delete.title">
             <de><![CDATA[Markierte Einträge löschen]]></de>
             <en><![CDATA[Delete marked entries]]></en>
         </locale>
         <locale name="trash.panel.btn.restore">
+            <de><![CDATA[Wiederherstellen]]></de>
+            <en><![CDATA[Restore]]></en>
+        </locale>
+        <locale name="trash.panel.btn.restore.title">
             <de><![CDATA[Markierte Einträge wiederherstellen]]></de>
             <en><![CDATA[Restore marked entries]]></en>
         </locale>
@@ -703,6 +711,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Do you want to delete the following entries permanently?]]></en>
         </locale>
         <locale name="trash.panel.btn.delete.all">
+            <de><![CDATA[Leeren]]></de>
+            <en><![CDATA[Clear]]></en>
+        </locale>
+        <locale name="trash.panel.btn.delete.all.title">
             <de><![CDATA[Alle Einträge löschen]]></de>
             <en><![CDATA[Delete all entries]]></en>
         </locale>
