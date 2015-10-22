@@ -9,16 +9,16 @@
  */
 function ajax_trash_media($project, $params)
 {
-    $Project = \QUI::getProjectManager()->decode( $project );
+    $Project = QUI::getProjectManager()->decode($project);
     $Media   = $Project->getMedia();
     $Trash   = $Media->getTrash();
 
     return $Trash->getList(
-        json_decode( $params, true )
+        json_decode($params, true)
     );
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_trash_media',
     array('project', 'params'),
     'Permission::checkAdminUser'

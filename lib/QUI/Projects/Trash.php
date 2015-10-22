@@ -121,17 +121,34 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
     /**
      * Zerstört die gewünschten Seiten im Trash
      *
-     * @param \QUI\Projects\Project $Project
      * @param Array                 $ids
      */
-    public function destroy(Project $Project, $ids = array())
+    public function destroy($ids = array())
     {
         if (!is_array($ids)) {
             return;
         }
 
         foreach ($ids as $id) {
-            $Site = new Site\Edit($Project, (int)$id);
+            $Site = new Site\Edit($this->_Project, (int)$id);
+            $Site->destroy();
+        }
+    }
+
+    /**
+     * Clear complete trash
+     */
+    public function clear()
+    {
+        $ids = $this->_Project->getSitesIds(array(
+            'where' => array(
+                'deleted' => 1,
+                'active'  => -1
+            )
+        ));
+
+        foreach ($ids as $data) {
+            $Site = new Site\Edit($this->_Project, (int)$data['id']);
             $Site->destroy();
         }
     }

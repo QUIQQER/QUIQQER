@@ -3,8 +3,8 @@
 /**
  * Restore media files
  *
- * @param String         $project  - Name of the project
- * @param String         $ids      - JSON Array, File IDs
+ * @param String $project - Name of the project
+ * @param String $ids - JSON Array, File IDs
  * @param String|Integer $parentid - Folder-ID
  *
  * @throws QUI\Exception
@@ -12,9 +12,9 @@
 function ajax_trash_media_restore($project, $ids, $parentid)
 {
     $Project = QUI::getProjectManager()->decode($project);
-    $Media = $Project->getMedia();
-    $Trash = $Media->getTrash();
-    $Folder = $Media->get($parentid);
+    $Media   = $Project->getMedia();
+    $Trash   = $Media->getTrash();
+    $Folder  = $Media->get($parentid);
 
     if (!QUI\Projects\Media\Utils::isFolder($Folder)) {
         throw new QUI\Exception(

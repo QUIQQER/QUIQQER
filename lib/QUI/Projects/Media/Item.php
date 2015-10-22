@@ -304,7 +304,6 @@ abstract class Item extends QUI\QDOM
      * Destroy the File complete from the DataBase and from the Filesystem
      *
      * @throws QUI\Exception
-     * @todo muss in den trash
      */
     public function destroy()
     {
@@ -312,7 +311,7 @@ abstract class Item extends QUI\QDOM
             throw new QUI\Exception('Only inactive files can be destroyed');
         }
 
-        if ($this->isDeleted()) {
+        if (!$this->isDeleted()) {
             throw new QUI\Exception('Only deleted files can be destroyed');
         }
 

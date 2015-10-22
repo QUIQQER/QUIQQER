@@ -51,6 +51,7 @@ define('controls/trash/Panel', [
 
         Binds: [
             'openDestroyWindow',
+            'openClearWindow',
             'openRestoreWindow',
             '$onCreate',
             '$onSelectChange',
@@ -94,6 +95,15 @@ define('controls/trash/Panel', [
 
             this.addButton({
                 type: 'seperator'
+            });
+
+            this.addButton({
+                name     : 'removeAll',
+                text     : Locale.get(lg, 'trash.panel.btn.delete.all'),
+                textimage: 'icon-remove',
+                events   : {
+                    onClick: this.openClearWindow
+                }
             });
 
             this.addButton({
@@ -206,6 +216,68 @@ define('controls/trash/Panel', [
             this.getButtons('restore').disable();
         },
 
+        openClearWindow: function () {
+            var self   = this,
+                type   = 'project',
+                params = this.$Select.getValue().split(',');
+
+            if (this.$Select.getValue().match('media')) {
+                type = 'media';
+            }
+
+            new QUIConfirm({
+                title      : Locale.get(lg, 'trash.panel.window.delete.all.title'),
+                icon       : 'icon-remove',
+                text       : Locale.get(lg, 'trash.panel.window.delete.all.text'),
+                information: Locale.get(lg, 'trash.panel.window.delete.all.information'),
+                maxHeight  : 300,
+                maxWidth   : 450,
+                events     : {
+                    onSubmit: function (Win) {
+                        Win.Loader.show();
+
+                        if (type == 'project') {
+                            self.clearProjectItems(params[0], params[1]).then(function () {
+                                Win.close();
+
+                                self.$ProjectGrid.refresh();
+                                self.getButtons('remove').disable();
+                                self.getButtons('restore').disable();
+                            });
+                        } else {
+                            self.clearMediaItems(params[0], params[1]).then(function () {
+                                Win.close();
+
+                                self.$MediaGrid.refresh();
+                                self.getButtons('remove').disable();
+                                self.getButtons('restore').disable();
+                            });
+                        }
+
+                        //
+                        //if (type == 'project') {
+                        //    self.destroyProjectItems(params[0], params[1], ids, function () {
+                        //        Win.close();
+                        //
+                        //        self.$ProjectGrid.refresh();
+                        //        self.getButtons('remove').disable();
+                        //        self.getButtons('restore').disable();
+                        //    });
+                        //
+                        //} else {
+                        //    self.destroyMediaItems(params[0], ids, function () {
+                        //        Win.close();
+                        //
+                        //        self.$MediaGrid.refresh();
+                        //        self.getButtons('remove').disable();
+                        //        self.getButtons('restore').disable();
+                        //    });
+                        //}
+                    }
+                }
+            }).open();
+        },
+
         /**
          * Opens the deletion window
          */
@@ -250,6 +322,8 @@ define('controls/trash/Panel', [
                 icon       : 'icon-remove',
                 text       : Locale.get(lg, 'trash.panel.window.delete.text'),
                 information: information,
+                maxHeight  : 300,
+                maxWidth   : 450,
                 events     : {
                     onSubmit: function (Win) {
                         Win.Loader.show();
@@ -436,18 +510,23 @@ define('controls/trash/Panel', [
 
             this.Loader.show();
 
-            Ajax.get('ajax_trash_sites', function (data) {
-                self.$ProjectGrid.setData(data);
-                self.Loader.hide();
-            }, {
-                project: JSON.encode({
-                    name: project,
-                    lang: lang
-                }),
-                params : JSON.encode({
-                    page   : options.page,
-                    perPage: options.perPage
-                })
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_trash_sites', function (data) {
+                    self.$ProjectGrid.setData(data);
+                    self.Loader.hide();
+
+                    resolve();
+                }, {
+                    project: JSON.encode({
+                        name: project,
+                        lang: lang
+                    }),
+                    params : JSON.encode({
+                        page   : options.page,
+                        perPage: options.perPage
+                    }),
+                    onError: reject
+                });
             });
         },
 
@@ -458,18 +537,24 @@ define('controls/trash/Panel', [
          * @param {String} lang - Lang of the project
          * @param {Array} ids - Array of the site ids
          * @param {Function} [callback] - callback function on finish
+         * @return Promise
          */
         destroyProjectItems: function (project, lang, ids, callback) {
-            Ajax.post('ajax_trash_destroy', function () {
-                if (typeof callback !== 'undefined') {
-                    callback();
-                }
-            }, {
-                project: JSON.encode({
-                    name: project,
-                    lang: lang
-                }),
-                ids    : JSON.encode(ids)
+            return new Promise(function (resolve, reject) {
+                Ajax.post('ajax_trash_destroy', function () {
+                    resolve();
+
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
+                }, {
+                    project: JSON.encode({
+                        name: project,
+                        lang: lang
+                    }),
+                    ids    : JSON.encode(ids),
+                    onError: reject
+                });
             });
         },
 
@@ -481,19 +566,53 @@ define('controls/trash/Panel', [
          * @param {Number} parentId - ID of the parent id
          * @param {Array} restoreIds - IDs to the restored ids
          * @param {Function} [callback] - callback function on finish
+         * @return Promise
          */
         restoreProjectItems: function (project, lang, parentId, restoreIds, callback) {
-            Ajax.post('ajax_trash_restore', function () {
-                if (typeof callback !== 'undefined') {
-                    callback();
-                }
-            }, {
-                project : JSON.encode({
-                    name: project,
-                    lang: lang
-                }),
-                parentid: parentId,
-                ids     : JSON.encode(restoreIds)
+            return new Promise(function (resolve, reject) {
+                Ajax.post('ajax_trash_restore', function () {
+
+                    resolve();
+
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
+
+                }, {
+                    project : JSON.encode({
+                        name: project,
+                        lang: lang
+                    }),
+                    parentid: parentId,
+                    ids     : JSON.encode(restoreIds),
+                    onError : reject
+                });
+            });
+        },
+
+        /**
+         * Destroy all deleted project items
+         *
+         * @param {String} project
+         * @param {String} lang
+         * @param {Function} [callback] - callback function on finish
+         */
+        clearProjectItems: function (project, lang, callback) {
+            return new Promise(function (resolve, reject) {
+                Ajax.post('ajax_trash_clear', function () {
+
+                    resolve();
+
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
+                }, {
+                    project: JSON.encode({
+                        name: project,
+                        lang: lang
+                    }),
+                    onError: reject
+                });
             });
         },
 
@@ -569,25 +688,31 @@ define('controls/trash/Panel', [
          * load the media trash data into the grid
          *
          * @param {String} project - name of the project
+         * @return Promise
          */
         $loadProjectMediaTrash: function (project) {
-            var self    = this,
-                options = this.$MediaGrid.options;
+            return new Promise(function (resolve, reject) {
+                var self    = this,
+                    options = this.$MediaGrid.options;
 
-            this.Loader.show();
+                this.Loader.show();
 
-            Ajax.get('ajax_trash_media', function (data) {
-                self.$MediaGrid.setData(data);
-                self.Loader.hide();
-            }, {
-                project: JSON.encode({
-                    name: project
-                }),
-                params : JSON.encode({
-                    page   : options.page,
-                    perPage: options.perPage
-                })
-            });
+                Ajax.get('ajax_trash_media', function (data) {
+                    self.$MediaGrid.setData(data);
+                    self.Loader.hide();
+
+                    resolve();
+                }, {
+                    project: JSON.encode({
+                        name: project
+                    }),
+                    params : JSON.encode({
+                        page   : options.page,
+                        perPage: options.perPage
+                    }),
+                    onError: reject
+                });
+            }.bind(this));
         },
 
         /**
@@ -596,17 +721,23 @@ define('controls/trash/Panel', [
          * @param {String} project      - Name of the project
          * @param {Array} ids           - Array of the site ids
          * @param {Function} [callback] - (optional), callback function on finish
+         * @return Promise
          */
         destroyMediaItems: function (project, ids, callback) {
-            Ajax.post('ajax_trash_media_destroy', function () {
-                if (typeof callback !== 'undefined') {
-                    callback();
-                }
-            }, {
-                project: JSON.encode({
-                    name: project
-                }),
-                ids    : JSON.encode(ids)
+            return new Promise(function (resolve, reject) {
+                Ajax.post('ajax_trash_media_destroy', function () {
+                    resolve();
+
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
+                }, {
+                    project: JSON.encode({
+                        name: project
+                    }),
+                    ids    : JSON.encode(ids),
+                    onError: reject
+                });
             });
         },
 
@@ -617,18 +748,48 @@ define('controls/trash/Panel', [
          * @param {Number} parentId     - ID of the parent id
          * @param {Array} restoreIds    - IDs to the restored ids
          * @param {Function} [callback] - (optional), callback function on finish
+         * @return Promise
          */
         restoreProjectMediaItems: function (project, parentId, restoreIds, callback) {
-            Ajax.post('ajax_trash_media_restore', function () {
-                if (typeof callback === 'function') {
-                    callback();
-                }
-            }, {
-                project : JSON.encode({
-                    name: project
-                }),
-                parentid: parentId,
-                ids     : JSON.encode(restoreIds)
+            return new Promise(function (resolve, reject) {
+                Ajax.post('ajax_trash_media_restore', function () {
+                    resolve();
+
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
+                }, {
+                    project : JSON.encode({
+                        name: project
+                    }),
+                    parentid: parentId,
+                    ids     : JSON.encode(restoreIds),
+                    onError : reject
+                });
+            });
+        },
+
+        /**
+         * Destroy all deleted media items
+         *
+         * @param {String} project
+         * @param {Function} [callback] - callback function on finish
+         * @return Promise
+         */
+        clearMediaItems: function (project, callback) {
+            return new Promise(function (resolve, reject) {
+                Ajax.post('ajax_trash_media_clear', function () {
+                    resolve();
+
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
+                }, {
+                    project: JSON.encode({
+                        name: project
+                    }),
+                    onError: reject
+                });
             });
         },
 

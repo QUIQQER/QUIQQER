@@ -695,12 +695,28 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Restore marked entries]]></en>
         </locale>
         <locale name="trash.panel.window.delete.title">
-            <de><![CDATA[Markierte Einträge Löschen?]]></de>
+            <de><![CDATA[Markierte Einträge löschen?]]></de>
             <en><![CDATA[Delete marked entries?]]></en>
         </locale>
         <locale name="trash.panel.window.delete.text">
             <de><![CDATA[Möchten Sie folgende Einträge unwiderruflich löschen?]]></de>
             <en><![CDATA[Do you want to delete the following entries permanently?]]></en>
+        </locale>
+        <locale name="trash.panel.btn.delete.all">
+            <de><![CDATA[Alle Einträge löschen]]></de>
+            <en><![CDATA[Delete all entries]]></en>
+        </locale>
+        <locale name="trash.panel.window.delete.all.title">
+            <de><![CDATA[Alle Einträge löschen?]]></de>
+            <en><![CDATA[Delete all entries?]]></en>
+        </locale>
+        <locale name="trash.panel.window.delete.all.text">
+            <de><![CDATA[Möchten Sie alle Einträge unwiderruflich löschen?]]></de>
+            <en><![CDATA[Do you want to delete all entries permanently?]]></en>
+        </locale>
+        <locale name="trash.panel.window.delete.all.information">
+            <de><![CDATA[Diese Einträge können nicht wieder hergestellt werden]]></de>
+            <en><![CDATA[These entries can not be restored]]></en>
         </locale>
         <locale name="trash.panel.window.restore.site.question">
             <de><![CDATA[Bitte wählen Sie die Elternseite aus, unter welcher die Seite(n) eingefügt werden soll(en)]]></de>
