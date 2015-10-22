@@ -1581,6 +1581,8 @@ class Rewrite
      * @param array $params
      *    $params['site'] => (object) Site
      *
+     * @param array $getParams
+     *
      * oder
      *    $params['id'] => (int) Id - Id der Seite
      *    $params['lang'] => (String) lang - Sprache der Seite
@@ -1757,8 +1759,12 @@ class Rewrite
         $seperator = self::URL_PARAM_SEPERATOR;
         $getParams = array();
 
-        if (isset($params['_getParams'])) {
+        if (isset($params['_getParams']) && is_string($params['_getParams'])) {
             parse_str($params['_getParams'], $getParams);
+            unset($params['_getParams']);
+
+        } elseif (isset($params['_getParams']) && is_array($params['_getParams'])) {
+            $getParams = $params['_getParams'];
             unset($params['_getParams']);
         }
 
