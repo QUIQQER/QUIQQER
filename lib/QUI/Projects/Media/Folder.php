@@ -462,7 +462,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $this->_children = array();
 
         if (!isset($params['order'])) {
-            $params['order'] = $this->getAttribute('priority');
+            $params['order'] = $this->getAttribute('order');
         }
 
         if (empty($params['order'])) {
