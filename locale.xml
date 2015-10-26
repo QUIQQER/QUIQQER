@@ -1390,6 +1390,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Wie soll die neue Seite heißen?]]></de>
             <en><![CDATA[How be called the new page?]]></en>
         </locale>
+        <locale name="projects.project.site.panel.window.create.button.submit">
+            <de><![CDATA[Anlegen]]></de>
+            <en><![CDATA[Create]]></en>
+        </locale>
         <locale name="projects.project.site.panel.window.create.text">
             <de><![CDATA[Bitte geben Sie ein Namen für die neue Seite an]]></de>
             <en><![CDATA[Please enter a name for the new page]]></en>

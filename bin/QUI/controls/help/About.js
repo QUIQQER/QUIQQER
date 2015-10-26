@@ -41,7 +41,7 @@ define('controls/help/About', [
             this.getContent().set(
                 'html',
 
-                '<div style="text-align: center; margin-top: 30px;">' +
+                '<div style="text-align: center;">' +
                 '<h2>QUIQQER Management System</h2>' +
                 '<p><a href="http://www.quiqqer.com" target="_blank">www.quiqqer.com</a></p>' +
                 '<br />' +
