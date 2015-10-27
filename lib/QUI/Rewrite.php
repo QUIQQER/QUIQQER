@@ -1697,7 +1697,8 @@ class Rewrite
          * Sprache behandeln
          */
 
-        if (isset($vhosts[$_SERVER['HTTP_HOST']])
+        if (isset($_SERVER['HTTP_HOST'])
+            && isset($vhosts[$_SERVER['HTTP_HOST']])
             && isset($vhosts[$_SERVER['HTTP_HOST']][$lang])
             && !empty($vhosts[$_SERVER['HTTP_HOST']][$lang])
         ) {
