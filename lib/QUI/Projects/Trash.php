@@ -54,8 +54,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
         $_params = $Grid->parseDBParams($params);
 
         $_params['where'] = array(
-            'deleted' => 1,
-            'active'  => -1
+            'deleted' => 1
         );
 
 
@@ -109,8 +108,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
 
         $total = $this->_Project->getSites(array(
             'where' => array(
-                'deleted' => 1,
-                'active'  => -1
+                'deleted' => 1
             ),
             'count' => true
         ));
@@ -142,8 +140,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
     {
         $ids = $this->_Project->getSitesIds(array(
             'where' => array(
-                'deleted' => 1,
-                'active'  => -1
+                'deleted' => 1
             )
         ));
 

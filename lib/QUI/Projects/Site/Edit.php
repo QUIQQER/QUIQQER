@@ -1236,17 +1236,17 @@ class Edit extends Site
 
         // Einzelne Verknüpfung löschen
         if ($pid && $orig == false) {
-            $qry = 'DELETE FROM `' . $table . '` ';
-            $qry .= 'WHERE child =' . $this->getId() . ' AND parent = ' . (int)$pid;
-
-            return $DataBase->fetchSQL($qry);
+            return $DataBase->delete($table, array(
+                'child'   => $this->getId(),
+                'parent'  => (int)$pid
+            ));
         }
 
-        $qry = 'DELETE FROM `' . $table . '` ';
-        $qry .= 'WHERE child =' . $this->getId() . ' AND parent = ' . (int)$pid
-                . ' AND oparent = ' . (int)$orig;
-
-        return $DataBase->fetchSQL($qry);
+        return $DataBase->delete($table, array(
+            'child'   => $this->getId(),
+            'parent'  => (int)$pid,
+            'oparent' => (int)$orig
+        ));
     }
 
     /**

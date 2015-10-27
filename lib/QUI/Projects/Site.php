@@ -1228,9 +1228,44 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         $Project = $this->getProject();
 
+        foreach ($children as $childId) {
+
+            try {
+                $Edit = new QUI\Projects\Site\Edit($Project, $childId);
+
+                if (!$Edit->isLinked()) {
+                    continue;
+                }
+
+                $pids = $Edit->getParentIds();
+
+                foreach ($pids as $pid) {
+                    if (in_array($pid, $children)) {
+                        $Edit->deleteLinked($pid);
+                        continue;
+                    }
+
+                    if ($pid == $this->getId()) {
+                        $Edit->deleteLinked($pid);
+                    }
+                }
+
+            } catch (QUI\Exception $Exception) {
+
+            }
+        }
+
+        // kinder neu hohlen
+        $children = $this->getChildrenIdsRecursive(array(
+            'active' => '0&1'
+        ));
+
         QUI::getDataBase()->update(
             $this->_TABLE,
-            array('deleted' => 1),
+            array(
+                'deleted' => 1,
+                'active'  => -1
+            ),
             array('id' => $this->getId())
         );
 
@@ -1238,7 +1273,10 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         foreach ($children as $child) {
             QUI::getDataBase()->update(
                 $this->_TABLE,
-                array('deleted' => 1),
+                array(
+                    'deleted' => 1,
+                    'active'  => -1
+                ),
                 array('id' => $child)
             );
 
