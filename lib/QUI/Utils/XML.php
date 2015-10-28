@@ -805,7 +805,10 @@ class XML
      */
     static function getTabsFromDom(\DOMDocument $Dom)
     {
-        $window = $Dom->getElementsByTagName('window');
+        $Path   = new \DOMXPath($Dom);
+        $window = $Path->query("//site/window");
+
+//        $window = $Dom->getElementsByTagName('window');
 
         if (!$window->length) {
             return array();
