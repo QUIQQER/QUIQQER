@@ -475,6 +475,10 @@
             <de><![CDATA[Profil]]></de>
             <en><![CDATA[Profile]]></en>
         </locale>
+        <locale name="add">
+            <de><![CDATA[Hinzufügen]]></de>
+            <en><![CDATA[Add]]></en>
+        </locale>
         <locale name="address.salutation.male">
             <de><![CDATA[Herr]]></de>
             <en><![CDATA[Mr]]></en>
