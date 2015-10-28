@@ -296,7 +296,7 @@ class Sites
             $Path = new \DOMXPath($Dom);
 
             QUI\Utils\DOM::addTabsToToolbar(
-                $Path->query("//site/types/type[@type='" . $types[1] . "']/window/tab"),
+                $Path->query("//site/types/type[@type='" . $types[1] . "']/tab"),
                 $Tabbar
             );
         }
