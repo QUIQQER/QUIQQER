@@ -805,36 +805,29 @@ class XML
      */
     static function getTabsFromDom(\DOMDocument $Dom)
     {
-        $Path   = new \DOMXPath($Dom);
-        $window = $Path->query("//site/window");
-
-//        $window = $Dom->getElementsByTagName('window');
+        $window = $Dom->getElementsByTagName('window');
 
         if (!$window->length) {
             return array();
         }
 
-        /* @var $Settings \DOMElement */
-        $Settings = $window->item(0);
-        $tablist  = $Settings->getElementsByTagName('tab');
+        return DOM::getTabs($window->item(0));
+    }
 
-        if (!$tablist->length) {
+    /**
+     * @param \DOMDocument $Dom
+     * @return array
+     */
+    static function getSiteTabsFromDom(\DOMDocument $Dom)
+    {
+        $Path   = new \DOMXPath($Dom);
+        $window = $Path->query("//site/window");
+
+        if (!$window->length) {
             return array();
         }
 
-        $tabs = array();
-
-        for ($c = 0; $c < $tablist->length; $c++) {
-            $Tab = $tablist->item($c);
-
-            if ($Tab->nodeName == '#text') {
-                continue;
-            }
-
-            $tabs[] = $Tab;
-        }
-
-        return $tabs;
+        return DOM::getTabs($window->item(0));
     }
 
     /**

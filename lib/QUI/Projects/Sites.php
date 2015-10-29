@@ -303,7 +303,7 @@ class Sites
 
 
         // Global tabs
-        $packages = \QUI::getPackageManager()->getInstalled();
+        $packages = QUI::getPackageManager()->getInstalled();
 
         foreach ($packages as $package) {
             // templates would be seperated
@@ -318,7 +318,9 @@ class Sites
             }
 
             QUI\Utils\DOM::addTabsToToolbar(
-                QUI\Utils\XML::getTabsFromXml($file),
+                QUI\Utils\XML::getSiteTabsFromDom(
+                    QUI\Utils\XML::getDomFromXml($file)
+                ),
                 $Tabbar
             );
         }
@@ -343,7 +345,9 @@ class Sites
             }
 
             QUI\Utils\DOM::addTabsToToolbar(
-                QUI\Utils\XML::getTabsFromXml($file),
+                QUI\Utils\XML::getSiteTabsFromDom(
+                    QUI\Utils\XML::getDomFromXml($file)
+                ),
                 $Tabbar
             );
         }

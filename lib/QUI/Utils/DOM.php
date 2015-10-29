@@ -348,6 +348,35 @@ class DOM
     }
 
     /**
+     * Return the tabs
+     *
+     * @param \DOMElement $DOMNode
+     * @return array
+     */
+    static function getTabs(\DOMElement $DOMNode)
+    {
+        $tablist = $DOMNode->getElementsByTagName('tab');
+
+        if (!$tablist->length) {
+            return array();
+        }
+
+        $tabs = array();
+
+        for ($c = 0; $c < $tablist->length; $c++) {
+            $Tab = $tablist->item($c);
+
+            if ($Tab->nodeName == '#text') {
+                continue;
+            }
+
+            $tabs[] = $Tab;
+        }
+
+        return $tabs;
+    }
+
+    /**
      * HTML eines DOM Tabs
      *
      * @param String $name
