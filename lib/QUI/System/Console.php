@@ -107,6 +107,10 @@ class Console
     {
         $this->title();
 
+        if (!isset($_SERVER['HTTP_HOST'])) {
+            $_SERVER['HTTP_HOST'] = '';
+        }
+
         if (!isset($_SERVER['argv'])) {
             $this->writeLn("Cannot use Consoletools");
             exit;
