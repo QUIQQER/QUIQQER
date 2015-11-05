@@ -142,6 +142,7 @@ Debug::marker('objekte initialisiert');
 // Wenn es ein Cache gibt und die Seite auch gecached werden soll
 if (CACHE && file_exists($site_cache_file)
     && $Site->getAttribute('nocache') != true
+    && !QUI::getUsers()->isAuth(QUI::getUserBySession())
 ) {
     $cache_content = file_get_contents($site_cache_file);
     $_content      = $Rewrite->outputFilter($cache_content);
@@ -170,7 +171,9 @@ try {
     Debug::marker('content done');
 
     // cachefile erstellen
-    if ($Site->getAttribute('nocache') != true) {
+    if ($Site->getAttribute('nocache') != true
+        && !QUI::getUsers()->isAuth(QUI::getUserBySession())) {
+
         QUI\Utils\System\File::mkdir(
             $site_cache_dir . $Project->getAttribute('name') . '/'
         );
@@ -198,7 +201,7 @@ try {
     try {
         $content = $Template->fetchTemplate($Rewrite->getErrorSite());
 
-    } catch (\QUI\Exception $Exception) {
+    } catch (QUI\Exception $Exception) {
         $content = $Template->fetchTemplate($Project->firstChild());
     }
 
