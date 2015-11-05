@@ -168,6 +168,10 @@
             <de><![CDATA[Platzhalterbild]]></de>
             <en><![CDATA[Placeholder image]]></en>
         </locale>
+        <locale name="projects.project.settings.panel.favicon">
+            <de><![CDATA[Favicon]]></de>
+            <en><![CDATA[Favicon]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/system" datatype="js,php">

@@ -232,7 +232,8 @@ class Manager
             "media_watermark_ratio"    => "",
             "media_image_library"      => "",
             "media_maxUploadSize"      => "",
-            "placeholder"              => ""
+            "placeholder"              => "",
+            "favicon"                  => ""
         );
 
         // settings.xml

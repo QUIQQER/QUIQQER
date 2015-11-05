@@ -2,6 +2,9 @@
 
 /**
  * Return the configuration of the project
+ *
+ * @param String $project - JSON Project data
+ * @param String $param - optional, wanted config
  * @return Array|String
  */
 function ajax_project_get_config($project, $param)
