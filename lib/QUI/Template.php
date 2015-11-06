@@ -34,6 +34,13 @@ class Template extends QUI\QDOM
     protected $_header = array();
 
     /**
+     * Footer extentions
+     *
+     * @var array
+     */
+    protected $_footer = array();
+
+    /**
      * assigned vars
      *
      * @var array
@@ -193,12 +200,66 @@ class Template extends QUI\QDOM
     }
 
     /**
-     * @param $jsPath
+     * @param String $jsPath
+     * @param Boolean $async
      * @param int $prio
      */
-    public function extendHeaderWithJavaScriptFile($jsPath, $prio = 3)
+    public function extendHeaderWithJavaScriptFile($jsPath, $async = true, $prio = 3)
     {
+        if ($async) {
+            $this->extendHeader(
+                '<script src="' . $jsPath . '" async></script>',
+                $prio
+            );
+
+            return;
+        }
+
         $this->extendHeader(
+            '<script src="' . $jsPath . '"></script>',
+            $prio
+        );
+    }
+
+    /**
+     * Add Code to the bottom of the html
+     *
+     * @param String $str
+     * @param Integer $prio
+     */
+    public function extendFooter($str, $prio = 3)
+    {
+        $prio = (int)$prio;
+
+        if (!isset($this->_header[$prio])) {
+            $this->_footer[$prio] = '';
+        }
+
+        $_str = $this->_footer[$prio];
+        $_str .= $str;
+
+        $this->_footer[$prio] = $_str;
+    }
+
+    /**
+     * Add the JavaScript File to the bottom of the html
+     *
+     * @param String $jsPath
+     * @param Boolean $async
+     * @param int $prio
+     */
+    public function extendFooterWithJavaScriptFile($jsPath, $async = true, $prio = 3)
+    {
+        if ($async) {
+            $this->extendFooter(
+                '<script src="' . $jsPath . '" async></script>',
+                $prio
+            );
+
+            return;
+        }
+
+        $this->extendFooter(
             '<script src="' . $jsPath . '"></script>',
             $prio
         );
@@ -212,15 +273,6 @@ class Template extends QUI\QDOM
     public function addOnloadJavaScriptModule($module)
     {
         $this->_onLoadModules[] = $module;
-    }
-
-    /**
-     * Return the Content of the Site
-     *
-     */
-    public function get()
-    {
-
     }
 
     /**
@@ -277,14 +329,12 @@ class Template extends QUI\QDOM
          * find the index.html
          */
 
-        $default_tpl = LIB_DIR . 'templates/index.html';
+        $default_tpl   = LIB_DIR . 'templates/index.html';
+        $project_tpl   = USR_DIR . $Project->getAttribute('name') . '/lib/index.html';
+        $project_index = USR_DIR . $Project->getAttribute('name') . '/lib/index.php';
 
-        $project_tpl = USR_DIR . $Project->getAttribute('name') . '/lib/index.html';
-        $project_index
-                     = USR_DIR . $Project->getAttribute('name') . '/lib/index.php';
-
-        $template_tpl   = false;
-        $template_index = false;
+//        $template_tpl   = false;
+//        $template_index = false;
 
         $tpl = $default_tpl;
 
@@ -312,7 +362,6 @@ class Template extends QUI\QDOM
 
         $template_tpl   = OPT_DIR . $projectTemplate . '/index.html';
         $template_index = OPT_DIR . $projectTemplate . '/index.php';
-
 
         if ($template_tpl && file_exists($template_tpl)) {
             $tpl = $template_tpl;
@@ -396,8 +445,21 @@ class Template extends QUI\QDOM
             }
         }
 
+        QUI::getEvents()->fireEvent('templateSiteFetch', array($this, $Site));
 
-        return $Engine->fetch($tpl);
+        $result = $Engine->fetch($tpl);
+
+        // footer extend
+        $footer       = $this->_footer;
+        $footerExtend = '';
+
+        foreach ($footer as $_str) {
+            $footerExtend .= $_str;
+        }
+
+        $result = str_replace('</body>', $footerExtend.'</body>', $result);
+
+        return $result;
     }
 
     /**
@@ -685,55 +747,4 @@ class Template extends QUI\QDOM
 
         return LIB_DIR . 'templates/standard.html';
     }
-
-//    /**
-//     * Set the admin menu to the template
-//     * If the user is an administrator the admin will be insert
-//     *
-//     * @param String $html - html
-//     * @return String
-//     * @deprecated
-//     */
-//    static function setAdminMenu($html)
-//    {
-//        $User = QUI::getUserBySession();
-//
-//        // Nur bei Benutzer die in den Adminbereich dürfen macht das Menü Sinn
-//        if ( $User->isAdmin() == false ) {
-//            return $html;
-//        }
-//
-//        $Project = QUI\Projects\Manager::get();
-//        $Site    = QUI::getRewrite()->getSite();
-//
-//        // letzte body ersetzen
-//        $string  = $html;
-//        $search  = '</body>';
-//        $replace = '
-//            <script type="text/javascript">
-//            /* <![CDATA[ */
-//                if (typeof _pcsg == "undefined") {
-//                    var _pcsg = {};
-//                };
-//
-//                _pcsg.Project = {
-//                    name : "'. $Project->getAttribute('name') .'",
-//                    lang : "'. $Project->getAttribute('lang') .'"
-//                };
-//
-//                _pcsg.Site = {id : '. $Site->getId() .'};
-//                _pcsg.admin = {
-//                    link : "'. URL_SYS_DIR .'admin.php"
-//                };
-//            /* ]]> */
-//            </script>
-//            <script type="text/javascript" src="'. URL_BIN_DIR .'js/AdminPageMenu.js"></script></body>';
-//
-//        return substr_replace(
-//            $html,
-//            $search,
-//            strrpos( $string, $search ),
-//            strlen( $search )
-//        );
-//    }
 }
