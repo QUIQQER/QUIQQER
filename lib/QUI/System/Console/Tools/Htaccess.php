@@ -22,7 +22,7 @@ class Htaccess extends QUI\System\Console\Tool
     public function __construct()
     {
         $this->setName('quiqqer:htaccess')
-             ->setDescription('Generate the htaccess File.');
+            ->setDescription('Generate the htaccess File.');
     }
 
     /**
@@ -34,8 +34,8 @@ class Htaccess extends QUI\System\Console\Tool
     {
         $this->writeLn('Generating HTACCESS ...');
 
-        $htaccessBackupFile = VAR_DIR.'backup/htaccess_'.date('Y-m-d__H_i_s');
-        $htaccessFile = CMS_DIR.'.htaccess';
+        $htaccessBackupFile = VAR_DIR . 'backup/htaccess_' . date('Y-m-d__H_i_s');
+        $htaccessFile       = CMS_DIR . '.htaccess';
 
         //
         // generate backup
@@ -73,11 +73,18 @@ class Htaccess extends QUI\System\Console\Tool
 # (____\/_)(_______)\_______/(____\/_)(____\/_)(_______/|/   \__/
 #
 # Generated HTACCESS File via QUIQQER
-# Date: '.date('Y-m-d H:i:s').'
+# Date: ' . date('Y-m-d H:i:s') . '
 #
 # Command to create new htaccess:
 # php quiqqer.php --username="" --password="" --tool=quiqqer:htaccess
 #';
+
+        // custom htaccess
+        if (file_exists(ETC_DIR . 'htaccess.custom.php')) {
+            $htaccessContent .= "# custom htaccess\n";
+            $htaccessContent .= file_get_contents(ETC_DIR . 'htaccess.custom.php');
+            $htaccessContent .= "\n\n";
+        }
 
         $htaccessContent .= $this->_template();
 
@@ -94,14 +101,13 @@ class Htaccess extends QUI\System\Console\Tool
      */
     protected function _template()
     {
-        $URL_DIR = URL_DIR;
+        $URL_DIR     = URL_DIR;
         $URL_LIB_DIR = URL_LIB_DIR;
         $URL_BIN_DIR = URL_BIN_DIR;
         $URL_SYS_DIR = URL_SYS_DIR;
         $URL_VAR_DIR = URL_VAR_DIR;
-        
-        if ($URL_DIR != '/')
-        {
+
+        if ($URL_DIR != '/') {
             $URL_LIB_DIR = str_replace($URL_DIR, '', URL_LIB_DIR);
             $URL_BIN_DIR = str_replace($URL_DIR, '', URL_BIN_DIR);
             $URL_SYS_DIR = str_replace($URL_DIR, '', URL_SYS_DIR);
@@ -113,14 +119,14 @@ class Htaccess extends QUI\System\Console\Tool
         $URL_SYS_DIR = ltrim($URL_SYS_DIR, '/');
         $URL_VAR_DIR = ltrim($URL_VAR_DIR, '/');
 
-        $quiqqerLib = URL_OPT_DIR.'quiqqer/quiqqer/lib';
-        $quiqqerBin = URL_OPT_DIR.'quiqqer/quiqqer/bin';
-        $quiqqerSys = URL_OPT_DIR.'quiqqer/quiqqer/admin';
+        $quiqqerLib = URL_OPT_DIR . 'quiqqer/quiqqer/lib';
+        $quiqqerBin = URL_OPT_DIR . 'quiqqer/quiqqer/bin';
+        $quiqqerSys = URL_OPT_DIR . 'quiqqer/quiqqer/admin';
 
         $URL_SYS_ADMIN_DIR = trim($URL_SYS_DIR, '/');
 
         return "
-
+# quiqqer rewrite
 <IfModule mod_rewrite.c>
 
     SetEnv HTTP_MOD_REWRITE On
