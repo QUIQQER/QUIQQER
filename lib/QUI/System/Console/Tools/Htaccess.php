@@ -77,11 +77,14 @@ class Htaccess extends QUI\System\Console\Tool
 #
 # Command to create new htaccess:
 # php quiqqer.php --username="" --password="" --tool=quiqqer:htaccess
+#
+# How do I customize the .htaccess file:
+# https://dev.quiqqer.com/quiqqer/quiqqer/wikis/htaccess
 #';
 
         // custom htaccess
         if (file_exists(ETC_DIR . 'htaccess.custom.php')) {
-            $htaccessContent .= "# custom htaccess\n";
+            $htaccessContent .= "\n\n# custom htaccess\n";
             $htaccessContent .= file_get_contents(ETC_DIR . 'htaccess.custom.php');
             $htaccessContent .= "\n\n";
         }
