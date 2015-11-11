@@ -29,7 +29,7 @@ class Breadcrumb extends QUI\Control
             dirname(__FILE__) . '/Breadcrumb.css'
         );
 
-        $this->setAttribute( 'class', 'quiqqer-breadcrumb grid-100 grid-parent' );
+        $this->setAttribute( 'class', 'quiqqer-breadcrumb' );
     }
 
     /**
