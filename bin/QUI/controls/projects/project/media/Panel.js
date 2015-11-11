@@ -821,6 +821,10 @@ define('controls/projects/project/media/Panel', [
         $createBreadCrumb: function (items) {
             var i, len, Item;
 
+            if (!this.getAttribute('breadcrump')) {
+                return;
+            }
+
             var self       = this,
                 Breadcrumb = this.getBreadcrumb(),
 
