@@ -50,6 +50,7 @@ define('controls/projects/project/media/Input', [
             name  : '',
             styles: false,
 
+            fileid              : false,
             breadcrumb          : true,    // you can specified if the breadcrumb is shown or not
             selectable_types    : false,    // you can specified which types are selectable
             selectable_mimetypes: false  	// you can specified which mime types are selectable
@@ -157,6 +158,10 @@ define('controls/projects/project/media/Input', [
                             if ("project" in urlParams) {
                                 project = urlParams.project;
                             }
+                        }
+
+                        if (!fileid) {
+                            fileid = this.getAttribute('fileid');
                         }
 
                         new MediaPopup({
