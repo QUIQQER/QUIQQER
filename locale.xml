@@ -1127,6 +1127,15 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Wähle einen Seitentypen aus]]></de>
             <en><![CDATA[Choose a site type]]></en>
         </locale>
+        <locale name="projects.typewindow.btn.sitemapView">
+            <de><![CDATA[Sitemap-Anzeige]]></de>
+            <en><![CDATA[Sitemap view]]></en>
+        </locale>
+        <locale name="projects.typewindow.btn.detailView">
+            <de><![CDATA[Detail-Anzeige]]></de>
+            <en><![CDATA[Detail view]]></en>
+        </locale>
+
         <locale name="projects.project.panel.settings.btn.save">
             <de><![CDATA[Speichern]]></de>
             <en><![CDATA[Save]]></en>
