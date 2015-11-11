@@ -5,13 +5,14 @@
  * @author www.pcsg.de (Henning Leutz)
  *
  * @require qui/controls/windows/Popup
+ * @require qui/controls/windows/Confirm
  * @require qui/controls/buttons/Button
  * @require controls/projects/project/media/Panel
+ * @require controls/projects/Select
  * @require Projects
  * @require Locale
  * @require Ajax
  */
-
 define('controls/projects/project/media/Popup', [
 
     'qui/controls/windows/Popup',
