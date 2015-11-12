@@ -278,8 +278,9 @@ class Ajax extends QUI\QDOM
     public function writeException($Exception)
     {
         $return = array();
+        $class  = get_class($Exception);
 
-        switch (get_class($Exception)) {
+        switch ($class) {
             case 'PDOException':
             case 'QUI\\Database\\Exception':
                 // DB Fehler immer loggen
@@ -294,7 +295,7 @@ class Ajax extends QUI\QDOM
                     $return['Exception']['code']    = 500;
                 }
 
-                if (DEVELOPMENT || DEBUG_MODE) {
+                if ((DEVELOPMENT || DEBUG_MODE) && $class != 'PDOException') {
                     $return['Exception']['context'] = $Exception->getContext();
                 }
 
