@@ -106,7 +106,7 @@ define('controls/permissions/Permission', [
         /**
          * Saves the permissions
          *
-         * @return Promise
+         * @return {Promise}
          */
         save : function()
         {

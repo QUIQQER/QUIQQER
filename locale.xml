@@ -853,9 +853,31 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Save project permissions]]></en>
         </locale>
         <locale name="permission.control.btn.site.save">
+            <de><![CDATA[Speichern]]></de>
+            <en><![CDATA[Save]]></en>
+        </locale>
+        <locale name="permission.control.btn.site.save.title">
             <de><![CDATA[Seitenrechte speichern]]></de>
             <en><![CDATA[Save page permissions]]></en>
         </locale>
+
+        <locale name="permission.control.btn.site.save.recursive">
+            <de><![CDATA[Seitenrechte rekursiv anwenden]]></de>
+            <en><![CDATA[Apply page permissions recursively]]></en>
+        </locale>
+        <locale name="permission.control.site.recursive.win.title">
+            <de><![CDATA[Rechte rekursiv anwenden]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+        <locale name="permission.control.site.recursive.win.text">
+            <de><![CDATA[Rechte rekursiv anwenden]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+        <locale name="permission.control.site.recursive.win.information" html="true">
+            <de><![CDATA[Die aktuellen Rechte werden auf alle Unterseiten und auf die ausgewählte Seite angewendet.]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+
 
         <locale name="permissions.panel.btn.sitemap.alt">
             <de><![CDATA[Zugriffsrechte anzeigen]]></de>
