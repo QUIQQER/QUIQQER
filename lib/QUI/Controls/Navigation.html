@@ -20,13 +20,14 @@
 {/if}
 
 {if count( $children )}
-<ul class="quiqqer-navigation-level-{$level}">
+<ul class="fa-ul quiqqer-navigation-level-{$level}">
     {foreach from=$children item=Child}
-    <li>
+    <li><i class="fa-li fa  fa-angle-double-right "></i>
         {assign var=active value=""}
         {if $activeId == $Child->getId()}
             {assign var=active value="quiqqer-navigation-active"}
         {/if}
+
         <a href="{url site=$Child}" class="{$active}">
             <span class="quiqqer-navigation-text">
                 {$Child->getAttribute('title')}
