@@ -7,22 +7,28 @@
     {assign var=level value=$level+1}
 {/if}
 
-{if $this->getAttribute('homelink') && $level == 1}
-    {assign var=active value=""}
-    {if $activeId == $Site->getId()}
-        {assign var=active value="quiqqer-navigation-active"}
-    {/if}
-    <a href="{url site=$Site}" class="quiqqer-navigation-home {$active}">
-        <span class="quiqqer-navigation-text">
-            {$Site->getAttribute('title')}
-        </span>
-    </a>
-{/if}
+
 
 {if count( $children )}
 <ul class="fa-ul quiqqer-navigation-level-{$level}">
+    <li>
+        {if $this->getAttribute('homelink') && $level == 1}
+        {assign var=active value=""}
+        {if $activeId == $Site->getId()}
+        {assign var=active value="quiqqer-navigation-active"}
+        {/if}
+        <i class="fa-li fa  fa-home"></i>
+        <a href="{url site=$Site}" class="quiqqer-navigation-home {$active}">
+        <span class="quiqqer-navigation-text">
+            {$Site->getAttribute('title')}
+        </span>
+        </a>
+        {/if}
+    </li>
+
     {foreach from=$children item=Child}
-    <li><i class="fa-li fa  fa-angle-double-right "></i>
+    <li>
+        <i class="fa-li fa  fa-angle-double-right "></i>
         {assign var=active value=""}
         {if $activeId == $Child->getId()}
             {assign var=active value="quiqqer-navigation-active"}
