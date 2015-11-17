@@ -602,6 +602,13 @@ class Manager
             );
         }
 
+        if ($userData[0]['active'] == 0) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get('quiqqer/system', 'exception.login.fail'),
+                401
+            );
+        }
+
         if ($userData[0]['expire']
             && $userData[0]['expire'] != '0000-00-00 00:00:00'
             && strtotime($userData[0]['expire']) < time()
@@ -710,6 +717,15 @@ class Manager
         try {
 
             $User = $this->get(QUI::getSession()->get('uid'));
+
+            if (!$User->isActive()) {
+                QUI::getSession()->destroy();
+
+                throw new QUI\Exception(
+                    QUI::getLocale()->get('quiqqer/system', 'exception.user.inactive'),
+                    401
+                );
+            }
 
             // Mehrfachanmeldungen? Dann keine Prüfung
             if (QUI::conf('session', 'multible')) {

@@ -3938,6 +3938,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Der gewünschte Benutzer wurde im System nicht gefunden]]></de>
             <en><![CDATA[]]></en>
         </locale>
+        <locale name="exception.user.inactive">
+            <de><![CDATA[Ihr Benutzer ist inaktiv.]]></de>
+            <en><![CDATA[Your Account is inactive.]]></en>
+        </locale>
         <locale name="exception.lib.user.illegal.signs">
             <de><![CDATA[Der Benutzername enthält unerlaubte Zeichen.
                 Bitte verwenden Sie nur Buchstaben, Zahlen und folgende Zeichen _ ä ö ü ß]]></de>
