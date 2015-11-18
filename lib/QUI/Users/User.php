@@ -1000,8 +1000,6 @@ class User implements QUI\Interfaces\Users\User
             );
         }
 
-        QUI::getEvents()->fireEvent('userActivate', array($this));
-
         QUI::getDataBase()->update(
             Manager::Table(),
             array('active' => 1),
@@ -1009,6 +1007,18 @@ class User implements QUI\Interfaces\Users\User
         );
 
         $this->_active = true;
+
+        try {
+
+            QUI::getEvents()->fireEvent('userActivate', array($this));
+
+        } catch (QUI\Exception $Exception) {
+
+            QUI\System\Log::addError($Exception->getMessage(), array(
+                'UserId'        => $this->getId(),
+                'ExceptionType' => $Exception->getType()
+            ));
+        }
 
         return $this->_active;
     }
