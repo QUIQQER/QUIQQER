@@ -1012,7 +1012,7 @@ class Edit extends Site
         }
 
         if (!empty($newPermissions)) {
-            $Child = $this->getChild($newId);
+            $Child = new Edit($this->getProject(), $newId);
 
             $PermManager->setSitePermissions(
                 $Child,

@@ -259,7 +259,11 @@ class Permission
 
                 // groups ids from the user
                 $group_ids = $User->getGroups(false);
-                $group_ids = explode(',', $group_ids);
+
+                if (!is_array($group_ids)) {
+                    $group_ids = explode(',', $group_ids);
+                }
+
 
                 $user_group_ids = array();
 
