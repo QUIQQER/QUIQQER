@@ -584,7 +584,7 @@ class Manager
 
         // check user data
         $userData = QUI::getDataBase()->fetch(array(
-            'select' => array('id', 'expire', 'secHash'),
+            'select' => array('id', 'expire', 'secHash', 'active'),
             'from'   => self::Table(),
             'where'  => array(
                 'id' => $userId
