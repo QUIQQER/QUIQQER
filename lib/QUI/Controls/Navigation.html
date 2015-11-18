@@ -17,35 +17,35 @@
     {if $activeId == $Site->getId()}
     {assign var=active value="quiqqer-navigation-active"}
     {/if}
-    <li>
-        <i class="fa-li fa  fa-home"></i>
-        <a href="{url site=$Site}" class="quiqqer-navigation-home {$active}">
-        <span class="quiqqer-navigation-text">
-            {$Site->getAttribute('title')}
+    <li class="quiqqer-navigation-li">
+        <span class="quiqqer-navigation-entry">
+            <a href="{url site=$Site}" class="quiqqer-navigation-home {$active} quiqqer-navigation-link">
+                {$Site->getAttribute('title')}
+            </a>
+            <i class="fa-nav fa  fa-home"></i>
         </span>
-        </a>
     </li>
     {/if}
 
 
     {foreach from=$children item=Child}
-    <li>
-{*
-        {assign var=subnavigation value=$Child->getNavigation()}
-        {if count ( $subnavigation )}
-*}
-        <i class="fa-li fa  fa-angle-right"></i>
+    <li class="quiqqer-navigation-li">
 
         {assign var=active value=""}
         {if $activeId == $Child->getId()}
             {assign var=active value="quiqqer-navigation-active"}
         {/if}
-
-        <a href="{url site=$Child}" class="{$active}">
-            <span class="quiqqer-navigation-text">
+        <span class="quiqqer-navigation-entry">
+            <a href="{url site=$Child}" class="{$active} quiqqer-navigation-link">
                 {$Child->getAttribute('title')}
-            </span>
-        </a>
+            </a>
+            {assign var=subnavigation value=$Child->getNavigation()}
+            {if count ( $subnavigation )}
+            <i class="fa fa-nav fa-angle-double-down" style="cursor: pointer;"></i>
+            {else}
+            <i class="fa fa-nav fa-angle-right"></i>
+            {/if}
+        </span>
 
         {if $levels === false || $levels-1 >= $level}
             {include file=$navTemplate
