@@ -47,20 +47,21 @@ class Auth implements QUI\Interfaces\Users\Auth
             'select' => array('password'),
             'from'   => QUI::getUsers()->Table(),
             'where'  => array(
-                'id'       => $this->getUserId()
+                'id' => $this->getUserId()
             ),
             'limit'  => 1
         ));
 
         if (empty($userData)
             || !isset($userData[0]['password'])
-            || empty($userData[0]['password'])) {
+            || empty($userData[0]['password'])
+        ) {
             return false;
         }
 
         // retrieve salt from saved password
         $savedPassword = $userData[0]['password'];
-        $salt = mb_substr($savedPassword, 0, SALT_LENGTH);
+        $salt          = mb_substr($savedPassword, 0, SALT_LENGTH);
 
         // generate password with given password and salt
         $password = Manager::genHash($password, $salt);
@@ -80,7 +81,7 @@ class Auth implements QUI\Interfaces\Users\Auth
         }
 
         $username = $this->_username;
-        $User = false;
+        $User     = false;
 
         /**
          * Standard Authentifizierung

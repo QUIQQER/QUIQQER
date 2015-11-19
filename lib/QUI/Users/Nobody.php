@@ -97,7 +97,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::activate()
      *
-     * @param String $code - activasion code [optional]
+     * @param string $code - activasion code [optional]
      *
      * @return bool
      */
@@ -195,7 +195,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::getType()
      *
-     * @return String
+     * @return string
      */
     public function getType()
     {
@@ -219,7 +219,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::getName()
      *
-     * @return String
+     * @return string
      */
     public function getName()
     {
@@ -231,7 +231,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::getUsername()
      *
-     * @return String
+     * @return string
      */
     public function getUsername()
     {
@@ -241,7 +241,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
     /**
      * Return the user lang
      *
-     * @return String
+     * @return string
      */
     public function getLang()
     {
@@ -275,6 +275,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * \QUI\Users\Nobody cannot have a address
      *
      * @param integer $id
+     * @return void
      *
      * @throws \QUI\Exception
      * @ignore
@@ -377,9 +378,9 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::getGroups()
      *
-     * @param Bool $array - returns the groups as objects (true) or as an array (false)
+     * @param boolean $array - returns the groups as objects (true) or as an array (false)
      *
-     * @return bool
+     * @return boolean
      */
     public function getGroups($array = true)
     {
@@ -398,9 +399,9 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::getAvatar()
      *
-     * @param Bool $url - get the avatar with the complete url string
+     * @param boolean $url - get the avatar with the complete url string
      *
-     * @return bool
+     * @return boolean
      */
     public function getAvatar($url = false)
     {
@@ -412,10 +413,10 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::getPermission()
      *
-     * @param String $right
-     * @param array $ruleset - optional, you can specific a ruleset, a rules = array with rights
+     * @param string $right
+     * @param array|boolean $ruleset - optional, you can specific a ruleset, a rules = array with rights
      *
-     * @return bool
+     * @return boolean
      *
      */
     public function getPermission($right, $ruleset = false)
@@ -429,8 +430,8 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::setExtra()
      *
-     * @param String $field
-     * @param String|Integer|array $value
+     * @param string $field
+     * @param string|integer|array $value
      *
      * @return bool
      */
@@ -446,7 +447,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @param \QUI\Projects\Project $Project
      *
-     * @return bool
+     * @return boolean
      */
     public function loadExtra(QUI\Projects\Project $Project)
     {
@@ -458,8 +459,8 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::setPassword()
      *
-     * @param String $new - new password
-     * @param \QUI\Users\User|bool $ParentUser
+     * @param string $new - new password
+     * @param \QUI\Users\User|boolean $ParentUser
      *
      * @return bool
      */
@@ -473,8 +474,8 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::checkPassword()
      *
-     * @param String $pass - Password
-     * @param Bool $encrypted - is the given password already encrypted?
+     * @param string $pass - Password
+     * @param boolean $encrypted - is the given password already encrypted?
      *
      * @return false
      */

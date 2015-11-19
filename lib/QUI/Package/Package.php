@@ -18,7 +18,7 @@ use QUI\Utils\XML;
  *
  * @event  onPackageSetup [ this ]
  * @event  onPackageInstall [ this ]
- * @event  onPackageUninstall [ String PackageName ]
+ * @event  onPackageUninstall [ string PackageName ]
  */
 class Package extends QUI\QDOM
 {
@@ -60,7 +60,7 @@ class Package extends QUI\QDOM
     /**
      * constructor
      *
-     * @param String $package - Name of the Package
+     * @param string $package - Name of the Package
      *
      * @throws QUI\Exception
      */
@@ -101,7 +101,7 @@ class Package extends QUI\QDOM
     /**
      * Return the system path of the package
      *
-     * @return String
+     * @return string
      */
     public function getDir()
     {
@@ -126,7 +126,7 @@ class Package extends QUI\QDOM
     /**
      * Return the system path of the package
      *
-     * @return String
+     * @return string
      */
     public function getName()
     {
@@ -136,7 +136,7 @@ class Package extends QUI\QDOM
     /**
      * Return the package config
      *
-     * @return QUI\Config|Bool
+     * @return QUI\Config|boolean
      */
     public function getConfig()
     {

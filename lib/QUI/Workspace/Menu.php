@@ -19,7 +19,7 @@ use QUI\Utils\XML;
 class Menu
 {
     /**
-     * @return Array
+     * @return array
      */
     public function getMenu()
     {
@@ -121,6 +121,7 @@ class Menu
                 $menuParent = $Window->getAttribute('menu-parent');
 
                 if (isset($windowList[$winName])) {
+                    /* @var $Item Menuitem */
                     $Item  = $windowList[$winName];
                     $files = $Item->getAttribute('qui-xml-file');
 

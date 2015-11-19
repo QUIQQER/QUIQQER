@@ -151,7 +151,7 @@ class Handler
     /**
      * Add an information for an user
      *
-     * @param String $str
+     * @param string $str
      */
     public function addAttention($str)
     {
@@ -165,7 +165,7 @@ class Handler
     /**
      * Add an error for an user
      *
-     * @param String $str
+     * @param string $str
      */
     public function addError($str)
     {
@@ -179,7 +179,7 @@ class Handler
     /**
      * Add a information for an user
      *
-     * @param String $str
+     * @param string $str
      */
     public function addInformation($str)
     {
@@ -193,7 +193,7 @@ class Handler
     /**
      * Add a success message for an user
      *
-     * @param String $str
+     * @param string $str
      */
     public function addSuccess($str)
     {
@@ -212,12 +212,9 @@ class Handler
      */
     public function sendMessage(User $User, Message $Message)
     {
-        $message = $Message->getMessage();
-        $message = Orthos::clearMySQL($message);
-
         QUI::getDataBase()->insert(self::Table(), array(
             'uid'     => $User->getId(),
-            'message' => $message,
+            'message' => $Message->getMessage(),
             'mcode'   => (int)$Message->getCode(),
             'mtime'   => (int)$Message->getAttribute('time'),
             'mtype'   => $Message->getType()
@@ -228,7 +225,7 @@ class Handler
      * Send an information to an user and save it to the database
      *
      * @param User   $User
-     * @param String $str
+     * @param string $str
      */
     public function sendAttention(User $User, $str)
     {
@@ -244,7 +241,7 @@ class Handler
      * Send an error to an user and save it to the database
      *
      * @param User   $User
-     * @param String $str
+     * @param string $str
      */
     public function sendError(User $User, $str)
     {
@@ -260,7 +257,7 @@ class Handler
      * Send a information to an user and save it to the database
      *
      * @param User   $User
-     * @param String $str
+     * @param string $str
      */
     public function sendInformation(User $User, $str)
     {
@@ -276,7 +273,7 @@ class Handler
      * Send a success message to an user and save it to the database
      *
      * @param User   $User
-     * @param String $str
+     * @param string $str
      */
     public function sendSuccess(User $User, $str)
     {

@@ -7,9 +7,9 @@
 /**
  * Autoloader for the QUIQQER CMS
  *
- * @param String $classname
+ * @param string $classname
  *
- * @return Bool
+ * @return boolean
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
@@ -30,7 +30,7 @@ if (function_exists('spl_autoload_register')) {
      * PHP Autoloader
      * Call the QUIQQER Autoloader function
      *
-     * @param String $classname
+     * @param string $classname
      */
     function __autoload($classname)
     {
@@ -41,9 +41,9 @@ if (function_exists('spl_autoload_register')) {
 /**
  * Main QUIQQER Autoload function
  *
- * @param String $classname
+ * @param string $classname
  *
- * @return bool
+ * @return boolean
  */
 function __quiqqer_autoload($classname)
 {
@@ -56,11 +56,11 @@ function __quiqqer_autoload($classname)
  * @author www.pcsg.de (Henning Leutz)
  *
  * @param Integer $errno
- * @param String  $errstr
- * @param String  $errfile
- * @param String  $errline
+ * @param string  $errstr
+ * @param string  $errfile
+ * @param string  $errline
  *
- * @return bool
+ * @return boolean
  * @throws ErrorException
  */
 function exception_error_handler($errno, $errstr, $errfile, $errline)

@@ -21,7 +21,7 @@ class Site
      * Set a attribute recursive from its parents if the attribute is not set
      *
      * @param \QUI\Projects\Site $Site
-     * @param String             $attribute
+     * @param string             $attribute
      */
     static function setRecursivAttribute(\QUI\Projects\Site $Site, $attribute)
     {
@@ -48,5 +48,4 @@ class Site
             $Parent = $Parent->getParent();
         }
     }
-
 }

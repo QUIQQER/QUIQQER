@@ -57,7 +57,7 @@ class Media extends QUI\QDOM
      * Here are all files located
      * (without the CMS_DIR)
      *
-     * @return String - path to the directory, relative to the system
+     * @return string - path to the directory, relative to the system
      */
     public function getPath()
     {
@@ -69,7 +69,7 @@ class Media extends QUI\QDOM
      * Here are all files located
      * (with the CMS_DIR)
      *
-     * @return String - path to the directory
+     * @return string - path to the directory
      */
     public function getFullPath()
     {
@@ -79,7 +79,7 @@ class Media extends QUI\QDOM
     /**
      * Return the cache directory from the media
      *
-     * @return String - path to the directory, relative to the system
+     * @return string - path to the directory, relative to the system
      */
     public function getCacheDir()
     {
@@ -90,7 +90,7 @@ class Media extends QUI\QDOM
      * Return the complete cache path from the media
      * (with the CMS_DIR)
      *
-     * @return String - path to the directory, relative to the system
+     * @return string - path to the directory, relative to the system
      */
     public function getFullCachePath()
     {
@@ -100,7 +100,7 @@ class Media extends QUI\QDOM
     /**
      * Return the DataBase table name
      *
-     * @param String|Bool $type - (optional) standard=false; other options: relations
+     * @param string|boolean $type - (optional) standard=false; other options: relations
      *
      * @return string
      */
@@ -351,7 +351,7 @@ class Media extends QUI\QDOM
     /**
      * Return a file from its file oath
      *
-     * @param String $filepath
+     * @param string $filepath
      *
      * @return QUI\Interfaces\Projects\Media\File
      * @throws QUI\Exception
@@ -387,7 +387,7 @@ class Media extends QUI\QDOM
      * Replace a file with another
      *
      * @param Integer $id
-     * @param String  $file - Path to the new file
+     * @param string  $file - Path to the new file
      *
      * @return QUI\Interfaces\Projects\Media\File
      * @throws \QUI\Exception

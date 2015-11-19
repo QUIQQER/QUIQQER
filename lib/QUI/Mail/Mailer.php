@@ -30,35 +30,35 @@ class Mailer extends QUI\QDOM
     /**
      * list of recipients
      *
-     * @var Array
+     * @var array
      */
     protected $_recipients = array();
 
     /**
      * list of reply
      *
-     * @var Array
+     * @var array
      */
     protected $_reply = array();
 
     /**
      * list of cc
      *
-     * @var Array
+     * @var array
      */
     protected $_cc = array();
 
     /**
      * list of bcc
      *
-     * @var Array
+     * @var array
      */
     protected $_bcc = array();
 
     /**
      * list of attachments
      *
-     * @var Array
+     * @var array
      */
     protected $_attachments = array();
 
@@ -171,7 +171,7 @@ class Mailer extends QUI\QDOM
     /**
      * Mail params to array
      *
-     * @return Array
+     * @return array
      */
     public function toArray()
     {
@@ -197,7 +197,7 @@ class Mailer extends QUI\QDOM
     /**
      * Set the from mail
      *
-     * @param String $from - mail@domain.net
+     * @param string $from - mail@domain.net
      */
     public function setFrom($from)
     {
@@ -207,7 +207,7 @@ class Mailer extends QUI\QDOM
     /**
      * Set the from name for the mail
      *
-     * @param String $fromName - Firstname Lastname
+     * @param string $fromName - Firstname Lastname
      */
     public function setFromName($fromName)
     {
@@ -217,7 +217,7 @@ class Mailer extends QUI\QDOM
     /**
      * Set the mail subject
      *
-     * @param String $subject
+     * @param string $subject
      */
     public function setSubject($subject)
     {
@@ -227,7 +227,7 @@ class Mailer extends QUI\QDOM
     /**
      * set the html flag, is html mail or not
      *
-     * @param Bool $html - is the mail a html mail or not?
+     * @param boolean $html - is the mail a html mail or not?
      */
     public function setHTML($html)
     {
@@ -237,7 +237,7 @@ class Mailer extends QUI\QDOM
     /**
      * Set the body
      *
-     * @param String $html
+     * @param string $html
      */
     public function setBody($html)
     {
@@ -262,7 +262,7 @@ class Mailer extends QUI\QDOM
     /**
      * Add an recipient
      *
-     * @param String $email - E-Mail
+     * @param string $email - E-Mail
      */
     public function addRecipient($email)
     {
@@ -277,7 +277,7 @@ class Mailer extends QUI\QDOM
     /**
      * Add reply to address
      *
-     * @param String $email - E-Mail
+     * @param string $email - E-Mail
      */
     public function addReplyTo($email)
     {
@@ -292,7 +292,7 @@ class Mailer extends QUI\QDOM
     /**
      * Add cc address
      *
-     * @param String $email - E-Mail
+     * @param string $email - E-Mail
      */
     public function addCC($email)
     {
@@ -307,7 +307,7 @@ class Mailer extends QUI\QDOM
     /**
      * Add bcc address
      *
-     * @param String $email - E-Mail
+     * @param string $email - E-Mail
      */
     public function addBCC($email)
     {
@@ -322,9 +322,9 @@ class Mailer extends QUI\QDOM
     /**
      * Add a file to the mail
      *
-     * @param String $file - path to the file
+     * @param string $file - path to the file
      *
-     * @return Bool
+     * @return boolean
      */
     public function addAttachment($file)
     {
@@ -340,7 +340,7 @@ class Mailer extends QUI\QDOM
     /**
      * Add a files to the mail
      *
-     * @param Array|String $files   - array with file paths eq:
+     * @param array|string $files   - array with file paths eq:
      *                              addAttachments( array('path/file1.end', 'path/file2.end') )
      *                              addAttachments( 'path/file1.end' )
      */

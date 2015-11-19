@@ -197,7 +197,7 @@ class Edit extends Site
     /**
      * Activate a site
      *
-     * @param QUI\Interfaces\Users\User|Bool $User - [optional] User to save
+     * @param QUI\Interfaces\Users\User|boolean $User - [optional] User to save
      *
      * @throws QUI\Exception
      */
@@ -246,7 +246,7 @@ class Edit extends Site
     /**
      * Deactivate a site
      *
-     * @param QUI\Interfaces\Users\User|Bool $User - [optional] User to save
+     * @param QUI\Interfaces\Users\User|boolean $User - [optional] User to save
      *
      * @throws QUI\Exception
      */
@@ -360,9 +360,9 @@ class Edit extends Site
     /**
      * Saves the site
      *
-     * @param QUI\Interfaces\Users\User|Bool $SaveUser - [optional] User to save
+     * @param QUI\Interfaces\Users\User|boolean $SaveUser - [optional] User to save
      *
-     * @return Bool
+     * @return boolean
      * @throws QUI\Exception
      */
     public function save($SaveUser = false)
@@ -693,7 +693,7 @@ class Edit extends Site
      * @param Integer $pid - Parent - ID
      * @param array $params
      *
-     * @return Array
+     * @return array
      */
     public function getChildrenIdsFromParentId($pid, $params = array())
     {
@@ -707,7 +707,7 @@ class Edit extends Site
             $where = array_merge($where_1, $params['where']);
 
         } elseif (isset($params['where']) && is_string($params['where'])) {
-            // @todo where als param String
+            // @todo where als param string
             QUI\System\Log::addDebug('WIRD NICHT verwendet' . $params['where']);
             $where = $where_1;
         } else {
@@ -742,9 +742,9 @@ class Edit extends Site
     /**
      * Checks if a site with the name in the children exists
      *
-     * @param String $name
+     * @param string $name
      *
-     * @return Bool
+     * @return boolean
      */
     public function existNameInChildren($name)
     {
@@ -776,12 +776,12 @@ class Edit extends Site
     /**
      * Return the children
      *
-     * @param Array $params Parameter für die Childrenausgabe
+     * @param array $params Parameter für die Childrenausgabe
      *                        $params['where']
      *                        $params['limit']
-     * @param Bool $recursiv Rekursiv alle Kinder IDs bekommen
+     * @param boolean $recursiv Rekursiv alle Kinder IDs bekommen
      *
-     * @return Array;
+     * @return array;
      */
     public function getChildren($params = array(), $recursiv = false)
     {
@@ -839,10 +839,10 @@ class Edit extends Site
     /**
      * Fügt eine Verknüpfung zu einer anderen Sprache ein
      *
-     * @param String $lang - Sprache zu welcher verknüpft werden soll
-     * @param String $id - ID zu welcher verknüpft werden soll
+     * @param string $lang - Sprache zu welcher verknüpft werden soll
+     * @param string $id - ID zu welcher verknüpft werden soll
      *
-     * @return Bool
+     * @return boolean
      */
     public function addLanguageLink($lang, $id)
     {
@@ -886,9 +886,9 @@ class Edit extends Site
     /**
      * Entfernt eine Verknüpfung zu einer Sprache
      *
-     * @param String $lang
+     * @param string $lang
      *
-     * @return Bool
+     * @return boolean
      */
     public function removeLanguageLink($lang)
     {
@@ -912,7 +912,7 @@ class Edit extends Site
      *
      * @param array $params
      * @param array $childPermissions - [optional] permissions for the child
-     * @param Bool|QUI\Users\User|QUI\Users\SystemUser $User - [optional] the user which create the site, optional
+     * @param boolean|QUI\Users\User|QUI\Users\SystemUser $User - [optional] the user which create the site, optional
      *
      * @return Int
      * @throws QUI\Exception
@@ -1034,7 +1034,7 @@ class Edit extends Site
      *
      * @param Integer $pid - Parent ID
      *
-     * @return Bool
+     * @return boolean
      */
     public function move($pid)
     {
@@ -1043,7 +1043,7 @@ class Edit extends Site
         $Project = $this->getProject();
         $Parent  = $Project->get((int)$pid);// Prüfen ob das Parent existiert
 
-        $children = $this->getChildrenIds($this->getId(), array(), true);
+        $children = $this->getChildrenIds();
 
         if (!in_array($pid, $children) && $pid != $this->getId()) {
             QUI::getDataBase()->update(
@@ -1073,7 +1073,7 @@ class Edit extends Site
      * Kopiert die Seite
      *
      * @param Integer $pid - ID des Parents unter welches die Kopie eingehängt werden soll
-     * @param \QUI\Projects\Project|Boolean $Project - (optional) Parent Project
+     * @param \QUI\Projects\Project|boolean $Project - (optional) Parent Project
      *
      * @return QUI\Projects\Site\Edit
      * @throws QUI\Exception
@@ -1155,7 +1155,7 @@ class Edit extends Site
      *
      * @param Int $pid
      *
-     * @return Bool
+     * @return boolean
      * @throws QUI\Exception
      */
     public function linked($pid)
@@ -1204,10 +1204,10 @@ class Edit extends Site
      * Löscht eine Verknüpfung
      *
      * @param Integer $pid - Parent ID
-     * @param Integer|Bool $all - (optional) Alle Verknüpfungen und Original Seite löschen
-     * @param Bool $orig - (optional) Delete the original site, too
+     * @param Integer|boolean $all - (optional) Alle Verknüpfungen und Original Seite löschen
+     * @param boolean $orig - (optional) Delete the original site, too
      *
-     * @return Bool
+     * @return boolean
      *
      * @todo refactor -> use PDO
      */
@@ -1352,7 +1352,7 @@ class Edit extends Site
      *
      * @todo muss überarbeitet werden, file operationen?
      *
-     * @return Bool - true if it worked, false if it not worked
+     * @return boolean - true if it worked, false if it not worked
      */
     public function lock()
     {
@@ -1421,9 +1421,9 @@ class Edit extends Site
     /**
      * Add an user to the permission
      *
-     * @param String $permission - name of the permission
+     * @param string $permission - name of the permission
      * @param User $User - User Object
-     * @param Boolean|\QUI\Users\User $EditUser
+     * @param boolean|\QUI\Users\User $EditUser
      */
     public function addUserToPermission(User $User, $permission, $EditUser = false)
     {
@@ -1434,8 +1434,8 @@ class Edit extends Site
      * add an group to the permission
      *
      * @param Group $Group
-     * @param String $permission
-     * @param Boolean|\QUI\Users\User $EditUser
+     * @param string $permission
+     * @param boolean|\QUI\Users\User $EditUser
      */
     public function addgroupToPermission(Group $Group, $permission, $EditUser = false)
     {
@@ -1445,9 +1445,9 @@ class Edit extends Site
     /**
      * Remove an user from the permission
      *
-     * @param String $permission - name of the permission
+     * @param string $permission - name of the permission
      * @param User $User - User Object#
-     * @param Boolean|\QUI\Users\User $EditUser
+     * @param boolean|\QUI\Users\User $EditUser
      */
     public function removeUserFromSitePermission(User $User, $permission, $EditUser = false)
     {
@@ -1458,8 +1458,8 @@ class Edit extends Site
      * Remove a group from the permission
      *
      * @param Group $Group
-     * @param String $permission - name of the permission
-     * @param Boolean|\QUI\Users\User $EditUser
+     * @param string $permission - name of the permission
+     * @param boolean|\QUI\Users\User $EditUser
      */
     public function removeGroupFromSitePermission(Group $Group, $permission, $EditUser = false)
     {
@@ -1473,10 +1473,10 @@ class Edit extends Site
     /**
      * Säubert eine URL macht sie schön
      *
-     * @param String $url
+     * @param string $url
      * @param QUI\Projects\Project $Project - Project clear extension
      *
-     * @return String
+     * @return string
      * @deprecated use QUI\Projects\Site\Utils::clearUrl
      */
     static function clearUrl($url, QUI\Projects\Project $Project)
@@ -1487,10 +1487,10 @@ class Edit extends Site
     /**
      * Prüft ob der Name erlaubt ist
      *
-     * @param String $name
+     * @param string $name
      *
      * @throws \QUI\Exception
-     * @return Bool
+     * @return boolean
      * @deprecated use \QUI\Projects\Site\Utils::checkName
      */
     static function checkName($name)

@@ -35,7 +35,7 @@ class Address extends QUI\QDOM
      * constructor
      *
      * @param QUI\Users\User $User - User
-     * @param Integer        $id   - Address id
+     * @param Integer $id - Address id
      *
      * @throws QUI\Exception
      */
@@ -51,7 +51,7 @@ class Address extends QUI\QDOM
         ));
 
         $this->_User = $User;
-        $this->_id = (int)$id;
+        $this->_id   = (int)$id;
 
         if (!isset($result[0])) {
             throw new QUI\Exception(
@@ -81,7 +81,7 @@ class Address extends QUI\QDOM
     /**
      * Telefon Nummer hinzufügen
      *
-     * @param Array $phone
+     * @param array $phone
      *
      * @example addPhone(array(
      *        'no'   => '555 29 29',
@@ -128,7 +128,7 @@ class Address extends QUI\QDOM
      * Editier ein bestehenden Eintrag
      *
      * @param integer $index
-     * @param string  $phone
+     * @param string $phone
      */
     public function editPhone($index, $phone)
     {
@@ -164,7 +164,7 @@ class Address extends QUI\QDOM
     /**
      * Telefon Liste
      *
-     * @return Array
+     * @return array
      */
     public function getPhoneList()
     {
@@ -222,7 +222,7 @@ class Address extends QUI\QDOM
      * E-Mail Eintrag editieren
      *
      * @param integer $index - index of the mail
-     * @param string  $mail  - E-Mail (eq: my@mail.com)
+     * @param string $mail - E-Mail (eq: my@mail.com)
      *
      * @throws QUI\Exception
      */
@@ -238,7 +238,7 @@ class Address extends QUI\QDOM
         }
 
         $index = (int)$index;
-        $list = $this->getMailList();
+        $list  = $this->getMailList();
 
         $list [$index] = $mail;
 
@@ -248,7 +248,7 @@ class Address extends QUI\QDOM
     /**
      * E-Mail Liste
      *
-     * @return Array
+     * @return array
      */
     public function getMailList()
     {
@@ -300,7 +300,7 @@ class Address extends QUI\QDOM
      */
     public function save()
     {
-        $mail = json_encode($this->getMailList());
+        $mail  = json_encode($this->getMailList());
         $phone = json_encode($this->getPhoneList());
 
         QUI::getDataBase()->update(
@@ -341,9 +341,9 @@ class Address extends QUI\QDOM
     /**
      * Adressen display
      *
-     * @param Bool $active - Setzt den Eintrag auf checked (optional)
+     * @param boolean $active - Setzt den Eintrag auf checked (optional)
      *
-     * @return String - HTML <address>
+     * @return string - HTML <address>
      */
     public function getDisplay($active = false)
     {
@@ -356,17 +356,17 @@ class Address extends QUI\QDOM
             'Countries' => new QUI\Countries\Manager()
         ));
 
-        return $Engine->fetch(SYS_DIR.'template/users/address/display.html');
+        return $Engine->fetch(SYS_DIR . 'template/users/address/display.html');
     }
 
     /**
-     * Addresse als JSON String
+     * Addresse als JSON string
      *
-     * @return String
+     * @return string
      */
     public function toJSON()
     {
-        $attributes = $this->getAttributes();
+        $attributes       = $this->getAttributes();
         $attributes['id'] = $this->getId();
 
         return json_encode($attributes);

@@ -70,10 +70,10 @@ class Utils
      * Tab contents of a group Tab / Button
      *
      * @param Integer $gid    - Group ID
-     * @param String  $plugin - Plugin
-     * @param String  $tab    - Tabname
+     * @param string  $plugin - Plugin
+     * @param string  $tab    - Tabname
      *
-     * @return String
+     * @return string
      */
     static function getTab($gid, $plugin, $tab)
     {

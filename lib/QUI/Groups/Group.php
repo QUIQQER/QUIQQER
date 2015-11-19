@@ -120,7 +120,7 @@ class Group extends QUI\QDOM
      * Deletes the group and sub-groups
      *
      * @todo alle Beziehungen in den Seiten müssen neu gesetzt werden
-     * @return Bool
+     * @return boolean
      * @throws QUI\Exception
      */
     public function delete()
@@ -165,10 +165,10 @@ class Group extends QUI\QDOM
      * set a group attribute
      * ID cannot be set
      *
-     * @param String $key - Attribute name
-     * @param String|Bool|Integer|array $value - value
+     * @param string $key - Attribute name
+     * @param string|boolean|Integer|array $value - value
      *
-     * @return Bool
+     * @return boolean
      */
     public function setAttribute($key, $value)
     {
@@ -247,7 +247,7 @@ class Group extends QUI\QDOM
     /**
      * Is the group active?
      *
-     * @return Bool
+     * @return boolean
      */
     public function isActive()
     {
@@ -257,9 +257,9 @@ class Group extends QUI\QDOM
     /**
      * Has the group the right?
      *
-     * @param String $right
+     * @param string $right
      *
-     * @return Bool|String
+     * @return boolean|string
      * @deprecated
      */
     public function hasRight($right)
@@ -270,9 +270,9 @@ class Group extends QUI\QDOM
     /**
      * Has the group the permission?
      *
-     * @param String $permission
+     * @param string $permission
      *
-     * @return Bool|String
+     * @return boolean|string
      */
     public function hasPermission($permission)
     {
@@ -284,7 +284,7 @@ class Group extends QUI\QDOM
     /**
      * return all rights
      *
-     * @return Array
+     * @return array
      */
     public function getRights()
     {
@@ -294,9 +294,9 @@ class Group extends QUI\QDOM
     /**
      * Exist the right in the group?
      *
-     * @param String $right
+     * @param string $right
      *
-     * @return Bool
+     * @return boolean
      */
     public function existsRight($right)
     {
@@ -314,7 +314,7 @@ class Group extends QUI\QDOM
     /**
      * set a right to the group
      *
-     * @param Array $rights
+     * @param array $rights
      *
      * @throws QUI\Exception
      */
@@ -339,9 +339,9 @@ class Group extends QUI\QDOM
     /**
      * return the users from the group
      *
-     * @param Array $params - SQL Params
+     * @param array $params - SQL Params
      *
-     * @return Array
+     * @return array
      */
     public function getUsers($params = array())
     {
@@ -356,7 +356,7 @@ class Group extends QUI\QDOM
     /**
      * search a user by name
      *
-     * @param String $username
+     * @param string $username
      *
      * @return QUI\Users\User
      * @throws QUI\Exception
@@ -388,7 +388,7 @@ class Group extends QUI\QDOM
     /**
      * returns the user count
      *
-     * @param Array $params - SQL Params
+     * @param array $params - SQL Params
      *
      * @return Integer
      */
@@ -431,9 +431,9 @@ class Group extends QUI\QDOM
      * Checks if the ID is from a parent group
      *
      * @param Integer $id - ID from parent
-     * @param Bool $recursiv - checks recursive or not
+     * @param boolean $recursiv - checks recursive or not
      *
-     * @return Bool
+     * @return boolean
      */
     public function isParent($id, $recursiv = false)
     {
@@ -455,7 +455,7 @@ class Group extends QUI\QDOM
     /**
      * return the parent group
      *
-     * @param Bool $obj - Parent Objekt (true) oder Parent-ID (false) -> (optional = true)
+     * @param boolean $obj - Parent Objekt (true) oder Parent-ID (false) -> (optional = true)
      *
      * @return Object|Integer|false
      * @throws QUI\Exception
@@ -549,9 +549,9 @@ class Group extends QUI\QDOM
     /**
      * Returns the sub groups
      *
-     * @param Array $params - Where Parameter
+     * @param array $params - Where Parameter
      *
-     * @return Array
+     * @return array
      */
     public function getChildren($params = array())
     {
@@ -579,10 +579,10 @@ class Group extends QUI\QDOM
     /**
      * return the subgroup ids
      *
-     * @param Bool $recursiv - recursiv true / false
+     * @param boolean $recursiv - recursiv true / false
      * @param      $params - SQL Params (limit, order)
      *
-     * @return Array
+     * @return array
      */
     public function getChildrenIds($recursiv = false, $params = array())
     {
@@ -655,7 +655,7 @@ class Group extends QUI\QDOM
     /**
      * Create a subgroup
      *
-     * @param String $name - name of the subgroup
+     * @param string $name - name of the subgroup
      *
      * @return QUI\Groups\Group
      * @throws QUI\Exception

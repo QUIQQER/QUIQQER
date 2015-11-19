@@ -44,7 +44,7 @@ abstract class Item extends QUI\QDOM
     /**
      * Path to the real file
      *
-     * @var String
+     * @var string
      */
     protected $_file;
 
@@ -335,7 +335,7 @@ abstract class Item extends QUI\QDOM
     /**
      * Returns if the file is active or not
      *
-     * @return Bool
+     * @return boolean
      */
     public function isActive()
     {
@@ -345,7 +345,7 @@ abstract class Item extends QUI\QDOM
     /**
      * Returns if the file is deleted or not
      *
-     * @return Bool
+     * @return boolean
      */
     public function isDeleted()
     {
@@ -355,7 +355,7 @@ abstract class Item extends QUI\QDOM
     /**
      * Rename the File
      *
-     * @param String $newname - The new name what the file get
+     * @param string $newname - The new name what the file get
      *
      * @throws \QUI\Exception
      */
@@ -513,7 +513,7 @@ abstract class Item extends QUI\QDOM
     /**
      * Return the path of the file, without host, url dir or cms dir
      *
-     * @return String
+     * @return string
      */
     public function getPath()
     {
@@ -523,7 +523,7 @@ abstract class Item extends QUI\QDOM
     /**
      * Return the fullpath of the file
      *
-     * @return String
+     * @return string
      */
     public function getFullPath()
     {
@@ -533,9 +533,9 @@ abstract class Item extends QUI\QDOM
     /**
      * Returns the url from the file
      *
-     * @param Bool $rewrite - false = image.php, true = rewrited URL
+     * @param boolean $rewrite - false = image.php, true = rewrited URL
      *
-     * @return String
+     * @return string
      */
     public function getUrl($rewrite = false)
     {
@@ -681,7 +681,7 @@ abstract class Item extends QUI\QDOM
     /**
      * Return the effects of the item
      *
-     * @return Array
+     * @return array
      */
     public function getEffects()
     {
@@ -707,8 +707,8 @@ abstract class Item extends QUI\QDOM
     /**
      * Set an item effect
      *
-     * @param String               $effect - Name of the effect
-     * @param String|Integer|Float $value  - Value of the effect
+     * @param string               $effect - Name of the effect
+     * @param string|Integer|Float $value  - Value of the effect
      */
     public function setEffect($effect, $value)
     {

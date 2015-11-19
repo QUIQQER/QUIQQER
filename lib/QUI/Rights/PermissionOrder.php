@@ -6,6 +6,7 @@
 
 namespace QUI\Rights;
 
+use QUI;
 use QUI\Groups\Group;
 
 /**
@@ -22,8 +23,8 @@ class PermissionOrder
     /**
      * Gibt den Maximalen Integer Rechte Wert zurück
      *
-     * @param String $permission - permission name
-     * @param Array  $groups     - List of groups
+     * @param string $permission - permission name
+     * @param array $groups - List of groups
      *
      * @return Integer
      */
@@ -48,7 +49,7 @@ class PermissionOrder
         // default
         if (is_null($result)) {
 
-            $Manager = \QUI::getPermissionManager();
+            $Manager  = QUI::getPermissionManager();
             $permData = $Manager->getPermissionData($permission);
 
             if (isset($permData['defaultvalue'])
@@ -64,8 +65,8 @@ class PermissionOrder
     /**
      * Gibt den Minimalen Integer Rechte Wert zurück
      *
-     * @param String $permission - permission name
-     * @param Array  $groups     - List of groups
+     * @param string $permission - permission name
+     * @param array $groups - List of groups
      *
      * @return Integer
      */
@@ -90,7 +91,7 @@ class PermissionOrder
         // default
         if (is_null($result)) {
 
-            $Manager = \QUI::getPermissionManager();
+            $Manager  = QUI::getPermissionManager();
             $permData = $Manager->getPermissionData($permission);
 
             if (isset($permData['defaultvalue'])
@@ -106,8 +107,8 @@ class PermissionOrder
     /**
      * Prüft die Rechte und gibt das Recht welches Geltung hat zurück
      *
-     * @param String $permission - permission name
-     * @param Array  $groups     - List of groups
+     * @param string $permission - permission name
+     * @param array $groups - List of groups
      *
      * @return boolean
      */
@@ -119,7 +120,7 @@ class PermissionOrder
         foreach ($groups as $Group) {
             $right = $Group->hasPermission($permission);
 
-            // falls wert bool ist
+            // falls wert boolean ist
             if ($right === true) {
                 return true;
             }

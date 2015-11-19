@@ -359,7 +359,7 @@ class Sites
     /**
      * Get the tab of a site
      *
-     * @param String $tabname - Name of the Tab
+     * @param string $tabname - Name of the Tab
      * @param Site\Edit $Site
      *
      * @throws \QUI\Exception
@@ -382,7 +382,7 @@ class Sites
      *
      * @param \QUI\Projects\Site $Site
      *
-     * @return Array
+     * @return array
      *
      * @todo schauen wegen admin bereich
      * @deprecated
@@ -416,8 +416,8 @@ class Sites
     /**
      * Search sites
      *
-     * @param String $search
-     * @param Array $params
+     * @param string $search
+     * @param array $params
      *
      * $params['Project'] - \QUI\Projects\Project
      * $params['project'] - string - project name

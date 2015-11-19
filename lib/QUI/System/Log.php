@@ -32,7 +32,7 @@ class Log
      *
      * @param Integer $LogLevel - Log Level
      *
-     * @return String
+     * @return string
      */
     static function levelToLogName($LogLevel)
     {
@@ -61,10 +61,10 @@ class Log
     /**
      * Writes a string to a log file
      *
-     * @param String $message - String to write
-     * @param Integer $loglevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
-     * @param Array $context - context data
-     * @param String|Boolean $filename - [optional] name of the log eq: messages, database,
+     * @param string $message - string to write
+     * @param integer $loglevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
+     * @param array $context - context data
+     * @param string|boolean $filename - [optional] name of the log eq: messages, database,
      *
      * @example \QUI\System\Log::write( 'My Error', \QUI\System\Log::LEVEL_ERROR );
      */
@@ -126,10 +126,10 @@ class Log
     /**
      * Writes with print_r the object into a log file
      *
-     * @param Object|String|Integer|Array $object
+     * @param Object|string|Integer|array $object
      * @param Integer $loglevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
-     * @param Array $context - context data
-     * @param String|Boolean $filename - [optional] name of the log eq: messages, database,
+     * @param array $context - context data
+     * @param string|boolean $filename - [optional] name of the log eq: messages, database,
      */
     static function writeRecursive(
         $object,
@@ -145,8 +145,8 @@ class Log
      *
      * @param \Exception $Exception
      * @param Integer $loglevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
-     * @param Array $context - context data
-     * @param String|Boolean $filename - [optional] name of the log eq: messages, database,
+     * @param array $context - context data
+     * @param string|boolean $filename - [optional] name of the log eq: messages, database,
      */
     static function writeException(
         $Exception,
@@ -164,9 +164,9 @@ class Log
     /**
      * Adds a log record at the DEBUG level.
      *
-     * @param String $message The log message
-     * @param Array $context - context data
-     * @param String|Boolean $filename - [optional] name of the log eq: messages, database (default = error)
+     * @param string $message The log message
+     * @param array $context - context data
+     * @param string|boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
     static function addDebug($message, $context = array(), $filename = false)
     {
@@ -177,8 +177,8 @@ class Log
      * Adds a log record at the INFO level.
      *
      * @param string $message The log message
-     * @param Array $context - context data
-     * @param String|Boolean $filename - [optional] name of the log eq: messages, database (default = error)
+     * @param array $context - context data
+     * @param string|boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
     static function addInfo($message, $context = array(), $filename = false)
     {
@@ -189,8 +189,8 @@ class Log
      * Adds a log record at the NOTICE level.
      *
      * @param string $message The log message
-     * @param Array $context - context data
-     * @param String|Boolean $filename - [optional] name of the log eq: messages, database (default = error)
+     * @param array $context - context data
+     * @param string|boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
     static function addNotice($message, $context = array(), $filename = false)
     {
@@ -201,8 +201,8 @@ class Log
      * Adds a log record at the WARNING level.
      *
      * @param string $message The log message
-     * @param Array $context - context data
-     * @param String|Boolean $filename - [optional] name of the log eq: messages, database (default = error)
+     * @param array $context - context data
+     * @param string|boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
     static function addWarning($message, $context = array(), $filename = false)
     {
@@ -213,8 +213,8 @@ class Log
      * Adds a log record at the ERROR level.
      *
      * @param string $message The log message
-     * @param Array $context - context data
-     * @param String|Boolean $filename - [optional] name of the log eq: messages, database (default = error)
+     * @param array $context - context data
+     * @param string|boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
     static function addError($message, $context = array(), $filename = false)
     {
@@ -225,8 +225,8 @@ class Log
      * Adds a log record at the CRITICAL level.
      *
      * @param string $message The log message
-     * @param Array $context - context data
-     * @param String|Boolean $filename - [optional] name of the log eq: messages, database (default = error)
+     * @param array $context - context data
+     * @param string|boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
     static function addCritical($message, $context = array(), $filename = false)
     {
@@ -237,8 +237,8 @@ class Log
      * Adds a log record at the ALERT level.
      *
      * @param string $message The log message
-     * @param Array $context - context data
-     * @param String|Boolean $filename - [optional] name of the log eq: messages, database (default = error)
+     * @param array $context - context data
+     * @param string|boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
     static function addAlert($message, $context = array(), $filename = false)
     {
@@ -249,8 +249,8 @@ class Log
      * Adds a log record at the EMERGENCY level.
      *
      * @param string $message The log message
-     * @param Array $context - context data
-     * @param String|Boolean $filename - [optional] name of the log eq: messages, database (default = error)
+     * @param array $context - context data
+     * @param string|boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
     static function addEmergency($message, $context = array(), $filename = false)
     {

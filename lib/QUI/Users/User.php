@@ -56,14 +56,14 @@ class User implements QUI\Interfaces\Users\User
     /**
      * Username
      *
-     * @var String
+     * @var string
      */
     protected $_name;
 
     /**
      * User lang
      *
-     * @var String
+     * @var string
      */
     protected $_lang = null;
 
@@ -84,14 +84,14 @@ class User implements QUI\Interfaces\Users\User
     /**
      * Super user flag
      *
-     * @var Bool
+     * @var boolean
      */
     protected $_su = false;
 
     /**
      * Admin flag
      *
-     * @var Bool
+     * @var boolean
      */
     protected $_admin = null;
 
@@ -112,28 +112,28 @@ class User implements QUI\Interfaces\Users\User
     /**
      * Encrypted pass
      *
-     * @var String
+     * @var string
      */
     protected $_password;
 
     /**
      * Extra fields
      *
-     * @var Array
+     * @var array
      */
     protected $_extra = array();
 
     /**
      * user plugins
      *
-     * @var Array
+     * @var array
      */
     protected $_plugins = array();
 
     /**
      * User addresses
      *
-     * @var Array
+     * @var array
      */
     protected $_address_list = array();
 
@@ -272,10 +272,10 @@ class User implements QUI\Interfaces\Users\User
      *
      * @see QUI\Interfaces\Users\User::getPermission()
      *
-     * @param String $right
-     * @param Array|Bool $ruleset - optional, you can specific a ruleset, a rules = array with rights
+     * @param string $right
+     * @param array|boolean $ruleset - optional, you can specific a ruleset, a rules = array with rights
      *
-     * @return Bool
+     * @return boolean
      */
     public function getPermission($right, $ruleset = false)
     {
@@ -300,9 +300,9 @@ class User implements QUI\Interfaces\Users\User
      *
      * @see        QUI\Interfaces\Users\User::getExtra()
      *
-     * @param String $field
+     * @param string $field
      *
-     * @return String|Integer|array
+     * @return string|Integer|array
      * @deprecated use getAttribute
      */
     public function getExtra($field)
@@ -315,8 +315,8 @@ class User implements QUI\Interfaces\Users\User
      *
      * @see        QUI\Interfaces\Users\User::setExtra()
      *
-     * @param String $field
-     * @param String|Integer|array $value
+     * @param string $field
+     * @param string|Integer|array $value
      *
      * @deprecated use user.xml and setAttribute
      */
@@ -390,7 +390,7 @@ class User implements QUI\Interfaces\Users\User
     /**
      * Return username
      *
-     * @return bool|String
+     * @return bool|string
      */
     public function getUsername()
     {
@@ -472,7 +472,7 @@ class User implements QUI\Interfaces\Users\User
     /**
      * Return the user Currency
      *
-     * @return String
+     * @return string
      * @todo do it as a plugin
      */
     public function getCurrency()
@@ -536,7 +536,7 @@ class User implements QUI\Interfaces\Users\User
      *
      * @see QUI\Interfaces\Users\User::setGroups()
      *
-     * @param array|String $groups
+     * @param array|string $groups
      */
     public function setGroups($groups)
     {
@@ -604,7 +604,7 @@ class User implements QUI\Interfaces\Users\User
      *
      * @see QUI\Interfaces\Users\User::getGroups()
      *
-     * @param Bool $array - returns the groups as objects (true) or as an array (false)
+     * @param boolean $array - returns the groups as objects (true) or as an array (false)
      *
      * @return array
      */
@@ -704,8 +704,8 @@ class User implements QUI\Interfaces\Users\User
      *
      * @see QUI\Interfaces\Users\User::setAttribute()
      *
-     * @param String $key
-     * @param String|Integer|Array $value
+     * @param string $key
+     * @param string|Integer|array $value
      *
      * @return void
      * @throws QUI\Exception
@@ -758,7 +758,7 @@ class User implements QUI\Interfaces\Users\User
     /**
      * Remove an attribute
      *
-     * @param String $key
+     * @param string $key
      */
     public function removeAttribute($key)
     {
@@ -776,7 +776,7 @@ class User implements QUI\Interfaces\Users\User
     /**
      * set attributes
      *
-     * @param Array $attributes
+     * @param array $attributes
      */
     public function setAttributes($attributes)
     {
@@ -790,9 +790,9 @@ class User implements QUI\Interfaces\Users\User
      *
      * @see QUI\Interfaces\Users\User::getAttribute()
      *
-     * @param String $var
+     * @param string $var
      *
-     * @return String|Integer|array
+     * @return string|Integer|array
      */
     public function getAttribute($var)
     {
@@ -818,7 +818,7 @@ class User implements QUI\Interfaces\Users\User
     /**
      * Return all user attributes
      *
-     * @return Array
+     * @return array
      */
     public function getAttributes()
     {
@@ -827,7 +827,7 @@ class User implements QUI\Interfaces\Users\User
         $params['id']      = $this->getId();
         $params['active']  = $this->_active;
         $params['deleted'] = $this->_deleted;
-        $params['admin']   = $this->isAdmin();
+        $params['admin']   = $this->canUseBackend();
         $params['avatar']  = $this->getAvatar();
         $params['su']      = $this->isSU();
 
@@ -843,9 +843,9 @@ class User implements QUI\Interfaces\Users\User
      *
      * @see QUI\Interfaces\Users\User::getAvatar()
      *
-     * @param Bool $url - get the avatar with the complete url string
+     * @param boolean $url - get the avatar with the complete url string
      *
-     * @return String
+     * @return string
      */
     public function getAvatar($url = false)
     {
@@ -886,8 +886,8 @@ class User implements QUI\Interfaces\Users\User
      *
      * @see QUI\Interfaces\Users\User::setPassword()
      *
-     * @param String $new - new password
-     * @param QUI\Interfaces\Users\User|Bool $ParentUser
+     * @param string $new - new password
+     * @param QUI\Interfaces\Users\User|boolean $ParentUser
      *
      * @throws QUI\Exception
      */
@@ -929,10 +929,10 @@ class User implements QUI\Interfaces\Users\User
      *
      * @see QUI\Interfaces\Users\User::checkPassword()
      *
-     * @param String $pass - Password
-     * @param Bool $encrypted - is the given password already encrypted?
+     * @param string $pass - Password
+     * @param boolean $encrypted - is the given password already encrypted?
      *
-     * @return Bool
+     * @return boolean
      */
     public function checkPassword($pass, $encrypted = false)
     {
@@ -950,9 +950,9 @@ class User implements QUI\Interfaces\Users\User
      *
      * @see QUI\Interfaces\Users\User::activate()
      *
-     * @param String|Bool $code - activasion code [optional]
+     * @param string|boolean $code - activasion code [optional]
      *
-     * @return Bool
+     * @return boolean
      * @throws QUI\Exception
      */
     public function activate($code = false)
@@ -1052,9 +1052,9 @@ class User implements QUI\Interfaces\Users\User
      *
      * @see QUI\Interfaces\Users\User::disable()
      *
-     * @param QUI\Interfaces\Users\User|Bool $ParentUser
+     * @param QUI\Interfaces\Users\User|boolean $ParentUser
      *
-     * @return Bool
+     * @return boolean
      * @throws QUI\Exception
      */
     public function disable($ParentUser = false)
@@ -1097,9 +1097,9 @@ class User implements QUI\Interfaces\Users\User
      *
      * @see QUI\Interfaces\Users\User::save()
      *
-     * @param QUI\Interfaces\Users\User|Bool $ParentUser
+     * @param QUI\Interfaces\Users\User|boolean $ParentUser
      *
-     * @return Bool
+     * @return boolean
      * @throws QUI\Exception
      */
     public function save($ParentUser = false)
@@ -1193,7 +1193,7 @@ class User implements QUI\Interfaces\Users\User
     }
 
     /**
-     * @return Bool
+     * @return boolean
      */
     public function canUseBackend()
     {
@@ -1261,9 +1261,9 @@ class User implements QUI\Interfaces\Users\User
     /**
      * Checks the edit rights of a user
      *
-     * @param QUI\Users\User|Bool $ParentUser
+     * @param QUI\Users\User|boolean $ParentUser
      *
-     * @return Bool - true
+     * @return boolean - true
      * @throws QUI\Exception
      */
     protected function _checkRights($ParentUser = false)
@@ -1296,7 +1296,7 @@ class User implements QUI\Interfaces\Users\User
      * Plugins could extend the user attributes
      * look at https://dev.quiqqer.com/quiqqer/quiqqer/wikis/User-Xml
      *
-     * @return Array
+     * @return array
      */
     protected function _getListOfExtraAttributes()
     {
@@ -1338,9 +1338,9 @@ class User implements QUI\Interfaces\Users\User
      * Read an user.xml and return the attributes,
      * if some extra attributes defined
      *
-     * @param String $file
+     * @param string $file
      *
-     * @return Array
+     * @return array
      */
     protected function _readAttributesFromUserXML($file)
     {
@@ -1377,7 +1377,7 @@ class User implements QUI\Interfaces\Users\User
     /**
      * Add a address to the user
      *
-     * @param Array $params
+     * @param array $params
      *
      * @return QUI\Users\Address
      */
@@ -1444,7 +1444,7 @@ class User implements QUI\Interfaces\Users\User
     /**
      * Returns all addresses from the user
      *
-     * @return Array
+     * @return array
      */
     public function getAddressList()
     {

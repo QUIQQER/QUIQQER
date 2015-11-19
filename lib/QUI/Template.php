@@ -50,14 +50,14 @@ class Template extends QUI\QDOM
     /**
      * modules that loaded after the onload event
      *
-     * @var Array
+     * @var array
      */
     protected $_onLoadModules = array();
 
     /**
      * site type tpl
      *
-     * @var String
+     * @var string
      */
     protected $_typetpl = '';
 
@@ -92,7 +92,7 @@ class Template extends QUI\QDOM
      * Register a param for the Template engine
      * This registered param would be assigned to the Template Engine at the getEngine() method
      *
-     * @param String $param
+     * @param string $param
      * @param mixed $value
      */
     public function assignGlobalParam($param, $value)
@@ -119,7 +119,7 @@ class Template extends QUI\QDOM
      *
      * if $admin=true, admin template plugins were loaded
      *
-     * @param Bool $admin - (optionsl) is the template for the admin or frontend? <- param depricated
+     * @param boolean $admin - (optionsl) is the template for the admin or frontend? <- param depricated
      *
      * @return QUI\Interfaces\Template\Engine
      * @throws QUI\Exception
@@ -156,8 +156,8 @@ class Template extends QUI\QDOM
     /**
      * Register a template engine
      *
-     * @param String $name
-     * @param String $class - must a class that implements QUI\Interfaces\Template\Engine
+     * @param string $name
+     * @param string $class - must a class that implements QUI\Interfaces\Template\Engine
      */
     static function registerEngine($name, $class)
     {
@@ -169,7 +169,7 @@ class Template extends QUI\QDOM
     /**
      * Extend the head <head>...</head>
      *
-     * @param String $str
+     * @param string $str
      * @param Integer $prio
      */
     public function extendHeader($str, $prio = 3)
@@ -200,9 +200,9 @@ class Template extends QUI\QDOM
     }
 
     /**
-     * @param String $jsPath
-     * @param Boolean $async
-     * @param int $prio
+     * @param string $jsPath
+     * @param boolean $async
+     * @param integer $prio
      */
     public function extendHeaderWithJavaScriptFile($jsPath, $async = true, $prio = 3)
     {
@@ -224,8 +224,8 @@ class Template extends QUI\QDOM
     /**
      * Add Code to the bottom of the html
      *
-     * @param String $str
-     * @param Integer $prio
+     * @param string $str
+     * @param integer $prio
      */
     public function extendFooter($str, $prio = 3)
     {
@@ -244,9 +244,9 @@ class Template extends QUI\QDOM
     /**
      * Add the JavaScript File to the bottom of the html
      *
-     * @param String $jsPath
-     * @param Boolean $async
-     * @param int $prio
+     * @param string $jsPath
+     * @param boolean $async
+     * @param integer $prio
      */
     public function extendFooterWithJavaScriptFile($jsPath, $async = true, $prio = 3)
     {
@@ -268,7 +268,7 @@ class Template extends QUI\QDOM
     /**
      * Add a javascript module, that laoded at the onload event
      *
-     * @param String $module
+     * @param string $module
      */
     public function addOnloadJavaScriptModule($module)
     {
@@ -280,7 +280,7 @@ class Template extends QUI\QDOM
      *
      * @param QUI\Projects\Site|QUI\Projects\Site\Edit $Site
      *
-     * @return String
+     * @return string
      */
     public function fetchTemplate($Site)
     {
@@ -457,7 +457,7 @@ class Template extends QUI\QDOM
             $footerExtend .= $_str;
         }
 
-        $result = str_replace('</body>', $footerExtend.'</body>', $result);
+        $result = str_replace('</body>', $footerExtend . '</body>', $result);
 
         return $result;
     }
@@ -466,7 +466,7 @@ class Template extends QUI\QDOM
      * Return the a html header
      * With all important meta entries and quiqqer libraries
      *
-     * @return String
+     * @return string
      */
     public function getHeader()
     {
@@ -574,7 +574,7 @@ class Template extends QUI\QDOM
      *
      * @param array $params - body params
      *
-     * @return String
+     * @return string
      */
     public function getLayout($params = array())
     {
@@ -599,7 +599,7 @@ class Template extends QUI\QDOM
     /**
      * Return the layout type
      *
-     * @return String|false
+     * @return string|false
      */
     public function getLayoutType()
     {
@@ -634,7 +634,7 @@ class Template extends QUI\QDOM
      *
      * @param array $params - body params
      *
-     * @return String
+     * @return string
      */
     public function getBody($params = array())
     {
@@ -717,11 +717,11 @@ class Template extends QUI\QDOM
     /**
      * Template für den Seitentyp
      *
-     * @param Array $types
-     * @param String $type
-     * @param String $template
+     * @param array $types
+     * @param string $type
+     * @param string $template
      *
-     * @return String
+     * @return string
      */
     protected function _getTypeTemplate($types, $type, $template)
     {

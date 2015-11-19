@@ -21,9 +21,9 @@ class Security
     /**
      * Verschlüsselung auf Basis des QUIQQER Salt
      *
-     * @param String $str
+     * @param string $str
      *
-     * @return String
+     * @return string
      */
     static function encrypt($str)
     {
@@ -39,9 +39,9 @@ class Security
     /**
      * Entschlüsselung auf Basis des CMS Salt
      *
-     * @param String $str
+     * @param string $str
      *
-     * @return String
+     * @return string
      */
     static function decrypt($str)
     {
@@ -57,10 +57,10 @@ class Security
     /**
      * Encrypted a password base64
      *
-     * @param String  $pass   - String to encrpyted
+     * @param string  $pass   - string to encrpyted
      * @param Integer $switch - where to split
      *
-     * @return String
+     * @return string
      */
     static function b64encrypt($pass, $switch = 3)
     {
@@ -73,10 +73,10 @@ class Security
     /**
      * Decrypt a base64 password
      *
-     * @param String  $pass   - String to decrypt
+     * @param string  $pass   - string to decrypt
      * @param Integer $switch - where to split
      *
-     * @return String
+     * @return string
      */
     static function b64decrypt($pass, $switch = 3)
     {

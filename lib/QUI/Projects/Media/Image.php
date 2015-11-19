@@ -77,8 +77,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the image path
      *
-     * @param string|bool $maxwidth - (optional)
-     * @param string|bool $maxheight - (optional)
+     * @param string|boolean $maxwidth - (optional)
+     * @param string|boolean $maxheight - (optional)
      *
      * @return string
      */
@@ -142,8 +142,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the image url
      *
-     * @param string|bool $maxwidth - (optional) width
-     * @param string|bool $maxheight - (optional) height
+     * @param string|boolean $maxwidth - (optional) width
+     * @param string|boolean $maxheight - (optional) height
      *
      * @return string
      */
@@ -159,10 +159,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * Creates a cache file and takes into account the maximum sizes
      * return the media url
      *
-     * @param Integer|Bool $maxwidth
-     * @param Integer|Bool $maxheight
+     * @param Integer|boolean $maxwidth
+     * @param Integer|boolean $maxheight
      *
-     * @return String - Path to the file
+     * @return string - Path to the file
      */
     public function createSizeCacheUrl($maxwidth = false, $maxheight = false)
     {
@@ -181,10 +181,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Creates a cache file and takes into account the maximum sizes
      *
-     * @param Integer|Bool $maxwidth
-     * @param Integer|Bool $maxheight
+     * @param Integer|boolean $maxwidth
+     * @param Integer|boolean $maxheight
      *
-     * @return String - Path to the file
+     * @return string - Path to the file
      */
     public function createResizeCache($maxwidth = false, $maxheight = false)
     {
@@ -199,8 +199,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the Image specific max resize params
      *
-     * @param Bool|Integer $maxwidth - (optional)
-     * @param Bool|Integer $maxheight - (optional)
+     * @param boolean|Integer $maxwidth - (optional)
+     * @param boolean|Integer $maxheight - (optional)
      *
      * @return array - array('width' => 100, 'height' => 100)
      */
@@ -265,8 +265,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Create a cache file with the new width and height
      *
-     * @param integer|bool $width - (optional)
-     * @param integer|bool $height - (optional)
+     * @param integer|boolean $width - (optional)
+     * @param integer|boolean $height - (optional)
      *
      * @return string - URL to the cachefile
      *
@@ -491,7 +491,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @param Integer $newWidth
      * @param Integer $newHeight
      *
-     * @return String - Path to the new Image
+     * @return string - Path to the new Image
      *
      * @throws QUI\Exception
      */
@@ -530,7 +530,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the Watermark image file
      *
-     * @return Image|Boolean
+     * @return Image|boolean
      * @throws QUI\Exception
      */
     public function getWatermark()
@@ -577,7 +577,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the Watermark image file
      *
-     * @return Image|Boolean
+     * @return Image|boolean
      * @throws QUI\Exception
      */
     public function getWatermarkPosition()
@@ -602,7 +602,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
-     * @return Array|bool|false|String
+     * @return array|bool|false|string
      */
     public function getWatermarkRatio()
     {

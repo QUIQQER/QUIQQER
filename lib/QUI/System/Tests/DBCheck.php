@@ -187,7 +187,7 @@ class DBCheck extends QUI\System\Test
      * Extracts check relevant data from xml table information
      *
      * @param      $info
-     * @param bool $isGlobal (optional) - is a global table
+     * @param boolean $isGlobal (optional) - is a global table
      *
      * @return array
      */
@@ -452,9 +452,9 @@ class DBCheck extends QUI\System\Test
     }
 
     /**
-     * @param String $table
-     * @param String $dbTable
-     * @param String $error
+     * @param string $table
+     * @param string $dbTable
+     * @param string $error
      */
     protected function _addError($table, $dbTable, $error)
     {
@@ -468,7 +468,7 @@ class DBCheck extends QUI\System\Test
     }
 
     /**
-     * @param String $xmlFile
+     * @param string $xmlFile
      */
     protected function _outputError($xmlFile)
     {

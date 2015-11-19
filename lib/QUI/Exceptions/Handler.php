@@ -71,7 +71,7 @@ class Handler extends QUI\QDOM
      * QUI\ExceptionHandler->registerShutdown('class::staticMethod');
      *
      * @throws QUI\Exception
-     * @return Bool
+     * @return boolean
      */
     public function registerShutdown()
     {
@@ -121,9 +121,9 @@ class Handler extends QUI\QDOM
      * Writes the error to the log
      *
      * @param Integer        $errno   - Fehlercode
-     * @param String         $errstr  - Fehler
-     * @param String         $errfile - (optional) Datei in welcher der Fehler auftaucht
-     * @param Integer|String $errline - (optional) Zeile in welcher der Fehler auftaucht
+     * @param string         $errstr  - Fehler
+     * @param string         $errfile - (optional) Datei in welcher der Fehler auftaucht
+     * @param Integer|string $errline - (optional) Zeile in welcher der Fehler auftaucht
      */
     public function writeErrorToLog(
         $errno,

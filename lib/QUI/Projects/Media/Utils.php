@@ -91,10 +91,10 @@ class Utils
     /**
      * Returns a suitable icon of a certain extension
      *
-     * @param String $ext - extenstion
-     * @param String $size - 16x16, 80x80 (default = 16x16); optional
+     * @param string $ext - extenstion
+     * @param string $size - 16x16, 80x80 (default = 16x16); optional
      *
-     * @return String - Icon url
+     * @return string - Icon url
      *
      * @todo icons in config auslagern, somit einfacher erweiterbar
      */
@@ -169,9 +169,9 @@ class Utils
     /**
      * Return the extension of a file
      *
-     * @param String $filename - filename
+     * @param string $filename - filename
      *
-     * @return String
+     * @return string
      */
     static function getExtension($filename)
     {
@@ -186,9 +186,9 @@ class Utils
      *
      * @example \QUI\Projects\Media\Utils::getMediaTypeByMimeType( 'image/jpeg' )
      *
-     * @param String $mime_type
+     * @param string $mime_type
      *
-     * @return String file|image
+     * @return string file|image
      */
     static function getMediaTypeByMimeType($mime_type)
     {
@@ -205,7 +205,7 @@ class Utils
      * Return the media image
      * If it is no image, its throws an exception
      *
-     * @param String $url - image.php? url
+     * @param string $url - image.php? url
      *
      * @return QUI\Projects\Media\Image
      * @throws QUI\Exception
@@ -228,7 +228,7 @@ class Utils
     /**
      * Return the media image, file, folder
      *
-     * @param String $url - image.php? url
+     * @param string $url - image.php? url
      *
      * @return QUI\Projects\Media\Item
      * @throws QUI\Exception
@@ -255,10 +255,10 @@ class Utils
      * Return <img /> from image attributes
      * considered responsive images, too
      *
-     * @param String $src
-     * @param Array $attributes
+     * @param string $src
+     * @param array $attributes
      *
-     * @return String
+     * @return string
      */
     static function getImageHTML($src, $attributes = array())
     {
@@ -353,10 +353,10 @@ class Utils
     /**
      * Return the rewrited url from a image.php? url
      *
-     * @param String $output
-     * @param Array $size
+     * @param string $output
+     * @param array $size
      *
-     * @return String
+     * @return string
      */
     static function getRewritedUrl($output, $size = array())
     {
@@ -458,9 +458,9 @@ class Utils
     /**
      * checks if the string can be used for a media folder name
      *
-     * @param String $str - foldername
+     * @param string $str - foldername
      *
-     * @return Bool
+     * @return boolean
      * @throws QUI\Exception
      */
     static function checkFolderName($str)
@@ -493,9 +493,9 @@ class Utils
     /**
      * Deletes characters which are not allowed for folders
      *
-     * @param String $str - Folder name
+     * @param string $str - Folder name
      *
-     * @return String
+     * @return string
      */
     static function stripFolderName($str)
     {
@@ -517,7 +517,7 @@ class Utils
     /**
      * checks if the string can be used for a media item
      *
-     * @param String $filename - the complete filename: my_file.jpg
+     * @param string $filename - the complete filename: my_file.jpg
      *
      * @throws QUI\Exception
      */
@@ -560,9 +560,9 @@ class Utils
     /**
      * Deletes characters which are not allowed in the media center
      *
-     * @param String $str
+     * @param string $str
      *
-     * @return String
+     * @return string
      */
     static function stripMediaName($str)
     {
@@ -592,9 +592,9 @@ class Utils
     /**
      * Is the variable a folder object?
      *
-     * @param String|Bool|Object $Unknown
+     * @param string|boolean|Object $Unknown
      *
-     * @return Bool
+     * @return boolean
      */
     static function isFolder($Unknown)
     {
@@ -616,9 +616,9 @@ class Utils
     /**
      * Is the variable a image object?
      *
-     * @param String|Bool|Object $Unknown
+     * @param string|boolean|Object $Unknown
      *
-     * @return Bool
+     * @return boolean
      */
     static function isImage($Unknown)
     {
@@ -640,9 +640,9 @@ class Utils
     /**
      * Is the URL a media url?
      *
-     * @param String $url
+     * @param string $url
      *
-     * @return Bool
+     * @return boolean
      */
     static function isMediaUrl($url)
     {
@@ -659,7 +659,7 @@ class Utils
     /**
      * Returns a media item by an url
      *
-     * @param String $url
+     * @param string $url
      *
      * @return \QUI\Projects\Media\Item
      * @throws QUI\Exception
@@ -699,7 +699,7 @@ class Utils
      *
      * @param QUI\Projects\Media $Media
      * @param Integer $fileid - The File which will be replaced
-     * @param Array $uploadparams - Array with file information array('name' => '', 'type' => '')
+     * @param array $uploadparams - Array with file information array('name' => '', 'type' => '')
      *
      * @throws QUI\Exception
      */
@@ -762,7 +762,7 @@ class Utils
      *
      * @param \QUI\Projects\Media\File|\QUI\Projects\Media\Image $File
      *
-     * @return String
+     * @return string
      */
     static function generateMD5($File)
     {
@@ -775,7 +775,7 @@ class Utils
      *
      * @param \QUI\Projects\Media\File|\QUI\Projects\Media\Image $File
      *
-     * @return String
+     * @return string
      */
     static function generateSHA1($File)
     {

@@ -40,7 +40,7 @@ class Manager extends QUI\QDOM
     /**
      * Return the db table for the groups
      *
-     * @return String
+     * @return string
      */
     static function Table()
     {
@@ -125,7 +125,7 @@ class Manager extends QUI\QDOM
      *
      * @param Integer $id - ID of the Group
      *
-     * @return String
+     * @return string
      */
     public function getGroupNameById($id)
     {
@@ -149,7 +149,7 @@ class Manager extends QUI\QDOM
      *
      * @param mixed $Group
      *
-     * @return Bool
+     * @return boolean
      */
     public function isGroup($Group)
     {
@@ -190,9 +190,9 @@ class Manager extends QUI\QDOM
     /**
      * Internal search helper
      *
-     * @param Array $params
+     * @param array $params
      *
-     * @return Array
+     * @return array
      * @ignore
      */
     protected function _search($params)

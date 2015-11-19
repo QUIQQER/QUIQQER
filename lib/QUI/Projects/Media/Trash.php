@@ -40,7 +40,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
     /**
      * Returns the trash path for the Media
      *
-     * @return String
+     * @return string
      */
     public function getPath()
     {
@@ -52,7 +52,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
     /**
      * Returns the items in the trash
      *
-     * @param Array $params - QUI\Utils\Grid parameters
+     * @param array $params - QUI\Utils\Grid parameters
      *
      * @return array
      */

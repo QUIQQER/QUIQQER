@@ -25,10 +25,10 @@ class Utils
     /**
      * Prüft ob der Name erlaubt ist
      *
-     * @param String $name
+     * @param string $name
      *
      * @throws QUI\Exception
-     * @return Bool
+     * @return boolean
      */
     static function checkName($name)
     {
@@ -74,10 +74,10 @@ class Utils
     /**
      * Säubert eine URL macht sie schön
      *
-     * @param String $url
+     * @param string $url
      * @param QUI\Projects\Project $Project - Project clear extension
      *
-     * @return String
+     * @return string
      */
     static function clearUrl($url, QUI\Projects\Project $Project)
     {
@@ -144,7 +144,7 @@ class Utils
      *
      * @param QUI\Projects\Site $Site
      *
-     * @return Array
+     * @return array
      */
     static function getDataBaseXMLListForSite($Site)
     {
@@ -227,7 +227,7 @@ class Utils
      *
      * @param QUI\Projects\Site $Site
      *
-     * @return Array
+     * @return array
      */
     static function getDataListForSite($Site)
     {
@@ -323,7 +323,7 @@ class Utils
      *
      * @param QUI\Projects\Site $Site
      *
-     * @return Array
+     * @return array
      */
     static function getExtraAttributeListForSite($Site)
     {
@@ -404,7 +404,7 @@ class Utils
      *
      * @param QUI\Projects\Site $Site
      *
-     * @return String
+     * @return string
      */
     static function getExtraSettingsForSite($Site)
     {
@@ -473,7 +473,7 @@ class Utils
      *
      * @param QUI\Projects\Site $Site
      *
-     * @return Array|Bool
+     * @return array|boolean
      */
     static function getAdminSiteModulesFromSite($Site)
     {

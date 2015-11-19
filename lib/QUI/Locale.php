@@ -24,14 +24,14 @@ class Locale
     /**
      * The current lang
      *
-     * @var String
+     * @var string
      */
     protected $_dateFormats = false;
 
     /**
      * The current lang
      *
-     * @var String
+     * @var string
      */
     protected $_current = 'en';
 
@@ -45,13 +45,13 @@ class Locale
     /**
      * gettext object
      *
-     * @var gettext
+     * @var array
      */
     protected $_gettext = array();
     /**
      * no translation flag
      *
-     * @var Bool
+     * @var boolean
      */
     public $no_translation = false;
 
@@ -71,9 +71,9 @@ class Locale
 
 
     /**
-     * Locale toString
+     * Locale tostring
      *
-     * @return String
+     * @return string
      */
     public function __toString()
     {
@@ -83,7 +83,7 @@ class Locale
     /**
      * Set the current language
      *
-     * @param String $lang
+     * @param string $lang
      */
     public function setCurrent($lang)
     {
@@ -93,7 +93,7 @@ class Locale
     /**
      * Return the current language
      *
-     * @return String
+     * @return string
      */
     public function getCurrent()
     {
@@ -106,7 +106,7 @@ class Locale
      * @param             $timestamp
      * @param bool|string $format - (optional) ;if not given, it uses the quiqqer system format
      *
-     * @return String
+     * @return string
      */
     public function formatDate($timestamp, $format = false)
     {
@@ -146,7 +146,7 @@ class Locale
     /**
      * Return all available dateformats
      *
-     * @return Array
+     * @return array
      */
     protected function _getDateFormats()
     {
@@ -166,9 +166,9 @@ class Locale
     /**
      * Return the locale list for a language
      *
-     * @param  {String} $lang - Language code (de, en, fr ...)
+     * @param  string $lang - Language code (de, en, fr ...)
      *
-     * @return {Array}
+     * @return array
      */
     public function _getLocalesByLang($lang)
     {
@@ -238,10 +238,10 @@ class Locale
     /**
      * Set translation
      *
-     * @param String $lang - Language
-     * @param String $group - Language group
-     * @param String|array $key
-     * @param String|bool $value
+     * @param string $lang - Language
+     * @param string $group - Language group
+     * @param string|array $key
+     * @param string|boolean $value
      */
     public function set($lang, $group, $key, $value = false)
     {
@@ -268,10 +268,10 @@ class Locale
     /**
      * Exist the variable in the translation?
      *
-     * @param String $group - language group
-     * @param String|bool $value - language group variable, optional
+     * @param string $group - language group
+     * @param string|boolean $value - language group variable, optional
      *
-     * @return Bool
+     * @return boolean
      */
     public function exists($group, $value = false)
     {
@@ -297,11 +297,11 @@ class Locale
     /**
      * Get the translation
      *
-     * @param String $group - Gruppe
-     * @param String|bool $value - (optional) Variable, optional
-     * @param Array|bool $replace - (optional)
+     * @param string $group - Gruppe
+     * @param string|boolean $value - (optional) Variable, optional
+     * @param array|boolean $replace - (optional)
      *
-     * @return String|array
+     * @return string|array
      */
     public function get($group, $value = false, $replace = false)
     {
@@ -321,10 +321,10 @@ class Locale
     /**
      * Translation helper method
      *
-     * @param String $group
-     * @param String|bool $value - (optional)
+     * @param string $group
+     * @param string|boolean $value - (optional)
      *
-     * @return String|Array
+     * @return string|array
      * @see ->get()
      * @ignore
      */
@@ -373,7 +373,7 @@ class Locale
      *
      * @param $group - language group
      *
-     * @return Bool|\QUI\Utils\Translation\GetText
+     * @return boolean|\QUI\Utils\Translation\GetText
      */
     public function initGetText($group)
     {
@@ -417,7 +417,7 @@ class Locale
     /**
      * read a config
      *
-     * @param String $group - translation group
+     * @param string $group - translation group
      */
     public function initConfig($group)
     {
@@ -443,10 +443,10 @@ class Locale
     /**
      * Get the translation file in dependence to the lang and group
      *
-     * @param String $lang
-     * @param String $group
+     * @param string $lang
+     * @param string $group
      *
-     * @return String
+     * @return string
      */
     public function getTranslationFile($lang, $group)
     {
@@ -460,7 +460,7 @@ class Locale
     /**
      * Folder located the translations
      *
-     * @return String
+     * @return string
      */
     public function dir()
     {

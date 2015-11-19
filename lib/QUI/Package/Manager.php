@@ -45,7 +45,7 @@ use QUI\Utils\System\File as QUIFile;
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
- * @event   onOutput [ String $message ]
+ * @event   onOutput [ string $message ]
  */
 class Manager extends QUI\QDOM
 {
@@ -54,7 +54,7 @@ class Manager extends QUI\QDOM
     /**
      * Package Directory
      *
-     * @var String
+     * @var string
      */
     protected $_dir;
 
@@ -62,63 +62,63 @@ class Manager extends QUI\QDOM
      * VAR Directory for composer
      * eq: here are the cache and the quiqqer composer.json file
      *
-     * @var String
+     * @var string
      */
     protected $_vardir;
 
     /**
      * Path to the composer.json file
      *
-     * @var String
+     * @var string
      */
     protected $_composer_json;
 
     /**
      * Path to the composer.lock file
      *
-     * @var String
+     * @var string
      */
     protected $_composer_lock;
 
     /**
      * exec command to the composer.phar file
      *
-     * @var String
+     * @var string
      */
     protected $_composer_exec;
 
     /**
      * Packaglist - installed packages
      *
-     * @var Array
+     * @var array
      */
     protected $_list = false;
 
     /**
      * Can composer execute via bash? shell?
      *
-     * @var Bool
+     * @var boolean
      */
     protected $_exec = false;
 
     /**
      * temporary require packages
      *
-     * @var Array
+     * @var array
      */
     protected $_require = array();
 
     /**
      * QUIQQER Version ->getVersion()
      *
-     * @var String
+     * @var string
      */
     protected $_version = null;
 
     /**
      * List of packages objects
      *
-     * @var Array
+     * @var array
      */
     protected $_packages = array();
 
@@ -139,7 +139,7 @@ class Manager extends QUI\QDOM
     /**
      * Path to the local repository
      *
-     * @var String
+     * @var string
      */
     protected $_localRepository;
 
@@ -234,7 +234,7 @@ class Manager extends QUI\QDOM
     /**
      * Return the version from the composer json
      *
-     * @return String
+     * @return string
      */
     public function getVersion()
     {
@@ -424,7 +424,7 @@ class Manager extends QUI\QDOM
     /**
      * Return the composer array
      *
-     * @return Array
+     * @return array
      */
     protected function _getComposerJSON()
     {
@@ -440,7 +440,7 @@ class Manager extends QUI\QDOM
      * internal get list method
      * return all installed packages and create the internal package list cache
      *
-     * @return Array
+     * @return array
      */
     protected function _getList()
     {
@@ -562,9 +562,9 @@ class Manager extends QUI\QDOM
     /**
      * Return the installed packages
      *
-     * @param Array $params - [optional] search / limit params
+     * @param array $params - [optional] search / limit params
      *
-     * @return Array
+     * @return array
      */
     public function getInstalled($params = array())
     {
@@ -602,7 +602,7 @@ class Manager extends QUI\QDOM
     /**
      * Return a package object
      *
-     * @param String $package - name of the package
+     * @param string $package - name of the package
      *
      * @return QUI\Package\Package
      * @throws QUI\Exception
@@ -619,8 +619,8 @@ class Manager extends QUI\QDOM
     /**
      * Install Package
      *
-     * @param String $package - name of the package
-     * @param String|bool $version - (optional) version of the package default = dev-master
+     * @param string $package - name of the package
+     * @param string|boolean $version - (optional) version of the package default = dev-master
      */
     public function install($package, $version = false)
     {
@@ -680,8 +680,8 @@ class Manager extends QUI\QDOM
     /**
      * Install Package
      *
-     * @param String $package - name of the package
-     * @param String|bool $version - (optional) version of the package
+     * @param string $package - name of the package
+     * @param string|boolean $version - (optional) version of the package
      */
     public function installWithoutLockClient($package, $version = false)
     {
@@ -714,7 +714,7 @@ class Manager extends QUI\QDOM
      * Install only a local package
      *
      * @param  string $package - name of the package
-     * @param bool $version - (optional) version of the package
+     * @param boolean $version - (optional) version of the package
      */
     public function installLocalPackage($package, $version = false)
     {
@@ -732,8 +732,8 @@ class Manager extends QUI\QDOM
     /**
      * Add a Package to the composer json
      *
-     * @param String|Array $package - name of the package
-     * @param String|bool $version - (optional) version of the package
+     * @param string|array $package - name of the package
+     * @param string|boolean $version - (optional) version of the package
      */
     public function setPackage($package, $version = false)
     {
@@ -786,9 +786,9 @@ class Manager extends QUI\QDOM
      * Return the params of an installed package
      * If you want the Package Object, you should use getInstalledPackage
      *
-     * @param String $package
+     * @param string $package
      *
-     * @return Array
+     * @return array
      */
     public function getPackage($package)
     {
@@ -834,7 +834,7 @@ class Manager extends QUI\QDOM
     /**
      * Return the dependencies of a package
      *
-     * @param String $package - package name
+     * @param string $package - package name
      *
      * @return array - list of dependencies
      */
@@ -859,9 +859,9 @@ class Manager extends QUI\QDOM
     /**
      * Return package details
      *
-     * @param String $package
+     * @param string $package
      *
-     * @return Array
+     * @return array
      */
     public function show($package)
     {
@@ -922,9 +922,9 @@ class Manager extends QUI\QDOM
     /**
      * Search a string in the repository
      *
-     * @param String $str - search string
+     * @param string $str - search string
      *
-     * @return Array
+     * @return array
      */
     public function searchPackage($str)
     {
@@ -949,7 +949,7 @@ class Manager extends QUI\QDOM
     /**
      * Execute a setup for a package
      *
-     * @param String $package
+     * @param string $package
      */
     public function setup($package)
     {
@@ -979,7 +979,7 @@ class Manager extends QUI\QDOM
     /**
      * Return the server list
      *
-     * @return Array
+     * @return array
      */
     public function getServerList()
     {
@@ -996,9 +996,9 @@ class Manager extends QUI\QDOM
     /**
      * Activate or Deactivate a server
      *
-     * @param String $server - Server, IP, Host
-     * @param Bool $status - 1 = active, 0 = disabled
-     * @param Bool $backup - Optional (default=true, create a backup, false = create no backup
+     * @param string $server - Server, IP, Host
+     * @param boolean $status - 1 = active, 0 = disabled
+     * @param boolean $backup - Optional (default=true, create a backup, false = create no backup
      */
     public function setServerStatus($server, $status, $backup = true)
     {
@@ -1018,8 +1018,8 @@ class Manager extends QUI\QDOM
     /**
      * Add a server to the update-server list
      *
-     * @param String $server - Server, IP, Host
-     * @param Array $params - Server Parameter
+     * @param string $server - Server, IP, Host
+     * @param array $params - Server Parameter
      */
     public function addServer($server, $params = array())
     {
@@ -1056,7 +1056,7 @@ class Manager extends QUI\QDOM
     /**
      * Remove a Server completly from the update-server list
      *
-     * @param String|Array $server
+     * @param string|array $server
      */
     public function removeServer($server)
     {
@@ -1160,7 +1160,7 @@ class Manager extends QUI\QDOM
     /**
      * Update a package or the entire system
      *
-     * @param string|bool $package - optional, package name, if false, it updates the complete system
+     * @param string|boolean $package - optional, package name, if false, it updates the complete system
      *
      * @throws QUI\Exception
      *
@@ -1302,7 +1302,7 @@ class Manager extends QUI\QDOM
     /**
      * Update a package or the entire system from a package archive
      *
-     * @param String|Boolean $package - Name of the package
+     * @param string|boolean $package - Name of the package
      *
      * @throws QUI\Exception
      */
@@ -1364,7 +1364,7 @@ class Manager extends QUI\QDOM
      *
      * @param string $command - composer command
      * @param array $params - composer argument params
-     * @param bool $showInfo - standard = false; shows messages with <info> or not
+     * @param boolean $showInfo - standard = false; shows messages with <info> or not
      *
      * @return array - result list
      */
@@ -1515,7 +1515,7 @@ class Manager extends QUI\QDOM
     }
 
     /**
-     * @return mixed|String
+     * @return mixed|string
      */
     protected function _getUploadPackageDir()
     {
@@ -1531,7 +1531,7 @@ class Manager extends QUI\QDOM
     /**
      * Upload a archiv file to the local quiqqer repository
      *
-     * @param String $file - Path to the package archive file
+     * @param string $file - Path to the package archive file
      *
      * @throws QUI\Exception
      */
