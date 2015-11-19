@@ -42,7 +42,7 @@ class User implements QUI\Interfaces\Users\User
     /**
      * User ID
      *
-     * @var Integer
+     * @var integer
      */
     protected $_id;
 
@@ -70,14 +70,14 @@ class User implements QUI\Interfaces\Users\User
     /**
      * Active status
      *
-     * @var Integer
+     * @var integer
      */
     protected $_active = 0;
 
     /**
      * Delete status
      *
-     * @var Integer
+     * @var integer
      */
     protected $_deleted = 0;
 
@@ -140,7 +140,7 @@ class User implements QUI\Interfaces\Users\User
     /**
      * contructor
      *
-     * @param Integer $id - ID of the user
+     * @param integer $id - ID of the user
      * @param \QUI\Users\Manager $Users - the user manager
      *
      * @throws \QUI\Exception
@@ -302,7 +302,7 @@ class User implements QUI\Interfaces\Users\User
      *
      * @param string $field
      *
-     * @return string|Integer|array
+     * @return string|integer|array
      * @deprecated use getAttribute
      */
     public function getExtra($field)
@@ -316,7 +316,7 @@ class User implements QUI\Interfaces\Users\User
      * @see        QUI\Interfaces\Users\User::setExtra()
      *
      * @param string $field
-     * @param string|Integer|array $value
+     * @param string|integer|array $value
      *
      * @deprecated use user.xml and setAttribute
      */
@@ -624,7 +624,7 @@ class User implements QUI\Interfaces\Users\User
     /**
      * Remove a group from the user
      *
-     * @param QUI\Groups\Group|Integer $Group
+     * @param QUI\Groups\Group|integer $Group
      */
     public function removeGroup($Group)
     {
@@ -654,7 +654,7 @@ class User implements QUI\Interfaces\Users\User
     /**
      * Add the user to a group
      *
-     * @param Integer $groupId
+     * @param integer $groupId
      */
     public function addToGroup($groupId)
     {
@@ -691,7 +691,7 @@ class User implements QUI\Interfaces\Users\User
     }
 
     /**
-     * @param Integer $gid
+     * @param integer $gid
      * @deprecated use addToGroup
      */
     public function addGroup($gid)
@@ -705,7 +705,7 @@ class User implements QUI\Interfaces\Users\User
      * @see QUI\Interfaces\Users\User::setAttribute()
      *
      * @param string $key
-     * @param string|Integer|array $value
+     * @param string|integer|array $value
      *
      * @return void
      * @throws QUI\Exception
@@ -792,7 +792,7 @@ class User implements QUI\Interfaces\Users\User
      *
      * @param string $var
      *
-     * @return string|Integer|array
+     * @return string|integer|array
      */
     public function getAttribute($var)
     {
@@ -1473,7 +1473,7 @@ class User implements QUI\Interfaces\Users\User
     /**
      * Get a address from the user
      *
-     * @param Integer $id - address ID
+     * @param integer $id - address ID
      *
      * @return QUI\Users\Address
      */

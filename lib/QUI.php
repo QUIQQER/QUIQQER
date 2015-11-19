@@ -77,7 +77,7 @@ class QUI
     /**
      * Timestamp of the last update
      *
-     * @var Integer
+     * @var integer
      */
     static $last_up_date = null;
 

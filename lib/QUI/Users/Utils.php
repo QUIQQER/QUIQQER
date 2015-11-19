@@ -91,7 +91,7 @@ class Utils
     /**
      * Tab contents of a user Tabs / Buttons
      *
-     * @param Integer $uid
+     * @param integer $uid
      * @param string  $plugin
      * @param string  $tab
      *

@@ -71,7 +71,7 @@ interface User
     /**
      * Returns the user id
      *
-     * @return Integer
+     * @return integer
      */
     public function getId();
 
@@ -149,7 +149,7 @@ interface User
     /**
      * Get an address from the user
      *
-     * @param Integer $id - ID of the address
+     * @param integer $id - ID of the address
      *
      * @return \QUI\Users\Address
      */
@@ -173,7 +173,7 @@ interface User
      * Set a attribute of the user
      *
      * @param string $key
-     * @param string|Integer|array $value
+     * @param string|integer|array $value
      */
     public function setAttribute($key, $value);
 
@@ -189,7 +189,7 @@ interface User
      *
      * @param string $var
      *
-     * @return string|Integer|array
+     * @return string|integer|array
      */
     public function getAttribute($var);
 

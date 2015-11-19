@@ -393,7 +393,7 @@ class Manager
     /**
      * Returns the number of users in the system
      *
-     * @return Integer
+     * @return integer
      */
     public function countAllUsers()
     {
@@ -770,7 +770,7 @@ class Manager
     /**
      * Get the user by id
      *
-     * @param Integer $id
+     * @param integer $id
      *
      * @return QUI\Users\User|false
      */
@@ -960,7 +960,7 @@ class Manager
     /**
      * Delete the user
      *
-     * @param Integer $id
+     * @param integer $id
      *
      * @return boolean
      */
@@ -1229,7 +1229,7 @@ class Manager
     /**
      * Gibt eine neue Benutzer Id zwischen 100 und 1000000000 zurück
      *
-     * @return Integer
+     * @return integer
      * @throws QUI\Exception
      */
     protected function _newId()

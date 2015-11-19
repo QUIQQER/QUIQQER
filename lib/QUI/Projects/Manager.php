@@ -277,7 +277,7 @@ class Manager
     /**
      * Return the projects count
      *
-     * @return Integer
+     * @return integer
      */
     static function count()
     {

@@ -45,7 +45,7 @@ class Guest extends QUI\Groups\Group
      * ID cannot be set
      *
      * @param string $key - Attribute name
-     * @param string|boolean|Integer|array $value - value
+     * @param string|boolean|integer|array $value - value
      *
      * @return boolean
      */
@@ -61,7 +61,7 @@ class Guest extends QUI\Groups\Group
     /**
      * Returns the Group-ID
      *
-     * @return Integer
+     * @return integer
      */
     public function getId()
     {
@@ -127,7 +127,7 @@ class Guest extends QUI\Groups\Group
     /**
      * Checks if the ID is from a parent group
      *
-     * @param Integer $id - ID from parent
+     * @param integer $id - ID from parent
      * @param boolean $recursiv - checks recursive or not
      *
      * @return boolean
@@ -142,7 +142,7 @@ class Guest extends QUI\Groups\Group
      *
      * @param boolean $obj - Parent Objekt (true) oder Parent-ID (false) -> (optional = true)
      *
-     * @return Object|Integer|false
+     * @return object|integer|false
      * @throws \QUI\Exception
      */
     public function getParent($obj = true)
@@ -163,7 +163,7 @@ class Guest extends QUI\Groups\Group
     /**
      * Have the group subgroups?
      *
-     * @return Integer
+     * @return integer
      */
     public function hasChildren()
     {

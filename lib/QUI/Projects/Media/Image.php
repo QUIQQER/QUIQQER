@@ -25,7 +25,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the real with of the image
      *
-     * @return Integer | false
+     * @return integer | false
      */
     public function getWidth()
     {
@@ -46,7 +46,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the real height of the image
      *
-     * @return Integer | false
+     * @return integer | false
      */
     public function getHeight()
     {
@@ -159,8 +159,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * Creates a cache file and takes into account the maximum sizes
      * return the media url
      *
-     * @param Integer|boolean $maxwidth
-     * @param Integer|boolean $maxheight
+     * @param integer|boolean $maxwidth
+     * @param integer|boolean $maxheight
      *
      * @return string - Path to the file
      */
@@ -181,8 +181,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Creates a cache file and takes into account the maximum sizes
      *
-     * @param Integer|boolean $maxwidth
-     * @param Integer|boolean $maxheight
+     * @param integer|boolean $maxwidth
+     * @param integer|boolean $maxheight
      *
      * @return string - Path to the file
      */
@@ -199,8 +199,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the Image specific max resize params
      *
-     * @param boolean|Integer $maxwidth - (optional)
-     * @param boolean|Integer $maxheight - (optional)
+     * @param boolean|integer $maxwidth - (optional)
+     * @param boolean|integer $maxheight - (optional)
      *
      * @return array - array('width' => 100, 'height' => 100)
      */
@@ -488,8 +488,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Resize the image and aspect the ratio
      *
-     * @param Integer $newWidth
-     * @param Integer $newHeight
+     * @param integer $newWidth
+     * @param integer $newHeight
      *
      * @return string - Path to the new Image
      *

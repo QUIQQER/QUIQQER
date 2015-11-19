@@ -439,7 +439,7 @@ class MyDB
      * Prüft ob ein Index gesetzt ist
      *
      * @param string $table
-     * @param string|Integer $key
+     * @param string|integer $key
      *
      * @return boolean
      */

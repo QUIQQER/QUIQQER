@@ -617,7 +617,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Returns the count of the children
      *
-     * @return Integer
+     * @return integer
      */
     public function hasChildren()
     {
@@ -760,7 +760,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Returns the count of the children
      *
-     * @return Integer
+     * @return integer
      */
     public function hasSubFolders()
     {

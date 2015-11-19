@@ -58,7 +58,7 @@ class Security
      * Encrypted a password base64
      *
      * @param string  $pass   - string to encrpyted
-     * @param Integer $switch - where to split
+     * @param integer $switch - where to split
      *
      * @return string
      */
@@ -74,7 +74,7 @@ class Security
      * Decrypt a base64 password
      *
      * @param string  $pass   - string to decrypt
-     * @param Integer $switch - where to split
+     * @param integer $switch - where to split
      *
      * @return string
      */

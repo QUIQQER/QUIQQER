@@ -776,7 +776,7 @@ class Manager
      *
      * @param QUI\Projects\Site $Site
      * @param string $permission
-     * @param string|Integer $value
+     * @param string|integer $value
      */
     protected function _setSitePermission($Site, $permission, $value)
     {
@@ -800,7 +800,7 @@ class Manager
      *
      * @param QUI\Projects\Site $Site
      * @param string $permission
-     * @param string|Integer $value
+     * @param string|integer $value
      */
     protected function _addSitePermission($Site, $permission, $value)
     {
@@ -893,7 +893,7 @@ class Manager
      *
      * @param QUI\Projects\Project $Project
      * @param string $permission
-     * @param string|Integer $value
+     * @param string|integer $value
      */
     protected function _setProjectPermission(
         QUI\Projects\Project $Project,
@@ -918,7 +918,7 @@ class Manager
      *
      * @param QUI\Projects\Project $Project
      * @param string $permission
-     * @param string|Integer $value
+     * @param string|integer $value
      */
     protected function _addProjectPermission(
         QUI\Projects\Project $Project,
@@ -1039,9 +1039,9 @@ class Manager
      * Cleanup the value for the type
      *
      * @param string $type
-     * @param string|Integer $val
+     * @param string|integer $val
      *
-     * @return string|Integer
+     * @return string|integer
      */
     protected function _cleanValue($type, $val)
     {

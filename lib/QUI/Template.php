@@ -170,7 +170,7 @@ class Template extends QUI\QDOM
      * Extend the head <head>...</head>
      *
      * @param string $str
-     * @param Integer $prio
+     * @param integer $prio
      */
     public function extendHeader($str, $prio = 3)
     {

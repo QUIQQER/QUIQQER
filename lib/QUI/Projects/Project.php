@@ -679,7 +679,7 @@ class Project
     /**
      * Eine Seite bekommen
      *
-     * @param Integer $id - ID der Seite
+     * @param integer $id - ID der Seite
      *
      * @return Site|Site\Edit
      */
@@ -702,7 +702,7 @@ class Project
     /**
      * Name einer bestimmten ID bekommen
      *
-     * @param Integer $id
+     * @param integer $id
      *
      * @return string
      * @deprecated
@@ -859,7 +859,7 @@ class Project
     /**
      * Return the children ids from a site
      *
-     * @param Integer $parentid - The parent site ID
+     * @param integer $parentid - The parent site ID
      * @param array $params - extra db statemens, like order, where, count, limit
      *
      * @return array
@@ -935,9 +935,9 @@ class Project
     /**
      * Returns the parent id from a site
      *
-     * @param Integer $id
+     * @param integer $id
      *
-     * @return Integer
+     * @return integer
      * @deprecated
      */
     public function getParentId($id)
@@ -948,9 +948,9 @@ class Project
     /**
      * Returns the parent id from a site
      *
-     * @param Integer $id - Child id
+     * @param integer $id - Child id
      *
-     * @return Integer Id of the Parent
+     * @return integer Id of the Parent
      */
     public function getParentIdFrom($id)
     {
@@ -978,7 +978,7 @@ class Project
     /**
      * Gibt alle Parent IDs zurück
      *
-     * @param Integer $id - child id
+     * @param integer $id - child id
      * @param boolean $reverse - revers the result
      *
      * @return array
@@ -1282,7 +1282,7 @@ class Project
     /**
      * Set the last edit date in the project
      *
-     * @param Integer $date
+     * @param integer $date
      */
     public function setEditDate($date)
     {
@@ -1331,7 +1331,7 @@ class Project
     /**
      * Return the last edit date in the project
      *
-     * @return Integer
+     * @return integer
      */
     public function getLastEditDate()
     {

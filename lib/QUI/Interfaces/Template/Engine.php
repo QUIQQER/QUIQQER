@@ -37,7 +37,7 @@ interface Engine
      * Extend the html header
      *
      * @param string  $str
-     * @param Integer $prio
+     * @param integer $prio
      */
     public function extendHeader($str, $prio = 3);
 }

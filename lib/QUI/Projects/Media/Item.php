@@ -37,7 +37,7 @@ abstract class Item extends QUI\QDOM
     /**
      * internal parent id (use ->getParentId())
      *
-     * @var Integer
+     * @var integer
      */
     protected $_parent_id = false;
 
@@ -51,19 +51,19 @@ abstract class Item extends QUI\QDOM
     /**
      * constructor
      *
-     * @param array               $params - item attributes
-     * @param \QUI\Projects\Media $Media  - Media of the file
+     * @param array $params - item attributes
+     * @param \QUI\Projects\Media $Media - Media of the file
      */
     public function __construct($params, Media $Media)
     {
         $this->_Media = $Media;
         $this->setAttributes($params);
 
-        $this->_file = CMS_DIR.$this->_Media->getPath().$this->getPath();
+        $this->_file = CMS_DIR . $this->_Media->getPath() . $this->getPath();
 
         if (!file_exists($this->_file)) {
             QUI::getMessagesHandler()->addAttention(
-                'File '.$this->_file.' ('.$this->getId().') doesn\'t exist'
+                'File ' . $this->_file . ' (' . $this->getId() . ') doesn\'t exist'
             );
 
             return;
@@ -71,14 +71,14 @@ abstract class Item extends QUI\QDOM
 
         $this->setAttribute('filesize', QUIFile::getFileSize($this->_file));
         $this->setAttribute('cache_url',
-            URL_DIR.$this->_Media->getCacheDir().$this->getPath());
+            URL_DIR . $this->_Media->getCacheDir() . $this->getPath());
         $this->setAttribute('url', $this->getUrl());
     }
 
     /**
      * Returns the id of the item
      *
-     * @return Integer
+     * @return integer
      */
     public function getId()
     {
@@ -237,7 +237,7 @@ abstract class Item extends QUI\QDOM
         // Move file to the temp folder
         $original = $this->getFullPath();
         $var_folder
-            = VAR_DIR.'media/'.$Media->getProject()->getAttribute('name').'/';
+                  = VAR_DIR . 'media/' . $Media->getProject()->getAttribute('name') . '/';
 
         if (!is_file($original)) {
             throw new QUI\Exception('Original File is not a File', 400);
@@ -259,7 +259,7 @@ abstract class Item extends QUI\QDOM
 
         // second, move the file to the trash
         try {
-            QUIFile::unlink($var_folder.$this->getId());
+            QUIFile::unlink($var_folder . $this->getId());
 
         } catch (QUI\Exception $Exception) {
             \QUI::getMessagesHandler()->addAttention(
@@ -269,7 +269,7 @@ abstract class Item extends QUI\QDOM
 
         try {
             QUIFile::mkdir($var_folder);
-            QUIFile::move($original, $var_folder.$this->getId());
+            QUIFile::move($original, $var_folder . $this->getId());
 
         } catch (QUI\Exception $Exception) {
             \QUI::getMessagesHandler()->addAttention(
@@ -319,9 +319,9 @@ abstract class Item extends QUI\QDOM
 
         // get the trash file and destroy it
         $var_folder
-            = VAR_DIR.'media/'.$Media->getProject()->getAttribute('name').'/';
+            = VAR_DIR . 'media/' . $Media->getProject()->getAttribute('name') . '/';
 
-        $var_file = $var_folder.$this->getId();
+        $var_file = $var_folder . $this->getId();
 
         QUIFile::unlink($var_file);
 
@@ -361,12 +361,12 @@ abstract class Item extends QUI\QDOM
      */
     public function rename($newname)
     {
-        $original = $this->getFullPath();
+        $original  = $this->getFullPath();
         $extension = QUI\Utils\String::pathinfo($original, PATHINFO_EXTENSION);
-        $Parent = $this->getParent();
+        $Parent    = $this->getParent();
 
-        $new_full_file = $Parent->getFullPath().$newname.'.'.$extension;
-        $new_file = $Parent->getPath().$newname.'.'.$extension;
+        $new_full_file = $Parent->getFullPath() . $newname . '.' . $extension;
+        $new_file      = $Parent->getPath() . $newname . '.' . $extension;
 
         if ($new_full_file == $original) {
             return;
@@ -386,14 +386,14 @@ abstract class Item extends QUI\QDOM
 
         if ($Parent->childWithNameExists($newname)) {
             throw new QUI\Exception(
-                'Eine Datei mit dem Namen '.$newname.'existiert bereits.
+                'Eine Datei mit dem Namen ' . $newname . 'existiert bereits.
                 Bitte wählen Sie einen anderen Namen.'
             ); // #locale
         }
 
-        if ($Parent->fileWithNameExists($newname.'.'.$extension)) {
+        if ($Parent->fileWithNameExists($newname . '.' . $extension)) {
             throw new QUI\Exception(
-                'Eine Datei mit dem Namen '.$newname.'existiert bereits.
+                'Eine Datei mit dem Namen ' . $newname . 'existiert bereits.
                 Bitte wählen Sie einen anderen Namen.'
             ); // #locale
         }
@@ -438,7 +438,7 @@ abstract class Item extends QUI\QDOM
     /**
      * Return the parent id
      *
-     * @return Integer
+     * @return integer
      */
     public function getParentId()
     {
@@ -469,7 +469,7 @@ abstract class Item extends QUI\QDOM
         }
 
         $parents = array();
-        $id = $this->getId();
+        $id      = $this->getId();
 
         while ($id = $this->_Media->getParentIdFrom($id)) {
             $parents[] = $id;
@@ -496,7 +496,7 @@ abstract class Item extends QUI\QDOM
      */
     public function getParents()
     {
-        $ids = $this->getParentIds();
+        $ids     = $this->getParentIds();
         $parents = array();
 
         foreach ($ids as $id) {
@@ -527,7 +527,7 @@ abstract class Item extends QUI\QDOM
      */
     public function getFullPath()
     {
-        return $this->_Media->getFullPath().$this->getAttribute('file');
+        return $this->_Media->getFullPath() . $this->getAttribute('file');
     }
 
     /**
@@ -542,23 +542,23 @@ abstract class Item extends QUI\QDOM
         if ($rewrite == false) {
             $Project = $this->_Media->getProject();
 
-            $str = 'image.php?id='.$this->getId().'&project='
-                .$Project->getAttribute('name');
+            $str = 'image.php?id=' . $this->getId() . '&project='
+                   . $Project->getAttribute('name');
 
             if ($this->getAttribute('maxheight')) {
-                $str .= '&maxheight='.$this->getAttribute('maxheight');
+                $str .= '&maxheight=' . $this->getAttribute('maxheight');
             }
 
             if ($this->getAttribute('maxwidth')) {
-                $str .= '&maxwidth='.$this->getAttribute('maxwidth');
+                $str .= '&maxwidth=' . $this->getAttribute('maxwidth');
             }
 
             return $str;
         }
 
         if ($this->getAttribute('active') == 1) {
-            return URL_DIR.$this->_Media->getCacheDir()
-            .$this->getAttribute('file');
+            return URL_DIR . $this->_Media->getCacheDir()
+                   . $this->getAttribute('file');
         }
 
         return '';
@@ -577,11 +577,11 @@ abstract class Item extends QUI\QDOM
         if ($Folder->fileWithNameExists($this->getAttribute('name'))) {
             throw new QUI\Exception(
                 'File with a same Name exist in folder '
-                .$Folder->getAttribute('name')
+                . $Folder->getAttribute('name')
             );
         }
 
-        $Parent = $this->getParent();
+        $Parent   = $this->getParent();
         $old_path = $this->getFullPath();
 
         $new_file = str_replace(
@@ -590,7 +590,7 @@ abstract class Item extends QUI\QDOM
             $this->getAttribute('file')
         );
 
-        $new_path = $this->_Media->getFullPath().$new_file;
+        $new_path = $this->_Media->getFullPath() . $new_file;
 
         // delete the file cache
         // @todo move the cache too
@@ -707,8 +707,8 @@ abstract class Item extends QUI\QDOM
     /**
      * Set an item effect
      *
-     * @param string               $effect - Name of the effect
-     * @param string|Integer|Float $value  - Value of the effect
+     * @param string $effect - Name of the effect
+     * @param string|integer|float $value - Value of the effect
      */
     public function setEffect($effect, $value)
     {

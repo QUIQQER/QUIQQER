@@ -69,7 +69,7 @@ class Utils
     /**
      * Tab contents of a group Tab / Button
      *
-     * @param Integer $gid    - Group ID
+     * @param integer $gid    - Group ID
      * @param string  $plugin - Plugin
      * @param string  $tab    - Tabname
      *

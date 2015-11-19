@@ -592,7 +592,7 @@ class Utils
     /**
      * Is the variable a folder object?
      *
-     * @param string|boolean|Object $Unknown
+     * @param string|boolean|object $Unknown
      *
      * @return boolean
      */
@@ -616,7 +616,7 @@ class Utils
     /**
      * Is the variable a image object?
      *
-     * @param string|boolean|Object $Unknown
+     * @param string|boolean|object $Unknown
      *
      * @return boolean
      */
@@ -698,7 +698,7 @@ class Utils
      * Check the upload params if a replacement can do
      *
      * @param QUI\Projects\Media $Media
-     * @param Integer $fileid - The File which will be replaced
+     * @param integer $fileid - The File which will be replaced
      * @param array $uploadparams - Array with file information array('name' => '', 'type' => '')
      *
      * @throws QUI\Exception

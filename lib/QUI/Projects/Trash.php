@@ -155,7 +155,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
      *
      * @param \QUI\Projects\Project $Project
      * @param array                 $ids
-     * @param Integer               $parentid
+     * @param integer               $parentid
      */
     public function restore(Project $Project, $ids, $parentid)
     {

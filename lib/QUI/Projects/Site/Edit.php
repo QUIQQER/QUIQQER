@@ -41,7 +41,7 @@ use QUI\Utils\Security\Orthos;
  * @qui-event  onSiteDeactivate [ \QUI\Projects\Site\Edit ]
  * @qui-event  onSiteSave [ \QUI\Projects\Site\Edit ]
  *
- * @event      onSiteCreateChild [ Integer $newId, \QUI\Projects\Site\Edit ]
+ * @event      onSiteCreateChild [ integer $newId, \QUI\Projects\Site\Edit ]
  * @event      onActivate [ \QUI\Projects\Site\Edit ]
  * @event      onDeactivate [ \QUI\Projects\Site\Edit ]
  * @event      onSave [ \QUI\Projects\Site\Edit ]
@@ -62,7 +62,7 @@ class Edit extends Site
      * Konstruktor
      *
      * @param QUI\Projects\Project $Project
-     * @param Integer $id
+     * @param integer $id
      */
     public function __construct(Project $Project, $id)
     {
@@ -690,7 +690,7 @@ class Edit extends Site
      *
      * @see Site::getChildrenIdsFromParentId()
      *
-     * @param Integer $pid - Parent - ID
+     * @param integer $pid - Parent - ID
      * @param array $params
      *
      * @return array
@@ -1032,7 +1032,7 @@ class Edit extends Site
     /**
      * Move the site to another parent
      *
-     * @param Integer $pid - Parent ID
+     * @param integer $pid - Parent ID
      *
      * @return boolean
      */
@@ -1072,7 +1072,7 @@ class Edit extends Site
     /**
      * Kopiert die Seite
      *
-     * @param Integer $pid - ID des Parents unter welches die Kopie eingehängt werden soll
+     * @param integer $pid - ID des Parents unter welches die Kopie eingehängt werden soll
      * @param \QUI\Projects\Project|boolean $Project - (optional) Parent Project
      *
      * @return QUI\Projects\Site\Edit
@@ -1203,8 +1203,8 @@ class Edit extends Site
     /**
      * Löscht eine Verknüpfung
      *
-     * @param Integer $pid - Parent ID
-     * @param Integer|boolean $all - (optional) Alle Verknüpfungen und Original Seite löschen
+     * @param integer $pid - Parent ID
+     * @param integer|boolean $all - (optional) Alle Verknüpfungen und Original Seite löschen
      * @param boolean $orig - (optional) Delete the original site, too
      *
      * @return boolean
@@ -1304,7 +1304,7 @@ class Edit extends Site
      *
      * @todo muss überarbeitet werden, file operationen?
      *
-     * @return bool|Integer
+     * @return bool|integer
      */
     public function isLockedFromOther()
     {

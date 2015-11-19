@@ -953,7 +953,7 @@ class Rewrite
     /**
      * Error Header übermitteln
      *
-     * @param Integer $code - Error Code
+     * @param integer $code - Error Code
      * @param string $url - Bei manchen Error Codes muss eine URL übergeben werden (30*)
      *
      * @return boolean

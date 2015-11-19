@@ -84,7 +84,7 @@ class Manager extends QUI\QDOM
     /**
      * Return a group by ID
      *
-     * @param Integer $id - ID of the Group
+     * @param integer $id - ID of the Group
      *
      * @return QUI\Groups\Group
      *
@@ -123,7 +123,7 @@ class Manager extends QUI\QDOM
     /**
      * Return the name of a group
      *
-     * @param Integer $id - ID of the Group
+     * @param integer $id - ID of the Group
      *
      * @return string
      */

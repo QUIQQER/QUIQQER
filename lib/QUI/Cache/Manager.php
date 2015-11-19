@@ -302,7 +302,7 @@ class Manager
      *
      * @param string $name
      *
-     * @return string|array|Object|boolean
+     * @return string|array|object|boolean
      *
      * @throws QUI\Cache\Exception
      */

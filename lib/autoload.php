@@ -55,7 +55,7 @@ function __quiqqer_autoload($classname)
  *
  * @author www.pcsg.de (Henning Leutz)
  *
- * @param Integer $errno
+ * @param integer $errno
  * @param string  $errstr
  * @param string  $errfile
  * @param string  $errline

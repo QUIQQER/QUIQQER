@@ -43,7 +43,7 @@ class Output extends \Symfony\Component\Console\Output\Output
     /**
      * Konstruktor
      *
-     * @param Integer $verbosity
+     * @param integer $verbosity
      * @param string|boolean $decorated
      * @param OutputFormatterInterface $formatter
      */

@@ -350,7 +350,7 @@ class DOM
     /**
      * Return the tabs
      *
-     * @param \DOMElement $DOMNode
+     * @param \DOMElement|\DOMNode $DOMNode
      * @return array
      */
     static function getTabs(\DOMElement $DOMNode)

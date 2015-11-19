@@ -356,7 +356,7 @@ class Session
      *
      * @param string $sid - Session-ID
      *
-     * @return Integer
+     * @return integer
      */
     public function getLastRefreshFrom($sid)
     {
@@ -378,7 +378,7 @@ class Session
     /**
      * Is the user online?
      *
-     * @param Integer $uid
+     * @param integer $uid
      *
      * @return boolean
      */

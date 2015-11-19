@@ -290,7 +290,7 @@ class Media extends QUI\QDOM
     /**
      * Return a media object
      *
-     * @param Integer $id - media id
+     * @param integer $id - media id
      *
      * @return \QUI\Projects\Media\Item|\QUI\Projects\Media\Image|\QUI\Projects\Media\File
      * @throws \QUI\Exception
@@ -386,7 +386,7 @@ class Media extends QUI\QDOM
     /**
      * Replace a file with another
      *
-     * @param Integer $id
+     * @param integer $id
      * @param string  $file - Path to the new file
      *
      * @return QUI\Interfaces\Projects\Media\File
@@ -491,9 +491,9 @@ class Media extends QUI\QDOM
     /**
      * Return the parent id
      *
-     * @param Integer $id
+     * @param integer $id
      *
-     * @return Integer|false
+     * @return integer|false
      */
     public function getParentIdFrom($id)
     {

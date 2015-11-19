@@ -21,12 +21,12 @@ use QUI\Groups\Group;
 class PermissionOrder
 {
     /**
-     * Gibt den Maximalen Integer Rechte Wert zurück
+     * Gibt den Maximalen integer Rechte Wert zurück
      *
      * @param string $permission - permission name
      * @param array $groups - List of groups
      *
-     * @return Integer
+     * @return integer
      */
     static function max_integer($permission, $groups)
     {
@@ -63,12 +63,12 @@ class PermissionOrder
     }
 
     /**
-     * Gibt den Minimalen Integer Rechte Wert zurück
+     * Gibt den Minimalen integer Rechte Wert zurück
      *
      * @param string $permission - permission name
      * @param array $groups - List of groups
      *
-     * @return Integer
+     * @return integer
      */
     static function min_integer($permission, $groups)
     {

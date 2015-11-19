@@ -28,7 +28,7 @@ class Group extends QUI\QDOM
     /**
      * The group root id
      *
-     * @var Integer
+     * @var integer
      */
     protected $_rootid;
 
@@ -56,7 +56,7 @@ class Group extends QUI\QDOM
     /**
      * constructor
      *
-     * @param Integer $id - Group ID
+     * @param integer $id - Group ID
      *
      * @throws QUI\Exception
      */
@@ -166,7 +166,7 @@ class Group extends QUI\QDOM
      * ID cannot be set
      *
      * @param string $key - Attribute name
-     * @param string|boolean|Integer|array $value - value
+     * @param string|boolean|integer|array $value - value
      *
      * @return boolean
      */
@@ -182,7 +182,7 @@ class Group extends QUI\QDOM
     /**
      * Returns the Group-ID
      *
-     * @return Integer
+     * @return integer
      */
     public function getId()
     {
@@ -390,7 +390,7 @@ class Group extends QUI\QDOM
      *
      * @param array $params - SQL Params
      *
-     * @return Integer
+     * @return integer
      */
     public function countUser($params = array())
     {
@@ -430,7 +430,7 @@ class Group extends QUI\QDOM
     /**
      * Checks if the ID is from a parent group
      *
-     * @param Integer $id - ID from parent
+     * @param integer $id - ID from parent
      * @param boolean $recursiv - checks recursive or not
      *
      * @return boolean
@@ -457,7 +457,7 @@ class Group extends QUI\QDOM
      *
      * @param boolean $obj - Parent Objekt (true) oder Parent-ID (false) -> (optional = true)
      *
-     * @return Object|Integer|false
+     * @return object|integer|false
      * @throws QUI\Exception
      */
     public function getParent($obj = true)
@@ -509,7 +509,7 @@ class Group extends QUI\QDOM
     /**
      * Helper method for getparents
      *
-     * @param Integer $id
+     * @param integer $id
      *
      * @ignore
      */
@@ -539,7 +539,7 @@ class Group extends QUI\QDOM
     /**
      * Have the group subgroups?
      *
-     * @return Integer
+     * @return integer
      */
     public function hasChildren()
     {
@@ -631,7 +631,7 @@ class Group extends QUI\QDOM
     /**
      * Helper method for the recursiveness
      *
-     * @param Integer $id
+     * @param integer $id
      */
     private function _getChildrenIds($id)
     {

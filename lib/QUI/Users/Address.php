@@ -27,7 +27,7 @@ class Address extends QUI\QDOM
     /**
      * Address-ID
      *
-     * @var Integer
+     * @var integer
      */
     protected $_id = false;
 
@@ -35,7 +35,7 @@ class Address extends QUI\QDOM
      * constructor
      *
      * @param QUI\Users\User $User - User
-     * @param Integer $id - Address id
+     * @param integer $id - Address id
      *
      * @throws QUI\Exception
      */
@@ -71,7 +71,7 @@ class Address extends QUI\QDOM
     /**
      * ID der Addresse
      *
-     * @return Integer
+     * @return integer
      */
     public function getId()
     {

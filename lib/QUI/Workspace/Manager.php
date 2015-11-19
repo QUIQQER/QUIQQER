@@ -55,10 +55,10 @@ class Manager
      * @param \QUI\USers\User $User
      * @param string $title - title of the workspace
      * @param string $data - Workspace profile
-     * @param Integer $minHeight - minimum height of the workspace
-     * @param Integer $minWidth - minimum width of the workspace
+     * @param integer $minHeight - minimum height of the workspace
+     * @param integer $minWidth - minimum width of the workspace
      *
-     * @return Integer - new Workspace ID
+     * @return integer - new Workspace ID
      */
     static function addWorkspace($User, $title, $data, $minHeight, $minWidth)
     {
@@ -80,7 +80,7 @@ class Manager
     /**
      * Delete a workspace
      *
-     * @param Integer $id - Workspace ID
+     * @param integer $id - Workspace ID
      * @param \QUI\Users\User $User - User of the Workspace
      */
     static function deleteWorkspace($id, $User)
@@ -115,7 +115,7 @@ class Manager
      *
      * @throws \QUI\Exception
      *
-     * @param Integer $id - id of the workspace
+     * @param integer $id - id of the workspace
      * @param \QUI\Users\User $User
      *
      * @return array
@@ -167,7 +167,7 @@ class Manager
      * Saves a workspace
      *
      * @param \QUI\Users\User $User
-     * @param Integer $id
+     * @param integer $id
      * @param array $data
      */
     static function saveWorkspace(QUI\Users\User $User, $id, $data = array())
@@ -210,7 +210,7 @@ class Manager
      * Set the workspace to the standard workspace
      *
      * @param \QUI\Users\User $User
-     * @param Integer $id
+     * @param integer $id
      */
     static function setStandardWorkspace(QUI\Users\User $User, $id)
     {

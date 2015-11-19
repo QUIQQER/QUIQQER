@@ -30,7 +30,7 @@ class Log
     /**
      * Return the log name by a log level
      *
-     * @param Integer $LogLevel - Log Level
+     * @param integer $LogLevel - Log Level
      *
      * @return string
      */
@@ -126,8 +126,8 @@ class Log
     /**
      * Writes with print_r the object into a log file
      *
-     * @param Object|string|Integer|array $object
-     * @param Integer $loglevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
+     * @param object|string|integer|array $object
+     * @param integer $loglevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
      * @param array $context - context data
      * @param string|boolean $filename - [optional] name of the log eq: messages, database,
      */
@@ -144,7 +144,7 @@ class Log
      * Writes an Exception to a log file
      *
      * @param \Exception $Exception
-     * @param Integer $loglevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
+     * @param integer $loglevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
      * @param array $context - context data
      * @param string|boolean $filename - [optional] name of the log eq: messages, database,
      */

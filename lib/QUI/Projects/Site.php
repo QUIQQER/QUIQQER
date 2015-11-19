@@ -36,7 +36,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * The site id
      *
-     * @var Integer
+     * @var integer
      */
     protected $_id;
 
@@ -50,7 +50,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * the main parent id
      *
-     * @var Integer
+     * @var integer
      */
     protected $_parent_id;
 
@@ -175,7 +175,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Constructor
      *
      * @param QUI\Projects\Project $Project
-     * @param Integer $id
+     * @param integer $id
      *
      * @throws QUI\Exception
      */
@@ -620,7 +620,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Prüft ob es eine Verknüpfung ist
      *
-     * @return boolean|Integer
+     * @return boolean|integer
      */
     public function isLinked()
     {
@@ -724,7 +724,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @param string|boolean $lang - optional, if it is set, then the language of the wanted linked sibling site
      *
-     * @return Integer
+     * @return integer
      */
     public function getId($lang = false)
     {
@@ -904,7 +904,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Die nächsten x Kinder
      *
-     * @param Integer $no
+     * @param integer $no
      *
      * @return array
      */
@@ -961,7 +961,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Die x vorhergehenden Geschwister
      *
-     * @param Integer $no
+     * @param integer $no
      *
      * @return array
      */
@@ -1041,7 +1041,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @param string $name
      *
-     * @return Integer
+     * @return integer
      * @throws QUI\Exception
      */
     public function getChildIdByName($name)
@@ -1077,7 +1077,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Return a children by id
      *
-     * @param Integer $id
+     * @param integer $id
      *
      * @return QUI\Projects\Site
      * @throws QUI\Exception
@@ -1171,7 +1171,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @param boolean $navhide - if navhide == false, navhide must be 0
      *
-     * @return Integer - Anzahl der Kinder
+     * @return integer - Anzahl der Kinder
      */
     public function hasChildren($navhide = false)
     {
@@ -1517,7 +1517,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * rekursiver Aufruf getUrl
      *
-     * @param Integer $id - Site ID
+     * @param integer $id - Site ID
      */
     protected function _getUrl($id)
     {
@@ -1535,7 +1535,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Return the Parent id from the site object
      *
-     * @return Integer
+     * @return integer
      */
     public function getParentId()
     {
@@ -1779,7 +1779,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @param string $permission - name of the permission
      * @param QUI\Users\User|boolean $User - optional
      *
-     * @return boolean|Integer
+     * @return boolean|integer
      */
     public function hasPermission($permission, $User = false)
     {

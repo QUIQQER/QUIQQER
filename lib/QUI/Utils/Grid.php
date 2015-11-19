@@ -84,8 +84,8 @@ class Grid extends QUI\QDOM
      * Parse a result array in a grid array
      *
      * @param array $data
-     * @param Integer $page
-     * @param Integer $limit
+     * @param integer $page
+     * @param integer $limit
      *
      * @return array
      */

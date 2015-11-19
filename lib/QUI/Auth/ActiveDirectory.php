@@ -10,49 +10,49 @@ namespace QUI\Auth;
 
 /**
  * ADLDAP_NORMAL_ACCOUNT
- * @var Integer
+ * @var integer
  * @package com.pcsg.qui.auth.activedirectory
  */
 define('ADLDAP_NORMAL_ACCOUNT', 805306368);
 
 /**
  * ADLDAP_NORMAL_ACCOUNT
- * @var Integer
+ * @var integer
  * @package com.pcsg.qui.auth.activedirectory
  */
 define('ADLDAP_WORKSTATION_TRUST', 805306369);
 
 /**
  * ADLDAP_NORMAL_ACCOUNT
- * @var Integer
+ * @var integer
  * @package com.pcsg.qui.auth.activedirectory
  */
 define('ADLDAP_INTERDOMAIN_TRUST', 805306370);
 
 /**
  * ADLDAP_NORMAL_ACCOUNT
- * @var Integer
+ * @var integer
  * @package com.pcsg.qui.auth.activedirectory
  */
 define('ADLDAP_SECURITY_GLOBAL_GROUP', 268435456);
 
 /**
  * ADLDAP_NORMAL_ACCOUNT
- * @var Integer
+ * @var integer
  * @package com.pcsg.qui.auth.activedirectory
  */
 define('ADLDAP_DISTRIBUTION_GROUP', 268435457);
 
 /**
  * ADLDAP_NORMAL_ACCOUNT
- * @var Integer
+ * @var integer
  * @package com.pcsg.qui.auth.activedirectory
  */
 define('ADLDAP_SECURITY_LOCAL_GROUP', 536870912);
 
 /**
  * ADLDAP_NORMAL_ACCOUNT
- * @var Integer
+ * @var integer
  * @package com.pcsg.qui.auth.activedirectory
  */
 define('ADLDAP_DISTRIBUTION_LOCAL_GROUP', 536870913);

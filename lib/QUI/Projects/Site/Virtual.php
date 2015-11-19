@@ -110,7 +110,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Prüft ob es eine Verknüpfung ist
      *
-     * @return boolean|Integer
+     * @return boolean|integer
      */
     public function isLinked()
     {
@@ -146,7 +146,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @param string|boolean $lang - optional, if it is set, then the language of the wanted linked sibling site
      *
-     * @return Integer
+     * @return integer
      */
     public function getId($lang = false)
     {
@@ -182,7 +182,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Die nächsten x Kinder
      *
-     * @param Integer $no
+     * @param integer $no
      *
      * @return array
      */
@@ -205,7 +205,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Die x vorhergehenden Geschwister
      *
-     * @param Integer $no
+     * @param integer $no
      *
      * @return array
      */
@@ -243,7 +243,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @param string $name
      *
-     * @return Integer
+     * @return integer
      * @throws QUI\Exception
      */
     public function getChildIdByName($name)
@@ -256,7 +256,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Return a children by id
      *
-     * @param Integer $id
+     * @param integer $id
      *
      * @return QUI\Projects\Site
      * @throws QUI\Exception
@@ -298,7 +298,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @param boolean $navhide - if navhide == false, navhide must be 0
      *
-     * @return Integer - Anzahl der Kinder
+     * @return integer - Anzahl der Kinder
      */
     public function hasChildren($navhide = false)
     {
@@ -344,7 +344,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Return the Parent id from the site object
      *
-     * @return Integer
+     * @return integer
      */
     public function getParentId()
     {
@@ -459,7 +459,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @param string              $permission - name of the permission
      * @param QUI\Users\User|boolean $User       - optional
      *
-     * @return boolean|Integer
+     * @return boolean|integer
      */
     public function hasPermission($permission, $User = false)
     {

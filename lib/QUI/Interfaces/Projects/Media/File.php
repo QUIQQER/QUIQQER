@@ -22,7 +22,7 @@ interface File
     /**
      * Return the file media ID
      *
-     * @return Integer
+     * @return integer
      */
     public function getId();
 
@@ -36,7 +36,7 @@ interface File
     /**
      * Return the parent id
      *
-     * @return Integer
+     * @return integer
      */
     public function getParentId();
 
