@@ -4045,6 +4045,16 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Ihre Sitzung ist abgelaufen, bitte loggen Sie sich ein]]></de>
             <en><![CDATA[Your session has expired, please login.]]></en>
         </locale>
+        <locale name="exception.session.expired.from.other">
+            <de><![CDATA[
+            Jemand hat sich auf einem anderen PC mit Ihrem Benutzernamen angemeldet,
+            Aus diesem Grund wurde Ihre Sitzung beendet. Bitte loggen Sie sich erneut ein.
+            ]]></de>
+            <en><![CDATA[
+            Someone is logged in from another PC with your username.
+            For that reason, your session has ended. Please log in again.
+            ]]></en>
+        </locale>
         <locale name="exception.no.permission">
             <de><![CDATA[Sie haben nicht die nötigen Rechte um diese Aktion durchzuführen]]></de>
             <en><![CDATA[You have not the necessary rights to perform this action.]]></en>

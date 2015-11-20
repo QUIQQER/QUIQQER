@@ -307,7 +307,7 @@ class Session
     /**
      * Checks the validity of the session
      *
-     * @return bool
+     * @return boolean
      */
     public function check()
     {

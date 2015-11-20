@@ -672,7 +672,7 @@ class Manager
     /**
      * Generate a user-dependent security hash
      * There are different data use such as IP, User-Agent and the System-Salt
-     * @todo noch eine eindeutige möglichkeit der Identifizierung des Browser  finden
+     * @todo noch eine eindeutige möglichkeit der Identifizierung des Browser finden
      * @return string
      */
     public function getSecHash()
@@ -706,45 +706,81 @@ class Manager
         }
 
         // max_life_time check
-        if (!QUI::getSession()->check()) {
+        try {
+
+            $this->checkUserSession();
+
+            return $this->get(QUI::getSession()->get('uid'));
+
+        } catch (QUI\Exception $Exception) {
             return $this->getNobody();
+        }
+    }
+
+    /**
+     * Checks, if the session is ok
+     *
+     * @throws QUI\Exception
+     */
+    public function checkUserSession()
+    {
+        // max_life_time check
+        if (!QUI::getSession()->check()) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.permission.session.expired'
+                ),
+                401
+            );
         }
 
         if (!QUI::getSession()->get('uid')) {
-            return $this->getNobody();
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.permission.session.expired'
+                ),
+                401
+            );
         }
 
-        try {
+        $User = $this->get(QUI::getSession()->get('uid'));
 
-            $User = $this->get(QUI::getSession()->get('uid'));
+        if (!$User->isActive()) {
+            QUI::getSession()->destroy();
 
-            if (!$User->isActive()) {
-                QUI::getSession()->destroy();
-
-                throw new QUI\Exception(
-                    QUI::getLocale()->get('quiqqer/system', 'exception.user.inactive'),
-                    401
-                );
-            }
-
-            // Mehrfachanmeldungen? Dann keine Prüfung
-            if (QUI::conf('session', 'multible')) {
-                return $User;
-            }
-
-            $sessionSecHash = QUI::getSession()->get('secHash');
-            $secHash        = $this->getSecHash();
-            $userSecHash    = $User->getAttribute('secHash');
-
-            if ($sessionSecHash == $secHash && $userSecHash == $secHash) {
-                return $User;
-            }
-
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::addDebug($Exception->getMessage());
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.user.inactive'
+                ),
+                401
+            );
         }
 
-        return $this->getNobody();
+        // Mehrfachanmeldungen? Dann keine Prüfung
+        if (QUI::conf('session', 'multible')) {
+            return;
+        }
+
+        $sessionSecHash = QUI::getSession()->get('secHash');
+        $secHash        = $this->getSecHash();
+        $userSecHash    = $User->getAttribute('secHash');
+
+        if ($sessionSecHash == $secHash && $userSecHash == $secHash) {
+            return;
+        }
+
+        //QUI::getSession()->destroy();
+
+        throw new QUI\Exception(
+            QUI::getLocale()->get(
+                'quiqqer/system',
+                'exception.session.expired.from.other'
+            ),
+            401
+        );
     }
 
     /**

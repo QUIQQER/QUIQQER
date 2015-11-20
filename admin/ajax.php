@@ -16,7 +16,7 @@ header("Content-Type: text/plain");
 // expire date in the past
 header("Cache-Control: no-cache, must-revalidate");
 header("Pragma: no-cache");
-header('Expires: '.gmdate('D, d M Y H:i:s', time() - 60).' GMT');
+header('Expires: ' . gmdate('D, d M Y H:i:s', time() - 60) . ' GMT');
 
 $User = QUI::getUserBySession();
 
@@ -53,13 +53,13 @@ QUI::getAjax();
 // ajax package loader
 if (isset($_REQUEST['package'])) {
     $package = $_REQUEST['package'];
-    $dir = OPT_DIR;
+    $dir     = OPT_DIR;
 
     foreach ($_rf_files as $key => $file) {
-        $firstpart = 'package_'.str_replace('/', '_', $package);
-        $ending = str_replace($firstpart, '', $file);
+        $firstpart = 'package_' . str_replace('/', '_', $package);
+        $ending    = str_replace($firstpart, '', $file);
 
-        $_rf_file = $dir.$package.str_replace('_', '/', $ending).'.php';
+        $_rf_file = $dir . $package . str_replace('_', '/', $ending) . '.php';
         $_rf_file = Orthos::clearPath($_rf_file);
         $_rf_file = realpath($_rf_file);
 
@@ -72,11 +72,11 @@ if (isset($_REQUEST['package'])) {
 // admin ajax
 foreach ($_rf_files as $key => $file) {
     $_rf_file
-        = OPT_DIR.'quiqqer/quiqqer/admin/'.str_replace('_', '/', $file).'.php';
+              = OPT_DIR . 'quiqqer/quiqqer/admin/' . str_replace('_', '/', $file) . '.php';
     $_rf_file = Orthos::clearPath($_rf_file);
     $_rf_file = realpath($_rf_file);
 
-    $dir = OPT_DIR.'quiqqer/quiqqer/admin/';
+    $dir = OPT_DIR . 'quiqqer/quiqqer/admin/';
 
     if (strpos($_rf_file, $dir) !== false && file_exists($_rf_file)) {
         require_once $_rf_file;
@@ -94,16 +94,16 @@ if (isset($_REQUEST['project'])) {
         );
     }
 
-    $projectDir = USR_DIR.$Project->getName();
-    $firstpart = 'project_'.$Project->getName().'_';
+    $projectDir = USR_DIR . $Project->getName();
+    $firstpart  = 'project_' . $Project->getName() . '_';
 
     foreach ($_rf_files as $key => $file) {
         $file = str_replace($firstpart, '', $file);
-        $file = $projectDir.'/lib/'.str_replace('_', '/', $file).'.php';
+        $file = $projectDir . '/lib/' . str_replace('_', '/', $file) . '.php';
         $file = Orthos::clearPath($file);
         $file = realpath($file);
 
-        $dir = $projectDir.'/lib/';
+        $dir = $projectDir . '/lib/';
 
         if (strpos($file, $dir) !== false && file_exists($file)) {
             require_once $file;
