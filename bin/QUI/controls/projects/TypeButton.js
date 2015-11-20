@@ -16,8 +16,7 @@ define('controls/projects/TypeButton', [
     'qui/controls/buttons/Button',
     'Locale'
 
-], function(QUIControl, TypeWindow, QUIButton, Locale)
-{
+], function (QUIControl, TypeWindow, QUIButton, Locale) {
     "use strict";
 
     /**
@@ -39,9 +38,8 @@ define('controls/projects/TypeButton', [
             project : false
         },
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize : function (options) {
+            this.parent(options);
 
             this.$Button = null;
             this.$Elm    = null;
@@ -53,32 +51,29 @@ define('controls/projects/TypeButton', [
          * @method controls/projects/TypeButton#create
          * @return {HTMLElement}
          */
-        create : function()
-        {
+        create : function () {
             var self = this;
 
             this.$Button = new QUIButton({
                 name   : 'project-types',
                 image  : 'icon-magic',
-                alt    : Locale.get( 'quiqqer/system', 'projects.typebutton.title' ),
-                title  : Locale.get( 'quiqqer/system', 'projects.typebutton.title' ),
+                alt    : Locale.get('quiqqer/system', 'projects.typebutton.title'),
+                title  : Locale.get('quiqqer/system', 'projects.typebutton.title'),
                 events :
                 {
-                    click : function()
-                    {
+                    click : function () {
                         new TypeWindow({
                             project : self.getAttribute('project'),
                             events  :
                             {
-                                onSubmit : function(Win, result)
-                                {
-                                    if ( result[0] ) {
-                                        self.fireEvent( 'submit', [ self, result[0] ] );
+                                onSubmit : function (Win, result) {
+                                    if (result[0]) {
+                                        self.fireEvent('submit', [self, result[0]]);
                                     }
                                 },
 
-                                onCancel : function() {
-                                    self.fireEvent( 'cancel' );
+                                onCancel : function () {
+                                    self.fireEvent('cancel');
                                 }
                             }
                         }).open();
@@ -87,7 +82,7 @@ define('controls/projects/TypeButton', [
             });
 
             this.$Elm = this.$Button.create();
-            this.$Elm.set( 'data-quiid', this.getId() );
+            this.$Elm.set('data-quiid', this.getId());
 
             return this.$Elm;
         }

@@ -447,8 +447,10 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
         parseMediaInput: function (Elm) {
             return new Promise(function (resolve, reject) {
                 require(['controls/projects/project/media/Input'], function (ProjectMediaInput) {
-                    var i, len;
-                    var mediaImages = Elm.getElements('input.media-image'),
+
+                    var i, len,
+
+                        mediaImages = Elm.getElements('input.media-image'),
                         mediaFolder = Elm.getElements('input.media-folder');
 
                     for (i = 0, len = mediaImages.length; i < len; i++) {

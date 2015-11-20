@@ -385,7 +385,7 @@ define('controls/users/Input', [
 
             var self = this;
 
-            uid = ( uid ).toInt();
+            uid = (uid).toInt();
 
             var User = new UserEntry(uid, {
                 events: {

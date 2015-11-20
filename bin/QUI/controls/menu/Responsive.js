@@ -12,8 +12,7 @@ define('controls/menu/Responsive', [
 
     'css!controls/menu/Responsive.css'
 
-], function(QUIControl, QUIButton, QUIBackground, QUILoader, Ajax)
-{
+], function (QUIControl, QUIButton, QUIBackground, QUILoader, Ajax) {
     "use strict";
 
     return new Class({
@@ -29,18 +28,17 @@ define('controls/menu/Responsive', [
             searchButton : false
         },
 
-        initialize : function(options)
-        {
+        initialize : function (options) {
             var self = this;
 
-            this.parent( options );
+            this.parent(options);
 
             this.$Loader = new QUILoader();
 
             this.$Background = new QUIBackground({
                 events :
                 {
-                    onClick : function() {
+                    onClick : function () {
                         self.hide();
                     }
                 }
@@ -60,13 +58,12 @@ define('controls/menu/Responsive', [
          *
          * @return {HTMLElement}
          */
-        create : function()
-        {
+        create : function () {
             var self = this;
 
             this.$Elm = new Element('div', {
                 'class' : 'qui-controls-menu-responsive',
-                html    : '<div class="qcm-responsive-title">'+
+                html    : '<div class="qcm-responsive-title">' +
                               '<div class="qcm-responsive-title-home">' +
                                   '<span class="icon-home"></span>' +
                                   '<span>Menü</span>' +
@@ -82,14 +79,14 @@ define('controls/menu/Responsive', [
                 }
             });
 
-            this.$Buttons = this.$Elm.getElement( '.qcm-responsive-buttons' );
-            this.$Close   = this.$Elm.getElement( '.qcm-responsive-title-close' );
-            this.$Content = this.$Elm.getElement( '.qcm-responsive-content' );
+            this.$Buttons = this.$Elm.getElement('.qcm-responsive-buttons');
+            this.$Close   = this.$Elm.getElement('.qcm-responsive-title-close');
+            this.$Content = this.$Elm.getElement('.qcm-responsive-content');
 
             // home button
-            this.$Elm.getElement( '.qcm-responsive-title-home' ).addEvents({
-                click : function() {
-                    self.showChildren( 1 );
+            this.$Elm.getElement('.qcm-responsive-title-home').addEvents({
+                click : function () {
+                    self.showChildren(1);
                 }
             });
 
@@ -99,29 +96,28 @@ define('controls/menu/Responsive', [
                 textimage : 'fa fa-angle-double-left icon-double-angle-left',
                 events :
                 {
-                    onClick : function() {
+                    onClick : function () {
                         self.back();
                     }
                 }
-            }).inject( this.$Buttons );
+            }).inject(this.$Buttons);
 
-            if ( this.getAttribute('searchButton') )
-            {
+            if (this.getAttribute('searchButton')) {
                 new QUIButton({
                     text : 'Suche',
                     textimage : 'icon-search'
-                }).inject( this.$Buttons );
+                }).inject(this.$Buttons);
             }
 
             this.$Close.addEvents({
-                click : function() {
+                click : function () {
                     self.hide();
                 }
             });
 
-            this.$Loader.inject( this.$Content );
+            this.$Loader.inject(this.$Content);
 
-            this.$FX = moofx( this.$Elm );
+            this.$FX = moofx(this.$Elm);
 
             return this.$Elm;
         },
@@ -129,10 +125,8 @@ define('controls/menu/Responsive', [
         /**
          * toggle the menu
          */
-        toggle : function()
-        {
-            if ( this.$show )
-            {
+        toggle : function () {
+            if (this.$show) {
                 this.hide();
                 return this;
             }
@@ -144,28 +138,26 @@ define('controls/menu/Responsive', [
         /**
          * Show the menu
          */
-        show : function()
-        {
+        show : function () {
             this.$show = true;
 
             var self  = this,
                 size  = document.body.getSize(),
                 width = 400;
 
-            if ( width > size.x * 0.9 ) {
+            if (width > size.x * 0.9) {
                 width = size.x * 0.9;
             }
 
-            if ( !this.$Elm ) {
-                this.inject( document.body );
+            if (!this.$Elm) {
+                this.inject(document.body);
             }
 
-            if ( this.$Elm.getParent() == document.body )
-            {
-                this.$Elm.addClass( 'shadow' );
+            if (this.$Elm.getParent() == document.body) {
+                this.$Elm.addClass('shadow');
 
-                if ( !this.$Background.getElm() ) {
-                    this.$Background.inject( document.body );
+                if (!this.$Background.getElm()) {
+                    this.$Background.inject(document.body);
                 }
 
                 this.$Background.show();
@@ -184,8 +176,8 @@ define('controls/menu/Responsive', [
             this.$FX.animate({
                 left : 0
             }, {
-                callback : function() {
-                    self.showChildren( self.getAttribute('id') );
+                callback : function () {
+                    self.showChildren(self.getAttribute('id'));
                 }
             });
         },
@@ -193,8 +185,7 @@ define('controls/menu/Responsive', [
         /**
          * hide the menu
          */
-        hide : function()
-        {
+        hide : function () {
             this.$show = false;
             this.$Background.hide();
 
@@ -208,8 +199,7 @@ define('controls/menu/Responsive', [
          *
          * @param {Number} siteid - ID of the parent site
          */
-        showChildren : function(siteid)
-        {
+        showChildren : function (siteid) {
             var self = this;
 
             this.$Loader.show();
@@ -217,22 +207,19 @@ define('controls/menu/Responsive', [
             Ajax.get([
                 'ajax_project_sites_navigation',
                 'ajax_project_parent'
-            ], function(result, parentId)
-            {
+            ], function (result, parentId) {
                 self.$parentId = parentId;
 
-                if ( siteid == 1 )
-                {
+                if (siteid == 1) {
                     self.$Back.disable();
-                } else
-                {
+                } else {
                     self.$Back.enable();
                 }
 
                 var i, len, entry, Text, Container;
                 var size = self.$Content.getSize();
 
-                self.$Content.set( 'html', '' );
+                self.$Content.set('html', '');
 
                 var Sheet = new Element('div', {
                     styles : {
@@ -240,38 +227,35 @@ define('controls/menu/Responsive', [
                         position: 'absolute',
                         top     : 0
                     }
-                }).inject( self.$Content );
+                }).inject(self.$Content);
 
-                var click = function()
-                {
+                var click = function () {
                     var Parent = this.getParent(
                         '.qcm-responsive-content-entry'
                     );
 
                     self.hide();
 
-                    window.location = Parent.get( 'data-url' );
+                    window.location = Parent.get('data-url');
                 };
 
-                var clickOpenChildren = function()
-                {
+                var clickOpenChildren = function () {
                     var Parent = this.getParent(
                         '.qcm-responsive-content-entry'
                     );
 
-                    self.showChildren( Parent.get('data-id') );
+                    self.showChildren(Parent.get('data-id'));
                 };
 
 
-                for ( i = 0, len = result.length; i < len; i++ )
-                {
+                for (i = 0, len = result.length; i < len; i++) {
                     entry = result[ i ];
 
                     Container = new Element('div', {
                         'class'    : 'qcm-responsive-content-entry',
                         'data-id'  : entry.id,
                         'data-url' : entry.url
-                    }).inject( Sheet );
+                    }).inject(Sheet);
 
                     Text = new Element('div', {
                         'class' : 'qcm-responsive-content-entry-text smooth box',
@@ -282,11 +266,10 @@ define('controls/menu/Responsive', [
                         events : {
                             click : click
                         }
-                    }).inject( Container );
+                    }).inject(Container);
 
-                    if ( !( entry.hasChildren ).toInt() )
-                    {
-                        Text.setStyle( 'width', size.x );
+                    if (!(entry.hasChildren).toInt()) {
+                        Text.setStyle('width', size.x);
                         continue;
                     }
 
@@ -296,10 +279,10 @@ define('controls/menu/Responsive', [
                         events  : {
                             click : clickOpenChildren
                         }
-                    }).inject( Container );
+                    }).inject(Container);
                 }
 
-                moofx( Sheet ).animate({
+                moofx(Sheet).animate({
                     left : 0
                 });
 
@@ -307,8 +290,8 @@ define('controls/menu/Responsive', [
 
             }, {
                 project : JSON.encode({
-                    name : self.getAttribute( 'project' ),
-                    lang : self.getAttribute( 'lang' )
+                    name : self.getAttribute('project'),
+                    lang : self.getAttribute('lang')
                 }),
                 id : siteid
             });
@@ -317,9 +300,8 @@ define('controls/menu/Responsive', [
         /**
          * opens the parent site
          */
-        back : function()
-        {
-            this.showChildren( this.$parentId );
+        back : function () {
+            this.showChildren(this.$parentId);
         }
     });
 });

@@ -22,8 +22,7 @@ define('classes/request/Downloads', [
     'qui/classes/DOM',
     'Ajax'
 
-], function(DOM, Ajax)
-{
+], function (DOM, Ajax) {
     "use strict";
 
     /**
@@ -49,9 +48,8 @@ define('classes/request/Downloads', [
 
         },
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize : function (options) {
+            this.parent(options);
             this.$frames = {};
         },
 
@@ -63,15 +61,14 @@ define('classes/request/Downloads', [
          * @params {String} request  - Request (Ajax) Function
          * @params {Object} [params] - extra GET params
          */
-        download : function(request, params)
-        {
+        download : function (request, params) {
             var self    = this,
                 frameId = String.uniqueID();
 
             params = params || {};
             params._frameId = frameId;
 
-            var url = Ajax.$url +'?'+ Ajax.parseParams(request, params );
+            var url = Ajax.$url + '?' + Ajax.parseParams(request, params);
 
             this.$frames[ frameId ] = new Element('iframe', {
                 src    : url,
@@ -85,16 +82,15 @@ define('classes/request/Downloads', [
                 },
                 events :
                 {
-                    load : function()
-                    {
-                        (function() {
-                            self.updateStatus( this.id );
-                        }).delay( 500, this );
+                    load : function () {
+                        (function () {
+                            self.updateStatus(this.id);
+                        }).delay(500, this);
                     }
                 }
             });
 
-            this.$frames[ frameId ].inject( document.body );
+            this.$frames[ frameId ].inject(document.body);
         },
 
         /**
@@ -102,13 +98,11 @@ define('classes/request/Downloads', [
          *
          * @method classes/request/Downloads#updateStatus
          */
-        updateStatus : function(frameId)
-        {
-            if ( frameId in this.$frames )
-            {
+        updateStatus : function (frameId) {
+            if (frameId in this.$frames) {
                 // dl fertig
                 this.$frames[ frameId ].destroy();
-                this.fireEvent( 'complete', [ this ] );
+                this.fireEvent('complete', [this]);
             }
         }
     });

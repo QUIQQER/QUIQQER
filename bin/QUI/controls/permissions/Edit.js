@@ -20,8 +20,7 @@ define('controls/permissions/Edit', [
     'controls/permissions/Permission',
     'Locale'
 
-], function(QUIDOM, QUIButton, QUIPrompt, Permission, QUILocale)
-{
+], function (QUIDOM, QUIButton, QUIPrompt, Permission, QUILocale) {
     "use strict";
 
     return new Class({
@@ -34,8 +33,7 @@ define('controls/permissions/Edit', [
             '$addPermission'
         ],
 
-        initialize : function(Object, options)
-        {
+        initialize : function (Object, options) {
             this.parent(null, options);
 
             this.addEvents({
@@ -48,9 +46,8 @@ define('controls/permissions/Edit', [
          *
          * @returns {Promise}
          */
-        $openBindSelect : function()
-        {
-            return new Promise(function(resolve) {
+        $openBindSelect : function () {
+            return new Promise(function (resolve) {
 
                 this.$Bind = new QUIDOM();
 
@@ -67,8 +64,7 @@ define('controls/permissions/Edit', [
         /**
          * event on open
          */
-        $onOpen : function()
-        {
+        $onOpen : function () {
             new QUIButton({
                 text      : QUILocale.get('quiqqer/system', 'permission.control.btn.add.permission'),
                 title     : QUILocale.get('quiqqer/system', 'permission.control.btn.add.permission'),
@@ -85,8 +81,7 @@ define('controls/permissions/Edit', [
         /**
          * opens the add permission dialog
          */
-        $addPermission : function()
-        {
+        $addPermission : function () {
             var self = this;
 
             new QUIPrompt({
@@ -99,8 +94,7 @@ define('controls/permissions/Edit', [
                 maxHeight   : 400,
                 events :
                 {
-                    onOpen : function(Win)
-                    {
+                    onOpen : function (Win) {
                         var Body  = Win.getContent(),
                             Input = Body.getElement('input');
 
@@ -114,18 +108,18 @@ define('controls/permissions/Edit', [
 
                         var Area = new Element('select', {
                             name : 'area',
-                            html : '<option value="">'+
+                            html : '<option value="">' +
                                        QUILocale.get('quiqqer/system', 'permissions.panel.window.add.select.user') +
-                                   '</option>'+
-                                   '<option value="site">'+
+                                   '</option>' +
+                                   '<option value="site">' +
                                        QUILocale.get('quiqqer/system', 'permissions.panel.window.add.select.site') +
                                    '</option>' +
-                                   '<option value="project">'+
+                                   '<option value="project">' +
                                        QUILocale.get('quiqqer/system', 'permissions.panel.window.add.select.project') +
                                    '</option>',
-//                                   '<option value="media">'+
-//                                       QUILocale.get('quiqqer/system', 'permissions.panel.window.add.select.media') +
-//                                   '</option>',
+                            //                                   '<option value="media">'+
+                            //                                       QUILocale.get('quiqqer/system', 'permissions.panel.window.add.select.media') +
+                            //                                   '</option>',
                             styles : {
                                 width   : 190,
                                 margin  : '10px 10px 10px 0'
@@ -151,24 +145,23 @@ define('controls/permissions/Edit', [
                         Body.getElement('.qui-windows-prompt-information').setStyle('clear', 'both');
                     },
 
-                    onSubmit : function(value, Win)
-                    {
+                    onSubmit : function (value, Win) {
                         Win.Loader.show();
 
                         var Content = Win.getContent();
 
                         require([
                             'utils/permissions/Utils'
-                        ], function(PermissionUtils) {
+                        ], function (PermissionUtils) {
 
                             PermissionUtils.Permissions.addPermission(
                                 value,
                                 Content.getElement('[name="area"]').value,
                                 Content.getElement('[name="type"]').value
-                            ).then(function() {
+                            ).then(function () {
                                 Win.close();
 
-                                self.close().then(function() {
+                                self.close().then(function () {
                                     self.open();
                                 });
                             });

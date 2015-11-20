@@ -20,8 +20,7 @@ define('controls/users/Entry', [
 
     'css!controls/users/Entry.css'
 
-], function(QUIControl, Users, Locale)
-{
+], function (QUIControl, Users, Locale) {
     "use strict";
 
     /**
@@ -42,10 +41,9 @@ define('controls/users/Entry', [
             'destroy'
         ],
 
-        initialize : function(uid, options)
-        {
-            this.$User = Users.get( uid );
-            this.parent( options );
+        initialize : function (uid, options) {
+            this.$User = Users.get(uid);
+            this.parent(options);
 
             this.$Elm      = null;
             this.$disabled = false;
@@ -56,8 +54,7 @@ define('controls/users/Entry', [
          *
          * @return {Object} classes/users/User
          */
-        getUser : function()
-        {
+        getUser : function () {
             return this.$User;
         },
 
@@ -66,8 +63,7 @@ define('controls/users/Entry', [
          *
          * @return {HTMLElement}
          */
-        create : function()
-        {
+        create : function () {
             var self = this;
 
             this.$Elm = new Element('div', {
@@ -80,21 +76,20 @@ define('controls/users/Entry', [
                        '<div class="users-entry-close icon-remove"></div>'
             });
 
-            var Close = this.$Elm.getElement( '.users-entry-close' );
+            var Close = this.$Elm.getElement('.users-entry-close');
 
-            Close.addEvent( 'click', function()
-            {
-                if ( !self.isDisabled() ) {
+            Close.addEvent('click', function () {
+                if (!self.isDisabled()) {
                     self.destroy();
                 }
             });
 
             Close.set({
-                alt   : Locale.get( 'quiqqer/system', 'users.entry.user.remove' ),
-                title : Locale.get( 'quiqqer/system', 'users.entry.user.remove' )
+                alt   : Locale.get('quiqqer/system', 'users.entry.user.remove'),
+                title : Locale.get('quiqqer/system', 'users.entry.user.remove')
             });
 
-            this.$User.addEvent( 'onRefresh', this.$onUserUpdate );
+            this.$User.addEvent('onRefresh', this.$onUserUpdate);
             this.refresh();
 
             return this.$Elm;
@@ -103,9 +98,8 @@ define('controls/users/Entry', [
         /**
          * event : on entry destroy
          */
-        $onDestroy : function()
-        {
-            this.$User.removeEvent( 'refresh', this.$onUserUpdate );
+        $onDestroy : function () {
+            this.$User.removeEvent('refresh', this.$onUserUpdate);
         },
 
         /**
@@ -113,21 +107,19 @@ define('controls/users/Entry', [
          *
          * @return {Object} this (controls/users/Entry)
          */
-        refresh : function()
-        {
-            var UserIcon = this.$Elm.getElement( '.users-entry-icon' );
+        refresh : function () {
+            var UserIcon = this.$Elm.getElement('.users-entry-icon');
 
             if (!UserIcon) {
                 return this;
             }
 
-            UserIcon.removeClass( 'icon-user' );
-            UserIcon.addClass( 'icon-refresh' );
-            UserIcon.addClass( 'icon-spin' );
+            UserIcon.removeClass('icon-user');
+            UserIcon.addClass('icon-refresh');
+            UserIcon.addClass('icon-spin');
 
-            if ( this.$User.getAttribute( 'name' ) )
-            {
-                this.$onUserUpdate( this.$User );
+            if (this.$User.getAttribute('name')) {
+                this.$onUserUpdate(this.$User);
                 return this;
             }
 
@@ -142,24 +134,23 @@ define('controls/users/Entry', [
          * @param {Object} User - classes/users/User
          * @return {Object} this (controls/users/Entry)
          */
-        $onUserUpdate : function(User)
-        {
-            if ( !this.$Elm ) {
+        $onUserUpdate : function (User) {
+            if (!this.$Elm) {
                 return this;
             }
 
-            var UserIcon = this.$Elm.getElement( '.users-entry-icon' );
+            var UserIcon = this.$Elm.getElement('.users-entry-icon');
 
             if (!UserIcon) {
                 return this;
             }
 
-            UserIcon.addClass( 'icon-user' );
-            UserIcon.removeClass( 'icon-refresh' );
-            UserIcon.removeClass( 'icon-spin' );
+            UserIcon.addClass('icon-user');
+            UserIcon.removeClass('icon-refresh');
+            UserIcon.removeClass('icon-spin');
 
-            this.$Elm.getElement( '.users-entry-text' )
-                     .set( 'html', User.getName() +' ('+ User.getId() +')' );
+            this.$Elm.getElement('.users-entry-text')
+                     .set('html', User.getName() + ' (' + User.getId() + ')');
 
             return this;
         },
@@ -168,9 +159,8 @@ define('controls/users/Entry', [
          * Disable the control
          * no changes are posible
          */
-        disable : function()
-        {
-            this.$Elm.removeClass( 'users-entry-enabled' );
+        disable : function () {
+            this.$Elm.removeClass('users-entry-enabled');
             this.$disabled = true;
         },
 
@@ -178,9 +168,8 @@ define('controls/users/Entry', [
          * Disable the control
          * changes are posible
          */
-        enable : function()
-        {
-            this.$Elm.addClass( 'users-entry-enabled' );
+        enable : function () {
+            this.$Elm.addClass('users-entry-enabled');
             this.$disabled = false;
         },
 
@@ -188,8 +177,7 @@ define('controls/users/Entry', [
          * Is it disabled?
          * if disabled, no changes are possible
          */
-        isDisabled : function()
-        {
+        isDisabled : function () {
             return this.$disabled;
         }
     });

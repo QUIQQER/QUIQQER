@@ -355,20 +355,20 @@ define('controls/projects/project/Panel', [
          * event : on panel resize
          */
         $onResize: function () {
-//            var Body      = this.getBody(),
-//                Container = this.$ProjectContainer,
-//                Search    = this.$ProjectSearch;
-//
-//            var height = Body.getComputedSize().height;
-//
-//            if ( !height || !Container || !this.$ProjectSearch ) {
-//                return;
-//            }
-//
-//            Container.setStyle(
-//                'height',
-//                height - Search.getComputedSize().totalHeight
-//            );
+            //            var Body      = this.getBody(),
+            //                Container = this.$ProjectContainer,
+            //                Search    = this.$ProjectSearch;
+            //
+            //            var height = Body.getComputedSize().height;
+            //
+            //            if ( !height || !Container || !this.$ProjectSearch ) {
+            //                return;
+            //            }
+            //
+            //            Container.setStyle(
+            //                'height',
+            //                height - Search.getComputedSize().totalHeight
+            //            );
         },
 
         /**
@@ -693,7 +693,7 @@ define('controls/projects/project/Panel', [
          */
         $openSitePanel: function (Item) {
             var self    = this,
-                id      = ( Item.getAttribute('value') ).toInt(),
+                id      = (Item.getAttribute('value')).toInt(),
                 project = this.getAttribute('project'),
                 lang    = this.getAttribute('lang');
 

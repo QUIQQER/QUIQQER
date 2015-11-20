@@ -22,8 +22,7 @@ define('controls/projects/project/media/Priority', [
     'Locale',
     'Ajax'
 
-], function(QUI, QUIControl, QUILoader, Grid, QUILocale, QUIAjax)
-{
+], function (QUI, QUIControl, QUILoader, Grid, QUILocale, QUIAjax) {
     "use strict";
 
     return new Class({
@@ -42,8 +41,7 @@ define('controls/projects/project/media/Priority', [
             folderId : false
         },
 
-        initialize : function(options)
-        {
+        initialize : function (options) {
             this.parent(options);
 
             this.Loader = new QUILoader();
@@ -59,8 +57,7 @@ define('controls/projects/project/media/Priority', [
          *
          * @returns {HTMLDivElement}
          */
-        create : function()
-        {
+        create : function () {
             this.$Elm = new Element('div', {
                 styles : {
                     height : '100%'
@@ -85,15 +82,15 @@ define('controls/projects/project/media/Priority', [
                    dataType  : 'integer',
                    width     : 50
                }, {
-                   header    : QUILocale.get('quiqqer/system', 'name' ),
+                   header    : QUILocale.get('quiqqer/system', 'name'),
                    dataIndex : 'name',
                    dataType  : 'string',
                    width     : 300
                }, {
-                    header    : QUILocale.get('quiqqer/system', 'title' ),
-                    dataIndex : 'title',
-                    dataType  : 'string',
-                    width     : 300
+                   header    : QUILocale.get('quiqqer/system', 'title'),
+                   dataIndex : 'title',
+                   dataType  : 'string',
+                   width     : 300
                }]
             });
 
@@ -105,9 +102,8 @@ define('controls/projects/project/media/Priority', [
         /**
          * Refresh the display
          */
-        refresh : function()
-        {
-            return new Promise(function(resolve, reject) {
+        refresh : function () {
+            return new Promise(function (resolve, reject) {
 
                 this.Loader.show();
 
@@ -118,17 +114,17 @@ define('controls/projects/project/media/Priority', [
 
                 var self = this;
 
-                require(['Projects'], function(Projects) {
+                require(['Projects'], function (Projects) {
 
                     var Media = Projects.get(self.getAttribute('project')).getMedia();
 
-                    Media.get(self.getAttribute('folderId')).then(function(Item) {
+                    Media.get(self.getAttribute('folderId')).then(function (Item) {
 
                         if (Item.getType() != 'classes/projects/project/media/Folder') {
                             return;
                         }
 
-                        Item.getChildren().then(function(children) {
+                        Item.getChildren().then(function (children) {
 
                             var data = [];
 
@@ -171,9 +167,8 @@ define('controls/projects/project/media/Priority', [
          *
          * @return Promise
          */
-        save : function()
-        {
-            return new Promise(function(resolve, reject) {
+        save : function () {
+            return new Promise(function (resolve, reject) {
 
                 this.Loader.show();
 
@@ -187,9 +182,9 @@ define('controls/projects/project/media/Priority', [
                     });
                 }
 
-                QUIAjax.post('ajax_media_folder_setPriorities', function() {
+                QUIAjax.post('ajax_media_folder_setPriorities', function () {
 
-                    this.refresh().then(function() {
+                    this.refresh().then(function () {
                         resolve();
                     });
 
@@ -206,8 +201,7 @@ define('controls/projects/project/media/Priority', [
         /**
          * event : on resize
          */
-        $onResize : function()
-        {
+        $onResize : function () {
             if (!this.$Grid || !this.$Elm) {
                 return;
             }
@@ -222,8 +216,7 @@ define('controls/projects/project/media/Priority', [
         /**
          * event : on inject
          */
-        $onInject : function()
-        {
+        $onInject : function () {
             this.$onResize();
             this.refresh();
         }

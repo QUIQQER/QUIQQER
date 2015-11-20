@@ -7,17 +7,17 @@
  * Firefox's early picture implementation (prior to FF41) is static and does
  * not react to viewport changes. This tiny module fixes this.
  */
-(function(window) {
+(function (window) {
     /*jshint eqnull:true */
     var ua = navigator.userAgent;
 
-    if ( window.HTMLPictureElement && ((/ecko/).test(ua) && ua.match(/rv\:(\d+)/) && RegExp.$1 < 41) ) {
-        addEventListener("resize", (function() {
+    if (window.HTMLPictureElement && ((/ecko/).test(ua) && ua.match(/rv\:(\d+)/) && RegExp.$1 < 41)) {
+        addEventListener("resize", (function () {
             var timer;
 
             var dummySrc = document.createElement("source");
 
-            var fixRespimg = function(img) {
+            var fixRespimg = function (img) {
                 var source, sizes;
                 var picture = img.parentNode;
 
@@ -25,32 +25,32 @@
                     source = dummySrc.cloneNode();
 
                     picture.insertBefore(source, picture.firstElementChild);
-                    setTimeout(function() {
+                    setTimeout(function () {
                         picture.removeChild(source);
                     });
                 } else if (!img._pfLastSize || img.offsetWidth > img._pfLastSize) {
                     img._pfLastSize = img.offsetWidth;
                     sizes = img.sizes;
                     img.sizes += ",100vw";
-                    setTimeout(function() {
+                    setTimeout(function () {
                         img.sizes = sizes;
                     });
                 }
             };
 
-            var findPictureImgs = function() {
+            var findPictureImgs = function () {
                 var i;
                 var imgs = document.querySelectorAll("picture > img, img[srcset][sizes]");
                 for (i = 0; i < imgs.length; i++) {
                     fixRespimg(imgs[i]);
                 }
             };
-            var onResize = function() {
+            var onResize = function () {
                 clearTimeout(timer);
                 timer = setTimeout(findPictureImgs, 99);
             };
             var mq = window.matchMedia && matchMedia("(orientation: landscape)");
-            var init = function() {
+            var init = function () {
                 onResize();
 
                 if (mq && mq.addListener) {
@@ -77,18 +77,18 @@
  *  License: MIT
  */
 
-(function( window, document, undefined ) {
+(function (window, document, undefined) {
     // Enable strict mode
     "use strict";
 
     // HTML shim|v it for old IE (IE9 will still need the HTML video tag workaround)
-    document.createElement( "picture" );
+    document.createElement("picture");
 
     var warn, eminpx, alwaysCheckWDescriptor, evalId;
     // local object for method references and testing exposure
     var pf = {};
-    var noop = function() {};
-    var image = document.createElement( "img" );
+    var noop = function () {};
+    var image = document.createElement("img");
     var getImgAttr = image.getAttribute;
     var setImgAttr = image.setAttribute;
     var removeImgAttr = image.removeAttribute;
@@ -103,7 +103,7 @@
     // ua sniffing is done for undetectable img loading features,
     // to do some non crucial perf optimizations
     var ua = navigator.userAgent;
-    var supportAbort = (/rident/).test(ua) || ((/ecko/).test(ua) && ua.match(/rv\:(\d+)/) && RegExp.$1 > 35 );
+    var supportAbort = (/rident/).test(ua) || ((/ecko/).test(ua) && ua.match(/rv\:(\d+)/) && RegExp.$1 > 35);
     var curSrcProp = "currentSrc";
     var regWDesc = /\s+\+?\d+(e\d+)?w/;
     var regSize = /(\([^)]+\))?\s*(.+)/;
@@ -111,7 +111,7 @@
     /**
      * Shortcut property for https://w3c.github.io/webappsec/specs/mixedcontent/#restricts-mixed-content ( for easy overriding in tests )
      */
-        // baseStyle also used by getEmValue (i.e.: width: 1em is important)
+    // baseStyle also used by getEmValue (i.e.: width: 1em is important)
     var baseStyle = "position:absolute;left:0;visibility:hidden;display:block;padding:0;border:none;font-size:1em;width:1em;overflow:hidden;clip:rect(0px, 0px, 0px, 0px)";
     var fsCss = "font-size:100%!important;";
     var isVwDirty = true;
@@ -123,7 +123,7 @@
         px: 1,
         "in": 96
     };
-    var anchor = document.createElement( "a" );
+    var anchor = document.createElement("a");
     /**
      * alreadyRun flag used for setOptions. is it true setOptions will reevaluate
      * @type {boolean}
@@ -146,11 +146,11 @@
         // https://html.spec.whatwg.org/multipage/infrastructure.html#valid-floating-point-number
         regexFloatingPoint = /^-?(?:[0-9]+|[0-9]*\.[0-9]+)(?:[eE][+-]?[0-9]+)?$/;
 
-    var on = function(obj, evt, fn, capture) {
-        if ( obj.addEventListener ) {
+    var on = function (obj, evt, fn, capture) {
+        if (obj.addEventListener) {
             obj.addEventListener(evt, fn, capture || false);
-        } else if ( obj.attachEvent ) {
-            obj.attachEvent( "on" + evt, fn);
+        } else if (obj.attachEvent) {
+            obj.attachEvent("on" + evt, fn);
         }
     };
 
@@ -158,10 +158,10 @@
      * simple memoize function:
      */
 
-    var memoize = function(fn) {
+    var memoize = function (fn) {
         var cache = {};
-        return function(input) {
-            if ( !(input in cache) ) {
+        return function (input) {
+            if (!(input in cache)) {
                 cache[ input ] = fn(input);
             }
             return cache[ input ];
@@ -187,10 +187,10 @@
      *
      * based on: https://gist.github.com/jonathantneal/db4f77009b155f083738
      */
-    var evalCSS = (function() {
+    var evalCSS = (function () {
 
         var regLength = /^([\d\.]+)(em|vw|px)$/;
-        var replace = function() {
+        var replace = function () {
             var args = arguments, index = 0, string = args[0];
             while (++index in args) {
                 string = string.replace(args[index], args[++index]);
@@ -198,7 +198,7 @@
             return string;
         };
 
-        var buildStr = memoize(function(css) {
+        var buildStr = memoize(function (css) {
 
             return "return " + replace((css || "").toLowerCase(),
                     // interpret `and`
@@ -223,17 +223,17 @@
                 ) + ";";
         });
 
-        return function(css, length) {
+        return function (css, length) {
             var parsedLength;
             if (!(css in cssCache)) {
                 cssCache[css] = false;
-                if (length && (parsedLength = css.match( regLength ))) {
+                if (length && (parsedLength = css.match(regLength))) {
                     cssCache[css] = parsedLength[ 1 ] * units[parsedLength[ 2 ]];
                 } else {
                     /*jshint evil:true */
-                    try{
+                    try {
                         cssCache[css] = new Function("e", buildStr(css))(units);
-                    } catch(e) {}
+                    } catch (e) {}
                     /*jshint evil:false */
                 }
             }
@@ -241,9 +241,9 @@
         };
     })();
 
-    var setResolution = function( candidate, sizesattr ) {
-        if ( candidate.w ) { // h = means height: || descriptor.type === 'h' do not handle yet...
-            candidate.cWidth = pf.calcListLength( sizesattr || "100vw" );
+    var setResolution = function (candidate, sizesattr) {
+        if (candidate.w) { // h = means height: || descriptor.type === 'h' do not handle yet...
+            candidate.cWidth = pf.calcListLength(sizesattr || "100vw");
             candidate.res = candidate.w / candidate.cWidth ;
         } else {
             candidate.res = candidate.d;
@@ -255,33 +255,33 @@
      *
      * @param opt
      */
-    var picturefill = function( opt ) {
+    var picturefill = function (opt) {
         var elements, i, plen;
 
         var options = opt || {};
 
-        if ( options.elements && options.elements.nodeType === 1 ) {
-            if ( options.elements.nodeName.toUpperCase() === "IMG" ) {
-                options.elements =  [ options.elements ];
+        if (options.elements && options.elements.nodeType === 1) {
+            if (options.elements.nodeName.toUpperCase() === "IMG") {
+                options.elements =  [options.elements];
             } else {
                 options.context = options.elements;
                 options.elements =  null;
             }
         }
 
-        elements = options.elements || pf.qsa( (options.context || document), ( options.reevaluate || options.reselect ) ? pf.sel : pf.selShort );
+        elements = options.elements || pf.qsa((options.context || document), (options.reevaluate || options.reselect) ? pf.sel : pf.selShort);
 
-        if ( (plen = elements.length) ) {
+        if ((plen = elements.length)) {
 
-            pf.setupRun( options );
+            pf.setupRun(options);
             alreadyRun = true;
 
             // Loop through all elements
-            for ( i = 0; i < plen; i++ ) {
+            for (i = 0; i < plen; i++) {
                 pf.fillImg(elements[ i ], options);
             }
 
-            pf.teardownRun( options );
+            pf.teardownRun(options);
         }
     };
 
@@ -290,14 +290,14 @@
      * @param {message}
      * @type {Function}
      */
-    warn = ( window.console && console.warn ) ?
-        function( message ) {
-            console.warn( message );
+    warn = (window.console && console.warn) ?
+        function (message) {
+            console.warn(message);
         } :
         noop
     ;
 
-    if ( !(curSrcProp in image) ) {
+    if (!(curSrcProp in image)) {
         curSrcProp = "src";
     }
 
@@ -306,15 +306,15 @@
     types[ "image/gif" ] = true;
     types[ "image/png" ] = true;
 
-    function detectTypeSupport( type, typeUri ) {
+    function detectTypeSupport(type, typeUri) {
         // based on Modernizr's lossless img-webp test
         // note: asynchronous
         var image = new window.Image();
-        image.onerror = function() {
+        image.onerror = function () {
             types[ type ] = false;
             picturefill();
         };
-        image.onload = function() {
+        image.onload = function () {
             types[ type ] = image.width === 1;
             picturefill();
         };
@@ -323,7 +323,7 @@
     }
 
     // test svg support
-    types[ "image/svg+xml" ] = document.implementation.hasFeature( "http://wwwindow.w3.org/TR/SVG11/feature#Image", "1.1" );
+    types[ "image/svg+xml" ] = document.implementation.hasFeature("http://wwwindow.w3.org/TR/SVG11/feature#Image", "1.1");
 
     /**
      * updates the internal vW property with the current viewport width in px
@@ -343,18 +343,18 @@
         units.vw = units.width / 100;
         units.vh = units.height / 100;
 
-        evalId = [ units.height, units.width, DPR ].join("-");
+        evalId = [units.height, units.width, DPR].join("-");
 
         units.em = pf.getEmValue();
         units.rem = units.em;
     }
 
-    function chooseLowRes( lowerValue, higherValue, dprValue, isCached ) {
+    function chooseLowRes(lowerValue, higherValue, dprValue, isCached) {
         var bonusFactor, tooMuch, bonus, meanDensity;
 
         //experimental
-        if (cfg.algorithm === "saveData" ){
-            if ( lowerValue > 2.7 ) {
+        if (cfg.algorithm === "saveData") {
+            if (lowerValue > 2.7) {
                 meanDensity = dprValue + 1;
             } else {
                 tooMuch = higherValue - dprValue;
@@ -377,52 +377,52 @@
         return meanDensity > dprValue;
     }
 
-    function applyBestCandidate( img ) {
+    function applyBestCandidate(img) {
         var srcSetCandidates;
-        var matchingSet = pf.getSet( img );
+        var matchingSet = pf.getSet(img);
         var evaluated = false;
-        if ( matchingSet !== "pending" ) {
+        if (matchingSet !== "pending") {
             evaluated = evalId;
-            if ( matchingSet ) {
-                srcSetCandidates = pf.setRes( matchingSet );
-                pf.applySetCandidate( srcSetCandidates, img );
+            if (matchingSet) {
+                srcSetCandidates = pf.setRes(matchingSet);
+                pf.applySetCandidate(srcSetCandidates, img);
             }
         }
         img[ pf.ns ].evaled = evaluated;
     }
 
-    function ascendingSort( a, b ) {
+    function ascendingSort(a, b) {
         return a.res - b.res;
     }
 
-    function setSrcToCur( img, src, set ) {
+    function setSrcToCur(img, src, set) {
         var candidate;
-        if ( !set && src ) {
+        if (!set && src) {
             set = img[ pf.ns ].sets;
             set = set && set[set.length - 1];
         }
 
         candidate = getCandidateForSrc(src, set);
 
-        if ( candidate ) {
+        if (candidate) {
             src = pf.makeUrl(src);
             img[ pf.ns ].curSrc = src;
             img[ pf.ns ].curCan = candidate;
 
-            if ( !candidate.res ) {
-                setResolution( candidate, candidate.set.sizes );
+            if (!candidate.res) {
+                setResolution(candidate, candidate.set.sizes);
             }
         }
         return candidate;
     }
 
-    function getCandidateForSrc( src, set ) {
+    function getCandidateForSrc(src, set) {
         var i, candidate, candidates;
-        if ( src && set ) {
-            candidates = pf.parseSet( set );
+        if (src && set) {
+            candidates = pf.parseSet(set);
             src = pf.makeUrl(src);
-            for ( i = 0; i < candidates.length; i++ ) {
-                if ( src === pf.makeUrl(candidates[ i ].url) ) {
+            for (i = 0; i < candidates.length; i++) {
+                if (src === pf.makeUrl(candidates[ i ].url)) {
                     candidate = candidates[ i ];
                     break;
                 }
@@ -431,27 +431,27 @@
         return candidate;
     }
 
-    function getAllSourceElements( picture, candidates ) {
+    function getAllSourceElements(picture, candidates) {
         var i, len, source, srcset;
 
         // SPEC mismatch intended for size and perf:
         // actually only source elements preceding the img should be used
         // also note: don't use qsa here, because IE8 sometimes doesn't like source as the key part in a selector
-        var sources = picture.getElementsByTagName( "source" );
+        var sources = picture.getElementsByTagName("source");
 
-        for ( i = 0, len = sources.length; i < len; i++ ) {
+        for (i = 0, len = sources.length; i < len; i++) {
             source = sources[ i ];
             source[ pf.ns ] = true;
-            srcset = source.getAttribute( "srcset" );
+            srcset = source.getAttribute("srcset");
 
             // if source does not have a srcset attribute, skip
-            if ( srcset ) {
-                candidates.push( {
+            if (srcset) {
+                candidates.push({
                     srcset: srcset,
-                    media: source.getAttribute( "media" ),
-                    type: source.getAttribute( "type" ),
-                    sizes: source.getAttribute( "sizes" )
-                } );
+                    media: source.getAttribute("media"),
+                    type: source.getAttribute("type"),
+                    sizes: source.getAttribute("sizes")
+                });
             }
         }
     }
@@ -531,40 +531,60 @@
                 if (regexNonNegativeInteger.test(value) && (lastChar === "w")) {
 
                     // If width and density are not both absent, then let error be yes.
-                    if (w || d) {pError = true;}
+                    if (w || d) {
+                        pError = true;
+                    }
 
                     // Apply the rules for parsing non-negative integers to the descriptor.
                     // If the result is zero, let error be yes.
                     // Otherwise, let width be the result.
-                    if (intVal === 0) {pError = true;} else {w = intVal;}
+                    if (intVal === 0) {
+                        pError = true;
+                    } else {
+                        w = intVal;
+                    }
 
-                    // If the descriptor consists of a valid floating-point number followed by
-                    // a U+0078 LATIN SMALL LETTER X character
+                                        // If the descriptor consists of a valid floating-point number followed by
+                                        // a U+0078 LATIN SMALL LETTER X character
                 } else if (regexFloatingPoint.test(value) && (lastChar === "x")) {
 
                     // If width, density and future-compat-h are not all absent, then let error
                     // be yes.
-                    if (w || d || h) {pError = true;}
+                    if (w || d || h) {
+                        pError = true;
+                    }
 
                     // Apply the rules for parsing floating-point number values to the descriptor.
                     // If the result is less than zero, let error be yes. Otherwise, let density
                     // be the result.
-                    if (floatVal < 0) {pError = true;} else {d = floatVal;}
+                    if (floatVal < 0) {
+                        pError = true;
+                    } else {
+                        d = floatVal;
+                    }
 
-                    // If the descriptor consists of a valid non-negative integer followed by
-                    // a U+0068 LATIN SMALL LETTER H character
+                                        // If the descriptor consists of a valid non-negative integer followed by
+                                        // a U+0068 LATIN SMALL LETTER H character
                 } else if (regexNonNegativeInteger.test(value) && (lastChar === "h")) {
 
                     // If height and density are not both absent, then let error be yes.
-                    if (h || d) {pError = true;}
+                    if (h || d) {
+                        pError = true;
+                    }
 
                     // Apply the rules for parsing non-negative integers to the descriptor.
                     // If the result is zero, let error be yes. Otherwise, let future-compat-h
                     // be the result.
-                    if (intVal === 0) {pError = true;} else {h = intVal;}
+                    if (intVal === 0) {
+                        pError = true;
+                    } else {
+                        h = intVal;
+                    }
 
-                    // Anything else, Let error be yes.
-                } else {pError = true;}
+                                        // Anything else, Let error be yes.
+                } else {
+                    pError = true;
+                }
             } // (close step 13 for loop)
 
             // 15. If error is still no, then append a new image source to candidates whose
@@ -573,11 +593,21 @@
             if (!pError) {
                 candidate.url = url;
 
-                if (w) { candidate.w = w;}
-                if (d) { candidate.d = d;}
-                if (h) { candidate.h = h;}
-                if (!h && !d && !w) {candidate.d = 1;}
-                if (candidate.d === 1) {set.has1x = true;}
+                if (w) {
+                    candidate.w = w;
+                }
+                if (d) {
+                    candidate.d = d;
+                }
+                if (h) {
+                    candidate.h = h;
+                }
+                if (!h && !d && !w) {
+                    candidate.d = 1;
+                }
+                if (candidate.d === 1) {
+                    set.has1x = true;
+                }
                 candidate.set = set;
 
                 candidates.push(candidate);
@@ -848,12 +878,12 @@
                     // (If previous character in loop was also a space, or if
                     // at the beginning of the string, do not add space char to
                     // component.)
-                    if ( (str.charAt(pos - 1) && isSpace( str.charAt(pos - 1) ) ) || !component ) {
+                    if ((str.charAt(pos - 1) && isSpace(str.charAt(pos - 1))) || !component) {
                         pos += 1;
                         continue;
                     } else if (parenDepth === 0) {
                         pushComponent();
-                        pos +=1;
+                        pos += 1;
                         continue;
                     } else {
                         // (Replace any space character with a plain space for legibility.)
@@ -868,7 +898,7 @@
                     pushComponentArray();
                     pos += 1;
                     continue;
-                } else if ( (chrctr === "/") && (str.charAt(pos + 1) === "*") ) {
+                } else if ((chrctr === "/") && (str.charAt(pos + 1) === "*")) {
                     inComment = true;
                     pos += 2;
                     continue;
@@ -880,12 +910,18 @@
         }
 
         function isValidNonNegativeSourceSizeValue(s) {
-            if (regexCssLengthWithUnits.test(s) && (parseFloat(s) >= 0)) {return true;}
-            if (regexCssCalc.test(s)) {return true;}
+            if (regexCssLengthWithUnits.test(s) && (parseFloat(s) >= 0)) {
+                return true;
+            }
+            if (regexCssCalc.test(s)) {
+                return true;
+            }
             // ( http://www.w3.org/TR/CSS2/syndata.html#numbers says:
             // "-0 is equivalent to 0 and is not a negative number." which means that
             // unitless zero and unitless negative zero must be accepted as special cases.)
-            if ((s === "0") || (s === "-0") || (s === "+0")) {return true;}
+            if ((s === "0") || (s === "-0") || (s === "+0")) {
+                return true;
+            }
             return false;
         }
 
@@ -940,7 +976,7 @@
             // media condition parses incorrectly but still somehow evaluates to true?
             // Can we just rely on the browser/polyfill to do it?)
             unparsedSize = unparsedSize.join(" ");
-            if (!(pf.matchesMedia( unparsedSize ) ) ) {
+            if (!(pf.matchesMedia(unparsedSize))) {
                 continue;
             }
 
@@ -962,7 +998,7 @@
     pf.supPicture = !!window.HTMLPictureElement;
 
     if (pf.supSrcset && pf.supPicture && !pf.supSizes) {
-        (function(image2) {
+        (function (image2) {
             image.srcset = "data:,a";
             image2.src = "data:,a";
             pf.supSrcset = image.complete === image2.complete;
@@ -976,14 +1012,14 @@
     pf.sel = pf.selShort;
     pf.cfg = cfg;
 
-    if ( pf.supSrcset ) {
+    if (pf.supSrcset) {
         pf.sel += ",img[" + srcsetAttr + "]";
     }
 
     /**
      * Shortcut property for `devicePixelRatio` ( for easy overriding in tests )
      */
-    pf.DPR = (DPR  || 1 );
+    pf.DPR = (DPR  || 1);
     pf.u = units;
 
     // container of supported mime types that one might need to qualify before using
@@ -999,7 +1035,7 @@
      * @returns {String} absolute URL
      */
 
-    pf.makeUrl = memoize(function(src) {
+    pf.makeUrl = memoize(function (src) {
         anchor.href = src;
         return anchor.href;
     });
@@ -1011,7 +1047,7 @@
      * @param sel
      * @returns {NodeList}
      */
-    pf.qsa = function(context, sel) {
+    pf.qsa = function (context, sel) {
         return context.querySelectorAll(sel);
     };
 
@@ -1020,16 +1056,16 @@
      * wether native or pf.mMQ is used will be decided lazy on first call
      * @returns {boolean}
      */
-    pf.matchesMedia = function() {
-        if ( window.matchMedia && (matchMedia( "(min-width: 0.1em)" ) || {}).matches ) {
-            pf.matchesMedia = function( media ) {
-                return !media || ( matchMedia( media ).matches );
+    pf.matchesMedia = function () {
+        if (window.matchMedia && (matchMedia("(min-width: 0.1em)") || {}).matches) {
+            pf.matchesMedia = function (media) {
+                return !media || (matchMedia(media).matches);
             };
         } else {
             pf.matchesMedia = pf.mMQ;
         }
 
-        return pf.matchesMedia.apply( this, arguments );
+        return pf.matchesMedia.apply(this, arguments);
     };
 
     /**
@@ -1038,7 +1074,7 @@
      * @param media
      * @returns {boolean}
      */
-    pf.mMQ = function( media ) {
+    pf.mMQ = function (media) {
         return media ? evalCSS(media) : true;
     };
 
@@ -1051,7 +1087,7 @@
      * @param sourceSizeValue
      * @returns {Number}
      */
-    pf.calcLength = function( sourceSizeValue ) {
+    pf.calcLength = function (sourceSizeValue) {
 
         var value = evalCSS(sourceSizeValue, true) || false;
         if (value < 0) {
@@ -1065,8 +1101,8 @@
      * Takes a type string and checks if its supported
      */
 
-    pf.supportsType = function( type ) {
-        return ( type ) ? types[ type ] : true;
+    pf.supportsType = function (type) {
+        return (type) ? types[ type ] : true;
     };
 
     /**
@@ -1074,16 +1110,16 @@
      * @param sourceSizeStr
      * @returns {*}
      */
-    pf.parseSize = memoize(function( sourceSizeStr ) {
-        var match = ( sourceSizeStr || "" ).match(regSize);
+    pf.parseSize = memoize(function (sourceSizeStr) {
+        var match = (sourceSizeStr || "").match(regSize);
         return {
             media: match && match[1],
             length: match && match[2]
         };
     });
 
-    pf.parseSet = function( set ) {
-        if ( !set.cands ) {
+    pf.parseSet = function (set) {
+        if (!set.cands) {
             set.cands = parseSrcset(set.srcset, set);
         }
         return set.cands;
@@ -1094,10 +1130,10 @@
      * function taken from respondjs
      * @returns {*|number}
      */
-    pf.getEmValue = function() {
+    pf.getEmValue = function () {
         var body;
-        if ( !eminpx && (body = document.body) ) {
-            var div = document.createElement( "div" ),
+        if (!eminpx && (body = document.body)) {
+            var div = document.createElement("div"),
                 originalHTMLCSS = docElem.style.cssText,
                 originalBodyCSS = body.style.cssText;
 
@@ -1108,12 +1144,12 @@
             docElem.style.cssText = fsCss;
             body.style.cssText = fsCss;
 
-            body.appendChild( div );
+            body.appendChild(div);
             eminpx = div.offsetWidth;
-            body.removeChild( div );
+            body.removeChild(div);
 
             //also update eminpx before returning
-            eminpx = parseFloat( eminpx, 10 );
+            eminpx = parseFloat(eminpx, 10);
 
             // restore the original values
             docElem.style.cssText = originalHTMLCSS;
@@ -1126,12 +1162,12 @@
     /**
      * Takes a string of sizes and returns the width in pixels as a number
      */
-    pf.calcListLength = function( sourceSizeListStr ) {
+    pf.calcListLength = function (sourceSizeListStr) {
         // Split up source size list, ie ( max-width: 30em ) 100%, ( max-width: 50em ) 50%, 33%
         //
         //                           or (min-width:30em) calc(30% - 15px)
-        if ( !(sourceSizeListStr in sizeLengthCache) || cfg.uT ) {
-            var winningLength = pf.calcLength( parseSizes( sourceSizeListStr ) );
+        if (!(sourceSizeListStr in sizeLengthCache) || cfg.uT) {
+            var winningLength = pf.calcLength(parseSizes(sourceSizeListStr));
 
             sizeLengthCache[ sourceSizeListStr ] = !winningLength ? units.width : winningLength;
         }
@@ -1149,14 +1185,14 @@
      * where resolution is http://dev.w3.org/csswg/css-values-3/#resolution-value
      * If sizes is specified, res is calculated
      */
-    pf.setRes = function( set ) {
+    pf.setRes = function (set) {
         var candidates;
-        if ( set ) {
+        if (set) {
 
-            candidates = pf.parseSet( set );
+            candidates = pf.parseSet(set);
 
-            for ( var i = 0, len = candidates.length; i < len; i++ ) {
-                setResolution( candidates[ i ], set.sizes );
+            for (var i = 0, len = candidates.length; i < len; i++) {
+                setResolution(candidates[ i ], set.sizes);
             }
         }
         return candidates;
@@ -1164,8 +1200,10 @@
 
     pf.setRes.res = setResolution;
 
-    pf.applySetCandidate = function( candidates, img ) {
-        if ( !candidates.length ) {return;}
+    pf.applySetCandidate = function (candidates, img) {
+        if (!candidates.length) {
+            return;
+        }
         var candidate,
             i,
             j,
@@ -1184,39 +1222,39 @@
         curCan = imageData.curCan || setSrcToCur(img, curSrc, candidates[0].set);
 
         // if we have a current source, we might either become lazy or give this source some advantage
-        if ( curCan && curCan.set === candidates[ 0 ].set ) {
+        if (curCan && curCan.set === candidates[ 0 ].set) {
 
             // if browser can abort image request and the image has a higher pixel density than needed
             // and this image isn't downloaded yet, we skip next part and try to save bandwidth
             abortCurSrc = (supportAbort && !img.complete && curCan.res - 0.1 > dpr);
 
-            if ( !abortCurSrc ) {
+            if (!abortCurSrc) {
                 curCan.cached = true;
 
                 // if current candidate is "best", "better" or "okay",
                 // set it to bestCandidate
-                if ( curCan.res >= dpr ) {
+                if (curCan.res >= dpr) {
                     bestCandidate = curCan;
                 }
             }
         }
 
-        if ( !bestCandidate ) {
+        if (!bestCandidate) {
 
-            candidates.sort( ascendingSort );
+            candidates.sort(ascendingSort);
 
             length = candidates.length;
             bestCandidate = candidates[ length - 1 ];
 
-            for ( i = 0; i < length; i++ ) {
+            for (i = 0; i < length; i++) {
                 candidate = candidates[ i ];
-                if ( candidate.res >= dpr ) {
+                if (candidate.res >= dpr) {
                     j = i - 1;
 
                     // we have found the perfect candidate,
                     // but let's improve this a little bit with some assumptions ;-)
                     if (candidates[ j ] &&
-                        (abortCurSrc || curSrc !== pf.makeUrl( candidate.url )) &&
+                        (abortCurSrc || curSrc !== pf.makeUrl(candidate.url)) &&
                         chooseLowRes(candidates[ j ].res, candidate.res, dpr, candidates[ j ].cached)) {
 
                         bestCandidate = candidates[ j ];
@@ -1229,50 +1267,50 @@
             }
         }
 
-        if ( bestCandidate ) {
+        if (bestCandidate) {
 
-            candidateSrc = pf.makeUrl( bestCandidate.url );
+            candidateSrc = pf.makeUrl(bestCandidate.url);
 
             imageData.curSrc = candidateSrc;
             imageData.curCan = bestCandidate;
 
-            if ( candidateSrc !== curSrc ) {
-                pf.setSrc( img, bestCandidate );
+            if (candidateSrc !== curSrc) {
+                pf.setSrc(img, bestCandidate);
             }
-            pf.setSize( img );
+            pf.setSize(img);
         }
     };
 
-    pf.setSrc = function( img, bestCandidate ) {
+    pf.setSrc = function (img, bestCandidate) {
         var origWidth;
         img.src = bestCandidate.url;
 
         // although this is a specific Safari issue, we don't want to take too much different code paths
-        if ( bestCandidate.set.type === "image/svg+xml" ) {
+        if (bestCandidate.set.type === "image/svg+xml") {
             origWidth = img.style.width;
             img.style.width = (img.offsetWidth + 1) + "px";
 
             // next line only should trigger a repaint
             // if... is only done to trick dead code removal
-            if ( img.offsetWidth + 1 ) {
+            if (img.offsetWidth + 1) {
                 img.style.width = origWidth;
             }
         }
     };
 
-    pf.getSet = function( img ) {
+    pf.getSet = function (img) {
         var i, set, supportsType;
         var match = false;
         var sets = img [ pf.ns ].sets;
 
-        for ( i = 0; i < sets.length && !match; i++ ) {
+        for (i = 0; i < sets.length && !match; i++) {
             set = sets[i];
 
-            if ( !set.srcset || !pf.matchesMedia( set.media ) || !(supportsType = pf.supportsType( set.type )) ) {
+            if (!set.srcset || !pf.matchesMedia(set.media) || !(supportsType = pf.supportsType(set.type))) {
                 continue;
             }
 
-            if ( supportsType === "pending" ) {
+            if (supportsType === "pending") {
                 set = supportsType;
             }
 
@@ -1283,46 +1321,46 @@
         return match;
     };
 
-    pf.parseSets = function( element, parent, options ) {
+    pf.parseSets = function (element, parent, options) {
         var srcsetAttribute, imageSet, isWDescripor, srcsetParsed;
 
         var hasPicture = parent && parent.nodeName.toUpperCase() === "PICTURE";
         var imageData = element[ pf.ns ];
 
-        if ( imageData.src === undefined || options.src ) {
-            imageData.src = getImgAttr.call( element, "src" );
-            if ( imageData.src ) {
-                setImgAttr.call( element, srcAttr, imageData.src );
+        if (imageData.src === undefined || options.src) {
+            imageData.src = getImgAttr.call(element, "src");
+            if (imageData.src) {
+                setImgAttr.call(element, srcAttr, imageData.src);
             } else {
-                removeImgAttr.call( element, srcAttr );
+                removeImgAttr.call(element, srcAttr);
             }
         }
 
-        if ( imageData.srcset === undefined || options.srcset || !pf.supSrcset || element.srcset ) {
-            srcsetAttribute = getImgAttr.call( element, "srcset" );
+        if (imageData.srcset === undefined || options.srcset || !pf.supSrcset || element.srcset) {
+            srcsetAttribute = getImgAttr.call(element, "srcset");
             imageData.srcset = srcsetAttribute;
             srcsetParsed = true;
         }
 
         imageData.sets = [];
 
-        if ( hasPicture ) {
+        if (hasPicture) {
             imageData.pic = true;
-            getAllSourceElements( parent, imageData.sets );
+            getAllSourceElements(parent, imageData.sets);
         }
 
-        if ( imageData.srcset ) {
+        if (imageData.srcset) {
             imageSet = {
                 srcset: imageData.srcset,
-                sizes: getImgAttr.call( element, "sizes" )
+                sizes: getImgAttr.call(element, "sizes")
             };
 
-            imageData.sets.push( imageSet );
+            imageData.sets.push(imageSet);
 
             isWDescripor = (alwaysCheckWDescriptor || imageData.src) && regWDesc.test(imageData.srcset || "");
 
             // add normal src as candidate, if source has no w descriptor
-            if ( !isWDescripor && imageData.src && !getCandidateForSrc(imageData.src, imageSet) && !imageSet.has1x ) {
+            if (!isWDescripor && imageData.src && !getCandidateForSrc(imageData.src, imageSet) && !imageSet.has1x) {
                 imageSet.srcset += ", " + imageData.src;
                 imageSet.cands.push({
                     url: imageData.src,
@@ -1331,11 +1369,11 @@
                 });
             }
 
-        } else if ( imageData.src ) {
-            imageData.sets.push( {
+        } else if (imageData.src) {
+            imageData.sets.push({
                 srcset: imageData.src,
                 sizes: null
-            } );
+            });
         }
 
         imageData.curCan = null;
@@ -1343,14 +1381,14 @@
 
         // if img has picture or the srcset was removed or has a srcset and does not support srcset at all
         // or has a w descriptor (and does not support sizes) set support to false to evaluate
-        imageData.supported = !( hasPicture || ( imageSet && !pf.supSrcset ) || isWDescripor );
+        imageData.supported = !(hasPicture || (imageSet && !pf.supSrcset) || isWDescripor);
 
-        if ( srcsetParsed && pf.supSrcset && !imageData.supported ) {
-            if ( srcsetAttribute ) {
-                setImgAttr.call( element, srcsetAttr, srcsetAttribute );
+        if (srcsetParsed && pf.supSrcset && !imageData.supported) {
+            if (srcsetAttribute) {
+                setImgAttr.call(element, srcsetAttr, srcsetAttribute);
                 element.srcset = "";
             } else {
-                removeImgAttr.call( element, srcsetAttr );
+                removeImgAttr.call(element, srcsetAttr);
             }
         }
 
@@ -1365,12 +1403,12 @@
         imageData.parsed = true;
     };
 
-    pf.fillImg = function(element, options) {
+    pf.fillImg = function (element, options) {
         var imageData;
         var extreme = options.reselect || options.reevaluate;
 
         // expando for caching data on the img
-        if ( !element[ pf.ns ] ) {
+        if (!element[ pf.ns ]) {
             element[ pf.ns ] = {};
         }
 
@@ -1379,47 +1417,47 @@
         // if the element has already been evaluated, skip it
         // unless `options.reevaluate` is set to true ( this, for example,
         // is set to true when running `picturefill` on `resize` ).
-        if ( !extreme && imageData.evaled === evalId ) {
+        if (!extreme && imageData.evaled === evalId) {
             return;
         }
 
-        if ( !imageData.parsed || options.reevaluate ) {
-            pf.parseSets( element, element.parentNode, options );
+        if (!imageData.parsed || options.reevaluate) {
+            pf.parseSets(element, element.parentNode, options);
         }
 
-        if ( !imageData.supported ) {
-            applyBestCandidate( element );
+        if (!imageData.supported) {
+            applyBestCandidate(element);
         } else {
             imageData.evaled = evalId;
         }
     };
 
-    pf.setupRun = function() {
-        if ( !alreadyRun || isVwDirty || (DPR !== window.devicePixelRatio) ) {
+    pf.setupRun = function () {
+        if (!alreadyRun || isVwDirty || (DPR !== window.devicePixelRatio)) {
             updateMetrics();
         }
     };
 
     // If picture is supported, well, that's awesome.
-    if ( pf.supPicture ) {
+    if (pf.supPicture) {
         picturefill = noop;
         pf.fillImg = noop;
     } else {
 
         // Set up picture polyfill by polling the document
-        (function() {
+        (function () {
             var isDomReady;
             var regReady = window.attachEvent ? /d$|^c/ : /d$|^c|^i/;
 
-            var run = function() {
+            var run = function () {
                 var readyState = document.readyState || "";
 
                 timerId = setTimeout(run, readyState === "loading" ? 200 :  999);
-                if ( document.body ) {
+                if (document.body) {
                     pf.fillImgs();
                     isDomReady = isDomReady || regReady.test(readyState);
-                    if ( isDomReady ) {
-                        clearTimeout( timerId );
+                    if (isDomReady) {
+                        clearTimeout(timerId);
                     }
 
                 }
@@ -1429,9 +1467,9 @@
 
             // Also attach picturefill on resize and readystatechange
             // http://modernjavascript.blogspot.com/2013/08/building-better-debounce.html
-            var debounce = function(func, wait) {
+            var debounce = function (func, wait) {
                 var timeout, timestamp;
-                var later = function() {
+                var later = function () {
                     var last = (new Date()) - timestamp;
 
                     if (last < wait) {
@@ -1442,7 +1480,7 @@
                     }
                 };
 
-                return function() {
+                return function () {
                     timestamp = new Date();
 
                     if (!timeout) {
@@ -1451,16 +1489,16 @@
                 };
             };
             var lastClientWidth = docElem.clientHeight;
-            var onResize = function() {
+            var onResize = function () {
                 isVwDirty = Math.max(window.innerWidth || 0, docElem.clientWidth) !== units.width || docElem.clientHeight !== lastClientWidth;
                 lastClientWidth = docElem.clientHeight;
-                if ( isVwDirty ) {
+                if (isVwDirty) {
                     pf.fillImgs();
                 }
             };
 
-            on( window, "resize", debounce(onResize, 99 ) );
-            on( document, "readystatechange", run );
+            on(window, "resize", debounce(onResize, 99));
+            on(document, "readystatechange", run);
         })();
     }
 
@@ -1474,14 +1512,14 @@
 
     window.picturefillCFG = {
         pf: pf,
-        push: function(args) {
+        push: function (args) {
             var name = args.shift();
             if (typeof pf[name] === "function") {
                 pf[name].apply(pf, args);
             } else {
                 cfg[name] = args[0];
                 if (alreadyRun) {
-                    pf.fillImgs( { reselect: true } );
+                    pf.fillImgs({ reselect: true });
                 }
             }
         }
@@ -1495,17 +1533,19 @@
     window.picturefill = picturefill;
 
     /* expose picturefill */
-    if ( typeof module === "object" && typeof module.exports === "object" ) {
+    if (typeof module === "object" && typeof module.exports === "object") {
         // CommonJS, just export
         module.exports = picturefill;
-    } else if ( typeof define === "function" && define.amd ) {
+    } else if (typeof define === "function" && define.amd) {
         // AMD support
-        define( "picturefill", function() { return picturefill; } );
+        define("picturefill", function () {
+            return picturefill;
+        });
     }
 
     // IE8 evals this sync, so it must be the last thing we do
-    if ( !pf.supPicture ) {
-        types[ "image/webp" ] = detectTypeSupport("image/webp", "data:image/webp;base64,UklGRkoAAABXRUJQVlA4WAoAAAAQAAAAAAAAAAAAQUxQSAwAAAABBxAR/Q9ERP8DAABWUDggGAAAADABAJ0BKgEAAQADADQlpAADcAD++/1QAA==" );
+    if (!pf.supPicture) {
+        types[ "image/webp" ] = detectTypeSupport("image/webp", "data:image/webp;base64,UklGRkoAAABXRUJQVlA4WAoAAAAQAAAAAAAAAAAAQUxQSAwAAAABBxAR/Q9ERP8DAABWUDggGAAAADABAJ0BKgEAAQADADQlpAADcAD++/1QAA==");
     }
 
-} )( window, document );
+})(window, document);

@@ -12,8 +12,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
    'qui/controls/windows/Prompt',
    'qui/controls/windows/Confirm'
 
-], function(QUI, QUIPrompt, QUIConfirm)
-{
+], function (QUI, QUIPrompt, QUIConfirm) {
     "use strict";
 
     /**
@@ -26,8 +25,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
 
         Type : "classes/projects/project/media/panel/DOMEvents",
 
-        initialize : function(MediaPanel)
-        {
+        initialize : function (MediaPanel) {
             this.$Panel = MediaPanel;
         },
 
@@ -36,8 +34,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
          *
          * @method classes/projects/project/media/panel/DOMEvents#getMedia
          */
-        getMedia : function()
-        {
+        getMedia : function () {
             return this.$Panel.getMedia();
         },
 
@@ -47,18 +44,15 @@ define('classes/projects/project/media/panel/DOMEvents', [
          * @method classes/projects/project/media/panel/DOMEvents#activateItem
          * @param {Array} List (DOMNode)
          */
-        activate : function(List)
-        {
+        activate : function (List) {
             var self = this;
 
-            this.$createLoaderItem( List );
+            this.$createLoaderItem(List);
 
-            this.getMedia().activate( this.$getIds( List ), function()
-            {
-                self.$destroyLoaderItem( List );
+            this.getMedia().activate(this.$getIds(List), function () {
+                self.$destroyLoaderItem(List);
 
-                for ( var i = 0, len = List.length; i < len; i++ )
-                {
+                for (var i = 0, len = List.length; i < len; i++) {
                     List[ i ].set('data-active', 1);
                     List[ i ].removeClass('qmi-deactive');
                     List[ i ].addClass('qmi-active');
@@ -72,18 +66,15 @@ define('classes/projects/project/media/panel/DOMEvents', [
          * @method classes/projects/project/media/panel/DOMEvents#deactivateItem
          * @param {Array} List (DOMNode)
          */
-        deactivate : function(List)
-        {
+        deactivate : function (List) {
             var self = this;
 
-            this.$createLoaderItem( List );
+            this.$createLoaderItem(List);
 
-            this.getMedia().deactivate(this.$getIds( List ), function()
-            {
-                self.$destroyLoaderItem( List );
+            this.getMedia().deactivate(this.$getIds(List), function () {
+                self.$destroyLoaderItem(List);
 
-                for ( var i = 0, len = List.length; i < len; i++ )
-                {
+                for (var i = 0, len = List.length; i < len; i++) {
                     List[ i ].set('data-active', 0);
                     List[ i ].removeClass('qmi-active');
                     List[ i ].addClass('qmi-deactive');
@@ -97,8 +88,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
          * @method classes/projects/project/media/panel/DOMEvents#deactivateItem
          * @param {Array} List (DOMNode)
          */
-        del : function(List)
-        {
+        del : function (List) {
             var self    = this,
                 Media   = this.getMedia(),
                 items   = [],
@@ -114,50 +104,46 @@ define('classes/projects/project/media/panel/DOMEvents', [
                 information : '<div class="qui-media-file-delete"></div>',
                 events :
                 {
-                    onOpen : function(Win)
-                    {
+                    onOpen : function (Win) {
                         Win.Loader.show();
 
-                        for ( var i = 0, len = List.length; i < len; i++ ) {
-                            list.push( List[ i ].get( 'data-id' ) );
+                        for (var i = 0, len = List.length; i < len; i++) {
+                            list.push(List[ i ].get('data-id'));
                         }
 
-                        Media.get( list ).done(function(result)
-                        {
+                        Media.get(list).done(function (result) {
                             var i, len;
                             var information = '<ul>';
 
                             items = result;
 
-                            for ( i = 0, len = items.length; i < len; i++ )
-                            {
+                            for (i = 0, len = items.length; i < len; i++) {
                                 information = information +
-                                    '<li>'+
-                                        '#'+ items[ i ].getAttribute('id') +
-                                        ' - '+ items[ i ].getAttribute('name') +
+                                    '<li>' +
+                                        '#' + items[ i ].getAttribute('id') +
+                                        ' - ' + items[ i ].getAttribute('name') +
                                     '</li>';
                             }
 
-                            information = information +'</ul>';
+                            information = information + '</ul>';
 
-                            Win.getContent().getElement( '.qui-media-file-delete' ).set(
+                            Win.getContent().getElement('.qui-media-file-delete').set(
                                 'html',
                                 information
                             );
 
                             Win.Loader.hide();
 
-                        }, function()
-                        {
+                        }, function () {
                             var information = '<ul>';
 
-                            for ( var i = 0, len = list.length; i < len; i++ ) {
-                                information = information + '<li>#'+ list[i] +'</li>';
+                            for (var i = 0, len = list.length; i < len; i++) {
+                                information = information + '<li>#' + list[i] + '</li>';
                             }
 
-                            information = information +'</ul>';
+                            information = information + '</ul>';
 
-                            Win.getContent().getElement( '.qui-media-file-delete' ).set(
+                            Win.getContent().getElement('.qui-media-file-delete').set(
                                 'html',
                                 information
                             );
@@ -166,15 +152,14 @@ define('classes/projects/project/media/panel/DOMEvents', [
                         });
                     },
 
-                    onSubmit : function()
-                    {
-                        if ( !list.length ) {
+                    onSubmit : function () {
+                        if (!list.length) {
                             return;
                         }
 
                         self.$Panel.Loader.show();
 
-                        Media.del( list, function() {
+                        Media.del(list, function () {
                             self.$Panel.refresh();
                         });
                     }
@@ -188,51 +173,44 @@ define('classes/projects/project/media/panel/DOMEvents', [
          * @method classes/projects/project/media/panel/DOMEvents#renameItem
          * @param {HTMLElement} DOMNode
          */
-        rename : function(DOMNode)
-        {
+        rename : function (DOMNode) {
             var self = this;
 
             new QUIPrompt({
                 name  : 'rename_item',
                 title : 'Ordner umbenennen', // #locale
-                icon  : URL_BIN_DIR +'16x16/folder.png',
+                icon  : URL_BIN_DIR + '16x16/folder.png',
                 maxHeight : 300,
                 maxWidth  : 450,
-                check : function(Win)
-                {
-                    Win.fireEvent( 'submit', [ Win.getValue(), Win ] );
+                check : function (Win) {
+                    Win.fireEvent('submit', [Win.getValue(), Win]);
                     return false;
                 },
 
                 events :
                 {
-                    onCreate : function(Win) {
+                    onCreate : function (Win) {
                         Win.Loader.show();
                     },
 
-                    onOpen : function(Win)
-                    {
+                    onOpen : function (Win) {
                         var itemid = DOMNode.get('data-id');
 
-                        self.getMedia().get( itemid, function(Item)
-                        {
-                            Win.setValue( Item.getAttribute( 'name' ) );
+                        self.getMedia().get(itemid, function (Item) {
+                            Win.setValue(Item.getAttribute('name'));
                             Win.Loader.hide();
                         });
                     },
 
-                    onSubmit : function(result, Win)
-                    {
+                    onSubmit : function (result, Win) {
                         var itemid  = DOMNode.get('data-id'),
                             newName = result;
 
-                        self.$createLoaderItem( DOMNode );
+                        self.$createLoaderItem(DOMNode);
 
-                        self.getMedia().get( itemid, function(Item)
-                        {
-                            Item.rename( newName, function(result)
-                            {
-                                if ( !DOMNode ) {
+                        self.getMedia().get(itemid, function (Item) {
+                            Item.rename(newName, function (result) {
+                                if (!DOMNode) {
                                     return;
                                 }
 
@@ -241,17 +219,17 @@ define('classes/projects/project/media/panel/DOMEvents', [
                                     title : result
                                 });
 
-                                DOMNode.getElement('span').set( 'html', result );
+                                DOMNode.getElement('span').set('html', result);
 
-                                self.$destroyLoaderItem( DOMNode );
+                                self.$destroyLoaderItem(DOMNode);
 
                                 Win.close();
                             });
                         });
                     },
 
-                    onCancel : function() {
-                        self.$destroyLoaderItem( DOMNode );
+                    onCancel : function () {
+                        self.$destroyLoaderItem(DOMNode);
                     }
                 }
             }).open();
@@ -263,15 +241,14 @@ define('classes/projects/project/media/panel/DOMEvents', [
          * @method classes/projects/project/media/panel/DOMEvents#replace
          * @param {HTMLElement} DOMNode
          */
-        replace : function(DOMNode)
-        {
+        replace : function (DOMNode) {
             var self = this;
 
             // #locale
             new QUIConfirm({
                 title   : 'Datei ersetzen ...',
                 icon    : 'icon-retweet',
-                name    : 'replace-media-id-'+ DOMNode.get('data-id'),
+                name    : 'replace-media-id-' + DOMNode.get('data-id'),
                 maxHeight : 400,
                 maxWidth  : 600,
 
@@ -282,15 +259,13 @@ define('classes/projects/project/media/panel/DOMEvents', [
                 autoclose   : false,
                 events :
                 {
-                    onCreate : function(Win)
-                    {
+                    onCreate : function (Win) {
                         var Content = Win.getContent();
 
                         // upload formular
-                        require(['controls/upload/Form'], function(UploadForm)
-                        {
+                        require(['controls/upload/Form'], function (UploadForm) {
                             var Form = new UploadForm({
-                                Drops  : [ Content ],
+                                Drops  : [Content],
                                 styles : {
                                     clear  : 'both',
                                     float  : 'left',
@@ -298,12 +273,11 @@ define('classes/projects/project/media/panel/DOMEvents', [
                                 },
                                 events :
                                 {
-                                    onBegin : function() {
+                                    onBegin : function () {
                                         Win.close();
                                     },
 
-                                    onComplete : function()
-                                    {
+                                    onComplete : function () {
                                         var i, len;
 
                                         var panels = QUI.Controls.get(
@@ -311,40 +285,38 @@ define('classes/projects/project/media/panel/DOMEvents', [
                                             ),
 
                                             windows = QUI.Controls.get(
-                                                'replace-media-id-'+ DOMNode.get('data-id')
+                                                'replace-media-id-' + DOMNode.get('data-id')
                                             ),
 
                                             filepanels = QUI.Controls.get(
-                                                'projects-media-file-panel-'+ DOMNode.get('data-id')
+                                                'projects-media-file-panel-' + DOMNode.get('data-id')
                                             );
 
                                         // Media panels refresh
-                                        for ( i = 0, len = panels.length; i < len; i++ ) {
+                                        for (i = 0, len = panels.length; i < len; i++) {
                                             panels[i].refresh();
                                         }
 
                                         // Media Windows
-                                        for ( i = 0, len = windows.length; i < len; i++ ) {
+                                        for (i = 0, len = windows.length; i < len; i++) {
                                             windows[i].close();
                                         }
 
                                         // File panels
-                                        for ( i = 0, len = filepanels.length; i < len; i++ ) {
+                                        for (i = 0, len = filepanels.length; i < len; i++) {
                                             filepanels[i].refresh();
                                         }
                                     },
 
                                     /// drag drop events
-                                    onDragenter: function(event, Elm)
-                                    {
-                                        Elm.addClass( 'qui-media-drag' );
+                                    onDragenter: function (event, Elm) {
+                                        Elm.addClass('qui-media-drag');
                                         event.stop();
                                     },
 
-                                    onDragend : function(event, Elm)
-                                    {
-                                        if ( Elm.hasClass('qui-media-drag') ) {
-                                            Elm.removeClass( 'qui-media-drag' );
+                                    onDragend : function (event, Elm) {
+                                        if (Elm.hasClass('qui-media-drag')) {
+                                            Elm.removeClass('qui-media-drag');
                                         }
                                     }
                                 }
@@ -355,14 +327,13 @@ define('classes/projects/project/media/panel/DOMEvents', [
                             Form.setParam('project', self.getMedia().getProject().getName());
                             Form.setParam('fileid', DOMNode.get('data-id'));
 
-                            Form.inject( Content );
+                            Form.inject(Content);
 
-                            Win.setAttribute( 'Form', Form );
+                            Win.setAttribute('Form', Form);
                         });
                     },
 
-                    onSubmit : function(Win)
-                    {
+                    onSubmit : function (Win) {
                         Win.Loader.show();
                         Win.getAttribute('Form').submit();
                     }
@@ -375,19 +346,17 @@ define('classes/projects/project/media/panel/DOMEvents', [
          *
          * @param {HTMLElement|Array} DOMNode - Parent (Media Item) DOMNode
          */
-        $createLoaderItem : function(DOMNode)
-        {
+        $createLoaderItem : function (DOMNode) {
             var List = DOMNode;
 
-            if ( !List.length ) {
+            if (!List.length) {
                 List = [DOMNode];
             }
 
-            for ( var i = 0, len = List.length; i < len; i++)
-            {
+            for (var i = 0, len = List.length; i < len; i++) {
                 new Element('div.loader', {
                     styles : {
-                        background : '#000000 url('+ URL_BIN_DIR +'images/loader-big-black-white.gif) no-repeat center center',
+                        background : '#000000 url(' + URL_BIN_DIR + 'images/loader-big-black-white.gif) no-repeat center center',
                         position   : 'absolute',
                         top        : 0,
                         left       : 0,
@@ -395,7 +364,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
                         width      : '100%',
                         opacity    : 0.5
                     }
-                }).inject( List[i] );
+                }).inject(List[i]);
             }
         },
 
@@ -404,20 +373,18 @@ define('classes/projects/project/media/panel/DOMEvents', [
          *
          * @param {HTMLElement|Array} DOMNode - Parent (Media Item) DOMNode or DOMNode List
          */
-        $destroyLoaderItem : function(DOMNode)
-        {
+        $destroyLoaderItem : function (DOMNode) {
             var i, len, Elm;
             var List = DOMNode;
 
-            if ( !List.length ) {
+            if (!List.length) {
                 List = [DOMNode];
             }
 
-            for ( i = 0, len = List.length; i < len; i++)
-            {
+            for (i = 0, len = List.length; i < len; i++) {
                 Elm = List[i].getElement('.loader');
 
-                if ( Elm ) {
+                if (Elm) {
                     Elm.destroy();
                 }
             }
@@ -429,12 +396,11 @@ define('classes/projects/project/media/panel/DOMEvents', [
          * @param {Array} List - List of DOMNodes
          * @return {Array}
          */
-        $getIds : function(List)
-        {
+        $getIds : function (List) {
             var list = [];
 
-            for ( var i = 0, len = List.length; i < len; i++ ) {
-                list.push( List[i].get('data-id') );
+            for (var i = 0, len = List.length; i < len; i++) {
+                list.push(List[i].get('data-id'));
             }
 
             return list;

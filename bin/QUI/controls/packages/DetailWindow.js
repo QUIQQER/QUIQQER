@@ -13,8 +13,7 @@ define([
     'qui/controls/windows/Popup',
     'controls/packages/Details'
 
-], function(QUI, QUIPopup, Details)
-{
+], function (QUI, QUIPopup, Details) {
     "use strict";
 
 
@@ -35,9 +34,8 @@ define([
             maxHeight : 500
         },
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize : function (options) {
+            this.parent(options);
 
             this.addEvents({
                 onOpen : this.$onOpen
@@ -47,26 +45,24 @@ define([
         /**
          * event : on open
          */
-        $onOpen : function()
-        {
+        $onOpen : function () {
             var self    = this,
                 Content = this.getContent();
 
-            Content.set( 'html', '' );
+            Content.set('html', '');
 
             new Details({
-                'package' : this.getAttribute( 'package' ),
+                'package' : this.getAttribute('package'),
                 events :
                 {
-                    onOpenSheet : function(Detail, Sheet)
-                    {
+                    onOpenSheet : function (Detail, Sheet) {
                         self.hideButtons();
 
                         Sheet.getElements('.qui-sheet-buttons-back')
                              .setStyle('display', 'none');
                     }
                 }
-            }).inject( Content );
+            }).inject(Content);
         }
     });
 

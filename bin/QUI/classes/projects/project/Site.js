@@ -95,7 +95,7 @@ define('classes/projects/project/Site', [
                 Site.$loaded       = true;
 
                 if ("has_children" in result) {
-                    Site.$has_children = ( result.has_children ).toInt();
+                    Site.$has_children = (result.has_children).toInt();
                 }
 
                 if ("parentid" in result) {
@@ -220,7 +220,7 @@ define('classes/projects/project/Site', [
                 return 0;
             }
 
-            return ( this.$has_children ).toInt();
+            return (this.$has_children).toInt();
         },
 
         /**
@@ -348,8 +348,8 @@ define('classes/projects/project/Site', [
                 }
 
                 if (result) {
-                    Site.$has_children = ( result.has_children ).toInt() || false;
-                    Site.$parentid     = ( result.parentid ).toInt() || false;
+                    Site.$has_children = (result.has_children).toInt() || false;
+                    Site.$parentid     = (result.parentid).toInt() || false;
                     Site.$url          = result.url || '';
                 }
 

@@ -15,8 +15,7 @@ define('utils/Media', [
     'qui/QUI',
     'Locale'
 
-], function(QUI, QUILocale)
-{
+], function (QUI, QUILocale) {
     "use strict";
 
     return {
@@ -27,31 +26,29 @@ define('utils/Media', [
          * @param {String} mimtype - MimeType of the file
          * @return {String}
          */
-        getIconByMimeType : function(mimtype)
-        {
-            if ( typeof mimtype === 'undefined' ) {
-                return URL_BIN_DIR +'16x16/extensions/empty.png';
+        getIconByMimeType : function (mimtype) {
+            if (typeof mimtype === 'undefined') {
+                return URL_BIN_DIR + '16x16/extensions/empty.png';
             }
 
-            if ( mimtype.match('image/') ) {
-                return URL_BIN_DIR +'16x16/extensions/image.png';
+            if (mimtype.match('image/')) {
+                return URL_BIN_DIR + '16x16/extensions/image.png';
             }
 
-            if ( mimtype.match('/pdf') ) {
-                return URL_BIN_DIR +'16x16/extensions/pdf.png';
+            if (mimtype.match('/pdf')) {
+                return URL_BIN_DIR + '16x16/extensions/pdf.png';
             }
 
-            if ( mimtype.match('/zip') ||
-                 mimtype.match('/gzip') )
-            {
-                return URL_BIN_DIR +'16x16/extensions/archive.png';
+            if (mimtype.match('/zip') ||
+                 mimtype.match('/gzip')) {
+                return URL_BIN_DIR + '16x16/extensions/archive.png';
             }
 
-            if ( mimtype.match('audio/') ) {
-               return URL_BIN_DIR +'16x16/extensions/audio.png';
+            if (mimtype.match('audio/')) {
+                return URL_BIN_DIR + '16x16/extensions/audio.png';
             }
 
-            return URL_BIN_DIR +'16x16/extensions/empty.png';
+            return URL_BIN_DIR + '16x16/extensions/empty.png';
         },
 
         /**
@@ -62,18 +59,16 @@ define('utils/Media', [
          *
          * @return {String}
          */
-        getUrlByImageParams : function(id, project)
-        {
-            return 'image.php?id='+ id +'&project='+ project;
+        getUrlByImageParams : function (id, project) {
+            return 'image.php?id=' + id + '&project=' + project;
         },
 
         /**
          *
          * @param {HTMLElement} Input
          */
-        bindCheckMediaName : function(Input)
-        {
-            Input.addEvent('keyup', function(event) {
+        bindCheckMediaName : function (Input) {
+            Input.addEvent('keyup', function (event) {
 
                 // shift code
                 if (event.code == 16) {
@@ -91,7 +86,7 @@ define('utils/Media', [
                 // special character
                 if (val.match(/[^0-9_a-zA-Z \-.]/g)) {
 
-                    QUI.getMessageHandler().then(function(MH) {
+                    QUI.getMessageHandler().then(function (MH) {
                         MH.addAttention(
                             QUILocale.get(
                                 'quiqqer/system',

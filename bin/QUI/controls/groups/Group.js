@@ -357,7 +357,7 @@ define('controls/groups/Group', [
             this.Loader.show();
 
             Ajax.get('ajax_groups_panel_categories', function (result) {
-console.log(result);
+                console.log(result);
                 for (var i = 0, len = result.length; i < len; i++) {
                     result[i].events = {
                         onActive: self.$onCategoryLoad,

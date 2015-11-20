@@ -19,8 +19,7 @@ define('controls/projects/project/site/Input', [
 
     'css!controls/projects/project/site/Input.css'
 
-], function(QUIControl, QUIButton, ProjectPopup)
-{
+], function (QUIControl, QUIButton, ProjectPopup) {
     "use strict";
 
     /**
@@ -47,9 +46,8 @@ define('controls/projects/project/site/Input', [
             external : false // external sites allowed?
         },
 
-        initialize : function(options, Input)
-        {
-            this.parent( options );
+        initialize : function (options, Input) {
+            this.parent(options);
 
             this.$Input      = Input || null;
             this.$SiteButton = null;
@@ -64,38 +62,35 @@ define('controls/projects/project/site/Input', [
          *
          * @return {HTMLElement}
          */
-        create : function()
-        {
+        create : function () {
             this.$Elm = new Element('div', {
                 'class'      : 'qui-controls-project-site-input box',
                 'data-quiid' : this.getId()
             });
 
-            if ( !this.$Input )
-            {
+            if (!this.$Input) {
                 this.$Input = new Element('input', {
                     name : this.getAttribute('name')
-                }).inject( this.$Elm );
+                }).inject(this.$Elm);
 
-            } else
-            {
-                this.$Elm.wraps( this.$Input );
+            } else {
+                this.$Elm.wraps(this.$Input);
 
-                if ( this.$Input.get( 'data-external' ) ) {
-                    this.setAttribute( 'external', true );
+                if (this.$Input.get('data-external')) {
+                    this.setAttribute('external', true);
                 }
             }
 
-            if ( this.getAttribute( 'styles' ) ) {
-                this.$Elm.setStyles( this.getAttribute( 'styles' ) );
+            if (this.getAttribute('styles')) {
+                this.$Elm.setStyles(this.getAttribute('styles'));
             }
 
             this.$Input.setStyles({
                 'float' : 'left'
             });
 
-            if ( !this.getAttribute( 'external' ) ) {
-                this.$Input.setStyle( 'cursor', 'pointer' );
+            if (!this.getAttribute('external')) {
+                this.$Input.setStyle('cursor', 'pointer');
             }
 
             var self = this;
@@ -104,35 +99,33 @@ define('controls/projects/project/site/Input', [
                 icon   : 'fa fa-file-o icon-file-alt',
                 events :
                 {
-                    onClick : function()
-                    {
+                    onClick : function () {
                         new ProjectPopup({
                             events :
                             {
-                                onSubmit : function(Popup, params) {
+                                onSubmit : function (Popup, params) {
                                     self.$Input.value = params.urls[ 0 ];
                                 }
                             }
                         }).open();
                     }
                 }
-            }).inject( this.$Elm );
+            }).inject(this.$Elm);
 
             new QUIButton({
                 icon   : 'icon-remove',
-                alt    : Locale.get( 'quiqqer/system', 'projects.project.site.input.clear' ),
-                title  : Locale.get( 'quiqqer/system', 'projects.project.site.input.clear' ),
+                alt    : Locale.get('quiqqer/system', 'projects.project.site.input.clear'),
+                title  : Locale.get('quiqqer/system', 'projects.project.site.input.clear'),
                 events :
                 {
-                    onClick : function() {
+                    onClick : function () {
                         self.$Input.value = '';
                     }
                 }
-            }).inject( this.$Elm );
+            }).inject(this.$Elm);
 
 
-            if ( !self.getAttribute( 'external' ) )
-            {
+            if (!self.getAttribute('external')) {
                 this.$Input.addEvents({
                     focus: function () {
                         self.$SiteButton.click();
@@ -146,8 +139,7 @@ define('controls/projects/project/site/Input', [
         /**
          * event : on import
          */
-        $onImport : function()
-        {
+        $onImport : function () {
             this.$Input = this.$Elm;
             this.create();
         }

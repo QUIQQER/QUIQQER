@@ -18,8 +18,7 @@ define('controls/projects/TypeInput', [
     'Plugins',
     'css!controls/projects/TypeInput.css'
 
-], function(QUIControl, TypeButton, TypeWindow, Plugins)
-{
+], function (QUIControl, TypeButton, TypeWindow, Plugins) {
     "use strict";
 
     /**
@@ -43,9 +42,8 @@ define('controls/projects/TypeInput', [
             name    : ''
         },
 
-        initialize : function(options, Input)
-        {
-            this.parent( options );
+        initialize : function (options, Input) {
+            this.parent(options);
 
             this.$Input = Input || null;
             this.$Elm   = null;
@@ -60,12 +58,10 @@ define('controls/projects/TypeInput', [
          * @method controls/projects/TypeInput#create
          * @return {HTMLElement}
          */
-        create : function()
-        {
-            if ( !this.$Input )
-            {
+        create : function () {
+            if (!this.$Input) {
                 this.$Input = new Element('input', {
-                    name : this.getAttribute( 'name' )
+                    name : this.getAttribute('name')
                 });
             }
 
@@ -78,24 +74,23 @@ define('controls/projects/TypeInput', [
                 'data-quiid' : this.getId()
             });
 
-            this.$Elm.wraps( this.$Input );
+            this.$Elm.wraps(this.$Input);
 
             // create the type button
             this.$TypeButton = new TypeButton({
-                project : this.getAttribute( 'project' ),
+                project : this.getAttribute('project'),
                 events  :
                 {
-                    onSubmit : function(Btn, result)
-                    {
+                    onSubmit : function (Btn, result) {
                         self.$Input.value = result;
                         self.loadTypeName();
                     }
                 }
-            }).inject( this.$Elm ) ;
+            }).inject(this.$Elm) ;
 
 
             this.$Text = new Element('div.qui-projects-type-input-text');
-            this.$Text.inject( this.$Elm );
+            this.$Text.inject(this.$Elm);
 
             // load the user type name
             this.loadTypeName();
@@ -108,12 +103,11 @@ define('controls/projects/TypeInput', [
          *
          * @param {Object} Project - classes/projects/Project
          */
-        setProject : function(Project)
-        {
-            this.setAttribute( 'project', Project.getName() );
+        setProject : function (Project) {
+            this.setAttribute('project', Project.getName());
 
-            if ( this.$TypeButton ) {
-                this.$TypeButton.setAttribute( 'project', Project.getName() );
+            if (this.$TypeButton) {
+                this.$TypeButton.setAttribute('project', Project.getName());
             }
         },
 
@@ -122,8 +116,7 @@ define('controls/projects/TypeInput', [
          *
          * @method controls/projects/TypeInput#loadTypeName
          */
-        loadTypeName : function()
-        {
+        loadTypeName : function () {
             var self = this;
 
             this.$Text.set({
@@ -131,20 +124,16 @@ define('controls/projects/TypeInput', [
                 title : '...'
             });
 
-            Plugins.getTypeName(this.$Input.value, function(result)
-            {
-                if ( self.$Text )
-                {
+            Plugins.getTypeName(this.$Input.value, function (result) {
+                if (self.$Text) {
                     self.$Text.set({
                         html  : result,
                         title : result
                     });
                 }
             }, {
-                onError : function()
-                {
-                    if ( self.$Text )
-                    {
+                onError : function () {
+                    if (self.$Text) {
                         self.$Text.set({
                             html  : '<span style="color: red">#unknown</span>',
                             title : null

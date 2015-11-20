@@ -302,7 +302,7 @@ define('controls/projects/project/media/Popup', [
             this.$Panel.Loader.hide();
 
             this.$getDetails(imageData, function (data) {
-                if (!( data.active ).toInt()) {
+                if (!(data.active).toInt()) {
                     self.$Panel.Loader.hide();
                     self.$activateItem(imageData);
                     return;

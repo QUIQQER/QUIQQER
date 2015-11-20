@@ -156,7 +156,7 @@ define([
          * @return {Boolean} true or false
          */
         isActive: function () {
-            return ( this.getAttribute('active') ).toInt() ? true : false;
+            return (this.getAttribute('active')).toInt() ? true : false;
         },
 
         /**

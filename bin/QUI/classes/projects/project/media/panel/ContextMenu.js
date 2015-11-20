@@ -16,8 +16,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
     'qui/controls/contextmenu/Seperator',
     'qui/utils/Elements'
 
-], function(QUIContextmenuItem, QUIContextmenuSeperator, QUIElementUtil)
-{
+], function (QUIContextmenuItem, QUIContextmenuSeperator, QUIElementUtil) {
     "use strict";
 
     /**
@@ -35,8 +34,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
          *
          * @param {Object} MediaPanel - controls/projects/project/media/Panel
          */
-        initialize : function(MediaPanel)
-        {
+        initialize : function (MediaPanel) {
             this.$MediaPanel = MediaPanel;
         },
 
@@ -45,8 +43,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
          *
          * @return {Object} controls/projects/project/media/Panel
          */
-        getPanel : function()
-        {
+        getPanel : function () {
             return this.$MediaPanel;
         },
 
@@ -55,30 +52,27 @@ define('classes/projects/project/media/panel/ContextMenu', [
          *
          * @param {DOMEvent} event - oncontextmenu DOMEvent
          */
-        show : function(event)
-        {
+        show : function (event) {
             event.stop();
 
             var Menu;
             var Elm = event.target;
 
-            if ( Elm.nodeName == 'SPAN' ) {
+            if (Elm.nodeName == 'SPAN') {
                 Elm = Elm.getParent('div');
             }
 
-            if ( Elm.get('data-type') === 'folder' )
-            {
-                Menu = this.getFolderMenu( Elm );
-            } else
-            {
-                Menu = this.getFileMenu( Elm );
+            if (Elm.get('data-type') === 'folder') {
+                Menu = this.getFolderMenu(Elm);
+            } else {
+                Menu = this.getFileMenu(Elm);
             }
 
             // zIndex
-            Menu.getElm().setStyle( 'zIndex', QUIElementUtil.getComputedZIndex( Elm ) + 1 );
+            Menu.getElm().setStyle('zIndex', QUIElementUtil.getComputedZIndex(Elm) + 1);
 
-            Menu.setPosition( event.page.x, event.page.y )
-                .setTitle( Elm.get('title') )
+            Menu.setPosition(event.page.x, event.page.y)
+                .setTitle(Elm.get('title'))
                 .show()
                 .focus();
         },
@@ -89,10 +83,9 @@ define('classes/projects/project/media/panel/ContextMenu', [
          * @method classes/projects/project/media/panel/ContextMenu#createPanelMenu
          * @param {Object} Menu - qui/controls/contextmenu/Menu
          */
-        createPanelMenu : function(Menu)
-        {
+        createPanelMenu : function (Menu) {
             Menu.clearChildren()
-                .setTitle( this.getPanel().$File.getAttribute('name') )
+                .setTitle(this.getPanel().$File.getAttribute('name'))
                 .appendChild(
                     new QUIContextmenuItem({
                         name    : 'create_folder',
@@ -101,8 +94,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                         Control : this,
                         events  :
                         {
-                            onMouseDown : function(Item)
-                            {
+                            onMouseDown : function (Item) {
                                 Item.getAttribute('Control')
                                     .getPanel()
                                     .createFolder();
@@ -118,23 +110,20 @@ define('classes/projects/project/media/panel/ContextMenu', [
          * @param {HTMLElement} DOMNode - DOM media item element
          * @return {qui/controls/contextmenu/Menu}
          */
-        getFileMenu : function(DOMNode)
-        {
+        getFileMenu : function (DOMNode) {
             var self = this,
                 Menu = this.getPanel().getContextMenu();
 
             Menu.clearChildren();
 
 
-            if ( DOMNode.get('data-active').toInt() === 0 )
-            {
+            if (DOMNode.get('data-active').toInt() === 0) {
                 Menu.appendChild(
-                    this.getActivateItem( DOMNode )
+                    this.getActivateItem(DOMNode)
                 );
-            } else
-            {
+            } else {
                 Menu.appendChild(
-                    this.getDeActivateItem( DOMNode )
+                    this.getDeActivateItem(DOMNode)
                 );
             }
 
@@ -142,26 +131,23 @@ define('classes/projects/project/media/panel/ContextMenu', [
             var Trash;
             var sels = this.getPanel().getSelectedItems();
 
-            if ( !sels.length || sels.length == 1 )
-            {
+            if (!sels.length || sels.length == 1) {
                 Trash = new QUIContextmenuItem({
                     name   : 'delete',
                     text   : 'In den Mülleimer werfen',
                     icon   : 'fa fa-trash-o icon-trash',
                     events :
                     {
-                        onMouseDown : function()
-                        {
-                            if ( !DOMNode ) {
+                        onMouseDown : function () {
+                            if (!DOMNode) {
                                 return;
                             }
 
-                            self.getPanel().deleteItem( DOMNode );
+                            self.getPanel().deleteItem(DOMNode);
                         }
                     }
                 });
-            } else
-            {
+            } else {
                 Trash = new QUIContextmenuItem({
                     name : 'delete',
                     text : 'In den Mülleimer werfen',
@@ -174,13 +160,12 @@ define('classes/projects/project/media/panel/ContextMenu', [
                         text   : DOMNode.get('title'),
                         events :
                         {
-                            onMouseDown : function()
-                            {
-                                if ( !DOMNode ) {
+                            onMouseDown : function () {
+                                if (!DOMNode) {
                                     return;
                                 }
 
-                                self.getPanel().deleteItem( DOMNode );
+                                self.getPanel().deleteItem(DOMNode);
                             }
                         }
                     })
@@ -190,12 +175,11 @@ define('classes/projects/project/media/panel/ContextMenu', [
                         text   : 'Alle markierte Elemente',
                         events :
                         {
-                            onMouseDown : function()
-                            {
+                            onMouseDown : function () {
                                 var Panel   = self.getPanel(),
                                     sels    = Panel.getSelectedItems();
 
-                                self.getPanel().deleteItems( sels );
+                                self.getPanel().deleteItems(sels);
                             }
                         }
                     })
@@ -218,21 +202,19 @@ define('classes/projects/project/media/panel/ContextMenu', [
                     icon   : 'icon-retweet',
                     events :
                     {
-                        onMouseDown : function()
-                        {
-                            if ( !DOMNode ) {
+                        onMouseDown : function () {
+                            if (!DOMNode) {
                                 return;
                             }
 
-                            self.getPanel().replaceItem( DOMNode );
+                            self.getPanel().replaceItem(DOMNode);
                         }
                     }
                 })
             );
 
             // if no error, you can download the file
-            if ( !DOMNode.get('data-error').toInt() )
-            {
+            if (!DOMNode.get('data-error').toInt()) {
                 Menu.appendChild(
                     new QUIContextmenuItem({
                         name   : 'download',
@@ -240,9 +222,8 @@ define('classes/projects/project/media/panel/ContextMenu', [
                         icon   : 'icon-download',
                         events :
                         {
-                            onMouseDown : function()
-                            {
-                                if ( !DOMNode ) {
+                            onMouseDown : function () {
+                                if (!DOMNode) {
                                     return;
                                 }
 
@@ -265,9 +246,8 @@ define('classes/projects/project/media/panel/ContextMenu', [
          * @param {HTMLElement} Droppable - drop box element (folder)
          * @param {DOMEvent} event
          */
-        showDragDropMenu : function(Element, Droppable, event)
-        {
-            if ( !Droppable ) {
+        showDragDropMenu : function (Element, Droppable, event) {
+            if (!Droppable) {
                 return;
             }
 
@@ -281,8 +261,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 };
 
 
-            if ( !pos.x && !pos.y )
-            {
+            if (!pos.x && !pos.y) {
                 pos = Droppable.getPosition();
 
                 pos.x = pos.x + 50;
@@ -290,21 +269,19 @@ define('classes/projects/project/media/panel/ContextMenu', [
             }
 
             Menu.clearChildren()
-                .setPosition( pos.x, pos.y )
-                .setTitle( title );
+                .setPosition(pos.x, pos.y)
+                .setTitle(title);
 
 
-            if ( Droppable.get('data-type') != 'folder' )
-            {
+            if (Droppable.get('data-type') != 'folder') {
                 Menu.appendChild(
                     new QUIContextmenuItem({
                         name : 'copy-files',
-                        text : 'Datei ersetzen mit '+ Element.name,
+                        text : 'Datei ersetzen mit ' + Element.name,
                         icon : 'icon-retweet',
                         events :
                         {
-                            onMouseDown : function(Item, event)
-                            {
+                            onMouseDown : function (Item, event) {
                                 event.stop();
 
                                 var Panel = self.getPanel();
@@ -312,8 +289,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                                 Panel.$Media.replace(
                                     Droppable.get('data-id'),
                                     Element,
-                                    function()
-                                    {
+                                    function () {
                                         Panel.refresh();
                                     }
                                 );
@@ -337,10 +313,9 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 return;
             }
 
-            if ( instanceOf( Element, File ) ||
-                 instanceOf( Element, FileList ) ||
-                 instanceOf( Element, Array ) )
-            {
+            if (instanceOf(Element, File) ||
+                 instanceOf(Element, FileList) ||
+                 instanceOf(Element, Array)) {
                 Menu.appendChild(
                     new QUIContextmenuItem({
                         name : 'upload-files',
@@ -348,15 +323,13 @@ define('classes/projects/project/media/panel/ContextMenu', [
                         icon : 'icon-upload',
                         events :
                         {
-                            onMouseDown : function(Item, event)
-                            {
+                            onMouseDown : function (Item, event) {
                                 event.stop();
 
                                 var Media = self.getPanel().getMedia();
 
-                                Media.get( Droppable.get('data-id'), function(Item)
-                                {
-                                    Item.uploadFiles( Element, function() {
+                                Media.get(Droppable.get('data-id'), function (Item) {
+                                    Item.uploadFiles(Element, function () {
                                         self.getPanel().refresh();
                                     });
                                 });
@@ -391,11 +364,10 @@ define('classes/projects/project/media/panel/ContextMenu', [
                     icon : 'icon-copy',
                     events :
                     {
-                        onMouseDown : function(Item, event)
-                        {
+                        onMouseDown : function (Item, event) {
                             event.stop();
 
-                            self.getPanel().copyTo( id, ids );
+                            self.getPanel().copyTo(id, ids);
                         }
                     }
                 })
@@ -406,11 +378,10 @@ define('classes/projects/project/media/panel/ContextMenu', [
                     icon : 'icon-cut',
                     events :
                     {
-                        onMouseDown : function(Item, event)
-                        {
+                        onMouseDown : function (Item, event) {
                             event.stop();
 
-                            self.getPanel().moveTo( id, ids );
+                            self.getPanel().moveTo(id, ids);
                         }
                     }
                 })
@@ -434,22 +405,19 @@ define('classes/projects/project/media/panel/ContextMenu', [
          * @param {HTMLElement} DOMNode - DOM media item element
          * @return {Object} qui/controls/contextmenu/Menu
          */
-        getFolderMenu : function(DOMNode)
-        {
+        getFolderMenu : function (DOMNode) {
             var self = this,
                 Menu = this.getPanel().getContextMenu();
 
             Menu.clearChildren();
 
-            if ( DOMNode.get('data-active').toInt() === 0 )
-            {
+            if (DOMNode.get('data-active').toInt() === 0) {
                 Menu.appendChild(
-                    this.getActivateItem( DOMNode )
+                    this.getActivateItem(DOMNode)
                 );
-            } else
-            {
+            } else {
                 Menu.appendChild(
-                    this.getDeActivateItem( DOMNode )
+                    this.getDeActivateItem(DOMNode)
                 );
             }
 
@@ -463,13 +431,12 @@ define('classes/projects/project/media/panel/ContextMenu', [
                     icon   : 'icon-font',
                     events :
                     {
-                        onMouseDown : function()
-                        {
-                            if ( !DOMNode ) {
+                        onMouseDown : function () {
+                            if (!DOMNode) {
                                 return;
                             }
 
-                            self.getPanel().renameItem( DOMNode );
+                            self.getPanel().renameItem(DOMNode);
                         }
                     }
                 })
@@ -480,13 +447,12 @@ define('classes/projects/project/media/panel/ContextMenu', [
                     icon   : 'fa fa-trash-o icon-trash',
                     events :
                     {
-                        onMouseDown : function()
-                        {
-                            if ( !DOMNode ) {
+                        onMouseDown : function () {
+                            if (!DOMNode) {
                                 return;
                             }
 
-                            self.getPanel().deleteItem( DOMNode );
+                            self.getPanel().deleteItem(DOMNode);
                         }
                     }
                 })
@@ -499,9 +465,8 @@ define('classes/projects/project/media/panel/ContextMenu', [
                     icon   : 'fa fa-folder-open-o icon-folder-open-alt',
                     events :
                     {
-                        onMouseDown : function()
-                        {
-                            if ( !DOMNode ) {
+                        onMouseDown : function () {
+                            if (!DOMNode) {
                                 return;
                             }
 
@@ -517,12 +482,11 @@ define('classes/projects/project/media/panel/ContextMenu', [
 
                             require([
                                 'controls/projects/project/media/FolderPanel'
-                            ], function(FolderPanel)
-                            {
+                            ], function (FolderPanel) {
                                 new FolderPanel({
                                     folderId : id,
                                     project : project
-                                }).inject( Parent );
+                                }).inject(Parent);
                             });
                         }
                     }
@@ -538,26 +502,23 @@ define('classes/projects/project/media/panel/ContextMenu', [
          * @param {HTMLElement} DOMNode - DOM media item element
          * @return {Object} qui/controls/contextmenu/Item
          */
-        getActivateItem : function(DOMNode)
-        {
+        getActivateItem : function (DOMNode) {
             var self = this,
                 sels = this.getPanel().getSelectedItems();
 
-            if ( !sels.length || sels.length == 1 )
-            {
+            if (!sels.length || sels.length == 1) {
                 return new QUIContextmenuItem({
                     name   : 'activate',
                     text   : 'Aktivieren',
                     icon   : 'fa fa-check icon-ok',
                     events :
                     {
-                        onMouseDown : function()
-                        {
-                            if ( !DOMNode ) {
+                        onMouseDown : function () {
+                            if (!DOMNode) {
                                 return;
                             }
 
-                            self.getPanel().activateItem( DOMNode );
+                            self.getPanel().activateItem(DOMNode);
                         }
                     }
                 });
@@ -575,13 +536,12 @@ define('classes/projects/project/media/panel/ContextMenu', [
                     text   : DOMNode.get('title'),
                     events :
                     {
-                        onMouseDown : function()
-                        {
-                            if ( !DOMNode ) {
+                        onMouseDown : function () {
+                            if (!DOMNode) {
                                 return;
                             }
 
-                            self.getPanel().activateItem( DOMNode );
+                            self.getPanel().activateItem(DOMNode);
                         }
                     }
                 })
@@ -591,12 +551,11 @@ define('classes/projects/project/media/panel/ContextMenu', [
                     text   : 'Alle markierte Elemente',
                     events :
                     {
-                        onMouseDown : function()
-                        {
+                        onMouseDown : function () {
                             var Panel = self.getPanel(),
                                 sels  = Panel.getSelectedItems();
 
-                            self.getPanel().activateItems( sels );
+                            self.getPanel().activateItems(sels);
                         }
                     }
                 })
@@ -611,26 +570,23 @@ define('classes/projects/project/media/panel/ContextMenu', [
          * @param {HTMLElement} DOMNode - DOM media item element
          * @return {Object} qui/controls/contextmenu/Item
          */
-        getDeActivateItem : function(DOMNode)
-        {
+        getDeActivateItem : function (DOMNode) {
             var self = this,
                 sels = this.getPanel().getSelectedItems();
 
-            if ( !sels.length || sels.length == 1 )
-            {
+            if (!sels.length || sels.length == 1) {
                 return new QUIContextmenuItem({
                     name    : 'deactivate',
                     text    : 'Deaktivieren',
                     icon    : 'icon-remove',
                     events  :
                     {
-                        onMouseDown : function()
-                        {
-                            if ( !DOMNode ) {
+                        onMouseDown : function () {
+                            if (!DOMNode) {
                                 return;
                             }
 
-                            self.getPanel().deactivateItem( DOMNode );
+                            self.getPanel().deactivateItem(DOMNode);
                         }
                     }
                 });
@@ -648,13 +604,12 @@ define('classes/projects/project/media/panel/ContextMenu', [
                     text   : DOMNode.get('title'),
                     events :
                     {
-                        onMouseDown : function()
-                        {
-                            if ( !DOMNode ) {
+                        onMouseDown : function () {
+                            if (!DOMNode) {
                                 return;
                             }
 
-                            self.getPanel().deactivateItem( DOMNode );
+                            self.getPanel().deactivateItem(DOMNode);
                         }
                     }
                 })
@@ -664,12 +619,11 @@ define('classes/projects/project/media/panel/ContextMenu', [
                     text   : 'Alle markierte Elemente',
                     events :
                     {
-                        onMouseDown : function()
-                        {
+                        onMouseDown : function () {
                             var Panel   = self.getPanel(),
                                 sels    = Panel.getSelectedItems();
 
-                            self.getPanel().deactivateItems( sels );
+                            self.getPanel().deactivateItems(sels);
                         }
                     }
                 })

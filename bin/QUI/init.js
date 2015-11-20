@@ -196,7 +196,7 @@ require(requireList, function () {
                     Object.each(list, function (Entry) {
                         var standard = false;
 
-                        if ("standard" in Entry && Entry.standard && ( Entry.standard ).toInt()) {
+                        if ("standard" in Entry && Entry.standard && (Entry.standard).toInt()) {
                             standard = true;
                         }
 

@@ -22,8 +22,7 @@ define('classes/projects/project/media/Item', [
     'Ajax',
     'qui/utils/Object'
 
-], function(DOM, Ajax, Utils)
-{
+], function (DOM, Ajax, Utils) {
     "use strict";
 
     /**
@@ -65,8 +64,7 @@ define('classes/projects/project/media/Item', [
             cache_url    : ''
         },
 
-        initialize : function(params, Media)
-        {
+        initialize : function (params, Media) {
             this.$Media = Media;
             this.$Panel = null;
             this.$effects = null;
@@ -80,12 +78,10 @@ define('classes/projects/project/media/Item', [
          * @param {Function} oncomplete - (optional) callback function
          * @return {Promise}
          */
-        refresh : function(oncomplete)
-        {
+        refresh : function (oncomplete) {
             var self = this;
 
-            return this.getMedia().getData(this.getId()).then(function(result)
-            {
+            return this.getMedia().getData(this.getId()).then(function (result) {
                 self.setAttributes(result);
 
                 self.fireEvent('refresh', [self]);
@@ -102,8 +98,7 @@ define('classes/projects/project/media/Item', [
          * @method classes/projects/project/media/Item#getMedia
          * @return {Object} classes/projects/project/Media
          */
-        getMedia : function()
-        {
+        getMedia : function () {
             return this.$Media;
         },
 
@@ -113,8 +108,7 @@ define('classes/projects/project/media/Item', [
          * @method classes/projects/project/media/Item#getId
          * @return {Number}
          */
-        getId : function()
-        {
+        getId : function () {
             return this.getAttribute('id');
         },
 
@@ -126,12 +120,10 @@ define('classes/projects/project/media/Item', [
          *
          * @return Promise
          */
-        getBreadcrumb : function(oncomplete)
-        {
-            return new Promise(function(resolve, reject) {
+        getBreadcrumb : function (oncomplete) {
+            return new Promise(function (resolve, reject) {
 
-                Ajax.get('ajax_media_breadcrumb', function(result)
-                {
+                Ajax.get('ajax_media_breadcrumb', function (result) {
                     if (typeof oncomplete == 'function') {
                         oncomplete(result);
                     }
@@ -158,11 +150,10 @@ define('classes/projects/project/media/Item', [
          *
          * @return Promise
          */
-        save : function(oncomplete, params)
-        {
+        save : function (oncomplete, params) {
             var self = this;
 
-            return new Promise(function(resolve, reject) {
+            return new Promise(function (resolve, reject) {
 
                 var attributes = self.getAttributes();
 
@@ -171,13 +162,12 @@ define('classes/projects/project/media/Item', [
                 params = Utils.combine(params, {
                     project    : self.getMedia().getProject().getName(),
                     fileid     : self.getId(),
-                    attributes : JSON.encode( self.getAttributes() ),
+                    attributes : JSON.encode(self.getAttributes()),
                     onError    : reject
                 });
 
 
-                Ajax.post('ajax_media_file_save', function(result)
-                {
+                Ajax.post('ajax_media_file_save', function (result) {
                     self.setAttributes(result);
                     self.fireEvent('save', [self]);
 
@@ -201,8 +191,7 @@ define('classes/projects/project/media/Item', [
          * @param {Function} [oncomplete] - (optional) callback Function
          * @param {Object} [params]       - (optional), parameters that are linked to the request object
          */
-        del : function(oncomplete, params)
-        {
+        del : function (oncomplete, params) {
             this.fireEvent('delete', [this]) ;
             this.getMedia().del(this.getId(), oncomplete, params);
         },
@@ -219,12 +208,11 @@ define('classes/projects/project/media/Item', [
          *
          * @return Promise
          */
-        activate : function(oncomplete, params)
-        {
+        activate : function (oncomplete, params) {
             var Media  = this.getMedia(),
                 Result = Media.activate(this.getId(), oncomplete, params);
 
-            return Result.then(function(result) {
+            return Result.then(function (result) {
                 this.setAttribute('active', result);
                 this.fireEvent('activate', [this]);
             }.bind(this));
@@ -242,12 +230,11 @@ define('classes/projects/project/media/Item', [
          *
          * @return Promise
          */
-        deactivate : function(oncomplete, params)
-        {
+        deactivate : function (oncomplete, params) {
             var Media  = this.getMedia(),
                 Result = Media.deactivate(this.getId(), oncomplete, params);
 
-            return Result.then(function(result) {
+            return Result.then(function (result) {
                 this.setAttribute('active', result);
                 this.fireEvent('deactivate', [this]);
             }.bind(this));
@@ -258,20 +245,18 @@ define('classes/projects/project/media/Item', [
          *
          * @method classes/projects/project/media/Item#download
          */
-        download : function()
-        {
-            if ( this.getType() === 'classes/projects/project/media/Folder' ) {
+        download : function () {
+            if (this.getType() === 'classes/projects/project/media/Folder') {
                 return;
             }
 
-            var url = Ajax.$url +'?'+ Ajax.parseParams('ajax_media_file_download', {
+            var url = Ajax.$url + '?' + Ajax.parseParams('ajax_media_file_download', {
                 project : this.getMedia().getProject().getName(),
                 fileid  : this.getId()
             });
 
             // create a iframe
-            if ( !document.id('download-frame') )
-            {
+            if (!document.id('download-frame')) {
                 new Element('iframe#download-frame', {
                     styles : {
                         position : 'absolute',
@@ -280,7 +265,7 @@ define('classes/projects/project/media/Item', [
                         left     : -400,
                         top      : -400
                     }
-                }).inject( document.body );
+                }).inject(document.body);
             }
 
             document.id('download-frame').set('src', url);
@@ -297,8 +282,7 @@ define('classes/projects/project/media/Item', [
          *
          * @return Promise
          */
-        replace : function(File, onfinish)
-        {
+        replace : function (File, onfinish) {
             return this.$Media.replace(this.getId(), onfinish);
         },
 
@@ -308,8 +292,7 @@ define('classes/projects/project/media/Item', [
          * @method classes/projects/project/media/Item#isActive
          * @return {Boolean}
          */
-        isActive : function()
-        {
+        isActive : function () {
             var active = this.getAttribute('active');
 
             if (typeOf(active) === 'boolean') {
@@ -330,9 +313,8 @@ define('classes/projects/project/media/Item', [
          *
          * @return Promise
          */
-        rename : function(newname, oncomplete, params)
-        {
-            return new Promise(function(resolve, reject) {
+        rename : function (newname, oncomplete, params) {
+            return new Promise(function (resolve, reject) {
 
                 params = Utils.combine(params, {
                     project : this.getMedia().getProject().getName(),
@@ -341,8 +323,7 @@ define('classes/projects/project/media/Item', [
                     onError : reject
                 });
 
-                Ajax.post('ajax_media_rename', function(result)
-                {
+                Ajax.post('ajax_media_rename', function (result) {
                     this.setAttribute('name', result);
 
                     if (typeof oncomplete === 'function') {
@@ -362,21 +343,19 @@ define('classes/projects/project/media/Item', [
          * Return the own image effects for the immage
          * @returns {Object}
          */
-        getEffects : function()
-        {
-            if ( this.$effects ) {
+        getEffects : function () {
+            if (this.$effects) {
                 return this.$effects;
             }
 
-            if ( !this.getAttribute('image_effects') )
-            {
+            if (!this.getAttribute('image_effects')) {
                 this.$effects = {};
                 return this.$effects;
             }
 
-            this.$effects = JSON.decode( this.getAttribute('image_effects') );
+            this.$effects = JSON.decode(this.getAttribute('image_effects'));
 
-            if ( !this.$effects ) {
+            if (!this.$effects) {
                 this.$effects = {};
             }
 
@@ -388,8 +367,7 @@ define('classes/projects/project/media/Item', [
          *
          * @param {String} effect
          */
-        getEffect : function(effect)
-        {
+        getEffect : function (effect) {
             var effects = this.getEffects();
 
             return effect in effects ? effects[ effect ] : false;
@@ -401,11 +379,10 @@ define('classes/projects/project/media/Item', [
          * @param {String} effect
          * @param {String|Number|null} value - if value is null, effect would be deleted
          */
-        setEffect: function(effect, value)
-        {
+        setEffect: function (effect, value) {
             this.getEffects();
 
-            if ( value === null ) {
+            if (value === null) {
                 delete this.$effects[ effect ];
                 return;
             }

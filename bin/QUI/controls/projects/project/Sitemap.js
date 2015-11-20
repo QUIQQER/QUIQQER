@@ -292,7 +292,7 @@ define('controls/projects/project/Sitemap', [
                         Map = self.getMap();
 
                     for (i = 0, len = ids.length; i < len; i++) {
-                        id    = ( ids[i] ).toInt();
+                        id    = (ids[i]).toInt();
                         items = Map.getChildrenByValue(id);
 
                         if (!items.length) {
@@ -434,14 +434,14 @@ define('controls/projects/project/Sitemap', [
                     limitStart = -1;
                 }
 
-                start = ( limitStart + 1 ) * projectLimit;
+                start = (limitStart + 1) * projectLimit;
 
                 // request
                 Ajax.get('ajax_site_getchildren', function (result) {
-                    var count    = ( result.count ).toInt(),
+                    var count    = (result.count).toInt(),
                         children = result.children,
                         end      = start + projectLimit,
-                        sheets   = ( count / projectLimit ).ceil();
+                        sheets   = (count / projectLimit).ceil();
 
                     Item.setAttribute('hasChildren', count);
                     Item.clearChildren();
@@ -551,7 +551,7 @@ define('controls/projects/project/Sitemap', [
             }
 
             var attributes = {
-                hasChildren: ( result.has_children ).toInt(),
+                hasChildren: (result.has_children).toInt(),
                 dragable   : true
             };
 
@@ -811,19 +811,19 @@ define('controls/projects/project/Sitemap', [
             }
 
             var self     = this,
-                sheets   = ( Item.getAttribute('sheets') ).toInt(),
+                sheets   = (Item.getAttribute('sheets')).toInt(),
                 Select   = new Element('select'),
                 SiteItem = Item.getAttribute('Item');
 
             for (var i = 0, len = sheets; i < len; i++) {
                 new Element('option', {
-                    html : 'Blatt ' + ( i + 1 ),
+                    html : 'Blatt ' + (i + 1),
                     value: i
                 }).inject(Select);
             }
 
             if (SiteItem.getAttribute('limitStart') !== false) {
-                Select.value = ( SiteItem.getAttribute('limitStart') ).toInt() + 1;
+                Select.value = (SiteItem.getAttribute('limitStart')).toInt() + 1;
             }
 
 
@@ -845,7 +845,7 @@ define('controls/projects/project/Sitemap', [
 
                     onSubmit: function (Win) {
                         var Select = Win.getContent().getElement('select'),
-                            sheet  = ( Select.value ).toInt();
+                            sheet  = (Select.value).toInt();
 
                         SiteItem.setAttribute('limitStart', sheet - 1);
                         self.$loadChildren(SiteItem);

@@ -10,8 +10,7 @@ define('controls/editors/ToolbarConfigurator', [
 
     'css!controls/editors/ToolbarConfigurator.css'
 
-], function(QUI, QUIControl, QUILoader, FormUtils, Ajax)
-{
+], function (QUI, QUIControl, QUILoader, FormUtils, Ajax) {
     "use strict";
 
     return new Class({
@@ -27,9 +26,8 @@ define('controls/editors/ToolbarConfigurator', [
             '$onInject'
         ],
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize : function (options) {
+            this.parent(options);
 
             this.Loader = new QUILoader();
 
@@ -47,8 +45,7 @@ define('controls/editors/ToolbarConfigurator', [
          *
          * @return {HTMLElement}
          */
-        create : function()
-        {
+        create : function () {
             var self = this;
 
             this.$Elm = new Element('div', {
@@ -60,7 +57,7 @@ define('controls/editors/ToolbarConfigurator', [
                           '<textarea class="control-editors-configurator-toolbar box"></textarea>'
             });
 
-            this.Loader.inject( this.$Elm );
+            this.Loader.inject(this.$Elm);
 
             this.$Select = this.$Elm.getElement(
                 '.control-editors-configurator-buttons'
@@ -72,24 +69,23 @@ define('controls/editors/ToolbarConfigurator', [
 
 
             this.$Select.addEvents({
-                mousedown : function(event)
-                {
+                mousedown : function (event) {
                     event.stop();
 
                     var Target = event.target;
 
-                    if ( Target.nodeName != 'OPTION' ) {
+                    if (Target.nodeName != 'OPTION') {
                         return;
                     }
 
                     var value = Target.value,
-                        str   = '<button>'+ value +'</button>'+"\n";
+                        str   = '<button>' + value + '</button>' + "\n";
 
-                    if ( value == 'seperator' ) {
-                        str = '<seperator></seperator>'+"\n";
+                    if (value == 'seperator') {
+                        str = '<seperator></seperator>' + "\n";
                     }
 
-                    FormUtils.insertTextAtCursor( self.$Textarea, str );
+                    FormUtils.insertTextAtCursor(self.$Textarea, str);
                 }
             });
 
@@ -158,12 +154,11 @@ define('controls/editors/ToolbarConfigurator', [
                 'BGColor' : 'Hintergrundfarbe'
             };
 
-            for ( var i in options )
-            {
+            for (var i in options) {
                 new Element('option', {
                     html  : options[ i ],
                     value : i
-                }).inject( this.$Select );
+                }).inject(this.$Select);
             }
 
             return this.$Elm;
@@ -172,17 +167,15 @@ define('controls/editors/ToolbarConfigurator', [
         /**
          * save the toolbar
          */
-        save : function()
-        {
+        save : function () {
             var self = this;
 
             self.Loader.show();
 
-            Ajax.post('ajax_editor_toolbar_save', function()
-            {
+            Ajax.post('ajax_editor_toolbar_save', function () {
                 self.Loader.hide();
             }, {
-                toolbar : this.getAttribute( 'toolbar' ),
+                toolbar : this.getAttribute('toolbar'),
                 xml     : this.$Textarea.value
             });
         },
@@ -190,12 +183,10 @@ define('controls/editors/ToolbarConfigurator', [
         /**
          * event : on inject
          */
-        $onInject : function()
-        {
+        $onInject : function () {
             this.Loader.show();
 
-            if ( !this.getAttribute( 'toolbar' ) )
-            {
+            if (!this.getAttribute('toolbar')) {
 
                 this.Loader.hide();
 
@@ -204,12 +195,11 @@ define('controls/editors/ToolbarConfigurator', [
 
             var self = this;
 
-            Ajax.get( 'ajax_editor_get_toolbar_xml', function(result)
-            {
+            Ajax.get('ajax_editor_get_toolbar_xml', function (result) {
                 self.$Textarea.value = result;
                 self.Loader.hide();
             }, {
-                toolbar : this.getAttribute( 'toolbar' )
+                toolbar : this.getAttribute('toolbar')
             });
         }
     });

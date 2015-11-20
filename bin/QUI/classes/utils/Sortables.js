@@ -22,13 +22,12 @@
  ...
  */
 
-define('classes/utils/Sortables', function()
-{
+define('classes/utils/Sortables', function () {
     "use strict";
 
     return new Class({
 
-        Implements: [ Events, Options ],
+        Implements: [Events, Options],
 
         options: {
             /*

@@ -31,7 +31,7 @@ define('controls/projects/project/media/FolderViewer', [
 
     'css!controls/projects/project/media/FolderViewer.css'
 
-], function(
+], function (
 
     QUI,
     QUIControl,
@@ -67,9 +67,8 @@ define('controls/projects/project/media/FolderViewer', [
             folderId : 1
         },
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize : function (options) {
+            this.parent(options);
 
             this.Loader = null;
             this.$Buttons = null;
@@ -91,8 +90,7 @@ define('controls/projects/project/media/FolderViewer', [
         /**
          * event : on create
          */
-        create : function()
-        {
+        create : function () {
             this.$Elm = this.parent();
             this.$Elm.addClass('qui-project-media-folderViewer');
 
@@ -102,14 +100,14 @@ define('controls/projects/project/media/FolderViewer', [
                        '<div class="qui-project-media-folderViewer-container"></div>'
             });
 
-            this.Loader = new QUILoader().inject( this.$Elm );
+            this.Loader = new QUILoader().inject(this.$Elm);
 
             this.$Buttons = this.$Elm.getElement('.qui-project-media-folderViewer-buttons');
             this.$Container = this.$Elm.getElement('.qui-project-media-folderViewer-container');
 
             this.$ButtonsDiashow = new QUIButton({
-                text      : Locale.get( lg, 'projects.project.media.folderviewer.btn.diashow' ),
-                title     : Locale.get( lg, 'projects.project.media.folderviewer.btn.diashow' ),
+                text      : Locale.get(lg, 'projects.project.media.folderviewer.btn.diashow'),
+                title     : Locale.get(lg, 'projects.project.media.folderviewer.btn.diashow'),
                 textimage : 'icon-play',
                 events    : {
                     onClick : this.diashow
@@ -136,31 +134,28 @@ define('controls/projects/project/media/FolderViewer', [
             // Upload events
             new RequestUpload([this.$Container], {
 
-                onDragenter: function(event, Elm)
-                {
-                    if ( !Elm.hasClass( 'qui-project-media-folderViewer-container' )  ) {
-                        Elm = Elm.getParent( 'qui-project-media-folderViewer-container' );
+                onDragenter: function (event, Elm) {
+                    if (!Elm.hasClass('qui-project-media-folderViewer-container')) {
+                        Elm = Elm.getParent('qui-project-media-folderViewer-container');
                     }
 
-                    if ( !Elm || !Elm.hasClass('qui-project-media-folderViewer-container') ) {
+                    if (!Elm || !Elm.hasClass('qui-project-media-folderViewer-container')) {
                         return;
                     }
 
-                    Elm.addClass( 'qui-media-drag' );
+                    Elm.addClass('qui-media-drag');
                     event.stop();
                 },
 
-                onDragleave: function(event, Elm)
-                {
-                    if ( Elm.hasClass( 'qui-project-media-folderViewer-container' ) ) {
-                        Elm.removeClass( 'qui-media-drag' );
+                onDragleave: function (event, Elm) {
+                    if (Elm.hasClass('qui-project-media-folderViewer-container')) {
+                        Elm.removeClass('qui-media-drag');
                     }
                 },
 
-                onDragend : function(event, Elm)
-                {
-                    if ( Elm.hasClass( 'qui-project-media-folderViewer-container' ) ) {
-                        Elm.removeClass( 'qui-media-drag' );
+                onDragend : function (event, Elm) {
+                    if (Elm.hasClass('qui-project-media-folderViewer-container')) {
+                        Elm.removeClass('qui-media-drag');
                     }
                 },
 
@@ -174,26 +169,22 @@ define('controls/projects/project/media/FolderViewer', [
         /**
          * event : on inject
          */
-        $onInject : function()
-        {
+        $onInject : function () {
             this.refresh();
         },
 
         /**
          * refresh the folder viewer
          */
-        refresh : function()
-        {
+        refresh : function () {
             this.Loader.show();
 
             var self = this,
                 Project = Projects.get(this.getAttribute('project')),
                 Media = Project.getMedia();
 
-            Media.get(this.getAttribute('folderId')).done(function(Item)
-            {
-                if (typeOf(Item) != 'classes/projects/project/media/Folder')
-                {
+            Media.get(this.getAttribute('folderId')).done(function (Item) {
+                if (typeOf(Item) != 'classes/projects/project/media/Folder') {
                     self.$Container.set(
                         'html',
                         Locale.get(lg, 'projects.project.media.folderviewer.no.folder')
@@ -206,8 +197,7 @@ define('controls/projects/project/media/FolderViewer', [
                 self.$Folder = Item;
                 self.$ButtonsUpload.enable();
 
-                Item.getChildren(function(items)
-                {
+                Item.getChildren(function (items) {
                     self.$Container.set('html', '');
 
                     var images = 0;
@@ -222,8 +212,7 @@ define('controls/projects/project/media/FolderViewer', [
                         }).inject(self.$Container);
                     }
 
-                    for (var i = 0, len = items.length; i < len; i++)
-                    {
+                    for (var i = 0, len = items.length; i < len; i++) {
                         if (items[i].type != 'image') {
                             continue;
                         }
@@ -252,12 +241,9 @@ define('controls/projects/project/media/FolderViewer', [
          *
          * @param {String} [image] - optional, source of the image, whiche should be zoomed
          */
-        diashow : function(image)
-        {
-            if (this.$Diashow)
-            {
-                if (typeOf(image) === 'string')
-                {
+        diashow : function (image) {
+            if (this.$Diashow) {
+                if (typeOf(image) === 'string') {
                     this.$Diashow.showImage(image);
                     return;
                 }
@@ -272,12 +258,10 @@ define('controls/projects/project/media/FolderViewer', [
             require([
                 'package/quiqqer/diashow/bin/Diashow',
                 'qui/utils/Elements'
-            ], function(Diashow, ElementUtils)
-            {
+            ], function (Diashow, ElementUtils) {
                 var imageData = self.$Container.getElements(
                     '.qui-project-media-folderViewer-item'
-                ).map(function(Elm)
-                {
+                ).map(function (Elm) {
                     return {
                         src   : Elm.get('data-src'),
                         title : Elm.title,
@@ -291,8 +275,7 @@ define('controls/projects/project/media/FolderViewer', [
                 });
 
 
-                if (typeOf(image) === 'string')
-                {
+                if (typeOf(image) === 'string') {
                     self.$Diashow.showImage(image);
                     return;
                 }
@@ -304,9 +287,8 @@ define('controls/projects/project/media/FolderViewer', [
         /**
          * Open upload
          */
-        openUpload : function()
-        {
-            this.openSheet(function(Content, Sheet) {
+        openUpload : function () {
+            this.openSheet(function (Content, Sheet) {
 
                 var Upload = new UploadForm({
                     multible     : true,
@@ -316,10 +298,10 @@ define('controls/projects/project/media/FolderViewer', [
                         height: '95%'
                     },
                     events : {
-                        onCancel : function() {
+                        onCancel : function () {
                             Sheet.hide();
                         },
-                        onComplete : function() {
+                        onComplete : function () {
                             Sheet.hide();
                             this.refresh();
                         }.bind(this)
@@ -344,30 +326,29 @@ define('controls/projects/project/media/FolderViewer', [
          * @param {Object} imageData - data of the image
          * @return {HTMLDivElement}
          */
-        $createImageItem : function(imageData)
-        {
+        $createImageItem : function (imageData) {
             var self = this,
                 imageSrc = URL_DIR + imageData.url;
 
             return new Element('div', {
                 'class' : 'qui-project-media-folderViewer-item',
-                html    : '<span class="qui-project-media-folderViewer-item-title">'+
+                html    : '<span class="qui-project-media-folderViewer-item-title">' +
                               imageData.name +
                           '</span>',
                 alt     : imageData.name,
                 title   : imageData.name,
                 styles  : {
-                    backgroundImage : 'url('+ imageSrc +'&maxwidth=80&maxheight=80&quiadmin=1)'
+                    backgroundImage : 'url(' + imageSrc + '&maxwidth=80&maxheight=80&quiadmin=1)'
                 },
-                'data-src' : imageSrc +'&noresize=1',
+                'data-src' : imageSrc + '&noresize=1',
                 'data-short' : imageData.short,
                 events :
                 {
-                    click : function() {
-                        self.diashow( this.get('data-src') );
+                    click : function () {
+                        self.diashow(this.get('data-src'));
                     },
 
-                    contextmenu : function(event) {
+                    contextmenu : function (event) {
                         event.stop();
                     }
                 }
@@ -380,8 +361,7 @@ define('controls/projects/project/media/FolderViewer', [
          * @param {DOMEvent} event         - DragDrop Event
          * @param {HTMLElement|File} Files - List of droped files
          */
-        $onDrop : function(event, Files)
-        {
+        $onDrop : function (event, Files) {
             if (!Files.length) {
                 return;
             }
@@ -395,7 +375,7 @@ define('controls/projects/project/media/FolderViewer', [
                 styles : {
                     opacity : 0
                 }
-            }).inject( this.$Elm );
+            }).inject(this.$Elm);
 
             var Message = new Element('div', {
                 'class' : 'qui-project-media-folderViewer-upload-message',
@@ -403,33 +383,32 @@ define('controls/projects/project/media/FolderViewer', [
                 styles : {
                     opacity : 0
                 }
-            }).inject( this.$Elm );
+            }).inject(this.$Elm);
 
-            var close = function()
-            {
-                moofx( Background ).animate({
+            var close = function () {
+                moofx(Background).animate({
                     opacity : 0
                 }, {
-                    callback : function() {
+                    callback : function () {
                         Background.destroy();
                     }
                 });
 
-                moofx( Message ).animate({
+                moofx(Message).animate({
                     opacity : 0,
                     top : top - 20
                 }, {
-                    callback : function() {
+                    callback : function () {
                         Message.destroy();
                     }
                 });
             };
 
             var msgSize = Message.getSize(),
-                top = ( size.y - msgSize.y ) / 2;
+                top = (size.y - msgSize.y) / 2;
 
             Message.setStyles({
-                left : ( size.x - msgSize.x ) / 2,
+                left : (size.x - msgSize.x) / 2,
                 top : top  - 20
             });
 
@@ -441,18 +420,17 @@ define('controls/projects/project/media/FolderViewer', [
                 },
                 events :
                 {
-                    onClick : function()
-                    {
+                    onClick : function () {
                         close();
 
                         self.Loader.show();
 
-                        self.$Folder.uploadFiles( Files, function() {
+                        self.$Folder.uploadFiles(Files, function () {
                             self.refresh();
                         });
                     }
                 }
-            }).inject( Message );
+            }).inject(Message);
 
             new QUIButton({
                 text : Locale.get(lg, 'projects.project.media.folderviewer.upload.btn.cancel'),
@@ -463,14 +441,14 @@ define('controls/projects/project/media/FolderViewer', [
                 events : {
                     onClick : close
                 }
-            }).inject( Message );
+            }).inject(Message);
 
 
-            moofx( Background ).animate({
+            moofx(Background).animate({
                 opacity : 0.6
             });
 
-            moofx( Message ).animate({
+            moofx(Message).animate({
                 opacity : 1,
                 top : top
             });

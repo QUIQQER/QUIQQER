@@ -15,8 +15,7 @@ define('controls/permissions/User', [
     'qui/controls/buttons/Button',
     'Locale'
 
-], function(Permission, QUIButton, QUILocale)
-{
+], function (Permission, QUIButton, QUILocale) {
     "use strict";
 
     var lg = 'quiqqer/system';
@@ -31,8 +30,7 @@ define('controls/permissions/User', [
             '$onOpen'
         ],
 
-        initialize : function(User, options)
-        {
+        initialize : function (User, options) {
             this.parent(User, options);
 
             this.$Select = null;
@@ -43,7 +41,7 @@ define('controls/permissions/User', [
 
             this.addEvents({
                 onOpen : this.$onOpen,
-                onDestroy : function() {
+                onDestroy : function () {
                     if (this.$Input) {
                         this.$Input.destroy();
                     }
@@ -56,11 +54,10 @@ define('controls/permissions/User', [
          *
          * @returns {Promise}
          */
-        $openBindSelect : function()
-        {
+        $openBindSelect : function () {
             var self = this;
 
-            return new Promise(function(resolve) {
+            return new Promise(function (resolve) {
 
                 var Container = new Element('div', {
                     'class' : 'controls-permissions-select shadow',
@@ -76,13 +73,12 @@ define('controls/permissions/User', [
                 }, {
                     duration : 250,
                     equation : 'ease-in-out',
-                    callback : function() {
+                    callback : function () {
 
-                        require(['controls/users/Input'], function(Input)
-                        {
+                        require(['controls/users/Input'], function (Input) {
                             Container.set(
                                 'html',
-                                '<h2>'+ QUILocale.get(lg, 'permissions.panel.select.user.title') +'</h2>'
+                                '<h2>' + QUILocale.get(lg, 'permissions.panel.select.user.title') + '</h2>'
                             );
 
                             self.$Input = new Input({
@@ -95,10 +91,8 @@ define('controls/permissions/User', [
                                 },
                                 events :
                                 {
-                                    onAdd : function(UserSearch, userid)
-                                    {
-                                        require(['Users'], function(Users)
-                                        {
+                                    onAdd : function (UserSearch, userid) {
+                                        require(['Users'], function (Users) {
                                             self.$Bind = Users.get(userid);
 
                                             // set status title
@@ -106,16 +100,16 @@ define('controls/permissions/User', [
                                                 self.$Status.set(
                                                     'html',
                                                     QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
-                                                        name : '<span class="fa icon-user"></span>'+
+                                                        name : '<span class="fa icon-user"></span>' +
                                                                self.$Bind.getName()
                                                     })
                                                 );
                                             } else {
-                                                self.$Bind.load().then(function() {
+                                                self.$Bind.load().then(function () {
                                                     self.$Status.set(
                                                         'html',
                                                         QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
-                                                            name : '<span class="fa icon-user"></span>'+
+                                                            name : '<span class="fa icon-user"></span>' +
                                                                    self.$Bind.getName()
                                                         })
                                                     );
@@ -128,7 +122,7 @@ define('controls/permissions/User', [
                                             }, {
                                                 duration : 250,
                                                 equation : 'cubic-bezier(.42,.4,.46,1.29)',
-                                                callback : function() {
+                                                callback : function () {
                                                     Container.destroy();
                                                     resolve();
                                                 }
@@ -146,8 +140,7 @@ define('controls/permissions/User', [
         /**
          * event on open
          */
-        $onOpen : function()
-        {
+        $onOpen : function () {
             new QUIButton({
                 text : QUILocale.get('quiqqer/system', 'permission.control.btn.user.save'),
                 title : QUILocale.get('quiqqer/system', 'permission.control.btn.user.save'),
@@ -156,14 +149,14 @@ define('controls/permissions/User', [
                     'float' : 'right'
                 },
                 events : {
-                    onClick : function(Btn) {
+                    onClick : function (Btn) {
 
                         Btn.setAttribute(
                             'textimage',
                             'icon-spinner icon-spin fa fa-spinner fa-spin'
                         );
 
-                        this.save().then(function() {
+                        this.save().then(function () {
                             Btn.setAttribute('textimage', 'icon-save');
                         });
 

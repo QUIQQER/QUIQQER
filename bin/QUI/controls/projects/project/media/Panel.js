@@ -1599,7 +1599,7 @@ define('controls/projects/project/media/Panel', [
                 return true;
             }
 
-            return ( typeFound && mimeTypeFound );
+            return (typeFound && mimeTypeFound);
         },
 
         /**
