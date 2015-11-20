@@ -67,7 +67,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Lädt die Plugins der Seite
      *
-     * @param String|bool $plugin - Plugin welches geladen werden soll, optional, ansonsten werden alle geladen
+     * @param string|boolean $plugin - Plugin welches geladen werden soll, optional, ansonsten werden alle geladen
      *
      * @return Virtual
      */
@@ -79,7 +79,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Serialisierungsdaten
      *
-     * @return String
+     * @return string
      */
     public function encode()
     {
@@ -89,7 +89,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Setzt JSON Parameter
      *
-     * @param String $params - JSON encoded string
+     * @param string $params - JSON encoded string
      *
      * @throws QUI\Exception
      */
@@ -110,7 +110,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Prüft ob es eine Verknüpfung ist
      *
-     * @return Bool|Integer
+     * @return boolean|integer
      */
     public function isLinked()
     {
@@ -120,10 +120,10 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Prüft ob es die Seite auch in einer anderen Sprache gibt
      *
-     * @param String $lang
-     * @param Bool   $check_only_active - check only active pages
+     * @param string $lang
+     * @param boolean   $check_only_active - check only active pages
      *
-     * @return Bool
+     * @return boolean
      */
     public function existLang($lang, $check_only_active = true)
     {
@@ -133,7 +133,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Gibt die IDs von Sprachverknüpfungen zurück
      *
-     * @return Array
+     * @return array
      */
     public function getLangIds()
     {
@@ -144,9 +144,9 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Return the ID of the site,
      * or the ID of the sibling (linked) site of another languager
      *
-     * @param String|bool $lang - optional, if it is set, then the language of the wanted linked sibling site
+     * @param string|boolean $lang - optional, if it is set, then the language of the wanted linked sibling site
      *
-     * @return Integer
+     * @return integer
      */
     public function getId($lang = false)
     {
@@ -159,9 +159,9 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @param array $params - Parameter für die Childrenausgabe
      *                      $params['where']
      *                      $params['limit']
-     * @param Bool  $load   - Legt fest ob die Kinder die Plugins laden sollen
+     * @param boolean  $load   - Legt fest ob die Kinder die Plugins laden sollen
      *
-     * @return Array;
+     * @return array;
      */
     public function getChildren($params = array(), $load = false)
     {
@@ -182,9 +182,9 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Die nächsten x Kinder
      *
-     * @param Integer $no
+     * @param integer $no
      *
-     * @return Array
+     * @return array
      */
     public function nextSiblings($no)
     {
@@ -205,9 +205,9 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Die x vorhergehenden Geschwister
      *
-     * @param Integer $no
+     * @param integer $no
      *
-     * @return Array
+     * @return array
      */
     public function previousSiblings($no)
     {
@@ -217,7 +217,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Gibt das erste Kind der Seite zurück
      *
-     * @param Array $params
+     * @param array $params
      *
      * @return QUI\Projects\Site | false
      */
@@ -241,9 +241,9 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Gibt ein Kind zurück welches den Namen hat
      *
-     * @param String $name
+     * @param string $name
      *
-     * @return Integer
+     * @return integer
      * @throws QUI\Exception
      */
     public function getChildIdByName($name)
@@ -256,7 +256,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Return a children by id
      *
-     * @param Integer $id
+     * @param integer $id
      *
      * @return QUI\Projects\Site
      * @throws QUI\Exception
@@ -270,11 +270,11 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Gibt die ID's der Kinder zurück
      * Wenn nur die ID's verwendet werden sollte dies vor getChildren verwendet werden
      *
-     * @param Array $params Parameter für die Childrenausgabe
+     * @param array $params Parameter für die Childrenausgabe
      *                      $params['where']
      *                      $params['limit']
      *
-     * @return Array
+     * @return array
      */
     public function getChildrenIds($params = array())
     {
@@ -296,9 +296,9 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Gibt zurück ob Site Kinder besitzt
      *
-     * @param Bool $navhide - if navhide == false, navhide must be 0
+     * @param boolean $navhide - if navhide == false, navhide must be 0
      *
-     * @return Integer - Anzahl der Kinder
+     * @return integer - Anzahl der Kinder
      */
     public function hasChildren($navhide = false)
     {
@@ -321,7 +321,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @param $params
      * @param $rewrited
      *
-     * @return String
+     * @return string
      */
     public function getUrl($params = array(), $rewrited = false)
     {
@@ -332,9 +332,9 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Gibt eine sprechenden URL zurück
      * DB Abfragen werden gemacht - Hier auf Performance achten
      *
-     * @param Array $params - Parameter welche an die URL angehängt werden
+     * @param array $params - Parameter welche an die URL angehängt werden
      *
-     * @return String
+     * @return string
      */
     public function getUrlRewrited($params = array())
     {
@@ -344,7 +344,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Return the Parent id from the site object
      *
-     * @return Integer
+     * @return integer
      */
     public function getParentId()
     {
@@ -363,7 +363,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * ->Parent
      * ->Parent
      *
-     * @return Array
+     * @return array
      */
     public function getParentIds()
     {
@@ -376,7 +376,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Return the Parent ID List
      *
-     * @return Array
+     * @return array
      */
     public function getParentIdTree()
     {
@@ -401,7 +401,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Gibt alle rekursive Parents als Objekte zurück
      * Site->Parent->ParentParent->ParentParentParent
      *
-     * @return Array
+     * @return array
      */
     public function getParents()
     {
@@ -432,7 +432,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Canonical URL - Um doppelte Inhalt zu vermeiden
      *
-     * @return String
+     * @return string
      */
     public function getCanonical()
     {
@@ -457,9 +457,9 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Shortcut for QUI\Rights\Permission::hasSitePermission
      *
      * @param string              $permission - name of the permission
-     * @param QUI\Users\User|Bool $User       - optional
+     * @param QUI\Users\User|boolean $User       - optional
      *
-     * @return Bool|Integer
+     * @return boolean|integer
      */
     public function hasPermission($permission, $User = false)
     {
@@ -470,7 +470,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Shortcut for QUI\Rights\Permission::checkSitePermission
      *
      * @param string              $permission - name of the permission
-     * @param QUI\Users\User|Bool $User       - optional
+     * @param QUI\Users\User|boolean $User       - optional
      *
      * @throws QUI\Exception
      */

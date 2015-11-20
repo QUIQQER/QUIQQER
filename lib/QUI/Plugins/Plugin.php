@@ -44,8 +44,8 @@ class Plugin extends \QUI\QDOM
 
 
     /**
-     * to String
-     * @return String
+     * to string
+     * @return string
      */
     public function __toString()
     {
@@ -132,7 +132,7 @@ class Plugin extends \QUI\QDOM
     /**
      * Gibt die Plugin Config zurück
      *
-     * @return Array
+     * @return array
      */
     public function getPluginIni()
     {
@@ -390,7 +390,7 @@ class Plugin extends \QUI\QDOM
      * @param string $section
      * @param string|null $key - (optional)
      *
-     * @return String || Bool
+     * @return string|boolean
      */
     public function getSettings($section, $key=null)
     {
@@ -406,9 +406,10 @@ class Plugin extends \QUI\QDOM
     /**
      * Setzt einen Config Parameter, prüft gleich den Typ, Rechte und ob dieser gesetzt werden darf
      *
-     * @param string $section
-     * @param string $key
-     * @param string $value
+     * @param string|boolean $section
+     * @param string|null $key
+     * @param string|null $value
+     * @return void|boolean
      */
     public function setSettings($section=false, $key=null, $value=null)
     {
@@ -422,11 +423,11 @@ class Plugin extends \QUI\QDOM
         $defaults = $this->_getDefaultSettings();
 
         if (!isset($defaults[$section])) {
-            return;
+            return false;
         }
 
         if (!isset($defaults[$section][$key])) {
-            return;
+            return false;
         }
 
         $default = $defaults[$section][$key];
@@ -476,7 +477,7 @@ class Plugin extends \QUI\QDOM
     /**
      * Prüft ob es eine Einstellungsseite / Fenster / Panel gibt
      *
-     * @return Bool
+     * @return boolean
      */
     public function existsSettingsWindow()
     {
@@ -664,8 +665,8 @@ class Plugin extends \QUI\QDOM
     /**
      * Sucht die gewünschte Categorie
      *
-     * @param String $name
-     * @return DOMNode || Bool
+     * @param string $name
+     * @return \DOMNode|boolean
      * @deprecated
      */
     public function getSettingsCategory($name)
@@ -722,7 +723,7 @@ class Plugin extends \QUI\QDOM
 
     /**
      * Gibt die DOM Tabs zurück
-     * @return Array
+     * @return array
      */
     public function getUserTabs()
     {
@@ -734,8 +735,8 @@ class Plugin extends \QUI\QDOM
     /**
      * Das HTML eines Tabs bekommen
      *
-     * @param String $name
-     * @return String
+     * @param string $name
+     * @return string
      */
     public function getUserTabHtml($name)
     {
@@ -773,7 +774,7 @@ class Plugin extends \QUI\QDOM
     /**
      * Gibt die erweiterten Benutzereigenschaften zurück
      *
-     * @return Array
+     * @return array
      */
     public function getUserAttributes()
     {
@@ -879,7 +880,7 @@ class Plugin extends \QUI\QDOM
     /**
      * Gibt die URL Addresse des Plugins zurück
      *
-     * @return String
+     * @return string
      */
     public function getUrlDir()
     {
@@ -893,7 +894,7 @@ class Plugin extends \QUI\QDOM
     /**
      * Gibt die Pfad Addresse des Plugins zurück
      *
-     * @return String
+     * @return string
      */
     public function getDir()
     {
@@ -903,7 +904,7 @@ class Plugin extends \QUI\QDOM
     /**
      * Plugin JavaScript Files
      *
-     * @return Array
+     * @return array
      */
     public function getJS()
     {
@@ -913,7 +914,7 @@ class Plugin extends \QUI\QDOM
     /**
      * Plugin CSS Files
      *
-     * @return Array
+     * @return array
      */
     public function getCSS()
     {
@@ -923,8 +924,8 @@ class Plugin extends \QUI\QDOM
     /**
      * Plugin beim MVC registrieren
      *
-     * @param \QUI\Projects\Project|Bool $Project - optional
-     * @return String
+     * @param \QUI\Projects\Project|boolean $Project - optional
+     * @return string
      */
     public function getTemplateHeader($Project=false)
     {
@@ -950,7 +951,7 @@ class Plugin extends \QUI\QDOM
      * Header Dateien des Plugins
      *
      * @param \QUI\Projects\Project $Project - optional
-     * @return Array
+     * @return array
      */
     public function getHeaderFiles($Project=false)
     {
@@ -1029,7 +1030,7 @@ class Plugin extends \QUI\QDOM
     /**
      * Alle JavaScript Sprachdateien
      *
-     * @return Array
+     * @return array
      */
     public function getJsLangFiles()
     {
@@ -1124,7 +1125,7 @@ class Plugin extends \QUI\QDOM
      * Default = Einstellungen aus der config.xml
      * Welche Einstellungen sind vorhanden
      *
-     * @return Array
+     * @return array
      */
     protected function _getDefaultSettings()
     {

@@ -6,6 +6,8 @@
 
 namespace QUI\Utils;
 
+use QUI;
+
 /**
  * Bridge für die alte MyDB Klasse zu neuer \PDO
  *
@@ -53,7 +55,7 @@ class MyDB
     }
 
     /**
-     * ToString Magic
+     * Tostring Magic
      */
     public function __toString()
     {
@@ -70,9 +72,9 @@ class MyDB
     /**
      * Maskiert die MySQL Query
      *
-     * @param unknown_type $data
+     * @param string $data
      *
-     * @return String
+     * @return string
      */
     public function escape($data)
     {
@@ -86,9 +88,11 @@ class MyDB
     /**
      * MASKIERTE QUERY
      *
-     * @param String $query
+     * @param string $query
      *
      * @return Resource
+     *
+     * @throws \QUI\Exception
      *
      * @deprecated use PDO and prepared statemens
      * getPDO()->query()->fetch
@@ -98,7 +102,7 @@ class MyDB
     public function query($query)
     {
         if (!is_string($query)) {
-            throw new \QUI\Exception('only strings accepted');
+            throw new QUI\Exception('only strings accepted');
         }
 
         $query .= ';';
@@ -109,16 +113,16 @@ class MyDB
     /**
      * MySQL Select
      *
-     * @param array  $params
-     *                      from => String table
-     *                      select => String table
+     * @param array $params
+     *                      from => string table
+     *                      select => string table
      *                      count => count | true oder AS Angabe
-     *                      where => String where
+     *                      where => string where
      *                      => Array
-     *                      order => String order
-     *                      group => String group
-     * @param String $type  - BOTH, NUM, ASSOC, OBJ
-     * @param String $type2 - ARRAY, ROW
+     *                      order => string order
+     *                      group => string group
+     * @param string $type - BOTH, NUM, ASSOC, OBJ
+     * @param string $type2 - ARRAY, ROW
      *
      * @return Resource
      */
@@ -130,7 +134,7 @@ class MyDB
     /**
      * Unmaskierte Query
      *
-     * @param Array $params
+     * @param array $params
      *
      * @return Resource
      */
@@ -142,9 +146,9 @@ class MyDB
     /**
      * Insert Query mit Rückgabe (lastInsertId)
      *
-     * @param Array $params
+     * @param array $params
      *
-     * @return int
+     * @return integer
      */
     public function insert($params)
     {
@@ -156,11 +160,11 @@ class MyDB
     /**
      * Liefert Daten aus der Datenbank im Typ ARRAY oder ROW oder OBJEKT
      *
-     * @param array  $params
-     * @param String $type  = BOTH, NUM, ASSOC, OBJ
-     * @param String $qtype = BOTH, NUM, ASSOC
+     * @param array $params
+     * @param string $type = BOTH, NUM, ASSOC, OBJ
+     * @param string $qtype = BOTH, NUM, ASSOC
      *
-     * @return Object|array
+     * @return object|array
      */
     public function getData($params, $type = 'ARRAY', $qtype = "NUM")
     {
@@ -187,9 +191,9 @@ class MyDB
     /**
      * gibt alle felder zurück
      *
-     * @param String $table
+     * @param string $table
      *
-     * @return Array
+     * @return array
      */
     public function getFields($table)
     {
@@ -199,7 +203,7 @@ class MyDB
     /**
      * Gibt die Tabellen zurück
      *
-     * @return unknown
+     * @return array
      */
     public function getTables()
     {
@@ -211,11 +215,11 @@ class MyDB
      * oder
      * tabelle, name, 'email'=>'horst@desgibbetnet.net'),"id=12 AND nachname = 'Meier'"
      *
-     * @param String $table
-     * @param String $field
-     * @param        String , Array $fieldAndId
+     * @param string $table
+     * @param string $field
+     * @param        string , Array $fieldAndId
      *
-     * @return Array
+     * @return array
      */
     public function getOneData($table, $field, $fieldAndId)
     {
@@ -229,8 +233,8 @@ class MyDB
     /**
      * add a data row
      *
-     * @param String $table
-     * @param array  $FieldValue - [array('field1'=>'value1', 'field2'=>'value2', 'field3'=>'value3')]
+     * @param string $table
+     * @param array $FieldValue - [array('field1'=>'value1', 'field2'=>'value2', 'field3'=>'value3')]
      *
      * @return integer
      */
@@ -247,9 +251,9 @@ class MyDB
      * oder
      * tabelle, array('name'=>'Horst', 'email'=>'horst@desgibbetnet.net'),"id=12 AND nachname = 'Meier'"
      *
-     * @param String      $table
-     * @param array       $fieldValue
-     * @param Sring|array $fieldAndId
+     * @param string $table
+     * @param array $fieldValue
+     * @param string|array $fieldAndId
      *
      * @return Resource
      */
@@ -265,11 +269,11 @@ class MyDB
     /**
      * Insert
      *
-     * @param unknown_type $table
-     * @param unknown_type $fieldValue
-     * @param unknown_type $fieldAndId
+     * @param string $table
+     * @param array $fieldValue
+     * @return string
      */
-    public function insertData($table, $fieldValue, $fieldAndId)
+    public function insertData($table, $fieldValue)
     {
         return $this->addData($table, $fieldValue);
     }
@@ -277,7 +281,7 @@ class MyDB
     /**
      * tabelle , array('id'=>1) oder string "id=1 AND name = 'Horst'"
      *
-     * @param String $table
+     * @param string $table
      * @param        Sring , Array $fieldAndId
      *
      * @return Resource
@@ -294,7 +298,7 @@ class MyDB
     /**
      * Optimiert Tabellen
      *
-     * @param String || Array $tables
+     * @param string|array $tables
      */
     public function optimize($tables)
     {
@@ -304,8 +308,8 @@ class MyDB
     /**
      * Enter description here...
      *
-     * @param unknown_type $table
-     * @param unknown_type $fields
+     * @param string $table
+     * @param array $fields
      */
     public function createTable($table, $fields)
     {
@@ -316,8 +320,8 @@ class MyDB
      * Erweitert Tabellen mit den Feldern
      * Wenn die Tabelle nicht existiert wird diese erstellt
      *
-     * @param String $table
-     * @param Array  $fields
+     * @param string $table
+     * @param array $fields
      */
     public function createTableFields($table, $fields)
     {
@@ -327,8 +331,8 @@ class MyDB
     /**
      * Löscht die Felder einer Tabelle, wenn die Tabelle keine Felder mehr hätte wird diese gelöscht
      *
-     * @param String $table  - Tabelle
-     * @param Array  $fields - Felder welche gelöscht werden sollen
+     * @param string $table - Tabelle
+     * @param array $fields - Felder welche gelöscht werden sollen
      */
     public function deleteTableFields($table, $fields)
     {
@@ -338,9 +342,9 @@ class MyDB
     /**
      * Prüft ob eine tabelle existiert
      *
-     * @param String $table - Tabellenname welcher gesucht wird
+     * @param string $table - Tabellenname welcher gesucht wird
      *
-     * @return Bool
+     * @return boolean
      */
     public function existTable($table)
     {
@@ -350,22 +354,20 @@ class MyDB
     /**
      * Löscht eine Tabelle
      *
-     * @param String $table
-     *
-     * @return Bool
+     * @param string $table
      */
     public function deleteTable($table)
     {
-        return $this->_DB->Table()->delete($table);
+        $this->_DB->Table()->delete($table);
     }
 
     /**
      * Prüft ob eine Spalte in der Tabelle existiert
      *
-     * @param String $table
-     * @param String $row
+     * @param string $table
+     * @param string $row
      *
-     * @return Bool
+     * @return boolean
      */
     public function existRowInTable($table, $row)
     {
@@ -375,9 +377,9 @@ class MyDB
     /**
      * Alle Spalten der Tabelle bekommen
      *
-     * @param unknown_type $table
+     * @param string $table
      *
-     * @return Array
+     * @return array
      */
     public function getRowsFromTable($table)
     {
@@ -387,22 +389,20 @@ class MyDB
     /**
      * Löscht eine Spalte aus der Tabelle
      *
-     * @param String $table
-     * @param String $row
-     *
-     * @return Bool
+     * @param string $table
+     * @param string $row
      */
     public function deleteRow($table, $row)
     {
-        return $this->_DB->Table()->deleteColumn($table);
+        $this->_DB->Table()->deleteColumn($table, $row);
     }
 
     /**
      * Liefert die Primary Keys einer Tabelle
      *
-     * @param unknown_type $table
+     * @param string $table
      *
-     * @return unknown
+     * @return array
      */
     public function getKeys($table)
     {
@@ -412,23 +412,23 @@ class MyDB
     /**
      * Prüft ob der PrimaryKey gesetzt ist
      *
-     * @param String $table
-     * @param String || Array $key
+     * @param string $table
+     * @param string|array $key
      *
-     * @return Bool
+     * @return boolean
      */
     public function issetPrimaryKey($table, $key)
     {
-        return $this->_DB->Table()->issetPrimaryKey($table);
+        return $this->_DB->Table()->issetPrimaryKey($table, $key);
     }
 
     /**
      * Setzt ein PrimaryKey einer Tabelle
      *
-     * @param String         $table
-     * @param String | Array $key
+     * @param string $table
+     * @param string|array $key
      *
-     * @return Bool
+     * @return boolean
      */
     public function setPrimaryKey($table, $key)
     {
@@ -438,10 +438,10 @@ class MyDB
     /**
      * Prüft ob ein Index gesetzt ist
      *
-     * @param unknown_type     $table
-     * @param String | Integer $key
+     * @param string $table
+     * @param string|integer $key
      *
-     * @return Bool
+     * @return boolean
      */
     public function issetIndex($table, $key)
     {
@@ -451,9 +451,9 @@ class MyDB
     /**
      * Liefert die Indexes einer Tabelle
      *
-     * @param String $table
+     * @param string $table
      *
-     * @return unknown
+     * @return array
      */
     public function getIndex($table)
     {
@@ -463,10 +463,10 @@ class MyDB
     /**
      * Setzt einen Index
      *
-     * @param String $table
-     * @param String || Array $index
+     * @param string $table
+     * @param string|array $index
      *
-     * @return Bool
+     * @return boolean
      */
     public function setIndex($table, $index)
     {
@@ -476,10 +476,10 @@ class MyDB
     /**
      * Setzt einen Index
      *
-     * @param String $table
-     * @param String || Array $index
+     * @param string $table
+     * @param string|array $index
      *
-     * @return Bool
+     * @return boolean
      */
     public function setFulltext($table, $index)
     {
@@ -489,22 +489,22 @@ class MyDB
     /**
      * Prüft ob ein Fulltext auf das Feld gesetzt ist
      *
-     * @param String           $table
-     * @param String | Integer $key
+     * @param string $table
+     * @param string|integer $key
      *
-     * @return Bool
+     * @return boolean
      */
     public function issetFulltext($table, $key)
     {
-        return $this->_DB->Table()->issetFulltext($table, $index);
+        return $this->_DB->Table()->issetFulltext($table, $key);
     }
 
 
     /**
      * backup method - not implemented
      *
-     * @param String $table
-     * @param String $file
+     * @param string $table
+     * @param string $file
      *
      * @deprecated
      */
@@ -516,8 +516,8 @@ class MyDB
     /**
      * restore method - not implemented
      *
-     * @param String $file
-     * @param String $table
+     * @param string $file
+     * @param string $table
      *
      * @deprecated
      */

@@ -66,7 +66,7 @@ class Mail
      * constructor
      * The E-Mail class uses the internal QUIQQER config settings
      *
-     * @param Array|bool $config - (optional) array(
+     * @param array|boolean $config - (optional) array(
      *                           'IsSMTP',
      *                           'SMTPServer',
      *                           'SMTPAuth',
@@ -168,7 +168,7 @@ class Mail
      *        'files'    => array('datei1', 'datei2', 'datei3')
      * ));
      *
-     * @param Array $mailconf
+     * @param array $mailconf
      *
      * @return true
      * @throws QUI\Exception
@@ -331,7 +331,7 @@ class Mail
     /**
      * Mail params to array
      *
-     * @return Array
+     * @return array
      */
     public function toArray()
     {

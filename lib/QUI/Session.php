@@ -49,7 +49,7 @@ class Session
     /**
      * Database table
      *
-     * @var String
+     * @var string
      */
     private $_table;
 
@@ -254,8 +254,8 @@ class Session
     /**
      * Set a variable to the session
      *
-     * @param String $name  - Name og the variable
-     * @param String $value - value of the variable
+     * @param string $name  - Name og the variable
+     * @param string $value - value of the variable
      */
     public function set($name, $value)
     {
@@ -277,7 +277,7 @@ class Session
     /**
      * returns a variable from the session
      *
-     * @param String $name - name of the variable
+     * @param string $name - name of the variable
      *
      * @return mixed
      */
@@ -293,7 +293,7 @@ class Session
     /**
      * returns the session-id
      *
-     * @return String
+     * @return string
      */
     public function getId()
     {
@@ -329,7 +329,7 @@ class Session
     /**
      * Delete a session variable
      *
-     * @param String $var - name of the variable
+     * @param string $var - name of the variable
      */
     public function del($var)
     {
@@ -354,9 +354,9 @@ class Session
     /**
      * Return the last login from the session-id
      *
-     * @param String $sid - Session-ID
+     * @param string $sid - Session-ID
      *
-     * @return Integer
+     * @return integer
      */
     public function getLastRefreshFrom($sid)
     {
@@ -378,9 +378,9 @@ class Session
     /**
      * Is the user online?
      *
-     * @param Integer $uid
+     * @param integer $uid
      *
-     * @return Bool
+     * @return boolean
      */
     public function isUserOnline($uid)
     {

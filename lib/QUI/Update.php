@@ -245,7 +245,7 @@ class Update
     /**
      * Import / register the template engines in an xml file and register it
      *
-     * @param String $xml_file - path to an engine.xml
+     * @param string $xml_file - path to an engine.xml
      * @param        $IO - Composer InputOutput
      */
     static function importTemplateEngines($xml_file, $IO = null)
@@ -276,7 +276,7 @@ class Update
     /**
      * Import / register the wysiwyg editors
      *
-     * @param String $xml_file - path to an engine.xml
+     * @param string $xml_file - path to an engine.xml
      * @param        $IO - Composer InputOutput
      */
     static function importEditors($xml_file, $IO = null)
@@ -307,7 +307,7 @@ class Update
     /**
      * Import / register quiqqer events
      *
-     * @param String $xml_file - path to an engine.xml
+     * @param string $xml_file - path to an engine.xml
      * @param        $IO - (optional) Composer InputOutput
      */
     static function importEvents($xml_file, $IO = null)
@@ -335,7 +335,7 @@ class Update
     /**
      * Import / register quiqqer site events
      *
-     * @param String $xml_file - path to an engine.xml
+     * @param string $xml_file - path to an engine.xml
      * @param        $IO - (optional)  Composer InputOutput
      */
     static function importSiteEvents($xml_file, $IO = null)
@@ -358,7 +358,7 @@ class Update
      * Import / register the menu items
      * it create a cache file for the package
      *
-     * @param String $xml_file - path to an engine.xml
+     * @param string $xml_file - path to an engine.xml
      * @param        $IO - Composer InputOutput
      */
     static function importMenu($xml_file, $IO = null)
@@ -397,7 +397,7 @@ class Update
      * Database setup
      * Reads the database.xml and create the definit tables
      *
-     * @param String $xml_file - path to an database.xml
+     * @param string $xml_file - path to an database.xml
      * @param        $IO - Composer InputOutput
      */
     static function importDatabase($xml_file, $IO = null)
@@ -415,7 +415,7 @@ class Update
      * Locale setup - translations
      * Reads the locale.xml and import it
      *
-     * @param String $xml_file - path to an locale.xml
+     * @param string $xml_file - path to an locale.xml
      * @param        $IO - Composer InputOutput
      */
     static function importLocale($xml_file, $IO = null)
@@ -433,8 +433,8 @@ class Update
      * Permissions import
      * Reads the permissions.xml and import it
      *
-     * @param String $xml_file - path to an locale.xml
-     * @param String $src - Source for the permissions
+     * @param string $xml_file - path to an locale.xml
+     * @param string $src - Source for the permissions
      * @param        $IO - Composer InputOutput
      */
     static function importPermissions($xml_file, $src = '', $IO = null)

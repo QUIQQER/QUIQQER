@@ -56,7 +56,7 @@ class Manager
     /**
      * Pfad zu den XML Dateien
      *
-     * @return String
+     * @return string
      */
     static function getPath()
     {
@@ -66,7 +66,7 @@ class Manager
     /**
      * Return the path to the toolbars
      *
-     * @return String
+     * @return string
      */
     static function getToolbarsPath()
     {
@@ -90,7 +90,7 @@ class Manager
     /**
      * Return all settings of the manager
      *
-     * @return Array
+     * @return array
      */
     static function getConfig()
     {
@@ -106,8 +106,8 @@ class Manager
     /**
      * Register a js editor
      *
-     * @param String $name    - name of the editor
-     * @param String $package - js modul/package name
+     * @param string $name    - name of the editor
+     * @param string $package - js modul/package name
      */
     static function registerEditor($name, $package)
     {
@@ -120,9 +120,9 @@ class Manager
      * Bereitet HTML für den Editor
      * URL bei Bildern richtig setzen damit diese im Admin angezeigt werden
      *
-     * @param String $html
+     * @param string $html
      *
-     * @return String
+     * @return string
      */
     public function load($html)
     {
@@ -160,7 +160,7 @@ class Manager
      *
      * @param QUI\Projects\Project $Project
      *
-     * @return Array
+     * @return array
      */
     static function getSettings(QUI\Projects\Project $Project)
     {
@@ -342,7 +342,7 @@ class Manager
     /**
      * Return the available styles
      *
-     * @param \QUI\Projects\Project|Bool $Project - (optional)
+     * @param \QUI\Projects\Project|boolean $Project - (optional)
      *
      * @return array
      */
@@ -360,7 +360,7 @@ class Manager
     /**
      * Delete a toolbar
      *
-     * @param String $toolbar - Name of the tools (toolbar.xml)
+     * @param string $toolbar - Name of the tools (toolbar.xml)
      */
     static function deleteToolbar($toolbar)
     {
@@ -381,7 +381,7 @@ class Manager
     /**
      * Add a new toolbar
      *
-     * @param String $toolbar - Name of the tools (myNewToolbar)
+     * @param string $toolbar - Name of the tools (myNewToolbar)
      *
      * @throws QUI\Exception
      */
@@ -411,8 +411,8 @@ class Manager
     /**
      * Save the Toolbar
      *
-     * @param String $toolbar - toolbar name
-     * @param String $xml     - toolbar xml
+     * @param string $toolbar - toolbar name
+     * @param string $xml     - toolbar xml
      *
      * @throws QUI\Exception
      */
@@ -463,7 +463,7 @@ class Manager
     /**
      * Buttonliste vom aktuellen Benutzer bekommen
      *
-     * @return Array
+     * @return array
      */
     static function getToolbarButtonsFromUser()
     {
@@ -522,7 +522,7 @@ class Manager
     /**
      * Toolbar auslesen
      *
-     * @param String $file - path to the file
+     * @param string $file - path to the file
      *
      * @return array
      */
@@ -646,9 +646,9 @@ class Manager
      *
      * @uses Tidy, if enabled
      *
-     * @param String $html
+     * @param string $html
      *
-     * @return String
+     * @return string
      */
     public function cleanHTML($html)
     {
@@ -685,9 +685,9 @@ class Manager
     /**
      * HTML Speichern
      *
-     * @param String $html
+     * @param string $html
      *
-     * @return String
+     * @return string
      */
     public function prepareHTMLForSave($html)
     {
@@ -725,9 +725,9 @@ class Manager
     /**
      * Entfernt Zeilenumbrüche in HTML
      *
-     * @param Array $params
+     * @param array $params
      *
-     * @return String
+     * @return string
      */
     protected function _deleteLineBreaksInHtml($params)
     {
@@ -745,9 +745,9 @@ class Manager
     /**
      * Image Src sauber machen
      *
-     * @param Array $html
+     * @param array $html
      *
-     * @return String
+     * @return string
      */
     public function cleanSrc($html)
     {
@@ -764,9 +764,9 @@ class Manager
     /**
      * HREF Src sauber machen
      *
-     * @param Array $html
+     * @param array $html
      *
-     * @return String
+     * @return string
      */
     public function cleanHref($html)
     {
@@ -789,9 +789,9 @@ class Manager
     /**
      * Bereitet HTML für den Editor
      *
-     * @param Array $html
+     * @param array $html
      *
-     * @return Array
+     * @return array
      */
     public function cleanAdminSrc($html)
     {

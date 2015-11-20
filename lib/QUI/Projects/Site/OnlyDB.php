@@ -21,7 +21,7 @@ class OnlyDB extends QUI\Projects\Site
      * constructor
      *
      * @param \QUI\Projects\Project $Project
-     * @param Integer               $id - Site ID
+     * @param integer               $id - Site ID
      *
      * @throws QUI\Exception
      */

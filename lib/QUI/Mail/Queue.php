@@ -56,7 +56,7 @@ class Queue
     /**
      * Return the path of the attachment directory
      *
-     * @param String|Integer $mailId - ID of the Mail Queue Entry
+     * @param string|integer $mailId - ID of the Mail Queue Entry
      *
      * @return string
      */
@@ -70,7 +70,7 @@ class Queue
      *
      * @param Mailer|QUI\Mail $Mail
      *
-     * @return Integer - Mailqueue-ID
+     * @return integer - Mailqueue-ID
      */
     static function addToQueue($Mail)
     {
@@ -116,7 +116,7 @@ class Queue
     /**
      * Send a mail from the queue
      *
-     * @return Bool
+     * @return boolean
      */
     public function send()
     {
@@ -155,9 +155,9 @@ class Queue
     /**
      * Send an mail by its mailqueue id
      *
-     * @param Integer $id
+     * @param integer $id
      *
-     * @return Bool
+     * @return boolean
      * @throws QUI\Exception
      */
     public function sendById($id)
@@ -209,9 +209,9 @@ class Queue
      *
      * @throws \QUI\Exception
      *
-     * @param Array $params - mail data
+     * @param array $params - mail data
      *
-     * @return Boolean
+     * @return boolean
      * @todo attachments
      */
     protected function _sendMail($params)
@@ -297,7 +297,7 @@ class Queue
     /**
      * Return the number of the queue
      *
-     * @return Integer
+     * @return integer
      */
     public function count()
     {
@@ -315,7 +315,7 @@ class Queue
     /**
      * Return the queue list
      *
-     * @return Array
+     * @return array
      */
     public function getList()
     {

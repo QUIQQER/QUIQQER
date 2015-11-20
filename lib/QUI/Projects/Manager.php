@@ -19,8 +19,8 @@ use QUI\Utils\DOM;
  * @author     www.pcsg.de (Henning Leutz)
  * @licence    For copyright and license information, please view the /README.md
  *
- * @event      onProjectConfigSave [ String project, Array config ]
- * @event      onCreateProject [ String \QUI\Projects\Project ]
+ * @event      onProjectConfigSave [ string project, Array config ]
+ * @event      onCreateProject [ string \QUI\Projects\Project ]
  *
  * @errorcodes 8xx Project Errors -> Look at Project.php
  */
@@ -60,8 +60,8 @@ class Manager
     /**
      * set configuration for a project
      *
-     * @param String $project
-     * @param Array $params
+     * @param string $project
+     * @param array $params
      */
     static function setConfigForProject($project, $params)
     {
@@ -129,8 +129,8 @@ class Manager
          * clear media cache
          * eq: if watermark settings changed
          *
-         * @param Array $config
-         * @param Array $old_config
+         * @param array $config
+         * @param array $old_config
          * @param Project $Project
          */
         function clearMediaCache($config, $old_config, Project $Project)
@@ -205,7 +205,7 @@ class Manager
      *
      * @param \QUI\Projects\Project $Project
      *
-     * @return Array
+     * @return array
      */
     static function getProjectConfigList(QUI\Projects\Project $Project)
     {
@@ -277,7 +277,7 @@ class Manager
     /**
      * Return the projects count
      *
-     * @return Integer
+     * @return integer
      */
     static function count()
     {
@@ -291,7 +291,7 @@ class Manager
      * Decode project data
      * Decode a project json string to a Project or decode a project array to a Project
      *
-     * @param String|Array $project - project data
+     * @param string|array $project - project data
      *
      * @return \QUI\Projects\Project
      * @throws \QUI\Exception
@@ -359,9 +359,9 @@ class Manager
     /**
      * Returns a project
      *
-     * @param String $project - Project name
-     * @param String|Bool $lang - Project lang, optional (if not set, the standard language used)
-     * @param String|Bool $template - used template, optional (if not set, the standard templaed used)
+     * @param string $project - Project name
+     * @param string|boolean $lang - Project lang, optional (if not set, the standard language used)
+     * @param string|boolean $template - used template, optional (if not set, the standard templaed used)
      *
      * @return \QUI\Projects\Project
      */
@@ -404,9 +404,9 @@ class Manager
     /**
      * Gibt alle Projektnamen zurück
      *
-     * @param Bool $asobject - Als Objekte bekommen, default = false
+     * @param boolean $asobject - Als Objekte bekommen, default = false
      *
-     * @return Array
+     * @return array
      */
     static function getProjects($asobject = false)
     {
@@ -488,8 +488,8 @@ class Manager
     /**
      * Create a new project
      *
-     * @param String $name - Project name
-     * @param String $lang - Project lang
+     * @param string $name - Project name
+     * @param string $lang - Project lang
      *
      * @return \QUI\Projects\Project
      * @throws \QUI\Exception
@@ -823,7 +823,7 @@ class Manager
      *
      * @param \QUI\Projects\Project $Project
      *
-     * @return Array
+     * @return array
      */
     static function getRelatedTemplates(QUI\Projects\Project $Project)
     {
@@ -869,7 +869,7 @@ class Manager
      *
      * @param \QUI\Projects\Project $Project
      *
-     * @return Array
+     * @return array
      */
     static function getRelatedSettingsXML(QUI\Projects\Project $Project)
     {
@@ -937,12 +937,12 @@ class Manager
     /**
      * Search a project
      *
-     * @param Array $params - Search params
+     * @param array $params - Search params
      *                      'search' => 'search string',
      *                      'limit'  => 5,
      *                      'page'   => 1
      *
-     * @return Array
+     * @return array
      */
     static function search($params)
     {

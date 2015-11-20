@@ -39,14 +39,14 @@ class Console
     /**
      * The current text color
      *
-     * @var String
+     * @var string
      */
     protected $_current_color = false;
 
     /**
      * the current background color
      *
-     * @var String
+     * @var string
      */
     protected $_current_bg = false;
 
@@ -281,9 +281,9 @@ class Console
     /**
      * Return a tool
      *
-     * @param Bool|String $tool - Bool true = all Tools | String = specific tool
+     * @param boolean|string $tool - boolean true = all Tools | string = specific tool
      *
-     * @return Array|Console\Tool
+     * @return array|Console\Tool
      */
     public function get($tool)
     {
@@ -411,8 +411,8 @@ class Console
     /**
      * Include the tool class
      *
-     * @param String $file
-     * @param String $dir
+     * @param string $file
+     * @param string $dir
      *
      * @throws QUI\Exception
      */
@@ -448,7 +448,7 @@ class Console
     /**
      * Output the help
      *
-     * @param String $msg - [optional] extra text
+     * @param string $msg - [optional] extra text
      */
     public function help($msg = '')
     {
@@ -524,7 +524,7 @@ class Console
     /**
      * Read the input from the user -> STDIN
      *
-     * @return String
+     * @return string
      */
     public function readInput()
     {
@@ -535,8 +535,8 @@ class Console
      * Write a new line
      *
      * @param string      $msg   - (optional) the printed message
-     * @param string|bool $color - (optional) textcolor
-     * @param string|bool $bg    - (optional) background color
+     * @param string|boolean $color - (optional) textcolor
+     * @param string|boolean $bg    - (optional) background color
      */
     public function writeLn($msg = '', $color = false, $bg = false)
     {
@@ -547,8 +547,8 @@ class Console
      * alternative for message()
      *
      * @param string      $msg   - Message to output
-     * @param string|bool $color - (optional) textcolor
-     * @param string|bool $bg    - (optional) background color
+     * @param string|boolean $color - (optional) textcolor
+     * @param string|boolean $bg    - (optional) background color
      */
     public function write($msg, $color = false, $bg = false)
     {
@@ -559,8 +559,8 @@ class Console
      * Output a message
      *
      * @param string      $msg   - Message to output
-     * @param string|bool $color - (optional) textcolor
-     * @param string|bool $bg    - (optional) background color
+     * @param string|boolean $color - (optional) textcolor
+     * @param string|boolean $bg    - (optional) background color
      */
     public function message($msg, $color = false, $bg = false)
     {

@@ -20,19 +20,17 @@ class Update extends QUI\System\Console\Tool
     public function __construct()
     {
         $this->setName('quiqqer:update')
-             ->setDescription('Update the quiqqer system and the quiqqer packages')
-
+            ->setDescription('Update the quiqqer system and the quiqqer packages')
             ->addArgument('clearCache',
-                 'Before execute the Update, clear the complete update cache.',
-                 false,
+                'Before execute the Update, clear the complete update cache.',
+                false,
                 true
             )
-
-             ->addArgument('setDevelopment',
-                 'Set QUIQQER to the development version',
-                 false,
-                 true
-             );
+            ->addArgument('setDevelopment',
+                'Set QUIQQER to the development version',
+                false,
+                true
+            );
     }
 
     /**
@@ -45,7 +43,7 @@ class Update extends QUI\System\Console\Tool
         $this->writeLn('Start Update ...');
 
         $self = $this;
-        $PM = QUI::getPackageManager();
+        $PM   = QUI::getPackageManager();
 
         $PM->Events->addEvent('onOutput', function ($message) use ($self) {
 
@@ -94,10 +92,10 @@ class Update extends QUI\System\Console\Tool
                 $packageList[$library['name']] = 'dev-dev';
             }
 
-            $packageList['quiqqer/qui'] = 'dev-dev';
+            $packageList['quiqqer/qui']     = 'dev-dev';
             $packageList['quiqqer/quiqqer'] = 'dev-dev';
             $packageList['quiqqer/qui-php'] = 'dev-dev';
-            $packageList['quiqqer/utils'] = 'dev-dev';
+            $packageList['quiqqer/utils']   = 'dev-dev';
 
             foreach ($packageList as $package => $version) {
                 QUI::getPackageManager()->setPackage($package, $version);
@@ -116,7 +114,7 @@ class Update extends QUI\System\Console\Tool
             $this->write(' [error]', 'red');
             $this->writeLn('');
             $this->writeLn(
-                'Something went wrong::'.$Exception->getMessage(),
+                'Something went wrong::' . $Exception->getMessage(),
                 'red'
             );
 
@@ -128,8 +126,8 @@ class Update extends QUI\System\Console\Tool
             $this->writeLn('');
 
             $this->writeLn(
-                'php var/composer/composer.phar --working-dir="'.VAR_DIR
-                .'composer" update', 'red'
+                'php var/composer/composer.phar --working-dir="' . VAR_DIR
+                . 'composer" update', 'red'
             );
 
             $this->resetColor();

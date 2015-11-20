@@ -33,21 +33,21 @@ class Project
     /**
      * The project site table
      *
-     * @var String
+     * @var string
      */
     private $_TABLE;
 
     /**
      * The project site relation table
      *
-     * @var String
+     * @var string
      */
     private $_RELTABLE;
 
     /**
      * The project site relation language table
      *
-     * @var String
+     * @var string
      */
     private $_RELLANGTABLE;
 
@@ -61,21 +61,21 @@ class Project
     /**
      * project name
      *
-     * @var String
+     * @var string
      */
     private $_name;
 
     /**
      * Project language
      *
-     * @var String
+     * @var string
      */
     private $_lang;
 
     /**
      * default language
      *
-     * @var String
+     * @var string
      */
     private $_default_lang;
 
@@ -131,9 +131,9 @@ class Project
     /**
      * Konstruktor eines Projektes
      *
-     * @param String $name - Name of the Project
-     * @param string|bool $lang - (optional) Language of the Project - optional
-     * @param string|bool $template - (optional) Template of the Project
+     * @param string $name - Name of the Project
+     * @param string|boolean $lang - (optional) Language of the Project - optional
+     * @param string|boolean $template - (optional) Template of the Project
      *
      * @throws QUI\Exception
      */
@@ -278,9 +278,9 @@ class Project
     }
 
     /**
-     * ToString
+     * Tostring
      *
-     * @return String
+     * @return string
      */
     public function __toString()
     {
@@ -313,7 +313,7 @@ class Project
     /**
      * Return the project name
      *
-     * @return String
+     * @return string
      */
     public function getName()
     {
@@ -323,7 +323,7 @@ class Project
     /**
      * Return the project lang
      *
-     * @return String
+     * @return string
      */
     public function getLang()
     {
@@ -334,7 +334,7 @@ class Project
      * Return the project title
      * Locale->get('project/NAME', 'title') or getName()
      *
-     * @return String
+     * @return string
      */
     public function getTitle()
     {
@@ -351,7 +351,7 @@ class Project
      * Durchsucht das Projekt nach Seiten
      *
      * @param string $search - Suchwort
-     * @param array|bool $select - (optional) in welchen Feldern gesucht werden soll array('name', 'title', 'short', 'content')
+     * @param array|boolean $select - (optional) in welchen Feldern gesucht werden soll array('name', 'title', 'short', 'content')
      *
      * @return array
      */
@@ -403,7 +403,7 @@ class Project
     /**
      * Rechteprüfung
      *
-     * @return Bool
+     * @return boolean
      * @deprecated
      */
     protected function _checkRights()
@@ -449,10 +449,10 @@ class Project
     /**
      * VHost zurück geben
      *
-     * @param Bool $with_protocol - Mit oder ohne http -> standard = ohne
-     * @param Bool $ssl - mit oder ohne ssl
+     * @param boolean $with_protocol - Mit oder ohne http -> standard = ohne
+     * @param boolean $ssl - mit oder ohne ssl
      *
-     * @return Bool | String
+     * @return boolean | string
      */
     public function getVHost($with_protocol = false, $ssl = false)
     {
@@ -487,12 +487,12 @@ class Project
     /**
      * Namen des Projektes
      *
-     * @param String $att -
+     * @param string $att -
      *                    name = Name des Projectes
      *                    lang = Aktuelle Sprache
      *                    db_table = Standard Datebanktabelle
      *
-     * @return String|false
+     * @return string|false
      */
     public function getAttribute($att)
     {
@@ -548,9 +548,9 @@ class Project
     /**
      * Gibt die gesuchte Einstellung vom Projekt zurück
      *
-     * @param string|bool $name - name of the config, default = false, returns complete configs
+     * @param string|boolean $name - name of the config, default = false, returns complete configs
      *
-     * @return false|String|Array
+     * @return false|string|array
      */
     public function getConfig($name = false)
     {
@@ -579,7 +579,7 @@ class Project
     /**
      * Gibt den allgemein gültigen Host vom Projekt zurück
      *
-     * @return String
+     * @return string
      */
     public function getHost()
     {
@@ -613,7 +613,7 @@ class Project
     /**
      * Gibt alle Attribute vom Projekt zurück
      *
-     * @return Array
+     * @return array
      */
     public function getAllAttributes()
     {
@@ -630,7 +630,7 @@ class Project
     /**
      * Erste Seite des Projektes
      *
-     * @$pluginload Bool
+     * @$pluginload boolean
      *
      * @return Site
      */
@@ -646,8 +646,8 @@ class Project
     /**
      * Leert den Cache des Objektes
      *
-     * @param Bool $link - Link Cache löschen
-     * @param Bool $site - Site Cache löschen
+     * @param boolean $link - Link Cache löschen
+     * @param boolean $site - Site Cache löschen
      *
      * @todo muss überarbeitet werden
      */
@@ -679,7 +679,7 @@ class Project
     /**
      * Eine Seite bekommen
      *
-     * @param Integer $id - ID der Seite
+     * @param integer $id - ID der Seite
      *
      * @return Site|Site\Edit
      */
@@ -702,9 +702,9 @@ class Project
     /**
      * Name einer bestimmten ID bekommen
      *
-     * @param Integer $id
+     * @param integer $id
      *
-     * @return String
+     * @return string
      * @deprecated
      */
     public function getNameById($id)
@@ -783,6 +783,7 @@ class Project
             $layouts = QUI\Utils\XML::getLayoutsFromXml($siteXML);
 
             foreach ($layouts as $Layout) {
+                /* @var $Layout \DOMElement */
                 if (isset($_resTemp[$Layout->getAttribute('type')])) {
                     continue;
                 }
@@ -820,7 +821,7 @@ class Project
     /**
      * Gibt die Namen der eingebundenen Plugins zurück
      *
-     * @return Array
+     * @return array
      */
 //     public function getPlugins()
 //     {
@@ -858,8 +859,8 @@ class Project
     /**
      * Return the children ids from a site
      *
-     * @param Integer $parentid - The parent site ID
-     * @param Array $params - extra db statemens, like order, where, count, limit
+     * @param integer $parentid - The parent site ID
+     * @param array $params - extra db statemens, like order, where, count, limit
      *
      * @return array
      */
@@ -884,7 +885,7 @@ class Project
             $where = array_merge($where_1, $params['where']);
 
         } elseif (isset($params['where']) && is_string($params['where'])) {
-            // @todo where als param String
+            // @todo where als param string
             QUI\System\Log::addDebug(
                 'Project->getChildrenIdsFrom WIRD NICHT verwendet' . $params['where']
             );
@@ -934,9 +935,9 @@ class Project
     /**
      * Returns the parent id from a site
      *
-     * @param Integer $id
+     * @param integer $id
      *
-     * @return Integer
+     * @return integer
      * @deprecated
      */
     public function getParentId($id)
@@ -947,9 +948,9 @@ class Project
     /**
      * Returns the parent id from a site
      *
-     * @param Integer $id - Child id
+     * @param integer $id - Child id
      *
-     * @return Integer Id of the Parent
+     * @return integer Id of the Parent
      */
     public function getParentIdFrom($id)
     {
@@ -977,10 +978,10 @@ class Project
     /**
      * Gibt alle Parent IDs zurück
      *
-     * @param Integer $id - child id
-     * @param Bool $reverse - revers the result
+     * @param integer $id - child id
+     * @param boolean $reverse - revers the result
      *
-     * @return Array
+     * @return array
      */
     public function getParentIds($id, $reverse = false)
     {
@@ -1002,10 +1003,10 @@ class Project
     /**
      * Ids von bestimmten Seiten bekommen
      *
-     * @param Array $params
+     * @param array $params
      *
      * @todo Muss mal echt überarbeitet werden, bad code
-     * @return Array
+     * @return array
      */
     function getSitesIds($params = array())
     {
@@ -1099,7 +1100,7 @@ class Project
     /**
      * Alle Seiten bekommen
      *
-     * @param array|bool $params
+     * @param array|boolean $params
      *
      * @return array|integer - if count is given, return is an integer, otherwise an array
      */
@@ -1281,7 +1282,7 @@ class Project
     /**
      * Set the last edit date in the project
      *
-     * @param Integer $date
+     * @param integer $date
      */
     public function setEditDate($date)
     {
@@ -1294,7 +1295,7 @@ class Project
     /**
      * Set custom CSS for the project -> set it to the custom.css file
      *
-     * @param String $css - CSS Data
+     * @param string $css - CSS Data
      */
     public function setCustomCSS($css)
     {
@@ -1330,7 +1331,7 @@ class Project
     /**
      * Return the last edit date in the project
      *
-     * @return Integer
+     * @return integer
      */
     public function getLastEditDate()
     {
@@ -1353,7 +1354,7 @@ class Project
     /**
      * Add an user to the project permission
      *
-     * @param String $permission - name of the permission
+     * @param string $permission - name of the permission
      * @param User $User - User Object
      */
     public function addUserToPermission(User $User, $permission)
@@ -1364,7 +1365,7 @@ class Project
     /**
      * Add an group to the project permission
      *
-     * @param String $permission - name of the permission
+     * @param string $permission - name of the permission
      * @param Group $Group - Group Object
      */
     public function addGroupToPermission(Group $Group, $permission)
@@ -1375,7 +1376,7 @@ class Project
     /**
      * Remove the user from the project permission
      *
-     * @param String $permission - name of the permission
+     * @param string $permission - name of the permission
      * @param User $User - User Object
      */
     public function removeUserFromPermission(User $User, $permission)

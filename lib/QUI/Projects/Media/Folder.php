@@ -214,7 +214,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @see QUI\Projects\Media\Item::rename()
      *
-     * @param String $newname - new name for the folder
+     * @param string $newname - new name for the folder
      *
      * @throws QUI\Exception
      */
@@ -617,7 +617,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Returns the count of the children
      *
-     * @return Integer
+     * @return integer
      */
     public function hasChildren()
     {
@@ -760,7 +760,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Returns the count of the children
      *
-     * @return Integer
+     * @return integer
      */
     public function hasSubFolders()
     {
@@ -828,7 +828,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return a file from the folder by name
      *
-     * @param String $filename
+     * @param string $filename
      *
      * @return QUI\Projects\Media\Item
      * @throws QUI\Exception
@@ -865,9 +865,9 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return true if a child with the name exist
      *
-     * @param String $name - name (my_holiday)
+     * @param string $name - name (my_holiday)
      *
-     * @return Bool
+     * @return boolean
      */
     public function childWithNameExists($name)
     {
@@ -886,9 +886,9 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return true if a file with the filename in the folder exists
      *
-     * @param String $file - filename (my_holiday.png)
+     * @param string $file - filename (my_holiday.png)
      *
-     * @return Bool
+     * @return boolean
      */
     public function fileWithNameExists($file)
     {
@@ -955,7 +955,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Adds / create a subfolder
      *
-     * @param String $foldername - Name of the new folder
+     * @param string $foldername - Name of the new folder
      *
      * @return QUI\Projects\Media\Folder
      * @throws QUI\Exception
@@ -1036,7 +1036,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Uploads a file to the Folder
      *
-     * @param String $file - Path to the File
+     * @param string $file - Path to the File
      *
      * @return QUI\Projects\Media\Item
      * @throws QUI\Exception
@@ -1192,8 +1192,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * If the file is a folder
      *
-     * @param String $path - Path to the dir
-     * @param QUI\Projects\Media\Folder|Bool $Folder - (optional) Uploaded Folder
+     * @param string $path - Path to the dir
+     * @param QUI\Projects\Media\Folder|boolean $Folder - (optional) Uploaded Folder
      *
      * @return QUI\Projects\Media\Item
      */
@@ -1231,7 +1231,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Returns all ids from children under the folder
      *
-     * @return Array
+     * @return array
      */
     protected function _getAllRecursiveChildrenIds()
     {

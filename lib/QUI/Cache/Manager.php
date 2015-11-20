@@ -70,7 +70,7 @@ class Manager
     /**
      * Create the Stash Cache Handler
      *
-     * @param String $key - (optional) cache name, cache key
+     * @param string $key - (optional) cache name, cache key
      *
      * @return Stash\Item
      * @throw
@@ -258,9 +258,9 @@ class Manager
     /**
      * Gibt den Stash\Driver\Composite oder den Stash\Driver zurück
      *
-     * @param String|Bool $type = optional: bestimmten Cache Handler bekommen
+     * @param string|boolean $type = optional: bestimmten Cache Handler bekommen
      *
-     * @return Stash\Interfaces\DriverInterface|Bool
+     * @return Stash\Interfaces\DriverInterface|boolean
      */
     static function getHandler($type = false)
     {
@@ -286,11 +286,11 @@ class Manager
     /**
      * Daten in den Cache setzen
      *
-     * @param String             $name
-     * @param String             $data
+     * @param string             $name
+     * @param string             $data
      * @param int|\DateTime|null $time -> sekunden oder datetime
      *
-     * @return Bool
+     * @return boolean
      */
     static function set($name, $data, $time = null)
     {
@@ -300,9 +300,9 @@ class Manager
     /**
      * Daten aus dem Cache bekommen
      *
-     * @param String $name
+     * @param string $name
      *
-     * @return String|Array|Object|Bool
+     * @return string|array|object|boolean
      *
      * @throws QUI\Cache\Exception
      */
@@ -353,7 +353,7 @@ class Manager
     /**
      * Cache leeren
      *
-     * @param String|Bool $key - optional, falls kein Key übergeben wird, wird komplett geleert
+     * @param string|boolean $key - optional, falls kein Key übergeben wird, wird komplett geleert
      */
     static function clear($key = false)
     {

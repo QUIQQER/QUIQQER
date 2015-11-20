@@ -23,7 +23,7 @@ class XML
      * Add a menu.xml file to a contextmenu bar item
      *
      * @param QUI\Controls\Contextmenu\Bar $Menu - Menu Object
-     * @param String $file - Path to XML File
+     * @param string $file - Path to XML File
      */
     static function addXMLFileToMenu(QUI\Controls\Contextmenu\Bar $Menu, $file)
     {
@@ -92,9 +92,9 @@ class XML
      * Read the config parameter of an *.xml file and
      * create a QUI\Config if not exist or read the QUI\Config
      *
-     * @param String $file - path to the xml file
+     * @param string $file - path to the xml file
      *
-     * @return QUI\Config|Bool - Config | false
+     * @return QUI\Config|boolean - Config | false
      */
     static function getConfigFromXml($file)
     {
@@ -173,9 +173,9 @@ class XML
     /**
      * Reads the config parameter from an *.xml
      *
-     * @param String $file - path to xml file
+     * @param string $file - path to xml file
      *
-     * @return \DOMElement|Bool - DOMElement | false
+     * @return \DOMElement|boolean - DOMElement | false
      */
     static function getConfigParamsFromXml($file)
     {
@@ -187,9 +187,9 @@ class XML
     /**
      * Reads the tools list from an *.xml
      *
-     * @param String $file - path to xml file
+     * @param string $file - path to xml file
      *
-     * @return Array
+     * @return array
      */
     static function getConsoleToolsFromXml($file)
     {
@@ -230,9 +230,9 @@ class XML
     /**
      * Reads the css file list from an *.xml
      *
-     * @param String $file
+     * @param string $file
      *
-     * @return Array
+     * @return array
      */
     static function getWysiwygCSSFromXml($file)
     {
@@ -252,9 +252,9 @@ class XML
     /**
      * Reads the database entries from an *.xml
      *
-     * @param String $file - path to the xml file
+     * @param string $file - path to the xml file
      *
-     * @return Array
+     * @return array
      */
     static function getDataBaseFromXml($file)
     {
@@ -308,7 +308,7 @@ class XML
     /**
      * Liefer das XML als DOMDocument zurück
      *
-     * @param String $filename
+     * @param string $filename
      *
      * @return \DOMDocument
      */
@@ -332,9 +332,9 @@ class XML
      * Reads the events from an *.xml
      * Return all <event>
      *
-     * @param String $file
+     * @param string $file
      *
-     * @return Array
+     * @return array
      */
     static function getEventsFromXml($file)
     {
@@ -361,9 +361,9 @@ class XML
     /**
      * Return the site types events from a site.xm file
      *
-     * @param String $file
+     * @param string $file
      *
-     * @return Array
+     * @return array
      */
     static function getSiteEventsFromXml($file)
     {
@@ -396,9 +396,9 @@ class XML
      * Return the layout types from a xml file
      * https://dev.quiqqer.com/quiqqer/quiqqer/wikis/Site-Xml
      *
-     * @param String $file
+     * @param string $file
      *
-     * @return Array
+     * @return array
      */
     static function getLayoutsFromXml($file)
     {
@@ -438,8 +438,8 @@ class XML
     /**
      * Return a specific layout DOM Node entry by its layout name
      *
-     * @param String $file - path to the xml file
-     * @param String $layoutName - name of the layout type
+     * @param string $file - path to the xml file
+     * @param string $layoutName - name of the layout type
      *
      * @return bool|\DOMElement
      */
@@ -462,7 +462,7 @@ class XML
      *
      * @param \DOMDocument $Dom
      *
-     * @return Array array(
+     * @return array array(
      *      array(
      *            'groups'   => 'group.name',
      *            'locales'  => array(),
@@ -541,9 +541,9 @@ class XML
     /**
      * Reads the menu items from an *.xml
      *
-     * @param String $file
+     * @param string $file
      *
-     * @return Array
+     * @return array
      */
     static function getMenuItemsXml($file)
     {
@@ -580,9 +580,9 @@ class XML
     /**
      * Return the panel nodes from an *.xml file
      *
-     * @param String $file - path to the xml file
+     * @param string $file - path to the xml file
      *
-     * @return Array
+     * @return array
      */
     static function getPanelsFromXMLFile($file)
     {
@@ -609,9 +609,9 @@ class XML
     /**
      * Read the permissions from an *.xml file
      *
-     * @param String $file - path to the xml file
+     * @param string $file - path to the xml file
      *
-     * @return Array
+     * @return array
      */
     static function getPermissionsFromXml($file)
     {
@@ -658,10 +658,10 @@ class XML
     /**
      * Reads the settings window from an *.xml and search the category
      *
-     * @param String $file - path to xml file
-     * @param String $name - Category name
+     * @param string $file - path to xml file
+     * @param string $name - Category name
      *
-     * @return \DOMElement|Bool - DOMElement | false
+     * @return \DOMElement|boolean - DOMElement | false
      */
     static function getSettingCategoriesFromXml($file, $name)
     {
@@ -687,9 +687,9 @@ class XML
     /**
      * Return the settings window from an *.xml
      *
-     * @param String $file
+     * @param string $file
      *
-     * @return Array
+     * @return array
      */
     static function getSettingWindowsFromXml($file)
     {
@@ -714,9 +714,9 @@ class XML
     /**
      * Return the project settings window from an *.xml
      *
-     * @param String $file
+     * @param string $file
      *
-     * @return Array
+     * @return array
      */
     static function getProjectSettingWindowsFromXml($file)
     {
@@ -742,9 +742,9 @@ class XML
      * Return the site types from a xml file
      * https://dev.quiqqer.com/quiqqer/quiqqer/wikis/Site-Xml
      *
-     * @param String $file
+     * @param string $file
      *
-     * @return Array
+     * @return array
      */
     static function getTypesFromXml($file)
     {
@@ -785,9 +785,9 @@ class XML
     /**
      * Reads the tabs from an *.xml
      *
-     * @param String $file
+     * @param string $file
      *
-     * @return Array
+     * @return array
      */
     static function getTabsFromXml($file)
     {
@@ -801,7 +801,7 @@ class XML
      *
      * @param \DOMDocument $Dom
      *
-     * @return Array
+     * @return array
      */
     static function getTabsFromDom(\DOMDocument $Dom)
     {
@@ -833,9 +833,9 @@ class XML
     /**
      * Reads the template_engines from an *.xml
      *
-     * @param String $file
+     * @param string $file
      *
-     * @return Array
+     * @return array
      */
     static function getTemplateEnginesFromXml($file)
     {
@@ -872,9 +872,9 @@ class XML
     /**
      * Reads the editor from an *.xml
      *
-     * @param String $file
+     * @param string $file
      *
-     * @return Array
+     * @return array
      */
     static function getWysiwygEditorsFromXml($file)
     {
@@ -911,9 +911,9 @@ class XML
     /**
      * Reads the widgets from an *.xml
      *
-     * @param String $file
+     * @param string $file
      *
-     * @return Array
+     * @return array
      */
     static function getWidgetsFromXml($file)
     {
@@ -969,9 +969,9 @@ class XML
     /**
      * Reads the widget from an *.xml file
      *
-     * @param String $file - path to the xml file
+     * @param string $file - path to the xml file
      *
-     * @return Boolean|\DOMElement
+     * @return boolean|\DOMElement
      */
     static function getWidgetFromXml($file)
     {
@@ -992,8 +992,8 @@ class XML
     /**
      * Save the setting to a xml specified config file
      *
-     * @param String $file
-     * @param Array $params
+     * @param string $file
+     * @param array $params
      *
      * @throws QUI\Exception
      */
@@ -1110,7 +1110,7 @@ class XML
      * Import a xml array to the database
      * the Array must come from self::getDataBaseFromXml
      *
-     * @param Array $dbfields - array with db fields
+     * @param array $dbfields - array with db fields
      */
     static function importDataBase($dbfields)
     {
@@ -1229,7 +1229,7 @@ class XML
     /**
      * Import a database.xml
      *
-     * @param String $xmlfile - Path to the file
+     * @param string $xmlfile - Path to the file
      *
      * @throws QUI\Exception
      */
@@ -1257,8 +1257,8 @@ class XML
     /**
      * Import a permissions.xml
      *
-     * @param String $xmlfile - Path to the file
-     * @param String $src - [optional] the source for the permissions
+     * @param string $xmlfile - Path to the file
+     * @param string $src - [optional] the source for the permissions
      */
     static function importPermissionsFromXml($xmlfile, $src = '')
     {

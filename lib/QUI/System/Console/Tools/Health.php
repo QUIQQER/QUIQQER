@@ -22,7 +22,7 @@ class Health extends QUI\System\Console\Tool
     public function __construct()
     {
         $this->setName('quiqqer:health')
-             ->setDescription('Checks the system health');
+            ->setDescription('Checks the system health');
     }
 
     /**

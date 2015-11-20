@@ -37,14 +37,14 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
     /**
      * Get Sites from Trash
      *
-     * @param Array $params - optional
+     * @param array $params - optional
      *                      - order
      *                      - sort
      *
      * - max
      * - page
      *
-     * @return Array
+     * @return array
      */
     public function getList($params = array())
     {
@@ -119,7 +119,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
     /**
      * Zerstört die gewünschten Seiten im Trash
      *
-     * @param Array                 $ids
+     * @param array                 $ids
      */
     public function destroy($ids = array())
     {
@@ -154,8 +154,8 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
      * Stellt die gewünschten Seiten wieder her
      *
      * @param \QUI\Projects\Project $Project
-     * @param Array                 $ids
-     * @param Integer               $parentid
+     * @param array                 $ids
+     * @param integer               $parentid
      */
     public function restore(Project $Project, $ids, $parentid)
     {

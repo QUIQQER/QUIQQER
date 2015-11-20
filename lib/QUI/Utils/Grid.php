@@ -19,7 +19,7 @@ class Grid extends QUI\QDOM
     /**
      * constructor
      *
-     * @param Array $params - optional
+     * @param array $params - optional
      */
     public function __construct($params = array())
     {
@@ -33,9 +33,9 @@ class Grid extends QUI\QDOM
     /**
      * Prepares DB parameters with limits
      *
-     * @param Array $params
+     * @param array $params
      *
-     * @return Array
+     * @return array
      */
     public function parseDBParams($params = array())
     {
@@ -50,10 +50,10 @@ class Grid extends QUI\QDOM
         }
 
         if ($this->getAttribute('page')) {
-            $page = ($this->getAttribute('page') - 1);
+            $page  = ($this->getAttribute('page') - 1);
             $start = $page * $this->getAttribute('max');
 
-            $_params['limit'] = $start.','.$this->getAttribute('max');
+            $_params['limit'] = $start . ',' . $this->getAttribute('max');
         }
 
         return $_params;
@@ -62,10 +62,10 @@ class Grid extends QUI\QDOM
     /**
      * Prepares the result for the Grid
      *
-     * @param array        $data
-     * @param integer|bool $count
+     * @param array $data
+     * @param integer|boolean $count
      *
-     * @return Array
+     * @return array
      */
     public function parseResult($data, $count = false)
     {
@@ -83,16 +83,16 @@ class Grid extends QUI\QDOM
     /**
      * Parse a result array in a grid array
      *
-     * @param Array   $data
-     * @param Integer $page
-     * @param Integer $limit
+     * @param array $data
+     * @param integer $page
+     * @param integer $limit
      *
      * @return array
      */
     static function getResult($data, $page, $limit)
     {
         $count = count($data);
-        $end = $page * $limit;
+        $end   = $page * $limit;
         $start = $end - $limit;
 
         return array(

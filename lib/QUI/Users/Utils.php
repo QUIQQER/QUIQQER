@@ -91,11 +91,11 @@ class Utils
     /**
      * Tab contents of a user Tabs / Buttons
      *
-     * @param Integer $uid
-     * @param String  $plugin
-     * @param String  $tab
+     * @param integer $uid
+     * @param string  $plugin
+     * @param string  $tab
      *
-     * @return String
+     * @return string
      */
     static function getTab($uid, $plugin, $tab)
     {
