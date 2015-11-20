@@ -619,7 +619,7 @@ define('controls/projects/project/media/FolderPanel', [
                     greyscale         : Greyscale.checked ? 1 : 0,
                     watermark         : this.$EffectWatermark.value,
                     watermark_position: WatermarkPosition.value,
-                    __nocache         : String.uniqueID()
+                    '__nocache'       : String.uniqueID()
                 });
 
             Image.set('src', url);

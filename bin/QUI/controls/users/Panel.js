@@ -1,4 +1,3 @@
-
 /**
  * User Manager (View)
  *
@@ -18,7 +17,6 @@
  * @require Locale
  * @require css!controls/users/Panel.css
  */
-
 define('controls/users/Panel', [
 
     'qui/QUI',
@@ -41,18 +39,18 @@ define('controls/users/Panel', [
 
     var lg = 'quiqqer/system';
 
-    var QUI          = arguments[ 0 ],
-        Panel        = arguments[ 1 ],
-        Grid         = arguments[ 2 ],
-        Users        = arguments[ 3 ],
-        Attention    = arguments[ 4 ],
-        QUIConfirm   = arguments[ 5 ],
-        QUIPrompt    = arguments[ 6 ],
-        QUIButton    = arguments[ 7 ],
-        QUISwitch    = arguments[ 8 ],
-        Template     = arguments[ 9 ],
-        ControlUtils = arguments[ 10 ],
-        Locale       = arguments[ 11 ];
+    var QUI          = arguments[0],
+        Panel        = arguments[1],
+        Grid         = arguments[2],
+        Users        = arguments[3],
+        Attention    = arguments[4],
+        QUIConfirm   = arguments[5],
+        QUIPrompt    = arguments[6],
+        QUIButton    = arguments[7],
+        QUISwitch    = arguments[8],
+        Template     = arguments[9],
+        ControlUtils = arguments[10],
+        Locale       = arguments[11];
 
     /**
      * @class controls/users/Panel
@@ -61,10 +59,10 @@ define('controls/users/Panel', [
      */
     return new Class({
 
-        Extends : Panel,
-        Type    : 'controls/users/Panel',
+        Extends: Panel,
+        Type   : 'controls/users/Panel',
 
-        Binds : [
+        Binds: [
             '$onCreate',
             '$onResize',
             '$onSwitchStatus',
@@ -81,18 +79,18 @@ define('controls/users/Panel', [
             'createUser'
         ],
 
-        initialize : function (options) {
+        initialize: function (options) {
             this.$uid = String.uniqueID();
 
             // defaults
             this.setAttributes({
-                field  : 'username',
-                order  : 'ASC',
-                limit  : 20,
-                page   : 1,
-                search : false,
-                searchSettings : {},
-                tabbar : false
+                field         : 'username',
+                order         : 'ASC',
+                limit         : 20,
+                page          : 1,
+                search        : false,
+                searchSettings: {},
+                tabbar        : false
             });
 
             this.parent(options);
@@ -104,18 +102,18 @@ define('controls/users/Panel', [
             this.addEvent('onResize', this.$onResize);
 
             Users.addEvents({
-                onSwitchStatus : this.$onSwitchStatus,
-                onDelete       : this.$onDeleteUser,
-                onRefresh      : this.$onUserRefresh,
-                onSave         : this.$onUserRefresh
+                onSwitchStatus: this.$onSwitchStatus,
+                onDelete      : this.$onDeleteUser,
+                onRefresh     : this.$onUserRefresh,
+                onSave        : this.$onUserRefresh
             });
 
             this.addEvent('onDestroy', function () {
                 Users.removeEvents({
-                    onSwitchStatus : this.$onSwitchStatus,
-                    onDelete       : this.$onDeleteUser,
-                    onRefresh      : this.$onUserRefresh,
-                    onSave         : this.$onUserRefresh
+                    onSwitchStatus: this.$onSwitchStatus,
+                    onDelete      : this.$onDeleteUser,
+                    onRefresh     : this.$onUserRefresh,
+                    onSave        : this.$onUserRefresh
                 });
             }.bind(this));
 
@@ -132,58 +130,58 @@ define('controls/users/Panel', [
          *
          * @return {controls/grid/Grid|null}
          */
-        getGrid : function () {
+        getGrid: function () {
             return this.$Grid;
         },
 
         /**
          * create the user panel
          */
-        $onCreate : function () {
+        $onCreate: function () {
             this.addButton({
-                name   : 'userSearch',
-                Users  : this,
-                alt    : Locale.get(lg, 'users.panel.btn.search.alt'),
-                title  : Locale.get(lg, 'users.panel.btn.search.title'),
-                image  : 'icon-search',
-                events : {
+                name  : 'userSearch',
+                Users : this,
+                alt   : Locale.get(lg, 'users.panel.btn.search.alt'),
+                title : Locale.get(lg, 'users.panel.btn.search.title'),
+                image : 'icon-search',
+                events: {
                     onClick: this.search
                 }
             });
 
             this.addButton({
-                name : 'usep',
-                type : 'seperator'
+                name: 'usep',
+                type: 'seperator'
             });
 
             this.addButton({
-                name   : 'userNew',
-                Users  : this,
-                events : {
-                    onClick : this.createUser
+                name  : 'userNew',
+                Users : this,
+                events: {
+                    onClick: this.createUser
                 },
-                text : Locale.get(lg, 'users.panel.btn.create')
+                text  : Locale.get(lg, 'users.panel.btn.create')
             });
 
             this.addButton({
-                name      : 'userEdit',
-                Users     : this,
-                text      : Locale.get(lg, 'users.panel.btn.edit'),
-                disabled  : true,
-                textimage : 'icon-pencil',
-                events    : {
-                    onMousedown : this.$onButtonEditClick
+                name     : 'userEdit',
+                Users    : this,
+                text     : Locale.get(lg, 'users.panel.btn.edit'),
+                disabled : true,
+                textimage: 'icon-pencil',
+                events   : {
+                    onMousedown: this.$onButtonEditClick
                 }
             });
 
             this.addButton({
-                name      : 'userDel',
-                Users     : this,
-                text      : Locale.get(lg, 'users.panel.btn.delete'),
-                disabled  : true,
-                textimage : 'fa fa-trash-o icon-trash',
-                events    : {
-                    onMousedown : this.$onButtonDelClick
+                name     : 'userDel',
+                Users    : this,
+                text     : Locale.get(lg, 'users.panel.btn.delete'),
+                disabled : true,
+                textimage: 'fa fa-trash-o icon-trash',
+                events   : {
+                    onMousedown: this.$onButtonDelClick
                 }
             });
 
@@ -194,46 +192,46 @@ define('controls/users/Panel', [
             this.$Container.inject(Body);
 
             this.$Grid = new Grid(this.$Container, {
-                columnModel : [{
-                    header    : Locale.get(lg, 'status'),
-                    dataIndex : 'status',
-                    dataType  : 'QUI',
-                    width     : 60
+                columnModel: [{
+                    header   : Locale.get(lg, 'status'),
+                    dataIndex: 'status',
+                    dataType : 'QUI',
+                    width    : 60
                 }, {
-                    header    : Locale.get(lg, 'user_id'),
-                    dataIndex : 'id',
-                    dataType  : 'integer',
-                    width     : 150
+                    header   : Locale.get(lg, 'user_id'),
+                    dataIndex: 'id',
+                    dataType : 'integer',
+                    width    : 150
                 }, {
-                    header    : Locale.get(lg, 'username'),
-                    dataIndex : 'username',
-                    dataType  : 'integer',
-                    width     : 150
+                    header   : Locale.get(lg, 'username'),
+                    dataIndex: 'username',
+                    dataType : 'integer',
+                    width    : 150
                 }, {
-                    header    : Locale.get(lg, 'group'),
-                    dataIndex : 'usergroup',
-                    dataType  : 'integer',
-                    width     : 150
+                    header   : Locale.get(lg, 'group'),
+                    dataIndex: 'usergroup',
+                    dataType : 'integer',
+                    width    : 150
                 }, {
-                    header    : Locale.get(lg, 'email'),
-                    dataIndex : 'email',
-                    dataType  : 'string',
-                    width     : 150
+                    header   : Locale.get(lg, 'email'),
+                    dataIndex: 'email',
+                    dataType : 'string',
+                    width    : 150
                 }, {
-                    header    : Locale.get(lg, 'firstname'),
-                    dataIndex : 'firstname',
-                    dataType  : 'string',
-                    width     : 150
+                    header   : Locale.get(lg, 'firstname'),
+                    dataIndex: 'firstname',
+                    dataType : 'string',
+                    width    : 150
                 }, {
-                    header    : Locale.get(lg, 'lastname'),
-                    dataIndex : 'lastname',
-                    dataType  : 'string',
-                    width     : 150
+                    header   : Locale.get(lg, 'lastname'),
+                    dataIndex: 'lastname',
+                    dataType : 'string',
+                    width    : 150
                 }, {
-                    header    : Locale.get(lg, 'c_date'),
-                    dataIndex : 'regdate',
-                    dataType  : 'date',
-                    width     : 150
+                    header   : Locale.get(lg, 'c_date'),
+                    dataIndex: 'regdate',
+                    dataType : 'date',
+                    width    : 150
                 }],
                 pagination : true,
                 filterInput: true,
@@ -257,18 +255,18 @@ define('controls/users/Panel', [
 
                 }.bind(this),
 
-                alternaterows     : true,
-                resizeColumns     : true,
-                selectable        : true,
-                multipleSelection : true,
-                resizeHeaderOnly  : true
+                alternaterows    : true,
+                resizeColumns    : true,
+                selectable       : true,
+                multipleSelection: true,
+                resizeHeaderOnly : true
             });
 
             // Events
             this.$Grid.addEvents({
-                onClick    : this.$gridClick,
-                onDblClick : this.$gridDblClick,
-                onBlur     : this.$gridBlur
+                onClick   : this.$gridClick,
+                onDblClick: this.$gridDblClick,
+                onBlur    : this.$gridBlur
             });
 
             // toolbar resize after insert
@@ -286,7 +284,7 @@ define('controls/users/Panel', [
          *
          * @param {Function} [callback]
          */
-        load : function (callback) {
+        load: function (callback) {
             this.Loader.show();
             this.$loadUsers(callback);
         },
@@ -297,7 +295,7 @@ define('controls/users/Panel', [
          * @param {Number} uid - User-ID
          * @return {Object} this
          */
-        openUser : function (uid) {
+        openUser: function (uid) {
             var self = this;
 
             require(['controls/users/User'], function (User) {
@@ -310,15 +308,15 @@ define('controls/users/Panel', [
         /**
          * Opens the users search settings
          */
-        search : function () {
+        search: function () {
             this.Loader.show();
 
             var self  = this,
                 Sheet = this.createSheet({
-                    title : Locale.get(lg, 'users.panel.search.title'),
-                    icon  : 'icon-search',
-                    closeButton : {
-                        text : 'schließen'
+                    title      : Locale.get(lg, 'users.panel.search.title'),
+                    icon : 'icon-search',
+                    closeButton: {
+                        text: 'schließen'
                     }
                 });
 
@@ -329,7 +327,7 @@ define('controls/users/Panel', [
                     var Body     = Sheet.getBody(),
                         settings = self.getAttribute('searchSettings'),
 
-                        values = Object.merge(
+                        values   = Object.merge(
                             {},
                             settings.filter,
                             settings.fields
@@ -357,24 +355,24 @@ define('controls/users/Panel', [
                     for (i = 0, len = inputs.length; i < len; i++) {
                         new_id = inputs[i].name + self.getId();
 
-                        inputs[ i ].set('id', new_id);
+                        inputs[i].set('id', new_id);
 
-                        if (values[ inputs[ i ].name ]) {
-                            if (inputs[ i ].type == 'checkbox') {
-                                inputs[ i ].checked = true;
+                        if (values[inputs[i].name]) {
+                            if (inputs[i].type == 'checkbox') {
+                                inputs[i].checked = true;
                             } else {
-                                inputs[ i ].value = values[ inputs[ i ].name ];
+                                inputs[i].value = values[inputs[i].name];
                             }
 
                         } else {
-                            if (inputs[ i ].type == 'checkbox') {
-                                inputs[ i ].checked = false;
+                            if (inputs[i].type == 'checkbox') {
+                                inputs[i].checked = false;
                             } else {
-                                inputs[ i ].value = '';
+                                inputs[i].value = '';
                             }
                         }
 
-                        Label = Frm.getElement('label[for="' + inputs[ i ].name + '"]');
+                        Label = Frm.getElement('label[for="' + inputs[i].name + '"]');
 
                         if (Label) {
                             Label.set('for', new_id);
@@ -389,22 +387,20 @@ define('controls/users/Panel', [
 
                     // search button
                     new QUIButton({
-                        textimage : 'icon-search',
-                        text : Locale.get(lg, 'users.panel.search.btn.start'),
-                        events :
-                        {
-                            onClick : function () {
+                        textimage: 'icon-search',
+                        text     : Locale.get(lg, 'users.panel.search.btn.start'),
+                        events   : {
+                            onClick: function () {
                                 self.execSearch(Sheet);
                             }
                         }
                     }).inject(Search, 'after');
 
                     Sheet.addButton({
-                        textimage : 'icon-search',
-                        text : Locale.get(lg, 'users.panel.search.btn.start'),
-                        events :
-                        {
-                            onClick : function () {
+                        textimage: 'icon-search',
+                        text     : Locale.get(lg, 'users.panel.search.btn.start'),
+                        events   : {
+                            onClick: function () {
                                 self.execSearch(Sheet);
                             }
                         }
@@ -422,36 +418,32 @@ define('controls/users/Panel', [
          *
          * @param {Object} Sheet - qui/desktop/panels/Sheet
          */
-        execSearch : function (Sheet) {
+        execSearch: function (Sheet) {
             var Frm = Sheet.getBody().getElement('form');
 
             this.setAttribute('search', true);
 
             // check if one checkbox is active
-            if (!Frm.elements.uid.checked &&
-                 !Frm.elements.username.checked &&
-                 !Frm.elements.email.checked &&
-                 !Frm.elements.firstname.checked &&
-                 !Frm.elements.lastname.checked) {
+            if (!Frm.elements.uid.checked && !Frm.elements.username.checked && !Frm.elements.email.checked && !Frm.elements.firstname.checked && !Frm.elements.lastname.checked) {
                 Frm.elements.uid.checked      = true;
                 Frm.elements.username.checked = true;
             }
 
 
             this.setAttribute('searchSettings', {
-                userSearchString : Frm.elements.search.value,
-                fields : {
-                    id        : Frm.elements.uid.checked,
-                    username  : Frm.elements.username.checked,
-                    email     : Frm.elements.email.checked,
-                    firstname : Frm.elements.firstname.checked,
-                    lastname  : Frm.elements.lastname.checked
+                userSearchString: Frm.elements.search.value,
+                fields          : {
+                    id       : Frm.elements.uid.checked,
+                    username : Frm.elements.username.checked,
+                    email    : Frm.elements.email.checked,
+                    firstname: Frm.elements.firstname.checked,
+                    lastname : Frm.elements.lastname.checked
                 },
-                filter : {
-                    filter_status        : Frm.elements.filter_status.value,
-                    filter_group         : Frm.elements.filter_group.value,
-                    filter_regdate_first : Frm.elements.filter_regdate_first.value,
-                    filter_regdate_last  : Frm.elements.filter_regdate_last.value
+                filter          : {
+                    filter_status       : Frm.elements.filter_status.value,
+                    filter_group        : Frm.elements.filter_group.value,
+                    filter_regdate_first: Frm.elements.filter_regdate_first.value,
+                    filter_regdate_last : Frm.elements.filter_regdate_last.value
                 }
             });
 
@@ -463,21 +455,21 @@ define('controls/users/Panel', [
         /**
          * Open the user create dialog
          */
-        createUser : function () {
+        createUser: function () {
             var self = this;
 
             new QUIPrompt({
-                name        : 'CreateUser',
-                title       : Locale.get(lg, 'users.panel.create.window.title'),
-                icon        : 'icon-user',
-                text        : Locale.get(lg, 'users.panel.create.window.text'),
-                information : Locale.get(lg, 'users.panel.create.window.information'),
+                name       : 'CreateUser',
+                title      : Locale.get(lg, 'users.panel.create.window.title'),
+                icon       : 'icon-user',
+                text       : Locale.get(lg, 'users.panel.create.window.text'),
+                information: Locale.get(lg, 'users.panel.create.window.information'),
 
-                width  : 500,
-                height : 150,
-                Panel  : this,
+                width : 500,
+                height: 150,
+                Panel : this,
 
-                check  : function (Win) {
+                check: function (Win) {
                     Win.Loader.show();
 
                     Users.existsUsername(
@@ -503,9 +495,8 @@ define('controls/users/Panel', [
                     return false;
                 },
 
-                events :
-                {
-                    onsubmit : function (value) {
+                events: {
+                    onsubmit: function (value) {
                         Users.createUser(value, function (result) {
                             self.openUser(result);
                         });
@@ -518,7 +509,7 @@ define('controls/users/Panel', [
         /**
          * onclick on the grid
          */
-        $gridClick : function (data) {
+        $gridClick: function (data) {
             var len    = data.target.selected.length,
                 Edit   = this.getButtons('userEdit'),
                 Delete = this.getButtons('userDel');
@@ -539,7 +530,7 @@ define('controls/users/Panel', [
         /**
          * dblclick on the grid
          */
-        $gridDblClick : function (data) {
+        $gridDblClick: function (data) {
             this.openUser(
                 data.target.getDataByRow(data.row).id
             );
@@ -548,7 +539,7 @@ define('controls/users/Panel', [
         /**
          * onblur on the grid
          */
-        $gridBlur : function () {
+        $gridBlur: function () {
             this.getGrid().unselectAll();
             this.getGrid().removeSections();
 
@@ -559,7 +550,7 @@ define('controls/users/Panel', [
         /**
          * Resize the users panel
          */
-        $onResize : function () {
+        $onResize: function () {
             var Body = this.getBody();
 
             if (!Body) {
@@ -591,7 +582,7 @@ define('controls/users/Panel', [
             var switches = Body.getElements('.qui-switch');
 
             for (i = 0, len = switches.length; i < len; i++) {
-                Control = QUI.Controls.getById(switches[ i ].get('data-quiid'));
+                Control = QUI.Controls.getById(switches[i].get('data-quiid'));
 
                 if (Control) {
                     Control.resize();
@@ -604,7 +595,7 @@ define('controls/users/Panel', [
          *
          * @param {Function} [callback]
          */
-        $loadUsers : function (callback) {
+        $loadUsers: function (callback) {
             var self = this;
 
             this.Loader.show();
@@ -613,14 +604,12 @@ define('controls/users/Panel', [
             this.setAttribute('icon', 'icon-refresh icon-spin');
             this.refresh();
 
-            if (this.getAttribute('search') &&
-                 !this.getBody().getElement('.messages-message')) {
+            if (this.getAttribute('search') && !this.getBody().getElement('.messages-message')) {
                 new Attention({
-                    Users   : this,
-                    message : Locale.get(lg, 'users.panel.search.info'),
-                    events  :
-                    {
-                        onClick : function (Message) {
+                    Users  : this,
+                    message: Locale.get(lg, 'users.panel.search.info'),
+                    events : {
+                        onClick: function (Message) {
                             self.setAttribute('search', false);
                             self.setAttribute('searchSettings', {});
 
@@ -628,10 +617,10 @@ define('controls/users/Panel', [
                             self.load();
                         }
                     },
-                    styles  : {
-                        margin : '0 0 20px',
-                        'border-width' : 1,
-                        cursor : 'pointer'
+                    styles : {
+                        margin        : '0 0 20px',
+                        'border-width': 1,
+                        cursor        : 'pointer'
                     }
                 }).inject(this.getBody(), 'top');
             }
@@ -640,12 +629,12 @@ define('controls/users/Panel', [
 
 
             Users.getList({
-                field : this.getAttribute('field'),
-                order : this.getAttribute('order'),
-                limit : this.getAttribute('limit'),
-                page  : this.getAttribute('page'),
-                search         : this.getAttribute('search'),
-                searchSettings : this.getAttribute('searchSettings')
+                field         : this.getAttribute('field'),
+                order         : this.getAttribute('order'),
+                limit         : this.getAttribute('limit'),
+                page          : this.getAttribute('page'),
+                search        : this.getAttribute('search'),
+                searchSettings: this.getAttribute('searchSettings')
 
             }, function (result) {
                 var Grid = self.getGrid();
@@ -676,7 +665,7 @@ define('controls/users/Panel', [
          *
          * @param {Object} Switch - qui/controls/buttons/Switch
          */
-        $btnSwitchStatus : function (Switch) {
+        $btnSwitchStatus: function (Switch) {
             var self = this,
                 User = Users.get(Switch.getAttribute('uid'));
 
@@ -697,18 +686,17 @@ define('controls/users/Panel', [
 
             if (Switch.getStatus() === false) {
                 new QUIConfirm({
-                    title : Locale.get(lg, 'users.panel.deactivate.window.title'),
-                    text  : Locale.get(lg, 'users.panel.deactivate.window.text', {
-                        userid   : User.getId(),
-                        username : User.getName()
+                    title      : Locale.get(lg, 'users.panel.deactivate.window.title'),
+                    text       : Locale.get(lg, 'users.panel.deactivate.window.text', {
+                        userid  : User.getId(),
+                        username: User.getName()
                     }),
-                    information : Locale.get(lg, 'users.panel.deactivate.window.information'),
-                    maxHeight : 400,
-                    maxWidth  : 600,
-                    autoclose : false,
-                    events    :
-                    {
-                        onSubmit : function (Win) {
+                    information: Locale.get(lg, 'users.panel.deactivate.window.information'),
+                    maxHeight  : 400,
+                    maxWidth   : 600,
+                    autoclose  : false,
+                    events     : {
+                        onSubmit: function (Win) {
                             Win.Loader.show();
 
                             Users.deactivate(Switch.getAttribute('uid'), function () {
@@ -722,7 +710,7 @@ define('controls/users/Panel', [
                             });
                         },
 
-                        onCancel : function () {
+                        onCancel: function () {
                             Switch.on();
                         }
                     }
@@ -740,18 +728,18 @@ define('controls/users/Panel', [
          * @param {Object} Users - classes/users/Users
          * @param {Object} ids - User-IDs
          */
-        $onSwitchStatus : function (Users, ids) {
+        $onSwitchStatus: function (Users, ids) {
             var i, len, Switch, entry, status;
 
             var Grid = this.getGrid(),
                 data = Grid.getData();
 
             for (i = 0, len = data.length; i < len; i++) {
-                if (typeof ids[ data[ i ].id ] === 'undefined') {
+                if (typeof ids[data[i].id] === 'undefined') {
                     continue;
                 }
 
-                entry = data[ i ];
+                entry = data[i];
 
                 status = (entry.active).toInt();
                 Switch = entry.status;
@@ -775,13 +763,13 @@ define('controls/users/Panel', [
          * @param {Object} Users - classes/users/Users
          * @param {Object} User - classes/users/User
          */
-        $onUserRefresh : function (Users, User) {
+        $onUserRefresh: function (Users, User) {
             var Grid = this.getGrid(),
                 data = Grid.getData(),
                 id   = User.getId();
 
             for (var i = 0, len = data.length; i < len; i++) {
-                if (data[ i ].id != id) {
+                if (data[i].id != id) {
                     continue;
                 }
 
@@ -792,21 +780,21 @@ define('controls/users/Panel', [
         /**
          * if a user is deleted
          */
-        $onDeleteUser : function (Users, ids) {
+        $onDeleteUser: function (Users, ids) {
             var i, id, len;
 
             var Grid = this.getGrid(),
                 data = Grid.getData(),
-                _tmp = {};
+                tmp  = {};
 
             for (i = 0, len = ids.length; i < len; i++) {
-                _tmp[ ids[i] ] = true;
+                tmp[ids[i]] = true;
             }
 
             for (i = 0, len = data.length; i < len; i++) {
-                id = data[ i ].id;
+                id = data[i].id;
 
-                if (_tmp[ id ]) {
+                if (tmp[id]) {
                     this.load();
                     break;
                 }
@@ -816,7 +804,7 @@ define('controls/users/Panel', [
         /**
          * Open all marked users
          */
-        $onButtonEditClick : function () {
+        $onButtonEditClick: function () {
             var Parent  = this.getParent(),
                 Grid    = this.getGrid(),
                 seldata = Grid.getSelectedData();
@@ -826,7 +814,7 @@ define('controls/users/Panel', [
             }
 
             if (seldata.length == 1) {
-                this.openUser(seldata[ 0 ].id);
+                this.openUser(seldata[0].id);
                 return;
             }
 
@@ -843,7 +831,7 @@ define('controls/users/Panel', [
                     Parent.appendTask(TaskGroup);
 
                     for (i = 0, len = seldata.length; i < len; i++) {
-                        User = new UserPanel(seldata[ i ].id);
+                        User = new UserPanel(seldata[i].id);
                         Task = Parent.instanceToTask(User);
 
                         TaskGroup.appendChild(Task);
@@ -857,21 +845,21 @@ define('controls/users/Panel', [
             }
 
             for (i = 0, len = seldata.length; i < len; i++) {
-                this.openUser(seldata[ i ].id);
+                this.openUser(seldata[i].id);
             }
         },
 
         /**
          * Open deletion popup
          */
-        $onButtonDelClick : function () {
+        $onButtonDelClick: function () {
             var i, len;
 
             var uids = [],
                 data = this.getGrid().getSelectedData();
 
             for (i = 0, len = data.length; i < len; i++) {
-                uids.push(data[ i ].id);
+                uids.push(data[i].id);
             }
 
             if (!uids.length) {
@@ -879,21 +867,20 @@ define('controls/users/Panel', [
             }
 
             new QUIConfirm({
-                name  : 'DeleteUsers',
-                title : Locale.get(lg, 'users.panel.delete.window.title'),
-                icon  : 'fa fa-trash-o icon-trash',
-                text  : Locale.get(lg, 'users.panel.delete.window.text', {
-                    userids : uids.join(', ')
+                name       : 'DeleteUsers',
+                title      : Locale.get(lg, 'users.panel.delete.window.title'),
+                icon       : 'fa fa-trash-o icon-trash',
+                text       : Locale.get(lg, 'users.panel.delete.window.text', {
+                    userids: uids.join(', ')
                 }),
-                texticon    : 'fa fa-trash-o icon-trash',
-                information : Locale.get(lg, 'users.panel.delete.window.information'),
+                texticon   : 'fa fa-trash-o icon-trash',
+                information: Locale.get(lg, 'users.panel.delete.window.information'),
 
-                width  : 500,
-                height : 150,
-                uids   : uids,
-                events :
-                {
-                    onSubmit : function (Win) {
+                width : 500,
+                height: 150,
+                uids  : uids,
+                events: {
+                    onSubmit: function (Win) {
                         require(['Users'], function (Users) {
                             Users.deleteUsers(
                                 Win.getAttribute('uids'),
@@ -913,25 +900,25 @@ define('controls/users/Panel', [
          * @param {Array} data
          * @return {Array}
          */
-        $parseDataForGrid : function (data) {
+        $parseDataForGrid: function (data) {
             var i, len, entry;
 
             for (i = 0, len = data.length; i < len; i++) {
-                entry = data[ i ];
+                entry = data[i];
 
-                data[ i ].active    = (entry.active).toInt();
-                data[ i ].usergroup = entry.usergroup || '';
+                data[i].active    = (entry.active).toInt();
+                data[i].usergroup = entry.usergroup || '';
 
                 if (entry.active == -1) {
                     continue;
                 }
 
-                data[ i ].status = new QUISwitch({
-                    status : entry.active == 1 ? true : false,
-                    uid    : entry.id,
-                    title  : entry.active ? this.active_text : this.deactive_text,
-                    events : {
-                        onChange : this.$btnSwitchStatus
+                data[i].status = new QUISwitch({
+                    status: entry.active == 1 ? true : false,
+                    uid   : entry.id,
+                    title : entry.active ? this.active_text : this.deactive_text,
+                    events: {
+                        onChange: this.$btnSwitchStatus
                     }
                 });
             }
@@ -945,13 +932,13 @@ define('controls/users/Panel', [
          * @param {Object} User - classes/users/User
          * @returns {Object|Boolean} (qui/controls/buttons/Switch)
          */
-        $getUserSwitch : function (User) {
+        $getUserSwitch: function (User) {
             var Grid = this.getGrid(),
                 data = Grid.getData(),
                 id   = User.getId();
 
             for (var i = 0, len = data.length; i < len; i++) {
-                if (data[ i ].id != id) {
+                if (data[i].id != id) {
                     continue;
                 }
 
@@ -968,7 +955,7 @@ define('controls/users/Panel', [
          * @param {Object} User - classes/users/User
          * @return {Object}
          */
-        userToGridData : function (User) {
+        userToGridData: function (User) {
             var active = (User.isActive()).toInt(),
                 id     = User.getId(),
                 result = User.getAttributes();
@@ -977,11 +964,11 @@ define('controls/users/Panel', [
 
             if (active != -1) {
                 result.status = new QUISwitch({
-                    status : active == 1 ? true : false,
-                    uid    : id,
-                    title  : active ? this.active_text : this.deactive_text,
-                    events : {
-                        onChange : this.$btnSwitchStatus
+                    status: active == 1 ? true : false,
+                    uid   : id,
+                    title : active ? this.active_text : this.deactive_text,
+                    events: {
+                        onChange: this.$btnSwitchStatus
                     }
                 });
             }
