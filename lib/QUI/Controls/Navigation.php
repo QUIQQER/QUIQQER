@@ -26,9 +26,12 @@ class Navigation extends QUI\Control
     {
         // defaults values
         $this->setAttributes(array(
-            'startId'  => 1, // id or site link
-            'homelink' => false,
-            'levels'   => false
+            'startId'   => 1, // id or site link
+            'homeLink'  => false,
+            'levels'    => false,
+            'homeIcon'  => 'fa-home',
+            'listIcon'  => 'fa-angle-right',
+            'levelIcon' => 'fa-angle-double-down'
         ));
 
         parent::setAttributes($attributes);
@@ -86,9 +89,15 @@ class Navigation extends QUI\Control
             'this'        => $this,
             'Project'     => $this->_getProject(),
             'Site'        => $Site,
-            'navTemplate' => dirname(__FILE__).'/Navigation.html',
+            'homeLink'    => $homeLink = $this->getAttribute('homeLink'),
+            'activeId'    => $Site->getId(),
             'activeId'    => $activeId,
-            'levels'      => $levels
+            'navTemplate' => dirname(__FILE__).'/Navigation.html',
+            'levels'      => $levels,
+            'Rewrite'     => QUI::getRewrite(),
+            'homeIcon'    => $homeIcon = $this->getAttribute('homeIcon'),
+            'listIcon'    => $listIcon = $this->getAttribute('listIcon'),
+            'levelIcon'   => $levelIcon = $this->getAttribute('levelIcon')
         ));
 
         $html = $Engine->fetch(dirname(__FILE__).'/Navigation.html');
