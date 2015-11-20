@@ -39,14 +39,13 @@ define('controls/projects/project/media/Popup', [
         ],
 
         options: {
-            project        : false,
-            fileid         : false,
-            closeButtonText: QUILocale.get('quiqqer/system', 'cancel'),
-
+            project             : false,
+            fileid              : false,
+            closeButtonText     : QUILocale.get('quiqqer/system', 'cancel'),
             breadcrumb          : true,
             selectable          : true,
             selectable_types    : false,   // you can specified which types are selectable
-            selectable_mimetypes: false  	// you can specified which mime types are selectable
+            selectable_mimetypes: false    // you can specified which mime types are selectable
         },
 
         initialize: function (options) {
