@@ -3,12 +3,12 @@
 require 'header.php';
 
 // qui path
-$qui_path = URL_OPT_DIR.'bin/qui/';
-$qui_extend = URL_OPT_DIR.'bin/qui/extend/';
+$qui_path   = URL_OPT_DIR . 'bin/qui/';
+$qui_extend = URL_OPT_DIR . 'bin/qui/extend/';
 
-$config = array();
+$config            = array();
 $config['globals'] = QUI::conf('globals');
-$config['gui'] = QUI::conf('gui');
+$config['gui']     = QUI::conf('gui');
 
 $Project = null;
 
@@ -34,11 +34,11 @@ try {
         href="//fonts.googleapis.com/css?family=Open+Sans:400,700,400italic|Bitter"
         rel="stylesheet"
         type="text/css"
-        />
+    />
 
     <meta name="viewport"
           content="width=device-width, initial-scale=1, minimum-scale=1,maximum-scale=1"
-        />
+    />
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
@@ -55,56 +55,56 @@ try {
     <link href="<?php echo URL_BIN_DIR; ?>css/tables.css"
           rel="stylesheet"
           type="text/css"
-        />
+    />
 
     <link href="<?php echo $qui_extend; ?>font-awesome/css/font-awesome.min.css"
           rel="stylesheet"
           type="text/css"
-        />
+    />
 
     <!--[if (lt IE 9) & (!IEMobile)]>
     <link href="<?php echo $qui_extend; ?>unsemantic/ie.css"
           rel="stylesheet"
           type="text/css"
-        />
+    />
     <![endif]-->
 
     <link
         href="<?php echo $qui_extend; ?>unsemantic/unsemantic-grid-responsive.css"
         rel="stylesheet"
         type="text/css"
-        />
+    />
 
     <link href="<?php echo $qui_extend; ?>animate.min.css"
           rel="stylesheet"
           type="text/css"
-        />
+    />
 
     <link href="<?php echo $qui_extend; ?>classes.css"
           rel="stylesheet"
           type="text/css"
-        />
+    />
 
     <link href="<?php echo $qui_extend; ?>buttons.css"
           rel="stylesheet"
           type="text/css"
-        />
+    />
 
     <link href="<?php echo $qui_extend; ?>elements.css"
           rel="stylesheet"
           type="text/css"
-        />
+    />
 
     <link href="<?php echo URL_BIN_DIR; ?>css/style.css"
           rel="stylesheet"
           type="text/css"
-        />
+    />
 
     <script type="text/javascript">
         /* <![CDATA[ */
         var USER = {
             isSU: <?php echo $User->isSU() ? 1 : 0; ?>,
-            id: <?php echo $User->getId() ? $User->getId() : 0; ?>,
+            id  : <?php echo $User->getId() ? $User->getId() : 0; ?>,
             lang: "<?php echo $User->getLang(); ?>",
             name: "<?php echo $User->getName(); ?>"
         };
@@ -131,14 +131,14 @@ try {
         )); ?>;
 
         var QUIQQER = {
-            Rewrite: {
-                URL_PARAM_SEPERATOR: "<?php echo \QUI\Rewrite::URL_PARAM_SEPERATOR; ?>",
-                URL_SPACE_CHARACTER: "<?php echo \QUI\Rewrite::URL_SPACE_CHARACTER; ?>",
+            Rewrite         : {
+                URL_PARAM_SEPERATOR  : "<?php echo \QUI\Rewrite::URL_PARAM_SEPERATOR; ?>",
+                URL_SPACE_CHARACTER  : "<?php echo \QUI\Rewrite::URL_SPACE_CHARACTER; ?>",
                 URL_PROJECT_CHARACTER: "<?php echo \QUI\Rewrite::URL_PROJECT_CHARACTER; ?>",
-                SUFFIX : "<?php echo \QUI\Rewrite::getDefaultSuffix(); ?>"
+                SUFFIX               : "<?php echo \QUI\Rewrite::getDefaultSuffix(); ?>"
             },
             inAdministration: true,
-            lu: "<?php echo QUI::getPackageManager()->getLastUpdateDate(); ?>"
+            lu              : "<?php echo QUI::getPackageManager()->getLastUpdateDate(); ?>"
         };
 
         /* ]]> */
@@ -161,12 +161,12 @@ try {
     $locales = array();
 
     foreach ($files as $package => $file) {
-        $locales[] = $package.'/'.$User->getLang();
+        $locales[] = $package . '/' . $User->getLang();
     }
 
     echo '<script type="text/javascript">';
     echo '/* <![CDATA[ */';
-    echo 'var QUIQQER_LOCALE = '.json_encode($locales, true);
+    echo 'var QUIQQER_LOCALE = ' . json_encode($locales, true);
     echo '/* ]]> */';
     echo '</script>';
 
@@ -210,7 +210,7 @@ try {
 <script src="<?php echo URL_BIN_DIR; ?>QUI/init.js"></script>
 
 <?php
-\QUI::getEvents()->fireEvent('adminLoadFooter');
+QUI::getEvents()->fireEvent('adminLoadFooter');
 ?>
 
 </body>

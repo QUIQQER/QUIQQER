@@ -105,13 +105,19 @@ class Permission
      */
     static function checkAdminUser($User = false)
     {
+        $UserToCheck = false;
+
         if ($User === false) {
-            $User = QUI::getUserBySession();
+            $UserToCheck = QUI::getUserBySession();
         }
 
-        self::checkUser($User);
+        if ($User === false) {
+            self::checkUser();
+        } else {
+            self::checkUser($UserToCheck);
+        }
 
-        if (!self::isAdmin($User)) {
+        if (!self::isAdmin($UserToCheck)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
@@ -323,13 +329,19 @@ class Permission
      */
     static function checkSU($User = false)
     {
+        $UserToCheck = false;
+
         if ($User === false) {
-            $User = QUI::getUserBySession();
+            $UserToCheck = QUI::getUserBySession();
         }
 
-        self::checkUser($User);
+        if ($UserToCheck) {
+            self::checkUser($User);
+        } else {
+            self::checkUser();
+        }
 
-        if (!self::isSU()) {
+        if (!self::isSU($UserToCheck)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
@@ -349,11 +361,19 @@ class Permission
      */
     static function checkUser($User = false)
     {
+        $UserToCheck = $User;
+
         if ($User === false) {
-            $User = QUI::getUserBySession();
+            $UserToCheck = QUI::getUserBySession();
         }
 
-        if (get_class($User) !== 'QUI\\Users\\User') {
+        if (get_class($UserToCheck) !== 'QUI\\Users\\User') {
+
+            if ($User === false) {
+                QUI::getUsers()->checkUserSession();
+            }
+
+            // if no exception throws
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',

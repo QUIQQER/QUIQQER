@@ -131,6 +131,8 @@ if (isset($_POST['username'])
 } elseif (QUI::getSession()->get('uid')) {
 
     try {
+        QUI::getUsers()->checkUserSession();
+
         $User = QUI::getUserBySession();
 
     } catch (QUI\Exception $Exception) {
@@ -147,8 +149,7 @@ if (isset($_GET['logout'])) {
     if (isset($_SERVER['REQUEST_URI'])
         && strpos($_SERVER['REQUEST_URI'], 'logout=1') !== false
     ) {
-        header('Location: '.str_replace('logout=1', '',
-                $_SERVER['REQUEST_URI']));
+        header('Location: '.str_replace('logout=1', '', $_SERVER['REQUEST_URI']));
         exit;
     }
 }
