@@ -5,13 +5,14 @@
  * @author www.pcsg.de (Henning Leutz)
  *
  * @require qui/controls/windows/Popup
+ * @require qui/controls/windows/Confirm
  * @require qui/controls/buttons/Button
  * @require controls/projects/project/media/Panel
+ * @require controls/projects/Select
  * @require Projects
  * @require Locale
  * @require Ajax
  */
-
 define('controls/projects/project/media/Popup', [
 
     'qui/controls/windows/Popup',
@@ -42,6 +43,7 @@ define('controls/projects/project/media/Popup', [
             fileid         : false,
             closeButtonText: QUILocale.get('quiqqer/system', 'cancel'),
 
+            breadcrumb          : true,
             selectable          : true,
             selectable_types    : false,   // you can specified which types are selectable
             selectable_mimetypes: false  	// you can specified which mime types are selectable
@@ -127,10 +129,10 @@ define('controls/projects/project/media/Popup', [
                                 self.Loader.show();
 
                                 moofx(SelectContainer).animate({
-                                    opacity : 0
+                                    opacity: 0
                                 }, {
-                                    duration : 250,
-                                    callback : function() {
+                                    duration: 250,
+                                    callback: function () {
                                         self.$onCreate();
                                     }
                                 });
@@ -173,6 +175,7 @@ define('controls/projects/project/media/Popup', [
                     dragable            : false,
                     collapsible         : false,
                     selectable          : true,
+                    breadcrumb          : self.getAttribute('breadcrumb'),
                     selectable_types    : self.getAttribute('selectable_types'),
                     selectable_mimetypes: self.getAttribute('selectable_mimetypes'),
                     events              : {

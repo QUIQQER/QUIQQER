@@ -24,9 +24,9 @@ class Manager
     /**
      * Send a mail
      *
-     * @param String $to
-     * @param String $subject
-     * @param String $body
+     * @param string $to
+     * @param string $subject
+     * @param string $body
      */
     public function send($to, $subject, $body)
     {

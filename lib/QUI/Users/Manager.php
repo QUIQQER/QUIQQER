@@ -32,21 +32,21 @@ class Manager
     /**
      * Return the db table
      *
-     * @return String
+     * @return string
      */
     static function Table()
     {
-        return QUI_DB_PRFX.'users';
+        return QUI_DB_PRFX . 'users';
     }
 
     /**
      * Return the db table for the addresses
      *
-     * @return String
+     * @return string
      */
     static function TableAddress()
     {
-        return QUI_DB_PRFX.'users_address';
+        return QUI_DB_PRFX . 'users_address';
     }
 
     /**
@@ -84,8 +84,8 @@ class Manager
 
         // Patch
         $DataBase->getPDO()->exec(
-            'ALTER TABLE `'.self::Table()
-            .'` CHANGE `birthday` `birthday` DATE NULL DEFAULT NULL'
+            'ALTER TABLE `' . self::Table()
+            . '` CHANGE `birthday` `birthday` DATE NULL DEFAULT NULL'
         );
 
         // Addresses
@@ -108,8 +108,8 @@ class Manager
         $DataBase->Table()->setIndex(self::TableAddress(), 'id');
 
         $DataBase->getPDO()->exec(
-            'ALTER TABLE `'.self::TableAddress()
-            .'` CHANGE `id` `id` INT( 11 ) NOT NULL AUTO_INCREMENT'
+            'ALTER TABLE `' . self::TableAddress()
+            . '` CHANGE `id` `id` INT( 11 ) NOT NULL AUTO_INCREMENT'
         );
     }
 
@@ -118,7 +118,7 @@ class Manager
      *
      * @param QUI\Users\User|QUI\Users\Nobody $User
      *
-     * @return Bool
+     * @return boolean
      */
     public function isAuth($User)
     {
@@ -145,7 +145,7 @@ class Manager
      *
      * @param mixed $User
      *
-     * @return Bool
+     * @return boolean
      */
     public function isUser($User)
     {
@@ -165,7 +165,7 @@ class Manager
      *
      * @param mixed $User
      *
-     * @return Bool
+     * @return boolean
      */
     public function isSystemUser($User)
     {
@@ -210,7 +210,7 @@ class Manager
     /**
      * Create a new User
      *
-     * @param String|bool $username - (optional), new username
+     * @param string|boolean $username - (optional), new username
      *
      * @return QUI\Users\User
      * @throws QUI\Exception
@@ -233,10 +233,10 @@ class Manager
 
         } else {
             $newname = 'Neuer Benutzer';
-            $i = 0;
+            $i       = 0;
 
             while ($this->usernameExists($newname)) {
-                $newname = 'Neuer Benutzer ('.$i.')';
+                $newname = 'Neuer Benutzer (' . $i . ')';
                 $i++;
             }
         }
@@ -322,7 +322,7 @@ class Manager
         }
 
         $regparams = array();
-        $optional = array(
+        $optional  = array(
             'firstname',
             'lastname',
             'usertitle',
@@ -345,7 +345,7 @@ class Manager
             // Benutzergruppen gesondert behandeln - darf nicht in die Root Gruppe
             if ($key == 'usergroup') {
                 $_gids = explode(',', $value);
-                $gids = array();
+                $gids  = array();
 
                 foreach ($_gids as $gid) {
                     if (!empty($gid) && $gid != $rootid) {
@@ -353,7 +353,7 @@ class Manager
                     }
                 }
 
-                $regparams['usergroup'] = ','.implode(',', $gids).',';
+                $regparams['usergroup'] = ',' . implode(',', $gids) . ',';
                 continue;
             }
 
@@ -369,14 +369,14 @@ class Manager
 
         $Session = QUI::getSession();
 
-        $regparams['id'] = $this->_newId();
-        $regparams['su'] = 0;
-        $regparams['username'] = $username;
-        $regparams['password'] = $password;
-        $regparams['active'] = 0;
+        $regparams['id']         = $this->_newId();
+        $regparams['su']         = 0;
+        $regparams['username']   = $username;
+        $regparams['password']   = $password;
+        $regparams['active']     = 0;
         $regparams['activation'] = Orthos::getPassword(20);
-        $regparams['regdate'] = time();
-        $regparams['lastedit'] = date('Y-m-d H:i:s');
+        $regparams['regdate']    = time();
+        $regparams['lastedit']   = date('Y-m-d H:i:s');
         $regparams['user_agent'] = $useragent;
 
         if ($Session->get('ref')) {
@@ -393,7 +393,7 @@ class Manager
     /**
      * Returns the number of users in the system
      *
-     * @return Integer
+     * @return integer
      */
     public function countAllUsers()
     {
@@ -412,7 +412,7 @@ class Manager
     /**
      * Get all users
      *
-     * @param Bool $objects - as objects=true, as array=false
+     * @param boolean $objects - as objects=true, as array=false
      *
      * @return array
      */
@@ -426,7 +426,7 @@ class Manager
         }
 
         $result = array();
-        $ids = $this->getAllUserIds();
+        $ids    = $this->getAllUserIds();
 
         foreach ($ids as $id) {
             try {
@@ -459,9 +459,9 @@ class Manager
     /**
      * Get specific users
      *
-     * @param Array $params -> SQL Array
+     * @param array $params -> SQL Array
      *
-     * @return Array
+     * @return array
      */
     public function getUsers($params = array())
     {
@@ -488,14 +488,14 @@ class Manager
     /**
      * Get specific users ids
      *
-     * @param Array $params -> SQL Array
+     * @param array $params -> SQL Array
      *
-     * @return Array
+     * @return array
      */
     public function getUserIds($params = array())
     {
         $params['select'] = 'id';
-        $params['from'] = self::Table();
+        $params['from']   = self::Table();
 
         return QUI::getDataBase()->fetch($params);
     }
@@ -503,8 +503,8 @@ class Manager
     /**
      * Loged in a user
      *
-     * @param String $username - username
-     * @param String $pass     - password
+     * @param string $username - username
+     * @param string $pass - password
      *
      * @return QUI\Users\User
      * @throws QUI\Exception
@@ -529,7 +529,7 @@ class Manager
 
         if (!get_magic_quotes_gpc()) {
             $username = addslashes($username);
-            $pass = addslashes($pass);
+            $pass     = addslashes($pass);
         }
 
         if (empty($pass)) {
@@ -537,7 +537,7 @@ class Manager
         }
 
         // Authentifizierung
-        $authType = QUI::conf('auth', 'type');
+        $authType  = QUI::conf('auth', 'type');
         $authClass = $authType;
 
         if ($authType == 'standard') {
@@ -556,7 +556,7 @@ class Manager
             );
         }
 
-        $Auth = new $authClass($username);
+        $Auth       = new $authClass($username);
         $implements = class_implements($Auth);
 
         if (!isset($implements['QUI\Interfaces\Users\Auth'])) {
@@ -584,7 +584,7 @@ class Manager
 
         // check user data
         $userData = QUI::getDataBase()->fetch(array(
-            'select' => array('id', 'expire', 'secHash'),
+            'select' => array('id', 'expire', 'secHash', 'active'),
             'from'   => self::Table(),
             'where'  => array(
                 'id' => $userId
@@ -602,21 +602,28 @@ class Manager
             );
         }
 
+        if ($userData[0]['active'] == 0) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get('quiqqer/system', 'exception.login.fail'),
+                401
+            );
+        }
+
         if ($userData[0]['expire']
             && $userData[0]['expire'] != '0000-00-00 00:00:00'
             && strtotime($userData[0]['expire']) < time()
         ) {
             throw new QUI\Exception(
                 QUI::getLocale()
-                   ->get('quiqqer/system', 'exception.login.expire', array(
-                       'expire' => $userData[0]['expire']
-                   ))
+                    ->get('quiqqer/system', 'exception.login.expire', array(
+                        'expire' => $userData[0]['expire']
+                    ))
             );
         }
 
 
-        $User = $this->get($userId);
-        $Groups = $User->Group;
+        $User        = $this->get($userId);
+        $Groups      = $User->Group;
         $groupActive = false;
 
         foreach ($Groups as $Group) {
@@ -671,7 +678,7 @@ class Manager
     public function getSecHash()
     {
         $secHashData = array();
-        $useragent = '';
+        $useragent   = '';
 
         // chromeframe nicht mitaufnehmen -> bug
         if (isset($_SERVER['HTTP_USER_AGENT'])
@@ -711,14 +718,23 @@ class Manager
 
             $User = $this->get(QUI::getSession()->get('uid'));
 
+            if (!$User->isActive()) {
+                QUI::getSession()->destroy();
+
+                throw new QUI\Exception(
+                    QUI::getLocale()->get('quiqqer/system', 'exception.user.inactive'),
+                    401
+                );
+            }
+
             // Mehrfachanmeldungen? Dann keine Prüfung
             if (QUI::conf('session', 'multible')) {
                 return $User;
             }
 
             $sessionSecHash = QUI::getSession()->get('secHash');
-            $secHash = $this->getSecHash();
-            $userSecHash = $User->getAttribute('secHash');
+            $secHash        = $this->getSecHash();
+            $userSecHash    = $User->getAttribute('secHash');
 
             if ($sessionSecHash == $secHash && $userSecHash == $secHash) {
                 return $User;
@@ -754,7 +770,7 @@ class Manager
     /**
      * Get the user by id
      *
-     * @param Integer $id
+     * @param integer $id
      *
      * @return QUI\Users\User|false
      */
@@ -774,7 +790,7 @@ class Manager
             return $this->_users[$id];
         }
 
-        $User = new User($id, $this);
+        $User              = new User($id, $this);
         $this->_users[$id] = $User;
 
         return $User;
@@ -783,7 +799,7 @@ class Manager
     /**
      * get the user by username
      *
-     * @param String $username - Username
+     * @param string $username - Username
      *
      * @throws QUI\Exception
      * @return QUI\Users\User
@@ -815,7 +831,7 @@ class Manager
     /**
      * Get the user by email
      *
-     * @param String $email - User E-Mail
+     * @param string $email - User E-Mail
      *
      * @return QUI\Users\User
      * @throws QUI\Exception
@@ -858,9 +874,9 @@ class Manager
     /**
      * Checks if the username already exists
      *
-     * @param String $username
+     * @param string $username
      *
-     * @return Bool
+     * @return boolean
      */
     public function usernameExists($username)
     {
@@ -905,9 +921,9 @@ class Manager
     /**
      * Checks the e-mail if this is already on the system
      *
-     * @param String $email
+     * @param string $email
      *
-     * @return Bool
+     * @return boolean
      */
     public function emailExists($email)
     {
@@ -926,27 +942,27 @@ class Manager
     /**
      * Generates a hash of a password
      *
-     * @param String $pass
-     * @param String $salt (optional) - use specific salt for password generation [default: randomly generated]
+     * @param string $pass
+     * @param string $salt (optional) - use specific salt for password generation [default: randomly generated]
      *
-     * @return String
+     * @return string
      */
     static function genHash($pass, $salt = null)
     {
         if (is_null($salt)) {
             $randomBytes = openssl_random_pseudo_bytes(SALT_LENGTH);
-            $salt = mb_substr(bin2hex($randomBytes), 0, SALT_LENGTH);
+            $salt        = mb_substr(bin2hex($randomBytes), 0, SALT_LENGTH);
         }
 
-        return $salt.md5($salt.$pass);
+        return $salt . md5($salt . $pass);
     }
 
     /**
      * Delete the user
      *
-     * @param Integer $id
+     * @param integer $id
      *
-     * @return Bool
+     * @return boolean
      */
     public function deleteUser($id)
     {
@@ -956,9 +972,9 @@ class Manager
     /**
      * Search all users
      *
-     * @param Array $params
+     * @param array $params
      *
-     * @return Array
+     * @return array
      */
     public function search($params)
     {
@@ -968,9 +984,9 @@ class Manager
     /**
      * Anzahl der Rechnungen
      *
-     * @param Array $params - Search parameter
+     * @param array $params - Search parameter
      *
-     * @return Array
+     * @return array
      */
     public function count($params)
     {
@@ -987,14 +1003,14 @@ class Manager
      *
      * @todo where params
      *
-     * @param Array $params
+     * @param array $params
      *
-     * @return Array
+     * @return array
      * @throws QUI\Database\Exception
      */
     protected function _search($params)
     {
-        $PDO = QUI::getDataBase()->getPDO();
+        $PDO    = QUI::getDataBase()->getPDO();
         $params = Orthos::clearArray($params);
 
         $allowOrderFields = array(
@@ -1010,17 +1026,17 @@ class Manager
             'su'        => true
         );
 
-        $max = 10;
+        $max   = 10;
         $start = 0;
 
         /**
          * SELECT
          */
-        $query = 'SELECT * FROM '.self::Table();
+        $query = 'SELECT * FROM ' . self::Table();
         $binds = array();
 
         if (isset($params['count'])) {
-            $query = 'SELECT COUNT( id ) AS count FROM '.self::Table();
+            $query = 'SELECT COUNT( id ) AS count FROM ' . self::Table();
         }
 
         /**
@@ -1052,10 +1068,10 @@ class Manager
             $filter = $params['searchSettings']['filter'];
             $fields = $params['searchSettings']['fields'];
 
-            $filter_status = false;
-            $filter_group = false;
+            $filter_status        = false;
+            $filter_group         = false;
             $filter_regdate_first = false;
-            $filter_regdate_last = false;
+            $filter_regdate_last  = false;
 
             // set the filters
             if (isset($filter['filter_status'])
@@ -1085,7 +1101,7 @@ class Manager
 
             // create the search
             $query .= ' WHERE (';
-            $binds[':search'] = '%'.$search.'%';
+            $binds[':search'] = '%' . $search . '%';
 
             if (empty($search)) {
                 $binds[':search'] = '%';
@@ -1100,7 +1116,7 @@ class Manager
                     continue;
                 }
 
-                $query .= ' '.$field.' LIKE :search OR ';
+                $query .= ' ' . $field . ' LIKE :search OR ';
             }
 
             if (substr($query, -3) == 'OR ') {
@@ -1126,8 +1142,8 @@ class Manager
 
                 foreach ($groups as $groupId) {
                     if ((int)$groupId > 0) {
-                        $query .= ' AND usergroup LIKE "%:'.$groupId.'%" ';
-                        $binds[':'.$groupId] = (int)$groupId;
+                        $query .= ' AND usergroup LIKE "%:' . $groupId . '%" ';
+                        $binds[':' . $groupId] = (int)$groupId;
                     }
                 }
             }
@@ -1136,7 +1152,7 @@ class Manager
             if ($filter_regdate_first) {
                 $query .= ' AND regdate >= :firstreg ';
                 $binds[':firstreg'] = QUI\Utils\Convert::convertMySqlDatetime(
-                    $filter['filter_regdate_first'].' 00:00:00'
+                    $filter['filter_regdate_first'] . ' 00:00:00'
                 );
             }
 
@@ -1144,7 +1160,7 @@ class Manager
             if ($filter_regdate_last) {
                 $query .= " AND regdate <= :lastreg ";
                 $binds[':lastreg'] = QUI\Utils\Convert::convertMySqlDatetime(
-                    $filter['filter_regdate_last'].' 00:00:00'
+                    $filter['filter_regdate_last'] . ' 00:00:00'
                 );
             }
         }
@@ -1158,7 +1174,7 @@ class Manager
             && $params['field']
             && isset($allowOrderFields[$params['field']])
         ) {
-            $query .= ' ORDER BY '.$params['field'].' '.$params['order'];
+            $query .= ' ORDER BY ' . $params['field'] . ' ' . $params['order'];
         }
 
         /**
@@ -1173,7 +1189,7 @@ class Manager
                 $start = (int)$params['start'];
             }
 
-            $query .= ' LIMIT '.$start.', '.$max;
+            $query .= ' LIMIT ' . $start . ', ' . $max;
         }
 
         $Statement = $PDO->prepare($query);
@@ -1213,13 +1229,13 @@ class Manager
     /**
      * Gibt eine neue Benutzer Id zwischen 100 und 1000000000 zurück
      *
-     * @return Integer
+     * @return integer
      * @throws QUI\Exception
      */
     protected function _newId()
     {
         $create = true;
-        $newid = false;
+        $newid  = false;
 
         while ($create) {
             srand(microtime() * 1000000);
@@ -1250,9 +1266,9 @@ class Manager
     /**
      * Delete illegal characters from the name
      *
-     * @param String $username
+     * @param string $username
      *
-     * @return Bool
+     * @return boolean
      */
     static function clearUsername($username)
     {
@@ -1262,9 +1278,9 @@ class Manager
     /**
      * Checks name for illegal characters
      *
-     * @param String $username
+     * @param string $username
      *
-     * @return Bool
+     * @return boolean
      * @throws QUI\Exception
      */
     static function checkUsernameSigns($username)
@@ -1272,7 +1288,7 @@ class Manager
         if ($username != self::clearUsername($username)) {
             throw new QUI\Exception(
                 QUI::getLocale()
-                   ->get('quiqqer/system', 'exception.lib.user.illegal.signs')
+                    ->get('quiqqer/system', 'exception.lib.user.illegal.signs')
             );
         }
 

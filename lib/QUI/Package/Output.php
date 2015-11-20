@@ -6,6 +6,7 @@
 
 namespace QUI\Package;
 
+use QUI;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 
@@ -16,20 +17,20 @@ use Symfony\Component\Console\Formatter\OutputFormatterInterface;
  * @author www.namerobot.com (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
  *
- * @event onOutput [ String $message ]
+ * @event onOutput [ string $message ]
  */
 
 class Output extends \Symfony\Component\Console\Output\Output
 {
     /**
      * List of messages
-     * @var Array
+     * @var array
      */
     protected $_messages = array();
 
     /**
      * current message string
-     * @var String
+     * @var string
      */
     protected $_message  = '';
 
@@ -42,22 +43,22 @@ class Output extends \Symfony\Component\Console\Output\Output
     /**
      * Konstruktor
      *
-     * @param Integer $verbosity
-     * @param string|bool $decorated
+     * @param integer $verbosity
+     * @param string|boolean $decorated
      * @param OutputFormatterInterface $formatter
      */
     public function __construct($verbosity=self::VERBOSITY_NORMAL, $decorated=false, OutputFormatterInterface $formatter=null)
     {
         parent::__construct( $verbosity, $decorated, $formatter );
 
-        $this->Events = new \QUI\Events\Manager();
+        $this->Events = new QUI\Events\Manager();
     }
 
     /**
      * Writes a message to the output.
      *
      * @param string  $message A message to write to the output
-     * @param Boolean $newline Whether to add a newline or not
+     * @param boolean $newline Whether to add a newline or not
      */
     public function doWrite($message, $newline)
     {
@@ -74,8 +75,10 @@ class Output extends \Symfony\Component\Console\Output\Output
     }
 
     /**
-     * (non-PHPdoc)
-     * @see \Symfony\Component\Console\Output\Output::write()
+     * @inheritdoc
+     * @param array|string $messages
+     * @param bool|false $newline
+     * @param int $type
      */
     public function write($messages, $newline=false, $type=self::OUTPUT_RAW)
     {
@@ -83,8 +86,9 @@ class Output extends \Symfony\Component\Console\Output\Output
     }
 
     /**
-     * (non-PHPdoc)
-     * @see \Symfony\Component\Console\Output\Output::writeln()
+     * @inheritdoc
+     * @param array|string $messages
+     * @param int $type
      */
     public function writeln($messages, $type=self::OUTPUT_RAW)
     {
@@ -93,7 +97,7 @@ class Output extends \Symfony\Component\Console\Output\Output
 
     /**
      * Return all messages
-     * @return Array
+     * @return array
      */
     public function getMessages()
     {

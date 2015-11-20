@@ -23,7 +23,7 @@ class Manager implements QUI\Interfaces\Events
     /**
      * Site Events
      *
-     * @var Array
+     * @var array
      */
     protected $_siteEvents = array();
 
@@ -73,7 +73,7 @@ class Manager implements QUI\Interfaces\Events
     /**
      * Return the events db table name
      *
-     * @return String
+     * @return string
      */
     static function Table()
     {
@@ -109,7 +109,7 @@ class Manager implements QUI\Interfaces\Events
     /**
      * Return a complete list of registered events
      *
-     * @return Array
+     * @return array
      */
     public function getList()
     {
@@ -119,9 +119,9 @@ class Manager implements QUI\Interfaces\Events
     /**
      * Return a complete list of registered events for a specific site type
      *
-     * @param String $type
+     * @param string $type
      *
-     * @return Array
+     * @return array
      */
     public function getSiteListByType($type)
     {
@@ -143,7 +143,7 @@ class Manager implements QUI\Interfaces\Events
      *
      * @example $EventManager->addEvent('myEvent', function() { });
      *
-     * @param String   $event - The type of event (e.g. 'complete').
+     * @param string   $event - The type of event (e.g. 'complete').
      * @param callback $fn    - The function to execute.
      */
     public function addEvent($event, $fn)
@@ -164,9 +164,9 @@ class Manager implements QUI\Interfaces\Events
      *
      * @example $EventManager->addEvent('onSave', '\Namespace\Class::exec', 'quiqqer/blog:blog/entry' });
      *
-     * @param String   $event    - The type of event (e.g. 'complete').
+     * @param string   $event    - The type of event (e.g. 'complete').
      * @param callback $fn       - The function to execute.
-     * @param String   $sitetype - type of the site
+     * @param string   $sitetype - type of the site
      */
     public function addSiteEvent($event, $fn, $sitetype)
     {
@@ -195,8 +195,8 @@ class Manager implements QUI\Interfaces\Events
      * Removes an event from the stack of events
      * It remove the events from the database, too.
      *
-     * @param String        $event - The type of event (e.g. 'complete').
-     * @param callback|bool $fn    - (optional) The function to remove.
+     * @param string        $event - The type of event (e.g. 'complete').
+     * @param callback|boolean $fn    - (optional) The function to remove.
      */
     public function removeEvent($event, $fn = false)
     {
@@ -234,7 +234,7 @@ class Manager implements QUI\Interfaces\Events
      * @see \QUI\Interfaces\Events::fireEvent()
      *
      * @param string     $event - The type of event (e.g. 'onComplete').
-     * @param array|bool $args  - (optional) the argument(s) to pass to the function.
+     * @param array|boolean $args  - (optional) the argument(s) to pass to the function.
      *                          The arguments must be in an array.
      */
     public function fireEvent($event, $args = false)

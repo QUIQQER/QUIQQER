@@ -1,4 +1,3 @@
-
 /**
  *
  * @module controls/projects/project/site/Select
@@ -11,9 +10,9 @@
  * @require controls/projects/TypeWindow
  * @require controls/projects/Popup
  * @require Projects
+ * @require Locale
  * @require css!controls/projects/project/site/Select.css
  */
-
 define('controls/projects/project/site/Select', [
 
     'qui/QUI',
@@ -28,48 +27,45 @@ define('controls/projects/project/site/Select', [
 
     'css!controls/projects/project/site/Select.css'
 
-],function(
-    QUI,
-    QUIControl,
-    QUIButton,
-    QUIPopup,
-    QUIHelp,
-    TypeWindow,
-    ProjectWindow,
-    Projects,
-    QUILocale)
-{
+], function (QUI,
+             QUIControl,
+             QUIButton,
+             QUIPopup,
+             QUIHelp,
+             TypeWindow,
+             ProjectWindow,
+             Projects,
+             QUILocale) {
     "use strict";
 
     var lg = 'quiqqer/system';
 
     return new Class({
 
-        Extends : QUIControl,
-        Type    : 'controls/projects/project/site/Select',
+        Extends: QUIControl,
+        Type   : 'controls/projects/project/site/Select',
 
-        Binds : [
+        Binds: [
             'openSitemap',
             'openSiteTypes',
             'openParentSitemap',
             '$onImport'
         ],
 
-        options : {
-            styles       : false,
-            name         : '',
-            value        : '',
-            projectName  : false,
-            projectLang  : false,
-            placeholder  : '',
-            selectids    : true,
-            selecttypes  : true,
-            selectparent : true
+        options: {
+            styles      : false,
+            name        : '',
+            value       : '',
+            projectName : false,
+            projectLang : false,
+            placeholder : '',
+            selectids   : true,
+            selecttypes : true,
+            selectparent: true
         },
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize: function (options) {
+            this.parent(options);
 
             this.$Input     = false;
             this.$Buttons   = false;
@@ -81,7 +77,7 @@ define('controls/projects/project/site/Select', [
             this.$ButtonParents = false;
 
             this.addEvents({
-                onImport : this.$onImport
+                onImport: this.$onImport
             });
         },
 
@@ -90,120 +86,113 @@ define('controls/projects/project/site/Select', [
          *
          * @return {HTMLElement}
          */
-        create : function()
-        {
+        create: function () {
             this.$Elm = new Element('div', {
-                'class' : 'control-site-select',
-                html    : '<div class="control-site-select-container"></div>'+
-                          '<div class="control-site-select-buttons"></div>'+
-                          '<div class="control-site-select-description"></div>'
+                'class': 'control-site-select',
+                html   : '<div class="control-site-select-container"></div>' +
+                         '<div class="control-site-select-buttons"></div>' +
+                         '<div class="control-site-select-description"></div>'
             });
 
-            if ( !this.$Input )
-            {
+            if (!this.$Input) {
                 this.$Input = new Element('input', {
-                    type : 'hidden'
-                }).inject( this.$Elm );
+                    type: 'hidden'
+                }).inject(this.$Elm);
             }
 
-            if ( this.getAttribute( 'styles' ) ) {
-                this.$Elm.setStyles( this.getAttribute( 'styles' ) );
+            if (this.getAttribute('styles')) {
+                this.$Elm.setStyles(this.getAttribute('styles'));
             }
 
-            this.$Buttons     = this.$Elm.getElement( '.control-site-select-buttons' );
-            this.$Container   = this.$Elm.getElement( '.control-site-select-container' );
-            this.$Description = this.$Elm.getElement( '.control-site-select-description' );
+            this.$Buttons     = this.$Elm.getElement('.control-site-select-buttons');
+            this.$Container   = this.$Elm.getElement('.control-site-select-container');
+            this.$Description = this.$Elm.getElement('.control-site-select-description');
 
             this.$Container.set(
                 'html',
 
-                '<p class="control-site-select-container-placeholder">'+
-                    this.getAttribute( 'placeholder' ) +
+                '<p class="control-site-select-container-placeholder">' +
+                this.getAttribute('placeholder') +
                 '</p>'
             );
 
             new QUIHelp({
-                text : QUILocale.get( lg, 'projects.project.site.select.description' )
+                text: QUILocale.get(lg, 'projects.project.site.select.description')
             }).inject(this.$Description);
 
             var buttons = 0;
             var width   = '100%';
 
-            if ( this.getAttribute( 'selecttypes' ) ) {
+            if (this.getAttribute('selecttypes')) {
                 buttons++;
             }
 
-            if ( this.getAttribute( 'selectids' ) ) {
+            if (this.getAttribute('selectids')) {
                 buttons++;
             }
 
-            if ( this.getAttribute( 'selectparent' ) ) {
+            if (this.getAttribute('selectparent')) {
                 buttons++;
             }
 
-            switch ( buttons )
-            {
+            switch (buttons) {
                 case 1:
                     width = '100%';
-                break;
+                    break;
 
                 case 2:
                     width = '50%';
-                break;
+                    break;
 
                 case 3:
                     width = '33%';
-                break;
+                    break;
             }
 
-            if ( this.getAttribute( 'selecttypes' ) )
-            {
+            if (this.getAttribute('selecttypes')) {
                 this.$ButtonTypes = new QUIButton({
-                    name: 'add-types',
-                    text: QUILocale.get( lg, 'projects.project.site.select.btn.addTypes' ),
-                    title: QUILocale.get( lg, 'projects.project.site.select.btn.addTypes' ),
-                    styles: {
+                    name    : 'add-types',
+                    text    : QUILocale.get(lg, 'projects.project.site.select.btn.addTypes'),
+                    title   : QUILocale.get(lg, 'projects.project.site.select.btn.addTypes'),
+                    styles  : {
                         width: width
                     },
-                    events: {
+                    events  : {
                         onClick: this.openSiteTypes
                     },
                     disabled: true
-                }).inject( this.$Buttons );
+                }).inject(this.$Buttons);
             }
 
-            if ( this.getAttribute( 'selectparent' ) )
-            {
+            if (this.getAttribute('selectparent')) {
                 this.$ButtonParents = new QUIButton({
-                    name: 'add-parent',
-                    text: QUILocale.get( lg, 'projects.project.site.select.btn.addParent' ),
-                    title: QUILocale.get( lg, 'projects.project.site.select.btn.addParent' ),
-                    styles: {
+                    name    : 'add-parent',
+                    text    : QUILocale.get(lg, 'projects.project.site.select.btn.addParent'),
+                    title   : QUILocale.get(lg, 'projects.project.site.select.btn.addParent'),
+                    styles  : {
                         width: width
                     },
-                    events: {
+                    events  : {
                         onClick: this.openParentSitemap
                     },
                     disabled: true
-                }).inject( this.$Buttons );
+                }).inject(this.$Buttons);
             }
 
-            if ( this.getAttribute( 'selectids' ) )
-            {
+            if (this.getAttribute('selectids')) {
                 this.$ButtonSite = new QUIButton({
-                    name: 'add-site',
-                    text: QUILocale.get( lg, 'projects.project.site.select.btn.addSite' ),
-                    title: QUILocale.get( lg, 'projects.project.site.select.btn.addSite' ),
-                    styles: {
+                    name    : 'add-site',
+                    text    : QUILocale.get(lg, 'projects.project.site.select.btn.addSite'),
+                    title   : QUILocale.get(lg, 'projects.project.site.select.btn.addSite'),
+                    styles  : {
                         width: width
                     },
-                    events: {
+                    events  : {
                         onClick: this.openSitemap
                     },
                     disabled: true
-                }).inject( this.$Buttons );
+                }).inject(this.$Buttons);
             }
-
 
 
             return this.$Elm;
@@ -212,9 +201,8 @@ define('controls/projects/project/site/Select', [
         /**
          * Resize the control
          */
-        resize : function()
-        {
-            if ( !this.$Elm ) {
+        resize: function () {
+            if (!this.$Elm) {
                 return;
             }
 
@@ -224,15 +212,14 @@ define('controls/projects/project/site/Select', [
                 btnSize  = this.$Buttons.getSize(),
                 descSize = this.$Description.getSize();
 
-            this.$Container.setStyle( 'height', maxSize.y - btnSize.y - descSize.y - 2 );
+            this.$Container.setStyle('height', maxSize.y - btnSize.y - descSize.y - 2);
         },
 
         /**
          * Refresh the control
          */
-        refresh : function()
-        {
-            if ( !this.$Elm ) {
+        refresh: function () {
+            if (!this.$Elm) {
                 return;
             }
 
@@ -243,29 +230,28 @@ define('controls/projects/project/site/Select', [
         /**
          * event : on import
          */
-        $onImport : function()
-        {
-            if ( this.$Elm.nodeName != 'INPUT' ) {
+        $onImport: function () {
+            if (this.$Elm.nodeName != 'INPUT') {
                 return;
             }
 
-            this.$Input = this.$Elm;
+            this.$Input      = this.$Elm;
             this.$Input.type = 'hidden';
-            this.$Input.set( 'data-quiid', this.getId() );
+            this.$Input.set('data-quiid', this.getId());
 
             this.$Elm = this.create();
-            this.$Elm.wraps( this.$Input );
+            this.$Elm.wraps(this.$Input);
 
-            this.setAttribute( 'name', this.$Input.name );
-            this.setAttribute( 'value', this.$Input.value );
+            this.setAttribute('name', this.$Input.name);
+            this.setAttribute('value', this.$Input.value);
 
             this.setProject(
-                this.$Input.get( 'data-project' ),
-                this.$Input.get( 'data-lang' )
+                this.$Input.get('data-project'),
+                this.$Input.get('data-lang')
             );
 
-            if ( this.$Input.value !== '' ) {
-                this.setValue( this.$Input.value );
+            if (this.$Input.value !== '') {
+                this.setValue(this.$Input.value);
             }
 
             this.resize();
@@ -277,35 +263,33 @@ define('controls/projects/project/site/Select', [
          * @param {String|Object} project - Name of the Project
          * @param {String} [lang] - Language of the Project
          */
-        setProject : function(project, lang)
-        {
-            if ( typeOf( project ) == 'classes/projects/Project' )
-            {
+        setProject: function (project, lang) {
+            if (typeOf(project) == 'classes/projects/Project') {
                 this.$Project = project;
 
-                if ( this.$ButtonTypes ) {
+                if (this.$ButtonTypes) {
                     this.$ButtonTypes.enable();
                 }
 
-                if ( this.$ButtonSite ) {
+                if (this.$ButtonSite) {
                     this.$ButtonSite.enable();
                 }
 
-                if ( this.$ButtonParents ) {
+                if (this.$ButtonParents) {
                     this.$ButtonParents.enable();
                 }
 
                 return;
             }
 
-            this.setAttribute( 'projectName', project );
-            this.setAttribute( 'projectLang', lang );
+            this.setAttribute('projectName', project);
+            this.setAttribute('projectLang', lang);
 
-            if ( project === '' ) {
+            if (project === '') {
                 return;
             }
 
-            if ( lang === '' ) {
+            if (lang === '') {
                 return;
             }
 
@@ -315,15 +299,15 @@ define('controls/projects/project/site/Select', [
             );
 
 
-            if ( this.$ButtonTypes ) {
+            if (this.$ButtonTypes) {
                 this.$ButtonTypes.enable();
             }
 
-            if ( this.$ButtonSite ) {
+            if (this.$ButtonSite) {
                 this.$ButtonSite.enable();
             }
 
-            if ( this.$ButtonParents ) {
+            if (this.$ButtonParents) {
                 this.$ButtonParents.enable();
             }
         },
@@ -333,31 +317,27 @@ define('controls/projects/project/site/Select', [
          *
          * @param {String} value
          */
-        setValue : function(value)
-        {
+        setValue: function (value) {
             var i, len, val;
-            var values = value.split( ';' );
+            var values = value.split(';');
 
-            for ( i = 0, len = values.length; i < len; i++ )
-            {
-                val = values[ i ];
+            for (i = 0, len = values.length; i < len; i++) {
+                val = values[i];
 
-                if ( val.match(':') && val.match( '/' ) )
-                {
-                    this.addSiteType( val );
+                if (val.match(':') && val.match('/')) {
+                    this.addSiteType(val);
                     continue;
                 }
 
-                if ( val.match('p') )
-                {
-                    this.addParentSiteId( val );
+                if (val.match('p')) {
+                    this.addParentSiteId(val);
                     continue;
                 }
 
-                val = parseInt( val );
+                val = parseInt(val);
 
-                if ( val ) {
-                    this.addSiteId( val );
+                if (val) {
+                    this.addSiteId(val);
                 }
             }
         },
@@ -365,25 +345,22 @@ define('controls/projects/project/site/Select', [
         /**
          * Opens the sitemap window, to add some side ids
          */
-        openSitemap : function()
-        {
-            if ( !this.$Project ) {
+        openSitemap: function () {
+            if (!this.$Project) {
                 return;
             }
 
             var self = this;
 
             new ProjectWindow({
-                project : this.$Project.getName(),
-                lang    : this.$Project.getLang(),
-                events  :
-                {
-                    onSubmit : function(Win, params)
-                    {
+                project: this.$Project.getName(),
+                lang   : this.$Project.getLang(),
+                events : {
+                    onSubmit: function (Win, params) {
                         var ids = params.ids;
 
-                        for ( var i = 0, len = ids.length; i < len; i++ ) {
-                            self.addSiteId( ids[ i ] );
+                        for (var i = 0, len = ids.length; i < len; i++) {
+                            self.addSiteId(ids[i]);
                         }
                     }
                 }
@@ -393,25 +370,22 @@ define('controls/projects/project/site/Select', [
         /**
          * Opens the sitemap window, to add some parent ids
          */
-        openParentSitemap : function()
-        {
-            if ( !this.$Project ) {
+        openParentSitemap: function () {
+            if (!this.$Project) {
                 return;
             }
 
             var self = this;
 
             new ProjectWindow({
-                project : this.$Project.getName(),
-                lang    : this.$Project.getLang(),
-                events  :
-                {
-                    onSubmit : function(Win, params)
-                    {
+                project: this.$Project.getName(),
+                lang   : this.$Project.getLang(),
+                events : {
+                    onSubmit: function (Win, params) {
                         var ids = params.ids;
 
-                        for ( var i = 0, len = ids.length; i < len; i++ ) {
-                            self.addParentSiteId( ids[ i ] );
+                        for (var i = 0, len = ids.length; i < len; i++) {
+                            self.addParentSiteId(ids[i]);
                         }
                     }
                 }
@@ -421,26 +395,22 @@ define('controls/projects/project/site/Select', [
         /**
          * Opens a site type window, to add some side types
          */
-        openSiteTypes : function()
-        {
-            if ( !this.$Project )
-            {
-                console.error( 'No Project was given.' );
+        openSiteTypes: function () {
+            if (!this.$Project) {
+                console.error('No Project was given.');
                 return;
             }
 
             var self = this;
 
             new TypeWindow({
-                multible : true,
-                project  : this.$Project.getName(),
-                pluginsSelectable : true,
-                events :
-                {
-                    onSubmit : function(Win, values)
-                    {
-                        for ( var i = 0, len = values.length; i < len; i++ ) {
-                            self.addSiteType( values[ i ] );
+                multible         : true,
+                project          : this.$Project.getName(),
+                pluginsSelectable: true,
+                events           : {
+                    onSubmit: function (Win, values) {
+                        for (var i = 0, len = values.length; i < len; i++) {
+                            self.addSiteType(values[i]);
                         }
                     }
                 }
@@ -452,26 +422,25 @@ define('controls/projects/project/site/Select', [
          *
          * @param {number} siteId
          */
-        addSiteId : function(siteId)
-        {
-            if ( typeof siteId === 'undefined' ) {
+        addSiteId: function (siteId) {
+            if (typeof siteId === 'undefined') {
                 return;
             }
 
-            siteId = parseInt( siteId );
+            siteId = parseInt(siteId);
 
-            if ( !siteId ) {
+            if (!siteId) {
                 return;
             }
 
 
-            var Elm = this.createEntry( siteId ).inject( this.$Container );
+            var Elm = this.createEntry(siteId).inject(this.$Container);
 
             new Element('span', {
-                'class' : 'fa fa-file-o icon-file-alt'
-            }).inject( Elm.getElement( '.control-site-select-entry-text' ) );
+                'class': 'fa fa-file-o icon-file-alt'
+            }).inject(Elm.getElement('.control-site-select-entry-text'));
 
-            Elm.inject( this.$Container );
+            Elm.inject(this.$Container);
 
 
             this.refreshValues();
@@ -482,26 +451,25 @@ define('controls/projects/project/site/Select', [
          *
          * @param {number} siteId
          */
-        addParentSiteId : function(siteId)
-        {
-            if ( typeof siteId === 'undefined' ) {
+        addParentSiteId: function (siteId) {
+            if (typeof siteId === 'undefined') {
                 return;
             }
 
-            siteId = parseInt( siteId.toString().replace( 'p', '' ) );
+            siteId = parseInt(siteId.toString().replace('p', ''));
 
-            if ( !siteId ) {
+            if (!siteId) {
                 return;
             }
 
-            var value = 'p'+ siteId.toString(),
-                Elm   = this.createEntry( value ).inject( this.$Container );
+            var value = 'p' + siteId.toString(),
+                Elm   = this.createEntry(value).inject(this.$Container);
 
             new Element('span', {
-                'class' : 'icon-file'
-            }).inject( Elm.getElement( '.control-site-select-entry-text' ) );
+                'class': 'icon-file'
+            }).inject(Elm.getElement('.control-site-select-entry-text'));
 
-            Elm.inject( this.$Container );
+            Elm.inject(this.$Container);
 
 
             this.refreshValues();
@@ -512,28 +480,27 @@ define('controls/projects/project/site/Select', [
          *
          * @param {String} type - eq: "quiqqer/%" "quiqqer/blog:blog/entry" "quiqqer/blog:%"
          */
-        addSiteType : function(type)
-        {
-            if ( typeof type === 'undefined' ) {
+        addSiteType: function (type) {
+            if (typeof type === 'undefined') {
                 return;
             }
 
-            if ( type === '' ) {
+            if (type === '') {
                 return;
             }
 
 
-            if ( !type.match( ':' ) && !type.match( '%' ) ) {
-                type = type +':%';
+            if (!type.match(':') && !type.match('%')) {
+                type = type + ':%';
             }
 
-            var Elm = this.createEntry( type );
+            var Elm = this.createEntry(type);
 
             new Element('span', {
-                'class' : 'icon-magic'
-            }).inject( Elm.getElement( '.control-site-select-entry-text' ) );
+                'class': 'icon-magic'
+            }).inject(Elm.getElement('.control-site-select-entry-text'));
 
-            Elm.inject( this.$Container );
+            Elm.inject(this.$Container);
 
 
             this.refreshValues();
@@ -545,23 +512,21 @@ define('controls/projects/project/site/Select', [
          * @param {String|Number} value
          * @returns {HTMLElement}
          */
-        createEntry : function(value)
-        {
+        createEntry: function (value) {
             var self = this;
 
             var Item = new Element('div', {
-                'class' : 'control-site-select-entry',
-                html : '<div class="control-site-select-entry-text">'+ value +'</div>'+
-                       '<div class="control-site-select-entry-delete">'+
-                           '<span class="icon-remove"></span>'+
-                       '</div>',
-                "data-value" : value
+                'class'     : 'control-site-select-entry',
+                html        : '<div class="control-site-select-entry-text">' + value + '</div>' +
+                              '<div class="control-site-select-entry-delete">' +
+                              '<span class="icon-remove"></span>' +
+                              '</div>',
+                "data-value": value
             });
 
 
-            Item.getElement( '.icon-remove').addEvent('click', function()
-            {
-                this.getParent( '.control-site-select-entry').destroy();
+            Item.getElement('.icon-remove').addEvent('click', function () {
+                this.getParent('.control-site-select-entry').destroy();
 
                 self.refreshValues();
             });
@@ -572,36 +537,33 @@ define('controls/projects/project/site/Select', [
         /**
          * Refresh the value, read the elements and set the value to the input field
          */
-        refreshValues : function()
-        {
-            if ( !this.$Elm ) {
+        refreshValues: function () {
+            if (!this.$Elm) {
                 return;
             }
 
             var i, len;
 
-            var list   = this.$Elm.getElements( '.control-site-select-entry'),
+            var list   = this.$Elm.getElements('.control-site-select-entry'),
                 values = [];
 
-            for ( i = 0, len = list.length; i < len; i++ )
-            {
+            for (i = 0, len = list.length; i < len; i++) {
                 values.push(
-                    list[ i ].get( 'data-value' )
+                    list[i].get('data-value')
                 );
             }
 
-            this.$Input.value = values.join( ';' );
-            this.setAttribute( 'value', this.$Input.value );
+            this.$Input.value = values.join(';');
+            this.setAttribute('value', this.$Input.value);
 
-            this.$Elm.getElements( '.control-site-select-container-placeholder').destroy();
+            this.$Elm.getElements('.control-site-select-container-placeholder').destroy();
 
-            if ( !values.length )
-            {
+            if (!values.length) {
                 this.$Container.set(
                     'html',
 
-                    '<p class="control-site-select-container-placeholder">'+
-                        this.getAttribute( 'placeholder' ) +
+                    '<p class="control-site-select-container-placeholder">' +
+                    this.getAttribute('placeholder') +
                     '</p>'
                 );
             }

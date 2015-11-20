@@ -10,49 +10,49 @@ namespace QUI\Auth;
 
 /**
  * ADLDAP_NORMAL_ACCOUNT
- * @var Integer
+ * @var integer
  * @package com.pcsg.qui.auth.activedirectory
  */
 define('ADLDAP_NORMAL_ACCOUNT', 805306368);
 
 /**
  * ADLDAP_NORMAL_ACCOUNT
- * @var Integer
+ * @var integer
  * @package com.pcsg.qui.auth.activedirectory
  */
 define('ADLDAP_WORKSTATION_TRUST', 805306369);
 
 /**
  * ADLDAP_NORMAL_ACCOUNT
- * @var Integer
+ * @var integer
  * @package com.pcsg.qui.auth.activedirectory
  */
 define('ADLDAP_INTERDOMAIN_TRUST', 805306370);
 
 /**
  * ADLDAP_NORMAL_ACCOUNT
- * @var Integer
+ * @var integer
  * @package com.pcsg.qui.auth.activedirectory
  */
 define('ADLDAP_SECURITY_GLOBAL_GROUP', 268435456);
 
 /**
  * ADLDAP_NORMAL_ACCOUNT
- * @var Integer
+ * @var integer
  * @package com.pcsg.qui.auth.activedirectory
  */
 define('ADLDAP_DISTRIBUTION_GROUP', 268435457);
 
 /**
  * ADLDAP_NORMAL_ACCOUNT
- * @var Integer
+ * @var integer
  * @package com.pcsg.qui.auth.activedirectory
  */
 define('ADLDAP_SECURITY_LOCAL_GROUP', 536870912);
 
 /**
  * ADLDAP_NORMAL_ACCOUNT
- * @var Integer
+ * @var integer
  * @package com.pcsg.qui.auth.activedirectory
  */
 define('ADLDAP_DISTRIBUTION_LOCAL_GROUP', 536870913);
@@ -96,19 +96,19 @@ class ActiveDirectory extends \QUI\QDOM implements \QUI\Interfaces\Users\Auth
 
     /**
      * _base_dn attributes
-     * @var String|false
+     * @var string|false
      */
     private $_base_dn = false;
 
     /**
      * ldap domain
-     * @var String|false
+     * @var string|false
      */
     private $_domain = false;
 
     /**
      * domain ldap controller
-     * @var String
+     * @var string
      */
     private $_domain_controller;
 
@@ -216,9 +216,9 @@ class ActiveDirectory extends \QUI\QDOM implements \QUI\Interfaces\Users\Auth
     }
 
     /**
-     * Wählt einen zufalls Controller aus der dem Controller Array
+     * Wählt einen zufalls Controller aus der dem Controller array
      *
-     * @return String - DC Server
+     * @return string - DC Server
      * @throws \QUI\Exception
      */
     protected function _randomController()
@@ -238,9 +238,9 @@ class ActiveDirectory extends \QUI\QDOM implements \QUI\Interfaces\Users\Auth
     /**
      * Auth über AD
      *
-     * @param String $username - username
-     * @param String $password - password
-     * @return Bool
+     * @param string $username - username
+     * @param string $password - password
+     * @return boolean
      */
     public function auth($username, $password)
     {
@@ -271,10 +271,10 @@ class ActiveDirectory extends \QUI\QDOM implements \QUI\Interfaces\Users\Auth
     /**
      * Gibt User Informationen aus der AD zurück
      *
-     * @param String $username
-     * @param Array $fields - optional
-     * @param Bool $showall - optional
-     * @return Array
+     * @param string $username
+     * @param array|boolean $fields - optional
+     * @param boolean $showall - optional
+     * @return array
      */
     public function getUser($username, $fields=false, $showall=false)
     {
@@ -350,8 +350,8 @@ class ActiveDirectory extends \QUI\QDOM implements \QUI\Interfaces\Users\Auth
     /**
      * Enter description here...
      *
-     * @param String $username
-     * @param String $recursive
+     * @param string $username
+     * @param string $recursive
      * @return array
      */
     public function getUserGroups($username,$recursive=NULL)
@@ -389,7 +389,7 @@ class ActiveDirectory extends \QUI\QDOM implements \QUI\Interfaces\Users\Auth
     }
 
     /**
-     * Gibt alle AD User als Array zurück
+     * Gibt alle AD User als array zurück
      * wenn eine Gruppe angegeben ist werden nur die Benutzer einer Gruppe zurück gegebe
      *
      * @param string $group - wenn gesetzt werden nur mitglieder aus dieser Gruppe zurück gegeben
@@ -517,7 +517,7 @@ class ActiveDirectory extends \QUI\QDOM implements \QUI\Interfaces\Users\Auth
     /**
      * Enter description here...
      *
-     * @param String $group
+     * @param string $group
      * @return unknown
      */
     public function recursive_groups($group)

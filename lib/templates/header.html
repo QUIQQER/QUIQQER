@@ -32,6 +32,11 @@
     <meta name="revisit-after" content="{$Site->getAttribute('meta.revisit')}" />
     <!-- [end] meta -->
 
+    {if $Project->getConfig('favicon')}
+    <link rel="shortcut icon" href="{$Project->getConfig('favicon')}" type="image/png" />
+    <link rel="icon" href="{$Project->getConfig('favicon')}" type="image/png" />
+    {/if}
+
     <script type="text/javascript">
         var URL_DIR          = '{$URL_DIR}';
             URL_OPT_DIR      = '{$URL_OPT_DIR}',
@@ -72,6 +77,7 @@
         {/if}
 
     </script>
+    <script async src="{$URL_BIN_DIR}QUI/polyfills/picturefill.min.js?lu={$lastUpdate}"></script>
     <!-- quiqqer-js-defined -->
 
     {if $Template->getAttribute('mootools')}

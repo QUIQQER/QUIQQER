@@ -9,14 +9,14 @@
  */
 function ajax_trash_restore($project, $ids, $parentid)
 {
-    $Project = \QUI::getProjectManager()->decode( $project );
-    $ids     = json_decode( $ids, true );
+    $Project = QUI::getProjectManager()->decode($project);
+    $ids     = json_decode($ids, true);
     $Trash   = $Project->getTrash();
 
-    $Trash->restore( $Project, $ids, $parentid );
+    $Trash->restore($Project, $ids, $parentid);
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_trash_restore',
     array('project', 'ids', 'parentid'),
     'Permission::checkAdminUser'

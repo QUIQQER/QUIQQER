@@ -77,7 +77,7 @@ class QUI
     /**
      * Timestamp of the last update
      *
-     * @var Integer
+     * @var integer
      */
     static $last_up_date = null;
 
@@ -230,7 +230,7 @@ class QUI
             /**
              * CMS_DIR - Path to the quiqqer folder, where the whole system are located
              *
-             * @var String
+             * @var string
              * @package com.pcsg.qui
              */
             define('CMS_DIR', $config['globals']['cms_dir']);
@@ -240,7 +240,7 @@ class QUI
             /**
              * DEBUG_MODE - setting if debug mode is enabled or not
              *
-             * @var Bool
+             * @var boolean
              * @package com.pcsg.qui
              */
             define("DEBUG_MODE", $config['globals']['debug_mode']);
@@ -250,7 +250,7 @@ class QUI
             /**
              * DEVELOPMENT - setting if the system is in development mode or not
              *
-             * @var Bool
+             * @var boolean
              * @package com.pcsg.qui
              */
             define("DEVELOPMENT", $config['globals']['development']);
@@ -274,7 +274,7 @@ class QUI
             /**
              * LIB_DIR - Path to the lib folder, where all the libraries are located
              *
-             * @var String
+             * @var string
              * @package com.pcsg.qui
              */
             define('LIB_DIR', $lib_dir);
@@ -285,7 +285,7 @@ class QUI
              * VAR_DIR - Path to the var folder,
              * where all the files are located on which the web server must have access
              *
-             * @var String
+             * @var string
              * @package com.pcsg.qui
              */
             define('VAR_DIR', $var_dir);
@@ -295,7 +295,7 @@ class QUI
             /**
              * BIN_DIR - Path to the bin folder, where all temp files are located
              *
-             * @var String
+             * @var string
              * @package com.pcsg.qui
              */
             define('BIN_DIR', dirname(LIB_DIR) . '/bin/');
@@ -305,7 +305,7 @@ class QUI
             /**
              * USR_DIR - Path to the usr folder, where all projects are located
              *
-             * @var String
+             * @var string
              * @package com.pcsg.qui
              */
             define('USR_DIR', $config['globals']['usr_dir']);
@@ -315,7 +315,7 @@ class QUI
             /**
              * SYS_DIR - Path to the etc folder, where all the configurations are located
              *
-             * @var String
+             * @var string
              * @package com.pcsg.qui
              */
             define('SYS_DIR', dirname(LIB_DIR) . '/admin/');
@@ -325,7 +325,7 @@ class QUI
             /**
              * OPT_DIR - Path to the plugin folder, where all plugins are located
              *
-             * @var String
+             * @var string
              * @package com.pcsg.qui
              */
             define('OPT_DIR', $config['globals']['opt_dir']);
@@ -335,7 +335,7 @@ class QUI
             /**
              * URL_DIR - path by which the system is accessible via the browser
              *
-             * @var String
+             * @var string
              * @package com.pcsg.qui
              */
             define('URL_DIR', $config['globals']['url_dir']);
@@ -355,7 +355,7 @@ class QUI
              * ERROR_BACKTRACE - configuration,
              * if a backtrace should write in the logs during a error
              *
-             * @var String
+             * @var string
              * @package com.pcsg.qui
              */
             define('ERROR_BACKTRACE', $Config->get('error', 'backtrace'));
@@ -365,7 +365,7 @@ class QUI
             /**
              * QUI_DB_PRFX - The DB Table Prefix
              *
-             * @var String
+             * @var string
              * @package com.pcsg.qui
              */
 
@@ -404,10 +404,6 @@ class QUI
         // Load Packages
         self::getPackageManager();
 
-        // register ajax
-        self::$Ajax = new QUI\Ajax(array(
-            'db_errors' => self::conf('error', 'mysql_ajax_errors_backend')
-        ));
 
         // mem peak - info mail at 80% usage
         self::getErrorHandler()->registerShutdown(function () {
@@ -475,8 +471,8 @@ class QUI
     /**
      * Get a QUIQQER main configuration entry
      *
-     * @param String $section
-     * @param String|null $key (optional)
+     * @param string $section
+     * @param string|null $key (optional)
      *
      * @return mixed
      */
@@ -492,7 +488,7 @@ class QUI
     /**
      * Returns all available languages
      *
-     * @return Array
+     * @return array
      */
     static function availableLanguages()
     {
@@ -508,7 +504,7 @@ class QUI
     /**
      * Return the QUIQQER version
      *
-     * @return String
+     * @return string
      */
     static function version()
     {
@@ -518,7 +514,7 @@ class QUI
     /**
      * Get registered vhosts
      *
-     * @return Array
+     * @return array
      */
     static function vhosts()
     {
@@ -538,11 +534,27 @@ class QUI
     }
 
     /**
+     * Return the global ajax object
+     *
+     * @return \QUI\Ajax
+     */
+    static function getAjax()
+    {
+        if (is_null(self::$Ajax)) {
+            self::$Ajax = new QUI\Ajax(array(
+                'db_errors' => self::conf('error', 'mysql_ajax_errors_backend')
+            ));
+        }
+
+        return self::$Ajax;
+    }
+
+    /**
      * Return the tablename with the QUI Prefix
      *
-     * @param String $table
+     * @param string $table
      *
-     * @return String
+     * @return string
      */
     static function getDBTableName($table)
     {
@@ -552,11 +564,11 @@ class QUI
     /**
      * Return the tablename with the QUI Prefix and table params
      *
-     * @param String $table
+     * @param string $table
      * @param \QUI\Projects\Project
-     * @param Bool $lang - language in the table name? default = true
+     * @param boolean $lang - language in the table name? default = true
      *
-     * @return String
+     * @return string
      */
     static function getDBProjectTableName(
         $table,
@@ -575,7 +587,7 @@ class QUI
      * Returns a config object for a INI file
      * Starting from CMS_DIR
      *
-     * @param String $file
+     * @param string $file
      *
      * @throws \QUI\Exception
      *
@@ -687,9 +699,9 @@ class QUI
      *
      * You can also use \QUI\Projects\Manager::getProject()
      *
-     * @param String|Array $project - Project name | array('name' => , 'lang' => , 'template' => )
-     * @param String|Bool $lang - Project lang (optional)
-     * @param String|Bool $template - Project template (optional)
+     * @param string|array $project - Project name | array('name' => , 'lang' => , 'template' => )
+     * @param string|boolean $lang - Project lang (optional)
+     * @param string|boolean $template - Project template (optional)
      *
      * @return \QUI\Projects\Project
      * @uses \QUI\Projects\Manager

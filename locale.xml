@@ -168,6 +168,10 @@
             <de><![CDATA[Platzhalterbild]]></de>
             <en><![CDATA[Placeholder image]]></en>
         </locale>
+        <locale name="projects.project.settings.panel.favicon">
+            <de><![CDATA[Favicon]]></de>
+            <en><![CDATA[Favicon]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/system" datatype="js,php">
@@ -319,6 +323,10 @@
             <de><![CDATA[Abbrechen]]></de>
             <en><![CDATA[Cancel]]></en>
         </locale>
+        <locale name="close">
+            <de><![CDATA[Schließen]]></de>
+            <en><![CDATA[Close]]></en>
+        </locale>
         <locale name="ok">
             <de><![CDATA[Ok]]></de>
             <en><![CDATA[Ok]]></en>
@@ -466,6 +474,14 @@
         <locale name="mobile">
             <de><![CDATA[Handy / Mobil]]></de>
             <en><![CDATA[Mobile]]></en>
+        </locale>
+        <locale name="profile">
+            <de><![CDATA[Profil]]></de>
+            <en><![CDATA[Profile]]></en>
+        </locale>
+        <locale name="add">
+            <de><![CDATA[Hinzufügen]]></de>
+            <en><![CDATA[Add]]></en>
         </locale>
         <locale name="address.salutation.male">
             <de><![CDATA[Herr]]></de>
@@ -679,20 +695,48 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Trash]]></en>
         </locale>
         <locale name="trash.panel.btn.delete">
+            <de><![CDATA[Einträge löschen]]></de>
+            <en><![CDATA[Delete entries]]></en>
+        </locale>
+        <locale name="trash.panel.btn.delete.title">
             <de><![CDATA[Markierte Einträge löschen]]></de>
             <en><![CDATA[Delete marked entries]]></en>
         </locale>
         <locale name="trash.panel.btn.restore">
+            <de><![CDATA[Wiederherstellen]]></de>
+            <en><![CDATA[Restore]]></en>
+        </locale>
+        <locale name="trash.panel.btn.restore.title">
             <de><![CDATA[Markierte Einträge wiederherstellen]]></de>
             <en><![CDATA[Restore marked entries]]></en>
         </locale>
         <locale name="trash.panel.window.delete.title">
-            <de><![CDATA[Markierte Einträge Löschen?]]></de>
+            <de><![CDATA[Markierte Einträge löschen?]]></de>
             <en><![CDATA[Delete marked entries?]]></en>
         </locale>
         <locale name="trash.panel.window.delete.text">
             <de><![CDATA[Möchten Sie folgende Einträge unwiderruflich löschen?]]></de>
             <en><![CDATA[Do you want to delete the following entries permanently?]]></en>
+        </locale>
+        <locale name="trash.panel.btn.delete.all">
+            <de><![CDATA[Leeren]]></de>
+            <en><![CDATA[Clear]]></en>
+        </locale>
+        <locale name="trash.panel.btn.delete.all.title">
+            <de><![CDATA[Alle Einträge löschen]]></de>
+            <en><![CDATA[Delete all entries]]></en>
+        </locale>
+        <locale name="trash.panel.window.delete.all.title">
+            <de><![CDATA[Alle Einträge löschen?]]></de>
+            <en><![CDATA[Delete all entries?]]></en>
+        </locale>
+        <locale name="trash.panel.window.delete.all.text">
+            <de><![CDATA[Möchten Sie alle Einträge unwiderruflich löschen?]]></de>
+            <en><![CDATA[Do you want to delete all entries permanently?]]></en>
+        </locale>
+        <locale name="trash.panel.window.delete.all.information">
+            <de><![CDATA[Diese Einträge können nicht wieder hergestellt werden]]></de>
+            <en><![CDATA[These entries can not be restored]]></en>
         </locale>
         <locale name="trash.panel.window.restore.site.question">
             <de><![CDATA[Bitte wählen Sie die Elternseite aus, unter welcher die Seite(n) eingefügt werden soll(en)]]></de>
@@ -809,9 +853,31 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Save project permissions]]></en>
         </locale>
         <locale name="permission.control.btn.site.save">
+            <de><![CDATA[Speichern]]></de>
+            <en><![CDATA[Save]]></en>
+        </locale>
+        <locale name="permission.control.btn.site.save.title">
             <de><![CDATA[Seitenrechte speichern]]></de>
             <en><![CDATA[Save page permissions]]></en>
         </locale>
+
+        <locale name="permission.control.btn.site.save.recursive">
+            <de><![CDATA[Seitenrechte rekursiv anwenden]]></de>
+            <en><![CDATA[Apply page permissions recursively]]></en>
+        </locale>
+        <locale name="permission.control.site.recursive.win.title">
+            <de><![CDATA[Rechte rekursiv anwenden]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+        <locale name="permission.control.site.recursive.win.text">
+            <de><![CDATA[Rechte rekursiv anwenden]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+        <locale name="permission.control.site.recursive.win.information" html="true">
+            <de><![CDATA[Die aktuellen Rechte werden auf alle Unterseiten und auf die ausgewählte Seite angewendet.]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+
 
         <locale name="permissions.panel.btn.sitemap.alt">
             <de><![CDATA[Zugriffsrechte anzeigen]]></de>
@@ -1083,6 +1149,15 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Wähle einen Seitentypen aus]]></de>
             <en><![CDATA[Choose a site type]]></en>
         </locale>
+        <locale name="projects.typewindow.btn.sitemapView">
+            <de><![CDATA[Sitemap-Anzeige]]></de>
+            <en><![CDATA[Sitemap view]]></en>
+        </locale>
+        <locale name="projects.typewindow.btn.detailView">
+            <de><![CDATA[Detail-Anzeige]]></de>
+            <en><![CDATA[Detail view]]></en>
+        </locale>
+
         <locale name="projects.project.panel.settings.btn.save">
             <de><![CDATA[Speichern]]></de>
             <en><![CDATA[Save]]></en>
@@ -1353,6 +1428,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="projects.project.site.panel.window.create.title">
             <de><![CDATA[Wie soll die neue Seite heißen?]]></de>
             <en><![CDATA[How be called the new page?]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.window.create.button.submit">
+            <de><![CDATA[Anlegen]]></de>
+            <en><![CDATA[Create]]></en>
         </locale>
         <locale name="projects.project.site.panel.window.create.text">
             <de><![CDATA[Bitte geben Sie ein Namen für die neue Seite an]]></de>
@@ -3858,6 +3937,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="exception.lib.user.not.found">
             <de><![CDATA[Der gewünschte Benutzer wurde im System nicht gefunden]]></de>
             <en><![CDATA[]]></en>
+        </locale>
+        <locale name="exception.user.inactive">
+            <de><![CDATA[Ihr Benutzer ist inaktiv.]]></de>
+            <en><![CDATA[Your Account is inactive.]]></en>
         </locale>
         <locale name="exception.lib.user.illegal.signs">
             <de><![CDATA[Der Benutzername enthält unerlaubte Zeichen.

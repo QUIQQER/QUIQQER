@@ -19,8 +19,8 @@ use QUI\Utils\DOM;
  * @author     www.pcsg.de (Henning Leutz)
  * @licence    For copyright and license information, please view the /README.md
  *
- * @event      onProjectConfigSave [ String project, Array config ]
- * @event      onCreateProject [ String \QUI\Projects\Project ]
+ * @event      onProjectConfigSave [ string project, Array config ]
+ * @event      onCreateProject [ string \QUI\Projects\Project ]
  *
  * @errorcodes 8xx Project Errors -> Look at Project.php
  */
@@ -60,8 +60,8 @@ class Manager
     /**
      * set configuration for a project
      *
-     * @param String $project
-     * @param Array  $params
+     * @param string $project
+     * @param array $params
      */
     static function setConfigForProject($project, $params)
     {
@@ -72,11 +72,11 @@ class Manager
             $Project
         );
 
-        $Config = self::getConfig();
+        $Config   = self::getConfig();
         $projects = $Config->toArray();
 
         // $config
-        $config = self::getProjectConfigList($Project);
+        $config     = self::getProjectConfigList($Project);
         $old_config = $config;
 
         if (isset($projects[$project])) {
@@ -114,7 +114,7 @@ class Manager
         $Config->save();
 
         QUI::getEvents()
-           ->fireEvent('projectConfigSave', array($project, $config));
+            ->fireEvent('projectConfigSave', array($project, $config));
 
         // remove the project from the temp
         if (self::$projects[$project]) {
@@ -129,8 +129,8 @@ class Manager
          * clear media cache
          * eq: if watermark settings changed
          *
-         * @param Array   $config
-         * @param Array   $old_config
+         * @param array $config
+         * @param array $old_config
          * @param Project $Project
          */
         function clearMediaCache($config, $old_config, Project $Project)
@@ -163,7 +163,7 @@ class Manager
             if (isset($config["media_watermark_position"])
                 && isset($old_config['media_watermark_position'])
                 && $config["media_watermark_position"]
-                != $old_config['media_watermark_position']
+                   != $old_config['media_watermark_position']
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
@@ -173,7 +173,7 @@ class Manager
             if (isset($config["media_image_library"])
                 && isset($old_config['media_image_library'])
                 && $config["media_image_library"]
-                != $old_config['media_image_library']
+                   != $old_config['media_image_library']
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
@@ -205,11 +205,11 @@ class Manager
      *
      * @param \QUI\Projects\Project $Project
      *
-     * @return Array
+     * @return array
      */
     static function getProjectConfigList(QUI\Projects\Project $Project)
     {
-        $cache = 'qui/projects/'.$Project->getName().'/configList';
+        $cache = 'qui/projects/' . $Project->getName() . '/configList';
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -232,14 +232,15 @@ class Manager
             "media_watermark_ratio"    => "",
             "media_image_library"      => "",
             "media_maxUploadSize"      => "",
-            "placeholder"              => ""
+            "placeholder"              => "",
+            "favicon"                  => ""
         );
 
         // settings.xml
         $settingsXml = self::getRelatedSettingsXML($Project);
 
         foreach ($settingsXml as $file) {
-            $Dom = QUI\Utils\XML::getDomFromXml($file);
+            $Dom  = QUI\Utils\XML::getDomFromXml($file);
             $Path = new \DOMXPath($Dom);
 
             $settingsList = $Path->query("//project/settings");
@@ -252,15 +253,15 @@ class Manager
                 $settingsName = $Settings->getAttribute('name');
 
                 if (!empty($settingsName)) {
-                    $settingsName = $settingsName.'.';
+                    $settingsName = $settingsName . '.';
                 }
 
                 foreach ($sections as $section => $entry) {
                     foreach ($entry as $key => $param) {
-                        $config[$settingsName.$section.'.'.$key] = '';
+                        $config[$settingsName . $section . '.' . $key] = '';
 
                         if (isset($param['default'])) {
-                            $config[$settingsName.$section.'.'.$key]
+                            $config[$settingsName . $section . '.' . $key]
                                 = $param['default'];
                         }
                     }
@@ -276,7 +277,7 @@ class Manager
     /**
      * Return the projects count
      *
-     * @return Integer
+     * @return integer
      */
     static function count()
     {
@@ -290,7 +291,7 @@ class Manager
      * Decode project data
      * Decode a project json string to a Project or decode a project array to a Project
      *
-     * @param String|Array $project - project data
+     * @param string|array $project - project data
      *
      * @return \QUI\Projects\Project
      * @throws \QUI\Exception
@@ -309,7 +310,7 @@ class Manager
 
         $projectName = $project['name'];
         $projectLang = false;
-        $projectTpl = false;
+        $projectTpl  = false;
 
         if (isset($project['lang'])) {
             $projectLang = $project['lang'];
@@ -358,9 +359,9 @@ class Manager
     /**
      * Returns a project
      *
-     * @param String      $project  - Project name
-     * @param String|Bool $lang     - Project lang, optional (if not set, the standard language used)
-     * @param String|Bool $template - used template, optional (if not set, the standard templaed used)
+     * @param string $project - Project name
+     * @param string|boolean $lang - Project lang, optional (if not set, the standard language used)
+     * @param string|boolean $template - used template, optional (if not set, the standard templaed used)
      *
      * @return \QUI\Projects\Project
      */
@@ -403,14 +404,14 @@ class Manager
     /**
      * Gibt alle Projektnamen zurück
      *
-     * @param Bool $asobject - Als Objekte bekommen, default = false
+     * @param boolean $asobject - Als Objekte bekommen, default = false
      *
-     * @return Array
+     * @return array
      */
     static function getProjects($asobject = false)
     {
         $config = self::getConfig()->toArray();
-        $list = array();
+        $list   = array();
 
         foreach ($config as $project => $conf) {
             try {
@@ -487,8 +488,8 @@ class Manager
     /**
      * Create a new project
      *
-     * @param String $name - Project name
-     * @param String $lang - Project lang
+     * @param string $name - Project name
+     * @param string $lang - Project lang
      *
      * @return \QUI\Projects\Project
      * @throws \QUI\Exception
@@ -571,14 +572,14 @@ class Manager
         $name = QUI\Utils\Security\Orthos::clear($name);
 
         $DataBase = QUI::getDataBase();
-        $Table = $DataBase->Table();
+        $Table    = $DataBase->Table();
 
 
         /**
          * Sites and sites relation
          */
-        $table_site = QUI_DB_PRFX.$name.'_'.$lang.'_sites';
-        $table_site_rel = QUI_DB_PRFX.$name.'_'.$lang.'_sites_relations';
+        $table_site     = QUI_DB_PRFX . $name . '_' . $lang . '_sites';
+        $table_site_rel = QUI_DB_PRFX . $name . '_' . $lang . '_sites_relations';
 
         $Table->appendFields($table_site, array(
             "id"          => "bigint(20) NOT NULL",
@@ -628,8 +629,8 @@ class Manager
         /**
          * Media and media relation
          */
-        $table_media = QUI_DB_PRFX.$name.'_media';
-        $table_media_rel = QUI_DB_PRFX.$name.'_media_relations';
+        $table_media     = QUI_DB_PRFX . $name . '_media';
+        $table_media_rel = QUI_DB_PRFX . $name . '_media_relations';
 
         $Table->appendFields($table_media, array(
             "id"           => "bigint(20) NOT NULL",
@@ -674,15 +675,15 @@ class Manager
         /**
          * Create the file system folders
          */
-        QUI\Utils\System\File::mkdir(CMS_DIR.'media/sites/'.$name.'/');
-        QUI\Utils\System\File::mkdir(USR_DIR.$name.'/');
+        QUI\Utils\System\File::mkdir(CMS_DIR . 'media/sites/' . $name . '/');
+        QUI\Utils\System\File::mkdir(USR_DIR . $name . '/');
 
 
         /**
          * Write the config
          */
-        if (!file_exists(CMS_DIR.'etc/projects.ini.php')) {
-            file_put_contents(CMS_DIR.'etc/projects.ini.php', '');
+        if (!file_exists(CMS_DIR . 'etc/projects.ini.php')) {
+            file_put_contents(CMS_DIR . 'etc/projects.ini.php', '');
         }
 
         $Config = self::getConfig();
@@ -702,8 +703,8 @@ class Manager
             'standard'     => '0'
         ));
 
-        if (count($Config->toArray()) == 1) {
-            $Config->setSection($name, 'standard', 1);
+        if (count($Config->toArray()) <= 1) {
+            $Config->setValue($name, 'standard', 1);
         }
 
         $Config->save();
@@ -737,20 +738,20 @@ class Manager
         );
 
         $project = $Project->getName();
-        $langs = $Project->getAttribute('langs');
+        $langs   = $Project->getAttribute('langs');
 
         $DataBase = QUI::getDataBase();
-        $Table = $DataBase->Table();
+        $Table    = $DataBase->Table();
 
         // delete site tables for all languages
         foreach ($langs as $lang) {
-            $table_site = QUI::getDBTableName($project.'_'.$lang.'_sites');
-            $table_site_rel = QUI::getDBTableName($project.'_'.$lang
-                .'_sites_relations');
-            $table_multi = QUI::getDBTableName($project.'_multilingual');
+            $table_site     = QUI::getDBTableName($project . '_' . $lang . '_sites');
+            $table_site_rel = QUI::getDBTableName($project . '_' . $lang
+                                                  . '_sites_relations');
+            $table_multi    = QUI::getDBTableName($project . '_multilingual');
 
-            $table_media = QUI::getDBTableName($project.'_media');
-            $table_media_rel = QUI::getDBTableName($project.'_media_relations');
+            $table_media     = QUI::getDBTableName($project . '_media');
+            $table_media_rel = QUI::getDBTableName($project . '_media_relations');
 
 
             $Table->delete($table_site);
@@ -765,7 +766,7 @@ class Manager
 
         foreach ($packages as $package) {
             // search database tables
-            $databaseXml = OPT_DIR.$package['name'].'/database.xml';
+            $databaseXml = OPT_DIR . $package['name'] . '/database.xml';
 
             if (!file_exists($databaseXml)) {
                 continue;
@@ -781,7 +782,7 @@ class Manager
             foreach ($dbfields['projects'] as $table) {
                 foreach ($langs as $lang) {
                     $tbl = QUI::getDBTableName(
-                        $project.'_'.$lang.'_'.$table['suffix']
+                        $project . '_' . $lang . '_' . $table['suffix']
                     );
 
                     $Table->delete($tbl);
@@ -791,14 +792,14 @@ class Manager
 
         // delete projects permissions
         QUI::getDataBase()->delete(
-            QUI::getDBTableName(QUI\Rights\Manager::TABLE).'2projects',
+            QUI::getDBTableName(QUI\Rights\Manager::TABLE) . '2projects',
             array(
                 'project' => $project
             )
         );
 
         QUI::getDataBase()->delete(
-            QUI::getDBTableName(QUI\Rights\Manager::TABLE).'2sites',
+            QUI::getDBTableName(QUI\Rights\Manager::TABLE) . '2sites',
             array(
                 'project' => $project
             )
@@ -822,16 +823,16 @@ class Manager
      *
      * @param \QUI\Projects\Project $Project
      *
-     * @return Array
+     * @return array
      */
     static function getRelatedTemplates(QUI\Projects\Project $Project)
     {
-        $result = array();
+        $result    = array();
         $templates = array();
-        $project = $Project->getName();
+        $project   = $Project->getName();
 
         if ($Project->getAttribute('template')) {
-            $result[] = $Project->getAttribute('template');
+            $result[]                                      = $Project->getAttribute('template');
             $templates[$Project->getAttribute('template')] = true;
         }
 
@@ -856,7 +857,7 @@ class Manager
             }
 
             $templates[$vhost['template']] = true;
-            $result[] = $vhost['template'];
+            $result[]                      = $vhost['template'];
         }
 
         return $result;
@@ -868,11 +869,11 @@ class Manager
      *
      * @param \QUI\Projects\Project $Project
      *
-     * @return Array
+     * @return array
      */
     static function getRelatedSettingsXML(QUI\Projects\Project $Project)
     {
-        $cache = 'qui/projects/'.$Project->getName().'/relatedSettingsXml';
+        $cache = 'qui/projects/' . $Project->getName() . '/relatedSettingsXml';
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -881,7 +882,7 @@ class Manager
 
         }
 
-        $list = array();
+        $list     = array();
         $packages = QUI::getPackageManager()->getInstalled();
 
         $templates = self::getRelatedTemplates($Project);
@@ -897,13 +898,13 @@ class Manager
                 }
             }
 
-            $file = OPT_DIR.$package['name'].'/settings.xml';
+            $file = OPT_DIR . $package['name'] . '/settings.xml';
 
             if (!file_exists($file)) {
                 continue;
             }
 
-            $Dom = QUI\Utils\XML::getDomFromXml($file);
+            $Dom  = QUI\Utils\XML::getDomFromXml($file);
             $Path = new \DOMXPath($Dom);
 
             $Settings = $Path->query("//quiqqer/project/settings");
@@ -914,10 +915,10 @@ class Manager
         }
 
         // direct - project settings
-        $projectSettings = USR_DIR.$Project->getName().'/settings.xml';
+        $projectSettings = USR_DIR . $Project->getName() . '/settings.xml';
 
         if (file_exists($projectSettings)) {
-            $Dom = QUI\Utils\XML::getDomFromXml($projectSettings);
+            $Dom  = QUI\Utils\XML::getDomFromXml($projectSettings);
             $Path = new \DOMXPath($Dom);
 
             $Settings = $Path->query("//quiqqer/project/settings");
@@ -936,12 +937,12 @@ class Manager
     /**
      * Search a project
      *
-     * @param Array $params - Search params
+     * @param array $params - Search params
      *                      'search' => 'search string',
      *                      'limit'  => 5,
      *                      'page'   => 1
      *
-     * @return Array
+     * @return array
      */
     static function search($params)
     {
@@ -952,7 +953,7 @@ class Manager
         $search = $params['search'];
 
         $result = array();
-        $list = self::getConfig()->toArray();
+        $list   = self::getConfig()->toArray();
 
         foreach ($list as $project => $entry) {
             if (!empty($search) && strpos($project, $search) === false) {

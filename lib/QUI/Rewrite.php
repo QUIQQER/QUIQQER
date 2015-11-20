@@ -52,28 +52,28 @@ class Rewrite
     /**
      * active project
      *
-     * @var String
+     * @var string
      */
     private $_project_str = '';
 
     /**
      * active template
      *
-     * @var String
+     * @var string
      */
     private $_template_str = false;
 
     /**
      * if project prefix is set
      *
-     * @var String
+     * @var string
      */
     private $_project_prefix = '';
 
     /**
      * project lang
      *
-     * @var String
+     * @var string
      */
     private $_lang = false;
 
@@ -129,14 +129,14 @@ class Rewrite
     /**
      * current suffix, (.html, .pdf, .print)
      *
-     * @var String
+     * @var string
      */
     private $_suffix = '.html';
 
     /**
      * the html output
      *
-     * @var String
+     * @var string
      */
     private $_output_content = '';
 
@@ -503,7 +503,7 @@ class Rewrite
                 && QUI::conf('globals', 'httpshost') !=
                    'https://' . $_SERVER['HTTP_HOST']
             ) {
-                $url = $this->_site->getUrlRewrited();
+                $url = $this->_site->getUrlRewritten();
                 $url
                      = $vhosts[$_SERVER['HTTP_HOST']][$this->_lang] . URL_DIR . $url;
                 $url = QUI\Utils\String::replaceDblSlashes($url);
@@ -544,7 +544,7 @@ class Rewrite
                 && isset($vhosts[$_SERVER['HTTP_HOST']][$this->_lang])
             ) {
 //                $url = $vhosts[$_SERVER['HTTP_HOST']][$this->_lang] . URL_DIR;
-//                $url = QUI\Utils\String::replaceDblSlashes($url);
+//                $url = QUI\Utils\string::replaceDblSlashes($url);
 //                $url = 'http://' . $this->_project_prefix . $url;
 
                 if (isset($_SERVER['REQUEST_URI'])
@@ -602,9 +602,9 @@ class Rewrite
     /**
      * Parameter der Rewrite
      *
-     * @param String $name
+     * @param string $name
      *
-     * @return String|Bool
+     * @return string|boolean
      */
     public function getParam($name)
     {
@@ -648,7 +648,7 @@ class Rewrite
     /**
      * Enter description here...
      *
-     * @return String
+     * @return string
      */
     public function getProjectPrefix()
     {
@@ -658,8 +658,8 @@ class Rewrite
     /**
      * Enter description here...
      *
-     * @param String $url
-     * @param Bool $setpath
+     * @param string $url
+     * @param boolean $setpath
      *
      * @return \QUI\Projects\Site|false
      */
@@ -927,7 +927,7 @@ class Rewrite
     /**
      * Gibt die Vhosts zurück
      *
-     * @return Array
+     * @return array
      */
     public function getVHosts()
     {
@@ -943,7 +943,7 @@ class Rewrite
     /**
      * Gibt das Suffix des Aufrufs zurück
      *
-     * @return String .print / .html
+     * @return string .print / .html
      */
     public function getSuffix()
     {
@@ -953,10 +953,10 @@ class Rewrite
     /**
      * Error Header übermitteln
      *
-     * @param Integer $code - Error Code
-     * @param String $url - Bei manchen Error Codes muss eine URL übergeben werden (30*)
+     * @param integer $code - Error Code
+     * @param string $url - Bei manchen Error Codes muss eine URL übergeben werden (30*)
      *
-     * @return Bool
+     * @return boolean
      */
     public function showErrorHeader($code = 404, $url = '')
     {
@@ -1144,8 +1144,8 @@ class Rewrite
     /**
      * Den aktuelle Pfad bekommen
      *
-     * @param Bool $start - where to start
-     * @param Bool $me - Pfad mit der aktuellen Seite ausgeben
+     * @param boolean $start - where to start
+     * @param boolean $me - Pfad mit der aktuellen Seite ausgeben
      *
      * @return array
      */
@@ -1188,7 +1188,7 @@ class Rewrite
      *
      * @param Int $id - ID der Seite welche geprüft werden soll
      *
-     * @return Bool
+     * @return boolean
      */
     public function isIdInPath($id)
     {
@@ -1219,9 +1219,9 @@ class Rewrite
      * Outputfilter
      * Geht HTML durch und ruft die dazugehörigen Funktionen auf um URLs umzuwandeln
      *
-     * @param String $output - html, text
+     * @param string $output - html, text
      *
-     * @return String
+     * @return string
      */
     public function outputFilter($output)
     {
@@ -1274,7 +1274,7 @@ class Rewrite
     /**
      * Output Content setzen
      *
-     * @param String $str
+     * @param string $str
      */
     public function setOutputContent($str)
     {
@@ -1284,7 +1284,7 @@ class Rewrite
     /**
      * Output Content bekommen
      *
-     * @return String
+     * @return string
      */
     public function getOutputContent()
     {
@@ -1295,9 +1295,9 @@ class Rewrite
      * Mail Protection gegen SPAM
      * Wandelt die Mail Addressen so um das ein BOT nichts mit anfangen kann
      *
-     * @param String $output
+     * @param string $output
      *
-     * @return String
+     * @return string
      */
     public function _output_mail($output)
     {
@@ -1314,9 +1314,9 @@ class Rewrite
     /**
      * Wandelt den Bildepfad in einen sprechenden Pfad um
      *
-     * @param String $output
+     * @param string $output
      *
-     * @return String
+     * @return string
      */
     public function _output_files($output)
     {
@@ -1334,9 +1334,9 @@ class Rewrite
     /**
      * Wandelt den Bilderpfad in einen sprechenden Pfad um
      *
-     * @param String $output
+     * @param string $output
      *
-     * @return String
+     * @return string
      */
     public function _output_images($output)
     {
@@ -1384,9 +1384,9 @@ class Rewrite
     /**
      * Wandelt eine PCSG URL in eine sprechende URL um
      *
-     * @param String $output
+     * @param string $output
      *
-     * @return String
+     * @return string
      */
     public function _output_links($output)
     {
@@ -1446,10 +1446,10 @@ class Rewrite
     /**
      * Sonderzeichen aus dem Namen entfernen damit die URL rein aussieht
      *
-     * @param String $url
-     * @param Bool $slash - Soll Slash ersetzt werden oder nicht
+     * @param string $url
+     * @param boolean $slash - Soll Slash ersetzt werden oder nicht
      *
-     * @return String
+     * @return string
      */
     static function replaceUrlSigns($url, $slash = false)
     {
@@ -1471,7 +1471,7 @@ class Rewrite
     /**
      * Return the url params as index array
      *
-     * @return Array
+     * @return array
      */
     public function getUrlParamsList()
     {
@@ -1581,12 +1581,14 @@ class Rewrite
      * @param array $params
      *    $params['site'] => (object) Site
      *
+     * @param array $getParams
+     *
      * oder
      *    $params['id'] => (int) Id - Id der Seite
-     *    $params['lang'] => (String) lang - Sprache der Seite
-     *    $params['project'] => (String) project - Projektnamen
+     *    $params['lang'] => (string) lang - Sprache der Seite
+     *    $params['project'] => (string) project - Projektnamen
      *
-     * @return String
+     * @return string
      * @throws QUI\Exception
      */
     public function getUrlFromSite($params = array(), $getParams = array())
@@ -1695,7 +1697,8 @@ class Rewrite
          * Sprache behandeln
          */
 
-        if (isset($vhosts[$_SERVER['HTTP_HOST']])
+        if (isset($_SERVER['HTTP_HOST'])
+            && isset($vhosts[$_SERVER['HTTP_HOST']])
             && isset($vhosts[$_SERVER['HTTP_HOST']][$lang])
             && !empty($vhosts[$_SERVER['HTTP_HOST']][$lang])
         ) {
@@ -1743,10 +1746,10 @@ class Rewrite
     /**
      * Erweitert die URL um Params
      *
-     * @param String $url
-     * @param Array $params
+     * @param string $url
+     * @param array $params
      *
-     * @return String
+     * @return string
      */
     private function _extendUrlWidthPrams($url, $params)
     {
@@ -1757,8 +1760,12 @@ class Rewrite
         $seperator = self::URL_PARAM_SEPERATOR;
         $getParams = array();
 
-        if (isset($params['_getParams'])) {
+        if (isset($params['_getParams']) && is_string($params['_getParams'])) {
             parse_str($params['_getParams'], $getParams);
+            unset($params['_getParams']);
+
+        } elseif (isset($params['_getParams']) && is_array($params['_getParams'])) {
+            $getParams = $params['_getParams'];
             unset($params['_getParams']);
         }
 

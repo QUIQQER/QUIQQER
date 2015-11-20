@@ -20,7 +20,7 @@ class Template extends QUI\QDOM
     /**
      * Constructor
      *
-     * @param Array $params
+     * @param array $params
      */
     public function __construct($params = array())
     {
@@ -37,7 +37,7 @@ class Template extends QUI\QDOM
     /**
      * Return the complete mail template as HTML
      *
-     * @return String
+     * @return string
      */
     public function getHTML()
     {
@@ -54,7 +54,7 @@ class Template extends QUI\QDOM
     /**
      * Return the complete mail as text, without html
      *
-     * @return String
+     * @return string
      */
     public function getText()
     {
@@ -76,7 +76,7 @@ class Template extends QUI\QDOM
     /**
      * Set the body html
      *
-     * @param String $html
+     * @param string $html
      */
     public function setBody($html)
     {
@@ -86,7 +86,7 @@ class Template extends QUI\QDOM
     /**
      * Set the Header template
      *
-     * @param String $template
+     * @param string $template
      */
     public function setHeaderTemplate($template)
     {
@@ -96,7 +96,7 @@ class Template extends QUI\QDOM
     /**
      * Set the Header template
      *
-     * @param String $template
+     * @param string $template
      */
     public function setFooterTemplate($template)
     {
@@ -120,7 +120,7 @@ class Template extends QUI\QDOM
     /**
      * Return the header template path
      *
-     * @return String
+     * @return string
      */
     public function getHeaderTemplate()
     {
@@ -150,7 +150,7 @@ class Template extends QUI\QDOM
     /**
      * Return the footer template path
      *
-     * @return String
+     * @return string
      */
     public function getFooterTemplate()
     {

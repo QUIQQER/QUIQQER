@@ -50,7 +50,7 @@ class Ajax extends QUI\QDOM
      * Registered functions which are available via Ajax
      *
      * @param string $reg_function - Function which exists in Ajax
-     * @param array|bool $reg_vars - Variables which has the function of
+     * @param array|boolean $reg_vars - Variables which has the function of
      * @param bool|string $user_perm - rights, optional
      *
      * @return bool
@@ -80,7 +80,7 @@ class Ajax extends QUI\QDOM
     /**
      * Checks the rights if a function has a checkPermissions routine
      *
-     * @param String|callback $reg_function
+     * @param string|callback $reg_function
      *
      * @throws \QUI\Exception
      */
@@ -126,7 +126,7 @@ class Ajax extends QUI\QDOM
     /**
      * ajax processing
      *
-     * @return String - quiqqer XML
+     * @return string - quiqqer XML
      * @throws QUI\Exception
      */
     public function call()
@@ -168,9 +168,9 @@ class Ajax extends QUI\QDOM
     /**
      * Internal call of an ajax function
      *
-     * @param String $_rf
+     * @param string $_rf
      *
-     * @return Array - the result
+     * @return array - the result
      */
     protected function _call_rf($_rf)
     {
@@ -216,7 +216,7 @@ class Ajax extends QUI\QDOM
 
             $value = urldecode($value);
 
-            if (get_magic_quotes_gpc()) {
+            if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
                 $params[$var] = stripslashes($value);
             } else {
                 $params[$var] = $value;
@@ -273,13 +273,14 @@ class Ajax extends QUI\QDOM
      *
      * @param \QUI\Exception|\PDOException $Exception
      *
-     * @return Array
+     * @return array
      */
     public function writeException($Exception)
     {
         $return = array();
+        $class  = get_class($Exception);
 
-        switch (get_class($Exception)) {
+        switch ($class) {
             case 'PDOException':
             case 'QUI\\Database\\Exception':
                 // DB Fehler immer loggen
@@ -294,7 +295,7 @@ class Ajax extends QUI\QDOM
                     $return['Exception']['code']    = 500;
                 }
 
-                if (DEVELOPMENT || DEBUG_MODE) {
+                if ((DEVELOPMENT || DEBUG_MODE) && $class != 'PDOException') {
                     $return['Exception']['context'] = $Exception->getContext();
                 }
 

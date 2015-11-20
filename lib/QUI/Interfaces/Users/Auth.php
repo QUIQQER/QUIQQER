@@ -26,7 +26,7 @@ interface Auth
      *
      * @param string $password
      *
-     * @return Bool
+     * @return boolean
      *
      * @throws \QUI\Exception
      */

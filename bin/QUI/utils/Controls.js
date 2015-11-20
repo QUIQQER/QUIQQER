@@ -51,6 +51,12 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                 needles.push(this.parseDate(Elm));
             }
 
+            // color
+            if (Elm.getElement('input[type="color"]')) {
+                needles.push(this.parseColor(Elm));
+            }
+
+
             // Groups
             if (Elm.getElement('input.groups,input.group')) {
                 needles.push(this.parseGroups(Elm));
@@ -127,6 +133,30 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                             image: Child.get('data-image'),
                             click: Child.get('data-click')
                         }).inject(Child);
+                    }
+
+                    resolve();
+
+                }, function () {
+                    reject();
+                });
+            });
+        },
+
+        /**
+         *
+         * @param Elm
+         * @returns {*}
+         */
+        parseColor: function (Elm) {
+            return new Promise(function (resolve, reject) {
+                require(['qui/controls/elements/ColorPicker'], function (QUIColorPicker) {
+
+                    var i, len;
+                    var elements = Elm.getElements('input[type="color"]');
+
+                    for (i = 0, len = elements.length; i < len; i++) {
+                        new QUIColorPicker().imports(elements[i]);
                     }
 
                     resolve();

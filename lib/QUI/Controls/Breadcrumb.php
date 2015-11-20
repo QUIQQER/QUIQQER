@@ -19,7 +19,7 @@ class Breadcrumb extends QUI\Control
 {
     /**
      * constructor
-     * @param Array $attributes
+     * @param array $attributes
      */
     public function __construct($attributes = array())
     {
@@ -29,7 +29,7 @@ class Breadcrumb extends QUI\Control
             dirname(__FILE__) . '/Breadcrumb.css'
         );
 
-        $this->setAttribute( 'class', 'quiqqer-breadcrumb grid-100 grid-parent' );
+        $this->setAttribute( 'class', 'quiqqer-breadcrumb' );
     }
 
     /**

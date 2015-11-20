@@ -20,7 +20,7 @@ class Navigation extends QUI\Control
     /**
      * constructor
      *
-     * @param Array $attributes
+     * @param array $attributes
      */
     public function __construct($attributes = array())
     {
@@ -37,7 +37,7 @@ class Navigation extends QUI\Control
             dirname(__FILE__).'/Navigation.css'
         );
 
-        $this->setAttribute('class', 'quiqqer-navigation grid-100 grid-parent');
+        $this->setAttribute('class', 'quiqqer-navigation grid-100');
     }
 
     /**

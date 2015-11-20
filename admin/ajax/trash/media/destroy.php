@@ -8,18 +8,18 @@
  */
 function ajax_trash_media_destroy($project, $ids)
 {
-    $Project = \QUI::getProjectManager()->decode( $project );
+    $Project = QUI::getProjectManager()->decode($project);
     $Media   = $Project->getMedia();
     $Trash   = $Media->getTrash();
 
     $ids = json_decode($ids, true);
 
-    foreach ( $ids as $id ) {
-        $Trash->destroy( $id );
+    foreach ($ids as $id) {
+        $Trash->destroy($id);
     }
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_trash_media_destroy',
     array('project', 'ids'),
     'Permission::checkAdminUser'

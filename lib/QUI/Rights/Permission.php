@@ -28,9 +28,9 @@ class Permission
     /**
      * Checks, if the user is an admin user
      *
-     * @param \QUI\Users\User|Bool $User - optional
+     * @param \QUI\Users\User|boolean $User - optional
      *
-     * @return Bool
+     * @return boolean
      */
     static function isAdmin($User = false)
     {
@@ -51,9 +51,9 @@ class Permission
     /**
      * Prüft den Benutzer auf SuperUser
      *
-     * @param \QUI\Users\User|Bool $User - optional
+     * @param \QUI\Users\User|boolean $User - optional
      *
-     * @return Bool
+     * @return boolean
      */
     static function isSU($User = false)
     {
@@ -79,8 +79,8 @@ class Permission
     /**
      * has the User the permission
      *
-     * @param String $perm
-     * @param \QUI\Users\User|bool $User
+     * @param string $perm
+     * @param \QUI\Users\User|boolean $User
      *
      * @return false|string|permission
      */
@@ -99,7 +99,7 @@ class Permission
     /**
      * Prüft ob der Benutzer in den Adminbereich darf
      *
-     * @param \QUI\Users\User|bool $User - optional
+     * @param \QUI\Users\User|boolean $User - optional
      *
      * @throws \QUI\Exception
      */
@@ -125,8 +125,8 @@ class Permission
     /**
      * Prüft ob der Benutzer das Recht besitzt
      *
-     * @param String $perm
-     * @param \QUI\Users\User|bool $User - optional
+     * @param string $perm
+     * @param \QUI\Users\User|boolean $User - optional
      *
      * @return false|string|permission
      *
@@ -174,10 +174,10 @@ class Permission
      * Check the permission with a given permission list
      *
      * @param array $permissions - list of permissions
-     * @param String $perm
-     * @param  \QUI\Users\User|Bool $User
+     * @param string $perm
+     * @param \QUI\Users\User|boolean $User
      *
-     * @return Bool
+     * @return boolean
      *
      * @throws \QUI\Exception
      */
@@ -259,7 +259,11 @@ class Permission
 
                 // groups ids from the user
                 $group_ids = $User->getGroups(false);
-                $group_ids = explode(',', $group_ids);
+
+                if (!is_array($group_ids)) {
+                    $group_ids = explode(',', $group_ids);
+                }
+
 
                 $user_group_ids = array();
 
@@ -313,7 +317,7 @@ class Permission
     /**
      * Prüft ob der Benutzer ein SuperUser ist
      *
-     * @param \QUI\Users\User|Bool $User - optional
+     * @param \QUI\Users\User|boolean $User - optional
      *
      * @throws \QUI\Exception
      */
@@ -339,7 +343,7 @@ class Permission
     /**
      * Prüft ob der Benutzer auch ein Benutzer ist
      *
-     * @param \QUI\Users\User|bool $User - optional
+     * @param \QUI\Users\User|boolean $User - optional
      *
      * @throws \QUI\Exception
      */
@@ -363,10 +367,10 @@ class Permission
     /**
      * Checks if the permission is set
      *
-     * @param String $perm
-     * @param \QUI\Users\User|bool $User - optional
+     * @param string $perm
+     * @param \QUI\Users\User|boolean $User - optional
      *
-     * @return Bool
+     * @return boolean
      */
     static function existsPermission($perm, $User = false)
     {
@@ -404,8 +408,8 @@ class Permission
      *
      * @param \QUI\Users\User $User
      * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
-     * @param String $permission - name of the permission
-     * @param Boolean|\QUI\Users\User $EditUser
+     * @param string $permission - name of the permission
+     * @param boolean|\QUI\Users\User $EditUser
      *
      * @return bool
      */
@@ -455,8 +459,8 @@ class Permission
      *
      * @param \QUI\Groups\Group $Group
      * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
-     * @param String $permission - name of the permission
-     * @param Boolean|\QUI\Users\User $EditUser
+     * @param string $permission - name of the permission
+     * @param boolean|\QUI\Users\User $EditUser
      *
      * @return bool
      */
@@ -505,11 +509,11 @@ class Permission
     /**
      * Checks if the User have the permission of the Site
      *
-     * @param String $perm
+     * @param string $perm
      * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
-     * @param \QUI\Users\User|bool $User - optional
+     * @param \QUI\Users\User|boolean $User - optional
      *
-     * @return Bool
+     * @return boolean
      *
      * @throws \QUI\Exception
      */
@@ -603,7 +607,7 @@ class Permission
     /**
      * Checks if the permission exists in the Site
      *
-     * @param String $perm
+     * @param string $perm
      * @param \QUI\Projects\Site\|\QUI\Projects\Site\Edit $Site
      *
      * @return bool
@@ -620,7 +624,7 @@ class Permission
      * Return the Site Permission
      *
      * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
-     * @param String $perm
+     * @param string $perm
      *
      * @return mixed|boolean
      */
@@ -635,9 +639,9 @@ class Permission
     /**
      * has the User the permission at the site?
      *
-     * @param String $perm
+     * @param string $perm
      * @param \QUI\Projects\Site $Site
-     * @param \QUI\Users\User|bool $User - optional
+     * @param \QUI\Users\User|boolean $User - optional
      *
      * @return bool
      */
@@ -658,8 +662,8 @@ class Permission
      *
      * @param Group $Group
      * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
-     * @param String $permission
-     * @param Boolean|\QUI\Users\User $EditUser
+     * @param string $permission
+     * @param boolean|\QUI\Users\User $EditUser
      *
      * @return bool
      */
@@ -714,8 +718,8 @@ class Permission
      *
      * @param \QUI\Users\User $User
      * @param \QUI\Projects\Site|\QUI\Projects\Site\Edit $Site
-     * @param String $permission
-     * @param Boolean|\QUI\Users\User $EditUser
+     * @param string $permission
+     * @param boolean|\QUI\Users\User $EditUser
      *
      * @return bool
      */
@@ -771,8 +775,8 @@ class Permission
      *
      * @param Group $Group
      * @param \QUI\Projects\Project $Project
-     * @param String $permission
-     * @param Boolean|\QUI\Users\User $EditUser
+     * @param string $permission
+     * @param boolean|\QUI\Users\User $EditUser
      *
      * @return bool
      */
@@ -821,10 +825,10 @@ class Permission
      *
      * @param \QUI\Users\User $User
      * @param \QUI\Projects\Project $Project
-     * @param String $permission - name of the
-     * @param Boolean|\QUI\Users\User $EditUser
+     * @param string $permission - name of the
+     * @param boolean|\QUI\Users\User $EditUser
      *
-     * @return bool
+     * @return boolean
      * @throws QUI\Exception
      */
     static function addUserToProjectPermission(
@@ -870,9 +874,9 @@ class Permission
     /**
      * Checks if the User have the permission of the Project
      *
-     * @param String $perm
+     * @param string $perm
      * @param Project $Project
-     * @param \QUI\Users\User|bool $User - optional
+     * @param \QUI\Users\User|boolean $User - optional
      *
      * @return bool
      *
@@ -969,7 +973,7 @@ class Permission
      *
      * @param \QUI\Users\User $User
      * @param \QUI\Projects\Project $Project
-     * @param String $permission - name of the permission
+     * @param string $permission - name of the permission
      */
     static function removeUserFromProjectPermission(
         User $User,
@@ -1013,7 +1017,7 @@ class Permission
      *
      * @param \QUI\Groups\Group $Group
      * @param \QUI\Projects\Project $Project
-     * @param String $permission - name of the permission
+     * @param string $permission - name of the permission
      *
      * @return bool
      */

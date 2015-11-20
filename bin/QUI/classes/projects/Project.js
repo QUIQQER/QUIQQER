@@ -121,39 +121,74 @@ define('classes/projects/Project', [
          *
          * @param {Function} callback - callback function
          * @param {String} [param] - param name
+         * @return Promise
          */
         getConfig: function (callback, param) {
-            param = param || false;
 
-            if (this.$config) {
-                if (param) {
-                    callback(this.$config[param]);
+            return new Promise(function (resolve, reject) {
+
+                param = param || false;
+
+                if (this.$config) {
+                    if (param) {
+                        callback(this.$config[param]);
+                        resolve(this.$config[param]);
+                        return;
+                    }
+
+                    if (typeof callback === 'function') {
+                        callback(this.$config);
+                    }
+
+                    resolve(this.$config);
                     return;
                 }
 
-                callback(this.$config);
-                return;
-            }
 
+                var self = this;
 
-            var self = this;
+                Ajax.get('ajax_project_get_config', function (result) {
+                    self.$config = result;
 
-            Ajax.get('ajax_project_get_config', function (result) {
-                self.$config = result;
+                    if (param) {
+                        callback(self.$config[param]);
+                        resolve(self.$config[param]);
+                        return;
+                    }
 
-                if (param) {
-                    callback(self.$config[param]);
-                    return;
-                }
+                    if (typeof callback === 'function') {
+                        callback(self.$config);
+                    }
 
-                callback(self.$config);
+                    resolve(self.$config);
 
-                require(['Projects'], function (Projects) {
-                    Projects.fireEvent('projectSave', [self]);
+                    require(['Projects'], function (Projects) {
+                        Projects.fireEvent('projectSave', [self]);
+                    });
+
+                }, {
+                    project: this.getName(),
+                    onError: reject
                 });
 
-            }, {
-                project: this.getName()
+            }.bind(this));
+        },
+
+        /**
+         * Return project defaults
+         * @returns {Promise}
+         */
+        getDefaults: function () {
+            var self = this;
+            return new Promise(function (resolve, reject) {
+
+                Ajax.get('ajax_project_get_defaults', function (result) {
+                    resolve(result);
+                }, {
+                    project: self.encode(),
+                    onError: reject
+                });
+
             });
         },
 
@@ -166,6 +201,7 @@ define('classes/projects/Project', [
          * @return Promise
          */
         setConfig: function (params, callback) {
+
             var self = this;
 
             return new Promise(function (resolve, reject) {

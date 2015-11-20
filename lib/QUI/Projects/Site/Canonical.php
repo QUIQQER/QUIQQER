@@ -36,7 +36,7 @@ class Canonical
     /**
      * Return the meta tag, if it is allowed
      *
-     * @return String
+     * @return string
      */
     public function output()
     {
@@ -114,7 +114,7 @@ class Canonical
     /**
      * Return <link rel="canonical"> tag
      *
-     * @param String $url - href link
+     * @param string $url - href link
      *
      * @return string
      */

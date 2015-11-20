@@ -20,7 +20,7 @@ class Event implements QUI\Interfaces\Events
     /**
      * Registered events
      *
-     * @var Array
+     * @var array
      */
     protected $_events = array();
 
@@ -44,7 +44,7 @@ class Event implements QUI\Interfaces\Events
      *
      * @see \QUI\Interfaces\Events::addEvent()
      *
-     * @param String   $event - The type of event (e.g. 'complete').
+     * @param string   $event - The type of event (e.g. 'complete').
      * @param callback $fn    - The function to execute.
      */
     public function addEvent($event, $fn)
@@ -71,8 +71,8 @@ class Event implements QUI\Interfaces\Events
      *
      * @see \QUI\Interfaces\Events::removeEvent()
      *
-     * @param String        $event - The type of event (e.g. 'complete').
-     * @param callback|Bool $fn    - (optional) The function to remove.
+     * @param string        $event - The type of event (e.g. 'complete').
+     * @param callback|boolean $fn    - (optional) The function to remove.
      */
     public function removeEvent($event, $fn = false)
     {
@@ -98,7 +98,7 @@ class Event implements QUI\Interfaces\Events
      *
      * @see \QUI\Interfaces\Events::removeEvents()
      *
-     * @param Array $events - (optional) If not passed removes all events of all types.
+     * @param array $events - (optional) If not passed removes all events of all types.
      */
     public function removeEvents(array $events)
     {
@@ -112,12 +112,12 @@ class Event implements QUI\Interfaces\Events
      *
      * @see \QUI\Interfaces\Events::fireEvent()
      *
-     * @param String     $event   - The type of event (e.g. 'onComplete').
-     * @param Array|Bool $args    - (optional) the argument(s) to pass to the function.
+     * @param string     $event   - The type of event (e.g. 'onComplete').
+     * @param array|boolean $args    - (optional) the argument(s) to pass to the function.
      *                            The arguments must be in an array.
-     * @param Bool       $force   - (optional) no recursion check, optional, default = false
+     * @param boolean       $force   - (optional) no recursion check, optional, default = false
      *
-     * @return Array - Event results, assoziative array
+     * @return array - Event results, assoziative array
      *
      * @throws QUI\ExceptionStack
      */
@@ -180,7 +180,23 @@ class Event implements QUI\Interfaces\Events
                 $Clone = new QUI\Exception(
                     $message,
                     $Exception->getCode(),
-                    $Exception->getType()
+                    array('trace' => $Exception->getTraceAsString())
+                );
+
+                $Stack->addException($Clone);
+
+            } catch (\Exception $Exception) {
+
+                $message = $Exception->getMessage();
+
+                if (is_string($fn)) {
+                    $message .= ' :: '. $fn;
+                }
+
+                $Clone = new QUI\Exception(
+                    $message,
+                    $Exception->getCode(),
+                    array('trace' => $Exception->getTraceAsString())
                 );
 
                 $Stack->addException($Clone);

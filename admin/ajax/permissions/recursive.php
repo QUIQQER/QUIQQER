@@ -8,32 +8,21 @@
  * @param String $permissions - JSON permissions
  * @throws \QUI\Exception
  */
-function ajax_permissions_save($params, $btype, $permissions)
+function ajax_permissions_recursive($params, $btype, $permissions)
 {
     $Manager     = QUI::getPermissionManager();
     $permissions = json_decode($permissions, true);
     $params      = json_decode($params, true);
+    $errors      = 0;
 
     switch ($btype) {
-        case 'classes/users/User':
-            $Bind = QUI::getUsers()->get($params['id']);
-            break;
-
-        case 'classes/groups/Group':
-            $Bind = QUI::getGroups()->get($params['id']);
-            break;
-
-        case 'classes/projects/Project':
-            $Bind = QUI::getProject($params['project']);
-            break;
-
         case 'classes/projects/project/Site':
             if (!isset($params['id'])) {
                 throw new QUI\Exception('Undefined index id');
             }
 
             $Project = QUI::getProject($params['project'], $params['lang']);
-            $Bind    = $Project->get($params['id']);
+            $Site    = $Project->get($params['id']);
             break;
 
         default:
@@ -43,18 +32,40 @@ function ajax_permissions_save($params, $btype, $permissions)
             break;
     }
 
-    $Manager->setPermissions($Bind, $permissions);
 
-    QUI::getMessagesHandler()->addSuccess(
-        QUI::getLocale()->get(
-            'quiqqer/system',
-            'permissions.message.save.success'
-        )
-    );
+    $childrenIds = $Site->getChildrenIdsRecursive(array(
+        'active' => '0&1'
+    ));
+
+    foreach ($childrenIds as $siteId) {
+        try {
+
+            $Manager->setPermissions(
+                new \QUI\Projects\Site\Edit($Project, $siteId),
+                $permissions
+            );
+
+        } catch (QUI\Exception $Exception) {
+            QUI::getMessagesHandler()->addAttention(
+                $Exception->getMessage()
+            );
+
+            $errors++;
+        }
+    }
+
+    if (!$errors) {
+        QUI::getMessagesHandler()->addSuccess(
+            QUI::getLocale()->get(
+                'quiqqer/system',
+                'permissions.message.save.success'
+            )
+        );
+    }
 }
 
 QUI::$Ajax->register(
-    'ajax_permissions_save',
+    'ajax_permissions_recursive',
     array('params', 'btype', 'permissions'),
     array(
         'Permission::checkAdminUser',

@@ -385,9 +385,17 @@ define('controls/projects/project/media/Panel', [
 
                 self.addButton(Upload);
 
-
                 if (self.getAttribute('startid')) {
                     self.openID(self.getAttribute('startid'));
+                    return;
+                }
+
+                // cached id?
+                var Project    = this.$Media.getProject();
+                var cacheMedia = Project.getName() + '-' + Project.getLang() + '-id';
+
+                if (QUI.Storage.get(cacheMedia)) {
+                    self.openID(QUI.Storage.get(cacheMedia));
                     return;
                 }
 
@@ -432,7 +440,14 @@ define('controls/projects/project/media/Panel', [
                 title: ' Media (' + Project.getName() + ')'
             });
 
-            // this.refresh();
+
+            // set cache
+            QUI.Storage.set(
+                Project.getName() + '-' + Project.getLang() + '-id',
+                fileid
+            );
+
+            this.setAttribute('startid', fileid);
 
             // get the file object
             this.getMedia().get(fileid).then(function (MediaFile) {
@@ -805,6 +820,10 @@ define('controls/projects/project/media/Panel', [
          */
         $createBreadCrumb: function (items) {
             var i, len, Item;
+
+            if (this.getAttribute('breadcrumb') === false) {
+                return;
+            }
 
             var self       = this,
                 Breadcrumb = this.getBreadcrumb(),

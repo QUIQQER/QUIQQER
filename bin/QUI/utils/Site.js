@@ -1,4 +1,3 @@
-
 /**
  * Helper for site operations
  *
@@ -22,8 +21,7 @@ define('utils/Site', [
     'Locale',
     'Ajax'
 
-], function(QUI, PanelUtils, Locale, Ajax)
-{
+], function (QUI, PanelUtils, Locale, Ajax) {
     "use strict";
 
     return {
@@ -33,8 +31,7 @@ define('utils/Site', [
          *
          * @return Object
          */
-        notAllowedUrlSigns : function()
-        {
+        notAllowedUrlSigns: function () {
             return {
                 '.' : true,
                 ',' : true,
@@ -51,7 +48,7 @@ define('utils/Site', [
                 '<' : true,
                 '>' : true,
                 '=' : true,
-                '\'' : true,
+                '\'': true,
                 '"' : true,
                 '@' : true,
                 '_' : true,
@@ -68,11 +65,10 @@ define('utils/Site', [
          * @param {String} url
          * @return {String}
          */
-        clearUrl : function(url)
-        {
-            var signs = Object.keys( this.notAllowedUrlSigns() ).join("");
+        clearUrl: function (url) {
+            var signs = Object.keys(this.notAllowedUrlSigns()).join("");
 
-            url = url.replace( new RegExp( signs, 'g' ), '' );
+            url = url.replace(new RegExp(signs, 'g'), '');
 
 
             // doppelte leerzeichen löschen
@@ -88,8 +84,7 @@ define('utils/Site', [
          * @param {Object} ParentSite - classes/projects/Site
          * @param {String} [value] - new name of the site, if no newname was passed, a window would be open
          */
-        openCreateChild : function(ParentSite, value)
-        {
+        openCreateChild: function (ParentSite, value) {
             var self    = this,
                 lg      = 'quiqqer/system',
                 Site    = ParentSite,
@@ -102,37 +97,42 @@ define('utils/Site', [
             ParentSite.fireEvent('beforeOpenCreateChild', [ParentSite]);
 
 
-            require(['qui/controls/windows/Prompt'], function(Prompt)
-            {
+            require(['qui/controls/windows/Prompt'], function (Prompt) {
+
                 new Prompt({
-                    title : Locale.get(lg, 'projects.project.site.panel.window.create.title'),
-                    text  : Locale.get(lg, 'projects.project.site.panel.window.create.text'),
-                    texticon    : 'icon-file',
-                    information : Locale.get(lg, 'projects.project.site.panel.window.create.information', {
-                        name : Site.getAttribute('name'),
-                        id   : Site.getId()
+                    title        : Locale.get(lg, 'projects.project.site.panel.window.create.title'),
+                    text         : Locale.get(lg, 'projects.project.site.panel.window.create.text'),
+                    titleicon    : 'icon-file fa fa-file',
+                    icon         : 'icon-file fa fa-file',
+                    information  : Locale.get(lg, 'projects.project.site.panel.window.create.information', {
+                        name: Site.getAttribute('name'),
+                        id  : Site.getId()
                     }),
-                    maxWidth  : 450,
-                    maxHeight : 300,
-                    value     : value,
-                    autoclose : false,
-                    events    :
-                    {
-                        onOpen : function(Win)
-                        {
+                    cancel_button: {
+                        text     : Locale.get(lg, 'cancel'),
+                        textimage: 'icon-remove fa fa-remove'
+                    },
+                    ok_button    : {
+                        text     : Locale.get(lg, 'projects.project.site.panel.window.create.button.submit'),
+                        textimage: 'icon-file fa fa-file'
+                    },
+                    maxWidth     : 450,
+                    maxHeight    : 300,
+                    value        : value,
+                    autoclose    : false,
+                    events       : {
+                        onOpen: function (Win) {
                             ParentSite.fireEvent('openCreateChild', [Win, ParentSite]);
                             Win.resize();
                         },
 
-                        onSubmit : function(value, Win)
-                        {
+                        onSubmit: function (value, Win) {
                             ParentSite.fireEvent(
                                 'openCreateChildSubmit',
                                 [value, Win, ParentSite]
                             );
 
-                            Site.createChild(value, function(result)
-                            {
+                            Site.createChild(value, function (result) {
                                 Win.close();
 
                                 PanelUtils.openSitePanel(
@@ -141,40 +141,33 @@ define('utils/Site', [
                                     result.id
                                 );
 
-                            }, function(Exception)
-                            {
+                            }, function (Exception) {
                                 // on error
-                                if (Exception.getCode() == 702)
-                                {
-                                    Ajax.get('ajax_site_clear', function(newName)
-                                    {
+                                if (Exception.getCode() == 702) {
+                                    Ajax.get('ajax_site_clear', function (newName) {
                                         Win.close();
 
-                                        require(['qui/controls/windows/Confirm'], function(QUIConfirm)
-                                        {
+                                        require(['qui/controls/windows/Confirm'], function (QUIConfirm) {
                                             // #locale
                                             new QUIConfirm({
-                                                title : Locale.get(lg, 'projects.project.site.panel.window.create.clear.title'),
-                                                text  : Locale.get(lg, 'projects.project.site.panel.window.create.clear.text'),
-                                                icon  : 'fa fa-warning icon-warning-sign',
-                                                maxWidth    : 600,
-                                                maxHeight   : 400,
-                                                autoclose   : false,
-                                                information : Locale.get(lg, 'projects.project.site.panel.window.create.clear.information', {
-                                                    newName : newName,
-                                                    value   : value
+                                                title      : Locale.get(lg, 'projects.project.site.panel.window.create.clear.title'),
+                                                text       : Locale.get(lg, 'projects.project.site.panel.window.create.clear.text'),
+                                                icon       : 'fa fa-warning icon-warning-sign',
+                                                maxWidth   : 600,
+                                                maxHeight  : 400,
+                                                autoclose  : false,
+                                                information: Locale.get(lg, 'projects.project.site.panel.window.create.clear.information', {
+                                                    newName: newName,
+                                                    value  : value
                                                 }),
-                                                events :
-                                                {
-                                                    onSubmit : function(Win)
-                                                    {
+                                                events     : {
+                                                    onSubmit: function (Win) {
                                                         Win.Loader.show();
 
                                                         Site.createChild({
-                                                            name  : newName,
-                                                            title : value
-                                                        }, function(result)
-                                                        {
+                                                            name : newName,
+                                                            title: value
+                                                        }, function (result) {
                                                             Win.close();
 
                                                             // open new site
@@ -184,14 +177,13 @@ define('utils/Site', [
                                                                 result.id
                                                             );
 
-                                                        }, function(Exception)
-                                                        {
+                                                        }, function (Exception) {
                                                             Win.close();
 
-                                                            self.openCreateChild( newName );
+                                                            self.openCreateChild(newName);
 
-                                                            QUI.getMessageHandler(function(MH) {
-                                                                MH.addError( Exception.getMessage() );
+                                                            QUI.getMessageHandler(function (MH) {
+                                                                MH.addError(Exception.getMessage());
                                                             });
                                                         });
                                                     }
@@ -200,19 +192,19 @@ define('utils/Site', [
                                         });
 
                                     }, {
-                                        project : Project.encode(),
-                                        name    : value
+                                        project: Project.encode(),
+                                        name   : value
                                     });
 
                                     return;
                                 }
 
-                                QUI.getMessageHandler(function(MH) {
-                                    MH.addError( Exception.getMessage() );
+                                QUI.getMessageHandler(function (MH) {
+                                    MH.addError(Exception.getMessage());
                                 });
 
                                 Win.Loader.hide();
-                            } );
+                            });
                         }
                     }
                 }).open();

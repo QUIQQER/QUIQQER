@@ -39,7 +39,7 @@ class DOM
     /**
      * Fügt DOM XML Tabs in eine Toolbar ein
      *
-     * @param Array|\DOMNodeList $tabs
+     * @param array|\DOMNodeList $tabs
      * @param QUI\Controls\Toolbar\Bar $Tabbar
      * @param                          $plugin - optional
      */
@@ -127,7 +127,7 @@ class DOM
      *
      * @param \DOMNode|\DOMElement $Button
      *
-     * @return String
+     * @return string
      */
     static function buttonDomToString(\DOMNode $Button)
     {
@@ -161,7 +161,7 @@ class DOM
      *
      * @param \DOMNode|\DOMElement $Table
      *
-     * @return Array
+     * @return array
      */
     static function dbTableDomToArray(\DOMNode $Table)
     {
@@ -256,7 +256,7 @@ class DOM
      *
      * @param \DOMNode|\DOMElement $Field
      *
-     * @return Array
+     * @return array
      */
     static function dbFieldDomToArray(\DOMNode $Field)
     {
@@ -296,7 +296,7 @@ class DOM
      *
      * @param \DOMNode $Primary
      *
-     * @return Array
+     * @return array
      */
     static function dbPrimaryDomToArray(\DOMNode $Primary)
     {
@@ -338,7 +338,7 @@ class DOM
      *
      * @param \DOMNode $Fulltext
      *
-     * @return Array
+     * @return array
      */
     static function dbAutoFullextDomToArray(\DOMNode $Fulltext)
     {
@@ -348,12 +348,41 @@ class DOM
     }
 
     /**
+     * Return the tabs
+     *
+     * @param \DOMElement|\DOMNode $DOMNode
+     * @return array
+     */
+    static function getTabs(\DOMElement $DOMNode)
+    {
+        $tablist = $DOMNode->getElementsByTagName('tab');
+
+        if (!$tablist->length) {
+            return array();
+        }
+
+        $tabs = array();
+
+        for ($c = 0; $c < $tablist->length; $c++) {
+            $Tab = $tablist->item($c);
+
+            if ($Tab->nodeName == '#text') {
+                continue;
+            }
+
+            $tabs[] = $Tab;
+        }
+
+        return $tabs;
+    }
+
+    /**
      * HTML eines DOM Tabs
      *
-     * @param String $name
-     * @param QUI\Projects\Project|String|QUI\Projects\Site|QUI\Projects\Site\Edit $Object - String = path to user.xml File
+     * @param string $name
+     * @param QUI\Projects\Project|string|QUI\Projects\Site|QUI\Projects\Site\Edit $Object - string = path to user.xml File
      *
-     * @return String
+     * @return string
      */
     static function getTabHTML($name, $Object)
     {
@@ -532,9 +561,9 @@ class DOM
      * if no <locale exist, it return the nodeValue
      *
      * @param \DOMNode|\DOMElement $Node
-     * @param Bool $translate - direct translation? default = true
+     * @param boolean $translate - direct translation? default = true
      *
-     * @return String|Array
+     * @return string|array
      */
     static function getTextFromNode(\DOMNode $Node, $translate = true)
     {
@@ -561,7 +590,7 @@ class DOM
      * Return all //wysiwyg/styles/style elements
      *
      * @param \DOMDocument $Dom
-     * @param bool $translate
+     * @param boolean $translate
      *
      * @return array
      */
@@ -599,11 +628,11 @@ class DOM
     }
 
     /**
-     * Wandelt <group> in einen String für die Einstellung um
+     * Wandelt <group> in einen string für die Einstellung um
      *
      * @param \DOMNode|\DOMElement $Group
      *
-     * @return String
+     * @return string
      */
     static function groupDomToString(\DOMNode $Group)
     {
@@ -637,11 +666,11 @@ class DOM
     }
 
     /**
-     * Returns the String between <body> and </body>
+     * Returns the string between <body> and </body>
      *
-     * @param String $html
+     * @param string $html
      *
-     * @return String
+     * @return string
      */
     static function getInnerBodyFromHTML($html)
     {
@@ -654,7 +683,7 @@ class DOM
      *
      * @param \DOMNode $Node
      *
-     * @return String
+     * @return string
      */
     static function getInnerHTML(\DOMNode $Node)
     {
@@ -673,7 +702,7 @@ class DOM
      *
      * @param \DOMDocument|\DOMNode $Dom
      *
-     * @return Array
+     * @return array
      */
     static function getConfigParamsFromDOM($Dom)
     {
@@ -796,7 +825,7 @@ class DOM
      *
      * @param \DOMNode|\DOMElement $Node
      *
-     * @return Array
+     * @return array
      */
     static function parsePanelToArray(\DOMNode $Node)
     {
@@ -838,7 +867,7 @@ class DOM
      *
      * @param \DOMNode|\DOMElement $Node
      *
-     * @return Array
+     * @return array
      */
     static function parsePermissionToArray(\DOMNode $Node)
     {
@@ -872,7 +901,7 @@ class DOM
      * @param \DOMNode $Category
      * @param          $Plugin - optional
      *
-     * @return String
+     * @return string
      */
     static function parseCategorieToHTML($Category, $Plugin = false)
     {
@@ -915,7 +944,7 @@ class DOM
         $even   = 'even';
 
         for ($c = 0; $c < $children->length; $c++) {
-            /* @param \DOMElement */
+            /* @var $Entry \DOMElement */
             $Entry = $children->item($c);
 
             if ($Entry->nodeName == '#text' || $Entry->nodeName == 'text'
@@ -1062,11 +1091,11 @@ class DOM
     }
 
     /**
-     * Eingabe Element Input in einen String für die Einstellung umwandeln
+     * Eingabe Element Input in einen string für die Einstellung umwandeln
      *
      * @param \DOMNode|\DOMElement $Input
      *
-     * @return String
+     * @return string
      */
     static function inputDomToString(\DOMNode $Input)
     {
@@ -1171,11 +1200,11 @@ class DOM
     }
 
     /**
-     * Eingabe Element Textarea in einen String für die Einstellung umwandeln
+     * Eingabe Element Textarea in einen string für die Einstellung umwandeln
      *
      * @param \DOMNode|\DOMElement $Textarea
      *
-     * @return String
+     * @return string
      */
     static function textareaDomToString(\DOMNode $Textarea)
     {
@@ -1219,7 +1248,7 @@ class DOM
      *
      * @param \DOMNode|\DOMNodeList $confs
      *
-     * @return Array
+     * @return array
      */
     static function parseConfs($confs)
     {
@@ -1257,9 +1286,9 @@ class DOM
     /**
      * Ersetzt Variablen im XML
      *
-     * @param String $value
+     * @param string $value
      *
-     * @return String
+     * @return string
      */
     static function parseVar($value)
     {
@@ -1297,11 +1326,11 @@ class DOM
     }
 
     /**
-     * Eingabe Element Select in einen String für die Einstellung umwandeln
+     * Eingabe Element Select in einen string für die Einstellung umwandeln
      *
      * @param \DOMNode|\DOMElement $Select
      *
-     * @return String
+     * @return string
      */
     static function selectDomToString(\DOMNode $Select)
     {

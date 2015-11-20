@@ -21,12 +21,12 @@ class CreateProject extends QUI\System\Console\Tool
     public function __construct()
     {
         $this->setName('quiqqer:create-project')
-             ->setDescription('Create a new project')
-             ->addArgument('projectname', 'Name of the project', 'p')
-             ->addArgument('projectlangs',
-                 'Langs of the project (comma separated)', 'l')
-             ->addArgument('template', 'Standard template of the project',
-                 false, true);
+            ->setDescription('Create a new project')
+            ->addArgument('projectname', 'Name of the project', 'p')
+            ->addArgument('projectlangs',
+                'Langs of the project (comma separated)', 'l')
+            ->addArgument('template', 'Standard template of the project',
+                false, true);
     }
 
     /**
@@ -78,7 +78,7 @@ class CreateProject extends QUI\System\Console\Tool
 
         } catch (QUI\Exception $Exception) {
             $this->writeLn('Could not create project: '
-                .$Exception->getMessage());
+                           . $Exception->getMessage());
 
             return;
         }
@@ -88,7 +88,7 @@ class CreateProject extends QUI\System\Console\Tool
             'langs'    => implode(',', $projectlangs)
         ));
 
-        $this->writeLn('Project '.$projectname.' successfuly created.');
+        $this->writeLn('Project ' . $projectname . ' successfuly created.');
         $this->writeLn('');
     }
 }

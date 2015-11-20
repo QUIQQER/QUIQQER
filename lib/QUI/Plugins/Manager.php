@@ -6,6 +6,8 @@
 
 namespace QUI\Plugins;
 
+use QUI;
+
 /**
  * Plugin Manager
  *
@@ -18,7 +20,7 @@ namespace QUI\Plugins;
  * @deprecated
  */
 
-class Manager extends \QUI\QDOM
+class Manager extends QUI\QDOM
 {
     /**
      * loaded plugins
@@ -34,13 +36,13 @@ class Manager extends \QUI\QDOM
 
     /**
      * Loaded flag
-     * @var Bool
+     * @var boolean
      */
     protected $_loaded = false;
 
     /**
      * loaded group extentions
-     * @var array|Bool
+     * @var array|boolean
      * @deprecated
      */
     protected $_groupplugins = false;
@@ -106,10 +108,10 @@ class Manager extends \QUI\QDOM
     /**
      * Gibt alle Plugins zurück die verfügbar sind
      *
-     * @param Bool $order		- Sortiert bekommen (optional)
-     * @param Bool $onlynames	- Nur Namen, keine Objekte (optional)
+     * @param boolean $order		- Sortiert bekommen (optional)
+     * @param boolean $onlynames	- Nur Namen, keine Objekte (optional)
      *
-     * @return Array
+     * @return array
      * @deprecated use package manager
      */
     public function getAvailablePlugins($order=false, $onlynames=false)
@@ -162,8 +164,8 @@ class Manager extends \QUI\QDOM
     /**
      * Return all inactive Plugins
      *
-     * @param Bool $order - get the list ordered
-     * @return Array
+     * @param boolean $order - get the list ordered
+     * @return array
      */
     public function getInactivePlugins($order=false)
     {
@@ -186,7 +188,7 @@ class Manager extends \QUI\QDOM
      * Gibt alle Seitentypen zurück die verfügbar sind
      *
      * @param \QUI\Projects\Project $Project - optional
-     * @return Array
+     * @return array
      */
     public function getAvailableTypes($Project=false)
     {
@@ -258,7 +260,7 @@ class Manager extends \QUI\QDOM
     /**
      * Gibt das Plugin zurück wenn ein Cachefile existiert
      *
-     * @param String $class
+     * @param string $class
      * @return unknown
      *
      * @todo mal überdenken
@@ -298,8 +300,8 @@ class Manager extends \QUI\QDOM
     /**
      * Plugin bekommen
      *
-     * @param String $name - Name des Plugins
-     * @param String $type - Seitentype
+     * @param string $name - Name des Plugins
+     * @param string $type - Seitentype
      *
      * @return Plugin
      * @todo Unbedingt ändern, get gibt nur aktiv Plugins zurück -> überarbeiten
@@ -390,7 +392,7 @@ class Manager extends \QUI\QDOM
     /**
      * Gibt dir das Plugin zurück wenn es verfügbar ist
      *
-     * @param String $plugin
+     * @param string $plugin
      * @return Plugin
      *
      * @throws \QUI\Exception
@@ -410,7 +412,7 @@ class Manager extends \QUI\QDOM
      * Ist das Plugin aktiv?
      *
      * @param unknown_type $plugin
-     * @return Bool
+     * @return boolean
      */
     public function isAvailable($plugin)
     {
@@ -426,7 +428,7 @@ class Manager extends \QUI\QDOM
     /**
      * Gibt das zuständige Plugin über den Seitetyp zurück
      *
-     * @param String $type
+     * @param string $type
      * @return Plugin
      */
     public function getPluginByType($type)
@@ -440,8 +442,8 @@ class Manager extends \QUI\QDOM
     /**
      * Get the full Type name
      *
-     * @param String $type - site type
-     * @return String
+     * @param string $type - site type
+     * @return string
      */
     public function getTypeName($type)
     {
@@ -477,7 +479,7 @@ class Manager extends \QUI\QDOM
      * Return the type icon
      *
      * @param unknown $type
-     * @return String
+     * @return string
      */
     public function getIconByType($type)
     {
@@ -563,7 +565,7 @@ class Manager extends \QUI\QDOM
     /**
      * Gibt alle Plugins zurück
      *
-     * @return Array
+     * @return array
      */
     public function _getAll()
     {
@@ -584,7 +586,7 @@ class Manager extends \QUI\QDOM
     /**
      * Gibt die Plugin Gruppen Erweiterungen zurück
      *
-     * @return Array
+     * @return array
      * @deprecated
      */
     public function getListOfGroupPlugins()

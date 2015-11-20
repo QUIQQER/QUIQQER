@@ -303,7 +303,7 @@ class Sites
 
 
         // Global tabs
-        $packages = \QUI::getPackageManager()->getInstalled();
+        $packages = QUI::getPackageManager()->getInstalled();
 
         foreach ($packages as $package) {
             // templates would be seperated
@@ -318,7 +318,9 @@ class Sites
             }
 
             QUI\Utils\DOM::addTabsToToolbar(
-                QUI\Utils\XML::getTabsFromXml($file),
+                QUI\Utils\XML::getSiteTabsFromDom(
+                    QUI\Utils\XML::getDomFromXml($file)
+                ),
                 $Tabbar
             );
         }
@@ -343,7 +345,9 @@ class Sites
             }
 
             QUI\Utils\DOM::addTabsToToolbar(
-                QUI\Utils\XML::getTabsFromXml($file),
+                QUI\Utils\XML::getSiteTabsFromDom(
+                    QUI\Utils\XML::getDomFromXml($file)
+                ),
                 $Tabbar
             );
         }
@@ -355,7 +359,7 @@ class Sites
     /**
      * Get the tab of a site
      *
-     * @param String $tabname - Name of the Tab
+     * @param string $tabname - Name of the Tab
      * @param Site\Edit $Site
      *
      * @throws \QUI\Exception
@@ -378,7 +382,7 @@ class Sites
      *
      * @param \QUI\Projects\Site $Site
      *
-     * @return Array
+     * @return array
      *
      * @todo schauen wegen admin bereich
      * @deprecated
@@ -412,8 +416,8 @@ class Sites
     /**
      * Search sites
      *
-     * @param String $search
-     * @param Array $params
+     * @param string $search
+     * @param array $params
      *
      * $params['Project'] - \QUI\Projects\Project
      * $params['project'] - string - project name

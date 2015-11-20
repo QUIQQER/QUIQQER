@@ -51,9 +51,9 @@ class Manager
     /**
      * Return the area, if the area is an allowed area
      *
-     * @param String $area - area string, global, user, groups, site, project, media
+     * @param string $area - area string, global, user, groups, site, project, media
      *
-     * @return String
+     * @return string
      */
     static function parseArea($area)
     {
@@ -74,9 +74,9 @@ class Manager
     /**
      * Return the corresponding area of a php class
      *
-     * @param String $cls
+     * @param string $cls
      *
-     * @return String
+     * @return string
      */
     static function classToArea($cls)
     {
@@ -113,9 +113,9 @@ class Manager
     /**
      * Return the type if the type is an allowed permission type
      *
-     * @param String $type - bool, string, int, group, groups, user, users, users_and_groups
+     * @param string $type - bool, string, int, group, groups, user, users, users_and_groups
      *
-     * @return String
+     * @return string
      */
     static function parseType($type)
     {
@@ -315,7 +315,7 @@ class Manager
     /**
      * Delete a permission
      *
-     * @param String $permission - name of the permission
+     * @param string $permission - name of the permission
      *
      * @throws QUI\Exception
      */
@@ -355,8 +355,8 @@ class Manager
     /**
      * Import a permissions.xml
      *
-     * @param String $xmlfile - Path to the file
-     * @param String $src - optional, the src from where the rights come from
+     * @param string $xmlfile - Path to the file
+     * @param string $src - optional, the src from where the rights come from
      *                            eq: system, plugin-name, user
      */
     public function importPermissionsFromXml($xmlfile, $src = '')
@@ -382,9 +382,9 @@ class Manager
     /**
      * Return all available permissions
      *
-     * @param String|bool $area - optional, specified the area of the permissions
+     * @param string|boolean $area - optional, specified the area of the permissions
      *
-     * @return Array
+     * @return array
      */
     public function getPermissionList($area = false)
     {
@@ -415,7 +415,7 @@ class Manager
     /**
      * Return the permission data
      *
-     * @param String $permission - Name of the permission
+     * @param string $permission - Name of the permission
      *
      * @return false|array
      * @throws QUI\Exception
@@ -434,7 +434,7 @@ class Manager
      *
      * @param QUI\Groups\Group|QUI\Users\User|QUI\Projects\Project|QUI\Projects\Site $Obj
      *
-     * @return Array
+     * @return array
      */
     public function getPermissions($Obj)
     {
@@ -536,8 +536,8 @@ class Manager
      *
      * @param QUI\Users\User|QUI\Groups\Group|
      *                           QUI\Projects\Project|QUI\Projects\Site|QUI\Projects\Site\Edit $Obj
-     * @param Array $permissions - Array of permissions
-     * @param Boolean|QUI\Users\User $EditUser - Edit user
+     * @param array $permissions - Array of permissions
+     * @param boolean|QUI\Users\User $EditUser - Edit user
      *
      * @throws QUI\Exception
      *
@@ -695,8 +695,8 @@ class Manager
      * Set the permissions for a site object
      *
      * @param QUI\Projects\Site|QUI\Projects\Site\Edit|QUI\Projects\Site\OnlyDB $Site
-     * @param Array $permissions - Array of permissions
-     * @param Boolean|QUI\Users\User $EditUser - Edit user
+     * @param array $permissions - Array of permissions
+     * @param boolean|QUI\Users\User $EditUser - Edit user
      */
     public function setSitePermissions($Site, $permissions, $EditUser = false)
     {
@@ -728,11 +728,13 @@ class Manager
 
                 foreach ($Perm as $PermValue) {
                     if (QUI::getUsers()->isUser($PermValue)) {
+                        /* @var $PermValue QUI\Users\User */
                         $permissionValues[] = 'u' . $PermValue->getId();
                         continue;
                     }
 
                     if (QUI::getGroups()->isGroup($PermValue)) {
+                        /* @var $PermValue QUI\Groups\Group */
                         $permissionValues[] = 'g' . $PermValue->getId();
                     }
                 }
@@ -740,9 +742,11 @@ class Manager
                 $permissionValue = implode(',', $permissionValues);
 
             } elseif(QUI::getUsers()->isUser($Perm)) {
+                /* @var $Perm QUI\Users\User */
                 $permissionValue = 'u'. $Perm->getId();
 
             } elseif(QUI::getGroups()->isGroup($Perm)) {
+                /* @var $Perm QUI\Groups\Group */
                 $permissionValue = 'g'. $Perm->getId();
 
             } else {
@@ -771,8 +775,8 @@ class Manager
      * Updates the permission entry for the site
      *
      * @param QUI\Projects\Site $Site
-     * @param String $permission
-     * @param String|Integer $value
+     * @param string $permission
+     * @param string|integer $value
      */
     protected function _setSitePermission($Site, $permission, $value)
     {
@@ -795,8 +799,8 @@ class Manager
      * Add a new permission entry for site
      *
      * @param QUI\Projects\Site $Site
-     * @param String $permission
-     * @param String|Integer $value
+     * @param string $permission
+     * @param string|integer $value
      */
     protected function _addSitePermission($Site, $permission, $value)
     {
@@ -819,7 +823,7 @@ class Manager
      * Remove all permissions from the site
      *
      * @param QUI\Projects\Site|QUI\Projects\Site\Edit|QUI\Projects\Site\OnlyDB $Site
-     * @param Boolean|\QUI\Users\User $EditUser
+     * @param boolean|\QUI\Users\User $EditUser
      */
     public function removeSitePermissions($Site, $EditUser = false)
     {
@@ -843,8 +847,8 @@ class Manager
      * Set the permissions for a project object
      *
      * @param QUI\Projects\Project $Project
-     * @param Array $permissions
-     * @param Boolean|\QUI\Users\User $EditUser
+     * @param array $permissions
+     * @param boolean|\QUI\Users\User $EditUser
      */
     public function setProjectPermissions(
         QUI\Projects\Project $Project,
@@ -888,8 +892,8 @@ class Manager
      * Updates the permission entry for the site
      *
      * @param QUI\Projects\Project $Project
-     * @param String $permission
-     * @param String|Integer $value
+     * @param string $permission
+     * @param string|integer $value
      */
     protected function _setProjectPermission(
         QUI\Projects\Project $Project,
@@ -913,8 +917,8 @@ class Manager
      * Add a new permission entry for site
      *
      * @param QUI\Projects\Project $Project
-     * @param String $permission
-     * @param String|Integer $value
+     * @param string $permission
+     * @param string|integer $value
      */
     protected function _addProjectPermission(
         QUI\Projects\Project $Project,
@@ -939,7 +943,7 @@ class Manager
      *
      * @param mixed $Obj
      *
-     * @return Array
+     * @return array
      */
     protected function _getData($Obj)
     {
@@ -1034,10 +1038,10 @@ class Manager
     /**
      * Cleanup the value for the type
      *
-     * @param String $type
-     * @param String|Integer $val
+     * @param string $type
+     * @param string|integer $val
      *
-     * @return String|Integer
+     * @return string|integer
      */
     protected function _cleanValue($type, $val)
     {
@@ -1090,7 +1094,7 @@ class Manager
      *
      * @param User $User
      * @param string $permission
-     * @param callback|string|bool $ruleset
+     * @param callback|string|boolean $ruleset
      *
      * @return mixed
      *
@@ -1163,7 +1167,7 @@ class Manager
      *
      * @param QUI\Groups\Group $Group
      *
-     * @return Array
+     * @return array
      */
     public function getRightParamsFromGroup(Group $Group)
     {

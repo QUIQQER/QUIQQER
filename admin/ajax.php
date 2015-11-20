@@ -47,6 +47,8 @@ if (!is_array($_rf_files)) {
     $_rf_files = array($_rf_files);
 }
 
+// generate global ajax
+QUI::getAjax();
 
 // ajax package loader
 if (isset($_REQUEST['package'])) {
@@ -113,6 +115,5 @@ if (isset($_REQUEST['project'])) {
 /**
  * Ajax Ausgabe
  */
-echo QUI::$Ajax->call();
-
+echo QUI::getAjax()->call();
 exit;
