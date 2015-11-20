@@ -11,39 +11,32 @@
 
 {if count( $children )}
 <ul class="fa-ul quiqqer-navigation-level-{$level}">
-
-    {if $this->getAttribute('homelink') && $level == 1}
-    {assign var=active value=""}
-    {if $activeId == $Site->getId()}
-    {assign var=active value="quiqqer-navigation-active"}
-    {/if}
+    {if $homeLink && $level == 1}
     <li class="quiqqer-navigation-li">
         <span class="quiqqer-navigation-entry">
-            <a href="{url site=$Site}" class="quiqqer-navigation-home {$active} quiqqer-navigation-link">
+            {if $homeIcon}
+            <i class="fa fa-list-styling fa-fw {$homeIcon}"></i>
+            {/if}
+            <a href="{url site=$Site}" class="quiqqer-navigation-home quiqqer-navigation-link">
                 {$Site->getAttribute('title')}
+                {$this->getAttribute('homelink')}
             </a>
-            <i class="fa-nav fa  fa-home"></i>
         </span>
     </li>
     {/if}
-
-
     {foreach from=$children item=Child}
-    <li class="quiqqer-navigation-li">
+    <li class="quiqqer-navigation-li {if $Rewrite->isIdInPath($Child->getId())} active-bgcolor {/if}">
 
-        {assign var=active value=""}
-        {if $activeId == $Child->getId()}
-            {assign var=active value="quiqqer-navigation-active"}
-        {/if}
-        <span class="quiqqer-navigation-entry">
-            <a href="{url site=$Child}" class="{$active} quiqqer-navigation-link">
+        <span class="quiqqer-navigation-entry{if $activeId == $Child->getId()} quiqqer-navigation-active{/if}">
+            {assign var=subnavigation value=$Child->getNavigation()}
+            {if $listIcon}
+            <i class="fa fa-list-styling fa-fw {$listIcon}"></i>
+            {/if}
+            <a href="{url site=$Child}" class="quiqqer-navigation-link" {if !$listIcon}style="margin-left: 16px;"{/if}>
                 {$Child->getAttribute('title')}
             </a>
-            {assign var=subnavigation value=$Child->getNavigation()}
             {if count ( $subnavigation )}
-            <i class="fa fa-nav fa-angle-double-down" style="cursor: pointer;"></i>
-            {else}
-            <i class="fa fa-nav fa-angle-right"></i>
+            <i class="fa fa-nav-levels {$levelIcon}"></i>
             {/if}
         </span>
 
