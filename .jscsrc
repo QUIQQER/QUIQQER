@@ -56,7 +56,7 @@
     "with",
     "continue"
   ],
-  "validateIndentation": 2,
+  "validateIndentation": 4,
   "disallowMixedSpacesAndTabs": true,
   "disallowTrailingWhitespace": true,
   "disallowTrailingComma": true,
