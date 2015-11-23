@@ -32,7 +32,7 @@
             {if $listIcon}
             <i class="fa fa-list-styling fa-fw {$listIcon}"></i>
             {/if}
-            <a href="{url site=$Child}" class="quiqqer-navigation-link" {if !$listIcon}style="margin-left: 16px;"{/if}>
+            <a href="{url site=$Child}" class="quiqqer-navigation-link" {if !$listIcon}style="margin-left: 30px;"{/if}>
                 {$Child->getAttribute('title')}
             </a>
             {if count ( $subnavigation )}
@@ -40,13 +40,16 @@
             {/if}
         </span>
 
-        {if $levels === false || $levels-1 >= $level}
-            {include file=$navTemplate
-                     Site=$Child
-                     level=$level
-                     levels=$levels
-            }
-        {/if}
+
+        <div class="{if !$Rewrite->isIdInPath($Child->getId())}quiqqer-navigation-close{/if}">
+            {if $levels === false || $levels-1 >= $level}
+                {include file=$navTemplate
+                         Site=$Child
+                         level=$level
+                         levels=$levels
+                }
+            {/if}
+        </div>
     </li>
     {/foreach}
 </ul>
