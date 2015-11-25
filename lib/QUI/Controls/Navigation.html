@@ -27,7 +27,12 @@
     {foreach from=$children item=Child}
     <li class="quiqqer-navigation-li {if $Rewrite->isIdInPath($Child->getId())} active-bgcolor {/if}">
 
-        <span class="quiqqer-navigation-entry{if $activeId == $Child->getId()} quiqqer-navigation-active{/if}">
+        <span class="quiqqer-navigation-entry{if $activeId == $Child->getId()} quiqqer-navigation-active{/if}"
+            {if
+                $Rewrite->isIdInPath($Child->getId()) &&
+                $activeId != $Child->getId() &&
+                $level == 1
+            } style="background: #e5e5e5;"{/if}>
             {assign var=subnavigation value=$Child->getNavigation()}
             {if $listIcon}
             <i class="fa fa-list-styling fa-fw {$listIcon}"></i>
@@ -36,7 +41,7 @@
                 {$Child->getAttribute('title')}
             </a>
             {if count ( $subnavigation )}
-            <i class="fa fa-nav-levels {$levelIcon}"></i>
+            <i class="fa fa-nav-levels {$levelIcon} {if $Rewrite->isIdInPath($Child->getId())} fa-nav-levels-rotate {/if} "></i>
             {/if}
         </span>
 
