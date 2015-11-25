@@ -32,16 +32,16 @@ class Autoloader
      */
     static function load($classname)
     {
-        if (class_exists($classname)) {
+        if (class_exists($classname, false)) {
             return true;
         }
 
-        if (interface_exists($classname)) {
+        if (interface_exists($classname, false)) {
             return true;
         }
 
         // exists quiqqer?
-        if (!class_exists('\QUI')) {
+        if (!class_exists('\QUI', false)) {
             require_once __DIR__ . '/QUI.php';
         }
 
@@ -49,28 +49,37 @@ class Autoloader
             return true;
         }
 
-        if (class_exists($classname)) {
+        if (class_exists($classname, false)) {
             return true;
         }
 
-        if (interface_exists($classname)) {
+        if (interface_exists($classname, false)) {
             return true;
         }
 
         // Projects
         if (strpos($classname, 'Projects\\') === 0) {
+
+            if (class_exists($classname, false)) {
+                return true;
+            }
+
+            if (interface_exists($classname, false)) {
+                return true;
+            }
+
             $file = USR_DIR . substr($classname, 9) . '.php';
             $file = str_replace('\\', '/', $file);
 
             if (file_exists($file)) {
-                require $file;
+                require_once $file;
             }
 
-            if (class_exists($classname)) {
+            if (class_exists($classname, false)) {
                 return true;
             }
 
-            if (interface_exists($classname)) {
+            if (interface_exists($classname, false)) {
                 return true;
             }
         }
