@@ -214,6 +214,16 @@ class DOM
             );
         }
 
+        // unique
+        $unique = $Table->getElementsByTagName('unique');
+
+        for ($i = 0; $i < $unique->length; $i++) {
+            $result = array_merge(
+                $result,
+                self::dbUniqueDomToArray($unique->item($i))
+            );
+        }
+
         // index
         $index = $Table->getElementsByTagName('index');
 
@@ -302,6 +312,20 @@ class DOM
     {
         return array(
             'primary' => explode(',', $Primary->nodeValue)
+        );
+    }
+
+    /**
+     * Unique Datenbank DOmNode Objekt in ein Array umwandeln
+     *
+     * @param \DOMNode $Unique
+     *
+     * @return array
+     */
+    static function dbUniqueDomToArray(\DOMNode $Unique)
+    {
+        return array(
+            'unique' => explode(',', $Unique->nodeValue)
         );
     }
 

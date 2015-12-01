@@ -1128,6 +1128,10 @@ class XML
                     $Table->setPrimaryKey($tbl, $table['primary']);
                 }
 
+                if (isset($table['unique'])) {
+                    $Table->setUniqueColumns($tbl, $table['unique']);
+                }
+
                 if (isset($table['index'])) {
                     $index = $table['index'];
 
