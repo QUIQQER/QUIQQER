@@ -77,20 +77,20 @@ class Manager
     public function getPHPMailer()
     {
         $config = \QUI::conf('mail');
-        $Mail = new \PHPMailer();
+        $Mail   = new \PHPMailer();
 
         if ($config['SMTP'] == true) {
             //$this->_mail->IsSMTP();
-            $Mail->Mailer = 'smtp';
-            $Mail->Host = $config['SMTPServer'];
+            $Mail->Mailer   = 'smtp';
+            $Mail->Host     = $config['SMTPServer'];
             $Mail->SMTPAuth = $config['SMTPAuth'];
             $Mail->Username = $config['SMTPUser'];
             $Mail->Password = $config['SMTPPass'];
         }
 
-        $Mail->From = $config['MAILFrom'];
+        $Mail->From     = $config['MAILFrom'];
         $Mail->FromName = $config['MAILFromText'];
-        $Mail->CharSet = 'UTF-8';
+        $Mail->CharSet  = 'UTF-8';
 
         return $Mail;
     }
