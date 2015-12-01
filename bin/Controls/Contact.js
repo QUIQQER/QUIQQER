@@ -64,6 +64,7 @@ define('Controls/Contact', [
 */
             new Element('button', {
                 html : 'senden',
+                'class' : 'button qui-button',
                 events : {
                     click : function() {
                         self.$Elm.getElement('form').fireEvent('submit');

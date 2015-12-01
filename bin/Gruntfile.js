@@ -20,16 +20,15 @@
  * plato -r -d /var/www/git/cms/report -t QUIQQER /var/www/git/cms/bin/js/*
  */
 
-module.exports = function(grunt)
-{
+module.exports = function (grunt) {
     "use strict";
 
     // External libs.
     //var uglifyjs = require('uglify-js');
-    var UglifyJS = require( "uglify-js" );
-    var gzip     = require( 'gzip-js' );
-    var cleanCSS = require( 'clean-css' );
-    var leaky    = require( 'leaky' );
+    var UglifyJS = require("uglify-js");
+    var gzip     = require('gzip-js');
+    var cleanCSS = require('clean-css');
+    var leaky    = require('leaky');
 
     // Project configuration.
     grunt.initConfig({
@@ -44,144 +43,135 @@ module.exports = function(grunt)
     // ==========================================================================
     // PCSG minify - minifies all javascript files and save it to *.min.js
     // ==========================================================================
-    grunt.registerMultiTask('pcsgmin', 'pcsg minify', function(arg1, arg2)
-    {
+    grunt.registerMultiTask('pcsgmin', 'pcsg minify', function (arg1, arg2) {
         //var foo = grunt.helper('pcsgmin');
-        var files = grunt.file.expandFiles( this.file.src );
+        var files = grunt.file.expandFiles(this.file.src);
         var i, len, src, min, map, new_file, new_file_map, result;
 
-        for ( i = 0, len = files.length; i < len; i++ )
-        {
-            if ( files[i].substr( 0, 3 ) != 'js/' ) {
+        for (i = 0, len = files.length; i < len; i++) {
+            if (files[i].substr(0, 3) != 'js/') {
                 continue;
             }
 
 
-            grunt.log.writeln( 'Start "' + files[i] );
+            grunt.log.writeln('Start "' + files[i]);
 
             // all others files, no js and css
-            if ( !files[i].match('.css') && !files[i].match('.js') ||
-                 files[i].match('.json') )
-            {
-                new_file = 'js-min/'+ files[i].substr( 3 );
+            if (!files[i].match('.css') && !files[i].match('.js') ||
+                 files[i].match('.json')) {
+                new_file = 'js-min/' + files[i].substr(3);
 
-                grunt.log.writeln( '\nCopy "' + new_file + '" created.' );
-                grunt.file.copy( files[i], new_file );
+                grunt.log.writeln('\nCopy "' + new_file + '" created.');
+                grunt.file.copy(files[i], new_file);
 
                 continue;
             }
 
 
             // css files
-            if ( files[i].match('.css') )
-            {
-                src = grunt.file.read( files[i] );
-                min = cleanCSS.process( src );
+            if (files[i].match('.css')) {
+                src = grunt.file.read(files[i]);
+                min = cleanCSS.process(src);
 
-                new_file  = 'js-min/'+ files[i].substr( 3 );
+                new_file  = 'js-min/' + files[i].substr(3);
 
-                grunt.file.write( new_file, min );
+                grunt.file.write(new_file, min);
 
-                grunt.log.writeln( '\nFile "' + new_file + '" created.' );
-                grunt.helper( 'min_max_info', min, src );
+                grunt.log.writeln('\nFile "' + new_file + '" created.');
+                grunt.helper('min_max_info', min, src);
                 continue;
             }
 
 
             // js files
-            src    = grunt.file.read( files[i] );
-            result = grunt.helper( 'uglify', src, grunt.config('uglify') );
+            src    = grunt.file.read(files[i]);
+            result = grunt.helper('uglify', src, grunt.config('uglify'));
 
             min = result.code;
             map = result.map;
 
-            new_file     = 'js-min/'+ files[i].substr( 3 );
-            new_file_map = 'js-min/'+ files[i].substr( 3 ) +'.map';
+            new_file     = 'js-min/' + files[i].substr(3);
+            new_file_map = 'js-min/' + files[i].substr(3) + '.map';
 
-            grunt.file.write( new_file, min );
-            grunt.file.write( new_file_map, map );
+            grunt.file.write(new_file, min);
+            grunt.file.write(new_file_map, map);
 
             // Fail task if errors were logged.
-            if ( this.errorCount ) {
+            if (this.errorCount) {
                 return false;
             }
 
             // Otherwise, print a success message....
-            grunt.log.writeln( '\nFile "' + new_file + '" created.' );
+            grunt.log.writeln('\nFile "' + new_file + '" created.');
             // ...and report some size information.
-            grunt.helper( 'min_max_info', min, src );
+            grunt.helper('min_max_info', min, src);
         }
     });
 
     // checks unused variables
-    grunt.registerMultiTask('leaky', 'Leaky Cleanup', function(arg1, arg2)
-    {
+    grunt.registerMultiTask('leaky', 'Leaky Cleanup', function (arg1, arg2) {
         //console.log( this.files );
         //console.log( this.filesSrc );
 
         //var foo = grunt.helper('pcsgmin');
-        var files  = grunt.file.expand( this.filesSrc ),
+        var files  = grunt.file.expand(this.filesSrc),
             errors = 0;
 
         var i, len, src, err;
 
-        for ( i = 0, len = files.length; i < len; i++ )
-        {
-            if ( !files[i].match( '.js' ) ) {
+        for (i = 0, len = files.length; i < len; i++) {
+            if (!files[i].match('.js')) {
                 continue;
             }
 
-            if ( files[i].match( 'mootools-core' ) ) {
+            if (files[i].match('mootools-core')) {
                 continue;
             }
 
-            if ( files[i].match( 'Prism.js' ) ) {
+            if (files[i].match('Prism.js')) {
                 continue;
             }
 
-            if ( files[i].match( 'lib/gridster' ) ) {
+            if (files[i].match('lib/gridster')) {
                 continue;
             }
 
-            if ( files[i].substr( 0, 3 ) != 'js/' ) {
+            if (files[i].substr(0, 3) != 'js/') {
                 continue;
             }
 
-            grunt.log.write( '.' );
+            grunt.log.write('.');
 
             // js files
-            src = grunt.file.read( files[i] );
+            src = grunt.file.read(files[i]);
 
-            try
-            {
-                err = leaky( src );
-            } catch ( e )
-            {
-                grunt.log.writeln( '==========================================' );
-                grunt.log.writeln( '' );
-                grunt.log.writeln( 'Error found in "' + files[i] );
-                grunt.log.error( e );
-                grunt.log.writeln( '' );
+            try {
+                err = leaky(src);
+            } catch (e) {
+                grunt.log.writeln('==========================================');
+                grunt.log.writeln('');
+                grunt.log.writeln('Error found in "' + files[i]);
+                grunt.log.error(e);
+                grunt.log.writeln('');
 
                 errors++;
 
                 err = false;
             }
 
-            if ( err instanceof leaky.LeakError )
-            {
-                grunt.log.writeln( '==========================================' );
-                grunt.log.writeln( '' );
-                grunt.log.writeln( 'Error found in "' + files[i] );
-                grunt.log.error( err );
-                grunt.log.writeln( '' );
+            if (err instanceof leaky.LeakError) {
+                grunt.log.writeln('==========================================');
+                grunt.log.writeln('');
+                grunt.log.writeln('Error found in "' + files[i]);
+                grunt.log.error(err);
+                grunt.log.writeln('');
 
                 errors++;
             }
         }
 
-        if ( errors ) {
-            grunt.fail.warn( 'found '+ errors +' errors' );
+        if (errors) {
+            grunt.fail.warn('found ' + errors + ' errors');
         }
     });
     // ==========================================================================
@@ -190,9 +180,8 @@ module.exports = function(grunt)
 
     // Minify with UglifyJS.
     // From https://github.com/mishoo/UglifyJS
-    grunt.registerTask('uglify', function(src, options)
-    {
-        if ( !options ) {
+    grunt.registerTask('uglify', function (src, options) {
+        if (!options) {
             options = {};
         }
 
@@ -201,10 +190,9 @@ module.exports = function(grunt)
         var ast, pos, result;
         var msg = 'Minifying with UglifyJS...';
 
-        grunt.verbose.write( msg );
+        grunt.verbose.write(msg);
 
-        try
-        {
+        try {
             result = UglifyJS.minify(src, {
                 outSourceMap : "out.js.map",
                 fromString   : true
@@ -226,10 +214,9 @@ module.exports = function(grunt)
             // https://github.com/mishoo/UglifyJS/issues/126
             return src + ';';
             */
-        } catch(e)
-        {
+        } catch (e) {
             // Something went wrong.
-            grunt.verbose.or.write( msg );
+            grunt.verbose.or.write(msg);
 
             pos = '['.red + ('L' + e.line).yellow + ':'.red + ('C' + e.col).yellow + ']'.red;
 
@@ -237,19 +224,18 @@ module.exports = function(grunt)
                 pos + ' ' + (e.message + ' (position: ' + e.pos + ')').yellow
             );
 
-            grunt.warn( 'UglifyJS found errors.', 10 );
+            grunt.warn('UglifyJS found errors.', 10);
         }
     });
 
-     // Return gzipped source.
-    grunt.registerTask('gzip', function(src) {
+    // Return gzipped source.
+    grunt.registerTask('gzip', function (src) {
         return src ? gzip.zip(src, {}) : '';
     });
 
     // Output some size info about a file.
-    grunt.registerTask('min_max_info', function(min, max)
-    {
-        var gzipSize = String( grunt.helper( 'gzip', min ).length );
+    grunt.registerTask('min_max_info', function (min, max) {
+        var gzipSize = String(grunt.helper('gzip', min).length);
         grunt.log.writeln('Uncompressed size: ' + String(max.length).green + ' bytes.');
         grunt.log.writeln('Compressed size: ' + gzipSize.green + ' bytes gzipped (' + String(min.length).green + ' bytes minified).');
     });
