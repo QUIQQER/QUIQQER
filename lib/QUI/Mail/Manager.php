@@ -19,7 +19,7 @@ class Manager
      *
      * @var \QUI\Mail\Queue
      */
-    protected $_Queue = null;
+    protected $Queue = null;
 
     /**
      * Send a mail
@@ -51,15 +51,26 @@ class Manager
      */
     public function getQueue()
     {
-        if (is_null($this->_Queue)) {
-            $this->_Queue = new Queue();
+        if (is_null($this->Queue)) {
+            $this->Queue = new Queue();
         }
 
-        return $this->_Queue;
+        return $this->Queue;
     }
 
     /**
-     * Return the PHPMailer object
+     * Return a Mailer object
+     * Easier send, uses the mailer queue
+     *
+     * @return Mailer
+     */
+    public function getMailer()
+    {
+        return new Mailer();
+    }
+
+    /**
+     * Return a PHPMailer object
      *
      * @return \PHPMailer
      */
