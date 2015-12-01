@@ -426,7 +426,6 @@ class User implements QUI\Interfaces\Users\User
                     ->getAttribute('lang');
 
             } catch (QUI\Exception $Exception) {
-
             }
         }
 
@@ -1009,11 +1008,9 @@ class User implements QUI\Interfaces\Users\User
         $this->_active = true;
 
         try {
-
             QUI::getEvents()->fireEvent('userActivate', array($this));
 
         } catch (QUI\Exception $Exception) {
-
             QUI\System\Log::addError($Exception->getMessage(), array(
                 'UserId'        => $this->getId(),
                 'ExceptionType' => $Exception->getType()
@@ -1304,7 +1301,6 @@ class User implements QUI\Interfaces\Users\User
             return QUI\Cache\Manager::get('user/plugin-attribute-list');
 
         } catch (QUI\Exception $Exception) {
-
         }
 
         $list       = QUI::getPackageManager()->getInstalled();
