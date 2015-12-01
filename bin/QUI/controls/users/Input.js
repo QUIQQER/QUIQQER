@@ -288,7 +288,6 @@ define('controls/users/Input', [
 
             if (!list.length) {
                 this.$Bind.set('value', '');
-
                 this.fireEvent('change', [this]);
                 this.enable();
                 return;
