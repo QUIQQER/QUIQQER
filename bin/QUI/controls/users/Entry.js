@@ -66,10 +66,10 @@ define('controls/users/Entry', [
                 'class'     : 'users-entry users-entry-enabled smooth',
                 'data-id'   : this.$User.getId(),
                 'data-quiid': this.getId(),
-
-                html: '<div class="users-entry-icon"></div>' +
-                      '<div class="users-entry-text"></div>' +
-                      '<div class="users-entry-close icon-remove"></div>'
+                title       : this.$User.getName() + ' - ' + this.$User.getId(),
+                html        : '<div class="users-entry-icon"></div>' +
+                              '<div class="users-entry-text"></div>' +
+                              '<div class="users-entry-close icon-remove"></div>'
             });
 
             var Close = this.$Elm.getElement('.users-entry-close');
