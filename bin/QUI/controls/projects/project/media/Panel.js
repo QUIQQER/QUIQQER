@@ -461,6 +461,7 @@ define('controls/projects/project/media/Panel', [
 
                 // if the MediaFile is no Folder
                 if (MediaFile.getType() !== 'classes/projects/project/media/Folder') {
+
                     require([
                         'controls/projects/project/media/FilePanel'
                     ], function (FilePanel) {
@@ -469,6 +470,11 @@ define('controls/projects/project/media/Panel', [
                         );
 
                         self.Loader.hide();
+                    });
+
+                    // open parent-id
+                    MediaFile.getParentId().then(function(parentId) {
+                        self.openID(parentId);
                     });
 
                     return;
