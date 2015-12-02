@@ -1,30 +1,45 @@
 
 .users-entry {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     clear: both;
+    cursor: default;
     float: left;
     font-size: 14px;
     line-height: 20px;
-    margin: 5px;
+    margin: 5px 0;
+    max-width: 400px;
+    padding: 5px 0;
+    width: 100%;
+}
+
+.users-entry:hover {
+    background: rgba(0, 0, 0, 0.1);
 }
 
 .users-entry-text {
     float: left;
     line-height: 20px;
-    margin: 0 0 0 5px;
+    overflow: hidden;
+    padding: 0 10px 0 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: calc(100% - 50px);
 }
 
 .users-entry-icon {
     float: left;
     line-height: 20px;
+    text-align: center;
+    width: 30px;
 }
 
 .users-entry-close {
     cursor: pointer;
     float: left;
     line-height: 20px;
-    margin: 0 0 0 10px;
-    padding: 0 10px;
+    text-align: center;
     visibility: hidden;
+    width: 20px;
 }
 
 .users-entry-enabled:hover .users-entry-close {
