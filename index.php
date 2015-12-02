@@ -43,7 +43,6 @@ try {
 
     // check if one projects exists
     if (!QUI::getProjectManager()->count()) {
-
         $Response->setStatusCode(Response::HTTP_NOT_FOUND);
 
         $Response->setContent(
@@ -103,15 +102,15 @@ try {
         $Smarty = QUI::getTemplateManager()->getEngine();
 
         $Smarty->assign(array(
-            'Project'     => $Project,
-            'URL_DIR'     => URL_DIR,
+            'Project' => $Project,
+            'URL_DIR' => URL_DIR,
             'URL_BIN_DIR' => URL_BIN_DIR,
             'URL_LIB_DIR' => URL_LIB_DIR,
             'URL_VAR_DIR' => URL_VAR_DIR,
             'URL_OPT_DIR' => URL_OPT_DIR,
             'URL_USR_DIR' => URL_USR_DIR,
             'URL_TPL_DIR' => URL_USR_DIR . $Project->getName() . '/',
-            'TPL_DIR'     => OPT_DIR . $Project->getName() . '/',
+            'TPL_DIR' => OPT_DIR . $Project->getName() . '/',
         ));
 
         $file  = SYS_DIR . 'template/maintenance.html';
@@ -176,7 +175,6 @@ try {
         if ($Site->getAttribute('nocache') != true
             && !QUI::getUsers()->isAuth(QUI::getUserBySession())
         ) {
-
             QUI\Utils\System\File::mkdir(
                 $site_cache_dir . $Project->getAttribute('name') . '/'
             );
@@ -189,7 +187,6 @@ try {
         }
 
     } catch (QUI\Exception $Exception) {
-
         if ($Exception->getCode() == 404) {
             $Response->setStatusCode(Response::HTTP_NOT_FOUND);
         } else {
@@ -219,14 +216,14 @@ try {
     exit;
 
 } catch (\Exception $Exception) {
-
     // error ??
     header('HTTP/1.1 503 Service Temporarily Unavailable');
     header('Status: 503 Service Temporarily Unavailable');
 
+    error_log($Exception->getTraceAsString());
     error_log($Exception->getMessage());
 
     echo file_get_contents(
-        dirname(__FILE__) .'/lib/templates/error.html'
+        dirname(__FILE__) . '/lib/templates/error.html'
     );
 }
