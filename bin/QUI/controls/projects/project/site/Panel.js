@@ -691,7 +691,10 @@ define('controls/projects/project/site/Panel', [
         $onCategoryEnter: function (Category) {
             this.Loader.show();
 
-            if (this.getActiveCategory()) {
+            var Active = this.getActiveCategory();
+
+            if (Active &&
+                Active.getAttribute('name') != Category.getAttribute('name')) {
                 this.$onCategoryLeave(this.getActiveCategory());
             }
 
@@ -993,6 +996,7 @@ define('controls/projects/project/site/Panel', [
                 );
 
                 this.$clearEditorPeriodicalSave();
+                this.getAttribute('Editor').destroy();
 
                 if (typeof callback === 'function') {
                     callback();
@@ -1009,6 +1013,7 @@ define('controls/projects/project/site/Panel', [
                 );
 
                 this.$clearEditorPeriodicalSave();
+                this.getAttribute('Editor').destroy();
 
                 if (typeof callback === 'function') {
                     callback();
