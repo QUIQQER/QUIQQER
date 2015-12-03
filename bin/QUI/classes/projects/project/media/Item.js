@@ -113,7 +113,9 @@ define('classes/projects/project/media/Item', [
         },
 
         /**
+         * Return the ID of the Parent
          *
+         * @method classes/projects/project/media/Item#getParentId
          * @returns {Promise}
          */
         getParentId: function () {
@@ -129,7 +131,9 @@ define('classes/projects/project/media/Item', [
         },
 
         /**
+         * Return the Parent Object
          *
+         * @method classes/projects/project/media/Item#getParent
          * @returns {Promise}
          */
         getParent: function () {
