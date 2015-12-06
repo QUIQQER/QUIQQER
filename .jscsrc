@@ -32,8 +32,8 @@
     "beforeOpeningRoundBrace": true
   },
   "requireSpaceBetweenArguments": true,
-  "requireMultipleVarDecl": false,
-  "requireVarDeclFirst": false,
+  //"requireMultipleVarDecl": false,
+  //"requireVarDeclFirst": false,
   "requireBlocksOnNewline": true,
   "disallowEmptyBlocks": true,
   "disallowSpacesInsideArrayBrackets": true,
