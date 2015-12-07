@@ -27,7 +27,6 @@ use QUI\Utils\Security\Orthos;
 use QUI\System\Log;
 
 try {
-
     require_once 'bootstrap.php';
 
     $Response = QUI::getGlobalResponse();
