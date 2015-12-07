@@ -1370,7 +1370,6 @@ class Rewrite
                     ? $Image->getAttribute('title') : '';
 
             } catch (QUI\Exception $Exception) {
-
             }
         }
 
