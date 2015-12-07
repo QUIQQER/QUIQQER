@@ -33,8 +33,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             return $this->getAttribute('image_width');
         }
 
-        $data = QUIFile::getInfo($this->getFullPath(),
-            array('imagesize' => true));
+        $data = QUIFile::getInfo(
+            $this->getFullPath(),
+            array('imagesize' => true)
+        );
 
         if (isset($data['width'])) {
             return $data['width'];
@@ -54,8 +56,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             return $this->getAttribute('image_height');
         }
 
-        $data = QUIFile::getInfo($this->getFullPath(),
-            array('imagesize' => true));
+        $data = QUIFile::getInfo(
+            $this->getFullPath(),
+            array('imagesize' => true)
+        );
 
         if (isset($data['height'])) {
             return $data['height'];

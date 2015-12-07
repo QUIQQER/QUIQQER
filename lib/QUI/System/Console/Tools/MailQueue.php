@@ -45,8 +45,11 @@ class MailQueue extends QUI\System\Console\Tool
 
         switch ($comand) {
             case 'count':
-                $this->writeLn($MailQueue->count().' mail(s) in the queue',
-                    'red');
+                $this->writeLn(
+                    $MailQueue->count().' mail(s) in the queue',
+                    'red'
+                );
+
                 $this->resetColor();
                 $this->writeLn('');
                 break;

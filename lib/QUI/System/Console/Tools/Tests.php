@@ -112,7 +112,9 @@ class Tests extends QUI\System\Console\Tool
             $this->writeLn('');
 
             $this->writeLn('Some tests are failed!!');
-            $this->writeLn('Please check the failed tests, QUIQQER may not function properly under some circumstances.');
+            $this->writeLn(
+                'Please check the failed tests, QUIQQER may not function properly under some circumstances.'
+            );
             $this->writeLn('');
         }
 

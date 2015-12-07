@@ -41,7 +41,6 @@ class Nginx extends QUI\System\Console\Tool
         // generate backup
         //
         if (file_exists($nginxFile)) {
-
             file_put_contents(
                 $nginxBackupFile,
                 file_get_contents($nginxFile)
@@ -81,7 +80,7 @@ class Nginx extends QUI\System\Console\Tool
 # php quiqqer.php --username="" --password="" --tool=quiqqer:nginx
 #';
 
-        $nginxContent .= $this->_template();
+        $nginxContent .= $this->template();
 
         file_put_contents($nginxFile, $nginxContent);
 
@@ -94,7 +93,7 @@ class Nginx extends QUI\System\Console\Tool
      *
      * @return string
      */
-    protected function _template()
+    protected function template()
     {
         $quiqqerDir = CMS_DIR;
         $quiqqerLib = URL_OPT_DIR . 'quiqqer/quiqqer/lib';

@@ -21,12 +21,14 @@ class Update extends QUI\System\Console\Tool
     {
         $this->setName('quiqqer:update')
             ->setDescription('Update the quiqqer system and the quiqqer packages')
-            ->addArgument('clearCache',
+            ->addArgument(
+                'clearCache',
                 'Before execute the Update, clear the complete update cache.',
                 false,
                 true
             )
-            ->addArgument('setDevelopment',
+            ->addArgument(
+                'setDevelopment',
                 'Set QUIQQER to the development version',
                 false,
                 true
@@ -48,7 +50,6 @@ class Update extends QUI\System\Console\Tool
         $PM->Events->addEvent('onOutput', function ($message) use ($self) {
 
             if (strpos($message, '<info>') !== false) {
-
                 $message = str_replace(
                     array('<info>', '</info>'),
                     '',
@@ -61,7 +62,6 @@ class Update extends QUI\System\Console\Tool
             }
 
             if (strpos($message, '<error>') !== false) {
-
                 $message = str_replace(
                     array('<error>', '</error>'),
                     '',
@@ -81,7 +81,6 @@ class Update extends QUI\System\Console\Tool
         }
 
         if ($this->getArgument('--setDevelopment')) {
-
             $packageList = array();
 
             $libraries = QUI::getPackageManager()->getInstalled(array(
@@ -110,7 +109,6 @@ class Update extends QUI\System\Console\Tool
             $this->writeLn('');
 
         } catch (\Exception $Exception) {
-
             $this->write(' [error]', 'red');
             $this->writeLn('');
             $this->writeLn(
@@ -126,8 +124,8 @@ class Update extends QUI\System\Console\Tool
             $this->writeLn('');
 
             $this->writeLn(
-                'php var/composer/composer.phar --working-dir="' . VAR_DIR
-                . 'composer" update', 'red'
+                'php var/composer/composer.phar --working-dir="' . VAR_DIR . 'composer" update',
+                'red'
             );
 
             $this->resetColor();
