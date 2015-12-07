@@ -25,28 +25,28 @@ abstract class Item extends QUI\QDOM
      *
      * @var bool|array
      */
-    protected $_effects = false;
+    protected $effects = false;
 
     /**
      * internal media object
      *
      * @var QUI\Projects\Media
      */
-    protected $_Media = null;
+    protected $Media = null;
 
     /**
      * internal parent id (use ->getParentId())
      *
      * @var integer
      */
-    protected $_parent_id = false;
+    protected $parent_id = false;
 
     /**
      * Path to the real file
      *
      * @var string
      */
-    protected $_file;
+    protected $file;
 
     /**
      * constructor
@@ -70,9 +70,11 @@ abstract class Item extends QUI\QDOM
         }
 
         $this->setAttribute('filesize', QUIFile::getFileSize($this->_file));
-        $this->setAttribute('cache_url',
-            URL_DIR . $this->_Media->getCacheDir() . $this->getPath());
         $this->setAttribute('url', $this->getUrl());
+        $this->setAttribute(
+            'cache_url',
+            URL_DIR . $this->_Media->getCacheDir() . $this->getPath()
+        );
     }
 
     /**
@@ -165,19 +167,15 @@ abstract class Item extends QUI\QDOM
             case 'priority':
             case 'priority ASC':
             case 'priority DESC':
-
             case 'c_date':
             case 'c_date ASC':
             case 'c_date DESC':
-
             case 'name':
             case 'name ASC':
             case 'name DESC':
-
             case 'title':
             case 'title ASC':
             case 'title DESC':
-
             case 'id':
             case 'id ASC':
             case 'id DESC':
@@ -295,7 +293,7 @@ abstract class Item extends QUI\QDOM
             array('child' => $this->getId())
         );
 
-        $this->_parent_id = false;
+        $this->parent_id = false;
 
         QUI::getEvents()->fireEvent('mediaDelete', array($this));
     }
@@ -442,8 +440,8 @@ abstract class Item extends QUI\QDOM
      */
     public function getParentId()
     {
-        if ($this->_parent_id) {
-            return $this->_parent_id;
+        if ($this->parent_id) {
+            return $this->parent_id;
         }
 
         $id = $this->getId();
@@ -452,9 +450,9 @@ abstract class Item extends QUI\QDOM
             return false;
         }
 
-        $this->_parent_id = $this->_Media->getParentIdFrom($id);
+        $this->parent_id = $this->_Media->getParentIdFrom($id);
 
-        return $this->_parent_id;
+        return $this->parent_id;
     }
 
     /**
@@ -633,7 +631,7 @@ abstract class Item extends QUI\QDOM
         $this->setAttribute('file', $new_file);
 
 
-        $this->_parent_id = $Folder->getId();
+        $this->parent_id = $Folder->getId();
     }
 
     /**
@@ -685,8 +683,8 @@ abstract class Item extends QUI\QDOM
      */
     public function getEffects()
     {
-        if (is_array($this->_effects)) {
-            return $this->_effects;
+        if (is_array($this->effects)) {
+            return $this->effects;
         }
 
         $effects = $this->getAttribute('image_effects');
@@ -696,12 +694,12 @@ abstract class Item extends QUI\QDOM
         }
 
         if (is_array($effects)) {
-            $this->_effects = $effects;
+            $this->effects = $effects;
         } else {
-            $this->_effects = array();
+            $this->effects = array();
         }
 
-        return $this->_effects;
+        return $this->effects;
     }
 
     /**
@@ -714,7 +712,7 @@ abstract class Item extends QUI\QDOM
     {
         $this->getEffects();
 
-        $this->_effects[$effect] = $value;
+        $this->effects[$effect] = $value;
     }
 
     /**
@@ -724,6 +722,6 @@ abstract class Item extends QUI\QDOM
      */
     public function setEffects($effects = array())
     {
-        $this->_effects = $effects;
+        $this->effects = $effects;
     }
 }

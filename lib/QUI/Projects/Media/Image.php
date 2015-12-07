@@ -6,11 +6,9 @@
 
 namespace QUI\Projects\Media;
 
-use BirknerAlex\XMPPHP\Log;
 use QUI;
 use QUI\Utils\System\File as QUIFile;
 use QUI\Utils\String as QUIString;
-use QUI\Utils\Image as QUIImage;
 use QUI\Utils\System\File;
 
 /**
@@ -305,7 +303,6 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $Image = $Media->getImageManager()->make($original);
 
         if ($width || $height) {
-
             if (!$width) {
                 $width = null;
             }
@@ -363,7 +360,6 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $Watermark = $this->getWatermark();
 
         if ($Watermark) {
-
             $pos   = $this->getWatermarkPosition();
             $ratio = $this->getWatermarkRatio();
 
@@ -552,28 +548,22 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         if ($imageEffects['watermark'] == 'default') {
-
             try {
-
                 $Project = $this->getProject();
 
                 return Utils::getImageByUrl($Project->getConfig('media_watermark'));
 
             } catch (QUI\Exception $Exception) {
-
             }
 
             return false;
         }
 
-
         try {
             return Utils::getImageByUrl($imageEffects['watermark']);
 
         } catch (QUI\Exception $Exception) {
-
         }
-
 
         return false;
     }

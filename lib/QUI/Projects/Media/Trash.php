@@ -23,7 +23,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
      *
      * @var QUI\Projects\Media
      */
-    protected $_Media;
+    protected $Media;
 
     /**
      * Konstruktor
@@ -32,7 +32,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
      */
     public function __construct(Media $Media)
     {
-        $this->_Media = $Media;
+        $this->Media = $Media;
 
         QUI\Utils\System\File::mkdir($this->getPath());
     }
@@ -45,7 +45,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
     public function getPath()
     {
         return
-            VAR_DIR . 'media/' . $this->_Media->getProject()->getAttribute('name')
+            VAR_DIR . 'media/' . $this->Media->getProject()->getAttribute('name')
             . '/';
     }
 
@@ -61,14 +61,14 @@ class Trash implements QUI\Interfaces\Projects\Trash
         $Grid = new QUI\Utils\Grid();
 
         $query          = $Grid->parseDBParams($params);
-        $query['from']  = $this->_Media->getTable();
+        $query['from']  = $this->Media->getTable();
         $query['where'] = array(
             'deleted' => 1
         );
 
         // count
         $count = QUI::getDataBase()->fetch(array(
-            'from'  => $this->_Media->getTable(),
+            'from' => $this->Media->getTable(),
             'count' => 'count',
             'where' => array(
                 'deleted' => 1
@@ -97,7 +97,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
     public function destroy($id)
     {
         // check if the file is realy deleted?
-        $File = $this->_Media->get($id);
+        $File = $this->Media->get($id);
 
         // #locale
         if (!$File->isDeleted()) {
@@ -116,16 +116,15 @@ class Trash implements QUI\Interfaces\Projects\Trash
     {
         $data = QUI::getDataBase()->fetch(array(
             'select' => 'id',
-            'from'   => $this->_Media->getTable(),
-            'where'  => array(
+            'from' => $this->Media->getTable(),
+            'where' => array(
                 'deleted' => 1
             )
         ));
 
         foreach ($data as $key => $entry) {
-            try
-            {
-                $File = $this->_Media->get($entry['id']);
+            try {
+                $File = $this->Media->get($entry['id']);
 
                 if (!$File->isDeleted()) {
                     continue;
@@ -164,7 +163,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
 
         // search old db entry for data
         $data = QUI::getDataBase()->fetch(array(
-            'from'  => $this->_Media->getTable(),
+            'from' => $this->Media->getTable(),
             'where' => array(
                 'id' => $id
             ),
@@ -193,7 +192,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
         // change old db entry, if one exist
         $Item->setAttributes(array(
             'title' => $data[0]['title'],
-            'alt'   => $data[0]['alt'],
+            'alt' => $data[0]['alt'],
             'short' => $data[0]['short']
         ));
 
@@ -201,7 +200,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
 
         // delete the old db entry
         QUI::getDataBase()->delete(
-            $this->_Media->getTable(),
+            $this->Media->getTable(),
             array('id' => $id)
         );
 
