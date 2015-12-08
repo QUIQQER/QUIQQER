@@ -930,7 +930,7 @@ class Edit extends Site
 
 
         //$newid    = $Project->getNewId();
-        $new_name = 'Neue Seite';
+        $new_name = 'Neue Seite';   // @todo multilingual
         $old      = $new_name;
 
         // Namen vergeben falls existiert

@@ -32,6 +32,8 @@ class Utils
      */
     static function checkName($name)
     {
+        // @todo multilingual
+
         if (!isset($name)) {
             throw new QUI\Exception(
                 'Bitte gebe einen Titel ein'
