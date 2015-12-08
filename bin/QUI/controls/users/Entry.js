@@ -1,4 +1,3 @@
-
 /**
  * A user field / display
  * the display updates itself
@@ -13,13 +12,10 @@
  */
 
 define('controls/users/Entry', [
-
     'qui/controls/Control',
     'Users',
     'Locale',
-
     'css!controls/users/Entry.css'
-
 ], function (QUIControl, Users, Locale) {
     "use strict";
 
@@ -33,15 +29,15 @@ define('controls/users/Entry', [
      */
     return new Class({
 
-        Extends : QUIControl,
-        Type    : 'controls/users/Entry',
+        Extends: QUIControl,
+        Type   : 'controls/users/Entry',
 
-        Binds : [
+        Binds: [
             '$onUserUpdate',
             'destroy'
         ],
 
-        initialize : function (uid, options) {
+        initialize: function (uid, options) {
             this.$User = Users.get(uid);
             this.parent(options);
 
@@ -54,7 +50,7 @@ define('controls/users/Entry', [
          *
          * @return {Object} classes/users/User
          */
-        getUser : function () {
+        getUser: function () {
             return this.$User;
         },
 
@@ -63,17 +59,17 @@ define('controls/users/Entry', [
          *
          * @return {HTMLElement}
          */
-        create : function () {
+        create: function () {
             var self = this;
 
             this.$Elm = new Element('div', {
-                'class'      : 'users-entry users-entry-enabled',
-                'data-id'    : this.$User.getId(),
-                'data-quiid' : this.getId(),
-
-                html : '<div class="users-entry-icon"></div>' +
-                       '<div class="users-entry-text"></div>' +
-                       '<div class="users-entry-close icon-remove"></div>'
+                'class'     : 'users-entry users-entry-enabled smooth',
+                'data-id'   : this.$User.getId(),
+                'data-quiid': this.getId(),
+                title       : this.$User.getName() + ' - ' + this.$User.getId(),
+                html        : '<div class="users-entry-icon"></div>' +
+                              '<div class="users-entry-text"></div>' +
+                              '<div class="users-entry-close icon-remove"></div>'
             });
 
             var Close = this.$Elm.getElement('.users-entry-close');
@@ -85,8 +81,8 @@ define('controls/users/Entry', [
             });
 
             Close.set({
-                alt   : Locale.get('quiqqer/system', 'users.entry.user.remove'),
-                title : Locale.get('quiqqer/system', 'users.entry.user.remove')
+                alt  : Locale.get('quiqqer/system', 'users.entry.user.remove'),
+                title: Locale.get('quiqqer/system', 'users.entry.user.remove')
             });
 
             this.$User.addEvent('onRefresh', this.$onUserUpdate);
@@ -98,7 +94,7 @@ define('controls/users/Entry', [
         /**
          * event : on entry destroy
          */
-        $onDestroy : function () {
+        $onDestroy: function () {
             this.$User.removeEvent('refresh', this.$onUserUpdate);
         },
 
@@ -107,7 +103,7 @@ define('controls/users/Entry', [
          *
          * @return {Object} this (controls/users/Entry)
          */
-        refresh : function () {
+        refresh: function () {
             var UserIcon = this.$Elm.getElement('.users-entry-icon');
 
             if (!UserIcon) {
@@ -134,7 +130,7 @@ define('controls/users/Entry', [
          * @param {Object} User - classes/users/User
          * @return {Object} this (controls/users/Entry)
          */
-        $onUserUpdate : function (User) {
+        $onUserUpdate: function (User) {
             if (!this.$Elm) {
                 return this;
             }
@@ -150,7 +146,7 @@ define('controls/users/Entry', [
             UserIcon.removeClass('icon-spin');
 
             this.$Elm.getElement('.users-entry-text')
-                     .set('html', User.getName() + ' (' + User.getId() + ')');
+                .set('html', User.getName() + ' (' + User.getId() + ')');
 
             return this;
         },
@@ -159,7 +155,7 @@ define('controls/users/Entry', [
          * Disable the control
          * no changes are posible
          */
-        disable : function () {
+        disable: function () {
             this.$Elm.removeClass('users-entry-enabled');
             this.$disabled = true;
         },
@@ -168,7 +164,7 @@ define('controls/users/Entry', [
          * Disable the control
          * changes are posible
          */
-        enable : function () {
+        enable: function () {
             this.$Elm.addClass('users-entry-enabled');
             this.$disabled = false;
         },
@@ -177,7 +173,7 @@ define('controls/users/Entry', [
          * Is it disabled?
          * if disabled, no changes are possible
          */
-        isDisabled : function () {
+        isDisabled: function () {
             return this.$disabled;
         }
     });

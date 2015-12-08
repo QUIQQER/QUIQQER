@@ -6,11 +6,9 @@
 
 namespace QUI\Projects\Media;
 
-use BirknerAlex\XMPPHP\Log;
 use QUI;
 use QUI\Utils\System\File as QUIFile;
 use QUI\Utils\String as QUIString;
-use QUI\Utils\Image as QUIImage;
 use QUI\Utils\System\File;
 
 /**
@@ -33,8 +31,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             return $this->getAttribute('image_width');
         }
 
-        $data = QUIFile::getInfo($this->getFullPath(),
-            array('imagesize' => true));
+        $data = QUIFile::getInfo(
+            $this->getFullPath(),
+            array('imagesize' => true)
+        );
 
         if (isset($data['width'])) {
             return $data['width'];
@@ -54,8 +54,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             return $this->getAttribute('image_height');
         }
 
-        $data = QUIFile::getInfo($this->getFullPath(),
-            array('imagesize' => true));
+        $data = QUIFile::getInfo(
+            $this->getFullPath(),
+            array('imagesize' => true)
+        );
 
         if (isset($data['height'])) {
             return $data['height'];
@@ -257,7 +259,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         return array(
-            'width'  => $newwidth,
+            'width' => $newwidth,
             'height' => $newheight
         );
     }
@@ -301,7 +303,6 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $Image = $Media->getImageManager()->make($original);
 
         if ($width || $height) {
-
             if (!$width) {
                 $width = null;
             }
@@ -358,48 +359,55 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         // watermark
         $Watermark = $this->getWatermark();
 
-        if ($Watermark) {
+        try {
+            if ($Watermark) {
+                $pos   = $this->getWatermarkPosition();
+                $ratio = $this->getWatermarkRatio();
 
-            $pos   = $this->getWatermarkPosition();
-            $ratio = $this->getWatermarkRatio();
+                $WatermarkImage = $Media->getImageManager()->make(
+                    $Watermark->getFullPath()
+                );
 
-            $WatermarkImage = $Media->getImageManager()->make(
-                $Watermark->getFullPath()
-            );
+                switch ($pos) {
+                    case "top-left":
+                    case "top":
+                    case "top-right":
+                    case "left":
+                    case "center":
+                    case "right":
+                    case "bottom-left":
+                    case "bottom":
+                    case "bottom-right":
+                        $watermarkPosition = $pos;
+                        break;
 
-            switch ($pos) {
-                case "top-left":
-                case "top":
-                case "top-right":
-                case "left":
-                case "center":
-                case "right":
-                case "bottom-left":
-                case "bottom":
-                case "bottom-right":
-                    $watermarkPosition = $pos;
-                    break;
+                    default:
+                        $watermarkPosition = 'bottom-right';
+                        break;
+                }
 
-                default:
-                    $watermarkPosition = 'bottom-right';
-                    break;
+                // ratio calc
+                if ($ratio) {
+                    $imageHeight = $Image->getHeight();
+                    $imageWidth  = $Image->getWidth();
+
+                    $imageHeight = $imageHeight * ($ratio / 100);
+                    $imageWidth  = $imageWidth * ($ratio / 100);
+
+                    $WatermarkImage->resize($imageWidth, $imageHeight, function ($Constraint) {
+                        $Constraint->aspectRatio();
+                        $Constraint->upsize();
+                    });
+                }
+
+                $Image->insert($WatermarkImage, $watermarkPosition);
             }
-
-            // ratio calc
-            if ($ratio) {
-                $imageHeight = $Image->getHeight();
-                $imageWidth  = $Image->getWidth();
-
-                $imageHeight = $imageHeight * ($ratio / 100);
-                $imageWidth  = $imageWidth * ($ratio / 100);
-
-                $WatermarkImage->resize($imageWidth, $imageHeight, function ($Constraint) {
-                    $Constraint->aspectRatio();
-                    $Constraint->upsize();
-                });
-            }
-
-            $Image->insert($WatermarkImage, $watermarkPosition);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addInfo($Exception->getMessage(), array(
+                'file' => $this->getFullPath(),
+                'fileId' => $this->getId(),
+                'info' => 'watermark creation'
+            ));
         }
 
         // create folders
@@ -548,28 +556,22 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         if ($imageEffects['watermark'] == 'default') {
-
             try {
-
                 $Project = $this->getProject();
 
                 return Utils::getImageByUrl($Project->getConfig('media_watermark'));
 
             } catch (QUI\Exception $Exception) {
-
             }
 
             return false;
         }
 
-
         try {
             return Utils::getImageByUrl($imageEffects['watermark']);
 
         } catch (QUI\Exception $Exception) {
-
         }
-
 
         return false;
     }

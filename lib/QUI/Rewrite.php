@@ -160,7 +160,7 @@ class Rewrite
      *
      * @return string
      */
-    static function getDefaultSuffix()
+    public static function getDefaultSuffix()
     {
         if (self::$SUFFIX !== false) {
             return self::$SUFFIX;
@@ -311,8 +311,7 @@ class Rewrite
                 // Wenns ein Hosteintrag mit der Sprache gibt, dahin leiten
                 // und es nicht der https host ist
                 // @todo https host nicht über den port prüfen, zu ungenau
-                if (
-                    isset($_SERVER['HTTP_HOST'])
+                if (isset($_SERVER['HTTP_HOST'])
                     && isset($vhosts[$_SERVER['HTTP_HOST']])
                     && isset($vhosts[$_SERVER['HTTP_HOST']][$this->_lang])
                     && !empty($vhosts[$_SERVER['HTTP_HOST']][$this->_lang])
@@ -357,8 +356,11 @@ class Rewrite
                     $lastpos_ul = strrpos($_REQUEST['_url'], '__') + 2;
                     $pos_dot    = strpos($_REQUEST['_url'], '.', $lastpos_ul);
 
-                    $size = substr($_REQUEST['_url'], $lastpos_ul,
-                        ($pos_dot - $lastpos_ul));
+                    $size = substr(
+                        $_REQUEST['_url'],
+                        $lastpos_ul,
+                        ($pos_dot - $lastpos_ul)
+                    );
 
                     $part_size = explode('x', $size);
 
@@ -413,12 +415,8 @@ class Rewrite
             header("Pragma: public");
             header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
             header("Accept-Ranges: bytes");
-            header("Content-Disposition: inline; filename=\"" . pathinfo($file,
-                    PATHINFO_BASENAME) . "\"");
-            header("Content-Size: " . filesize($file));
-            header("Content-Length: " . filesize($file));
+            header("Content-Disposition: inline; filename=\"" . pathinfo($file, PATHINFO_BASENAME) . "\"");
             header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-            header("Connection: Keep-Alive");
 
             $fo_image = fopen($file, "r");
             $fr_image = fread($fo_image, filesize($file));
@@ -711,14 +709,14 @@ class Rewrite
             $val = $_url[$i];
 
             // letzte seite = url params raushohlen
-            if ($len === $i+1) {
+            if ($len === $i + 1) {
 
                 $defaultSuffix = QUI\Rewrite::getDefaultSuffix();
-                $suffixLen = mb_strlen($defaultSuffix);
+                $suffixLen     = mb_strlen($defaultSuffix);
 
                 if ($defaultSuffix != ''
-                    && mb_substr($val, $suffixLen * -1) == $defaultSuffix)
-                {
+                    && mb_substr($val, $suffixLen * -1) == $defaultSuffix
+                ) {
                     $site_url = mb_substr($val, 0, $suffixLen * -1);
                 } else {
                     $site_url = $val;
@@ -1372,7 +1370,6 @@ class Rewrite
                     ? $Image->getAttribute('title') : '';
 
             } catch (QUI\Exception $Exception) {
-
             }
         }
 
@@ -1512,7 +1509,7 @@ class Rewrite
 
         foreach ($paths as $path) {
             QUI::getDataBase()->insert($table, array(
-                'id'   => $Site->getId(),
+                'id' => $Site->getId(),
                 'path' => $path
             ));
         }

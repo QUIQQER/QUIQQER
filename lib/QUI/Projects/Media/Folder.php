@@ -25,7 +25,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @var array
      */
-    protected $_children = array();
+    protected $children = array();
 
     /**
      * (non-PHPdoc)
@@ -47,7 +47,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $parents_ids = $this->getParentIds();
 
         foreach ($parents_ids as $id) {
-
             try {
                 $Item = $Media->get($id);
                 $Item->activate();
@@ -83,11 +82,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $this->setAttribute('active', 0);
 
         // Images / Folders / Files rekursive deactivasion
-        $ids   = $this->_getAllRecursiveChildrenIds();
+        $ids   = $this->getAllRecursiveChildrenIds();
         $Media = $this->_Media;
 
         foreach ($ids as $id) {
-
             try {
                 $Item = $Media->get($id);
                 $Item->deactivate();
@@ -118,12 +116,11 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
 
-        $children = $this->_getAllRecursiveChildrenIds();
+        $children = $this->getAllRecursiveChildrenIds();
 
         // move files to the temp folder
         // and delete the files first
         foreach ($children as $id) {
-
             try {
                 $File = $this->_Media->get($id);
 
@@ -138,7 +135,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         // now delete all sub folders
         foreach ($children as $id) {
-
             try {
                 $File = $this->_Media->get($id);
 
@@ -247,7 +243,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         if ($Parent->childWithNameExists($newname)) {
             throw new QUI\Exception(
-                'Ein Ordner mit dem gleichen Namen existiert bereits.', 403
+                'Ein Ordner mit dem gleichen Namen existiert bereits.',
+                403
             );
         }
 
@@ -459,7 +456,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function getChildren($params = array())
     {
-        $this->_children = array();
+        $this->children = array();
 
         if (!isset($params['order'])) {
             $params['order'] = $this->getAttribute('order');
@@ -473,14 +470,14 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         foreach ($ids as $id) {
             try {
-                $this->_children[] = $this->_Media->get($id);
+                $this->children[] = $this->_Media->get($id);
 
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
             }
         }
 
-        return $this->_children;
+        return $this->children;
     }
 
     /**
@@ -516,19 +513,15 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             case 'priority':
             case 'priority ASC':
             case 'priority DESC':
-
             case 'c_date':
             case 'c_date ASC':
             case 'c_date DESC':
-
             case 'name':
             case 'name ASC':
             case 'name DESC':
-
             case 'title':
             case 'title ASC':
             case 'title DESC':
-
             case 'id':
             case 'id ASC':
             case 'id DESC':
@@ -715,19 +708,15 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 case 'title':
                 case 'title DESC':
                 case 'title ASC':
-
                 case 'name':
                 case 'name DESC':
                 case 'name ASC':
-
                 case 'c_date':
                 case 'c_date DESC':
                 case 'c_date ASC':
-
                 case 'e_date':
                 case 'e_date ASC':
                 case 'e_date DESC':
-
                 case 'priority':
                 case 'priority ASC':
                 case 'priority DESC':
@@ -877,7 +866,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             return true;
 
         } catch (QUI\Exception $Exception) {
-
         }
 
         return false;
@@ -1048,7 +1036,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         if (is_dir($file)) {
-            return $this->_uploadFolder($file);
+            return $this->uploadFolder($file);
         }
 
         $fileinfo = FileUtils::getInfo($file);
@@ -1136,7 +1124,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         // if it is an image, than resize -> if needed
         if (Utils::isImage($File) && $maxSize) {
-
             /* @var $File Image */
             $resizeData = $File->getResizeSize($maxSize, $maxSize);
 
@@ -1169,11 +1156,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     public function setEffectsRecursive()
     {
         $Media   = $this->getMedia();
-        $ids     = $this->_getAllRecursiveChildrenIds();
+        $ids     = $this->getAllRecursiveChildrenIds();
         $effects = $this->getEffects();
 
         foreach ($ids as $id) {
-
             try {
                 $Item = $Media->get($id);
 
@@ -1183,7 +1169,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 }
 
             } catch (QUI\Exception $Exception) {
-
                 QUI\System\Log::addDebug($Exception->getMessage());
             }
         }
@@ -1197,7 +1182,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @return QUI\Projects\Media\Item
      */
-    protected function _uploadFolder($path, $Folder = false)
+    protected function uploadFolder($path, $Folder = false)
     {
         $files = FileUtils::readDir($path);
 
@@ -1213,7 +1198,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                     $NewFolder = $this->createFolder($foldername);
                 }
 
-                $this->_uploadFolder($path . '/' . $file, $NewFolder);
+                $this->uploadFolder($path . '/' . $file, $NewFolder);
                 continue;
             }
 
@@ -1233,7 +1218,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @return array
      */
-    protected function _getAllRecursiveChildrenIds()
+    protected function getAllRecursiveChildrenIds()
     {
         // own sql statement, not over the getChildren() method,
         // its better for performance

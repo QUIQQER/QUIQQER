@@ -22,7 +22,7 @@ class Queue
      *
      * @return string
      */
-    static function Table()
+    public static function TABLE()
     {
         return QUI_DB_PRFX . 'mailqueue';
     }
@@ -30,11 +30,11 @@ class Queue
     /**
      * Execute the db mail queue setup
      */
-    static function setup()
+    public static function setup()
     {
         $Table = QUI::getDataBase()->Table();
 
-        $Table->appendFields(self::Table(), array(
+        $Table->appendFields(self::TABLE(), array(
             'id'           => 'int(11) NOT NULL',
             'subject'      => 'varchar(1000)',
             'body'         => 'text',
@@ -49,8 +49,8 @@ class Queue
             'attachements' => 'text'
         ));
 
-        $Table->setPrimaryKey(self::Table(), 'id');
-        $Table->setAutoIncrement(self::Table(), 'id');
+        $Table->setPrimaryKey(self::TABLE(), 'id');
+        $Table->setAutoIncrement(self::TABLE(), 'id');
     }
 
     /**
@@ -60,7 +60,7 @@ class Queue
      *
      * @return string
      */
-    static function getAttachmentDir($mailId)
+    public static function getAttachmentDir($mailId)
     {
         return VAR_DIR . 'mailQueue/' . (int)$mailId . '/';
     }
@@ -72,7 +72,7 @@ class Queue
      *
      * @return integer - Mailqueue-ID
      */
-    static function addToQueue($Mail)
+    public static function addToQueue($Mail)
     {
         $params = $Mail->toArray();
 
@@ -89,7 +89,7 @@ class Queue
         }
 
 
-        QUI::getDataBase()->insert(self::Table(), $params);
+        QUI::getDataBase()->insert(self::TABLE(), $params);
 
         $newMailId = QUI::getDataBase()->getPDO()->lastInsertId('id');
 
@@ -121,7 +121,7 @@ class Queue
     public function send()
     {
         $params = QUI::getDataBase()->fetch(array(
-            'from'  => self::Table(),
+            'from'  => self::TABLE(),
             'limit' => 1
         ));
 
@@ -130,11 +130,11 @@ class Queue
         }
 
         try {
-            $send = $this->_sendMail($params[0]);
+            $send = $this->sendMail($params[0]);
 
             // successful send
             if ($send) {
-                QUI::getDataBase()->delete(self::Table(), array(
+                QUI::getDataBase()->delete(self::TABLE(), array(
                     'id' => $params[0]['id']
                 ));
 
@@ -163,7 +163,7 @@ class Queue
     public function sendById($id)
     {
         $params = QUI::getDataBase()->fetch(array(
-            'from'  => self::Table(),
+            'from'  => self::TABLE(),
             'where' => array(
                 'id' => (int)$id
             ),
@@ -182,11 +182,11 @@ class Queue
 
 
         try {
-            $send = $this->_sendMail($params[0]);
+            $send = $this->sendMail($params[0]);
 
             // successful send
             if ($send) {
-                QUI::getDataBase()->delete(self::Table(), array(
+                QUI::getDataBase()->delete(self::TABLE(), array(
                     'id' => $params[0]['id']
                 ));
 
@@ -214,7 +214,7 @@ class Queue
      * @return boolean
      * @todo attachments
      */
-    protected function _sendMail($params)
+    protected function sendMail($params)
     {
         $PhpMailer = QUI::getMailManager()->getPHPMailer();
 
@@ -225,21 +225,37 @@ class Queue
 
         // mailto
         foreach ($mailto as $address) {
+            if (is_array($address)) {
+                $PhpMailer->addAddress($address[0], $address[1]);
+                continue;
+            }
             $PhpMailer->addAddress($address);
         }
 
         // reply
         foreach ($replyto as $entry) {
+            if (is_array($entry)) {
+                $PhpMailer->addAddress($entry[0], $entry[1]);
+                continue;
+            }
             $PhpMailer->addReplyTo($entry);
         }
 
         // cc
         foreach ($cc as $entry) {
+            if (is_array($entry)) {
+                $PhpMailer->addAddress($entry[0], $entry[1]);
+                continue;
+            }
             $PhpMailer->addCC($entry);
         }
 
         // bcc
         foreach ($bcc as $entry) {
+            if (is_array($entry)) {
+                $PhpMailer->addAddress($entry[0], $entry[1]);
+                continue;
+            }
             $PhpMailer->addBCC($entry);
         }
 
@@ -262,8 +278,12 @@ class Queue
                     $infos['mime_type'] = 'application/octet-stream';
                 }
 
-                $PhpMailer->addAttachment($file, $infos['basename'], 'base64',
-                    $infos['mime_type']);
+                $PhpMailer->addAttachment(
+                    $file,
+                    $infos['basename'],
+                    'base64',
+                    $infos['mime_type']
+                );
             }
         }
 
@@ -302,7 +322,7 @@ class Queue
     public function count()
     {
         $result = QUI::getDataBase()->fetch(array(
-            'from'  => self::Table(),
+            'from'  => self::TABLE(),
             'count' => array(
                 'select' => 'id',
                 'as'     => 'count'
@@ -320,7 +340,7 @@ class Queue
     public function getList()
     {
         return QUI::getDataBase()->fetch(array(
-            'from' => self::Table()
+            'from' => self::TABLE()
         ));
     }
 }

@@ -41,7 +41,6 @@ class Htaccess extends QUI\System\Console\Tool
         // generate backup
         //
         if (file_exists($htaccessFile)) {
-
             file_put_contents(
                 $htaccessBackupFile,
                 file_get_contents($htaccessFile)
@@ -51,8 +50,10 @@ class Htaccess extends QUI\System\Console\Tool
             $this->writeLn($htaccessBackupFile);
 
         } else {
-            $this->writeLn('No .htaccess File found. Could not create a backup.',
-                'red');
+            $this->writeLn(
+                'No .htaccess File found. Could not create a backup.',
+                'red'
+            );
         }
 
         $this->resetColor();
@@ -89,7 +90,7 @@ class Htaccess extends QUI\System\Console\Tool
             $htaccessContent .= "\n\n";
         }
 
-        $htaccessContent .= $this->_template();
+        $htaccessContent .= $this->template();
 
         file_put_contents($htaccessFile, $htaccessContent);
 
@@ -102,7 +103,7 @@ class Htaccess extends QUI\System\Console\Tool
      *
      * @return string
      */
-    protected function _template()
+    protected function template()
     {
         $URL_DIR     = URL_DIR;
         $URL_LIB_DIR = URL_LIB_DIR;

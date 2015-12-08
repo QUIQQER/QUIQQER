@@ -23,10 +23,17 @@ class CreateProject extends QUI\System\Console\Tool
         $this->setName('quiqqer:create-project')
             ->setDescription('Create a new project')
             ->addArgument('projectname', 'Name of the project', 'p')
-            ->addArgument('projectlangs',
-                'Langs of the project (comma separated)', 'l')
-            ->addArgument('template', 'Standard template of the project',
-                false, true);
+            ->addArgument(
+                'projectlangs',
+                'Langs of the project (comma separated)',
+                'l'
+            )
+            ->addArgument(
+                'template',
+                'Standard template of the project',
+                false,
+                true
+            );
     }
 
     /**
@@ -85,7 +92,7 @@ class CreateProject extends QUI\System\Console\Tool
 
         QUI::getProjectManager()->setConfigForProject($projectname, array(
             'template' => $template,
-            'langs'    => implode(',', $projectlangs)
+            'langs' => implode(',', $projectlangs)
         ));
 
         $this->writeLn('Project ' . $projectname . ' successfuly created.');

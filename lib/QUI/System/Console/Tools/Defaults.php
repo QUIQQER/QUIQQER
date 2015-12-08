@@ -90,7 +90,6 @@ class Defaults extends QUI\System\Console\Tool
                 $User = QUI::getUsers()->get($uid['id']);
                 $User->save();
             } catch (QUI\Exception $Exception) {
-
             }
         }
 

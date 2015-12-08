@@ -82,7 +82,7 @@ define('classes/projects/project/Media', [
          * @param {Number|Array} id       - ID of the file or an id list
          * @param {Function|Array} params - Item params or a callback function
          *
-         * @return {Object} Promise
+         * @return {Promise}
          */
         get : function (id, params) {
             var self = this;
@@ -162,7 +162,7 @@ define('classes/projects/project/Media', [
          * @param {Number|Array} id  - ID of the file or an id list
          * @param {Function} [onfinish] - (optional), callback function
          *
-         * @return {Object} Promise
+         * @return {Promise}
          */
         getData : function (id, onfinish) {
             var self = this;
@@ -188,7 +188,7 @@ define('classes/projects/project/Media', [
          * get the first child of the media
          *
          * @method classes/projects/project/Media#get
-         * @return {Object} Promise
+         * @return {Promise}
          */
         firstChild : function (callback) {
             return this.get(1, callback);
@@ -204,7 +204,7 @@ define('classes/projects/project/Media', [
          * @param {Function} onfinish - callback function after the upload is finish
          *                              onfinish( {controls/upload/File} )
          *
-         * @return Promise
+         * @return {Promise}
          */
         replace : function (childid, File, onfinish) {
             return new Promise(function (resolve, reject) {
@@ -237,7 +237,7 @@ define('classes/projects/project/Media', [
          * @param {Function} [oncomplete] - (optional), callback Function
          * @param {Object} [params]       - (optional), parameters that are linked to the request object
          *
-         * @return Promise
+         * @return {Promise}
          */
         activate : function (id, oncomplete, params) {
             return new Promise(function (resolve, reject) {
@@ -279,7 +279,7 @@ define('classes/projects/project/Media', [
          * @param {Function} [oncomplete] - (optional), callback Function
          * @param {Object} [params]       - (optional), parameters that are linked to the request object
          *
-         * @return Promise
+         * @return {Promise}
          */
         deactivate : function (id, oncomplete, params) {
             return new Promise(function (resolve, reject) {
@@ -322,7 +322,7 @@ define('classes/projects/project/Media', [
          * @param {Function} [oncomplete] - (optional), callback Function
          * @param {Object} [params]       - (optional), parameters that are linked to the request object
          *
-         * @return Promise
+         * @return {Promise}
          */
         del : function (id, oncomplete, params) {
             return new Promise(function (resolve, reject) {

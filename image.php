@@ -3,14 +3,11 @@
 require_once 'bootstrap.php';
 
 if (!isset($_REQUEST['project']) || !isset($_REQUEST['id'])) {
-
     header("HTTP/1.0 404 Not Found");
     exit;
-
 }
 
 use QUI\Projects\Media;
-
 
 try {
     /* @var $project \QUI\Projects\Project */
@@ -56,7 +53,6 @@ try {
         && Media\Utils::isImage($File)
         && QUI::getUsers()->getUserBySession()->canUseBackend()
     ) {
-
         if (!isset($_REQUEST['maxwidth'])) {
             $_REQUEST['maxwidth'] = null;
         }
@@ -101,12 +97,14 @@ try {
             exit;
         }
 
-        echo $Image->resize($_REQUEST['maxwidth'], $_REQUEST['maxheight'],
+        echo $Image->resize(
+            $_REQUEST['maxwidth'],
+            $_REQUEST['maxheight'],
             function ($Constraint) {
                 $Constraint->aspectRatio();
                 $Constraint->upsize();
-            })
-            ->response();
+            }
+        )->response();
 
         $Image->save($cacheFile);
 
@@ -151,10 +149,7 @@ try {
     header("Content-Length: " . filesize($image));
     header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
     header("Connection: Keep-Alive");
-    header(
-        "Content-Disposition: inline; filename=\"" . pathinfo($file,
-        PATHINFO_BASENAME) . "\""
-    );
+    header("Content-Disposition: inline; filename=\"" . pathinfo($file, PATHINFO_BASENAME) . "\"");
 
     $fo_image = fopen($image, "r");
     $fr_image = fread($fo_image, filesize($image));
@@ -164,7 +159,6 @@ try {
     exit;
 
 } catch (QUI\Exception $Exception) {
-
 }
 
 

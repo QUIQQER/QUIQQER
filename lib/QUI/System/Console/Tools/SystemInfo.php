@@ -70,7 +70,7 @@ class SystemInfo extends QUI\System\Console\Tool
             if ($key == 'authors') {
                 foreach ($value as $arr) {
                     foreach ($arr as $_key => $_value) {
-                        $this->_printArrayEntry($_key, $_value, "%-15s");
+                        $this->printArrayEntry($_key, $_value, "%-15s");
                     }
 
                     $this->writeLn('');
@@ -80,7 +80,7 @@ class SystemInfo extends QUI\System\Console\Tool
             }
 
             foreach ($value as $_key => $_value) {
-                $this->_printArrayEntry($_key, $_value);
+                $this->printArrayEntry($_key, $_value);
             }
         }
 
@@ -134,7 +134,7 @@ class SystemInfo extends QUI\System\Console\Tool
      * @param string $value
      * @param string $format - http://php.net/manual/de/function.sprintf.php
      */
-    protected function _printArrayEntry($key, $value, $format = "%-25s")
+    protected function printArrayEntry($key, $value, $format = "%-25s")
     {
         $this->write(sprintf($format, $key), 'purple');
         $this->resetColor();

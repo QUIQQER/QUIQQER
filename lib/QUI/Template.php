@@ -231,7 +231,7 @@ class Template extends QUI\QDOM
     {
         $prio = (int)$prio;
 
-        if (!isset($this->_header[$prio])) {
+        if (!isset($this->_footer[$prio])) {
             $this->_footer[$prio] = '';
         }
 

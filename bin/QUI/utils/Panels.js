@@ -115,6 +115,7 @@ define('utils/Panels', function () {
 
                             if (folderId) {
                                 Panel.openID(parseInt(folderId));
+                                continue;
                             }
 
                             Project    = Panel.getProject();
