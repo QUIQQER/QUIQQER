@@ -6,7 +6,7 @@
  * @param String $project  - Name of the project
  * @param String $folderId - Folder-ID
  *
- * @return Array
+ * @return array
  * @throws \QUI\Exception
  */
 function ajax_media_folder_recursiveEffects($project, $folderId)

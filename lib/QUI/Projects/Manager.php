@@ -11,7 +11,6 @@ use QUI\Rights\Permission;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\DOM;
 
-
 /**
  * The Project Manager
  * The main object to get a project
@@ -31,28 +30,28 @@ class Manager
      *
      * @var \QUI\Config
      */
-    static $Config = null;
+    public static $Config = null;
 
     /**
      * laoded projects
      *
      * @var array
      */
-    static $projects = array();
+    public static $projects = array();
 
     /**
      * standard project
      *
      * @var \QUI\Projects\Project
      */
-    static $Standard = null;
+    public static $Standard = null;
 
     /**
      * projects.ini
      *
      * @return \QUI\Config
      */
-    static function getConfig()
+    public static function getConfig()
     {
         return QUI::getConfig('etc/projects.ini');
     }
@@ -63,7 +62,7 @@ class Manager
      * @param string $project
      * @param array $params
      */
-    static function setConfigForProject($project, $params)
+    public static function setConfigForProject($project, $params)
     {
         $Project = self::getProject($project);
 
@@ -85,7 +84,6 @@ class Manager
 
         // generate new config for the project
         foreach ($config as $key => $value) {
-
             if (!isset($old_config[$key])) {
                 continue;
             }
@@ -207,7 +205,7 @@ class Manager
      *
      * @return array
      */
-    static function getProjectConfigList(QUI\Projects\Project $Project)
+    public static function getProjectConfigList(QUI\Projects\Project $Project)
     {
         $cache = 'qui/projects/' . $Project->getName() . '/configList';
 
@@ -215,25 +213,25 @@ class Manager
             return QUI\Cache\Manager::get($cache);
 
         } catch (QUI\Exception $Exception) {
-
         }
 
         $config = array(
-            "default_lang"             => "de",
-            "langs"                    => "de",
-            "admin_mail"               => "support@pcsg.de",
-            "template"                 => "",
-            "layout"                   => "",
-            "image_text"               => "0",
-            "standard"                 => "1",
-            "adminSitemapMax"          => 20,
-            "media_watermark"          => "",
+            "default_lang" => "de",
+            "langs" => "de",
+            "admin_mail" => "support@pcsg.de",
+            "template" => "",
+            "layout" => "",
+            "image_text" => "0",
+            "standard" => "1",
+            "adminSitemapMax" => 20,
+            "media_watermark" => "",
             "media_watermark_position" => "",
-            "media_watermark_ratio"    => "",
-            "media_image_library"      => "",
-            "media_maxUploadSize"      => "",
-            "placeholder"              => "",
-            "favicon"                  => ""
+            "media_watermark_ratio" => "",
+            "media_image_library" => "",
+            "media_maxUploadSize" => "",
+            "media_createCacheOnSave" => "1",
+            "placeholder" => "",
+            "favicon" => ""
         );
 
         // settings.xml
@@ -279,7 +277,7 @@ class Manager
      *
      * @return integer
      */
-    static function count()
+    public static function count()
     {
         $Config = self::getConfig();
         $config = $Config->toArray();
@@ -296,7 +294,7 @@ class Manager
      * @return \QUI\Projects\Project
      * @throws \QUI\Exception
      */
-    static function decode($project)
+    public static function decode($project)
     {
         if (is_string($project)) {
             $project = json_decode($project, true);
@@ -329,7 +327,7 @@ class Manager
      * @return Project
      * @throws \QUI\Exception
      */
-    static function get()
+    public static function get()
     {
         $Rewrite = QUI::getRewrite();
 
@@ -365,7 +363,7 @@ class Manager
      *
      * @return \QUI\Projects\Project
      */
-    static function getProject($project, $lang = false, $template = false)
+    public static function getProject($project, $lang = false, $template = false)
     {
         if ($lang == false && isset(self::$projects[$project])
             && isset(self::$projects[$project]['_standard'])
@@ -408,7 +406,7 @@ class Manager
      *
      * @return array
      */
-    static function getProjects($asobject = false)
+    public static function getProjects($asobject = false)
     {
         $config = self::getConfig()->toArray();
         $list   = array();
@@ -432,7 +430,6 @@ class Manager
                 }
 
             } catch (QUI\Exception $Exception) {
-
             }
         }
 
@@ -445,7 +442,7 @@ class Manager
      * @return \QUI\Projects\Project
      * @throws QUI\Exception
      */
-    static function getStandard()
+    public static function getStandard()
     {
         if (!is_null(self::$Standard)) {
             return self::$Standard;
@@ -496,7 +493,7 @@ class Manager
      *
      * @todo noch einmal anschauen und übersichtlicher schreiben
      */
-    static function createProject($name, $lang)
+    public static function createProject($name, $lang)
     {
         Permission::checkPermission(
             'quiqqer.projects.create'
@@ -582,46 +579,46 @@ class Manager
         $table_site_rel = QUI_DB_PRFX . $name . '_' . $lang . '_sites_relations';
 
         $Table->appendFields($table_site, array(
-            "id"          => "bigint(20) NOT NULL",
-            "name"        => "varchar(200) NOT NULL",
-            "title"       => "tinytext",
-            "short"       => "text",
-            "content"     => "longtext",
-            "type"        => "varchar(32) default NULL",
-            "active"      => "tinyint(1) NOT NULL",
-            "deleted"     => "tinyint(1) NOT NULL",
-            "c_date"      => "timestamp NULL default NULL",
-            "e_date"      => "timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP",
-            "c_user"      => "int(11) default NULL",
-            "e_user"      => "int(11) default NULL",
-            "nav_hide"    => "tinyint(1) NOT NULL",
-            "order_type"  => "varchar(100) default NULL",
+            "id" => "bigint(20) NOT NULL",
+            "name" => "varchar(200) NOT NULL",
+            "title" => "tinytext",
+            "short" => "text",
+            "content" => "longtext",
+            "type" => "varchar(32) default NULL",
+            "active" => "tinyint(1) NOT NULL",
+            "deleted" => "tinyint(1) NOT NULL",
+            "c_date" => "timestamp NULL default NULL",
+            "e_date" => "timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP",
+            "c_user" => "int(11) default NULL",
+            "e_user" => "int(11) default NULL",
+            "nav_hide" => "tinyint(1) NOT NULL",
+            "order_type" => "varchar(100) default NULL",
             "order_field" => "bigint(20) default NULL",
-            "extra"       => "text default NULL",
+            "extra" => "text default NULL",
         ));
 
         $Table->appendFields($table_site_rel, array(
             "parent" => "bigint(20) NOT NULL",
-            "child"  => "bigint(20) NOT NULL"
+            "child" => "bigint(20) NOT NULL"
         ));
 
         $Table->setAutoIncrement($table_site, 'id');
 
         // first site
         $DataBase->insert($table_site, array(
-            "id"          => 1,
-            "name"        => 'Start',
-            "title"       => 'start',
-            "short"       => 'Shorttext',
-            "content"     => "<p>Welcome to my project</p>",
-            "type"        => 'standard',
-            "active"      => 1,
-            "deleted"     => 0,
-            "c_date"      => date('Y-m-d H:i:s'),
-            "c_user"      => QUI::getUserBySession()->getId(),
-            "e_user"      => QUI::getUserBySession()->getId(),
-            "nav_hide"    => '',
-            "order_type"  => "",
+            "id" => 1,
+            "name" => 'Start',
+            "title" => 'start',
+            "short" => 'Shorttext',
+            "content" => "<p>Welcome to my project</p>",
+            "type" => 'standard',
+            "active" => 1,
+            "deleted" => 0,
+            "c_date" => date('Y-m-d H:i:s'),
+            "c_user" => QUI::getUserBySession()->getId(),
+            "e_user" => QUI::getUserBySession()->getId(),
+            "nav_hide" => '',
+            "order_type" => "",
             "order_field" => ""
         ));
 
@@ -633,42 +630,42 @@ class Manager
         $table_media_rel = QUI_DB_PRFX . $name . '_media_relations';
 
         $Table->appendFields($table_media, array(
-            "id"           => "bigint(20) NOT NULL",
-            "name"         => "varchar(200) NOT NULL",
-            "title"        => "tinytext",
-            "short"        => "text",
-            "type"         => "varchar(32) default NULL",
-            "active"       => "tinyint(1) NOT NULL",
-            "deleted"      => "tinyint(1) NOT NULL",
-            "c_date"       => "timestamp NULL default NULL",
-            "e_date"       => "timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP",
-            "c_user"       => "int(11) default NULL",
-            "e_user"       => "int(11) default NULL",
-            "file"         => "text",
-            "alt"          => "text",
-            "mime_type"    => "text",
+            "id" => "bigint(20) NOT NULL",
+            "name" => "varchar(200) NOT NULL",
+            "title" => "tinytext",
+            "short" => "text",
+            "type" => "varchar(32) default NULL",
+            "active" => "tinyint(1) NOT NULL",
+            "deleted" => "tinyint(1) NOT NULL",
+            "c_date" => "timestamp NULL default NULL",
+            "e_date" => "timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP",
+            "c_user" => "int(11) default NULL",
+            "e_user" => "int(11) default NULL",
+            "file" => "text",
+            "alt" => "text",
+            "mime_type" => "text",
             "image_height" => "int(6) default NULL",
-            "image_width"  => "int(6) default NULL"
+            "image_width" => "int(6) default NULL"
         ));
 
         $Table->appendFields($table_media_rel, array(
             "parent" => "bigint(20) NOT NULL",
-            "child"  => "bigint(20) NOT NULL"
+            "child" => "bigint(20) NOT NULL"
         ));
 
         // first folder
         $DataBase->insert($table_media, array(
-            "id"      => 1,
-            "name"    => 'Start',
-            "title"   => 'start',
-            "short"   => 'Shorttext',
-            "type"    => 'folder',
-            "file"    => '',
-            "active"  => 1,
+            "id" => 1,
+            "name" => 'Start',
+            "title" => 'start',
+            "short" => 'Shorttext',
+            "type" => 'folder',
+            "file" => '',
+            "active" => 1,
             "deleted" => 0,
-            "c_date"  => date('Y-m-d H:i:s'),
-            "c_user"  => QUI::getUserBySession()->getId(),
-            "e_user"  => QUI::getUserBySession()->getId()
+            "c_date" => date('Y-m-d H:i:s'),
+            "c_user" => QUI::getUserBySession()->getId(),
+            "e_user" => QUI::getUserBySession()->getId()
         ));
 
 
@@ -690,17 +687,17 @@ class Manager
 
         $Config->setSection($name, array(
             'default_lang' => $lang,
-            'langs'        => $lang,
-            'admin_mail'   => 'support@pcsg.de',
-            'template'     => $name,
-            'image_text'   => '0',
-            'keywords'     => '',
-            'description'  => '',
-            'robots'       => 'index',
-            'author'       => '',
-            'publisher'    => '',
-            'copyright'    => '',
-            'standard'     => '0'
+            'langs' => $lang,
+            'admin_mail' => 'support@pcsg.de',
+            'template' => $name,
+            'image_text' => '0',
+            'keywords' => '',
+            'description' => '',
+            'robots' => 'index',
+            'author' => '',
+            'publisher' => '',
+            'copyright' => '',
+            'standard' => '0'
         ));
 
         if (count($Config->toArray()) <= 1) {
@@ -730,7 +727,7 @@ class Manager
      *
      * @param \QUI\Projects\Project $Project
      */
-    static function deleteProject(QUI\Projects\Project $Project)
+    public static function deleteProject(QUI\Projects\Project $Project)
     {
         Permission::checkProjectPermission(
             'quiqqer.projects.destroy',
@@ -825,7 +822,7 @@ class Manager
      *
      * @return array
      */
-    static function getRelatedTemplates(QUI\Projects\Project $Project)
+    public static function getRelatedTemplates(QUI\Projects\Project $Project)
     {
         $result    = array();
         $templates = array();
@@ -871,7 +868,7 @@ class Manager
      *
      * @return array
      */
-    static function getRelatedSettingsXML(QUI\Projects\Project $Project)
+    public static function getRelatedSettingsXML(QUI\Projects\Project $Project)
     {
         $cache = 'qui/projects/' . $Project->getName() . '/relatedSettingsXml';
 
@@ -879,7 +876,6 @@ class Manager
             return QUI\Cache\Manager::get($cache);
 
         } catch (QUI\Exception $Exception) {
-
         }
 
         $list     = array();
@@ -944,7 +940,7 @@ class Manager
      *
      * @return array
      */
-    static function search($params)
+    public static function search($params)
     {
         if (!isset($params['search'])) {
             return array();
@@ -965,7 +961,7 @@ class Manager
             foreach ($langs as $lang) {
                 $result[] = array(
                     'project' => $project,
-                    'lang'    => $lang
+                    'lang' => $lang
                 );
             }
         }

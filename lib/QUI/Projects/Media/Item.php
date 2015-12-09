@@ -197,11 +197,11 @@ abstract class Item extends QUI\QDOM
         QUI::getDataBase()->update(
             $this->_Media->getTable(),
             array(
-                'title'         => $this->getAttribute('title'),
-                'alt'           => $this->getAttribute('alt'),
-                'short'         => $this->getAttribute('short'),
-                'order'         => $order,
-                'priority'      => (int)$this->getAttribute('priority'),
+                'title' => $this->getAttribute('title'),
+                'alt' => $this->getAttribute('alt'),
+                'short' => $this->getAttribute('short'),
+                'order' => $order,
+                'priority' => (int)$this->getAttribute('priority'),
                 'image_effects' => json_encode($image_effects)
             ),
             array(
@@ -209,7 +209,12 @@ abstract class Item extends QUI\QDOM
             )
         );
 
-        if (method_exists($this, 'createCache')) {
+        // @todo in eine queue setzen
+        $Project = $this->getProject();
+
+        if ($Project->getConfig('media_createCacheOnSave')
+            && method_exists($this, 'createCache')
+        ) {
             $this->createCache();
         }
 
@@ -280,8 +285,8 @@ abstract class Item extends QUI\QDOM
             $this->_Media->getTable(),
             array(
                 'deleted' => 1,
-                'active'  => 0,
-                'file'    => ''
+                'active' => 0,
+                'file' => ''
             ),
             array(
                 'id' => $this->getId()
@@ -620,7 +625,7 @@ abstract class Item extends QUI\QDOM
             ),
             array(
                 'parent' => $Parent->getId(),
-                'child'  => $this->getId()
+                'child' => $this->getId()
             )
         );
 

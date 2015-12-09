@@ -172,6 +172,10 @@
             <de><![CDATA[Favicon]]></de>
             <en><![CDATA[Favicon]]></en>
         </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.createCacheOnSave">
+            <de><![CDATA[Bildercache on the Fly erstellen.]]></de>
+            <en><![CDATA[Create image cache on the fly.]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/system" datatype="js,php">

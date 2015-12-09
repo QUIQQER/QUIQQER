@@ -1161,6 +1161,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         foreach ($ids as $id) {
             try {
+                set_time_limit(1);
                 $Item = $Media->get($id);
 
                 if (MediaUtils::isFolder($Item) || MediaUtils::isImage($Item)) {
