@@ -16,7 +16,6 @@ try {
     $Project = QUI::getProjectManager()->getStandard();
 
 } catch (QUI\Exception $Exception) {
-
 }
 ?>
 <!doctype html>
@@ -71,6 +70,12 @@ try {
 
     <link
         href="<?php echo $qui_extend; ?>unsemantic/unsemantic-grid-responsive.css"
+        rel="stylesheet"
+        type="text/css"
+    />
+
+    <link
+        href="<?php echo URL_OPT_DIR; ?>quiqqer/messages/bin/messages.css"
         rel="stylesheet"
         type="text/css"
     />
@@ -155,7 +160,6 @@ try {
         $files = \QUI\Translator::getJSTranslationFiles($User->getLang());
 
     } catch (\QUI\Exception $Exception) {
-
     }
 
     $locales = array();

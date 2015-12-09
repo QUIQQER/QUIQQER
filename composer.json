@@ -53,7 +53,8 @@
         "quiqqer/log" : "dev-dev",
         "quiqqer/diashow" : "dev-dev",
         "quiqqer/lockclient" : "dev-dev",
-        "quiqqer/template-qui" : "dev-dev"
+        "quiqqer/template-qui" : "dev-dev",
+        "quiqqer/messages" : "*"
     },
 
     "require-dev" : {

@@ -282,6 +282,17 @@ define('controls/users/User', [
                     if (ShowPasswords.checked) {
                         ShowPasswords.checked = false;
                     }
+
+                    // has a password?
+                    if (!self.getUser().getAttribute('hasPassword')) {
+                        new Element('tr', {
+                            html: '<td colspan="2">' +
+                                  '    <div class="content-message-error">' +
+                                  '        Der Benutzer besitzt noch kein Passwort' +
+                                  '    </div>' +
+                                  '</td>'
+                        }).inject(Body.getElement('tbody'));
+                    }
                 }
 
                 // password expire

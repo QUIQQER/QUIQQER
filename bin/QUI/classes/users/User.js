@@ -254,10 +254,12 @@ define('classes/users/User', [
             }
 
             Ajax.post('ajax_users_set_password', function (result, Request) {
+                this.setAttribute('hasPassword', 1);
+
                 if (typeof onfinish !== 'undefined') {
                     onfinish(result, Request);
                 }
-            }, {
+            }.bind(this), {
                 uid    : this.getId(),
                 pw1    : pass1,
                 pw2    : pass2,
