@@ -301,7 +301,6 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
                 return QUI\Countries\Manager::get($_SERVER["GEOIP_COUNTRY_CODE"]);
 
             } catch (QUI\Exception $Exception) {
-
             }
         }
 

@@ -4007,7 +4007,23 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
         <locale name="exception.login.fail">
             <de><![CDATA[Login fehlgeschlagen. Bitte überprüfen Sie Benutzername und Passwort.]]></de>
-            <en><![CDATA[Login failed. Please check the username.]]></en>
+            <en><![CDATA[Login failed. Please check the username and password.]]></en>
+        </locale>
+        <locale name="exception.login.fail.no.password">
+            <de><![CDATA[Login fehlgeschlagen. Bitte geben Sie ein Passwort an.]]></de>
+            <en><![CDATA[Login failed. Please check the password.]]></en>
+        </locale>
+        <locale name="exception.login.fail.wrong.password.input">
+            <de><![CDATA[Login fehlgeschlagen. Bitte geben Sie ein korrektes Passwort an.]]></de>
+            <en><![CDATA[Login failed. Please insert a correct password.]]></en>
+        </locale>
+        <locale name="exception.login.fail.wrong.username.input">
+            <de><![CDATA[Login fehlgeschlagen. Bitte geben Sie ein korrekten Benutzernamen an.]]></de>
+            <en><![CDATA[Login failed. Please insert a correct username.]]></en>
+        </locale>
+        <locale name="exception.login.fail.user.not.found">
+            <de><![CDATA[Login fehlgeschlagen. Benutzer wurde nicht gefunden.]]></de>
+            <en><![CDATA[Login failed. User not found.]]></en>
         </locale>
         <locale name="message.site.save.success">
             <de><![CDATA[Die Seite [id] [title] wurde erfolgreich gespeichert]]></de>

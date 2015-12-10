@@ -19,20 +19,20 @@ class Auth implements QUI\Interfaces\Users\Auth
      * User object
      * @var false|QUI\Users\User
      */
-    protected $_User;
+    protected $User;
 
     /**
      * Name of the user
      * @var string
      */
-    protected $_username;
+    protected $username;
 
     /**
      * @param string $username
      */
     public function __construct($username = '')
     {
-        $this->_username = $username;
+        $this->username = $username;
     }
 
     /**
@@ -45,11 +45,11 @@ class Auth implements QUI\Interfaces\Users\Auth
     {
         $userData = QUI::getDataBase()->fetch(array(
             'select' => array('password'),
-            'from'   => QUI::getUsers()->Table(),
-            'where'  => array(
+            'from' => QUI::getUsers()->Table(),
+            'where' => array(
                 'id' => $this->getUserId()
             ),
-            'limit'  => 1
+            'limit' => 1
         ));
 
         if (empty($userData)
@@ -76,11 +76,11 @@ class Auth implements QUI\Interfaces\Users\Auth
      */
     public function getUserId()
     {
-        if ($this->_User) {
-            return $this->_User->getId();
+        if ($this->User) {
+            return $this->User->getId();
         }
 
-        $username = $this->_username;
+        $username = $this->username;
         $User     = false;
 
         /**
@@ -92,7 +92,6 @@ class Auth implements QUI\Interfaces\Users\Auth
             try {
                 $User = QUI::getUsers()->getUserByMail($username);
             } catch (QUI\Exception $Exception) {
-
             }
         }
 
@@ -104,7 +103,7 @@ class Auth implements QUI\Interfaces\Users\Auth
             }
         }
 
-        $this->_User = $User;
+        $this->User = $User;
 
         return $User->getId();
     }

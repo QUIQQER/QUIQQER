@@ -34,7 +34,7 @@ class Manager
      *
      * @return string
      */
-    static function Table()
+    public static function Table()
     {
         return QUI_DB_PRFX . 'users';
     }
@@ -44,7 +44,7 @@ class Manager
      *
      * @return string
      */
-    static function TableAddress()
+    public static function TableAddress()
     {
         return QUI_DB_PRFX . 'users_address';
     }
@@ -57,29 +57,29 @@ class Manager
         $DataBase = QUI::getDataBase();
 
         $DataBase->Table()->appendFields(self::Table(), array(
-            'id'         => 'int(11)',
-            'username'   => 'varchar(50)',
-            'password'   => 'varchar(50)',
-            'usergroup'  => 'text',
-            'firstname'  => 'varchar(40)',
-            'lastname'   => 'varchar(40)',
-            'usertitle'  => 'varchar(40)',
-            'birthday'   => 'varchar(12)',
-            'email'      => 'varchar(50)',
-            'active'     => 'int(1)',
-            'regdate'    => 'int(11)',
-            'lastvisit'  => 'int(11)',
-            'su'         => 'tinyint(1)',
-            'avatar'     => 'text',
-            'extra'      => 'text NULL',
-            'lang'       => 'varchar(2) NULL',
-            'expire'     => 'TIMESTAMP NULL',
-            'lastedit'   => 'TIMESTAMP NOT NULL',
-            'shortcuts'  => 'varchar(5) NULL',
+            'id' => 'int(11)',
+            'username' => 'varchar(50)',
+            'password' => 'varchar(50)',
+            'usergroup' => 'text',
+            'firstname' => 'varchar(40)',
+            'lastname' => 'varchar(40)',
+            'usertitle' => 'varchar(40)',
+            'birthday' => 'varchar(12)',
+            'email' => 'varchar(50)',
+            'active' => 'int(1)',
+            'regdate' => 'int(11)',
+            'lastvisit' => 'int(11)',
+            'su' => 'tinyint(1)',
+            'avatar' => 'text',
+            'extra' => 'text NULL',
+            'lang' => 'varchar(2) NULL',
+            'expire' => 'TIMESTAMP NULL',
+            'lastedit' => 'TIMESTAMP NOT NULL',
+            'shortcuts' => 'varchar(5) NULL',
             'activation' => 'varchar(20) NULL',
-            'referal'    => 'varchar(200) NULL',
+            'referal' => 'varchar(200) NULL',
             'user_agent' => 'text',
-            'address'    => 'int(11)'
+            'address' => 'int(11)'
         ));
 
         // Patch
@@ -90,19 +90,19 @@ class Manager
 
         // Addresses
         $DataBase->Table()->appendFields(self::TableAddress(), array(
-            'id'         => 'int(11)',
-            'uid'        => 'int(11)',
+            'id' => 'int(11)',
+            'uid' => 'int(11)',
             'salutation' => 'varchar(10)',
-            'firstname'  => 'varchar(40)',
-            'lastname'   => 'varchar(40)',
-            'phone'      => 'text',
-            'mail'       => 'text',
-            'company'    => 'varchar(100)',
-            'delivery'   => 'text',
-            'street_no'  => 'text',
-            'zip'        => 'text',
-            'city'       => 'text',
-            'country'    => 'text'
+            'firstname' => 'varchar(40)',
+            'lastname' => 'varchar(40)',
+            'phone' => 'text',
+            'mail' => 'text',
+            'company' => 'varchar(100)',
+            'delivery' => 'text',
+            'street_no' => 'text',
+            'zip' => 'text',
+            'city' => 'text',
+            'country' => 'text'
         ));
 
         $DataBase->Table()->setIndex(self::TableAddress(), 'id');
@@ -249,9 +249,9 @@ class Manager
         QUI::getDataBase()->insert(
             self::Table(),
             array(
-                'id'       => $newid,
+                'id' => $newid,
                 'username' => $newname,
-                'regdate'  => time()
+                'regdate' => time()
             )
         );
 
@@ -399,7 +399,7 @@ class Manager
     {
         $result = QUI::getDataBase()->fetch(array(
             'count' => 'count',
-            'from'  => self::Table()
+            'from' => self::Table()
         ));
 
         if (isset($result[0]) && isset($result[0]['count'])) {
@@ -420,7 +420,7 @@ class Manager
     {
         if ($objects == false) {
             return QUI::getDataBase()->fetch(array(
-                'from'  => self::Table(),
+                'from' => self::Table(),
                 'order' => 'username'
             ));
         }
@@ -449,8 +449,8 @@ class Manager
     {
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'id',
-            'from'   => self::Table(),
-            'order'  => 'username'
+            'from' => self::Table(),
+            'order' => 'username'
         ));
 
         return $result;
@@ -511,16 +511,16 @@ class Manager
      */
     public function login($username, $pass)
     {
-        if (!is_string($username)) {
+        if (!is_string($username) || empty($username)) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/system', 'exception.login.fail'),
+                array('quiqqer/system', 'exception.login.fail.wrong.username.input'),
                 401
             );
         }
 
-        if (!is_string($pass)) {
+        if (!is_string($pass) || empty($pass)) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/system', 'exception.login.fail'),
+                array('quiqqer/system', 'exception.login.fail.wrong.password.input'),
                 401
             );
         }
@@ -533,7 +533,10 @@ class Manager
         }
 
         if (empty($pass)) {
-            throw new QUI\Exception('No Password given', 401);
+            throw new QUI\Exception(
+                array('quiqqer/system', 'exception.login.fail.no.password'),
+                401
+            );
         }
 
         // Authentifizierung
@@ -545,13 +548,12 @@ class Manager
         }
 
         if (!class_exists($authClass)) {
-
             QUI\System\Log::addError(
                 'Authentication Type not found. Please check your config settings'
             );
 
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/system', 'exception.login.fail'),
+                array('quiqqer/system', 'exception.login.fail'),
                 401
             );
         }
@@ -560,13 +562,12 @@ class Manager
         $implements = class_implements($Auth);
 
         if (!isset($implements['QUI\Interfaces\Users\Auth'])) {
-
             QUI\System\Log::addError(
                 'Authentication Type is not from Interface QUI\Interfaces\Users\Auth'
             );
 
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/system', 'exception.login.fail'),
+                array('quiqqer/system', 'exception.login.fail'),
                 401
             );
         }
@@ -574,7 +575,7 @@ class Manager
         /* @var $Auth QUI\Interfaces\Users\Auth */
         if ($Auth->auth($pass) === false) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/system', 'exception.login.fail'),
+                array('quiqqer/system', 'exception.login.fail'),
                 401
             );
         }
@@ -585,26 +586,23 @@ class Manager
         // check user data
         $userData = QUI::getDataBase()->fetch(array(
             'select' => array('id', 'expire', 'secHash', 'active'),
-            'from'   => self::Table(),
-            'where'  => array(
+            'from' => self::Table(),
+            'where' => array(
                 'id' => $userId
             ),
-            'limit'  => 1
+            'limit' => 1
         ));
 
         if (!isset($userData[0])) {
             throw new QUI\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/system',
-                    'exception.lib.user.user.not.found'
-                ),
+                array('quiqqer/system', 'exception.login.fail.user.not.found'),
                 404
             );
         }
 
         if ($userData[0]['active'] == 0) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/system', 'exception.login.fail'),
+                array('quiqqer/system', 'exception.login.fail.user.not.found'),
                 401
             );
         }
@@ -635,7 +633,7 @@ class Manager
 
         if ($groupActive === false) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/system', 'exception.login.fail'),
+                array('quiqqer/system', 'exception.login.fail'),
                 401
             );
         }
@@ -654,9 +652,9 @@ class Manager
         QUI::getDataBase()->update(
             self::Table(),
             array(
-                'lastvisit'  => time(),
+                'lastvisit' => time(),
                 'user_agent' => $useragent,
-                'secHash'    => $this->getSecHash()
+                'secHash' => $this->getSecHash()
             ),
             array('id' => $userId)
         );
@@ -707,7 +705,6 @@ class Manager
 
         // max_life_time check
         try {
-
             $this->checkUserSession();
 
             return $this->get(QUI::getSession()->get('uid'));
@@ -844,11 +841,11 @@ class Manager
     {
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'id',
-            'from'   => self::Table(),
-            'where'  => array(
+            'from' => self::Table(),
+            'where' => array(
                 'username' => $username
             ),
-            'limit'  => 1
+            'limit' => 1
         ));
 
         if (!isset($result[0])) {
@@ -876,11 +873,11 @@ class Manager
     {
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'id',
-            'from'   => self::Table(),
-            'where'  => array(
+            'from' => self::Table(),
+            'where' => array(
                 'email' => $email
             ),
-            'limit'  => 1
+            'limit' => 1
         ));
 
         if (!isset($result[0])) {
@@ -922,11 +919,11 @@ class Manager
 
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'username',
-            'from'   => self::Table(),
-            'where'  => array(
+            'from' => self::Table(),
+            'where' => array(
                 'username' => $username
             ),
-            'limit'  => 1
+            'limit' => 1
         ));
 
         return isset($result[0]) ? true : false;
@@ -965,11 +962,11 @@ class Manager
     {
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'email',
-            'from'   => self::Table(),
-            'where'  => array(
+            'from' => self::Table(),
+            'where' => array(
                 'email' => $email
             ),
-            'limit'  => 1
+            'limit' => 1
         ));
 
         return isset($result[0]) ? true : false;
@@ -983,7 +980,7 @@ class Manager
      *
      * @return string
      */
-    static function genHash($pass, $salt = null)
+    public static function genHash($pass, $salt = null)
     {
         if (is_null($salt)) {
             $randomBytes = openssl_random_pseudo_bytes(SALT_LENGTH);
@@ -1050,16 +1047,16 @@ class Manager
         $params = Orthos::clearArray($params);
 
         $allowOrderFields = array(
-            'id'        => true,
-            'email'     => true,
-            'username'  => true,
+            'id' => true,
+            'email' => true,
+            'username' => true,
             'usergroup' => true,
             'firstname' => true,
-            'lastname'  => true,
-            'birthday'  => true,
-            'active'    => true,
-            'regdate'   => true,
-            'su'        => true
+            'lastname' => true,
+            'birthday' => true,
+            'active' => true,
+            'regdate' => true,
+            'su' => true
         );
 
         $max   = 10;
@@ -1278,7 +1275,7 @@ class Manager
             $newid = rand(100, 1000000000);
 
             $result = QUI::getDataBase()->fetch(array(
-                'from'  => self::Table(),
+                'from' => self::Table(),
                 'where' => array(
                     'id' => $newid
                 )
@@ -1306,7 +1303,7 @@ class Manager
      *
      * @return boolean
      */
-    static function clearUsername($username)
+    public static function clearUsername($username)
     {
         return preg_replace('/[^a-zA-Z0-9-_äöüß@\.]/', '', $username);
     }
@@ -1319,7 +1316,7 @@ class Manager
      * @return boolean
      * @throws QUI\Exception
      */
-    static function checkUsernameSigns($username)
+    public static function checkUsernameSigns($username)
     {
         if ($username != self::clearUsername($username)) {
             throw new QUI\Exception(
