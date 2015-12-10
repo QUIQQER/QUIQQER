@@ -18,12 +18,12 @@ use QUI\Utils\Security\Orthos;
  */
 class Handler
 {
-    protected $_messages = array();
+    protected $messages = array();
 
     /**
      * Return the message handler db table
      */
-    static function Table()
+    public static function Table()
     {
         return QUI_DB_PRFX.'messages';
     }
@@ -31,7 +31,7 @@ class Handler
     /**
      * Create the database table for the messages
      */
-    static function setup()
+    public static function setup()
     {
         QUI::getDataBase()->Table()->appendFields(self::Table(), array(
             'uid'     => 'int(11)',
@@ -47,7 +47,7 @@ class Handler
      */
     public function clear()
     {
-        $this->_messages = array();
+        $this->messages = array();
     }
 
     /**
@@ -59,7 +59,7 @@ class Handler
      */
     public function getNewMessages($User)
     {
-        $result = $this->_messages;
+        $result = $this->messages;
 
         if (!$User->getId()) {
             return $result;
@@ -113,7 +113,7 @@ class Handler
             $result[] = $Message;
         }
 
-        $this->_messages = array();
+        $this->messages = array();
 
         return $result;
     }
@@ -145,7 +145,7 @@ class Handler
      */
     public function addMessage($Message)
     {
-        $this->_messages[$Message->getHash()] = $Message;
+        $this->messages[$Message->getHash()] = $Message;
     }
 
     /**
