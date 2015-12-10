@@ -22,7 +22,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
      *
      * @var \QUI\Projects\Project
      */
-    protected $_Project = null;
+    protected $Project = null;
 
     /**
      * Konstruktor
@@ -31,7 +31,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
      */
     public function __construct(Project $Project)
     {
-        $this->_Project = $Project;
+        $this->Project = $Project;
     }
 
     /**
@@ -91,7 +91,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
          * Creating result
          */
         $result = array();
-        $sites = $this->_Project->getSites($_params);
+        $sites = $this->Project->getSites($_params);
 
         foreach ($sites as $Site) {
             /* @var $Site Site */
@@ -106,7 +106,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
 
         //\QUI\System\Log::writeRecursive( $result );
 
-        $total = $this->_Project->getSites(array(
+        $total = $this->Project->getSites(array(
             'where' => array(
                 'deleted' => 1
             ),
@@ -128,7 +128,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
         }
 
         foreach ($ids as $id) {
-            $Site = new Site\Edit($this->_Project, (int)$id);
+            $Site = new Site\Edit($this->Project, (int)$id);
             $Site->destroy();
         }
     }
@@ -138,14 +138,14 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
      */
     public function clear()
     {
-        $ids = $this->_Project->getSitesIds(array(
+        $ids = $this->Project->getSitesIds(array(
             'where' => array(
                 'deleted' => 1
             )
         ));
 
         foreach ($ids as $data) {
-            $Site = new Site\Edit($this->_Project, (int)$data['id']);
+            $Site = new Site\Edit($this->Project, (int)$data['id']);
             $Site->destroy();
         }
     }
