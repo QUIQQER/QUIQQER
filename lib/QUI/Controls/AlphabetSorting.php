@@ -14,22 +14,21 @@ use QUI;
  * @author www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
  */
-
 class AlphabetSorting extends QUI\Control
 {
     /**
      * constructor
      * @param array $attributes
      */
-    public function __construct($attributes=array())
+    public function __construct($attributes = array())
     {
-        parent::setAttributes( $attributes );
+        parent::__construct($attributes);
 
         $this->addCSSFile(
-            dirname( __FILE__ ) .'/AlphabetSorting.css'
+            dirname(__FILE__) . '/AlphabetSorting.css'
         );
 
-        $this->setAttribute( 'class', 'quiqqer-alphabetSorting grid-100 grid-parent' );
+        $this->setAttribute('class', 'quiqqer-alphabetSorting grid-100 grid-parent');
     }
 
     /**
@@ -45,14 +44,12 @@ class AlphabetSorting extends QUI\Control
         $active = 'abc';
         $anchor = '';
 
-        if ( $this->getAttribute( 'anchor' ) ) {
-            $anchor = $this->getAttribute( 'anchor' );
+        if ($this->getAttribute('anchor')) {
+            $anchor = $this->getAttribute('anchor');
         }
 
-        if ( isset( $_REQUEST['list'] ) )
-        {
-            switch ( $_REQUEST['list'] )
-            {
+        if (isset($_REQUEST['list'])) {
+            switch ($_REQUEST['list']) {
                 case 'abc':
                 case 'def':
                 case 'ghi':
@@ -62,41 +59,40 @@ class AlphabetSorting extends QUI\Control
                 case 'stu':
                 case 'vz':
                     $active = $_REQUEST['list'];
-                break;
+                    break;
             }
         }
 
         $attributes = $this->getAttributes();
         $params     = array();
 
-        foreach ( $attributes as $key => $value )
-        {
-            if ( $key == 'class' ) {
+        foreach ($attributes as $key => $value) {
+            if ($key == 'class') {
                 continue;
             }
 
-            if ( $key == 'letters' ) {
+            if ($key == 'letters') {
                 continue;
             }
 
-            if ( $key == 'anchor' ) {
+            if ($key == 'anchor') {
                 continue;
             }
 
 
-            if ( is_string( $value ) || is_int( $value ) ) {
-                $params[ $key ] = $value;
+            if (is_string($value) || is_int($value)) {
+                $params[$key] = $value;
             }
         }
 
         $Engine->assign(array(
-            'active'    => $active,
+            'active' => $active,
             'urlParams' => $params,
-            'anchor'    => $anchor,
-            'Site'      => $Site,
-            'Project'   => $Project
+            'anchor' => $anchor,
+            'Site' => $Site,
+            'Project' => $Project
         ));
 
-        return $Engine->fetch( dirname( __FILE__ ) .'/AlphabetSorting.html' );
+        return $Engine->fetch(dirname(__FILE__) . '/AlphabetSorting.html');
     }
 }

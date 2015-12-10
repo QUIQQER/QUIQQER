@@ -14,7 +14,6 @@ use QUI;
  * @author www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
  */
-
 class Breadcrumb extends QUI\Control
 {
     /**
@@ -23,13 +22,13 @@ class Breadcrumb extends QUI\Control
      */
     public function __construct($attributes = array())
     {
-        parent::setAttributes( $attributes );
+        parent::__construct($attributes);
 
         $this->addCSSFile(
             dirname(__FILE__) . '/Breadcrumb.css'
         );
 
-        $this->setAttribute( 'class', 'quiqqer-breadcrumb' );
+        $this->setAttribute('class', 'quiqqer-breadcrumb');
     }
 
     /**
@@ -44,6 +43,6 @@ class Breadcrumb extends QUI\Control
             'Rewrite' => QUI::getRewrite()
         ));
 
-        return $Engine->fetch( dirname( __FILE__ ) .'/Breadcrumb.html' );
+        return $Engine->fetch(dirname(__FILE__) . '/Breadcrumb.html');
     }
 }

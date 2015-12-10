@@ -26,16 +26,16 @@ class LangSwitch extends QUI\Control
     {
         // defaults values
         $this->setAttributes(array(
-            'Site'      => false,
+            'Site' => false,
             'showFlags' => true,
-            'showText'  => true,
-            'DropDown'  => false
+            'showText' => true,
+            'DropDown' => false
         ));
 
-        parent::setAttributes($attributes);
+        parent::__construct($attributes);
 
         $this->addCSSFile(
-            dirname(__FILE__).'/LangSwitch.css'
+            dirname(__FILE__) . '/LangSwitch.css'
         );
 
         $this->setAttribute('class', 'quiqqer-langSwitch grid-100 grid-parent');
@@ -49,7 +49,7 @@ class LangSwitch extends QUI\Control
     public function getBody()
     {
         $Engine = QUI::getTemplateManager()->getEngine();
-        $Site = $this->_getSite();
+        $Site   = $this->getSite();
 
         if (!$Site) {
             return '';
@@ -59,7 +59,7 @@ class LangSwitch extends QUI\Control
 
         if (count($Project->getAttribute('langs')) < 2) {
             QUI\System\Log::addNotice(
-                'The Project "'.$Project->getName().'" has only one Language.'.
+                'The Project "' . $Project->getName() . '" has only one Language.' .
                 'The Control (\QUI\Controls\LangSwitch) makes here no sense.'
             );
 
@@ -67,13 +67,13 @@ class LangSwitch extends QUI\Control
         }
 
         $Engine->assign(array(
-            'Site'    => $Site,
+            'Site' => $Site,
             'Project' => $Project,
-            'langs'   => $Project->getAttribute('langs'),
-            'this'    => $this
+            'langs' => $Project->getAttribute('langs'),
+            'this' => $this
         ));
 
-        return $Engine->fetch(dirname(__FILE__).'/LangSwitch.html');
+        return $Engine->fetch(dirname(__FILE__) . '/LangSwitch.html');
     }
 
     /**
@@ -81,7 +81,7 @@ class LangSwitch extends QUI\Control
      *
      * @return QUI\Projects\Site
      */
-    protected function _getSite()
+    protected function getSite()
     {
         if ($this->getAttribute('Site')) {
             return $this->getAttribute('Site');
