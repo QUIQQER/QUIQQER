@@ -28,28 +28,28 @@ class Manager
      *
      * @var \QUI\Config
      */
-    static $Config = null;
+    public static $Config = null;
 
     /**
      * Editor plugins
      *
      * @var array
      */
-    protected $_plugins = array();
+    protected $plugins = array();
 
     /**
      * Setup
      */
-    static function setup()
+    public static function setup()
     {
         QUIFile::mkdir(self::getToolbarsPath());
 
-        if (!file_exists(CMS_DIR.'etc/wysiwyg/conf.ini.php')) {
-            file_put_contents(CMS_DIR.'etc/wysiwyg/conf.ini.php', '');
+        if (!file_exists(CMS_DIR . 'etc/wysiwyg/conf.ini.php')) {
+            file_put_contents(CMS_DIR . 'etc/wysiwyg/conf.ini.php', '');
         }
 
-        if (!file_exists(CMS_DIR.'etc/wysiwyg/editors.ini.php')) {
-            file_put_contents(CMS_DIR.'etc/wysiwyg/editors.ini.php', '');
+        if (!file_exists(CMS_DIR . 'etc/wysiwyg/editors.ini.php')) {
+            file_put_contents(CMS_DIR . 'etc/wysiwyg/editors.ini.php', '');
         }
     }
 
@@ -58,9 +58,9 @@ class Manager
      *
      * @return string
      */
-    static function getPath()
+    public static function getPath()
     {
-        return CMS_DIR.'etc/wysiwyg/';
+        return CMS_DIR . 'etc/wysiwyg/';
     }
 
     /**
@@ -68,9 +68,9 @@ class Manager
      *
      * @return string
      */
-    static function getToolbarsPath()
+    public static function getToolbarsPath()
     {
-        return self::getPath().'toolbars/';
+        return self::getPath() . 'toolbars/';
     }
 
     /**
@@ -78,7 +78,7 @@ class Manager
      *
      * @return QUI\Config
      */
-    static function getConf()
+    public static function getConf()
     {
         if (!self::$Config) {
             self::$Config = QUI::getConfig('etc/wysiwyg/conf.ini.php');
@@ -92,13 +92,13 @@ class Manager
      *
      * @return array
      */
-    static function getConfig()
+    public static function getConfig()
     {
-        $config = self::getConf()->toArray();
+        $config             = self::getConf()->toArray();
         $config['toolbars'] = self::getToolbars();
 
         $config['editors'] = QUI::getConfig('etc/wysiwyg/editors.ini.php')
-                                ->toArray();
+            ->toArray();
 
         return $config;
     }
@@ -106,10 +106,10 @@ class Manager
     /**
      * Register a js editor
      *
-     * @param string $name    - name of the editor
+     * @param string $name - name of the editor
      * @param string $package - js modul/package name
      */
-    static function registerEditor($name, $package)
+    public static function registerEditor($name, $package)
     {
         $Conf = QUI::getConfig('etc/wysiwyg/editors.ini.php');
         $Conf->setValue($name, null, $package);
@@ -133,7 +133,7 @@ class Manager
             $html
         );
 
-        foreach ($this->_plugins as $p) {
+        foreach ($this->plugins as $p) {
             if (method_exists($p, 'onLoad')) {
                 $html = $p->onLoad($html);
             }
@@ -147,10 +147,10 @@ class Manager
      *
      * @return array
      */
-    static function getToolbars()
+    public static function getToolbars()
     {
         $folder = self::getToolbarsPath();
-        $files = QUIFile::readDir($folder, true);
+        $files  = QUIFile::readDir($folder, true);
 
         return $files;
     }
@@ -162,24 +162,23 @@ class Manager
      *
      * @return array
      */
-    static function getSettings(QUI\Projects\Project $Project)
+    public static function getSettings(QUI\Projects\Project $Project)
     {
-        $project = $Project->getName();
-        $cacheName = $Project->getName().'/'.$Project->getLang().'/wysiwyg/settings';
+        $project   = $Project->getName();
+        $cacheName = $Project->getName() . '/' . $Project->getLang() . '/wysiwyg/settings';
 
         try {
             return QUI\Cache\Manager::get($cacheName);
 
         } catch (QUI\Exception $Exception) {
-
         }
 
         // css files
-        $css = array();
+        $css    = array();
         $styles = array();
-        $file = USR_DIR.$Project->getName().'/settings.xml';
+        $file   = USR_DIR . $Project->getName() . '/settings.xml';
 
-        $bodyId = false;
+        $bodyId    = false;
         $bodyClass = false;
 
         // project files
@@ -187,17 +186,17 @@ class Manager
             $files = QUI\Utils\XML::getWysiwygCSSFromXml($file);
 
             foreach ($files as $cssfile) {
-                $css[] = URL_USR_DIR.$project.'/'.$cssfile;
+                $css[] = URL_USR_DIR . $project . '/' . $cssfile;
             }
 
             // id and css class
-            $Dom = QUI\Utils\XML::getDomFromXml($file);
+            $Dom  = QUI\Utils\XML::getDomFromXml($file);
             $Path = new \DOMXPath($Dom);
 
             $WYSIWYG = $Path->query("//wysiwyg");
 
             if ($WYSIWYG->length) {
-                $bodyId = $WYSIWYG->item(0)->getAttribute('id');
+                $bodyId    = $WYSIWYG->item(0)->getAttribute('id');
                 $bodyClass = $WYSIWYG->item(0)->getAttribute('class');
             }
 
@@ -213,11 +212,11 @@ class Manager
 
         if ($Project->getAttribute('template')) {
             $templates[]
-                = OPT_DIR.$Project->getAttribute('template').'/settings.xml';
+                = OPT_DIR . $Project->getAttribute('template') . '/settings.xml';
         }
 
         // project vhosts
-        $VHosts = new QUI\System\VhostManager();
+        $VHosts       = new QUI\System\VhostManager();
         $projectHosts = $VHosts->getHostsByProject($Project->getName());
 
         foreach ($projectHosts as $host) {
@@ -231,7 +230,7 @@ class Manager
                 continue;
             }
 
-            $file = OPT_DIR.$data['template'].'/settings.xml';
+            $file = OPT_DIR . $data['template'] . '/settings.xml';
 
             if (file_exists($file)) {
                 $templates[] = $file;
@@ -265,13 +264,13 @@ class Manager
 
             // id and css class
             if (!$bodyId && !$bodyClass) {
-                $Dom = QUI\Utils\XML::getDomFromXml($file);
+                $Dom  = QUI\Utils\XML::getDomFromXml($file);
                 $Path = new \DOMXPath($Dom);
 
                 $WYSIWYG = $Path->query("//wysiwyg");
 
                 if ($WYSIWYG->length) {
-                    $bodyId = $WYSIWYG->item(0)->getAttribute('id');
+                    $bodyId    = $WYSIWYG->item(0)->getAttribute('id');
                     $bodyClass = $WYSIWYG->item(0)->getAttribute('class');
                 }
 
@@ -286,14 +285,13 @@ class Manager
         $packages = QUI::getPackageManager()->getInstalled();
 
         foreach ($packages as $package) {
-
             if ($package['type'] != 'quiqqer-plugin'
                 && $package['type'] != 'quiqqer-module'
             ) {
                 continue;
             }
 
-            $settings = OPT_DIR.$package['name'].'/settings.xml';
+            $settings = OPT_DIR . $package['name'] . '/settings.xml';
 
             if (!file_exists($settings)) {
                 continue;
@@ -326,10 +324,10 @@ class Manager
 
 
         $result = array(
-            'cssFiles'  => $css,
-            'bodyId'    => $bodyId,
+            'cssFiles' => $css,
+            'bodyId' => $bodyId,
             'bodyClass' => $bodyClass,
-            'styles'    => $styles
+            'styles' => $styles
         );
 
 
@@ -346,12 +344,11 @@ class Manager
      *
      * @return array
      */
-    static function getStyles($Project = false)
+    public static function getStyles($Project = false)
     {
         $styles = array();
 
         if ($Project) {
-
         }
 
         return $styles;
@@ -362,14 +359,14 @@ class Manager
      *
      * @param string $toolbar - Name of the tools (toolbar.xml)
      */
-    static function deleteToolbar($toolbar)
+    public static function deleteToolbar($toolbar)
     {
         QUI\Rights\Permission::hasPermission(
             'quiqqer.editors.toolbar.delete'
         );
 
         $folder = self::getToolbarsPath();
-        $path = $folder.$toolbar;
+        $path   = $folder . $toolbar;
 
         $path = Orthos::clearPath($path);
 
@@ -385,7 +382,7 @@ class Manager
      *
      * @throws QUI\Exception
      */
-    static function addToolbar($toolbar)
+    public static function addToolbar($toolbar)
     {
         QUI\Rights\Permission::hasPermission(
             'quiqqer.editors.toolbar.add'
@@ -394,7 +391,7 @@ class Manager
         $toolbar = str_replace('.xml', '', $toolbar);
 
         $folder = self::getToolbarsPath();
-        $file = $folder.$toolbar.'.xml';
+        $file   = $folder . $toolbar . '.xml';
 
         if (file_exists($file)) {
             throw new QUI\Exception(
@@ -412,11 +409,11 @@ class Manager
      * Save the Toolbar
      *
      * @param string $toolbar - toolbar name
-     * @param string $xml     - toolbar xml
+     * @param string $xml - toolbar xml
      *
      * @throws QUI\Exception
      */
-    static function saveToolbar($toolbar, $xml)
+    public static function saveToolbar($toolbar, $xml)
     {
         QUI\Rights\Permission::hasPermission(
             'quiqqer.editors.toolbar.save'
@@ -425,7 +422,7 @@ class Manager
         $toolbar = str_replace('.xml', '', $toolbar);
 
         $folder = self::getToolbarsPath();
-        $file = $folder.$toolbar.'.xml';
+        $file   = $folder . $toolbar . '.xml';
 
         if (!file_exists($file)) {
             throw new QUI\Exception(
@@ -465,21 +462,21 @@ class Manager
      *
      * @return array
      */
-    static function getToolbarButtonsFromUser()
+    public static function getToolbarButtonsFromUser()
     {
         // Erste Benutzer spezifische Toolbar
         $Users = QUI::getUsers();
-        $User = $Users->getUserBySession();
+        $User  = $Users->getUserBySession();
 
         if (!$Users->isAuth($User)) {
             return array();
         }
 
-        $toolbar = $User->getAttribute('wysiwyg-toolbar');
+        $toolbar     = $User->getAttribute('wysiwyg-toolbar');
         $toolbarPath = self::getToolbarsPath();
 
         if (!empty($toolbar)) {
-            $toolbar = $toolbarPath.$User->getAttribute('wysiwyg-toolbar');
+            $toolbar = $toolbarPath . $User->getAttribute('wysiwyg-toolbar');
 
             if (file_exists($toolbar)) {
                 return self::parseXmlFileToArray($toolbar);
@@ -490,11 +487,11 @@ class Manager
         $groups = $User->getGroups();
 
         if ($groups) {
-            $Group = end($groups);
+            $Group   = end($groups);
             $toolbar = $Group->getAttribute('toolbar');
 
             if (!empty($toolbar)) {
-                $toolbar = $toolbarPath.$Group->getAttribute('toolbar');
+                $toolbar = $toolbarPath . $Group->getAttribute('toolbar');
 
                 if (file_exists($toolbar)) {
                     return self::parseXmlFileToArray($toolbar);
@@ -502,7 +499,7 @@ class Manager
             }
         }
 
-        $Config = self::getConf();
+        $Config  = self::getConf();
         $toolbar = $Config->get('toolbars', 'standard');
 
         // standard
@@ -511,8 +508,8 @@ class Manager
         }
 
         if (strpos($toolbar, '.xml') !== false) {
-            if (file_exists($toolbarPath.$toolbar)) {
-                return self::parseXmlFileToArray($toolbarPath.$toolbar);
+            if (file_exists($toolbarPath . $toolbar)) {
+                return self::parseXmlFileToArray($toolbarPath . $toolbar);
             }
         }
 
@@ -526,18 +523,17 @@ class Manager
      *
      * @return array
      */
-    static function parseXmlFileToArray($file)
+    public static function parseXmlFileToArray($file)
     {
-        $cache = 'editor/xml/file/'.md5($file);
+        $cache = 'editor/xml/file/' . md5($file);
 
         try {
             return QUI\Cache\Manager::get($cache);
 
         } catch (QUI\Exception $Exception) {
-
         }
 
-        $Dom = QUI\Utils\XML::getDomFromXml($file);
+        $Dom     = QUI\Utils\XML::getDomFromXml($file);
         $toolbar = $Dom->getElementsByTagName('toolbar');
 
         if (!$toolbar->length) {
@@ -545,7 +541,7 @@ class Manager
         }
 
         $children = $toolbar->item(0)->childNodes;
-        $result = array();
+        $result   = array();
 
         for ($i = 0; $i < $children->length; $i++) {
             $Param = $children->item($i);
@@ -575,14 +571,14 @@ class Manager
      *
      * @return boolean|array
      */
-    static function parseXMLLineNode($Node)
+    public static function parseXMLLineNode($Node)
     {
         if ($Node->nodeName != 'line') {
             return false;
         }
 
         $children = $Node->childNodes;
-        $result = array();
+        $result   = array();
 
         for ($i = 0; $i < $children->length; $i++) {
             $Param = $children->item($i);
@@ -606,14 +602,14 @@ class Manager
      *
      * @return boolean|array
      */
-    static function parseXMLGroupNode($Node)
+    public static function parseXMLGroupNode($Node)
     {
         if ($Node->nodeName != 'group') {
             return false;
         }
 
         $children = $Node->childNodes;
-        $result = array();
+        $result   = array();
 
         for ($i = 0; $i < $children->length; $i++) {
             $Param = $children->item($i);
@@ -628,7 +624,7 @@ class Manager
 
             if ($Param->nodeName == 'button') {
                 $result[] = array(
-                    'type'   => 'button',
+                    'type' => 'button',
                     'button' => trim($Param->nodeValue)
                 );
             }
@@ -665,11 +661,11 @@ class Manager
             $Tidy = new \Tidy();
 
             $config = array(
-                "char-encoding"       => "utf8",
-                'output-xhtml'        => true,
-                'indent-attributes'   => false,
-                'wrap'                => 0,
-                'word-2000'           => 1,
+                "char-encoding" => "utf8",
+                'output-xhtml' => true,
+                'indent-attributes' => false,
+                'wrap' => 0,
+                'word-2000' => 1,
                 // html 5 Tags registrieren
                 'new-blocklevel-tags' => 'header, footer, article, section, hgroup, nav, figure'
             );
@@ -704,7 +700,7 @@ class Manager
             $html
         );
 
-        foreach ($this->_plugins as $p) {
+        foreach ($this->plugins as $p) {
             if (method_exists($p, 'onSave')) {
                 $html = $p->onSave($html);
             }
@@ -715,7 +711,7 @@ class Manager
         // Zeilenumbrüche in HTML löschen
         $html = preg_replace_callback(
             '#(<)(.*?)(>)#',
-            array($this, "_deleteLineBreaksInHtml"),
+            array($this, "deleteLineBreaksInHtml"),
             $html
         );
 
@@ -729,7 +725,7 @@ class Manager
      *
      * @return string
      */
-    protected function _deleteLineBreaksInHtml($params)
+    protected function deleteLineBreaksInHtml($params)
     {
         if (!isset($params[0])) {
             return $params[0];
@@ -753,9 +749,9 @@ class Manager
     {
         if (isset($html[2]) && strpos($html[2], 'image.php') !== false) {
             $html[2] = str_replace('&amp;', '&', $html[2]);
-            $src_ = explode('image.php?', $html[2]);
+            $src_    = explode('image.php?', $html[2]);
 
-            return ' '.$html[1].'="image.php?'.$src_[1].'"';
+            return ' ' . $html[1] . '="image.php?' . $src_[1] . '"';
         }
 
         return $html[0];
@@ -773,14 +769,14 @@ class Manager
         if (isset($html[2]) && strpos($html[2], 'index.php') !== false) {
             $index = explode('index.php?', $html[2]);
 
-            return $html[1].'="index.php?'.$index[1].'"';
+            return $html[1] . '="index.php?' . $index[1] . '"';
         }
 
 
         if (isset($html[2]) && strpos($html[2], 'image.php') !== false) {
             $index = explode('image.php?', $html[2]);
 
-            return ' '.$html[1].'="image.php?'.$index[1].'"';
+            return ' ' . $html[1] . '="image.php?' . $index[1] . '"';
         }
 
         return $html[0];
@@ -798,7 +794,7 @@ class Manager
         if (isset($html[2]) && strpos($html[2], 'image.php') !== false) {
             $src_ = explode('image.php?', $html[2]);
 
-            return ' '.$html[1].'="'.URL_DIR.'image.php?'.$src_[1].'" ';
+            return ' ' . $html[1] . '="' . URL_DIR . 'image.php?' . $src_[1] . '" ';
         }
 
         return $html[0];
