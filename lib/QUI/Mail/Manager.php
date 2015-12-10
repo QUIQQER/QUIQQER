@@ -6,6 +6,8 @@
 
 namespace QUI\Mail;
 
+use QUI\System\Log;
+
 /**
  * Mail Manager
  *
@@ -86,6 +88,8 @@ class Manager
             $Mail->SMTPAuth = $config['SMTPAuth'];
             $Mail->Username = $config['SMTPUser'];
             $Mail->Password = $config['SMTPPass'];
+
+            Log::addNotice('Missing SMTP E-Mail Server');
         }
 
         $Mail->From     = $config['MAILFrom'];
