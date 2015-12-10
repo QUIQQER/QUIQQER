@@ -23,14 +23,14 @@ class Ajax extends QUI\QDOM
      *
      * @var array
      */
-    static $_functions = array();
+    protected static $functions = array();
 
     /**
      * registered permissions from available ajax functions
      *
      * @var array
      */
-    static $_permissions = array();
+    protected static $permissions = array();
 
     /**
      * constructor
@@ -55,7 +55,7 @@ class Ajax extends QUI\QDOM
      *
      * @return bool
      */
-    static function register(
+    public static function register(
         $reg_function,
         $reg_vars = array(),
         $user_perm = false
@@ -68,10 +68,10 @@ class Ajax extends QUI\QDOM
             $reg_vars = array();
         }
 
-        self::$_functions[$reg_function] = $reg_vars;
+        self::$functions[$reg_function] = $reg_vars;
 
         if ($user_perm) {
-            self::$_permissions[$reg_function] = $user_perm;
+            self::$permissions[$reg_function] = $user_perm;
         }
 
         return true;
@@ -84,16 +84,15 @@ class Ajax extends QUI\QDOM
      *
      * @throws \QUI\Exception
      */
-    static function checkPermissions($reg_function)
+    public static function checkPermissions($reg_function)
     {
-        if (!isset(self::$_permissions[$reg_function])) {
+        if (!isset(self::$permissions[$reg_function])) {
             return;
         }
 
-        $function = self::$_permissions[$reg_function];
+        $function = self::$permissions[$reg_function];
 
         if (is_object($function) && get_class($function) === 'Closure') {
-
             $function();
             return;
         }
@@ -147,7 +146,7 @@ class Ajax extends QUI\QDOM
         }
 
         foreach ($_rfs as $_rf) {
-            $result[$_rf] = $this->_call_rf($_rf);
+            $result[$_rf] = $this->callRequestFunction($_rf);
         }
 
         QUI::getSession()->getSymfonySession()->save();
@@ -172,9 +171,9 @@ class Ajax extends QUI\QDOM
      *
      * @return array - the result
      */
-    protected function _call_rf($_rf)
+    protected function callRequestFunction($_rf)
     {
-        if (!isset(self::$_functions[$_rf])) {
+        if (!isset(self::$functions[$_rf])) {
             if (defined('DEVELOPMENT') && DEVELOPMENT) {
                 System\Log::addDebug('Funktion ' . $_rf . ' nicht gefunden');
             }
@@ -201,7 +200,7 @@ class Ajax extends QUI\QDOM
         $params = array();
 
         // Params
-        foreach (self::$_functions[$_rf] as $var) {
+        foreach (self::$functions[$_rf] as $var) {
             if (!isset($_REQUEST[$var])) {
                 $params[$var] = '';
                 continue;
@@ -238,8 +237,8 @@ class Ajax extends QUI\QDOM
 
         QUI::getEvents()->fireEvent('ajaxCall', array(
             'function' => $_rf,
-            'result'   => $return,
-            'params'   => $params
+            'result' => $return,
+            'params' => $params
         ));
 
 
@@ -349,11 +348,11 @@ class Ajax extends QUI\QDOM
     {
         switch (connection_status()) {
             case 2: // timeout
-
                 $return = array(
                     'Exception' => array(
-                        'message' => 'Zeitüberschreitung der Anfrage. Bitte versuchen Sie es erneut oder zu einem späteren Zeitpunkt.',
-                        'code'    => 504
+                        'message' => 'Zeitüberschreitung der Anfrage.' .
+                                     'Bitte versuchen Sie es erneut oder zu einem späteren Zeitpunkt.',
+                        'code' => 504
                     )
                 );
 
