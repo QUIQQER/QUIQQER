@@ -185,6 +185,11 @@ try {
             Log(Debug::output());
         }
 
+        QUI::getSession()->set(
+            'CURRENT_LANG',
+            QUI::getLocale()->getCurrent()
+        );
+
     } catch (QUI\Exception $Exception) {
         if ($Exception->getCode() == 404) {
             $Response->setStatusCode(Response::HTTP_NOT_FOUND);

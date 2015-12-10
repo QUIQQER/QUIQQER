@@ -79,7 +79,6 @@ try {
     QUI::getDataBase();
 
 } catch (\Exception $Exception) {
-
     header('HTTP/1.1 503 Service Temporarily Unavailable');
     header('Status: 503 Service Temporarily Unavailable');
 
@@ -129,7 +128,6 @@ if (isset($_POST['username'])
     }
 
 } elseif (QUI::getSession()->get('uid')) {
-
     try {
         QUI::getUsers()->checkUserSession();
 
@@ -142,7 +140,6 @@ if (isset($_POST['username'])
 
 // Logout
 if (isset($_GET['logout'])) {
-
     $User->logout();
     $User = QUI::getUsers()->getNobody();
 

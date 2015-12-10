@@ -19,6 +19,11 @@ use QUI;
 class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
 {
     /**
+     * @var null
+     */
+    protected $Locale = null;
+
+    /**
      * constructor
      */
     public function __construct()
@@ -245,7 +250,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      */
     public function getLang()
     {
-        return \QUI::getLocale()->getCurrent();
+        return self::getLocale()->getCurrent();
     }
 
     /**
@@ -255,7 +260,17 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      */
     public function getLocale()
     {
-        return \QUI::getLocale();
+        if ($this->Locale) {
+            return $this->Locale;
+        }
+
+        $this->Locale = new QUI\Locale();
+
+        if (QUI::getSession()->get('CURRENT_LANG')) {
+            $this->Locale->setCurrent(QUI::getSession()->get('CURRENT_LANG'));
+        }
+
+        return $this->Locale;
     }
 
     /**
