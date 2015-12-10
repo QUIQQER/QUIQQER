@@ -74,7 +74,7 @@ class Manager implements QUI\Interfaces\Events
      *
      * @return string
      */
-    public function TABLE()
+    public static function TABLE()
     {
         return QUI_DB_PRFX . 'events';
     }
