@@ -19,29 +19,29 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * @var null|QUI\Projects\Site
      */
-    protected $_Parent = null;
+    protected $Parent = null;
 
     /**
      * Project
      *
      * @var null
      */
-    protected $_Project = null;
+    protected $Project = null;
 
     /**
-     * @param array                $attributes
+     * @param array $attributes
      * @param QUI\Projects\Project $Project
-     * @param QUI\Projects\Site    $Parent
+     * @param QUI\Projects\Site $Parent
      *
      * @throws QUI\Exception
      */
     public function __construct(
         $attributes = array(),
-        QUI\Projects\Project $Project,
+        QUI\Projects\Project $Project = null,
         QUI\Projects\Site $Parent = null
     ) {
-        $this->_Project = $Project;
-        $this->_Parent = $Parent;
+        $this->Project = $Project;
+        $this->Parent  = $Parent;
 
         $this->setAttributes($attributes);
 
@@ -49,7 +49,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         foreach ($needles as $needle) {
             if (!$this->getAttribute($needle)) {
-                throw new QUI\Exception('Misisng attribute '.$needle);
+                throw new QUI\Exception('Misisng attribute ' . $needle);
             }
         }
     }
@@ -61,7 +61,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getProject()
     {
-        return $this->_Project;
+        return $this->Project;
     }
 
     /**
@@ -121,7 +121,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Prüft ob es die Seite auch in einer anderen Sprache gibt
      *
      * @param string $lang
-     * @param boolean   $check_only_active - check only active pages
+     * @param boolean $check_only_active - check only active pages
      *
      * @return boolean
      */
@@ -159,7 +159,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @param array $params - Parameter für die Childrenausgabe
      *                      $params['where']
      *                      $params['limit']
-     * @param boolean  $load   - Legt fest ob die Kinder die Plugins laden sollen
+     * @param boolean $load - Legt fest ob die Kinder die Plugins laden sollen
      *
      * @return array;
      */
@@ -249,7 +249,8 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     public function getChildIdByName($name)
     {
         throw new QUI\Exception(
-            'No Child found with name '.$name, 705
+            'No Child found with name ' . $name,
+            705
         );
     }
 
@@ -348,11 +349,11 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getParentId()
     {
-        if (!$this->_Parent) {
+        if (!$this->Parent) {
             return 1;
         }
 
-        return $this->_Parent->getId();
+        return $this->Parent->getId();
     }
 
     /**
@@ -367,7 +368,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getParentIds()
     {
-        $parents = $this->getParent()->getParentIds();
+        $parents   = $this->getParent()->getParentIds();
         $parents[] = $this->getParent()->getId();
 
         return $parents;
@@ -390,11 +391,11 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getParent()
     {
-        if (!$this->_Parent) {
-            return $this->_Project->firstChild();
+        if (!$this->Parent) {
+            return $this->Project->firstChild();
         }
 
-        return $this->_Parent;
+        return $this->Parent;
     }
 
     /**
@@ -405,7 +406,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getParents()
     {
-        $parents = $this->getParent()->getParents();
+        $parents   = $this->getParent()->getParents();
         $parents[] = $this->getParent();
 
         return $parents;
@@ -456,8 +457,8 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Shortcut for QUI\Rights\Permission::hasSitePermission
      *
-     * @param string              $permission - name of the permission
-     * @param QUI\Users\User|boolean $User       - optional
+     * @param string $permission - name of the permission
+     * @param QUI\Users\User|boolean $User - optional
      *
      * @return boolean|integer
      */
@@ -469,8 +470,8 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Shortcut for QUI\Rights\Permission::checkSitePermission
      *
-     * @param string              $permission - name of the permission
-     * @param QUI\Users\User|boolean $User       - optional
+     * @param string $permission - name of the permission
+     * @param QUI\Users\User|boolean $User - optional
      *
      * @throws QUI\Exception
      */

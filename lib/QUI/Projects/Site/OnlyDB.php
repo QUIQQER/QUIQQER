@@ -88,7 +88,8 @@ class OnlyDB extends QUI\Projects\Site
             }
         }
 
-        if (isset($result[0]['extra'])) /* deprecated */ {
+        /* deprecated */
+        if (isset($result[0]['extra'])) {
             $this->_extra = json_decode($result[0]['extra'], true);
             unset($result[0]['extra']);
         }
