@@ -41,13 +41,15 @@ class DBCheck extends QUI\System\Test
      */
     public function __construct()
     {
+        parent::__construct();
+
         $this->setAttributes(array(
             'title' => 'QUIQQER - Database Check (on failure check error log!)',
             'description' => 'Compares existing QUIQQER database tables ' .
                              'with database.xml files and detects discrepancies.'
         ));
 
-        $this->_isRequired = self::TEST_IS_REQUIRED;
+        $this->isRequired = self::TEST_IS_REQUIRED;
     }
 
     /**

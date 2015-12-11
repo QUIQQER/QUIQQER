@@ -34,24 +34,24 @@ class Log
      *
      * @return string
      */
-    static function levelToLogName($LogLevel)
+    public static function levelToLogName($LogLevel)
     {
         switch ($LogLevel) {
-            case self::LEVEL_DEBUG     :
+            case self::LEVEL_DEBUG:
                 return 'debug';
-            case self::LEVEL_INFO      :
+            case self::LEVEL_INFO:
                 return 'info';
-            case self::LEVEL_NOTICE    :
+            case self::LEVEL_NOTICE:
                 return 'notice';
-            case self::LEVEL_WARNING   :
+            case self::LEVEL_WARNING:
                 return 'warning';
-            case self::LEVEL_ERROR     :
+            case self::LEVEL_ERROR:
                 return 'error';
-            case self::LEVEL_CRITICAL  :
+            case self::LEVEL_CRITICAL:
                 return 'critical';
-            case self::LEVEL_ALERT     :
+            case self::LEVEL_ALERT:
                 return 'alert';
-            case self::LEVEL_EMERGENCY :
+            case self::LEVEL_EMERGENCY:
                 return 'emergency';
         }
 
@@ -68,7 +68,7 @@ class Log
      *
      * @example \QUI\System\Log::write( 'My Error', \QUI\System\Log::LEVEL_ERROR );
      */
-    static function write(
+    public static function write(
         $message,
         $loglevel = self::LEVEL_INFO,
         $context = array(),
@@ -131,7 +131,7 @@ class Log
      * @param array $context - context data
      * @param string|boolean $filename - [optional] name of the log eq: messages, database,
      */
-    static function writeRecursive(
+    public static function writeRecursive(
         $object,
         $loglevel = self::LEVEL_INFO,
         $context = array(),
@@ -148,7 +148,7 @@ class Log
      * @param array $context - context data
      * @param string|boolean $filename - [optional] name of the log eq: messages, database,
      */
-    static function writeException(
+    public static function writeException(
         $Exception,
         $loglevel = self::LEVEL_ERROR,
         $context = array(),
@@ -168,7 +168,7 @@ class Log
      * @param array $context - context data
      * @param string|boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    static function addDebug($message, $context = array(), $filename = false)
+    public static function addDebug($message, $context = array(), $filename = false)
     {
         self::write($message, self::LEVEL_DEBUG, $context, $filename);
     }
@@ -180,7 +180,7 @@ class Log
      * @param array $context - context data
      * @param string|boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    static function addInfo($message, $context = array(), $filename = false)
+    public static function addInfo($message, $context = array(), $filename = false)
     {
         self::write($message, self::LEVEL_INFO, $context, $filename);
     }
@@ -192,7 +192,7 @@ class Log
      * @param array $context - context data
      * @param string|boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    static function addNotice($message, $context = array(), $filename = false)
+    public static function addNotice($message, $context = array(), $filename = false)
     {
         self::write($message, self::LEVEL_NOTICE, $context, $filename);
     }
@@ -204,7 +204,7 @@ class Log
      * @param array $context - context data
      * @param string|boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    static function addWarning($message, $context = array(), $filename = false)
+    public static function addWarning($message, $context = array(), $filename = false)
     {
         self::write($message, self::LEVEL_WARNING, $context, $filename);
     }
@@ -216,7 +216,7 @@ class Log
      * @param array $context - context data
      * @param string|boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    static function addError($message, $context = array(), $filename = false)
+    public static function addError($message, $context = array(), $filename = false)
     {
         self::write($message, self::LEVEL_ERROR, $context, $filename);
     }
@@ -228,7 +228,7 @@ class Log
      * @param array $context - context data
      * @param string|boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    static function addCritical($message, $context = array(), $filename = false)
+    public static function addCritical($message, $context = array(), $filename = false)
     {
         self::write($message, self::LEVEL_CRITICAL, $context, $filename);
     }
@@ -240,7 +240,7 @@ class Log
      * @param array $context - context data
      * @param string|boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    static function addAlert($message, $context = array(), $filename = false)
+    public static function addAlert($message, $context = array(), $filename = false)
     {
         self::write($message, self::LEVEL_ALERT, $context, $filename);
     }
@@ -252,7 +252,7 @@ class Log
      * @param array $context - context data
      * @param string|boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    static function addEmergency($message, $context = array(), $filename = false)
+    public static function addEmergency($message, $context = array(), $filename = false)
     {
         self::write($message, self::LEVEL_EMERGENCY, $context, $filename);
     }

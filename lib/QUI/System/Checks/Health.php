@@ -30,7 +30,7 @@ class Health
      *
      * @return array
      */
-    static function systemCheck()
+    public static function systemCheck()
     {
         $File = new QUI\Utils\System\File();
         $md5  = CMS_DIR . 'checklist.md5';
@@ -69,7 +69,7 @@ class Health
      *
      * @return array
      */
-    static function packageCheck($plugin)
+    public static function packageCheck($plugin)
     {
         $dir = OPT_DIR . $plugin;
         $md5 = $dir . '/checklist.md5';
@@ -86,7 +86,7 @@ class Health
      * @return array
      * @throws \QUI\Exception
      */
-    static function check($md5Checkfile, $dir)
+    public static function check($md5Checkfile, $dir)
     {
         if (!file_exists($md5Checkfile)) {
             throw new QUI\Exception(
@@ -115,7 +115,7 @@ class Health
      *
      * @return array
      */
-    static function checkArray($md5Checkfile, $fileList, $dir)
+    public static function checkArray($md5Checkfile, $fileList, $dir)
     {
         $md5Entries = file($md5Checkfile);
         $md5List    = array();
@@ -165,7 +165,7 @@ class Health
      *
      * @throws \QUI\Exception
      */
-    static function checkWritable()
+    public static function checkWritable()
     {
         // check files
         $md5hashFile = CMS_DIR . 'checklist.md5';
@@ -219,4 +219,3 @@ class Health
         }
     }
 }
-

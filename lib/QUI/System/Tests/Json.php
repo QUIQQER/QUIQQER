@@ -22,12 +22,14 @@ class Json extends QUI\System\Test
      */
     public function __construct()
     {
+        parent::__construct();
+
         $this->setAttributes(array(
             'title'       => 'json_decode and json_encode',
             'description' => ''
         ));
 
-        $this->_isRequired = self::TEST_IS_REQUIRED;
+        $this->isRequired = self::TEST_IS_REQUIRED;
     }
 
     /**

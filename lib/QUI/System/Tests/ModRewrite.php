@@ -22,12 +22,14 @@ class ModRewrite extends QUI\System\Test
      */
     public function __construct()
     {
+        parent::__construct();
+
         $this->setAttributes(array(
             'title'       => 'Apache mod_rewrite installed',
             'description' => ''
         ));
 
-        $this->_isRequired = self::TEST_IS_REQUIRED;
+        $this->isRequired = self::TEST_IS_REQUIRED;
     }
 
     /**

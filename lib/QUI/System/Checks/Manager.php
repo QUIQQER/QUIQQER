@@ -22,7 +22,6 @@ use QUI;
  * @todo create a systemcheck exception
  * @deprecated
  */
-
 class Manager
 {
     /**
@@ -30,7 +29,7 @@ class Manager
      *
      * @return array
      */
-    static function standard()
+    public static function standard()
     {
         /**
          * 1  = OK
@@ -49,8 +48,11 @@ class Manager
             $JSON->setAttribute('message', 'JSON ist verfügbar');
         } else {
             $JSON->setAttribute('error', -1);
-            $JSON->setAttribute('message',
-                'Installieren / Aktivieren Sie bitte die PHP Erweiterung JSON. Weitere Information finden Sie <a href="http://de3.php.net/manual/de/json.setup.php">hier</a>');
+            $JSON->setAttribute(
+                'message',
+                'Installieren / Aktivieren Sie bitte die PHP Erweiterung JSON.' .
+                'Weitere Information finden Sie <a href="http://de3.php.net/manual/de/json.setup.php">hier</a>'
+            );
         }
 
         $need[] = $JSON;
@@ -64,8 +66,11 @@ class Manager
             $ZLIB->setAttribute('message', 'ZLIB ist verfügbar');
         } else {
             $ZLIB->setAttribute('error', -1);
-            $ZLIB->setAttribute('message',
-                'Installieren / Aktivieren Sie bitte die ZLIB Erweiterung JSON. Weitere Information finden Sie <a href="http://de3.php.net/manual/de/zlib.setup.php">hier</a>');
+            $ZLIB->setAttribute(
+                'message',
+                'Installieren / Aktivieren Sie bitte die ZLIB Erweiterung JSON. ' .
+                'Weitere Information finden Sie <a href="http://de3.php.net/manual/de/zlib.setup.php">hier</a>'
+            );
         }
 
         $need[] = $ZLIB;
@@ -79,8 +84,13 @@ class Manager
             $Tidy->setAttribute('message', 'Tidy ist verfügbar');
         } else {
             $Tidy->setAttribute('error', 0);
-            $Tidy->setAttribute('message',
-                'Tidy wird für das Cleanup des HTML Codes benötigt. Es wird nicht vorrausgesetzt, jedoch empfehlen wir diese Erweiterung zu aktivieren. Mehr Informationen finden Sie <a href="http://de3.php.net/manual/de/tidy.setup.php">hier</a>');
+            $Tidy->setAttribute(
+                'message',
+                'Tidy wird für das Cleanup des HTML Codes benötigt. ' .
+                'Es wird nicht vorrausgesetzt, jedoch empfehlen wir diese Erweiterung zu' .
+                'aktivieren. Mehr Informationen finden Sie ' .
+                '<a href="http://de3.php.net/manual/de/tidy.setup.php">hier</a>'
+            );
         }
 
         $need[] = $Tidy;

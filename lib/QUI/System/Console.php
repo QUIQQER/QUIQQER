@@ -57,30 +57,30 @@ class Console
      */
     protected $_colors
         = array(
-            'black'        => '0;30',
-            'dark_gray'    => '1;30',
-            'blue'         => '0;34',
-            'light_blue'   => '1;34',
-            'green'        => '0;32',
-            'light_green'  => '1;32',
-            'cyan'         => '0;36',
-            'light_cyan'   => '1;36',
-            'red'          => '0;31',
-            'light_red'    => '1;31',
-            'purple'       => '0;35',
+            'black' => '0;30',
+            'dark_gray' => '1;30',
+            'blue' => '0;34',
+            'light_blue' => '1;34',
+            'green' => '0;32',
+            'light_green' => '1;32',
+            'cyan' => '0;36',
+            'light_cyan' => '1;36',
+            'red' => '0;31',
+            'light_red' => '1;31',
+            'purple' => '0;35',
             'light_purple' => '1;35',
-            'brown'        => '0;33',
-            'yellow'       => '1;33',
-            'light_gray'   => '0;37',
-            'white'        => '1;37',
-            'black_u'      => '4;30',
-            'red_u'        => '4;31',
-            'green_u'      => '4;32',
-            'yellow_u'     => '4;33',
-            'blue_u'       => '4;34',
-            'purple_u'     => '4;35',
-            'cyan_u'       => '4;36',
-            'white_u'      => '4;37'
+            'brown' => '0;33',
+            'yellow' => '1;33',
+            'light_gray' => '0;37',
+            'white' => '1;37',
+            'black_u' => '4;30',
+            'red_u' => '4;31',
+            'green_u' => '4;32',
+            'yellow_u' => '4;33',
+            'blue_u' => '4;34',
+            'purple_u' => '4;35',
+            'cyan_u' => '4;36',
+            'white_u' => '4;37'
         );
 
     /**
@@ -88,17 +88,16 @@ class Console
      *
      * @var array
      */
-    protected $_bg
-        = array(
-            'black'      => '40',
-            'red'        => '41',
-            'green'      => '42',
-            'yellow'     => '43',
-            'blue'       => '44',
-            'magenta'    => '45',
-            'cyan'       => '46',
-            'light_gray' => '47'
-        );
+    protected $_bg = array(
+        'black' => '40',
+        'red' => '41',
+        'green' => '42',
+        'yellow' => '43',
+        'blue' => '44',
+        'magenta' => '45',
+        'cyan' => '46',
+        'light_gray' => '47'
+    );
 
     /**
      * constructor
@@ -150,7 +149,7 @@ class Console
             );
 
         } catch (QUI\Exception $Exception) {
-            $this->writeLn($Exception->getMessage()."\n\n", 'red');
+            $this->writeLn($Exception->getMessage() . "\n\n", 'red');
             exit;
         }
 
@@ -176,7 +175,7 @@ class Console
             $tools = $this->get(true);
 
             foreach ($tools as $tool => $obj) {
-                $this->writeLn(" - ".$tool."\n");
+                $this->writeLn(" - " . $tool . "\n");
             }
 
             $this->writeLn("\n");
@@ -196,8 +195,8 @@ class Console
     {
         // Vars löschen die Probleme bereiten können
         $_REQUEST = array();
-        $_POST = array();
-        $_GET = array();
+        $_POST    = array();
+        $_GET     = array();
 
         if (isset($_SERVER['argv'][0])) {
             unset($_SERVER['argv'][0]);
@@ -308,9 +307,7 @@ class Console
         }
 
         if ($Tool = $this->get($this->_argv['--tool'])) {
-
             try {
-
                 if (is_array($Tool) || !$Tool) {
                     throw new QUI\Exception('Tool not found', 404);
                 }
@@ -341,11 +338,11 @@ class Console
     private function _read()
     {
         // Standard Konsoletools
-        $path = LIB_DIR.'QUI/System/Console/Tools/';
+        $path  = LIB_DIR . 'QUI/System/Console/Tools/';
         $files = QUI\Utils\System\File::readDir($path, true);
 
         for ($i = 0, $len = count($files); $i < $len; $i++) {
-            if (!file_exists($path.$files[$i])) {
+            if (!file_exists($path . $files[$i])) {
                 continue;
             }
 
@@ -354,44 +351,43 @@ class Console
 
         // look at console tools at plugins
         $PackageManager = \QUI::getPackageManager();
-        $plugins = $PackageManager->getInstalled();
+        $plugins        = $PackageManager->getInstalled();
 
         $tools = array();
 
         foreach ($plugins as $plugin) {
-            $dir = OPT_DIR.$plugin['name'];
+            $dir = OPT_DIR . $plugin['name'];
 
-            if (!file_exists($dir.'/console.xml')) {
+            if (!file_exists($dir . '/console.xml')) {
                 continue;
             }
 
             $tools = array_merge(
                 $tools,
-                QUI\Utils\XML::getConsoleToolsFromXml($dir.'/console.xml')
+                QUI\Utils\XML::getConsoleToolsFromXml($dir . '/console.xml')
             );
         }
 
         // look at console tools at projects
         $ProjectManager = \QUI::getProjectManager();
-        $projects = $ProjectManager->getProjects();
+        $projects       = $ProjectManager->getProjects();
 
         foreach ($projects as $project) {
-            $dir = USR_DIR.$project;
+            $dir = USR_DIR . $project;
 
-            if (!file_exists($dir.'/console.xml')) {
+            if (!file_exists($dir . '/console.xml')) {
                 continue;
             }
 
             $tools = array_merge(
                 $tools,
-                QUI\Utils\XML::getConsoleToolsFromXml($dir.'/console.xml')
+                QUI\Utils\XML::getConsoleToolsFromXml($dir . '/console.xml')
             );
         }
 
 
         // init tools
         foreach ($tools as $cls) {
-
             if (!class_exists($cls)) {
                 continue;
             }
@@ -418,7 +414,7 @@ class Console
      */
     protected function _includeClasses($file, $dir)
     {
-        $file = Orthos::clearPath(realpath($dir.$file));
+        $file = Orthos::clearPath(realpath($dir . $file));
 
         if (!file_exists($file)) {
             throw new QUI\Exception('console tool not exists');
@@ -457,8 +453,10 @@ class Console
 
         $this->writeLn();
         $this->writeLn(" Call");
-        $this->writeLn(" php quiqqer.php --username=[USERNAME] --password=[PASSWORD] --tool=[TOOLNAME] [--PARAMS]",
-            'red');
+        $this->writeLn(
+            " php quiqqer.php --username=[USERNAME] --password=[PASSWORD] --tool=[TOOLNAME] [--PARAMS]",
+            'red'
+        );
 
         $this->clearMsg();
         $this->writeLn("");
@@ -534,21 +532,21 @@ class Console
     /**
      * Write a new line
      *
-     * @param string      $msg   - (optional) the printed message
+     * @param string $msg - (optional) the printed message
      * @param string|boolean $color - (optional) textcolor
-     * @param string|boolean $bg    - (optional) background color
+     * @param string|boolean $bg - (optional) background color
      */
     public function writeLn($msg = '', $color = false, $bg = false)
     {
-        $this->message("\n".$msg, $color, $bg);
+        $this->message("\n" . $msg, $color, $bg);
     }
 
     /**
      * alternative for message()
      *
-     * @param string      $msg   - Message to output
+     * @param string $msg - Message to output
      * @param string|boolean $color - (optional) textcolor
-     * @param string|boolean $bg    - (optional) background color
+     * @param string|boolean $bg - (optional) background color
      */
     public function write($msg, $color = false, $bg = false)
     {
@@ -558,9 +556,9 @@ class Console
     /**
      * Output a message
      *
-     * @param string      $msg   - Message to output
+     * @param string $msg - Message to output
      * @param string|boolean $color - (optional) textcolor
-     * @param string|boolean $bg    - (optional) background color
+     * @param string|boolean $bg - (optional) background color
      */
     public function message($msg, $color = false, $bg = false)
     {
@@ -573,11 +571,11 @@ class Console
         }
 
         if (isset($this->_colors[$this->_current_color])) {
-            echo "\033[".$this->_colors[$this->_current_color]."m";
+            echo "\033[" . $this->_colors[$this->_current_color] . "m";
         }
 
         if (isset($this->_bg[$this->_current_bg])) {
-            echo "\033[".$this->_bg[$this->_current_bg]."m";
+            echo "\033[" . $this->_bg[$this->_current_bg] . "m";
         }
 
         echo $msg;
@@ -599,7 +597,7 @@ class Console
     public function clearMsg()
     {
         $this->_current_color = false;
-        $this->_current_bg = false;
+        $this->_current_bg    = false;
 
         echo "\033[0m";
     }
