@@ -21,7 +21,7 @@ class Autoloader
      *
      * @var \Composer\Autoload\ClassLoader
      */
-    static $ComposerLoader = null;
+    public static $ComposerLoader = null;
 
     /**
      * Start the autoload
@@ -30,7 +30,7 @@ class Autoloader
      *
      * @return boolean
      */
-    static function load($classname)
+    public static function load($classname)
     {
         if (class_exists($classname, false)) {
             return true;
@@ -59,7 +59,6 @@ class Autoloader
 
         // Projects
         if (strpos($classname, 'Projects\\') === 0) {
-
             if (class_exists($classname, false)) {
                 return true;
             }

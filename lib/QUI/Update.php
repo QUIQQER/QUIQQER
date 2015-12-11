@@ -21,11 +21,11 @@ if (!function_exists('glob_recursive')) {
     {
         $files = glob($pattern, $flags);
 
-        foreach (
-            glob(dirname($pattern) . '/*', GLOB_ONLYDIR | GLOB_NOSORT) as $dir
-        ) {
-            $files = array_merge($files,
-                glob_recursive($dir . '/' . basename($pattern), $flags));
+        foreach (glob(dirname($pattern) . '/*', GLOB_ONLYDIR | GLOB_NOSORT) as $dir) {
+            $files = array_merge(
+                $files,
+                glob_recursive($dir . '/' . basename($pattern), $flags)
+            );
         }
 
         return $files;
@@ -49,7 +49,7 @@ class Update
      *
      * @todo implement the installation
      */
-    static function onInstall(Event $Event)
+    public static function onInstall(Event $Event)
     {
         // Log::writeRecursive( $event, 'error' );
 
@@ -66,7 +66,7 @@ class Update
      *
      * @param Event $Event
      */
-    static function onUpdate(Event $Event)
+    public static function onUpdate(Event $Event)
     {
         $IO       = $Event->getIO();
         $Composer = $Event->getComposer();
@@ -133,7 +133,6 @@ class Update
 
         // first we need all databases
         foreach ($packages as $package) {
-
             if ($package == 'composer') {
                 continue;
             }
@@ -142,7 +141,6 @@ class Update
             $list        = QUIFile::readDir($package_dir);
 
             foreach ($list as $sub) {
-
                 if (!is_dir($package_dir . '/' . $sub)) {
                     continue;
                 }
@@ -168,7 +166,6 @@ class Update
 
         // then we can read the rest xml files
         foreach ($packages as $package) {
-
             if ($package == 'composer') {
                 continue;
             }
@@ -177,7 +174,6 @@ class Update
             $list        = QUIFile::readDir($package_dir);
 
             foreach ($list as $sub) {
-
                 if (!is_dir($package_dir . '/' . $sub)) {
                     continue;
                 }
@@ -229,15 +225,11 @@ class Update
         $IO->write('Starting QUIQQER setup');
 
         if (QUI::getUserBySession()->getId()) {
-
             QUI::setup();
-
             $IO->write('QUIQQER Setup finish');
 
         } else {
-
             QUI\Cache\Manager::clearAll();
-
             $IO->write('Maybe some Databases or Plugins need a setup. Please log in and execute the setup.');
         }
     }
@@ -248,7 +240,7 @@ class Update
      * @param string $xml_file - path to an engine.xml
      * @param        $IO - Composer InputOutput
      */
-    static function importTemplateEngines($xml_file, $IO = null)
+    public static function importTemplateEngines($xml_file, $IO = null)
     {
         if (!file_exists($xml_file)) {
             return;
@@ -279,7 +271,7 @@ class Update
      * @param string $xml_file - path to an engine.xml
      * @param        $IO - Composer InputOutput
      */
-    static function importEditors($xml_file, $IO = null)
+    public static function importEditors($xml_file, $IO = null)
     {
         if (!file_exists($xml_file)) {
             return;
@@ -310,7 +302,7 @@ class Update
      * @param string $xml_file - path to an engine.xml
      * @param        $IO - (optional) Composer InputOutput
      */
-    static function importEvents($xml_file, $IO = null)
+    public static function importEvents($xml_file, $IO = null)
     {
         if (!file_exists($xml_file)) {
             return;
@@ -338,7 +330,7 @@ class Update
      * @param string $xml_file - path to an engine.xml
      * @param        $IO - (optional)  Composer InputOutput
      */
-    static function importSiteEvents($xml_file, $IO = null)
+    public static function importSiteEvents($xml_file, $IO = null)
     {
         if (!file_exists($xml_file)) {
             return;
@@ -361,7 +353,7 @@ class Update
      * @param string $xml_file - path to an engine.xml
      * @param        $IO - Composer InputOutput
      */
-    static function importMenu($xml_file, $IO = null)
+    public static function importMenu($xml_file, $IO = null)
     {
         if (!file_exists($xml_file)) {
             return;
@@ -400,7 +392,7 @@ class Update
      * @param string $xml_file - path to an database.xml
      * @param        $IO - Composer InputOutput
      */
-    static function importDatabase($xml_file, $IO = null)
+    public static function importDatabase($xml_file, $IO = null)
     {
         if (!file_exists($xml_file)) {
             return;
@@ -418,7 +410,7 @@ class Update
      * @param string $xml_file - path to an locale.xml
      * @param        $IO - Composer InputOutput
      */
-    static function importLocale($xml_file, $IO = null)
+    public static function importLocale($xml_file, $IO = null)
     {
         if (!file_exists($xml_file)) {
             return;
@@ -437,7 +429,7 @@ class Update
      * @param string $src - Source for the permissions
      * @param        $IO - Composer InputOutput
      */
-    static function importPermissions($xml_file, $src = '', $IO = null)
+    public static function importPermissions($xml_file, $src = '', $IO = null)
     {
         if (!file_exists($xml_file)) {
             return;
@@ -456,7 +448,7 @@ class Update
      *
      * @throws QUI\Exception
      */
-    static function importAllMenuXMLs($Composer = null)
+    public static function importAllMenuXMLs($Composer = null)
     {
         $packages_dir = false;
 
@@ -502,7 +494,7 @@ class Update
      * Reimportation from all permissions.xml files
      * Read all packages and import the permissions.xml files to the quiqqer system
      */
-    static function importAllPermissionsXMLs()
+    public static function importAllPermissionsXMLs()
     {
         $packages = QUIFile::readDir(OPT_DIR);
 
@@ -511,7 +503,7 @@ class Update
             QUI::getDBTableName(QUI\Rights\Manager::TABLE),
             array(
                 'src' => array(
-                    'type'  => 'NOT',
+                    'type' => 'NOT',
                     'value' => 'user'
                 )
             )
@@ -554,7 +546,7 @@ class Update
      *
      * @throws QUI\Exception
      */
-    static function importAllLocaleXMLs($Composer = null)
+    public static function importAllLocaleXMLs($Composer = null)
     {
         $packages_dir = false;
 

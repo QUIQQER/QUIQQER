@@ -71,11 +71,9 @@ class Temp
 
         // create a var_dir temp folder
         do {
-            $folder = $this->_folder . str_replace(
-                    array(' ', '.'),
-                    '',
-                    microtime()
-                ) . '/';
+            $folder = $this->_folder .
+                      str_replace(array(' ', '.'), '', microtime()) . '/';
+            
         } while (file_exists($folder));
 
         QUIFile::mkdir($folder);

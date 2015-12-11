@@ -175,7 +175,7 @@ class QUI
     /**
      * QUI\Temp Object, use \QUI::getTemp();
      *
-     * @var QUI\Temp
+     * @var \QUI\Temp
      */
     public static $Temp = null;
 
@@ -437,9 +437,9 @@ class QUI
                            "URI: " . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"] . "\n" .
                            "HTTP_REFERER: " . $_SERVER["HTTP_REFERER"];
 
-                if (QUI::conf('mail', 'admin_mail')) {
-                    QUI::getMailManager()->send(
-                        \QUI::conf('mail', 'admin_mail'),
+                if (self::conf('mail', 'admin_mail')) {
+                    self::getMailManager()->send(
+                        self::conf('mail', 'admin_mail'),
                         'Memory limit reached at http://' . $_SERVER["HTTP_HOST"],
                         $message
                     );

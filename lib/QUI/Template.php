@@ -24,42 +24,42 @@ class Template extends QUI\QDOM
      *
      * @var array
      */
-    protected $_engines = array();
+    protected $engines = array();
 
     /**
      * Header extentions
      *
      * @var array
      */
-    protected $_header = array();
+    protected $header = array();
 
     /**
      * Footer extentions
      *
      * @var array
      */
-    protected $_footer = array();
+    protected $footer = array();
 
     /**
      * assigned vars
      *
      * @var array
      */
-    protected $_assigned = array();
+    protected $assigned = array();
 
     /**
      * modules that loaded after the onload event
      *
      * @var array
      */
-    protected $_onLoadModules = array();
+    protected $onLoadModules = array();
 
     /**
      * site type tpl
      *
      * @var string
      */
-    protected $_typetpl = '';
+    protected $typetpl = '';
 
     /**
      * constructor
@@ -72,11 +72,11 @@ class Template extends QUI\QDOM
 
         // defaults
         $this->setAttributes(array(
-            'mootools'       => true,
-            'requirejs'      => true,
-            'html5'          => true,
+            'mootools' => true,
+            'requirejs' => true,
+            'html5' => true,
             'content-header' => true,
-            'content-body'   => true
+            'content-body' => true
         ));
     }
 
@@ -85,7 +85,7 @@ class Template extends QUI\QDOM
      */
     public function load()
     {
-        $this->_engines = self::getConfig()->toArray();
+        $this->engines = self::getConfig()->toArray();
     }
 
     /**
@@ -97,7 +97,7 @@ class Template extends QUI\QDOM
      */
     public function assignGlobalParam($param, $value)
     {
-        $this->_assigned[$param] = $value;
+        $this->assigned[$param] = $value;
     }
 
     /**
@@ -105,7 +105,7 @@ class Template extends QUI\QDOM
      *
      * @return QUI\Config
      */
-    static function getConfig()
+    public static function getConfig()
     {
         if (!file_exists(CMS_DIR . 'etc/templates.ini.php')) {
             file_put_contents(CMS_DIR . 'etc/templates.ini.php', '');
@@ -126,18 +126,18 @@ class Template extends QUI\QDOM
      */
     public function getEngine($admin = false)
     {
-        if (empty($this->_engines)) {
+        if (empty($this->engines)) {
             $this->load();
         }
 
         $engine = QUI::conf('template', 'engine');
 
-        if (!isset($this->_engines[$engine])) {
+        if (!isset($this->engines[$engine])) {
             throw new QUI\Exception('Template Engine not found!');
         }
 
         /* @var $Engine QUI\Interfaces\Template\Engine */
-        $Engine     = new $this->_engines[$engine]($admin);
+        $Engine     = new $this->engines[$engine]($admin);
         $implements = class_implements($Engine);
 
         if (!isset($implements['QUI\\Interfaces\\Template\\Engine'])) {
@@ -146,8 +146,8 @@ class Template extends QUI\QDOM
             );
         }
 
-        if (!empty($this->_assigned)) {
-            $Engine->assign($this->_assigned);
+        if (!empty($this->assigned)) {
+            $Engine->assign($this->assigned);
         }
 
         return $Engine;
@@ -159,7 +159,7 @@ class Template extends QUI\QDOM
      * @param string $name
      * @param string $class - must a class that implements QUI\Interfaces\Template\Engine
      */
-    static function registerEngine($name, $class)
+    public static function registerEngine($name, $class)
     {
         $Conf = self::getConfig();
         $Conf->setValue($name, null, $class);
@@ -176,14 +176,14 @@ class Template extends QUI\QDOM
     {
         $prio = (int)$prio;
 
-        if (!isset($this->_header[$prio])) {
-            $this->_header[$prio] = '';
+        if (!isset($this->header[$prio])) {
+            $this->header[$prio] = '';
         }
 
-        $_str = $this->_header[$prio];
+        $_str = $this->header[$prio];
         $_str .= $str;
 
-        $this->_header[$prio] = $_str;
+        $this->header[$prio] = $_str;
     }
 
     /**
@@ -231,14 +231,14 @@ class Template extends QUI\QDOM
     {
         $prio = (int)$prio;
 
-        if (!isset($this->_footer[$prio])) {
-            $this->_footer[$prio] = '';
+        if (!isset($this->footer[$prio])) {
+            $this->footer[$prio] = '';
         }
 
-        $_str = $this->_footer[$prio];
+        $_str = $this->footer[$prio];
         $_str .= $str;
 
-        $this->_footer[$prio] = $_str;
+        $this->footer[$prio] = $_str;
     }
 
     /**
@@ -272,7 +272,7 @@ class Template extends QUI\QDOM
      */
     public function addOnloadJavaScriptModule($module)
     {
-        $this->_onLoadModules[] = $module;
+        $this->onLoadModules[] = $module;
     }
 
     /**
@@ -297,9 +297,9 @@ class Template extends QUI\QDOM
         $User = $Users->getUserBySession();
 
         // header
-        $_header = $this->_header;
+        $header = $this->header;
 
-        foreach ($_header as $key => $str) {
+        foreach ($header as $key => $str) {
             $Engine->extendHeader($str, $key);
         }
 
@@ -309,20 +309,20 @@ class Template extends QUI\QDOM
 
         // Zuweisungen
         $Engine->assign(array(
-            'URL_DIR'     => URL_DIR,
+            'URL_DIR' => URL_DIR,
             'URL_BIN_DIR' => URL_BIN_DIR,
             'URL_LIB_DIR' => URL_LIB_DIR,
             'URL_VAR_DIR' => URL_VAR_DIR,
             'URL_OPT_DIR' => URL_OPT_DIR,
             'URL_USR_DIR' => URL_USR_DIR,
-            'User'        => $User,
-            'Locale'      => $Locale,
-            'L'           => $Locale,
-            'Template'    => $Template,
-            'Site'        => $Site,
-            'Project'     => $Project,
-            'Rewrite'     => $Rewrite,
-            'lastUpdate'  => QUI::getPackageManager()->getLastUpdateDate()
+            'User' => $User,
+            'Locale' => $Locale,
+            'L' => $Locale,
+            'Template' => $Template,
+            'Site' => $Site,
+            'Project' => $Project,
+            'Rewrite' => $Rewrite,
+            'lastUpdate' => QUI::getPackageManager()->getLastUpdateDate()
         ));
 
         /**
@@ -348,12 +348,10 @@ class Template extends QUI\QDOM
             $projectName = $Project->getName();
 
             foreach ($vhosts as $vhost) {
-
                 if (isset($vhost['project'])
                     && $vhost['project'] == $projectName
                     && !empty($vhost['template'])
                 ) {
-
                     $projectTemplate = $vhost['template'];
                     break;
                 }
@@ -368,7 +366,7 @@ class Template extends QUI\QDOM
 
             $Engine->assign(array(
                 'URL_TPL_DIR' => URL_OPT_DIR . $projectTemplate . '/',
-                'TPL_DIR'     => OPT_DIR . $projectTemplate . '/',
+                'TPL_DIR' => OPT_DIR . $projectTemplate . '/',
             ));
         }
 
@@ -377,7 +375,7 @@ class Template extends QUI\QDOM
 
             $Engine->assign(array(
                 'URL_TPL_DIR' => URL_USR_DIR . $Project->getAttribute('name') . '/',
-                'TPL_DIR'     => USR_DIR . $Project->getAttribute('name') . '/',
+                'TPL_DIR' => USR_DIR . $Project->getAttribute('name') . '/',
             ));
         }
 
@@ -450,7 +448,7 @@ class Template extends QUI\QDOM
         $result = $Engine->fetch($tpl);
 
         // footer extend
-        $footer       = $this->_footer;
+        $footer       = $this->footer;
         $footerExtend = '';
 
         foreach ($footer as $_str) {
@@ -520,7 +518,6 @@ class Template extends QUI\QDOM
             );
 
         } catch (QUI\Exception $Exception) {
-
         }
 
         $locales = array();
@@ -530,7 +527,7 @@ class Template extends QUI\QDOM
         }
 
 
-        $headers      = $this->_header;
+        $headers      = $this->header;
         $headerExtend = '';
 
         foreach ($headers as $_str) {
@@ -554,15 +551,15 @@ class Template extends QUI\QDOM
 
         // assign
         $Engine->assign(array(
-            'Project'         => $Project,
-            'Site'            => $Site,
-            'Engine'          => $Engine,
-            'localeFiles'     => $locales,
-            'loadModuleFiles' => $this->_onLoadModules,
-            'headerExtend'    => $headerExtend,
-            'ControlManager'  => new QUI\Control\Manager(),
-            'Canonical'       => new QUI\Projects\Site\Canonical($Site),
-            'lastUpdate'      => QUI::getPackageManager()->getLastUpdateDate()
+            'Project' => $Project,
+            'Site' => $Site,
+            'Engine' => $Engine,
+            'localeFiles' => $locales,
+            'loadModuleFiles' => $this->onLoadModules,
+            'headerExtend' => $headerExtend,
+            'ControlManager' => new QUI\Control\Manager(),
+            'Canonical' => new QUI\Projects\Site\Canonical($Site),
+            'lastUpdate' => QUI::getPackageManager()->getLastUpdateDate()
         ));
 
         return $Engine->fetch(LIB_DIR . 'templates/header.html');
@@ -723,28 +720,28 @@ class Template extends QUI\QDOM
      *
      * @return string
      */
-    protected function _getTypeTemplate($types, $type, $template)
-    {
-        if (isset($types['template'])) {
-            // Falls im Projekt ein Template existiert
-            $tpl = USR_DIR . 'lib/' . $template . '/' . $type . '/' . $types['template'];
-
-            if (file_exists($tpl)) {
-                return $tpl;
-            }
-
-            // Falls im Plugin ein Template existiert
-            $tpl = OPT_DIR . $type . '/' . $types['template'];
-
-            if (file_exists($tpl)) {
-                return $tpl;
-            }
-        }
-
-        if (file_exists(USR_DIR . 'lib/' . $template . '/standard/body.html')) {
-            return USR_DIR . 'lib/' . $template . '/standard/body.html';
-        }
-
-        return LIB_DIR . 'templates/standard.html';
-    }
+//    protected function _getTypeTemplate($types, $type, $template)
+//    {
+//        if (isset($types['template'])) {
+//            // Falls im Projekt ein Template existiert
+//            $tpl = USR_DIR . 'lib/' . $template . '/' . $type . '/' . $types['template'];
+//
+//            if (file_exists($tpl)) {
+//                return $tpl;
+//            }
+//
+//            // Falls im Plugin ein Template existiert
+//            $tpl = OPT_DIR . $type . '/' . $types['template'];
+//
+//            if (file_exists($tpl)) {
+//                return $tpl;
+//            }
+//        }
+//
+//        if (file_exists(USR_DIR . 'lib/' . $template . '/standard/body.html')) {
+//            return USR_DIR . 'lib/' . $template . '/standard/body.html';
+//        }
+//
+//        return LIB_DIR . 'templates/standard.html';
+//    }
 }
