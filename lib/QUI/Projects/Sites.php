@@ -166,7 +166,7 @@ class Sites
     /**
      * Return the tabs of a site
      *
-     * @param \QUI\Projects\Site\Edit $Site
+     * @param \QUI\Projects\Site\Edit|\QUI\Projects\Site $Site
      *
      * @return \QUI\Controls\Toolbar\Bar
      */

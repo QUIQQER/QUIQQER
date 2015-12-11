@@ -796,6 +796,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Returns the count of the children
      *
+     * @todo use getElements folder with count
+     *
      * @return integer
      */
     public function hasSubFolders()
@@ -826,6 +828,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
     /**
      * Returns only the sub folders
+     *
+     * @deprecated use getFolders
      *
      * @return array
      */

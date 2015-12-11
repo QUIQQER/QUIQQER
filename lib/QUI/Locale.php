@@ -26,28 +26,28 @@ class Locale
      *
      * @var string
      */
-    protected $_dateFormats = false;
+    protected $dateFormats = false;
 
     /**
      * The current lang
      *
      * @var string
      */
-    protected $_current = 'en';
+    protected $current = 'en';
 
     /**
      * the exist langs
      *
      * @var array
      */
-    protected $_langs = array();
+    protected $langs = array();
 
     /**
      * gettext object
      *
      * @var array
      */
-    protected $_gettext = array();
+    protected $gettext = array();
     /**
      * no translation flag
      *
@@ -60,14 +60,14 @@ class Locale
      *
      * @var array
      */
-    protected $_inis = array();
+    protected $inis = array();
 
     /**
      * List of internal locale list for setlocale()
      *
      * @var array
      */
-    protected $_localeList = array();
+    protected $localeList = array();
 
 
     /**
@@ -87,7 +87,7 @@ class Locale
      */
     public function setCurrent($lang)
     {
-        $this->_current = $lang;
+        $this->current = $lang;
     }
 
     /**
@@ -97,7 +97,7 @@ class Locale
      */
     public function getCurrent()
     {
-        return $this->_current;
+        return $this->current;
     }
 
     /**
@@ -118,7 +118,7 @@ class Locale
 
         if ($format) {
             $oldlocale = setlocale(LC_TIME, "0");
-            setlocale(LC_TIME, $this->_getLocalesByLang($current));
+            setlocale(LC_TIME, $this->getLocalesByLang($current));
 
             $result = utf8_encode(strftime($format, $timestamp));
 
@@ -127,11 +127,11 @@ class Locale
             return $result;
         }
 
-        $formats = $this->_getDateFormats();
+        $formats = $this->getDateFormats();
 
         if (isset($formats[$current])) {
             $oldlocale = setlocale(LC_TIME, "0");
-            setlocale(LC_TIME, $this->_getLocalesByLang($current));
+            setlocale(LC_TIME, $this->getLocalesByLang($current));
 
             $result = utf8_encode(strftime($formats[$current], $timestamp));
 
@@ -148,19 +148,19 @@ class Locale
      *
      * @return array
      */
-    protected function _getDateFormats()
+    protected function getDateFormats()
     {
-        if ($this->_dateFormats) {
-            return $this->_dateFormats;
+        if ($this->dateFormats) {
+            return $this->dateFormats;
         }
 
-        $this->_dateFormats = QUI::conf('date_formats');
+        $this->dateFormats = QUI::conf('date_formats');
 
-        if (!$this->_dateFormats) {
-            $this->_dateFormats = array();
+        if (!$this->dateFormats) {
+            $this->dateFormats = array();
         }
 
-        return $this->_dateFormats;
+        return $this->dateFormats;
     }
 
     /**
@@ -170,10 +170,10 @@ class Locale
      *
      * @return array
      */
-    public function _getLocalesByLang($lang)
+    public function getLocalesByLang($lang)
     {
-        if (isset($this->_localeList[$lang])) {
-            return $this->_localeList[$lang];
+        if (isset($this->localeList[$lang])) {
+            return $this->localeList[$lang];
         }
 
         // no shell
@@ -181,14 +181,14 @@ class Locale
             // if we cannot read locale list, so we must guess
             $langCode = strtolower($lang) . '_' . strtoupper($lang);
 
-            $this->_localeList[$lang] = array(
+            $this->localeList[$lang] = array(
                 $langCode,
                 $langCode . '.utf8',
                 $langCode . '.UTF-8',
                 $langCode . '@euro'
             );
 
-            return $this->_localeList[$lang];
+            return $this->localeList[$lang];
         }
 
 
@@ -230,9 +230,9 @@ class Locale
             return $a > $b;
         });
 
-        $this->_localeList[$lang] = $langList;
+        $this->localeList[$lang] = $langList;
 
-        return $this->_localeList[$lang];
+        return $this->localeList[$lang];
     }
 
     /**
@@ -245,22 +245,22 @@ class Locale
      */
     public function set($lang, $group, $key, $value = false)
     {
-        if (!isset($this->_langs[$lang])) {
-            $this->_langs[$lang] = $lang;
+        if (!isset($this->langs[$lang])) {
+            $this->langs[$lang] = $lang;
         }
 
-        if (!isset($this->_langs[$lang][$group])) {
-            $this->_langs[$lang][$group] = array();
+        if (!isset($this->langs[$lang][$group])) {
+            $this->langs[$lang][$group] = array();
         }
 
         if (!is_array($key)) {
-            $this->_langs[$lang][$group][$key] = $value;
+            $this->langs[$lang][$group][$key] = $value;
 
             return;
         }
 
-        $this->_langs[$lang][$group] = array_merge(
-            $this->_langs[$lang][$group],
+        $this->langs[$lang][$group] = array_merge(
+            $this->langs[$lang][$group],
             $key
         );
     }
@@ -275,7 +275,7 @@ class Locale
      */
     public function exists($group, $value = false)
     {
-        $str = $this->_get($group, $value);
+        $str = $this->getHelper($group, $value);
 
         if ($value === false) {
             if (empty($str)) {
@@ -306,10 +306,10 @@ class Locale
     public function get($group, $value = false, $replace = false)
     {
         if ($replace === false || empty($replace)) {
-            return $this->_get($group, $value);
+            return $this->getHelper($group, $value);
         }
 
-        $str = $this->_get($group, $value);
+        $str = $this->getHelper($group, $value);
 
         foreach ($replace as $key => $value) {
             $str = str_replace('[' . $key . ']', $value, $str);
@@ -328,13 +328,13 @@ class Locale
      * @see ->get()
      * @ignore
      */
-    protected function _get($group, $value = false)
+    protected function getHelper($group, $value = false)
     {
         if ($this->no_translation) {
             return '[' . $group . '] ' . $value;
         }
 
-        $current = $this->_current;
+        $current = $this->current;
 
         // auf gettext wenn vorhanden
         $GetText = $this->initGetText($group);
@@ -347,22 +347,22 @@ class Locale
             }
         }
 
-        if (!isset($this->_langs[$current])
-            || !isset($this->_langs[$current][$group])
+        if (!isset($this->langs[$current])
+            || !isset($this->langs[$current][$group])
         ) {
             // Kein gettext vorhanden, dann Config einlesen
-            $this->_langs[$current][$group] = array();
+            $this->langs[$current][$group] = array();
             $this->initConfig($group);
         }
 
         if (!$value) {
-            return $this->_langs[$current][$group];
+            return $this->langs[$current][$group];
         }
 
-        if (isset($this->_langs[$current][$group][$value])
-            && !empty($this->_langs[$current][$group][$value])
+        if (isset($this->langs[$current][$group][$value])
+            && !empty($this->langs[$current][$group][$value])
         ) {
-            return $this->_langs[$current][$group][$value];
+            return $this->langs[$current][$group][$value];
         }
 
         return '[' . $group . '] ' . $value;
@@ -377,25 +377,28 @@ class Locale
      */
     public function initGetText($group)
     {
-        $current = $this->_current;
+        $current = $this->current;
 
-        if (isset($this->_gettext[$current])
-            && isset($this->_gettext[$current][$group])
+        if (isset($this->gettext[$current])
+            && isset($this->gettext[$current][$group])
         ) {
-            return $this->_gettext[$current][$group];
+            return $this->gettext[$current][$group];
         }
 
         if (!function_exists('gettext')) {
-            $this->_gettext[$current][$group] = false;
+            $this->gettext[$current][$group] = false;
 
             return false;
         }
 
 
-        $Gettext = new QUI\Utils\Translation\GetText($current, $group,
-            $this->dir());
+        $Gettext = new QUI\Utils\Translation\GetText(
+            $current,
+            $group,
+            $this->dir()
+        );
 
-        $this->_gettext[$current][$group] = $Gettext;
+        $this->gettext[$current][$group] = $Gettext;
 
         if ($Gettext->fileExist()) {
             return $Gettext;
@@ -409,7 +412,7 @@ class Locale
             . $domain . '.mo nicht gefunden.'
         );
 
-        $this->_gettext[$current][$group] = false;
+        $this->gettext[$current][$group] = false;
 
         return false;
     }
@@ -421,9 +424,9 @@ class Locale
      */
     public function initConfig($group)
     {
-        $lang = $this->_current;
+        $lang = $this->current;
         $file = $this->getTranslationFile(
-            $this->_current,
+            $this->current,
             $group
         );
 
@@ -431,8 +434,8 @@ class Locale
             return;
         }
 
-        if (isset($this->_inis[$file])) {
-            $Config = $this->_inis[$file];
+        if (isset($this->inis[$file])) {
+            $Config = $this->inis[$file];
         } else {
             $Config = new QUI\Config($file);
         }

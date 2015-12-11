@@ -24,14 +24,14 @@ class MyDB
      *
      * @var \QUI\Database\DB
      */
-    protected $_DB = null;
+    protected $DB = null;
 
     /**
      * constructor
      */
     public function __construct()
     {
-        $this->_DB = \QUI::getDataBase();
+        $this->DB = \QUI::getDataBase();
     }
 
     /**
@@ -140,7 +140,7 @@ class MyDB
      */
     public function queryNoEscape($params)
     {
-        return $this->_DB->exec($params);
+        return $this->DB->exec($params);
     }
 
     /**
@@ -152,9 +152,9 @@ class MyDB
      */
     public function insert($params)
     {
-        $this->_DB->exec($params);
+        $this->DB->exec($params);
 
-        return $this->_DB->getPDO()->lastInsertId();
+        return $this->DB->getPDO()->lastInsertId();
     }
 
     /**
@@ -170,20 +170,20 @@ class MyDB
     {
         switch ($type) {
             case 'OBJ':
-                return $this->_DB->fetch($params, \PDO::FETCH_OBJ);
+                return $this->DB->fetch($params, \PDO::FETCH_OBJ);
                 break;
 
             case 'NUM':
-                return $this->_DB->fetch($params, \PDO::FETCH_NUM);
+                return $this->DB->fetch($params, \PDO::FETCH_NUM);
                 break;
 
             case 'BOTH':
-                return $this->_DB->fetch($params, \PDO::FETCH_BOTH);
+                return $this->DB->fetch($params, \PDO::FETCH_BOTH);
                 break;
 
             default:
             case 'ASSOC':
-                return $this->_DB->fetch($params, \PDO::FETCH_ASSOC);
+                return $this->DB->fetch($params, \PDO::FETCH_ASSOC);
                 break;
         }
     }
@@ -197,7 +197,7 @@ class MyDB
      */
     public function getFields($table)
     {
-        return $this->_DB->Table()->getFields($table);
+        return $this->DB->Table()->getFields($table);
     }
 
     /**
@@ -207,7 +207,7 @@ class MyDB
      */
     public function getTables()
     {
-        return $this->_DB->Table()->getTables();
+        return $this->DB->Table()->getTables();
     }
 
     /**
@@ -225,8 +225,8 @@ class MyDB
     {
         return $this->getData(array(
             'select' => $field,
-            'from'   => $table,
-            'where'  => $fieldAndId
+            'from' => $table,
+            'where' => $fieldAndId
         ));
     }
 
@@ -242,7 +242,7 @@ class MyDB
     {
         return $this->insert(array(
             'insert' => $table,
-            'set'    => $FieldValue
+            'set' => $FieldValue
         ));
     }
 
@@ -259,10 +259,10 @@ class MyDB
      */
     public function updateData($table, $fieldValue, $fieldAndId)
     {
-        return $this->_DB->exec(array(
+        return $this->DB->exec(array(
             'update' => $table,
-            'set'    => $fieldValue,
-            'where'  => $fieldAndId
+            'set' => $fieldValue,
+            'where' => $fieldAndId
         ));
     }
 
@@ -288,10 +288,10 @@ class MyDB
      */
     public function deleteData($table, $fieldAndId)
     {
-        return $this->_DB->exec(array(
+        return $this->DB->exec(array(
             'delete' => true,
-            'from'   => $table,
-            'where'  => $fieldAndId
+            'from' => $table,
+            'where' => $fieldAndId
         ));
     }
 
@@ -302,7 +302,7 @@ class MyDB
      */
     public function optimize($tables)
     {
-        $this->_DB->Table()->optimize($tables);
+        $this->DB->Table()->optimize($tables);
     }
 
     /**
@@ -313,7 +313,7 @@ class MyDB
      */
     public function createTable($table, $fields)
     {
-        $this->_DB->Table()->create($table, $fields);
+        $this->DB->Table()->create($table, $fields);
     }
 
     /**
@@ -325,7 +325,7 @@ class MyDB
      */
     public function createTableFields($table, $fields)
     {
-        $this->_DB->Table()->appendFields($table, $fields);
+        $this->DB->Table()->appendFields($table, $fields);
     }
 
     /**
@@ -336,7 +336,7 @@ class MyDB
      */
     public function deleteTableFields($table, $fields)
     {
-        $this->_DB->Table()->deleteFields($table, $fields);
+        $this->DB->Table()->deleteFields($table, $fields);
     }
 
     /**
@@ -348,7 +348,7 @@ class MyDB
      */
     public function existTable($table)
     {
-        return $this->_DB->Table()->exist($table);
+        return $this->DB->Table()->exist($table);
     }
 
     /**
@@ -358,7 +358,7 @@ class MyDB
      */
     public function deleteTable($table)
     {
-        $this->_DB->Table()->delete($table);
+        $this->DB->Table()->delete($table);
     }
 
     /**
@@ -371,7 +371,7 @@ class MyDB
      */
     public function existRowInTable($table, $row)
     {
-        return $this->_DB->Table()->existColumnInTable($table, $row);
+        return $this->DB->Table()->existColumnInTable($table, $row);
     }
 
     /**
@@ -383,7 +383,7 @@ class MyDB
      */
     public function getRowsFromTable($table)
     {
-        return $this->_DB->Table()->getColumns($table);
+        return $this->DB->Table()->getColumns($table);
     }
 
     /**
@@ -394,7 +394,7 @@ class MyDB
      */
     public function deleteRow($table, $row)
     {
-        $this->_DB->Table()->deleteColumn($table, $row);
+        $this->DB->Table()->deleteColumn($table, $row);
     }
 
     /**
@@ -406,7 +406,7 @@ class MyDB
      */
     public function getKeys($table)
     {
-        return $this->_DB->Table()->getKeys($table);
+        return $this->DB->Table()->getKeys($table);
     }
 
     /**
@@ -419,7 +419,7 @@ class MyDB
      */
     public function issetPrimaryKey($table, $key)
     {
-        return $this->_DB->Table()->issetPrimaryKey($table, $key);
+        return $this->DB->Table()->issetPrimaryKey($table, $key);
     }
 
     /**
@@ -432,7 +432,7 @@ class MyDB
      */
     public function setPrimaryKey($table, $key)
     {
-        return $this->_DB->Table()->setPrimaryKey($table, $key);
+        return $this->DB->Table()->setPrimaryKey($table, $key);
     }
 
     /**
@@ -445,7 +445,7 @@ class MyDB
      */
     public function issetIndex($table, $key)
     {
-        return $this->_DB->Table()->issetIndex($table, $key);
+        return $this->DB->Table()->issetIndex($table, $key);
     }
 
     /**
@@ -457,7 +457,7 @@ class MyDB
      */
     public function getIndex($table)
     {
-        return $this->_DB->Table()->getIndex($table);
+        return $this->DB->Table()->getIndex($table);
     }
 
     /**
@@ -470,7 +470,7 @@ class MyDB
      */
     public function setIndex($table, $index)
     {
-        return $this->_DB->Table()->setIndex($table, $index);
+        return $this->DB->Table()->setIndex($table, $index);
     }
 
     /**
@@ -483,7 +483,7 @@ class MyDB
      */
     public function setFulltext($table, $index)
     {
-        return $this->_DB->Table()->setFulltext($table, $index);
+        return $this->DB->Table()->setFulltext($table, $index);
     }
 
     /**
@@ -496,7 +496,7 @@ class MyDB
      */
     public function issetFulltext($table, $key)
     {
-        return $this->_DB->Table()->issetFulltext($table, $key);
+        return $this->DB->Table()->issetFulltext($table, $key);
     }
 
 

@@ -28,7 +28,7 @@ class DOM
      *
      * @return QUI\QDOM
      */
-    static function arrayToQDOM(array $array)
+    public static function arrayToQDOM(array $array)
     {
         $DOM = new QUI\QDOM();
         $DOM->setAttributes($array);
@@ -43,7 +43,7 @@ class DOM
      * @param QUI\Controls\Toolbar\Bar $Tabbar
      * @param                          $plugin - optional
      */
-    static function addTabsToToolbar($tabs, Toolbar\Bar $Tabbar, $plugin = '')
+    public static function addTabsToToolbar($tabs, Toolbar\Bar $Tabbar, $plugin = '')
     {
         foreach ($tabs as $Tab) {
             /* @var $Tab \DOMElement */
@@ -70,10 +70,10 @@ class DOM
             }
 
             $ToolbarTab = new Toolbar\Tab(array(
-                'name'    => $Tab->getAttribute('name'),
-                'text'    => $text,
-                'image'   => $image,
-                'plugin'  => $plugin,
+                'name' => $Tab->getAttribute('name'),
+                'text' => $text,
+                'image' => $image,
+                'plugin' => $plugin,
                 'wysiwyg' => $type == 'wysiwyg' ? true : false
             ));
 
@@ -88,6 +88,9 @@ class DOM
             }
 
             if ($Onload && $Onload->item(0)) {
+                $Element = $Onload->item(0);
+                /* @var $Element \DOMElement */
+
                 $ToolbarTab->setAttribute(
                     'onload',
                     $Onload->item(0)->nodeValue
@@ -95,11 +98,14 @@ class DOM
 
                 $ToolbarTab->setAttribute(
                     'onload_require',
-                    $Onload->item(0)->getAttribute('require')
+                    $Element->getAttribute('require')
                 );
             }
 
             if ($OnUnload && $OnUnload->item(0)) {
+                $Element = $Onload->item(0);
+                /* @var $Element \DOMElement */
+
                 $ToolbarTab->setAttribute(
                     'onunload',
                     $OnUnload->item(0)->nodeValue
@@ -107,7 +113,7 @@ class DOM
 
                 $ToolbarTab->setAttribute(
                     'onunload_require',
-                    $Onload->item(0)->getAttribute('require')
+                    $Element->getAttribute('require')
                 );
             }
 
@@ -129,7 +135,7 @@ class DOM
      *
      * @return string
      */
-    static function buttonDomToString(\DOMNode $Button)
+    public static function buttonDomToString(\DOMNode $Button)
     {
         if ($Button->nodeName != 'button') {
             return '';
@@ -163,15 +169,15 @@ class DOM
      *
      * @return array
      */
-    static function dbTableDomToArray(\DOMNode $Table)
+    public static function dbTableDomToArray(\DOMNode $Table)
     {
         $result = array(
-            'suffix'            => $Table->getAttribute('name'),
-            'engine'            => $Table->getAttribute('engine'),
+            'suffix' => $Table->getAttribute('name'),
+            'engine' => $Table->getAttribute('engine'),
             'no-site-reference' => false,
-            'no-project-lang'   => false,
-            'no-auto-update'    => false,
-            'site-types'        => false
+            'no-project-lang' => false,
+            'no-auto-update' => false,
+            'site-types' => false
         );
 
         if ((int)$Table->getAttribute('no-site-reference') === 1) {
@@ -187,7 +193,8 @@ class DOM
         }
 
         if ($Table->getAttribute('site-types')) {
-            $result['site-types'] = explode(',',
+            $result['site-types'] = explode(
+                ',',
                 $Table->getAttribute('site-types')
             );
         }
@@ -268,7 +275,7 @@ class DOM
      *
      * @return array
      */
-    static function dbFieldDomToArray(\DOMNode $Field)
+    public static function dbFieldDomToArray(\DOMNode $Field)
     {
         $str = '';
         $str .= $Field->getAttribute('type');
@@ -308,7 +315,7 @@ class DOM
      *
      * @return array
      */
-    static function dbPrimaryDomToArray(\DOMNode $Primary)
+    public static function dbPrimaryDomToArray(\DOMNode $Primary)
     {
         return array(
             'primary' => explode(',', $Primary->nodeValue)
@@ -322,7 +329,7 @@ class DOM
      *
      * @return array
      */
-    static function dbUniqueDomToArray(\DOMNode $Unique)
+    public static function dbUniqueDomToArray(\DOMNode $Unique)
     {
         return array(
             'unique' => explode(',', $Unique->nodeValue)
@@ -336,7 +343,7 @@ class DOM
      *
      * @return array
      */
-    static function dbIndexDomToArray(\DOMNode $Index)
+    public static function dbIndexDomToArray(\DOMNode $Index)
     {
         return array(
             'index' => trim($Index->nodeValue)
@@ -350,7 +357,7 @@ class DOM
      *
      * @return array
      */
-    static function dbAutoIncrementDomToArray(\DOMNode $AI)
+    public static function dbAutoIncrementDomToArray(\DOMNode $AI)
     {
         return array(
             'auto_increment' => trim($AI->nodeValue)
@@ -364,7 +371,7 @@ class DOM
      *
      * @return array
      */
-    static function dbAutoFullextDomToArray(\DOMNode $Fulltext)
+    public static function dbAutoFullextDomToArray(\DOMNode $Fulltext)
     {
         return array(
             'fulltext' => trim($Fulltext->nodeValue)
@@ -377,7 +384,7 @@ class DOM
      * @param \DOMElement|\DOMNode $DOMNode
      * @return array
      */
-    static function getTabs(\DOMElement $DOMNode)
+    public static function getTabs(\DOMElement $DOMNode)
     {
         $tablist = $DOMNode->getElementsByTagName('tab');
 
@@ -404,11 +411,12 @@ class DOM
      * HTML eines DOM Tabs
      *
      * @param string $name
-     * @param QUI\Projects\Project|string|QUI\Projects\Site|QUI\Projects\Site\Edit $Object - string = path to user.xml File
+     * @param QUI\Projects\Project|string|QUI\Projects\Site|QUI\Projects\Site\Edit
+     *        $Object - string = path to user.xml File
      *
      * @return string
      */
-    static function getTabHTML($name, $Object)
+    public static function getTabHTML($name, $Object)
     {
         $tabs = array();
 
@@ -426,10 +434,10 @@ class DOM
                 );
 
             } else {
-                if (
-                    get_class($Object) === 'QUI\\Projects\\Site'
+                if (get_class($Object) === 'QUI\\Projects\\Site'
                     || get_class($Object) === 'QUI\\Projects\\Site\\Edit'
                 ) {
+                    /* @var $Object QUI\Projects\Site */
                     $Tabbar = QUI\Projects\Sites::getTabs($Object);
                     $Tab    = $Tabbar->getElementByName($name);
 
@@ -440,10 +448,8 @@ class DOM
                             // site extra settings
                             $extra = '';
 
-                            if ($file == SYS_DIR . 'template/site/settings.html'
-                            ) {
-                                $extra
-                                    = Utils::getExtraSettingsForSite($Object);
+                            if ($file == SYS_DIR . 'template/site/settings.html') {
+                                $extra = Utils::getExtraSettingsForSite($Object);
                             }
 
                             // generate html
@@ -451,10 +457,10 @@ class DOM
                                 ->getEngine(true);
 
                             $Engine->assign(array(
-                                'Site'    => $Object,
+                                'Site' => $Object,
                                 'Project' => $Object->getProject(),
                                 'Plugins' => QUI::getPluginManager(),
-                                'QUI'     => new QUI()
+                                'QUI' => new QUI()
                             ));
 
                             return $Engine->fetch($file) . $extra;
@@ -487,7 +493,7 @@ class DOM
      *
      * @return array
      */
-    static function getButtonsFromWindow($Dom)
+    public static function getButtonsFromWindow($Dom)
     {
         $btnlist = $Dom->getElementsByTagName('categories');
 
@@ -556,14 +562,12 @@ class DOM
                 foreach ($projects as $project) {
                     $Button->setAttribute(
                         'text',
-                        str_replace('{$project}', $project,
-                            $Button->getAttribute('text'))
+                        str_replace('{$project}', $project, $Button->getAttribute('text'))
                     );
 
                     $Button->setAttribute(
                         'title',
-                        str_replace('{$project}', $project,
-                            $Button->getAttribute('title'))
+                        str_replace('{$project}', $project, $Button->getAttribute('title'))
                     );
 
                     $Button->setAttribute('section', $project);
@@ -589,7 +593,7 @@ class DOM
      *
      * @return string|array
      */
-    static function getTextFromNode(\DOMNode $Node, $translate = true)
+    public static function getTextFromNode(\DOMNode $Node, $translate = true)
     {
         $loc = $Node->getElementsByTagName('locale');
 
@@ -597,16 +601,19 @@ class DOM
             return self::parseVar(trim($Node->nodeValue));
         }
 
+        /* @var $Element \DOMElement */
+        $Element = $loc->item(0);
+
         if ($translate === false) {
             return array(
-                $loc->item(0)->getAttribute('group'),
-                $loc->item(0)->getAttribute('var')
+                $Element->getAttribute('group'),
+                $Element->getAttribute('var')
             );
         }
 
         return QUI::getLocale()->get(
-            $loc->item(0)->getAttribute('group'),
-            $loc->item(0)->getAttribute('var')
+            $Element->getAttribute('group'),
+            $Element->getAttribute('var')
         );
     }
 
@@ -618,7 +625,7 @@ class DOM
      *
      * @return array
      */
-    static function getWysiwygStyles(\DOMDocument $Dom, $translate = true)
+    public static function getWysiwygStyles(\DOMDocument $Dom, $translate = true)
     {
         $Path   = new \DOMXPath($Dom);
         $Styles = $Path->query("//wysiwyg/styles/style");
@@ -631,7 +638,6 @@ class DOM
 
         /* @var $Style \DOMElement */
         foreach ($Styles as $Style) {
-
             $attributeList = array();
             $attributes    = $Style->getElementsByTagName('attribute');
 
@@ -642,8 +648,8 @@ class DOM
             }
 
             $result[] = array(
-                'text'       => self::getTextFromNode($Style, $translate),
-                'element'    => $Style->getAttribute('element'),
+                'text' => self::getTextFromNode($Style, $translate),
+                'element' => $Style->getAttribute('element'),
                 'attributes' => $attributeList
             );
         }
@@ -658,7 +664,7 @@ class DOM
      *
      * @return string
      */
-    static function groupDomToString(\DOMNode $Group)
+    public static function groupDomToString(\DOMNode $Group)
     {
         if ($Group->nodeName != 'group') {
             return '';
@@ -696,7 +702,7 @@ class DOM
      *
      * @return string
      */
-    static function getInnerBodyFromHTML($html)
+    public static function getInnerBodyFromHTML($html)
     {
         return preg_replace('/(.*)<body>(.*)<\/body>(.*)/si', '$2', $html);
     }
@@ -709,7 +715,7 @@ class DOM
      *
      * @return string
      */
-    static function getInnerHTML(\DOMNode $Node)
+    public static function getInnerHTML(\DOMNode $Node)
     {
         $Dom      = new \DOMDocument();
         $Children = $Node->childNodes;
@@ -728,7 +734,7 @@ class DOM
      *
      * @return array
      */
-    static function getConfigParamsFromDOM($Dom)
+    public static function getConfigParamsFromDOM($Dom)
     {
         $Settings = $Dom;
 
@@ -786,7 +792,7 @@ class DOM
      *
      * @return QUI\Controls\Windows\Window|bool
      */
-    static function parseDomToWindow($Dom)
+    public static function parseDomToWindow($Dom)
     {
         $settings = $Dom->getElementsByTagName('settings');
 
@@ -825,9 +831,11 @@ class DOM
         $params = $Window->getElementsByTagName('params');
 
         if ($params->item(0)) {
-            $icon = $params->item(0)->getElementsByTagName('icon');
+            /* @var $Element \DOMElement */
+            $Element = $params->item(0);
+            $icon    = $Element->getElementsByTagName('icon');
 
-            if ($icon->item(0)) {
+            if ($Element) {
                 $Win->setAttribute(
                     'icon',
                     self::parseVar($icon->item(0)->nodeValue)
@@ -851,7 +859,7 @@ class DOM
      *
      * @return array
      */
-    static function parsePanelToArray(\DOMNode $Node)
+    public static function parsePanelToArray(\DOMNode $Node)
     {
         if ($Node->nodeName != 'panel') {
             return array();
@@ -879,9 +887,9 @@ class DOM
         }
 
         return array(
-            'image'   => $image,
-            'title'   => $title,
-            'text'    => $text,
+            'image' => $image,
+            'title' => $title,
+            'text' => $text,
             'require' => $require
         );
     }
@@ -893,7 +901,7 @@ class DOM
      *
      * @return array
      */
-    static function parsePermissionToArray(\DOMNode $Node)
+    public static function parsePermissionToArray(\DOMNode $Node)
     {
         if ($Node->nodeName != 'permission') {
             return array();
@@ -912,9 +920,9 @@ class DOM
         $area = QUI\Rights\Manager::parseArea($Node->getAttribute('area'));
 
         return array(
-            'name'    => $perm,
-            'area'    => $area,
-            'type'    => $type,
+            'name' => $perm,
+            'area' => $area,
+            'type' => $type,
             'default' => $default
         );
     }
@@ -927,7 +935,7 @@ class DOM
      *
      * @return string
      */
-    static function parseCategorieToHTML($Category, $Plugin = false)
+    public static function parseCategorieToHTML($Category, $Plugin = false)
     {
         if (is_bool($Category)) {
             return '';
@@ -982,9 +990,9 @@ class DOM
 
                 if (file_exists($file)) {
                     $Engine->assign(array(
-                        'Plugin'  => $Plugin,
+                        'Plugin' => $Plugin,
                         'Plugins' => QUI::getPluginManager(),
-                        'QUI'     => new QUI()
+                        'QUI' => new QUI()
                     ));
 
                     $result .= $Engine->fetch($file);
@@ -1062,9 +1070,9 @@ class DOM
 
                             if (file_exists($file)) {
                                 $Engine->assign(array(
-                                    'Plugin'  => $Plugin,
+                                    'Plugin' => $Plugin,
                                     'Plugins' => QUI::getPluginManager(),
-                                    'QUI'     => new QUI()
+                                    'QUI' => new QUI()
                                 ));
 
                                 $result .= $Engine->fetch($file);
@@ -1121,7 +1129,7 @@ class DOM
      *
      * @return string
      */
-    static function inputDomToString(\DOMNode $Input)
+    public static function inputDomToString(\DOMNode $Input)
     {
         if ($Input->nodeName != 'input') {
             return '';
@@ -1230,7 +1238,7 @@ class DOM
      *
      * @return string
      */
-    static function textareaDomToString(\DOMNode $Textarea)
+    public static function textareaDomToString(\DOMNode $Textarea)
     {
         if ($Textarea->nodeName != 'textarea') {
             return '';
@@ -1274,7 +1282,7 @@ class DOM
      *
      * @return array
      */
-    static function parseConfs($confs)
+    public static function parseConfs($confs)
     {
         $result = array();
 
@@ -1299,7 +1307,7 @@ class DOM
             }
 
             $result[$Conf->getAttribute('name')] = array(
-                'type'    => $type,
+                'type' => $type,
                 'default' => $default
             );
         }
@@ -1314,7 +1322,7 @@ class DOM
      *
      * @return string
      */
-    static function parseVar($value)
+    public static function parseVar($value)
     {
         $value = trim($value);
 
@@ -1356,7 +1364,7 @@ class DOM
      *
      * @return string
      */
-    static function selectDomToString(\DOMNode $Select)
+    public static function selectDomToString(\DOMNode $Select)
     {
         if ($Select->nodeName != 'select') {
             return '';

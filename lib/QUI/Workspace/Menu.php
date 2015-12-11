@@ -7,7 +7,6 @@ namespace QUI\Workspace;
 
 use QUI;
 use QUI\Controls\Contextmenu\Bar;
-use QUI\Controls\Contextmenu\Baritem;
 use QUI\Controls\Contextmenu\Menuitem;
 use QUI\Utils\XML;
 
@@ -24,13 +23,11 @@ class Menu
     public function getMenu()
     {
         try {
-
             return QUI\Cache\Manager::get(
-                $this->_getCacheName()
+                $this->getCacheName()
             );
 
         } catch (QUI\Exception $Exception) {
-
         }
 
         return $this->createMenu();
@@ -64,7 +61,6 @@ class Menu
         $Projects = $Settings->getElementByName('projects');
 
         foreach ($projects as $project) {
-
             if (!$Projects) {
                 continue;
             }
@@ -195,7 +191,7 @@ class Menu
             XML::addXMLFileToMenu($Menu, $dir . $file);
         }
 
-        QUI\Cache\Manager::set($this->_getCacheName(), $Menu->toArray());
+        QUI\Cache\Manager::set($this->getCacheName(), $Menu->toArray());
 
         return $Menu->toArray();
     }
@@ -260,7 +256,7 @@ class Menu
      * Cachename for the menu
      * The name of the menu cache is user dependent
      */
-    protected function _getCacheName()
+    protected function getCacheName()
     {
         $User  = QUI::getUserBySession();
         $cache = 'qui/admin/menu/' . $User->getId() . '/' . $User->getLang();
