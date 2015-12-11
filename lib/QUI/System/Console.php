@@ -27,68 +27,67 @@ class Console
      *
      * @var array
      */
-    private $_tools = array();
+    private $tools = array();
 
     /**
      * Console parameter
      *
      * @var array
      */
-    private $_argv;
+    private $argv;
 
     /**
      * The current text color
      *
      * @var string
      */
-    protected $_current_color = false;
+    protected $current_color = false;
 
     /**
      * the current background color
      *
      * @var string
      */
-    protected $_current_bg = false;
+    protected $current_bg = false;
 
     /**
      * All available text colors
      *
      * @var array
      */
-    protected $_colors
-        = array(
-            'black' => '0;30',
-            'dark_gray' => '1;30',
-            'blue' => '0;34',
-            'light_blue' => '1;34',
-            'green' => '0;32',
-            'light_green' => '1;32',
-            'cyan' => '0;36',
-            'light_cyan' => '1;36',
-            'red' => '0;31',
-            'light_red' => '1;31',
-            'purple' => '0;35',
-            'light_purple' => '1;35',
-            'brown' => '0;33',
-            'yellow' => '1;33',
-            'light_gray' => '0;37',
-            'white' => '1;37',
-            'black_u' => '4;30',
-            'red_u' => '4;31',
-            'green_u' => '4;32',
-            'yellow_u' => '4;33',
-            'blue_u' => '4;34',
-            'purple_u' => '4;35',
-            'cyan_u' => '4;36',
-            'white_u' => '4;37'
-        );
+    protected $colors = array(
+        'black' => '0;30',
+        'dark_gray' => '1;30',
+        'blue' => '0;34',
+        'light_blue' => '1;34',
+        'green' => '0;32',
+        'light_green' => '1;32',
+        'cyan' => '0;36',
+        'light_cyan' => '1;36',
+        'red' => '0;31',
+        'light_red' => '1;31',
+        'purple' => '0;35',
+        'light_purple' => '1;35',
+        'brown' => '0;33',
+        'yellow' => '1;33',
+        'light_gray' => '0;37',
+        'white' => '1;37',
+        'black_u' => '4;30',
+        'red_u' => '4;31',
+        'green_u' => '4;32',
+        'yellow_u' => '4;33',
+        'blue_u' => '4;34',
+        'purple_u' => '4;35',
+        'cyan_u' => '4;36',
+        'white_u' => '4;37'
+    );
 
     /**
      * All available background colors
      *
      * @var array
      */
-    protected $_bg = array(
+    protected $bg = array(
         'black' => '40',
         'red' => '41',
         'green' => '42',
@@ -115,7 +114,7 @@ class Console
             exit;
         }
 
-        $params = $this->_read_argv();
+        $params = $this->readArgv();
 
         if (isset($params['--help']) && !isset($params['--tool'])) {
             $this->help();
@@ -165,8 +164,8 @@ class Console
         }
 
         // Login
-        $this->_argv = $params;
-        $this->_read();
+        $this->argv = $params;
+        $this->read();
 
         if (isset($params['--listtools'])) {
             $this->title();
@@ -191,7 +190,7 @@ class Console
      *
      * @return array
      */
-    protected function _read_argv()
+    protected function readArgv()
     {
         // Vars löschen die Probleme bereiten können
         $_REQUEST = array();
@@ -254,8 +253,8 @@ class Console
             return;
         }
 
-        if (isset($this->_tools[$tool])) {
-            $Exec = $this->_tools[$tool];
+        if (isset($this->tools[$tool])) {
+            $Exec = $this->tools[$tool];
         }
 
         if ($Exec) {
@@ -286,12 +285,12 @@ class Console
      */
     public function get($tool)
     {
-        if (isset($this->_tools[$tool]) && is_object($this->_tools[$tool])) {
-            return $this->_tools[$tool];
+        if (isset($this->tools[$tool]) && is_object($this->tools[$tool])) {
+            return $this->tools[$tool];
         }
 
         if ($tool == true) {
-            return $this->_tools;
+            return $this->tools;
         }
 
         return false;
@@ -302,17 +301,17 @@ class Console
      */
     public function start()
     {
-        if (!isset($this->_argv['--tool'])) {
+        if (!isset($this->argv['--tool'])) {
             return;
         }
 
-        if ($Tool = $this->get($this->_argv['--tool'])) {
+        if ($Tool = $this->get($this->argv['--tool'])) {
             try {
                 if (is_array($Tool) || !$Tool) {
                     throw new QUI\Exception('Tool not found', 404);
                 }
 
-                if (isset($this->_argv['--help'])) {
+                if (isset($this->argv['--help'])) {
                     $Tool->outputHelp();
 
                     return;
@@ -335,7 +334,7 @@ class Console
     /**
      * Read all tools and include it
      */
-    private function _read()
+    private function read()
     {
         // Standard Konsoletools
         $path  = LIB_DIR . 'QUI/System/Console/Tools/';
@@ -346,7 +345,7 @@ class Console
                 continue;
             }
 
-            $this->_includeClasses($files[$i], $path);
+            $this->includeClasses($files[$i], $path);
         }
 
         // look at console tools at plugins
@@ -396,11 +395,11 @@ class Console
             $Tool = new $cls();
             $Tool->setAttribute('parent', $this);
 
-            foreach ($this->_argv as $key => $value) {
+            foreach ($this->argv as $key => $value) {
                 $Tool->setArgument($key, $value);
             }
 
-            $this->_tools[$Tool->getName()] = $Tool;
+            $this->tools[$Tool->getName()] = $Tool;
         }
     }
 
@@ -412,7 +411,7 @@ class Console
      *
      * @throws QUI\Exception
      */
-    protected function _includeClasses($file, $dir)
+    protected function includeClasses($file, $dir)
     {
         $file = Orthos::clearPath(realpath($dir . $file));
 
@@ -434,11 +433,11 @@ class Console
         $Tool = new $class();
         $Tool->setAttribute('parent', $this);
 
-        foreach ($this->_argv as $key => $value) {
+        foreach ($this->argv as $key => $value) {
             $Tool->setArgument($key, $value);
         }
 
-        $this->_tools[$Tool->getName()] = $Tool;
+        $this->tools[$Tool->getName()] = $Tool;
     }
 
     /**
@@ -482,7 +481,7 @@ class Console
      */
     public function title()
     {
-        $params = $this->_read_argv();
+        $params = $this->readArgv();
 
         if (isset($params['--noLogo'])) {
             return;
@@ -563,19 +562,19 @@ class Console
     public function message($msg, $color = false, $bg = false)
     {
         if ($color) {
-            $this->_current_color = $color;
+            $this->current_color = $color;
         }
 
         if ($bg) {
-            $this->_current_bg = $bg;
+            $this->current_bg = $bg;
         }
 
-        if (isset($this->_colors[$this->_current_color])) {
-            echo "\033[" . $this->_colors[$this->_current_color] . "m";
+        if (isset($this->colors[$this->current_color])) {
+            echo "\033[" . $this->colors[$this->current_color] . "m";
         }
 
-        if (isset($this->_bg[$this->_current_bg])) {
-            echo "\033[" . $this->_bg[$this->_current_bg] . "m";
+        if (isset($this->bg[$this->current_bg])) {
+            echo "\033[" . $this->bg[$this->current_bg] . "m";
         }
 
         echo $msg;
@@ -596,8 +595,8 @@ class Console
      */
     public function clearMsg()
     {
-        $this->_current_color = false;
-        $this->_current_bg    = false;
+        $this->current_color = false;
+        $this->current_bg    = false;
 
         echo "\033[0m";
     }

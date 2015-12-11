@@ -28,13 +28,12 @@ class PermissionOrder
      *
      * @return integer
      */
-    static function max_integer($permission, $groups)
+    public static function maxInteger($permission, $groups)
     {
         $result = null;
 
         /* @var $Group Group */
         foreach ($groups as $Group) {
-
             if ($Group->hasPermission($permission) === false) {
                 continue;
             }
@@ -48,7 +47,6 @@ class PermissionOrder
 
         // default
         if (is_null($result)) {
-
             $Manager  = QUI::getPermissionManager();
             $permData = $Manager->getPermissionData($permission);
 
@@ -63,6 +61,14 @@ class PermissionOrder
     }
 
     /**
+     * @deprecated
+     */
+    public static function max_integer($permission, $groups)
+    {
+        self::maxInteger($permission, $groups);
+    }
+
+    /**
      * Gibt den Minimalen integer Rechte Wert zurück
      *
      * @param string $permission - permission name
@@ -70,13 +76,12 @@ class PermissionOrder
      *
      * @return integer
      */
-    static function min_integer($permission, $groups)
+    public static function minInteger($permission, $groups)
     {
         $result = null;
 
         /* @var $Group Group */
         foreach ($groups as $Group) {
-
             if ($Group->hasPermission($permission) === false) {
                 continue;
             }
@@ -90,7 +95,6 @@ class PermissionOrder
 
         // default
         if (is_null($result)) {
-
             $Manager  = QUI::getPermissionManager();
             $permData = $Manager->getPermissionData($permission);
 
@@ -105,6 +109,14 @@ class PermissionOrder
     }
 
     /**
+     * @deprecated
+     */
+    public static function min_integer($permission, $groups)
+    {
+        return self::minInteger($permission, $groups);
+    }
+
+    /**
      * Prüft die Rechte und gibt das Recht welches Geltung hat zurück
      *
      * @param string $permission - permission name
@@ -112,7 +124,7 @@ class PermissionOrder
      *
      * @return boolean
      */
-    static function permission($permission, $groups)
+    public static function permission($permission, $groups)
     {
         $result = false;
 

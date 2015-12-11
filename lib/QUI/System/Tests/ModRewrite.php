@@ -65,7 +65,7 @@ class ModRewrite extends QUI\System\Test
             return self::STATUS_OK;
         }
 
-        return $this->_checkViaHTTP();
+        return $this->checkViaHTTP();
     }
 
     /**
@@ -73,7 +73,7 @@ class ModRewrite extends QUI\System\Test
      *
      * @return self::STATUS_OK|self::STATUS_ERROR
      */
-    protected function _checkViaHTTP()
+    protected function checkViaHTTP()
     {
         try {
             $Project = QUI::getProjectManager()->getStandard();
