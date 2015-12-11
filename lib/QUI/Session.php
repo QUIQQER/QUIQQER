@@ -30,35 +30,35 @@ class Session
      *
      * @var int
      */
-    protected $_lifetime = 1400;
+    protected $lifetime = 1400;
 
     /**
      * Session handler
      *
      * @var \Symfony\Component\HttpFoundation\Session\Session
      */
-    private $_Session = false;
+    private $Session = false;
 
     /**
      * Storage handler
      *
      * @var \Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
      */
-    private $_Storage = false;
+    private $Storage = false;
 
     /**
      * Database table
      *
      * @var string
      */
-    private $_table;
+    private $table;
 
     /**
      * constructor
      */
     public function __construct()
     {
-        $this->_table = QUI_DB_PRFX.'sessions';
+        $this->table = QUI_DB_PRFX.'sessions';
 
         // symfony files
         $classNativeSessionStorage
@@ -75,15 +75,14 @@ class Session
 
         // options
         if ($sess = QUI::conf('session', 'max_life_time')) {
-            $this->_lifetime = $sess;
+            $this->lifetime = $sess;
         }
 
         $storageOptions = array(
-            'cookie_lifetime'  => $this->_lifetime
+            'cookie_lifetime'  => $this->lifetime
         );
 
         if (!class_exists('NativeSessionStorage')) {
-
             if (file_exists($fileNativeSessionStorage)) {
                 require_once $fileNativeSessionStorage;
 
@@ -94,21 +93,20 @@ class Session
             }
 
             if (class_exists($classNativeSessionStorage)) {
-                $this->_Storage = new $classNativeSessionStorage(
+                $this->Storage = new $classNativeSessionStorage(
                     $storageOptions,
-                    $this->_getStorage()
+                    $this->getStorage()
                 );
             }
 
         } else {
-            $this->_Storage = new NativeSessionStorage(
+            $this->Storage = new NativeSessionStorage(
                 $storageOptions,
-                $this->_getStorage()
+                $this->getStorage()
             );
         }
 
         if (!class_exists('NativeSessionStorage')) {
-
             if (file_exists($fileSession)) {
                 require_once $fileSession;
 
@@ -118,12 +116,12 @@ class Session
             }
 
             if (class_exists($classSession)) {
-                $this->_Session = new $classSession($this->_Storage);
+                $this->Session = new $classSession($this->Storage);
             }
 
         } else {
-            $this->_Session
-                = new \Symfony\Component\HttpFoundation\Session\Session($this->_Storage);
+            $this->Session
+                = new \Symfony\Component\HttpFoundation\Session\Session($this->Storage);
         }
     }
 
@@ -132,7 +130,7 @@ class Session
      *
      * @return \SessionHandlerInterface
      */
-    protected function _getStorage()
+    protected function getStorage()
     {
         $sessionType = QUI::conf('session', 'type');
 
@@ -149,7 +147,6 @@ class Session
 
         // memcached
         if ($sessionType == 'memcached' && class_exists('Memcached')) {
-
             $memcached_data = QUI::conf('session', 'memcached_data');
             $memcached_data = explode(';', $memcached_data);
 
@@ -177,7 +174,6 @@ class Session
 
         // memcache
         if ($sessionType == 'memcache' && class_exists('Memcache')) {
-
             $memcache_data = QUI::conf('session', 'memcache_data');
             $memcache_data = explode(';', $memcache_data);
 
@@ -205,12 +201,11 @@ class Session
 
         // session via database
         if ($sessionType == 'database') {
-
             $PDO = QUI::getDataBase()->getNewPDO();
             $PDO->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
             return new PdoSessionHandler($PDO, array(
-                'db_table'        => $this->_table,
+                'db_table'        => $this->table,
                 'db_id_col'       => 'session_id',
                 'db_data_col'     => 'session_value',
                 'db_time_col'     => 'session_time',
@@ -226,8 +221,8 @@ class Session
      */
     public function start()
     {
-        if ($this->_Session) {
-            $this->_Session->start();
+        if ($this->Session) {
+            $this->Session->start();
         }
     }
 
@@ -240,7 +235,7 @@ class Session
 
         // pdo mysql options db
         // more at http://symfony.com/doc/current/cookbook/configuration/pdo_session_storage.html
-        $DBTable->appendFields($this->_table, array(
+        $DBTable->appendFields($this->table, array(
             'session_id'       => 'varchar(255) NOT NULL',
             'session_value'    => 'text NOT NULL',
             'session_time'     => 'int(11) NOT NULL',
@@ -248,7 +243,7 @@ class Session
             'uid'              => 'int(11) NOT NULL'
         ));
 
-        $DBTable->setPrimaryKey($this->_table, 'session_id');
+        $DBTable->setPrimaryKey($this->table, 'session_id');
     }
 
     /**
@@ -259,8 +254,8 @@ class Session
      */
     public function set($name, $value)
     {
-        if ($this->_Session) {
-            $this->_Session->set($name, $value);
+        if ($this->Session) {
+            $this->Session->set($name, $value);
         }
     }
 
@@ -269,8 +264,8 @@ class Session
      */
     public function refresh()
     {
-        if ($this->_Session) {
-            $this->_Session->migrate();
+        if ($this->Session) {
+            $this->Session->migrate();
         }
     }
 
@@ -283,8 +278,8 @@ class Session
      */
     public function get($name)
     {
-        if ($this->_Session) {
-            return $this->_Session->get($name, false);
+        if ($this->Session) {
+            return $this->Session->get($name, false);
         }
 
         return false;
@@ -297,8 +292,8 @@ class Session
      */
     public function getId()
     {
-        if ($this->_Session) {
-            return $this->_Session->getId();
+        if ($this->Session) {
+            return $this->Session->getId();
         }
 
         return md5(microtime());
@@ -311,14 +306,14 @@ class Session
      */
     public function check()
     {
-        if (!$this->_Session) {
+        if (!$this->Session) {
             return false;
         }
 
-        $idle = time() - $this->_Session->getMetadataBag()->getLastUsed();
+        $idle = time() - $this->Session->getMetadataBag()->getLastUsed();
 
-        if ($idle > $this->_lifetime) {
-            $this->_Session->invalidate();
+        if ($idle > $this->lifetime) {
+            $this->Session->invalidate();
 
             return false;
         }
@@ -333,8 +328,8 @@ class Session
      */
     public function del($var)
     {
-        if ($this->_Session) {
-            $this->_Session->remove($var);
+        if ($this->Session) {
+            $this->Session->remove($var);
         }
     }
 
@@ -343,12 +338,12 @@ class Session
      */
     public function destroy()
     {
-        if (!$this->_Session) {
+        if (!$this->Session) {
             return;
         }
 
-        $this->_Session->clear();
-        $this->_Session->invalidate();
+        $this->Session->clear();
+        $this->Session->invalidate();
     }
 
     /**
@@ -361,7 +356,7 @@ class Session
     public function getLastRefreshFrom($sid)
     {
         $result = QUI::getDataBase()->fetch(array(
-            'from'  => $this->_table,
+            'from'  => $this->table,
             'where' => array(
                 'session_id' => $sid
             ),
@@ -385,7 +380,7 @@ class Session
     public function isUserOnline($uid)
     {
         $result = QUI::getDataBase()->fetch(array(
-            'from'  => $this->_table,
+            'from'  => $this->table,
             'where' => array(
                 'uid' => (int)$uid
             ),
@@ -402,6 +397,6 @@ class Session
      */
     public function getSymfonySession()
     {
-        return $this->_Session;
+        return $this->Session;
     }
 }

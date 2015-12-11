@@ -25,7 +25,7 @@ class Security
      *
      * @return string
      */
-    static function encrypt($str)
+    public static function encrypt($str)
     {
         if (empty($str)) {
             return '';
@@ -43,7 +43,7 @@ class Security
      *
      * @return string
      */
-    static function decrypt($str)
+    public static function decrypt($str)
     {
         if (empty($str)) {
             return '';
@@ -62,7 +62,7 @@ class Security
      *
      * @return string
      */
-    static function b64encrypt($pass, $switch = 3)
+    public static function b64encrypt($pass, $switch = 3)
     {
         // Passwort drehn
         $newpass = substr($pass, $switch).substr($pass, 0, $switch);
@@ -78,7 +78,7 @@ class Security
      *
      * @return string
      */
-    static function b64decrypt($pass, $switch = 3)
+    public static function b64decrypt($pass, $switch = 3)
     {
         $newpass = base64_decode($pass);
 

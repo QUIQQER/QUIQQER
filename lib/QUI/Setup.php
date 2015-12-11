@@ -21,7 +21,7 @@ class Setup
     /**
      * Excute the QUIQQER Setup
      */
-    static function all()
+    public static function all()
     {
         // not at phpunit
         if (!isset($_SERVER['argv'])
@@ -106,7 +106,6 @@ class Setup
 
         // first we need all databases
         foreach ($packages as $package) {
-
             if ($package == 'composer') {
                 continue;
             }
@@ -151,7 +150,7 @@ class Setup
      * Generate the main files,
      * the main link only to the internal quiqqer/quiqqer files
      */
-    static function generateFileLinks()
+    public static function generateFileLinks()
     {
         $fileHeader
             = '<?php
@@ -213,7 +212,6 @@ if (file_exists(\$boot)) {
         // rest
         file_put_contents(
             $image,
-
             $fileHeader.
             "require 'bootstrap.php';\n".
             "require '{$OPT_DIR}quiqqer/quiqqer/image.php';"
@@ -221,7 +219,6 @@ if (file_exists(\$boot)) {
 
         file_put_contents(
             $index,
-
             $fileHeader.
             "require 'bootstrap.php';\n".
             "require '{$OPT_DIR}quiqqer/quiqqer/index.php';"
@@ -229,7 +226,6 @@ if (file_exists(\$boot)) {
 
         file_put_contents(
             $quiqqer,
-
             $fileHeader.
             "require 'bootstrap.php';\n".
             "require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php';"
