@@ -26,6 +26,13 @@ class Ajax extends QUI\QDOM
     protected static $functions = array();
 
     /**
+     * Available ajax lambda functions
+     *
+     * @var array
+     */
+    protected static $callables = array();
+
+    /**
      * registered permissions from available ajax functions
      *
      * @var array
@@ -47,10 +54,10 @@ class Ajax extends QUI\QDOM
     }
 
     /**
-     * Registered functions which are available via Ajax
+     * Registered a function which is available via ajax
      *
-     * @param string $reg_function - Function which exists in Ajax
-     * @param array|boolean $reg_vars - Variables which has the function of
+     * @param string $reg_function - Function which is callable via ajax
+     * @param array|boolean $reg_vars - Variables of the function
      * @param bool|string $user_perm - rights, optional
      *
      * @return bool
@@ -72,6 +79,42 @@ class Ajax extends QUI\QDOM
 
         if ($user_perm) {
             self::$permissions[$reg_function] = $user_perm;
+        }
+
+        return true;
+    }
+
+    /**
+     * Registered a lambda function which is available via ajax
+     *
+     * @param string $name - Name of the function
+     * @param callable $function - Function
+     * @param array $reg_vars - Variables of the function
+     * @param bool|false $user_perm - (optional) permissions / rights
+     *
+     * @return bool
+     */
+    public static function registerFunction(
+        $name,
+        $function,
+        $reg_vars = array(),
+        $user_perm = false
+    ) {
+        if (!is_callable($function)) {
+            return false;
+        }
+
+        if (!is_string($name)) {
+            return false;
+        }
+
+        self::$callables[$name] = array(
+            'callable' => $function,
+            'params' => $reg_vars
+        );
+
+        if ($user_perm) {
+            self::$permissions[$name] = $user_perm;
         }
 
         return true;
@@ -173,7 +216,9 @@ class Ajax extends QUI\QDOM
      */
     protected function callRequestFunction($_rf)
     {
-        if (!isset(self::$functions[$_rf])) {
+        if (!isset(self::$functions[$_rf])
+            && !isset(self::$callables[$_rf])
+        ) {
             if (defined('DEVELOPMENT') && DEVELOPMENT) {
                 System\Log::addDebug('Funktion ' . $_rf . ' nicht gefunden');
             }
@@ -200,7 +245,13 @@ class Ajax extends QUI\QDOM
         $params = array();
 
         // Params
-        foreach (self::$functions[$_rf] as $var) {
+        if (isset(self::$callables[$_rf])) {
+            $functionParams = self::$callables[$_rf]['params'];
+        } else {
+            $functionParams = self::$functions[$_rf];
+        }
+
+        foreach ($functionParams as $var) {
             if (!isset($_REQUEST[$var])) {
                 $params[$var] = '';
                 continue;
@@ -213,19 +264,23 @@ class Ajax extends QUI\QDOM
                 continue;
             }
 
-            $value = urldecode($value);
-
-            if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
-                $params[$var] = stripslashes($value);
-            } else {
-                $params[$var] = $value;
-            }
+            $value        = urldecode($value);
+            $params[$var] = $value;
         }
 
         try {
-            $return = array(
-                'result' => call_user_func_array($_rf, $params)
-            );
+            if (isset(self::$callables[$_rf])) {
+                $return = array(
+                    'result' => call_user_func_array(
+                        self::$callables[$_rf]['callable'],
+                        $params
+                    )
+                );
+            } else {
+                $return = array(
+                    'result' => call_user_func_array($_rf, $params)
+                );
+            }
 
         } catch (QUI\Exception $Exception) {
             return $this->writeException($Exception);
