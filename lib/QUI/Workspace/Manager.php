@@ -23,7 +23,7 @@ class Manager
      *
      * @return string
      */
-    public static function Table()
+    public static function TABLE()
     {
         return QUI_DB_PRFX . 'users_workspaces';
     }
@@ -35,7 +35,7 @@ class Manager
     {
         $Table = QUI::getDataBase()->Table();
 
-        $Table->appendFields(self::Table(), array(
+        $Table->appendFields(self::TABLE(), array(
             'id'        => 'int(11) NOT NULL',
             'uid'       => 'int(11) NOT NULL',
             'title'     => 'text',
@@ -45,8 +45,8 @@ class Manager
             'standard'  => 'int(1)'
         ));
 
-        $Table->setAutoIncrement(self::Table(), 'id');
-        $Table->setPrimaryKey(self::Table(), 'id');
+        $Table->setAutoIncrement(self::TABLE(), 'id');
+        $Table->setPrimaryKey(self::TABLE(), 'id');
     }
 
     /**
@@ -66,7 +66,7 @@ class Manager
         $minHeight = (int)$minHeight;
         $minWidth  = (int)$minWidth;
 
-        QUI::getDataBase()->insert(self::Table(), array(
+        QUI::getDataBase()->insert(self::TABLE(), array(
             'uid'       => $User->getId(),
             'title'     => $title,
             'data'      => $data,
@@ -85,7 +85,7 @@ class Manager
      */
     public static function deleteWorkspace($id, $User)
     {
-        QUI::getDataBase()->delete(self::Table(), array(
+        QUI::getDataBase()->delete(self::TABLE(), array(
             'uid' => $User->getId(),
             'id'  => (int)$id
         ));
@@ -101,7 +101,7 @@ class Manager
     public static function getWorkspacesByUser(QUI\Users\User $User)
     {
         $result = QUI::getDataBase()->fetch(array(
-            'from'  => self::Table(),
+            'from'  => self::TABLE(),
             'where' => array(
                 'uid' => $User->getId()
             )
@@ -123,7 +123,7 @@ class Manager
     public static function getWorkspaceById($id, $User)
     {
         $result = QUI::getDataBase()->fetch(array(
-            'from'  => self::Table(),
+            'from'  => self::TABLE(),
             'where' => array(
                 'id'  => $id,
                 'uid' => $User->getId()
@@ -216,14 +216,14 @@ class Manager
     {
         // all to no standard
         QUI::getDataBase()->update(
-            self::Table(),
+            self::TABLE(),
             array('standard' => 0),
             array('uid' => $User->getId())
         );
 
         // standard
         QUI::getDataBase()->update(
-            self::Table(),
+            self::TABLE(),
             array('standard' => 1),
             array(
                 'id'  => $id,

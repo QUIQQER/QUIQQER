@@ -28,21 +28,21 @@ class Manager extends QUI\QDOM
      *
      * @var array
      */
-    protected $_groups;
+    protected $groups;
 
     /**
      * Files that are to be loaded in the admin area
      *
      * @var array
      */
-    protected $_adminjsfiles = array();
+    protected $adminjsfiles = array();
 
     /**
      * Return the db table for the groups
      *
      * @return string
      */
-    static function Table()
+    public static function TABLE()
     {
         return QUI_DB_PRFX . 'groups';
     }
@@ -55,18 +55,18 @@ class Manager extends QUI\QDOM
         $DataBase = QUI::getDataBase();
         $Table    = $DataBase->Table();
 
-        $Table->appendFields(self::Table(), array(
-            'id'      => 'int(11) NOT NULL',
-            'name'    => 'varchar(50) NOT NULL',
-            'admin'   => 'tinyint(2) NOT NULL',
-            'parent'  => 'int(11) NOT NULL',
-            'active'  => 'tinyint(1) NOT NULL',
+        $Table->appendFields(self::TABLE(), array(
+            'id' => 'int(11) NOT NULL',
+            'name' => 'varchar(50) NOT NULL',
+            'admin' => 'tinyint(2) NOT NULL',
+            'parent' => 'int(11) NOT NULL',
+            'active' => 'tinyint(1) NOT NULL',
             'toolbar' => 'varchar(128) NULL',
-            'rights'  => 'text'
+            'rights' => 'text'
         ));
 
-        $Table->setPrimaryKey(self::Table(), 'id');
-        $Table->setIndex(self::Table(), 'parent');
+        $Table->setPrimaryKey(self::TABLE(), 'id');
+        $Table->setIndex(self::TABLE(), 'parent');
     }
 
     /**
@@ -111,13 +111,13 @@ class Manager extends QUI\QDOM
             );
         }
 
-        if (isset($this->_groups[$id])) {
-            return $this->_groups[$id];
+        if (isset($this->groups[$id])) {
+            return $this->groups[$id];
         }
 
-        $this->_groups[$id] = new Group($id);
+        $this->groups[$id] = new Group($id);
 
-        return $this->_groups[$id];
+        return $this->groups[$id];
     }
 
     /**
@@ -141,7 +141,7 @@ class Manager extends QUI\QDOM
      */
     public function search($params = array())
     {
-        return $this->_search($params);
+        return $this->searchHelper($params);
     }
 
     /**
@@ -178,7 +178,7 @@ class Manager extends QUI\QDOM
         unset($params['limit']);
         unset($params['start']);
 
-        $result = $this->_search($params);
+        $result = $this->searchHelper($params);
 
         if (isset($result[0]) && isset($result[0]['count'])) {
             return (int)$result[0]['count'];
@@ -195,7 +195,7 @@ class Manager extends QUI\QDOM
      * @return array
      * @ignore
      */
-    protected function _search($params)
+    protected function searchHelper($params)
     {
         $DataBase = QUI::getDataBase();
         $params   = Orthos::clearArray($params);
@@ -209,9 +209,9 @@ class Manager extends QUI\QDOM
         );
 
         $allowSearchFields = array(
-            'id'     => true,
-            'name'   => true,
-            'admin'  => true,
+            'id' => true,
+            'name' => true,
+            'admin' => true,
             'parent' => true,
             'active' => true
         );
@@ -220,13 +220,13 @@ class Manager extends QUI\QDOM
         $start = 0;
 
         $_fields = array(
-            'from' => self::Table()
+            'from' => self::TABLE()
         );
 
         if (isset($params['count'])) {
             $_fields['count'] = array(
                 'select' => 'id',
-                'as'     => 'count'
+                'as' => 'count'
             );
         }
 
@@ -259,27 +259,24 @@ class Manager extends QUI\QDOM
         if (isset($params['search']) && !isset($params['searchSettings'])) {
             $_fields['where'] = array(
                 'name' => array(
-                    'type'  => '%LIKE%',
+                    'type' => '%LIKE%',
                     'value' => $params['search']
                 )
             );
 
-        } else {
-            if (
-                isset($params['search'])
-                && isset($params['searchSettings'])
-                && is_array($params['searchSettings'])
-            ) {
-                foreach ($params['searchSettings'] as $field) {
-                    if (!isset($allowSearchFields[$field])) {
-                        continue;
-                    }
-
-                    $_fields['where_or'][$field] = array(
-                        'type'  => '%LIKE%',
-                        'value' => $params['search']
-                    );
+        } elseif (isset($params['search'])
+                  && isset($params['searchSettings'])
+                  && is_array($params['searchSettings'])
+        ) {
+            foreach ($params['searchSettings'] as $field) {
+                if (!isset($allowSearchFields[$field])) {
+                    continue;
                 }
+
+                $_fields['where_or'][$field] = array(
+                    'type' => '%LIKE%',
+                    'value' => $params['search']
+                );
             }
         }
 

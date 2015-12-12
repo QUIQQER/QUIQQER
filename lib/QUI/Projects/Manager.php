@@ -131,8 +131,7 @@ class Manager
          * @param array $old_config
          * @param Project $Project
          */
-        function clearMediaCache($config, $old_config, Project $Project)
-        {
+        $clearMediaCache = function ($config, $old_config, Project $Project) {
             if (!isset($config["media_watermark"])
                 && !isset($config["media_watermark_position"])
                 && !isset($config["media_image_library"])
@@ -177,9 +176,9 @@ class Manager
                 $Project->getMedia()->clearCache();
                 return;
             }
-        }
+        };
 
-        clearMediaCache($config, $old_config, $Project);
+        $clearMediaCache($config, $old_config, $Project);
 
         // if this project should be the standard,
         // all other projects are not

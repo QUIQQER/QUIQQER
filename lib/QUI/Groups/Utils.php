@@ -26,14 +26,14 @@ class Utils
      *
      * @return \QUI\Controls\Toolbar\Bar
      */
-    static function getGroupToolbar($Group)
+    public static function getGroupToolbar($Group)
     {
         $Tabbar = new QUI\Controls\Toolbar\Bar(array(
             'name' => 'UserToolbar'
         ));
 
         DOM::addTabsToToolbar(
-            XML::getTabsFromXml(SYS_DIR.'groups.xml'),
+            XML::getTabsFromXml(SYS_DIR . 'groups.xml'),
             $Tabbar,
             'pcsg'
         );
@@ -69,16 +69,16 @@ class Utils
     /**
      * Tab contents of a group Tab / Button
      *
-     * @param integer $gid    - Group ID
-     * @param string  $plugin - Plugin
-     * @param string  $tab    - Tabname
+     * @param integer $gid - Group ID
+     * @param string $plugin - Plugin
+     * @param string $tab - Tabname
      *
      * @return string
      */
-    static function getTab($gid, $plugin, $tab)
+    public static function getTab($gid, $plugin, $tab)
     {
         $Groups = QUI::getGroups();
-        $Group = $Groups->get($gid);
+        $Group  = $Groups->get($gid);
         $Engine = QUI::getTemplateManager()->getEngine(true);
 
         $Engine->assign(array(
@@ -87,9 +87,7 @@ class Utils
 
         // System
         if ($plugin === 'pcsg') {
-            return DOM::getTabHTML(
-                $tab, SYS_DIR.'groups.xml'
-            );
+            return DOM::getTabHTML($tab, SYS_DIR . 'groups.xml');
         }
 
         /*

@@ -447,16 +447,19 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
             $result = QUI::getDataBase()->fetch(array(
                 'select' => $fieldList,
-                'from'   => $tbl,
-                'where'  => array(
+                'from' => $tbl,
+                'where' => array(
                     'id' => $this->getId()
                 ),
-                'limit'  => 1
+                'limit' => 1
             ));
 
             // package.package.table.attribute
-            $attributePrfx = str_replace('/', '.',
-                $package . '.' . $fields['suffix']);
+            $attributePrfx = str_replace(
+                '/',
+                '.',
+                $package . '.' . $fields['suffix']
+            );
 
             foreach ($fieldList as $field) {
                 if ($field == 'id') {
@@ -529,7 +532,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         $this->_loadflag = false;
 
         $result = QUI::getDataBase()->fetch(array(
-            'from'  => $this->_TABLE,
+            'from' => $this->_TABLE,
             'where' => array(
                 'id' => $this->getId()
             ),
@@ -544,9 +547,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 ),
                 705,
                 array(
-                    'siteId'  => $this->getId(),
+                    'siteId' => $this->getId(),
                     'project' => $this->getProject()->getName(),
-                    'lang'    => $this->getProject()->getLang()
+                    'lang' => $this->getProject()->getLang()
                 )
             );
         }
@@ -561,9 +564,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 ),
                 705,
                 array(
-                    'siteId'  => $this->getId(),
+                    'siteId' => $this->getId(),
                     'project' => $this->getProject()->getName(),
-                    'lang'    => $this->getProject()->getLang()
+                    'lang' => $this->getProject()->getLang()
                 )
             );
         }
@@ -576,9 +579,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 ),
                 705,
                 array(
-                    'siteId'  => $this->getId(),
+                    'siteId' => $this->getId(),
                     'project' => $this->getProject()->getName(),
-                    'lang'    => $this->getProject()->getLang()
+                    'lang' => $this->getProject()->getLang()
                 )
             );
         }
@@ -587,7 +590,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         // Verknüpfung hohlen
         if ($this->getId() != 1) {
             $relresult = QUI::getDataBase()->fetch(array(
-                'from'  => $this->_RELTABLE,
+                'from' => $this->_RELTABLE,
                 'where' => array(
                     'child' => $this->getId()
                 )
@@ -694,7 +697,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             $Project = $this->getProject();
 
             $dbResult = QUI::getDataBase()->fetch(array(
-                'from'  => $Project->getAttribute('name') . '_multilingual',
+                'from' => $Project->getAttribute('name') . '_multilingual',
                 'where' => array(
                     $Project->getAttribute('lang') => $this->getId()
                 )
@@ -712,7 +715,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             }
 
         } catch (QUI\Exception $Exception) {
-
         }
 
         return $result;
@@ -818,12 +820,10 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 case 'name DESC':
                 case 'title ASC':
                 case 'title DESC':
-
                 case 'c_date ASC':
                 case 'c_date DESC':
                 case 'd_date ASC':
                 case 'd_date DESC':
-
                 case 'release_from ASC':
                 case 'release_from DESC':
                     $params['order'] = $this->getAttribute('order_type');
@@ -927,8 +927,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 if (isset($list[$key + $i])) {
                     try {
                         $result[] = $Project->get((int)$list[$key + $i]);
-                    } catch (QUI\Exception $e) {
-
+                    } catch (QUI\Exception $Exception) {
                     }
                 }
             }
@@ -984,8 +983,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 if (isset($list[$key - $i])) {
                     try {
                         $result[] = $Project->get((int)$list[$key - $i]);
-                    } catch (QUI\Exception $e) {
-
+                    } catch (QUI\Exception $Exception) {
                     }
                 }
             }
@@ -1047,18 +1045,18 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     public function getChildIdByName($name)
     {
         $result = QUI::getDataBase()->fetch(array(
-            'from'  => array(
+            'from' => array(
                 $this->_RELTABLE,
                 $this->_TABLE
             ),
             'where' => array(
                 $this->_RELTABLE . '.parent' => $this->getId(),
-                $this->_TABLE . '.deleted'   => 0,
-                $this->_RELTABLE . '.child'  => '`' . $this->_TABLE . '.id`',
+                $this->_TABLE . '.deleted' => 0,
+                $this->_RELTABLE . '.child' => '`' . $this->_TABLE . '.id`',
                 // LIKE muss bleiben wegen _,
                 // sonst werden keine Seiten mehr gefunden
-                $this->_TABLE . '.name'      => array(
-                    'type'  => 'LIKE',
+                $this->_TABLE . '.name' => array(
+                    'type' => 'LIKE',
                     'value' => str_replace('-', '_', $name)
                 )
             ),
@@ -1070,7 +1068,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         }
 
         throw new QUI\Exception(
-            'No Child found with name ' . $name, 705
+            'No Child found with name ' . $name,
+            705
         );
     }
 
@@ -1095,10 +1094,10 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         }
 
         $result = QUI::getDataBase()->fetch(array(
-            'from'  => $this->_RELTABLE,
+            'from' => $this->_RELTABLE,
             'where' => array(
                 'parent' => $this->getId(),
-                'child'  => $id
+                'child' => $id
             ),
             'limit' => 1
         ));
@@ -1186,7 +1185,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         // prepared
         $prepared = array(
-            ':pid'     => $this->getId(),
+            ':pid' => $this->getId(),
             ':deleted' => 0
         );
 
@@ -1229,7 +1228,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         $Project = $this->getProject();
 
         foreach ($children as $childId) {
-
             try {
                 $Edit = new QUI\Projects\Site\Edit($Project, $childId);
 
@@ -1251,7 +1249,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 }
 
             } catch (QUI\Exception $Exception) {
-
             }
         }
 
@@ -1264,7 +1261,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             $this->_TABLE,
             array(
                 'deleted' => 1,
-                'active'  => -1
+                'active' => -1
             ),
             array('id' => $this->getId())
         );
@@ -1275,7 +1272,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 $this->_TABLE,
                 array(
                     'deleted' => 1,
-                    'active'  => -1
+                    'active' => -1
                 ),
                 array('id' => $child)
             );
@@ -1303,15 +1300,15 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     protected function _existNameInChildren($name)
     {
         $result = QUI::getDataBase()->fetch(array(
-            'from'  => array(
+            'from' => array(
                 $this->_RELTABLE,
                 $this->_TABLE
             ),
             'where' => array(
                 $this->_RELTABLE . '.parent' => $this->getId(),
-                $this->_TABLE . '.deleted'   => 0,
-                $this->_RELTABLE . '.child'  => $this->_TABLE . '.id',
-                $this->_TABLE . '.name'      => $name
+                $this->_TABLE . '.deleted' => 0,
+                $this->_RELTABLE . '.child' => $this->_TABLE . '.id',
+                $this->_TABLE . '.name' => $name
             ),
             'limit' => '1'
         ));
@@ -1348,7 +1345,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                '&lang=' . $this->getProject()->getLang();
 
         foreach ($params as $param => $value) {
-
             if (empty($value)) {
                 continue;
             }
@@ -1365,7 +1361,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         }
 
         if (!empty($getParams)) {
-
             foreach ($getParams as $key => $value) {
                 if (!is_string($value) && !is_numeric($value)) {
                     unset($getParams[$key]);
@@ -1439,8 +1434,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         } else {
             if ($this->getParentId()
                 && $this->getParentId() != 1
-            ) // Wenn parent nicht die Startseite ist, dann muss der Pfad generiert werden
-            {
+            ) {
+                // Wenn parent nicht die Startseite ist, dann muss der Pfad generiert werden
                 $this->_getUrl($this->getId());
 
                 foreach (array_reverse($this->_parents) as $parent) {
@@ -1575,11 +1570,11 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'parent',
-            'from'   => $this->_RELTABLE,
-            'where'  => array(
+            'from' => $this->_RELTABLE,
+            'where' => array(
                 'child' => $this->getId()
             ),
-            'order'  => 'oparent ASC'
+            'order' => 'oparent ASC'
         ));
 
         $pids = array();
@@ -1711,8 +1706,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         // Daten löschen
         $DataBase->exec(array(
             'delete' => true,
-            'from'   => $this->_TABLE,
-            'where'  => array(
+            'from' => $this->_TABLE,
+            'where' => array(
                 'id' => $this->getId()
             )
         ));
@@ -1720,8 +1715,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         // sich als Kind löschen
         $DataBase->exec(array(
             'delete' => true,
-            'from'   => $this->_RELTABLE,
-            'where'  => array(
+            'from' => $this->_RELTABLE,
+            'where' => array(
                 'child' => $this->getId()
             )
         ));
@@ -1729,8 +1724,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         // sich als parent löschen
         $DataBase->exec(array(
             'delete' => true,
-            'from'   => $this->_RELTABLE,
-            'where'  => array(
+            'from' => $this->_RELTABLE,
+            'where' => array(
                 'parent' => $this->getId()
             )
         ));

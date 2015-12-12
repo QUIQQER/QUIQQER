@@ -16,7 +16,6 @@ try {
     $QUM->init();
 
 } catch (QUI\Exception $Exception) {
-
     QUI\System\Log::writeException($Exception);
 
     $QUM->flushMessage($Exception->toArray());

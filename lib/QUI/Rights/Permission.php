@@ -32,7 +32,7 @@ class Permission
      *
      * @return boolean
      */
-    static function isAdmin($User = false)
+    public static function isAdmin($User = false)
     {
         if ($User === false) {
             $User = QUI::getUserBySession();
@@ -42,7 +42,6 @@ class Permission
             return self::checkPermission('quiqqer.admin', $User);
 
         } catch (QUI\Exception $Exception) {
-
         }
 
         return false;
@@ -55,7 +54,7 @@ class Permission
      *
      * @return boolean
      */
-    static function isSU($User = false)
+    public static function isSU($User = false)
     {
         if ($User === false) {
             $User = QUI::getUserBySession();
@@ -70,7 +69,6 @@ class Permission
             return self::checkPermission('quiqqer.su', $User);
 
         } catch (QUI\Exception $Exception) {
-
         }
 
         return false;
@@ -84,13 +82,12 @@ class Permission
      *
      * @return false|string|permission
      */
-    static function hasPermission($perm, $User = false)
+    public static function hasPermission($perm, $User = false)
     {
         try {
             return self::checkPermission($perm, $User);
 
         } catch (QUI\Exception $Exception) {
-
         }
 
         return false;
@@ -103,7 +100,7 @@ class Permission
      *
      * @throws \QUI\Exception
      */
-    static function checkAdminUser($User = false)
+    public static function checkAdminUser($User = false)
     {
         $UserToCheck = false;
 
@@ -138,7 +135,7 @@ class Permission
      *
      * @throws \QUI\Exception
      */
-    static function checkPermission($perm, $User = false)
+    public static function checkPermission($perm, $User = false)
     {
         if ($User === false) {
             $User = QUI::getUserBySession();
@@ -187,10 +184,9 @@ class Permission
      *
      * @throws \QUI\Exception
      */
-    static function checkPermissionList($permissions, $perm, $User = false)
+    public static function checkPermissionList($permissions, $perm, $User = false)
     {
         if (!isset($permissions[$perm])) {
-
             QUI\System\Log::addNotice(
                 'Permission missing: ' . $perm
             );
@@ -262,7 +258,6 @@ class Permission
 
             case 'groups':
             case 'users_and_groups':
-
                 // groups ids from the user
                 $group_ids = $User->getGroups(false);
 
@@ -327,7 +322,7 @@ class Permission
      *
      * @throws \QUI\Exception
      */
-    static function checkSU($User = false)
+    public static function checkSU($User = false)
     {
         $UserToCheck = false;
 
@@ -359,7 +354,7 @@ class Permission
      *
      * @throws \QUI\Exception
      */
-    static function checkUser($User = false)
+    public static function checkUser($User = false)
     {
         $UserToCheck = $User;
 
@@ -368,7 +363,6 @@ class Permission
         }
 
         if (get_class($UserToCheck) !== 'QUI\\Users\\User') {
-
             if ($User === false) {
                 QUI::getUsers()->checkUserSession();
             }
@@ -392,7 +386,7 @@ class Permission
      *
      * @return boolean
      */
-    static function existsPermission($perm, $User = false)
+    public static function existsPermission($perm, $User = false)
     {
         if ($User === false) {
             $User = QUI::getUserBySession();
@@ -433,7 +427,7 @@ class Permission
      *
      * @return bool
      */
-    static function addUserToSitePermission(User $User, $Site, $permission, $EditUser = false)
+    public static function addUserToSitePermission(User $User, $Site, $permission, $EditUser = false)
     {
         if (QUI\Projects\Site\Utils::isSiteObject($Site) === false) {
             return false;
@@ -484,7 +478,7 @@ class Permission
      *
      * @return bool
      */
-    static function addGroupToSitePermission(Group $Group, $Site, $permission, $EditUser)
+    public static function addGroupToSitePermission(Group $Group, $Site, $permission, $EditUser)
     {
         if (QUI\Projects\Site\Utils::isSiteObject($Site) === false) {
             return false;
@@ -537,7 +531,7 @@ class Permission
      *
      * @throws \QUI\Exception
      */
-    static function checkSitePermission($perm, $Site, $User = false)
+    public static function checkSitePermission($perm, $Site, $User = false)
     {
         if ($User === false) {
             $User = QUI::getUserBySession();
@@ -572,7 +566,7 @@ class Permission
                         $User
                     );
                 }
-
+                break;
             case 'quiqqer.projects.site.edit':
             case 'quiqqer.projects.sites.edit':
                 try {
@@ -587,7 +581,7 @@ class Permission
                         $User
                     );
                 }
-
+                break;
             case 'quiqqer.projects.site.del':
             case 'quiqqer.projects.sites.del':
                 try {
@@ -603,7 +597,7 @@ class Permission
                         $User
                     );
                 }
-
+                break;
             case 'quiqqer.projects.site.new':
             case 'quiqqer.projects.sites.new':
                 try {
@@ -632,7 +626,7 @@ class Permission
      *
      * @return bool
      */
-    static function existsSitePermission($perm, $Site)
+    public static function existsSitePermission($perm, $Site)
     {
         $Manager     = QUI::getPermissionManager();
         $permissions = $Manager->getSitePermissions($Site);
@@ -648,7 +642,7 @@ class Permission
      *
      * @return mixed|boolean
      */
-    static function getSitePermission($Site, $perm)
+    public static function getSitePermission($Site, $perm)
     {
         $Manager     = QUI::getPermissionManager();
         $permissions = $Manager->getSitePermissions($Site);
@@ -665,13 +659,12 @@ class Permission
      *
      * @return bool
      */
-    static function hasSitePermission($perm, $Site, $User = false)
+    public static function hasSitePermission($perm, $Site, $User = false)
     {
         try {
             return self::checkSitePermission($perm, $Site, $User);
 
         } catch (QUI\Exception $Exception) {
-
         }
 
         return false;
@@ -687,7 +680,7 @@ class Permission
      *
      * @return bool
      */
-    static function removeGroupFromSitePermission(
+    public static function removeGroupFromSitePermission(
         Group $Group,
         $Site,
         $permission,
@@ -743,7 +736,7 @@ class Permission
      *
      * @return bool
      */
-    static function removeUserFromSitePermission(User $User, $Site, $permission, $EditUser = false)
+    public static function removeUserFromSitePermission(User $User, $Site, $permission, $EditUser = false)
     {
         if (QUI\Projects\Site\Utils::isSiteObject($Site) === false) {
             return false;
@@ -800,7 +793,7 @@ class Permission
      *
      * @return bool
      */
-    static function addGroupToProjectPermission(
+    public static function addGroupToProjectPermission(
         Group $Group,
         Project $Project,
         $permission,
@@ -851,7 +844,7 @@ class Permission
      * @return boolean
      * @throws QUI\Exception
      */
-    static function addUserToProjectPermission(
+    public static function addUserToProjectPermission(
         User $User,
         Project $Project,
         $permission,
@@ -902,7 +895,7 @@ class Permission
      *
      * @throws QUI\Exception
      */
-    static function checkProjectPermission(
+    public static function checkProjectPermission(
         $perm,
         Project $Project,
         $User = false
@@ -940,7 +933,7 @@ class Permission
                         $User
                     );
                 }
-
+                break;
             case 'quiqqer.projects.destroy':
             case 'quiqqer.project.destroy':
                 try {
@@ -955,6 +948,7 @@ class Permission
                         $User
                     );
                 }
+                break;
             case 'quiqqer.projects.setconfig':
             case 'quiqqer.project.setconfig':
                 try {
@@ -969,6 +963,7 @@ class Permission
                         $User
                     );
                 }
+                break;
             case 'quiqqer.projects.editCustomCSS':
             case 'quiqqer.project.editCustomCSS':
                 try {
@@ -995,7 +990,7 @@ class Permission
      * @param \QUI\Projects\Project $Project
      * @param string $permission - name of the permission
      */
-    static function removeUserFromProjectPermission(
+    public static function removeUserFromProjectPermission(
         User $User,
         Project $Project,
         $permission
@@ -1041,7 +1036,7 @@ class Permission
      *
      * @return bool
      */
-    static function removeGroupFromProjectPermission(
+    public static function removeGroupFromProjectPermission(
         Group $Group,
         Project $Project,
         $permission

@@ -22,14 +22,14 @@ class Address extends QUI\QDOM
      *
      * @var QUI\Users\User
      */
-    protected $_User = null;
+    protected $User = null;
 
     /**
      * Address-ID
      *
      * @var integer
      */
-    protected $_id = false;
+    protected $id = false;
 
     /**
      * constructor
@@ -42,16 +42,16 @@ class Address extends QUI\QDOM
     public function __construct(User $User, $id)
     {
         $result = QUI::getDataBase()->fetch(array(
-            'from'  => Manager::TableAddress(),
+            'from' => Manager::TableAddress(),
             'where' => array(
-                'id'  => (int)$id,
+                'id' => (int)$id,
                 'uid' => $User->getId()
             ),
             'limit' => '1'
         ));
 
-        $this->_User = $User;
-        $this->_id   = (int)$id;
+        $this->User = $User;
+        $this->id   = (int)$id;
 
         if (!isset($result[0])) {
             throw new QUI\Exception(
@@ -75,7 +75,7 @@ class Address extends QUI\QDOM
      */
     public function getId()
     {
-        return $this->_id;
+        return $this->id;
     }
 
     /**
@@ -284,7 +284,6 @@ class Address extends QUI\QDOM
             );
 
         } catch (QUI\Exception $Exception) {
-
         }
 
         throw new QUI\Exception(
@@ -307,18 +306,19 @@ class Address extends QUI\QDOM
             Manager::TableAddress(),
             array(
                 'salutation' => Orthos::clear($this->getAttribute('salutation')),
-                'firstname'  => Orthos::clear($this->getAttribute('firstname')),
-                'lastname'   => Orthos::clear($this->getAttribute('lastname')),
-                'company'    => Orthos::clear($this->getAttribute('company')),
-                'delivery'   => Orthos::clear($this->getAttribute('delivery')),
-                'street_no'  => Orthos::clear($this->getAttribute('street_no')),
-                'zip'        => Orthos::clear($this->getAttribute('zip')),
-                'city'       => Orthos::clear($this->getAttribute('city')),
-                'country'    => Orthos::clear($this->getAttribute('country')),
-                'mail'       => $mail,
-                'phone'      => $phone
-            ), array(
-                'id' => $this->_id
+                'firstname' => Orthos::clear($this->getAttribute('firstname')),
+                'lastname' => Orthos::clear($this->getAttribute('lastname')),
+                'company' => Orthos::clear($this->getAttribute('company')),
+                'delivery' => Orthos::clear($this->getAttribute('delivery')),
+                'street_no' => Orthos::clear($this->getAttribute('street_no')),
+                'zip' => Orthos::clear($this->getAttribute('zip')),
+                'city' => Orthos::clear($this->getAttribute('city')),
+                'country' => Orthos::clear($this->getAttribute('country')),
+                'mail' => $mail,
+                'phone' => $phone
+            ),
+            array(
+                'id' => $this->id
             )
         );
     }
@@ -330,10 +330,10 @@ class Address extends QUI\QDOM
     {
         QUI::getDataBase()->exec(array(
             'delete' => true,
-            'from'   => Manager::TableAddress(),
-            'where'  => array(
-                'id'  => $this->getId(),
-                'uid' => $this->_User->getId()
+            'from' => Manager::TableAddress(),
+            'where' => array(
+                'id' => $this->getId(),
+                'uid' => $this->User->getId()
             )
         ));
     }
@@ -350,9 +350,9 @@ class Address extends QUI\QDOM
         $Engine = QUI::getTemplateManager()->getEngine(true);
 
         $Engine->assign(array(
-            'User'      => $this->_User,
-            'Address'   => $this,
-            'active'    => $active,
+            'User' => $this->User,
+            'Address' => $this,
+            'active' => $active,
             'Countries' => new QUI\Countries\Manager()
         ));
 

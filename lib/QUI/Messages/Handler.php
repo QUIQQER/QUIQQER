@@ -23,7 +23,7 @@ class Handler
     /**
      * Return the message handler db table
      */
-    public static function Table()
+    public static function TABLE()
     {
         return QUI_DB_PRFX.'messages';
     }
@@ -33,7 +33,7 @@ class Handler
      */
     public static function setup()
     {
-        QUI::getDataBase()->Table()->appendFields(self::Table(), array(
+        QUI::getDataBase()->Table()->appendFields(self::TABLE(), array(
             'uid'     => 'int(11)',
             'message' => 'text',
             'mtype'   => 'varchar(100)',
@@ -66,13 +66,13 @@ class Handler
         }
 
         $list = QUI::getDataBase()->fetch(array(
-            'from'  => self::Table(),
+            'from'  => self::TABLE(),
             'where' => array(
                 'uid' => $User->getId()
             )
         ));
 
-        QUI::getDataBase()->delete(self::Table(), array(
+        QUI::getDataBase()->delete(self::TABLE(), array(
             'uid' => $User->getId()
         ));
 
@@ -212,7 +212,7 @@ class Handler
      */
     public function sendMessage(User $User, Message $Message)
     {
-        QUI::getDataBase()->insert(self::Table(), array(
+        QUI::getDataBase()->insert(self::TABLE(), array(
             'uid'     => $User->getId(),
             'message' => $Message->getMessage(),
             'mcode'   => (int)$Message->getCode(),

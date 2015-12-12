@@ -23,35 +23,35 @@ class Group extends QUI\QDOM
      *
      * @var array
      */
-    protected $_settings;
+    protected $settings;
 
     /**
      * The group root id
      *
      * @var integer
      */
-    protected $_rootid;
+    protected $rootid;
 
     /**
      * internal right cache
      *
      * @var array
      */
-    protected $_rights = array();
+    protected $rights = array();
 
     /**
      * internal children id cache
      *
      * @var array
      */
-    protected $_childrenids = null;
+    protected $childrenids = null;
 
     /**
      * internal parentid cache
      *
      * @var array
      */
-    protected $_parentids = null;
+    protected $parentids = null;
 
     /**
      * constructor
@@ -62,15 +62,15 @@ class Group extends QUI\QDOM
      */
     public function __construct($id)
     {
-        $this->_rootid = QUI::conf('globals', 'root');
+        $this->rootid = QUI::conf('globals', 'root');
         parent::setAttribute('id', (int)$id);
 
         try {
             // falls cache vorhanden ist
             $cache = QUI\Cache\Manager::get('qui/groups/group/' . $this->getId());
 
-            $this->_parentids = $cache['parentids'];
-            $this->_rights    = $cache['rights'];
+            $this->parentids = $cache['parentids'];
+            $this->rights    = $cache['rights'];
 
             if (is_array($cache['attributes'])) {
                 foreach ($cache['attributes'] as $key => $value) {
@@ -83,7 +83,6 @@ class Group extends QUI\QDOM
             }
 
         } catch (QUI\Cache\Exception $Exception) {
-
         }
 
         $result = QUI::getDataBase()->fetch(array(
@@ -110,10 +109,10 @@ class Group extends QUI\QDOM
 
         // rechte setzen
         if ($this->getAttribute('rights')) {
-            $this->_rights = json_decode($this->getAttribute('rights'), true);
+            $this->rights = json_decode($this->getAttribute('rights'), true);
         }
 
-        $this->_createCache();
+        $this->createCache();
     }
 
     /**
@@ -195,7 +194,7 @@ class Group extends QUI\QDOM
      */
     public function save()
     {
-        $this->_rights = QUI::getPermissionManager()
+        $this->rights = QUI::getPermissionManager()
             ->getRightParamsFromGroup($this);
 
         // Felder bekommen
@@ -204,14 +203,14 @@ class Group extends QUI\QDOM
             array(
                 'name'    => $this->getAttribute('name'),
                 'toolbar' => $this->getAttribute('toolbar'),
-                'admin'   => $this->_rootid == $this->getId() ? 1
+                'admin'   => $this->rootid == $this->getId() ? 1
                     : (int)$this->getAttribute('admin'),
-                'rights'  => json_encode($this->_rights)
+                'rights'  => json_encode($this->rights)
             ),
             array('id' => $this->getId())
         );
 
-        $this->_createCache();
+        $this->createCache();
     }
 
     /**
@@ -226,7 +225,7 @@ class Group extends QUI\QDOM
         );
 
         $this->setAttribute('active', 1);
-        $this->_createCache();
+        $this->createCache();
     }
 
     /**
@@ -241,7 +240,7 @@ class Group extends QUI\QDOM
         );
 
         $this->setAttribute('active', 0);
-        $this->_createCache();
+        $this->createCache();
     }
 
     /**
@@ -288,7 +287,7 @@ class Group extends QUI\QDOM
      */
     public function getRights()
     {
-        return $this->_rights;
+        return $this->rights;
     }
 
     /**
@@ -304,7 +303,7 @@ class Group extends QUI\QDOM
             return true;
         }
 
-        if (isset($this->_rights[$right])) {
+        if (isset($this->rights[$right])) {
             return true;
         }
 
@@ -332,7 +331,7 @@ class Group extends QUI\QDOM
         }
 
         foreach ($rights as $k => $v) {
-            $this->_rights[$k] = $v;
+            $this->rights[$k] = $v;
         }
     }
 
@@ -438,7 +437,7 @@ class Group extends QUI\QDOM
     public function isParent($id, $recursiv = false)
     {
         if ($recursiv) {
-            if (in_array($id, $this->_parentids)) {
+            if (in_array($id, $this->parentids)) {
                 return true;
             }
 
@@ -482,11 +481,11 @@ class Group extends QUI\QDOM
      */
     public function getParentIds()
     {
-        if ($this->_parentids) {
-            return $this->_parentids;
+        if ($this->parentids) {
+            return $this->parentids;
         }
 
-        $this->_parentids = array();
+        $this->parentids = array();
 
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'id, parent',
@@ -497,13 +496,13 @@ class Group extends QUI\QDOM
             'limit'  => 1
         ));
 
-        $this->_parentids[] = $result[0]['parent'];
+        $this->parentids[] = $result[0]['parent'];
 
         if (!empty($result[0]['parent'])) {
-            $this->_getParentIds($result[0]['parent']);
+            $this->getParentIdsHelper($result[0]['parent']);
         }
 
-        return $this->_parentids;
+        return $this->parentids;
     }
 
     /**
@@ -513,7 +512,7 @@ class Group extends QUI\QDOM
      *
      * @ignore
      */
-    private function _getParentIds($id)
+    private function getParentIdsHelper($id)
     {
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'id, parent',
@@ -531,9 +530,9 @@ class Group extends QUI\QDOM
             return;
         }
 
-        $this->_parentids[] = $result[0]['parent'];
+        $this->parentids[] = $result[0]['parent'];
 
-        $this->_getParentIds($result[0]['parent']);
+        $this->getParentIdsHelper($result[0]['parent']);
     }
 
     /**
@@ -586,12 +585,12 @@ class Group extends QUI\QDOM
      */
     public function getChildrenIds($recursiv = false, $params = array())
     {
-        if ($this->_childrenids) {
-            return $this->_childrenids;
+        if ($this->childrenids) {
+            return $this->childrenids;
         }
 
 
-        $this->_childrenids = array();
+        $this->childrenids = array();
 
         $_params = array(
             'select' => 'id',
@@ -612,20 +611,20 @@ class Group extends QUI\QDOM
         $result = QUI::getDataBase()->fetch($_params);
 
         if (!isset($result) || !isset($result[0])) {
-            return $this->_childrenids;
+            return $this->childrenids;
         }
 
         foreach ($result as $entry) {
             if (isset($entry['id'])) {
-                $this->_childrenids[] = $entry['id'];
+                $this->childrenids[] = $entry['id'];
 
                 if ($recursiv == true) {
-                    $this->_getChildrenIds($entry['id']);
+                    $this->getChildrenIdsHelper($entry['id']);
                 }
             }
         }
 
-        return $this->_childrenids;
+        return $this->childrenids;
     }
 
     /**
@@ -633,7 +632,7 @@ class Group extends QUI\QDOM
      *
      * @param integer $id
      */
-    private function _getChildrenIds($id)
+    private function getChildrenIdsHelper($id)
     {
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'id',
@@ -645,9 +644,9 @@ class Group extends QUI\QDOM
 
         foreach ($result as $entry) {
             if (isset($entry['id'])) {
-                $this->_childrenids[] = $entry['id'];
+                $this->childrenids[] = $entry['id'];
 
-                $this->_getChildrenIds($entry['id']);
+                $this->getChildrenIdsHelper($entry['id']);
             }
         }
     }
@@ -710,13 +709,13 @@ class Group extends QUI\QDOM
      *
      * @ignore
      */
-    protected function _createCache()
+    protected function createCache()
     {
         // Cache aufbauen
         QUI\Cache\Manager::set('qui/groups/group/' . $this->getId(), array(
             'parentids'  => $this->getParentIds(),
             'attributes' => $this->getAttributes(),
-            'rights'     => $this->_rights
+            'rights'     => $this->rights
         ));
     }
 }

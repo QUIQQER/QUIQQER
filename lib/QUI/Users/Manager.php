@@ -217,7 +217,7 @@ class Manager
      */
     public function createChild($username = false)
     {
-        $newid = $this->_newId();
+        $newid = $this->newId();
 
         if ($username) {
             if ($this->usernameExists($username)) {
@@ -369,7 +369,7 @@ class Manager
 
         $Session = QUI::getSession();
 
-        $regparams['id']         = $this->_newId();
+        $regparams['id']         = $this->newId();
         $regparams['su']         = 0;
         $regparams['username']   = $username;
         $regparams['password']   = $password;
@@ -1265,7 +1265,7 @@ class Manager
      * @return integer
      * @throws QUI\Exception
      */
-    protected function _newId()
+    protected function newId()
     {
         $create = true;
         $newid  = false;
