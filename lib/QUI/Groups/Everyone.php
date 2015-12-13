@@ -74,7 +74,7 @@ class Everyone extends QUI\Groups\Group
      */
     public function save()
     {
-        $this->_rights = QUI::getPermissionManager()
+        $this->rights = QUI::getPermissionManager()
                             ->getRightParamsFromGroup($this);
 
         // Felder bekommen
@@ -84,13 +84,13 @@ class Everyone extends QUI\Groups\Group
                 'name'    => 'Everyone',
                 'toolbar' => $this->getAttribute('toolbar'),
                 'admin'   => 0,
-                'rights'  => json_encode($this->_rights),
+                'rights'  => json_encode($this->rights),
                 'active'  => 1
             ),
             array('id' => $this->getId())
         );
 
-        $this->_createCache();
+        $this->createCache();
     }
 
     /**
