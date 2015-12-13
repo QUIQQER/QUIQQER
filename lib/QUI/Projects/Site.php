@@ -521,7 +521,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             unset($decode['linked_parent']);
         }
 
-        $this->_attributes = $decode;
+        $this->attributes = $decode;
     }
 
     /**
