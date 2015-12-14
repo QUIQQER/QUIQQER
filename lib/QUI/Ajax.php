@@ -108,6 +108,10 @@ class Ajax extends QUI\QDOM
             return false;
         }
 
+        if (!is_array($reg_vars)) {
+            $reg_vars = array();
+        }
+
         self::$callables[$name] = array(
             'callable' => $function,
             'params' => $reg_vars
@@ -242,9 +246,9 @@ class Ajax extends QUI\QDOM
             $_SERVER['REQUEST_URI'] = $_REQUEST['pcsg_uri'];
         }
 
+        // Params
         $params = array();
 
-        // Params
         if (isset(self::$callables[$_rf])) {
             $functionParams = self::$callables[$_rf]['params'];
         } else {
