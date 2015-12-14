@@ -229,7 +229,7 @@ abstract class Item extends QUI\QDOM
     public function delete()
     {
         if ($this->isDeleted()) {
-            throw new QUI\Exception('File is already deleted', 400);
+            throw new QUI\Exception('File is already deleted', 400); // #locale
         }
 
         QUI::getEvents()->fireEvent('mediaDeleteBegin', array($this));
@@ -243,11 +243,11 @@ abstract class Item extends QUI\QDOM
                   = VAR_DIR . 'media/' . $Media->getProject()->getAttribute('name') . '/';
 
         if (!is_file($original)) {
-            throw new QUI\Exception('Original File is not a File', 400);
+            throw new QUI\Exception('Original File is not a File', 400); // #locale
         }
 
         if ($First->getFullPath() == $original) {
-            throw new QUI\Exception('You cannot delete the root file', 400);
+            throw new QUI\Exception('You cannot delete the root file', 400); // #locale
         }
 
         // first, delete the cache
@@ -299,6 +299,8 @@ abstract class Item extends QUI\QDOM
         );
 
         $this->parent_id = false;
+
+        $this->setAttribute('deleted', 1);
 
         QUI::getEvents()->fireEvent('mediaDelete', array($this));
     }
