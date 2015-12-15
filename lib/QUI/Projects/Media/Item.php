@@ -536,6 +536,24 @@ abstract class Item extends QUI\QDOM
     }
 
     /**
+     * Returns information about a file path
+     *
+     * @param array|boolean $options - If present, specifies a specific element to be returned;
+     *                                  one of:
+     *                                  PATHINFO_DIRNAME, PATHINFO_BASENAME,
+     *                                  PATHINFO_EXTENSION or PATHINFO_FILENAME.
+     * @return mixed
+     */
+    public function getPathinfo($options = false)
+    {
+        if (!$options) {
+            return pathinfo($this->getFullPath());
+        }
+
+        return pathinfo($this->getFullPath(), $options);
+    }
+
+    /**
      * Returns the url from the file
      *
      * @param boolean $rewrite - false = image.php, true = rewrited URL
