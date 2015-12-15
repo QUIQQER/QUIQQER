@@ -210,7 +210,7 @@ define('controls/projects/project/media/FolderViewer', [
                     }
 
                     for (var i = 0, len = items.length; i < len; i++) {
-                        if (allowedTypes.contains(items[i].type)) {
+                        if (!allowedTypes.contains(items[i].type)) {
                             continue;
                         }
 
@@ -325,7 +325,15 @@ define('controls/projects/project/media/FolderViewer', [
          */
         $createImageItem: function (imageData) {
             var self     = this,
-                imageSrc = URL_DIR + imageData.url;
+                imageSrc = URL_DIR + imageData.url,
+                dataSrc  = imageSrc + '&noresize=1';
+
+            imageSrc = imageSrc +'&maxwidth=80&maxheight=80&quiadmin=1';
+
+            if (imageData.type == 'file') {
+                imageSrc = imageData.icon80x80;
+                dataSrc  = imageData.icon80x80;
+            }
 
             return new Element('div', {
                 'class'     : 'qui-project-media-folderViewer-item',
@@ -335,9 +343,9 @@ define('controls/projects/project/media/FolderViewer', [
                 alt         : imageData.name,
                 title       : imageData.name,
                 styles      : {
-                    backgroundImage: 'url(' + imageSrc + '&maxwidth=80&maxheight=80&quiadmin=1)'
+                    backgroundImage: 'url(' + imageSrc + ')'
                 },
-                'data-src'  : imageSrc + '&noresize=1',
+                'data-src'  : dataSrc,
                 'data-short': imageData.short,
                 events      : {
                     click: function () {
