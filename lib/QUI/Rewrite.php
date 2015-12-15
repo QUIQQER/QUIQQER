@@ -1349,7 +1349,7 @@ class Rewrite
             return $output[0];
         }
 
-        $att = QUI\Utils\String::getHTMLAttributes($img);
+        $att = QUI\Utils\StringHelper::getHTMLAttributes($img);
 
         if (!isset($att['src'])) {
             return $output[0];
