@@ -56,24 +56,24 @@ abstract class Item extends QUI\QDOM
      */
     public function __construct($params, Media $Media)
     {
-        $this->_Media = $Media;
+        $this->Media = $Media;
         $this->setAttributes($params);
 
-        $this->_file = CMS_DIR . $this->_Media->getPath() . $this->getPath();
+        $this->file = CMS_DIR . $this->Media->getPath() . $this->getPath();
 
-        if (!file_exists($this->_file)) {
+        if (!file_exists($this->file)) {
             QUI::getMessagesHandler()->addAttention(
-                'File ' . $this->_file . ' (' . $this->getId() . ') doesn\'t exist'
+                'File ' . $this->file . ' (' . $this->getId() . ') doesn\'t exist'
             );
 
             return;
         }
 
-        $this->setAttribute('filesize', QUIFile::getFileSize($this->_file));
+        $this->setAttribute('filesize', QUIFile::getFileSize($this->file));
         $this->setAttribute('url', $this->getUrl());
         $this->setAttribute(
             'cache_url',
-            URL_DIR . $this->_Media->getCacheDir() . $this->getPath()
+            URL_DIR . $this->Media->getCacheDir() . $this->getPath()
         );
     }
 
@@ -106,7 +106,7 @@ abstract class Item extends QUI\QDOM
         }
 
         QUI::getDataBase()->update(
-            $this->_Media->getTable(),
+            $this->Media->getTable(),
             array('active' => 1),
             array('id' => $this->getId())
         );
@@ -132,7 +132,7 @@ abstract class Item extends QUI\QDOM
     public function deactivate()
     {
         QUI::getDataBase()->update(
-            $this->_Media->getTable(),
+            $this->Media->getTable(),
             array('active' => 0),
             array('id' => $this->getId())
         );
@@ -195,7 +195,7 @@ abstract class Item extends QUI\QDOM
         }
 
         QUI::getDataBase()->update(
-            $this->_Media->getTable(),
+            $this->Media->getTable(),
             array(
                 'title' => $this->getAttribute('title'),
                 'alt' => $this->getAttribute('alt'),
@@ -234,7 +234,7 @@ abstract class Item extends QUI\QDOM
 
         QUI::getEvents()->fireEvent('mediaDeleteBegin', array($this));
 
-        $Media = $this->_Media;
+        $Media = $this->Media;
         $First = $Media->firstChild();
 
         // Move file to the temp folder
@@ -282,7 +282,7 @@ abstract class Item extends QUI\QDOM
 
         // change db entries
         QUI::getDataBase()->update(
-            $this->_Media->getTable(),
+            $this->Media->getTable(),
             array(
                 'deleted' => 1,
                 'active' => 0,
@@ -294,7 +294,7 @@ abstract class Item extends QUI\QDOM
         );
 
         QUI::getDataBase()->delete(
-            $this->_Media->getTable('relations'),
+            $this->Media->getTable('relations'),
             array('child' => $this->getId())
         );
 
@@ -320,7 +320,7 @@ abstract class Item extends QUI\QDOM
             throw new QUI\Exception('Only deleted files can be destroyed');
         }
 
-        $Media = $this->_Media;
+        $Media = $this->Media;
 
         // get the trash file and destroy it
         $var_folder
@@ -330,7 +330,7 @@ abstract class Item extends QUI\QDOM
 
         QUIFile::unlink($var_file);
 
-        QUI::getDataBase()->delete($this->_Media->getTable(), array(
+        QUI::getDataBase()->delete($this->Media->getTable(), array(
             'id' => $this->getId()
         ));
 
@@ -367,7 +367,7 @@ abstract class Item extends QUI\QDOM
     public function rename($newname)
     {
         $original  = $this->getFullPath();
-        $extension = QUI\Utils\String::pathinfo($original, PATHINFO_EXTENSION);
+        $extension = QUI\Utils\StringHelper::pathinfo($original, PATHINFO_EXTENSION);
         $Parent    = $this->getParent();
 
         $new_full_file = $Parent->getFullPath() . $newname . '.' . $extension;
@@ -414,7 +414,7 @@ abstract class Item extends QUI\QDOM
 
 
         \QUI::getDataBase()->update(
-            $this->_Media->getTable(),
+            $this->Media->getTable(),
             array(
                 'name' => $newname,
                 'file' => $new_file
@@ -457,7 +457,7 @@ abstract class Item extends QUI\QDOM
             return false;
         }
 
-        $this->parent_id = $this->_Media->getParentIdFrom($id);
+        $this->parent_id = $this->Media->getParentIdFrom($id);
 
         return $this->parent_id;
     }
@@ -476,7 +476,7 @@ abstract class Item extends QUI\QDOM
         $parents = array();
         $id      = $this->getId();
 
-        while ($id = $this->_Media->getParentIdFrom($id)) {
+        while ($id = $this->Media->getParentIdFrom($id)) {
             $parents[] = $id;
         }
 
@@ -491,7 +491,7 @@ abstract class Item extends QUI\QDOM
      */
     public function getParent()
     {
-        return $this->_Media->get($this->getParentId());
+        return $this->Media->get($this->getParentId());
     }
 
     /**
@@ -505,7 +505,7 @@ abstract class Item extends QUI\QDOM
         $parents = array();
 
         foreach ($ids as $id) {
-            $parents[] = $this->_Media->get($id);
+            $parents[] = $this->Media->get($id);
         }
 
         return $parents;
@@ -532,7 +532,25 @@ abstract class Item extends QUI\QDOM
      */
     public function getFullPath()
     {
-        return $this->_Media->getFullPath() . $this->getAttribute('file');
+        return $this->Media->getFullPath() . $this->getAttribute('file');
+    }
+
+    /**
+     * Returns information about a file path
+     *
+     * @param array|boolean $options - If present, specifies a specific element to be returned;
+     *                                  one of:
+     *                                  PATHINFO_DIRNAME, PATHINFO_BASENAME,
+     *                                  PATHINFO_EXTENSION or PATHINFO_FILENAME.
+     * @return mixed
+     */
+    public function getPathinfo($options = false)
+    {
+        if (!$options) {
+            return pathinfo($this->getFullPath());
+        }
+
+        return pathinfo($this->getFullPath(), $options);
     }
 
     /**
@@ -545,7 +563,7 @@ abstract class Item extends QUI\QDOM
     public function getUrl($rewrite = false)
     {
         if ($rewrite == false) {
-            $Project = $this->_Media->getProject();
+            $Project = $this->Media->getProject();
 
             $str = 'image.php?id=' . $this->getId() . '&project='
                    . $Project->getAttribute('name');
@@ -562,7 +580,7 @@ abstract class Item extends QUI\QDOM
         }
 
         if ($this->getAttribute('active') == 1) {
-            return URL_DIR . $this->_Media->getCacheDir()
+            return URL_DIR . $this->Media->getCacheDir()
                    . $this->getAttribute('file');
         }
 
@@ -595,7 +613,7 @@ abstract class Item extends QUI\QDOM
             $this->getAttribute('file')
         );
 
-        $new_path = $this->_Media->getFullPath() . $new_file;
+        $new_path = $this->Media->getFullPath() . $new_file;
 
         // delete the file cache
         // @todo move the cache too
@@ -610,7 +628,7 @@ abstract class Item extends QUI\QDOM
 
         // update file path
         QUI::getDataBase()->update(
-            $this->_Media->getTable(),
+            $this->Media->getTable(),
             array(
                 'file' => $new_file
             ),
@@ -621,7 +639,7 @@ abstract class Item extends QUI\QDOM
 
         // set the new parent relationship
         QUI::getDataBase()->update(
-            $this->_Media->getTable('relations'),
+            $this->Media->getTable('relations'),
             array(
                 'parent' => $Folder->getId()
             ),
@@ -667,7 +685,7 @@ abstract class Item extends QUI\QDOM
      */
     public function getMedia()
     {
-        return $this->_Media;
+        return $this->Media;
     }
 
     /**

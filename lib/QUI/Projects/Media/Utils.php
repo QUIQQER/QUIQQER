@@ -8,7 +8,7 @@ namespace QUI\Projects\Media;
 
 use QUI;
 use QUI\System\Log;
-use QUI\Utils\String as StringUtils;
+use QUI\Utils\StringHelper as StringUtils;
 
 /**
  * Helper for the Media Center Manager
@@ -573,7 +573,7 @@ class Utils
 
         // delete the dots but not the last dot
         $str = str_replace('.', '_', $str);
-        $str = QUI\Utils\String::replaceLast('_', '.', $str);
+        $str = StringUtils::replaceLast('_', '.', $str);
 
         // FIX
         $str = preg_replace('/[_]{2,}/', "_", $str);
