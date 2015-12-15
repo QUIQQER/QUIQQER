@@ -746,8 +746,22 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             return $this->_lang_ids[$lang];
         }
 
+        $availableLangs = $Project->getAttribute('langs');
+
         $pname = $Project->getAttribute('name');
         $plang = $Project->getAttribute('lang');
+
+        if ($lang && !in_array($lang, $availableLangs)) {
+            throw new QUI\Exception(
+                array(
+                    'quiqqer/system',
+                    'exception.project.lang.not.found',
+                    array('lang' => $lang)
+                ),
+                404
+            );
+        }
+
 
         $site_table = $pname . '_' . $plang . '_sites';
         $lang_table = $pname . '_' . $lang . '_sites';
