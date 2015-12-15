@@ -230,9 +230,9 @@ define('controls/projects/project/media/Panel', [
                 self.addButton(
                     new QUIButton({
                         name  : 'left-sitemap-media-button',
-                        image: 'icon-sitemap',
-                        alt  : Locale.get(lg, 'projects.project.site.media.panel.btn.sitemap.show'),
-                        title: Locale.get(lg, 'projects.project.site.media.panel.btn.sitemap.show'),
+                        image : 'icon-sitemap',
+                        alt   : Locale.get(lg, 'projects.project.site.media.panel.btn.sitemap.show'),
+                        title : Locale.get(lg, 'projects.project.site.media.panel.btn.sitemap.show'),
                         events: {
                             onClick: function (Btn) {
                                 if (Btn.isActive()) {
@@ -281,8 +281,8 @@ define('controls/projects/project/media/Panel', [
                 View.appendChild(
                     new ContextmenuItem({
                         name  : 'symbols',
-                        text: Locale.get(lg, 'projects.project.site.media.panel.btn.view.symbols'),
-                        icon: 'icon-th',
+                        text  : Locale.get(lg, 'projects.project.site.media.panel.btn.view.symbols'),
+                        icon  : 'icon-th',
                         events: {
                             onMouseDown: function (Item) {
                                 View.change(Item);
@@ -292,8 +292,8 @@ define('controls/projects/project/media/Panel', [
                 ).appendChild(
                     new ContextmenuItem({
                         name  : 'details',
-                        text: Locale.get(lg, 'projects.project.site.media.panel.btn.view.details'),
-                        icon: 'icon-list-alt',
+                        text  : Locale.get(lg, 'projects.project.site.media.panel.btn.view.details'),
+                        icon  : 'icon-list-alt',
                         events: {
                             onMouseDown: function (Item) {
                                 View.change(Item);
@@ -303,8 +303,8 @@ define('controls/projects/project/media/Panel', [
                 ).appendChild(
                     new ContextmenuItem({
                         name  : 'preview',
-                        text: Locale.get(lg, 'projects.project.site.media.panel.btn.view.preview'),
-                        icon: 'fa fa-eye icon-eye-open',
+                        text  : Locale.get(lg, 'projects.project.site.media.panel.btn.view.preview'),
+                        icon  : 'fa fa-eye icon-eye-open',
                         events: {
                             onMouseDown: function (Item) {
                                 View.change(Item);
@@ -342,7 +342,7 @@ define('controls/projects/project/media/Panel', [
                 self.addButton(
                     new QUIButton({
                         name     : 'create_folder',
-                        text: Locale.get(lg, 'projects.project.site.media.panel.btn.create'),
+                        text     : Locale.get(lg, 'projects.project.site.media.panel.btn.create'),
                         textimage: 'fa fa-folder-open-o icon-folder-open-alt',
                         events   : {
                             onClick: function () {
@@ -361,8 +361,8 @@ define('controls/projects/project/media/Panel', [
                 Upload.appendChild(
                     new ContextmenuItem({
                         name  : 'upload_files',
-                        text: Locale.get(lg, 'projects.project.site.media.panel.btn.upload.files'),
-                        icon: 'icon-file',
+                        text  : Locale.get(lg, 'projects.project.site.media.panel.btn.upload.files'),
+                        icon  : 'icon-file',
                         events: {
                             onMouseDown: function () {
                                 self.uploadFiles();
@@ -372,8 +372,8 @@ define('controls/projects/project/media/Panel', [
                 ).appendChild(
                     new ContextmenuItem({
                         name  : 'upload_archive',
-                        text: Locale.get(lg, 'projects.project.site.media.panel.btn.upload.archive'),
-                        icon: 'icon-archive',
+                        text  : Locale.get(lg, 'projects.project.site.media.panel.btn.upload.archive'),
+                        icon  : 'icon-archive',
                         events: {
                             onMouseDown: function () {
                                 self.uploadArchive();
@@ -473,7 +473,7 @@ define('controls/projects/project/media/Panel', [
                     });
 
                     // open parent-id
-                    MediaFile.getParentId().then(function(parentId) {
+                    MediaFile.getParentId().then(function (parentId) {
                         self.openID(parentId);
                     });
 
@@ -501,7 +501,9 @@ define('controls/projects/project/media/Panel', [
                 }, {
                     order: self.getAttribute('field') + ' ' + self.getAttribute('order')
                 });
-            });
+            }).catch(function() {
+                this.openID(1);
+            }.bind(this));
         },
 
         /**
