@@ -103,7 +103,10 @@ define('utils/Panels', function () {
                     'Projects'
                 ], function (QUI, QUIPanel, MediaPanel, Projects) {
                     var i, len, Panel, Project, cacheMedia;
-                    var panels = QUI.Controls.get('projects-media-panel');
+
+                    var panels = QUI.Controls.getByType(
+                        'controls/projects/project/media/Panel'
+                    );
 
                     if (panels.length) {
                         for (i = 0, len = panels.length; i < len; i++) {
@@ -115,7 +118,8 @@ define('utils/Panels', function () {
 
                             if (folderId) {
                                 Panel.openID(parseInt(folderId));
-                                continue;
+                                self.execPanelOpen(Panel);
+                                return;
                             }
 
                             Project    = Panel.getProject();
@@ -143,7 +147,7 @@ define('utils/Panels', function () {
                     Project    = Projects.get(project);
                     cacheMedia = Project.getName() + '-' + Project.getLang() + '-id';
 
-                    if (QUI.Storage.get(cacheMedia)) {
+                    if (!folderId && QUI.Storage.get(cacheMedia)) {
                         folderId = QUI.Storage.get(cacheMedia);
                     }
 
