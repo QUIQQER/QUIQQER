@@ -8,7 +8,7 @@ namespace QUI\Projects\Media;
 
 use QUI;
 use QUI\Utils\System\File as QUIFile;
-use QUI\Utils\String as QUIString;
+use QUI\Utils\StringHelper as QUIString;
 use QUI\Utils\System\File;
 
 /**
@@ -86,7 +86,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function getSizeCachePath($maxwidth = false, $maxheight = false)
     {
-        $Media = $this->_Media;
+        $Media = $this->Media;
         /* @var $Media QUI\Projects\Media */
         $cdir = CMS_DIR . $Media->getCacheDir();
         $file = $this->getAttribute('file');
@@ -280,7 +280,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             return false;
         }
 
-        $Media     = $this->_Media;
+        $Media     = $this->Media;
         $original  = $this->getFullPath();
         $cachefile = $this->getSizeCachePath($width, $height);
 
@@ -429,7 +429,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function deleteCache()
     {
-        $Media   = $this->_Media;
+        $Media   = $this->Media;
         $Project = $Media->getProject();
 
         $cdir = CMS_DIR . $Media->getCacheDir();
@@ -476,7 +476,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function deleteAdminCache()
     {
-        $Media   = $this->_Media;
+        $Media   = $this->Media;
         $Project = $Media->getProject();
 
         $cacheDir = VAR_DIR . 'cache/admin/media/' . $Project->getName() . '/'
@@ -505,7 +505,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function resize($newWidth = 0, $newHeight = 0)
     {
-        $dir      = CMS_DIR . $this->_Media->getPath();
+        $dir      = CMS_DIR . $this->Media->getPath();
         $original = $dir . $this->getAttribute('file');
 
         try {
@@ -651,7 +651,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $this->setAttribute('md5hash', $md5);
 
         QUI::getDataBase()->update(
-            $this->_Media->getTable(),
+            $this->Media->getTable(),
             array('md5hash' => $md5),
             array('id' => $this->getId())
         );
@@ -677,7 +677,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $this->setAttribute('sha1hash', $sha1);
 
         QUI::getDataBase()->update(
-            $this->_Media->getTable(),
+            $this->Media->getTable(),
             array('sha1hash' => $sha1),
             array('id' => $this->getId())
         );
