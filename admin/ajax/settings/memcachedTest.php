@@ -11,7 +11,7 @@ function ajax_settings_memcachedTest($data)
 
     if (!class_exists('Memcached')) {
         QUI::getMessagesHandler()->addError(
-            QUI::getLocale(
+            QUI::getLocale()->get(
                 'quiqqer/system',
                 'message.session.auth.memcached.notinstalled'
             )
@@ -34,7 +34,6 @@ function ajax_settings_memcachedTest($data)
     $errors = 0;
 
     foreach ($data as $entry) {
-
         if (!isset($entry['server'])) {
             QUI::getMessagesHandler()->addAttention(
                 QUI::getLocale()->get(
