@@ -1338,6 +1338,8 @@ class Rewrite
                 $att['title'] = $Image->getAttribute('title')
                     ? $Image->getAttribute('title') : '';
 
+                $att['data-src'] = $Image->getSizeCacheUrl();
+
             } catch (QUI\Exception $Exception) {
             }
         }

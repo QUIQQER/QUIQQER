@@ -3,7 +3,7 @@
 /**
  * This file contains the quiqqer access for the api, cron and console
  */
-
+define('QUIQQER_SYSTEM', true);
 require 'bootstrap.php';
 
 // no console

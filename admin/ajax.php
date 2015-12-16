@@ -5,6 +5,7 @@
  */
 
 define('QUIQQER_AJAX', true);
+define('QUIQQER_SYSTEM', true);
 
 require_once 'header.php';
 

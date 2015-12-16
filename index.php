@@ -1,6 +1,7 @@
 <?php
 
 error_reporting(E_ALL);
+define('QUIQQER_SYSTEM', true);
 
 /**
  * @author www.pcsg.com (Henning Leutz)
@@ -34,7 +35,7 @@ try {
 
     // UTF 8 Prüfung für umlaute in url
     if (isset($_REQUEST['_url'])) {
-        $_REQUEST['_url'] = QUI\Utils\String::toUTF8($_REQUEST['_url']);
+        $_REQUEST['_url'] = QUI\Utils\StringHelper::toUTF8($_REQUEST['_url']);
     }
 
     //\QUI\Utils\System\Debug::$run = true;

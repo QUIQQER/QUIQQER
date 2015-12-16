@@ -213,22 +213,19 @@ if (file_exists(\$boot)) {
         file_put_contents(
             $image,
             $fileHeader.
-            "require 'bootstrap.php';\n".
-            "require '{$OPT_DIR}quiqqer/quiqqer/image.php';"
+            "require '{$OPT_DIR}quiqqer/quiqqer/image.php';\n"
         );
 
         file_put_contents(
             $index,
             $fileHeader.
-            "require 'bootstrap.php';\n".
-            "require '{$OPT_DIR}quiqqer/quiqqer/index.php';"
+            "require '{$OPT_DIR}quiqqer/quiqqer/index.php';\n"
         );
 
         file_put_contents(
             $quiqqer,
             $fileHeader.
-            "require 'bootstrap.php';\n".
-            "require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php';"
+            "require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php';\n"
         );
     }
 }

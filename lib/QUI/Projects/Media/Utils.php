@@ -322,7 +322,7 @@ class Utils
         $img = '<img ';
 
         foreach ($attributes as $key => $value) {
-            $img .= $key . '="' . $value . '" ';
+            $img .= htmlspecialchars($key) . '="' . htmlspecialchars($value) . '" ';
         }
 
         // responsive image
@@ -344,7 +344,7 @@ class Utils
 //            $img .= ' srcset="'. implode(",\n", $srcset) .'"';
 //        }
 
-        $img .= ' src="' . $src . '" />';
+        $img .= ' src="' . htmlspecialchars($src) . '" />';
 
         return $img;
     }

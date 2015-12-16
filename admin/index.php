@@ -1,5 +1,6 @@
 <?php
 
+define('QUIQQER_SYSTEM', true);
 require 'header.php';
 
 // qui path
