@@ -6,6 +6,7 @@
  */
 
 $dir = str_replace('quiqqer/quiqqer/lib/QUI/Upload/bin', '', dirname(__FILE__));
+define('QUIQQER_SYSTEM', true);
 
 require_once $dir.'header.php';
 

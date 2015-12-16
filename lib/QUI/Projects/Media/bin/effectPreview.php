@@ -1,12 +1,16 @@
 <?php
 
+/**
+ * This file includes the image preview
+ */
 if (!isset($_REQUEST['id']) || !isset($_REQUEST['project'])) {
     exit;
 }
 
 $dir = str_replace('quiqqer/quiqqer/lib/QUI/Projects/Media/bin', '', dirname(__FILE__));
+define('QUIQQER_SYSTEM', true);
 
-require_once $dir . 'header.php';
+require_once $dir . '/header.php';
 
 $Project = QUI::getProject($_REQUEST['project']);
 $Media   = $Project->getMedia();
