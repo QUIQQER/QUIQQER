@@ -15,7 +15,6 @@
  * @require Locale
  * @require css!controls/projects/project/media/FolderViewer.css
  */
-
 define('controls/projects/project/media/FolderViewer', [
 
     'qui/QUI',
@@ -180,14 +179,23 @@ define('controls/projects/project/media/FolderViewer', [
                 Media   = Project.getMedia();
 
             Media.get(this.getAttribute('folderId')).done(function (Item) {
+                var allowedTypes = self.getAttribute('filetype');
+
                 if (typeOf(Item) != 'classes/projects/project/media/Folder') {
                     self.$Container.set(
                         'html',
                         Locale.get(lg, 'projects.project.media.folderviewer.no.folder')
                     );
 
+                    self.$ButtonsDiashow.disable();
                     self.Loader.hide();
                     return;
+                }
+
+                if (allowedTypes && !allowedTypes.contains('image')) {
+                    self.$ButtonsDiashow.disable();
+                } else {
+                    self.$ButtonsDiashow.enable();
                 }
 
                 self.$Folder = Item;
@@ -196,8 +204,7 @@ define('controls/projects/project/media/FolderViewer', [
                 Item.getChildren(function (items) {
                     self.$Container.set('html', '');
 
-                    var images       = 0,
-                        allowedTypes = self.getAttribute('filetype');
+                    var images = 0;
 
                     if (items.length === 0) {
 
@@ -321,18 +328,20 @@ define('controls/projects/project/media/FolderViewer', [
          * create a domnode for the image data
          *
          * @param {Object} imageData - data of the image
-         * @return {HTMLDivElement}
+         * @return {Element}
          */
         $createImageItem: function (imageData) {
-            var self     = this,
+            var cursor   = 'zoom-in',
+                self     = this,
                 imageSrc = URL_DIR + imageData.url,
                 dataSrc  = imageSrc + '&noresize=1';
 
-            imageSrc = imageSrc +'&maxwidth=80&maxheight=80&quiadmin=1';
+            imageSrc = imageSrc + '&maxwidth=80&maxheight=80&quiadmin=1';
 
             if (imageData.type == 'file') {
                 imageSrc = imageData.icon80x80;
                 dataSrc  = imageData.icon80x80;
+                cursor   = 'default';
             }
 
             return new Element('div', {
@@ -343,13 +352,16 @@ define('controls/projects/project/media/FolderViewer', [
                 alt         : imageData.name,
                 title       : imageData.name,
                 styles      : {
-                    backgroundImage: 'url(' + imageSrc + ')'
+                    backgroundImage: 'url(' + imageSrc + ')',
+                    cursor         : cursor
                 },
                 'data-src'  : dataSrc,
                 'data-short': imageData.short,
                 events      : {
                     click: function () {
-                        self.diashow(this.get('data-src'));
+                        if (imageData.type == 'image') {
+                            self.diashow(this.get('data-src'));
+                        }
                     },
 
                     contextmenu: function (event) {
