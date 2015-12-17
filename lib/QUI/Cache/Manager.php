@@ -90,7 +90,7 @@ class Manager
             $key = md5(__FILE__) . '/qui/';
         }
 
-        if (!is_null(self::$Stash)) {
+        if (self::$Stash !== null) {
             return self::$Stash->getItem($key);
         }
 
@@ -277,8 +277,8 @@ class Manager
             return false;
         }
 
-        if (!is_null(self::$Handler)) {
-            return self::$Handler;
+        if (self::$Handler === null) {
+            return false;
         }
 
         return self::$Handler;

@@ -404,7 +404,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function getLang()
     {
-        if (!is_null($this->_lang)) {
+        if ($this->_lang !== null) {
             return $this->_lang;
         }
 
@@ -1192,7 +1192,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function canUseBackend()
     {
-        if (!is_null($this->_admin)) {
+        if ($this->_admin !== null) {
             return $this->_admin;
         }
 

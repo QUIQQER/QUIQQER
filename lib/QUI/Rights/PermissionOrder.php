@@ -38,7 +38,7 @@ class PermissionOrder
                 continue;
             }
 
-            if (is_null($result)
+            if ($result === null
                 || (int)$Group->hasPermission($permission) > $result
             ) {
                 $result = (int)$Group->hasPermission($permission);
@@ -46,7 +46,7 @@ class PermissionOrder
         }
 
         // default
-        if (is_null($result)) {
+        if ($result === null) {
             $Manager  = QUI::getPermissionManager();
             $permData = $Manager->getPermissionData($permission);
 
@@ -86,7 +86,7 @@ class PermissionOrder
                 continue;
             }
 
-            if (is_null($result)
+            if ($result === null
                 || (int)$Group->hasPermission($permission) < $result
             ) {
                 $result = (int)$Group->hasPermission($permission);
@@ -94,7 +94,7 @@ class PermissionOrder
         }
 
         // default
-        if (is_null($result)) {
+        if ($result === null) {
             $Manager  = QUI::getPermissionManager();
             $permData = $Manager->getPermissionData($permission);
 

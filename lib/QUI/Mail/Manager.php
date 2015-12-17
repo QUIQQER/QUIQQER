@@ -53,7 +53,7 @@ class Manager
      */
     public function getQueue()
     {
-        if (is_null($this->Queue)) {
+        if ($this->Queue === null) {
             $this->Queue = new Queue();
         }
 

@@ -591,7 +591,7 @@ class Project
      */
     public function firstChild()
     {
-        if (is_null($this->firstchild)) {
+        if ($this->firstchild === null) {
             $this->firstchild = $this->get(1);
         }
 

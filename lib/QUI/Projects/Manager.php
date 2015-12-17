@@ -443,7 +443,7 @@ class Manager
      */
     public static function getStandard()
     {
-        if (!is_null(self::$Standard)) {
+        if (self::$Standard !== null) {
             return self::$Standard;
         }
 
@@ -465,7 +465,7 @@ class Manager
             }
         }
 
-        if (is_null(self::$Standard)) {
+        if (self::$Standard === null) {
             QUI\System\Log::addAlert(
                 'No standard project are set. Please define a standard projekt'
             );

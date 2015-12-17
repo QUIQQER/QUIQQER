@@ -478,7 +478,7 @@ class QUI
      */
     public static function conf($section, $key = null)
     {
-        if (is_null(self::$Conf)) {
+        if (self::$Conf === null) {
             self::$Conf = self::getConfig('etc/conf.ini.php');
         }
 
@@ -540,7 +540,7 @@ class QUI
      */
     public static function getAjax()
     {
-        if (is_null(self::$Ajax)) {
+        if (self::$Ajax === null) {
             self::$Ajax = new QUI\Ajax(array(
                 'db_errors' => self::conf('error', 'mysql_ajax_errors_backend')
             ));
@@ -626,7 +626,7 @@ class QUI
      */
     public static function getCountries()
     {
-        if (is_null(self::$Countries)) {
+        if (self::$Countries === null) {
             self::$Countries = new \QUI\Countries\Manager();
         }
 
@@ -642,7 +642,7 @@ class QUI
      */
     public static function getDB()
     {
-        if (is_null(self::$DataBase)) {
+        if (self::$DataBase === null) {
             self::$DataBase = new \QUI\Utils\MyDB();
         }
 
@@ -656,7 +656,7 @@ class QUI
      */
     public static function getDataBase()
     {
-        if (is_null(self::$DataBase2)) {
+        if (self::$DataBase2 === null) {
             self::$DataBase2 = new \QUI\Database\DB(array(
                 'driver' => self::conf('db', 'driver'),
                 'host' => self::conf('db', 'host'),
@@ -676,7 +676,7 @@ class QUI
      */
     public static function getEvents()
     {
-        if (is_null(self::$Events)) {
+        if (self::$Events === null) {
             self::$Events = new \QUI\Events\Manager();
         }
 
@@ -735,7 +735,7 @@ class QUI
      */
     public static function getErrorHandler()
     {
-        if (is_null(self::$ErrorHandler)) {
+        if (self::$ErrorHandler === null) {
             require_once dirname(__FILE__) . '/QUI/Exceptions/Handler.php';
 
             self::$ErrorHandler = new \QUI\Exceptions\Handler();
@@ -761,7 +761,7 @@ class QUI
      */
     public static function getGroups()
     {
-        if (is_null(self::$Groups)) {
+        if (self::$Groups === null) {
             self::$Groups = new \QUI\Groups\Manager();
         }
 
@@ -775,7 +775,7 @@ class QUI
      */
     public static function getMessagesHandler()
     {
-        if (is_null(self::$MessageHandler)) {
+        if (self::$MessageHandler === null) {
             self::$MessageHandler = new \QUI\Messages\Handler();
         }
 
@@ -789,7 +789,7 @@ class QUI
      */
     public static function getLocale()
     {
-        if (is_null(self::$Locale)) {
+        if (self::$Locale === null) {
             self::$Locale = new \QUI\Locale();
         }
 
@@ -803,7 +803,7 @@ class QUI
      */
     public static function getMailManager()
     {
-        if (is_null(self::$MailManager)) {
+        if (self::$MailManager === null) {
             self::$MailManager = new \QUI\Mail\Manager();
         }
 
@@ -817,7 +817,7 @@ class QUI
      */
     public static function getPackageManager()
     {
-        if (is_null(self::$PackageManager)) {
+        if (self::$PackageManager === null) {
             self::$PackageManager = new \QUI\Package\Manager();
         }
 
@@ -843,7 +843,7 @@ class QUI
      */
     public static function getProjectManager()
     {
-        if (is_null(self::$ProjectManager)) {
+        if (self::$ProjectManager === null) {
             self::$ProjectManager = new \QUI\Projects\Manager();
         }
 
@@ -865,7 +865,7 @@ class QUI
      */
     public static function getPluginManager()
     {
-        if (is_null(self::$Plugins)) {
+        if (self::$Plugins === null) {
             self::$Plugins = new \QUI\Plugins\Manager();
         }
 
@@ -879,7 +879,7 @@ class QUI
      */
     public static function getRewrite()
     {
-        if (is_null(self::$Rewrite)) {
+        if (self::$Rewrite === null) {
             self::$Rewrite = new \QUI\Rewrite();
         }
 
@@ -905,7 +905,7 @@ class QUI
      */
     public static function getPermissionManager()
     {
-        if (is_null(self::$Rights)) {
+        if (self::$Rights === null) {
             self::$Rights = new \QUI\Rights\Manager();
         }
 
@@ -919,7 +919,7 @@ class QUI
      */
     public static function getRequest()
     {
-        if (is_null(self::$Request)) {
+        if (self::$Request === null) {
             self::$Request = Request::createFromGlobals();
         }
 
@@ -931,7 +931,7 @@ class QUI
      */
     public static function getGlobalResponse()
     {
-        if (is_null(self::$Response)) {
+        if (self::$Response === null) {
             self::$Response = new Response();
             self::$Response->setCharset('UTF-8');
             self::$Response->headers->set('Content-Type', 'text/html');
@@ -947,7 +947,7 @@ class QUI
      */
     public static function getSession()
     {
-        if (is_null(self::$Session)) {
+        if (self::$Session === null) {
             self::$Session = new \QUI\Session();
             self::getRequest()->setSession(self::$Session->getSymfonySession());
         }
@@ -962,7 +962,7 @@ class QUI
      */
     public static function getTemp()
     {
-        if (is_null(self::$Temp)) {
+        if (self::$Temp === null) {
             self::$Temp = new \QUI\Temp(VAR_DIR . 'tmp');
         }
 
@@ -976,7 +976,7 @@ class QUI
      */
     public static function getTemplateManager()
     {
-        if (is_null(self::$Template)) {
+        if (self::$Template === null) {
             self::$Template = new \QUI\Template();
         }
 
@@ -990,7 +990,7 @@ class QUI
      */
     public static function getUsers()
     {
-        if (is_null(self::$Users)) {
+        if (self::$Users === null) {
             self::$Users = new \QUI\Users\Manager();
         }
 

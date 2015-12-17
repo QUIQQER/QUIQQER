@@ -982,7 +982,7 @@ class Manager
      */
     public static function genHash($pass, $salt = null)
     {
-        if (is_null($salt)) {
+        if ($salt === null) {
             $randomBytes = openssl_random_pseudo_bytes(SALT_LENGTH);
             $salt        = mb_substr(bin2hex($randomBytes), 0, SALT_LENGTH);
         }
