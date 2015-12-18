@@ -7,7 +7,7 @@
 namespace QUI\Projects;
 
 use QUI;
-use QUI\Utils\String as StringUtils;
+use QUI\Utils\StringHelper as StringUtils;
 
 /**
  * Site Objekt - eine einzelne Seite

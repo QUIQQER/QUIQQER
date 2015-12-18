@@ -453,8 +453,8 @@ class Locale
      */
     public function getTranslationFile($lang, $group)
     {
-        $locale = QUI\Utils\String::toLower($lang) . '_'
-                  . QUI\Utils\String::toUpper($lang);
+        $locale = QUI\Utils\StringHelper::toLower($lang) . '_'
+                  . QUI\Utils\StringHelper::toUpper($lang);
         $group  = str_replace('/', '_', $group);
 
         return $this->dir() . '/' . $locale . '/LC_MESSAGES/' . $group . '.ini.php';

@@ -9,7 +9,7 @@ namespace QUI\System\Tests;
 use QUI;
 use QUI\Utils\System\File as SystemFile;
 use QUI\Utils\XML as XML;
-use QUI\Utils\String as String;
+use QUI\Utils\StringHelper as StringHelper;
 
 /**
  * Database Check - Compares existing QUIQQER database tables with database.xml files
@@ -213,7 +213,7 @@ class DBCheck extends QUI\System\Test
             $primaryKeys = $info['primary'];
         } else {
             foreach ($info['fields'] as $column => $structure) {
-                $structure = String::toLower($structure);
+                $structure = StringHelper::toLower($structure);
 
                 if (mb_strpos($structure, 'primary key') !== false) {
                     $primaryKeys[] = $column;
@@ -231,7 +231,7 @@ class DBCheck extends QUI\System\Test
             $checkData['auto_inc'] = $info['auto_increment'];
         } else {
             foreach ($info['fields'] as $column => $structure) {
-                $structure = String::toLower($structure);
+                $structure = StringHelper::toLower($structure);
 
                 if (mb_strpos($structure, 'auto_increment') !== false) {
                     $checkData['auto_inc'] = $column;
@@ -367,7 +367,7 @@ class DBCheck extends QUI\System\Test
             }
 
             // column declaration from the xml file
-            $fieldData = String::toLower($fields[$fieldName]);
+            $fieldData = StringHelper::toLower($fields[$fieldName]);
 
             /*** NULL/NOT NULL check ***/
             $nullable = true;
