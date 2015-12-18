@@ -3,11 +3,11 @@
 /**
  * Tab einer Benutzereinstellung bekommen
  *
- * @param Integer $uid
- * @param String  $plugin
- * @param String  $tab
+ * @param integer $uid
+ * @param string $plugin
+ * @param string $tab
  *
- * @return String
+ * @return string
  */
 function ajax_users_getCategory($uid, $plugin, $tab)
 {

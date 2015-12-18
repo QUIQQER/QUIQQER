@@ -3,21 +3,20 @@
 /**
  * Return the site children
  *
- * @param String  $project
- * @param Integer $id
- * @param String  $params - JSON Array
+ * @param string $project
+ * @param integer $id
+ * @param string $params - JSON Array
  *
- *
- * @return Array
+ * @return array
  */
 function ajax_site_getchildren($project, $id, $params)
 {
     $Project = QUI::getProjectManager()->decode($project);
-    $Site = new QUI\Projects\Site\Edit($Project, (int)$id);
-    $params = json_decode($params, true);
+    $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
+    $params  = json_decode($params, true);
 
     $PluginManager = QUI::getPluginManager();
-    $attributes = false;
+    $attributes    = false;
 
     if (isset($params['attributes'])) {
         $attributes = explode(',', $params['attributes']);
@@ -80,7 +79,7 @@ function ajax_site_getchildren($project, $id, $params)
     }
 
     return array(
-        'count'    => $Site->hasChildren(true),
+        'count' => $Site->hasChildren(true),
         'children' => $childs
     );
 }

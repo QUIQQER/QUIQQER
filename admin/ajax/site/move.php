@@ -3,11 +3,11 @@
 /**
  * Move a site under another site
  *
- * @param String $project - project data
- * @param Integer $id - site ID
- * @param Integer $newParentId - new parent ID
+ * @param string $project - project data
+ * @param integer $id - site ID
+ * @param integer $newParentId - new parent ID
  *
- * @return Array
+ * @return array
  */
 function ajax_site_move($project, $id, $newParentId)
 {

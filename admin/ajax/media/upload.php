@@ -3,17 +3,17 @@
 /**
  * Upload a file
  *
- * @param String         $project - Name of the project
- * @param Integer|String $parentid
- * @param \QUI\QDOM      $File
+ * @param string $project - Name of the project
+ * @param integer|string $parentid
+ * @param \QUI\QDOM $File
  *
  * @throws \QUI\Exception
  */
 function ajax_media_upload($project, $parentid, $File)
 {
     $Project = QUI\Projects\Manager::getProject($project);
-    $Media = $Project->getMedia();
-    $Folder = $Media->get((int)$parentid);
+    $Media   = $Project->getMedia();
+    $Folder  = $Media->get((int)$parentid);
 
     if ($Folder->getType() != 'QUI\\Projects\\Media\\Folder') {
         throw new QUI\Exception(

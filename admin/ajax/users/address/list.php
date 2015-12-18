@@ -3,20 +3,19 @@
 /**
  * Return all addresses from an user
  *
- * @param Integer|String $uid - id of the user
+ * @param integer|string $uid - id of the user
  *
- * @return Array
+ * @return array
  */
 function ajax_users_address_list($uid)
 {
-    $User = QUI::getUsers()->get((int)$uid);
-
+    $User      = QUI::getUsers()->get((int)$uid);
     $addresses = $User->getAddressList();
-    $result = array();
+    $result    = array();
 
     foreach ($addresses as $Address) {
-        $entry = $Address->getAllAttributes();
-        $entry['id'] = $Address->getId();
+        $entry        = $Address->getAllAttributes();
+        $entry['id']  = $Address->getId();
         $entry['uid'] = $User->getId();
 
         $result[] = $entry;

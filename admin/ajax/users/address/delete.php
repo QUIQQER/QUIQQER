@@ -3,10 +3,10 @@
 /**
  * Delete a address
  *
- * @param Integer|String $uid - id of the user
- * @param Integer|String $aid - id of the address
+ * @param integer|string $uid - id of the user
+ * @param integer|string $aid - id of the address
  *
- * @return Array
+ * @return array
  */
 function ajax_users_address_delete($uid, $aid)
 {

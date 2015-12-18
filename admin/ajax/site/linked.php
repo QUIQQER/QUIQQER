@@ -3,22 +3,22 @@
 /**
  * Create a linkage / shortcut
  *
- * @param String $project
- * @param Integer $id
- * @param Integer $newParentId
+ * @param string $project
+ * @param integer $id
+ * @param integer $newParentId
  *
- * @return Array
+ * @return array
  */
 function ajax_site_linked($project, $id, $newParentId)
 {
-    $Project = \QUI::getProjectManager()->decode( $project );
-    $Site    = new \QUI\Projects\Site\Edit( $Project, (int)$id );
+    $Project = QUI::getProjectManager()->decode($project);
+    $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
 
-    $Site->linked( (int)$newParentId );
+    $Site->linked((int)$newParentId);
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_site_linked',
-    array( 'project', 'id', 'newParentId' ),
+    array('project', 'id', 'newParentId'),
     'Permission::checkAdminUser'
 );

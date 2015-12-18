@@ -3,14 +3,14 @@
 /**
  * Replace a file with another file
  *
- * @param String    $project - name of the project
- * @param Integer   $fileid
+ * @param string $project - name of the project
+ * @param integer $fileid
  * @param \QUI\QDOM $File
  */
 function ajax_media_replace($project, $fileid, $File)
 {
     $Project = QUI\Projects\Manager::getProject($project);
-    $Media = $Project->getMedia();
+    $Media   = $Project->getMedia();
 
     $file = $File->getAttribute('filepath');
 

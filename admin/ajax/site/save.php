@@ -3,16 +3,16 @@
 /**
  * Saves a site
  *
- * @param String  $project    - project data
- * @param Integer $id         - Site ID
- * @param String  $attributes - JSON Array
+ * @param string $project - project data
+ * @param integer $id - Site ID
+ * @param string $attributes - JSON Array
  *
- * @return Array
+ * @return array
  */
 function ajax_site_save($project, $id, $attributes)
 {
     $Project = QUI::getProjectManager()->decode($project);
-    $Site = new QUI\Projects\Site\Edit($Project, (int)$id);
+    $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
 
     $attributes = json_decode($attributes, true);
 

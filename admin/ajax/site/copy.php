@@ -3,11 +3,11 @@
 /**
  * Copy a site
  *
- * @param String $project
- * @param Integer $id
- * @param String $newParent - JSON Data
+ * @param string $project
+ * @param integer $id
+ * @param string $newParent - JSON Data
  *
- * @return Integer - new site id
+ * @return integer - new site id
  */
 function ajax_site_copy($project, $id, $newParent)
 {
