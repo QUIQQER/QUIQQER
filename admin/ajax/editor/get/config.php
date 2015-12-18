@@ -3,7 +3,7 @@
 /**
  * Return the main editor config
  *
- * @return Array
+ * @return array
  */
 function ajax_editor_get_config()
 {

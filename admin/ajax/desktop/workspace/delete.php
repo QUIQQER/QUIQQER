@@ -7,16 +7,16 @@
  */
 function ajax_desktop_workspace_delete($ids)
 {
-    $User = \QUI::getUserBySession();
-    $ids  = json_decode( $ids, true );
+    $User = QUI::getUserBySession();
+    $ids  = json_decode($ids, true);
 
-    foreach ( $ids as $id ) {
-        \QUI\Workspace\Manager::deleteWorkspace( $id, $User );
+    foreach ($ids as $id) {
+        QUI\Workspace\Manager::deleteWorkspace($id, $User);
     }
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_desktop_workspace_delete',
-    array( 'ids' ),
+    array('ids'),
     'Permission::checkUser'
 );

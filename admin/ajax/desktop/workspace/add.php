@@ -7,10 +7,10 @@
  */
 function ajax_desktop_workspace_add($data)
 {
-    $User = \QUI::getUserBySession();
-    $data = json_decode( $data, true );
+    $User = QUI::getUserBySession();
+    $data = json_decode($data, true);
 
-    \QUI\Workspace\Manager::addWorkspace(
+    QUI\Workspace\Manager::addWorkspace(
         $User,
         $data['title'],
         $data['data'],
@@ -19,8 +19,8 @@ function ajax_desktop_workspace_add($data)
     );
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_desktop_workspace_add',
-    array( 'data' ),
+    array('data'),
     'Permission::checkUser'
 );

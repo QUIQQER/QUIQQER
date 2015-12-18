@@ -3,9 +3,9 @@
 /**
  * Return the available toolbars
  *
- * @param String / Integer $uid
+ * @param string / Integer $uid
  *
- * @return Array
+ * @return array
  */
 function ajax_editor_get_toolbars()
 {

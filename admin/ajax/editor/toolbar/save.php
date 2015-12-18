@@ -3,8 +3,8 @@
 /**
  * Saves a toolbar
  *
- * @param String $toolbar - name of the toolbar
- * @param String $xml     - xml content
+ * @param string $toolbar - name of the toolbar
+ * @param string $xml - xml content
  */
 function ajax_editor_toolbar_save($toolbar, $xml)
 {

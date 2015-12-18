@@ -8,15 +8,15 @@
  */
 function ajax_desktop_workspace_save($id, $data)
 {
-    $User = \QUI::getUserBySession();
+    $User = QUI::getUserBySession();
 
-    \QUI\Workspace\Manager::saveWorkspace($User, $id, array(
+    QUI\Workspace\Manager::saveWorkspace($User, $id, array(
         'data' => $data
     ));
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_desktop_workspace_save',
-    array( 'id', 'data' ),
+    array('id', 'data'),
     'Permission::checkUser'
 );

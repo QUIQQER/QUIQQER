@@ -3,7 +3,7 @@
 /**
  * Delete a toolbar
  *
- * @param String $toolbar - name of the toolbar
+ * @param string $toolbar - name of the toolbar
  */
 function ajax_editor_toolbar_delete($toolbar)
 {
