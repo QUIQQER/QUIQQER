@@ -518,7 +518,7 @@ class QUI
      */
     public static function vhosts()
     {
-        if (!is_null(self::$vhosts)) {
+        if (self::$vhosts !== null) {
             return self::$vhosts;
         }
 
