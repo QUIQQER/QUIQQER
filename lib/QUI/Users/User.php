@@ -558,7 +558,7 @@ class User implements QUI\Interfaces\Users\User
                 }
             }
 
-            $this->_groups = implode($aTmp, ',');
+            $this->_groups = ',' . implode($aTmp, ',') . ',';
             return;
         }
 
