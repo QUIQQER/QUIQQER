@@ -558,8 +558,8 @@ class Edit extends Site
         $update = QUI::getDataBase()->update(
             $this->_TABLE,
             array(
-                'name' => $this->getAttribute('name'),
-                'title' => $this->getAttribute('title'),
+                'name' => trim($this->getAttribute('name')),
+                'title' => trim($this->getAttribute('title')),
                 'short' => $this->getAttribute('short'),
                 'content' => $this->getAttribute('content'),
                 'type' => $this->getAttribute('type'),
