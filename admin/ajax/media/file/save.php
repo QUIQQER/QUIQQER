@@ -3,17 +3,17 @@
 /**
  * Saves the data of a media file
  *
- * @param String $project    - Name of the project
- * @param String|Integer - File-ID
- * @param String $attributes - JSON Array, new file attributes
+ * @param string $project - Name of the project
+ * @param string|integer - File-ID
+ * @param string $attributes - JSON Array, new file attributes
  *
- * @return String
+ * @return string
  */
 function ajax_media_file_save($project, $fileid, $attributes)
 {
     $Project = QUI\Projects\Manager::getProject($project);
-    $Media = $Project->getMedia();
-    $File = $Media->get($fileid);
+    $Media   = $Project->getMedia();
+    $File    = $Media->get($fileid);
 
     $attributes = json_decode($attributes, true);
 

@@ -3,11 +3,11 @@
 /**
  * Saves the address
  *
- * @param String $uid  - User ID
- * @param String $aid  - Address ID
- * @param String $data - JSON Array
+ * @param string $uid - User ID
+ * @param string $aid - Address ID
+ * @param string $data - JSON Array
  *
- * @return Integer
+ * @return integer
  */
 function ajax_users_address_save($uid, $aid, $data)
 {

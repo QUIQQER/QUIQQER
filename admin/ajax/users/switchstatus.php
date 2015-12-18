@@ -3,9 +3,9 @@
 /**
  * Switch the user status of the users
  *
- * @param String $uid - JSON Array | JSON Integer
+ * @param string $uid - JSON Array | JSON Integer
  *
- * @return Array
+ * @return array
  */
 function ajax_users_switchstatus($uid)
 {
@@ -15,7 +15,7 @@ function ajax_users_switchstatus($uid)
         $uid = array($uid);
     }
 
-    $Users = QUI::getUsers();
+    $Users  = QUI::getUsers();
     $result = array();
 
     foreach ($uid as $_uid) {

@@ -3,8 +3,8 @@
 /**
  * Deactivate the file / files
  *
- * @param String         $project - Name of the project
- * @param String|Integer $fileid  - File-ID or JSON Array list of file IDs
+ * @param string $project - Name of the project
+ * @param string|integer $fileid - File-ID or JSON Array list of file IDs
  *
  * @return string|array
  * @throws \QUI\Exception
@@ -14,7 +14,7 @@ function ajax_media_deactivate($project, $fileid)
     $fileid = json_decode($fileid, true);
 
     $Project = QUI\Projects\Manager::getProject($project);
-    $Media = $Project->getMedia();
+    $Media   = $Project->getMedia();
 
     if (is_array($fileid)) {
         $result = array();

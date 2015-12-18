@@ -3,8 +3,8 @@
 /**
  * Return the project settings template
  *
- * @param String $project - JSON Project Data
- * @return String
+ * @param string $project - JSON Project Data
+ * @return string
  */
 function ajax_project_panel_settings($project)
 {

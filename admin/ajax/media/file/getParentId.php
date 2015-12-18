@@ -3,10 +3,10 @@
 /**
  * Returns the Parent-ID from a media file
  *
- * @param String $project - Name of the project
- * @param String|Integer $fileid - File-ID
+ * @param string $project - Name of the project
+ * @param string|integer $fileid - File-ID
  *
- * @return Integer
+ * @return integer
  */
 function ajax_media_file_getParentId($project, $fileid)
 {

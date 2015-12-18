@@ -3,7 +3,7 @@
 /**
  * Destroy all deleted site ids
  *
- * @param String $project - Project data, JSON Array
+ * @param string $project - Project data, JSON Array
  */
 function ajax_trash_clear($project)
 {

@@ -3,9 +3,9 @@
 /**
  * Return the user data
  *
- * @param String / Integer $uid
+ * @param string / Integer $uid
  *
- * @return Array
+ * @return array
  */
 
 function ajax_users_get($uid)

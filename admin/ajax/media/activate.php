@@ -3,8 +3,8 @@
 /**
  * Activate the file / files
  *
- * @param String         $project - Name of the project
- * @param String|Integer $fileid  - File-ID
+ * @param string $project - Name of the project
+ * @param string|integer $fileid - File-ID
  *
  * @return array|boolean
  * @throws \QUI\Exception
@@ -14,7 +14,7 @@ function ajax_media_activate($project, $fileid)
     $fileid = json_decode($fileid, true);
 
     $Project = QUI\Projects\Manager::getProject($project);
-    $Media = $Project->getMedia();
+    $Media   = $Project->getMedia();
 
     if (is_array($fileid)) {
         $result = array();

@@ -3,15 +3,15 @@
 /**
  * Search groups
  *
- * @param String $params
- * @return Array
+ * @param string $params
+ * @return array
  */
 function ajax_usersgroups_search($params)
 {
     $dir = dirname(dirname(__FILE__));
 
-    require_once $dir.'/users/search.php';
-    require_once $dir.'/groups/search.php';
+    require_once $dir . '/users/search.php';
+    require_once $dir . '/groups/search.php';
 
     // users
     $users = ajax_users_search($params);
@@ -31,9 +31,9 @@ function ajax_usersgroups_search($params)
 
     // combine results
     $result = array(
-        'page'  => $users['page'],
+        'page' => $users['page'],
         'total' => $users['total'] + $groups['total'],
-        'data'  => array_merge(
+        'data' => array_merge(
             $users['data'],
             $groups['data']
         )

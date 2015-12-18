@@ -3,18 +3,18 @@
 /**
  * Create a new folder
  *
- * @param String $project   - Name of the project
- * @param String $parentid  - Parent-ID of the new folder
- * @param String $newfolder - Name of the new Folder
+ * @param string $project - Name of the project
+ * @param string $parentid - Parent-ID of the new folder
+ * @param string $newfolder - Name of the new Folder
  *
- * @return Array
+ * @return array
  * @throws \QUI\Exception
  */
 function ajax_media_folder_create($project, $parentid, $newfolder)
 {
     $Project = QUI\Projects\Manager::getProject($project);
-    $Media = $Project->getMedia();
-    $File = $Media->get($parentid);
+    $Media   = $Project->getMedia();
+    $File    = $Media->get($parentid);
 
     if (QUI\Projects\Media\Utils::isFolder($File) === false) {
         throw new QUI\Exception(

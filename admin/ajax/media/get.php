@@ -3,21 +3,21 @@
 /**
  * Returns the file data
  *
- * @param String $project - Name of the project
- * @param String $fileid  - File-ID
+ * @param string $project - Name of the project
+ * @param string $fileid - File-ID
  *
- * @return Array
+ * @return array
  */
 function ajax_media_get($project, $fileid)
 {
     $Project = QUI\Projects\Manager::getProject($project);
-    $Media = $Project->getMedia();
-    $File = $Media->get($fileid);
+    $Media   = $Project->getMedia();
+    $File    = $Media->get($fileid);
 
-    $parents = $File->getParents();
+    $parents    = $File->getParents();
     $breadcrumb = array();
-    $children = array();
-    $_children = array();
+    $children   = array();
+    $_children  = array();
 
     if ($File->getType() === 'QUI\\Projects\\Media\\Folder') {
         $_children = $File->getChildren();
@@ -37,9 +37,9 @@ function ajax_media_get($project, $fileid)
 
 
     return array(
-        'file'       => QUI\Projects\Media\Utils::parseForMediaCenter($File),
+        'file' => QUI\Projects\Media\Utils::parseForMediaCenter($File),
         'breadcrumb' => $breadcrumb,
-        'children'   => $children
+        'children' => $children
     );
 }
 

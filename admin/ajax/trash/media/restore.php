@@ -3,9 +3,9 @@
 /**
  * Restore media files
  *
- * @param String $project - Name of the project
- * @param String $ids - JSON Array, File IDs
- * @param String|Integer $parentid - Folder-ID
+ * @param string $project - Name of the project
+ * @param string $ids - JSON Array, File IDs
+ * @param string|integer $parentid - Folder-ID
  *
  * @throws QUI\Exception
  */

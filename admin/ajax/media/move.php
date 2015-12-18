@@ -3,17 +3,17 @@
 /**
  * Copy files to a folder
  *
- * @param String $project - Name of the project
- * @param String $to      - Folder-ID
- * @param String $ids     - ids which copied
+ * @param string $project - Name of the project
+ * @param string $to - Folder-ID
+ * @param string $ids - ids which copied
  *
  * @throws \QUI\Exception
  */
 function ajax_media_move($project, $to, $ids)
 {
     $Project = QUI\Projects\Manager::getProject($project);
-    $Media = $Project->getMedia();
-    $Folder = $Media->get($to);
+    $Media   = $Project->getMedia();
+    $Folder  = $Media->get($to);
 
     $ids = json_decode($ids, true);
 

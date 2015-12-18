@@ -3,9 +3,9 @@
 /**
  * Restore sites
  *
- * @param String $project - Project data, JSON Array
- * @param JSON Array $ids
- * @param String|Integer $parentid - Site-ID
+ * @param string $project - Project data, JSON Array
+ * @param string $ids - json array
+ * @param string|integer $parentid - Site-ID
  */
 function ajax_trash_restore($project, $ids, $parentid)
 {

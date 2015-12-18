@@ -3,17 +3,17 @@
 /**
  * Gibt die Daten eines Benutzers zurück
  *
- * @param String / Integer $uid
- * @return Array
+ * @param string $vhost
+ * @return array
  */
 function ajax_vhosts_remove($vhost)
 {
-    $VhostManager = new \QUI\System\VhostManager();
-    $VhostManager->removeVhost( $vhost );
+    $VhostManager = new QUI\System\VhostManager();
+    $VhostManager->removeVhost($vhost);
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_vhosts_remove',
-    array( 'vhost' ),
+    array('vhost'),
     'Permission::checkSU'
 );

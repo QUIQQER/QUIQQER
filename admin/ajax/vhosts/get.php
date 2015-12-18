@@ -3,18 +3,18 @@
 /**
  * Return the vhost data
  *
- * @param String $vhost - vhost
- * @return Array
+ * @param string $vhost - vhost
+ * @return array
  */
 function ajax_vhosts_get($vhost)
 {
-    $VhostManager = new \QUI\System\VhostManager();
+    $VhostManager = new QUI\System\VhostManager();
 
-    return $VhostManager->getVhost( $vhost );
+    return $VhostManager->getVhost($vhost);
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_vhosts_get',
-    array( 'vhost' ),
+    array('vhost'),
     'Permission::checkSU'
 );

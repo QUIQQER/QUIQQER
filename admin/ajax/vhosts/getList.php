@@ -3,8 +3,7 @@
 /**
  * Gibt die Daten eines Benutzers zurück
  *
- * @param String / Integer $uid
- * @return Array
+ * @return array
  */
 function ajax_vhosts_getList()
 {
@@ -13,7 +12,7 @@ function ajax_vhosts_getList()
     return $VhostManager->getList();
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_vhosts_getList',
     false,
     'Permission::checkSU'

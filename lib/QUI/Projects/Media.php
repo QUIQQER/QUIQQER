@@ -288,7 +288,7 @@ class Media extends QUI\QDOM
      *
      * @param integer $id - media id
      *
-     * @return \QUI\Projects\Media\Item|\QUI\Projects\Media\Image|\QUI\Projects\Media\File
+     * @return \QUI\Projects\Media\Item|\QUI\Projects\Media\Image|\QUI\Projects\Media\File|\QUI\Projects\Media\Folder
      * @throws \QUI\Exception
      */
     public function get($id)

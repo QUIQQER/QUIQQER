@@ -3,25 +3,23 @@
 /**
  * Return the sitetypes of the project
  *
- * @param String $project - project data; JSON Array
- * @return Array
+ * @param string $project - project data; JSON Array
+ * @return array
  */
 function ajax_project_types_get_list($project)
 {
-    try
-    {
-        $Project = \QUI::getProjectManager()->decode($project);
+    try {
+        $Project = QUI::getProjectManager()->decode($project);
 
-    } catch ( \QUI\Exception $Exception )
-    {
+    } catch (QUI\Exception $Exception) {
         $Project = false;
     }
 
-    return \QUI::getPluginManager()->getAvailableTypes( $Project );
+    return QUI::getPluginManager()->getAvailableTypes($Project);
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_project_types_get_list',
-    array( 'project' ),
+    array('project'),
     'Permission::checkAdminUser'
 );

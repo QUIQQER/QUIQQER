@@ -3,7 +3,7 @@
 /**
  * Test memcached serves
  *
- * @param String $data - JSON data
+ * @param string $data - JSON data
  */
 function ajax_settings_memcachedTest($data)
 {
@@ -59,15 +59,15 @@ function ajax_settings_memcachedTest($data)
         }
 
         $server = $entry['server'];
-        $port = $entry['port'];
+        $port   = $entry['port'];
 
         $Memcached = new Memcached();
         $Memcached->addServer($server, $port);
 
         $status = $Memcached->getStats();
 
-        if (!isset($status[$server.":".$port])
-            || $status[$server.":".$port]['pid'] <= 0
+        if (!isset($status[$server . ":" . $port])
+            || $status[$server . ":" . $port]['pid'] <= 0
         ) {
             $errors++;
 
@@ -77,7 +77,7 @@ function ajax_settings_memcachedTest($data)
                     'message.session.auth.memcached.error',
                     array(
                         'server' => $server,
-                        'port'   => $port
+                        'port' => $port
                     )
                 )
             );

@@ -3,9 +3,9 @@
 /**
  * Return the tabs / categories
  *
- * @param String $project
- * @param String $id
- * @return Array
+ * @param string $project
+ * @param string $id
+ * @return array
  */
 function ajax_site_categories_get($project, $id)
 {

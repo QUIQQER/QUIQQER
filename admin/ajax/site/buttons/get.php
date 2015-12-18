@@ -3,10 +3,10 @@
 /**
  * Return the action buttons from the site
  *
- * @param String $id
- * @param String $project
+ * @param string $id
+ * @param string $project
  *
- * @return Array
+ * @return array
  */
 function ajax_site_buttons_get($project, $id)
 {

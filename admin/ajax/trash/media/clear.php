@@ -3,7 +3,7 @@
 /**
  * Destroy all files
  *
- * @param String $project - Name of the project
+ * @param string $project - Name of the project
  */
 function ajax_trash_media_clear($project)
 {

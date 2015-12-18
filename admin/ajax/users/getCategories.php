@@ -3,14 +3,14 @@
 /**
  * Gibt die Button für den Benutzer zurück
  *
- * @param String / Integer $uid
+ * @param string / Integer $uid
  *
- * @return Array
+ * @return array
  */
 function ajax_users_getCategories($uid)
 {
     $Users = QUI::getUsers();
-    $User = $Users->get((int)$uid);
+    $User  = $Users->get((int)$uid);
 
     $Toolbar = QUI\Users\Utils::getUserToolbar($User);
 

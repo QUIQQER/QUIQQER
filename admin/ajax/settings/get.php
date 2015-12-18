@@ -3,8 +3,8 @@
 /**
  * Return config params from a xml file
  *
- * @param String $file
- * @return Array
+ * @param string $file
+ * @return array
  */
 function ajax_settings_get($file)
 {
@@ -16,7 +16,6 @@ function ajax_settings_get($file)
     }
 
     foreach ($files as $file) {
-
         if (!file_exists($file)) {
             continue;
         }

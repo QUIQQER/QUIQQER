@@ -3,9 +3,9 @@
 /**
  * Return the rewrited url from an image.php url
  *
- * @param String $fileurl - image.php string
+ * @param string $fileurl - image.php string
  *
- * @return String
+ * @return string
  */
 function ajax_media_url_rewrited($fileurl)
 {
@@ -24,7 +24,6 @@ function ajax_media_url_rewrited($fileurl)
         return $url;
 
     } catch (QUI\Exception $Exception) {
-
     }
 
     return $fileurl;

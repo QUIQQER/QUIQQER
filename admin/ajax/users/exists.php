@@ -3,9 +3,9 @@
 /**
  * check, if this is a username which can be used
  *
- * @param String $username
+ * @param string $username
  *
- * @return Bool
+ * @return boolean
  */
 
 function ajax_users_exists($username)

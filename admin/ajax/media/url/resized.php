@@ -5,11 +5,11 @@ use \QUI\Projects\Media\Utils as Utils;
 /**
  * Return the rewrited url from an image.php url
  *
- * @param String         $fileurl   - File url
- * @param String|Integer $maxWidth  - wanted width of the file
- * @param String|Integer $maxHeight - wanted height of the file
+ * @param string $fileurl - File url
+ * @param string|integer $maxWidth - wanted width of the file
+ * @param string|integer $maxHeight - wanted height of the file
  *
- * @return String
+ * @return string
  */
 function ajax_media_url_resized($fileurl, $maxWidth, $maxHeight)
 {
@@ -31,11 +31,9 @@ function ajax_media_url_resized($fileurl, $maxWidth, $maxHeight)
         }
 
         /* @var $File \QUI\Projects\Media\Image */
-
         return $File->getSizeCacheUrl($maxWidth, $maxHeight);
 
     } catch (QUI\Exception $Exception) {
-
     }
 
     return $fileurl;

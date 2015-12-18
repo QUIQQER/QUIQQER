@@ -3,21 +3,21 @@
 /**
  * Clear a site name
  *
- * @param String $project
- * @param String $name
+ * @param string $project
+ * @param string $name
  *
- * @return String
+ * @return string
  */
 function ajax_site_clear($project, $name)
 {
-    return \QUI\Projects\Site\Utils::clearUrl(
+    return QUI\Projects\Site\Utils::clearUrl(
         $name,
-        \QUI::getProjectManager()->decode( $project )
+        QUI::getProjectManager()->decode($project)
     );
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_site_clear',
-    array( 'project', 'name' ),
+    array('project', 'name'),
     'Permission::checkAdminUser'
 );

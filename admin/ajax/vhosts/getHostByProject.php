@@ -3,19 +3,19 @@
 /**
  * Return the vhost data
  *
- * @param String $vhost - vhost
- * @return Array
+ * @param string $vhost - vhost
+ * @return array
  */
 function ajax_vhosts_getHostByProject($project)
 {
-    $Project = \QUI::getProjectManager()->decode( $project );
-    $Manager = new \QUI\System\VhostManager();
+    $Project = QUI::getProjectManager()->decode($project);
+    $Manager = new QUI\System\VhostManager();
 
-    return $Manager->getHostByProject( $Project->getName(), $Project->getLang() );
+    return $Manager->getHostByProject($Project->getName(), $Project->getLang());
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_vhosts_getHostByProject',
-    array( 'project' ),
+    array('project'),
     'Permission::checkSU'
 );

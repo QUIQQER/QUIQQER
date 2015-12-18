@@ -3,9 +3,9 @@
 /**
  * Save the available permissions to a user or a group
  *
- * @param String $params - JSON Array
- * @param String $btype - bind type (QUI.controls.users.User or QUI.controls.groups.Group)
- * @param String $permissions - JSON permissions
+ * @param string $params - JSON Array
+ * @param string $btype - bind type (QUI.controls.users.User or QUI.controls.groups.Group)
+ * @param string $permissions - JSON permissions
  * @throws \QUI\Exception
  */
 function ajax_permissions_recursive($params, $btype, $permissions)
@@ -39,7 +39,6 @@ function ajax_permissions_recursive($params, $btype, $permissions)
 
     foreach ($childrenIds as $siteId) {
         try {
-
             $Manager->setPermissions(
                 new \QUI\Projects\Site\Edit($Project, $siteId),
                 $permissions

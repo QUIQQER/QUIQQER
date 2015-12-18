@@ -3,16 +3,16 @@
 /**
  * Return the file(s)
  *
- * @param String         $project - Name of the project
- * @param String|Integer $fileid  - File-ID or list of file ids (JSON array)
+ * @param string $project - Name of the project
+ * @param string|integer $fileid - File-ID or list of file ids (JSON array)
  *
- * @return String
+ * @return string
  */
 function ajax_media_delete($project, $fileid)
 {
-    $fileid = json_decode($fileid, true);
+    $fileid  = json_decode($fileid, true);
     $Project = QUI\Projects\Manager::getProject($project);
-    $Media = $Project->getMedia();
+    $Media   = $Project->getMedia();
 
     if (is_array($fileid)) {
         foreach ($fileid as $id) {

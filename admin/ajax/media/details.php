@@ -5,16 +5,16 @@ use QUI\Projects\Media\Utils;
 /**
  * Return the data of the fileid
  *
- * @param String $project - Project name
- * @param String $fileid  - JSON String|Array
+ * @param string $project - Project name
+ * @param string $fileid - JSON String|Array
  *
- * @return Array
+ * @return array
  */
 function ajax_media_details($project, $fileid)
 {
-    $fileid = json_decode($fileid, true);
+    $fileid  = json_decode($fileid, true);
     $Project = QUI\Projects\Manager::getProject($project);
-    $Media = $Project->getMedia();
+    $Media   = $Project->getMedia();
 
     if (!is_array($fileid)) {
         $File = $Media->get($fileid);

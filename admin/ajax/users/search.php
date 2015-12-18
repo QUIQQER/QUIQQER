@@ -3,18 +3,18 @@
 /**
  * Search users
  *
- * @param String $params - JSON Array
+ * @param string $params - JSON Array
  *
- * @return Array
+ * @return array
  */
 function ajax_users_search($params)
 {
     $params = json_decode($params, true);
 
     $Groups = QUI::getGroups();
-    $Users = QUI::getUsers();
-    $page = 1;
-    $limit = 10;
+    $Users  = QUI::getUsers();
+    $page   = 1;
+    $limit  = 10;
 
     $params['start'] = 0;
 
@@ -56,10 +56,10 @@ function ajax_users_search($params)
             }
 
             try {
-                $groupnames .= $Groups->getGroupNameById($gid).',';
+                $groupnames .= $Groups->getGroupNameById($gid) . ',';
 
             } catch (QUI\Exception $Exception) {
-                $groupnames .= $gid.',';
+                $groupnames .= $gid . ',';
             }
         }
 
@@ -74,8 +74,8 @@ function ajax_users_search($params)
 
     return array(
         'total' => $Users->count($params),
-        'page'  => $page,
-        'data'  => $result
+        'page' => $page,
+        'data' => $result
     );
 }
 

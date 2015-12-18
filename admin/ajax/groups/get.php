@@ -3,8 +3,8 @@
 /**
  * Gruppendaten
  *
- * @param String / Integer $uid
- * @return Array
+ * @param string / Integer $uid
+ * @return array
  */
 function ajax_groups_get($gid)
 {

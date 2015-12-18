@@ -3,15 +3,15 @@
 /**
  * Search a project
  *
- * @param String $params - search string
- * @return Array
+ * @param string $params - search string
+ * @return array
  */
 function ajax_project_search($params)
 {
-    $params = json_decode( $params, true );
+    $params = json_decode($params, true);
 
     return QUI\Utils\Grid::getResult(
-        QUI\Projects\Manager::search( $params ),
+        QUI\Projects\Manager::search($params),
         1,
         10
     );
@@ -19,6 +19,6 @@ function ajax_project_search($params)
 
 QUI::$Ajax->register(
     'ajax_project_search',
-    array( 'params' ),
+    array('params'),
     'Permission::checkAdminUser'
 );

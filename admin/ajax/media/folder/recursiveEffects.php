@@ -3,8 +3,8 @@
 /**
  * Set the folder effects recursive
  *
- * @param String $project  - Name of the project
- * @param String $folderId - Folder-ID
+ * @param string $project - Name of the project
+ * @param string $folderId - Folder-ID
  *
  * @return array
  * @throws \QUI\Exception
@@ -12,8 +12,8 @@
 function ajax_media_folder_recursiveEffects($project, $folderId)
 {
     $Project = QUI\Projects\Manager::getProject($project);
-    $Media = $Project->getMedia();
-    $Folder = $Media->get($folderId);
+    $Media   = $Project->getMedia();
+    $Folder  = $Media->get($folderId);
 
     if (QUI\Projects\Media\Utils::isFolder($Folder) === false) {
         throw new QUI\Exception(
@@ -26,7 +26,7 @@ function ajax_media_folder_recursiveEffects($project, $folderId)
 
     QUI::getMessagesHandler()->addSuccess(
         QUI::getLocale()
-           ->get('quiqqer/system', 'message.folder.effects.resursive,success')
+            ->get('quiqqer/system', 'message.folder.effects.resursive,success')
     );
 }
 

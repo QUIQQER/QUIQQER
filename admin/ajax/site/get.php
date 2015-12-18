@@ -3,10 +3,10 @@
 /**
  * Return the site data
  *
- * @param String $project
- * @param String $id
+ * @param string $project
+ * @param string $id
  *
- * @return Array
+ * @return array
  */
 function ajax_site_get($project, $id)
 {
@@ -20,11 +20,11 @@ function ajax_site_get($project, $id)
     );
 
     return array(
-        'modules'      => QUI\Projects\Site\Utils::getAdminSiteModulesFromSite($Site),
-        'attributes'   => $attributes,
+        'modules' => QUI\Projects\Site\Utils::getAdminSiteModulesFromSite($Site),
+        'attributes' => $attributes,
         'has_children' => $Site->hasChildren(true),
-        'parentid'     => $Site->getParentId(),
-        'url'          => $Site->getUrlRewrited()
+        'parentid' => $Site->getParentId(),
+        'url' => $Site->getUrlRewrited()
     );
 }
 

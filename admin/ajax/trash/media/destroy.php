@@ -3,8 +3,8 @@
 /**
  * Destroy files
  *
- * @param String $project - Name of the project
- * @param String $ids - JSON Array, List of IDs
+ * @param string $project - Name of the project
+ * @param string $ids - JSON Array, List of IDs
  */
 function ajax_trash_media_destroy($project, $ids)
 {

@@ -3,10 +3,10 @@
 /**
  * Return the tab content
  *
- * @param String $project
- * @param String $id
- * @param String $tab
- * @return String
+ * @param string $project
+ * @param string $id
+ * @param string $tab
+ * @return string
  */
 function ajax_site_categories_template($project, $id, $tab)
 {

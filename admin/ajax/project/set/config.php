@@ -3,8 +3,8 @@
 /**
  * Set the config of an project
  *
- * @param String $project - project name
- * @param String $params - JSON Array
+ * @param string $project - project name
+ * @param string $params - JSON Array
  */
 function ajax_project_set_config($project, $params)
 {

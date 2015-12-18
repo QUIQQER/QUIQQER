@@ -3,43 +3,42 @@
 /**
  * Return all installed packages
  *
- * @param String $str - Search string
- * @param String|Integer $from - Sheet start
- * @param String|Integer $max - Limit of the results
- * @return Array
+ * @param string $str - Search string
+ * @param string|integer $from - Sheet start
+ * @param string|integer $max - Limit of the results
+ * @return array
  */
 function ajax_system_packages_search($str, $from, $max)
 {
-    if ( !isset( $from ) || !$from ) {
+    if (!isset($from) || !$from) {
         $from = 1;
     }
 
-    if ( !isset( $max ) || !$max ) {
+    if (!isset($max) || !$max) {
         $max = 20;
     }
 
     $from = (int)$from;
     $max  = (int)$max;
 
-    $result = \QUI::getPackageManager()->searchPackage( $str );
-    $result = \QUI\Utils\Grid::getResult( $result, $from, $max );
+    $result = QUI::getPackageManager()->searchPackage($str);
+    $result = QUI\Utils\Grid::getResult($result, $from, $max);
 
     $data = array();
 
-    $list      = \QUI::getPackageManager()->getInstalled();
+    $list      = QUI::getPackageManager()->getInstalled();
     $installed = array();
 
-    foreach ( $list as $package ) {
-        $installed[ $package['name'] ] = true;
+    foreach ($list as $package) {
+        $installed[$package['name']] = true;
     }
 
 
-    foreach ( $result['data'] as $package => $description )
-    {
+    foreach ($result['data'] as $package => $description) {
         $data[] = array(
-            'package'     => $package,
+            'package' => $package,
             'description' => $description,
-            'isInstalled' => isset( $installed[ $package ] ) ? true : false
+            'isInstalled' => isset($installed[$package]) ? true : false
         );
     }
 
@@ -48,9 +47,9 @@ function ajax_system_packages_search($str, $from, $max)
     return $result;
 }
 
-\QUI::$Ajax->register(
+QUI::$Ajax->register(
     'ajax_system_packages_search',
-    array( 'str', 'from', 'max' ),
+    array('str', 'from', 'max'),
     array(
         'Permission::checkAdminUser',
         'quiqqer.system.update'

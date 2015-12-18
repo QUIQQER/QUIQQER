@@ -3,15 +3,15 @@
 /**
  * Return the rights for the binded type (group or user)
  *
- * @param String $params - JSON array
- * @param String $btype  - binded object type
+ * @param string $params - JSON array
+ * @param string $btype - binded object type
  *
  * @return array
  * @throws \QUI\Exception
  */
 function ajax_permissions_get($params, $btype)
 {
-    $params = json_decode($params, true);
+    $params  = json_decode($params, true);
     $Manager = QUI::getPermissionManager();
 
     switch ($btype) {
@@ -29,7 +29,7 @@ function ajax_permissions_get($params, $btype)
 
         case 'classes/projects/project/Site':
             $Project = QUI::getProject($params['project'], $params['lang']);
-            $Bind = $Project->get($params['id']);
+            $Bind    = $Project->get($params['id']);
             break;
 
         default:
