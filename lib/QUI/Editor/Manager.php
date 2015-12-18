@@ -484,10 +484,10 @@ class Manager
         }
 
         // Dann Gruppenspezifische Toolbar
+        // @todo gruppen toolbar muss im admin auswählbar sein
         $groups = $User->getGroups();
 
-        if ($groups) {
-            $Group   = end($groups);
+        foreach ($groups as $Group) {
             $toolbar = $Group->getAttribute('toolbar');
 
             if (!empty($toolbar)) {
@@ -498,6 +498,7 @@ class Manager
                 }
             }
         }
+
 
         $Config  = self::getConf();
         $toolbar = $Config->get('toolbars', 'standard');

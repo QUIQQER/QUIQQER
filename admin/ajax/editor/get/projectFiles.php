@@ -5,7 +5,7 @@
  *
  * @param string $project - project data
  *
- * @return Array
+ * @return array
  */
 function ajax_editor_get_projectFiles($project)
 {

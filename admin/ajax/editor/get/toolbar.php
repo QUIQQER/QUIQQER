@@ -5,7 +5,7 @@
  *
  * @param String / Integer $uid
  *
- * @return Array
+ * @return array
  */
 function ajax_editor_get_toolbar($toolbar)
 {
