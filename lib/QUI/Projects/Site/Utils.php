@@ -9,7 +9,7 @@ namespace QUI\Projects\Site;
 use QUI;
 use QUI\Projects;
 use QUI\Projects\Project;
-use QUI\Utils\String as StringUtils;
+use QUI\Utils\StringHelper as StringUtils;
 use QUI\Utils\XML;
 use QUI\Utils\DOM;
 use QUI\Utils\Security\Orthos;
@@ -62,7 +62,7 @@ class Utils
         }
 
         // Prüfung des Namens - Sonderzeichen
-        if (preg_match($signs, $name)) {
+        if (preg_match($signs, $name)) { // #locale
             throw new QUI\Exception(
                 'In der URL "' . $name
                 . '" dürfen folgende Zeichen nicht verwendet werden: _-.,:;#@`!§$%&/?<>=\'"[]+',

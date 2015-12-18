@@ -293,7 +293,7 @@ class DOM
         if ($Field->getAttribute('null') == 1) {
             $str .= 'NULL';
         } else {
-            $structure = QUI\Utils\String::toLower(
+            $structure = QUI\Utils\StringHelper::toLower(
                 $Field->getAttribute('type')
             );
 
