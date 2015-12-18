@@ -3,14 +3,13 @@
 /**
  * Check for updates
  *
- * @return Array
+ * @return array
  */
 function ajax_system_update_check()
 {
     $updates = \QUI::getPackageManager()->checkUpdates();
 
-    if ( !count( $updates ) )
-    {
+    if (!count($updates)) {
         \QUI::getMessagesHandler()->addInformation(
             \QUI::getLocale()->get(
                 'quiqqer/system',

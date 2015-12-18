@@ -3,9 +3,9 @@
 /**
  * Benutzer aktivieren
  *
- * @param {JSON Integer|JSON Array} $uid
+ * @param integer|array|string $uid
  *
- * @return Array
+ * @return array
  */
 function ajax_users_activate($uid)
 {
@@ -15,7 +15,7 @@ function ajax_users_activate($uid)
         $uid = array($uid);
     }
 
-    $Users = QUI::getUsers();
+    $Users  = QUI::getUsers();
     $result = array();
 
     foreach ($uid as $_uid) {

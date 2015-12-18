@@ -4,25 +4,22 @@
  * Return XML Window fromm a xml settings file
  *
  * @param string $file - Path to file, or JSON Array with xml files
- * @return Array
+ * @return array
  */
 function ajax_settings_window($file)
 {
     $cacheName = 'qui/admin/menu/windows/' . md5($file);
 
-    try
-    {
+    try {
         return QUI\Cache\Manager::get($cacheName);
 
     } catch (QUI\Exception $Exception) {
-
     }
 
     $files     = array();
     $jsonFiles = json_decode($file, true);
 
     if ($jsonFiles) {
-
         if (is_string($jsonFiles)) {
             $files = array($jsonFiles);
         } else {
@@ -37,7 +34,6 @@ function ajax_settings_window($file)
     $Window = null;
 
     foreach ($files as $file) {
-
         if (!file_exists($file)) {
             continue;
         }
@@ -74,7 +70,7 @@ function ajax_settings_window($file)
     // sort categories
     $categories = $Window->getCategories();
 
-    usort($categories, function($CatA, $CatB) {
+    usort($categories, function ($CatA, $CatB) {
         $indexA = $CatA->getAttribute('index');
         $indexB = $CatB->getAttribute('index');
 

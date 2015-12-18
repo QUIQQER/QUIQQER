@@ -3,8 +3,8 @@
 /**
  * Return the default configuration of a project
  *
- * @param {String} $project - Project data
- * @return Array
+ * @param String $project - Project data
+ * @return array
  */
 function ajax_project_get_defaults($project)
 {

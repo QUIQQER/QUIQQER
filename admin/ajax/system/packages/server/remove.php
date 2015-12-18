@@ -1,9 +1,10 @@
 <?php
 
 /**
- * Return all update servers
+ * Remove a server
  *
- * @return Array
+ * @param string $server
+ * @return array
  */
 function ajax_system_packages_server_remove($server)
 {
@@ -13,20 +14,18 @@ function ajax_system_packages_server_remove($server)
 
     \QUI::getMessagesHandler()->addSuccess(
         \QUI::getLocale()->get(
-        	'quiqqer/system',
-        	'message.packages.server.remove.successfuly',
-            array( 'server' => $server )
+            'quiqqer/system',
+            'message.packages.server.remove.successfuly',
+            array('server' => $server)
         )
     );
 }
 
 QUI::$Ajax->register(
-	'ajax_system_packages_server_remove',
-    array( 'server', 'params' ),
+    'ajax_system_packages_server_remove',
+    array('server', 'params'),
     array(
-    	'Permission::checkAdminUser',
+        'Permission::checkAdminUser',
         'quiqqer.system.update'
     )
 );
-
-?>

@@ -4,7 +4,7 @@
  * Switch the groups status
  *
  * @param string $gid - JSON Integer | JSON Array
- * @return Array
+ * @return array
  */
 function ajax_groups_switchstatus($gid)
 {

@@ -7,7 +7,7 @@
 /**
  * Return the administration menu
  *
- * @return Array
+ * @return array
  */
 function ajax_menu()
 {

@@ -3,7 +3,7 @@
 /**
  * Return the root ID
  *
- * @return Integer
+ * @return integer
  */
 function ajax_groups_root()
 {

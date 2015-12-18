@@ -3,9 +3,9 @@
 /**
  * Benutzer deaktivieren
  *
- * @param {JSON Integer|JSON Array} $uid
+ * @param integer|array|string $uid
  *
- * @return Array
+ * @return array
  */
 function ajax_users_deactivate($uid)
 {
