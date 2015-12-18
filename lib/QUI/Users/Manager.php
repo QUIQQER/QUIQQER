@@ -116,6 +116,8 @@ class Manager
     /**
      * Is the user authenticated
      *
+     * @todo muss noch fremde nutzer prüfen
+     *
      * @param QUI\Users\User|QUI\Users\Nobody $User
      *
      * @return boolean
@@ -527,7 +529,9 @@ class Manager
 
         $username = Orthos::clear($username);
 
-        if (!get_magic_quotes_gpc()) {
+        if (function_exists('get_magic_quotes_gpc')
+            && !get_magic_quotes_gpc()
+        ) {
             $username = addslashes($username);
             $pass     = addslashes($pass);
         }
