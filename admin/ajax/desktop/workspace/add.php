@@ -5,22 +5,20 @@
  *
  * @param string $data - workspace data, json array
  */
-function ajax_desktop_workspace_add($data)
-{
-    $User = QUI::getUserBySession();
-    $data = json_decode($data, true);
-
-    QUI\Workspace\Manager::addWorkspace(
-        $User,
-        $data['title'],
-        $data['data'],
-        $data['minHeight'],
-        $data['minWidth']
-    );
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_desktop_workspace_add',
+    function ($data) {
+        $User = QUI::getUserBySession();
+        $data = json_decode($data, true);
+
+        QUI\Workspace\Manager::addWorkspace(
+            $User,
+            $data['title'],
+            $data['data'],
+            $data['minHeight'],
+            $data['minWidth']
+        );
+    },
     array('data'),
     'Permission::checkUser'
 );

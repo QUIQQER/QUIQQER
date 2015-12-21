@@ -7,9 +7,11 @@
  *
  * @return array
  */
-function ajax_editor_get_toolbars()
-{
-    return QUI\Editor\Manager::getToolbars();
-}
-
-QUI::$Ajax->register('ajax_editor_get_toolbars', false, 'Permission::checkSU');
+QUI::$Ajax->registerFunction(
+    'ajax_editor_get_toolbars',
+    function () {
+        return QUI\Editor\Manager::getToolbars();
+    },
+    false,
+    'Permission::checkSU'
+);

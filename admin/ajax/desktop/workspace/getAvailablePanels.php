@@ -5,13 +5,11 @@
  *
  * @return array
  */
-function ajax_desktop_workspace_getAvailablePanels()
-{
-    return QUI\Workspace\Manager::getAvailablePanels();
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_desktop_workspace_getAvailablePanels',
+    function () {
+        return QUI\Workspace\Manager::getAvailablePanels();
+    },
     false,
     'Permission::checkUser'
 );

@@ -128,7 +128,7 @@ try {
         };
 
         var QUIQQER_VERSION = "<?php echo \QUI::version() ?>";
-        var QUIQQER_CONFIG = <?php echo json_encode( $config ); ?>;
+        var QUIQQER_CONFIG = <?php echo json_encode($config); ?>;
 
         // standard project
         var QUIQQER_PROJECT = <?php echo json_encode(array(

@@ -316,27 +316,27 @@ $languages = QUI::availableLanguages();
 
         // require config
         require.config({
-                           baseUrl    : '<?php echo URL_BIN_DIR; ?>QUI/',
-                           paths      : {
-                               "package"    : "<?php echo URL_OPT_DIR; ?>",
-                               "qui"        : '<?php echo URL_OPT_DIR; ?>bin/qui/qui',
-                               "locale"     : '<?php echo URL_VAR_DIR; ?>locale/bin',
-                               "URL_OPT_DIR": "<?php echo URL_OPT_DIR; ?>",
-                               "URL_BIN_DIR": "<?php echo URL_BIN_DIR; ?>"
-                           },
-                           waitSeconds: 0,
-                           catchError : true,
-                           map        : {
-                               '*': {
-                                   'css': '<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/css.js'
-                               }
-                           }
-                       });
+            baseUrl    : '<?php echo URL_BIN_DIR; ?>QUI/',
+            paths      : {
+                "package"    : "<?php echo URL_OPT_DIR; ?>",
+                "qui"        : '<?php echo URL_OPT_DIR; ?>bin/qui/qui',
+                "locale"     : '<?php echo URL_VAR_DIR; ?>locale/bin',
+                "URL_OPT_DIR": "<?php echo URL_OPT_DIR; ?>",
+                "URL_BIN_DIR": "<?php echo URL_BIN_DIR; ?>"
+            },
+            waitSeconds: 0,
+            catchError : true,
+            map        : {
+                '*': {
+                    'css': '<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/css.js'
+                }
+            }
+        });
 
         document.id(window).addEvent('load', function () {
             require([
-                        'qui/controls/buttons/Select'
-                    ], function (QUISelect) {
+                'qui/controls/buttons/Select'
+            ], function (QUISelect) {
                 var Logo = document.getElement('.logo'),
                     Linp = document.getElement('.logininput');
 
@@ -360,22 +360,24 @@ $languages = QUI::availableLanguages();
 
                 <?php
 
-                    $url_bin_dir = URL_BIN_DIR;
+                $url_bin_dir = URL_BIN_DIR;
 
-                    foreach ( $languages as $lang )
-                    {
-                        $langText = '';
+                foreach ($languages as $lang) {
+                    $langText = '';
 
-                        switch ( $lang )
-                        {
-                            case 'de': $langText = 'Deutsch'; break;
-                            case 'en': $langText = 'English'; break;
+                    switch ($lang) {
+                        case 'de':
+                            $langText = 'Deutsch';
+                            break;
+                        case 'en':
+                            $langText = 'English';
+                            break;
 
-                            default:
-                                continue 2;
-                        }
+                        default:
+                            continue 2;
+                    }
 
-                        echo "
+                    echo "
 
                             window.LangSelect.appendChild(
                                 '{$langText}',
@@ -384,7 +386,7 @@ $languages = QUI::availableLanguages();
                             );
 
                         ";
-                    }
+                }
 
                 ?>
 
@@ -440,9 +442,9 @@ $languages = QUI::availableLanguages();
             }
 
             require([
-                        'Locale',
-                        'locale/quiqqer/system/' + lang
-                    ], function (QUILocale) {
+                'Locale',
+                'locale/quiqqer/system/' + lang
+            ], function (QUILocale) {
                 QUILocale.setCurrent(lang);
 
                 document.getElements('[for="username"]').set(
@@ -508,8 +510,8 @@ if (isset($languages[0])) {
 
 <?php if (defined('LOGIN_FAILED')) { ?>
     <script type="text/javascript">
-        require(['qui/QUI'], function() {
-            QUI.getMessageHandler().then(function(MH) {
+        require(['qui/QUI'], function () {
+            QUI.getMessageHandler().then(function (MH) {
                 MH.addError("<?php echo LOGIN_FAILED; ?>");
             });
         });

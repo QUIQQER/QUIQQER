@@ -6,16 +6,14 @@
  * @param integer $id - Workspace ID
  * @param string $data - JSON Data Array; Workspace data
  */
-function ajax_desktop_workspace_edit($id, $data)
-{
-    $User = QUI::getUserBySession();
-    $data = json_decode($data, true);
-
-    QUI\Workspace\Manager::saveWorkspace($User, $id, $data);
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_desktop_workspace_edit',
+    function ($id, $data) {
+        $User = QUI::getUserBySession();
+        $data = json_decode($data, true);
+
+        QUI\Workspace\Manager::saveWorkspace($User, $id, $data);
+    },
     array('id', 'data'),
     'Permission::checkUser'
 );
