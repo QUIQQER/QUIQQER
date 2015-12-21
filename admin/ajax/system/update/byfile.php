@@ -5,28 +5,26 @@
  *
  * @params \QUI\QDOM $File
  */
-function ajax_system_update_byfile($File)
-{
-    $filepath = $File->getAttribute( 'filepath' );
-
-    if ( !file_exists( $filepath ) && !is_dir( $filepath ) )
-    {
-        throw new \QUI\Exception(
-            \QUI::getLocale()->get(
-                'quiqqer/system',
-                'exception.no.quiqqer.update.archive'
-            )
-        );
-    }
-
-    \QUI::getPackageManager()->updatePackage(
-        $File->getAttribute( 'filepath' )
-    );
-}
-
-\QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_system_update_byfile',
-    array( 'File' ),
+    function ($File) {
+        /* @var $File \QUI\QDOM */
+        $filepath = $File->getAttribute('filepath');
+
+        if (!file_exists($filepath) && !is_dir($filepath)) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.no.quiqqer.update.archive'
+                )
+            );
+        }
+
+        QUI::getPackageManager()->updatePackage(
+            $File->getAttribute('filepath')
+        );
+    },
+    array('File'),
     array(
         'Permission::checkAdminUser',
         'quiqqer.system.update'

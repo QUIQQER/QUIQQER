@@ -6,13 +6,11 @@
  * @param string $package - Name of the package
  * @return array
  */
-function ajax_system_packages_get($package)
-{
-    return QUI::getPackageManager()->getInstalledPackage($package)->getComposerData();
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_system_packages_get',
+    function ($package) {
+        return QUI::getPackageManager()->getInstalledPackage($package)->getComposerData();
+    },
     array('package'),
     array(
         'Permission::checkAdminUser',

@@ -6,14 +6,16 @@
  * @param string $plugin
  * @param string $params
  */
-function ajax_system_plugins_delete($plugin, $params)
-{
-    $Plugins = QUI::getPlugins();
-    $Plugin  = $Plugins->get($plugin);
+QUI::$Ajax->registerFunction(
+    'ajax_system_plugins_delete',
+    function ($plugin, $params) {
+        $Plugins = QUI::getPlugins();
+        $Plugin  = $Plugins->get($plugin);
 
-    $Plugin->uninstall(
-        json_decode($params, true)
-    );
-}
-
-QUI::$Ajax->register('ajax_system_plugins_delete', array('plugin', 'params'), 'Permission::checkSU');
+        $Plugin->uninstall(
+            json_decode($params, true)
+        );
+    },
+    array('plugin', 'params'),
+    'Permission::checkSU'
+);

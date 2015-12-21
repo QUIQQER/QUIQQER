@@ -6,14 +6,12 @@
  * @param string $file
  * @return array
  */
-function ajax_uploads_cancel($file)
-{
-    $UploadManager = new \QUI\Upload\Manager();
-    $UploadManager->cancel($file);
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_uploads_cancel',
+    function ($file) {
+        $UploadManager = new QUI\Upload\Manager();
+        $UploadManager->cancel($file);
+    },
     array('file'),
     'Permission::checkAdminUser'
 );

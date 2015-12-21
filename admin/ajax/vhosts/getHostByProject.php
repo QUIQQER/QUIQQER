@@ -3,19 +3,17 @@
 /**
  * Return the vhost data
  *
- * @param string $vhost - vhost
+ * @param string $project - name of the project
  * @return array
  */
-function ajax_vhosts_getHostByProject($project)
-{
-    $Project = QUI::getProjectManager()->decode($project);
-    $Manager = new QUI\System\VhostManager();
-
-    return $Manager->getHostByProject($Project->getName(), $Project->getLang());
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_vhosts_getHostByProject',
+    function ($project) {
+        $Project = QUI::getProjectManager()->decode($project);
+        $Manager = new QUI\System\VhostManager();
+
+        return $Manager->getHostByProject($Project->getName(), $Project->getLang());
+    },
     array('project'),
     'Permission::checkSU'
 );

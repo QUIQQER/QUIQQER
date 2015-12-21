@@ -10,9 +10,11 @@ QUI::$Ajax->registerFunction(
     function () {
         require_once 'get.php';
 
-        return ajax_groups_get(
-            (int)QUI::conf('globals', 'root')
-        );
+        $result = QUI::$Ajax->callRequestFunction('ajax_groups_get', array(
+            'gid' => (int)QUI::conf('globals', 'root')
+        ));
+
+        return $result['result'];
     },
     false,
     'Permission::checkSU'

@@ -7,17 +7,15 @@
  * @param string $ids - json array
  * @param string|integer $parentid - Site-ID
  */
-function ajax_trash_restore($project, $ids, $parentid)
-{
-    $Project = QUI::getProjectManager()->decode($project);
-    $ids     = json_decode($ids, true);
-    $Trash   = $Project->getTrash();
-
-    $Trash->restore($Project, $ids, $parentid);
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_trash_restore',
+    function ($project, $ids, $parentid) {
+        $Project = QUI::getProjectManager()->decode($project);
+        $ids     = json_decode($ids, true);
+        $Trash   = $Project->getTrash();
+
+        $Trash->restore($Project, $ids, $parentid);
+    },
     array('project', 'ids', 'parentid'),
     'Permission::checkAdminUser'
 );

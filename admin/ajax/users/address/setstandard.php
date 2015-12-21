@@ -8,17 +8,15 @@
  *
  * @return array
  */
-function ajax_users_address_setstandard($uid, $aid)
-{
-    $User    = QUI::getUsers()->get((int)$uid);
-    $Address = $User->getAddress((int)$aid);
-
-    $User->setAttribute('address', $Address->getId());
-    $User->save();
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_users_address_setstandard',
+    function ($uid, $aid) {
+        $User    = QUI::getUsers()->get((int)$uid);
+        $Address = $User->getAddress((int)$aid);
+
+        $User->setAttribute('address', $Address->getId());
+        $User->save();
+    },
     array('uid', 'aid'),
     'Permission::checkSU'
 );

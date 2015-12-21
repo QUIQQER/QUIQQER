@@ -5,15 +5,12 @@
  *
  * @return array
  */
-function ajax_vhosts_getList()
-{
-    $VhostManager = new \QUI\System\VhostManager();
-
-    return $VhostManager->getList();
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_vhosts_getList',
+    function () {
+        $VhostManager = new \QUI\System\VhostManager();
+        return $VhostManager->getList();
+    },
     false,
     'Permission::checkSU'
 );

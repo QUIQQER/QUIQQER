@@ -9,29 +9,27 @@
  *
  * @throws QUI\Exception
  */
-function ajax_trash_media_restore($project, $ids, $parentid)
-{
-    $Project = QUI::getProjectManager()->decode($project);
-    $Media   = $Project->getMedia();
-    $Trash   = $Media->getTrash();
-    $Folder  = $Media->get($parentid);
-
-    if (!QUI\Projects\Media\Utils::isFolder($Folder)) {
-        throw new QUI\Exception(
-            'No Folder given'
-        );
-    }
-
-    /* @var $Folder \QUI\Projects\Media\Folder */
-    $ids = json_decode($ids, true);
-
-    foreach ($ids as $id) {
-        $Trash->restore($id, $Folder);
-    }
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_trash_media_restore',
+    function ($project, $ids, $parentid) {
+        $Project = QUI::getProjectManager()->decode($project);
+        $Media   = $Project->getMedia();
+        $Trash   = $Media->getTrash();
+        $Folder  = $Media->get($parentid);
+
+        if (!QUI\Projects\Media\Utils::isFolder($Folder)) {
+            throw new QUI\Exception(
+                'No Folder given' //#locale
+            );
+        }
+
+        /* @var $Folder \QUI\Projects\Media\Folder */
+        $ids = json_decode($ids, true);
+
+        foreach ($ids as $id) {
+            $Trash->restore($id, $Folder);
+        }
+    },
     array('project', 'ids', 'parentid'),
     'Permission::checkAdminUser'
 );

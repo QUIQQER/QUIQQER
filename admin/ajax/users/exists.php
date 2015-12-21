@@ -7,14 +7,11 @@
  *
  * @return boolean
  */
-
-function ajax_users_exists($username)
-{
-    return QUI::getUsers()->usernameExists($username);
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_users_exists',
+    function ($username) {
+        return QUI::getUsers()->usernameExists($username);
+    },
     array('username'),
     'Permission::checkUser'
 );

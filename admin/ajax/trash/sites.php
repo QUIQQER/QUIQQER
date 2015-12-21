@@ -8,18 +8,16 @@
  *
  * @return array
  */
-function ajax_trash_sites($project, $params)
-{
-    $Project = QUI::getProjectManager()->decode($project);
-    $Trash   = $Project->getTrash();
-
-    return $Trash->getList(
-        json_decode($params, true)
-    );
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_trash_sites',
+    function ($project, $params) {
+        $Project = QUI::getProjectManager()->decode($project);
+        $Trash   = $Project->getTrash();
+
+        return $Trash->getList(
+            json_decode($params, true)
+        );
+    },
     array('project', 'params'),
     'Permission::checkAdminUser'
 );

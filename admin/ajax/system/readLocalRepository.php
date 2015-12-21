@@ -5,13 +5,11 @@
  *
  * @return array
  */
-function ajax_system_readLocalRepository()
-{
-    return QUI::getPackageManager()->readLocalRepository();
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_system_readLocalRepository',
+    function () {
+        return QUI::getPackageManager()->readLocalRepository();
+    },
     false,
     array(
         'Permission::checkAdminUser',

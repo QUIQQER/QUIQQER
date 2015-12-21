@@ -9,15 +9,12 @@
  *
  * @return array
  */
-function ajax_menu()
-{
-    $Menu = new QUI\Workspace\Menu();
-
-    return $Menu->getMenu();
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_menu',
+    function () {
+        $Menu = new QUI\Workspace\Menu();
+        return $Menu->getMenu();
+    },
     false,
     'Permission::checkAdminUser'
 );

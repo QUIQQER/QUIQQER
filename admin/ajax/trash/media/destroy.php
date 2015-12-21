@@ -6,21 +6,19 @@
  * @param string $project - Name of the project
  * @param string $ids - JSON Array, List of IDs
  */
-function ajax_trash_media_destroy($project, $ids)
-{
-    $Project = QUI::getProjectManager()->decode($project);
-    $Media   = $Project->getMedia();
-    $Trash   = $Media->getTrash();
-
-    $ids = json_decode($ids, true);
-
-    foreach ($ids as $id) {
-        $Trash->destroy($id);
-    }
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_trash_media_destroy',
+    function ($project, $ids) {
+        $Project = QUI::getProjectManager()->decode($project);
+        $Media   = $Project->getMedia();
+        $Trash   = $Media->getTrash();
+
+        $ids = json_decode($ids, true);
+
+        foreach ($ids as $id) {
+            $Trash->destroy($id);
+        }
+    },
     array('project', 'ids'),
     'Permission::checkAdminUser'
 );

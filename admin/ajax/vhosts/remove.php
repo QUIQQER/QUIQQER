@@ -6,14 +6,12 @@
  * @param string $vhost
  * @return array
  */
-function ajax_vhosts_remove($vhost)
-{
-    $VhostManager = new QUI\System\VhostManager();
-    $VhostManager->removeVhost($vhost);
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_vhosts_remove',
+    function ($vhost) {
+        $VhostManager = new QUI\System\VhostManager();
+        $VhostManager->removeVhost($vhost);
+    },
     array('vhost'),
     'Permission::checkSU'
 );

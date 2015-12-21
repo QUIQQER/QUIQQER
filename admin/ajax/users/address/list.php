@@ -7,25 +7,24 @@
  *
  * @return array
  */
-function ajax_users_address_list($uid)
-{
-    $User      = QUI::getUsers()->get((int)$uid);
-    $addresses = $User->getAddressList();
-    $result    = array();
-
-    foreach ($addresses as $Address) {
-        $entry        = $Address->getAllAttributes();
-        $entry['id']  = $Address->getId();
-        $entry['uid'] = $User->getId();
-
-        $result[] = $entry;
-    }
-
-    return $result;
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_users_address_list',
+    function ($uid) {
+        $User      = QUI::getUsers()->get((int)$uid);
+        $addresses = $User->getAddressList();
+        $result    = array();
+
+        foreach ($addresses as $Address) {
+            /* @var $Address \QUI\Users\Address */
+            $entry        = $Address->getAttributes();
+            $entry['id']  = $Address->getId();
+            $entry['uid'] = $User->getId();
+
+            $result[] = $entry;
+        }
+
+        return $result;
+    },
     array('uid'),
     'Permission::checkSU'
 );

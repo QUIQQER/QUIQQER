@@ -5,22 +5,24 @@
  *
  * @param string $file
  */
-function ajax_system_plugins_download($file)
-{
-    $Update = new \QUI\Update();
+QUI::$Ajax->registerFunction(
+    'ajax_system_plugins_download',
+    function ($file) {
+        $Update = new \QUI\Update();
 
-    global $oldpercent;
-    $oldpercent = 0;
-
-    $Update->download($file, function ($percent, $file) {
         global $oldpercent;
+        $oldpercent = 0;
 
-        // nur bei veränderung ausgeben, performanter
-        if ($oldpercent != (int)$percent) {
-            $oldpercent = (int)$percent;
-            Update::flushMessage($percent, 'message', $file);
-        }
-    });
-}
+        $Update->download($file, function ($percent, $file) {
+            global $oldpercent;
 
-QUI::$Ajax->register('ajax_system_plugins_download', array('file'), 'Permission::checkSU');
+            // nur bei veränderung ausgeben, performanter
+            if ($oldpercent != (int)$percent) {
+                $oldpercent = (int)$percent;
+                \QUI\Update::flushMessage($percent, 'message', $file);
+            }
+        });
+    },
+    array('file'),
+    'Permission::checkSU'
+);

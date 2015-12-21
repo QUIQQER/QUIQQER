@@ -5,8 +5,7 @@
  *
  * @return integer
  */
-function ajax_system_modRewrite()
-{
+QUI::$Ajax->registerFunction('ajax_system_modRewrite', function () {
     // quiqqer check
     if (array_key_exists('HTTP_MOD_REWRITE', $_SERVER)) {
         return 1;
@@ -34,6 +33,4 @@ function ajax_system_modRewrite()
     }
 
     return 0;
-}
-
-QUI::$Ajax->register('ajax_system_modRewrite');
+});

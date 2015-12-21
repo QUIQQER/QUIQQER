@@ -7,16 +7,14 @@
  *
  * @return integer User-ID
  */
-function ajax_users_create($username)
-{
-    $Users = QUI::getUsers();
-    $User  = $Users->createChild($username);
-
-    return $User->getId();
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_users_create',
+    function ($username) {
+        $Users = QUI::getUsers();
+        $User  = $Users->createChild($username);
+
+        return $User->getId();
+    },
     array('username'),
     'Permission::checkUser'
 );

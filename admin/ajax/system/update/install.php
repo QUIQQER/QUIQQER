@@ -5,15 +5,11 @@
  *
  * @return String
  */
-function ajax_system_update_install($File)
-{
+QUI::$Ajax->registerFunction(
+    'ajax_system_update_install',
+    function ($File) {
 
-}
-
-QUI::$Ajax->register(
-	'ajax_system_update_install',
+    },
     array('File'),
     'Permission::checkSU'
 );
-
-?>

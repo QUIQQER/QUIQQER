@@ -5,16 +5,14 @@
  *
  * @param string $project - Project data, JSON Array
  */
-function ajax_trash_clear($project)
-{
-    $Project = QUI::getProjectManager()->decode($project);
-    $Trash   = $Project->getTrash();
-
-    $Trash->clear();
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_trash_clear',
+    function ($project) {
+        $Project = QUI::getProjectManager()->decode($project);
+        $Trash   = $Project->getTrash();
+
+        $Trash->clear();
+    },
     array('project'),
     'Permission::checkAdminUser'
 );
