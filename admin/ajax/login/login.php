@@ -7,14 +7,12 @@
  * @param string $password - password
  * @return array
  */
-function ajax_login_login($username, $password)
-{
-    QUI::getUsers()->login($username, $password);
-
-    return QUI::getUserBySession()->getAttributes();
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_login_login',
+    function ($username, $password) {
+        QUI::getUsers()->login($username, $password);
+
+        return QUI::getUserBySession()->getAttributes();
+    },
     array('username', 'password')
 );
