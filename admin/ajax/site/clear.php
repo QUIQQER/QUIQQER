@@ -8,16 +8,14 @@
  *
  * @return string
  */
-function ajax_site_clear($project, $name)
-{
-    return QUI\Projects\Site\Utils::clearUrl(
-        $name,
-        QUI::getProjectManager()->decode($project)
-    );
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_site_clear',
+    function ($project, $name) {
+        return QUI\Projects\Site\Utils::clearUrl(
+            $name,
+            QUI::getProjectManager()->decode($project)
+        );
+    },
     array('project', 'name'),
     'Permission::checkAdminUser'
 );

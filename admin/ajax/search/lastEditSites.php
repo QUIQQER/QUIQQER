@@ -7,23 +7,24 @@
  *
  * @return array
  */
-function ajax_search_lastEditSites($params)
-{
-    $params   = json_decode($params, true);
-    $projects = QUI::getProjectManager()->getProjects(true);
-    $tables   = array();
+QUI::$Ajax->registerFunction(
+    'ajax_search_lastEditSites',
+    function ($params) {
+        $params   = json_decode($params, true);
+        $projects = QUI::getProjectManager()->getProjects(true);
+        $tables   = array();
 
-    /* @var $Project QUI\Projects\Project */
+        /* @var $Project QUI\Projects\Project */
 
-    $PDO     = QUI::getDataBase()->getPDO();
-    $selects = array();
+        $PDO     = QUI::getDataBase()->getPDO();
+        $selects = array();
 
-    foreach ($projects as $Project) {
-        $table   = $Project->getAttribute('db_table');
-        $lang    = $Project->getLang();
-        $project = $Project->getName();
+        foreach ($projects as $Project) {
+            $table   = $Project->getAttribute('db_table');
+            $lang    = $Project->getLang();
+            $project = $Project->getName();
 
-        $selects[] = "
+            $selects[] = "
             SELECT id, e_date, name, title,
                 '{$project}' as project,
                 '{$lang}' as lang,
@@ -31,21 +32,19 @@ function ajax_search_lastEditSites($params)
             FROM
                 `{$table}`
         ";
-    }
+        }
 
-    $query     = 'SELECT id, e_date, name, title, project, lang FROM (' . implode(' UNION ',
-            $selects) . ') AS merged ORDER BY e_date DESC LIMIT 0,10';
+        $query = 'SELECT id, e_date, name, title, project, lang
+                 FROM (' . implode(' UNION ', $selects) . ') AS merged
+                 ORDER BY e_date DESC LIMIT 0,10';
 
-    $Statement = $PDO->prepare($query);
-    $Statement->execute();
+        $Statement = $PDO->prepare($query);
+        $Statement->execute();
 
-    $result = $Statement->fetchAll(\PDO::FETCH_ASSOC);
+        $result = $Statement->fetchAll(\PDO::FETCH_ASSOC);
 
-    return $result;
-}
-
-QUI::$Ajax->register(
-    'ajax_search_lastEditSites',
+        return $result;
+    },
     array('params'),
     'Permission::checkAdminUser'
 );

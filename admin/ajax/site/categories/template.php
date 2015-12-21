@@ -8,18 +8,16 @@
  * @param string $tab
  * @return string
  */
-function ajax_site_categories_template($project, $id, $tab)
-{
-    $Project = QUI::getProjectManager()->decode($project);
-    $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
-
-    return QUI\Utils\StringHelper::removeLineBreaks(
-        QUI\Utils\DOM::getTabHTML($tab, $Site)
-    );
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_site_categories_template',
+    function ($project, $id, $tab) {
+        $Project = QUI::getProjectManager()->decode($project);
+        $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
+
+        return QUI\Utils\StringHelper::removeLineBreaks(
+            QUI\Utils\DOM::getTabHTML($tab, $Site)
+        );
+    },
     array('project', 'id', 'tab'),
     'Permission::checkAdminUser'
 );

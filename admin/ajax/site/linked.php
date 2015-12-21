@@ -9,16 +9,14 @@
  *
  * @return array
  */
-function ajax_site_linked($project, $id, $newParentId)
-{
-    $Project = QUI::getProjectManager()->decode($project);
-    $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
-
-    $Site->linked((int)$newParentId);
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_site_linked',
+    function ($project, $id, $newParentId) {
+        $Project = QUI::getProjectManager()->decode($project);
+        $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
+
+        $Site->linked((int)$newParentId);
+    },
     array('project', 'id', 'newParentId'),
     'Permission::checkAdminUser'
 );

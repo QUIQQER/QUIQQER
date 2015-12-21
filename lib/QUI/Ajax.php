@@ -199,7 +199,7 @@ class Ajax extends QUI\QDOM
         QUI::getSession()->getSymfonySession()->save();
 
         if (QUI::getMessagesHandler()) {
-            $result['message_handler'] = \QUI::getMessagesHandler()
+            $result['message_handler'] = QUI::getMessagesHandler()
                 ->getMessagesAsArray(
                     QUI::getUserBySession()
                 );
@@ -215,10 +215,11 @@ class Ajax extends QUI\QDOM
      * Internal call of an ajax function
      *
      * @param string $_rf
+     * @param array|boolean|mixed $values
      *
      * @return array - the result
      */
-    protected function callRequestFunction($_rf)
+    public function callRequestFunction($_rf, $values = false)
     {
         if (!isset(self::$functions[$_rf])
             && !isset(self::$callables[$_rf])
@@ -251,17 +252,22 @@ class Ajax extends QUI\QDOM
 
         if (isset(self::$callables[$_rf])) {
             $functionParams = self::$callables[$_rf]['params'];
+
         } else {
             $functionParams = self::$functions[$_rf];
         }
 
         foreach ($functionParams as $var) {
-            if (!isset($_REQUEST[$var])) {
+            if (!isset($_REQUEST[$var]) && !$values) {
                 $params[$var] = '';
                 continue;
             }
 
-            $value = $_REQUEST[$var];
+            if ($values && isset($values[$var])) {
+                $value = $values[$var];
+            } else {
+                $value = $_REQUEST[$var];
+            }
 
             if (is_object($value)) {
                 $params[$var] = $value;

@@ -7,16 +7,14 @@
  * @param string $id - Site ID
  * @return array
  */
-function ajax_site_unlock($project, $id)
-{
-    $Project = QUI::getProjectManager()->decode($project);
-    $Site    = new QUI\Projects\Site\Edit($Project, $id);
-
-    $Site->unlockWithRights();
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_site_unlock',
+    function ($project, $id) {
+        $Project = QUI::getProjectManager()->decode($project);
+        $Site    = new QUI\Projects\Site\Edit($Project, $id);
+
+        $Site->unlockWithRights();
+    },
     array('project', 'id'),
     'Permission::checkAdminUser'
 );
