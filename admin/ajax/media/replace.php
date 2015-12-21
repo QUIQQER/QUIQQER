@@ -7,22 +7,21 @@
  * @param integer $fileid
  * @param \QUI\QDOM $File
  */
-function ajax_media_replace($project, $fileid, $File)
-{
-    $Project = QUI\Projects\Manager::getProject($project);
-    $Media   = $Project->getMedia();
-
-    $file = $File->getAttribute('filepath');
-
-    if (!file_exists($file)) {
-        return;
-    }
-
-    $Media->replace($fileid, $file);
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_media_replace',
+    function ($project, $fileid, $File) {
+        $Project = QUI\Projects\Manager::getProject($project);
+        $Media   = $Project->getMedia();
+
+        /* @var $File \QUI\QDOM */
+        $file = $File->getAttribute('filepath');
+
+        if (!file_exists($file)) {
+            return;
+        }
+
+        $Media->replace($fileid, $file);
+    },
     array('project', 'fileid', 'File'),
     'Permission::checkAdminUser'
 );

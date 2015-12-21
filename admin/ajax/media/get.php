@@ -8,43 +8,41 @@
  *
  * @return array
  */
-function ajax_media_get($project, $fileid)
-{
-    $Project = QUI\Projects\Manager::getProject($project);
-    $Media   = $Project->getMedia();
-    $File    = $Media->get($fileid);
-
-    $parents    = $File->getParents();
-    $breadcrumb = array();
-    $children   = array();
-    $_children  = array();
-
-    if ($File->getType() === 'QUI\\Projects\\Media\\Folder') {
-        $_children = $File->getChildren();
-    }
-
-    // create breadcrumb data
-    foreach ($parents as $Parent) {
-        $breadcrumb[] = QUI\Projects\Media\Utils::parseForMediaCenter($Parent);
-    }
-
-    $breadcrumb[] = QUI\Projects\Media\Utils::parseForMediaCenter($File);
-
-    // create children data
-    foreach ($_children as $Child) {
-        $children[] = QUI\Projects\Media\Utils::parseForMediaCenter($Child);
-    }
-
-
-    return array(
-        'file' => QUI\Projects\Media\Utils::parseForMediaCenter($File),
-        'breadcrumb' => $breadcrumb,
-        'children' => $children
-    );
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_media_get',
+    function ($project, $fileid) {
+        $Project = QUI\Projects\Manager::getProject($project);
+        $Media   = $Project->getMedia();
+        $File    = $Media->get($fileid);
+
+        $parents    = $File->getParents();
+        $breadcrumb = array();
+        $children   = array();
+        $_children  = array();
+
+        if ($File->getType() === 'QUI\\Projects\\Media\\Folder') {
+            $_children = $File->getChildren();
+        }
+
+        // create breadcrumb data
+        foreach ($parents as $Parent) {
+            $breadcrumb[] = QUI\Projects\Media\Utils::parseForMediaCenter($Parent);
+        }
+
+        $breadcrumb[] = QUI\Projects\Media\Utils::parseForMediaCenter($File);
+
+        // create children data
+        foreach ($_children as $Child) {
+            $children[] = QUI\Projects\Media\Utils::parseForMediaCenter($Child);
+        }
+
+
+        return array(
+            'file' => QUI\Projects\Media\Utils::parseForMediaCenter($File),
+            'breadcrumb' => $breadcrumb,
+            'children' => $children
+        );
+    },
     array('project', 'fileid'),
     'Permission::checkAdminUser'
 );

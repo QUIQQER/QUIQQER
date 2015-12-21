@@ -11,36 +11,34 @@ use \QUI\Projects\Media\Utils as Utils;
  *
  * @return string
  */
-function ajax_media_url_resized($fileurl, $maxWidth, $maxHeight)
-{
-    if (Utils::isMediaUrl($fileurl) === false) {
-        return $fileurl;
-    }
-
-    try {
-        $File = Utils::getMediaItemByUrl($fileurl);
-
-        if (!Utils::isImage($File)) {
-            if (Utils::isFolder($File)) {
-                return Utils::getIconByExtension('folder');
-            }
-
-            return Utils::getIconByExtension(
-                Utils::getExtension($File->getFullPath())
-            );
+QUI::$Ajax->registerFunction(
+    'ajax_media_url_resized',
+    function ($fileurl, $maxWidth, $maxHeight) {
+        if (Utils::isMediaUrl($fileurl) === false) {
+            return $fileurl;
         }
 
-        /* @var $File \QUI\Projects\Media\Image */
-        return $File->getSizeCacheUrl($maxWidth, $maxHeight);
+        try {
+            $File = Utils::getMediaItemByUrl($fileurl);
 
-    } catch (QUI\Exception $Exception) {
-    }
+            if (!Utils::isImage($File)) {
+                if (Utils::isFolder($File)) {
+                    return Utils::getIconByExtension('folder');
+                }
 
-    return $fileurl;
-}
+                return Utils::getIconByExtension(
+                    Utils::getExtension($File->getFullPath())
+                );
+            }
 
-QUI::$Ajax->register(
-    'ajax_media_url_resized',
+            /* @var $File \QUI\Projects\Media\Image */
+            return $File->getSizeCacheUrl($maxWidth, $maxHeight);
+
+        } catch (QUI\Exception $Exception) {
+        }
+
+        return $fileurl;
+    },
     array('fileurl', 'maxWidth', 'maxHeight'),
     'Permission::checkAdminUser'
 );

@@ -9,36 +9,34 @@
  *
  * @throws \QUI\Exception
  */
-function ajax_media_copy($project, $to, $ids)
-{
-    $Project = QUI\Projects\Manager::getProject($project);
-    $Media   = $Project->getMedia();
-    $Folder  = $Media->get($to);
+QUI::$Ajax->registerFunction(
+    'ajax_media_copy',
+    function ($project, $to, $ids) {
+        $Project = QUI\Projects\Manager::getProject($project);
+        $Media   = $Project->getMedia();
+        $Folder  = $Media->get($to);
 
-    $ids = json_decode($ids, true);
+        $ids = json_decode($ids, true);
 
-    if (!QUI\Projects\Media\Utils::isFolder($Folder)) {
-        throw new QUI\Exception(
-            'Bitte wählen Sie ein Ordner aus um die Dateie zu kopieren.'
-        );
-    }
-
-    /* @var $Folder \QUI\Projects\Media\Folder */
-    foreach ($ids as $id) {
-        try {
-            $Item = $Media->get((int)$id);
-            $Item->copyTo($Folder);
-
-        } catch (QUI\Exception $Exception) {
-            QUI::getMessagesHandler()->addError(
-                $Exception->getMessage()
+        if (!QUI\Projects\Media\Utils::isFolder($Folder)) {
+            throw new QUI\Exception(
+                'Bitte wählen Sie ein Ordner aus um die Dateie zu kopieren.'
             );
         }
-    }
-}
 
-QUI::$Ajax->register(
-    'ajax_media_copy',
+        /* @var $Folder \QUI\Projects\Media\Folder */
+        foreach ($ids as $id) {
+            try {
+                $Item = $Media->get((int)$id);
+                $Item->copyTo($Folder);
+
+            } catch (QUI\Exception $Exception) {
+                QUI::getMessagesHandler()->addError(
+                    $Exception->getMessage()
+                );
+            }
+        }
+    },
     array('project', 'to', 'ids'),
     'Permission::checkAdminUser'
 );

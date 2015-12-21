@@ -7,30 +7,28 @@
  *
  * @return string
  */
-function ajax_media_url_rewrited($fileurl)
-{
-    if (QUI\Projects\Media\Utils::isMediaUrl($fileurl) === false) {
-        return $fileurl;
-    }
-
-    try {
-        $File = QUI\Projects\Media\Utils::getImageByUrl($fileurl);
-        $url = $File->getUrl(true);
-
-        if (empty($url)) {
-            return $File->getUrl();
+QUI::$Ajax->registerFunction(
+    'ajax_media_url_rewrited',
+    function ($fileurl) {
+        if (QUI\Projects\Media\Utils::isMediaUrl($fileurl) === false) {
+            return $fileurl;
         }
 
-        return $url;
+        try {
+            $File = QUI\Projects\Media\Utils::getImageByUrl($fileurl);
+            $url  = $File->getUrl(true);
 
-    } catch (QUI\Exception $Exception) {
-    }
+            if (empty($url)) {
+                return $File->getUrl();
+            }
 
-    return $fileurl;
-}
+            return $url;
 
-QUI::$Ajax->register(
-    'ajax_media_url_rewrited',
+        } catch (QUI\Exception $Exception) {
+        }
+
+        return $fileurl;
+    },
     array('fileurl'),
     'Permission::checkAdminUser'
 );

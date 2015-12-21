@@ -8,20 +8,18 @@
  * @param string $filename - File name
  * @param string $filetype - File type
  */
-function ajax_media_checkreplace($project, $fileid, $filename, $filetype)
-{
-    $Project = QUI\Projects\Manager::getProject($project);
-    $Media   = $Project->getMedia();
-
-    // check before upload if a replacement is allowed
-    QUI\Projects\Media\Utils::checkReplace($Media, $fileid, array(
-        'name' => $filename,
-        'type' => $filetype
-    ));
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_media_checkreplace',
+    function ($project, $fileid, $filename, $filetype) {
+        $Project = QUI\Projects\Manager::getProject($project);
+        $Media   = $Project->getMedia();
+
+        // check before upload if a replacement is allowed
+        QUI\Projects\Media\Utils::checkReplace($Media, $fileid, array(
+            'name' => $filename,
+            'type' => $filetype
+        ));
+    },
     array('project', 'fileid', 'filename', 'filetype'),
     'Permission::checkAdminUser'
 );

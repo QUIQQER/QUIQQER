@@ -8,32 +8,30 @@
  *
  * @return integer
  */
-function ajax_media_file_getParentId($project, $fileid)
-{
-    $Project = QUI\Projects\Manager::getProject($project);
-    $Media   = $Project->getMedia();
-
-    try {
-        $File = $Media->get($fileid);
-
-    } catch (QUI\Exception $Exception) {
-        return $Media->firstChild()->getId();
-    }
-
-    if (QUI\Projects\Media\Utils::isFolder($File)) {
-        return $File->getId();
-    }
-
-    try {
-        return $File->getParent()->getId();
-
-    } catch (QUI\Exception $Exception) {
-        return $Media->firstChild()->getId();
-    }
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_media_file_getParentId',
+    function ($project, $fileid) {
+        $Project = QUI\Projects\Manager::getProject($project);
+        $Media   = $Project->getMedia();
+
+        try {
+            $File = $Media->get($fileid);
+
+        } catch (QUI\Exception $Exception) {
+            return $Media->firstChild()->getId();
+        }
+
+        if (QUI\Projects\Media\Utils::isFolder($File)) {
+            return $File->getId();
+        }
+
+        try {
+            return $File->getParent()->getId();
+
+        } catch (QUI\Exception $Exception) {
+            return $Media->firstChild()->getId();
+        }
+    },
     array('project', 'fileid'),
     'Permission::checkAdminUser'
 );

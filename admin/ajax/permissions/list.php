@@ -5,13 +5,11 @@
  *
  * @return array
  */
-function ajax_permissions_list()
-{
-    return \QUI::getPermissionManager()->getPermissionList();
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_permissions_list',
+    function () {
+        return QUI::getPermissionManager()->getPermissionList();
+    },
     false,
     array(
         'Permission::checkAdminUser',

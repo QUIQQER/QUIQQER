@@ -9,39 +9,37 @@
  * @return string|array
  * @throws \QUI\Exception
  */
-function ajax_media_deactivate($project, $fileid)
-{
-    $fileid = json_decode($fileid, true);
+QUI::$Ajax->registerFunction(
+    'ajax_media_deactivate',
+    function ($project, $fileid) {
+        $fileid = json_decode($fileid, true);
 
-    $Project = QUI\Projects\Manager::getProject($project);
-    $Media   = $Project->getMedia();
+        $Project = QUI\Projects\Manager::getProject($project);
+        $Media   = $Project->getMedia();
 
-    if (is_array($fileid)) {
-        $result = array();
+        if (is_array($fileid)) {
+            $result = array();
 
-        foreach ($fileid as $id) {
-            try {
-                $File = $Media->get($id);
-                $File->deactivate();
+            foreach ($fileid as $id) {
+                try {
+                    $File = $Media->get($id);
+                    $File->deactivate();
 
-                $result[$File->getId()] = $File->isActive();
+                    $result[$File->getId()] = $File->isActive();
 
-            } catch (QUI\Exception $Exception) {
-                QUI::getMessagesHandler()->addError($Exception->getMessage());
+                } catch (QUI\Exception $Exception) {
+                    QUI::getMessagesHandler()->addError($Exception->getMessage());
+                }
             }
+
+            return $result;
         }
 
-        return $result;
-    }
+        $File = $Media->get($fileid);
+        $File->deactivate();
 
-    $File = $Media->get($fileid);
-    $File->deactivate();
-
-    return $File->isActive();
-}
-
-QUI::$Ajax->register(
-    'ajax_media_deactivate',
+        return $File->isActive();
+    },
     array('project', 'fileid'),
     'Permission::checkAdminUser'
 );
