@@ -6,13 +6,11 @@
  * @param string $sitetype - name of the sitetype
  * @return string
  */
-function ajax_project_types_get_title($sitetype)
-{
-    return QUI::getPluginManager()->getTypeName($sitetype);
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_project_types_get_title',
+    function ($sitetype) {
+        return QUI::getPluginManager()->getTypeName($sitetype);
+    },
     array('sitetype'),
     'Permission::checkAdminUser'
 );

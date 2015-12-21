@@ -7,19 +7,17 @@
  * @param string|integer $id - Site-ID
  * @return array
  */
-function ajax_project_parent($project, $id)
-{
-    $Project = QUI::getProjectManager()->decode($project);
-    $Site    = $Project->get($id);
-
-    if (!$Site->getParentId()) {
-        return 1;
-    }
-
-    return $Site->getParentId();
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_project_parent',
+    function ($project, $id) {
+        $Project = QUI::getProjectManager()->decode($project);
+        $Site    = $Project->get($id);
+
+        if (!$Site->getParentId()) {
+            return 1;
+        }
+
+        return $Site->getParentId();
+    },
     array('project', 'id')
 );
